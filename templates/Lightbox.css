@@ -1,0 +1,72 @@
+body{
+font-family: verdana, helvetica, sans-serif;
+font-size: 12px;
+}
+
+.image-container-default{
+height: 150px;
+width: 150px;
+border: 2px solid #ddd;
+float: left;
+margin: 0 10px 10px 0;
+text-align: center;
+padding-top: 10px;
+}
+
+.image-container-hover{
+height: 150px;
+width: 150px;
+border: 2px solid #666;
+float: left;
+margin: 0 10px 10px 0;
+text-align: center;
+padding-top: 10px;
+}
+
+.image-container-selected{
+height: 150px;
+width: 150px;
+border: 2px solid #666;
+background-color: #ddd;
+float: left;
+margin: 0 10px 10px 0;
+text-align: center;
+padding-top: 10px;
+}
+
+.image-container-selected .image_title{
+font-weight: bold;
+}
+
+.image-container-selected img{
+border: 1px solid #eee;
+}
+
+.image-container-dragging{
+height: 150px;
+width: 150px;
+border: 2px solid #666;
+background-color: #eee;
+float: left;
+margin: 0 10px 10px 0;
+text-align: center;
+opacity: .2;
+filter: alpha(opacity=20);
+padding-top: 10px;
+}
+
+
+.image_title{
+margin-top:5px;
+height: 40px;
+overflow: hidden;
+}
+
+
+.image_tooltip{
+background-color:lightyellow;
+width: 150px;
+padding: 10px;
+font-size: 11px;
+border: 1px solid #666;
+}

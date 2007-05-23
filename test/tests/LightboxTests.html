@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" 
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Lightbox Tests</title>
+	<script language="JavaScript" type="text/javascript" src="../jsunit/app/jsUnitCore.js"> </script>
+		<script type="text/javascript" 
+			djConfig="isDebug: true"
+			src="/dojo/dojo.js"></script>
+		<script type="text/javascript">
+			dojo.require("fluid.Lightbox");
+			dojo.require("dijit.util.parser");	// scan page for widgets and instantiate them
+</script>
+
+	<style type="text/css">
+		@import "/fluid/templates/Lightbox.css";
+	</style>
+
+<script>
+function testSelect () {
+	var lightbox;
+	var defaultClass="image-container-default";
+	var hoverClass="image-container-hover";
+	var selectedClass="image-container-selected";
+	var draggingClass="image-container-dragging";
+
+	// check that "some image" isn't selected
+	assertTrue("image2 should be movable",dojo.hasClass(dojo.byId("image2"), defaultClass));
+	assertFalse("image2 should not be selected",dojo.hasClass(dojo.byId("image2"), selectedClass));
+	
+	// select the image
+	lightbox = new fluid.Lightbox();
+	lightbox.setSelected(dojo.byId("image2"));
+
+	// test the response to the selection
+	assertFalse("image2 should not be moveable", dojo.hasClass(dojo.byId("image2"), defaultClass));
+	assertTrue("image2 should be selected", dojo.hasClass(dojo.byId("image2"), selectedClass));
+	
+	// select the image already selected to ensure it remains selected.
+	lightbox.setSelected(dojo.byId("image2"));
+	assertTrue("image2 should still be selected",dojo.hasClass(dojo.byId("image2"), selectedClass));
+
+	// select a different image and check to see that the previous image is deselected
+	// and the new image is selected
+	assertTrue("image3 should be movable",dojo.hasClass(dojo.byId("image3"), defaultClass));
+	assertFalse("image3 should not be selected",dojo.hasClass(dojo.byId("image3"), selectedClass));
+	
+	lightbox.setSelected(dojo.byId ("image3"));
+	
+	// previous image deselected
+	assertTrue("image2 should now be moveable (previously selected)",dojo.hasClass(dojo.byId("image2"), defaultClass));
+	assertFalse("image2 should not be selected anymore",dojo.hasClass(dojo.byId("image2"), selectedClass));
+	
+	// new image selected
+	assertFalse("image3 should not be moveable",dojo.hasClass(dojo.byId("image3"), defaultClass));
+	assertTrue("image3 should be selected",dojo.hasClass(dojo.byId("image3"), selectedClass));
+}
+
+
+// TODO:
+// We need a better name for this function. Not clear exactly what it does.
+function testIdentifyTarget () {
+	//  fail("Implement the tests!!!");
+}
+
+
+function testRelease () {
+	// 
+	
+//    fail("Implement the tests!!!");
+}
+</script>
+</head>
+
+  <body>
+<p>this is the Lightbox test page</p>
+
+	<input id="image1" dojoType="fluid.Lightbox"/>
+	<input id="image2" dojoType="fluid.Lightbox"/>
+	<input id="image3" dojoType="fluid.Lightbox"/>
+
+  </body>
+</html>
