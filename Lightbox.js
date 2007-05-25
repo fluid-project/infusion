@@ -23,6 +23,7 @@
 
 dojo.provide("fluid.Lightbox");
 
+dojo.require("fluid.GridLayoutManager");
 dojo.require("dijit.base.Widget");
 dojo.require("dijit.base.TemplatedWidget");
 dojo.require("dijit.base.FormElement");
@@ -50,13 +51,14 @@ dojo.declare(
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
+			// do we need to keep the template? can we use dijit.base.getCachedTemplate/dijit.getCachedTemplate ?
 			this.thumbTemplate = this.domNode.getElementsByTagName("div")[0];
 			this.domNode.removeChild(this.domNode.getElementsByTagName("div")[0]);
-//			this.imageList = this.buildImageList(/*we will get this from the Gallery Tool eventually*/[]);
+			this.imageList = this.buildImageList(/*we will get this from the Gallery Tool eventually*/[]);
 
 
-var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
-this.imageList=this.buildImageList(urlList);
+//var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
+//this.imageList=this.buildImageList(urlList);
 
 
 			this.setDomNode(this.imageList);
@@ -71,8 +73,10 @@ this.imageList=this.buildImageList(urlList);
 		},
 		
 		setDomNode: function(imageList) {
+			this.imageList = [];
 			for (imgNode in imageList) {
 				dojo.place(imageList[imgNode],this.domNode,imgNode);
+				this.imageList.push(imageList[imgNode]);
 			}
 		},
 		
@@ -95,12 +99,25 @@ this.imageList=this.buildImageList(urlList);
 		},
 		
 		handleKeyDown: function (/*event object*/ evt) {
-			this._debugMessage("Firing KeyDown function");
-			
+			var key = evt.keyCode;
+			if (key == dojo.keys.CTRL) {
+				this._debugMessage("CTRL down");
+				dojo.stopEvent(evt);
+			}
+			else {
+				
+			}
 		},
 		
 		handleKeyUp: function (/*event object*/ evt) {
-			this._debugMessage("Firing KeyUp function");			
+			var key = evt.keyCode;
+			if (key == dojo.keys.CTRL) {
+				this._debugMessage("CTRL up");
+				dojo.stopEvent(evt);
+			}
+			else {
+				
+			}			
 		},
 		
 		handleArrowKeyPress: function (/*event object*/ evt){
@@ -159,7 +176,7 @@ this.imageList=this.buildImageList(urlList);
 		},
 		
 		_debugMessage: function(message) {
-			if (this.debugMode)
+			if (this.debugMode && dojo.byId("debugString"))
 				dojo.byId("debugString").firstChild.nodeValue = message;
 		}
 	});
