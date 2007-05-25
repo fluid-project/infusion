@@ -32,75 +32,111 @@
 			src="/dojo/dojo.js"></script>
 		<script type="text/javascript">
 			dojo.require("fluid.Lightbox");
+			dojo.require("dojo._base.event");
 			dojo.require("dijit.util.parser");	// scan page for widgets and instantiate them
-</script>
+		</script>
 
 	<style type="text/css">
 		@import "/fluid/templates/Lightbox.css";
 	</style>
 
 <script>
-function testSelect () {
+	
+function testHandleArrowKeyPress()	 {
 	var lightbox;
 	var defaultClass="image-container-default";
-	var hoverClass="image-container-hover";
-	var selectedClass="image-container-selected";
+	var focusClass="image-container-selected";
 	var draggingClass="image-container-dragging";
 
-	// check that "some image" isn't selected
-	assertTrue("image2 should be movable",dojo.hasClass(dojo.byId("image2"), defaultClass));
-	assertFalse("image2 should not be selected",dojo.hasClass(dojo.byId("image2"), selectedClass));
-	
-	// select the image
 	lightbox = new fluid.Lightbox();
-	lightbox.setSelected(dojo.byId("image2"));
-
-	// test the response to the selection
-	assertFalse("image2 should not be moveable", dojo.hasClass(dojo.byId("image2"), defaultClass));
-	assertTrue("image2 should be selected", dojo.hasClass(dojo.byId("image2"), selectedClass));
+	lightbox.focus(dojo.byId("fluid.thumb0"));
 	
-	// select the image already selected to ensure it remains selected.
-	lightbox.setSelected(dojo.byId("image2"));
-	assertTrue("image2 should still be selected",dojo.hasClass(dojo.byId("image2"), selectedClass));
-
-	// select a different image and check to see that the previous image is deselected
-	// and the new image is selected
-	assertTrue("image3 should be movable",dojo.hasClass(dojo.byId("image3"), defaultClass));
-	assertFalse("image3 should not be selected",dojo.hasClass(dojo.byId("image3"), selectedClass));
+	assertTrue("fluid.thumb0 should be selected",dojo.hasClass(dojo.byId("fluid.thumb0"), focusedClass));
+	assertTrue("fluid.thumb1 should be not selected",dojo.hasClass(dojo.byId("fluid.thumb1"), defaultClass));
+	var evt = {keyCode: dojo.keys.RIGHT_ARROW };
+	lightbox.handleArrowKeyPress(evt);
+	assertTrue("fluid.thumb0 should be not selected",dojo.hasClass(dojo.byId("fluid.thumb0"), defaultClass));
+	assertTrue("fluid.thumb1 should be selected",dojo.hasClass(dojo.byId("fluid.thumb1"), focusedClass));
 	
-	lightbox.setSelected(dojo.byId ("image3"));
-	
-	// previous image deselected
-	assertTrue("image2 should now be moveable (previously selected)",dojo.hasClass(dojo.byId("image2"), defaultClass));
-	assertFalse("image2 should not be selected anymore",dojo.hasClass(dojo.byId("image2"), selectedClass));
-	
-	// new image selected
-	assertFalse("image3 should not be moveable",dojo.hasClass(dojo.byId("image3"), defaultClass));
-	assertTrue("image3 should be selected",dojo.hasClass(dojo.byId("image3"), selectedClass));
 }
 
+function testFocus () {
+	var lightbox;
+	var defaultClass="image-container-default";
+	var focusClass="image-container-selected";
+	var draggingClass="image-container-dragging";
 
-// TODO:
-// We need a better name for this function. Not clear exactly what it does.
-function testIdentifyTarget () {
-	//  fail("Implement the tests!!!");
-}
+	lightbox = new fluid.Lightbox();
+	var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
+	var imgList;
+	imgList = lightbox.buildImageList(urlList);
+	lightbox.setDomNode(imgList);
 
-
-function testRelease () {
-	// 
+	// check that "some image" isn't focused
+alert(dojo.byId("fluid.thumb1"));
+/*	assertTrue("fluid.thumb1 should be moveable",dojo.hasClass(dojo.byId("fluid.thumb1"), defaultClass));
+	assertFalse("fluid.thumb1 should not be focused",dojo.hasClass(dojo.byId("fluid.thumb1"), focusClass));
 	
-//    fail("Implement the tests!!!");
+	// focus the image
+	lightbox.focus(dojo.byId("fluid.thumb1"));
+
+	// test the response to the focus
+	assertFalse("fluid.thumb1 should not be moveable", dojo.hasClass(dojo.byId("fluid.thumb1"), defaultClass));
+	assertTrue("fluid.thumb1 should be focused", dojo.hasClass(dojo.byId("fluid.thumb1"), focusClass));
+	
+	// focus the image already focused to ensure it remains focused.
+	lightbox.focus(dojo.byId("fluid.thumb1"));
+	assertTrue("fluid.thumb1 should still be focused",dojo.hasClass(dojo.byId("fluid.thumb1"), focusClass));
+
+	// focus a different image and check to see that the previous image is defocused
+	// and the new image is focused
+	assertTrue("fluid.thumb2 should be movable",dojo.hasClass(dojo.byId("fluid.thumb2"), defaultClass));
+	assertFalse("fluid.thumb2 should not be focused",dojo.hasClass(dojo.byId("fluid.thumb2"), focusClass));
+	
+	lightbox.focus(dojo.byId ("fluid.thumb2"));
+	
+	// previous image defocused
+	assertTrue("fluid.thumb1 should now be moveable (previously focused)",dojo.hasClass(dojo.byId("fluid.thumb1"), defaultClass));
+	assertFalse("fluid.thumb1 should not be focused anymore",dojo.hasClass(dojo.byId("fluid.thumb1"), focusClass));
+	
+	// new image focused
+	assertFalse("fluid.thumb2 should not be moveable",dojo.hasClass(dojo.byId("fluid.thumb2"), defaultClass));
+	assertTrue("fluid.thumb2 should be focused",dojo.hasClass(dojo.byId("fluid.thumb2"), focusClass));
+	
+	// clean up
+	dojo.removeClass(dojo.byId("fluid.thumb2"),focusClass);
+	dojo.addClass(dojo.byId("fluid.thumb2"),defaultClass);
+*/
 }
+
+function testBuildImageList() {
+	var lightbox;
+	lightbox = new fluid.Lightbox();
+
+	assertEquals (0, lightbox.imageList.length);	
+	
+	var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
+	var imgList;
+	imgList = lightbox.buildImageList(urlList);
+	assertEquals (3, imgList.length);
+
+	assertEquals ("http://foo.com/url1", imgList[0].getElementsByTagName("a")[0].href);
+	assertEquals ("http://foo.com/url1", imgList[0].getElementsByTagName("img")[0].src);
+
+	assertEquals ("http://foo.com/url2", imgList[1].getElementsByTagName("a")[0].href);
+	assertEquals ("http://foo.com/url2", imgList[1].getElementsByTagName("img")[0].src);
+
+	assertEquals ("http://foo.com/url3", imgList[2].getElementsByTagName("a")[0].href);
+	assertEquals ("http://foo.com/url3", imgList[2].getElementsByTagName("img")[0].src);
+}
+
 </script>
 </head>
 
   <body>
-<p>this is the Lightbox test page</p>
+	<p>this is the Lightbox test page</p>
 
-	<input id="image1" dojoType="fluid.Lightbox"/>
-	<input id="image2" dojoType="fluid.Lightbox"/>
-	<input id="image3" dojoType="fluid.Lightbox"/>
+	<input id="fluid.thumb0" dojoType="fluid.Lightbox"/>
 
   </body>
 </html>

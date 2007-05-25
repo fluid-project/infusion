@@ -1,5 +1,4 @@
-<div class='image-container-default'
-	 tabIndex="${this.tabIndex}" type="${this.type}" id="${this.id}" name="${this.name}" alt="${this.alt}" >
+<div tabIndex='0'>
 <!--
  Fluid Project
 
@@ -21,11 +20,17 @@
  130 St. George St., Toronto, Ontario, Canada
  Telephone: (416) 978-4360
 -->
+	<p class="debug" id="debugString">Foo</p>
 
-	<a href='image.jpg'>
-		<img src='image.jpg'/>
-		<div class='image_title'>
-			Image caption  here
-		</div>
-	</a>
+	<!-- this div is the one that will be replicated, one per thumbnail -->
+	<div id='fluid.thumb' class='image-container-default' name='fluid.thumb'>
+		<a  id='fluid.thumb.link' href='#' name='fluid.thumb.link'>
+			<img  id='fluid.thumb.img' src='thumb1.jpg' name='fluid.thumb.img'/>
+			<div  id='fluid.thumb.caption' class='image-title' name='fluid.thumb.caption'>
+				Image caption  here
+			</div>
+		</a>
+	</div>
+
+
 </div>

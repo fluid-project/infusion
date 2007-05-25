@@ -27,36 +27,126 @@ dojo.require("dijit.base.Widget");
 dojo.require("dijit.base.TemplatedWidget");
 dojo.require("dijit.base.FormElement");
 
+(function(){
+		fluid.states = {defaultClass:"image-container-default",
+		focusedClass:"image-container-selected",
+		draggingClass:"image-container-dragging"
+		};		
+})();
+
 dojo.declare(
 	"fluid.Lightbox",	// class name
 	[dijit.base.FormElement, dijit.base.TemplatedWidget],
 	{
 
 		templatePath: dojo.moduleUrl("fluid", "templates/Lightbox.html"),
-		selectedNode: null,
-		setSelected: function(/*node*/ aNode) {
-			
-		var defaultClass="image-container-default";
-		var hoverClass="image-container-hover";
-		var selectedClass="image-container-selected";
-		var draggingClass="image-container-dragging";
+		thumbTemplate: null,
+		focusedNode: null,
+		focusedNodeIndex: 0,
+		imageList: [],  // list of dom nodes i.e. the thumb divs
+		debugMode: false,
 
+		postCreate: function () {
+			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
+			this.thumbTemplate = this.domNode.getElementsByTagName("div")[0];
+			this.domNode.removeChild(this.domNode.getElementsByTagName("div")[0]);
+//			this.imageList = this.buildImageList(/*we will get this from the Gallery Tool eventually*/[]);
+
+
+var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
+this.imageList=this.buildImageList(urlList);
+
+
+			this.setDomNode(this.imageList);
+
+			for (i=0; i < this.imageList.length; i++){
+				if (dojo.hasClass(this.imageList[i], fluid.states.focusedClass)) {
+					this.focusedNode = this.imageList[i];
+					this.focusedNodeIndex = i;
+					break;
+				}
+			}
+		},
+		
+		setDomNode: function(imageList) {
+			for (imgNode in imageList) {
+				dojo.place(imageList[imgNode],this.domNode,imgNode);
+			}
+		},
+		
+		focus: function(/*node*/ aNode) {
 			// deselect any previously selected node.
 			// todo: we may need an unselect function. In which case we will refactor the IF block above.		
-			if (this.selectedNode != null) {
-				dojo.removeClass (this.selectedNode, selectedClass);
-				dojo.addClass (this.selectedNode, defaultClass);
+			if (this.focusedNode != null) {
+				dojo.removeClass (this.focusedNode, fluid.states.focusedClass);
+				dojo.addClass (this.focusedNode, fluid.states.defaultClass);
 			}
 			
 			// Note: currently selecting a node that is already "selected" keeps it selected.
 			// Question: Should selecting a node if it is already selected deselect the node?
 			
-			this.selectedNode = aNode;
-			dojo.removeClass (this.selectedNode, defaultClass);
-			dojo.addClass (this.selectedNode, selectedClass); 
+			this.focusedNode = aNode;			
+			
+			dojo.removeClass (this.focusedNode, fluid.states.defaultClass);
+			dojo.addClass (this.focusedNode, fluid.states.focusedClass); 
+			this._debugMessage(" class is now" + this.focusedNode.className);
 		},
 		
+		handleKeyDown: function (/*Event oject */ evt) {
+			
+		},
 		
+		handleArrowKeyPress: function (/*event object*/ evt){
+			
+			var key = evt.keyCode;
+			dojo.stopEvent(evt);
+			if (key == dojo.keys.DOWN_ARROW)
+				this._debugMessage("Down");
+			else if (key == dojo.keys.UP_ARROW)
+				this._debugMessage("Up");
+			else if (key == dojo.keys.LEFT_ARROW) {
+				this._debugMessage("Left");
+				
+				// set focus to next to right sibling in imageList
+				// if current focus image is the first in list, change focus to last image in imageList
+				
+			}
+			else if (key == dojo.keys.RIGHT_ARROW) {
+				this._debugMessage("Right");
+				
+				// set focus to next to right sibling in imageList
+				// if current focus image is the last, change focus to first image in imageList
+				if (this.focusedNodeIndex == this.imageList.length-1) {
+					this._debugMessage(" set focus index to 0");
+					
+					this.focus (this.imageList[0]);
+					this.focusedNodeIndex = 0;
+				} else {
+					this._debugMessage(" set focus index to " + (this.focusedNodeIndex+1));
+					this.focus (this.imageList[this.focusedNodeIndex+1]);
+					this.focusedNodeIndex = this.focusedNodeIndex+1;
+				}
+			}
+			else 
+				this._debugMessage(key);
+		},
 		
+		buildImageList: function (urlList) {
+			var imgDivList = [];
+			for (url in urlList) {
+				var imgDiv = this.thumbTemplate.cloneNode(true);
+				imgDiv.id += url;
+				imgDiv.getElementsByTagName("a")[0].href = urlList[url];
+				imgDiv.getElementsByTagName("img")[0].src = urlList[url];
+				imgDiv.getElementsByTagName("div")[0].firstChild.nodeValue = urlList[url];
+				imgDivList.push(imgDiv);
+			}
+			return imgDivList;
+		},
+		
+		_debugMessage: function(message) {
+			if (this.debugMode)
+				dojo.byId("debugString").firstChild.nodeValue = message;
+		}
 	});
 
