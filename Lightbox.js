@@ -44,10 +44,12 @@ dojo.declare(
 		focusedNode: null,
 		focusedNodeIndex: 0,
 		imageList: [],  // list of dom nodes i.e. the thumb divs
-		debugMode: false,
+		debugMode: true,
 
 		postCreate: function () {
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
+			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
+			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
 			this.thumbTemplate = this.domNode.getElementsByTagName("div")[0];
 			this.domNode.removeChild(this.domNode.getElementsByTagName("div")[0]);
 //			this.imageList = this.buildImageList(/*we will get this from the Gallery Tool eventually*/[]);
@@ -92,24 +94,34 @@ this.imageList=this.buildImageList(urlList);
 			this._debugMessage(" class is now" + this.focusedNode.className);
 		},
 		
-		handleKeyDown: function (/*Event oject */ evt) {
+		handleKeyDown: function (/*event object*/ evt) {
+			this._debugMessage("Firing KeyDown function");
 			
+		},
+		
+		handleKeyUp: function (/*event object*/ evt) {
+			this._debugMessage("Firing KeyUp function");			
 		},
 		
 		handleArrowKeyPress: function (/*event object*/ evt){
 			
 			var key = evt.keyCode;
-			dojo.stopEvent(evt);
-			if (key == dojo.keys.DOWN_ARROW)
+			if (key == dojo.keys.DOWN_ARROW){
 				this._debugMessage("Down");
-			else if (key == dojo.keys.UP_ARROW)
+				dojo.stopEvent(evt);
+			}
+			else if (key == dojo.keys.UP_ARROW){
 				this._debugMessage("Up");
+				dojo.stopEvent(evt);
+			
+			}
 			else if (key == dojo.keys.LEFT_ARROW) {
 				this._debugMessage("Left");
 				
 				// set focus to next to right sibling in imageList
 				// if current focus image is the first in list, change focus to last image in imageList
-				
+				dojo.stopEvent(evt);
+			
 			}
 			else if (key == dojo.keys.RIGHT_ARROW) {
 				this._debugMessage("Right");
@@ -126,6 +138,8 @@ this.imageList=this.buildImageList(urlList);
 					this.focus (this.imageList[this.focusedNodeIndex+1]);
 					this.focusedNodeIndex = this.focusedNodeIndex+1;
 				}
+				dojo.stopEvent(evt);
+			
 			}
 			else 
 				this._debugMessage(key);
