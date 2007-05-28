@@ -59,7 +59,7 @@ function testHandleArrowKeyPress()	 {
 	
 	assertTrue("fluid.thumb0 should be selected",dojo.hasClass(document.getElementById("fluid.thumb0"), focusedClass));
 	assertTrue("fluid.thumb1 should be not selected",dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
-	var evt = {keyCode: dojo.keys.RIGHT_ARROW };
+	var evt = {keyCode: dojo.keys.RIGHT_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
 	lightbox.handleArrowKeyPress(evt);
 /*	assertTrue("fluid.thumb0 should be not selected",dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
 	assertTrue("fluid.thumb1 should be selected",dojo.hasClass(document.getElementById("fluid.thumb1"), focusedClass));
