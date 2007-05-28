@@ -28,18 +28,18 @@ dojo.require("dijit.base.Widget");
 dojo.require("dijit.base.TemplatedWidget");
 dojo.require("dijit.base.FormElement");
 
-(function(){
-		fluid.states = {defaultClass:"image-container-default",
+(function() {
+	fluid.states = {
+		defaultClass:"image-container-default",
 		focusedClass:"image-container-selected",
 		draggingClass:"image-container-dragging"
-		};		
+	};		
 })();
 
 dojo.declare(
 	"fluid.Lightbox",	// class name
 	[dijit.base.FormElement, dijit.base.TemplatedWidget],
 	{
-
 		templatePath: dojo.moduleUrl("fluid", "templates/Lightbox.html"),
 		thumbTemplate: null,
 		focusedNode: null,
@@ -51,26 +51,20 @@ dojo.declare(
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
-			// do we need to keep the template? can we use dijit.base.getCachedTemplate/dijit.getCachedTemplate ?
 			this.thumbTemplate = this.domNode.getElementsByTagName("div")[0];
 			this.domNode.removeChild(this.domNode.getElementsByTagName("div")[0]);
 			this.imageList = this.buildImageList(/*we will get this from the Gallery Tool eventually*/[]);
 
-
+// these are test images that we are using until we get the images from the server
 //var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
 //this.imageList=this.buildImageList(urlList);
 
-
 			this.setDomNode(this.imageList);
-
-			for (i=0; i < this.imageList.length; i++){
-				if (dojo.hasClass(this.imageList[i], fluid.states.focusedClass)) {
-					this.focusedNode = this.imageList[i];
-					this.focusedNodeIndex = i;
-					break;
-				}
+			if (this.imageList.length > 0) {
+				this.focus(this.imageList[0]);
 			}
-		},
+			
+		}, // end postCreate
 		
 		setDomNode: function(imageList) {
 			this.imageList = [];
@@ -78,25 +72,22 @@ dojo.declare(
 				dojo.place(imageList[imgNode],this.domNode,imgNode);
 				this.imageList.push(imageList[imgNode]);
 			}
-		},
+		}, // end setDomNode
 		
 		focus: function(/*node*/ aNode) {
-			// deselect any previously selected node.
-			// todo: we may need an unselect function. In which case we will refactor the IF block above.		
+			// deselect any previously focused node
 			if (this.focusedNode != null) {
 				dojo.removeClass (this.focusedNode, fluid.states.focusedClass);
 				dojo.addClass (this.focusedNode, fluid.states.defaultClass);
 			}
-			
-			// Note: currently selecting a node that is already "selected" keeps it selected.
-			// Question: Should selecting a node if it is already selected deselect the node?
-			
+						
 			this.focusedNode = aNode;			
 			
 			dojo.removeClass (this.focusedNode, fluid.states.defaultClass);
 			dojo.addClass (this.focusedNode, fluid.states.focusedClass); 
+			
 			this._debugMessage(" class is now" + this.focusedNode.className);
-		},
+		}, //end focus
 		
 		handleKeyDown: function (/*event object*/ evt) {
 			var key = evt.keyCode;
@@ -107,7 +98,7 @@ dojo.declare(
 			else {
 				
 			}
-		},
+		}, // end handleKeyDown
 		
 		handleKeyUp: function (/*event object*/ evt) {
 			var key = evt.keyCode;
@@ -118,34 +109,36 @@ dojo.declare(
 			else {
 				
 			}			
-		},
+		}, // end handleKeyUp
 		
 		handleArrowKeyPress: function (/*event object*/ evt){
 			
-			var key = evt.keyCode;
-			if (key == dojo.keys.DOWN_ARROW){
+			switch (key = evt.keyCode) {
+			case dojo.keys.DOWN_ARROW: {
 				this._debugMessage("Down");
 				dojo.stopEvent(evt);
+				break;
 			}
-			else if (key == dojo.keys.UP_ARROW){
+			case dojo.keys.UP_ARROW: {
 				this._debugMessage("Up");
 				dojo.stopEvent(evt);
-			
+				break;
 			}
-			else if (key == dojo.keys.LEFT_ARROW) {
+			case dojo.keys.LEFT_ARROW: {
 				this._debugMessage("Left");
 				
 				// set focus to next to right sibling in imageList
 				// if current focus image is the first in list, change focus to last image in imageList
 				dojo.stopEvent(evt);
-			
+				break;
 			}
-			else if (key == dojo.keys.RIGHT_ARROW) {
+			case dojo.keys.RIGHT_ARROW: {
 				this._debugMessage("Right");
-				
+								
 				// set focus to next to right sibling in imageList
 				// if current focus image is the last, change focus to first image in imageList
 				if (this.focusedNodeIndex == this.imageList.length-1) {
+										
 					this._debugMessage(" set focus index to 0");
 					
 					this.focus (this.imageList[0]);
@@ -156,11 +149,13 @@ dojo.declare(
 					this.focusedNodeIndex = this.focusedNodeIndex+1;
 				}
 				dojo.stopEvent(evt);
-			
+				break;
 			}
-			else 
+			default: 
 				this._debugMessage(key);
-		},
+				break;
+			}
+		}, // end handleArrowKeyPress
 		
 		buildImageList: function (urlList) {
 			var imgDivList = [];
@@ -173,11 +168,12 @@ dojo.declare(
 				imgDivList.push(imgDiv);
 			}
 			return imgDivList;
-		},
+		}, // end buildImageList
 		
 		_debugMessage: function(message) {
 			if (this.debugMode && dojo.byId("debugString"))
 				dojo.byId("debugString").firstChild.nodeValue = message;
-		}
-	});
+		} // end _debugMessage
+	}
+);
 

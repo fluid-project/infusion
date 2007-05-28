@@ -57,13 +57,31 @@ function testHandleArrowKeyPress()	 {
 
 	lightbox.focus(dojo.byId("fluid.thumb0"));
 	
-	assertTrue("fluid.thumb0 should be selected",dojo.hasClass(document.getElementById("fluid.thumb0"), focusedClass));
-	assertTrue("fluid.thumb1 should be not selected",dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
+	assertTrue("fluid.thumb0 should be focused",dojo.hasClass(document.getElementById("fluid.thumb0"), focusedClass));
+	assertFalse("fluid.thumb0 should not be default", dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
+	assertTrue("fluid.thumb1 should be not focused",dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
+	assertFalse("fluid.thumb1 should not be focused", dojo.hasClass(document.getElementById("fluid.thumb1"), focusedClass));
+
 	var evt = {keyCode: dojo.keys.RIGHT_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
 	lightbox.handleArrowKeyPress(evt);
-/*	assertTrue("fluid.thumb0 should be not selected",dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
-	assertTrue("fluid.thumb1 should be selected",dojo.hasClass(document.getElementById("fluid.thumb1"), focusedClass));
-*/	
+	assertTrue("fluid.thumb0 should be default",dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
+	assertFalse("fluid.thumb0 should not be focused", dojo.hasClass(document.getElementById("fluid.thumb0"), focusedClass));
+	assertTrue("fluid.thumb1 should be focused",dojo.hasClass(document.getElementById("fluid.thumb1"), focusedClass));
+	assertFalse("fluid.thumb1 should not be default", dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
+
+	lightbox.handleArrowKeyPress(evt);
+	assertTrue("fluid.thumb0 should be default", dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
+	assertTrue("fluid.thumb1 should be default", dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
+	assertTrue("fluid.thumb2 should be focused", dojo.hasClass(document.getElementById("fluid.thumb2"), focusedClass));
+
+	lightbox.handleArrowKeyPress(evt);
+	//assertTrue("fluid.thumb0 should be focused after wrapping", dojo.hasClass(document.getElementById("fluid.thumb0"), focusedClass));
+	//assertFalse("fluid.thumb0 should not be default after wrapping", dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
+	assertTrue("fluid.thumb1 should be default", dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
+	assertFalse("fluid.thumb1 should not be focused after wrapping", dojo.hasClass(document.getElementById("fluid.thumb1"), focusedClass));
+	assertTrue("fluid.thumb2 should be default", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
+	assertFalse("fluid.thumb2 should not be focused after wrapping", dojo.hasClass(document.getElementById("fluid.thumb2"), focusedClass));
+	
 }
 
 
