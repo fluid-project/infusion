@@ -43,238 +43,173 @@
 <script>
 	
 function testHandleArrowKeyPressForLeftAndRight()	 {
-	var lightbox;
+	var lightbox = new fluid.Lightbox();
 	var defaultClass="image-container-default";
 	var focusedClass="image-container-selected";
 	var draggingClass="image-container-dragging";
 
-	lightbox = new fluid.Lightbox();
-	var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
-	var imgList;
-	imgList = lightbox.buildImageList(urlList);
-	lightbox.setDomNode(imgList);
-	document.body.appendChild(lightbox.domNode);
-
 	// set the focus on the first image
-	lightbox.focus(dojo.byId("fluid.thumb0"));	
-	assertTrue("fluid.thumb0 should be focused",dojo.hasClass(document.getElementById("fluid.thumb0"), focusedClass));
-	assertFalse("fluid.thumb0 should not be default", dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
-	assertTrue("fluid.thumb1 should be not focused",dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
-	assertFalse("fluid.thumb1 should not be focused", dojo.hasClass(document.getElementById("fluid.thumb1"), focusedClass));
+	assertTrue("fluid.thumb1 should be focused",dojo.hasClass(document.getElementById("fluid.thumb1"), focusedClass));
+	assertFalse("fluid.thumb1 should not be default", dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
+	assertTrue("fluid.thumb2 should be not focused",dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
+	assertFalse("fluid.thumb2 should not be focused", dojo.hasClass(document.getElementById("fluid.thumb2"), focusedClass));
 
 	// Test: right arrow to the second image
 	var evtRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
 	lightbox.handleArrowKeyPress(evtRightArrow);
-	assertTrue("fluid.thumb0 should be default",dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
-	assertFalse("fluid.thumb0 should not be focused", dojo.hasClass(document.getElementById("fluid.thumb0"), focusedClass));
-	assertTrue("fluid.thumb1 should be focused",dojo.hasClass(document.getElementById("fluid.thumb1"), focusedClass));
-	assertFalse("fluid.thumb1 should not be default", dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
+	assertTrue("fluid.thumb1 should be default",dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
+	assertFalse("fluid.thumb1 should not be focused", dojo.hasClass(document.getElementById("fluid.thumb1"), focusedClass));
+	assertTrue("fluid.thumb2 should be focused",dojo.hasClass(document.getElementById("fluid.thumb2"), focusedClass));
+	assertFalse("fluid.thumb2 should not be default", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
 
 	// Test: right arrow to the last image
 	lightbox.handleArrowKeyPress(evtRightArrow);
-	assertTrue("fluid.thumb0 should be default", dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
 	assertTrue("fluid.thumb1 should be default", dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
-	assertTrue("fluid.thumb2 should be focused", dojo.hasClass(document.getElementById("fluid.thumb2"), focusedClass));
+	assertTrue("fluid.thumb2 should be default", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
+	assertTrue("fluid.thumb3 should be focused", dojo.hasClass(document.getElementById("fluid.thumb3"), focusedClass));
 
 	// Test: left arrow to the previous image
 	var evtLeftArrow = {keyCode: dojo.keys.LEFT_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
 	lightbox.handleArrowKeyPress(evtLeftArrow);
-	assertTrue("left arrow to second fluid.thumb0 should be default", dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
-	assertTrue("left arrow to second fluid.thumb1 should be focused", dojo.hasClass(document.getElementById("fluid.thumb1"), focusedClass));
-	assertTrue("left arrow to second fluid.thumb2 should be default", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
+	assertTrue("left arrow to second fluid.thumb1 should be default", dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
+	assertTrue("left arrow to second fluid.thumb2 should be focused", dojo.hasClass(document.getElementById("fluid.thumb2"), focusedClass));
+	assertTrue("left arrow to second fluid.thumb3 should be default", dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
 	
 	// Test: right arrow past the last image - expect wrap to the first image
 	lightbox.handleArrowKeyPress(evtRightArrow);
 	lightbox.handleArrowKeyPress(evtRightArrow);
-	assertTrue("fluid.thumb0 should be focused after wrapping", dojo.hasClass(document.getElementById("fluid.thumb0"), focusedClass));
-	assertFalse("fluid.thumb0 should not be default after wrapping", dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
-	assertTrue("fluid.thumb1 should be default", dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
-	assertFalse("fluid.thumb1 should not be focused after wrapping", dojo.hasClass(document.getElementById("fluid.thumb1"), focusedClass));
+	assertTrue("fluid.thumb1 should be focused after wrapping", dojo.hasClass(document.getElementById("fluid.thumb1"), focusedClass));
+	assertFalse("fluid.thumb1 should not be default after wrapping", dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
 	assertTrue("fluid.thumb2 should be default", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
 	assertFalse("fluid.thumb2 should not be focused after wrapping", dojo.hasClass(document.getElementById("fluid.thumb2"), focusedClass));
+	assertTrue("fluid.thumb3 should be default", dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
+	assertFalse("fluid.thumb3 should not be focused after wrapping", dojo.hasClass(document.getElementById("fluid.thumb3"), focusedClass));
 	
 	// Test: left arrow on the first image - expect wrap to the last image
 	lightbox.handleArrowKeyPress(evtLeftArrow);
-	assertTrue("fluid.thumb0 should be default", dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
 	assertTrue("fluid.thumb1 should be default", dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
-	assertTrue("fluid.thumb2 should be focused", dojo.hasClass(document.getElementById("fluid.thumb2"), focusedClass));	
+	assertTrue("fluid.thumb2 should be default", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
+	assertTrue("fluid.thumb3 should be focused", dojo.hasClass(document.getElementById("fluid.thumb3"), focusedClass));	
 }
 
 function testHandleKeyUpAndDown() {
-	var lightbox;
+	var lightbox = new fluid.Lightbox();
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
 	var draggingClass="image-container-dragging";
 
-	lightbox = new fluid.Lightbox();
-	document.body.appendChild(lightbox.domNode);
-	var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
-	var imgList;
-	imgList = lightbox.buildImageList(urlList);
-	lightbox.setDomNode(imgList);
-
 	// check that none of the images are currently being moved.
-	assertFalse("should not be in move state",dojo.hasClass(document.getElementById("fluid.thumb0"), draggingClass));
 	assertFalse("should not be in move state",dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
 	assertFalse("should not be in move state",dojo.hasClass(document.getElementById("fluid.thumb2"), draggingClass));
+	assertFalse("should not be in move state",dojo.hasClass(document.getElementById("fluid.thumb3"), draggingClass));
 	
 	// focus the first thumb
-	lightbox.focus(dojo.byId("fluid.thumb0"));
+	lightbox.focus(dojo.byId("fluid.thumb1"));
 	
 	// ctrl down - expect dragging state to start
 	var evtCTRL = {keyCode: dojo.keys.CTRL, preventDefault: function(){}, stopPropagation: function(){} };
 	lightbox.handleKeyDown(evtCTRL);
-	assertTrue("should be in move state to start",dojo.hasClass(document.getElementById("fluid.thumb0"), draggingClass));
-	assertFalse("should not be in move state",dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
+	assertTrue("should be in move state to start",dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
 	assertFalse("should not be in move state",dojo.hasClass(document.getElementById("fluid.thumb2"), draggingClass));
-	assertFalse("thumb0 should not be focused", dojo.hasClass(document.getElementById("fluid.thumb0"), focusClass));
+	assertFalse("should not be in move state",dojo.hasClass(document.getElementById("fluid.thumb3"), draggingClass));
+	assertFalse("thumb0 should not be focused", dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
 	
 	// right arrow down - all the dragging states should remain the same
 	var evtRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
 	lightbox.handleKeyDown(evtRightArrow);
-	assertTrue("should still be in move state to start",dojo.hasClass(document.getElementById("fluid.thumb0"), draggingClass));
-	assertFalse("should still not be in move state",dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
+	assertTrue("should still be in move state to start",dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
 	assertFalse("should still not be in move state",dojo.hasClass(document.getElementById("fluid.thumb2"), draggingClass));
-	assertFalse("thumb0 should not be focused", dojo.hasClass(document.getElementById("fluid.thumb0"), focusClass));
+	assertFalse("should still not be in move state",dojo.hasClass(document.getElementById("fluid.thumb3"), draggingClass));
+	assertFalse("thumb0 should not be focused", dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
 
 	// right arrow with key-up event handler. The dragging states should remain the same.
 	lightbox.handleKeyUp(evtRightArrow);
-	assertTrue("should still be in move state to start",dojo.hasClass(document.getElementById("fluid.thumb0"), draggingClass));
-	assertFalse("should still not be in move state",dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
+	assertTrue("should still be in move state to start",dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
 	assertFalse("should still not be in move state",dojo.hasClass(document.getElementById("fluid.thumb2"), draggingClass));
-	assertFalse("thumb0 should not be focused", dojo.hasClass(document.getElementById("fluid.thumb0"), focusClass));
+	assertFalse("should still not be in move state",dojo.hasClass(document.getElementById("fluid.thumb3"), draggingClass));
+	assertFalse("thumb0 should not be focused", dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
 
     // ctrl up - expect dragging to end
 	lightbox.handleKeyUp(evtCTRL);
-	assertFalse("should no longer be in move state",dojo.hasClass(document.getElementById("fluid.thumb0"), draggingClass));
-	assertFalse("should still not be in move state",dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
+	assertFalse("should no longer be in move state",dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
 	assertFalse("should still not be in move state",dojo.hasClass(document.getElementById("fluid.thumb2"), draggingClass));
-	assertTrue("thumb0 should be focused", dojo.hasClass(document.getElementById("fluid.thumb0"), focusClass));
+	assertFalse("should still not be in move state",dojo.hasClass(document.getElementById("fluid.thumb3"), draggingClass));
+	assertTrue("thumb0 should be focused", dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
 }
-
 
 
 function testMove() {
-	
 	assertTrue(false);
 	
-	// ctrl right arrow - expect first and second image to swap
-	var evtCTRLRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
-	lightbox.handleArrowKeyPress(evtCTRLRightArrow);
-	assertTrue("should be in move state",dojo.hasClass(document.getElementById("fluid.thumb0"), draggingClass));
-	assertFalse("should not be in move state",dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
-	assertFalse("should not be in move state",dojo.hasClass(document.getElementById("fluid.thumb2"), draggingClass));
-
-	var lightboxDOMNode = dojo.byId("fluid.lightbox");
-	var thumbArray = lightboxDOMNode.childNodes;
-	assertEquals("fluid.thumb1", thumbArray[0].id);
-	assertEquals("fluid.thumb0", thumbArray[1].id);
-	assertEquals("fluid.thumb2", thumbArray[2].id);
-	
-}
-
-function testFocus () {
-	var lightbox;
+	var lightbox = new fluid.Lightbox();
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
 	var draggingClass="image-container-dragging";
+	
+	// ctrl right arrow - expect first and second image to swap
+	var evtCTRL = {keyCode: dojo.keys.CTRL, preventDefault: function(){}, stopPropagation: function(){} };
+	var evtRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
+	lightbox.handleKeyDown(evtCTRL);	
+	lightbox.handleArrowKeyPress(evtRightArrow);
+	assertTrue("thumb0 should be in move state", dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
+	assertTrue("thumb1 should be in default state", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
+	assertTrue("thumb2 should be in default state", dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
 
-	lightbox = new fluid.Lightbox();
-	var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
-	var imgList;
-	imgList = lightbox.buildImageList(urlList);
-	lightbox.setDomNode(imgList);
-	document.body.appendChild(lightbox.domNode);
+	var lightboxDOMNode = dojo.byId("fluid.lightbox");
+	var thumbArray = lightboxDOMNode.childNodes;
+	assertEquals("fluid.thumb2", thumbArray[0].id);
+	assertEquals("fluid.thumb1", thumbArray[1].id);
+	assertEquals("fluid.thumb3", thumbArray[2].id);
 	
+	// Need to clean up the move or the other tests will fail
+}
+
+
+function testFocus () {
+	var lightbox = new fluid.Lightbox();
+	var defaultClass="image-container-default";
+	var focusClass="image-container-selected";
+	var draggingClass="image-container-dragging";
 	
-	// check that nothing is focused
-	assertTrue("fluid.thumb0 should be moveable",dojo.hasClass(document.getElementById("fluid.thumb0"), defaultClass));
-	assertTrue("fluid.thumb1 should be moveable",dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
-	assertTrue("fluid.thumb2 should be moveable",dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
-	assertFalse("fluid.thumb0 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb0"), focusClass));
-	assertFalse("fluid.thumb1 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
+	// the first thumb should be focused
+	assertTrue("fluid.thumb1 should be moveable",dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
 	assertFalse("fluid.thumb2 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb2"), focusClass));
+	assertFalse("fluid.thumb3 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb3"), focusClass));
+	assertFalse("fluid.thumb1 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
+	assertTrue("fluid.thumb2 should be moveable",dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
+	assertTrue("fluid.thumb3 should be moveable",dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
 	
 	// focus the image
-	lightbox.focus(dojo.byId("fluid.thumb1"));
+	lightbox.focus(dojo.byId("fluid.thumb2"));
 
 	// test the response to the focus
-	assertFalse("fluid.thumb1 should not be default", dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
-	assertTrue("fluid.thumb1 should be focused", dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
+	assertFalse("fluid.thumb2 should not be default", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
+	assertTrue("fluid.thumb2 should be focused", dojo.hasClass(document.getElementById("fluid.thumb2"), focusClass));
 	
 	// focus the image already focused to ensure it remains focused.
-	lightbox.focus(dojo.byId("fluid.thumb1"));
-	assertTrue("fluid.thumb1 should still be focused",dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
+	lightbox.focus(dojo.byId("fluid.thumb2"));
+	assertTrue("fluid.thumb2 should still be focused",dojo.hasClass(document.getElementById("fluid.thumb2"), focusClass));
 
 	// Test: focus a different image and check to see that the previous image is defocused
 	// and the new image is focused
-	assertTrue("fluid.thumb2 should be default",dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
-	assertFalse("fluid.thumb2 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb2"), focusClass));
+	assertTrue("fluid.thumb3 should be default",dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
+	assertFalse("fluid.thumb3 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb3"), focusClass));
 	
-	lightbox.focus(dojo.byId ("fluid.thumb2"));
+	lightbox.focus(dojo.byId ("fluid.thumb3"));
 	
 	// previous image defocused
-	assertTrue("fluid.thumb1 should now be default (previously focused)",dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
-	assertFalse("fluid.thumb1 should not be focused anymore",dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
+	assertTrue("fluid.thumb2 should now be default (previously focused)",dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
+	assertFalse("fluid.thumb2 should not be focused anymore",dojo.hasClass(document.getElementById("fluid.thumb2"), focusClass));
 	
 	// new image focused
-	assertFalse("fluid.thumb2 should not be default",dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
-	assertTrue("fluid.thumb2 should be focused",dojo.hasClass(document.getElementById("fluid.thumb2"), focusClass));
+	assertFalse("fluid.thumb3 should not be default",dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
+	assertTrue("fluid.thumb3 should be focused",dojo.hasClass(document.getElementById("fluid.thumb3"), focusClass));
 	
 	// clean up
-	dojo.removeClass(dojo.byId("fluid.thumb2"),focusClass);
-	dojo.addClass(dojo.byId("fluid.thumb2"),defaultClass);
+	dojo.removeClass(dojo.byId("fluid.thumb3"),focusClass);
+	dojo.addClass(dojo.byId("fluid.thumb3"),defaultClass);
 }
 
-function testBuildImageList() {
-	var lightbox;
-	lightbox = new fluid.Lightbox();
-	document.body.appendChild(lightbox.domNode);
-
-	assertEquals (0, lightbox.imageList.length);	
-	
-	var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
-	var imgList;
-	imgList = lightbox.buildImageList(urlList);
-	assertEquals (3, imgList.length);
-
-	assertEquals ("http://foo.com/url1", imgList[0].getElementsByTagName("a")[0].href);
-	assertEquals ("http://foo.com/url1", imgList[0].getElementsByTagName("img")[0].src);
-
-	assertEquals ("http://foo.com/url2", imgList[1].getElementsByTagName("a")[0].href);
-	assertEquals ("http://foo.com/url2", imgList[1].getElementsByTagName("img")[0].src);
-
-	assertEquals ("http://foo.com/url3", imgList[2].getElementsByTagName("a")[0].href);
-	assertEquals ("http://foo.com/url3", imgList[2].getElementsByTagName("img")[0].src);
-	
-	// Test: empty list
-	urlList = [];
-	imgList = lightbox.buildImageList(urlList);
-	assertEquals (0, imgList.length);
-	
-}
-
-function testSetDomNode() {
-	var lightbox;
-	lightbox = new fluid.Lightbox();
-	var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
-	var imgList;
-	imgList = lightbox.buildImageList(urlList);
-	
-	assertEquals ("Initial dom node should be length 0",0, lightbox.domNode.getElementsByTagName("*").length);
-	
-	lightbox.setDomNode(imgList);
-	
-	assertEquals (6, lightbox.domNode.getElementsByTagName("div").length);
-
-	// Test: empty list
-	lightbox = new fluid.Lightbox();
-	urlList = [];
-	imgList = lightbox.buildImageList(urlList);
-	
-	lightbox.setDomNode(imgList);
-	assertEquals (0, lightbox.domNode.getElementsByTagName("div").length);
-}
 
 </script>
 </head>
@@ -282,7 +217,21 @@ function testSetDomNode() {
   <body>
 	<p>this is the Lightbox test page</p>
 
-	<input id="fluid.thumb0" dojoType="fluid.Lightbox"/>
-
+	<div tabIndex="2" id="fluid-lightbox"><div class="float image-container-default" id="fluid.thumb1">
+			<a  href="http://localhost:8080/portal/tool/94d4acb8-5be4-495a-00b1-0355205a5dc2/faces/sequence?image=/group/99c5c04c-940a-4e57-8073-2c6ebba2d0a4/Gallery-Tool-Collections/Fruit/Red Apple.gif&amp;auto=off&amp;seq=none" id="gallery:::thumbs-div:::thumbs-link">
+				<img  width="100%" src="http://localhost:8080/access/content/group/99c5c04c-940a-4e57-8073-2c6ebba2d0a4/Gallery-Tool-Collections/Fruit/Red Apple.gif" border="0" alt="Red Apple" id="gallery:::thumbs-div:::thumbs-image"/>
+				<div  class="caption image-title" id="gallery:::thumbs-div:::thumbs-name">Red Apple</div>
+			</a>
+		</div><div class="float image-container-default" id="fluid.thumb2">
+			<a  href="http://localhost:8080/portal/tool/94d4acb8-5be4-495a-00b1-0355205a5dc2/faces/sequence?image=/group/99c5c04c-940a-4e57-8073-2c6ebba2d0a4/Gallery-Tool-Collections/Fruit/Orange.gif&amp;auto=off&amp;seq=none" id="gallery:::thumbs-div::1:thumbs-link">
+				<img  width="100%" src="http://localhost:8080/access/content/group/99c5c04c-940a-4e57-8073-2c6ebba2d0a4/Gallery-Tool-Collections/Fruit/Orange.gif" border="0" alt="Orange" id="gallery:::thumbs-div::1:thumbs-image"/>
+				<div  class="caption image-title" id="gallery:::thumbs-div::1:thumbs-name">Orange</div>
+		  	</a>
+		</div><div class="float image-container-default" id="fluid.thumb3">
+		  	<a  href="http://localhost:8080/portal/tool/94d4acb8-5be4-495a-00b1-0355205a5dc2/faces/sequence?image=/group/99c5c04c-940a-4e57-8073-2c6ebba2d0a4/Gallery-Tool-Collections/Fruit/Green Apple.gif&amp;auto=off&amp;seq=none" id="gallery:::thumbs-div::2:thumbs-link">
+				<img  width="100%" src="http://localhost:8080/access/content/group/99c5c04c-940a-4e57-8073-2c6ebba2d0a4/Gallery-Tool-Collections/Fruit/Green Apple.gif" border="0" alt="Green Apple" id="gallery:::thumbs-div::2:thumbs-image"/>
+				<div  class="caption image-title" id="gallery:::thumbs-div::2:thumbs-name">Green Apple</div>
+			</a>
+		</div></div>
   </body>
 </html>

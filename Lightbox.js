@@ -42,29 +42,21 @@ dojo.declare(
 		focusedNodeIndex: 0,
 		debugMode: true,
 
-	buildRendering: function(){
-		// summary:
-		//		Construct the UI for this widget, setting this.domNode.
-		//		Most widgets will mixin TemplatedWidget, which overrides this method.
-		this.domNode = dojo.byId("fluid-lightbox");
-	},
+		buildRendering: function(){
+			// summary:
+			//		Construct the UI for this widget, setting this.domNode.
+			//		Most widgets will mixin TemplatedWidget, which overrides this method.
+			this.domNode = dojo.byId("fluid-lightbox");
+		},
 
 		postCreate: function () {
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
-
-// these are test images that we are using until we get the images from the server
-//var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
-//this.imageList=this.buildImageList(urlList);
-
-//			if (this.imageList.length > 0) {
-//				this.focus(this.imageList[0]);
-//			}
-			
+			this.focus(this.domNode.firstChild);
 		}, // end postCreate
-		
-		focus: function(/*node*/ aNode) {
+				
+		focus: function(/*node*/ aNode) {			
 			// deselect any previously focused node
 			if (this.focusedNode != null) {
 				dojo.removeClass (this.focusedNode, fluid.states.focusedClass);
@@ -104,7 +96,6 @@ dojo.declare(
 		}, // end handleKeyUp
 		
 		handleArrowKeyPress: function (/*event object*/ evt){
-			
 			switch (key = evt.keyCode) {
 			case dojo.keys.DOWN_ARROW: {
 				this._debugMessage("Down");
@@ -119,30 +110,19 @@ dojo.declare(
 			case dojo.keys.LEFT_ARROW: {
 				this._debugMessage("Left Arrow");
 				
-				// set focus to next left sibling in imageList
-				// if current focus image is the first in list, change focus to last image in imageList
-				if (this.focusedNodeIndex == 0) {
-					this.focusedNodeIndex = this.imageList.length-1;					
+				// set focus to the left sibling 
+				// if current focus image is the first, change focus to last image
+				if (this.focusedNode.previousSibling) {
+					this.focus (this.focusedNode.previousSibling);					
 				} else {
-					this.focusedNodeIndex = this.focusedNodeIndex-1;
+					this.focus (this.focusedNode.parentNode.lastChild);					
 				}
-			//	this._debugMessage(" focused node index = " + this.focusedNodeIndex);					
-				this.focus (this.imageList[this.focusedNodeIndex]);
+				
 				dojo.stopEvent(evt);
 				break;
 			}
 			case dojo.keys.RIGHT_ARROW: {
-				this._debugMessage("Right Arrow");
-								
-				// set focus to next to right sibling in imageList
-				// if current focus image is the last, change focus to first image in imageList
-				if (this.focusedNodeIndex == this.imageList.length-1) {										
-					this.focusedNodeIndex = 0;
-				} else {
-					this.focusedNodeIndex = this.focusedNodeIndex+1;
-				}
-			//	this._debugMessage(" focused node index = " + this.focusedNodeIndex);					
-				this.focus (this.imageList[this.focusedNodeIndex]);
+				this.handleRightArrow(evt.ctrlKey);								
 				dojo.stopEvent(evt);
 				break;
 			}
@@ -151,6 +131,20 @@ dojo.declare(
 				break;
 			}
 		}, // end handleArrowKeyPress
+		
+		handleRightArrow: function(isCtrl) {
+			if (isCtrl) {
+				dojo.place(this.focusedNode,this.focusedNode.nextSibling,"after");
+			} else {			
+				// set focus to next to right sibling
+				// if current focus image is the last, change focus to first thumbnail
+				if (this.focusedNode.nextSibling) {					
+					this.focus (this.focusedNode.nextSibling);					
+				} else {
+					this.focus (this.focusedNode.parentNode.firstChild);
+				}
+			}
+		}, // end handleRightArrow
 		
 		_debugMessage: function(message) {
 			if (this.debugMode && dojo.byId("debugString"))
