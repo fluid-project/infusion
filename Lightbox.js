@@ -52,7 +52,7 @@ dojo.declare(
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
 			this.thumbTemplate = this.domNode.getElementsByTagName("div")[0];
-			this.domNode.removeChild(this.domNode.getElementsByTagName("div")[0]);
+			this.domNode.removeChild(this.thumbTemplate);
 			this.imageList = this.buildImageList(/*we will get this from the Gallery Tool eventually*/[]);
 
 // these are test images that we are using until we get the images from the server
@@ -85,14 +85,14 @@ dojo.declare(
 			
 			dojo.removeClass (this.focusedNode, fluid.states.defaultClass);
 			dojo.addClass (this.focusedNode, fluid.states.focusedClass); 
-			
-			this._debugMessage(" class is now" + this.focusedNode.className);
 		}, //end focus
 		
 		handleKeyDown: function (/*event object*/ evt) {
 			var key = evt.keyCode;
 			if (key == dojo.keys.CTRL) {
 				this._debugMessage("CTRL down");
+				dojo.removeClass(this.focusedNode, fluid.states.focusedClass);
+				dojo.addClass(this.focusedNode, fluid.states.draggingClass);
 				dojo.stopEvent(evt);
 			}
 			else {
@@ -104,6 +104,8 @@ dojo.declare(
 			var key = evt.keyCode;
 			if (key == dojo.keys.CTRL) {
 				this._debugMessage("CTRL up");
+				dojo.removeClass(this.focusedNode, fluid.states.draggingClass);
+				dojo.addClass(this.focusedNode, fluid.states.focusedClass);
 				dojo.stopEvent(evt);
 			}
 			else {
@@ -125,29 +127,32 @@ dojo.declare(
 				break;
 			}
 			case dojo.keys.LEFT_ARROW: {
-				this._debugMessage("Left");
+				this._debugMessage("Left Arrow");
 				
-				// set focus to next to right sibling in imageList
+				// set focus to next left sibling in imageList
 				// if current focus image is the first in list, change focus to last image in imageList
+				if (this.focusedNodeIndex == 0) {
+					this.focusedNodeIndex = this.imageList.length-1;					
+				} else {
+					this.focusedNodeIndex = this.focusedNodeIndex-1;
+				}
+			//	this._debugMessage(" focused node index = " + this.focusedNodeIndex);					
+				this.focus (this.imageList[this.focusedNodeIndex]);
 				dojo.stopEvent(evt);
 				break;
 			}
 			case dojo.keys.RIGHT_ARROW: {
-				this._debugMessage("Right");
+				this._debugMessage("Right Arrow");
 								
 				// set focus to next to right sibling in imageList
 				// if current focus image is the last, change focus to first image in imageList
-				if (this.focusedNodeIndex == this.imageList.length-1) {
-										
-					this._debugMessage(" set focus index to 0");
-					
-					this.focus (this.imageList[0]);
+				if (this.focusedNodeIndex == this.imageList.length-1) {										
 					this.focusedNodeIndex = 0;
 				} else {
-					this._debugMessage(" set focus index to " + (this.focusedNodeIndex+1));
-					this.focus (this.imageList[this.focusedNodeIndex+1]);
 					this.focusedNodeIndex = this.focusedNodeIndex+1;
 				}
+			//	this._debugMessage(" focused node index = " + this.focusedNodeIndex);					
+				this.focus (this.imageList[this.focusedNodeIndex]);
 				dojo.stopEvent(evt);
 				break;
 			}
