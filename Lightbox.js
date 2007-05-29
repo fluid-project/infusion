@@ -25,8 +25,6 @@ dojo.provide("fluid.Lightbox");
 
 dojo.require("fluid.GridLayoutManager");
 dojo.require("dijit.base.Widget");
-dojo.require("dijit.base.TemplatedWidget");
-dojo.require("dijit.base.FormElement");
 
 (function() {
 	fluid.states = {
@@ -38,41 +36,33 @@ dojo.require("dijit.base.FormElement");
 
 dojo.declare(
 	"fluid.Lightbox",	// class name
-	[dijit.base.FormElement, dijit.base.TemplatedWidget],
+	[dijit.base.Widget],
 	{
-		templatePath: dojo.moduleUrl("fluid", "templates/Lightbox.html"),
-		thumbTemplate: null,
 		focusedNode: null,
 		focusedNodeIndex: 0,
-		imageList: [],  // list of dom nodes i.e. the thumb divs
 		debugMode: true,
+
+	buildRendering: function(){
+		// summary:
+		//		Construct the UI for this widget, setting this.domNode.
+		//		Most widgets will mixin TemplatedWidget, which overrides this method.
+		this.domNode = dojo.byId("fluid-lightbox");
+	},
 
 		postCreate: function () {
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
-			this.thumbTemplate = this.domNode.getElementsByTagName("div")[0];
-			this.domNode.removeChild(this.thumbTemplate);
-			this.imageList = this.buildImageList(/*we will get this from the Gallery Tool eventually*/[]);
 
 // these are test images that we are using until we get the images from the server
 //var urlList = ["http://foo.com/url1", "http://foo.com/url2", "http://foo.com/url3"];
 //this.imageList=this.buildImageList(urlList);
 
-			this.setDomNode(this.imageList);
-			if (this.imageList.length > 0) {
-				this.focus(this.imageList[0]);
-			}
+//			if (this.imageList.length > 0) {
+//				this.focus(this.imageList[0]);
+//			}
 			
 		}, // end postCreate
-		
-		setDomNode: function(imageList) {
-			this.imageList = [];
-			for (imgNode in imageList) {
-				dojo.place(imageList[imgNode],this.domNode,imgNode);
-				this.imageList.push(imageList[imgNode]);
-			}
-		}, // end setDomNode
 		
 		focus: function(/*node*/ aNode) {
 			// deselect any previously focused node
@@ -161,19 +151,6 @@ dojo.declare(
 				break;
 			}
 		}, // end handleArrowKeyPress
-		
-		buildImageList: function (urlList) {
-			var imgDivList = [];
-			for (url in urlList) {
-				var imgDiv = this.thumbTemplate.cloneNode(true);
-				imgDiv.id += url;
-				imgDiv.getElementsByTagName("a")[0].href = urlList[url];
-				imgDiv.getElementsByTagName("img")[0].src = urlList[url];
-				imgDiv.getElementsByTagName("div")[0].firstChild.nodeValue = urlList[url];
-				imgDivList.push(imgDiv);
-			}
-			return imgDivList;
-		}, // end buildImageList
 		
 		_debugMessage: function(message) {
 			if (this.debugMode && dojo.byId("debugString"))
