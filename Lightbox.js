@@ -109,14 +109,7 @@ dojo.declare(
 			}
 			case dojo.keys.LEFT_ARROW: {
 				this._debugMessage("Left Arrow");
-				
-				// set focus to the left sibling 
-				// if current focus image is the first, change focus to last image
-				if (this.focusedNode.previousSibling) {
-					this.focus (this.focusedNode.previousSibling);					
-				} else {
-					this.focus (this.focusedNode.parentNode.lastChild);					
-				}
+				this.handleLeftArrow(evt.ctrlKey);								
 				
 				dojo.stopEvent(evt);
 				break;
@@ -145,6 +138,20 @@ dojo.declare(
 				}
 			}
 		}, // end handleRightArrow
+		
+		handleLeftArrow: function(isCtrl) {
+			if (isCtrl) {
+				dojo.place(this.focusedNode,this.focusedNode.previousSibling,"before");
+			} else {			
+				// set focus to next to left sibling
+				// if current focus image is the first, change focus to last thumbnail
+				if (this.focusedNode.previousSibling) {					
+					this.focus (this.focusedNode.previousSibling);					
+				} else {
+					this.focus (this.focusedNode.parentNode.lastChild);
+				}
+			}
+		}, // end handleLeftArrow
 		
 		_debugMessage: function(message) {
 			if (this.debugMode && dojo.byId("debugString"))
