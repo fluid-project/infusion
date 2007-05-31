@@ -36,13 +36,12 @@ dojo.require("dijit.base.Widget");
 
 dojo.declare(
 	"fluid.Lightbox",	// class name
-	[dijit.base.Widget],
+	[dijit.base.Widget,],
 	{
 		focusedNode: null,
-		focusedNodeIndex: 0,
 		debugMode: true,
 
-		buildRendering: function(){
+		buildRendering: function() {
 			// summary:
 			//		Construct the UI for this widget, setting this.domNode.
 			//		Most widgets will mixin TemplatedWidget, which overrides this method.
@@ -110,7 +109,6 @@ dojo.declare(
 			case dojo.keys.LEFT_ARROW: {
 				this._debugMessage("Left Arrow");
 				this.handleLeftArrow(evt.ctrlKey);								
-				
 				dojo.stopEvent(evt);
 				break;
 			}
@@ -127,36 +125,63 @@ dojo.declare(
 		
 		handleRightArrow: function(isCtrl) {
 			if (isCtrl) {
-				dojo.place(this.focusedNode,this.focusedNode.nextSibling,"after");
+				dojo.place(this.focusedNode,this.nextElement(this.focusedNode),"after");
 			} else {			
 				// set focus to next to right sibling
 				// if current focus image is the last, change focus to first thumbnail
-				if (this.focusedNode.nextSibling) {					
-					this.focus (this.focusedNode.nextSibling);					
+				
+				if (this.nextElement(this.focusedNode)) {					
+					this.focus (this.nextElement(this.focusedNode));					
 				} else {
 					this.focus (this.focusedNode.parentNode.firstChild);
 				}
+			
 			}
 		}, // end handleRightArrow
 		
 		handleLeftArrow: function(isCtrl) {
 			if (isCtrl) {
-				dojo.place(this.focusedNode,this.focusedNode.previousSibling,"before");
+				dojo.place(this.focusedNode, this.previousElement(this.focusedNode),"before");
 			} else {			
 				// set focus to next to left sibling
 				// if current focus image is the first, change focus to last thumbnail
 				if (this.focusedNode.previousSibling) {					
-					this.focus (this.focusedNode.previousSibling);					
+					this.focus (this.previousElement(this.focusedNode));					
 				} else {
 					this.focus (this.focusedNode.parentNode.lastChild);
 				}
 			}
 		}, // end handleLeftArrow
+				
+		nextElement: function(node) {
+			while (node){
+				node = node.nextSibling;
+				if (this.isElement(node)) {
+					return (node); 
+				}
+			}
+			return node;
+		}, // end nextElement
+		
+		previousElement: function(node) {
+			while (node){
+				node = node.previousSibling;
+				if (this.isElement(node)) {
+					return (node); 
+				}
+			}
+			return node;
+		}, // end previousElement
+		
+		isElement: function(node) {
+			return node && node.nodeType == 1;
+		},
 		
 		_debugMessage: function(message) {
 			if (this.debugMode && dojo.byId("debugString"))
 				dojo.byId("debugString").firstChild.nodeValue = message;
-		} // end _debugMessage
+		}, // end _debugMessage
+
 	}
 );
 

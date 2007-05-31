@@ -102,7 +102,8 @@ function testHandleArrowKeyPressForLeftAndRight()	 {
 	lightbox.handleArrowKeyPress(evtLeftArrow);
 	assertTrue("fluid.thumb1 should be default", dojo.hasClass(document.getElementById("fluid.thumb1"), defaultClass));
 	assertTrue("fluid.thumb2 should be default", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
-	assertTrue("fluid.thumb3 should be focused", dojo.hasClass(document.getElementById("fluid.thumb3"), focusedClass));	
+	assertTrue("fluid.thumb3 should be focused", dojo.hasClass(document.getElementById("fluid.thumb3"), focusedClass));
+
 }
 
 function testHandleKeyUpAndDown() {
@@ -151,9 +152,7 @@ function testHandleKeyUpAndDown() {
 }
 
 
-function testMove() {
-	
-//assertTrue("deliberately failing because we don't clean up", false);
+function testMove() {	
 	var lightbox = new fluid.Lightbox();
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
@@ -166,25 +165,25 @@ function testMove() {
 	// ctrl right arrow - expect first and second image to swap
 	lightbox.handleKeyDown(evtCTRL);	
 	lightbox.handleArrowKeyPress(evtRightArrow);
-	assertTrue("thumb0 should be in move state after ctrl-right", dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
-	assertTrue("thumb1 should be in default state after ctrl-right", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
-	assertTrue("thumb2 should be in default state after ctrl-right", dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
+	assertTrue("thumb1 should be in move state after ctrl-right", dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
+	assertTrue("thumb2 should be in default state after ctrl-right", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
+	assertTrue("thumb3 should be in default state after ctrl-right", dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
 
 	var lightboxDOMNode = dojo.byId("fluid-lightbox");
-	var thumbArray = lightboxDOMNode.childNodes;
+	var thumbArray = lightboxDOMNode.getElementsByTagName("div");
 	assertEquals("after move right", "fluid.thumb2", thumbArray[0].id);
-	assertEquals("after move right", "fluid.thumb1", thumbArray[1].id);
-	assertEquals("after move right", "fluid.thumb3", thumbArray[2].id);
+	assertEquals("after move right", "fluid.thumb1", thumbArray[2].id);
+	assertEquals("after move right", "fluid.thumb3", thumbArray[4].id);
 	
 	// ctrl up
 	lightbox.handleKeyUp(evtCTRL);	
 	assertTrue("thumb1 should be in selected state", dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
 	assertTrue("thumb2 should be in default state", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
 	assertTrue("thumb3 should be in default state", dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
-	var thumbArray = lightboxDOMNode.childNodes;
-	assertEquals("after move right", "fluid.thumb2", thumbArray[0].id);
-	assertEquals("after move right", "fluid.thumb1", thumbArray[1].id);
-	assertEquals("after move right", "fluid.thumb3", thumbArray[2].id);
+	thumbArray = lightboxDOMNode.getElementsByTagName("div");;
+	assertEquals("after move right ctrl up", "fluid.thumb2", thumbArray[0].id);
+	assertEquals("after move right ctrl up", "fluid.thumb1", thumbArray[2].id);
+	assertEquals("after move right ctrl up", "fluid.thumb3", thumbArray[4].id);
 
 	// ctrl left arrow - expect first and second image to swap
 	lightbox.handleKeyDown(evtCTRL);	
@@ -193,17 +192,16 @@ function testMove() {
 	assertTrue("thumb2 should be in default state after ctrl-left", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
 	assertTrue("thumb3 should be in default state after ctrl-left", dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
 
+	thumbArray = lightboxDOMNode.getElementsByTagName("div");;
 	assertEquals("fluid.thumb1", thumbArray[0].id);
-	assertEquals("fluid.thumb2", thumbArray[1].id);
-	assertEquals("fluid.thumb3", thumbArray[2].id);
+	assertEquals("fluid.thumb2", thumbArray[2].id);
+	assertEquals("fluid.thumb3", thumbArray[4].id);
 	
 	// ctrl up
 	lightbox.handleKeyUp(evtCTRL);	
 	assertTrue("thumb1 should be in selected state", dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
 	assertTrue("thumb2 should be in default state", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
 	assertTrue("thumb3 should be in default state", dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
-
-	// Need to clean up the move or the other tests will fail
 }
 
 
@@ -247,9 +245,6 @@ function testFocus () {
 	assertFalse("fluid.thumb3 should not be default",dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
 	assertTrue("fluid.thumb3 should be focused",dojo.hasClass(document.getElementById("fluid.thumb3"), focusClass));
 	
-	// clean up
-	dojo.removeClass(dojo.byId("fluid.thumb3"),focusClass);
-	dojo.addClass(dojo.byId("fluid.thumb3"),defaultClass);
 }
 
 
@@ -261,17 +256,20 @@ function testFocus () {
 
 
 	<input dojoType="fluid.Lightbox" type="hidden"/>
+
 	<div tabIndex="2" id="fluid-lightbox"><div class="float image-container-default" id="fluid.thumb1">
 			<a  href="RedApple.jpg" id="gallery:::thumbs-div:::thumbs-link">
 				<img  width="100%" src="RedApple.jpg" border="0" alt="Red Apple" id="gallery:::thumbs-div:::thumbs-image"/>
 				<div  class="caption image-title" id="gallery:::thumbs-div:::thumbs-name">Red Apple</div>
 			</a>
-		</div><div class="float image-container-default" id="fluid.thumb2">
+		</div>
+		<div class="float image-container-default" id="fluid.thumb2">
 			<a  href="Orange.jpg" id="gallery:::thumbs-div::1:thumbs-link">
 				<img  width="100%" src="Orange.jpg" border="0" alt="Orange" id="gallery:::thumbs-div::1:thumbs-image"/>
 				<div  class="caption image-title" id="gallery:::thumbs-div::1:thumbs-name">Orange</div>
 		  	</a>
-		</div><div class="float image-container-default" id="fluid.thumb3">
+		</div>
+		<div class="float image-container-default" id="fluid.thumb3">
 		  	<a  href="Kiwi.jpg" id="gallery:::thumbs-div::2:thumbs-link">
 				<img  width="100%" src="Kiwi.jpg" border="0" alt="Green Apple" id="gallery:::thumbs-div::2:thumbs-image"/>
 				<div  class="caption image-title" id="gallery:::thumbs-div::2:thumbs-name">Green Apple</div>
