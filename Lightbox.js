@@ -55,7 +55,7 @@ dojo.declare(
 			this.focus(this.domNode.firstChild);
 		}, // end postCreate
 				
-		focus: function(/*node*/ aNode) {			
+		focus: function(aNode) {			
 			// deselect any previously focused node
 			if (this.focusedNode != null) {
 				dojo.removeClass (this.focusedNode, fluid.states.focusedClass);
@@ -68,7 +68,7 @@ dojo.declare(
 			dojo.addClass (this.focusedNode, fluid.states.focusedClass); 
 		}, //end focus
 		
-		handleKeyDown: function (/*event object*/ evt) {
+		handleKeyDown: function (evt) {
 			var key = evt.keyCode;
 			if (key == dojo.keys.CTRL) {
 				this._debugMessage("CTRL down");
@@ -81,7 +81,7 @@ dojo.declare(
 			}
 		}, // end handleKeyDown
 		
-		handleKeyUp: function (/*event object*/ evt) {
+		handleKeyUp: function (evt) {
 			var key = evt.keyCode;
 			if (key == dojo.keys.CTRL) {
 				this._debugMessage("CTRL up");
@@ -94,7 +94,7 @@ dojo.declare(
 			}			
 		}, // end handleKeyUp
 		
-		handleArrowKeyPress: function (/*event object*/ evt){
+		handleArrowKeyPress: function (evt){
 			switch (key = evt.keyCode) {
 			case dojo.keys.DOWN_ARROW: {
 				this._debugMessage("Down");
@@ -188,8 +188,7 @@ dojo.declare(
 		_debugMessage: function(message) {
 			if (this.debugMode && dojo.byId("debugString"))
 				dojo.byId("debugString").firstChild.nodeValue = message;
-		}, // end _debugMessage
-
+		} // end _debugMessage
 	}
 );
 

@@ -40,6 +40,6 @@ dojo.declare(
 
 		_updateGrid: function() {
 			
-		},
+		}
 		
 	});
