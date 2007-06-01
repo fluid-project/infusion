@@ -152,7 +152,7 @@ function testHandleKeyUpAndDown() {
 }
 
 
-function testMove() {	
+function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {	
 	var lightbox = new fluid.Lightbox();
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
@@ -162,7 +162,7 @@ function testMove() {
 	var evtRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
 	var evtLeftArrow = {keyCode: dojo.keys.LEFT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
 	
-	// ctrl right arrow - expect first and second image to swap
+	// Test: ctrl right arrow - expect first and second image to swap
 	lightbox.handleKeyDown(evtCTRL);	
 	lightbox.handleArrowKeyPress(evtRightArrow);
 	assertTrue("thumb1 should be in move state after ctrl-right", dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
@@ -185,7 +185,7 @@ function testMove() {
 	assertEquals("after move right ctrl up", "fluid.thumb1", thumbArray[2].id);
 	assertEquals("after move right ctrl up", "fluid.thumb3", thumbArray[4].id);
 
-	// ctrl left arrow - expect first and second image to swap
+	// Test: ctrl left arrow - expect first and second image to swap
 	lightbox.handleKeyDown(evtCTRL);	
 	lightbox.handleArrowKeyPress(evtLeftArrow);
 	assertTrue("thumb1 should be in move state after ctrl-left", dojo.hasClass(document.getElementById("fluid.thumb1"), draggingClass));
@@ -202,6 +202,29 @@ function testMove() {
 	assertTrue("thumb1 should be in selected state", dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
 	assertTrue("thumb2 should be in default state", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
 	assertTrue("thumb3 should be in default state", dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
+
+	// Test: ctrl left arrow - expect first image to move to third place,
+	//       second image to move to first place and third image to move to second place
+	lightbox.handleKeyDown(evtCTRL);	
+	lightbox.handleArrowKeyPress(evtLeftArrow);
+	lightbox.handleKeyUp(evtCTRL);	
+
+	thumbArray = lightboxDOMNode.getElementsByTagName("div");;
+	assertEquals("fluid.thumb2", thumbArray[0].id);
+	assertEquals("fluid.thumb3", thumbArray[2].id);
+	assertEquals("fluid.thumb1", thumbArray[4].id);
+
+	// Test: ctrl right arrow - expect thumb1 to move to first place,
+	//       thumb2 to move to second place and thumb3 to move to third place
+	lightbox.handleKeyDown(evtCTRL);	
+	lightbox.handleArrowKeyPress(evtRightArrow);
+	lightbox.handleKeyUp(evtCTRL);	
+
+	thumbArray = lightboxDOMNode.getElementsByTagName("div");;
+	assertEquals("fluid.thumb1", thumbArray[0].id);
+	assertEquals("fluid.thumb2", thumbArray[2].id);
+	assertEquals("fluid.thumb3", thumbArray[4].id);
+
 }
 
 

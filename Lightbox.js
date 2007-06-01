@@ -124,35 +124,43 @@ dojo.declare(
 		}, // end handleArrowKeyPress
 		
 		handleRightArrow: function(isCtrl) {
-			if (isCtrl) {
-				dojo.place(this.focusedNode,this.nextElement(this.focusedNode),"after");
-			} else {			
-				// set focus to next to right sibling
-				// if current focus image is the last, change focus to first thumbnail
-				
-				if (this.nextElement(this.focusedNode)) {					
-					this.focus (this.nextElement(this.focusedNode));					
-				} else {
-					this.focus (this.focusedNode.parentNode.firstChild);
-				}
+			var nextRightSibling = this.nextElement(this.focusedNode);
+			var placementPosition;
 			
+			if (nextRightSibling) {
+				placementPosition = "after";
+			} else {
+				// if current focus image is the last, change focus to first thumbnail
+				nextRightSibling = this.focusedNode.parentNode.firstChild;
+				placementPosition = "before";
 			}
+			
+			this._changeFocusOrMove(isCtrl, nextRightSibling, placementPosition);
 		}, // end handleRightArrow
 		
 		handleLeftArrow: function(isCtrl) {
-			if (isCtrl) {
-				dojo.place(this.focusedNode, this.previousElement(this.focusedNode),"before");
-			} else {			
-				// set focus to next to left sibling
-				// if current focus image is the first, change focus to last thumbnail
-				if (this.focusedNode.previousSibling) {					
-					this.focus (this.previousElement(this.focusedNode));					
-				} else {
-					this.focus (this.focusedNode.parentNode.lastChild);
-				}
+			var nextLeftSibling = this.previousElement(this.focusedNode);
+			var placementPosition;
+			
+			if (nextLeftSibling) {
+				placementPosition = "before";
+			} else {
+				// if current focus image is the first, the next sibling is the last sibling
+				nextLeftSibling = this.focusedNode.parentNode.lastChild;
+				placementPosition = "after";
 			}
+			
+			this._changeFocusOrMove(isCtrl, nextLeftSibling, placementPosition);
 		}, // end handleLeftArrow
-				
+		
+		_changeFocusOrMove: function(shouldMove, refSibling, placementPosition) {
+			if (shouldMove) {
+				dojo.place(this.focusedNode, refSibling, placementPosition);
+			} else {
+				this.focus(refSibling);
+			}		
+		},
+		
 		nextElement: function(node) {
 			while (node){
 				node = node.nextSibling;
