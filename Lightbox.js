@@ -23,7 +23,7 @@
 
 dojo.provide("fluid.Lightbox");
 
-dojo.require("fluid.GridLayoutManager");
+//dojo.require("fluid.GridLayoutManager");
 dojo.require("dijit.base.Widget");
 
 (function() {
@@ -36,10 +36,9 @@ dojo.require("dijit.base.Widget");
 
 dojo.declare(
 	"fluid.Lightbox",	// class name
-	[dijit.base.Widget,],
+	dijit.base.Widget,
 	{
 		focusedNode: null,
-		debugMode: true,
 
 		buildRendering: function() {
 			// summary:
@@ -52,10 +51,10 @@ dojo.declare(
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
-			this.focus(this.domNode.firstChild);
+			this.focusNode(this.domNode.firstChild);
 		}, // end postCreate
 				
-		focus: function(aNode) {			
+		focusNode: function(aNode) {			
 			// deselect any previously focused node
 			if (this.focusedNode != null) {
 				dojo.removeClass (this.focusedNode, fluid.states.focusedClass);
@@ -71,43 +70,32 @@ dojo.declare(
 		handleKeyDown: function (evt) {
 			var key = evt.keyCode;
 			if (key == dojo.keys.CTRL) {
-				this._debugMessage("CTRL down");
 				dojo.removeClass(this.focusedNode, fluid.states.focusedClass);
 				dojo.addClass(this.focusedNode, fluid.states.draggingClass);
 				dojo.stopEvent(evt);
-			}
-			else {
-				
 			}
 		}, // end handleKeyDown
 		
 		handleKeyUp: function (evt) {
 			var key = evt.keyCode;
 			if (key == dojo.keys.CTRL) {
-				this._debugMessage("CTRL up");
 				dojo.removeClass(this.focusedNode, fluid.states.draggingClass);
 				dojo.addClass(this.focusedNode, fluid.states.focusedClass);
 				dojo.stopEvent(evt);
-			}
-			else {
-				
-			}			
+			}		
 		}, // end handleKeyUp
 		
 		handleArrowKeyPress: function (evt){
 			switch (key = evt.keyCode) {
 			case dojo.keys.DOWN_ARROW: {
-				this._debugMessage("Down");
 				dojo.stopEvent(evt);
 				break;
 			}
 			case dojo.keys.UP_ARROW: {
-				this._debugMessage("Up");
 				dojo.stopEvent(evt);
 				break;
 			}
 			case dojo.keys.LEFT_ARROW: {
-				this._debugMessage("Left Arrow");
 				this.handleLeftArrow(evt.ctrlKey);								
 				dojo.stopEvent(evt);
 				break;
@@ -117,9 +105,7 @@ dojo.declare(
 				dojo.stopEvent(evt);
 				break;
 			}
-			default: 
-				this._debugMessage(key);
-				break;
+			default:
 			}
 		}, // end handleArrowKeyPress
 		
@@ -157,7 +143,7 @@ dojo.declare(
 			if (shouldMove) {
 				dojo.place(this.focusedNode, refSibling, placementPosition);
 			} else {
-				this.focus(refSibling);
+				this.focusNode(refSibling);
 			}		
 		},
 		
@@ -183,12 +169,7 @@ dojo.declare(
 		
 		isElement: function(node) {
 			return node && node.nodeType == 1;
-		},
-		
-		_debugMessage: function(message) {
-			if (this.debugMode && dojo.byId("debugString"))
-				dojo.byId("debugString").firstChild.nodeValue = message;
-		} // end _debugMessage
+		}
 	}
 );
 

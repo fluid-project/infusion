@@ -118,7 +118,7 @@ function testHandleKeyUpAndDown() {
 	assertFalse("thumb3 should not be in move state to start",dojo.hasClass(document.getElementById("fluid.thumb3"), draggingClass));
 	
 	// focus the first thumb
-	lightbox.focus(dojo.byId("fluid.thumb1"));
+	lightbox.focusNode(dojo.byId("fluid.thumb1"));
 	
 	// ctrl down - expect dragging state to start
 	var evtCTRL = {keyCode: dojo.keys.CTRL, preventDefault: function(){}, stopPropagation: function(){} };
@@ -228,7 +228,7 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 }
 
 
-function testFocus () {
+function testFocusNode () {
 	var lightbox = new fluid.Lightbox();
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
@@ -243,14 +243,14 @@ function testFocus () {
 	assertTrue("fluid.thumb3 should be moveable",dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
 	
 	// focus the image
-	lightbox.focus(dojo.byId("fluid.thumb2"));
+	lightbox.focusNode(dojo.byId("fluid.thumb2"));
 
 	// test the response to the focus
 	assertFalse("fluid.thumb2 should not be default", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
 	assertTrue("fluid.thumb2 should be focused", dojo.hasClass(document.getElementById("fluid.thumb2"), focusClass));
 	
 	// focus the image already focused to ensure it remains focused.
-	lightbox.focus(dojo.byId("fluid.thumb2"));
+	lightbox.focusNode(dojo.byId("fluid.thumb2"));
 	assertTrue("fluid.thumb2 should still be focused",dojo.hasClass(document.getElementById("fluid.thumb2"), focusClass));
 
 	// Test: focus a different image and check to see that the previous image is defocused
@@ -258,7 +258,7 @@ function testFocus () {
 	assertTrue("fluid.thumb3 should be default",dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
 	assertFalse("fluid.thumb3 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb3"), focusClass));
 	
-	lightbox.focus(dojo.byId ("fluid.thumb3"));
+	lightbox.focusNode(dojo.byId ("fluid.thumb3"));
 	
 	// previous image defocused
 	assertTrue("fluid.thumb2 should now be default (previously focused)",dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
