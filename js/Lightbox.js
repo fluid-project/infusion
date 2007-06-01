@@ -21,7 +21,7 @@
 */
 
 
-dojo.provide("fluid.Lightbox");
+dojo.provide("fluid.js.Lightbox");
 
 //dojo.require("fluid.GridLayoutManager");
 dojo.require("dijit.base.Widget");
