@@ -226,6 +226,44 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 
 }
 
+function testPersistFocus () {
+	var lightbox = new fluid.Lightbox();
+	var defaultClass="image-container-default";
+	var focusClass="image-container-selected";
+	
+	// first thumb nail should be focused initially.
+	assertTrue("Persist Focus Test: fluid.thumb1 should be moveable",dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
+	assertFalse("Persist Focus Test: fluid.thumb2 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb2"), focusClass));
+	assertFalse("Persist Focus Test: fluid.thumb3 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb3"), focusClass));
+	
+	// Change focus to the paragraph text, then back to the lightbox
+	dojo.byId ("para1").focus();
+	dojo.byId ("fluid-lightbox").focus();
+	
+	// check that the first thumb nail is still moveable.
+	assertTrue("Persist Focus Test: fluid.thumb1 should be moveable",dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
+	assertFalse("Persist Focus Test: fluid.thumb2 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb2"), focusClass));
+	assertFalse("Persist Focus Test: fluid.thumb3 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb3"), focusClass));
+	
+	// set focus to another image.
+	lightbox.focusNode(dojo.byId("fluid.thumb2"));
+	assertFalse("Persist Focus Test: fluid.thumb1 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
+	assertTrue ("Persist Focus Test: fluid.thumb2 should be moveable",dojo.hasClass(document.getElementById("fluid.thumb2"), focusClass));
+	assertFalse("Persist Focus Test: fluid.thumb3 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb3"), focusClass));
+	
+	// Change focus to the paragraph text, then back to the lightbox
+	dojo.byId ("para1").focus();
+	dojo.byId ("fluid-lightbox").focus();
+	
+	// check that the first thumb nail is still moveable.
+	lightbox.focusNode(dojo.byId("fluid.thumb2"));
+	assertFalse("Persist Focus Test: fluid.thumb1 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
+	assertTrue ("Persist Focus Test: fluid.thumb2 should be moveable",dojo.hasClass(document.getElementById("fluid.thumb2"), focusClass));
+	assertFalse("Persist Focus Test: fluid.thumb3 should not be focused",dojo.hasClass(document.getElementById("fluid.thumb3"), focusClass));
+	
+	// test persistance of focus between page navigation / page loads?	
+}
+
 
 function testFocusNode () {
 	var lightbox = new fluid.Lightbox();
@@ -274,7 +312,7 @@ function testFocusNode () {
 </head>
 
   <body id="lightbox-parent">
-	<p>this is the Lightbox test page</p>
+	<p id="para1">this is the Lightbox test page</p>
 
 
 	<input type="hidden" dojoType="fluid.Lightbox"/>
