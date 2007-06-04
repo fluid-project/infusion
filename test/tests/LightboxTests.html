@@ -37,7 +37,7 @@
 		</script>
 
 	<style type="text/css">
-		@import "/fluid/css/Lightbox.css";
+		@import "../../css/Lightbox.css";
 	</style>
 
 <script>
@@ -280,23 +280,30 @@ function testFocusNode () {
 	<input dojoType="fluid.Lightbox" type="hidden"/>
 
 	<div tabIndex="2" id="fluid-lightbox"><div class="float image-container-default" id="fluid.thumb1">
-			<a  href="Dragonfruit.jpg" id="gallery:::thumbs-div:::thumbs-link">
-				<img  width="100%" src="Dragonfruit.jpg" border="0" alt="Dragonfruit" id="gallery:::thumbs-div:::thumbs-image"/>
+			<a href="Dragonfruit.jpg" id="gallery:::thumbs-div:::thumbs-link">
+				<div class="image-inner-container">
+					<img src="Dragonfruit.jpg" border="0" alt="Dragonfruit" id="gallery:::thumbs-div:::thumbs-image"/>
+				</div>
 				<div  class="caption image-title" id="gallery:::thumbs-div:::thumbs-name">Dragonfruit</div>
 			</a>
 		</div>
 		<div class="float image-container-default" id="fluid.thumb2">
-			<a  href="Kiwano.jpg" id="gallery:::thumbs-div::1:thumbs-link">
-				<img  width="100%" src="Kiwano.jpg" border="0" alt="Kiwano" id="gallery:::thumbs-div::1:thumbs-image"/>
+			<a href="Kiwano.jpg" id="gallery:::thumbs-div::1:thumbs-link">
+				<div class="image-inner-container">
+					<img src="Kiwano.jpg" border="0" alt="Kiwano" id="gallery:::thumbs-div::1:thumbs-image"/>
+				</div>
 				<div  class="caption image-title" id="gallery:::thumbs-div::1:thumbs-name">Kiwano</div>
 		  	</a>
 		</div>
 		<div class="float image-container-default" id="fluid.thumb3">
-			<a  href="Mangosteen.jpg" id="gallery:::thumbs-div::2:thumbs-link">
-				<img  width="100%" src="Mangosteen.jpg" border="0" alt="Mangosteen" id="gallery:::thumbs-div::2:thumbs-image"/>
+			<a href="Mangosteen.jpg" id="gallery:::thumbs-div::2:thumbs-link">
+				<div class="image-inner-container">
+					<img src="Mangosteen.jpg" border="0" alt="Mangosteen" id="gallery:::thumbs-div::2:thumbs-image"/>
+				</div>
 				<div  class="caption image-title" id="gallery:::thumbs-div::2:thumbs-name">Mangosteen</div>
 			</a>
-		</div></div>
+		</div>
+	</div>
 		
   </body>
 </html>

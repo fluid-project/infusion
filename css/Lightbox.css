@@ -26,6 +26,20 @@ font-family: verdana, helvetica, sans-serif;
 font-size: 12px;
 }
 
+
+.image-inner-container{
+height: 100px;
+width: 140px;
+background-color: #eee;
+overflow: hidden;
+margin: 0 auto 3px auto;
+}
+
+.image-inner-container img{
+width: 150px;
+}
+
+
 .image-container-default{
 height: 150px;
 width: 150px;
