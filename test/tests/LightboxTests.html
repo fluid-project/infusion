@@ -171,8 +171,8 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	var lightboxDOMNode = dojo.byId("fluid-lightbox");
 	var thumbArray = lightboxDOMNode.getElementsByTagName("div");
 	assertEquals("after move right", "fluid.thumb2", thumbArray[0].id);
-	assertEquals("after move right", "fluid.thumb1", thumbArray[2].id);
-	assertEquals("after move right", "fluid.thumb3", thumbArray[4].id);
+	assertEquals("after move right", "fluid.thumb1", thumbArray[3].id);
+	assertEquals("after move right", "fluid.thumb3", thumbArray[6].id);
 	
 	// ctrl up
 	lightbox.handleKeyUp(evtCTRL);	
@@ -181,8 +181,8 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	assertTrue("thumb3 should be in default state", dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
 	thumbArray = lightboxDOMNode.getElementsByTagName("div");;
 	assertEquals("after move right ctrl up", "fluid.thumb2", thumbArray[0].id);
-	assertEquals("after move right ctrl up", "fluid.thumb1", thumbArray[2].id);
-	assertEquals("after move right ctrl up", "fluid.thumb3", thumbArray[4].id);
+	assertEquals("after move right ctrl up", "fluid.thumb1", thumbArray[3].id);
+	assertEquals("after move right ctrl up", "fluid.thumb3", thumbArray[6].id);
 
 	// Test: ctrl left arrow - expect first and second image to swap
 	lightbox.handleKeyDown(evtCTRL);	
@@ -193,8 +193,8 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 
 	thumbArray = lightboxDOMNode.getElementsByTagName("div");;
 	assertEquals("fluid.thumb1", thumbArray[0].id);
-	assertEquals("fluid.thumb2", thumbArray[2].id);
-	assertEquals("fluid.thumb3", thumbArray[4].id);
+	assertEquals("fluid.thumb2", thumbArray[3].id);
+	assertEquals("fluid.thumb3", thumbArray[6].id);
 	
 	// ctrl up
 	lightbox.handleKeyUp(evtCTRL);	
@@ -210,8 +210,8 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 
 	thumbArray = lightboxDOMNode.getElementsByTagName("div");;
 	assertEquals("fluid.thumb2", thumbArray[0].id);
-	assertEquals("fluid.thumb3", thumbArray[2].id);
-	assertEquals("fluid.thumb1", thumbArray[4].id);
+	assertEquals("fluid.thumb3", thumbArray[3].id);
+	assertEquals("fluid.thumb1", thumbArray[6].id);
 
 	// Test: ctrl right arrow - expect thumb1 to move to first place,
 	//       thumb2 to move to second place and thumb3 to move to third place
@@ -221,8 +221,8 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 
 	thumbArray = lightboxDOMNode.getElementsByTagName("div");;
 	assertEquals("fluid.thumb1", thumbArray[0].id);
-	assertEquals("fluid.thumb2", thumbArray[2].id);
-	assertEquals("fluid.thumb3", thumbArray[4].id);
+	assertEquals("fluid.thumb2", thumbArray[3].id);
+	assertEquals("fluid.thumb3", thumbArray[6].id);
 
 }
 
@@ -277,33 +277,32 @@ function testFocusNode () {
 	<p>this is the Lightbox test page</p>
 
 
-	<input dojoType="fluid.Lightbox" type="hidden"/>
+	<input type="hidden" dojoType="fluid.Lightbox"/>
 
-	<div tabIndex="2" id="fluid-lightbox"><div class="float image-container-default" id="fluid.thumb1">
-			<a href="Dragonfruit.jpg" id="gallery:::thumbs-div:::thumbs-link">
+	<div tabIndex="2" id="fluid-lightbox" ><div class="float image-container-default" id="fluid.thumb1">
+			<a href="images/Dragonfruit.jpg" id="gallery:::thumbs-div:::thumbs-link">
 				<div class="image-inner-container">
-					<img src="Dragonfruit.jpg" border="0" alt="Dragonfruit" id="gallery:::thumbs-div:::thumbs-image"/>
+					<img src="images/Dragonfruit.jpg" border="0" alt="Dragonfruit" id="gallery:::thumbs-div:::thumbs-image"/>
 				</div>
 				<div  class="caption image-title" id="gallery:::thumbs-div:::thumbs-name">Dragonfruit</div>
 			</a>
 		</div>
 		<div class="float image-container-default" id="fluid.thumb2">
-			<a href="Kiwano.jpg" id="gallery:::thumbs-div::1:thumbs-link">
+			<a href="images/Kiwano.jpg" id="gallery:::thumbs-div::1:thumbs-link">
 				<div class="image-inner-container">
-					<img src="Kiwano.jpg" border="0" alt="Kiwano" id="gallery:::thumbs-div::1:thumbs-image"/>
+					<img src="images/Kiwano.jpg" border="0" alt="Kiwano" id="gallery:::thumbs-div::1:thumbs-image"/>
 				</div>
 				<div  class="caption image-title" id="gallery:::thumbs-div::1:thumbs-name">Kiwano</div>
 		  	</a>
 		</div>
 		<div class="float image-container-default" id="fluid.thumb3">
-			<a href="Mangosteen.jpg" id="gallery:::thumbs-div::2:thumbs-link">
+			<a href="images/Mangosteen.jpg" id="gallery:::thumbs-div::2:thumbs-link">
 				<div class="image-inner-container">
-					<img src="Mangosteen.jpg" border="0" alt="Mangosteen" id="gallery:::thumbs-div::2:thumbs-image"/>
+					<img src="images/Mangosteen.jpg" border="0" alt="Mangosteen" id="gallery:::thumbs-div::2:thumbs-image"/>
 				</div>
 				<div  class="caption image-title" id="gallery:::thumbs-div::2:thumbs-name">Mangosteen</div>
 			</a>
-		</div>
-	</div>
+		</div></div>
 		
   </body>
 </html>
