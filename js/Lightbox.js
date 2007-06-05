@@ -41,10 +41,9 @@ dojo.declare(
 		focusedNode: null,
 
 		buildRendering: function() {
-			// summary:
-			//		Construct the UI for this widget, setting this.domNode.
-			//		Most widgets will mixin TemplatedWidget, which overrides this method.
-			this.domNode = dojo.byId("fluid-lightbox");
+			// note: this should really be informed of the Id by the gallery, to be able
+			// to handle multiple lightboxes
+			this.domNode = dojo.byId("gallery:::gallery-thumbs:::");
 		},
 
 		postCreate: function () {

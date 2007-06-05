@@ -45,11 +45,11 @@
 var imgListClone;
 
 function setUp() {
-	imgListClone = document.getElementById("fluid-lightbox").cloneNode(true);
+	imgListClone = document.getElementById("gallery:::gallery-thumbs:::").cloneNode(true);
 }
 
 function tearDown() {
-	var fluidLightboxDOMNode = document.getElementById("fluid-lightbox");
+	var fluidLightboxDOMNode = document.getElementById("gallery:::gallery-thumbs:::");
 	var lightboxParent = document.getElementById("lightbox-parent");
 	lightboxParent.removeChild(fluidLightboxDOMNode);
 	lightboxParent.appendChild(imgListClone);
@@ -168,7 +168,7 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	assertTrue("thumb2 should be in default state after ctrl-right", dojo.hasClass(document.getElementById("fluid.thumb2"), defaultClass));
 	assertTrue("thumb3 should be in default state after ctrl-right", dojo.hasClass(document.getElementById("fluid.thumb3"), defaultClass));
 
-	var lightboxDOMNode = dojo.byId("fluid-lightbox");
+	var lightboxDOMNode = dojo.byId("gallery:::gallery-thumbs:::");
 	var thumbArray = lightboxDOMNode.getElementsByTagName("div");
 	assertEquals("after move right", "fluid.thumb2", thumbArray[0].id);
 	assertEquals("after move right", "fluid.thumb1", thumbArray[3].id);
@@ -238,7 +238,7 @@ function testPersistFocus () {
 	
 	// Change focus to the paragraph text, then back to the lightbox
 	dojo.byId ("para1").focus();
-	dojo.byId ("fluid-lightbox").focus();
+	dojo.byId ("gallery:::gallery-thumbs:::").focus();
 	
 	// check that the first thumb nail is still moveable.
 	assertTrue("Persist Focus Test: fluid.thumb1 should be moveable",dojo.hasClass(document.getElementById("fluid.thumb1"), focusClass));
@@ -253,7 +253,7 @@ function testPersistFocus () {
 	
 	// Change focus to the paragraph text, then back to the lightbox
 	dojo.byId ("para1").focus();
-	dojo.byId ("fluid-lightbox").focus();
+	dojo.byId ("gallery:::gallery-thumbs:::").focus();
 	
 	// check that the first thumb nail is still moveable.
 	lightbox.focusNode(dojo.byId("fluid.thumb2"));
@@ -317,7 +317,7 @@ function testFocusNode () {
 
 	<input type="hidden" dojoType="fluid.Lightbox"/>
 
-	<div tabIndex="2" id="fluid-lightbox" ><div class="float image-container-default" id="fluid.thumb1">
+	<div tabIndex="2" id="gallery:::gallery-thumbs:::" ><div class="float image-container-default" id="fluid.thumb1">
 			<a href="images/Dragonfruit.jpg" id="gallery:::thumbs-div:::thumbs-link">
 				<div class="image-inner-container">
 					<img src="images/Dragonfruit.jpg" border="0" alt="Dragonfruit" id="gallery:::thumbs-div:::thumbs-image"/>
