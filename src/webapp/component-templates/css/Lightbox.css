@@ -93,12 +93,19 @@ padding-top: 10px;
 }
 
 
-.image_title{
+.image-title{
 margin-top:5px;
 height: 40px;
 overflow: hidden;
 }
 
+.image-title a{
+text-decoration: none;
+}
+
+.image-title a:hover{
+text-decoration: underline;
+}
 
 .image_tooltip{
 background-color:lightyellow;

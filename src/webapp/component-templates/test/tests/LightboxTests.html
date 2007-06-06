@@ -328,24 +328,43 @@ function testFocusNode () {
 
 	<input type="hidden" dojoType="fluid.Lightbox"/>
 
-	<div tabIndex="2" id="gallery:::gallery-thumbs:::" ><div class="float image-container-default" id="fluid.thumbFirst">
-			<a href="images/Dragonfruit.jpg"">
+	<div tabIndex="2" id="gallery:::gallery-thumbs:::" >
+		
+		
+		
+		<!-- DRAGONFRUIT HAS THE CORRECT TEMPLATE -->
+		
+		<div class="float image-container-default" id="fluid.thumbFirst">
 				<div class="image-inner-container">
-					<img src="images/Dragonfruit.jpg" border="0" alt="Dragonfruit"/>
+					<a href="images/Dragonfruit.jpg">
+						<img src="images/Dragonfruit.jpg" border="0" alt="Dragonfruit"/>
+					</a>
 				</div>
-				<div  class="caption image-title"">Dragonfruit</div>
-			</a>
+				<div class="caption image-title"">
+					<a href="images/Dragonfruit.jpg"">Dragonfruit</a>
+				</div>
 		</div>
+		
+		<!-- ************************************* -->
+		
+		
+		
+		
 		<div class="float image-container-default" id="fluid.thumbSecond">
-			<a href="images/Kiwano.jpg"">
 				<div class="image-inner-container">
-					<img src="images/Kiwano.jpg" border="0" alt="Kiwano"/>
+					<a href="images/Kiwano.jpg">
+						<img src="images/Kiwano.jpg" border="0" alt="Kiwano"/>
+					</a>
 				</div>
-				<div  class="caption image-title"">Kiwano</div>
-		  	</a>
+				<div  class="caption image-title"">
+					<a href="images/Kiwano.jpg"">Kiwano</a>
+				</div>
 		</div>
+		
+		
+		
 		<div class="float image-container-default" id="fluid.thumb3">
-			<a href="images/Blackberry.jpg"">
+			<a href="images/Blackberry.jpg">
 				<div class="image-inner-container">
 					<img src="images/Blackberry.jpg" border="0" alt="Blackberry"/>
 				</div>
@@ -353,7 +372,7 @@ function testFocusNode () {
 		  	</a>
 		</div>
 		<div class="float image-container-default" id="fluid.thumb4">
-			<a href="images/Cherry.jpg"">
+			<a href="images/Cherry.jpg">
 				<div class="image-inner-container">
 					<img src="images/Cherry.jpg" border="0" alt="Cherry"/>
 				</div>
