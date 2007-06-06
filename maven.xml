@@ -7,7 +7,7 @@
   <!-- the common "full" goal invokes the default goal.  Used in maven -Dgoal=full multiproject:goal from .. -->
   <goal name="full">
     <!--attainGoal name="dependencies" /-->
-    <attainGoal name="deploy" />
+    <attainGoal name="war:install" />
   </goal>
 
   <!-- Override jar:install goal to compose "partial WAR" strategy -->
@@ -17,7 +17,7 @@
 
 <!-- This standard stanza is required for any webapps participating in the
    "partial WAR" build strategy -->
-  <preGoal name="war:webapp">
+  <preGoal name="war:resources">
     <echo>Expanding webapp dependencies</echo>
 
     <mkdir dir="${maven.war.webapp.dir}" />
@@ -30,7 +30,8 @@
       </j:if>
     </j:forEach>
   </preGoal>
-
+  
+<!-- Do not deploy for now, will be folded into each deployed user
   <goal name="deploy" prereqs="war:install">
     <maven:property defaultValue="${pom.artifactId}" var="webappName"
       name="deploy.webappname" />
@@ -41,5 +42,5 @@
     <copy file="${maven.war.build.dir}/${maven.war.final.name}" 
       tofile="${destination}.war"/>
   </goal>
-
+-->
 </project>

@@ -10,7 +10,7 @@
   rsf:id="scr=contribute-script"></script>
 <script type="text/javascript" src="../js/Lightbox.js"
  rsf:id="scr=contribute-script"></script>
-<script rsf:id="contribute-script" type="text/javascript">
+<script rsf:id="scr=contribute-script" type="text/javascript">
 			dojo.require("fluid.js.Lightbox");
 			dojo.require("dijit.util.parser");	// scan page for widgets and instantiate them
 </script>
@@ -25,34 +25,34 @@
 
 <div rsf:id="lightbox-client-cell:">
 
-<a rsf:id="thumbs-link">
+<a href="#" rsf:id="thumbs-link">
 <div class="image-inner-container">
 <img border="0" src="../test/tests/images/Tamarillo.jpg"/></div>
 <div class="caption image-title">Is this the way to Tamarillo?</div>
 </a>
 </div>
 </div>
-</div>
 
 <!--  fake cells for previewing -->
 
-<div class="float float image-container-default">
-
+<div rsf:id="ignore" class="float float image-container-default">
+<a href="#">
 <div class="image-inner-container">
 <img border="0" src="../test/tests/images/Kiwano.jpg"/></div>
 <div class="caption image-title">Takeshi Kitano</div>
 </a>
 </div>
-</div>
 
-<div class="float float image-container-default">
-
+<div rsf:id="ignore" class="float float image-container-default">
+<a href="#">
 <div class="image-inner-container">
 <img border="0" src="../test/tests/images/Mangosteen.jpg"/></div>
 <div class="caption image-title">Bruce Springsteen</div>
 </a>
 </div>
+
 </div>
+
 
 </body>
 </html>
