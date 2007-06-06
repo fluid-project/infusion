@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <pomVersion>3</pomVersion>
+  <artifactId>fluid-component-templates</artifactId>
+  <name>Fluid Components Templates</name>
+  <groupId>org.fluidproject</groupId>
+  <currentVersion>1.0</currentVersion>
+  <organization>
+    <name>CARET</name>
+    <url>http://www.caret.cam.ac.uk</url>
+  </organization>
+  <inceptionYear>2005</inceptionYear>
+  <properties>
+    <!-- This project is NOT REALLY a JAR, but we want it not to deploy
+    to the server when invoked as a byproduct of a Sakai build. -->
+    <deploy.type>jar</deploy.type>
+  </properties>
+  <description>
+    Fluid Components package, packaged for a standard Servlet environment.
+  </description>
+  <dependencies>
+  </dependencies>
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+    </unitTest>
+  </build>
+</project>
+
