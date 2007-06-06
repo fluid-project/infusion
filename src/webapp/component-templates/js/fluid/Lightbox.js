@@ -21,7 +21,7 @@
 */
 
 
-dojo.provide("fluid.js.Lightbox");
+dojo.provide("fluid.Lightbox");
 
 //dojo.require("fluid.GridLayoutManager");
 dojo.require("dijit.base.Widget");
@@ -50,7 +50,7 @@ dojo.declare(
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
-			this.focusNode(this.domNode.firstChild);
+			this.focusNode(this.firstElement(this.domNode));
 		}, // end postCreate
 				
 		focusNode: function(aNode) {			
@@ -116,7 +116,7 @@ dojo.declare(
 				placementPosition = "after";
 			} else {
 				// if current focus image is the last, change focus to first thumbnail
-				nextRightSibling = this.focusedNode.parentNode.firstChild;
+				nextRightSibling = this.firstElement(this.focusedNode.parentNode);
 				placementPosition = "before";
 			}
 			
@@ -131,7 +131,7 @@ dojo.declare(
 				placementPosition = "before";
 			} else {
 				// if current focus image is the first, the next sibling is the last sibling
-				nextLeftSibling = this.focusedNode.parentNode.lastChild;
+				nextLeftSibling = this.lastElement(this.focusedNode.parentNode);
 				placementPosition = "after";
 			}
 			
@@ -165,6 +165,26 @@ dojo.declare(
 			}
 			return node;
 		}, // end previousElement
+		
+		firstElement: function(nodeParent) {
+			var node = nodeParent.firstChild;
+			
+			if (this.isElement(node)) {
+				return node;
+			}
+			
+			return this.nextElement(node);
+		},
+		
+		lastElement: function(nodeParent) {
+			var node = nodeParent.lastChild;
+			
+			if (this.isElement(node)) {
+				return node;
+			}
+			
+			return this.previousElement(node);
+		},
 		
 		isElement: function(node) {
 			return node && node.nodeType == 1;
