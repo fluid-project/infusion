@@ -1,6 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" 
-	"http://www.w3.org/TR/html4/strict.dtd">
-<!--
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <!--
  Fluid Project
 
  Copyright (c) 2006, 2007 University of Toronto. All rights reserved.
@@ -22,7 +22,28 @@
  Telephone: (416) 978-4360
 -->
 
-<html>
+<!--
+	Notes on the following name spaces.
+	1.  For ARIA roles:
+		 xmlns:xhtml10="http://www.w3.org/1999/xhtml"
+		 xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"
+	 
+		 See section "2.4.1 Applying roles in XHTML", specifically
+		 the paragraph about XHTML1.0.  The DOCTYPE above declares
+		 this document as "XHTML 1.0 Transitional"):
+		 http://www.w3.org/TR/2007/WD-aria-role-20070601/#applying_roles
+	
+	2.  For ARIA states:
+			xmlns:aaa="http://www.w3.org/2005/07/aaa"
+			
+			See section "3.1 Document Conformance", specifically the section
+			2.2:
+			http://www.w3.org/TR/2007/WD-aria-state-20070601/#docconf
+-->
+
+<html	xmlns:xhtml10="http://www.w3.org/1999/xhtml"
+		xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"
+		xmlns:aaa="http://www.w3.org/2005/07/aaa">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Lightbox Tests</title>
@@ -341,25 +362,40 @@ function testFocusNode () {
 </script>
 </head>
 
-  <body id="lightbox-parent">
+  <body>
 	<p id="para1">this is the Lightbox test page</p>
 
 
 	<input type="hidden" dojoType="fluid.Lightbox"/>
 
-	<div tabIndex="2" id="gallery:::gallery-thumbs:::" >
+	<div xhtml10:role="wairole:application" id="lightbox-parent">
+	<!--
+		Declare the thumbnails as an ARIA grid, that is single-selectable, writeable, and, when
+		first loaded, has the first thumbnail focussed.
+	-->
+	<div tabIndex="2" id="gallery:::gallery-thumbs:::"
+		xhtml10:role="wairole:grid"
+		aaa:multiselectable="false"
+		aaa:readonly="false"
+		aaa:activedescendent="fluid.thumbFirst"
+		aaa:disabled="false">
 		
 		<!-- Please leave the whitespace preceding and following this comment as it is used in testing. -->
 		
 		<!-- DRAGONFRUIT HAS THE CORRECT TEMPLATE -->
 		
-		<div class="float image-container-default" id="fluid.thumbFirst">
+		<div class="float image-container-default" id="fluid.thumbFirst"
+			xhtml10:role="wairole:gridcell"
+			aaa:selected="true"
+			aaa:readonly="false"
+			aaa:disabled="false"
+			aaa:grab="supported">
 				<div class="image-inner-container">
 					<a href="images/Dragonfruit.jpg">
 						<img src="images/Dragonfruit.jpg" border="0" alt="Dragonfruit"/>
 					</a>
 				</div>
-				<div class="caption image-title"">
+				<div class="caption image-title">
 					<a href="images/Dragonfruit.jpg"">Dragonfruit</a>
 				</div>
 		</div>
@@ -369,7 +405,12 @@ function testFocusNode () {
 		
 		
 		
-		<div class="float image-container-default" id="fluid.thumbSecond">
+		<div class="float image-container-default" id="fluid.thumbSecond"
+			xhtml10:role="wairole:gridcell"
+			aaa:selected="false"
+			aaa:readonly="false"
+			aaa:disabled="false"
+			aaa:grab="supported">
 				<div class="image-inner-container">
 					<a href="images/Kiwano.jpg">
 						<img src="images/Kiwano.jpg" border="0" alt="Kiwano"/>
@@ -482,6 +523,6 @@ function testFocusNode () {
 				<!-- Please leave the whitespace preceding and following this comment as it is used in testing. -->
 
 	</div>
-		
+	</div>	
   </body>
 </html>
