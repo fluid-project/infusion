@@ -50,7 +50,7 @@ dojo.declare(
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
-			this.focusNode(this.firstElement(this.domNode));
+			dojo.connect(this.domNode, "onfocus", this, "selectFocusedNode");
 		}, // end postCreate
 				
 		focusNode: function(aNode) {			
@@ -64,7 +64,15 @@ dojo.declare(
 			
 			dojo.removeClass (this.focusedNode, fluid.states.defaultClass);
 			dojo.addClass (this.focusedNode, fluid.states.focusedClass); 
+			this.focusedNode.getElementsByTagName("a")[0].focus();
 		}, //end focus
+		
+		selectFocusedNode: function() {
+			if (this.focusedNode == null) {
+				this.focusedNode = this.firstElement(this.domNode);
+			}
+			this.focusNode(this.focusedNode);
+		},
 		
 		handleKeyDown: function (evt) {
 			var key = evt.keyCode;
@@ -141,6 +149,7 @@ dojo.declare(
 		_changeFocusOrMove: function(shouldMove, refSibling, placementPosition) {
 			if (shouldMove) {
 				dojo.place(this.focusedNode, refSibling, placementPosition);
+				this.focusedNode.getElementsByTagName("a")[0].focus();
 			} else {
 				this.focusNode(refSibling);
 			}		

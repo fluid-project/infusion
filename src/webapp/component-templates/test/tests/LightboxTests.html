@@ -63,6 +63,7 @@ function testHandleArrowKeyPressForLeftAndRight()	 {
 	var defaultClass="image-container-default";
 	var focusedClass="image-container-selected";
 	var draggingClass="image-container-dragging";
+	lightbox.domNode.focus();
 
 	// set the focus on the first image
 	assertTrue("fluid.thumbFirst should be focused",dojo.hasClass(document.getElementById("fluid.thumbFirst"), focusedClass));
@@ -124,6 +125,7 @@ function testHandleKeyUpAndDown() {
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
 	var draggingClass="image-container-dragging";
+	lightbox.domNode.focus();
 
 	// check that none of the images are currently being moved.
 	assertFalse("thumbFirst should not be in move state to start",dojo.hasClass(document.getElementById("fluid.thumbFirst"), draggingClass));
@@ -170,7 +172,8 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
 	var draggingClass="image-container-dragging";
-	
+	lightbox.domNode.focus();
+
 	var evtCTRL = {keyCode: dojo.keys.CTRL, preventDefault: function(){}, stopPropagation: function(){} };
 	var evtRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
 	var evtLeftArrow = {keyCode: dojo.keys.LEFT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
@@ -244,6 +247,8 @@ function testPersistFocus () {
 	var lightbox = new fluid.Lightbox();
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
+	lightbox.domNode.focus();
+
 	
 	// first thumb nail should be focused initially.
 	assertTrue("Persist Focus Test: fluid.thumbFirst should be moveable",dojo.hasClass(document.getElementById("fluid.thumbFirst"), focusClass));
@@ -285,13 +290,17 @@ function testFocusNode () {
 	var focusClass="image-container-selected";
 	var draggingClass="image-container-dragging";
 	
-	// the first thumb should be focused
-	assertTrue("fluid.thumbFirst should be moveable",dojo.hasClass(document.getElementById("fluid.thumbFirst"), focusClass));
-	assertFalse("fluid.thumbSecond should not be focused",dojo.hasClass(document.getElementById("fluid.thumbSecond"), focusClass));
-	assertFalse("fluid.thumbSecondLast should not be focused",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), focusClass));
-	assertFalse("fluid.thumbFirst should not be focused",dojo.hasClass(document.getElementById("fluid.thumbFirst"), defaultClass));
-	assertTrue("fluid.thumbSecond should be moveable",dojo.hasClass(document.getElementById("fluid.thumbSecond"), defaultClass));
-	assertTrue("fluid.thumbSecondLast should be moveable",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), defaultClass));
+	// nothing should be focused
+	assertFalse("fluid.thumbFirst should not be focused before lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbFirst"), focusClass));
+	assertFalse("fluid.thumbSecond should not be focused before lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbSecond"), focusClass));
+	assertFalse("fluid.thumbSecondLast should not be focused before lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), focusClass));
+	assertTrue("fluid.thumbFirst should not be focused before lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbFirst"), defaultClass));
+	assertTrue("fluid.thumbSecond should not be focused before lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbSecond"), defaultClass));
+	assertTrue("fluid.thumbSecondLast should not be focused before lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), defaultClass));
+	
+	// put focus on lightbox - first node should get focusClass
+	lightbox.domNode.focus();
+	assertTrue("fluid.thumbFirst should be focused now that lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbFirst"), focusClass));
 	
 	// focus the image
 	lightbox.focusNode(dojo.byId("fluid.thumbSecond"));
