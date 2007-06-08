@@ -247,9 +247,12 @@ function testPersistFocus () {
 	var lightbox = new fluid.Lightbox();
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
+
+	assertFalse("fluid.thumbFirst should not be focused before lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbFirst"), focusClass));
+	assertTrue("fluid.thumbFirst should not be focused before lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbFirst"), defaultClass));
+
 	lightbox.domNode.focus();
 
-	
 	// first thumb nail should be focused initially.
 	assertTrue("Persist Focus Test: fluid.thumbFirst should be moveable",dojo.hasClass(document.getElementById("fluid.thumbFirst"), focusClass));
 	assertFalse("Persist Focus Test: fluid.thumbSecond should not be focused",dojo.hasClass(document.getElementById("fluid.thumbSecond"), focusClass));
@@ -280,6 +283,9 @@ function testPersistFocus () {
 	assertTrue ("Persist Focus Test: fluid.thumbSecond should be moveable",dojo.hasClass(document.getElementById("fluid.thumbSecond"), focusClass));
 	assertFalse("Persist Focus Test: fluid.thumbSecondLast should not be focused",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), focusClass));
 	
+	lightbox.domNode.blur();
+	assertTrue("after lightbox blur, focusedNode should not be selected", dojo.hasClass(document.getElementById("fluid.thumbSecond"), defaultClass));
+
 	// test persistance of focus between page navigation / page loads?	
 }
 
@@ -328,6 +334,8 @@ function testFocusNode () {
 	assertFalse("fluid.thumbSecondLast should not be default",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), defaultClass));
 	assertTrue("fluid.thumbSecondLast should be focused",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), focusClass));
 	
+	lightbox.domNode.blur();
+	assertTrue("after lightbox blur, focusedNode should not be selected", dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), defaultClass));
 }
 
 

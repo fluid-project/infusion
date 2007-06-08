@@ -51,14 +51,12 @@ dojo.declare(
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
 			dojo.connect(this.domNode, "onfocus", this, "selectFocusedNode");
+			dojo.connect(this.domNode, "onblur", this, "deselectFocusedNode");
 		}, // end postCreate
 				
 		focusNode: function(aNode) {			
 			// deselect any previously focused node
-			if (this.focusedNode != null) {
-				dojo.removeClass (this.focusedNode, fluid.states.focusedClass);
-				dojo.addClass (this.focusedNode, fluid.states.defaultClass);
-			}
+			this.deselectFocusedNode();
 						
 			this.focusedNode = aNode;			
 			
@@ -67,11 +65,19 @@ dojo.declare(
 			this.focusedNode.getElementsByTagName("a")[0].focus();
 		}, //end focus
 		
+		
 		selectFocusedNode: function() {
 			if (this.focusedNode == null) {
 				this.focusedNode = this.firstElement(this.domNode);
 			}
 			this.focusNode(this.focusedNode);
+		},
+		
+		deselectFocusedNode: function() {
+			if (this.focusedNode != null) {
+				dojo.removeClass (this.focusedNode, fluid.states.focusedClass);
+				dojo.addClass (this.focusedNode, fluid.states.defaultClass);
+			}
 		},
 		
 		handleKeyDown: function (evt) {
