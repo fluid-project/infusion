@@ -22,26 +22,31 @@
 <div rsf:id="lightbox:" id="gallery:::gallery-thumbs:::" tabIndex='2'
   dojoType="fluid.Lightbox">
 
-<div rsf:id="lightbox-cell:" class="float float image-container-default">
+<div rsf:id="lightbox-cell:" class="float image-container-default">
 
-<div rsf:id="lightbox-client-cell:">
-
-<a href="#" rsf:id="thumbs-link">
-<div class="image-inner-container">
-<img border="0" src="../test/tests/images/Tamarillo.jpg"/></div>
-<div class="caption image-title">Is this the way to Tamarillo?</div>
-</a>
-</div>
+	<div rsf:id="lightbox-client-cell:">
+	
+		<!-- These contents of 'lightbox-client-cell:' are only here for previewability.
+		     They will be replaced, through RSF, by the template that is in the client
+			 i.e. the Gallery tool's main.html -->
+		<a href="#" rsf:id="thumbs-link">
+			<div class="image-inner-container">
+				<img border="0" src="../test/tests/images/Tamarillo.jpg"/>
+			</div>
+			<div class="caption image-title">Is this the way to Tamarillo?</div>
+		</a>
+	</div>
 </div>
 
 <!--  fake cells for previewing -->
 
 <div rsf:id="ignore" class="float float image-container-default">
-<a href="#">
-<div class="image-inner-container">
-<img border="0" src="../test/tests/images/Kiwano.jpg"/></div>
-<div class="caption image-title">Takeshi Kitano</div>
-</a>
+	<a href="#">
+		<div class="image-inner-container">
+			<img border="0" src="../test/tests/images/Kiwano.jpg"/>
+		</div>
+		<div class="caption image-title">Takeshi Kitano</div>
+	</a>
 </div>
 
 <div rsf:id="ignore" class="float float image-container-default">

@@ -34,7 +34,7 @@
 	<script language="JavaScript" type="text/javascript" src="LightboxTests.js"></script>
     <script type="../../js/fluid/Lightbox.js" rsf:id="scr=contribute-script"></script>
 	<script type="text/javascript" src="../../js/dojo/dojo.js" rsf:id="scr=contribute-script"></script>
-	<script type="text/javascript">
+	<script type="text/javascript"  rsf:id="scr=contribute-script">
 	  dojo.require("fluid.Lightbox");
 	  dojo.require("dojo._base.event");
 	  dojo.require("dijit.util.parser");
@@ -43,149 +43,148 @@
 
   <body>
 	<p id="para1">this is the Lightbox test page</p>
-	
-    <div rsf:id="lightbox:" id="fluid-lightbox" tabIndex='2' dojoType="fluid.Lightbox">
 
-		<div xhtml10:role="wairole:application" id="lightbox-parent">
-		<!--
-			Declare the thumbnails as an ARIA grid, that is single-selectable, writeable, and, when
-			first loaded, has the first thumbnail focussed.
-		-->
-		<div tabIndex="2" id="gallery:::gallery-thumbs:::"
-			xhtml10:role="wairole:grid"
+	<!-- lightbox-parent is used for testing setup and teardown only -->
+	<div  id="lightbox-parent">
+	
+    <div rsf:id="lightbox:" id="gallery:::gallery-thumbs:::" tabIndex='2' dojoType="fluid.Lightbox"
+	 		xhtml10:role="wairole:grid"
 			aaa:multiselectable="false"
 			aaa:readonly="false"
 			aaa:activedescendent="fluid.thumbFirst"
 			aaa:disabled="false">
-			
-			<!-- Please leave the whitespace preceding and following this comment as it is used in testing. -->
-			
-			<div class="float image-container-default" id="fluid.thumbFirst"
+				
+		<!--
+			Declare the thumbnails as an ARIA grid, that is single-selectable, writeable, and, when
+			first loaded, has the first thumbnail focussed.
+		-->
+		<div rsf:id="lightbox-cell:" class="float image-container-default" id="fluid.thumbFirst" 
 				xhtml10:role="wairole:gridcell"
 				aaa:selected="true"
 				aaa:readonly="false"
 				aaa:disabled="false"
 				aaa:grab="supported">
+			
+			<!-- Please leave the whitespace preceding and following this comment as it is used in testing. -->
+			<!-- lightbox-client-cell will get replaced by RSF -->
+			<!-- this div currently has the 'proper' template for css purposes -->
+			<div rsf:id="lightbox-client-cell:">
 					<div class="image-inner-container">
 						<a href="images/Dragonfruit.jpg">
-							<img src="images/Dragonfruit.jpg" border="0" alt="Dragonfruit"/>
+							<img id="fluid.img.first" src="images/Dragonfruit.jpg" border="0" alt="Dragonfruit"/>
 						</a>
 					</div>
 					<div class="caption image-title">
-						<a href="images/Dragonfruit.jpg"">Dragonfruit</a>
+						<a href="images/Dragonfruit.jpg">Dragonfruit</a>
 					</div>
 			</div>
+		</div>
 	
-			<div class="float image-container-default" id="fluid.thumbSecond"
-				xhtml10:role="wairole:gridcell"
-				aaa:selected="false"
-				aaa:readonly="false"
-				aaa:disabled="false"
-				aaa:grab="supported">
+			<div  rsf:id="ignore" class="float image-container-default" id="fluid.thumbSecond">
 					<div class="image-inner-container">
 						<a href="images/Kiwano.jpg">
-							<img src="images/Kiwano.jpg" border="0" alt="Kiwano"/>
+							<img id="fluid.img.second" src="images/Kiwano.jpg" border="0" alt="Kiwano"/>
 						</a>
 					</div>
-					<div  class="caption image-title"">
-						<a href="images/Kiwano.jpg"">Kiwano</a>
+					<div  class="caption image-title">
+						<a href="images/Kiwano.jpg">Kiwano</a>
 					</div>
 			</div>
 			
 			<!-- Please leave the whitespace preceding and following this comment as it is used in testing. -->		
 			
-			<div class="float image-container-default" id="fluid.thumb3">
+			<div  rsf:id="ignore" class="float image-container-default" id="fluid.thumb3">
 				<a href="images/Blackberry.jpg">
 					<div class="image-inner-container">
-						<img src="images/Blackberry.jpg" border="0" alt="Blackberry"/>
+						<img id="fluid.img.3" src="images/Blackberry.jpg" border="0" alt="Blackberry"/>
 					</div>
-					<div  class="caption image-title"">Blackberry</div>
+					<div  class="caption image-title">Blackberry</div>
 			  	</a>
 			</div>
-			<div class="float image-container-default" id="fluid.thumb4">
+			<div  rsf:id="ignore" class="float image-container-default"id="fluid.thumb4">
 				<a href="images/Cherry.jpg">
 					<div class="image-inner-container">
-						<img src="images/Cherry.jpg" border="0" alt="Cherry"/>
+						<img id="fluid.img.4" src="images/Cherry.jpg" border="0" alt="Cherry"/>
 					</div>
-					<div  class="caption image-title"">Cherry</div>
+					<div  class="caption image-title">Cherry</div>
 			  	</a>
 			</div>
-			<div class="float image-container-default" id="fluid.thumb5">
-				<a href="images/Fig.jpg"">
+			<div  rsf:id="ignore" class="float image-container-default"id="fluid.thumb5">
+				<a href="images/Fig.jpg">
 					<div class="image-inner-container">
-						<img src="images/Fig.jpg" border="0" alt="Fig"/>
+						<img id="fluid.img.5" src="images/Fig.jpg" border="0" alt="Fig"/>
 					</div>
-					<div  class="caption image-title"">Fig</div>
+					<div  class="caption image-title">Fig</div>
 			  	</a>
 			</div>
-			<div class="float image-container-default" id="fluid.thumb6">
-				<a href="images/Grapes.jpg"">
+			<div  rsf:id="ignore" class="float image-container-default"id="fluid.thumb6">
+				<a href="images/Grapes.jpg">
 					<div class="image-inner-container">
-						<img src="images/Grapes.jpg" border="0" alt="Grapes"/>
+						<img id="fluid.img.6" src="images/Grapes.jpg" border="0" alt="Grapes"/>
 					</div>
-					<div  class="caption image-title"">Grapes</div>
+					<div  class="caption image-title">Grapes</div>
 			  	</a>
 			</div>
-			<div class="float image-container-default" id="fluid.thumb7">
-				<a href="images/Kiwi.jpg"">
+			<div  rsf:id="ignore" class="float image-container-default"id="fluid.thumb7">
+				<a href="images/Kiwi.jpg">
 					<div class="image-inner-container">
-						<img src="images/Kiwi.jpg" border="0" alt="Kiwi"/>
+						<img id="fluid.img.7" src="images/Kiwi.jpg" border="0" alt="Kiwi"/>
 					</div>
-					<div  class="caption image-title"">Kiwi</div>
+					<div  class="caption image-title">Kiwi</div>
 			  	</a>
 			</div>
-			<div class="float image-container-default" id="fluid.thumb8">
-				<a href="images/Kumquat.jpg"">
+			<div  rsf:id="ignore" class="float image-container-default"id="fluid.thumb8">
+				<a href="images/Kumquat.jpg">
 					<div class="image-inner-container">
-						<img src="images/Kumquat.jpg" border="0" alt="Kumquat"/>
+						<img id="fluid.img.8" src="images/Kumquat.jpg" border="0" alt="Kumquat"/>
 					</div>
-					<div  class="caption image-title"">Kumquat</div>
+					<div  class="caption image-title">Kumquat</div>
 			  	</a>
 			</div>
-			<div class="float image-container-default" id="fluid.thumb9">
-				<a href="images/Lemon.jpg"">
+			<div  rsf:id="ignore" class="float image-container-default"id="fluid.thumb9">
+				<a href="images/Lemon.jpg">
 					<div class="image-inner-container">
-						<img src="images/Lemon.jpg" border="0" alt="Lemon"/>
+						<img id="fluid.img.9" src="images/Lemon.jpg" border="0" alt="Lemon"/>
 					</div>
-					<div  class="caption image-title"">Lemon</div>
+					<div  class="caption image-title">Lemon</div>
 			  	</a>
 			</div>
-			<div class="float image-container-default" id="fluid.thumb10">
-				<a href="images/Orange.jpg"">
+			<div  rsf:id="ignore" class="float image-container-default"id="fluid.thumb10">
+				<a href="images/Orange.jpg">
 					<div class="image-inner-container">
-						<img src="images/Orange.jpg" border="0" alt="Orange"/>
+						<img id="fluid.img.10" src="images/Orange.jpg" border="0" alt="Orange"/>
 					</div>
-					<div  class="caption image-title"">Orange</div>
+					<div  class="caption image-title">Orange</div>
 			  	</a>
 			</div>
-			<div class="float image-container-default" id="fluid.thumb11">
-				<a href="images/RedApple.jpg"">
+			<div  rsf:id="ignore" class="float image-container-default"id="fluid.thumb11">
+				<a href="images/RedApple.jpg">
 					<div class="image-inner-container">
-						<img src="images/RedApple.jpg" border="0" alt="RedApple"/>
+						<img id="fluid.img.11" src="images/RedApple.jpg" border="0" alt="RedApple"/>
 					</div>
-					<div  class="caption image-title"">RedApple</div>
+					<div  class="caption image-title">RedApple</div>
 			  	</a>
 			</div>
-			<div class="float image-container-default" id="fluid.thumb12">
-				<a href="images/Tamarillo.jpg"">
+			<div  rsf:id="ignore" class="float image-container-default"id="fluid.thumb12">
+				<a href="images/Tamarillo.jpg">
 					<div class="image-inner-container">
-						<img src="images/Tamarillo.jpg" border="0" alt="Tamarillo"/>
+						<img id="fluid.img.12" src="images/Tamarillo.jpg" border="0" alt="Tamarillo"/>
 					</div>
-					<div  class="caption image-title"">Tamarillo</div>
+					<div  class="caption image-title">Tamarillo</div>
 			  	</a>
 			</div>
-			<div class="float image-container-default" id="fluid.thumbSecondLast">
-				<a href="images/Mangosteen.jpg"">
+			<div  rsf:id="ignore" class="float image-container-default"id="fluid.thumbSecondLast">
+				<a href="images/Mangosteen.jpg">
 					<div class="image-inner-container">
-						<img src="images/Mangosteen.jpg" border="0" alt="Mangosteen""/>
+						<img id="fluid.img.secondLast" src="images/Mangosteen.jpg" border="0" alt="Mangosteen"/>
 					</div>
-					<div  class="caption image-title"">Mangosteen</div>
+					<div  class="caption image-title">Mangosteen</div>
 				</a>
 			</div>
-			<div class="float image-container-default" id="fluid.thumbLast">
-				<a href="images/Banana.jpg"">
+			<div  rsf:id="ignore" class="float image-container-default"id="fluid.thumbLast">
+				<a href="images/Banana.jpg">
 					<div class="image-inner-container">
-						<img src="images/Banana.jpg" border="0" alt="Banana"/>
+						<img id="fluid.img.last" src="images/Banana.jpg" border="0" alt="Banana"/>
 					</div>
 					<div  class="caption image-title">Banana</div>
 				</a>
@@ -194,7 +193,6 @@
 					<!-- Please leave the whitespace preceding and following this comment as it is used in testing. -->
 	
 		</div>
-		</div>	
 	</div>
   </body>
 </html>
