@@ -38,11 +38,26 @@ dojo.declare(
 	"fluid.Lightbox",	// class name
 	dijit.base.Widget,
 	{
-		focusedNode: null,
+		
+		// the currently active item 
+		activeItem: null,
 
-	  deriveFocusNode: function(protoFocusedNode) {
-      return protoFocusedNode.getElementsByTagName("a")[0];
-	  },
+		/**
+		 * Return the first anchor tag in the specified item. This is done so that the user can use
+		 * a keypress (i.e. Enter key) to activate the link.
+		 * 
+		 * In this Lightbox component this means that the image link is returned by this method,
+		 * so the user can get the full-sized version of the image.
+		 * 
+		 * @param {Object} item
+		 * @return {Object} The first "a" (anchor) element contained in the specified item.
+		 */
+		getElementToFocus: function(item) {
+			// TODO: generalize this to return any specified element specified on construction of 
+			// Lightbox
+			return item.getElementsByTagName("a")[0];
+		},
+
 
 		buildRendering: function() {
 			// note: this should really be informed of the Id by the gallery, to be able
@@ -51,44 +66,52 @@ dojo.declare(
 		},
 
 		postCreate: function () {
+			// Dojo calls this function after constructing the object.
+			
+			// Connect the listeners that handle keypresses and focusing
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
-			dojo.connect(this.domNode, "onfocus", this, "selectFocusedNode");
-			dojo.connect(this.domNode, "onblur", this, "deselectFocusedNode");
+			dojo.connect(this.domNode, "onfocus", this, "selectActiveItem");
+			dojo.connect(this.domNode, "onblur", this, "setActiveItemToDefaultState");
 		}, // end postCreate
-				
-		focusNode: function(aNode) {			
-			// deselect any previously focused node
-			this.deselectFocusedNode();
+		
+		/**
+		 * Changes the current focus to the specified item.
+		 * @param {Object} anItem
+		 */
+		focusItem: function(anItem) {			
+			this.setActiveItemToDefaultState();
 						
-			this.focusedNode = aNode;			
+			this.activeItem = anItem;			
 			
-			dojo.removeClass (this.focusedNode, fluid.states.defaultClass);
-			dojo.addClass (this.focusedNode, fluid.states.focusedClass);
-//			this.deriveFocusNode(focusedNode).focus();
+			dojo.removeClass (this.activeItem, fluid.states.defaultClass);
+			dojo.addClass (this.activeItem, fluid.states.focusedClass);
+			this.getElementToFocus(this.activeItem).focus();
 		}, //end focus
 		
-		
-		selectFocusedNode: function() {
-			if (this.focusedNode == null) {
-				this.focusedNode = this.firstElement(this.domNode);
+		/**
+		 * Changes focus to the active item.
+		 */
+		selectActiveItem: function() {
+			if (this.activeItem == null) {
+				this.activeItem = this.firstElement(this.domNode);
 			}
-			this.focusNode(this.focusedNode);
+			this.focusItem(this.activeItem);
 		},
 		
-		deselectFocusedNode: function() {
-			if (this.focusedNode != null) {
-				dojo.removeClass (this.focusedNode, fluid.states.focusedClass);
-				dojo.addClass (this.focusedNode, fluid.states.defaultClass);
+		setActiveItemToDefaultState: function() {
+			if (this.activeItem != null) {
+				dojo.removeClass (this.activeItem, fluid.states.focusedClass);
+				dojo.addClass (this.activeItem, fluid.states.defaultClass);
 			}
 		},
 		
 		handleKeyDown: function (evt) {
 			var key = evt.keyCode;
 			if (key == dojo.keys.CTRL) {
-				dojo.removeClass(this.focusedNode, fluid.states.focusedClass);
-				dojo.addClass(this.focusedNode, fluid.states.draggingClass);
+				dojo.removeClass(this.activeItem, fluid.states.focusedClass);
+				dojo.addClass(this.activeItem, fluid.states.draggingClass);
 				dojo.stopEvent(evt);
 			}
 		}, // end handleKeyDown
@@ -96,8 +119,8 @@ dojo.declare(
 		handleKeyUp: function (evt) {
 			var key = evt.keyCode;
 			if (key == dojo.keys.CTRL) {
-				dojo.removeClass(this.focusedNode, fluid.states.draggingClass);
-				dojo.addClass(this.focusedNode, fluid.states.focusedClass);
+				dojo.removeClass(this.activeItem, fluid.states.draggingClass);
+				dojo.addClass(this.activeItem, fluid.states.focusedClass);
 				dojo.stopEvent(evt);
 			}		
 		}, // end handleKeyUp
@@ -127,14 +150,14 @@ dojo.declare(
 		}, // end handleArrowKeyPress
 		
 		handleRightArrow: function(isCtrl) {
-			var nextRightSibling = this.nextElement(this.focusedNode);
+			var nextRightSibling = this.nextElement(this.activeItem);
 			var placementPosition;
 			
 			if (nextRightSibling) {
 				placementPosition = "after";
 			} else {
 				// if current focus image is the last, change focus to first thumbnail
-				nextRightSibling = this.firstElement(this.focusedNode.parentNode);
+				nextRightSibling = this.firstElement(this.activeItem.parentNode);
 				placementPosition = "before";
 			}
 			
@@ -142,14 +165,14 @@ dojo.declare(
 		}, // end handleRightArrow
 		
 		handleLeftArrow: function(isCtrl) {
-			var nextLeftSibling = this.previousElement(this.focusedNode);
+			var nextLeftSibling = this.previousElement(this.activeItem);
 			var placementPosition;
 			
 			if (nextLeftSibling) {
 				placementPosition = "before";
 			} else {
 				// if current focus image is the first, the next sibling is the last sibling
-				nextLeftSibling = this.lastElement(this.focusedNode.parentNode);
+				nextLeftSibling = this.lastElement(this.activeItem.parentNode);
 				placementPosition = "after";
 			}
 			
@@ -158,10 +181,10 @@ dojo.declare(
 		
 		_changeFocusOrMove: function(shouldMove, refSibling, placementPosition) {
 			if (shouldMove) {
-				dojo.place(this.focusedNode, refSibling, placementPosition);
-//				this.deriveFocusNode(this.focusedNode).focus();
+				dojo.place(this.activeItem, refSibling, placementPosition);
+				this.getElementToFocus(this.activeItem).focus();
 			} else {
-				this.focusNode(refSibling);
+				this.focusItem(refSibling);
 			}		
 		},
 		
