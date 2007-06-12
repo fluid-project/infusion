@@ -40,6 +40,10 @@ dojo.declare(
 	{
 		focusedNode: null,
 
+	  deriveFocusNode: function(protoFocusedNode) {
+      return protoFocusedNode.getElementsByTagName("a")[0];
+	  },
+
 		buildRendering: function() {
 			// note: this should really be informed of the Id by the gallery, to be able
 			// to handle multiple lightboxes
@@ -61,8 +65,8 @@ dojo.declare(
 			this.focusedNode = aNode;			
 			
 			dojo.removeClass (this.focusedNode, fluid.states.defaultClass);
-			dojo.addClass (this.focusedNode, fluid.states.focusedClass); 
-			this.focusedNode.getElementsByTagName("a")[0].focus();
+			dojo.addClass (this.focusedNode, fluid.states.focusedClass);
+//			this.deriveFocusNode(focusedNode).focus();
 		}, //end focus
 		
 		
@@ -155,7 +159,7 @@ dojo.declare(
 		_changeFocusOrMove: function(shouldMove, refSibling, placementPosition) {
 			if (shouldMove) {
 				dojo.place(this.focusedNode, refSibling, placementPosition);
-				this.focusedNode.getElementsByTagName("a")[0].focus();
+//				this.deriveFocusNode(this.focusedNode).focus();
 			} else {
 				this.focusNode(refSibling);
 			}		

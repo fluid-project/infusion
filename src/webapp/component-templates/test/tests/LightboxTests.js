@@ -13,13 +13,18 @@ function tearDown() {
 	lightboxParent.appendChild(imgListClone);
 }
 	
+function focusLightboxNode(lightbox, domNode) {
+  lightbox.deriveFocusNode(domNode).focus();
+}
+
+	
 function testHandleArrowKeyPressForLeftAndRight()	 {
 	var lightbox = new fluid.Lightbox();
 	var defaultClass="image-container-default";
 	var focusedClass="image-container-selected";
 	var draggingClass="image-container-dragging";
-	lightbox.domNode.focus();
-
+	focusLightboxNode(lightbox, lightbox.domNode);
+	
 	// set the focus on the first image
 	assertTrue("fluid.thumbFirst should be focused",dojo.hasClass(document.getElementById("fluid.thumbFirst"), focusedClass));
 	assertFalse("fluid.thumbFirst should not be default", dojo.hasClass(document.getElementById("fluid.thumbFirst"), defaultClass));
@@ -80,7 +85,7 @@ function testHandleKeyUpAndDown() {
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
 	var draggingClass="image-container-dragging";
-	lightbox.domNode.focus();
+	focusLightboxNode(lightbox, lightbox.domNode);
 
 	// check that none of the images are currently being moved.
 	assertFalse("thumbFirst should not be in move state to start",dojo.hasClass(document.getElementById("fluid.thumbFirst"), draggingClass));
@@ -127,7 +132,7 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
 	var draggingClass="image-container-dragging";
-	lightbox.domNode.focus();
+	focusLightboxNode(lightbox, lightbox.domNode);
 
 	var evtCTRL = {keyCode: dojo.keys.CTRL, preventDefault: function(){}, stopPropagation: function(){} };
 	var evtRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
@@ -206,7 +211,7 @@ function testPersistFocus () {
 	assertFalse("fluid.thumbFirst should not be focused before lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbFirst"), focusClass));
 	assertTrue("fluid.thumbFirst should not be focused before lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbFirst"), defaultClass));
 
-	lightbox.domNode.focus();
+	focusLightboxNode(lightbox, lightbox.domNode);
 
 	// first thumb nail should be focused initially.
 	assertTrue("Persist Focus Test: fluid.thumbFirst should be moveable",dojo.hasClass(document.getElementById("fluid.thumbFirst"), focusClass));
@@ -214,8 +219,11 @@ function testPersistFocus () {
 	assertFalse("Persist Focus Test: fluid.thumbSecondLast should not be focused",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), focusClass));
 	
 	// Change focus to the paragraph text, then back to the lightbox
-	dojo.byId ("para1").focus();
-	dojo.byId ("gallery:::gallery-thumbs:::").focus();
+	dojo.byId ("input1").focus();
+// This next line violates DOM Level 1 http://www.w3.org/TR/REC-DOM-Level-1/level-one-html.html#method-focus
+// see alternatives	
+//	dojo.byId ("gallery:::gallery-thumbs:::").focus();
+	focusLightboxNode(lightbox, lightbox.domNode);
 	
 	// check that the first thumb nail is still moveable.
 	assertTrue("Persist Focus Test: fluid.thumbFirst should be moveable",dojo.hasClass(document.getElementById("fluid.thumbFirst"), focusClass));
@@ -229,8 +237,8 @@ function testPersistFocus () {
 	assertFalse("Persist Focus Test: fluid.thumbSecondLast should not be focused",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), focusClass));
 	
 	// Change focus to the paragraph text, then back to the lightbox
-	dojo.byId ("para1").focus();
-	dojo.byId ("gallery:::gallery-thumbs:::").focus();
+	dojo.byId ("input1").focus();
+	focusLightboxNode(lightbox, lightbox.domNode);
 	
 	// check that the first thumb nail is still moveable.
 	lightbox.focusNode(dojo.byId("fluid.thumbSecond"));
@@ -238,7 +246,7 @@ function testPersistFocus () {
 	assertTrue ("Persist Focus Test: fluid.thumbSecond should be moveable",dojo.hasClass(document.getElementById("fluid.thumbSecond"), focusClass));
 	assertFalse("Persist Focus Test: fluid.thumbSecondLast should not be focused",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), focusClass));
 	
-	lightbox.domNode.blur();
+	lightbox.deriveFocusNode(lightbox.domNode).blur();
 	assertTrue("after lightbox blur, focusedNode should not be selected", dojo.hasClass(document.getElementById("fluid.thumbSecond"), defaultClass));
 
 	// test persistance of focus between page navigation / page loads?	
@@ -260,7 +268,7 @@ function testFocusNode () {
 	assertTrue("fluid.thumbSecondLast should not be focused before lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), defaultClass));
 	
 	// put focus on lightbox - first node should get focusClass
-	lightbox.domNode.focus();
+	focusLightboxNode(lightbox, lightbox.domNode);
 	assertTrue("fluid.thumbFirst should be focused now that lightbox has focus",dojo.hasClass(document.getElementById("fluid.thumbFirst"), focusClass));
 	
 	// focus the image
@@ -289,6 +297,6 @@ function testFocusNode () {
 	assertFalse("fluid.thumbSecondLast should not be default",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), defaultClass));
 	assertTrue("fluid.thumbSecondLast should be focused",dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), focusClass));
 	
-	lightbox.domNode.blur();
+	lightbox.deriveFocusNode(lightbox.domNode).blur();
 	assertTrue("after lightbox blur, focusedNode should not be selected", dojo.hasClass(document.getElementById("fluid.thumbSecondLast"), defaultClass));
 }
