@@ -23,7 +23,6 @@
 
 dojo.provide("fluid.Lightbox");
 
-//dojo.require("fluid.GridLayoutManager");
 dojo.require("dijit.base.Widget");
 
 (function() {
@@ -41,6 +40,8 @@ dojo.declare(
 		
 		// the lightbox-reorderable DOM element that is currently active
 		activeItem: null,
+		
+		gridLayoutHandler: null,
 
 		/**
 		 * Return the element within the item that should receive focus.
@@ -74,6 +75,11 @@ dojo.declare(
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
 			dojo.connect(this.domNode, "onfocus", this, "selectActiveItem");
 			dojo.connect(this.domNode, "onblur", this, "setActiveItemToDefaultState");
+			dojo.connect(window, "onresize", this, "handleWindowResizeEvent");
+			
+			this.gridLayoutHandler = new GridLayoutHandler();
+			this.gridLayoutHandler.setGrid(this.domNode);
+
 		}, // end postCreate
 		
 		/**
@@ -230,7 +236,45 @@ dojo.declare(
 		
 		isElement: function(node) {
 			return node && node.nodeType == 1;
+		},
+		
+		handleWindowResizeEvent: function(resizeEvent) {
 		}
 	}
 );
+
+function GridLayoutHandler() {
+	
+	this.numOfColumnsInGrid = 0
+	this.grid = null;
+	this.itemList = new Array();
+	
+	this.setGrid = function (aGrid) {
+		this.grid = aGrid;
+		nodes = this.grid.childNodes;
+		for (i=0; i<nodes.length; i++) {
+			if (nodes[i] && nodes[i].nodeType == 1) {
+				this.itemList.push(nodes[i]);
+			}
+		}
+	};
+	
+	this.updateGridWidth = function () {
+		
+	};
+	
+	this.getItemBelow = function (item) {
+		var curIndex = this.itemList.indexOf(item);
+		var belowIndex = curIndex+this.numOfColumnsInGrid;
+		if (belowIndex >= this.itemList.length) {
+			belowIndex = belowIndex % this.numOfColumnsInGrid;
+		}
+		return this.itemList[belowIndex];
+	};
+	
+	this.getItemAbove = function (item) {
+		
+	};
+	
+}
 
