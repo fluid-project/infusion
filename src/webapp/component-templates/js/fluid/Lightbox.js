@@ -39,18 +39,18 @@ dojo.declare(
 	dijit.base.Widget,
 	{
 		
-		// the currently active item 
+		// the lightbox-reorderable DOM element that is currently active
 		activeItem: null,
 
 		/**
-		 * Return the first anchor tag in the specified item. This is done so that the user can use
-		 * a keypress (i.e. Enter key) to activate the link.
+		 * Return the element within the item that should receive focus.
 		 * 
-		 * In this Lightbox component this means that the image link is returned by this method,
-		 * so the user can get the full-sized version of the image.
+		 * NOTE: The lightbox currently assumes that items will have an anchor, and that this anchor
+		 * should receive focus so that it can be activated with an 'enter' keypress. This function
+		 * currently returns the first anchor in the item.
 		 * 
 		 * @param {Object} item
-		 * @return {Object} The first "a" (anchor) element contained in the specified item.
+		 * @return {Object} The element that should receive focus in the specified item.
 		 */
 		getElementToFocus: function(item) {
 			// TODO: generalize this to return any specified element specified on construction of 
@@ -94,14 +94,14 @@ dojo.declare(
 		 * Changes focus to the active item.
 		 */
 		selectActiveItem: function() {
-			if (this.activeItem == null) {
+			if (!this.activeItem) {
 				this.activeItem = this.firstElement(this.domNode);
 			}
 			this.focusItem(this.activeItem);
 		},
 		
 		setActiveItemToDefaultState: function() {
-			if (this.activeItem != null) {
+			if (this.activeItem) {
 				dojo.removeClass (this.activeItem, fluid.states.focusedClass);
 				dojo.addClass (this.activeItem, fluid.states.defaultClass);
 			}
