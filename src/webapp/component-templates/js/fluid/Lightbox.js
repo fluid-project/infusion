@@ -43,6 +43,8 @@ dojo.declare(
 		
 		gridLayoutHandler: null,
 
+		utilities: null,
+		
 		/**
 		 * Return the element within the item that should receive focus.
 		 * 
@@ -79,6 +81,9 @@ dojo.declare(
 			
 			this.gridLayoutHandler = new GridLayoutHandler();
 			this.gridLayoutHandler.setGrid(this.domNode);
+			
+			this.utilities = new Utilities();
+			this.utilities.removeNonElementNodes(this.domNode);
 
 		}, // end postCreate
 		
@@ -323,5 +328,22 @@ function GridLayoutHandler() {
 		return this.itemList[aboveIndex];
 	};
 	
+}
+
+function Utilities() {
+	this.removeNonElementNodes = function(rootNode) {
+		var currChild = rootNode.firstChild;
+		var nextSibling = currChild.nextSibling;
+		if (currChild.nodeType != 1) {
+			rootNode.removeChild(currChild);
+		}
+		while (nextSibling){
+			currChild = nextSibling;
+			nextSibling = currChild.nextSibling;
+			if (currChild.nodeType != 1) {
+				rootNode.removeChild(currChild);
+			}			
+		} 
+	}
 }
 
