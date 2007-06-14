@@ -1,16 +1,3 @@
-var numOfImages = 14;
-var firstImageId = "gallery:::gallery-thumbs:::lightbox-cell::0:";
-var secondImageId = "gallery:::gallery-thumbs:::lightbox-cell::1:";
-var thirdImageId = "gallery:::gallery-thumbs:::lightbox-cell::2:";
-var fourthImageId = "gallery:::gallery-thumbs:::lightbox-cell::3:";
-var fifthImageId = "gallery:::gallery-thumbs:::lightbox-cell::4:";
-var seventhImageId = "gallery:::gallery-thumbs:::lightbox-cell::6:";
-var tenthImageId = "gallery:::gallery-thumbs:::lightbox-cell::9:";
-var fourthLastImageId = "gallery:::gallery-thumbs:::lightbox-cell::10:";
-var thirdLastImageId = "gallery:::gallery-thumbs:::lightbox-cell::11:";
-var secondLastImageId = "gallery:::gallery-thumbs:::lightbox-cell::12:";
-var lastImageId = "gallery:::gallery-thumbs:::lightbox-cell::13:";
-
 function testGetRightSiblingAndPosition() {
 	var gridHandler = new GridLayoutHandler();
 	var imageList = dojo.byId("gallery:::gallery-thumbs:::");
@@ -39,22 +26,33 @@ function testGetItemBelow() {
 	var gridHandler = new GridLayoutHandler();
 	var imageList = dojo.byId("gallery:::gallery-thumbs:::");
 	gridHandler.setGrid(imageList);
-	gridHandler.numOfColumnsInGrid = 4;
+	gridHandler.numOfColumnsInGrid = 3;
 	
-	assertEquals("Since there are 4 colums in the grid, the item below the first image should be the fifth image", 
-		dojo.byId(fifthImageId), gridHandler.getItemBelow(dojo.byId(firstImageId)));
+	var itemInfo = gridHandler.getItemBelow(dojo.byId(firstImageId));
+	assertEquals("Since there are 3 colums in the grid, the item below the first image should be the fourth image", 
+		dojo.byId(fourthImageId), itemInfo.item);
+	assertFalse("no wrap below first image", itemInfo.hasWrapped);
 
-	assertEquals("the item below the third image should be the seventh image", 
-		dojo.byId(seventhImageId), gridHandler.getItemBelow(dojo.byId(thirdImageId)));
+	itemInfo = gridHandler.getItemBelow(dojo.byId(thirdImageId));
+	assertEquals("the item below the third image should be the sixth image", 
+		dojo.byId(sixthImageId), itemInfo.item);
+	assertFalse("no wrap below third image", itemInfo.hasWrapped);
 
-	assertEquals("the item below the third last image should be the fourth image", 
-		dojo.byId(fourthImageId), gridHandler.getItemBelow(dojo.byId(thirdLastImageId)));
+	itemInfo = gridHandler.getItemBelow(dojo.byId(thirdLastImageId));
+	assertEquals("the item below the third last image should be the third image", 
+		dojo.byId(thirdImageId), itemInfo.item);
+	assertTrue("wrap below third last image", itemInfo.hasWrapped);
 
+	itemInfo = gridHandler.getItemBelow(dojo.byId(secondLastImageId));
 	assertEquals("the item below the second last image should be the first image", 
-		dojo.byId(firstImageId), gridHandler.getItemBelow(dojo.byId(secondLastImageId)));
+		dojo.byId(firstImageId), itemInfo.item);
+	assertTrue("wrap below second last image", itemInfo.hasWrapped);
 
+	itemInfo = gridHandler.getItemBelow(dojo.byId(lastImageId));
 	assertEquals("the item below the last image should be the second image", 
-		dojo.byId(secondImageId), gridHandler.getItemBelow(dojo.byId(lastImageId)));
+		dojo.byId(secondImageId), itemInfo.item);
+	assertTrue("wrap below last image", itemInfo.hasWrapped);
+
 }
 
 function testGetItemAbove() {
@@ -63,39 +61,58 @@ function testGetItemAbove() {
 	gridHandler.setGrid(imageList);
 	gridHandler.numOfColumnsInGrid = 4;
 	
+	var itemInfo = gridHandler.getItemAbove(dojo.byId(seventhImageId));
 	assertEquals("the item above the seventh image should be the third image", 
-		dojo.byId(thirdImageId), gridHandler.getItemAbove(dojo.byId(seventhImageId)));
+		dojo.byId(thirdImageId), itemInfo.item);
+	assertFalse("no wrap above seventh image", itemInfo.hasWrapped);
 
+	itemInfo = gridHandler.getItemAbove(dojo.byId(lastImageId));
 	assertEquals("the item above the last image should be the tenth image", 
-		dojo.byId(tenthImageId), gridHandler.getItemAbove(dojo.byId(lastImageId)));
+		dojo.byId(tenthImageId), itemInfo.item);
+	assertFalse("no wrap above tenth image", itemInfo.hasWrapped);
 
+	itemInfo = gridHandler.getItemAbove(dojo.byId(firstImageId));
 	assertEquals("Since there are 4 colums in the grid, the item above the first image should be the second last image", 
-		dojo.byId(secondLastImageId), gridHandler.getItemAbove(dojo.byId(firstImageId)));
+		dojo.byId(secondLastImageId), itemInfo.item);
+	assertTrue("wrap above first image", itemInfo.hasWrapped);
 
+	itemInfo = gridHandler.getItemAbove(dojo.byId(secondImageId));
 	assertEquals("the item above the second image should be the last image", 
-		dojo.byId(lastImageId), gridHandler.getItemAbove(dojo.byId(secondImageId)));
+		dojo.byId(lastImageId), itemInfo.item);
+	assertTrue("wrap above second image", itemInfo.hasWrapped);
 
+	itemInfo = gridHandler.getItemAbove(dojo.byId(thirdImageId));
 	assertEquals("the item above the third image should be the fourth last image", 
-		dojo.byId(fourthLastImageId), gridHandler.getItemAbove(dojo.byId(thirdImageId)));
+		dojo.byId(fourthLastImageId), itemInfo.item);
+	assertTrue("wrap above third image", itemInfo.hasWrapped);
 	
+	itemInfo = gridHandler.getItemAbove(dojo.byId(fourthImageId));
 	assertEquals("the item above the fourth image should be the third last image", 
-		dojo.byId(thirdLastImageId), gridHandler.getItemAbove(dojo.byId(fourthImageId)));
+		dojo.byId(thirdLastImageId), itemInfo.item);
+	assertTrue("wrap above fourth image", itemInfo.hasWrapped);
 
 	// Test with grid size 3
 	gridHandler.numOfColumnsInGrid = 3;
 	
+	itemInfo = gridHandler.getItemAbove(dojo.byId(fifthImageId));
 	assertEquals("the item above the fifth image should be the second image", 
-		dojo.byId(secondImageId), gridHandler.getItemAbove(dojo.byId(fifthImageId)));
+		dojo.byId(secondImageId), itemInfo.item);
+	assertFalse("no wrap above fifth image", itemInfo.hasWrapped);
 
+	itemInfo = gridHandler.getItemAbove(dojo.byId(firstImageId));
 	assertEquals("the item above the first image should be the second last image", 
-		dojo.byId(secondLastImageId), gridHandler.getItemAbove(dojo.byId(firstImageId)));
+		dojo.byId(secondLastImageId), itemInfo.item);
+	assertTrue("wrap above first image", itemInfo.hasWrapped);
 
+	itemInfo = gridHandler.getItemAbove(dojo.byId(secondImageId));
 	assertEquals("the item above the second image should be the last image", 
-		dojo.byId(lastImageId), gridHandler.getItemAbove(dojo.byId(secondImageId)));
+		dojo.byId(lastImageId), itemInfo.item );
+	assertTrue("wrap above second image", itemInfo.hasWrapped);
 		
+	itemInfo = gridHandler.getItemAbove(dojo.byId(thirdImageId));
 	assertEquals("the item above the third image should be the third last image", 
-		dojo.byId(thirdLastImageId), gridHandler.getItemAbove(dojo.byId(thirdImageId)));
-
+		dojo.byId(thirdLastImageId), itemInfo.item);
+	assertTrue("no wrap above third image", itemInfo.hasWrapped);
 		
 	
 }

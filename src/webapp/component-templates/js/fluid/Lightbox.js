@@ -140,12 +140,12 @@ dojo.declare(
 		handleArrowKeyPress: function (evt){
 			switch (key = evt.keyCode) {
 			case dojo.keys.DOWN_ARROW: {
-//				this.handleDownArrow(evt.ctrlKey);								
+				this.handleDownArrow(evt.ctrlKey);								
 				dojo.stopEvent(evt);
 				break;
 			}
 			case dojo.keys.UP_ARROW: {
-//				this.handleUpArrow(evt.ctrlKey);								
+				this.handleUpArrow(evt.ctrlKey);								
 				dojo.stopEvent(evt);
 				break;
 			}
@@ -164,13 +164,25 @@ dojo.declare(
 		}, // end handleArrowKeyPress
 	
 		handleUpArrow: function (isCtrl) {
-			var itemAbove = this.gridLayoutHandler.getItemAbove(this.activeItem);
-			this._changeFocusOrMove(isCtrl, itemAbove, "before");	
+			var itemAboveInfo = this.gridLayoutHandler.getItemAbove(this.activeItem);
+			
+			// if we wrap around, then we want to insert after the item 'above' 
+			if (itemAboveInfo.hasWrapped) {
+				this._changeFocusOrMove(isCtrl, itemAboveInfo.item, "after");	
+			} else {
+				this._changeFocusOrMove(isCtrl, itemAboveInfo.item, "before");	
+			}
 		},
 
 		handleDownArrow: function (isCtrl) {
-			var itemBelow = this.gridLayoutHandler.getItemBelow(this.activeItem);
-			this._changeFocusOrMove(isCtrl, itemBelow, "after");	
+			var itemBelowInfo = this.gridLayoutHandler.getItemBelow(this.activeItem);
+			
+			// if we wrap around, then we want to insert before the item 'below' 
+			if (itemBelowInfo.hasWrapped) {
+				this._changeFocusOrMove(isCtrl, itemBelowInfo.item, "before");
+			} else {
+				this._changeFocusOrMove(isCtrl, itemBelowInfo.item, "after");
+			}	
 		},
 		
 		handleRightArrow: function(isCtrl) {
@@ -285,7 +297,7 @@ function GridLayoutHandler() {
 	};
 	
 	this.getRightSiblingAndPosition = function (item) {
-		var nextIndex = this.grid.childNodes.indexOf(item) + 1;
+		var nextIndex = dojo.indexOf(this.grid.childNodes, item) + 1;
 		var pos = "after";
 		if (nextIndex >= this.grid.childNodes.length) {
 			nextIndex = 0;
@@ -296,19 +308,24 @@ function GridLayoutHandler() {
 	},
 	
 	this.getItemBelow = function (item) {
-		var curIndex = this.grid.childNodes.indexOf(item);
+		var curIndex = dojo.indexOf(this.grid.childNodes, item);
 		var belowIndex = curIndex+this.numOfColumnsInGrid;
+		var hasWrapped = false;
+		
 		if (belowIndex >= this.grid.childNodes.length) {
+			hasWrapped = true;
 			belowIndex = belowIndex % this.numOfColumnsInGrid;
 		}
-		return this.grid.childNodes[belowIndex];
+		return {item: this.grid.childNodes[belowIndex], hasWrapped: hasWrapped};
 	};
 	
 	this.getItemAbove = function (item) {
-		var curIndex = this.grid.childNodes.indexOf(item);
+		var curIndex = dojo.indexOf(this.grid.childNodes, item);
 		var aboveIndex = curIndex-this.numOfColumnsInGrid;
+		var hasWrapped = false;
 		
 		if (aboveIndex < 0) {
+			hasWrapped = true;
 			var itemsInLastRow = this.grid.childNodes.length % this.numOfColumnsInGrid;
 			if (curIndex  >= itemsInLastRow) {
 				aboveIndex = curIndex + this.grid.childNodes.length - itemsInLastRow
@@ -318,7 +335,7 @@ function GridLayoutHandler() {
 			}
 		}
 		
-		return this.grid.childNodes[aboveIndex];
+		return {item: this.grid.childNodes[aboveIndex], hasWrapped: hasWrapped};
 	};
 	
 }
