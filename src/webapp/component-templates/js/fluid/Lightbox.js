@@ -79,12 +79,13 @@ dojo.declare(
 			dojo.connect(this.domNode, "onblur", this, "setActiveItemToDefaultState");
 			dojo.connect(window, "onresize", this, "handleWindowResizeEvent");
 			
-			this.gridLayoutHandler = new GridLayoutHandler();
-			this.gridLayoutHandler.setGrid(this.domNode);
-			
+			// remove whitespace from the tree before passing it to the grid handler
 			this.utilities = new Utilities();
 			this.utilities.removeNonElementNodes(this.domNode);
 
+			this.gridLayoutHandler = new GridLayoutHandler();
+			this.gridLayoutHandler.setGrid(this.domNode);
+			
 		}, // end postCreate
 		
 		/**
@@ -264,26 +265,18 @@ function GridLayoutHandler() {
 	
 	this.numOfColumnsInGrid = 0
 	this.grid = null;
-	this.itemList = null;
 	
 	this.setGrid = function (aGrid) {
-		this.itemList = new Array();
 		this.grid = aGrid;
-		nodes = this.grid.childNodes;
-		for (i=0; i<nodes.length; i++) {
-			if (nodes[i] && nodes[i].nodeType == 1) {
-				this.itemList.push(nodes[i]);
-			}
-		}
 		this.updateGridWidth();
 	};
 	
 	this.updateGridWidth = function () {
-		var firstItemY = dojo.coords(this.itemList[0]).y;
+		var firstItemY = dojo.coords(this.grid.childNodes[0]).y;
 
 		var i = 1;
-		while (i < this.itemList.length) {		
-			if (dojo.coords(this.itemList[i]).y > firstItemY) {
+		while (i < this.grid.childNodes.length) {		
+			if (dojo.coords(this.grid.childNodes[i]).y > firstItemY) {
 				this.numOfColumnsInGrid = i;
 				break;
 			}
@@ -292,40 +285,40 @@ function GridLayoutHandler() {
 	};
 	
 	this.getRightSiblingAndPosition = function (item) {
-		var nextIndex = this.itemList.indexOf(item) + 1;
+		var nextIndex = this.grid.childNodes.indexOf(item) + 1;
 		var pos = "after";
-		if (nextIndex >= this.itemList.length) {
+		if (nextIndex >= this.grid.childNodes.length) {
 			nextIndex = 0;
 			pos = "before";
 		}
 		
-		return {item: this.itemList[nextIndex], position: pos};
+		return {item: this.grid.childNodes[nextIndex], position: pos};
 	},
 	
 	this.getItemBelow = function (item) {
-		var curIndex = this.itemList.indexOf(item);
+		var curIndex = this.grid.childNodes.indexOf(item);
 		var belowIndex = curIndex+this.numOfColumnsInGrid;
-		if (belowIndex >= this.itemList.length) {
+		if (belowIndex >= this.grid.childNodes.length) {
 			belowIndex = belowIndex % this.numOfColumnsInGrid;
 		}
-		return this.itemList[belowIndex];
+		return this.grid.childNodes[belowIndex];
 	};
 	
 	this.getItemAbove = function (item) {
-		var curIndex = this.itemList.indexOf(item);
+		var curIndex = this.grid.childNodes.indexOf(item);
 		var aboveIndex = curIndex-this.numOfColumnsInGrid;
 		
 		if (aboveIndex < 0) {
-			var itemsInLastRow = this.itemList.length % this.numOfColumnsInGrid;
+			var itemsInLastRow = this.grid.childNodes.length % this.numOfColumnsInGrid;
 			if (curIndex  >= itemsInLastRow) {
-				aboveIndex = curIndex + this.itemList.length - itemsInLastRow
+				aboveIndex = curIndex + this.grid.childNodes.length - itemsInLastRow
 					- this.numOfColumnsInGrid;
 			} else {
-				aboveIndex = curIndex + this.itemList.length - itemsInLastRow;
+				aboveIndex = curIndex + this.grid.childNodes.length - itemsInLastRow;
 			}
 		}
 		
-		return this.itemList[aboveIndex];
+		return this.grid.childNodes[aboveIndex];
 	};
 	
 }
