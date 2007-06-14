@@ -134,10 +134,12 @@ dojo.declare(
 		handleArrowKeyPress: function (evt){
 			switch (key = evt.keyCode) {
 			case dojo.keys.DOWN_ARROW: {
+//				this.handleDownArrow(evt.ctrlKey);								
 				dojo.stopEvent(evt);
 				break;
 			}
 			case dojo.keys.UP_ARROW: {
+//				this.handleUpArrow(evt.ctrlKey);								
 				dojo.stopEvent(evt);
 				break;
 			}
@@ -154,6 +156,16 @@ dojo.declare(
 			default:
 			}
 		}, // end handleArrowKeyPress
+	
+		handleUpArrow: function (isCtrl) {
+			var itemAbove = this.gridLayoutHandler.getItemAbove(this.activeItem);
+			this._changeFocusOrMove(isCtrl, itemAbove, "before");	
+		},
+
+		handleDownArrow: function (isCtrl) {
+			var itemBelow = this.gridLayoutHandler.getItemBelow(this.activeItem);
+			this._changeFocusOrMove(isCtrl, itemBelow, "after");	
+		},
 		
 		handleRightArrow: function(isCtrl) {
 			var nextRightSibling = this.nextElement(this.activeItem);
@@ -247,9 +259,10 @@ function GridLayoutHandler() {
 	
 	this.numOfColumnsInGrid = 0
 	this.grid = null;
-	this.itemList = new Array();
+	this.itemList = null;
 	
 	this.setGrid = function (aGrid) {
+		this.itemList = new Array();
 		this.grid = aGrid;
 		nodes = this.grid.childNodes;
 		for (i=0; i<nodes.length; i++) {
@@ -257,11 +270,32 @@ function GridLayoutHandler() {
 				this.itemList.push(nodes[i]);
 			}
 		}
+		this.updateGridWidth();
 	};
 	
 	this.updateGridWidth = function () {
-		
+		var firstItemY = dojo.coords(this.itemList[0]).y;
+
+		var i = 1;
+		while (i < this.itemList.length) {		
+			if (dojo.coords(this.itemList[i]).y > firstItemY) {
+				this.numOfColumnsInGrid = i;
+				break;
+			}
+			i++;
+		}
 	};
+	
+	this.getRightSiblingAndPosition = function (item) {
+		var nextIndex = this.itemList.indexOf(item) + 1;
+		var pos = "after";
+		if (nextIndex >= this.itemList.length) {
+			nextIndex = 0;
+			pos = "before";
+		}
+		
+		return {item: this.itemList[nextIndex], position: pos};
+	},
 	
 	this.getItemBelow = function (item) {
 		var curIndex = this.itemList.indexOf(item);
@@ -273,7 +307,20 @@ function GridLayoutHandler() {
 	};
 	
 	this.getItemAbove = function (item) {
+		var curIndex = this.itemList.indexOf(item);
+		var aboveIndex = curIndex-this.numOfColumnsInGrid;
 		
+		if (aboveIndex < 0) {
+			var itemsInLastRow = this.itemList.length % this.numOfColumnsInGrid;
+			if (curIndex  >= itemsInLastRow) {
+				aboveIndex = curIndex + this.itemList.length - itemsInLastRow
+					- this.numOfColumnsInGrid;
+			} else {
+				aboveIndex = curIndex + this.itemList.length - itemsInLastRow;
+			}
+		}
+		
+		return this.itemList[aboveIndex];
 	};
 	
 }

@@ -3,6 +3,7 @@ var imgListClone;
 var numOfImages = 14;
 var firstImageId = "gallery:::gallery-thumbs:::lightbox-cell::0:";
 var secondImageId = "gallery:::gallery-thumbs:::lightbox-cell::1:";
+var fifthImageId = "gallery:::gallery-thumbs:::lightbox-cell::4:";
 var secondLastImageId = "gallery:::gallery-thumbs:::lightbox-cell::12:";
 var lastImageId = "gallery:::gallery-thumbs:::lightbox-cell::13:";
 
@@ -21,6 +22,35 @@ function focusLightboxNode(lightbox, domNode) {
   lightbox.getElementToFocus(domNode).focus();
 }
 
+// This test is NOT complete
+//function testHandleArrowKeyPressForUpAndDown() {
+//	var lightbox = new fluid.Lightbox();
+//	var defaultClass="image-container-default";
+//	var focusedClass="image-container-selected";
+//	var draggingClass="image-container-dragging";
+//	var evtDownArrow = {keyCode: dojo.keys.DOWN_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
+//	var evtUpArrow = {keyCode: dojo.keys.UP_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
+//
+//	// setup: force the grid to have four columns
+//	lightbox.gridLayoutHandler.numOfColumnsInGrid = 4;
+//	focusLightboxNode(lightbox, lightbox.domNode);
+//	assertTrue("Initially the first image should be focused",dojo.hasClass(document.getElementById(firstImageId), focusedClass));
+//
+//	// Test: down arrow to the fifth image
+//	lightbox.handleArrowKeyPress(evtDownArrow);
+//	assertTrue("After down arrow, first image should be default",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
+//	assertFalse("After down arrow, first image should not be focused", dojo.hasClass(document.getElementById(firstImageId), focusedClass));
+//	assertTrue("After down arrow, fifth image should be focused",dojo.hasClass(document.getElementById(fifthImageId), focusedClass));
+//	assertFalse("After down arrow, fifth image should not be default", dojo.hasClass(document.getElementById(fifthImageId), defaultClass));
+//
+//	// Test: up arrow to the firsh image
+//	lightbox.handleArrowKeyPress(evtUpArrow);
+//	assertFalse("After up arrow, first image should not be default",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
+//	assertTrue("After up arrow, first image should be focused", dojo.hasClass(document.getElementById(firstImageId), focusedClass));
+//	assertFalse("After up arrow, fifth image should not be focused",dojo.hasClass(document.getElementById(fifthImageId), focusedClass));
+//	assertTrue("After up arrow, fifth image should be default", dojo.hasClass(document.getElementById(fifthImageId), defaultClass));
+//	
+//}
 
 function testHandleArrowKeyPressForLeftAndRight()	 {
 	var lightbox = new fluid.Lightbox();
