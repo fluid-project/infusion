@@ -114,3 +114,14 @@ padding: 10px;
 font-size: 11px;
 border: 1px solid #666;
 }
+
+
+/* these classes are for the testing div */
+
+#lightbox-parent{
+width: 100%;
+}
+
+#lightbox-parent-half{
+width: 50%;
+}
