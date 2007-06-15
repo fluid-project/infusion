@@ -253,6 +253,11 @@ function GridLayoutHandler() {
 		}
 	};
 	
+	/*
+	 * Returns an object containing the item that is to the right of the given item
+	 * and a flag indicating whether or not the process has 'wrapped' around the end of
+	 * the row that the given item is in
+	 */
 	this.getRightSibling = function (item) {
 		var nextIndex = dojo.indexOf(this.grid.childNodes, item) + 1;
 		var hasWrapped = false;
@@ -265,6 +270,11 @@ function GridLayoutHandler() {
 		return {item: this.grid.childNodes[nextIndex], hasWrapped: hasWrapped};
 	},
 	
+	/*
+	 * Returns an object containing the item that is to the left of the given item
+	 * and a flag indicating whether or not the process has 'wrapped' around the end of
+	 * the row that the given item is in
+	 */
 	this.getLeftSibling = function (item) {
 		var previousIndex = dojo.indexOf(this.grid.childNodes, item) - 1;
 		var hasWrapped = false;
@@ -277,6 +287,13 @@ function GridLayoutHandler() {
 		return {item: this.grid.childNodes[previousIndex], hasWrapped: hasWrapped};
 	},
 	
+	/*
+	 * Returns an object containing the item that is below the given item in the current grid
+	 * and a flag indicating whether or not the process has 'wrapped' around the end of
+	 * the column that the given item is in. The flag is necessary because when an image is being
+	 * moved to the resulting item location, the decision of whether or not to insert before or
+	* after the item changes if the process wrapped around the column.
+	 */
 	this.getItemBelow = function (item) {
 		var curIndex = dojo.indexOf(this.grid.childNodes, item);
 		var belowIndex = curIndex+this.numOfColumnsInGrid;
@@ -289,6 +306,13 @@ function GridLayoutHandler() {
 		return {item: this.grid.childNodes[belowIndex], hasWrapped: hasWrapped};
 	};
 	
+	/*
+	 * Returns an object containing the item that is above the given item in the current grid
+	 * and a flag indicating whether or not the process has 'wrapped' around the end of
+	 * the column that the given item is in. The flag is necessary because when an image is being
+	 * moved to the resulting item location, the decision of whether or not to insert before or
+	* after the item changes if the process wrapped around the column.
+	 */
 	this.getItemAbove = function (item) {
 		var curIndex = dojo.indexOf(this.grid.childNodes, item);
 		var aboveIndex = curIndex-this.numOfColumnsInGrid;
