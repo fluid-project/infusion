@@ -136,3 +136,22 @@ function testGetItemAbove() {
 		
 	
 }
+
+function testUpdateGrideWidth() {
+	var gridHandler = new GridLayoutHandler();
+	var imageList = dojo.byId("gallery:::gallery-thumbs:::");
+	gridHandler.setGrid(imageList);
+	var oldNumCols = gridHandler.numOfColumnsInGrid;
+
+	// change the width
+	dojo.removeClass(dojo.byId("lightbox-parent"), "full-width");
+	dojo.addClass(dojo.byId("lightbox-parent"), "half-width");
+	gridHandler.updateGridWidth();
+	assertEquals("after resize, the grid width should be "+oldNumCols/2, oldNumCols/2, gridHandler.numOfColumnsInGrid);
+
+	// change it back
+	dojo.removeClass(dojo.byId("lightbox-parent"), "half-width");
+	dojo.addClass(dojo.byId("lightbox-parent"), "full-width");
+	gridHandler.updateGridWidth()
+	assertEquals("after resize, the grid width should be "+oldNumCols, oldNumCols, gridHandler.numOfColumnsInGrid);
+}

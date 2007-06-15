@@ -385,3 +385,25 @@ function testSetActiveItemToDefaultState() {
 	assertTrue("after resetting active item, first image should be in default state", dojo.hasClass(document.getElementById(firstImageId), defaultClass));
 }
 
+function testHandleWindowResizeEvent() {
+	var lightbox = new fluid.Lightbox();
+	var oldNumCols = lightbox.gridLayoutHandler.numOfColumnsInGrid;
+
+	// change the width
+	dojo.removeClass(dojo.byId("lightbox-parent"), "full-width");
+	dojo.addClass(dojo.byId("lightbox-parent"), "half-width");
+	
+	// tell the lightbox of the change
+	var resizeEvent = {foo: "bar"};
+	lightbox.handleWindowResizeEvent(resizeEvent);
+	assertEquals("after resize, the grid width should be "+oldNumCols/2, oldNumCols/2, lightbox.gridLayoutHandler.numOfColumnsInGrid);
+
+	// change it back
+	dojo.removeClass(dojo.byId("lightbox-parent"), "half-width");
+	dojo.addClass(dojo.byId("lightbox-parent"), "full-width");
+	
+	// tell the lightbox of the change
+	var resizeEvent = {foo: "bar"};
+	lightbox.handleWindowResizeEvent(resizeEvent);
+	assertEquals("after resize, the grid width should be "+oldNumCols, oldNumCols, lightbox.gridLayoutHandler.numOfColumnsInGrid);
+}

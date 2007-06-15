@@ -215,12 +215,21 @@ dojo.declare(
 			}		
 		},
 		
+		// currently just updates the size of the grid.
 		handleWindowResizeEvent: function(resizeEvent) {
 			this.gridLayoutHandler.updateGridWidth();
 		}
 	}
 );
 
+/*
+ * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
+ * changes dimensions when the window changes size. As a result, when the user presses the up or
+ * down arrow key, the expected behaviour depends on the current window size.
+ * 
+ * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
+ * in the window, and of informing the Lightbox of which items surround a given item.
+ */
 function GridLayoutHandler() {
 	
 	this.numOfColumnsInGrid = 0
@@ -301,6 +310,9 @@ function GridLayoutHandler() {
 	
 }
 
+/*
+ * Utilities object for providing various lightbox-independent convenience functions
+ */
 function Utilities() {
 	this.removeNonElementNodes = function(rootNode) {
 		var currChild = rootNode.firstChild;
