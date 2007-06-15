@@ -118,10 +118,9 @@ border: 1px solid #666;
 
 /* these classes are for the testing div */
 
-#lightbox-parent{
+.full-width{
 width: 100%;
 }
-
-#lightbox-parent-half{
+.half-width{
 width: 50%;
 }
