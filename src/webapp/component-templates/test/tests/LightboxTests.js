@@ -1,12 +1,12 @@
 var imgListClone;
 
 function setUp() {
-	imgListClone = document.getElementById("gallery:::gallery-thumbs:::").cloneNode(true);
+	imgListClone = document.getElementById(lightboxRootId).cloneNode(true);
 }
 
 function tearDown() {
-	var fluidLightboxDOMNode = document.getElementById("gallery:::gallery-thumbs:::");
-	var lightboxParent = document.getElementById("lightbox-parent");
+	var fluidLightboxDOMNode = document.getElementById(lightboxRootId);
+	var lightboxParent = document.getElementById(lightboxParentId);
 	lightboxParent.removeChild(fluidLightboxDOMNode);
 	lightboxParent.appendChild(imgListClone);
 }
@@ -32,7 +32,7 @@ function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {
 	// Test: ctrl down arrow 
 	lightbox.handleArrowKeyPress(evtDownArrow);
 	
-	var lightboxDOMNode = dojo.byId("gallery:::gallery-thumbs:::");
+	var lightboxDOMNode = dojo.byId(lightboxRootId);
 	var thumbArray = lightboxDOMNode.getElementsByTagName("img");
 	assertEquals("after ctrl-down-arrow, expect second image to be first", "fluid.img.second", thumbArray[0].id);
 	assertEquals("after ctrl-down-arrow, expect third image to be second", "fluid.img.3", thumbArray[1].id);
@@ -42,12 +42,12 @@ function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {
 
 	// Test: ctrl up arrow - expect everything to go back to the original state
 	lightbox.handleArrowKeyPress(evtUpArrow);
-	helpTestItemsInOriginalPosition("after ctrl-up", dojo.byId("gallery:::gallery-thumbs:::"));
+	helpTestItemsInOriginalPosition("after ctrl-up", dojo.byId(lightboxRootId));
 
 	// Test: ctrl up arrow 
 	lightbox.handleArrowKeyPress(evtUpArrow);
 	
-	lightboxDOMNode = dojo.byId("gallery:::gallery-thumbs:::");
+	lightboxDOMNode = dojo.byId(lightboxRootId);
 	thumbArray = lightboxDOMNode.getElementsByTagName("img");
 	assertEquals("after ctrl-up-arrow, expect second image to be first", "fluid.img.second", thumbArray[0].id);
 	assertEquals("after ctrl-up-arrow, expect third image to be second", "fluid.img.3", thumbArray[1].id);
@@ -57,7 +57,7 @@ function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {
 
 	// Test: ctrl down arrow - expect everything to go back to the original state
 	lightbox.handleArrowKeyPress(evtDownArrow);
-	helpTestItemsInOriginalPosition("after ctrl-down wrap", dojo.byId("gallery:::gallery-thumbs:::"));
+	helpTestItemsInOriginalPosition("after ctrl-down wrap", dojo.byId(lightboxRootId));
 
 }
 
@@ -216,7 +216,7 @@ function testHandleKeyUpAndHandleKeyDownItemMovement() {
 
 	// after ctrl down, order should not change
 	lightbox.handleKeyDown(evtCTRL);
-	var lightboxDOMNode = dojo.byId("gallery:::gallery-thumbs:::");
+	var lightboxDOMNode = dojo.byId(lightboxRootId);
 	helpTestItemsInOriginalPosition("after ctrl-down", lightboxDOMNode);
 	
 	// after ctrl up, order should not change
@@ -238,7 +238,7 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	// Test: ctrl right arrow - expect first and second image to swap
 	lightbox.handleArrowKeyPress(evtRightArrow);
 
-	var lightboxDOMNode = dojo.byId("gallery:::gallery-thumbs:::");
+	var lightboxDOMNode = dojo.byId(lightboxRootId);
 	var thumbArray = lightboxDOMNode.getElementsByTagName("img");
 	assertEquals("after ctrl-right-arrow, expect second image to be first", "fluid.img.second", thumbArray[0].id);
 	assertEquals("after ctrl-right-arrow, expect first image to be second", "fluid.img.first", thumbArray[1].id);
@@ -390,8 +390,8 @@ function testHandleWindowResizeEvent() {
 	var oldNumCols = lightbox.gridLayoutHandler.numOfColumnsInGrid;
 
 	// change the width
-	dojo.removeClass(dojo.byId("lightbox-parent"), "full-width");
-	dojo.addClass(dojo.byId("lightbox-parent"), "half-width");
+	dojo.removeClass(dojo.byId(lightboxParentId), "full-width");
+	dojo.addClass(dojo.byId(lightboxParentId), "half-width");
 	
 	// tell the lightbox of the change
 	var resizeEvent = {foo: "bar"};
@@ -399,11 +399,33 @@ function testHandleWindowResizeEvent() {
 	assertEquals("after resize, the grid width should be "+oldNumCols/2, oldNumCols/2, lightbox.gridLayoutHandler.numOfColumnsInGrid);
 
 	// change it back
-	dojo.removeClass(dojo.byId("lightbox-parent"), "half-width");
-	dojo.addClass(dojo.byId("lightbox-parent"), "full-width");
+	dojo.removeClass(dojo.byId(lightboxParentId), "half-width");
+	dojo.addClass(dojo.byId(lightboxParentId), "full-width");
 	
 	// tell the lightbox of the change
 	var resizeEvent = {foo: "bar"};
 	lightbox.handleWindowResizeEvent(resizeEvent);
 	assertEquals("after resize, the grid width should be "+oldNumCols, oldNumCols, lightbox.gridLayoutHandler.numOfColumnsInGrid);
+}
+
+function testUpdateActiveDescendent() {
+	var lightbox = new fluid.Lightbox();
+	lbRoot = dojo.byId(lightboxRootId);
+	assertFalse("before first lightbox focus, no item should be activedescendent", lbRoot.hasAttribute("aaa:activedescendent"));
+
+	lightbox.domNode.focus();
+	assertEquals("after first lightbox focus, first image should be activedescendent", firstImageId, lbRoot.getAttribute("aaa:activedescendent"));
+	
+	lightbox.activeItem = dojo.byId(thirdImageId);
+	lightbox._updateActiveDescendent();
+	assertEquals("after setting active item to third image, third image should be activedescendent", thirdImageId, lbRoot.getAttribute("aaa:activedescendent"));
+
+	lightbox.domNode.blur();
+	lightbox._updateActiveDescendent();
+	assertEquals("after removing focus from lightbox, third image should still be activedescendent", thirdImageId, lbRoot.getAttribute("aaa:activedescendent"));
+
+	lightbox.activeItem = null;
+	lightbox._updateActiveDescendent();
+	assertFalse("after unsetting active item, no item should be activedescendent", lbRoot.hasAttribute("aaa:activedescendent"));
+
 }

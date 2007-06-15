@@ -1,5 +1,11 @@
 var numOfImages = 14;
 
+// The id of the root node of the lightbox
+var lightboxRootId = "gallery:::gallery-thumbs:::";
+
+// The id of the parent of the lightbox
+var lightboxParentId = "lightbox-parent";
+
 // The ids of the thumbnails in Lightbox.html
 var firstImageId = "gallery:::gallery-thumbs:::lightbox-cell::0:";
 var secondImageId = "gallery:::gallery-thumbs:::lightbox-cell::1:";

@@ -85,7 +85,10 @@ dojo.declare(
 
 			this.gridLayoutHandler = new GridLayoutHandler();
 			this.gridLayoutHandler.setGrid(this.domNode);
-			
+
+			if (this.domNode.hasAttribute("aaa:activedescendent")) {
+				this.domNode.removeAttribute("aaa:activedescendent");			
+			}
 		}, // end postCreate
 		
 		/**
@@ -95,7 +98,7 @@ dojo.declare(
 		focusItem: function(anItem) {			
 			this.setActiveItemToDefaultState();
 						
-			this.activeItem = anItem;			
+			this._setActiveItem(anItem);			
 			
 			dojo.removeClass (this.activeItem, fluid.states.defaultClass);
 			dojo.addClass (this.activeItem, fluid.states.focusedClass);
@@ -107,7 +110,7 @@ dojo.declare(
 		 */
 		selectActiveItem: function() {
 			if (!this.activeItem) {
-				this.activeItem = this.domNode.firstChild;
+				this._setActiveItem(this.domNode.firstChild);
 			}
 			this.focusItem(this.activeItem);
 		},
@@ -218,7 +221,21 @@ dojo.declare(
 		// currently just updates the size of the grid.
 		handleWindowResizeEvent: function(resizeEvent) {
 			this.gridLayoutHandler.updateGridWidth();
-		}
+		},
+
+		_setActiveItem: function(anItem) {
+			this.activeItem = anItem;
+			this._updateActiveDescendent();
+		},
+		
+		_updateActiveDescendent: function() {
+			if (this.activeItem) {
+				this.domNode.setAttribute("aaa:activedescendent", this.activeItem.id);
+			} else if (this.domNode.hasAttribute("aaa:activedescendent")) {
+				this.domNode.removeAttribute("aaa:activedescendent");
+			}
+		}	
+
 	}
 );
 
@@ -331,7 +348,6 @@ function GridLayoutHandler() {
 		
 		return {item: this.grid.childNodes[aboveIndex], hasWrapped: hasWrapped};
 	};
-	
 }
 
 /*
