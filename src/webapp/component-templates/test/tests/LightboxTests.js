@@ -25,7 +25,7 @@ function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {
 	var evtDownArrow = {keyCode: dojo.keys.DOWN_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
 	var evtUpArrow = {keyCode: dojo.keys.UP_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
 
-	// setup: force the grid to have four columns
+	// setup: force the grid to have three columns
 	lightbox.gridLayoutHandler.numOfColumnsInGrid = 3;
 
 	
@@ -42,14 +42,7 @@ function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {
 
 	// Test: ctrl up arrow - expect everything to go back to the original state
 	lightbox.handleArrowKeyPress(evtUpArrow);
-	
-	lightboxDOMNode = dojo.byId("gallery:::gallery-thumbs:::");
-	thumbArray = lightboxDOMNode.getElementsByTagName("img");
-	assertEquals("after ctrl-up-arrow, expect first image to be first", "fluid.img.first", thumbArray[0].id);
-	assertEquals("after ctrl-up-arrow, expect second image to be second", "fluid.img.second", thumbArray[1].id);
-	assertEquals("after ctrl-up-arrow, expect third image to be third", "fluid.img.3", thumbArray[2].id);
-	assertEquals("after ctrl-up-arrow, expect fourth image to be fourth", "fluid.img.4", thumbArray[3].id);
-	assertEquals("after ctrl-up-arrow, expect fifth image to still be fifth", "fluid.img.5", thumbArray[4].id);
+	helpTestItemsInOriginalPosition("after ctrl-up", dojo.byId("gallery:::gallery-thumbs:::"));
 
 	// Test: ctrl up arrow 
 	lightbox.handleArrowKeyPress(evtUpArrow);
@@ -62,6 +55,28 @@ function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {
 	assertEquals("after ctrl-up-arrow, expect first image to be second last", "fluid.img.first", thumbArray[12].id);
 	assertEquals("after ctrl-up-arrow, expect last image to still be last", "fluid.img.last", thumbArray[13].id);
 
+	// Test: ctrl down arrow - expect everything to go back to the original state
+	lightbox.handleArrowKeyPress(evtDownArrow);
+	helpTestItemsInOriginalPosition("after ctrl-down wrap", dojo.byId("gallery:::gallery-thumbs:::"));
+
+}
+
+function helpTestItemsInOriginalPosition(desc, lightboxDOMNode) {
+	thumbArray = lightboxDOMNode.getElementsByTagName("img");
+	assertEquals(desc + " expect first image to be first", "fluid.img.first", thumbArray[0].id);
+	assertEquals(desc + " expect second image to be second", "fluid.img.second", thumbArray[1].id);
+	assertEquals(desc + " expect third image to be third", "fluid.img.3", thumbArray[2].id);
+	assertEquals(desc + " expect fourth image to be fourth", "fluid.img.4", thumbArray[3].id);
+	assertEquals(desc + " expect fifth image to be fifth", "fluid.img.5", thumbArray[4].id);
+	assertEquals(desc + " expect sixth image to be sixth", "fluid.img.6", thumbArray[5].id);
+	assertEquals(desc + " expect seventh image to be seventh", "fluid.img.7", thumbArray[6].id);
+	assertEquals(desc + " expect eighth image to be eighth", "fluid.img.8", thumbArray[7].id);
+	assertEquals(desc + " expect ninth image to be ninth", "fluid.img.9", thumbArray[8].id);
+	assertEquals(desc + " expect tenth image to be tenth", "fluid.img.10", thumbArray[9].id);
+	assertEquals(desc + " expect fourth last image to be fourth last", "fluid.img.11", thumbArray[10].id);
+	assertEquals(desc + " expect third last image to be third last", "fluid.img.12", thumbArray[11].id);
+	assertEquals(desc + " expect second last image to be second last", "fluid.img.secondLast", thumbArray[12].id);
+	assertEquals(desc + " expect last image to be last", "fluid.img.last", thumbArray[13].id);
 }
 
 // This test is NOT complete
@@ -202,17 +217,11 @@ function testHandleKeyUpAndHandleKeyDownItemMovement() {
 	// after ctrl down, order should not change
 	lightbox.handleKeyDown(evtCTRL);
 	var lightboxDOMNode = dojo.byId("gallery:::gallery-thumbs:::");
-	var thumbArray = lightboxDOMNode.getElementsByTagName("img");
-	assertEquals("after ctrl key down, first image should still be first", "fluid.img.first", thumbArray[0].id);
-	assertEquals("after ctrl key down, second image should still be second", "fluid.img.second", thumbArray[1].id);
-	assertEquals("after ctrl key down, last image should still be last", "fluid.img.last", thumbArray[numOfImages - 1].id);
+	helpTestItemsInOriginalPosition("after ctrl-down", lightboxDOMNode);
 	
 	// after ctrl up, order should not change
 	lightbox.handleKeyUp(evtCTRL);
-	var thumbArray = lightboxDOMNode.getElementsByTagName("img");
-	assertEquals("after ctrl key up, first image should still be first", "fluid.img.first", thumbArray[0].id);
-	assertEquals("after ctrl key up, second image should still be second", "fluid.img.second", thumbArray[1].id);
-	assertEquals("after ctrl key up, last image should still be last", "fluid.img.last", thumbArray[numOfImages - 1].id);
+	helpTestItemsInOriginalPosition("after ctrl-up", lightboxDOMNode);
 }
 
 /*
@@ -237,11 +246,7 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	
 	// Test: ctrl left arrow - expect first and second image to swap back to original order
 	lightbox.handleArrowKeyPress(evtLeftArrow);
-
-	thumbArray = lightboxDOMNode.getElementsByTagName("img");;
-	assertEquals("after ctrl-left-arrow, expect first image to be first", "fluid.img.first", thumbArray[0].id);
-	assertEquals("after ctrl-left-arrow, expect second image to be second", "fluid.img.second", thumbArray[1].id);
-	assertEquals("after ctrl-left-arrow, expect first last to be last", "fluid.img.last", thumbArray[numOfImages - 1].id);
+	helpTestItemsInOriginalPosition("after ctrl-left-arrow", lightboxDOMNode);
 
 	// Test: ctrl left arrow - expect first image to move to last place,
 	//       second image to move to first place and last image to move to second-last place
@@ -255,11 +260,7 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	// Test: ctrl right arrow - expect first image to move back to first place,
 	//       second image to move to back second place and thumbLast to move to back last place
 	lightbox.handleArrowKeyPress(evtRightArrow);
-
-	thumbArray = lightboxDOMNode.getElementsByTagName("img");;
-	assertEquals("after ctrl-right-arrow on first image (currently in last position), expect first to be first", "fluid.img.first", thumbArray[0].id);
-	assertEquals("after ctrl-right-arrow on first image (currently in last position), expect second to be second", "fluid.img.second", thumbArray[1].id);
-	assertEquals("after ctrl-right-arrow on first image (currently in last position), expect last to be last", "fluid.img.last", thumbArray[numOfImages - 1].id);
+	helpTestItemsInOriginalPosition("after ctrl-left-arrow", lightboxDOMNode);
 
 }
 

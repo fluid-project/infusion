@@ -107,7 +107,7 @@ dojo.declare(
 		 */
 		selectActiveItem: function() {
 			if (!this.activeItem) {
-				this.activeItem = this.firstElement(this.domNode);
+				this.activeItem = this.domNode.firstChild;
 			}
 			this.focusItem(this.activeItem);
 		},
@@ -186,33 +186,24 @@ dojo.declare(
 		},
 		
 		handleRightArrow: function(isCtrl) {
-			var nextRightSibling = this.nextElement(this.activeItem);
-			var placementPosition;
+			var rightSiblingInfo = this.gridLayoutHandler.getRightSibling(this.activeItem);
 			
-			if (nextRightSibling) {
-				placementPosition = "after";
+			if (rightSiblingInfo.hasWrapped) {
+				this._changeFocusOrMove(isCtrl, rightSiblingInfo.item, "before");
 			} else {
-				// if current focus image is the last, change focus to first thumbnail
-				nextRightSibling = this.firstElement(this.activeItem.parentNode);
-				placementPosition = "before";
+				this._changeFocusOrMove(isCtrl, rightSiblingInfo.item, "after");
 			}
-			
-			this._changeFocusOrMove(isCtrl, nextRightSibling, placementPosition);
+
 		}, // end handleRightArrow
 		
 		handleLeftArrow: function(isCtrl) {
-			var nextLeftSibling = this.previousElement(this.activeItem);
-			var placementPosition;
+			var leftSiblingInfo = this.gridLayoutHandler.getLeftSibling(this.activeItem);
 			
-			if (nextLeftSibling) {
-				placementPosition = "before";
+			if (leftSiblingInfo.hasWrapped) {
+				this._changeFocusOrMove(isCtrl, leftSiblingInfo.item, "after");
 			} else {
-				// if current focus image is the first, the next sibling is the last sibling
-				nextLeftSibling = this.lastElement(this.activeItem.parentNode);
-				placementPosition = "after";
-			}
-			
-			this._changeFocusOrMove(isCtrl, nextLeftSibling, placementPosition);
+				this._changeFocusOrMove(isCtrl, leftSiblingInfo.item, "before");				
+			}			
 		}, // end handleLeftArrow
 		
 		_changeFocusOrMove: function(shouldMove, refSibling, placementPosition) {
@@ -224,51 +215,8 @@ dojo.declare(
 			}		
 		},
 		
-		nextElement: function(node) {
-			while (node){
-				node = node.nextSibling;
-				if (this.isElement(node)) {
-					return (node); 
-				}
-			}
-			return node;
-		}, // end nextElement
-		
-		previousElement: function(node) {
-			while (node){
-				node = node.previousSibling;
-				if (this.isElement(node)) {
-					return (node); 
-				}
-			}
-			return node;
-		}, // end previousElement
-		
-		firstElement: function(nodeParent) {
-			var node = nodeParent.firstChild;
-			
-			if (this.isElement(node)) {
-				return node;
-			}
-			
-			return this.nextElement(node);
-		},
-		
-		lastElement: function(nodeParent) {
-			var node = nodeParent.lastChild;
-			
-			if (this.isElement(node)) {
-				return node;
-			}
-			
-			return this.previousElement(node);
-		},
-		
-		isElement: function(node) {
-			return node && node.nodeType == 1;
-		},
-		
 		handleWindowResizeEvent: function(resizeEvent) {
+			this.gridLayoutHandler.updateGridWidth();
 		}
 	}
 );
@@ -296,15 +244,28 @@ function GridLayoutHandler() {
 		}
 	};
 	
-	this.getRightSiblingAndPosition = function (item) {
+	this.getRightSibling = function (item) {
 		var nextIndex = dojo.indexOf(this.grid.childNodes, item) + 1;
-		var pos = "after";
+		var hasWrapped = false;
+		
 		if (nextIndex >= this.grid.childNodes.length) {
 			nextIndex = 0;
-			pos = "before";
+			hasWrapped = true
 		}
 		
-		return {item: this.grid.childNodes[nextIndex], position: pos};
+		return {item: this.grid.childNodes[nextIndex], hasWrapped: hasWrapped};
+	},
+	
+	this.getLeftSibling = function (item) {
+		var previousIndex = dojo.indexOf(this.grid.childNodes, item) - 1;
+		var hasWrapped = false;
+		
+		if (previousIndex < 0) {
+			previousIndex = this.grid.childNodes.length - 1;
+			hasWrapped = true
+		}
+		
+		return {item: this.grid.childNodes[previousIndex], hasWrapped: hasWrapped};
 	},
 	
 	this.getItemBelow = function (item) {

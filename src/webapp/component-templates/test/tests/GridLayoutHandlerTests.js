@@ -1,25 +1,45 @@
-function testGetRightSiblingAndPosition() {
+function testGetRightSibling() {
 	var gridHandler = new GridLayoutHandler();
 	var imageList = dojo.byId("gallery:::gallery-thumbs:::");
 	gridHandler.setGrid(imageList);
 
-	var nextSiblingAndPos = gridHandler.getRightSiblingAndPosition(dojo.byId(firstImageId))
+	var rightSibling = gridHandler.getRightSibling(dojo.byId(firstImageId))
 	assertEquals("The item to the right of the first image should be the second image", 
-		dojo.byId(secondImageId), nextSiblingAndPos.item);
-	assertEquals("The position to the right of the first image should be after", 
-		"after", nextSiblingAndPos.position);
+		dojo.byId(secondImageId), rightSibling.item);
+	assertFalse("No wrap to the right of the first image", rightSibling.hasWrapped);
 
-	nextSiblingAndPos = gridHandler.getRightSiblingAndPosition(dojo.byId(thirdImageId))
+	rightSibling = gridHandler.getRightSibling(dojo.byId(thirdImageId))
 	assertEquals("The item to the right of the third image should be the fourth image", 
-		dojo.byId(fourthImageId), nextSiblingAndPos.item);
-	assertEquals("The position to the right of the third image should be after", 
-		"after", nextSiblingAndPos.position);
+		dojo.byId(fourthImageId), rightSibling.item);
+	assertFalse("No wrap to the right of the third image", rightSibling.hasWrapped);
 
-	nextSiblingAndPos = gridHandler.getRightSiblingAndPosition(dojo.byId(lastImageId))
+	rightSibling = gridHandler.getRightSibling(dojo.byId(lastImageId))
 	assertEquals("The item to the right of the last image should be the first image", 
-		dojo.byId(firstImageId), nextSiblingAndPos.item);
-	assertEquals("The position to the right of the first image should be before", 
-		"before", nextSiblingAndPos.position);	
+		dojo.byId(firstImageId), rightSibling.item);
+	assertTrue("Wrap to the right of the last image", rightSibling.hasWrapped);	
+}
+
+function testGetLeftSibling() {
+	var gridHandler = new GridLayoutHandler();
+	var imageList = dojo.byId("gallery:::gallery-thumbs:::");
+	gridHandler.setGrid(imageList);
+
+	var leftSibling = gridHandler.getLeftSibling(dojo.byId(fourthImageId))
+	assertEquals("The item to the left of the fourth image should be the third image", 
+		dojo.byId(thirdImageId), leftSibling.item);
+	assertFalse("No wrap to the left of the fourth image", leftSibling.hasWrapped);
+
+	leftSibling = gridHandler.getLeftSibling(dojo.byId(lastImageId))
+	assertEquals("The item to the left of the last image should be the second last image", 
+		dojo.byId(secondLastImageId), leftSibling.item);
+	assertFalse("No wrap to the left of the last image", leftSibling.hasWrapped);
+
+	leftSibling = gridHandler.getLeftSibling(dojo.byId(firstImageId))
+	assertEquals("The item to the left of the first image should be the last image", 
+		dojo.byId(lastImageId), leftSibling.item);
+	assertTrue("Wrap to the left of the first image", leftSibling.hasWrapped);
+
+
 }
 
 function testGetItemBelow() {
