@@ -24,6 +24,7 @@
 dojo.provide("fluid.Lightbox");
 
 dojo.require("dijit.base.Widget");
+dojo.require("MochiKit.DOM");
 
 (function() {
 	fluid.states = {
@@ -91,21 +92,18 @@ dojo.declare(
 
 			this.gridLayoutHandler.setGrid(this.domNode);
 
-			if (this.domNode.hasAttribute("aaa:activedescendent")) {
-				this.domNode.removeAttribute("aaa:activedescendent");			
+			if (MochiKit.DOM.getNodeAttribute (this.domNode,"aaa:activedescendent")) {
+				MochiKit.DOM.removeNodeAttribute (this.domNode,"aaa:activedescendent");
 			}
-
 		},
 		
 		/**
 		 * Changes the current focus to the specified item.
 		 * @param {Object} anItem
 		 */
-		focusItem: function(anItem) {			
+		focusItem: function(anItem) {
 			this.setActiveItemToDefaultState();
-						
 			this._setActiveItem(anItem);			
-			
 			dojo.removeClass (this.activeItem, fluid.states.defaultClass);
 			dojo.addClass (this.activeItem, fluid.states.focusedClass);
 			this.getElementToFocus(this.activeItem).focus();
@@ -236,9 +234,9 @@ dojo.declare(
 		
 		_updateActiveDescendent: function() {
 			if (this.activeItem) {
-				this.domNode.setAttribute("aaa:activedescendent", this.activeItem.id);
-			} else if (this.domNode.hasAttribute("aaa:activedescendent")) {
-				this.domNode.removeAttribute("aaa:activedescendent");
+				MochiKit.DOM.setNodeAttribute (this.domNode, "aaa:activedescendent", this.activeItem.id);
+			} else if (MochiKit.DOM.getNodeAttribute (this.domNode, "aaa:activedescendent")) {
+				MochiKit.DOM.removeNodeAttribute (this.domNode, "aaa:activedescendent");
 			}
 		}	
 

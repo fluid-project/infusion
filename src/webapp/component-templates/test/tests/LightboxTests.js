@@ -431,21 +431,21 @@ function testHandleWindowResizeEvent() {
 function testUpdateActiveDescendent() {
 	var lightbox = createLightbox();
 	lbRoot = dojo.byId(lightboxRootId);
-	assertFalse("before first lightbox focus, no item should be activedescendent", lbRoot.hasAttribute("aaa:activedescendent"));
+	assertNull("before first lightbox focus, no item should be activedescendent", MochiKit.DOM.getNodeAttribute (lbRoot,"aaa:activedescendent"));
 
-	lightbox.domNode.focus();
-	assertEquals("after first lightbox focus, first image should be activedescendent", firstImageId, lbRoot.getAttribute("aaa:activedescendent"));
+	lightbox.focusItem (dojo.byId (firstImageId));
+	assertEquals("after first lightbox focus, first image should be activedescendent", firstImageId, MochiKit.DOM.getNodeAttribute (lbRoot, "aaa:activedescendent"));
 	
 	lightbox.activeItem = dojo.byId(thirdImageId);
 	lightbox._updateActiveDescendent();
-	assertEquals("after setting active item to third image, third image should be activedescendent", thirdImageId, lbRoot.getAttribute("aaa:activedescendent"));
+	assertEquals("after setting active item to third image, third image should be activedescendent", thirdImageId, MochiKit.DOM.getNodeAttribute (lbRoot, "aaa:activedescendent"));
 
 	lightbox.domNode.blur();
 	lightbox._updateActiveDescendent();
-	assertEquals("after removing focus from lightbox, third image should still be activedescendent", thirdImageId, lbRoot.getAttribute("aaa:activedescendent"));
+	assertEquals("after removing focus from lightbox, third image should still be activedescendent", thirdImageId, MochiKit.DOM.getNodeAttribute (lbRoot, "aaa:activedescendent"));
 
 	lightbox.activeItem = null;
 	lightbox._updateActiveDescendent();
-	assertFalse("after unsetting active item, no item should be activedescendent", lbRoot.hasAttribute("aaa:activedescendent"));
+	assertNull("after unsetting active item, no item should be activedescendent", MochiKit.DOM.getNodeAttribute (lbRoot, "aaa:activedescendent"));
 
 }
