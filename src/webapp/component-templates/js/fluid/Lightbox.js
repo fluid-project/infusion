@@ -41,9 +41,9 @@ dojo.declare(
 		// the lightbox-reorderable DOM element that is currently active
 		activeItem: null,
 		
-		gridLayoutHandler: null,
+		gridLayoutHandler: new GridLayoutHandler(),
 
-		utilities: null,
+		utilities: new Utilities(),
 		
 		/**
 		 * Return the element within the item that should receive focus.
@@ -61,35 +61,41 @@ dojo.declare(
 			return item.getElementsByTagName("a")[0];
 		},
 
-
-		buildRendering: function() {
-			// note: this should really be informed of the Id by the gallery, to be able
-			// to handle multiple lightboxes
-			this.domNode = dojo.byId("gallery:::gallery-thumbs:::");
-		},
-
 		postCreate: function () {
 			// Dojo calls this function after constructing the object.
-			
-			// Connect the listeners that handle keypresses and focusing
+			dojo.connect(window, "onresize", this, "handleWindowResizeEvent");
+			if (this.domNode) {
+				this.setUpDomNode();
+			}
+		}, // end postCreate
+		
+		/**
+		 * This function should be used when creating a lightbox progammatically, immediately
+		 * after constructing the lightbox
+		 */
+		setDomNode: function(aDomNode) {
+			this.domNode = aDomNode;
+			this.setUpDomNode();
+		},
+		
+		setUpDomNode: function () {
+						// Connect the listeners that handle keypresses and focusing
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
 			dojo.connect(this.domNode, "onfocus", this, "selectActiveItem");
 			dojo.connect(this.domNode, "onblur", this, "setActiveItemToDefaultState");
-			dojo.connect(window, "onresize", this, "handleWindowResizeEvent");
 			
 			// remove whitespace from the tree before passing it to the grid handler
-			this.utilities = new Utilities();
 			this.utilities.removeNonElementNodes(this.domNode);
 
-			this.gridLayoutHandler = new GridLayoutHandler();
 			this.gridLayoutHandler.setGrid(this.domNode);
 
 			if (this.domNode.hasAttribute("aaa:activedescendent")) {
 				this.domNode.removeAttribute("aaa:activedescendent");			
 			}
-		}, // end postCreate
+
+		},
 		
 		/**
 		 * Changes the current focus to the specified item.

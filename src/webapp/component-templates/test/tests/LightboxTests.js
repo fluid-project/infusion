@@ -1,3 +1,4 @@
+
 var imgListClone;
 
 function setUp() {
@@ -15,12 +16,18 @@ function focusLightboxNode(lightbox, domNode) {
   lightbox.getElementToFocus(domNode).focus();
 }
 
+function createLightbox() {
+	var lightbox = new fluid.Lightbox();
+	lightbox.setDomNode(dojo.byId(lightboxRootId));
+	return lightbox;
+}
+
 /*
  * This test tests the movement of images, and does not concern itself
  * with changes of state (i.e. dragging, etc.)
  */
 function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {	
-	var lightbox = new fluid.Lightbox();
+	var lightbox = createLightbox();
 	focusLightboxNode(lightbox, lightbox.domNode);
 	var evtDownArrow = {keyCode: dojo.keys.DOWN_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
 	var evtUpArrow = {keyCode: dojo.keys.UP_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
@@ -79,9 +86,8 @@ function helpTestItemsInOriginalPosition(desc, lightboxDOMNode) {
 	assertEquals(desc + " expect last image to be last", "fluid.img.last", thumbArray[13].id);
 }
 
-// This test is NOT complete
 function testHandleArrowKeyPressForUpAndDown() {
-	var lightbox = new fluid.Lightbox();
+	var lightbox = createLightbox();
 	var defaultClass="image-container-default";
 	var focusedClass="image-container-selected";
 	var draggingClass="image-container-dragging";
@@ -100,17 +106,31 @@ function testHandleArrowKeyPressForUpAndDown() {
 	assertTrue("After down arrow, fifth image should be focused",dojo.hasClass(document.getElementById(fifthImageId), focusedClass));
 	assertFalse("After down arrow, fifth image should not be default", dojo.hasClass(document.getElementById(fifthImageId), defaultClass));
 
-	// Test: up arrow to the firsh image
+	// Test: up arrow to the first image
 	lightbox.handleArrowKeyPress(evtUpArrow);
 	assertFalse("After up arrow, first image should not be default",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
 	assertTrue("After up arrow, first image should be focused", dojo.hasClass(document.getElementById(firstImageId), focusedClass));
 	assertFalse("After up arrow, fifth image should not be focused",dojo.hasClass(document.getElementById(fifthImageId), focusedClass));
 	assertTrue("After up arrow, fifth image should be default", dojo.hasClass(document.getElementById(fifthImageId), defaultClass));
+
+	// Test: up arrow to the second last image
+	lightbox.handleArrowKeyPress(evtUpArrow);
+	assertTrue("After up arrow, first image should be default",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
+	assertFalse("After up arrow, first image should not be focused", dojo.hasClass(document.getElementById(firstImageId), focusedClass));
+	assertTrue("After up arrow, second last image should be focused",dojo.hasClass(document.getElementById(secondLastImageId), focusedClass));
+	assertFalse("After up arrow, second last image should be default", dojo.hasClass(document.getElementById(secondLastImageId), defaultClass));
+
+	// Test: down arrow to the first image
+	lightbox.handleArrowKeyPress(evtDownArrow);
+	assertFalse("After down arrow, first image should not be default",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
+	assertTrue("After down arrow, first image should be focused", dojo.hasClass(document.getElementById(firstImageId), focusedClass));
+	assertFalse("After down arrow, second last image should not be focused",dojo.hasClass(document.getElementById(secondLastImageId), focusedClass));
+	assertTrue("After down arrow, second last image should be default", dojo.hasClass(document.getElementById(secondLastImageId), defaultClass));
 	
 }
 
 function testHandleArrowKeyPressForLeftAndRight()	 {
-	var lightbox = new fluid.Lightbox();
+	var lightbox = createLightbox();
 	var defaultClass="image-container-default";
 	var focusedClass="image-container-selected";
 	var draggingClass="image-container-dragging";
@@ -163,7 +183,7 @@ function testHandleArrowKeyPressForLeftAndRight()	 {
 }
 
 function testHandleKeyUpAndHandleKeyDownChangesState() {
-	var lightbox = new fluid.Lightbox();
+	var lightbox = createLightbox();
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
 	var draggingClass="image-container-dragging";
@@ -209,7 +229,7 @@ function testHandleKeyUpAndHandleKeyDownChangesState() {
 }
 
 function testHandleKeyUpAndHandleKeyDownItemMovement() {
-	var lightbox = new fluid.Lightbox();
+	var lightbox = createLightbox();
 	focusLightboxNode(lightbox, lightbox.domNode);
 
 	var evtCTRL = {keyCode: dojo.keys.CTRL, preventDefault: function(){}, stopPropagation: function(){} };
@@ -229,7 +249,7 @@ function testHandleKeyUpAndHandleKeyDownItemMovement() {
  * with changes of state (i.e. dragging, etc.)
  */
 function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {	
-	var lightbox = new fluid.Lightbox();
+	var lightbox = createLightbox();
 	focusLightboxNode(lightbox, lightbox.domNode);
 
 	var evtRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
@@ -265,7 +285,7 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 }
 
 function testPersistFocus () {
-	var lightbox = new fluid.Lightbox();
+	var lightbox = createLightbox();
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
 
@@ -312,8 +332,8 @@ function testPersistFocus () {
 
 
 function testfocusItem () {
-	var lightbox = new fluid.Lightbox();
-	var defaultClass="image-container-default";
+	var lightbox = createLightbox();
+ 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
 	var draggingClass="image-container-dragging";
 	
@@ -349,7 +369,7 @@ function testfocusItem () {
 }
 
 function testSelectActiveItem() {
-	var lightbox = new fluid.Lightbox();
+	var lightbox = createLightbox();
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
 
@@ -374,7 +394,7 @@ function testSelectActiveItem() {
 }
 
 function testSetActiveItemToDefaultState() {
-	var lightbox = new fluid.Lightbox();
+	var lightbox = createLightbox();
 	var defaultClass="image-container-default";
 	
 	// first set up an active item so that it's not in a default state
@@ -386,7 +406,7 @@ function testSetActiveItemToDefaultState() {
 }
 
 function testHandleWindowResizeEvent() {
-	var lightbox = new fluid.Lightbox();
+	var lightbox = createLightbox();
 	var oldNumCols = lightbox.gridLayoutHandler.numOfColumnsInGrid;
 
 	// change the width
@@ -409,7 +429,7 @@ function testHandleWindowResizeEvent() {
 }
 
 function testUpdateActiveDescendent() {
-	var lightbox = new fluid.Lightbox();
+	var lightbox = createLightbox();
 	lbRoot = dojo.byId(lightboxRootId);
 	assertFalse("before first lightbox focus, no item should be activedescendent", lbRoot.hasAttribute("aaa:activedescendent"));
 
