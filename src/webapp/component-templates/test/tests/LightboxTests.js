@@ -17,9 +17,7 @@ function focusLightboxNode(lightbox, domNode) {
 }
 
 function createLightbox() {
-	var lightbox = new fluid.Lightbox();
-	lightbox.setDomNode(dojo.byId(lightboxRootId));
-	return lightbox;
+	return new fluid.Lightbox(null, lightboxRootId);
 }
 
 /*

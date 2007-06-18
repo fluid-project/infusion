@@ -70,15 +70,6 @@ dojo.declare(
 			}
 		}, // end postCreate
 		
-		/**
-		 * This function should be used when creating a lightbox progammatically, immediately
-		 * after constructing the lightbox
-		 */
-		setDomNode: function(aDomNode) {
-			this.domNode = aDomNode;
-			this.setUpDomNode();
-		},
-		
 		setUpDomNode: function () {
 						// Connect the listeners that handle keypresses and focusing
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
