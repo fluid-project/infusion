@@ -46,20 +46,23 @@ dojo.declare(
 
 		utilities: new Utilities(),
 		
+		tagNameToFocus: null,
+		
+		tagNameIndexToFocus: 0,
+		
 		/**
-		 * Return the element within the item that should receive focus.
+		 * Return the element within the item that should receive focus. 
 		 * 
-		 * NOTE: The lightbox currently assumes that items will have an anchor, and that this anchor
-		 * should receive focus so that it can be activated with an 'enter' keypress. This function
-		 * currently returns the first anchor in the item.
+		 * Note: If the tag name to focus is not specified, the item itself is returned.
 		 * 
 		 * @param {Object} item
 		 * @return {Object} The element that should receive focus in the specified item.
 		 */
 		getElementToFocus: function(item) {
-			// TODO: generalize this to return any specified element specified on construction of 
-			// Lightbox
-			return item.getElementsByTagName("a")[0];
+			if (this.tagNameToFocus) {
+				return item.getElementsByTagName(this.tagNameToFocus)[this.tagNameIndexToFocus];
+			}
+			return item;
 		},
 
 		postCreate: function () {
@@ -71,7 +74,7 @@ dojo.declare(
 		}, // end postCreate
 		
 		setUpDomNode: function () {
-						// Connect the listeners that handle keypresses and focusing
+			// Connect the listeners that handle keypresses and focusing
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
