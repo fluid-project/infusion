@@ -422,7 +422,7 @@ function testHandleWindowResizeEvent() {
 	// tell the lightbox of the change
 	var resizeEvent = {foo: "bar"};
 	lightbox.handleWindowResizeEvent(resizeEvent);
-	assertEquals("after resize, the grid width should be "+oldNumCols/2, oldNumCols/2, lightbox.gridLayoutHandler.numOfColumnsInGrid);
+	assertEquals("after resize, the grid width should be "+Math.floor(oldNumCols/2), Math.floor(oldNumCols/2), lightbox.gridLayoutHandler.numOfColumnsInGrid);
 
 	// change it back
 	dojo.removeClass(dojo.byId(lightboxParentId), "half-width");

@@ -24,6 +24,7 @@
 dojo.provide("fluid.Lightbox");
 
 dojo.require("dijit.base.Widget");
+dojo.require("dojo.dnd.source");
 dojo.require("MochiKit.DOM");
 
 (function() {
@@ -71,6 +72,10 @@ dojo.declare(
 			if (this.domNode) {
 				this.setUpDomNode();
 			}
+			
+			// calling _initDnD will activate the drag-and-drop functionality
+			// this._initDnD();
+			
 		}, // end postCreate
 		
 		setUpDomNode: function () {
@@ -232,9 +237,27 @@ dojo.declare(
 			} else if (MochiKit.DOM.getNodeAttribute (this.domNode, "aaa:activedescendent")) {
 				MochiKit.DOM.removeNodeAttribute (this.domNode, "aaa:activedescendent");
 			}
-		}	
+		},
 
+		_initDnD: function() {
+			dndlb = new dojo.dnd.Source("gallery:::gallery-thumbs:::", {creator: itemCreator, horizontal: true});
+			dndlb.lightbox = this;
+			items = dojo.byId("gallery:::gallery-thumbs:::").childNodes;
+			var itemArray = new Array();
+			for(i=0;i<items.length;i++) {
+				itemArray.push(items[i]);
+			}
+			dndlb.insertNodes(false, itemArray);
+			dndlb.onMouseOver =  function(source){
+			alert(source.relatedTarget.innerHTML);
+//				this.lightbox._changeFocusOrMove(false, source.relatedTarget, "before");
+				// call superclass
+//				dojo.dnd.Source.prototype.onMouseOver.apply(this.lightbox, arguments);
+			};
+		}
+		
 	}
+	
 );
 
 /*
@@ -367,4 +390,24 @@ function Utilities() {
 		} 
 	}
 }
+
+/*
+ * Drag and Drop support functions
+ */
+var initDnD = function() {
+	dndlb = new dojo.dnd.Source("gallery:::gallery-thumbs:::", {creator: itemCreator, horizontal: true});
+	items = dojo.byId("gallery:::gallery-thumbs:::").childNodes;
+	var itemArray = new Array();
+	for(i=0;i<items.length;i++) {
+		itemArray.push(items[i]);
+	}
+	dndlb.insertNodes(false, itemArray);
+};
+
+
+function itemCreator(data, hint) {
+	var types = [];
+	types.push("testType");
+	return {node: data, data: data, types: types};
+}	
 

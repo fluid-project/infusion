@@ -137,7 +137,7 @@ function testGetItemAbove() {
 	
 }
 
-function testUpdateGrideWidth() {
+function testUpdateGridWidth() {
 	var gridHandler = new GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setGrid(imageList);
@@ -147,7 +147,7 @@ function testUpdateGrideWidth() {
 	dojo.removeClass(dojo.byId(lightboxParentId), "full-width");
 	dojo.addClass(dojo.byId(lightboxParentId), "half-width");
 	gridHandler.updateGridWidth();
-	assertEquals("after resize, the grid width should be "+oldNumCols/2, oldNumCols/2, gridHandler.numOfColumnsInGrid);
+	assertEquals("after resize, the grid width should be "+Math.floor(oldNumCols/2), Math.floor(oldNumCols/2), gridHandler.numOfColumnsInGrid);
 
 	// change it back
 	dojo.removeClass(dojo.byId(lightboxParentId), "half-width");
