@@ -74,7 +74,7 @@ dojo.declare(
 			}
 			
 			// calling _initDnD will activate the drag-and-drop functionality
-			// this._initDnD();
+			 this._initDnD();
 			
 		}, // end postCreate
 		
@@ -248,12 +248,11 @@ dojo.declare(
 				itemArray.push(items[i]);
 			}
 			dndlb.insertNodes(false, itemArray);
-			dndlb.onMouseOver =  function(source){
-			alert(source.relatedTarget.innerHTML);
+//			dndlb.onMouseOver =  function(source){
 //				this.lightbox._changeFocusOrMove(false, source.relatedTarget, "before");
 				// call superclass
 //				dojo.dnd.Source.prototype.onMouseOver.apply(this.lightbox, arguments);
-			};
+//			};
 		}
 		
 	}
