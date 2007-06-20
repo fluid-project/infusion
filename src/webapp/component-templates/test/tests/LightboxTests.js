@@ -1,3 +1,4 @@
+dojo.require("MochiKit.DOM");
 
 var imgListClone;
 
@@ -20,6 +21,30 @@ function createLightbox() {
 	return new fluid.Lightbox(null, lightboxRootId);
 }
 
+function testFindAncestorGridCell() {
+	var lightbox = createLightbox();
+	
+	var testItem = dojo.byId(firstImageId);
+	assertEquals("The test item's role attribute should be gridcell",
+		MochiKit.DOM.getNodeAttribute(testItem, "xhtml10:role"), "wairole:gridcell");
+
+	assertEquals("Given the test item itself, the ancestor grid cell should be the test item",
+		testItem, lightbox._findAncestorGridCell(testItem));
+	assertEquals("Given the image, the ancestor grid cell should be the test item",
+		testItem, lightbox._findAncestorGridCell(MochiKit.DOM.getFirstElementByTagAndClassName("img", null, testItem)));
+	assertEquals("Given the caption div, the ancestor grid cell should be the test item",
+		testItem, lightbox._findAncestorGridCell(MochiKit.DOM.getFirstElementByTagAndClassName("div", "caption", testItem)));
+	assertEquals("Given the caption div, the ancestor grid cell should be the test item",
+		testItem, lightbox._findAncestorGridCell(MochiKit.DOM.getFirstElementByTagAndClassName("a", null, testItem)));
+	assertEquals("Given the title of the document, the ancestor grid cell should be null",
+		null, lightbox._findAncestorGridCell(MochiKit.DOM.getFirstElementByTagAndClassName("title", null, document.body)));
+	
+	testItem = dojo.byId(fourthImageId);
+	assertEquals("Given another test item itself, the ancestor grid cell should be the new test item",
+		testItem, lightbox._findAncestorGridCell(testItem));
+	assertEquals("Given theanotherimage, the ancestor grid cell should be new test item",
+		testItem, lightbox._findAncestorGridCell(MochiKit.DOM.getFirstElementByTagAndClassName("img", null, testItem)));
+}
 /*
  * This test tests the movement of images, and does not concern itself
  * with changes of state (i.e. dragging, etc.)

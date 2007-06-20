@@ -248,8 +248,26 @@ dojo.declare(
 				itemArray.push(items[i]);
 			}
 			dndlb.insertNodes(false, itemArray);
-		}
+			
+            dndlb.onMouseDown =  function(source){
+				// note: source.target will not work in IE, you need to use source.srcElement
+				var actualSource = (source.target || source.srcElement);
+                this.lightbox.focusItem(this.lightbox._findAncestorGridCell(source.target));
+                dojo.dnd.Source.prototype.onMouseDown.apply(dndlb, arguments);
+            };
+
+		},
 		
+		
+		_findAncestorGridCell: function(gridCellDescendent) {
+			if (gridCellDescendent == null) {
+				return null;
+			} else if (MochiKit.DOM.getNodeAttribute (gridCellDescendent, "xhtml10:role") == "wairole:gridcell") {
+				return gridCellDescendent;
+			} else {
+				return this._findAncestorGridCell(MochiKit.DOM.getFirstParentByTagAndClassName(gridCellDescendent, '*', null));
+			}
+		}
 	}
 	
 );
@@ -387,8 +405,8 @@ function Utilities() {
 
 
 
-function itemCreator(data, hint) {
+function itemCreator(item, hint) {
 	var types = [];
-	return {node: data, data: data, types: types};
+	return {node: item, data: item, types: types};
 }	
 
