@@ -252,7 +252,7 @@ dojo.declare(
             dndlb.onMouseDown =  function(source){
 				// note: source.target will not work in IE, you need to use source.srcElement
 				var actualSource = (source.target || source.srcElement);
-                this.lightbox.focusItem(this.lightbox._findAncestorGridCell(source.target));
+                this.lightbox.focusItem(this.lightbox._findAncestorGridCell(actualSource));
                 dojo.dnd.Source.prototype.onMouseDown.apply(dndlb, arguments);
             };
 
