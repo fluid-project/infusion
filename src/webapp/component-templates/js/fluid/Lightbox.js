@@ -240,19 +240,14 @@ dojo.declare(
 		},
 
 		_initDnD: function() {
-			dndlb = new dojo.dnd.Source("gallery:::gallery-thumbs:::", {creator: itemCreator, horizontal: true});
+			dndlb = new dojo.dnd.Source(this.domNode.id, {creator: itemCreator, horizontal: true});
 			dndlb.lightbox = this;
-			items = dojo.byId("gallery:::gallery-thumbs:::").childNodes;
+			items = this.domNode.childNodes;
 			var itemArray = new Array();
 			for(i=0;i<items.length;i++) {
 				itemArray.push(items[i]);
 			}
 			dndlb.insertNodes(false, itemArray);
-//			dndlb.onMouseOver =  function(source){
-//				this.lightbox._changeFocusOrMove(false, source.relatedTarget, "before");
-				// call superclass
-//				dojo.dnd.Source.prototype.onMouseOver.apply(this.lightbox, arguments);
-//			};
 		}
 		
 	}
@@ -390,23 +385,10 @@ function Utilities() {
 	}
 }
 
-/*
- * Drag and Drop support functions
- */
-var initDnD = function() {
-	dndlb = new dojo.dnd.Source("gallery:::gallery-thumbs:::", {creator: itemCreator, horizontal: true});
-	items = dojo.byId("gallery:::gallery-thumbs:::").childNodes;
-	var itemArray = new Array();
-	for(i=0;i<items.length;i++) {
-		itemArray.push(items[i]);
-	}
-	dndlb.insertNodes(false, itemArray);
-};
 
 
 function itemCreator(data, hint) {
 	var types = [];
-	types.push("testType");
 	return {node: data, data: data, types: types};
 }	
 
