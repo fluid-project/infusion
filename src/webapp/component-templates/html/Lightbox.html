@@ -36,16 +36,8 @@
 	<script language="JavaScript" type="text/javascript" src="../test/tests/GridLayoutHandlerTests.js"></script>
 	<script language="JavaScript" type="text/javascript" src="../test/tests/LightboxTests.js"></script> 
 	<script language="JavaScript" type="text/javascript" src="../test/tests/UtilitiesTests.js"></script>
-    <script type="../js/fluid/Lightbox.js" rsf:id="scr=contribute-script"></script>
-	<script type="text/javascript"  rsf:id="scr=contribute-script">
-	  dojo.require("fluid.Lightbox");
-	  function setupLightbox () {
-		  var lightbox = new fluid.Lightbox(null, "gallery:::gallery-thumbs:::");
-		  lightbox.tagNameToFocus = "a";
-		  lightbox.tagNameIndexToFocus = 1;
-	  }
-	  dojo.addOnLoad(setupLightbox);
-	</script>
+    <script language="JavaScript" src="../js/fluid/Lightbox.js" rsf:id="scr=contribute-script"></script>
+
   </head>
 
   <body>
@@ -311,8 +303,11 @@
 					</div>
 				</div>
 			</div>
-	
+  
 		</div>
+    <script type="text/javascript"  rsf:id="init-script">
+      FluidProject.initLightbox("gallery:::gallery-thumbs:::");
+    </script>
 	</div>
   </body>
 </html>

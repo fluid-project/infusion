@@ -20,7 +20,6 @@
  Telephone: (416) 978-4360
 */
 
-
 dojo.provide("fluid.Lightbox");
 
 dojo.require("dijit.base.Widget");
@@ -35,6 +34,8 @@ dojo.require("MochiKit.DOM");
 	};		
 })();
 
+
+
 dojo.declare(
 	"fluid.Lightbox",	// class name
 	dijit.base.Widget,
@@ -45,8 +46,6 @@ dojo.declare(
 		
 		gridLayoutHandler: new GridLayoutHandler(),
 
-		utilities: new Utilities(),
-		
 		tagNameToFocus: null,
 		
 		tagNameIndexToFocus: 0,
@@ -87,7 +86,7 @@ dojo.declare(
 			dojo.connect(this.domNode, "onblur", this, "setActiveItemToDefaultState");
 			
 			// remove whitespace from the tree before passing it to the grid handler
-			this.utilities.removeNonElementNodes(this.domNode);
+			FluidProject.Utilities.removeNonElementNodes(this.domNode);
 
 			this.gridLayoutHandler.setGrid(this.domNode);
 
@@ -239,8 +238,14 @@ dojo.declare(
 			}
 		},
 
+
+        _itemCreator: function(item, hint) {
+          var types = [];
+          return {node: item, data: item, types: types};
+          },
+
 		_initDnD: function() {
-			dndlb = new dojo.dnd.Source(this.domNode.id, {creator: itemCreator, horizontal: true});
+			dndlb = new dojo.dnd.Source(this.domNode.id, {creator: this._itemCreator, horizontal: true});
 			dndlb.lightbox = this;
 			items = this.domNode.childNodes;
 			var itemArray = new Array();
@@ -383,11 +388,12 @@ function GridLayoutHandler() {
 	};
 }
 
+var FluidProject = {
 /*
  * Utilities object for providing various lightbox-independent convenience functions
  */
-function Utilities() {
-	this.removeNonElementNodes = function(rootNode) {
+    Utilities: {
+	  removeNonElementNodes: function(rootNode) {
 		var currChild = rootNode.firstChild;
 		var nextSibling = currChild.nextSibling;
 		if (currChild.nodeType != 1) {
@@ -400,13 +406,16 @@ function Utilities() {
 				rootNode.removeChild(currChild);
 			}			
 		} 
-	}
-}
+	  }
+	},
+	initLightbox: function(namebase) {
+	 var lightbox = new fluid.Lightbox(null, "gallery:::gallery-thumbs:::");
+      lightbox.tagNameToFocus = "a";
+      lightbox.tagNameIndexToFocus = 1;
+    }
+  };
 
 
 
-function itemCreator(item, hint) {
-	var types = [];
-	return {node: item, data: item, types: types};
-}	
+
 
