@@ -84,7 +84,7 @@ dojo.declare(
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
 			dojo.connect(this.domNode, "onfocus", this, "selectActiveItem");
 			dojo.connect(this.domNode, "onblur", this, "setActiveItemToDefaultState");
-			
+
 			// remove whitespace from the tree before passing it to the grid handler
 			FluidProject.Utilities.removeNonElementNodes(this.domNode);
 
@@ -260,10 +260,15 @@ dojo.declare(
                 this.lightbox.focusItem(this.lightbox._findAncestorGridCell(actualSource));
                 dojo.dnd.Source.prototype.onMouseDown.apply(dndlb, arguments);
             };
-
+			dndlb.onMouseUp = function (source) {
+				// note: source.target will not work in IE, you need to use source.srcElement
+				var actualSource = (source.target || source.srcElement);
+                dojo.dnd.Source.prototype.onMouseUp.apply (dndlb, arguments);
+	            this.lightbox.focusItem (this.lightbox.activeItem);
+			};
 		},
 		
-		
+
 		_findAncestorGridCell: function(gridCellDescendent) {
 			if (gridCellDescendent == null) {
 				return null;
@@ -408,10 +413,10 @@ var FluidProject = {
 		} 
 	  }
 	},
-	initLightbox: function(namebase) {
-	 var lightbox = new fluid.Lightbox(null, "gallery:::gallery-thumbs:::");
-      lightbox.tagNameToFocus = "a";
-      lightbox.tagNameIndexToFocus = 1;
+	initLightbox: function(namebase, tagName, tagNameIndex) {
+	 var lightbox = new fluid.Lightbox(null, namebase);
+      lightbox.tagNameToFocus = tagName
+      lightbox.tagNameIndexToFocus = tagNameIndex;
     }
   };
 
