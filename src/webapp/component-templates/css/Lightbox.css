@@ -116,6 +116,56 @@ border: 1px solid #666;
 }
 
 
+/*---------- DOJO DND STYLING ---------------*/
+
+.dojoDndItemOver{ 
+border-color: #666;
+background-color: white;
+}
+.dojoDndItemSelected{
+background-color: #ddd;
+}
+.dojoDndItemAnchor{
+background: #ddd; 
+color: black;
+}
+
+.dojoDndItemOver.dojoDndItemSelected
+{
+/*background: #ec8;*/
+}
+
+.dojoDndItemOver.dojoDndItemAnchor{
+/*background: #ec8;*/
+}
+
+.dojoDndItemBefore{
+border-left: 3px solid red;
+}
+.dojoDndItemAfter{
+border-right: 3px solid red;
+}
+
+.dojoDndAvatar{
+/*font-size: 75%;*/
+border: 0;
+}
+
+.dojoDndAvatarHeader
+{
+/*background: #aaa;*/
+display:none;
+}
+
+.dojoDndAvatarItem
+{
+/*background: #eee;*/
+}
+
+
+
+
+
 /* these classes are for the testing div */
 
 .full-width{
@@ -124,3 +174,6 @@ width: 100%;
 .half-width{
 width: 50%;
 }
+
+
+
