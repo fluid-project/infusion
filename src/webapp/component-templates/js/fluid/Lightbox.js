@@ -20,21 +20,22 @@
  Telephone: (416) 978-4360
 */
 
+
 dojo.provide("fluid.Lightbox");
 
 dojo.require("dijit.base.Widget");
 dojo.require("dojo.dnd.source");
 dojo.require("MochiKit.DOM");
+dojo.require("dijit.Tooltip");
+dojo.require("dojo.i18n");
 
 (function() {
 	fluid.states = {
 		defaultClass:"image-container-default",
 		focusedClass:"image-container-selected",
 		draggingClass:"image-container-dragging"
-	};		
+	};
 })();
-
-
 
 dojo.declare(
 	"fluid.Lightbox",	// class name
@@ -74,6 +75,9 @@ dojo.declare(
 			
 			// calling _initDnD will activate the drag-and-drop functionality
 			 this._initDnD();
+			 
+			 // Internationalization of Strings
+			 dojo.requireLocalization("fluid", "instructions");
 			
 		}, // end postCreate
 		
@@ -105,6 +109,7 @@ dojo.declare(
 			dojo.removeClass (this.activeItem, fluid.states.defaultClass);
 			dojo.addClass (this.activeItem, fluid.states.focusedClass);
 			this.getElementToFocus(this.activeItem).focus();
+			this.activeItem.theTooltip.open();
 		}, //end focus
 		
 		/**
@@ -121,6 +126,7 @@ dojo.declare(
 			if (this.activeItem) {
 				dojo.removeClass (this.activeItem, fluid.states.focusedClass);
 				dojo.addClass (this.activeItem, fluid.states.defaultClass);
+				this.activeItem.theTooltip.close ();
 			}
 		},
 		
@@ -224,8 +230,27 @@ dojo.declare(
 		handleWindowResizeEvent: function(resizeEvent) {
 			this.gridLayoutHandler.updateGridWidth();
 		},
+		
+		_createStyledTooltip: function () {
+				var resource = dojo.i18n.getLocalization("fluid", "instructions");
+				
+				var firstPara = dojo.doc.createElement("p");
+				firstPara.innerHTML = "<strong>"+resource.thumbnailViewText+"</strong>";
+				firstPara.innerHTML += "<em>"+resource.thumbnailViewEmphasis+"</em>";
+
+				var secondPara = dojo.doc.createElement("p");
+				secondPara.innerHTML = "<strong>"+resource.thumbnailDragText+"</strong>";
+				secondPara.innerHTML += "<em>"+resource.thumbnailDragEmphasis+"</em>";
+
+				var styleTextDiv = dojo.doc.createElement("div");
+		},
 
 		_setActiveItem: function(anItem) {
+			if (!anItem.theTooltip) {
+				var res = dojo.i18n.getLocalization("fluid", "instructions");
+				anItem.theTooltip = new dijit.Tooltip ({connectId: anItem.id, caption: res.thumbnailInstructions});
+            }
+
 			this.activeItem = anItem;
 			this._updateActiveDescendent();
 		},

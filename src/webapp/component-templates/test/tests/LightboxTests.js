@@ -1,4 +1,5 @@
 dojo.require("MochiKit.DOM");
+dojo.require("dojo.i18n");
 
 var imgListClone;
 
@@ -45,6 +46,7 @@ function testFindAncestorGridCell() {
 	assertEquals("Given theanotherimage, the ancestor grid cell should be new test item",
 		testItem, lightbox._findAncestorGridCell(MochiKit.DOM.getFirstElementByTagAndClassName("img", null, testItem)));
 }
+
 /*
  * This test tests the movement of images, and does not concern itself
  * with changes of state (i.e. dragging, etc.)
@@ -143,6 +145,9 @@ function testHandleArrowKeyPressForUpAndDown() {
 	assertTrue("After up arrow, second last image should be focused",dojo.hasClass(document.getElementById(secondLastImageId), focusedClass));
 	assertFalse("After up arrow, second last image should be default", dojo.hasClass(document.getElementById(secondLastImageId), defaultClass));
 
+	// Test: tool tip is showing.
+	helpTestTooltip(secondLastImageId, lightbox.activeItem);
+
 	// Test: down arrow to the first image
 	lightbox.handleArrowKeyPress(evtDownArrow);
 	assertFalse("After down arrow, first image should not be default",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
@@ -150,6 +155,20 @@ function testHandleArrowKeyPressForUpAndDown() {
 	assertFalse("After down arrow, second last image should not be focused",dojo.hasClass(document.getElementById(secondLastImageId), focusedClass));
 	assertTrue("After down arrow, second last image should be default", dojo.hasClass(document.getElementById(secondLastImageId), defaultClass));
 	
+	// Test: tool tip is showing.
+	helpTestTooltip(firstImageId, lightbox.activeItem);	
+}
+
+function helpTestTooltip(imageId, activeItem) {
+	var localizedStringsResource = dojo.i18n.getLocalization("fluid", "instructions");
+	tooltipFromRez = localizedStringsResource.thumbnailInstructions;
+	tooltipContainer = MochiKit.DOM.getFirstElementByTagAndClassName("div", "dojoTooltipContainer", document);
+	tooltipFromDoc = tooltipContainer.innerHTML;
+
+	assertNotNull ("<tooltipContainer> should not be null nor undefined with " + imageId, tooltipContainer);
+	assertNotNull ("<tooltip> should not be null nor undefined with" + imageId, tooltipFromRez);
+	assertTrue ("tooltip div should contain the tooltip text from resource file  with" + imageId, tooltipFromDoc.indexOf(tooltipFromRez)>=0);
+	assertEquals(imageId + " should have a tooltip showing", imageId, activeItem.theTooltip.connectId);	
 }
 
 function testHandleArrowKeyPressForLeftAndRight()	 {
@@ -413,7 +432,7 @@ function testSelectActiveItemSecondSelected() {
 	var lightbox = createLightbox();
 	var defaultClass="image-container-default";
 	var focusClass="image-container-selected";
-	lightbox.activeItem = dojo.byId (secondImageId);
+	lightbox._setActiveItem(dojo.byId (secondImageId));
 	
 	// before selecting the active item, nothing should have focus	
 	assertTrue("first image should not be focused initially ",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
