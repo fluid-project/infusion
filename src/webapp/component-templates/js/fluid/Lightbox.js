@@ -413,14 +413,16 @@ var FluidProject = {
 		} 
 	  }
 	},
-	initLightbox: function(namebase, tagName, tagNameIndex) {
-	 var lightbox = new fluid.Lightbox(null, namebase);
+// Server-level initialisation for the lightbox. This is template-specific and
+// server-generic, in that template-specific dependencies have been factored off.
+	initLightbox: function(namebase) {
+      FluidProject.initLightboxClient(namebase, "a", 1);
+	  },
+// Client-level initialisation for the lightbox, allowing parameterisation for
+// different templates.
+	initLightboxClient: function(namebase, tagName, tagNameIndex) {
+	  var lightbox = new fluid.Lightbox(null, namebase);
       lightbox.tagNameToFocus = tagName
       lightbox.tagNameIndexToFocus = tagNameIndex;
     }
   };
-
-
-
-
-

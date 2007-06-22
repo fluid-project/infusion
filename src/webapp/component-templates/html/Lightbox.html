@@ -37,6 +37,7 @@
 	<script language="JavaScript" type="text/javascript" src="../test/tests/LightboxTests.js"></script> 
 	<script language="JavaScript" type="text/javascript" src="../test/tests/UtilitiesTests.js"></script>
     <script language="JavaScript" src="../js/fluid/Lightbox.js" rsf:id="scr=contribute-script"></script>
+
   </head>
 
   <body>
@@ -45,10 +46,17 @@
 	  and back again -->
 	<input id="input1" type="text" value="thingit" style="display:none"></input>
 
-	<!-- lightbox-parent is used for testing setup and teardown only -->
-	<div id="lightbox-parent" class="full-width">
-	
-	    <div rsf:id="lightbox:" id="gallery:::gallery-thumbs:::" tabIndex='2'
+
+	<div class="full-width">
+    <!-- lightbox-parent is used for testing setup and teardown only, but there
+    is a temporary concidence between this testing div and the RSF server div
+    since i) testing code makes the assumption that lightbox-parent is the direct
+    DOM parent of the lightbox itself, and ii) the lightbox code makes the 
+    assumption that there are no non-whitespace DOM elements within the lightbox
+    container at top level other than the reordering cells, and so becomes confused
+    by the trailing <script> block required for server initialisation -->
+	    <div rsf:id="lightbox:" id="lightbox-parent" >
+	    <div rsf:id="lightbox-temp-container:" id="gallery:::gallery-thumbs:::" tabIndex='2'
 		 		xhtml10:role="wairole:grid"
 				aaa:multiselectable="false"
 				aaa:readonly="false"
@@ -302,11 +310,11 @@
 					</div>
 				</div>
 			</div>
-  
+        </div>
+        <script type="text/javascript"  rsf:id="init-script">
+         FluidProject.initLightbox("gallery:::gallery-thumbs:::");
+        </script>
 		</div>
-    <script type="text/javascript"  rsf:id="init-script">
-      FluidProject.initLightbox("gallery:::gallery-thumbs:::", "a", 1);
-    </script>
 	</div>
   </body>
 </html>
