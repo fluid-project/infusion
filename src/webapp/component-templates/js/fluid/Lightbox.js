@@ -279,20 +279,25 @@ dojo.declare(
 			}
 			dndlb.insertNodes(false, itemArray);
 			
-            dndlb.onMouseDown =  function(source){
-				// note: source.target will not work in IE, you need to use source.srcElement
-				var actualSource = (source.target || source.srcElement);
-                this.lightbox.focusItem(this.lightbox._findAncestorGridCell(actualSource));
+			// Override dojo's dnd 'onMouseDown' in order to put focus on the drag source.  Then
+			// apply the superclass 'onMouseDown'.
+			//
+            dndlb.onMouseDown =  function(ecmaEvent){
+				// note: source.target will not work in IE, need to use source.srcElement instead.
+				var targetElement = (ecmaEvent.target || ecmaEvent.srcElement);
+                this.lightbox.focusItem(this.lightbox._findAncestorGridCell(targetElement));
                 dojo.dnd.Source.prototype.onMouseDown.apply(dndlb, arguments);
             };
-			dndlb.onMouseUp = function (source) {
-				// note: source.target will not work in IE, you need to use source.srcElement
-				var actualSource = (source.target || source.srcElement);
-                dojo.dnd.Source.prototype.onMouseUp.apply (dndlb, arguments);
-	            this.lightbox.focusItem (this.lightbox.activeItem);
+			
+			// dojo's dnd system lastly calls 'onDndCancel'.  Override it here to first call the
+			// superclass 'onDndCancel', and then set focus to the dropped item after superclass
+			// returns.
+			//
+			dndlb.onDndCancel = function () {
+				dojo.dnd.Source.prototype.onDndCancel.apply (dndlb, arguments);
+				this.lightbox.focusItem (this.lightbox.activeItem);
 			};
 		},
-		
 
 		_findAncestorGridCell: function(gridCellDescendent) {
 			if (gridCellDescendent == null) {
