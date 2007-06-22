@@ -54,15 +54,12 @@ function testFindAncestorGridCell() {
 function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {	
 	var lightbox = createLightbox();
 	lightbox.domNode.focus();
-	var evtDownArrow = {keyCode: dojo.keys.DOWN_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
-	var evtUpArrow = {keyCode: dojo.keys.UP_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
 
 	// setup: force the grid to have three columns
 	lightbox.gridLayoutHandler.numOfColumnsInGrid = 3;
 
-	
-	// Test: ctrl down arrow 
-	lightbox.handleArrowKeyPress(evtDownArrow);
+	// Test: ctrl down arrow - move the first image down
+	lightbox.handleArrowKeyPress(evtCtrlDownArrow);
 	
 	var lightboxDOMNode = dojo.byId(lightboxRootId);
 	var thumbArray = lightboxDOMNode.getElementsByTagName("img");
@@ -73,11 +70,11 @@ function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {
 	assertEquals("after ctrl-down-arrow, expect fifth image to still be fifth", "fluid.img.5", thumbArray[4].id);
 
 	// Test: ctrl up arrow - expect everything to go back to the original state
-	lightbox.handleArrowKeyPress(evtUpArrow);
-	helpTestItemsInOriginalPosition("after ctrl-up", dojo.byId(lightboxRootId));
+	lightbox.handleArrowKeyPress(evtCtrlUpArrow);
+	itemsInOriginalPositionTest("after ctrl-up", dojo.byId(lightboxRootId));
 
-	// Test: ctrl up arrow 
-	lightbox.handleArrowKeyPress(evtUpArrow);
+	// Test: ctrl up arrow - move the first image 'up'
+	lightbox.handleArrowKeyPress(evtCtrlUpArrow);
 	
 	lightboxDOMNode = dojo.byId(lightboxRootId);
 	thumbArray = lightboxDOMNode.getElementsByTagName("img");
@@ -88,12 +85,12 @@ function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {
 	assertEquals("after ctrl-up-arrow, expect last image to still be last", "fluid.img.last", thumbArray[13].id);
 
 	// Test: ctrl down arrow - expect everything to go back to the original state
-	lightbox.handleArrowKeyPress(evtDownArrow);
-	helpTestItemsInOriginalPosition("after ctrl-down wrap", dojo.byId(lightboxRootId));
+	lightbox.handleArrowKeyPress(evtCtrlDownArrow);
+	itemsInOriginalPositionTest("after ctrl-down wrap", dojo.byId(lightboxRootId));
 
 }
 
-function helpTestItemsInOriginalPosition(desc, lightboxDOMNode) {
+function itemsInOriginalPositionTest(desc, lightboxDOMNode) {
 	thumbArray = lightboxDOMNode.getElementsByTagName("img");
 	assertEquals(desc + " expect first image to be first", "fluid.img.first", thumbArray[0].id);
 	assertEquals(desc + " expect second image to be second", "fluid.img.second", thumbArray[1].id);
@@ -113,53 +110,58 @@ function helpTestItemsInOriginalPosition(desc, lightboxDOMNode) {
 
 function testHandleArrowKeyPressForUpAndDown() {
 	var lightbox = createLightbox();
-	var defaultClass="image-container-default";
-	var focusedClass="image-container-selected";
-	var draggingClass="image-container-dragging";
-	var evtDownArrow = {keyCode: dojo.keys.DOWN_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
-	var evtUpArrow = {keyCode: dojo.keys.UP_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
-
 	// setup: force the grid to have four columns
 	lightbox.gridLayoutHandler.numOfColumnsInGrid = 4;
 	lightbox.domNode.focus();
-	assertTrue("Initially the first image should be focused",dojo.hasClass(document.getElementById(firstImageId), focusedClass));
+	
+	isItemFocusedTest("Initially ", firstImageId);
 
 	// Test: down arrow to the fifth image
 	lightbox.handleArrowKeyPress(evtDownArrow);
-	assertTrue("After down arrow, first image should be default",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertFalse("After down arrow, first image should not be focused", dojo.hasClass(document.getElementById(firstImageId), focusedClass));
-	assertTrue("After down arrow, fifth image should be focused",dojo.hasClass(document.getElementById(fifthImageId), focusedClass));
-	assertFalse("After down arrow, fifth image should not be default", dojo.hasClass(document.getElementById(fifthImageId), defaultClass));
+	isItemDefaultTest("After down arrow ", firstImageId);
+	isItemFocusedTest("After down arrow ", fifthImageId);
 
 	// Test: up arrow to the first image
 	lightbox.handleArrowKeyPress(evtUpArrow);
-	assertFalse("After up arrow, first image should not be default",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertTrue("After up arrow, first image should be focused", dojo.hasClass(document.getElementById(firstImageId), focusedClass));
-	assertFalse("After up arrow, fifth image should not be focused",dojo.hasClass(document.getElementById(fifthImageId), focusedClass));
-	assertTrue("After up arrow, fifth image should be default", dojo.hasClass(document.getElementById(fifthImageId), defaultClass));
+	isItemFocusedTest("After up arrow ", firstImageId);
+	isItemDefaultTest("After up arrow ", fifthImageId);
 
 	// Test: up arrow to the second last image
 	lightbox.handleArrowKeyPress(evtUpArrow);
-	assertTrue("After up arrow, first image should be default",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertFalse("After up arrow, first image should not be focused", dojo.hasClass(document.getElementById(firstImageId), focusedClass));
-	assertTrue("After up arrow, second last image should be focused",dojo.hasClass(document.getElementById(secondLastImageId), focusedClass));
-	assertFalse("After up arrow, second last image should be default", dojo.hasClass(document.getElementById(secondLastImageId), defaultClass));
+	isItemDefaultTest("After up arrow wrap ", firstImageId);
+	isItemFocusedTest("After up arrow wrap ", secondLastImageId);
 
 	// Test: tool tip is showing.
-	helpTestTooltip(secondLastImageId, lightbox.activeItem);
+	isTooltipShowingTest(secondLastImageId, lightbox.activeItem);
 
 	// Test: down arrow to the first image
 	lightbox.handleArrowKeyPress(evtDownArrow);
-	assertFalse("After down arrow, first image should not be default",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertTrue("After down arrow, first image should be focused", dojo.hasClass(document.getElementById(firstImageId), focusedClass));
-	assertFalse("After down arrow, second last image should not be focused",dojo.hasClass(document.getElementById(secondLastImageId), focusedClass));
-	assertTrue("After down arrow, second last image should be default", dojo.hasClass(document.getElementById(secondLastImageId), defaultClass));
+	isItemFocusedTest("After down arrow wrap ", firstImageId);
+	isItemDefaultTest("After down arrow wrap ", secondLastImageId);
 	
 	// Test: tool tip is showing.
-	helpTestTooltip(firstImageId, lightbox.activeItem);	
+	isTooltipShowingTest(firstImageId, lightbox.activeItem);	
 }
 
-function helpTestTooltip(imageId, activeItem) {
+function isItemDefaultTest(message, itemId) {
+	assertTrue(message + itemId  +  " should be default", dojo.hasClass(document.getElementById(itemId), defaultClass));	
+	assertFalse(message + itemId  +  " not be focused", dojo.hasClass(document.getElementById(itemId), focusedClass));
+	assertFalse(message + itemId  +  " not be dragging", dojo.hasClass(document.getElementById(itemId), draggingClass));
+}
+
+function isItemFocusedTest(message, itemId) {
+	assertTrue(message + itemId  +  " should be focused", dojo.hasClass(document.getElementById(itemId), focusedClass));	
+	assertFalse(message + itemId  +  " should not be default",dojo.hasClass(document.getElementById(itemId), defaultClass));
+	assertFalse(message + itemId  +  " should not be default",dojo.hasClass(document.getElementById(itemId), draggingClass));
+}
+
+function isItemDraggedTest(message, itemId) {
+	assertTrue(message + itemId  +  " should be dragging", dojo.hasClass(document.getElementById(itemId), draggingClass));	
+	assertFalse(message + itemId  +  " should not be default",dojo.hasClass(document.getElementById(itemId), defaultClass));
+	assertFalse(message + itemId  +  " not should be focused", dojo.hasClass(document.getElementById(itemId), focusedClass));	
+}
+
+function isTooltipShowingTest(imageId, activeItem) {
 	var localizedStringsResource = dojo.i18n.getLocalization("fluid", "instructions");
 	tooltipFromRez = localizedStringsResource.thumbnailInstructions;
 	tooltipContainer = MochiKit.DOM.getFirstElementByTagAndClassName("div", "dojoTooltipContainer", document);
@@ -173,117 +175,94 @@ function helpTestTooltip(imageId, activeItem) {
 
 function testHandleArrowKeyPressForLeftAndRight()	 {
 	var lightbox = createLightbox();
-	var defaultClass="image-container-default";
-	var focusedClass="image-container-selected";
-	var draggingClass="image-container-dragging";
 	lightbox.domNode.focus();
 	
-	// set the focus on the first image
-	assertTrue("first image should be focused",dojo.hasClass(document.getElementById(firstImageId), focusedClass));
-	assertFalse("first image should not be default", dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertTrue("second  image should be not focused",dojo.hasClass(document.getElementById(secondImageId), defaultClass));
-	assertFalse("second  image should not be focused", dojo.hasClass(document.getElementById(secondImageId), focusedClass));
+	isItemFocusedTest("Initially ", firstImageId);
+	isItemDefaultTest("Initially ", secondImageId);
 
 	// Test: right arrow to the second image
-	var evtRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
 	lightbox.handleArrowKeyPress(evtRightArrow);
-	assertTrue("first image should be default",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertFalse("first image should not be focused", dojo.hasClass(document.getElementById(firstImageId), focusedClass));
-	assertTrue("second image should be focused",dojo.hasClass(document.getElementById(secondImageId), focusedClass));
-	assertFalse("second image should not be default", dojo.hasClass(document.getElementById(secondImageId), defaultClass));
+	isItemFocusedTest("After right arrow ", secondImageId);
+	isItemDefaultTest("After right arrow ", firstImageId);
 
 	// Test: right arrow to the last image
 	for (focusPosition = 2; focusPosition < numOfImages; focusPosition++ ) {
 		lightbox.handleArrowKeyPress(evtRightArrow);
 	}
-	assertTrue("first image should be default", dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertTrue("second image should be default", dojo.hasClass(document.getElementById(secondImageId), defaultClass));
-	assertTrue("last image should be focused", dojo.hasClass(document.getElementById(lastImageId), focusedClass));
-
+	isItemFocusedTest("Right arrow to last ", lastImageId);
+	isItemDefaultTest("Right arrow to last ", firstImageId);
+	isItemDefaultTest("Right arrow to last ", secondImageId);
+	
 	// Test: left arrow to the previous image
-	var evtLeftArrow = {keyCode: dojo.keys.LEFT_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
 	lightbox.handleArrowKeyPress(evtLeftArrow);
-	assertTrue("left arrow to second first image should be default", dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertTrue("left arrow to second second-last image should be focused", dojo.hasClass(document.getElementById(secondLastImageId), focusedClass));
-	assertTrue("left arrow to second last image should be default", dojo.hasClass(document.getElementById(lastImageId), defaultClass));
+	isItemFocusedTest("Left arrow to second last ", secondLastImageId);
+	isItemDefaultTest("Left arrow to second last ", firstImageId);
+	isItemDefaultTest("Left arrow to second last ", lastImageId);
 	
 	// Test: right arrow past the last image - expect wrap to the first image
 	lightbox.handleArrowKeyPress(evtRightArrow);
 	lightbox.handleArrowKeyPress(evtRightArrow);
-	assertTrue("first image should be focused after wrapping", dojo.hasClass(document.getElementById(firstImageId), focusedClass));
-	assertFalse("first image should not be default after wrapping", dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertTrue("second image should be default", dojo.hasClass(document.getElementById(secondImageId), defaultClass));
-	assertFalse("second image should not be focused after wrapping", dojo.hasClass(document.getElementById(secondImageId), focusedClass));
-	assertTrue("last image should be default", dojo.hasClass(document.getElementById(lastImageId), defaultClass));
-	assertFalse("last image should not be focused after wrapping", dojo.hasClass(document.getElementById(lastImageId), focusedClass));
-	
+	isItemFocusedTest("Right arrow wrap ", firstImageId);
+	isItemDefaultTest("Right arrow wrap ", secondImageId);
+	isItemDefaultTest("Right arrow wrap ", lastImageId);
+
 	// Test: left arrow on the first image - expect wrap to the last image
 	lightbox.handleArrowKeyPress(evtLeftArrow);
-	assertTrue("first image should be default", dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertTrue("second image should be default", dojo.hasClass(document.getElementById(secondImageId), defaultClass));
-	assertTrue("last image should be focused", dojo.hasClass(document.getElementById(lastImageId), focusedClass));
+	isItemFocusedTest("Left arrow wrap ", lastImageId);
+	isItemDefaultTest("Left arrow wrap ", firstImageId);
+	isItemDefaultTest("Left arrow wrap ", secondImageId);
+
 }
 
 function testHandleKeyUpAndHandleKeyDownChangesState() {
 	var lightbox = createLightbox();
-	var defaultClass="image-container-default";
-	var focusClass="image-container-selected";
-	var draggingClass="image-container-dragging";
 	lightbox.domNode.focus();
 
 	// check that none of the images are currently being moved.
-	assertFalse("first image should not be in move state to start",dojo.hasClass(document.getElementById(firstImageId), draggingClass));
-	assertFalse("second image should not be in move state to start",dojo.hasClass(document.getElementById(secondImageId), draggingClass));
-	assertFalse("second-last image should not be in move state to start",dojo.hasClass(document.getElementById(secondLastImageId), draggingClass));
+	isItemFocusedTest("Initially ", firstImageId);
+	isItemDefaultTest("Initially ", secondImageId);
+	isItemDefaultTest("Initially ", secondLastImageId);
 	
 	// focus the first thumb
 	lightbox.focusItem(dojo.byId(firstImageId));
 	
 	// ctrl down - expect dragging state to start
-	var evtCTRL = {keyCode: dojo.keys.CTRL, preventDefault: function(){}, stopPropagation: function(){} };
 	lightbox.handleKeyDown(evtCTRL);
-	assertTrue("first image should be in move state after ctrl-down",dojo.hasClass(document.getElementById(firstImageId), draggingClass));
-	assertFalse("second image should not be in move state after ctrl-down",dojo.hasClass(document.getElementById(secondImageId), draggingClass));
-	assertFalse("second-last image should not be in move state after ctrl-down",dojo.hasClass(document.getElementById(secondLastImageId), draggingClass));
-	assertFalse("first image should not be focused after ctrl-down", dojo.hasClass(document.getElementById(firstImageId), focusClass));
-	
+	isItemDraggedTest("After ctrl-down, should be in move state ", firstImageId);
+	isItemDefaultTest("After ctrl-down, ", secondImageId);
+	isItemDefaultTest("After ctrl-down, ", secondLastImageId);
+		
 	// right arrow down - all the dragging states should remain the same
-	var evtRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
 	lightbox.handleKeyDown(evtRightArrow);
-	assertTrue("first image should still be in move state after right-arrow",dojo.hasClass(document.getElementById(firstImageId), draggingClass));
-	assertFalse("second image should still not be in move state after right-arrow",dojo.hasClass(document.getElementById(secondImageId), draggingClass));
-	assertFalse("second-last image should still not be in move state after right-arrow",dojo.hasClass(document.getElementById(secondLastImageId), draggingClass));
-	assertFalse("first image should not be focused after right-arrow", dojo.hasClass(document.getElementById(firstImageId), focusClass));
+	isItemDraggedTest("After ctrl-down right arrow down, should be in move state ", firstImageId);
+	isItemDefaultTest("After ctrl-down right arrow down, ", secondImageId);
+	isItemDefaultTest("After ctrl-down right arrow down, ", secondLastImageId);
 
 	// right arrow with key-up event handler. The dragging states should remain the same.
 	lightbox.handleKeyUp(evtRightArrow);
-	assertTrue("first image should still be in move state after right-arrow up",dojo.hasClass(document.getElementById(firstImageId), draggingClass));
-	assertFalse("second image should still not be in move state after right-arrow up",dojo.hasClass(document.getElementById(secondImageId), draggingClass));
-	assertFalse("second-last image should still not be in move state after right-arrow up",dojo.hasClass(document.getElementById(secondLastImageId), draggingClass));
-	assertFalse("first image should not be focused after right-arrow up", dojo.hasClass(document.getElementById(firstImageId), focusClass));
+	isItemDraggedTest("After ctrl-down right arrow up, should be in move state ", firstImageId);
+	isItemDefaultTest("After ctrl-down right arrow up, ", secondImageId);
+	isItemDefaultTest("After ctrl-down right arrow up, ", secondLastImageId);
 
     // ctrl up - expect dragging to end
 	lightbox.handleKeyUp(evtCTRL);
-	assertFalse("first image should no longer be in move state after ctrl up",dojo.hasClass(document.getElementById(firstImageId), draggingClass));
-	assertFalse("second image should still not be in move state after ctrl up",dojo.hasClass(document.getElementById(secondImageId), draggingClass));
-	assertFalse("second-last image should still not be in move state after ctrl up",dojo.hasClass(document.getElementById(secondLastImageId), draggingClass));
-	assertTrue("first image should be focused after ctrl up", dojo.hasClass(document.getElementById(firstImageId), focusClass));
+	isItemFocusedTest("After ctrl-up ", firstImageId);
+	isItemDefaultTest("After ctrl-up ", secondImageId);
+	isItemDefaultTest("After ctrl-up ", secondLastImageId);
 }
 
 function testHandleKeyUpAndHandleKeyDownItemMovement() {
 	var lightbox = createLightbox();
 	lightbox.domNode.focus();
 
-	var evtCTRL = {keyCode: dojo.keys.CTRL, preventDefault: function(){}, stopPropagation: function(){} };
-
 	// after ctrl down, order should not change
 	lightbox.handleKeyDown(evtCTRL);
 	var lightboxDOMNode = dojo.byId(lightboxRootId);
-	helpTestItemsInOriginalPosition("after ctrl-down", lightboxDOMNode);
+	itemsInOriginalPositionTest("after ctrl-down", lightboxDOMNode);
 	
 	// after ctrl up, order should not change
 	lightbox.handleKeyUp(evtCTRL);
-	helpTestItemsInOriginalPosition("after ctrl-up", lightboxDOMNode);
+	itemsInOriginalPositionTest("after ctrl-up", lightboxDOMNode);
 }
 
 /*
@@ -293,12 +272,9 @@ function testHandleKeyUpAndHandleKeyDownItemMovement() {
 function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {	
 	var lightbox = createLightbox();
 	lightbox.domNode.focus();
-
-	var evtRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
-	var evtLeftArrow = {keyCode: dojo.keys.LEFT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
 	
 	// Test: ctrl right arrow - expect first and second image to swap
-	lightbox.handleArrowKeyPress(evtRightArrow);
+	lightbox.handleArrowKeyPress(evtCtrlRightArrow);
 
 	var lightboxDOMNode = dojo.byId(lightboxRootId);
 	var thumbArray = lightboxDOMNode.getElementsByTagName("img");
@@ -307,12 +283,12 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	assertEquals("after ctrl-right-arrow, expect last image to be last", "fluid.img.last", thumbArray[numOfImages - 1].id);
 	
 	// Test: ctrl left arrow - expect first and second image to swap back to original order
-	lightbox.handleArrowKeyPress(evtLeftArrow);
-	helpTestItemsInOriginalPosition("after ctrl-left-arrow", lightboxDOMNode);
+	lightbox.handleArrowKeyPress(evtCtrlLeftArrow);
+	itemsInOriginalPositionTest("after ctrl-left-arrow", lightboxDOMNode);
 
 	// Test: ctrl left arrow - expect first image to move to last place,
 	//       second image to move to first place and last image to move to second-last place
-	lightbox.handleArrowKeyPress(evtLeftArrow);
+	lightbox.handleArrowKeyPress(evtCtrlLeftArrow);
 
 	thumbArray = lightboxDOMNode.getElementsByTagName("img");;
 	assertEquals("after ctrl-left-arrow on first image, expect first last to be last", "fluid.img.first", thumbArray[numOfImages - 1].id);
@@ -321,56 +297,48 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 
 	// Test: ctrl right arrow - expect first image to move back to first place,
 	//       second image to move to back second place and thumbLast to move to back last place
-	lightbox.handleArrowKeyPress(evtRightArrow);
-	helpTestItemsInOriginalPosition("after ctrl-left-arrow", lightboxDOMNode);
-
+	lightbox.handleArrowKeyPress(evtCtrlRightArrow);
+	itemsInOriginalPositionTest("after ctrl-left-arrow", lightboxDOMNode);
 }
 
 function testPersistFocus () {
 	var lightbox = createLightbox();
-	var defaultClass="image-container-default";
-	var focusClass="image-container-selected";
 
-	assertFalse("first image should not be focused before lightbox has focus",dojo.hasClass(document.getElementById(firstImageId), focusClass));
-	assertTrue("first image should be default before lightbox has focus",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
+	isItemDefaultTest("Initially ", firstImageId);
 
 	lightbox.domNode.focus();
 
 	// first thumb nail should be focused initially.
-	assertTrue("Persist Focus Test: first image should be moveable",dojo.hasClass(document.getElementById(firstImageId), focusClass));
-	assertFalse("Persist Focus Test: second image should not be focused",dojo.hasClass(document.getElementById(secondImageId), focusClass));
-	assertFalse("Persist Focus Test: second-last image should not be focused",dojo.hasClass(document.getElementById(secondLastImageId), focusClass));
+	isItemFocusedTest("When lightbox has focus ", firstImageId);
+	isItemDefaultTest("When lightbox has focus ", secondImageId);
 	
 	// Change focus to the input1, then back to the lightbox
 	dojo.byId ("input1").focus();
 	lightbox.domNode.blur();
-	assertFalse("first image should not be moveable after blur",dojo.hasClass(document.getElementById(firstImageId), focusClass));
+	isItemDefaultTest("After blur ", firstImageId);
 	
 	focusLightboxNode(lightbox, lightbox.domNode);
 	
 	// check that the first thumb nail is still moveable.
-	assertTrue("Persist Focus Test: first image should be moveable",dojo.hasClass(document.getElementById(firstImageId), focusClass));
-	assertFalse("Persist Focus Test: second image should not be focused",dojo.hasClass(document.getElementById(secondImageId), focusClass));
-	assertFalse("Persist Focus Test: second-last image should not be focused",dojo.hasClass(document.getElementById(secondLastImageId), focusClass));
+	isItemFocusedTest("When lightbox has focus again ", firstImageId);
+	isItemDefaultTest("When lightbox has focus again ", secondImageId);
 	
 	// set focus to another image.
 	lightbox.focusItem(dojo.byId(secondImageId));
-	assertFalse("Persist Focus Test: first image should not be focused",dojo.hasClass(document.getElementById(firstImageId), focusClass));
-	assertTrue ("Persist Focus Test: second image should be moveable",dojo.hasClass(document.getElementById(secondImageId), focusClass));
-	assertFalse("Persist Focus Test: second-last should not be focused",dojo.hasClass(document.getElementById(secondLastImageId), focusClass));
+	isItemFocusedTest("Changed focus to second ", secondImageId);
+	isItemDefaultTest("Changed focus to second ", firstImageId);
 	
 	// Change focus to the input1, then back to the lightbox
 	dojo.byId ("input1").focus();
 	focusLightboxNode(lightbox, lightbox.domNode);
 	
-	// check that the first thumb nail is still moveable.
+	// check that the second thumb nail is still moveable.
 	lightbox.focusItem(dojo.byId(secondImageId));
-	assertFalse("Persist Focus Test: first image should not be focused",dojo.hasClass(document.getElementById(firstImageId), focusClass));
-	assertTrue ("Persist Focus Test: second image should be moveable",dojo.hasClass(document.getElementById(secondImageId), focusClass));
-	assertFalse("Persist Focus Test: second-last image should not be focused",dojo.hasClass(document.getElementById(secondLastImageId), focusClass));
+	isItemFocusedTest("Lightbox refocused with second selected ", secondImageId);
+	isItemDefaultTest("Lightbox refocused with second selected ", firstImageId);
 	
 	lightbox.getElementToFocus(lightbox.domNode).blur();
-	assertTrue("after lightbox blur, focusedItem should not be selected", dojo.hasClass(document.getElementById(secondImageId), defaultClass));
+	isItemDefaultTest("Lightbox blur with second selected ", secondImageId);
 
 	// test persistance of focus between page navigation / page loads?	
 }
@@ -378,81 +346,56 @@ function testPersistFocus () {
 
 function testfocusItem () {
 	var lightbox = createLightbox();
- 	var defaultClass="image-container-default";
-	var focusClass="image-container-selected";
-	var draggingClass="image-container-dragging";
 	
 	// nothing should be focused
-	assertFalse("first image should not be focused initially",dojo.hasClass(document.getElementById(firstImageId), focusClass));
-	assertFalse("second image should not be focused initially",dojo.hasClass(document.getElementById(secondImageId), focusClass));
-	assertTrue("first image should have a default look initially",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertTrue("second image should have a default look initially",dojo.hasClass(document.getElementById(secondImageId), defaultClass));
-		
+	isItemDefaultTest("Initially", firstImageId);
+	isItemDefaultTest("Initially", secondImageId);
+	
 	// focus the second image
 	lightbox.focusItem(dojo.byId(secondImageId));
-
-	// test the response to the focus
-	assertFalse("second image should not be default after it's focused", dojo.hasClass(document.getElementById(secondImageId), defaultClass));
-	assertTrue("second image should be focused after it's focused", dojo.hasClass(document.getElementById(secondImageId), focusClass));
+	isItemFocusedTest("After focus on second image ", secondImageId);
 	
 	// focus the image already focused to ensure it remains focused.
 	lightbox.focusItem(dojo.byId(secondImageId));
-	assertTrue("second image should be focused after it's focused again",dojo.hasClass(document.getElementById(secondImageId), focusClass));
+	isItemFocusedTest("After refocus on second image ", secondImageId);
 
 	// Test: focus a different image and check to see that the previous image is defocused
 	// and the new image is focused	
 	lightbox.focusItem(dojo.byId (firstImageId));
 	
-	// previous image defocused
-	assertTrue("second image should be default after the first image is focused",dojo.hasClass(document.getElementById(secondImageId), defaultClass));
-	assertFalse("second image should not be focused after the first image is focused",dojo.hasClass(document.getElementById(secondImageId), focusClass));
-	
-	// new image focused
-	assertFalse("first image should not be default after the first image is focused",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertTrue("first image should be focused after the first image is focused",dojo.hasClass(document.getElementById(firstImageId), focusClass));
-	
+	isItemDefaultTest("After focus on first image ", secondImageId);
+	isItemFocusedTest("After focus on first image ", firstImageId);
 }
 
 function testSelectActiveItemNothingSelected() {
 	var lightbox = createLightbox();
-	var defaultClass="image-container-default";
-	var focusClass="image-container-selected";
 
-	// before starting, nothing should have focus	
-	assertTrue("first image should not be initially focused",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertTrue("second image should not be initially focused",dojo.hasClass(document.getElementById(secondImageId), defaultClass));
-
+	isItemDefaultTest("Initially", firstImageId);
 	lightbox.selectActiveItem();
-	assertFalse("after selecting active item, first image should not be default",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertTrue("after selecting active item, first image should be focused",dojo.hasClass(document.getElementById(firstImageId), focusClass));
+	isItemFocusedTest("After select active item ", firstImageId);
 }
 	
 function testSelectActiveItemSecondSelected() {
 	// set the active item to something else
 	var lightbox = createLightbox();
-	var defaultClass="image-container-default";
-	var focusClass="image-container-selected";
 	lightbox._setActiveItem(dojo.byId (secondImageId));
 	
 	// before selecting the active item, nothing should have focus	
-	assertTrue("first image should not be focused initially ",dojo.hasClass(document.getElementById(firstImageId), defaultClass));
-	assertTrue("second image should not be focused initially ",dojo.hasClass(document.getElementById(secondImageId), defaultClass));
+	isItemDefaultTest("Initially", firstImageId);
+	isItemDefaultTest("Initially", secondImageId);
 	
 	lightbox.selectActiveItem();
-	assertFalse("after selecting active item, first image should be not focused",dojo.hasClass(document.getElementById(firstImageId), focusClass));
-	assertTrue("after selecting active item, second image should be focused",dojo.hasClass(document.getElementById(secondImageId), focusClass));
+	isItemFocusedTest("after selecting active item ", secondImageId);
+	isItemDefaultTest("after selecting active item ", firstImageId);
 }
 
 function testSetActiveItemToDefaultState() {
 	var lightbox = createLightbox();
-	var defaultClass="image-container-default";
-	
-	// first set up an active item so that it's not in a default state
 	lightbox.domNode.focus();
-	assertFalse("before testing, first image should not be in default state", dojo.hasClass(document.getElementById(firstImageId), defaultClass));
+	isItemFocusedTest("Initially", firstImageId);
 	
 	lightbox.setActiveItemToDefaultState();
-	assertTrue("after resetting active item, first image should be in default state", dojo.hasClass(document.getElementById(firstImageId), defaultClass));
+	isItemDefaultTest("after resetting active item, ", firstImageId);
 }
 
 function testHandleWindowResizeEvent() {

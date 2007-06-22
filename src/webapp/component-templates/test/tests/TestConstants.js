@@ -19,3 +19,20 @@ var fourthLastImageId = "gallery:::gallery-thumbs:::lightbox-cell::10:";
 var thirdLastImageId = "gallery:::gallery-thumbs:::lightbox-cell::11:";
 var secondLastImageId = "gallery:::gallery-thumbs:::lightbox-cell::12:";
 var lastImageId = "gallery:::gallery-thumbs:::lightbox-cell::13:";
+
+// CSS class names
+var defaultClass="image-container-default";
+var focusedClass="image-container-selected";
+var draggingClass="image-container-dragging";
+
+// Stubs
+var evtDownArrow = {keyCode: dojo.keys.DOWN_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
+var evtUpArrow = {keyCode: dojo.keys.UP_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
+var evtRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
+var evtLeftArrow = {keyCode: dojo.keys.LEFT_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
+var evtCTRL = {keyCode: dojo.keys.CTRL, preventDefault: function(){}, stopPropagation: function(){} };
+var evtCtrlRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
+var evtCtrlLeftArrow = {keyCode: dojo.keys.LEFT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
+var evtCtrlDownArrow = {keyCode: dojo.keys.DOWN_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
+var evtCtrlUpArrow = {keyCode: dojo.keys.UP_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
+
