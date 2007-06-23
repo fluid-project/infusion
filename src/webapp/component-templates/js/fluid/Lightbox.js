@@ -40,7 +40,6 @@ dojo.declare(
 	"fluid.Lightbox",	// class name
 	dijit.base.Widget,
 	{
-		
 		// the lightbox-reorderable DOM element that is currently active
 		activeItem: null,
 		
@@ -51,6 +50,8 @@ dojo.declare(
 		tagNameIndexToFocus: 0,
 		
 		messageNamebase: "message-bundle:",
+		
+		orderChangedCallback: null,
 		
 		/**
 		 * Return the element within the item that should receive focus. 
@@ -438,20 +439,38 @@ var FluidProject = {
 				rootNode.removeChild(currChild);
 			}			
 		} 
-	  }
+	  },
+	findForm: function (element) {
+      while(element) {
+      if (element.nodeName.toLowerCase() == "form") return element;
+        element = element.parentNode;
+        }
+      }
 	},
 // Server-level initialisation for the lightbox. This is template-specific and
 // server-generic, in that template-specific dependencies have been factored off.
 	initLightbox: function(namebase, count, messageNamebase) {
-      FluidProject.initLightboxClient(namebase, messageNamebase, "a", 1);
+      FluidProject.initLightboxClient(namebase, count, messageNamebase, "a", 1);
+	  },
+	deriveCellBase: function(namebase, index) {
+	  return namebase + "lightbox-cell::"+index+":";
 	  },
 // Client-level initialisation for the lightbox, allowing parameterisation for
 // different templates.
-	initLightboxClient: function(namebase, messageNamebase, tagName, tagNameIndex) {
+	initLightboxClient: function(namebase, count, messageNamebase, tagName, tagNameIndex) {
+	  var form = FluidProject.Utilities.findForm(document.getElementById(namebase));
+	  var inputs = new Array();
+	  for (var i = 0; i < count; ++ i) {
+	    var inputid = FluidProject.deriveCellBase(namebase, i) + "reorder-index";
+	    }
+	  var orderChangedCallback = function() {
+	    };
+	
 	  var lightbox = new fluid.Lightbox(
 	    {tagNameToFocus: tagName,
 	     tagNameIndexToFocus : tagNameIndex,
-	     messageNamebase : messageNamebase
+	     messageNamebase : messageNamebase,
+	     orderChangedCallback: orderChangedCallback
 	    }, 
 	    namebase);
     }
