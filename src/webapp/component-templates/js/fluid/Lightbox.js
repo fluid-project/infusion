@@ -27,7 +27,6 @@ dojo.require("dijit.base.Widget");
 dojo.require("dojo.dnd.source");
 dojo.require("MochiKit.DOM");
 dojo.require("dijit.Tooltip");
-dojo.require("dojo.i18n");
 
 (function() {
 	fluid.states = {
@@ -50,6 +49,8 @@ dojo.declare(
 		tagNameToFocus: null,
 		
 		tagNameIndexToFocus: 0,
+		
+		messageNamebase: "message-bundle:",
 		
 		/**
 		 * Return the element within the item that should receive focus. 
@@ -77,7 +78,8 @@ dojo.declare(
 			 this._initDnD();
 			 
 			 // Internationalization of Strings
-			 dojo.requireLocalization("fluid", "instructions");
+// This line here will cause Firefox 1.5 to lock up on Windows.
+//			 dojo.requireLocalization("fluid", "instructions");
 			
 		}, // end postCreate
 		
@@ -231,24 +233,19 @@ dojo.declare(
 			this.gridLayoutHandler.updateGridWidth();
 		},
 		
-		_createStyledTooltip: function () {
-				var resource = dojo.i18n.getLocalization("fluid", "instructions");
-				
-				var firstPara = dojo.doc.createElement("p");
-				firstPara.innerHTML = "<strong>"+resource.thumbnailViewText+"</strong>";
-				firstPara.innerHTML += "<em>"+resource.thumbnailViewEmphasis+"</em>";
-
-				var secondPara = dojo.doc.createElement("p");
-				secondPara.innerHTML = "<strong>"+resource.thumbnailDragText+"</strong>";
-				secondPara.innerHTML += "<em>"+resource.thumbnailDragEmphasis+"</em>";
-
-				var styleTextDiv = dojo.doc.createElement("div");
-		},
-
+		_fetchMessage: function(messagekey) {
+		  var messageid = this.messageNamebase + messagekey;
+		  var node = document.getElementById(messageid);
+		  return node? node.innerHTML: "[Message not found at id " + messageid + "]";
+		  },
+		
 		_setActiveItem: function(anItem) {
 			if (!anItem.theTooltip) {
-				var res = dojo.i18n.getLocalization("fluid", "instructions");
-				anItem.theTooltip = new dijit.Tooltip ({connectId: anItem.id, caption: res.thumbnailInstructions});
+			    var caption = this._fetchMessage("thumbnailInstructions");
+				anItem.theTooltip = new dijit.Tooltip (
+				{connectId: anItem.id, 
+				 caption: caption
+				});
             }
 
 			this.activeItem = anItem;
@@ -445,14 +442,17 @@ var FluidProject = {
 	},
 // Server-level initialisation for the lightbox. This is template-specific and
 // server-generic, in that template-specific dependencies have been factored off.
-	initLightbox: function(namebase) {
-      FluidProject.initLightboxClient(namebase, "a", 1);
+	initLightbox: function(namebase, count, messageNamebase) {
+      FluidProject.initLightboxClient(namebase, messageNamebase, "a", 1);
 	  },
 // Client-level initialisation for the lightbox, allowing parameterisation for
 // different templates.
-	initLightboxClient: function(namebase, tagName, tagNameIndex) {
-	  var lightbox = new fluid.Lightbox(null, namebase);
-      lightbox.tagNameToFocus = tagName
-      lightbox.tagNameIndexToFocus = tagNameIndex;
+	initLightboxClient: function(namebase, messageNamebase, tagName, tagNameIndex) {
+	  var lightbox = new fluid.Lightbox(
+	    {tagNameToFocus: tagName,
+	     tagNameIndexToFocus : tagNameIndex,
+	     messageNamebase : messageNamebase
+	    }, 
+	    namebase);
     }
   };

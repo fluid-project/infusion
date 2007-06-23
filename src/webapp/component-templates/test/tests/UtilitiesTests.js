@@ -12,8 +12,8 @@ function testRemoveNonElementNodes() {
 			otherNodeCount++;
 		}
 	}
-	assertEquals("before removing whitespace, we should have 4 elements", 4, elementNodeCount);
-	assertEquals("before removing whitespace, we should have 6 non-elements", 6, otherNodeCount);
+	assertEquals("before removing whitespace, we should have 5 elements", 5, elementNodeCount);
+	assertEquals("before removing whitespace, we should have 9 non-elements", 9, otherNodeCount);
 	
 	FluidProject.Utilities.removeNonElementNodes(testNode);
 
@@ -26,7 +26,7 @@ function testRemoveNonElementNodes() {
 			otherNodeCount++;
 		}
 	}
-	assertEquals("after removing whitespace, we should have 4 elements", 4, elementNodeCount);
+	assertEquals("after removing whitespace, we should have 5 elements", 5, elementNodeCount);
 	assertEquals("after removing whitespace, we should have 0 non-elements", 0, otherNodeCount);
 	
 }

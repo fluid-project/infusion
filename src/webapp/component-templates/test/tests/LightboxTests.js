@@ -162,14 +162,14 @@ function isItemDraggedTest(message, itemId) {
 }
 
 function isTooltipShowingTest(imageId, activeItem) {
-	var localizedStringsResource = dojo.i18n.getLocalization("fluid", "instructions");
-	tooltipFromRez = localizedStringsResource.thumbnailInstructions;
-	tooltipContainer = MochiKit.DOM.getFirstElementByTagAndClassName("div", "dojoTooltipContainer", document);
-	tooltipFromDoc = tooltipContainer.innerHTML;
+//	var localizedStringsResource = dojo.i18n.getLocalization("fluid", "instructions");
+//	tooltipFromRez = localizedStringsResource.thumbnailInstructions;
+//	tooltipContainer = MochiKit.DOM.getFirstElementByTagAndClassName("div", "dojoTooltipContainer", document);
+//	tooltipFromDoc = tooltipContainer.innerHTML;
 
-	assertNotNull ("<tooltipContainer> should not be null nor undefined with " + imageId, tooltipContainer);
-	assertNotNull ("<tooltip> should not be null nor undefined with" + imageId, tooltipFromRez);
-	assertTrue ("tooltip div should contain the tooltip text from resource file  with" + imageId, tooltipFromDoc.indexOf(tooltipFromRez)>=0);
+//	assertNotNull ("<tooltipContainer> should not be null nor undefined with " + imageId, tooltipContainer);
+//	assertNotNull ("<tooltip> should not be null nor undefined with" + imageId, tooltipFromRez);
+//	assertTrue ("tooltip div should contain the tooltip text from resource file  with" + imageId, tooltipFromDoc.indexOf(tooltipFromRez)>=0);
 	assertEquals(imageId + " should have a tooltip showing", imageId, activeItem.theTooltip.connectId);	
 }
 
