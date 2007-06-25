@@ -19,7 +19,11 @@ function focusLightboxNode(lightbox, domNode) {
 }
 
 function createLightbox() {
-	return new fluid.Lightbox(null, lightboxRootId);
+	return new fluid.Lightbox(
+	    {tagNameToFocus: "a",
+	     tagNameIndexToFocus : 0,
+	     orderChangedCallback: function(){}}
+	     , lightboxRootId);
 }
 
 function testFindAncestorGridCell() {
@@ -53,7 +57,7 @@ function testFindAncestorGridCell() {
  */
 function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {	
 	var lightbox = createLightbox();
-	lightbox.domNode.focus();
+	lightbox.selectActiveItem();
 
 	// setup: force the grid to have three columns
 	lightbox.gridLayoutHandler.numOfColumnsInGrid = 3;
@@ -112,7 +116,7 @@ function testHandleArrowKeyPressForUpAndDown() {
 	var lightbox = createLightbox();
 	// setup: force the grid to have four columns
 	lightbox.gridLayoutHandler.numOfColumnsInGrid = 4;
-	lightbox.domNode.focus();
+  lightbox.selectActiveItem();
 	
 	isItemFocusedTest("Initially ", firstImageId);
 
@@ -175,7 +179,7 @@ function isTooltipShowingTest(imageId, activeItem) {
 
 function testHandleArrowKeyPressForLeftAndRight()	 {
 	var lightbox = createLightbox();
-	lightbox.domNode.focus();
+  lightbox.selectActiveItem();
 	
 	isItemFocusedTest("Initially ", firstImageId);
 	isItemDefaultTest("Initially ", secondImageId);
@@ -216,7 +220,7 @@ function testHandleArrowKeyPressForLeftAndRight()	 {
 
 function testHandleKeyUpAndHandleKeyDownChangesState() {
 	var lightbox = createLightbox();
-	lightbox.domNode.focus();
+  lightbox.selectActiveItem();
 
 	// check that none of the images are currently being moved.
 	isItemFocusedTest("Initially ", firstImageId);
@@ -253,7 +257,7 @@ function testHandleKeyUpAndHandleKeyDownChangesState() {
 
 function testHandleKeyUpAndHandleKeyDownItemMovement() {
 	var lightbox = createLightbox();
-	lightbox.domNode.focus();
+  lightbox.selectActiveItem();
 
 	// after ctrl down, order should not change
 	lightbox.handleKeyDown(evtCTRL);
@@ -271,7 +275,7 @@ function testHandleKeyUpAndHandleKeyDownItemMovement() {
  */
 function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {	
 	var lightbox = createLightbox();
-	lightbox.domNode.focus();
+  lightbox.selectActiveItem();
 	
 	// Test: ctrl right arrow - expect first and second image to swap
 	lightbox.handleArrowKeyPress(evtCtrlRightArrow);
@@ -306,7 +310,7 @@ function testPersistFocus () {
 
 	isItemDefaultTest("Initially ", firstImageId);
 
-	lightbox.domNode.focus();
+  lightbox.selectActiveItem();
 
 	// first thumb nail should be focused initially.
 	isItemFocusedTest("When lightbox has focus ", firstImageId);
@@ -314,7 +318,7 @@ function testPersistFocus () {
 	
 	// Change focus to the input1, then back to the lightbox
 	dojo.byId ("input1").focus();
-	lightbox.domNode.blur();
+//	lightbox.domNode.blur();
 	isItemDefaultTest("After blur ", firstImageId);
 	
 	focusLightboxNode(lightbox, lightbox.domNode);
@@ -391,7 +395,7 @@ function testSelectActiveItemSecondSelected() {
 
 function testSetActiveItemToDefaultState() {
 	var lightbox = createLightbox();
-	lightbox.domNode.focus();
+  lightbox.selectActiveItem();
 	isItemFocusedTest("Initially", firstImageId);
 	
 	lightbox.setActiveItemToDefaultState();
@@ -426,14 +430,14 @@ function testUpdateActiveDescendent() {
 	lbRoot = dojo.byId(lightboxRootId);
 	assertNull("before first lightbox focus, no item should be activedescendent", MochiKit.DOM.getNodeAttribute (lbRoot,"aaa:activedescendent"));
 
-	lightbox.domNode.focus();
+  lightbox.selectActiveItem();
 	assertEquals("after first lightbox focus, first image should be activedescendent", firstImageId, MochiKit.DOM.getNodeAttribute (lbRoot, "aaa:activedescendent"));
 	
 	lightbox.activeItem = dojo.byId(thirdImageId);
 	lightbox._updateActiveDescendent();
 	assertEquals("after setting active item to third image, third image should be activedescendent", thirdImageId, MochiKit.DOM.getNodeAttribute (lbRoot, "aaa:activedescendent"));
 
-	lightbox.domNode.blur();
+	dojo.byId ("input1").focus();
 	lightbox._updateActiveDescendent();
 	assertEquals("after removing focus from lightbox, third image should still be activedescendent", thirdImageId, MochiKit.DOM.getNodeAttribute (lbRoot, "aaa:activedescendent"));
 

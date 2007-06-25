@@ -46,7 +46,8 @@
 	  and back again -->
 	<input id="input1" type="text" value="thingit" style="display:none"></input>
 
-
+  <!-- Server-directed JS will assume that the components are enclosed in a form somehow -->
+  <form id="reorder-form">
 	<div class="full-width">
     <!-- lightbox-parent is used for testing setup and teardown only, but there
     is a temporary concidence between this testing div and the RSF server div
@@ -85,7 +86,7 @@
 						<a href="../images/Dragonfruit.jpg">Dragonfruit</a>
 					</div>
 				</div>
-                <input rsf:id="reorder-index" id="gallery:::gallery-thumbs:::lightbox-cell::0:reorder-index" type="hidden"/>
+        <input rsf:id="reorder-index" value="0" id="gallery:::gallery-thumbs:::lightbox-cell::0:reorder-index" type="hidden"/>
 			</div>
 		
 			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::1:"
@@ -104,6 +105,7 @@
 						<a href="../images/Kiwano.jpg">Kiwano</a>
 					</div>
 				</div>
+       <input id="gallery:::gallery-thumbs:::lightbox-cell::1:reorder-index" value="1" type="hidden"/>			
 			</div>
 							
 			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::2:"
@@ -122,9 +124,10 @@
 						<a href="../images/Blackberry.jpg">Blackberry</a>
 					</div>
 				</div>
+	      <input id="gallery:::gallery-thumbs:::lightbox-cell::2:reorder-index" value="2" type="hidden"/>
 			</div>
 			
-			<div rsf:id="scr=ignore" class="float image-container-default"id="gallery:::gallery-thumbs:::lightbox-cell::3:"
+			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::3:"
 					xhtml10:role="wairole:gridcell"
 					aaa:selected="true"
 					aaa:readonly="false"
@@ -140,8 +143,9 @@
 						<a href="../images/Cherry.jpg">Cherry</a>
 					</div>
 				</div>
+        <input id="gallery:::gallery-thumbs:::lightbox-cell::3:reorder-index" value="3" type="hidden"/>
 			</div>
-			<div rsf:id="scr=ignore" class="float image-container-default"id="gallery:::gallery-thumbs:::lightbox-cell::4:"
+			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::4:"
 					xhtml10:role="wairole:gridcell"
 					aaa:selected="true"
 					aaa:readonly="false"
@@ -157,8 +161,9 @@
 						<a href="../images/Fig.jpg">Fig</a>
 					</div>
 				</div>
+        <input id="gallery:::gallery-thumbs:::lightbox-cell::4:reorder-index" value="4" type="hidden"/>        
 			</div>
-			<div rsf:id="scr=ignore" class="float image-container-default"id="gallery:::gallery-thumbs:::lightbox-cell::5:"
+			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::5:"
 					xhtml10:role="wairole:gridcell"
 					aaa:selected="true"
 					aaa:readonly="false"
@@ -174,8 +179,9 @@
 						<a href="../images/Grapes.jpg">Grapes</a>
 					</div>
 				</div>
+        <input id="gallery:::gallery-thumbs:::lightbox-cell::5:reorder-index" value="5" type="hidden"/>
 			</div>
-			<div rsf:id="scr=ignore" class="float image-container-default"id="gallery:::gallery-thumbs:::lightbox-cell::6:"
+			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::6:"
 					xhtml10:role="wairole:gridcell"
 					aaa:selected="true"
 					aaa:readonly="false"
@@ -191,8 +197,9 @@
 						<a href="../images/Kiwi.jpg">Kiwi</a>
 					</div>
 				</div>
+        <input id="gallery:::gallery-thumbs:::lightbox-cell::6:reorder-index" value="6" type="hidden"/>
 			</div>
-			<div rsf:id="scr=ignore" class="float image-container-default"id="gallery:::gallery-thumbs:::lightbox-cell::7:"
+			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::7:"
 					xhtml10:role="wairole:gridcell"
 					aaa:selected="true"
 					aaa:readonly="false"
@@ -208,8 +215,9 @@
 						<a href="../images/Kumquat.jpg">Kumquat</a>
 					</div>
 				</div>
+        <input id="gallery:::gallery-thumbs:::lightbox-cell::7:reorder-index" value="7" type="hidden"/>
 			</div>
-			<div rsf:id="scr=ignore" class="float image-container-default"id="gallery:::gallery-thumbs:::lightbox-cell::8:"
+			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::8:"
 					xhtml10:role="wairole:gridcell"
 					aaa:selected="true"
 					aaa:readonly="false"
@@ -225,8 +233,9 @@
 						<a href="../images/Lemon.jpg">Lemon</a>
 					</div>
 				</div>
+        <input id="gallery:::gallery-thumbs:::lightbox-cell::8:reorder-index" value="8" type="hidden"/>
 			</div>
-			<div rsf:id="scr=ignore" class="float image-container-default"id="gallery:::gallery-thumbs:::lightbox-cell::9:"
+			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::9:"
 					xhtml10:role="wairole:gridcell"
 					aaa:selected="true"
 					aaa:readonly="false"
@@ -242,8 +251,9 @@
 						<a href="../images/Orange.jpg">Orange</a>
 					</div>
 				</div>
+        <input id="gallery:::gallery-thumbs:::lightbox-cell::9:reorder-index" value="9" type="hidden"/>
 			</div>
-			<div rsf:id="scr=ignore" class="float image-container-default"id="gallery:::gallery-thumbs:::lightbox-cell::10:"
+			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::10:"
 					xhtml10:role="wairole:gridcell"
 					aaa:selected="true"
 					aaa:readonly="false"
@@ -259,8 +269,9 @@
 						<a href="../images/RedApple.jpg">RedApple</a>
 					</div>
 				</div>
+        <input id="gallery:::gallery-thumbs:::lightbox-cell::10:reorder-index" value="10" type="hidden"/>
 			</div>
-			<div rsf:id="scr=ignore" class="float image-container-default"id="gallery:::gallery-thumbs:::lightbox-cell::11:"
+			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::11:"
 					xhtml10:role="wairole:gridcell"
 					aaa:selected="true"
 					aaa:readonly="false"
@@ -276,8 +287,9 @@
 						<a href="../images/Tamarillo.jpg">Tamarillo</a>
 					</div>
 				</div>
+        <input id="gallery:::gallery-thumbs:::lightbox-cell::11:reorder-index" value="11" type="hidden"/>
 			</div>
-			<div rsf:id="scr=ignore" class="float image-container-default"id="gallery:::gallery-thumbs:::lightbox-cell::12:"
+			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::12:"
 					xhtml10:role="wairole:gridcell"
 					aaa:selected="true"
 					aaa:readonly="false"
@@ -293,8 +305,9 @@
 						<a href="../images/Mangosteen.jpg">Mangosteen</a>
 					</div>
 				</div>
+        <input id="gallery:::gallery-thumbs:::lightbox-cell::12:reorder-index" value="12" type="hidden"/>
 			</div>
-			<div rsf:id="scr=ignore" class="float image-container-default"id="gallery:::gallery-thumbs:::lightbox-cell::13:"
+			<div rsf:id="scr=ignore" class="float image-container-default" id="gallery:::gallery-thumbs:::lightbox-cell::13:"
 					xhtml10:role="wairole:gridcell"
 					aaa:selected="true"
 					aaa:readonly="false"
@@ -310,6 +323,7 @@
 						<a href="../images/Banana.jpg">Banana</a>
 					</div>
 				</div>
+        <input id="gallery:::gallery-thumbs:::lightbox-cell::13:reorder-index" value="13" type="hidden"/>
 			</div>
         </div>
         <script type="text/javascript"  rsf:id="init-script">
@@ -331,5 +345,6 @@
         </p>
       </div>
     </div>
+    </form>
   </body>
 </html>

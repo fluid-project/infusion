@@ -459,6 +459,22 @@ var FluidProject = {
 	deriveCellBase: function(namebase, index) {
 	  return namebase + "lightbox-cell::"+index+":";
 	  },
+// Custom query method seeks all tags descended from a given root with a 
+// particular tag name, whose id matches a regex. The Dojo query parser
+// is broken http://trac.dojotoolkit.org/ticket/3520#preview, this is all
+// it might do anyway, and this will be plenty fast.
+	seekNodesById: function(rootnode, tagname, idmatch) {
+	  var inputs = rootnode.getElementsByTagName(tagname);
+	  var togo = new Array();
+	  for (var i = 0; i < inputs.length; ++ i) {
+	    var input = inputs[i];
+	    var id = input.id;
+	    if (id && id.match(idmatch)) {
+	      togo.push(input);
+	      }
+	    }
+	    return togo;
+	  },
 // Client-level initialisation for the lightbox, allowing parameterisation for
 // different templates.
 	initLightboxClient: function(namebase, count, messageNamebase, tagName, tagNameIndex) {
@@ -468,19 +484,18 @@ var FluidProject = {
 	  // Very hard to imagine any perversity which may lead to this picking any stray stuff :P
 	  
 	  // An approach based on the "sourceIndex" DOM property would be much more efficient,
-	  // but this is only supported in IE. Dojo prides itself on the speed of its CSS3 queries...
-	  var selector = "#" + FluidProject.Utilities.escapeSelector(namebase) 
-	     //+ " input[id^=\"" + FluidProject.Utilities.escapeSelector(namebase + "lightbox-cell::") + "\"]"
-	     //+ "[id$=\"reorder-index\"]"
-	     ;
-//	  alert("selector: " + selector);
+	  // but this is only supported in IE. 
+	  // This selector approach is ALSO broken, see Dojo bug 3520.
+	  //var selector = "#" + FluidProject.Utilities.escapeSelector(namebase) 
+	  //+ " input[id^=\"" + FluidProject.Utilities.escapeSelector(namebase + "lightbox-cell::") + "\"]"
+	  //+ "[id$=\"reorder-index\"]";
 	  var orderChangedCallback = function() {
-	    var inputs = dojo.query(selector);
-//	    alert("Found " + inputs.length + " nodes");
+//	  var inputs = dojo.query(selector);
+      var inputs = FluidProject.seekNodesById(reorderform, "input", 
+          FluidProject.deriveCellBase(namebase, ".*") + "reorder-index");
 	  
 	    for (var i = 0; i < inputs.length; ++ i) {
-//	      alert("Index " +i +" old value " + inputs[i].value);
-	      inputs[i].node.value = i;
+	      inputs[i].value = i;
 	      }
 	    
 	    // dojo.io.bind is gone: http://dojotoolkit.org/book/dojo-porting-guide-0-4-x-0-9/io-transports-ajax
