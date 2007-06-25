@@ -441,6 +441,9 @@ var FluidProject = {
 			}			
 		} 
 	  },
+	escapeSelector: function(id) {
+	  return id.replace(/\:/g,"\\:");
+	  },
 	findForm: function (element) {
       while(element) {
       if (element.nodeName.toLowerCase() == "form") return element;
@@ -460,26 +463,24 @@ var FluidProject = {
 // different templates.
 	initLightboxClient: function(namebase, count, messageNamebase, tagName, tagNameIndex) {
 	  var reorderform = FluidProject.Utilities.findForm(document.getElementById(namebase));
-	  // Investigate: does storage of this array constitute a DOM circle leak?
-	  var inputs = new Array();
-	  for (var i = 0; i < count; ++ i) {
-	    var inputid = FluidProject.deriveCellBase(namebase, i) + "reorder-index";
-	    var element = dojo.byId(inputid);
-	    if (element) inputs.push(element);
-	    }
+	  // An <input> tag nested within our root namebase tag, which has an id which 
+	  // begins with the  namebase:lightbox-cell:: prefix, and ends with "reorder-index" trail.
+	  // Very hard to imagine any perversity which may lead to this picking any stray stuff :P
+	  
+	  // An approach based on the "sourceIndex" DOM property would be much more efficient,
+	  // but this is only supported in IE. Dojo prides itself on the speed of its CSS3 queries...
+	  var selector = "#" + FluidProject.Utilities.escapeSelector(namebase) 
+	     //+ " input[id^=\"" + FluidProject.Utilities.escapeSelector(namebase + "lightbox-cell::") + "\"]"
+	     //+ "[id$=\"reorder-index\"]"
+	     ;
+//	  alert("selector: " + selector);
 	  var orderChangedCallback = function() {
-	    // create an array of pairs of nodes and their DOM index
-	    var tosort = new Array();
+	    var inputs = dojo.query(selector);
+//	    alert("Found " + inputs.length + " nodes");
+	  
 	    for (var i = 0; i < inputs.length; ++ i) {
-	      tosort.push({node: inputs[i], index: inputs[i].sourceIndex});
-	      }
-	    // sort them by DOM index, then apply their list index position as value
-	    tosort.sort(
-	      function(a, b) {
-	        return a.index < b.index? -1 : (a.index == b.index? 0 : 1);
-	        });
-	    for (var i = 0; i < inputs.length; ++ i) {
-	      tosort[i].node.value = i;
+//	      alert("Index " +i +" old value " + inputs[i].value);
+	      inputs[i].node.value = i;
 	      }
 	    
 	    // dojo.io.bind is gone: http://dojotoolkit.org/book/dojo-porting-guide-0-4-x-0-9/io-transports-ajax
