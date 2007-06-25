@@ -468,12 +468,10 @@ var FluidProject = {
 	    if (element) inputs.push(element);
 	    }
 	  var orderChangedCallback = function() {
-	    alert("callback");
 	    // create an array of pairs of nodes and their DOM index
 	    var tosort = new Array();
 	    for (var i = 0; i < inputs.length; ++ i) {
 	      tosort.push({node: inputs[i], index: inputs[i].sourceIndex});
-	      alert("Pushed " + i + " " + inputs[i] + " with index " + inputs[i].sourceIndex);
 	      }
 	    // sort them by DOM index, then apply their list index position as value
 	    tosort.sort(
@@ -481,7 +479,6 @@ var FluidProject = {
 	        return a.index < b.index? -1 : (a.index == b.index? 0 : 1);
 	        });
 	    for (var i = 0; i < inputs.length; ++ i) {
-	      alert("Index " +i +" old value " + tosort[i].node.value);
 	      tosort[i].node.value = i;
 	      }
 	    
