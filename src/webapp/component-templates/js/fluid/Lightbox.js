@@ -224,6 +224,7 @@ dojo.declare(
 			if (shouldMove) {
 				dojo.place(this.activeItem, refSibling, placementPosition);
 				this.getElementToFocus(this.activeItem).focus();
+				this.orderChangedCallback();
 			} else {
 				this.focusItem(refSibling);
 			}		
@@ -280,7 +281,7 @@ dojo.declare(
 			// Override dojo's dnd 'onMouseDown' in order to put focus on the drag source.  Then
 			// apply the superclass 'onMouseDown'.
 			//
-            dndlb.onMouseDown =  function(ecmaEvent){
+      dndlb.onMouseDown = function(ecmaEvent){
 				// note: source.target will not work in IE, need to use source.srcElement instead.
 				var targetElement = (ecmaEvent.target || ecmaEvent.srcElement);
                 this.lightbox.focusItem(this.lightbox._findAncestorGridCell(targetElement));
@@ -425,7 +426,7 @@ var FluidProject = {
 /*
  * Utilities object for providing various lightbox-independent convenience functions
  */
-    Utilities: {
+  Utilities: {
 	  removeNonElementNodes: function(rootNode) {
 		var currChild = rootNode.firstChild;
 		var nextSibling = currChild.nextSibling;
@@ -458,13 +459,42 @@ var FluidProject = {
 // Client-level initialisation for the lightbox, allowing parameterisation for
 // different templates.
 	initLightboxClient: function(namebase, count, messageNamebase, tagName, tagNameIndex) {
-	  var form = FluidProject.Utilities.findForm(document.getElementById(namebase));
+	  var reorderform = FluidProject.Utilities.findForm(document.getElementById(namebase));
+	  // Investigate: does storage of this array constitute a DOM circle leak?
 	  var inputs = new Array();
 	  for (var i = 0; i < count; ++ i) {
 	    var inputid = FluidProject.deriveCellBase(namebase, i) + "reorder-index";
+	    var element = dojo.byId(inputid);
+	    if (element) inputs.push(element);
 	    }
 	  var orderChangedCallback = function() {
+	    alert("callback");
+	    // create an array of pairs of nodes and their DOM index
+	    var tosort = new Array();
+	    for (var i = 0; i < inputs.length; ++ i) {
+	      tosort.push({node: inputs[i], index: inputs[i].sourceIndex});
+	      alert("Pushed " + i + " " + inputs[i] + " with index " + inputs[i].sourceIndex);
+	      }
+	    // sort them by DOM index, then apply their list index position as value
+	    tosort.sort(
+	      function(a, b) {
+	        return a.index < b.index? -1 : (a.index == b.index? 0 : 1);
+	        });
+	    for (var i = 0; i < inputs.length; ++ i) {
+	      alert("Index " +i +" old value " + tosort[i].node.value);
+	      tosort[i].node.value = i;
+	      }
+	    
+	    // dojo.io.bind is gone: http://dojotoolkit.org/book/dojo-porting-guide-0-4-x-0-9/io-transports-ajax
+	    if (reorderform.action) {
+	      dojo.xhrPost({
+          url: reorderform.action,
+          form: reorderform,
+          load: function(type, data, evt){ /* No-op response */ },
+          });
+        };
 	    };
+	
 	
 	  var lightbox = new fluid.Lightbox(
 	    {tagNameToFocus: tagName,
