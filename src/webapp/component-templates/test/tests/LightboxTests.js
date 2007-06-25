@@ -1,4 +1,3 @@
-dojo.require("MochiKit.DOM");
 dojo.require("dojo.i18n");
 
 var imgListClone;
@@ -31,24 +30,24 @@ function testFindAncestorGridCell() {
 	
 	var testItem = dojo.byId(firstImageId);
 	assertEquals("The test item's role attribute should be gridcell",
-		MochiKit.DOM.getNodeAttribute(testItem, "xhtml10:role"), "wairole:gridcell");
+		"wairole:gridcell", testItem.getAttribute("xhtml10:role"));
 
 	assertEquals("Given the test item itself, the ancestor grid cell should be the test item",
 		testItem, lightbox._findAncestorGridCell(testItem));
 	assertEquals("Given the image, the ancestor grid cell should be the test item",
-		testItem, lightbox._findAncestorGridCell(MochiKit.DOM.getFirstElementByTagAndClassName("img", null, testItem)));
+		testItem, lightbox._findAncestorGridCell(testItem.getElementsByTagName("img")[0]));
 	assertEquals("Given the caption div, the ancestor grid cell should be the test item",
-		testItem, lightbox._findAncestorGridCell(MochiKit.DOM.getFirstElementByTagAndClassName("div", "caption", testItem)));
-	assertEquals("Given the caption div, the ancestor grid cell should be the test item",
-		testItem, lightbox._findAncestorGridCell(MochiKit.DOM.getFirstElementByTagAndClassName("a", null, testItem)));
+		testItem, lightbox._findAncestorGridCell(testItem.getElementsByTagName("div")[2]));
+	assertEquals("Given the caption anchor, the ancestor grid cell should be the test item",
+		testItem, lightbox._findAncestorGridCell(testItem.getElementsByTagName("a")[1]));
 	assertEquals("Given the title of the document, the ancestor grid cell should be null",
-		null, lightbox._findAncestorGridCell(MochiKit.DOM.getFirstElementByTagAndClassName("title", null, document.body)));
+		null, lightbox._findAncestorGridCell(document.body.getElementsByTagName("title")[0]));
 	
 	testItem = dojo.byId(fourthImageId);
 	assertEquals("Given another test item itself, the ancestor grid cell should be the new test item",
 		testItem, lightbox._findAncestorGridCell(testItem));
-	assertEquals("Given theanotherimage, the ancestor grid cell should be new test item",
-		testItem, lightbox._findAncestorGridCell(MochiKit.DOM.getFirstElementByTagAndClassName("img", null, testItem)));
+	assertEquals("Given another image, the ancestor grid cell should be new test item",
+		testItem, lightbox._findAncestorGridCell(testItem.getElementsByTagName("img")[0]));
 }
 
 /*
@@ -168,9 +167,10 @@ function isItemDraggedTest(message, itemId) {
 function isTooltipShowingTest(imageId, activeItem) {
 //	var localizedStringsResource = dojo.i18n.getLocalization("fluid", "instructions");
 //	tooltipFromRez = localizedStringsResource.thumbnailInstructions;
+// The following line needs to be re-written to not use MochiKit
 //	tooltipContainer = MochiKit.DOM.getFirstElementByTagAndClassName("div", "dojoTooltipContainer", document);
 //	tooltipFromDoc = tooltipContainer.innerHTML;
-
+//
 //	assertNotNull ("<tooltipContainer> should not be null nor undefined with " + imageId, tooltipContainer);
 //	assertNotNull ("<tooltip> should not be null nor undefined with" + imageId, tooltipFromRez);
 //	assertTrue ("tooltip div should contain the tooltip text from resource file  with" + imageId, tooltipFromDoc.indexOf(tooltipFromRez)>=0);
@@ -428,21 +428,21 @@ function testHandleWindowResizeEvent() {
 function testUpdateActiveDescendent() {
 	var lightbox = createLightbox();
 	lbRoot = dojo.byId(lightboxRootId);
-	assertNull("before first lightbox focus, no item should be activedescendent", MochiKit.DOM.getNodeAttribute (lbRoot,"aaa:activedescendent"));
+	assertNull("before first lightbox focus, no item should be activedescendent", lbRoot.getAttribute("aaa:activedescendent"));
 
-  lightbox.selectActiveItem();
-	assertEquals("after first lightbox focus, first image should be activedescendent", firstImageId, MochiKit.DOM.getNodeAttribute (lbRoot, "aaa:activedescendent"));
+    lightbox.selectActiveItem();
+	assertEquals("after first lightbox focus, first image should be activedescendent", firstImageId, lbRoot.getAttribute("aaa:activedescendent"));
 	
 	lightbox.activeItem = dojo.byId(thirdImageId);
 	lightbox._updateActiveDescendent();
-	assertEquals("after setting active item to third image, third image should be activedescendent", thirdImageId, MochiKit.DOM.getNodeAttribute (lbRoot, "aaa:activedescendent"));
+	assertEquals("after setting active item to third image, third image should be activedescendent", thirdImageId, lbRoot.getAttribute("aaa:activedescendent"));
 
 	dojo.byId ("input1").focus();
 	lightbox._updateActiveDescendent();
-	assertEquals("after removing focus from lightbox, third image should still be activedescendent", thirdImageId, MochiKit.DOM.getNodeAttribute (lbRoot, "aaa:activedescendent"));
+	assertEquals("after removing focus from lightbox, third image should still be activedescendent", thirdImageId, lbRoot.getAttribute("aaa:activedescendent"));
 
 	lightbox.activeItem = null;
 	lightbox._updateActiveDescendent();
-	assertNull("after unsetting active item, no item should be activedescendent", MochiKit.DOM.getNodeAttribute (lbRoot, "aaa:activedescendent"));
+	assertNull("after unsetting active item, no item should be activedescendent", lbRoot.getAttribute("aaa:activedescendent"));
 
 }

@@ -25,7 +25,6 @@ dojo.provide("fluid.Lightbox");
 
 dojo.require("dijit.base.Widget");
 dojo.require("dojo.dnd.source");
-dojo.require("MochiKit.DOM");
 dojo.require("dijit.Tooltip");
 
 (function() {
@@ -97,8 +96,8 @@ dojo.declare(
 
 			this.gridLayoutHandler.setGrid(this.domNode);
 
-			if (MochiKit.DOM.getNodeAttribute (this.domNode,"aaa:activedescendent")) {
-				MochiKit.DOM.removeNodeAttribute (this.domNode,"aaa:activedescendent");
+			if (this.domNode.getAttribute("aaa:activedescendent")) {
+				this.domNode.removeAttribute("aaa:activedescendent");
 			}
 		},
 		
@@ -113,7 +112,7 @@ dojo.declare(
 			dojo.addClass (this.activeItem, fluid.states.focusedClass);
 			this.getElementToFocus(this.activeItem).focus();
 			// Tooltip disabled because styling makes user experience confusing.
-			// this.activeItem.theTooltip.open();
+			// this.activeItem.theTooltip.open();	
 		}, //end focus
 		
 		/**
@@ -245,13 +244,13 @@ dojo.declare(
 		
 		_setActiveItem: function(anItem) {
 			// Tooltip disabled because styling makes user experience confusing.
-			//if (!anItem.theTooltip) {
-			    //var caption = this._fetchMessage("thumbnailInstructions");
-				//anItem.theTooltip = new dijit.Tooltip (
-				//{connectId: anItem.id, 
-				// caption: caption
-				//});
-            // }
+//			if (!anItem.theTooltip) {
+//			    var caption = this._fetchMessage("thumbnailInstructions");
+//				anItem.theTooltip = new dijit.Tooltip (
+//				{connectId: anItem.id, 
+//				 caption: caption
+//				});
+//             }
 
 			this.activeItem = anItem;
 			this._updateActiveDescendent();
@@ -259,9 +258,9 @@ dojo.declare(
 		
 		_updateActiveDescendent: function() {
 			if (this.activeItem) {
-				MochiKit.DOM.setNodeAttribute (this.domNode, "aaa:activedescendent", this.activeItem.id);
-			} else if (MochiKit.DOM.getNodeAttribute (this.domNode, "aaa:activedescendent")) {
-				MochiKit.DOM.removeNodeAttribute (this.domNode, "aaa:activedescendent");
+				this.domNode.setAttribute("aaa:activedescendent", this.activeItem.id);
+			} else if (this.domNode.getAttribute("aaa:activedescendent")) {
+				this.domNode.removeAttribute("aaa:activedescendent");
 			}
 		},
 
@@ -304,10 +303,10 @@ dojo.declare(
 		_findAncestorGridCell: function(gridCellDescendent) {
 			if (gridCellDescendent == null) {
 				return null;
-			} else if (MochiKit.DOM.getNodeAttribute (gridCellDescendent, "xhtml10:role") == "wairole:gridcell") {
+			} else if (gridCellDescendent.getAttribute("xhtml10:role") == "wairole:gridcell") {
 				return gridCellDescendent;
 			} else {
-				return this._findAncestorGridCell(MochiKit.DOM.getFirstParentByTagAndClassName(gridCellDescendent, '*', null));
+				return this._findAncestorGridCell(gridCellDescendent.parentNode);
 			}
 		}
 	}
