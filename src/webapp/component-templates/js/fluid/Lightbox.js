@@ -112,7 +112,8 @@ dojo.declare(
 			dojo.removeClass (this.activeItem, fluid.states.defaultClass);
 			dojo.addClass (this.activeItem, fluid.states.focusedClass);
 			this.getElementToFocus(this.activeItem).focus();
-			this.activeItem.theTooltip.open();
+			// Tooltip disabled because styling makes user experience confusing.
+			// this.activeItem.theTooltip.open();
 		}, //end focus
 		
 		/**
@@ -129,7 +130,8 @@ dojo.declare(
 			if (this.activeItem) {
 				dojo.removeClass (this.activeItem, fluid.states.focusedClass);
 				dojo.addClass (this.activeItem, fluid.states.defaultClass);
-				this.activeItem.theTooltip.close ();
+			// Tooltip disabled because styling makes user experience confusing.
+			// this.activeItem.theTooltip.close ();
 			}
 		},
 		
@@ -242,13 +244,14 @@ dojo.declare(
 		  },
 		
 		_setActiveItem: function(anItem) {
-			if (!anItem.theTooltip) {
-			    var caption = this._fetchMessage("thumbnailInstructions");
-				anItem.theTooltip = new dijit.Tooltip (
-				{connectId: anItem.id, 
-				 caption: caption
-				});
-            }
+			// Tooltip disabled because styling makes user experience confusing.
+			//if (!anItem.theTooltip) {
+			    //var caption = this._fetchMessage("thumbnailInstructions");
+				//anItem.theTooltip = new dijit.Tooltip (
+				//{connectId: anItem.id, 
+				// caption: caption
+				//});
+            // }
 
 			this.activeItem = anItem;
 			this._updateActiveDescendent();
