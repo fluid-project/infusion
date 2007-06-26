@@ -92,6 +92,10 @@ dojo.declare(
 			dojo.connect(this.domNode, "onblur", this, "setActiveItemToDefaultState");
 
 			// remove whitespace from the tree before passing it to the grid handler
+			// this is currently necessary because the Lightbox assumes that any nodes inside
+			// it are re-orderable items.
+			// NOTE: The lightbox needs to be refactored to work without this assumption, so that
+			// it can identify re-orderable items another way e.g. through a class name
 			FluidProject.Utilities.removeNonElementNodes(this.domNode);
 
 			this.gridLayoutHandler.setGrid(this.domNode);
@@ -331,6 +335,13 @@ function GridLayoutHandler() {
 		this.updateGridWidth();
 	};
 	
+	/*
+	 * The updateGridWidth function assumes that every child node of this.grid is a re-orderable
+	 * item. This assumption allows the use of indices and knowledge of the number of columns in
+	 * determining what item is 'above' or 'below' a given item.
+	 * NOTE: The lightbox needs to be refactored to work without this assumption, so that it can
+	 * identify re-orderable items another way e.g. through a class name
+	 */
 	this.updateGridWidth = function () {
 		var firstItemY = dojo.coords(this.grid.childNodes[0]).y;
 
@@ -383,7 +394,10 @@ function GridLayoutHandler() {
 	 * and a flag indicating whether or not the process has 'wrapped' around the end of
 	 * the column that the given item is in. The flag is necessary because when an image is being
 	 * moved to the resulting item location, the decision of whether or not to insert before or
-	* after the item changes if the process wrapped around the column.
+	 * after the item changes if the process wrapped around the column.
+	 * NOTE: The lightbox needs to be refactored to work without the assumption that only
+	 * re-orderable items exist in the dom. This will mean that simple index-based calculations will
+	 * not be adequate.
 	 */
 	this.getItemBelow = function (item) {
 		var curIndex = dojo.indexOf(this.grid.childNodes, item);
@@ -402,7 +416,10 @@ function GridLayoutHandler() {
 	 * and a flag indicating whether or not the process has 'wrapped' around the end of
 	 * the column that the given item is in. The flag is necessary because when an image is being
 	 * moved to the resulting item location, the decision of whether or not to insert before or
-	* after the item changes if the process wrapped around the column.
+	 * after the item changes if the process wrapped around the column.
+	 * NOTE: The lightbox needs to be refactored to work without the assumption that only
+	 * re-orderable items exist in the dom. This will mean that simple index-based calculations will
+	 * not be adequate.
 	 */
 	this.getItemAbove = function (item) {
 		var curIndex = dojo.indexOf(this.grid.childNodes, item);
@@ -429,6 +446,9 @@ var FluidProject = {
  * Utilities object for providing various lightbox-independent convenience functions
  */
   Utilities: {
+
+	  // NOTE: This function will be removed when the lightbox is refactored to support non-
+	  // re-orderable item nodes. Until then, it is necessary.
 	  removeNonElementNodes: function(rootNode) {
 		var currChild = rootNode.firstChild;
 		var nextSibling = currChild.nextSibling;
