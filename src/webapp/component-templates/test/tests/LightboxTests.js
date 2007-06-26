@@ -174,7 +174,7 @@ function isTooltipShowingTest(imageId, activeItem) {
 //	assertNotNull ("<tooltipContainer> should not be null nor undefined with " + imageId, tooltipContainer);
 //	assertNotNull ("<tooltip> should not be null nor undefined with" + imageId, tooltipFromRez);
 //	assertTrue ("tooltip div should contain the tooltip text from resource file  with" + imageId, tooltipFromDoc.indexOf(tooltipFromRez)>=0);
-	assertEquals(imageId + " should have a tooltip showing", imageId, activeItem.theTooltip.connectId);	
+//	assertEquals(imageId + " should have a tooltip showing", imageId, activeItem.theTooltip.connectId);	
 }
 
 function testHandleArrowKeyPressForLeftAndRight()	 {
