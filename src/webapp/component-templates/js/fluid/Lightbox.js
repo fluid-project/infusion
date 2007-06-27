@@ -441,7 +441,17 @@ function GridLayoutHandler() {
 	};
 }
 
-var FluidProject = {
+if (typeof FluidProject == "undefined") {
+  FluidProject = {};
+  };
+  
+FluidProject.declare = function(target, args) {
+  for (arg in args) {
+    target[arg] = args[arg];
+    }
+  };
+
+FluidProject.declare(FluidProject, {
 /*
  * Utilities object for providing various lightbox-independent convenience functions
  */
@@ -539,4 +549,4 @@ var FluidProject = {
 	    }, 
 	    namebase);
     }
-  };
+  });
