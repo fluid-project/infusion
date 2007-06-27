@@ -279,7 +279,7 @@ dojo.declare(
 			dndlb.lightbox = this;
 			items = this.domNode.childNodes;
 			var itemArray = new Array();
-			for(i=0;i<items.length;i++) {
+			for(i = 0; i < items.length; i++) {
 				itemArray.push(items[i]);
 			}
 			dndlb.insertNodes(false, itemArray);
@@ -287,7 +287,7 @@ dojo.declare(
 			// Override dojo's dnd 'onMouseDown' in order to put focus on the drag source.  Then
 			// apply the superclass 'onMouseDown'.
 			//
-      dndlb.onMouseDown = function(ecmaEvent){
+            dndlb.onMouseDown = function(ecmaEvent){
 				// note: source.target will not work in IE, need to use source.srcElement instead.
 				var targetElement = (ecmaEvent.target || ecmaEvent.srcElement);
                 this.lightbox.focusItem(this.lightbox._findAncestorGridCell(targetElement));
@@ -302,6 +302,13 @@ dojo.declare(
 				dojo.dnd.Source.prototype.onDndCancel.apply (dndlb, arguments);
 				this.lightbox.focusItem (this.lightbox.activeItem);
 			};
+			dndlb.onDndDrop = function(source, nodes, copy) {
+			// Use of "this" here is alarmingly ambiguous, and we really want the
+			// callback not to be a public property.
+           // TODO: why can't we call "superclass" rather than "prototype" here?
+                dojo.dnd.Source.prototype.onDndDrop.call(this, source, nodes, copy);
+		  	    this.lightbox.orderChangedCallback();
+			}
 		},
 
 		_findAncestorGridCell: function(gridCellDescendent) {
