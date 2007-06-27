@@ -1,5 +1,5 @@
 function testGetRightSibling() {
-	var gridHandler = new GridLayoutHandler();
+	var gridHandler = new fluid.GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setGrid(imageList);
 
@@ -20,7 +20,7 @@ function testGetRightSibling() {
 }
 
 function testGetLeftSibling() {
-	var gridHandler = new GridLayoutHandler();
+	var gridHandler = new fluid.GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setGrid(imageList);
 
@@ -43,7 +43,7 @@ function testGetLeftSibling() {
 }
 
 function testGetItemBelow() {
-	var gridHandler = new GridLayoutHandler();
+	var gridHandler = new fluid.GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setGrid(imageList);
 	gridHandler.numOfColumnsInGrid = 3;
@@ -76,7 +76,7 @@ function testGetItemBelow() {
 }
 
 function testGetItemAbove() {
-	var gridHandler = new GridLayoutHandler();
+	var gridHandler = new fluid.GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setGrid(imageList);
 	gridHandler.numOfColumnsInGrid = 4;
@@ -138,7 +138,7 @@ function testGetItemAbove() {
 }
 
 function testUpdateGridWidth() {
-	var gridHandler = new GridLayoutHandler();
+	var gridHandler = new fluid.GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setGrid(imageList);
 	var oldNumCols = gridHandler.numOfColumnsInGrid;
