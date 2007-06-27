@@ -90,7 +90,7 @@ fluid.declare(fluid, {
 				dojo.xhrPost({
 					url: reorderform.action,
 					form: reorderform,
-					load: function(type, data, evt){ /* No-op response */ },
+					load: function(type, data, evt){ /* No-op response */ }
 				});
 			};
 		};
