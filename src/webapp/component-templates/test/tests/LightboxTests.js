@@ -135,7 +135,7 @@ function testHandleArrowKeyPressForUpAndDown() {
 	isItemFocusedTest("After up arrow wrap ", secondLastImageId);
 
 	// Test: tool tip is showing.
-	isTooltipShowingTest(secondLastImageId, lightbox.activeItem);
+	isTooltipShowingTest(lightbox.activeItem);
 
 	// Test: down arrow to the first image
 	lightbox.handleArrowKeyPress(evtDownArrow);
@@ -143,7 +143,7 @@ function testHandleArrowKeyPressForUpAndDown() {
 	isItemDefaultTest("After down arrow wrap ", secondLastImageId);
 	
 	// Test: tool tip is showing.
-	isTooltipShowingTest(firstImageId, lightbox.activeItem);	
+	isTooltipShowingTest(lightbox.activeItem);	
 }
 
 function isItemDefaultTest(message, itemId) {
@@ -164,17 +164,23 @@ function isItemDraggedTest(message, itemId) {
 	assertFalse(message + itemId  +  " not should be focused", dojo.hasClass(document.getElementById(itemId), focusedClass));	
 }
 
-function isTooltipShowingTest(imageId, activeItem) {
-//	var localizedStringsResource = dojo.i18n.getLocalization("fluid", "instructions");
-//	tooltipFromRez = localizedStringsResource.thumbnailInstructions;
-// The following line needs to be re-written to not use MochiKit
-//	tooltipContainer = MochiKit.DOM.getFirstElementByTagAndClassName("div", "dojoTooltipContainer", document);
-//	tooltipFromDoc = tooltipContainer.innerHTML;
-//
-//	assertNotNull ("<tooltipContainer> should not be null nor undefined with " + imageId, tooltipContainer);
-//	assertNotNull ("<tooltip> should not be null nor undefined with" + imageId, tooltipFromRez);
-//	assertTrue ("tooltip div should contain the tooltip text from resource file  with" + imageId, tooltipFromDoc.indexOf(tooltipFromRez)>=0);
-//	assertEquals(imageId + " should have a tooltip showing", imageId, activeItem.theTooltip.connectId);	
+function isTooltipShowingTest(activeItem) {
+
+	var tooltipDiv = dojo.byId ("dojoTooltip");
+
+	// test that the tooltip is showing.
+	assertNotNull ("the tooltip div should not be null", tooltipDiv);
+	assertNotEquals ("The tooltip should have a style (i.e. showing)", "", tooltipDiv.style);
+
+
+	// test the contents of the tooltip is not empty.
+	var tooltipContainer = tooltipDiv.getElementsByTagName ("div")[0];
+	assertNotNull ("<tooltipContainer> should not be null nor undefined", tooltipContainer);
+	
+	var tooltipFromDoc = tooltipContainer.innerHTML;
+
+	assertNotNull ("Tooltip text should not be null",tooltipFromDoc);
+	assertNotEquals ("Tooltip text should have length greater than zero", 0, tooltipFromDoc.length);
 }
 
 function testHandleArrowKeyPressForLeftAndRight()	 {

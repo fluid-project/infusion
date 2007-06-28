@@ -84,11 +84,6 @@ dojo.declare(
 			
 			// calling _initDnD will activate the drag-and-drop functionality
 			 this._initDnD();
-			 
-			 // Internationalization of Strings
-// This line here will cause Firefox 1.5 to lock up on Windows.
-//			 dojo.requireLocalization("fluid", "instructions");
-			
 		}, // end postCreate
 		
 		setUpDomNode: function () {
@@ -123,8 +118,7 @@ dojo.declare(
 			dojo.removeClass (this.activeItem, fluid.states.defaultClass);
 			dojo.addClass (this.activeItem, fluid.states.focusedClass);
 			this.getElementToFocus(this.activeItem).focus();
-			// Tooltip disabled because styling makes user experience confusing.
-			// this.activeItem.theTooltip.open();	
+			this.activeItem.theTooltip.open();	
 		}, //end focus
 		
 		/**
@@ -141,8 +135,9 @@ dojo.declare(
 			if (this.activeItem) {
 				dojo.removeClass (this.activeItem, fluid.states.focusedClass);
 				dojo.addClass (this.activeItem, fluid.states.defaultClass);
-			// Tooltip disabled because styling makes user experience confusing.
-			// this.activeItem.theTooltip.close ();
+				if (this.activeItem.theTooltip) {
+					this.activeItem.theTooltip.close ();
+				}
 			}
 		},
 		
@@ -256,13 +251,13 @@ dojo.declare(
 		
 		_setActiveItem: function(anItem) {
 			// Tooltip disabled because styling makes user experience confusing.
-//			if (!anItem.theTooltip) {
-//			    var caption = this._fetchMessage("thumbnailInstructions");
-//				anItem.theTooltip = new dijit.Tooltip (
-//				{connectId: anItem.id, 
-//				 caption: caption
-//				});
-//             }
+			if (!anItem.theTooltip) {
+			    var caption = this._fetchMessage("thumbnailInstructions");
+				anItem.theTooltip = new dijit.Tooltip (
+				{connectId: anItem.id, 
+				 caption: caption
+				});
+             }
 
 			this.activeItem = anItem;
 			this._updateActiveDescendent();
