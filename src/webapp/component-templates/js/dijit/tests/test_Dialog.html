@@ -1,0 +1,395 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Dialog Widget Dojo Tests</title>
+<style type="text/css">
+	@import "../../dojo/resources/dojo.css";
+	@import "../themes/tundra/tundra.css";
+	@import "css/dijitTests.css";
+	table { border: none; }
+</style>		
+<script type="text/javascript"
+	djConfig="isDebug: true"
+	src="../../dojo/dojo.js"></script>
+<script type="text/javascript">
+	dojo.require("dijit.Dialog");
+	dojo.require("dojo.parser");	// scan page for widgets and instantiate them
+</script>
+
+<script type="text/javascript">
+var thirdDlg;
+function createDialog() {
+	if(!thirdDlg){
+		var pane = dojo.byId('thirdDialog');
+		pane.style.width = "300px"; 	
+		thirdDlg = new dijit.Dialog({
+			title: "Programatic Dialog Creation"
+		},pane);
+	}
+	setTimeout("thirdDlg.show()","3000");
+}
+
+</script>
+<style type="text/css">
+body { font-family : sans-serif; }
+
+
+form {
+	margin-bottom : 0;
+}
+</style>
+</head>
+<body class="tundra">
+<h2>Dijit layout.Dialog tests</h2>
+<a href="javascript:dijit.byId('dialog1').show()">Show First Dialog</a> |
+
+<div dojoType="dijit.Dialog" id="dialog1" closeNode="hider" title="First Dialog">
+	<form onsubmit="return false;">
+		<table>
+			<tr>
+				<td><label for="name">Name: </label></td>
+				<td><input type="text" id="name"></td>
+			</tr>
+			<tr>
+				<td><label for="loc">Location: </label></td>
+				<td><input type="text" id="loc"></td>
+			</tr>
+			<tr>
+				<td><label for="desc">Description: </label></td>
+				<td><input type="text" id="desc"></td>
+			</tr>
+			<tr>
+				<td><label for="fileloc">Location: </label></td>
+				<td><input type="file" id="fileloc"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="button" id="hider" value="OK"></td>
+			</tr>
+		</table>
+	</form>
+</div>
+
+<a id="loginLink" href="javascript:dijit.byId('tooltipDlg').show('loginLink')">Show Tooltip Dialog</a> |
+
+<div dojoType="dijit.layout.TooltipDialog" id="tooltipDlg" title="Enter Login information" closeNode="hider2">
+	<form onsubmit="return false;">
+		<table>
+			<tr>
+				<td>User:</td>
+				<td><label for="user"><input type="text" id="user"></label></td>
+			</tr>
+			<tr>
+				<td>Password:</td>
+				<td><label for="pwd"><input type="password" id="pwd"></label></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+					<button id="hider2">Login</button>
+			</tr>
+		</table>
+	</form>
+</div>
+
+<a href="javascript:createDialog()" title="shows after 3 second delay">Programatic Dialog (3 second delay)</a> |
+
+
+<div id="thirdDialog" style="display: none;">
+	<form>
+	<input>
+	<br>
+	<button>hello</button>
+	<br>
+	<select>
+		<option>Lorem</option>
+		<option>ipsum</option>
+		<option>dolor</option>
+		<option>sit</option>
+		<option>amet</option>
+	</select>
+	</form>
+	<p>
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
+	semper sagittis velit. Cras in mi. Duis porta mauris ut ligula. Proin
+	porta rutrum lacus. Etiam consequat scelerisque quam. Nulla facilisi.
+	Maecenas luctus venenatis nulla. In sit amet dui non mi semper iaculis.
+	Sed molestie tortor at ipsum. Morbi dictum rutrum magna. Sed vitae
+	risus.
+	</p>
+</div>
+
+
+<a href="javascript:dijit.byId('fourthDlg').show();">Test HREF Dialog</a> |
+
+<div dojoType="dijit.Dialog" id="fourthDlg" href="layout/tab2.html" title="From HREF"></div>
+
+<p><b><i>(scroll down to see more links to click, for testing positioning / scroll handling)</i></b></p>
+
+<p>
+Here's a form.  Try clicking the programatic dialog link, then focusing on the form.
+After the dialog closes focus should be returned to the form
+</p>
+
+<form>
+<input>
+<br>
+<button>hello</button>
+<br>
+<select>
+	<option>Lorem</option>
+	<option>ipsum</option>
+	<option>dolor</option>
+	<option>sit</option>
+	<option>amet</option>
+</select>
+</form>
+
+<p>Aliquam vitae enim. Duis scelerisque metus auctor est venenatis
+imperdiet. Fusce dignissim porta augue. Nulla vestibulum. Integer lorem
+nunc, ullamcorper a, commodo ac, malesuada sed, dolor. Aenean id mi in
+massa bibendum suscipit. Integer eros. Nullam suscipit mauris. In
+pellentesque. Mauris ipsum est, pharetra semper, pharetra in, viverra
+quis, tellus. Etiam purus. Quisque egestas, tortor ac cursus lacinia,
+felis leo adipiscing nisi, et rhoncus elit dolor eget eros. Fusce ut
+quam. Suspendisse eleifend leo vitae ligula. Nulla facilisi. Nulla
+rutrum, erat vitae lacinia dictum, pede purus imperdiet lacus, ut
+semper velit ante id metus. Praesent massa dolor, porttitor sed,
+pulvinar in, consequat ut, leo. Nullam nec est. Aenean id risus blandit
+tortor pharetra congue. Suspendisse pulvinar.
+</p>
+<p>Vestibulum convallis eros ac justo. Proin dolor. Etiam aliquam. Nam
+ornare elit vel augue. Suspendisse potenti. Etiam sed mauris eu neque
+nonummy mollis. Vestibulum vel purus ac pede semper accumsan. Vivamus
+lobortis, sem vitae nonummy lacinia, nisl est gravida magna, non cursus
+est quam sed urna. Phasellus adipiscing justo in ipsum. Duis sagittis
+dolor sit amet magna. Suspendisse suscipit, neque eu dictum auctor,
+nisi augue tincidunt arcu, non lacinia magna purus nec magna. Praesent
+pretium sollicitudin sapien. Suspendisse imperdiet. Class aptent taciti
+sociosqu ad litora torquent per conubia nostra, per inceptos
+hymenaeos.
+</p>
+<form>
+	<center>
+		<select>
+			<option>1</option>
+			<option>2</option>
+		</select>
+	</center>
+</form>
+<p>Mauris pharetra lorem sit amet sapien. Nulla libero metus, tristique
+et, dignissim a, tempus et, metus. Ut libero. Vivamus tempus purus vel
+ipsum. Quisque mauris urna, vestibulum commodo, rutrum vitae, ultrices
+vitae, nisl. Class aptent taciti sociosqu ad litora torquent per
+conubia nostra, per inceptos hymenaeos. Nulla id erat sit amet odio
+luctus eleifend. Proin massa libero, ultricies non, tincidunt a,
+vestibulum non, tellus. Nunc nunc purus, lobortis a, pulvinar at,
+egestas a, mi. Cras adipiscing velit a mauris. Morbi felis. Etiam at
+felis. Cras eget eros et justo mattis pulvinar. Nullam at justo id
+risus porttitor dignissim. Vestibulum sed velit vel metus tincidunt
+tempus. Nunc euismod nisl id dolor tristique tincidunt. Nullam placerat
+turpis sed odio. Curabitur in est id nibh tempus ultrices. Aliquam
+consectetuer dapibus eros. Aliquam nisl.
+</p>
+
+<p>
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
+semper sagittis velit. Cras in mi. Duis porta mauris ut ligula. Proin
+porta rutrum lacus. Etiam consequat scelerisque quam. Nulla facilisi.
+Maecenas luctus venenatis nulla. In sit amet dui non mi semper iaculis.
+Sed molestie tortor at ipsum. Morbi dictum rutrum magna. Sed vitae
+risus.
+</p>
+<p>Aliquam vitae enim. Duis scelerisque metus auctor est venenatis
+imperdiet. Fusce dignissim porta augue. Nulla vestibulum. Integer lorem
+nunc, ullamcorper a, commodo ac, malesuada sed, dolor. Aenean id mi in
+massa bibendum suscipit. Integer eros. Nullam suscipit mauris. In
+pellentesque. Mauris ipsum est, pharetra semper, pharetra in, viverra
+quis, tellus. Etiam purus. Quisque egestas, tortor ac cursus lacinia,
+felis leo adipiscing nisi, et rhoncus elit dolor eget eros. Fusce ut
+quam. Suspendisse eleifend leo vitae ligula. Nulla facilisi. Nulla
+rutrum, erat vitae lacinia dictum, pede purus imperdiet lacus, ut
+semper velit ante id metus. Praesent massa dolor, porttitor sed,
+pulvinar in, consequat ut, leo. Nullam nec est. Aenean id risus blandit
+tortor pharetra congue. Suspendisse pulvinar.
+</p>
+
+<a id="loginLink2" href="javascript:dijit.byId('tooltipDlg').show('loginLink2')" title="Enter Login information2">Show Tooltip Dialog pointing upwards</a>
+(will go up if there isn't enough space on the bottom of the screen)
+
+<p>Vestibulum convallis eros ac justo. Proin dolor. Etiam aliquam. Nam
+ornare elit vel augue. Suspendisse potenti. Etiam sed mauris eu neque
+nonummy mollis. Vestibulum vel purus ac pede semper accumsan. Vivamus
+lobortis, sem vitae nonummy lacinia, nisl est gravida magna, non cursus
+est quam sed urna. Phasellus adipiscing justo in ipsum. Duis sagittis
+dolor sit amet magna. Suspendisse suscipit, neque eu dictum auctor,
+nisi augue tincidunt arcu, non lacinia magna purus nec magna. Praesent
+pretium sollicitudin sapien. Suspendisse imperdiet. Class aptent taciti
+sociosqu ad litora torquent per conubia nostra, per inceptos
+hymenaeos.
+</p>
+<form>
+	<center>
+		<select>
+			<option>1</option>
+			<option>2</option>
+		</select>
+	</center>
+</form>
+<p>Mauris pharetra lorem sit amet sapien. Nulla libero metus, tristique
+et, dignissim a, tempus et, metus. Ut libero. Vivamus tempus purus vel
+ipsum. Quisque mauris urna, vestibulum commodo, rutrum vitae, ultrices
+vitae, nisl. Class aptent taciti sociosqu ad litora torquent per
+conubia nostra, per inceptos hymenaeos. Nulla id erat sit amet odio
+luctus eleifend. Proin massa libero, ultricies non, tincidunt a,
+vestibulum non, tellus. Nunc nunc purus, lobortis a, pulvinar at,
+egestas a, mi. Cras adipiscing velit a mauris. Morbi felis. Etiam at
+felis. Cras eget eros et justo mattis pulvinar. Nullam at justo id
+risus porttitor dignissim. Vestibulum sed velit vel metus tincidunt
+tempus. Nunc euismod nisl id dolor tristique tincidunt. Nullam placerat
+turpis sed odio. Curabitur in est id nibh tempus ultrices. Aliquam
+consectetuer dapibus eros. Aliquam nisl.
+</p>
+
+<a href="javascript:dijit.byId('SecondDialog').show()">Show Second Dialog</a>
+<p>
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
+semper sagittis velit. Cras in mi. Duis porta mauris ut ligula. Proin
+porta rutrum lacus. Etiam consequat scelerisque quam. Nulla facilisi.
+Maecenas luctus venenatis nulla. In sit amet dui non mi semper iaculis.
+Sed molestie tortor at ipsum. Morbi dictum rutrum magna. Sed vitae
+risus.
+</p>
+<p>Aliquam vitae enim. Duis scelerisque metus auctor est venenatis
+imperdiet. Fusce dignissim porta augue. Nulla vestibulum. Integer lorem
+nunc, ullamcorper a, commodo ac, malesuada sed, dolor. Aenean id mi in
+massa bibendum suscipit. Integer eros. Nullam suscipit mauris. In
+pellentesque. Mauris ipsum est, pharetra semper, pharetra in, viverra
+quis, tellus. Etiam purus. Quisque egestas, tortor ac cursus lacinia,
+felis leo adipiscing nisi, et rhoncus elit dolor eget eros. Fusce ut
+quam. Suspendisse eleifend leo vitae ligula. Nulla facilisi. Nulla
+rutrum, erat vitae lacinia dictum, pede purus imperdiet lacus, ut
+semper velit ante id metus. Praesent massa dolor, porttitor sed,
+pulvinar in, consequat ut, leo. Nullam nec est. Aenean id risus blandit
+tortor pharetra congue. Suspendisse pulvinar.
+</p>
+<p>Vestibulum convallis eros ac justo. Proin dolor. Etiam aliquam. Nam
+ornare elit vel augue. Suspendisse potenti. Etiam sed mauris eu neque
+nonummy mollis. Vestibulum vel purus ac pede semper accumsan. Vivamus
+lobortis, sem vitae nonummy lacinia, nisl est gravida magna, non cursus
+est quam sed urna. Phasellus adipiscing justo in ipsum. Duis sagittis
+dolor sit amet magna. Suspendisse suscipit, neque eu dictum auctor,
+nisi augue tincidunt arcu, non lacinia magna purus nec magna. Praesent
+pretium sollicitudin sapien. Suspendisse imperdiet. Class aptent taciti
+sociosqu ad litora torquent per conubia nostra, per inceptos
+hymenaeos.
+</p>
+<p>Mauris pharetra lorem sit amet sapien. Nulla libero metus, tristique
+et, dignissim a, tempus et, metus. Ut libero. Vivamus tempus purus vel
+ipsum. Quisque mauris urna, vestibulum commodo, rutrum vitae, ultrices
+vitae, nisl. Class aptent taciti sociosqu ad litora torquent per
+conubia nostra, per inceptos hymenaeos. Nulla id erat sit amet odio
+luctus eleifend. Proin massa libero, ultricies non, tincidunt a,
+vestibulum non, tellus. Nunc nunc purus, lobortis a, pulvinar at,
+egestas a, mi. Cras adipiscing velit a mauris. Morbi felis. Etiam at
+felis. Cras eget eros et justo mattis pulvinar. Nullam at justo id
+risus porttitor dignissim. Vestibulum sed velit vel metus tincidunt
+tempus. Nunc euismod nisl id dolor tristique tincidunt. Nullam placerat
+turpis sed odio. Curabitur in est id nibh tempus ultrices. Aliquam
+consectetuer dapibus eros. Aliquam nisl.
+</p>
+
+<p>
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
+semper sagittis velit. Cras in mi. Duis porta mauris ut ligula. Proin
+porta rutrum lacus. Etiam consequat scelerisque quam. Nulla facilisi.
+Maecenas luctus venenatis nulla. In sit amet dui non mi semper iaculis.
+Sed molestie tortor at ipsum. Morbi dictum rutrum magna. Sed vitae
+risus.
+</p>
+<p>Aliquam vitae enim. Duis scelerisque metus auctor est venenatis
+imperdiet. Fusce dignissim porta augue. Nulla vestibulum. Integer lorem
+nunc, ullamcorper a, commodo ac, malesuada sed, dolor. Aenean id mi in
+massa bibendum suscipit. Integer eros. Nullam suscipit mauris. In
+pellentesque. Mauris ipsum est, pharetra semper, pharetra in, viverra
+quis, tellus. Etiam purus. Quisque egestas, tortor ac cursus lacinia,
+felis leo adipiscing nisi, et rhoncus elit dolor eget eros. Fusce ut
+quam. Suspendisse eleifend leo vitae ligula. Nulla facilisi. Nulla
+rutrum, erat vitae lacinia dictum, pede purus imperdiet lacus, ut
+semper velit ante id metus. Praesent massa dolor, porttitor sed,
+pulvinar in, consequat ut, leo. Nullam nec est. Aenean id risus blandit
+tortor pharetra congue. Suspendisse pulvinar.
+</p>
+<p>Vestibulum convallis eros ac justo. Proin dolor. Etiam aliquam. Nam
+ornare elit vel augue. Suspendisse potenti. Etiam sed mauris eu neque
+nonummy mollis. Vestibulum vel purus ac pede semper accumsan. Vivamus
+lobortis, sem vitae nonummy lacinia, nisl est gravida magna, non cursus
+est quam sed urna. Phasellus adipiscing justo in ipsum. Duis sagittis
+dolor sit amet magna. Suspendisse suscipit, neque eu dictum auctor,
+nisi augue tincidunt arcu, non lacinia magna purus nec magna. Praesent
+pretium sollicitudin sapien. Suspendisse imperdiet. Class aptent taciti
+sociosqu ad litora torquent per conubia nostra, per inceptos
+hymenaeos.
+</p>
+<p>Mauris pharetra lorem sit amet sapien. Nulla libero metus, tristique
+et, dignissim a, tempus et, metus. Ut libero. Vivamus tempus purus vel
+ipsum. Quisque mauris urna, vestibulum commodo, rutrum vitae, ultrices
+vitae, nisl. Class aptent taciti sociosqu ad litora torquent per
+conubia nostra, per inceptos hymenaeos. Nulla id erat sit amet odio
+luctus eleifend. Proin massa libero, ultricies non, tincidunt a,
+vestibulum non, tellus. Nunc nunc purus, lobortis a, pulvinar at,
+egestas a, mi. Cras adipiscing velit a mauris. Morbi felis. Etiam at
+felis. Cras eget eros et justo mattis pulvinar. Nullam at justo id
+risus porttitor dignissim. Vestibulum sed velit vel metus tincidunt
+tempus. Nunc euismod nisl id dolor tristique tincidunt. Nullam placerat
+turpis sed odio. Curabitur in est id nibh tempus ultrices. Aliquam
+consectetuer dapibus eros. Aliquam nisl.
+</p>
+<p><button id="dlgButton" onclick="javascript:dijit.byId('tooltipDlg2').show('dlgButton')"'>Tooltip with Links</button>
+</p>
+<div dojoType="dijit.layout.TooltipDialog" id="tooltipDlg2" title="General Information Dialog">
+	<p>Vestibulum convallis eros ac justo. Proin dolor. Etiam aliquam. Nam
+	ornare elit vel augue. Suspendisse potenti. Etiam sed mauris eu neque
+	nonummy mollis. <a href="http://www.lipsum.com/">Vestibulum</a> vel purus ac pede semper accumsan. Vivamus
+	lobortis, sem vitae nonummy lacinia, nisl est gravida magna, non cursus
+	est quam sed urna. Phasellus adipiscing justo in <a href="http://www.lipsum.com/">ipsum</a>. Duis sagittis
+	dolor sit amet magna. Suspendisse suscipit, neque eu dictum auctor,
+	nisi augue tincidunt arcu, non lacinia magna purus nec magna. Praesent
+	pretium sollicitudin sapien. <a href="http://www.lipsum.com/">Suspendisse imperdiet</a>. Class aptent taciti
+	sociosqu ad litora torquent per conubia nostra, per inceptos
+	hymenaeos.
+	</p>
+</div>
+
+ 
+
+<div dojoType="dijit.Dialog" id="SecondDialog" bgColor="black" closeNode="closeButton" title="Second Dialog">
+	<form onsubmit="return false;">
+		<table>
+			<tr>
+				<td>Name:</td>
+				<td><input type="text"></td>
+			</tr>
+			<tr>
+				<td>Location:</td>
+				<td><input type="text"></td>
+			</tr>
+			<tr>
+				<td>Description:</td>
+				<td><input type="text"></td>
+			</tr>
+			<tr>
+				<td>Location:</td>
+				<td><input type="file"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+					<input type="button" id="closeButton" value="OK"></td>
+			</tr>
+		</table>
+	</form>
+</div>
+
+</body>
+</html>
+

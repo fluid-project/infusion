@@ -1,0 +1,24 @@
+<fieldset class='dijit dijitInline dijitLeft dijitComboButton'  baseClass='dijitComboButton'
+	id="${id}" name="${name}"
+	dojoAttachEvent="onmouseover:_onMouse;onmouseout:_onMouse;onmousedown:_onMouse;"	
+>
+<table cellspacing='0' cellpadding='0'  waiRole="presentation" >
+	<tr>
+		<td	class="dijitStretch dijitButtonContents dijitButtonNode"
+			tabIndex="${tabIndex}"
+			dojoAttachEvent="onklick:_onButtonClick"
+			waiRole="button">
+			<div class="dijitInline ${iconClass}"></div>
+			<span class="dijitButtonContents" dojoAttachPoint="containerNode;focusNode" id="${id}_label">${label}</span>
+		</td>
+		<td class='dijitReset dijitRight dijitButtonNode dijitDownArrowButton'
+			dojoAttachPoint="popupStateNode"
+			dojoAttachEvent="onmouseover:_onMouse;onmouseout:_onMouse;onmousedown:_onMouse;onklick:_onArrowClick; onkeypress:_onKey;"
+			baseClass="dijitComboButtonDownArrow"
+			title="${optionsTitle}"
+			tabIndex="${tabIndex}"
+			waiRole="button" waiState="haspopup-true"
+		><div waiRole="presentation">&#9660;</div>
+	</td></tr>
+</table>
+</fieldset>

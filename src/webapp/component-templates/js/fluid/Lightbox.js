@@ -28,7 +28,7 @@ fluid.declare = function(target, args) {
     }
 };
 
-dojo.require("dijit.base.Widget");
+dojo.require("dijit._Widget");
 dojo.require("dojo.dnd.source");
 dojo.require("dijit.Tooltip");
 dojo.require("fluid.Fluid");
@@ -45,7 +45,7 @@ dojo.require("fluid.Fluid");
 
 dojo.declare(
 	"fluid.Lightbox",	// class name
-	dijit.base.Widget,
+	dijit._Widget,
 	{
 		// the lightbox-reorderable DOM element that is currently active
 		activeItem: null,
@@ -118,7 +118,7 @@ dojo.declare(
 			dojo.removeClass (this.activeItem, fluid.states.defaultClass);
 			dojo.addClass (this.activeItem, fluid.states.focusedClass);
 			this.getElementToFocus(this.activeItem).focus();
-			this.activeItem.theTooltip.open();	
+			//this.activeItem.theTooltip.open();	
 		}, //end focus
 		
 		/**
@@ -136,7 +136,7 @@ dojo.declare(
 				dojo.removeClass (this.activeItem, fluid.states.focusedClass);
 				dojo.addClass (this.activeItem, fluid.states.defaultClass);
 				if (this.activeItem.theTooltip) {
-					this.activeItem.theTooltip.close ();
+					//this.activeItem.theTooltip.close ();
 				}
 			}
 		},
@@ -251,13 +251,13 @@ dojo.declare(
 		
 		_setActiveItem: function(anItem) {
 			// Tooltip disabled because styling makes user experience confusing.
-			if (!anItem.theTooltip) {
-			    var caption = this._fetchMessage("thumbnailInstructions");
-				anItem.theTooltip = new dijit.Tooltip (
-				{connectId: anItem.id, 
-				 caption: caption
-				});
-             }
+//			if (!anItem.theTooltip) {
+//			    var caption = this._fetchMessage("thumbnailInstructions");
+//				anItem.theTooltip = new dijit.Tooltip (
+//				{connectId: anItem.id, 
+//				 label: caption
+//				});
+//             }
 
 			this.activeItem = anItem;
 			this._updateActiveDescendent();

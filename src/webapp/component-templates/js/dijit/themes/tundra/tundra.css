@@ -1,0 +1,1143 @@
+/*
+	Adds cosmetic styling to Dijit.  Users may swap with a custom theme CSS file.
+*/
+
+@import url("../dijit.css");
+
+
+/*
+ * IE6: can't display PNG images with gradient transparency.
+ * Want to use filter property for those images, but then need to specify a path relative
+ * to the main page, rather than relative to this file... using gifs for now
+ */
+.dj_ie6 .tundra .dijitInputField,
+.dj_ie6 .tundra .dijitComboBoxInput {
+	background-image: none;
+	/* TODO: won't work; path is wrong; use gif instead? */
+	/* filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="dijitTundraGradientBg.png", sizingMethod="scale"); */
+}
+
+/** TODO: add all other PNGs here that need this */
+
+.dj_safari .tundra .dijitPopup {
+	/* -webkit-border-radius: 5px; */
+	-webkit-box-shadow: 0px 3px 7px #adadad;
+}
+
+/*
+ * Control opacity of popups
+ */
+.tundra .dijitPopup div,
+.tundra .dijitPopup table {
+	opacity: 0.95;
+}
+
+/*****
+		dijit.form.Button
+		dijit.form.DropDownButton
+		dijit.form.ComboButton
+		dijit.form.ComboBox (partial)
+ *****/
+
+
+.tundra .dijitButtonNode {
+	/* enabled state - inner */
+	/* border:1px outset #a0a0a0; */
+	border:1px solid #9b9b9b;
+	padding:.3em .4em .1em .4em;
+	background:#e9e9e9 url("images/buttonEnabled.png") repeat-x top;
+}
+
+.tundra .dijitButtonDisabled .dijitButtonNode,
+.tundra .dijitToggleButtonDisabled .dijitButtonNode,
+.tundra .dijitDropDownButtonDisabled .dijitButtonNode,
+.tundra .dijitComboButtonDisabled .dijitButtonNode,
+.tundra .dijitComboBoxDisabled .dijitDownArrowButton,
+.tundra .dijitComboBoxDisabled .dijitComboBoxInput,
+.tundra .dijitSpinnerDisabled .dijitSpinnerInput,
+.tundra .dijitSpinnerDisabled .dijitButtonNode {
+	/* disabled state - inner */
+	border: 1px solid #d5d5d5;
+	color:#b4b4b4;
+	background:#e4e4e4 url("images/buttonDisabled.png") top repeat-x;
+}
+
+.tundra .dijitButtonHover .dijitButtonNode,
+.tundra .dijitToggleButtonHover .dijitButtonNode,
+.tundra .dijitToggleButtonSelectedHover .dijitButtonNode,
+.tundra .dijitDropDownButtonHover .dijitButtonNode,
+.tundra .dijitComboButtonHover .dijitButtonContents,
+.tundra .dijitComboButtonDownArrowHover .dijitDownArrowButton,
+.tundra .dijitComboBoxHover .dijitDownArrowButton,
+.tundra .dijitSpinnerUpArrowHover .dijitUpArrowButton,
+.tundra .dijitSpinnerDownArrowHover .dijitDownArrowButton {
+	/* hover state - inner */
+	border-color:#366dba;
+	color:#366dba;
+	background-image: url("images/buttonHover.png") bottom;
+}
+
+.tundra .dijitButtonActive .dijitButtonNode,
+.tundra .dijitToggleButtonActive .dijitButtonNode,
+.tundra .dijitToggleButtonSelected .dijitButtonNode,
+.tundra .dijitToggleButtonSelectedHover .dijitButtonNode,
+.tundra .dijitToggleButtonSelectedActive .dijitButtonNode,
+.tundra .dijitDropDownButtonActive .dijitButtonNode,
+.tundra .dijitComboButtonActive .dijitButtonContents,
+.tundra .dijitDownArrowActive .dijitDownArrowButton,
+.tundra .dijitComboBoxActive .dijitDownArrowButton {
+	/* active state - inner (for when you are pressing a normal button, or
+	 * when a toggle button is in a depressed state
+	 */
+	border-color:#366dba;
+	/* border-style:inset; */
+	background: #ededed url("images/buttonActive.png") bottom repeat-x;
+}
+
+.tundra .dijitToolbar {
+	border:1px solid #9b9b9b;
+	background:#e9e9e9 url("images/buttonEnabled.png") repeat-x top;
+}
+
+.tundra .dijitToolbar .dijitButtonNode,
+.tundra .dijitToolbar .dijitToolbarSeparator {
+	padding: 0px;
+	margin: 1px;
+	border: 1px solid transparent;
+}
+.tundra .dijitToolbar .dijitButtonHover .dijitButtonNode,
+.tundra .dijitToolbar .dijitToggleButtonHover .dijitButtonNode,
+.tundra .dijitToolbar .dijitToggleButtonActive .dijitButtonNode,
+.tundra .dijitToolbar .dijitToggleButtonSelected .dijitButtonNode,
+.tundra .dijitToolbar .dijitDropDownButtonHover .dijitButtonNode,
+.tundra .dijitToolbar .dijitToggleButtonSelectedHover .dijitButtonNode,
+.tundra .dijitToolbar .dijitToggleButtonSelected .dijitButtonNode {
+	border-color: #366dba;
+}
+.dijitToolbarSeparator {
+	background-image: url(images/editor.gif);
+	height: 18px;
+	width: 18px;
+}
+
+/** ???
+.tundra .dijitButtonEnabled *[popupActive],
+.tundra .dijitButtonEnabled *:active {
+	background-image: url("images/buttonActive.png");
+}
+*/
+
+
+
+
+/****
+		dijit.form.Textbox
+		dijit.form.ValidationTextbox
+		dijit.form.SerializableTextbox
+		dijit.form.RangeBoundTextbox
+		dijit.form.NumberTextbox
+		dijit.form.CurrencyTextbox
+		dijit.form.NumberSpinner
+		dijit.form.ComboBox (partial)
+ ****/
+
+.tundra .dijitComboBox {
+	/* put margin on the outer element of the autocompleter rather than the input */
+	margin:.0em .1em .2em .1em;
+}
+
+
+
+/*.tundra .dijitInputField,		MOW TODO */
+.tundra .dijitSpinner input,
+.tundra .dijitInlineEditor input,
+.tundra .dijitTextaArea,
+.tundra .dijitComboBoxInput,
+.tundra .dijitSpinnerInput {
+	/* 	For all except dijit.form.NumberSpinner:  the actual input element.
+		For dijit.form.NumberSpinner: the outer fieldset that contains the input.
+	*/
+	font-size: inherit;
+	background:#fff url("images/validationInputBg.png") repeat-x top left;
+	border:1px solid #9b9b9b;
+	line-height: normal;
+	padding: 0.2em 0.3em;
+}
+
+/*
+.tundra .dijitComboBoxInput {
+	margin:0em;
+	padding:.1em .3em;
+}
+*/
+
+.tundra .dijitComboBoxFocused .dijitComboBoxInput {
+	/* input field when focused (eg: typing affects it) */
+	border-color:#366dba;
+	border-style:inset;
+}
+
+.tundra .dijitComboBoxDisabled .dijitComboBoxInput {
+	/* input field when disabled (also set above) */
+}
+
+.tundra .dijitComboBoxHover .dijitComboBoxInput  {
+	/* input field when hovered over */
+	border-color:#366dba;
+}
+
+.tundra .dijitComboBoxActive .dijitComboBoxInput {
+	/* input field when mouse is down (?) */
+}
+
+
+
+
+
+
+
+
+
+/* Dojo Input Field */
+
+.tundra .dijitInputFieldValidationNormal {
+	
+}
+
+.tundra .dijitInputFieldValidationWarning {
+	border:1px solid #f3d118;
+}
+
+.tundra .dijitInputFieldValidationError {
+	border:1px solid #f3d118;
+	background:#f9f7ba;
+}
+
+.tundra .dijitInputFieldValidationError:hover,
+.tundra .dijitInputFieldValidationError:focus {
+	
+}
+
+/*
+ *  Checkbox and Radio Widgets,
+ *	and the CSS to embed a checkbox or radio icon inside a ToggleButton.
+ *
+ *	Order of images in the default sprite (from L to R, checkbox and radio in same image):
+ *		checkbox	normal 	 - checked
+ *							 - unchecked
+ *					disabled - checked
+ *							 - unchecked
+ *					hover 	 - checked
+ *							 - unchecked
+ *
+ *		radio		normal 	 - checked
+ *							 - unchecked
+ *					disabled - checked
+ *							 - unchecked
+ *					hover 	 - checked
+ *							 - unchecked
+*/
+.tundra .dijitCheckbox,
+.tundra .dijitRadio,
+.tundra .dijitCheckboxIcon,		/* inside a toggle button */
+.tundra .dijitRadioIcon	{		/* inside a toggle button */
+	background-image: url('images/checkmark.png'); /* checkbox sprite image */
+	width: 16px;
+	height: 16px;
+}
+
+.tundra .dijitCheckbox,
+.tundra .dijitToggleButton .dijitCheckboxIcon {
+	/* unchecked */
+	background-position: -16px;
+}
+ 
+.tundra .dijitCheckboxSelected,
+.tundra .dijitToggleButtonSelected .dijitCheckboxIcon {
+	/* checked */
+	background-position: 0px;
+}
+
+.tundra .dijitCheckboxSelectedDisabled,
+.tundra .dijitToggleButtonSelectedDisabled .dijitCheckboxIcon {
+	/* disabled but selected */
+	background-position: -32px;
+}
+
+.tundra .dijitCheckboxDisabled,
+.tundra .dijitToggleButtonDisabled .dijitCheckboxIcon {
+	/* disabled */
+	background-position: -48px;
+}
+
+.tundra .dijitCheckboxSelectedHover,
+.tundra .dijitToggleButtonSelectedHover .dijitCheckboxIcon,
+.tundra .dijitToggleButtonSelectedActive .dijitCheckboxIcon {
+	/* selected and being hovered over, or being pressed to uncheck */
+	background-position: -64px;
+}
+
+.tundra .dijitCheckboxHover,
+.tundra .dijitToggleButtonHover .dijitCheckboxIcon,
+.tundra .dijitToggleButtonActive .dijitCheckboxIcon {
+	/* unselected, but being hovered over or being pressed */
+	background-position: -80px;
+}
+
+.tundra .dijitRadio,
+.tundra .dijitToggleButton .dijitRadioIcon {
+	/* unselected */
+	background-position: -112px;
+}
+
+.tundra .dijitRadioSelected,
+.tundra .dijitToggleButtonSelected .dijitRadioIcon {
+	/* selected */
+	background-position: -96px;
+}
+
+.tundra .dijitRadioSelectedDisabled,
+.tundra .dijitToggleButtonSelectedDisabled .dijitRadioIcon {
+	/* selected but disabled */
+	background-position: -128px;
+}
+
+.tundra .dijitRadioDisabled,
+.tundra .dijitToggleButtonDisabled .dijitRadioIcon {
+	/* unselected and disabled */
+	background-position: -144px;
+}
+
+.tundra .dijitRadioSelectedHover,
+.tundra .dijitToggleButtonSelectedHover .dijitRadioIcon,
+.tundra .dijitToggleButtonSelectedActive .dijitRadioIcon {
+	/* selected but hovering over it or pressing it */
+	background-position: -160px;
+}
+
+.tundra .dijitRadioHover,
+.tundra .dijitToggleButtonHover .dijitRadioIcon,
+.tundra .dijitToggleButtonActive .dijitRadioIcon {
+	/* hovering over or pressing an unselected radio button */
+	background-position: -176px;
+}
+
+/* Menu */
+.tundra .dijitMenu {
+	border: 1px solid #9b9b9b;
+	margin: 0px;
+	padding: 0px;
+}
+
+.tundra .dijitMenuItem{
+	background-color: #f7f7f7;
+	font: menu;
+	margin: 0;
+}
+
+.tundra .dijitMenuItem TD {
+	padding:2px;
+}
+
+.tundra .dijitMenuItemHover {
+	background-color: #95a0b0; /* #555555; #aaaaaa; #646464;  #60a1ea; */
+	color:#fff;
+}
+
+.tundra .dijitMenuItemIcon {
+	width: 16px;
+	height: 16px;
+	padding-right: 3px;
+}
+
+
+/* MOW: I don't think this is used anymore:
+.tundra .dijitMenuItemHover .dijitMenuItemSubmenu {
+	background-image: url(images/submenu_on.gif);
+}
+
+.tundra .dijitRTL .dijitMenuItemHover .dijitMenuItemSubmenu {
+	background-image: url(images/submenu_on_rtl.gif);
+}
+*/
+
+/* MOW: I don't think this is used anymore:
+.tundra .dijitMenuItemDisabled .dijitMenuItemSubmenu {
+	background-image: url(images/submenu_disabled.gif);
+}
+
+.tundra .dijitRTL .dijitMenuItemDisabled .dijitMenuItemSubmenu {
+	background-image: url(images/submenu_disabled_rtl.gif);
+}
+*/
+
+
+
+.tundra .dijitMenuSeparator {
+	background-color: #f7f7f7;
+}
+
+/* separator can be two pixels -- set border of either one to 0px to have only one */
+.tundra .dijitMenuSeparatorTop {
+	border-bottom: 1px solid #9b9b9b; /*97adcb; */
+}
+
+.tundra .dijitMenuSeparatorBottom {
+	border-top: 1px solid #e8e8e8;
+}
+
+
+
+
+
+/* Toaster */
+
+.tundra .dijitToasterContent{
+	padding:1em;
+	padding-top:0.25em;
+	background:#73c74a;
+}
+
+.tundra .dijitToasterMessage{ 
+	color:#fff;
+}
+.tundra .dijitToasterWarning{ }
+.tundra .dijitToasterError,
+.tundra .dijitToasterFatal{
+	font-weight:bold;
+	color:#fff;
+}
+
+.tundra .dijitToasterWarning .dijitToasterContent{
+	padding:1em;
+	padding-top:0.25em;
+	background:#d4d943;
+} 
+
+.tundra .dijitToasterError .dijitToasterContent{
+	padding:1em;
+	padding-top:0.25em;
+	background:#c46600;
+} 
+
+
+/* TitlePane */
+
+.tundra .dijitTitlePaneTitle {
+	background: #cccccc;
+	background:#fafafa url("images/titleBarBg.gif") repeat-x bottom 
+left;
+	border:1px solid #bfbfbf;
+	padding:4px 4px 2px 4px;
+	cursor: pointer;
+}
+
+.tundra .dijitTitlePaneTitle .dijitOpenCloseArrowOuter {
+	margin-right:5px;
+}
+
+.tundra .dijitOpen .dijitTitlePaneTitle .dijitOpenCloseArrowOuter {
+	position:relative;
+	top:2px;
+}
+
+.tundra .dijitTitlePaneContent {
+	background: #ffffff;
+	border:1px solid #bfbfbf;
+	border-top: 1px solid #cddde9;	/* w/out this, an <h1> on the top line causes a gap between the .content and .label */
+	padding:10px;
+}
+
+.tundra .dijitClickableRegion {
+	background-color : #ffc !important;
+}
+
+
+.tundra .dijitTextArea {
+	width:50%;
+	overflow:auto;
+	border:1px solid #7788a0;
+}
+
+
+/* Tabs */
+
+
+.tundra .dijitTabPaneWrapper {
+	/*
+	overflow: hidden;
+	*/
+	border:1px solid #ccc;
+}
+
+.tundra .dijitTab {
+	line-height:normal;
+	margin-right:5px;		/* space between one tab and the next in top/bottom mode */
+	padding:0px;
+	border:1px solid #afafaf;
+	background:#e2e2e2 url("images/tabEnabled.png") repeat-x;
+}
+
+.tundra .dijitAlignLeft .dijitTab,
+.tundra .dijitAlignRight .dijitTab {
+	margin-right:0px;
+	margin-bottom:5px;	/* space between one tab and the next in left/right mode */
+}
+
+
+.tundra .dijitTabInnerDiv {
+/*	min-height:16px;	*/
+	padding:6px 10px 4px 10px;
+	border-left:1px solid #fff;
+	border-bottom:1px solid #fff;
+}
+
+.tundra .dijitTabSelected,
+.tundra .dijitTabSelectedHover,
+.tundra .dijitTabCloseButtonSelectedHover
+{
+	background:#e2e2e2 url("images/tabActive.png") repeat-x bottom !important;
+}
+
+
+
+/* make the active tab white on the side next to the content pane */
+.tundra .dijitAlignTop .dijitTabSelected,
+.tundra .dijitAlignTop .dijitTabSelectedHover,
+.tundra .dijitAlignTop .dijitTabCloseButtonSelectedHover
+{
+	border-bottom-color:white;
+	vertical-align:bottom;
+}
+
+.tundra .dijitAlignBottom .dijitTabSelected,
+.tundra .dijitAlignBottom .dijitTabSelectedHover,
+.tundra .dijitAlignBottom .dijitTabCloseButtonSelectedHover
+{
+	border-top-color:white;
+	-moz-border-radius:2px 2px 0px 0px;	/* eliminate some border detritrus on moz */
+}
+
+.tundra .dijitAlignLeft .dijitTabSelected,
+.tundra .dijitAlignLeft .dijitTabSelectedHover,
+.tundra .dijitAlignLeft .dijitTabCloseButtonSelectedHover
+{
+	border-right-color:white;
+}
+
+.tundra .dijitAlignRight .dijitTabSelected,
+.tundra .dijitAlignRight .dijitTabSelectedHover,
+.tundra .dijitAlignRight .dijitTabCloseButtonSelectedHover
+{
+	border-left-color:white;
+}
+
+
+.tundra .dijitTabHover,
+.tundra .dijitTabCloseButtonHover {
+	color: #243C5F;
+	border-top-color:#92a0b3;
+	border-left-color:#92a0b3;
+	border-right-color:#92a0b3;
+	background:#e2e2e2 url("images/tabHover.png") repeat-x bottom;
+}
+
+
+.tundra .dijitTab .closeImage {
+	position:relative;
+	top: 2px;
+	height : 12px;
+	width : 12px;
+	padding : 0 12px 0 0;
+	margin : 0px 0px 0px 10px;
+	background : url("images/tabClose.png") no-repeat right top;
+}
+
+.tundra .dijitTabCloseButton .closeImage {
+	background-image : url("images/tabCloseHover.png") !important;
+}
+
+
+
+/* SplitContainer */
+
+.tundra .dijitSplitContainerSizerH {
+	background:url("images/splitContainerSizerH.png") repeat-y #fff;
+	border:0;
+	border-left:1px solid #bfbfbf;
+	border-right:1px solid #bfbfbf;
+	width:7px;
+}
+
+.tundra .dijitSplitContainerSizerH .thumb {
+	background:url("images/splitContainerSizerHThumb.png") no-repeat #ccc;
+	left:1px;
+	width:3px;
+	height:19px;
+}
+
+.tundra .dijitSplitContainerSizerV {
+	background:url("images/splitContainerSizerV.png") repeat-x #fff;
+	border:0;
+	border-top:1px solid #bfbfbf;
+	border-bottom:1px solid #bfbfbf;
+	height:7px;
+}
+
+.tundra .dijitSplitContainerSizerV .thumb {
+	background:url("images/splitContainerSizerVThumb.png") no-repeat #ccc;
+	top:1px;
+	width:19px;
+	height:3px;
+}
+
+
+/* Dialog */
+
+.tundra .dijitDialog {
+	background: #eee;
+	border: 1px solid #999;
+}
+
+.tundra .dijitDialog .dijitTitlePaneTitle{
+	border-top: none;
+	border-left: none;
+	border-right: none;
+}
+
+.tundra .dijitDialog .dijitTitlePaneContent {
+	border: none;
+}
+
+.tundra .dijitDialogTitleBar {
+	/* outer container for the titlebar of the dialog */
+	background: #fafafa url("images/titleBarBg.gif") repeat-x bottom left;
+	/* border: 1px solid #bfbfbf; */
+	padding: 4px 8px 2px 4px;
+	cursor: move;
+}
+
+.tundra .dijitDialogTitle {
+	/* typography and styling of the dialog title */
+	font-weight: bold;
+	padding: 8px 12px 8px 12px;
+}
+
+.tundra .dijitDialogCloseIcon {
+	/* the default close icon for the dialog */
+	background : url("images/tabClose.png") no-repeat right top;
+	float: right;
+	position: absolute;
+	vertical-align: middle;
+	right: 5px;
+	top: 5px;
+	height: 22px;
+	width: 22px;
+	cursor: pointer;
+}
+
+.tundra .dijitDialogContent {
+	/* the body of the dialog */
+	padding: 8px;
+}
+
+/*Tooltip*/
+
+.tundra .dijitTooltip,
+.tundra .dijitTooltipDialog {
+	/* the outermost dom node, holding the connector and container */
+	opacity: 0.95;
+}
+
+.tundra .dijitTooltipContainer {
+	/*
+		The part with the text.
+
+		NOTE: 
+			FF doesn't clip images used as CSS bgs if you specify a border
+			radius. If you use a solid color, it does. Webkit gets it right.
+			Sigh.
+		background: #ffffff url("images/popupMenuBg.gif") repeat-x bottom left;
+	*/
+	background-color: #fafafa;
+	border:1px solid #b6c7d5;
+	padding:0.45em;
+	border-radius: 6px;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 6px;
+}
+
+.tundra .dijitTooltipConnect {
+	/* the arrow piece */
+	border:0px;
+	z-index: 2;
+}
+
+.tundra .dijitTooltipBelow {
+	margin-top: 13px;
+}
+.tundra .dijitTooltipBelow .dijitTooltipConnector {
+	/* the arrow piece for tooltips below an element */
+	top: -13px;
+	left: 3px;
+	background:url("images/tooltipConnectorUp.png") no-repeat top left;
+	width:16px;
+	height:14px;
+}
+.dj_ie6 .tundra .dijitTooltipBelow .dijitTooltipConnector {
+	background-image: url("images/tooltipConnectorUp.gif");
+}
+
+.tundra .dijitTooltipAbove {
+	margin-bottom: 13px;
+}
+.tundra .dijitTooltipAbove .dijitTooltipConnector {
+	/* the arrow piece for tooltips above an element */
+	bottom: -12px;
+	left: 3px;
+	background:url("images/tooltipConnectorDown.png") no-repeat top left;
+	width:16px;
+	height:14px;
+}
+.dj_ie6 .tundra .dijitTooltipAbove .dijitTooltipConnector {
+	background-image: url("images/tooltipConnectorDown.gif");
+}
+
+.tundra .dijitTooltipLeft {
+	margin-right: 13px;
+}
+.tundra .dijitTooltipLeft .dijitTooltipConnector {
+	/* the arrow piece for tooltips to the left of an element, bottom borders aligned */
+	right: -12px;
+	bottom: 7px;
+	background:url("images/tooltipConnectorRight.png") no-repeat top left;
+	width:16px;
+	height:14px;
+}
+.dj_ie6 .tundra .dijitTooltipLeft .dijitTooltipConnector {
+	background-image: url("images/tooltipConnectorRight.gif");
+}
+
+.tundra .dijitTooltipRight {
+	margin-left: 13px;
+}
+.tundra .dijitTooltipRight .dijitTooltipConnector {
+	/* the arrow piece for tooltips to the right of an element, bottom borders aligned */
+	left: -13px;
+	bottom: 7px;
+	background:url("images/tooltipConnectorLeft.png") no-repeat top left;
+	width:16px;
+	height:14px;
+}
+.dj_ie6 .tundra .dijitTooltipRight .dijitTooltipConnector {
+	background-image: url("images/tooltipConnectorLeft.gif");
+}
+
+/*Accordion*/
+
+.tundra .dijitAccordionPane-selected {
+	/* background-color:#85aeec; */
+	background-color: #e7e7e7;
+}
+
+.tundra .dijitAccordionPane .title {
+	background:#fafafa url("images/titleBar.png") repeat-x bottom left;
+	border: 1px solid #bfbfbf;
+	padding:4px 4px 2px 4px;
+}
+
+.tundra .dijitAccordionPane-selected .title {
+	background: #ededed url("images/buttonActive.png") bottom repeat-x;
+	font-weight: bold;
+	/* border:1px solid #84a3d1; */
+	border: 1px solid #aaaaaa;
+	padding: 4px 4px 2px 4px;
+}
+
+.tundra .dijitAccordionPane .title .arrow {
+	background:url("images/doubleArrowUp.png") no-repeat;
+	width:9px;
+	height:9px;
+	margin-top:2px;
+}
+
+.tundra .dijitAccordionPane-selected .title .arrow {
+	background:url("images/doubleArrowDown.png") no-repeat;
+	margin-top:3px;
+}
+
+.tundra .dijitAccordionPane .body {
+	background: #fff;
+	border:1px solid #bfbfbf;
+}
+
+
+
+/* Tree */
+.tundra .TreeNode {
+    background-image : url('images/i.gif');
+    background-position : top left;
+    background-repeat : repeat-y;
+    margin-left: 19px;
+    zoom: 1;	/* MOW: what the heck is this doing in here? */
+}
+.tundra .TreeIsRoot {
+    margin-left: 0;
+}
+ 
+/* left vertical line (grid) for all nodes */
+.tundra .TreeIsLast {
+    background: url('images/i_half.gif') no-repeat;
+}
+
+.tundra .TreeExpando {
+    width: 18px;
+    height: 18px;
+}
+
+.tundra .TreeContent {
+    min-height: 18px;
+    min-width: 18px;
+    margin-left:18px;
+    padding-top:3px;
+    padding-left:1px;
+}
+
+.tundra .TreeIEContent {
+	height: 18px;
+}
+ 
+.tundra .TreeExpand {
+    width: 18px;
+    height: 18px;
+    background-repeat : no-repeat;
+}
+ 
+/* same style as IE selection */
+.tundra .TreeNodeEmphasized {
+    background-color: Highlight;
+    color: HighlightText;
+}
+
+/* don't use :focus due to opera and IE's lack of support on div's */
+.tundra .TreeLabelFocused {
+	outline: 1px invert dotted;
+}
+
+.tundra .TreeExpandoOpened {
+	background-image: url('images/treeExpand_minus.gif');
+}
+ 
+.tundra .TreeExpandoClosed {
+	background-image: url('images/treeExpand_plus.gif');
+}
+ 
+.tundra .TreeExpandoLeaf {
+	background-image: url('images/treeExpand_leaf.gif');
+}
+
+.tundra .TreeExpandoLoading {
+	background-image: url('images/treeExpand_loading.gif');
+}
+
+
+/* Calendar*/
+
+
+.tundra .calendarIncrementControl {
+	/* next/prev month buttons */
+	padding:2px;
+}
+
+.tundra table.calendarContainer {
+/*	border:1px solid #566f8f;*/
+	font-size: 100%;
+	border-collapse: collapse; 
+	border-spacing: 0; 
+	border: 1px solid #ccc; 
+	margin: 0;
+}
+
+
+
+.tundra .calendarMonthContainer th {
+	/* month header cell */
+	background:white url("images/calendarMonthLabel.png") repeat-x top;
+	padding-top:.2em;
+}
+
+.tundra .calendarDayLabelTemplate {
+	/* day of week labels */
+	background:white url("images/calendarDayLabel.png") repeat-x bottom;
+	font-weight:normal;
+	padding-top:.15em;
+	padding-bottom:0em;
+	border-top: 1px solid #eeeeee;
+	color:#293a4b;
+	text-align:center;
+}
+
+.tundra .calendarMonthLabel {
+	/* day of week labels */
+	color:#293a4b;
+	font-size: 0.75em;
+	font-weight: bold;
+	text-align:center;
+}
+
+.dj_ie7 .tundra .calendarDateTemplate,
+.dj_ie6 .tundra .calendarDateTemplate {
+	font-size: 0.8em;
+}
+
+.tundra .calendarDateTemplate {
+	/* style for each day cell */
+	font-size: 0.9em;
+	font-weight: bold;
+	text-align: center;
+	padding: 0.3em 0.3em 0.05em 0.3em;
+	letter-spacing: 1px;
+}
+
+
+.tundra .calendarPreviousMonth,
+.tundra .calendarNextMonth 		{
+	/* days that are part of the previous or next month */
+	color:#999999;
+	background-color:#f8f8f8 !important;
+}
+
+.tundra .calendarPreviousMonthDisabled,
+.tundra .calendarNextMonthDisabled	{
+	/* days that are part of the previous or next month - disabled*/
+	background-color:#a4a5a6 !important;
+}
+
+.tundra .calendarCurrentMonth {
+	/* days that are part of this month */
+	background-color:white !important;
+}
+
+.tundra .calendarCurrentMonthDisabled {
+	/* days that are part of this month - disabled */	
+	background-color:#bbbbbc !important;
+}
+
+
+.tundra .calendarCurrentDate {
+	/* cell for today's date */
+	text-decoration:underline;
+	font-weight:bold;
+}
+
+.tundra .calendarSelectedDate {
+	/* cell for the selected date */
+	background-color:#bbc4d0 !important;
+	color:black !important;
+}
+
+
+.tundra .calendarYearContainer {
+	/* footer of the table that contains the year display/selector */
+	background:white url("images/calendarYearLabel.png") repeat-x bottom;
+	border-top:1px solid #ccc;
+}
+
+.tundra .calendarYearLabel {
+	/* container for all of 3 year labels */
+	margin:0;
+	padding:0.4em 0 0.25em 0;
+	text-align:center;
+}
+
+.tundra .calendarSelectedYear {
+	/* label for selected year */
+	color:black;
+	padding:0.2em;
+	padding-bottom:0.1em;
+	background-color:#bbc4d0 !important;
+}
+
+.tundra .calendarNextYear, 
+.tundra .calendarPreviousYear {
+	/* label for next/prev years */
+	color:black !important;
+	font-weight:normal;
+}
+
+
+
+
+/* inline edit boxen */
+.tundra .dijitInlineValue {
+	/* span around an inline-editable value when NOT in edit mode */
+	padding:3px;
+	margin:4px;
+}
+
+
+/* MOW: trying to get this to look like a mini-dialog.  Advised? */
+.tundra .dijitInlineEditor {
+	/* fieldset surrounding an inlineEditor in edit mode */
+	display: inline-block;
+	display: -moz-inline-stack;
+	#display:inline;
+	/*
+	border: solid;
+	border-color: #7788a0 #344257 #344257 #7788a0;
+	border-width:1px 2px 2px 1px;
+	-moz-border-radius:0px 2px 0px 2px;	make BL and TR corners indent on Moz so it looks like we have a shadow
+	background-color:white;
+	*/
+}
+
+.dijitInlineEditor .saveButton,
+.dijitInlineEditor .cancelButton {
+	margin:3px 3px 3px 0px;
+}
+
+
+/* spinner */
+
+.tundra .dijitSpinner {}
+
+.tundra .dijitSpinner input {
+}
+
+.tundra .dijitSpinnerArrowGroup {}
+
+
+
+
+/****
+		dijit.ProgressBar
+ ****/
+ 
+.tundra .dijitProgressBar {
+	margin:2px 0px 2px 0px;
+}
+
+ 
+.tundra .dijitProgressBarEmpty{
+	/* outer container and background of the bar that's not finished yet*/
+	background:#ececec url("images/progressBarEmpty.png") repeat-x bottom left;
+	border-color: #84a3d1;
+}
+
+
+.dijitProgressBarFull {
+	/* outer container for background of bar that is finished */
+}
+
+.tundra .dijitProgressBarTile{
+	/* inner container for finished portion when in 'tile' (image) mode */
+	background:#cad2de url("images/progressBarFull.png") repeat-x top left;
+}
+
+.tundra .dijitProgressBarEmptyLabel{
+	/* label for portion of the bar that's not finished yet 
+		Set to a color that contrasts with the "Empty" part.  
+	*/
+	color:#293a4b;
+}
+
+.tundra .dijitProgressBarFullLabel{
+	/* label for portion of the bar that is finished 
+		set to a color that contrasts with the "Full" part
+	*/
+	color:#2963b9;
+}
+
+
+.tundra .dijitProgressBarIndeterminate .dijitProgressBarTile {
+	/* use an animated gif for the progress bar in 'indeterminate' mode */
+	background:#cad2de url("images/dijitProgressBarAnim.gif") repeat-x top left;
+}
+
+/**** ICONS *****/
+
+.tundra .dijitEditorIconSep,
+.tundra .dijitEditorIconBackColor,
+.tundra .dijitEditorIconBold,
+.tundra .dijitEditorIconCancel,
+.tundra .dijitEditorIconCopy,
+.tundra .dijitEditorIconCreateLink,
+.tundra .dijitEditorIconCut,
+.tundra .dijitEditorIconDelete,
+.tundra .dijitEditorIconForeColor,
+.tundra .dijitEditorIconHiliteColor,
+.tundra .dijitEditorIconIndent,
+.tundra .dijitEditorIconInsertHorizontalRule,
+.tundra .dijitEditorIconInsertImage,
+.tundra .dijitEditorIconInsertOrderedList,
+.tundra .dijitEditorIconInsertTable,
+.tundra .dijitEditorIconInsertUnorderedList,
+.tundra .dijitEditorIconItalic,
+.tundra .dijitEditorIconJustifycenter,
+.tundra .dijitEditorIconJustifyfull,
+.tundra .dijitEditorIconJustifyleft,
+.tundra .dijitEditorIconJustifyright,
+.tundra .dijitEditorIconLeftToRight,
+.tundra .dijitEditorIconListBulletIndent,
+.tundra .dijitEditorIconListBulletOutdent,
+.tundra .dijitEditorIconListNumIndent,
+.tundra .dijitEditorIconListNumOutdent,
+.tundra .dijitEditorIconOutdent,
+.tundra .dijitEditorIconPaste,
+.tundra .dijitEditorIconRedo,
+.tundra .dijitEditorIconRemoveFormat,
+.tundra .dijitEditorIconRightToLeft,
+.tundra .dijitEditorIconSave,
+.tundra .dijitEditorIconSpace,
+.tundra .dijitEditorIconStrikethrough,
+.tundra .dijitEditorIconSubscript,
+.tundra .dijitEditorIconSuperscript,
+.tundra .dijitEditorIconUnderline,
+.tundra .dijitEditorIconUndo,
+.tundra .dijitEditorIconWikiword {
+	background-image: url('images/editor.gif'); /* editor icons sprite image */
+	width: 18px;
+	height: 18px;
+	display: block;		/* optional: if unspecified icon will be inline */
+	text-align: center;
+}
+.tundra .dijitEditorIconSep { background-position: 0px; }
+.tundra .dijitEditorIconBackColor { background-position: -18px; }
+.tundra .dijitEditorIconBold { background-position: -36px; }
+.tundra .dijitEditorIconCancel { background-position: -54px; }
+.tundra .dijitEditorIconCopy { background-position: -72px; }
+.tundra .dijitEditorIconCreateLink { background-position: -90px; }
+.tundra .dijitEditorIconCut { background-position: -108px; }
+.tundra .dijitEditorIconDelete { background-position: -126px; }
+.tundra .dijitEditorIconForeColor { background-position: -144px; }
+.tundra .dijitEditorIconHiliteColor { background-position: -162px; }
+.tundra .dijitEditorIconIndent { background-position: -180px; }
+.tundra .dijitEditorIconInsertHorizontalRule { background-position: -198px; }
+.tundra .dijitEditorIconInsertImage { background-position: -216px; }
+.tundra .dijitEditorIconInsertOrderedList { background-position: -234px; }
+.tundra .dijitEditorIconInsertTable { background-position: -252px; }
+.tundra .dijitEditorIconInsertUnorderedList { background-position: -270px; }
+.tundra .dijitEditorIconItalic { background-position: -288px; }
+.tundra .dijitEditorIconJustifycenter { background-position: -306px; }
+.tundra .dijitEditorIconJustifyfull { background-position: -324px; }
+.tundra .dijitEditorIconJustifyleft { background-position: -342px; }
+.tundra .dijitEditorIconJustifyright { background-position: -360px; }
+.tundra .dijitEditorIconLeftToRight { background-position: -378px; }
+.tundra .dijitEditorIconListBulletIndent { background-position: -396px; }
+.tundra .dijitEditorIconListBulletOutdent { background-position: -414px; }
+.tundra .dijitEditorIconListNumIndent { background-position: -432px; }
+.tundra .dijitEditorIconListNumOutdent { background-position: -450px; }
+.tundra .dijitEditorIconOutdent { background-position: -468px; }
+.tundra .dijitEditorIconPaste { background-position: -486px; }
+.tundra .dijitEditorIconRedo { background-position: -504px; }
+.tundra .dijitEditorIconRemoveFormat { background-position: -522px; }
+.tundra .dijitEditorIconRightToLeft { background-position: -540px; }
+.tundra .dijitEditorIconSave { background-position: -558px; }
+.tundra .dijitEditorIconSpace { background-position: -576px; }
+.tundra .dijitEditorIconStrikethrough { background-position: -594px; }
+.tundra .dijitEditorIconSubscript { background-position: -612px; }
+.tundra .dijitEditorIconSuperscript { background-position: -630px; }
+.tundra .dijitEditorIconUnderline { background-position: -648px; }
+.tundra .dijitEditorIconUndo { background-position: -666px; }
+.tundra .dijitEditorIconWikiword { background-position: -684px; }
+

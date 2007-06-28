@@ -26,6 +26,9 @@ font-family: verdana, helvetica, sans-serif;
 font-size: 12px;
 }
 
+.image-container{
+overflow: hidden; width: 100%;
+}
 
 .image-inner-container{
 height: 100px;
