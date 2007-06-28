@@ -190,11 +190,12 @@ width: 50%;
 }
 
 .dojoTooltipContainer {
-	border: solid black 2px;
-	background: #b8b5b5;
+	border: solid #999 2px;
+	background: lightyellow;
 	color: black;
-	font-size: small;
+	font-size: .9em;
 	padding: 2px 2px 2px 2px;
+padding: 5px;
 }
 
 .dojoTooltipConnector {
@@ -202,7 +203,7 @@ width: 50%;
 	font-size: 0px; line-height: 0%; width: 0px;
 	position: absolute;
 	border-top: none;
-	border-bottom: 14px solid black;
+	border-bottom: 14px solid #999;
 	border-left: 7px solid transparent;
 	border-right: 7px solid transparent;
 	top: -14px;
@@ -214,7 +215,7 @@ width: 50%;
 	/* the background of the triangle */
 	font-size: 0px; line-height: 0%; width: 0px;
 	position: absolute;
-	border-bottom: 10px solid #b8b5b5;
+	border-bottom: 10px solid lightyellow;
 	border-left: 5px solid transparent;
 	border-right: 5px solid transparent;
 	top: 6px;
