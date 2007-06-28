@@ -313,7 +313,9 @@ dojo.declare(
 			dndlb.onDndDrop = function(source, nodes, copy) {
 			// Use of "this" here is alarmingly ambiguous, and we really want the
 			// callback not to be a public property.
-           // TODO: why can't we call "superclass" rather than "prototype" here?
+           // TODO: why can't we call "superclass" rather than "prototype" here
+           // Answer: Dojo inheritance documented at http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book20
+           // "superclass" must be explicitly enabled with a call to "inherit"
                 dojo.dnd.Source.prototype.onDndDrop.call(this, source, nodes, copy);
 		  	    this.lightbox.orderChangedCallback();
 			}
