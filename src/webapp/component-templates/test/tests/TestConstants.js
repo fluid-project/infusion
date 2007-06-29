@@ -36,3 +36,34 @@ var evtCtrlLeftArrow = {keyCode: dojo.keys.LEFT_ARROW, ctrlKey: true, preventDef
 var evtCtrlDownArrow = {keyCode: dojo.keys.DOWN_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
 var evtCtrlUpArrow = {keyCode: dojo.keys.UP_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
 
+// All the test function names for the JsUnit tests.  Needed for running JsUnit in 
+// IE and Safari.
+//
+function exposeTestFunctionNames() {
+	return [
+	    // GridLayoutHandlerTests.js
+		//
+		"testGetRightSibling",
+		"testGetLeftSibling",
+		"testGetItemBelow",
+		"testGetItemAbove",
+		"testUpdateGridWidth",
+		
+		// LightboxTests.js
+		//
+		"testFindAncestorGridCell",
+		"testHandleArrowKeyPressForCtrlUpAndCtrlDown",
+		"testHandleArrowKeyPressForUpAndDown",
+		"testHandleArrowKeyPressForLeftAndRight",
+		"testHandleKeyUpAndHandleKeyDownChangesState",
+		"testHandleKeyUpAndHandleKeyDownItemMovement",
+		"testHandleArrowKeyPressForCtrlLeftAndCtrlRight",
+		"testPersistFocus",
+		"testfocusItem",
+		"testSelectActiveItemNothingSelected",
+		"testSelectActiveItemSecondSelected",
+		"testSetActiveItemToDefaultState",
+		"testHandleWindowResizeEvent",
+		"testUpdateActiveDescendent",
+	];
+}	// end exposeTestFunctionNames().
