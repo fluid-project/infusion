@@ -118,7 +118,9 @@ dojo.declare(
 			dojo.removeClass (this.activeItem, fluid.states.defaultClass);
 			dojo.addClass (this.activeItem, fluid.states.focusedClass);
 			this.getElementToFocus(this.activeItem).focus();
-			this.activeItem.theTooltip.open();	
+			// Temporarily disable the tooltip; when it is properly styled and behaving,
+			// it will be re-enabled.
+			// this.activeItem.theTooltip.open();	
 		}, //end focus
 		
 		/**
@@ -135,9 +137,11 @@ dojo.declare(
 			if (this.activeItem) {
 				dojo.removeClass (this.activeItem, fluid.states.focusedClass);
 				dojo.addClass (this.activeItem, fluid.states.defaultClass);
-				if (this.activeItem.theTooltip) {
-					this.activeItem.theTooltip.close ();
-				}
+				// Temporarily disable the tooltip; when it is properly styled and behaving,
+				// it will be re-enabled.
+				// if (this.activeItem.theTooltip) {
+				// 	this.activeItem.theTooltip.close ();
+				// }
 			}
 		},
 		
@@ -250,14 +254,15 @@ dojo.declare(
 		  },
 		
 		_setActiveItem: function(anItem) {
-			// Tooltip disabled because styling makes user experience confusing.
-			if (!anItem.theTooltip) {
-			    var caption = this._fetchMessage("thumbnailInstructions");
-				anItem.theTooltip = new dijit.Tooltip (
-				{connectId: anItem.id, 
-				 label: caption
-				}, "dojoTooltip");
-             }
+			// Temporarily disable the tooltip; when it is properly styled and behaving,
+			// it will be re-enabled.
+//			if (!anItem.theTooltip) {
+//			    var caption = this._fetchMessage("thumbnailInstructions");
+//				anItem.theTooltip = new dijit.Tooltip (
+//				{connectId: anItem.id, 
+//				 label: caption
+//				}, "dojoTooltip");
+//             }
 
 			this.activeItem = anItem;
 			this._updateActiveDescendent();

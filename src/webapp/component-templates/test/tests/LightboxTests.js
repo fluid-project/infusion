@@ -135,7 +135,9 @@ function testHandleArrowKeyPressForUpAndDown() {
 	isItemFocusedTest("After up arrow wrap ", secondLastImageId);
 
 	// Test: tool tip is showing.
-	isTooltipShowingTest(lightbox.activeItem);
+	// The tooltip is temporarily disabled; when it is properly styled and behaving,
+	// the test will be re-enabled.
+	// isTooltipShowingTest(lightbox.activeItem);
 
 	// Test: down arrow to the first image
 	lightbox.handleArrowKeyPress(evtDownArrow);
@@ -143,7 +145,9 @@ function testHandleArrowKeyPressForUpAndDown() {
 	isItemDefaultTest("After down arrow wrap ", secondLastImageId);
 	
 	// Test: tool tip is showing.
-	isTooltipShowingTest(lightbox.activeItem);	
+	// The tooltip is temporarily disabled; when it is properly styled and behaving,
+	// the test will be re-enabled.
+	// isTooltipShowingTest(lightbox.activeItem);	
 }
 
 function isItemDefaultTest(message, itemId) {
