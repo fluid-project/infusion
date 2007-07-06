@@ -226,4 +226,30 @@ padding: 5px;
 	z-index: 3;
 }
 
+.lightbox-instructions{
+color: #666;
+background-color: lightyellow;
+padding: 3px;
+border: 2px solid #ddd;
+/*
+border-width: 0 0 2px 2px;
+*/
+font-size: .9em;
+/*
+position: absolute;
+top: 0;
+right: 0;
+*/
+width: 300px;
+}
+
+
+.lightbox-downarrow{
+font-size: 0px; line-height: 0%; width: 0px;
+margin: 5px 8px 10px 0;
+float: left;
+border-bottom: 10px solid red;
+border-left: 10px solid transparent;
+border-right: 10px solid transparent;
+}
 
