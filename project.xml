@@ -20,6 +20,9 @@
   </description>
   <dependencies>
   </dependencies>
+  <repository>
+    <connection>scm:svn:https://source.sakaiproject.org/contrib/utoronto/fluid/components/trunk</connection>
+  </repository>
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
