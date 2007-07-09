@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.util.popup"]){
+dojo._hasResource["dijit.util.popup"] = true;
 dojo.provide("dijit.util.popup");
 
 dojo.require("dijit.util.focus");
@@ -75,7 +77,7 @@ dijit.util.popup = new function(){
 		stack.push({wrapper: wrapper, iframe: iframe, widget: widget, onClose: args.onClose});
 
 		if(widget.onOpen){
-			widget.onOpen();
+			widget.onOpen(best);
 		}
 
 		return best;
@@ -93,8 +95,9 @@ dijit.util.popup = new function(){
 		// #2685: check if the widget still has a domNode so ContentPane can change its URL without getting an error
 		if(!widget||!widget.domNode){ return; }
 		dojo.style(widget.domNode, "display", "none");
-		iframe.remove();
-		wrapper.parentNode.removeChild(wrapper);
+		dojo.body().appendChild(widget.domNode);
+		iframe.destroy();
+		dojo._destroyElement(wrapper);
 
 		if(widget.onClose){
 			widget.onClose();
@@ -155,31 +158,15 @@ dijit.util.popup = new function(){
 
 		if(stack.length==0){ return; }
 
-		//PORT #2804. Use isAncestor
-		var isDescendantOf = function(/*Node*/node, /*Node*/ancestor){
-			//	summary
-			//	Returns boolean if node is a descendant of ancestor
-			// guaranteeDescendant allows us to be a "true" isDescendantOf function
-
-			while(node){
-				if(node === ancestor){
-					return true; // boolean
-				}
-				node = node.parentNode;
-			}
-			return false; // boolean
-		}
-
 		// if they clicked on the trigger node (often a button), ignore the click
-		if(currentTrigger && isDescendantOf(node, currentTrigger)){
+		if(currentTrigger && dojo.isDescendant(node, currentTrigger)){
 			return;
 		}
 
 		// if they clicked on the popup itself then ignore it
 		if(dojo.some(stack, function(elem){
-			return isDescendantOf(node, elem.widget.domNode);
-		}))
-		{
+			return dojo.isDescendant(node, elem.widget.domNode);
+		})){
 			return;
 		}
 
@@ -262,12 +249,13 @@ dijit.util.BackgroundIframe = function(/* HTMLElement */node){
 };
 
 dojo.extend(dijit.util.BackgroundIframe, {
-	remove: function(){
-		//	summary: remove the iframe
+	destroy: function(){
+		//	summary: destroy the iframe
 		if(this.iframe){
-			this.iframe.parentNode.removeChild(this.iframe); // PORT: leak?
+			dojo._destroyElement(this.iframe);
 			delete this.iframe;
-			this.iframe=null;
 		}
 	}
 });
+
+}

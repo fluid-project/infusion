@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests.date.stamp"]){
+dojo._hasResource["tests.date.stamp"] = true;
 dojo.provide("tests.date.stamp");
 
 dojo.require("dojo.date.stamp");
@@ -70,3 +72,5 @@ function test_date_iso_tz(t){
 	}
 	]
 );
+
+}

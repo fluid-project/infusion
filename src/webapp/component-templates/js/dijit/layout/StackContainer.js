@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.layout.StackContainer"]){
+dojo._hasResource["dijit.layout.StackContainer"] = true;
 dojo.provide("dijit.layout.StackContainer");
 
 dojo.require("dijit._Templated");
@@ -313,24 +315,30 @@ dojo.declare(
 			//   and closing the current page.
 
 			if(this.disabled || evt.altKey || evt.shiftKey || evt.ctrlKey){ return; }
-			if( (evt.keyCode == dojo.keys.RIGHT_ARROW)||
-				(evt.keyCode == dojo.keys.LEFT_ARROW) ){
-				var children = this.getChildren();
-
-				// find currently focused button in children array
-				var current = dojo.indexOf(children, this.pane2button[this._currentChild]);
-
-				// pick next button to focus on
-				var offset = evt.keyCode == dojo.keys.RIGHT_ARROW ? 1 : children.length - 1;
-				var next = children[ (current + offset) % children.length ];	// the next button to focus on
-
-				dojo.stopEvent(evt);
-				next.onClick();
-			}else if(evt.keyCode == dojo.keys.DELETE){
-				if (this._currentChild.closable){
-					this.onCloseButtonClick(this._currentChild);
-					dojo.stopEvent(evt); // so we don't close a browser tab!
-				}
+			var forward = true;
+			switch(evt.keyCode){				
+				case dojo.keys.LEFT_ARROW:
+				case dojo.keys.UP_ARROW:
+					forward=false;
+					// fall through
+				case dojo.keys.RIGHT_ARROW:
+				case dojo.keys.DOWN_ARROW:
+					// find currently focused button in children array
+					var children = this.getChildren();
+					var current = dojo.indexOf(children, this.pane2button[this._currentChild]);
+					// pick next button to focus on
+					var offset = forward ? 1 : children.length - 1;
+					var next = children[ (current + offset) % children.length ];
+					dojo.stopEvent(evt);
+					next.onClick();
+					break;
+				case dojo.keys.DELETE:
+					if (this._currentChild.closable){
+						this.onCloseButtonClick(this._currentChild);
+						dojo.stopEvent(evt); // so we don't close a browser tab!
+					}
+				default:
+					return;
 			}
 		}
 	}
@@ -378,3 +386,5 @@ dojo.extend(dijit._Widget, {
 		return true;
 	}
 });
+
+}

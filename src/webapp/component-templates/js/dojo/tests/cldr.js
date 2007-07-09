@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests.cldr"]){
+dojo._hasResource["tests.cldr"] = true;
 dojo.provide("tests.cldr");
 
 dojo.require("dojo.cldr.supplemental");
@@ -13,3 +15,5 @@ tests.register("tests.cldr",
 		}
 	]
 );
+
+}

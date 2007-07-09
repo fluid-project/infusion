@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.util.scroll"]){
+dojo._hasResource["dijit.util.scroll"] = true;
 dojo.provide("dijit.util.scroll");
 
 dijit.util.scroll.scrollIntoView = function(/* HTMLElement */node){
@@ -27,3 +29,5 @@ dijit.util.scroll.scrollIntoView = function(/* HTMLElement */node){
 		}
 	}
 };
+
+}

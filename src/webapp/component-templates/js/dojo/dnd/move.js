@@ -1,6 +1,9 @@
+if(!dojo._hasResource["dojo.dnd.move"]){
+dojo._hasResource["dojo.dnd.move"] = true;
 dojo.provide("dojo.dnd.move");
 
 dojo.require("dojo.dnd.common");
+dojo.require("dojo.dnd.autoscroll");
 
 dojo.dnd.Mover = function(node, e){
 	// summary: an object, which makes a node follow the mouse, 
@@ -30,6 +33,7 @@ dojo.extend(dojo.dnd.Mover, {
 	onMouseMove: function(e){
 		// summary: event processor for onmousemove
 		// e: Event: mouse event
+		dojo.dnd.autoScroll(e);
 		var m = this.marginBox;
 		dojo.marginBox(this.node, {l: m.l + e.pageX, t: m.t + e.pageY});
 	},
@@ -196,3 +200,5 @@ dojo.dnd.parentConstrainedMover = function(area, within){
 	};
 	return dojo.dnd.constrainedMover(fun, within);	// Object
 };
+
+}

@@ -1,8 +1,10 @@
+if(!dojo._hasResource["dojo.currency"]){
+dojo._hasResource["dojo.currency"] = true;
 dojo.provide("dojo.currency");
 
 dojo.require("dojo.number");
 dojo.require("dojo.i18n");
-dojo.requireLocalization("dojo.cldr", "currency");
+dojo.requireLocalization("dojo.cldr", "currency", null, "ko,zh,ja,en,en-ca,en-au,ROOT,en-us,it,fr,pt,es,de");
 dojo.require("dojo.cldr.monetary");
 
 dojo.currency._mixInDefaults = function(options){
@@ -96,4 +98,6 @@ dojo.currency.parse = function(/*String*/expression, /*Object?*/options){
 //		fractional- where places are implied by pattern or explicit 'places' parameter, whether to include the fractional portion.
 //			By default for currencies, it the fractional portion is optional.
 	return dojo.number.parse(expression, dojo.currency._mixInDefaults(options));
+}
+
 }

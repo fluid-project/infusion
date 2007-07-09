@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests._base.Deferred"]){
+dojo._hasResource["tests._base.Deferred"] = true;
 dojo.provide("tests._base.Deferred");
 
 doh.register("tests._base.Deferred", 
@@ -62,3 +64,5 @@ doh.register("tests._base.Deferred",
 		}
 	]
 );
+
+}

@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests.date"]){
+dojo._hasResource["tests.date"] = true;
 dojo.provide("tests.date");
 
 dojo.require("dojo.date");
@@ -488,3 +490,5 @@ function test_date_diff(t){
 
 dojo.require("tests.date.locale");
 dojo.require("tests.date.stamp");
+
+}

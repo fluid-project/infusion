@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests._base.json"]){
+dojo._hasResource["tests._base.json"] = true;
 dojo.provide("tests._base.json");
 
 tests.register("tests._base.json", 
@@ -25,3 +27,5 @@ tests.register("tests._base.json",
 	]
 );
 
+
+}

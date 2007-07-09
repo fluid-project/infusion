@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.layout.SplitContainer"]){
+dojo._hasResource["dijit.layout.SplitContainer"] = true;
 dojo.provide("dijit.layout.SplitContainer");
 
 //
@@ -74,7 +76,7 @@ dojo.declare(
 		this.virtualSizer.style.zIndex = 10;
 		this.virtualSizer.className = this.isHorizontal ? 'dijitSplitContainerVirtualSizerH' : 'dijitSplitContainerVirtualSizerV';
 		this.domNode.appendChild(this.virtualSizer);
-		dijit._disableSelection(this.virtualSizer);
+		dojo.setSelectable(this.virtualSizer, false);
 
 	},
 
@@ -123,7 +125,7 @@ dojo.declare(
 		dojo.connect(sizer, "onmousedown", handler);
 
 		this.domNode.appendChild(sizer);
-		dijit._disableSelection(sizer);
+		dojo.setSelectable(sizer, false);
 	},
 
 	removeChild: function(widget){
@@ -134,7 +136,7 @@ dojo.declare(
 			for(var x = 0; x < children.length; x++){
 				if(children[x] === widget){
 					var i = this.sizers.length - 1;
-					this.domNode.removeChild(this.sizers[i]);
+					dojo._destroyElement(this.sizers[i]);
 					this.sizers.length = i;
 					break;
 				}
@@ -545,3 +547,5 @@ dojo.extend(dijit._Widget, {
 	//	each takes up 50% of the available space.
 	sizeShare: 10
 });
+
+}

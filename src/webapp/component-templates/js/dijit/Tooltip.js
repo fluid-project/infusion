@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.Tooltip"]){
+dojo._hasResource["dijit.Tooltip"] = true;
 dojo.provide("dijit.Tooltip");
 
 dojo.require("dijit._Widget");
@@ -20,7 +22,7 @@ dojo.declare(
 		//		Milliseconds to fade in/fade out
 		duration: 200,
 
-		templatePath: dojo.moduleUrl("dijit", "templates/Tooltip.html"),
+		templateString:"<div class=\"dijitTooltip\" id=\"dojoTooltip\">\n\t<div class=\"dijitTooltipContainer dijitTooltipContents\" dojoAttachPoint=\"containerNode\" waiRole='alert'></div>\n\t<div class=\"dijitTooltipConnector\"></div>\n</div>\n",
 
 		postCreate: function(){
 			dojo.body().appendChild(this.domNode);
@@ -129,30 +131,12 @@ dojo.declare(
 			}, this);
 		},
 
-		//PORT #2804
-		_isDescendantOf: function(/*Node*/node, /*Node*/ancestor){
-			//	summary
-			//	Returns boolean if node is a descendant of ancestor
-
-			while(node){
-				if(node === ancestor){
-					return true; // boolean
-				}
-				try{
-					node = node.parentNode;
-				}catch(e){
-					return false;
-				}
-			}
-			return false; // boolean
-		},
-
 		_onMouseOver: function(/*Event*/ e){
 			this._onHover(e);
 		},
 
 		_onMouseOut: function(/*Event*/ e){
-			if(this._isDescendantOf(e.relatedTarget, this._connectNode)){
+			if(dojo.isDescendant(e.relatedTarget, this._connectNode)){
 				// false event; just moved from target to target child; ignore.
 				return;
 			}
@@ -203,3 +187,5 @@ dojo.declare(
 		}
 	}
 );
+
+}

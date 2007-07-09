@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests._base._loader.bootstrap"]){
+dojo._hasResource["tests._base._loader.bootstrap"] = true;
 dojo.provide("tests._base._loader.bootstrap");
 
 tests.register("tests._base._loader.bootstrap", 
@@ -84,3 +86,5 @@ tests.register("tests._base._loader.bootstrap",
 		}
 	]
 );
+
+}

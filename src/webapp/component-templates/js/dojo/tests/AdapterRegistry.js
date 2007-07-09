@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests.AdapterRegistry"]){
+dojo._hasResource["tests.AdapterRegistry"] = true;
 dojo.provide("tests.AdapterRegistry");
 dojo.require("dojo.AdapterRegistry");
 
@@ -69,3 +71,5 @@ doh.register("tests.AdapterRegistry",
 		}
 	]
 );
+
+}

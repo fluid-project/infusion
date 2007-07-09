@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.data.api.Request"]){
+dojo._hasResource["dojo.data.api.Request"] = true;
 dojo.provide("dojo.data.api.Request");
 
 dojo.declare("dojo.data.api.Request",null,null,{
@@ -26,3 +28,5 @@ dojo.declare("dojo.data.api.Request",null,null,{
 		throw new Error('Unimplemented API: dojo.data.api.Request.abort');
 	}
 });
+
+}

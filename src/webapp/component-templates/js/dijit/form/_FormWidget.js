@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form._FormWidget"]){
+dojo._hasResource["dijit.form._FormWidget"] = true;
 dojo.provide("dijit.form._FormWidget");
 
 dojo.require("dijit._Widget");
@@ -203,3 +205,5 @@ dojo.declare("dijit.form._FormWidget", [dijit._Widget, dijit._Templated],
 		return this.getValue();
 	}
 });
+
+}

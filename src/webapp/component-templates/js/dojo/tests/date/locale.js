@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests.date.locale"]){
+dojo._hasResource["tests.date.locale"] = true;
 dojo.provide("tests.date.locale");
 
 dojo.require("dojo.date.locale");
@@ -14,7 +16,7 @@ tests.register("tests.date.locale",
 				var partLocaleList = ["en-us", "fr-fr", "es", "de-at", "ja-jp", "zh-cn"];
 
 				for(var i = 0 ; i < partLocaleList.length; i ++){
-					dojo.requireLocalization("dojo.cldr","gregorian",partLocaleList[i]);
+					dojo.requireLocalization("dojo.cldr","gregorian",partLocaleList[i], "ko,zh-cn,zh,ja,en,it-it,en-ca,en-au,it,en-gb,es-es,fr,pt,ROOT,ko-kr,es,de,pt-br");
 				}
 			},
 			runTest: function(t){
@@ -373,3 +375,5 @@ function test_validate_datetime_isValidDate(){
 	jum.assertTrue("test25", dojo_validate_isValidDate("19-10-2005", "d-M-yyyy"));
 }
 */
+
+}

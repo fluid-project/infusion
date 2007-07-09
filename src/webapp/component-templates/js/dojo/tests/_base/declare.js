@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests._base.declare"]){
+dojo._hasResource["tests._base.declare"] = true;
 dojo.provide("tests._base.declare");
 
 tests.register("tests._base.declare",
@@ -185,3 +187,5 @@ tests.register("tests._base.declare",
 		//	- multi-level inheritance + L/R conflict checks
 	]
 );
+
+}

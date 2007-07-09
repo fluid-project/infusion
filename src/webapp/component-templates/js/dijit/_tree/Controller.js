@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit._tree.Controller"]){
+dojo._hasResource["dijit._tree.Controller"] = true;
 dojo.provide("dijit._tree.Controller");
 
 dojo.require("dijit._Widget");
@@ -311,3 +313,5 @@ dojo.declare(
 	}
 
 });
+
+}

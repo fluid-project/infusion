@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.dnd.container"]){
+dojo._hasResource["dojo.dnd.container"] = true;
 dojo.provide("dojo.dnd.container");
 
 dojo.require("dojo.dnd.common");
@@ -67,8 +69,13 @@ function(node, params){
 		// summary: event processor for onmouseover
 		// e: Event: mouse event
 		var n = e.relatedTarget;
-		for(; n; n = n.parentNode){
+		while(n){
 			if(n == this.node){ break; }
+			try{
+				n = n.parentNode;
+			}catch(x){
+				n = null;
+			}
 		}
 		if(!n){
 			this._changeState("Container", "Over");
@@ -83,8 +90,13 @@ function(node, params){
 	onMouseOut: function(e){
 		// summary: event processor for onmouseout
 		// e: Event: mouse event
-		for(var n = e.relatedTarget; n; n = n.parentNode){
+		for(var n = e.relatedTarget; n;){
 			if(n == this.node){ return; }
+			try{
+				n = n.parentNode;
+			}catch(x){
+				n = null;
+			}
 		}
 		if(this.current){
 			this._removeItemClass(this.current, "Over");
@@ -252,3 +264,5 @@ dojo.dnd._defaultSelector = function(node) {
 	}
 	return ret;	// Object
 };
+
+}

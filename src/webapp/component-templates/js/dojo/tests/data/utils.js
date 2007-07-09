@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests.data.utils"]){
+dojo._hasResource["tests.data.utils"] = true;
 dojo.provide("tests.data.utils");
 dojo.require("dojo.data.util.filter");
 dojo.require("dojo.data.util.sorter");
@@ -197,3 +199,5 @@ tests.register("tests.data.utils",
 	]
 );
 
+
+}

@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.behavior"]){
+dojo._hasResource["dojo.behavior"] = true;
 dojo.provide("dojo.behavior");
 
 dojo.behavior = new function(){
@@ -179,3 +181,5 @@ dojo.behavior = new function(){
 }
 
 dojo.addOnLoad(dojo.behavior, "apply");
+
+}

@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form.NumberTextbox"]){
+dojo._hasResource["dijit.form.NumberTextbox"] = true;
 dojo.provide("dijit.form.NumberTextbox");
 
 dojo.require("dijit.form.ValidationTextbox");
@@ -25,3 +27,5 @@ dojo.declare(
 		// constraints object: min, max, places
 	}
 );
+
+}

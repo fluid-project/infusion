@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests._base.array"]){
+dojo._hasResource["tests._base.array"] = true;
 dojo.provide("tests._base.array");
 
 tests.register("tests._base.array", 
@@ -264,3 +266,5 @@ tests.register("tests._base.array",
 	]
 );
 
+
+}

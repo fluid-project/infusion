@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.fx"]){
+dojo._hasResource["dojo.fx"] = true;
 dojo.provide("dojo.fx");
 
 dojo.fx.chain = function(/*dojo._Animation[]*/ animations){
@@ -152,3 +154,5 @@ dojo.fx.slideTo = function(/*Object?*/ args){
 	return anim; // dojo._Animation
 }
 
+
+}

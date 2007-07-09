@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.util.window"]){
+dojo._hasResource["dijit.util.window"] = true;
 dojo.provide("dijit.util.window");
 
 dijit.util.window.getDocumentWindow = function(doc){
@@ -37,4 +39,6 @@ dijit.util.window.getDocumentWindow = function(doc){
 	}
 
 	return doc._parentWindow || doc.parentWindow || doc.defaultView;	//	Window
+}
+
 }

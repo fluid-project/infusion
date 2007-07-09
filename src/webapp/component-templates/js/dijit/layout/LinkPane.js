@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.layout.LinkPane"]){
+dojo._hasResource["dijit.layout.LinkPane"] = true;
 dojo.provide("dijit.layout.LinkPane");
 
 dojo.require("dijit.layout.ContentPane");
@@ -28,3 +30,5 @@ dojo.declare("dijit.layout.LinkPane",
 
 	}
 });
+
+}

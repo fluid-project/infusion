@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form.Textarea"]){
+dojo._hasResource["dijit.form.Textarea"] = true;
 dojo.provide("dijit.form.Textarea");
 
 dojo.require("dijit.form._FormWidget");
@@ -142,3 +144,5 @@ dojo.declare(
 		this._setFormValue();
 	}
 });
+
+}

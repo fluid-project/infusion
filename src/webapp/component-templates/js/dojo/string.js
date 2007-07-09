@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.string"]){
+dojo._hasResource["dojo.string"] = true;
 dojo.provide("dojo.string");
 
 dojo.string.pad = function(/*String*/text, /*int*/size, /*String?*/ch, /*boolean?*/end){
@@ -56,3 +58,5 @@ dojo.string.substitute = function(	/*String*/template,
 		return value.toString();
 	}); // string
 };
+
+}

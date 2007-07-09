@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.date.stamp"]){
+dojo._hasResource["dojo.date.stamp"] = true;
 dojo.provide("dojo.date.stamp");
 
 // Methods to convert dates to or from a wire (string) format using well-known conventions
@@ -119,4 +121,6 @@ dojo.date.stamp.toISOString = function(/*Date*/dateObject, /*Object?*/options){
 		formattedDate.push(time);
 	}
 	return formattedDate.join('T'); // String
+}
+
 }

@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.ColorPalette"]){
+dojo._hasResource["dijit.ColorPalette"] = true;
 dojo.provide("dijit.ColorPalette");
 
 dojo.require("dijit.util.place");
@@ -78,7 +80,7 @@ dojo.declare(
 
 	// templatePath: String
 	//		Path to the template of this widget.
-	templatePath: dojo.moduleUrl("dijit", "templates/ColorPalette.html"),
+	templateString:"<fieldset class=\"dijitInlineBox\">\n\t<div style=\"overflow: hidden\" dojoAttachPoint=\"divNode\" >\n\t\t<img style=\"border-style: none;\" dojoAttachPoint=\"imageNode\" tabIndex=\"-1\" />\n\t</div>\t\n</fieldset>\n",
 
 
 	_paletteDims: {
@@ -246,3 +248,5 @@ dojo.declare(
 		}
 	}
 });
+
+}

@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form.Button"]){
+dojo._hasResource["dijit.form.Button"] = true;
 dojo.provide("dijit.form.Button");
 
 dojo.require("dijit.form._FormWidget");
@@ -27,7 +29,7 @@ dojo.declare(
 
 		type: "button",
 		baseClass: "dijitButton",
-		templatePath: dojo.moduleUrl("dijit.form", "templates/Button.html"),
+		templateString:"<div class=\"dijit dijitLeft dijitInline dijitButton\" baseClass=\"${baseClass}\"\n\tdojoAttachEvent=\"onclick:onClick;onmouseover:_onMouse;onmouseout:_onMouse;onmousedown:_onMouse\"\n\t><div class='dijitRight'\n\t><button class=\"dijitStretch dijitButtonNode dijitButtonContents\"\n\t\ttabIndex=\"${tabIndex}\" type=\"${type}\" id=\"${id}\" name=\"${name}\" alt=\"${alt}\"\n\t\t><div class=\"dijitInline ${iconClass}\"></div\n\t\t><span class=\"dijitButtonContents\" dojoAttachPoint=\"containerNode;focusNode\">${label}</span\n\t></button\n></div></div>\n",
 
 		// TODO: set button's title to this.containerNode.innerText
 
@@ -51,31 +53,44 @@ dojo.declare(
 
 /*
  * usage
- *	<button dojoType="DropDownButton" dropDownId="mymenu">Hello world</button>
+ *	<button dojoType="DropDownButton" label="Hello world"><div dojotype=dijit.Menu>...</div></button>
  *
  *  var button1 = dojo.widget.createWidget("DropDownButton", {label: "hello world", dropDownId: foo});
  *	document.body.appendChild(button1.domNode);
  */
 dojo.declare(
 	"dijit.form.DropDownButton",
-	dijit.form.Button,
+	[dijit.form.Button, dijit._Container],
 	{
 		// summary
 		//		push the button and a menu shows up
 
-		// dropDownId: String
-		//	widget id of the menu that this button should activate
-		dropDownId: "",
 		baseClass : "dijitDropDownButton",
 
-		templatePath: dojo.moduleUrl("dijit.form" , "templates/DropDownButton.html"),
+		templateString:"<div class=\"dijit dijitLeft dijitInlineBox dijitDropDownButton\" baseClass=\"dijitDropDownButton\"\n\tdojoAttachEvent=\"onmouseover:_onMouse;onmouseout:_onMouse;onmousedown:_onMouse;onclick:_onArrowClick; onkeypress:_onKey;\"\n\t><div class='dijitRight'>\n\t<button tabIndex=\"${tabIndex}\" class=\"dijitStretch dijitButtonNode\" type=\"${type}\" id=\"${id}\" name=\"${name}\" alt=\"${alt}\"\n\t\t><div class=\"dijitInline ${iconClass}\"></div\n\t\t><span class=\"dijitButtonContents\" \tdojoAttachPoint=\"containerNode;popupStateNode;focusNode\"\n\t\t waiRole=\"button\" waiState=\"haspopup-true;labelledby-${id}_label\" id=\"${id}_label\">${label}</span\n\t\t><span class='dijitA11yDownArrow'>&#9660;</span>\n\t</button>\n</div></div>\n",
 
-		postCreate: function(){
-			dijit.form.DropDownButton.superclass.postCreate.apply(this, arguments);
+		_fillContent: function(){
+			// my inner HTML contains both the button text and a drop down widget, like
+			// <DropDownButton>  <button>push me</button>  <Menu> ... </Menu> </DropDownButton>
+			// first part holds button label and second part is popup
+			if(this.srcNodeRef){
+				var nodes = dojo.query("*", this.srcNodeRef);
+				dijit.form.DropDownButton.superclass._fillContent.call(this, nodes[0]);
+				
+				// save pointer to srcNode so we can grab the drop down widget after it's instantiated
+				this.dropDownContainer = this.srcNodeRef;
+			}
 		},
 
 		startup: function(){
-			this._dropDown = dijit.byId(this.dropDownId);
+			// we didn't copy the dropdown widget from the this.srcNodeRef, so it's in no-man's
+			// land now.  move it to document.body.
+			if(!this.dropDown){
+				var node = dojo.query("[widgetId]", this.dropDownContainer)[0];
+				this.dropDown = dijit.util.manager.byNode(node);
+			}
+			dojo.body().appendChild(this.dropDown.domNode);
+			this.dropDown.domNode.style.display="none";
 		},
 
 		_onArrowClick: function(/*Event*/ e){
@@ -88,7 +103,7 @@ dojo.declare(
 			// summary: callback when the user presses a key on menu popup node
 			if(this.disabled){ return; }
 			if(e.keyCode == dojo.keys.DOWN_ARROW){
-				if(!this._dropDown || this._dropDown.domNode.style.display=="none"){
+				if(!this.dropDown || this.dropDown.domNode.style.display=="none"){
 					dojo.stopEvent(e);
 					return this._toggleDropDown();
 				}
@@ -99,7 +114,7 @@ dojo.declare(
 			// summary: toggle the drop-down widget; if it is up, close it, if not, open it
 			if(this.disabled){ return; }
 			this.popupStateNode.focus();
-			var dropDown = this._dropDown;
+			var dropDown = this.dropDown;
 			if(!dropDown){ return false; }
 			if(!dropDown.isShowingNow){
 				var oldWidth=dropDown.domNode.style.width;
@@ -129,7 +144,7 @@ dojo.declare(
 
 /*
  * usage
- *	<button dojoType="ComboButton" onClick="..." dropDownId="mymenu">Hello world</button>
+ *	<button dojoType="ComboButton" onClick="..."><span>Hello world</span><div dojoType=dijit.Menu>...</div></button>
  *
  *  var button1 = dojo.widget.createWidget("DropDownButton", {label: "hello world", onClick: foo, dropDownId: "myMenu"});
  *	document.body.appendChild(button1.domNode);
@@ -140,7 +155,7 @@ dojo.declare(
 	{
 		// summary
 		//		left side is normal button, right side displays menu
-		templatePath: dojo.moduleUrl("dijit.form", "templates/ComboButton.html"),
+		templateString:"<fieldset class='dijit dijitInline dijitLeft dijitComboButton'  baseClass='dijitComboButton'\n\tid=\"${id}\" name=\"${name}\"\n\tdojoAttachEvent=\"onmouseover:_onMouse;onmouseout:_onMouse;onmousedown:_onMouse;\"\t\n>\n<table cellspacing='0' cellpadding='0'  waiRole=\"presentation\" >\n\t<tr>\n\t\t<td\tclass=\"dijitStretch dijitButtonContents dijitButtonNode\"\n\t\t\ttabIndex=\"${tabIndex}\"\n\t\t\tdojoAttachEvent=\"onklick:_onButtonClick\"\n\t\t\twaiRole=\"button\">\n\t\t\t<div class=\"dijitInline ${iconClass}\"></div>\n\t\t\t<span class=\"dijitButtonContents\" dojoAttachPoint=\"containerNode;focusNode\" id=\"${id}_label\">${label}</span>\n\t\t</td>\n\t\t<td class='dijitReset dijitRight dijitButtonNode dijitDownArrowButton'\n\t\t\tdojoAttachPoint=\"popupStateNode\"\n\t\t\tdojoAttachEvent=\"onmouseover:_onMouse;onmouseout:_onMouse;onmousedown:_onMouse;onklick:_onArrowClick; onkeypress:_onKey;\"\n\t\t\tbaseClass=\"dijitComboButtonDownArrow\"\n\t\t\ttitle=\"${optionsTitle}\"\n\t\t\ttabIndex=\"${tabIndex}\"\n\t\t\twaiRole=\"button\" waiState=\"haspopup-true\"\n\t\t><div waiRole=\"presentation\">&#9660;</div>\n\t</td></tr>\n</table>\n</fieldset>\n",
 
 		// optionsTitle: String
 		//  text that describes the options menu (accessibility)
@@ -188,3 +203,5 @@ dojo.declare(
 		this.onChange(selected);	// TODO: finalize arg list to onChange()
 	}
 });
+
+}

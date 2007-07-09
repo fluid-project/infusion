@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.rpc.RpcService"]){
+dojo._hasResource["dojo.rpc.RpcService"] = true;
 dojo.provide("dojo.rpc.RpcService");
 
 dojo.declare(
@@ -137,3 +139,5 @@ dojo.declare(
 		}
 	}
 );
+
+}

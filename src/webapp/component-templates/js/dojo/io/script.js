@@ -1,14 +1,31 @@
+if(!dojo._hasResource["dojo.io.script"]){
+dojo._hasResource["dojo.io.script"] = true;
 dojo.provide("dojo.io.script");
 
 dojo.io.script = {
 	get: function(/*Object*/args){
 		//summary: sends a get request using a dynamically created script tag.
-		//TODOC: valid arguments.
+		//See dojo._ioArgs() in _base/xhr.js for a list of commonly accepted 
+		//properties on the args argument. Additional properties
+		//that apply to all of the dojo.xhr* methods:
+		//callbackParamName:
+		//		String. The URL parameter name that indicates the JSONP callback string.
+		//		For instance, when using Yahoo JSONP calls it is normally, 
+		//		callbackParamName: "callback". For AOL JSONP calls it is normally 
+		//		callbackParamName: "c".
+		//checkString: 
+		//		String. A string of JavaScript that when evaluated like so: 
+		//		"typeof(" + checkString + ") != 'undefined'"
+		//		being true means that the script fetched has been loaded. 
+		//		Do not use this if doing a JSONP type of call (use callbackParamName instead).
+		//"handleAs" is NOT applicable to dojo.io.script.get() calls, since it is
+		//implied by the usage of "callbackParamName" (response will be a JSONP call
+		//returning JSON) or "checkString" (response is pure JavaScript defined in
+		//the body of the script that was attached).
+
 		var dfd = this._makeScriptDeferred(args);
 		var ioArgs = dfd.ioArgs;
-		if(ioArgs.query.length){
-			ioArgs.url += "?" + ioArgs.query;
-		}
+		dojo._ioAddQueryToUrl(ioArgs);
 
 		this.attach(ioArgs.id, ioArgs.url);
 		dojo._ioWatch(dfd, this._validCheck, this._ioCheck, this._resHandle);
@@ -28,14 +45,7 @@ dojo.io.script = {
 
 	remove: function(/*String*/id){
 		//summary: removes the script element with the given id.
-		//FIXME: Convert to destroyNode function if/when it exists?
-		var node = dojo.byId(id);
-		if(node && node.parentNode){
-			node.parentNode.removeChild(node);
-		}
-		if(dojo.isIE){
-			node.outerHTML=''; //prevent ugly IE mem leak associated with Node.removeChild (ticket #1727)
-		}
+		dojo._destroyElement(dojo.byId(id));
 	},
 
 	_makeScriptDeferred: function(/*Object*/args){
@@ -164,4 +174,6 @@ dojo.io.script = {
 		//object that represents the script request.
 		this.ioArgs.json = json;
 	}
+}
+
 }

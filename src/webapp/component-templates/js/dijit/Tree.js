@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.Tree"]){
+dojo._hasResource["dijit.Tree"] = true;
 dojo.provide("dijit.Tree");
 
 dojo.require("dojo.fx");
@@ -129,7 +131,7 @@ dojo.declare(
 	//		name of attribute that holds children of a tree node
 	childrenAttr: "children",
 
-	templatePath: dojo.moduleUrl("dijit", "_tree/Tree.html"),		
+	templateString:"<div class=\"TreeContainer\" style=\"\" waiRole=\"tree\"\n\tdojoAttachEvent=\"onclick:_onClick;onkeypress:_onKeyPress\"\n></div>\n",		
 
 	isExpanded: true, // consider this "root node" to be always expanded
 
@@ -267,7 +269,7 @@ dojo.declare(
 	// summary
 	//		Single node within a tree
 
-	templatePath: dojo.moduleUrl("dijit", "_tree/Node.html"),		
+	templateString:"<div class=\"TreeNode TreeExpandLeaf TreeChildrenNo\" waiRole=\"presentation\"\n\tdojoAttachEvent=\"onfocus:_onFocus\";\n\t><span dojoAttachPoint=\"expandoNode\" class=\"TreeExpando\" waiRole=\"presentation\"\n\t></span\n\t><span dojoAttachPoint=\"expandoNodeText\" class=\"dijitExpandoText\" waiRole=\"presentation\"\n\t></span\n\t><div dojoAttachPoint=\"iconNode\" class=\"TreeIcon\" waiRole=\"presentation\"\n\t ><div dojoAttachPoint=\"contentNode\" class=\"TreeContent\" waiRole=\"presentation\"\n\t  ><span dojoAttachPoint=labelNode class=\"TreeLabel\" wairole=\"treeitem\" expanded=\"true\" tabindex=\"-1\"\n\t  ></span\n\t ></div\n\t></div\n></div>\n",		
 
 	// type: String
 	//		User defined identifier to differentiate nodes, and to control icon used
@@ -408,3 +410,5 @@ dojo.declare(
 		return '['+this.declaredClass+', '+this.label+']';
 	}
 });
+
+}

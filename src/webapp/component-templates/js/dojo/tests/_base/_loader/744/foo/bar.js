@@ -1,3 +1,5 @@
+if(!dojo._hasResource["foo.bar"]){
+dojo._hasResource["foo.bar"] = true;
 dojo.provide("foo.bar");
 
 //Define some globals and see if we can read them.
@@ -13,4 +15,6 @@ function getBarMessage(){
 //This is OK
 getBar2Message = function(){
 	return getBarMessage();
+}
+
 }

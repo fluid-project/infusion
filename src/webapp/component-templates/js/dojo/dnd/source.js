@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.dnd.source"]){
+dojo._hasResource["dojo.dnd.source"] = true;
 dojo.provide("dojo.dnd.source");
 
 dojo.require("dojo.dnd.selector");
@@ -22,7 +24,7 @@ dojo.require("dojo.dnd.manager");
 dojo.declare("dojo.dnd.Source", dojo.dnd.Selector,
 	// summary: a Source object, which can be used as a DnD source, or a DnD target
 function(node, params){
-	// summary: a constructor of the Selector
+	// summary: a constructor of the Source
 	// node: Node: node or node's id to build the source on
 	// params: Object: a dict of parameters, recognized parameters are:
 	//	isSource: Boolean: can be used as a DnD source, if true; assumed to be "true" if omitted
@@ -264,3 +266,13 @@ function(node, params){
 		this._changeState("Source", copy ? "Copied" : "Moved");
 	}
 });
+
+dojo.declare("dojo.dnd.Target", dojo.dnd.Source,
+	// summary: a Target object, which can be used as a DnD target
+function(node, params){
+	// summary: a constructor of the Target --- see the Source constructor for details
+	this.isSource = false;
+	dojo.removeClass(this.node, "dojoDndSource");
+});
+
+}

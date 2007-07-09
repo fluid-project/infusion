@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.tests.module"]){
+dojo._hasResource["dojo.tests.module"] = true;
 dojo.provide("dojo.tests.module");
 
 try{
@@ -17,4 +19,6 @@ try{
 	dojo.require("tests.parser");
 }catch(e){
 	doh.debug(e);
+}
+
 }

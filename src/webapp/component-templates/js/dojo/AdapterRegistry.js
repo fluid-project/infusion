@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.AdapterRegistry"]){
+dojo._hasResource["dojo.AdapterRegistry"] = true;
 dojo.provide("dojo.AdapterRegistry");
 
 dojo.AdapterRegistry = function(/*Boolean?*/ returnWrappers){
@@ -72,3 +74,5 @@ dojo.extend(dojo.AdapterRegistry, {
 		return false;
 	}
 });
+
+}

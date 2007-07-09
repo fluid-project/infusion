@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form.Textbox"]){
+dojo._hasResource["dijit.form.Textbox"] = true;
 dojo.provide("dijit.form.Textbox");
 
 dojo.require("dijit.form._FormWidget");
@@ -34,7 +36,7 @@ dojo.declare(
 		//		HTML INPUT tag maxlength declaration.
 		maxlength: "999999",
 
-		templatePath: dojo.moduleUrl("dijit.form", "templates/Textbox.html"),
+		templateString:"<input dojoAttachPoint='textbox;focusNode' dojoAttachEvent='onblur;onfocus;onkeyup'\n\tid='${id}' name='${name}' class=\"dijitInputField\" type='${type}' size='${size}' maxlength='${maxlength}' tabIndex='${tabIndex}'>\n",
 
 		getTextValue: function(){
 			return this.filter(this.textbox.value);
@@ -125,3 +127,5 @@ dojo.declare(
 		}
 	}
 );
+
+}

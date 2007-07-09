@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.layout.TabContainer"]){
+dojo._hasResource["dijit.layout.TabContainer"] = true;
 dojo.provide("dijit.layout.TabContainer");
 
 dojo.require("dijit.layout.StackContainer");
@@ -21,7 +23,7 @@ dojo.declare(
 	tabPosition: "top",
 
 	templateString: null,	// override setting in StackContainer
-	templatePath: dojo.moduleUrl("dijit.layout", "templates/TabContainer.html"),
+	templateString:"<div class=\"dijitTabContainer\">\n\t<div dojoAttachPoint=\"tablistNode\"></div>\n\t<div class=\"dijitTabPaneWrapper\" dojoAttachPoint=\"containerNode\" dojoAttachEvent=\"onkeypress:_onKeyPress\" waiRole=\"tabpanel\"></div>\n</div>\n",
 
 	postCreate: function(){	
 		dijit.layout.TabContainer.superclass.postCreate.apply(this, arguments);
@@ -143,6 +145,8 @@ dojo.declare(
 			this.closeButtonNode.style.display="none";
 		}
 		dijit.layout._TabButton.superclass.postCreate.apply(this, arguments);
-		dijit._disableSelection(this.titleNode);
+		dojo.setSelectable(this.titleNode, false);
 	}
 });
+
+}

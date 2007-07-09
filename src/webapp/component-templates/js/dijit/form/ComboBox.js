@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form.ComboBox"]){
+dojo._hasResource["dijit.form.ComboBox"] = true;
 dojo.provide("dijit.form.ComboBox");
 
 dojo.require("dijit.util.scroll");
@@ -614,3 +616,5 @@ dojo.declare(
 	[dijit.form.ValidationTextbox, dijit.form.ComboBoxMixin],
 	{}
 );
+
+}

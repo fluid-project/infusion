@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.data.api.Write"]){
+dojo._hasResource["dojo.data.api.Write"] = true;
 dojo.provide("dojo.data.api.Write");
 dojo.require("dojo.data.api.Read");
 
@@ -205,3 +207,5 @@ dojo.declare("dojo.data.api.Write", dojo.data.api.Read, {
 		return false; // boolean
 	}
 });
+
+}

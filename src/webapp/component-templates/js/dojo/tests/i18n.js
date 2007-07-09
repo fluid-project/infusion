@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests.i18n"]){
+dojo._hasResource["tests.i18n"] = true;
 dojo.provide("tests.i18n");
 
 dojo.require("dojo.i18n");
@@ -5,7 +7,7 @@ dojo.require("dojo.i18n");
 (function(){
 	var setUp = function(locale){
 		return function(){
-			dojo.requireLocalization("tests","salutations",locale);
+			dojo.requireLocalization("tests","salutations",locale, "");
 		}
 	}
 
@@ -82,3 +84,5 @@ dojo.require("dojo.i18n");
 	};
 	tests.register("tests.i18n", testSet);
 })();
+
+}

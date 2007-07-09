@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.data.util.sorter"]){
+dojo._hasResource["dojo.data.util.sorter"] = true;
 dojo.provide("dojo.data.util.sorter");
 
 dojo.data.util.sorter.basicComparator = function(	/*anything*/ a, 
@@ -75,3 +77,5 @@ dojo.data.util.sorter.createSortFunction = function(	/* attributes array */sortS
 		return 0; //int  
 	};  //  Function
 };
+
+}

@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form.Checkbox"]){
+dojo._hasResource["dijit.form.Checkbox"] = true;
 dojo.provide("dijit.form.Checkbox");
 
 dojo.require("dijit.form.Button");
@@ -24,7 +26,7 @@ dojo.declare(
 		// In case 2, the regular html inputs are invisible but still used by
 		// the user. They are turned quasi-invisible and overlay the background-image.
 
-		templatePath: dojo.moduleUrl("dijit.form", "templates/Checkbox.html"),
+		templateString:"<span class=\"${baseClass}\" baseClass=\"${baseClass}\"\n\t><input\n\t \tid=\"${id}\" tabIndex=\"${tabIndex}\" type=\"${_type}\" name=\"${name}\" value=\"${value}\"\n\t\tclass=\"dijitCheckboxInput\"\n\t\tdojoAttachPoint=\"inputNode;focusNode\"\n\t \tdojoAttachEvent=\"onmouseover:_onMouse;onmouseout:_onMouse;onclick:onClick\"\n></span>\n",
 
 		baseClass: "dijitCheckbox",
 
@@ -43,7 +45,7 @@ dojo.declare(
 		value: "on",
 
 		postCreate: function(){
-			dijit._disableSelection(this.inputNode);
+			dojo.setSelectable(this.inputNode, false);
 			this.setSelected(this.checked);
 			dijit.form.ToggleButton.prototype.postCreate.apply(this, arguments);
 		},
@@ -118,3 +120,5 @@ dojo.declare(
 		}
 	}
 );
+
+}

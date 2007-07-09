@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.data.api.Notification"]){
+dojo._hasResource["dojo.data.api.Notification"] = true;
 dojo.provide("dojo.data.api.Notification");
 dojo.require("dojo.data.api.Read");
 
@@ -97,3 +99,5 @@ dojo.declare("dojo.data.api.Notification",dojo.data.api.Read,null,{
 		throw new Error('Unimplemented API: dojo.data.api.Notification.onDelete');
 	}
 });
+
+}

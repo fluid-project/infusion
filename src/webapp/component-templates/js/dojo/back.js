@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.back"]){
+dojo._hasResource["dojo.back"] = true;
 dojo.provide("dojo.back");
 
 (function() { 
@@ -348,3 +350,5 @@ dojo.provide("dojo.back");
 		}
 	};
  })();
+
+}

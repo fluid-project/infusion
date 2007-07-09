@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests._base._loader.loader"]){
+dojo._hasResource["tests._base._loader.loader"] = true;
 dojo.provide("tests._base._loader.loader");
 
 tests.register("tests._base._loader.loader", 
@@ -46,3 +48,5 @@ tests.register("tests._base._loader.loader",
 		}
 	]
 );
+
+}

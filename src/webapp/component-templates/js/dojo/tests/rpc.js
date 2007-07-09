@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests.rpc"]){
+dojo._hasResource["tests.rpc"] = true;
 dojo.provide("tests.rpc");
 
 dojo.require("dojo.rpc.RpcService");
@@ -154,3 +156,5 @@ tests.register("tests.rpc",
 );
 
 
+
+}

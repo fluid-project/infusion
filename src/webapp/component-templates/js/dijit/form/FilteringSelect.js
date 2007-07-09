@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form.FilteringSelect"]){
+dojo._hasResource["dijit.form.FilteringSelect"] = true;
 dojo.provide("dijit.form.FilteringSelect");
 
 dojo.require("dijit.form.ComboBox");
@@ -169,3 +171,5 @@ dojo.declare(
 		}
 	}
 );
+
+}

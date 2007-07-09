@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.tests.module"]){
+dojo._hasResource["dijit.tests.module"] = true;
 dojo.provide("dijit.tests.module");
 
 try{
@@ -11,3 +13,5 @@ try{
 }
 
 
+
+}

@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.layout._LayoutWidget"]){
+dojo._hasResource["dijit.layout._LayoutWidget"] = true;
 dojo.provide("dijit.layout._LayoutWidget");
 
 dojo.require("dijit._Widget");
@@ -95,8 +97,8 @@ dijit.layout.marginBox2contentBox = function(/*DomNode*/ node, /*Object*/ mb){
 	var me=dojo._getMarginExtents(node, cs);
 	var pb=dojo._getPadBorderExtents(node, cs);
 	return {
-		l: dojo._toPixelValue(this.containerNode, cs.paddingLeft),
-		t: dojo._toPixelValue(this.containerNode, cs.paddingTop),
+		l: dojo._toPixelValue(node, cs.paddingLeft),
+		t: dojo._toPixelValue(node, cs.paddingTop),
 		w: mb.w - (me.w + pb.w),
 		h: mb.h - (me.h + pb.h)
 	};
@@ -170,3 +172,5 @@ dijit.layout.layoutChildren = function(/*DomNode*/ container, /*Object*/ dim, /*
 	});
 	return ret;
 };
+
+}

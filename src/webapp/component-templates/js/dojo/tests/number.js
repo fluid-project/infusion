@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests.number"]){
+dojo._hasResource["tests.number"] = true;
 dojo.provide("tests.number");
 
 dojo.require("dojo.number");
@@ -140,7 +142,7 @@ tests.register("tests.number",
 				var partLocaleList = ["en-us", "fr-fr", "de-de"];
 
 				for(var i = 0 ; i < partLocaleList.length; i ++){
-					dojo.requireLocalization("dojo.cldr","number",partLocaleList[i]);
+					dojo.requireLocalization("dojo.cldr","number",partLocaleList[i], "zh-cn,en,en-ca,zh-tw,en-us,it,ja-jp,ROOT,de-de,es-es,fr,pt,ko-kr,es,de");
 				}
 			},
 			runTest: function(t){
@@ -567,7 +569,7 @@ function test_number_format_pad(){
 //	t.is(0,result);
 
 	/**************************************** tolerant parse *****************************************
-	 * refere to ICU4J's NumberFormatTest.TestStrictParse()£»
+	 * refere to ICU4J's NumberFormatTest.TestStrictParse()ï¿½ï¿½
 	 * TODO: Seems dojo.number parses string in a tolerant way.  
 	 */
 	 var options = {locale:"en"};
@@ -959,3 +961,5 @@ function test_number_format_pad(){
 		}
 	]
 );
+
+}

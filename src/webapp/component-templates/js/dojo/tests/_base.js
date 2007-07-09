@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests._base"]){
+dojo._hasResource["tests._base"] = true;
 var testGlobal = this;
 try{
 	dojo.provide("tests._base");
@@ -116,6 +118,7 @@ try{
 		spidermonkey: ["tests._base._loader.hostenv_spidermonkey"]
 	});
 	dojo.require("tests._base.array");
+	dojo.require("tests._base.Color");
 	dojo.require("tests._base.lang");
 	dojo.require("tests._base.declare");
 	dojo.require("tests._base.connect");
@@ -128,4 +131,6 @@ try{
 	dojo.requireIf(dojo.isBrowser, "tests._base.xhr");
 }catch(e){
 	doh.debug(e);
+}
+
 }

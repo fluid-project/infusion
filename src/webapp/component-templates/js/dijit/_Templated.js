@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit._Templated"]){
+dojo._hasResource["dijit._Templated"] = true;
 dojo.provide("dijit._Templated");
 
 dojo.require("dijit._Widget");
@@ -86,12 +88,17 @@ dojo.declare("dijit._Templated",
 				});
 			}
 
-			// relocate source contents to templated container node
-			// this.containerNode must be able to receive children, or exceptions will be thrown
-			if(this.srcNodeRef && this.srcNodeRef.hasChildNodes()){
+			this._fillContent(this.srcNodeRef);
+		},
+
+		_fillContent: function(/*DomNode*/ source){
+			// summary:
+			//		relocate source contents to templated container node
+			//		this.containerNode must be able to receive children, or exceptions will be thrown
+			if(source){
 				var dest = this.containerNode||this.domNode;
-				while(this.srcNodeRef.hasChildNodes()){
-					dest.appendChild(this.srcNodeRef.firstChild);
+				while(source.hasChildNodes()){
+					dest.appendChild(source.firstChild);
 				}
 			}
 		},
@@ -260,15 +267,15 @@ if(dojo.isIE){
 		section: {re: /^<(thead|tbody|tfoot)[\s\r\n>]/i, pre: "<table>", post: "</table>"}
 	};
 
+	// dummy container node used temporarily to hold nodes being created
 	var tn;
-	var _parent;
 
 	dijit._Templated._createNodesFromText = function(/*String*/text){
 		//	summary
 		//	Attempts to create a set of nodes based on the structure of the passed text.
 
 		if(!tn){
-			_parent = tn = dojo.doc.createElement("div");
+			tn = dojo.doc.createElement("div");
 			tn.style.visibility="hidden";
 		}
 		var tableType = "none";
@@ -289,21 +296,15 @@ if(dojo.isIE){
 		}
 
 		var tag = { cell: "tr", row: "tbody", section: "table" }[tableType];
-		if(typeof tag != "undefined"){
-			_parent = tn.getElementsByTagName(tag)[0];
-		}
+		var _parent = (typeof tag != "undefined") ?
+						tn.getElementsByTagName(tag)[0] :
+						tn;
 
 		var nodes = [];
-		/*
-		for(var x=0; x<_parent.childNodes.length; x++){
-			nodes.push(_parent.childNodes[x].cloneNode(true));
-		}
-		*/
 		while(_parent.firstChild){
 			nodes.push(_parent.removeChild(_parent.firstChild));
 		}
-		//PORT	dojo.html.destroyNode(tn); FIXME: need code to prevent leaks and such
-		_parent = dojo.body().removeChild(tn);
+		tn.innerHTML="";
 		return nodes;	//	Array
 	}
 })();
@@ -317,3 +318,5 @@ dojo.extend(dijit._Widget,{
 	waiRole: "",
 	waiState:""
 })
+
+}

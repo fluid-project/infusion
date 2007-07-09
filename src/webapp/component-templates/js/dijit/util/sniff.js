@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.util.sniff"]){
+dojo._hasResource["dijit.util.sniff"] = true;
 dojo.provide("dijit.util.sniff");
 
 // ported from dojo.html.applyBrowserClass (style.js)
@@ -37,3 +39,5 @@ dojo.provide("dijit.util.sniff");
 		}
 	}
 })();
+
+}

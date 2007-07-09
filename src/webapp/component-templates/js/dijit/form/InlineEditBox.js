@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form.InlineEditBox"]){
+dojo._hasResource["dijit.form.InlineEditBox"] = true;
 dojo.provide("dijit.form.InlineEditBox");
 
 dojo.require("dojo.i18n");
@@ -6,7 +8,7 @@ dojo.require("dijit.form._FormWidget");
 dojo.require("dijit._Container");
 dojo.require("dijit.form.Button");
 
-dojo.requireLocalization("dijit", "common");
+dojo.requireLocalization("dijit", "common", null, "ROOT,de");
 
 dojo.declare(
 	"dijit.form.InlineEditBox",
@@ -27,7 +29,7 @@ dojo.declare(
 	//		void focus()
 	//		It must also be able to initialize with style="display:none;" set.
 {
-	templatePath: dojo.moduleUrl("dijit.form", "templates/InlineEditBox.html"),
+	templateString:"<span>\n\t<span class='dijitInlineValue' tabIndex=\"0\" dojoAttachPoint=\"editable;focusNode\" style=\"\" waiRole=\"button\"\n\t\tdojoAttachEvent=\"onkeypress:_onKeyPress;onclick:_onClick;onmouseout:_onMouseOut;onmouseover:_onMouseOver;onfocus:_onMouseOver;onblur:_onMouseOut;\"></span>\n\t<fieldset style=\"display:none;\" dojoAttachPoint=\"editNode\" class=\"dijitInlineEditor\">\n\t\t<div dojoAttachPoint=\"containerNode\" dojoAttachEvent=\"onkeyup:checkForValueChange;\"></div>\n\t\t<button class='saveButton' dojoAttachPoint=\"saveButton\" dojoType=\"dijit.form.Button\" dojoAttachEvent=\"onClick:save\">${buttonSave}</button>\n\t\t<button class='cancelButton' dojoAttachPoint=\"cancelButton\" dojoType=\"dijit.form.Button\" dojoAttachEvent=\"onClick:cancel\">${buttonCancel}</button>\n\t</fieldset>\n</span>\n",
 
 	// editing: Boolean
 	//		Is the node currently in edit mode?
@@ -190,3 +192,5 @@ dojo.declare(
 		dijit.form.InlineEditBox.superclass.enable.apply(this, arguments);
 	}
 });
+
+}

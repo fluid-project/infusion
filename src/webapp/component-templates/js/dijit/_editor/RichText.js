@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit._editor.RichText"]){
+dojo._hasResource["dijit._editor.RichText"] = true;
 dojo.provide("dijit._editor.RichText");
 dojo.require("dijit._Widget");
 dojo.require("dijit._editor.selection");
@@ -663,9 +665,7 @@ dojo.declare(
 						this.document = this.iframe.contentDocument;
 					}
 
-					// FIXME: what's the 0.9 eqivalent for this?
-					// dojo.html.removeNode(tmpContent);
-					tmpContent.parentNode.removeChild(tmpContent);
+					dojo._destroyElement(tmpContent);
 					this.document.body.innerHTML = html;
 					this.document.designMode = "on";
 					//	try{
@@ -682,9 +682,7 @@ dojo.declare(
 
 					this.onLoad();
 				}else{
-					// FIXME: what's the 0.9 eqivalent for this?
-					// dojo.html.removeNode(tmpContent);
-					tmpContent.parentNode.removeChild(tmpContent);
+					dojo._destroyElement(tmpContent);
 					this.editNode.innerHTML = html;
 					this.onDisplayChanged();
 				}
@@ -810,13 +808,13 @@ dojo.declare(
 		onLoad: function(e){
 			// summary: handler after the content of the document finishes loading
 			this.isLoaded = true;
-			if (this.iframe && !dojo.isIE){
+			if(this.iframe && !dojo.isIE){
 				this.editNode = this.document.body;
 				if(!this.height){
 					this.connect(this, "onDisplayChanged", "_updateHeight");
 				}
 
-				try { // sanity check for Mozilla
+				try{ // sanity check for Mozilla
 //					this.document.execCommand("useCSS", false, true); // old moz call
 					this.document.execCommand("styleWithCSS", false, false); // new moz call
 					//this.document.execCommand("insertBrOnReturn", false, false); // new moz call
@@ -836,9 +834,8 @@ dojo.declare(
 
 					this.interval = setInterval(dojo.hitch(this, "onDisplayChanged"), 750);
 					// throw new Error("onload");
-				}else if(dojo.isMoz|| dojo.isOpera){
+				}else if(dojo.isMoz || dojo.isOpera){
 					var doc = this.document;
-					var self = this;
 					var events=this.events.concat(this.captureEvents);
 					dojo.forEach(events, function(e){
 						var l = dojo.connect(this.document, e.toLowerCase(), dojo.hitch(this, e));
@@ -903,8 +900,9 @@ dojo.declare(
 				this.execCommand((e.shiftKey ? "outdent" : "indent"));
 			}else if(dojo.isIE){
 				// FIXME: get this from connect() instead!
-				if((65 <= e.keyCode&&e.keyCode <= 90) ||
-				  (e.keyCode>=37&&e.keyCode<=40)){ //arrow keys
+				if(	(65 <= e.keyCode&&e.keyCode <= 90) ||
+					(e.keyCode>=37&&e.keyCode<=40)
+				){ //arrow keys
 					e.charCode = e.keyCode;
 					this.onKeyPress(e);
 				}
@@ -948,7 +946,7 @@ dojo.declare(
 			}), 1);
 		},
 
-		addKeyHandler: function (/*String*/key, /*Int*/modifiers, /*Function*/handler) {
+		addKeyHandler: function(/*String*/key, /*Int*/modifiers, /*Function*/handler){
 			// summary: add a handler for a keyboard shortcut
 			if(!dojo.isArray(this._keyHandlers[key])){ this._keyHandlers[key] = []; }
 			this._keyHandlers[key].push({
@@ -1189,7 +1187,7 @@ dojo.declare(
 			//		changes and the result needs to be reflected in the UI
 		},
 
-		_normalizeCommand: function (/*String*/cmd){
+		_normalizeCommand: function(/*String*/cmd){
 			// summary:
 			//		Used as the advice function by dojo.connect to map our
 			//		normalized set of commands to those supported by the target
@@ -1205,7 +1203,7 @@ dojo.declare(
 			return command;
 		},
 
-		queryCommandAvailable: function (/*String*/command) {
+		queryCommandAvailable: function(/*String*/command){
 			// summary:
 			//		Tests whether a command is supported by the host. Clients SHOULD check
 			//		whether a command is supported before attempting to use it, behaviour
@@ -1219,7 +1217,7 @@ dojo.declare(
 
 			var gt420 = this._safariIsLeopard();
 
-			function isSupportedBy (browsers) {
+			function isSupportedBy(browsers){
 				return {
 					ie: Boolean(browsers & ie),
 					mozilla: Boolean(browsers & mozilla),
@@ -1231,7 +1229,7 @@ dojo.declare(
 
 			var supportedBy = null;
 
-			switch (command.toLowerCase()) {
+			switch(command.toLowerCase()){
 				case "bold": case "italic": case "underline":
 				case "subscript": case "superscript":
 				case "fontname": case "fontsize":
@@ -1278,7 +1276,7 @@ dojo.declare(
 				(dojo.isOpera && supportedBy.opera);  // Boolean return true if the command is supported, false otherwise
 		},
 
-		execCommand: function (/*String*/command, argument){
+		execCommand: function(/*String*/command, argument){
 			// summary: Executes a command in the Rich Text area
 			// command: The command to execute
 			// argument: An optional argument to the command
@@ -1306,7 +1304,7 @@ dojo.declare(
 					insertRange.select();
 					//insertRange.collapse(true);
 					return true;
-				}else if(dojo.isMoz && argument.length==0){
+				}else if(dojo.isMoz && !argument.length){
 					//mozilla can not inserthtml an empty html to delete current selection
 					//so we delete the selection instead in this case
 					dojo.withGlobal(this.window,'remove',dijit._editor.selection); // FIXME
@@ -1317,7 +1315,7 @@ dojo.declare(
 			}else if(
 				(command == "unlink")&&
 				(this.queryCommandEnabled("unlink"))&&
-				(dojo.isMoz)
+				(dojo.isMoz || dojo.isSafari)
 			){
 				// fix up unlink in Mozilla to unlink the link and not just the selection
 
@@ -1335,7 +1333,7 @@ dojo.declare(
 				var a = dojo.withGlobal(this.window, "getAncestorElement",dijit._editor.selection, ['a']);
 				dojo.withGlobal(this.window, "selectElement", dijit._editor.selection, [a]);
 
-				return this.document.execCommand("unlink");
+				return this.document.execCommand("unlink", false, null);
 			}else if((command == "hilitecolor")&&(dojo.isMoz)){
 //				// mozilla doesn't support hilitecolor properly when useCSS is
 //				// set to false (bugzilla #279330)
@@ -1361,7 +1359,7 @@ dojo.declare(
 //					this.document = this.iframe.contentWindow.document
 //				}
 
-				if(argument || command!="createlink") {
+				if(argument || command!="createlink"){
 					returnValue = this.document.execCommand(command, false, argument);
 				}
 			}
@@ -1373,10 +1371,11 @@ dojo.declare(
 		queryCommandEnabled: function(/*String*/command){
 			// summary: check whether a command is enabled or not
 			command = this._normalizeCommand(command);
-			if(dojo.isMoz){
+			if(dojo.isMoz || dojo.isSafari){
 				if(command == "unlink"){ // mozilla returns true always
+					// console.debug(dojo.withGlobal(this.window, "hasAncestorElement",dijit._editor.selection, ['a']));
 					return dojo.withGlobal(this.window, "hasAncestorElement",dijit._editor.selection, ['a']);
-				} else if (command == "inserttable") {
+				}else if (command == "inserttable"){
 					return true;
 				}
 			}
@@ -1392,7 +1391,7 @@ dojo.declare(
 			return this.document.queryCommandState(command);
 		},
 
-		queryCommandValue: function (command) {
+		queryCommandValue: function(command){
 			// summary: check the value of a given command
 			command = this._normalizeCommand(command);
 			if(dojo.isIE && command == "formatblock"){
@@ -1593,6 +1592,9 @@ dojo.declare(
 
 			// var height = dojo.marginBox(this.editNode).h;
 			var height = dojo.marginBox(this.editNode).h;
+			if(dojo.isOpera){
+				height = this.editNode.scrollHeight;
+			}
 
 			// console.debug(this.editNode);
 			// alert(this.editNode);
@@ -1670,7 +1672,7 @@ dojo.declare(
 						}
 					}else{
 						var attr, i=0, attrs = node.attributes;
-						while(attr=attrs[i++]) {
+						while(attr=attrs[i++]){
 							//ignore all attributes starting with _dj which are
 							//internal temporary attributes used by the editor
 							if(attr.name.substr(0,3) != '_dj' /*&&
@@ -1692,7 +1694,7 @@ dojo.declare(
 					while(attr=attrarray[i++]){
 						output += ' '+attr[0]+'="'+attr[1]+'"';
 					}
-					if(node.childNodes.length>0){
+					if(node.childNodes.length){
 						output += '>' + this.getNodeChildrenHtml(node)+'</'+node.tagName.toLowerCase()+'>';
 					}else{
 						output += ' />';
@@ -1733,7 +1735,7 @@ dojo.declare(
 			// force:
 			if(this.isClosed){return false; }
 
-			if (arguments.length == 0) { save = true; }
+			if(!arguments.length){ save = true; }
 			this._content = this.getValue();
 			var changed = (this.savedContent != this._content);
 
@@ -1741,18 +1743,6 @@ dojo.declare(
 			// FIXME: why was this here? if (this.iframe){ this.domNode.style.lineHeight = null; }
 
 			if(this.interval){ clearInterval(this.interval); }
-
-			/*
-			if(dojo.isIE){
-				dojo.event.browser.clean(this.editNode);
-			}
-
-			if(this.iframe){
-				// FIXME: should keep iframe around for later re-use
-				dojo.html.destroyNode(this.iframe);
-				delete this.iframe;
-			}
-			*/
 
 			if(this.textarea){
 				with(this.textarea.style){
@@ -1857,7 +1847,7 @@ dojo.declare(
 							wrapNodes(nodesInLine);
 							currentNodeIndex = (currentNodeIndex+1)-nodesInLine.length;
 							if(currentNode.nodeName=="BR"){
-								currentNode.parentNode.removeChild(currentNode);
+								dojo._destroyElement(currentNode);
 							}
 						}
 						nodesInLine = [];
@@ -1883,7 +1873,7 @@ dojo.declare(
 						dojo.forEach(trailingNodes, function(node){
 							newP.appendChild(node);
 						});
-						currentNode.parentNode.removeChild(currentNode);
+						dojo._destroyElement(currentNode);
 						trailingNodes = [];
 					}else{
 						trailingNodes.unshift(currentNode);
@@ -1934,8 +1924,8 @@ dojo.declare(
 				if(node.nodeType != 1 || node.tagName != 'P'){
 					return (dojo.style(node, 'display') == 'block');
 				}else{
-				if(!node.childNodes.length || node.innerHTML=="&nbsp;"){ return true }
-				//return node.innerHTML.match(/^(<br\ ?\/?>| |\&nbsp\;)$/i);
+					if(!node.childNodes.length || node.innerHTML=="&nbsp;"){ return true }
+					//return node.innerHTML.match(/^(<br\ ?\/?>| |\&nbsp\;)$/i);
 				}
 			}
 
@@ -1969,7 +1959,7 @@ dojo.declare(
 					}
 					node = node.nextSibling;
 					if(deleteNode){
-						deleteNode.parentNode.removeChild(deleteNode);
+						dojo._destroyElement(deleteNode);
 						deleteNode = null;
 					}
 				}
@@ -1983,8 +1973,10 @@ dojo.declare(
 				// FIXME:
 				// dojo.html.insertCssText(lineFixingStyles, this.document);
 				this.document.__INSERTED_EDITIOR_NEWLINE_CSS = true;
-//				this.regularPsToSingleLinePs(this.editNode);
+				// this.regularPsToSingleLinePs(this.editNode);
 			}
 		}
 	}
 );
+
+}

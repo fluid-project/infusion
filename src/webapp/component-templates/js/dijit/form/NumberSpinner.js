@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form.NumberSpinner"]){
+dojo._hasResource["dijit.form.NumberSpinner"] = true;
 dojo.provide("dijit.form.NumberSpinner");
 
 dojo.require("dijit.form._Spinner");
@@ -25,3 +27,5 @@ dojo.declare(
 		return newval;
 	}
 });
+
+}

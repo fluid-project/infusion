@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests._base._loader.hostenv_spidermonkey"]){
+dojo._hasResource["tests._base._loader.hostenv_spidermonkey"] = true;
 dojo.provide("tests._base._loader.hostenv_spidermonkey");
 
 tests.register("tests._base._loader.hostenv_spidermonkey", 
@@ -9,3 +11,5 @@ tests.register("tests._base._loader.hostenv_spidermonkey",
 		}
 	]
 );
+
+}

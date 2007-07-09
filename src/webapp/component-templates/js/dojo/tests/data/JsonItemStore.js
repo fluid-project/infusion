@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests.data.JsonItemStore"]){
+dojo._hasResource["tests.data.JsonItemStore"] = true;
 dojo.provide("tests.data.JsonItemStore");
 dojo.require("dojo.data.JsonItemStore");
 dojo.require("dojo.data.api.Read");
@@ -1578,3 +1580,5 @@ doh.register("tests.data.JsonItemStore",
 	]
 );
 
+
+}

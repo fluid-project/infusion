@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.rpc.JsonService"]){
+dojo._hasResource["dojo.rpc.JsonService"] = true;
 dojo.provide("dojo.rpc.JsonService");
 dojo.require("dojo.rpc.RpcService");
 
@@ -60,3 +62,5 @@ dojo.declare(
 		}
 	}
 );
+
+}

@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.ProgressBar"]){
+dojo._hasResource["dijit.ProgressBar"] = true;
 dojo.provide("dijit.ProgressBar");
 
 dojo.require("dojo.fx");
@@ -54,7 +56,7 @@ dojo.declare(
 		// true: show that a process is underway but that the progress is unknown
 		indeterminate: false,
 
-		templatePath: dojo.moduleUrl("dijit", "templates/ProgressBar.html"),
+		templateString:"<div class=\"dijitProgressBar dijitProgressBarEmpty\"\n\t><div dojoAttachPoint=\"emptyLabel\" class=\"dijitProgressBarEmptyLabel\"\n\t></div\n\t><div waiRole=\"progressbar\" tabindex=\"0\" dojoAttachPoint=\"internalProgress\" class=\"dijitProgressBarFull\"\n\t\t><div class=\"dijitProgressBarTile\"\n\t\t></div\n\t\t><div dojoAttachPoint=\"fullLabel\" class=\"dijitProgressBarFullLabel\"\n\t\t></div\n\t></div\n\t><img dojoAttachPoint=\"inteterminateHighContrastImage\" class=\"dijitIndeterminateProgressBarHighContrastImage\"\n\t></img\n></div>\n",
 
 		_indeterminateHighContrastImagePath:
 			dojo.moduleUrl("dijit", "themes/a11y/indeterminate_progress.gif"),
@@ -124,3 +126,5 @@ dojo.declare(
 		onChange: function(){}
 	}
 );
+
+}

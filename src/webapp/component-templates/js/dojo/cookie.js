@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.cookie"]){
+dojo._hasResource["dojo.cookie"] = true;
 dojo.provide("dojo.cookie");
 
 dojo.cookie = function(/*String*/name, /*String?*/value, /*Object?*/props){
@@ -48,3 +50,5 @@ dojo.cookie = function(/*String*/name, /*String?*/value, /*Object?*/props){
 		return null;
 	}
 };
+
+}

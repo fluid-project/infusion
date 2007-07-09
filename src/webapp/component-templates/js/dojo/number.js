@@ -1,7 +1,9 @@
+if(!dojo._hasResource["dojo.number"]){
+dojo._hasResource["dojo.number"] = true;
 dojo.provide("dojo.number");
 
 dojo.require("dojo.i18n");
-dojo.requireLocalization("dojo.cldr", "number");
+dojo.requireLocalization("dojo.cldr", "number", null, "zh-cn,en,en-ca,zh-tw,en-us,it,ja-jp,ROOT,de-de,es-es,fr,pt,ko-kr,es,de");
 dojo.require("dojo.string");
 dojo.require("dojo.regexp");
 
@@ -456,4 +458,6 @@ dojo.number._integerRegexp = function(/*Object?*/flags){
 
 	// integer RE
 	return signRE + numberRE; // String
+}
+
 }

@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.util.manager"]){
+dojo._hasResource["dijit.util.manager"] = true;
 dojo.provide("dijit.util.manager");
 
 dijit.util.manager = new function(){
@@ -61,15 +63,18 @@ dijit.util.manager = new function(){
 	}
 };
 
-// #3531: causes errors, commenting out for now
-/***
-dojo.addOnUnload(function(){
-	dijit.util.manager.destroyAll();
-});
-***/
+if(dojo.isIE && dojo.isIE < 7){
+	// Only run this for IE6 because we think it's only necessary in that case,
+	// and because it causes problems on FF.  See bugt #3531 for details.
+	dojo.addOnUnload(function(){
+		dijit.util.manager.destroyAll();
+	});
+}
 
 dijit.byId = function(/*String*/id){
 	// summary:
 	//		Returns a widget by its id
 	return (dojo.isString(id)) ? dijit.util.manager.getWidgets()[id] : id;
 };
+
+}

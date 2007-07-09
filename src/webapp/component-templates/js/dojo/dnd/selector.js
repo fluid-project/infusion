@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.dnd.selector"]){
+dojo._hasResource["dojo.dnd.selector"] = true;
 dojo.provide("dojo.dnd.selector");
 
 dojo.require("dojo.dnd.common");
@@ -245,3 +247,5 @@ function(node, params){
 		return this;	// self
 	}
 });
+
+}

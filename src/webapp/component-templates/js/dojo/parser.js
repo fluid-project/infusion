@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.parser"]){
+dojo._hasResource["dojo.parser"] = true;
 dojo.provide("dojo.parser");
 dojo.require("dojo.date.stamp");
 
@@ -226,12 +228,20 @@ dojo.parser = new function(){
 //Register the parser callback. It should be the first callback
 //after the a11y test.
 
-// FIXME: need to clobber cross-dependency!!
-if(dojo.exists("dijit.util.wai.onload") && (dijit.util.wai.onload === dojo._loaders[0])){
-	dojo._loaders.splice(1, 0, function(){ dojo.parser.parse(); });
-}else{
-	dojo._loaders.unshift(function(){ dojo.parser.parse(); });
-}
+(function(){
+	var parseRunner = function(){ 
+		if(djConfig["parseOnLoad"] == true){
+			dojo.parser.parse(); 
+		}
+	};
+
+	// FIXME: need to clobber cross-dependency!!
+	if(dojo.exists("dijit.util.wai.onload") && (dijit.util.wai.onload === dojo._loaders[0])){
+		dojo._loaders.splice(1, 0, parseRunner);
+	}else{
+		dojo._loaders.unshift(parseRunner);
+	}
+})();
 
 //TODO: ported from 0.4.x Dojo.  Can we reduce this?
 dojo.parser._anonCtr = 0;
@@ -254,4 +264,6 @@ dojo.parser._nameAnonFunc = function(/*Function*/anonFuncPtr, /*Object*/thisObj)
 	}
 	nso[ret] = anonFuncPtr;
 	return ret; // String
+}
+
 }

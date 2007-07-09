@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.TitlePane"]){
+dojo._hasResource["dijit.TitlePane"] = true;
 dojo.provide("dijit.TitlePane");
 
 dojo.require("dojo.fx");
@@ -26,7 +28,7 @@ dojo.declare(
 
 	contentClass : "dijitTitlePaneContent",
 
-	templatePath: dojo.moduleUrl("dijit", "templates/TitlePane.html"),
+	templateString:"<div id=\"${id}\">\n\t<div dojoAttachEvent=\"onclick: _onTitleClick; onkeypress: _onTitleKey\" tabindex=\"0\"\n\t\t\twaiRole=\"button\" class=\"dijitTitlePaneTitle\" dojoAttachPoint=\"focusNode\">\n\t\t<span class=\"dijitOpenCloseArrowOuter\" style=\"float: left;\"><span class=\"dijitOpenCloseArrowInner\"></span></span>\n\t\t<span dojoAttachPoint=\"titleNode\" class=\"dijitInlineBox dijitTitleNode\"></span>\n\t</div>\n\t<div dojoAttachPoint=\"containerNode\" waiRole=\"region\" tabindex=\"-1\" class=\"dijitTitlePaneContent\"></div>\n</div>\n",
 
 	postCreate: function(){
 		this.setTitle(this.title);
@@ -80,3 +82,5 @@ dojo.declare(
 		this.titleNode.innerHTML=title;
 	}
 });
+
+}

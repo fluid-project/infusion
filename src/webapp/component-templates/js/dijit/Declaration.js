@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.Declaration"]){
+dojo._hasResource["dijit.Declaration"] = true;
 dojo.provide("dijit.Declaration");
 dojo.require("dijit._Widget");
 dojo.require("dijit._Templated");
@@ -48,3 +50,5 @@ dojo.declare(
 		}
 	}
 );
+
+}

@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.util.wai"]){
+dojo._hasResource["dijit.util.wai"] = true;
 dojo.provide("dijit.util.wai");
 
 dijit.util.waiNames  = ["waiRole", "waiState"];
@@ -112,3 +114,5 @@ dijit.util.wai = {
 
 // Make sure the a11y test runs first.
 dojo._loaders.unshift(dijit.util.wai.onload);
+
+}

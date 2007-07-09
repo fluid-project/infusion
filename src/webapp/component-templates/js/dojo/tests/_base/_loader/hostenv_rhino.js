@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests._base._loader.hostenv_rhino"]){
+dojo._hasResource["tests._base._loader.hostenv_rhino"] = true;
 dojo.provide("tests._base._loader.hostenv_rhino");
 
 tests.register("tests._base._loader.hostenv_rhino", 
@@ -11,3 +13,5 @@ tests.register("tests._base._loader.hostenv_rhino",
 		}
 	]
 );
+
+}

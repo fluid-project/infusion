@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests._base.lang"]){
+dojo._hasResource["tests._base.lang"] = true;
 dojo.provide("tests._base.lang");
 
 tests.register("tests._base.lang", 
@@ -154,3 +156,5 @@ tests.register("tests._base.lang",
 		}
 	]
 );
+
+}

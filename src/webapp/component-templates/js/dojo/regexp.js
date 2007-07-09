@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.regexp"]){
+dojo._hasResource["dojo.regexp"] = true;
 dojo.provide("dojo.regexp");
 
 dojo.regexp.escapeString = function(/*String*/str, /*String?*/except){
@@ -46,4 +48,6 @@ dojo.regexp.group = function(/*String*/expression, /*Boolean?*/nonCapture){
 	// summary: adds group match to expression
 	// nonCapture: If true, uses non-capturing match, otherwise matches are retained by regular expression. 
 	return "(" + (nonCapture ? "?:":"") + expression + ")"; // String
+}
+
 }

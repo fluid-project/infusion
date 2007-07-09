@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form.ValidationTextbox"]){
+dojo._hasResource["dijit.form.ValidationTextbox"] = true;
 dojo.provide("dijit.form.ValidationTextbox");
 
 dojo.require("dojo.i18n");
@@ -6,7 +8,7 @@ dojo.require("dijit.util.wai");
 dojo.require("dijit.form.Textbox");
 dojo.require("dijit.Tooltip");
 
-dojo.requireLocalization("dijit.form", "validate");
+dojo.requireLocalization("dijit.form", "validate", null, "zh-cn,ja,it,ROOT,fr,de");
 
 dojo.declare(
 	"dijit.form.ValidationTextbox",
@@ -102,6 +104,13 @@ dojo.declare(
 		_displayMessage: function(/*String*/ message){
 			if(this._message == message){ return; }
 			this._message = message;
+			this.displayMessage(message);
+		},
+		
+		displayMessage: function(/*String*/ message){
+			// summary:
+			//		User overridable method to display validation errors/hints.
+			//		By default uses a tooltip.
 			if(message){
 				dijit.MasterTooltip.show(message, this.domNode);
 			}else{
@@ -261,3 +270,5 @@ dojo.declare(
 		}
 	}
 );
+
+}

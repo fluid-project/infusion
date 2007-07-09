@@ -58,6 +58,26 @@
 						// FIXME: the 'correct' w is not 100 on Safari WebKit (2.0.4 [419.3]), the right-margin extends to the document edge
 						// "t.is(100, dojo.marginBox('sq100nopos').w);", 
 						"t.is(100, dojo.marginBox('sq100nopos').h);",
+						
+						"t.is(10, dojo._getPadExtents(dojo.byId('sq100ltpad10rbmargin10')).l);",
+						"t.is(10, dojo._getPadExtents(dojo.byId('sq100ltpad10rbmargin10')).t);",
+						"t.is(10, dojo._getPadExtents(dojo.byId('sq100ltpad10rbmargin10')).w);",
+						"t.is(10, dojo._getPadExtents(dojo.byId('sq100ltpad10rbmargin10')).h);",
+
+						"t.is(0, dojo._getMarginExtents(dojo.byId('sq100ltpad10rbmargin10')).l);",
+						"t.is(0, dojo._getMarginExtents(dojo.byId('sq100ltpad10rbmargin10')).t);",
+						"t.is(10, dojo._getMarginExtents(dojo.byId('sq100ltpad10rbmargin10')).w);",
+						"t.is(10, dojo._getMarginExtents(dojo.byId('sq100ltpad10rbmargin10')).h);",
+
+						"t.is(10, dojo._getBorderExtents(dojo.byId('sq100border10margin10pad10')).l);",
+						"t.is(10, dojo._getBorderExtents(dojo.byId('sq100border10margin10pad10')).t);",
+						"t.is(20, dojo._getBorderExtents(dojo.byId('sq100border10margin10pad10')).w);",
+						"t.is(20, dojo._getBorderExtents(dojo.byId('sq100border10margin10pad10')).h);",
+
+						"t.is(20, dojo._getPadBorderExtents(dojo.byId('sq100border10margin10pad10')).l);",
+						"t.is(20, dojo._getPadBorderExtents(dojo.byId('sq100border10margin10pad10')).t);",
+						"t.is(40, dojo._getPadBorderExtents(dojo.byId('sq100border10margin10pad10')).w);",
+						"t.is(40, dojo._getPadBorderExtents(dojo.byId('sq100border10margin10pad10')).h);",
 
 						function coordsBasic(t){
 							var pos = dojo.coords("sq100", false);
@@ -92,6 +112,57 @@
 						function getBgcolor(t){
 							var bgc = dojo.style('sq100nopos', 'backgroundColor');
 							t.t((bgc == "rgb(0, 0, 0)")||(bgc == "black")||(bgc == "#000000"));
+						},
+						function isDescendant(t){
+							t.t(dojo.isDescendant("sq100", dojo.body()));
+							t.t(dojo.isDescendant("sq100", dojo.doc));
+							t.t(dojo.isDescendant("sq100", "sq100"));
+							t.t(dojo.isDescendant(dojo.byId("sq100"), "sq100"));
+							t.f(dojo.isDescendant("sq100", dojo.byId("sq100").firstChild));
+							t.t(dojo.isDescendant(dojo.byId("sq100").firstChild, "sq100"));
+						},
+						function isDescendantIframe(t){
+							var bif = dojo.byId("blah");
+							bif.contentDocument.write("<html><body><div id='subDiv'></div></body></html>");
+							bif.contentDocument.close();
+							// this test barely makes sense. disabling it for now.
+							// t.t(dojo.isDescendant(bif.contentDocument.getElementById("subDiv"), bif.parentNode));
+							var subDiv = bif.contentDocument.getElementById("subDiv");
+							t.t(dojo.isDescendant(subDiv, subDiv));
+							t.t(dojo.isDescendant(subDiv, subDiv.parentNode));
+							t.f(dojo.isDescendant(subDiv.parentNode, subDiv));
+
+						},
+						function testClassFunctions(t){
+							var node = dojo.byId("sq100");
+							dojo.addClass(node, "a");
+							t.is("a", node.className);
+							dojo.removeClass(node, "c");
+							t.is("a", node.className);
+							t.assertTrue(dojo.hasClass(node, "a"));
+							t.assertFalse(dojo.hasClass(node, "b"));
+							dojo.addClass(node, "b");
+							t.is("a b", node.className);
+							t.assertTrue(dojo.hasClass(node, "a"));
+							t.assertTrue(dojo.hasClass(node, "b"));
+							dojo.removeClass(node, "a");
+							t.is("b", node.className);
+							t.assertFalse(dojo.hasClass(node, "a"));
+							t.assertTrue(dojo.hasClass(node, "b"));
+							dojo.toggleClass(node, "a");
+							t.is("b a", node.className);
+							t.assertTrue(dojo.hasClass(node, "a"));
+							t.assertTrue(dojo.hasClass(node, "b"));
+							dojo.toggleClass(node, "a");
+							t.is("b", node.className);
+							t.assertFalse(dojo.hasClass(node, "a"));
+							t.assertTrue(dojo.hasClass(node, "b"));
+							dojo.toggleClass(node, "b");
+							t.is("", node.className);
+							t.assertFalse(dojo.hasClass(node, "a"));
+							t.assertFalse(dojo.hasClass(node, "b"));
+							dojo.removeClass(node, "c");
+							t.assertTrue(!node.className);
 						}
 					]
 				);
@@ -283,6 +354,7 @@
 		<div id="sq100nopos">
 			100px square, no positioning
 		</div>
+		<iframe id="blah"></iframe>
 	</body>
 </html>
 

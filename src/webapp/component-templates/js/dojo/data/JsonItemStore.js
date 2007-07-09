@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.data.JsonItemStore"]){
+dojo._hasResource["dojo.data.JsonItemStore"] = true;
 dojo.provide("dojo.data.JsonItemStore");
 
 dojo.require("dojo.data.util.filter");
@@ -530,3 +532,5 @@ dojo.declare("dojo.data.JsonItemStore",
 });
 //Mix in the simple fetch implementation to this class.
 dojo.extend(dojo.data.JsonItemStore,dojo.data.util.simpleFetch);
+
+}

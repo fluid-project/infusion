@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.cldr.monetary"]){
+dojo._hasResource["dojo.cldr.monetary"] = true;
 dojo.provide("dojo.cldr.monetary");
 
 dojo.cldr.monetary.getData = function(code){
@@ -21,3 +23,5 @@ dojo.cldr.monetary.getData = function(code){
 
 	return {places: places, round: round}; // Object
 };
+
+}

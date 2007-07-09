@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form.CurrencyTextbox"]){
+dojo._hasResource["dijit.form.CurrencyTextbox"] = true;
 dojo.provide("dijit.form.CurrencyTextbox");
 
 //FIXME: dojo.experimental throws an unreadable exception?
@@ -27,3 +29,5 @@ dojo.declare(
 		}
 	}
 );
+
+}

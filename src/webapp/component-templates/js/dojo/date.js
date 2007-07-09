@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.date"]){
+dojo._hasResource["dojo.date"] = true;
 dojo.provide("dojo.date");
 
 dojo.date.getDaysInMonth = function(/*Date*/dateObject){
@@ -348,3 +350,5 @@ dojo.date.difference = function(/*Date*/date1, /*Date?*/date2, /*String?*/interv
 	// Round for fractional values and DST leaps
 	return Math.round(delta); // Number (integer)
 };
+
+}

@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit._editor.selection"]){
+dojo._hasResource["dijit._editor.selection"] = true;
 dojo.provide("dijit._editor.selection");
 
 // FIXME:
@@ -190,3 +192,5 @@ dojo.mixin(dijit._editor.selection, {
 		}
 	}
 });
+
+}

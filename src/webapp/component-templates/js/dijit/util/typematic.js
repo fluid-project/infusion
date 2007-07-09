@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.util.typematic"]){
+dojo._hasResource["dijit.util.typematic"] = true;
 dojo.provide("dijit.util.typematic");
 
 dijit.util.typematic = {
@@ -126,3 +128,5 @@ dijit.util.typematic = {
 			this.addMouseListener(mouseNode, _this, callback, subsequentDelay, initialDelay));
 	}
 };
+
+}

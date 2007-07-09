@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.form.DateTextbox"]){
+dojo._hasResource["dijit.form.DateTextbox"] = true;
 dojo.provide("dijit.form.DateTextbox");
 
 dojo.require("dijit._Calendar");
@@ -92,6 +94,16 @@ dojo.declare(
 		postCreate: function(){
 			dijit.form.DateTextbox.superclass.postCreate.apply(this, arguments);
 			this.connect(this.domNode, "onclick", "_open");
+		},
+
+		getDisplayedValue:function(){
+			return this.textbox.value;
+		},
+
+		setDisplayedValue:function(/*String*/ value){
+			this.textbox.value=value;
 		}
 	}
 );
+
+}

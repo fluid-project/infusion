@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.Toolbar"]){
+dojo._hasResource["dijit.Toolbar"] = true;
 dojo.provide("dijit.Toolbar");
 
 dojo.require("dijit._Widget");
@@ -20,14 +22,12 @@ dojo.declare(
 // Combine with dijit.MenuSeparator??
 dojo.declare(
 	"dijit.ToolbarSeparator",
-	[dijit._Widget, dijit._Templated, dijit._Contained],
+	[ dijit._Widget, dijit._Templated ],
 {
 	// summary
 	//	A line between two menu items
-
-	templateString: '<span class="dijitToolbarSeparator dijitInline"></span>',
-
-	postCreate: function(){
-		dijit._disableSelection(this.domNode);
-	}
+	templateString: '<div class="dijitToolbarSeparator dijitInline"></div>',
+	postCreate: function(){ dojo.setSelectable(this.domNode, false); }
 });
+
+}

@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit._Widget"]){
+dojo._hasResource["dijit._Widget"] = true;
 dojo.provide("dijit._Widget");
 
 dojo.require("dijit.util.manager");
@@ -152,23 +154,17 @@ function(params, srcNodeRef){
 		//		tear-down?
 
 		if(this.bgIframe){
-			this.bgIframe.remove();
+			this.bgIframe.destroy();
 			delete this.bgIframe;
 		}
 
 		if(this.domNode){
-			//			dojo.dom.destroyNode(this.domNode);
-			//PORT #2931
-			if(this.domNode.parentNode){
-				this.domNode.parentNode.removeChild(this.domNode);
-			}
+			dojo._destroyElement(this.domNode);
 			delete this.domNode;
 		}
 
-		if(this.srcNodeRef && this.srcNodeRef.parentNode){
-//			dojo.dom.destroyNode(this.srcNodeRef);
-//PORT #2931
-			this.srcNodeRef.parentNode.removeChild(this.srcNodeRef);
+		if(this.srcNodeRef){
+			dojo._destroyElement(this.srcNodeRef);
 			delete this.srcNodeRef;
 		}
 	},
@@ -273,16 +269,4 @@ function(params, srcNodeRef){
 	}
 });
 
-//PORT - where does this go?  dijit.util?  dojo.html?
-dijit._disableSelection = function(/*DomNode*/element){
-	// summary: disable selection on a node
-
-	if(dojo.isMozilla){
-		element.style.MozUserSelect = "none";
-	}else if(dojo.isKhtml){
-		element.style.KhtmlUserSelect = "none";
-	}else if(dojo.isIE){
-		element.unselectable = "on";
-	}
-	//FIXME: else?  Opera?
-};
+}

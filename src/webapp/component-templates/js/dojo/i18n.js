@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.i18n"]){
+dojo._hasResource["dojo.i18n"] = true;
 dojo.provide("dojo.i18n");
 
 dojo.i18n.getLocalization = function(/*String*/packageName, /*String*/bundleName, /*String?*/locale){
@@ -246,3 +248,5 @@ dojo.i18n._preloadLocalizations = function(){
 	}
 	dojo.i18n._preloadLocalizations = function(){};
 };
+
+}

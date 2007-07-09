@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dojo.data.util.filter"]){
+dojo._hasResource["dojo.data.util.filter"] = true;
 dojo.provide("dojo.data.util.filter");
 
 dojo.data.util.filter.patternToRegExp = function(/*String*/pattern, /*boolean?*/ ignoreCase){
@@ -63,3 +65,5 @@ dojo.data.util.filter.patternToRegExp = function(/*String*/pattern, /*boolean?*/
 	}
 	
 };
+
+}

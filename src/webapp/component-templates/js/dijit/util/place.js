@@ -1,3 +1,5 @@
+if(!dojo._hasResource["dijit.util.place"]){
+dojo._hasResource["dijit.util.place"] = true;
 dojo.provide("dijit.util.place");
 
 // ported from dojo.html.util
@@ -165,4 +167,6 @@ dijit.util.placeOnScreenAroundElement = function(
 	}
 	
 	return dijit.util._place(node, choices);
+}
+
 }

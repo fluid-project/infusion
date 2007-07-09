@@ -1,3 +1,5 @@
+if(!dojo._hasResource["tests.string"]){
+dojo._hasResource["tests.string"] = true;
 dojo.provide("tests.string");
 
 dojo.require("dojo.string");
@@ -16,3 +18,5 @@ tests.register("tests.string",
 		}
 	]
 );
+
+}
