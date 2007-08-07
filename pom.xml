@@ -5,16 +5,16 @@
                       http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>fluid-component-templates</artifactId>
-  <name>Fluid Components Templates</name>
+  <artifactId>fluid-components</artifactId>
+  <name>Fluid Components</name>
   <groupId>org.fluidproject</groupId>
-  <version>1.0</version>
+  <version>0.1</version>
 
   <organization>
-    <name>CARET</name>
-    <url>http://www.caret.cam.ac.uk</url>
+    <name>Fluid Project</name>
+    <url>http://fluidproject.org</url>
   </organization>
-  <inceptionYear>2005</inceptionYear>
+  <inceptionYear>2007</inceptionYear>
   <packaging>war</packaging>
   <build>
     <plugins>
