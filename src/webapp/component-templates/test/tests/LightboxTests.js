@@ -54,7 +54,7 @@ function testFindAncestorGridCell() {
  * This test tests the movement of images, and does not concern itself
  * with changes of state (i.e. dragging, etc.)
  */
-function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {	
+function testHandleArrowKeyPressMoveThumbDown() {	
 	var lightbox = createLightbox();
 	lightbox.selectActiveItem();
 
@@ -62,7 +62,7 @@ function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {
 	lightbox.gridLayoutHandler.numOfColumnsInGrid = 3;
 
 	// Test: ctrl down arrow - move the first image down
-	lightbox.handleArrowKeyPress(evtCtrlDownArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlDownArrow());
 	
 	var lightboxDOMNode = dojo.byId(lightboxRootId);
 	var thumbArray = lightboxDOMNode.getElementsByTagName("img");
@@ -73,11 +73,19 @@ function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {
 	assertEquals("after ctrl-down-arrow, expect fifth image to still be fifth", "fluid.img.5", thumbArray[4].id);
 
 	// Test: ctrl up arrow - expect everything to go back to the original state
-	lightbox.handleArrowKeyPress(evtCtrlUpArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlUpArrow());
 	itemsInOriginalPositionTest("after ctrl-up", dojo.byId(lightboxRootId));
-
+ }
+ 
+ function testHandleArrowKeyPressWrapThumbUp() {
 	// Test: ctrl up arrow - move the first image 'up'
-	lightbox.handleArrowKeyPress(evtCtrlUpArrow);
+	var lightbox = createLightbox();
+	lightbox.selectActiveItem();
+
+	// setup: force the grid to have three columns
+	lightbox.gridLayoutHandler.numOfColumnsInGrid = 3;
+
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlUpArrow());
 	
 	lightboxDOMNode = dojo.byId(lightboxRootId);
 	thumbArray = lightboxDOMNode.getElementsByTagName("img");
@@ -88,7 +96,7 @@ function testHandleArrowKeyPressForCtrlUpAndCtrlDown() {
 	assertEquals("after ctrl-up-arrow, expect last image to still be last", "fluid.img.last", thumbArray[13].id);
 
 	// Test: ctrl down arrow - expect everything to go back to the original state
-	lightbox.handleArrowKeyPress(evtCtrlDownArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlDownArrow());
 	itemsInOriginalPositionTest("after ctrl-down wrap", dojo.byId(lightboxRootId));
 
 }
@@ -120,17 +128,17 @@ function testHandleArrowKeyPressForUpAndDown() {
 	isItemFocusedTest("Initially ", firstImageId);
 
 	// Test: down arrow to the fifth image
-	lightbox.handleArrowKeyPress(evtDownArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtDownArrow());
 	isItemDefaultTest("After down arrow ", firstImageId);
 	isItemFocusedTest("After down arrow ", fifthImageId);
 
 	// Test: up arrow to the first image
-	lightbox.handleArrowKeyPress(evtUpArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtUpArrow());
 	isItemFocusedTest("After up arrow ", firstImageId);
 	isItemDefaultTest("After up arrow ", fifthImageId);
 
 	// Test: up arrow to the second last image
-	lightbox.handleArrowKeyPress(evtUpArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtUpArrow());
 	isItemDefaultTest("After up arrow wrap ", firstImageId);
 	isItemFocusedTest("After up arrow wrap ", secondLastImageId);
 
@@ -140,7 +148,7 @@ function testHandleArrowKeyPressForUpAndDown() {
 	// isTooltipShowingTest(lightbox.activeItem);
 
 	// Test: down arrow to the first image
-	lightbox.handleArrowKeyPress(evtDownArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtDownArrow());
 	isItemFocusedTest("After down arrow wrap ", firstImageId);
 	isItemDefaultTest("After down arrow wrap ", secondLastImageId);
 	
@@ -189,39 +197,39 @@ function isTooltipShowingTest(activeItem) {
 
 function testHandleArrowKeyPressForLeftAndRight()	 {
 	var lightbox = createLightbox();
-  lightbox.selectActiveItem();
+    lightbox.selectActiveItem();
 	
 	isItemFocusedTest("Initially ", firstImageId);
 	isItemDefaultTest("Initially ", secondImageId);
 
 	// Test: right arrow to the second image
-	lightbox.handleArrowKeyPress(evtRightArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtRightArrow());
 	isItemFocusedTest("After right arrow ", secondImageId);
 	isItemDefaultTest("After right arrow ", firstImageId);
 
 	// Test: right arrow to the last image
 	for (focusPosition = 2; focusPosition < numOfImages; focusPosition++ ) {
-		lightbox.handleArrowKeyPress(evtRightArrow);
+		lightbox.handleArrowKeyPress(fluid.testUtils.createEvtRightArrow());
 	}
 	isItemFocusedTest("Right arrow to last ", lastImageId);
 	isItemDefaultTest("Right arrow to last ", firstImageId);
 	isItemDefaultTest("Right arrow to last ", secondImageId);
 	
 	// Test: left arrow to the previous image
-	lightbox.handleArrowKeyPress(evtLeftArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtLeftArrow());
 	isItemFocusedTest("Left arrow to second last ", secondLastImageId);
 	isItemDefaultTest("Left arrow to second last ", firstImageId);
 	isItemDefaultTest("Left arrow to second last ", lastImageId);
 	
 	// Test: right arrow past the last image - expect wrap to the first image
-	lightbox.handleArrowKeyPress(evtRightArrow);
-	lightbox.handleArrowKeyPress(evtRightArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtRightArrow());
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtRightArrow());
 	isItemFocusedTest("Right arrow wrap ", firstImageId);
 	isItemDefaultTest("Right arrow wrap ", secondImageId);
 	isItemDefaultTest("Right arrow wrap ", lastImageId);
 
 	// Test: left arrow on the first image - expect wrap to the last image
-	lightbox.handleArrowKeyPress(evtLeftArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtLeftArrow());
 	isItemFocusedTest("Left arrow wrap ", lastImageId);
 	isItemDefaultTest("Left arrow wrap ", firstImageId);
 	isItemDefaultTest("Left arrow wrap ", secondImageId);
@@ -230,7 +238,7 @@ function testHandleArrowKeyPressForLeftAndRight()	 {
 
 function testHandleKeyUpAndHandleKeyDownChangesState() {
 	var lightbox = createLightbox();
-  lightbox.selectActiveItem();
+    lightbox.selectActiveItem();
 
 	// check that none of the images are currently being moved.
 	isItemFocusedTest("Initially ", firstImageId);
@@ -241,25 +249,25 @@ function testHandleKeyUpAndHandleKeyDownChangesState() {
 	lightbox.focusItem(dojo.byId(firstImageId));
 	
 	// ctrl down - expect dragging state to start
-	lightbox.handleKeyDown(evtCTRL);
+	lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL());
 	isItemDraggedTest("After ctrl-down, should be in move state ", firstImageId);
 	isItemDefaultTest("After ctrl-down, ", secondImageId);
 	isItemDefaultTest("After ctrl-down, ", secondLastImageId);
 		
 	// right arrow down - all the dragging states should remain the same
-	lightbox.handleKeyDown(evtRightArrow);
+	lightbox.handleKeyDown(fluid.testUtils.createEvtRightArrow());
 	isItemDraggedTest("After ctrl-down right arrow down, should be in move state ", firstImageId);
 	isItemDefaultTest("After ctrl-down right arrow down, ", secondImageId);
 	isItemDefaultTest("After ctrl-down right arrow down, ", secondLastImageId);
 
 	// right arrow with key-up event handler. The dragging states should remain the same.
-	lightbox.handleKeyUp(evtRightArrow);
+	lightbox.handleKeyUp(fluid.testUtils.createEvtRightArrow());
 	isItemDraggedTest("After ctrl-down right arrow up, should be in move state ", firstImageId);
 	isItemDefaultTest("After ctrl-down right arrow up, ", secondImageId);
 	isItemDefaultTest("After ctrl-down right arrow up, ", secondLastImageId);
 
     // ctrl up - expect dragging to end
-	lightbox.handleKeyUp(evtCTRL);
+	lightbox.handleKeyUp(fluid.testUtils.createEvtCTRL());
 	isItemFocusedTest("After ctrl-up ", firstImageId);
 	isItemDefaultTest("After ctrl-up ", secondImageId);
 	isItemDefaultTest("After ctrl-up ", secondLastImageId);
@@ -267,15 +275,15 @@ function testHandleKeyUpAndHandleKeyDownChangesState() {
 
 function testHandleKeyUpAndHandleKeyDownItemMovement() {
 	var lightbox = createLightbox();
-  lightbox.selectActiveItem();
+    lightbox.selectActiveItem();
 
 	// after ctrl down, order should not change
-	lightbox.handleKeyDown(evtCTRL);
+	lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL());
 	var lightboxDOMNode = dojo.byId(lightboxRootId);
 	itemsInOriginalPositionTest("after ctrl-down", lightboxDOMNode);
 	
 	// after ctrl up, order should not change
-	lightbox.handleKeyUp(evtCTRL);
+	lightbox.handleKeyUp(fluid.testUtils.createEvtCTRL());
 	itemsInOriginalPositionTest("after ctrl-up", lightboxDOMNode);
 }
 
@@ -285,10 +293,10 @@ function testHandleKeyUpAndHandleKeyDownItemMovement() {
  */
 function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {	
 	var lightbox = createLightbox();
-  lightbox.selectActiveItem();
+    lightbox.selectActiveItem();
 	
 	// Test: ctrl right arrow - expect first and second image to swap
-	lightbox.handleArrowKeyPress(evtCtrlRightArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlRightArrow());
 
 	var lightboxDOMNode = dojo.byId(lightboxRootId);
 	var thumbArray = lightboxDOMNode.getElementsByTagName("img");
@@ -297,12 +305,12 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	assertEquals("after ctrl-right-arrow, expect last image to be last", "fluid.img.last", thumbArray[numOfImages - 1].id);
 	
 	// Test: ctrl left arrow - expect first and second image to swap back to original order
-	lightbox.handleArrowKeyPress(evtCtrlLeftArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlLeftArrow());
 	itemsInOriginalPositionTest("after ctrl-left-arrow", lightboxDOMNode);
 
 	// Test: ctrl left arrow - expect first image to move to last place,
 	//       second image to move to first place and last image to move to second-last place
-	lightbox.handleArrowKeyPress(evtCtrlLeftArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlLeftArrow());
 
 	thumbArray = lightboxDOMNode.getElementsByTagName("img");;
 	assertEquals("after ctrl-left-arrow on first image, expect first last to be last", "fluid.img.first", thumbArray[numOfImages - 1].id);
@@ -311,7 +319,7 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 
 	// Test: ctrl right arrow - expect first image to move back to first place,
 	//       second image to move to back second place and thumbLast to move to back last place
-	lightbox.handleArrowKeyPress(evtCtrlRightArrow);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlRightArrow());
 	itemsInOriginalPositionTest("after ctrl-left-arrow", lightboxDOMNode);
 }
 
@@ -320,7 +328,7 @@ function testPersistFocus () {
 
 	isItemDefaultTest("Initially ", firstImageId);
 
-  lightbox.selectActiveItem();
+    lightbox.selectActiveItem();
 
 	// first thumb nail should be focused initially.
 	isItemFocusedTest("When lightbox has focus ", firstImageId);
@@ -405,7 +413,7 @@ function testSelectActiveItemSecondSelected() {
 
 function testSetActiveItemToDefaultState() {
 	var lightbox = createLightbox();
-  lightbox.selectActiveItem();
+    lightbox.selectActiveItem();
 	isItemFocusedTest("Initially", firstImageId);
 	
 	lightbox.setActiveItemToDefaultState();

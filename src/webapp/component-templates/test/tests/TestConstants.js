@@ -25,17 +25,6 @@ var defaultClass="image-container-default";
 var focusedClass="image-container-selected";
 var draggingClass="image-container-dragging";
 
-// Stubs
-var evtDownArrow = {keyCode: dojo.keys.DOWN_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
-var evtUpArrow = {keyCode: dojo.keys.UP_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
-var evtRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
-var evtLeftArrow = {keyCode: dojo.keys.LEFT_ARROW, preventDefault: function(){}, stopPropagation: function(){} };
-var evtCTRL = {keyCode: dojo.keys.CTRL, preventDefault: function(){}, stopPropagation: function(){} };
-var evtCtrlRightArrow = {keyCode: dojo.keys.RIGHT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
-var evtCtrlLeftArrow = {keyCode: dojo.keys.LEFT_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
-var evtCtrlDownArrow = {keyCode: dojo.keys.DOWN_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
-var evtCtrlUpArrow = {keyCode: dojo.keys.UP_ARROW, ctrlKey: true, preventDefault: function(){}, stopPropagation: function(){} };
-
 // All the test function names for the JsUnit tests.  Needed for running JsUnit in 
 // IE and Safari.
 //
@@ -52,7 +41,8 @@ function exposeTestFunctionNames() {
 		// LightboxTests.js
 		//
 		"testFindAncestorGridCell",
-		"testHandleArrowKeyPressForCtrlUpAndCtrlDown",
+		"testHandleArrowKeyPressMoveThumbDown",
+		"testHandleArrowKeyPressWrapThumbUp",
 		"testHandleArrowKeyPressForUpAndDown",
 		"testHandleArrowKeyPressForLeftAndRight",
 		"testHandleKeyUpAndHandleKeyDownChangesState",
