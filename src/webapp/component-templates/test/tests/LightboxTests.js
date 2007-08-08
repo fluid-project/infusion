@@ -335,6 +335,9 @@ function testPersistFocus () {
 	isItemDefaultTest("When lightbox has focus ", secondImageId);
 	
 	// Change focus to the input1, then back to the lightbox
+	var newInputElement = document.createElement("input");
+	newInputElement.id="input1";
+	dojo.place(newInputElement, dojo.byId("para1"), "after");
 	dojo.byId ("input1").focus();
 //	lightbox.domNode.blur();
 	isItemDefaultTest("After blur ", firstImageId);
@@ -455,6 +458,9 @@ function testUpdateActiveDescendent() {
 	lightbox._updateActiveDescendent();
 	assertEquals("after setting active item to third image, third image should be activedescendent", thirdImageId, lbRoot.getAttribute("aaa:activedescendent"));
 
+	var newInputElement = document.createElement("input");
+	newInputElement.id="input1";
+	dojo.place(newInputElement, dojo.byId("para1"), "after");
 	dojo.byId ("input1").focus();
 	lightbox._updateActiveDescendent();
 	assertEquals("after removing focus from lightbox, third image should still be activedescendent", thirdImageId, lbRoot.getAttribute("aaa:activedescendent"));
