@@ -54,6 +54,6 @@ function exposeTestFunctionNames() {
 		"testSelectActiveItemSecondSelected",
 		"testSetActiveItemToDefaultState",
 		"testHandleWindowResizeEvent",
-		"testUpdateActiveDescendent",
+		"testUpdateActiveDescendent"
 	];
 }	// end exposeTestFunctionNames().
