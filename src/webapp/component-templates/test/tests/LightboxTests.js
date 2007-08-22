@@ -1,5 +1,3 @@
-dojo.require("dojo.i18n");
-
 var imgListClone;
 
 function setUp() {
@@ -19,9 +17,7 @@ function focusLightboxNode(lightbox, domNode) {
 
 function createLightbox() {
 	return new fluid.Lightbox(
-	    {tagNameToFocus: "a",
-	     tagNameIndexToFocus : 0,
-	     orderChangedCallback: function(){}}
+	    {orderChangedCallback: function(){}}
 	     , lightboxRootId);
 }
 
@@ -357,7 +353,6 @@ function testPersistFocus () {
 
 	// test persistance of focus between page navigation / page loads?	
 }
-
 
 function testfocusItem () {
 	var lightbox = createLightbox();

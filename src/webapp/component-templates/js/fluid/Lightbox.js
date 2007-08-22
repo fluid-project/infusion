@@ -47,31 +47,28 @@ dojo.declare(
 	"fluid.Lightbox",	// class name
 	dijit._Widget,
 	{
-		// the lightbox-reorderable DOM element that is currently active
+		// the reorderable DOM element that is currently active
 		activeItem: null,
 		
 		gridLayoutHandler: new fluid.GridLayoutHandler(),
-
-		tagNameToFocus: null,
-		
-		tagNameIndexToFocus: 0,
 		
 		messageNamebase: "message-bundle:",
 		
 		orderChangedCallback: null,
 		
 		/**
-		 * Return the element within the item that should receive focus. 
-		 * 
-		 * Note: If the tag name to focus is not specified, the item itself is returned.
+		 * Return the element within the item that should receive focus. This is determined by the class 
+		 * 'reorderable-focus-target'. If it is not specified, the item itself is returned.
 		 * 
 		 * @param {Object} item
 		 * @return {Object} The element that should receive focus in the specified item.
 		 */
 		getElementToFocus: function(item) {
-			if (this.tagNameToFocus) {
-				return item.getElementsByTagName(this.tagNameToFocus)[this.tagNameIndexToFocus];
+			var elementToFocus = dojo.query(".reorderable-focus-target", item)[0];
+			if (elementToFocus) {
+				return elementToFocus;
 			}
+			
 			return item;
 		},
 
@@ -95,10 +92,10 @@ dojo.declare(
 			dojo.connect(this.domNode, "onblur", this, "setActiveItemToDefaultState");
 
 			// remove whitespace from the tree before passing it to the grid handler
-			// this is currently necessary because the Lightbox assumes that any nodes inside
+			// this is currently necessary because the reorderer assumes that any nodes inside
 			// it are re-orderable items.
-			// NOTE: The lightbox needs to be refactored to work without this assumption, so that
-			// it can identify re-orderable items another way e.g. through a class name
+			// NOTE: The reorderer needs to be refactored to work without this assumption, so that
+			// it can identify re-orderable items another way e.g. through a class name [FLUID-2]
 			fluid.Utilities.removeNonElementNodes(this.domNode);
 
 			this.gridLayoutHandler.setGrid(this.domNode);
@@ -118,9 +115,6 @@ dojo.declare(
 			dojo.removeClass (this.activeItem, fluid.states.defaultClass);
 			dojo.addClass (this.activeItem, fluid.states.focusedClass);
 			this.getElementToFocus(this.activeItem).focus();
-			// Temporarily disable the tooltip; when it is properly styled and behaving,
-			// it will be re-enabled.
-			// this.activeItem.theTooltip.open();	
 		}, //end focus
 		
 		/**
@@ -137,11 +131,6 @@ dojo.declare(
 			if (this.activeItem) {
 				dojo.removeClass (this.activeItem, fluid.states.focusedClass);
 				dojo.addClass (this.activeItem, fluid.states.defaultClass);
-				// Temporarily disable the tooltip; when it is properly styled and behaving,
-				// it will be re-enabled.
-				// if (this.activeItem.theTooltip) {
-				// 	this.activeItem.theTooltip.close ();
-				// }
 			}
 		},
 		
@@ -254,16 +243,6 @@ dojo.declare(
 		  },
 		
 		_setActiveItem: function(anItem) {
-			// Temporarily disable the tooltip; when it is properly styled and behaving,
-			// it will be re-enabled.
-//			if (!anItem.theTooltip) {
-//			    var caption = this._fetchMessage("thumbnailInstructions");
-//				anItem.theTooltip = new dijit.Tooltip (
-//				{connectId: anItem.id, 
-//				 label: caption
-//				}, "dojoTooltip");
-//             }
-
 			this.activeItem = anItem;
 			this._updateActiveDescendent();
 		},
@@ -284,7 +263,7 @@ dojo.declare(
 
 		_initDnD: function() {
 			dndlb = new dojo.dnd.Source(this.domNode.id, {creator: this._itemCreator, horizontal: true});
-			dndlb.lightbox = this;
+			dndlb.reorderer = this;
 			items = this.domNode.childNodes;
 			var itemArray = new Array();
 			for(i = 0; i < items.length; i++) {
@@ -298,7 +277,7 @@ dojo.declare(
             dndlb.onMouseDown = function(ecmaEvent){
 				// note: source.target will not work in IE, need to use source.srcElement instead.
 				var targetElement = (ecmaEvent.target || ecmaEvent.srcElement);
-                this.lightbox.focusItem(this.lightbox._findAncestorGridCell(targetElement));
+                this.reorderer.focusItem(this.reorderer._findAncestorGridCell(targetElement));
                 dojo.dnd.Source.prototype.onMouseDown.apply(dndlb, arguments);
             };
 			
@@ -308,7 +287,7 @@ dojo.declare(
 			//
 			dndlb.onDndCancel = function () {
 				dojo.dnd.Source.prototype.onDndCancel.apply (dndlb, arguments);
-				this.lightbox.focusItem (this.lightbox.activeItem);
+				this.reorderer.focusItem (this.reorderer.activeItem);
 			};
 			dndlb.onDndDrop = function(source, nodes, copy) {
 			// Use of "this" here is alarmingly ambiguous, and we really want the
@@ -317,7 +296,7 @@ dojo.declare(
            // Answer: Dojo inheritance documented at http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book20
            // "superclass" must be explicitly enabled with a call to "inherit"
                 dojo.dnd.Source.prototype.onDndDrop.call(this, source, nodes, copy);
-		  	    this.lightbox.orderChangedCallback();
+		  	    this.reorderer.orderChangedCallback();
 			}
 		},
 

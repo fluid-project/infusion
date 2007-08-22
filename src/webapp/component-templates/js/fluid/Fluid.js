@@ -98,8 +98,6 @@ fluid.declare(fluid, {
 		
 		var lightbox = new fluid.Lightbox(
 			{
-				tagNameToFocus: tagName,
-				tagNameIndexToFocus : tagNameIndex,
 				messageNamebase : messageNamebase,
 				orderChangedCallback: orderChangedCallback
 			}, 
