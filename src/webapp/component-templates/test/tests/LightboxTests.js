@@ -12,7 +12,7 @@ function tearDown() {
 }
 	
 function createLightbox() {
-	return new fluid.Lightbox(
+	return new fluid.Reorderer(
 	    {orderChangedCallback: function(){}}
 	     , lightboxRootId);
 }

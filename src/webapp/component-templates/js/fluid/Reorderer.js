@@ -20,7 +20,7 @@
  Telephone: (416) 978-4360
 */
 
-dojo.provide("fluid.Lightbox");
+dojo.provide("fluid.Reorderer");
 
 fluid.declare = function(target, args) {
 	for (arg in args) {
@@ -44,7 +44,7 @@ dojo.require("fluid.Fluid");
 
 
 dojo.declare(
-	"fluid.Lightbox",	// class name
+	"fluid.Reorderer",	// class name
 	dijit._Widget,
 	{
 		// the reorderable DOM element that is currently active

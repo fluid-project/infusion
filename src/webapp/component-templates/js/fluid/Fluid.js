@@ -38,7 +38,7 @@ fluid.declare(fluid, {
 	// Server-level initialisation for the lightbox. This is template-specific and
 	// server-generic, in that template-specific dependencies have been factored off.
 	initLightbox: function(namebase, count, messageNamebase) {
-		fluid.initLightboxClient(namebase, count, messageNamebase, "a", 1);
+		fluid.initLightboxClient(namebase, count, messageNamebase);
 	},
 	
 	deriveCellBase: function(namebase, index) {
@@ -64,7 +64,7 @@ fluid.declare(fluid, {
 	
 	// Client-level initialisation for the lightbox, allowing parameterisation for
 	// different templates.
-	initLightboxClient: function(namebase, count, messageNamebase, tagName, tagNameIndex) {
+	initLightboxClient: function(namebase, count, messageNamebase) {
 		var reorderform = fluid.Utilities.findForm(document.getElementById(namebase));
 		// An <input> tag nested within our root namebase tag, which has an id which 
 		// begins with the  namebase:lightbox-cell:: prefix, and ends with "reorder-index" trail.
@@ -96,7 +96,7 @@ fluid.declare(fluid, {
 		};
 		
 		
-		var lightbox = new fluid.Lightbox(
+		var lightbox = new fluid.Reorderer(
 			{
 				messageNamebase : messageNamebase,
 				orderChangedCallback: orderChangedCallback
@@ -107,11 +107,11 @@ fluid.declare(fluid, {
 
 fluid.declare(fluid, {
 	/*
-	 * Utilities object for providing various lightbox-independent convenience functions
+	 * Utilities object for providing various general convenience functions
 	 */
     Utilities: {
 
-	  // NOTE: This function will be removed when the lightbox is refactored to support non-
+	  // NOTE: This function will be removed when the reorderer is refactored to support non-
 	  // re-orderable item nodes. Until then, it is necessary.
 	  removeNonElementNodes: function(rootNode) {
 		var currChild = rootNode.firstChild;
@@ -164,7 +164,7 @@ fluid.declare(fluid, {
 		 * The updateGridWidth function assumes that every child node of this.grid is a re-orderable
 		 * item. This assumption allows the use of indices and knowledge of the number of columns in
 		 * determining what item is 'above' or 'below' a given item.
-		 * NOTE: The lightbox needs to be refactored to work without this assumption, so that it can
+		 * NOTE: The reorderer needs to be refactored to work without this assumption, so that it can
 		 * identify re-orderable items another way e.g. through a class name
 		 */
 		this.updateGridWidth = function () {
