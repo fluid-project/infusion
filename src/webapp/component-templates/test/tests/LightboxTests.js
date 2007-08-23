@@ -11,10 +11,6 @@ function tearDown() {
 	lightboxParent.appendChild(imgListClone);
 }
 	
-function focusLightboxNode(lightbox, domNode) {
-  lightbox.getElementToFocus(domNode).focus();
-}
-
 function createLightbox() {
 	return new fluid.Lightbox(
 	    {orderChangedCallback: function(){}}
@@ -24,7 +20,7 @@ function createLightbox() {
 function testFindAncestorGridCell() {
 	var lightbox = createLightbox();
 	
-	var testItem = dojo.byId(firstImageId);
+	var testItem = dojo.byId(firstReorderableId);
 	assertEquals("The test item's role attribute should be gridcell",
 		"wairole:gridcell", testItem.getAttribute("xhtml10:role"));
 
@@ -39,7 +35,7 @@ function testFindAncestorGridCell() {
 	assertEquals("Given the title of the document, the ancestor grid cell should be null",
 		null, lightbox._findAncestorGridCell(document.body.getElementsByTagName("title")[0]));
 	
-	testItem = dojo.byId(fourthImageId);
+	testItem = dojo.byId(fourthReorderableId);
 	assertEquals("Given another test item itself, the ancestor grid cell should be the new test item",
 		testItem, lightbox._findAncestorGridCell(testItem));
 	assertEquals("Given another image, the ancestor grid cell should be new test item",
@@ -62,11 +58,11 @@ function testHandleArrowKeyPressMoveThumbDown() {
 	
 	var lightboxDOMNode = dojo.byId(lightboxRootId);
 	var thumbArray = lightboxDOMNode.getElementsByTagName("img");
-	assertEquals("after ctrl-down-arrow, expect second image to be first", "fluid.img.second", thumbArray[0].id);
-	assertEquals("after ctrl-down-arrow, expect third image to be second", "fluid.img.3", thumbArray[1].id);
-	assertEquals("after ctrl-down-arrow, expect fourth image to be third", "fluid.img.4", thumbArray[2].id);
-	assertEquals("after ctrl-down-arrow, expect first image to be fourth", "fluid.img.first", thumbArray[3].id);
-	assertEquals("after ctrl-down-arrow, expect fifth image to still be fifth", "fluid.img.5", thumbArray[4].id);
+	assertEquals("after ctrl-down-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
+	assertEquals("after ctrl-down-arrow, expect third image to be second", thirdImageId, thumbArray[1].id);
+	assertEquals("after ctrl-down-arrow, expect fourth image to be third", fourthImageId, thumbArray[2].id);
+	assertEquals("after ctrl-down-arrow, expect first image to be fourth", firstImageId, thumbArray[3].id);
+	assertEquals("after ctrl-down-arrow, expect fifth image to still be fifth", fifthImageId, thumbArray[4].id);
 
 	// Test: ctrl up arrow - expect everything to go back to the original state
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlUpArrow());
@@ -85,11 +81,11 @@ function testHandleArrowKeyPressMoveThumbDown() {
 	
 	lightboxDOMNode = dojo.byId(lightboxRootId);
 	thumbArray = lightboxDOMNode.getElementsByTagName("img");
-	assertEquals("after ctrl-up-arrow, expect second image to be first", "fluid.img.second", thumbArray[0].id);
-	assertEquals("after ctrl-up-arrow, expect third image to be second", "fluid.img.3", thumbArray[1].id);
-	assertEquals("after ctrl-up-arrow, expect fifth image to be fourth", "fluid.img.5", thumbArray[3].id);
-	assertEquals("after ctrl-up-arrow, expect first image to be second last", "fluid.img.first", thumbArray[12].id);
-	assertEquals("after ctrl-up-arrow, expect last image to still be last", "fluid.img.last", thumbArray[13].id);
+	assertEquals("after ctrl-up-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
+	assertEquals("after ctrl-up-arrow, expect third image to be second", thirdImageId, thumbArray[1].id);
+	assertEquals("after ctrl-up-arrow, expect fifth image to be fourth", fifthImageId, thumbArray[3].id);
+	assertEquals("after ctrl-up-arrow, expect first image to be second last", firstImageId, thumbArray[12].id);
+	assertEquals("after ctrl-up-arrow, expect last image to still be last", lastImageId, thumbArray[13].id);
 
 	// Test: ctrl down arrow - expect everything to go back to the original state
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlDownArrow());
@@ -99,126 +95,110 @@ function testHandleArrowKeyPressMoveThumbDown() {
 
 function itemsInOriginalPositionTest(desc, lightboxDOMNode) {
 	thumbArray = lightboxDOMNode.getElementsByTagName("img");
-	assertEquals(desc + " expect first image to be first", "fluid.img.first", thumbArray[0].id);
-	assertEquals(desc + " expect second image to be second", "fluid.img.second", thumbArray[1].id);
-	assertEquals(desc + " expect third image to be third", "fluid.img.3", thumbArray[2].id);
-	assertEquals(desc + " expect fourth image to be fourth", "fluid.img.4", thumbArray[3].id);
-	assertEquals(desc + " expect fifth image to be fifth", "fluid.img.5", thumbArray[4].id);
-	assertEquals(desc + " expect sixth image to be sixth", "fluid.img.6", thumbArray[5].id);
-	assertEquals(desc + " expect seventh image to be seventh", "fluid.img.7", thumbArray[6].id);
-	assertEquals(desc + " expect eighth image to be eighth", "fluid.img.8", thumbArray[7].id);
-	assertEquals(desc + " expect ninth image to be ninth", "fluid.img.9", thumbArray[8].id);
-	assertEquals(desc + " expect tenth image to be tenth", "fluid.img.10", thumbArray[9].id);
-	assertEquals(desc + " expect fourth last image to be fourth last", "fluid.img.11", thumbArray[10].id);
-	assertEquals(desc + " expect third last image to be third last", "fluid.img.12", thumbArray[11].id);
-	assertEquals(desc + " expect second last image to be second last", "fluid.img.secondLast", thumbArray[12].id);
-	assertEquals(desc + " expect last image to be last", "fluid.img.last", thumbArray[13].id);
+	assertEquals(desc + " expect first image to be first", firstImageId, thumbArray[0].id);
+	assertEquals(desc + " expect second image to be second", secondImageId, thumbArray[1].id);
+	assertEquals(desc + " expect third image to be third", thirdImageId, thumbArray[2].id);
+	assertEquals(desc + " expect fourth image to be fourth", fourthImageId, thumbArray[3].id);
+	assertEquals(desc + " expect fifth image to be fifth", fifthImageId, thumbArray[4].id);
+	assertEquals(desc + " expect sixth image to be sixth", sixthImageId, thumbArray[5].id);
+	assertEquals(desc + " expect seventh image to be seventh", seventhImageId, thumbArray[6].id);
+	assertEquals(desc + " expect eighth image to be eighth", eighthImageId, thumbArray[7].id);
+	assertEquals(desc + " expect ninth image to be ninth", ninthImageId, thumbArray[8].id);
+	assertEquals(desc + " expect tenth image to be tenth", tenthImageId, thumbArray[9].id);
+	assertEquals(desc + " expect fourth last image to be fourth last", eleventhImageId, thumbArray[10].id);
+	assertEquals(desc + " expect third last image to be third last", twelvethImageId, thumbArray[11].id);
+	assertEquals(desc + " expect second last image to be second last", secondLastImageId, thumbArray[12].id);
+	assertEquals(desc + " expect last image to be last", lastImageId, thumbArray[13].id);
 }
 
 function testHandleArrowKeyPressForUpAndDown() {
 	var lightbox = createLightbox();
 	// setup: force the grid to have four columns
 	lightbox.gridLayoutHandler.numOfColumnsInGrid = 4;
-  lightbox.selectActiveItem();
+	lightbox.selectActiveItem();
 	
-	isItemFocusedTest("Initially ", firstImageId);
+	isItemFocusedTest("Initially ", firstReorderableId);
 
 	// Test: down arrow to the fifth image
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtDownArrow());
-	isItemDefaultTest("After down arrow ", firstImageId);
-	isItemFocusedTest("After down arrow ", fifthImageId);
+	isItemDefaultTest("After down arrow ", firstReorderableId);
+	isItemFocusedTest("After down arrow ", fifthReorderableId);
 
 	// Test: up arrow to the first image
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtUpArrow());
-	isItemFocusedTest("After up arrow ", firstImageId);
-	isItemDefaultTest("After up arrow ", fifthImageId);
+	isItemFocusedTest("After up arrow ", firstReorderableId);
+	isItemDefaultTest("After up arrow ", fifthReorderableId);
 
 	// Test: up arrow to the second last image
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtUpArrow());
-	isItemDefaultTest("After up arrow wrap ", firstImageId);
-	isItemFocusedTest("After up arrow wrap ", secondLastImageId);
+	isItemDefaultTest("After up arrow wrap ", firstReorderableId);
+	isItemFocusedTest("After up arrow wrap ", secondLastReorderableId);
 
 	// Test: down arrow to the first image
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtDownArrow());
-	isItemFocusedTest("After down arrow wrap ", firstImageId);
-	isItemDefaultTest("After down arrow wrap ", secondLastImageId);
+	isItemFocusedTest("After down arrow wrap ", firstReorderableId);
+	isItemDefaultTest("After down arrow wrap ", secondLastReorderableId);
 }
 
 function isItemDefaultTest(message, itemId) {
-	assertTrue(message + itemId  +  " should be default", dojo.hasClass(document.getElementById(itemId), defaultClass));	
-	assertFalse(message + itemId  +  " not be focused", dojo.hasClass(document.getElementById(itemId), focusedClass));
-	assertFalse(message + itemId  +  " not be dragging", dojo.hasClass(document.getElementById(itemId), draggingClass));
+	var element = document.getElementById(itemId);
+	assertTrue(message + itemId  +  " should be default", dojo.hasClass(element, defaultClass));	
+	assertFalse(message + itemId  +  " not be focused", dojo.hasClass(element, selectedClass));
+	assertFalse(message + itemId  +  " not be dragging", dojo.hasClass(element, draggingClass));
 }
 
 function isItemFocusedTest(message, itemId) {
-	assertTrue(message + itemId  +  " should be focused", dojo.hasClass(document.getElementById(itemId), focusedClass));	
-	assertFalse(message + itemId  +  " should not be default",dojo.hasClass(document.getElementById(itemId), defaultClass));
-	assertFalse(message + itemId  +  " should not be default",dojo.hasClass(document.getElementById(itemId), draggingClass));
+	var element = document.getElementById(itemId);
+	assertTrue(message + itemId  +  " should be focused", dojo.hasClass(element, selectedClass));	
+	assertFalse(message + itemId  +  " should not be default",dojo.hasClass(element, defaultClass));
+	assertFalse(message + itemId  +  " should not be default",dojo.hasClass(element, draggingClass));
 }
 
 function isItemDraggedTest(message, itemId) {
-	assertTrue(message + itemId  +  " should be dragging", dojo.hasClass(document.getElementById(itemId), draggingClass));	
-	assertFalse(message + itemId  +  " should not be default",dojo.hasClass(document.getElementById(itemId), defaultClass));
-	assertFalse(message + itemId  +  " not should be focused", dojo.hasClass(document.getElementById(itemId), focusedClass));	
-}
-
-function isTooltipShowingTest(activeItem) {
-
-	var tooltipDiv = dojo.byId ("dojoTooltip");
-
-	// test that the tooltip is showing.
-	assertNotNull ("the tooltip div should not be null", tooltipDiv);
-	assertNotEquals ("The tooltip should have a style (i.e. showing)", "", tooltipDiv.style);
-
-
-	// test the contents of the tooltip is not empty.
-	var tooltipContainer = tooltipDiv.getElementsByTagName ("div")[0];
-	assertNotNull ("<tooltipContainer> should not be null nor undefined", tooltipContainer);
-	
-	var tooltipFromDoc = tooltipContainer.innerHTML;
-
-	assertNotNull ("Tooltip text should not be null",tooltipFromDoc);
-	assertNotEquals ("Tooltip text should have length greater than zero", 0, tooltipFromDoc.length);
+	var element = document.getElementById(itemId);
+	assertTrue(message + itemId  +  " should be dragging", dojo.hasClass(element, draggingClass));	
+	assertFalse(message + itemId  +  " should not be default",dojo.hasClass(element, defaultClass));
+	assertFalse(message + itemId  +  " not should be focused", dojo.hasClass(element, selectedClass));	
 }
 
 function testHandleArrowKeyPressForLeftAndRight()	 {
 	var lightbox = createLightbox();
     lightbox.selectActiveItem();
 	
-	isItemFocusedTest("Initially ", firstImageId);
-	isItemDefaultTest("Initially ", secondImageId);
+	isItemFocusedTest("Initially ", firstReorderableId);
+	isItemDefaultTest("Initially ", secondReorderableId);
 
 	// Test: right arrow to the second image
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtRightArrow());
-	isItemFocusedTest("After right arrow ", secondImageId);
-	isItemDefaultTest("After right arrow ", firstImageId);
+	isItemFocusedTest("After right arrow ", secondReorderableId);
+	isItemDefaultTest("After right arrow ", firstReorderableId);
 
 	// Test: right arrow to the last image
 	for (focusPosition = 2; focusPosition < numOfImages; focusPosition++ ) {
 		lightbox.handleArrowKeyPress(fluid.testUtils.createEvtRightArrow());
 	}
-	isItemFocusedTest("Right arrow to last ", lastImageId);
-	isItemDefaultTest("Right arrow to last ", firstImageId);
-	isItemDefaultTest("Right arrow to last ", secondImageId);
+	isItemFocusedTest("Right arrow to last ", LastReorderableId);
+	isItemDefaultTest("Right arrow to last ", firstReorderableId);
+	isItemDefaultTest("Right arrow to last ", secondReorderableId);
 	
 	// Test: left arrow to the previous image
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtLeftArrow());
-	isItemFocusedTest("Left arrow to second last ", secondLastImageId);
-	isItemDefaultTest("Left arrow to second last ", firstImageId);
-	isItemDefaultTest("Left arrow to second last ", lastImageId);
+	isItemFocusedTest("Left arrow to second last ", secondLastReorderableId);
+	isItemDefaultTest("Left arrow to second last ", firstReorderableId);
+	isItemDefaultTest("Left arrow to second last ", LastReorderableId);
 	
 	// Test: right arrow past the last image - expect wrap to the first image
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtRightArrow());
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtRightArrow());
-	isItemFocusedTest("Right arrow wrap ", firstImageId);
-	isItemDefaultTest("Right arrow wrap ", secondImageId);
-	isItemDefaultTest("Right arrow wrap ", lastImageId);
+	isItemFocusedTest("Right arrow wrap ", firstReorderableId);
+	isItemDefaultTest("Right arrow wrap ", secondReorderableId);
+	isItemDefaultTest("Right arrow wrap ", LastReorderableId);
 
 	// Test: left arrow on the first image - expect wrap to the last image
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtLeftArrow());
-	isItemFocusedTest("Left arrow wrap ", lastImageId);
-	isItemDefaultTest("Left arrow wrap ", firstImageId);
-	isItemDefaultTest("Left arrow wrap ", secondImageId);
+	isItemFocusedTest("Left arrow wrap ", LastReorderableId);
+	isItemDefaultTest("Left arrow wrap ", firstReorderableId);
+	isItemDefaultTest("Left arrow wrap ", secondReorderableId);
 
 }
 
@@ -227,36 +207,36 @@ function testHandleKeyUpAndHandleKeyDownChangesState() {
     lightbox.selectActiveItem();
 
 	// check that none of the images are currently being moved.
-	isItemFocusedTest("Initially ", firstImageId);
-	isItemDefaultTest("Initially ", secondImageId);
-	isItemDefaultTest("Initially ", secondLastImageId);
+	isItemFocusedTest("Initially ", firstReorderableId);
+	isItemDefaultTest("Initially ", secondReorderableId);
+	isItemDefaultTest("Initially ", secondLastReorderableId);
 	
 	// focus the first thumb
-	lightbox.focusItem(dojo.byId(firstImageId));
+	lightbox.focusItem(dojo.byId(firstReorderableId));
 	
 	// ctrl down - expect dragging state to start
 	lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL());
-	isItemDraggedTest("After ctrl-down, should be in move state ", firstImageId);
-	isItemDefaultTest("After ctrl-down, ", secondImageId);
-	isItemDefaultTest("After ctrl-down, ", secondLastImageId);
+	isItemDraggedTest("After ctrl-down, ", firstReorderableId);
+	isItemDefaultTest("After ctrl-down, ", secondReorderableId);
+	isItemDefaultTest("After ctrl-down, ", secondLastReorderableId);
 		
 	// right arrow down - all the dragging states should remain the same
 	lightbox.handleKeyDown(fluid.testUtils.createEvtRightArrow());
-	isItemDraggedTest("After ctrl-down right arrow down, should be in move state ", firstImageId);
-	isItemDefaultTest("After ctrl-down right arrow down, ", secondImageId);
-	isItemDefaultTest("After ctrl-down right arrow down, ", secondLastImageId);
+	isItemDraggedTest("After ctrl-down right arrow down, ", firstReorderableId);
+	isItemDefaultTest("After ctrl-down right arrow down, ", secondReorderableId);
+	isItemDefaultTest("After ctrl-down right arrow down, ", secondLastReorderableId);
 
 	// right arrow with key-up event handler. The dragging states should remain the same.
 	lightbox.handleKeyUp(fluid.testUtils.createEvtRightArrow());
-	isItemDraggedTest("After ctrl-down right arrow up, should be in move state ", firstImageId);
-	isItemDefaultTest("After ctrl-down right arrow up, ", secondImageId);
-	isItemDefaultTest("After ctrl-down right arrow up, ", secondLastImageId);
+	isItemDraggedTest("After ctrl-down right arrow up, ", firstReorderableId);
+	isItemDefaultTest("After ctrl-down right arrow up, ", secondReorderableId);
+	isItemDefaultTest("After ctrl-down right arrow up, ", secondLastReorderableId);
 
     // ctrl up - expect dragging to end
 	lightbox.handleKeyUp(fluid.testUtils.createEvtCTRL());
-	isItemFocusedTest("After ctrl-up ", firstImageId);
-	isItemDefaultTest("After ctrl-up ", secondImageId);
-	isItemDefaultTest("After ctrl-up ", secondLastImageId);
+	isItemFocusedTest("After ctrl-up ", firstReorderableId);
+	isItemDefaultTest("After ctrl-up ", secondReorderableId);
+	isItemDefaultTest("After ctrl-up ", secondLastReorderableId);
 }
 
 function testHandleKeyUpAndHandleKeyDownItemMovement() {
@@ -286,9 +266,9 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 
 	var lightboxDOMNode = dojo.byId(lightboxRootId);
 	var thumbArray = lightboxDOMNode.getElementsByTagName("img");
-	assertEquals("after ctrl-right-arrow, expect second image to be first", "fluid.img.second", thumbArray[0].id);
-	assertEquals("after ctrl-right-arrow, expect first image to be second", "fluid.img.first", thumbArray[1].id);
-	assertEquals("after ctrl-right-arrow, expect last image to be last", "fluid.img.last", thumbArray[numOfImages - 1].id);
+	assertEquals("after ctrl-right-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
+	assertEquals("after ctrl-right-arrow, expect first image to be second", firstImageId, thumbArray[1].id);
+	assertEquals("after ctrl-right-arrow, expect last image to be last", lastImageId, thumbArray[numOfImages - 1].id);
 	
 	// Test: ctrl left arrow - expect first and second image to swap back to original order
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlLeftArrow());
@@ -299,9 +279,9 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlLeftArrow());
 
 	thumbArray = lightboxDOMNode.getElementsByTagName("img");;
-	assertEquals("after ctrl-left-arrow on first image, expect first last to be last", "fluid.img.first", thumbArray[numOfImages - 1].id);
-	assertEquals("after ctrl-left-arrow on first image, expect second to be first", "fluid.img.second", thumbArray[0].id);
-	assertEquals("after ctrl-left-arrow on first image, expect last to be second-last", "fluid.img.last", thumbArray[numOfImages - 2].id);
+	assertEquals("after ctrl-left-arrow on first image, expect first last to be last", firstImageId, thumbArray[numOfImages - 1].id);
+	assertEquals("after ctrl-left-arrow on first image, expect second to be first", secondImageId, thumbArray[0].id);
+	assertEquals("after ctrl-left-arrow on first image, expect last to be second-last", lastImageId, thumbArray[numOfImages - 2].id);
 
 	// Test: ctrl right arrow - expect first image to move back to first place,
 	//       second image to move to back second place and thumbLast to move to back last place
@@ -312,105 +292,102 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 function testPersistFocus () {
 	var lightbox = createLightbox();
 
-	isItemDefaultTest("Initially ", firstImageId);
+	isItemDefaultTest("Initially ", firstReorderableId);
 
     lightbox.selectActiveItem();
 
 	// first thumb nail should be focused initially.
-	isItemFocusedTest("When lightbox has focus ", firstImageId);
-	isItemDefaultTest("When lightbox has focus ", secondImageId);
+	isItemFocusedTest("When lightbox has focus ", firstReorderableId);
+	isItemDefaultTest("When lightbox has focus ", secondReorderableId);
 	
 	// Change focus to the input1, then back to the lightbox
 	var newInputElement = document.createElement("input");
 	newInputElement.id="input1";
 	dojo.place(newInputElement, dojo.byId("para1"), "after");
 	dojo.byId ("input1").focus();
-//	lightbox.domNode.blur();
-	isItemDefaultTest("After blur ", firstImageId);
+	isItemDefaultTest("After focus leaves the lightbox ", firstReorderableId);
 	
-	focusLightboxNode(lightbox, lightbox.domNode);
+	lightbox.getElementToFocus(lightbox.domNode).focus();
 	
 	// check that the first thumb nail is still moveable.
-	isItemFocusedTest("When lightbox has focus again ", firstImageId);
-	isItemDefaultTest("When lightbox has focus again ", secondImageId);
+	isItemFocusedTest("When lightbox has focus again ", firstReorderableId);
+	isItemDefaultTest("When lightbox has focus again ", secondReorderableId);
 	
 	// set focus to another image.
-	lightbox.focusItem(dojo.byId(secondImageId));
-	isItemFocusedTest("Changed focus to second ", secondImageId);
-	isItemDefaultTest("Changed focus to second ", firstImageId);
+	lightbox.focusItem(dojo.byId(secondReorderableId));
+	isItemFocusedTest("Changed focus to second ", secondReorderableId);
+	isItemDefaultTest("Changed focus to second ", firstReorderableId);
 	
 	// Change focus to the input1, then back to the lightbox
 	dojo.byId ("input1").focus();
-	focusLightboxNode(lightbox, lightbox.domNode);
+	lightbox.getElementToFocus(lightbox.domNode).focus();
 	
 	// check that the second thumb nail is still moveable.
-	lightbox.focusItem(dojo.byId(secondImageId));
-	isItemFocusedTest("Lightbox refocused with second selected ", secondImageId);
-	isItemDefaultTest("Lightbox refocused with second selected ", firstImageId);
+	lightbox.focusItem(dojo.byId(secondReorderableId));
+	isItemFocusedTest("Lightbox refocused with second selected ", secondReorderableId);
+	isItemDefaultTest("Lightbox refocused with second selected ", firstReorderableId);
 	
 	lightbox.getElementToFocus(lightbox.domNode).blur();
-	isItemDefaultTest("Lightbox blur with second selected ", secondImageId);
-
-	// test persistance of focus between page navigation / page loads?	
+	isItemDefaultTest("Lightbox blur with second selected ", secondReorderableId);
 }
 
 function testfocusItem () {
 	var lightbox = createLightbox();
 	
 	// nothing should be focused
-	isItemDefaultTest("Initially", firstImageId);
-	isItemDefaultTest("Initially", secondImageId);
+	isItemDefaultTest("Initially", firstReorderableId);
+	isItemDefaultTest("Initially", secondReorderableId);
 	
 	// focus the second image
-	lightbox.focusItem(dojo.byId(secondImageId));
-	isItemFocusedTest("After focus on second image ", secondImageId);
+	lightbox.focusItem(dojo.byId(secondReorderableId));
+	isItemFocusedTest("After focus on second image ", secondReorderableId);
 	
 	// focus the image already focused to ensure it remains focused.
-	lightbox.focusItem(dojo.byId(secondImageId));
-	isItemFocusedTest("After refocus on second image ", secondImageId);
+	lightbox.focusItem(dojo.byId(secondReorderableId));
+	isItemFocusedTest("After refocus on second image ", secondReorderableId);
 
-	// Test: focus a different image and check to see that the previous image is defocused
+	// focus a different image and check to see that the previous image is defocused
 	// and the new image is focused	
-	lightbox.focusItem(dojo.byId (firstImageId));
-	
-	isItemDefaultTest("After focus on first image ", secondImageId);
-	isItemFocusedTest("After focus on first image ", firstImageId);
+	lightbox.focusItem(dojo.byId (firstReorderableId));
+	isItemDefaultTest("After focus on first image ", secondReorderableId);
+	isItemFocusedTest("After focus on first image ", firstReorderableId);
 }
 
 function testSelectActiveItemNothingSelected() {
 	var lightbox = createLightbox();
 
-	isItemDefaultTest("Initially", firstImageId);
+	isItemDefaultTest("Initially", firstReorderableId);
 	lightbox.selectActiveItem();
-	isItemFocusedTest("After select active item ", firstImageId);
+	isItemFocusedTest("After select active item ", firstReorderableId);
 }
 	
 function testSelectActiveItemSecondSelected() {
-	// set the active item to something else
+	// set the active item to something other than the default first item
 	var lightbox = createLightbox();
-	lightbox._setActiveItem(dojo.byId (secondImageId));
+	lightbox._setActiveItem(dojo.byId (secondReorderableId));
 	
 	// before selecting the active item, nothing should have focus	
-	isItemDefaultTest("Initially", firstImageId);
-	isItemDefaultTest("Initially", secondImageId);
+	isItemDefaultTest("Initially", firstReorderableId);
+	isItemDefaultTest("Initially", secondReorderableId);
 	
 	lightbox.selectActiveItem();
-	isItemFocusedTest("after selecting active item ", secondImageId);
-	isItemDefaultTest("after selecting active item ", firstImageId);
+	isItemFocusedTest("after selecting active item ", secondReorderableId);
+	isItemDefaultTest("after selecting active item ", firstReorderableId);
 }
 
 function testSetActiveItemToDefaultState() {
 	var lightbox = createLightbox();
     lightbox.selectActiveItem();
-	isItemFocusedTest("Initially", firstImageId);
+	isItemFocusedTest("Initially", firstReorderableId);
 	
 	lightbox.setActiveItemToDefaultState();
-	isItemDefaultTest("after resetting active item, ", firstImageId);
+	isItemDefaultTest("after resetting active item, ", firstReorderableId);
 }
 
 function testHandleWindowResizeEvent() {
 	var lightbox = createLightbox();
 	var oldNumCols = lightbox.gridLayoutHandler.numOfColumnsInGrid;
+	var halfWidthNumCols = Math.floor(oldNumCols/2);
 
 	// change the width
 	dojo.removeClass(dojo.byId(lightboxParentId), "full-width");
@@ -419,7 +396,8 @@ function testHandleWindowResizeEvent() {
 	// tell the lightbox of the change
 	var resizeEvent = {foo: "bar"};
 	lightbox.handleWindowResizeEvent(resizeEvent);
-	assertEquals("after resize, the grid width should be "+Math.floor(oldNumCols/2), Math.floor(oldNumCols/2), lightbox.gridLayoutHandler.numOfColumnsInGrid);
+	assertEquals("after resize, the grid width should be "+halfWidthNumCols,
+		halfWidthNumCols, lightbox.gridLayoutHandler.numOfColumnsInGrid);
 
 	// change it back
 	dojo.removeClass(dojo.byId(lightboxParentId), "half-width");
@@ -428,7 +406,8 @@ function testHandleWindowResizeEvent() {
 	// tell the lightbox of the change
 	var resizeEvent = {foo: "bar"};
 	lightbox.handleWindowResizeEvent(resizeEvent);
-	assertEquals("after resize, the grid width should be "+oldNumCols, oldNumCols, lightbox.gridLayoutHandler.numOfColumnsInGrid);
+	assertEquals("after resize, the grid width should be "+oldNumCols,
+		oldNumCols, lightbox.gridLayoutHandler.numOfColumnsInGrid);
 }
 
 function testUpdateActiveDescendent() {
@@ -437,18 +416,18 @@ function testUpdateActiveDescendent() {
 	assertNull("before first lightbox focus, no item should be activedescendent", lbRoot.getAttribute("aaa:activedescendent"));
 
     lightbox.selectActiveItem();
-	assertEquals("after first lightbox focus, first image should be activedescendent", firstImageId, lbRoot.getAttribute("aaa:activedescendent"));
+	assertEquals("after first lightbox focus, first image should be activedescendent", firstReorderableId, lbRoot.getAttribute("aaa:activedescendent"));
 	
-	lightbox.activeItem = dojo.byId(thirdImageId);
+	lightbox.activeItem = dojo.byId(thirdReorderableId);
 	lightbox._updateActiveDescendent();
-	assertEquals("after setting active item to third image, third image should be activedescendent", thirdImageId, lbRoot.getAttribute("aaa:activedescendent"));
+	assertEquals("after setting active item to third image, third image should be activedescendent", thirdReorderableId, lbRoot.getAttribute("aaa:activedescendent"));
 
 	var newInputElement = document.createElement("input");
 	newInputElement.id="input1";
 	dojo.place(newInputElement, dojo.byId("para1"), "after");
 	dojo.byId ("input1").focus();
 	lightbox._updateActiveDescendent();
-	assertEquals("after removing focus from lightbox, third image should still be activedescendent", thirdImageId, lbRoot.getAttribute("aaa:activedescendent"));
+	assertEquals("after removing focus from lightbox, third image should still be activedescendent", thirdReorderableId, lbRoot.getAttribute("aaa:activedescendent"));
 
 	lightbox.activeItem = null;
 	lightbox._updateActiveDescendent();

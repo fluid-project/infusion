@@ -36,7 +36,7 @@ dojo.require("fluid.Fluid");
 (function() {
 	fluid.states = {
 		defaultClass:"image-container-default",
-		focusedClass:"image-container-selected",
+		selectedClass:"image-container-selected",
 		draggingClass:"image-container-dragging"
 	};
 })();
@@ -113,7 +113,7 @@ dojo.declare(
 			this.setActiveItemToDefaultState();
 			this._setActiveItem(anItem);			
 			dojo.removeClass (this.activeItem, fluid.states.defaultClass);
-			dojo.addClass (this.activeItem, fluid.states.focusedClass);
+			dojo.addClass (this.activeItem, fluid.states.selectedClass);
 			this.getElementToFocus(this.activeItem).focus();
 		}, //end focus
 		
@@ -129,7 +129,7 @@ dojo.declare(
 		
 		setActiveItemToDefaultState: function() {
 			if (this.activeItem) {
-				dojo.removeClass (this.activeItem, fluid.states.focusedClass);
+				dojo.removeClass (this.activeItem, fluid.states.selectedClass);
 				dojo.addClass (this.activeItem, fluid.states.defaultClass);
 			}
 		},
@@ -137,7 +137,7 @@ dojo.declare(
 		handleKeyDown: function (evt) {
 			var key = evt.keyCode;
 			if (key == dojo.keys.CTRL) {
-				dojo.removeClass(this.activeItem, fluid.states.focusedClass);
+				dojo.removeClass(this.activeItem, fluid.states.selectedClass);
 				dojo.addClass(this.activeItem, fluid.states.draggingClass);
 				dojo.stopEvent(evt);
 			}
@@ -147,7 +147,7 @@ dojo.declare(
 			var key = evt.keyCode;
 			if (key == dojo.keys.CTRL) {
 				dojo.removeClass(this.activeItem, fluid.states.draggingClass);
-				dojo.addClass(this.activeItem, fluid.states.focusedClass);
+				dojo.addClass(this.activeItem, fluid.states.selectedClass);
 				dojo.stopEvent(evt);
 			}		
 		}, // end handleKeyUp
