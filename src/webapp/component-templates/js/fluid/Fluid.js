@@ -35,36 +35,13 @@ if (typeof(fluid) == "undefined") {
 
 fluid.declare(fluid, {
 	
-	// Server-level initialisation for the lightbox. This is template-specific and
-	// server-generic, in that template-specific dependencies have been factored off.
-	initLightbox: function(namebase, count, messageNamebase) {
-		fluid.initLightboxClient(namebase, count, messageNamebase);
-	},
-	
-	deriveCellBase: function(namebase, index) {
+	deriveLightboxCellBase: function(namebase, index) {
 		return namebase + "lightbox-cell::"+index+":";
-	},
-	
-	// Custom query method seeks all tags descended from a given root with a 
-	// particular tag name, whose id matches a regex. The Dojo query parser
-	// is broken http://trac.dojotoolkit.org/ticket/3520#preview, this is all
-	// it might do anyway, and this will be plenty fast.
-	seekNodesById: function(rootnode, tagname, idmatch) {
-		var inputs = rootnode.getElementsByTagName(tagname);
-		var togo = new Array();
-		for (var i = 0; i < inputs.length; ++ i) {
-			var input = inputs[i];
-			var id = input.id;
-			if (id && id.match(idmatch)) {
-				togo.push(input);
-			}
-		}
-		return togo;
 	},
 	
 	// Client-level initialisation for the lightbox, allowing parameterisation for
 	// different templates.
-	initLightboxClient: function(namebase, count, messageNamebase) {
+	initLightbox: function(namebase, count, messageNamebase) {
 		var reorderform = fluid.Utilities.findForm(document.getElementById(namebase));
 		// An <input> tag nested within our root namebase tag, which has an id which 
 		// begins with the  namebase:lightbox-cell:: prefix, and ends with "reorder-index" trail.
@@ -78,8 +55,8 @@ fluid.declare(fluid, {
 		//+ "[id$=\"reorder-index\"]";
 		var orderChangedCallback = function() {
 			//	  var inputs = dojo.query(selector);
-			var inputs = fluid.seekNodesById(reorderform, "input", 
-			fluid.deriveCellBase(namebase, ".*") + "reorder-index");
+			var inputs = fluid.Utilities.seekNodesById(reorderform, "input", 
+			fluid.deriveLightboxCellBase(namebase, ".*") + "reorder-index");
 			
 			for (var i = 0; i < inputs.length; ++ i) {
 				inputs[i].value = i;
@@ -111,6 +88,23 @@ fluid.declare(fluid, {
 	 */
     Utilities: {
 
+	// Custom query method seeks all tags descended from a given root with a 
+	// particular tag name, whose id matches a regex. The Dojo query parser
+	// is broken http://trac.dojotoolkit.org/ticket/3520#preview, this is all
+	// it might do anyway, and this will be plenty fast.
+	seekNodesById: function(rootnode, tagname, idmatch) {
+		var inputs = rootnode.getElementsByTagName(tagname);
+		var togo = new Array();
+		for (var i = 0; i < inputs.length; ++ i) {
+			var input = inputs[i];
+			var id = input.id;
+			if (id && id.match(idmatch)) {
+				togo.push(input);
+			}
+		}
+		return togo;
+	},
+	
 	  // NOTE: This function will be removed when the reorderer is refactored to support non-
 	  // re-orderable item nodes. Until then, it is necessary.
 	  removeNonElementNodes: function(rootNode) {
