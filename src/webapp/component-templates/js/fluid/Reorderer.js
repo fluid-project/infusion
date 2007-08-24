@@ -50,7 +50,7 @@ dojo.declare(
 		// the reorderable DOM element that is currently active
 		activeItem: null,
 		
-		gridLayoutHandler: new fluid.GridLayoutHandler(),
+		layoutHandler: null,
 		
 		messageNamebase: "message-bundle:",
 		
@@ -98,7 +98,7 @@ dojo.declare(
 			// it can identify re-orderable items another way e.g. through a class name [FLUID-2]
 			fluid.Utilities.removeNonElementNodes(this.domNode);
 
-			this.gridLayoutHandler.setGrid(this.domNode);
+			this.layoutHandler.setGrid(this.domNode);
 
 			if (this.domNode.getAttribute("aaa:activedescendent")) {
 				this.domNode.removeAttribute("aaa:activedescendent");
@@ -179,7 +179,7 @@ dojo.declare(
 		}, // end handleArrowKeyPress
 	
 		handleUpArrow: function (isCtrl) {
-			var itemAboveInfo = this.gridLayoutHandler.getItemAbove(this.activeItem);
+			var itemAboveInfo = this.layoutHandler.getItemAbove(this.activeItem);
 			
 			// if we wrap around, then we want to insert after the item 'above' 
 			if (itemAboveInfo.hasWrapped) {
@@ -190,7 +190,7 @@ dojo.declare(
 		},
 
 		handleDownArrow: function (isCtrl) {
-			var itemBelowInfo = this.gridLayoutHandler.getItemBelow(this.activeItem);
+			var itemBelowInfo = this.layoutHandler.getItemBelow(this.activeItem);
 			
 			// if we wrap around, then we want to insert before the item 'below' 
 			if (itemBelowInfo.hasWrapped) {
@@ -201,7 +201,7 @@ dojo.declare(
 		},
 		
 		handleRightArrow: function(isCtrl) {
-			var rightSiblingInfo = this.gridLayoutHandler.getRightSibling(this.activeItem);
+			var rightSiblingInfo = this.layoutHandler.getRightSibling(this.activeItem);
 			
 			if (rightSiblingInfo.hasWrapped) {
 				this._changeFocusOrMove(isCtrl, rightSiblingInfo.item, "before");
@@ -212,7 +212,7 @@ dojo.declare(
 		}, // end handleRightArrow
 		
 		handleLeftArrow: function(isCtrl) {
-			var leftSiblingInfo = this.gridLayoutHandler.getLeftSibling(this.activeItem);
+			var leftSiblingInfo = this.layoutHandler.getLeftSibling(this.activeItem);
 			
 			if (leftSiblingInfo.hasWrapped) {
 				this._changeFocusOrMove(isCtrl, leftSiblingInfo.item, "after");
@@ -233,7 +233,7 @@ dojo.declare(
 		
 		// currently just updates the size of the grid.
 		handleWindowResizeEvent: function(resizeEvent) {
-			this.gridLayoutHandler.updateGridWidth();
+			this.layoutHandler.updateGridWidth();
 		},
 		
 		_fetchMessage: function(messagekey) {

@@ -13,7 +13,8 @@ function tearDown() {
 	
 function createLightbox() {
 	return new fluid.Reorderer(
-	    {orderChangedCallback: function(){}}
+	    {orderChangedCallback: function(){},
+	     layoutHandler: new fluid.GridLayoutHandler()}
 	     , lightboxRootId);
 }
 
@@ -51,7 +52,7 @@ function testHandleArrowKeyPressMoveThumbDown() {
 	lightbox.selectActiveItem();
 
 	// setup: force the grid to have three columns
-	lightbox.gridLayoutHandler.numOfColumnsInGrid = 3;
+	lightbox.layoutHandler.numOfColumnsInGrid = 3;
 
 	// Test: ctrl down arrow - move the first image down
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlDownArrow());
@@ -75,7 +76,7 @@ function testHandleArrowKeyPressMoveThumbDown() {
 	lightbox.selectActiveItem();
 
 	// setup: force the grid to have three columns
-	lightbox.gridLayoutHandler.numOfColumnsInGrid = 3;
+	lightbox.layoutHandler.numOfColumnsInGrid = 3;
 
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlUpArrow());
 	
@@ -114,7 +115,7 @@ function itemsInOriginalPositionTest(desc, lightboxDOMNode) {
 function testHandleArrowKeyPressForUpAndDown() {
 	var lightbox = createLightbox();
 	// setup: force the grid to have four columns
-	lightbox.gridLayoutHandler.numOfColumnsInGrid = 4;
+	lightbox.layoutHandler.numOfColumnsInGrid = 4;
 	lightbox.selectActiveItem();
 	
 	isItemFocusedTest("Initially ", firstReorderableId);
@@ -386,7 +387,7 @@ function testSetActiveItemToDefaultState() {
 
 function testHandleWindowResizeEvent() {
 	var lightbox = createLightbox();
-	var oldNumCols = lightbox.gridLayoutHandler.numOfColumnsInGrid;
+	var oldNumCols = lightbox.layoutHandler.numOfColumnsInGrid;
 	var halfWidthNumCols = Math.floor(oldNumCols/2);
 
 	// change the width
@@ -397,7 +398,7 @@ function testHandleWindowResizeEvent() {
 	var resizeEvent = {foo: "bar"};
 	lightbox.handleWindowResizeEvent(resizeEvent);
 	assertEquals("after resize, the grid width should be "+halfWidthNumCols,
-		halfWidthNumCols, lightbox.gridLayoutHandler.numOfColumnsInGrid);
+		halfWidthNumCols, lightbox.layoutHandler.numOfColumnsInGrid);
 
 	// change it back
 	dojo.removeClass(dojo.byId(lightboxParentId), "half-width");
@@ -407,7 +408,7 @@ function testHandleWindowResizeEvent() {
 	var resizeEvent = {foo: "bar"};
 	lightbox.handleWindowResizeEvent(resizeEvent);
 	assertEquals("after resize, the grid width should be "+oldNumCols,
-		oldNumCols, lightbox.gridLayoutHandler.numOfColumnsInGrid);
+		oldNumCols, lightbox.layoutHandler.numOfColumnsInGrid);
 }
 
 function testUpdateActiveDescendent() {

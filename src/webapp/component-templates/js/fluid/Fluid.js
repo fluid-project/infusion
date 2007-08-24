@@ -76,7 +76,8 @@ fluid.declare(fluid, {
 		var lightbox = new fluid.Reorderer(
 			{
 				messageNamebase : messageNamebase,
-				orderChangedCallback: orderChangedCallback
+				orderChangedCallback: orderChangedCallback,
+				layoutHandler: new fluid.GridLayoutHandler()
 			}, 
 			namebase);
 	}
