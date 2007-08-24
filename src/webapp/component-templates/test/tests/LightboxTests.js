@@ -18,7 +18,7 @@ function createLightbox() {
 	     , lightboxRootId);
 }
 
-function testFindAncestorGridCell() {
+function testFindReorderableParent() {
 	var lightbox = createLightbox();
 	
 	var testItem = dojo.byId(firstReorderableId);
@@ -26,21 +26,21 @@ function testFindAncestorGridCell() {
 		"wairole:gridcell", testItem.getAttribute("xhtml10:role"));
 
 	assertEquals("Given the test item itself, the ancestor grid cell should be the test item",
-		testItem, lightbox._findAncestorGridCell(testItem));
+		testItem, lightbox._findReorderableParent(testItem));
 	assertEquals("Given the image, the ancestor grid cell should be the test item",
-		testItem, lightbox._findAncestorGridCell(testItem.getElementsByTagName("img")[0]));
+		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("img")[0]));
 	assertEquals("Given the caption div, the ancestor grid cell should be the test item",
-		testItem, lightbox._findAncestorGridCell(testItem.getElementsByTagName("div")[2]));
+		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("div")[2]));
 	assertEquals("Given the caption anchor, the ancestor grid cell should be the test item",
-		testItem, lightbox._findAncestorGridCell(testItem.getElementsByTagName("a")[1]));
+		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("a")[1]));
 	assertEquals("Given the title of the document, the ancestor grid cell should be null",
-		null, lightbox._findAncestorGridCell(document.body.getElementsByTagName("title")[0]));
+		null, lightbox._findReorderableParent(document.body.getElementsByTagName("title")[0]));
 	
 	testItem = dojo.byId(fourthReorderableId);
 	assertEquals("Given another test item itself, the ancestor grid cell should be the new test item",
-		testItem, lightbox._findAncestorGridCell(testItem));
+		testItem, lightbox._findReorderableParent(testItem));
 	assertEquals("Given another image, the ancestor grid cell should be new test item",
-		testItem, lightbox._findAncestorGridCell(testItem.getElementsByTagName("img")[0]));
+		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("img")[0]));
 }
 
 /*
@@ -376,12 +376,12 @@ function testSelectActiveItemSecondSelected() {
 	isItemDefaultTest("after selecting active item ", firstReorderableId);
 }
 
-function testSetActiveItemToDefaultState() {
+function testChangeActiveItemToDefaultState() {
 	var lightbox = createLightbox();
     lightbox.selectActiveItem();
 	isItemFocusedTest("Initially", firstReorderableId);
 	
-	lightbox.setActiveItemToDefaultState();
+	lightbox.changeActiveItemToDefaultState();
 	isItemDefaultTest("after resetting active item, ", firstReorderableId);
 }
 

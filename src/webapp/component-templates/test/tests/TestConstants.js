@@ -47,16 +47,14 @@ var draggingClass="image-container-dragging";
 function exposeTestFunctionNames() {
 	return [
 	    // GridLayoutHandlerTests.js
-		//
 		"testGetRightSibling",
 		"testGetLeftSibling",
 		"testGetItemBelow",
 		"testGetItemAbove",
-		"testUpdateGridWidth",
+		"testWindowDidResize",
 		
 		// LightboxTests.js
-		//
-		"testFindAncestorGridCell",
+		"testFindReorderableParent",
 		"testHandleArrowKeyPressMoveThumbDown",
 		"testHandleArrowKeyPressWrapThumbUp",
 		"testHandleArrowKeyPressForUpAndDown",
@@ -68,8 +66,8 @@ function exposeTestFunctionNames() {
 		"testfocusItem",
 		"testSelectActiveItemNothingSelected",
 		"testSelectActiveItemSecondSelected",
-		"testSetActiveItemToDefaultState",
+		"testChangeActiveItemToDefaultState",
 		"testHandleWindowResizeEvent",
 		"testUpdateActiveDescendent"
 	];
-}	// end exposeTestFunctionNames().
+}

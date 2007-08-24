@@ -41,7 +41,7 @@ fluid.declare(fluid, {
 	
 	// Client-level initialisation for the lightbox, allowing parameterisation for
 	// different templates.
-	initLightbox: function(namebase, count, messageNamebase) {
+	initLightbox: function(namebase, messageNamebase) {
 		var reorderform = fluid.Utilities.findForm(document.getElementById(namebase));
 		// An <input> tag nested within our root namebase tag, which has an id which 
 		// begins with the  namebase:lightbox-cell:: prefix, and ends with "reorder-index" trail.
@@ -150,9 +150,9 @@ fluid.declare(fluid, {
 		this.numOfColumnsInGrid = 0
 		this.grid = null;
 		
-		this.setGrid = function (aGrid) {
+		this.setReorderableContainer = function (aGrid) {
 			this.grid = aGrid;
-			this.updateGridWidth();
+			this.windowDidResize();
 		};
 		
 		/*
@@ -162,7 +162,7 @@ fluid.declare(fluid, {
 		 * NOTE: The reorderer needs to be refactored to work without this assumption, so that it can
 		 * identify re-orderable items another way e.g. through a class name
 		 */
-		this.updateGridWidth = function () {
+		this.windowDidResize = function () {
 			var firstItemY = dojo.coords(this.grid.childNodes[0]).y;
 	
 			var i = 1;

@@ -72,33 +72,34 @@ dojo.declare(
 			return item;
 		},
 
+		// Dojo calls this function after constructing the object.
 		postCreate: function () {
-			// Dojo calls this function after constructing the object.
+			// Listen to window resize events so the layout handler can recalculate if desired.			
 			dojo.connect(window, "onresize", this, "handleWindowResizeEvent");
+			
 			if (this.domNode) {
-				this.setUpDomNode();
+				this._setUpDomNode();
 			}
 			
-			// calling _initDnD will activate the drag-and-drop functionality
-			 this._initDnD();
-		}, // end postCreate
+			this._enableDragAndDrop();
+		},
 		
-		setUpDomNode: function () {
+		_setUpDomNode: function () {
 			// Connect the listeners that handle keypresses and focusing
 			dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
 			dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
 			dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
 			dojo.connect(this.domNode, "onfocus", this, "selectActiveItem");
-			dojo.connect(this.domNode, "onblur", this, "setActiveItemToDefaultState");
+			dojo.connect(this.domNode, "onblur", this, "changeActiveItemToDefaultState");
 
-			// remove whitespace from the tree before passing it to the grid handler
-			// this is currently necessary because the reorderer assumes that any nodes inside
+			// Remove whitespace from the tree before passing it to the grid handler.
+			// This is currently necessary because the reorderer assumes that any nodes inside
 			// it are re-orderable items.
 			// NOTE: The reorderer needs to be refactored to work without this assumption, so that
 			// it can identify re-orderable items another way e.g. through a class name [FLUID-2]
 			fluid.Utilities.removeNonElementNodes(this.domNode);
 
-			this.layoutHandler.setGrid(this.domNode);
+			this.layoutHandler.setReorderableContainer(this.domNode);
 
 			if (this.domNode.getAttribute("aaa:activedescendent")) {
 				this.domNode.removeAttribute("aaa:activedescendent");
@@ -110,12 +111,12 @@ dojo.declare(
 		 * @param {Object} anItem
 		 */
 		focusItem: function(anItem) {
-			this.setActiveItemToDefaultState();
+			this.changeActiveItemToDefaultState();
 			this._setActiveItem(anItem);			
-			dojo.removeClass (this.activeItem, fluid.states.defaultClass);
-			dojo.addClass (this.activeItem, fluid.states.selectedClass);
+			dojo.removeClass(this.activeItem, fluid.states.defaultClass);
+			dojo.addClass(this.activeItem, fluid.states.selectedClass);
 			this.getElementToFocus(this.activeItem).focus();
-		}, //end focus
+		},
 		
 		/**
 		 * Changes focus to the active item.
@@ -127,30 +128,28 @@ dojo.declare(
 			this.focusItem(this.activeItem);
 		},
 		
-		setActiveItemToDefaultState: function() {
+		changeActiveItemToDefaultState: function() {
 			if (this.activeItem) {
-				dojo.removeClass (this.activeItem, fluid.states.selectedClass);
-				dojo.addClass (this.activeItem, fluid.states.defaultClass);
+				dojo.removeClass(this.activeItem, fluid.states.selectedClass);
+				dojo.addClass(this.activeItem, fluid.states.defaultClass);
 			}
 		},
 		
 		handleKeyDown: function (evt) {
-			var key = evt.keyCode;
-			if (key == dojo.keys.CTRL) {
+			if (evt.keyCode == dojo.keys.CTRL) {
 				dojo.removeClass(this.activeItem, fluid.states.selectedClass);
 				dojo.addClass(this.activeItem, fluid.states.draggingClass);
 				dojo.stopEvent(evt);
 			}
-		}, // end handleKeyDown
+		},
 		
 		handleKeyUp: function (evt) {
-			var key = evt.keyCode;
-			if (key == dojo.keys.CTRL) {
+			if (evt.keyCode == dojo.keys.CTRL) {
 				dojo.removeClass(this.activeItem, fluid.states.draggingClass);
 				dojo.addClass(this.activeItem, fluid.states.selectedClass);
 				dojo.stopEvent(evt);
 			}		
-		}, // end handleKeyUp
+		},
 		
 		handleArrowKeyPress: function (evt){
 			switch (key = evt.keyCode) {
@@ -176,12 +175,12 @@ dojo.declare(
 			}
 			default:
 			}
-		}, // end handleArrowKeyPress
+		},
 	
 		handleUpArrow: function (isCtrl) {
 			var itemAboveInfo = this.layoutHandler.getItemAbove(this.activeItem);
 			
-			// if we wrap around, then we want to insert after the item 'above' 
+			// If we wrap around, then we want to insert after the item 'above' 
 			if (itemAboveInfo.hasWrapped) {
 				this._changeFocusOrMove(isCtrl, itemAboveInfo.item, "after");	
 			} else {
@@ -192,7 +191,7 @@ dojo.declare(
 		handleDownArrow: function (isCtrl) {
 			var itemBelowInfo = this.layoutHandler.getItemBelow(this.activeItem);
 			
-			// if we wrap around, then we want to insert before the item 'below' 
+			// If we wrap around, then we want to insert before the item 'below' 
 			if (itemBelowInfo.hasWrapped) {
 				this._changeFocusOrMove(isCtrl, itemBelowInfo.item, "before");
 			} else {
@@ -209,7 +208,7 @@ dojo.declare(
 				this._changeFocusOrMove(isCtrl, rightSiblingInfo.item, "after");
 			}
 
-		}, // end handleRightArrow
+		},
 		
 		handleLeftArrow: function(isCtrl) {
 			var leftSiblingInfo = this.layoutHandler.getLeftSibling(this.activeItem);
@@ -219,7 +218,7 @@ dojo.declare(
 			} else {
 				this._changeFocusOrMove(isCtrl, leftSiblingInfo.item, "before");				
 			}			
-		}, // end handleLeftArrow
+		},
 		
 		_changeFocusOrMove: function(shouldMove, refSibling, placementPosition) {
 			if (shouldMove) {
@@ -231,16 +230,17 @@ dojo.declare(
 			}		
 		},
 		
-		// currently just updates the size of the grid.
+		// Currently just updates the size of the grid.
 		handleWindowResizeEvent: function(resizeEvent) {
-			this.layoutHandler.updateGridWidth();
+			this.layoutHandler.windowDidResize();
 		},
 		
 		_fetchMessage: function(messagekey) {
-		  var messageid = this.messageNamebase + messagekey;
-		  var node = document.getElementById(messageid);
-		  return node? node.innerHTML: "[Message not found at id " + messageid + "]";
-		  },
+			var messageID = this.messageNamebase + messagekey;
+			var node = document.getElementById(messageID);
+			
+			return node? node.innerHTML: "[Message not found at id " + messageID + "]";
+		},
 		
 		_setActiveItem: function(anItem) {
 			this.activeItem = anItem;
@@ -255,13 +255,12 @@ dojo.declare(
 			}
 		},
 
-
         _itemCreator: function(item, hint) {
-          var types = [];
-          return {node: item, data: item, types: types};
-          },
+        	var types = [];
+        	return {node: item, data: item, types: types};
+        },
 
-		_initDnD: function() {
+		_enableDragAndDrop: function() {
 			dndlb = new dojo.dnd.Source(this.domNode.id, {creator: this._itemCreator, horizontal: true});
 			dndlb.reorderer = this;
 			items = this.domNode.childNodes;
@@ -273,7 +272,6 @@ dojo.declare(
 			
 			// Override dojo's dnd 'onMouseDown' in order to put focus on the drag source.  Then
 			// apply the superclass 'onMouseDown'.
-			//
             dndlb.onMouseDown = function(ecmaEvent){
 				// note: source.target will not work in IE, need to use source.srcElement instead.
 				var targetElement = (ecmaEvent.target || ecmaEvent.srcElement);
@@ -281,32 +279,35 @@ dojo.declare(
                 dojo.dnd.Source.prototype.onMouseDown.apply(dndlb, arguments);
             };
 			
-			// dojo's dnd system lastly calls 'onDndCancel'.  Override it here to first call the
+			// dojo's dnd system lastly calls 'onDndCancel'. Override it here to first call the
 			// superclass 'onDndCancel', and then set focus to the dropped item after superclass
 			// returns.
-			//
 			dndlb.onDndCancel = function () {
 				dojo.dnd.Source.prototype.onDndCancel.apply (dndlb, arguments);
 				this.reorderer.focusItem (this.reorderer.activeItem);
 			};
+			
 			dndlb.onDndDrop = function(source, nodes, copy) {
-			// Use of "this" here is alarmingly ambiguous, and we really want the
-			// callback not to be a public property.
-           // TODO: why can't we call "superclass" rather than "prototype" here
-           // Answer: Dojo inheritance documented at http://manual.dojotoolkit.org/WikiHome/DojoDotBook/Book20
-           // "superclass" must be explicitly enabled with a call to "inherit"
+				// Use of "this" here is alarmingly ambiguous, and we really want the
+				// callback not to be a public property.
                 dojo.dnd.Source.prototype.onDndDrop.call(this, source, nodes, copy);
 		  	    this.reorderer.orderChangedCallback();
 			}
 		},
 
-		_findAncestorGridCell: function(gridCellDescendent) {
-			if (gridCellDescendent == null) {
+		/**
+		 * Finds the parent element marked "reorderable" (or in the temporary case, with the
+		 * equivalent ARIA role) for a child element.
+		 */
+		_findReorderableParent: function(childElement) {
+			// This code will need to be refactored to look for a "reorderable" class rather than
+			// a grid-specific ARIA role.
+			if (childElement == null) {
 				return null;
-			} else if (gridCellDescendent.getAttribute("xhtml10:role") == "wairole:gridcell") {
-				return gridCellDescendent;
+			} else if (childElement.getAttribute("xhtml10:role") == "wairole:gridcell") {
+				return childElement;
 			} else {
-				return this._findAncestorGridCell(gridCellDescendent.parentNode);
+				return this._findReorderableParent(childElement.parentNode);
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 function testGetRightSibling() {
 	var gridHandler = new fluid.GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
-	gridHandler.setGrid(imageList);
+	gridHandler.setReorderableContainer(imageList);
 
 	var rightSibling = gridHandler.getRightSibling(dojo.byId(firstReorderableId))
 	assertEquals("The item to the right of the first image should be the second image", 
@@ -22,7 +22,7 @@ function testGetRightSibling() {
 function testGetLeftSibling() {
 	var gridHandler = new fluid.GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
-	gridHandler.setGrid(imageList);
+	gridHandler.setReorderableContainer(imageList);
 
 	var leftSibling = gridHandler.getLeftSibling(dojo.byId(fourthReorderableId))
 	assertEquals("The item to the left of the fourth image should be the third image", 
@@ -45,7 +45,7 @@ function testGetLeftSibling() {
 function testGetItemBelow() {
 	var gridHandler = new fluid.GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
-	gridHandler.setGrid(imageList);
+	gridHandler.setReorderableContainer(imageList);
 	gridHandler.numOfColumnsInGrid = 3;
 	
 	var itemInfo = gridHandler.getItemBelow(dojo.byId(firstReorderableId));
@@ -78,7 +78,7 @@ function testGetItemBelow() {
 function testGetItemAbove() {
 	var gridHandler = new fluid.GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
-	gridHandler.setGrid(imageList);
+	gridHandler.setReorderableContainer(imageList);
 	gridHandler.numOfColumnsInGrid = 4;
 	
 	var itemInfo = gridHandler.getItemAbove(dojo.byId(seventhReorderableId));
@@ -137,21 +137,21 @@ function testGetItemAbove() {
 	
 }
 
-function testUpdateGridWidth() {
+function testWindowDidResize() {
 	var gridHandler = new fluid.GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
-	gridHandler.setGrid(imageList);
+	gridHandler.setReorderableContainer(imageList);
 	var oldNumCols = gridHandler.numOfColumnsInGrid;
 
 	// change the width
 	dojo.removeClass(dojo.byId(lightboxParentId), "full-width");
 	dojo.addClass(dojo.byId(lightboxParentId), "half-width");
-	gridHandler.updateGridWidth();
+	gridHandler.windowDidResize();
 	assertEquals("after resize, the grid width should be "+Math.floor(oldNumCols/2), Math.floor(oldNumCols/2), gridHandler.numOfColumnsInGrid);
 
 	// change it back
 	dojo.removeClass(dojo.byId(lightboxParentId), "half-width");
 	dojo.addClass(dojo.byId(lightboxParentId), "full-width");
-	gridHandler.updateGridWidth()
+	gridHandler.windowDidResize()
 	assertEquals("after resize, the grid width should be "+oldNumCols, oldNumCols, gridHandler.numOfColumnsInGrid);
 }
