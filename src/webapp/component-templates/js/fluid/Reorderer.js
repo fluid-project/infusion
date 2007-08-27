@@ -275,7 +275,7 @@ dojo.declare(
             dndlb.onMouseDown = function(ecmaEvent){
 				// note: source.target will not work in IE, need to use source.srcElement instead.
 				var targetElement = (ecmaEvent.target || ecmaEvent.srcElement);
-                this.reorderer.focusItem(this.reorderer._findAncestorGridCell(targetElement));
+                this.reorderer.focusItem(this.reorderer._findReorderableParent(targetElement));
                 dojo.dnd.Source.prototype.onMouseDown.apply(dndlb, arguments);
             };
 			
