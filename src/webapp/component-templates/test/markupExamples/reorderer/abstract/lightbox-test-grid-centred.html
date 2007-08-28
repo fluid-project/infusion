@@ -21,10 +21,9 @@
  Telephone: (416) 978-4360
 --><title>Div Grid Horizontally Centred</title>
 
-
-
-
-
+	<style>
+		@import url("../lightbox-html-test.css");
+	</style>
 <style type="text/css">
 
 div.container {
@@ -33,7 +32,7 @@ div.container {
 }
 
 div.row {
-    width: 110%;
+    width: 100%;
     text-align: center;
 }
 
@@ -58,8 +57,17 @@ p.row3 {
 <!-- DIV GRID HORIZONTALLY CENTRED -->
 
 <h3>Div Grid Horizontally Centred</h3>
+
+<p>This page is an example of a grid with variably-sized cells, marked up for use with the Reorderer.</p>
+<p>The point of this example is to show a case where one
+row in the grid has fewer columns than others. In this example,
+the third row has but four items centred horizontally, whereas the
+other rows have five. In this situation, an item in the shorter row is
+centred below two items in the row immediately above; and is itself
+above a pair of items in the row below it. </p>
+
 <div style="clear: both;"> </div>
-    <div class="container">
+    <div class="reorderer_container">
         <div class="row">
             <p class="orderable cell">
                 Item 1.
@@ -67,7 +75,7 @@ p.row3 {
             <p class="orderable cell">
                 Item 2.
             </p>
-            <p class="orderable cell">
+            <p class="cell">
                 Item 3.
             </p>
             <p class="orderable cell">
@@ -87,7 +95,7 @@ p.row3 {
             <p class="orderable cell">
                 Item 8.
             </p>
-            <p class="orderable cell">
+            <p class="cell">
                 Item 9.
             </p>
             <p class="orderable cell">
@@ -126,14 +134,5 @@ p.row3 {
             </p>
         </div>
     </div>
-    <hr>
-    <p>The
-point of "Div Grid Horizontally Centred" is to show a case where one
-row in the grid has fewer columns than others. In the above example,
-the third row has but four items centred horizontally, whereas the
-other rows have five. In this situation, an item in the shorter row is
-centred below two items in the row immediately above; and is itself
-above a pair of items in the row below it. </p>
-
  
 </body></html>
