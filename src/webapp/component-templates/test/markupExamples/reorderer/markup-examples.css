@@ -5,15 +5,10 @@ width: 75%;
 margin: 10 auto;
 }
 
-dt{
-	padding-top: 10px;
-}
-
 .reorderer_container{
 padding: 20px;
 border: 1px dashed red;
 overflow: hidden;
-background-color: #eee;
 }
 	
 .orderable{
