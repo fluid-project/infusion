@@ -11,11 +11,6 @@ border: 1px dashed red;
 overflow: hidden;
 }
 	
-.fixed{
-background-color: #eee;
-color: #999;
-}
-
 .orderable{
 background-color: lightyellow;
 }
