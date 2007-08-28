@@ -11,12 +11,12 @@ border: 1px dashed red;
 overflow: hidden;
 }
 	
-.reorderer_fixed{
+.fixed{
 background-color: #eee;
 color: #999;
 }
 
-.reorderer_draggable{
+.orderable{
 background-color: lightyellow;
 }
 
