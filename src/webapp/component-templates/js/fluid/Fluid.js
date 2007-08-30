@@ -49,37 +49,35 @@ fluid.declare(fluid, {
 		
 		// An approach based on the "sourceIndex" DOM property would be much more efficient,
 		// but this is only supported in IE. 
-		// This selector approach is ALSO broken, see Dojo bug 3520.
-		//var selector = "#" + fluid.Utilities.escapeSelector(namebase) 
-		//+ " input[id^=\"" + fluid.Utilities.escapeSelector(namebase + "lightbox-cell::") + "\"]"
-		//+ "[id$=\"reorder-index\"]";
 		var orderChangedCallback = function() {
-			//	  var inputs = dojo.query(selector);
-			var inputs = fluid.Utilities.seekNodesById(reorderform, "input", 
-			fluid.deriveLightboxCellBase(namebase, ".*") + "reorder-index");
+			var inputs = fluid.Utilities.seekNodesById(
+				reorderform, 
+				"input", 
+				fluid.deriveLightboxCellBase(namebase, ".*") + "reorder-index"
+			);
 			
 			for (var i = 0; i < inputs.length; ++ i) {
 				inputs[i].value = i;
 			}
-			
-			// dojo.io.bind is gone: http://dojotoolkit.org/book/dojo-porting-guide-0-4-x-0-9/io-transports-ajax
-			if (reorderform.action) {
+
+			if (reorderform && reorderform.action) {
 				dojo.xhrPost({
 					url: reorderform.action,
 					form: reorderform,
 					load: function(type, data, evt){ /* No-op response */ }
 				});
-			};
+			}
 		};
 		
-		
-		var lightbox = new fluid.Reorderer(
-			{
+		var lightbox = new fluid.Reorderer({
 				messageNamebase : messageNamebase,
 				orderChangedCallback: orderChangedCallback,
 				layoutHandler: new fluid.GridLayoutHandler()
 			}, 
-			namebase);
+			namebase
+		);
+		
+		return lightbox;
 	}
 });  
 
