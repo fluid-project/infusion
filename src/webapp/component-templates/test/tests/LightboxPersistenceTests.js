@@ -28,7 +28,7 @@
 function testIsOrderChangedCallbackSet() {
 	var lightbox = fluid.initLightbox(lightboxRootId, MESSAGE_BUNDLE_BASE);
 	assertNotNull("orderChangedCallback is not initialized", lightbox.orderChangedCallback);
-	lightbox.handleLeftArrow(true);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlRightArrow());
 }
 
 /**
@@ -52,7 +52,7 @@ function testIsOrderChangedCallbackCalled() {
 	);
 	
 	// Perform a move
-	lightbox.handleLeftArrow(true);
+	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlRightArrow());
 	assertNotNull("order changed callback is not called when a move is performed", 
 		dojo.byId("callbackCalled"));
 }

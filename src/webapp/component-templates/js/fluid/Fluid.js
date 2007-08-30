@@ -145,28 +145,28 @@ fluid.declare(fluid, {
 	 */
 	GridLayoutHandler : function (){
 		
-		this.numOfColumnsInGrid = 0
-		this.grid = null;
+		this._numOfColumnsInGrid = 0;
+		this._grid = null;
 		
 		this.setReorderableContainer = function (aGrid) {
-			this.grid = aGrid;
+			this._grid = aGrid;
 			this.windowDidResize();
 		};
 		
 		/*
-		 * The updateGridWidth function assumes that every child node of this.grid is a re-orderable
+		 * The updateGridWidth function assumes that every child node of this._grid is a re-orderable
 		 * item. This assumption allows the use of indices and knowledge of the number of columns in
 		 * determining what item is 'above' or 'below' a given item.
 		 * NOTE: The reorderer needs to be refactored to work without this assumption, so that it can
 		 * identify re-orderable items another way e.g. through a class name
 		 */
 		this.windowDidResize = function () {
-			var firstItemY = dojo.coords(this.grid.childNodes[0]).y;
+			var firstItemY = dojo.coords(this._grid.childNodes[0]).y;
 	
 			var i = 1;
-			while (i < this.grid.childNodes.length) {		
-				if (dojo.coords(this.grid.childNodes[i]).y > firstItemY) {
-					this.numOfColumnsInGrid = i;
+			while (i < this._grid.childNodes.length) {		
+				if (dojo.coords(this._grid.childNodes[i]).y > firstItemY) {
+					this._numOfColumnsInGrid = i;
 					break;
 				}
 				i++;
@@ -178,34 +178,51 @@ fluid.declare(fluid, {
 		 * and a flag indicating whether or not the process has 'wrapped' around the end of
 		 * the row that the given item is in
 		 */
-		this.getRightSibling = function (item) {
-			var nextIndex = dojo.indexOf(this.grid.childNodes, item) + 1;
+		this._getRightSiblingInfo = function (item) {
+			var nextIndex = dojo.indexOf(this._grid.childNodes, item) + 1;
 			var hasWrapped = false;
 			
-			if (nextIndex >= this.grid.childNodes.length) {
+			if (nextIndex >= this._grid.childNodes.length) {
 				nextIndex = 0;
 				hasWrapped = true
 			}
 			
-			return {item: this.grid.childNodes[nextIndex], hasWrapped: hasWrapped};
-		},
+			return {item: this._grid.childNodes[nextIndex], hasWrapped: hasWrapped};
+		};
 		
+		this.getRightSibling = function (item) {
+			return this._getRightSiblingInfo(item).item;
+		};
+		
+		this.moveItemRight = function (item) {
+			this._moveItem(item, this._getRightSiblingInfo(item), "after", "before");
+		};
+
 		/*
 		 * Returns an object containing the item that is to the left of the given item
 		 * and a flag indicating whether or not the process has 'wrapped' around the end of
 		 * the row that the given item is in
 		 */
-		this.getLeftSibling = function (item) {
-			var previousIndex = dojo.indexOf(this.grid.childNodes, item) - 1;
+		this._getLeftSiblingInfo = function (item) {
+			var previousIndex = dojo.indexOf(this._grid.childNodes, item) - 1;
 			var hasWrapped = false;
 			
 			if (previousIndex < 0) {
-				previousIndex = this.grid.childNodes.length - 1;
+				previousIndex = this._grid.childNodes.length - 1;
 				hasWrapped = true
 			}
 			
-			return {item: this.grid.childNodes[previousIndex], hasWrapped: hasWrapped};
-		},
+			return {item: this._grid.childNodes[previousIndex], hasWrapped: hasWrapped};
+		};
+		
+		
+		this.getLeftSibling = function (item) {
+			return this._getLeftSiblingInfo(item).item;
+		};
+
+		this.moveItemLeft = function (item) {
+			this._moveItem(item, this._getLeftSiblingInfo(item), "before", "after");
+		};
 		
 		/*
 		 * Returns an object containing the item that is below the given item in the current grid
@@ -217,18 +234,26 @@ fluid.declare(fluid, {
 		 * re-orderable items exist in the dom. This will mean that simple index-based calculations will
 		 * not be adequate.
 		 */
-		this.getItemBelow = function (item) {
-			var curIndex = dojo.indexOf(this.grid.childNodes, item);
-			var belowIndex = curIndex+this.numOfColumnsInGrid;
+		this._getItemInfoBelow = function (item) {
+			var curIndex = dojo.indexOf(this._grid.childNodes, item);
+			var belowIndex = curIndex+this._numOfColumnsInGrid;
 			var hasWrapped = false;
 			
-			if (belowIndex >= this.grid.childNodes.length) {
+			if (belowIndex >= this._grid.childNodes.length) {
 				hasWrapped = true;
-				belowIndex = belowIndex % this.numOfColumnsInGrid;
+				belowIndex = belowIndex % this._numOfColumnsInGrid;
 			}
-			return {item: this.grid.childNodes[belowIndex], hasWrapped: hasWrapped};
+			return {item: this._grid.childNodes[belowIndex], hasWrapped: hasWrapped};
 		};
 		
+		this.getItemBelow = function(item) {
+			return this._getItemInfoBelow(item).item;
+		};
+
+		this.moveItemDown = function (item) {
+			this._moveItem(item, this._getItemInfoBelow(item), "after", "before");
+		};
+				
 		/*
 		 * Returns an object containing the item that is above the given item in the current grid
 		 * and a flag indicating whether or not the process has 'wrapped' around the end of
@@ -239,24 +264,40 @@ fluid.declare(fluid, {
 		 * re-orderable items exist in the dom. This will mean that simple index-based calculations will
 		 * not be adequate.
 		 */
-		this.getItemAbove = function (item) {
-			var curIndex = dojo.indexOf(this.grid.childNodes, item);
-			var aboveIndex = curIndex-this.numOfColumnsInGrid;
+		this._getItemInfoAbove = function (item) {
+			var curIndex = dojo.indexOf(this._grid.childNodes, item);
+			var aboveIndex = curIndex-this._numOfColumnsInGrid;
 			var hasWrapped = false;
 			
 			if (aboveIndex < 0) {
 				hasWrapped = true;
-				var itemsInLastRow = this.grid.childNodes.length % this.numOfColumnsInGrid;
+				var itemsInLastRow = this._grid.childNodes.length % this._numOfColumnsInGrid;
 				if (curIndex  >= itemsInLastRow) {
-					aboveIndex = curIndex + this.grid.childNodes.length - itemsInLastRow
-						- this.numOfColumnsInGrid;
+					aboveIndex = curIndex + this._grid.childNodes.length - itemsInLastRow
+						- this._numOfColumnsInGrid;
 				} else {
-					aboveIndex = curIndex + this.grid.childNodes.length - itemsInLastRow;
+					aboveIndex = curIndex + this._grid.childNodes.length - itemsInLastRow;
 				}
 			}
 			
-			return {item: this.grid.childNodes[aboveIndex], hasWrapped: hasWrapped};
+			return {item: this._grid.childNodes[aboveIndex], hasWrapped: hasWrapped};
 		};
-	}
 
+		this.getItemAbove = function (item) {
+			return this._getItemInfoAbove(item).item;	
+		}; 
+		
+		this.moveItemUp = function(item) {
+			this._moveItem(item, this._getItemInfoAbove(item), "before", "after");
+		};
+		
+		this._moveItem = function(item, relatedItemInfo, defaultPlacement, wrappedPlacement) {
+			var itemPlacement = defaultPlacement;
+			if (relatedItemInfo.hasWrapped) {
+				itemPlacement = wrappedPlacement;
+			}
+			dojo.place(item, relatedItemInfo.item, itemPlacement);
+		};
+		
+	} // End of GridLayoutHandler
 });

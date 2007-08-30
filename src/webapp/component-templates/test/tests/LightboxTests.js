@@ -52,7 +52,7 @@ function testHandleArrowKeyPressMoveThumbDown() {
 	lightbox.selectActiveItem();
 
 	// setup: force the grid to have three columns
-	lightbox.layoutHandler.numOfColumnsInGrid = 3;
+	lightbox.layoutHandler._numOfColumnsInGrid = 3;
 
 	// Test: ctrl down arrow - move the first image down
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlDownArrow());
@@ -76,7 +76,7 @@ function testHandleArrowKeyPressMoveThumbDown() {
 	lightbox.selectActiveItem();
 
 	// setup: force the grid to have three columns
-	lightbox.layoutHandler.numOfColumnsInGrid = 3;
+	lightbox.layoutHandler._numOfColumnsInGrid = 3;
 
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlUpArrow());
 	
@@ -115,7 +115,7 @@ function itemsInOriginalPositionTest(desc, lightboxDOMNode) {
 function testHandleArrowKeyPressForUpAndDown() {
 	var lightbox = createLightbox();
 	// setup: force the grid to have four columns
-	lightbox.layoutHandler.numOfColumnsInGrid = 4;
+	lightbox.layoutHandler._numOfColumnsInGrid = 4;
 	lightbox.selectActiveItem();
 	
 	isItemFocusedTest("Initially ", firstReorderableId);
@@ -387,7 +387,7 @@ function testChangeActiveItemToDefaultState() {
 
 function testHandleWindowResizeEvent() {
 	var lightbox = createLightbox();
-	var oldNumCols = lightbox.layoutHandler.numOfColumnsInGrid;
+	var oldNumCols = lightbox.layoutHandler._numOfColumnsInGrid;
 	var halfWidthNumCols = Math.floor(oldNumCols/2);
 
 	// change the width
@@ -398,7 +398,7 @@ function testHandleWindowResizeEvent() {
 	var resizeEvent = {foo: "bar"};
 	lightbox.handleWindowResizeEvent(resizeEvent);
 	assertEquals("after resize, the grid width should be "+halfWidthNumCols,
-		halfWidthNumCols, lightbox.layoutHandler.numOfColumnsInGrid);
+		halfWidthNumCols, lightbox.layoutHandler._numOfColumnsInGrid);
 
 	// change it back
 	dojo.removeClass(dojo.byId(lightboxParentId), "half-width");
@@ -408,7 +408,7 @@ function testHandleWindowResizeEvent() {
 	var resizeEvent = {foo: "bar"};
 	lightbox.handleWindowResizeEvent(resizeEvent);
 	assertEquals("after resize, the grid width should be "+oldNumCols,
-		oldNumCols, lightbox.layoutHandler.numOfColumnsInGrid);
+		oldNumCols, lightbox.layoutHandler._numOfColumnsInGrid);
 }
 
 function testUpdateActiveDescendent() {

@@ -53,10 +53,10 @@ var draggingClass="image-container-dragging";
 function exposeTestFunctionNames() {
 	return [
 	    // GridLayoutHandlerTests.js
-		"testGetRightSibling",
-		"testGetLeftSibling",
-		"testGetItemBelow",
-		"testGetItemAbove",
+		"testGetRightSiblingInfo",
+		"testGetLeftSiblingInfo",
+		"testGetItemInfoBelow",
+		"testGetItemInfoAbove",
 		"testWindowDidResize",
 		
 		// LightboxTests.js

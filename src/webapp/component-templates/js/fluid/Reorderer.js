@@ -178,56 +178,43 @@ dojo.declare(
 		},
 	
 		handleUpArrow: function (isCtrl) {
-			var itemAboveInfo = this.layoutHandler.getItemAbove(this.activeItem);
-			
-			// If we wrap around, then we want to insert after the item 'above' 
-			if (itemAboveInfo.hasWrapped) {
-				this._changeFocusOrMove(isCtrl, itemAboveInfo.item, "after");	
-			} else {
-				this._changeFocusOrMove(isCtrl, itemAboveInfo.item, "before");	
-			}
-		},
-
-		handleDownArrow: function (isCtrl) {
-			var itemBelowInfo = this.layoutHandler.getItemBelow(this.activeItem);
-			
-			// If we wrap around, then we want to insert before the item 'below' 
-			if (itemBelowInfo.hasWrapped) {
-				this._changeFocusOrMove(isCtrl, itemBelowInfo.item, "before");
-			} else {
-				this._changeFocusOrMove(isCtrl, itemBelowInfo.item, "after");
-			}	
-		},
-		
-		handleRightArrow: function(isCtrl) {
-			var rightSiblingInfo = this.layoutHandler.getRightSibling(this.activeItem);
-			
-			if (rightSiblingInfo.hasWrapped) {
-				this._changeFocusOrMove(isCtrl, rightSiblingInfo.item, "before");
-			} else {
-				this._changeFocusOrMove(isCtrl, rightSiblingInfo.item, "after");
-			}
-
-		},
-		
-		handleLeftArrow: function(isCtrl) {
-			var leftSiblingInfo = this.layoutHandler.getLeftSibling(this.activeItem);
-			
-			if (leftSiblingInfo.hasWrapped) {
-				this._changeFocusOrMove(isCtrl, leftSiblingInfo.item, "after");
-			} else {
-				this._changeFocusOrMove(isCtrl, leftSiblingInfo.item, "before");				
-			}			
-		},
-		
-		_changeFocusOrMove: function(shouldMove, refSibling, placementPosition) {
-			if (shouldMove) {
-				dojo.place(this.activeItem, refSibling, placementPosition);
+			if (isCtrl) {
+ 				this.layoutHandler.moveItemUp(this.activeItem);
 				this.getElementToFocus(this.activeItem).focus();
 				this.orderChangedCallback();
 			} else {
-				this.focusItem(refSibling);
-			}		
+				this.focusItem(this.layoutHandler.getItemAbove(this.activeItem));
+			}			
+		},
+
+		handleDownArrow: function (isCtrl) {
+			if (isCtrl) {
+				this.layoutHandler.moveItemDown(this.activeItem);
+				this.getElementToFocus(this.activeItem).focus();
+				this.orderChangedCallback();
+			} else {
+				this.focusItem(this.layoutHandler.getItemBelow(this.activeItem));
+			}
+		},
+		
+		handleRightArrow: function(isCtrl) {
+			if (isCtrl) {
+				this.layoutHandler.moveItemRight(this.activeItem);
+				this.getElementToFocus(this.activeItem).focus();
+				this.orderChangedCallback();				
+			} else {
+				this.focusItem(this.layoutHandler.getRightSibling(this.activeItem));				
+			}			
+		},
+		
+		handleLeftArrow: function(isCtrl) {
+			if (isCtrl) {
+				this.layoutHandler.moveItemLeft(this.activeItem);
+				this.getElementToFocus(this.activeItem).focus();
+				this.orderChangedCallback();				
+			} else {
+				this.focusItem(this.layoutHandler.getLeftSibling(this.activeItem));				
+			}
 		},
 		
 		// Currently just updates the size of the grid.
