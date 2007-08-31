@@ -76,8 +76,6 @@ fluid.declare(fluid, {
 			}, 
 			namebase
 		);
-		
-		return lightbox;
 	}
 });  
 
