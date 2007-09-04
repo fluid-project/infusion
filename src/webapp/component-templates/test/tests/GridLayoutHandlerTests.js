@@ -17,6 +17,11 @@ function testGetRightSiblingInfo() {
 	assertEquals("The item to the right of the last image should be the first image", 
 		dojo.byId(firstReorderableId), rightSibling.item);
 	assertTrue("Wrap to the right of the last image", rightSibling.hasWrapped);	
+	
+	rightSibling = gridHandler._getRightSiblingInfo(dojo.byId(thirdImageId));
+	assertEquals("When a non-orderable is passed to getRightSiblingInfo the first orderable should be returned.", 
+		firstReorderableId, rightSibling.item.id);
+	assertFalse("No wrap when non-reorderable is passed in.", rightSibling.hasWrapped);	
 }
 
 function testGetLeftSiblingInfo() {
@@ -39,6 +44,10 @@ function testGetLeftSiblingInfo() {
 		dojo.byId(LastReorderableId), leftSibling.item);
 	assertTrue("Wrap to the left of the first image", leftSibling.hasWrapped);
 
+	leftSibling = gridHandler._getLeftSiblingInfo(dojo.byId(thirdImageId));
+	assertEquals("When a non-orderable is passed to getLeftSiblingInfo the first orderable should be returned.", 
+		firstReorderableId, leftSibling.item.id);
+	assertFalse("No wrap when non-reorderable is passed in.", leftSibling.hasWrapped);	
 
 }
 
@@ -72,6 +81,11 @@ function testGetItemInfoBelow() {
 	assertEquals("the item below the last image should be the second image", 
 		dojo.byId(secondReorderableId), itemInfo.item);
 	assertTrue("wrap below last image", itemInfo.hasWrapped);
+
+	itemInfo = gridHandler._getItemInfoBelow(dojo.byId(thirdImageId));
+	assertEquals("When a non-orderable is passed to _getItemInfoBelow the first orderable should be returned.", 
+		firstReorderableId, itemInfo.item.id);
+	assertFalse("No wrap when non-reorderable is passed in.", itemInfo.hasWrapped);	
 
 }
 
@@ -110,6 +124,11 @@ function testGetItemInfoAbove() {
 	assertEquals("the item above the fourth image should be the third last image", 
 		dojo.byId(thirdLastReorderableId), itemInfo.item);
 	assertTrue("wrap above fourth image", itemInfo.hasWrapped);
+
+	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(thirdImageId));
+	assertEquals("When a non-orderable is passed to _getItemInfoAbove the first orderable should be returned.", 
+		firstReorderableId, itemInfo.item.id);
+	assertFalse("No wrap when non-reorderable is passed in.", itemInfo.hasWrapped);	
 
 	// Test with grid size 3
 	gridHandler._numOfColumnsInGrid = 3;

@@ -159,11 +159,12 @@ fluid.declare(fluid, {
 		 * identify re-orderable items another way e.g. through a class name
 		 */
 		this.windowDidResize = function () {
-			var firstItemY = dojo.coords(this._grid.childNodes[0]).y;
+			var orderables = dojo.query(".orderable", this._grid);
+			var firstItemY = dojo.coords(orderables[0]).y;
 	
 			var i = 1;
-			while (i < this._grid.childNodes.length) {		
-				if (dojo.coords(this._grid.childNodes[i]).y > firstItemY) {
+			while (i < orderables.length) {		
+				if (dojo.coords(orderables[i]).y > firstItemY) {
 					this._numOfColumnsInGrid = i;
 					break;
 				}
@@ -176,16 +177,8 @@ fluid.declare(fluid, {
 		 * and a flag indicating whether or not the process has 'wrapped' around the end of
 		 * the row that the given item is in
 		 */
-		this._getRightSiblingInfo = function (item) {
-			var nextIndex = dojo.indexOf(this._grid.childNodes, item) + 1;
-			var hasWrapped = false;
-			
-			if (nextIndex >= this._grid.childNodes.length) {
-				nextIndex = 0;
-				hasWrapped = true
-			}
-			
-			return {item: this._grid.childNodes[nextIndex], hasWrapped: hasWrapped};
+		this._getRightSiblingInfo = function (item) {			
+			return this._getSiblingInfo (item, 1);
 		};
 		
 		this.getRightSibling = function (item) {
@@ -202,18 +195,9 @@ fluid.declare(fluid, {
 		 * the row that the given item is in
 		 */
 		this._getLeftSiblingInfo = function (item) {
-			var previousIndex = dojo.indexOf(this._grid.childNodes, item) - 1;
-			var hasWrapped = false;
-			
-			if (previousIndex < 0) {
-				previousIndex = this._grid.childNodes.length - 1;
-				hasWrapped = true
-			}
-			
-			return {item: this._grid.childNodes[previousIndex], hasWrapped: hasWrapped};
+			return this._getSiblingInfo (item, -1);
 		};
-		
-		
+			
 		this.getLeftSibling = function (item) {
 			return this._getLeftSiblingInfo(item).item;
 		};
@@ -221,27 +205,62 @@ fluid.declare(fluid, {
 		this.moveItemLeft = function (item) {
 			this._moveItem(item, this._getLeftSiblingInfo(item), "before", "after");
 		};
-		
+
+		/*
+		 * A general get{Left|Right}SiblingInfo() given an item and a direction.
+		 * The direction is encoded by either a +1 to move right, or a -1 to
+		 * move left, and that value is used internally as an increment or
+		 * decrement, respectively, of the index of the given item.
+		 */
+		this._getSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
+			var orderables = dojo.query(".orderable", this._grid);
+			var index = dojo.indexOf(orderables, item) + incDecrement;
+			var hasWrapped = false;
+				
+			// Handle wrapping to 'before' the beginning. 
+			if (index == -1) {
+				index = orderables.length - 1;
+				hasWrapped = true;
+			}
+			// Handle wrapping to 'after' the end.
+			else if (index == orderables.length) {
+				index = 0;
+				hasWrapped = true;
+			} 
+			// Handle case where the passed-in item is *not* an "orderable"
+			// (or other undefined error).
+			//
+			else if (index < -1 || index > orderables.length) {
+				index = 0;
+			}
+			
+			return {item: orderables[index], hasWrapped: hasWrapped};
+		};
+				
 		/*
 		 * Returns an object containing the item that is below the given item in the current grid
 		 * and a flag indicating whether or not the process has 'wrapped' around the end of
 		 * the column that the given item is in. The flag is necessary because when an image is being
 		 * moved to the resulting item location, the decision of whether or not to insert before or
 		 * after the item changes if the process wrapped around the column.
-		 * NOTE: The lightbox needs to be refactored to work without the assumption that only
-		 * re-orderable items exist in the dom. This will mean that simple index-based calculations will
-		 * not be adequate.
 		 */
 		this._getItemInfoBelow = function (item) {
-			var curIndex = dojo.indexOf(this._grid.childNodes, item);
+			var orderables = dojo.query(".orderable", this._grid);
+			var curIndex = dojo.indexOf(orderables, item);
+			
+			// Handle case where the passed-in item is *not* an "orderable"
+			if (curIndex < 0) {
+				return {item: orderables[0], hasWrapped: false};
+			}
+			
 			var belowIndex = curIndex+this._numOfColumnsInGrid;
 			var hasWrapped = false;
 			
-			if (belowIndex >= this._grid.childNodes.length) {
+			if (belowIndex >= orderables.length) {
 				hasWrapped = true;
 				belowIndex = belowIndex % this._numOfColumnsInGrid;
 			}
-			return {item: this._grid.childNodes[belowIndex], hasWrapped: hasWrapped};
+			return {item: orderables[belowIndex], hasWrapped: hasWrapped};
 		};
 		
 		this.getItemBelow = function(item) {
@@ -258,27 +277,31 @@ fluid.declare(fluid, {
 		 * the column that the given item is in. The flag is necessary because when an image is being
 		 * moved to the resulting item location, the decision of whether or not to insert before or
 		 * after the item changes if the process wrapped around the column.
-		 * NOTE: The lightbox needs to be refactored to work without the assumption that only
-		 * re-orderable items exist in the dom. This will mean that simple index-based calculations will
-		 * not be adequate.
 		 */
 		this._getItemInfoAbove = function (item) {
-			var curIndex = dojo.indexOf(this._grid.childNodes, item);
+			var orderables = dojo.query(".orderable", this._grid);
+			var curIndex = dojo.indexOf(orderables, item);
+
+			// Handle case where the passed-in item is *not* an "orderable"
+			if (curIndex < 0) {
+				return {item: orderables[0], hasWrapped: false};
+			}
+			
 			var aboveIndex = curIndex-this._numOfColumnsInGrid;
 			var hasWrapped = false;
 			
 			if (aboveIndex < 0) {
 				hasWrapped = true;
-				var itemsInLastRow = this._grid.childNodes.length % this._numOfColumnsInGrid;
+				var itemsInLastRow = orderables.length % this._numOfColumnsInGrid;
 				if (curIndex  >= itemsInLastRow) {
-					aboveIndex = curIndex + this._grid.childNodes.length - itemsInLastRow
+					aboveIndex = curIndex + orderables.length - itemsInLastRow
 						- this._numOfColumnsInGrid;
 				} else {
-					aboveIndex = curIndex + this._grid.childNodes.length - itemsInLastRow;
+					aboveIndex = curIndex + orderables.length - itemsInLastRow;
 				}
 			}
 			
-			return {item: this._grid.childNodes[aboveIndex], hasWrapped: hasWrapped};
+			return {item: orderables[aboveIndex], hasWrapped: hasWrapped};
 		};
 
 		this.getItemAbove = function (item) {
