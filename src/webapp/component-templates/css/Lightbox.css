@@ -165,26 +165,6 @@ display:none;
 /*background: #eee;*/
 }
 
-
-
-
-
-/* these classes are used for testing */
-
-.full-width{
-width: 100%;
-}
-.half-width{
-width: 50%;
-}
-.width-3-thumb{
-width: 500px;
-}
-.width-4-thumb{
-width: 675px;
-}
-
-
 /* Tooltip styling */
 
 /* currently using Dijit's default style. */
