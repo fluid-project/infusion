@@ -73,10 +73,7 @@ dojo.declare(
 		},
 
 		// Dojo calls this function after constructing the object.
-		postCreate: function () {
-			// Listen to window resize events so the layout handler can recalculate if desired.			
-			dojo.connect(window, "onresize", this, "handleWindowResizeEvent");
-			
+		postCreate: function () {			
 			if (this.domNode) {
 				this._setUpDomNode();
 			}
@@ -216,12 +213,7 @@ dojo.declare(
 				this.focusItem(this.layoutHandler.getLeftSibling(this.activeItem));				
 			}
 		},
-		
-		// Currently just updates the size of the grid.
-		handleWindowResizeEvent: function(resizeEvent) {
-			this.layoutHandler.windowDidResize();
-		},
-		
+				
 		_fetchMessage: function(messagekey) {
 			var messageID = this.messageNamebase + messagekey;
 			var node = document.getElementById(messageID);

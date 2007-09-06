@@ -143,35 +143,12 @@ fluid.declare(fluid, {
 	 */
 	GridLayoutHandler : function (){
 		
-		this._numOfColumnsInGrid = 0;
 		this._grid = null;
 		
 		this.setReorderableContainer = function (aGrid) {
 			this._grid = aGrid;
-			this.windowDidResize();
 		};
-		
-		/*
-		 * The updateGridWidth function assumes that every child node of this._grid is a re-orderable
-		 * item. This assumption allows the use of indices and knowledge of the number of columns in
-		 * determining what item is 'above' or 'below' a given item.
-		 * NOTE: The reorderer needs to be refactored to work without this assumption, so that it can
-		 * identify re-orderable items another way e.g. through a class name
-		 */
-		this.windowDidResize = function () {
-			var orderables = dojo.query(".orderable", this._grid);
-			var firstItemY = dojo.coords(orderables[0]).y;
-	
-			var i = 1;
-			while (i < orderables.length) {		
-				if (dojo.coords(orderables[i]).y > firstItemY) {
-					this._numOfColumnsInGrid = i;
-					break;
-				}
-				i++;
-			}
-		};
-		
+				
 		/*
 		 * Returns an object containing the item that is to the right of the given item
 		 * and a flag indicating whether or not the process has 'wrapped' around the end of
@@ -244,23 +221,32 @@ fluid.declare(fluid, {
 		 * moved to the resulting item location, the decision of whether or not to insert before or
 		 * after the item changes if the process wrapped around the column.
 		 */
-		this._getItemInfoBelow = function (item) {
+		this._getItemInfoBelow = function (inItem) {
 			var orderables = dojo.query(".orderable", this._grid);
-			var curIndex = dojo.indexOf(orderables, item);
+			var curIndex = dojo.indexOf(orderables, inItem);
+			var curCoords = dojo.coords(inItem);
 			
 			// Handle case where the passed-in item is *not* an "orderable"
 			if (curIndex < 0) {
 				return {item: orderables[0], hasWrapped: false};
 			}
 			
-			var belowIndex = curIndex+this._numOfColumnsInGrid;
-			var hasWrapped = false;
-			
-			if (belowIndex >= orderables.length) {
-				hasWrapped = true;
-				belowIndex = belowIndex % this._numOfColumnsInGrid;
+			for (i = curIndex + 1; i < orderables.length; i++) {
+				var iCoords = dojo.coords(orderables[i]);
+				if (iCoords.x == curCoords.x && iCoords.y > curCoords.y) {
+					return {item: orderables[i], hasWrapped: false};
+				}				
 			}
-			return {item: orderables[belowIndex], hasWrapped: hasWrapped};
+			
+			for (i = 0; i < curIndex; i++ ) {
+				var iCoords = dojo.coords(orderables[i]);
+				if (iCoords.x == curCoords.x) {
+					return {item: orderables[i], hasWrapped: true};
+				}
+			}
+			
+			// Didn't find an item below - return what was passed in
+			return {item: inItem, hasWrapped: false};
 		};
 		
 		this.getItemBelow = function(item) {
@@ -278,30 +264,32 @@ fluid.declare(fluid, {
 		 * moved to the resulting item location, the decision of whether or not to insert before or
 		 * after the item changes if the process wrapped around the column.
 		 */
-		this._getItemInfoAbove = function (item) {
+		this._getItemInfoAbove = function (inItem) {
 			var orderables = dojo.query(".orderable", this._grid);
-			var curIndex = dojo.indexOf(orderables, item);
+			var curIndex = dojo.indexOf(orderables, inItem);
+			var curCoords = dojo.coords(inItem);
 
 			// Handle case where the passed-in item is *not* an "orderable"
 			if (curIndex < 0) {
 				return {item: orderables[0], hasWrapped: false};
 			}
+
+			for (i = curIndex - 1; i > -1; i--) {
+				var iCoords = dojo.coords(orderables[i]);
+				if (iCoords.x == curCoords.x && iCoords.y < curCoords.y) {
+					return {item: orderables[i], hasWrapped: false};
+				}				
+			}
 			
-			var aboveIndex = curIndex-this._numOfColumnsInGrid;
-			var hasWrapped = false;
-			
-			if (aboveIndex < 0) {
-				hasWrapped = true;
-				var itemsInLastRow = orderables.length % this._numOfColumnsInGrid;
-				if (curIndex  >= itemsInLastRow) {
-					aboveIndex = curIndex + orderables.length - itemsInLastRow
-						- this._numOfColumnsInGrid;
-				} else {
-					aboveIndex = curIndex + orderables.length - itemsInLastRow;
+			for (i = orderables.length - 1; i > curIndex; i-- ) {
+				var iCoords = dojo.coords(orderables[i]);
+				if (iCoords.x == curCoords.x) {
+					return {item: orderables[i], hasWrapped: true};
 				}
 			}
 			
-			return {item: orderables[aboveIndex], hasWrapped: hasWrapped};
+			// Didn't find an item above - return what was passed in
+			return {item: inItem, hasWrapped: false};
 		};
 
 		this.getItemAbove = function (item) {

@@ -55,7 +55,8 @@ function testGetItemInfoBelow() {
 	var gridHandler = new fluid.GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
-	gridHandler._numOfColumnsInGrid = 3;
+	dojo.removeClass(dojo.byId(lightboxParentId), "full-width");
+	dojo.addClass(dojo.byId(lightboxParentId), "width-3-thumb");
 	
 	var itemInfo = gridHandler._getItemInfoBelow(dojo.byId(firstReorderableId));
 	assertEquals("Since there are 3 colums in the grid, the item below the first image should be the fourth image", 
@@ -93,8 +94,9 @@ function testGetItemInfoAbove() {
 	var gridHandler = new fluid.GridLayoutHandler();
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
-	gridHandler._numOfColumnsInGrid = 4;
-	
+	dojo.removeClass(dojo.byId(lightboxParentId), "full-width");
+	dojo.addClass(dojo.byId(lightboxParentId), "width-4-thumb");
+		
 	var itemInfo = gridHandler._getItemInfoAbove(dojo.byId(seventhReorderableId));
 	assertEquals("the item above the seventh image should be the third image", 
 		dojo.byId(thirdReorderableId), itemInfo.item);
@@ -131,7 +133,8 @@ function testGetItemInfoAbove() {
 	assertFalse("No wrap when non-reorderable is passed in.", itemInfo.hasWrapped);	
 
 	// Test with grid size 3
-	gridHandler._numOfColumnsInGrid = 3;
+	dojo.removeClass(dojo.byId(lightboxParentId), "width-4-thumb");
+	dojo.addClass(dojo.byId(lightboxParentId), "width-3-thumb");
 	
 	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(fifthReorderableId));
 	assertEquals("the item above the fifth image should be the second image", 
@@ -153,24 +156,7 @@ function testGetItemInfoAbove() {
 		dojo.byId(thirdLastReorderableId), itemInfo.item);
 	assertTrue("no wrap above third image", itemInfo.hasWrapped);
 		
-	
-}
-
-function testWindowDidResize() {
-	var gridHandler = new fluid.GridLayoutHandler();
-	var imageList = dojo.byId(lightboxRootId);
-	gridHandler.setReorderableContainer(imageList);
-	var oldNumCols = gridHandler._numOfColumnsInGrid;
-
-	// change the width
-	dojo.removeClass(dojo.byId(lightboxParentId), "full-width");
-	dojo.addClass(dojo.byId(lightboxParentId), "half-width");
-	gridHandler.windowDidResize();
-	assertEquals("after resize, the grid width should be "+Math.floor(oldNumCols/2), Math.floor(oldNumCols/2), gridHandler._numOfColumnsInGrid);
-
-	// change it back
-	dojo.removeClass(dojo.byId(lightboxParentId), "half-width");
+	dojo.removeClass(dojo.byId(lightboxParentId), "width-3-thumb");
 	dojo.addClass(dojo.byId(lightboxParentId), "full-width");
-	gridHandler.windowDidResize()
-	assertEquals("after resize, the grid width should be "+oldNumCols, oldNumCols, gridHandler._numOfColumnsInGrid);
+	
 }

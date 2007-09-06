@@ -2,6 +2,10 @@ var imgListClone;
 
 function setUp() {
 	imgListClone = document.getElementById(lightboxRootId).cloneNode(true);
+	
+	// Force the grid size to three thumbnails wide
+	dojo.removeClass(dojo.byId(lightboxParentId), "full-width");
+	dojo.addClass(dojo.byId(lightboxParentId), "width-3-thumb");
 }
 
 function tearDown() {
@@ -51,9 +55,6 @@ function testHandleArrowKeyPressMoveThumbDown() {
 	var lightbox = createLightbox();
 	lightbox.selectActiveItem();
 
-	// setup: force the grid to have three columns
-	lightbox.layoutHandler._numOfColumnsInGrid = 3;
-
 	// Test: ctrl down arrow - move the first image down
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlDownArrow());
 	
@@ -74,9 +75,6 @@ function testHandleArrowKeyPressMoveThumbDown() {
 	// Test: ctrl up arrow - move the first image 'up'
 	var lightbox = createLightbox();
 	lightbox.selectActiveItem();
-
-	// setup: force the grid to have three columns
-	lightbox.layoutHandler._numOfColumnsInGrid = 3;
 
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlUpArrow());
 	
@@ -115,7 +113,9 @@ function itemsInOriginalPositionTest(desc, lightboxDOMNode) {
 function testHandleArrowKeyPressForUpAndDown() {
 	var lightbox = createLightbox();
 	// setup: force the grid to have four columns
-	lightbox.layoutHandler._numOfColumnsInGrid = 4;
+	dojo.removeClass(dojo.byId(lightboxParentId), "width-3-thumb");
+	dojo.addClass(dojo.byId(lightboxParentId), "width-4-thumb");
+	
 	lightbox.selectActiveItem();
 	
 	isItemFocusedTest("Initially ", firstReorderableId);
@@ -139,6 +139,10 @@ function testHandleArrowKeyPressForUpAndDown() {
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtDownArrow());
 	isItemFocusedTest("After down arrow wrap ", firstReorderableId);
 	isItemDefaultTest("After down arrow wrap ", secondLastReorderableId);
+
+	dojo.removeClass(dojo.byId(lightboxParentId), "width-4-thumb");
+	dojo.addClass(dojo.byId(lightboxParentId), "width-3-thumb");
+
 }
 
 function isItemDefaultTest(message, itemId) {
@@ -383,32 +387,6 @@ function testChangeActiveItemToDefaultState() {
 	
 	lightbox.changeActiveItemToDefaultState();
 	isItemDefaultTest("after resetting active item, ", firstReorderableId);
-}
-
-function testHandleWindowResizeEvent() {
-	var lightbox = createLightbox();
-	var oldNumCols = lightbox.layoutHandler._numOfColumnsInGrid;
-	var halfWidthNumCols = Math.floor(oldNumCols/2);
-
-	// change the width
-	dojo.removeClass(dojo.byId(lightboxParentId), "full-width");
-	dojo.addClass(dojo.byId(lightboxParentId), "half-width");
-	
-	// tell the lightbox of the change
-	var resizeEvent = {foo: "bar"};
-	lightbox.handleWindowResizeEvent(resizeEvent);
-	assertEquals("after resize, the grid width should be "+halfWidthNumCols,
-		halfWidthNumCols, lightbox.layoutHandler._numOfColumnsInGrid);
-
-	// change it back
-	dojo.removeClass(dojo.byId(lightboxParentId), "half-width");
-	dojo.addClass(dojo.byId(lightboxParentId), "full-width");
-	
-	// tell the lightbox of the change
-	var resizeEvent = {foo: "bar"};
-	lightbox.handleWindowResizeEvent(resizeEvent);
-	assertEquals("after resize, the grid width should be "+oldNumCols,
-		oldNumCols, lightbox.layoutHandler._numOfColumnsInGrid);
 }
 
 function testUpdateActiveDescendent() {

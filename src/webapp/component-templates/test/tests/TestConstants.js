@@ -57,7 +57,6 @@ function exposeTestFunctionNames() {
 		"testGetLeftSiblingInfo",
 		"testGetItemInfoBelow",
 		"testGetItemInfoAbove",
-		"testWindowDidResize",
 		
 		// LightboxTests.js
 		"testFindReorderableParent",
@@ -73,7 +72,6 @@ function exposeTestFunctionNames() {
 		"testSelectActiveItemNothingSelected",
 		"testSelectActiveItemSecondSelected",
 		"testChangeActiveItemToDefaultState",
-		"testHandleWindowResizeEvent",
 		"testUpdateActiveDescendent",
 		
 		// LightboxPersistenceTets.js

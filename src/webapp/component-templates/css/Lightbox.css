@@ -169,7 +169,7 @@ display:none;
 
 
 
-/* these classes are for the testing div */
+/* these classes are used for testing */
 
 .full-width{
 width: 100%;
@@ -177,6 +177,13 @@ width: 100%;
 .half-width{
 width: 50%;
 }
+.width-3-thumb{
+width: 500px;
+}
+.width-4-thumb{
+width: 675px;
+}
+
 
 /* Tooltip styling */
 
