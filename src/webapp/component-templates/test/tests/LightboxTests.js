@@ -1,13 +1,15 @@
 var imgListClone;
 
+// This setUp will be called before each of the tests that are included in Lightbox.html - including ones not in this file.
 function setUp() {
 	imgListClone = document.getElementById(lightboxRootId).cloneNode(true);
 	
 	// Force the grid size to three thumbnails wide
-	dojo.removeClass(dojo.byId(lightboxParentId), "full-width");
-	dojo.addClass(dojo.byId(lightboxParentId), "width-3-thumb");
+	dojo.addClass(dojo.byId(lightboxRootId), "width-3-thumb");
 }
 
+
+// This tearDown will be called after each of the tests that are included in Lightbox.html - including ones not in this file.
 function tearDown() {
 	var fluidLightboxDOMNode = document.getElementById(lightboxRootId);
 	var lightboxParent = document.getElementById(lightboxParentId);
@@ -113,8 +115,8 @@ function itemsInOriginalPositionTest(desc, lightboxDOMNode) {
 function testHandleArrowKeyPressForUpAndDown() {
 	var lightbox = createLightbox();
 	// setup: force the grid to have four columns
-	dojo.removeClass(dojo.byId(lightboxParentId), "width-3-thumb");
-	dojo.addClass(dojo.byId(lightboxParentId), "width-4-thumb");
+	dojo.removeClass(dojo.byId(lightboxRootId), "width-3-thumb");
+	dojo.addClass(dojo.byId(lightboxRootId), "width-4-thumb");
 	
 	lightbox.selectActiveItem();
 	
@@ -139,9 +141,6 @@ function testHandleArrowKeyPressForUpAndDown() {
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtDownArrow());
 	isItemFocusedTest("After down arrow wrap ", firstReorderableId);
 	isItemDefaultTest("After down arrow wrap ", secondLastReorderableId);
-
-	dojo.removeClass(dojo.byId(lightboxParentId), "width-4-thumb");
-	dojo.addClass(dojo.byId(lightboxParentId), "width-3-thumb");
 
 }
 
@@ -182,7 +181,7 @@ function testHandleArrowKeyPressForLeftAndRight()	 {
 	for (focusPosition = 2; focusPosition < numOfImages; focusPosition++ ) {
 		lightbox.handleArrowKeyPress(fluid.testUtils.createEvtRightArrow());
 	}
-	isItemFocusedTest("Right arrow to last ", LastReorderableId);
+	isItemFocusedTest("Right arrow to last ", lastReorderableId);
 	isItemDefaultTest("Right arrow to last ", firstReorderableId);
 	isItemDefaultTest("Right arrow to last ", secondReorderableId);
 	
@@ -190,18 +189,18 @@ function testHandleArrowKeyPressForLeftAndRight()	 {
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtLeftArrow());
 	isItemFocusedTest("Left arrow to second last ", secondLastReorderableId);
 	isItemDefaultTest("Left arrow to second last ", firstReorderableId);
-	isItemDefaultTest("Left arrow to second last ", LastReorderableId);
+	isItemDefaultTest("Left arrow to second last ", lastReorderableId);
 	
 	// Test: right arrow past the last image - expect wrap to the first image
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtRightArrow());
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtRightArrow());
 	isItemFocusedTest("Right arrow wrap ", firstReorderableId);
 	isItemDefaultTest("Right arrow wrap ", secondReorderableId);
-	isItemDefaultTest("Right arrow wrap ", LastReorderableId);
+	isItemDefaultTest("Right arrow wrap ", lastReorderableId);
 
 	// Test: left arrow on the first image - expect wrap to the last image
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtLeftArrow());
-	isItemFocusedTest("Left arrow wrap ", LastReorderableId);
+	isItemFocusedTest("Left arrow wrap ", lastReorderableId);
 	isItemDefaultTest("Left arrow wrap ", firstReorderableId);
 	isItemDefaultTest("Left arrow wrap ", secondReorderableId);
 

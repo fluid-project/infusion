@@ -24,7 +24,7 @@ var tenthReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::9:";
 var fourthLastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::10:";
 var thirdLastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::11:";
 var secondLastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::12:";
-var LastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::13:";
+var lastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::13:";
 
 // The ids of the images we test with in Lightbox.html
 var firstImageId = "fluid.img.first";
@@ -57,6 +57,8 @@ function exposeTestFunctionNames() {
 		"testGetLeftSiblingInfo",
 		"testGetItemInfoBelow",
 		"testGetItemInfoAbove",
+		"testGetItemInfoBelowOneRow",
+		"testGetItemInfoAboveOneRow",
 		
 		// LightboxTests.js
 		"testFindReorderableParent",
