@@ -101,24 +101,7 @@ fluid.declare(fluid, {
 		}
 		return togo;
 	},
-	
-	  // NOTE: This function will be removed when the reorderer is refactored to support non-
-	  // re-orderable item nodes. Until then, it is necessary.
-	  removeNonElementNodes: function(rootNode) {
-		var currChild = rootNode.firstChild;
-		var nextSibling = currChild.nextSibling;
-		if (currChild.nodeType != 1) {
-			rootNode.removeChild(currChild);
-		}
-		while (nextSibling){
-			currChild = nextSibling;
-			nextSibling = currChild.nextSibling;
-			if (currChild.nodeType != 1) {
-				rootNode.removeChild(currChild);
-			}			
-		} 
-	  },
-	  
+		  
 	escapeSelector: function(id) {
 		return id.replace(/\:/g,"\\:");
 	},

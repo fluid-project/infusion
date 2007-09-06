@@ -89,13 +89,6 @@ dojo.declare(
 			dojo.connect(this.domNode, "onfocus", this, "selectActiveItem");
 			dojo.connect(this.domNode, "onblur", this, "changeActiveItemToDefaultState");
 
-			// Remove whitespace from the tree before passing it to the grid handler.
-			// This is currently necessary because the reorderer assumes that any nodes inside
-			// it are re-orderable items.
-			// NOTE: The reorderer needs to be refactored to work without this assumption, so that
-			// it can identify re-orderable items another way e.g. through a class name [FLUID-2]
-			fluid.Utilities.removeNonElementNodes(this.domNode);
-
 			this.layoutHandler.setReorderableContainer(this.domNode);
 
 			if (this.domNode.getAttribute("aaa:activedescendent")) {
@@ -120,7 +113,7 @@ dojo.declare(
 		 */
 		selectActiveItem: function() {
 			if (!this.activeItem) {
-				this._setActiveItem(this.domNode.firstChild);
+				this._setActiveItem(dojo.query (".orderable", this.domNode)[0]);
 			}
 			this.focusItem(this.activeItem);
 		},
