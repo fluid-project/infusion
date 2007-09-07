@@ -113,7 +113,12 @@ dojo.declare(
 		 */
 		selectActiveItem: function() {
 			if (!this.activeItem) {
-				this._setActiveItem(dojo.query (".orderable", this.domNode)[0]);
+				var orderables = dojo.query (".orderable", this.domNode);
+				if (orderables.length > 0) {
+					this._setActiveItem(orderables[0]);
+				}
+				else
+					return;
 			}
 			this.focusItem(this.activeItem);
 		},
@@ -126,7 +131,7 @@ dojo.declare(
 		},
 		
 		handleKeyDown: function (evt) {
-			if (evt.keyCode == dojo.keys.CTRL) {
+			if (this.activeItem && evt.keyCode == dojo.keys.CTRL) {
 				dojo.removeClass(this.activeItem, fluid.states.selectedClass);
 				dojo.addClass(this.activeItem, fluid.states.draggingClass);
 				dojo.stopEvent(evt);
@@ -134,7 +139,7 @@ dojo.declare(
 		},
 		
 		handleKeyUp: function (evt) {
-			if (evt.keyCode == dojo.keys.CTRL) {
+			if (this.activeItem && evt.keyCode == dojo.keys.CTRL) {
 				dojo.removeClass(this.activeItem, fluid.states.draggingClass);
 				dojo.addClass(this.activeItem, fluid.states.selectedClass);
 				dojo.stopEvent(evt);
@@ -142,28 +147,30 @@ dojo.declare(
 		},
 		
 		handleArrowKeyPress: function (evt){
-			switch (key = evt.keyCode) {
-			case dojo.keys.DOWN_ARROW: {
-				this.handleDownArrow(evt.ctrlKey);								
-				dojo.stopEvent(evt);
-				break;
-			}
-			case dojo.keys.UP_ARROW: {
-				this.handleUpArrow(evt.ctrlKey);								
-				dojo.stopEvent(evt);
-				break;
-			}
-			case dojo.keys.LEFT_ARROW: {
-				this.handleLeftArrow(evt.ctrlKey);								
-				dojo.stopEvent(evt);
-				break;
-			}
-			case dojo.keys.RIGHT_ARROW: {
-				this.handleRightArrow(evt.ctrlKey);								
-				dojo.stopEvent(evt);
-				break;
-			}
-			default:
+			if (this.activeItem) {
+				switch (key = evt.keyCode) {
+				case dojo.keys.DOWN_ARROW: {
+					this.handleDownArrow(evt.ctrlKey);								
+					dojo.stopEvent(evt);
+					break;
+				}
+				case dojo.keys.UP_ARROW: {
+					this.handleUpArrow(evt.ctrlKey);								
+					dojo.stopEvent(evt);
+					break;
+				}
+				case dojo.keys.LEFT_ARROW: {
+					this.handleLeftArrow(evt.ctrlKey);								
+					dojo.stopEvent(evt);
+					break;
+				}
+				case dojo.keys.RIGHT_ARROW: {
+					this.handleRightArrow(evt.ctrlKey);								
+					dojo.stopEvent(evt);
+					break;
+				}
+				default:
+				}
 			}
 		},
 	

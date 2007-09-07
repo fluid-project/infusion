@@ -21,18 +21,13 @@
 */
 
 /**
- * Test to see that callback function is properly assigned in Fluid.js
- * initLightbox() function.
- * @author Fluid
+ * Need tests for fluid.initLightbox(), but it requires refactoring before meaningful
+ * tests can be written.  As it stands, the aspects of initLightbox() to test are
+ * within closures and cannot be accessed (e.g., the callback that reorders items).
  */
-function testIsOrderChangedCallbackSet() {
-	var lightbox = fluid.initLightbox(lightboxRootId, MESSAGE_BUNDLE_BASE);
-	assertNotNull("orderChangedCallback is not initialized", lightbox.orderChangedCallback);
-	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlRightArrow());
-}
 
 /**
- * Test to see that callback function is called.
+ * Test to see that callback function is called after a "move item" key press.
  * @author Fluid
  */
 function testIsOrderChangedCallbackCalled() {
@@ -52,6 +47,7 @@ function testIsOrderChangedCallbackCalled() {
 	);
 	
 	// Perform a move
+	lightbox.selectActiveItem();
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlRightArrow());
 	assertNotNull("order changed callback is not called when a move is performed", 
 		dojo.byId("callbackCalled"));

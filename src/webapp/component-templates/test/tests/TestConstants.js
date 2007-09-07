@@ -75,9 +75,9 @@ function exposeTestFunctionNames() {
 		"testSelectActiveItemSecondSelected",
 		"testChangeActiveItemToDefaultState",
 		"testUpdateActiveDescendent",
+		"testKeypressesWithNoOrderables",
 		
 		// LightboxPersistenceTets.js
-		"testIsOrderChangedCallbackSet",
 		"testIsOrderChangedCallbackCalled"
 	];
 }

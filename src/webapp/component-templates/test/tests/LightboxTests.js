@@ -363,6 +363,66 @@ function testSelectActiveItemNothingSelected() {
 	isItemDefaultTest("Initially", firstReorderableId);
 	lightbox.selectActiveItem();
 	isItemFocusedTest("After select active item ", firstReorderableId);
+	
+	// Now, test it with no reorderables.
+	//
+	var orderables = dojo.query(".orderable", lightboxRootId);
+	for (var i in orderables) {
+		dojo.removeClass (orderables[i], "orderable");
+	}
+	var lightboxWithNoOrderables = createLightbox();
+	orderables = dojo.query(".orderable", lightboxWithNoOrderables.domNode);
+	assertEquals ("There should be no 'orderables' in this lightbox", 0, orderables.length);
+	lightboxWithNoOrderables.selectActiveItem();
+	assertNull ("Lightbox's activeItem member should be null", lightboxWithNoOrderables.activeItem);
+}
+
+function testKeypressesWithNoOrderables() {
+	
+	var orderables = dojo.query(".orderable", lightboxRootId);
+	for (var i in orderables) {
+		dojo.removeClass (orderables[i], "orderable");
+	}
+	var lightboxWithNoOrderables = createLightbox();
+	orderables = dojo.query(".orderable", lightboxWithNoOrderables.domNode);
+	assertEquals ("There should be no 'orderables' in this lightbox", 0, orderables.length);
+	
+	lightboxWithNoOrderables.selectActiveItem();
+	assertNull ("Lightbox's activeItem member should be null", lightboxWithNoOrderables.activeItem);
+		
+	// Test left arrow, right arrow, etc. with and without control key.
+	lightboxWithNoOrderables.handleArrowKeyPress(fluid.testUtils.createEvtCtrlRightArrow());
+	assertNull ("After ctrl-right, activeItem member should be null",
+		lightboxWithNoOrderables.activeItem);	
+	lightboxWithNoOrderables.handleArrowKeyPress(fluid.testUtils.createEvtCtrlLeftArrow());
+	assertNull ("After ctrl-left, activeItem member should be null",
+		lightboxWithNoOrderables.activeItem);	
+	lightboxWithNoOrderables.handleArrowKeyPress(fluid.testUtils.createEvtCtrlUpArrow());
+	assertNull ("After ctrl-up, activeItem member should be null",
+		lightboxWithNoOrderables.activeItem);	
+	lightboxWithNoOrderables.handleArrowKeyPress(fluid.testUtils.createEvtCtrlDownArrow());
+	assertNull ("After ctrl-down, activeItem member should be null",
+		lightboxWithNoOrderables.activeItem);	
+
+	lightboxWithNoOrderables.handleArrowKeyPress(fluid.testUtils.createEvtLeftArrow());
+	assertNull ("After left, activeItem member should be null",
+		lightboxWithNoOrderables.activeItem);
+	lightboxWithNoOrderables.handleArrowKeyPress(fluid.testUtils.createEvtRightArrow());
+	assertNull ("After right, activeItem member should be null",
+		lightboxWithNoOrderables.activeItem);
+	lightboxWithNoOrderables.handleArrowKeyPress(fluid.testUtils.createEvtUpArrow());
+	assertNull ("After up, activeItem member should be null",
+		lightboxWithNoOrderables.activeItem);	
+	lightboxWithNoOrderables.handleArrowKeyPress(fluid.testUtils.createEvtDownArrow());
+	assertNull ("After down, activeItem member should be null",
+		lightboxWithNoOrderables.activeItem);
+	
+	lightboxWithNoOrderables.handleKeyDown (fluid.testUtils.createEvtCTRL());
+	assertNull ("After ctrl pressed, activeItem member should be null",
+		lightboxWithNoOrderables.activeItem);
+	lightboxWithNoOrderables.handleKeyUp (fluid.testUtils.createEvtCTRL());
+	assertNull ("After key released w, activeItem member should be null",
+		lightboxWithNoOrderables.activeItem);
 }
 	
 function testSelectActiveItemSecondSelected() {
