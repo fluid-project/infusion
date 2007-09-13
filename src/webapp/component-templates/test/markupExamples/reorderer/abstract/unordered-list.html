@@ -22,33 +22,56 @@
  Telephone: (416) 978-4360
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
-<head>
-<title>Vertical Unordered List</title>
-	<style type="text/css">
+  <head>
+    <title>Vertical Unordered List</title>
+	  <style type="text/css">
 		@import url("../markup-examples.css");
-	</style>
-</head>
+	  </style>
+  	  <script language="JavaScript" type="text/javascript" src="../../../../js/dojo/dojo.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../js/fluid/Reorderer.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../jsunit/app/jsUnitCore.js"></script>
+	  <script language="JavaScript" type="text/javascript" src="../../../tests/ListLayoutHandlerTests.js"></script>	
+  </head>
 
-<body>
+  <body>
 <!-- UNORDERED LIST -->
 
-<h3>Unordered List (vertical)</h3>
-<p>This page is an example of an unordered list that is visually laid out vertically, marked up for use with the Reorderer.
+    <h3>Unordered List (vertical)</h3>
+    <p>This page contains two examples of unordered lists that are visually laid out vertically, marked up for use with the Reorderer.
 List items that have been tagged as reorderable are highlighted.</p>
 
-<div class="reorderer_container">
-<ul>
-<li class="orderable">An Item 1</li>
-<li>An Item 2</li>
-<li class="orderable">An Item 3</li>
-<li>An Item 4</li>
-<li class="orderable">An Item 5</li>
-<li class="orderable">An Item 6</li>
-<li class="orderable">An Item 7</li>
-<li class="orderable">An Item 8</li>
-<li>An Item 9</li>
-<li class="orderable">An Item 10</li>
-</ul>
-</div>
+    <div id="list1" class="reorderer_container">
+      <ul>
+        <li class="orderable">An Item 1</li>
+        <li>An Item 2</li>
+        <li class="orderable">An Item 3</li>
+        <li>An Item 4</li>
+        <li class="orderable">An Item 5</li>
+        <li class="orderable">An Item 6</li>
+        <li class="orderable">An Item 7</li>
+        <li class="orderable">An Item 8</li>
+        <li>An Item 9</li>
+        <li class="orderable">An Item 10</li>
+      </ul>
+    </div>
 
-</body></html>
+    <div id="list2" tabindex="0" class="reorderer_container">
+      <ul>
+        <li id="list2item1" class="orderable image-container-default">Item 1</li>
+        <li id="list2item2" class="orderable image-container-default">Item 2</li>
+        <li id="list2item3" class="orderable image-container-default">Item 3</li>
+        <li id="list2item4" class="orderable image-container-default">Item 4</li>
+        <li id="list2item5" class="orderable image-container-default">Item 5</li>
+      </ul>
+    </div>
+
+    <script language="JavaScript" type="text/javascript">
+      new fluid.Reorderer({
+          orderChangedCallback: function() {},
+          layoutHandler: new fluid.ListLayoutHandler()
+        },
+        "list2"
+      );
+    </script>
+  </body>
+</html>

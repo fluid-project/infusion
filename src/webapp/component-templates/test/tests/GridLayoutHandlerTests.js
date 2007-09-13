@@ -3,17 +3,17 @@ function testGetRightSiblingInfo() {
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
 
-	var rightSibling = gridHandler._getRightSiblingInfo(dojo.byId(firstReorderableId))
+	var rightSibling = gridHandler._getRightSiblingInfo(dojo.byId(firstReorderableId));
 	assertEquals("The item to the right of the first image should be the second image", 
 		dojo.byId(secondReorderableId), rightSibling.item);
 	assertFalse("No wrap to the right of the first image", rightSibling.hasWrapped);
 
-	rightSibling = gridHandler._getRightSiblingInfo(dojo.byId(thirdReorderableId))
+	rightSibling = gridHandler._getRightSiblingInfo(dojo.byId(thirdReorderableId));
 	assertEquals("The item to the right of the third image should be the fourth image", 
 		dojo.byId(fourthReorderableId), rightSibling.item);
 	assertFalse("No wrap to the right of the third image", rightSibling.hasWrapped);
 
-	rightSibling = gridHandler._getRightSiblingInfo(dojo.byId(lastReorderableId))
+	rightSibling = gridHandler._getRightSiblingInfo(dojo.byId(lastReorderableId));
 	assertEquals("The item to the right of the last image should be the first image", 
 		dojo.byId(firstReorderableId), rightSibling.item);
 	assertTrue("Wrap to the right of the last image", rightSibling.hasWrapped);	
@@ -29,17 +29,17 @@ function testGetLeftSiblingInfo() {
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
 
-	var leftSibling = gridHandler._getLeftSiblingInfo(dojo.byId(fourthReorderableId))
+	var leftSibling = gridHandler._getLeftSiblingInfo(dojo.byId(fourthReorderableId));
 	assertEquals("The item to the left of the fourth image should be the third image", 
 		dojo.byId(thirdReorderableId), leftSibling.item);
 	assertFalse("No wrap to the left of the fourth image", leftSibling.hasWrapped);
 
-	leftSibling = gridHandler._getLeftSiblingInfo(dojo.byId(lastReorderableId))
+	leftSibling = gridHandler._getLeftSiblingInfo(dojo.byId(lastReorderableId));
 	assertEquals("The item to the left of the last image should be the second last image", 
 		dojo.byId(secondLastReorderableId), leftSibling.item);
 	assertFalse("No wrap to the left of the last image", leftSibling.hasWrapped);
 
-	leftSibling = gridHandler._getLeftSiblingInfo(dojo.byId(firstReorderableId))
+	leftSibling = gridHandler._getLeftSiblingInfo(dojo.byId(firstReorderableId));
 	assertEquals("The item to the left of the first image should be the last image", 
 		dojo.byId(lastReorderableId), leftSibling.item);
 	assertTrue("Wrap to the left of the first image", leftSibling.hasWrapped);

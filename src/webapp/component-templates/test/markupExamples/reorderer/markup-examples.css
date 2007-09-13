@@ -5,10 +5,15 @@ width: 75%;
 margin: 10 auto;
 }
 
+dt{
+	padding-top: 10px;
+}
+
 .reorderer_container{
 padding: 20px;
 border: 1px dashed red;
 overflow: hidden;
+background-color: #eee;
 }
 	
 .orderable{
@@ -62,4 +67,27 @@ border: 1px solid black;
 
 table td{
 border: 1px solid black;
+}
+
+
+.image-container-default{
+border: 2px solid #ddd;
+margin: 0 10px 10px 0 !important;
+text-align: center;
+padding-top: 10px;
+}
+
+.image-container-hover{
+border: 2px solid #666;
+margin: 0 10px 10px 0 !important;
+text-align: center;
+padding-top: 10px;
+}
+
+.image-container-selected{
+border: 2px solid #666;
+background-color: #ddd;
+margin: 0 10px 10px 0 !important;
+text-align: center;
+padding-top: 10px;
 }

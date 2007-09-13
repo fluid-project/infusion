@@ -116,6 +116,100 @@ fluid.declare(fluid, {
 });
 
 fluid.declare(fluid, {
+	   ListLayoutHandler : function () {
+        this._container = null;
+        
+        this.setReorderableContainer = function (aList) {
+            this._container = aList;
+        };
+        
+        /*
+         * Returns an object containing the item that is to the right of the given item
+         * and a flag indicating whether or not the process has 'wrapped' around the end of
+         * the row that the given item is in
+         */
+        this._getRightSiblingInfo = function (item) {           
+            return this._getSiblingInfo (item, 1);
+        };
+        
+        this.getRightSibling = function (item) {
+            return this._getRightSiblingInfo(item).item;
+        };
+        
+        this.moveItemRight = function (item) {
+            this._moveItem(item, this._getRightSiblingInfo(item), "after", "before");
+        };
+
+        /*
+         * Returns an object containing the item that is to the left of the given item
+         * and a flag indicating whether or not the process has 'wrapped' around the end of
+         * the row that the given item is in
+         */
+        this._getLeftSiblingInfo = function (item) {
+            return this._getSiblingInfo (item, -1);
+        };
+            
+        this.getLeftSibling = function (item) {
+            return this._getLeftSiblingInfo(item).item;
+        };
+
+        this.moveItemLeft = function (item) {
+            this._moveItem(item, this._getLeftSiblingInfo(item), "before", "after");
+        };
+
+        /*
+         * A general get{Left|Right}SiblingInfo() given an item and a direction.
+         * The direction is encoded by either a +1 to move right, or a -1 to
+         * move left, and that value is used internally as an increment or
+         * decrement, respectively, of the index of the given item.
+         */
+        this._getSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
+            var orderables = dojo.query(".orderable", this._container);
+            var index = dojo.indexOf(orderables, item) + incDecrement;
+            var hasWrapped = false;
+                
+            // Handle wrapping to 'before' the beginning. 
+            if (index == -1) {
+                index = orderables.length - 1;
+                hasWrapped = true;
+            }
+            // Handle wrapping to 'after' the end.
+            else if (index == orderables.length) {
+                index = 0;
+                hasWrapped = true;
+            } 
+            // Handle case where the passed-in item is *not* an "orderable"
+            // (or other undefined error).
+            //
+            else if (index < -1 || index > orderables.length) {
+                index = 0;
+            }
+            
+            return {item: orderables[index], hasWrapped: hasWrapped};
+        };
+
+        this.getItemBelow = function (item) {
+            return this.getRightSibling(item);
+        };
+
+        this.getItemAbove = function (item) {
+            return this.getLeftSibling(item);
+        };
+        
+        this.moveItemUp = this.moveItemLeft;
+        
+        this.moveItemDown = this.moveItemRight;
+        
+        this._moveItem = function(item, relatedItemInfo, defaultPlacement, wrappedPlacement) {
+            var itemPlacement = defaultPlacement;
+            if (relatedItemInfo.hasWrapped) {
+                itemPlacement = wrappedPlacement;
+            }
+            dojo.place(item, relatedItemInfo.item, itemPlacement);
+        };
+        
+    },
+    
 	/*
 	 * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
 	 * changes dimensions when the window changes size. As a result, when the user presses the up or
@@ -125,78 +219,9 @@ fluid.declare(fluid, {
 	 * in the window, and of informing the Lightbox of which items surround a given item.
 	 */
 	GridLayoutHandler : function (){
-		
-		this._grid = null;
-		
-		this.setReorderableContainer = function (aGrid) {
-			this._grid = aGrid;
-		};
-				
-		/*
-		 * Returns an object containing the item that is to the right of the given item
-		 * and a flag indicating whether or not the process has 'wrapped' around the end of
-		 * the row that the given item is in
-		 */
-		this._getRightSiblingInfo = function (item) {			
-			return this._getSiblingInfo (item, 1);
-		};
-		
-		this.getRightSibling = function (item) {
-			return this._getRightSiblingInfo(item).item;
-		};
-		
-		this.moveItemRight = function (item) {
-			this._moveItem(item, this._getRightSiblingInfo(item), "after", "before");
-		};
 
-		/*
-		 * Returns an object containing the item that is to the left of the given item
-		 * and a flag indicating whether or not the process has 'wrapped' around the end of
-		 * the row that the given item is in
-		 */
-		this._getLeftSiblingInfo = function (item) {
-			return this._getSiblingInfo (item, -1);
-		};
-			
-		this.getLeftSibling = function (item) {
-			return this._getLeftSiblingInfo(item).item;
-		};
-
-		this.moveItemLeft = function (item) {
-			this._moveItem(item, this._getLeftSiblingInfo(item), "before", "after");
-		};
-
-		/*
-		 * A general get{Left|Right}SiblingInfo() given an item and a direction.
-		 * The direction is encoded by either a +1 to move right, or a -1 to
-		 * move left, and that value is used internally as an increment or
-		 * decrement, respectively, of the index of the given item.
-		 */
-		this._getSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
-			var orderables = dojo.query(".orderable", this._grid);
-			var index = dojo.indexOf(orderables, item) + incDecrement;
-			var hasWrapped = false;
-				
-			// Handle wrapping to 'before' the beginning. 
-			if (index == -1) {
-				index = orderables.length - 1;
-				hasWrapped = true;
-			}
-			// Handle wrapping to 'after' the end.
-			else if (index == orderables.length) {
-				index = 0;
-				hasWrapped = true;
-			} 
-			// Handle case where the passed-in item is *not* an "orderable"
-			// (or other undefined error).
-			//
-			else if (index < -1 || index > orderables.length) {
-				index = 0;
-			}
-			
-			return {item: orderables[index], hasWrapped: hasWrapped};
-		};
-				
+        fluid.ListLayoutHandler.call(this);
+						
 		/*
 		 * Returns an object containing the item that is below the given item in the current grid
 		 * and a flag indicating whether or not the process has 'wrapped' around the end of
@@ -205,7 +230,7 @@ fluid.declare(fluid, {
 		 * after the item changes if the process wrapped around the column.
 		 */
 		this._getItemInfoBelow = function (inItem) {
-			var orderables = dojo.query(".orderable", this._grid);
+			var orderables = dojo.query(".orderable", this._container);
 			var curIndex = dojo.indexOf(orderables, inItem);
 			var curCoords = dojo.coords(inItem);
 			
@@ -248,7 +273,7 @@ fluid.declare(fluid, {
 		 * after the item changes if the process wrapped around the column.
 		 */
 		this._getItemInfoAbove = function (inItem) {
-			var orderables = dojo.query(".orderable", this._grid);
+			var orderables = dojo.query(".orderable", this._container);
 			var curIndex = dojo.indexOf(orderables, inItem);
 			var curCoords = dojo.coords(inItem);
 
@@ -282,14 +307,7 @@ fluid.declare(fluid, {
 		this.moveItemUp = function(item) {
 			this._moveItem(item, this._getItemInfoAbove(item), "before", "after");
 		};
-		
-		this._moveItem = function(item, relatedItemInfo, defaultPlacement, wrappedPlacement) {
-			var itemPlacement = defaultPlacement;
-			if (relatedItemInfo.hasWrapped) {
-				itemPlacement = wrappedPlacement;
-			}
-			dojo.place(item, relatedItemInfo.item, itemPlacement);
-		};
-		
+				
 	} // End of GridLayoutHandler
+		
 });

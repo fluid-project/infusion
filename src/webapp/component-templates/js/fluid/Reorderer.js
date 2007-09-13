@@ -242,7 +242,7 @@ dojo.declare(
 		_enableDragAndDrop: function() {
 			dndlb = new dojo.dnd.Source(this.domNode.id, {creator: this._itemCreator, horizontal: true});
 			dndlb.reorderer = this;
-			items = this.domNode.childNodes;
+			items = dojo.query(".orderable", this.domNode);
 			var itemArray = new Array();
 			for(i = 0; i < items.length; i++) {
 				itemArray.push(items[i]);
@@ -275,15 +275,12 @@ dojo.declare(
 		},
 
 		/**
-		 * Finds the parent element marked "reorderable" (or in the temporary case, with the
-		 * equivalent ARIA role) for a child element.
+		 * Finds the parent element marked "orderable" for a child element.
 		 */
 		_findReorderableParent: function(childElement) {
-			// This code will need to be refactored to look for a "reorderable" class rather than
-			// a grid-specific ARIA role.
 			if (childElement == null) {
 				return null;
-			} else if (childElement.getAttribute("xhtml10:role") == "wairole:gridcell") {
+			} else if (dojo.hasClass(childElement, "orderable")) {
 				return childElement;
 			} else {
 				return this._findReorderableParent(childElement.parentNode);
