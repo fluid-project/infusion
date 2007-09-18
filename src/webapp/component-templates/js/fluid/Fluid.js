@@ -26,17 +26,18 @@ if (typeof(dojo) != 'undefined') {
 
 if (typeof(fluid) == "undefined") {
 	fluid = {};
-	fluid.declare = function(target, args) {
-		for (arg in args) {
-			target[arg] = args[arg];
-		}
-	};
 };
+
+fluid.declare = function(target, args) {
+    for (arg in args) {
+      target[arg] = args[arg];
+    }
+  };
 
 fluid.declare(fluid, {
 	
 	deriveLightboxCellBase: function(namebase, index) {
-		return namebase + "lightbox-cell::"+index+":";
+		return namebase + "lightbox-cell:"+index+":";
 	},
 	
 	// Client-level initialisation for the lightbox, allowing parameterisation for

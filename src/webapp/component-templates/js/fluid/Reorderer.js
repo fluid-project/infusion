@@ -31,7 +31,6 @@ fluid.declare = function(target, args) {
 dojo.require("dijit._Widget");
 dojo.require("dojo.dnd.source");
 dojo.require("dijit.Tooltip");
-dojo.require("fluid.Fluid");
 
 (function() {
 	fluid.states = {
