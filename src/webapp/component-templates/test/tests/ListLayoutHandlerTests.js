@@ -14,9 +14,6 @@ function testGetRightSiblingWrap() {
 		dojo.byId(firstItemId), rightSibling);	
 }
 
-    // TODO: write this test
-    // "When a non-orderable is passed to getRightSibling the first orderable should be returned.", 
-
 function testGetLeftSibling() {
 	var leftSibling = listHandler1.getLeftSibling(dojo.byId(secondItemId));
 	assertEquals("The item to the left of the second item should be the first item", 
@@ -32,9 +29,6 @@ function testGetLeftSiblingWrap() {
 	assertEquals("The item to the left of the first item should be the last item", 
 		dojo.byId(lastItemId), leftSibling);
 }
-
-    // TODO: write this test
-    //"When a non-orderable is passed to getLeftSibling the first orderable should be returned.", 
 
 function testGetItemBelow() {
 	var itemBelow = listHandler1.getItemBelow(dojo.byId(firstItemId));
@@ -52,9 +46,6 @@ function testGetItemBelowWrap() {
 		dojo.byId(firstItemId), itemBelow);	
 }
 
-    // TODO: write this test
-    // "When a non-orderable is passed to getItemBelow the first orderable should be returned.", 
-
 function testGetItemAbove() {
 	var itemAbove = listHandler1.getItemAbove(dojo.byId(secondItemId));
 	assertEquals("The item to the left of the second item should be the first item", 
@@ -71,9 +62,46 @@ function testGetItemAboveWrap() {
 		dojo.byId(lastItemId), itemAbove);
 }
 
+function testNextItemForNonOrderableReturnsTheFirstItem() {
+    var rightSibling = listHandler1.getRightSibling(dojo.byId(nonOrderabeItemId));
+    assertEquals("When a non-orderable is passed to getRightSibling the first orderable should be returned.", 
+        dojo.byId(firstItemId), rightSibling);  
+        
+    var leftSibling = listHandler1.getLeftSibling(dojo.byId(nonOrderabeItemId));
+    assertEquals("When a non-orderable is passed to getLeftSibling the first orderable should be returned.", 
+        dojo.byId(firstItemId), leftSibling);
 
-    // TODO: write this test
-    //"When a non-orderable is passed to getItemAbove the first orderable should be returned.", 
+    var itemBelow = listHandler1.getItemBelow(dojo.byId(nonOrderabeItemId));
+    assertEquals("When a non-orderable is passed to getItemBelow the first orderable should be returned", 
+        dojo.byId(firstItemId), itemBelow);
 
-// TODO: write movement tests
+    var itemAbove = listHandler1.getItemAbove(dojo.byId(nonOrderabeItemId));
+    assertEquals("When a non-orderable is passed to getItemAbove the first orderable should be returned.", 
+        dojo.byId(firstItemId), itemAbove);
+        
+}
+
+// TODO: expand the movement test 
+function testMovement() {
+    var theList = dojo.byId("list1");
+    	
+    listItems = theList.getElementsByTagName("li");
+    
+    assertEquals("Before moving anything, expect first is first", firstItemId, listItems[0].id);
+    assertEquals("Before moving anything, expect second is second", secondItemId, listItems[1].id);
+    assertEquals("Before moving anything, expect third is third", thirdItemId, listItems[2].id);
+    assertEquals("Before moving anything, expect fourth is fourth", fourthItemId, listItems[3].id);
+    assertEquals("Before moving anything, expect last is last", lastItemId, listItems[4].id);
+
+    listHandler1.moveItemDown(listItems[0]);
+    
+    listItemsAfterMove = theList.getElementsByTagName("li");
+    
+    assertEquals("After, expect second is first", secondItemId, listItemsAfterMove[0].id);
+    assertEquals("After, expect first is second", firstItemId, listItemsAfterMove[1].id);
+    assertEquals("After, expect third is third", thirdItemId, listItemsAfterMove[2].id);
+    assertEquals("After, expect fourth is fourth", fourthItemId, listItemsAfterMove[3].id);
+    assertEquals("After, expect last is last", lastItemId, listItemsAfterMove[4].id);
+
+}
 
