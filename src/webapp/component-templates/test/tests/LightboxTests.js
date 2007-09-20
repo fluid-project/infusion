@@ -1,28 +1,3 @@
-var imgListClone;
-
-// This setUp will be called before each of the tests that are included in Lightbox.html - including ones not in this file.
-function setUp() {
-	imgListClone = document.getElementById(lightboxRootId).cloneNode(true);
-	
-	// Force the grid size to three thumbnails wide
-	dojo.addClass(dojo.byId(lightboxRootId), "width-3-thumb");
-}
-
-
-// This tearDown will be called after each of the tests that are included in Lightbox.html - including ones not in this file.
-function tearDown() {
-	var fluidLightboxDOMNode = document.getElementById(lightboxRootId);
-	var lightboxParent = document.getElementById(lightboxParentId);
-	lightboxParent.removeChild(fluidLightboxDOMNode);
-	lightboxParent.appendChild(imgListClone);
-}
-	
-function createLightbox() {
-	return new fluid.Reorderer(
-	    {orderChangedCallback: function(){},
-	     layoutHandler: new fluid.GridLayoutHandler()}
-	     , lightboxRootId);
-}
 
 function testFindReorderableParent() {
 	var lightbox = createLightbox();

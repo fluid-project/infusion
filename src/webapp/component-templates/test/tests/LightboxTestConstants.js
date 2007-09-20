@@ -1,3 +1,7 @@
+/**
+ * This file contains test constants and setup and teardown functions that are used when testing with the data in the Lightbox.html file.
+ */
+ 
 var numOfImages = 14;
 
 // The id of the form for submitting changes to the server.
@@ -47,8 +51,9 @@ var defaultClass="image-container-default";
 var selectedClass="image-container-selected";
 var draggingClass="image-container-dragging";
 
-// All the test function names for the JsUnit tests.  Needed for running JsUnit in 
-// IE and Safari.
+// All the test function names for the JsUnit tests that test against the Lightbox.html file.  
+// This is needed for running JsUnit in IE and Safari.
+// It's a very brittle and annoying way of specifying test names and should be fixed. [FLUID-35]
 //
 function exposeTestFunctionNames() {
 	return [
@@ -80,4 +85,29 @@ function exposeTestFunctionNames() {
 		// LightboxPersistenceTets.js
 		"testIsOrderChangedCallbackCalled"
 	];
+}
+
+var imgListClone;
+
+// This setUp will be called before each of the tests that are included in Lightbox.html 
+function setUp() {
+    imgListClone = document.getElementById(lightboxRootId).cloneNode(true);
+    
+    // Force the grid size to three thumbnails wide
+    dojo.addClass(dojo.byId(lightboxRootId), "width-3-thumb");
+}
+
+// This tearDown will be called after each of the tests that are included in Lightbox.html 
+function tearDown() {
+    var fluidLightboxDOMNode = document.getElementById(lightboxRootId);
+    var lightboxParent = document.getElementById(lightboxParentId);
+    lightboxParent.removeChild(fluidLightboxDOMNode);
+    lightboxParent.appendChild(imgListClone);
+}
+    
+function createLightbox() {
+    return new fluid.Reorderer(
+        {orderChangedCallback: function(){},
+         layoutHandler: new fluid.GridLayoutHandler()}
+         , lightboxRootId);
 }

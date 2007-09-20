@@ -30,7 +30,10 @@
   	  <script language="JavaScript" type="text/javascript" src="../../../../js/dojo/dojo.js"></script>
       <script language="JavaScript" type="text/javascript" src="../../../../js/fluid/Fluid.js"></script>
       <script language="JavaScript" type="text/javascript" src="../../../../js/fluid/Reorderer.js"></script>
+      
+      <!--  These are used for JsUnit tests that have been written using this page as data -->
       <script language="JavaScript" type="text/javascript" src="../../../jsunit/app/jsUnitCore.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../tests/UnorderedListTestConstants.js"></script>
 	  <script language="JavaScript" type="text/javascript" src="../../../tests/ListLayoutHandlerTests.js"></script>	
   </head>
 
@@ -38,10 +41,41 @@
 <!-- UNORDERED LIST -->
 
     <h3>Unordered List (vertical)</h3>
-    <p>This page contains two examples of unordered lists that are visually laid out vertically, marked up for use with the Reorderer.
-List items that have been tagged as reorderable are highlighted.</p>
 
-    <div id="list1" class="reorderer_container">
+    <div id="list1" tabindex="0" class="reorderer_container">
+      <p> This is a simple example of using the Reorderer with a list. 
+        If you look at the markup, you'll notice the "orderable" class. 
+        This is the contract between the Reorderer and its template: any element with an "orderable" 
+        class can be moved with the use of the Reorderer.
+        If you look at the page source, you'll also notice a script block containing: 
+        <span style="display: block; padding: 10px"> new fluid.Reorderer({orderChangedCallback: 
+          function() {}, layoutHandler: new fluid.ListLayoutHandler() }, "list1");
+        </span>
+         This is the script that creates a Reorderer using a ListLayoutHandler and attaches it to this list.
+      </p>
+
+      <ul>
+        <li id="list1item1" class="orderable image-container-default">Item 1</li>
+        <li id="list1item2" class="orderable image-container-default">Item 2</li>
+        <li id="list1item3" class="orderable image-container-default">Item 3</li>
+        <li id="list1item4" class="orderable image-container-default">Item 4</li>
+        <li id="list1item5" class="orderable image-container-default">Item 5</li>
+      </ul>
+    </div>
+
+    <script language="JavaScript" type="text/javascript">
+      new fluid.Reorderer({
+          orderChangedCallback: function() {},
+          layoutHandler: new fluid.ListLayoutHandler()
+        },
+        "list1"
+      );
+    </script>
+    
+    <p>This is an example of an unordered list that is visually laid out vertically, marked up for use with the Reorderer.
+List items that have been tagged as orderable are highlighted. Notice that a Reorderer has not been created for this list.</p>
+
+    <div id="list2" class="reorderer_container">
       <ul>
         <li class="orderable">An Item 1</li>
         <li>An Item 2</li>
@@ -56,23 +90,5 @@ List items that have been tagged as reorderable are highlighted.</p>
       </ul>
     </div>
 
-    <div id="list2" tabindex="0" class="reorderer_container">
-      <ul>
-        <li id="list2item1" class="orderable image-container-default">Item 1</li>
-        <li id="list2item2" class="orderable image-container-default">Item 2</li>
-        <li id="list2item3" class="orderable image-container-default">Item 3</li>
-        <li id="list2item4" class="orderable image-container-default">Item 4</li>
-        <li id="list2item5" class="orderable image-container-default">Item 5</li>
-      </ul>
-    </div>
-
-    <script language="JavaScript" type="text/javascript">
-      new fluid.Reorderer({
-          orderChangedCallback: function() {},
-          layoutHandler: new fluid.ListLayoutHandler()
-        },
-        "list2"
-      );
-    </script>
   </body>
 </html>
