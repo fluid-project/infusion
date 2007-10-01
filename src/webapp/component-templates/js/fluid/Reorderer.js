@@ -37,6 +37,10 @@ dojo.require("dojo.dnd.source");
 		selectedClass:"image-container-selected",
 		draggingClass:"image-container-dragging"
 	};
+    dndStates = [
+        "dojoDndItemAnchor",
+        "dojoDndItemSelected"
+    ];
 })();
 
 
@@ -124,6 +128,9 @@ dojo.declare(
 		changeActiveItemToDefaultState: function() {
 			if (this.activeItem) {
 				dojo.removeClass(this.activeItem, fluid.states.selectedClass);
+				for (i=0;i<dndStates.length;i++) {
+                    dojo.removeClass(this.activeItem, dndStates[i]);
+                }
 				dojo.addClass(this.activeItem, fluid.states.defaultClass);
 			}
 		},
