@@ -247,15 +247,11 @@ dojo.declare(
         },
 
 		_enableDragAndDrop: function() {
-			dndlb = new dojo.dnd.Source(this.domNode.id, {creator: this._itemCreator, horizontal: true});
+			var dndlb = new dojo.dnd.Source(this.domNode.id, {creator: this._itemCreator, horizontal: true});
             dndlb.singular=true;
 			dndlb.reorderer = this;
-			items = dojo.query(".orderable", this.domNode);
-			var itemArray = new Array();
-			for(i = 0; i < items.length; i++) {
-				itemArray.push(items[i]);
-			}
-			dndlb.insertNodes(false, itemArray);
+			var items = dojo.query(".orderable", this.domNode);
+			dndlb.insertNodes(false, items);
 			
 			// Override dojo's dnd 'onMouseDown' in order to put focus on the drag source.  Then
 			// apply the superclass 'onMouseDown'.
@@ -271,6 +267,11 @@ dojo.declare(
 			// superclass 'onDndCancel', and then set focus to the dropped item after superclass
 			// returns.
 			dndlb.onDndCancel = function () {
+                var m = dojo.dnd.manager();
+                if (dndlb.isDragging && !m.canDropFlag) {
+                    var nodeToMoveBack = dndlb.anchor;
+                    dndlb.insertNodes (true, [nodeToMoveBack], true, null);
+                }
 				dojo.dnd.Source.prototype.onDndCancel.apply (dndlb, arguments);
 				this.reorderer.focusItem (this.reorderer.activeItem);
 			};
