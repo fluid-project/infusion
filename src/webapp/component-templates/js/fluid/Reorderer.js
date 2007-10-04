@@ -248,6 +248,7 @@ dojo.declare(
 
 		_enableDragAndDrop: function() {
 			dndlb = new dojo.dnd.Source(this.domNode.id, {creator: this._itemCreator, horizontal: true});
+            dndlb.singular=true;
 			dndlb.reorderer = this;
 			items = dojo.query(".orderable", this.domNode);
 			var itemArray = new Array();
