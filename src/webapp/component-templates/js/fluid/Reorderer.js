@@ -139,6 +139,7 @@ dojo.declare(
 			if (this.activeItem && evt.keyCode == dojo.keys.CTRL) {
 				dojo.removeClass(this.activeItem, fluid.states.selectedClass);
 				dojo.addClass(this.activeItem, fluid.states.draggingClass);
+                this.activeItem.setAttribute("aaa:grab", "true");
 				dojo.stopEvent(evt);
 			}
 		},
@@ -147,6 +148,7 @@ dojo.declare(
 			if (this.activeItem && evt.keyCode == dojo.keys.CTRL) {
 				dojo.removeClass(this.activeItem, fluid.states.draggingClass);
 				dojo.addClass(this.activeItem, fluid.states.selectedClass);
+                this.activeItem.setAttribute("aaa:grab", "supported");
 				dojo.stopEvent(evt);
 			}		
 		},
@@ -238,7 +240,7 @@ dojo.declare(
 				this.domNode.removeAttribute("aaa:activedescendent");
 			}
 		},
-
+		
         _itemCreator: function(item, hint) {
         	var types = [];
         	return {node: item, data: item, types: types};
@@ -260,6 +262,7 @@ dojo.declare(
 				// note: source.target will not work in IE, need to use source.srcElement instead.
 				var targetElement = (ecmaEvent.target || ecmaEvent.srcElement);
                 this.reorderer.focusItem(this.reorderer._findReorderableParent(targetElement));
+                this.reorderer.activeItem.setAttribute("aaa:grab", "true");
                 dojo.dnd.Source.prototype.onMouseDown.apply(dndlb, arguments);
             };
 			
@@ -276,7 +279,12 @@ dojo.declare(
 				// callback not to be a public property.
                 dojo.dnd.Source.prototype.onDndDrop.call(this, source, nodes, copy);
 		  	    this.reorderer.orderChangedCallback();
-			}
+			};
+
+            dndlb.onMouseUp = function(ecmaEvent){
+                this.reorderer.activeItem.setAttribute("aaa:grab", "supported");
+                dojo.dnd.Source.prototype.onMouseUp.apply(dndlb, arguments);
+            };
 		},
 
 		/**

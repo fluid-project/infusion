@@ -447,3 +447,20 @@ function testUpdateActiveDescendent() {
 	assertNull("after unsetting active item, no item should be activedescendent", lbRoot.getAttribute("aaa:activedescendent"));
 
 }
+
+function testUpdateGrabProperty() {
+    var lightbox = createLightbox();
+    lbRoot = dojo.byId(lightboxRootId);
+    var testItem = dojo.byId(firstReorderableId);
+    assertEquals("before any action, test item should have grab of supported", "supported", testItem.getAttribute("aaa:grab"));
+    
+    lightbox.selectActiveItem();
+    lightbox.handleKeyDown (fluid.testUtils.createEvtCTRL());
+    assertEquals("while CTRL held down, test item should have grab of true", "true", testItem.getAttribute("aaa:grab"));
+
+    lightbox.handleArrowKeyPress (fluid.testUtils.createEvtCtrlRightArrow());
+    assertEquals("after arrow while CTRL still held down, test item should have grab of true", "true", testItem.getAttribute("aaa:grab"));
+    
+    lightbox.handleKeyUp (fluid.testUtils.createEvtCTRL());
+    assertEquals("after CTRL released, test item should have grab of supported", "supported", testItem.getAttribute("aaa:grab"));
+}

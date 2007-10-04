@@ -81,6 +81,7 @@ function exposeTestFunctionNames() {
 		"testChangeActiveItemToDefaultState",
 		"testUpdateActiveDescendent",
 		"testKeypressesWithNoOrderables",
+		"testUpdateGrabProperty",
 		
 		// LightboxPersistenceTets.js
 		"testIsOrderChangedCallbackCalled"
