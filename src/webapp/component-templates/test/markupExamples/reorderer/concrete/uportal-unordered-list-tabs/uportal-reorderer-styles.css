@@ -2,16 +2,19 @@
 .image-container-default{
 position: relative;
 top: 0px;
+border-width: 0;
 }
 
 .image-container-hover{
 }
 
-.image-container-selected a{
+.image-container-selected a {
+text-decoration: underline !important;
 }
 
 .image-container-dragging a{
 background-color: lightyellow !important;
 position: relative;
 top: -5px;
+text-decoration: underline !important;
 }
