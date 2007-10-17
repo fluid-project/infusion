@@ -1,20 +1,104 @@
 
+/*---------- DOJO DND STYLING ---------------*/
+
+.dojoDndItemOver{ 
+}
+
+.dojoDndItemSelected{
+}
+
+.dojoDndItemAnchor{
+}
+
+.dojoDndItemOver.dojoDndItemSelected{
+}
+
+.dojoDndItemOver.dojoDndItemAnchor{
+}
+
+.dojoDndItemBefore a{
+border-left: 2px solid black !important;
+}
+
+.dojoDndItemBefore #activeTabLink{
+border-left: 2px solid black !important;
+}
+
+
+.dojoDndItemAfter a{
+border-right: 2px solid black !important;
+}
+
+.dojoDndAvatar{
+}
+
+.dojoDndAvatarHeader
+{
+display:none;
+}
+
+.dojoDndAvatarItem
+{
+opacity: 1 !important;
+}
+
+
+.dojoDndAvatarItem td li 
+{
+list-style: none !important;
+}
+
+
+.dojoDndAvatarItem td li a
+{
+background-color: lightyellow !important;
+padding: 10px 20px !important;
+opacity: 1 !important;
+list-style: none !important;
+text-decoration: none;
+font-weight: bold;
+color: #6666CC;
+}
+
+
+
+/* TAB STYLES */
+
+#tabs li a{
+border: 2px solid #ccc;
+}
+
+#activeTabLink{
+border: 2px solid white !important;
+}
+
+
 .image-container-default{
 position: relative;
 top: 0px;
-border-width: 0;
 }
 
 .image-container-hover{
 }
 
 .image-container-selected a {
-text-decoration: underline !important;
+border-color: black black #ccc black !important;
+}
+
+.image-container-selected #activeTabLink {
+border-color: black black white black !important;
 }
 
 .image-container-dragging a{
 background-color: lightyellow !important;
 position: relative;
 top: -5px;
-text-decoration: underline !important;
+border-color: lightyellow !important;
+}
+
+.image-container-dragging #activeTab{
+background-color: lightyellow !important;
+position: relative;
+top: -5px;
+border-color: lightyellow !important;
 }
