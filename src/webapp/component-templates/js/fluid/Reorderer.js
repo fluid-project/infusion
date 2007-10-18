@@ -58,6 +58,8 @@ dojo.declare(
 		
 		orderChangedCallback: null,
 		
+		orderableIdBase: null,
+		
 		/**
 		 * Return the element within the item that should receive focus. This is determined by the class 
 		 * 'reorderable-focus-target'. If it is not specified, the item itself is returned.
@@ -247,47 +249,20 @@ dojo.declare(
         },
 
 		_enableDragAndDrop: function() {
-			var dndlb = new dojo.dnd.Source(this.domNode.id, {creator: this._itemCreator, horizontal: true});
-            dndlb.singular=true;
-			dndlb.reorderer = this;
-			var items = dojo.query(".orderable", this.domNode);
-			dndlb.insertNodes(false, items);
-			
-			// Override dojo's dnd 'onMouseDown' in order to put focus on the drag source.  Then
-			// apply the superclass 'onMouseDown'.
-            dndlb.onMouseDown = function(ecmaEvent){
-				// note: source.target will not work in IE, need to use source.srcElement instead.
-				var targetElement = (ecmaEvent.target || ecmaEvent.srcElement);
-                this.reorderer.focusItem(this.reorderer._findReorderableParent(targetElement));
-                this.reorderer.activeItem.setAttribute("aaa:grab", "true");
-                dojo.dnd.Source.prototype.onMouseDown.apply(dndlb, arguments);
-            };
-			
-			// dojo's dnd system lastly calls 'onDndCancel'. Override it here to first call the
-			// superclass 'onDndCancel', and then set focus to the dropped item after superclass
-			// returns.
-			dndlb.onDndCancel = function () {
-                var m = dojo.dnd.manager();
-                if (dndlb.isDragging && !m.canDropFlag) {
-                    var nodeToMoveBack = dndlb.anchor;
-                    dndlb.insertNodes (true, [nodeToMoveBack], true, null);
+            var reorderer = this;
+            jQuery(this.domNode).sortable({
+                items: "[id^="+this.orderableIdBase+"]",
+                start: function(e, ui) {
+                    reorderer.focusItem(reorderer._findReorderableParent(ui.draggable.element));
+                    reorderer.activeItem.setAttribute("aaa:grab", "true");
+                },
+                update: function(e, ui) {
+                    reorderer.orderChangedCallback();
+                    reorderer.focusItem (reorderer.activeItem);
+                    reorderer.activeItem.setAttribute("aaa:grab", "supported");
                 }
-				dojo.dnd.Source.prototype.onDndCancel.apply (dndlb, arguments);
-				this.reorderer.focusItem (this.reorderer.activeItem);
-			};
-			
-			dndlb.onDndDrop = function(source, nodes, copy) {
-				// Use of "this" here is alarmingly ambiguous, and we really want the
-				// callback not to be a public property.
-                dojo.dnd.Source.prototype.onDndDrop.call(this, source, nodes, copy);
-		  	    this.reorderer.orderChangedCallback();
-			};
-
-            dndlb.onMouseUp = function(ecmaEvent){
-                this.reorderer.activeItem.setAttribute("aaa:grab", "supported");
-                dojo.dnd.Source.prototype.onMouseUp.apply(dndlb, arguments);
-            };
-		},
+            });
+        },
 
 		/**
 		 * Finds the parent element marked "orderable" for a child element.

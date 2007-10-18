@@ -42,7 +42,7 @@ fluid.declare(fluid, {
 	
 	// Client-level initialisation for the lightbox, allowing parameterisation for
 	// different templates.
-	initLightbox: function(namebase, cellcount, messageNamebase) {
+	initLightbox: function(namebase, messageNamebase) {
 		var reorderform = fluid.Utilities.findForm(document.getElementById(namebase));
 		// An <input> tag nested within our root namebase tag, which has an id which 
 		// begins with the  namebase:lightbox-cell:: prefix, and ends with "reorder-index" trail.
@@ -73,7 +73,8 @@ fluid.declare(fluid, {
 		var lightbox = new fluid.Reorderer({
 				messageNamebase : messageNamebase,
 				orderChangedCallback: orderChangedCallback,
-				layoutHandler: new fluid.GridLayoutHandler()
+				layoutHandler: new fluid.GridLayoutHandler(),
+                orderableIdBase: namebase
 			}, 
 			namebase
 		);

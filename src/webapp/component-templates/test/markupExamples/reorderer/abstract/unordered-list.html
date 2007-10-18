@@ -28,7 +28,9 @@
 		@import url("../markup-examples.css");
 	  </style>
   	  <script language="JavaScript" type="text/javascript" src="../../../../js/dojo/dojo.js"></script>
-      <script language="JavaScript" type="text/javascript" src="../../../../js/fluid/Fluid.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../js/jquery/jquery-1.2.1.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.sortable.js"></script>
       <script language="JavaScript" type="text/javascript" src="../../../../js/fluid/Reorderer.js"></script>
       
       <!--  These are used for JsUnit tests that have been written using this page as data -->
@@ -66,7 +68,8 @@
     <script language="JavaScript" type="text/javascript">
       new fluid.Reorderer({
           orderChangedCallback: function() {},
-          layoutHandler: new fluid.ListLayoutHandler()
+          layoutHandler: new fluid.ListLayoutHandler(),
+          orderableIdBase: "list1item"
         },
         "list1"
       );
