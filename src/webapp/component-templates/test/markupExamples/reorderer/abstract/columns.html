@@ -58,10 +58,6 @@ Contents that have been tagged as reorderable are highlighted.
 </p>
 <p>In this mark-up, the Reorderer has been applied to the items using the GridLayoutHandler.
 Ultimately, a ColumnLayoutHandler will be created.</p>
-<p>Due to bugs in dojo's Drag and Drop implementation, this example does not function properly.
-To experiment with the keyboard functionality, you should disable
-the Reorderer's use of Drag and Drop by editing <code>Reorderer.js</code> and
- commenting out the call to <code>_enableDragAndDrop()</code>.</p>
 <div class="reorderer_container">
 <table id="reorderer-root" tabindex="0" >
 	<tbody><tr>
@@ -109,12 +105,11 @@ the Reorderer's use of Drag and Drop by editing <code>Reorderer.js</code> and
 </div>
 
     <script language="JavaScript" type="text/javascript">
-      new fluid.Reorderer({
+      new fluid.Reorderer("reorderer-root", {
           orderChangedCallback: function() {},
           layoutHandler: new fluid.GridLayoutHandler(),
           orderableIdBase: "portlet_n"
-        },
-        "reorderer-root"
+        }
       );
     </script>
 

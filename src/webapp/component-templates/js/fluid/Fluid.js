@@ -20,10 +20,6 @@
  Telephone: (416) 978-4360
 */
 
-if (typeof(dojo) != 'undefined') {
-	dojo.provide("fluid.Fluid");
-}
-
 if (typeof(fluid) == "undefined") {
 	fluid = {};
 };
@@ -70,13 +66,12 @@ fluid.declare(fluid, {
 			}
 		};
 		
-		var lightbox = new fluid.Reorderer({
+		var lightbox = new fluid.Reorderer(namebase, {
 				messageNamebase : messageNamebase,
 				orderChangedCallback: orderChangedCallback,
 				layoutHandler: new fluid.GridLayoutHandler(),
                 orderableIdBase: namebase
-			}, 
-			namebase
+			}
 		);
 	}
 });  

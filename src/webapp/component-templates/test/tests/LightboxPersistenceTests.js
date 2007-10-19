@@ -31,7 +31,7 @@
  * @author Fluid
  */
 function testIsOrderChangedCallbackCalled() {
-	var lightbox = new fluid.Reorderer({
+	var lightbox = new fluid.Reorderer(lightboxRootId, {
 			// Define a "persistence" callback that simply creates a known
 			// input element with id 'callbackCalled'.  Later, we can test
 			// whether the callback was called by looking for the element.
@@ -42,8 +42,7 @@ function testIsOrderChangedCallbackCalled() {
 				dojo.place(newInputElement, dojo.byId("para1"), "after");
 			},
 	    	layoutHandler: new fluid.GridLayoutHandler()
-		},
-		lightboxRootId
+		}
 	);
 	
 	// Perform a move

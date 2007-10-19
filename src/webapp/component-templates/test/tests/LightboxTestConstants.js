@@ -107,8 +107,8 @@ function tearDown() {
 }
     
 function createLightbox() {
-    return new fluid.Reorderer(
+    return new fluid.Reorderer(lightboxRootId, 
         {orderChangedCallback: function(){},
          layoutHandler: new fluid.GridLayoutHandler()}
-         , lightboxRootId);
+    );
 }
