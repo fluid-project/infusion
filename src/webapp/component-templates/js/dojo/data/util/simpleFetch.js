@@ -1,4 +1,4 @@
-if(!dojo._hasResource["dojo.data.util.simpleFetch"]){
+if(!dojo._hasResource["dojo.data.util.simpleFetch"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dojo.data.util.simpleFetch"] = true;
 dojo.provide("dojo.data.util.simpleFetch");
 dojo.require("dojo.data.util.sorter");

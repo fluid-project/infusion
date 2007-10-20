@@ -2,20 +2,19 @@
 	"http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
-		<title>Test Textbox Validation Widgets</title>
+		<title>Test TextBox Validation Widgets</title>
 
 		<script type="text/javascript" src="../testBidi.js"></script>
 
 		<script type="text/javascript" src="../../../dojo/dojo.js"
 			djConfig="isDebug: true, parseOnLoad: true, extraLocale: ['de-de', 'en-us']"></script>
 		<script type="text/javascript">
-			dojo.require("dijit.form.Textbox");
-			dojo.require("dijit.form.ValidationTextbox");
-			dojo.require("dijit.form.NumberTextbox");
-			dojo.require("dijit.form.CurrencyTextbox");
-			dojo.require("dijit.form.DateTextbox");
-//			dojo.require("dojo.validate.common");
-//			dojo.require("dojo.validate.us");
+			dojo.require("dijit.form.TextBox");
+			dojo.require("dijit.form.ValidationTextBox");
+			dojo.require("dijit.form.NumberTextBox");
+			dojo.require("dijit.form.CurrencyTextBox");
+			dojo.require("dijit.form.DateTextBox");
+			dojo.require("dijit.form.TimeTextBox");
 			dojo.require("dojo.currency");
 			dojo.require("dojo.date.locale");
 			dojo.require("dojo.parser");	// scan page for widgets and instantiate them
@@ -23,6 +22,7 @@
 		<style type="text/css">
 			@import "../../../dojo/resources/dojo.css";
 			@import "../../themes/tundra/tundra.css";
+			@import "../../themes/tundra/tundra_rtl.css";
 			@import "../css/dijitTests.css";
 
 			.testExample {
@@ -65,50 +65,49 @@
 
 			<div class="dojoTitlePaneLabel">
 				<label for="q01">First Name:  </label>
-				<span class="noticeMessage"> Textbox class, <b>tabIndex=2</b>, Attributes: {trim: true, propercase: true, class: 'medium'}, First letter of each word is upper case.</span>
+				<span class="noticeMessage"> TextBox class, <b>tabIndex=2</b>, Attributes: {trim: true, propercase: true, class: 'medium'}, First letter of each word is upper case.</span>
 			</div>
 			<div class="testExample">
 				<input id="q01" type="text" name="firstname" value="testing testing" class="medium" tabIndex=2
-					dojoType="dijit.form.Textbox"
+					dojoType="dijit.form.TextBox"
 					trim="true"
 					propercase="true" />
 			</div>
 
 			<div class="dojoTitlePaneLabel">
 				<label for="q02">Last Name:  </label>
-				<span class="noticeMessage"> Textbox class, Attributes: {trim: true, uppercase: true, class: 'medium'}, all letters converted to upper case. </span>
+				<span class="noticeMessage"> TextBox class, Attributes: {trim: true, uppercase: true, class: 'medium'}, all letters converted to upper case. </span>
 			</div>
 			<div class="testExample">
 				<input id="q02" type="text" name="lastname" value="testing testing" class="medium"
-					dojoType="dijit.form.Textbox"
+					dojoType="dijit.form.TextBox"
 					trim="true"
 					uppercase="true" />
 			</div>
 
 			<div class="dojoTitlePaneLabel">
 				<label for="q03">Age:  </label>
-				<span class="noticeMessage"> Textbox class, <b>tabIndex=1</b>, Attributes: {trim: true, digit: true, class: 'small'}, all but digits extracted.</span>
+				<span class="noticeMessage"> TextBox class, <b>tabIndex=1</b>, Attributes: {trim: true}, no initial value specified.</span>
 			</div>
 			<div class="testExample">
-				<input id="q03" type="text" name="age" value="38" tabIndex=1
-					dojoType="dijit.form.NumberTextbox"
+				<input id="q03" type="text" name="age" tabIndex=1
+					dojoType="dijit.form.NumberTextBox"
 					promptMessage="(optional) Enter an age between 0 and 120"
 					size=4
 					maxlength=3
-					constraints={places:0,min:0,max:120}
-					onValueChanged="console.debug('onValueChanged fired for widget id = ' + this.id + ' with value = ' + arguments[0]);"
-					trim="true"
+					constraints="{places:0,min:0,max:120}"
+					onChange="console.debug('onChange fired for widget id = ' + this.id + ' with value = ' + arguments[0]);"
 					/>
 			</div>
 
 			<div class="dojoTitlePaneLabel">
 				<label for="q04">Occupation:  </label>
-				<span class="noticeMessage">ValidationTextbox class,
+				<span class="noticeMessage">ValidationTextBox class,
 					Attributes: {lowercase: true, required: true}. Displays a prompt message if field is missing. </span>
 			</div>
 			<div class="testExample">
 				<input id="q04" type="text" name="occupation" class="medium"
-					dojoType="dijit.form.ValidationTextbox"
+					dojoType="dijit.form.ValidationTextBox"
 					lowercase="true"
 					required="true"
 					promptMessage="Enter an occupation" />
@@ -116,7 +115,7 @@
 
 			<div class="dojoTitlePaneLabel">
 				<label for="q05">Elevation:  </label>
-				<span class="noticeMessage">IntegerTextbox class,
+				<span class="noticeMessage">IntegerTextBox class,
 					Attributes: {required: true, min:-20000, max:+20000 }, Enter feet above sea level with a sign.</span>
 			</div>
 			<div class="testExample">
@@ -133,15 +132,13 @@
 			required: "true" ,
 			invalidMessage: "Invalid elevation."
 		};
-		var refNode = document.getElementById("q05");
-
-		var w = new dijit.form.NumberTextbox(props, refNode);
+		var w = new dijit.form.NumberTextBox(props, "q05");
 	});
 </script>
 <!--
 			<div class="dojoTitlePaneLabel">
 				<label for="attach-here">Population:  </label>
-				<span class="noticeMessage">IntegerTextbox class,
+				<span class="noticeMessage">IntegerTextBox class,
 					Attributes: {trim: true, required: true, signed: false, separator: ","}. <br><b> This widget was added in script, not markup. </b> </span>
 			</div>
 			<div class="testExample" >
@@ -160,19 +157,18 @@
 			constraints: {signed:false, separator: ","},
 			invalidMessage: "Invalid population.  Be sure to use commas."
 		};
-		var refNode = document.getElementById("attach-here");
-		var w = new dijit.form.ValidationTextbox(props, refNode);
+		var w = new dijit.form.ValidationTextBox(props, "attach-here");
 		});
 	</script>
 
 	<div class="dojoTitlePaneLabel">
 		<label for="q06">Real Number:  </label>
-		<span class="noticeMessage">RealNumberTextbox class,
+		<span class="noticeMessage">RealNumberTextBox class,
 			Attributes: {trim: true, required: true}. Enter any sort of real number.</span>
 	</div>
 	<div class="testExample">
 		<input id="q06" type="text" name="real1" class="medium" value="+0.1234"
-			dojoType="dijit.form.ValidationTextbox"
+			dojoType="dijit.form.ValidationTextBox"
 			regExpGen="dojo.regexp.realNumber"
 			trim="true"
 			required="true"
@@ -180,12 +176,12 @@
 	</div>
 	<div class="dojoTitlePaneLabel">
 		<label for="q07">Exponential Notation:  </label>
-		<span class="noticeMessage">RealNumberTextbox class,
+		<span class="noticeMessage">RealNumberTextBox class,
 			Attributes: {exponent: true}. Enter a real number in exponential notation.</span>
 	</div>
 	<div class="testExample">
 		<input id="q07" type="text" name="real2" class="medium" value="+0.12"
-			dojoType="dijit.form.ValidationTextbox"
+			dojoType="dijit.form.ValidationTextBox"
 			regExpGen="dojo.regexp.realNumber"
 			trim="true"
 			required="true"
@@ -196,15 +192,15 @@
 
 	<div class="dojoTitlePaneLabel">
 		<label for="q08">Annual Income:  </label>
-		<span class="noticeMessage">CurrencyTextbox class,
+		<span class="noticeMessage">CurrencyTextBox class,
 			Attributes: {fractional: true}.  Enter whole and cents.  Currency symbol is optional.</span>
 	</div>
 
 	<div class="testExample">
 		<input id="q08" type="text" name="income1" class="medium" value="54775.53"
-			dojoType="dijit.form.CurrencyTextbox"
+			dojoType="dijit.form.CurrencyTextBox"
 			required="true"
-			constraints={fractional:true}
+			constraints="{fractional:true}"
 			currency="USD"
 			invalidMessage="Invalid amount.  Include dollar sign, commas, and cents.  Cents are mandatory." />USD
 	</div>
@@ -213,7 +209,7 @@
 		euro currency (local format) fractional part is optional:
 		<input id="q08eur" type="text" name="income2"
 			class="medium" value="54775.53"
-			dojoType="dijit.form.CurrencyTextbox"
+			dojoType="dijit.form.CurrencyTextBox"
 			required="true"
 			currency="EUR"
 			invalidMessage="Invalid amount.  Include dollar sign, commas, and cents." />EUR
@@ -241,7 +237,7 @@
 				currency: "EUR",
 				invalidMessage: "Invalid amount.  Example: " + example
 			};
-			var w = new dijit.form.CurrencyTextbox(props, "q08eurde");
+			var w = new dijit.form.CurrencyTextBox(props, "q08eurde");
 		});
 	</script>
 
@@ -253,7 +249,7 @@
 	</div>
 	<div class="testExample">
 		<input id="q08a" type="text" name="income3" class="medium" value="$54,775.53"
-			dojoType="dijit.form.ValidationTextbox"
+			dojoType="dijit.form.ValidationTextBox"
 			regExpGen="dojo.regexp.currency"
 			trim="true"
 			required="true"
@@ -263,12 +259,12 @@
 
 	<div class="dojoTitlePaneLabel">
 		<label for="q09">IPv4 Address:  </label>
-		<span class="noticeMessage">IpAddressTextbox class,
+		<span class="noticeMessage">IpAddressTextBox class,
 			Attributes: {allowIPv6: false, allowHybrid: false}. Also Dotted Hex works, 0x18.0x11.0x9b.0x28</span>
 	</div>
 	<div class="testExample">
 		<input id="q09" type="text" name="ipv4" class="medium" value="24.17.155.40"
-			dojoType="dijit.form.ValidationTextbox"
+			dojoType="dijit.form.ValidationTextBox"
 			regExpGen="dojo.regexp.ipAddress"
 			trim="true"
 			required="true"
@@ -278,13 +274,13 @@
 
 	<div class="dojoTitlePaneLabel">
 		<label for="q10"> IPv6 Address:  </label>
-		<span class="noticeMessage">IpAddressTextbox class,
+		<span class="noticeMessage">IpAddressTextBox class,
 			Attributes: {allowDottedDecimal: false, allowDottedHex: false}.
 					Also hybrid works, x:x:x:x:x:x:d.d.d.d</span>
 	</div>
 	<div class="testExample">
 		<input id="q10" type="text" name="ipv6" class="long" value="0000:0000:0000:0000:0000:0000:0000:0000"
-			dojoType="dijit.form.ValidationTextbox"
+			dojoType="dijit.form.ValidationTextBox"
 			regExpGen="dojo.regexp.ipAddress"
 			trim="true"
 			uppercase = "true"
@@ -295,13 +291,13 @@
 
 	<div class="dojoTitlePaneLabel">
 		<label for="q11"> URL:  </label>
-		<span class="noticeMessage">UrlTextbox class,
+		<span class="noticeMessage">UrlTextBox class,
 			Attributes: {required: true, trim: true, scheme: true}. </span>
 	</div>
 
 	<div class="testExample">
 		<input id="q11" type="text" name="url" class="long" value="http://www.xyz.com/a/b/c?x=2#p3"
-			dojoType="dijit.form.ValidationTextbox"
+			dojoType="dijit.form.ValidationTextBox"
 			regExpGen="dojo.regexp.url"
 			trim="true"
 			required="true"
@@ -311,13 +307,13 @@
 
 	<div class="dojoTitlePaneLabel">
 		<label for="q12"> Email Address  </label>
-		<span class="noticeMessage">EmailTextbox class,
+		<span class="noticeMessage">EmailTextBox class,
 			Attributes: {required: true, trim: true}. </span>
 	</div>
 
 	<div class="testExample">
 		<input id="q12" type="text" name="email" class="long" value="fred&barney@stonehenge.com"
-			dojoType="dijit.form.ValidationTextbox"
+			dojoType="dijit.form.ValidationTextBox"
 			regExpGen="dojo.regexp.emailAddress"
 			trim="true"
 			required="true"
@@ -326,13 +322,13 @@
 
 	<div class="dojoTitlePaneLabel">
 		<label for="q13"> Email Address List </label>
-		<span class="noticeMessage">EmailListTextbox class,
+		<span class="noticeMessage">EmailListTextBox class,
 			Attributes: {required: true, trim: true}. </span>
 	</div>
 
 	<div class="testExample">
 		<input id="q13" type="text" name="email" class="long" value="a@xyz.com; b@xyz.com; c@xyz.com; "
-			dojoType="dijit.form.ValidationTextbox"
+			dojoType="dijit.form.ValidationTextBox"
 			regExpGen="dojo.regexp.emailAddressList"
 			trim="true"
 			required="true"
@@ -341,20 +337,20 @@
 	-->
 	<div class="dojoTitlePaneLabel">
 		<label for="q14"> Date (local format) </label>
-		<span class="noticeMessage">DateTextbox class, no attributes</span>
+		<span class="noticeMessage">DateTextBox class, no attributes</span>
 	</div>
 	<div class="testExample">
-		<input id="q14" type="text" dojoType="dijit.form.DateTextbox"> 
+		<input id="q14" name="noDOMvalue" type="text" dojoType="dijit.form.DateTextBox"> 
 	</div>
 	<div class="dojoTitlePaneLabel">
 		<label for="q14a"> Date (local format) </label>
-		<span class="noticeMessage">DateTextbox class,
+		<span class="noticeMessage">DateTextBox class,
 			Attributes: required="true", constraints={min:'2004-01-01',max:'2006-12-31'}. Works for leap years</span>
 	</div>
 	<div class="testExample">
 		<input id="q14a" type="text" name="date1" class="medium" value="2005-12-30"
-			dojoType="dijit.form.DateTextbox"
-			constraints={min:'2004-01-01',max:'2006-12-31'}
+			dojoType="dijit.form.DateTextBox"
+			constraints="{min:'2004-01-01',max:'2006-12-31'}"
 			required="true"
 			promptMessage="mm/dd/yyyy"
 			invalidMessage="Invalid date. Use mm/dd/yyyy format." />
@@ -362,13 +358,13 @@
 	</div>
 	<div class="dojoTitlePaneLabel">
 		<label for="q14b"> Date (American format) </label>
-		<span class="noticeMessage">DateTextbox class,
+		<span class="noticeMessage">DateTextBox class,
 			Attributes: lang="en-us", required="true", constraints={min:'2004-01-01',max:'2006-12-31'}. Works for leap years</span>
 	</div>
 	<div class="testExample">
 		<input id="q14b" type="text" name="date1" class="medium" value="2005-12-30"
-			dojoType="dijit.form.DateTextbox"
-			constraints={min:'2004-01-01',max:'2006-12-31'}
+			dojoType="dijit.form.DateTextBox"
+			constraints="{min:'2004-01-01',max:'2006-12-31'}"
 			lang="en-us"
 			required="true"
 			promptMessage="mm/dd/yyyy"
@@ -376,7 +372,7 @@
 	</div>
 	<div class="dojoTitlePaneLabel">
 		<label for="q15"> Date (German format) </label>
-		<span class="noticeMessage">DateTextbox class,
+		<span class="noticeMessage">DateTextBox class,
 			Attributes: lang="de-de", constraints={min:2004-01-01, max:2006-12-31}. Works for leap years</span>
 	</div>
 	<div class="testExample">
@@ -395,110 +391,70 @@
 			rangeMessage: "Enter a date in 2006.",
 			invalidMessage: "Invalid date. Use dd.mm.yy format."
 		};
-		var refNode = document.getElementById("q15");
-
-		var w = new dijit.form.DateTextbox(props, refNode);
+		var w = new dijit.form.DateTextBox(props, "q15");
 	});
 	</script>
 
 	<div class="dojoTitlePaneLabel">
-		<label for="q16"> 12 Hour Time </label>
-		<span class="noticeMessage">TimeTextbox class,
-			Attributes: {formatLength: "medium", required: true, trim: true}</span>
+		<label for="q16">Time using local conventions with seconds</label>
+		<span class="noticeMessage">TimeTextBox class,
+			Attributes: {formatLength:'medium'}</span>
 	</div>
 	<div class="testExample">
-		<input id="q16" type="text" name="time1" class="medium" value="5:45:00 pm"
-			dojoType="dijit.form.ValidationTextbox"
-			validator="dojo.date.locale.parse"
-			constraints={formatLength:'medium',selector:'time'}
-			trim="true"
+		<input id="q16" type="text" name="time1" class="medium" value="T17:45:00"
+			dojoType="dijit.form.TimeTextBox"
+			constraints="{formatLength:'medium'}"
+			required="true"
+			invalidMessage="Invalid time." />
+	</div>
+
+	<div class="dojoTitlePaneLabel">
+		<label for="q16a">Time using local conventions without seconds</label>
+		<span class="noticeMessage">TimeTextBox class,
+			Attributes: {formatLength:'short'}</span>
+	</div>
+	<div class="testExample">
+		<input id="q16a" type="text" name="time1a" class="medium" value="T17:45:00"
+			dojoType="dijit.form.TimeTextBox"
+			constraints="{formatLength:'short'}"
+			required="true"
+			invalidMessage="Invalid time." />
+	</div>
+
+	<div class="dojoTitlePaneLabel">
+		<label for="q16b"> 12 Hour Time </label>
+		<span class="noticeMessage">TimeTextBox class,
+			Attributes: {timePattern:'h:mm:ss a'}</span>
+	</div>
+	<div class="testExample">
+		<input id="q16b" type="text" name="time1b" class="medium" value="T17:45:00"
+			dojoType="dijit.form.TimeTextBox"
+			constraints="{timePattern:'h:mm:ss a'}"
 			required="true"
 			invalidMessage="Invalid time." />
 	</div>
 
 	<div class="dojoTitlePaneLabel">
 		<label for="q17"> 24 Hour Time</label>
-		<span class="noticeMessage">TimeTextbox class,
-			Attributes: {displayFormat:"HH:mm:ss", required: true, trim: true}</span>
+		<span class="noticeMessage">TimeTextBox class,
+			Attributes: {timePattern:'HH:mm:ss'}</span>
 	</div>
 	<div class="testExample">
-		<input id="q17" type="text" name="time2" class="medium" value="17:45:00"
-			dojoType="dijit.form.ValidationTextbox"
-			validator="dojo.date.locale.parse"
-			constraints={formatLength:'short',selector:'time',timePattern:'HH:mm:ss'}
-			trim="true"
+		<input id="q17" type="text" name="time2" class="medium" value="T17:45:00"
+			dojoType="dijit.form.TimeTextBox"
+			constraints="{timePattern:'HH:mm:ss'}"
 			required="true"
 			invalidMessage="Invalid time. Use HH:mm:ss where HH is 00 - 23 hours.">
 			</div>
 
-	<!--
 	<div class="dojoTitlePaneLabel">
-		<label for="q18"> US State 2 letter abbr. </label>
-		<span class="noticeMessage">UsStateTextbox class,
-			Attributes: {required: true, trim: true, uppercase: true}</span>
-	</div>
-	<div class="testExample">
-		<input id="q18" type="text" name="state" class="small" value="CA"
-			dojoType="dijit.form.ValidationTextbox"
-			regExpGen="dojo.regexp.us.state"
-			constraints={allowTerritories:false}
-			trim="true"
-			uppercase="true"
-			required="true"
-			invalidMessage="Invalid US state abbr.">
-	</div>
-
-	<div class="dojoTitlePaneLabel">
-		<label for="q19"> US Zip Code </label>
-		<span class="noticeMessage">UsZipTextbox class,
-			Attributes: {required: true, trim: true} Five digit Zip code or 5 + 4.</span>
-	</div>
-	<div class="testExample">
-		<input id="q19" type="text" name="zip" class="medium" value="98225-1649"
-			dojoType="dijit.form.ValidationTextbox"
-			validator="dojo.validate.us.isZipCode"
-			trim="true"
-			required="true"
-			invalidMessage="Invalid US Zip Code.">
-	</div>
-
-	<div class="dojoTitlePaneLabel">
-		<label for="q20"> US Social Security Number </label>
-		<span class="noticeMessage">UsSocialSecurityNumberTextbox class,
-			Attributes: {required: true, trim: true} </span>
-	</div>
-	<div class="testExample">
-		<input id="q20" type="text" name="ssn" class="medium" value="123-45-6789"
-			dojoType="dijit.form.ValidationTextbox"
-			validator="dojo.validate.us.isSocialSecurityNumber"
-			trim="true"
-			required="true"
-			invalidMessage="Invalid US Social Security Number.">
-	</div>
-
-	<div class="dojoTitlePaneLabel">
-		<label for="q21"> 10-digit US Phone Number </label>
-		<span class="noticeMessage">UsPhoneNumberTextbox class,
-			Attributes: {required: true, trim: true} </span>
-	</div>
-	<div class="testExample">
-		<input id="q21" type="text" name="phone" class="medium" value="(123) 456-7890"
-			dojoType="dijit.form.ValidationTextbox"
-			validator="dojo.validate.us.isPhoneNumber"
-			trim="true"
-			required="true"
-			invalidMessage="Invalid US Phone Number.">
-	</div>
-	-->
-
-	<div class="dojoTitlePaneLabel">
-		<label for="q22"> Regular Expression </label>
-		<span class="noticeMessage">RegexpTextbox class,
+		<label for="q22">Regular Expression </label>
+		<span class="noticeMessage">RegexpTextBox class,
 			Attributes: {required: true} </span>
 	</div>
 	<div class="testExample">
 		<input id="q22" type="text" name="phone" class="medium" value="someTestString"
-			dojoType="dijit.form.ValidationTextbox"
+			dojoType="dijit.form.ValidationTextBox"
 			regExp="[\w]+"
 			required="true"
 			invalidMessage="Invalid Non-Space Text.">
@@ -510,7 +466,7 @@
 	</div>
 	<div class="testExample">
 		<input id="q23" type="password" name="password" class="medium"
-			dojoType="dijit.form.Textbox">
+			dojoType="dijit.form.TextBox">
 	</div>
 
 	<div class="dojoTitlePaneLabel">
@@ -529,9 +485,7 @@
                         id: "mname",
                         value: null
                 };
-                var refNode = document.getElementById("ticket1651");
-
-                var w = new dijit.form.Textbox(props, refNode);
+                var w = new dijit.form.TextBox(props, "ticket1651");
         });
 </script>
 <script>

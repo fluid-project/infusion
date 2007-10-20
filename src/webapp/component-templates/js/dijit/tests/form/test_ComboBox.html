@@ -6,15 +6,15 @@
 	<style>
 		@import "../../../dojo/resources/dojo.css";
 		@import "../../themes/tundra/tundra.css";
+		@import "../../themes/tundra/tundra_rtl.css";
 		@import "../css/dijitTests.css";
 	</style>
 	<script type="text/javascript" src="../testBidi.js"></script>
 	<script type="text/javascript" src="../../../dojo/dojo.js"
 		djConfig="isDebug: true, parseOnLoad: true"></script>
 	<script type="text/javascript">
-		dojo.require("dojo.data.JsonItemStore");
+		dojo.require("dojo.data.ItemFileReadStore");
 		dojo.require("dijit.form.ComboBox");
-		dojo.require("dijit.util.manager");
 		dojo.require("dojo.parser");	// scan page for widgets and instantiate them
 
 		function setVal1(val){
@@ -29,20 +29,29 @@
 		}
 		var combo;
 		function init(){
-			var store = new dojo.data.JsonItemStore({url: 'comboBoxData.json'});
+			var store = new dojo.data.ItemFileReadStore({url: 'comboBoxData.json'});
 			combo = new dijit.form.ComboBox({
 				name:"prog",
 				autocomplete:false,
 				store: store,
 				searchAttr:"name"
 			}, dojo.byId("progCombo"));
+			
+			var store2 = new dojo.data.ItemFileReadStore({url: 'comboBoxDataToo.json'});
+			combo = new dijit.form.ComboBox({
+				name:"prog2",
+				autocomplete:false,
+				store:store2,
+				query:{type:'country'},
+				searchAttr:"name"
+			}, dojo.byId("progCombo2"));
 		}
 		dojo.addOnLoad(init);
 
 		function toggleDisabled(button, widget){
 			widget = dijit.byId(widget);
 			button = dojo.byId(button);
-			widget.disabled ? widget.enable() : widget.disable();
+			widget.setDisabled(!widget.disabled);
 			button.innerHTML= widget.disabled ? "Enable" : "Disable";
 		}
 	</script>
@@ -66,8 +75,7 @@ The drop down list is filtered by the data you have already typed in.
 			style="width: 300px;font-size:20pt;background-color:cyan;"
 			name="foo.bar1"
 			autocomplete="false"
-			value="Iowa"
-			onValueChanged="setVal1"
+			onChange="setVal1"
 	>
 		<option></option>
 		<option>Alabama</option>
@@ -136,7 +144,7 @@ The drop down list is filtered by the data you have already typed in.
 	<span>Value: <input id="value1" disabled></span>
 	<hr>
 
-	<div dojoType="dojo.data.JsonItemStore" jsId="stateStore"
+	<div dojoType="dojo.data.ItemFileReadStore" jsId="stateStore"
 		url="comboBoxData.json"></div>
 
 	<p>ComboBox #2: url, autocomplete=true:</p>
@@ -148,7 +156,7 @@ The drop down list is filtered by the data you have already typed in.
 			searchAttr="name"
 			style="width: 300px;"
 			name="state2"
-			onValueChanged="setVal2"
+			onChange="setVal2"
 			id="datatest"
 	>
 	<span>Value: <input id="value2" disabled></span>
@@ -165,7 +173,7 @@ The drop down list is filtered by the data you have already typed in.
 			style="width: 300px;"
 			name="state3"
 			autocomplete="false"
-			onValueChanged="setVal3"
+			onChange="setVal3"
 			disabled
 	>
 	<span>Value: <input id="value3" disabled></span>
@@ -186,6 +194,9 @@ The drop down list is filtered by the data you have already typed in.
 	<p>A combo created by createWidget</p>
 	<input id="progCombo">
 	<hr>
+	<p>A ComboBox with an initial query.  (Limits list to items with type = country.)</p> 
+	<input id="progCombo2"> 
+	<hr> 
 	<input type="button" value="Create one in a window" onclick="var win=window.open(window.location);"></input>
 	<input type="submit">
 
@@ -210,7 +221,7 @@ also: adding a simple combo box to test IE bleed through problem:
 <li>Tab into the combo works, list should not apear.</li>
 <li>Tab out of the combo works - closes dropdown and goes to next control (focus should not go to the dropdown because tabindex="-1").</li>
 <li>Do the dropdown and click outside of it - the dropdown disappears.</li>
-<li>Javascript disabled -> fallback to old style combo?</li>
+<li>Javascript disabled -&gt; fallback to old style combo?</li>
 <li>Can you paste in the start of a match? [no]</li>
 <li>Backspace to start - dropdown shows all all items</li>
 <li>Backspace deselects last character [Borked: currently you have to backspace twice]</li>

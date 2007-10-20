@@ -1,4 +1,4 @@
-if(!dojo._hasResource["dojo.date.locale"]){
+if(!dojo._hasResource["dojo.date.locale"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dojo.date.locale"] = true;
 dojo.provide("dojo.date.locale");
 
@@ -257,7 +257,7 @@ dojo.date.locale._parseInfo = function(/*Object?*/options){
 	var tokens = [];
 	var re = _processPattern(pattern, dojo.hitch(this, _buildDateTimeRE, tokens, bundle, options));
 	return {regexp: re, tokens: tokens, bundle: bundle};
-}
+};
 
 dojo.date.locale.parse = function(/*String*/value, /*Object?*/options){
 	// summary:
@@ -296,6 +296,7 @@ dojo.date.locale.parse = function(/*String*/value, /*Object?*/options){
 	//in the cases where the year is parsed after the month and day.
 	var result = new Date(1972, 0);
 	var expected = {};
+	var amPm = "";
 	dojo.forEach(match, function(v, i){
 		if(!i){return;}
 		var token=tokens[i-1];
@@ -391,12 +392,9 @@ dojo.date.locale.parse = function(/*String*/value, /*Object?*/options){
 //					console.debug("dojo.date.locale.parse: Could not parse am/pm part.");
 					return null;
 				}
-				var hours = result.getHours();
-				if(v == pm && hours < 12){
-					result.setHours(hours + 12); //e.g., 3pm -> 15
-				} else if(v == am && hours == 12){
-					result.setHours(0); //12am -> 0
-				}
+
+				// we might not have seen the hours field yet, so store the state and apply hour change later
+				amPm = (v == pm) ? 'p' : (v == am) ? 'a' : '';
 				break;
 			case 'K': //hour (1-24)
 				if(v==24){v=0;}
@@ -405,13 +403,13 @@ dojo.date.locale.parse = function(/*String*/value, /*Object?*/options){
 			case 'H': //hour (0-23)
 			case 'k': //hour (0-11)
 				//TODO: strict bounds checking, padding
-				if(v>23){
+				if(v > 23){
 //					console.debug("dojo.date.locale.parse: Illegal hours value");
 					return null;
 				}
 
 				//in the 12-hour case, adjusting for am/pm requires the 'a' part
-				//which for now we will assume always comes after the 'h' part
+				//which could come before or after the hour, so we will adjust later
 				result.setHours(v);
 				break;
 			case 'm': //minutes
@@ -422,14 +420,21 @@ dojo.date.locale.parse = function(/*String*/value, /*Object?*/options){
 				break;
 			case 'S': //milliseconds
 				result.setMilliseconds(v);
-				break;
-			case 'w':
-//				var firstDay = 0;
-			default:
+//				break;
+//			case 'w':
+//TODO				var firstDay = 0;
+//			default:
 //TODO: throw?
 //				console.debug("dojo.date.locale.parse: unsupported pattern char=" + token.charAt(0));
 		}
 	});
+
+	var hours = result.getHours();
+	if(amPm === 'p' && hours < 12){
+		result.setHours(hours + 12); //e.g., 3pm -> 15
+	}else if(amPm === 'a' && hours == 12){
+		result.setHours(0); //12am -> 0
+	}
 
 	//validate parse date fields versus input date fields
 	if(expected.year && result.getFullYear() != expected.year){
@@ -537,16 +542,18 @@ function _buildDateTimeRE(tokens, bundle, options, pattern){
 					if(pm != pm.toLowerCase()){ s += '|' + pm.toLowerCase(); }
 				}
 				break;
-//			default:
+			default:
+			// case 'v':
+			// case 'z':
+			// case 'Z':
+				s = ".*";
 //				console.debug("parse of date format, pattern=" + pattern);
 		}
 
 		if(tokens){ tokens.push(match); }
 
-//FIXME: replace whitespace within final regexp with more flexible whitespace match instead?
-		//tolerate whitespace
-		return '\\s*(' + s + ')\\s*';
-	});
+		return "(" + s + ")"; // add capture
+	}).replace(/[\xa0 ]/g, "[\\s\\xa0]"); // normalize whitespace.  Need explicit handling of \xa0 for IE.
 }
 })();
 
@@ -606,9 +613,9 @@ dojo.date.locale.isWeekend = function(/*Date?*/dateObject, /*String?*/locale){
 
 	var weekend = dojo.cldr.supplemental.getWeekend(locale);
 	var day = (dateObject || new Date()).getDay();
-	if(weekend.end<weekend.start){
-		weekend.end+=7;
-		if(day<weekend.start){ day+=7; }
+	if(weekend.end < weekend.start){
+		weekend.end += 7;
+		if(day < weekend.start){ day += 7; }
 	}
 	return day >= weekend.start && day <= weekend.end; // Boolean
 };
@@ -617,23 +624,20 @@ dojo.date.locale.isWeekend = function(/*Date?*/dateObject, /*String?*/locale){
 
 dojo.date.locale._getDayOfYear = function(/*Date*/dateObject){
 	// summary: gets the day of the year as represented by dateObject
-	var fullYear = dateObject.getFullYear();
-	var lastDayOfPrevYear = new Date(fullYear-1, 11, 31);
-	return Math.floor((dateObject.getTime() -
-		lastDayOfPrevYear.getTime()) / (24*60*60*1000)); // Number
-}
+	return dojo.date.difference(new Date(dateObject.getFullYear(), 0, 1), dateObject) + 1; // Number
+};
 
-dojo.date.locale._getWeekOfYear = function(/*Date*/dateObject, /*Number*/firstDay){
-	if(arguments.length == 1){ firstDay = 0; } // Sunday
+dojo.date.locale._getWeekOfYear = function(/*Date*/dateObject, /*Number*/firstDayOfWeek){
+	if(arguments.length == 1){ firstDayOfWeek = 0; } // Sunday
 
-	// work out the first day of the year corresponding to the week
-	var firstDayOfYear = new Date(dateObject.getFullYear(), 0, 1);
-	var day = firstDayOfYear.getDay();
-	firstDayOfYear.setDate(firstDayOfYear.getDate() -
-			day + firstDay - (day > firstDay ? 7 : 0));
+	var firstDayOfYear = new Date(dateObject.getFullYear(), 0, 1).getDay();
+	var adj = (firstDayOfYear - firstDayOfWeek + 7) % 7;
+	var week = Math.floor((dojo.date.locale._getDayOfYear(dateObject) + adj - 1) / 7);
 
-	return Math.floor((dateObject.getTime() -
-		firstDayOfYear.getTime()) / (7*24*60*60*1000)); // Number
-}
+	// if year starts on the specified day, start counting weeks at 1
+	if(firstDayOfYear == firstDayOfWeek){ week++; }
+
+	return week; // Number
+};
 
 }

@@ -1,4 +1,4 @@
-if(!dojo._hasResource["dojo.data.util.filter"]){
+if(!dojo._hasResource["dojo.data.util.filter"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dojo.data.util.filter"] = true;
 dojo.provide("dojo.data.util.filter");
 

@@ -15,6 +15,20 @@
 			djConfig="isDebug: true"></script>
 		<script type="text/javascript">
 			dojo.require("doh.runner");
+
+			function getIframeDocument(/*DOMNode*/iframeNode){
+				//summary: Returns the document object associated with the iframe DOM Node argument.
+				var doc = iframeNode.contentDocument || // W3
+					(
+						(iframeNode.contentWindow)&&(iframeNode.contentWindow.document)
+					) ||  // IE
+					(
+						(iframeNode.name)&&(document.frames[iframeNode.name])&&
+						(document.frames[iframeNode.name].document)
+					) || null;
+				return doc;
+			}
+
 			dojo.addOnLoad(function(){
 				doh.register("t", 
 					[
@@ -105,6 +119,23 @@
 							// t.is(100, pos.w);
 							t.is(100, pos.h);
 						},
+						function coordsScrolled(t) {
+							var s = document.createElement('div');
+							var c = document.createElement('div');
+							document.body.appendChild(s);
+							s.appendChild(c);
+							var x=257, y= 285;
+							with (s.style) {
+								position = 'absolute';
+								overflow = 'scroll';
+							}	
+							dojo._setMarginBox(s, x, y, 100, 100);
+							dojo._setMarginBox(c, 0, 0, 500, 500);
+							s.scrollTop = 200;
+							var pos = dojo.coords(s, true);
+							t.is(x, pos.x);
+							t.is(y, pos.y);
+						},
 						"t.is(1, dojo.style('sq100nopos', 'opacity'));",
 						"t.is(0.1, dojo.style('sq100nopos', 'opacity', 0.1));",
 						"t.is(0.8, dojo.style('sq100nopos', 'opacity', 0.8));",
@@ -123,11 +154,11 @@
 						},
 						function isDescendantIframe(t){
 							var bif = dojo.byId("blah");
-							bif.contentDocument.write("<html><body><div id='subDiv'></div></body></html>");
-							bif.contentDocument.close();
+							getIframeDocument(bif).write("<html><body><div id='subDiv'></div></body></html>");
+							getIframeDocument(bif).close();
 							// this test barely makes sense. disabling it for now.
 							// t.t(dojo.isDescendant(bif.contentDocument.getElementById("subDiv"), bif.parentNode));
-							var subDiv = bif.contentDocument.getElementById("subDiv");
+							var subDiv = getIframeDocument(bif).getElementById("subDiv");
 							t.t(dojo.isDescendant(subDiv, subDiv));
 							t.t(dojo.isDescendant(subDiv, subDiv.parentNode));
 							t.f(dojo.isDescendant(subDiv.parentNode, subDiv));

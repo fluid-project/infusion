@@ -1,4 +1,4 @@
-if(!dojo._hasResource["dijit.form.FilteringSelect"]){
+if(!dojo._hasResource["dijit.form.FilteringSelect"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dijit.form.FilteringSelect"] = true;
 dojo.provide("dijit.form.FilteringSelect");
 
@@ -6,7 +6,7 @@ dojo.require("dijit.form.ComboBox");
 
 dojo.declare(
 	"dijit.form.FilteringSelect",
-	[dijit.form.MappedTextbox, dijit.form.ComboBoxMixin],
+	[dijit.form.MappedTextBox, dijit.form.ComboBoxMixin],
 	{
 		/*
 		 * summary
@@ -81,7 +81,7 @@ dojo.declare(
 
 		_setValue:function(/*String*/ value, /*String*/ displayedValue){
 			this.valueNode.value = value;
-			dijit.form.FilteringSelect.superclass.setValue.apply(this, arguments);
+			dijit.form.FilteringSelect.superclass.setValue.call(this, value, true, displayedValue);
 		},
 
 		setValue: function(/*String*/ value){
@@ -121,24 +121,6 @@ dojo.declare(
 			return store.getValue(item, this.searchAttr);
 		},
 
-		_createOption:function(/*Object*/ tr){
-			// summary: creates an option to appear on the popup menu
-
-			var td=dijit.form.ComboBoxMixin.prototype._createOption.apply(this, arguments);
-			// #3129
-			if(this.labelAttr){
-				if(this.labelType=="html"){
-					td.innerHTML=this.store.getValue(tr, this.labelAttr);
-				}else{
-					// prevent parsing of HTML
-					var textnode=document.createTextNode(this.store.getValue(tr, this.labelAttr));
-					td.innerHTML="";
-					td.appendChild(textnode);
-				}
-			}
-			return td;
-		},
-
 		onkeyup: function(/*Event*/ evt){
 			// summary: internal function
 			// FilteringSelect needs to wait for the complete label before committing to a reverse lookup
@@ -166,7 +148,16 @@ dojo.declare(
 				// so the last valid value will get the warning textbox
 				// set the textbox value now so that the impending warning will make sense to the user
 				this.textbox.value=label;
-				this.store.fetch({query:query, queryOptions:{ignoreCase:this.ignoreCase}, onComplete: dojo.hitch(this, this._callbackSetLabel)});
+				this.store.fetch({query:query, queryOptions:{ignoreCase:this.ignoreCase, deep:true}, onComplete: dojo.hitch(this, this._callbackSetLabel)});
+			}
+		},
+
+		_getMenuLabelFromItem:function(/*Item*/ item){
+			// internal function to help ComboBoxMenu figure out what to display
+			if(this.labelAttr){return {html:this.labelType=="html", label:this.store.getValue(item, this.labelAttr)};}
+			else{
+				// because this function is called by ComboBoxMenu, this.inherited tries to find the superclass of ComboBoxMenu
+				return dijit.form.ComboBoxMixin.prototype._getMenuLabelFromItem.apply(this, arguments);
 			}
 		}
 	}

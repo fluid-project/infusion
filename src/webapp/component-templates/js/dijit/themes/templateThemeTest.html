@@ -3,16 +3,15 @@
 <html>
 	<head>
 		<title>Test Widget Templates in Multiple Themes</title>
-		
+
+		<script type="text/javascript" src="../tests/testBidi.js"></script>
 		<script type="text/javascript" src="../../dojo/dojo.js"
 			djConfig="parseOnLoad: true, isDebug: true"></script>
 		<script type="text/javascript">
-			dojo.require("dijit.util.sniff");
 			dojo.require("dijit.Menu");
 			dojo.require("dijit.form.Button");
 			dojo.require("dijit.form.ComboBox");
 			dojo.require("dijit.form.NumberSpinner");
-			dojo.require("dijit.util.manager");
 			dojo.require("dojo.parser");
 			logMessage = console.debug;
 		</script>
@@ -146,7 +145,7 @@
 
 		<br><br>
 		<input dojoType="dijit.form.NumberSpinner" 
-			onValueChanged="console.debug('onValueChanged fired for widget id = ' + this.id + ' with value = ' + arguments[0]);"
+			onChange="console.debug('onChange fired for widget id = ' + this.id + ' with value = ' + arguments[0]);"
 			value="900" 
 			constraints={max:1550,places:0}
 			maxlength="10" 
@@ -154,7 +153,7 @@
 
 
 		<input dojoType="dijit.form.NumberSpinner" 
-			onValueChanged="console.debug('onValueChanged fired for widget id = ' + this.id + ' with value = ' + arguments[0]);"
+			onChange="console.debug('onChange fired for widget id = ' + this.id + ' with value = ' + arguments[0]);"
 			value="900" 
 			disabled='true'
 			constraints={max:1550,places:0}

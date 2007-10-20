@@ -1,4 +1,4 @@
-if(!dojo._hasResource["dojo.regexp"]){
+if(!dojo._hasResource["dojo.regexp"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dojo.regexp"] = true;
 dojo.provide("dojo.regexp");
 

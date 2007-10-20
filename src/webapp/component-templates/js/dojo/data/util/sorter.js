@@ -1,4 +1,4 @@
-if(!dojo._hasResource["dojo.data.util.sorter"]){
+if(!dojo._hasResource["dojo.data.util.sorter"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dojo.data.util.sorter"] = true;
 dojo.provide("dojo.data.util.sorter");
 

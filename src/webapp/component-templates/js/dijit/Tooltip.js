@@ -1,12 +1,9 @@
-if(!dojo._hasResource["dijit.Tooltip"]){
+if(!dojo._hasResource["dijit.Tooltip"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dijit.Tooltip"] = true;
 dojo.provide("dijit.Tooltip");
 
 dojo.require("dijit._Widget");
 dojo.require("dijit._Templated");
-dojo.require("dijit.util.place");
-dojo.require("dijit.util.popup");
-dojo.require("dijit.util.sniff");
 
 dojo.declare(
 	"dijit._MasterTooltip",
@@ -22,20 +19,16 @@ dojo.declare(
 		//		Milliseconds to fade in/fade out
 		duration: 200,
 
-		templateString:"<div class=\"dijitTooltip\" id=\"dojoTooltip\">\n\t<div class=\"dijitTooltipContainer dijitTooltipContents\" dojoAttachPoint=\"containerNode\" waiRole='alert'></div>\n\t<div class=\"dijitTooltipConnector\"></div>\n</div>\n",
+		templateString:"<div class=\"dijitTooltip dijitTooltipLeft\" id=\"dojoTooltip\">\n\t<div class=\"dijitTooltipContainer dijitTooltipContents\" dojoAttachPoint=\"containerNode\" waiRole='alert'></div>\n\t<div class=\"dijitTooltipConnector\"></div>\n</div>\n",
 
 		postCreate: function(){
 			dojo.body().appendChild(this.domNode);
 
-			this.bgIframe = new dijit.util.BackgroundIframe(this.domNode);
+			this.bgIframe = new dijit.BackgroundIframe(this.domNode);
 
-			// Setup fade-in and fade-out functions.  An IE bug prevents the arrow from showing up
-			// unless opacity==1, because it's displayed via overflow: visible on the main div.
-			var opacity = dojo.isIE ? 1 : dojo.style(this.domNode, "opacity");
-			this.fadeIn = dojo._fade({node: this.domNode, duration: this.duration, end: opacity});
-			dojo.connect(this.fadeIn, "onEnd", this, "_onShow");
-			this.fadeOut = dojo._fade({node: this.domNode, duration: this.duration, end: 0});
-			dojo.connect(this.fadeOut, "onEnd", this, "_onHide");
+			// Setup fade-in and fade-out functions.
+			this.fadeIn = dojo.fadeIn({ node: this.domNode, duration: this.duration, onEnd: dojo.hitch(this, "_onShow") }),
+			this.fadeOut = dojo.fadeOut({ node: this.domNode, duration: this.duration, onEnd: dojo.hitch(this, "_onHide") });
 
 		},
 
@@ -50,10 +43,14 @@ dojo.declare(
 				return;
 			}
 			this.containerNode.innerHTML=innerHTML;
+			
+			// Firefox bug. when innerHTML changes to be shorter than previous
+			// one, the node size will not be updated until it moves.  
+			this.domNode.style.top = (this.domNode.offsetTop + 1) + "px"; 
 
 			// position the element and change CSS according to position	
 			var align = this.isLeftToRight() ? {'BR': 'BL', 'BL': 'BR'} : {'BL': 'BR', 'BR': 'BL'};
-			var pos = dijit.util.placeOnScreenAroundElement(this.domNode, aroundNode, align);
+			var pos = dijit.placeOnScreenAroundElement(this.domNode, aroundNode, align);
 			this.domNode.className="dijitTooltip dijitTooltip" + (pos.corner=='BL' ? "Right" : "Left");
 			
 			// show it

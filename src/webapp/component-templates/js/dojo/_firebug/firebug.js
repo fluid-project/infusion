@@ -1,4 +1,4 @@
-if(!dojo._hasResource["dojo._firebug.firebug"]){
+if(!dojo._hasResource["dojo._firebug.firebug"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dojo._firebug.firebug"] = true;
 dojo.provide("dojo._firebug.firebug");
 if(
@@ -179,8 +179,12 @@ if(
 		if(!styleParent){
 			styleParent = doc.getElementsByTagName("html")[0];
 		}
-		styleParent.appendChild(styleElement);
-
+		if(dojo.isIE){
+			window.setTimeout(function(){ styleParent.appendChild(styleElement); }, 0);
+		}else{
+			styleParent.appendChild(styleElement);
+		}
+		
 		if(typeof djConfig != "undefined" && djConfig["debugContainerId"]){
 			consoleFrame = doc.getElementById(djConfig.debugContainerId);
 		}

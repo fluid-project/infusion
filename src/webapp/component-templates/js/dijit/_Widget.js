@@ -1,65 +1,13 @@
-if(!dojo._hasResource["dijit._Widget"]){
+if(!dojo._hasResource["dijit._Widget"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dijit._Widget"] = true;
 dojo.provide("dijit._Widget");
 
-dojo.require("dijit.util.manager");
+dojo.require("dijit._base");
 
-dojo.declare("dijit._Widget", null,
-function(params, srcNodeRef){
-	// summary:
-	//		To understand the process by which widgets are instantiated, it
-	//		is critical to understand what other methods the constructor calls and
-	//		which of them you'll want to over-ride. Of course, adventurous
-	//		developers could over-ride the constructor entirely, but this should
-	//		only be done as a last resort.
-	//
-	//		Below is a list of the methods that are called, in the order
-	//		they are fired, along with notes about what they do and if/when
-	//		you should over-ride them in your widget:
-	//			
-	//			postMixInProperties:
-	//				a stub function that you can over-ride to modify
-	//				variables that may have been naively assigned by
-	//				mixInProperties
-	//			# widget is added to manager object here
-	//			buildRendering
-	//				Subclasses use this method to handle all UI initialization
-	//				Sets this.domNode.  Templated widgets do this automatically
-	//				and otherwise it just uses the source dom node.
-	//			postCreate
-	//				a stub function that you can over-ride to modify take
-	//				actions once the widget has been placed in the UI
-
-	// store pointer to original dom tree
-	this.srcNodeRef = dojo.byId(srcNodeRef);
-
-	// For garbage collection.  An array of handles returned by Widget.connect()
-	// Each handle returned from Widget.connect() is an array of handles from dojo.connect()
-	this._connects=[];
-
-	//mixin our passed parameters
-	if(this.srcNodeRef && (typeof this.srcNodeRef.id == "string")){ this.id = this.srcNodeRef.id; }
-	if(params){
-		dojo.mixin(this,params);
-	}
-
-	this.postMixInProperties();
-	dijit.util.manager.add(this);
-	this.buildRendering();
-	if(this.domNode){
-		this.domNode.setAttribute("widgetId", this.id);
-		if(this.srcNodeRef && this.srcNodeRef.dir){
-			this.domNode.dir = this.srcNodeRef.dir;
-		}
-	}
-	this.postCreate();
-
-	// If srcNodeRef has been processed and removed from the DOM (e.g. TemplatedWidget) then delete it to allow GC.
-	if(this.srcNodeRef && !this.srcNodeRef.parentNode){
-		delete this.srcNodeRef;
-	}
-},
-{
+dojo.declare("dijit._Widget", null, {
+	constructor: function(params, srcNodeRef){
+		this.create(params, srcNodeRef);
+	},
 	// id: String
 	//		a unique, opaque ID string that can be assigned by users or by the
 	//		system. If the developer passes an ID which is known not to be
@@ -88,6 +36,72 @@ function(params, srcNodeRef){
 	domNode: null,
 
 	//////////// INITIALIZATION METHODS ///////////////////////////////////////
+	
+	create: function(params, srcNodeRef) {
+		// summary:
+		//		To understand the process by which widgets are instantiated, it
+		//		is critical to understand what other methods create calls and
+		//		which of them you'll want to override. Of course, adventurous
+		//		developers could override create entirely, but this should
+		//		only be done as a last resort.
+		//
+		//		Below is a list of the methods that are called, in the order
+		//		they are fired, along with notes about what they do and if/when
+		//		you should over-ride them in your widget:
+		//			
+		//			postMixInProperties:
+		//				a stub function that you can over-ride to modify
+		//				variables that may have been naively assigned by
+		//				mixInProperties
+		//			# widget is added to manager object here
+		//			buildRendering
+		//				Subclasses use this method to handle all UI initialization
+		//				Sets this.domNode.  Templated widgets do this automatically
+		//				and otherwise it just uses the source dom node.
+		//			postCreate
+		//				a stub function that you can over-ride to modify take
+		//				actions once the widget has been placed in the UI
+
+		// store pointer to original dom tree
+		this.srcNodeRef = dojo.byId(srcNodeRef);
+
+		// For garbage collection.  An array of handles returned by Widget.connect()
+		// Each handle returned from Widget.connect() is an array of handles from dojo.connect()
+		this._connects=[];
+
+		// _attaches: String[]
+		// 		names of all our dojoAttachPoint variables
+		this._attaches=[];
+	
+		//mixin our passed parameters
+		if(this.srcNodeRef && (typeof this.srcNodeRef.id == "string")){ this.id = this.srcNodeRef.id; }
+		if(params){
+			dojo.mixin(this,params);
+		}
+		this.postMixInProperties();
+		
+		// generate an id for the widget if one wasn't specified
+		// (be sure to do this before buildRendering() because that function might
+		// expect the id to be there.
+		if(!this.id){
+			this.id=dijit.getUniqueId(this.declaredClass.replace(/\./g,"_"));
+		}
+		dijit.registry.add(this);
+
+		this.buildRendering();
+		if(this.domNode){
+			this.domNode.setAttribute("widgetId", this.id);
+			if(this.srcNodeRef && this.srcNodeRef.dir){
+				this.domNode.dir = this.srcNodeRef.dir;
+			}
+		}
+		this.postCreate();
+
+		// If srcNodeRef has been processed and removed from the DOM (e.g. TemplatedWidget) then delete it to allow GC.
+		if(this.srcNodeRef && !this.srcNodeRef.parentNode){
+			delete this.srcNodeRef;
+		}
+	},
 
 	postMixInProperties: function(){
 		// summary
@@ -134,7 +148,7 @@ function(params, srcNodeRef){
 
 	destroy: function(/*Boolean*/ finalize){
 		// summary:
-		// 		Destroy this widget, but not its descendents
+		// 		Destroy this widget, but not its descendants
 		// finalize: Boolean
 		//		is this function being called part of global environment
 		//		tear-down?
@@ -143,7 +157,7 @@ function(params, srcNodeRef){
 			dojo.forEach(array, dojo.disconnect);
 		});
 		this.destroyRendering(finalize);
-		dijit.util.manager.remove(this.id);
+		dijit.registry.remove(this.id);
 	},
 
 	destroyRendering: function(/*Boolean*/ finalize){
@@ -198,9 +212,9 @@ function(params, srcNodeRef){
 
 	getDescendants: function(){
 		// summary:
-		//	return all the descendent widgets
+		//	return all the descendant widgets
 		var list = dojo.query('[widgetId]', this.domNode);
-		return list.map(dijit.util.manager.byNode);		// Array
+		return list.map(dijit.byNode);		// Array
 	},
 
 	nodesWithKeyClick : ["input", "button"],
@@ -213,24 +227,28 @@ function(params, srcNodeRef){
 		// summary:
 		//		Connects specified obj/event to specified method of this object
 		//		and registers for disconnect() on widget destroy.
-		//		Special event: "onklick" triggers on a click or enter-down or space-up
+		//		Special event: "ondijitclick" triggers on a click or enter-down or space-up
 		//		Similar to dojo.connect() but takes three arguments rather than four.
 		var handles =[];
-		if (event == "onklick"){
+		if(event == "ondijitclick"){
 			var w = this;
 			// add key based click activation for unsupported nodes.
-			if (!this.nodesWithKeyClick[obj.nodeName]){
+			if(!this.nodesWithKeyClick[obj.nodeName]){
 				handles.push(dojo.connect(obj, "onkeydown", this,
 					function(e){
 						if(e.keyCode == dojo.keys.ENTER){
 							return (dojo.isString(method))? 
 								w[method](e) : method.call(w, e);
+						}else if(e.keyCode == dojo.keys.SPACE){
+							// stop space down as it causes IE to scroll
+							// the browser window
+							dojo.stopEvent(e);
 						}
 			 		}));
 				handles.push(dojo.connect(obj, "onkeyup", this,
 					function(e){
 						if(e.keyCode == dojo.keys.SPACE){
-							return (dojo.isString(method))? 
+							return dojo.isString(method) ? 
 								w[method](e) : method.call(w, e);
 						}
 			 		}));
@@ -260,6 +278,10 @@ function(params, srcNodeRef){
 	isLeftToRight: function(){
 		// summary:
 		//		Checks the DOM to for the text direction for bi-directional support
+		// description:
+		//		This method cannot be used during widget construction because the widget
+		//		must first be connected to the DOM tree.  Parent nodes are searched for the
+		//		'dir' attribute until one is found, otherwise left to right mode is assumed.
 		//		See HTML spec, DIR attribute for more information.
 
 		if(typeof this._ltr == "undefined"){

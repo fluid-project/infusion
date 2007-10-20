@@ -1,11 +1,12 @@
-if(!dojo._hasResource["dijit.ColorPalette"]){
+if(!dojo._hasResource["dijit.ColorPalette"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dijit.ColorPalette"] = true;
 dojo.provide("dijit.ColorPalette");
 
-dojo.require("dijit.util.place");
-dojo.require("dijit.util.typematic");
 dojo.require("dijit._Widget");
 dojo.require("dijit._Templated");
+dojo.require("dojo.colors");
+dojo.require("dojo.i18n");
+dojo.requireLocalization("dojo", "colors", null, "ROOT");
 
 dojo.declare(
 		"dijit.ColorPalette",
@@ -28,9 +29,9 @@ dojo.declare(
 	//		Size of grid, either "7x10" or "3x4".
 	palette: "7x10",
 
-	//_selectedColor: String
+	//_value: String
 	//		The value of the selected color.
-	selectedColor: null,
+	value: null,
 
 	//_currentFocus: Integer
 	//		Index of the currently focused color.
@@ -49,18 +50,19 @@ dojo.declare(
 	//		The first level is a hashmap of the different arrays available
 	//		The next two dimensions represent the columns and rows of colors.
 	_palettes: {
-		"7x10": [["fff", "fcc", "fc9", "ff9", "ffc", "9f9", "9ff", "cff", "ccf", "fcf"],
-			["ccc", "f66", "f96", "ff6", "ff3", "6f9", "3ff", "6ff", "99f", "f9f"],
-			["c0c0c0", "f00", "f90", "fc6", "ff0", "3f3", "6cc", "3cf", "66c", "c6c"],
-			["999", "c00", "f60", "fc3", "fc0", "3c0", "0cc", "36f", "63f", "c3c"],
-			["666", "900", "c60", "c93", "990", "090", "399", "33f", "60c", "939"],
-			["333", "600", "930", "963", "660", "060", "366", "009", "339", "636"],
-			["000", "300", "630", "633", "330", "030", "033", "006", "309", "303"]],
-
-		"3x4": [["ffffff"/*white*/, "00ff00"/*lime*/, "008000"/*green*/, "0000ff"/*blue*/],
-			["c0c0c0"/*silver*/, "ffff00"/*yellow*/, "ff00ff"/*fuchsia*/, "000080"/*navy*/],
-			["808080"/*gray*/, "ff0000"/*red*/, "800080"/*purple*/, "000000"/*black*/]]
-			//["00ffff"/*aqua*/, "808000"/*olive*/, "800000"/*maroon*/, "008080"/*teal*/]];
+			
+		"7x10":	[["white", "seashell", "cornsilk", "lemonchiffon","lightyellow", "palegreen", "paleturquoise", "lightcyan",	"lavender", "plum"],
+				["lightgray", "pink", "bisque", "moccasin", "khaki", "lightgreen", "lightseagreen", "lightskyblue", "cornflowerblue", "violet"],
+				["silver", "lightcoral", "sandybrown", "orange", "palegoldenrod", "chartreuse", "mediumturquoise", 	"skyblue", "mediumslateblue","orchid"],
+				["gray", "red", "orangered", "darkorange", "yellow", "limegreen", 	"darkseagreen", "royalblue", "slateblue", "mediumorchid"],
+				["dimgray", "crimson", 	"chocolate", "coral", "gold", "forestgreen", "seagreen", "blue", "blueviolet", "darkorchid"],
+				["darkslategray","firebrick","saddlebrown", "sienna", "olive", "green", "darkcyan", "mediumblue","darkslateblue", "darkmagenta" ],
+				["black", "darkred", "maroon", "brown", "darkolivegreen", "darkgreen", "midnightblue", "navy", "indigo", 	"purple"]],
+				
+		"3x4": [["white", "lime", "green", "blue"],
+			["silver", "yellow", "fuchsia", "navy"],
+			["gray", "red", "purple", "black"]]	
+			
 	},
 
 	// _imagePaths: Map
@@ -80,12 +82,12 @@ dojo.declare(
 
 	// templatePath: String
 	//		Path to the template of this widget.
-	templateString:"<fieldset class=\"dijitInlineBox\">\n\t<div style=\"overflow: hidden\" dojoAttachPoint=\"divNode\" >\n\t\t<img style=\"border-style: none;\" dojoAttachPoint=\"imageNode\" tabIndex=\"-1\" />\n\t</div>\t\n</fieldset>\n",
+	templateString:"<fieldset class=\"dijitInlineBox\">\n\t<div style=\"overflow: hidden\" dojoAttachPoint=\"divNode\" waiRole=\"grid\" tabIndex=\"-1\">\n\t\t<img style=\"border-style: none;\" dojoAttachPoint=\"imageNode\" tabIndex=\"-1\" />\n\t</div>\t\n</fieldset>\n",
 
 
 	_paletteDims: {
 		"7x10": {"width": "185px", "height": "117px"},
-		"3x4": {"width": "82px", "height": "58px"}
+		"3x4": {"width": "77px", "height": "53px"}
 	},
 
 
@@ -96,6 +98,7 @@ dojo.declare(
 		var choices = this._palettes[this.palette];	
 		this.domNode.style.position = "relative";
 		this._highlightNodes = [];	
+		this.colorNames = dojo.i18n.getLocalization("dojo", "colors", this.lang);
 
 		for(var row=0; row < choices.length; row++){
 			for(var col=0; col < choices[row].length; col++){
@@ -103,20 +106,21 @@ dojo.declare(
 				highlightNode.src = dojo.moduleUrl("dijit", "templates/blank.gif");
 				dojo.addClass(highlightNode, "dijitPaletteImg");
 				var color = choices[row][col];
-				highlightNode.alt = highlightNode.color = color;
+				var colorValue = new dojo.Color(dojo.Color.named[color]);
+				highlightNode.alt = this.colorNames[color];
+				highlightNode.color = colorValue.toHex();
 				var highlightStyle = highlightNode.style;
-				highlightStyle.color = highlightStyle.backgroundColor = "#" + color;
-				dojo.forEach(["onMouseOver", "onBlur", "onFocus", "onKeyDown"], function(handler){
-					this.connect(highlightNode, handler.toLowerCase(), handler);
+				highlightStyle.color = highlightStyle.backgroundColor = highlightNode.color;
+				dojo.forEach(["Dijitclick", "MouseOut", "MouseOver", "Blur", "Focus"], function(handler){
+					this.connect(highlightNode, "on"+handler.toLowerCase(), "_onColor"+handler);
 				}, this);
-				this.connect(highlightNode, "onmousedown", "onClick");
 				this.divNode.appendChild(highlightNode);
 				var coords = this._paletteCoords;
 				highlightStyle.top = coords.topOffset + (row * coords.cHeight) + "px";
 				highlightStyle.left = coords.leftOffset + (col * coords.cWidth) + "px";
 				highlightNode.setAttribute("tabIndex","-1");
-				highlightNode.title = color+ " "; //color name will go here
-				dijit.util.wai.setAttr(highlightNode, "waiRole", "role", "td");
+				highlightNode.title = this.colorNames[color];
+				dijit.wai.setAttr(highlightNode, "waiRole", "role", "gridcell");
 				highlightNode.index = this._highlightNodes.length;
 				this._highlightNodes.push(highlightNode);
 			}
@@ -140,7 +144,7 @@ dojo.declare(
 			LEFT_ARROW: -1
 		};
 		for(var key in keyIncrementMap){
-			dijit.util.typematic.addKeyListener(this.domNode,
+			dijit.typematic.addKeyListener(this.domNode,
 				{keyCode:dojo.keys[key], ctrlKey:false, altKey:false, shiftKey:false},
 				this,
 				function(){
@@ -151,7 +155,13 @@ dojo.declare(
 		}
 	},
 
-	onColorSelect: function(color){
+	focus: function(){
+		// summary:
+		//		Focus this ColorPalette.
+		dijit.focus(this._highlightNodes[this._currentFocus]);
+	},
+
+	onChange: function(color){
 		// summary:
 		//		Callback when a color is selected.
 		// color: String
@@ -159,20 +169,31 @@ dojo.declare(
 		console.debug("Color selected is: "+color);
 	},
 
-	onClick: function(/*Event*/ evt){
+	_onColorDijitclick: function(/*Event*/ evt){
 		// summary:
-		//		Handler when a mouse click occurs. This causes the color that is clicked to be selected.
+		//		Handler for click, enter key & space key. Selects the color.
 		// evt:
-		//			The click event.
+		//		The event.
 		var target = evt.currentTarget;
-		this._currentFocus = target.index;
-		target.focus();
-		this._selectColor(target);	
+		if (this._currentFocus != target.index){
+			this._currentFocus = target.index;
+			dijit.focus(target);
+		}
+		this._selectColor(target);
+		dojo.stopEvent(evt);
 	},
 
-	onMouseOver: function(evt){
+	_onColorMouseOut: function(/*Event*/ evt){
 		// summary:
-		//		Handler for onMouseOver. This changes the color being highlighted.
+		//		Handler for onMouseOut. Removes highlight.
+		// evt:
+		//		The mouse event.
+		dojo.removeClass(evt.currentTarget, "dijitPaletteImgHighlight");
+	},
+
+	_onColorMouseOver: function(/*Event*/ evt){
+		// summary:
+		//		Handler for onMouseOver. Highlights the color.
 		// evt:
 		//		The mouse event.
 		var target = evt.currentTarget;
@@ -180,20 +201,21 @@ dojo.declare(
 		target.focus();
 	},
 
-	onBlur: function(evt){
+	_onColorBlur: function(/*Event*/ evt){
 		// summary:
-		//		Handler for the onBlur event. Causes the highlight Div
-		//		to be destroyed.
+		//		Handler for onBlur. Removes highlight and sets
+		//		the first color as the palette's tab point.
 		// evt:
 		//		The blur event.
 		dojo.removeClass(evt.currentTarget, "dijitPaletteImgHighlight");
+		evt.currentTarget.tabIndex = -1;
+		this._currentFocus = 0;
+		this._highlightNodes[0].tabIndex = 0;
 	},
 
-	onFocus: function(evt){
+	_onColorFocus: function(/*Event*/ evt){
 		// summary:
-		//		Handler for onFocus. This highlights the first color in the
-		//		palette if it is the first time the palette is focused.
-		//		Otherwise the last color highlighted is focused.
+		//		Handler for onFocus. Highlights the color.
 		// evt:
 		//		The focus event.
 		if(this._currentFocus != evt.currentTarget.index){
@@ -204,31 +226,17 @@ dojo.declare(
 
 	},
 
-	onKeyDown: function(evt){
-		// summary:
-		//		Handler for the onKeyDown event.
-		//		It handles space and tab being pressed.
-		//		Space selects the color currently highlighted.
-		//		Tab blurs the area currently highlighted.
-		// evt:
-		//		The keydown event.
-
-		if((evt.keyCode == dojo.keys.SPACE) && this._currentFocus){
-			this._selectColor(this._highlightNodes[this._currentFocus]);
-		}
-	},
-
 	_selectColor: function(selectNode){	
 		// summary:
-		// 		This selects a color. It triggers the onColorSelect event
+		// 		This selects a color. It triggers the onChange event
 		// area:
 		//		The area node that covers the color being selected.
-		this.selectedColor = selectNode.color;
-		this.onColorSelect(selectNode.color);
+		this.value = selectNode.color;
+		this.onChange(selectNode.color);
 	},
 
 	_navigateByKey: function(increment, typeCount){
-		// summary:
+		// summary:we
 		// 	  	This is the callback for typematic.
 		// 		It changes the focus and the highlighed color.
 		// increment:

@@ -1,4 +1,4 @@
-if(!dojo._hasResource["tests._base._loader.bootstrap"]){
+if(!dojo._hasResource["tests._base._loader.bootstrap"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["tests._base._loader.bootstrap"] = true;
 dojo.provide("tests._base._loader.bootstrap");
 

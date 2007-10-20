@@ -1,4 +1,4 @@
-if(!dojo._hasResource["tests.AdapterRegistry"]){
+if(!dojo._hasResource["tests.AdapterRegistry"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["tests.AdapterRegistry"] = true;
 dojo.provide("tests.AdapterRegistry");
 dojo.require("dojo.AdapterRegistry");

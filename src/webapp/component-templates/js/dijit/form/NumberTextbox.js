@@ -1,26 +1,33 @@
-if(!dojo._hasResource["dijit.form.NumberTextbox"]){
-dojo._hasResource["dijit.form.NumberTextbox"] = true;
-dojo.provide("dijit.form.NumberTextbox");
+if(!dojo._hasResource["dijit.form.NumberTextBox"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
+dojo._hasResource["dijit.form.NumberTextBox"] = true;
+dojo.provide("dijit.form.NumberTextBox");
 
-dojo.require("dijit.form.ValidationTextbox");
+dojo.require("dijit.form.ValidationTextBox");
 dojo.require("dojo.number");
 
 dojo.declare(
-	"dijit.form.NumberTextboxMixin",
+	"dijit.form.NumberTextBoxMixin",
 	null,
 	{
 		// summary:
 		//		A mixin for all number textboxes
 		regExpGen: dojo.number.regexp,
-		format: dojo.number.format,
+		format: function(/*Number*/ value, /*Object*/ constraints){
+			if(isNaN(value)){ return null; }
+			return dojo.number.format(value, constraints);
+		},
+		serialize: function(/*Number*/ value){
+			if(isNaN(value)){ return null; }
+			return this.inherited('serialize', arguments);
+		},
 		parse: dojo.number.parse,
-		value: 0
+		value: NaN
 	}
 );
 
 dojo.declare(
-	"dijit.form.NumberTextbox",
-	[dijit.form.RangeBoundTextbox,dijit.form.NumberTextboxMixin],
+	"dijit.form.NumberTextBox",
+	[dijit.form.RangeBoundTextBox,dijit.form.NumberTextBoxMixin],
 	{
 		// summary:
 		//		A validating, serializable, range-bound text box.

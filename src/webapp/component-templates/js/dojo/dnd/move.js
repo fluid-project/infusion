@@ -1,4 +1,4 @@
-if(!dojo._hasResource["dojo.dnd.move"]){
+if(!dojo._hasResource["dojo.dnd.move"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dojo.dnd.move"] = true;
 dojo.provide("dojo.dnd.move");
 
@@ -23,7 +23,7 @@ dojo.dnd.Mover = function(node, e){
 		firstEvent
 	];
 	// set globals to indicate that move has started
-	dojo.publish("dndMoveStart", [this.node]);
+	dojo.publish("/dnd/move/start", [this.node]);
 	dojo.addClass(dojo.body(), "dojoMove"); 
 	dojo.addClass(this.node, "dojoMoveItem"); 
 };
@@ -51,7 +51,7 @@ dojo.extend(dojo.dnd.Mover, {
 		// summary: stops the move, deletes all references, so the object can be garbage-collected
 		dojo.forEach(this.events, dojo.disconnect);
 		// undo global settings
-		dojo.publish("dndMoveStop", [this.node]);
+		dojo.publish("/dnd/move/stop", [this.node]);
 		dojo.removeClass(dojo.body(), "dojoMove");
 		dojo.removeClass(this.node, "dojoMoveItem");
 		// destroy objects
@@ -59,10 +59,10 @@ dojo.extend(dojo.dnd.Mover, {
 	}
 });
 
-dojo.dnd.Moveable = function(node, opt){
+dojo.dnd.Moveable = function(node, params){
 	// summary: an object, which makes a node moveable
 	// node: Node: a node (or node's id) to be moved
-	// opt: Object: an optional object with additional parameters;
+	// params: Object: an optional object with additional parameters;
 	//	following parameters are recognized:
 	//		handle: Node: a node (or node's id), which is used as a mouse handle
 	//			if omitted, the node itself is used as a handle
@@ -70,11 +70,11 @@ dojo.dnd.Moveable = function(node, opt){
 	//		skip: Boolean: skip move of form elements
 	//		mover: Object: a constructor of custom Mover
 	this.node = dojo.byId(node);
-	this.handle = (opt && opt.handle) ? dojo.byId(opt.handle) : null;
+	this.handle = (params && params.handle) ? dojo.byId(params.handle) : null;
 	if(!this.handle){ this.handle = this.node; }
-	this.delay = (opt && opt.delay > 0) ? opt.delay : 0;
-	this.skip  = opt && opt.skip;
-	this.mover = (opt && opt.mover) ? opt.mover : dojo.dnd.Mover;
+	this.delay = (params && params.delay > 0) ? params.delay : 0;
+	this.skip  = params && params.skip;
+	this.mover = (params && params.mover) ? params.mover : dojo.dnd.Mover;
 	this.events = [
 		dojo.connect(this.handle, "onmousedown", this, "onMouseDown"),
 		// cancel text selection and text dragging
@@ -84,20 +84,28 @@ dojo.dnd.Moveable = function(node, opt){
 };
 
 dojo.extend(dojo.dnd.Moveable, {
+	// object attributes (for markup)
+	handle: "",
+	delay: 0,
+	skip: false,
+	
+	// markup methods
+	markupFactory: function(params, node){
+		return new dojo.dnd.Moveable(node, params);
+	},
+
+	// methods
+	destroy: function(){
+		// summary: stops watching for possible move, deletes all references, so the object can be garbage-collected
+		dojo.forEach(this.events, dojo.disconnect);
+		this.events = this.node = this.handle = null;
+	},
+	
 	// mouse event processors
 	onMouseDown: function(e){
 		// summary: event processor for onmousedown, creates a Mover for the node
 		// e: Event: mouse event
-		if(this.skip){
-			var t = e.target;
-			if(t.nodeType == 3 /*TEXT_NODE*/){
-				t = t.parentNode;
-			}
-			// do not trigger move if user interacts with form elements
-			if(" button textarea input select option ".indexOf(" " + t.tagName.toLowerCase() + " ") >= 0) {
-				return;
-			}
-		}
+		if(this.skip && dojo.dnd.isFormElement(e)){ return; }
 		if(this.delay){
 			this.events.push(dojo.connect(this.handle, "onmousemove", this, "onMouseMove"));
 			this.events.push(dojo.connect(this.handle, "onmouseup", this, "onMouseUp"));
@@ -122,12 +130,6 @@ dojo.extend(dojo.dnd.Moveable, {
 		// e: Event: mouse event
 		dojo.disconnect(this.events.pop());
 		dojo.disconnect(this.events.pop());
-	},
-	// utilities
-	destroy: function(){
-		// summary: stops watching for possible move, deletes all references, so the object can be garbage-collected
-		dojo.forEach(this.events, dojo.disconnect);
-		this.events = this.node = this.handle = null;
 	}
 });
 

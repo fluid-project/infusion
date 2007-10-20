@@ -1,9 +1,11 @@
-if(!dojo._hasResource["dijit.layout.ContentPane"]){
+if(!dojo._hasResource["dijit.layout.ContentPane"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dijit.layout.ContentPane"] = true;
 dojo.provide("dijit.layout.ContentPane");
 
 dojo.require("dijit._Widget");
 dojo.require("dojo.parser");
+dojo.require("dojo.string");
+dojo.requireLocalization("dijit", "loading", null, "ROOT");
 
 dojo.declare(
 	"dijit.layout.ContentPane",
@@ -29,9 +31,10 @@ dojo.declare(
 	//		To do a ajax update use .setHref('url')
 
 	// href: String
-	//		The href of the content that displays now
-	//		Set this at construction if you want to load externally,
-	//		changing href after creation doesn't have any effect, see setHref
+	//		The href of the content that displays now.
+	//		Set this at construction if you want to load data externally when the
+	//		pane is shown.  (Set preload=true to load it immediately.)
+	//		Changing href after creation doesn't have any effect; see setHref();
 	href: "",
 
 	// extractContent: Boolean
@@ -43,13 +46,11 @@ dojo.declare(
 	parseOnLoad:	true,
 
 	// preventCache: Boolean
-	//	Cache content retreived externally
+	//		Cache content retreived externally
 	preventCache:	false,
 
 	// preload: Boolean
 	//	Force load of data even if pane is hidden.
-	// Note:
-	//		In order to delay download you need to initially hide the node it constructs from
 	preload: false,
 
 	// refreshOnShow: Boolean
@@ -58,11 +59,11 @@ dojo.declare(
 
 	// loadingMessage: String
 	//	Message that shows while downloading
-	loadingMessage: "Loading...", //TODO: i18n or set a image containing the same info (no i18n required)
+	loadingMessage: "<span class='dijitContentPaneLoading'>${loadingState}</span>", // TODO: consider a graphical representation for this state which does not require localization
 
 	// errorMessage: String
 	//	Message that shows if an error occurs
-	errorMessage: "Sorry, but an error occured", // TODO: i18n
+	errorMessage: "<span class='dijitContentPaneError'>${errorState}</span>", // TODO: consider a graphical representation for this state which does not require localization
 
 	// isLoaded: Boolean
 	//	Tells loading status see onLoad|onUnload for event hooks
@@ -77,6 +78,14 @@ dojo.declare(
 		// over a node
 		this.domNode.title = "";
 
+		if(this.preload){
+			this._loadCheck();
+		}
+
+		var messages = dojo.i18n.getLocalization("dijit", "loading", this.lang);
+		this.loadingMessage = dojo.string.substitute(this.loadingMessage, messages);
+		this.errorMessage = dojo.string.substitute(this.errorMessage, messages);
+
 		// for programatically created ContentPane (with <span> tag), need to muck w/CSS
 		// or it's as though overflow:visible is set
 		dojo.addClass(this.domNode, this["class"]);
@@ -84,9 +93,7 @@ dojo.declare(
 
 	startup: function(){
 		if(!this._started){
-			if(!this.linkLazyLoadToParent()){
-				this._loadCheck();
-			}
+			this._loadCheck();
 			this._started = true;
 		}
 	},
@@ -95,7 +102,7 @@ dojo.declare(
 		// summary:
 		//		Force a refresh (re-download) of content, be sure to turn off cache
 
-		// we return result of _prepareLoad here to avoid code dup. in dojox.widget.ContentPane
+		// we return result of _prepareLoad here to avoid code dup. in dojox.layout.ContentPane
 		return this._prepareLoad(true);
 	},
 
@@ -107,7 +114,7 @@ dojo.declare(
 		//		url to the page you want to get, must be within the same domain as your mainpage
 		this.href = href;
 
-		// we return result of _prepareLoad here to avoid code dup. in dojox.widget.ContentPane
+		// we return result of _prepareLoad here to avoid code dup. in dojox.layout.ContentPane
 		return this._prepareLoad();
 	},
 
@@ -129,7 +136,7 @@ dojo.declare(
 
 		this._setContent(data || "");
 
-		this._isDownloaded = false; // must be set after _setContent(..), pathadjust in dojox.widget.ContentPane
+		this._isDownloaded = false; // must be set after _setContent(..), pathadjust in dojox.layout.ContentPane
 
 		if(this.parseOnLoad){
 			this._createSubWidgets();
@@ -155,7 +162,6 @@ dojo.declare(
 		}
 		// make sure we call onUnload
 		this._onUnloadHandler();
-		this.unlinkLazyLoadFromParent();
 		this._beingDestroyed = true;
 		dijit.layout.ContentPane.superclass.destroy.call(this);
 	},
@@ -164,72 +170,41 @@ dojo.declare(
 		dojo.marginBox(this.domNode, size);
 	},
 
-	linkLazyLoadToParent: function(){
-		// summary:
-		//		start to listen on parent Container selectChild publishes (lazy load)
-		//		You dont need to call this method unless you manualy addChild this ContentPane to a Container
-		// description:
-		//		Container must be a instanceof dijit.layout.StackContainer
-		//		like TabContainer, AccordionContainer etc
-		//		For this method to work, this.domNode must already be
-		//		inserted in DOM as a Child of Container
-		if(dijit._Contained && dijit.layout.StackContainer && !this._subscr_show){
-			// look upwards to find the closest stackContainer
-			var p = this, ch = this;
-			while(p = dijit._Contained.prototype.getParent.call(p)){
-				if(p && p instanceof dijit.layout.StackContainer){ break; }
-				ch = p; // containers child isn't always this widget, see AccordionPane
-			}
-
-			if(p){
-				// relay published event to correct function (code reuse)
-				function cb(receiver){
-					return function(page){
-						if(page==ch && receiver){ receiver.call(this);}
-					};
-				}
-
-				// if container has this page selected, start loading..
-				if(p.selectedChildWidget == ch){ this._loadCheck(); }
-
-				this._subscr_show = dojo.subscribe(p.id+"-selectChild", this, cb(this._loadCheck));
-				this._subscr_remove = dojo.subscribe(p.id+"-selectChild", this, cb(this.unlinkLazyLoadFromParent));
-				return true; // Boolean
-			}
-		}
-		return false; // Boolean
-	},
-
-	unlinkLazyLoadFromParent: function(){
-		// summary:
-		//		unhooks selectChild publishes from parent Container (lazy load)
-		if(this._subscr_show){
-			dojo.unsubscribe(this._subscr_remove);
-			dojo.unsubscribe(this._subscr_show);
-			this._subscr_remove = this._subscr_show = null;
-		}
-	},
-
-	_loadCheck: function(){
-		// call this when you change onShow (onSelected) status when selected in parent container
-		// its used as a trigger for href download when this.domNode.display != 'none'
-		if(this.refreshOnShow || (!this.isLoaded && this.href)){
-			this._prepareLoad(this.refreshOnShow);
-		}
-	},
-
 	_prepareLoad: function(forceLoad){
-		// sets up for a xhrLoad, load is deferred until widget onShowor selected in parentContainer
+		// sets up for a xhrLoad, load is deferred until widget onShow
+		// cancels a inflight download
+		this.cancel();
 		this.isLoaded = false;
+		this._loadCheck(forceLoad);
+	},
 
-		// defer load if until widget is showing
-		if(forceLoad || this.preload || (this.domNode.style.display != 'none')){
+	_loadCheck: function(forceLoad){
+		// call this when you change onShow (onSelected) status when selected in parent container
+		// it's used as a trigger for href download when this.domNode.display != 'none'
+
+		// sequence:
+		// if no href -> bail
+		// forceLoad -> always load
+		// this.preload -> load when download not in progress, domNode display doesn't matter
+		// this.refreshOnShow -> load when download in progress bails, domNode display !='none' AND
+		//						this.open !== false (undefined is ok), isLoaded doesn't matter
+		// else -> load when download not in progress, if this.open !== false (undefined is ok) AND
+		//						domNode display != 'none', isLoaded must be false
+
+		var displayState = ((this.open !== false) && (this.domNode.style.display != 'none'));
+
+		if(this.href &&	
+			(forceLoad ||
+				(this.preload && !this._xhrDfd) ||
+				(this.refreshOnShow && displayState && !this._xhrDfd) ||
+				(!this.isLoaded && displayState && !this._xhrDfd)
+			)
+		){
 			this._downloadExternalContent();
 		}
 	},
 
 	_downloadExternalContent: function(){
-		this.cancel();
 		this._onUnloadHandler();
 
 		// display loading message
@@ -240,14 +215,17 @@ dojo.declare(
 
 		var self = this;
 		var getArgs = {
-			preventCache:  (this.preventCache || this.refreshOnShow),
+			preventCache: (this.preventCache || this.refreshOnShow),
 			url: this.href,
 			handleAs: "text"
 		};
+		if(dojo.isObject(this.ioArgs)){
+			dojo.mixin(getArgs, this.ioArgs);
+		}
 
-		var getHandler = this._xhrDfd = dojo.xhrGet(getArgs);
+		var hand = this._xhrDfd = (this.ioMethod || dojo.xhrGet)(getArgs);
 
-		getHandler.addCallback(function(html){
+		hand.addCallback(function(html){
 			try{
 				self.onDownloadEnd.call(self);
 				self._isDownloaded = true;
@@ -255,14 +233,16 @@ dojo.declare(
 			}catch(err){
 				self._onError.call(self, 'Content', err); // onContentError
 			}
+			delete self._xhrDfd;
 			return html;
 		});
 
-		getHandler.addErrback(function(err){
-			if(!getHandler.cancelled){
+		hand.addErrback(function(err){
+			if(!hand.cancelled){
 				// show error message in the pane
 				self._onError.call(self, 'Download', err); // onDownloadError
 			}
+			delete self._xhrDfd;
 			return err;
 		});
 	},
@@ -297,7 +277,7 @@ dojo.declare(
 			if(typeof cont == "string"){
 				// dijit.ContentPane does only minimal fixes,
 				// No pathAdjustments, script retrieval, style clean etc
-				// some of these should be available in the dojox.widget.ContentPane
+				// some of these should be available in the dojox.layout.ContentPane
 				if(this.extractContent){
 					match = cont.match(/<body[^>]*>\s*([\s\S]+)\s*<\/body>/im);
 					if(match){ cont = match[1]; }

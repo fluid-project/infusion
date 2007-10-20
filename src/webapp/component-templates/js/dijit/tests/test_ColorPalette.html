@@ -23,7 +23,7 @@
 		function setColor(color){
 
 			var theSpan = dojo.byId("outputSpan");
-			theSpan.style.color = "#"+color;
+			theSpan.style.color = color;
 			theSpan.innerHTML = color;
 		}
 	</script>
@@ -37,10 +37,10 @@
 
 <body class="tundra">
 
-	<h1 class="testTitle">
+	<h1 class="testTitle"></h1>
 
 	<p>Default color palette (7x10):</p>
-	<div dojoType="dijit.ColorPalette" onColorSelect="setColor(this.selectedColor);"></div>
+	<div dojoType="dijit.ColorPalette" onChange="setColor(this.value);"></div>
 
 	Test color is: <span id="outputSpan"></span>.
 

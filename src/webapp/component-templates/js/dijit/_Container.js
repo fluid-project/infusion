@@ -1,8 +1,6 @@
-if(!dojo._hasResource["dijit._Container"]){
+if(!dojo._hasResource["dijit._Container"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dijit._Container"] = true;
 dojo.provide("dijit._Container");
-
-dojo.require("dijit.util.manager");
 
 dojo.declare("dijit._Contained",
 	null,
@@ -65,11 +63,18 @@ dojo.declare("dijit._Container",
 			//		Process the given child widget, inserting it's dom node as
 			//		a child of our dom node
 
-			var containerNode = this.containerNode || this.domNode;
 			if(typeof insertIndex == "undefined"){
 				insertIndex = "last";
 			}
-			dojo.place(widget.domNode, containerNode, insertIndex);
+			dojo.place(widget.domNode, this.containerNode || this.domNode, insertIndex);
+
+			// If I've been started but the child widget hasn't been started,
+			// start it now.  Make sure to do this after widget has been
+			// inserted into the DOM tree, so it can see that it's being controlled by me,
+			// so it doesn't try to size itself.
+			if(this._started && !widget._started){
+				widget.startup();
+			}
 		},
 
 		removeChild: function(/*Widget*/ widget){
@@ -98,7 +103,7 @@ dojo.declare("dijit._Container",
 		getChildren: function(){
 			// summary:
 			//		returns array of children widgets
-			return dojo.query("> [widgetId]", this.containerNode || this.domNode).map(dijit.util.manager.byNode); // Array
+			return dojo.query("> [widgetId]", this.containerNode || this.domNode).map(dijit.byNode); // Array
 		},
 
 		hasChildren: function(){

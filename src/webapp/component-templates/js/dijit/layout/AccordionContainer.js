@@ -1,10 +1,13 @@
-if(!dojo._hasResource["dijit.layout.AccordionContainer"]){
+if(!dojo._hasResource["dijit.layout.AccordionContainer"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dijit.layout.AccordionContainer"] = true;
 dojo.provide("dijit.layout.AccordionContainer");
 
 dojo.require("dojo.fx");
 
+dojo.require("dijit._Container");
+dojo.require("dijit._Templated");
 dojo.require("dijit.layout.StackContainer");
+dojo.require("dijit.layout.ContentPane");
 
 dojo.declare(
 	"dijit.layout.AccordionContainer",
@@ -29,15 +32,19 @@ dojo.declare(
 
 		_verticalSpace: 0,
 
+		postCreate: function(){
+			this.domNode.style.overflow="hidden";
+			dijit.layout.AccordionContainer.superclass.postCreate.apply(this, arguments);
+		},
+
 		startup: function(){
+			if(this._started){ return; }
 			dijit.layout.StackContainer.prototype.startup.apply(this, arguments);
 			if(this.selectedChildWidget){
 				var style = this.selectedChildWidget.containerNode.style;
 				style.display = "";
 				style.overflow = "auto";
 				this.selectedChildWidget._setSelectedState(true);
-			}else{
-				this.getChildren()[0].focusNode.setAttribute("tabIndex","0");
 			}
 		},
 
@@ -54,9 +61,13 @@ dojo.declare(
 			this._verticalSpace = (mySize.h - totalCollapsedHeight);
 			if(openPane){
 				openPane.containerNode.style.height = this._verticalSpace + "px";
+/***
+TODO: this is wrong.  probably you wanted to call resize on the SplitContainer
+inside the AccordionPane??
 				if(openPane.resize){
-					openPane.resize({h: this.verticalSpace});
+					openPane.resize({h: this._verticalSpace});
 				}
+***/
 			}
 		},
 
@@ -73,11 +84,6 @@ dojo.declare(
 				newWidget.setSelected(true);
 				var newContents = newWidget.containerNode;
 				newContents.style.display = "";
-				dojo.forEach(newWidget.getChildren(), function(widget){
-					if(widget.resize){
-						widget.resize({h: paneHeight});
-					}
-				});
 
 				animations.push(dojo.animateProperty({ 
 					node: newContents, 
@@ -111,25 +117,25 @@ dojo.declare(
 
 		// note: we are treating the container as controller here
 		processKey: function(/*Event*/ evt){
-			if(this.disabled || evt.altKey || evt.shiftKey || evt.ctrlKey){ return; }
+			if(this.disabled || evt.altKey || evt.shiftKey || evt.ctrlKey){
+				return 	dijit.layout.AccordionContainer.superclass._onKeyPress.apply(this, arguments);
+			}
 			var forward = true;
 			switch(evt.keyCode){				
 				case dojo.keys.LEFT_ARROW:
 				case dojo.keys.UP_ARROW:
-					forward=false;
+					forward = false;
+					// fallthrough
 				case dojo.keys.RIGHT_ARROW:
 				case dojo.keys.DOWN_ARROW:
 					// find currently focused button in children array
 					var children = this.getChildren();
-					var current = dojo.indexOf(children, evt._dijitWidget);
+					var index = dojo.indexOf(children, evt._dijitWidget);
 					// pick next button to focus on
-					var offset = forward ? 1 : children.length - 1;
-					var next = children[ (current + offset) % children.length ];
+					index += forward ? 1 : children.length - 1;
+					var next = children[ index % children.length ];
 					dojo.stopEvent(evt);
 					next._onTitleClick();
-					break;
-			default:
-				return;
 			}
 		}
 	}
@@ -137,25 +143,16 @@ dojo.declare(
 
 dojo.declare(
 	"dijit.layout.AccordionPane",
-	[dijit.layout._LayoutWidget, dijit._Templated],
+	[dijit.layout.ContentPane, dijit._Templated, dijit._Contained],
 {
 	// summary
 	//		AccordionPane is a box with a title that contains another widget (often a ContentPane).
 	//		It's a widget used internally by AccordionContainer.
 
-	// title: String
-	//		title to print on top of AccordionPane
-	title: "",
-
-	// selected: Boolean
-	//	if true, this is the open pane
-	selected: false,
-
-	templateString:"<div class='dijitAccordionPane'\n\t><div dojoAttachPoint='titleNode;focusNode' dojoAttachEvent='onklick:_onTitleClick;onkeypress:_onKeyPress'\n\t\tclass='title' wairole=\"tab\"\n\t\t><div class='arrow'></div\n\t\t><div class='arrowTextUp' waiRole=\"presentation\">&#9650;&#9650;</div\n\t\t><div class='arrowTextDown' waiRole=\"presentation\">&#9660;&#9660;</div\n\t\t><span dojoAttachPoint='titleTextNode'>${title}</span></div\n\t><div><div dojoAttachPoint='containerNode' style='overflow: hidden; height: 1px; display: none'\n\t\tclass='body' waiRole=\"tabpanel\"\n\t></div></div>\n</div>\n",
+	templateString:"<div class='dijitAccordionPane'\n\t><div dojoAttachPoint='titleNode,focusNode' dojoAttachEvent='ondijitclick:_onTitleClick,onkeypress:_onKeyPress'\n\t\tclass='dijitAccordionTitle' wairole=\"tab\"\n\t\t><div class='dijitAccordionArrow'></div\n\t\t><div class='arrowTextUp' waiRole=\"presentation\">&#9650;</div\n\t\t><div class='arrowTextDown' waiRole=\"presentation\">&#9660;</div\n\t\t><span dojoAttachPoint='titleTextNode'>${title}</span></div\n\t><div><div dojoAttachPoint='containerNode' style='overflow: hidden; height: 1px; display: none'\n\t\tdojoAttachEvent='onkeypress:_onKeyPress'\n\t\tclass='dijitAccordionBody' waiRole=\"tabpanel\"\n\t></div></div>\n</div>\n",
 
 	postCreate: function(){
 		dijit.layout.AccordionPane.superclass.postCreate.apply(this, arguments);
-		dojo.addClass(this.domNode, this["class"]);
 		dojo.setSelectable(this.titleNode, false);
 		this.setSelected(this.selected);
 	},
@@ -168,9 +165,8 @@ dojo.declare(
 	_onTitleClick: function(){
 		// summary: callback when someone clicks my title
 		var parent = this.getParent();
-//		parent.selectChild(parent.selectedChildWidget == this ? null : this);
 		parent.selectChild(this);
-		this.focusNode.focus();
+		dijit.focus(this.focusNode);
 	},
 
 	_onKeyPress: function(/*Event*/ evt){

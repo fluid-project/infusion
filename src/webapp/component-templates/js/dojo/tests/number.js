@@ -1,4 +1,4 @@
-if(!dojo._hasResource["tests.number"]){
+if(!dojo._hasResource["tests.number"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["tests.number"] = true;
 dojo.provide("tests.number");
 
@@ -146,11 +146,6 @@ tests.register("tests.number",
 				}
 			},
 			runTest: function(t){
-			},
-			tearDown: function(){
-				//Clean up bundles that should not exist if
-				//the test is re-run.
-				delete dojo.cldr.nls.number;
 			}
 		},
 		{
@@ -225,6 +220,12 @@ tests.register("tests.number",
 	t.is(-123.4, dojo.number.parse("(123.4)", {pattern: "#0.#;(#0.#)"}));
 
 	t.is(null, dojo.number.format("abcd", {pattern: "0000"}));
+	
+	t.is(123, dojo.number.parse("123", {places:0}));
+	t.is(123, dojo.number.parse("123", {places:'0'}));
+	t.is(123.4, dojo.number.parse("123.4", {places:1}));
+	t.is(123.45, dojo.number.parse("123.45", {places:'1,3'}));
+	t.is(123.45, dojo.number.parse("123.45", {places:'0,2'}));
 			}
 		},
 		{
@@ -569,7 +570,7 @@ function test_number_format_pad(){
 //	t.is(0,result);
 
 	/**************************************** tolerant parse *****************************************
-	 * refere to ICU4J's NumberFormatTest.TestStrictParse()��
+	 * refers to ICU4J's NumberFormatTest.TestStrictParse()??
 	 * TODO: Seems dojo.number parses string in a tolerant way.  
 	 */
 	 var options = {locale:"en"};

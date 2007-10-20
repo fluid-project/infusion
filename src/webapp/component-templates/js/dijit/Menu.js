@@ -1,19 +1,19 @@
-if(!dojo._hasResource["dijit.Menu"]){
+if(!dojo._hasResource["dijit.Menu"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dijit.Menu"] = true;
 dojo.provide("dijit.Menu");
 
 dojo.require("dijit._Widget");
 dojo.require("dijit._Container");
 dojo.require("dijit._Templated");
-dojo.require("dijit.util.popup");
-dojo.require("dijit.util.scroll");
-dojo.require("dijit.util.window");
-dojo.require("dijit.util.sniff");
 
 dojo.declare(
 	"dijit.Menu",
 	[dijit._Widget, dijit._Templated, dijit._Container],
 {
+	preamble: function() {
+		this._bindings = [];
+	},
+	
 	templateString:
 			'<table class="dijit dijitMenu dijitReset dijitMenuTable" waiRole="menu" dojoAttachEvent="onkeypress:_onKeyPress">' +
 				'<tbody class="dijitReset" dojoAttachPoint="containerNode"></tbody>'+
@@ -33,9 +33,9 @@ dojo.declare(
 	// pointer to menu that displayed me
 	parentMenu: null,
 
-	// submenuDelay: Integer
-	//	number of milliseconds before hovering (without clicking) causes the submenu to automatically open
-	submenuDelay: 500,
+	// popupDelay: Integer
+	//	number of milliseconds before hovering (without clicking) causes the popup to automatically open
+	popupDelay: 500,
 
 	// _contextMenuWithMouse: Boolean
 	//	used to record mouse and keyboard events to determine if a context
@@ -48,34 +48,25 @@ dojo.declare(
 		}else{
 			dojo.forEach(this.targetNodeIds, this.bindDomNode, this);
 		}
-
-		if(!this.isLeftToRight()){
-			this.containerNode.className += " dojoRTL";
-		}
 	},
 
 	startup: function(){
 		dojo.forEach(this.getChildren(), function(child){ child.startup(); });
 	},
 
-	_moveToParentMenu: function(/*Event*/ evt){
-		if(this.parentMenu){
-			//only process event in the focused menu
-			//and its immediate parentPopup to support
-			//MenuBar
-			if(evt._menuUpKeyProcessed){
-				dojo.stopEvent(e);
-			}else{
-				if(this._focusedItem){
-					this._blurFocusedItem();
-				}
-				this.parentMenu.closeSubmenu();
-				evt._menuUpKeyProcessed = true;
-			}
-		}
+	onExecute: function(){
+		// summary: attach point for notification about when a menu item has been executed
 	},
 
-	_moveToChildMenu: function(/*Event*/ evt){
+	onCancel: function(/*Boolean*/ closeAll){
+		// summary: attach point for notification about when the user cancels the current menu
+	},
+
+	focus: function(){
+		this._focusFirstItem();
+	},
+
+	_moveToPopup: function(/*Event*/ evt){
 		if(this._focusedItem && this._focusedItem.popup && !this._focusedItem.disabled){
 			return this._activateCurrentItem(evt);
 		}
@@ -84,10 +75,7 @@ dojo.declare(
 
 	_activateCurrentItem: function(/*Event*/ evt){
 		if(this._focusedItem){
-			this._focusedItem._onClick();
-			if(this.currentSubmenu){
-				this.currentSubmenu._focusFirstItem();
-			}
+			this._focusedItem._onClick(evt);
 			return true; //do not pass to parent menu
 		}
 		return false;
@@ -106,25 +94,25 @@ dojo.declare(
 				break;
 			case dojo.keys.UP_ARROW:
 				this._focusNeighborItem(-1);
+				dojo.stopEvent(evt);
 				break;
 			case dojo.keys.RIGHT_ARROW:
-				this._moveToChildMenu(evt);
+				this._moveToPopup(evt);
 				dojo.stopEvent(evt);
 				break;
 			case dojo.keys.LEFT_ARROW:
-				this._moveToParentMenu(evt);
-				break;
-			case dojo.keys.ESCAPE:
 				if(this.parentMenu){
-					this._moveToParentMenu(evt);
+					this.onCancel(false);
 				}else{
 					dojo.stopEvent(evt);
-					dijit.util.popup.closeAll();
 				}
 				break;
 			case dojo.keys.TAB:
 				dojo.stopEvent(evt);
-				dijit.util.popup.closeAll();
+				// Hmm, there's no good infrastructure to support cancel closing the whole tree
+				// of menus, but it's close to an execute event, in the sense that focus is returned
+				// to the previously focused node (for a context menu) or to the DropDownButton
+				this.onExecute();
 				break;
 		}
 	},
@@ -183,17 +171,17 @@ dojo.declare(
 		this._focusItem(item);
 
 		if(this._focusedItem.popup && !this._focusedItem.disabled && !this.hover_timer){
-			this.hover_timer = setTimeout(dojo.hitch(this, "_openSubmenu"), this.submenuDelay);
+			this.hover_timer = setTimeout(dojo.hitch(this, "_openPopup"), this.popupDelay);
 		}
 	},
 
 	_blurFocusedItem: function(){
 		// summary: internal function to remove focus from the currently focused item
 		if(this._focusedItem){
-			// Close all submenus that are open and descendents of this menu
-			dijit.util.popup.closeTo(this);
+			// Close all popups that are open and descendants of this menu
+			dijit.popup.closeTo(this);
 			this._focusedItem._blur();
-			this._stopSubmenuTimer();
+			this._stopPopupTimer();
 			this._focusedItem = null;
 		}
 	},
@@ -202,7 +190,7 @@ dojo.declare(
 		//this._blurFocusedItem();
 	},
 
-	_stopSubmenuTimer: function(){
+	_stopPopupTimer: function(){
 		if(this.hover_timer){
 			clearTimeout(this.hover_timer);
 			this.hover_timer = null;
@@ -221,37 +209,23 @@ dojo.declare(
 
 		if(item.popup){
 			if(!this.is_open){
-				this._openSubmenu();
+				this._openPopup();
 			}
 		}else{
 			// before calling user defined handler, close hierarchy of menus
 			// and restore focus to place it was when menu was opened
-			var savedFocus = this._getTopMenu()._savedFocus;
-			if(savedFocus){
-				dijit.util.focus.restore(savedFocus);
-			}
-			dijit.util.popup.closeAll();
+			this.onExecute();
+
+			// user defined handler for click
+			item.onClick();
 		}
-
-		// user defined handler for click
-		item.onClick();
-	},
-
-	closeSubmenu: function(force){
-		// summary: close the currently displayed submenu
-		if(!this.currentSubmenu){ return; }
-
-		dijit.util.popup.closeTo(this);
-		this._focusedItem._focus();	// put focus back on my node
-
-		this.currentSubmenu = null;
 	},
 
 	// thanks burstlib!
 	_iframeContentWindow: function(/* HTMLIFrameElement */iframe_el) {
 		//	summary
 		//	returns the window reference of the passed iframe
-		var win = dijit.util.window.getDocumentWindow(dijit.Menu._iframeContentDocument(iframe_el)) ||
+		var win = dijit.getDocumentWindow(dijit.Menu._iframeContentDocument(iframe_el)) ||
 			// Moz. TODO: is this available when defaultView isn't?
 			dijit.Menu._iframeContentDocument(iframe_el)['__parent__'] ||
 			(iframe_el.name && document.frames[iframe_el.name]) || null;
@@ -273,7 +247,7 @@ dojo.declare(
 		node = dojo.byId(node);
 
 		//TODO: this is to support context popups in Editor.  Maybe this shouldn't be in dijit.Menu
-		var win = dijit.util.window.getDocumentWindow(node.ownerDocument);
+		var win = dijit.getDocumentWindow(node.ownerDocument);
 		if(node.tagName.toLowerCase()=="iframe"){
 			win = this._iframeContentWindow(node);
 			node = dojo.withGlobal(win, dojo.body);
@@ -282,17 +256,20 @@ dojo.declare(
 		// to capture these events at the top level,
 		// attach to document, not body
 		var cn = (node == dojo.body() ? dojo.doc : node);
-		node[this.id+'_connect'] = [
+		
+		node[this.id] = this._bindings.push([
 			dojo.connect(cn, "oncontextmenu", this, "_openMyself"),
 			dojo.connect(cn, "onkeydown", this, "_contextKey"),
 			dojo.connect(cn, "onmousedown", this, "_contextMouse")
-		];
+		]);
 	},
 
 	unBindDomNode: function(/*String|DomNode*/ nodeName){
 		// summary: detach menu from given node
 		var node = dojo.byId(nodeName);
-		dojo.forEach(node[this.id+'_connect'], dojo.disconnect);
+		var bid = node[this.id]-1, b = this._bindings[bid];
+		dojo.forEach(b, dojo.disconnect);
+		delete this._bindings[bid];
 	},
 
 	_contextKey: function(e){
@@ -320,48 +297,98 @@ dojo.declare(
 		// summary:
 		//		Internal function for opening myself when the user
 		//		does a right-click or something similar
+
 		dojo.stopEvent(e);
+		
+		// Get coordinates.
 		// if we are opening the menu with the mouse or on safari open
 		// the menu at the mouse cursor
 		// (Safari does not have a keyboard command to open the context menu
 		// and we don't currently have a reliable way to determine
 		// _contextMenuWithMouse on Safari)
-		this._savedFocus = dijit.util.focus.save(this);
+		var x,y;
 		if(dojo.isSafari || this._contextMenuWithMouse){
-			dijit.util.popup.open({ popup: this, x: e.pageX, y: e.pageY });
+			x=e.pageX;
+			y=e.pageY;
 		}else{
 			// otherwise open near e.target
 			var coords = dojo.coords(e.target, true);
-			dijit.util.popup.open({popup: this, x: coords.x + 10, y: coords.y + 10});
+			x = coords.x + 10;
+			y = coords.y + 10;
+		}
+
+		var self=this;
+		var savedFocus = dijit.getFocus(this);
+		function closeAndRestoreFocus(){
+			// user has clicked on a menu or popup
+			dijit.focus(savedFocus);
+			dijit.popup.closeAll();
+		}
+		dijit.popup.open({
+			popup: this,
+			x: x,
+			y: y,
+			onExecute: closeAndRestoreFocus,
+			onCancel: closeAndRestoreFocus,
+			orient: this.isLeftToRight() ? 'L' : 'R'
+		});
+		this.focus();
+		
+		this._onBlur = function(){
+			// Usually the parent closes the child widget but if this is a context
+			// menu then there is no parent
+			dijit.popup.closeAll();
+			// don't try to restor focus; user has clicked another part of the screen
+			// and set focus there
 		}
 	},
 
 	onOpen: function(/*Event*/ e){
 		// summary
 		//		Open menu relative to the mouse
-		this._focusFirstItem();
 		this.isShowingNow = true;
 	},
 
 	onClose: function(){
 		// summary: callback when this menu is closed
-		this._stopSubmenuTimer();
+		this._stopPopupTimer();
 		this.parentMenu = null;
 		this.isShowingNow = false;
-		this.currentSubmenu = null;
+		this.currentPopup = null;
+		if(this._focusedItem){
+			this._blurFocusedItem();
+		}
 	},
 
-	_openSubmenu: function(){
-		// summary: open the submenu to the side of the current menu item
-		this._stopSubmenuTimer();
+	_openPopup: function(){
+		// summary: open the popup to the side of the current menu item
+		this._stopPopupTimer();
 		var from_item = this._focusedItem;
-		var submenu = from_item.popup;
+		var popup = from_item.popup;
 
-		if(submenu.isShowingNow){ return; }
-		submenu.parentMenu = this;
-		dijit.util.popup.open({popup: submenu, around: from_item.arrowCell, orient: {'TR': 'TL', 'TL': 'TR'}, submenu: true});
+		if(popup.isShowingNow){ return; }
+		popup.parentMenu = this;
+		var self = this;
+		dijit.popup.open({
+			parent: this,
+			popup: popup,
+			around: from_item.arrowCell,
+			orient: this.isLeftToRight() ? {'TR': 'TL', 'TL': 'TR'} : {'TL': 'TR', 'TR': 'TL'},
+			submenu: true,
+			onCancel: function(){
+				// called when the child menu is canceled
+				dijit.popup.close();
+				self._focusedItem._focus();	// put focus back on my node
+				self.currentPopup = null;
+			}
+		});
+			
 
-		this.currentSubmenu = submenu;
+		this.currentPopup = popup;
+		
+		if(popup.focus){
+			popup.focus();
+		}
 	}
 }
 );
@@ -374,14 +401,16 @@ dojo.declare(
 	//	A line item in a Menu2
 
 	// Make 3 columns
-	//   icon, label, and arrow (BiDi-dependent) indicating sub-menu
+	//   icon, label, and expand arrow (BiDi-dependent) indicating sub-menu
 	templateString:
 		 '<tr class="dijitReset dijitMenuItem"'
-		+'dojoAttachEvent="onmouseover:_onHover;onmouseout:_onUnhover;onklick:_onClick;">'
+		+'dojoAttachEvent="onmouseover:_onHover,onmouseout:_onUnhover,ondijitclick:_onClick">'
 		+'<td class="dijitReset"><div class="dijitMenuItemIcon ${iconClass}"></div></td>'
 		+'<td tabIndex="-1" class="dijitReset dijitMenuItemLabel" dojoAttachPoint="containerNode" waiRole="menuitem"></td>'
 		+'<td class="dijitReset" dojoAttachPoint="arrowCell">'
-			+'<span class="dijitA11yRightArrow" style="display:none;" dojoAttachPoint="arrow">&#9658;</span>'
+			+'<div class="dijitMenuExpand" dojoAttachPoint="expand" style="display:none">'
+			+'<span class="dijit_a11y dijitInline dijitArrowNode dijitMenuExpandInner">+</span>'
+			+'</div>'
 		+'</td>'
 		+'</tr>',
 
@@ -422,8 +451,9 @@ dojo.declare(
 		this.getParent().onItemUnhover(this);
 	},
 
-	_onClick: function(focus){
+	_onClick: function(evt){
 		this.getParent().onItemClick(this);
+		dojo.stopEvent(evt);
 	},
 
 	onClick: function() {
@@ -434,7 +464,7 @@ dojo.declare(
 	_focus: function(){
 		dojo.addClass(this.domNode, 'dijitMenuItemHover');
 		try{
-			this.containerNode.focus();
+			dijit.focus(this.containerNode);
 		}catch(e){
 			// this throws on IE (at least) in some scenarios
 		}
@@ -448,7 +478,7 @@ dojo.declare(
 		// summary: enable or disable this menu item
 		this.disabled = value;
 		dojo[value ? "addClass" : "removeClass"](this.domNode, 'dijitMenuItemDisabled');
-		dijit.util.wai.setAttr(this.containerNode, 'waiState', 'disabled', value ? 'true' : 'false');
+		dijit.wai.setAttr(this.containerNode, 'waiState', 'disabled', value ? 'true' : 'false');
 	}
 });
 
@@ -457,9 +487,12 @@ dojo.declare(
 	dijit.MenuItem,
 {
 	_fillContent: function(){
-		// my inner HTML contains both the label and a drop down widget, like
-		// <SubMenu>  <span>click me</span>  <Menu> ... </Menu> </SubMenu>
-		// first part holds button label and second part is popup
+		// my inner HTML contains both the menu item text and a popup widget, like
+		// <div dojoType="dijit.PopupMenuItem">
+		//		<span>pick me</span>
+		//		<popup> ... </popup>
+		// </div>
+		// the first part holds the menu item text and the second part is the popup
 		if(this.srcNodeRef){
 			var nodes = dojo.query("*", this.srcNodeRef);
 			dijit.PopupMenuItem.superclass._fillContent.call(this, nodes[0]);
@@ -474,13 +507,14 @@ dojo.declare(
 		// land now.  move it to document.body.
 		if(!this.popup){
 			var node = dojo.query("[widgetId]", this.dropDownContainer)[0];
-			this.popup = dijit.util.manager.byNode(node);
+			this.popup = dijit.byNode(node);
 		}
 		dojo.body().appendChild(this.popup.domNode);
 
 		this.popup.domNode.style.display="none";
-		dojo.style(this.arrow, "display", "");
-		dijit.util.wai.setAttr(this.containerNode, "waiState", "haspopup", "true");
+		dojo.addClass(this.expand, "dijitMenuExpandEnabled");
+		dojo.style(this.expand, "display", "");
+		dijit.wai.setAttr(this.containerNode, "waiState", "haspopup", "true");
 	}
 });
 

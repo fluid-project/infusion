@@ -1,4 +1,4 @@
-if(!dojo._hasResource["dojo.cldr.monetary"]){
+if(!dojo._hasResource["dojo.cldr.monetary"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dojo.cldr.monetary"] = true;
 dojo.provide("dojo.cldr.monetary");
 

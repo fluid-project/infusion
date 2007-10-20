@@ -1,4 +1,4 @@
-if(!dojo._hasResource["dojo.dnd.common"]){
+if(!dojo._hasResource["dojo.dnd.common"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dojo.dnd.common"] = true;
 dojo.provide("dojo.dnd.common");
 
@@ -19,6 +19,17 @@ dojo.dnd.getUniqueId = function(){
 		id = "dojoUnique" + (++dojo.dnd._uniqueId);
 	}while(dojo.byId(id));
 	return id;
+};
+
+dojo.dnd._empty = {};
+
+dojo.dnd.isFormElement = function(/*Event*/ e){
+	// summary: returns true, if user clicked on a form element
+	var t = e.target;
+	if(t.nodeType == 3 /*TEXT_NODE*/){
+		t = t.parentNode;
+	}
+	return " button textarea input select option ".indexOf(" " + t.tagName.toLowerCase() + " ") >= 0;	// Boolean
 };
 
 }

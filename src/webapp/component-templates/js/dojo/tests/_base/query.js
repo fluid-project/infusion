@@ -1,4 +1,4 @@
-if(!dojo._hasResource["tests._base.query"]){
+if(!dojo._hasResource["tests._base.query"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["tests._base.query"] = true;
 dojo.provide("tests._base.query");
 if(dojo.isBrowser){

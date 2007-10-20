@@ -1,4 +1,4 @@
-if(!dojo._hasResource["dojo.dnd.manager"]){
+if(!dojo._hasResource["dojo.dnd.manager"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dojo.dnd.manager"] = true;
 dojo.provide("dojo.dnd.manager");
 
@@ -29,7 +29,7 @@ dojo.extend(dojo.dnd.Manager, {
 			this.target = (source && source.targetState != "Disabled") ? source : null;
 			this.avatar.update();
 		}
-		dojo.publish("dndSourceOver", [source]);
+		dojo.publish("/dnd/source/over", [source]);
 	},
 	outSource: function(source){
 		// summary: called when a source detected a mouse-out conditiion
@@ -39,10 +39,10 @@ dojo.extend(dojo.dnd.Manager, {
 				this.target = null;
 				this.canDropFlag = false;
 				this.avatar.update();
-				dojo.publish("dndSourceOver", [null]);
+				dojo.publish("/dnd/source/over", [null]);
 			}
 		}else{
-			dojo.publish("dndSourceOver", [null]);
+			dojo.publish("/dnd/source/over", [null]);
 		}
 	},
 	startDrag: function(source, nodes, copy){
@@ -55,7 +55,7 @@ dojo.extend(dojo.dnd.Manager, {
 		this.copy   = Boolean(copy); // normalizing to true boolean
 		this.avatar = this.makeAvatar();
 		dojo.body().appendChild(this.avatar.node);
-		dojo.publish("dndStart", [source, nodes, this.copy]);
+		dojo.publish("/dnd/start", [source, nodes, this.copy]);
 		this.events = [
 			dojo.connect(dojo.doc, "onmousemove", this, "onMouseMove"),
 			dojo.connect(dojo.doc, "onmouseup",   this, "onMouseUp"),
@@ -112,9 +112,9 @@ dojo.extend(dojo.dnd.Manager, {
 		// e: Event: mouse event
 		if(this.avatar){
 			if(this.target && this.canDropFlag){
-				dojo.publish("dndDrop", [this.source, this.nodes, Boolean(this.source.copyState(dojo.dnd.getCopyKeyState(e)))]);
+				dojo.publish("/dnd/drop", [this.source, this.nodes, Boolean(this.source.copyState(dojo.dnd.getCopyKeyState(e)))]);
 			}else{
-				dojo.publish("dndCancel");
+				dojo.publish("/dnd/cancel");
 			}
 			this.stopDrag();
 		}
@@ -133,7 +133,7 @@ dojo.extend(dojo.dnd.Manager, {
 					}
 					break;
 				case dojo.keys.ESCAPE:
-					dojo.publish("dndCancel");
+					dojo.publish("/dnd/cancel");
 					this.stopDrag();
 					break;
 			}

@@ -1,4 +1,4 @@
-if(!dojo._hasResource["tests._base.lang"]){
+if(!dojo._hasResource["tests._base.lang"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["tests._base.lang"] = true;
 dojo.provide("tests._base.lang");
 

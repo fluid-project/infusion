@@ -6,6 +6,7 @@
 	<style type="text/css">
 		@import "../../../dojo/resources/dojo.css";
 		@import "../../themes/tundra/tundra.css";
+		@import "../../themes/tundra/tundra_rtl.css";
 		@import "../css/dijitTests.css";
 	</style>
 
@@ -24,8 +25,8 @@
 	<script type="text/javascript">
 		dojo.require("dijit.layout.AccordionContainer");
 		dojo.require("dijit.layout.ContentPane");
-		dojo.require("dijit.layout.SplitContainer");
-		// dojo.require("dijit.form.ComboBox");
+//		dojo.require("dijit.layout.SplitContainer");
+		dojo.require("dijit.form.ComboBox");
 	 	dojo.require("dijit.form.Button");
 		dojo.require("dojo.parser");	// scan page for widgets and instantiate them
 
@@ -110,13 +111,11 @@
 	<p>HTML after</p>
 	<p>HTML after</p>
 	<p></p>
-	<p>Accordion with complex widgets</p>
+	<p>Accordion with widgets</p>
 	<div dojoType="dijit.layout.AccordionContainer" duration="200"
 		style="float: left; margin-right: 30px; width: 400px; height: 300px; overflow: hidden">
 		<div dojoType="dijit.layout.AccordionPane" selected="true"
-			title="Pane 1"
-			onSelected="console.debug('pane 1 selected');" >
-			<div dojoType="dijit.layout.ContentPane">
+			title="Pane 1" >
 				<select>
 					<option>red</option>
 					<option>blue</option>
@@ -147,15 +146,13 @@
 				sollicitudin sed, consequat nec, facilisis sit amet, orci. Aenean
 				ut eros sit amet ante pharetra interdum.
 				</p>
-			</div>
 		</div>
 		
 		<!-- test lazy loading -->
-		<div dojoType="dijit.layout.AccordionPane" title="Pane 2 (lazy load)">
-			<div dojoType="dijit.layout.ContentPane" href="tab1.html"></div>
-		</div>
+		<div dojoType="dijit.layout.AccordionPane" title="Pane 2 (lazy load)" href="tab1.html"></div>
 
-		<div dojoType="dijit.layout.AccordionPane" title="Pane 3 (split pane)">
+<!-- Support for nested complex widgets de-supported, for now
+		<div dojoType="dijit.layout.AccordionLayoutPane" title="Pane 3 (split pane)">
 			<div dojoType="dijit.layout.SplitContainer">
 				<p dojoType="dijit.layout.ContentPane">
 				Sed arcu magna, molestie at, fringilla in, sodales eu, elit.
@@ -189,6 +186,7 @@
 				</p>
 			</div>
 		</div>
+-->
 	</div>
 
 	<h2>Programatically created:</h2>

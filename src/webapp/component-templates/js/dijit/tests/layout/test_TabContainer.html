@@ -15,9 +15,6 @@
 		dojo.require("dijit.form.Button");
 		dojo.require("dojo.parser");	// scan page for widgets and instantiate them
 
-		function boo(panel, node){
-			node.innerHTML = "Handlers override grabbing from URLs. They run in context of the widget, so 'this' refers to the tab widget.";
-		}
 		function testClose(pane,tab){
 		  return confirm("Please confirm that you want tab "+tab.title+" closed");
 		}
@@ -34,6 +31,7 @@
 	<style type="text/css">
 		@import "../../../dojo/resources/dojo.css";
 		@import "../../themes/tundra/tundra.css";
+		@import "../../themes/tundra/tundra_rtl.css";
 		@import "../css/dijitTests.css";
 
 		body {
@@ -57,11 +55,11 @@
 	part of this page.   Tab2 is initially selected.
 	</p>
 
-	<div id="mainTabContainer" dojoType="dijit.layout.TabContainer" style="width: 100%; height: 20em;" selectedChild="tab2">
+	<div id="mainTabContainer" dojoType="dijit.layout.TabContainer" style="width: 100%; height: 20em;">
 
 		<div id="tab1" dojoType="dijit.layout.ContentPane" href="tab1.html" title="Tab 1"></div>
 
-		<div id="tab2" dojoType="dijit.layout.ContentPane" href="tab2.html" refreshOnShow="true" title="Tab 2"></div>
+		<div id="tab2" dojoType="dijit.layout.ContentPane" href="tab2.html" refreshOnShow="true" title="Tab 2" selected="true"></div>
 
 		<div dojoType="dijit.layout.ContentPane" title="Tab 3">
 			<h1>I am tab 3</h1>
@@ -93,8 +91,6 @@
 			tortor pharetra congue. Suspendisse pulvinar.
 			</p>
 		</div>
-
-		<div dojoType="dijit.layout.LinkPane" title="Handler tab" handler="boo"></div>
 
 		<div dojoType="dijit.layout.ContentPane" title="Another Tab">
 			<h1>I love local content</h1>
@@ -141,14 +137,14 @@
 
 	<div id="lhtabs" dojoType="dijit.layout.TabContainer" tabPosition="left-h" style="width: 100%; height: 10em;">
 		<div id="lhtab1" dojoType="dijit.layout.ContentPane" href="tab1.html" title="Tab 1"></div>
-		<div id="lhtab2" dojoType="dijit.layout.ContentPane" href="tab2.html" refreshOnShow="true" title="Tab 2"></div>
+		<div id="lhtab2" dojoType="dijit.layout.ContentPane" href="tab2.html" refreshOnShow="true" title="Tab 2" closable="true"></div>
 	</div>
 
 	<p>Tabs with titles on the right:</p>
 
 	<div id="lrtabs" dojoType="dijit.layout.TabContainer" tabPosition="right-h" style="width: 100%; height: 10em;">
 		<div id="rhtab1" dojoType="dijit.layout.ContentPane" href="tab1.html" title="Tab 1"></div>
-		<div id="rhtab2" dojoType="dijit.layout.ContentPane" href="tab2.html" refreshOnShow="true" title="Tab 2"></div>
+		<div id="rhtab2" dojoType="dijit.layout.ContentPane" href="tab2.html" refreshOnShow="true" title="Tab 2" closable="true"></div>
 	</div>
 
 	<h3>Typical rendering time</h3>

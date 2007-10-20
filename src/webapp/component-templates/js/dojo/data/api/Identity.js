@@ -1,9 +1,9 @@
-if(!dojo._hasResource["dojo.data.api.Identity"]){
+if(!dojo._hasResource["dojo.data.api.Identity"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dojo.data.api.Identity"] = true;
 dojo.provide("dojo.data.api.Identity");
 dojo.require("dojo.data.api.Read");
 
-dojo.declare("dojo.data.api.Identity",dojo.data.api.Read,null,{
+dojo.declare("dojo.data.api.Identity", dojo.data.api.Read, {
 	//	summary:
 	//		This is an abstract API that data provider implementations conform to.
 	//		This file defines methods signatures and intentionally leaves all the

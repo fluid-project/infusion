@@ -1,8 +1,8 @@
-if(!dojo._hasResource["dojo.data.api.Request"]){
+if(!dojo._hasResource["dojo.data.api.Request"]){ //_hasResource checks added by build. Do not use _hasResource directly in your code.
 dojo._hasResource["dojo.data.api.Request"] = true;
 dojo.provide("dojo.data.api.Request");
 
-dojo.declare("dojo.data.api.Request",null,null,{
+dojo.declare("dojo.data.api.Request", null, {
 	//	summary:
 	//		This class defines out the semantics of what a 'Request' object looks like
 	//		when returned from a fetch() method.  In general, a request object is
