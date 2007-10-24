@@ -227,7 +227,7 @@ fluid.Reorderer = function(domNodeId, params) {
         jQuery(this.domNode).sortable({
             items: "[id^="+this.orderableIdBase+"]",
             start: function(e, ui) {
-                reorderer.focusItem(reorderer._findReorderableParent(ui.draggable.element));
+                reorderer.focusItem(ui.draggable.element);
                 reorderer.activeItem.setAttribute("aaa:grab", "true");
             },
             update: function(e, ui) {
