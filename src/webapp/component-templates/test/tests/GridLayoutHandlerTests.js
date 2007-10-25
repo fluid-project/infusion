@@ -1,5 +1,5 @@
 function testGetRightSiblingInfo() {
-	var gridHandler = new fluid.GridLayoutHandler();
+	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
 
@@ -25,7 +25,7 @@ function testGetRightSiblingInfo() {
 }
 
 function testGetLeftSiblingInfo() {
-	var gridHandler = new fluid.GridLayoutHandler();
+	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
 
@@ -52,7 +52,7 @@ function testGetLeftSiblingInfo() {
 }
 
 function testGetItemInfoBelow() {
-	var gridHandler = new fluid.GridLayoutHandler();
+	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
 	
@@ -89,7 +89,7 @@ function testGetItemInfoBelow() {
 }
 
 function testGetItemInfoAbove() {
-	var gridHandler = new fluid.GridLayoutHandler();
+	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
 	dojo.removeClass(dojo.byId(lightboxRootId), "width-3-thumb");
@@ -157,7 +157,7 @@ function testGetItemInfoAbove() {
 }
 
 function testGetItemInfoBelowOneRow() {
-	var gridHandler = new fluid.GridLayoutHandler();
+	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
 	dojo.addClass(dojo.byId(lightboxRootId), "width-all-thumb");
@@ -180,7 +180,7 @@ function testGetItemInfoBelowOneRow() {
 }
 
 function testGetItemInfoAboveOneRow() {
-	var gridHandler = new fluid.GridLayoutHandler();
+	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
 	var imageList = dojo.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
 	dojo.addClass(dojo.byId(lightboxRootId), "width-all-thumb");

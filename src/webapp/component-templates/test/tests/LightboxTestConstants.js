@@ -17,18 +17,21 @@ var lightboxRootId = "gallery:::gallery-thumbs:::";
 var lightboxParentId = "lightbox-parent";
 
 // The ids of the reorderable items in Lightbox.html
-var firstReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::0:";
-var secondReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::1:";
-var thirdReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::2:";
-var fourthReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::3:";
-var fifthReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::4:";
-var sixthReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::5:";
-var seventhReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::6:";
-var tenthReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::9:";
-var fourthLastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::10:";
-var thirdLastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::11:";
-var secondLastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::12:";
-var lastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell::13:";
+var firstReorderableId = "gallery:::gallery-thumbs:::lightbox-cell:0:";
+var secondReorderableId = "gallery:::gallery-thumbs:::lightbox-cell:1:";
+var thirdReorderableId = "gallery:::gallery-thumbs:::lightbox-cell:2:";
+var fourthReorderableId = "gallery:::gallery-thumbs:::lightbox-cell:3:";
+var fifthReorderableId = "gallery:::gallery-thumbs:::lightbox-cell:4:";
+var sixthReorderableId = "gallery:::gallery-thumbs:::lightbox-cell:5:";
+var seventhReorderableId = "gallery:::gallery-thumbs:::lightbox-cell:6:";
+var tenthReorderableId = "gallery:::gallery-thumbs:::lightbox-cell:9:";
+var fourthLastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell:10:";
+var thirdLastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell:11:";
+var secondLastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell:12:";
+var lastReorderableId = "gallery:::gallery-thumbs:::lightbox-cell:13:";
+
+var orderableBaseId = "gallery:::gallery-thumbs:::lightbox-cell:";
+var selectByDivAndId = "div[id^="+orderableBaseId+"]";
 
 // The ids of the images we test with in Lightbox.html
 var firstImageId = "fluid.img.first";
@@ -105,10 +108,27 @@ function tearDown() {
     lightboxParent.removeChild(fluidLightboxDOMNode);
     lightboxParent.appendChild(imgListClone);
 }
+
+function findOrderableByDivAndId (containerEl) {
+	return dojo.query (selectByDivAndId, containerEl);
+}
+
+function findNoOrderables() {
+	return [];
+}
     
 function createLightbox() {
-    return new fluid.Reorderer(lightboxRootId, 
-        {orderChangedCallback: function(){},
-         layoutHandler: new fluid.GridLayoutHandler()}
-    );
+    return new fluid.Reorderer (lightboxRootId, {
+        orderChangedCallback: function(){},
+        layoutHandler: new fluid.GridLayoutHandler (findOrderableByDivAndId),
+        orderableFinder: findOrderableByDivAndId
+    });
 }
+
+function createLightboxWithNoOrderables() {
+	return new fluid.Reorderer (lightboxRootId, {
+        layoutHandler: new fluid.GridLayoutHandler (findNoOrderables),
+        orderableFinder: findNoOrderables
+    });
+}
+

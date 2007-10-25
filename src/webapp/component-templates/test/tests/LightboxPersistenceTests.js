@@ -41,7 +41,8 @@ function testIsOrderChangedCallbackCalled() {
 				newInputElement.id="callbackCalled";
 				dojo.place(newInputElement, dojo.byId("para1"), "after");
 			},
-	    	layoutHandler: new fluid.GridLayoutHandler()
+	    	layoutHandler: new fluid.GridLayoutHandler(findOrderableByDivAndId),
+            orderableFinder: findOrderableByDivAndId
 		}
 	);
 	

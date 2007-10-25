@@ -66,11 +66,17 @@ fluid.declare(fluid, {
 			}
 		};
 		
-		var lightbox = new fluid.Reorderer(namebase, {
+		// This orderable finder assumes that the lightbox thumbnails are 'div' elements
+		var lightboxCellNamePattern = "^" + fluid.deriveLightboxCellBase (namebase, "[0-9]+") +"$";
+		var lightboxOrderableFinder = function (containerEl) {
+			return fluid.Utilities.seekNodesById (containerEl, "div", lightboxCellNamePattern);
+		};
+		
+		var lightbox = new fluid.Reorderer (namebase, {
 				messageNamebase : messageNamebase,
 				orderChangedCallback: orderChangedCallback,
-				layoutHandler: new fluid.GridLayoutHandler(),
-                orderableIdBase: namebase
+				layoutHandler: new fluid.GridLayoutHandler (lightboxOrderableFinder),
+                orderableFinder: lightboxOrderableFinder
 			}
 		);
 	}
@@ -86,14 +92,14 @@ fluid.declare(fluid, {
 	// particular tag name, whose id matches a regex. The Dojo query parser
 	// is broken http://trac.dojotoolkit.org/ticket/3520#preview, this is all
 	// it might do anyway, and this will be plenty fast.
-	seekNodesById: function(rootnode, tagname, idmatch) {
-		var inputs = rootnode.getElementsByTagName(tagname);
+	seekNodesById: function (rootnode, tagname, idmatch) {
+		var inputs = rootnode.getElementsByTagName (tagname);
 		var togo = new Array();
 		for (var i = 0; i < inputs.length; ++ i) {
 			var input = inputs[i];
 			var id = input.id;
-			if (id && id.match(idmatch)) {
-				togo.push(input);
+			if (id && id.match (idmatch)) {
+				togo.push (input);
 			}
 		}
 		return togo;
@@ -110,6 +116,7 @@ fluid.declare(fluid, {
 			}
 		}
 	}
+	
 });
 
 

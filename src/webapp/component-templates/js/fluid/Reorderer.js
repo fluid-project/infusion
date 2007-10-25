@@ -23,6 +23,7 @@ if (typeof(fluid) == "undefined") {
     fluid = {};
 };
 
+
 (function() {
 	fluid.states = {
 		defaultClass:"image-container-default",
@@ -34,6 +35,10 @@ if (typeof(fluid) == "undefined") {
 
 
 fluid.Reorderer = function(domNodeId, params) {
+	// Reliable 'this'.
+	//
+	var thisReorderer = this;
+	
 	this.domNode = dojo.byId(domNodeId);
 	
 	// the reorderable DOM element that is currently active
@@ -42,15 +47,16 @@ fluid.Reorderer = function(domNodeId, params) {
 	this.layoutHandler = null;
 		
 	this.messageNamebase = "message-bundle:";
+	
+	// Default call back does nothing, and avoids "null pointer exceptions".
+	this.orderChangedCallback = function() {};
 		
-	this.orderChangedCallback = null;
-		
-	this.orderableIdBase = null;
-		
+    this.orderableFinder = null;
+			
 	if (params) {
         dojo.mixin(this, params);
     }
-        
+    
    /**
     * Return the element within the item that should receive focus. This is determined by the class 
     * 'reorderable-focus-target'. If it is not specified, the item itself is returned.
@@ -99,7 +105,7 @@ fluid.Reorderer = function(domNodeId, params) {
 	 */
 	this.selectActiveItem = function() {
 		if (!this.activeItem) {
-			var orderables = dojo.query (".orderable", this.domNode);
+			var orderables = this.orderableFinder (this.domNode);
 			if (orderables.length > 0) {
 				this._setActiveItem(orderables[0]);
 			}
@@ -223,32 +229,47 @@ fluid.Reorderer = function(domNodeId, params) {
 	};
 	
 	this._enableDragAndDrop = function() {
-        var reorderer = this;
+        var items = this.orderableFinder (this.domNode);
+        if (items.length == 0) {
+        	return;
+        }
+        
+        var selector = "";
+        for (var i = 0; i < items.length; i++) {
+            selector += "[id=" + items[i].id + "]";
+        	if (i != items.length - 1) {
+        		selector += ", ";
+        	}        	
+        }
+        
         jQuery(this.domNode).sortable({
-            items: "[id^="+this.orderableIdBase+"]",
+            items: selector,
             start: function(e, ui) {
-                reorderer.focusItem(ui.draggable.element);
-                reorderer.activeItem.setAttribute("aaa:grab", "true");
+            	thisReorderer.focusItem (ui.draggable.element);
+                thisReorderer.activeItem.setAttribute ("aaa:grab", "true");
             },
             update: function(e, ui) {
-                reorderer.orderChangedCallback();
-                reorderer.focusItem (reorderer.activeItem);
-                reorderer.activeItem.setAttribute("aaa:grab", "supported");
+                thisReorderer.orderChangedCallback();
+                thisReorderer.focusItem (thisReorderer.activeItem);
+                thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
             }
         });
     };
 
 	/**
-	 * Finds the parent element marked "orderable" for a child element.
+	 * Finds the "orderable" parent element given a child element.
 	 */
-	this._findReorderableParent = function(childElement) {
+	this._findReorderableParent = function(childElement, items) {
 		if (childElement == null) {
 			return null;
-		} else if (dojo.hasClass(childElement, "orderable")) {
-			return childElement;
-		} else {
-			return this._findReorderableParent(childElement.parentNode);
-		}
+        }
+        else {
+        	for (var i=0; i<items.length; i++) {
+        		if (childElement === items[i])
+        		  return childElement;
+        	}
+        	return this._findReorderableParent (childElement.parentNode, items);
+        }
 	};
 
     // Final initialization of the Reorderer at the end of the construction process	
@@ -258,7 +279,9 @@ fluid.Reorderer = function(domNodeId, params) {
     }
 }; // End Reorderer
 
-fluid.ListLayoutHandler = function () {
+fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
+	this.orderableFinder = orderableFinder;
+	
     this._container = null;
     
     this.setReorderableContainer = function (aList) {
@@ -306,7 +329,7 @@ fluid.ListLayoutHandler = function () {
      * decrement, respectively, of the index of the given item.
      */
     this._getSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
-        var orderables = dojo.query(".orderable", this._container);
+        var orderables = this.orderableFinder (this._container);
         var index = dojo.indexOf(orderables, item) + incDecrement;
         var hasWrapped = false;
             
@@ -360,9 +383,9 @@ fluid.ListLayoutHandler = function () {
  * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
  * in the window, and of informing the Lightbox of which items surround a given item.
  */
-fluid.GridLayoutHandler = function (){
+fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
 
-    fluid.ListLayoutHandler.call(this);
+    fluid.ListLayoutHandler.call(this, orderableFinder);
                     
     /*
      * Returns an object containing the item that is below the given item in the current grid
@@ -372,7 +395,7 @@ fluid.GridLayoutHandler = function (){
      * after the item changes if the process wrapped around the column.
      */
     this._getItemInfoBelow = function (inItem) {
-        var orderables = dojo.query(".orderable", this._container);
+        var orderables = this.orderableFinder (this._container);
         var curIndex = dojo.indexOf(orderables, inItem);
         var curCoords = dojo.coords(inItem);
         
@@ -415,7 +438,7 @@ fluid.GridLayoutHandler = function (){
      * after the item changes if the process wrapped around the column.
      */
     this._getItemInfoAbove = function (inItem) {
-        var orderables = dojo.query(".orderable", this._container);
+        var orderables = this.orderableFinder (this._container);
         var curIndex = dojo.indexOf(orderables, inItem);
         var curCoords = dojo.coords(inItem);
 

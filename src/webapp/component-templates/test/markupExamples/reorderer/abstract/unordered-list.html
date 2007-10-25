@@ -50,8 +50,14 @@
         This is the contract between the Reorderer and its template: any element with an "orderable" 
         class can be moved with the use of the Reorderer.
         If you look at the page source, you'll also notice a script block containing: 
-        <span id="reordererScript" style="display: block; padding: 10px"> new fluid.Reorderer("list1", {orderChangedCallback: 
-          function() {}, layoutHandler: new fluid.ListLayoutHandler() });
+        <span id="reordererScript" style="display: block; padding: 10px">
+            <pre>
+	new fluid.Reorderer ("list1", {
+	    orderChangedCallback: function() {},
+	    layoutHandler: new fluid.ListLayoutHandler (listOrderableFinder),
+	    orderableFinder: listOrderableFinder
+	});
+            </pre>
         </span>
          This is the script that creates a Reorderer using a ListLayoutHandler and attaches it to this list.
       </p>
@@ -66,12 +72,11 @@
     </div>
 
     <script language="JavaScript" type="text/javascript">
-      new fluid.Reorderer("list1", {
+      new fluid.Reorderer ("list1", {
           orderChangedCallback: function() {},
-          layoutHandler: new fluid.ListLayoutHandler(),
-          orderableIdBase: "list1item"
-        }
-      );
+          layoutHandler: new fluid.ListLayoutHandler (listOrderableFinder),
+          orderableFinder: listOrderableFinder  // defined in UnorderedListTestConstants.js
+      });
     </script>
     
     <p>This is an example of an unordered list that is visually laid out vertically, marked up for use with the Reorderer.

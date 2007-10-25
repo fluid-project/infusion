@@ -10,7 +10,9 @@
 <link type="text/css" href="render.userLayoutRootNode.uP_files/spring.css" rel="stylesheet">
 
       <script language="JavaScript" type="text/javascript" src="../../../../../js/dojo/dojo.js"></script>
-      <script language="JavaScript" type="text/javascript" src="../../../../../js/fluid/Fluid.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../../js/jquery/jquery-1.2.1.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.sortable.js"></script>
       <script language="JavaScript" type="text/javascript" src="../../../../../js/fluid/Reorderer.js"></script>
 </head>
 
@@ -36,9 +38,14 @@
 	
 	</div>
     <script language="JavaScript" type="text/javascript">
+      
+      function findOrderableTabs (container) {
+        return dojo.query ("[id^=tab_]", container);
+      }
+    
       new fluid.Reorderer("tabList", {
-          orderChangedCallback: function() {},
-          layoutHandler: new fluid.ListLayoutHandler()
+          layoutHandler: new fluid.ListLayoutHandler (findOrderableTabs),
+          orderableFinder: findOrderableTabs
         }
       );
     </script>

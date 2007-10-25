@@ -32,10 +32,16 @@ function exposeTestFunctionNames() {
 
 var listHandler1;
 
+function listOrderableFinder (containerEl) {
+    return dojo.query ("[id^=list1item]", containerEl);
+}
+
 // This setUp will be called before each of the tests that are included in unordered-list.html 
 function setUp() {
-    listHandler1 = new fluid.ListLayoutHandler();
+    listHandler1 = new fluid.ListLayoutHandler(listOrderableFinder);
     var list = dojo.byId("list1");
     listHandler1.setReorderableContainer(list);
 
 }
+
+

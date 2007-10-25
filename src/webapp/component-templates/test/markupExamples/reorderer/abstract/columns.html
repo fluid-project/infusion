@@ -63,7 +63,7 @@ Ultimately, a ColumnLayoutHandler will be created.</p>
 	<tbody><tr>
 
 			<td>
-				<div class="portlet orderable" id="portlet_n1">
+				<div class="portlet orderable" id="portlet_ord_n1">
 					<div class="title">title 1</div>
 					<div class="content">content</div>
 				</div>
@@ -71,7 +71,7 @@ Ultimately, a ColumnLayoutHandler will be created.</p>
 					<div class="title">title 2</div>
 					<div class="content">content</div>
 				</div>
-				<div class="portlet orderable" id="portlet_n3">
+				<div class="portlet orderable" id="portlet_ord_n3">
 					<div class="title">title 3</div>
 					<div class="content">content</div>
 				</div>
@@ -81,21 +81,21 @@ Ultimately, a ColumnLayoutHandler will be created.</p>
 					<div class="title">title 4</div>
 					<div class="content">content</div>
 				</div>
-				<div class="portlet orderable" id="portlet_n5">
+				<div class="portlet orderable" id="portlet_ord_n5">
 					<div class="title">title 5</div>
 					<div class="content">content</div>
 				</div>
 			</td>
 			<td>
-				<div class="portlet orderable" id="portlet_n6">
+				<div class="portlet orderable" id="portlet_ord_n6">
 					<div class="title">title 6</div>
 					<div class="content">content</div>
 				</div>
-				<div class="portlet orderable" id="portlet_n7">
+				<div class="portlet orderable" id="portlet_ord_n7">
 					<div class="title">title 7</div>
 					<div class="content">content</div>
 				</div>
-				<div class="portlet orderable" id="portlet_n8">
+				<div class="portlet orderable" id="portlet_ord_n8">
 					<div class="title">title 8</div>
 					<div class="content">content</div>
 				</div>
@@ -105,10 +105,13 @@ Ultimately, a ColumnLayoutHandler will be created.</p>
 </div>
 
     <script language="JavaScript" type="text/javascript">
+      function findOrderablePortlets (container) {
+        return dojo.query ("[id^=portlet_ord_]", container);
+      }
       new fluid.Reorderer("reorderer-root", {
           orderChangedCallback: function() {},
-          layoutHandler: new fluid.GridLayoutHandler(),
-          orderableIdBase: "portlet_n"
+          layoutHandler: new fluid.GridLayoutHandler (findOrderablePortlets),
+          orderableFinder: findOrderablePortlets
         }
       );
     </script>

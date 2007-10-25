@@ -6,22 +6,23 @@ function testFindReorderableParent() {
 	assertEquals("The test item's role attribute should be gridcell",
 		"wairole:gridcell", testItem.getAttribute("xhtml10:role"));
 
+    var orderables = lightbox.orderableFinder (lightboxRootId);
 	assertEquals("Given the test item itself, the ancestor grid cell should be the test item",
-		testItem, lightbox._findReorderableParent(testItem));
+		testItem, lightbox._findReorderableParent(testItem, orderables));
 	assertEquals("Given the image, the ancestor grid cell should be the test item",
-		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("img")[0]));
+		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("img")[0], orderables));
 	assertEquals("Given the caption div, the ancestor grid cell should be the test item",
-		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("div")[2]));
+		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("div")[2], orderables));
 	assertEquals("Given the caption anchor, the ancestor grid cell should be the test item",
-		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("a")[1]));
+		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("a")[1], orderables));
 	assertEquals("Given the title of the document, the ancestor grid cell should be null",
-		null, lightbox._findReorderableParent(document.body.getElementsByTagName("title")[0]));
+		null, lightbox._findReorderableParent(document.body.getElementsByTagName("title")[0], orderables));
 	
 	testItem = dojo.byId(fourthReorderableId);
 	assertEquals("Given another test item itself, the ancestor grid cell should be the new test item",
-		testItem, lightbox._findReorderableParent(testItem));
+		testItem, lightbox._findReorderableParent(testItem, orderables));
 	assertEquals("Given another image, the ancestor grid cell should be new test item",
-		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("img")[0]));
+		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("img")[0], orderables));
 }
 
 /*
@@ -341,12 +342,8 @@ function testSelectActiveItemNothingSelected() {
 	
 	// Now, test it with no reorderables.
 	//
-	var orderables = dojo.query(".orderable", lightboxRootId);
-	for (var i in orderables) {
-		dojo.removeClass (orderables[i], "orderable");
-	}
-	var lightboxWithNoOrderables = createLightbox();
-	orderables = dojo.query(".orderable", lightboxWithNoOrderables.domNode);
+	var lightboxWithNoOrderables = createLightboxWithNoOrderables();
+	var orderables = lightboxWithNoOrderables.orderableFinder();
 	assertEquals ("There should be no 'orderables' in this lightbox", 0, orderables.length);
 	lightboxWithNoOrderables.selectActiveItem();
 	assertNull ("Lightbox's activeItem member should be null", lightboxWithNoOrderables.activeItem);
@@ -354,12 +351,8 @@ function testSelectActiveItemNothingSelected() {
 
 function testKeypressesWithNoOrderables() {
 	
-	var orderables = dojo.query(".orderable", lightboxRootId);
-	for (var i in orderables) {
-		dojo.removeClass (orderables[i], "orderable");
-	}
-	var lightboxWithNoOrderables = createLightbox();
-	orderables = dojo.query(".orderable", lightboxWithNoOrderables.domNode);
+	var lightboxWithNoOrderables = createLightboxWithNoOrderables();
+	orderables = lightboxWithNoOrderables.orderableFinder();
 	assertEquals ("There should be no 'orderables' in this lightbox", 0, orderables.length);
 	
 	lightboxWithNoOrderables.selectActiveItem();
@@ -464,3 +457,4 @@ function testUpdateGrabProperty() {
     lightbox.handleKeyUp (fluid.testUtils.createEvtCTRL());
     assertEquals("after CTRL released, test item should have grab of supported", "supported", testItem.getAttribute("aaa:grab"));
 }
+
