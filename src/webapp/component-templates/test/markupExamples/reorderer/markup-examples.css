@@ -70,21 +70,21 @@ border: 1px solid black;
 }
 
 
-.image-container-default{
+.orderable-default{
 border: 2px solid #ddd;
 margin: 0 10px 10px 0 !important;
 text-align: center;
 padding-top: 10px;
 }
 
-.image-container-hover{
+.orderable-hover{
 border: 2px solid #666;
 margin: 0 10px 10px 0 !important;
 text-align: center;
 padding-top: 10px;
 }
 
-.image-container-selected{
+.orderable-selected{
 border: 2px solid #666;
 background-color: #ddd;
 margin: 0 10px 10px 0 !important;

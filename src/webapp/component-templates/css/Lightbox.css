@@ -43,7 +43,7 @@ width: 150px;
 }
 
 
-.image-container-default{
+.orderable-default{
 height: 150px !important;
 width: 150px;
 border: 2px solid #ddd;
@@ -53,7 +53,7 @@ text-align: center;
 padding-top: 10px;
 }
 
-.image-container-hover{
+.orderable-hover{
 height: 150px !important;
 width: 150px;
 border: 2px solid #666;
@@ -63,7 +63,7 @@ text-align: center;
 padding-top: 10px;
 }
 
-.image-container-selected{
+.orderable-selected{
 height: 150px !important;
 width: 150px;
 border: 2px solid #666;
@@ -74,15 +74,15 @@ text-align: center;
 padding-top: 10px;
 }
 
-.image-container-selected .image_title{
+.orderable-selected .image_title{
 font-weight: bold;
 }
 
-.image-container-selected img{
+.orderable-selected img{
 border: 1px solid #eee;
 }
 
-.image-container-dragging{
+.orderable-dragging{
 height: 150px !important;
 width: 150px;
 border: 2px solid #666;

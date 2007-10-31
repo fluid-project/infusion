@@ -73,30 +73,30 @@ border: 2px solid white !important;
 }
 
 
-.image-container-default{
+.orderable-default{
 position: relative;
 top: 0px;
 }
 
-.image-container-hover{
+.orderable-hover{
 }
 
-.image-container-selected a {
+.orderable-selected a {
 border-color: black black #ccc black !important;
 }
 
-.image-container-selected #activeTabLink {
+.orderable-selected #activeTabLink {
 border-color: black black white black !important;
 }
 
-.image-container-dragging a{
+.orderable-dragging a{
 background-color: lightyellow !important;
 position: relative;
 top: -5px;
 border-color: lightyellow !important;
 }
 
-.image-container-dragging #activeTab{
+.orderable-dragging #activeTab{
 background-color: lightyellow !important;
 position: relative;
 top: -5px;

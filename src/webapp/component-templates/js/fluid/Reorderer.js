@@ -26,9 +26,9 @@ if (typeof(fluid) == "undefined") {
 
 (function() {
 	fluid.states = {
-		defaultClass:"image-container-default",
-		selectedClass:"image-container-selected",
-		draggingClass:"image-container-dragging"
+		defaultClass:"orderable-default",
+		selectedClass:"orderable-selected",
+		draggingClass:"orderable-dragging"
 	};
 })();
 

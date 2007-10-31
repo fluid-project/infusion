@@ -50,9 +50,9 @@ var secondLastImageId = "fluid.img.secondLast";
 var lastImageId = "fluid.img.last";
 
 // CSS class names
-var defaultClass="image-container-default";
-var selectedClass="image-container-selected";
-var draggingClass="image-container-dragging";
+var defaultClass="orderable-default";
+var selectedClass="orderable-selected";
+var draggingClass="orderable-dragging";
 
 // All the test function names for the JsUnit tests that test against the Lightbox.html file.  
 // This is needed for running JsUnit in IE and Safari.
