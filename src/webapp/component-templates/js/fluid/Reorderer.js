@@ -59,13 +59,13 @@ fluid.Reorderer = function(domNodeId, params) {
     
    /**
     * Return the element within the item that should receive focus. This is determined by the class 
-    * 'reorderable-focus-target'. If it is not specified, the item itself is returned.
+    * 'orderable-focus-target'. If it is not specified, the item itself is returned.
     * 
     * @param {Object} item
     * @return {Object} The element that should receive focus in the specified item.
     */
 	this.getElementToFocus = function(item) {
-		var elementToFocus = dojo.query(".reorderable-focus-target", item)[0];
+		var elementToFocus = dojo.query(".orderable-focus-target", item)[0];
 		if (elementToFocus) {
 			return elementToFocus;
 		}
