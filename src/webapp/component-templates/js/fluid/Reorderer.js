@@ -241,19 +241,46 @@ fluid.Reorderer = function(domNodeId, params) {
         		selector += ", ";
         	}        	
         }
-        
-        jQuery(this.domNode).sortable({
-            items: selector,
-            start: function(e, ui) {
-            	thisReorderer.focusItem (ui.draggable.element);
-                thisReorderer.activeItem.setAttribute ("aaa:grab", "true");
-            },
-            update: function(e, ui) {
-                thisReorderer.orderChangedCallback();
-                thisReorderer.focusItem (thisReorderer.activeItem);
-                thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
-            }
-        });
+
+        // Make all the items draggable and droppable.
+        //
+        var dropMarker;
+        for (var i = 0; i < items.length; i++) {
+        	var anItem = items[i];
+        	jQuery (anItem).draggable ({
+        		helper: "clone",
+        		start: function (e, ui) {
+                    thisReorderer.focusItem (ui.draggable.element);
+                    dojo.addClass (ui.draggable.element, "orderable-dragging");
+                    ui.draggable.element.setAttribute ("aaa:grab", "true");
+                    dropMarker = document.createElement (ui.draggable.element.tagName);
+                    dojo.addClass (dropMarker, "orderableDropMarker");                    
+                    dropMarker.style.visibility = "hidden";
+        		},
+        		stop: function(e, ui) {
+        			dojo.removeClass (ui.draggable.element, "orderable-dragging");
+                    thisReorderer.orderChangedCallback();
+                    thisReorderer.focusItem (ui.draggable.element);
+                    thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
+                    if (dropMarker.parentNode)
+                        dropMarker.parentNode.removeChild (dropMarker);
+                }
+        	});
+        	jQuery (anItem).droppable ({
+        		accept: selector,
+        		tolerance: "pointer",
+                over: function (e, ui) {
+                    jQuery (ui.droppable.element).after (dropMarker);                	
+                    dropMarker.style.visibility = "visible";
+                },
+                out: function (e, ui) {
+                    dropMarker.style.visibility = "hidden";
+                },
+                drop: function (e, ui) {
+                	dojo.place (ui.draggable.element.id, ui.droppable.element.id, "after");
+                }
+        	});
+        }
     };
 
 	/**

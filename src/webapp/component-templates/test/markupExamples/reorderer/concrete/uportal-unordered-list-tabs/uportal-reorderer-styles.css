@@ -89,6 +89,10 @@ border-color: black black #ccc black !important;
 border-color: black black white black !important;
 }
 
+.orderable-dragging {
+	opacity: 0.75;
+}
+
 .orderable-dragging a{
 background-color: lightyellow !important;
 position: relative;
@@ -101,4 +105,11 @@ background-color: lightyellow !important;
 position: relative;
 top: -5px;
 border-color: lightyellow !important;
+}
+
+.orderableDropMarker{
+  height: 16px !important;
+  width: 2px;
+  background-color: yellow !important;
+  float: left;
 }

@@ -42,13 +42,12 @@ margin: 0 auto 3px auto;
 width: 150px;
 }
 
-
 .orderable-default{
 height: 150px !important;
 width: 150px;
 border: 2px solid #ddd;
 float: left;
-margin: 0 10px 10px 0 !important;
+margin: 5px !important;
 text-align: center;
 padding-top: 10px;
 }
@@ -58,7 +57,7 @@ height: 150px !important;
 width: 150px;
 border: 2px solid #666;
 float: left;
-margin: 0 10px 10px 0 !important;
+margin: 5px !important;
 text-align: center;
 padding-top: 10px;
 }
@@ -69,7 +68,7 @@ width: 150px;
 border: 2px solid #666;
 background-color: #ddd;
 float: left;
-margin: 0 10px 10px 0 !important;
+margin: 5px !important;
 text-align: center;
 padding-top: 10px;
 }
@@ -88,13 +87,12 @@ width: 150px;
 border: 2px solid #666;
 background-color: #eee;
 float: left;
-margin: 0 10px 10px 0 !important;
+margin: 5px !important;
 text-align: center;
 opacity: .2;
 filter: alpha(opacity=20);
 padding-top: 10px;
 }
-
 
 .image-title{
 margin-top:5px;
@@ -118,52 +116,13 @@ font-size: 11px;
 border: 1px solid #666;
 }
 
-
-/*---------- DOJO DND STYLING ---------------*/
-
-.dojoDndItemOver{ 
-border-color: #666;
-background-color: white;
-}
-.dojoDndItemSelected{
-background-color: #ddd;
-}
-.dojoDndItemAnchor{
-background: #ddd; 
-color: black;
+div .orderableDropMarker{
+  height: 160px !important;
+  width: 4px;
+  background-color: red;
+  float: left;
 }
 
-.dojoDndItemOver.dojoDndItemSelected
-{
-/*background: #ec8;*/
-}
-
-.dojoDndItemOver.dojoDndItemAnchor{
-/*background: #ec8;*/
-}
-
-.dojoDndItemBefore{
-border-left: 3px solid red;
-}
-.dojoDndItemAfter{
-border-right: 3px solid red;
-}
-
-.dojoDndAvatar{
-/*font-size: 75%;*/
-border: 0;
-}
-
-.dojoDndAvatarHeader
-{
-/*background: #aaa;*/
-display:none;
-}
-
-.dojoDndAvatarItem
-{
-/*background: #eee;*/
-}
 
 /* Tooltip styling */
 
