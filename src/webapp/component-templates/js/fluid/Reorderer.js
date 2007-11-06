@@ -33,7 +33,6 @@ if (typeof(fluid) == "undefined") {
 })();
 
 
-
 fluid.Reorderer = function(domNodeId, params) {
 	// Reliable 'this'.
 	//
@@ -69,7 +68,6 @@ fluid.Reorderer = function(domNodeId, params) {
 		if (elementToFocus) {
 			return elementToFocus;
 		}
-		
 		return item;
 	};
 	
@@ -109,8 +107,9 @@ fluid.Reorderer = function(domNodeId, params) {
 			if (orderables.length > 0) {
 				this._setActiveItem(orderables[0]);
 			}
-			else
+			else {
 				return;
+			}
 		}
 		this.focusItem(this.activeItem);
 	};
@@ -260,8 +259,8 @@ fluid.Reorderer = function(domNodeId, params) {
         		stop: function(e, ui) {
         			dojo.removeClass (ui.draggable.element, "orderable-dragging");
                     thisReorderer.orderChangedCallback();
-                    thisReorderer.focusItem (ui.draggable.element);
                     thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
+                    thisReorderer.domNode.focus();
                     if (dropMarker.parentNode)
                         dropMarker.parentNode.removeChild (dropMarker);
                 }
