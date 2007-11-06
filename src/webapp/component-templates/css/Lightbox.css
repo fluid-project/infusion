@@ -108,68 +108,11 @@ text-decoration: none;
 text-decoration: underline;
 }
 
-.image_tooltip{
-background-color:lightyellow;
-width: 150px;
-padding: 10px;
-font-size: 11px;
-border: 1px solid #666;
-}
-
 div .orderableDropMarker{
   height: 160px !important;
   width: 4px;
   background-color: red;
   float: left;
-}
-
-
-/* Tooltip styling */
-
-/* currently using Dijit's default style. */
-.dojoTooltip {
-	position: absolute;
-	z-index: 10;
-	display: block;
-	margin-top: 10px;
-	border: red;
-	/* make visible but off screen */
-	left: -10000px;
-	top: -10000px;
-}
-
-.dojoTooltipContainer {
-	border: solid #999 2px;
-	background: lightyellow;
-	color: black;
-	font-size: .9em;
-	padding: 2px 2px 2px 2px;
-padding: 5px;
-}
-
-.dojoTooltipConnector {
-	/* the border on the triangle */
-	font-size: 0px; line-height: 0%; width: 0px;
-	position: absolute;
-	border-top: none;
-	border-bottom: 14px solid #999;
-	border-left: 7px solid transparent;
-	border-right: 7px solid transparent;
-	top: -14px;
-	left: 3px;
-	z-index: 2;
-}
-
-.dojoTooltipConnector div {
-	/* the background of the triangle */
-	font-size: 0px; line-height: 0%; width: 0px;
-	position: absolute;
-	border-bottom: 10px solid lightyellow;
-	border-left: 5px solid transparent;
-	border-right: 5px solid transparent;
-	top: 6px;
-	left: -5px;
-	z-index: 3;
 }
 
 .lightbox-instructions{
@@ -186,7 +129,6 @@ top: 0;
 right: 0;
 width: 300px;
 }
-
 
 .lightbox-downarrow{
 font-size: 0px; line-height: 0%; width: 0px;
