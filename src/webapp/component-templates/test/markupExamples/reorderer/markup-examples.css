@@ -91,3 +91,8 @@ margin: 0 10px 10px 0 !important;
 text-align: center;
 padding-top: 10px;
 }
+
+.orderable-avatar {
+    background-color: blue;
+    opacity: 0.75;
+}

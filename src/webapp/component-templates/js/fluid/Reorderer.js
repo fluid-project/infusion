@@ -255,6 +255,7 @@ fluid.Reorderer = function(domNodeId, params) {
                     dropMarker = document.createElement (ui.draggable.element.tagName);
                     dojo.addClass (dropMarker, "orderableDropMarker");                    
                     dropMarker.style.visibility = "hidden";
+                    dojo.addClass (ui.helper, "orderable-avatar");
         		},
         		stop: function(e, ui) {
         			dojo.removeClass (ui.draggable.element, "orderable-dragging");
