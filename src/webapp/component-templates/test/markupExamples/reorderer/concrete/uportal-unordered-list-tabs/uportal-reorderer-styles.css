@@ -107,7 +107,7 @@ top: -5px;
 border-color: lightyellow !important;
 }
 
-.orderableDropMarker{
+.orderable-drop-marker{
   height: 16px !important;
   width: 2px;
   background-color: yellow !important;

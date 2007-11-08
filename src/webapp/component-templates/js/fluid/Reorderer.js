@@ -23,16 +23,6 @@ if (typeof(fluid) == "undefined") {
     fluid = {};
 };
 
-
-(function() {
-	fluid.states = {
-		defaultClass:"orderable-default",
-		selectedClass:"orderable-selected",
-		draggingClass:"orderable-dragging"
-	};
-})();
-
-
 fluid.Reorderer = function(domNodeId, params) {
 	// Reliable 'this'.
 	//
@@ -52,19 +42,29 @@ fluid.Reorderer = function(domNodeId, params) {
 		
     this.orderableFinder = null;
 			
+    this.cssClasses = {
+        defaultStyle: "orderable-default",
+        selected: "orderable-selected",
+        dragging: "orderable-dragging",
+        hover: "orderable-hover",
+        focusTarget: "orderable-focus-target",
+        dropMarker: "orderable-drop-marker",
+        avatar: "orderable-avatar"
+    };
+
 	if (params) {
         dojo.mixin(this, params);
     }
     
    /**
-    * Return the element within the item that should receive focus. This is determined by the class 
-    * 'orderable-focus-target'. If it is not specified, the item itself is returned.
+    * Return the element within the item that should receive focus. This is determined by 
+    * cssClasses.focusTarget. If it is not specified, the item itself is returned.
     * 
     * @param {Object} item
     * @return {Object} The element that should receive focus in the specified item.
     */
 	this.getElementToFocus = function(item) {
-		var elementToFocus = dojo.query(".orderable-focus-target", item)[0];
+		var elementToFocus = dojo.query("." + this.cssClasses.focusTarget, item)[0];
 		if (elementToFocus) {
 			return elementToFocus;
 		}
@@ -93,8 +93,8 @@ fluid.Reorderer = function(domNodeId, params) {
 	this.focusItem = function(anItem) {
 		this.changeActiveItemToDefaultState();
 		this._setActiveItem(anItem);			
-		dojo.removeClass(this.activeItem, fluid.states.defaultClass);
-		dojo.addClass(this.activeItem, fluid.states.selectedClass);
+		dojo.removeClass(this.activeItem, this.cssClasses.defaultStyle);
+		dojo.addClass(this.activeItem, this.cssClasses.selected);
 		this.getElementToFocus(this.activeItem).focus();
 	};
 	
@@ -116,15 +116,15 @@ fluid.Reorderer = function(domNodeId, params) {
 		
 	this.changeActiveItemToDefaultState = function() {
 		if (this.activeItem) {
-			dojo.removeClass(this.activeItem, fluid.states.selectedClass);
-			dojo.addClass(this.activeItem, fluid.states.defaultClass);
+			dojo.removeClass(this.activeItem, this.cssClasses.selected);
+			dojo.addClass(this.activeItem, this.cssClasses.defaultStyle);
 		}
 	};
 	
 	this.handleKeyDown = function (evt) {
 		if (this.activeItem && evt.keyCode == dojo.keys.CTRL) {
-			dojo.removeClass(this.activeItem, fluid.states.selectedClass);
-			dojo.addClass(this.activeItem, fluid.states.draggingClass);
+			dojo.removeClass(this.activeItem, this.cssClasses.selected);
+			dojo.addClass(this.activeItem, this.cssClasses.dragging);
 	        this.activeItem.setAttribute("aaa:grab", "true");
 			dojo.stopEvent(evt);
 		}
@@ -132,8 +132,8 @@ fluid.Reorderer = function(domNodeId, params) {
 	
 	this.handleKeyUp = function (evt) {
 		if (this.activeItem && evt.keyCode == dojo.keys.CTRL) {
-			dojo.removeClass(this.activeItem, fluid.states.draggingClass);
-			dojo.addClass(this.activeItem, fluid.states.selectedClass);
+			dojo.removeClass(this.activeItem, this.cssClasses.dragging);
+			dojo.addClass(this.activeItem, this.cssClasses.selected);
 	        this.activeItem.setAttribute("aaa:grab", "supported");
 			dojo.stopEvent(evt);
 		}		
@@ -235,10 +235,19 @@ fluid.Reorderer = function(domNodeId, params) {
         
         var selector = "";
         for (var i = 0; i < items.length; i++) {
-            selector += "[id=" + items[i].id + "]";
+            var item = items[i];
+            selector += "[id=" + item.id + "]";
         	if (i != items.length - 1) {
         		selector += ", ";
         	}        	
+        	
+            dojo.connect(item, "onmouseover",  function () {
+                dojo.addClass(this, thisReorderer.cssClasses.hover);
+            });
+            dojo.connect(item, "onmouseout",  function () {
+                dojo.removeClass(this, thisReorderer.cssClasses.hover);
+            });
+        	
         }
 
         // Make all the items draggable and droppable.
@@ -250,15 +259,15 @@ fluid.Reorderer = function(domNodeId, params) {
         		helper: "clone",
         		start: function (e, ui) {
                     thisReorderer.focusItem (ui.draggable.element);
-                    dojo.addClass (ui.draggable.element, "orderable-dragging");
+                    dojo.addClass (ui.draggable.element, thisReorderer.cssClasses.dragging);
                     ui.draggable.element.setAttribute ("aaa:grab", "true");
                     dropMarker = document.createElement (ui.draggable.element.tagName);
-                    dojo.addClass (dropMarker, "orderableDropMarker");                    
+                    dojo.addClass (dropMarker, thisReorderer.cssClasses.dropMarker);                    
                     dropMarker.style.visibility = "hidden";
-                    dojo.addClass (ui.helper, "orderable-avatar");
+                    dojo.addClass (ui.helper, thisReorderer.cssClasses.avatar);
         		},
         		stop: function(e, ui) {
-        			dojo.removeClass (ui.draggable.element, "orderable-dragging");
+        			dojo.removeClass (ui.draggable.element, thisReorderer.cssClasses.dragging);
                     thisReorderer.orderChangedCallback();
                     thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
                     thisReorderer.domNode.focus();

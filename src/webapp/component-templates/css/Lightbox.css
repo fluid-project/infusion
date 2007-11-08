@@ -108,7 +108,7 @@ text-decoration: none;
 text-decoration: underline;
 }
 
-div .orderableDropMarker{
+div .orderable-drop-marker{
   height: 160px !important;
   width: 4px;
   background-color: red;
