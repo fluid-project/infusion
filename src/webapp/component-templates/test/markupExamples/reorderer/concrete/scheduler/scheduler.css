@@ -1,0 +1,13 @@
+table {
+	border: 1px solid #999;
+	border-collapse: collapse;
+}
+
+th, td {
+	padding: 10px;
+	border: 1px solid #999;
+}
+
+.fixed {
+	font-style: italic;
+}
