@@ -1,0 +1,90 @@
+<html>
+<head>
+  <title>Definition List</title>
+  <style type="text/css">
+    @import url("todo-list.css");
+  </style>
+  <script type="text/javascript" src="../../../../../js/dojo/dojo.js"></script>
+  <script type="text/javascript" src="../../../../../js/jquery/jquery-1.2.1.js"></script>
+  <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
+  <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
+  <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
+  <script type="text/javascript" src="../../../../../js/fluid/Reorderer.js"></script>
+  <!--  Ensure jQuery is in no conflicts mode --> 
+  <script language="JavaScript" type="text/javascript">
+    jQuery.noConflict();
+  </script> 
+</head>
+
+<body>
+  <h3>Conference Planning To-do List</h3>
+
+  <ol id="todo-list" tabindex="0">
+    <li id="myUniquePrefix.orderable1">
+      Select the date
+    </li>
+    <li id="myUniquePrefix.orderable2">
+      Create promotional plan
+      <ul>
+        <li>email campaign</li>
+        <li>web site</li>
+        <li>print materials</li>
+      </ul>
+    </li>
+    <li id="myUniquePrefix.orderable3">
+      Book facilities
+      <ul>
+      	<li>Select building</li>
+      	<li>Book rooms</li>
+      </ul>
+    </li>
+    <li id="myUniquePrefix.orderable4">
+      Book caterer
+    </li>
+    <li id="myUniquePrefix.orderable5">
+      Book block of hotel rooms
+    </li>
+    <li id="myUniquePrefix.orderable6">
+      Develop a conference daily schedule of events
+    </li>
+    <li id="myUniquePrefix.orderable7">
+      Book speakers
+      <ul>
+      	<li>Keynote</li>
+      	<li>Internal/employee</li>
+      </ul>
+    </li>
+    <li id="myUniquePrefix.orderable8">
+    Plan the registration process
+      <ul>
+        <li>Deadline for early bird and final registrations</li>
+        <li>Create/enter data into database</li>
+        <li>Create/upload information for web registration</li>
+      </ul>
+    </li>
+    <li id="myUniquePrefix.orderable9">
+      Book audio visual equipment and technicians
+    </li>
+    <li id="myUniquePrefix.orderable10">
+      Create name tags and welcome packages
+      <ul>
+        <li>schedule of events</li>
+        <li>maps, tickets</li>
+        <li>paper, pen, trinkets</li>
+        <li>instructions</li>
+      </ul>
+    </li>
+  </ol>
+
+  <script language="JavaScript" type="text/javascript">
+    function myOrderableFinder (containerEl) {
+      return dojo.query ("[id^=myUniquePrefix]", containerEl);
+    }
+    new fluid.Reorderer ("todo-list", {
+      orderChangedCallback: function() {},
+      layoutHandler: new fluid.ListLayoutHandler (myOrderableFinder),
+      orderableFinder: myOrderableFinder
+    });
+  </script>
+</body>
+</html>

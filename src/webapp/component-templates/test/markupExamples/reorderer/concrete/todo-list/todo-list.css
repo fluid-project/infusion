@@ -1,0 +1,47 @@
+body{
+font-family: verdana, sans-serif;
+font-size: 0.8em;
+}
+
+table {
+border: 1px solid #ddd;
+width: 300px
+}
+
+td{
+padding: 5px;
+font-size: 12px;
+}
+
+.ui-draggable{
+background-color: #eee;
+}
+
+.orderable-default{
+background-color: #eee;
+}
+
+.orderable-hover{
+background-color: lightyellow;
+cursor: move;
+}
+
+.orderable-selected{
+background-color: #ddd;
+}
+
+.orderable-avatar {
+opacity: 0.55;
+width: 300px;
+border: 0;
+}
+
+.orderable-drop-marker{
+background-color: red;
+height: 10px;
+}
+
+.orderable-drop-marker div{
+color: #ddd;
+}
+
