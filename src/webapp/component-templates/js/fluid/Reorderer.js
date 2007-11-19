@@ -233,7 +233,12 @@ fluid.Reorderer = function(domNodeId, params) {
         });
   
         jQuery (anItem).draggable ({
-            helper: "clone",
+            helper: function() {
+            	var avatar = jQuery (this).clone();
+            	jQuery (avatar).removeAttr ("id");
+            	jQuery ("[id]", avatar).removeAttr("id");            	
+            	return avatar;
+            },
             start: function (e, ui) {
                 thisReorderer.focusItem (ui.draggable.element);                
                 dojo.addClass (ui.draggable.element, thisReorderer.cssClasses.dragging);
@@ -245,7 +250,6 @@ fluid.Reorderer = function(domNodeId, params) {
             },
             stop: function(e, ui) {
                 dojo.removeClass (ui.draggable.element, thisReorderer.cssClasses.dragging);
-                thisReorderer.orderChangedCallback();
                 thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
                 thisReorderer.domNode.focus();
                 if (dropMarker.parentNode) {
@@ -266,6 +270,7 @@ fluid.Reorderer = function(domNodeId, params) {
             },
             drop: function (e, ui) {
                 dojo.place (ui.draggable.element.id, ui.droppable.element.id, "after");
+                thisReorderer.orderChangedCallback();
             }
         });
     };
