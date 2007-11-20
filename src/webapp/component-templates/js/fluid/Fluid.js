@@ -30,6 +30,10 @@ fluid.declare(fluid, {
 	// different templates.
 	initLightbox: function(namebase, messageNamebase) {
 		var reorderform = fluid.Utilities.findForm(document.getElementById(namebase));
+		
+		// Remove the anchors from the taborder - camel case 'tabIndex' needed for IE7 support
+		jQuery ("a", reorderform).attr ("tabIndex", "-1");
+		
 		// An <input> tag nested within our root namebase tag, which has an id which 
 		// begins with the  namebase:lightbox-cell:: prefix, and ends with "reorder-index" trail.
 		// Very hard to imagine any perversity which may lead to this picking any stray stuff :P
