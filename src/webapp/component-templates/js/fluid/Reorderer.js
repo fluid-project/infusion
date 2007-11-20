@@ -236,7 +236,8 @@ fluid.Reorderer = function(domNodeId, params) {
             helper: function() {
             	var avatar = jQuery (this).clone();
             	jQuery (avatar).removeAttr ("id");
-            	jQuery ("[id]", avatar).removeAttr("id");            	
+            	jQuery ("[id]", avatar).removeAttr("id");
+            	jQuery (":hidden", avatar).remove();            	
             	return avatar;
             },
             start: function (e, ui) {
