@@ -1,0 +1,47 @@
+
+#tabList {
+padding-bottom: 10px;
+border-bottom: 1px solid #696;
+}
+
+#tabList li {
+display: inline;
+padding: 10px;
+}
+
+#tablist a {
+text-decoration: none;
+}
+	
+.ui-draggable{
+background-color: #eee;
+}
+
+.orderable-default{
+background-color: #eee;
+}
+
+.orderable-hover{
+background-color: lightyellow;
+cursor: move;
+}
+
+.orderable-selected{
+background-color: #ddd;
+}
+
+.orderable-dragging {
+background-color: lightyellow;
+}
+
+.orderable-avatar {
+opacity: 0.55;
+width: 300px;
+border: 0;
+}
+
+.orderable-drop-marker{
+background-color: red;
+height: 10px;
+}
+

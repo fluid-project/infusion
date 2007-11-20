@@ -1,0 +1,58 @@
+<html>
+    <head>
+        <title>Sortable Tabs</title>
+        <link rel="stylesheet" type="text/css" href="unordered-list-tabs.css" title="default" />
+        
+        <!-- The Reorderer currently depends on a number of JavaScript libraries, including Dojo and jQuery. -->
+        <script type="text/javascript" src="../../../../../js/dojo/dojo.js"></script>
+        <script type="text/javascript" src="../../../../../js/jquery/jquery-1.2.1.js"></script>
+        <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
+        <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
+        <script type="text/javascript" src="../../../../../js/fluid/Reorderer.js"></script>
+ 
+		<!--  Ensure jQuery is in no conflicts mode --> 
+		<script type="text/javascript">
+    		jQuery.noConflict();
+		</script> 
+    </head>
+    
+    <body>
+  <div id="tabs">
+  <ul id="tabList" tabindex="0">
+    <li class="active-tab orderable" id="tab_1"><a href="#" id="activeTabLink"><span>Welcome</span></a></li>
+    <li id="tab_2" class="orderable"><a href="#"><span>Main</span></a></li>
+    <li id="tab_3" class="orderable"><a href="#"><span>Misc</span></a></li>
+    <li id="tab_4" class="orderable"><a href="#"><span>News</span></a></li>
+    </ul>
+    
+    </div>
+
+<div>
+<p>Vestibulum quam. Nam tristique. Morbi nisi. Mauris non magna. Praesent a sem sed lorem viverra adipiscing. Nunc feugiat tincidunt erat.
+Nam non eros. Aliquam a enim suscipit nibh pretium ultrices. Etiam rutrum enim eget orci. Vestibulum placerat. Curabitur nisi mauris, 
+eleifend consectetuer, tincidunt in, cursus vitae, augue. Morbi commodo purus feugiat felis. Nullam et augue a ante hendrerit sollicitudin. 
+Sed lacus lacus, bibendum volutpat, pretium in, condimentum vel, purus. Sed tempor convallis enim. Morbi pulvinar erat nec eros. Curabitur nec 
+ipsum sed nisl sodales posuere. Cras eu mauris quis turpis tempus hendrerit. Donec non nunc. Curabitur semper lorem ac diam.</p>
+
+<p>Praesent auctor, pede in feugiat mattis, sem neque viverra magna, id dignissim augue magna vitae elit. Praesent vulputate nibh. 
+Maecenas aliquam, augue vel tristique facilisis, nibh lorem vestibulum quam, id aliquam ante sem et dui. Praesent nec nunc sed quam 
+vulputate fringilla. Pellentesque id pede non nisi pulvinar cursus. Curabitur diam dui, feugiat eu, euismod ac, eleifend eget, massa. 
+Fusce orci dui, eleifend tristique, pharetra et, varius vitae, tortor. Duis imperdiet, enim elementum eleifend rutrum, ipsum dui luctus 
+leo, ac lobortis leo nisi vitae elit. Sed luctus eros et lorem. Vestibulum aliquet risus vel diam.</p>
+
+</div>
+     <script language="JavaScript" type="text/javascript">
+      
+      function findOrderableTabs (container) {
+        return dojo.query ("[id^=tab_]", container);
+      }
+    
+      new fluid.Reorderer("tabList", {
+          layoutHandler: new fluid.ListLayoutHandler (findOrderableTabs),
+          orderableFinder: findOrderableTabs
+        }
+      );
+    </script>
+    </body>
+</html>
