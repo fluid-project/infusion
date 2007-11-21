@@ -1,0 +1,339 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns:xhtml10="http://www.w3.org/1999/xhtml"
+  xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"
+  xmlns:aaa="http://www.w3.org/2005/07/aaa">
+	
+  <head>
+    <title>Fluid Lightbox</title>
+    <link href="lightbox.css" type="text/css" rel="stylesheet" media="all" />
+    <script type="text/javascript" src="../../../../../js/dojo/dojo.js"></script>
+    <script type="text/javascript" src="../../../../../js/jquery/jquery-1.2.1.js"></script>
+    <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
+    <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
+    <script type="text/javascript" src="../../../../../js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../../js/fluid/Reorderer.js"></script>
+    
+    <!--  Ensure jQuery is in no conflicts mode --> 
+    <script type="text/javascript">
+      jQuery.noConflict();
+    </script> 
+    
+  </head>
+
+  <body>
+
+  <!--  
+  	The initLightbox() implementation assumes that reorderables are enclosed in a form. 
+    This is due to the strategy we use for posting the item order back to the server.
+  -->
+  <form id="reorder-form">
+  
+    	<div id="gallery" tabIndex="2" class="image-container"
+	 		xhtml10:role="wairole:grid"
+			aaa:multiselectable="false"
+			aaa:readonly="false"
+			aaa:activedescendent="gallerylightbox-cell:0:"
+			aaa:disabled="false">
+				
+			<!--
+				Declare the thumbnails as an ARIA grid, that is single-selectable, writeable, and, when
+				first loaded, has the first thumbnail focussed.
+			-->
+	
+			<div class="float orderable-default" id="gallerylightbox-cell:0:" 
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported"
+					aaa:dropeffect="move">
+				
+				<div>
+					<div class="image-inner-container">
+						<a id="focus-element1" href="../../../../../images/Dragonfruit.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.first" src="../../../../../images/Dragonfruit.jpg" border="0" alt="Dragonfruit"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Dragonfruit.jpg" >Dragonfruit</a>
+					</div>
+				</div>
+        		<inputvalue="0" id="gallerylightbox-cell:0:reorder-index" type="hidden"/>
+			</div>
+		
+			<div class="float orderable-default" id="gallerylightbox-cell:1:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported"
+                    aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/Kiwano.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.second" src="../../../../../images/Kiwano.jpg" border="0" alt="Kiwano"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Kiwano.jpg" >Kiwano</a>
+					</div>
+				</div>
+       			<input id="gallerylightbox-cell:1:reorder-index" value="1" type="hidden"/>			
+			</div>
+							
+			<div class="float orderable-default" id="gallerylightbox-cell:2:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported"
+					aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/Blackberry.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.3" src="../../../../../images/Blackberry.jpg" border="0" alt="Blackberry"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Blackberry.jpg" >Blackberry</a>
+					</div>
+				</div>
+	      		<input id="gallerylightbox-cell:2:reorder-index" value="2" type="hidden"/>
+			</div>
+			
+			<div class="float orderable-default" id="gallerylightbox-cell:3:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported"
+					aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/Cherry.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.4" src="../../../../../images/Cherry.jpg" border="0" alt="Cherry"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Cherry.jpg" >Cherry</a>
+					</div>
+				</div>
+        		<input id="gallerylightbox-cell:3:reorder-index" value="3" type="hidden"/>
+			</div>
+			
+			<div class="float orderable-default" id="gallerylightbox-cell:4:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported" 					aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/Fig.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.5" src="../../../../../images/Fig.jpg" border="0" alt="Fig"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Fig.jpg" >Fig</a>
+					</div>
+				</div>
+        		<input id="gallerylightbox-cell:4:reorder-index" value="4" type="hidden"/>        
+			</div>
+			
+			<div class="float orderable-default" id="gallerylightbox-cell:5:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported"
+					aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/Grapes.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.6" src="../../../../../images/Grapes.jpg" border="0" alt="Grapes"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Grapes.jpg" >Grapes</a>
+					</div>
+				</div>
+        		<input id="gallerylightbox-cell:5:reorder-index" value="5" type="hidden"/>
+			</div>
+			
+			<!-- This thumbnail intentionally does not have a orderable-focus-target -->
+			<div class="float orderable-default" id="gallerylightbox-cell:6:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported"
+					aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/Kiwi.jpg" >
+							<img id="fluid.img.7" src="../../../../../images/Kiwi.jpg" border="0" alt="Kiwi"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Kiwi.jpg" >Kiwi</a>
+					</div>
+				</div>
+        		<input id="gallerylightbox-cell:6:reorder-index" value="6" type="hidden"/>
+			</div>
+			
+			<div class="float orderable-default" id="gallerylightbox-cell:7:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported"
+					aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/Kumquat.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.8" src="../../../../../images/Kumquat.jpg" border="0" alt="Kumquat"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Kumquat.jpg" >Kumquat</a>
+					</div>
+				</div>
+        		<input id="gallerylightbox-cell:7:reorder-index" value="7" type="hidden"/>
+			</div>
+			
+			<div class="float orderable-default" id="gallerylightbox-cell:8:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported"
+					aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/Lemon.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.9" src="../../../../../images/Lemon.jpg" border="0" alt="Lemon"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Lemon.jpg" >Lemon</a>
+					</div>
+				</div>
+        		<input id="gallerylightbox-cell:8:reorder-index" value="8" type="hidden"/>
+			</div>
+			
+			<div class="float orderable-default" id="gallerylightbox-cell:9:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported"
+					aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/Orange.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.10" src="../../../../../images/Orange.jpg" border="0" alt="Orange"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Orange.jpg" >Orange</a>
+					</div>
+				</div>
+        		<input id="gallerylightbox-cell:9:reorder-index" value="9" type="hidden"/>
+			</div>
+			
+			<div class="float orderable-default" id="gallerylightbox-cell:10:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported"
+					aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/RedApple.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.11" src="../../../../../images/RedApple.jpg" border="0" alt="RedApple"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/RedApple.jpg" >RedApple</a>
+					</div>
+				</div>
+        		<input id="gallerylightbox-cell:10:reorder-index" value="10" type="hidden"/>
+			</div>
+			
+			<div class="float orderable-default" id="gallerylightbox-cell:11:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported"
+					aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/Tamarillo.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.12" src="../../../../../images/Tamarillo.jpg" border="0" alt="Tamarillo"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Tamarillo.jpg" >Tamarillo</a>
+					</div>
+				</div>
+        		<input id="gallerylightbox-cell:11:reorder-index" value="11" type="hidden"/>
+			</div>
+			
+			<div class="float orderable-default" id="gallerylightbox-cell:12:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported" 					aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/Mangosteen.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.secondLast" src="../../../../../images/Mangosteen.jpg" border="0" alt="Mangosteen"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Mangosteen.jpg" >Mangosteen</a>
+					</div>
+				</div>
+        		<input id="gallerylightbox-cell:12:reorder-index" value="12" type="hidden"/>
+			</div>
+			
+			<div class="float orderable-default orderable" id="gallerylightbox-cell:13:"
+					xhtml10:role="wairole:gridcell"
+					aaa:selected="true"
+					aaa:readonly="false"
+					aaa:disabled="false"
+					aaa:grab="supported"
+					aaa:dropeffect="move">
+				<div>
+					<div class="image-inner-container">
+						<a href="../../../../../images/Banana.jpg" class="orderable-focus-target" >
+							<img id="fluid.img.last" src="../../../../../images/Banana.jpg" border="0" alt="Banana"/>
+						</a>
+					</div>
+					<div class="caption image-title">
+						<a href="../../../../../images/Banana.jpg" >Banana</a>
+					</div>
+				</div>
+        		<input id="gallerylightbox-cell:13:reorder-index" value="13" type="hidden"/>
+			</div>
+        </div>
+        
+        <script type="text/javascript">
+         fluid.initLightbox("gallery", "message-bundle:");
+        </script>
+			
+	<!-- Sample instruction message. At runtime, this would be supplied by the server. -->
+	<div id="message-bundle:" class="lightbox-instructions">
+		<div class="lightbox-downarrow"></div><div id="message-bundle:thumbnailInstructions">
+			View an image by pressing Enter. Move an image using CTRL+Arrow Key.
+		</div>
+	</div>
+    </form>
+  </body>
+</html>
