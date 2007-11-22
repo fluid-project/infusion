@@ -4,12 +4,14 @@
 		<link rel="stylesheet" type="text/css" href="scheduler.css" title="default" />
 		
 		<!-- The Reorderer currently depends on a number of JavaScript libraries, including Dojo and jQuery. -->
-		<script src="../js/dojo/dojo.js"></script>
-    	<script src="../js/jquery/jquery-1.2.1.js"></script>
-    	<script src="../js/jquery.ui-1.0/ui.mouse.js"></script>
-    	<script src="../js/jquery.ui-1.0/ui.draggable.js"></script>
-    	<script src="../js/jquery.ui-1.0/ui.droppable.js"></script>
-    	<script src="../js/fluid/Reorderer.js"></script>
+		<script src="../../../../../js/dojo/dojo.js"></script>
+    	<script src="../../../../../js/jquery/jquery-1.2.1.js"></script>
+    	<script src="../../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
+    	<script src="../../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
+    	<script src="../../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
+    	<script src="../../../../../js/fluid/Reorderer.js"></script>
+    	<script src="json2.js"></script>
+    	<script src="Scheduler.js"></script>
 	</head>
 	
 	<body>
@@ -24,11 +26,11 @@
 			</tr>
 			<tr>
 				<td>10:00 am</td>
-				<td id="myUniquePrefix.orderable0">Keynote Speech, Douglas Crockford</td>
+				<td id="orderable0" class="movableTopic">Keynote Speech, Douglas Crockford</td>
 			</tr>
 			<tr>
 				<td>11:00 am</td>
-				<td id="myUniquePrefix.orderable1">OSGi: A Component Model for the Future, Antranig Basman</td>
+				<td id="orderable1" class="movableTopic">OSGi: A Component Model for the Future, Antranig Basman</td>
 			</tr>
 			<tr>
 				<td>12:00 pm</td>
@@ -36,11 +38,11 @@
 			</tr>
 			<tr>
 				<td>1:00 pm</td>
-				<td id="myUniquePrefix.orderable2">Why JavaScript Doesn't Need Classes, Colin Clark</td>
+				<td id="orderable2" class="movableTopic">Why JavaScript Doesn't Need Classes, Colin Clark</td>
 			</tr>
 			<tr>
 				<td>2:00 pm</td>
-				<td id="myUniquePrefix.orderable3">Automated User Testing with Selenium, Michelle D'Souza</td>
+				<td id="orderable3" class="movableTopic">Automated User Testing with Selenium, Michelle D'Souza</td>
 			</tr>
 			<tr>
 				<td>3:00 pm</td>
@@ -48,15 +50,18 @@
 			</tr>
 			<tr>
 				<td>4:00 pm</td>
-				<td id="myUniquePrefix.orderable4">Design Patterns in Context, Allison Bloodworth</td>
+				<td id="orderable4" class="movableTopic">Design Patterns in Context, Allison Bloodworth</td>
 			</tr>
 			<tr>
 				<td>5:00 pm</td>
-				<td id="myUniquePrefix.orderable5">Goal-Directed Design and the Cooperian Philosophy, Daphne Ogle</td>
+				<td id="orderable5" class="movableTopic">Goal-Directed Design and the Cooperian Philosophy, Daphne Ogle</td>
 			</tr>
 		</table>
 		
-		<!-- Initialize the Reorderer after the markup for portal-friendliness. -->
+		<!-- Initialize the Reorderer after the markup has been rendered. -->
+        <script>
+        	fluid.Scheduler.initScheduler("sortableSchedule");
+        </script>
         
 	</body>
 </html>
