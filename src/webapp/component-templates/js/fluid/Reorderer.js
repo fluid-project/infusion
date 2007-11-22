@@ -10,16 +10,16 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-if (typeof(fluid) == "undefined") {
+if (typeof (fluid) == "undefined") {
     fluid = {};
-};
+}
 
-fluid.Reorderer = function(domNodeId, params) {
+fluid.Reorderer = function (domNodeId, params) {
 	// Reliable 'this'.
 	//
 	var thisReorderer = this;
 	
-	this.domNode = dojo.byId(domNodeId);
+	this.domNode = dojo.byId (domNodeId);
 	
 	// the reorderable DOM element that is currently active
     this.activeItem = null;
@@ -44,7 +44,7 @@ fluid.Reorderer = function(domNodeId, params) {
     };
 
 	if (params) {
-        dojo.mixin(this, params);
+        dojo.mixin (this, params);
     }
     
    /**
@@ -62,7 +62,7 @@ fluid.Reorderer = function(domNodeId, params) {
 		return item;
 	};
 	
-	this._setUpDomNode = function () {
+	this._setUpDomNode = function() {
 		// Connect the listeners that handle keypresses and focusing
 		dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
 		dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
@@ -132,27 +132,23 @@ fluid.Reorderer = function(domNodeId, params) {
 	
 	this.handleArrowKeyPress = function (evt){
 		if (this.activeItem) {
-			switch (key = evt.keyCode) {
-			case dojo.keys.DOWN_ARROW: {
+			switch (evt.keyCode) {
+			case dojo.keys.DOWN_ARROW: 
 				this.handleDownArrow(evt.ctrlKey);								
 				dojo.stopEvent(evt);
 				break;
-			}
-			case dojo.keys.UP_ARROW: {
+			case dojo.keys.UP_ARROW: 
 				this.handleUpArrow(evt.ctrlKey);								
 				dojo.stopEvent(evt);
 				break;
-			}
-			case dojo.keys.LEFT_ARROW: {
+			case dojo.keys.LEFT_ARROW: 
 				this.handleLeftArrow(evt.ctrlKey);								
 				dojo.stopEvent(evt);
 				break;
-			}
-			case dojo.keys.RIGHT_ARROW: {
+			case dojo.keys.RIGHT_ARROW: 
 				this.handleRightArrow(evt.ctrlKey);								
 				dojo.stopEvent(evt);
 				break;
-			}
 			default:
 			}
 		}
@@ -276,11 +272,11 @@ fluid.Reorderer = function(domNodeId, params) {
                 thisReorderer.orderChangedCallback();
             }
         });
-    };
+    }
     	
 	this._enableDragAndDrop = function() {
         var items = this.orderableFinder (this.domNode);
-        if (items.length == 0) {
+        if (items.length === 0) {
         	return;
         }
         
@@ -295,7 +291,7 @@ fluid.Reorderer = function(domNodeId, params) {
 
         // Make all the items draggable and droppable.
         //
-         for (var i = 0; i < items.length; i++) {
+         for (i = 0; i < items.length; i++) {
             setUpDnDItem(items[i], selector);
         }
     };
@@ -304,13 +300,14 @@ fluid.Reorderer = function(domNodeId, params) {
 	 * Finds the "orderable" parent element given a child element.
 	 */
 	this._findReorderableParent = function(childElement, items) {
-		if (childElement == null) {
+		if (!childElement) {
 			return null;
         }
         else {
         	for (var i=0; i<items.length; i++) {
-        		if (childElement === items[i])
-        		  return childElement;
+        		if (childElement === items[i]) {
+                    return childElement;
+        		}  
         	}
         	return this._findReorderableParent (childElement.parentNode, items);
         }
@@ -442,6 +439,7 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
         var orderables = this.orderableFinder (this._container);
         var curIndex = dojo.indexOf(orderables, inItem);
         var curCoords = dojo.coords(inItem);
+        var i, iCoords;
         
         // Handle case where the passed-in item is *not* an "orderable"
         if (curIndex < 0) {
@@ -449,14 +447,14 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
         }
         
         for (i = curIndex + 1; i < orderables.length; i++) {
-            var iCoords = dojo.coords(orderables[i]);
+            iCoords = dojo.coords(orderables[i]);
             if (iCoords.x == curCoords.x && iCoords.y > curCoords.y) {
                 return {item: orderables[i], hasWrapped: false};
             }               
         }
         
         for (i = 0; i < curIndex; i++ ) {
-            var iCoords = dojo.coords(orderables[i]);
+            iCoords = dojo.coords(orderables[i]);
             if (iCoords.x == curCoords.x) {
                 return {item: orderables[i], hasWrapped: true};
             }
@@ -485,6 +483,7 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
         var orderables = this.orderableFinder (this._container);
         var curIndex = dojo.indexOf(orderables, inItem);
         var curCoords = dojo.coords(inItem);
+        var i, iCoords;
 
         // Handle case where the passed-in item is *not* an "orderable"
         if (curIndex < 0) {
@@ -492,14 +491,14 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
         }
 
         for (i = curIndex - 1; i > -1; i--) {
-            var iCoords = dojo.coords(orderables[i]);
+            iCoords = dojo.coords(orderables[i]);
             if (iCoords.x == curCoords.x && iCoords.y < curCoords.y) {
                 return {item: orderables[i], hasWrapped: false};
             }               
         }
         
         for (i = orderables.length - 1; i > curIndex; i-- ) {
-            var iCoords = dojo.coords(orderables[i]);
+            iCoords = dojo.coords(orderables[i]);
             if (iCoords.x == curCoords.x) {
                 return {item: orderables[i], hasWrapped: true};
             }
