@@ -1,41 +1,42 @@
+
 body{
-font-family: verdana, sans-serif;
-font-size: 0.8em;
+    font-family: verdana, sans-serif;
+    font-size: 0.8em;
 }
 
 ol > li {
-	margin: 10px;
+    margin: 10px;
 }
 
 .ui-draggable{
-background-color: #eee;
+    background-color: #eee;
 }
 
 .orderable-default{
-background-color: #eee;
+    background-color: #eee;
 }
 
 .orderable-hover{
-background-color: lightyellow;
-cursor: move;
+    background-color: lightyellow;
+    cursor: move;
 }
 
 .orderable-selected{
-background-color: #ddd;
+    background-color: #ddd;
 }
 
 .orderable-dragging {
-background-color: lightyellow;
+    background-color: lightyellow;
 }
 
 .orderable-avatar {
-opacity: 0.55;
-width: 300px;
-border: 0;
+    opacity: 0.55;
+    width: 300px;
+    border: 0;
 }
 
 .orderable-drop-marker{
-background-color: red;
-height: 10px;
+    background-color: red;
+    height: 10px;
 }
 
