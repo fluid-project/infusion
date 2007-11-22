@@ -38,7 +38,7 @@ function exposeTestFunctionNames() {
         "testGetItemAboveWrap",
         "testNextItemForNonOrderableReturnsTheFirstItem",
         "testMovement"
-    ]
+    ];
 }
 
 var listHandler1;
