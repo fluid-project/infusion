@@ -7,7 +7,7 @@ fluid.Scheduler = {};
 fluid.Scheduler.initScheduler = function (containerId) {
 	var orderableFinder = fluid.Scheduler.createCSSOrderableFinderForClass ("movableTopic");
 	
-	new fluid.Reorderer (containerId, {
+	var reorderer = new fluid.Reorderer (containerId, {
 		orderChangedCallback: fluid.Scheduler.createJSONOrderChangedCallback (orderableFinder),
 		orderableFinder: orderableFinder,
 		layoutHandler: new fluid.GridLayoutHandler (orderableFinder)
