@@ -1,88 +1,88 @@
 body{
-font-family: verdana, helvetica, sans-serif;
-font-size: 12px;
+  font-family: verdana, helvetica, sans-serif;
+  font-size: 12px;
 }
 
 .image-container{
-overflow: hidden; width: 100%;
+  overflow: hidden; width: 100%;
 }
 
 .image-inner-container{
-height: 100px;
-width: 140px;
-background-color: #eee;
-overflow: hidden;
-margin: 0 auto 3px auto;
+  height: 100px;
+  width: 140px;
+  background-color: #eee;
+  overflow: hidden;
+  margin: 0 auto 3px auto;
 }
 
 .image-inner-container img{
-width: 150px;
+  width: 150px;
 }
 
 .orderable-default{
-height: 150px !important;
-width: 150px;
-border: 2px solid #ddd;
-float: left;
-margin: 5px !important;
-text-align: center;
-padding-top: 10px;
+  height: 150px !important;
+	width: 150px;
+	border: 2px solid #ddd;
+	float: left;
+	margin: 5px !important;
+	text-align: center;
+	padding-top: 10px;
 }
 
 .orderable-hover{
-height: 150px !important;
-width: 150px;
-border: 2px solid #666;
-float: left;
-margin: 5px !important;
-text-align: center;
-padding-top: 10px;
+	height: 150px !important;
+	width: 150px;
+	border: 2px solid #666;
+	float: left;
+	margin: 5px !important;
+	text-align: center;
+	padding-top: 10px;
 }
 
 .orderable-selected{
-height: 150px !important;
-width: 150px;
-border: 2px solid #666;
-background-color: #ddd;
-float: left;
-margin: 5px !important;
-text-align: center;
-padding-top: 10px;
+	height: 150px !important;
+	width: 150px;
+	border: 2px solid #666;
+	background-color: #ddd;
+	float: left;
+	margin: 5px !important;
+	text-align: center;
+	padding-top: 10px;
 }
 
 .orderable-selected .image_title{
-font-weight: bold;
+  font-weight: bold;
 }
 
 .orderable-selected img{
-border: 1px solid #eee;
+  border: 1px solid #eee;
 }
 
 .orderable-dragging{
-height: 150px !important;
-width: 150px;
-border: 2px solid #666;
-background-color: #eee;
-float: left;
-margin: 5px !important;
-text-align: center;
-opacity: .2;
-filter: alpha(opacity=20);
-padding-top: 10px;
+	height: 150px !important;
+	width: 150px;
+	border: 2px solid #666;
+	background-color: #eee;
+	float: left;
+	margin: 5px !important;
+	text-align: center;
+	opacity: .2;
+	filter: alpha(opacity=20);
+	padding-top: 10px;
 }
 
 .image-title{
-margin-top:5px;
-height: 40px;
-overflow: hidden;
+	margin-top:5px;
+	height: 40px;
+	overflow: hidden;
 }
 
 .image-title a{
-text-decoration: none;
+  text-decoration: none;
 }
 
 .image-title a:hover{
-text-decoration: underline;
+  text-decoration: underline;
 }
 
 div .orderable-drop-marker{
@@ -93,26 +93,23 @@ div .orderable-drop-marker{
 }
 
 .lightbox-instructions{
-color: #666;
-background-color: lightyellow;
-padding: 3px;
-border: 2px solid #ddd;
-/*
-border-width: 0 0 2px 2px;
-*/
-font-size: .9em;
-position: absolute;
-top: 0;
-right: 0;
-width: 300px;
+	color: #666;
+	background-color: lightyellow;
+	padding: 3px;
+	border: 2px solid #ddd;
+	font-size: .9em;
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 300px;
 }
 
 .lightbox-downarrow{
-font-size: 0px; line-height: 0%; width: 0px;
-margin: 5px 8px 10px 0;
-float: left;
-border-top: 10px solid red;
-border-left: 10px solid lightyellow;
-border-right: 10px solid lightyellow;
+	font-size: 0px; line-height: 0%; width: 0px;
+	margin: 5px 8px 10px 0;
+	float: left;
+	border-top: 10px solid red;
+	border-left: 10px solid lightyellow;
+	border-right: 10px solid lightyellow;
 }
 
