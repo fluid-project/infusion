@@ -72,9 +72,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	
 		this.layoutHandler.setReorderableContainer(this.domNode);
 	
-		if (this.domNode.getAttribute("aaa:activedescendent")) {
-			this.domNode.removeAttribute("aaa:activedescendent");
-		}
+		this.domNode.removeAttribute("aaa:activedescendent");
 	};
 		
 	/**
@@ -209,7 +207,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	this._updateActiveDescendent = function() {
 		if (this.activeItem) {
 			this.domNode.setAttribute("aaa:activedescendent", this.activeItem.id);
-		} else if (this.domNode.getAttribute("aaa:activedescendent")) {
+		} else {
 			this.domNode.removeAttribute("aaa:activedescendent");
 		}
 	};
