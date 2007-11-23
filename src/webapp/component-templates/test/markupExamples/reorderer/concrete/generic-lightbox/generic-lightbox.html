@@ -30,21 +30,23 @@
 
   <!--  
     The Lightbox uses hidden inputs as the strategy for posting the item order back 
-    to the server, therefore the reorderables need to be enclosed in a form.
+    to the server, therefore the orderables need to be enclosed in a form.
   -->
   <form id="reorder-form">
   
-      <div id="gallery" tabIndex="2" class="image-container"
+      <!--
+        Declare the thumbnails as an ARIA grid, that is single-selectable, writeable, and, when
+        first receives focus, has the first thumbnail focussed.  The ARIA state 'aaa:activedescendent'
+        declares the id of the active thumbnail, and is provided here for documentation.  The
+        actual value is set by the JavaScript as the user navigates among the thumbnails.
+      -->
+      <div id="gallery" tabindex="0" class="image-container"
       xhtml10:role="wairole:grid"
       aaa:multiselectable="false"
       aaa:readonly="false"
       aaa:activedescendent="gallerylightbox-cell:0:"
       aaa:disabled="false">
         
-      <!--
-        Declare the thumbnails as an ARIA grid, that is single-selectable, writeable, and, when
-        first loaded, has the first thumbnail focussed.
-      -->
       <div class="float orderable-default" id="gallerylightbox-cell:0:" 
            xhtml10:role="wairole:gridcell"
            aaa:selected="true"
@@ -56,7 +58,7 @@
           <!--  
             Orderable items are divs denoted by ids in the following form.
             [lightbox-container-id] + lightbox-cell: + [index] + :  
-            The initLightbox function expects this format when attaching the javascript behaviour of the Lightbox. 
+            The initLightbox() function expects this format when attaching the javascript behaviour of the Lightbox. 
           -->
           <div class="image-inner-container">
             <!--  The 'orderable-focus-target' class will ensure that this anchor has focus when a thumbnail is selected. -->
@@ -67,8 +69,14 @@
           <div class="caption image-title">
             <a href="../../../../../images/Dragonfruit.jpg" >Dragonfruit</a>
           </div>
-          <!--  This input is used for posting the new order back to the server. -->
-          <input value="0" id="gallerylightbox-cell:0:reorder-index" type="hidden"/>
+          
+          <!--  
+            This input is used for posting the new order back to the server.
+            The value is the index of the thumbnail in a virtual array of thumbnails.
+            That is, 'value="0"' denotes the 0'th thumbnail; 'value="1"' the 1st,
+            and so on.
+          -->
+          <input id="gallerylightbox-cell:0:reorder-index" value="0" type="hidden"/>
         </div>
     
         <div class="float orderable-default" id="gallerylightbox-cell:1:"
@@ -130,7 +138,8 @@
           aaa:selected="true"
           aaa:readonly="false"
           aaa:disabled="false"
-          aaa:grab="supported"           aaa:dropeffect="move">
+          aaa:grab="supported"
+          aaa:dropeffect="move">
           <div class="image-inner-container">
             <a href="../../../../../images/Fig.jpg" class="orderable-focus-target" >
               <img id="fluid.img.5" src="../../../../../images/Fig.jpg" border="0" alt="Fig"/>
@@ -304,9 +313,9 @@
         </div>
       </div>
               
-      <!--  Attach the javascript functionality to the markup by using initLightbox -->
+      <!--  Attach the javascript functionality to the markup by using initLightbox() -->
       <script type="text/javascript">
-        fluid.initLightbox("gallery", "message-bundle:");
+        fluid.initLightbox ("gallery", "message-bundle:");
       </script>
       
       <!-- Sample instruction message. At runtime, this would be supplied by the server. -->

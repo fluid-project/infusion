@@ -48,7 +48,7 @@
 
     <!--  
       The Lightbox uses hidden inputs as the strategy for posting the item order back 
-      to the server, therefore the reorderables need to be enclosed in a form.
+      to the server, therefore the orderables need to be enclosed in a form.
     -->
     <form id="reorder-form">
 
@@ -57,7 +57,9 @@
       
         <!--
           Declare the thumbnails as an ARIA grid, that is single-selectable, writeable, and, when
-          first loaded, has the first thumbnail focussed.
+          first receives focus, has the first thumbnail focussed.  The ARIA state 'aaa:activedescendent'
+          declares the id of the active thumbnail, and is provided here for documentation.  The
+          actual value is set by the JavaScript as the user navigates among the thumbnails.
         -->
         <div rsf:id="lightbox-temp-container:" id="gallery:::gallery-thumbs:::" tabindex="0" class="image-container"
           xhtml10:role="wairole:grid"
@@ -69,7 +71,7 @@
           <!--  
             Orderable items are divs denoted by ids in the following form.
             [lightbox-container-id] + lightbox-cell: + [index] + :  
-            The initLightbox function expects this format when attaching the javascript behaviour of the Lightbox. 
+            The initLightbox() function expects this format when attaching the javascript behaviour of the Lightbox. 
           -->
           <div rsf:id="lightbox-cell:" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:0:" 
             xhtml10:role="wairole:gridcell"
@@ -93,8 +95,14 @@
                 <a href="../images/Dragonfruit.jpg" >Dragonfruit</a>
               </div>
             </div>
-            <!--  This input is used for posting the new order back to the server. -->
-            <input rsf:id="reorder-index" value="0" id="gallery:::gallery-thumbs:::lightbox-cell:0:reorder-index" type="hidden"/>
+          
+            <!--  
+              This input is used for posting the new order back to the server.
+              The value is the index of the thumbnail in a virtual array of thumbnails.
+              That is, 'value="0"' denotes the 0'th thumbnail; 'value="1"' the 1st,
+              and so on.
+            -->
+            <input rsf:id="reorder-index" id="gallery:::gallery-thumbs:::lightbox-cell:0:reorder-index" value="0" type="hidden"/>
           </div>
     
           <!--  The remainder of the lightbox cells are used for the stand alone lightbox and the tests, not the RSF gallery -->
@@ -358,9 +366,9 @@
 		      </div>
 		    </div>
         
-        <!--  Attach the javascript functionality to the markup by using initLightbox -->
+        <!--  Attach the javascript functionality to the markup by using initLightbox() -->
         <script type="text/javascript"  rsf:id="init-script">
-          fluid.initLightbox("gallery:::gallery-thumbs:::", "message-bundle:");
+          fluid.initLightbox ("gallery:::gallery-thumbs:::", "message-bundle:");
         </script>
       </div>
       
