@@ -376,7 +376,7 @@ fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
      */
     this._getSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
         var orderables = this.orderableFinder (this._container);
-        var index = dojo.indexOf(orderables, item) + incDecrement;
+        var index = dojo.indexOf (orderables, item) + incDecrement;
         var hasWrapped = false;
             
         // Handle wrapping to 'before' the beginning. 
@@ -400,23 +400,23 @@ fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
     };
 
     this.getItemBelow = function (item) {
-        return this.getRightSibling(item);
+        return this.getRightSibling (item);
     };
 
     this.getItemAbove = function (item) {
-        return this.getLeftSibling(item);
+        return this.getLeftSibling (item);
     };
     
     this.moveItemUp = this.moveItemLeft;
     
     this.moveItemDown = this.moveItemRight;
     
-    this._moveItem = function(item, relatedItemInfo, defaultPlacement, wrappedPlacement) {
+    this._moveItem = function (item, relatedItemInfo, defaultPlacement, wrappedPlacement) {
         var itemPlacement = defaultPlacement;
         if (relatedItemInfo.hasWrapped) {
             itemPlacement = wrappedPlacement;
         }
-        dojo.place(item, relatedItemInfo.item, itemPlacement);
+        dojo.place (item, relatedItemInfo.item, itemPlacement);
     };
     
 }; // End ListLayoutHandler
@@ -424,14 +424,14 @@ fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
 /*
  * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
  * changes dimensions when the window changes size. As a result, when the user presses the up or
- * down arrow key, the expected behaviour depends on the current window size.
+ * down arrow key, what lies above or below depends on the current window size.
  * 
  * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
  * in the window, and of informing the Lightbox of which items surround a given item.
  */
 fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
 
-    fluid.ListLayoutHandler.call(this, orderableFinder);
+    fluid.ListLayoutHandler.call (this, orderableFinder);
                     
     /*
      * Returns an object containing the item that is below the given item in the current grid
@@ -442,8 +442,8 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
      */
     this._getItemInfoBelow = function (inItem) {
         var orderables = this.orderableFinder (this._container);
-        var curIndex = dojo.indexOf(orderables, inItem);
-        var curCoords = dojo.coords(inItem);
+        var curIndex = dojo.indexOf (orderables, inItem);
+        var curCoords = dojo.coords (inItem);
         var i, iCoords;
         
         // Handle case where the passed-in item is *not* an "orderable"
@@ -452,14 +452,14 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
         }
         
         for (i = curIndex + 1; i < orderables.length; i++) {
-            iCoords = dojo.coords(orderables[i]);
+            iCoords = dojo.coords (orderables[i]);
             if (iCoords.x == curCoords.x && iCoords.y > curCoords.y) {
                 return {item: orderables[i], hasWrapped: false};
             }               
         }
         
         for (i = 0; i < curIndex; i++ ) {
-            iCoords = dojo.coords(orderables[i]);
+            iCoords = dojo.coords (orderables[i]);
             if (iCoords.x == curCoords.x) {
                 return {item: orderables[i], hasWrapped: true};
             }
@@ -470,11 +470,11 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
     };
     
     this.getItemBelow = function(item) {
-        return this._getItemInfoBelow(item).item;
+        return this._getItemInfoBelow (item).item;
     };
 
     this.moveItemDown = function (item) {
-        this._moveItem(item, this._getItemInfoBelow(item), "after", "before");
+        this._moveItem (item, this._getItemInfoBelow (item), "after", "before");
     };
             
     /*
@@ -486,8 +486,8 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
      */
     this._getItemInfoAbove = function (inItem) {
         var orderables = this.orderableFinder (this._container);
-        var curIndex = dojo.indexOf(orderables, inItem);
-        var curCoords = dojo.coords(inItem);
+        var curIndex = dojo.indexOf (orderables, inItem);
+        var curCoords = dojo.coords (inItem);
         var i, iCoords;
 
         // Handle case where the passed-in item is *not* an "orderable"
@@ -514,11 +514,11 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
     };
 
     this.getItemAbove = function (item) {
-        return this._getItemInfoAbove(item).item;   
+        return this._getItemInfoAbove (item).item;   
     }; 
     
-    this.moveItemUp = function(item) {
-        this._moveItem(item, this._getItemInfoAbove(item), "before", "after");
+    this.moveItemUp = function (item) {
+        this._moveItem (item, this._getItemInfoAbove (item), "before", "after");
     };
             
 }; // End of GridLayoutHandler
