@@ -68,3 +68,8 @@ fluid.testUtils.createUnmodifiedKeyEvent = function (inKeyCode) {
 fluid.testUtils.createKeyEvent = function (inKeyCode, inCtrlKey) {
 	return {keyCode: inKeyCode, ctrlKey: inCtrlKey, preventDefault: function(){}, stopPropagation: function(){} };
 }
+
+fluid.testUtils.assertNotNullAndNotUndefined = function (message, value) {
+	assertNotUndefined(message, value);
+	assertNotNull(message, value);
+}
