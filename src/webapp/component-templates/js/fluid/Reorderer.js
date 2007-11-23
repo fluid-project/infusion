@@ -54,8 +54,8 @@ fluid.Reorderer = function (domNodeId, params) {
     * @param {Object} item
     * @return {Object} The element that should receive focus in the specified item.
     */
-	this.getElementToFocus = function(item) {
-		var elementToFocus = dojo.query("." + this.cssClasses.focusTarget, item)[0];
+	this.getElementToFocus = function (item) {
+		var elementToFocus = dojo.query ("." + this.cssClasses.focusTarget, item)[0];
 		if (elementToFocus) {
 			return elementToFocus;
 		}
@@ -64,15 +64,15 @@ fluid.Reorderer = function (domNodeId, params) {
 	
 	this._setUpDomNode = function() {
 		// Connect the listeners that handle keypresses and focusing
-		dojo.connect(this.domNode, "keypress", this, "handleArrowKeyPress");
-		dojo.connect(this.domNode, "keydown", this, "handleKeyDown");
-		dojo.connect(this.domNode, "keyup", this, "handleKeyUp");
-		dojo.connect(this.domNode, "onfocus", this, "selectActiveItem");
-		dojo.connect(this.domNode, "onblur", this, "changeActiveItemToDefaultState");
+		dojo.connect (this.domNode, "keypress", this, "handleArrowKeyPress");
+		dojo.connect (this.domNode, "keydown", this, "handleKeyDown");
+		dojo.connect (this.domNode, "keyup", this, "handleKeyUp");
+		dojo.connect (this.domNode, "onfocus", this, "selectActiveItem");
+		dojo.connect (this.domNode, "onblur", this, "changeActiveItemToDefaultState");
 	
-		this.layoutHandler.setReorderableContainer(this.domNode);
+		this.layoutHandler.setReorderableContainer (this.domNode);
 	
-		this.domNode.removeAttribute("aaa:activedescendent");
+		this.domNode.removeAttribute ("aaa:activedescendent");
 	};
 		
 	/**
@@ -81,10 +81,10 @@ fluid.Reorderer = function (domNodeId, params) {
 	 */
 	this.focusItem = function(anItem) {
 		this.changeActiveItemToDefaultState();
-		this._setActiveItem(anItem);			
-		dojo.removeClass(this.activeItem, this.cssClasses.defaultStyle);
-		dojo.addClass(this.activeItem, this.cssClasses.selected);
-		this.getElementToFocus(this.activeItem).focus();
+		this._setActiveItem (anItem);			
+		dojo.removeClass (this.activeItem, this.cssClasses.defaultStyle);
+		dojo.addClass (this.activeItem, this.cssClasses.selected);
+		this.getElementToFocus (this.activeItem).focus();
 	};
 	
 	/**
@@ -94,129 +94,130 @@ fluid.Reorderer = function (domNodeId, params) {
 		if (!this.activeItem) {
 			var orderables = this.orderableFinder (this.domNode);
 			if (orderables.length > 0) {
-				this._setActiveItem(orderables[0]);
+				this._setActiveItem (orderables[0]);
 			}
 			else {
 				return;
 			}
 		}
-		this.focusItem(this.activeItem);
+		this.focusItem (this.activeItem);
 	};
 		
 	this.changeActiveItemToDefaultState = function() {
 		if (this.activeItem) {
-			dojo.removeClass(this.activeItem, this.cssClasses.selected);
-			dojo.addClass(this.activeItem, this.cssClasses.defaultStyle);
+			dojo.removeClass (this.activeItem, this.cssClasses.selected);
+			dojo.addClass (this.activeItem, this.cssClasses.defaultStyle);
 		}
 	};
 	
 	this.handleKeyDown = function (evt) {
 		if (this.activeItem && evt.keyCode == dojo.keys.CTRL) {
-			dojo.removeClass(this.activeItem, this.cssClasses.selected);
-			dojo.addClass(this.activeItem, this.cssClasses.dragging);
-	        this.activeItem.setAttribute("aaa:grab", "true");
-			dojo.stopEvent(evt);
+			dojo.removeClass (this.activeItem, this.cssClasses.selected);
+			dojo.addClass (this.activeItem, this.cssClasses.dragging);
+	        this.activeItem.setAttribute ("aaa:grab", "true");
+			dojo.stopEvent (evt);
 		}
 	};
 	
 	this.handleKeyUp = function (evt) {
 		if (this.activeItem && evt.keyCode == dojo.keys.CTRL) {
-			dojo.removeClass(this.activeItem, this.cssClasses.dragging);
-			dojo.addClass(this.activeItem, this.cssClasses.selected);
-	        this.activeItem.setAttribute("aaa:grab", "supported");
-			dojo.stopEvent(evt);
+			dojo.removeClass (this.activeItem, this.cssClasses.dragging);
+			dojo.addClass (this.activeItem, this.cssClasses.selected);
+	        this.activeItem.setAttribute ("aaa:grab", "supported");
+			dojo.stopEvent (evt);
 		}		
 	};
 	
-	this.handleArrowKeyPress = function (evt){
+	this.handleArrowKeyPress = function (evt) {
 		if (this.activeItem) {
 			switch (evt.keyCode) {
-			case dojo.keys.DOWN_ARROW: 
-				this.handleDownArrow(evt.ctrlKey);								
-				dojo.stopEvent(evt);
-				break;
-			case dojo.keys.UP_ARROW: 
-				this.handleUpArrow(evt.ctrlKey);								
-				dojo.stopEvent(evt);
-				break;
-			case dojo.keys.LEFT_ARROW: 
-				this.handleLeftArrow(evt.ctrlKey);								
-				dojo.stopEvent(evt);
-				break;
-			case dojo.keys.RIGHT_ARROW: 
-				this.handleRightArrow(evt.ctrlKey);								
-				dojo.stopEvent(evt);
-				break;
-			default:
+				case dojo.keys.DOWN_ARROW: 
+					this.handleDownArrow (evt.ctrlKey);								
+					dojo.stopEvent (evt);
+					break;
+				case dojo.keys.UP_ARROW: 
+					this.handleUpArrow (evt.ctrlKey);								
+					dojo.stopEvent (evt);
+					break;
+				case dojo.keys.LEFT_ARROW: 
+					this.handleLeftArrow (evt.ctrlKey);								
+					dojo.stopEvent (evt);
+					break;
+				case dojo.keys.RIGHT_ARROW: 
+					this.handleRightArrow (evt.ctrlKey);								
+					dojo.stopEvent (evt);
+					break;
+				default:
 			}
 		}
 	};
 	
 	this.handleUpArrow = function (isCtrl) {
 		if (isCtrl) {
-			this.layoutHandler.moveItemUp(this.activeItem);
-			this.getElementToFocus(this.activeItem).focus();
+			this.layoutHandler.moveItemUp (this.activeItem);
+			this.getElementToFocus (this.activeItem).focus();
 			this.orderChangedCallback();
 		} else {
-			this.focusItem(this.layoutHandler.getItemAbove(this.activeItem));
+			this.focusItem (this.layoutHandler.getItemAbove(this.activeItem));
 		}			
 	};
 	
 	this.handleDownArrow = function (isCtrl) {
 		if (isCtrl) {
-			this.layoutHandler.moveItemDown(this.activeItem);
-			this.getElementToFocus(this.activeItem).focus();
+			this.layoutHandler.moveItemDown (this.activeItem);
+			this.getElementToFocus (this.activeItem).focus();
 			this.orderChangedCallback();
 		} else {
-			this.focusItem(this.layoutHandler.getItemBelow(this.activeItem));
+			this.focusItem (this.layoutHandler.getItemBelow (this.activeItem));
 		}
 	};
 	
-	this.handleRightArrow = function(isCtrl) {
+	this.handleRightArrow = function (isCtrl) {
 		if (isCtrl) {
-			this.layoutHandler.moveItemRight(this.activeItem);
-			this.getElementToFocus(this.activeItem).focus();
+			this.layoutHandler.moveItemRight (this.activeItem);
+			this.getElementToFocus (this.activeItem).focus();
 			this.orderChangedCallback();				
 		} else {
-			this.focusItem(this.layoutHandler.getRightSibling(this.activeItem));				
+			this.focusItem (this.layoutHandler.getRightSibling (this.activeItem));				
 		}			
 	};
 	
-	this.handleLeftArrow = function(isCtrl) {
+	this.handleLeftArrow = function (isCtrl) {
 		if (isCtrl) {
-			this.layoutHandler.moveItemLeft(this.activeItem);
-			this.getElementToFocus(this.activeItem).focus();
+			this.layoutHandler.moveItemLeft (this.activeItem);
+			this.getElementToFocus (this.activeItem).focus();
 			this.orderChangedCallback();				
 		} else {
-			this.focusItem(this.layoutHandler.getLeftSibling(this.activeItem));				
+			this.focusItem (this.layoutHandler.getLeftSibling (this.activeItem));				
 		}
 	};
 			
-	this._fetchMessage = function(messagekey) {
+	this._fetchMessage = function (messagekey) {
 		var messageID = this.messageNamebase + messagekey;
-		var node = document.getElementById(messageID);
+		var node = document.getElementById (messageID);
 		
 		return node? node.innerHTML: "[Message not found at id " + messageID + "]";
 	};
 	
-	this._setActiveItem = function(anItem) {
+	this._setActiveItem = function (anItem) {
 		this.activeItem = anItem;
 		this._updateActiveDescendent();
 	};
 	
 	this._updateActiveDescendent = function() {
 		if (this.activeItem) {
-			this.domNode.setAttribute("aaa:activedescendent", this.activeItem.id);
+			this.domNode.setAttribute ("aaa:activedescendent", this.activeItem.id);
 		} else {
-			this.domNode.removeAttribute("aaa:activedescendent");
+			this.domNode.removeAttribute ("aaa:activedescendent");
 		}
 	};
 	
-    // Given an item, make it a draggable and a droppable with the relevant
-    // properties and functions.
-    // @param  anItem      The element to make draggable and droppable.
-    // @param  selector    The jQuery selector(s) that select all the orderables.
-    //
+    /**
+     * Given an item, make it a draggable and a droppable with the relevant properties and functions.
+     * @param  anItem      The element to make draggable and droppable.
+     * @param  selector    The jQuery selector(s) that select all the orderables.
+     */ 
+  
     var dropMarker; // private scratch variable
     
     function setUpDnDItem (anItem, selector) {
@@ -233,17 +234,21 @@ fluid.Reorderer = function (domNodeId, params) {
             	jQuery (avatar).removeAttr ("id");
             	jQuery ("[id]", avatar).removeAttr ("id");
             	jQuery (":hidden", avatar).remove(); 
-            	jQuery ("input", avatar).attr ("disabled", "true");           	
+            	jQuery ("input", avatar).attr ("disabled", "true"); 
+            	avatar.addClass (thisReorderer.cssClasses.avatar);          	
             	return avatar;
             },
             start: function (e, ui) {
                 thisReorderer.focusItem (ui.draggable.element);                
                 dojo.addClass (ui.draggable.element, thisReorderer.cssClasses.dragging);
                 ui.draggable.element.setAttribute ("aaa:grab", "true");
+                
+                // In order to create valid html, the drop marker is the same type as the node being dragged.
+                // This creates a confusing UI in cases such as an ordered list. 
+                // drop marker functionality should be made pluggable. 
                 dropMarker = document.createElement (ui.draggable.element.tagName);
                 dojo.addClass (dropMarker, thisReorderer.cssClasses.dropMarker);                    
                 dropMarker.style.visibility = "hidden";
-                dojo.addClass (ui.helper, thisReorderer.cssClasses.avatar);
             },
             stop: function(e, ui) {
                 dojo.removeClass (ui.draggable.element, thisReorderer.cssClasses.dragging);
@@ -266,18 +271,21 @@ fluid.Reorderer = function (domNodeId, params) {
                 dropMarker.style.visibility = "hidden";
             },
             drop: function (e, ui) {
-                dojo.place (ui.draggable.element.id, ui.droppable.element.id, "after");
+                jQuery (ui.droppable.element).after (ui.draggable.element);
                 thisReorderer.orderChangedCallback();
             }
         });
     }
     	
-	this._enableDragAndDrop = function() {
-        var items = this.orderableFinder (this.domNode);
+	function enableDragAndDrop() {
+        var items = thisReorderer.orderableFinder (thisReorderer.domNode);
         if (items.length === 0) {
         	return;
         }
         
+        // Create a selector based on the ids of the nodes for use with drag and drop.
+        // This should be replaced with using the actual nodes rather then a selector 
+        // but will require a patch to jquery's DnD. 
         var selector = "";
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
@@ -288,16 +296,15 @@ fluid.Reorderer = function (domNodeId, params) {
         }
 
         // Make all the items draggable and droppable.
-        //
          for (i = 0; i < items.length; i++) {
-            setUpDnDItem(items[i], selector);
+            setUpDnDItem (items[i], selector);
         }
-    };
+    }
 
 	/**
 	 * Finds the "orderable" parent element given a child element.
 	 */
-	this._findReorderableParent = function(childElement, items) {
+	this._findReorderableParent = function (childElement, items) {
 		if (!childElement) {
 			return null;
         }
@@ -314,7 +321,7 @@ fluid.Reorderer = function (domNodeId, params) {
     // Final initialization of the Reorderer at the end of the construction process	
 	if (this.domNode) {
         this._setUpDomNode();
-        this._enableDragAndDrop();
+        enableDragAndDrop();
     }
 }; // End Reorderer
 
