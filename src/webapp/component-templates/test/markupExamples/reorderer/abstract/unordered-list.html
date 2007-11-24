@@ -4,50 +4,35 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
   <head>
     <title>Vertical Unordered List</title>
-	  <style type="text/css">
-		@import url("../markup-examples.css");
-	  </style>
-  	  <script language="JavaScript" type="text/javascript" src="../../../../js/dojo/dojo.js"></script>
-      <script language="JavaScript" type="text/javascript" src="../../../../js/jquery/jquery-1.2.1.js"></script>
-      <script language="JavaScript" type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
-      <script type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
-      <script type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
-      <script language="JavaScript" type="text/javascript" src="../../../../js/fluid/Reorderer.js"></script>
+    <style type="text/css">
+      @import url("../markup-examples.css");
+    </style>
+
+    <!--  These are the required javascript modules for the Reorderer 
+          eventually to be replaced with a single build generated file -->
+    <script type="text/javascript" src="../../../../js/dojo/dojo.js"></script>
+    <script type="text/javascript" src="../../../../js/jquery/jquery-1.2.1.js"></script>
+    <script type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
+    <script type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
+    <script type="text/javascript" src="../../../../js/fluid/Reorderer.js"></script>
       
-      <!--  These are used for JsUnit tests that have been written using this page as data -->
-      <script language="JavaScript" type="text/javascript" src="../../../jsunit/app/jsUnitCore.js"></script>
-      <script language="JavaScript" type="text/javascript" src="../../../tests/UnorderedListTestConstants.js"></script>
-	  <script language="JavaScript" type="text/javascript" src="../../../tests/ListLayoutHandlerTests.js"></script>	
+    <!--  These are used for JsUnit tests that have been written using this page as data -->
+    <script type="text/javascript" src="../../../jsunit/app/jsUnitCore.js"></script>
+    <script type="text/javascript" src="../../../tests/UnorderedListTestConstants.js"></script>
+    <script type="text/javascript" src="../../../tests/ListLayoutHandlerTests.js"></script>	
 
-      <!--  Ensure jQuery is in no conflicts mode --> 
-      <script language="JavaScript" type="text/javascript">
-        jQuery.noConflict();
-      </script> 
+    <!--  Ensure jQuery plays nice with other toolkits - 
+          must be called after all the javascript is loaded. --> 
+    <script type="text/javascript">
+      jQuery.noConflict();
+    </script> 
   </head>
-
   <body>
-<!-- UNORDERED LIST -->
-
-    <h3>Unordered List (vertical)</h3>
+    <h1>Unordered List (vertical)</h1>
 
     <div id="list1" tabindex="0" class="reorderer_container">
-      <p> This is a simple example of using the Reorderer with a list. 
-        If you look at the markup, you'll notice the "orderable" class. 
-        This is the contract between the Reorderer and its template: any element with an "orderable" 
-        class can be moved with the use of the Reorderer.
-        If you look at the page source, you'll also notice a script block containing: 
-        <span id="reordererScript" style="display: block; padding: 10px">
-            <pre>
-	new fluid.Reorderer ("list1", {
-	    orderChangedCallback: function() {},
-	    layoutHandler: new fluid.ListLayoutHandler (listOrderableFinder),
-	    orderableFinder: listOrderableFinder
-	});
-            </pre>
-        </span>
-         This is the script that creates a Reorderer using a ListLayoutHandler and attaches it to this list.
-      </p>
-
+      <p> This is a simple example of using the Reorderer with a list. </p>
       <ul>
         <li id="list1item1" class="orderable orderable-default">Item 1</li>
         <li id="list1item2" class="orderable orderable-default">Item 2</li>
@@ -57,18 +42,18 @@
       </ul>
     </div>
 
-    <script language="JavaScript" type="text/javascript">
+    <script type="text/javascript">
       new fluid.Reorderer ("list1", {
-          orderChangedCallback: function() {},
           layoutHandler: new fluid.ListLayoutHandler (listOrderableFinder),
           orderableFinder: listOrderableFinder  // defined in UnorderedListTestConstants.js
       });
     </script>
     
-    <p>This is an example of an unordered list that is visually laid out vertically, marked up for use with the Reorderer.
-List items that have been tagged as orderable are highlighted. Notice that a Reorderer has not been created for this list.</p>
-
+    <h1>Unordered List No Reorderer </h1>
     <div id="list2" class="reorderer_container">
+      <p>This is an example of an unordered list that is visually laid out 
+         vertically with no Reorderer attached to it. 
+      </p>
       <ul>
         <li class="orderable">An Item 1</li>
         <li>An Item 2</li>
