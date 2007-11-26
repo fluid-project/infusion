@@ -130,7 +130,6 @@ function findNoOrderables() {
     
 function createLightbox() {
     return new fluid.Reorderer (lightboxRootId, {
-        orderChangedCallback: function(){},
         layoutHandler: new fluid.GridLayoutHandler (findOrderableByDivAndId),
         orderableFinder: findOrderableByDivAndId
     });

@@ -19,7 +19,7 @@ var secondItemId = "list1item2";
 var thirdItemId = "list1item3";
 var fourthItemId = "list1item4";
 var lastItemId = "list1item5"; 
-var nonOrderabeItemId = "reordererScript";       
+var nonOrderabeItemId = "reorderer-script";       
         
 // All the test function names for the JsUnit tests that test against the unordered-list.html file.  
 // This is needed for running JsUnit in IE and Safari.
