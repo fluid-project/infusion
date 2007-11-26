@@ -20,7 +20,7 @@ background-color: #eee;
 background-color: lightyellow;
 }
 
-h3{
+h1 {
 clear: both;
 border-top: 1px solid #ddd;
 margin-top: 20px;
@@ -40,20 +40,6 @@ text-align: center;
 background-color: #eee;
 width: 75px;
 height: 75px;
-}
-
-.dummy {
-height: 3px;
-width: 3px;
-background-color: red;
-display: block;
-}
-
-.dummy:focus{
-/*
-padding: 10px;
-background-color: lightyellow;
-*/
 }
 
 .li-horizontal{

@@ -277,7 +277,7 @@ fluid.Reorderer = function (domNodeId, params) {
         });
     }
     	
-	function enableDragAndDrop() {
+	function initOrderables() {
         var items = thisReorderer.orderableFinder (thisReorderer.domNode);
         if (items.length === 0) {
         	return;
@@ -286,6 +286,7 @@ fluid.Reorderer = function (domNodeId, params) {
         // Create a selector based on the ids of the nodes for use with drag and drop.
         // This should be replaced with using the actual nodes rather then a selector 
         // but will require a patch to jquery's DnD. 
+        // See: FLUID-71, FLUID-112
         var selector = "";
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
@@ -295,8 +296,9 @@ fluid.Reorderer = function (domNodeId, params) {
         	}        	      	
         }
 
-        // Make all the items draggable and droppable.
+        // Setup orderable item including drag and drop.
          for (i = 0; i < items.length; i++) {
+            jQuery (items[i]).addClass (thisReorderer.cssClasses.defaultStyle);
             setUpDnDItem (items[i], selector);
         }
     }
@@ -321,7 +323,7 @@ fluid.Reorderer = function (domNodeId, params) {
     // Final initialization of the Reorderer at the end of the construction process	
 	if (this.domNode) {
         this._setUpDomNode();
-        enableDragAndDrop();
+        initOrderables();
     }
 }; // End Reorderer
 

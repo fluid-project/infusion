@@ -8,10 +8,6 @@ ol > li {
     margin: 10px;
 }
 
-.ui-draggable{
-    background-color: #eee;
-}
-
 .orderable-default{
     background-color: #eee;
 }
