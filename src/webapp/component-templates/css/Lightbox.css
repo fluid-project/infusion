@@ -50,10 +50,6 @@ body{
 	padding-top: 10px;
 }
 
-.orderable-selected .image_title{
-  font-weight: bold;
-}
-
 .orderable-selected img{
   border: 1px solid #eee;
 }
