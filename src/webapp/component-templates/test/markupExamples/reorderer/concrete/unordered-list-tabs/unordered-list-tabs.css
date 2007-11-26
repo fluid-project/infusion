@@ -1,43 +1,53 @@
+body{
+font-family: verdana, arial, sans-serif;
+margin: 20px;
+}
 
 #tabList {
-    padding-bottom: 10px;
-    border-bottom: 1px solid #696;
+padding-bottom: 10px;
+border-bottom: 1px solid #696;
 }
 
 #tabList li {
-    display: inline;
-    padding: 10px;
+display: inline;
+padding: 10px;
+margin-right: 5px;
+border: 1px solid #ccc;
+border-bottom: 0;
+font-size: .9em;
 }
 
+
 #tablist a {
-    text-decoration: none;
+text-decoration: none;
 }
 
 .orderable-default{
-    background-color: #eee;
+background-color: #eee;
 }
 
 .orderable-hover{
-    background-color: lightyellow;
-    cursor: move;
+cursor: move;
 }
 
 .orderable-selected{
-    background-color: #ddd;
+background-color: #ddd;
 }
 
 .orderable-dragging {
-    background-color: lightyellow;
+background-color: lightyellow;
+position: relative;
+top: -5px;
 }
 
 .orderable-avatar {
-    opacity: 0.55;
-    width: 300px;
-    border: 0;
+opacity: 0.55;
+border: 0;
 }
 
 .orderable-drop-marker{
-    background-color: red;
-    height: 10px;
+background-color: red;
+height: 10px;
+width: 5px;
 }
 
