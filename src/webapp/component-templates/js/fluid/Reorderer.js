@@ -68,7 +68,7 @@ fluid.Reorderer = function (domNodeId, params) {
 		dojo.connect (this.domNode, "keydown", this, "handleKeyDown");
 		dojo.connect (this.domNode, "keyup", this, "handleKeyUp");
 		dojo.connect (this.domNode, "onfocus", this, "selectActiveItem");
-		dojo.connect (this.domNode, "onblur", this, "changeActiveItemToDefaultState");
+		dojo.connect (this.domNode, "onblur", this, "handleBlur");
 	
 		this.layoutHandler.setReorderableContainer (this.domNode);
 	
@@ -101,6 +101,12 @@ fluid.Reorderer = function (domNodeId, params) {
 			}
 		}
 		this.focusItem (this.activeItem);
+	};
+	
+	this.handleBlur = function() {
+		if (!jQuery.browser.msie) {
+            this.changeActiveItemToDefaultState();
+		}
 	};
 		
 	this.changeActiveItemToDefaultState = function() {
