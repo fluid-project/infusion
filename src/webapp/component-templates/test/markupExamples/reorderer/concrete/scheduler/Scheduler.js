@@ -33,7 +33,7 @@ fluid.Scheduler.initRSFScheduler = function (namebase, orderableTagName, orderab
     return new fluid.Reorderer (namebase, {
                                 orderChangedCallback: fluid.Scheduler.createJSONOrderChangedCallback (orderableFinder),
                                 orderableFinder: orderableFinder,
-                                layoutHandler: new fluid.GridLayoutHandler (orderableFinder)
+                                layoutHandler: new fluid.ListLayoutHandler (orderableFinder)
                                 });
 };
 
@@ -92,7 +92,6 @@ fluid.Scheduler.createRSFOrderableFinder = function (namebase, orderableTagName,
     return function (containerElement) {
         var orderablesRange = "[0-" + (numOrderables - 1) + "]";
         var idRegExp = "^" + namebase + orderableIdName + ":" + orderablesRange + ":" + "$";
-        console.debug(idRegExp);
         
         return fluid.Utilities.seekNodesById (containerElement, 
                                               orderableTagName, 
