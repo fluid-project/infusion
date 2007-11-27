@@ -2,16 +2,20 @@
     font-style: italic;
 }
 
-#page-replace\:uniquePortletId\:component\:\:tree\:\:branches\:\:rsfSortableSchedule\:\: .orderable-selected {
-    color: red;
+.orderable-selected {
+    font-weight: bold;
 }
 
-#page-replace\:uniquePortletId\:component\:\:tree\:\:branches\:\:rsfSortableSchedule\:\:orderable\:0\:\:lightningTalks\:\: .orderable-selected {
-    color: green;
+.orderable-dragging {
+    color: gray;	
 }
 
-#page-replace\:uniquePortletId\:component\:\:tree\:\:branches\:\:rsfSortableSchedule\:\:orderable\:0\:\:sessions\:\: .orderable-selected {
-    color: blue;
+.orderable-hover {
+    color: gray;	
+}
+
+.orderable-drop-marker {
+    height: 10px;
 }
 
 .columnTitle {
@@ -20,7 +24,7 @@
 }
 
 .column {
-    list-style:none;
+    list-style: none;
 }
 
 li{
