@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<title>Sortable Scheduler</title>
 		<link rel="stylesheet" type="text/css" href="scheduler.css" title="default" />
@@ -10,6 +10,7 @@
     	<script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
     	<script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
     	<script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
+        <script type="text/javascript" src="../../../../../js/fluid/Fluid.js"></script>    	
     	<script type="text/javascript" src="../../../../../js/fluid/Reorderer.js"></script>
     	<script type="text/javascript" src="json2.js"></script>
     	<script type="text/javascript" src="Scheduler.js"></script>
@@ -17,57 +18,41 @@
     	<!--  These are used for JsUnit tests that have been written using this page as sample data. -->
       	<script type="text/javascript" src="../../../../jsunit/app/jsUnitCore.js"></script>
       	<script type="text/javascript" src="../../../../tests/TestUtils.js"></script>	
-	  	<script type="text/javascript" src="../../../../tests/SchedulerTests.js"></script>	
+	  	<script type="text/javascript" src="../../../../tests/SchedulerTests.js"></script>
 	</head>
 	
 	<body>
-		<table id="sortableSchedule">
-			<tr>
-				<th>Time</th>
-				<th>Agenda Item</th>
-			</tr>
-			<tr>
-				<td>9:00 am</td>
-				<td class="fixed">Introductory Remarks</td>
-			</tr>
-			<tr>
-				<td>10:00 am</td>
-				<td id="orderable0" class="movableTopic">Keynote Speech, Douglas Crockford</td>
-			</tr>
-			<tr>
-				<td>11:00 am</td>
-				<td id="orderable1" class="movableTopic">OSGi: A Component Model for the Future, Antranig Basman</td>
-			</tr>
-			<tr>
-				<td>12:00 pm</td>
-				<td class="fixed">Lunch</td>
-			</tr>
-			<tr>
-				<td>1:00 pm</td>
-				<td id="orderable2" class="movableTopic">Why JavaScript Doesn't Need Classes, Colin Clark</td>
-			</tr>
-			<tr>
-				<td>2:00 pm</td>
-				<td id="orderable3" class="movableTopic">Automated User Testing with Selenium, Michelle D'Souza</td>
-			</tr>
-			<tr>
-				<td>3:00 pm</td>
-				<td class="fixed">Afternoon Break</td>
-			</tr>
-			<tr>
-				<td>4:00 pm</td>
-				<td id="orderable4" class="movableTopic">Design Patterns in Context, Allison Bloodworth</td>
-			</tr>
-			<tr>
-				<td>5:00 pm</td>
-				<td id="orderable5" class="movableTopic">Goal-Directed Design and the Cooperian Philosophy, Daphne Ogle</td>
-			</tr>
-		</table>
-		
-		<!-- Initialize the Reorderer after the markup has been rendered. -->
-        <script type="text/javascript">
-        	fluid.Scheduler.initScheduler("sortableSchedule");
-        </script>
+	    <h1>Conference Scheduling Grid</h1>
+		<div id="sortableSchedule" tabindex="0">
+		  <ul class="times column">
+		      <li class="columnTitle">Time</li>
+		      <li>9:00 am</li>
+		      <li>10:00 am</li>
+		      <li>11:00 am</li>
+		      <li>Noon</li>
+		      <li>1:00 pm</li>
+		      <li>2:00 pm</li>
+		      <li>3:00 pm</li>
+		      <li>4:00 pm</li>
+		      <li>5:00 pm</li>
+		  </ul>
+		  <ul id="agendaItems" class="column">
+	          <li class="columnTitle">Agenda Item</li>
+	          <li class="fixed">Introductory Remarks</li>
+	          <li id="sortableSchedule.orderable0" class="movableTopic">Keynote Speech, Douglas Crockford</li>
+	          <li id="sortableSchedule.orderable1" class="movableTopic">OSGi: A Component Model for the Future, Antranig Basman</li>
+	          <li class="fixed">Lunch</td>
+	          <li id="sortableSchedule.orderable2" class="movableTopic">Why JavaScript Doesn't Need Classes, Colin Clark</li>
+	          <li id="sortableSchedule.orderable3" class="movableTopic">Automated User Testing with Selenium, Michelle D'Souza</li>
+	          <li class="fixed">Afternoon Break</td>
+	          <li id="sortableSchedule.orderable4" class="movableTopic">Design Patterns in Context, Allison Bloodworth</li>
+	          <li id="sortableSchedule.orderable5" class="movableTopic">Goal-Directed Design and the Cooperian Philosophy, Daphne Ogle</li>
+		  </ul>
+        </div>
         
+        <!-- Initialize the Reorderer after the markup has been rendered. -->
+        <script type="text/javascript">
+            fluid.Scheduler.initScheduler("sortableSchedule");
+        </script>
 	</body>
 </html>

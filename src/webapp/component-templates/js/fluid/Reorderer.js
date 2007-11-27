@@ -277,7 +277,8 @@ fluid.Reorderer = function (domNodeId, params) {
                 dropMarker.style.visibility = "hidden";
             },
             drop: function (e, ui) {
-                jQuery (ui.droppable.element).after (ui.draggable.element);
+            	thisReorderer.layoutHandler._moveItem(ui.draggable.element, {item: ui.droppable.element, hasWrapped: false}, "after", "after");
+  //              jQuery (ui.droppable.element).after (ui.draggable.element);
                 thisReorderer.orderChangedCallback();
             }
         });

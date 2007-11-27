@@ -1,13 +1,31 @@
-table {
-	border: 1px solid #999;
-	border-collapse: collapse;
-}
-
-th, td {
-	padding: 10px;
-	border: 1px solid #999;
-}
-
 .fixed {
-	font-style: italic;
+    font-style: italic;
+}
+
+.orderable-selected {
+    color: red;
+}
+
+.columnTitle {
+    font-style: bold;
+    font-size: 18pt;
+}
+
+.column {
+    list-style:none;
+}
+
+li{
+    padding-bottom: 10px;
+}
+
+.times {
+    float: left;
+    margin: 0;
+    text-align: right;
+}
+
+#agendaItems{
+    margin: 0;
+    padding-left: 8.25em;
 }
