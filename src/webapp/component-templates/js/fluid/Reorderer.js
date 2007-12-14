@@ -227,7 +227,33 @@ fluid.Reorderer = function (domNodeId, params) {
 			this.domNode.removeAttribute ("aaa:activedescendent");
 		}
 	};
-	
+
+    this.beforeOrAfter = function (evt, element) {
+        var mid = jQuery (element).offset().left + (element.offsetWidth / 2);
+    	if (evt.clientX < mid)
+    	   return -1;
+    	else
+    	   return 1;
+    };
+ 
+    // Private variable to track the previous before or after result.  Must be set to "forget" the
+    // previous value when trackMouseMovement is unbound from the mousemouve events.
+    //
+    var previousBeforeOrAfter = 0;
+    
+    function trackMouseMovement (evt) {
+	    var beforeOrAfter = thisReorderer.beforeOrAfter (evt, this);
+	    if (beforeOrAfter != previousBeforeOrAfter) {
+	    	if (beforeOrAfter == -1) {
+	           jQuery (evt.data).before (dropMarker);
+	       }        
+	       else {
+	           jQuery (evt.data).after (dropMarker);
+	       }
+	       previousBeforeOrAfter = beforeOrAfter;
+	    }
+	};
+ 
     /**
      * Given an item, make it a draggable and a droppable with the relevant properties and functions.
      * @param  anItem      The element to make draggable and droppable.
@@ -285,14 +311,24 @@ fluid.Reorderer = function (domNodeId, params) {
             accept: selector,
             tolerance: "pointer",
             over: function (e, ui) {
-                jQuery (ui.droppable.element).after (dropMarker);                 
+            	// the second parameter to bind() can be accessed through the event as event.data
+                jQuery (ui.droppable.element).bind ("mousemove", ui.droppable.element, trackMouseMovement);                
                 dropMarker.style.visibility = "visible";
             },
             out: function (e, ui) {
                 dropMarker.style.visibility = "hidden";
+                jQuery (ui.droppable.element).unbind ("mousemove", trackMouseMovement);
+                thisReorderer.previousBeforeOrAfter = 0;
             },
             drop: function (e, ui) {
-                jQuery (ui.droppable.element).after (ui.draggable.element);
+                var beforeOrAfter = thisReorderer.beforeOrAfter (e, this);
+                if (beforeOrAfter == -1) {
+                    jQuery (ui.droppable.element).before (ui.draggable.element);
+                } else {
+                    jQuery (ui.droppable.element).after (ui.draggable.element);
+                }
+                jQuery (ui.droppable.element).unbind ("mousemove", trackMouseMovement);
+                thisReorderer.previousBeforeOrAfter = 0;
                 thisReorderer.orderChangedCallback();
             }
         });
