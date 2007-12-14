@@ -211,13 +211,12 @@ function testHandleKeyUpAndHandleKeyDownChangesState() {
 	isItemDefaultTest("After ctrl-down, ", secondLastReorderableId);
 		
 	// right arrow down - all the dragging states should remain the same
-	lightbox.handleKeyDown(fluid.testUtils.createEvtRightArrow());
+	lightbox.handleKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
 	isItemDraggedTest("After ctrl-down right arrow down, ", firstReorderableId);
 	isItemDefaultTest("After ctrl-down right arrow down, ", secondReorderableId);
 	isItemDefaultTest("After ctrl-down right arrow down, ", secondLastReorderableId);
-
 	// right arrow with key-up event handler. The dragging states should remain the same.
-	lightbox.handleKeyUp(fluid.testUtils.createEvtRightArrow());
+	lightbox.handleKeyUp(fluid.testUtils.createEvtCtrlRightArrow());
 	isItemDraggedTest("After ctrl-down right arrow up, ", firstReorderableId);
 	isItemDefaultTest("After ctrl-down right arrow up, ", secondReorderableId);
 	isItemDefaultTest("After ctrl-down right arrow up, ", secondLastReorderableId);

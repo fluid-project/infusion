@@ -31,7 +31,7 @@ fluid.Scheduler.initRSFScheduler = function (namebase, orderableTagName, orderab
                                                                     orderableIdName, 
                                                                     numOrderables);
     return new fluid.Reorderer (namebase, {
-                                orderChangedCallback: fluid.Scheduler.createJSONOrderChangedCallback (orderableFinder),
+//                                orderChangedCallback: fluid.Scheduler.createJSONOrderChangedCallback (orderableFinder),
                                 orderableFinder: orderableFinder,
                                 layoutHandler: new fluid.ListLayoutHandler (orderableFinder)
                                 });

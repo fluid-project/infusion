@@ -10,9 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-if (typeof(fluid) == "undefined") {
-    fluid = {};
-}
+var fluid = fluid || {};
 
 fluid.deriveLightboxCellBase = function (namebase, index) {
     return namebase + "lightbox-cell:" + index + ":";

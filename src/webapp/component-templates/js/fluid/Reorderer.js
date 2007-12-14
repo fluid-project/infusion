@@ -10,9 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-if (typeof (fluid) == "undefined") {
-    fluid = {};
-}
+var fluid = fluid || {};
 
 fluid.Reorderer = function (domNodeId, params) {
 	// Reliable 'this'.
@@ -64,11 +62,11 @@ fluid.Reorderer = function (domNodeId, params) {
 	
 	this._setUpDomNode = function() {
 		// Connect the listeners that handle keypresses and focusing
-		dojo.connect (this.domNode, "keypress", this, "handleArrowKeyPress");
-		dojo.connect (this.domNode, "keydown", this, "handleKeyDown");
-		dojo.connect (this.domNode, "keyup", this, "handleKeyUp");
-		dojo.connect (this.domNode, "onfocus", this, "selectActiveItem");
-		dojo.connect (this.domNode, "onblur", this, "handleBlur");
+        var jqNode = jQuery (this.domNode);
+        jqNode.focus (this.handleFocus);
+        jqNode.blur (this.handleBlur);
+        jqNode.keydown (this.handleKeyDown);
+        jqNode.keyup (this.handleKeyUp);
 	
 		this.layoutHandler.setReorderableContainer (this.domNode);
 	
@@ -80,11 +78,13 @@ fluid.Reorderer = function (domNodeId, params) {
 	 * @param {Object} anItem
 	 */
 	this.focusItem = function(anItem) {
-		this.changeActiveItemToDefaultState();
-		this._setActiveItem (anItem);			
-		dojo.removeClass (this.activeItem, this.cssClasses.defaultStyle);
-		dojo.addClass (this.activeItem, this.cssClasses.selected);
-		this.getElementToFocus (this.activeItem).focus();
+		if (this.activeItem !== anItem) {
+            this.changeActiveItemToDefaultState();
+            this._setActiveItem (anItem);	
+		}
+        dojo.removeClass (this.activeItem, this.cssClasses.defaultStyle);
+        dojo.addClass (this.activeItem, this.cssClasses.selected);
+        jQuery (this.getElementToFocus (this.activeItem)).focus();
 	};
 	
 	/**
@@ -103,11 +103,17 @@ fluid.Reorderer = function (domNodeId, params) {
 		this.focusItem (this.activeItem);
 	};
 	
-	this.handleBlur = function() {
-		if (!jQuery.browser.msie) {
-            this.changeActiveItemToDefaultState();
-		}
-	};
+    this.handleFocus = function (evt) {
+        thisReorderer.selectActiveItem();
+        return false;
+    };
+
+    this.handleBlur = function() {
+        // Temporarily disabled blur handling in IE. See FLUID-7 for details.
+        if (!jQuery.browser.msie) {
+            thisReorderer.changeActiveItemToDefaultState();
+        }
+    };
 		
 	this.changeActiveItemToDefaultState = function() {
 		if (this.activeItem) {
@@ -117,46 +123,49 @@ fluid.Reorderer = function (domNodeId, params) {
 	};
 	
 	this.handleKeyDown = function (evt) {
-		if (this.activeItem && evt.keyCode == dojo.keys.CTRL) {
-			dojo.removeClass (this.activeItem, this.cssClasses.selected);
-			dojo.addClass (this.activeItem, this.cssClasses.dragging);
-	        this.activeItem.setAttribute ("aaa:grab", "true");
-			dojo.stopEvent (evt);
-		}
+       if (thisReorderer.activeItem && evt.keyCode == dojo.keys.CTRL) {
+           dojo.removeClass (thisReorderer.activeItem, thisReorderer.cssClasses.selected);
+           dojo.addClass (thisReorderer.activeItem, thisReorderer.cssClasses.dragging);
+           thisReorderer.activeItem.setAttribute ("aaa:grab", "true");
+           return false;
+       }
+
+       return thisReorderer.handleArrowKeyPress(evt);
 	};
 	
 	this.handleKeyUp = function (evt) {
-		if (this.activeItem && evt.keyCode == dojo.keys.CTRL) {
-			dojo.removeClass (this.activeItem, this.cssClasses.dragging);
-			dojo.addClass (this.activeItem, this.cssClasses.selected);
-	        this.activeItem.setAttribute ("aaa:grab", "supported");
-			dojo.stopEvent (evt);
-		}		
+       if (thisReorderer.activeItem && evt.keyCode == dojo.keys.CTRL) {
+           dojo.removeClass (thisReorderer.activeItem, thisReorderer.cssClasses.dragging);
+           dojo.addClass (thisReorderer.activeItem, thisReorderer.cssClasses.selected);
+           thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
+           return false;
+       } 
 	};
 	
 	this.handleArrowKeyPress = function (evt) {
-		if (this.activeItem) {
-			switch (evt.keyCode) {
-				case dojo.keys.DOWN_ARROW: 
-					this.handleDownArrow (evt.ctrlKey);								
-					dojo.stopEvent (evt);
-					break;
-				case dojo.keys.UP_ARROW: 
-					this.handleUpArrow (evt.ctrlKey);								
-					dojo.stopEvent (evt);
-					break;
-				case dojo.keys.LEFT_ARROW: 
-					this.handleLeftArrow (evt.ctrlKey);								
-					dojo.stopEvent (evt);
-					break;
-				case dojo.keys.RIGHT_ARROW: 
-					this.handleRightArrow (evt.ctrlKey);								
-					dojo.stopEvent (evt);
-					break;
-				default:
-			}
-		}
-	};
+        if (thisReorderer.activeItem) {
+            switch (evt.keyCode) {
+                case dojo.keys.DOWN_ARROW:
+                    evt.preventDefault();
+                    thisReorderer.handleDownArrow (evt.ctrlKey);                                
+                    return false;
+                case dojo.keys.UP_ARROW: 
+                    evt.preventDefault();
+                    thisReorderer.handleUpArrow (evt.ctrlKey);                              
+                    return false;
+                case dojo.keys.LEFT_ARROW: 
+                    evt.preventDefault();
+                    thisReorderer.handleLeftArrow (evt.ctrlKey);                                
+                    return false;
+                case dojo.keys.RIGHT_ARROW: 
+                    evt.preventDefault();
+                    thisReorderer.handleRightArrow (evt.ctrlKey);                               
+                    return false;
+                default:
+                    return true;
+            }
+        }
+    };
 	
 	this.handleUpArrow = function (isCtrl) {
 		if (isCtrl) {
@@ -181,8 +190,9 @@ fluid.Reorderer = function (domNodeId, params) {
 	this.handleRightArrow = function (isCtrl) {
 		if (isCtrl) {
 			this.layoutHandler.moveItemRight (this.activeItem);
-			this.getElementToFocus (this.activeItem).focus();
-			this.orderChangedCallback();				
+			jQuery(this.getElementToFocus (this.activeItem)).focus();
+			this.orderChangedCallback();	
+	
 		} else {
 			this.focusItem (this.layoutHandler.getRightSibling (this.activeItem));				
 		}			

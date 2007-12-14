@@ -2,6 +2,18 @@
     font-style: italic;
 }
 
+#page-replace\:uniquePortletId\:component\:\:tree\:\:branches\:\:rsfSortableSchedule\:\: .orderable-selected {
+    color: red;
+}
+
+#page-replace\:uniquePortletId\:component\:\:tree\:\:branches\:\:rsfSortableSchedule\:\:orderable\:0\:\:lightningTalks\:\: .orderable-selected {
+    color: green;
+}
+
+#page-replace\:uniquePortletId\:component\:\:tree\:\:branches\:\:rsfSortableSchedule\:\:orderable\:0\:\:sessions\:\: .orderable-selected {
+    color: blue;
+}
+
 .orderable-selected {
     font-weight: bold;
 }
