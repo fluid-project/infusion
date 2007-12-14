@@ -53,7 +53,7 @@ fluid.Reorderer = function (domNodeId, params) {
     * @return {Object} The element that should receive focus in the specified item.
     */
 	this.getElementToFocus = function (item) {
-		var elementToFocus = dojo.query ("." + this.cssClasses.focusTarget, item)[0];
+		var elementToFocus = jQuery ("." + this.cssClasses.focusTarget, item).get (0);
 		if (elementToFocus) {
 			return elementToFocus;
 		}
@@ -82,8 +82,8 @@ fluid.Reorderer = function (domNodeId, params) {
             this.changeActiveItemToDefaultState();
             this._setActiveItem (anItem);	
 		}
-        dojo.removeClass (this.activeItem, this.cssClasses.defaultStyle);
-        dojo.addClass (this.activeItem, this.cssClasses.selected);
+        jQuery (this.activeItem).removeClass (this.cssClasses.defaultStyle);
+        jQuery (this.activeItem).addClass (this.cssClasses.selected);
         jQuery (this.getElementToFocus (this.activeItem)).focus();
 	};
 	
@@ -117,15 +117,15 @@ fluid.Reorderer = function (domNodeId, params) {
 		
 	this.changeActiveItemToDefaultState = function() {
 		if (this.activeItem) {
-			dojo.removeClass (this.activeItem, this.cssClasses.selected);
-			dojo.addClass (this.activeItem, this.cssClasses.defaultStyle);
+            jQuery (this.activeItem).removeClass (this.cssClasses.selected);
+			jQuery (this.activeItem).addClass (this.cssClasses.defaultStyle);
 		}
 	};
 	
 	this.handleKeyDown = function (evt) {
        if (thisReorderer.activeItem && evt.keyCode == dojo.keys.CTRL) {
-           dojo.removeClass (thisReorderer.activeItem, thisReorderer.cssClasses.selected);
-           dojo.addClass (thisReorderer.activeItem, thisReorderer.cssClasses.dragging);
+           jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
+           jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.dragging);
            thisReorderer.activeItem.setAttribute ("aaa:grab", "true");
            return false;
        }
@@ -135,8 +135,8 @@ fluid.Reorderer = function (domNodeId, params) {
 	
 	this.handleKeyUp = function (evt) {
        if (thisReorderer.activeItem && evt.keyCode == dojo.keys.CTRL) {
-           dojo.removeClass (thisReorderer.activeItem, thisReorderer.cssClasses.dragging);
-           dojo.addClass (thisReorderer.activeItem, thisReorderer.cssClasses.selected);
+           jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.dragging);
+           jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.selected);
            thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
            return false;
        } 
@@ -237,14 +237,19 @@ fluid.Reorderer = function (domNodeId, params) {
     var dropMarker; // private scratch variable
     
     function setUpDnDItem (anItem, selector) {
-        dojo.connect (anItem, "onmouseover",  function () {
-            dojo.addClass (this, thisReorderer.cssClasses.hover);
-        });
-        dojo.connect (anItem, "onmouseout",  function () {
-            dojo.removeClass (this, thisReorderer.cssClasses.hover);
-        });
+        anItem.mouseover ( 
+            function () {
+            	jQuery (this).addClass (thisReorderer.cssClasses.hover);
+            }
+        );
+    	
+        anItem.mouseout (  
+            function () {
+                jQuery (this).removeClass (thisReorderer.cssClasses.hover);
+            }
+        );
   
-        jQuery (anItem).draggable ({
+        anItem.draggable ({
             helper: function() {
             	var avatar = jQuery (this).clone();
             	jQuery (avatar).removeAttr ("id");
@@ -256,18 +261,18 @@ fluid.Reorderer = function (domNodeId, params) {
             },
             start: function (e, ui) {
                 thisReorderer.focusItem (ui.draggable.element);                
-                dojo.addClass (ui.draggable.element, thisReorderer.cssClasses.dragging);
+                jQuery (ui.draggable.element).addClass (thisReorderer.cssClasses.dragging);
                 ui.draggable.element.setAttribute ("aaa:grab", "true");
                 
                 // In order to create valid html, the drop marker is the same type as the node being dragged.
                 // This creates a confusing UI in cases such as an ordered list. 
                 // drop marker functionality should be made pluggable. 
                 dropMarker = document.createElement (ui.draggable.element.tagName);
-                dojo.addClass (dropMarker, thisReorderer.cssClasses.dropMarker);                    
+                jQuery (dropMarker).addClass (thisReorderer.cssClasses.dropMarker);
                 dropMarker.style.visibility = "hidden";
             },
             stop: function(e, ui) {
-                dojo.removeClass (ui.draggable.element, thisReorderer.cssClasses.dragging);
+                jQuery (ui.draggable.element).removeClass (thisReorderer.cssClasses.dragging);
                 thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
                 thisReorderer.domNode.focus();
                 if (dropMarker.parentNode) {
@@ -276,7 +281,7 @@ fluid.Reorderer = function (domNodeId, params) {
             }
         });
 
-        jQuery (anItem).droppable ({
+        anItem.droppable ({
             accept: selector,
             tolerance: "pointer",
             over: function (e, ui) {
@@ -315,7 +320,7 @@ fluid.Reorderer = function (domNodeId, params) {
         // Setup orderable item including drag and drop.
          for (i = 0; i < items.length; i++) {
             jQuery (items[i]).addClass (thisReorderer.cssClasses.defaultStyle);
-            setUpDnDItem (items[i], selector);
+            setUpDnDItem (jQuery (items[i]), selector);
         }
     }
 
@@ -434,7 +439,14 @@ fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
         if (relatedItemInfo.hasWrapped) {
             itemPlacement = wrappedPlacement;
         }
-        dojo.place (item, relatedItemInfo.item, itemPlacement);
+        
+        // The "after" and "before" strings are an artifact of using dojo.place. 
+        // This should be refactored. 
+        if (itemPlacement === "after") {
+            jQuery (relatedItemInfo.item).after (item);
+        } else {
+        	jQuery (relatedItemInfo.item).before (item);
+        }
     };
     
 }; // End ListLayoutHandler
@@ -460,31 +472,23 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
      */
     this._getItemInfoBelow = function (inItem) {
         var orderables = this.orderableFinder (this._container);
-        var curIndex = dojo.indexOf (orderables, inItem);
         var curCoords = dojo.coords (inItem);
         var i, iCoords;
+        var firstItemInColumn, currentItem;
         
-        // Handle case where the passed-in item is *not* an "orderable"
-        if (curIndex < 0) {
-            return {item: orderables[0], hasWrapped: false};
-        }
-        
-        for (i = curIndex + 1; i < orderables.length; i++) {
-            iCoords = dojo.coords (orderables[i]);
-            if (iCoords.x == curCoords.x && iCoords.y > curCoords.y) {
-                return {item: orderables[i], hasWrapped: false};
-            }               
-        }
-        
-        for (i = 0; i < curIndex; i++ ) {
-            iCoords = dojo.coords (orderables[i]);
-            if (iCoords.x == curCoords.x) {
-                return {item: orderables[i], hasWrapped: true};
+        for (i = 0; i < orderables.length; i++) {
+        	currentItem = orderables [i];
+        	iCoords = dojo.coords (orderables[i]);
+        	if (iCoords.x == curCoords.x) {
+                firstItemInColumn = firstItemInColumn || currentItem;
+                if (iCoords.y > curCoords.y) {
+                	return {item: currentItem, hasWrapped: false};
+                }
             }
         }
-        
-        // Didn't find an item below - return what was passed in
-        return {item: inItem, hasWrapped: false};
+
+        firstItemInColumn = firstItemInColumn || orderables [0];
+        return {item: firstItemInColumn, hasWrapped: true};
     };
     
     this.getItemBelow = function(item) {
@@ -507,28 +511,21 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
         var curIndex = dojo.indexOf (orderables, inItem);
         var curCoords = dojo.coords (inItem);
         var i, iCoords;
-
-        // Handle case where the passed-in item is *not* an "orderable"
-        if (curIndex < 0) {
-            return {item: orderables[0], hasWrapped: false};
-        }
-
-        for (i = curIndex - 1; i > -1; i--) {
-            iCoords = dojo.coords(orderables[i]);
-            if (iCoords.x == curCoords.x && iCoords.y < curCoords.y) {
-                return {item: orderables[i], hasWrapped: false};
-            }               
-        }
+        var lastItemInColumn, currentItem;
         
-        for (i = orderables.length - 1; i > curIndex; i-- ) {
-            iCoords = dojo.coords(orderables[i]);
+        for (i = orderables.length - 1; i > -1; i--) {
+            currentItem = orderables [i];
+            iCoords = dojo.coords (orderables[i]);
             if (iCoords.x == curCoords.x) {
-                return {item: orderables[i], hasWrapped: true};
+                lastItemInColumn = lastItemInColumn || currentItem;
+                if (curCoords.y > iCoords.y) {
+                    return {item: currentItem, hasWrapped: false};
+                }
             }
         }
-        
-        // Didn't find an item above - return what was passed in
-        return {item: inItem, hasWrapped: false};
+
+        lastItemInColumn = lastItemInColumn || orderables [0];
+        return {item: lastItemInColumn, hasWrapped: true};
     };
 
     this.getItemAbove = function (item) {

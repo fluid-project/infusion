@@ -33,7 +33,6 @@ function testGetRightSiblingInfo() {
 	rightSibling = gridHandler._getRightSiblingInfo(dojo.byId(thirdImageId));
 	assertEquals("When a non-orderable is passed to getRightSiblingInfo the first orderable should be returned.", 
 		firstReorderableId, rightSibling.item.id);
-	assertFalse("No wrap when non-reorderable is passed in.", rightSibling.hasWrapped);	
 }
 
 function testGetLeftSiblingInfo() {
@@ -96,7 +95,6 @@ function testGetItemInfoBelow() {
 	itemInfo = gridHandler._getItemInfoBelow(dojo.byId(thirdImageId));
 	assertEquals("When a non-orderable is passed to _getItemInfoBelow the first orderable should be returned.", 
 		firstReorderableId, itemInfo.item.id);
-	assertFalse("No wrap when non-reorderable is passed in.", itemInfo.hasWrapped);	
 
 }
 
@@ -140,7 +138,6 @@ function testGetItemInfoAbove() {
 	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(thirdImageId));
 	assertEquals("When a non-orderable is passed to _getItemInfoAbove the first orderable should be returned.", 
 		firstReorderableId, itemInfo.item.id);
-	assertFalse("No wrap when non-reorderable is passed in.", itemInfo.hasWrapped);	
 
 	// Test with grid size 3
 	dojo.removeClass(dojo.byId(lightboxRootId), "width-4-thumb");
@@ -177,17 +174,14 @@ function testGetItemInfoBelowOneRow() {
 	var itemInfo = gridHandler._getItemInfoBelow(dojo.byId(firstReorderableId));
 	assertEquals("Since there is only 1 row, the item below the first image should be itself", 
 		dojo.byId(firstReorderableId), itemInfo.item);
-	assertFalse("no wrap below first image", itemInfo.hasWrapped);
 
 	itemInfo = gridHandler._getItemInfoBelow(dojo.byId(thirdReorderableId));
 	assertEquals("Since there is only 1 row, the item below the third image should be itself", 
 		dojo.byId(thirdReorderableId), itemInfo.item);
-	assertFalse("no wrap below third image", itemInfo.hasWrapped);
 
 	itemInfo = gridHandler._getItemInfoBelow(dojo.byId(lastReorderableId));
 	assertEquals("Since there is only 1 row, the item below the last image should be itself", 
 		dojo.byId(lastReorderableId), itemInfo.item);
-	assertFalse("no wrap below last image", itemInfo.hasWrapped);
 	
 }
 
@@ -200,16 +194,13 @@ function testGetItemInfoAboveOneRow() {
 	var itemInfo = gridHandler._getItemInfoAbove(dojo.byId(firstReorderableId));
 	assertEquals("Since there is only 1 row, the item above the first image should be itself", 
 		dojo.byId(firstReorderableId), itemInfo.item);
-	assertFalse("no wrap below first image", itemInfo.hasWrapped);
 
 	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(thirdReorderableId));
 	assertEquals("Since there is only 1 row, the item above the third image should be itself", 
 		dojo.byId(thirdReorderableId), itemInfo.item);
-	assertFalse("no wrap below third image", itemInfo.hasWrapped);
 
 	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(lastReorderableId));
 	assertEquals("Since there is only 1 row, the item above the last image should be itself", 
 		dojo.byId(lastReorderableId), itemInfo.item);
-	assertFalse("no wrap below last image", itemInfo.hasWrapped);
 	
 }
