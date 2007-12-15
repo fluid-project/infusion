@@ -508,16 +508,16 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
      */
     this._getItemInfoBelow = function (inItem) {
         var orderables = this.orderableFinder (this._container);
-        var curCoords = dojo.coords (inItem);
+        var curCoords = jQuery (inItem).offset();
         var i, iCoords;
         var firstItemInColumn, currentItem;
         
         for (i = 0; i < orderables.length; i++) {
         	currentItem = orderables [i];
-        	iCoords = dojo.coords (orderables[i]);
-        	if (iCoords.x == curCoords.x) {
+        	iCoords = jQuery (orderables[i]).offset();
+        	if (iCoords.left == curCoords.left) {
                 firstItemInColumn = firstItemInColumn || currentItem;
-                if (iCoords.y > curCoords.y) {
+                if (iCoords.top > curCoords.top) {
                 	return {item: currentItem, hasWrapped: false};
                 }
             }
@@ -544,17 +544,16 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
      */
     this._getItemInfoAbove = function (inItem) {
         var orderables = this.orderableFinder (this._container);
-        var curIndex = dojo.indexOf (orderables, inItem);
-        var curCoords = dojo.coords (inItem);
+        var curCoords = jQuery (inItem).offset();
         var i, iCoords;
         var lastItemInColumn, currentItem;
         
         for (i = orderables.length - 1; i > -1; i--) {
             currentItem = orderables [i];
-            iCoords = dojo.coords (orderables[i]);
-            if (iCoords.x == curCoords.x) {
+            iCoords = jQuery (orderables[i]).offset();
+            if (iCoords.left == curCoords.left) {
                 lastItemInColumn = lastItemInColumn || currentItem;
-                if (curCoords.y > iCoords.y) {
+                if (curCoords.top > iCoords.top) {
                     return {item: currentItem, hasWrapped: false};
                 }
             }
