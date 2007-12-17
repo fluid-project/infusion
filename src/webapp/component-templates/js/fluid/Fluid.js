@@ -12,6 +12,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var fluid = fluid || {};
 
+fluid.keys = {
+    UP: 38,
+    DOWN: 40,
+    LEFT: 37,
+    RIGHT: 39,
+    SPACE: 32,
+    ENTER: 13,
+    TAB: 9
+};
+
 fluid.deriveLightboxCellBase = function (namebase, index) {
     return namebase + "lightbox-cell:" + index + ":";
 };
