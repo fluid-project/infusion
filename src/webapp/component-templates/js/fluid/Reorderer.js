@@ -123,7 +123,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	};
 	
 	this.handleKeyDown = function (evt) {
-       if (thisReorderer.activeItem && evt.keyCode == dojo.keys.CTRL) {
+       if (thisReorderer.activeItem && evt.keyCode == fluid.keys.CTRL) {
            jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
            jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.dragging);
            thisReorderer.activeItem.setAttribute ("aaa:grab", "true");
@@ -134,7 +134,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	};
 	
 	this.handleKeyUp = function (evt) {
-       if (thisReorderer.activeItem && evt.keyCode == dojo.keys.CTRL) {
+       if (thisReorderer.activeItem && evt.keyCode == fluid.keys.CTRL) {
            jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.dragging);
            jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.selected);
            thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
@@ -145,19 +145,19 @@ fluid.Reorderer = function (domNodeId, params) {
 	this.handleArrowKeyPress = function (evt) {
         if (thisReorderer.activeItem) {
             switch (evt.keyCode) {
-                case dojo.keys.DOWN_ARROW:
+                case fluid.keys.DOWN:
                     evt.preventDefault();
                     thisReorderer.handleDownArrow (evt.ctrlKey);                                
                     return false;
-                case dojo.keys.UP_ARROW: 
+                case fluid.keys.UP: 
                     evt.preventDefault();
                     thisReorderer.handleUpArrow (evt.ctrlKey);                              
                     return false;
-                case dojo.keys.LEFT_ARROW: 
+                case fluid.keys.LEFT: 
                     evt.preventDefault();
                     thisReorderer.handleLeftArrow (evt.ctrlKey);                                
                     return false;
-                case dojo.keys.RIGHT_ARROW: 
+                case fluid.keys.RIGHT: 
                     evt.preventDefault();
                     thisReorderer.handleRightArrow (evt.ctrlKey);                               
                     return false;

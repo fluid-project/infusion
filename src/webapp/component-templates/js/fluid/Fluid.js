@@ -19,7 +19,8 @@ fluid.keys = {
     RIGHT: 39,
     SPACE: 32,
     ENTER: 13,
-    TAB: 9
+    TAB: 9,
+    CTRL: 17
 };
 
 fluid.deriveLightboxCellBase = function (namebase, index) {
