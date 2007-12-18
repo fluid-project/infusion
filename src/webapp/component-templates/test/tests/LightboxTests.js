@@ -14,7 +14,7 @@ function testFindReorderableParent() {
 	
 	var testItem = dojo.byId(firstReorderableId);
 	assertEquals("The test item's role attribute should be gridcell",
-		"wairole:gridcell", testItem.getAttribute("xhtml10:role"));
+		"wairole:gridcell", testItem.getAttribute("role"));
 
     var orderables = lightbox.orderableFinder (lightboxRootId);
 	assertEquals("Given the test item itself, the ancestor grid cell should be the test item",
