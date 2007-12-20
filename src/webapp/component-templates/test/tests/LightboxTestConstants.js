@@ -106,10 +106,11 @@ var imgListClone;
 
 // This setUp will be called before each of the tests that are included in Lightbox.html 
 function setUp() {
-    imgListClone = document.getElementById(lightboxRootId).cloneNode(true);
+	imgList = document.getElementById(lightboxRootId);
+    imgListClone = imgList.cloneNode(true);
     
     // Force the grid size to three thumbnails wide
-    dojo.addClass(dojo.byId(lightboxRootId), "width-3-thumb");
+    jQuery (imgList).addClass ("width-3-thumb");
 }
 
 // This tearDown will be called after each of the tests that are included in Lightbox.html 
