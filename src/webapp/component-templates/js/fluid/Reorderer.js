@@ -16,6 +16,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	// Reliable 'this'.
 	//
 	var thisReorderer = this;
+	var theAvatar = null;
 	
 	this.domNode = dojo.byId (domNodeId);
 	
@@ -235,23 +236,15 @@ fluid.Reorderer = function (domNodeId, params) {
     	else
     	   return 1;
     };
- 
-    // Private variable to track the previous before or after result.  Must be set to "forget" the
-    // previous value when trackMouseMovement is unbound from the mousemouve events.
-    //
-    var previousBeforeOrAfter = 0;
     
     function trackMouseMovement (evt) {
-	    var beforeOrAfter = thisReorderer.beforeOrAfter (evt, this);
-	    if (beforeOrAfter != previousBeforeOrAfter) {
-	    	if (beforeOrAfter == -1) {
-	           jQuery (evt.data).before (dropMarker);
-	       }        
-	       else {
-	           jQuery (evt.data).after (dropMarker);
-	       }
-	       previousBeforeOrAfter = beforeOrAfter;
-	    }
+	    var beforeOrAfter = thisReorderer.beforeOrAfter (evt, evt.data);
+    	if (beforeOrAfter == -1) {
+           jQuery (evt.data).before (dropMarker);
+       }        
+       else {
+           jQuery (evt.data).after (dropMarker);
+       }
 	};
  
     /**
@@ -277,13 +270,13 @@ fluid.Reorderer = function (domNodeId, params) {
   
         anItem.draggable ({
             helper: function() {
-            	var avatar = jQuery (this).clone();
-            	jQuery (avatar).removeAttr ("id");
-            	jQuery ("[id]", avatar).removeAttr ("id");
-            	jQuery (":hidden", avatar).remove(); 
-            	jQuery ("input", avatar).attr ("disabled", "true"); 
-            	avatar.addClass (thisReorderer.cssClasses.avatar);          	
-            	return avatar;
+            	theAvatar = jQuery (this).clone();
+            	jQuery (theAvatar).removeAttr ("id");
+            	jQuery ("[id]", theAvatar).removeAttr ("id");
+            	jQuery (":hidden", theAvatar).remove(); 
+            	jQuery ("input", theAvatar).attr ("disabled", "true"); 
+            	theAvatar.addClass (thisReorderer.cssClasses.avatar);          	
+            	return theAvatar;
             },
             start: function (e, ui) {
                 thisReorderer.focusItem (ui.draggable.element);                
@@ -304,6 +297,7 @@ fluid.Reorderer = function (domNodeId, params) {
                 if (dropMarker.parentNode) {
                     dropMarker.parentNode.removeChild (dropMarker);
                 }
+                theAvatar = null;
             }
         });
 
@@ -312,13 +306,14 @@ fluid.Reorderer = function (domNodeId, params) {
             tolerance: "pointer",
             over: function (e, ui) {
             	// the second parameter to bind() can be accessed through the event as event.data
-                jQuery (ui.droppable.element).bind ("mousemove", ui.droppable.element, trackMouseMovement);                
+                jQuery (ui.droppable.element).bind ("mousemove", ui.droppable.element, trackMouseMovement);    
+                jQuery (theAvatar).bind ("mousemove", ui.droppable.element, trackMouseMovement);            
                 dropMarker.style.visibility = "visible";
             },
             out: function (e, ui) {
                 dropMarker.style.visibility = "hidden";
                 jQuery (ui.droppable.element).unbind ("mousemove", trackMouseMovement);
-                thisReorderer.previousBeforeOrAfter = 0;
+                jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
             },
             drop: function (e, ui) {
                 var beforeOrAfter = thisReorderer.beforeOrAfter (e, this);
@@ -328,7 +323,7 @@ fluid.Reorderer = function (domNodeId, params) {
                     jQuery (ui.droppable.element).after (ui.draggable.element);
                 }
                 jQuery (ui.droppable.element).unbind ("mousemove", trackMouseMovement);
-                thisReorderer.previousBeforeOrAfter = 0;
+                jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
                 thisReorderer.orderChangedCallback();
             }
         });
