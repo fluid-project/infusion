@@ -50,9 +50,12 @@
       function findOrderableTabs (container) {
         return jQuery ("[id^=tab_]", container);
       }
-    
+      
+      var aLayoutHandler = new fluid.ListLayoutHandler (findOrderableTabs);
+      aLayoutHandler.orientation = fluid.orientation.HORIZONTAL; 
+
       new fluid.Reorderer("tabList", {
-          layoutHandler: new fluid.ListLayoutHandler (findOrderableTabs),
+          layoutHandler: aLayoutHandler,
           orderableFinder: findOrderableTabs
         }
       );

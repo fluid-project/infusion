@@ -245,18 +245,12 @@ fluid.Reorderer = function (domNodeId, params) {
 			this.domNode.removeAttribute ("aaa:activedescendent");
 		}
 	};
-
-    this.beforeOrAfter = function (evt, element) {
-        var mid = jQuery (element).offset().left + (element.offsetWidth / 2);
-    	if (evt.clientX < mid)
-    	   return -1;
-    	else
-    	   return 1;
-    };
     
+    /**
+     * evt.data - the droppable DOM element.
+     */
     function trackMouseMovement (evt) {
-	    var beforeOrAfter = thisReorderer.beforeOrAfter (evt, evt.data);
-    	if (beforeOrAfter == -1) {
+        if (thisReorderer.layoutHandler.isMouseBefore (evt, evt.data)) {
            jQuery (evt.data).before (dropMarker);
        }        
        else {
@@ -333,8 +327,7 @@ fluid.Reorderer = function (domNodeId, params) {
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
             },
             drop: function (e, ui) {
-                var beforeOrAfter = thisReorderer.beforeOrAfter (e, this);
-                if (beforeOrAfter == -1) {
+                if (thisReorderer.layoutHandler.isMouseBefore (e, this)) {
                     jQuery (ui.droppable.element).before (ui.draggable.element);
                 } else {
                     jQuery (ui.droppable.element).after (ui.draggable.element);
@@ -400,6 +393,8 @@ fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
 	this.orderableFinder = orderableFinder;
 	
     this._container = null;
+    
+    this.orientation = fluid.orientation.VERTICAL;  // default.
     
     this.setReorderableContainer = function (aList) {
         this._container = aList;
@@ -496,6 +491,23 @@ fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
         	jQuery (relatedItemInfo.item).before (item);
         }
     };
+
+    /**
+     * For drag-and-drop during the drag:  is the mouse over the "before" half
+     * of the droppable?  In the case of a vertically oriented set of orderables,
+     * "before" means "above".  For a horizontally oriented set, "before" means
+     * "left of".
+     */
+    this.isMouseBefore = function (evt, droppableEl) {
+    	if (this.orientation === fluid.orientation.VERTICAL) {
+	        var mid = jQuery (droppableEl).offset().top + (droppableEl.offsetHeight / 2);
+	        return (evt.pageY < mid);
+    	}
+    	else {
+            var mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
+            return (evt.clientX < mid);
+    	}
+    };    
     
 }; // End ListLayoutHandler
     
@@ -510,6 +522,7 @@ fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
 fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
 
     fluid.ListLayoutHandler.call (this, orderableFinder);
+    this.orientation = fluid.orientation.HORIZONTAL;
                     
     /*
      * Returns an object containing the item that is below the given item in the current grid
@@ -582,7 +595,7 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
     this.moveItemUp = function (item) {
         this._moveItem (item, this._getItemInfoAbove (item), "before", "after");
     };
-            
+                
 }; // End of GridLayoutHandler
     
 

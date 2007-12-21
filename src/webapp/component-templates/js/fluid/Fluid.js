@@ -23,6 +23,11 @@ fluid.keys = {
     CTRL: 17
 };
 
+fluid.orientation = {
+	HORIZONTAL: 0,
+	VERTICAL: 1
+};
+
 fluid.deriveLightboxCellBase = function (namebase, index) {
     return namebase + "lightbox-cell:" + index + ":";
 };
