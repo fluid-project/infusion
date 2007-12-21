@@ -73,6 +73,8 @@ fluid.initLightbox = function (namebase, messageNamebase) {
             orderableFinder: lightboxOrderableFinder
         }
     );
+    
+    fluid.Lightbox.addThumbnailActivateHandler (lightbox);
 };
   
 

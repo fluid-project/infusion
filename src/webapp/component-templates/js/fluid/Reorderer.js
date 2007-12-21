@@ -53,7 +53,7 @@ fluid.Reorderer = function (domNodeId, params) {
     * @param {Object} item
     * @return {Object} The element that should receive focus in the specified item.
     */
-	this.getElementToFocus = function (item) {
+	this.findElementToFocus = function (item) {
 		var elementToFocus = jQuery ("." + this.cssClasses.focusTarget, item).get (0);
 		if (elementToFocus) {
 			return elementToFocus;
@@ -83,11 +83,26 @@ fluid.Reorderer = function (domNodeId, params) {
             this.changeActiveItemToDefaultState();
             this._setActiveItem (anItem);	
 		}
-        jQuery (this.activeItem).removeClass (this.cssClasses.defaultStyle);
-        jQuery (this.activeItem).addClass (this.cssClasses.selected);
-        jQuery (this.getElementToFocus (this.activeItem)).focus();
+		
+		var jActiveItem = jQuery (this.activeItem);
+        jActiveItem.removeClass (this.cssClasses.defaultStyle);
+        jActiveItem.addClass (this.cssClasses.selected);
+        
+        this.addFocusToElement (this.findElementToFocus (this.activeItem));
 	};
 	
+	this.addFocusToElement = function (anElement) {
+		var jElement = jQuery(anElement);
+        if (!jElement.attr ("tabindex")) {
+            jElement.attr ("tabindex", "-1");
+        }
+        jElement.focus ();
+	};
+	
+	this.removeFocusFromElement = function (anElement) {
+		jQuery (anElement).blur ();
+    };
+
 	/**
 	 * Changes focus to the active item.
 	 */
@@ -118,8 +133,10 @@ fluid.Reorderer = function (domNodeId, params) {
 		
 	this.changeActiveItemToDefaultState = function() {
 		if (this.activeItem) {
-            jQuery (this.activeItem).removeClass (this.cssClasses.selected);
-			jQuery (this.activeItem).addClass (this.cssClasses.defaultStyle);
+			var jActiveItem = jQuery (this.activeItem);
+			jActiveItem.removeClass (this.cssClasses.selected);
+			jActiveItem.addClass (this.cssClasses.defaultStyle);
+			this.removeFocusFromElement (jActiveItem);
 		}
 	};
 	
@@ -171,7 +188,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	this.handleUpArrow = function (isCtrl) {
 		if (isCtrl) {
 			this.layoutHandler.moveItemUp (this.activeItem);
-			this.getElementToFocus (this.activeItem).focus();
+			this.findElementToFocus (this.activeItem).focus();
 			this.orderChangedCallback();
 		} else {
 			this.focusItem (this.layoutHandler.getItemAbove(this.activeItem));
@@ -181,7 +198,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	this.handleDownArrow = function (isCtrl) {
 		if (isCtrl) {
 			this.layoutHandler.moveItemDown (this.activeItem);
-			this.getElementToFocus (this.activeItem).focus();
+			this.findElementToFocus (this.activeItem).focus();
 			this.orderChangedCallback();
 		} else {
 			this.focusItem (this.layoutHandler.getItemBelow (this.activeItem));
@@ -191,7 +208,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	this.handleRightArrow = function (isCtrl) {
 		if (isCtrl) {
 			this.layoutHandler.moveItemRight (this.activeItem);
-			jQuery(this.getElementToFocus (this.activeItem)).focus();
+			jQuery(this.findElementToFocus (this.activeItem)).focus();
 			this.orderChangedCallback();	
 	
 		} else {
@@ -202,7 +219,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	this.handleLeftArrow = function (isCtrl) {
 		if (isCtrl) {
 			this.layoutHandler.moveItemLeft (this.activeItem);
-			this.getElementToFocus (this.activeItem).focus();
+			this.findElementToFocus (this.activeItem).focus();
 			this.orderChangedCallback();				
 		} else {
 			this.focusItem (this.layoutHandler.getLeftSibling (this.activeItem));				

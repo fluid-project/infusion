@@ -296,7 +296,7 @@ function testPersistFocus () {
 	dojo.byId ("input1").focus();
 	isItemDefaultTest("After focus leaves the lightbox ", firstReorderableId);
 	
-	lightbox.getElementToFocus(lightbox.domNode).focus();
+	lightbox.findElementToFocus(lightbox.domNode).focus();
 	
 	// check that the first thumb nail is still moveable.
 	isItemFocusedTest("When lightbox has focus again ", firstReorderableId);
@@ -309,14 +309,14 @@ function testPersistFocus () {
 	
 	// Change focus to the input1, then back to the lightbox
 	dojo.byId ("input1").focus();
-	lightbox.getElementToFocus(lightbox.domNode).focus();
+	lightbox.findElementToFocus(lightbox.domNode).focus();
 	
 	// check that the second thumb nail is still moveable.
 	lightbox.focusItem(dojo.byId(secondReorderableId));
 	isItemFocusedTest("Lightbox refocused with second selected ", secondReorderableId);
 	isItemDefaultTest("Lightbox refocused with second selected ", firstReorderableId);
 	
-	lightbox.getElementToFocus(lightbox.domNode).blur();
+	lightbox.findElementToFocus(lightbox.domNode).blur();
 	isItemDefaultTest("Lightbox blur with second selected ", secondReorderableId);
 }
 
@@ -467,3 +467,15 @@ function testUpdateGrabProperty() {
     assertEquals("after CTRL released, test item should have grab of supported", "supported", testItem.getAttribute("aaa:grab"));
 }
 
+function testAddFocusToElement() {
+    var lightbox = createLightbox();
+    var testItem = jQuery("[id="+firstReorderableId+"]");
+    assertEquals("before adding focus, tabindex should be undefined", undefined, jQuery(testItem).attr("tabindex"));
+    lightbox.addFocusToElement(testItem);
+    assertEquals("after adding focus, tabindex should be -1", "-1", jQuery(testItem).attr("tabindex"));
+    var testItem2 = jQuery("[id="+secondReorderableId+"]");
+    jQuery(testItem2).attr("tabindex", 2);
+    assertEquals("before adding focus to something with tabindex=2, tabindex should be 2", "2", jQuery(testItem2).attr("tabindex"));
+    lightbox.addFocusToElement(testItem2);
+    assertEquals("before adding focus to something with tabindex=2, tabindex should be still be 2", "2", jQuery(testItem2).attr("tabindex"));
+}
