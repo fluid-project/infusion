@@ -12,6 +12,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 var fluid = fluid || {};
+var dojo = dojo || {};
+var jQuery = jQuery || {};
 
 fluid.Reorderer = function (domNodeId, params) {
 	// Reliable 'this'.
