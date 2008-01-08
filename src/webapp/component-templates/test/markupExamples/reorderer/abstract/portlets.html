@@ -1,0 +1,161 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ Fluid Project
+
+ Copyright (c) 2006, 2007 University of Toronto. All rights reserved.
+
+ Licensed under the Educational Community License, Version 1.0 (the "License"); 
+ you may not use this file except in compliance with the License. 
+ You may obtain a copy of the License at 
+ 
+ http://www.opensource.org/licenses/ecl1.php 
+ 
+ Unless required by applicable law or agreed to in writing, software 
+ distributed under the License is distributed on an "AS IS" BASIS, 
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ See the License for the specific language governing permissions and 
+ limitations under the License.
+
+ Adaptive Technology Resource Centre, University of Toronto
+ 130 St. George St., Toronto, Ontario, Canada
+ Telephone: (416) 978-4360
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+<head>
+<title>Portlets Example</title>
+  <style type="text/css">
+    @import url("../markup-examples.css");
+  </style>
+  <style type="text/css">
+    td {
+      padding: 8px;
+      vertical-align: top;
+    }
+    .portlet {
+      padding: 10px;
+    }
+  </style>
+      <script language="JavaScript" type="text/javascript" src="../../../../js/dojo/dojo.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../js/jquery/jquery-1.2.1.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../js/fluid/Fluid.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../js/fluid/Reorderer.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../../js/fluid/PortletLayoutHandler.js"></script>
+      
+      <!--  These are used for JsUnit tests that have been written using this page as data -->
+      <script language="JavaScript" type="text/javascript" src="../../../jsunit/app/jsUnitCore.js"></script>
+      <script language="JavaScript" type="text/javascript" src="../../../tests/PortletTestConstants.js"></script>
+	  <script language="JavaScript" type="text/javascript" src="../../../tests/PortletLayoutHandlerTests.js"></script>	
+</head>
+<body>
+	
+<!-- TABLE -->
+
+<div class="reorderer_container">
+<table id="reorderer-root" tabindex="0" >
+	<tbody><tr>
+
+			<td>
+				<div class="portlet orderable-default" id="portlet1">
+					<div class="title">portlet 1</div>
+					<div class="content">prec 90</div>
+				</div>
+				<div class="portlet orderable-default" id="portlet2">
+					<div class="title">portlet 2</div>
+					<div class="content">prec 80</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet3">
+					<div class="title">portlet 3</div>
+					<div class="content">prec 50</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet4">
+					<div class="title">portlet 4</div>
+					<div class="content">&nbsp;</div>
+				</div>
+			</td>
+			<td>
+				<div class="portlet orderable-default" id="portlet5">
+					<div class="title">portlet 5</div>
+					<div class="content">prec 70</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet6">
+					<div class="title">portlet 6</div>
+					<div class="content">&nbsp;</div>
+				</div>
+			</td>
+			<td>
+				<div class="portlet orderable orderable-default" id="portlet7">
+					<div class="title">portlet 7</div>
+					<div class="content">prec 60</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet8">
+					<div class="title">portlet 8</div>
+					<div class="content">&nbsp;</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet9">
+					<div class="title">portlet 9</div>
+					<div class="content">&nbsp;</div>
+				</div>
+			</td>
+	</tr>
+</tbody></table>
+</div>
+
+<script language="JavaScript" type="text/javascript">
+	function portletFinder (containerEl) {
+	    return jQuery ("[id^=portlet]", containerEl);
+	}
+	function portletOrderableFinder (containerEl) {
+	    return jQuery ("#portlet3,#portlet4,#portlet6,#portlet7,#portlet8,#portlet9");
+	}
+	var layout = { id:"t2",
+				columns:[{ id:"c1", children:["portlet1","portlet2","portlet3","portlet4"]},
+						 { id:"c2", children:["portlet5","portlet6"]   },
+						 { id:"c3", children:["portlet7","portlet8","portlet9"]}
+						]
+					};
+var dropTargets = {
+    portlet1:{portlet1:[0,0],portlet2:[0,0],portlet3:[0,0],portlet4:[0,0],
+              portlet5:[0,0],portlet6:[0,0],
+              portlet7:[0,0],portlet8:[0,0],portlet9:[0,0]},
+	portlet2:{portlet1:[0,0],portlet2:[0,0],portlet3:[0,0],portlet4:[0,0],
+    	      portlet5:[0,0],portlet6:[0,0],
+		      portlet7:[0,0],portlet8:[0,0],portlet9:[0,0]},
+	portlet3:{portlet1:[0,0],portlet2:[0,1],portlet3:[1,1],portlet4:[1,1],
+              portlet5:[0,1],portlet6:[1,1],
+              portlet7:[1,1],portlet8:[1,1],portlet9:[1,1]},
+	portlet4:{portlet1:[0,0],portlet2:[0,0],portlet3:[0,1],portlet4:[1,1],
+    	      portlet5:[0,1],portlet6:[1,1],
+		      portlet7:[0,1],portlet8:[1,1],portlet9:[1,1]},
+	portlet5:{portlet1:[0,0],portlet2:[0,0],portlet3:[0,0],portlet4:[0,0],
+    	      portlet5:[0,0],portlet6:[0,0],
+		      portlet7:[0,0],portlet8:[0,0],portlet9:[0,0]},
+	portlet6:{portlet1:[0,0],portlet2:[0,0],portlet3:[0,1],portlet4:[1,1],
+    	      portlet5:[0,1],portlet6:[1,1],
+		      portlet7:[0,1],portlet8:[1,1],portlet9:[1,1]},
+	portlet7:{portlet1:[0,0],portlet2:[0,1],portlet3:[1,1],portlet4:[1,1],
+    	      portlet5:[0,1],portlet6:[1,1],
+		      portlet7:[1,1],portlet8:[1,1],portlet9:[1,1]},
+	portlet8:{portlet1:[0,0],portlet2:[0,0],portlet3:[0,1],portlet4:[1,1],
+    	      portlet5:[0,1],portlet6:[1,1],
+		      portlet7:[0,1],portlet8:[1,1],portlet9:[1,1]},
+	portlet9:{portlet1:[0,0],portlet2:[0,0],portlet3:[0,1],portlet4:[1,1],
+    	      portlet5:[0,1],portlet6:[1,1],
+		      portlet7:[0,1],portlet8:[1,1],portlet9:[1,1]}
+};
+
+      new fluid.Reorderer("reorderer-root", {
+          orderChangedCallback: function() {},
+          layoutHandler: new fluid.PortletLayoutHandler (portletOrderableFinder,
+          		layout, dropTargets),
+          orderableFinder: portletOrderableFinder,
+          droppableFinder: portletFinder,
+          dropTargets: dropTargets
+        }
+      );
+    </script>
+
+</body></html>
