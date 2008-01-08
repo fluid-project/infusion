@@ -10,6 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+// Declare dependencies.
 var fluid = fluid || {};
 
 fluid.Reorderer = function (domNodeId, params) {
@@ -141,7 +142,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	};
 	
 	this.handleKeyDown = function (evt) {
-       if (thisReorderer.activeItem && evt.keyCode == fluid.keys.CTRL) {
+       if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
            jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
            jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.dragging);
            thisReorderer.activeItem.setAttribute ("aaa:grab", "true");
@@ -152,7 +153,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	};
 	
 	this.handleKeyUp = function (evt) {
-       if (thisReorderer.activeItem && evt.keyCode == fluid.keys.CTRL) {
+       if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
            jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.dragging);
            jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.selected);
            thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
@@ -352,7 +353,7 @@ fluid.Reorderer = function (domNodeId, params) {
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
             selector += "[id=" + item.id + "]";
-        	if (i != items.length - 1) {
+        	if (i !== items.length - 1) {
         		selector += ", ";
         	}        	      	
         }
@@ -445,12 +446,12 @@ fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
         var hasWrapped = false;
             
         // Handle wrapping to 'before' the beginning. 
-        if (index == -1) {
+        if (index === -1) {
             index = orderables.length - 1;
             hasWrapped = true;
         }
         // Handle wrapping to 'after' the end.
-        else if (index == orderables.length) {
+        else if (index === orderables.length) {
             index = 0;
             hasWrapped = true;
         } 
@@ -540,7 +541,7 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
         for (i = 0; i < orderables.length; i++) {
         	currentItem = orderables [i];
         	iCoords = jQuery (orderables[i]).offset();
-        	if (iCoords.left == curCoords.left) {
+        	if (iCoords.left === curCoords.left) {
                 firstItemInColumn = firstItemInColumn || currentItem;
                 if (iCoords.top > curCoords.top) {
                 	return {item: currentItem, hasWrapped: false};
@@ -576,7 +577,7 @@ fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
         for (i = orderables.length - 1; i > -1; i--) {
             currentItem = orderables [i];
             iCoords = jQuery (orderables[i]).offset();
-            if (iCoords.left == curCoords.left) {
+            if (iCoords.left === curCoords.left) {
                 lastItemInColumn = lastItemInColumn || currentItem;
                 if (curCoords.top > iCoords.top) {
                     return {item: currentItem, hasWrapped: false};
@@ -620,58 +621,8 @@ fluid.PortletLayoutHandler = function (/*function*/ orderableFinder,
     // Public members.
     this.orderableFinder = orderableFinder;
     
-    // Private Methods
-    var getRightSiblingInfo = function(item) {
-        if (thisLH._isInRightmostColumn(item))
-            return {item: item, hasWrapped: true};
-        else
-            return getHorizontalSiblingInfo(item, 1);
-    };
-    
-    var getLeftSiblingInfo = function(item) {
-        if (thisLH._isInLeftmostColumn(item))
-            return {item: item, hasWrapped: true};
-        else
-            return getHorizontalSiblingInfo(item, -1);
-    };
-    
-    var getItemInfoBelow = function (item) {
-        if (thisLH._isLastInColumn(item))
-            return {item:item, hasWrapped:true};
-        else
-            return getVerticalSiblingInfo (item, 1);
-    };
-    
-    var getItemInfoAbove = function (item) {
-        if (thisLH._isFirstInColumn(item))
-            return {item:item, hasWrapped:true};
-        else
-            return getVerticalSiblingInfo (item, -1);
-    };
-
-    var isAtEndOfColumn = function (item, column) {
-        var index = null;
-        for (var col = 0; col < portletLayout.columns.length; col++) {
-            index = portletLayout.columns[col].children.indexOf(item.id);
-            if (index >= 0) {
-                break;
-            }
-        }
-        if (index >= 0) {
-            if (column == "top") {
-                return (index == 0) ? true : false;
-            } else {
-                if (index == portletLayout.columns[col].children.length-1) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
-        return false;
-    };
-    
-    /*
+    // Private Methods.
+       /*
      * A general get{Above|Below}SiblingInfo() given an item and a direction.
      * The direction is encoded by either a +1 to move down, or a -1 to
      * move up, and that value is used internally as an increment or
@@ -683,7 +634,7 @@ fluid.PortletLayoutHandler = function (/*function*/ orderableFinder,
         var hasWrapped = false;
             
         // If we wrap, backup 
-        if ((index == -1) || (index == orderables.length)) {
+        if ((index === -1) || (index === orderables.length)) {
             return {item: null, hasWrapped: true};
         }
         // Handle case where the passed-in item is *not* an "orderable"
@@ -709,27 +660,83 @@ fluid.PortletLayoutHandler = function (/*function*/ orderableFinder,
             
         var colIndex = -1;
         for (var col = 0; col < portletLayout.columns.length; col++) {
-            if (portletLayout.columns[col].children.indexOf(item.id) != -1) {
+            if (portletLayout.columns[col].children.indexOf(item.id) !== -1) {
                 colIndex = col;
                 break;
             }
         }
-        if (colIndex == -1)
+        if (colIndex === -1) {
             return {item: null, hasWrapped: true};
+        }
 
         colIndex = colIndex + incDecrement;
         var itemIndex = 0;
         var id = portletLayout.columns[colIndex].children[itemIndex];
-        var item = jQuery ("#" + id).get (0);
-        while (orderables.index (item) == -1) {
+        var sibling = jQuery ("#" + id).get (0);
+        while (orderables.index (sibling) === -1) {
             itemIndex += 1;
             id = portletLayout.columns[colIndex].children[itemIndex];
-            item = jQuery ("#" + id).get (0);
+            sibling = jQuery ("#" + id).get (0);
         }
-        return {item: item, hasWrapped: false};
+        return {item: sibling, hasWrapped: false};
 
     };
     
+    var getRightSiblingInfo = function(item) {
+        if (thisLH._isInRightmostColumn(item)) {
+            return {item: item, hasWrapped: true};
+        } else {
+            return getHorizontalSiblingInfo(item, 1);
+        }
+    };
+    
+    var getLeftSiblingInfo = function(item) {
+        if (thisLH._isInLeftmostColumn(item)) {
+            return {item: item, hasWrapped: true};
+        } else {
+            return getHorizontalSiblingInfo(item, -1);
+        }
+    };
+    
+    var getItemInfoBelow = function (item) {
+        if (thisLH._isLastInColumn(item)) {
+            return {item:item, hasWrapped:true};
+        } else {
+            return getVerticalSiblingInfo (item, 1);
+        }
+    };
+    
+    var getItemInfoAbove = function (item) {
+        if (thisLH._isFirstInColumn(item)) {
+            return {item:item, hasWrapped:true};
+        } else {
+            return getVerticalSiblingInfo (item, -1);
+        }
+    };
+
+    var isAtEndOfColumn = function (item, column) {
+        var index = null;
+        for (var col = 0; col < portletLayout.columns.length; col++) {
+            index = portletLayout.columns[col].children.indexOf(item.id);
+            if (index >= 0) {
+                break;
+            }
+        }
+        if (index >= 0) {
+            if (column === "top") {
+                return (index === 0) ? true : false;
+            } else {
+                if (index === portletLayout.columns[col].children.length-1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
+    };
+    
+    // Identical to ListLayoutHandler, except for privacy settings
     var moveItem = function (item, relatedItemInfo, defaultPlacement, wrappedPlacement) {
         var itemPlacement = defaultPlacement;
         if (relatedItemInfo.hasWrapped) {
@@ -755,51 +762,61 @@ fluid.PortletLayoutHandler = function (/*function*/ orderableFinder,
     };
     
     this.setReorderableContainer = function (aList) {
-        _container = aList;
+        container = aList;
     };
     
     this._isInLeftmostColumn = function (item) {
-        if (portletLayout.columns[0].children.indexOf(item.id) != -1)
+        if (portletLayout.columns[0].children.indexOf(item.id) !== -1) {
             return true;
-        else
+        } else {
             return false;
+        }
     };
     
     this._isInRightmostColumn = function (item) {
-        if (portletLayout.columns[portletLayout.columns.length-1].children.indexOf(item.id) != -1)
+        if (portletLayout.columns[portletLayout.columns.length-1].children.indexOf(item.id) !== -1) {
             return true;
-        else
+        } else {
             return false;
+        }
     };
     
+    // Identical to ListLayoutHandler, except for privacy settings
     this.getRightSibling = function (item) {
         return getRightSiblingInfo(item).item;
     };
     
+    // Identical to ListLayoutHandler, except for privacy settings
     this.moveItemRight = function (item) {
         moveItem(item, getRightSiblingInfo(item), "before", "after");
     };
 
+    // Identical to ListLayoutHandler, except for privacy settings
     this.getLeftSibling = function (item) {
         return getLeftSiblingInfo(item).item;
     };
 
+    // Identical to ListLayoutHandler, except for privacy settings
     this.moveItemLeft = function (item) {
         moveItem(item, getLeftSiblingInfo(item), "before", "after");
     };
 
+    // Identical to GridLayoutHandler, except for privacy settings
     this.getItemAbove = function (item) {
         return getItemInfoAbove(item).item;
     };
     
+    // Identical to GridLayoutHandler, except for privacy settings
     this.moveItemUp = function (item) {
         moveItem (item, getItemInfoAbove(item), "before", "after");
     };
         
+    // Identical to GridLayoutHandler, except for privacy settings
     this.getItemBelow = function (item) {
         return getItemInfoBelow(item).item;
     };
 
+    // Identical to GridLayoutHandler, except for privacy settings
     this.moveItemDown = function (item) {
         moveItem (item, getItemInfoBelow(item), "after", "before");
     };
@@ -810,13 +827,16 @@ fluid.PortletLayoutHandler = function (/*function*/ orderableFinder,
      * "before" means "above".  For a horizontally oriented set, "before" means
      * "left of".
      */
+     
+    // Identical to ListLayoutHandler
     this.isMouseBefore = function (evt, droppableEl) {
+    	var mid;
         if (this.orientation === fluid.orientation.VERTICAL) {
-            var mid = jQuery (droppableEl).offset ().top + (droppableEl.offsetHeight / 2);
+            mid = jQuery (droppableEl).offset ().top + (droppableEl.offsetHeight / 2);
             return (evt.pageY < mid);
         }
         else {
-            var mid = jQuery (droppableEl).offset ().left + (droppableEl.offsetWidth / 2);
+            mid = jQuery (droppableEl).offset ().left + (droppableEl.offsetWidth / 2);
             return (evt.clientX < mid);
         }
     };    
