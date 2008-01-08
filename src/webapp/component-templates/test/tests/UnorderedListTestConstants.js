@@ -44,7 +44,7 @@ function exposeTestFunctionNames() {
 var listHandler1;
 
 function listOrderableFinder (containerEl) {
-    return dojo.query ("[id^=list1item]", containerEl);
+    return jQuery ("[id^=list1item]", containerEl);
 }
 
 // This setUp will be called before each of the tests that are included in unordered-list.html 

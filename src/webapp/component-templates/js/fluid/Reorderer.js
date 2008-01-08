@@ -43,7 +43,7 @@ fluid.Reorderer = function (domNodeId, params) {
     };
 
 	if (params) {
-        dojo.mixin (this, params);
+        fluid.mixin (this, params);
     }
     
    /**
@@ -245,6 +245,8 @@ fluid.Reorderer = function (domNodeId, params) {
 			this.domNode.removeAttribute ("aaa:activedescendent");
 		}
 	};
+
+    var dropMarker; // private scratch variable
     
     /**
      * evt.data - the droppable DOM element.
@@ -256,16 +258,13 @@ fluid.Reorderer = function (domNodeId, params) {
        else {
            jQuery (evt.data).after (dropMarker);
        }
-	};
+	}
  
     /**
      * Given an item, make it a draggable and a droppable with the relevant properties and functions.
      * @param  anItem      The element to make draggable and droppable.
      * @param  selector    The jQuery selector(s) that select all the orderables.
      */ 
-  
-    var dropMarker; // private scratch variable
-    
     function setUpDnDItem (anItem, selector) {
         anItem.mouseover ( 
             function () {
@@ -442,7 +441,7 @@ fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
      */
     this._getSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
         var orderables = this.orderableFinder (this._container);
-        var index = dojo.indexOf (orderables, item) + incDecrement;
+        var index = jQuery (orderables).index (item) + incDecrement;
         var hasWrapped = false;
             
         // Handle wrapping to 'before' the beginning. 
@@ -499,12 +498,13 @@ fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
      * "left of".
      */
     this.isMouseBefore = function (evt, droppableEl) {
+    	var mid;
     	if (this.orientation === fluid.orientation.VERTICAL) {
-	        var mid = jQuery (droppableEl).offset().top + (droppableEl.offsetHeight / 2);
+	        mid = jQuery (droppableEl).offset().top + (droppableEl.offsetHeight / 2);
 	        return (evt.pageY < mid);
     	}
     	else {
-            var mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
+            mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
             return (evt.clientX < mid);
     	}
     };    

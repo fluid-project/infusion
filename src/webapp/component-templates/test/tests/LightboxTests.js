@@ -9,6 +9,45 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+function itemsInOriginalPositionTest(desc, lightboxDOMNode) {
+    thumbArray = lightboxDOMNode.getElementsByTagName("img");
+    assertEquals(desc + " expect first image to be first", firstImageId, thumbArray[0].id);
+    assertEquals(desc + " expect second image to be second", secondImageId, thumbArray[1].id);
+    assertEquals(desc + " expect third image to be third", thirdImageId, thumbArray[2].id);
+    assertEquals(desc + " expect fourth image to be fourth", fourthImageId, thumbArray[3].id);
+    assertEquals(desc + " expect fifth image to be fifth", fifthImageId, thumbArray[4].id);
+    assertEquals(desc + " expect sixth image to be sixth", sixthImageId, thumbArray[5].id);
+    assertEquals(desc + " expect seventh image to be seventh", seventhImageId, thumbArray[6].id);
+    assertEquals(desc + " expect eighth image to be eighth", eighthImageId, thumbArray[7].id);
+    assertEquals(desc + " expect ninth image to be ninth", ninthImageId, thumbArray[8].id);
+    assertEquals(desc + " expect tenth image to be tenth", tenthImageId, thumbArray[9].id);
+    assertEquals(desc + " expect fourth last image to be fourth last", eleventhImageId, thumbArray[10].id);
+    assertEquals(desc + " expect third last image to be third last", twelvethImageId, thumbArray[11].id);
+    assertEquals(desc + " expect second last image to be second last", secondLastImageId, thumbArray[12].id);
+    assertEquals(desc + " expect last image to be last", lastImageId, thumbArray[13].id);
+}
+
+function isItemDefaultTest(message, itemId) {
+    var element = document.getElementById(itemId);
+    assertTrue(message + itemId  +  " should be default", dojo.hasClass(element, defaultClass));    
+    assertFalse(message + itemId  +  " not be focused", dojo.hasClass(element, selectedClass));
+    assertFalse(message + itemId  +  " not be dragging", dojo.hasClass(element, draggingClass));
+}
+
+function isItemFocusedTest(message, itemId) {
+    var element = document.getElementById(itemId);
+    assertTrue(message + itemId  +  " should be focused", dojo.hasClass(element, selectedClass));   
+    assertFalse(message + itemId  +  " should not be default",dojo.hasClass(element, defaultClass));
+    assertFalse(message + itemId  +  " should not be default",dojo.hasClass(element, draggingClass));
+}
+
+function isItemDraggedTest(message, itemId) {
+    var element = document.getElementById(itemId);
+    assertTrue(message + itemId  +  " should be dragging", dojo.hasClass(element, draggingClass));  
+    assertFalse(message + itemId  +  " should not be default",dojo.hasClass(element, defaultClass));
+    assertFalse(message + itemId  +  " not should be focused", dojo.hasClass(element, selectedClass));  
+}
+
 function testFindReorderableParent() {
 	var lightbox = createLightbox();
 	
@@ -16,7 +55,7 @@ function testFindReorderableParent() {
 	assertEquals("The test item's role attribute should be gridcell",
 		"wairole:gridcell", testItem.getAttribute("role"));
 
-    var orderables = lightbox.orderableFinder (lightboxRootId);
+    var orderables = lightbox.orderableFinder (jQuery("[id=" + lightboxRootId + "]"));
 	assertEquals("Given the test item itself, the ancestor grid cell should be the test item",
 		testItem, lightbox._findReorderableParent(testItem, orderables));
 	assertEquals("Given the image, the ancestor grid cell should be the test item",
@@ -80,24 +119,6 @@ function testHandleArrowKeyPressMoveThumbDown() {
 
 }
 
-function itemsInOriginalPositionTest(desc, lightboxDOMNode) {
-	thumbArray = lightboxDOMNode.getElementsByTagName("img");
-	assertEquals(desc + " expect first image to be first", firstImageId, thumbArray[0].id);
-	assertEquals(desc + " expect second image to be second", secondImageId, thumbArray[1].id);
-	assertEquals(desc + " expect third image to be third", thirdImageId, thumbArray[2].id);
-	assertEquals(desc + " expect fourth image to be fourth", fourthImageId, thumbArray[3].id);
-	assertEquals(desc + " expect fifth image to be fifth", fifthImageId, thumbArray[4].id);
-	assertEquals(desc + " expect sixth image to be sixth", sixthImageId, thumbArray[5].id);
-	assertEquals(desc + " expect seventh image to be seventh", seventhImageId, thumbArray[6].id);
-	assertEquals(desc + " expect eighth image to be eighth", eighthImageId, thumbArray[7].id);
-	assertEquals(desc + " expect ninth image to be ninth", ninthImageId, thumbArray[8].id);
-	assertEquals(desc + " expect tenth image to be tenth", tenthImageId, thumbArray[9].id);
-	assertEquals(desc + " expect fourth last image to be fourth last", eleventhImageId, thumbArray[10].id);
-	assertEquals(desc + " expect third last image to be third last", twelvethImageId, thumbArray[11].id);
-	assertEquals(desc + " expect second last image to be second last", secondLastImageId, thumbArray[12].id);
-	assertEquals(desc + " expect last image to be last", lastImageId, thumbArray[13].id);
-}
-
 function testHandleArrowKeyPressForUpAndDown() {
 	var lightbox = createLightbox();
 	// setup: force the grid to have four columns
@@ -128,27 +149,6 @@ function testHandleArrowKeyPressForUpAndDown() {
 	isItemFocusedTest("After down arrow wrap ", firstReorderableId);
 	isItemDefaultTest("After down arrow wrap ", secondLastReorderableId);
 
-}
-
-function isItemDefaultTest(message, itemId) {
-	var element = document.getElementById(itemId);
-	assertTrue(message + itemId  +  " should be default", dojo.hasClass(element, defaultClass));	
-	assertFalse(message + itemId  +  " not be focused", dojo.hasClass(element, selectedClass));
-	assertFalse(message + itemId  +  " not be dragging", dojo.hasClass(element, draggingClass));
-}
-
-function isItemFocusedTest(message, itemId) {
-	var element = document.getElementById(itemId);
-	assertTrue(message + itemId  +  " should be focused", dojo.hasClass(element, selectedClass));	
-	assertFalse(message + itemId  +  " should not be default",dojo.hasClass(element, defaultClass));
-	assertFalse(message + itemId  +  " should not be default",dojo.hasClass(element, draggingClass));
-}
-
-function isItemDraggedTest(message, itemId) {
-	var element = document.getElementById(itemId);
-	assertTrue(message + itemId  +  " should be dragging", dojo.hasClass(element, draggingClass));	
-	assertFalse(message + itemId  +  " should not be default",dojo.hasClass(element, defaultClass));
-	assertFalse(message + itemId  +  " not should be focused", dojo.hasClass(element, selectedClass));	
 }
 
 function testHandleArrowKeyPressForLeftAndRight()	 {
@@ -267,7 +267,7 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	//       second image to move to first place and last image to move to second-last place
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlLeftArrow());
 
-	thumbArray = lightboxDOMNode.getElementsByTagName("img");;
+	thumbArray = lightboxDOMNode.getElementsByTagName("img");
 	assertEquals("after ctrl-left-arrow on first image, expect first last to be last", firstImageId, thumbArray[numOfImages - 1].id);
 	assertEquals("after ctrl-left-arrow on first image, expect second to be first", secondImageId, thumbArray[0].id);
 	assertEquals("after ctrl-left-arrow on first image, expect last to be second-last", lastImageId, thumbArray[numOfImages - 2].id);
@@ -427,7 +427,7 @@ function testChangeActiveItemToDefaultState() {
 
 function testUpdateActiveDescendent() {
 	var lightbox = createLightbox();
-	lbRoot = dojo.byId(lightboxRootId);
+	var lbRoot = dojo.byId(lightboxRootId);
 	assertNull("before first lightbox focus, no item should be activedescendent", lbRoot.getAttribute("aaa:activedescendent"));
 
     lightbox.selectActiveItem();
@@ -452,7 +452,7 @@ function testUpdateActiveDescendent() {
 
 function testUpdateGrabProperty() {
     var lightbox = createLightbox();
-    lbRoot = dojo.byId(lightboxRootId);
+    var lbRoot = dojo.byId(lightboxRootId);
     var testItem = dojo.byId(firstReorderableId);
     assertEquals("before any action, test item should have grab of supported", "supported", testItem.getAttribute("aaa:grab"));
     

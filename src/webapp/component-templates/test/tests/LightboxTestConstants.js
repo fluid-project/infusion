@@ -19,7 +19,7 @@ var numOfImages = 14;
 var REORDER_FORM_ID = "reorder-form";
 
 // The base name of the resource bundle for localized strings.
-var MESSAGE_BUNDLE_BASE = "message-bundle:"
+var MESSAGE_BUNDLE_BASE = "message-bundle:";
 
 // The id of the root node of the lightbox
 var lightboxRootId = "gallery:::gallery-thumbs:::";
@@ -122,7 +122,7 @@ function tearDown() {
 }
 
 function findOrderableByDivAndId (containerEl) {
-	return dojo.query (selectByDivAndId, containerEl);
+    return jQuery (selectByDivAndId, containerEl);
 }
 
 function findNoOrderables() {

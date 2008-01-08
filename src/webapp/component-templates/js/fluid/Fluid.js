@@ -28,6 +28,14 @@ fluid.orientation = {
 	VERTICAL: 1
 };
 
+fluid.mixin = function (target, args) {
+    for (var arg in args) {
+        if (args.hasOwnProperty (arg)) {
+            target[arg] = args[arg];
+        }
+    }
+};
+  
 fluid.deriveLightboxCellBase = function (namebase, index) {
     return namebase + "lightbox-cell:" + index + ":";
 };
@@ -117,7 +125,7 @@ fluid.Utilities.findForm = function (element) {
         }
         element = element.parentNode;
     }
-}
+};
     
     
 
