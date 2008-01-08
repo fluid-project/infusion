@@ -1,5 +1,5 @@
 /*
-Copyright 2007 University of Toronto
+Copyright 2007 - 2008 University of Toronto
 Copyright 2007 University of Cambridge
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -12,7 +12,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 var fluid = fluid || {};
-var dojo = dojo || {};
 var jQuery = jQuery || {};
 
 fluid.Reorderer = function (domNodeId, params) {
@@ -21,7 +20,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	var thisReorderer = this;
 	var theAvatar = null;
 	
-	this.domNode = dojo.byId (domNodeId);
+	this.domNode = jQuery ("[id=" + domNodeId + "]");
 	
 	// the reorderable DOM element that is currently active
     this.activeItem = null;
@@ -64,19 +63,14 @@ fluid.Reorderer = function (domNodeId, params) {
 		return item;
 	};
 	
-	this._setUpDomNode = function() {
-		// Connect the listeners that handle keypresses and focusing
-        var jqNode = jQuery (this.domNode);
-        jqNode.focus (this.handleFocus);
-        jqNode.blur (this.handleBlur);
-        jqNode.keydown (this.handleKeyDown);
-        jqNode.keyup (this.handleKeyUp);
+	function setupDomNode (domNode) {
+		domNode.focus(thisReorderer.handleFocus);
+        domNode.blur (thisReorderer.handleBlur);
+        domNode.keydown (thisReorderer.handleKeyDown);
+        domNode.keyup (thisReorderer.handleKeyUp);
+        domNode.removeAttr ("aaa:activedescendent");
+ 	}	
 	
-		this.layoutHandler.setReorderableContainer (this.domNode);
-	
-		this.domNode.removeAttribute ("aaa:activedescendent");
-	};
-		
 	/**
 	 * Changes the current focus to the specified item.
 	 * @param {Object} anItem
@@ -111,7 +105,7 @@ fluid.Reorderer = function (domNodeId, params) {
 	 */
 	this.selectActiveItem = function() {
 		if (!this.activeItem) {
-			var orderables = this.orderableFinder (this.domNode);
+			var orderables = this.orderableFinder (this.domNode.get(0));
 			if (orderables.length > 0) {
 				this._setActiveItem (orderables[0]);
 			}
@@ -126,14 +120,14 @@ fluid.Reorderer = function (domNodeId, params) {
         thisReorderer.selectActiveItem();
         return false;
     };
-
-    this.handleBlur = function() {
+    
+    this.handleBlur = function (evt) {
         // Temporarily disabled blur handling in IE. See FLUID-7 for details.
         if (!jQuery.browser.msie) {
             thisReorderer.changeActiveItemToDefaultState();
         }
     };
-		
+    		
 	this.changeActiveItemToDefaultState = function() {
 		if (this.activeItem) {
 			var jActiveItem = jQuery (this.activeItem);
@@ -143,7 +137,7 @@ fluid.Reorderer = function (domNodeId, params) {
 		}
 	};
 	
-	this.handleKeyDown = function (evt) {
+    this.handleKeyDown = function (evt) {
        if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
            jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
            jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.dragging);
@@ -152,17 +146,17 @@ fluid.Reorderer = function (domNodeId, params) {
        }
 
        return thisReorderer.handleArrowKeyPress(evt);
-	};
-	
-	this.handleKeyUp = function (evt) {
+    };
+
+    this.handleKeyUp = function (evt) {
        if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
            jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.dragging);
            jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.selected);
            thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
            return false;
        } 
-	};
-	
+    };
+		
 	this.handleArrowKeyPress = function (evt) {
         if (thisReorderer.activeItem) {
             switch (evt.keyCode) {
@@ -243,9 +237,9 @@ fluid.Reorderer = function (domNodeId, params) {
 	
 	this._updateActiveDescendent = function() {
 		if (this.activeItem) {
-			this.domNode.setAttribute ("aaa:activedescendent", this.activeItem.id);
+			this.domNode.attr ("aaa:activedescendent", this.activeItem.id);
 		} else {
-			this.domNode.removeAttribute ("aaa:activedescendent");
+			this.domNode.removeAttr ("aaa:activedescendent");
 		}
 	};
 
@@ -342,7 +336,7 @@ fluid.Reorderer = function (domNodeId, params) {
     }
     	
 	function initOrderables() {
-        var items = thisReorderer.orderableFinder (thisReorderer.domNode);
+        var items = thisReorderer.orderableFinder (thisReorderer.domNode.get(0));
         if (items.length === 0) {
         	return;
         }
@@ -386,7 +380,8 @@ fluid.Reorderer = function (domNodeId, params) {
 
     // Final initialization of the Reorderer at the end of the construction process	
 	if (this.domNode) {
-        this._setUpDomNode();
+        setupDomNode(this.domNode);
+        this.layoutHandler.setReorderableContainer (this.domNode.get(0));
         initOrderables();
     }
 }; // End Reorderer
