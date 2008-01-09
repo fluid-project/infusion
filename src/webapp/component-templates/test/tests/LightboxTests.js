@@ -10,7 +10,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 function itemsInOriginalPositionTest(desc) {
-    thumbArray = findImgsInLightbox();
+    var thumbArray = findImgsInLightbox();
     assertEquals(desc + " expect first image to be first", firstImageId, thumbArray[0].id);
     assertEquals(desc + " expect second image to be second", secondImageId, thumbArray[1].id);
     assertEquals(desc + " expect third image to be third", thirdImageId, thumbArray[2].id);
@@ -28,24 +28,27 @@ function itemsInOriginalPositionTest(desc) {
 }
 
 function isItemDefaultTest(message, itemId) {
-    var element = document.getElementById(itemId);
-    assertTrue(message + itemId  +  " should be default", dojo.hasClass(element, defaultClass));    
-    assertFalse(message + itemId  +  " not be focused", dojo.hasClass(element, selectedClass));
-    assertFalse(message + itemId  +  " not be dragging", dojo.hasClass(element, draggingClass));
+    var item = jQuery ("[id=" + itemId + "]");
+    
+    assertTrue(message + itemId  +  " should be default", item.hasClass (defaultClass));
+    assertFalse(message + itemId  +  " not be focused", item.hasClass (selectedClass));
+    assertFalse(message + itemId  +  " not be dragging", item.hasClass (draggingClass));
 }
 
 function isItemFocusedTest(message, itemId) {
-    var element = document.getElementById(itemId);
-    assertTrue(message + itemId  +  " should be focused", dojo.hasClass(element, selectedClass));   
-    assertFalse(message + itemId  +  " should not be default",dojo.hasClass(element, defaultClass));
-    assertFalse(message + itemId  +  " should not be default",dojo.hasClass(element, draggingClass));
+    var item = jQuery ("[id=" + itemId + "]");
+    
+    assertTrue(message + itemId  +  " should be focused", item.hasClass (selectedClass));   
+    assertFalse(message + itemId  +  " should not be default", item.hasClass (defaultClass));
+    assertFalse(message + itemId  +  " should not be default", item.hasClass (draggingClass));
 }
 
 function isItemDraggedTest(message, itemId) {
-    var element = document.getElementById(itemId);
-    assertTrue(message + itemId  +  " should be dragging", dojo.hasClass(element, draggingClass));  
-    assertFalse(message + itemId  +  " should not be default",dojo.hasClass(element, defaultClass));
-    assertFalse(message + itemId  +  " not should be focused", dojo.hasClass(element, selectedClass));  
+    var item = jQuery ("[id=" + itemId + "]");
+    
+    assertTrue(message + itemId  +  " should be dragging", item.hasClass (draggingClass));  
+    assertFalse(message + itemId  +  " should not be default",item.hasClass (defaultClass));
+    assertFalse(message + itemId  +  " not should be focused", item.hasClass (selectedClass));  
 }
 
 /*
@@ -78,7 +81,7 @@ function testHandleArrowKeyPressMoveThumbDown() {
 
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlUpArrow());
 	
-	thumbArray = findImgsInLightbox();
+	var thumbArray = findImgsInLightbox();
 	assertEquals("after ctrl-up-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
 	assertEquals("after ctrl-up-arrow, expect third image to be second", thirdImageId, thumbArray[1].id);
 	assertEquals("after ctrl-up-arrow, expect fifth image to be fourth", fifthImageId, thumbArray[3].id);
@@ -94,9 +97,11 @@ function testHandleArrowKeyPressMoveThumbDown() {
 function testHandleArrowKeyPressForUpAndDown() {
 	var lightbox = createLightbox();
 	// setup: force the grid to have four columns
-	dojo.removeClass(dojo.byId(lightboxRootId), "width-3-thumb");
-	dojo.addClass(dojo.byId(lightboxRootId), "width-4-thumb");
-	
+	var lightboxRoot = jQuery ("[id=" + lightboxRootId + "]");
+    
+	lightboxRoot.removeClass("width-3-thumb");
+    lightboxRoot.addClass("width-4-thumb");
+    
 	lightbox.selectActiveItem();
 	
 	isItemFocusedTest("Initially ", firstReorderableId);
@@ -166,6 +171,7 @@ function testHandleArrowKeyPressForLeftAndRight()	 {
 
 function testHandleKeyUpAndHandleKeyDownChangesState() {
 	var lightbox = createLightbox();
+    var firstReorderable = jQuery ("[id=" + firstReorderableId + "]");
     lightbox.selectActiveItem();
 
 	// check that none of the images are currently being moved.
@@ -174,7 +180,7 @@ function testHandleKeyUpAndHandleKeyDownChangesState() {
 	isItemDefaultTest("Initially ", secondLastReorderableId);
 	
 	// focus the first thumb
-	lightbox.focusItem(dojo.byId(firstReorderableId));
+	lightbox.focusItem(firstReorderable.get(0));
 	
 	// ctrl down - expect dragging state to start
 	lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL());
@@ -260,71 +266,73 @@ function testPersistFocus () {
 	isItemDefaultTest("When lightbox has focus ", secondReorderableId);
 	
 	// Change focus to the input1, then back to the lightbox
-	var newInputElement = document.createElement("input");
+	var newInputElement = document.createElement ("input");
 	newInputElement.id="input1";
-	dojo.place(newInputElement, dojo.byId("para1"), "after");
-	dojo.byId ("input1").focus();
-	isItemDefaultTest("After focus leaves the lightbox ", firstReorderableId);
+	
+	var para1 = jQuery ("[id=para1]");
+    jQuery (para1).after (newInputElement);
+    jQuery ("[id=input1]").get(0).focus();
+	isItemDefaultTest ("After focus leaves the lightbox ", firstReorderableId);
 	
 	lightbox.findElementToFocus(lightbox.domNode).focus();
 	
 	// check that the first thumb nail is still moveable.
-	isItemFocusedTest("When lightbox has focus again ", firstReorderableId);
-	isItemDefaultTest("When lightbox has focus again ", secondReorderableId);
+	isItemFocusedTest ("When lightbox has focus again ", firstReorderableId);
+	isItemDefaultTest ("When lightbox has focus again ", secondReorderableId);
 	
 	// set focus to another image.
-	lightbox.focusItem(dojo.byId(secondReorderableId));
-	isItemFocusedTest("Changed focus to second ", secondReorderableId);
-	isItemDefaultTest("Changed focus to second ", firstReorderableId);
+	lightbox.focusItem (jQuery ("[id="+secondReorderableId+"]"));
+    isItemFocusedTest ("Changed focus to second ", secondReorderableId);
+	isItemDefaultTest ("Changed focus to second ", firstReorderableId);
 	
 	// Change focus to the input1, then back to the lightbox
-	dojo.byId ("input1").focus();
-	lightbox.findElementToFocus(lightbox.domNode).focus();
+	jQuery ("[id=input1]").get(0).focus();
+	lightbox.findElementToFocus (lightbox.domNode).focus();
 	
 	// check that the second thumb nail is still moveable.
-	lightbox.focusItem(dojo.byId(secondReorderableId));
-	isItemFocusedTest("Lightbox refocused with second selected ", secondReorderableId);
-	isItemDefaultTest("Lightbox refocused with second selected ", firstReorderableId);
+	lightbox.focusItem (jQuery ("[id="+secondReorderableId+"]"));
+    isItemFocusedTest ("Lightbox refocused with second selected ", secondReorderableId);
+	isItemDefaultTest ("Lightbox refocused with second selected ", firstReorderableId);
 	
-	lightbox.findElementToFocus(lightbox.domNode).blur();
-	isItemDefaultTest("Lightbox blur with second selected ", secondReorderableId);
+	lightbox.findElementToFocus (lightbox.domNode).blur();
+	isItemDefaultTest ("Lightbox blur with second selected ", secondReorderableId);
 }
 
 function testfocusItem () {
 	var lightbox = createLightbox();
 	
 	// nothing should be focused
-	isItemDefaultTest("Initially", firstReorderableId);
-	isItemDefaultTest("Initially", secondReorderableId);
+	isItemDefaultTest ("Initially", firstReorderableId);
+	isItemDefaultTest ("Initially", secondReorderableId);
 	
 	// focus the second image
-	lightbox.focusItem(dojo.byId(secondReorderableId));
-	isItemFocusedTest("After focus on second image ", secondReorderableId);
+	lightbox.focusItem (jQuery ("[id="+secondReorderableId+"]"));
+    isItemFocusedTest ("After focus on second image ", secondReorderableId);
 	
 	// focus the image already focused to ensure it remains focused.
-	lightbox.focusItem(dojo.byId(secondReorderableId));
-	isItemFocusedTest("After refocus on second image ", secondReorderableId);
+	lightbox.focusItem (jQuery ("[id="+secondReorderableId+"]"));
+    isItemFocusedTest ("After refocus on second image ", secondReorderableId);
 
 	// focus a different image and check to see that the previous image is defocused
 	// and the new image is focused	
-	lightbox.focusItem(dojo.byId (firstReorderableId));
-	isItemDefaultTest("After focus on first image ", secondReorderableId);
-	isItemFocusedTest("After focus on first image ", firstReorderableId);
+	lightbox.focusItem (jQuery ("[id="+firstReorderableId+"]"));
+    isItemDefaultTest ("After focus on first image ", secondReorderableId);
+	isItemFocusedTest ("After focus on first image ", firstReorderableId);
 }
 
 function testSelectActiveItemNothingSelected() {
 	var lightbox = createLightbox();
 
-	isItemDefaultTest("Initially", firstReorderableId);
-	lightbox.selectActiveItem();
-	isItemFocusedTest("After select active item ", firstReorderableId);
+	isItemDefaultTest ("Initially", firstReorderableId);
+	lightbox.selectActiveItem ();
+	isItemFocusedTest ("After select active item ", firstReorderableId);
 	
 	// Now, test it with no reorderables.
 	//
-	var lightboxWithNoOrderables = createLightboxWithNoOrderables();
-	var orderables = lightboxWithNoOrderables.orderableFinder();
+	var lightboxWithNoOrderables = createLightboxWithNoOrderables ();
+	var orderables = lightboxWithNoOrderables.orderableFinder ();
 	assertEquals ("There should be no 'orderables' in this lightbox", 0, orderables.length);
-	lightboxWithNoOrderables.selectActiveItem();
+	lightboxWithNoOrderables.selectActiveItem ();
 	assertNull ("Lightbox's activeItem member should be null", lightboxWithNoOrderables.activeItem);
 }
 
@@ -375,15 +383,16 @@ function testKeypressesWithNoOrderables() {
 function testSelectActiveItemSecondSelected() {
 	// set the active item to something other than the default first item
 	var lightbox = createLightbox();
-	lightbox._setActiveItem(dojo.byId (secondReorderableId));
+	
+	lightbox._setActiveItem (jQuery ("[id="+secondReorderableId+"]"));
 	
 	// before selecting the active item, nothing should have focus	
-	isItemDefaultTest("Initially", firstReorderableId);
-	isItemDefaultTest("Initially", secondReorderableId);
+	isItemDefaultTest ("Initially", firstReorderableId);
+	isItemDefaultTest ("Initially", secondReorderableId);
 	
 	lightbox.selectActiveItem();
-	isItemFocusedTest("after selecting active item ", secondReorderableId);
-	isItemDefaultTest("after selecting active item ", firstReorderableId);
+	isItemFocusedTest ("after selecting active item ", secondReorderableId);
+	isItemDefaultTest ("after selecting active item ", firstReorderableId);
 }
 
 function testChangeActiveItemToDefaultState() {
@@ -397,55 +406,58 @@ function testChangeActiveItemToDefaultState() {
 
 function testUpdateActiveDescendent() {
 	var lightbox = createLightbox();
-	var lbRoot = dojo.byId(lightboxRootId);
-	assertNull("before first lightbox focus, no item should be activedescendent", lbRoot.getAttribute("aaa:activedescendent"));
+	var lbRoot = jQuery ("[id=" + lightboxRootId + "]");
+	assertUndefined ("before first lightbox focus, no item should be activedescendent", lbRoot.attr("aaa:activedescendent"));
 
     lightbox.selectActiveItem();
-	assertEquals("after first lightbox focus, first image should be activedescendent", firstReorderableId, lbRoot.getAttribute("aaa:activedescendent"));
+	assertEquals ("after first lightbox focus, first image should be activedescendent", firstReorderableId, lbRoot.attr("aaa:activedescendent"));
 	
-	lightbox.activeItem = dojo.byId(thirdReorderableId);
+	lightbox.activeItem = jQuery ("[id=" + thirdReorderableId + "]").get(0);
 	lightbox._updateActiveDescendent();
-	assertEquals("after setting active item to third image, third image should be activedescendent", thirdReorderableId, lbRoot.getAttribute("aaa:activedescendent"));
+	assertEquals ("after setting active item to third image, third image should be activedescendent", thirdReorderableId, lbRoot.attr("aaa:activedescendent"));
 
 	var newInputElement = document.createElement("input");
 	newInputElement.id="input1";
-	dojo.place(newInputElement, dojo.byId("para1"), "after");
-	dojo.byId ("input1").focus();
-	lightbox._updateActiveDescendent();
-	assertEquals("after removing focus from lightbox, third image should still be activedescendent", thirdReorderableId, lbRoot.getAttribute("aaa:activedescendent"));
+	
+	jQuery ("[id=para1]").after (newInputElement);
+    jQuery ("[id=input1]").get(0).focus();
+    lightbox._updateActiveDescendent();
+	assertEquals ("after removing focus from lightbox, third image should still be activedescendent", thirdReorderableId, lbRoot.attr("aaa:activedescendent"));
 
 	lightbox.activeItem = null;
 	lightbox._updateActiveDescendent();
-	assertNull("after unsetting active item, no item should be activedescendent", lbRoot.getAttribute("aaa:activedescendent"));
-
+	assertUndefined ("after unsetting active item, no item should be activedescendent", lbRoot.attr("aaa:activedescendent"));
 }
 
 function testUpdateGrabProperty() {
     var lightbox = createLightbox();
-    var lbRoot = dojo.byId(lightboxRootId);
-    var testItem = dojo.byId(firstReorderableId);
-    assertEquals("before any action, test item should have grab of supported", "supported", testItem.getAttribute("aaa:grab"));
+    var lbRoot = jQuery ("[id=" + lightboxRootId + "]");
+    var testItem = jQuery ("[id=" + firstReorderableId + "]");
+    assertEquals ("before any action, test item should have grab of supported", "supported", testItem.attr("aaa:grab"));
     
     lightbox.selectActiveItem();
     lightbox.handleKeyDown (fluid.testUtils.createEvtCTRL());
-    assertEquals("while CTRL held down, test item should have grab of true", "true", testItem.getAttribute("aaa:grab"));
+    assertEquals ("while CTRL held down, test item should have grab of true", "true", testItem.attr("aaa:grab"));
 
     lightbox.handleArrowKeyPress (fluid.testUtils.createEvtCtrlRightArrow());
-    assertEquals("after arrow while CTRL still held down, test item should have grab of true", "true", testItem.getAttribute("aaa:grab"));
+    assertEquals ("after arrow while CTRL still held down, test item should have grab of true", "true", testItem.attr("aaa:grab"));
     
     lightbox.handleKeyUp (fluid.testUtils.createEvtCTRL());
-    assertEquals("after CTRL released, test item should have grab of supported", "supported", testItem.getAttribute("aaa:grab"));
+    assertEquals ("after CTRL released, test item should have grab of supported", "supported", testItem.attr("aaa:grab"));
 }
 
 function testAddFocusToElement() {
     var lightbox = createLightbox();
-    var testItem = jQuery("[id="+firstReorderableId+"]");
-    assertEquals("before adding focus, tabindex should be undefined", undefined, jQuery(testItem).attr("tabindex"));
-    lightbox.addFocusToElement(testItem);
-    assertEquals("after adding focus, tabindex should be -1", "-1", jQuery(testItem).attr("tabindex"));
-    var testItem2 = jQuery("[id="+secondReorderableId+"]");
-    jQuery(testItem2).attr("tabindex", 2);
-    assertEquals("before adding focus to something with tabindex=2, tabindex should be 2", "2", jQuery(testItem2).attr("tabindex"));
-    lightbox.addFocusToElement(testItem2);
-    assertEquals("before adding focus to something with tabindex=2, tabindex should be still be 2", "2", jQuery(testItem2).attr("tabindex"));
+    var testItem = jQuery ("[id="+firstReorderableId+"]");
+    
+    assertEquals ("before adding focus, tabindex should be undefined", undefined, jQuery (testItem).attr ("tabindex"));
+    lightbox.addFocusToElement (testItem);
+    assertEquals("after adding focus, tabindex should be -1", "-1", jQuery (testItem).attr ("tabindex"));
+    
+    var testItem2 = jQuery ("[id="+secondReorderableId+"]");
+    jQuery (testItem2).attr ("tabindex", 2);
+    
+    assertEquals ("before adding focus to something with tabindex=2, tabindex should be 2", "2", jQuery (testItem2).attr ("tabindex"));
+    lightbox.addFocusToElement (testItem2);
+    assertEquals ("before adding focus to something with tabindex=2, tabindex should be still be 2", "2", jQuery (testItem2).attr ("tabindex"));
 }
