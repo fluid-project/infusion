@@ -1,5 +1,5 @@
 /*
-Copyright 2007 University of Toronto
+Copyright 2007-2008 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -109,7 +109,7 @@ function setUp() {
     imgListClone = document.getElementById(lightboxRootId).cloneNode(true);
     
     // Force the grid size to three thumbnails wide
-    dojo.addClass(dojo.byId(lightboxRootId), "width-3-thumb");
+    jQuery("[id="+lightboxRootId+"]").addClass ("width-3-thumb");
 }
 
 // This tearDown will be called after each of the tests that are included in Lightbox.html 

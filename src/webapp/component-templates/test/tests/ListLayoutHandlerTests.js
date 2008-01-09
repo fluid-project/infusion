@@ -1,5 +1,5 @@
 /*
-Copyright 2007 University of Toronto
+Copyright 2007-2008 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -10,93 +10,91 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 function testGetRightSibling() {
-	var rightSibling = listHandler1.getRightSibling(dojo.byId(firstItemId));
+	var rightSibling = listHandler1.getRightSibling(fluid.testUtils.byId(firstItemId));
 	assertEquals("The item to the right of the first item should be the second item", 
-		dojo.byId(secondItemId), rightSibling);
+		fluid.testUtils.byId(secondItemId), rightSibling);
 		
-	rightSibling = listHandler1.getRightSibling(dojo.byId(thirdItemId));
+	rightSibling = listHandler1.getRightSibling(fluid.testUtils.byId(thirdItemId));
 	assertEquals("The item to the right of the third item should be the fourth item", 
-		dojo.byId(fourthItemId), rightSibling);
+		fluid.testUtils.byId(fourthItemId), rightSibling);
 }
 
 function testGetRightSiblingWrap() {
-	var rightSibling = listHandler1.getRightSibling(dojo.byId(lastItemId));
+	var rightSibling = listHandler1.getRightSibling(fluid.testUtils.byId(lastItemId));
 	assertEquals("The item to the right of the last item should be the first item", 
-		dojo.byId(firstItemId), rightSibling);	
+		fluid.testUtils.byId(firstItemId), rightSibling);	
 }
 
 function testGetLeftSibling() {
-	var leftSibling = listHandler1.getLeftSibling(dojo.byId(secondItemId));
+	var leftSibling = listHandler1.getLeftSibling(fluid.testUtils.byId(secondItemId));
 	assertEquals("The item to the left of the second item should be the first item", 
-		dojo.byId(firstItemId), leftSibling);
+		fluid.testUtils.byId(firstItemId), leftSibling);
 
-	leftSibling = listHandler1.getLeftSibling(dojo.byId(lastItemId));
+	leftSibling = listHandler1.getLeftSibling(fluid.testUtils.byId(lastItemId));
 	assertEquals("The item to the left of the last item should be the fourth item", 
-		dojo.byId(fourthItemId), leftSibling);
+		fluid.testUtils.byId(fourthItemId), leftSibling);
 }
 
 function testGetLeftSiblingWrap() {
-	leftSibling = listHandler1.getLeftSibling(dojo.byId(firstItemId));
+	leftSibling = listHandler1.getLeftSibling(fluid.testUtils.byId(firstItemId));
 	assertEquals("The item to the left of the first item should be the last item", 
-		dojo.byId(lastItemId), leftSibling);
+		fluid.testUtils.byId(lastItemId), leftSibling);
 }
 
 function testGetItemBelow() {
-	var itemBelow = listHandler1.getItemBelow(dojo.byId(firstItemId));
+	var itemBelow = listHandler1.getItemBelow(fluid.testUtils.byId(firstItemId));
 	assertEquals("The item to the right of the first item should be the second item", 
-		dojo.byId(secondItemId), itemBelow);
+		fluid.testUtils.byId(secondItemId), itemBelow);
 
-	itemBelow = listHandler1.getItemBelow(dojo.byId(thirdItemId));
+	itemBelow = listHandler1.getItemBelow(fluid.testUtils.byId(thirdItemId));
 	assertEquals("The item to the right of the third item should be the fourth item", 
-		dojo.byId(fourthItemId), itemBelow);
+		fluid.testUtils.byId(fourthItemId), itemBelow);
 }
 
 function testGetItemBelowWrap() {
-	itemBelow = listHandler1.getItemBelow(dojo.byId(lastItemId));
+	itemBelow = listHandler1.getItemBelow(fluid.testUtils.byId(lastItemId));
 	assertEquals("The item to the right of the last item should be the first item", 
-		dojo.byId(firstItemId), itemBelow);	
+		fluid.testUtils.byId(firstItemId), itemBelow);	
 }
 
 function testGetItemAbove() {
-	var itemAbove = listHandler1.getItemAbove(dojo.byId(secondItemId));
+	var itemAbove = listHandler1.getItemAbove(fluid.testUtils.byId(secondItemId));
 	assertEquals("The item to the left of the second item should be the first item", 
-		dojo.byId(firstItemId), itemAbove);
+		fluid.testUtils.byId(firstItemId), itemAbove);
 
-	itemAbove = listHandler1.getItemAbove(dojo.byId(lastItemId));
+	itemAbove = listHandler1.getItemAbove(fluid.testUtils.byId(lastItemId));
 	assertEquals("The item to the left of the last item should be the fourth item", 
-		dojo.byId(fourthItemId), itemAbove);
+		fluid.testUtils.byId(fourthItemId), itemAbove);
 }
 
 function testGetItemAboveWrap() {
-	itemAbove = listHandler1.getItemAbove(dojo.byId(firstItemId));
+	itemAbove = listHandler1.getItemAbove(fluid.testUtils.byId(firstItemId));
 	assertEquals("The item to the left of the first item should be the last item", 
-		dojo.byId(lastItemId), itemAbove);
+		fluid.testUtils.byId(lastItemId), itemAbove);
 }
 
 function testNextItemForNonOrderableReturnsTheFirstItem() {
-    var rightSibling = listHandler1.getRightSibling(dojo.byId(nonOrderabeItemId));
+    var rightSibling = listHandler1.getRightSibling(fluid.testUtils.byId(nonOrderabeItemId));
     assertEquals("When a non-orderable is passed to getRightSibling the first orderable should be returned.", 
-        dojo.byId(firstItemId), rightSibling);  
+        fluid.testUtils.byId(firstItemId), rightSibling);  
         
-    var leftSibling = listHandler1.getLeftSibling(dojo.byId(nonOrderabeItemId));
+    var leftSibling = listHandler1.getLeftSibling(fluid.testUtils.byId(nonOrderabeItemId));
     assertEquals("When a non-orderable is passed to getLeftSibling the first orderable should be returned.", 
-        dojo.byId(firstItemId), leftSibling);
+        fluid.testUtils.byId(firstItemId), leftSibling);
 
-    var itemBelow = listHandler1.getItemBelow(dojo.byId(nonOrderabeItemId));
+    var itemBelow = listHandler1.getItemBelow(fluid.testUtils.byId(nonOrderabeItemId));
     assertEquals("When a non-orderable is passed to getItemBelow the first orderable should be returned", 
-        dojo.byId(firstItemId), itemBelow);
+        fluid.testUtils.byId(firstItemId), itemBelow);
 
-    var itemAbove = listHandler1.getItemAbove(dojo.byId(nonOrderabeItemId));
+    var itemAbove = listHandler1.getItemAbove(fluid.testUtils.byId(nonOrderabeItemId));
     assertEquals("When a non-orderable is passed to getItemAbove the first orderable should be returned.", 
-        dojo.byId(firstItemId), itemAbove);
+        fluid.testUtils.byId(firstItemId), itemAbove);
         
 }
 
 // TODO: expand the movement test 
 function testMovement() {
-    var theList = dojo.byId("list1");
-    	
-    listItems = theList.getElementsByTagName("li");
+    var listItems = jQuery("li", jQuery("#list1"));
     
     assertEquals("Before moving anything, expect first is first", firstItemId, listItems[0].id);
     assertEquals("Before moving anything, expect second is second", secondItemId, listItems[1].id);
@@ -106,7 +104,7 @@ function testMovement() {
 
     listHandler1.moveItemDown(listItems[0]);
     
-    listItemsAfterMove = theList.getElementsByTagName("li");
+    var listItemsAfterMove = jQuery("li", jQuery("#list1"));
     
     assertEquals("After, expect second is first", secondItemId, listItemsAfterMove[0].id);
     assertEquals("After, expect first is second", firstItemId, listItemsAfterMove[1].id);

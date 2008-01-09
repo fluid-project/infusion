@@ -1,5 +1,5 @@
 /*
-Copyright 2007 University of Toronto
+Copyright 2007-2008 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -28,7 +28,7 @@ function testIsOrderChangedCallbackCalled() {
 			orderChangedCallback: function(){
 				var newInputElement = document.createElement("input");
 				newInputElement.id="callbackCalled";
-				dojo.place(newInputElement, dojo.byId("para1"), "after");
+				jQuery ("[id=para1]").after(newInputElement);
 			},
 	    	layoutHandler: new fluid.GridLayoutHandler(findOrderableByDivAndId),
             orderableFinder: findOrderableByDivAndId
@@ -39,6 +39,6 @@ function testIsOrderChangedCallbackCalled() {
 	lightbox.selectActiveItem();
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlRightArrow());
 	assertNotNull("order changed callback is not called when a move is performed", 
-		dojo.byId("callbackCalled"));
+		fluid.testUtils.byId("callbackCalled"));
 }
 

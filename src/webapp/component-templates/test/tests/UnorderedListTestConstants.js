@@ -1,5 +1,5 @@
 /*
-Copyright 2007 University of Toronto
+Copyright 2007-2008 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -50,7 +50,7 @@ function listOrderableFinder (containerEl) {
 // This setUp will be called before each of the tests that are included in unordered-list.html 
 function setUp() {
     listHandler1 = new fluid.ListLayoutHandler(listOrderableFinder);
-    var list = dojo.byId("list1");
+    var list = fluid.testUtils.byId("list1");
     listHandler1.setReorderableContainer(list);
 
 }

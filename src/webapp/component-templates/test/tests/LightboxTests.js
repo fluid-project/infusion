@@ -269,8 +269,7 @@ function testPersistFocus () {
 	var newInputElement = document.createElement ("input");
 	newInputElement.id="input1";
 	
-	var para1 = jQuery ("[id=para1]");
-    jQuery (para1).after (newInputElement);
+	jQuery ("[id=para1]").after (newInputElement);
     jQuery ("[id=input1]").get(0).focus();
 	isItemDefaultTest ("After focus leaves the lightbox ", firstReorderableId);
 	
