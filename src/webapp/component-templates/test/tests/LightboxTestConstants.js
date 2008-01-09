@@ -80,7 +80,6 @@ function exposeTestFunctionNames() {
 		"testGetItemInfoAboveOneRow",
 		
 		// LightboxTests.js
-		"testFindReorderableParent",
 		"testHandleArrowKeyPressMoveThumbDown",
 		"testHandleArrowKeyPressWrapThumbUp",
 		"testHandleArrowKeyPressForUpAndDown",
@@ -128,6 +127,10 @@ function findOrderableByDivAndId (containerEl) {
 function findNoOrderables() {
 	return [];
 }
+
+function findImgsInLightbox() {
+    return jQuery("img", jQuery("[id=" + lightboxRootId + "]"));
+}
     
 function createLightbox() {
     return new fluid.Reorderer (lightboxRootId, {
@@ -142,4 +145,6 @@ function createLightboxWithNoOrderables() {
         orderableFinder: findNoOrderables
     });
 }
+
+
 

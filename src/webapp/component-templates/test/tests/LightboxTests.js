@@ -1,5 +1,5 @@
 /*
-Copyright 2007 University of Toronto
+Copyright 2007 - 2008 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -9,8 +9,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-function itemsInOriginalPositionTest(desc, lightboxDOMNode) {
-    thumbArray = lightboxDOMNode.getElementsByTagName("img");
+function itemsInOriginalPositionTest(desc) {
+    thumbArray = findImgsInLightbox();
     assertEquals(desc + " expect first image to be first", firstImageId, thumbArray[0].id);
     assertEquals(desc + " expect second image to be second", secondImageId, thumbArray[1].id);
     assertEquals(desc + " expect third image to be third", thirdImageId, thumbArray[2].id);
@@ -48,32 +48,6 @@ function isItemDraggedTest(message, itemId) {
     assertFalse(message + itemId  +  " not should be focused", dojo.hasClass(element, selectedClass));  
 }
 
-function testFindReorderableParent() {
-	var lightbox = createLightbox();
-	
-	var testItem = dojo.byId(firstReorderableId);
-	assertEquals("The test item's role attribute should be gridcell",
-		"wairole:gridcell", testItem.getAttribute("role"));
-
-    var orderables = lightbox.orderableFinder (jQuery("[id=" + lightboxRootId + "]"));
-	assertEquals("Given the test item itself, the ancestor grid cell should be the test item",
-		testItem, lightbox._findReorderableParent(testItem, orderables));
-	assertEquals("Given the image, the ancestor grid cell should be the test item",
-		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("img")[0], orderables));
-	assertEquals("Given the caption div, the ancestor grid cell should be the test item",
-		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("div")[2], orderables));
-	assertEquals("Given the caption anchor, the ancestor grid cell should be the test item",
-		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("a")[1], orderables));
-	assertEquals("Given the title of the document, the ancestor grid cell should be null",
-		null, lightbox._findReorderableParent(document.body.getElementsByTagName("title")[0], orderables));
-	
-	testItem = dojo.byId(fourthReorderableId);
-	assertEquals("Given another test item itself, the ancestor grid cell should be the new test item",
-		testItem, lightbox._findReorderableParent(testItem, orderables));
-	assertEquals("Given another image, the ancestor grid cell should be new test item",
-		testItem, lightbox._findReorderableParent(testItem.getElementsByTagName("img")[0], orderables));
-}
-
 /*
  * This test tests the movement of images, and does not concern itself
  * with changes of state (i.e. dragging, etc.)
@@ -85,8 +59,7 @@ function testHandleArrowKeyPressMoveThumbDown() {
 	// Test: ctrl down arrow - move the first image down
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlDownArrow());
 	
-	var lightboxDOMNode = dojo.byId(lightboxRootId);
-	var thumbArray = lightboxDOMNode.getElementsByTagName("img");
+	var thumbArray = findImgsInLightbox();
 	assertEquals("after ctrl-down-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
 	assertEquals("after ctrl-down-arrow, expect third image to be second", thirdImageId, thumbArray[1].id);
 	assertEquals("after ctrl-down-arrow, expect fourth image to be third", fourthImageId, thumbArray[2].id);
@@ -95,7 +68,7 @@ function testHandleArrowKeyPressMoveThumbDown() {
 
 	// Test: ctrl up arrow - expect everything to go back to the original state
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlUpArrow());
-	itemsInOriginalPositionTest("after ctrl-up", dojo.byId(lightboxRootId));
+	itemsInOriginalPositionTest("after ctrl-up");
  }
  
  function testHandleArrowKeyPressWrapThumbUp() {
@@ -105,8 +78,7 @@ function testHandleArrowKeyPressMoveThumbDown() {
 
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlUpArrow());
 	
-	lightboxDOMNode = dojo.byId(lightboxRootId);
-	thumbArray = lightboxDOMNode.getElementsByTagName("img");
+	thumbArray = findImgsInLightbox();
 	assertEquals("after ctrl-up-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
 	assertEquals("after ctrl-up-arrow, expect third image to be second", thirdImageId, thumbArray[1].id);
 	assertEquals("after ctrl-up-arrow, expect fifth image to be fourth", fifthImageId, thumbArray[3].id);
@@ -115,7 +87,7 @@ function testHandleArrowKeyPressMoveThumbDown() {
 
 	// Test: ctrl down arrow - expect everything to go back to the original state
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlDownArrow());
-	itemsInOriginalPositionTest("after ctrl-down wrap", dojo.byId(lightboxRootId));
+	itemsInOriginalPositionTest("after ctrl-down wrap");
 
 }
 
@@ -234,12 +206,11 @@ function testHandleKeyUpAndHandleKeyDownItemMovement() {
 
 	// after ctrl down, order should not change
 	lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL());
-	var lightboxDOMNode = dojo.byId(lightboxRootId);
-	itemsInOriginalPositionTest("after ctrl-down", lightboxDOMNode);
+	itemsInOriginalPositionTest("after ctrl-down");
 	
 	// after ctrl up, order should not change
 	lightbox.handleKeyUp(fluid.testUtils.createEvtCTRL());
-	itemsInOriginalPositionTest("after ctrl-up", lightboxDOMNode);
+	itemsInOriginalPositionTest("after ctrl-up");
 }
 
 /*
@@ -253,21 +224,20 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	// Test: ctrl right arrow - expect first and second image to swap
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlRightArrow());
 
-	var lightboxDOMNode = dojo.byId(lightboxRootId);
-	var thumbArray = lightboxDOMNode.getElementsByTagName("img");
+	var thumbArray = findImgsInLightbox();
 	assertEquals("after ctrl-right-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
 	assertEquals("after ctrl-right-arrow, expect first image to be second", firstImageId, thumbArray[1].id);
 	assertEquals("after ctrl-right-arrow, expect last image to be last", lastImageId, thumbArray[numOfImages - 1].id);
 	
 	// Test: ctrl left arrow - expect first and second image to swap back to original order
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlLeftArrow());
-	itemsInOriginalPositionTest("after ctrl-left-arrow", lightboxDOMNode);
+	itemsInOriginalPositionTest("after ctrl-left-arrow");
 
 	// Test: ctrl left arrow - expect first image to move to last place,
 	//       second image to move to first place and last image to move to second-last place
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlLeftArrow());
 
-	thumbArray = lightboxDOMNode.getElementsByTagName("img");
+	thumbArray = findImgsInLightbox();
 	assertEquals("after ctrl-left-arrow on first image, expect first last to be last", firstImageId, thumbArray[numOfImages - 1].id);
 	assertEquals("after ctrl-left-arrow on first image, expect second to be first", secondImageId, thumbArray[0].id);
 	assertEquals("after ctrl-left-arrow on first image, expect last to be second-last", lastImageId, thumbArray[numOfImages - 2].id);
@@ -275,7 +245,7 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 	// Test: ctrl right arrow - expect first image to move back to first place,
 	//       second image to move to back second place and thumbLast to move to back last place
 	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlRightArrow());
-	itemsInOriginalPositionTest("after ctrl-left-arrow", lightboxDOMNode);
+	itemsInOriginalPositionTest("after ctrl-left-arrow");
 }
 
 function testPersistFocus () {
