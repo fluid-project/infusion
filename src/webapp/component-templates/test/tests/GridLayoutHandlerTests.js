@@ -12,50 +12,50 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 function testGetRightSiblingInfo() {
 	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
-	var imageList = dojo.byId(lightboxRootId);
+	var imageList = fluid.testUtils.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
 
-	var rightSibling = gridHandler._getRightSiblingInfo(dojo.byId(firstReorderableId));
+	var rightSibling = gridHandler._getRightSiblingInfo(fluid.testUtils.byId(firstReorderableId));
 	assertEquals("The item to the right of the first image should be the second image", 
-		dojo.byId(secondReorderableId), rightSibling.item);
+		fluid.testUtils.byId(secondReorderableId), rightSibling.item);
 	assertFalse("No wrap to the right of the first image", rightSibling.hasWrapped);
 
-	rightSibling = gridHandler._getRightSiblingInfo(dojo.byId(thirdReorderableId));
+	rightSibling = gridHandler._getRightSiblingInfo(fluid.testUtils.byId(thirdReorderableId));
 	assertEquals("The item to the right of the third image should be the fourth image", 
-		dojo.byId(fourthReorderableId), rightSibling.item);
+		fluid.testUtils.byId(fourthReorderableId), rightSibling.item);
 	assertFalse("No wrap to the right of the third image", rightSibling.hasWrapped);
 
-	rightSibling = gridHandler._getRightSiblingInfo(dojo.byId(lastReorderableId));
+	rightSibling = gridHandler._getRightSiblingInfo(fluid.testUtils.byId(lastReorderableId));
 	assertEquals("The item to the right of the last image should be the first image", 
-		dojo.byId(firstReorderableId), rightSibling.item);
+		fluid.testUtils.byId(firstReorderableId), rightSibling.item);
 	assertTrue("Wrap to the right of the last image", rightSibling.hasWrapped);	
 	
-	rightSibling = gridHandler._getRightSiblingInfo(dojo.byId(thirdImageId));
+	rightSibling = gridHandler._getRightSiblingInfo(fluid.testUtils.byId(thirdImageId));
 	assertEquals("When a non-orderable is passed to getRightSiblingInfo the first orderable should be returned.", 
 		firstReorderableId, rightSibling.item.id);
 }
 
 function testGetLeftSiblingInfo() {
 	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
-	var imageList = dojo.byId(lightboxRootId);
+	var imageList = fluid.testUtils.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
 
-	var leftSibling = gridHandler._getLeftSiblingInfo(dojo.byId(fourthReorderableId));
+	var leftSibling = gridHandler._getLeftSiblingInfo(fluid.testUtils.byId(fourthReorderableId));
 	assertEquals("The item to the left of the fourth image should be the third image", 
-		dojo.byId(thirdReorderableId), leftSibling.item);
+		fluid.testUtils.byId(thirdReorderableId), leftSibling.item);
 	assertFalse("No wrap to the left of the fourth image", leftSibling.hasWrapped);
 
-	leftSibling = gridHandler._getLeftSiblingInfo(dojo.byId(lastReorderableId));
+	leftSibling = gridHandler._getLeftSiblingInfo(fluid.testUtils.byId(lastReorderableId));
 	assertEquals("The item to the left of the last image should be the second last image", 
-		dojo.byId(secondLastReorderableId), leftSibling.item);
+		fluid.testUtils.byId(secondLastReorderableId), leftSibling.item);
 	assertFalse("No wrap to the left of the last image", leftSibling.hasWrapped);
 
-	leftSibling = gridHandler._getLeftSiblingInfo(dojo.byId(firstReorderableId));
+	leftSibling = gridHandler._getLeftSiblingInfo(fluid.testUtils.byId(firstReorderableId));
 	assertEquals("The item to the left of the first image should be the last image", 
-		dojo.byId(lastReorderableId), leftSibling.item);
+		fluid.testUtils.byId(lastReorderableId), leftSibling.item);
 	assertTrue("Wrap to the left of the first image", leftSibling.hasWrapped);
 
-	leftSibling = gridHandler._getLeftSiblingInfo(dojo.byId(thirdImageId));
+	leftSibling = gridHandler._getLeftSiblingInfo(fluid.testUtils.byId(thirdImageId));
 	assertEquals("When a non-orderable is passed to getLeftSiblingInfo the first orderable should be returned.", 
 		firstReorderableId, leftSibling.item.id);
 	assertFalse("No wrap when non-reorderable is passed in.", leftSibling.hasWrapped);	
@@ -64,35 +64,35 @@ function testGetLeftSiblingInfo() {
 
 function testGetItemInfoBelow() {
 	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
-	var imageList = dojo.byId(lightboxRootId);
+	var imageList = fluid.testUtils.byId(lightboxRootId);
 	gridHandler.setReorderableContainer(imageList);
 	
-	var itemInfo = gridHandler._getItemInfoBelow(dojo.byId(firstReorderableId));
+	var itemInfo = gridHandler._getItemInfoBelow(fluid.testUtils.byId(firstReorderableId));
 	assertEquals("Since there are 3 colums in the grid, the item below the first image should be the fourth image", 
-		dojo.byId(fourthReorderableId), itemInfo.item);
+		fluid.testUtils.byId(fourthReorderableId), itemInfo.item);
 	assertFalse("no wrap below first image", itemInfo.hasWrapped);
 
-	itemInfo = gridHandler._getItemInfoBelow(dojo.byId(thirdReorderableId));
+	itemInfo = gridHandler._getItemInfoBelow(fluid.testUtils.byId(thirdReorderableId));
 	assertEquals("the item below the third image should be the sixth image", 
-		dojo.byId(sixthReorderableId), itemInfo.item);
+		fluid.testUtils.byId(sixthReorderableId), itemInfo.item);
 	assertFalse("no wrap below third image", itemInfo.hasWrapped);
 
-	itemInfo = gridHandler._getItemInfoBelow(dojo.byId(thirdLastReorderableId));
+	itemInfo = gridHandler._getItemInfoBelow(fluid.testUtils.byId(thirdLastReorderableId));
 	assertEquals("the item below the third last image should be the third image", 
-		dojo.byId(thirdReorderableId), itemInfo.item);
+		fluid.testUtils.byId(thirdReorderableId), itemInfo.item);
 	assertTrue("wrap below third last image", itemInfo.hasWrapped);
 
-	itemInfo = gridHandler._getItemInfoBelow(dojo.byId(secondLastReorderableId));
+	itemInfo = gridHandler._getItemInfoBelow(fluid.testUtils.byId(secondLastReorderableId));
 	assertEquals("the item below the second last image should be the first image", 
-		dojo.byId(firstReorderableId), itemInfo.item);
+		fluid.testUtils.byId(firstReorderableId), itemInfo.item);
 	assertTrue("wrap below second last image", itemInfo.hasWrapped);
 
-	itemInfo = gridHandler._getItemInfoBelow(dojo.byId(lastReorderableId));
+	itemInfo = gridHandler._getItemInfoBelow(fluid.testUtils.byId(lastReorderableId));
 	assertEquals("the item below the last image should be the second image", 
-		dojo.byId(secondReorderableId), itemInfo.item);
+		fluid.testUtils.byId(secondReorderableId), itemInfo.item);
 	assertTrue("wrap below last image", itemInfo.hasWrapped);
 
-	itemInfo = gridHandler._getItemInfoBelow(dojo.byId(thirdImageId));
+	itemInfo = gridHandler._getItemInfoBelow(fluid.testUtils.byId(thirdImageId));
 	assertEquals("When a non-orderable is passed to _getItemInfoBelow the first orderable should be returned.", 
 		firstReorderableId, itemInfo.item.id);
 
@@ -100,107 +100,107 @@ function testGetItemInfoBelow() {
 
 function testGetItemInfoAbove() {
 	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
-	var imageList = dojo.byId(lightboxRootId);
+	var imageList = jQuery ("[id=" + lightboxRootId + "]");
 	gridHandler.setReorderableContainer(imageList);
-	dojo.removeClass(dojo.byId(lightboxRootId), "width-3-thumb");
-	dojo.addClass(dojo.byId(lightboxRootId), "width-4-thumb");
+	imageList.removeClass ("width-3-thumb");
+	imageList.addClass ("width-4-thumb");
 		
-	var itemInfo = gridHandler._getItemInfoAbove(dojo.byId(seventhReorderableId));
+	var itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(seventhReorderableId));
 	assertEquals("the item above the seventh image should be the third image", 
-		dojo.byId(thirdReorderableId), itemInfo.item);
+		fluid.testUtils.byId(thirdReorderableId), itemInfo.item);
 	assertFalse("no wrap above seventh image", itemInfo.hasWrapped);
 
-	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(lastReorderableId));
+	itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(lastReorderableId));
 	assertEquals("the item above the last image should be the tenth image", 
-		dojo.byId(tenthReorderableId), itemInfo.item);
+		fluid.testUtils.byId(tenthReorderableId), itemInfo.item);
 	assertFalse("no wrap above tenth image", itemInfo.hasWrapped);
 
-	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(firstReorderableId));
+	itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(firstReorderableId));
 	assertEquals("Since there are 4 colums in the grid, the item above the first image should be the second last image", 
-		dojo.byId(secondLastReorderableId), itemInfo.item);
+		fluid.testUtils.byId(secondLastReorderableId), itemInfo.item);
 	assertTrue("wrap above first image", itemInfo.hasWrapped);
 
-	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(secondReorderableId));
+	itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(secondReorderableId));
 	assertEquals("the item above the second image should be the last image", 
-		dojo.byId(lastReorderableId), itemInfo.item);
+		fluid.testUtils.byId(lastReorderableId), itemInfo.item);
 	assertTrue("wrap above second image", itemInfo.hasWrapped);
 
-	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(thirdReorderableId));
+	itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(thirdReorderableId));
 	assertEquals("the item above the third image should be the fourth last image", 
-		dojo.byId(fourthLastReorderableId), itemInfo.item);
+		fluid.testUtils.byId(fourthLastReorderableId), itemInfo.item);
 	assertTrue("wrap above third image", itemInfo.hasWrapped);
 	
-	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(fourthReorderableId));
+	itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(fourthReorderableId));
 	assertEquals("the item above the fourth image should be the third last image", 
-		dojo.byId(thirdLastReorderableId), itemInfo.item);
+		fluid.testUtils.byId(thirdLastReorderableId), itemInfo.item);
 	assertTrue("wrap above fourth image", itemInfo.hasWrapped);
 
-	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(thirdImageId));
+	itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(thirdImageId));
 	assertEquals("When a non-orderable is passed to _getItemInfoAbove the first orderable should be returned.", 
 		firstReorderableId, itemInfo.item.id);
 
 	// Test with grid size 3
-	dojo.removeClass(dojo.byId(lightboxRootId), "width-4-thumb");
-	dojo.addClass(dojo.byId(lightboxRootId), "width-3-thumb");
+	imageList.removeClass ("width-4-thumb");
+	imageList.addClass ("width-3-thumb");
 	
-	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(fifthReorderableId));
+	itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(fifthReorderableId));
 	assertEquals("the item above the fifth image should be the second image", 
-		dojo.byId(secondReorderableId), itemInfo.item);
+		fluid.testUtils.byId(secondReorderableId), itemInfo.item);
 	assertFalse("no wrap above fifth image", itemInfo.hasWrapped);
 
-	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(firstReorderableId));
+	itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(firstReorderableId));
 	assertEquals("the item above the first image should be the second last image", 
-		dojo.byId(secondLastReorderableId), itemInfo.item);
+		fluid.testUtils.byId(secondLastReorderableId), itemInfo.item);
 	assertTrue("wrap above first image", itemInfo.hasWrapped);
 
-	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(secondReorderableId));
+	itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(secondReorderableId));
 	assertEquals("the item above the second image should be the last image", 
-		dojo.byId(lastReorderableId), itemInfo.item );
+		fluid.testUtils.byId(lastReorderableId), itemInfo.item );
 	assertTrue("wrap above second image", itemInfo.hasWrapped);
 		
-	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(thirdReorderableId));
+	itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(thirdReorderableId));
 	assertEquals("the item above the third image should be the third last image", 
-		dojo.byId(thirdLastReorderableId), itemInfo.item);
+		fluid.testUtils.byId(thirdLastReorderableId), itemInfo.item);
 	assertTrue("no wrap above third image", itemInfo.hasWrapped);
 			
 }
 
 function testGetItemInfoBelowOneRow() {
 	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
-	var imageList = dojo.byId(lightboxRootId);
+    var imageList = jQuery ("[id=" + lightboxRootId + "]");
 	gridHandler.setReorderableContainer(imageList);
-	dojo.addClass(dojo.byId(lightboxRootId), "width-all-thumb");
+	imageList.addClass ("width-all-thumb");
 	
-	var itemInfo = gridHandler._getItemInfoBelow(dojo.byId(firstReorderableId));
+	var itemInfo = gridHandler._getItemInfoBelow(fluid.testUtils.byId(firstReorderableId));
 	assertEquals("Since there is only 1 row, the item below the first image should be itself", 
-		dojo.byId(firstReorderableId), itemInfo.item);
+		fluid.testUtils.byId(firstReorderableId), itemInfo.item);
 
-	itemInfo = gridHandler._getItemInfoBelow(dojo.byId(thirdReorderableId));
+	itemInfo = gridHandler._getItemInfoBelow(fluid.testUtils.byId(thirdReorderableId));
 	assertEquals("Since there is only 1 row, the item below the third image should be itself", 
-		dojo.byId(thirdReorderableId), itemInfo.item);
+		fluid.testUtils.byId(thirdReorderableId), itemInfo.item);
 
-	itemInfo = gridHandler._getItemInfoBelow(dojo.byId(lastReorderableId));
+	itemInfo = gridHandler._getItemInfoBelow(fluid.testUtils.byId(lastReorderableId));
 	assertEquals("Since there is only 1 row, the item below the last image should be itself", 
-		dojo.byId(lastReorderableId), itemInfo.item);
+		fluid.testUtils.byId(lastReorderableId), itemInfo.item);
 	
 }
 
 function testGetItemInfoAboveOneRow() {
 	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
-	var imageList = dojo.byId(lightboxRootId);
+    var imageList = jQuery ("[id=" + lightboxRootId + "]");
 	gridHandler.setReorderableContainer(imageList);
-	dojo.addClass(dojo.byId(lightboxRootId), "width-all-thumb");
+	imageList.addClass ("width-all-thumb");
 	
-	var itemInfo = gridHandler._getItemInfoAbove(dojo.byId(firstReorderableId));
+	var itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(firstReorderableId));
 	assertEquals("Since there is only 1 row, the item above the first image should be itself", 
-		dojo.byId(firstReorderableId), itemInfo.item);
+		fluid.testUtils.byId(firstReorderableId), itemInfo.item);
 
-	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(thirdReorderableId));
+	itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(thirdReorderableId));
 	assertEquals("Since there is only 1 row, the item above the third image should be itself", 
-		dojo.byId(thirdReorderableId), itemInfo.item);
+		fluid.testUtils.byId(thirdReorderableId), itemInfo.item);
 
-	itemInfo = gridHandler._getItemInfoAbove(dojo.byId(lastReorderableId));
+	itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(lastReorderableId));
 	assertEquals("Since there is only 1 row, the item above the last image should be itself", 
-		dojo.byId(lastReorderableId), itemInfo.item);
+		fluid.testUtils.byId(lastReorderableId), itemInfo.item);
 	
 }
