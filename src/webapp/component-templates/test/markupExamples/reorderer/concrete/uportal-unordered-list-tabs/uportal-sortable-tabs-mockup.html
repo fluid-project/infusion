@@ -10,16 +10,17 @@
 <link type="text/css" href="render.userLayoutRootNode.uP_files/spring.css" rel="stylesheet">
 
       <script language="JavaScript" type="text/javascript" src="../../../../../js/jquery/jquery-1.2.1.js"></script>
+      <script type="text/javascript" src="../../../../../js/jquery.tabindex/jquery.tabindex.js"></script>
       <script language="JavaScript" type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
       <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
       <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
       <script type="text/javascript" src="../../../../../js/fluid/Fluid.js"></script>
       <script language="JavaScript" type="text/javascript" src="../../../../../js/fluid/Reorderer.js"></script>
 
-      <!--  Ensure jQuery is in no conflicts mode --> 
+      <!--  Ensure jQuery is in no conflicts mode -->
       <script language="JavaScript" type="text/javascript">
         jQuery.noConflict();
-      </script> 
+      </script>
 </head>
 
 <body><div id="portal-page-header"><div id="logo"><img alt="Logo" src="render.userLayoutRootNode.uP_files/uportal_logo_grid.gif" height="60" width="104"></div><div id="welcome"><form style="margin: 0pt 0pt 0pt 5px; padding: 0pt; vertical-align: middle;" method="post" action="#"><input value="login" name="action" type="hidden">
@@ -27,31 +28,31 @@
            Password: <input size="15" name="password" style="vertical-align: middle;" type="password">&nbsp;
            <input class="portlet-form-button" name="Login" value="Login" style="vertical-align: middle;" type="submit"></form></div>
            <div style="height: 55px;"></div>
-           	
-           	
+
+
   <div id="tabs">
   <ul id="tabList" tabindex="0">
   <script type="text/javascript">
 //<![CDATA[
 
 								var tabId = "u8l1s46";
-							
+
 //]]></script>
 	<li class="active-tab orderable" id="tab_u8l1s46"><a href="#" id="activeTabLink" tabindex="-1"><span>Welcome</span></a></li>
 	<li id="tab_s4" class="orderable"><a href="#" tabindex="-1"><span>Main</span></a></li>
     <li id="tab_s9" class="orderable"><a href="#" tabindex="-1"><span>Misc</span></a></li>
 	<li id="tab_s14" class="orderable"><a href="#" tabindex="-1"><span>News</span></a></li>
 	</ul>
-	
+
 	</div>
     <script language="JavaScript" type="text/javascript">
-      
+
       function findOrderableTabs (container) {
         return jQuery ("[id^=tab_]", container);
       }
-      
+
       var aLayoutHandler = new fluid.ListLayoutHandler (findOrderableTabs);
-      aLayoutHandler.orientation = fluid.orientation.HORIZONTAL; 
+      aLayoutHandler.orientation = fluid.orientation.HORIZONTAL;
 
       new fluid.Reorderer("tabList", {
           layoutHandler: aLayoutHandler,
@@ -60,20 +61,20 @@
       );
     </script>
 	</div>
-	
-	
-	
-	<div id="portal-page-body"><table id="columns-table" cellpadding="0" cellspacing="15" width="100%"><tbody><tr id="portal-page-columns"><td id="column_u8l1s49" valign="top" width="100%"><div class="portletContainer" id="portlet_u8l1n52"><div class="portlet-toolbar" id="toolbar_u8l1n52"><div class="icons"><img title="maximize" alt="maximize" src="render.userLayoutRootNode.uP_files/focus.gif" height="19" width="19"></div><img style="float: left; padding-top: 2px; padding-right: 3px; margin-left: -2px;" title="shade" alt="shade" src="render.userLayoutRootNode.uP_files/max.gif" id="portletToggleImg_u8l1n52" height="19" width="19"><a id="u8l1n52" name="u8l1n52"></a><h2>DLM Administrator's Guide</h2></div><div class="portlet clearfix dlm.admin.guide" id="portletContent_u8l1n52"><table cellpadding="0" cellspacing="5"><tbody><tr><td class="uportal-background-light" valign="top" width="15%"><table cellpadding="0" cellspacing="5"><tbody><tr><td class="uportal-channel-title"> Contents </td></tr><tr class="uportal-background-highlight"><td class="uportal-channel-subtitle">Whence Came This Tab?</td></tr><tr><td class="uportal-channel-subtitle">Whence Came DLM?</td></tr><tr><td class="uportal-channel-subtitle">Introducing dlm.xml</td></tr><tr><td class="uportal-channel-subtitle">Defining Framents</td></tr><tr><td class="uportal-channel-subtitle">Defining Audiences</td></tr><tr><td class="uportal-channel-subtitle">Setting up Fragment Layouts</td></tr><tr><td class="uportal-channel-subtitle">Custom UI Changes</td></tr><tr><td class="uportal-channel-subtitle">Future Direction</td></tr></tbody></table></td><td class="uportal-background-content" valign="top" width="85%"><table cellpadding="5" cellspacing="0"><tbody><tr><td class="uportal-channel-title">Whence Came This Tab?</td></tr><tr><td class="uportal-channel-text">If you are seeing this channel for the first time chances are you just turned on a feature known as <span class="uportal-copyright">Distributed Layout 
-Management</span> or <span class="uportal-copyright">DLM</span>. Of the tabs in this page, this one is unique. Most are part of the guest user's own layout. 
-This tab isn't. In DLM terminology it is a <span class="uportal-copyright">fragment</span> that was merged in by DLM. Traditionally, if you wanted to change what 
-guests see you would set a password for the guest user, log in as guest, and change the layout. Not with DLM. <span class="uportal-copyright">To 
+
+
+
+	<div id="portal-page-body"><table id="columns-table" cellpadding="0" cellspacing="15" width="100%"><tbody><tr id="portal-page-columns"><td id="column_u8l1s49" valign="top" width="100%"><div class="portletContainer" id="portlet_u8l1n52"><div class="portlet-toolbar" id="toolbar_u8l1n52"><div class="icons"><img title="maximize" alt="maximize" src="render.userLayoutRootNode.uP_files/focus.gif" height="19" width="19"></div><img style="float: left; padding-top: 2px; padding-right: 3px; margin-left: -2px;" title="shade" alt="shade" src="render.userLayoutRootNode.uP_files/max.gif" id="portletToggleImg_u8l1n52" height="19" width="19"><a id="u8l1n52" name="u8l1n52"></a><h2>DLM Administrator's Guide</h2></div><div class="portlet clearfix dlm.admin.guide" id="portletContent_u8l1n52"><table cellpadding="0" cellspacing="5"><tbody><tr><td class="uportal-background-light" valign="top" width="15%"><table cellpadding="0" cellspacing="5"><tbody><tr><td class="uportal-channel-title"> Contents </td></tr><tr class="uportal-background-highlight"><td class="uportal-channel-subtitle">Whence Came This Tab?</td></tr><tr><td class="uportal-channel-subtitle">Whence Came DLM?</td></tr><tr><td class="uportal-channel-subtitle">Introducing dlm.xml</td></tr><tr><td class="uportal-channel-subtitle">Defining Framents</td></tr><tr><td class="uportal-channel-subtitle">Defining Audiences</td></tr><tr><td class="uportal-channel-subtitle">Setting up Fragment Layouts</td></tr><tr><td class="uportal-channel-subtitle">Custom UI Changes</td></tr><tr><td class="uportal-channel-subtitle">Future Direction</td></tr></tbody></table></td><td class="uportal-background-content" valign="top" width="85%"><table cellpadding="5" cellspacing="0"><tbody><tr><td class="uportal-channel-title">Whence Came This Tab?</td></tr><tr><td class="uportal-channel-text">If you are seeing this channel for the first time chances are you just turned on a feature known as <span class="uportal-copyright">Distributed Layout
+Management</span> or <span class="uportal-copyright">DLM</span>. Of the tabs in this page, this one is unique. Most are part of the guest user's own layout.
+This tab isn't. In DLM terminology it is a <span class="uportal-copyright">fragment</span> that was merged in by DLM. Traditionally, if you wanted to change what
+guests see you would set a password for the guest user, log in as guest, and change the layout. Not with DLM. <span class="uportal-copyright">To
 change the contents of this tab</span> log in with the following user id and password:
 </td></tr><tr><td class="uportal-channel-text">
 User Id: <span class="uportal-channel-strong">guest-lo</span>, Password: <span class="uportal-channel-strong">guest-lo</span>
 </td></tr><tr><td class="uportal-channel-text">
-This user is a DLM fragment owner. This account has all of the same capabilities 
-as a regular user with one exception, <span class="uportal-copyright">no fragments are merged into a fragment owner's layout</span>. Fragment owners 
-see only their owned layout since that layout becomes the fragment that is pushed into other layouts. 
+This user is a DLM fragment owner. This account has all of the same capabilities
+as a regular user with one exception, <span class="uportal-copyright">no fragments are merged into a fragment owner's layout</span>. Fragment owners
+see only their owned layout since that layout becomes the fragment that is pushed into other layouts.
 </td></tr><tr><td class="uportal-channel-text">
 Now once you log in, change the guest fragment, and log out, <span class="uportal-copyright">you will notice that this tab didn't change</span>.
 Doesn't DLM push changes to the guest layout? Of course it does. The

@@ -4,35 +4,36 @@
 <html xmlns:xhtml10="http://www.w3.org/1999/xhtml"
   xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"
   xmlns:aaa="http://www.w3.org/2005/07/aaa">
-  
+
   <head>
     <title>Generic Lightbox</title>
     <link href="../../../../../css/Lightbox.css" type="text/css" rel="stylesheet" media="all" />
 
-    <!--  These are the required javascript modules for the Lightbox 
+    <!--  These are the required javascript modules for the Lightbox
           eventually to be replaced with a single build generated file -->
     <script type="text/javascript" src="../../../../../js/jquery/jquery-1.2.1.js"></script>
+    <script type="text/javascript" src="../../../../../js/jquery.tabindex/jquery.tabindex.js"></script>
     <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
     <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
     <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
     <script type="text/javascript" src="../../../../../js/fluid/Fluid.js"></script>
     <script type="text/javascript" src="../../../../../js/fluid/Reorderer.js"></script>
-    
-    <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. --> 
+
+    <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. -->
     <script type="text/javascript">
       jQuery.noConflict();
-    </script> 
-    
+    </script>
+
   </head>
 
   <body>
 
-  <!--  
-    The Lightbox uses hidden inputs as the strategy for posting the item order back 
+  <!--
+    The Lightbox uses hidden inputs as the strategy for posting the item order back
     to the server, therefore the orderables need to be enclosed in a form.
   -->
   <form id="reorder-form">
-  
+
       <!--
         Declare the thumbnails as an ARIA grid, that is single-selectable, writeable, and, when
         first receives focus, has the first thumbnail focussed.  The ARIA state 'aaa:activedescendent'
@@ -45,19 +46,19 @@
       aaa:readonly="false"
       aaa:activedescendent="gallerylightbox-cell:0:"
       aaa:disabled="false">
-        
-      <div class="float orderable-default" id="gallerylightbox-cell:0:" 
+
+      <div class="float orderable-default" id="gallerylightbox-cell:0:"
            xhtml10:role="wairole:gridcell"
            aaa:selected="true"
            aaa:readonly="false"
            aaa:disabled="false"
            aaa:grab="supported"
            aaa:dropeffect="move">
-        
-          <!--  
+
+          <!--
             Orderable items are divs denoted by ids in the following form.
-            [lightbox-container-id] + lightbox-cell: + [index] + :  
-            The initLightbox() function expects this format when attaching the javascript behaviour of the Lightbox. 
+            [lightbox-container-id] + lightbox-cell: + [index] + :
+            The initLightbox() function expects this format when attaching the javascript behaviour of the Lightbox.
           -->
           <div class="image-inner-container">
             <!--  The 'orderable-focus-target' class will ensure that this anchor has focus when a thumbnail is selected. -->
@@ -68,8 +69,8 @@
           <div class="caption image-title">
             <a href="../../../../../images/Dragonfruit.jpg" >Dragonfruit</a>
           </div>
-          
-          <!--  
+
+          <!--
             This input is used for posting the new order back to the server.
             The value is the index of the thumbnail in a virtual array of thumbnails.
             That is, 'value="0"' denotes the 0'th thumbnail; 'value="1"' the 1st,
@@ -77,7 +78,7 @@
           -->
           <input id="gallerylightbox-cell:0:reorder-index" value="0" type="hidden"/>
         </div>
-    
+
         <div class="float orderable-default" id="gallerylightbox-cell:1:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -93,9 +94,9 @@
           <div class="caption image-title">
             <a href="../../../../../images/Kiwano.jpg" >Kiwano</a>
           </div>
-          <input id="gallerylightbox-cell:1:reorder-index" value="1" type="hidden"/>      
+          <input id="gallerylightbox-cell:1:reorder-index" value="1" type="hidden"/>
         </div>
-              
+
         <div class="float orderable-default" id="gallerylightbox-cell:2:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -113,7 +114,7 @@
           </div>
           <input id="gallerylightbox-cell:2:reorder-index" value="2" type="hidden"/>
         </div>
-      
+
         <div class="float orderable-default" id="gallerylightbox-cell:3:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -131,7 +132,7 @@
           </div>
           <input id="gallerylightbox-cell:3:reorder-index" value="3" type="hidden"/>
         </div>
-      
+
         <div class="float orderable-default" id="gallerylightbox-cell:4:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -147,9 +148,9 @@
           <div class="caption image-title">
             <a href="../../../../../images/Fig.jpg" >Fig</a>
          </div>
-          <input id="gallerylightbox-cell:4:reorder-index" value="4" type="hidden"/>        
+          <input id="gallerylightbox-cell:4:reorder-index" value="4" type="hidden"/>
         </div>
-      
+
         <div class="float orderable-default" id="gallerylightbox-cell:5:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -167,7 +168,7 @@
           </div>
           <input id="gallerylightbox-cell:5:reorder-index" value="5" type="hidden"/>
         </div>
-      
+
         <div class="float orderable-default" id="gallerylightbox-cell:6:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -185,7 +186,7 @@
           </div>
           <input id="gallerylightbox-cell:6:reorder-index" value="6" type="hidden"/>
         </div>
-      
+
         <div class="float orderable-default" id="gallerylightbox-cell:7:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -203,7 +204,7 @@
           </div>
           <input id="gallerylightbox-cell:7:reorder-index" value="7" type="hidden"/>
         </div>
-      
+
         <div class="float orderable-default" id="gallerylightbox-cell:8:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -221,7 +222,7 @@
           </div>
           <input id="gallerylightbox-cell:8:reorder-index" value="8" type="hidden"/>
         </div>
-      
+
         <div class="float orderable-default" id="gallerylightbox-cell:9:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -239,7 +240,7 @@
           </div>
           <input id="gallerylightbox-cell:9:reorder-index" value="9" type="hidden"/>
         </div>
-      
+
         <div class="float orderable-default" id="gallerylightbox-cell:10:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -257,7 +258,7 @@
           </div>
           <input id="gallerylightbox-cell:10:reorder-index" value="10" type="hidden"/>
         </div>
-      
+
         <div class="float orderable-default" id="gallerylightbox-cell:11:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -275,7 +276,7 @@
           </div>
           <input id="gallerylightbox-cell:11:reorder-index" value="11" type="hidden"/>
         </div>
-      
+
         <div class="float orderable-default" id="gallerylightbox-cell:12:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -292,7 +293,7 @@
           </div>
           <input id="gallerylightbox-cell:12:reorder-index" value="12" type="hidden"/>
         </div>
-      
+
         <div class="float orderable-default orderable" id="gallerylightbox-cell:13:"
           xhtml10:role="wairole:gridcell"
           aaa:selected="true"
@@ -311,12 +312,12 @@
           <input id="gallerylightbox-cell:13:reorder-index" value="13" type="hidden"/>
         </div>
       </div>
-              
+
       <!--  Attach the javascript functionality to the markup by using initLightbox() -->
       <script type="text/javascript">
         fluid.initLightbox ("gallery", "message-bundle:");
       </script>
-      
+
       <!-- Sample instruction message. At runtime, this would be supplied by the server. -->
       <div id="message-bundle:" class="lightbox-instructions">
         <div class="lightbox-downarrow"></div><div id="message-bundle:thumbnailInstructions">

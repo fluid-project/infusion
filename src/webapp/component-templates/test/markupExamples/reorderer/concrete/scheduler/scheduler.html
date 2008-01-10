@@ -3,23 +3,24 @@
 	<head>
 		<title>Sortable Scheduler</title>
 		<link rel="stylesheet" type="text/css" href="scheduler.css" title="default" />
-		
+
 		<!-- The Reorderer currently depends on a number of JavaScript libraries, including jQuery. -->
     	<script type="text/javascript" src="../../../../../js/jquery/jquery-1.2.1.js"></script>
+        <script type="text/javascript" src="../../../../../js/jquery.tabindex/jquery.tabindex.js"></script>
     	<script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
     	<script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
     	<script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
-        <script type="text/javascript" src="../../../../../js/fluid/Fluid.js"></script>    	
+        <script type="text/javascript" src="../../../../../js/fluid/Fluid.js"></script>
     	<script type="text/javascript" src="../../../../../js/fluid/Reorderer.js"></script>
     	<script type="text/javascript" src="json2.js"></script>
     	<script type="text/javascript" src="Scheduler.js"></script>
-    	
+
     	<!--  These are used for JsUnit tests that have been written using this page as sample data. -->
       	<script type="text/javascript" src="../../../../jsunit/app/jsUnitCore.js"></script>
-      	<script type="text/javascript" src="../../../../tests/TestUtils.js"></script>	
+      	<script type="text/javascript" src="../../../../tests/TestUtils.js"></script>
 	  	<script type="text/javascript" src="../../../../tests/SchedulerTests.js"></script>
 	</head>
-	
+
 	<body>
 	    <h1>Conference Scheduling Grid</h1>
 		<div id="sortableSchedule" tabindex="0">
@@ -46,7 +47,7 @@
 		      <li class="fixed">Closing Remarks</li>
 		  </ul>
         </div>
-        
+
         <!-- Initialize the Reorderer after the markup has been rendered. -->
         <script type="text/javascript">
             fluid.Scheduler.initScheduler("sortableSchedule");

@@ -8,26 +8,27 @@
       @import url("../markup-examples.css");
     </style>
 
-    <!--  These are the required javascript modules for the Reorderer 
+    <!--  These are the required javascript modules for the Reorderer
           eventually to be replaced with a single build generated file -->
     <script type="text/javascript" src="../../../../js/jquery/jquery-1.2.1.js"></script>
+    <script type="text/javascript" src="../../../../js/jquery.tabindex/jquery.tabindex.js"></script>
     <script type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
     <script type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
     <script type="text/javascript" src="../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
     <script type="text/javascript" src="../../../../js/fluid/Fluid.js"></script>
     <script type="text/javascript" src="../../../../js/fluid/Reorderer.js"></script>
-      
+
     <!--  These are used for JsUnit tests that have been written using this page as data -->
     <script type="text/javascript" src="../../../jsunit/app/jsUnitCore.js"></script>
     <script type="text/javascript" src="../../../tests/TestUtils.js"></script>
     <script type="text/javascript" src="../../../tests/UnorderedListTestConstants.js"></script>
-    <script type="text/javascript" src="../../../tests/ListLayoutHandlerTests.js"></script>	
+    <script type="text/javascript" src="../../../tests/ListLayoutHandlerTests.js"></script>
 
-    <!--  Ensure jQuery plays nice with other toolkits - 
-          must be called after all the javascript is loaded. --> 
+    <!--  Ensure jQuery plays nice with other toolkits -
+          must be called after all the javascript is loaded. -->
     <script type="text/javascript">
       jQuery.noConflict();
-    </script> 
+    </script>
   </head>
   <body>
     <h1>Unordered List (vertical)</h1>
@@ -49,11 +50,11 @@
           orderableFinder: listOrderableFinder  // defined in UnorderedListTestConstants.js
       });
     </script>
-    
+
     <h1>Unordered List No Reorderer </h1>
     <div id="list2" class="reorderer_container">
-      <p>This is an example of an unordered list that is visually laid out 
-         vertically with no Reorderer attached to it. 
+      <p>This is an example of an unordered list that is visually laid out
+         vertically with no Reorderer attached to it.
       </p>
       <ul>
         <li class="orderable">An Item 1</li>
