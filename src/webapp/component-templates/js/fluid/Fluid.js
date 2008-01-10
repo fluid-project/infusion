@@ -65,11 +65,9 @@ fluid.initLightbox = function (namebase, messageNamebase) {
         }
 
         if (reorderform && reorderform.action) {
-            dojo.xhrPost({
-                url: reorderform.action,
-                form: reorderform,
-                load: function (type, data, evt) { /* No-op response */ }
-            });
+            jQuery.post(reorderform.action, 
+            jQuery(reorderform).serialize(),
+            function (type, data, evt) { /* No-op response */ });
         }
     };
     
