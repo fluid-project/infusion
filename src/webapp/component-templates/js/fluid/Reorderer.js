@@ -656,7 +656,7 @@ fluid.PortletLayoutHandler = function (/*function*/ orderableFinder,
             
         var colIndex = -1;
         for (var col = 0; col < portletLayout.columns.length; col++) {
-            if (portletLayout.columns[col].children.indexOf(item.id) !== -1) {
+            if (jQuery(portletLayout.columns[col].children).index(item.id) !== -1) {
                 colIndex = col;
                 break;
             }
@@ -713,7 +713,7 @@ fluid.PortletLayoutHandler = function (/*function*/ orderableFinder,
     var isAtEndOfColumn = function (item, column) {
         var index = null;
         for (var col = 0; col < portletLayout.columns.length; col++) {
-            index = portletLayout.columns[col].children.indexOf(item.id);
+            index = jQuery(portletLayout.columns[col].children).index(item.id);
             if (index >= 0) {
                 break;
             }
@@ -762,7 +762,7 @@ fluid.PortletLayoutHandler = function (/*function*/ orderableFinder,
     };
     
     this._isInLeftmostColumn = function (item) {
-        if (portletLayout.columns[0].children.indexOf(item.id) !== -1) {
+        if (jQuery(portletLayout.columns[0].children).index(item.id) !== -1) {
             return true;
         } else {
             return false;
@@ -770,7 +770,7 @@ fluid.PortletLayoutHandler = function (/*function*/ orderableFinder,
     };
     
     this._isInRightmostColumn = function (item) {
-        if (portletLayout.columns[portletLayout.columns.length-1].children.indexOf(item.id) !== -1) {
+        if (jQuery(portletLayout.columns[portletLayout.columns.length-1].children).index(item.id) !== -1) {
             return true;
         } else {
             return false;
