@@ -8,7 +8,7 @@ var SchedulerTests = {
 	secondMoveableId: "sortableSchedule\\.orderable1",
 	thirdMoveableId: "sortableSchedule\\.orderable2",
 	numUnmoveables: 3,
-	unmoveableClass: "fixed",
+	unmoveableClass: "fixed"
 };
 
 function exposeTestFunctionNames () {
