@@ -51,10 +51,8 @@ function listOrderableFinder (containerEl) {
 
 // This setUp will be called before each of the tests that are included in unordered-list.html 
 function setUp() {
-    listHandler1 = new fluid.ListLayoutHandler(listOrderableFinder);
-    var list = fluid.testUtils.byId("list1");
-    listHandler1.setReorderableContainer(list);
-
+	var list = fluid.testUtils.byId("list1");
+    listHandler1 = new fluid.ListLayoutHandler(listOrderableFinder, list);
 }
 
 

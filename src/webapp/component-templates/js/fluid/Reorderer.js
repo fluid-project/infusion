@@ -408,7 +408,6 @@ fluid.Reorderer = function (container, params) {
     // Final initialization of the Reorderer at the end of the construction process	
 	if (this.domNode) {
         setupDomNode(this.domNode);
-        this.layoutHandler.setReorderableContainer (this.domNode.get(0));
         initOrderables();
     }
 }; // End Reorderer
@@ -434,17 +433,16 @@ fluid.Reorderer = function (container, params) {
     };
     
     // Public layout handlers.
-	fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
-	    this.orderableFinder = orderableFinder;
-	    
-	    this._container = null;
-	    
+	fluid.ListLayoutHandler = function (/*function*/ orderableFinder, container) {
+        // Unwrap the container if it's a jQuery.
+        if (container.jquery) {
+            container = container.get(0);
+        }
+       
+        this.orderableFinder = orderableFinder;
+	    	    
 	    this.orientation = fluid.orientation.VERTICAL;  // default.
-	    
-	    this.setReorderableContainer = function (aList) {
-	        this._container = aList;
-	    };
-	    
+	    	    
     /*
          * A general get{Left|Right}SiblingInfo() given an item, a list of orderables and a direction.
          * The direction is encoded by either a +1 to move right, or a -1 to
@@ -452,7 +450,7 @@ fluid.Reorderer = function (container, params) {
          * decrement, respectively, of the index of the given item.
          */
         this._getSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
-            var orderables = this.orderableFinder(this._container);
+            var orderables = this.orderableFinder(container);
             var index = jQuery (orderables).index (item) + incDecrement;
             var hasWrapped = false;
                 
@@ -550,10 +548,13 @@ fluid.Reorderer = function (container, params) {
 	 * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
 	 * in the window, and of informing the Lightbox of which items surround a given item.
 	 */
-	fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
-	
+	fluid.GridLayoutHandler = function (/*function*/ orderableFinder, container) {
+		// Unwrap the container if it's a jQuery.
+		if (container.jquery) {
+			container = container.get(0);
+		}
 	   
-	    fluid.ListLayoutHandler.call (this, orderableFinder);
+	    fluid.ListLayoutHandler.call (this, orderableFinder, container);
 	    this.orientation = fluid.orientation.HORIZONTAL;
 	                    
 	    /*
@@ -564,7 +565,7 @@ fluid.Reorderer = function (container, params) {
 	     * after the item changes if the process wrapped around the column.
 	     */
 	    this._getItemInfoBelow = function (inItem) {
-	        var orderables = this.orderableFinder (this._container);
+	        var orderables = this.orderableFinder (container);
 	        var curCoords = jQuery (inItem).offset();
 	        var i, iCoords;
 	        var firstItemInColumn, currentItem;
@@ -600,7 +601,7 @@ fluid.Reorderer = function (container, params) {
 	     * after the item changes if the process wrapped around the column.
 	     */
 	     this._getItemInfoAbove = function (inItem) {
-	        var orderables = this.orderableFinder (this._container);
+	        var orderables = this.orderableFinder (container);
 	        var curCoords = jQuery (inItem).offset();
 	        var i, iCoords;
 	        var lastItemInColumn, currentItem;
@@ -639,7 +640,7 @@ fluid.Reorderer = function (container, params) {
 	 * - Moving sideways will always move to the top available drop target in the column
 	 * - Wrapping is not necessary at this first pass, but is ok
 	 */
-	fluid.PortletLayoutHandler = function (/*function*/ orderableFinder,
+	fluid.PortletLayoutHandler = function (/*function*/ orderableFinder, container,
 	        /* JSON object */ portletLayoutJSON,
 	        /* JSON object */ dropTargetPermissionsJSON) {
 	    
@@ -647,8 +648,12 @@ fluid.Reorderer = function (container, params) {
 	    var thisLH = this; // Hold onto this layouthandler for the enclosed private functions.
 	    var portletLayout = portletLayoutJSON;
 	    var dropTargetPermissions = dropTargetPermissionsJSON;
-	    var container = null;
 	    
+	    // Unwrap the container if it's a jQuery.
+        if (container.jquery) {
+            container = container.get(0);
+        }
+        
 	    // Public members.
 	    this.orderableFinder = orderableFinder;
 	    
@@ -776,10 +781,6 @@ fluid.Reorderer = function (container, params) {
 	
 	    this._isLastInColumn = function (item) {
 	        return isAtEndOfColumn(item, "bottom");
-	    };
-	    
-	    this.setReorderableContainer = function (aList) {
-	        container = aList;
 	    };
 	    
 	    this._isInLeftmostColumn = function (item) {

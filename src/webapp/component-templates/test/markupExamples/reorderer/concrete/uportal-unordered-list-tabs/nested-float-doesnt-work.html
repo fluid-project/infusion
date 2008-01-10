@@ -65,8 +65,9 @@
         return jQuery ("[id^=tab_]", container);
       }
 
-      new fluid.Reorderer("tabList", {
-          layoutHandler: new fluid.ListLayoutHandler (findOrderableTabs),
+      var tabListContainer = jQuery ("#tabList");
+      new fluid.Reorderer(tabListContainer, {
+          layoutHandler: new fluid.ListLayoutHandler (findOrderableTabs, tabListContainer),
           orderableFinder: findOrderableTabs
         }
       );

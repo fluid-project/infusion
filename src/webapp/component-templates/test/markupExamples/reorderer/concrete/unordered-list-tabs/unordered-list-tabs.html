@@ -53,10 +53,11 @@ leo, ac lobortis leo nisi vitae elit. Sed luctus eros et lorem. Vestibulum aliqu
       // The Reorderer requires two parameters for it to work.
       // 1. The orderableFinder function which enables items to be reordered.
       // 2. The layoutHandler which enables the keyboard functions of the Reorderer.
-      var aLayoutHandler = new fluid.ListLayoutHandler (findOrderableTabs);
+      var tabList = jQuery ("#tabList");
+      var aLayoutHandler = new fluid.ListLayoutHandler (findOrderableTabs, tabList);
       aLayoutHandler.orientation = fluid.orientation.HORIZONTAL;
 
-      new fluid.Reorderer("tabList", {
+      new fluid.Reorderer(tabList, {
         layoutHandler: aLayoutHandler,
         orderableFinder: findOrderableTabs
         }

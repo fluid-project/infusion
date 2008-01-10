@@ -137,15 +137,17 @@ function findImgsInLightbox() {
 }
     
 function createLightbox() {
-    return new fluid.Reorderer (fetchLightboxRoot (), {
-        layoutHandler: new fluid.GridLayoutHandler (findOrderableByDivAndId),
+	var lightboxRoot = fetchLightboxRoot ();
+    return new fluid.Reorderer (lightboxRoot, {
+        layoutHandler: new fluid.GridLayoutHandler (findOrderableByDivAndId, lightboxRoot),
         orderableFinder: findOrderableByDivAndId
     });
 }
 
 function createLightboxWithNoOrderables() {
-	return new fluid.Reorderer (fetchLightboxRoot (), {
-        layoutHandler: new fluid.GridLayoutHandler (findNoOrderables),
+	var lightboxRoot = fetchLightboxRoot ();
+	return new fluid.Reorderer (lightboxRoot, {
+        layoutHandler: new fluid.GridLayoutHandler (findNoOrderables, lightboxRoot),
         orderableFinder: findNoOrderables
     });
 }

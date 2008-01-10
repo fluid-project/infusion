@@ -81,7 +81,7 @@ fluid.initLightbox = function (namebase, messageNamebase) {
     var lightbox = new fluid.Reorderer (lightboxContainer, {
             messageNamebase : messageNamebase,
             orderChangedCallback: orderChangedCallback,
-            layoutHandler: new fluid.GridLayoutHandler (lightboxOrderableFinder),
+            layoutHandler: new fluid.GridLayoutHandler (lightboxOrderableFinder, lightboxContainer),
             orderableFinder: lightboxOrderableFinder
         }
     );

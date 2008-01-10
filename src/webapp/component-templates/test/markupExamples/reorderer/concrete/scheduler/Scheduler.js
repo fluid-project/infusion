@@ -21,10 +21,11 @@ fluid.Scheduler = function () {
 		    var orderableFinder = fluid.Scheduler.createCSSOrderableFinderForClass ("movableTopic");
 		    var jsonCallback = fluid.Scheduler.createJSONOrderChangedCallback (orderableFinder);
 
-		    return new fluid.Reorderer (fetchReordererContainer (containerId), {
+            var container = fetchReordererContainer (containerId);
+		    return new fluid.Reorderer (container, {
 		                                orderChangedCallback: jsonCallback,
 		                                orderableFinder: orderableFinder,
-		                                layoutHandler: new fluid.ListLayoutHandler (orderableFinder)
+		                                layoutHandler: new fluid.ListLayoutHandler (orderableFinder, container)
 		                                });
 		},
 
@@ -33,9 +34,10 @@ fluid.Scheduler = function () {
 		                                                                    orderableTagName,
 		                                                                    orderableIdName,
 		                                                                    numOrderables);
-		    return new fluid.Reorderer (fetchReordererContainer (namebase), {
+		    var container = fetchReordererContainer (namebase);
+		    return new fluid.Reorderer (container, {
 		                                orderableFinder: orderableFinder,
-		                                layoutHandler: new fluid.ListLayoutHandler (orderableFinder)
+		                                layoutHandler: new fluid.ListLayoutHandler (orderableFinder, container)
 		                                });
 		},
 

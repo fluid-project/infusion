@@ -146,9 +146,10 @@ var dropTargets = {
 		      portlet7:[0,1],portlet8:[1,1],portlet9:[1,1]}
 };
 
-      new fluid.Reorderer("reorderer-root", {
+      var portletReordererRoot = jQuery("#reorderer-root");
+      new fluid.Reorderer(portletReordererRoot, {
           orderChangedCallback: function() {},
-          layoutHandler: new fluid.PortletLayoutHandler (portletOrderableFinder,
+          layoutHandler: new fluid.PortletLayoutHandler (portletOrderableFinder, portletReordererRoot, 
           		layout, dropTargets),
           orderableFinder: portletOrderableFinder,
           droppableFinder: portletFinder,

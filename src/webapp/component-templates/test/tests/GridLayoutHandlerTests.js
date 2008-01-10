@@ -11,9 +11,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
  */
 
 function testGetRightSiblingInfo() {
-	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
-	var imageList = fluid.testUtils.byId(lightboxRootId);
-	gridHandler.setReorderableContainer(imageList);
+    var imageList = fluid.testUtils.byId(lightboxRootId);
+	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId, imageList);
 
 	var rightSibling = gridHandler._getRightSiblingInfo(fluid.testUtils.byId(firstReorderableId));
 	assertEquals("The item to the right of the first image should be the second image", 
@@ -36,9 +35,8 @@ function testGetRightSiblingInfo() {
 }
 
 function testGetLeftSiblingInfo() {
-	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
 	var imageList = fluid.testUtils.byId(lightboxRootId);
-	gridHandler.setReorderableContainer(imageList);
+	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId, imageList);
 
 	var leftSibling = gridHandler._getLeftSiblingInfo(fluid.testUtils.byId(fourthReorderableId));
 	assertEquals("The item to the left of the fourth image should be the third image", 
@@ -63,9 +61,8 @@ function testGetLeftSiblingInfo() {
 }
 
 function testGetItemInfoBelow() {
-	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
 	var imageList = fluid.testUtils.byId(lightboxRootId);
-	gridHandler.setReorderableContainer(imageList);
+	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId, imageList);
 	
 	var itemInfo = gridHandler._getItemInfoBelow(fluid.testUtils.byId(firstReorderableId));
 	assertEquals("Since there are 3 colums in the grid, the item below the first image should be the fourth image", 
@@ -99,9 +96,8 @@ function testGetItemInfoBelow() {
 }
 
 function testGetItemInfoAbove() {
-	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
 	var imageList = jQuery ("[id=" + lightboxRootId + "]");
-	gridHandler.setReorderableContainer(imageList);
+	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId, imageList);
 	imageList.removeClass ("width-3-thumb");
 	imageList.addClass ("width-4-thumb");
 		
@@ -166,9 +162,8 @@ function testGetItemInfoAbove() {
 }
 
 function testGetItemInfoBelowOneRow() {
-	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
-    var imageList = jQuery ("[id=" + lightboxRootId + "]");
-	gridHandler.setReorderableContainer(imageList);
+	var imageList = jQuery ("[id=" + lightboxRootId + "]");
+	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId, imageList);
 	imageList.addClass ("width-all-thumb");
 	
 	var itemInfo = gridHandler._getItemInfoBelow(fluid.testUtils.byId(firstReorderableId));
@@ -186,9 +181,8 @@ function testGetItemInfoBelowOneRow() {
 }
 
 function testGetItemInfoAboveOneRow() {
-	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId);
-    var imageList = jQuery ("[id=" + lightboxRootId + "]");
-	gridHandler.setReorderableContainer(imageList);
+	var imageList = jQuery ("[id=" + lightboxRootId + "]");
+	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId, imageList);
 	imageList.addClass ("width-all-thumb");
 	
 	var itemInfo = gridHandler._getItemInfoAbove(fluid.testUtils.byId(firstReorderableId));

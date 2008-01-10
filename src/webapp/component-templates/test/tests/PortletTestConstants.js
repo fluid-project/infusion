@@ -76,10 +76,9 @@ var dropTargets = {
 
 // This setUp will be called before each of the tests that are included in unordered-list.html 
 function setUp() {
-	portletHandler = new fluid.PortletLayoutHandler (portletOrderableFinder,
+	var table = jQuery("#reorderer-root");
+	portletHandler = new fluid.PortletLayoutHandler (portletOrderableFinder, table,
           		layout, dropTargets);
-    var table = jQuery("#reorderer-root");
-    portletHandler.setReorderableContainer(table);
 }
 
 

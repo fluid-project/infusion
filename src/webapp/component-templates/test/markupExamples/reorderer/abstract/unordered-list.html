@@ -45,8 +45,8 @@
     </div>
 
     <script type="text/javascript" id="reorderer-script">
-      new fluid.Reorderer ("list1", {
-          layoutHandler: new fluid.ListLayoutHandler (listOrderableFinder),
+      new fluid.Reorderer (jQuery ("#list1"), {
+          layoutHandler: new fluid.ListLayoutHandler (listOrderableFinder, jQuery ("#list1")),
           orderableFinder: listOrderableFinder  // defined in UnorderedListTestConstants.js
       });
     </script>

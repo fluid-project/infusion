@@ -99,9 +99,10 @@
       // 1. The orderableFinder function which enables items to be reordered. 
       // 2. The layoutHandler which enables the keyboard functions of the Reorderer.
       // The orderChangedCallback can be supplied to the Reorderer and will be executed when the order changes.
-      new fluid.Reorderer ("todo-list", {
+      var todoListContainer = jQuery ("#todo-list");
+      new fluid.Reorderer (todoListContainer, {
         orderableFinder: myOrderableFinder,
-        layoutHandler: new fluid.ListLayoutHandler (myOrderableFinder)
+        layoutHandler: new fluid.ListLayoutHandler (myOrderableFinder, todoListContainer)
       });
     </script>
   </body>
