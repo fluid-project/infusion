@@ -13,14 +13,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 var fluid = fluid || {};
 
-fluid.Reorderer = function (domNodeId, params) {
+fluid.Reorderer = function (container, params) {
 	// Reliable 'this'.
 	//
 	var thisReorderer = this;
 	var theAvatar = null;
 	
-	this.domNode = jQuery ("[id=" + domNodeId + "]");
-	
+	this.domNode = jQuery (container);
+    
 	// the reorderable DOM element that is currently active
     this.activeItem = null;
 		
@@ -413,95 +413,12 @@ fluid.Reorderer = function (domNodeId, params) {
     }
 }; // End Reorderer
 
-fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
-	this.orderableFinder = orderableFinder;
-	
-    this._container = null;
-    
-    this.orientation = fluid.orientation.VERTICAL;  // default.
-    
-    this.setReorderableContainer = function (aList) {
-        this._container = aList;
-    };
-    
-    /*
-     * Returns an object containing the item that is to the right of the given item
-     * and a flag indicating whether or not the process has 'wrapped' around the end of
-     * the row that the given item is in
-     */
-    this._getRightSiblingInfo = function (item) {           
-        return this._getSiblingInfo (item, 1);
-    };
-    
-    this.getRightSibling = function (item) {
-        return this._getRightSiblingInfo(item).item;
-    };
-    
-    this.moveItemRight = function (item) {
-        this._moveItem(item, this._getRightSiblingInfo(item), "after", "before");
-    };
-
-    /*
-     * Returns an object containing the item that is to the left of the given item
-     * and a flag indicating whether or not the process has 'wrapped' around the end of
-     * the row that the given item is in
-     */
-    this._getLeftSiblingInfo = function (item) {
-        return this._getSiblingInfo (item, -1);
-    };
-        
-    this.getLeftSibling = function (item) {
-        return this._getLeftSiblingInfo(item).item;
-    };
-
-    this.moveItemLeft = function (item) {
-        this._moveItem(item, this._getLeftSiblingInfo(item), "before", "after");
-    };
-
-    /*
-     * A general get{Left|Right}SiblingInfo() given an item and a direction.
-     * The direction is encoded by either a +1 to move right, or a -1 to
-     * move left, and that value is used internally as an increment or
-     * decrement, respectively, of the index of the given item.
-     */
-    this._getSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
-        var orderables = this.orderableFinder (this._container);
-        var index = jQuery (orderables).index (item) + incDecrement;
-        var hasWrapped = false;
-            
-        // Handle wrapping to 'before' the beginning. 
-        if (index === -1) {
-            index = orderables.length - 1;
-            hasWrapped = true;
-        }
-        // Handle wrapping to 'after' the end.
-        else if (index === orderables.length) {
-            index = 0;
-            hasWrapped = true;
-        } 
-        // Handle case where the passed-in item is *not* an "orderable"
-        // (or other undefined error).
-        //
-        else if (index < -1 || index > orderables.length) {
-            index = 0;
-        }
-        
-        return {item: orderables[index], hasWrapped: hasWrapped};
-    };
-
-    this.getItemBelow = function (item) {
-        return this.getRightSibling (item);
-    };
-
-    this.getItemAbove = function (item) {
-        return this.getLeftSibling (item);
-    };
-    
-    this.moveItemUp = this.moveItemLeft;
-    
-    this.moveItemDown = this.moveItemRight;
-    
-    this._moveItem = function (item, relatedItemInfo, defaultPlacement, wrappedPlacement) {
+/*******************
+ * Layout Handlers *
+ *******************/
+(function () {
+	// Shared private functions.
+	var moveItem = function (item, relatedItemInfo, defaultPlacement, wrappedPlacement) {
         var itemPlacement = defaultPlacement;
         if (relatedItemInfo.hasWrapped) {
             itemPlacement = wrappedPlacement;
@@ -512,357 +429,434 @@ fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
         if (itemPlacement === "after") {
             jQuery (relatedItemInfo.item).after (item);
         } else {
-        	jQuery (relatedItemInfo.item).before (item);
-        }
-    };
-
-    /**
-     * For drag-and-drop during the drag:  is the mouse over the "before" half
-     * of the droppable?  In the case of a vertically oriented set of orderables,
-     * "before" means "above".  For a horizontally oriented set, "before" means
-     * "left of".
-     */
-    this.isMouseBefore = function (evt, droppableEl) {
-    	var mid;
-    	if (this.orientation === fluid.orientation.VERTICAL) {
-	        mid = jQuery (droppableEl).offset().top + (droppableEl.offsetHeight / 2);
-	        return (evt.pageY < mid);
-    	}
-    	else {
-            mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
-            return (evt.clientX < mid);
-    	}
-    };    
-    
-}; // End ListLayoutHandler
-    
-/*
- * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
- * changes dimensions when the window changes size. As a result, when the user presses the up or
- * down arrow key, what lies above or below depends on the current window size.
- * 
- * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
- * in the window, and of informing the Lightbox of which items surround a given item.
- */
-fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
-
-    fluid.ListLayoutHandler.call (this, orderableFinder);
-    this.orientation = fluid.orientation.HORIZONTAL;
-                    
-    /*
-     * Returns an object containing the item that is below the given item in the current grid
-     * and a flag indicating whether or not the process has 'wrapped' around the end of
-     * the column that the given item is in. The flag is necessary because when an image is being
-     * moved to the resulting item location, the decision of whether or not to insert before or
-     * after the item changes if the process wrapped around the column.
-     */
-    this._getItemInfoBelow = function (inItem) {
-        var orderables = this.orderableFinder (this._container);
-        var curCoords = jQuery (inItem).offset();
-        var i, iCoords;
-        var firstItemInColumn, currentItem;
-        
-        for (i = 0; i < orderables.length; i++) {
-        	currentItem = orderables [i];
-        	iCoords = jQuery (orderables[i]).offset();
-        	if (iCoords.left === curCoords.left) {
-                firstItemInColumn = firstItemInColumn || currentItem;
-                if (iCoords.top > curCoords.top) {
-                	return {item: currentItem, hasWrapped: false};
-                }
-            }
-        }
-
-        firstItemInColumn = firstItemInColumn || orderables [0];
-        return {item: firstItemInColumn, hasWrapped: true};
-    };
-    
-    this.getItemBelow = function(item) {
-        return this._getItemInfoBelow (item).item;
-    };
-
-    this.moveItemDown = function (item) {
-        this._moveItem (item, this._getItemInfoBelow (item), "after", "before");
-    };
-            
-    /*
-     * Returns an object containing the item that is above the given item in the current grid
-     * and a flag indicating whether or not the process has 'wrapped' around the end of
-     * the column that the given item is in. The flag is necessary because when an image is being
-     * moved to the resulting item location, the decision of whether or not to insert before or
-     * after the item changes if the process wrapped around the column.
-     */
-    this._getItemInfoAbove = function (inItem) {
-        var orderables = this.orderableFinder (this._container);
-        var curCoords = jQuery (inItem).offset();
-        var i, iCoords;
-        var lastItemInColumn, currentItem;
-        
-        for (i = orderables.length - 1; i > -1; i--) {
-            currentItem = orderables [i];
-            iCoords = jQuery (orderables[i]).offset();
-            if (iCoords.left === curCoords.left) {
-                lastItemInColumn = lastItemInColumn || currentItem;
-                if (curCoords.top > iCoords.top) {
-                    return {item: currentItem, hasWrapped: false};
-                }
-            }
-        }
-
-        lastItemInColumn = lastItemInColumn || orderables [0];
-        return {item: lastItemInColumn, hasWrapped: true};
-    };
-
-    this.getItemAbove = function (item) {
-        return this._getItemInfoAbove (item).item;   
-    }; 
-    
-    this.moveItemUp = function (item) {
-        this._moveItem (item, this._getItemInfoAbove (item), "before", "after");
-    };
-                
-}; // End of GridLayoutHandler
-    
-/*
- * Portlet Layout Handler for reordering portlet-type markup.
- * 
- * General movement guidelines:
- * 
- * - Arrowing sideways will always go to the top (moveable) portlet in the column
- * - Moving sideways will always move to the top available drop target in the column
- * - Wrapping is not necessary at this first pass, but is ok
- */
-fluid.PortletLayoutHandler = function (/*function*/ orderableFinder,
-        /* JSON object */ portletLayoutJSON,
-        /* JSON object */ dropTargetPermissionsJSON) {
-    
-    // Private members.
-    var thisLH = this; // Hold onto this layouthandler for the enclosed private functions.
-    var portletLayout = portletLayoutJSON;
-    var dropTargetPermissions = dropTargetPermissionsJSON;
-    var container = null;
-    
-    // Public members.
-    this.orderableFinder = orderableFinder;
-    
-    // Private Methods.
-       /*
-     * A general get{Above|Below}SiblingInfo() given an item and a direction.
-     * The direction is encoded by either a +1 to move down, or a -1 to
-     * move up, and that value is used internally as an increment or
-     * decrement, respectively, of the index of the given item.
-     */
-    var getVerticalSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
-        var orderables = thisLH.orderableFinder (container);
-        var index = jQuery(orderables).index(item) + incDecrement;
-        var hasWrapped = false;
-            
-        // If we wrap, backup 
-        if ((index === -1) || (index === orderables.length)) {
-            return {item: null, hasWrapped: true};
-        }
-        // Handle case where the passed-in item is *not* an "orderable"
-        // (or other undefined error).
-        //
-        else if (index < -1 || index > orderables.length) {
-            index = 0;
-        }
-        
-        return {item: orderables[index], hasWrapped: hasWrapped};
-    };
-
-    /*
-     * A general get{Beside}SiblingInfo() given an item and a direction.
-     * The direction is encoded by either a +1 to move right, or a -1 to
-     * move left.
-     * Currently, the horizontal sibling defaults to the top item in the
-     * neighboring column.
-     */
-    var getHorizontalSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
-        var hasWrapped = false;
-        var orderables = thisLH.orderableFinder (container);
-            
-        var colIndex = -1;
-        for (var col = 0; col < portletLayout.columns.length; col++) {
-            if (jQuery(portletLayout.columns[col].children).index(item.id) !== -1) {
-                colIndex = col;
-                break;
-            }
-        }
-        if (colIndex === -1) {
-            return {item: null, hasWrapped: true};
-        }
-
-        colIndex = colIndex + incDecrement;
-        var itemIndex = 0;
-        var id = portletLayout.columns[colIndex].children[itemIndex];
-        var sibling = jQuery ("#" + id).get (0);
-        while (orderables.index (sibling) === -1) {
-            itemIndex += 1;
-            id = portletLayout.columns[colIndex].children[itemIndex];
-            sibling = jQuery ("#" + id).get (0);
-        }
-        return {item: sibling, hasWrapped: false};
-
-    };
-    
-    var getRightSiblingInfo = function(item) {
-        if (thisLH._isInRightmostColumn(item)) {
-            return {item: item, hasWrapped: true};
-        } else {
-            return getHorizontalSiblingInfo(item, 1);
-        }
-    };
-    
-    var getLeftSiblingInfo = function(item) {
-        if (thisLH._isInLeftmostColumn(item)) {
-            return {item: item, hasWrapped: true};
-        } else {
-            return getHorizontalSiblingInfo(item, -1);
-        }
-    };
-    
-    var getItemInfoBelow = function (item) {
-        if (thisLH._isLastInColumn(item)) {
-            return {item:item, hasWrapped:true};
-        } else {
-            return getVerticalSiblingInfo (item, 1);
-        }
-    };
-    
-    var getItemInfoAbove = function (item) {
-        if (thisLH._isFirstInColumn(item)) {
-            return {item:item, hasWrapped:true};
-        } else {
-            return getVerticalSiblingInfo (item, -1);
-        }
-    };
-
-    var isAtEndOfColumn = function (item, column) {
-        var index = null;
-        for (var col = 0; col < portletLayout.columns.length; col++) {
-            index = jQuery(portletLayout.columns[col].children).index(item.id);
-            if (index >= 0) {
-                break;
-            }
-        }
-        if (index >= 0) {
-            if (column === "top") {
-                return (index === 0) ? true : false;
-            } else {
-                if (index === portletLayout.columns[col].children.length-1) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
-        return false;
-    };
-    
-    // Identical to ListLayoutHandler, except for privacy settings
-    var moveItem = function (item, relatedItemInfo, defaultPlacement, wrappedPlacement) {
-        var itemPlacement = defaultPlacement;
-        if (relatedItemInfo.hasWrapped) {
-            itemPlacement = wrappedPlacement;
-        }
-        
-        if (itemPlacement === "after") {
-            jQuery (relatedItemInfo.item).after (item);
-        } else {
             jQuery (relatedItemInfo.item).before (item);
-        }
+        } 
     };
     
-    // Public Methods
-    
-    // These methods are public only for our unit tests. They need to be refactored into a portletlayout object.
-    this._isFirstInColumn = function (item) {
-        return isAtEndOfColumn(item, "top");
-    };
+    // Public layout handlers.
+	fluid.ListLayoutHandler = function (/*function*/ orderableFinder) {
+	    this.orderableFinder = orderableFinder;
+	    
+	    this._container = null;
+	    
+	    this.orientation = fluid.orientation.VERTICAL;  // default.
+	    
+	    this.setReorderableContainer = function (aList) {
+	        this._container = aList;
+	    };
+	    
+    /*
+         * A general get{Left|Right}SiblingInfo() given an item, a list of orderables and a direction.
+         * The direction is encoded by either a +1 to move right, or a -1 to
+         * move left, and that value is used internally as an increment or
+         * decrement, respectively, of the index of the given item.
+         */
+        this._getSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
+            var orderables = this.orderableFinder(this._container);
+            var index = jQuery (orderables).index (item) + incDecrement;
+            var hasWrapped = false;
+                
+            // Handle wrapping to 'before' the beginning. 
+            if (index === -1) {
+                index = orderables.length - 1;
+                hasWrapped = true;
+            }
+            // Handle wrapping to 'after' the end.
+            else if (index === orderables.length) {
+                index = 0;
+                hasWrapped = true;
+            } 
+            // Handle case where the passed-in item is *not* an "orderable"
+            // (or other undefined error).
+            //
+            else if (index < -1 || index > orderables.length) {
+                index = 0;
+            }
+            
+            return {item: orderables[index], hasWrapped: hasWrapped};
+        };
 
-    this._isLastInColumn = function (item) {
-        return isAtEndOfColumn(item, "bottom");
-    };
-    
-    this.setReorderableContainer = function (aList) {
-        container = aList;
-    };
-    
-    this._isInLeftmostColumn = function (item) {
-        if (jQuery(portletLayout.columns[0].children).index(item.id) !== -1) {
-            return true;
-        } else {
-            return false;
-        }
-    };
-    
-    this._isInRightmostColumn = function (item) {
-        if (jQuery(portletLayout.columns[portletLayout.columns.length-1].children).index(item.id) !== -1) {
-            return true;
-        } else {
-            return false;
-        }
-    };
-    
-    // Identical to ListLayoutHandler, except for privacy settings
-    this.getRightSibling = function (item) {
-        return getRightSiblingInfo(item).item;
-    };
-    
-    // Identical to ListLayoutHandler, except for privacy settings
-    this.moveItemRight = function (item) {
-        moveItem(item, getRightSiblingInfo(item), "before", "after");
-    };
-
-    // Identical to ListLayoutHandler, except for privacy settings
-    this.getLeftSibling = function (item) {
-        return getLeftSiblingInfo(item).item;
-    };
-
-    // Identical to ListLayoutHandler, except for privacy settings
-    this.moveItemLeft = function (item) {
-        moveItem(item, getLeftSiblingInfo(item), "before", "after");
-    };
-
-    // Identical to GridLayoutHandler, except for privacy settings
-    this.getItemAbove = function (item) {
-        return getItemInfoAbove(item).item;
-    };
-    
-    // Identical to GridLayoutHandler, except for privacy settings
-    this.moveItemUp = function (item) {
-        moveItem (item, getItemInfoAbove(item), "before", "after");
-    };
+        /*
+         * Returns an object containing the item that is to the right of the given item
+         * and a flag indicating whether or not the process has 'wrapped' around the end of
+         * the row that the given item is in
+         */
+        this._getRightSiblingInfo = function (item) {           
+            return this._getSiblingInfo (item, 1);
+        };
         
-    // Identical to GridLayoutHandler, except for privacy settings
-    this.getItemBelow = function (item) {
-        return getItemInfoBelow(item).item;
-    };
-
-    // Identical to GridLayoutHandler, except for privacy settings
-    this.moveItemDown = function (item) {
-        moveItem (item, getItemInfoBelow(item), "after", "before");
-    };
+        /*
+         * Returns an object containing the item that is to the left of the given item
+         * and a flag indicating whether or not the process has 'wrapped' around the end of
+         * the row that the given item is in
+         */
+        this._getLeftSiblingInfo = function (item) {
+            return this._getSiblingInfo (item, -1);
+        };
+        
+	    this.getRightSibling = function (item) {
+	        return this._getRightSiblingInfo(item).item;
+	    };
+	    
+	    this.moveItemRight = function (item) {
+	        moveItem (item, this._getRightSiblingInfo(item), "after", "before");
+	    };
+	
+	    this.getLeftSibling = function (item) {
+	        return this._getLeftSiblingInfo(item).item;
+	    };
+	
+	    this.moveItemLeft = function (item) {
+	        moveItem (item, this._getLeftSiblingInfo(item), "before", "after");
+	    };
+	
+	
+	    this.getItemBelow = function (item) {
+	        return this.getRightSibling (item);
+	    };
+	
+	    this.getItemAbove = function (item) {
+	        return this.getLeftSibling (item);
+	    };
+	    
+	    this.moveItemUp = this.moveItemLeft;
+	    
+	    this.moveItemDown = this.moveItemRight;
+	
+	    /**
+	     * For drag-and-drop during the drag:  is the mouse over the "before" half
+	     * of the droppable?  In the case of a vertically oriented set of orderables,
+	     * "before" means "above".  For a horizontally oriented set, "before" means
+	     * "left of".
+	     */
+	    this.isMouseBefore = function (evt, droppableEl) {
+	        var mid;
+	        if (this.orientation === fluid.orientation.VERTICAL) {
+	            mid = jQuery (droppableEl).offset().top + (droppableEl.offsetHeight / 2);
+	            return (evt.pageY < mid);
+	        }
+	        else {
+	            mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
+	            return (evt.clientX < mid);
+	        }
+	    };    
+	}; // End ListLayoutHandler
     
-    /**
-     * For drag-and-drop during the drag:  is the mouse over the "before" half
-     * of the droppable?  In the case of a vertically oriented set of orderables,
-     * "before" means "above".  For a horizontally oriented set, "before" means
-     * "left of".
-     */
-     
-    // Identical to ListLayoutHandler
-    this.isMouseBefore = function (evt, droppableEl) {
-    	var mid;
-        if (this.orientation === fluid.orientation.VERTICAL) {
-            mid = jQuery (droppableEl).offset ().top + (droppableEl.offsetHeight / 2);
-            return (evt.pageY < mid);
-        }
-        else {
-            mid = jQuery (droppableEl).offset ().left + (droppableEl.offsetWidth / 2);
-            return (evt.clientX < mid);
-        }
-    };    
-}; // End PortalLayoutHandler
+	/*
+	 * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
+	 * changes dimensions when the window changes size. As a result, when the user presses the up or
+	 * down arrow key, what lies above or below depends on the current window size.
+	 * 
+	 * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
+	 * in the window, and of informing the Lightbox of which items surround a given item.
+	 */
+	fluid.GridLayoutHandler = function (/*function*/ orderableFinder) {
+	
+	   
+	    fluid.ListLayoutHandler.call (this, orderableFinder);
+	    this.orientation = fluid.orientation.HORIZONTAL;
+	                    
+	    /*
+	     * Returns an object containing the item that is below the given item in the current grid
+	     * and a flag indicating whether or not the process has 'wrapped' around the end of
+	     * the column that the given item is in. The flag is necessary because when an image is being
+	     * moved to the resulting item location, the decision of whether or not to insert before or
+	     * after the item changes if the process wrapped around the column.
+	     */
+	    this._getItemInfoBelow = function (inItem) {
+	        var orderables = this.orderableFinder (this._container);
+	        var curCoords = jQuery (inItem).offset();
+	        var i, iCoords;
+	        var firstItemInColumn, currentItem;
+	        
+	        for (i = 0; i < orderables.length; i++) {
+	            currentItem = orderables [i];
+	            iCoords = jQuery (orderables[i]).offset();
+	            if (iCoords.left === curCoords.left) {
+	                firstItemInColumn = firstItemInColumn || currentItem;
+	                if (iCoords.top > curCoords.top) {
+	                    return {item: currentItem, hasWrapped: false};
+	                }
+	            }
+	        }
+	
+	        firstItemInColumn = firstItemInColumn || orderables [0];
+	        return {item: firstItemInColumn, hasWrapped: true};
+	    };
+	    
+	    this.getItemBelow = function(item) {
+	        return this._getItemInfoBelow (item).item;
+	    };
+	
+	    this.moveItemDown = function (item) {
+	        moveItem (item, this._getItemInfoBelow (item), "after", "before");
+	    };
+	            
+	    /*
+	     * Returns an object containing the item that is above the given item in the current grid
+	     * and a flag indicating whether or not the process has 'wrapped' around the end of
+	     * the column that the given item is in. The flag is necessary because when an image is being
+	     * moved to the resulting item location, the decision of whether or not to insert before or
+	     * after the item changes if the process wrapped around the column.
+	     */
+	     this._getItemInfoAbove = function (inItem) {
+	        var orderables = this.orderableFinder (this._container);
+	        var curCoords = jQuery (inItem).offset();
+	        var i, iCoords;
+	        var lastItemInColumn, currentItem;
+	        
+	        for (i = orderables.length - 1; i > -1; i--) {
+	            currentItem = orderables [i];
+	            iCoords = jQuery (orderables[i]).offset();
+	            if (iCoords.left === curCoords.left) {
+	                lastItemInColumn = lastItemInColumn || currentItem;
+	                if (curCoords.top > iCoords.top) {
+	                    return {item: currentItem, hasWrapped: false};
+	                }
+	            }
+	        }
+	
+	        lastItemInColumn = lastItemInColumn || orderables [0];
+	        return {item: lastItemInColumn, hasWrapped: true};
+	    };
+	
+	    this.getItemAbove = function (item) {
+	        return this._getItemInfoAbove (item).item;   
+	    }; 
+	    
+	    this.moveItemUp = function (item) {
+	        moveItem (item, this._getItemInfoAbove (item), "before", "after");
+	    };
+	                
+	}; // End of GridLayoutHandler
+
+	/*
+	 * Portlet Layout Handler for reordering portlet-type markup.
+	 * 
+	 * General movement guidelines:
+	 * 
+	 * - Arrowing sideways will always go to the top (moveable) portlet in the column
+	 * - Moving sideways will always move to the top available drop target in the column
+	 * - Wrapping is not necessary at this first pass, but is ok
+	 */
+	fluid.PortletLayoutHandler = function (/*function*/ orderableFinder,
+	        /* JSON object */ portletLayoutJSON,
+	        /* JSON object */ dropTargetPermissionsJSON) {
+	    
+	    // Private members.
+	    var thisLH = this; // Hold onto this layouthandler for the enclosed private functions.
+	    var portletLayout = portletLayoutJSON;
+	    var dropTargetPermissions = dropTargetPermissionsJSON;
+	    var container = null;
+	    
+	    // Public members.
+	    this.orderableFinder = orderableFinder;
+	    
+	    // Private Methods.
+	       /*
+	     * A general get{Above|Below}SiblingInfo() given an item and a direction.
+	     * The direction is encoded by either a +1 to move down, or a -1 to
+	     * move up, and that value is used internally as an increment or
+	     * decrement, respectively, of the index of the given item.
+	     */
+	    var getVerticalSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
+	        var orderables = thisLH.orderableFinder (container);
+	        var index = jQuery(orderables).index(item) + incDecrement;
+	        var hasWrapped = false;
+	            
+	        // If we wrap, backup 
+	        if ((index === -1) || (index === orderables.length)) {
+	            return {item: null, hasWrapped: true};
+	        }
+	        // Handle case where the passed-in item is *not* an "orderable"
+	        // (or other undefined error).
+	        //
+	        else if (index < -1 || index > orderables.length) {
+	            index = 0;
+	        }
+	        
+	        return {item: orderables[index], hasWrapped: hasWrapped};
+	    };
+	
+	    /*
+	     * A general get{Beside}SiblingInfo() given an item and a direction.
+	     * The direction is encoded by either a +1 to move right, or a -1 to
+	     * move left.
+	     * Currently, the horizontal sibling defaults to the top item in the
+	     * neighboring column.
+	     */
+	    var getHorizontalSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
+	        var hasWrapped = false;
+	        var orderables = thisLH.orderableFinder (container);
+	            
+	        var colIndex = -1;
+	        for (var col = 0; col < portletLayout.columns.length; col++) {
+	            if (jQuery(portletLayout.columns[col].children).index(item.id) !== -1) {
+	                colIndex = col;
+	                break;
+	            }
+	        }
+	        if (colIndex === -1) {
+	            return {item: null, hasWrapped: true};
+	        }
+	
+	        colIndex = colIndex + incDecrement;
+	        var itemIndex = 0;
+	        var id = portletLayout.columns[colIndex].children[itemIndex];
+	        var sibling = jQuery ("#" + id).get (0);
+	        while (orderables.index (sibling) === -1) {
+	            itemIndex += 1;
+	            id = portletLayout.columns[colIndex].children[itemIndex];
+	            sibling = jQuery ("#" + id).get (0);
+	        }
+	        return {item: sibling, hasWrapped: false};
+	
+	    };
+	    
+	    var getRightSiblingInfo = function(item) {
+	        if (thisLH._isInRightmostColumn(item)) {
+	            return {item: item, hasWrapped: true};
+	        } else {
+	            return getHorizontalSiblingInfo(item, 1);
+	        }
+	    };
+	    
+	    var getLeftSiblingInfo = function(item) {
+	        if (thisLH._isInLeftmostColumn(item)) {
+	            return {item: item, hasWrapped: true};
+	        } else {
+	            return getHorizontalSiblingInfo(item, -1);
+	        }
+	    };
+	    
+	    var getItemInfoBelow = function (item) {
+	        if (thisLH._isLastInColumn(item)) {
+	            return {item:item, hasWrapped:true};
+	        } else {
+	            return getVerticalSiblingInfo (item, 1);
+	        }
+	    };
+	    
+	    var getItemInfoAbove = function (item) {
+	        if (thisLH._isFirstInColumn(item)) {
+	            return {item:item, hasWrapped:true};
+	        } else {
+	            return getVerticalSiblingInfo (item, -1);
+	        }
+	    };
+	
+	    var isAtEndOfColumn = function (item, column) {
+	        var index = null;
+	        for (var col = 0; col < portletLayout.columns.length; col++) {
+	            index = jQuery(portletLayout.columns[col].children).index(item.id);
+	            if (index >= 0) {
+	                break;
+	            }
+	        }
+	        if (index >= 0) {
+	            if (column === "top") {
+	                return (index === 0) ? true : false;
+	            } else {
+	                if (index === portletLayout.columns[col].children.length-1) {
+	                    return true;
+	                } else {
+	                    return false;
+	                }
+	            }
+	        }
+	        return false;
+	    };
+	    
+	    // Public Methods
+	    
+	    // These methods are public only for our unit tests. They need to be refactored into a portletlayout object.
+	    this._isFirstInColumn = function (item) {
+	        return isAtEndOfColumn(item, "top");
+	    };
+	
+	    this._isLastInColumn = function (item) {
+	        return isAtEndOfColumn(item, "bottom");
+	    };
+	    
+	    this.setReorderableContainer = function (aList) {
+	        container = aList;
+	    };
+	    
+	    this._isInLeftmostColumn = function (item) {
+	        if (jQuery(portletLayout.columns[0].children).index(item.id) !== -1) {
+	            return true;
+	        } else {
+	            return false;
+	        }
+	    };
+	    
+	    this._isInRightmostColumn = function (item) {
+	        if (jQuery(portletLayout.columns[portletLayout.columns.length-1].children).index(item.id) !== -1) {
+	            return true;
+	        } else {
+	            return false;
+	        }
+	    };
+	    
+	    // Identical to ListLayoutHandler, except for privacy settings
+	    this.getRightSibling = function (item) {
+	        return getRightSiblingInfo(item).item;
+	    };
+	    
+	    // Identical to ListLayoutHandler, except for privacy settings
+	    this.moveItemRight = function (item) {
+	        moveItem(item, getRightSiblingInfo(item), "before", "after");
+	    };
+	
+	    // Identical to ListLayoutHandler, except for privacy settings
+	    this.getLeftSibling = function (item) {
+	        return getLeftSiblingInfo(item).item;
+	    };
+	
+	    // Identical to ListLayoutHandler, except for privacy settings
+	    this.moveItemLeft = function (item) {
+	        moveItem(item, getLeftSiblingInfo(item), "before", "after");
+	    };
+	
+	    // Identical to GridLayoutHandler, except for privacy settings
+	    this.getItemAbove = function (item) {
+	        return getItemInfoAbove(item).item;
+	    };
+	    
+	    // Identical to GridLayoutHandler, except for privacy settings
+	    this.moveItemUp = function (item) {
+	        moveItem (item, getItemInfoAbove(item), "before", "after");
+	    };
+	        
+	    // Identical to GridLayoutHandler, except for privacy settings
+	    this.getItemBelow = function (item) {
+	        return getItemInfoBelow(item).item;
+	    };
+	
+	    // Identical to GridLayoutHandler, except for privacy settings
+	    this.moveItemDown = function (item) {
+	        moveItem (item, getItemInfoBelow(item), "after", "before");
+	    };
+	    
+	    /**
+	     * For drag-and-drop during the drag:  is the mouse over the "before" half
+	     * of the droppable?  In the case of a vertically oriented set of orderables,
+	     * "before" means "above".  For a horizontally oriented set, "before" means
+	     * "left of".
+	     */
+	     
+	    // Identical to ListLayoutHandler
+	    this.isMouseBefore = function (evt, droppableEl) {
+	        var mid;
+	        if (this.orientation === fluid.orientation.VERTICAL) {
+	            mid = jQuery (droppableEl).offset ().top + (droppableEl.offsetHeight / 2);
+	            return (evt.pageY < mid);
+	        }
+	        else {
+	            mid = jQuery (droppableEl).offset ().left + (droppableEl.offsetWidth / 2);
+	            return (evt.clientX < mid);
+	        }
+	    };    
+	}; // End PortalLayoutHandler
+}) ();
 

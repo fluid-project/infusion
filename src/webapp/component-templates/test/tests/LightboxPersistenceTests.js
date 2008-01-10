@@ -20,7 +20,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
  * @author Fluid
  */
 function testIsOrderChangedCallbackCalled() {
-	var lightbox = new fluid.Reorderer(lightboxRootId, {
+	var lightboxContainer = jQuery ("[id=" + lightboxRootId + "]");
+	var lightbox = new fluid.Reorderer(lightboxContainer, {
 			// Define a "persistence" callback that simply creates a known
 			// input element with id 'callbackCalled'.  Later, we can test
 			// whether the callback was called by looking for the element.

@@ -77,7 +77,8 @@ fluid.initLightbox = function (namebase, messageNamebase) {
         return fluid.Utilities.seekNodesById (containerEl, "div", lightboxCellNamePattern);
     };
     
-    var lightbox = new fluid.Reorderer (namebase, {
+    var lightboxContainer = jQuery ("[id=" + namebase + "]");
+    var lightbox = new fluid.Reorderer (lightboxContainer, {
             messageNamebase : messageNamebase,
             orderChangedCallback: orderChangedCallback,
             layoutHandler: new fluid.GridLayoutHandler (lightboxOrderableFinder),
@@ -118,14 +119,9 @@ fluid.Utilities.escapeSelector = function(id) {
   
 fluid.Utilities.findForm = function (element) {
     while(element) {
-        if (element.nodeName.toLowerCase() == "form") {
+        if (element.nodeName.toLowerCase() === "form") {
             return element;
         }
         element = element.parentNode;
     }
 };
-    
-    
-
-
-

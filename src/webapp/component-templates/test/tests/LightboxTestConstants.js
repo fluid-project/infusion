@@ -104,12 +104,16 @@ function exposeTestFunctionNames() {
 
 var imgListClone;
 
+function fetchLightboxRoot () {
+    return jQuery("[id=" + lightboxRootId + "]");
+}
+
 // This setUp will be called before each of the tests that are included in Lightbox.html 
 function setUp() {
     imgListClone = document.getElementById(lightboxRootId).cloneNode(true);
     
     // Force the grid size to three thumbnails wide
-    jQuery("[id="+lightboxRootId+"]").addClass ("width-3-thumb");
+    fetchLightboxRoot().addClass ("width-3-thumb");
 }
 
 // This tearDown will be called after each of the tests that are included in Lightbox.html 
@@ -129,22 +133,21 @@ function findNoOrderables() {
 }
 
 function findImgsInLightbox() {
-    return jQuery("img", jQuery("[id=" + lightboxRootId + "]"));
+    return jQuery("img", fetchLightboxRoot());
 }
     
 function createLightbox() {
-    return new fluid.Reorderer (lightboxRootId, {
+    return new fluid.Reorderer (fetchLightboxRoot (), {
         layoutHandler: new fluid.GridLayoutHandler (findOrderableByDivAndId),
         orderableFinder: findOrderableByDivAndId
     });
 }
 
 function createLightboxWithNoOrderables() {
-	return new fluid.Reorderer (lightboxRootId, {
+	return new fluid.Reorderer (fetchLightboxRoot (), {
         layoutHandler: new fluid.GridLayoutHandler (findNoOrderables),
         orderableFinder: findNoOrderables
     });
 }
-
 
 
