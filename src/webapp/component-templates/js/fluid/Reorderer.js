@@ -88,9 +88,9 @@ fluid.Reorderer = function (domNodeId, params) {
 	};
 	
 	this.addFocusToElement = function (anElement) {
-		var jElement = jQuery(anElement);
-        if (!jElement.attr ("tabindex")) {
-            jElement.attr ("tabindex", "-1");
+		var jElement = jQuery (anElement);
+        if (!jElement.hasTabIndex ()) {
+            jElement.tabIndex (-1);
         }
         jElement.focus ();
 	};

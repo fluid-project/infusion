@@ -55,7 +55,7 @@ function isItemDraggedTest(message, itemId) {
  * This test tests the movement of images, and does not concern itself
  * with changes of state (i.e. dragging, etc.)
  */
-function testHandleArrowKeyPressMoveThumbDown() {	
+function testHandleArrowKeyPressMoveThumbDown() {
 	var lightbox = createLightbox();
 	lightbox.selectActiveItem();
 
@@ -449,14 +449,14 @@ function testAddFocusToElement() {
     var lightbox = createLightbox();
     var testItem = jQuery ("[id="+firstReorderableId+"]");
     
-    assertEquals ("before adding focus, tabindex should be undefined", undefined, jQuery (testItem).attr ("tabindex"));
+    assertEquals ("before adding focus, tabindex should be undefined", undefined, testItem.tabIndex ());
     lightbox.addFocusToElement (testItem);
-    assertEquals("after adding focus, tabindex should be -1", "-1", jQuery (testItem).attr ("tabindex"));
+    assertEquals("after adding focus, tabindex should be -1", -1, testItem.tabIndex ());
     
     var testItem2 = jQuery ("[id="+secondReorderableId+"]");
-    jQuery (testItem2).attr ("tabindex", 2);
+    testItem2.tabIndex (2);
     
-    assertEquals ("before adding focus to something with tabindex=2, tabindex should be 2", "2", jQuery (testItem2).attr ("tabindex"));
+    assertEquals ("before adding focus to something with tabindex=2, tabindex should be 2", 2, testItem2.tabIndex ());
     lightbox.addFocusToElement (testItem2);
-    assertEquals ("before adding focus to something with tabindex=2, tabindex should be still be 2", "2", jQuery (testItem2).attr ("tabindex"));
+    assertEquals ("before adding focus to something with tabindex=2, tabindex should be still be 2", 2, testItem2.tabIndex ());
 }
