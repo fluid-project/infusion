@@ -255,34 +255,20 @@ fluid.Reorderer = function (domNodeId, params) {
            jQuery (evt.data).after (dropMarker);
        }
 	}
- 
+
     /**
-     * Given an item, make it a draggable and a droppable with the relevant properties and functions.
-     * @param  anItem      The element to make draggable and droppable.
-     * @param  selector    The jQuery selector(s) that select all the orderables.
-     */ 
-    function setUpDnDItem (anItem, selector) {
-        anItem.mouseover ( 
-            function () {
-            	jQuery (this).addClass (thisReorderer.cssClasses.hover);
-            }
-        );
-    	
-        anItem.mouseout (  
-            function () {
-                jQuery (this).removeClass (thisReorderer.cssClasses.hover);
-            }
-        );
-  
+     * Given an item, make it draggable.
+     */
+    function setUpDraggable (anItem) {
         anItem.draggable ({
             helper: function() {
-            	theAvatar = jQuery (this).clone();
-            	jQuery (theAvatar).removeAttr ("id");
-            	jQuery ("[id]", theAvatar).removeAttr ("id");
-            	jQuery (":hidden", theAvatar).remove(); 
-            	jQuery ("input", theAvatar).attr ("disabled", "true"); 
-            	theAvatar.addClass (thisReorderer.cssClasses.avatar);          	
-            	return theAvatar;
+                theAvatar = jQuery (this).clone();
+                jQuery (theAvatar).removeAttr ("id");
+                jQuery ("[id]", theAvatar).removeAttr ("id");
+                jQuery (":hidden", theAvatar).remove(); 
+                jQuery ("input", theAvatar).attr ("disabled", "true"); 
+                theAvatar.addClass (thisReorderer.cssClasses.avatar);           
+                return theAvatar;
             },
             start: function (e, ui) {
                 thisReorderer.focusItem (ui.draggable.element);                
@@ -306,12 +292,18 @@ fluid.Reorderer = function (domNodeId, params) {
                 theAvatar = null;
             }
         });
+    
+    }   // end setUpDraggable()
 
+    /**
+     * Make item a drop target.
+     */
+    function setUpDroppable (anItem, selector) {
         anItem.droppable ({
             accept: selector,
             tolerance: "pointer",
             over: function (e, ui) {
-            	// the second parameter to bind() can be accessed through the event as event.data
+                // the second parameter to bind() can be accessed through the event as event.data
                 jQuery (ui.droppable.element).bind ("mousemove", ui.droppable.element, trackMouseMovement);    
                 jQuery (theAvatar).bind ("mousemove", ui.droppable.element, trackMouseMovement);            
                 dropMarker.style.visibility = "visible";
@@ -332,7 +324,32 @@ fluid.Reorderer = function (domNodeId, params) {
                 thisReorderer.orderChangedCallback();
             }
         });
-    }
+    
+    }   // end setUpDroppable().
+ 
+    /**
+     * Given an item, make it a draggable and a droppable with the relevant properties and functions.
+     * @param  anItem      The element to make draggable and droppable.
+     * @param  selector    The jQuery selector(s) that select all the orderables.
+     */ 
+    function setUpDnDItem (anItem, selector) {
+        anItem.mouseover ( 
+            function () {
+            	jQuery (this).addClass (thisReorderer.cssClasses.hover);
+            }
+        );
+    	
+        anItem.mouseout (  
+            function () {
+                jQuery (this).removeClass (thisReorderer.cssClasses.hover);
+            }
+        );
+  
+        // Make anItem draggable and a drop target (in the jQuery UI sense).
+        setUpDraggable (anItem);
+        setUpDroppable (anItem, selector);
+            
+    }   // end setUpDnDItem()
     	
 	function initOrderables() {
         var items = thisReorderer.orderableFinder (thisReorderer.domNode.get(0));
@@ -353,12 +370,23 @@ fluid.Reorderer = function (domNodeId, params) {
         	}        	      	
         }
 
-        // Setup orderable item including drag and drop.
+         // Setup orderable item including drag and drop.
          for (i = 0; i < items.length; i++) {
             jQuery (items[i]).addClass (thisReorderer.cssClasses.defaultStyle);
             setUpDnDItem (jQuery (items[i]), selector);
         }
-    }
+        
+        // Add any other drop targets (e.g., any unmoveable ones).
+        if ((thisReorderer.droppableFinder) && (thisReorderer.droppableFinder.constructor === Function)) {
+            var extraDropTargets = thisReorderer.droppableFinder (thisReorderer.domNode);
+            for (i = 0; i < extraDropTargets.length; i++) {
+                var jExtraDropTarget = jQuery (extraDropTargets[i]);
+                if (!jExtraDropTarget.droppableInstance()) {
+                    setUpDroppable (jExtraDropTarget, selector);
+                }
+            }
+        }
+    }   // end initOrderables().
 
 	/**
 	 * Finds the "orderable" parent element given a child element.
