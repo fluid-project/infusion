@@ -44,7 +44,9 @@ function exposeTestFunctionNames() {
 var listHandler1;
 
 function listOrderableFinder (containerEl) {
-    return jQuery ("[id^=list1item]", containerEl);
+	// This is returning the list instead of a jQuery object to ensure that people 
+	// can use an orderable finder function that doesn't use jQuery
+    return jQuery ("[id^=list1item]", containerEl).get();
 }
 
 // This setUp will be called before each of the tests that are included in unordered-list.html 
