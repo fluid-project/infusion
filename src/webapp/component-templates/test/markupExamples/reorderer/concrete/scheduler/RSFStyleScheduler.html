@@ -3,23 +3,24 @@
     <head>
         <title>Unconference Scheduler: Illustrates RSF-Style ID Contracts with the Reorderer</title>
         <link rel="stylesheet" type="text/css" href="scheduler.css" title="default" />
-        
+
         <!-- The Reorderer currently depends on a number of JavaScript libraries, including jQuery. -->
         <script type="text/javascript" src="../../../../../js/jquery/jquery-1.2.1.js"></script>
+        <script type="text/javascript" src="../../../../../js/jquery.tabindex/jquery.tabindex.js"></script>
         <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.mouse.js"></script>
         <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.draggable.js"></script>
         <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
-        <script type="text/javascript" src="../../../../../js/fluid/Fluid.js"></script>     
+        <script type="text/javascript" src="../../../../../js/fluid/Fluid.js"></script>
         <script type="text/javascript" src="../../../../../js/fluid/Reorderer.js"></script>
         <script type="text/javascript" src="json2.js"></script>
         <script type="text/javascript" src="Scheduler.js"></script>
-        
+
         <!--  These are used for JsUnit tests that have been written using this page as sample data. -->
         <script type="text/javascript" src="../../../../jsunit/app/jsUnitCore.js"></script>
-        <script type="text/javascript" src="../../../../tests/TestUtils.js"></script>   
+        <script type="text/javascript" src="../../../../tests/TestUtils.js"></script>
         <script type="text/javascript" src="../../../../tests/RSFStyleSchedulerTests.js"></script>
     </head>
-    
+
     <body>
         <h1>Unconference Scheduling Grid</h1>
         <div id="page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::" tabindex="0">
@@ -30,10 +31,10 @@
               <li>1:00 pm</li>
               <li>4:00 pm</li>
             </ul>
-            
+
             <ul class="column">
               <li class="fixed">Introductory Remarks</li>
-              <li id="page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::orderable:0:" 
+              <li id="page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::orderable:0:"
                   class="movableTopic">
                     <span class="columnTitle">Lightning Talks</span>
                     <br />
@@ -50,7 +51,7 @@
                         </li>
                     </ol>
                 </li>
-                <li id="page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::orderable:1:" 
+                <li id="page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::orderable:1:"
                     class="movableTopic">
                     <span class="columnTitle">Break-out Sessions</span>
                     <br />
@@ -72,25 +73,25 @@
                 </li>
                 <!-- This orderable should not be picked up by the orderable finder, despite matching the pattern.
                      This is due to the fact that we explicitly state two orderables, not three. -->
-                <li id="page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::orderable:2:" 
+                <li id="page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::orderable:2:"
                     class="fixed">
                     Debrief and Summary
                 </li>
-            </ul>            
+            </ul>
         </span>
-        
+
         <!-- And the inner list Reorderers -->
         <script type="text/javascript">
             fluid.Scheduler.initRSFScheduler("page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::",
                                              "li",
                                              "orderable",
                                              2);
- 
+
             fluid.Scheduler.initRSFScheduler("page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::orderable:0::lightningTalks::",
                                              "li",
                                              "orderable",
                                              3);
-                                             
+
             fluid.Scheduler.initRSFScheduler("page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::orderable:0::sessions::",
                                              "li",
                                              "orderable",
