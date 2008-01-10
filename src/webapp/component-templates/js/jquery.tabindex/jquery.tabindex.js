@@ -11,22 +11,22 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 (function ($) {
 	// Private functions.
 	var normalizeTabIndexName = function () {
-	    return jQuery.browser.msie ? "tabIndex" : "tabindex";
+	    return $.browser.msie ? "tabIndex" : "tabindex";
 	}
 
 	var getValue = function (elements) {
 		if (!elements.hasTabIndex ()) {
-			return null;
+			return undefined;
 		}
 
-        // Get the attribute (.attr () doesn't work) and return it as a number value.
+        // Get the attribute (.attr () doesn't work for tabIndex in IE) and return it as a number value.
 		var value = elements[0].getAttribute (normalizeTabIndexName ());
 		return Number (value);
 	};
 
 	var setValue = function (elements, toIndex) {
-		return elements.each (function () {
-			$ (this).attr (normalizeTabIndexName (), toIndex);
+		return elements.each (function (i, item) {
+			$ (item).attr (normalizeTabIndexName (), toIndex);
 		});
 	};
 
@@ -40,8 +40,8 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 	};
 
 	$.fn.removeTabIndex = function () {
-		return this.each(function () {
-			$ (this).removeAttr (normalizeTabIndexName ());
+		return this.each(function (i, item) {
+			$ (item).removeAttr (normalizeTabIndexName ());
 		});
 	};
 
