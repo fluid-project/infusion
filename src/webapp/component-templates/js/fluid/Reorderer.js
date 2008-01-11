@@ -432,7 +432,24 @@ fluid.Reorderer = function (container, params) {
         } 
     };
     
-    fluid.itemInfos = {
+    /**
+     * For drag-and-drop during the drag:  is the mouse over the "before" half
+     * of the droppable?  In the case of a vertically oriented set of orderables,
+     * "before" means "above".  For a horizontally oriented set, "before" means
+     * "left of".
+     */
+    var isMouseBefore = function (evt, droppableEl, orientation) {
+        var mid;
+        if (orientation === fluid.orientation.VERTICAL) {
+            mid = jQuery (droppableEl).offset().top + (droppableEl.offsetHeight / 2);
+            return (evt.pageY < mid);
+        } else {
+            mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
+            return (evt.clientX < mid);
+        }
+    };    
+
+    var itemInfoFinders = {
         /*
          * A general get{Left|Right}SiblingInfo() given an item, a list of orderables and a direction.
          * The direction is encoded by either a +1 to move right, or a -1 to
@@ -469,7 +486,7 @@ fluid.Reorderer = function (container, params) {
          * the row that the given item is in
          */
         getRightSiblingInfo: function (item, orderables) {
-            return fluid.itemInfos.getSiblingInfo (item, orderables, 1);
+            return this.getSiblingInfo (item, orderables, 1);
         },
         
         /*
@@ -478,9 +495,63 @@ fluid.Reorderer = function (container, params) {
          * the row that the given item is in
          */
         getLeftSiblingInfo: function (item, orderables) {
-            return fluid.itemInfos.getSiblingInfo (item, orderables, -1);
-        }
+            return this.getSiblingInfo (item, orderables, -1);
+        },
         
+        /*
+         * Returns an object containing the item that is below the given item in the current grid
+         * and a flag indicating whether or not the process has 'wrapped' around the end of
+         * the column that the given item is in. The flag is necessary because when an image is being
+         * moved to the resulting item location, the decision of whether or not to insert before or
+         * after the item changes if the process wrapped around the column.
+         */
+        getItemInfoBelow: function (inItem, orderables) {
+            var curCoords = jQuery (inItem).offset();
+            var i, iCoords;
+            var firstItemInColumn, currentItem;
+            
+            for (i = 0; i < orderables.length; i++) {
+                currentItem = orderables [i];
+                iCoords = jQuery (orderables[i]).offset();
+                if (iCoords.left === curCoords.left) {
+                    firstItemInColumn = firstItemInColumn || currentItem;
+                    if (iCoords.top > curCoords.top) {
+                        return {item: currentItem, hasWrapped: false};
+                    }
+                }
+            }
+    
+            firstItemInColumn = firstItemInColumn || orderables [0];
+            return {item: firstItemInColumn, hasWrapped: true};
+        },
+        
+        /*
+         * Returns an object containing the item that is above the given item in the current grid
+         * and a flag indicating whether or not the process has 'wrapped' around the end of
+         * the column that the given item is in. The flag is necessary because when an image is being
+         * moved to the resulting item location, the decision of whether or not to insert before or
+         * after the item changes if the process wrapped around the column.
+         */
+         getItemInfoAbove: function (inItem, orderables) {
+            var curCoords = jQuery (inItem).offset();
+            var i, iCoords;
+            var lastItemInColumn, currentItem;
+            
+            for (i = orderables.length - 1; i > -1; i--) {
+                currentItem = orderables [i];
+                iCoords = jQuery (orderables[i]).offset();
+                if (iCoords.left === curCoords.left) {
+                    lastItemInColumn = lastItemInColumn || currentItem;
+                    if (curCoords.top > iCoords.top) {
+                        return {item: currentItem, hasWrapped: false};
+                    }
+                }
+            }
+    
+            lastItemInColumn = lastItemInColumn || orderables [0];
+            return {item: lastItemInColumn, hasWrapped: true};
+        }
+    
     };
     
     // Public layout handlers.
@@ -495,51 +566,32 @@ fluid.Reorderer = function (container, params) {
 	    this.orientation = fluid.orientation.VERTICAL;  // default.
 	    	    
 	    this.getRightSibling = function (item) {
-	        return fluid.itemInfos.getRightSiblingInfo(item, this.orderableFinder(container)).item;
+	        return itemInfoFinders.getRightSiblingInfo(item, this.orderableFinder(container)).item;
 	    };
 	    
 	    this.moveItemRight = function (item) {
-	        moveItem (item, fluid.itemInfos.getRightSiblingInfo(item, this.orderableFinder(container)), "after", "before");
+	        moveItem (item, itemInfoFinders.getRightSiblingInfo(item, this.orderableFinder(container)), "after", "before");
 	    };
 	
 	    this.getLeftSibling = function (item) {
-	        return fluid.itemInfos.getLeftSiblingInfo(item, this.orderableFinder(container)).item;
+	        return itemInfoFinders.getLeftSiblingInfo(item, this.orderableFinder(container)).item;
 	    };
 	
 	    this.moveItemLeft = function (item) {
-	        moveItem (item, fluid.itemInfos.getLeftSiblingInfo(item, this.orderableFinder(container)), "before", "after");
+	        moveItem (item, itemInfoFinders.getLeftSiblingInfo(item, this.orderableFinder(container)), "before", "after");
 	    };
 	
+	    this.getItemBelow = this.getRightSibling;
 	
-	    this.getItemBelow = function (item) {
-	        return this.getRightSibling (item);
-	    };
-	
-	    this.getItemAbove = function (item) {
-	        return this.getLeftSibling (item);
-	    };
+	    this.getItemAbove = this.getLeftSibling;
 	    
 	    this.moveItemUp = this.moveItemLeft;
 	    
 	    this.moveItemDown = this.moveItemRight;
 	
-	    /**
-	     * For drag-and-drop during the drag:  is the mouse over the "before" half
-	     * of the droppable?  In the case of a vertically oriented set of orderables,
-	     * "before" means "above".  For a horizontally oriented set, "before" means
-	     * "left of".
-	     */
-	    this.isMouseBefore = function (evt, droppableEl) {
-	        var mid;
-	        if (this.orientation === fluid.orientation.VERTICAL) {
-	            mid = jQuery (droppableEl).offset().top + (droppableEl.offsetHeight / 2);
-	            return (evt.pageY < mid);
-	        }
-	        else {
-	            mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
-	            return (evt.clientX < mid);
-	        }
-	    };    
+        this.isMouseBefore = function(evt, droppableEl) {
+        	return isMouseBefore(evt, droppableEl, this.orientation);
+        };
 	}; // End ListLayoutHandler
     
 	/*
@@ -559,76 +611,20 @@ fluid.Reorderer = function (container, params) {
 	    fluid.ListLayoutHandler.call (this, orderableFinder, container);
 	    this.orientation = fluid.orientation.HORIZONTAL;
 	                    
-	    /*
-	     * Returns an object containing the item that is below the given item in the current grid
-	     * and a flag indicating whether or not the process has 'wrapped' around the end of
-	     * the column that the given item is in. The flag is necessary because when an image is being
-	     * moved to the resulting item location, the decision of whether or not to insert before or
-	     * after the item changes if the process wrapped around the column.
-	     */
-	    this._getItemInfoBelow = function (inItem) {
-	        var orderables = this.orderableFinder (container);
-	        var curCoords = jQuery (inItem).offset();
-	        var i, iCoords;
-	        var firstItemInColumn, currentItem;
-	        
-	        for (i = 0; i < orderables.length; i++) {
-	            currentItem = orderables [i];
-	            iCoords = jQuery (orderables[i]).offset();
-	            if (iCoords.left === curCoords.left) {
-	                firstItemInColumn = firstItemInColumn || currentItem;
-	                if (iCoords.top > curCoords.top) {
-	                    return {item: currentItem, hasWrapped: false};
-	                }
-	            }
-	        }
-	
-	        firstItemInColumn = firstItemInColumn || orderables [0];
-	        return {item: firstItemInColumn, hasWrapped: true};
-	    };
-	    
 	    this.getItemBelow = function(item) {
-	        return this._getItemInfoBelow (item).item;
+	        return itemInfoFinders.getItemInfoBelow (item, this.orderableFinder(container)).item;
 	    };
 	
 	    this.moveItemDown = function (item) {
-	        moveItem (item, this._getItemInfoBelow (item), "after", "before");
+	        moveItem (item, itemInfoFinders.getItemInfoBelow (item, this.orderableFinder(container)), "after", "before");
 	    };
 	            
-	    /*
-	     * Returns an object containing the item that is above the given item in the current grid
-	     * and a flag indicating whether or not the process has 'wrapped' around the end of
-	     * the column that the given item is in. The flag is necessary because when an image is being
-	     * moved to the resulting item location, the decision of whether or not to insert before or
-	     * after the item changes if the process wrapped around the column.
-	     */
-	     this._getItemInfoAbove = function (inItem) {
-	        var orderables = this.orderableFinder (container);
-	        var curCoords = jQuery (inItem).offset();
-	        var i, iCoords;
-	        var lastItemInColumn, currentItem;
-	        
-	        for (i = orderables.length - 1; i > -1; i--) {
-	            currentItem = orderables [i];
-	            iCoords = jQuery (orderables[i]).offset();
-	            if (iCoords.left === curCoords.left) {
-	                lastItemInColumn = lastItemInColumn || currentItem;
-	                if (curCoords.top > iCoords.top) {
-	                    return {item: currentItem, hasWrapped: false};
-	                }
-	            }
-	        }
-	
-	        lastItemInColumn = lastItemInColumn || orderables [0];
-	        return {item: lastItemInColumn, hasWrapped: true};
-	    };
-	
 	    this.getItemAbove = function (item) {
-	        return this._getItemInfoAbove (item).item;   
+	        return itemInfoFinders.getItemInfoAbove (item, this.orderableFinder(container)).item;   
 	    }; 
 	    
 	    this.moveItemUp = function (item) {
-	        moveItem (item, this._getItemInfoAbove (item), "before", "after");
+	        moveItem (item, itemInfoFinders.getItemInfoAbove (item, this.orderableFinder(container)), "before", "after");
 	    };
 	                
 	}; // End of GridLayoutHandler
@@ -660,11 +656,12 @@ fluid.Reorderer = function (container, params) {
 	    this.orderableFinder = orderableFinder;
 	    
 	    // Private Methods.
-	       /*
+        /*
 	     * A general get{Above|Below}SiblingInfo() given an item and a direction.
 	     * The direction is encoded by either a +1 to move down, or a -1 to
 	     * move up, and that value is used internally as an increment or
 	     * decrement, respectively, of the index of the given item.
+	     * This implementation does not wrap around. 
 	     */
 	    var getVerticalSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
 	        var orderables = thisLH.orderableFinder (container);
@@ -689,7 +686,7 @@ fluid.Reorderer = function (container, params) {
 	     * A general get{Beside}SiblingInfo() given an item and a direction.
 	     * The direction is encoded by either a +1 to move right, or a -1 to
 	     * move left.
-	     * Currently, the horizontal sibling defaults to the top item in the
+	     * Currently, the horizontal sibling defaults to the top orderable item in the
 	     * neighboring column.
 	     */
 	    var getHorizontalSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
@@ -841,25 +838,10 @@ fluid.Reorderer = function (container, params) {
 	        moveItem (item, getItemInfoBelow(item), "after", "before");
 	    };
 	    
-	    /**
-	     * For drag-and-drop during the drag:  is the mouse over the "before" half
-	     * of the droppable?  In the case of a vertically oriented set of orderables,
-	     * "before" means "above".  For a horizontally oriented set, "before" means
-	     * "left of".
-	     */
-	     
-	    // Identical to ListLayoutHandler
-	    this.isMouseBefore = function (evt, droppableEl) {
-	        var mid;
-	        if (this.orientation === fluid.orientation.VERTICAL) {
-	            mid = jQuery (droppableEl).offset ().top + (droppableEl.offsetHeight / 2);
-	            return (evt.pageY < mid);
-	        }
-	        else {
-	            mid = jQuery (droppableEl).offset ().left + (droppableEl.offsetWidth / 2);
-	            return (evt.clientX < mid);
-	        }
-	    };    
+	    this.isMouseBefore = function(evt, droppableEl) {
+            return isMouseBefore(evt, droppableEl, this.orientation);
+        };
+
 	}; // End PortalLayoutHandler
 }) ();
 

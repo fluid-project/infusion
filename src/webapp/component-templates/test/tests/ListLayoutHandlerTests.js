@@ -43,17 +43,17 @@ function testGetLeftSiblingWrap() {
 
 function testGetItemBelow() {
 	var itemBelow = listHandler1.getItemBelow(fluid.testUtils.byId(firstItemId));
-	assertEquals("The item to the right of the first item should be the second item", 
+	assertEquals("The item below  the first item should be the second item", 
 		fluid.testUtils.byId(secondItemId), itemBelow);
 
 	itemBelow = listHandler1.getItemBelow(fluid.testUtils.byId(thirdItemId));
-	assertEquals("The item to the right of the third item should be the fourth item", 
+	assertEquals("The item below the third item should be the fourth item", 
 		fluid.testUtils.byId(fourthItemId), itemBelow);
 }
 
 function testGetItemBelowWrap() {
 	itemBelow = listHandler1.getItemBelow(fluid.testUtils.byId(lastItemId));
-	assertEquals("The item to the right of the last item should be the first item", 
+	assertEquals("The item below the last item should be the first item", 
 		fluid.testUtils.byId(firstItemId), itemBelow);	
 }
 
