@@ -432,25 +432,14 @@ fluid.Reorderer = function (container, params) {
         } 
     };
     
-    // Public layout handlers.
-	fluid.ListLayoutHandler = function (/*function*/ orderableFinder, container) {
-        // Unwrap the container if it's a jQuery.
-        if (container.jquery) {
-            container = container.get(0);
-        }
-       
-        this.orderableFinder = orderableFinder;
-	    	    
-	    this.orientation = fluid.orientation.VERTICAL;  // default.
-	    	    
-    /*
+    fluid.itemInfos = {
+        /*
          * A general get{Left|Right}SiblingInfo() given an item, a list of orderables and a direction.
          * The direction is encoded by either a +1 to move right, or a -1 to
          * move left, and that value is used internally as an increment or
          * decrement, respectively, of the index of the given item.
          */
-        this._getSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
-            var orderables = this.orderableFinder(container);
+        getSiblingInfo: function (item, orderables, /* +1, -1 */ incDecrement) {
             var index = jQuery (orderables).index (item) + incDecrement;
             var hasWrapped = false;
                 
@@ -472,40 +461,53 @@ fluid.Reorderer = function (container, params) {
             }
             
             return {item: orderables[index], hasWrapped: hasWrapped};
-        };
+        },
 
         /*
          * Returns an object containing the item that is to the right of the given item
          * and a flag indicating whether or not the process has 'wrapped' around the end of
          * the row that the given item is in
          */
-        this._getRightSiblingInfo = function (item) {           
-            return this._getSiblingInfo (item, 1);
-        };
+        getRightSiblingInfo: function (item, orderables) {
+            return fluid.itemInfos.getSiblingInfo (item, orderables, 1);
+        },
         
         /*
          * Returns an object containing the item that is to the left of the given item
          * and a flag indicating whether or not the process has 'wrapped' around the end of
          * the row that the given item is in
          */
-        this._getLeftSiblingInfo = function (item) {
-            return this._getSiblingInfo (item, -1);
-        };
+        getLeftSiblingInfo: function (item, orderables) {
+            return fluid.itemInfos.getSiblingInfo (item, orderables, -1);
+        }
         
+    };
+    
+    // Public layout handlers.
+	fluid.ListLayoutHandler = function (/*function*/ orderableFinder, container) {
+        // Unwrap the container if it's a jQuery.
+        if (container.jquery) {
+            container = container.get(0);
+        }
+       
+        this.orderableFinder = orderableFinder;
+	    	    
+	    this.orientation = fluid.orientation.VERTICAL;  // default.
+	    	    
 	    this.getRightSibling = function (item) {
-	        return this._getRightSiblingInfo(item).item;
+	        return fluid.itemInfos.getRightSiblingInfo(item, this.orderableFinder(container)).item;
 	    };
 	    
 	    this.moveItemRight = function (item) {
-	        moveItem (item, this._getRightSiblingInfo(item), "after", "before");
+	        moveItem (item, fluid.itemInfos.getRightSiblingInfo(item, this.orderableFinder(container)), "after", "before");
 	    };
 	
 	    this.getLeftSibling = function (item) {
-	        return this._getLeftSiblingInfo(item).item;
+	        return fluid.itemInfos.getLeftSiblingInfo(item, this.orderableFinder(container)).item;
 	    };
 	
 	    this.moveItemLeft = function (item) {
-	        moveItem (item, this._getLeftSiblingInfo(item), "before", "after");
+	        moveItem (item, fluid.itemInfos.getLeftSiblingInfo(item, this.orderableFinder(container)), "before", "after");
 	    };
 	
 	

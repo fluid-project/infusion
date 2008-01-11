@@ -71,9 +71,11 @@ var draggingClass="orderable-dragging";
 //
 function exposeTestFunctionNames() {
 	return [
-	    // GridLayoutHandlerTests.js
+	    // ItemInfosTests.js
 		"testGetRightSiblingInfo",
 		"testGetLeftSiblingInfo",
+		
+		// GridLayoutHandlerTests.js
 		"testGetItemInfoBelow",
 		"testGetItemInfoAbove",
 		"testGetItemInfoBelowOneRow",
