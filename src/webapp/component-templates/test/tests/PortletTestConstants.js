@@ -3,6 +3,9 @@
  * testing with the data in the portlets.html file.
  */
 
+// The id of the root node of the lightbox
+var portalRootId = "reorderer-root";
+
 var col1portlet1id = "portlet1";
 var col1portlet2id = "portlet2";
 var col1portlet3id = "portlet3";
@@ -27,8 +30,10 @@ function exposeTestFunctionNames() {
 		"testIsInLeftmostColumn",
 		"testIsInRightmostColumn",
 		"testGetLeftSibling",
-		"testGetRightSibling"
-    ]
+		"testGetRightSibling",
+		"testMoveItemDown",
+		"testMoveItemUp"
+    ];
 }
 
 var portletHandler;
@@ -74,11 +79,17 @@ var dropTargets = {
 		   portlet7:[0,1],portlet8:[1,1],portlet9:[1,1]}
 };
 
-// This setUp will be called before each of the tests that are included in unordered-list.html 
+// This setUp will be called before each of the tests that are included in portlets.html 
+var portletRootClone;
 function setUp() {
-	var table = jQuery("#reorderer-root");
+	var table = jQuery ("#" + portalRootId);
+    portletRootClone = table.clone();
 	portletHandler = new fluid.PortletLayoutHandler (portletOrderableFinder, table,
           		layout, dropTargets);
+}
+
+function tearDown() {
+    jQuery ("#" + portalRootId).replaceWith (portletRootClone);
 }
 
 

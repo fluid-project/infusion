@@ -148,3 +148,24 @@ function testGetRightSibling() {
 		jQuery ("#" + col3portlet3id)[0], rightSibling);
 }
 
+function testMoveItemDown() {
+    var portletList = jQuery("div [id^=portlet]");
+    assertEquals(col1portlet3id, portletList[2].id);
+    assertEquals(col1portlet4id, portletList[3].id);
+
+	portletHandler.moveItemDown (jQuery ("#" + col1portlet3id)[0]);
+	portletList = jQuery("div [id^=portlet]");
+	assertEquals(col1portlet4id, portletList[2].id);
+    assertEquals(col1portlet3id, portletList[3].id);
+}
+
+function testMoveItemUp() {
+    var portletList = jQuery("div [id^=portlet]");
+    assertEquals("Before move portlet 3 is in third position", col1portlet3id, portletList[2].id);
+    assertEquals("Before move portlet 4 is in fourth position", col1portlet4id, portletList[3].id);
+
+    portletHandler.moveItemUp (jQuery ("#" + col1portlet4id)[0]);
+    portletList = jQuery("div [id^=portlet]");
+    assertEquals("After move portlet 4 is in third position", col1portlet4id, portletList[2].id);
+    assertEquals("After move portlet 3 is in fourth position", col1portlet3id, portletList[3].id);
+}
