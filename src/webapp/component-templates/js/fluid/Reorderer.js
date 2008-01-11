@@ -686,8 +686,7 @@ fluid.Reorderer = function (container, params) {
 	     * Currently, the horizontal sibling defaults to the top orderable item in the
 	     * neighboring column.
 	     */
-	    var getHorizontalSiblingInfo = function (item, /* +1, -1 */ incDecrement) {
-	        var hasWrapped = false;
+	    var getHorizontalSibling = function (item, /* +1, -1 */ incDecrement) {
 	        var orderables = thisLH.orderableFinder (container);
 	            
 	        var colIndex = -1;
@@ -698,7 +697,7 @@ fluid.Reorderer = function (container, params) {
 	            }
 	        }
 	        if (colIndex === -1) {
-	            return {item: null, hasWrapped: true};
+	            return null;
 	        }
 	
 	        colIndex = colIndex + incDecrement;
@@ -710,26 +709,10 @@ fluid.Reorderer = function (container, params) {
 	            id = portletLayout.columns[colIndex].children[itemIndex];
 	            sibling = jQuery ("#" + id).get (0);
 	        }
-	        return {item: sibling, hasWrapped: false};
+	        return sibling;
 	
 	    };
 	    
-	    var getRightSiblingInfo = function(item) {
-	        if (thisLH._isInRightmostColumn(item)) {
-	            return {item: item, hasWrapped: true};
-	        } else {
-	            return getHorizontalSiblingInfo(item, 1);
-	        }
-	    };
-	    
-	    var getLeftSiblingInfo = function(item) {
-	        if (thisLH._isInLeftmostColumn(item)) {
-	            return {item: item, hasWrapped: true};
-	        } else {
-	            return getHorizontalSiblingInfo(item, -1);
-	        }
-	    };
-
 	    var isAtEndOfColumn = function (item, column) {
 	        var index = null;
 	        for (var col = 0; col < portletLayout.columns.length; col++) {
@@ -781,22 +764,30 @@ fluid.Reorderer = function (container, params) {
 	    
 	    // Identical to ListLayoutHandler, except for privacy settings
 	    this.getRightSibling = function (item) {
-	        return getRightSiblingInfo(item).item;
+            if (thisLH._isInRightmostColumn(item)) {
+                return item;
+            } else {
+                return getHorizontalSibling(item, 1);
+            }
 	    };
 	    
 	    // Identical to ListLayoutHandler, except for privacy settings
 	    this.moveItemRight = function (item) {
-	        moveItem(item, getRightSiblingInfo(item), "before", "after");
+            jQuery (this.getRightSibling(item)).before (item);
 	    };
 	
 	    // Identical to ListLayoutHandler, except for privacy settings
 	    this.getLeftSibling = function (item) {
-	        return getLeftSiblingInfo(item).item;
+            if (thisLH._isInLeftmostColumn(item)) {
+                return item;
+            } else {
+                return getHorizontalSibling(item, -1);
+            }
 	    };
 	
 	    // Identical to ListLayoutHandler, except for privacy settings
 	    this.moveItemLeft = function (item) {
-	        moveItem(item, getLeftSiblingInfo(item), "before", "after");
+            jQuery (this.getLeftSibling(item)).before (item);
 	    };
 	
 	    this.getItemAbove = function (item) {

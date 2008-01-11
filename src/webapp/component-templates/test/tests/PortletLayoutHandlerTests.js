@@ -149,23 +149,73 @@ function testGetRightSibling() {
 }
 
 function testMoveItemDown() {
-    var portletList = jQuery("div [id^=portlet]");
+    var portletList = jQuery("div[id^=portlet]");
     assertEquals(col1portlet3id, portletList[2].id);
     assertEquals(col1portlet4id, portletList[3].id);
 
 	portletHandler.moveItemDown (jQuery ("#" + col1portlet3id)[0]);
-	portletList = jQuery("div [id^=portlet]");
+	portletList = jQuery("div[id^=portlet]");
 	assertEquals(col1portlet4id, portletList[2].id);
     assertEquals(col1portlet3id, portletList[3].id);
 }
 
 function testMoveItemUp() {
-    var portletList = jQuery("div [id^=portlet]");
+    var portletList = jQuery("div[id^=portlet]");
     assertEquals("Before move portlet 3 is in third position", col1portlet3id, portletList[2].id);
     assertEquals("Before move portlet 4 is in fourth position", col1portlet4id, portletList[3].id);
 
     portletHandler.moveItemUp (jQuery ("#" + col1portlet4id)[0]);
-    portletList = jQuery("div [id^=portlet]");
+    portletList = jQuery("div[id^=portlet]");
     assertEquals("After move portlet 4 is in third position", col1portlet4id, portletList[2].id);
     assertEquals("After move portlet 3 is in fourth position", col1portlet3id, portletList[3].id);
+}
+
+function testMoveItemRight() {
+	var cols = jQuery ("td");
+    var col1PortletList = jQuery ("div[id^=portlet]", cols.get (0));
+    var col2PortletList = jQuery ("div[id^=portlet]", cols.get (1));
+
+    assertEquals (4, col1PortletList.length);
+    assertEquals (2, col2PortletList.length);
+    assertEquals ("Before move portlet 3 is in third position column 1", col1portlet3id, col1PortletList[2].id);
+    assertEquals ("Before move portlet 4 is in fourth position column 1", col1portlet4id, col1PortletList[3].id);
+    assertEquals ("Before move portlet 5 is in first position column 2", col2portlet1id, col2PortletList[0].id);
+    assertEquals ("Before move portlet 6 is in second position column 2", col2portlet2id, col2PortletList[1].id);
+
+    portletHandler.moveItemRight (jQuery ("#" + col1portlet3id)[0]);
+    col1PortletList = jQuery("div[id^=portlet]", cols.get (0));
+    col2PortletList = jQuery("div[id^=portlet]", cols.get (1));
+
+    assertEquals (3, col1PortletList.length);
+    assertEquals (3, col2PortletList.length);
+    assertEquals ("After move portlet 4 is in third position column 1", col1portlet4id, col1PortletList[2].id);
+    assertEquals ("After move portlet 5 is in first position column 2", col2portlet1id, col2PortletList[0].id);
+    assertEquals ("After move portlet 3 is in second position column 2", col1portlet3id, col2PortletList[1].id);
+    assertEquals ("After move portlet 6 is in third position column 2", col2portlet2id, col2PortletList[2].id);
+
+}
+
+function testMoveItemLeft() {
+    var cols = jQuery ("td");
+    var col2PortletList = jQuery ("div[id^=portlet]", cols.get (1));
+    var col3PortletList = jQuery ("div[id^=portlet]", cols.get (2));
+
+    assertEquals ("Before move, col2 should have 2 portlets", 2, col2PortletList.length);
+    assertEquals ("Before move, col3 should have 3 portlets", 3, col3PortletList.length);
+    assertEquals ("Before move portlet 7 is in third position column 3", col3portlet1id, col3PortletList[0].id);
+    assertEquals ("Before move portlet 8 is in fourth position column 3", col3portlet2id, col3PortletList[1].id);
+    assertEquals ("Before move portlet 5 is in first position column 2", col2portlet1id, col2PortletList[0].id);
+    assertEquals ("Before move portlet 6 is in second position column 2", col2portlet2id, col2PortletList[1].id);
+
+    portletHandler.moveItemLeft (jQuery ("#" + col3portlet1id)[0]);
+    col2PortletList = jQuery ("div[id^=portlet]", cols.get (1));
+    col3PortletList = jQuery ("div[id^=portlet]", cols.get (2));
+
+    assertEquals ("After move, col2 should have 3 portlets", 3, col2PortletList.length);
+    assertEquals ("After move, col3 should have 2 portlets", 2, col3PortletList.length);
+    assertEquals ("After move portlet 8 is in first position column 3", col3portlet2id, col3PortletList[0].id);
+    assertEquals ("After move portlet 7 is in second position column 2", col3portlet1id, col2PortletList[1].id);
+    assertEquals ("After move portlet 5 is in first position column 2", col2portlet1id, col2PortletList[0].id);
+    assertEquals ("After move portlet 6 is in third position column 2", col2portlet2id, col2PortletList[2].id);
+
 }

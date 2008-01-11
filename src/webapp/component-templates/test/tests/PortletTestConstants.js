@@ -32,7 +32,9 @@ function exposeTestFunctionNames() {
 		"testGetLeftSibling",
 		"testGetRightSibling",
 		"testMoveItemDown",
-		"testMoveItemUp"
+		"testMoveItemUp",
+		"testMoveItemRight",
+		"testMoveItemLeft"
     ];
 }
 
