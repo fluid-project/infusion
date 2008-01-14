@@ -30,11 +30,15 @@ function exposeTestFunctionNames() {
 		"testIsInLeftmostColumn",
 		"testIsInRightmostColumn",
 		"testGetLeftSibling",
-		"testGetRightSibling",
-		"testMoveItemDown",
-		"testMoveItemUp",
-		"testMoveItemRight",
-		"testMoveItemLeft"
+        "testGetRightSibling",
+        "testMoveItemDown",
+        "testMoveItemUp",
+        "testMoveItemRight",
+        "testMoveItemLeft",
+		
+		// PortletLayoutTests.js
+		"testCalcNextColumnIndex",
+		"testFindFirstOrderableSiblingInColumn"
     ];
 }
 

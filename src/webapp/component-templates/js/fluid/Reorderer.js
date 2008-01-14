@@ -14,25 +14,25 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var fluid = fluid || {};
 
 fluid.Reorderer = function (container, params) {
-	// Reliable 'this'.
-	//
-	var thisReorderer = this;
-	var theAvatar = null;
-	
-	this.domNode = jQuery (container);
+    // Reliable 'this'.
+    //
+    var thisReorderer = this;
+    var theAvatar = null;
     
-	// the reorderable DOM element that is currently active
+    this.domNode = jQuery (container);
+    
+    // the reorderable DOM element that is currently active
     this.activeItem = null;
-		
-	this.layoutHandler = null;
-		
-	this.messageNamebase = "message-bundle:";
-	
-	// Default call back does nothing, and avoids "null pointer exceptions".
-	this.orderChangedCallback = function() {};
-		
+        
+    this.layoutHandler = null;
+        
+    this.messageNamebase = "message-bundle:";
+    
+    // Default call back does nothing, and avoids "null pointer exceptions".
+    this.orderChangedCallback = function() {};
+        
     this.orderableFinder = null;
-			
+            
     this.cssClasses = {
         defaultStyle: "orderable-default",
         selected: "orderable-selected",
@@ -43,7 +43,7 @@ fluid.Reorderer = function (container, params) {
         avatar: "orderable-avatar"
     };
 
-	if (params) {
+    if (params) {
         fluid.mixin (this, params);
     }
     
@@ -54,67 +54,67 @@ fluid.Reorderer = function (container, params) {
     * @param {Object} item
     * @return {Object} The element that should receive focus in the specified item.
     */
-	this.findElementToFocus = function (item) {
-		var elementToFocus = jQuery ("." + this.cssClasses.focusTarget, item).get (0);
-		if (elementToFocus) {
-			return elementToFocus;
-		}
-		return item;
-	};
-	
-	function setupDomNode (domNode) {
-		domNode.focus(thisReorderer.handleFocus);
+    this.findElementToFocus = function (item) {
+        var elementToFocus = jQuery ("." + this.cssClasses.focusTarget, item).get (0);
+        if (elementToFocus) {
+            return elementToFocus;
+        }
+        return item;
+    };
+    
+    function setupDomNode (domNode) {
+        domNode.focus(thisReorderer.handleFocus);
         domNode.blur (thisReorderer.handleBlur);
         domNode.keydown (thisReorderer.handleKeyDown);
         domNode.keyup (thisReorderer.handleKeyUp);
         domNode.removeAttr ("aaa:activedescendent");
- 	}	
-	
-	/**
-	 * Changes the current focus to the specified item.
-	 * @param {Object} anItem
-	 */
-	this.focusItem = function(anItem) {
-		if (this.activeItem !== anItem) {
+    }   
+    
+    /**
+     * Changes the current focus to the specified item.
+     * @param {Object} anItem
+     */
+    this.focusItem = function(anItem) {
+        if (this.activeItem !== anItem) {
             this.changeActiveItemToDefaultState();
-            this._setActiveItem (anItem);	
-		}
-		
-		var jActiveItem = jQuery (this.activeItem);
+            this._setActiveItem (anItem);   
+        }
+        
+        var jActiveItem = jQuery (this.activeItem);
         jActiveItem.removeClass (this.cssClasses.defaultStyle);
         jActiveItem.addClass (this.cssClasses.selected);
         
         this.addFocusToElement (this.findElementToFocus (this.activeItem));
-	};
-	
-	this.addFocusToElement = function (anElement) {
-		var jElement = jQuery (anElement);
+    };
+    
+    this.addFocusToElement = function (anElement) {
+        var jElement = jQuery (anElement);
         if (!jElement.hasTabIndex ()) {
             jElement.tabIndex (-1);
         }
         jElement.focus ();
-	};
-	
-	this.removeFocusFromElement = function (anElement) {
-		jQuery (anElement).blur ();
+    };
+    
+    this.removeFocusFromElement = function (anElement) {
+        jQuery (anElement).blur ();
     };
 
-	/**
-	 * Changes focus to the active item.
-	 */
-	this.selectActiveItem = function() {
-		if (!this.activeItem) {
-			var orderables = this.orderableFinder (this.domNode.get(0));
-			if (orderables.length > 0) {
-				this._setActiveItem (orderables[0]);
-			}
-			else {
-				return;
-			}
-		}
-		this.focusItem (this.activeItem);
-	};
-	
+    /**
+     * Changes focus to the active item.
+     */
+    this.selectActiveItem = function() {
+        if (!this.activeItem) {
+            var orderables = this.orderableFinder (this.domNode.get(0));
+            if (orderables.length > 0) {
+                this._setActiveItem (orderables[0]);
+            }
+            else {
+                return;
+            }
+        }
+        this.focusItem (this.activeItem);
+    };
+    
     this.handleFocus = function (evt) {
         thisReorderer.selectActiveItem();
         return false;
@@ -126,16 +126,16 @@ fluid.Reorderer = function (container, params) {
             thisReorderer.changeActiveItemToDefaultState();
         }
     };
-    		
-	this.changeActiveItemToDefaultState = function() {
-		if (this.activeItem) {
-			var jActiveItem = jQuery (this.activeItem);
-			jActiveItem.removeClass (this.cssClasses.selected);
-			jActiveItem.addClass (this.cssClasses.defaultStyle);
-			this.removeFocusFromElement (jActiveItem);
-		}
-	};
-	
+            
+    this.changeActiveItemToDefaultState = function() {
+        if (this.activeItem) {
+            var jActiveItem = jQuery (this.activeItem);
+            jActiveItem.removeClass (this.cssClasses.selected);
+            jActiveItem.addClass (this.cssClasses.defaultStyle);
+            this.removeFocusFromElement (jActiveItem);
+        }
+    };
+    
     this.handleKeyDown = function (evt) {
        if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
            jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
@@ -155,8 +155,8 @@ fluid.Reorderer = function (container, params) {
            return false;
        } 
     };
-		
-	this.handleArrowKeyPress = function (evt) {
+        
+    this.handleArrowKeyPress = function (evt) {
         if (thisReorderer.activeItem) {
             switch (evt.keyCode) {
                 case fluid.keys.DOWN:
@@ -180,67 +180,67 @@ fluid.Reorderer = function (container, params) {
             }
         }
     };
-	
-	this.handleUpArrow = function (isCtrl) {
-		if (isCtrl) {
-			this.layoutHandler.moveItemUp (this.activeItem);
-			this.findElementToFocus (this.activeItem).focus();
-			this.orderChangedCallback();
-		} else {
-			this.focusItem (this.layoutHandler.getItemAbove(this.activeItem));
-		}			
-	};
-	
-	this.handleDownArrow = function (isCtrl) {
-		if (isCtrl) {
-			this.layoutHandler.moveItemDown (this.activeItem);
-			this.findElementToFocus (this.activeItem).focus();
-			this.orderChangedCallback();
-		} else {
-			this.focusItem (this.layoutHandler.getItemBelow (this.activeItem));
-		}
-	};
-	
-	this.handleRightArrow = function (isCtrl) {
-		if (isCtrl) {
-			this.layoutHandler.moveItemRight (this.activeItem);
-			jQuery(this.findElementToFocus (this.activeItem)).focus();
-			this.orderChangedCallback();	
-	
-		} else {
-			this.focusItem (this.layoutHandler.getRightSibling (this.activeItem));				
-		}			
-	};
-	
-	this.handleLeftArrow = function (isCtrl) {
-		if (isCtrl) {
-			this.layoutHandler.moveItemLeft (this.activeItem);
-			this.findElementToFocus (this.activeItem).focus();
-			this.orderChangedCallback();				
-		} else {
-			this.focusItem (this.layoutHandler.getLeftSibling (this.activeItem));				
-		}
-	};
-			
-	this._fetchMessage = function (messagekey) {
-		var messageID = this.messageNamebase + messagekey;
-		var node = document.getElementById (messageID);
-		
-		return node? node.innerHTML: "[Message not found at id " + messageID + "]";
-	};
-	
-	this._setActiveItem = function (anItem) {
-		this.activeItem = anItem;
-		this._updateActiveDescendent();
-	};
-	
-	this._updateActiveDescendent = function() {
-		if (this.activeItem) {
-			this.domNode.attr ("aaa:activedescendent", this.activeItem.id);
-		} else {
-			this.domNode.removeAttr ("aaa:activedescendent");
-		}
-	};
+    
+    this.handleUpArrow = function (isCtrl) {
+        if (isCtrl) {
+            this.layoutHandler.moveItemUp (this.activeItem);
+            this.findElementToFocus (this.activeItem).focus();
+            this.orderChangedCallback();
+        } else {
+            this.focusItem (this.layoutHandler.getItemAbove(this.activeItem));
+        }           
+    };
+    
+    this.handleDownArrow = function (isCtrl) {
+        if (isCtrl) {
+            this.layoutHandler.moveItemDown (this.activeItem);
+            this.findElementToFocus (this.activeItem).focus();
+            this.orderChangedCallback();
+        } else {
+            this.focusItem (this.layoutHandler.getItemBelow (this.activeItem));
+        }
+    };
+    
+    this.handleRightArrow = function (isCtrl) {
+        if (isCtrl) {
+            this.layoutHandler.moveItemRight (this.activeItem);
+            jQuery(this.findElementToFocus (this.activeItem)).focus();
+            this.orderChangedCallback();    
+    
+        } else {
+            this.focusItem (this.layoutHandler.getRightSibling (this.activeItem));              
+        }           
+    };
+    
+    this.handleLeftArrow = function (isCtrl) {
+        if (isCtrl) {
+            this.layoutHandler.moveItemLeft (this.activeItem);
+            this.findElementToFocus (this.activeItem).focus();
+            this.orderChangedCallback();                
+        } else {
+            this.focusItem (this.layoutHandler.getLeftSibling (this.activeItem));               
+        }
+    };
+            
+    this._fetchMessage = function (messagekey) {
+        var messageID = this.messageNamebase + messagekey;
+        var node = document.getElementById (messageID);
+        
+        return node? node.innerHTML: "[Message not found at id " + messageID + "]";
+    };
+    
+    this._setActiveItem = function (anItem) {
+        this.activeItem = anItem;
+        this._updateActiveDescendent();
+    };
+    
+    this._updateActiveDescendent = function() {
+        if (this.activeItem) {
+            this.domNode.attr ("aaa:activedescendent", this.activeItem.id);
+        } else {
+            this.domNode.removeAttr ("aaa:activedescendent");
+        }
+    };
 
     var dropMarker; // private scratch variable
     
@@ -254,7 +254,7 @@ fluid.Reorderer = function (container, params) {
        else {
            jQuery (evt.data).after (dropMarker);
        }
-	}
+    }
 
     /**
      * Given an item, make it draggable.
@@ -335,10 +335,10 @@ fluid.Reorderer = function (container, params) {
     function setUpDnDItem (anItem, selector) {
         anItem.mouseover ( 
             function () {
-            	jQuery (this).addClass (thisReorderer.cssClasses.hover);
+                jQuery (this).addClass (thisReorderer.cssClasses.hover);
             }
         );
-    	
+        
         anItem.mouseout (  
             function () {
                 jQuery (this).removeClass (thisReorderer.cssClasses.hover);
@@ -350,11 +350,11 @@ fluid.Reorderer = function (container, params) {
         setUpDroppable (anItem, selector);
             
     }   // end setUpDnDItem()
-    	
-	function initOrderables() {
+        
+    function initOrderables() {
         var items = thisReorderer.orderableFinder (thisReorderer.domNode.get(0));
         if (items.length === 0) {
-        	return;
+            return;
         }
         
         // Create a selector based on the ids of the nodes for use with drag and drop.
@@ -365,9 +365,9 @@ fluid.Reorderer = function (container, params) {
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
             selector += "[id=" + item.id + "]";
-        	if (i !== items.length - 1) {
-        		selector += ", ";
-        	}        	      	
+            if (i !== items.length - 1) {
+                selector += ", ";
+            }                   
         }
 
          // Setup orderable item including drag and drop.
@@ -388,25 +388,25 @@ fluid.Reorderer = function (container, params) {
         }
     }   // end initOrderables().
 
-	/**
-	 * Finds the "orderable" parent element given a child element.
-	 */
-	this._findReorderableParent = function (childElement, items) {
-		if (!childElement) {
-			return null;
+    /**
+     * Finds the "orderable" parent element given a child element.
+     */
+    this._findReorderableParent = function (childElement, items) {
+        if (!childElement) {
+            return null;
         }
         else {
-        	for (var i=0; i<items.length; i++) {
-        		if (childElement === items[i]) {
+            for (var i=0; i<items.length; i++) {
+                if (childElement === items[i]) {
                     return childElement;
-        		}  
-        	}
-        	return this._findReorderableParent (childElement.parentNode, items);
+                }  
+            }
+            return this._findReorderableParent (childElement.parentNode, items);
         }
-	};
+    };
 
-    // Final initialization of the Reorderer at the end of the construction process	
-	if (this.domNode) {
+    // Final initialization of the Reorderer at the end of the construction process 
+    if (this.domNode) {
         setupDomNode(this.domNode);
         initOrderables();
     }
@@ -416,8 +416,8 @@ fluid.Reorderer = function (container, params) {
  * Layout Handlers *
  *******************/
 (function () {
-	// Shared private functions.
-	var moveItem = function (item, relatedItemInfo, defaultPlacement, wrappedPlacement) {
+    // Shared private functions.
+    var moveItem = function (item, relatedItemInfo, defaultPlacement, wrappedPlacement) {
         var itemPlacement = defaultPlacement;
         if (relatedItemInfo.hasWrapped) {
             itemPlacement = wrappedPlacement;
@@ -555,42 +555,42 @@ fluid.Reorderer = function (container, params) {
     };
     
     // Public layout handlers.
-	fluid.ListLayoutHandler = function (/*function*/ orderableFinder, container) {
+    fluid.ListLayoutHandler = function (/*function*/ orderableFinder, container) {
         // Unwrap the container if it's a jQuery.
         if (container.jquery) {
             container = container.get(0);
         }
-	    	    
-	    this.orientation = fluid.orientation.VERTICAL;  // default.
-	    	    
-	    this.getRightSibling = function (item) {
-	        return itemInfoFinders.getRightSiblingInfo(item, orderableFinder(container)).item;
-	    };
-	    
-	    this.moveItemRight = function (item) {
-	        moveItem (item, itemInfoFinders.getRightSiblingInfo(item, orderableFinder(container)), "after", "before");
-	    };
-	
-	    this.getLeftSibling = function (item) {
-	        return itemInfoFinders.getLeftSiblingInfo(item, orderableFinder(container)).item;
-	    };
-	
-	    this.moveItemLeft = function (item) {
-	        moveItem (item, itemInfoFinders.getLeftSiblingInfo(item, orderableFinder(container)), "before", "after");
-	    };
-	
-	    this.getItemBelow = this.getRightSibling;
-	
-	    this.getItemAbove = this.getLeftSibling;
-	    
-	    this.moveItemUp = this.moveItemLeft;
-	    
-	    this.moveItemDown = this.moveItemRight;
-	
-        this.isMouseBefore = function(evt, droppableEl) {
-        	return isMouseBefore(evt, droppableEl, this.orientation);
+                
+        this.orientation = fluid.orientation.VERTICAL;  // default.
+                
+        this.getRightSibling = function (item) {
+            return itemInfoFinders.getRightSiblingInfo(item, orderableFinder(container)).item;
         };
-	}; // End ListLayoutHandler
+        
+        this.moveItemRight = function (item) {
+            moveItem (item, itemInfoFinders.getRightSiblingInfo(item, orderableFinder(container)), "after", "before");
+        };
+    
+        this.getLeftSibling = function (item) {
+            return itemInfoFinders.getLeftSiblingInfo(item, orderableFinder(container)).item;
+        };
+    
+        this.moveItemLeft = function (item) {
+            moveItem (item, itemInfoFinders.getLeftSiblingInfo(item, orderableFinder(container)), "before", "after");
+        };
+    
+        this.getItemBelow = this.getRightSibling;
+    
+        this.getItemAbove = this.getLeftSibling;
+        
+        this.moveItemUp = this.moveItemLeft;
+        
+        this.moveItemDown = this.moveItemRight;
+    
+        this.isMouseBefore = function(evt, droppableEl) {
+            return isMouseBefore(evt, droppableEl, this.orientation);
+        };
+    }; // End ListLayoutHandler
     
 	/*
 	 * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
@@ -627,33 +627,78 @@ fluid.Reorderer = function (container, params) {
 	                
 	}; // End of GridLayoutHandler
 
-	/*
-	 * Portlet Layout Handler for reordering portlet-type markup.
-	 * 
-	 * General movement guidelines:
-	 * 
-	 * - Arrowing sideways will always go to the top (moveable) portlet in the column
-	 * - Moving sideways will always move to the top available drop target in the column
-	 * - Wrapping is not necessary at this first pass, but is ok
-	 */
-	fluid.PortletLayoutHandler = function (/*function*/ orderableFinder, container,
-	        /* JSON object */ portletLayoutJSON,
-	        /* JSON object */ dropTargetPermissionsJSON) {
-	    
-	    // Private members.
-	    var thisLH = this; // Hold onto this layouthandler for the enclosed private functions.
-	    var portletLayout = portletLayoutJSON;
-	    var dropTargetPermissions = dropTargetPermissionsJSON;
-	    
-	    // Unwrap the container if it's a jQuery.
+    /*
+     * PortletLayout helper object.
+     */
+    fluid.PortletLayout = function (inPortletLayoutJSON) {
+        var thisPortletLayout = this;
+        var portletLayoutJSON = inPortletLayoutJSON;
+        
+        /**
+         * Calculate the index of the column to either the left or right of the given item.
+         * If no such column, returns -1.
+         */
+         this.calcNextColumnIndex = function (item) {
+            var colIndex = -1;
+            for (var col = 0; col < portletLayoutJSON.columns.length; col++) {
+                if (jQuery (portletLayoutJSON.columns[col].children).index (item.id) !== -1) {
+                    colIndex = col;
+                    break;
+                }
+            }
+            return colIndex;
+        };
+        
+        /**
+         * Return the first orderable item in the given column.
+         */
+        this.findFirstOrderableSiblingInColumn = function (columnIndex, orderableItems) {
+            // Pull out the portlet id of the top-most sibling in the column.
+            var topMostOrderableSibling = null;
+            var itemIndex = 0;
+            var column = portletLayoutJSON.columns[columnIndex];
+            if (column) {
+                var id = column.children[itemIndex];
+                topMostOrderableSibling = jQuery ("#" + id)[0];
+                // loop down the column looking for first orderable portlet (i.e. skip over non-movable portlets)
+                while (orderableItems.index (topMostOrderableSibling) === -1) {
+                    itemIndex += 1;
+                    id = column.children[itemIndex];
+                    topMostOrderableSibling = jQuery ("#" + id).get (0);
+                }
+            }
+            return topMostOrderableSibling;
+        };
+        
+    };   // End of PortletLayout.
+    
+    /*
+     * Portlet Layout Handler for reordering portlet-type markup.
+     * 
+     * General movement guidelines:
+     * 
+     * - Arrowing sideways will always go to the top (moveable) portlet in the column
+     * - Moving sideways will always move to the top available drop target in the column
+     * - Wrapping is not necessary at this first pass, but is ok
+     */
+    fluid.PortletLayoutHandler = function (/*function*/ orderableFinder, container,
+            /* JSON object */ portletLayoutJSON,
+            /* JSON object */ dropTargetPermissionsJSON) {
+        
+        // Private members.
+        var thisLH = this; // Hold onto this layouthandler for the enclosed private functions.
+        var portletLayout = new fluid.PortletLayout (portletLayoutJSON);
+        var dropTargetPermissions = dropTargetPermissionsJSON;
+        
+        // Unwrap the container if it's a jQuery.
         if (container.jquery) {
             container = container.get(0);
         }
         
-	    // Public members.
-	    this.orderableFinder = orderableFinder;
-	    
-	    // Private Methods.
+        // Public members.
+        this.orderableFinder = orderableFinder;
+        
+        // Private Methods.
         /*
 	     * A general get{Above|Below}Sibling() given an item and a direction.
 	     * The direction is encoded by either a +1 to move down, or a -1 to
@@ -689,34 +734,21 @@ fluid.Reorderer = function (container, params) {
 	    var getHorizontalSibling = function (item, /* +1, -1 */ incDecrement) {
 	        var orderables = thisLH.orderableFinder (container);
 	            
-	        var colIndex = -1;
-	        for (var col = 0; col < portletLayout.columns.length; col++) {
-	            if (jQuery(portletLayout.columns[col].children).index(item.id) !== -1) {
-	                colIndex = col;
-	                break;
-	            }
-	        }
+            // go through all the children and find which column the passed in item is located in.
+            // Save that column if found.
+            var colIndex = portletLayout.calcNextColumnIndex (item);
 	        if (colIndex === -1) {
 	            return null;
 	        }
-	
-	        colIndex = colIndex + incDecrement;
-	        var itemIndex = 0;
-	        var id = portletLayout.columns[colIndex].children[itemIndex];
-	        var sibling = jQuery ("#" + id).get (0);
-	        while (orderables.index (sibling) === -1) {
-	            itemIndex += 1;
-	            id = portletLayout.columns[colIndex].children[itemIndex];
-	            sibling = jQuery ("#" + id).get (0);
-	        }
+            var sibling = portletLayout.findFirstOrderableSiblingInColumn (colIndex + incDecrement, orderables);
 	        return sibling;
 	
 	    };
 	    
 	    var isAtEndOfColumn = function (item, column) {
 	        var index = null;
-	        for (var col = 0; col < portletLayout.columns.length; col++) {
-	            index = jQuery(portletLayout.columns[col].children).index(item.id);
+	        for (var col = 0; col < portletLayoutJSON.columns.length; col++) {
+	            index = jQuery(portletLayoutJSON.columns[col].children).index(item.id);
 	            if (index >= 0) {
 	                break;
 	            }
@@ -725,7 +757,7 @@ fluid.Reorderer = function (container, params) {
 	            if (column === "top") {
 	                return (index === 0) ? true : false;
 	            } else {
-	                if (index === portletLayout.columns[col].children.length-1) {
+	                if (index === portletLayoutJSON.columns[col].children.length-1) {
 	                    return true;
 	                } else {
 	                    return false;
@@ -747,7 +779,7 @@ fluid.Reorderer = function (container, params) {
 	    };
 	    
 	    this._isInLeftmostColumn = function (item) {
-	        if (jQuery(portletLayout.columns[0].children).index(item.id) !== -1) {
+	        if (jQuery(portletLayoutJSON.columns[0].children).index(item.id) !== -1) {
 	            return true;
 	        } else {
 	            return false;
@@ -755,7 +787,7 @@ fluid.Reorderer = function (container, params) {
 	    };
 	    
 	    this._isInRightmostColumn = function (item) {
-	        if (jQuery(portletLayout.columns[portletLayout.columns.length-1].children).index(item.id) !== -1) {
+	        if (jQuery(portletLayoutJSON.columns[portletLayoutJSON.columns.length-1].children).index(item.id) !== -1) {
 	            return true;
 	        } else {
 	            return false;
@@ -818,6 +850,6 @@ fluid.Reorderer = function (container, params) {
             return isMouseBefore(evt, droppableEl, this.orientation);
         };
 
-	}; // End PortalLayoutHandler
+    }; // End PortalLayoutHandler
 }) ();
 
