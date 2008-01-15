@@ -631,46 +631,25 @@ fluid.Reorderer = function (container, params) {
      * PortletLayout helper object.
      */
     fluid.PortletLayout = function() {
-        var thisPortletLayout = this;
-        
+    	        
         /**
-         * Calculate the index of the column of the given item.
-         * If no such column, returns -1.
+         * Calculate the location of the item and the column in which it resides.
+         * @return  An object with column index and item index (within that column) properties.
+         *          These indices are -1 if the item does not exist in the grid.
          */
-         this.calcColumnIndex = function (item, portletLayoutJSON) {
-            var colIndex = -1;
+        this.calcColumnAndItemIndex = function (item, portletLayoutJSON) {
+        	var indices = { columnIndex: -1, itemIndex: -1 };
             for (var col = 0; col < portletLayoutJSON.columns.length; col++) {
-                if (jQuery (portletLayoutJSON.columns[col].children).index (item.id) !== -1) {
-                    colIndex = col;
+            	var itemIndex = jQuery (portletLayoutJSON.columns[col].children).index (item.id);
+                if (itemIndex !== -1) {
+                    indices.columnIndex = col;
+                    indices.itemIndex = itemIndex;
                     break;
                 }                
             }
-            return colIndex;
+            return indices;
         };
-
-        /**
-         * Determine the index of the given item in *any* column.  Note that this returns only the
-         * index of the item, and not any column information.
-         * @param   item                The item to determine the index of.
-         * @param   portletLayoutJSON   Encoding of layout.
-         * @param   colIndex            Optional parameter to search only within a certain column.
-         */
-         this.calcItemIndexInAnyColumn = function (item, portletLayoutJSON, colIndex) {
-            if (typeof (colIndex) == 'undefined' || colIndex === null )
-                var columnIndex = this.calcColumnIndex (item, portletLayoutJSON);
-            else
-                columnIndex = colIndex;
-         	return (jQuery (portletLayoutJSON.columns[columnIndex].children).index (item.id));
-         };
-        
-        /**
-         * Determine the index of an item within the given column index.
-         * If item not in that column, returns -1.
-         */
-         this.calcItemIndexInColumn = function (item, columnIndex, portletLayoutJSON) {
-         	return jQuery (portletLayoutJSON.columns[columnIndex].children).index (item.id);
-         };
-         
+                        
         /**
          * Return the first orderable item in the given column.
          */
@@ -692,6 +671,18 @@ fluid.Reorderer = function (container, params) {
             return topMostOrderableSibling;
         };
         
+        /**
+         * Return the number of items in the given column.  If the column index
+         * is out of bounds, this returns -1.
+         */
+        this.numItemsInColumn = function (columnIndex, portletLayoutJSON) {
+        	if ((columnIndex < 0) || (columnIndex > portletLayoutJSON.columns.length)) {
+        		return -1;
+        	}
+        	else {
+        	   return portletLayoutJSON.columns[columnIndex].children.length;
+        	}
+        };        
     };   // End of PortletLayout.
     
     /*
@@ -758,7 +749,7 @@ fluid.Reorderer = function (container, params) {
 	            
             // go through all the children and find which column the passed in item is located in.
             // Save that column if found.
-            var colIndex = portletLayout.calcColumnIndex (item, portletLayoutJSON);
+            var colIndex = portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON).columnIndex;
 	        if (colIndex === -1) {
 	            return null;
 	        }
@@ -771,19 +762,17 @@ fluid.Reorderer = function (container, params) {
 	    
 	    // These methods are public only for our unit tests. They need to be refactored into a portletlayout object.
 	    this._isFirstInColumn = function (item) {
-            var colIndex = portletLayout.calcColumnIndex (item, portletLayoutJSON);
-            var index = portletLayout.calcItemIndexInAnyColumn (item, portletLayoutJSON, colIndex);
-	    	return (index === 0) ? true : false;
+	    	var position = portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON);
+	    	return (position.itemIndex === 0) ? true : false;
 	    };
 	
 	    this._isLastInColumn = function (item) {
-            var colIndex = portletLayout.calcColumnIndex (item, portletLayoutJSON);
-            var index = portletLayout.calcItemIndexInAnyColumn (item, portletLayoutJSON, colIndex);
-            return (index === portletLayoutJSON.columns[colIndex].children.length-1) ? true : false;
+            var position = portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON);
+            return (position.itemIndex === portletLayout.numItemsInColumn (position.columnIndex, portletLayoutJSON)-1) ? true : false;
 	    };
 	    
 	    this._isInLeftmostColumn = function (item) {
-	        if (jQuery(portletLayoutJSON.columns[0].children).index(item.id) !== -1) {
+	    	if (portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON).columnIndex === 0) {
 	            return true;
 	        } else {
 	            return false;
@@ -791,7 +780,8 @@ fluid.Reorderer = function (container, params) {
 	    };
 	    
 	    this._isInRightmostColumn = function (item) {
-	        if (jQuery(portletLayoutJSON.columns[portletLayoutJSON.columns.length-1].children).index(item.id) !== -1) {
+	    	var position = portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON);
+            if (position.columnIndex === portletLayoutJSON.columns.length-1) {
 	            return true;
 	        } else {
 	            return false;

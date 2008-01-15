@@ -37,10 +37,9 @@ function exposeTestFunctionNames() {
         "testMoveItemLeft",
 		
 		// PortletLayoutTests.js
-		"testCalcColumnIndex",
+		"testCalcColumnAndItemIndex",
 		"testFindFirstOrderableSiblingInColumn",
-		"testCalcItemIndexInColumn",
-		"testCalcItemIndexInAnyColumn"
+		"testNumItemsInColumn"
     ];
 }
 
