@@ -78,10 +78,14 @@ fluid.initLightbox = function (namebase, messageNamebase) {
     };
     
     var lightboxContainer = jQuery ("[id=" + namebase + "]");
+    var layoutHandlerParams = {
+        orderableFinder: lightboxOrderableFinder,
+        container: lightboxContainer,
+        orderChangedCallback: orderChangedCallback
+    };
     var lightbox = new fluid.Reorderer (lightboxContainer, {
             messageNamebase : messageNamebase,
-            orderChangedCallback: orderChangedCallback,
-            layoutHandler: new fluid.GridLayoutHandler (lightboxOrderableFinder, lightboxContainer),
+            layoutHandler: new fluid.GridLayoutHandler (layoutHandlerParams),
             orderableFinder: lightboxOrderableFinder
         }
     );

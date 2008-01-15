@@ -52,7 +52,16 @@ function listOrderableFinder (containerEl) {
 // This setUp will be called before each of the tests that are included in unordered-list.html 
 function setUp() {
 	var list = fluid.testUtils.byId("list1");
-    listHandler1 = new fluid.ListLayoutHandler(listOrderableFinder, list);
+    var layoutHandlerParams = {
+        orderableFinder: listOrderableFinder,
+        container: list,
+        orderChangedCallback: callbackConfirmer
+    };
+    listHandler1 = new fluid.ListLayoutHandler(layoutHandlerParams);
+}
+
+function callbackConfirmer() {
+    fluid.testUtils.orderChangedCallbackWasCalled = true;
 }
 
 

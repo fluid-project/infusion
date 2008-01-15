@@ -91,8 +91,13 @@ var portletRootClone;
 function setUp() {
 	var table = jQuery ("#" + portalRootId);
     portletRootClone = table.clone();
-	portletHandler = new fluid.PortletLayoutHandler (portletOrderableFinder, table,
-          		layout, dropTargets);
+    var layoutHandlerParams = {
+      orderableFinder: portletOrderableFinder,
+      container: table,
+      portletLayout: layout,
+      dropTargetPermissions: dropTargets
+    };
+	portletHandler = new fluid.PortletLayoutHandler (layoutHandlerParams);
 }
 
 function tearDown() {

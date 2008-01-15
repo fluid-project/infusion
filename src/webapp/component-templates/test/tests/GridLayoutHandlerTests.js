@@ -12,8 +12,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 
 function testGetItemBelow() {
-    var container = jQuery ("[id=" + lightboxRootId + "]");
-    var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId, container);
+    var gridHandler = createGridLayoutHandler();
     
     var item = gridHandler.getItemBelow(fluid.testUtils.byId(firstReorderableId));
     assertEquals("Since there are 3 colums in the grid, the item below the first image should be the fourth image", 
@@ -29,8 +28,7 @@ function testGetItemBelow() {
 }
 
 function testGetItemBelowWrapped() {
-    var container = jQuery ("[id=" + lightboxRootId + "]");
-    var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId, container);
+    var gridHandler = createGridLayoutHandler();
 
     var item = gridHandler.getItemBelow(fluid.testUtils.byId(thirdLastReorderableId));
     assertEquals("the item below the third last image should be the third image", 
@@ -47,7 +45,7 @@ function testGetItemBelowWrapped() {
 
 function testGetItemBelowOneRow() {
     var container = jQuery ("[id=" + lightboxRootId + "]");
-    var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId, container);
+    var gridHandler = createGridLayoutHandler(container);
     container.addClass ("width-all-thumb");
     
     var item = gridHandler.getItemBelow(fluid.testUtils.byId(firstReorderableId));
@@ -65,7 +63,7 @@ function testGetItemBelowOneRow() {
 }
 function testGetItemAbove() {
 	var container = jQuery ("[id=" + lightboxRootId + "]");
-	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId, container);
+    var gridHandler = createGridLayoutHandler(container);
 	container.removeClass ("width-3-thumb");
 	container.addClass ("width-4-thumb");
 		
@@ -97,7 +95,7 @@ function testGetItemAbove() {
 
 function testGetItemAboveWrapped() {
     var container = jQuery ("[id=" + lightboxRootId + "]");
-    var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId, container);
+    var gridHandler = createGridLayoutHandler(container);
     container.removeClass ("width-3-thumb");
     container.addClass ("width-4-thumb");
 
@@ -133,7 +131,7 @@ function testGetItemAboveWrapped() {
 
 function testGetItemAboveOneRow() {
 	var container = jQuery ("[id=" + lightboxRootId + "]");
-	var gridHandler = new fluid.GridLayoutHandler(findOrderableByDivAndId, container);
+    var gridHandler = createGridLayoutHandler(container);
 	container.addClass ("width-all-thumb");
 	
 	var item = gridHandler.getItemAbove(fluid.testUtils.byId(firstReorderableId));

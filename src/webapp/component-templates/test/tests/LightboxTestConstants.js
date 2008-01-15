@@ -138,18 +138,35 @@ function findImgsInLightbox() {
     
 function createLightbox() {
 	var lightboxRoot = fetchLightboxRoot ();
+    var layoutHandlerParams = {
+        orderableFinder: findOrderableByDivAndId,
+        container: lightboxRoot
+    };
     return new fluid.Reorderer (lightboxRoot, {
-        layoutHandler: new fluid.GridLayoutHandler (findOrderableByDivAndId, lightboxRoot),
+        layoutHandler: new fluid.GridLayoutHandler (layoutHandlerParams),
         orderableFinder: findOrderableByDivAndId
     });
 }
 
 function createLightboxWithNoOrderables() {
 	var lightboxRoot = fetchLightboxRoot ();
+    var layoutHandlerParams = {
+        orderableFinder: findNoOrderables,
+        container: lightboxRoot
+    };
 	return new fluid.Reorderer (lightboxRoot, {
-        layoutHandler: new fluid.GridLayoutHandler (findNoOrderables, lightboxRoot),
+        layoutHandler: new fluid.GridLayoutHandler (layoutHandlerParams),
         orderableFinder: findNoOrderables
     });
 }
 
+function createGridLayoutHandler(container) {
+    if (!container) {
+        container = jQuery ("[id=" + lightboxRootId + "]");
+    }
+    return new fluid.GridLayoutHandler({
+        orderableFinder: findOrderableByDivAndId,
+        container: container
+    });
+}
 

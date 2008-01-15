@@ -52,8 +52,12 @@
       }
 
       var tabListContainer = jQuery ("#tabList");
-      var aLayoutHandler = new fluid.ListLayoutHandler (findOrderableTabs, tabListContainer);
-      aLayoutHandler.orientation = fluid.orientation.HORIZONTAL;
+      var layoutHandlerParams = {
+        orderableFinder: findOrderableTabs,
+        container: tabListContainer,
+        orientation: fluid.orientation.HORIZONTAL
+      };
+      var aLayoutHandler = new fluid.ListLayoutHandler (layoutHandlerParams);
 
       new fluid.Reorderer(tabListContainer, {
           layoutHandler: aLayoutHandler,

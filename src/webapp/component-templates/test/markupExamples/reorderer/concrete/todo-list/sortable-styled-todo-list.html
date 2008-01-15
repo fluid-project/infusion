@@ -98,11 +98,15 @@
       // The Reorderer requires two parameters for it to work. 
       // 1. The orderableFinder function which enables items to be reordered. 
       // 2. The layoutHandler which enables the keyboard functions of the Reorderer.
-      // The orderChangedCallback can be supplied to the Reorderer and will be executed when the order changes.
+      // The orderChangedCallback can be supplied to the LayoutHandler and will be executed when the order changes.
       var todoListContainer = jQuery ("#todo-list");
+      var layoutHandlerParams = {
+        orderableFinder: myOrderableFinder,
+        container: todoListContainer
+      };
       new fluid.Reorderer (todoListContainer, {
         orderableFinder: myOrderableFinder,
-        layoutHandler: new fluid.ListLayoutHandler (myOrderableFinder, todoListContainer)
+        layoutHandler: new fluid.ListLayoutHandler (layoutHandlerParams)
       });
     </script>
   </body>

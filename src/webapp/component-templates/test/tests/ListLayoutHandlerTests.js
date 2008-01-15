@@ -96,6 +96,7 @@ function testNextItemForNonOrderableReturnsTheFirstItem() {
 function testMovement() {
     var listItems = jQuery("li", jQuery("#list1"));
     
+    assertUndefined(fluid.testUtils.orderChangedCallbackWasCalled);
     assertEquals("Before moving anything, expect first is first", firstItemId, listItems[0].id);
     assertEquals("Before moving anything, expect second is second", secondItemId, listItems[1].id);
     assertEquals("Before moving anything, expect third is third", thirdItemId, listItems[2].id);
@@ -106,6 +107,7 @@ function testMovement() {
     
     var listItemsAfterMove = jQuery("li", jQuery("#list1"));
     
+    assertTrue(fluid.testUtils.orderChangedCallbackWasCalled);
     assertEquals("After, expect second is first", secondItemId, listItemsAfterMove[0].id);
     assertEquals("After, expect first is second", firstItemId, listItemsAfterMove[1].id);
     assertEquals("After, expect third is third", thirdItemId, listItemsAfterMove[2].id);

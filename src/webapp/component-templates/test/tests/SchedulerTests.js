@@ -97,8 +97,6 @@ function testInitScheduler () {
 				 jQuery (reorderer.domNode).attr ("id"));
 
 	// Ensure that the necessary parameters have been specified.
-	fluid.testUtils.assertNotNullAndNotUndefined ("The Reorderer's order changed callback should be set.",
-												  reorderer.orderChangedCallback);
 	fluid.testUtils.assertNotNullAndNotUndefined ("The Reorderer's orderable finder should be set.", 
 												  reorderer.orderableFinder);
 	fluid.testUtils.assertNotNullAndNotUndefined ("The Reorderer's layout handler should be set.", 
