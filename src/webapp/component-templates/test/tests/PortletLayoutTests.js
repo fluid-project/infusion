@@ -107,3 +107,10 @@ function testNumItemsInColumn() {
     numItems = portletLayout.numItemsInColumn (1000000, layout);
     assertEquals ("Number of portlets in non-existent column should be -1", -1, numItems);
 }
+
+function testNumColumns() {
+    var portletLayout = new fluid.PortletLayout();
+
+    assertEquals("Number of columns in test layout should be 3", 3, portletLayout.numColumns(layout));
+    assertEquals("Number of columns in empty layout should be 0", 0, portletLayout.numColumns(emptyLayout));
+}

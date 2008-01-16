@@ -35,11 +35,13 @@ function exposeTestFunctionNames() {
         "testMoveItemUp",
         "testMoveItemRight",
         "testMoveItemLeft",
+        "testCallbackReturnValue",
 		
 		// PortletLayoutTests.js
 		"testCalcColumnAndItemIndex",
 		"testFindFirstOrderableSiblingInColumn",
-		"testNumItemsInColumn"
+		"testNumItemsInColumn",
+		"testNumColumns"
     ];
 }
 
@@ -55,6 +57,8 @@ var layout = { id:"t2",
 					 { id:"c3", children:["portlet7","portlet8","portlet9"]}
 					]
 				};
+				
+var emptyLayout = { id:"t3", columns:[ ] };
 	
 var dropTargets = {
     portlet1:{portlet1:[1,1],portlet2:[1,1],portlet3:[1,1],portlet4:[1,1],

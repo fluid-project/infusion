@@ -549,17 +549,11 @@ fluid.Reorderer = function (container, params) {
         var orientation = params.orientation;
         
         // Unwrap the container if it's a jQuery.
-        if (container.jquery) {
-            container = container.get(0);
-        }
+        container = (container.jquery) ? container.get(0) : container;
         
-        if (!orderChangedCallback) {
-            orderChangedCallback = function () {};
-        }
+        orderChangedCallback = orderChangedCallback || function () {};
         
-        if (!orientation) {
-            orientation = fluid.orientation.VERTICAL;  // default.
-        }
+        orientation = orientation || fluid.orientation.VERTICAL;    // default
                 
         this.getRightSibling = function (item) {
             return itemInfoFinders.getRightSiblingInfo(item, orderableFinder(container)).item;
@@ -618,13 +612,9 @@ fluid.Reorderer = function (container, params) {
         var orientation = fluid.orientation.HORIZONTAL;
         
 		// Unwrap the container if it's a jQuery.
-		if (container.jquery) {
-			container = container.get(0);
-		}
-	   
-        if (!orderChangedCallback) {
-            orderChangedCallback = function () {};
-        }
+        container = (container.jquery) ? container.get(0) : container;
+        
+        orderChangedCallback = orderChangedCallback || function () {};
         
 	    this.getItemBelow = function(item) {
 	        return itemInfoFinders.getItemInfoBelow (item, orderableFinder(container)).item;
@@ -644,6 +634,12 @@ fluid.Reorderer = function (container, params) {
             orderChangedCallback(); 
 	    };
 	                
+	    // We need to override ListLayoutHandler.isMouseBefore to ensure that the local private
+	    // orientation is used.
+        this.isMouseBefore = function(evt, droppableEl) {
+            return isMouseBefore(evt, droppableEl, orientation);
+        };
+        
 	}; // End of GridLayoutHandler
 
     /*
@@ -701,7 +697,11 @@ fluid.Reorderer = function (container, params) {
         	else {
         	   return portletLayoutJSON.columns[columnIndex].children.length;
         	}
-        };        
+        };
+        
+        this.numColumns = function (portletLayoutJSON) {
+            return portletLayoutJSON.columns.length;
+        };
     };   // End of PortletLayout.
     
     /*
@@ -727,14 +727,10 @@ fluid.Reorderer = function (container, params) {
         var dropTargetPermissions = dropTargetPermissionsJSON;
         
         // Unwrap the container if it's a jQuery.
-        if (container.jquery) {
-            container = container.get(0);
-        }
+        container = (container.jquery) ? container.get(0) : container;
         
-        if (!orderChangedCallback) {
-            orderChangedCallback = function () {};
-        }
-        
+        orderChangedCallback = orderChangedCallback || function () {};
+
         // Public members.
         this.orderableFinder = orderableFinder;
         
@@ -805,8 +801,7 @@ fluid.Reorderer = function (container, params) {
 	    };
 	    
 	    this._isInRightmostColumn = function (item) {
-	    	var position = portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON);
-            if (position.columnIndex === portletLayoutJSON.columns.length-1) {
+	    	if (portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON).columnIndex === portletLayout.numColumns (portletLayoutJSON) - 1) {
 	            return true;
 	        } else {
 	            return false;
@@ -825,7 +820,7 @@ fluid.Reorderer = function (container, params) {
 	    
 	    this.moveItemRight = function (item) {
             jQuery (this.getRightSibling(item)).before (item);
-            orderChangedCallback(); 
+            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
 	    };
 	
 	    this.getLeftSibling = function (item) {
@@ -838,7 +833,7 @@ fluid.Reorderer = function (container, params) {
 	
 	    this.moveItemLeft = function (item) {
             jQuery (this.getLeftSibling(item)).before (item);
-            orderChangedCallback(); 
+            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
 	    };
 	
 	    this.getItemAbove = function (item) {
@@ -851,7 +846,7 @@ fluid.Reorderer = function (container, params) {
 	    
 	    this.moveItemUp = function (item) {
             jQuery (this.getItemAbove(item)).before (item);
-            orderChangedCallback(); 
+            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
 	    };
 	        
 	    this.getItemBelow = function (item) {
@@ -864,7 +859,7 @@ fluid.Reorderer = function (container, params) {
 	
 	    this.moveItemDown = function (item) {
 	    	jQuery (this.getItemBelow(item)).after (item);
-            orderChangedCallback(); 
+            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
 	    };
 	    
 	    this.isMouseBefore = function(evt, droppableEl) {
@@ -877,7 +872,7 @@ fluid.Reorderer = function (container, params) {
             } else {
                 jQuery (relatedItem).after (item);
             }
-            orderChangedCallback(); 
+            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
         };
     }; // End PortalLayoutHandler
 }) ();

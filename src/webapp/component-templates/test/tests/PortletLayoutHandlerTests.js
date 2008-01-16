@@ -219,3 +219,29 @@ function testMoveItemLeft() {
     assertEquals ("After move portlet 6 is in third position column 2", col2portlet2id, col2PortletList[2].id);
 
 }
+
+function testCallbackReturnValue() {
+    var newLayout = { id:"t2",
+            columns:[{ id:"c1", children:["portlet1","portlet2","portlet3","portlet4"]},
+                     { id:"c2", children:["portlet5","portlet7","portlet6"]   },
+                     { id:"c3", children:["portlet8","portlet9"]}
+                    ]
+                };
+    var layoutHandlerParams = {
+      orderableFinder: portletOrderableFinder,
+      container: jQuery ("#" + portalRootId),
+      portletLayout: layout,
+      dropTargetPermissions: dropTargets,
+      orderChangedCallback: function () {return newLayout;}
+    };
+    portletHandler = new fluid.PortletLayoutHandler (layoutHandlerParams);
+
+    // this test uses the layout handler's public api get methods instead of inspecting the dom
+    assertEquals ("Before move portlet 7 is to the right of portlet 6", col3portlet1id,
+            portletHandler.getRightSibling(jQuery("#"+col2portlet2id)[0]).id);
+    
+    portletHandler.moveItemLeft (jQuery ("#" + col3portlet1id)[0]);
+
+    assertEquals ("After move portlet 7 is to the left of portlet 8", col3portlet1id,
+            portletHandler.getLeftSibling(jQuery("#"+col3portlet2id)[0]).id);
+}
