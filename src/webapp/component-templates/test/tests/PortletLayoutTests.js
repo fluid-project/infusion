@@ -15,59 +15,59 @@ function testCalcColumnAndItemIndex () {
 
     // Tests for column index:
     // Column 0
-    var item = jQuery ("#" + col1portlet1id)[0];
-    assertEquals (col1portlet1id + " should be in 1st column", 0, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
-    item = jQuery ("#" + col1portlet2id)[0];
-    assertEquals (col1portlet2id + " should be in 1st column", 0, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
-    item = jQuery ("#" + col1portlet3id)[0];
-    assertEquals (col1portlet3id + " should be in 1st column", 0, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
-    item = jQuery ("#" + col1portlet4id)[0];
-    assertEquals (col1portlet4id + " should be in 1st column", 0, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    var item = jQuery ("#" + portlet1id)[0];
+    assertEquals (portlet1id + " should be in 1st column", 0, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    item = jQuery ("#" + portlet2id)[0];
+    assertEquals (portlet2id + " should be in 1st column", 0, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    item = jQuery ("#" + portlet3id)[0];
+    assertEquals (portlet3id + " should be in 1st column", 0, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    item = jQuery ("#" + portlet4id)[0];
+    assertEquals (portlet4id + " should be in 1st column", 0, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     
     // Column 1
-    item = jQuery ("#" + col2portlet1id)[0];
-    assertEquals (col2portlet1id + " should be in 2nd column", 1, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
-    item = jQuery ("#" + col2portlet2id)[0];
-    assertEquals (col2portlet2id + " should be in 2nd column", 1, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    item = jQuery ("#" + portlet5id)[0];
+    assertEquals (portlet5id + " should be in 2nd column", 1, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    item = jQuery ("#" + portlet6id)[0];
+    assertEquals (portlet6id + " should be in 2nd column", 1, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     
     // Column 2
-    item = jQuery ("#" + col3portlet1id)[0];
-    assertEquals (col3portlet1id + " should be in 3rd column", 2, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
-    item = jQuery ("#" + col3portlet2id)[0];
-    assertEquals (col3portlet2id + " should be in 3rd column", 2, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
-    item = jQuery ("#" + col3portlet3id)[0];
-    assertEquals (col3portlet3id + " should be in 3rd column", 2, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    item = jQuery ("#" + portlet7id)[0];
+    assertEquals (portlet7id + " should be in 3rd column", 2, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    item = jQuery ("#" + portlet8id)[0];
+    assertEquals (portlet8id + " should be in 3rd column", 2, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    item = jQuery ("#" + portlet9id)[0];
+    assertEquals (portlet9id + " should be in 3rd column", 2, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     
     // Not in any column.
     item = jQuery ("#" + portalRootId);
     assertEquals (portalRootId + " should not be in any column", -1, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     
     // Tests for item index:    
-    item = jQuery ("#" + col1portlet1id)[0];
+    item = jQuery ("#" + portlet1id)[0];
     assertEquals ("portlet1 (no column index provided) should have index 0", 0, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
 
-    item = jQuery ("#" + col1portlet2id)[0];
+    item = jQuery ("#" + portlet2id)[0];
     assertEquals ("portlet2 (no column index provided) should have index 1", 1, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
           
-    item = jQuery ("#" + col1portlet3id)[0];
+    item = jQuery ("#" + portlet3id)[0];
     assertEquals ("portlet3 (no column index provided) should have index 2", 2, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
           
-    item = jQuery ("#" + col1portlet4id)[0];
+    item = jQuery ("#" + portlet4id)[0];
     assertEquals ("portlet4 (no column index provided) should have index 3", 3, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
           
-    item = jQuery ("#" + col2portlet1id)[0];
+    item = jQuery ("#" + portlet5id)[0];
     assertEquals ("portlet5 (no column index provided) should have index 0", 0, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
           
-    item = jQuery ("#" + col2portlet2id)[0];
+    item = jQuery ("#" + portlet6id)[0];
     assertEquals ("portlet6 (no column index provided) should have index 1", 1, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
           
-    item = jQuery ("#" + col3portlet1id)[0];
+    item = jQuery ("#" + portlet7id)[0];
     assertEquals ("portlet7 (no column index provided) should have index 0", 0, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
           
-    item = jQuery ("#" + col3portlet2id)[0];
+    item = jQuery ("#" + portlet8id)[0];
     assertEquals ("portlet8 (no column index provided) should have index 1", 1, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
     
-    item = jQuery ("#" + col3portlet3id)[0];
+    item = jQuery ("#" + portlet9id)[0];
     assertEquals ("portlet9 (no column index provided) should have index 2", 2, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);    
     
 }   // end testCalcNextColumnIndex().
@@ -78,12 +78,12 @@ function testFindFirstOrderableSiblingInColumn () {
     
     // Test for existing moveable portlets in the three columns.
     var portlet = portletLayout.findFirstOrderableSiblingInColumn (0, orderables, layout);
-    assertEquals ("First orderable portlet in column 1 should be " + col1portlet3id, jQuery ("#" + col1portlet3id)[0], portlet);
+    assertEquals ("First orderable portlet in column 1 should be " + portlet3id, jQuery ("#" + portlet3id)[0], portlet);
 
     portlet = portletLayout.findFirstOrderableSiblingInColumn (1, orderables, layout);
-    assertEquals ("First orderable portlet in column 2 should be " + col2portlet2id, jQuery ("#" + col2portlet2id)[0], portlet);
+    assertEquals ("First orderable portlet in column 2 should be " + portlet6id, jQuery ("#" + portlet6id)[0], portlet);
     portlet = portletLayout.findFirstOrderableSiblingInColumn (2, orderables, layout);
-    assertEquals ("First orderable portlet in column 3 should be " + col3portlet1id, jQuery ("#" + col3portlet1id)[0], portlet);
+    assertEquals ("First orderable portlet in column 3 should be " + portlet7id, jQuery ("#" + portlet7id)[0], portlet);
 
     // Test for a non-existetnt column.
     portlet = portletLayout.findFirstOrderableSiblingInColumn (4, orderables, layout);

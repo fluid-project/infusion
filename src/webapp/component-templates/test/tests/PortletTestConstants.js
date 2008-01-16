@@ -6,15 +6,15 @@
 // The id of the root node of the lightbox
 var portalRootId = "reorderer-root";
 
-var col1portlet1id = "portlet1";
-var col1portlet2id = "portlet2";
-var col1portlet3id = "portlet3";
-var col1portlet4id = "portlet4";
-var col2portlet1id = "portlet5";
-var col2portlet2id = "portlet6";
-var col3portlet1id = "portlet7";
-var col3portlet2id = "portlet8";
-var col3portlet3id = "portlet9";
+var portlet1id = "portlet1";
+var portlet2id = "portlet2";
+var portlet3id = "portlet3";
+var portlet4id = "portlet4";
+var portlet5id = "portlet5";
+var portlet6id = "portlet6";
+var portlet7id = "portlet7";
+var portlet8id = "portlet8";
+var portlet9id = "portlet9";
 
 // All the test function names for the JsUnit tests that test against the unordered-list.html file.  
 // This is needed for running JsUnit in IE and Safari.
@@ -23,12 +23,8 @@ var col3portlet3id = "portlet9";
 function exposeTestFunctionNames() {
     return [
         // PortletLayoutHandlerTests.js
-		"testIsFirstInColumn",
-		"testIsLastInColumn",
 		"testGetItemAbove",
 		"testGetItemBelow",
-		"testIsInLeftmostColumn",
-		"testIsInRightmostColumn",
 		"testGetLeftSibling",
         "testGetRightSibling",
         "testMoveItemDown",

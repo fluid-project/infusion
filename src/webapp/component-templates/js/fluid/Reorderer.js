@@ -702,6 +702,7 @@ fluid.Reorderer = function (container, params) {
         this.numColumns = function (portletLayoutJSON) {
             return portletLayoutJSON.columns.length;
         };
+        
     };   // End of PortletLayout.
     
     /*
@@ -722,7 +723,6 @@ fluid.Reorderer = function (container, params) {
         var orientation = fluid.orientation.VERTICAL;
         
         // Private members.
-        var thisLH = this; // Hold onto this layouthandler for the enclosed private functions.
         var portletLayout = new fluid.PortletLayout();
         var dropTargetPermissions = dropTargetPermissionsJSON;
         
@@ -731,9 +731,6 @@ fluid.Reorderer = function (container, params) {
         
         orderChangedCallback = orderChangedCallback || function () {};
 
-        // Public members.
-        this.orderableFinder = orderableFinder;
-        
         // Private Methods.
         /*
 	     * A general get{Above|Below}Sibling() given an item and a direction.
@@ -743,7 +740,7 @@ fluid.Reorderer = function (container, params) {
 	     * This implementation does not wrap around. 
 	     */
 	    var getVerticalSibling = function (item, /* +1, -1 */ incDecrement) {
-	        var orderables = thisLH.orderableFinder (container);
+	        var orderables = orderableFinder (container);
 	        var index = jQuery(orderables).index(item) + incDecrement;
 	            
 	        // If we wrap, backup 
@@ -768,7 +765,7 @@ fluid.Reorderer = function (container, params) {
 	     * neighboring column.
 	     */
 	    var getHorizontalSibling = function (item, /* +1, -1 */ incDecrement) {
-	        var orderables = thisLH.orderableFinder (container);
+	        var orderables = orderableFinder (container);
 	            
             // go through all the children and find which column the passed in item is located in.
             // Save that column if found.
@@ -782,36 +779,37 @@ fluid.Reorderer = function (container, params) {
 	    };
 	    	    
 	    // These methods are public only for our unit tests. They need to be refactored into a portletlayout object.
-	    this._isFirstInColumn = function (item) {
-	    	var position = portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON);
-	    	return (position.itemIndex === 0) ? true : false;
-	    };
-	
-	    this._isLastInColumn = function (item) {
+         var isFirstInColumn = function (item) {
+            var position = portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON);
+            return (position.itemIndex === 0) ? true : false;
+        };
+    
+        var isLastInColumn = function (item) {
             var position = portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON);
             return (position.itemIndex === portletLayout.numItemsInColumn (position.columnIndex, portletLayoutJSON)-1) ? true : false;
-	    };
-	    
-	    this._isInLeftmostColumn = function (item) {
-	    	if (portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON).columnIndex === 0) {
-	            return true;
-	        } else {
-	            return false;
-	        }
-	    };
-	    
-	    this._isInRightmostColumn = function (item) {
-	    	if (portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON).columnIndex === portletLayout.numColumns (portletLayoutJSON) - 1) {
-	            return true;
-	        } else {
-	            return false;
-	        }
-	    };
+        };
+        
+        var isInLeftmostColumn = function (item) {
+            if (portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON).columnIndex === 0) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+        
+        var isInRightmostColumn = function (item) {
+            if (portletLayout.calcColumnAndItemIndex (item, portletLayoutJSON).columnIndex === portletLayout.numColumns (portletLayoutJSON) - 1) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+            
 	   
         // Public Methods
         
 	    this.getRightSibling = function (item) {
-            if (thisLH._isInRightmostColumn(item)) {
+            if (isInRightmostColumn(item)) {
                 return item;
             } else {
                 return getHorizontalSibling(item, 1);
@@ -824,7 +822,7 @@ fluid.Reorderer = function (container, params) {
 	    };
 	
 	    this.getLeftSibling = function (item) {
-            if (thisLH._isInLeftmostColumn(item)) {
+            if (isInLeftmostColumn(item)) {
                 return item;
             } else {
                 return getHorizontalSibling(item, -1);
@@ -837,7 +835,7 @@ fluid.Reorderer = function (container, params) {
 	    };
 	
 	    this.getItemAbove = function (item) {
-	    	if (thisLH._isFirstInColumn(item)) {
+	    	if (isFirstInColumn(item)) {
                 return item;
             } else {
                 return getVerticalSibling (item, -1);
@@ -850,7 +848,7 @@ fluid.Reorderer = function (container, params) {
 	    };
 	        
 	    this.getItemBelow = function (item) {
-	    	if (thisLH._isLastInColumn(item)) {
+	    	if (isLastInColumn(item)) {
                 return item;
             } else {
                 return getVerticalSibling (item, 1);
