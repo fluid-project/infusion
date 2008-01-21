@@ -22,6 +22,13 @@ var portlet9id = "portlet9";
 
 function exposeTestFunctionNames() {
     return [
+        // PortletLayoutTests.js
+        "testCalcColumnAndItemIndex",
+        "testFindFirstOrderableSiblingInColumn",
+        "testNumItemsInColumn",
+        "testNumColumns",
+        "testUpdateLayout",
+
         // PortletLayoutHandlerTests.js
 		"testGetItemAbove",
 		"testGetItemBelow",
@@ -31,13 +38,8 @@ function exposeTestFunctionNames() {
         "testMoveItemUp",
         "testMoveItemRight",
         "testMoveItemLeft",
-        "testCallbackReturnValue",
+        "testCallbackReturnValue"
 		
-		// PortletLayoutTests.js
-		"testCalcColumnAndItemIndex",
-		"testFindFirstOrderableSiblingInColumn",
-		"testNumItemsInColumn",
-		"testNumColumns"
     ];
 }
 
@@ -47,7 +49,7 @@ var portletHandler;
         return jQuery ("#portlet3,#portlet4,#portlet6,#portlet7,#portlet8,#portlet9");
 	}
 
-var layout = { id:"t2",
+var layout1 = { id:"t2",
 			columns:[{ id:"c1", children:["portlet1","portlet2","portlet3","portlet4"]},
 					 { id:"c2", children:["portlet5","portlet6"]   },
 					 { id:"c3", children:["portlet7","portlet8","portlet9"]}
@@ -91,6 +93,7 @@ var portletRootClone;
 function setUp() {
 	var table = jQuery ("#" + portalRootId);
     portletRootClone = table.clone();
+    layout = fluid.testUtils.cloneObj(layout1);
     var layoutHandlerParams = {
       orderableFinder: portletOrderableFinder,
       container: table,

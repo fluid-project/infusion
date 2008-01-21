@@ -12,7 +12,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
  
 function testCalcColumnAndItemIndex () {
     var portletLayout = new fluid.PortletLayout();
-
     // Tests for column index:
     // Column 0
     var item = jQuery ("#" + portlet1id)[0];
@@ -113,4 +112,48 @@ function testNumColumns() {
 
     assertEquals("Number of columns in test layout should be 3", 3, portletLayout.numColumns(layout));
     assertEquals("Number of columns in empty layout should be 0", 0, portletLayout.numColumns(emptyLayout));
+}
+
+function testUpdateLayout () {
+    var portletLayout = new fluid.PortletLayout();
+    var item = jQuery ("#" + portlet3id)[0];
+    var relatedItem = jQuery ("#" + portlet6id)[0];
+    
+    isOriginalOrderTest("Before doing anyting");    
+
+    // Move to invalid location
+    portletLayout.updateLayout (item, undefined, "before", layout);
+
+    isOriginalOrderTest("After invalid move attempt");    
+    
+    portletLayout.updateLayout (item, relatedItem, "before", layout);
+    assertEquals ("After move, Portlet 3 should be before Portlet 6", portlet3id, layout.columns[1].children[1]);
+    assertEquals ("After move, Portlet 6 should be third in the column", portlet6id, layout.columns[1].children[2]);
+    assertEquals ("After move, Portlet 3 should not be in column 1", -1, jQuery.inArray( portlet3id, layout.columns[0]));
+     
+    // Move after
+    relatedItem = jQuery ("#" + portlet8id)[0];
+    portletLayout.updateLayout (item, relatedItem, "after", layout);
+    assertEquals ("After move, Portlet 3 should be after Portlet 8", portlet3id, layout.columns[2].children[2]);
+    assertEquals ("After move, Portlet 8 should be second in the column", portlet8id, layout.columns[2].children[1]);
+    assertEquals ("After move, Portlet 3 should not be in column 2", -1, jQuery.inArray( portlet3id, layout.columns[1]));
+      
+    // Move within same column
+    relatedItem = jQuery ("#" + portlet7id)[0];
+    portletLayout.updateLayout (item, relatedItem, "before", layout);
+    assertEquals ("After move, Portlet 3 should be before Portlet 7", portlet3id, layout.columns[2].children[0]);
+    assertEquals ("After move, Portlet 7 should be second in the column", portlet7id, layout.columns[2].children[1]);
+}
+
+function isOriginalOrderTest(testStr) {
+    assertEquals (testStr + ", Portlet1 should be 1st in column 1", portlet1id, layout.columns[0].children[0]);
+    assertEquals (testStr + ", Portlet2 should be 2nd in column 1", portlet2id, layout.columns[0].children[1]);
+    assertEquals (testStr + ", Portlet3 should be 3rd in column 1", portlet3id, layout.columns[0].children[2]);
+    assertEquals (testStr + ", Portlet4 should be 4th in column 1", portlet4id, layout.columns[0].children[3]);
+    assertEquals (testStr + ", Portlet5 should be 1st in column 2", portlet5id, layout.columns[1].children[0]);
+    assertEquals (testStr + ", Portlet6 should be 2nd in column 2", portlet6id, layout.columns[1].children[1]);
+    assertEquals (testStr + ", Portlet7 should be 1st in column 3", portlet7id, layout.columns[2].children[0]);
+    assertEquals (testStr + ", Portlet8 should be 2nd in column 3", portlet8id, layout.columns[2].children[1]);
+    assertEquals (testStr + ", Portlet9 should be 3rd in column 3", portlet9id, layout.columns[2].children[2]);
+    
 }

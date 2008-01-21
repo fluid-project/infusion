@@ -703,6 +703,20 @@ fluid.Reorderer = function (container, params) {
             return portletLayoutJSON.columns.length;
         };
         
+        /**
+         * Move an item within the portletLayoutJSON object. 
+         */
+        this.updateLayout = function (item, relativeItem, placement, portletLayoutJSON) {
+            if (!item || !relativeItem) { return };
+            var itemIndices = this.calcColumnAndItemIndex (item, portletLayoutJSON);
+
+            var itemId = portletLayoutJSON.columns[itemIndices.columnIndex].children[itemIndices.itemIndex];
+            portletLayoutJSON.columns[itemIndices.columnIndex].children.splice (itemIndices.itemIndex, 1);
+
+            var relativeItemIndices = this.calcColumnAndItemIndex (relativeItem, portletLayoutJSON);
+            var targetCol = portletLayoutJSON.columns[relativeItemIndices.columnIndex].children;
+            targetCol.splice (relativeItemIndices.itemIndex + (placement === "before"? 0 : 1), 0, itemId);
+        };
     };   // End of PortletLayout.
     
     /*
@@ -817,8 +831,13 @@ fluid.Reorderer = function (container, params) {
 	    };
 	    
 	    this.moveItemRight = function (item) {
-            jQuery (this.getRightSibling(item)).before (item);
+            var rightSibling =this.getRightSibling(item);
+            jQuery (rightSibling).before (item);
+            portletLayout.updateLayout (item, rightSibling, "before", portletLayoutJSON);
+            // first, stringify the json before sending it
             portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
+            // the return value will actually be a big json object with two parts
+            // we'll have to parse it, and separate the two parts
 	    };
 	
 	    this.getLeftSibling = function (item) {
@@ -830,7 +849,9 @@ fluid.Reorderer = function (container, params) {
 	    };
 	
 	    this.moveItemLeft = function (item) {
-            jQuery (this.getLeftSibling(item)).before (item);
+	        var leftSibling = this.getLeftSibling(item);
+            jQuery (leftSibling).before (item);
+            portletLayout.updateLayout (item, leftSibling, "before", portletLayoutJSON);
             portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
 	    };
 	
@@ -843,7 +864,9 @@ fluid.Reorderer = function (container, params) {
 	    };
 	    
 	    this.moveItemUp = function (item) {
-            jQuery (this.getItemAbove(item)).before (item);
+	        var siblingAbove = this.getItemAbove(item);
+            jQuery (siblingAbove).before (item);
+            portletLayout.updateLayout (item, siblingAbove, "before", portletLayoutJSON);
             portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
 	    };
 	        
@@ -856,7 +879,9 @@ fluid.Reorderer = function (container, params) {
 	    };
 	
 	    this.moveItemDown = function (item) {
-	    	jQuery (this.getItemBelow(item)).after (item);
+	        var siblingBelow = this.getItemBelow(item);
+	    	jQuery (siblingBelow).after (item);
+            portletLayout.updateLayout (item, siblingBelow, "after", portletLayoutJSON);
             portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
 	    };
 	    
@@ -867,8 +892,10 @@ fluid.Reorderer = function (container, params) {
         this.mouseMoveItem = function (e, item, relatedItem) {
             if (this.isMouseBefore (e, relatedItem)) {
                 jQuery (relatedItem).before (item);
+                portletLayout.updateLayout (item, relatedItem, "before", portletLayoutJSON);
             } else {
                 jQuery (relatedItem).after (item);
+                portletLayout.updateLayout (item, relatedItem, "after", portletLayoutJSON);
             }
             portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
         };

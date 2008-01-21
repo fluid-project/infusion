@@ -75,3 +75,41 @@ fluid.testUtils.assertNotNullAndNotUndefined = function (message, value) {
 fluid.testUtils.byId = function (id) {
 	return jQuery ("[id=" + id + "]").get(0);
 };
+
+/**
+ * Function that performs a deep clone of the object passed as an argument.
+ * Based upon the clone() function in Dojo v1.0.2.
+ */
+fluid.testUtils.cloneObj = function (obj) {
+    var newObj;
+    
+    if (!obj) { return obj; }
+    
+    // Handle Array
+    if (obj instanceof Array) {
+        newObj = [];
+        for (var i = 0; i < obj.length; ++i) {
+            newObj.push (fluid.testUtils.cloneObj (obj[i]) );
+        }
+        return newObj;
+    }
+    
+    // handle non-Object
+    if ( ! (obj instanceof Object) ) {
+        return obj;
+    }
+    
+    // handle Node
+    if (obj.nodeType && obj.cloneNode) {
+        return obj.cloneNode (true);
+    }
+    
+    // Generic objects
+    newObj = new obj.constructor();
+    for (var i in obj) {
+        if ( !(i in newObj) || newObj[i] != obj[i]) {
+            newObj[i] = fluid.testUtils.cloneObj (obj[i]);
+        }
+    }
+    return newObj;
+}
