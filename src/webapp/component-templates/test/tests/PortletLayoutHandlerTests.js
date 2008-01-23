@@ -4,11 +4,11 @@ function testGetItemAbove() {
         jQuery ("#" + portlet8id)[0], itemAbove);
 
 	itemAbove = portletHandler.getItemAbove(jQuery ("#" + portlet1id)[0]);
-	assertEquals(portlet1id.id+" is at the top of the column, so nothing is 'above' it",
+	assertEquals(portlet1id +" is at the top of the column, so nothing is 'above' it",
 		jQuery ("#" + portlet1id)[0], itemAbove);
 
 	itemAbove = portletHandler.getItemAbove(jQuery ("#" + portlet7id)[0]);
-	assertEquals(portlet7id.id+" is at the top of the column, so nothing is 'above' it",
+	assertEquals(portlet7id +" is at the top of the column, expected nothing 'above' it but got " + itemAbove.id,
 		jQuery ("#" + portlet7id)[0], itemAbove);
 
     itemAbove = portletHandler.getItemAbove(jQuery ("#" + portlet4id)[0]);
@@ -172,9 +172,9 @@ function testCallbackReturnValue() {
                 };
     var layoutHandlerParams = {
       orderableFinder: portletOrderableFinder,
-      container: jQuery ("#" + portalRootId),
+      container: jQuery (portalRootSelector),
       portletLayout: layout,
-      dropTargetPermissions: dropTargets,
+      dropTargetPermissions: dropTargetPerms,
       orderChangedCallback: function () {return newLayout;}
     };
     portletHandler = new fluid.PortletLayoutHandler (layoutHandlerParams);
