@@ -100,17 +100,26 @@ function testMoveItemDown() {
 	portletList = jQuery("div[id^=portlet]");
 	assertEquals(portlet4id, portletList[2].id);
     assertEquals(portlet3id, portletList[3].id);
+
 }
 
 function testMoveItemUp() {
     var portletList = jQuery("div[id^=portlet]");
     assertEquals("Before move portlet 3 is in third position", portlet3id, portletList[2].id);
     assertEquals("Before move portlet 4 is in fourth position", portlet4id, portletList[3].id);
+    assertEquals("Before move portlet 8 is in second last position", portlet8id, portletList[7].id);
+    assertEquals("Before move portlet 9 is in last position", portlet9id, portletList[8].id);
 
+    portletHandler.moveItemUp (jQuery ("#" + portlet9id)[0]);
+    portletList = jQuery("div[id^=portlet]");
+    assertEquals("After move portlet 8 is in last position", portlet8id, portletList[8].id);
+    assertEquals("After move portlet 9 is in second last position", portlet9id, portletList[7].id);
+
+    // Invalid move - should not work
     portletHandler.moveItemUp (jQuery ("#" + portlet4id)[0]);
     portletList = jQuery("div[id^=portlet]");
-    assertEquals("After move portlet 4 is in third position", portlet4id, portletList[2].id);
-    assertEquals("After move portlet 3 is in fourth position", portlet3id, portletList[3].id);
+    assertEquals("After move portlet 3 is in third position", portlet3id, portletList[2].id);
+    assertEquals("After move portlet 4 is in fourth position", portlet4id, portletList[3].id);
 }
 
 function testMoveItemRight() {

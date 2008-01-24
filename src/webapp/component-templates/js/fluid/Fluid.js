@@ -28,6 +28,11 @@ fluid.orientation = {
 	VERTICAL: 1
 };
 
+fluid.position = {
+	BEFORE: 0,
+	AFTER: 1
+};
+
 fluid.mixin = function (target, args) {
     for (var arg in args) {
         if (args.hasOwnProperty (arg)) {

@@ -103,6 +103,23 @@ function testFindFirstOrderableSiblingInColumn () {
     
 }   // end testFindFirstOrderableSiblingInColumn().
 
+function testFindLinearIndex() {
+    var portletLayout = new fluid.PortletLayout();
+    
+    var index = portletLayout.findLinearIndex (portlet1id, layout);
+    assertEquals(0, index);
+
+    index = portletLayout.findLinearIndex (portlet3id, layout);
+    assertEquals(2, index);
+
+    index = portletLayout.findLinearIndex (portlet9id, layout);
+    assertEquals(8, index);
+    
+    index = portletLayout.findLinearIndex ("doesNotExist", layout);
+    assertEquals(-1, index);
+    
+}
+
 function testNumItemsInColumn() {
     var portletLayout = new fluid.PortletLayout();
     

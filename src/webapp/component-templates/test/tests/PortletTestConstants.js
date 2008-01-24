@@ -32,9 +32,13 @@ var portlet9id = "portlet9";
 // It's a very brittle and annoying way of specifying test names and should be fixed. [FLUID-35]
 function exposeTestFunctionNames() {
     return [
+        // PortletPermsTests.js
+        "testCanDrop",
+        
         // PortletLayoutTests.js
         "testCalcColumnAndItemIndex",
         "testFindFirstOrderableSiblingInColumn",
+        "testFindLinearIndex",
         "testNumItemsInColumn",
         "testNumColumns",
         "testUpdateLayout",
@@ -52,64 +56,19 @@ function exposeTestFunctionNames() {
     ];
 }
 
-var layout = { 
-    id:"t2",
-    columns:[
-        { id:"c1", children:["portlet1","portlet2","portlet3","portlet4"]},
-        { id:"c2", children:["portlet5","portlet6"]   },
-        { id:"c3", children:["portlet7","portlet8","portlet9"]}
-    ]
-};
-				
-var emptyLayout = { id:"t3", columns:[ ] };
-  
-var dropTargetPerms = [
-    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],    // portlet1
-    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],    // portlet2
-    [[0,0], [0,1], [1,1], [1,1], [0,1], [1,1], [0,1], [1,1], [1,1]],    // portlet3  
-    [[0,0], [0,0], [0,1], [1,1], [0,1], [1,1], [0,1], [1,1], [1,1]],    // portlet4
-    [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0], [0,0]],    // portlet5
-    [[0,0], [0,0], [0,1], [1,1], [0,1], [1,1], [0,1], [1,1], [1,1]],    // portlet6
-    [[0,0], [0,1], [1,1], [1,1], [0,1], [1,1], [1,1], [1,1], [1,1]],    // portlet7  
-    [[0,0], [0,0], [0,1], [1,1], [0,1], [1,1], [0,1], [1,1], [1,1]],    // portlet8
-    [[0,0], [0,0], [0,1], [1,1], [0,1], [1,1], [0,1], [1,1], [1,1]]     // portlet9
-];    
+var emptyLayout = { id:"t3", columns:[ ] };   
 
 function portletOrderableFinder (containerEl) {
     return jQuery ("#portlet3,#portlet4,#portlet6,#portlet7,#portlet8,#portlet9");
 }
 
-function initPortletReorderer() {
-
-    var portletFinder = function (containerEl) {
-        return jQuery ("[id^=portlet]", containerEl);
-    };
-
-    var portletOrderableFinder = function (containerEl) {
-        return jQuery ("#portlet3,#portlet4,#portlet6,#portlet7,#portlet8,#portlet9");
-    };
-    
-    var portletReordererRoot = jQuery(portalRootSelector);
-
-    var layoutHandlerParams = {
-        orderableFinder: portletOrderableFinder,
-        container: portletReordererRoot,
-        portletLayout: layout,
-        dropTargetPermissions: dropTargetPerms
-    };
-    
-    return new fluid.Reorderer(portletReordererRoot, {
-        layoutHandler: new fluid.PortletLayoutHandler (layoutHandlerParams),
-        orderableFinder: portletOrderableFinder,
-        droppableFinder: portletFinder,
-        dropTargets: dropTargetPerms
-    });
-}
-
 var portletRootClone;
 var portletHandler;
 
-// This setUp will be called before each of the tests that are included in portlets.html 
+/*
+ * This setUp will be called before each of the tests that are included in portlets.html 
+ * layout, portletOrderableFinder and dropTargetPerms are defined in portlets.js
+ */
 function setUp() {
 	var table = jQuery (portalRootSelector);
     portletRootClone = table.clone();

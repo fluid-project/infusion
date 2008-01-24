@@ -642,6 +642,11 @@ fluid.Reorderer = function (container, params) {
         
 	}; // End of GridLayoutHandler
 
+    fluid.portletPerms = fluid.portletPerms || {};
+    fluid.portletPerms.canDrop = function (perms, indexOfItem, indexOfTarget, position) {
+        return (!!perms[indexOfItem][indexOfTarget][position]); 
+    };
+    
     /*
      * PortletLayout helper object.
      */
@@ -699,15 +704,32 @@ fluid.Reorderer = function (container, params) {
         	}
         };
         
-        this.numColumns = function (portletLayoutJSON) {
-            return portletLayoutJSON.columns.length;
+        this.numColumns = function (layout) {
+            return layout.columns.length;
+        };
+        
+        this.findLinearIndex = function (itemId, layout) {
+            var columns = layout.columns;
+            var linearIndex = 0;
+            
+            for (var i = 0; i < columns.length; i++) {
+            	var idsInCol = columns[i].children;
+            	for (var j = 0; j < idsInCol.length; j++) {
+            		if (idsInCol[j] === itemId) {
+            			return linearIndex;
+            		}
+            		linearIndex++;
+            	}
+            }
+            
+            return -1;
         };
         
         /**
          * Move an item within the portletLayoutJSON object. 
          */
         this.updateLayout = function (item, relativeItem, placement, portletLayoutJSON) {
-            if (!item || !relativeItem) { return };
+            if (!item || !relativeItem) { return; }
             var itemIndices = this.calcColumnAndItemIndex (item, portletLayoutJSON);
 
             var itemId = portletLayoutJSON.columns[itemIndices.columnIndex].children[itemIndices.itemIndex];
@@ -733,12 +755,10 @@ fluid.Reorderer = function (container, params) {
         var container = params.container;
         var orderChangedCallback = params.orderChangedCallback;
         var portletLayoutJSON = params.portletLayout;
-        var dropTargetPermissionsJSON = params.dropTargetPermissions;
+        var targetPerms = params.dropTargetPermissions;
         var orientation = fluid.orientation.VERTICAL;
         
-        // Private members.
         var portletLayout = new fluid.PortletLayout();
-        var dropTargetPermissions = dropTargetPermissionsJSON;
         
         // Unwrap the container if it's a jQuery.
         container = (container.jquery) ? container.get(0) : container;
@@ -819,7 +839,34 @@ fluid.Reorderer = function (container, params) {
             }
         };
             
-	   
+        var canDrop = function (itemId, relatedItemId, position) {
+            return fluid.portletPerms.canDrop(
+                targetPerms, 
+                portletLayout.findLinearIndex(itemId, portletLayoutJSON), 
+                portletLayout.findLinearIndex(relatedItemId, portletLayoutJSON), 
+                position);
+        };
+        
+        var moveBefore = function (item, relatedItem) {
+            if (!canDrop (item.id, relatedItem.id, fluid.position.BEFORE)) {
+                return;
+            } 
+                
+            jQuery (relatedItem).before (item);
+            portletLayout.updateLayout (item, relatedItem, "before", portletLayoutJSON);
+            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
+        };
+        
+        var moveAfter = function (item, relatedItem) {
+            if (!canDrop (item.id, relatedItem.id, fluid.position.AFTER)) {
+                return;
+            } 
+                
+            jQuery (relatedItem).after (item);
+            portletLayout.updateLayout (item, relatedItem, "after", portletLayoutJSON);
+            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
+        };	   
+
         // Public Methods
         
 	    this.getRightSibling = function (item) {
@@ -831,7 +878,7 @@ fluid.Reorderer = function (container, params) {
 	    };
 	    
 	    this.moveItemRight = function (item) {
-            var rightSibling =this.getRightSibling(item);
+            var rightSibling = this.getRightSibling (item);
             jQuery (rightSibling).before (item);
             portletLayout.updateLayout (item, rightSibling, "before", portletLayoutJSON);
             // first, stringify the json before sending it
@@ -865,9 +912,7 @@ fluid.Reorderer = function (container, params) {
 	    
 	    this.moveItemUp = function (item) {
 	        var siblingAbove = this.getItemAbove(item);
-            jQuery (siblingAbove).before (item);
-            portletLayout.updateLayout (item, siblingAbove, "before", portletLayoutJSON);
-            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
+	        moveBefore (item, siblingAbove);
 	    };
 	        
 	    this.getItemBelow = function (item) {
@@ -880,9 +925,7 @@ fluid.Reorderer = function (container, params) {
 	
 	    this.moveItemDown = function (item) {
 	        var siblingBelow = this.getItemBelow(item);
-	    	jQuery (siblingBelow).after (item);
-            portletLayout.updateLayout (item, siblingBelow, "after", portletLayoutJSON);
-            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
+	        moveAfter (item, siblingBelow);
 	    };
 	    
 	    this.isMouseBefore = function(evt, droppableEl) {
@@ -891,14 +934,12 @@ fluid.Reorderer = function (container, params) {
 
         this.mouseMoveItem = function (e, item, relatedItem) {
             if (this.isMouseBefore (e, relatedItem)) {
-                jQuery (relatedItem).before (item);
-                portletLayout.updateLayout (item, relatedItem, "before", portletLayoutJSON);
+                moveBefore (item, relatedItem);
             } else {
-                jQuery (relatedItem).after (item);
-                portletLayout.updateLayout (item, relatedItem, "after", portletLayoutJSON);
+                moveAfter (item, relatedItem);
             }
-            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
         };
+        
     }; // End PortalLayoutHandler
 }) ();
 
