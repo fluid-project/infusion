@@ -24,128 +24,119 @@ function isOriginalOrderTest(testStr, layoutObj) {
 }
  
 function testCalcColumnAndItemIndex () {
-    var portletLayout = new fluid.PortletLayout();
     // Tests for column index:
     // Column 0
     var item = jQuery ("#" + portlet1id)[0];
-    assertEquals (portlet1id + " should be in 1st column", 0, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    assertEquals (portlet1id + " should be in 1st column", 0, fluid.portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     item = jQuery ("#" + portlet2id)[0];
-    assertEquals (portlet2id + " should be in 1st column", 0, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    assertEquals (portlet2id + " should be in 1st column", 0, fluid.portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     item = jQuery ("#" + portlet3id)[0];
-    assertEquals (portlet3id + " should be in 1st column", 0, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    assertEquals (portlet3id + " should be in 1st column", 0, fluid.portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     item = jQuery ("#" + portlet4id)[0];
-    assertEquals (portlet4id + " should be in 1st column", 0, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    assertEquals (portlet4id + " should be in 1st column", 0, fluid.portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     
     // Column 1
     item = jQuery ("#" + portlet5id)[0];
-    assertEquals (portlet5id + " should be in 2nd column", 1, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    assertEquals (portlet5id + " should be in 2nd column", 1, fluid.portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     item = jQuery ("#" + portlet6id)[0];
-    assertEquals (portlet6id + " should be in 2nd column", 1, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    assertEquals (portlet6id + " should be in 2nd column", 1, fluid.portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     
     // Column 2
     item = jQuery ("#" + portlet7id)[0];
-    assertEquals (portlet7id + " should be in 3rd column", 2, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    assertEquals (portlet7id + " should be in 3rd column", 2, fluid.portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     item = jQuery ("#" + portlet8id)[0];
-    assertEquals (portlet8id + " should be in 3rd column", 2, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    assertEquals (portlet8id + " should be in 3rd column", 2, fluid.portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     item = jQuery ("#" + portlet9id)[0];
-    assertEquals (portlet9id + " should be in 3rd column", 2, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    assertEquals (portlet9id + " should be in 3rd column", 2, fluid.portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     
     // Not in any column.
     item = jQuery (portalRootSelector);
-    assertEquals (portalRootSelector + " should not be in any column", -1, portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
+    assertEquals (portalRootSelector + " should not be in any column", -1, fluid.portletLayout.calcColumnAndItemIndex (item, layout).columnIndex);
     
     // Tests for item index:    
     item = jQuery ("#" + portlet1id)[0];
-    assertEquals ("portlet1 (no column index provided) should have index 0", 0, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
+    assertEquals ("portlet1 (no column index provided) should have index 0", 0, fluid.portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
 
     item = jQuery ("#" + portlet2id)[0];
-    assertEquals ("portlet2 (no column index provided) should have index 1", 1, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
+    assertEquals ("portlet2 (no column index provided) should have index 1", 1, fluid.portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
           
     item = jQuery ("#" + portlet3id)[0];
-    assertEquals ("portlet3 (no column index provided) should have index 2", 2, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
+    assertEquals ("portlet3 (no column index provided) should have index 2", 2, fluid.portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
           
     item = jQuery ("#" + portlet4id)[0];
-    assertEquals ("portlet4 (no column index provided) should have index 3", 3, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
+    assertEquals ("portlet4 (no column index provided) should have index 3", 3, fluid.portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
           
     item = jQuery ("#" + portlet5id)[0];
-    assertEquals ("portlet5 (no column index provided) should have index 0", 0, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
+    assertEquals ("portlet5 (no column index provided) should have index 0", 0, fluid.portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
           
     item = jQuery ("#" + portlet6id)[0];
-    assertEquals ("portlet6 (no column index provided) should have index 1", 1, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
+    assertEquals ("portlet6 (no column index provided) should have index 1", 1, fluid.portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
           
     item = jQuery ("#" + portlet7id)[0];
-    assertEquals ("portlet7 (no column index provided) should have index 0", 0, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
+    assertEquals ("portlet7 (no column index provided) should have index 0", 0, fluid.portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
           
     item = jQuery ("#" + portlet8id)[0];
-    assertEquals ("portlet8 (no column index provided) should have index 1", 1, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
+    assertEquals ("portlet8 (no column index provided) should have index 1", 1, fluid.portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);
     
     item = jQuery ("#" + portlet9id)[0];
-    assertEquals ("portlet9 (no column index provided) should have index 2", 2, portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);    
+    assertEquals ("portlet9 (no column index provided) should have index 2", 2, fluid.portletLayout.calcColumnAndItemIndex (item, layout).itemIndex);    
     
 }   // end testCalcNextColumnIndex().
  
 function testFindFirstOrderableSiblingInColumn () {
-    var portletLayout = new fluid.PortletLayout();
     var orderables = portletOrderableFinder();
     
     // Test for existing moveable portlets in the three columns.
-    var portlet = portletLayout.findFirstOrderableSiblingInColumn (0, orderables, layout);
+    var portlet = fluid.portletLayout.findFirstOrderableSiblingInColumn (0, orderables, layout);
     assertEquals ("First orderable portlet in column 1 should be " + portlet3id, jQuery ("#" + portlet3id)[0], portlet);
 
-    portlet = portletLayout.findFirstOrderableSiblingInColumn (1, orderables, layout);
+    portlet = fluid.portletLayout.findFirstOrderableSiblingInColumn (1, orderables, layout);
     assertEquals ("First orderable portlet in column 2 should be " + portlet6id, jQuery ("#" + portlet6id)[0], portlet);
-    portlet = portletLayout.findFirstOrderableSiblingInColumn (2, orderables, layout);
+    portlet = fluid.portletLayout.findFirstOrderableSiblingInColumn (2, orderables, layout);
     assertEquals ("First orderable portlet in column 3 should be " + portlet7id, jQuery ("#" + portlet7id)[0], portlet);
 
     // Test for a non-existetnt column.
-    portlet = portletLayout.findFirstOrderableSiblingInColumn (4, orderables, layout);
+    portlet = fluid.portletLayout.findFirstOrderableSiblingInColumn (4, orderables, layout);
     assertNull ("No column 4 -- no 'first orderable portlet'", portlet);
     
 }   // end testFindFirstOrderableSiblingInColumn().
 
-function testFindLinearIndex() {
-    var portletLayout = new fluid.PortletLayout();
-    
-    var index = portletLayout.findLinearIndex (portlet1id, layout);
+function testFindLinearIndex() {    
+    var index = fluid.portletLayout.findLinearIndex (portlet1id, layout);
     assertEquals(0, index);
 
-    index = portletLayout.findLinearIndex (portlet3id, layout);
+    index = fluid.portletLayout.findLinearIndex (portlet3id, layout);
     assertEquals(2, index);
 
-    index = portletLayout.findLinearIndex (portlet9id, layout);
+    index = fluid.portletLayout.findLinearIndex (portlet9id, layout);
     assertEquals(8, index);
     
-    index = portletLayout.findLinearIndex ("doesNotExist", layout);
+    index = fluid.portletLayout.findLinearIndex ("doesNotExist", layout);
     assertEquals(-1, index);
     
 }
 
-function testNumItemsInColumn() {
-    var portletLayout = new fluid.PortletLayout();
-    
-    var numItems = portletLayout.numItemsInColumn (0, layout);
+function testNumItemsInColumn() {    
+    var numItems = fluid.portletLayout.numItemsInColumn (0, layout);
     assertEquals ("Number of portlets in column 1 should be 4", 4, numItems);
-    numItems = portletLayout.numItemsInColumn (1, layout);
+    numItems = fluid.portletLayout.numItemsInColumn (1, layout);
     assertEquals ("Number of portlets in column 2 should be 2", 2, numItems);
-    numItems = portletLayout.numItemsInColumn (2, layout);
+    numItems = fluid.portletLayout.numItemsInColumn (2, layout);
     assertEquals ("Number of portlets in column 3 should be 3", 3, numItems);
 
     // Test 'non-existent' column by passing in a negative column index, and one definitely too large.
-    numItems = portletLayout.numItemsInColumn (-1, layout);
+    numItems = fluid.portletLayout.numItemsInColumn (-1, layout);
     assertEquals ("Number of portlets in non-existent column should be -1", -1, numItems);
-    numItems = portletLayout.numItemsInColumn (1000000, layout);
+    numItems = fluid.portletLayout.numItemsInColumn (1000000, layout);
     assertEquals ("Number of portlets in non-existent column should be -1", -1, numItems);
 }
 
 function testNumColumns() {
-    var portletLayout = new fluid.PortletLayout();
-
-    assertEquals("Number of columns in test layout should be 3", 3, portletLayout.numColumns(layout));
-    assertEquals("Number of columns in empty layout should be 0", 0, portletLayout.numColumns(emptyLayout));
+    assertEquals("Number of columns in test layout should be 3", 3, fluid.portletLayout.numColumns(layout));
+    assertEquals("Number of columns in empty layout should be 0", 0, fluid.portletLayout.numColumns(emptyLayout));
 }
 
 function testUpdateLayout () {
-    var portletLayout = new fluid.PortletLayout();
     var item = jQuery ("#" + portlet3id)[0];
     var relatedItem = jQuery ("#" + portlet6id)[0];
     var layoutClone = fluid.testUtils.cloneObj(layout);
@@ -153,26 +144,26 @@ function testUpdateLayout () {
     isOriginalOrderTest("Before doing anyting", layoutClone);    
 
     // Move to invalid location
-    portletLayout.updateLayout (item, undefined, "before", layoutClone);
+    fluid.portletLayout.updateLayout (item, undefined, "before", layoutClone);
 
     isOriginalOrderTest("After invalid move attempt", layoutClone);    
     
     // Move before
-    portletLayout.updateLayout (item, relatedItem, "before", layoutClone);
+    fluid.portletLayout.updateLayout (item, relatedItem, "before", layoutClone);
     assertEquals ("After move, Portlet 3 should be before Portlet 6", portlet3id, layoutClone.columns[1].children[1]);
     assertEquals ("After move, Portlet 6 should be third in the column", portlet6id, layoutClone.columns[1].children[2]);
     assertEquals ("After move, Portlet 3 should not be in column 1", -1, jQuery.inArray( portlet3id, layoutClone.columns[0]));
      
     // Move after
     relatedItem = jQuery ("#" + portlet8id)[0];
-    portletLayout.updateLayout (item, relatedItem, "after", layoutClone);
+    fluid.portletLayout.updateLayout (item, relatedItem, "after", layoutClone);
     assertEquals ("After move, Portlet 3 should be after Portlet 8", portlet3id, layoutClone.columns[2].children[2]);
     assertEquals ("After move, Portlet 8 should be second in the column", portlet8id, layoutClone.columns[2].children[1]);
     assertEquals ("After move, Portlet 3 should not be in column 2", -1, jQuery.inArray( portlet3id, layoutClone.columns[1]));
       
     // Move within same column
     relatedItem = jQuery ("#" + portlet7id)[0];
-    portletLayout.updateLayout (item, relatedItem, "before", layoutClone);
+    fluid.portletLayout.updateLayout (item, relatedItem, "before", layoutClone);
     assertEquals ("After move, Portlet 3 should be before Portlet 7", portlet3id, layoutClone.columns[2].children[0]);
     assertEquals ("After move, Portlet 7 should be second in the column", portlet7id, layoutClone.columns[2].children[1]);
 }
