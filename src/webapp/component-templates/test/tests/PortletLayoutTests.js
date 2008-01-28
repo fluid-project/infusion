@@ -144,26 +144,26 @@ function testUpdateLayout () {
     isOriginalOrderTest("Before doing anyting", layoutClone);    
 
     // Move to invalid location
-    fluid.portletLayout.updateLayout (item, undefined, "before", layoutClone);
+    fluid.portletLayout.updateLayout (item, undefined, fluid.position.BEFORE, layoutClone);
 
     isOriginalOrderTest("After invalid move attempt", layoutClone);    
     
     // Move before
-    fluid.portletLayout.updateLayout (item, relatedItem, "before", layoutClone);
+    fluid.portletLayout.updateLayout (item, relatedItem, fluid.position.BEFORE, layoutClone);
     assertEquals ("After move, Portlet 3 should be before Portlet 6", portlet3id, layoutClone.columns[1].children[1]);
     assertEquals ("After move, Portlet 6 should be third in the column", portlet6id, layoutClone.columns[1].children[2]);
     assertEquals ("After move, Portlet 3 should not be in column 1", -1, jQuery.inArray( portlet3id, layoutClone.columns[0]));
      
     // Move after
     relatedItem = jQuery ("#" + portlet8id)[0];
-    fluid.portletLayout.updateLayout (item, relatedItem, "after", layoutClone);
+    fluid.portletLayout.updateLayout (item, relatedItem, fluid.position.AFTER, layoutClone);
     assertEquals ("After move, Portlet 3 should be after Portlet 8", portlet3id, layoutClone.columns[2].children[2]);
     assertEquals ("After move, Portlet 8 should be second in the column", portlet8id, layoutClone.columns[2].children[1]);
     assertEquals ("After move, Portlet 3 should not be in column 2", -1, jQuery.inArray( portlet3id, layoutClone.columns[1]));
       
     // Move within same column
     relatedItem = jQuery ("#" + portlet7id)[0];
-    fluid.portletLayout.updateLayout (item, relatedItem, "before", layoutClone);
+    fluid.portletLayout.updateLayout (item, relatedItem, fluid.position.BEFORE, layoutClone);
     assertEquals ("After move, Portlet 3 should be before Portlet 7", portlet3id, layoutClone.columns[2].children[0]);
     assertEquals ("After move, Portlet 7 should be second in the column", portlet7id, layoutClone.columns[2].children[1]);
 }

@@ -404,15 +404,13 @@ fluid.Reorderer = function (container, params) {
  *******************/
 (function () {
     // Shared private functions.
-    var moveItem = function (item, relatedItemInfo, defaultPlacement, wrappedPlacement) {
-        var itemPlacement = defaultPlacement;
+    var moveItem = function (item, relatedItemInfo, position, wrappedPosition) {
+        var itemPlacement = position;
         if (relatedItemInfo.hasWrapped) {
-            itemPlacement = wrappedPlacement;
+            itemPlacement = wrappedPosition;
         }
         
-        // The "after" and "before" strings are an artifact of using dojo.place. 
-        // This should be refactored. 
-        if (itemPlacement === "after") {
+        if (itemPlacement === fluid.position.AFTER) {
             jQuery (relatedItemInfo.item).after (item);
         } else {
             jQuery (relatedItemInfo.item).before (item);
@@ -556,11 +554,12 @@ fluid.Reorderer = function (container, params) {
         orientation = orientation || fluid.orientation.VERTICAL;    // default
                 
         this.getRightSibling = function (item) {
-            return itemInfoFinders.getRightSiblingInfo(item, orderableFinder(container)).item;
+            return itemInfoFinders.getRightSiblingInfo (item, orderableFinder (container)).item;
         };
         
         this.moveItemRight = function (item) {
-            moveItem (item, itemInfoFinders.getRightSiblingInfo(item, orderableFinder(container)), "after", "before");
+        	var rightSiblingInfo = itemInfoFinders.getRightSiblingInfo (item, orderableFinder (container));
+            moveItem (item, rightSiblingInfo, fluid.position.AFTER, fluid.position.BEFORE);
             orderChangedCallback();
         };
     
@@ -569,7 +568,8 @@ fluid.Reorderer = function (container, params) {
         };
     
         this.moveItemLeft = function (item) {
-            moveItem (item, itemInfoFinders.getLeftSiblingInfo(item, orderableFinder(container)), "before", "after");
+        	var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo (item, orderableFinder (container));
+            moveItem (item, leftSiblingInfo, fluid.position.BEFORE, fluid.position.AFTER);
             orderChangedCallback();
         };
     
@@ -621,16 +621,18 @@ fluid.Reorderer = function (container, params) {
 	    };
 	
 	    this.moveItemDown = function (item) {
-	        moveItem (item, itemInfoFinders.getItemInfoBelow (item, orderableFinder(container)), "after", "before");
+	    	var itemBelow = itemInfoFinders.getItemInfoBelow (item, orderableFinder (container));
+	        moveItem (item, itemBelow, fluid.position.AFTER, fluid.position.BEFORE);
             orderChangedCallback(); 
 	    };
 	            
 	    this.getItemAbove = function (item) {
-	        return itemInfoFinders.getItemInfoAbove (item, orderableFinder(container)).item;   
+	        return itemInfoFinders.getItemInfoAbove (item, orderableFinder (container)).item;   
 	    }; 
 	    
 	    this.moveItemUp = function (item) {
-	        moveItem (item, itemInfoFinders.getItemInfoAbove (item, orderableFinder(container)), "before", "after");
+	    	var itemAbove = itemInfoFinders.getItemInfoAbove (item, orderableFinder (container));
+	        moveItem (item, itemAbove, fluid.position.BEFORE, fluid.position.AFTER);
             orderChangedCallback(); 
 	    };
 	                
@@ -778,12 +780,11 @@ fluid.Reorderer = function (container, params) {
             }           
             if (position === fluid.position.BEFORE) {
                 jQuery (relatedItem).before (item);
-                fluid.portletLayout.updateLayout (item, relatedItem, "before", portletLayoutJSON);
             }
             else {
                 jQuery (relatedItem).after (item);
-                fluid.portletLayout.updateLayout (item, relatedItem, "after", portletLayoutJSON);
             }
+            fluid.portletLayout.updateLayout (item, relatedItem, position, portletLayoutJSON);
             portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
         };
         
@@ -800,7 +801,7 @@ fluid.Reorderer = function (container, params) {
 	    this.moveItemRight = function (item) {
             var rightSibling = this.getRightSibling (item);
             jQuery (rightSibling).before (item);
-            fluid.portletLayout.updateLayout (item, rightSibling, "before", portletLayoutJSON);
+            fluid.portletLayout.updateLayout (item, rightSibling, fluid.position.BEFORE, portletLayoutJSON);
             // first, stringify the json before sending it
             portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
             // the return value will actually be a big json object with two parts
@@ -818,7 +819,7 @@ fluid.Reorderer = function (container, params) {
 	    this.moveItemLeft = function (item) {
 	        var leftSibling = this.getLeftSibling(item);
             jQuery (leftSibling).before (item);
-            fluid.portletLayout.updateLayout (item, leftSibling, "before", portletLayoutJSON);
+            fluid.portletLayout.updateLayout (item, leftSibling, fluid.position.BEFORE, portletLayoutJSON);
             portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
 	    };
 	
@@ -961,7 +962,7 @@ fluid.portletLayout = function () {
         /**
          * Move an item within the layout object. 
          */
-        updateLayout: function (item, relativeItem, placement, layout) {
+        updateLayout: function (item, relativeItem, position, layout) {
             if (!item || !relativeItem || item === relativeItem) { 
                 return; 
             }
@@ -971,7 +972,7 @@ fluid.portletLayout = function () {
 
             var relativeItemIndices = fluid.portletLayout.calcColumnAndItemIndex (relativeItem, layout);
             var targetCol = layout.columns[relativeItemIndices.columnIndex].children;
-            targetCol.splice (relativeItemIndices.itemIndex + (placement === "before"? 0 : 1), 0, item.id);
+            targetCol.splice (relativeItemIndices.itemIndex + position, 0, item.id);
         }
     };	
 } ();
