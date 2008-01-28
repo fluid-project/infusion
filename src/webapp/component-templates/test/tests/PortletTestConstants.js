@@ -13,10 +13,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
  * This file contains test constants and setup and teardown functions that are used when
  * testing with the data in the portlets.html file.
  */
-
-// The id of the root node of the lightbox
-var portalRootSelector = "#portlet-reorderer-root";
-
 var portlet1id = "portlet1";
 var portlet2id = "portlet2";
 var portlet3id = "portlet3";
@@ -33,7 +29,7 @@ var portlet9id = "portlet9";
 function exposeTestFunctionNames() {
     return [
         // PortletPermsTests.js
-        "testCanDrop",
+        "testCanMove",
         
         // PortletLayoutTests.js
         "testCalcColumnAndItemIndex",
@@ -52,7 +48,9 @@ function exposeTestFunctionNames() {
         "testMoveItemUp",
         "testMoveItemRight",
         "testMoveItemLeft",
-        "testCallbackReturnValue"
+        "testCallbackReturnValue",
+        "testFirstDroppableTarget",
+        "testFirstDroppableTargetSkipColumn"
     ];
 }
 

@@ -10,16 +10,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
  
 */
 
-function testCanDrop() {
-    assertFalse (fluid.portletPerms.canDrop (dropTargetPerms, 0, 0, fluid.position.BEFORE));
-    assertFalse (fluid.portletPerms.canDrop (dropTargetPerms, 0, 0, fluid.position.AFTER));
+function testCanMove() {
+    assertFalse (fluid.portletPerms.canMove (dropTargetPerms, 0, 0, fluid.position.BEFORE));
+    assertFalse (fluid.portletPerms.canMove (dropTargetPerms, 0, 0, fluid.position.AFTER));
 
-    assertFalse (fluid.portletPerms.canDrop (dropTargetPerms, 0, 6, fluid.position.BEFORE));
-    assertFalse (fluid.portletPerms.canDrop (dropTargetPerms, 0, 6, fluid.position.AFTER));
+    assertFalse (fluid.portletPerms.canMove (dropTargetPerms, 0, 6, fluid.position.BEFORE));
+    assertFalse (fluid.portletPerms.canMove (dropTargetPerms, 0, 6, fluid.position.AFTER));
 
-    assertFalse (fluid.portletPerms.canDrop (dropTargetPerms, 2, 6, fluid.position.BEFORE));
-    assertTrue (fluid.portletPerms.canDrop (dropTargetPerms, 2, 6, fluid.position.AFTER));
+    assertFalse (fluid.portletPerms.canMove (dropTargetPerms, 2, 6, fluid.position.BEFORE));
+    assertTrue (fluid.portletPerms.canMove (dropTargetPerms, 2, 6, fluid.position.AFTER));
 
-    assertTrue (fluid.portletPerms.canDrop (dropTargetPerms, 8, 8, fluid.position.BEFORE));
-    assertTrue (fluid.portletPerms.canDrop (dropTargetPerms, 8, 8, fluid.position.AFTER));
+    assertTrue (fluid.portletPerms.canMove (dropTargetPerms, 8, 8, fluid.position.BEFORE));
+    assertTrue (fluid.portletPerms.canMove (dropTargetPerms, 8, 8, fluid.position.AFTER));
 }

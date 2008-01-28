@@ -643,7 +643,12 @@ fluid.Reorderer = function (container, params) {
 	}; // End of GridLayoutHandler
 
     fluid.portletPerms = fluid.portletPerms || {};
-    fluid.portletPerms.canDrop = function (perms, indexOfItem, indexOfTarget, position) {
+    
+    /**
+     * Determine if a given item can move before or after the given target position, given the
+     * permissions information.
+     */
+    fluid.portletPerms.canMove = function (perms, indexOfItem, indexOfTarget, position) {
         return (!!perms[indexOfItem][indexOfTarget][position]); 
     };
     
@@ -657,10 +662,10 @@ fluid.Reorderer = function (container, params) {
          * @return  An object with column index and item index (within that column) properties.
          *          These indices are -1 if the item does not exist in the grid.
          */
-        this.calcColumnAndItemIndex = function (item, portletLayoutJSON) {
+        this.calcColumnAndItemIndex = function (item, layout) {
         	var indices = { columnIndex: -1, itemIndex: -1 };
-            for (var col = 0; col < portletLayoutJSON.columns.length; col++) {
-            	var itemIndex = jQuery (portletLayoutJSON.columns[col].children).index (item.id);
+            for (var col = 0; col < layout.columns.length; col++) {
+            	var itemIndex = jQuery (layout.columns[col].children).index (item.id);
                 if (itemIndex !== -1) {
                     indices.columnIndex = col;
                     indices.itemIndex = itemIndex;
@@ -673,11 +678,11 @@ fluid.Reorderer = function (container, params) {
         /**
          * Return the first orderable item in the given column.
          */
-        this.findFirstOrderableSiblingInColumn = function (columnIndex, orderableItems, portletLayoutJSON) {
+        this.findFirstOrderableSiblingInColumn = function (columnIndex, orderableItems, layout) {
             // Pull out the portlet id of the top-most sibling in the column.
             var topMostOrderableSibling = null;
             var itemIndex = 0;
-            var column = portletLayoutJSON.columns[columnIndex];
+            var column = layout.columns[columnIndex];
             if (column) {
                 var id = column.children[itemIndex];
                 topMostOrderableSibling = jQuery ("#" + id)[0];
@@ -695,19 +700,23 @@ fluid.Reorderer = function (container, params) {
          * Return the number of items in the given column.  If the column index
          * is out of bounds, this returns -1.
          */
-        this.numItemsInColumn = function (columnIndex, portletLayoutJSON) {
-        	if ((columnIndex < 0) || (columnIndex > portletLayoutJSON.columns.length)) {
+        this.numItemsInColumn = function (columnIndex, layout) {
+        	if ((columnIndex < 0) || (columnIndex > layout.columns.length)) {
         		return -1;
         	}
         	else {
-        	   return portletLayoutJSON.columns[columnIndex].children.length;
+        	   return layout.columns[columnIndex].children.length;
         	}
         };
         
         this.numColumns = function (layout) {
             return layout.columns.length;
         };
-        
+
+        this.isValidColumn = function (index, layout) {
+            return (index < layout.columns.length) && (index >= 0);
+        }; 
+                   
         this.findLinearIndex = function (itemId, layout) {
             var columns = layout.columns;
             var linearIndex = 0;
@@ -726,17 +735,17 @@ fluid.Reorderer = function (container, params) {
         };
         
         /**
-         * Move an item within the portletLayoutJSON object. 
+         * Move an item within the layout object. 
          */
-        this.updateLayout = function (item, relativeItem, placement, portletLayoutJSON) {
+        this.updateLayout = function (item, relativeItem, placement, layout) {
             if (!item || !relativeItem) { return; }
-            var itemIndices = this.calcColumnAndItemIndex (item, portletLayoutJSON);
+            var itemIndices = this.calcColumnAndItemIndex (item, layout);
 
-            var itemId = portletLayoutJSON.columns[itemIndices.columnIndex].children[itemIndices.itemIndex];
-            portletLayoutJSON.columns[itemIndices.columnIndex].children.splice (itemIndices.itemIndex, 1);
+            var itemId = layout.columns[itemIndices.columnIndex].children[itemIndices.itemIndex];
+            layout.columns[itemIndices.columnIndex].children.splice (itemIndices.itemIndex, 1);
 
-            var relativeItemIndices = this.calcColumnAndItemIndex (relativeItem, portletLayoutJSON);
-            var targetCol = portletLayoutJSON.columns[relativeItemIndices.columnIndex].children;
+            var relativeItemIndices = this.calcColumnAndItemIndex (relativeItem, layout);
+            var targetCol = layout.columns[relativeItemIndices.columnIndex].children;
             targetCol.splice (relativeItemIndices.itemIndex + (placement === "before"? 0 : 1), 0, itemId);
         };
     };   // End of PortletLayout.
@@ -811,6 +820,49 @@ fluid.Reorderer = function (container, params) {
 	        return sibling;
 	
 	    };
+        
+        var canMove = function (itemId, relatedItemId, position) {
+            return fluid.portletPerms.canMove(
+                targetPerms, 
+                portletLayout.findLinearIndex(itemId, portletLayoutJSON), 
+                portletLayout.findLinearIndex(relatedItemId, portletLayoutJSON), 
+                position);
+        };
+        
+        /**
+         * Find the first target that can be moved in the given column, possibly moving to the next
+         * column, left or right, depending on which direction we are moving. 
+         */
+        this.firstDroppableTarget = function (itemId, targetColIndex, /* +1, -1 */ colIncDecrement) {
+            // default return value is "the item itself".
+            //
+            var firstPossibleTarget = { id: itemId, position: fluid.position.BEFORE };
+            var found = false;
+            
+            // Safety check -- can't search before the 0'th column -- declare found so first loop bails.
+            if (targetColIndex < 0) {
+                found = true;            	
+            }
+            
+        	// Loop thru all of the columns beginning with the <targetColIndex>'th column.
+        	for (var i = targetColIndex;  portletLayout.isValidColumn (i, portletLayoutJSON) && !found; i += colIncDecrement) {
+                // Loop thru the target column's items, looking for the first item that can be moved to.
+                // 
+                var idsInCol = portletLayoutJSON.columns[i].children;
+        	    for (var j = 0; (j < idsInCol.length) && !found; j++) {
+        		    var possibleTargetId = idsInCol[j];
+        		    if ((found = canMove (itemId, possibleTargetId, fluid.position.BEFORE))) {
+        			    firstPossibleTarget.id = possibleTargetId;
+        			    firstPossibleTarget.position = fluid.position.BEFORE;
+        		    }
+        		    else if ((found = canMove (itemId, possibleTargetId, fluid.position.AFTER))) {
+                        firstPossibleTarget.id = possibleTargetId;
+                        firstPossibleTarget.position = fluid.position.AFTER;
+        		    }
+        	    }
+            }
+         	return firstPossibleTarget;
+        };
 	    	    
 	    // These methods are public only for our unit tests. They need to be refactored into a portletlayout object.
          var isFirstInColumn = function (item) {
@@ -838,35 +890,23 @@ fluid.Reorderer = function (container, params) {
                 return false;
             }
         };
-            
-        var canDrop = function (itemId, relatedItemId, position) {
-            return fluid.portletPerms.canDrop(
-                targetPerms, 
-                portletLayout.findLinearIndex(itemId, portletLayoutJSON), 
-                portletLayout.findLinearIndex(relatedItemId, portletLayoutJSON), 
-                position);
-        };
-        
-        var moveBefore = function (item, relatedItem) {
-            if (!canDrop (item.id, relatedItem.id, fluid.position.BEFORE)) {
-                return;
-            } 
-                
-            jQuery (relatedItem).before (item);
-            portletLayout.updateLayout (item, relatedItem, "before", portletLayoutJSON);
-            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
-        };
-        
-        var moveAfter = function (item, relatedItem) {
-            if (!canDrop (item.id, relatedItem.id, fluid.position.AFTER)) {
-                return;
-            } 
-                
-            jQuery (relatedItem).after (item);
-            portletLayout.updateLayout (item, relatedItem, "after", portletLayoutJSON);
-            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
-        };	   
 
+        var move = function (item, relatedItem, position /* BEFORE or AFTER */) {
+            if (!canMove (item.id, relatedItem.id, position)) {
+                return;
+            } 
+            
+            if (position === fluid.position.BEFORE) {
+                jQuery (relatedItem).before (item);
+                portletLayout.updateLayout (item, relatedItem, "before", portletLayoutJSON);
+            }
+            else {
+                jQuery (relatedItem).after (item);
+                portletLayout.updateLayout (item, relatedItem, "after", portletLayoutJSON);
+            }
+            portletLayoutJSON = orderChangedCallback() || portletLayoutJSON; 
+        };
+        
         // Public Methods
         
 	    this.getRightSibling = function (item) {
@@ -912,7 +952,7 @@ fluid.Reorderer = function (container, params) {
 	    
 	    this.moveItemUp = function (item) {
 	        var siblingAbove = this.getItemAbove(item);
-	        moveBefore (item, siblingAbove);
+	        move (item, siblingAbove, fluid.position.BEFORE);
 	    };
 	        
 	    this.getItemBelow = function (item) {
@@ -925,7 +965,7 @@ fluid.Reorderer = function (container, params) {
 	
 	    this.moveItemDown = function (item) {
 	        var siblingBelow = this.getItemBelow(item);
-	        moveAfter (item, siblingBelow);
+	        move (item, siblingBelow, fluid.position.AFTER);
 	    };
 	    
 	    this.isMouseBefore = function(evt, droppableEl) {
@@ -934,9 +974,9 @@ fluid.Reorderer = function (container, params) {
 
         this.mouseMoveItem = function (e, item, relatedItem) {
             if (this.isMouseBefore (e, relatedItem)) {
-                moveBefore (item, relatedItem);
+                move (item, relatedItem, fluid.position.BEFORE);
             } else {
-                moveAfter (item, relatedItem);
+                move (item, relatedItem, fluid.position.AFTER);
             }
         };
         

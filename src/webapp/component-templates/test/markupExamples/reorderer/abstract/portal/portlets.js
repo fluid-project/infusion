@@ -8,6 +8,7 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
+var portalRootSelector = "#portlet-reorderer-root";
 
 var layout = { 
     id:"t2",
@@ -40,7 +41,7 @@ function initPortletReorderer() {
         return jQuery ("#portlet3,#portlet4,#portlet6,#portlet7,#portlet8,#portlet9");
     };
     
-    var portletReordererRoot = jQuery(portalRootSelector);
+    var portletReordererRoot = jQuery (portalRootSelector);
 
     var layoutHandlerParams = {
         orderableFinder: portletOrderableFinder,
