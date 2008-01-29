@@ -727,6 +727,14 @@ fluid.Reorderer = function (container, params) {
             layout = orderChangedCallback() || layout; 
         };
         
+        var moveHorizontally = function (item, direction /* -1, +1 */) {
+            var targetColIndex = fluid.portletLayout.findColIndex (item, layout) + direction;
+            var target = fluid.portletLayout.firstDroppableTarget (item.id, targetColIndex, direction, layout, targetPerms);
+            var targetItem = jQuery ("[id=" + target.id + "]").get(0); 
+
+            move (item, targetItem, target.position);
+        };
+        
         // Public Methods
         
 	    this.getRightSibling = function (item) {
@@ -738,13 +746,7 @@ fluid.Reorderer = function (container, params) {
 	    };
 	    
 	    this.moveItemRight = function (item) {
-            var rightSibling = this.getRightSibling (item);
-            jQuery (rightSibling).before (item);
-            fluid.portletLayout.updateLayout (item, rightSibling, fluid.position.BEFORE, layout);
-            // first, stringify the json before sending it
-            layout = orderChangedCallback() || layout; 
-            // the return value will actually be a big json object with two parts
-            // we'll have to parse it, and separate the two parts
+	    	moveHorizontally (item, 1);
 	    };
 	
 	    this.getLeftSibling = function (item) {
@@ -756,10 +758,7 @@ fluid.Reorderer = function (container, params) {
 	    };
 	
 	    this.moveItemLeft = function (item) {
-	        var leftSibling = this.getLeftSibling(item);
-            jQuery (leftSibling).before (item);
-            fluid.portletLayout.updateLayout (item, leftSibling, fluid.position.BEFORE, layout);
-            layout = orderChangedCallback() || layout; 
+            moveHorizontally (item, -1);
 	    };
 	
 	    this.getItemAbove = function (item) {
@@ -927,7 +926,7 @@ fluid.portletLayout = function () {
             var found = false;
             
             // Safety check -- can't search before the 0'th column -- declare found so first loop bails.
-            if (targetColIndex < 0) {
+            if (targetColIndex < 0 || targetColIndex >= fluid.portletLayout.numColumns (layout)) {
                 found = true;               
             }
             
