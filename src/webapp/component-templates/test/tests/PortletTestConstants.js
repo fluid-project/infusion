@@ -28,16 +28,16 @@ var portlet9id = "portlet9";
 // It's a very brittle and annoying way of specifying test names and should be fixed. [FLUID-35]
 function exposeTestFunctionNames() {
     return [
-        // PortletPermsTests.js
-        "testCanMove",
-        
         // PortletLayoutTests.js
+        "testCanMove",
         "testCalcColumnAndItemIndex",
         "testFindFirstOrderableSiblingInColumn",
         "testFindLinearIndex",
         "testNumItemsInColumn",
         "testNumColumns",
         "testUpdateLayout",
+        "testFirstDroppableTarget",
+        "testFirstDroppableTargetSkipColumn",
 
         // PortletLayoutHandlerTests.js
 		"testGetItemAbove",
@@ -48,9 +48,7 @@ function exposeTestFunctionNames() {
         "testMoveItemUp",
         "testMoveItemRight",
         "testMoveItemLeft",
-        "testCallbackReturnValue",
-        "testFirstDroppableTarget",
-        "testFirstDroppableTargetSkipColumn"
+        "testCallbackReturnValue"
     ];
 }
 
