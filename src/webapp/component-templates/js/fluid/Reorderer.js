@@ -432,8 +432,8 @@ fluid.Reorderer = function (container, params) {
             mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
             return (evt.clientX < mid);
         }
-    };    
-
+    };
+    
     var itemInfoFinders = {
         /*
          * A general get{Left|Right}SiblingInfo() given an item, a list of orderables and a direction.
@@ -441,8 +441,8 @@ fluid.Reorderer = function (container, params) {
          * move left, and that value is used internally as an increment or
          * decrement, respectively, of the index of the given item.
          */
-        getSiblingInfo: function (item, orderables, /* +1, -1 */ incDecrement) {
-            var index = jQuery (orderables).index (item) + incDecrement;
+        getSiblingInfo: function (item, orderables, /* NEXT, PREVIOUS */ direction) {
+            var index = jQuery (orderables).index (item) + direction;
             var hasWrapped = false;
                 
             // Handle wrapping to 'before' the beginning. 
@@ -471,7 +471,7 @@ fluid.Reorderer = function (container, params) {
          * the row that the given item is in
          */
         getRightSiblingInfo: function (item, orderables) {
-            return this.getSiblingInfo (item, orderables, 1);
+            return this.getSiblingInfo (item, orderables, fluid.direction.NEXT);
         },
         
         /*
@@ -480,7 +480,7 @@ fluid.Reorderer = function (container, params) {
          * the row that the given item is in
          */
         getLeftSiblingInfo: function (item, orderables) {
-            return this.getSiblingInfo (item, orderables, -1);
+            return this.getSiblingInfo (item, orderables, fluid.direction.PREVIOUS);
         },
         
         /*
@@ -672,9 +672,9 @@ fluid.Reorderer = function (container, params) {
 	     * decrement, respectively, of the index of the given item.
 	     * This implementation does not wrap around. 
 	     */
-	    var getVerticalSibling = function (item, /* +1, -1 */ incDecrement) {
+	    var getVerticalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
 	        var orderables = orderableFinder (container);
-	        var index = jQuery(orderables).index(item) + incDecrement;
+	        var index = jQuery(orderables).index(item) + direction;
 	            
 	        // If we wrap, backup 
 	        if ((index === -1) || (index === orderables.length)) {
@@ -697,7 +697,7 @@ fluid.Reorderer = function (container, params) {
 	     * Currently, the horizontal sibling defaults to the top orderable item in the
 	     * neighboring column.
 	     */
-	    var getHorizontalSibling = function (item, /* +1, -1 */ incDecrement) {
+	    var getHorizontalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
 	        var orderables = orderableFinder (container);
 	            
             // go through all the children and find which column the passed in item is located in.
@@ -706,7 +706,7 @@ fluid.Reorderer = function (container, params) {
 	        if (colIndex === -1) {
 	            return null;
 	        }
-            var sibling = fluid.portletLayout.findFirstOrderableSiblingInColumn (colIndex + incDecrement, orderables, layout);
+            var sibling = fluid.portletLayout.findFirstOrderableSiblingInColumn (colIndex + direction, orderables, layout);
 	        return sibling;
 	
 	    };
@@ -727,7 +727,7 @@ fluid.Reorderer = function (container, params) {
             layout = orderChangedCallback() || layout; 
         };
         
-        var moveHorizontally = function (item, direction /* -1, +1 */) {
+        var moveHorizontally = function (item, direction /* PREVIOUS, NEXT */) {
             var targetColIndex = fluid.portletLayout.findColIndex (item, layout) + direction;
             var target = fluid.portletLayout.firstDroppableTarget (item.id, targetColIndex, direction, layout, targetPerms);
             var targetItem = jQuery ("[id=" + target.id + "]").get(0); 
@@ -738,34 +738,34 @@ fluid.Reorderer = function (container, params) {
         // Public Methods
         
 	    this.getRightSibling = function (item) {
-            if (fluid.portletLayout.isInRightmostColumn(item, layout)) {
+            if (fluid.portletLayout.isInRightmostColumn (item, layout)) {
                 return item;
             } else {
-                return getHorizontalSibling(item, 1);
+                return getHorizontalSibling(item, fluid.direction.NEXT);
             }
 	    };
 	    
 	    this.moveItemRight = function (item) {
-	    	moveHorizontally (item, 1);
+	    	moveHorizontally (item, fluid.direction.NEXT);
 	    };
 	
 	    this.getLeftSibling = function (item) {
-            if (fluid.portletLayout.isInLeftmostColumn(item, layout)) {
+            if (fluid.portletLayout.isInLeftmostColumn (item, layout)) {
                 return item;
             } else {
-                return getHorizontalSibling(item, -1);
+                return getHorizontalSibling(item, fluid.direction.PREVIOUS);
             }
 	    };
 	
 	    this.moveItemLeft = function (item) {
-            moveHorizontally (item, -1);
+            moveHorizontally (item, fluid.direction.PREVIOUS);
 	    };
 	
 	    this.getItemAbove = function (item) {
-	    	if (fluid.portletLayout.isFirstInColumn(item, layout)) {
+	    	if (fluid.portletLayout.isFirstInColumn (item, layout)) {
                 return item;
             } else {
-                return getVerticalSibling (item, -1);
+                return getVerticalSibling (item, fluid.direction.PREVIOUS);
             }
 	    };
 	    
@@ -775,10 +775,10 @@ fluid.Reorderer = function (container, params) {
 	    };
 	        
 	    this.getItemBelow = function (item) {
-	    	if (fluid.portletLayout.isLastInColumn(item, layout)) {
+	    	if (fluid.portletLayout.isLastInColumn (item, layout)) {
                 return item;
             } else {
-                return getVerticalSibling (item, 1);
+                return getVerticalSibling (item, fluid.direction.NEXT);
             }
 	    };
 	
@@ -920,7 +920,7 @@ fluid.portletLayout = function () {
          * Find the first target that can be moved in the given column, possibly moving to the next
          * column, left or right, depending on which direction we are moving. 
          */
-        firstDroppableTarget: function (itemId, targetColIndex, /* +1, -1 */ colIncDecrement, layout, perms) {
+        firstDroppableTarget: function (itemId, targetColIndex, /* NEXT, PREVIOUS */ direction, layout, perms) {
             // default return value is "the item itself".
             var firstPossibleTarget = { id: itemId, position: fluid.position.BEFORE };
             var found = false;
@@ -931,7 +931,7 @@ fluid.portletLayout = function () {
             }
             
             // Loop thru all of the columns beginning with the <targetColIndex>'th column.
-            for (var i = targetColIndex; fluid.portletLayout.isColumn (i, layout) && !found; i += colIncDecrement) {
+            for (var i = targetColIndex; fluid.portletLayout.isColumn (i, layout) && !found; i += direction) {
                 // Loop thru the target column's items, looking for the first item that can be moved to.
                 var idsInCol = layout.columns[i].children;
                 for (var j = 0; (j < idsInCol.length) && !found; j++) {
@@ -964,7 +964,7 @@ fluid.portletLayout = function () {
         },
         
         isInRightmostColumn: function (item, layout) {
-            return (fluid.portletLayout.findColIndex (item, layout) === fluid.portletLayout.numColumns (layout) - 1);
+            return (fluid.portletLayout.findColIndex (item, layout) === fluid.portletLayout.numColumns (layout)-1);
         }
     };	
 } ();

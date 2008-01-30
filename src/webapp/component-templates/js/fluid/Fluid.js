@@ -33,6 +33,14 @@ fluid.position = {
 	AFTER: 1
 };
 
+/**
+ * For incrementing/decrementing a count or index.
+ */
+fluid.direction = {
+    NEXT: 1,
+    PREVIOUS: -1
+};
+
 fluid.mixin = function (target, args) {
     for (var arg in args) {
         if (args.hasOwnProperty (arg)) {
