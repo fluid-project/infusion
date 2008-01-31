@@ -13,22 +13,43 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 var fluid = fluid || {};
 
+    // We are currently changing the Reorderer to have an 'items' structure 
+    // that contains Arrays or jQuery objects of selectables, movables and dropTargets 
+    // instead of the orderableFinder function
+    // We will wrap plain Arrays in a jQuery.
+    
+    // Adapt our previous notion of "orderables" to the more fine-grained approach of items.
+    // Will be removed when the API has changed.
+fluid.adaptItems = function (params, reordererContainer) {
+        var items = params.items || {};
+        items.movables = items.movables || params.orderableFinder(reordererContainer.get (0));
+        items.selectables = items.selectables || items.movables;
+        items.dropTargets = items.dropTargets || items.movables;
+        
+        return items;
+    };
+
+    // To be replaced with a call to the generic 'wrap' function
+fluid.wrapItems = function (items) {
+        items.movables = (items.movables.jquery) ? items.movables : jQuery (items.movables); 
+        items.selectables = (items.selectables.jquery) ? items.selectables : jQuery (items.selectables); 
+        items.dropTargets = (items.dropTargets.jquery) ? items.dropTargets : jQuery (items.dropTargets);
+
+        return items;
+     };
+     
 fluid.Reorderer = function (container, params) {
     // Reliable 'this'.
-    //
     var thisReorderer = this;
-    var theAvatar = null;
     
     this.domNode = jQuery (container);
-    
+
     // the reorderable DOM element that is currently active
     this.activeItem = null;
         
     this.layoutHandler = null;
         
     this.messageNamebase = "message-bundle:";
-    
-    this.orderableFinder = null;
             
     this.cssClasses = {
         defaultStyle: "orderable-default",
@@ -39,6 +60,9 @@ fluid.Reorderer = function (container, params) {
         dropMarker: "orderable-drop-marker",
         avatar: "orderable-avatar"
     };
+
+    // parsing the parameters
+    var items = fluid.wrapItems (fluid.adaptItems (params, thisReorderer.domNode));
 
     if (params) {
         fluid.mixin (this, params);
@@ -108,15 +132,14 @@ fluid.Reorderer = function (container, params) {
      * Changes focus to the active item.
      */
     this.selectActiveItem = function() {
-        if (!this.activeItem) {
-            var orderables = this.orderableFinder (this.domNode.get(0));
-            if (orderables.length > 0) {
-                this._setActiveItem (orderables[0]);
-            }
-            else {
-                return;
-            }
+        if (items.selectables.length <= 0) {
+            return;
         }
+        
+        if (!this.activeItem) {
+            this._setActiveItem (items.selectables[0]);
+        }
+
         this.focusItem (this.activeItem);
     };
     
@@ -242,6 +265,8 @@ fluid.Reorderer = function (container, params) {
         }
     };
 
+    // Drag and drop set code starts here. This needs to be refactored to be better contained.
+    var theAvatar = null;
     var dropMarker; // private scratch variable
     
     /**
@@ -257,10 +282,24 @@ fluid.Reorderer = function (container, params) {
     }
 
     /**
-     * Given an item, make it draggable.
+     * Takes a jQuery object and adds 'movable' functionality to it
      */
-    function setUpDraggable (anItem) {
-        anItem.draggable ({
+    function initMovable (item) {
+        item.addClass (thisReorderer.cssClasses.defaultStyle);
+
+        item.mouseover ( 
+            function () {
+                jQuery (this).addClass (thisReorderer.cssClasses.hover);
+            }
+        );
+        
+        item.mouseout (  
+            function () {
+                jQuery (this).removeClass (thisReorderer.cssClasses.hover);
+            }
+        );
+        
+        item.draggable ({
             helper: function() {
                 theAvatar = jQuery (this).clone();
                 jQuery (theAvatar).removeAttr ("id");
@@ -292,13 +331,12 @@ fluid.Reorderer = function (container, params) {
                 theAvatar = null;
             }
         });
-    
-    }   // end setUpDraggable()
+    }   
 
     /**
-     * Make item a drop target.
+     * Takes a jQuery object and a selector that matches movable items
      */
-    function setUpDroppable (anItem, selector) {
+    function initDropTarget (anItem, selector) {
         anItem.droppable ({
             accept: selector,
             tolerance: "pointer",
@@ -319,91 +357,39 @@ fluid.Reorderer = function (container, params) {
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
             }
         });
-    
-    }   // end setUpDroppable().
- 
-    /**
-     * Given an item, make it a draggable and a droppable with the relevant properties and functions.
-     * @param  anItem      The element to make draggable and droppable.
-     * @param  selector    The jQuery selector(s) that select all the orderables.
-     */ 
-    function setUpDnDItem (anItem, selector) {
-        anItem.mouseover ( 
-            function () {
-                jQuery (this).addClass (thisReorderer.cssClasses.hover);
-            }
-        );
+    }
         
-        anItem.mouseout (  
-            function () {
-                jQuery (this).removeClass (thisReorderer.cssClasses.hover);
-            }
-        );
-  
-        // Make anItem draggable and a drop target (in the jQuery UI sense).
-        setUpDraggable (anItem);
-        setUpDroppable (anItem, selector);
-            
-    }   // end setUpDnDItem()
+    function initItems() {
+        var i;
         
-    function initOrderables() {
-        var items = thisReorderer.orderableFinder (thisReorderer.domNode.get(0));
-        if (items.length === 0) {
-            return;
-        }
-        
-        // Create a selector based on the ids of the nodes for use with drag and drop.
+        // Selector based on the ids of the nodes for use with drag and drop.
         // This should be replaced with using the actual nodes rather then a selector 
         // but will require a patch to jquery's DnD. 
         // See: FLUID-71, FLUID-112
         var selector = "";
-        for (var i = 0; i < items.length; i++) {
-            var item = items[i];
-            selector += "[id=" + item.id + "]";
-            if (i !== items.length - 1) {
-                selector += ", ";
-            }                   
+
+        // Setup moveables
+        for (i = 0; i < items.movables.length; i++) {
+            var item = items.movables[i];
+            initMovable (jQuery (item));
+
+            // Build the selector
+             selector += "[id=" + item.id + "]";
+             if (i !== items.movables.length - 1) {
+                 selector += ", ";
+             }
         }
 
-         // Setup orderable item including drag and drop.
-         for (i = 0; i < items.length; i++) {
-            jQuery (items[i]).addClass (thisReorderer.cssClasses.defaultStyle);
-            setUpDnDItem (jQuery (items[i]), selector);
-        }
-        
-        // Add any other drop targets (e.g., any unmoveable ones).
-        if ((thisReorderer.droppableFinder) && (thisReorderer.droppableFinder.constructor === Function)) {
-            var extraDropTargets = thisReorderer.droppableFinder (thisReorderer.domNode);
-            for (i = 0; i < extraDropTargets.length; i++) {
-                var jExtraDropTarget = jQuery (extraDropTargets[i]);
-                if (!jExtraDropTarget.droppableInstance()) {
-                    setUpDroppable (jExtraDropTarget, selector);
-                }
-            }
-        }
-    }   // end initOrderables().
-
-    /**
-     * Finds the "orderable" parent element given a child element.
-     */
-    this._findReorderableParent = function (childElement, items) {
-        if (!childElement) {
-            return null;
-        }
-        else {
-            for (var i=0; i<items.length; i++) {
-                if (childElement === items[i]) {
-                    return childElement;
-                }  
-            }
-            return this._findReorderableParent (childElement.parentNode, items);
-        }
-    };
+         // Setup dropTargets
+        for (i = 0; i < items.dropTargets.length; i++) {
+            initDropTarget (jQuery (items.dropTargets[i]), selector);
+        }  
+    } 
 
     // Final initialization of the Reorderer at the end of the construction process 
     if (this.domNode) {
         setupDomNode(this.domNode);
-        initOrderables();
+        initItems();
     }
 }; // End Reorderer
 

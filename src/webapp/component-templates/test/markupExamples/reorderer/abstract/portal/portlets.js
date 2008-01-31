@@ -43,8 +43,15 @@ function initPortletReorderer() {
     
     var portletReordererRoot = jQuery (portalRootSelector);
 
+    var items = {
+        selectables: portletFinder(portletReordererRoot), 
+        movables: portletOrderableFinder(portletReordererRoot),
+        dropTargets: portletFinder(portletReordererRoot)
+    };
+    
     var layoutHandlerParams = {
-        orderableFinder: portletOrderableFinder,
+//        orderableFinder: portletOrderableFinder,
+        items: items,
         container: portletReordererRoot,
         portletLayout: layout,
         dropTargetPermissions: dropTargetPerms
@@ -52,8 +59,9 @@ function initPortletReorderer() {
     
     return new fluid.Reorderer(portletReordererRoot, {
         layoutHandler: new fluid.PortletLayoutHandler (layoutHandlerParams),
-        orderableFinder: portletOrderableFinder,
-        droppableFinder: portletFinder,
-        dropTargets: dropTargetPerms
+        items: items
+//        orderableFinder: portletOrderableFinder,
+//        droppableFinder: portletFinder,
+//        dropTargets: dropTargetPerms
     });
 }
