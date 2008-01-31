@@ -65,6 +65,14 @@ fluid.Reorderer = function (container, params) {
         domNode.keydown (thisReorderer.handleKeyDown);
         domNode.keyup (thisReorderer.handleKeyUp);
         domNode.removeAttr ("aaa:activedescendent");
+        
+        // FLUID-143. Disable text selection for the reorderer.
+		// ondrag() and onselectstart() are Internet Explorer specific functions.
+		// Override them so that drag+drop actions don't also select text in IE.
+        if (jQuery.browser.msie) {
+			domNode.get(0).ondrag = function () { return false; }; 
+			domNode.get(0).onselectstart = function () { return false; };
+        } 
     }   
     
     /**

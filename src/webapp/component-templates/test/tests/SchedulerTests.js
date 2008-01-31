@@ -90,11 +90,13 @@ function testGenerateJSONStringForOrderables () {
 }
 
 function testInitScheduler () {
-	var reorderer = fluid.Scheduler.initScheduler (SchedulerTests.reordererContainerId);
+	var reorderer = fluid.Scheduler.initScheduler (SchedulerTests.conferenceContainerId);
 	
+	// Make sure we have a container.
+	assertNotNull (reorderer.domNode.get (0));
 	assertEquals("The Reorderer's domNode should be the sortableSchedule element",
-				 SchedulerTests.reordererContainerId,
-				 jQuery (reorderer.domNode).attr ("id"));
+				 SchedulerTests.conferenceContainerId,
+				 reorderer.domNode.attr ("id"));
 
 	// Ensure that the necessary parameters have been specified.
 	fluid.testUtils.assertNotNullAndNotUndefined ("The Reorderer's orderable finder should be set.", 
