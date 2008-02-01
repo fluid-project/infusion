@@ -48,7 +48,11 @@ fluid.mixin = function (target, args) {
         }
     }
 };
-  
+
+fluid.wrap = function (obj) {
+    return ((!obj || obj.jquery) ? obj : jQuery (obj)); 
+}
+
 fluid.deriveLightboxCellBase = function (namebase, index) {
     return namebase + "lightbox-cell:" + index + ":";
 };
@@ -56,7 +60,8 @@ fluid.deriveLightboxCellBase = function (namebase, index) {
 // Client-level initialisation for the lightbox, allowing parameterisation for
 // different templates.
 fluid.initLightbox = function (namebase, messageNamebase) {
-    var reorderform = fluid.Utilities.findForm (document.getElementById (namebase));
+    var parentNode = document.getElementById (namebase);
+    var reorderform = fluid.Utilities.findForm (parentNode);
         
     // Remove the anchors from the taborder - camel case 'tabIndex' needed for IE7 support
     jQuery ("a", reorderform).attr ("tabIndex", "-1");
@@ -86,8 +91,8 @@ fluid.initLightbox = function (namebase, messageNamebase) {
     
     // This orderable finder knows that the lightbox thumbnails are 'div' elements
     var lightboxCellNamePattern = "^" + fluid.deriveLightboxCellBase (namebase, "[0-9]+") +"$";
-    var lightboxOrderableFinder = function (containerEl) {
-        return fluid.Utilities.seekNodesById (containerEl, "div", lightboxCellNamePattern);
+    var lightboxOrderableFinder = function () {
+        return fluid.Utilities.seekNodesById (parentNode, "div", lightboxCellNamePattern);
     };
     
     var lightboxContainer = jQuery ("[id=" + namebase + "]");

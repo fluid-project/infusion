@@ -33,25 +33,24 @@ var dropTargetPerms = [
 
 function initPortletReorderer() {
 
-    var portletFinder = function (containerEl) {
-        return jQuery ("[id^=portlet]", containerEl);
-    };
-
-    var portletOrderableFinder = function (containerEl) {
-        return jQuery ("#portlet3,#portlet4,#portlet6,#portlet7,#portlet8,#portlet9");
-    };
-    
     var portletReordererRoot = jQuery (portalRootSelector);
 
+    var portletFinder = function () {
+        return jQuery ("[id^=portlet]", portletReordererRoot);
+    };
+
+    var portletOrderableFinder = function () {
+        return jQuery ("#portlet3,#portlet4,#portlet6,#portlet7,#portlet8,#portlet9");
+    };    
+
     var items = {
-        selectables: portletFinder(portletReordererRoot), 
-        movables: portletOrderableFinder(portletReordererRoot),
-        dropTargets: portletFinder(portletReordererRoot)
+        selectables: portletFinder, 
+        movables: portletOrderableFinder,
+        dropTargets: portletFinder
     };
     
     var layoutHandlerParams = {
-//        orderableFinder: portletOrderableFinder,
-        items: items,
+        orderableFinder: portletOrderableFinder,
         container: portletReordererRoot,
         portletLayout: layout,
         dropTargetPermissions: dropTargetPerms
@@ -60,8 +59,5 @@ function initPortletReorderer() {
     return new fluid.Reorderer(portletReordererRoot, {
         layoutHandler: new fluid.PortletLayoutHandler (layoutHandlerParams),
         items: items
-//        orderableFinder: portletOrderableFinder,
-//        droppableFinder: portletFinder,
-//        dropTargets: dropTargetPerms
     });
 }

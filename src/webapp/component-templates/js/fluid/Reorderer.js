@@ -14,30 +14,22 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var fluid = fluid || {};
 
     // We are currently changing the Reorderer to have an 'items' structure 
-    // that contains Arrays or jQuery objects of selectables, movables and dropTargets 
-    // instead of the orderableFinder function
-    // We will wrap plain Arrays in a jQuery.
+    // that contains functions that return Arrays or jQuery objects of
+    // selectables, movables and dropTargets instead of the orderableFinder function
     
     // Adapt our previous notion of "orderables" to the more fine-grained approach of items.
     // Will be removed when the API has changed.
 fluid.adaptItems = function (params, reordererContainer) {
-        var items = params.items || {};
-        items.movables = items.movables || params.orderableFinder(reordererContainer.get (0));
-        items.selectables = items.selectables || items.movables;
-        items.dropTargets = items.dropTargets || items.movables;
+    var finderFn = params.orderableFinder || function () {};    
+    var items = params.items || {};
+    
+    items.movables = items.movables || finderFn;
+    items.selectables = items.selectables || finderFn;
+    items.dropTargets = items.dropTargets || finderFn;
         
-        return items;
-    };
-
-    // To be replaced with a call to the generic 'wrap' function
-fluid.wrapItems = function (items) {
-        items.movables = (items.movables.jquery) ? items.movables : jQuery (items.movables); 
-        items.selectables = (items.selectables.jquery) ? items.selectables : jQuery (items.selectables); 
-        items.dropTargets = (items.dropTargets.jquery) ? items.dropTargets : jQuery (items.dropTargets);
-
-        return items;
-     };
-     
+    return items;
+};
+   
 fluid.Reorderer = function (container, params) {
     // Reliable 'this'.
     var thisReorderer = this;
@@ -62,7 +54,7 @@ fluid.Reorderer = function (container, params) {
     };
 
     // parsing the parameters
-    var items = fluid.wrapItems (fluid.adaptItems (params, thisReorderer.domNode));
+    var items = fluid.adaptItems (params, thisReorderer.domNode);
 
     if (params) {
         fluid.mixin (this, params);
@@ -132,12 +124,13 @@ fluid.Reorderer = function (container, params) {
      * Changes focus to the active item.
      */
     this.selectActiveItem = function() {
-        if (items.selectables.length <= 0) {
+        var selectables = fluid.wrap(items.selectables());
+        if (selectables.length <= 0) {
             return;
         }
         
         if (!this.activeItem) {
-            this._setActiveItem (items.selectables[0]);
+            this._setActiveItem (selectables[0]);
         }
 
         this.focusItem (this.activeItem);
@@ -361,6 +354,8 @@ fluid.Reorderer = function (container, params) {
         
     function initItems() {
         var i;
+        var movables = fluid.wrap (items.movables());
+        var dropTargets = fluid.wrap (items.dropTargets());
         
         // Selector based on the ids of the nodes for use with drag and drop.
         // This should be replaced with using the actual nodes rather then a selector 
@@ -369,20 +364,20 @@ fluid.Reorderer = function (container, params) {
         var selector = "";
 
         // Setup moveables
-        for (i = 0; i < items.movables.length; i++) {
-            var item = items.movables[i];
+        for (i = 0; i < movables.length; i++) {
+            var item = movables[i];
             initMovable (jQuery (item));
 
             // Build the selector
              selector += "[id=" + item.id + "]";
-             if (i !== items.movables.length - 1) {
+             if (i !== movables.length - 1) {
                  selector += ", ";
              }
         }
 
          // Setup dropTargets
-        for (i = 0; i < items.dropTargets.length; i++) {
-            initDropTarget (jQuery (items.dropTargets[i]), selector);
+        for (i = 0; i < dropTargets.length; i++) {
+            initDropTarget (jQuery (dropTargets[i]), selector);
         }  
     } 
 

@@ -98,7 +98,8 @@ fluid.Scheduler = function () {
 		},
 
 		createRSFOrderableFinder: function (namebase, orderableTagName, orderableIdName, numOrderables) {
-		    return function (containerElement) {
+		    return function () {
+                var containerElement = document.getElementById(namebase);
 		        var orderablesRange = "[0-" + (numOrderables - 1) + "]";
 		        var idRegExp = "^" + namebase + orderableIdName + ":" + orderablesRange + ":" + "$";
 
