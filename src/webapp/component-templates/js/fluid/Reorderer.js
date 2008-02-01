@@ -76,7 +76,7 @@ fluid.Reorderer = function (container, params) {
     * @return {Object} The element that should receive focus in the specified item.
     */
     this.findElementToFocus = function (item) {
-        var elementToFocus = jQuery ("." + this.cssClasses.focusTarget, item).get (0);
+        var elementToFocus = jQuery ("." + this.cssClasses.focusTarget, item)[0];
         if (elementToFocus) {
             return elementToFocus;
         }
@@ -94,8 +94,8 @@ fluid.Reorderer = function (container, params) {
 		// ondrag() and onselectstart() are Internet Explorer specific functions.
 		// Override them so that drag+drop actions don't also select text in IE.
         if (jQuery.browser.msie) {
-			domNode.get(0).ondrag = function () { return false; }; 
-			domNode.get(0).onselectstart = function () { return false; };
+			domNode[0].ondrag = function () { return false; }; 
+			domNode[0].onselectstart = function () { return false; };
         } 
     }   
     
@@ -541,7 +541,7 @@ fluid.Reorderer = function (container, params) {
         var orientation = params.orientation;
         
         // Unwrap the container if it's a jQuery.
-        container = (container.jquery) ? container.get(0) : container;
+        container = (container.jquery) ? container[0] : container;
         
         orderChangedCallback = orderChangedCallback || function () {};
         
@@ -606,7 +606,7 @@ fluid.Reorderer = function (container, params) {
         var orientation = fluid.orientation.HORIZONTAL;
         
 		// Unwrap the container if it's a jQuery.
-        container = (container.jquery) ? container.get(0) : container;
+        container = (container.jquery) ? container[0] : container;
         
         orderChangedCallback = orderChangedCallback || function () {};
         
@@ -656,32 +656,26 @@ fluid.Reorderer = function (container, params) {
         var orientation = fluid.orientation.VERTICAL;
         
         // Unwrap the container if it's a jQuery.
-        container = (container.jquery) ? container.get(0) : container;
+        container = (container.jquery) ? container[0] : container;
         
         // Private Methods.
         /*
-	     * A general get{Above|Below}Sibling() given an item and a direction.
-	     * The direction is encoded by either a +1 to move down, or a -1 to
-	     * move up, and that value is used internally as an increment or
-	     * decrement, respectively, of the index of the given item.
-	     * This implementation does not wrap around. 
+	     * Find an item's sibling in the vertical direction based on the
+         * layout.  This assumes that there is no wrapping the top and
+         * bottom of the columns, and returns the given item if at top
+         * and seeking the previous item, or at the bottom and seeking
+         * the next item.
 	     */
 	    var getVerticalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
-	        var orderables = orderableFinder (container);
-	        var index = jQuery(orderables).index(item) + direction;
-	            
-	        // If we wrap, backup 
-	        if ((index === -1) || (index === orderables.length)) {
-	            return null;
-	        }
-	        // Handle case where the passed-in item is *not* an "orderable"
-	        // (or other undefined error).
-	        //
-	        else if (index < -1 || index > orderables.length) {
-	            index = 0;
-	        }
-	        
-	        return orderables[index];
+            var coords = fluid.portletLayout.calcColumnAndItemIndex (item, layout);
+	        var siblingIndex = coords.itemIndex + direction;
+            var numItems = fluid.portletLayout.numItemsInColumn (coords.columnIndex, layout);
+            if ((siblingIndex < 0) || (siblingIndex > numItems)) {
+                return item;
+            }
+            else {
+                return fluid.portletLayout.getItemAt (coords.columnIndex, siblingIndex, layout);
+            }
 	    };
 	
 	    /*
@@ -692,17 +686,15 @@ fluid.Reorderer = function (container, params) {
 	     * neighboring column.
 	     */
 	    var getHorizontalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
-	        var orderables = orderableFinder (container);
+            var orderables = orderableFinder (container);
 	            
-            // go through all the children and find which column the passed in item is located in.
-            // Save that column if found.
+            // Find which column the passed in item is located in.  If found, return the
+            // first orderable in the next column that can be "dropped" onto by <item>.
             var colIndex = fluid.portletLayout.findColIndex (item, layout);
 	        if (colIndex === -1) {
 	            return null;
 	        }
-            var sibling = fluid.portletLayout.findFirstOrderableSiblingInColumn (colIndex + direction, orderables, layout);
-	        return sibling;
-	
+            return fluid.portletLayout.findFirstOrderableSiblingInColumn (colIndex + direction, orderables, layout);	
 	    };
 	    	    
         // This should probably be part of the public API so it can be configured.
@@ -724,7 +716,7 @@ fluid.Reorderer = function (container, params) {
         var moveHorizontally = function (item, direction /* PREVIOUS, NEXT */) {
             var targetColIndex = fluid.portletLayout.findColIndex (item, layout) + direction;
             var target = fluid.portletLayout.firstDroppableTarget (item.id, targetColIndex, direction, layout, targetPerms);
-            var targetItem = jQuery ("[id=" + target.id + "]").get(0); 
+            var targetItem = jQuery ("[id=" + target.id + "]")[0]; 
 
             move (item, targetItem, target.position);
         };
@@ -827,7 +819,7 @@ fluid.portletLayout = function () {
             }
             return indices;
         },
-
+        
         findColIndex: function (item, layout) {
         	return fluid.portletLayout.calcColumnAndItemIndex (item, layout).columnIndex;
         },
@@ -851,7 +843,7 @@ fluid.portletLayout = function () {
                 while (orderableItems.index (topMostOrderableSibling) === -1) {
                     itemIndex += 1;
                     id = column.children[itemIndex];
-                    topMostOrderableSibling = jQuery ("#" + id).get (0);
+                    topMostOrderableSibling = jQuery ("#" + id)[0];
                 }
             }
             return topMostOrderableSibling;
@@ -942,7 +934,21 @@ fluid.portletLayout = function () {
             }
             return firstPossibleTarget;
         },
-        
+
+        /**
+         * Return the item in the given column (index) and at the given position (index)
+         * in that column.
+         */
+        getItemAt: function (columnIndex, itemIndex, layout) {
+            var item = null;
+            if ((columnIndex >= 0) && (columnIndex < fluid.portletLayout.numColumns (layout))) {
+                if ((itemIndex >= 0) && (itemIndex < fluid.portletLayout.numItemsInColumn (columnIndex, layout))) {
+                    item = jQuery ("#"+layout.columns[columnIndex].children[itemIndex])[0];
+                }
+            }
+            return item;
+        },
+
         // Could refactor to take the id since the portletLayout has no use for actual items. 
         isFirstInColumn: function (item, layout) {
             return (fluid.portletLayout.findItemIndex (item, layout) === 0);

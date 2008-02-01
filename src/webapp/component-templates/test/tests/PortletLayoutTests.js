@@ -291,3 +291,34 @@ function testCanMove() {
     assertTrue (fluid.portletLayout.canMove (portlet9id, portlet9id, fluid.position.BEFORE, layout, dropTargetPerms));
     assertTrue (fluid.portletLayout.canMove (portlet9id, portlet9id, fluid.position.AFTER, layout, dropTargetPerms));
 }
+
+function testGetItemAt() {
+
+    // top-left corner should be portlet1.
+    var item = fluid.portletLayout.getItemAt (0, 0, layout);
+    assertEquals ("Top left portlet should be portlet1", portlet1id, item.id);
+    
+    // bottom right = portlet9
+    item = fluid.portletLayout.getItemAt (2, 2, layout);
+    assertEquals ("Bottom right portlet should be portlet9", portlet9id, item.id);
+
+    // portlet6 is in the middle
+    item = fluid.portletLayout.getItemAt (1, 1, layout);
+    assertEquals ("Bottom right portlet should be portlet6", portlet6id, item.id);
+
+    // portlet4 is bottom of 1st column
+    item = fluid.portletLayout.getItemAt (0, 3, layout);
+    assertEquals ("Bottom right portlet should be portlet4", portlet4id, item.id);
+
+    // null for invalid column (negative or too big)
+    item = fluid.portletLayout.getItemAt (-1, 3, layout);
+    assertNull ("Negative column index should give null result", item);
+    item = fluid.portletLayout.getItemAt (999, 3, layout);
+    assertNull ("Column index greater than number of columns should give null result", item);
+
+    // null for invalid item index (negative or too big)
+    item = fluid.portletLayout.getItemAt (0, -1, layout);
+    assertNull ("Negative item index should give null result", item);
+    item = fluid.portletLayout.getItemAt (0, 999, layout);
+    assertNull ("Item index greater than number of items in column should give null result", item);
+}

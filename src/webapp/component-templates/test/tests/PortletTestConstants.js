@@ -38,6 +38,7 @@ function exposeTestFunctionNames() {
         "testUpdateLayout",
         "testFirstDroppableTarget",
         "testFirstDroppableTargetSkipColumn",
+        "testGetItemAt",
 
         // PortletLayoutHandlerTests.js
 		"testGetItemAbove",
