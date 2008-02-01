@@ -51,7 +51,7 @@ fluid.mixin = function (target, args) {
 
 fluid.wrap = function (obj) {
     return ((!obj || obj.jquery) ? obj : jQuery (obj)); 
-}
+};
 
 fluid.deriveLightboxCellBase = function (namebase, index) {
     return namebase + "lightbox-cell:" + index + ":";
@@ -91,20 +91,25 @@ fluid.initLightbox = function (namebase, messageNamebase) {
     
     // This orderable finder knows that the lightbox thumbnails are 'div' elements
     var lightboxCellNamePattern = "^" + fluid.deriveLightboxCellBase (namebase, "[0-9]+") +"$";
-    var lightboxOrderableFinder = function () {
+    var itemFinder = function () {
         return fluid.Utilities.seekNodesById (parentNode, "div", lightboxCellNamePattern);
     };
     
-    var lightboxContainer = jQuery ("[id=" + namebase + "]");
+    var items = {
+        selectables: itemFinder,
+        movables: itemFinder,
+        dropTargets: itemFinder
+    };
+        
     var layoutHandlerParams = {
-        orderableFinder: lightboxOrderableFinder,
-        container: lightboxContainer,
+        items: items,
         orderChangedCallback: orderChangedCallback
     };
-    var lightbox = new fluid.Reorderer (lightboxContainer, {
+
+    var lightbox = new fluid.Reorderer (parentNode, {
             messageNamebase : messageNamebase,
             layoutHandler: new fluid.GridLayoutHandler (layoutHandlerParams),
-            orderableFinder: lightboxOrderableFinder
+            items: items
         }
     );
     

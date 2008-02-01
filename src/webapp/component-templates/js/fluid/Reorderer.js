@@ -19,7 +19,7 @@ var fluid = fluid || {};
     
     // Adapt our previous notion of "orderables" to the more fine-grained approach of items.
     // Will be removed when the API has changed.
-fluid.adaptItems = function (params, reordererContainer) {
+fluid.adaptItems = function (params) {
     var finderFn = params.orderableFinder || function () {};    
     var items = params.items || {};
     
@@ -39,8 +39,6 @@ fluid.Reorderer = function (container, params) {
     // the reorderable DOM element that is currently active
     this.activeItem = null;
         
-    this.layoutHandler = null;
-        
     this.messageNamebase = "message-bundle:";
             
     this.cssClasses = {
@@ -54,8 +52,10 @@ fluid.Reorderer = function (container, params) {
     };
 
     // parsing the parameters
-    var items = fluid.adaptItems (params, thisReorderer.domNode);
+    var items = fluid.adaptItems (params);
+    var layoutHandler = params.layoutHandler;
 
+    // This should be replaced with proper parsing of the parameters that we expect    
     if (params) {
         fluid.mixin (this, params);
     }
@@ -204,37 +204,37 @@ fluid.Reorderer = function (container, params) {
     
     this.handleUpArrow = function (isCtrl) {
         if (isCtrl) {
-            this.layoutHandler.moveItemUp (this.activeItem);
+            layoutHandler.moveItemUp (this.activeItem);
             this.findElementToFocus (this.activeItem).focus();
         } else {
-            this.focusItem (this.layoutHandler.getItemAbove(this.activeItem));
+            this.focusItem (layoutHandler.getItemAbove(this.activeItem));
         }           
     };
     
     this.handleDownArrow = function (isCtrl) {
         if (isCtrl) {
-            this.layoutHandler.moveItemDown (this.activeItem);
+            layoutHandler.moveItemDown (this.activeItem);
             this.findElementToFocus (this.activeItem).focus();
         } else {
-            this.focusItem (this.layoutHandler.getItemBelow (this.activeItem));
+            this.focusItem (layoutHandler.getItemBelow (this.activeItem));
         }
     };
     
     this.handleRightArrow = function (isCtrl) {
         if (isCtrl) {
-            this.layoutHandler.moveItemRight (this.activeItem);
+            layoutHandler.moveItemRight (this.activeItem);
             jQuery(this.findElementToFocus (this.activeItem)).focus();
         } else {
-            this.focusItem (this.layoutHandler.getRightSibling (this.activeItem));              
+            this.focusItem (layoutHandler.getRightSibling (this.activeItem));              
         }           
     };
     
     this.handleLeftArrow = function (isCtrl) {
         if (isCtrl) {
-            this.layoutHandler.moveItemLeft (this.activeItem);
+            layoutHandler.moveItemLeft (this.activeItem);
             this.findElementToFocus (this.activeItem).focus();
         } else {
-            this.focusItem (this.layoutHandler.getLeftSibling (this.activeItem));               
+            this.focusItem (layoutHandler.getLeftSibling (this.activeItem));               
         }
     };
             
@@ -266,7 +266,7 @@ fluid.Reorderer = function (container, params) {
      * evt.data - the droppable DOM element.
      */
     function trackMouseMovement (evt) {
-        if (thisReorderer.layoutHandler.isMouseBefore (evt, evt.data)) {
+        if (layoutHandler.isMouseBefore (evt, evt.data)) {
            jQuery (evt.data).before (dropMarker);
        }        
        else {
@@ -345,7 +345,7 @@ fluid.Reorderer = function (container, params) {
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
             },
             drop: function (e, ui) {
-                thisReorderer.layoutHandler.mouseMoveItem(e, ui.draggable.element, ui.droppable.element);
+                layoutHandler.mouseMoveItem(e, ui.draggable.element, ui.droppable.element);
                 jQuery (ui.droppable.element).unbind ("mousemove", trackMouseMovement);
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
             }
@@ -530,34 +530,26 @@ fluid.Reorderer = function (container, params) {
     
     // Public layout handlers.
     fluid.ListLayoutHandler = function (params) {
-        var orderableFinder = params.orderableFinder;
-        var container = params.container;
-        var orderChangedCallback = params.orderChangedCallback;
-        var orientation = params.orientation;
-        
-        // Unwrap the container if it's a jQuery.
-        container = (container.jquery) ? container[0] : container;
-        
-        orderChangedCallback = orderChangedCallback || function () {};
-        
-        orientation = orientation || fluid.orientation.VERTICAL;    // default
+        var items = fluid.adaptItems (params);
+        var orderChangedCallback = params.orderChangedCallback || function () {};
+        var orientation = params.orientation || fluid.orientation.VERTICAL;
                 
         this.getRightSibling = function (item) {
-            return itemInfoFinders.getRightSiblingInfo (item, orderableFinder (container)).item;
+            return itemInfoFinders.getRightSiblingInfo (item, items.selectables ()).item;
         };
         
         this.moveItemRight = function (item) {
-        	var rightSiblingInfo = itemInfoFinders.getRightSiblingInfo (item, orderableFinder (container));
+        	var rightSiblingInfo = itemInfoFinders.getRightSiblingInfo (item, items.movables ());
             moveItem (item, rightSiblingInfo, fluid.position.AFTER, fluid.position.BEFORE);
             orderChangedCallback();
         };
     
         this.getLeftSibling = function (item) {
-            return itemInfoFinders.getLeftSiblingInfo(item, orderableFinder(container)).item;
+            return itemInfoFinders.getLeftSiblingInfo(item, items.selectables ()).item;
         };
     
         this.moveItemLeft = function (item) {
-        	var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo (item, orderableFinder (container));
+        	var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo (item, items.movables ());
             moveItem (item, leftSiblingInfo, fluid.position.BEFORE, fluid.position.AFTER);
             orderChangedCallback();
         };
@@ -595,32 +587,26 @@ fluid.Reorderer = function (container, params) {
 	fluid.GridLayoutHandler = function (params) {
         fluid.ListLayoutHandler.call (this, params);
 
-        var orderableFinder = params.orderableFinder;
-        var container = params.container;
-        var orderChangedCallback = params.orderChangedCallback;
+        var items = fluid.adaptItems (params);
+        var orderChangedCallback = params.orderChangedCallback || function () {};
         var orientation = fluid.orientation.HORIZONTAL;
-        
-		// Unwrap the container if it's a jQuery.
-        container = (container.jquery) ? container[0] : container;
-        
-        orderChangedCallback = orderChangedCallback || function () {};
-        
+                
 	    this.getItemBelow = function(item) {
-	        return itemInfoFinders.getItemInfoBelow (item, orderableFinder(container)).item;
+	        return itemInfoFinders.getItemInfoBelow (item, items.selectables ()).item;
 	    };
 	
 	    this.moveItemDown = function (item) {
-	    	var itemBelow = itemInfoFinders.getItemInfoBelow (item, orderableFinder (container));
+	    	var itemBelow = itemInfoFinders.getItemInfoBelow (item, items.movables ());
 	        moveItem (item, itemBelow, fluid.position.AFTER, fluid.position.BEFORE);
             orderChangedCallback(); 
 	    };
 	            
 	    this.getItemAbove = function (item) {
-	        return itemInfoFinders.getItemInfoAbove (item, orderableFinder (container)).item;   
+	        return itemInfoFinders.getItemInfoAbove (item, items.selectables ()).item;   
 	    }; 
 	    
 	    this.moveItemUp = function (item) {
-	    	var itemAbove = itemInfoFinders.getItemInfoAbove (item, orderableFinder (container));
+	    	var itemAbove = itemInfoFinders.getItemInfoAbove (item, items.movables ());
 	        moveItem (item, itemAbove, fluid.position.BEFORE, fluid.position.AFTER);
             orderChangedCallback(); 
 	    };

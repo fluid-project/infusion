@@ -255,6 +255,7 @@ function testHandleArrowKeyPressForCtrlLeftAndCtrlRight() {
 }
 
 function testPersistFocus () {
+    var lbRoot = fetchLightboxRoot ();
 	var lightbox = createLightbox();
 
 	isItemDefaultTest("Initially ", firstReorderableId);
@@ -273,7 +274,7 @@ function testPersistFocus () {
     jQuery ("[id=input1]").get(0).focus();
 	isItemDefaultTest ("After focus leaves the lightbox ", firstReorderableId);
 	
-	lightbox.findElementToFocus(lightbox.domNode).focus();
+	lightbox.findElementToFocus (lbRoot).focus();
 	
 	// check that the first thumb nail is still moveable.
 	isItemFocusedTest ("When lightbox has focus again ", firstReorderableId);
@@ -286,14 +287,14 @@ function testPersistFocus () {
 	
 	// Change focus to the input1, then back to the lightbox
 	jQuery ("[id=input1]").get(0).focus();
-	lightbox.findElementToFocus (lightbox.domNode).focus();
+	lightbox.findElementToFocus (lbRoot).focus();
 	
 	// check that the second thumb nail is still moveable.
 	lightbox.focusItem (jQuery ("[id="+secondReorderableId+"]"));
     isItemFocusedTest ("Lightbox refocused with second selected ", secondReorderableId);
 	isItemDefaultTest ("Lightbox refocused with second selected ", firstReorderableId);
 	
-	lightbox.findElementToFocus (lightbox.domNode).blur();
+	lightbox.findElementToFocus (lbRoot).blur();
 	isItemDefaultTest ("Lightbox blur with second selected ", secondReorderableId);
 }
 
