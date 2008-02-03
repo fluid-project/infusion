@@ -4,9 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
   <head>
     <title>Vertical Unordered List</title>
-    <style type="text/css">
-      @import url("../markup-examples.css");
-    </style>
+    <link href="../markup-examples.css" type="text/css" rel="stylesheet" media="all" />
 
     <!--  These are the required javascript modules for the Reorderer
           eventually to be replaced with a single build generated file -->
@@ -45,14 +43,8 @@
     </div>
 
     <script type="text/javascript" id="reorderer-script">
-      var layoutHandlerParams = {
-        orderableFinder: listOrderableFinder,
-        container: jQuery("#list1")
-      };
-      new fluid.Reorderer (jQuery ("#list1"), {
-          layoutHandler: new fluid.ListLayoutHandler (layoutHandlerParams),
-          orderableFinder: listOrderableFinder  // defined in UnorderedListTestConstants.js
-      });
+        // createListReorderer is defined in UnorderedListTestConstants.js
+        createListReorderer ();
     </script>
 
     <h1>Unordered List No Reorderer </h1>

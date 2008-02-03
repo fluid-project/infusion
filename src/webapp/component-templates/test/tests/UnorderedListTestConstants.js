@@ -13,6 +13,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
  * This file contains test constants and setup and teardown functions that are used when testing with the data in the unordered-list.html file.
  */
 
+// Using the DOM node instead of a jQuery to ensure this behaviour works.
+var list1 = jQuery ("#list1")[0];
+
 // The ids of the items in the first list
 var firstItemId = "list1item1";
 var secondItemId = "list1item2";
@@ -41,27 +44,39 @@ function exposeTestFunctionNames() {
     ];
 }
 
-var listHandler1;
-
-function listOrderableFinder (containerEl) {
+function listMovableFinder () {
 	// This is returning the list instead of a jQuery object to ensure that people 
 	// can use an orderable finder function that doesn't use jQuery
-    return jQuery ("[id^=list1item]", containerEl).get();
+    return jQuery ("[id^=list1item]", list1).get();
 }
 
-// This setUp will be called before each of the tests that are included in unordered-list.html 
-function setUp() {
-	var list = fluid.testUtils.byId("list1");
-    var layoutHandlerParams = {
-        orderableFinder: listOrderableFinder,
-        container: list,
-        orderChangedCallback: callbackConfirmer
-    };
-    listHandler1 = new fluid.ListLayoutHandler(layoutHandlerParams);
-}
+var items = {movables:listMovableFinder};
 
 function callbackConfirmer() {
     fluid.testUtils.orderChangedCallbackWasCalled = true;
 }
+
+function createListLayoutHandler () {
+    var layoutParams = {
+        items: items,
+        orderChangedCallback: callbackConfirmer
+    };
+    return new fluid.ListLayoutHandler (layoutParams);
+}
+
+function createListReorderer () {
+    return new fluid.Reorderer (list1, {
+            layoutHandler: createListLayoutHandler (),
+            items: items
+        });
+}
+
+var listHandler1;
+
+// This setUp will be called before each of the tests that are included in unordered-list.html 
+function setUp() {
+    listHandler1 = createListLayoutHandler ();
+}
+
 
 

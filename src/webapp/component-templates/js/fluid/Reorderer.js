@@ -22,10 +22,9 @@ var fluid = fluid || {};
 fluid.adaptItems = function (params) {
     var finderFn = params.orderableFinder || function () {};    
     var items = params.items || {};
-    
     items.movables = items.movables || finderFn;
-    items.selectables = items.selectables || finderFn;
-    items.dropTargets = items.dropTargets || finderFn;
+    items.selectables = items.selectables || items.movables;
+    items.dropTargets = items.dropTargets || items.movables;
         
     return items;
 };
@@ -629,14 +628,10 @@ fluid.Reorderer = function (container, params) {
      * - Wrapping is not necessary at this first pass, but is ok
      */
     fluid.PortletLayoutHandler = function (params) {
-        var container = params.container;
         var orderChangedCallback = params.orderChangedCallback || function () {};
         var layout = params.portletLayout;
         var targetPerms = params.dropTargetPermissions;
         var orientation = fluid.orientation.VERTICAL;
-        
-        // Unwrap the container if it's a jQuery.
-        container = (container.jquery) ? container[0] : container;
         
         // Private Methods.
         /*
