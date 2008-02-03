@@ -322,3 +322,69 @@ function testGetItemAt() {
     item = fluid.portletLayout.getItemAt (0, 999, layout);
     assertNull ("Item index greater than number of items in column should give null result", item);
 }
+
+function testNearestNextMoveableTarget() {
+    
+    // portlet3's nearest next is portlet4.
+    var startItem = jQuery ("#"+portlet3id)[0];
+    var actual = fluid.portletLayout.nearestNextMoveableTarget (startItem, layout, dropTargetPerms);
+    assertEquals ("portlet3's nearest next target should be portlet4", portlet4id, actual.id);
+
+    // portlet1 is fixed; its nearest next is itself
+    startItem = jQuery ("#"+portlet1id)[0];
+    actual = fluid.portletLayout.nearestNextMoveableTarget (startItem, layout, dropTargetPerms);
+    assertEquals ("portlet1's nearest next target should be itself", portlet1id, actual.id);
+
+    // portlet2 is fixed; its nearest next is itself
+    startItem = jQuery ("#"+portlet2id)[0];
+    actual = fluid.portletLayout.nearestNextMoveableTarget (startItem, layout, dropTargetPerms);
+    assertEquals ("portlet2's nearest next target should be portlet2", portlet2id, actual.id);
+
+    // portlet7's nearest next is portlet8.
+    startItem = jQuery ("#"+portlet7id)[0];
+    actual = fluid.portletLayout.nearestNextMoveableTarget (startItem, layout, dropTargetPerms);
+    assertEquals ("portlet7's nearest next target should be portlet8", portlet8id, actual.id);
+
+    // portlet8's nearest next is portlet9.
+    startItem = jQuery ("#"+portlet8id)[0];
+    actual = fluid.portletLayout.nearestNextMoveableTarget (startItem, layout, dropTargetPerms);
+    assertEquals ("portlet7's nearest next target should be portlet8", portlet9id, actual.id);
+}
+
+function testNearestPreviousMoveableTarget() {
+    
+    // portlet3's can't move up since the portlets above it are fixed.
+    var startItem = jQuery ("#"+portlet3id)[0];
+    var actual = fluid.portletLayout.nearestPreviousMoveableTarget (startItem, layout, dropTargetPerms);
+    assertEquals ("portlet3's can't move up; nearest previous should be itself", portlet3id, actual.id);
+
+    // portlet4 can't move up since portlet3 has greater precedence.
+    startItem = jQuery ("#"+portlet4id)[0];
+    actual = fluid.portletLayout.nearestPreviousMoveableTarget (startItem, layout, dropTargetPerms);
+    assertEquals ("portlet4's can't move up; nearest previous should be itself", portlet4id, actual.id);
+
+    // portlet1 is fixed; its nearest preivious is itself
+    startItem = jQuery ("#"+portlet1id)[0];
+    actual = fluid.portletLayout.nearestPreviousMoveableTarget (startItem, layout, dropTargetPerms);
+    assertEquals ("portle12's nearest next target should be portlet2", portlet1id, actual.id);
+
+    // portlet2 is fixed; its nearest preivious is itself
+    startItem = jQuery ("#"+portlet2id)[0];
+    actual = fluid.portletLayout.nearestPreviousMoveableTarget (startItem, layout, dropTargetPerms);
+    assertEquals ("portlet2's nearest next target should be portlet2", portlet2id, actual.id);
+
+    // portlet7's nearest previous is portlet6.
+    startItem = jQuery ("#"+portlet7id)[0];
+    actual = fluid.portletLayout.nearestPreviousMoveableTarget (startItem, layout, dropTargetPerms);
+    assertEquals ("portlet7's nearest next target should be portlet6", portlet6id, actual.id);
+
+    // portlet8's nearest previous is portlet6.
+    startItem = jQuery ("#"+portlet8id)[0];
+    actual = fluid.portletLayout.nearestPreviousMoveableTarget (startItem, layout, dropTargetPerms);
+    assertEquals ("portlet8's nearest previous target should be portlet6", portlet6id, actual.id);
+
+    // portlet9's nearest next is portlet8.
+    var startItem = jQuery ("#"+portlet9id)[0];
+    actual = fluid.portletLayout.nearestPreviousMoveableTarget (startItem, layout, dropTargetPerms);
+    assertEquals ("portlet9's nearest previous target should be portlet6", portlet8id, actual.id);
+}

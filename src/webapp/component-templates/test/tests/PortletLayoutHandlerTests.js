@@ -53,12 +53,12 @@ function testGetItemBelow() {
 
 function testGetLeftSibling() {
 	var leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet5id)[0]);
-	assertEquals(portlet3id+" should to the left of "+portlet5id,
-		jQuery ("#" + portlet3id)[0], leftSibling);
+	assertEquals(portlet1id+" should to the left of "+portlet5id,
+		jQuery ("#" + portlet1id)[0], leftSibling);
 
 	leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet6id)[0]);
-	assertEquals(portlet3id+" should to the left of "+portlet6id,
-		jQuery ("#" + portlet3id)[0], leftSibling);
+	assertEquals(portlet2id+" should to the left of "+portlet6id,
+		jQuery ("#" + portlet2id)[0], leftSibling);
 
 	leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet9id)[0]);
 	assertEquals(portlet6id+" should to the left of "+portlet9id,
@@ -74,8 +74,8 @@ function testGetLeftSibling() {
 }
 
 function testGetRightSibling() {
-	var rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet1id)[0]);
-	assertEquals(portlet6id+" should to the right of "+portlet1id,
+	var rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet2id)[0]);
+	assertEquals(portlet6id+" should to the right of "+portlet2id,
 		jQuery ("#" + portlet6id)[0], rightSibling);
 
 	rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet4id)[0]);
@@ -83,8 +83,8 @@ function testGetRightSibling() {
 		jQuery ("#" + portlet6id)[0], rightSibling);
 
 	rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet6id)[0]);
-	assertEquals(portlet7id+" should to the right of "+portlet6id,
-		jQuery ("#" + portlet7id)[0], rightSibling);
+	assertEquals(portlet8id+" should to the right of "+portlet6id,
+		jQuery ("#" + portlet8id)[0], rightSibling);
 
 	rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet7id)[0]);
 	assertEquals(portlet7id+" is at the far right, so nothing is to the right",
@@ -193,11 +193,11 @@ function testCallbackReturnValue() {
     portletHandler = new fluid.PortletLayoutHandler (layoutHandlerParams);
 
     // this test uses the layout handler's public api get methods instead of inspecting the dom
-    assertEquals ("Before move portlet 7 is to the right of portlet 6", portlet7id,
-            portletHandler.getRightSibling(jQuery("#"+portlet6id)[0]).id);
+    assertEquals ("Before move portlet 7 is to the right of portlet 5", portlet7id,
+            portletHandler.getRightSibling(jQuery("#"+portlet5id)[0]).id);
     
     portletHandler.moveItemLeft (jQuery ("#" + portlet7id)[0]);
 
-    assertEquals ("After move portlet 7 is to the left of portlet 8", portlet7id,
-            portletHandler.getLeftSibling(jQuery("#"+portlet8id)[0]).id);
+    assertEquals ("After move portlet 7 is to the left of portlet 9", portlet7id,
+            portletHandler.getLeftSibling(jQuery("#"+portlet9id)[0]).id);
 }
