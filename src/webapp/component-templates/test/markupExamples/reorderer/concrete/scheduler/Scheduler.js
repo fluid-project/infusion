@@ -1,5 +1,5 @@
 /*
-Copyright 2007 University of Toronto
+Copyright 2007 - 2008 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -16,20 +16,20 @@ fluid.Scheduler = function () {
 		return jQuery("[id=" + id + "]");
 	};
 	return {
-		initScheduler: function (containerId) {
-		    var orderableFinder = fluid.Scheduler.createCSSOrderableFinderForClass ("movableTopic");
-		    var jsonCallback = fluid.Scheduler.createJSONOrderChangedCallback (orderableFinder);
-
+        initScheduler: function (containerId) {
+            var movableFinder = fluid.Scheduler.createCSSOrderableFinderForClass ("movableTopic");
+            var jsonCallback = fluid.Scheduler.createJSONOrderChangedCallback (movableFinder);
+            var items = { movables: movableFinder };
+            
             var container = fetchReordererContainer (containerId);
-		    return new fluid.Reorderer (container, {
-		                                orderableFinder: orderableFinder,
-		                                layoutHandler: new fluid.ListLayoutHandler ({
-                                            orderableFinder: orderableFinder,
-                                            container: container,
+            return new fluid.Reorderer (container, {
+                                        items: items,
+                                        layoutHandler: new fluid.ListLayoutHandler ({
+                                            items: items,
                                             orderChangedCallback: jsonCallback
-                                            })
-		                                });
-		},
+                                        })
+                                    });
+            },
 
 		initRSFScheduler: function (namebase, orderableTagName, orderableIdName, numOrderables) {
 		    var orderableFinder = fluid.Scheduler.createRSFOrderableFinder (namebase,
@@ -37,11 +37,11 @@ fluid.Scheduler = function () {
 		                                                                    orderableIdName,
 		                                                                    numOrderables);
 		    var container = fetchReordererContainer (namebase);
+		    var items = { movables: orderableFinder };
 		    return new fluid.Reorderer (container, {
-		                                orderableFinder: orderableFinder,
+		                                items: items,
                                         layoutHandler: new fluid.ListLayoutHandler ({
-                                            orderableFinder: orderableFinder,
-                                            container: container
+                                            items: items
                                             })
 		                                });
 		},

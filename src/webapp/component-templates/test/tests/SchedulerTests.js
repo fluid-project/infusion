@@ -98,9 +98,7 @@ function testInitScheduler () {
 				 SchedulerTests.conferenceContainerId,
 				 reorderer.domNode.attr ("id"));
 
-	// Ensure that the necessary parameters have been specified.
-	fluid.testUtils.assertNotNullAndNotUndefined ("The Reorderer's orderable finder should be set.", 
-												  reorderer.orderableFinder);
+	// Ensure that the layout handler has been specified.
 	fluid.testUtils.assertNotNullAndNotUndefined ("The Reorderer's layout handler should be set.", 
 												  reorderer.layoutHandler);
 }

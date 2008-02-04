@@ -14,7 +14,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
  */
 
 // Using the DOM node instead of a jQuery to ensure this behaviour works.
-var list1 = jQuery ("#list1")[0];
+var findList1 = function () { return jQuery ("#list1")[0]; };
 
 // The ids of the items in the first list
 var firstItemId = "list1item1";
@@ -28,7 +28,7 @@ var nonOrderabeItemId = "reorderer-script";
 // This is needed for running JsUnit in IE and Safari.
 // It's a very brittle and annoying way of specifying test names and should be fixed. [FLUID-35]
 
-function exposeTestFunctionNames() {
+function exposeTestFunctionNames () {
     return [
         // ListLayoutHandlerTests.js
         "testGetRightSibling",
@@ -47,12 +47,12 @@ function exposeTestFunctionNames() {
 function listMovableFinder () {
 	// This is returning the list instead of a jQuery object to ensure that people 
 	// can use an orderable finder function that doesn't use jQuery
-    return jQuery ("[id^=list1item]", list1).get();
+    return jQuery ("[id^=list1item]", findList1 ()).get ();
 }
 
-var items = {movables:listMovableFinder};
+var items = { movables:listMovableFinder };
 
-function callbackConfirmer() {
+function callbackConfirmer () {
     fluid.testUtils.orderChangedCallbackWasCalled = true;
 }
 
@@ -65,7 +65,7 @@ function createListLayoutHandler () {
 }
 
 function createListReorderer () {
-    return new fluid.Reorderer (list1, {
+    return new fluid.Reorderer (findList1 (), {
             layoutHandler: createListLayoutHandler (),
             items: items
         });
@@ -74,7 +74,7 @@ function createListReorderer () {
 var listHandler1;
 
 // This setUp will be called before each of the tests that are included in unordered-list.html 
-function setUp() {
+function setUp () {
     listHandler1 = createListLayoutHandler ();
 }
 
