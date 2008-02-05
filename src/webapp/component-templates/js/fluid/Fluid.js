@@ -102,14 +102,14 @@ fluid.initLightbox = function (namebase, messageNamebase) {
     };
         
     var layoutHandlerParams = {
-        items: items,
+        findItems: items,
         orderChangedCallback: orderChangedCallback
     };
 
     var lightbox = new fluid.Reorderer (parentNode, {
             messageNamebase : messageNamebase,
             layoutHandler: new fluid.GridLayoutHandler (layoutHandlerParams),
-            items: items
+            findItems: items
         }
     );
     

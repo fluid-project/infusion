@@ -57,6 +57,6 @@ function initPortletReorderer() {
     
     return new fluid.Reorderer(portletReordererRoot, {
         layoutHandler: new fluid.PortletLayoutHandler (layoutHandlerParams),
-        items: items
+        findItems: items
     });
 }

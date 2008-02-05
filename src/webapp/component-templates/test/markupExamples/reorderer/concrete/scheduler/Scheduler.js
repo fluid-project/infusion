@@ -23,9 +23,9 @@ fluid.Scheduler = function () {
             
             var container = fetchReordererContainer (containerId);
             return new fluid.Reorderer (container, {
-                                        items: items,
+                                        findItems: items,
                                         layoutHandler: new fluid.ListLayoutHandler ({
-                                            items: items,
+                                            findItems: items,
                                             orderChangedCallback: jsonCallback
                                         })
                                     });
@@ -39,9 +39,9 @@ fluid.Scheduler = function () {
 		    var container = fetchReordererContainer (namebase);
 		    var items = { movables: orderableFinder };
 		    return new fluid.Reorderer (container, {
-		                                items: items,
+		                                findItems: items,
                                         layoutHandler: new fluid.ListLayoutHandler ({
-                                            items: items
+                                            findItems: items
                                             })
 		                                });
 		},

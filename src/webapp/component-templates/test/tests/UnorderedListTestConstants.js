@@ -58,7 +58,7 @@ function callbackConfirmer () {
 
 function createListLayoutHandler () {
     var layoutParams = {
-        items: items,
+        findItems: items,
         orderChangedCallback: callbackConfirmer
     };
     return new fluid.ListLayoutHandler (layoutParams);
@@ -67,7 +67,7 @@ function createListLayoutHandler () {
 function createListReorderer () {
     return new fluid.Reorderer (findList1 (), {
             layoutHandler: createListLayoutHandler (),
-            items: items
+            findItems: items
         });
 }
 
