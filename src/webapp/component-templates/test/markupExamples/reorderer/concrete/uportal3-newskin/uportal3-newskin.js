@@ -23,8 +23,8 @@ demo.initPortletReorderer = function() {
     var layout = { 
         id:"portalPageBodyLayout",
         columns:[
-            { id:"column_u14l1s48", children:["portlet_u14l1n49","portlet_u14l1n51","portlet_u14l1n50"]},
-            { id:"column_u14l1s47", children:["portlet_u14l1n52","portlet_n101"]}
+            { id:"column_u14l1s48", children:["portlet_u14l1n50", "portlet_u14l1n49"]},
+            { id:"column_u14l1s47", children:["portlet_u14l1n52","portlet_u14l1n51","portlet_n101"]}
         ]
     };
 
