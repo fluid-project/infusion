@@ -3,7 +3,7 @@
 }
 
 .orderable-hover{
-  border: 2px solid red;
+  cursor: move;
 }
 
 .orderable-selected{
@@ -21,3 +21,4 @@ div .orderable-drop-marker{
   width: 80px;
   background-color: green;
 }
+

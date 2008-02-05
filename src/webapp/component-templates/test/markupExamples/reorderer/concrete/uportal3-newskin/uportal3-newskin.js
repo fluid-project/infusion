@@ -27,7 +27,8 @@ demo.initPortletReorderer = function() {
     var items = {
         movables: findMovables,
         selectables: findPortlets,
-        dropTargets: findPortlets
+        dropTargets: findPortlets,
+        handleClassName: "portlet-toolbar"
     };
     
     var layout = { 

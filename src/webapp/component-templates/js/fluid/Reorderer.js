@@ -263,13 +263,21 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 
         item.mouseover ( 
             function () {
-                jQuery (this).addClass (thisReorderer.cssClasses.hover);
+                var handle = this;
+                if (findItems.handleClassName) {
+                    handle = jQuery("."+findItems.handleClassName, this);
+                }
+                jQuery (handle).addClass (thisReorderer.cssClasses.hover);
             }
         );
         
         item.mouseout (  
             function () {
-                jQuery (this).removeClass (thisReorderer.cssClasses.hover);
+                var handle = this;
+                if (findItems.handleClassName) {
+                    handle = jQuery("."+findItems.handleClassName, this);
+                }
+                jQuery (handle).removeClass (thisReorderer.cssClasses.hover);
             }
         );
         
