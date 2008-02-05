@@ -57,33 +57,27 @@ function exposeTestFunctionNames() {
 
 var emptyLayout = { id:"t3", columns:[ ] };   
 
-function portletOrderableFinder (containerEl) {
-    return jQuery ("#portlet3,#portlet4,#portlet6,#portlet7,#portlet8,#portlet9");
-}
-
 var portletRootClone;
 var portletHandler;
 
 /*
  * This setUp will be called before each of the tests that are included in portlets.html 
- * layout, portletOrderableFinder and dropTargetPerms are defined in portlets.js
+ * layout and dropTargetPerms are defined in portlets.js
  */
 function setUp() {
-	var table = jQuery (portalRootSelector);
+	var table = jQuery (demo.portal.portalRootSelector);
     portletRootClone = table.clone();
-    var layoutClone = fluid.testUtils.cloneObj(layout);
+    var layoutClone = fluid.testUtils.cloneObj(demo.portal.layout);
     
     var layoutHandlerParams = {
-      orderableFinder: portletOrderableFinder,
-      container: table,
       portletLayout: layoutClone,
-      dropTargetPermissions: dropTargetPerms
+      dropTargetPermissions: demo.portal.dropTargetPerms
     };
     
     portletHandler = new fluid.PortletLayoutHandler (layoutHandlerParams);
 }
 
 function tearDown() {
-    jQuery (portalRootSelector).replaceWith (portletRootClone);
+    jQuery (demo.portal.portalRootSelector).replaceWith (portletRootClone);
 }
 

@@ -21,24 +21,20 @@ https://source.fluidproject.org/svn/LICENSE.txt
  */
 function testIsOrderChangedCallbackCalled() {
 	var lightboxContainer = jQuery ("[id=" + lightboxRootId + "]");
+
+    // Define a "persistence" callback that simply creates a known
+    // input element with id 'callbackCalled'.  Later, we can test
+    // whether the callback was called by looking for the element.
     var testOrderChangedCallback = function() {
         var newInputElement = document.createElement("input");
         newInputElement.id = "callbackCalled";
         jQuery ("[id=para1]").after (newInputElement);
     };
-    var layoutHandlerParams = {
+    var layoutHandler = new fluid.GridLayoutHandler ({
         findMovables: findOrderableByDivAndId,
         orderChangedCallback: testOrderChangedCallback
-    };
-	var lightbox = new fluid.Reorderer(lightboxContainer, {
-			// Define a "persistence" callback that simply creates a known
-			// input element with id 'callbackCalled'.  Later, we can test
-			// whether the callback was called by looking for the element.
-			//
-	    	layoutHandler: new fluid.GridLayoutHandler(layoutHandlerParams),
-            findMovables: findOrderableByDivAndId
-		}
-	);
+    });
+	var lightbox = new fluid.Reorderer (lightboxContainer, findOrderableByDivAndId, layoutHandler);
 	
 	// Perform a move
 	lightbox.selectActiveItem ();

@@ -24,8 +24,5 @@ demo.initTodoList = function () {
         findMovables: myOrderableFinder
     });
 
-    return new fluid.Reorderer (todoListContainer, {
-        findMovables: myOrderableFinder,
-        layoutHandler: layoutHandler
-    });
+    return new fluid.Reorderer (todoListContainer, myOrderableFinder, layoutHandler);
 };

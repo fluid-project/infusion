@@ -36,13 +36,10 @@ demo.initPortletReorderer = function() {
         [[1,1],[1,1],[1,1],[1,1],[1,1]]
     ];
 
-    var layoutHandlerParams = {
+    var layoutHandler = new fluid.PortletLayoutHandler ({
         portletLayout: layout,
         dropTargetPermissions: dropTargetPerms
-    };
-    
-    return new fluid.Reorderer(portletReordererRoot, {
-        layoutHandler: new fluid.PortletLayoutHandler (layoutHandlerParams),
-        findMovables: findMovables
     });
+    
+    return new fluid.Reorderer (portletReordererRoot, findMovables, layoutHandler);
 };

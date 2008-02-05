@@ -94,22 +94,14 @@ fluid.initLightbox = function (namebase, messageNamebase) {
     var itemFinder = function () {
         return fluid.Utilities.seekNodesById (parentNode, "div", lightboxCellNamePattern);
     };
-    
-    var items = {
-        selectables: itemFinder,
-        movables: itemFinder,
-        dropTargets: itemFinder
-    };
         
-    var layoutHandlerParams = {
-        findItems: items,
+    var layoutHandler = new fluid.GridLayoutHandler ({
+        findMovables: itemFinder,
         orderChangedCallback: orderChangedCallback
-    };
+    });
 
-    var lightbox = new fluid.Reorderer (parentNode, {
-            messageNamebase : messageNamebase,
-            layoutHandler: new fluid.GridLayoutHandler (layoutHandlerParams),
-            findItems: items
+    var lightbox = new fluid.Reorderer (parentNode, itemFinder, layoutHandler, {
+            messageNamebase : messageNamebase
         }
     );
     
@@ -151,4 +143,25 @@ fluid.Utilities.findForm = function (element) {
         }
         element = element.parentNode;
     }
+};
+
+/**
+ * Adapt 'findItems' object given either a 'findItems' object or a 'findMovables' function 
+ **/
+fluid.Utilities.adaptFindItems = function (finder) {
+    var finderFn = function () {};
+    var findItems = {};
+    
+    if (typeof finder === 'function') {
+        finderFn = finder;
+    } else {
+        findItems = finder;
+    }
+
+    findItems.movables = findItems.movables || finderFn;
+    findItems.selectables = findItems.selectables || findItems.movables;
+    findItems.dropTargets = findItems.dropTargets || findItems.movables;
+        
+    return findItems;
+    
 };

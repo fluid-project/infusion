@@ -12,25 +12,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 var fluid = fluid || {};
-
-    // We are currently changing the Reorderer to have a 'findItems' structure 
-    // that contains functions that return Arrays or jQuery objects of
-    // selectables, movables and dropTargets instead of the orderableFinder function
-    // or a findMovables function.
-    
-    // Adapt our previous notion of "orderables" to the more fine-grained approach of items.
-    // Will be removed when the API has changed.
-fluid.adaptItems = function (params) {
-    var finderFn = params.findMovables || params.orderableFinder || function () {};    
-    var findItems = params.findItems || {};
-    findItems.movables = findItems.movables || finderFn;
-    findItems.selectables = findItems.selectables || findItems.movables;
-    findItems.dropTargets = findItems.dropTargets || findItems.movables;
-        
-    return findItems;
-};
    
-fluid.Reorderer = function (container, params) {
+fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     // Reliable 'this'.
     var thisReorderer = this;
     
@@ -51,13 +34,11 @@ fluid.Reorderer = function (container, params) {
         avatar: "orderable-avatar"
     };
 
-    // parsing the parameters
-    var findItems = fluid.adaptItems (params);
-    var layoutHandler = params.layoutHandler;
+    findItems = fluid.Utilities.adaptFindItems (findItems);
 
-    // This should be replaced with proper parsing of the parameters that we expect    
-    if (params) {
-        fluid.mixin (this, params);
+    // This should be replaced with proper parsing of the options that we expect    
+    if (options) {
+        fluid.mixin (this, options);
     }
     
    /**
@@ -528,9 +509,14 @@ fluid.Reorderer = function (container, params) {
     
     };
     
+    // This is here temporarily and will be removed when the API to the layout handlers is changed.
+    var adaptItems = function (params) {
+        return fluid.Utilities.adaptFindItems(params.findMovables || params.findItems);
+    };
+    
     // Public layout handlers.
     fluid.ListLayoutHandler = function (params) {
-        var findItems = fluid.adaptItems (params);
+        var findItems = adaptItems (params);
         var orderChangedCallback = params.orderChangedCallback || function () {};
         var orientation = params.orientation || fluid.orientation.VERTICAL;
                 
@@ -587,7 +573,7 @@ fluid.Reorderer = function (container, params) {
 	fluid.GridLayoutHandler = function (params) {
         fluid.ListLayoutHandler.call (this, params);
 
-        var findItems = fluid.adaptItems (params);
+        var findItems = adaptItems (params);
         var orderChangedCallback = params.orderChangedCallback || function () {};
         var orientation = fluid.orientation.HORIZONTAL;
                 

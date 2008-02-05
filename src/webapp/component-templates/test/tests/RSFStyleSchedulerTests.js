@@ -18,7 +18,7 @@ var RSFStyleSchedulerTests = {
     numUnconferenceMoveables: 2,
     numLightningTalkMoveables: 3,
     numSessionMoveables: 4
-}
+};
 
 function exposeTestFunctionNames () {
     return [
@@ -43,7 +43,7 @@ function testRSFOrderableFinderUnconferenceContainer () {
                   containerElement.id);
                   
     // Now make sure we're getting exactly the orderables we expect.
-    var orderables = orderableFinder (containerElement);
+    var orderables = orderableFinder ();
     assertEquals ("There should be two unconference orderables.",
                   RSFStyleSchedulerTests.numUnconferenceMoveables,
                   orderables.length);
@@ -70,7 +70,7 @@ function testRSFOrderableFinderLightningTalkContainer () {
                 containerElement.id);
               
    // Now make sure we're getting exactly the orderables we expect.  
-   var orderables = orderableFinder (containerElement);
+   var orderables = orderableFinder ();
    assertEquals ("There should be three lightning talk orderables.",
                  RSFStyleSchedulerTests.numLightningTalkMoveables,
                  orderables.length);
@@ -100,7 +100,7 @@ function testRSFOrderableFinderSessionContainer () {
                 containerElement.id);
                 
    // Now make sure we're getting exactly the orderables we expect.
-   var orderables = orderableFinder (containerElement);
+   var orderables = orderableFinder ();
    assertEquals ("There should be four session orderables.",
                  RSFStyleSchedulerTests.numSessionMoveables,
                  orderables.length);

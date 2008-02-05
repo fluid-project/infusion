@@ -184,10 +184,8 @@ function testCallbackReturnValue() {
                     ]
                 };
     var layoutHandlerParams = {
-      orderableFinder: portletOrderableFinder,
-      container: jQuery (portalRootSelector),
-      portletLayout: fluid.testUtils.cloneObj(layout),
-      dropTargetPermissions: dropTargetPerms,
+      portletLayout: fluid.testUtils.cloneObj(demo.portal.layout),
+      dropTargetPermissions: demo.portal.dropTargetPerms,
       orderChangedCallback: function () {return newLayout;}
     };
     portletHandler = new fluid.PortletLayoutHandler (layoutHandlerParams);

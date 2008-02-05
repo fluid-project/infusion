@@ -24,7 +24,7 @@ function testCSSOrderableFinder () {
 	// Create a cssOrderableFinder for the class "movableTopic."
 	var orderableFinder = fluid.Scheduler.createCSSOrderableFinderForClass (SchedulerTests.moveableClass);
 	var containerElement = jQuery ("#" + SchedulerTests.conferenceContainerId).get(0);
-	var foundOrderables = orderableFinder (containerElement);
+	var foundOrderables = orderableFinder ();
 	assertEquals ("There should be six moveable topics.", 6, foundOrderables.length);
 	
 	// Check to make sure each returned element does indeed contain the correct class.
@@ -36,7 +36,7 @@ function testCSSOrderableFinder () {
 	
 	// Create a cssOrderableFinder for a non-existant class "foo."
 	orderableFinder = fluid.Scheduler.createCSSOrderableFinderForClass ("foo");
-	foundOrderables = orderableFinder (containerElement);
+	foundOrderables = orderableFinder ();
 	assertEquals ("There should be no elements matched for 'foo'.", 0, foundOrderables.length);
 }
 
@@ -47,7 +47,7 @@ function testPortalSafeFinder () {
 																  SchedulerTests.numMoveables,
 																  ".");
     var containerElement = jQuery ("#" + SchedulerTests.conferenceContainerId).get(0);												  
-	var foundOrderables = orderableFinder (containerElement);
+	var foundOrderables = orderableFinder ();
 	assertEquals ("There should be six moveable topics.", SchedulerTests.numMoveables, foundOrderables.length);
 	
 	// Make sure they're all good and correct orderables.
@@ -98,7 +98,8 @@ function testInitScheduler () {
 				 SchedulerTests.conferenceContainerId,
 				 reorderer.domNode.attr ("id"));
 
-	// Ensure that the layout handler has been specified.
-	fluid.testUtils.assertNotNullAndNotUndefined ("The Reorderer's layout handler should be set.", 
-												  reorderer.layoutHandler);
+	// TODO: This test used to check whether parameters that are passed in are sucessfully set in the Reorderer. 
+	// Now these parameters (layoutHandler, findMovables) are private and cannot be accessed directly from the test
+	// We need to find another way to test this functionality.
+	
 }

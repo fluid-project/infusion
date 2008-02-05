@@ -18,32 +18,27 @@ fluid.Scheduler = function () {
 	return {
         initScheduler: function (containerId) {
             var movableFinder = fluid.Scheduler.createCSSOrderableFinderForClass ("movableTopic");
-            var jsonCallback = fluid.Scheduler.createJSONOrderChangedCallback (movableFinder);
-            var items = { movables: movableFinder };
-            
+            var jsonCallback = fluid.Scheduler.createJSONOrderChangedCallback (movableFinder);            
             var container = fetchReordererContainer (containerId);
-            return new fluid.Reorderer (container, {
-                                        findItems: items,
-                                        layoutHandler: new fluid.ListLayoutHandler ({
-                                            findItems: items,
+            
+            var layoutHandler = new fluid.ListLayoutHandler ({
+                                            findMovables: movableFinder,
                                             orderChangedCallback: jsonCallback
-                                        })
-                                    });
-            },
+                                        });
+
+            return new fluid.Reorderer (container, movableFinder, layoutHandler);
+        },
 
 		initRSFScheduler: function (namebase, orderableTagName, orderableIdName, numOrderables) {
-		    var orderableFinder = fluid.Scheduler.createRSFOrderableFinder (namebase,
+		    var movableFinder = fluid.Scheduler.createRSFOrderableFinder (namebase,
 		                                                                    orderableTagName,
 		                                                                    orderableIdName,
 		                                                                    numOrderables);
 		    var container = fetchReordererContainer (namebase);
-		    var items = { movables: orderableFinder };
-		    return new fluid.Reorderer (container, {
-		                                findItems: items,
-                                        layoutHandler: new fluid.ListLayoutHandler ({
-                                            findItems: items
-                                            })
-		                                });
+		    var layoutHandler = new fluid.ListLayoutHandler ({
+                                            findMovables: movableFinder
+                                            });
+		    return new fluid.Reorderer (container, movableFinder, layoutHandler); 
 		},
 
 		createJSONOrderChangedCallback: function (orderableFinder, urlToPostJSON) {
@@ -67,9 +62,9 @@ fluid.Scheduler = function () {
 		},
 
 		createCSSOrderableFinderForClass: function (className) {
-		    return function (containerElement) {
+		    return function () {
 		        var orderableSelector = "." + className;
-		        return jQuery (orderableSelector, containerElement);
+		        return jQuery (orderableSelector);
 		    };
 		},
 

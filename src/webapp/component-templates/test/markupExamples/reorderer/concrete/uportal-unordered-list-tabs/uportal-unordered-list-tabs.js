@@ -27,8 +27,5 @@ demo.initUportalUnorderedListTabs = function () {
     
     var layoutHandler = new fluid.ListLayoutHandler (layoutHandlerParams);
 
-    return new fluid.Reorderer(tabListContainer, {
-        layoutHandler: layoutHandler,
-        findMovables: findOrderableTabs
-    });
+    return new fluid.Reorderer (tabListContainer, findOrderableTabs, layoutHandler);
 };

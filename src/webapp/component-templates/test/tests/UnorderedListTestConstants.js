@@ -50,25 +50,20 @@ function listMovableFinder () {
     return jQuery ("[id^=list1item]", findList1 ()).get ();
 }
 
-var items = { movables:listMovableFinder };
-
 function callbackConfirmer () {
     fluid.testUtils.orderChangedCallbackWasCalled = true;
 }
 
 function createListLayoutHandler () {
     var layoutParams = {
-        findItems: items,
+        findMovables: listMovableFinder,
         orderChangedCallback: callbackConfirmer
     };
     return new fluid.ListLayoutHandler (layoutParams);
 }
 
 function createListReorderer () {
-    return new fluid.Reorderer (findList1 (), {
-            layoutHandler: createListLayoutHandler (),
-            findItems: items
-        });
+    return new fluid.Reorderer (findList1 (), listMovableFinder, createListLayoutHandler ());
 }
 
 var listHandler1;

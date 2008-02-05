@@ -25,8 +25,5 @@ demo.initUnorderedListTabs = function () {
         orientation: fluid.orientation.HORIZONTAL
     });
     
-    return new fluid.Reorderer (tabList, {
-        layoutHandler: layoutHandler,
-        findMovables: findOrderableTabs
-    });
+    return new fluid.Reorderer (tabList, findOrderableTabs, layoutHandler);
 };
