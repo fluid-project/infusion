@@ -330,17 +330,12 @@ function testSelectActiveItemNothingSelected() {
 	// Now, test it with no reorderables.
 	//
 	var lightboxWithNoOrderables = createLightboxWithNoOrderables ();
-	var orderables = lightboxWithNoOrderables.orderableFinder ();
-	assertEquals ("There should be no 'orderables' in this lightbox", 0, orderables.length);
 	lightboxWithNoOrderables.selectActiveItem ();
 	assertNull ("Lightbox's activeItem member should be null", lightboxWithNoOrderables.activeItem);
 }
 
 function testKeypressesWithNoOrderables() {
-	
-	var lightboxWithNoOrderables = createLightboxWithNoOrderables();
-	orderables = lightboxWithNoOrderables.orderableFinder();
-	assertEquals ("There should be no 'orderables' in this lightbox", 0, orderables.length);
+    var lightboxWithNoOrderables = createLightboxWithNoOrderables();
 	
 	lightboxWithNoOrderables.selectActiveItem();
 	assertNull ("Lightbox's activeItem member should be null", lightboxWithNoOrderables.activeItem);

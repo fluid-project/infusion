@@ -1,4 +1,6 @@
-<html>
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Sortable Tabs</title>
     <link rel="stylesheet" type="text/css" href="unordered-list-tabs.css" title="default" />
@@ -13,6 +15,7 @@
     <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
     <script type="text/javascript" src="../../../../../js/fluid/Fluid.js"></script>
     <script type="text/javascript" src="../../../../../js/fluid/Reorderer.js"></script>
+    <script type="text/javascript" src="unordered-list-tabs.js"></script>
 
     <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. -->
     <script type="text/javascript">
@@ -44,28 +47,8 @@ Fusce orci dui, eleifend tristique, pharetra et, varius vitae, tortor. Duis impe
 leo, ac lobortis leo nisi vitae elit. Sed luctus eros et lorem. Vestibulum aliquet risus vel diam.</p>
 
     </div>
-    <script language="JavaScript" type="text/javascript">
-      // The orderable finder  identifies the orderable element by their unique id prefix.
-      function findOrderableTabs (container) {
-        return jQuery ("[id^=tab_]", container);
-      }
-
-      // The Reorderer requires two parameters for it to work.
-      // 1. The orderableFinder function which enables items to be reordered.
-      // 2. The layoutHandler which enables the keyboard functions of the Reorderer.
-      var tabList = jQuery ("#tabList");
-      var layoutHandlerParams = {
-        orderableFinder: findOrderableTabs,
-        container: tabList,
-        orientation: fluid.orientation.HORIZONTAL
-      };
-      var aLayoutHandler = new fluid.ListLayoutHandler (layoutHandlerParams);
-
-      new fluid.Reorderer(tabList, {
-        layoutHandler: aLayoutHandler,
-        orderableFinder: findOrderableTabs
-        }
-      );
+    <script type="text/javascript">
+        demo.initUnorderedListTabs ();
     </script>
   </body>
 </html>

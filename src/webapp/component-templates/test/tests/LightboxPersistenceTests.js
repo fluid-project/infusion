@@ -21,14 +21,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
  */
 function testIsOrderChangedCallbackCalled() {
 	var lightboxContainer = jQuery ("[id=" + lightboxRootId + "]");
-    var testOrderChangedCallback = function(){
+    var testOrderChangedCallback = function() {
         var newInputElement = document.createElement("input");
-        newInputElement.id="callbackCalled";
-        jQuery ("[id=para1]").after(newInputElement);
+        newInputElement.id = "callbackCalled";
+        jQuery ("[id=para1]").after (newInputElement);
     };
     var layoutHandlerParams = {
-        orderableFinder: findOrderableByDivAndId,
-        container: lightboxContainer,
+        findMovables: findOrderableByDivAndId,
         orderChangedCallback: testOrderChangedCallback
     };
 	var lightbox = new fluid.Reorderer(lightboxContainer, {
@@ -37,14 +36,14 @@ function testIsOrderChangedCallbackCalled() {
 			// whether the callback was called by looking for the element.
 			//
 	    	layoutHandler: new fluid.GridLayoutHandler(layoutHandlerParams),
-            orderableFinder: findOrderableByDivAndId
+            findMovables: findOrderableByDivAndId
 		}
 	);
 	
 	// Perform a move
-	lightbox.selectActiveItem();
-	lightbox.handleArrowKeyPress(fluid.testUtils.createEvtCtrlRightArrow());
-	assertNotNull("order changed callback is not called when a move is performed", 
-		fluid.testUtils.byId("callbackCalled"));
+	lightbox.selectActiveItem ();
+	lightbox.handleArrowKeyPress (fluid.testUtils.createEvtCtrlRightArrow ());
+	assertNotNull ("order changed callback is not called when a move is performed", 
+		fluid.testUtils.byId ("callbackCalled"));
 }
 
