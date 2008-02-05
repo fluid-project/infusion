@@ -1,7 +1,7 @@
 function testGetItemAbove() {
     var itemAbove = portletHandler.getItemAbove (jQuery ("#" + portlet9id)[0]);
     assertEquals (portlet8id+" should be above "+portlet9id,
-        jQuery ("#" + portlet8id)[0], itemAbove);
+        portlet8id, itemAbove.id);
 
 	itemAbove = portletHandler.getItemAbove (jQuery ("#" + portlet1id)[0]);
 	assertEquals (portlet1id +" is at the top of the column, so nothing is 'above' it",
@@ -100,7 +100,7 @@ function testMoveItemDown() {
     assertEquals(portlet3id, portletList[2].id);
     assertEquals(portlet4id, portletList[3].id);
 
-	portletHandler.moveItemDown (jQuery ("#" + portlet3id)[0]);
+	portletHandler.moveItemDown (jQuery ("#"+portlet3id)[0]);
 	portletList = jQuery("div[id^=portlet]");
 	assertEquals(portlet4id, portletList[2].id);
     assertEquals(portlet3id, portletList[3].id);

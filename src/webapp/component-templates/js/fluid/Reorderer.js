@@ -629,14 +629,15 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
          * the next item.
 	     */
 	    var getVerticalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
-            var coords = fluid.portletLayout.calcColumnAndItemIndex (item, layout);
+            var coords = fluid.portletLayout.calcColumnAndItemIndex (item.id, layout);
 	        var siblingIndex = coords.itemIndex + direction;
             var numItems = fluid.portletLayout.numItemsInColumn (coords.columnIndex, layout);
             if ((siblingIndex < 0) || (siblingIndex >= numItems)) {
                 return item;
             }
             else {
-                return fluid.portletLayout.getItemAt (coords.columnIndex, siblingIndex, layout);
+                var itemId = fluid.portletLayout.getItemAt (coords.columnIndex, siblingIndex, layout);
+                return jQuery ("#"+itemId)[0];
             }
 	    };
 	
@@ -649,7 +650,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	     */
 	    var getHorizontalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
             var sibling = item;
-            var coords = fluid.portletLayout.calcColumnAndItemIndex (item, layout);
+            var coords = fluid.portletLayout.calcColumnAndItemIndex (item.id, layout);
             var numColumns = fluid.portletLayout.numColumns (layout);
             
             // First attempt:  get the item in the next/previous column at exactly
@@ -663,7 +664,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                     sib = fluid.portletLayout.getItemAt (siblingColIndex, sibIndex, layout);
                 }
                 if (sib !== null) {
-                    sibling = sib;
+                    sibling = jQuery ("#"+sib)[0];
                 }
             }
             return sibling;	
@@ -681,21 +682,20 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
             else {
                 jQuery (relatedItem).after (item);
             }
-            fluid.portletLayout.updateLayout (item, relatedItem, position, layout);
+            fluid.portletLayout.updateLayout (item.id, relatedItem.id, position, layout);
             layout = orderChangedCallback() || layout; 
         };
         
         var moveHorizontally = function (item, direction /* PREVIOUS, NEXT */) {
-            var targetColIndex = fluid.portletLayout.findColIndex (item, layout) + direction;
+            var targetColIndex = fluid.portletLayout.findColIndex (item.id, layout) + direction;
             var target = fluid.portletLayout.firstDroppableTarget (item.id, targetColIndex, direction, layout, targetPerms);
             var targetItem = jQuery ("[id=" + target.id + "]")[0]; 
-
             move (item, targetItem, target.position);
         };
         
         var moveVertically = function (item, direction /* PREVIOUS, NEXT */) {
-            var target = fluid.portletLayout.nearestMoveableTarget (item, direction, layout, targetPerms);
-            var targetItem = jQuery ("[id=" + target.id + "]")[0]; 
+            var target = fluid.portletLayout.nearestMoveableTarget (item.id, direction, layout, targetPerms);
+            var targetItem = jQuery ("[id=" + target.id + "]")[0];
             move (item, targetItem, target.position);
         };
         
@@ -714,10 +714,10 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	    };
 	
 	    this.getLeftSibling = function (item) {
-            if (fluid.portletLayout.isInLeftmostColumn (item, layout)) {
+            if (fluid.portletLayout.isInLeftmostColumn (item.id, layout)) {
                 return item;
             } else {
-                return getHorizontalSibling(item, fluid.direction.PREVIOUS);
+                return getHorizontalSibling (item, fluid.direction.PREVIOUS);
             }
 	    };
 	
@@ -726,7 +726,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	    };
 	
 	    this.getItemAbove = function (item) {
-	    	if (fluid.portletLayout.isFirstInColumn (item, layout)) {
+	    	if (fluid.portletLayout.isFirstInColumn (item.id, layout)) {
                 return item;
             } else {
                 return getVerticalSibling (item, fluid.direction.PREVIOUS);
@@ -783,10 +783,10 @@ fluid.portletLayout = function () {
          * @return  An object with column index and item index (within that column) properties.
          *          These indices are -1 if the item does not exist in the grid.
          */
-        calcColumnAndItemIndex: function (item, layout) {
+        calcColumnAndItemIndex: function (itemId, layout) {
             var indices = { columnIndex: -1, itemIndex: -1 };
             for (var col = 0; col < layout.columns.length; col++) {
-                var itemIndex = jQuery (layout.columns[col].children).index (item.id);
+                var itemIndex = jQuery (layout.columns[col].children).index (itemId);
                 if (itemIndex !== -1) {
                     indices.columnIndex = col;
                     indices.itemIndex = itemIndex;
@@ -796,12 +796,12 @@ fluid.portletLayout = function () {
             return indices;
         },
         
-        findColIndex: function (item, layout) {
-        	return fluid.portletLayout.calcColumnAndItemIndex (item, layout).columnIndex;
+        findColIndex: function (itemId, layout) {
+        	return fluid.portletLayout.calcColumnAndItemIndex (itemId, layout).columnIndex;
         },
         
-        findItemIndex: function (item, layout) {
-            return fluid.portletLayout.calcColumnAndItemIndex (item, layout).itemIndex;
+        findItemIndex: function (itemId, layout) {
+            return fluid.portletLayout.calcColumnAndItemIndex (itemId, layout).itemIndex;
         },      
  
         /**
@@ -865,17 +865,16 @@ fluid.portletLayout = function () {
         /**
          * Move an item within the layout object. 
          */
-        updateLayout: function (item, relativeItem, position, layout) {
-            if (!item || !relativeItem || item === relativeItem) { 
+        updateLayout: function (itemId, relativeItemId, position, layout) {
+            if (!itemId || !relativeItemId || itemId === relativeItemId) { 
                 return; 
             }
-            
-            var itemIndices = fluid.portletLayout.calcColumnAndItemIndex (item, layout);
+            var itemIndices = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
             layout.columns[itemIndices.columnIndex].children.splice (itemIndices.itemIndex, 1);
 
-            var relativeItemIndices = fluid.portletLayout.calcColumnAndItemIndex (relativeItem, layout);
+            var relativeItemIndices = fluid.portletLayout.calcColumnAndItemIndex (relativeItemId, layout);
             var targetCol = layout.columns[relativeItemIndices.columnIndex].children;
-            targetCol.splice (relativeItemIndices.itemIndex + position, 0, item.id);
+            targetCol.splice (relativeItemIndices.itemIndex + position, 0, itemId);
         },
         
         /**
@@ -911,20 +910,20 @@ fluid.portletLayout = function () {
             return firstPossibleTarget;
         },
 
-        nearestMoveableTarget: function (item, /* NEXT, PREVIOUS */ direction, layout, perms) {
+        nearestMoveableTarget: function (itemId, /* NEXT, PREVIOUS */ direction, layout, perms) {
             if (direction === fluid.direction.NEXT) {
-                return fluid.portletLayout.nearestNextMoveableTarget (item, layout, perms);
+                return fluid.portletLayout.nearestNextMoveableTarget (itemId, layout, perms);
             }
             else {
-                return fluid.portletLayout.nearestPreviousMoveableTarget (item, layout, perms);
+                return fluid.portletLayout.nearestPreviousMoveableTarget (itemId, layout, perms);
             }
         },
         
-        nearestNextMoveableTarget: function (item, layout, perms) {
+        nearestNextMoveableTarget: function (itemId, layout, perms) {
             // default return value is "the item itself".
-            var nextPossibleTarget = { id: item.id, position: fluid.position.AFTER };
+            var nextPossibleTarget = { id: itemId, position: fluid.position.AFTER };
             var found = false;
-            var startCoords = fluid.portletLayout.calcColumnAndItemIndex (item, layout);
+            var startCoords = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
             
             // Safety check calcColumnAndItemIndex() returns either valid indices or negative
             // values.  If the column index is negative, set found; loop below will bail.
@@ -940,7 +939,7 @@ fluid.portletLayout = function () {
                 var startItemIndex = ( i === startCoords.columnIndex ? startCoords.itemIndex : -1 );
                 for (var j = startItemIndex + 1; (j < idsInCol.length) && !found; j++) {
                     var possibleTargetId = idsInCol[j];
-                    if ((found = fluid.portletLayout.canMove (item.id, possibleTargetId, fluid.position.AFTER, layout, perms))) {
+                    if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.AFTER, layout, perms))) {
                         nextPossibleTarget.id = possibleTargetId;
                     }
                 }
@@ -948,11 +947,11 @@ fluid.portletLayout = function () {
             return nextPossibleTarget;
         },
 
-        nearestPreviousMoveableTarget: function (item, layout, perms) {
+        nearestPreviousMoveableTarget: function (itemId, layout, perms) {
             // default return value is "the item itself".
-            var previousPossibleTarget = { id: item.id, position: fluid.position.BEFORE };
+            var previousPossibleTarget = { id: itemId, position: fluid.position.BEFORE };
             var found = false;
-            var startCoords = fluid.portletLayout.calcColumnAndItemIndex (item, layout);
+            var startCoords = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
             
             // Safety check calcColumnAndItemIndex() returns either valid indices or negative
             // values.  If the column index is negative, set found; loop below will bail.
@@ -968,7 +967,7 @@ fluid.portletLayout = function () {
                 var startItemIndex = ( i === startCoords.columnIndex ? startCoords.itemIndex : idsInCol.length );
                 for (var j = startItemIndex - 1; (j > -1) && !found; j--) {
                     var possibleTargetId = idsInCol[j];
-                    if ((found = fluid.portletLayout.canMove (item.id, possibleTargetId, fluid.position.BEFORE, layout, perms))) {
+                    if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.BEFORE, layout, perms))) {
                         previousPossibleTarget.id = possibleTargetId;
                     }
                 }
@@ -982,31 +981,31 @@ fluid.portletLayout = function () {
          * returns null.
          */
         getItemAt: function (columnIndex, itemIndex, layout) {
-            var item = null;
+            var itemId = null;
             if ((columnIndex >= 0) && (columnIndex < fluid.portletLayout.numColumns (layout))) {
                 if ((itemIndex >= 0) && (itemIndex < fluid.portletLayout.numItemsInColumn (columnIndex, layout))) {
-                    item = jQuery ("#"+layout.columns[columnIndex].children[itemIndex])[0];
+                    itemId = layout.columns[columnIndex].children[itemIndex];
                 }
             }
-            return item;
+            return itemId;
         },
 
         // Could refactor to take the id since the portletLayout has no use for actual items. 
-        isFirstInColumn: function (item, layout) {
-            return (fluid.portletLayout.findItemIndex (item, layout) === 0);
+        isFirstInColumn: function (itemId, layout) {
+            return (fluid.portletLayout.findItemIndex (itemId, layout) === 0);
         },
     
-        isLastInColumn: function (item, layout) {
-            var position = fluid.portletLayout.calcColumnAndItemIndex (item, layout);
+        isLastInColumn: function (itemId, layout) {
+            var position = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
             return (position.itemIndex === fluid.portletLayout.numItemsInColumn (position.columnIndex, layout)-1) ? true : false;
         },
         
-        isInLeftmostColumn: function (item, layout) {
-            return (fluid.portletLayout.findColIndex (item, layout) === 0);
+        isInLeftmostColumn: function (itemId, layout) {
+            return (fluid.portletLayout.findColIndex (itemId, layout) === 0);
         },
         
-        isInRightmostColumn: function (item, layout) {
-            return (fluid.portletLayout.findColIndex (item, layout) === fluid.portletLayout.numColumns (layout)-1);
+        isInRightmostColumn: function (itemId, layout) {
+            return (fluid.portletLayout.findColIndex (itemId, layout) === fluid.portletLayout.numColumns (layout)-1);
         }
     };	
 } ();
