@@ -123,6 +123,11 @@
 			
 		},
 		drop: function(e) {
+			// Temporary Fix
+			// Fix for jQueryUI ticket 1547 and FLUID-152.
+			// Don't handle events called via mouseup.
+			if ( e.type!="dragstop" ) return;  
+			// End Temporary Fix
 
 			var c = $.ui.ddmanager.current;
 			if (!c || c.element == this.element) return; // Bail if draggable and droppable are same element
