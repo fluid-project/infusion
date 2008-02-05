@@ -16,10 +16,20 @@ demo.initPortletReorderer = function() {
 
     var portletReordererRoot = jQuery("[id=portalPage]");
     
-    var findMovables = function (){
+    var findPortlets = function () {
         return jQuery ("[id^=portlet_]", portletReordererRoot);
     };
+    
+    var findMovables = function () {
+        return jQuery ("#portlet_u14l1n49,#portlet_u14l1n52,#portlet_u14l1n51,#portlet_n101");
+    };
 
+    var items = {
+        movables: findMovables,
+        selectables: findPortlets,
+        dropTargets: findPortlets
+    };
+    
     var layout = { 
         id:"portalPageBodyLayout",
         columns:[
@@ -29,11 +39,11 @@ demo.initPortletReorderer = function() {
     };
 
     var dropTargetPerms = [
-        [[1,1],[1,1],[1,1],[1,1],[1,1]],
-        [[1,1],[1,1],[1,1],[1,1],[1,1]],
-        [[1,1],[1,1],[1,1],[1,1],[1,1]],
-        [[1,1],[1,1],[1,1],[1,1],[1,1]],
-        [[1,1],[1,1],[1,1],[1,1],[1,1]]
+        [[0,0],[0,0],[0,0],[0,0],[0,0]],
+        [[0,1],[1,1],[1,1],[1,1],[1,1]],
+        [[0,1],[1,1],[1,1],[1,1],[1,1]],
+        [[0,1],[1,1],[1,1],[1,1],[1,1]],
+        [[0,1],[1,1],[1,1],[1,1],[1,1]]
     ];
 
     var layoutHandler = new fluid.PortletLayoutHandler ({
@@ -41,5 +51,5 @@ demo.initPortletReorderer = function() {
         dropTargetPermissions: dropTargetPerms
     });
     
-    return new fluid.Reorderer (portletReordererRoot, findMovables, layoutHandler);
+    return new fluid.Reorderer (portletReordererRoot, items, layoutHandler);
 };
