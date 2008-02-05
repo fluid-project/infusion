@@ -517,16 +517,15 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     
     };
     
-    // This is here temporarily and will be removed when the API to the layout handlers is changed.
-    var adaptItems = function (params) {
-        return fluid.Utilities.adaptFindItems(params.findMovables || params.findItems);
-    };
-    
     // Public layout handlers.
-    fluid.ListLayoutHandler = function (params) {
-        var findItems = adaptItems (params);
-        var orderChangedCallback = params.orderChangedCallback || function () {};
-        var orientation = params.orientation || fluid.orientation.VERTICAL;
+    fluid.ListLayoutHandler = function (findItems, options) {
+        findItems = fluid.Utilities.adaptFindItems (findItems);
+        var orderChangedCallback = function () {};
+        var orientation = fluid.orientation.VERTICAL;
+        if (options) {
+            orderChangedCallback = options.orderChangedCallback || orderChangedCallback;
+            orientation = options.orientation || orientation;
+        }
                 
         this.getRightSibling = function (item) {
             return itemInfoFinders.getRightSiblingInfo (item, findItems.selectables ()).item;
@@ -578,11 +577,16 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	 * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
 	 * in the window, and of informing the Lightbox of which items surround a given item.
 	 */
-	fluid.GridLayoutHandler = function (params) {
-        fluid.ListLayoutHandler.call (this, params);
+	fluid.GridLayoutHandler = function (findItems, options) {
+        fluid.ListLayoutHandler.call (this, findItems, options);
 
-        var findItems = adaptItems (params);
-        var orderChangedCallback = params.orderChangedCallback || function () {};
+        findItems = fluid.Utilities.adaptFindItems (findItems);
+        
+        var orderChangedCallback = function () {};
+        if (options) {
+            orderChangedCallback = options.orderChangedCallback || orderChangedCallback;
+        }
+        
         var orientation = fluid.orientation.HORIZONTAL;
                 
 	    this.getItemBelow = function(item) {
@@ -622,11 +626,12 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
      * - Moving sideways will always move to the top available drop target in the column
      * - Wrapping is not necessary at this first pass, but is ok
      */
-    fluid.PortletLayoutHandler = function (params) {
-        var orderChangedCallback = params.orderChangedCallback || function () {};
-        var layout = params.portletLayout;
-        var targetPerms = params.dropTargetPermissions;
+    fluid.PortletLayoutHandler = function (layout, targetPerms, options) {
         var orientation = fluid.orientation.VERTICAL;
+        var orderChangedCallback = function () {};
+        if (options) {
+            orderChangedCallback = options.orderChangedCallback || orderChangedCallback;
+        }
         
         // Private Methods.
         /*

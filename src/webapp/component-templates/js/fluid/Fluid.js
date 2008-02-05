@@ -95,8 +95,7 @@ fluid.initLightbox = function (namebase, messageNamebase) {
         return fluid.Utilities.seekNodesById (parentNode, "div", lightboxCellNamePattern);
     };
         
-    var layoutHandler = new fluid.GridLayoutHandler ({
-        findMovables: itemFinder,
+    var layoutHandler = new fluid.GridLayoutHandler (itemFinder, {
         orderChangedCallback: orderChangedCallback
     });
 

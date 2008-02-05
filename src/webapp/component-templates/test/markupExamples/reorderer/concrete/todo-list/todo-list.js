@@ -20,9 +20,7 @@ demo.initTodoList = function () {
         return jQuery ("[id^=myUniquePrefix]", todoListContainer);
     };
 
-    var layoutHandler = new fluid.ListLayoutHandler ({
-        findMovables: myOrderableFinder
-    });
+    var layoutHandler = new fluid.ListLayoutHandler (myOrderableFinder);
 
     return new fluid.Reorderer (todoListContainer, myOrderableFinder, layoutHandler);
 };

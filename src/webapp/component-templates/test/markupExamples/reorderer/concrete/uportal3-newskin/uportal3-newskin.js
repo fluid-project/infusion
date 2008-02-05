@@ -47,10 +47,7 @@ demo.initPortletReorderer = function() {
         [[0,1],[1,1],[1,1],[1,1],[1,1]]
     ];
 
-    var layoutHandler = new fluid.PortletLayoutHandler ({
-        portletLayout: layout,
-        dropTargetPermissions: dropTargetPerms
-    });
+    var layoutHandler = new fluid.PortletLayoutHandler (layout, dropTargetPerms);
     
     return new fluid.Reorderer (portletReordererRoot, items, layoutHandler);
 };

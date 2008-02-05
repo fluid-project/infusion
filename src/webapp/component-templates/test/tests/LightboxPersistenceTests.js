@@ -30,8 +30,7 @@ function testIsOrderChangedCallbackCalled() {
         newInputElement.id = "callbackCalled";
         jQuery ("[id=para1]").after (newInputElement);
     };
-    var layoutHandler = new fluid.GridLayoutHandler ({
-        findMovables: findOrderableByDivAndId,
+    var layoutHandler = new fluid.GridLayoutHandler (findOrderableByDivAndId, {
         orderChangedCallback: testOrderChangedCallback
     });
 	var lightbox = new fluid.Reorderer (lightboxContainer, findOrderableByDivAndId, layoutHandler);

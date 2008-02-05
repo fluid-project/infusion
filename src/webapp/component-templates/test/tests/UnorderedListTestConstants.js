@@ -55,11 +55,9 @@ function callbackConfirmer () {
 }
 
 function createListLayoutHandler () {
-    var layoutParams = {
-        findMovables: listMovableFinder,
+    return new fluid.ListLayoutHandler (listMovableFinder, {
         orderChangedCallback: callbackConfirmer
-    };
-    return new fluid.ListLayoutHandler (layoutParams);
+    });
 }
 
 function createListReorderer () {

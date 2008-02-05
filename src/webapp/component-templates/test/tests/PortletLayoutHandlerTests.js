@@ -183,12 +183,12 @@ function testCallbackReturnValue() {
                      { id:"c3", children:["portlet8","portlet9"]}
                     ]
                 };
-    var layoutHandlerParams = {
-      portletLayout: fluid.testUtils.cloneObj(demo.portal.layout),
-      dropTargetPermissions: demo.portal.dropTargetPerms,
-      orderChangedCallback: function () {return newLayout;}
-    };
-    portletHandler = new fluid.PortletLayoutHandler (layoutHandlerParams);
+
+    portletHandler = new fluid.PortletLayoutHandler (
+        fluid.testUtils.cloneObj(demo.portal.layout), 
+        demo.portal.dropTargetPerms,
+        { orderChangedCallback: function () {return newLayout;} }
+    );
 
     // this test uses the layout handler's public api get methods instead of inspecting the dom
     assertEquals ("Before move portlet 7 is to the right of portlet 5", portlet7id,

@@ -20,8 +20,7 @@ demo.initUnorderedListTabs = function () {
         return jQuery ("[id^=tab_]", tabList);
     };
     
-    var layoutHandler = new fluid.ListLayoutHandler ({
-        findMovables: findOrderableTabs,
+    var layoutHandler = new fluid.ListLayoutHandler (findOrderableTabs, {
         orientation: fluid.orientation.HORIZONTAL
     });
     

@@ -20,12 +20,9 @@ demo.initUportalUnorderedListTabs = function () {
         return jQuery ("[id^=tab_]", tabListContainer);
     };
 
-    var layoutHandlerParams = {
-        findMovables: findOrderableTabs,
+    var layoutHandler = new fluid.ListLayoutHandler (findOrderableTabs, {
         orientation: fluid.orientation.HORIZONTAL
-    };
-    
-    var layoutHandler = new fluid.ListLayoutHandler (layoutHandlerParams);
+    });
 
     return new fluid.Reorderer (tabListContainer, findOrderableTabs, layoutHandler);
 };

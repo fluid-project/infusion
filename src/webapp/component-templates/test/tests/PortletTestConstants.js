@@ -69,12 +69,7 @@ function setUp() {
     portletRootClone = table.clone();
     var layoutClone = fluid.testUtils.cloneObj(demo.portal.layout);
     
-    var layoutHandlerParams = {
-      portletLayout: layoutClone,
-      dropTargetPermissions: demo.portal.dropTargetPerms
-    };
-    
-    portletHandler = new fluid.PortletLayoutHandler (layoutHandlerParams);
+    portletHandler = new fluid.PortletLayoutHandler (layoutClone, demo.portal.dropTargetPerms);
 }
 
 function tearDown() {
