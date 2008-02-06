@@ -42,6 +42,7 @@ function exposeTestFunctionNames() {
         "testNearestNextMoveableTarget",
         "testNearestPreviousMoveableTarget",
         "testFirstItemInAdjacentColumn",
+        "testItemAboveBelow",
 
         // PortletLayoutHandlerTests.js
 		"testGetItemAbove",

@@ -643,17 +643,8 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	     * the next item.
 	     */
 	    var getVerticalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
-	        var coords = fluid.portletLayout.calcColumnAndItemIndex (item.id, layout);
-	        var siblingIndex = coords.itemIndex + direction;
-	        var numItems = fluid.portletLayout.numItemsInColumn (coords.columnIndex, layout);
-	        if ((siblingIndex < 0) || (siblingIndex >= numItems)) {
-	            return item;
-	        }
-	        else {
-	            var itemId = fluid.portletLayout.getItemAt (coords.columnIndex, siblingIndex, layout);
-	         
-  return jQuery ("#"+itemId)[0];
-	        }
+	    	var siblingId = fluid.portletLayout.itemAboveBelow (item.id, direction, layout);
+            return jQuery ("#"+siblingId)[0];
 	    };
 	
 	    /*
@@ -832,6 +823,23 @@ fluid.portletLayout = function () {
             }
             return topMostOrderableSibling;
         },
+        
+        /**
+         * Return the item above/below the given item within that item's column.  If at
+         * bottom of column or at top, return the item itelf (no wrapping).
+         */
+        itemAboveBelow: function (itemId, /*PREVIOUS, NEXT*/ direction, layout) {
+        	
+        	var coords = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
+            var siblingIndex = coords.itemIndex + direction;
+            var numItems = fluid.portletLayout.numItemsInColumn (coords.columnIndex, layout);
+            if ((siblingIndex < 0) || (siblingIndex >= numItems)) {
+                return itemId;
+            }
+            else {
+                return fluid.portletLayout.getItemAt (coords.columnIndex, siblingIndex, layout);
+            }
+        },
 
         /**
          * Return the number of items in the given column.  If the column index
@@ -924,7 +932,7 @@ fluid.portletLayout = function () {
                 return fluid.portletLayout.nearestNextMoveableTarget (itemId, layout, perms);
             }
             else {
-                return fluid.portletLayout.nearestPreviousMoveableTarget (itemId, layout, perms)
+                return fluid.portletLayout.nearestPreviousMoveableTarget (itemId, layout, perms);
             }
         },
         
@@ -935,20 +943,17 @@ fluid.portletLayout = function () {
             var startCoords = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
             
             // Safety check calcColumnAndItemIndex() returns either valid indices or negative
-            // values.  If the column index is negative, set found; loop below will bail
+            // values.  If the column index is negative, set found.
             if (startCoords.columnIndex < 0) {
                 found = true;
             }
             
-            // Loop thru all of the columns beginning with the <startCoords.columnIndex>'th column.
-            for (var i = startCoords.columnIndex; fluid.portletLayout.isColumn (i, layout) && !found; i++) {
-               
-                // Loop thru the target column's items, staring with the item just after the given item
+            if (!found) {
+                // Loop thru the target column's items, starting with the item just after the given item
                 // looking for an item that can be moved to (after).
-                var idsInCol = layout.columns[i].children;
-                var startItemIndex = ( i === startCoords.columnIndex ? startCoords.itemIndex : -1 )
-                for (var j = startItemIndex + 1; (j < idsInCol.length) && !found; j++) {
-                    var possibleTargetId = idsInCol[j]
+                var idsInCol = layout.columns[startCoords.columnIndex].children;
+                for (var i = startCoords.itemIndex + 1; (i < idsInCol.length) && !found; i++) {
+                    var possibleTargetId = idsInCol[i]
                     if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.AFTER, layout, perms))) {
                         nextPossibleTarget.id = possibleTargetId;
                     }
@@ -964,19 +969,17 @@ fluid.portletLayout = function () {
             var startCoords = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
             
             // Safety check calcColumnAndItemIndex() returns either valid indices or negative
-            // values.  If the column index is negative, set found; loop below will bail.
+            // values.  If the column index is negative, set found.
             if (startCoords.columnIndex < 0)  {
                 found = true;
             }
 
-            // Loop thru all of the columns beginning with the <startCoords.columnIndex>'th column.
-            for (var i = startCoords.columnIndex; fluid.portletLayout.isColumn (i, layout) && !found; i--) {
+            if (!found) {
                 // Loop thru the target column's items, starting with the item just before the given item,
                 // looking for an item that can be moved to (before).
-                var idsInCol = layout.columns[i].children;
-                var startItemIndex = ( i === startCoords.columnIndex ? startCoords.itemIndex : idsInCol.length );
-                for (var j = startItemIndex - 1; (j > -1) && !found; j--) {
-                    var possibleTargetId = idsInCol[j];
+                var idsInCol = layout.columns[startCoords.columnIndex].children;
+                for (var i = startCoords.itemIndex - 1; (i > -1) && !found; i--) {
+                    var possibleTargetId = idsInCol[i];
                     if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.BEFORE, layout, perms))) {
                         previousPossibleTarget.id = possibleTargetId;
                     }

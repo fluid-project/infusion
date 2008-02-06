@@ -307,6 +307,18 @@ function testNearestNextMoveableTarget() {
     // portlet8's nearest next is portlet9.
     actual = fluid.portletLayout.nearestNextMoveableTarget (portlet8id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet7's nearest next target should be portlet8", portlet9id, actual.id);
+
+    // portlet9 has no next since it is at the bottom of a column.
+    actual = fluid.portletLayout.nearestNextMoveableTarget (portlet9id, demo.portal.layout, demo.portal.dropTargetPerms);
+    assertEquals ("portlet9 has no next since it is at the bottom of a column", portlet9id, actual.id);
+
+    // portlet4 has no next since it is at the bottom of a column.
+    actual = fluid.portletLayout.nearestNextMoveableTarget (portlet4id, demo.portal.layout, demo.portal.dropTargetPerms);
+    assertEquals ("portlet9 has no next since it is at the bottom of a column", portlet4id, actual.id);
+
+    // portlet6 has no next since it is at the bottom of a column.
+    actual = fluid.portletLayout.nearestNextMoveableTarget (portlet6id, demo.portal.layout, demo.portal.dropTargetPerms);
+    assertEquals ("portlet6 has no next since it is at the bottom of a column", portlet6id, actual.id);
 }
 
 function testNearestPreviousMoveableTarget() {
@@ -327,15 +339,15 @@ function testNearestPreviousMoveableTarget() {
     actual = fluid.portletLayout.nearestPreviousMoveableTarget (portlet2id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet2's nearest next target should be portlet2", portlet2id, actual.id);
 
-    // portlet7's nearest previous is portlet6.
+    // portlet7 is at the top of the column.
     actual = fluid.portletLayout.nearestPreviousMoveableTarget (portlet7id, demo.portal.layout, demo.portal.dropTargetPerms);
-    assertEquals ("portlet7's nearest next target should be portlet6", portlet6id, actual.id);
+    assertEquals ("portlet7 has no previous since it is at the top of a column", portlet7id, actual.id);
 
-    // portlet8's nearest previous is portlet6.
+    // portlet8's can't be moved up since portlet7 has greater precedence.
     actual = fluid.portletLayout.nearestPreviousMoveableTarget (portlet8id, demo.portal.layout, demo.portal.dropTargetPerms);
-    assertEquals ("portlet8's nearest previous target should be portlet6", portlet6id, actual.id);
+    assertEquals ("portlet8's 't be moved up since portlet7 has greater precedence", portlet8id, actual.id);
 
-    // portlet9's nearest next is portlet8.
+    // portlet9's nearest previous is portlet8.
     actual = fluid.portletLayout.nearestPreviousMoveableTarget (portlet9id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet9's nearest previous target should be portlet6", portlet8id, actual.id);
 }
@@ -384,3 +396,59 @@ function testFirstItemInAdjacentColumn() {
     actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet9id, fluid.direction.NEXT, demo.portal.layout);
     assertEquals ("portlet9 has not right neighbour since it is in the right-most column", portlet9id, actualId);   
 }
+
+function testItemAboveBelow() {
+    var above = fluid.direction.PREVIOUS;
+    var below = fluid.direction.NEXT;
+    
+    // Above
+    var itemAboveId = fluid.portletLayout.itemAboveBelow (portlet9id, above, demo.portal.layout);
+    assertEquals (portlet8id+" should be above "+portlet9id,
+        portlet8id, itemAboveId);
+
+    itemAboveId = fluid.portletLayout.itemAboveBelow (portlet1id, above, demo.portal.layout);
+    assertEquals (portlet1id +" is at the top of the column, so nothing is 'above' it",
+        portlet1id, itemAboveId);
+
+    itemAboveId = fluid.portletLayout.itemAboveBelow (portlet7id, above, demo.portal.layout);
+    assertEquals (portlet7id +" is at the top of the column, expected nothing 'above' it but got " + itemAboveId,
+        portlet7id, itemAboveId);
+
+    itemAboveId = fluid.portletLayout.itemAboveBelow (portlet4id, above, demo.portal.layout);
+    assertEquals (portlet3id+" should be above "+portlet4id,
+        portlet3id, itemAboveId);
+
+    itemAboveId = fluid.portletLayout.itemAboveBelow (portlet8id, above, demo.portal.layout);
+    assertEquals (portlet7id+" should be above "+portlet8id,
+        portlet7id, itemAboveId);
+
+    itemAboveId = fluid.portletLayout.itemAboveBelow (portlet2id, above, demo.portal.layout);
+    assertEquals (portlet1id+" should be above "+portlet2id,
+        portlet1id, itemAboveId);
+
+    // Below
+    var itemBelowId = fluid.portletLayout.itemAboveBelow (portlet3id, below, demo.portal.layout);
+    assertEquals (portlet4id+" should be below "+portlet3id,
+        portlet4id, itemBelowId);
+
+    itemBelowId = fluid.portletLayout.itemAboveBelow (portlet7id, below, demo.portal.layout);
+    assertEquals (portlet8id+" should be below "+portlet7id,
+        portlet8id, itemBelowId);
+
+    itemBelowId = fluid.portletLayout.itemAboveBelow (portlet8id, below, demo.portal.layout);
+    assertEquals (portlet9id+" should be below "+portlet8id,
+        portlet9id, itemBelowId);
+
+    itemBelowId = fluid.portletLayout.itemAboveBelow (portlet4id, below, demo.portal.layout);
+    assertEquals (portlet4id.id+" is at the bottom of the column, so nothing is 'below' it",
+        portlet4id, itemBelowId);
+
+    itemBelowId = fluid.portletLayout.itemAboveBelow (portlet9id, below, demo.portal.layout);
+    assertEquals (portlet9id.id+" is at the bottom of the column, so nothing is 'below' it",
+        portlet9id, itemBelowId);
+
+    itemBelowId = fluid.portletLayout.itemAboveBelow (portlet1id, below, demo.portal.layout);
+    assertEquals (portlet2id+" should be below "+portlet1id,
+        portlet2id, itemBelowId);
+
+}   // end testItemAboveBelow().
