@@ -143,9 +143,9 @@ function testUpdateLayout () {
 }
 
 
-function testFirstDroppableTargetSkipColumn() {
-    var moveRight = 1;
-    var moveLeft = -1;
+function testFirstMoveableTargetSkipColumn() {
+    var moveRight = fluid.direction.NEXT;
+    var moveLeft = fluid.direction.PREVIOUS;
 
     var smallLayout = { 
         id:"t2",
@@ -163,91 +163,80 @@ function testFirstDroppableTargetSkipColumn() {
     ];
     
     // Test move portlet 1 right, expect it can't be dropped in column 2
-    var nextColIndex = 1;
     var expected = { id: portlet3id, position: fluid.position.BEFORE };
-    var actual = fluid.portletLayout.firstDroppableTarget (portlet1id, nextColIndex, moveRight, smallLayout, smallDropTargetPerms);
+    var actual = fluid.portletLayout.firstMoveableTarget (portlet1id, moveRight, smallLayout, smallDropTargetPerms);
     assertEquals ("Moving portlet1 right, should find portlet3...", expected.id, actual.id);
     assertEquals ("...moving portlet1 right, should find BEFORE (0)", expected.position, actual.position);
 
     // Test move portlet 3 left, expect it can't be dropped in column 2
-    nextColIndex = 1;
     expected = { id: portlet1id, position: fluid.position.BEFORE };
-    actual = fluid.portletLayout.firstDroppableTarget (portlet3id, nextColIndex, moveLeft, smallLayout, smallDropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet3id, moveLeft, smallLayout, smallDropTargetPerms);
     assertEquals ("Moving portlet3 left, should find portlet1...", expected.id, actual.id);
     assertEquals ("...moving portlet3 left, should find BEFORE (0)", expected.position, actual.position);
-    
 }
 
-function testFirstDroppableTarget() {
-    var moveRight = 1;
-    var moveLeft = -1;
+function testFirstMoveableTarget() {
+    var moveRight = fluid.direction.NEXT;
+    var moveLeft = fluid.direction.PREVIOUS;
 
     // Given: moving the last portlet in the 1st column (portlet4),
     // Find: the first portlet in the 2nd column where it can drop.
     // Result should be "after portlet five"
-    var nextColIndex = 1;
     var expected = { id: portlet5id, position: fluid.position.AFTER };
-    var actual = fluid.portletLayout.firstDroppableTarget (portlet4id, nextColIndex, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+    var actual = fluid.portletLayout.firstMoveableTarget (portlet4id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Moving portlet4 right, should find portlet5...", expected.id, actual.id);
     assertEquals ("...moving portlet4 right, should find AFTER (1)", expected.position, actual.position);
     
     // Can't move portlet1 nor portlet2 right at all (they are fixed).
-    actual = fluid.portletLayout.firstDroppableTarget (portlet1id, nextColIndex, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet1id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Can't move portlet1 right at all", portlet1id, actual.id);
-    actual = fluid.portletLayout.firstDroppableTarget (portlet2id, nextColIndex, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet2id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Can't move portlet2 right at all", portlet2id, actual.id);
     
     // Can't move portlet5 left nor right (it's fixed).
-    nextColIndex = 2;
-    actual = fluid.portletLayout.firstDroppableTarget (portlet5id, nextColIndex, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet5id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Can't move portlet5id right at all", portlet5id, actual.id);
-    nextColIndex = 0;
-    actual = fluid.portletLayout.firstDroppableTarget (portlet5id, nextColIndex, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet5id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Can't move portlet5id left at all", portlet5id, actual.id);
     
     // Can't move any portlet in first column left.
-    var noSuchColumn = -1;
-    actual = fluid.portletLayout.firstDroppableTarget (portlet1id, noSuchColumn, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet1id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Can't move portlet1 left at all", portlet1id, actual.id);
     
-    actual = fluid.portletLayout.firstDroppableTarget (portlet2id, noSuchColumn, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet2id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Can't move portlet2 left at all", portlet2id, actual.id);
     
-    actual = fluid.portletLayout.firstDroppableTarget (portlet3id, noSuchColumn, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet3id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Can't move portlet3 left at all", portlet3id, actual.id);
     
-    actual = fluid.portletLayout.firstDroppableTarget (portlet4id, noSuchColumn, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet4id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Can't move portlet4 left at all", portlet4id, actual.id);
 
     // Can't move any portlet in last column right.
-    noSuchColumn = 3;
-    actual = fluid.portletLayout.firstDroppableTarget (portlet7id, noSuchColumn, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet7id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Can't move portlet7id left at all", portlet7id, actual.id);
     
-    actual = fluid.portletLayout.firstDroppableTarget (portlet8id, noSuchColumn, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet8id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Can't move portlet8id left at all", portlet8id, actual.id);
     
-    actual = fluid.portletLayout.firstDroppableTarget (portlet9id, noSuchColumn, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet9id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Can't move portlet9id left at all", portlet9id, actual.id);
    
     // Moving portlet7 left, should give "after portlet5".
-    nextColIndex = 1;
     expected = { id: portlet5id, position: fluid.position.AFTER };
-    actual = fluid.portletLayout.firstDroppableTarget (portlet7id, nextColIndex, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet7id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Moving portlet7 left, should find portlet5...", expected.id, actual.id);
     assertEquals ("...moving portlet7 left, should find AFTER (1)", expected.position, actual.position);
      
     // Moving portlet 6 left, should give "after portlet3".
-    nextColIndex = 0;
     expected = { id: portlet3id, position: fluid.position.AFTER };
-    actual = fluid.portletLayout.firstDroppableTarget (portlet6id, nextColIndex, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet6id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Moving portlet6 left, should find portlet3...", expected.id, actual.id);
     assertEquals ("...moving portlet6 left, should find AFTER (1)", expected.position, actual.position);   
 
     // Moving portlet 6 right, should give "after portlet7".
-    nextColIndex = 2;
     expected = { id: portlet7id, position: fluid.position.AFTER };
-    actual = fluid.portletLayout.firstDroppableTarget (portlet6id, nextColIndex, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.firstMoveableTarget (portlet6id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("Moving portlet6 right, should find portlet7...", expected.id, actual.id);
     assertEquals ("...moving portlet6 right, should find AFTER (1)", expected.position, actual.position);   
 }
@@ -349,4 +338,49 @@ function testNearestPreviousMoveableTarget() {
     // portlet9's nearest next is portlet8.
     actual = fluid.portletLayout.nearestPreviousMoveableTarget (portlet9id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet9's nearest previous target should be portlet6", portlet8id, actual.id);
+}
+
+function testFirstItemInAdjacentColumn() {
+
+    // portlet1 has no left neighbour, portlet5 is at the top of the next column.
+    var actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet1id, fluid.direction.PREVIOUS, demo.portal.layout);
+    assertEquals ("portlet1's has no left neighbour since it is in the left-most column", portlet1id, actualId);
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet1id, fluid.direction.NEXT, demo.portal.layout);
+    assertEquals ("portlet1's right neighbour should be portlet5", portlet5id, actualId);
+    
+    // portlet2 has no left neighbour, portlet5 is at the top of the next column.
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet2id, fluid.direction.PREVIOUS, demo.portal.layout);
+    assertEquals ("portlet2 has no left neighbour since it is in the left-most column", portlet2id, actualId);
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet2id, fluid.direction.NEXT, demo.portal.layout);
+    assertEquals ("portlet2's right neighbour should be portlet5", portlet5id, actualId);
+    
+    // portlet4 has no left neighbour, portlet5 is at the top of the next column.
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet4id, fluid.direction.PREVIOUS, demo.portal.layout);
+    assertEquals ("portlet4 has no left neighbour since it is in the left-most column", portlet4id, actualId);
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet4id, fluid.direction.NEXT, demo.portal.layout);
+    assertEquals ("portlet4's right neighbour should be portlet5", portlet5id, actualId);
+    
+    // portlet1 is at the top of the previous column wrt portlet5; portlet7 is at the top of the next column.
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet5id, fluid.direction.PREVIOUS, demo.portal.layout);
+    assertEquals ("portlet1 is at the top of the column left of portlet5", portlet1id, actualId);
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet5id, fluid.direction.NEXT, demo.portal.layout);
+    assertEquals ("portlet7 is at the top of the column right of portlet5", portlet7id, actualId);
+    
+    // portlet1 is at the top of the previous column wrt portlet6; portlet7 is at the top of the next column.
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet6id, fluid.direction.PREVIOUS, demo.portal.layout);
+    assertEquals ("portlet1 is at the top of the column left of portlet6", portlet1id, actualId);
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet6id, fluid.direction.NEXT, demo.portal.layout);
+    assertEquals ("portlet7 is at the top of the column right of portlet6", portlet7id, actualId);
+
+    // portlet15 is at the top of the previous column wrt portlet7; portlet7 has no ritht neighbour.
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet7id, fluid.direction.PREVIOUS, demo.portal.layout);
+    assertEquals ("portlet5 is at the top of the column left of portlet7", portlet5id, actualId);
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet7id, fluid.direction.NEXT, demo.portal.layout);
+    assertEquals ("portlet7 has not right neighbour since it is in the right-most column", portlet7id, actualId);
+    
+    // portlet5 is at the top of the previous column wrt portlet9; portlet9 has no right neighbour.
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet9id, fluid.direction.PREVIOUS, demo.portal.layout);
+    assertEquals ("portlet5 is at the top of the column left of portlet9", portlet5id, actualId);
+    actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet9id, fluid.direction.NEXT, demo.portal.layout);
+    assertEquals ("portlet9 has not right neighbour since it is in the right-most column", portlet9id, actualId);   
 }

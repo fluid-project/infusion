@@ -36,11 +36,12 @@ function exposeTestFunctionNames() {
         "testNumItemsInColumn",
         "testNumColumns",
         "testUpdateLayout",
-        "testFirstDroppableTarget",
-        "testFirstDroppableTargetSkipColumn",
+        "testFirstMoveableTarget",
+        "testFirstMoveableTargetSkipColumn",
         "testGetItemAt",
         "testNearestNextMoveableTarget",
         "testNearestPreviousMoveableTarget",
+        "testFirstItemInAdjacentColumn",
 
         // PortletLayoutHandlerTests.js
 		"testGetItemAbove",

@@ -57,12 +57,12 @@ function testGetLeftSibling() {
 		jQuery ("#" + portlet1id)[0], leftSibling);
 
 	leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet6id)[0]);
-	assertEquals(portlet2id+" should to the left of "+portlet6id,
-		jQuery ("#" + portlet2id)[0], leftSibling);
+	assertEquals(portlet1id+" should to the left of "+portlet6id,
+		jQuery ("#" + portlet1id)[0], leftSibling);
 
 	leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet9id)[0]);
-	assertEquals(portlet6id+" should to the left of "+portlet9id,
-		jQuery ("#" + portlet6id)[0], leftSibling);
+	assertEquals(portlet5id+" should to the left of "+portlet9id,
+		jQuery ("#" + portlet5id)[0], leftSibling);
 
 	leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet1id)[0]);
 	assertEquals(portlet1id+" is at the far left, so nothing is to the left",
@@ -75,16 +75,16 @@ function testGetLeftSibling() {
 
 function testGetRightSibling() {
 	var rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet2id)[0]);
-	assertEquals(portlet6id+" should to the right of "+portlet2id,
-		jQuery ("#" + portlet6id)[0], rightSibling);
+	assertEquals(portlet5id+" should to the right of "+portlet2id,
+		jQuery ("#" + portlet5id)[0], rightSibling);
 
 	rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet4id)[0]);
-	assertEquals(portlet6id+" should to the right of "+portlet4id,
-		jQuery ("#" + portlet6id)[0], rightSibling);
+	assertEquals(portlet5id+" should to the right of "+portlet4id,
+		jQuery ("#" + portlet5id)[0], rightSibling);
 
 	rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet6id)[0]);
 	assertEquals(portlet8id+" should to the right of "+portlet6id,
-		jQuery ("#" + portlet8id)[0], rightSibling);
+		jQuery ("#" + portlet7id)[0], rightSibling);
 
 	rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet7id)[0]);
 	assertEquals(portlet7id+" is at the far right, so nothing is to the right",
@@ -183,19 +183,27 @@ function testCallbackReturnValue() {
                      { id:"c3", children:["portlet8","portlet9"]}
                     ]
                 };
-
+                
+    var portletLayout = fluid.testUtils.cloneObj (demo.portal.layout);
     portletHandler = new fluid.PortletLayoutHandler (
-        fluid.testUtils.cloneObj(demo.portal.layout), 
+        portletLayout, 
         demo.portal.dropTargetPerms,
         { orderChangedCallback: function () {return newLayout;} }
     );
 
     // this test uses the layout handler's public api get methods instead of inspecting the dom
     assertEquals ("Before move portlet 7 is to the right of portlet 5", portlet7id,
-            portletHandler.getRightSibling(jQuery("#"+portlet5id)[0]).id);
+            portletHandler.getRightSibling (jQuery ("#"+portlet5id)[0]).id);
     
     portletHandler.moveItemLeft (jQuery ("#" + portlet7id)[0]);
 
-    assertEquals ("After move portlet 7 is to the left of portlet 9", portlet7id,
-            portletHandler.getLeftSibling(jQuery("#"+portlet9id)[0]).id);
+    // Compare <newLayout> to original given in <portletLayout>.
+    for (var i = 0; i < newLayout.columns.length; i++) {
+        var aColumn = newLayout.columns[i];
+        for (var j = 0; j < aColumn.children.length; j++) {
+            var aChild = aColumn.children[j];
+            assertEquals ("After move, column " + i + ", item " + j,
+                aChild, portletLayout.columns[i].children[j]);
+        }
+    }
 }
