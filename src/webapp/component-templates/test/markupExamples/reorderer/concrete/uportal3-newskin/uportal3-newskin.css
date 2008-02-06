@@ -1,5 +1,4 @@
 .orderable-default{
-  border: 2px solid green;
 }
 
 .orderable-hover{
@@ -7,7 +6,7 @@
 }
 
 .orderable-selected{
-  border: 2px solid blue;
+  border: 2px solid #666;
 }
 
 .orderable-avatar {
