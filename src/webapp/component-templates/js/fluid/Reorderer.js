@@ -283,7 +283,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         
         item.draggable ({
             helper: function() {
-                theAvatar = jQuery (this).clone();
+                theAvatar = item.clone();
                 jQuery (theAvatar).removeAttr ("id");
                 jQuery ("[id]", theAvatar).removeAttr ("id");
                 jQuery (":hidden", theAvatar).remove(); 
@@ -292,26 +292,27 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 return theAvatar;
             },
             start: function (e, ui) {
-                thisReorderer.focusItem (ui.draggable.element);                
-                jQuery (ui.draggable.element).addClass (thisReorderer.cssClasses.dragging);
-                ui.draggable.element.setAttribute ("aaa:grab", "true");
+                thisReorderer.focusItem (item[0]);                
+                item.addClass (thisReorderer.cssClasses.dragging);
+                item.attr ("aaa:grab", "true");
                 
                 // In order to create valid html, the drop marker is the same type as the node being dragged.
                 // This creates a confusing UI in cases such as an ordered list. 
                 // drop marker functionality should be made pluggable. 
-                dropMarker = document.createElement (ui.draggable.element.tagName);
+                dropMarker = document.createElement (item[0].tagName);
                 jQuery (dropMarker).addClass (thisReorderer.cssClasses.dropMarker);
                 dropMarker.style.visibility = "hidden";
             },
             stop: function(e, ui) {
-                jQuery (ui.draggable.element).removeClass (thisReorderer.cssClasses.dragging);
+                item.removeClass (thisReorderer.cssClasses.dragging);
                 thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
                 thisReorderer.domNode.focus();
                 if (dropMarker.parentNode) {
                     dropMarker.parentNode.removeChild (dropMarker);
                 }
                 theAvatar = null;
-            }
+            },
+            handle: findItems.handleClassName ? jQuery ("."+findItems.handleClassName, item) : item
         });
     }   
 
