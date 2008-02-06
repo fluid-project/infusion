@@ -263,21 +263,15 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 
         item.mouseover ( 
             function () {
-                var handle = this;
-                if (findItems.handleClassName) {
-                    handle = jQuery("."+findItems.handleClassName, this);
-                }
-                jQuery (handle).addClass (thisReorderer.cssClasses.hover);
+                var handle = findItems.grabHandle ? jQuery (findItems.grabHandle (item[0])) : item;
+                handle.addClass (thisReorderer.cssClasses.hover);
             }
         );
         
         item.mouseout (  
             function () {
-                var handle = this;
-                if (findItems.handleClassName) {
-                    handle = jQuery("."+findItems.handleClassName, this);
-                }
-                jQuery (handle).removeClass (thisReorderer.cssClasses.hover);
+                var handle = findItems.grabHandle ? jQuery (findItems.grabHandle (item[0])) : item;
+                handle.removeClass (thisReorderer.cssClasses.hover);
             }
         );
         
@@ -312,31 +306,31 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 }
                 theAvatar = null;
             },
-            handle: findItems.handleClassName ? jQuery ("."+findItems.handleClassName, item) : item
+            handle: findItems.grabHandle ? findItems.grabHandle (item[0]) : item
         });
     }   
 
     /**
      * Takes a jQuery object and a selector that matches movable items
      */
-    function initDropTarget (anItem, selector) {
-        anItem.droppable ({
+    function initDropTarget (item, selector) {
+        item.droppable ({
             accept: selector,
             tolerance: "pointer",
             over: function (e, ui) {
                 // the second parameter to bind() can be accessed through the event as event.data
-                jQuery (ui.droppable.element).bind ("mousemove", ui.droppable.element, trackMouseMovement);    
-                jQuery (theAvatar).bind ("mousemove", ui.droppable.element, trackMouseMovement);            
+                item.bind ("mousemove", item[0], trackMouseMovement);    
+                jQuery (theAvatar).bind ("mousemove", item[0], trackMouseMovement);            
                 dropMarker.style.visibility = "visible";
             },
             out: function (e, ui) {
                 dropMarker.style.visibility = "hidden";
-                jQuery (ui.droppable.element).unbind ("mousemove", trackMouseMovement);
+                item.unbind ("mousemove", trackMouseMovement);
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
             },
             drop: function (e, ui) {
-                layoutHandler.mouseMoveItem(e, ui.draggable.element, ui.droppable.element);
-                jQuery (ui.droppable.element).unbind ("mousemove", trackMouseMovement);
+                layoutHandler.mouseMoveItem (e, ui.draggable.element, item[0]);
+                item.unbind ("mousemove", trackMouseMovement);
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
             }
         });
@@ -954,7 +948,7 @@ fluid.portletLayout = function () {
                 // looking for an item that can be moved to (after).
                 var idsInCol = layout.columns[startCoords.columnIndex].children;
                 for (var i = startCoords.itemIndex + 1; (i < idsInCol.length) && !found; i++) {
-                    var possibleTargetId = idsInCol[i]
+                    var possibleTargetId = idsInCol[i];
                     if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.AFTER, layout, perms))) {
                         nextPossibleTarget.id = possibleTargetId;
                     }

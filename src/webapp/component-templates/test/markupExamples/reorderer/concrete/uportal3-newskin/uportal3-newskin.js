@@ -24,11 +24,17 @@ demo.initPortletReorderer = function() {
         return jQuery ("#portlet_u14l1n49,#portlet_u14l1n52,#portlet_u14l1n51,#portlet_n101");
     };
 
+    var grabHandle = function (item) {        
+        // the handle is the toolbar. The toolbar id is the same as the portlet id, with the
+        // "portlet_" prefix replaced by "toolbar_".
+        return jQuery ("[id=toolbar_" + item.id.split ("_")[1] + "]");
+    };
+    
     var items = {
         movables: findMovables,
         selectables: findPortlets,
         dropTargets: findPortlets,
-        handleClassName: "portlet-toolbar"
+        grabHandle: grabHandle
     };
     
     var layout = { 
