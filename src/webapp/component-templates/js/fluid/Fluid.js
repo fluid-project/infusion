@@ -160,7 +160,7 @@ fluid.Utilities.adaptFindItems = function (finder) {
     findItems.movables = findItems.movables || finderFn;
     findItems.selectables = findItems.selectables || findItems.movables;
     findItems.dropTargets = findItems.dropTargets || findItems.movables;
+    findItems.grabHandle = findItems.grabHandle || function (item) { return item; };
         
     return findItems;
-    
 };

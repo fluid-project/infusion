@@ -263,14 +263,14 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 
         item.mouseover ( 
             function () {
-                var handle = findItems.grabHandle ? jQuery (findItems.grabHandle (item[0])) : item;
+                var handle = jQuery (findItems.grabHandle (item[0]));
                 handle.addClass (thisReorderer.cssClasses.hover);
             }
         );
         
         item.mouseout (  
             function () {
-                var handle = findItems.grabHandle ? jQuery (findItems.grabHandle (item[0])) : item;
+                var handle = jQuery (findItems.grabHandle (item[0]));
                 handle.removeClass (thisReorderer.cssClasses.hover);
             }
         );
@@ -306,7 +306,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 }
                 theAvatar = null;
             },
-            handle: findItems.grabHandle ? findItems.grabHandle (item[0]) : item
+            handle: findItems.grabHandle (item[0])
         });
     }   
 
