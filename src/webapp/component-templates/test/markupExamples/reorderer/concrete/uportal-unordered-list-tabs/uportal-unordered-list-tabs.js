@@ -14,7 +14,7 @@ var demo = demo || {};
 
 demo.initUportalUnorderedListTabs = function () {
 
-    var tabListContainer = jQuery ("#tabList");
+    var tabListContainer = fluid.utils.jById ("tabList");
 
     var findOrderableTabs = function () {
         return jQuery ("[id^=tab_]", tabListContainer);

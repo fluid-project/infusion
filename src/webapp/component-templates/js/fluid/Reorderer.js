@@ -34,7 +34,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         avatar: "orderable-avatar"
     };
 
-    findItems = fluid.Utilities.adaptFindItems (findItems);
+    findItems = fluid.utils.adaptFindItems (findItems);
 
     // This should be replaced with proper parsing of the options that we expect    
     if (options) {
@@ -514,7 +514,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     
     // Public layout handlers.
     fluid.ListLayoutHandler = function (findItems, options) {
-        findItems = fluid.Utilities.adaptFindItems (findItems);
+        findItems = fluid.utils.adaptFindItems (findItems);
         var orderChangedCallback = function () {};
         var orientation = fluid.orientation.VERTICAL;
         if (options) {
@@ -575,7 +575,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	fluid.GridLayoutHandler = function (findItems, options) {
         fluid.ListLayoutHandler.call (this, findItems, options);
 
-        findItems = fluid.Utilities.adaptFindItems (findItems);
+        findItems = fluid.utils.adaptFindItems (findItems);
         
         var orderChangedCallback = function () {};
         if (options) {
@@ -639,7 +639,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	     */
 	    var getVerticalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
 	    	var siblingId = fluid.portletLayout.itemAboveBelow (item.id, direction, layout);
-            return jQuery ("#"+siblingId)[0];
+            return fluid.utils.jById (siblingId)[0];
 	    };
 	
 	    /*
@@ -651,7 +651,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	     */
 	    var getHorizontalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
 	        var itemId = fluid.portletLayout.firstItemInAdjacentColumn (item.id, direction, layout);
-	        return jQuery ("#"+itemId)[0];
+	        return fluid.utils.jById (itemId)[0];
         };
 	    	    
         // This should probably be part of the public API so it can be configured.
@@ -672,13 +672,13 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         
         var moveHorizontally = function (item, direction /* PREVIOUS, NEXT */) {
             var targetInfo = fluid.portletLayout.firstMoveableTarget (item.id, direction, layout, targetPerms);
-            var targetItem = jQuery ("[id=" + targetInfo.id + "]")[0];
+            var targetItem = fluid.utils.jById (targetInfo.id)[0];
             move (item, targetItem, targetInfo.position);
         };
         
         var moveVertically = function (item, direction /* PREVIOUS, NEXT */) {
             var target = fluid.portletLayout.nearestMoveableTarget (item.id, direction, layout, targetPerms);
-            var targetItem = jQuery ("[id=" + target.id + "]")[0];
+            var targetItem = fluid.utils.jById (target.id)[0];
             move (item, targetItem, target.position);
         };
         
@@ -808,12 +808,12 @@ fluid.portletLayout = function () {
             var column = layout.columns[columnIndex];
             if (column) {
                 var id = column.children[itemIndex];
-                topMostOrderableSibling = jQuery ("#" + id)[0];
+                topMostOrderableSibling = fluid.utils.jById (id)[0];
                 // loop down the column looking for first orderable portlet (i.e. skip over non-movable portlets)
                 while (orderableItems.index (topMostOrderableSibling) === -1) {
                     itemIndex += 1;
                     id = column.children[itemIndex];
-                    topMostOrderableSibling = jQuery ("#" + id)[0];
+                    topMostOrderableSibling = fluid.utils.jById (id)[0];
                 }
             }
             return topMostOrderableSibling;
@@ -1013,6 +1013,10 @@ fluid.portletLayout = function () {
         
         isInRightmostColumn: function (itemId, layout) {
             return (fluid.portletLayout.findColIndex (itemId, layout) === fluid.portletLayout.numColumns (layout)-1);
+        },
+        
+        containerId: function (layout) {
+            return layout.id;
         }
     };	
 } ();

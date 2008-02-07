@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../../../../../js/jquery.ui-1.0/ui.droppable.js"></script>
     <script type="text/javascript" src="../../../../../js/fluid/Fluid.js"></script>
     <script type="text/javascript" src="../../../../../js/fluid/Reorderer.js"></script>
+    <script type="text/javascript" src="../../../../../js/fluid/Portal.js"></script>
     <script type="text/javascript" src="portlets.js"></script>
 
     <!--  These are used for JsUnit tests that have been written using this page as data -->
@@ -79,7 +80,7 @@
     </div>
 
     <script type="text/javascript">    
-        var aPortletReorderer = demo.portal.initPortletReorderer ();   /* in portlets.js */
+        var aPortletReorderer = fluid.initPortalReorderer (demo.portal.layout, demo.portal.dropTargetPerms);
     </script>
   </body>
 </html>

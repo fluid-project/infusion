@@ -12,6 +12,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Ensure the demo namespace exists
 var demo = demo || {};
 
+// This should be replaced with a call to fluid.initPortletReorderer
 demo.initPortletReorderer = function() {
 
     var portletReordererRoot = jQuery("[id=portalPage]");

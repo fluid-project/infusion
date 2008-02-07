@@ -41,8 +41,8 @@ function testCalcColumnAndItemIndex () {
     assertEquals (portlet9id + " should be in 3rd column", 2, fluid.portletLayout.calcColumnAndItemIndex (portlet9id, demo.portal.layout).columnIndex);
     
     // Not in any column.
-    var item = jQuery (demo.portal.portalRootSelector);
-    assertEquals (demo.portal.portalRootSelector + " should not be in any column", -1, fluid.portletLayout.calcColumnAndItemIndex (item.id, demo.portal.layout).columnIndex);
+    var item = fluid.utils.jById (portalRootId);
+    assertEquals (portalRootId + " should not be in any column", -1, fluid.portletLayout.calcColumnAndItemIndex (item.id, demo.portal.layout).columnIndex);
     
     // Tests for item index:    
     assertEquals ("portlet1 (no column index provided) should have index 0", 0, fluid.portletLayout.calcColumnAndItemIndex (portlet1id, demo.portal.layout).itemIndex);

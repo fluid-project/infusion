@@ -20,7 +20,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
  * @author Fluid
  */
 function testIsOrderChangedCallbackCalled() {
-	var lightboxContainer = jQuery ("[id=" + lightboxRootId + "]");
+	var lightboxContainer = fluid.utils.jById (lightboxRootId);
 
     // Define a "persistence" callback that simply creates a known
     // input element with id 'callbackCalled'.  Later, we can test

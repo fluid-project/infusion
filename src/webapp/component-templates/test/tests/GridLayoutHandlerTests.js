@@ -44,7 +44,7 @@ function testGetItemBelowWrapped() {
 }
 
 function testGetItemBelowOneRow() {
-    var container = jQuery ("[id=" + lightboxRootId + "]");
+    var container = fluid.utils.jById (lightboxRootId);
     var gridHandler = createGridLayoutHandler ();
     container.addClass ("width-all-thumb");
     
@@ -62,7 +62,7 @@ function testGetItemBelowOneRow() {
     
 }
 function testGetItemAbove() {
-	var container = jQuery ("[id=" + lightboxRootId + "]");
+	var container = fluid.utils.jById (lightboxRootId);
     var gridHandler = createGridLayoutHandler ();
 	container.removeClass ("width-3-thumb");
 	container.addClass ("width-4-thumb");
@@ -94,7 +94,7 @@ function testGetItemAbove() {
 }
 
 function testGetItemAboveWrapped() {
-    var container = jQuery ("[id=" + lightboxRootId + "]");
+    var container = fluid.utils.jById (lightboxRootId);
     var gridHandler = createGridLayoutHandler ();
     container.removeClass ("width-3-thumb");
     container.addClass ("width-4-thumb");
@@ -130,7 +130,7 @@ function testGetItemAboveWrapped() {
 }
 
 function testGetItemAboveOneRow() {
-	var container = jQuery ("[id=" + lightboxRootId + "]");
+	var container = fluid.utils.jById (lightboxRootId);
     var gridHandler = createGridLayoutHandler ();
 	container.addClass ("width-all-thumb");
 	

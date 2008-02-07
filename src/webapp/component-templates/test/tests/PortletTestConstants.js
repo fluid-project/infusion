@@ -13,6 +13,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
  * This file contains test constants and setup and teardown functions that are used when
  * testing with the data in the portlets.html file.
  */
+ 
+var portalRootId = "portlet-reorderer-root";
+
 var portlet1id = "portlet1";
 var portlet2id = "portlet2";
 var portlet3id = "portlet3";
@@ -67,7 +70,7 @@ var portletHandler;
  * layout and dropTargetPerms are defined in portlets.js
  */
 function setUp() {
-	var table = jQuery (demo.portal.portalRootSelector);
+	var table = fluid.utils.jById (portalRootId);
     portletRootClone = table.clone();
     var layoutClone = fluid.testUtils.cloneObj(demo.portal.layout);
     
@@ -75,6 +78,6 @@ function setUp() {
 }
 
 function tearDown() {
-    jQuery (demo.portal.portalRootSelector).replaceWith (portletRootClone);
+    fluid.utils.jById (portalRootId).replaceWith (portletRootClone);
 }
 

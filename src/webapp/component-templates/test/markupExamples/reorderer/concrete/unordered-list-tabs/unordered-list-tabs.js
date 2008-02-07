@@ -13,7 +13,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 
 demo.initUnorderedListTabs = function () {
-    var tabList = jQuery ("#tabList");
+    var tabList = fluid.utils.jById ("tabList");
     
     // Identifies the orderable elements by their unique id prefix.
     var findOrderableTabs = function  () {

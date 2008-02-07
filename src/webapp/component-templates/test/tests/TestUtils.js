@@ -73,7 +73,7 @@ fluid.testUtils.assertNotNullAndNotUndefined = function (message, value) {
  * Returns the actual element.
  */
 fluid.testUtils.byId = function (id) {
-	return jQuery ("[id=" + id + "]").get(0);
+	return fluid.utils.jById(id)[0];
 };
 
 /**
@@ -106,10 +106,10 @@ fluid.testUtils.cloneObj = function (obj) {
     
     // Generic objects
     newObj = new obj.constructor();
-    for (var i in obj) {
-        if ( !(i in newObj) || newObj[i] != obj[i]) {
-            newObj[i] = fluid.testUtils.cloneObj (obj[i]);
+    for (var item in obj) {
+        if ( !(item in newObj) || newObj[item] !== obj[item]) {
+            newObj[item] = fluid.testUtils.cloneObj (obj[item]);
         }
     }
     return newObj;
-}
+};

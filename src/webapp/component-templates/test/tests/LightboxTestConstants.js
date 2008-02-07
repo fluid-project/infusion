@@ -105,7 +105,7 @@ function exposeTestFunctionNames() {
 var imgListClone;
 
 function fetchLightboxRoot () {
-    return jQuery("[id=" + lightboxRootId + "]");
+    return fluid.utils.jById (lightboxRootId);
 }
 
 // This setUp will be called before each of the tests that are included in Lightbox.html 

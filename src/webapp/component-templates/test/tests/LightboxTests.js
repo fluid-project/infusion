@@ -28,7 +28,7 @@ function itemsInOriginalPositionTest(desc) {
 }
 
 function isItemDefaultTest(message, itemId) {
-    var item = jQuery ("[id=" + itemId + "]");
+    var item = fluid.utils.jById (itemId);
     
     assertTrue(message + itemId  +  " should be default", item.hasClass (defaultClass));
     assertFalse(message + itemId  +  " not be focused", item.hasClass (selectedClass));
@@ -36,7 +36,7 @@ function isItemDefaultTest(message, itemId) {
 }
 
 function isItemFocusedTest(message, itemId) {
-    var item = jQuery ("[id=" + itemId + "]");
+    var item = fluid.utils.jById (itemId);
     
     assertTrue(message + itemId  +  " should be focused", item.hasClass (selectedClass));   
     assertFalse(message + itemId  +  " should not be default", item.hasClass (defaultClass));
@@ -44,7 +44,7 @@ function isItemFocusedTest(message, itemId) {
 }
 
 function isItemDraggedTest(message, itemId) {
-    var item = jQuery ("[id=" + itemId + "]");
+    var item = fluid.utils.jById (itemId);
     
     assertTrue(message + itemId  +  " should be dragging", item.hasClass (draggingClass));  
     assertFalse(message + itemId  +  " should not be default",item.hasClass (defaultClass));
@@ -97,7 +97,7 @@ function testHandleArrowKeyPressMoveThumbDown() {
 function testHandleArrowKeyPressForUpAndDown() {
 	var lightbox = createLightbox();
 	// setup: force the grid to have four columns
-	var lightboxRoot = jQuery ("[id=" + lightboxRootId + "]");
+	var lightboxRoot = fluid.utils.jById (lightboxRootId);
     
 	lightboxRoot.removeClass("width-3-thumb");
     lightboxRoot.addClass("width-4-thumb");
@@ -171,7 +171,7 @@ function testHandleArrowKeyPressForLeftAndRight()	 {
 
 function testHandleKeyUpAndHandleKeyDownChangesState() {
 	var lightbox = createLightbox();
-    var firstReorderable = jQuery ("[id=" + firstReorderableId + "]");
+    var firstReorderable = fluid.utils.jById (firstReorderableId);
     lightbox.selectActiveItem();
 
 	// check that none of the images are currently being moved.
@@ -281,7 +281,7 @@ function testPersistFocus () {
 	isItemDefaultTest ("When lightbox has focus again ", secondReorderableId);
 	
 	// set focus to another image.
-	lightbox.focusItem (jQuery ("[id="+secondReorderableId+"]"));
+	lightbox.focusItem (fluid.utils.jById (secondReorderableId));
     isItemFocusedTest ("Changed focus to second ", secondReorderableId);
 	isItemDefaultTest ("Changed focus to second ", firstReorderableId);
 	
@@ -290,7 +290,7 @@ function testPersistFocus () {
 	lightbox.findElementToFocus (lbRoot).focus();
 	
 	// check that the second thumb nail is still moveable.
-	lightbox.focusItem (jQuery ("[id="+secondReorderableId+"]"));
+	lightbox.focusItem (fluid.utils.jById (secondReorderableId));
     isItemFocusedTest ("Lightbox refocused with second selected ", secondReorderableId);
 	isItemDefaultTest ("Lightbox refocused with second selected ", firstReorderableId);
 	
@@ -306,16 +306,16 @@ function testfocusItem () {
 	isItemDefaultTest ("Initially", secondReorderableId);
 	
 	// focus the second image
-	lightbox.focusItem (jQuery ("[id="+secondReorderableId+"]"));
+	lightbox.focusItem (fluid.utils.jById (secondReorderableId));
     isItemFocusedTest ("After focus on second image ", secondReorderableId);
 	
 	// focus the image already focused to ensure it remains focused.
-	lightbox.focusItem (jQuery ("[id="+secondReorderableId+"]"));
+	lightbox.focusItem (fluid.utils.jById (secondReorderableId));
     isItemFocusedTest ("After refocus on second image ", secondReorderableId);
 
 	// focus a different image and check to see that the previous image is defocused
 	// and the new image is focused	
-	lightbox.focusItem (jQuery ("[id="+firstReorderableId+"]"));
+	lightbox.focusItem (fluid.utils.jById (firstReorderableId));
     isItemDefaultTest ("After focus on first image ", secondReorderableId);
 	isItemFocusedTest ("After focus on first image ", firstReorderableId);
 }
@@ -379,7 +379,7 @@ function testSelectActiveItemSecondSelected() {
 	// set the active item to something other than the default first item
 	var lightbox = createLightbox();
 	
-	lightbox._setActiveItem (jQuery ("[id="+secondReorderableId+"]"));
+	lightbox._setActiveItem (fluid.utils.jById (secondReorderableId));
 	
 	// before selecting the active item, nothing should have focus	
 	isItemDefaultTest ("Initially", firstReorderableId);
@@ -401,13 +401,13 @@ function testChangeActiveItemToDefaultState() {
 
 function testUpdateActiveDescendent() {
 	var lightbox = createLightbox();
-	var lbRoot = jQuery ("[id=" + lightboxRootId + "]");
+	var lbRoot = fluid.utils.jById (lightboxRootId);
 	assertUndefined ("before first lightbox focus, no item should be activedescendent", lbRoot.attr("aaa:activedescendent"));
 
     lightbox.selectActiveItem();
 	assertEquals ("after first lightbox focus, first image should be activedescendent", firstReorderableId, lbRoot.attr("aaa:activedescendent"));
 	
-	lightbox.activeItem = jQuery ("[id=" + thirdReorderableId + "]").get(0);
+	lightbox.activeItem = fluid.utils.jById (thirdReorderableId)[0];
 	lightbox._updateActiveDescendent();
 	assertEquals ("after setting active item to third image, third image should be activedescendent", thirdReorderableId, lbRoot.attr("aaa:activedescendent"));
 
@@ -426,8 +426,8 @@ function testUpdateActiveDescendent() {
 
 function testUpdateGrabProperty() {
     var lightbox = createLightbox();
-    var lbRoot = jQuery ("[id=" + lightboxRootId + "]");
-    var testItem = jQuery ("[id=" + firstReorderableId + "]");
+    var lbRoot = fluid.utils.jById (lightboxRootId);
+    var testItem = fluid.utils.jById (firstReorderableId);
     assertEquals ("before any action, test item should have grab of supported", "supported", testItem.attr("aaa:grab"));
     
     lightbox.selectActiveItem();
@@ -443,13 +443,13 @@ function testUpdateGrabProperty() {
 
 function testAddFocusToElement() {
     var lightbox = createLightbox();
-    var testItem = jQuery ("[id="+firstReorderableId+"]");
+    var testItem = fluid.utils.jById (firstReorderableId);
     
     assertEquals ("before adding focus, tabindex should be undefined", undefined, testItem.tabIndex ());
     lightbox.addFocusToElement (testItem);
     assertEquals("after adding focus, tabindex should be -1", -1, testItem.tabIndex ());
     
-    var testItem2 = jQuery ("[id="+secondReorderableId+"]");
+    var testItem2 = fluid.utils.jById (secondReorderableId);
     testItem2.tabIndex (2);
     
     assertEquals ("before adding focus to something with tabindex=2, tabindex should be 2", 2, testItem2.tabIndex ());

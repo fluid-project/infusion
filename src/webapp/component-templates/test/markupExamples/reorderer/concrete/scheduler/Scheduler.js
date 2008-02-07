@@ -13,7 +13,7 @@ fluid = fluid || {};
 
 fluid.Scheduler = function () {
 	var fetchReordererContainer = function (id) {
-		return jQuery("[id=" + id + "]");
+		return fluid.utils.jById (id);
 	};
 	return {
         initScheduler: function (containerId) {
@@ -95,9 +95,9 @@ fluid.Scheduler = function () {
 		        var orderablesRange = "[0-" + (numOrderables - 1) + "]";
 		        var idRegExp = "^" + namebase + orderableIdName + ":" + orderablesRange + ":" + "$";
 
-		        return fluid.Utilities.seekNodesById (containerElement,
+		        return fluid.utils.seekNodesById (containerElement,
 		                                              orderableTagName,
-		                                              fluid.Utilities.escapeSelector(idRegExp));
+		                                              fluid.utils.escapeSelector(idRegExp));
 		    };
 		},
 

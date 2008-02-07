@@ -61,7 +61,7 @@ fluid.deriveLightboxCellBase = function (namebase, index) {
 // different templates.
 fluid.initLightbox = function (namebase, messageNamebase) {
     var parentNode = document.getElementById (namebase);
-    var reorderform = fluid.Utilities.findForm (parentNode);
+    var reorderform = fluid.utils.findForm (parentNode);
         
     // Remove the anchors from the taborder - camel case 'tabIndex' needed for IE7 support
     jQuery ("a", reorderform).attr ("tabIndex", "-1");
@@ -73,7 +73,7 @@ fluid.initLightbox = function (namebase, messageNamebase) {
     // An approach based on the "sourceIndex" DOM property would be much more efficient,
     // but this is only supported in IE. 
     var orderChangedCallback = function() {
-        var inputs = fluid.Utilities.seekNodesById(
+        var inputs = fluid.utils.seekNodesById(
             reorderform, 
             "input", 
             "^" + fluid.deriveLightboxCellBase (namebase, "[^:]*") + "reorder-index$");
@@ -92,7 +92,7 @@ fluid.initLightbox = function (namebase, messageNamebase) {
     // This orderable finder knows that the lightbox thumbnails are 'div' elements
     var lightboxCellNamePattern = "^" + fluid.deriveLightboxCellBase (namebase, "[0-9]+") +"$";
     var itemFinder = function () {
-        return fluid.Utilities.seekNodesById (parentNode, "div", lightboxCellNamePattern);
+        return fluid.utils.seekNodesById (parentNode, "div", lightboxCellNamePattern);
     };
         
     var layoutHandler = new fluid.GridLayoutHandler (itemFinder, {
@@ -112,13 +112,13 @@ fluid.initLightbox = function (namebase, messageNamebase) {
 /*
  * Utilities object for providing various general convenience functions
  */
-fluid.Utilities = {};
+fluid.utils = {};
 
 // Custom query method seeks all tags descended from a given root with a 
 // particular tag name, whose id matches a regex. The Dojo query parser
 // is broken http://trac.dojotoolkit.org/ticket/3520#preview, this is all
 // it might do anyway, and this will be plenty fast.
-fluid.Utilities.seekNodesById = function (rootnode, tagname, idmatch) {
+fluid.utils.seekNodesById = function (rootnode, tagname, idmatch) {
     var inputs = rootnode.getElementsByTagName (tagname);
     var togo = [];
     for (var i = 0; i < inputs.length; ++ i) {
@@ -131,11 +131,11 @@ fluid.Utilities.seekNodesById = function (rootnode, tagname, idmatch) {
     return togo;
 };
       
-fluid.Utilities.escapeSelector = function(id) {
+fluid.utils.escapeSelector = function(id) {
     return id.replace (/\:/g,"\\:");
 };
   
-fluid.Utilities.findForm = function (element) {
+fluid.utils.findForm = function (element) {
     while(element) {
         if (element.nodeName.toLowerCase() === "form") {
             return element;
@@ -147,7 +147,7 @@ fluid.Utilities.findForm = function (element) {
 /**
  * Adapt 'findItems' object given either a 'findItems' object or a 'findMovables' function 
  **/
-fluid.Utilities.adaptFindItems = function (finder) {
+fluid.utils.adaptFindItems = function (finder) {
     var finderFn = function () {};
     var findItems = {};
     
@@ -163,4 +163,11 @@ fluid.Utilities.adaptFindItems = function (finder) {
     findItems.grabHandle = findItems.grabHandle || function (item) { return item; };
         
     return findItems;
+};
+
+/**
+ * Returns a jQuery object given the id of a DOM node
+ */
+fluid.utils.jById = function (id) {
+    return jQuery ("[id=" + id + "]");
 };

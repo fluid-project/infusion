@@ -34,7 +34,7 @@ function testRSFOrderableFinderUnconferenceContainer () {
                                                                     "li",
                                                                     "orderable",
                                                                     2);
-    var escapedContainerSelector = fluid.Utilities.escapeSelector ("#" + RSFStyleSchedulerTests.unconferenceNamebase);
+    var escapedContainerSelector = fluid.utils.escapeSelector ("#" + RSFStyleSchedulerTests.unconferenceNamebase);
     
     // Check our sanity first. 
     var containerElement = jQuery (escapedContainerSelector).get (0);                                                           
@@ -61,7 +61,7 @@ function testRSFOrderableFinderLightningTalkContainer () {
                                                                    "li",
                                                                    "orderable",
                                                                    3);
-   var escapedContainerSelector = fluid.Utilities.escapeSelector ("#" + RSFStyleSchedulerTests.lightningTalkNamebase);
+   var escapedContainerSelector = fluid.utils.escapeSelector ("#" + RSFStyleSchedulerTests.lightningTalkNamebase);
    
    // Check our sanity first.                                                     
    var containerElement = jQuery (escapedContainerSelector).get (0);                                                           
@@ -91,7 +91,7 @@ function testRSFOrderableFinderSessionContainer () {
                                                                    "li",
                                                                    "orderable",
                                                                    4);
-   var escapedContainerSelector = fluid.Utilities.escapeSelector ("#" + RSFStyleSchedulerTests.sessionNamebase);
+   var escapedContainerSelector = fluid.utils.escapeSelector ("#" + RSFStyleSchedulerTests.sessionNamebase);
    var containerElement = jQuery (escapedContainerSelector).get (0);      
    
    // Check our sanity first.                                                     
