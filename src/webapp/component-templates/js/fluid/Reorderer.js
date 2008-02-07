@@ -1015,6 +1015,71 @@ fluid.portletLayout = function () {
             return (fluid.portletLayout.findColIndex (itemId, layout) === fluid.portletLayout.numColumns (layout)-1);
         },
         
+        /**
+         * Determine the moveables, selectables, and drop targets based on the information
+         * in the layout and permission objects.
+         */
+        createFindItems: function (layout, perms) {
+            var findItems = {};
+            var selectablesSelector;
+            var movablesSelector;
+            var dropTargets;
+
+            // Check all the permission pairs in the indexed row.  If any
+            // pair has a value of '1', then this item can move.  Otherwise,
+            // it is fixed.
+            var canItemAtIndexMove = function (linearIndex) {
+            	var permsRow = perms[linearIndex];
+            	for (var p = 0; p < permsRow.length; p++) {
+            		if ((permsRow[p][0] === 1) || (permsRow[p][1] === 1)) {
+            			return true;
+            		}
+            	}
+            	return false;
+            };
+            
+            // Check all the permission pairs in the indexed virtual column.  If it's
+            // [0,0] all the way down, it's not a drop target.
+            var isNotDropTarget = function (linearIndex) {
+            	for (var col = 0; col < perms.length; col++) {
+            		var permsRow = perms[col];
+            		if ((permsRow[linearIndex][0] === 1) || (permsRow[linearIndex][1] === 1)) {
+            			return false;
+            		}
+            	}
+            	return true;
+            };
+              
+            var cols = layout.columns;
+            for (var i = 0; i < cols.length; i++) {
+                var idsInCol = cols[i].children;
+                for (var j = 0; j < idsInCol.length; j++) {
+                    var idSelector = "[id=" + idsInCol[j] + "]";
+                    selectablesSelector = selectablesSelector ? selectablesSelector + "," + idSelector : idSelector;
+                    
+                    var linearIndex = fluid.portletLayout.findLinearIndex (idsInCol[j], layout);
+                    if (canItemAtIndexMove (linearIndex)) {
+                        movablesSelector = movablesSelector ? movablesSelector + "," + idSelector : idSelector; 
+                    }
+                    if (!isNotDropTarget (linearIndex)) {
+                    	dropTargets = dropTargets ? dropTargets + "," + idSelector : idSelector;
+                    }
+                }
+            }
+            findItems.selectables = function () {
+                return jQuery (selectablesSelector);
+            };
+            findItems.movables = function () {
+                return jQuery (movablesSelector);
+            };
+
+            findItems.dropTargets = function() {
+                return jQuery (dropTargets);
+            };
+          
+            return findItems;
+        },
+        
         containerId: function (layout) {
             return layout.id;
         }

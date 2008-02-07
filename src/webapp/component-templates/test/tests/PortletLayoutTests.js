@@ -452,3 +452,17 @@ function testItemAboveBelow() {
         portlet2id, itemBelowId);
 
 }   // end testItemAboveBelow().
+
+function testCreateFindItems () {
+    var findItems = fluid.portletLayout.createFindItems (demo.portal.layout, demo.portal.dropTargetPerms);
+    var selectables = fluid.wrap (findItems.selectables ());
+    assertEquals ("There are 9 selectable portlets", 9, selectables.length);
+
+    var movables = fluid.wrap (findItems.movables ());
+    assertEquals ("6 portlets can be moved", 6, movables.length);
+    
+    var dropTargets = fluid.wrap (findItems.dropTargets ());
+    assertEquals ("there should be 8 drop targets", 8, dropTargets.length);
+    
+}   // end testCreateFindItems().
+
