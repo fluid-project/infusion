@@ -1,0 +1,146 @@
+<project name="Fluid" default="buildAll" basedir=".">
+	<description>
+	Build a distributable package of Fluid components.
+	</description>
+
+	<!-- get environment variables -->
+	<property environment="env"/>
+	
+     <!-- Versioning. Move into build.properties -->
+	 <property name="fluid_version" value="0.2" />
+
+	<!-- Define dependencies -->
+    <property name="yuicompressor" location="lib/yuicompressor-2.3.3.jar" />
+	<property name="jslint" location="lib/jslint4java-1.1+rhino.jar" />
+
+	<!-- set up directory locations -->
+	<property name="src" location="../src" />
+	<property name="dist" location="../dist" />
+	<property name="build" location="../build" />
+	<property name="zipfile" value="fluid-${fluid_version}.zip" />
+
+	<!-- task definition for JSLint -->
+	<taskdef name="jslint" 
+		classname="net.happygiraffe.jslint.ant.JSLintTask" 
+		classpath="${jslint}" />
+
+	<!-- cleanup after ourselves -->
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+	</target>
+
+	<!-- setup our structures -->
+	<target name="init" depends="clean">
+		<mkdir dir="${build}" />
+		<mkdir dir="${dist}" />
+	</target>
+
+	<!-- Target: buildAll -->
+	<target name="buildAll" depends="init, copyBuildTree, jsMinify, cssMinify, package">
+
+	</target>
+	
+	<target name="copyBuildTree">
+		<copy todir="${build}">
+			<dirset dir="${src}">
+			</dirset>
+	    </copy>
+	</target>
+
+	<!-- Target: Minify the CSS files -->
+	<target name="cssMinify">
+		<description>
+		Minify all .CSS files and copy them into the build directory.
+		</description>
+		<echo>Minifying .CSS files...</echo>
+		<apply executable="java" dest="${build}" parallel="false">
+			<!-- The files to act upon. -->	
+			<fileset dir="${src}"  casesensitive="no">
+				<include name="**/*.css"/>
+				<exclude name="**/test/*"/>
+			</fileset>
+
+			<arg line="-jar"/>
+			<arg path="${yuicompressor}"/>
+			<arg line="--line-break 0"/>
+			<srcfile/>
+
+			<!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
+			<!-- output minified files with a *-min.css suffix. -->
+			<arg line="-o"/>
+			<mapper type="glob" from="*.css" to="*-min.css"/>
+			<targetfile/>
+		</apply>
+	</target>
+
+<!-- Target: Minify the JS files -->
+	<target name="jsMinify">
+		<description>
+		Minify all .JS files and copy them into the build directory.
+		</description>
+		<echo>Minifying .JS files...</echo>
+		<apply executable="java" dest="${build}"  parallel="false">
+				<!-- The files to act upon. -->	
+				<!-- May need to modify this so files are minified in a certain order -->
+				<fileset dir="${src}" casesensitive="no">
+					<include name="**/*.js"/>
+					<exclude name="**/test/*"/>
+				</fileset>
+
+				<arg line="-jar"/>
+				<arg path="${yuicompressor}"/>
+				<srcfile/>
+
+				<!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
+				<!-- output minified files with a *-min.js suffix. -->
+				<arg line="-o"/>
+				<mapper type="glob" from="*.js" to="*-min.js"/>
+				<targetfile/> 
+		</apply>
+	</target>
+
+
+	<target name="package">
+		<description>
+			Creates the release directory structure and zips it all up.
+		</description>
+
+		<mkdir dir="${dist}/fluid-components" />
+		<copy todir="${dist}/fluid-components">
+			<fileset dir="${build}/webapp/component-templates">
+				<include name="js/**" />
+				<include name="css/**" />
+		    </fileset>
+		</copy>
+
+		<mkdir dir="${dist}/sample-code" />
+		<copy todir="${dist}/sample-code">
+			<fileset dir="${src}/webapp/component-templates/test/">
+				<include name="markupExamples/**" />
+		    </fileset>
+		</copy>
+		
+		<mkdir dir="${dist}/server-side-templates" />
+		<copy todir="${dist}/server-side-templates">
+			<fileset dir="${src}/webapp/component-templates/">
+				<include name="html/**" />
+				<include name="images/**" />
+		    </fileset>
+		</copy>
+
+		<mkdir dir="${dist}/tests" />
+		<copy todir="${dist}/tests">
+			<fileset dir="${src}/webapp/component-templates/test">
+				<include name="jsunit/**" />
+				<include name="tests/**" />
+		    </fileset>
+		</copy>
+
+		<echo>Zipping minified files in ${build} to ${dist}/${zipfile}</echo>
+		<zip destfile="${dist}/${zipfile}" 
+			basedir="${dist}"
+			includes="**/*"  excludes="*.zip" />
+	</target>
+
+</project>
