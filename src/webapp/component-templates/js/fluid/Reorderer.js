@@ -746,10 +746,8 @@ fluid.portletLayout = function () {
         * permissions information.
         */
     	canMove: function (itemId, targetItemId, position, layout, perms) {
-            var itemIndex = fluid.portletLayout.findLinearIndex(itemId, layout);
-            var targetItemIndex = fluid.portletLayout.findLinearIndex(targetItemId, layout);
-    		
-            return (!!perms[itemIndex][targetItemIndex][position]); 
+    		var indices = fluid.portletLayout.findItemAndTargetIndices (itemId, targetItemId, position, layout);
+            return (!!perms[indices.itemIndex][indices.targetIndex]); 
         },
         
         /**
@@ -778,46 +776,22 @@ fluid.portletLayout = function () {
             return fluid.portletLayout.calcColumnAndItemIndex (itemId, layout).itemIndex;
         },
         
- 
-      /**
-
+        /**
          * Given an item id, and a direction, find the top item in the next/previous column.
          */
         firstItemInAdjacentColumn: function (itemId, /* PREVIOUS, NEXT */ direction, layout) {
             var siblingId = itemId;
-            var coords = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
+            var colIndex = fluid.portletLayout.findColIndex (itemId, layout);
             var numColumns = fluid.portletLayout.numColumns (layout);
             
             // Go to the top of the next/previous column
 
-            coords.columnIndex += direction;
-            if ((coords.columnIndex >= 0) && (coords.columnIndex < numColumns)) {
-                siblingId = fluid.portletLayout.getItemAt (coords.columnIndex, 0, layout);
+            colIndex += direction;
+            if ((colIndex >= 0) && (colIndex < numColumns)) {
+                siblingId = fluid.portletLayout.getItemAt (colIndex, 0, layout);
             }
             return siblingId;
         }, 
-
-        
-        /**
-         * Return the first orderable item in the given column.
-         */
-        findFirstOrderableSiblingInColumn:  function (columnIndex, orderableItems, layout) {
-            // Pull out the portlet id of the top-most sibling in the column.
-            var topMostOrderableSibling = null;
-            var itemIndex = 0;
-            var column = layout.columns[columnIndex];
-            if (column) {
-                var id = column.children[itemIndex];
-                topMostOrderableSibling = fluid.utils.jById (id)[0];
-                // loop down the column looking for first orderable portlet (i.e. skip over non-movable portlets)
-                while (orderableItems.index (topMostOrderableSibling) === -1) {
-                    itemIndex += 1;
-                    id = column.children[itemIndex];
-                    topMostOrderableSibling = fluid.utils.jById (id)[0];
-                }
-            }
-            return topMostOrderableSibling;
-        },
         
         /**
          * Return the item above/below the given item within that item's column.  If at
@@ -856,22 +830,59 @@ fluid.portletLayout = function () {
         isColumn: function (index, layout) {
             return (index < layout.columns.length) && (index >= 0);
         },
-
-        findLinearIndex: function (itemId, layout) {
+        
+        /**
+         * Returns itemIndex and targetIndex
+         * This could have been written in two functions for clarity however it gets called a lot and 
+         * the two functions were considerably less performant then this single function.
+         * 
+         * Item index is the row in the permissions object pertaining to the item.
+         * Target index is the column in the permission object refering to the postion before or after the target.
+         */
+        findItemAndTargetIndices: function (itemId, targetId, position, layout) {
             var columns = layout.columns;
-            var linearIndex = 0;
+            
+            // Default to not found.
+            var foundIndices = {
+                itemIndex: -1,
+                targetIndex: -1
+            };
+            
+            // If the ids are invalid, bail immediately.
+            if (!itemId || !targetId) {            
+                return foundIndices;
+            }
+
+            var itemIndexCounter = 0;
+            var targetIndexCounter = position;
             
             for (var i = 0; i < columns.length; i++) {
                 var idsInCol = columns[i].children;
                 for (var j = 0; j < idsInCol.length; j++) {
-                    if (idsInCol[j] === itemId) {
-                        return linearIndex;
+                    var currId = idsInCol[j];                    
+                    if (currId === itemId) {
+                        foundIndices.itemIndex = itemIndexCounter; 
                     }
-                    linearIndex++;
+                    if (currId === targetId) {
+                        foundIndices.targetIndex = targetIndexCounter; 
+                    }
+                    
+                    // Check if we're done, and if so, bail early.
+                    if (foundIndices.itemIndex >= 0 && foundIndices.targetIndex >= 0) {
+                        return foundIndices;
+                    }
+                    
+                    // Increment our index counters and keep searching.
+                    itemIndexCounter++;
+                    targetIndexCounter++;
                 }
+                
+                // Make sure we account for the additional drop target at the end of a column.
+                targetIndexCounter++;
             }
-            return -1;
-        },
+
+            return foundIndices;     
+        }, 
         
         /**
          * Move an item within the layout object. 
@@ -1006,69 +1017,60 @@ fluid.portletLayout = function () {
             var position = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
             return (position.itemIndex === fluid.portletLayout.numItemsInColumn (position.columnIndex, layout)-1) ? true : false;
         },
+
+        canItemMove: function (itemIndex, perms) {
+            var itemPerms = perms[itemIndex];
+            for (var i = 0; i < itemPerms.length; i++) {
+                if (itemPerms[i] === 1) {
+                    return true;
+                }
+            }
+            return false;
+        }, 
         
-        isInLeftmostColumn: function (itemId, layout) {
-            return (fluid.portletLayout.findColIndex (itemId, layout) === 0);
-        },
-        
-        isInRightmostColumn: function (itemId, layout) {
-            return (fluid.portletLayout.findColIndex (itemId, layout) === fluid.portletLayout.numColumns (layout)-1);
+        isDropTarget: function (beforeTargetIndex, perms) {
+            for (var i = 0; i < perms.length; i++) {
+                if (perms[i][beforeTargetIndex] === 1 || perms[i][beforeTargetIndex + 1] === 1) {
+                    return true;
+                }
+            }
+            return false;
         },
         
         /**
          * Determine the moveables, selectables, and drop targets based on the information
          * in the layout and permission objects.
          */
-        createFindItems: function (layout, perms) {
+        createFindItems: function (layout, perms, grabHandle) {
             var findItems = {};
+            findItems.grabHandle = grabHandle;
+            
             var selectablesSelector;
             var movablesSelector;
             var dropTargets;
-
-            // Check all the permission pairs in the indexed row.  If any
-            // pair has a value of '1', then this item can move.  Otherwise,
-            // it is fixed.
-            var canItemAtIndexMove = function (linearIndex) {
-            	var permsRow = perms[linearIndex];
-            	for (var p = 0; p < permsRow.length; p++) {
-            		if ((permsRow[p][0] === 1) || (permsRow[p][1] === 1)) {
-            			return true;
-            		}
-            	}
-            	return false;
-            };
             
-            // Check all the permission pairs in the indexed virtual column.  If it's
-            // [0,0] all the way down, it's not a drop target.
-            var isNotDropTarget = function (linearIndex) {
-            	for (var col = 0; col < perms.length; col++) {
-            		var permsRow = perms[col];
-            		if ((permsRow[linearIndex][0] === 1) || (permsRow[linearIndex][1] === 1)) {
-            			return false;
-            		}
-            	}
-            	return true;
-            };
-              
             var cols = layout.columns;
             for (var i = 0; i < cols.length; i++) {
                 var idsInCol = cols[i].children;
                 for (var j = 0; j < idsInCol.length; j++) {
-                    var idSelector = "[id=" + idsInCol[j] + "]";
+                    var itemId = idsInCol[j];
+                    var idSelector = "[id=" + itemId  + "]";
                     selectablesSelector = selectablesSelector ? selectablesSelector + "," + idSelector : idSelector;
                     
-                    var linearIndex = fluid.portletLayout.findLinearIndex (idsInCol[j], layout);
-                    if (canItemAtIndexMove (linearIndex)) {
+                    var indices = fluid.portletLayout.findItemAndTargetIndices (itemId, itemId, fluid.position.BEFORE, layout);
+                    if (fluid.portletLayout.canItemMove (indices.itemIndex, perms)) {
                         movablesSelector = movablesSelector ? movablesSelector + "," + idSelector : idSelector; 
                     }
-                    if (!isNotDropTarget (linearIndex)) {
+                    if (fluid.portletLayout.isDropTarget (indices.targetIndex, perms)) {
                     	dropTargets = dropTargets ? dropTargets + "," + idSelector : idSelector;
                     }
                 }
             }
+            
             findItems.selectables = function () {
                 return jQuery (selectablesSelector);
             };
+            
             findItems.movables = function () {
                 return jQuery (movablesSelector);
             };

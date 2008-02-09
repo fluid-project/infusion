@@ -34,8 +34,7 @@ function exposeTestFunctionNames() {
         // PortletLayoutTests.js
         "testCanMove",
         "testCalcColumnAndItemIndex",
-        "testFindFirstOrderableSiblingInColumn",
-        "testFindLinearIndex",
+        "testFindItemAndTargetIndices",
         "testNumItemsInColumn",
         "testNumColumns",
         "testUpdateLayout",
@@ -47,6 +46,8 @@ function exposeTestFunctionNames() {
         "testFirstItemInAdjacentColumn",
         "testItemAboveBelow",
         "testCreateFindItems",
+        "testCanItemMove",
+        "testIsDropTarget",
 
         // PortletLayoutHandlerTests.js
 		"testGetItemAbove",

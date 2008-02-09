@@ -1,7 +1,7 @@
-fluid.initPortalReorderer = function (layout, perms) {
+fluid.initPortalReorderer = function (layout, perms, grabHandle) {
     var portletReordererRoot = fluid.utils.jById (fluid.portletLayout.containerId (layout));
 
-    var items = fluid.portletLayout.createFindItems (layout, perms);
+    var items = fluid.portletLayout.createFindItems (layout, perms, grabHandle);
     
     var layoutHandler = new fluid.PortletLayoutHandler (layout, perms);
     

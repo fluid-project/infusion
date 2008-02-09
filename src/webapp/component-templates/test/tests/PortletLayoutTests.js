@@ -57,37 +57,22 @@ function testCalcColumnAndItemIndex () {
     
 }   // end testCalcNextColumnIndex().
  
-function testFindFirstOrderableSiblingInColumn () {
-    var orderables = demo.portal.findMovables ();
+function testFindItemAndTargetIndices() {    
+    var indices = fluid.portletLayout.findItemAndTargetIndices (portlet1id, portlet1id, fluid.position.BEFORE, demo.portal.layout);
+    assertEquals (0, indices.itemIndex);
+    assertEquals (0, indices.targetIndex);
+
+    indices = fluid.portletLayout.findItemAndTargetIndices (portlet3id, portlet3id, fluid.position.BEFORE, demo.portal.layout);
+    assertEquals (2, indices.itemIndex);
+    assertEquals (2, indices.targetIndex);
     
-    // Test for existing moveable portlets in the three columns.
-    var portlet = fluid.portletLayout.findFirstOrderableSiblingInColumn (0, orderables, demo.portal.layout);
-    assertEquals ("First orderable portlet in column 1 should be " + portlet3id, jQuery ("#" + portlet3id)[0], portlet);
-
-    portlet = fluid.portletLayout.findFirstOrderableSiblingInColumn (1, orderables, demo.portal.layout);
-    assertEquals ("First orderable portlet in column 2 should be " + portlet6id, jQuery ("#" + portlet6id)[0], portlet);
-    portlet = fluid.portletLayout.findFirstOrderableSiblingInColumn (2, orderables, demo.portal.layout);
-    assertEquals ("First orderable portlet in column 3 should be " + portlet7id, jQuery ("#" + portlet7id)[0], portlet);
-
-    // Test for a non-existetnt column.
-    portlet = fluid.portletLayout.findFirstOrderableSiblingInColumn (4, orderables, demo.portal.layout);
-    assertNull ("No column 4 -- no 'first orderable portlet'", portlet);
+    indices = fluid.portletLayout.findItemAndTargetIndices (portlet9id, portlet9id, fluid.position.BEFORE, demo.portal.layout);
+    assertEquals (8, indices.itemIndex);
+    assertEquals (10, indices.targetIndex);
     
-}   // end testFindFirstOrderableSiblingInColumn().
-
-function testFindLinearIndex() {    
-    var index = fluid.portletLayout.findLinearIndex (portlet1id, demo.portal.layout);
-    assertEquals(0, index);
-
-    index = fluid.portletLayout.findLinearIndex (portlet3id, demo.portal.layout);
-    assertEquals(2, index);
-
-    index = fluid.portletLayout.findLinearIndex (portlet9id, demo.portal.layout);
-    assertEquals(8, index);
-    
-    index = fluid.portletLayout.findLinearIndex ("doesNotExist", demo.portal.layout);
-    assertEquals(-1, index);
-    
+    indices = fluid.portletLayout.findItemAndTargetIndices (null, undefined, fluid.position.BEFORE, demo.portal.layout);
+    assertEquals (-1, indices.itemIndex);
+    assertEquals (-1, indices.targetIndex);    
 }
 
 function testNumItemsInColumn() {    
@@ -157,9 +142,9 @@ function testFirstMoveableTargetSkipColumn() {
     };
 
     var smallDropTargetPerms = [
-        [[0,0], [0,0], [1,1]],   // portlet1
-        [[0,0], [0,0], [0,0]],   // portlet2
-        [[1,1], [0,0], [0,0]]    // portlet3  
+        [0, 0, 0, 0, 1, 1],   // portlet1
+        [0, 0, 0, 0, 0, 0],   // portlet2
+        [1, 1, 0, 0, 0, 0]    // portlet3  
     ];
     
     // Test move portlet 1 right, expect it can't be dropped in column 2
@@ -249,10 +234,13 @@ function testCanMove() {
     assertFalse (fluid.portletLayout.canMove (portlet1id, portlet7id, fluid.position.AFTER, demo.portal.layout, demo.portal.dropTargetPerms));
 
     assertFalse (fluid.portletLayout.canMove (portlet3id, portlet7id, fluid.position.BEFORE, demo.portal.layout, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.canMove (portlet3id, portlet7id, fluid.position.AFTER, demo.portal.layout, demo.portal.dropTargetPerms));
+    assertTrue ("portlet 3 can move after portlet 7", 
+        fluid.portletLayout.canMove (portlet3id, portlet7id, fluid.position.AFTER, demo.portal.layout, demo.portal.dropTargetPerms));
 
-    assertTrue (fluid.portletLayout.canMove (portlet9id, portlet9id, fluid.position.BEFORE, demo.portal.layout, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.canMove (portlet9id, portlet9id, fluid.position.AFTER, demo.portal.layout, demo.portal.dropTargetPerms));
+    assertTrue ("portlet 9 can move before portlet 9", 
+        fluid.portletLayout.canMove (portlet9id, portlet9id, fluid.position.BEFORE, demo.portal.layout, demo.portal.dropTargetPerms));
+    assertTrue ("portlet 9 can move after portlet 9",
+        fluid.portletLayout.canMove (portlet9id, portlet9id, fluid.position.AFTER, demo.portal.layout, demo.portal.dropTargetPerms));
 }
 
 function testGetItemAt() {
@@ -466,3 +454,28 @@ function testCreateFindItems () {
     
 }   // end testCreateFindItems().
 
+function testCanItemMove () {
+    assertFalse (fluid.portletLayout.canItemMove (0, demo.portal.dropTargetPerms));
+    assertFalse (fluid.portletLayout.canItemMove (1, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.canItemMove (2, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.canItemMove (3, demo.portal.dropTargetPerms));
+    assertFalse (fluid.portletLayout.canItemMove (4, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.canItemMove (5, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.canItemMove (6, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.canItemMove (7, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.canItemMove (8, demo.portal.dropTargetPerms));
+    
+}
+
+function testIsDropTarget () {
+    assertFalse (fluid.portletLayout.isDropTarget (0, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.isDropTarget (1, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.isDropTarget (2, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.isDropTarget (3, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.isDropTarget (5, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.isDropTarget (6, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.isDropTarget (8, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.isDropTarget (9, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.isDropTarget (10, demo.portal.dropTargetPerms));
+    
+}
