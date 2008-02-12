@@ -141,8 +141,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     this.handleKeyDown = function (evt) {
         if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
         	// Don't treat the active item as dragging unless it is a movable.
-            var movables = fluid.wrap (findItems.movables());
-            if (jQuery (movables).index (thisReorderer.activeItem) >= 0) {
+            if (jQuery (fluid.wrap (findItems.movables())).index (thisReorderer.activeItem) >= 0) {
                 jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
                 jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.dragging);
                 thisReorderer.activeItem.setAttribute ("aaa:grab", "true");
@@ -153,12 +152,15 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     };
 
     this.handleKeyUp = function (evt) {
-       if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
-           jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.dragging);
-           jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.selected);
-           thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
-           return false;
-       } 
+        if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
+            // Don't treat the active item as dragging unless it is a movable.
+            if (jQuery (fluid.wrap (findItems.movables())).index (thisReorderer.activeItem) >= 0) {
+                jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.dragging);
+                jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.selected);
+                thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
+                return false;
+            }
+       }
     };
         
     this.handleArrowKeyPress = function (evt) {
