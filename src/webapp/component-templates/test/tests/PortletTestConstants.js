@@ -57,8 +57,7 @@ function exposeTestFunctionNames() {
         "testMoveItemDown",
         "testMoveItemUp",
         "testMoveItemRight",
-        "testMoveItemLeft",
-        "testCallbackReturnValue"
+        "testMoveItemLeft"
     ];
 }
 

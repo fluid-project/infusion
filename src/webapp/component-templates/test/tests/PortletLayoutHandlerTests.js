@@ -175,35 +175,3 @@ function testMoveItemLeft() {
     assertEquals ("After move portlet 6 is in third position column 2", portlet6id, col2PortletList[2].id);
 
 }
-
-function testCallbackReturnValue() {
-    var newLayout = { id:"t2",
-            columns:[{ id:"c1", children:["portlet1","portlet2","portlet3","portlet4"]},
-                     { id:"c2", children:["portlet5","portlet7","portlet6"]   },
-                     { id:"c3", children:["portlet8","portlet9"]}
-                    ]
-                };
-                
-    var portletLayout = fluid.testUtils.cloneObj (demo.portal.layout);
-    portletHandler = new fluid.PortletLayoutHandler (
-        portletLayout, 
-        demo.portal.dropTargetPerms,
-        { orderChangedCallback: function () {return newLayout;} }
-    );
-
-    // this test uses the layout handler's public api get methods instead of inspecting the dom
-    assertEquals ("Before move portlet 7 is to the right of portlet 5", portlet7id,
-            portletHandler.getRightSibling (jQuery ("#"+portlet5id)[0]).id);
-    
-    portletHandler.moveItemLeft (jQuery ("#" + portlet7id)[0]);
-
-    // Compare <newLayout> to original given in <portletLayout>.
-    for (var i = 0; i < newLayout.columns.length; i++) {
-        var aColumn = newLayout.columns[i];
-        for (var j = 0; j < aColumn.children.length; j++) {
-            var aChild = aColumn.children[j];
-            assertEquals ("After move, column " + i + ", item " + j,
-                aChild, portletLayout.columns[i].children[j]);
-        }
-    }
-}

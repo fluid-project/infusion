@@ -264,7 +264,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         	jQuery (evt.data.target).after (dropMarker);
             dropMarker.style.visibility = "visible";
         }
-     };
+     }
 
     /**
      * Takes a jQuery object and adds 'movable' functionality to it
@@ -648,8 +648,20 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     fluid.PortletLayoutHandler = function (layout, targetPerms, options) {
         var orientation = fluid.orientation.VERTICAL;
         var orderChangedCallback = function () {};
+        
+        // Check if any optional parameters were sent
         if (options) {
-            orderChangedCallback = options.orderChangedCallback || orderChangedCallback;
+            if (options.orderChangedCallbackUrl) {
+                // Create the orderChangedCallback function
+                orderChangedCallback = function () {
+                    jQuery.post (options.orderChangedCallbackUrl, 
+                        JSON.stringify (layout),
+                        function (data, textStatus) { 
+                            targetPerms = data; 
+                        }, 
+                        "json");
+                };
+            }
         }
         
         // Private Methods.
@@ -658,7 +670,6 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	     * layout.  This assumes that there is no wrapping the top and
 	     * bottom of the columns, and returns the given item if at top
 	     * and seeking the previous item, or at the bottom and seeking
-
 	     * the next item.
 	     */
 	    var getVerticalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
@@ -686,12 +697,11 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
             }           
             if (position === fluid.position.BEFORE) {
                 jQuery (relatedItem).before (item);
-            }
-            else {
+            } else {
                 jQuery (relatedItem).after (item);
             }
             fluid.portletLayout.updateLayout (item.id, relatedItem.id, position, layout);
-            layout = orderChangedCallback() || layout; 
+            orderChangedCallback (); 
         };
         
         var moveHorizontally = function (item, direction /* PREVIOUS, NEXT */) {

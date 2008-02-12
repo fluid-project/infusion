@@ -34,7 +34,4 @@ demo.portal.dropTargetPerms = [
     [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1]   // portlet 9
 ]; 
 
-demo.portal.findMovables = function () {
-    return jQuery ("#portlet3,#portlet4,#portlet6,#portlet7,#portlet8,#portlet9");
-};
 
