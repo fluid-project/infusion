@@ -139,14 +139,17 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     };
     
     this.handleKeyDown = function (evt) {
-       if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
-           jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
-           jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.dragging);
-           thisReorderer.activeItem.setAttribute ("aaa:grab", "true");
-           return false;
-       }
-
-       return thisReorderer.handleArrowKeyPress(evt);
+        if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
+        	// Don't treat the active item as dragging unless it is a movable.
+            var movables = fluid.wrap (findItems.movables());
+            if (jQuery (movables).index (thisReorderer.activeItem) >= 0) {
+                jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
+                jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.dragging);
+                thisReorderer.activeItem.setAttribute ("aaa:grab", "true");
+                return false;
+            }
+        }
+        return thisReorderer.handleArrowKeyPress(evt);
     };
 
     this.handleKeyUp = function (evt) {
