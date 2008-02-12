@@ -30,7 +30,8 @@ fluid.orientation = {
 
 fluid.position = {
 	BEFORE: 0,
-	AFTER: 1
+	AFTER: 1,
+	NO_TARGET: -1
 };
 
 /**
