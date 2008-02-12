@@ -209,6 +209,7 @@
 	{
 		white-space: nowrap;
 		background-color: #000099;
+font-size: 11px;
 	}
 
 	.portlet-toolbar a 
@@ -216,12 +217,51 @@
 		text-decoration: none;
 		color: #fff
 	}
+
+
+
+	.portlet-toolbar-locked
+	{
+		white-space: nowrap;
+		background-color: #000099;
+font-size: 11px;
+	}
+
+	.portlet-toolbar-locked a 
+	{
+		text-decoration: none;
+		color: #fff
+	}
 	
+	.portlet-toolbar-locked span
+	{
+position: relative;
+left: -5px;
+top: 3px;
+	}
+
+
+
+	.portlet-toolbar span
+	{
+position: relative;
+left: -5px;
+top: 3px;
+	}
+
 	.portlet-toolbar h2
 	{
 		margin-left: 0.5em;
 		padding-left: 20px;
 		background: url("../icons/application.png") 0 5px no-repeat;
+	}
+
+	.portlet-toolbar-locked h2
+	{
+display: inline;
+position:relative;
+top: -3px;
+left: -10px;
 	}
 
 	.portlet-control-remove 

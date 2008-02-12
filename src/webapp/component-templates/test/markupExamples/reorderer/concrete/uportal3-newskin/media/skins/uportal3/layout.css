@@ -164,6 +164,18 @@
 	.portlet-container {
 		margin-bottom: 1em;
 	}
+
+
+	.portlet-toolbar-locked
+	{
+		position: relative;
+	}
+	
+	.portlet-toolbar-locked h2 
+	{
+		margin: 0;
+		padding: 0.25em 1em;
+	}
 	
 	.portlet-toolbar 
 	{
