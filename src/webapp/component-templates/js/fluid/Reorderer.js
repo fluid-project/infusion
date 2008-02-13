@@ -246,24 +246,23 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 
     // Drag and drop set code starts here. This needs to be refactored to be better contained.
     var theAvatar = null;
-    var dropMarker; // private scratch variable
+    var dropMarker; // instantiated below in item.draggable.start().
     
-    /**
-     * evt.data - the droppable DOM element.
-     */
-    function trackMouseMovement (evt) {
-        var dropInfo = layoutHandler.isDropBefore (evt, evt.data);
-        if (dropInfo === fluid.position.NO_TARGET) {
-        	dropMarker.style.visibility = "hidden";
-        }
-        else if (dropInfo === fluid.position.BEFORE) {
-            jQuery (evt.data.target).before (dropMarker);
-            dropMarker.style.visibility = "visible";
-        }
-        else {  // must be AFTER
-        	jQuery (evt.data.target).after (dropMarker);
-            dropMarker.style.visibility = "visible";
-        }
+    function createTrackMouseMovement (target, moving) {
+        return function trackMouseMovement (evt) {
+                var dropInfo = layoutHandler.isDropBefore (target, moving, evt.clientX, evt.pageY);
+                if (dropInfo === fluid.position.NO_TARGET) {
+        	       dropMarker.style.visibility = "hidden";
+                }
+                else if (dropInfo === fluid.position.BEFORE) {
+                    jQuery (target).before (dropMarker);
+                    dropMarker.style.visibility = "visible";
+                }
+                else {  // must be AFTER
+                   jQuery (target).after (dropMarker);
+                   dropMarker.style.visibility = "visible";
+                }
+            };
      }
 
     /**
@@ -325,14 +324,15 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
      * Takes a jQuery object and a selector that matches movable items
      */
     function initDropTarget (item, selector) {
+    	var trackMouseMovement;
         item.droppable ({
             accept: selector,
             tolerance: "pointer",
             over: function (e, ui) {
-                // the second parameter to bind() can be accessed through the event as event.data
-                var targetAndMoving = { target: item[0], moving: ui.draggable.element };
-                item.bind ("mousemove", targetAndMoving, trackMouseMovement);    
-                jQuery (theAvatar).bind ("mousemove", targetAndMoving, trackMouseMovement);
+                trackMouseMovement = createTrackMouseMovement (item[0], ui.draggable.element);
+                item.bind ("mousemove", trackMouseMovement);    
+                jQuery (theAvatar).bind ("mousemove", trackMouseMovement);
+                
             },
             out: function (e, ui) {
                 dropMarker.style.visibility = "hidden";
@@ -340,7 +340,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
             },
             drop: function (e, ui) {
-                layoutHandler.mouseMoveItem (e, ui.draggable.element, item[0]);
+                layoutHandler.mouseMoveItem (ui.draggable.element, item[0], e.clientX, e.pageY);           
                 item.unbind ("mousemove", trackMouseMovement);
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
             }
@@ -407,14 +407,14 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
      * "before" means "above".  For a horizontally oriented set, "before" means
      * "left of".
      */
-    var isMouseBefore = function (evt, droppableEl, orientation) {
+    var isMouseBefore = function (droppableEl, orientation, x, y) {    	
         var mid;
         if (orientation === fluid.orientation.VERTICAL) {
             mid = jQuery (droppableEl).offset().top + (droppableEl.offsetHeight / 2);
-            return (evt.pageY < mid);
+            return (y < mid);
         } else {
             mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
-            return (evt.clientX < mid);
+            return (x < mid);
         }
     };    
     
@@ -561,8 +561,8 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         
         this.moveItemDown = this.moveItemRight;
     
-        this.isDropBefore = function (evt, targetAndMoving) {
-        	if (isMouseBefore (evt, targetAndMoving.target, orientation)) {
+        this.isDropBefore = function (target, moving, x, y) {
+            if (isMouseBefore (target, orientation, x, y)) {
         		return fluid.position.BEFORE;
         	}
         	else {
@@ -570,15 +570,14 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         	}
         };
         
-        this.mouseMoveItem = function (e, item, relatedItem) {
-        	var targetAndMoving = { target: relatedItem, moving: item };
-        	var whereTo = this.isDropBefore (e, targetAndMoving);
+        this.mouseMoveItem = function (moving, target, x, y) {
+            var whereTo = this.isDropBefore (target, moving, x, y);
             if (whereTo === fluid.position.BEFORE) {
-                jQuery (relatedItem).before (item);
+                jQuery (target).before (moving);
             } else if (whereTo === fluid.position.AFTER) {
-                jQuery (relatedItem).after (item);
+                jQuery (target).after (moving);
             }
-            orderChangedCallback(); 
+            orderChangedCallback();
         };
         
     }; // End ListLayoutHandler
@@ -625,8 +624,8 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	                
 	    // We need to override ListLayoutHandler.isDropBefore to ensure that the local private
 	    // orientation is used.
-	    this.isDropBefore = function (evt, targetAndMoving) {
-            if (isMouseBefore (evt, targetAndMoving.target, orientation)) {
+        this.isDropBefore = function (target, moving, x, y) {
+            if (isMouseBefore (target, orientation, x, y)) {
                 return fluid.position.BEFORE;
             }
             else {
@@ -757,9 +756,9 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	        moveVertically (item, fluid.direction.NEXT);
 	    };
 	    
-	    this.isDropBefore = function (evt, targetAndMoving) {
-	    	var position = isMouseBefore (evt, targetAndMoving.target, orientation) ? fluid.position.BEFORE : fluid.position.AFTER;
-	    	var canDrop = fluid.portletLayout.canMove (targetAndMoving.moving.id, targetAndMoving.target.id, position, layout, targetPerms);
+        this.isDropBefore = function (target, moving, x, y) {
+            var position = isMouseBefore (target, orientation, x, y) ? fluid.position.BEFORE : fluid.position.AFTER;
+            var canDrop = fluid.portletLayout.canMove (moving.id, target.id, position, layout, targetPerms);
 	    	if (canDrop) {
                 return position;
 	    	}
@@ -768,13 +767,12 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	    	}
         };
 
-        this.mouseMoveItem = function (e, item, relatedItem) {
-            var targetAndMoving = { target: relatedItem, moving: item}; 
-            var dropIt = this.isDropBefore (e, targetAndMoving);
+        this.mouseMoveItem = function (moving, target, x, y) {
+            var dropIt = this.isDropBefore (target, moving, x, y);
             if (dropIt === fluid.position.BEFORE) {
-                move (item, relatedItem, fluid.position.BEFORE);
+                move (moving, target, fluid.position.BEFORE);
             } else if (dropIt === fluid.position.AFTER){
-                move (item, relatedItem, fluid.position.AFTER);
+                move (moving, target, fluid.position.AFTER);
             }
         };
         
