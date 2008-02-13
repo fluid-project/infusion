@@ -6,8 +6,8 @@
 	<!-- get environment variables -->
 	<property environment="env"/>
 	
-     <!-- Versioning. Move into build.properties -->
-	 <property name="fluid_version" value="0.2" />
+     <!-- Link to the build.properties file.  -->
+	<property file="build.properties"/>
 
 	<!-- Define dependencies -->
     <property name="yuicompressor" location="lib/yuicompressor-2.3.3.jar" />
@@ -17,6 +17,8 @@
 	<property name="src" location="../src" />
 	<property name="dist" location="../dist" />
 	<property name="build" location="../build" />
+
+	<!-- the filename for the package to output -->
 	<property name="zipfile" value="fluid-${fluid_version}.zip" />
 
 	<!-- task definition for JSLint -->
@@ -30,6 +32,12 @@
 		<delete dir="${dist}" />
 	</target>
 
+	<!-- actions to execute before ending this script -->
+	<target name="beforeEnding">
+		<!-- delete the Fluid-all.js concatenated file because we no longer need it. -->
+		<delete file="${src}/webapp/component-templates/js/fluid/Fluid-all.js" />
+	</target>
+
 	<!-- setup our structures -->
 	<target name="init" depends="clean">
 		<mkdir dir="${build}" />
@@ -38,9 +46,17 @@
 
 	<!-- Target: buildAll -->
 	<target name="buildAll" depends="init, copyBuildTree, jsMinify, cssMinify, package">
-
+		<antcall target="beforeEnding"/>
 	</target>
 	
+	<!-- Concatenate the JS files before minifying -->
+	<target name="concatJS">
+		<concat destfile="${src}/webapp/component-templates/js/fluid/Fluid-all.js" append="true" >
+		<filelist dir="${src}/webapp/component-templates/js/fluid"
+			files="${order_of_dependencies}" />
+		</concat>
+	</target>
+
 	<target name="copyBuildTree">
 		<copy todir="${build}">
 			<dirset dir="${src}">
@@ -75,7 +91,7 @@
 	</target>
 
 <!-- Target: Minify the JS files -->
-	<target name="jsMinify">
+	<target name="jsMinify" depends="concatJS">
 		<description>
 		Minify all .JS files and copy them into the build directory.
 		</description>
@@ -101,6 +117,8 @@
 	</target>
 
 
+<!-- Target: Package the minified Javascript into a Zip file -->
+<!-- Todo: build a WAR file -->
 	<target name="package">
 		<description>
 			Creates the release directory structure and zips it all up.
