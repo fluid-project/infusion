@@ -1,3 +1,9 @@
+<!--
+To build a distribution, type: ant
+To jsLint all source code in the source directory, type: ant validate
+To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
+-->
+
 <project name="Fluid" default="buildAll" basedir=".">
 	<description>
 	Build a distributable package of Fluid components.
@@ -17,6 +23,7 @@
 	<property name="src" location="../src" />
 	<property name="dist" location="../dist" />
 	<property name="build" location="../build" />
+	<property name="lint" location="${src}"/>
 
 	<!-- the filename for the package to output -->
 	<property name="zipfile" value="fluid-${fluid_version}.zip" />
@@ -114,6 +121,18 @@
 				<mapper type="glob" from="*.js" to="*-min.js"/>
 				<targetfile/> 
 		</apply>
+	</target>
+
+
+<!-- Target: validate -->
+	<target name="validate">
+		<description>
+		Validate the javascript files using JSLint.
+		</description>
+
+		<echo>Validating .JS files...</echo>
+        <jslint dir="${lint}" excludes="${excludeFromJSLint}">
+        </jslint>
 	</target>
 
 
