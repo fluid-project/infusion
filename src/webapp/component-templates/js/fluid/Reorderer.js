@@ -733,11 +733,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	    };
 	
 	    this.getItemAbove = function (item) {
-	    	if (fluid.portletLayout.isFirstInColumn (item.id, layout)) {
-                return item;
-            } else {
-                return getVerticalSibling (item, fluid.direction.PREVIOUS);
-            }
+	    	return getVerticalSibling (item, fluid.direction.PREVIOUS);
 	    };
 	    
 	    this.moveItemUp = function (item) {
@@ -745,11 +741,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	    };
 	        
 	    this.getItemBelow = function (item) {
-	    	if (fluid.portletLayout.isLastInColumn (item, layout)) {
-                return item;
-            } else {
-                return getVerticalSibling (item, fluid.direction.NEXT);
-            }
+	    	return getVerticalSibling (item, fluid.direction.NEXT);
 	    };
 	
 	    this.moveItemDown = function (item) {
@@ -780,15 +772,17 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 }) ();
 
 fluid.portletLayout = function () {
-	// Public API.
-    return {
-       /**
-        * Determine if a given item can move before or after the given target position, given the
-        * permissions information.
-        */
-    	canMove: function (itemId, targetItemId, position, layout, perms) {
-    		var indices = fluid.portletLayout.findItemAndTargetIndices (itemId, targetItemId, position, layout);
-            return (!!perms[indices.itemIndex][indices.targetIndex]); 
+    var internals = {
+        layoutWalker: function (fn, layout) {
+            for (var col = 0; col < layout.columns.length; col++) {
+                var idsInCol = layout.columns[col].children;
+                for (var i = 0; i < idsInCol.length; i++) {
+                    var fnReturn = fn (idsInCol, i, col);
+                    if (fnReturn) {
+                        return fnReturn;
+                    }
+                }
+            }
         },
         
         /**
@@ -796,72 +790,23 @@ fluid.portletLayout = function () {
          * @return  An object with column index and item index (within that column) properties.
          *          These indices are -1 if the item does not exist in the grid.
          */
-        calcColumnAndItemIndex: function (itemId, layout) {
-            var indices = { columnIndex: -1, itemIndex: -1 };
-            for (var col = 0; col < layout.columns.length; col++) {
-                var itemIndex = jQuery (layout.columns[col].children).index (itemId);
-                if (itemIndex !== -1) {
-                    indices.columnIndex = col;
-                    indices.itemIndex = itemIndex;
-                    break;
-                }                
-            }
-            return indices;
+        findColumnAndItemIndices: function (itemId, layout) {
+            var findIndices = function (idsInCol, index, col) {
+                if (idsInCol[index] === itemId) {
+                    return {columnIndex: col, itemIndex: index};
+                }  
+            };
+            
+            var indices = internals.layoutWalker (findIndices, layout);
+            return indices || { columnIndex: -1, itemIndex: -1 };
         },
         
         findColIndex: function (itemId, layout) {
-        	return fluid.portletLayout.calcColumnAndItemIndex (itemId, layout).columnIndex;
+            return internals.findColumnAndItemIndices (itemId, layout).columnIndex;
         },
         
         findItemIndex: function (itemId, layout) {
-            return fluid.portletLayout.calcColumnAndItemIndex (itemId, layout).itemIndex;
-        },
-        
-        /**
-         * Given an item id, and a direction, find the top item in the next/previous column.
-         */
-        firstItemInAdjacentColumn: function (itemId, /* PREVIOUS, NEXT */ direction, layout) {
-            var siblingId = itemId;
-            var colIndex = fluid.portletLayout.findColIndex (itemId, layout);
-            var numColumns = fluid.portletLayout.numColumns (layout);
-            
-            // Go to the top of the next/previous column
-
-            colIndex += direction;
-            if ((colIndex >= 0) && (colIndex < numColumns)) {
-                siblingId = fluid.portletLayout.getItemAt (colIndex, 0, layout);
-            }
-            return siblingId;
-        }, 
-        
-        /**
-         * Return the item above/below the given item within that item's column.  If at
-         * bottom of column or at top, return the item itelf (no wrapping).
-         */
-        itemAboveBelow: function (itemId, /*PREVIOUS, NEXT*/ direction, layout) {
-        	
-        	var coords = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
-            var siblingIndex = coords.itemIndex + direction;
-            var numItems = fluid.portletLayout.numItemsInColumn (coords.columnIndex, layout);
-            if ((siblingIndex < 0) || (siblingIndex >= numItems)) {
-                return itemId;
-            }
-            else {
-                return fluid.portletLayout.getItemAt (coords.columnIndex, siblingIndex, layout);
-            }
-        },
-
-        /**
-         * Return the number of items in the given column.  If the column index
-         * is out of bounds, this returns -1.
-         */
-        numItemsInColumn: function (columnIndex, layout) {
-            if ((columnIndex < 0) || (columnIndex > layout.columns.length)) {
-                return -1;
-            }
-            else {
-               return layout.columns[columnIndex].children.length;
-            }
+            return internals.findColumnAndItemIndices (itemId, layout).itemIndex;
         },
         
         numColumns: function (layout) {
@@ -873,7 +818,7 @@ fluid.portletLayout = function () {
         },
         
         /**
-         * Returns itemIndex and targetIndex
+         * Returns targetIndex
          * This could have been written in two functions for clarity however it gets called a lot and 
          * the two functions were considerably less performant then this single function.
          * 
@@ -923,73 +868,15 @@ fluid.portletLayout = function () {
             }
 
             return foundIndices;     
-        }, 
-        
-        /**
-         * Move an item within the layout object. 
-         */
-        updateLayout: function (itemId, relativeItemId, position, layout) {
-            if (!itemId || !relativeItemId || itemId === relativeItemId) { 
-                return; 
-            }
-            var itemIndices = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
-            layout.columns[itemIndices.columnIndex].children.splice (itemIndices.itemIndex, 1);
-
-            var relativeItemIndices = fluid.portletLayout.calcColumnAndItemIndex (relativeItemId, layout);
-            var targetCol = layout.columns[relativeItemIndices.columnIndex].children;
-            targetCol.splice (relativeItemIndices.itemIndex + position, 0, itemId);
-        },
-        
-        /**
-         * Find the first target that can be moved in the given column, possibly moving to the next
-         * column, left or right, depending on which direction we are moving. 
-         */
-        firstMoveableTarget: function (itemId, /* NEXT, PREVIOUS */ direction, layout, perms) {
-            // default return value is "the item itself".
-            var firstPossibleTarget = { id: itemId, position: fluid.position.BEFORE };
-            var found = false;
-            var targetColIndex = fluid.portletLayout.findColIndex (itemId, layout) + direction;
-            
-            // Safety check -- can't search before the 0'th column -- declare found so first loop bails.
-            if (targetColIndex < 0 || targetColIndex >= fluid.portletLayout.numColumns (layout)) {
-                found = true;               
-            }
-            
-            // Loop thru all of the columns beginning with the <targetColIndex>'th column.
-            for (var i = targetColIndex; fluid.portletLayout.isColumn (i, layout) && !found; i += direction) {
-                // Loop thru the target column's items, looking for the first item that can be moved to.
-                var idsInCol = layout.columns[i].children;
-                for (var j = 0; (j < idsInCol.length) && !found; j++) {
-                    var possibleTargetId = idsInCol[j];
-                    if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.BEFORE, layout, perms))) {
-                        firstPossibleTarget.id = possibleTargetId;
-                        firstPossibleTarget.position = fluid.position.BEFORE;
-                    }
-                    else if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.AFTER, layout, perms))) {
-                        firstPossibleTarget.id = possibleTargetId;
-                        firstPossibleTarget.position = fluid.position.AFTER;
-                    }
-                }
-            }
-            return firstPossibleTarget;
-        },
-
-        nearestMoveableTarget: function (itemId, /* NEXT, PREVIOUS */ direction, layout, perms) {
-            if (direction === fluid.direction.NEXT) {
-                return fluid.portletLayout.nearestNextMoveableTarget (itemId, layout, perms);
-            }
-            else {
-                return fluid.portletLayout.nearestPreviousMoveableTarget (itemId, layout, perms);
-            }
         },
         
         nearestNextMoveableTarget: function (itemId, layout, perms) {
             // default return value is "the item itself".
             var nextPossibleTarget = { id: itemId, position: fluid.position.AFTER };
             var found = false;
-            var startCoords = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
+            var startCoords = internals.findColumnAndItemIndices (itemId, layout);
             
-            // Safety check calcColumnAndItemIndex() returns either valid indices or negative
+            // Safety check findColumnAndItemIndices() returns either valid indices or negative
             // values.  If the column index is negative, set found.
             if (startCoords.columnIndex < 0) {
                 found = true;
@@ -1013,9 +900,9 @@ fluid.portletLayout = function () {
             // default return value is "the item itself".
             var previousPossibleTarget = { id: itemId, position: fluid.position.BEFORE };
             var found = false;
-            var startCoords = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
+            var startCoords = internals.findColumnAndItemIndices (itemId, layout);
             
-            // Safety check calcColumnAndItemIndex() returns either valid indices or negative
+            // Safety check findColumnAndItemIndices() returns either valid indices or negative
             // values.  If the column index is negative, set found.
             if (startCoords.columnIndex < 0)  {
                 found = true;
@@ -1042,23 +929,18 @@ fluid.portletLayout = function () {
          */
         getItemAt: function (columnIndex, itemIndex, layout) {
             var itemId = null;
-            if ((columnIndex >= 0) && (columnIndex < fluid.portletLayout.numColumns (layout))) {
-                if ((itemIndex >= 0) && (itemIndex < fluid.portletLayout.numItemsInColumn (columnIndex, layout))) {
-                    itemId = layout.columns[columnIndex].children[itemIndex];
+            var cols = layout.columns;
+            
+            if (columnIndex >= 0 && columnIndex < cols.length) {
+                var idsInCol = cols[columnIndex].children;
+                if (itemIndex >= 0 && itemIndex < idsInCol.length) {
+                    itemId = idsInCol[itemIndex];
                 }
             }
+            
             return itemId;
         },
         
-        isFirstInColumn: function (itemId, layout) {
-            return (fluid.portletLayout.findItemIndex (itemId, layout) === 0);
-        },
-    
-        isLastInColumn: function (itemId, layout) {
-            var position = fluid.portletLayout.calcColumnAndItemIndex (itemId, layout);
-            return (position.itemIndex === fluid.portletLayout.numItemsInColumn (position.columnIndex, layout)-1) ? true : false;
-        },
-
         canItemMove: function (itemIndex, perms) {
             var itemPerms = perms[itemIndex];
             for (var i = 0; i < itemPerms.length; i++) {
@@ -1076,6 +958,111 @@ fluid.portletLayout = function () {
                 }
             }
             return false;
+        }
+    };   
+	// Public API.
+    return {
+        internals: internals,
+
+       /**
+        * Determine if a given item can move before or after the given target position, given the
+        * permissions information.
+        */
+    	canMove: function (itemId, targetItemId, position, layout, perms) {
+    		var indices = internals.findItemAndTargetIndices (itemId, targetItemId, position, layout);
+            return (!!perms[indices.itemIndex][indices.targetIndex]); 
+        },
+        
+        /**
+         * Given an item id, and a direction, find the top item in the next/previous column.
+         */
+        firstItemInAdjacentColumn: function (itemId, /* PREVIOUS, NEXT */ direction, layout) {
+            var findItemInAdjacentCol = function (idsInCol, index, col) {
+                var id = idsInCol[index];
+                if (id === itemId) {
+                    var adjacentCol = col + direction;
+                    return internals.getItemAt (adjacentCol, 0, layout);
+                }
+            };
+            
+            return internals.layoutWalker (findItemInAdjacentCol, layout) || itemId; 
+        }, 
+        
+        /**
+         * Return the item above/below the given item within that item's column.  If at
+         * bottom of column or at top, return the item itelf (no wrapping).
+         */
+        itemAboveBelow: function (itemId, /*PREVIOUS, NEXT*/ direction, layout) {
+            var findItemAboveBelow = function (idsInCol, index) {
+                if (idsInCol[index] === itemId) {
+                    var siblingIndex = index + direction;
+                    if ((siblingIndex < 0) || (siblingIndex >= idsInCol.length)) {
+                        return itemId;
+                    } else {
+                        return idsInCol[siblingIndex];
+                    }
+                }
+        	};
+
+            return internals.layoutWalker (findItemAboveBelow, layout) || itemId;
+        },
+        
+        /**
+         * Move an item within the layout object. 
+         */
+        updateLayout: function (itemId, relativeItemId, position, layout) {
+            if (!itemId || !relativeItemId || itemId === relativeItemId) { 
+                return; 
+            }
+            var itemIndices = internals.findColumnAndItemIndices (itemId, layout);
+            layout.columns[itemIndices.columnIndex].children.splice (itemIndices.itemIndex, 1);
+
+            var relativeItemIndices = internals.findColumnAndItemIndices (relativeItemId, layout);
+            var targetCol = layout.columns[relativeItemIndices.columnIndex].children;
+            targetCol.splice (relativeItemIndices.itemIndex + position, 0, itemId);
+        },
+        
+        /**
+         * Find the first target that can be moved in the given column, possibly moving to the next
+         * column, left or right, depending on which direction we are moving. 
+         */
+        firstMoveableTarget: function (itemId, /* NEXT, PREVIOUS */ direction, layout, perms) {
+            // default return value is "the item itself".
+            var firstPossibleTarget = { id: itemId, position: fluid.position.BEFORE };
+            var found = false;
+            var targetColIndex = internals.findColIndex (itemId, layout) + direction;
+            
+            // Safety check -- can't search before the 0'th column -- declare found so first loop bails.
+            if (targetColIndex < 0 || targetColIndex >= internals.numColumns (layout)) {
+                found = true;               
+            }
+            
+            // Loop thru all of the columns beginning with the <targetColIndex>'th column.
+            for (var i = targetColIndex; internals.isColumn (i, layout) && !found; i += direction) {
+                // Loop thru the target column's items, looking for the first item that can be moved to.
+                var idsInCol = layout.columns[i].children;
+                for (var j = 0; (j < idsInCol.length) && !found; j++) {
+                    var possibleTargetId = idsInCol[j];
+                    if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.BEFORE, layout, perms))) {
+                        firstPossibleTarget.id = possibleTargetId;
+                        firstPossibleTarget.position = fluid.position.BEFORE;
+                    }
+                    else if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.AFTER, layout, perms))) {
+                        firstPossibleTarget.id = possibleTargetId;
+                        firstPossibleTarget.position = fluid.position.AFTER;
+                    }
+                }
+            }
+            return firstPossibleTarget;
+        },
+
+        nearestMoveableTarget: function (itemId, /* NEXT, PREVIOUS */ direction, layout, perms) {
+            if (direction === fluid.direction.NEXT) {
+                return internals.nearestNextMoveableTarget (itemId, layout, perms);
+            }
+            else {
+                return internals.nearestPreviousMoveableTarget (itemId, layout, perms);
+            }
         },
         
         /**
@@ -1098,11 +1085,11 @@ fluid.portletLayout = function () {
                     var idSelector = "[id=" + itemId  + "]";
                     selectablesSelector = selectablesSelector ? selectablesSelector + "," + idSelector : idSelector;
                     
-                    var indices = fluid.portletLayout.findItemAndTargetIndices (itemId, itemId, fluid.position.BEFORE, layout);
-                    if (fluid.portletLayout.canItemMove (indices.itemIndex, perms)) {
+                    var indices = internals.findItemAndTargetIndices (itemId, itemId, fluid.position.BEFORE, layout);
+                    if (internals.canItemMove (indices.itemIndex, perms)) {
                         movablesSelector = movablesSelector ? movablesSelector + "," + idSelector : idSelector; 
                     }
-                    if (fluid.portletLayout.isDropTarget (indices.targetIndex, perms)) {
+                    if (internals.isDropTarget (indices.targetIndex, perms)) {
                     	dropTargets = dropTargets ? dropTargets + "," + idSelector : idSelector;
                     }
                 }

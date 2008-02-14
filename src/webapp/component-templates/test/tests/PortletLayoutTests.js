@@ -23,76 +23,61 @@ function isOriginalOrderTest(testStr, layoutObj) {
     
 }
  
-function testCalcColumnAndItemIndex () {
+function testFindColumnAndItemIndices () {
     // Tests for column index:
     // Column 0
-    assertEquals (portlet1id + " should be in 1st column", 0, fluid.portletLayout.calcColumnAndItemIndex (portlet1id, demo.portal.layout).columnIndex);
-    assertEquals (portlet2id + " should be in 1st column", 0, fluid.portletLayout.calcColumnAndItemIndex (portlet2id, demo.portal.layout).columnIndex);
-    assertEquals (portlet3id + " should be in 1st column", 0, fluid.portletLayout.calcColumnAndItemIndex (portlet3id, demo.portal.layout).columnIndex);
-    assertEquals (portlet4id + " should be in 1st column", 0, fluid.portletLayout.calcColumnAndItemIndex (portlet4id, demo.portal.layout).columnIndex);
+    assertEquals (portlet1id + " should be in 1st column", 0, fluid.portletLayout.internals.findColumnAndItemIndices (portlet1id, demo.portal.layout).columnIndex);
+    assertEquals (portlet2id + " should be in 1st column", 0, fluid.portletLayout.internals.findColumnAndItemIndices (portlet2id, demo.portal.layout).columnIndex);
+    assertEquals (portlet3id + " should be in 1st column", 0, fluid.portletLayout.internals.findColumnAndItemIndices (portlet3id, demo.portal.layout).columnIndex);
+    assertEquals (portlet4id + " should be in 1st column", 0, fluid.portletLayout.internals.findColumnAndItemIndices (portlet4id, demo.portal.layout).columnIndex);
     
     // Column 1
-    assertEquals (portlet5id + " should be in 2nd column", 1, fluid.portletLayout.calcColumnAndItemIndex (portlet5id, demo.portal.layout).columnIndex);
-    assertEquals (portlet6id + " should be in 2nd column", 1, fluid.portletLayout.calcColumnAndItemIndex (portlet6id, demo.portal.layout).columnIndex);
+    assertEquals (portlet5id + " should be in 2nd column", 1, fluid.portletLayout.internals.findColumnAndItemIndices (portlet5id, demo.portal.layout).columnIndex);
+    assertEquals (portlet6id + " should be in 2nd column", 1, fluid.portletLayout.internals.findColumnAndItemIndices (portlet6id, demo.portal.layout).columnIndex);
     
     // Column 2
-    assertEquals (portlet7id + " should be in 3rd column", 2, fluid.portletLayout.calcColumnAndItemIndex (portlet7id, demo.portal.layout).columnIndex);
-    assertEquals (portlet8id + " should be in 3rd column", 2, fluid.portletLayout.calcColumnAndItemIndex (portlet8id, demo.portal.layout).columnIndex);
-    assertEquals (portlet9id + " should be in 3rd column", 2, fluid.portletLayout.calcColumnAndItemIndex (portlet9id, demo.portal.layout).columnIndex);
+    assertEquals (portlet7id + " should be in 3rd column", 2, fluid.portletLayout.internals.findColumnAndItemIndices (portlet7id, demo.portal.layout).columnIndex);
+    assertEquals (portlet8id + " should be in 3rd column", 2, fluid.portletLayout.internals.findColumnAndItemIndices (portlet8id, demo.portal.layout).columnIndex);
+    assertEquals (portlet9id + " should be in 3rd column", 2, fluid.portletLayout.internals.findColumnAndItemIndices (portlet9id, demo.portal.layout).columnIndex);
     
     // Not in any column.
     var item = fluid.utils.jById (portalRootId);
-    assertEquals (portalRootId + " should not be in any column", -1, fluid.portletLayout.calcColumnAndItemIndex (item.id, demo.portal.layout).columnIndex);
+    assertEquals (portalRootId + " should not be in any column", -1, fluid.portletLayout.internals.findColumnAndItemIndices (item.id, demo.portal.layout).columnIndex);
     
     // Tests for item index:    
-    assertEquals ("portlet1 (no column index provided) should have index 0", 0, fluid.portletLayout.calcColumnAndItemIndex (portlet1id, demo.portal.layout).itemIndex);
-    assertEquals ("portlet2 (no column index provided) should have index 1", 1, fluid.portletLayout.calcColumnAndItemIndex (portlet2id, demo.portal.layout).itemIndex);
-    assertEquals ("portlet3 (no column index provided) should have index 2", 2, fluid.portletLayout.calcColumnAndItemIndex (portlet3id, demo.portal.layout).itemIndex);
-    assertEquals ("portlet4 (no column index provided) should have index 3", 3, fluid.portletLayout.calcColumnAndItemIndex (portlet4id, demo.portal.layout).itemIndex);
-    assertEquals ("portlet5 (no column index provided) should have index 0", 0, fluid.portletLayout.calcColumnAndItemIndex (portlet5id, demo.portal.layout).itemIndex);
-    assertEquals ("portlet6 (no column index provided) should have index 1", 1, fluid.portletLayout.calcColumnAndItemIndex (portlet6id, demo.portal.layout).itemIndex);
-    assertEquals ("portlet7 (no column index provided) should have index 0", 0, fluid.portletLayout.calcColumnAndItemIndex (portlet7id, demo.portal.layout).itemIndex);
-    assertEquals ("portlet8 (no column index provided) should have index 1", 1, fluid.portletLayout.calcColumnAndItemIndex (portlet8id, demo.portal.layout).itemIndex);
-    assertEquals ("portlet9 (no column index provided) should have index 2", 2, fluid.portletLayout.calcColumnAndItemIndex (portlet9id, demo.portal.layout).itemIndex);    
+    assertEquals ("portlet1 (no column index provided) should have index 0", 0, fluid.portletLayout.internals.findColumnAndItemIndices (portlet1id, demo.portal.layout).itemIndex);
+    assertEquals ("portlet2 (no column index provided) should have index 1", 1, fluid.portletLayout.internals.findColumnAndItemIndices (portlet2id, demo.portal.layout).itemIndex);
+    assertEquals ("portlet3 (no column index provided) should have index 2", 2, fluid.portletLayout.internals.findColumnAndItemIndices (portlet3id, demo.portal.layout).itemIndex);
+    assertEquals ("portlet4 (no column index provided) should have index 3", 3, fluid.portletLayout.internals.findColumnAndItemIndices (portlet4id, demo.portal.layout).itemIndex);
+    assertEquals ("portlet5 (no column index provided) should have index 0", 0, fluid.portletLayout.internals.findColumnAndItemIndices (portlet5id, demo.portal.layout).itemIndex);
+    assertEquals ("portlet6 (no column index provided) should have index 1", 1, fluid.portletLayout.internals.findColumnAndItemIndices (portlet6id, demo.portal.layout).itemIndex);
+    assertEquals ("portlet7 (no column index provided) should have index 0", 0, fluid.portletLayout.internals.findColumnAndItemIndices (portlet7id, demo.portal.layout).itemIndex);
+    assertEquals ("portlet8 (no column index provided) should have index 1", 1, fluid.portletLayout.internals.findColumnAndItemIndices (portlet8id, demo.portal.layout).itemIndex);
+    assertEquals ("portlet9 (no column index provided) should have index 2", 2, fluid.portletLayout.internals.findColumnAndItemIndices (portlet9id, demo.portal.layout).itemIndex);    
     
 }   // end testCalcNextColumnIndex().
  
 function testFindItemAndTargetIndices() {    
-    var indices = fluid.portletLayout.findItemAndTargetIndices (portlet1id, portlet1id, fluid.position.BEFORE, demo.portal.layout);
+    var indices = fluid.portletLayout.internals.findItemAndTargetIndices (portlet1id, portlet1id, fluid.position.BEFORE, demo.portal.layout);
     assertEquals (0, indices.itemIndex);
     assertEquals (0, indices.targetIndex);
 
-    indices = fluid.portletLayout.findItemAndTargetIndices (portlet3id, portlet3id, fluid.position.BEFORE, demo.portal.layout);
+    indices = fluid.portletLayout.internals.findItemAndTargetIndices (portlet3id, portlet3id, fluid.position.BEFORE, demo.portal.layout);
     assertEquals (2, indices.itemIndex);
     assertEquals (2, indices.targetIndex);
     
-    indices = fluid.portletLayout.findItemAndTargetIndices (portlet9id, portlet9id, fluid.position.BEFORE, demo.portal.layout);
+    indices = fluid.portletLayout.internals.findItemAndTargetIndices (portlet9id, portlet9id, fluid.position.BEFORE, demo.portal.layout);
     assertEquals (8, indices.itemIndex);
     assertEquals (10, indices.targetIndex);
     
-    indices = fluid.portletLayout.findItemAndTargetIndices (null, undefined, fluid.position.BEFORE, demo.portal.layout);
+    indices = fluid.portletLayout.internals.findItemAndTargetIndices (null, undefined, fluid.position.BEFORE, demo.portal.layout);
     assertEquals (-1, indices.itemIndex);
     assertEquals (-1, indices.targetIndex);    
 }
 
-function testNumItemsInColumn() {    
-    var numItems = fluid.portletLayout.numItemsInColumn (0, demo.portal.layout);
-    assertEquals ("Number of portlets in column 1 should be 4", 4, numItems);
-    numItems = fluid.portletLayout.numItemsInColumn (1, demo.portal.layout);
-    assertEquals ("Number of portlets in column 2 should be 2", 2, numItems);
-    numItems = fluid.portletLayout.numItemsInColumn (2, demo.portal.layout);
-    assertEquals ("Number of portlets in column 3 should be 3", 3, numItems);
-
-    // Test 'non-existent' column by passing in a negative column index, and one definitely too large.
-    numItems = fluid.portletLayout.numItemsInColumn (-1, demo.portal.layout);
-    assertEquals ("Number of portlets in non-existent column should be -1", -1, numItems);
-    numItems = fluid.portletLayout.numItemsInColumn (1000000, demo.portal.layout);
-    assertEquals ("Number of portlets in non-existent column should be -1", -1, numItems);
-}
-
 function testNumColumns() {
-    assertEquals("Number of columns in test layout should be 3", 3, fluid.portletLayout.numColumns (demo.portal.layout));
-    assertEquals("Number of columns in empty layout should be 0", 0, fluid.portletLayout.numColumns (emptyLayout));
+    assertEquals("Number of columns in test layout should be 3", 3, fluid.portletLayout.internals.numColumns (demo.portal.layout));
+    assertEquals("Number of columns in empty layout should be 0", 0, fluid.portletLayout.internals.numColumns (emptyLayout));
 }
 
 function testUpdateLayout () {
@@ -246,97 +231,97 @@ function testCanMove() {
 function testGetItemAt() {
 
     // top-left corner should be portlet1.
-    var itemId = fluid.portletLayout.getItemAt (0, 0, demo.portal.layout);
+    var itemId = fluid.portletLayout.internals.getItemAt (0, 0, demo.portal.layout);
     assertEquals ("Top left portlet should be portlet1", portlet1id, itemId);
     
     // bottom right = portlet9
-    itemId = fluid.portletLayout.getItemAt (2, 2, demo.portal.layout);
+    itemId = fluid.portletLayout.internals.getItemAt (2, 2, demo.portal.layout);
     assertEquals ("Bottom right portlet should be portlet9", portlet9id, itemId);
 
     // portlet6 is in the middle
-    itemId = fluid.portletLayout.getItemAt (1, 1, demo.portal.layout);
+    itemId = fluid.portletLayout.internals.getItemAt (1, 1, demo.portal.layout);
     assertEquals ("Bottom right portlet should be portlet6", portlet6id, itemId);
 
     // portlet4 is bottom of 1st column
-    itemId = fluid.portletLayout.getItemAt (0, 3, demo.portal.layout);
+    itemId = fluid.portletLayout.internals.getItemAt (0, 3, demo.portal.layout);
     assertEquals ("Bottom right portlet should be portlet4", portlet4id, itemId);
 
     // null for invalid column (negative or too big)
-    itemId = fluid.portletLayout.getItemAt (-1, 3, demo.portal.layout);
+    itemId = fluid.portletLayout.internals.getItemAt (-1, 3, demo.portal.layout);
     assertNull ("Negative column index should give null result", itemId);
-    item = fluid.portletLayout.getItemAt (999, 3, demo.portal.layout);
+    item = fluid.portletLayout.internals.getItemAt (999, 3, demo.portal.layout);
     assertNull ("Column index greater than number of columns should give null result", itemId);
 
     // null for invalid item index (negative or too big)
-    itemId = fluid.portletLayout.getItemAt (0, -1, demo.portal.layout);
+    itemId = fluid.portletLayout.internals.getItemAt (0, -1, demo.portal.layout);
     assertNull ("Negative item index should give null result", itemId);
-    item = fluid.portletLayout.getItemAt (0, 999, demo.portal.layout);
+    item = fluid.portletLayout.internals.getItemAt (0, 999, demo.portal.layout);
     assertNull ("Item index greater than number of items in column should give null result", itemId);
 }
 
 function testNearestNextMoveableTarget() {
     
     // portlet3's nearest next is portlet4.
-    var actual = fluid.portletLayout.nearestNextMoveableTarget (portlet3id, demo.portal.layout, demo.portal.dropTargetPerms);
+    var actual = fluid.portletLayout.internals.nearestNextMoveableTarget (portlet3id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet3's nearest next target should be portlet4", portlet4id, actual.id);
 
     // portlet1 is fixed; its nearest next is itself
-    actual = fluid.portletLayout.nearestNextMoveableTarget (portlet1id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestNextMoveableTarget (portlet1id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet1's nearest next target should be itself", portlet1id, actual.id);
 
     // portlet2 is fixed; its nearest next is itself
-    actual = fluid.portletLayout.nearestNextMoveableTarget (portlet2id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestNextMoveableTarget (portlet2id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet2's nearest next target should be portlet2", portlet2id, actual.id);
 
     // portlet7's nearest next is portlet8.
-    actual = fluid.portletLayout.nearestNextMoveableTarget (portlet7id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestNextMoveableTarget (portlet7id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet7's nearest next target should be portlet8", portlet8id, actual.id);
 
     // portlet8's nearest next is portlet9.
-    actual = fluid.portletLayout.nearestNextMoveableTarget (portlet8id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestNextMoveableTarget (portlet8id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet7's nearest next target should be portlet8", portlet9id, actual.id);
 
     // portlet9 has no next since it is at the bottom of a column.
-    actual = fluid.portletLayout.nearestNextMoveableTarget (portlet9id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestNextMoveableTarget (portlet9id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet9 has no next since it is at the bottom of a column", portlet9id, actual.id);
 
     // portlet4 has no next since it is at the bottom of a column.
-    actual = fluid.portletLayout.nearestNextMoveableTarget (portlet4id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestNextMoveableTarget (portlet4id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet9 has no next since it is at the bottom of a column", portlet4id, actual.id);
 
     // portlet6 has no next since it is at the bottom of a column.
-    actual = fluid.portletLayout.nearestNextMoveableTarget (portlet6id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestNextMoveableTarget (portlet6id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet6 has no next since it is at the bottom of a column", portlet6id, actual.id);
 }
 
 function testNearestPreviousMoveableTarget() {
     
     // portlet3's can't move up since the portlets above it are fixed.
-    var actual = fluid.portletLayout.nearestPreviousMoveableTarget (portlet3id, demo.portal.layout, demo.portal.dropTargetPerms);
+    var actual = fluid.portletLayout.internals.nearestPreviousMoveableTarget (portlet3id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet3's can't move up; nearest previous should be itself", portlet3id, actual.id);
 
     // portlet4 can't move up since portlet3 has greater precedence.
-    actual = fluid.portletLayout.nearestPreviousMoveableTarget (portlet4id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestPreviousMoveableTarget (portlet4id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet4's can't move up; nearest previous should be itself", portlet4id, actual.id);
 
     // portlet1 is fixed; its nearest preivious is itself
-    actual = fluid.portletLayout.nearestPreviousMoveableTarget (portlet1id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestPreviousMoveableTarget (portlet1id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portle12's nearest next target should be portlet2", portlet1id, actual.id);
 
     // portlet2 is fixed; its nearest preivious is itself
-    actual = fluid.portletLayout.nearestPreviousMoveableTarget (portlet2id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestPreviousMoveableTarget (portlet2id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet2's nearest next target should be portlet2", portlet2id, actual.id);
 
     // portlet7 is at the top of the column.
-    actual = fluid.portletLayout.nearestPreviousMoveableTarget (portlet7id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestPreviousMoveableTarget (portlet7id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet7 has no previous since it is at the top of a column", portlet7id, actual.id);
 
     // portlet8's can't be moved up since portlet7 has greater precedence.
-    actual = fluid.portletLayout.nearestPreviousMoveableTarget (portlet8id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestPreviousMoveableTarget (portlet8id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet8's 't be moved up since portlet7 has greater precedence", portlet8id, actual.id);
 
     // portlet9's nearest previous is portlet8.
-    actual = fluid.portletLayout.nearestPreviousMoveableTarget (portlet9id, demo.portal.layout, demo.portal.dropTargetPerms);
+    actual = fluid.portletLayout.internals.nearestPreviousMoveableTarget (portlet9id, demo.portal.layout, demo.portal.dropTargetPerms);
     assertEquals ("portlet9's nearest previous target should be portlet6", portlet8id, actual.id);
 }
 
@@ -455,27 +440,27 @@ function testCreateFindItems () {
 }   // end testCreateFindItems().
 
 function testCanItemMove () {
-    assertFalse (fluid.portletLayout.canItemMove (0, demo.portal.dropTargetPerms));
-    assertFalse (fluid.portletLayout.canItemMove (1, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.canItemMove (2, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.canItemMove (3, demo.portal.dropTargetPerms));
-    assertFalse (fluid.portletLayout.canItemMove (4, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.canItemMove (5, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.canItemMove (6, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.canItemMove (7, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.canItemMove (8, demo.portal.dropTargetPerms));
+    assertFalse (fluid.portletLayout.internals.canItemMove (0, demo.portal.dropTargetPerms));
+    assertFalse (fluid.portletLayout.internals.canItemMove (1, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.canItemMove (2, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.canItemMove (3, demo.portal.dropTargetPerms));
+    assertFalse (fluid.portletLayout.internals.canItemMove (4, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.canItemMove (5, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.canItemMove (6, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.canItemMove (7, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.canItemMove (8, demo.portal.dropTargetPerms));
     
 }
 
 function testIsDropTarget () {
-    assertFalse (fluid.portletLayout.isDropTarget (0, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.isDropTarget (1, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.isDropTarget (2, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.isDropTarget (3, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.isDropTarget (5, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.isDropTarget (6, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.isDropTarget (8, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.isDropTarget (9, demo.portal.dropTargetPerms));
-    assertTrue (fluid.portletLayout.isDropTarget (10, demo.portal.dropTargetPerms));
+    assertFalse (fluid.portletLayout.internals.isDropTarget (0, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.isDropTarget (1, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.isDropTarget (2, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.isDropTarget (3, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.isDropTarget (5, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.isDropTarget (6, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.isDropTarget (8, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.isDropTarget (9, demo.portal.dropTargetPerms));
+    assertTrue (fluid.portletLayout.internals.isDropTarget (10, demo.portal.dropTargetPerms));
     
 }

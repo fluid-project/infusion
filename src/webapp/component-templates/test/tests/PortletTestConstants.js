@@ -33,9 +33,8 @@ function exposeTestFunctionNames() {
     return [
         // PortletLayoutTests.js
         "testCanMove",
-        "testCalcColumnAndItemIndex",
+        "testFindColumnAndItemIndices",
         "testFindItemAndTargetIndices",
-        "testNumItemsInColumn",
         "testNumColumns",
         "testUpdateLayout",
         "testFirstMoveableTarget",
