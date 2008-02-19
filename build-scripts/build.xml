@@ -9,10 +9,8 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	Build a distributable package of Fluid components.
 	</description>
 
-	<!-- get environment variables -->
-	<property environment="env"/>
-	
-     <!-- Link to the build.properties file.  -->
+	<!-- get environment variables and properties -->
+	<property environment="env"/>	
 	<property file="build.properties"/>
 
 	<!-- Define dependencies -->
@@ -20,9 +18,11 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="jslint" location="lib/jslint4java-1.1+rhino.jar" />
 
 	<!-- set up directory locations -->
-	<property name="src" location="../src" />
+	<property name="src" location="../fluid-components" />
 	<property name="dist" location="../dist" />
 	<property name="build" location="../build" />
+	<property name="web-inf" location="../WEB-INF"/>
+	<property name="components-build" location="${build}/fluid-components" />
 	<property name="lint" location="${src}"/>
 
 	<!-- the filename for the package to output -->
@@ -33,98 +33,163 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		classname="net.happygiraffe.jslint.ant.JSLintTask" 
 		classpath="${jslint}" />
 
-	<!-- cleanup after ourselves -->
+	<!-- Target: buildAll -->
+	<target name="buildAll" depends="clean, createDistro, war, package" />
+
+	<!-- Target: cleanup before running -->
 	<target name="clean">
 		<delete dir="${build}" />
 		<delete dir="${dist}" />
 	</target>
 
-	<!-- actions to execute before ending this script -->
-	<target name="beforeEnding">
-		<!-- delete the Fluid-all.js concatenated file because we no longer need it. -->
-		<delete file="${src}/webapp/component-templates/js/fluid/Fluid-all.js" />
-	</target>
-
-	<!-- setup our structures -->
-	<target name="init" depends="clean">
+	<!-- Set up the build directory structure -->
+	<target name="init">
 		<mkdir dir="${build}" />
+		<mkdir dir="${components-build}" />
+		
+		<!-- Copy the directory structure (but not the files) of fluid-components into the build tree -->
+		<copy todir="${components-build}">
+			<dirset dir="${src}">
+				<include name="**/*" />
+			</dirset>
+		</copy>
+		
 		<mkdir dir="${dist}" />
 	</target>
 
-	<!-- Target: buildAll -->
-	<target name="buildAll" depends="init, copyBuildTree, jsMinify, cssMinify, package">
-		<antcall target="beforeEnding"/>
-	</target>
-	
-	<!-- Concatenate the JS files before minifying -->
-	<target name="concatJS">
-		<concat destfile="${src}/webapp/component-templates/js/fluid/Fluid-all.js" append="true" >
-		<filelist dir="${src}/webapp/component-templates/js/fluid"
-			files="${order_of_dependencies}" />
-		</concat>
-	</target>
-
-	<target name="copyBuildTree">
-		<copy todir="${build}">
-			<dirset dir="${src}">
-			</dirset>
+	<!--Copy files that don't need to be minified from the source tree to the build directory -->
+	<target name="copyUnminifiableFiles" depends="init">
+		<copy todir="${components-build}">
+				<fileset dir="${src}">
+					<include name="html/**" />
+					<include name="images/**" />
+				</fileset>
 	    </copy>
 	</target>
 
-	<!-- Target: Minify the CSS files -->
-	<target name="cssMinify">
-		<description>
-		Minify all .CSS files and copy them into the build directory.
-		</description>
-		<echo>Minifying .CSS files...</echo>
-		<apply executable="java" dest="${build}" parallel="false">
-			<!-- The files to act upon. -->	
-			<fileset dir="${src}"  casesensitive="no">
-				<include name="**/*.css"/>
-				<exclude name="**/test/*"/>
-			</fileset>
-
-			<arg line="-jar"/>
-			<arg path="${yuicompressor}"/>
-			<arg line="--line-break 0"/>
-			<srcfile/>
-
-			<!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
-			<!-- output minified files with a *-min.css suffix. -->
-			<arg line="-o"/>
-			<mapper type="glob" from="*.css" to="*-min.css"/>
-			<targetfile/>
-		</apply>
+	<!-- Concatenate all the minified JS files together into an all-in-one file. -->
+	<target name="fluidAllInOne" depends="init">
+		<concat destfile="${components-build}/js/Fluid-all.js" append="true" >
+			<filelist dir="${src}/js/fluid" files="${order_of_dependencies}" />
+		</concat>
+		
+		<antcall target="minify">
+			<param name="fromDir" value="${components-build}/js" />
+			<param name="toDir" value="${components-build}/js/fluid" />
+			<param name="file-pattern" value="Fluid-all.js" />
+			<param name="lineBreakArg" value="" />
+		</antcall>
+		
+		<!-- delete the unminified concatenated file generated above -->
+		<delete file="${components-build}/js/Fluid-all.js" />
 	</target>
 
-<!-- Target: Minify the JS files -->
-	<target name="jsMinify" depends="concatJS">
+	<!-- Target: Minify the JS files -->
+	<target name="minify">
 		<description>
-		Minify all .JS files and copy them into the build directory.
+		Minify the specified files and copy them into the specified directory. Don't call this directly.
 		</description>
-		<echo>Minifying .JS files...</echo>
-		<apply executable="java" dest="${build}"  parallel="false">
+
+		<apply executable="java" dest="${toDir}"  parallel="false">
 				<!-- The files to act upon. -->	
-				<!-- May need to modify this so files are minified in a certain order -->
-				<fileset dir="${src}" casesensitive="no">
-					<include name="**/*.js"/>
-					<exclude name="**/test/*"/>
+				<fileset dir="${fromDir}" casesensitive="no">
+					<include name="**/${file-pattern}" />
+					<exclude name="**/test/*" />
 				</fileset>
 
-				<arg line="-jar"/>
-				<arg path="${yuicompressor}"/>
+				<arg line="-jar" />
+				<arg path="${yuicompressor}" />
 				<srcfile/>
 
 				<!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
-				<!-- output minified files with a *-min.js suffix. -->
-				<arg line="-o"/>
-				<mapper type="glob" from="*.js" to="*-min.js"/>
-				<targetfile/> 
+				<arg line="${lineBreakArg}" />
+				<arg line="-o" />
+				<mapper type="glob" from="${file-pattern}" to="${file-pattern}" />
+				<targetfile /> 
 		</apply>
 	</target>
+	
+	<target name="minifyAll">
+		<!-- Minify all the other JavaScript files straight out of the source tree. -->
+		<echo>Minifying .JS files...</echo>
+		<antcall target="minify">
+			<param name="fromDir" value="${src}/js" />
+			<param name="toDir" value="${components-build}/js" />
+			<param name="file-pattern" value="*.js" />
+			<param name="lineBreakArg" value="" />
+		</antcall>
+		
+		<echo>Minifying .CSS files...</echo>
+		<antcall target="minify">
+			<param name="fromDir" value="${src}/css" />
+			<param name="toDir" value="${components-build}/css" />
+			<param name="file-pattern" value="*.css" />
+			<param name="lineBreakArg" value="--line-break 0" />
+		</antcall>
+	</target>
 
+	<!-- Copy all the files necessary for the distribution. -->
+	<target name="createDistro" depends="init, copyUnminifiableFiles, minifyAll, fluidAllInOne">
+		<description>
+		Copy all the files necessary for distribution to the Dist directory.
+		</description>
 
-<!-- Target: validate -->
+		<copy todir="${dist}">
+			<fileset dir="${build}">
+				<exclude name="war/**"/>
+			</fileset>
+		</copy>
+
+		<mkdir dir="${dist}/sample-code" />
+		<copy todir="${dist}/sample-code">
+			<fileset dir="../sample-code/">
+				<include name="markupExamples/**" />
+		    </fileset>
+		</copy>
+
+		<mkdir dir="${dist}/tests" />
+		<copy todir="${dist}/tests">
+			<fileset dir="../tests">
+				<include name="jsunit/**" />
+				<include name="fluid-tests/**" />
+				<include name="utils/**"/>
+		    </fileset>
+		</copy>
+	</target>
+
+    <!-- Zip up the whole release bundle -->
+	<target name="package" depends="createDistro">
+		<description>
+			Creates the release directory structure and zips it all up.
+		</description>
+
+		<echo>Zipping minified files in ${build} to ${dist}/${zipfile}</echo>
+		<zip destfile="${dist}/${zipfile}" 
+			basedir="${dist}"
+			includes="**/*"  excludes="*.zip" />
+	</target>
+
+	<target name="war" depends="createDistro">
+		<copy todir="${build}/war/src/webapp/component-templates" >
+			<fileset dir="${components-build}"/>
+		</copy>
+
+		<copy todir="${build}/war/src/webapp/WEB-INF" >
+			<fileset dir="${web-inf}"/>
+		</copy>
+
+		<copy todir="${build}/war">
+			<fileset dir=".">
+				<include name="pom.xml" />
+				<include name="project.xml" />
+				<include name="maven.xml" />
+				<include name="project.properties" />
+			</fileset>
+		</copy>
+
+	</target>
+
+	<!-- Target: validate -->
 	<target name="validate">
 		<description>
 		Validate the javascript files using JSLint.
@@ -133,51 +198,6 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		<echo>Validating .JS files...</echo>
         <jslint dir="${lint}" excludes="${excludeFromJSLint}">
         </jslint>
-	</target>
-
-
-<!-- Target: Package the minified Javascript into a Zip file -->
-<!-- Todo: build a WAR file -->
-	<target name="package">
-		<description>
-			Creates the release directory structure and zips it all up.
-		</description>
-
-		<mkdir dir="${dist}/fluid-components" />
-		<copy todir="${dist}/fluid-components">
-			<fileset dir="${build}/webapp/component-templates">
-				<include name="js/**" />
-				<include name="css/**" />
-		    </fileset>
-		</copy>
-
-		<mkdir dir="${dist}/sample-code" />
-		<copy todir="${dist}/sample-code">
-			<fileset dir="${src}/webapp/component-templates/test/">
-				<include name="markupExamples/**" />
-		    </fileset>
-		</copy>
-		
-		<mkdir dir="${dist}/server-side-templates" />
-		<copy todir="${dist}/server-side-templates">
-			<fileset dir="${src}/webapp/component-templates/">
-				<include name="html/**" />
-				<include name="images/**" />
-		    </fileset>
-		</copy>
-
-		<mkdir dir="${dist}/tests" />
-		<copy todir="${dist}/tests">
-			<fileset dir="${src}/webapp/component-templates/test">
-				<include name="jsunit/**" />
-				<include name="tests/**" />
-		    </fileset>
-		</copy>
-
-		<echo>Zipping minified files in ${build} to ${dist}/${zipfile}</echo>
-		<zip destfile="${dist}/${zipfile}" 
-			basedir="${dist}"
-			includes="**/*"  excludes="*.zip" />
 	</target>
 
 </project>
