@@ -80,22 +80,19 @@ function exposeTestFunctionNames() {
 		"testGetItemAboveOneRow",
 		
 		// LightboxTests.js
-		"testHandleArrowKeyPressMoveThumbDown",
-		"testHandleArrowKeyPressWrapThumbUp",
-		"testHandleArrowKeyPressForUpAndDown",
-		"testHandleArrowKeyPressForLeftAndRight",
+		"testHandleArrowKeyDownMoveThumbDown",
+		"testHandleArrowKeyDownWrapThumbUp",
+		"testHandleArrowKeyDownForUpAndDown",
+		"testHandleArrowKeyDownForLeftAndRight",
 		"testHandleKeyUpAndHandleKeyDownChangesState",
 		"testHandleKeyUpAndHandleKeyDownItemMovement",
-		"testHandleArrowKeyPressForCtrlLeftAndCtrlRight",
+		"testHandleArrowKeyDownForCtrlLeftAndCtrlRight",
 		"testPersistFocus",
-		"testfocusItem",
-		"testSelectActiveItemNothingSelected",
-		"testSelectActiveItemSecondSelected",
-		"testChangeActiveItemToDefaultState",
+		"testItemFocusBlur",
+		"testLightboxFocussed",
 		"testUpdateActiveDescendent",
 		"testKeypressesWithNoOrderables",
 		"testUpdateGrabProperty",
-		"testAddFocusToElement",
 		
 		// LightboxPersistenceTets.js
 		"testIsOrderChangedCallbackCalled"
@@ -106,6 +103,10 @@ var imgListClone;
 
 function fetchLightboxRoot () {
     return fluid.utils.jById (lightboxRootId);
+}
+
+function focusLightbox () {
+    fetchLightboxRoot ().focus ();
 }
 
 // This setUp will be called before each of the tests that are included in Lightbox.html 

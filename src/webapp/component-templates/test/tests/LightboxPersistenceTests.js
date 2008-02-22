@@ -34,10 +34,10 @@ function testIsOrderChangedCallbackCalled() {
         orderChangedCallback: testOrderChangedCallback
     });
 	var lightbox = new fluid.Reorderer (lightboxContainer, findOrderableByDivAndId, layoutHandler);
+    focusLightbox ();
 	
 	// Perform a move
-	lightbox.selectActiveItem ();
-	lightbox.handleArrowKeyPress (fluid.testUtils.createEvtCtrlRightArrow ());
+	lightbox.handleArrowKeyDown (fluid.testUtils.createEvtCtrlRightArrow ());
 	assertNotNull ("order changed callback is not called when a move is performed", 
 		fluid.testUtils.byId ("callbackCalled"));
 }

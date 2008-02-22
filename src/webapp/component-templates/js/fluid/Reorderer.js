@@ -20,7 +20,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     this.domNode = jQuery (container);
 
     // the reorderable DOM element that is currently active
-    this.activeItem = null;
+    this.activeItem = undefined;
         
     this.messageNamebase = "message-bundle:";
             
@@ -29,7 +29,6 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         selected: "orderable-selected",
         dragging: "orderable-dragging",
         hover: "orderable-hover",
-        focusTarget: "orderable-focus-target",
         dropMarker: "orderable-drop-marker",
         avatar: "orderable-avatar"
     };
@@ -41,24 +40,8 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         fluid.mixin (this, options);
     }
     
-   /**
-    * Return the element within the item that should receive focus. This is determined by 
-    * cssClasses.focusTarget. If it is not specified, the item itself is returned.
-    * 
-    * @param {Object} item
-    * @return {Object} The element that should receive focus in the specified item.
-    */
-    this.findElementToFocus = function (item) {
-        var elementToFocus = jQuery ("." + this.cssClasses.focusTarget, item)[0];
-        if (elementToFocus) {
-            return elementToFocus;
-        }
-        return item;
-    };
-    
     function setupDomNode (domNode) {
-        domNode.focus(thisReorderer.handleFocus);
-        domNode.blur (thisReorderer.handleBlur);
+        domNode.focus (thisReorderer.focusActiveItem);
         domNode.keydown (thisReorderer.handleKeyDown);
         domNode.keyup (thisReorderer.handleKeyUp);
         domNode.removeAttr ("aaa:activedescendent");
@@ -71,116 +54,83 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 			domNode[0].onselectstart = function () { return false; };
         } 
     }   
-    
-    /**
-     * Changes the current focus to the specified item.
-     * @param {Object} anItem
-     */
-    this.focusItem = function(anItem) {
-        if (this.activeItem !== anItem) {
-            this.changeActiveItemToDefaultState();
-            this._setActiveItem (anItem);   
+
+    this.focusActiveItem = function (evt) {
+        // If the active item has not been set yet, set it to the first selectable.
+        if (!thisReorderer.activeItem) {
+            var selectables = fluid.wrap (findItems.selectables());
+            if (selectables.length <= 0) {
+                return;
+            }
+            selectables[0].focus ();
+        } else {
+            thisReorderer.activeItem.focus ();
         }
-        
-        var jActiveItem = jQuery (this.activeItem);
-        jActiveItem.removeClass (this.cssClasses.defaultStyle);
-        jActiveItem.addClass (this.cssClasses.selected);
-        
-        this.addFocusToElement (this.findElementToFocus (this.activeItem));
-    };
-    
-    this.addFocusToElement = function (anElement) {
-        var jElement = jQuery (anElement);
-        if (!jElement.hasTabIndex ()) {
-            jElement.tabIndex (-1);
-        }
-        jElement.focus ();
-    };
-    
-    this.removeFocusFromElement = function (anElement) {
-        jQuery (anElement).blur ();
     };
 
-    /**
-     * Changes focus to the active item.
-     */
-    this.selectActiveItem = function() {
-        var selectables = fluid.wrap(findItems.selectables());
-        if (selectables.length <= 0) {
-            return;
-        }
-        
-        if (!this.activeItem) {
-            this._setActiveItem (selectables[0]);
-        }
-
-        this.focusItem (this.activeItem);
-    };
-    
-    this.handleFocus = function (evt) {
-        thisReorderer.selectActiveItem();
-        return false;
-    };
-    
-    this.handleBlur = function (evt) {
-        // Temporarily disabled blur handling in IE. See FLUID-7 for details.
-        if (!jQuery.browser.msie) {
-            thisReorderer.changeActiveItemToDefaultState();
-        }
-    };
-            
-    this.changeActiveItemToDefaultState = function() {
-        if (this.activeItem) {
-            var jActiveItem = jQuery (this.activeItem);
-            jActiveItem.removeClass (this.cssClasses.selected);
-            jActiveItem.addClass (this.cssClasses.defaultStyle);
-            this.removeFocusFromElement (jActiveItem);
-        }
-    };
-    
     this.handleKeyDown = function (evt) {
+        // The the key pressed is ctrl, and the active item is movable we want to restyle the active item.
         if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
         	// Don't treat the active item as dragging unless it is a movable.
-            if (jQuery (fluid.wrap (findItems.movables())).index (thisReorderer.activeItem) >= 0) {
-                jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
-                jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.dragging);
-                thisReorderer.activeItem.setAttribute ("aaa:grab", "true");
-                return false;
+            if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
+                var jActiveItem = jQuery (thisReorderer.activeItem);
+                jActiveItem.removeClass (thisReorderer.cssClasses.selected);
+                jActiveItem.addClass (thisReorderer.cssClasses.dragging);
+                jActiveItem.attr ("aaa:grab", "true");
             }
+            return false;
         }
-        return thisReorderer.handleArrowKeyPress(evt);
+        
+        // The only other keys we listen for are the arrows.
+        return thisReorderer.handleArrowKeyDown(evt);
     };
 
     this.handleKeyUp = function (evt) {
         if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
             // Don't treat the active item as dragging unless it is a movable.
-            if (jQuery (fluid.wrap (findItems.movables())).index (thisReorderer.activeItem) >= 0) {
+            if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
                 jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.dragging);
                 jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.selected);
                 thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
                 return false;
             }
-       }
+        }
     };
-        
-    this.handleArrowKeyPress = function (evt) {
+
+    var handleArrow = function (isMove, moveFunc, nextItemFunc) {
+        if (isMove) {
+
+            // only move the target if it is actually movable
+            if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
+                moveFunc (thisReorderer.activeItem);
+                // refocus on the active item because moving places focus on the body
+                thisReorderer.activeItem.focus();
+                jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
+            }
+
+        } else {
+            nextItemFunc (thisReorderer.activeItem).focus ();
+        }           
+    };
+            
+    this.handleArrowKeyDown = function (evt) {
         if (thisReorderer.activeItem) {
             switch (evt.keyCode) {
                 case fluid.keys.DOWN:
                     evt.preventDefault();
-                    thisReorderer.handleDownArrow (evt.ctrlKey);                                
+                    handleArrow (evt.ctrlKey, layoutHandler.moveItemDown, layoutHandler.getItemBelow);
                     return false;
                 case fluid.keys.UP: 
                     evt.preventDefault();
-                    thisReorderer.handleUpArrow (evt.ctrlKey);                              
+                    handleArrow (evt.ctrlKey, layoutHandler.moveItemUp, layoutHandler.getItemAbove);
                     return false;
                 case fluid.keys.LEFT: 
                     evt.preventDefault();
-                    thisReorderer.handleLeftArrow (evt.ctrlKey);                                
+                    handleArrow (evt.ctrlKey, layoutHandler.moveItemLeft, layoutHandler.getLeftSibling);
                     return false;
                 case fluid.keys.RIGHT: 
                     evt.preventDefault();
-                    thisReorderer.handleRightArrow (evt.ctrlKey);                               
+                    handleArrow (evt.ctrlKey, layoutHandler.moveItemRight, layoutHandler.getRightSibling);
                     return false;
                 default:
                     return true;
@@ -188,42 +138,6 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         }
     };
     
-    this.handleUpArrow = function (isCtrl) {
-        if (isCtrl) {
-            layoutHandler.moveItemUp (this.activeItem);
-            this.findElementToFocus (this.activeItem).focus();
-        } else {
-            this.focusItem (layoutHandler.getItemAbove(this.activeItem));
-        }           
-    };
-    
-    this.handleDownArrow = function (isCtrl) {
-        if (isCtrl) {
-            layoutHandler.moveItemDown (this.activeItem);
-            this.findElementToFocus (this.activeItem).focus();
-        } else {
-            this.focusItem (layoutHandler.getItemBelow (this.activeItem));
-        }
-    };
-    
-    this.handleRightArrow = function (isCtrl) {
-        if (isCtrl) {
-            layoutHandler.moveItemRight (this.activeItem);
-            jQuery(this.findElementToFocus (this.activeItem)).focus();
-        } else {
-            this.focusItem (layoutHandler.getRightSibling (this.activeItem));              
-        }           
-    };
-    
-    this.handleLeftArrow = function (isCtrl) {
-        if (isCtrl) {
-            layoutHandler.moveItemLeft (this.activeItem);
-            this.findElementToFocus (this.activeItem).focus();
-        } else {
-            this.focusItem (layoutHandler.getLeftSibling (this.activeItem));               
-        }
-    };
-            
     this._fetchMessage = function (messagekey) {
         var messageID = this.messageNamebase + messagekey;
         var node = document.getElementById (messageID);
@@ -296,7 +210,8 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 return theAvatar;
             },
             start: function (e, ui) {
-                thisReorderer.focusItem (item[0]);                
+                item[0].focus ();                
+                item.removeClass (thisReorderer.cssClasses.selected);
                 item.addClass (thisReorderer.cssClasses.dragging);
                 item.attr ("aaa:grab", "true");
                 
@@ -309,8 +224,8 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
             },
             stop: function(e, ui) {
                 item.removeClass (thisReorderer.cssClasses.dragging);
+                item.addClass (thisReorderer.cssClasses.selected);
                 thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
-                thisReorderer.domNode.focus();
                 if (dropMarker.parentNode) {
                     dropMarker.parentNode.removeChild (dropMarker);
                 }
@@ -347,10 +262,35 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         });
     }
         
-    function initItems() {
+    var initSelectables = function (selectables) {
+        var handleBlur = function (evt) {
+            var jThis = jQuery(this);
+            jThis.removeClass (thisReorderer.cssClasses.selected);
+            jThis.addClass (thisReorderer.cssClasses.defaultStyle);
+        };
+        
+        var handleFocus = function (evt) {
+            thisReorderer._setActiveItem (this);
+            var jThis = jQuery(this);
+            jThis.removeClass (thisReorderer.cssClasses.defaultStyle);
+            jThis.addClass (thisReorderer.cssClasses.selected);
+        };
+        
+        // set up selectables 
+        // Remove the selectables from the taborder - camel case 'tabIndex' needed for IE7 support
+        for (var i = 0; i < selectables.length; i++) {
+            var item = jQuery(selectables[i]);
+            item.attr ("tabIndex", "-1");
+            item.blur (handleBlur);
+            item.focus (handleFocus);
+        }
+    };
+    
+    var initItems = function () {
         var i;
         var movables = fluid.wrap (findItems.movables());
         var dropTargets = fluid.wrap (findItems.dropTargets());
+        initSelectables (fluid.wrap (findItems.selectables ()));
         
         // Selector based on the ids of the nodes for use with drag and drop.
         // This should be replaced with using the actual nodes rather then a selector 
@@ -370,11 +310,11 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
              }
         }
 
-         // Setup dropTargets
+        // Setup dropTargets
         for (i = 0; i < dropTargets.length; i++) {
             initDropTarget (jQuery (dropTargets[i]), selector);
-        }  
-    } 
+        }         
+    };
 
     // Final initialization of the Reorderer at the end of the construction process 
     if (this.domNode) {
