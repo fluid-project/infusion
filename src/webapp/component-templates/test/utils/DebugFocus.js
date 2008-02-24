@@ -6,7 +6,9 @@ fluid.debug = function () {
     };
 
     var outputEventDetails = function (eventType, event, caughtBy) {
-        console.debug (eventType + " was called on target " + printId (event.target) + ", caught by " + printId (caughtBy));
+        if (typeof console !== 'undefined') {
+            console.debug (eventType + " was called on target " + printId (event.target) + ", caught by " + printId (caughtBy));
+        }
     };
 
     var focusOutputter = function (evt) {
