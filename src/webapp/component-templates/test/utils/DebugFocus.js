@@ -30,7 +30,7 @@ fluid.debug = function () {
 
             var everything = jQuery ("*");
             everything.each (function () {
-               if (jQuery (this).hasTabindex ()) {
+               if (jQuery (this).hasTabIndex ()) {
                    focussableElements.push (this);
                }
             });

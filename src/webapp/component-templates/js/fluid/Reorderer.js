@@ -60,12 +60,13 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         if (!thisReorderer.activeItem) {
             var selectables = fluid.wrap (findItems.selectables());
             if (selectables.length <= 0) {
-                return;
+                return evt.stopPropagation();
             }
             selectables[0].focus ();
         } else {
             thisReorderer.activeItem.focus ();
         }
+        return evt.stopPropagation();
     };
 
     this.handleKeyDown = function (evt) {
@@ -258,22 +259,32 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 layoutHandler.mouseMoveItem (ui.draggable.element, item[0], e.clientX, e.pageY);           
                 item.unbind ("mousemove", trackMouseMovement);
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
+                // refocus on the active item because moving places focus on the body
+                thisReorderer.activeItem.focus();
             }
         });
     }
         
+    var changeSelectedToDefault = function (jItem) {
+        jItem.removeClass (thisReorderer.cssClasses.selected);
+        jItem.addClass (thisReorderer.cssClasses.defaultStyle);
+    };
+    
     var initSelectables = function (selectables) {
         var handleBlur = function (evt) {
-            var jThis = jQuery(this);
-            jThis.removeClass (thisReorderer.cssClasses.selected);
-            jThis.addClass (thisReorderer.cssClasses.defaultStyle);
+            changeSelectedToDefault (jQuery(this));
+            return evt.stopPropagation();
         };
         
         var handleFocus = function (evt) {
+            if (thisReorderer.activeItem && thisReorderer.activeItem !== this) {
+                changeSelectedToDefault (jQuery(thisReorderer.activeItem));
+            }
             thisReorderer._setActiveItem (this);
             var jThis = jQuery(this);
             jThis.removeClass (thisReorderer.cssClasses.defaultStyle);
             jThis.addClass (thisReorderer.cssClasses.selected);
+            return evt.stopPropagation();
         };
         
         // set up selectables 
