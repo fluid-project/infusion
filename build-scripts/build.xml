@@ -18,10 +18,10 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="jslint" location="lib/jslint4java-1.1+rhino.jar" />
 
 	<!-- set up directory locations -->
-	<property name="src" location="../fluid-components" />
+	<property name="src" location="../src/webapp/fluid-components" />
 	<property name="dist" location="../dist" />
 	<property name="build" location="../build" />
-	<property name="web-inf" location="../WEB-INF"/>
+	<property name="web-inf" location="../src/webapp/WEB-INF"/>
 	<property name="components-build" location="${build}/fluid-components" />
 	<property name="lint" location="${src}"/>
 
@@ -142,14 +142,14 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 
 		<mkdir dir="${dist}/sample-code" />
 		<copy todir="${dist}/sample-code">
-			<fileset dir="../sample-code/">
-				<include name="markupExamples/**" />
+			<fileset dir="../src/webapp/sample-code/">
+				<include name="reorderer/**" />
 		    </fileset>
 		</copy>
 
 		<mkdir dir="${dist}/tests" />
 		<copy todir="${dist}/tests">
-			<fileset dir="../tests">
+			<fileset dir="../src/webapp/tests">
 				<include name="jsunit/**" />
 				<include name="fluid-tests/**" />
 				<include name="utils/**"/>
@@ -179,7 +179,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		</copy>
 
 		<copy todir="${build}/war">
-			<fileset dir=".">
+			<fileset dir="..">
 				<include name="pom.xml" />
 				<include name="project.xml" />
 				<include name="maven.xml" />
