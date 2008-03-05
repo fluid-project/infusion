@@ -2,7 +2,7 @@ var fluid = fluid || {};
 
 fluid.Lightbox = {
 	addThumbnailActivateHandler: function (lightbox) {
-		var lightboxContainerElement = lightbox.id;
+		var lightboxContainerElement = lightbox.domNode;
 		
 		var enterKeyHandler = function (evt) {
 			if (evt.which == fluid.keys.ENTER) {
