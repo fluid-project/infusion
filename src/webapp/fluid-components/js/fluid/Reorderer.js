@@ -44,7 +44,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         domNode.focus (thisReorderer.focusActiveItem);
         domNode.keydown (thisReorderer.handleKeyDown);
         domNode.keyup (thisReorderer.handleKeyUp);
-        domNode.removeAttr ("aaa:activedescendent");
+        domNode.ariaState ("activedescendent", "");
         
         // FLUID-143. Disable text selection for the reorderer.
 		// ondrag() and onselectstart() are Internet Explorer specific functions.
@@ -77,7 +77,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 var jActiveItem = jQuery (thisReorderer.activeItem);
                 jActiveItem.removeClass (thisReorderer.cssClasses.selected);
                 jActiveItem.addClass (thisReorderer.cssClasses.dragging);
-                jActiveItem.attr ("aaa:grab", "true");
+                jActiveItem.ariaState ("grab", "true");
             }
             return false;
         }
@@ -90,9 +90,10 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
             // Don't treat the active item as dragging unless it is a movable.
             if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
-                jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.dragging);
-                jQuery (thisReorderer.activeItem).addClass (thisReorderer.cssClasses.selected);
-                thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
+                var jActiveItem = jQuery (thisReorderer.activeItem);
+                jActiveItem.removeClass (thisReorderer.cssClasses.dragging);
+                jActiveItem.addClass (thisReorderer.cssClasses.selected);
+                jActiveItem.ariaState ("grab", "supported");
                 return false;
             }
         }
@@ -153,9 +154,9 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     
     this._updateActiveDescendent = function() {
         if (this.activeItem) {
-            this.domNode.attr ("aaa:activedescendent", this.activeItem.id);
+            this.domNode.ariaState ("activedescendent", this.activeItem.id);
         } else {
-            this.domNode.removeAttr ("aaa:activedescendent");
+            this.domNode.ariaState ("activedescendent", "");
         }
     };
 
@@ -214,7 +215,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 item[0].focus ();                
                 item.removeClass (thisReorderer.cssClasses.selected);
                 item.addClass (thisReorderer.cssClasses.dragging);
-                item.attr ("aaa:grab", "true");
+                item.ariaState ("grab", "true");
                 
                 // In order to create valid html, the drop marker is the same type as the node being dragged.
                 // This creates a confusing UI in cases such as an ordered list. 
@@ -226,7 +227,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
             stop: function(e, ui) {
                 item.removeClass (thisReorderer.cssClasses.dragging);
                 item.addClass (thisReorderer.cssClasses.selected);
-                thisReorderer.activeItem.setAttribute ("aaa:grab", "supported");
+                jQuery (thisReorderer.activeItem).ariaState ("grab", "supported");
                 if (dropMarker.parentNode) {
                     dropMarker.parentNode.removeChild (dropMarker);
                 }
