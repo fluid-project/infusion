@@ -105,7 +105,8 @@ fluid.initLightbox = function (namebase, messageNamebase) {
         }
     );
     
-    fluid.Lightbox.addThumbnailActivateHandler (lightbox);
+    fluid.Lightbox.addThumbnailActivateHandler (parentNode);
+    
 };
   
 

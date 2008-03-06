@@ -1,16 +1,15 @@
 var fluid = fluid || {};
 
 fluid.Lightbox = {
-	addThumbnailActivateHandler: function (lightbox) {
-		var lightboxContainerElement = lightbox.domNode;
+	addThumbnailActivateHandler: function (lightboxContainer) {
 		
 		var enterKeyHandler = function (evt) {
 			if (evt.which == fluid.keys.ENTER) {
-				var thumbnailAnchors = jQuery ("a", lightbox.activeItem);
+				var thumbnailAnchors = jQuery ("a", evt.target);
 				document.location = thumbnailAnchors.attr ('href');
 			}
 		};
 		
-		jQuery (lightboxContainerElement).keypress (enterKeyHandler);
+		jQuery (lightboxContainer).keypress (enterKeyHandler);
 	}
 };
