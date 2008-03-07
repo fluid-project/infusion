@@ -1,0 +1,111 @@
+--- jARIA_original.js	2008-03-05 20:55:47.000000000 -0500
++++ jARIA.js	2008-03-06 13:10:43.000000000 -0500
+@@ -34,41 +34,10 @@
+ 
+ var xhtmlRolesRegex = new RegExp("^" + xhtmlRoles.join("|") + "$");
+ 
+-var focusableRoles = [
+-	"button",
+-	"checkbox",
+-	"columnheader",
+-	"combobox",
+-	"grid",
+-	"gridcell",
+-	"group",
+-	"listbox",
+-	"listitem",
+-	"menu",
+-	"menubar",
+-	"menuitem",
+-	"menuitemcheckbox",
+-	"menuitemradio",
+-	"option",
+-	"radio",
+-	"radiogroup",
+-	"row",
+-	"rowheader",
+-	"slider",
+-	"spinbutton",
+-	"tab",
+-	"tabpanel",
+-	"textbox",
+-	"toolbar",
+-	"tree",
+-	"treegrid",
+-	"treeitem"
+-];
+-
+-var focusableRolesRegex = new RegExp("^(wairole:)?" + focusableRoles.join("|") + "$");
++var isFF2 = $.browser.mozilla && (parseFloat($.browser.version) < 1.9);
+ 
+ var ariaStateAttr = (function() {
+-	if ($.browser.mozilla && parseFloat($.browser.version) < 1.9) {
++	if (isFF2) {
+ 		// Firefox < v3, so use States & Properties namespace.
+ 		return function(jq, attr, val) {
+ 			if (typeof val != "undefined") {
+@@ -100,14 +69,10 @@
+ 
+ 			// Add the role: prefix, unless it's one of the XHTML Role Module roles
+ 
+-			role = xhtmlRolesRegex.test(role) ? role : "wairole:" + role;
++			role = (xhtmlRolesRegex.test(role) || !isFF2) ? role : "wairole:" + role;
+ 
+ 			jq.each(function(i, el) {
+ 				$(el).attr("role", role);
+-				
+-				if (focusableRolesRegex.test(role) && el.tabIndex < 0) {
+-					el.tabIndex = 0;
+-				}
+ 			});
+ 			return jq;
+ 		} else {
+@@ -148,36 +113,7 @@
+ 				return jq;
+ 			}
+  		}
+-  	},
+-  	
+-  	ariaParse : function() {
+-		// Parse classnames for ARIA info.
+-		
+-  		var jq = this;
+-		jq.find("*").filter(".axs").each(function(i, el){
+-			var classNames = $(el).attr("className").split(/\s+/);
+-			var parsingAria = false;
+-			var roleSet = false;
+- 
+-			$.each(classNames, function(i, className) {
+-				if (className == "axs") {
+-					parsingAria = true;
+-					return true;
+-				}
+-				if (parsingAria) {
+-					if (roleSet) {
+-						var state = className.split(/-/);
+-						$(el).ariaState(state[0], state[1] || "true");
+-					} else {
+-						$(el).ariaRole(className);
+-						roleSet = true;
+-					}
+-				}
+-			});
+-  		});
+-		jq.trigger("ariaready");
+-		return jq;
+-	}
++  	}
+ });
+ 
+ // Add :ariaRole(role) and :ariaState(state[=value]) filters.
+@@ -189,8 +125,4 @@
+ 	ariaState : "jQuery(a).ariaState(m[3].split(/=/)[0])==(/=/.test(m[3])?m[3].split(/=/)[1]:'true')"
+ });
+ 
+-$(document).ready(function(){
+-	$(document).ariaParse();
+-});
+-
+-})(jQuery);
+\ No newline at end of file
++})(jQuery);

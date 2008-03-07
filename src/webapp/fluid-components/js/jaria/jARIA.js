@@ -3,6 +3,12 @@
  
  This software is dual licensed under the MIT (MIT-LICENSE.txt)
  and GPL (GPL-LICENSE.txt) licenses.
+
+ You may obtain a copy of the GPL License at 
+ https://source.fluidproject.org/svn/fluid/components/trunk/src/webapp/fluid-components/js/jquery/GPL-LICENSE.txt
+
+ You may obtain a copy of the MIT License at 
+ https://source.fluidproject.org/svn/fluid/components/trunk/src/webapp/fluid-components/js/jquery/MIT-LICENSE.txt
 ***/
 
 /******************************
