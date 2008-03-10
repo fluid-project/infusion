@@ -140,13 +140,13 @@ function findImgsInLightbox() {
 function createLightbox() {
 	var lightboxRoot = fetchLightboxRoot ();
     var layoutHandler = new fluid.GridLayoutHandler (findOrderableByDivAndId);
-    return new fluid.Reorderer (lightboxRoot, findOrderableByDivAndId, layoutHandler);
+    return new fluid.Reorderer (lightboxRoot, findOrderableByDivAndId, layoutHandler, { role : fluid.roles.GRID });
 }
 
 function createLightboxWithNoOrderables() {
 	var lightboxRoot = fetchLightboxRoot ();
     var layoutHandler = new fluid.GridLayoutHandler (findNoOrderables);
-	return new fluid.Reorderer (lightboxRoot, findNoOrderables, layoutHandler);
+	return new fluid.Reorderer (lightboxRoot, findNoOrderables, layoutHandler, { role : fluid.roles.GRID });
 }
 
 function createGridLayoutHandler () {

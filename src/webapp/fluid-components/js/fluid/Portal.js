@@ -12,5 +12,5 @@ fluid.initPortalReorderer = function (layout, perms, grabHandle, orderChangedCal
 
     var layoutHandler = new fluid.PortletLayoutHandler (layout, perms, options);
     
-    return new fluid.Reorderer (portletReordererRoot, items, layoutHandler);
+    return new fluid.Reorderer (portletReordererRoot, items, layoutHandler, { role : fluid.roles.GRID });
 };

@@ -16,7 +16,9 @@ var fluid = fluid || {};
 fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     // Reliable 'this'.
     var thisReorderer = this;
-    
+
+    var role = fluid.roles.LIST;
+        
     this.domNode = jQuery (container);
 
     // the reorderable DOM element that is currently active
@@ -37,6 +39,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 
     // This should be replaced with proper parsing of the options that we expect    
     if (options) {
+        role = options.role || role;
         fluid.mixin (this, options);
     }
     
@@ -54,6 +57,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 			domNode[0].onselectstart = function () { return false; };
         } 
         
+        domNode.ariaRole (role.container);
         domNode.ariaState ("multiselectable", "false");
         domNode.ariaState ("readonly", "false");
         domNode.ariaState ("disabled", "false");
@@ -305,6 +309,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
             item.blur (handleBlur);
             item.focus (handleFocus);
             
+            item.ariaRole (role.item);
             item.ariaState ("selected", "false");
             item.ariaState ("disabled", "false");
         }

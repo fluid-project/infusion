@@ -23,6 +23,15 @@ fluid.keys = {
     CTRL: 17
 };
 
+/**
+ * These roles are used to add ARIA roles to orderable items. This list can be extended as needed,
+ * but the values of the container and item roles must match ARIA-specified roles.
+ */  
+fluid.roles = {
+    GRID: { container: "grid", item: "gridcell" },
+    LIST: { container: "list", item: "listitem" }
+};
+
 fluid.orientation = {
 	HORIZONTAL: 0,
 	VERTICAL: 1
@@ -101,7 +110,8 @@ fluid.initLightbox = function (namebase, messageNamebase) {
     });
 
     var lightbox = new fluid.Reorderer (parentNode, itemFinder, layoutHandler, {
-            messageNamebase : messageNamebase
+            messageNamebase : messageNamebase,
+            role : fluid.roles.GRID
         }
     );
     
