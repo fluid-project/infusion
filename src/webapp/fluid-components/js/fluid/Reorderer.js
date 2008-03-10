@@ -53,6 +53,10 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 			domNode[0].ondrag = function () { return false; }; 
 			domNode[0].onselectstart = function () { return false; };
         } 
+        
+        domNode.ariaState ("multiselectable", "false");
+        domNode.ariaState ("readonly", "false");
+        domNode.ariaState ("disabled", "false");
     }   
 
     this.focusActiveItem = function (evt) {
@@ -150,6 +154,10 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     this._setActiveItem = function (anItem) {
         this.activeItem = anItem;
         this._updateActiveDescendent();
+        var jItem = jQuery(anItem);
+        jItem.removeClass (thisReorderer.cssClasses.defaultStyle);
+        jItem.addClass (thisReorderer.cssClasses.selected);
+        jItem.ariaState ("selected", "true");
     };
     
     this._updateActiveDescendent = function() {
@@ -186,6 +194,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
      */
     function initMovable (item) {
         item.addClass (thisReorderer.cssClasses.defaultStyle);
+        item.ariaState ("grab", "supported");
 
         item.mouseover ( 
             function () {
@@ -241,6 +250,8 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
      * Takes a jQuery object and a selector that matches movable items
      */
     function initDropTarget (item, selector) {
+        item.ariaState ("dropeffect", "move");
+
     	var trackMouseMovement;
         item.droppable ({
             accept: selector,
@@ -269,6 +280,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     var changeSelectedToDefault = function (jItem) {
         jItem.removeClass (thisReorderer.cssClasses.selected);
         jItem.addClass (thisReorderer.cssClasses.defaultStyle);
+        jItem.ariaState("selected", "false");
     };
     
     var initSelectables = function (selectables) {
@@ -282,9 +294,6 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 changeSelectedToDefault (jQuery(thisReorderer.activeItem));
             }
             thisReorderer._setActiveItem (this);
-            var jThis = jQuery(this);
-            jThis.removeClass (thisReorderer.cssClasses.defaultStyle);
-            jThis.addClass (thisReorderer.cssClasses.selected);
             return evt.stopPropagation();
         };
         
@@ -295,6 +304,9 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
             item.attr ("tabIndex", "-1");
             item.blur (handleBlur);
             item.focus (handleFocus);
+            
+            item.ariaState ("selected", "false");
+            item.ariaState ("disabled", "false");
         }
     };
     

@@ -363,25 +363,30 @@ function testKeypressesWithNoOrderables() {
 		lightboxWithNoOrderables.activeItem);
 }
 
-function testUpdateActiveDescendent() {
+function testUpdateAriaStates() {
 	var lightbox = createLightbox();
 	var lbRoot = fetchLightboxRoot ();
+    var firstImage = fluid.utils.jById (firstReorderableId);
 	assertEquals ("before first lightbox focus, no item should be activedescendent", "", lbRoot.ariaState("activedescendent"));
+    assertEquals ("before first lightbox focus, first item should not be selected", "false", firstImage.ariaState("selected"));
 
     focusLightbox ();
 	assertEquals ("after first lightbox focus, first image should be activedescendent", firstReorderableId, lbRoot.ariaState("activedescendent"));
+    assertEquals ("after first lightbox focus, first image should be selected", "true", firstImage.ariaState("selected"));
 	
-	lightbox.activeItem = fluid.utils.jById (thirdReorderableId)[0];
-	lightbox._updateActiveDescendent();
+    var thirdImage = fluid.utils.jById (thirdReorderableId);
+    thirdImage.focus();
 	assertEquals ("after setting active item to third image, third image should be activedescendent", thirdReorderableId, lbRoot.ariaState("activedescendent"));
+    assertEquals ("after setting active item to third image, first image should not be selected", "false", firstImage.ariaState("selected"));
+    assertEquals ("after setting active item to third image, third image should be selected", "true", thirdImage.ariaState("selected"));
 
 	var newInputElement = document.createElement("input");
 	newInputElement.id="input1";
 	
 	jQuery ("[id=para1]").after (newInputElement);
     jQuery ("[id=input1]").get(0).focus();
-    lightbox._updateActiveDescendent();
 	assertEquals ("after removing focus from lightbox, third image should still be activedescendent", thirdReorderableId, lbRoot.ariaState("activedescendent"));
+    assertEquals ("after removing focus from lightbox, third image should not be selected", "false", thirdImage.ariaState("selected"));
 
 	lightbox.activeItem = null;
 	lightbox._updateActiveDescendent();
@@ -392,10 +397,7 @@ function testUpdateGrabProperty() {
     var lightbox = createLightbox();
     var lbRoot = fetchLightboxRoot ();
     var testItem = fluid.utils.jById (firstReorderableId);
-// The ARIA markup currently in the template is actually incorrect, so the following test tests that the markup is incorrect.
-// Using jARIA actually tests for correct markup, so this test fails. We will reinstate it with the next commit, when we remove
-// the incorrect markup.
-//    assertEquals ("before any action, test item should have grab of supported", "supported", testItem.ariaState("grab"));
+    assertEquals ("before any action, test item should have grab of supported", "supported", testItem.ariaState("grab"));
     
     focusLightbox ();
     lightbox.handleKeyDown (fluid.testUtils.createEvtCTRL());

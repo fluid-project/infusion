@@ -90,7 +90,7 @@ function exposeTestFunctionNames() {
 		"testPersistFocus",
 		"testItemFocusBlur",
 		"testLightboxFocussed",
-		"testUpdateActiveDescendent",
+		"testUpdateAriaStates",
 		"testKeypressesWithNoOrderables",
 		"testUpdateGrabProperty",
 		
