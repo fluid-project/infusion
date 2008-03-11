@@ -63,64 +63,6 @@ fluid.wrap = function (obj) {
     return ((!obj || obj.jquery) ? obj : jQuery (obj)); 
 };
 
-fluid.deriveLightboxCellBase = function (namebase, index) {
-    return namebase + "lightbox-cell:" + index + ":";
-};
-    
-// Client-level initialisation for the lightbox, allowing parameterisation for
-// different templates.
-fluid.initLightbox = function (namebase, messageNamebase) {
-    var parentNode = document.getElementById (namebase);
-    var reorderform = fluid.utils.findForm (parentNode);
-        
-    // Remove the anchors from the taborder - camel case 'tabIndex' needed for IE7 support
-    jQuery ("a", reorderform).attr ("tabIndex", "-1");
-    
-    // An <input> tag nested within our root namebase tag, which has an id which 
-    // begins with the  namebase:lightbox-cell:: prefix, and ends with "reorder-index" trail.
-    // Very hard to imagine any perversity which may lead to this picking any stray stuff :P
-    
-    // An approach based on the "sourceIndex" DOM property would be much more efficient,
-    // but this is only supported in IE. 
-    var orderChangedCallback = function() {
-        var inputs = fluid.utils.seekNodesById(
-            reorderform, 
-            "input", 
-            "^" + fluid.deriveLightboxCellBase (namebase, "[^:]*") + "reorder-index$");
-        
-        for (var i = 0; i < inputs.length; ++ i) {
-            inputs[i].value = i;
-        }
-
-        if (reorderform && reorderform.action) {
-            jQuery.post(reorderform.action, 
-            jQuery(reorderform).serialize(),
-            function (type, data, evt) { /* No-op response */ });
-        }
-    };
-    
-    // This orderable finder knows that the lightbox thumbnails are 'div' elements
-    var lightboxCellNamePattern = "^" + fluid.deriveLightboxCellBase (namebase, "[0-9]+") +"$";
-    var itemFinder = function () {
-        return fluid.utils.seekNodesById (parentNode, "div", lightboxCellNamePattern);
-    };
-        
-    var layoutHandler = new fluid.GridLayoutHandler (itemFinder, {
-        orderChangedCallback: orderChangedCallback
-    });
-
-    var lightbox = new fluid.Reorderer (parentNode, itemFinder, layoutHandler, {
-            messageNamebase : messageNamebase,
-            role : fluid.roles.GRID
-        }
-    );
-    
-    fluid.Lightbox.addThumbnailActivateHandler (parentNode);
-    
-};
-  
-
-
 /*
  * Utilities object for providing various general convenience functions
  */

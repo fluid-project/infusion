@@ -10,7 +10,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /**
- * Need tests for fluid.initLightbox(), but it requires refactoring before meaningful
+ * Need tests for fluid.lightbox.initLightbox(), but it requires refactoring before meaningful
  * tests can be written.  As it stands, the aspects of initLightbox() to test are
  * within closures and cannot be accessed (e.g., the callback that reorders items).
  */
