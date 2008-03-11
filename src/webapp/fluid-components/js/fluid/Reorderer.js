@@ -42,12 +42,23 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         role = options.role || role;
         fluid.mixin (this, options);
     }
+
+    var firstSelectable = function () {
+        var selectables = fluid.wrap (findItems.selectables());
+        if (selectables.length <= 0) {
+            return null;
+        }
+        return selectables[0];
+    }
     
     function setupDomNode (domNode) {
         domNode.focus (thisReorderer.focusActiveItem);
         domNode.keydown (thisReorderer.handleKeyDown);
         domNode.keyup (thisReorderer.handleKeyUp);
-        domNode.ariaState ("activedescendent", "");
+        var first = firstSelectable();
+        if (first) {
+            domNode.ariaState ("activedescendent", first.id);
+        }
         
         // FLUID-143. Disable text selection for the reorderer.
 		// ondrag() and onselectstart() are Internet Explorer specific functions.
@@ -62,15 +73,15 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         domNode.ariaState ("readonly", "false");
         domNode.ariaState ("disabled", "false");
     }   
-
+    
     this.focusActiveItem = function (evt) {
         // If the active item has not been set yet, set it to the first selectable.
         if (!thisReorderer.activeItem) {
-            var selectables = fluid.wrap (findItems.selectables());
-            if (selectables.length <= 0) {
+            var first = firstSelectable();
+            if (!first) {  
                 return evt.stopPropagation();
             }
-            selectables[0].focus ();
+            jQuery(first).focus ();
         } else {
             thisReorderer.activeItem.focus ();
         }
@@ -157,19 +168,11 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     
     this._setActiveItem = function (anItem) {
         this.activeItem = anItem;
-        this._updateActiveDescendent();
         var jItem = jQuery(anItem);
         jItem.removeClass (thisReorderer.cssClasses.defaultStyle);
         jItem.addClass (thisReorderer.cssClasses.selected);
         jItem.ariaState ("selected", "true");
-    };
-    
-    this._updateActiveDescendent = function() {
-        if (this.activeItem) {
-            this.domNode.ariaState ("activedescendent", this.activeItem.id);
-        } else {
-            this.domNode.ariaState ("activedescendent", "");
-        }
+        this.domNode.ariaState ("activedescendent", anItem.id);
     };
 
     // Drag and drop set code starts here. This needs to be refactored to be better contained.

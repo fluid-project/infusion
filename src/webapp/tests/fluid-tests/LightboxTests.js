@@ -367,7 +367,7 @@ function testUpdateAriaStates() {
 	var lightbox = createLightbox();
 	var lbRoot = fetchLightboxRoot ();
     var firstImage = fluid.utils.jById (firstReorderableId);
-	assertEquals ("before first lightbox focus, no item should be activedescendent", "", lbRoot.ariaState("activedescendent"));
+	assertEquals ("before first lightbox focus, first item should be activedescendent", firstReorderableId, lbRoot.ariaState("activedescendent"));
     assertEquals ("before first lightbox focus, first item should not be selected", "false", firstImage.ariaState("selected"));
 
     focusLightbox ();
@@ -388,9 +388,6 @@ function testUpdateAriaStates() {
 	assertEquals ("after removing focus from lightbox, third image should still be activedescendent", thirdReorderableId, lbRoot.ariaState("activedescendent"));
     assertEquals ("after removing focus from lightbox, third image should not be selected", "false", thirdImage.ariaState("selected"));
 
-	lightbox.activeItem = null;
-	lightbox._updateActiveDescendent();
-	assertEquals ("after unsetting active item, no item should be activedescendent", "", lbRoot.ariaState("activedescendent"));
 }
 
 function testUpdateGrabProperty() {
