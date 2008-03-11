@@ -17,15 +17,21 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     // Reliable 'this'.
     var thisReorderer = this;
 
-    var role = fluid.roles.LIST;
-        
     this.domNode = jQuery (container);
+    findItems = fluid.utils.adaptFindItems (findItems);
+
+    var role = fluid.roles.LIST;
+    var messageNamebase = "message-bundle:";
+
+    if (options) {
+        role = options.role || role;
+        messageNamebase = options.messageNamebase || messageNamebase;
+    }
 
     // the reorderable DOM element that is currently active
     this.activeItem = undefined;
-        
-    this.messageNamebase = "message-bundle:";
-            
+    
+    // we may want to make this an optional parameter so people can use their own style names.                
     this.cssClasses = {
         defaultStyle: "orderable-default",
         selected: "orderable-selected",
@@ -35,21 +41,13 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         avatar: "orderable-avatar"
     };
 
-    findItems = fluid.utils.adaptFindItems (findItems);
-
-    // This should be replaced with proper parsing of the options that we expect    
-    if (options) {
-        role = options.role || role;
-        fluid.mixin (this, options);
-    }
-
     var firstSelectable = function () {
         var selectables = fluid.wrap (findItems.selectables());
         if (selectables.length <= 0) {
             return null;
         }
         return selectables[0];
-    }
+    };
     
     function setupDomNode (domNode) {
         domNode.focus (thisReorderer.focusActiveItem);
