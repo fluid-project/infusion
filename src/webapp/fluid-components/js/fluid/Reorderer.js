@@ -81,7 +81,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
             }
             jQuery(first).focus ();
         } else {
-            thisReorderer.activeItem.focus ();
+            jQuery (thisReorderer.activeItem).focus ();
         }
         return evt.stopPropagation();
     };
@@ -128,7 +128,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
             }
 
         } else {
-            nextItemFunc (thisReorderer.activeItem).focus ();
+            jQuery(nextItemFunc (thisReorderer.activeItem)).focus ();
         }           
     };
             
@@ -226,7 +226,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 return theAvatar;
             },
             start: function (e, ui) {
-                item[0].focus ();                
+                item.focus ();                
                 item.removeClass (thisReorderer.cssClasses.selected);
                 item.addClass (thisReorderer.cssClasses.dragging);
                 item.ariaState ("grab", "true");

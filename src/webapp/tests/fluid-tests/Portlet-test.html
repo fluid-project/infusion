@@ -1,0 +1,95 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+  <head>
+    <title>Portlet Tests</title>
+    <link href="../../markup-examples.css" type="text/css" rel="stylesheet" media="all" />
+
+    <script type="text/javascript" src="../../fluid-components/js/jquery/jquery-1.2.1.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/jquery.tabindex/jquery.tabindex.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/jquery.ui-1.0/ui.mouse.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/jquery.ui-1.0/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/jquery.ui-1.0/ui.droppable.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/jaria/jARIA.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/json/json2.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/fluid/Reorderer.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/fluid/Portal.js"></script>
+    <script type="text/javascript" src="js/portlets-setup.js"></script>
+
+    <!--  These are the jqUnit test files -->
+    <link rel="Stylesheet" media="screen" href="../jqUnit/testsuite.css" />
+    <script type="text/javascript" src="../jqUnit/testrunner.js"></script>
+    <script type="text/javascript" src="../jqUnit/jqUnit.js"></script>
+  
+    <!--  These are used for tests that have been written using this page as data -->
+    <script type="text/javascript" src="js/TestUtils.js"></script>
+    <script type="text/javascript" src="js/PortletTestConstants.js"></script>
+    <script type="text/javascript" src="js/PortletLayoutHandlerTests.js"></script>
+    <script type="text/javascript" src="js/PortletLayoutTests.js"></script>
+  </head>
+  <body>
+     <h1 id="header">Portlet Test Suite</h1>
+    <h2 id="banner"></h2>
+    <h2 id="userAgent"></h2>
+    
+    <ol id="tests"></ol>
+    <div id="main" style="display: none;">
+
+  <!-- TABLE -->
+
+    <div class="reorderer_container">
+      <table id="portlet-reorderer-root" tabindex="0" >
+        <tbody>
+          <tr>
+            <td id="c1">
+                <div class="portlet orderable-default" id="portlet1">
+					<div class="title">portlet 1</div>
+					<div class="content">prec 90</div>
+				</div>
+				<div class="portlet orderable-default" id="portlet2">
+					<div class="title">portlet 2</div>
+					<div class="content">prec 80</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet3">
+					<div class="title">portlet 3</div>
+					<div class="content">prec 50</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet4">
+					<div class="title">portlet 4</div>
+					<div class="content">&nbsp;</div>
+				</div>
+			</td>
+			<td id="c2">
+				<div class="portlet orderable-default" id="portlet5">
+					<div class="title">portlet 5</div>
+					<div class="content">prec 70</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet6">
+					<div class="title">portlet 6</div>
+					<div class="content">&nbsp;</div>
+				</div>
+			</td>
+			<td id="c3">
+				<div class="portlet orderable orderable-default" id="portlet7">
+					<div class="title">portlet 7</div>
+					<div class="content">prec 60</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet8">
+					<div class="title">portlet 8</div>
+					<div class="content">&nbsp;</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet9">
+					<div class="title">portlet 9</div>
+					<div class="content">&nbsp;</div>
+				</div>
+			</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+</div>
+  </body>
+</html>

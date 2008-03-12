@@ -1,0 +1,83 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+  <head>
+    <title>List Layout Handler Tests</title>
+    <link href="../markup-examples.css" type="text/css" rel="stylesheet" media="all" />
+
+    <!--  These are the required javascript modules for the Reorderer
+          eventually to be replaced with a single build generated file -->
+    <script type="text/javascript" src="../../fluid-components/js/jquery/jquery-1.2.1.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/jquery.tabindex/jquery.tabindex.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/jquery.ui-1.0/ui.mouse.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/jquery.ui-1.0/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/jquery.ui-1.0/ui.droppable.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/jaria/jARIA.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/fluid/Reorderer.js"></script>
+
+    <!--  These are the jqUnit test files -->
+    <link rel="Stylesheet" media="screen" href="../jqUnit/testsuite.css" />
+    <script type="text/javascript" src="../jqUnit/testrunner.js"></script>
+    <script type="text/javascript" src="../jqUnit/jqUnit.js"></script>
+  
+    <!--  These are used for tests that have been written using this page as data -->
+    <script type="text/javascript" src="js/TestUtils.js"></script>
+    <script type="text/javascript" src="js/UnorderedListTestConstants.js"></script>
+    <script type="text/javascript" src="js/ListLayoutHandlerTests.js"></script>
+
+    <!--  Ensure jQuery plays nice with other toolkits -
+          must be called after all the javascript is loaded. -->
+    <script type="text/javascript">
+      jQuery.noConflict();
+    </script>
+  </head>
+  <body>
+     <h1 id="header">ListLayoutHandler Test Suite</h1>
+    <h2 id="banner"></h2>
+    <h2 id="userAgent"></h2>
+    
+    <ol id="tests"></ol>
+    <div id="main" style="display: none;">
+
+    <h1>Unordered List (vertical)</h1>
+
+    <div id="list1" tabindex="0" class="reorderer_container">
+      <p> This is a simple example of using the Reorderer with a list. </p>
+      <ul>
+        <li id="list1item1" class="orderable orderable-default">Item 1</li>
+        <li id="list1item2" class="orderable orderable-default">Item 2</li>
+        <li id="list1item3" class="orderable orderable-default">Item 3</li>
+        <li id="list1item4" class="orderable orderable-default">Item 4</li>
+        <li id="list1item5" class="orderable orderable-default">Item 5</li>
+      </ul>
+    </div>
+
+    <script type="text/javascript" id="reorderer-script">
+        // createListReorderer is defined in UnorderedListTestConstants.js
+        createListReorderer ();
+    </script>
+
+    <h1>Unordered List No Reorderer </h1>
+    <div id="list2" class="reorderer_container">
+      <p>This is an example of an unordered list that is visually laid out
+         vertically with no Reorderer attached to it.
+      </p>
+      <ul>
+        <li class="orderable">An Item 1</li>
+        <li>An Item 2</li>
+        <li class="orderable">An Item 3</li>
+        <li>An Item 4</li>
+        <li class="orderable">An Item 5</li>
+        <li class="orderable">An Item 6</li>
+        <li class="orderable">An Item 7</li>
+        <li class="orderable">An Item 8</li>
+        <li>An Item 9</li>
+        <li class="orderable">An Item 10</li>
+      </ul>
+    </div>
+
+    </div>
+  </body>
+</html>
