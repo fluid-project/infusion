@@ -1,0 +1,6 @@
+Attribution:
+ * This is the unit testing suite from jQuery dual-licensed under the GPL and MIT licenses.
+ * The original is available at http://jqueryjs.googlecode.com/svn/trunk/jquery/test/data/
+
+Instructions:
+ * To run the unit test suite, simply open any of the *-test.html pages in your web browser.
