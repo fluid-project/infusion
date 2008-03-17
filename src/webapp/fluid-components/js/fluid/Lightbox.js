@@ -16,6 +16,23 @@ var fluid = fluid || {};
         jQuery (lightboxContainer).keypress (enterKeyHandler);
     };
     
+    var createItemFinder = function (parentNode, containerId) {
+        // This orderable finder knows that the lightbox thumbnails are 'div' elements
+        var lightboxCellNamePattern = "^" + deriveLightboxCellBase (containerId, "[0-9]+") +"$";
+        
+        return function () {
+            return fluid.utils.seekNodesById (parentNode, "div", lightboxCellNamePattern);
+        };
+    };
+    
+    var createLightboxWithKeyset = function (containerId, instructionMessageId, keys) {
+        var parentNode = document.getElementById (containerId);
+        var itemFinder = createItemFinder(parentNode, containerId);
+        var orderChangedCallback = fluid.lightbox.defaultOrderChangedCallback (parentNode);
+            
+        return fluid.lightbox.createLightbox (parentNode, itemFinder, orderChangedCallback, instructionMessageId, keys);
+    };
+    
     // Public Lightbox API
     fluid.lightbox = {
         /**
@@ -56,8 +73,9 @@ var fluid = fluid || {};
          * @param {Function} itemFinderFn A function that returns a list of orderable images
          * @param {Function} orderChangedFn A function that is called when the image order is changed by the user
          * @param {String} instructionMessageId The id of the DOM element containing instructional text for Lightbox users
+         * @param {Object} keys (optional) Keyset for navigating and moving thumbnails in the Lightbox
          */
-        createLightbox: function (container, itemFinderFn, orderChangedFn, instructionMessageId) {
+        createLightbox: function (container, itemFinderFn, orderChangedFn, instructionMessageId, keys) {
             // Remove the anchors from the taborder.
             jQuery ("a", container).tabIndex (-1);
             addThumbnailActivateHandler (container);
@@ -68,7 +86,8 @@ var fluid = fluid || {};
             
             return new fluid.Reorderer (container, itemFinderFn, layoutHandler, {
                 messageNamebase : instructionMessageId,
-                role : fluid.roles.GRID
+                role : fluid.roles.GRID,
+                keys : keys
             });
         },
         
@@ -80,16 +99,26 @@ var fluid = fluid || {};
          * @param {String} instructionMessageId The id of the DOM element containing instructional text for Lightbox users
          */
         createLightboxFromIds: function (containerId, instructionMessageId) {
-            var parentNode = document.getElementById (containerId);
-            var orderChangedCallback = fluid.lightbox.defaultOrderChangedCallback (parentNode);
-            
-            // This orderable finder knows that the lightbox thumbnails are 'div' elements
-            var lightboxCellNamePattern = "^" + deriveLightboxCellBase (containerId, "[0-9]+") +"$";
-            var itemFinder = function () {
-                return fluid.utils.seekNodesById (parentNode, "div", lightboxCellNamePattern);
+            return createLightboxWithKeyset (containerId, instructionMessageId, undefined);
+        },
+        
+        /**
+         * Creates a new Lightbox using a screen reader compatible key set by binding to element ids in the DOM.
+         * This provides a convenient way of constructing a Lightbox with the default configuration.
+         * 
+         * @param {String} containerId The id of the DOM element that represents the Lightbox
+         * @param {String} instructionMessageId The id of the DOM element containing instructional text for Lightbox users
+         */
+        createScreenReaderLightbox: function (containerId, instructionMessageId) {
+            var keys = { 
+                modifier: fluid.keys.SHIFT, 
+                up: fluid.keys.NP8, 
+                down: fluid.keys.NP2,
+                right: fluid.keys.NP6,
+                left: fluid.keys.NP4
             };
             
-            fluid.lightbox.createLightbox (parentNode, itemFinder, orderChangedCallback, instructionMessageId);
+            return createLightboxWithKeyset (containerId, instructionMessageId, keys);
         }
     };
 }) (jQuery, document);

@@ -218,13 +218,13 @@
 
       <!--  Attach the javascript functionality to the markup by using createLightboxFromIds() -->
       <script type="text/javascript">
-        fluid.lightbox.createLightboxFromIds ("gallery", "message-bundle:");
+        fluid.lightbox.createScreenReaderLightbox ("gallery", "message-bundle:");
       </script>
 
       <!-- Sample instruction message. At runtime, this would be supplied by the server. -->
       <div id="message-bundle:" class="lightbox-instructions">
         <div class="lightbox-downarrow"></div><div id="message-bundle:thumbnailInstructions">
-          View an image by pressing Enter. Move an image using CTRL+Arrow Key.
+          View an image by pressing Enter. Move an image using SHIFT+Numeric Key Pad 2, 8, 4, 6.
         </div>
       </div>
     </form>

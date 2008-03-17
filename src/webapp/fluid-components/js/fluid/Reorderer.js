@@ -22,10 +22,18 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 
     var role = fluid.roles.LIST;
     var messageNamebase = "message-bundle:";
-
+    var keys = {
+        modifier : fluid.keys.CTRL,
+        up : fluid.keys.UP,
+        down : fluid.keys.DOWN,
+        right : fluid.keys.RIGHT,
+        left : fluid.keys.LEFT
+    };
+    
     if (options) {
         role = options.role || role;
         messageNamebase = options.messageNamebase || messageNamebase;
+        keys = options.keys || keys;
     }
 
     // the reorderable DOM element that is currently active
@@ -88,7 +96,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 
     this.handleKeyDown = function (evt) {
         // The the key pressed is ctrl, and the active item is movable we want to restyle the active item.
-        if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
+        if (thisReorderer.activeItem && evt.keyCode === keys.modifier) {
         	// Don't treat the active item as dragging unless it is a movable.
             if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
                 var jActiveItem = jQuery (thisReorderer.activeItem);
@@ -100,11 +108,11 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         }
         
         // The only other keys we listen for are the arrows.
-        return thisReorderer.handleArrowKeyDown(evt);
+        return thisReorderer.handleDirectionKeyDown(evt);
     };
 
     this.handleKeyUp = function (evt) {
-        if (thisReorderer.activeItem && evt.keyCode === fluid.keys.CTRL) {
+        if (thisReorderer.activeItem && evt.keyCode === keys.modifier) {
             // Don't treat the active item as dragging unless it is a movable.
             if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
                 var jActiveItem = jQuery (thisReorderer.activeItem);
@@ -116,9 +124,8 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         }
     };
 
-    var handleArrow = function (isMove, moveFunc, nextItemFunc) {
+    var handleDirectionKey = function (isMove, moveFunc, nextItemFunc) {
         if (isMove) {
-
             // only move the target if it is actually movable
             if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
                 moveFunc (thisReorderer.activeItem);
@@ -132,24 +139,39 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         }           
     };
             
-    this.handleArrowKeyDown = function (evt) {
+    var isMove = function (evt) {
+        switch (keys.modifier) {
+            case fluid.keys.CTRL:
+                return evt.ctrlKey;
+            case fluid.keys.SHIFT:
+                return evt.shiftKey;
+            case fluid.keys.META:
+                return evt.metaKey;
+            case fluid.keys.ALT:
+                return evt.altKey;
+            default:
+                return false;
+        }
+    };
+    
+    this.handleDirectionKeyDown = function (evt) {
         if (thisReorderer.activeItem) {
             switch (evt.keyCode) {
-                case fluid.keys.DOWN:
+                case keys.down:
                     evt.preventDefault();
-                    handleArrow (evt.ctrlKey, layoutHandler.moveItemDown, layoutHandler.getItemBelow);
+                    handleDirectionKey (isMove(evt), layoutHandler.moveItemDown, layoutHandler.getItemBelow);
                     return false;
-                case fluid.keys.UP: 
+                case keys.up: 
                     evt.preventDefault();
-                    handleArrow (evt.ctrlKey, layoutHandler.moveItemUp, layoutHandler.getItemAbove);
+                    handleDirectionKey (isMove(evt), layoutHandler.moveItemUp, layoutHandler.getItemAbove);
                     return false;
-                case fluid.keys.LEFT: 
+                case keys.left: 
                     evt.preventDefault();
-                    handleArrow (evt.ctrlKey, layoutHandler.moveItemLeft, layoutHandler.getLeftSibling);
+                    handleDirectionKey (isMove(evt), layoutHandler.moveItemLeft, layoutHandler.getLeftSibling);
                     return false;
-                case fluid.keys.RIGHT: 
+                case keys.right: 
                     evt.preventDefault();
-                    handleArrow (evt.ctrlKey, layoutHandler.moveItemRight, layoutHandler.getRightSibling);
+                    handleDirectionKey (isMove(evt), layoutHandler.moveItemRight, layoutHandler.getRightSibling);
                     return false;
                 default:
                     return true;

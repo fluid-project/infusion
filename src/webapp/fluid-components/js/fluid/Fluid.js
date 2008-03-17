@@ -13,14 +13,21 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var fluid = fluid || {};
 
 fluid.keys = {
-    UP: 38,
-    DOWN: 40,
-    LEFT: 37,
-    RIGHT: 39,
-    SPACE: 32,
-    ENTER: 13,
     TAB: 9,
-    CTRL: 17
+    ENTER: 13,
+    SHIFT: 16,
+    CTRL: 17,
+    ALT: 18,
+    META: 19,
+    SPACE: 32,
+    LEFT: 37,
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40,
+    NP2: 98,
+    NP4: 100,
+    NP6: 102,
+    NP8: 104
 };
 
 /**

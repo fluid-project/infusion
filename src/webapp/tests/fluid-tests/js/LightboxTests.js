@@ -54,42 +54,7 @@ $(document).ready (function () {
         jqUnit.assertFalse(message + itemId  +  " not should be selected", item.hasClass (selectedClass));  
     }
     
-    /*
-     * This test tests the movement of images, and does not concern itself
-     * with changes of state (i.e. dragging, etc.)
-     */
-    lightboxTests.test ("HandleArrowKeyDownMoveThumbDown", function () {
-        var lightbox = createLightbox();
-        focusLightbox ();
-    
-        // Test: ctrl down arrow - move the first image down
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtCtrlDownArrow());
-        
-        var thumbArray = findImgsInLightbox();
-        jqUnit.assertEquals("after ctrl-down-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
-        jqUnit.assertEquals("after ctrl-down-arrow, expect third image to be second", thirdImageId, thumbArray[1].id);
-        jqUnit.assertEquals("after ctrl-down-arrow, expect fourth image to be third", fourthImageId, thumbArray[2].id);
-        jqUnit.assertEquals("after ctrl-down-arrow, expect first image to be fourth", firstImageId, thumbArray[3].id);
-        jqUnit.assertEquals("after ctrl-down-arrow, expect fifth image to still be fifth", fifthImageId, thumbArray[4].id);
-     });
-     
-     lightboxTests.test ("HandleArrowKeyDownWrapThumbUp", function () {
-        // Test: ctrl up arrow - move the first image 'up'
-        var lightbox = createLightbox();
-        focusLightbox ();
-    
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtCtrlUpArrow());
-        
-        var thumbArray = findImgsInLightbox();
-        jqUnit.assertEquals("after ctrl-up-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
-        jqUnit.assertEquals("after ctrl-up-arrow, expect third image to be second", thirdImageId, thumbArray[1].id);
-        jqUnit.assertEquals("after ctrl-up-arrow, expect fifth image to be fourth", fifthImageId, thumbArray[3].id);
-        jqUnit.assertEquals("after ctrl-up-arrow, expect first image to be second last", firstImageId, thumbArray[12].id);
-        jqUnit.assertEquals("after ctrl-up-arrow, expect last image to still be last", lastImageId, thumbArray[13].id);
-    });
-    
-    lightboxTests.test ("HandleArrowKeyDownForUpAndDown", function () {
-        var lightbox = createLightbox();
+    function verticalNavigationTest (lightbox, upEvt, downEvt) {
         // setup: force the grid to have four columns
         var lightboxRoot = fluid.utils.jById (lightboxRootId);
         
@@ -104,31 +69,29 @@ $(document).ready (function () {
         fluid.utils.jById (firstReorderableId)[0].focus ();
     
         // Test: down arrow to the fifth image
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtDownArrow());
+        lightbox.handleDirectionKeyDown(downEvt);
         isItemDefaultTest("After down arrow ", firstReorderableId);
         isItemFocusedTest("After down arrow ", fifthReorderableId);
     
         // Test: up arrow to the first image
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtUpArrow());
+        lightbox.handleDirectionKeyDown(upEvt);
         isItemFocusedTest("After up arrow ", firstReorderableId);
         isItemDefaultTest("After up arrow ", fifthReorderableId);
     
         // Test: up arrow to the second last image
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtUpArrow());
+        lightbox.handleDirectionKeyDown(upEvt);
         isItemDefaultTest("After up arrow wrap ", firstReorderableId);
         isItemFocusedTest("After up arrow wrap ", secondLastReorderableId);
     
         // Test: down arrow to the first image
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtDownArrow());
+        lightbox.handleDirectionKeyDown(downEvt);
         isItemFocusedTest("After down arrow wrap ", firstReorderableId);
         isItemDefaultTest("After down arrow wrap ", secondLastReorderableId);
+    }
     
-    });
+    function horizontalNavigationTest (lightbox, rightEvt, leftEvt) {
+        focusLightbox ();        
     
-    lightboxTests.test ("HandleArrowKeyDownForLeftAndRight", function () {
-        var lightbox = createLightbox();
-        focusLightbox ();
-        
         isItemFocusedTest("Initially ", firstReorderableId);
         isItemDefaultTest("Initially ", secondReorderableId);
     
@@ -136,37 +99,134 @@ $(document).ready (function () {
         fluid.utils.jById (firstReorderableId)[0].focus ();
     
         // Test: right arrow to the second image
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtRightArrow());
-        isItemFocusedTest("After right arrow ", secondReorderableId);
-        isItemDefaultTest("After right arrow ", firstReorderableId);
+        lightbox.handleDirectionKeyDown(rightEvt);
+        isItemFocusedTest("After right ", secondReorderableId);
+        isItemDefaultTest("After right ", firstReorderableId);
     
         // Test: right arrow to the last image
         for (focusPosition = 2; focusPosition < numOfImages; focusPosition++ ) {
-            lightbox.handleArrowKeyDown(fluid.testUtils.createEvtRightArrow());
+            lightbox.handleDirectionKeyDown(rightEvt);
         }
-        isItemFocusedTest("Right arrow to last ", lastReorderableId);
-        isItemDefaultTest("Right arrow to last ", firstReorderableId);
-        isItemDefaultTest("Right arrow to last ", secondReorderableId);
+        isItemFocusedTest("Right to last ", lastReorderableId);
+        isItemDefaultTest("Right to last ", firstReorderableId);
+        isItemDefaultTest("Right to last ", secondReorderableId);
         
         // Test: left arrow to the previous image
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtLeftArrow());
-        isItemFocusedTest("Left arrow to second last ", secondLastReorderableId);
-        isItemDefaultTest("Left arrow to second last ", firstReorderableId);
-        isItemDefaultTest("Left arrow to second last ", lastReorderableId);
+        lightbox.handleDirectionKeyDown(leftEvt);
+        isItemFocusedTest("Left to second last ", secondLastReorderableId);
+        isItemDefaultTest("Left to second last ", firstReorderableId);
+        isItemDefaultTest("Left to second last ", lastReorderableId);
         
         // Test: right arrow past the last image - expect wrap to the first image
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtRightArrow());
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtRightArrow());
-        isItemFocusedTest("Right arrow wrap ", firstReorderableId);
-        isItemDefaultTest("Right arrow wrap ", secondReorderableId);
-        isItemDefaultTest("Right arrow wrap ", lastReorderableId);
+        lightbox.handleDirectionKeyDown(rightEvt);
+        lightbox.handleDirectionKeyDown(rightEvt);
+        isItemFocusedTest("Right wrap ", firstReorderableId);
+        isItemDefaultTest("Right wrap ", secondReorderableId);
+        isItemDefaultTest("Right wrap ", lastReorderableId);
     
         // Test: left arrow on the first image - expect wrap to the last image
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtLeftArrow());
-        isItemFocusedTest("Left arrow wrap ", lastReorderableId);
-        isItemDefaultTest("Left arrow wrap ", firstReorderableId);
-        isItemDefaultTest("Left arrow wrap ", secondReorderableId);
+        lightbox.handleDirectionKeyDown(leftEvt);
+        isItemFocusedTest("Left wrap ", lastReorderableId);
+        isItemDefaultTest("Left wrap ", firstReorderableId);
+        isItemDefaultTest("Left wrap ", secondReorderableId);
     
+    }
+    
+    function verticalMovementTest (lightbox, modifiedUpEvt, modifiedDownEvt) {
+        // Default width is 3 thumbnails.
+
+        focusLightbox ();
+        lightbox.handleDirectionKeyDown(modifiedDownEvt);
+
+        // Refocus the lightbox because of a strange 5 pixel shift which happens only in tests after moving down
+        focusLightbox ();
+        var thumbArray = findImgsInLightbox();
+        jqUnit.assertEquals("after modified-down, expect second image to be first", secondImageId, thumbArray[0].id);
+        jqUnit.assertEquals("after modified-down, expect first image to be fourth", firstImageId, thumbArray[3].id);
+        jqUnit.assertEquals("after modified-down, expect fifth image to be fifth", fifthImageId, thumbArray[4].id);
+        jqUnit.assertEquals("after modified-down, expect last image to be last", lastImageId, thumbArray[numOfImages - 1].id);
+
+        lightbox.handleDirectionKeyDown(modifiedUpEvt);
+
+        // Refocus the lightbox because of a strange 5 pixel shift which happens only in tests after moving up
+        focusLightbox ();
+        itemsInOriginalPositionTest("after modified-up");        
+    }
+    
+    function horizontalMovementTest (lightbox, modifiedRightEvt, modifiedLeftEvt) {
+        focusLightbox ();
+        
+        // Test: ctrl right arrow - expect first and second image to swap
+        lightbox.handleDirectionKeyDown(modifiedRightEvt);
+    
+        var thumbArray = findImgsInLightbox();
+        jqUnit.assertEquals("after modified-right, expect second image to be first", secondImageId, thumbArray[0].id);
+        jqUnit.assertEquals("after modified-right, expect first image to be second", firstImageId, thumbArray[1].id);
+        jqUnit.assertEquals("after modified-right, expect last image to be last", lastImageId, thumbArray[numOfImages - 1].id);
+        
+        // Test: ctrl left arrow - expect first and second image to swap back to original order
+        lightbox.handleDirectionKeyDown(modifiedLeftEvt);
+        itemsInOriginalPositionTest("after modified-left");
+    
+        // Test: ctrl left arrow - expect first image to move to last place,
+        //       second image to move to first place and last image to move to second-last place
+        lightbox.handleDirectionKeyDown(modifiedLeftEvt);
+    
+        thumbArray = findImgsInLightbox();
+        jqUnit.assertEquals("after modified-left on first image, expect first last to be last", firstImageId, thumbArray[numOfImages - 1].id);
+        jqUnit.assertEquals("after modified-left on first image, expect second to be first", secondImageId, thumbArray[0].id);
+        jqUnit.assertEquals("after modified-left on first image, expect last to be second-last", lastImageId, thumbArray[numOfImages - 2].id);
+    
+        // Test: ctrl right arrow - expect first image to move back to first place,
+        //       second image to move to back second place and thumbLast to move to back last place
+        lightbox.handleDirectionKeyDown(modifiedRightEvt);
+        itemsInOriginalPositionTest("after modified-left");
+    }
+    
+    /*
+     * This test tests the movement of images, and does not concern itself
+     * with changes of state (i.e. dragging, etc.)
+     */
+    lightboxTests.test ("HandleArrowKeyDownMoveThumbDown", function () {
+        var lightbox = createLightbox();
+        focusLightbox ();
+    
+        // Test: ctrl down arrow - move the first image down
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlDownArrow());
+        
+        var thumbArray = findImgsInLightbox();
+        jqUnit.assertEquals("after ctrl-down-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
+        jqUnit.assertEquals("after ctrl-down-arrow, expect third image to be second", thirdImageId, thumbArray[1].id);
+        jqUnit.assertEquals("after ctrl-down-arrow, expect fourth image to be third", fourthImageId, thumbArray[2].id);
+        jqUnit.assertEquals("after ctrl-down-arrow, expect first image to be fourth", firstImageId, thumbArray[3].id);
+        jqUnit.assertEquals("after ctrl-down-arrow, expect fifth image to still be fifth", fifthImageId, thumbArray[4].id);
+     });
+     
+     lightboxTests.test ("HandleArrowKeyDownWrapThumbUp", function () {
+        // Test: ctrl up arrow - move the first image 'up'
+        var lightbox = createLightbox();
+        focusLightbox ();
+    
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlUpArrow());
+        
+        var thumbArray = findImgsInLightbox();
+        jqUnit.assertEquals("after ctrl-up-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
+        jqUnit.assertEquals("after ctrl-up-arrow, expect third image to be second", thirdImageId, thumbArray[1].id);
+        jqUnit.assertEquals("after ctrl-up-arrow, expect fifth image to be fourth", fifthImageId, thumbArray[3].id);
+        jqUnit.assertEquals("after ctrl-up-arrow, expect first image to be second last", firstImageId, thumbArray[12].id);
+        jqUnit.assertEquals("after ctrl-up-arrow, expect last image to still be last", lastImageId, thumbArray[13].id);
+    });
+    
+    lightboxTests.test ("HandleArrowKeyDownForUpAndDown", function () {
+        var lightbox = createLightbox();
+        verticalNavigationTest (lightbox, fluid.testUtils.createEvtUpArrow(), fluid.testUtils.createEvtDownArrow());
+    
+    });
+    
+    lightboxTests.test ("HandleArrowKeyDownForLeftAndRight", function () {
+        var lightbox = createLightbox();
+    
+        horizontalNavigationTest (lightbox, fluid.testUtils.createEvtRightArrow(), fluid.testUtils.createEvtLeftArrow());
     });
     
     lightboxTests.test ("HandleKeyUpAndHandleKeyDownChangesState", function () {
@@ -221,35 +281,15 @@ $(document).ready (function () {
      * This test tests the movement of images, and does not concern itself
      * with changes of state (i.e. dragging, etc.)
      */
-    lightboxTests.test ("HandleArrowKeyDownForCtrlLeftAndCtrlRight", function () {  
+    lightboxTests.test ("HandleArrowCtrlArrowKeyDown", function () {  
         var lightbox = createLightbox();
-        focusLightbox ();
-        
-        // Test: ctrl right arrow - expect first and second image to swap
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
-    
-        var thumbArray = findImgsInLightbox();
-        jqUnit.assertEquals("after ctrl-right-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
-        jqUnit.assertEquals("after ctrl-right-arrow, expect first image to be second", firstImageId, thumbArray[1].id);
-        jqUnit.assertEquals("after ctrl-right-arrow, expect last image to be last", lastImageId, thumbArray[numOfImages - 1].id);
-        
-        // Test: ctrl left arrow - expect first and second image to swap back to original order
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtCtrlLeftArrow());
-        itemsInOriginalPositionTest("after ctrl-left-arrow");
-    
-        // Test: ctrl left arrow - expect first image to move to last place,
-        //       second image to move to first place and last image to move to second-last place
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtCtrlLeftArrow());
-    
-        thumbArray = findImgsInLightbox();
-        jqUnit.assertEquals("after ctrl-left-arrow on first image, expect first last to be last", firstImageId, thumbArray[numOfImages - 1].id);
-        jqUnit.assertEquals("after ctrl-left-arrow on first image, expect second to be first", secondImageId, thumbArray[0].id);
-        jqUnit.assertEquals("after ctrl-left-arrow on first image, expect last to be second-last", lastImageId, thumbArray[numOfImages - 2].id);
-    
-        // Test: ctrl right arrow - expect first image to move back to first place,
-        //       second image to move to back second place and thumbLast to move to back last place
-        lightbox.handleArrowKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
-        itemsInOriginalPositionTest("after ctrl-left-arrow");
+        horizontalMovementTest (lightbox,
+                                fluid.testUtils.createEvtCtrlRightArrow(),
+                                fluid.testUtils.createEvtCtrlLeftArrow());
+                                
+        verticalMovementTest (lightbox,
+                              fluid.testUtils.createEvtCtrlUpArrow(),
+                              fluid.testUtils.createEvtCtrlDownArrow());
     });
     
     lightboxTests.test ("PersistFocus ", function () {
@@ -333,29 +373,29 @@ $(document).ready (function () {
         jqUnit.assertUndefined ("Lightbox's activeItem member should not be set", lightboxWithNoOrderables.activeItem);
             
         // Test left arrow, right arrow, etc. with and without control key.
-        lightboxWithNoOrderables.handleArrowKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
+        lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
         jqUnit.assertUndefined ("After ctrl-right, activeItem member should not be set",
             lightboxWithNoOrderables.activeItem);   
-        lightboxWithNoOrderables.handleArrowKeyDown(fluid.testUtils.createEvtCtrlLeftArrow());
+        lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlLeftArrow());
         jqUnit.assertUndefined ("After ctrl-left, activeItem member should not be set",
             lightboxWithNoOrderables.activeItem);   
-        lightboxWithNoOrderables.handleArrowKeyDown(fluid.testUtils.createEvtCtrlUpArrow());
+        lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlUpArrow());
         jqUnit.assertUndefined ("After ctrl-up, activeItem member should not be set",
             lightboxWithNoOrderables.activeItem);   
-        lightboxWithNoOrderables.handleArrowKeyDown(fluid.testUtils.createEvtCtrlDownArrow());
+        lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlDownArrow());
         jqUnit.assertUndefined ("After ctrl-down, activeItem member should not be set",
             lightboxWithNoOrderables.activeItem);   
     
-        lightboxWithNoOrderables.handleArrowKeyDown(fluid.testUtils.createEvtLeftArrow());
+        lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtLeftArrow());
         jqUnit.assertUndefined ("After left, activeItem member should not be set",
             lightboxWithNoOrderables.activeItem);
-        lightboxWithNoOrderables.handleArrowKeyDown(fluid.testUtils.createEvtRightArrow());
+        lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtRightArrow());
         jqUnit.assertUndefined ("After right, activeItem member should not be set",
             lightboxWithNoOrderables.activeItem);
-        lightboxWithNoOrderables.handleArrowKeyDown(fluid.testUtils.createEvtUpArrow());
+        lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtUpArrow());
         jqUnit.assertUndefined ("After up, activeItem member should not be set",
             lightboxWithNoOrderables.activeItem);   
-        lightboxWithNoOrderables.handleArrowKeyDown(fluid.testUtils.createEvtDownArrow());
+        lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtDownArrow());
         jqUnit.assertUndefined ("After down, activeItem member should not be set",
             lightboxWithNoOrderables.activeItem);
         
@@ -404,12 +444,83 @@ $(document).ready (function () {
         lightbox.handleKeyDown (fluid.testUtils.createEvtCTRL());
         jqUnit.assertEquals ("while CTRL held down, test item should have grab of true", "true", testItem.ariaState("grab"));
     
-        lightbox.handleArrowKeyDown (fluid.testUtils.createEvtCtrlRightArrow());
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
         jqUnit.assertEquals ("after arrow while CTRL still held down, test item should have grab of true", "true", testItem.ariaState("grab"));
         
         lightbox.handleKeyUp (fluid.testUtils.createEvtCTRL());
         jqUnit.assertEquals ("after CTRL released, test item should have grab of supported", "supported", testItem.ariaState("grab"));
     });
 
+    lightboxTests.test ("AlternativeKeySetDefaultKeysDontWork", function () {
+        var lightbox = fluid.lightbox.createScreenReaderLightbox(lightboxRootId, MESSAGE_BUNDLE_BASE);
+        focusLightbox ();
+        
+        // Test arrow keys
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtRightArrow());
+        isItemFocusedTest("After right arrow ", firstReorderableId);
+        isItemDefaultTest("After right arrow ", secondReorderableId);
+
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtLeftArrow());
+        isItemFocusedTest("After left arrow ", firstReorderableId);
+        isItemDefaultTest("After left arrow ", lastReorderableId);
+
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtUpArrow());
+        isItemFocusedTest("After up arrow ", firstReorderableId);
+        isItemDefaultTest("After up arrow ", secondLastReorderableId);
+
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtDownArrow());
+        isItemFocusedTest("After down arrow ", firstReorderableId);
+        isItemDefaultTest("After down arrow ", fourthReorderableId);
+         
+        // Test CTRL
+        lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL());
+        isItemFocusedTest("After ctrl-down, ", firstReorderableId);
+        lightbox.handleKeyUp(fluid.testUtils.createEvtCTRL());
+        isItemFocusedTest("After ctrl-up, ", firstReorderableId);
+
+        // Test CTRL arrow keys  
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
+        itemsInOriginalPositionTest("After ctrl right arrow");
+
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlLeftArrow());
+        itemsInOriginalPositionTest("After ctrl left arrow");
+
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlUpArrow());
+        itemsInOriginalPositionTest("After ctrl up arrow");
+
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlDownArrow());
+        itemsInOriginalPositionTest("After ctrl down arrow");
+        
+    });    
+
+    lightboxTests.test ("AlternativeKeySetNavigation", function () {
+        var lightbox = fluid.lightbox.createScreenReaderLightbox(lightboxRootId, MESSAGE_BUNDLE_BASE);
+        focusLightbox ();
+        
+        // Test NumPad arrows (8, 4, 6, 2)
+        horizontalNavigationTest(lightbox,
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.NP6),
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.NP4));
+                                
+        fluid.utils.jById(firstReorderableId).focus();
+        verticalNavigationTest (lightbox,
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.NP8),
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.NP2));
+       });
+       
+    lightboxTests.test ("AlternativeKeySetMovement", function () {
+        var lightbox = fluid.lightbox.createScreenReaderLightbox(lightboxRootId, MESSAGE_BUNDLE_BASE);
+        focusLightbox ();
+        
+        // Test Shift + NumPad arrows (8, 4, 6, 2)
+
+        horizontalMovementTest (lightbox,
+                                fluid.testUtils.createShiftKeyEvent(fluid.keys.NP6),
+                                fluid.testUtils.createShiftKeyEvent(fluid.keys.NP4));
+        fluid.utils.jById(firstReorderableId).focus();
+        verticalMovementTest (lightbox,
+                                fluid.testUtils.createShiftKeyEvent (fluid.keys.NP8),
+                                fluid.testUtils.createShiftKeyEvent (fluid.keys.NP2));
+       });
 });
 

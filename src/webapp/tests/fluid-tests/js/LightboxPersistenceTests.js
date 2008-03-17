@@ -38,7 +38,7 @@ $(document).ready (function () {
         focusLightbox ();
     	
     	// Perform a move
-    	lightbox.handleArrowKeyDown (fluid.testUtils.createEvtCtrlRightArrow ());
+    	lightbox.handleDirectionKeyDown (fluid.testUtils.createEvtCtrlRightArrow ());
     	jqUnit.assertNotNull ("order changed callback is not called when a move is performed", 
     		fluid.testUtils.byId ("callbackCalled"));
     });
