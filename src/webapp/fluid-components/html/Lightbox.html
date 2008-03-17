@@ -2,9 +2,8 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <!--  This is a multi purpose file used for:
-        1. running jsUnit tests
-        2. as a stand alone example of the Lightbox 
-        3. as the RSF template for the image gallery tool 
+        1. as a stand alone example of the Lightbox 
+        2. as the RSF template for the image gallery tool 
       Note that the RSF ids throughout this template are used by the gallery tool and are only necessary when using RSF.-->
       
 <html xmlns="http://www.w3.org/1999/xhtml" 
@@ -15,8 +14,7 @@
     <title>Fluid Lightbox</title>
     <link href="../css/Lightbox.css" rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" />
     
-    <!--  These are the required javascript modules for the Lightbox 
-          eventually to be replaced with a single build generated file -->
+    <!--  Required javascript modules for the Lightbox which can be replaced with the build generated file Fluid-all.js -->
     <script type="text/javascript" src="../js/jquery/jquery-1.2.1.js" rsf:id="scr=contribute-script"></script>
     <script type="text/javascript" src="../js/jquery.tabindex/jquery.tabindex.js" rsf:id="scr=contribute-script"></script>
     <script type="text/javascript" src="../js/jquery.ui-1.0/ui.mouse.js" rsf:id="scr=contribute-script"></script>
@@ -27,18 +25,6 @@
     <script type="text/javascript" src="../js/fluid/Reorderer.js" rsf:id="scr=contribute-script"></script>
     <script type="text/javascript" src="../js/fluid/Lightbox.js" rsf:id="scr=contribute-script"></script>
     
-    <!--  These are test-time dependencies and will be removed at render time by RSF. -->
-    <link href="../../tests/fluid-tests/TestStyles.css" type="text/css" rel="stylesheet" media="all" />
-    <script type="text/javascript" src="../../tests/jsunit/app/jsUnitCore.js"></script>
-    <script type="text/javascript" src="../../tests/fluid-tests/LightboxTestConstants.js"></script>
-    <script type="text/javascript" src="../../tests/fluid-tests/TestUtils.js"></script>
-  
-    <!--  These are the jsUnit tests -->
-    <script type="text/javascript" src="../../tests/fluid-tests/ItemInfosTests.js"></script>
-    <script type="text/javascript" src="../../tests/fluid-tests/GridLayoutHandlerTests.js"></script>
-    <script type="text/javascript" src="../../tests/fluid-tests/LightboxTests.js"></script> 
-    <script type="text/javascript" src="../../tests/fluid-tests/LightboxPersistenceTests.js"></script> 
-
     <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. --> 
     <script type="text/javascript" rsf:id="scr=contribute-script">
       jQuery.noConflict();

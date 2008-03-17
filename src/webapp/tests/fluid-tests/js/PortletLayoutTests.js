@@ -252,13 +252,13 @@ $(document).ready (function () {
         // null for invalid column (negative or too big)
         itemId = fluid.portletLayout.internals.getItemAt (-1, 3, demo.portal.layout);
         jqUnit.assertNull ("Negative column index should give null result", itemId);
-        item = fluid.portletLayout.internals.getItemAt (999, 3, demo.portal.layout);
+        itemId = fluid.portletLayout.internals.getItemAt (999, 3, demo.portal.layout);
         jqUnit.assertNull ("Column index greater than number of columns should give null result", itemId);
     
         // null for invalid item index (negative or too big)
         itemId = fluid.portletLayout.internals.getItemAt (0, -1, demo.portal.layout);
         jqUnit.assertNull ("Negative item index should give null result", itemId);
-        item = fluid.portletLayout.internals.getItemAt (0, 999, demo.portal.layout);
+        itemId = fluid.portletLayout.internals.getItemAt (0, 999, demo.portal.layout);
         jqUnit.assertNull ("Item index greater than number of items in column should give null result", itemId);
     });
     

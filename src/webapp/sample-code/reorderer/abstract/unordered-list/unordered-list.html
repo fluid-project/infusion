@@ -4,24 +4,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
   <head>
     <title>Vertical Unordered List</title>
-    <link href="../markup-examples.css" type="text/css" rel="stylesheet" media="all" />
+    <link href="../../markup-examples.css" type="text/css" rel="stylesheet" media="all" />
 
-    <!--  These are the required javascript modules for the Reorderer
-          eventually to be replaced with a single build generated file -->
-    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.1.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/jquery.tabindex/jquery.tabindex.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/jquery.ui-1.0/ui.mouse.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/jquery.ui-1.0/ui.draggable.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/jquery.ui-1.0/ui.droppable.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/jaria/jARIA.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/fluid/Reorderer.js"></script>
-
-    <!--  These are used for JsUnit tests that have been written using this page as data -->
-    <script type="text/javascript" src="../../../tests/jsunit/app/jsUnitCore.js"></script>
-    <script type="text/javascript" src="../../../tests/fluid-tests/TestUtils.js"></script>
-    <script type="text/javascript" src="../../../tests/fluid-tests/UnorderedListTestConstants.js"></script>
-    <script type="text/javascript" src="../../../tests/fluid-tests/ListLayoutHandlerTests.js"></script>
+    <!--  Required javascript modules for the Reorderer which can be replaced with the build generated file Fluid-all.js -->
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.2.1.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery.tabindex/jquery.tabindex.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery.ui-1.0/ui.mouse.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery.ui-1.0/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery.ui-1.0/ui.droppable.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/jaria/jARIA.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/Reorderer.js"></script>
+    <script type="text/javascript" src="unordered-list.js"></script>
 
     <!--  Ensure jQuery plays nice with other toolkits -
           must be called after all the javascript is loaded. -->
@@ -44,8 +38,7 @@
     </div>
 
     <script type="text/javascript" id="reorderer-script">
-        // createListReorderer is defined in UnorderedListTestConstants.js
-        createListReorderer ();
+        jQuery(document).ready(demo.unorderedList.createListReorderer);
     </script>
 
     <h1>Unordered List No Reorderer </h1>

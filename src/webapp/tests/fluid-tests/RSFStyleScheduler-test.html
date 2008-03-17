@@ -13,7 +13,7 @@
         <script type="text/javascript" src="../../fluid-components/js/jaria/jARIA.js"></script>
         <script type="text/javascript" src="../../fluid-components/js/fluid/Fluid.js"></script>
         <script type="text/javascript" src="../../fluid-components/js/fluid/Reorderer.js"></script>
-        <script type="text/javascript" src="js/Scheduler-setup.js"></script>
+        <script type="text/javascript" src="../../sample-code/reorderer/concrete/scheduler/Scheduler.js"></script>
 
         <!--  These are the jqUnit test files -->
         <link rel="Stylesheet" media="screen" href="../jqUnit/testsuite.css" />
@@ -90,24 +90,6 @@
                 </li>
             </ul>
         </div>
-
-        <!-- And the inner list Reorderers -->
-        <script type="text/javascript">
-            fluid.Scheduler.initRSFScheduler("page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::",
-                                             "li",
-                                             "orderable",
-                                             2);
-
-            fluid.Scheduler.initRSFScheduler("page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::orderable:0::lightningTalks::",
-                                             "li",
-                                             "orderable",
-                                             3);
-
-            fluid.Scheduler.initRSFScheduler("page-replace:uniquePortletId:component::tree::branches::rsfSortableSchedule::orderable:0::sessions::",
-                                             "li",
-                                             "orderable",
-                                             4);
-        </script>
     </div>
     </body>
 </html>
