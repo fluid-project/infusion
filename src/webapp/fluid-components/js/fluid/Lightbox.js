@@ -85,7 +85,7 @@ var fluid = fluid || {};
             });
             
             return new fluid.Reorderer (container, itemFinderFn, layoutHandler, {
-                messageNamebase : instructionMessageId,
+                instructionMessageId : instructionMessageId,
                 role : fluid.roles.GRID,
                 keys : keys
             });

@@ -21,7 +21,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     findItems = fluid.utils.adaptFindItems (findItems);
 
     var role = fluid.roles.LIST;
-    var messageNamebase = "message-bundle:";
+    var instructionMessageId = "message-bundle:";
     var keys = {
         modifier : fluid.keys.CTRL,
         up : fluid.keys.UP,
@@ -32,7 +32,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     
     if (options) {
         role = options.role || role;
-        messageNamebase = options.messageNamebase || messageNamebase;
+        instructionMessageId = options.instructionMessageId || instructionMessageId;
         keys = options.keys || keys;
     }
 
@@ -180,7 +180,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     };
     
     this._fetchMessage = function (messagekey) {
-        var messageID = this.messageNamebase + messagekey;
+        var messageID = this.instructionMessageId + messagekey;
         var node = document.getElementById (messageID);
         
         return node? node.innerHTML: "[Message not found at id " + messageID + "]";
