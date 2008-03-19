@@ -23,7 +23,9 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     var role = fluid.roles.LIST;
     var instructionMessageId = "message-bundle:";
     var keys = {
-        modifier : fluid.keys.CTRL,
+        modifier : function (evt) {
+                       return evt.ctrlKey;
+                   },
         up : fluid.keys.UP,
         down : fluid.keys.DOWN,
         right : fluid.keys.RIGHT,
@@ -94,12 +96,16 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         return evt.stopPropagation();
     };
 
+    var isMove = function (evt) {
+        return keys.modifier(evt);
+    };
+    
     this.handleKeyDown = function (evt) {
         // The the key pressed is ctrl, and the active item is movable we want to restyle the active item.
-        if (thisReorderer.activeItem && evt.keyCode === keys.modifier) {
+        var jActiveItem = jQuery (thisReorderer.activeItem);
+        if (thisReorderer.activeItem && jActiveItem.hasClass(thisReorderer.cssClasses.selected) && isMove(evt)) {
         	// Don't treat the active item as dragging unless it is a movable.
             if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
-                var jActiveItem = jQuery (thisReorderer.activeItem);
                 jActiveItem.removeClass (thisReorderer.cssClasses.selected);
                 jActiveItem.addClass (thisReorderer.cssClasses.dragging);
                 jActiveItem.ariaState ("grab", "true");
@@ -112,10 +118,10 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     };
 
     this.handleKeyUp = function (evt) {
-        if (thisReorderer.activeItem && evt.keyCode === keys.modifier) {
+        var jActiveItem = jQuery (thisReorderer.activeItem);
+        if (thisReorderer.activeItem && jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && !isMove(evt)) {
             // Don't treat the active item as dragging unless it is a movable.
             if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
-                var jActiveItem = jQuery (thisReorderer.activeItem);
                 jActiveItem.removeClass (thisReorderer.cssClasses.dragging);
                 jActiveItem.addClass (thisReorderer.cssClasses.selected);
                 jActiveItem.ariaState ("grab", "supported");
@@ -124,8 +130,8 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         }
     };
 
-    var handleDirectionKey = function (isMove, moveFunc, nextItemFunc) {
-        if (isMove) {
+    var handleDirectionKey = function (isMoving, moveFunc, nextItemFunc) {
+        if (isMoving) {
             // only move the target if it is actually movable
             if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
                 moveFunc (thisReorderer.activeItem);
@@ -139,21 +145,6 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         }           
     };
             
-    var isMove = function (evt) {
-        switch (keys.modifier) {
-            case fluid.keys.CTRL:
-                return evt.ctrlKey;
-            case fluid.keys.SHIFT:
-                return evt.shiftKey;
-            case fluid.keys.META:
-                return evt.metaKey;
-            case fluid.keys.ALT:
-                return evt.altKey;
-            default:
-                return false;
-        }
-    };
-    
     this.handleDirectionKeyDown = function (evt) {
         if (thisReorderer.activeItem) {
             switch (evt.keyCode) {

@@ -258,7 +258,7 @@ $(document).ready (function () {
         isItemDefaultTest("After ctrl-down right arrow up, ", secondLastReorderableId);
     
         // ctrl up - expect dragging to end
-        lightbox.handleKeyUp(fluid.testUtils.createEvtCTRL());
+        lightbox.handleKeyUp(fluid.testUtils.createEvtCTRLUp());
         isItemFocusedTest("After ctrl-up ", firstReorderableId);
         isItemDefaultTest("After ctrl-up ", secondReorderableId);
         isItemDefaultTest("After ctrl-up ", secondLastReorderableId);
@@ -273,7 +273,7 @@ $(document).ready (function () {
         itemsInOriginalPositionTest("after ctrl-down");
         
         // after ctrl up, order should not change
-        lightbox.handleKeyUp(fluid.testUtils.createEvtCTRL());
+        lightbox.handleKeyUp(fluid.testUtils.createEvtCTRLUp());
         itemsInOriginalPositionTest("after ctrl-up");
     });
     
@@ -402,7 +402,7 @@ $(document).ready (function () {
         lightboxWithNoOrderables.handleKeyDown (fluid.testUtils.createEvtCTRL());
         jqUnit.assertUndefined ("After ctrl pressed, activeItem member should not be set",
             lightboxWithNoOrderables.activeItem);
-        lightboxWithNoOrderables.handleKeyUp (fluid.testUtils.createEvtCTRL());
+        lightboxWithNoOrderables.handleKeyUp (fluid.testUtils.createEvtCTRLUp());
         jqUnit.assertUndefined ("After key released w, activeItem member should not be set",
             lightboxWithNoOrderables.activeItem);
     });
@@ -447,12 +447,12 @@ $(document).ready (function () {
         lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
         jqUnit.assertEquals ("after arrow while CTRL still held down, test item should have grab of true", "true", testItem.ariaState("grab"));
         
-        lightbox.handleKeyUp (fluid.testUtils.createEvtCTRL());
+        lightbox.handleKeyUp (fluid.testUtils.createEvtCTRLUp());
         jqUnit.assertEquals ("after CTRL released, test item should have grab of supported", "supported", testItem.ariaState("grab"));
     });
 
     lightboxTests.test ("AlternativeKeySetDefaultKeysDontWork", function () {
-        var lightbox = fluid.lightbox.createScreenReaderLightbox(lightboxRootId, MESSAGE_BUNDLE_BASE);
+        var lightbox = createAltKeystrokeLightbox();
         focusLightbox ();
         
         // Test arrow keys
@@ -475,7 +475,7 @@ $(document).ready (function () {
         // Test CTRL
         lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL());
         isItemFocusedTest("After ctrl-down, ", firstReorderableId);
-        lightbox.handleKeyUp(fluid.testUtils.createEvtCTRL());
+        lightbox.handleKeyUp(fluid.testUtils.createEvtCTRLUp());
         isItemFocusedTest("After ctrl-up, ", firstReorderableId);
 
         // Test CTRL arrow keys  
@@ -494,33 +494,30 @@ $(document).ready (function () {
     });    
 
     lightboxTests.test ("AlternativeKeySetNavigation", function () {
-        var lightbox = fluid.lightbox.createScreenReaderLightbox(lightboxRootId, MESSAGE_BUNDLE_BASE);
+        var lightbox = createAltKeystrokeLightbox();
         focusLightbox ();
         
-        // Test NumPad arrows (8, 4, 6, 2)
         horizontalNavigationTest(lightbox,
-                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.NP6),
-                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.NP4));
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.k),
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.j));
                                 
         fluid.utils.jById(firstReorderableId).focus();
         verticalNavigationTest (lightbox,
-                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.NP8),
-                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.NP2));
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.i),
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.m));
        });
        
     lightboxTests.test ("AlternativeKeySetMovement", function () {
-        var lightbox = fluid.lightbox.createScreenReaderLightbox(lightboxRootId, MESSAGE_BUNDLE_BASE);
+        var lightbox = createAltKeystrokeLightbox();
         focusLightbox ();
         
-        // Test Shift + NumPad arrows (8, 4, 6, 2)
-
         horizontalMovementTest (lightbox,
-                                fluid.testUtils.createShiftKeyEvent(fluid.keys.NP6),
-                                fluid.testUtils.createShiftKeyEvent(fluid.keys.NP4));
+                                fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.k),
+                                fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.j));
         fluid.utils.jById(firstReorderableId).focus();
         verticalMovementTest (lightbox,
-                                fluid.testUtils.createShiftKeyEvent (fluid.keys.NP8),
-                                fluid.testUtils.createShiftKeyEvent (fluid.keys.NP2));
+                                fluid.testUtils.createCtrlShiftKeyEvent (fluid.keys.i),
+                                fluid.testUtils.createCtrlShiftKeyEvent (fluid.keys.m));
        });
 });
 

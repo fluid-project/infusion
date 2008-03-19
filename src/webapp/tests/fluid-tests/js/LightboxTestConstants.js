@@ -119,3 +119,19 @@ function createGridLayoutHandler () {
     return new fluid.GridLayoutHandler (findOrderableByDivAndId);
 }
 
+
+function createAltKeystrokeLightbox () {
+    var keys = { 
+        modifier: function (evt) {
+                return (evt.ctrlKey && evt.shiftKey);
+            }, 
+        up: fluid.keys.i, 
+        down: fluid.keys.m,
+        right: fluid.keys.k,
+        left: fluid.keys.j
+    };
+    
+    return fluid.lightbox.createLightbox (fetchLightboxRoot(),
+                                        findOrderableByDivAndId, function () {}, MESSAGE_BUNDLE_BASE, keys);
+
+}

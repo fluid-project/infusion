@@ -111,11 +111,13 @@ var fluid = fluid || {};
          */
         createScreenReaderLightbox: function (containerId, instructionMessageId) {
             var keys = { 
-                modifier: fluid.keys.SHIFT, 
-                up: fluid.keys.NP8, 
-                down: fluid.keys.NP2,
-                right: fluid.keys.NP6,
-                left: fluid.keys.NP4
+                modifier: function (evt) {
+                        return (evt.ctrlKey);
+                    }, 
+                up: fluid.keys.i, 
+                down: fluid.keys.m,
+                right: fluid.keys.k,
+                left: fluid.keys.j
             };
             
             return createLightboxWithKeyset (containerId, instructionMessageId, keys);

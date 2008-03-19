@@ -32,6 +32,10 @@ fluid.testUtils.createEvtLeftArrow = function() {
 	return this.createUnmodifiedKeyEvent(fluid.keys.LEFT);		
 }; 
 
+fluid.testUtils.createEvtCTRLUp = function() {
+    return this.createUnmodifiedKeyEvent(fluid.keys.CTRL);    
+};
+
 fluid.testUtils.createEvtCTRL = function() {
 	return this.createCtrlKeyEvent(fluid.keys.CTRL);	
 };
@@ -56,8 +60,8 @@ fluid.testUtils.createCtrlKeyEvent = function (inKeyCode) {
     return this.createKeyEvent (inKeyCode, true /* control key is down */);
 };
 
-fluid.testUtils.createShiftKeyEvent = function (inKeyCode) {
-	return this.createKeyEvent (inKeyCode, false, true /* shift key is down */);
+fluid.testUtils.createCtrlShiftKeyEvent = function (inKeyCode) {
+	return this.createKeyEvent (inKeyCode, true, true /* ctrl and shift keys are down */);
 };
 
 fluid.testUtils.createUnmodifiedKeyEvent = function (inKeyCode) {
