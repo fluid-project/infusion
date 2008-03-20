@@ -170,13 +170,6 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         }
     };
     
-    this._fetchMessage = function (messagekey) {
-        var messageID = this.instructionMessageId + messagekey;
-        var node = document.getElementById (messageID);
-        
-        return node? node.innerHTML: "[Message not found at id " + messageID + "]";
-    };
-    
     this._setActiveItem = function (anItem) {
         this.activeItem = anItem;
         var jItem = jQuery(anItem);
