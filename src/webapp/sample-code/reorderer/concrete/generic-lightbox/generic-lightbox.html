@@ -32,9 +32,17 @@
     to the server, therefore the orderables need to be enclosed in a form.
   -->
   <form id="reorder-form">
-      <div id="gallery" tabindex="0" class="image-container">
+      <!-- Sample instruction message. At runtime, this would be supplied by the server. -->
+      <div id="message-bundle:" class="lightbox-instructions" tabindex="1"
+      	   title="Image Lightbox: Select an image using i, k, m or j. View an image by pressing Enter. Move an image using CTRL + i, k, m or j.">
+        <div class="lightbox-downarrow"></div><div id="message-bundle:thumbnailInstructions">
+          Image Lightbox: Select an image using i, k, m or j. View an image by pressing Enter. Move an image using CTRL + i, k, m or j.
+        </div>
+      </div>
 
-      <div class="float orderable-default" id="gallerylightbox-cell:0:">
+      <div id="gallery" tabindex="2" class="image-container" title="Lightbox">
+
+      <div class="float orderable-default" id="gallerylightbox-cell:0:" title="Dragonfruit thumbnail">
 
           <!--
             Orderable items are divs denoted by ids in the following form.
@@ -43,7 +51,7 @@
           -->
           <div class="image-inner-container">
             <a id="focus-element1" href="../../../../fluid-components/images/Dragonfruit.jpg" >
-              <img id="fluid.img.first" src="../../../../fluid-components/images/Dragonfruit.jpg" border="0" alt="Dragonfruit"/>
+              <img id="fluid.img.first" src="../../../../fluid-components/images/Dragonfruit.jpg" border="0" alt="Dragonfruit thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -59,7 +67,7 @@
           <input id="gallerylightbox-cell:0:reorder-index" value="0" type="hidden"/>
         </div>
 
-        <div class="float orderable-default" id="gallerylightbox-cell:1:">
+        <div class="float orderable-default" id="gallerylightbox-cell:1:" title="Kiwano thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/Kiwano.jpg" >
               <img id="fluid.img.second" src="../../../../fluid-components/images/Kiwano.jpg" border="0" alt="Kiwano"/>
@@ -71,10 +79,10 @@
           <input id="gallerylightbox-cell:1:reorder-index" value="1" type="hidden"/>
         </div>
 
-        <div class="float orderable-default" id="gallerylightbox-cell:2:">
+        <div class="float orderable-default" id="gallerylightbox-cell:2:" title="Blackberry thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/Blackberry.jpg" >
-              <img id="fluid.img.3" src="../../../../fluid-components/images/Blackberry.jpg" border="0" alt="Blackberry"/>
+              <img id="fluid.img.3" src="../../../../fluid-components/images/Blackberry.jpg" border="0" alt="Blackberry thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -83,10 +91,10 @@
           <input id="gallerylightbox-cell:2:reorder-index" value="2" type="hidden"/>
         </div>
 
-        <div class="float orderable-default" id="gallerylightbox-cell:3:">
+        <div class="float orderable-default" id="gallerylightbox-cell:3:" title="Cherry thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/Cherry.jpg" >
-              <img id="fluid.img.4" src="../../../../fluid-components/images/Cherry.jpg" border="0" alt="Cherry"/>
+              <img id="fluid.img.4" src="../../../../fluid-components/images/Cherry.jpg" border="0" alt="Cherry thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -95,10 +103,10 @@
           <input id="gallerylightbox-cell:3:reorder-index" value="3" type="hidden"/>
         </div>
 
-        <div class="float orderable-default" id="gallerylightbox-cell:4:">
+        <div class="float orderable-default" id="gallerylightbox-cell:4:" title="Fig thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/Fig.jpg" >
-              <img id="fluid.img.5" src="../../../../fluid-components/images/Fig.jpg" border="0" alt="Fig"/>
+              <img id="fluid.img.5" src="../../../../fluid-components/images/Fig.jpg" border="0" alt="Fig thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -107,10 +115,10 @@
           <input id="gallerylightbox-cell:4:reorder-index" value="4" type="hidden"/>
         </div>
 
-        <div class="float orderable-default" id="gallerylightbox-cell:5:">
+        <div class="float orderable-default" id="gallerylightbox-cell:5:" title="Grapes thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/Grapes.jpg" >
-              <img id="fluid.img.6" src="../../../../fluid-components/images/Grapes.jpg" border="0" alt="Grapes"/>
+              <img id="fluid.img.6" src="../../../../fluid-components/images/Grapes.jpg" border="0" alt="Grapes thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -119,10 +127,10 @@
           <input id="gallerylightbox-cell:5:reorder-index" value="5" type="hidden"/>
         </div>
 
-        <div class="float orderable-default" id="gallerylightbox-cell:6:">
+        <div class="float orderable-default" id="gallerylightbox-cell:6:" title="Kiwi thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/Kiwi.jpg">
-              <img id="fluid.img.7" src="../../../../fluid-components/images/Kiwi.jpg" border="0" alt="Kiwi"/>
+              <img id="fluid.img.7" src="../../../../fluid-components/images/Kiwi.jpg" border="0" alt="Kiwi thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -131,10 +139,10 @@
           <input id="gallerylightbox-cell:6:reorder-index" value="6" type="hidden"/>
         </div>
 
-        <div class="float orderable-default" id="gallerylightbox-cell:7:">
+        <div class="float orderable-default" id="gallerylightbox-cell:7:" title="Kumquat thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/Kumquat.jpg" >
-              <img id="fluid.img.8" src="../../../../fluid-components/images/Kumquat.jpg" border="0" alt="Kumquat"/>
+              <img id="fluid.img.8" src="../../../../fluid-components/images/Kumquat.jpg" border="0" alt="Kumquat thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -143,10 +151,10 @@
           <input id="gallerylightbox-cell:7:reorder-index" value="7" type="hidden"/>
         </div>
 
-        <div class="float orderable-default" id="gallerylightbox-cell:8:">
+        <div class="float orderable-default" id="gallerylightbox-cell:8:" title="Lemon thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/Lemon.jpg" >
-              <img id="fluid.img.9" src="../../../../fluid-components/images/Lemon.jpg" border="0" alt="Lemon"/>
+              <img id="fluid.img.9" src="../../../../fluid-components/images/Lemon.jpg" border="0" alt="Lemon thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -155,10 +163,10 @@
           <input id="gallerylightbox-cell:8:reorder-index" value="8" type="hidden"/>
         </div>
 
-        <div class="float orderable-default" id="gallerylightbox-cell:9:">
+        <div class="float orderable-default" id="gallerylightbox-cell:9:" title="Orange thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/Orange.jpg" >
-              <img id="fluid.img.10" src="../../../../fluid-components/images/Orange.jpg" border="0" alt="Orange"/>
+              <img id="fluid.img.10" src="../../../../fluid-components/images/Orange.jpg" border="0" alt="Orange thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -167,10 +175,10 @@
           <input id="gallerylightbox-cell:9:reorder-index" value="9" type="hidden"/>
         </div>
 
-        <div class="float orderable-default" id="gallerylightbox-cell:10:">
+        <div class="float orderable-default" id="gallerylightbox-cell:10:" title="Red apple thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/RedApple.jpg" >
-              <img id="fluid.img.11" src="../../../../fluid-components/images/RedApple.jpg" border="0" alt="RedApple"/>
+              <img id="fluid.img.11" src="../../../../fluid-components/images/RedApple.jpg" border="0" alt="Red apple thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -179,10 +187,10 @@
           <input id="gallerylightbox-cell:10:reorder-index" value="10" type="hidden"/>
         </div>
 
-        <div class="float orderable-default" id="gallerylightbox-cell:11:">
+        <div class="float orderable-default" id="gallerylightbox-cell:11:" title="Tamarillo thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/Tamarillo.jpg" >
-              <img id="fluid.img.12" src="../../../../fluid-components/images/Tamarillo.jpg" border="0" alt="Tamarillo"/>
+              <img id="fluid.img.12" src="../../../../fluid-components/images/Tamarillo.jpg" border="0" alt="Tamarillo thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -191,10 +199,10 @@
           <input id="gallerylightbox-cell:11:reorder-index" value="11" type="hidden"/>
         </div>
 
-        <div class="float orderable-default" id="gallerylightbox-cell:12:">
+        <div class="float orderable-default" id="gallerylightbox-cell:12:" title="Mangosteen thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/Mangosteen.jpg" >
-              <img id="fluid.img.secondLast" src="../../../../fluid-components/images/Mangosteen.jpg" border="0" alt="Mangosteen"/>
+              <img id="fluid.img.secondLast" src="../../../../fluid-components/images/Mangosteen.jpg" border="0" alt="Mangosteen thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -203,10 +211,10 @@
           <input id="gallerylightbox-cell:12:reorder-index" value="12" type="hidden"/>
         </div>
 
-        <div class="float orderable-default orderable" id="gallerylightbox-cell:13:">
+        <div class="float orderable-default orderable" id="gallerylightbox-cell:13:" title="Banana thumbnail">
           <div class="image-inner-container">
             <a href="../../../../fluid-components/images/Banana.jpg" >
-              <img id="fluid.img.last" src="../../../../fluid-components/images/Banana.jpg" border="0" alt="Banana"/>
+              <img id="fluid.img.last" src="../../../../fluid-components/images/Banana.jpg" border="0" alt="Banana thumbnail"/>
             </a>
           </div>
           <div class="caption image-title">
@@ -220,13 +228,6 @@
       <script type="text/javascript">
         fluid.lightbox.createScreenReaderLightbox ("gallery", "message-bundle:");
       </script>
-
-      <!-- Sample instruction message. At runtime, this would be supplied by the server. -->
-      <div id="message-bundle:" class="lightbox-instructions">
-        <div class="lightbox-downarrow"></div><div id="message-bundle:thumbnailInstructions">
-          View an image by pressing Enter. Move an image using CTRL + i, k, m, j.
-        </div>
-      </div>
     </form>
   </body>
 </html>
