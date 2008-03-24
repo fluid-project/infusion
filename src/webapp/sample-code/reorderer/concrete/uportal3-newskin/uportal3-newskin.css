@@ -15,9 +15,7 @@
 }
 
 div .orderable-drop-marker{
-  height: 4px !important;
-  margin: 10px;
-  width: 80px;
-  background-color: green;
+  height: 10px !important;
+  background-color: #fa7019;
 }
 
