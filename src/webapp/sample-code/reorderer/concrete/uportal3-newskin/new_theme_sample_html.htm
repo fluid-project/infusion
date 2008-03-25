@@ -23,12 +23,13 @@
 
 <link href="uportal3-newskin.css" type="text/css" rel="stylesheet"/>
 <!--  Required javascript modules for the Reorderer which can be replaced with the build generated file Fluid-all.js -->
-<script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.2.1.js"></script>
-<script type="text/javascript" src="../../../../fluid-components/js/jquery.tabindex/jquery.tabindex.js"></script>
-<script type="text/javascript" src="../../../../fluid-components/js/jquery.ui-1.0/ui.mouse.js"></script>
-<script type="text/javascript" src="../../../../fluid-components/js/jquery.ui-1.0/ui.draggable.js"></script>
-<script type="text/javascript" src="../../../../fluid-components/js/jquery.ui-1.0/ui.droppable.js"></script>
-<script type="text/javascript" src="../../../../fluid-components/js/jaria/jARIA.js"></script>
+<script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.2.3.js"></script>
+<script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery.tabindex.js"></script>
+<script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery.dimensions.js"></script>
+<script type="text/javascript" src="../../../../fluid-components/js/jquery/ui.base.js"></script>
+<script type="text/javascript" src="../../../../fluid-components/js/jquery/ui.draggable.js"></script>
+<script type="text/javascript" src="../../../../fluid-components/js/jquery/ui.droppable.js"></script>
+<script type="text/javascript" src="../../../../fluid-components/js/jquery/jARIA.js"></script>
 <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
 <script type="text/javascript" src="../../../../fluid-components/js/json/json2.js"></script>    
 <script type="text/javascript" src="../../../../fluid-components/js/fluid/Reorderer.js"></script>
@@ -49,6 +50,11 @@
       
 //]]>
 </script>
+    <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. --> 
+    <script type="text/javascript" rsf:id="scr=contribute-script">
+      jQuery.noConflict();
+    </script> 
+
 </head>
 <body class="logged-in dashboard" id="portal">
 <div id="portalPage">

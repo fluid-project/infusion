@@ -26,6 +26,13 @@ $(document).ready (function () {
         
     }
      
+    portletLayoutTests.test ("FindColIndex", function () {
+        jqUnit.assertEquals (column1id + " should be in 1st column", 0, fluid.portletLayout.internals.findColIndex (column1id, demo.portal.layout));
+        jqUnit.assertEquals (column2id + " should be in 2nd column", 1, fluid.portletLayout.internals.findColIndex (column2id, demo.portal.layout));
+        jqUnit.assertEquals (column3id + " should be in 3rd column", 2, fluid.portletLayout.internals.findColIndex (column3id, demo.portal.layout));
+        jqUnit.assertEquals (column4id + " should be in 4th column", 3, fluid.portletLayout.internals.findColIndex (column4id, demo.portal.layout));
+    });
+    
     portletLayoutTests.test ("FindColumnAndItemIndices", function () {
         // Tests for column index:
         // Column 0
@@ -79,7 +86,7 @@ $(document).ready (function () {
     });
     
     portletLayoutTests.test ("NumColumns", function () {
-        jqUnit.assertEquals("Number of columns in test layout should be 3", 3, fluid.portletLayout.internals.numColumns (demo.portal.layout));
+        jqUnit.assertEquals("Number of columns in test layout should be 4", 4, fluid.portletLayout.internals.numColumns (demo.portal.layout));
         jqUnit.assertEquals("Number of columns in empty layout should be 0", 0, fluid.portletLayout.internals.numColumns (emptyLayout));
     });
     
@@ -438,7 +445,7 @@ $(document).ready (function () {
         jqUnit.assertEquals ("6 portlets can be moved", 6, movables.length);
         
         var dropTargets = fluid.wrap (findItems.dropTargets ());
-        jqUnit.assertEquals ("there should be 8 drop targets", 8, dropTargets.length);
+        jqUnit.assertEquals ("there should be 12 drop targets", 12, dropTargets.length);
         
     });   // end testCreateFindItems().
     

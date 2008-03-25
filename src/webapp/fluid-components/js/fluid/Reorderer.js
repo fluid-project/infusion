@@ -186,18 +186,21 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     function createTrackMouseMovement (target, moving) {
         return function trackMouseMovement (evt) {
                 var dropInfo = layoutHandler.isDropBefore (target, moving, evt.clientX, evt.pageY);
-                if (dropInfo === fluid.position.NO_TARGET) {
-        	       dropMarker.style.visibility = "hidden";
-                }
-                else if (dropInfo === fluid.position.BEFORE) {
+                if (dropInfo === fluid.position.BEFORE) {
                     jQuery (target).before (dropMarker);
                     dropMarker.style.visibility = "visible";
                 }
-                else {  // must be AFTER
+                else if (dropInfo === fluid.position.AFTER){
                    jQuery (target).after (dropMarker);
                    dropMarker.style.visibility = "visible";
                 }
-            };
+                else if (dropInfo === fluid.position.INSIDE) {
+                   jQuery (target).append (dropMarker);
+                   dropMarker.style.visibility = "visible";
+                } else {  // must be NO_TARGET
+                   dropMarker.style.visibility = "hidden";
+                }
+        };
      }
 
     /**
@@ -266,9 +269,10 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     	var trackMouseMovement;
         item.droppable ({
             accept: selector,
+            greedy: true,
             tolerance: "pointer",
             over: function (e, ui) {
-                trackMouseMovement = createTrackMouseMovement (item[0], ui.draggable.element);
+                trackMouseMovement = createTrackMouseMovement (item[0], ui.draggable[0]);
                 item.bind ("mousemove", trackMouseMovement);    
                 jQuery (theAvatar).bind ("mousemove", trackMouseMovement);
                 
@@ -279,7 +283,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
             },
             drop: function (e, ui) {
-                layoutHandler.mouseMoveItem (ui.draggable.element, item[0], e.clientX, e.pageY);           
+                layoutHandler.mouseMoveItem (ui.draggable[0], item[0], e.clientX, e.pageY);           
                 item.unbind ("mousemove", trackMouseMovement);
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
                 // refocus on the active item because moving places focus on the body
@@ -665,15 +669,17 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         };
 	    	    
         // This should probably be part of the public API so it can be configured.
-        var move = function (item, relatedItem, position /* BEFORE or AFTER */) {
+        var move = function (item, relatedItem, position /* BEFORE, AFTER or INSIDE */) {
             if (!item || !relatedItem || 
                 !fluid.portletLayout.canMove (item.id, relatedItem.id, position, layout, targetPerms)) {
                 return;
             }           
             if (position === fluid.position.BEFORE) {
                 jQuery (relatedItem).before (item);
-            } else {
+            } else if (position === fluid.position.AFTER) {
                 jQuery (relatedItem).after (item);
+            } else {  // must be INSIDE
+                jQuery (relatedItem).append (item);
             }
             fluid.portletLayout.updateLayout (item.id, relatedItem.id, position, layout);
             orderChangedCallback (); 
@@ -725,6 +731,9 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	    };
 	    
         this.isDropBefore = function (target, moving, x, y) {
+            if (fluid.portletLayout.isColumn (target.id, layout)) {
+                return fluid.position.INSIDE;
+            }
             var position = isMouseBefore (target, orientation, x, y) ? fluid.position.BEFORE : fluid.position.AFTER;
             var canDrop = fluid.portletLayout.canMove (moving.id, target.id, position, layout, targetPerms);
 	    	if (canDrop) {
@@ -737,10 +746,8 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 
         this.mouseMoveItem = function (moving, target, x, y) {
             var dropIt = this.isDropBefore (target, moving, x, y);
-            if (dropIt === fluid.position.BEFORE) {
-                move (moving, target, fluid.position.BEFORE);
-            } else if (dropIt === fluid.position.AFTER){
-                move (moving, target, fluid.position.AFTER);
+            if (dropIt !== fluid.position.NO_TARGET) {
+                move (moving, target, dropIt);
             }
         };
         
@@ -777,8 +784,13 @@ fluid.portletLayout = function () {
             return indices || { columnIndex: -1, itemIndex: -1 };
         },
         
-        findColIndex: function (itemId, layout) {
-            return internals.findColumnAndItemIndices (itemId, layout).columnIndex;
+        findColIndex: function (colId, layout) {
+            for (var col = 0; col < layout.columns.length; col++ ) {
+                if (colId === layout.columns[col].id) {
+                    return col;
+                }
+            }
+            return -1;
         },
         
         findItemIndex: function (itemId, layout) {
@@ -789,7 +801,7 @@ fluid.portletLayout = function () {
             return layout.columns.length;
         },
         
-        isColumn: function (index, layout) {
+        isColumnIndex: function (index, layout) {
             return (index < layout.columns.length) && (index >= 0);
         },
         
@@ -940,11 +952,22 @@ fluid.portletLayout = function () {
     return {
         internals: internals,
 
+        isColumn: function (id, layout) {
+            var colIndex = internals.findColIndex(id, layout);
+            return (colIndex > -1);
+        },
+        
        /**
         * Determine if a given item can move before or after the given target position, given the
         * permissions information.
         */
     	canMove: function (itemId, targetItemId, position, layout, perms) {
+    	    if (position === fluid.position.NO_TARGET) {
+    	        return false;
+    	    }
+    	    if (position === fluid.position.INSIDE) {
+    	        return true;
+    	    }
     		var indices = internals.findItemAndTargetIndices (itemId, targetItemId, position, layout);
             return (!!perms[indices.itemIndex][indices.targetIndex]); 
         },
@@ -986,16 +1009,22 @@ fluid.portletLayout = function () {
         /**
          * Move an item within the layout object. 
          */
-        updateLayout: function (itemId, relativeItemId, position, layout) {
-            if (!itemId || !relativeItemId || itemId === relativeItemId) { 
+        updateLayout: function (itemId, targetId, position, layout) {
+            if (!itemId || !targetId || itemId === targetId) { 
                 return; 
             }
             var itemIndices = internals.findColumnAndItemIndices (itemId, layout);
             layout.columns[itemIndices.columnIndex].children.splice (itemIndices.itemIndex, 1);
+            if (position === fluid.position.INSIDE) {
+                var targetCol = layout.columns[internals.findColIndex (targetId, layout)].children;
+                targetCol.splice (targetCol.length, 0, itemId);
 
-            var relativeItemIndices = internals.findColumnAndItemIndices (relativeItemId, layout);
-            var targetCol = layout.columns[relativeItemIndices.columnIndex].children;
-            targetCol.splice (relativeItemIndices.itemIndex + position, 0, itemId);
+            } else {
+                var relativeItemIndices = internals.findColumnAndItemIndices (targetId, layout);
+                var targetCol = layout.columns[relativeItemIndices.columnIndex].children;
+                targetCol.splice (relativeItemIndices.itemIndex + position, 0, itemId);
+            }
+
         },
         
         /**
@@ -1006,7 +1035,7 @@ fluid.portletLayout = function () {
             // default return value is "the item itself".
             var firstPossibleTarget = { id: itemId, position: fluid.position.BEFORE };
             var found = false;
-            var targetColIndex = internals.findColIndex (itemId, layout) + direction;
+            var targetColIndex = internals.findColumnAndItemIndices (itemId, layout).columnIndex + direction;
             
             // Safety check -- can't search before the 0'th column -- declare found so first loop bails.
             if (targetColIndex < 0 || targetColIndex >= internals.numColumns (layout)) {
@@ -1014,7 +1043,7 @@ fluid.portletLayout = function () {
             }
             
             // Loop thru all of the columns beginning with the <targetColIndex>'th column.
-            for (var i = targetColIndex; internals.isColumn (i, layout) && !found; i += direction) {
+            for (var i = targetColIndex; internals.isColumnIndex (i, layout) && !found; i += direction) {
                 // Loop thru the target column's items, looking for the first item that can be moved to.
                 var idsInCol = layout.columns[i].children;
                 for (var j = 0; (j < idsInCol.length) && !found; j++) {
@@ -1069,6 +1098,9 @@ fluid.portletLayout = function () {
                     	dropTargets = dropTargets ? dropTargets + "," + idSelector : idSelector;
                     }
                 }
+                // now add the column itself
+                var colIdSelector = "[id=" + cols[i].id  + "]";
+                dropTargets = dropTargets ? dropTargets + "," + colIdSelector : colIdSelector;
             }
             
             findItems.selectables = function () {

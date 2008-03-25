@@ -25,6 +25,10 @@ var portlet6id = "portlet6";
 var portlet7id = "portlet7";
 var portlet8id = "portlet8";
 var portlet9id = "portlet9";
+var column1id = "c1";
+var column2id = "c2";
+var column3id = "c3";
+var column4id = "c4";
 
 var emptyLayout = { id:"t3", columns:[ ] };   
 
