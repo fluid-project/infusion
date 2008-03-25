@@ -332,27 +332,20 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         var dropTargets = fluid.wrap (findItems.dropTargets());
         initSelectables (fluid.wrap (findItems.selectables ()));
         
-        // Selector based on the ids of the nodes for use with drag and drop.
-        // This should be replaced with using the actual nodes rather then a selector 
-        // but will require a patch to jquery's DnD. 
-        // See: FLUID-71, FLUID-112
-        var selector = "";
-
         // Setup moveables
         for (i = 0; i < movables.length; i++) {
             var item = movables[i];
             initMovable (jQuery (item));
-
-            // Build the selector
-             selector += "[id=" + item.id + "]";
-             if (i !== movables.length - 1) {
-                 selector += ", ";
-             }
         }
-
+		
+		// Create a simple predicate function that will identify valid drop targets.
+		var droppablePredicate = function (potentialDroppable) {
+			return (movables.index(potentialDroppable[0]) > -1);	
+		}
+		
         // Setup dropTargets
         for (i = 0; i < dropTargets.length; i++) {
-            initDropTarget (jQuery (dropTargets[i]), selector);
+            initDropTarget (jQuery (dropTargets[i]), droppablePredicate);
         }         
     };
 
