@@ -341,7 +341,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 		// Create a simple predicate function that will identify valid drop targets.
 		var droppablePredicate = function (potentialDroppable) {
 			return (movables.index(potentialDroppable[0]) > -1);	
-		}
+		};
 		
         // Setup dropTargets
         for (i = 0; i < dropTargets.length; i++) {
@@ -973,7 +973,18 @@ fluid.portletLayout = function () {
                 var id = idsInCol[index];
                 if (id === itemId) {
                     var adjacentCol = col + direction;
-                    return internals.getItemAt (adjacentCol, 0, layout);
+                    var adjacentItem = internals.getItemAt (adjacentCol, 0, layout);
+                    // if there are no items in the adjacent column, keep checking further columns
+                    while (!adjacentItem) {
+                        adjacentCol = adjacentCol + direction;
+                        if (internals.isColumnIndex(adjacentCol, layout)) {
+                            adjacentItem = internals.getItemAt (adjacentCol, 0, layout);
+                        } else {
+                            adjacentItem = itemId;
+                        }
+                    }
+                    return adjacentItem; 
+                //    return internals.getItemAt (adjacentCol, 0, layout);
                 }
             };
             
@@ -1008,13 +1019,14 @@ fluid.portletLayout = function () {
             }
             var itemIndices = internals.findColumnAndItemIndices (itemId, layout);
             layout.columns[itemIndices.columnIndex].children.splice (itemIndices.itemIndex, 1);
+            var targetCol;
             if (position === fluid.position.INSIDE) {
-                var targetCol = layout.columns[internals.findColIndex (targetId, layout)].children;
+                targetCol = layout.columns[internals.findColIndex (targetId, layout)].children;
                 targetCol.splice (targetCol.length, 0, itemId);
 
             } else {
                 var relativeItemIndices = internals.findColumnAndItemIndices (targetId, layout);
-                var targetCol = layout.columns[relativeItemIndices.columnIndex].children;
+                targetCol = layout.columns[relativeItemIndices.columnIndex].children;
                 targetCol.splice (relativeItemIndices.itemIndex + position, 0, itemId);
             }
 

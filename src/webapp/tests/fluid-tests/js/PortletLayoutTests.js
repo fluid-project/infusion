@@ -316,6 +316,25 @@ $(document).ready (function () {
         jqUnit.assertEquals ("portlet9's nearest previous target should be portlet6", portlet8id, actual.id);
     });
     
+    portletLayoutTests.test ("FirstItemInAdjacentColumnSkipColumn", function () {
+        var smallLayout = { 
+            id:"t2",
+            columns:[
+                { id:column1id, children:[portlet1id]},
+                { id:column2id, children:[]},
+                { id:column3id, children:[portlet2id]}
+            ]
+        };
+
+        var actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet1id, fluid.direction.NEXT, smallLayout);
+        jqUnit.assertEquals ("portlet1's right neighbour should be portlet2", portlet2id, actualId);
+
+
+        actualId = fluid.portletLayout.firstItemInAdjacentColumn (portlet2id, fluid.direction.PREVIOUS, smallLayout);
+        jqUnit.assertEquals ("portlet2's left neighbour should be portlet1", portlet1id, actualId);
+
+    });
+    
     portletLayoutTests.test ("FirstItemInAdjacentColumn", function () {
     
         // portlet1 has no left neighbour, portlet5 is at the top of the next column.
