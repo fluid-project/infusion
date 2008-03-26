@@ -123,7 +123,7 @@ $(document).ready (function () {
     });
     
     
-    portletLayoutTests.test ("FirstMoveableTargetSkipColumn", function () {
+    portletLayoutTests.test ("FindTargetIsColumn", function () {
         var moveRight = fluid.direction.NEXT;
         var moveLeft = fluid.direction.PREVIOUS;
     
@@ -142,20 +142,19 @@ $(document).ready (function () {
             [1, 1, 0, 0, 0, 0]    // portlet3  
         ];
         
-        // Test move portlet 1 right, expect it can't be dropped in column 2
-        var expected = { id: portlet3id, position: fluid.position.BEFORE };
-        var actual = fluid.portletLayout.firstMoveableTarget (portlet1id, moveRight, smallLayout, smallDropTargetPerms);
-        jqUnit.assertEquals ("Moving portlet1 right, should find portlet3...", expected.id, actual.id);
-        jqUnit.assertEquals ("...moving portlet1 right, should find BEFORE (0)", expected.position, actual.position);
+        // Test move portlet 1 right, expect it to be dropped at the end of column 2
+        var expected = { id: column2id, position: fluid.position.INSIDE };
+        var actual = fluid.portletLayout.findTarget (portlet1id, moveRight, smallLayout, smallDropTargetPerms);
+        jqUnit.assertEquals ("Moving portlet1 right, should find column 2...", expected.id, actual.id);
+        jqUnit.assertEquals ("...moving portlet1 right, should find INSIDE (2)", expected.position, actual.position);
     
-        // Test move portlet 3 left, expect it can't be dropped in column 2
-        expected = { id: portlet1id, position: fluid.position.BEFORE };
-        actual = fluid.portletLayout.firstMoveableTarget (portlet3id, moveLeft, smallLayout, smallDropTargetPerms);
-        jqUnit.assertEquals ("Moving portlet3 left, should find portlet1...", expected.id, actual.id);
-        jqUnit.assertEquals ("...moving portlet3 left, should find BEFORE (0)", expected.position, actual.position);
+        // Test move portlet 3 left, expect it to be dropped at the end of column 2
+        actual = fluid.portletLayout.findTarget (portlet3id, moveLeft, smallLayout, smallDropTargetPerms);
+        jqUnit.assertEquals ("Moving portlet3 left, should find column 2...", expected.id, actual.id);
+        jqUnit.assertEquals ("...moving portlet3 left, should find INSIDE (2)", expected.position, actual.position);
     });
     
-    portletLayoutTests.test ("FirstMoveableTarget", function () {
+    portletLayoutTests.test ("FindTarget", function () {
         var moveRight = fluid.direction.NEXT;
         var moveLeft = fluid.direction.PREVIOUS;
     
@@ -163,60 +162,42 @@ $(document).ready (function () {
         // Find: the first portlet in the 2nd column where it can drop.
         // Result should be "after portlet five"
         var expected = { id: portlet5id, position: fluid.position.AFTER };
-        var actual = fluid.portletLayout.firstMoveableTarget (portlet4id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+        var actual = fluid.portletLayout.findTarget (portlet4id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("Moving portlet4 right, should find portlet5...", expected.id, actual.id);
         jqUnit.assertEquals ("...moving portlet4 right, should find AFTER (1)", expected.position, actual.position);
-        
-        // Can't move portlet1 nor portlet2 right at all (they are fixed).
-        actual = fluid.portletLayout.firstMoveableTarget (portlet1id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
-        jqUnit.assertEquals ("Can't move portlet1 right at all", portlet1id, actual.id);
-        actual = fluid.portletLayout.firstMoveableTarget (portlet2id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
-        jqUnit.assertEquals ("Can't move portlet2 right at all", portlet2id, actual.id);
-        
-        // Can't move portlet5 left nor right (it's fixed).
-        actual = fluid.portletLayout.firstMoveableTarget (portlet5id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
-        jqUnit.assertEquals ("Can't move portlet5id right at all", portlet5id, actual.id);
-        actual = fluid.portletLayout.firstMoveableTarget (portlet5id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
-        jqUnit.assertEquals ("Can't move portlet5id left at all", portlet5id, actual.id);
-        
+                
         // Can't move any portlet in first column left.
-        actual = fluid.portletLayout.firstMoveableTarget (portlet1id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
-        jqUnit.assertEquals ("Can't move portlet1 left at all", portlet1id, actual.id);
-        
-        actual = fluid.portletLayout.firstMoveableTarget (portlet2id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
-        jqUnit.assertEquals ("Can't move portlet2 left at all", portlet2id, actual.id);
-        
-        actual = fluid.portletLayout.firstMoveableTarget (portlet3id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.portletLayout.findTarget (portlet3id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("Can't move portlet3 left at all", portlet3id, actual.id);
         
-        actual = fluid.portletLayout.firstMoveableTarget (portlet4id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.portletLayout.findTarget (portlet4id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("Can't move portlet4 left at all", portlet4id, actual.id);
     
-        // Can't move any portlet in last column right.
-        actual = fluid.portletLayout.firstMoveableTarget (portlet7id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
-        jqUnit.assertEquals ("Can't move portlet7id left at all", portlet7id, actual.id);
+        // Moving any portlet in last column right will put them into the empty column.
+        actual = fluid.portletLayout.findTarget (portlet7id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+        jqUnit.assertEquals ("Move portlet7id right into empty column", column4id, actual.id);
         
-        actual = fluid.portletLayout.firstMoveableTarget (portlet8id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
-        jqUnit.assertEquals ("Can't move portlet8id left at all", portlet8id, actual.id);
+        actual = fluid.portletLayout.findTarget (portlet8id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+        jqUnit.assertEquals ("Move portlet8id right into empty column", column4id, actual.id);
         
-        actual = fluid.portletLayout.firstMoveableTarget (portlet9id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
-        jqUnit.assertEquals ("Can't move portlet9id left at all", portlet9id, actual.id);
+        actual = fluid.portletLayout.findTarget (portlet9id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+        jqUnit.assertEquals ("Move portlet9id right into empty column", column4id, actual.id);
        
         // Moving portlet7 left, should give "after portlet5".
         expected = { id: portlet5id, position: fluid.position.AFTER };
-        actual = fluid.portletLayout.firstMoveableTarget (portlet7id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.portletLayout.findTarget (portlet7id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("Moving portlet7 left, should find portlet5...", expected.id, actual.id);
         jqUnit.assertEquals ("...moving portlet7 left, should find AFTER (1)", expected.position, actual.position);
          
         // Moving portlet 6 left, should give "after portlet3".
         expected = { id: portlet3id, position: fluid.position.AFTER };
-        actual = fluid.portletLayout.firstMoveableTarget (portlet6id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.portletLayout.findTarget (portlet6id, moveLeft, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("Moving portlet6 left, should find portlet3...", expected.id, actual.id);
         jqUnit.assertEquals ("...moving portlet6 left, should find AFTER (1)", expected.position, actual.position);   
     
         // Moving portlet 6 right, should give "after portlet7".
         expected = { id: portlet7id, position: fluid.position.AFTER };
-        actual = fluid.portletLayout.firstMoveableTarget (portlet6id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.portletLayout.findTarget (portlet6id, moveRight, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("Moving portlet6 right, should find portlet7...", expected.id, actual.id);
         jqUnit.assertEquals ("...moving portlet6 right, should find AFTER (1)", expected.position, actual.position);   
     });

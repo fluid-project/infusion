@@ -679,7 +679,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         };
         
         var moveHorizontally = function (item, direction /* PREVIOUS, NEXT */) {
-            var targetInfo = fluid.portletLayout.firstMoveableTarget (item.id, direction, layout, targetPerms);
+            var targetInfo = fluid.portletLayout.findTarget (item.id, direction, layout, targetPerms);
             var targetItem = fluid.utils.jById (targetInfo.id)[0];
             move (item, targetItem, targetInfo.position);
         };
@@ -1021,37 +1021,33 @@ fluid.portletLayout = function () {
         },
         
         /**
-         * Find the first target that can be moved in the given column, possibly moving to the next
-         * column, left or right, depending on which direction we are moving. 
+         * Find the first target that can be moved to in the given column, possibly moving to the end
+         * of the column if there are no valid drop targets. 
+         * @return Object containing id (the id of the target) and position (relative to the target)
          */
-        firstMoveableTarget: function (itemId, /* NEXT, PREVIOUS */ direction, layout, perms) {
-            // default return value is "the item itself".
-            var firstPossibleTarget = { id: itemId, position: fluid.position.BEFORE };
-            var found = false;
+        findTarget: function (itemId, /* NEXT, PREVIOUS */ direction, layout, perms) {
             var targetColIndex = internals.findColumnAndItemIndices (itemId, layout).columnIndex + direction;
-            
-            // Safety check -- can't search before the 0'th column -- declare found so first loop bails.
+            var targetCol = layout.columns[targetColIndex];
+			
+            // If column is invalid, bail returning the current position.
             if (targetColIndex < 0 || targetColIndex >= internals.numColumns (layout)) {
-                found = true;               
+                return { id: itemId, position: fluid.position.BEFORE };               
             }
             
-            // Loop thru all of the columns beginning with the <targetColIndex>'th column.
-            for (var i = targetColIndex; internals.isColumnIndex (i, layout) && !found; i += direction) {
-                // Loop thru the target column's items, looking for the first item that can be moved to.
-                var idsInCol = layout.columns[i].children;
-                for (var j = 0; (j < idsInCol.length) && !found; j++) {
-                    var possibleTargetId = idsInCol[j];
-                    if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.BEFORE, layout, perms))) {
-                        firstPossibleTarget.id = possibleTargetId;
-                        firstPossibleTarget.position = fluid.position.BEFORE;
-                    }
-                    else if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.AFTER, layout, perms))) {
-                        firstPossibleTarget.id = possibleTargetId;
-                        firstPossibleTarget.position = fluid.position.AFTER;
-                    }
+            // Loop thru the target column's items, looking for the first item that can be moved to.
+            var idsInCol = targetCol.children;
+            for (var i = 0; (i < idsInCol.length); i++) {
+                var targetId = idsInCol[i];
+                if (fluid.portletLayout.canMove (itemId, targetId, fluid.position.BEFORE, layout, perms)) {
+                    return { id: targetId, position: fluid.position.BEFORE };
+                }
+                else if (fluid.portletLayout.canMove (itemId, targetId, fluid.position.AFTER, layout, perms)) {
+                    return { id: targetId, position: fluid.position.AFTER };
                 }
             }
-            return firstPossibleTarget;
+			
+            // no valid portlets found, so target is the column itself
+            return { id: targetCol.id, position: fluid.position.INSIDE };
         },
 
         nearestMoveableTarget: function (itemId, /* NEXT, PREVIOUS */ direction, layout, perms) {
