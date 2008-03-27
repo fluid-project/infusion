@@ -185,6 +185,8 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     
     function createTrackMouseMovement (target, moving) {
         return function trackMouseMovement (evt) {
+if (target.id === "c3")
+  console.log("trackMouseMovement on target c3");
                 var dropInfo = layoutHandler.isDropBefore (target, moving, evt.clientX, evt.pageY);
                 if (dropInfo === fluid.position.BEFORE) {
                     jQuery (target).before (dropMarker);
@@ -225,6 +227,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         );
         
         item.draggable ({
+            refreshPositions: true,
             helper: function() {
                 theAvatar = item.clone();
                 jQuery (theAvatar).removeAttr ("id");
@@ -278,18 +281,27 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
             greedy: true,
             tolerance: "pointer",
             over: function (e, ui) {
+console.log("OVER "+item[0].id);
                 trackMouseMovement = createTrackMouseMovement (item[0], ui.draggable[0]);
+if (item[0].id === "c3")
+  console.log("binding trackmousemovement to c3");
                 item.bind ("mousemove", trackMouseMovement);    
                 jQuery (theAvatar).bind ("mousemove", trackMouseMovement);
                 
             },
             out: function (e, ui) {
+console.log("OUT "+item[0].id);
                 dropMarker.style.visibility = "hidden";
+if (item[0].id === "c3")
+  console.log("unbinding trackmousemovement from c3");
                 item.unbind ("mousemove", trackMouseMovement);
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
             },
             drop: function (e, ui) {
+console.log("DROP "+item[0].id);
                 layoutHandler.mouseMoveItem (ui.draggable[0], item[0], e.clientX, e.pageY);           
+if (item[0].id === "c3")
+  console.log("unbinding trackmousemovement from c3");
                 item.unbind ("mousemove", trackMouseMovement);
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
                 // refocus on the active item because moving places focus on the body
