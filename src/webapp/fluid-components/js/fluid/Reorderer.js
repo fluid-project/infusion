@@ -232,6 +232,12 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 jQuery (":hidden", theAvatar).remove(); 
                 jQuery ("input", theAvatar).attr ("disabled", "true"); 
                 theAvatar.addClass (thisReorderer.cssClasses.avatar);           
+// dropping in the same column fails if the avatar is considered a droppable.
+// droppable ("destroy") should take care of this, but it doesn't seem to remove
+// the class, which is what is checked, so we remove it manually
+// (see http://dev.jquery.com/ticket/2599)
+//                jQuery (theAvatar).droppable ("destroy");
+                theAvatar.removeClass ("ui-droppable");
                 return theAvatar;
             },
             start: function (e, ui) {
