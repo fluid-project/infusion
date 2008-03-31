@@ -1,1 +1,1 @@
-The ui.*.js files in this folder were checked out from jQuery-ui's trunk on March 25, 2008
+The ui.*.js files in this folder were checked out from jQuery-ui's trunk revision 5158 on March 31, 2008

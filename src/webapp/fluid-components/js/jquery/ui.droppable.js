@@ -1,3 +1,18 @@
+/*
+ * jQuery UI Droppable
+ *
+ * Copyright (c) 2008 Paul Bakaus
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
+ * and GPL (GPL-LICENSE.txt) licenses.
+ * 
+ * http://docs.jquery.com/UI/Droppables
+ *
+ * Depends:
+ *   ui.base.js
+ *   ui.draggable.js
+ *
+ * Revision: $Id: ui.droppable.js 5149 2008-03-31 10:51:18Z rdworth $
+ */
 ;(function($) {
 
 	$.fn.extend({
@@ -175,10 +190,14 @@
 					&& t < (draggable.positionAbs.top + draggable.clickOffset.top) && (draggable.positionAbs.top + draggable.clickOffset.top) < b);
 				break;
 			case 'touch':
-				return (   (l < x1 && x1 < r && t < y1 && y1 < b)    // Top-Left Corner
-					|| (l < x1 && x1 < r && t < y2 && y2 < b)    // Bottom-Left Corner
-					|| (l < x2 && x2 < r && t < y1 && y1 < b)    // Top-Right Corner
-					|| (l < x2 && x2 < r && t < y2 && y2 < b) ); // Bottom-Right Corner
+				return ( (y1 >= t && y1 <= b) ||	// Top edge touching
+						 (y2 >= t && y2 <= b) ||	// Bottom edge touching
+						 (y1 < t && y2 > b)		// Surrounded vertically
+						 ) && (
+						 (x1 >= l && x1 <= r) ||	// Left edge touching
+						 (x2 >= l && x2 <= r) ||	// Right edge touching
+						 (x1 < l && x2 > r)		// Surrounded horizontally
+						);
 				break;
 			default:
 				return false;
@@ -259,5 +278,32 @@
 		}
 	};
 	
-})(jQuery);
+/*
+ * Droppable Extensions
+ */
 
+	$.ui.plugin.add("droppable", "activeClass", {
+		activate: function(e, ui) {
+			$(this).addClass(ui.options.activeClass);
+		},
+		deactivate: function(e, ui) {
+			$(this).removeClass(ui.options.activeClass);
+		},
+		drop: function(e, ui) {
+			$(this).removeClass(ui.options.activeClass);
+		}
+	});
+
+	$.ui.plugin.add("droppable", "hoverClass", {
+		over: function(e, ui) {
+			$(this).addClass(ui.options.hoverClass);
+		},
+		out: function(e, ui) {
+			$(this).removeClass(ui.options.hoverClass);
+		},
+		drop: function(e, ui) {
+			$(this).removeClass(ui.options.hoverClass);
+		}
+	});	
+
+})(jQuery);

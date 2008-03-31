@@ -188,17 +188,17 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 var dropInfo = layoutHandler.isDropBefore (target, moving, evt.clientX, evt.pageY);
                 if (dropInfo === fluid.position.BEFORE) {
                     jQuery (target).before (dropMarker);
-                    dropMarker.style.visibility = "visible";
+                    dropMarker.show();
                 }
                 else if (dropInfo === fluid.position.AFTER){
                    jQuery (target).after (dropMarker);
-                   dropMarker.style.visibility = "visible";
+                   dropMarker.show();
                 }
                 else if (dropInfo === fluid.position.INSIDE) {
                    jQuery (target).append (dropMarker);
-                   dropMarker.style.visibility = "visible";
+                   dropMarker.show();
                 } else {  // must be NO_TARGET
-                   dropMarker.style.visibility = "hidden";
+                   dropMarker.hide();
                 }
         };
      }
@@ -226,6 +226,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         
         item.draggable ({
             refreshPositions: true,
+            scroll: true,
             helper: function() {
                 theAvatar = item.clone();
                 jQuery (theAvatar).removeAttr ("id");
@@ -250,17 +251,15 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 // In order to create valid html, the drop marker is the same type as the node being dragged.
                 // This creates a confusing UI in cases such as an ordered list. 
                 // drop marker functionality should be made pluggable. 
-                dropMarker = document.createElement (item[0].tagName);
-                jQuery (dropMarker).addClass (thisReorderer.cssClasses.dropMarker);
-                dropMarker.style.visibility = "hidden";
+                dropMarker = jQuery(document.createElement (item[0].tagName));
+                dropMarker.addClass (thisReorderer.cssClasses.dropMarker);
+                dropMarker.hide();
             },
             stop: function(e, ui) {
                 item.removeClass (thisReorderer.cssClasses.dragging);
                 item.addClass (thisReorderer.cssClasses.selected);
                 jQuery (thisReorderer.activeItem).ariaState ("grab", "supported");
-                if (dropMarker.parentNode) {
-                    dropMarker.parentNode.removeChild (dropMarker);
-                }
+                dropMarker.remove();
                 theAvatar = null;
             },
             handle: findItems.grabHandle (item[0])
@@ -285,7 +284,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
                 
             },
             out: function (e, ui) {
-                dropMarker.style.visibility = "hidden";
+                dropMarker.hide();
                 item.unbind ("mousemove", trackMouseMovement);
                 jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
             },
