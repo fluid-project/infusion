@@ -185,16 +185,16 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
     
     function createTrackMouseMovement (target, moving) {
         return function trackMouseMovement (evt) {
-                var dropInfo = layoutHandler.isDropBefore (target, moving, evt.clientX, evt.pageY);
-                if (dropInfo === fluid.position.BEFORE) {
+                var position = layoutHandler.dropPosition (target, moving, evt.clientX, evt.pageY);
+                if (position === fluid.position.BEFORE) {
                     jQuery (target).before (dropMarker);
                     dropMarker.show();
                 }
-                else if (dropInfo === fluid.position.AFTER){
+                else if (position === fluid.position.AFTER){
                    jQuery (target).after (dropMarker);
                    dropMarker.show();
                 }
-                else if (dropInfo === fluid.position.INSIDE) {
+                else if (position === fluid.position.INSIDE) {
                    jQuery (target).append (dropMarker);
                    dropMarker.show();
                 } else {  // must be NO_TARGET
@@ -386,15 +386,18 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
      * "before" means "above".  For a horizontally oriented set, "before" means
      * "left of".
      */
-    var isMouseBefore = function (droppableEl, orientation, x, y) {    	
+    var mousePosition = function (droppableEl, orientation, x, y) {    	
         var mid;
+        var isBefore;
         if (orientation === fluid.orientation.VERTICAL) {
             mid = jQuery (droppableEl).offset().top + (droppableEl.offsetHeight / 2);
-            return (y < mid);
+            isBefore = y < mid;
         } else {
             mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
-            return (x < mid);
+            isBefore = x < mid;
         }
+        
+        return (isBefore ? fluid.position.BEFORE : fluid.position.AFTER);
     };    
     
     var itemInfoFinders = {
@@ -540,17 +543,12 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         
         this.moveItemDown = this.moveItemRight;
     
-        this.isDropBefore = function (target, moving, x, y) {
-            if (isMouseBefore (target, orientation, x, y)) {
-        		return fluid.position.BEFORE;
-        	}
-        	else {
-        		return fluid.position.AFTER;
-        	}
+        this.dropPosition = function (target, moving, x, y) {
+            return mousePosition (target, orientation, x, y);
         };
         
         this.mouseMoveItem = function (moving, target, x, y) {
-            var whereTo = this.isDropBefore (target, moving, x, y);
+            var whereTo = this.dropPosition (target, moving, x, y);
             if (whereTo === fluid.position.BEFORE) {
                 jQuery (target).before (moving);
             } else if (whereTo === fluid.position.AFTER) {
@@ -601,15 +599,10 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
             orderChangedCallback(); 
 	    };
 	                
-	    // We need to override ListLayoutHandler.isDropBefore to ensure that the local private
+	    // We need to override ListLayoutHandler.dropPosition to ensure that the local private
 	    // orientation is used.
-        this.isDropBefore = function (target, moving, x, y) {
-            if (isMouseBefore (target, orientation, x, y)) {
-                return fluid.position.BEFORE;
-            }
-            else {
-                return fluid.position.AFTER;
-            }
+        this.dropPosition = function (target, moving, x, y) {
+            return mousePosition (target, orientation, x, y);
         };
         
 	}; // End of GridLayoutHandler
@@ -729,11 +722,11 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
 	        moveVertically (item, fluid.direction.NEXT);
 	    };
 	    
-        this.isDropBefore = function (target, moving, x, y) {
+        this.dropPosition = function (target, moving, x, y) {
             if (fluid.portletLayout.isColumn (target.id, layout)) {
                 return fluid.position.INSIDE;
             }
-            var position = isMouseBefore (target, orientation, x, y) ? fluid.position.BEFORE : fluid.position.AFTER;
+            var position = mousePosition (target, orientation, x, y);
             var canDrop = fluid.portletLayout.canMove (moving.id, target.id, position, layout, targetPerms);
 	    	if (canDrop) {
                 return position;
@@ -744,7 +737,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         };
 
         this.mouseMoveItem = function (moving, target, x, y) {
-            var dropIt = this.isDropBefore (target, moving, x, y);
+            var dropIt = this.dropPosition (target, moving, x, y);
             if (dropIt !== fluid.position.NO_TARGET) {
                 move (moving, target, dropIt);
             }
