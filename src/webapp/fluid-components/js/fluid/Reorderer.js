@@ -12,17 +12,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 var fluid = fluid || {};
-   
-fluid.Reorderer = function (container, findItems, layoutHandler, options) {
-    // Reliable 'this'.
-    var thisReorderer = this;
 
-    this.domNode = jQuery (container);
-    findItems = fluid.utils.adaptFindItems (findItems);
-
-    var role = fluid.roles.LIST;
-    var instructionMessageId = "message-bundle:";
-    var keys = {
+(function (jQuery, fluid) {
+    var defaultContainerRole = fluid.roles.LIST;
+    var defaultInstructionMessageId = "message-bundle:";
+    
+    var defaultKeys = {
         modifier : function (evt) {
                        return evt.ctrlKey;
                    },
@@ -32,17 +27,7 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         left : fluid.keys.LEFT
     };
     
-    if (options) {
-        role = options.role || role;
-        instructionMessageId = options.instructionMessageId || instructionMessageId;
-        keys = options.keys || keys;
-    }
-
-    // the reorderable DOM element that is currently active
-    this.activeItem = undefined;
-    
-    // we may want to make this an optional parameter so people can use their own style names.                
-    this.cssClasses = {
+    var defaultCssClassNames = {
         defaultStyle: "orderable-default",
         selected: "orderable-selected",
         dragging: "orderable-dragging",
@@ -50,317 +35,339 @@ fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         dropMarker: "orderable-drop-marker",
         avatar: "orderable-avatar"
     };
-
-    var firstSelectable = function () {
+    
+    function firstSelectable (findItems) {
         var selectables = fluid.wrap (findItems.selectables());
         if (selectables.length <= 0) {
             return null;
         }
         return selectables[0];
-    };
+    }
     
-    function setupDomNode (domNode) {
-        domNode.focus (thisReorderer.focusActiveItem);
-        domNode.keydown (thisReorderer.handleKeyDown);
-        domNode.keyup (thisReorderer.handleKeyUp);
-        var first = firstSelectable();
-        if (first) {
-            domNode.ariaState ("activedescendent", first.id);
-        }
-        
+    function bindHandlersToContainer (container, focusHandler, keyDownHandler, keyUpHandler) {
+        container.focus (focusHandler);
+        container.keydown (keyDownHandler);
+        container.keyup (keyUpHandler);
         // FLUID-143. Disable text selection for the reorderer.
-		// ondrag() and onselectstart() are Internet Explorer specific functions.
-		// Override them so that drag+drop actions don't also select text in IE.
+        // ondrag() and onselectstart() are Internet Explorer specific functions.
+        // Override them so that drag+drop actions don't also select text in IE.
         if (jQuery.browser.msie) {
-			domNode[0].ondrag = function () { return false; }; 
-			domNode[0].onselectstart = function () { return false; };
+            container[0].ondrag = function () { return false; }; 
+            container[0].onselectstart = function () { return false; };
         } 
-        
-        domNode.ariaRole (role.container);
-        domNode.ariaState ("multiselectable", "false");
-        domNode.ariaState ("readonly", "false");
-        domNode.ariaState ("disabled", "false");
-    }   
+    }
     
-    this.focusActiveItem = function (evt) {
-        // If the active item has not been set yet, set it to the first selectable.
-        if (!thisReorderer.activeItem) {
-            var first = firstSelectable();
-            if (!first) {  
-                return evt.stopPropagation();
-            }
-            jQuery(first).focus ();
-        } else {
-            jQuery (thisReorderer.activeItem).focus ();
+    function addRolesToContainer (container, findItems, role) {
+        var first = firstSelectable(findItems);
+        if (first) {
+            container.ariaState ("activedescendent", first.id);
         }
-        return evt.stopPropagation();
-    };
-
-    var isMove = function (evt) {
-        return keys.modifier(evt);
-    };
+        container.ariaRole (role.container);
+        container.ariaState ("multiselectable", "false");
+        container.ariaState ("readonly", "false");
+        container.ariaState ("disabled", "false");
+    }
     
-    this.handleKeyDown = function (evt) {
-        // The the key pressed is ctrl, and the active item is movable we want to restyle the active item.
-        var jActiveItem = jQuery (thisReorderer.activeItem);
-        if (thisReorderer.activeItem && jActiveItem.hasClass(thisReorderer.cssClasses.selected) && isMove(evt)) {
-        	// Don't treat the active item as dragging unless it is a movable.
-            if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
-                jActiveItem.removeClass (thisReorderer.cssClasses.selected);
-                jActiveItem.addClass (thisReorderer.cssClasses.dragging);
-                jActiveItem.ariaState ("grab", "true");
-            }
-            return false;
-        }
+    function changeSelectedToDefault (jItem, cssClasses) {
+        jItem.removeClass (cssClasses.selected);
+        jItem.addClass (cssClasses.defaultStyle);
+        jItem.ariaState("selected", "false");
+    }
         
-        // The only other keys we listen for are the arrows.
-        return thisReorderer.handleDirectionKeyDown(evt);
-    };
+    fluid.Reorderer = function (container, findItems, layoutHandler, options) {
+        // Reliable 'this'.
+        var thisReorderer = this;
+        
+        // Basic setup
+        this.domNode = jQuery (container);
+        this.activeItem = undefined;
+        findItems = fluid.utils.adaptFindItems (findItems); // For backwards API compatibility
 
-    this.handleKeyUp = function (evt) {
-        var jActiveItem = jQuery (thisReorderer.activeItem);
-        if (thisReorderer.activeItem && jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && !isMove(evt)) {
-            // Don't treat the active item as dragging unless it is a movable.
-            if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
-                jActiveItem.removeClass (thisReorderer.cssClasses.dragging);
-                jActiveItem.addClass (thisReorderer.cssClasses.selected);
-                jActiveItem.ariaState ("grab", "supported");
+        // Configure default properties.
+        options = options || {};
+        var role = options.role || defaultContainerRole;
+        var instructionMessageId = options.instructionMessageId || defaultInstructionMessageId;
+        var keys = options.keys || defaultKeys;
+        this.cssClasses = options.cssClassNames || defaultCssClassNames;
+
+        this.focusActiveItem = function (evt) {
+            // If the active item has not been set yet, set it to the first selectable.
+            if (!thisReorderer.activeItem) {
+                var first = firstSelectable(findItems);
+                if (!first) {  
+                    return evt.stopPropagation();
+                }
+                jQuery(first).focus ();
+            } else {
+                jQuery (thisReorderer.activeItem).focus ();
+            }
+            return evt.stopPropagation();
+        };
+
+        var isMove = function (evt) {
+            return keys.modifier(evt);
+        };
+            
+        this.handleKeyDown = function (evt) {
+            // The the key pressed is ctrl, and the active item is movable we want to restyle the active item.
+            var jActiveItem = jQuery (thisReorderer.activeItem);
+            if (thisReorderer.activeItem && jActiveItem.hasClass(thisReorderer.cssClasses.selected) && isMove(evt)) {
+               // Don't treat the active item as dragging unless it is a movable.
+                if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
+                    jActiveItem.removeClass (thisReorderer.cssClasses.selected);
+                    jActiveItem.addClass (thisReorderer.cssClasses.dragging);
+                    jActiveItem.ariaState ("grab", "true");
+                }
                 return false;
             }
-        }
-    };
-
-    var handleDirectionKey = function (isMoving, moveFunc, nextItemFunc) {
-        if (isMoving) {
-            // only move the target if it is actually movable
-            if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
-                moveFunc (thisReorderer.activeItem);
-                // refocus on the active item because moving places focus on the body
-                thisReorderer.activeItem.focus();
-                jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
-            }
-
-        } else {
-            jQuery(nextItemFunc (thisReorderer.activeItem)).focus ();
-        }           
-    };
-            
-    this.handleDirectionKeyDown = function (evt) {
-        if (thisReorderer.activeItem) {
-            switch (evt.keyCode) {
-                case keys.down:
-                    evt.preventDefault();
-                    handleDirectionKey (isMove(evt), layoutHandler.moveItemDown, layoutHandler.getItemBelow);
-                    return false;
-                case keys.up: 
-                    evt.preventDefault();
-                    handleDirectionKey (isMove(evt), layoutHandler.moveItemUp, layoutHandler.getItemAbove);
-                    return false;
-                case keys.left: 
-                    evt.preventDefault();
-                    handleDirectionKey (isMove(evt), layoutHandler.moveItemLeft, layoutHandler.getLeftSibling);
-                    return false;
-                case keys.right: 
-                    evt.preventDefault();
-                    handleDirectionKey (isMove(evt), layoutHandler.moveItemRight, layoutHandler.getRightSibling);
-                    return false;
-                default:
-                    return true;
-            }
-        }
-    };
-    
-    this._setActiveItem = function (anItem) {
-        this.activeItem = anItem;
-        var jItem = jQuery(anItem);
-        jItem.removeClass (thisReorderer.cssClasses.defaultStyle);
-        jItem.addClass (thisReorderer.cssClasses.selected);
-        jItem.ariaState ("selected", "true");
-        this.domNode.ariaState ("activedescendent", anItem.id);
-    };
-
-    // Drag and drop set code starts here. This needs to be refactored to be better contained.
-    var theAvatar = null;
-    var dropMarker; // instantiated below in item.draggable.start().
-    
-    function createTrackMouseMovement (target, moving) {
-        return function trackMouseMovement (evt) {
-                var position = layoutHandler.dropPosition (target, moving, evt.clientX, evt.pageY);
-                if (position === fluid.position.BEFORE) {
-                    jQuery (target).before (dropMarker);
-                    dropMarker.show();
-                }
-                else if (position === fluid.position.AFTER){
-                   jQuery (target).after (dropMarker);
-                   dropMarker.show();
-                }
-                else if (position === fluid.position.INSIDE) {
-                   jQuery (target).append (dropMarker);
-                   dropMarker.show();
-                } else {  // must be NO_TARGET
-                   dropMarker.hide();
-                }
+        
+            // The only other keys we listen for are the arrows.
+            return thisReorderer.handleDirectionKeyDown(evt);
         };
-     }
 
-    /**
-     * Takes a jQuery object and adds 'movable' functionality to it
-     */
-    function initMovable (item) {
-        item.addClass (thisReorderer.cssClasses.defaultStyle);
-        item.ariaState ("grab", "supported");
+        this.handleKeyUp = function (evt) {
+            var jActiveItem = jQuery (thisReorderer.activeItem);
+            if (thisReorderer.activeItem && jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && !isMove(evt)) {
+                // Don't treat the active item as dragging unless it is a movable.
+                if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
+                    jActiveItem.removeClass (thisReorderer.cssClasses.dragging);
+                    jActiveItem.addClass (thisReorderer.cssClasses.selected);
+                    jActiveItem.ariaState ("grab", "supported");
+                    return false;
+                }
+            }
+        };
 
-        item.mouseover ( 
-            function () {
-                var handle = jQuery (findItems.grabHandle (item[0]));
-                handle.addClass (thisReorderer.cssClasses.hover);
+        var handleDirectionKey = function (isMoving, moveFunc, nextItemFunc) {
+            if (isMoving) {
+                // only move the target if it is actually movable
+                if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
+                    moveFunc (thisReorderer.activeItem);
+                    // refocus on the active item because moving places focus on the body
+                    thisReorderer.activeItem.focus();
+                    jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
+                }
+            } else {
+                jQuery(nextItemFunc (thisReorderer.activeItem)).focus ();
+            }           
+        };
+            
+        this.handleDirectionKeyDown = function (evt) {
+            if (thisReorderer.activeItem) {
+                switch (evt.keyCode) {
+                    case keys.down:
+                        evt.preventDefault();
+                        handleDirectionKey (isMove(evt), layoutHandler.moveItemDown, layoutHandler.getItemBelow);
+                        return false;
+                    case keys.up: 
+                        evt.preventDefault();
+                        handleDirectionKey (isMove(evt), layoutHandler.moveItemUp, layoutHandler.getItemAbove);
+                        return false;
+                    case keys.left: 
+                        evt.preventDefault();
+                        handleDirectionKey (isMove(evt), layoutHandler.moveItemLeft, layoutHandler.getLeftSibling);
+                        return false;
+                    case keys.right: 
+                        evt.preventDefault();
+                        handleDirectionKey (isMove(evt), layoutHandler.moveItemRight, layoutHandler.getRightSibling);
+                        return false;
+                    default:
+                        return true;
+                }
             }
-        );
+        };
+    
+        // Drag and drop set code starts here. This needs to be refactored to be better contained.
+        var theAvatar = null;
+        var dropMarker; // instantiated below in item.draggable.start().
+    
+        function createTrackMouseMovement (target, moving) {
+            return function trackMouseMovement (evt) {
+                    var position = layoutHandler.dropPosition (target, moving, evt.clientX, evt.pageY);
+                    if (position === fluid.position.BEFORE) {
+                        jQuery (target).before (dropMarker);
+                        dropMarker.show();
+                    }
+                    else if (position === fluid.position.AFTER){
+                       jQuery (target).after (dropMarker);
+                       dropMarker.show();
+                    }
+                    else if (position === fluid.position.INSIDE) {
+                       jQuery (target).append (dropMarker);
+                       dropMarker.show();
+                    } else {  // must be NO_TARGET
+                       dropMarker.hide();
+                    }
+            };
+        }
+
+        /**
+         * Takes a jQuery object and adds 'movable' functionality to it
+         */
+        function initMovable (item) {
+            item.addClass (thisReorderer.cssClasses.defaultStyle);
+            item.ariaState ("grab", "supported");
+
+            item.mouseover ( 
+                function () {
+                    var handle = jQuery (findItems.grabHandle (item[0]));
+                    handle.addClass (thisReorderer.cssClasses.hover);
+                }
+            );
         
-        item.mouseout (  
-            function () {
-                var handle = jQuery (findItems.grabHandle (item[0]));
-                handle.removeClass (thisReorderer.cssClasses.hover);
-            }
-        );
+            item.mouseout (  
+                function () {
+                    var handle = jQuery (findItems.grabHandle (item[0]));
+                    handle.removeClass (thisReorderer.cssClasses.hover);
+                }
+            );
         
-        item.draggable ({
-            refreshPositions: true,
-            scroll: true,
-            helper: function() {
-                theAvatar = item.clone();
-                jQuery (theAvatar).removeAttr ("id");
-                jQuery ("[id]", theAvatar).removeAttr ("id");
-                jQuery (":hidden", theAvatar).remove(); 
-                jQuery ("input", theAvatar).attr ("disabled", "true"); 
-                theAvatar.addClass (thisReorderer.cssClasses.avatar);           
+            item.draggable ({
+                refreshPositions: true,
+                scroll: true,
+                helper: function() {
+                    theAvatar = item.clone();
+                    jQuery (theAvatar).removeAttr ("id");
+                    jQuery ("[id]", theAvatar).removeAttr ("id");
+                    jQuery (":hidden", theAvatar).remove();
+                    jQuery ("input", theAvatar).attr ("disabled", "true");
+                    theAvatar.addClass (thisReorderer.cssClasses.avatar);           
 // dropping in the same column fails if the avatar is considered a droppable.
 // droppable ("destroy") should take care of this, but it doesn't seem to remove
 // the class, which is what is checked, so we remove it manually
 // (see http://dev.jquery.com/ticket/2599)
 //                jQuery (theAvatar).droppable ("destroy");
-                theAvatar.removeClass ("ui-droppable");
-                return theAvatar;
-            },
-            start: function (e, ui) {
-                item.focus ();                
-                item.removeClass (thisReorderer.cssClasses.selected);
-                item.addClass (thisReorderer.cssClasses.dragging);
-                item.ariaState ("grab", "true");
+                    theAvatar.removeClass ("ui-droppable");
+                    return theAvatar;
+                },
+                start: function (e, ui) {
+                    item.focus ();
+                    item.removeClass (thisReorderer.cssClasses.selected);
+                    item.addClass (thisReorderer.cssClasses.dragging);
+                    item.ariaState ("grab", "true");
                 
-                // In order to create valid html, the drop marker is the same type as the node being dragged.
-                // This creates a confusing UI in cases such as an ordered list. 
-                // drop marker functionality should be made pluggable. 
-                dropMarker = jQuery(document.createElement (item[0].tagName));
-                dropMarker.addClass (thisReorderer.cssClasses.dropMarker);
-                dropMarker.hide();
-            },
-            stop: function(e, ui) {
-                item.removeClass (thisReorderer.cssClasses.dragging);
-                item.addClass (thisReorderer.cssClasses.selected);
-                jQuery (thisReorderer.activeItem).ariaState ("grab", "supported");
-                dropMarker.remove();
-                theAvatar = null;
-            },
-            handle: findItems.grabHandle (item[0])
-        });
-    }   
+                    // In order to create valid html, the drop marker is the same type as the node being dragged.
+                    // This creates a confusing UI in cases such as an ordered list. 
+                    // drop marker functionality should be made pluggable. 
+                    dropMarker = jQuery(document.createElement (item[0].tagName));
+                    dropMarker.addClass (thisReorderer.cssClasses.dropMarker);
+                    dropMarker.hide();
+                },
+                stop: function(e, ui) {
+                    item.removeClass (thisReorderer.cssClasses.dragging);
+                    item.addClass (thisReorderer.cssClasses.selected);
+                    jQuery (thisReorderer.activeItem).ariaState ("grab", "supported");
+                    dropMarker.remove();
+                    theAvatar = null;
+                },
+                handle: findItems.grabHandle (item[0])
+            });
+        }   
 
-    /**
-     * Takes a jQuery object and a selector that matches movable items
-     */
-    function initDropTarget (item, selector) {
-        item.ariaState ("dropeffect", "move");
+        /**
+         * Takes a jQuery object and a selector that matches movable items
+         */
+        function initDropTarget (item, selector) {
+            item.ariaState ("dropeffect", "move");
 
-    	var trackMouseMovement;
-        item.droppable ({
-            accept: selector,
-            greedy: true,
-            tolerance: "pointer",
-            over: function (e, ui) {
-                trackMouseMovement = createTrackMouseMovement (item[0], ui.draggable[0]);
-                item.bind ("mousemove", trackMouseMovement);    
-                jQuery (theAvatar).bind ("mousemove", trackMouseMovement);
-                
-            },
-            out: function (e, ui) {
-                dropMarker.hide();
-                item.unbind ("mousemove", trackMouseMovement);
-                jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
-            },
-            drop: function (e, ui) {
-                layoutHandler.mouseMoveItem (ui.draggable[0], item[0], e.clientX, e.pageY);           
-                item.unbind ("mousemove", trackMouseMovement);
-                jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);            
-                // refocus on the active item because moving places focus on the body
-                thisReorderer.activeItem.focus();
-            }
-        });
-    }
+           var trackMouseMovement;
+            item.droppable ({
+                accept: selector,
+                greedy: true,
+                tolerance: "pointer",
+                over: function (e, ui) {
+                    trackMouseMovement = createTrackMouseMovement (item[0], ui.draggable[0]);
+                    item.bind ("mousemove", trackMouseMovement);
+                    jQuery (theAvatar).bind ("mousemove", trackMouseMovement);
+                },
+                out: function (e, ui) {
+                    dropMarker.hide();
+                    item.unbind ("mousemove", trackMouseMovement);
+                    jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);
+                },
+                drop: function (e, ui) {
+                    layoutHandler.mouseMoveItem (ui.draggable[0], item[0], e.clientX, e.pageY);
+                    item.unbind ("mousemove", trackMouseMovement);
+                    jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);
+                    // refocus on the active item because moving places focus on the body
+                    thisReorderer.activeItem.focus();
+                }
+            });
+        }
+   
+        var initSelectables = function (selectables) {
+            var handleBlur = function (evt) {
+                changeSelectedToDefault (jQuery(this), thisReorderer.cssClasses);
+                return evt.stopPropagation();
+            };
         
-    var changeSelectedToDefault = function (jItem) {
-        jItem.removeClass (thisReorderer.cssClasses.selected);
-        jItem.addClass (thisReorderer.cssClasses.defaultStyle);
-        jItem.ariaState("selected", "false");
-    };
-    
-    var initSelectables = function (selectables) {
-        var handleBlur = function (evt) {
-            changeSelectedToDefault (jQuery(this));
-            return evt.stopPropagation();
-        };
+            var handleFocus = function (evt) {
+                thisReorderer.selectItem (this);
+                return evt.stopPropagation();
+            };
         
-        var handleFocus = function (evt) {
-            if (thisReorderer.activeItem && thisReorderer.activeItem !== this) {
-                changeSelectedToDefault (jQuery(thisReorderer.activeItem));
-            }
-            thisReorderer._setActiveItem (this);
-            return evt.stopPropagation();
-        };
-        
-        // set up selectables 
-        // Remove the selectables from the taborder - camel case 'tabIndex' needed for IE7 support
-        for (var i = 0; i < selectables.length; i++) {
-            var item = jQuery(selectables[i]);
-            item.attr ("tabIndex", "-1");
-            item.blur (handleBlur);
-            item.focus (handleFocus);
+            // set up selectables 
+            // Remove the selectables from the taborder - camel case 'tabIndex' needed for IE7 support
+            for (var i = 0; i < selectables.length; i++) {
+                var item = jQuery(selectables[i]);
+                item.attr ("tabIndex", "-1");
+                item.blur (handleBlur);
+                item.focus (handleFocus);
             
-            item.ariaRole (role.item);
-            item.ariaState ("selected", "false");
-            item.ariaState ("disabled", "false");
+                item.ariaRole (role.item);
+                item.ariaState ("selected", "false");
+                item.ariaState ("disabled", "false");
+            }
+        };
+    
+        var initItems = function () {
+            var i;
+            var movables = fluid.wrap (findItems.movables());
+            var dropTargets = fluid.wrap (findItems.dropTargets());
+            initSelectables (fluid.wrap (findItems.selectables ()));
+        
+            // Setup moveables
+            for (i = 0; i < movables.length; i++) {
+                var item = movables[i];
+                initMovable (jQuery (item));
+            }
+        
+            // Create a simple predicate function that will identify valid drop targets.
+            var droppablePredicate = function (potentialDroppable) {
+                return (movables.index(potentialDroppable[0]) > -1);    
+            };
+        
+            // Setup dropTargets
+            for (i = 0; i < dropTargets.length; i++) {
+                initDropTarget (jQuery (dropTargets[i]), droppablePredicate);
+            }         
+        };
+
+        // Final initialization of the Reorderer at the end of the construction process 
+        if (this.domNode) {
+            bindHandlersToContainer (this.domNode, 
+                thisReorderer.focusActiveItem,
+                thisReorderer.handleKeyDown,
+                thisReorderer.handleKeyUp);
+            addRolesToContainer (this.domNode, findItems, role);
+            initItems();
         }
     };
     
-    var initItems = function () {
-        var i;
-        var movables = fluid.wrap (findItems.movables());
-        var dropTargets = fluid.wrap (findItems.dropTargets());
-        initSelectables (fluid.wrap (findItems.selectables ()));
-        
-        // Setup moveables
-        for (i = 0; i < movables.length; i++) {
-            var item = movables[i];
-            initMovable (jQuery (item));
+    fluid.Reorderer.prototype.selectItem = function (anItem) {
+        // Set the previous active item back to its default state.
+        if (this.activeItem && this.activeItem !== anItem) {
+            changeSelectedToDefault (jQuery (this.activeItem), this.cssClasses);
         }
-		
-		// Create a simple predicate function that will identify valid drop targets.
-		var droppablePredicate = function (potentialDroppable) {
-			return (movables.index(potentialDroppable[0]) > -1);	
-		};
-		
-        // Setup dropTargets
-        for (i = 0; i < dropTargets.length; i++) {
-            initDropTarget (jQuery (dropTargets[i]), droppablePredicate);
-        }         
+        // Then select the new item.
+        this.activeItem = anItem;
+        var jItem = jQuery(anItem);
+        jItem.removeClass (this.cssClasses.defaultStyle);
+        jItem.addClass (this.cssClasses.selected);
+        jItem.ariaState ("selected", "true");
+        this.domNode.ariaState ("activedescendent", anItem.id);
     };
-
-    // Final initialization of the Reorderer at the end of the construction process 
-    if (this.domNode) {
-        setupDomNode(this.domNode);
-        initItems();
-    }
-}; // End Reorderer
+}) (jQuery, fluid);
 
 /*******************
  * Layout Handlers *
