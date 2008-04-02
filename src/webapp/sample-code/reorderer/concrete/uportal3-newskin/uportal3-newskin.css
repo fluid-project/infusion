@@ -10,8 +10,9 @@
 }
 
 .orderable-avatar {
-    background-color: blue;
-    opacity: 0.75;
+  height: 25px;
+  width: 50px;
+  border: 2px solid grey;
 }
 
 div .orderable-drop-marker{

@@ -1,0 +1,79 @@
+
+body{
+font-family: verdana, arial, sans-serif;
+width: 75%;
+margin: 10px auto;
+}
+
+.reorderer_container{
+padding: 20px;
+border: 1px dashed red;
+overflow: hidden;
+background-color: #eee;
+}
+	
+.orderable{
+background-color: lightyellow;
+}
+
+.box{
+width: 100px;
+border: 1px solid black;
+height: 100px;
+float: left;
+margin: 0 0 10px 10px;
+text-align: center;
+}
+
+table{
+border: 1px solid black;
+}
+
+table td{
+border: 1px solid black;
+}
+
+
+.orderable-default{
+  border: 2px solid #ddd;
+  margin: 0 10px 10px 0 !important;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.orderable-hover{
+  border: 2px solid #666;
+  margin: 0 10px 10px 0 !important;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.orderable-selected{
+  border: 2px solid #666;
+  background-color: #ddd;
+  margin: 0 10px 10px 0 !important;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.orderable-avatar {
+    height: 25px;
+    width: 50px;
+    background-color: blue;
+    opacity: 0.75;
+}
+
+div .orderable-drop-marker{
+  height: 4px !important;
+  width: 80px;
+  background-color: green;
+}
+
+.portlet {
+  padding: 10px;
+}
+
+#portlet-reorderer-root td {
+  padding: 8px;
+  vertical-align: top;
+}

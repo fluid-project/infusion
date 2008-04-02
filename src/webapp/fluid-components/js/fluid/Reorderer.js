@@ -36,6 +36,21 @@ var fluid = fluid || {};
         avatar: "orderable-avatar"
     };
     
+    var defaultAvatarCreator = function(item) {
+        var avatar = jQuery (item).clone ();
+        avatar.removeAttr ("id");
+        jQuery ("[id]", avatar).removeAttr ("id");
+        jQuery (":hidden", avatar).remove();
+        jQuery ("input", avatar).attr ("disabled", "true");
+// dropping in the same column fails if the avatar is considered a droppable.
+// droppable ("destroy") should take care of this, but it doesn't seem to remove
+// the class, which is what is checked, so we remove it manually
+// (see http://dev.jquery.com/ticket/2599)
+//                    avatar.droppable ("destroy");
+        avatar.removeClass ("ui-droppable");
+        return avatar;
+    };
+
     function firstSelectable (findItems) {
         var selectables = fluid.wrap (findItems.selectables());
         if (selectables.length <= 0) {
@@ -89,6 +104,7 @@ var fluid = fluid || {};
         var instructionMessageId = options.instructionMessageId || defaultInstructionMessageId;
         var keys = options.keys || defaultKeys;
         this.cssClasses = options.cssClassNames || defaultCssClassNames;
+        var avatarCreator = options.avatarCreator || defaultAvatarCreator;
 
         this.focusActiveItem = function (evt) {
             // If the active item has not been set yet, set it to the first selectable.
@@ -178,7 +194,6 @@ var fluid = fluid || {};
         };
     
         // Drag and drop set code starts here. This needs to be refactored to be better contained.
-        var theAvatar = null;
         var dropMarker; // instantiated below in item.draggable.start().
     
         function createTrackMouseMovement (target, moving) {
@@ -225,20 +240,10 @@ var fluid = fluid || {};
             item.draggable ({
                 refreshPositions: true,
                 scroll: true,
-                helper: function() {
-                    theAvatar = item.clone();
-                    jQuery (theAvatar).removeAttr ("id");
-                    jQuery ("[id]", theAvatar).removeAttr ("id");
-                    jQuery (":hidden", theAvatar).remove();
-                    jQuery ("input", theAvatar).attr ("disabled", "true");
-                    theAvatar.addClass (thisReorderer.cssClasses.avatar);           
-// dropping in the same column fails if the avatar is considered a droppable.
-// droppable ("destroy") should take care of this, but it doesn't seem to remove
-// the class, which is what is checked, so we remove it manually
-// (see http://dev.jquery.com/ticket/2599)
-//                jQuery (theAvatar).droppable ("destroy");
-                    theAvatar.removeClass ("ui-droppable");
-                    return theAvatar;
+                helper: function () {
+                    var avatar = jQuery (avatarCreator (item[0]));
+                    avatar.addClass (thisReorderer.cssClasses.avatar);
+                    return avatar;
                 },
                 start: function (e, ui) {
                     item.focus ();
@@ -258,7 +263,7 @@ var fluid = fluid || {};
                     item.addClass (thisReorderer.cssClasses.selected);
                     jQuery (thisReorderer.activeItem).ariaState ("grab", "supported");
                     dropMarker.remove();
-                    theAvatar = null;
+                    ui.helper = null;
                 },
                 handle: findItems.grabHandle (item[0])
             });
@@ -278,17 +283,17 @@ var fluid = fluid || {};
                 over: function (e, ui) {
                     trackMouseMovement = createTrackMouseMovement (item[0], ui.draggable[0]);
                     item.bind ("mousemove", trackMouseMovement);
-                    jQuery (theAvatar).bind ("mousemove", trackMouseMovement);
+                    ui.helper.bind ("mousemove", trackMouseMovement);
                 },
                 out: function (e, ui) {
                     dropMarker.hide();
                     item.unbind ("mousemove", trackMouseMovement);
-                    jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);
+                    ui.helper.unbind ("mousemove", trackMouseMovement);
                 },
                 drop: function (e, ui) {
                     layoutHandler.mouseMoveItem (ui.draggable[0], item[0], e.clientX, e.pageY);
                     item.unbind ("mousemove", trackMouseMovement);
-                    jQuery (theAvatar).unbind ("mousemove", trackMouseMovement);
+                    ui.helper.unbind ("mousemove", trackMouseMovement);
                     // refocus on the active item because moving places focus on the body
                     thisReorderer.activeItem.focus();
                 }

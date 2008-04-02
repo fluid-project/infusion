@@ -3,14 +3,20 @@ fluid.initPortalReorderer = function (layout, perms, grabHandle, orderChangedCal
 
     var items = fluid.portletLayout.createFindItems (layout, perms, grabHandle);
 
-    var options;
+    var lhOptions;
     if (orderChangedCallbackUrl) {
-        options = {
+        lhOptions = {
             orderChangedCallbackUrl: orderChangedCallbackUrl
         };
     }
 
-    var layoutHandler = new fluid.PortletLayoutHandler (layout, perms, options);
+    var layoutHandler = new fluid.PortletLayoutHandler (layout, perms, lhOptions);
+    var rOptions = {
+        role : fluid.roles.GRID,
+        avatarCreator : function (item) {
+            return document.createElement ("div");
+        }
+    }
     
-    return new fluid.Reorderer (portletReordererRoot, items, layoutHandler, { role : fluid.roles.GRID });
+    return new fluid.Reorderer (portletReordererRoot, items, layoutHandler, rOptions);
 };
