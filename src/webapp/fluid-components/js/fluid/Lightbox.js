@@ -77,7 +77,7 @@ var fluid = fluid || {};
          */
         createLightbox: function (container, itemFinderFn, orderChangedFn, instructionMessageId, keys) {
             // Remove the anchors from the taborder.
-            jQuery ("a", container).tabIndex (-1);
+            jQuery ("a", container).tabindex (-1);
             addThumbnailActivateHandler (container);
             
             var layoutHandler = new fluid.GridLayoutHandler (itemFinderFn, {

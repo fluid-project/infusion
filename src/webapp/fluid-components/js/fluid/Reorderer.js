@@ -312,10 +312,10 @@ var fluid = fluid || {};
             };
         
             // set up selectables 
-            // Remove the selectables from the taborder - camel case 'tabIndex' needed for IE7 support
+            // Remove the selectables from the taborder
             for (var i = 0; i < selectables.length; i++) {
                 var item = jQuery(selectables[i]);
-                item.attr ("tabIndex", "-1");
+                item.tabindex ("-1");
                 item.blur (handleBlur);
                 item.focus (handleFocus);
             
@@ -355,6 +355,10 @@ var fluid = fluid || {};
                 thisReorderer.handleKeyDown,
                 thisReorderer.handleKeyUp);
             addRolesToContainer (this.domNode, findItems, role);
+            // ensure that the Reorderer container is in the tab order
+            if (!this.domNode.hasTabindex() || (this.domNode.tabindex() < 0)) {
+                this.domNode.tabindex("0");
+            }
             initItems();
         }
     };

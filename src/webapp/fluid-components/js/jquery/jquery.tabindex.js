@@ -1,7 +1,7 @@
 /*
 Copyright 2007 University of Toronto
 
-Licensed under the GNU Public License or the MIT license. 
+Licensed under the GNU General Public License or the MIT license.
 You may not use this file except in compliance with one these
 Licenses.
 
@@ -10,28 +10,40 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 */
 (function ($) {
 	// Private functions.
-	var normalizeTabIndexName = function () {
+	var normalizeTabindexName = function () {
 	    return $.browser.msie ? "tabIndex" : "tabindex";
 	}
 
 	var getValue = function (elements) {
-		if (!elements.hasTabIndex ()) {
-			return undefined;
+        if (elements.length <= 0) {
+            return undefined;
+        }
+
+		if (!elements.hasTabindexAttr ()) {
+		    return canHaveDefaultTabindex (elements) ? Number (0) : undefined;
 		}
 
         // Get the attribute (.attr () doesn't work for tabIndex in IE) and return it as a number value.
-		var value = elements[0].getAttribute (normalizeTabIndexName ());
+		var value = elements[0].getAttribute (normalizeTabindexName ());
 		return Number (value);
 	};
 
 	var setValue = function (elements, toIndex) {
 		return elements.each (function (i, item) {
-			$ (item).attr (normalizeTabIndexName (), toIndex);
+			$ (item).attr (normalizeTabindexName (), toIndex);
 		});
 	};
 
+	var canHaveDefaultTabindex = function (elements) {
+       if (elements.length <= 0) {
+           return false;
+       }
+
+	   return jQuery (elements[0]).is ("a, input, button, select, area, textarea, object");
+	}
+
 	// Public methods.
-	$.fn.tabIndex = function (toIndex) {
+	$.fn.tabindex = function (toIndex) {
 		if (toIndex !== null && toIndex !== undefined) {
 			return setValue (this, toIndex);
 		} else {
@@ -39,14 +51,23 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 		}
 	};
 
-	$.fn.removeTabIndex = function () {
+	$.fn.removeTabindex = function () {
 		return this.each(function (i, item) {
-			$ (item).removeAttr (normalizeTabIndexName ());
+			$ (item).removeAttr (normalizeTabindexName ());
 		});
 	};
 
-	$.fn.hasTabIndex = function () {
-	    var attributeNode = this[0].getAttributeNode (normalizeTabIndexName ());
+	$.fn.hasTabindexAttr = function () {
+	    if (this.length <= 0) {
+	        return false;
+	    }
+
+	    var attributeNode = this[0].getAttributeNode (normalizeTabindexName ());
         return attributeNode ? attributeNode.specified : false;
 	};
+
+	$.fn.hasTabindex = function () {
+        return this.hasTabindexAttr () || canHaveDefaultTabindex (this);
+	};
+
 }) (jQuery);
