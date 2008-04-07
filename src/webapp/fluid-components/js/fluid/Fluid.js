@@ -40,8 +40,8 @@ fluid.roles = {
 };
 
 fluid.orientation = {
-	HORIZONTAL: 0,
-	VERTICAL: 1
+	HORIZONTAL: "horiz",
+	VERTICAL: "vert"
 };
 
 fluid.position = {
