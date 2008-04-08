@@ -19,8 +19,8 @@ var fluid = fluid || {};
     
     var defaultKeys = {
         modifier : function (evt) {
-                       return evt.ctrlKey;
-                   },
+	        return evt.ctrlKey;
+        },
         up : fluid.keys.UP,
         down : fluid.keys.DOWN,
         right : fluid.keys.RIGHT,

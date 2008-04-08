@@ -14,12 +14,12 @@ var demo = demo || {};
 demo.portal = {};
 
 demo.portal.layout = { 
-    id:"portlet-reorderer-root",
-    columns:[
-        { id:"c1", children:["portlet1","portlet2","portlet3","portlet4"]},
-        { id:"c2", children:["portlet5","portlet6"]},
-        { id:"c3", children:["portlet7","portlet8","portlet9"]},
-        { id:"c4", children:[]}
+    "id":"portlet-reorderer-root",
+    "columns":[
+        { "id":"c1", "children":["portlet1","portlet2","portlet3","portlet4"]},
+        { "id":"c2", "children":["portlet5","portlet6"]},
+        { "id":"c3", "children":["portlet7","portlet8","portlet9"]},
+        { "id":"c4", "children":[]}
     ]
 };
 
