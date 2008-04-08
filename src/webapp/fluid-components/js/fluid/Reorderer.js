@@ -381,7 +381,7 @@ var fluid = fluid || {};
 /*******************
  * Layout Handlers *
  *******************/
-(function () {
+(function (jQuery, fluid) {
     // Shared private functions.
     var moveItem = function (item, relatedItemInfo, position, wrappedPosition) {
         var itemPlacement = position;
@@ -760,9 +760,9 @@ var fluid = fluid || {};
         };
         
     }; // End PortalLayoutHandler
-}) ();
+}) (jQuery, fluid);
 
-fluid.portletLayout = function () {
+fluid.portletLayout = function (jQuery, fluid) {
     var internals = {
         layoutWalker: function (fn, layout) {
             for (var col = 0; col < layout.columns.length; col++) {
@@ -1138,4 +1138,4 @@ fluid.portletLayout = function () {
             return layout.id;
         }
     };	
-} ();
+} (jQuery, fluid);
