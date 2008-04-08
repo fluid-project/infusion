@@ -69,19 +69,22 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 
 	<!-- Concatenate all the minified JS files together into an all-in-one file. -->
 	<target name="fluidAllInOne" depends="init">
-		<concat destfile="${components-build}/js/Fluid-all.js" append="true" >
-			<filelist dir="${src}/js/fluid" files="${order_of_dependencies}" />
+	    <mkdir dir="${components-build}/js/all" />
+		<concat destfile="${components-build}/js/all/Fluid-all.js" append="true" >
+		    <filelist dir="${src}/js/jquery" files="${jquery_order_of_dependencies}" />
+			<filelist dir="${src}/js/fluid" files="${fluid_order_of_dependencies}" />
+            <filelist dir="${src}/js/json" files="json2.js" />
 		</concat>
 		
 		<antcall target="minify">
-			<param name="fromDir" value="${components-build}/js" />
-			<param name="toDir" value="${components-build}/js/fluid" />
+			<param name="fromDir" value="${components-build}/js/all" />
+			<param name="toDir" value="${components-build}/js/" />
 			<param name="file-pattern" value="Fluid-all.js" />
 			<param name="lineBreakArg" value="" />
 		</antcall>
 		
 		<!-- delete the unminified concatenated file generated above -->
-		<delete file="${components-build}/js/Fluid-all.js" />
+		<delete dir="${components-build}/js/all" />
 	</target>
 
 	<!-- Target: Minify the JS files -->
