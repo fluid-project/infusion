@@ -197,7 +197,9 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		</description>
 
 		<echo>Validating .JS files...</echo>
-        <jslint dir="${lint}" excludes="${excludeFromJSLint}">
+        <jslint dir="${lint}" 
+                excludes="${excludeFromJSLint}"
+                options="browser,eqeqeq,nomen,undef">
         </jslint>
 	</target>
 
