@@ -146,16 +146,14 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		<mkdir dir="${dist}/sample-code" />
 		<copy todir="${dist}/sample-code">
 			<fileset dir="../src/webapp/sample-code/">
-				<include name="reorderer/**" />
+				<include name="*/**" />
 		    </fileset>
 		</copy>
 
 		<mkdir dir="${dist}/tests" />
 		<copy todir="${dist}/tests">
 			<fileset dir="../src/webapp/tests">
-				<include name="jsunit/**" />
-				<include name="fluid-tests/**" />
-				<include name="utils/**"/>
+				<include name="*/**" />
 		    </fileset>
 		</copy>
 	</target>
