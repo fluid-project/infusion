@@ -16,7 +16,7 @@ fluid.initPortalReorderer = function (layout, perms, grabHandle, orderChangedCal
         avatarCreator : function (item) {
             return document.createElement ("div");
         }
-    }
+    };
     
     return new fluid.Reorderer (portletReordererRoot, items, layoutHandler, rOptions);
 };
