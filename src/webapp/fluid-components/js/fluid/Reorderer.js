@@ -59,10 +59,11 @@ var fluid = fluid || {};
         return selectables[0];
     }
     
-    function bindHandlersToContainer (container, focusHandler, keyDownHandler, keyUpHandler) {
+    function bindHandlersToContainer (container, focusHandler, keyDownHandler, keyUpHandler, mouseMoveHandler) {
         container.focus (focusHandler);
         container.keydown (keyDownHandler);
         container.keyup (keyUpHandler);
+        container.mousemove (mouseMoveHandler);
         // FLUID-143. Disable text selection for the reorderer.
         // ondrag() and onselectstart() are Internet Explorer specific functions.
         // Override them so that drag+drop actions don't also select text in IE.
@@ -88,7 +89,33 @@ var fluid = fluid || {};
         jItem.addClass (cssClasses.defaultStyle);
         jItem.ariaState("selected", "false");
     }
+    
+    // This is the start of refactoring the drag and drop code out into its own space. 
+    // These are the private stateless functions.
+    var dndFunctions = {};
+    dndFunctions.findTarget = function (element, dropTargets, avatarId, currentDroppable) {
+        var isAvatar = function (el) {
+            return (el && el.id === avatarId);
+        };
+            
+        var isTargetOrAvatar = function (el) {
+            return ((dropTargets.index (el) > -1) || isAvatar (el));
+        };
+
+        var target = isTargetOrAvatar(element) ? element : jQuery.grep(jQuery(element).parents(), isTargetOrAvatar)[0];
         
+        // If the avatar was the target of the event, use the last known drop target instead.
+        if (isAvatar(target)) {
+            target = currentDroppable ? currentDroppable[0] : null;        
+        }
+        return target;
+    };
+    dndFunctions.createAvatarId = function (parentId) {
+        // Generating the avatar's id to be containerId_avatar
+        // This is safe since there is only a single avatar at a time
+        return parentId + "_avatar";
+    };
+    
     fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         // Reliable 'this'.
         var thisReorderer = this;
@@ -195,26 +222,42 @@ var fluid = fluid || {};
     
         // Drag and drop set code starts here. This needs to be refactored to be better contained.
         var dropMarker; // instantiated below in item.draggable.start().
-    
-        function createTrackMouseMovement (target, moving) {
-            return function trackMouseMovement (evt) {
-                    var position = layoutHandler.dropPosition (target, moving, evt.clientX, evt.pageY);
-                    if (position === fluid.position.BEFORE) {
-                        jQuery (target).before (dropMarker);
-                        dropMarker.show();
+        // Storing the current droppable to work around the issue where the avatar is below the mouse pointer and blocks events
+        // See FLUID-407
+        var currentDroppable;
+        
+        var createTrackMouse = function (dropTargets){
+            dropTargets = fluid.wrap (dropTargets);
+            var avatarId = dndFunctions.createAvatarId(thisReorderer.domNode.id);
+           
+            return function (evt){
+                if (currentDroppable) {
+                    var target = dndFunctions.findTarget (evt.target, dropTargets, avatarId, currentDroppable);
+                    
+                    if (target) {
+                        var position = layoutHandler.dropPosition(target, thisReorderer.activeItem, evt.clientX, evt.pageY);
+                        if (position === fluid.position.BEFORE) {
+                            jQuery(target).before(dropMarker);
+                            dropMarker.show();
+                        }
+                        else if (position === fluid.position.AFTER) {
+                            jQuery(target).after(dropMarker);
+                            dropMarker.show();
+                        }
+                        else if (position === fluid.position.INSIDE) {
+                            jQuery(target).append(dropMarker);
+                            dropMarker.show();
+                        }
+                        else { // must be NO_TARGET
+                            dropMarker.hide();
+                        }
                     }
-                    else if (position === fluid.position.AFTER){
-                       jQuery (target).after (dropMarker);
-                       dropMarker.show();
+                    else {
+                        dropMarker.hide();
                     }
-                    else if (position === fluid.position.INSIDE) {
-                       jQuery (target).append (dropMarker);
-                       dropMarker.show();
-                    } else {  // must be NO_TARGET
-                       dropMarker.hide();
-                    }
+                }
             };
-        }
+        };
 
         /**
          * Takes a jQuery object and adds 'movable' functionality to it
@@ -243,6 +286,7 @@ var fluid = fluid || {};
                 helper: function () {
                     var avatar = jQuery (avatarCreator (item[0]));
                     avatar.addClass (thisReorderer.cssClasses.avatar);
+                    avatar.attr("id", dndFunctions.createAvatarId(thisReorderer.domNode.id));
                     return avatar;
                 },
                 start: function (e, ui) {
@@ -264,6 +308,7 @@ var fluid = fluid || {};
                     jQuery (thisReorderer.activeItem).ariaState ("grab", "supported");
                     dropMarker.remove();
                     ui.helper = null;
+                    currentDroppable = null;
                 },
                 handle: findItems.grabHandle (item[0])
             });
@@ -275,25 +320,17 @@ var fluid = fluid || {};
         function initDropTarget (item, selector) {
             item.ariaState ("dropeffect", "move");
 
-           var trackMouseMovement;
             item.droppable ({
                 accept: selector,
                 greedy: true,
                 tolerance: "pointer",
                 over: function (e, ui) {
-                    trackMouseMovement = createTrackMouseMovement (item[0], ui.draggable[0]);
-                    item.bind ("mousemove", trackMouseMovement);
-                    ui.helper.bind ("mousemove", trackMouseMovement);
-                },
-                out: function (e, ui) {
-                    dropMarker.hide();
-                    item.unbind ("mousemove", trackMouseMovement);
-                    ui.helper.unbind ("mousemove", trackMouseMovement);
+                    // Store the droppable for the case when the avatar gets the mouse move instead of the droppable below it.
+                    // See FLUID-407
+                    currentDroppable = ui.element;
                 },
                 drop: function (e, ui) {
                     layoutHandler.mouseMoveItem (ui.draggable[0], item[0], e.clientX, e.pageY);
-                    item.unbind ("mousemove", trackMouseMovement);
-                    ui.helper.unbind ("mousemove", trackMouseMovement);
                     // refocus on the active item because moving places focus on the body
                     thisReorderer.activeItem.focus();
                 }
@@ -353,7 +390,8 @@ var fluid = fluid || {};
             bindHandlersToContainer (this.domNode, 
                 thisReorderer.focusActiveItem,
                 thisReorderer.handleKeyDown,
-                thisReorderer.handleKeyUp);
+                thisReorderer.handleKeyUp,
+                createTrackMouse (findItems.dropTargets()));
             addRolesToContainer (this.domNode, findItems, role);
             // ensure that the Reorderer container is in the tab order
             if (!this.domNode.hasTabindex() || (this.domNode.tabindex() < 0)) {
