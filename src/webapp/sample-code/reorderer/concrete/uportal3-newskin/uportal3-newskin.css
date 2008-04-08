@@ -12,7 +12,8 @@
 .orderable-avatar {
   height: 25px;
   width: 50px;
-  border: 2px solid grey;
+  border: 1px solid #666;
+  background-color: #666;
   z-index: 65535;
 }
 
