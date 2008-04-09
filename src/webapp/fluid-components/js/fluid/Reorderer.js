@@ -17,16 +17,6 @@ var fluid = fluid || {};
     var defaultContainerRole = fluid.roles.LIST;
     var defaultInstructionMessageId = "message-bundle:";
     
-    var defaultKeys = {
-        modifier : function (evt) {
-	        return evt.ctrlKey;
-        },
-        up : fluid.keys.UP,
-        down : fluid.keys.DOWN,
-        right : fluid.keys.RIGHT,
-        left : fluid.keys.LEFT
-    };
-    
     var defaultCssClassNames = {
         defaultStyle: "orderable-default",
         selected: "orderable-selected",
@@ -116,6 +106,14 @@ var fluid = fluid || {};
         return parentId + "_avatar";
     };
     
+    var setupKeySets = function (defaultKeys, userKeys) {
+        // Check if the user has given us an array of keySets or a single keySet.
+        if (userKeys && !(userKeys instanceof Array)) {
+            userKeys = [userKeys];    
+        }
+        return userKeys || [defaultKeys];
+    };
+    
     fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         // Reliable 'this'.
         var thisReorderer = this;
@@ -129,7 +127,7 @@ var fluid = fluid || {};
         options = options || {};
         var role = options.role || defaultContainerRole;
         var instructionMessageId = options.instructionMessageId || defaultInstructionMessageId;
-        var keys = options.keys || defaultKeys;
+        var keys = setupKeySets(fluid.defaultKeys, options.keys);
         this.cssClasses = options.cssClassNames || defaultCssClassNames;
         var avatarCreator = options.avatarCreator || defaultAvatarCreator;
 
@@ -148,9 +146,15 @@ var fluid = fluid || {};
         };
 
         var isMove = function (evt) {
-            return keys.modifier(evt);
+            var i = 0;
+            for (i; i < keys.length; i++) {
+                if (keys[i].modifier(evt)) {
+                    return true;
+                }
+            }
+            return false; 
         };
-            
+        
         this.handleKeyDown = function (evt) {
             // The the key pressed is ctrl, and the active item is movable we want to restyle the active item.
             var jActiveItem = jQuery (thisReorderer.activeItem);
@@ -194,32 +198,94 @@ var fluid = fluid || {};
                 jQuery(nextItemFunc (thisReorderer.activeItem)).focus ();
             }           
         };
-            
-        this.handleDirectionKeyDown = function (evt) {
-            if (thisReorderer.activeItem) {
-                switch (evt.keyCode) {
-                    case keys.down:
-                        evt.preventDefault();
-                        handleDirectionKey (isMove(evt), layoutHandler.moveItemDown, layoutHandler.getItemBelow);
-                        return false;
-                    case keys.up: 
-                        evt.preventDefault();
-                        handleDirectionKey (isMove(evt), layoutHandler.moveItemUp, layoutHandler.getItemAbove);
-                        return false;
-                    case keys.left: 
-                        evt.preventDefault();
-                        handleDirectionKey (isMove(evt), layoutHandler.moveItemLeft, layoutHandler.getLeftSibling);
-                        return false;
-                    case keys.right: 
-                        evt.preventDefault();
-                        handleDirectionKey (isMove(evt), layoutHandler.moveItemRight, layoutHandler.getRightSibling);
-                        return false;
-                    default:
-                        return true;
-                }
+ 
+         var moveItem = function(moveFunc){
+             if (jQuery.inArray(thisReorderer.activeItem, findItems.movables()) >= 0) {
+                 moveFunc(thisReorderer.activeItem);
+                 // refocus on the active item because moving places focus on the body
+                thisReorderer.activeItem.focus();
+                jQuery(thisReorderer.activeItem).removeClass(thisReorderer.cssClasses.selected);
             }
         };
-    
+        
+        var noModifier = function (evt) {
+            return (!evt.ctrlKey && !evt.altKey && !evt.shiftKey && !evt.metaKey);
+        };
+        
+        var moveItemForKeyCode = function (keyCode, keySet, layoutHandler) {
+            var didMove = false;
+            switch (keyCode) {
+                case keySet.up:
+                    moveItem (layoutHandler.moveItemUp);
+                    didMove = true;
+                    break;
+                case keySet.down:
+                    moveItem (layoutHandler.moveItemDown);
+                    didMove = true;
+                    break;
+                case keySet.left:
+                    moveItem (layoutHandler.moveItemLeft);
+                    didMove = true;
+                    break;
+                case keySet.right:
+                    moveItem (layoutHandler.moveItemRight);
+                    didMove = true;
+                    break;
+            }
+            
+            return didMove;
+        };
+        
+        var focusItemForKeyCode = function(keyCode, keySet, layoutHandler, activeItem){
+            var didFocus = false;
+            var item;
+            switch (keyCode) {
+                case keySet.up:
+                    item = layoutHandler.getItemAbove (activeItem);
+                    didFocus = true;
+                    break;
+                case keySet.down:
+                    item = layoutHandler.getItemBelow (activeItem);
+                    didFocus = true;
+                    break;
+                case keySet.left:
+                    item = layoutHandler.getLeftSibling (activeItem);
+                    didFocus = true;
+                    break;
+                case keySet.right:
+                    item = layoutHandler.getRightSibling (activeItem);
+                    didFocus = true;
+                    break;
+            }
+            jQuery (item).focus ();
+            
+            return didFocus;
+        };
+        
+        this.handleDirectionKeyDown = function (evt) {
+            if (!thisReorderer.activeItem) {
+                return true;
+            }
+            
+            for (var i = 0; i < keys.length; i++) {
+                var keySet = keys[i];
+                var didProcessKey = false;
+                if (keySet.modifier (evt)) {
+                    didProcessKey = moveItemForKeyCode (evt.keyCode, keySet, layoutHandler);
+            
+                } else if (noModifier(evt)) {
+                    didProcessKey = focusItemForKeyCode (evt.keyCode, keySet, layoutHandler, thisReorderer.activeItem);
+                }
+                
+                // We got the right key press. Bail right away by swallowing the event.
+                if (didProcessKey) {
+                    return false;
+                }
+            }
+            
+            return true;
+        };
+
         // Drag and drop set code starts here. This needs to be refactored to be better contained.
         var dropMarker; // instantiated below in item.draggable.start().
         // Storing the current droppable to work around the issue where the avatar is below the mouse pointer and blocks events

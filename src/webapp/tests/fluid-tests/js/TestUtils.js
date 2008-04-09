@@ -56,6 +56,10 @@ fluid.testUtils.createEvtCtrlUpArrow = function() {
 	return this.createCtrlKeyEvent(fluid.keys.UP);
 };
 
+fluid.testUtils.createAltKeyEvent = function (inKeyCode) {
+    return this.createKeyEvent (inKeyCode, false, false, true /* alt key is down */);
+};
+
 fluid.testUtils.createCtrlKeyEvent = function (inKeyCode) {
     return this.createKeyEvent (inKeyCode, true /* control key is down */);
 };
@@ -65,11 +69,12 @@ fluid.testUtils.createCtrlShiftKeyEvent = function (inKeyCode) {
 };
 
 fluid.testUtils.createUnmodifiedKeyEvent = function (inKeyCode) {
-	return this.createKeyEvent (inKeyCode, false /* no control key modifier */);
+    return this.createKeyEvent (inKeyCode, false /* no control key modifier */);
 };
 
-fluid.testUtils.createKeyEvent = function (inKeyCode, inCtrlKey, inShiftKey) {
-	return {keyCode: inKeyCode, ctrlKey: inCtrlKey, shiftKey: inShiftKey, preventDefault: function(){}, stopPropagation: function(){} };
+fluid.testUtils.createKeyEvent = function (inKeyCode, inCtrlKey, inShiftKey, inAltKey) {
+    return {keyCode: inKeyCode, ctrlKey: inCtrlKey, shiftKey: inShiftKey, altKey: inAltKey, 
+            preventDefault: function(){}, stopPropagation: function(){} };
 };
 
 fluid.testUtils.assertNotNullAndNotUndefined = function (message, value) {

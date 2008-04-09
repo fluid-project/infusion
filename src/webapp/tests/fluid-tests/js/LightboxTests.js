@@ -519,5 +519,77 @@ $(document).ready (function () {
                                 fluid.testUtils.createCtrlShiftKeyEvent (fluid.keys.i),
                                 fluid.testUtils.createCtrlShiftKeyEvent (fluid.keys.m));
        });
+ 
+    lightboxTests.test ("MultiKeySetNavigation", function () {
+        var lightbox = createMultiKeystrokeLightbox();
+        focusLightbox ();
+        
+        horizontalNavigationTest(lightbox,
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.k),
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.j));
+
+        fluid.utils.jById(firstReorderableId).focus();
+        horizontalNavigationTest(lightbox,
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.RIGHT),
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.LEFT));
+                                
+        fluid.utils.jById(firstReorderableId).focus();
+        verticalNavigationTest (lightbox,
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.i),
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.m));
+
+        fluid.utils.jById(firstReorderableId).focus();
+        verticalNavigationTest (lightbox,
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.UP),
+                                fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.DOWN));
+       });
+       
+    lightboxTests.test ("MultiKeySetMovement", function () {
+        var lightbox = createMultiKeystrokeLightbox();
+        focusLightbox ();
+        
+        horizontalMovementTest (lightbox,
+                                fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.k),
+                                fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.j));
+
+        fluid.utils.jById(firstReorderableId).focus();
+        horizontalMovementTest (lightbox,
+                                fluid.testUtils.createAltKeyEvent(fluid.keys.RIGHT),
+                                fluid.testUtils.createAltKeyEvent(fluid.keys.LEFT));
+
+        fluid.utils.jById(firstReorderableId).focus();
+        verticalMovementTest (lightbox,
+                                fluid.testUtils.createCtrlShiftKeyEvent (fluid.keys.i),
+                                fluid.testUtils.createCtrlShiftKeyEvent (fluid.keys.m));
+
+        fluid.utils.jById(firstReorderableId).focus();
+        verticalMovementTest (lightbox,
+                                fluid.testUtils.createAltKeyEvent (fluid.keys.UP),
+                                fluid.testUtils.createAltKeyEvent (fluid.keys.DOWN));
+    });
+
+    lightboxTests.test ("MultiKeySetWrongModifier", function () {
+        var lightbox = createMultiKeystrokeLightbox();
+        focusLightbox ();
+        
+        // Test: alt k - expect no movement
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createAltKeyEvent(fluid.keys.k));
+        itemsInOriginalPositionTest("after alt-k");
+// Test focus didn't move ??????
+
+    
+        // Test: alt m - expect no movement
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createAltKeyEvent(fluid.keys.m));
+        itemsInOriginalPositionTest("after alt-m");
+
+        // Test: ctrl shift left arrow - expect no movement
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.LEFT));
+        itemsInOriginalPositionTest("after ctrl shift left arrow");
+
+        // Test: ctrl shift up arrow - expect no movement
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.UP));
+        itemsInOriginalPositionTest("after ctrl shift up arrow");
+
+    });    
 });
 

@@ -119,19 +119,32 @@ function createGridLayoutHandler () {
     return new fluid.GridLayoutHandler (findOrderableByDivAndId);
 }
 
-
+var altKeys = { 
+    modifier: function (evt) {
+            return (evt.ctrlKey && evt.shiftKey);
+        }, 
+    up: fluid.keys.i, 
+    down: fluid.keys.m,
+    right: fluid.keys.k,
+    left: fluid.keys.j
+};
+    
 function createAltKeystrokeLightbox () {
-    var keys = { 
+    return fluid.lightbox.createLightbox (fetchLightboxRoot(),
+                                        findOrderableByDivAndId, function () {}, MESSAGE_BUNDLE_BASE, [altKeys]);
+}
+
+function createMultiKeystrokeLightbox () {
+    var altKeys2 = { 
         modifier: function (evt) {
-                return (evt.ctrlKey && evt.shiftKey);
+                return (evt.altKey);
             }, 
-        up: fluid.keys.i, 
-        down: fluid.keys.m,
-        right: fluid.keys.k,
-        left: fluid.keys.j
+        up: fluid.keys.UP, 
+        down: fluid.keys.DOWN,
+        right: fluid.keys.RIGHT,
+        left: fluid.keys.LEFT
     };
     
     return fluid.lightbox.createLightbox (fetchLightboxRoot(),
-                                        findOrderableByDivAndId, function () {}, MESSAGE_BUNDLE_BASE, keys);
-
+                                        findOrderableByDivAndId, function () {}, MESSAGE_BUNDLE_BASE, [altKeys, altKeys2]);
 }
