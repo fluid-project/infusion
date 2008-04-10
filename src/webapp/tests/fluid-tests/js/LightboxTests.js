@@ -575,20 +575,26 @@ $(document).ready (function () {
         // Test: alt k - expect no movement
         lightbox.handleDirectionKeyDown(fluid.testUtils.createAltKeyEvent(fluid.keys.k));
         itemsInOriginalPositionTest("after alt-k");
-// Test focus didn't move ??????
-
+        isItemFocusedTest("After failed move, ", firstReorderableId);
+        isItemDefaultTest("After failed move, ", secondReorderableId);
     
         // Test: alt m - expect no movement
         lightbox.handleDirectionKeyDown(fluid.testUtils.createAltKeyEvent(fluid.keys.m));
         itemsInOriginalPositionTest("after alt-m");
+        isItemFocusedTest("After failed move, ", firstReorderableId);
+        isItemDefaultTest("After failed move, ", secondReorderableId);
 
         // Test: ctrl shift left arrow - expect no movement
         lightbox.handleDirectionKeyDown(fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.LEFT));
         itemsInOriginalPositionTest("after ctrl shift left arrow");
+        isItemFocusedTest("After failed move, ", firstReorderableId);
+        isItemDefaultTest("After failed move, ", secondReorderableId);
 
         // Test: ctrl shift up arrow - expect no movement
         lightbox.handleDirectionKeyDown(fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.UP));
         itemsInOriginalPositionTest("after ctrl shift up arrow");
+        isItemFocusedTest("After failed move, ", firstReorderableId);
+        isItemDefaultTest("After failed move, ", secondReorderableId);
 
     });   
     

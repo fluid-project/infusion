@@ -106,12 +106,12 @@ var fluid = fluid || {};
         return parentId + "_avatar";
     };
     
-    var setupKeySets = function (defaultKeys, userKeys) {
-        // Check if the user has given us an array of keySets or a single keySet.
-        if (userKeys && !(userKeys instanceof Array)) {
-            userKeys = [userKeys];    
+    var setupKeysets = function (defaultKeysets, userKeysets) {
+        // Check if the user has given us an array of keysets or a single keyset.
+        if (userKeysets && !(userKeysets instanceof Array)) {
+            userKeysets = [userKeysets];    
         }
-        return userKeys || [defaultKeys];
+        return userKeysets || defaultKeysets;
     };
     
     fluid.Reorderer = function (container, findItems, layoutHandler, options) {
@@ -127,7 +127,7 @@ var fluid = fluid || {};
         options = options || {};
         var role = options.role || defaultContainerRole;
         var instructionMessageId = options.instructionMessageId || defaultInstructionMessageId;
-        var keys = setupKeySets(fluid.defaultKeys, options.keys);
+        var keysets = setupKeysets(fluid.defaultKeysets, options.keysets);
         this.cssClasses = options.cssClassNames || defaultCssClassNames;
         var avatarCreator = options.avatarCreator || defaultAvatarCreator;
 
@@ -147,12 +147,16 @@ var fluid = fluid || {};
 
         var isMove = function (evt) {
             var i = 0;
-            for (i; i < keys.length; i++) {
-                if (keys[i].modifier(evt)) {
+            for (i; i < keysets.length; i++) {
+                if (keysets[i].modifier(evt)) {
                     return true;
                 }
             }
-            return false; 
+            return false;
+        };
+        
+        var isActiveItemMovable = function () {
+            return (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0);
         };
         
         this.handleKeyDown = function (evt) {
@@ -160,7 +164,7 @@ var fluid = fluid || {};
             var jActiveItem = jQuery (thisReorderer.activeItem);
             if (thisReorderer.activeItem && jActiveItem.hasClass(thisReorderer.cssClasses.selected) && isMove(evt)) {
                // Don't treat the active item as dragging unless it is a movable.
-                if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
+                if (isActiveItemMovable ()) {
                     jActiveItem.removeClass (thisReorderer.cssClasses.selected);
                     jActiveItem.addClass (thisReorderer.cssClasses.dragging);
                     jActiveItem.ariaState ("grab", "true");
@@ -176,7 +180,7 @@ var fluid = fluid || {};
             var jActiveItem = jQuery (thisReorderer.activeItem);
             if (thisReorderer.activeItem && jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && !isMove(evt)) {
                 // Don't treat the active item as dragging unless it is a movable.
-                if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
+                if (isActiveItemMovable ()) {
                     jActiveItem.removeClass (thisReorderer.cssClasses.dragging);
                     jActiveItem.addClass (thisReorderer.cssClasses.selected);
                     jActiveItem.ariaState ("grab", "supported");
@@ -185,22 +189,8 @@ var fluid = fluid || {};
             }
         };
 
-        var handleDirectionKey = function (isMoving, moveFunc, nextItemFunc) {
-            if (isMoving) {
-                // only move the target if it is actually movable
-                if (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0) {
-                    moveFunc (thisReorderer.activeItem);
-                    // refocus on the active item because moving places focus on the body
-                    thisReorderer.activeItem.focus();
-                    jQuery (thisReorderer.activeItem).removeClass (thisReorderer.cssClasses.selected);
-                }
-            } else {
-                jQuery(nextItemFunc (thisReorderer.activeItem)).focus ();
-            }           
-        };
- 
-         var moveItem = function(moveFunc){
-             if (jQuery.inArray(thisReorderer.activeItem, findItems.movables()) >= 0) {
+        var moveItem = function (moveFunc){
+             if (isActiveItemMovable ()) {
                  moveFunc(thisReorderer.activeItem);
                  // refocus on the active item because moving places focus on the body
                 thisReorderer.activeItem.focus();
@@ -212,22 +202,22 @@ var fluid = fluid || {};
             return (!evt.ctrlKey && !evt.altKey && !evt.shiftKey && !evt.metaKey);
         };
         
-        var moveItemForKeyCode = function (keyCode, keySet, layoutHandler) {
+        var moveItemForKeyCode = function (keyCode, keyset, layoutHandler) {
             var didMove = false;
             switch (keyCode) {
-                case keySet.up:
+                case keyset.up:
                     moveItem (layoutHandler.moveItemUp);
                     didMove = true;
                     break;
-                case keySet.down:
+                case keyset.down:
                     moveItem (layoutHandler.moveItemDown);
                     didMove = true;
                     break;
-                case keySet.left:
+                case keyset.left:
                     moveItem (layoutHandler.moveItemLeft);
                     didMove = true;
                     break;
-                case keySet.right:
+                case keyset.right:
                     moveItem (layoutHandler.moveItemRight);
                     didMove = true;
                     break;
@@ -236,23 +226,23 @@ var fluid = fluid || {};
             return didMove;
         };
         
-        var focusItemForKeyCode = function(keyCode, keySet, layoutHandler, activeItem){
+        var focusItemForKeyCode = function(keyCode, keyset, layoutHandler, activeItem){
             var didFocus = false;
             var item;
             switch (keyCode) {
-                case keySet.up:
+                case keyset.up:
                     item = layoutHandler.getItemAbove (activeItem);
                     didFocus = true;
                     break;
-                case keySet.down:
+                case keyset.down:
                     item = layoutHandler.getItemBelow (activeItem);
                     didFocus = true;
                     break;
-                case keySet.left:
+                case keyset.left:
                     item = layoutHandler.getLeftSibling (activeItem);
                     didFocus = true;
                     break;
-                case keySet.right:
+                case keyset.right:
                     item = layoutHandler.getRightSibling (activeItem);
                     didFocus = true;
                     break;
@@ -267,14 +257,14 @@ var fluid = fluid || {};
                 return true;
             }
             
-            for (var i = 0; i < keys.length; i++) {
-                var keySet = keys[i];
+            for (var i = 0; i < keysets.length; i++) {
+                var keyset = keysets[i];
                 var didProcessKey = false;
-                if (keySet.modifier (evt)) {
-                    didProcessKey = moveItemForKeyCode (evt.keyCode, keySet, layoutHandler);
+                if (keyset.modifier (evt)) {
+                    didProcessKey = moveItemForKeyCode (evt.keyCode, keyset, layoutHandler);
             
                 } else if (noModifier(evt)) {
-                    didProcessKey = focusItemForKeyCode (evt.keyCode, keySet, layoutHandler, thisReorderer.activeItem);
+                    didProcessKey = focusItemForKeyCode (evt.keyCode, keyset, layoutHandler, thisReorderer.activeItem);
                 }
                 
                 // We got the right key press. Bail right away by swallowing the event.

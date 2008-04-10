@@ -34,5 +34,5 @@ demo.initUnorderedListTabs = function () {
         orientation: fluid.orientation.HORIZONTAL
     });
     
-    return new fluid.Reorderer (tabList, findOrderableTabs, layoutHandler, {keys: [fluid.defaultKeys, altKeys]});
+    return new fluid.Reorderer (tabList, findOrderableTabs, layoutHandler, {keysets: fluid.defaultKeyset.push(altKeys)});
 };

@@ -60,7 +60,7 @@ var fluid = fluid || {};
         PREVIOUS: -1
     };
     
-    fluid.defaultKeys = {
+    fluid.defaultKeysets = [{
         modifier : function (evt) {
 	        return evt.ctrlKey;
         },
@@ -68,7 +68,16 @@ var fluid = fluid || {};
         down : fluid.keys.DOWN,
         right : fluid.keys.RIGHT,
         left : fluid.keys.LEFT
-    };
+    },
+    {
+        modifier : function (evt) {
+	        return evt.ctrlKey;
+        },
+        up : fluid.keys.i,
+        down : fluid.keys.m,
+        right : fluid.keys.k,
+        left : fluid.keys.j
+    }];
     
     fluid.mixin = function (target, args) {
         for (var arg in args) {

@@ -25,12 +25,12 @@ var fluid = fluid || {};
         };
     };
     
-    var createLightboxWithKeyset = function (containerId, instructionMessageId, keys) {
+    var createLightboxWithKeyset = function (containerId, instructionMessageId, keysets) {
         var parentNode = document.getElementById (containerId);
         var itemFinder = createItemFinder(parentNode, containerId);
         var orderChangedCallback = fluid.lightbox.defaultOrderChangedCallback (parentNode);
             
-        return fluid.lightbox.createLightbox (parentNode, itemFinder, orderChangedCallback, instructionMessageId, keys);
+        return fluid.lightbox.createLightbox (parentNode, itemFinder, orderChangedCallback, instructionMessageId, keysets);
     };
     
     // Public Lightbox API
@@ -73,9 +73,9 @@ var fluid = fluid || {};
          * @param {Function} itemFinderFn A function that returns a list of orderable images
          * @param {Function} orderChangedFn A function that is called when the image order is changed by the user
          * @param {String} instructionMessageId The id of the DOM element containing instructional text for Lightbox users
-         * @param {Object} keys (optional) Keyset for navigating and moving thumbnails in the Lightbox
+         * @param {Object} keysets (optional) Keyset for navigating and moving thumbnails in the Lightbox
          */
-        createLightbox: function (container, itemFinderFn, orderChangedFn, instructionMessageId, keys) {
+        createLightbox: function (container, itemFinderFn, orderChangedFn, instructionMessageId, keysets) {
             // Remove the anchors from the taborder.
             jQuery ("a", container).tabindex (-1);
             addThumbnailActivateHandler (container);
@@ -87,7 +87,7 @@ var fluid = fluid || {};
             return new fluid.Reorderer (container, itemFinderFn, layoutHandler, {
                 instructionMessageId : instructionMessageId,
                 role : fluid.roles.GRID,
-                keys : keys
+                keysets : keysets
             });
         },
         
@@ -100,27 +100,6 @@ var fluid = fluid || {};
          */
         createLightboxFromIds: function (containerId, instructionMessageId) {
             return createLightboxWithKeyset (containerId, instructionMessageId, undefined);
-        },
-        
-        /**
-         * Creates a new Lightbox using a screen reader compatible key set by binding to element ids in the DOM.
-         * This provides a convenient way of constructing a Lightbox with the default configuration.
-         * 
-         * @param {String} containerId The id of the DOM element that represents the Lightbox
-         * @param {String} instructionMessageId The id of the DOM element containing instructional text for Lightbox users
-         */
-        createScreenReaderLightbox: function (containerId, instructionMessageId) {
-            var keys = { 
-                modifier: function (evt) {
-                        return (evt.ctrlKey);
-                    }, 
-                up: fluid.keys.i, 
-                down: fluid.keys.m,
-                right: fluid.keys.k,
-                left: fluid.keys.j
-            };
-            
-            return createLightboxWithKeyset (containerId, instructionMessageId, keys);
         }
     };
 }) (jQuery, document);
