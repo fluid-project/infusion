@@ -148,3 +148,18 @@ function createMultiKeystrokeLightbox () {
     return fluid.lightbox.createLightbox (fetchLightboxRoot(),
                                         findOrderableByDivAndId, function () {}, MESSAGE_BUNDLE_BASE, [altKeys, altKeys2]);
 }
+
+function createMultiOverlappingKeystrokeLightbox () {
+    var altKeys2 = { 
+        modifier: function (evt) {
+                return (evt.ctrlKey);
+            }, 
+        up: fluid.keys.UP, 
+        down: fluid.keys.DOWN,
+        right: fluid.keys.RIGHT,
+        left: fluid.keys.LEFT
+    };
+    
+    return fluid.lightbox.createLightbox (fetchLightboxRoot(),
+                                        findOrderableByDivAndId, function () {}, MESSAGE_BUNDLE_BASE, [altKeys, altKeys2]);
+}

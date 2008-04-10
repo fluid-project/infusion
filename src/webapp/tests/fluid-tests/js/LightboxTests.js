@@ -590,6 +590,31 @@ $(document).ready (function () {
         lightbox.handleDirectionKeyDown(fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.UP));
         itemsInOriginalPositionTest("after ctrl shift up arrow");
 
-    });    
+    });   
+    
+    lightboxTests.test ("MultiKeySetOverlappingModifierMovement", function () {
+        var lightbox = createMultiOverlappingKeystrokeLightbox();
+        focusLightbox ();
+        
+        horizontalMovementTest (lightbox,
+                                fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.k),
+                                fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.j));
+
+        fluid.utils.jById(firstReorderableId).focus();
+        horizontalMovementTest (lightbox,
+                                fluid.testUtils.createCtrlKeyEvent(fluid.keys.RIGHT),
+                                fluid.testUtils.createCtrlKeyEvent(fluid.keys.LEFT));
+
+        fluid.utils.jById(firstReorderableId).focus();
+        verticalMovementTest (lightbox,
+                                fluid.testUtils.createCtrlShiftKeyEvent (fluid.keys.i),
+                                fluid.testUtils.createCtrlShiftKeyEvent (fluid.keys.m));
+
+        fluid.utils.jById(firstReorderableId).focus();
+        verticalMovementTest (lightbox,
+                                fluid.testUtils.createCtrlKeyEvent (fluid.keys.UP),
+                                fluid.testUtils.createCtrlKeyEvent (fluid.keys.DOWN));
+    });
+
 });
 
