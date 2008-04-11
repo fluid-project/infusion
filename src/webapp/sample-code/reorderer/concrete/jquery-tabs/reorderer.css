@@ -1,0 +1,28 @@
+
+.default-tab {
+}
+
+.hover-tab {
+    border: 1px solid black;
+}
+
+.selected-tab {
+    background-color: blue;
+}
+
+.dragging-tab {
+    background-color: lightyellow;
+    position: relative;
+    top: -5px;
+}
+
+.drop-marker-tab {
+    background-color: red;
+    height: 10px;
+    width: 5px;
+}
+
+.avatar-tab {
+    opacity: 0.55;
+    border: 0;
+}

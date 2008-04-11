@@ -12,19 +12,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Ensure the demo namespace exists
 var demo = demo || {};
 
-demo.initUnorderedListTabs = function () {
+demo.initJqueryTabs = function () {
     var tabList = fluid.utils.jById ("tabList");
 
-    var altKeys = { 
-        modifier: function (evt) {
-                return (evt.ctrlKey && evt.shiftKey);
-            }, 
-        up: fluid.keys.i, 
-        down: fluid.keys.m,
-        right: fluid.keys.k,
-        left: fluid.keys.j
+    var cssClassNames = {
+        defaultStyle: "default-tab",
+        selected: "selected-tab",
+        dragging: "dragging-tab",
+        hover: "hover-tab",
+        dropMarker: "drop-marker-tab",
+        avatar: "avatar-tab"
     };
-
     // Identifies the orderable elements by their unique id prefix.
     var findOrderableTabs = function  () {
         return jQuery ("[id^=tab_]", tabList);
@@ -34,5 +32,5 @@ demo.initUnorderedListTabs = function () {
         orientation: fluid.orientation.HORIZONTAL
     });
     
-    return new fluid.Reorderer (tabList, findOrderableTabs, layoutHandler, {keysets: fluid.defaultKeysets.push(altKeys)});
+    return new fluid.Reorderer (tabList, findOrderableTabs, layoutHandler, {cssClassNames: cssClassNames});
 };
