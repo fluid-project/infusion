@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Image Gallery</title>
+	<link href="../upload-sample.css" type="text/css" rel="stylesheet" media="all" />
+	<link href="../../../fluid-components/css/MultiFileUpload.css" rel="stylesheet" type="text/css" />
+    <script src="../../../fluid-components/js/jquery/jquery-1.2.3.js" type="text/javascript"></script>
+    <script src="../../../fluid-components/js/jquery/jquery.dimensions.js" type="text/javascript"></script>
+	<script src="../../../fluid-components/js/jquery/ui.base.js" type="text/javascript"></script>
+	<script src="../../../fluid-components/js/swfupload/swfupload.js" type="text/javascript"></script>
+	<script src="../../../fluid-components/js/fluid/Fluid.js" type="text/javascript"></script>
+	<script src="../../../fluid-components/js/fluid/MultiFileUpload.js" type="text/javascript"></script>
+	<script language="JavaScript" type="text/javascript">
+		var settings =   {
+			uploadUrl : "../php/upload.php",
+			//uploadUrl : "",
+			flashUrl : "../../../fluid-components/swfupload/swfupload_f9.swf",
+			whenDone: "index.html",
+			whenCancel: "index.html",
+			debug: true
+			//postParams: {"PHPSESSID" : "<?php echo $_REQUEST['PHPSESSID']; ?>"}
+		};
+		
+		$(document).ready(function() {
+        	fluid.uploader.init(settings);
+    	});
+	</script>
+</head>
+<body>
+<div class="portletBody specialLink">
+
+	<ol id="step-indicator">
+		<li class="active-step">Choose Images</li>
+		<li class="inactive-step">Upload Images</li>
+		<li class="inactive-step">Edit Image Information</li>
+	</ol>
+	
+	<form id="single-inline-fluid-uploader" class="fluid-uploader" method="get" enctype="multipart/form-data">
+		<div class="inner-container start">
+			<div>Upload images from your Computer to <em>All Images</em></div>
+			<div><input type="checkbox" class="add-collection"/><label for="add-collection">Also add image to the current collection <em>Week 1</em></label></div>
+			<table cellspacing="0" class="fluid-uploader-queue">
+				<caption>File Queue:</caption>
+				<thead>
+					<tr>
+						<th>File Name</th><th>Size</th><th>Status</th><th>Remove</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="fluid-uploader-row-placeholder"><td class="fileName">&nbsp;</td><td class="fileSize">&nbsp;</td><td class="fileStatus">&nbsp;</td><td class="fileRemove"><button type="button" class="removeFileBtn" /></td></tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="4">
+							Files to upload: <strong class="fluid-uploader-totalFiles">0</strong> (<span class="fluid-uploader-totalBytes">0</span>)
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+			
+			<button type="button" class="bigbtn targetbtn fluid-uploader-browse" >Browse&#0133;</button><button type="button" class="fluid-uploader-upload bigbtn" >Upload&#0133;</button>
+			<p class="instructions">After clicking the <em>Browse</em> button, you can select multiple files using the <em>Shift</em> or <em class="fluid-uploader-modifierKey">Control</em> keys.</p>
+			
+			<hr noshade="noshade" size="1" />
+			<button type="button" class="fluid-uploader-cancel bigbtn targetbtn" >Cancel</button><button type="button" class="fluid-uploader-done bigbtn" >Continue&#0133;</button>
+			
+			<div class="fluid-progress">
+				<div class="progress-content">
+					<h2>Uploading Files...</h2>
+					<div class="file-progress progressor">
+						<label class="progress-label">
+							<span class="file_name">&nbsp;</span> :: <span class="percent">0</span>% complete
+						</label>
+						<div class="progress-indicator"><span>&nbsp;</span></div>
+					</div>
+					<div class="total-progress progressor">
+						<label class="progress-label">
+							Total Progress: <span class="percent">0</span>% [<span class="file_index">0</span> of <span class="total_file_num">0</span> files]
+						</label>
+						<div class="progress-indicator">&nbsp;</div>
+					</div>
+					<div align="right">
+						<button type="button" class="fluid-uploader-pause bigbtn targetbtn">Pause Upload</button>
+					</div>
+				</div>
+				<div class="progress-mask">
+					<div class="progress-mask-top">&nbsp;</div>
+					<div class="progress-mask-btm">&nbsp;</div>
+				</div>
+			</div>
+			<!--
+				<div class="progress" id="progress2">
+				<div class="progress_content">
+					<h2>Uploading Files...</h2>
+					<p>Uploading: <span id="file_name"></span>:</p>
+					<div id="file-progress" class="progress-status">
+						<div class="progress-status-data">
+							<span id="percent">0</span>% complete
+						</div>
+						<div class="progress-status-indicator"></div>
+					</div>
+					<p>Total Progress: </p>
+					<div id="total-progress" class="progress-status">
+						<div class="progress-status-data">
+							<span id="percent">0</span>% [<span id="file_index">0</span> of <span id="total_file_num">0</span> files]
+						</div>
+						<div class="progress-status-indicator"></div>
+					</div>
+					<div align="right">
+						<button type="button" class="bigbtn targetbtn" id="pauseBtn">Pause Upload</button>
+					</div>
+				</div>
+				<div class="progress_mask">
+					<div class="progress_mask_top">&nbsp;</div>
+					<div class="progress_mask_btm">&nbsp;</div>
+				</div>
+			</div>-->
+		</div>
+	</form>
+
+</div>
+
+</body>
+</html>

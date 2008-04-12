@@ -1,0 +1,236 @@
+/* styles used for testing and development
+ * TODO: should be moved to tool css for image gallery
+ */
+
+.fluid-uploader { 
+	margin-top: 2em;
+	padding: 1em 2em;
+	display: block;
+	clear: both;
+}
+
+.fluid-uploader button.bigbtn {
+	height: 2.7em;
+	padding-left: 2em;
+	padding-right: 2em;
+	margin-right: 1em;
+	margin-top: 0.6em;
+	outline: none;
+}
+
+.fluid-uploader-queue {
+	width: 480px;
+	border-left: 1px solid #BBB;
+	border-bottom: 1px solid #BBB;
+	border-right: 1px solid #BBB;	
+}
+
+.fluid-uploader-queue caption {
+	font-weight: bolder;
+	text-align: left;
+	margin: 1em 0;
+}
+
+.fluid-uploader-queue tr {
+	background-color: #DFDFDF;
+}
+
+.fluid-uploader-queue tbody {
+	overflow-x: hidden;
+	overflow-y: auto;
+	width: 465px;
+}
+
+.fluid-uploader-queue tbody tr {
+	background-color: white;
+}
+
+.fluid-uploader-queue tr.hover {
+	background-color: #FBFFDC;
+}
+
+.fluid-uploader-queue tr.dim {
+	color: #666;
+}
+
+.fluid-uploader-queue td, .fluid-uploader-queue th { 
+	text-align: left;
+	padding: 6px;
+	border-top: 1px solid #CCC;
+}
+
+.fluid-uploader-queue th { 
+	text-align: left;
+	padding: 6px;
+	border-left: 1px solid #CCC;
+}
+
+.fluid-uploader-queue th:first-child { 
+	border-left: none;
+}
+
+.fluid-uploader-queue td {
+	border-right: none;
+}
+
+.fluid-uploader-queue tfoot td {
+	text-align: right;
+}
+
+.fluid-uploader-queue .fileName {
+	max-width: 256px;
+	overflow: hidden;
+}
+
+.fluid-uploader-queue .removeFileBtn {
+	border: none;
+	height: 16px;
+	width: 16px;
+	overflow: hidden;
+	background: url(../images/uploader/delete.png) scroll no-repeat 0px 0px;
+}
+
+.fluid-uploader-queue td.fileRemove {
+	width: 2em;
+	text-align: center;
+}
+
+.fluid-uploader-queue td.fileRemove, .fluid-uploader-queue td.fileStatus { 
+	white-space: nowrap;
+}
+
+.fluid-uploader-queue td.fileSize { 
+	text-align: center;
+	white-space: nowrap;
+}
+
+
+.fluid-uploader-row-placeholder td {
+	background-color: #E1EFEF;
+	padding: 0;
+	font-size: 0.6em;
+}
+
+.fluid-uploader-row-placeholder button, .fluid-uploader-queue .dim button {
+	display: none;
+}
+
+/* STATES
+ * start - before the first click of the Browse button
+ * ready - no files in the queue; case where there were files but they've been removed
+ * loaded - files in the queue, but the Upload button has not been clicked
+ * partial - some files uploaded, some still in the queue
+ * done - all files have been uploaded
+ */
+
+.fluid-uploader .start .fluid-upload-browse {
+	background-color: #82ACFD;
+}
+
+.fluid-uploader .start table, .fluid-uploader .start .fluid-uploader-upload {
+	display: none;
+}
+
+.fluid-uploader .loaded .fluid-uploader-upload {
+	background-color: #82ACFD;
+}
+
+.fluid-uploader .empty .fluid-uploader-upload, .fluid-uploader .done .fluid-uploader-upload, .fluid-uploader .start .fluid-uploader-done {
+	color: #666;
+	border: 1px solid #CCC;
+}
+
+.fluid-uploader .instructions  {
+	display: none;
+	width: 200px;
+}
+
+.fluid-uploader .start .instructions  {
+	display: block;
+}
+
+.fluid-uploader .loaded .fluid-uploader-row-placeholder td, .fluid-uploader .done .fluid-uploader-row-placeholder td {
+	font-size: 0.2em;
+}
+
+/* 
+ * PROGRESS INDICATOR
+ */
+
+.fluid-progress {
+	display: none;
+	width: 453px;
+	position: fixed;
+	top: 120px;
+	left: auto;
+	overflow: hidden;
+}
+
+.progress-content {
+	position: relative;
+	padding: 1em 1.2em 1.4em;
+	z-index: 400;
+}
+
+.progress-content h2 {
+	margin: 0 0 .6em;
+	color: white;
+}
+
+.progress-content p {
+	color: white
+}
+
+.progressor {
+	position: relative;
+	margin: 5px 0;
+	background-color: white;
+	color: black;
+}
+
+.progress-label {
+	display: block;
+	position: relative;
+	background: transparent;
+	border: 1px solid #CCC;
+	padding: 3px 0;
+	font-weight: bolder;
+	text-align: center;
+	z-index: 400;
+}
+
+.progress-indicator {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url('../images/uploader/upload.gif');	
+	height: 100%;
+	width: 1%;
+	z-index: 350;
+}
+
+/* mask */
+.progress-mask {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 300;
+	overflow: visible;
+}
+
+.progress-mask-top, .progress-mask-btm {
+	position: relative;
+	width: 100%;
+	left: 0;
+}
+
+.progress-mask-top {
+	height: 14px;
+	background: url(../images/progress/rounded_overlay_top.png) no-repeat top right;
+}
+
+.progress-mask-btm {
+	background: url(../images/progress/rounded_overlay_btm.png) no-repeat bottom right;
+}
