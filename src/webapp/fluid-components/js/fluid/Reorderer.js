@@ -162,16 +162,16 @@ var fluid = fluid || {};
         this.handleKeyDown = function (evt) {
             // The the key pressed is ctrl, and the active item is movable we want to restyle the active item.
             var jActiveItem = jQuery (thisReorderer.activeItem);
-            if (thisReorderer.activeItem && jActiveItem.hasClass(thisReorderer.cssClasses.selected) && isMove(evt)) {
+            if (thisReorderer.activeItem && !jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && isMove(evt)) {
                // Don't treat the active item as dragging unless it is a movable.
                 if (isActiveItemMovable ()) {
                     jActiveItem.removeClass (thisReorderer.cssClasses.selected);
                     jActiveItem.addClass (thisReorderer.cssClasses.dragging);
                     jActiveItem.ariaState ("grab", "true");
+                    
                 }
                 return false;
             }
-        
             // The only other keys we listen for are the arrows.
             return thisReorderer.handleDirectionKeyDown(evt);
         };
@@ -640,7 +640,7 @@ var fluid = fluid || {};
         };
     
         this.moveItemLeft = function (item) {
-        	var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo (item, findItems.movables ());
+         	var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo (item, findItems.movables ());
             moveItem (item, leftSiblingInfo, fluid.position.BEFORE, fluid.position.AFTER);
             orderChangedCallback();
         };
