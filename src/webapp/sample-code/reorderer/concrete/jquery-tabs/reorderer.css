@@ -3,17 +3,21 @@
 }
 
 .hover-tab {
-    border: 1px solid black;
+    border-top: 2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
 }
 
 .selected-tab {
-    background-color: blue;
+    border-top: 2px solid green;
+    border-left: 2px solid green;
+    border-right: 2px solid green;
 }
 
 .dragging-tab {
     background-color: lightyellow;
     position: relative;
-    top: -5px;
+    top: -10px;
 }
 
 .drop-marker-tab {

@@ -13,7 +13,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 
 demo.initJqueryTabs = function () {
+    var addTabActivateHandler = function (container) {
+        var enterKeyHandler = function (evt) {
+            if (evt.which === fluid.keys.ENTER) {
+                var tabAnchors = jQuery ("a", evt.target);
+                fragmentUrl = tabAnchors.attr ('href');
+                jQuery("#tabList").tabs("select", fragmentUrl);
+            }
+        };
+        jQuery (container).keypress (enterKeyHandler);
+    };
+
     var tabList = fluid.utils.jById ("tabList");
+    addTabActivateHandler (tabList);
 
     var cssClassNames = {
         defaultStyle: "default-tab",
