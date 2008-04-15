@@ -42,7 +42,7 @@
 
       <!-- lightbox-parent is used for testing setup and teardown -->
       <div rsf:id="lightbox:" id="lightbox-parent" >
-        <div rsf:id="lightbox-temp-container:" id="gallery:::gallery-thumbs:::" class="image-container">
+        <div rsf:id="lightbox-temp-container:" id="gallery:::gallery-thumbs:::" class="image-container" tabindex="2">
          
           <!--  
             Orderable items are divs denoted by ids in the following form.
@@ -265,7 +265,8 @@
       </div>
       
       <!-- Sample instruction message. In the RSF gallery, this is supplied by the server. -->
-      <div id="message-bundle:" class="lightbox-instructions">
+      <div id="message-bundle:" class="lightbox-instructions" tabindex="1"
+              title="Image Lightbox: To use the keyboard: Select an image using i, k, m or j, or the arrow keys. View an image by pressing Enter. Move an image using CTRL + a direction key.">
         <div class="lightbox-downarrow"></div><div id="message-bundle:thumbnailInstructions">
           To use the keyboard:<br/>
             Select an image using i, k, m or j, or the arrow keys.<br/>
