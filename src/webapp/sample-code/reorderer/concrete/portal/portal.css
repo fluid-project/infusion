@@ -362,6 +362,17 @@ ul.horizontal-list-floated li {
   background:transparent url(images/application_edit.png) no-repeat scroll 0%;
 }
 
+.left-column #portalPageFooter {
+  margin-left:196px;
+}
+
+#portalPageFooter {
+  color:#3366CC;
+  font-size:80%;
+  text-align:center;
+  padding-top:5em;
+}
+
 .orderable-hover{
   cursor: move;
 }
