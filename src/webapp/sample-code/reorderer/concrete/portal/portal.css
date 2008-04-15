@@ -1,0 +1,393 @@
+body {
+  font-family:Verdana;
+  text-align:left;
+  font-size:13px;
+  font-size-adjust:none;
+  font-stretch:normal;
+  font-style:normal;
+  font-variant:normal;
+  font-weight:normal;
+  line-height:1.22;
+  color:#000000;
+}
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td {
+  margin:0pt;
+  padding:0pt;
+}
+
+fieldset, img {
+  border:0pt none;
+}
+
+p, fieldset, table {
+  margin-bottom:1em;
+}
+
+table, table tr, table td {
+  border:medium none;
+  margin:0pt;
+  padding:0pt;
+}
+
+table {
+  border-collapse:collapse;
+  border-spacing:0pt;
+}
+
+ol, ul, dl {
+  margin-left:2em;
+}
+
+ul li {
+  list-style-position:outside;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family:Arial;
+  font-weight:bold;
+}
+
+h2 {
+  font-size:123.1%;
+}
+
+element.style {
+  display:block;
+}
+
+body#portal.left-column {
+  background:#FFFFFF url(images/page_column_back.png) repeat-y scroll 0% 50%;
+}
+
+#portalPageHeader {
+  background-color:#000066;
+  border-bottom:4px solid #000033;
+}
+
+#portalPageBar {
+  background:#180884 url(images/headerbar.png) repeat-x scroll 0pt;
+  border-bottom:2px solid #000033;
+  color:#9999CC;
+  text-align:right;
+}
+
+#portalPageBarLinks {
+  padding:0.5em 1em 0.5em 0pt;
+}
+
+#portalPageBarLinks a {
+  color:#FFFFFF;
+  padding-left:20px;
+  padding-right:6px;
+  text-decoration:none;
+}
+
+#portalPageBarHome {
+  background:transparent url(images/house.png) no-repeat scroll 0%;
+}
+
+#portalPageBarCustom {
+  background:transparent url(images/user.png) no-repeat scroll 0%;
+}
+
+#portalPageBarSitemap {
+  background:transparent url(images/map.png) no-repeat scroll 0%;
+}
+
+#portalPageBarHelp {
+  background:transparent url(images/help.png) no-repeat scroll 0%;
+}
+
+#portalSkipNav a, #portalSkipNav a:hover, #portalSkipNav a:visited {
+  height:1px;
+  left:0pt;
+  overflow:hidden;
+  position:absolute;
+  top:-500px;
+  width:1px;
+}
+
+#portalLogo {
+  margin:10px 20px;
+}
+  
+#portalWelcome {
+  color:#DDDDDD;
+  left:195px;
+  position:absolute;
+  top:3em;
+}
+
+#portalWelcome .logout-label {
+  padding-left:0.5em;
+}
+
+#portalWelcome a {
+  color:#9999FF;
+  text-decoration:none;
+}
+
+.header #portalNavigationList {
+  left:192px;
+  position:absolute;
+  top:66px;
+}
+
+#portalNavigation ul, #portalNavigation li {
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+  margin:0pt;
+  padding:0pt;
+}
+
+
+#portalNavigation .header .portal-navigation {
+  border-left:1px solid #000033;
+  border-right:1px solid #000033;
+  border-top:4px solid #000033;
+}
+
+#portalNavigation .header .first {
+  border-left:4px solid #000033;
+}
+
+#portalNavigation .portal-navigation {
+  background:#9999CC url(images/tab.png) repeat-x scroll 0%;
+}
+
+ul.horizontal-list-floated li {
+  float:left;
+  padding-left:1em;
+}
+
+#portalNavigation #portalNavigationList a {
+  padding:0.5em 2em;
+  display:block;
+  font-weight:bold;
+  text-decoration:none;
+}
+
+#portalPage table tr {
+  vertical-align:top;
+}
+
+#portalPageLeftColumnInner {
+  width:195px;
+}
+
+#portalPageLeftColumn .block {
+  margin-bottom:10px;
+}
+
+#portalPageLeftColumn .block h2.block-title {
+  border-bottom:2px solid #6666CC;
+  color:#000066;
+  font-size:100%;
+  margin:0pt;
+  padding:0.5em;
+}
+
+#portalPageLeftColumn .block-content {
+  background:transparent url(images/top_light_fade.png) repeat-x scroll 0%;
+}
+
+#webSearchContainer form {
+  padding:1em;
+}
+
+#webSearchContainer input, #webSearchContainer select {
+  margin-bottom:0.5em;
+}
+
+#portalQuicklinks ul, #portalQuicklinks li {
+  margin:0pt;
+  padding:0pt;
+}
+
+#portalQuicklinks li {
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+}
+
+#portalQuicklinks a {
+  text-decoration:none;
+}
+
+#portalPageBodyTitleRowContents {
+  padding:1em;
+  position:relative;
+}
+
+#portalPageBody h1 {
+  margin:0pt;
+}
+
+#portalPageBodyTitle {
+  color:#FF6600;
+  font-size:250%;
+}
+
+#portalCustomizationLinks {
+  border-bottom:2px solid #CCCCFF;
+  border-left:2px solid #CCCCFF;
+  color:#000099;
+  font-size:80%;
+  padding:0.5em 0pt 0.5em 1em;
+  margin:0pt;
+  position:absolute;
+  right:0pt;
+  text-align:right;
+  top:0pt;
+}
+
+#portalCustomizationLinks h3 {
+  padding-right:1em;
+}
+
+#portalCustomizationLinks h3, #portalCustomizationLinks ul, #portalCustomizationLinks li {
+  display:inline;
+}
+
+#portalCustomizationLinks ul {
+  margin:0pt;
+}
+
+#portalCustomizationLinks li {
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+}
+
+#portalCustomizationLinksAddContent a {
+  background:transparent url(images/application_add.png) no-repeat scroll 0%;
+}
+
+#portalCustomizationLinks a {
+  padding:2px 5px 2px 20px;
+}
+
+.portal-pipe {
+  padding:0pt 0.5em;
+}
+
+#portalCustomizationLinksChangeLayout a {
+  background:transparent url(images/layout_content.png) no-repeat scroll 0%;
+}
+
+#portalCustomizationLinksChooseSkin a {
+  background:transparent url(images/color_swatch.png) no-repeat scroll 0%;
+}
+
+#portalCustomizationLinksAddTab a {
+  background:transparent url(images/tab_add.png) no-repeat scroll 0%;
+}
+
+.portal-page-column-inner {
+  min-height:100px;
+  padding-bottom:2em;
+  padding-left:1em;
+}
+
+.portlet-container {
+  margin-bottom:1em;
+}
+
+.portlet-top {
+  background:#000099 url(images/portlet_corner_topleft.png) no-repeat scroll left top;
+}
+
+.portlet-top-inner {
+  background:transparent url(images/portlet_corner_topright.png) no-repeat scroll right top;
+  height:3px;
+}
+
+.portlet-toolbar {
+  background-color:#000099;
+  white-space:nowrap;
+  position:relative;
+}
+
+.portlet-toolbar h2 {
+  background:transparent url(images/application.png) no-repeat scroll 0pt 3px;
+  margin:0pt 0pt 0px 0.5em;
+  padding:2px 20px 3px 20px;
+}
+
+.portlet-toolbar a {
+  color:#FFFFFF;
+  text-decoration:none;
+}
+
+.portlet-controls {
+  position:absolute;
+  right:0pt;
+  top:4px;
+}
+
+.portlet-controls .focus {
+  background:transparent url(images/zoom.png) no-repeat scroll 0%;
+}
+
+.portlet-controls .portlet-control {
+  padding-left:20px;
+}
+
+.dashboard .portlet-content {
+  background-color:#FFFFFF;
+  border-left:1px solid #000099;
+  border-right:1px solid #000099;
+}
+
+.portlet-content {
+  padding:1em;
+}
+
+.portlet-bottom {
+  background:#000099 url(images/portlet_corner_bottomleft.png) no-repeat scroll left bottom;
+}
+
+.portlet-bottom-inner {
+  background:transparent url(images/portlet_corner_bottomright.png) no-repeat scroll right bottom;
+  height:3px;
+}
+
+.portlet-controls .remove {
+  background:transparent url(images/cross.png) no-repeat scroll 0%;
+}
+
+.portlet-controls .edit {
+  background:transparent url(images/application_edit.png) no-repeat scroll 0%;
+}
+
+.orderable-hover{
+  cursor: move;
+}
+
+.orderable-selected{
+  border: 2px solid #666;
+}
+
+.orderable-avatar {
+  height: 25px;
+  width: 50px;
+  border: 1px solid #666;
+  background-color: #666;
+  z-index: 65535;
+}
+
+div .orderable-drop-marker{
+  height: 10px !important;
+  background-color: #fa7019;
+}
+
+
+
+
+
+
+
+
+
