@@ -1,3 +1,5 @@
+/* General styles */
+
 body {
   font-family:Verdana;
   text-align:left;
@@ -55,6 +57,8 @@ h2 {
 element.style {
   display:block;
 }
+
+/* Portal styles */
 
 body#portal.left-column {
   background:#FFFFFF url(images/page_column_back.png) repeat-y scroll 0% 50%;
@@ -173,6 +177,8 @@ ul.horizontal-list-floated li {
   vertical-align:top;
 }
 
+/* Left column styles */
+
 #portalPageLeftColumnInner {
   width:195px;
 }
@@ -215,6 +221,8 @@ ul.horizontal-list-floated li {
 #portalQuicklinks a {
   text-decoration:none;
 }
+
+/* Portal body styles */
 
 #portalPageBodyTitleRowContents {
   padding:1em;
@@ -294,6 +302,8 @@ ul.horizontal-list-floated li {
 #inner-column_u15l1s12 {
   padding-right:1em;    
 }
+
+/* Portlet styles */
 
 .portlet-container {
   margin-bottom:1em;
@@ -383,6 +393,14 @@ ul.horizontal-list-floated li {
   padding-top:5em;
 }
 
+/* Search styles */
+
+.gsc-branding-text {
+  padding-top:5em;   
+}
+
+/* Calendar styles */
+
 div#calendar-channel .datepicker_links {
   background:#FFFFFF none repeat scroll 0% 50%;
 }
@@ -429,6 +447,7 @@ div#calendar-channel .datepicker_links {
   color:#333333;
 }
 
+/* Reorderer styles */
 
 .orderable-hover{
   cursor: move;
