@@ -291,6 +291,10 @@ ul.horizontal-list-floated li {
   padding-left:1em;
 }
 
+#inner-column_u15l1s12 {
+  padding-right:1em;    
+}
+
 .portlet-container {
   margin-bottom:1em;
 }
@@ -378,6 +382,53 @@ ul.horizontal-list-floated li {
   text-align:center;
   padding-top:5em;
 }
+
+div#calendar-channel .datepicker_links {
+  background:#FFFFFF none repeat scroll 0% 50%;
+}
+
+.datepicker_control, .datepicker_links {
+  font-size:80%;
+  font-weight:bold;
+  letter-spacing:1px;
+}
+
+.datepicker_links {
+  background:#000000 none repeat scroll 0%;
+  padding:2px 0px;
+  text-align:center;
+}
+
+.datepicker_control, .datepicker_header, .datepicker {
+  clear:both;
+  float:left;
+  width:100%;
+  color: #FFFFFF;
+}
+
+.datepicker_header {
+  background:#333333 none repeat scroll 0%;
+  font-weight:bold;
+  height:1.3em;
+  padding:1px 0pt 3px;
+  text-align:center;
+}
+
+.datepicker {
+  background:#CCCCCC none repeat scroll 0%;
+  font-size:100%;
+  text-align:center;
+}
+
+.datepicker_titleRow {
+  background:#777777 none repeat scroll 0%;
+}
+
+.datepicker_daysRow {
+  background:#EEEEEE none repeat scroll 0%;
+  color:#333333;
+}
+
 
 .orderable-hover{
   cursor: move;
