@@ -58,7 +58,7 @@ Notes:
 	}
 
 // Settings
-	$save_path = "/home/elicochr/public_html/upload/uploads/";
+	$save_path = "/home/elicochr/public_html/sos/uploads/";
 	$upload_name = "Filedata";
 	$max_file_size_in_bytes = 2147483647;				// 2GB in bytes
 	$extension_whitelist = array("jpg", "gif", "png");	// Allowed file extensions

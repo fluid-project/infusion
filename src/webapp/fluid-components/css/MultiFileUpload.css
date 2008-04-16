@@ -18,6 +18,14 @@
 	outline: none;
 }
 
+.fluid-uploader button.fluid-uploader-browse {
+	background-image: url(../images/uploader/add.png);
+	background-attachment: scroll;
+	background-repeat: no-repeat;
+	background-position: 2px 1px;
+	padding-left: 20px;
+}
+
 .fluid-uploader-queue {
 	width: 480px;
 	border-left: 1px solid #BBB;
@@ -75,6 +83,12 @@
 
 .fluid-uploader-queue tfoot td {
 	text-align: right;
+	padding: 3px;
+}
+
+.fluid-uploader-queue tfoot td:first-child {
+	text-align: left;
+	padding: 2px;
 }
 
 .fluid-uploader-queue .fileName {
@@ -87,7 +101,12 @@
 	height: 16px;
 	width: 16px;
 	overflow: hidden;
-	background: url(../images/uploader/delete.png) scroll no-repeat 0px 0px;
+	background: url(../images/uploader/btn-delete-blu.gif) scroll no-repeat 0px 0px;
+	outline: 0;
+}
+
+.fluid-uploader-queue .removeFileBtn:hover {
+	background: url(../images/uploader/btn-delete-on.gif) scroll no-repeat 0px 0px;
 }
 
 .fluid-uploader-queue td.fileRemove {
@@ -123,26 +142,28 @@
  * done - all files have been uploaded
  */
 
-.fluid-uploader .start .fluid-upload-browse {
+.fluid-uploader .start .fluid-uploader-browse {
 	background-color: #82ACFD;
 }
 
+/*
 .fluid-uploader .start table, .fluid-uploader .start .fluid-uploader-upload {
 	display: none;
 }
+*/
 
 .fluid-uploader .loaded .fluid-uploader-upload {
 	background-color: #82ACFD;
 }
 
-.fluid-uploader .empty .fluid-uploader-upload, .fluid-uploader .done .fluid-uploader-upload, .fluid-uploader .start .fluid-uploader-done {
+.fluid-uploader .empty .fluid-uploader-upload, .fluid-uploader .done .fluid-uploader-upload, .fluid-uploader .start .fluid-uploader-done, .fluid-uploader .start .fluid-uploader-upload {
 	color: #666;
 	border: 1px solid #CCC;
 }
 
 .fluid-uploader .instructions  {
 	display: none;
-	width: 200px;
+	width: 300px;
 }
 
 .fluid-uploader .start .instructions  {
@@ -161,7 +182,7 @@
 	display: none;
 	width: 453px;
 	position: fixed;
-	top: 120px;
+	top: 100px;
 	left: auto;
 	overflow: hidden;
 }
