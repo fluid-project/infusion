@@ -160,9 +160,12 @@ var fluid = fluid || {};
         };
         
         this.handleKeyDown = function (evt) {
-            // The the key pressed is ctrl, and the active item is movable we want to restyle the active item.
+            if (!thisReorderer.activeItem || (thisReorderer.activeItem !== evt.target)) {
+                return true;
+            }
+            // If the key pressed is ctrl, and the active item is movable we want to restyle the active item.
             var jActiveItem = jQuery (thisReorderer.activeItem);
-            if (thisReorderer.activeItem && !jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && isMove(evt)) {
+            if (!jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && isMove(evt)) {
                // Don't treat the active item as dragging unless it is a movable.
                 if (isActiveItemMovable ()) {
                     jActiveItem.removeClass (thisReorderer.cssClasses.selected);
@@ -177,8 +180,11 @@ var fluid = fluid || {};
         };
 
         this.handleKeyUp = function (evt) {
+            if (!thisReorderer.activeItem || (thisReorderer.activeItem !== evt.target)) {
+                return true;
+            }
             var jActiveItem = jQuery (thisReorderer.activeItem);
-            if (thisReorderer.activeItem && jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && !isMove(evt)) {
+            if (jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && !isMove(evt)) {
                 // Don't treat the active item as dragging unless it is a movable.
                 if (isActiveItemMovable ()) {
                     jActiveItem.removeClass (thisReorderer.cssClasses.dragging);

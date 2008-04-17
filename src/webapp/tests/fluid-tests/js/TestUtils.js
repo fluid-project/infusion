@@ -16,64 +16,65 @@ fluid.testUtils = fluid.testUtils || {};
  * A number of utility functions for createing "duck-type" events for testing various key
  * stroke combinations.
  */
-fluid.testUtils.createEvtDownArrow = function() {
-	return this.createUnmodifiedKeyEvent(fluid.keys.DOWN);					
+fluid.testUtils.createEvtDownArrow = function(target) {
+	return this.createUnmodifiedKeyEvent(fluid.keys.DOWN, target);					
 };
 
-fluid.testUtils.createEvtUpArrow = function() {
-	return this.createUnmodifiedKeyEvent(fluid.keys.UP);				
+fluid.testUtils.createEvtUpArrow = function(target) {
+	return this.createUnmodifiedKeyEvent(fluid.keys.UP, target);				
 }; 
 
-fluid.testUtils.createEvtRightArrow = function() {
-	return this.createUnmodifiedKeyEvent(fluid.keys.RIGHT);			
+fluid.testUtils.createEvtRightArrow = function(target) {
+	return this.createUnmodifiedKeyEvent(fluid.keys.RIGHT, target);			
 }; 
 
-fluid.testUtils.createEvtLeftArrow = function() {
-	return this.createUnmodifiedKeyEvent(fluid.keys.LEFT);		
+fluid.testUtils.createEvtLeftArrow = function(target) {
+	return this.createUnmodifiedKeyEvent(fluid.keys.LEFT, target);		
 }; 
 
-fluid.testUtils.createEvtCTRLUp = function() {
-    return this.createUnmodifiedKeyEvent(fluid.keys.CTRL);    
+fluid.testUtils.createEvtCTRLUp = function(target) {
+    return this.createUnmodifiedKeyEvent(fluid.keys.CTRL, target);    
 };
 
-fluid.testUtils.createEvtCTRL = function() {
-	return this.createCtrlKeyEvent(fluid.keys.CTRL);	
+fluid.testUtils.createEvtCTRL = function(target) {
+	return this.createCtrlKeyEvent(fluid.keys.CTRL, target);	
 };
 
-fluid.testUtils.createEvtCtrlLeftArrow = function() {
-	return this.createCtrlKeyEvent(fluid.keys.LEFT);
+fluid.testUtils.createEvtCtrlLeftArrow = function(target) {
+	return this.createCtrlKeyEvent(fluid.keys.LEFT, target);
 };
 
-fluid.testUtils.createEvtCtrlRightArrow = function() {
-	return this.createCtrlKeyEvent(fluid.keys.RIGHT);
+fluid.testUtils.createEvtCtrlRightArrow = function(target) {
+	return this.createCtrlKeyEvent(fluid.keys.RIGHT, target);
 };
 
-fluid.testUtils.createEvtCtrlDownArrow = function() {
-	return this.createCtrlKeyEvent(fluid.keys.DOWN);
+fluid.testUtils.createEvtCtrlDownArrow = function(target) {
+	return this.createCtrlKeyEvent(fluid.keys.DOWN, target);
 };
 
-fluid.testUtils.createEvtCtrlUpArrow = function() {
-	return this.createCtrlKeyEvent(fluid.keys.UP);
+fluid.testUtils.createEvtCtrlUpArrow = function(target) {
+	return this.createCtrlKeyEvent(fluid.keys.UP, target);
 };
 
-fluid.testUtils.createAltKeyEvent = function (inKeyCode) {
-    return this.createKeyEvent (inKeyCode, false, false, true /* alt key is down */);
+fluid.testUtils.createAltKeyEvent = function (inKeyCode, target) {
+    return this.createKeyEvent (inKeyCode, false, false, true /* alt key is down */, target);
 };
 
-fluid.testUtils.createCtrlKeyEvent = function (inKeyCode) {
-    return this.createKeyEvent (inKeyCode, true /* control key is down */);
+fluid.testUtils.createCtrlKeyEvent = function (inKeyCode, target) {
+    return this.createKeyEvent (inKeyCode, true /* control key is down */, false, false, target);
 };
 
-fluid.testUtils.createCtrlShiftKeyEvent = function (inKeyCode) {
-	return this.createKeyEvent (inKeyCode, true, true /* ctrl and shift keys are down */);
+fluid.testUtils.createCtrlShiftKeyEvent = function (inKeyCode, target) {
+	return this.createKeyEvent (inKeyCode, true, true /* ctrl and shift keys are down */, false, target);
 };
 
-fluid.testUtils.createUnmodifiedKeyEvent = function (inKeyCode) {
-    return this.createKeyEvent (inKeyCode, false /* no control key modifier */);
+fluid.testUtils.createUnmodifiedKeyEvent = function (inKeyCode, target) {
+    return this.createKeyEvent (inKeyCode, false /* no control key modifier */, false, false, target);
 };
 
-fluid.testUtils.createKeyEvent = function (inKeyCode, inCtrlKey, inShiftKey, inAltKey) {
+fluid.testUtils.createKeyEvent = function (inKeyCode, inCtrlKey, inShiftKey, inAltKey, target) {
     return {keyCode: inKeyCode, ctrlKey: inCtrlKey, shiftKey: inShiftKey, altKey: inAltKey, 
+            target: target,
             preventDefault: function(){}, stopPropagation: function(){} };
 };
 

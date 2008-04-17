@@ -240,25 +240,25 @@ $(document).ready (function () {
         isItemDefaultTest("Initially ", secondLastReorderableId);
         
         // ctrl down - expect dragging state to start
-        lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL());
+        lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL (firstReorderable[0]));
         isItemDraggedTest("After ctrl-down, ", firstReorderableId);
         isItemDefaultTest("After ctrl-down, ", secondReorderableId);
         isItemDefaultTest("After ctrl-down, ", secondLastReorderableId);
             
         // right arrow down - all the dragging states should remain the same
-        lightbox.handleKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
+        lightbox.handleKeyDown(fluid.testUtils.createEvtCtrlRightArrow (firstReorderable[0]));
         isItemDraggedTest("After ctrl-down right arrow down, ", firstReorderableId);
         isItemDefaultTest("After ctrl-down right arrow down, ", secondReorderableId);
         isItemDefaultTest("After ctrl-down right arrow down, ", secondLastReorderableId);
         
         // right arrow with key-up event handler. The dragging states should remain the same.
-        lightbox.handleKeyUp(fluid.testUtils.createEvtCtrlRightArrow());
+        lightbox.handleKeyUp(fluid.testUtils.createEvtCtrlRightArrow (firstReorderable[0]));
         isItemDraggedTest("After ctrl-down right arrow up, ", firstReorderableId);
         isItemDefaultTest("After ctrl-down right arrow up, ", secondReorderableId);
         isItemDefaultTest("After ctrl-down right arrow up, ", secondLastReorderableId);
     
         // ctrl up - expect dragging to end
-        lightbox.handleKeyUp(fluid.testUtils.createEvtCTRLUp());
+        lightbox.handleKeyUp(fluid.testUtils.createEvtCTRLUp (firstReorderable[0]));
         isItemFocusedTest("After ctrl-up ", firstReorderableId);
         isItemDefaultTest("After ctrl-up ", secondReorderableId);
         isItemDefaultTest("After ctrl-up ", secondLastReorderableId);
@@ -441,13 +441,13 @@ $(document).ready (function () {
         jqUnit.assertEquals ("before any action, test item should have grab of supported", "supported", testItem.ariaState("grab"));
         
         focusLightbox ();
-        lightbox.handleKeyDown (fluid.testUtils.createEvtCTRL());
+        lightbox.handleKeyDown (fluid.testUtils.createEvtCTRL (testItem[0]));
         jqUnit.assertEquals ("while CTRL held down, test item should have grab of true", "true", testItem.ariaState("grab"));
     
-        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
+        lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlRightArrow(testItem[0]));
         jqUnit.assertEquals ("after arrow while CTRL still held down, test item should have grab of true", "true", testItem.ariaState("grab"));
         
-        lightbox.handleKeyUp (fluid.testUtils.createEvtCTRLUp());
+        lightbox.handleKeyUp (fluid.testUtils.createEvtCTRLUp(testItem[0]));
         jqUnit.assertEquals ("after CTRL released, test item should have grab of supported", "supported", testItem.ariaState("grab"));
     });
 

@@ -11,7 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 $(document).ready (function () {
-    var layoutCustomizerTests = new jqUnit.TestCase ("LayoutCustomizer Tests", setUp, tearDown);
+    var moduleLayoutTests = new jqUnit.TestCase ("ModuleLayout Tests", setUp, tearDown);
 
     function isOriginalOrderTest(testStr, layoutObj) {
         jqUnit.assertEquals (testStr + ", Portlet1 should be 1st in column 1", portlet1id, layoutObj.columns[0].children[0]);
@@ -26,14 +26,14 @@ $(document).ready (function () {
         
     }
      
-    layoutCustomizerTests.test ("FindColIndex", function () {
+    moduleLayoutTests.test ("FindColIndex", function () {
         jqUnit.assertEquals (column1id + " should be in 1st column", 0, fluid.moduleLayout.internals.findColIndex (column1id, demo.portal.layout));
         jqUnit.assertEquals (column2id + " should be in 2nd column", 1, fluid.moduleLayout.internals.findColIndex (column2id, demo.portal.layout));
         jqUnit.assertEquals (column3id + " should be in 3rd column", 2, fluid.moduleLayout.internals.findColIndex (column3id, demo.portal.layout));
         jqUnit.assertEquals (column4id + " should be in 4th column", 3, fluid.moduleLayout.internals.findColIndex (column4id, demo.portal.layout));
     });
     
-    layoutCustomizerTests.test ("FindColumnAndItemIndices", function () {
+    moduleLayoutTests.test ("FindColumnAndItemIndices", function () {
         // Tests for column index:
         // Column 0
         jqUnit.assertEquals (portlet1id + " should be in 1st column", 0, fluid.moduleLayout.internals.findColumnAndItemIndices (portlet1id, demo.portal.layout).columnIndex);
@@ -67,7 +67,7 @@ $(document).ready (function () {
         
     });   // end testCalcNextColumnIndex().
      
-    layoutCustomizerTests.test ("FindItemAndTargetIndices", function () {    
+    moduleLayoutTests.test ("FindItemAndTargetIndices", function () {    
         var indices = fluid.moduleLayout.internals.findItemAndTargetIndices (portlet1id, portlet1id, fluid.position.BEFORE, demo.portal.layout);
         jqUnit.assertEquals ("Item index of portlet 1 should be 0", 0, indices.itemIndex);
         jqUnit.assertEquals ("Target index of portlet 1 should be 0", 0, indices.targetIndex);
@@ -85,12 +85,12 @@ $(document).ready (function () {
         jqUnit.assertEquals ("Target index of an undefined portlet should be -1", -1, indices.targetIndex);    
     });
     
-    layoutCustomizerTests.test ("NumColumns", function () {
+    moduleLayoutTests.test ("NumColumns", function () {
         jqUnit.assertEquals("Number of columns in test layout should be 4", 4, fluid.moduleLayout.internals.numColumns (demo.portal.layout));
         jqUnit.assertEquals("Number of columns in empty layout should be 0", 0, fluid.moduleLayout.internals.numColumns (emptyLayout));
     });
     
-    layoutCustomizerTests.test ("UpdateLayout", function () {
+    moduleLayoutTests.test ("UpdateLayout", function () {
         var item = jQuery ("#" + portlet3id)[0];
         var relatedItem = jQuery ("#" + portlet6id)[0];
         var layoutClone = fluid.testUtils.cloneObj (demo.portal.layout);
@@ -123,7 +123,7 @@ $(document).ready (function () {
     });
     
     
-    layoutCustomizerTests.test ("FindTargetIsColumn", function () {
+    moduleLayoutTests.test ("FindTargetIsColumn", function () {
         var moveRight = fluid.direction.NEXT;
         var moveLeft = fluid.direction.PREVIOUS;
     
@@ -154,7 +154,7 @@ $(document).ready (function () {
         jqUnit.assertEquals ("...moving portlet3 left, should find INSIDE (2)", expected.position, actual.position);
     });
     
-    layoutCustomizerTests.test ("FindTarget", function () {
+    moduleLayoutTests.test ("FindTarget", function () {
         var moveRight = fluid.direction.NEXT;
         var moveLeft = fluid.direction.PREVIOUS;
     
@@ -202,7 +202,7 @@ $(document).ready (function () {
         jqUnit.assertEquals ("...moving portlet6 right, should find AFTER (1)", expected.position, actual.position);   
     });
     
-    layoutCustomizerTests.test ("CanMove", function () {
+    moduleLayoutTests.test ("CanMove", function () {
         jqUnit.assertFalse (fluid.moduleLayout.canMove (portlet1id, portlet1id, fluid.position.BEFORE, demo.portal.layout, demo.portal.dropTargetPerms));
         jqUnit.assertFalse (fluid.moduleLayout.canMove (portlet1id, portlet1id, fluid.position.AFTER, demo.portal.layout, demo.portal.dropTargetPerms));
     
@@ -219,7 +219,7 @@ $(document).ready (function () {
             fluid.moduleLayout.canMove (portlet9id, portlet9id, fluid.position.AFTER, demo.portal.layout, demo.portal.dropTargetPerms));
     });
     
-    layoutCustomizerTests.test ("GetItemAt", function () {
+    moduleLayoutTests.test ("GetItemAt", function () {
     
         // top-left corner should be portlet1.
         var itemId = fluid.moduleLayout.internals.getItemAt (0, 0, demo.portal.layout);
@@ -250,7 +250,7 @@ $(document).ready (function () {
         jqUnit.assertNull ("Item index greater than number of items in column should give null result", itemId);
     });
     
-    layoutCustomizerTests.test ("NearestNextMoveableTarget", function () {
+    moduleLayoutTests.test ("NearestNextMoveableTarget", function () {
         
         // portlet3's nearest next is portlet4.
         var actual = fluid.moduleLayout.internals.nearestNextMoveableTarget (portlet3id, demo.portal.layout, demo.portal.dropTargetPerms);
@@ -285,7 +285,7 @@ $(document).ready (function () {
         jqUnit.assertEquals ("portlet6 has no next since it is at the bottom of a column", portlet6id, actual.id);
     });
     
-    layoutCustomizerTests.test ("NearestPreviousMoveableTarget", function () {
+    moduleLayoutTests.test ("NearestPreviousMoveableTarget", function () {
         
         // portlet3's can't move up since the portlets above it are fixed.
         var actual = fluid.moduleLayout.internals.nearestPreviousMoveableTarget (portlet3id, demo.portal.layout, demo.portal.dropTargetPerms);
@@ -316,7 +316,7 @@ $(document).ready (function () {
         jqUnit.assertEquals ("portlet9's nearest previous target should be portlet6", portlet8id, actual.id);
     });
     
-    layoutCustomizerTests.test ("FirstItemInAdjacentColumnSkipColumn", function () {
+    moduleLayoutTests.test ("FirstItemInAdjacentColumnSkipColumn", function () {
         var smallLayout = { 
             id:"t2",
             columns:[
@@ -335,7 +335,7 @@ $(document).ready (function () {
 
     });
     
-    layoutCustomizerTests.test ("FirstItemInAdjacentColumn", function () {
+    moduleLayoutTests.test ("FirstItemInAdjacentColumn", function () {
     
         // portlet1 has no left neighbour, portlet5 is at the top of the next column.
         var actualId = fluid.moduleLayout.firstItemInAdjacentColumn (portlet1id, fluid.direction.PREVIOUS, demo.portal.layout);
@@ -380,7 +380,7 @@ $(document).ready (function () {
         jqUnit.assertEquals ("portlet9 has not right neighbour since it is in the right-most column", portlet9id, actualId);   
     });
     
-    layoutCustomizerTests.test ("ItemAboveBelow", function () {
+    moduleLayoutTests.test ("ItemAboveBelow", function () {
         var above = fluid.direction.PREVIOUS;
         var below = fluid.direction.NEXT;
         
@@ -436,7 +436,7 @@ $(document).ready (function () {
     
     });   // end testItemAboveBelow().
     
-    layoutCustomizerTests.test ("CreateFindItems", function () {
+    moduleLayoutTests.test ("CreateFindItems", function () {
         var findItems = fluid.moduleLayout.createFindItems (demo.portal.layout, demo.portal.dropTargetPerms);
         var selectables = fluid.wrap (findItems.selectables ());
         jqUnit.assertEquals ("There are 9 selectable portlets", 9, selectables.length);
@@ -449,7 +449,7 @@ $(document).ready (function () {
         
     });   // end testCreateFindItems().
     
-    layoutCustomizerTests.test ("CanItemMove", function () {
+    moduleLayoutTests.test ("CanItemMove", function () {
         jqUnit.assertFalse ("Portlet 1 should not be movable", fluid.moduleLayout.internals.canItemMove (0, demo.portal.dropTargetPerms));
         jqUnit.assertFalse ("Portlet 2 should not be movable", fluid.moduleLayout.internals.canItemMove (1, demo.portal.dropTargetPerms));
         jqUnit.assertTrue ("Portlet 3 should be movable", fluid.moduleLayout.internals.canItemMove (2, demo.portal.dropTargetPerms));
@@ -462,7 +462,7 @@ $(document).ready (function () {
         
     });
     
-    layoutCustomizerTests.test ("IsDropTarget", function () {
+    moduleLayoutTests.test ("IsDropTarget", function () {
         jqUnit.assertFalse ("Portlet 1 should not be a drop target", fluid.moduleLayout.internals.isDropTarget (0, demo.portal.dropTargetPerms));
         jqUnit.assertTrue ("Portlet 2 should be a drop target", fluid.moduleLayout.internals.isDropTarget (1, demo.portal.dropTargetPerms));
         jqUnit.assertTrue ("Portlet 3 should be a drop target", fluid.moduleLayout.internals.isDropTarget (2, demo.portal.dropTargetPerms));
