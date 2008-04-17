@@ -25,14 +25,6 @@ var fluid = fluid || {};
         };
     };
     
-    var createLightboxWithKeyset = function (containerId, instructionMessageId, keysets) {
-        var parentNode = document.getElementById (containerId);
-        var itemFinder = createItemFinder(parentNode, containerId);
-        var orderChangedCallback = fluid.lightbox.defaultOrderChangedCallback (parentNode);
-            
-        return fluid.lightbox.createLightbox (parentNode, itemFinder, orderChangedCallback, instructionMessageId, keysets);
-    };
-    
     // Public Lightbox API
     fluid.lightbox = {
         /**
@@ -73,9 +65,9 @@ var fluid = fluid || {};
          * @param {Function} itemFinderFn A function that returns a list of orderable images
          * @param {Function} orderChangedFn A function that is called when the image order is changed by the user
          * @param {String} instructionMessageId The id of the DOM element containing instructional text for Lightbox users
-         * @param {Object} keysets (optional) Keyset for navigating and moving thumbnails in the Lightbox
+         * @param {Object} options (optional) extra options for the Reorderer
          */
-        createLightbox: function (container, itemFinderFn, orderChangedFn, instructionMessageId, keysets) {
+        createLightbox: function (container, itemFinderFn, orderChangedFn, instructionMessageId, options) {
             // Remove the anchors from the taborder.
             jQuery ("a", container).tabindex (-1);
             addThumbnailActivateHandler (container);
@@ -83,12 +75,14 @@ var fluid = fluid || {};
             var layoutHandler = new fluid.GridLayoutHandler (itemFinderFn, {
                 orderChangedCallback: orderChangedFn
             });
-            
-            return new fluid.Reorderer (container, itemFinderFn, layoutHandler, {
+
+            var reordererOptions = {
                 instructionMessageId : instructionMessageId,
-                role : fluid.roles.GRID,
-                keysets : keysets
-            });
+                role : fluid.roles.GRID
+            };            
+            fluid.mixin (reordererOptions, options);
+            
+            return new fluid.Reorderer (container, itemFinderFn, layoutHandler, reordererOptions);
         },
         
         /**
@@ -99,7 +93,11 @@ var fluid = fluid || {};
          * @param {String} instructionMessageId The id of the DOM element containing instructional text for Lightbox users
          */
         createLightboxFromIds: function (containerId, instructionMessageId) {
-            return createLightboxWithKeyset (containerId, instructionMessageId, undefined);
+            var parentNode = document.getElementById (containerId);
+            var itemFinder = createItemFinder(parentNode, containerId);
+            var orderChangedCallback = fluid.lightbox.defaultOrderChangedCallback (parentNode);
+            
+            return fluid.lightbox.createLightbox (parentNode, itemFinder, orderChangedCallback, instructionMessageId);
         }
     };
 }) (jQuery, document);
