@@ -12,10 +12,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var fluid = fluid || {};
 
 (function (fluid) {
-    fluid.initPortalReorderer = function (layout, perms, grabHandle, orderChangedCallbackUrl) {
-        var portletReordererRoot = fluid.utils.jById (fluid.portletLayout.containerId (layout));
+    fluid.initLayoutCustomizer = function (layout, perms, grabHandle, orderChangedCallbackUrl) {
+        var reordererRoot = fluid.utils.jById (fluid.moduleLayout.containerId (layout));
     
-        var items = fluid.portletLayout.createFindItems (layout, perms, grabHandle);
+        var items = fluid.moduleLayout.createFindItems (layout, perms, grabHandle);
     
         var lhOptions;
         if (orderChangedCallbackUrl) {
@@ -24,7 +24,7 @@ var fluid = fluid || {};
             };
         }
     
-        var layoutHandler = new fluid.PortletLayoutHandler (layout, perms, lhOptions);
+        var layoutHandler = new fluid.ModuleLayoutHandler (layout, perms, lhOptions);
         var rOptions = {
             role : fluid.roles.GRID,
             avatarCreator : function (item) {
@@ -32,6 +32,6 @@ var fluid = fluid || {};
             }
         };
         
-        return new fluid.Reorderer (portletReordererRoot, items, layoutHandler, rOptions);
+        return new fluid.Reorderer (reordererRoot, items, layoutHandler, rOptions);
     };
 }) (fluid);

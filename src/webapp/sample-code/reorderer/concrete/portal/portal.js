@@ -34,5 +34,5 @@ demo.initPortletReorderer = function() {
         return jQuery ("[id=toolbar_" + item.id.split ("_")[1] + "]");
     };
 
-    return fluid.initPortalReorderer (layout, dropTargetPerms, grabHandle);
+    return fluid.initLayoutCustomizer (layout, dropTargetPerms, grabHandle);
 };  

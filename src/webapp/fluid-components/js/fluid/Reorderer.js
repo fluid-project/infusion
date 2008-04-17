@@ -718,15 +718,15 @@ var fluid = fluid || {};
 	}; // End of GridLayoutHandler
     
     /*
-     * Portlet Layout Handler for reordering portlet-type markup.
+     * Module Layout Handler for reordering content modules.
      * 
      * General movement guidelines:
      * 
-     * - Arrowing sideways will always go to the top (moveable) portlet in the column
+     * - Arrowing sideways will always go to the top (moveable) module in the column
      * - Moving sideways will always move to the top available drop target in the column
      * - Wrapping is not necessary at this first pass, but is ok
      */
-    fluid.PortletLayoutHandler = function (layout, targetPerms, options) {
+    fluid.ModuleLayoutHandler = function (layout, targetPerms, options) {
         var orientation = fluid.orientation.VERTICAL;
         var orderChangedCallback = function () {};
         
@@ -754,7 +754,7 @@ var fluid = fluid || {};
 	     * the next item.
 	     */
 	    var getVerticalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
-	    	var siblingId = fluid.portletLayout.itemAboveBelow (item.id, direction, layout);
+	    	var siblingId = fluid.moduleLayout.itemAboveBelow (item.id, direction, layout);
             return fluid.utils.jById (siblingId)[0];
 	    };
 	
@@ -766,14 +766,14 @@ var fluid = fluid || {};
 	     * the next item.
 	     */
 	    var getHorizontalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
-	        var itemId = fluid.portletLayout.firstItemInAdjacentColumn (item.id, direction, layout);
+	        var itemId = fluid.moduleLayout.firstItemInAdjacentColumn (item.id, direction, layout);
 	        return fluid.utils.jById (itemId)[0];
         };
 	    	    
         // This should probably be part of the public API so it can be configured.
         var move = function (item, relatedItem, position /* BEFORE, AFTER or INSIDE */) {
             if (!item || !relatedItem || 
-                !fluid.portletLayout.canMove (item.id, relatedItem.id, position, layout, targetPerms)) {
+                !fluid.moduleLayout.canMove (item.id, relatedItem.id, position, layout, targetPerms)) {
                 return;
             }           
             if (position === fluid.position.BEFORE) {
@@ -783,18 +783,18 @@ var fluid = fluid || {};
             } else {  // must be INSIDE
                 jQuery (relatedItem).append (item);
             }
-            fluid.portletLayout.updateLayout (item.id, relatedItem.id, position, layout);
+            fluid.moduleLayout.updateLayout (item.id, relatedItem.id, position, layout);
             orderChangedCallback (); 
         };
         
         var moveHorizontally = function (item, direction /* PREVIOUS, NEXT */) {
-            var targetInfo = fluid.portletLayout.findTarget (item.id, direction, layout, targetPerms);
+            var targetInfo = fluid.moduleLayout.findTarget (item.id, direction, layout, targetPerms);
             var targetItem = fluid.utils.jById (targetInfo.id)[0];
             move (item, targetItem, targetInfo.position);
         };
         
         var moveVertically = function (item, direction /* PREVIOUS, NEXT */) {
-            var target = fluid.portletLayout.nearestMoveableTarget (item.id, direction, layout, targetPerms);
+            var target = fluid.moduleLayout.nearestMoveableTarget (item.id, direction, layout, targetPerms);
             var targetItem = fluid.utils.jById (target.id)[0];
             move (item, targetItem, target.position);
         };
@@ -833,11 +833,11 @@ var fluid = fluid || {};
 	    };
 	    
         this.dropPosition = function (target, moving, x, y) {
-            if (fluid.portletLayout.isColumn (target.id, layout)) {
+            if (fluid.moduleLayout.isColumn (target.id, layout)) {
                 return fluid.position.INSIDE;
             }
             var position = mousePosition (target, orientation, x, y);
-            var canDrop = fluid.portletLayout.canMove (moving.id, target.id, position, layout, targetPerms);
+            var canDrop = fluid.moduleLayout.canMove (moving.id, target.id, position, layout, targetPerms);
 	    	if (canDrop) {
                 return position;
 	    	}
@@ -853,10 +853,10 @@ var fluid = fluid || {};
             }
         };
         
-    }; // End PortalLayoutHandler
+    }; // End ModuleLayoutHandler
 }) (jQuery, fluid);
 
-fluid.portletLayout = function (jQuery, fluid) {
+fluid.moduleLayout = function (jQuery, fluid) {
     var internals = {
         layoutWalker: function (fn, layout) {
             for (var col = 0; col < layout.columns.length; col++) {
@@ -978,7 +978,7 @@ fluid.portletLayout = function (jQuery, fluid) {
                 var idsInCol = layout.columns[startCoords.columnIndex].children;
                 for (var i = startCoords.itemIndex + 1; (i < idsInCol.length) && !found; i++) {
                     var possibleTargetId = idsInCol[i];
-                    if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.AFTER, layout, perms))) {
+                    if ((found = fluid.moduleLayout.canMove (itemId, possibleTargetId, fluid.position.AFTER, layout, perms))) {
                         nextPossibleTarget.id = possibleTargetId;
                     }
                 }
@@ -1004,7 +1004,7 @@ fluid.portletLayout = function (jQuery, fluid) {
                 var idsInCol = layout.columns[startCoords.columnIndex].children;
                 for (var i = startCoords.itemIndex - 1; (i > -1) && !found; i--) {
                     var possibleTargetId = idsInCol[i];
-                    if ((found = fluid.portletLayout.canMove (itemId, possibleTargetId, fluid.position.BEFORE, layout, perms))) {
+                    if ((found = fluid.moduleLayout.canMove (itemId, possibleTargetId, fluid.position.BEFORE, layout, perms))) {
                         previousPossibleTarget.id = possibleTargetId;
                     }
                 }
@@ -1159,15 +1159,15 @@ fluid.portletLayout = function (jQuery, fluid) {
             var idsInCol = targetCol.children;
             for (var i = 0; (i < idsInCol.length); i++) {
                 var targetId = idsInCol[i];
-                if (fluid.portletLayout.canMove (itemId, targetId, fluid.position.BEFORE, layout, perms)) {
+                if (fluid.moduleLayout.canMove (itemId, targetId, fluid.position.BEFORE, layout, perms)) {
                     return { id: targetId, position: fluid.position.BEFORE };
                 }
-                else if (fluid.portletLayout.canMove (itemId, targetId, fluid.position.AFTER, layout, perms)) {
+                else if (fluid.moduleLayout.canMove (itemId, targetId, fluid.position.AFTER, layout, perms)) {
                     return { id: targetId, position: fluid.position.AFTER };
                 }
             }
 			
-            // no valid portlets found, so target is the column itself
+            // no valid modules found, so target is the column itself
             return { id: targetCol.id, position: fluid.position.INSIDE };
         },
 

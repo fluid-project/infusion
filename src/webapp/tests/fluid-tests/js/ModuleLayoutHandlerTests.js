@@ -11,7 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 $(document).ready (function () {
-    var portletLHTests = new jqUnit.TestCase ("PortletLayoutHandler Tests", setUp, tearDown);
+    var portletLHTests = new jqUnit.TestCase ("ModuleLayoutHandler Tests", setUp, tearDown);
 
     portletLHTests.test ("GetItemAbove", function () {
         var itemAbove = portletHandler.getItemAbove (jQuery ("#" + portlet9id)[0]);
