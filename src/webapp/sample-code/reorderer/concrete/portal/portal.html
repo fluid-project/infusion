@@ -18,6 +18,7 @@
     <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
     <script type="text/javascript" src="../../../../fluid-components/js/fluid/Reorderer.js"></script>
     <script type="text/javascript" src="../../../../fluid-components/js/fluid/LayoutCustomizer.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/Lightbox.js"></script>
     <script type="text/javascript" src="portal.js"></script>
 
   </head>
@@ -188,19 +189,6 @@ lacinia ligula et dolor. Phasellus hendrerit nulla. Aliquam feugiat
 eleifend tellus. Nullam tristique nisi et est. Sed luctus magna ut dui.
 Nam aliquet metus laoreet tortor.
                             </p>
-    	                    <p>Duis erat mi, placerat
-vel, vulputate ac, commodo vel, mauris. Duis molestie. Sed urna erat,
-viverra sit amet, aliquam ut, facilisis a, magna. Nullam suscipit
-posuere justo. Curabitur ac augue. Maecenas eget orci. Aenean et purus.
-Curabitur non nulla sed metus convallis ornare. Lorem ipsum dolor sit
-amet, consectetuer adipiscing elit. Sed sed ipsum nec libero pharetra
-malesuada. Suspendisse potenti. Pellentesque et sapien non purus
-malesuada auctor. Nulla aliquet dui quis diam. Mauris dictum justo eget
-neque. Maecenas vel magna vitae neque volutpat eleifend. Fusce id massa
-ut nunc lobortis interdum. Duis libero justo, lacinia in, commodo nec,
-hendrerit sit amet, nulla. Pellentesque habitant morbi tristique
-senectus et netus et malesuada fames ac turpis egestas.
-                            </p>
     	                    <p>Vivamus
 scelerisque fringilla urna. Nulla facilisi. Duis vestibulum. Nunc
 venenatis mauris quis quam. Pellentesque enim lorem, blandit in,
@@ -217,13 +205,13 @@ dignissim suscipit.
                         <div class="portlet-bottom-inner"></div>
                       </div>
                     </div>
-                    <div xmlns:dlm="http://www.uportal.org/layout/dlm" class="portlet-container google-portlet movable" id="portlet_u15l1n11">
+                    <div xmlns:dlm="http://www.uportal.org/layout/dlm" class="portlet-container lightbox-portlet movable" id="portlet_u15l1n11">
                       <div class="portlet-top">
                         <div class="portlet-top-inner"></div>
                       </div>
                       <div style="cursor: move; -moz-user-select: none;" class="portlet-toolbar" id="toolbar_u15l1n11">
                         <a id="u15l1n11" name="u15l1n11"></a>
-                        <h2><a href="#">Google Search</a></h2>
+                        <h2><a href="#">Image Lightbox</a></h2>
                         <div class="portlet-controls">
                           <a class="portlet-control edit" title="To enter the edit mode for this portlet" href="#">
                           </a>
@@ -235,27 +223,126 @@ dignissim suscipit.
                       </div>
                     <div class="portlet-content" id="portletContent_u15l1n11">
                       <div class="portlet-content-inner">
-                        <div id="Pluto_4_u15l1n11_searchcontrol">
-                          <div class="gsc-control">
-                            <form accept-charset="utf-8" class="gsc-search-box">
-                              <table class="gsc-search-box" cellpadding="0" cellspacing="0">
-                                <tbody>
-                                  <tr>
-                                    <td class="gsc-input"><input name="search" class="gsc-input" size="10" autocomplete="off" type="text"></td>
-                                    <td class="gsc-search-button"><input title="search" class="gsc-search-button" value="Search" type="submit"></td>
-                                    <td class="gsc-clear-button"><div title="clear results" class="gsc-clear-button">&nbsp;</div></td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </form>
+                          <div id="lightbox-instructions" class="lightbox-instructions"
+                          	   title="Image Lightbox: To use the keyboard: Select an image using i, k, m or j, or the arrow keys. View an image by pressing Enter. Move an image using CTRL + a direction key.">
+                            <div class="lightbox-downarrow"></div><div id="message-bundle:thumbnailInstructions">
+                              To use the keyboard:<br/>
+                                Select an image using i, k, m or j, or the arrow keys.<br/>
+                                View an image by pressing Enter.<br/>
+                                Move an image using CTRL + a direction key. 
+                            </div>
                           </div>
-                          <div class="gsc-branding-text">This is an example of the Google search portlet</div>
+                        <div id="gallery" class="image-container" title="Lightbox">
+                    
+                          <div class="float" id="thumb-0" title="Dragonfruit thumbnail">
+                              <div class="image-inner-container">
+                                <a href="../../../../fluid-components/images/Dragonfruit.jpg" >
+                                  <img id="fluid.img.first" src="../../../../fluid-components/images/Dragonfruit.jpg" border="0" alt="Dragonfruit thumbnail"/>
+                                </a>
+                              </div>
+                              <div class="caption image-title">
+                                <a href="../../../../fluid-components/images/Dragonfruit.jpg" >Dragonfruit</a>
+                              </div>
+                            </div>
+                    
+                            <div class="float" id="thumb-1" title="Kiwano thumbnail">
+                              <div class="image-inner-container">
+                                <a href="../../../../fluid-components/images/Kiwano.jpg" >
+                                  <img id="fluid.img.second" src="../../../../fluid-components/images/Kiwano.jpg" border="0" alt="Kiwano"/>
+                                </a>
+                              </div>
+                              <div class="caption image-title">
+                                <a href="../../../../fluid-components/images/Kiwano.jpg" >Kiwano</a>
+                              </div>
+                            </div>
+                    
+                            <div class="float" id="thumb-2" title="Blackberry thumbnail">
+                              <div class="image-inner-container">
+                                <a href="../../../../fluid-components/images/Blackberry.jpg" >
+                                  <img id="fluid.img.3" src="../../../../fluid-components/images/Blackberry.jpg" border="0" alt="Blackberry thumbnail"/>
+                                </a>
+                              </div>
+                              <div class="caption image-title">
+                                <a href="../../../../fluid-components/images/Blackberry.jpg" >Blackberry</a>
+                              </div>
+                            </div>
+                    
+                            <div class="float" id="thumb-3" title="Cherry thumbnail">
+                              <div class="image-inner-container">
+                                <a href="../../../../fluid-components/images/Cherry.jpg" >
+                                  <img id="fluid.img.4" src="../../../../fluid-components/images/Cherry.jpg" border="0" alt="Cherry thumbnail"/>
+                                </a>
+                              </div>
+                              <div class="caption image-title">
+                                <a href="../../../../fluid-components/images/Cherry.jpg" >Cherry</a>
+                              </div>
+                            </div>
+                    
+                            <div class="float" id="thumb-4" title="Fig thumbnail">
+                              <div class="image-inner-container">
+                                <a href="../../../../fluid-components/images/Fig.jpg" >
+                                  <img id="fluid.img.5" src="../../../../fluid-components/images/Fig.jpg" border="0" alt="Fig thumbnail"/>
+                                </a>
+                              </div>
+                              <div class="caption image-title">
+                                <a href="../../../../fluid-components/images/Fig.jpg" >Fig</a>
+                             </div>
+                            </div>
+                    
+                            <div class="float" id="thumb-6" title="Kiwi thumbnail">
+                              <div class="image-inner-container">
+                                <a href="../../../../fluid-components/images/Kiwi.jpg">
+                                  <img id="fluid.img.7" src="../../../../fluid-components/images/Kiwi.jpg" border="0" alt="Kiwi thumbnail"/>
+                                </a>
+                              </div>
+                              <div class="caption image-title">
+                                <a href="../../../../fluid-components/images/Kiwi.jpg" >Kiwi</a>
+                              </div>
+                            </div>
+                    
+                            <div class="float" id="thumb-7" title="Kumquat thumbnail">
+                              <div class="image-inner-container">
+                                <a href="../../../../fluid-components/images/Kumquat.jpg" >
+                                  <img id="fluid.img.8" src="../../../../fluid-components/images/Kumquat.jpg" border="0" alt="Kumquat thumbnail"/>
+                                </a>
+                              </div>
+                              <div class="caption image-title">
+                                <a href="../../../../fluid-components/images/Kumquat.jpg" >Kumquat</a>
+                              </div>
+                            </div>
+                    
+                            <div class="float" id="thumb-11" title="Tamarillo thumbnail">
+                              <div class="image-inner-container">
+                                <a href="../../../../fluid-components/images/Tamarillo.jpg" >
+                                  <img id="fluid.img.12" src="../../../../fluid-components/images/Tamarillo.jpg" border="0" alt="Tamarillo thumbnail"/>
+                                </a>
+                              </div>
+                              <div class="caption image-title">
+                                <a href="../../../../fluid-components/images/Tamarillo.jpg" >Tamarillo</a>
+                              </div>
+                            </div>
+                    
+                            <div class="float" id="thumb-12" title="Mangosteen thumbnail">
+                              <div class="image-inner-container">
+                                <a href="../../../../fluid-components/images/Mangosteen.jpg" >
+                                  <img id="fluid.img.secondLast" src="../../../../fluid-components/images/Mangosteen.jpg" border="0" alt="Mangosteen thumbnail"/>
+                                </a>
+                              </div>
+                              <div class="caption image-title">
+                                <a href="../../../../fluid-components/images/Mangosteen.jpg" >Mangosteen</a>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                      <script>
+                        demo.initLightboxReorderer();
+                    </script>
                     <div class="portlet-bottom">
                       <div class="portlet-bottom-inner"></div>
                     </div>
+                    </div>
+                    
                   </div>
                 </div>
               </td>

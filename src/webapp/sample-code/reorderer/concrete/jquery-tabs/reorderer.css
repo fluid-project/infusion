@@ -9,15 +9,22 @@
 }
 
 .selected-tab {
-    border-top: 2px solid green;
-    border-left: 2px solid green;
-    border-right: 2px solid green;
+     border-bottom: 1px solid #519e2d;
+}
+.selected-tab a, .selected-tab a span {
+    color: #3e9344 !important;
+    background: #ffffff !important;
 }
 
 .dragging-tab {
-    background-color: lightyellow;
     position: relative;
+    border-bottom: 3px solid #94c86e;
     top: -10px;
+}
+
+.dragging-tab a, .dragging-tab a span {
+    color: #3e9344 !important;
+    background: #ffffff !important;
 }
 
 .drop-marker-tab {

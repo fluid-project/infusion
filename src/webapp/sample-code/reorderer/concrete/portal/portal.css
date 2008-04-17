@@ -447,6 +447,113 @@ div#calendar-channel .datepicker_links {
   color:#333333;
 }
 
+/* Lightbox Styles */
+.image-container{
+  overflow: hidden; width: 100%;
+}
+
+.image-inner-container{
+  height: 100px;
+  width: 140px;
+  background-color: #eee;
+  overflow: hidden;
+  margin: 0 auto 3px auto;
+}
+
+.image-inner-container img{
+  width: 150px;
+}
+
+.image-title{
+	margin-top:5px;
+	height: 40px;
+	overflow: hidden;
+}
+
+.image-title a{
+  text-decoration: none;
+}
+
+.image-title a:hover{
+  text-decoration: underline;
+}
+
+.lightbox-instructions{
+	color: #666;
+	background-color: lightyellow;
+	padding: 3px;
+	border: 2px solid #ddd;
+	font-size: .9em;
+	width: 340px;
+    margin: 0px 0px 0px auto;
+}
+
+.lightbox-downarrow{
+	font-size: 0px; line-height: 0%; width: 0px;
+	margin: 5px 8px 30px 0;
+	float: left;
+	border-top: 10px solid red;
+	border-left: 10px solid lightyellow;
+	border-right: 10px solid lightyellow;
+}
+
+/* Lightbox Reorderer Styles */
+.lb-orderable-default{
+  height: 150px !important;
+	width: 150px;
+	border: 2px solid #ddd;
+	float: left;
+	margin: 5px !important;
+	text-align: center;
+	padding-top: 10px;
+}
+
+.lb-orderable-hover{
+	height: 150px !important;
+	width: 150px;
+	border: 2px solid #666;
+	float: left;
+	margin: 5px !important;
+	text-align: center;
+	padding-top: 10px;
+}
+
+.lb-orderable-selected{
+	height: 150px !important;
+	width: 150px;
+	border: 2px solid #666;
+	background-color: #ddd;
+	float: left;
+	margin: 5px !important;
+	text-align: center;
+	padding-top: 10px;
+}
+
+.lb-orderable-selected img{
+  border: 1px solid #eee;
+}
+
+.lb-orderable-dragging{
+	height: 150px !important;
+	width: 150px;
+	border: 2px solid #666;
+	background-color: #eee;
+	float: left;
+	margin: 5px !important;
+	text-align: center;
+	opacity: .2;
+	filter: alpha(opacity=20);
+	padding-top: 10px;
+}
+
+
+.lb-orderable-drop-marker{
+  height: 160px !important;
+  width: 4px;
+  background-color: red;
+  float: left;
+}
+
 /* Reorderer styles */
 
 .orderable-hover{

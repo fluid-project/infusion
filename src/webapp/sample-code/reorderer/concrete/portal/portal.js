@@ -35,4 +35,25 @@ demo.initPortletReorderer = function() {
     };
 
     return fluid.initLayoutCustomizer (layout, dropTargetPerms, grabHandle);
-};  
+};
+
+demo.initLightboxReorderer = function () {
+    var cssClassNames = {
+        defaultStyle: "lb-orderable-default",
+        selected: "lb-orderable-selected",
+        dragging: "lb-orderable-dragging",
+        hover: "lb-orderable-hover",
+        dropMarker: "lb-orderable-drop-marker",
+        avatar: "lb-orderable-avatar"
+    };  
+    
+    var orderableFinderFunction = function () {
+        return jQuery("#gallery > [id^=thumb-]");
+    };
+    
+    return fluid.lightbox.createLightbox (fluid.utils.jById("gallery"),
+                                            orderableFinderFunction,
+                                            function () {},
+                                            "gallery-instructions",
+                                            {cssClassNames: cssClassNames});
+};
