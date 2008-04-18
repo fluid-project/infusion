@@ -99,7 +99,7 @@ $(document).ready (function () {
     listLHTests.test ("Movement", function () {
         var listItems = jQuery("li", jQuery("#list1"));
         
-        jqUnit.assertUndefined("Before move, orderChangedCallback should not have been called", demo.unorderedList.orderChangedCallbackWasCalled);
+        jqUnit.assertUndefined("Before move, orderChangedCallback should not have been called", orderChangedCallbackWasCalled);
         jqUnit.assertEquals("Before moving anything, expect first is first", firstItemId, listItems[0].id);
         jqUnit.assertEquals("Before moving anything, expect second is second", secondItemId, listItems[1].id);
         jqUnit.assertEquals("Before moving anything, expect third is third", thirdItemId, listItems[2].id);
@@ -110,7 +110,7 @@ $(document).ready (function () {
         
         var listItemsAfterMove = jQuery("li", jQuery("#list1"));
         
-        jqUnit.assertTrue("After, callback should have been called", demo.unorderedList.orderChangedCallbackWasCalled);
+        jqUnit.assertTrue("After, callback should have been called", orderChangedCallbackWasCalled);
         jqUnit.assertEquals("After, expect second is first", secondItemId, listItemsAfterMove[0].id);
         jqUnit.assertEquals("After, expect first is second", firstItemId, listItemsAfterMove[1].id);
         jqUnit.assertEquals("After, expect third is third", thirdItemId, listItemsAfterMove[2].id);

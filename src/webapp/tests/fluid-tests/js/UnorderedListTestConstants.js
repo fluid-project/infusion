@@ -25,8 +25,26 @@ var listHandler1;
 
 // This setUp will be called before each of the tests that are included in unordered-list.html 
 function setUp () {
-    listHandler1 = demo.unorderedList.createListLayoutHandler();
+    listHandler1 = createListLayoutHandler();
 }
 
 
+var findList1 = function () { return jQuery ("#list1")[0]; };
 
+var orderChangedCallbackWasCalled;
+
+var listMovableFinder = function  () {
+    // This is returning the list instead of a jQuery object to ensure that people 
+    // can use an orderable finder function that doesn't use jQuery
+    return jQuery ("[id^=list1item]", findList1 ()).get ();
+};
+
+var callbackConfirmer = function () {
+    orderChangedCallbackWasCalled = true;
+};
+
+var createListLayoutHandler = function  () {
+        return new fluid.ListLayoutHandler (listMovableFinder, {
+                orderChangedCallback: callbackConfirmer
+            });
+    };

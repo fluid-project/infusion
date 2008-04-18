@@ -28,16 +28,6 @@ fluid.Scheduler = function () {
             return new fluid.Reorderer (container, movableFinder, layoutHandler);
         },
 
-		initRSFScheduler: function (namebase, orderableTagName, orderableIdName, numOrderables) {
-		    var movableFinder = fluid.Scheduler.createRSFOrderableFinder (namebase,
-		                                                                    orderableTagName,
-		                                                                    orderableIdName,
-		                                                                    numOrderables);
-		    var container = fetchReordererContainer (namebase);
-		    var layoutHandler = new fluid.ListLayoutHandler (movableFinder);
-		    return new fluid.Reorderer (container, movableFinder, layoutHandler); 
-		},
-
 		createJSONOrderChangedCallback: function (orderableFinder, urlToPostJSON) {
 		    return function () {
 		        var orderMapJSONString = fluid.Scheduler.generateJSONStringForOrderables(orderableFinder());
@@ -86,18 +76,6 @@ fluid.Scheduler = function () {
 		        }
 
 		        return orderables;
-		    };
-		},
-
-		createRSFOrderableFinder: function (namebase, orderableTagName, orderableIdName, numOrderables) {
-		    return function () {
-                var containerElement = document.getElementById(namebase);
-		        var orderablesRange = "[0-" + (numOrderables - 1) + "]";
-		        var idRegExp = "^" + namebase + orderableIdName + ":" + orderablesRange + ":" + "$";
-
-		        return fluid.utils.seekNodesById (containerElement,
-		                                              orderableTagName,
-		                                              fluid.utils.escapeSelector(idRegExp));
 		    };
 		},
 
