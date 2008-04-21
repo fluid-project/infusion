@@ -3,36 +3,37 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Conference Planning Tasks</title>
+    <link href="todo-list.css" type="text/css" rel="stylesheet"/>
 
     <!--  Required javascript modules for the Reorderer which can be replaced with the build generated file Fluid-all.js -->
-    <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.2.3.js"></script>
-    <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery.tabindex.js"></script>
-    <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery.dimensions.js"></script>
-    <script type="text/javascript" src="../../../../fluid-components/js/jquery/ui.base.js"></script>
-    <script type="text/javascript" src="../../../../fluid-components/js/jquery/ui.draggable.js"></script>
-    <script type="text/javascript" src="../../../../fluid-components/js/jquery/ui.droppable.js"></script>
-    <script type="text/javascript" src="../../../../fluid-components/js/jquery/jARIA.js"></script>
-    <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
-    <script type="text/javascript" src="../../../../fluid-components/js/fluid/Reorderer.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.3.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.tabindex.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.dimensions.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.base.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.droppable.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jARIA.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>    
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/Reorderer.js"></script>
     <script type="text/javascript" src="todo-list.js"></script>
-
-    <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. -->
+    
+    <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. --> 
     <script language="JavaScript" type="text/javascript">
       jQuery.noConflict();
-    </script>
+    </script> 
   </head>
-
+  
   <body>
     <h3>Sortable Conference Planning To-do List</h3>
-
-    <!--
+  
+    <!-- 
       The Reorderer container must have an id, and must be in the tab order of the document.
     -->
     <ol id="todo-list">
 
-      <!--
-        Orderable items are denoted by ids that begin with a common, unique prefix.
-        This allows the orderable finder function to easily identify orderable elements.
+      <!--  
+        Orderable items are denoted by ids that begin with a common, unique prefix.  
+        This allows the orderable finder function to easily identify orderable elements. 
       -->
       <li id="myUniquePrefix.orderable1">
         Select the date
@@ -89,7 +90,7 @@
         </ul>
       </li>
     </ol>
-
+  
     <script type="text/javascript">
         demo.initTodoList ();
     </script>
