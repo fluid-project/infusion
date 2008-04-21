@@ -31,6 +31,7 @@ img {
 	margin: 5px !important;
 	text-align: center;
 	padding-top: 10px;
+    cursor: move;
 }
 
 .orderable-hover{
@@ -52,6 +53,7 @@ img {
 	margin: 5px !important;
 	text-align: center;
 	padding-top: 10px;
+    cursor: move;
 }
 
 .orderable-selected img{
