@@ -1,0 +1,5 @@
+
+The tests in this folder assume that the tabindex project has been checked out as a sibling of
+the fluid-components project, i.e. the HTML test files assume a particular relative path to
+the jqUnit test files:
+    ../../fluid-components/src/webapp/tests/jqUnit
