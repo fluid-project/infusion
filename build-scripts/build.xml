@@ -18,16 +18,22 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="jslint" location="lib/jslint4java-1.1+rhino.jar" />
 
 	<!-- set up directory locations -->
-	<property name="src" location="../src/webapp/fluid-components" />
-	<property name="dist" location="../dist" />
-	<property name="build" location="../build" />
-	<property name="web-inf" location="../src/webapp/WEB-INF"/>
+    <property name="base-dir" location=".." />
+	<property name="src" location="${base-dir}/src/webapp/fluid-components" />
+	<property name="jquery-src" location="${base-dir}/src/webapp/fluid-components/js/jquery" />
+	<property name="dist" location="${base-dir}/dist" />
+	<property name="build" location="${base-dir}/build" />
+	<property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
 	<property name="components-build" location="${build}/fluid-components" />
+	<property name="jquery-build" location="${build}/fluid-components/js/jquery" />
 	<property name="lint" location="${src}"/>
 
 	<!-- the filename for the package to output -->
 	<property name="zipfile" value="fluid-${fluid_version}.zip" />
 
+    <!-- the filename of the documentation PDF -->
+    <property name="pdf-file" value="Fluid-${fluid_version}.pdf" />
+    
 	<!-- task definition for JSLint -->
 	<taskdef name="jslint" 
 		classname="net.happygiraffe.jslint.ant.JSLintTask" 
@@ -65,6 +71,17 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 					<include name="images/**" />
 				</fileset>
 	    </copy>
+        <copy todir="${build}">
+            <fileset dir="${base-dir}">
+                <include name="LICENSE.txt" />
+            </fileset>
+        </copy>
+        <copy todir="${jquery-build}">
+            <fileset dir="${jquery-src}">
+                <include name="GPL-LICENSE.txt" />
+                <include name="MIT-LICENSE.txt" />
+            </fileset>
+        </copy>
 	</target>
 
 	<!-- Concatenate all the minified JS files together into an all-in-one file. -->
@@ -145,15 +162,22 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 
 		<mkdir dir="${dist}/sample-code" />
 		<copy todir="${dist}/sample-code">
-			<fileset dir="../src/webapp/sample-code/">
+			<fileset dir="${base-dir}/src/webapp/sample-code/">
 				<include name="*/**" />
 		    </fileset>
 		</copy>
 
 		<mkdir dir="${dist}/tests" />
 		<copy todir="${dist}/tests">
-			<fileset dir="../src/webapp/tests">
+			<fileset dir="${base-dir}/src/webapp/tests">
 				<include name="*/**" />
+		    </fileset>
+		</copy>
+
+		<mkdir dir="${dist}/documentation" />
+		<copy todir="${dist}/documentation">
+			<fileset dir="${base-dir}">
+				<include name="${pdf-file}" />
 		    </fileset>
 		</copy>
 	</target>
