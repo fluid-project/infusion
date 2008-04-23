@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <title>jQuery UI Tabs - Keyboard Navigable</title>
+
+    <link rel="stylesheet" href="../../shared/jquery/flora.tabs.css" type="text/css" media="screen" title="Flora (Default)" />
+    <link rel="stylesheet" href="../../shared/jquery/style.css" type="text/css" media="screen" title="Flora (Default)" />
+
+    <script type="text/javascript" src="jquery-ui-accessible-tabs.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.3.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.base.js"></script>
+    <script type="text/javascript" src="../../shared/jquery/ui.tabs.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.tabindex.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jARIA.js"></script>
+
+  </head>
+
+  <body class="flora">
+    <h1>Keyboard Navigable jQuery UI Tabs</h1>
+
+    <ul id="tabs">
+        <li id="catsTab"><a href="#catsPanel" tabindex="-1"><span>Cats</span></a></li>
+        <li id="dogsTab"><a href="#dogsPanel" tabindex="-1"><span>Dogs</span></a></li>
+        <li id="hamstersTab"><a href="#hamstersPanel" tabindex="-1"><span>Hamsters</span></a></li>
+        <li id="alligatorsTab"><a href="#alligatorsPanel" tabindex="-1"><span>Alligators</span></a></li>
+    </ul>
+
+    <div id="panels">
+      <div id="catsPanel">
+        Cats meow.
+      </div>
+      <div id="dogsPanel">
+        Dogs bark.
+      </div>
+      <div id="hamstersPanel">
+        Hamsters wheel.
+      </div>
+      <div id="alligatorsPanel">
+        Alligators bite.
+      </div>
+    </div>
+    <script type="text/javascript">
+        fluid.accessibleTabs.initializeTabs("tabs", "panels");
+    </script>
+  </body>
+</html>

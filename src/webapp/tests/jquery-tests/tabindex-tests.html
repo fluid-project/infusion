@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" id="html">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>jQuery.tabindex Test Suite</title>
+  <link rel="Stylesheet" media="screen" href="../jqUnit/testsuite.css" />
+  <script type="text/javascript" src="../../fluid-components/js/jquery/jquery-1.2.3.js"></script>
+  <script type="text/javascript" src="../../fluid-components/js/jquery/jquery.tabindex.js"></script>
+  <script type="text/javascript" src="../jqUnit/testrunner.js"></script>
+  <script type="text/javascript" src="js/tabindex-tests.js"></script>
+</head>
+
+<body id="body">
+  <h1 id="header">jQuery.tabindex Test Suite</h1>
+  <h2 id="banner"></h2>
+  <h2 id="userAgent"></h2>
+
+  <!-- Test HTML -->
+  <div id="main" style="display: none;">
+    <p>This page contains a suite of unit tests for the jquery.tabindex plugin.</p>
+
+    <h1>Food</h1>
+    <ol id="listWithTabIndex" tabindex="0">
+        <li id="foodWithNegativeTabIndex" tabindex="-1">Rice</li>
+        <li id="foodNoTabIndex">Beans</li>
+        <li>Blinis</li>
+        <li>Tofu</li>
+    </ol>
+
+    <h2 id="headingWithNoTabIndex">I'm hungry. I should...</h2>
+    <a href="#" id="linkNoTabIndex">Eat lots of food</a> |
+    <a href="#" id="linkWithTabIndex" tabindex="2">Eat a little food</a> |
+    <a href="#" id="linkWithNegativeTabIndex" tabindex="-1">Eat no food</a>
+  </div>
+
+  <ol id="tests"></ol>
+</body>
+</html>
