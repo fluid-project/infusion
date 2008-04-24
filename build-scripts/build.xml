@@ -20,16 +20,16 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<!-- set up directory locations -->
     <property name="base-dir" location=".." />
 	<property name="src" location="${base-dir}/src/webapp/fluid-components" />
-	<property name="jquery-src" location="${base-dir}/src/webapp/fluid-components/js/jquery" />
-	<property name="swfupload-src" location="${base-dir}/src/webapp/fluid-components/swfupload" />
-	<property name="swfupload-js-src" location="${base-dir}/src/webapp/fluid-components/js/swfupload" />
+	<property name="jquery-src" location="${src}/js/jquery" />
+	<property name="swfupload-src" location="${src}/swfupload" />
+	<property name="swfupload-js-src" location="${src}/js/swfupload" />
 	<property name="dist" location="${base-dir}/dist" />
 	<property name="build" location="${base-dir}/build" />
 	<property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
 	<property name="components-build" location="${build}/fluid-components" />
-	<property name="jquery-build" location="${build}/fluid-components/js/jquery" />
-	<property name="swfupload-build" location="${build}/fluid-components/swfupload" />
-	<property name="swfupload-js-build" location="${build}/fluid-components/js/swfupload" />
+	<property name="jquery-build" location="${components-build}/js/jquery" />
+	<property name="swfupload-build" location="${components-build}/swfupload" />
+	<property name="swfupload-js-build" location="${components-build}/js/swfupload" />
 	<property name="lint" location="${src}"/>
 
 	<!-- the filename for the package to output -->
@@ -211,7 +211,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	</target>
 
 	<target name="war" depends="createDistro">
-		<copy todir="${build}/war/src/webapp/component-templates" >
+		<copy todir="${build}/war/src/webapp/fluid-components" >
 			<fileset dir="${components-build}"/>
 		</copy>
 
