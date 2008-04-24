@@ -21,11 +21,15 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     <property name="base-dir" location=".." />
 	<property name="src" location="${base-dir}/src/webapp/fluid-components" />
 	<property name="jquery-src" location="${base-dir}/src/webapp/fluid-components/js/jquery" />
+	<property name="swfupload-src" location="${base-dir}/src/webapp/fluid-components/swfupload" />
+	<property name="swfupload-js-src" location="${base-dir}/src/webapp/fluid-components/js/swfupload" />
 	<property name="dist" location="${base-dir}/dist" />
 	<property name="build" location="${base-dir}/build" />
 	<property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
 	<property name="components-build" location="${build}/fluid-components" />
 	<property name="jquery-build" location="${build}/fluid-components/js/jquery" />
+	<property name="swfupload-build" location="${build}/fluid-components/swfupload" />
+	<property name="swfupload-js-build" location="${build}/fluid-components/js/swfupload" />
 	<property name="lint" location="${src}"/>
 
 	<!-- the filename for the package to output -->
@@ -74,12 +78,24 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         <copy todir="${build}">
             <fileset dir="${base-dir}">
                 <include name="LICENSE.txt" />
+                <include name="README.txt" />
             </fileset>
         </copy>
         <copy todir="${jquery-build}">
             <fileset dir="${jquery-src}">
                 <include name="GPL-LICENSE.txt" />
                 <include name="MIT-LICENSE.txt" />
+            </fileset>
+        </copy>
+        <copy todir="${swfupload-build}">
+            <fileset dir="${swfupload-src}">
+                <include name="LICENSE.txt" />
+                <include name="swfupload_f9.swf" />
+            </fileset>
+        </copy>
+        <copy todir="${swfupload-js-build}">
+            <fileset dir="${swfupload-js-src}">
+                <include name="LICENSE.txt" />
             </fileset>
         </copy>
 	</target>
