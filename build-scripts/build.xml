@@ -38,13 +38,16 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     <!-- the filename of the documentation PDF -->
     <property name="pdf-file" value="Fluid-${fluid_version}.pdf" />
     
+    <!-- the filename of the war file -->
+    <property name="warfile" value="fluid-components-${fluid_version}.war" />
+    
 	<!-- task definition for JSLint -->
 	<taskdef name="jslint" 
 		classname="net.happygiraffe.jslint.ant.JSLintTask" 
 		classpath="${jslint}" />
 
 	<!-- Target: buildAll -->
-	<target name="buildAll" depends="clean, createDistro, war, package" />
+	<target name="buildAll" depends="clean, war, createDistro, package" />
 
 	<!-- Target: cleanup before running -->
 	<target name="clean">
@@ -204,7 +207,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 			Creates the release directory structure and zips it all up.
 		</description>
 
-		<echo>Zipping minified files in ${build} to ${dist}/${zipfile}</echo>
+		<echo>Zipping minified files in ${dist} to ${dist}/${zipfile}</echo>
 		<zip destfile="${dist}/${zipfile}" 
 			basedir="${dist}"
 			includes="**/*"  excludes="*.zip" />
@@ -227,6 +230,21 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 				<include name="project.properties" />
 			</fileset>
 		</copy>
+
+        <echo>Building war file...</echo>
+		<apply executable="mvn" dir="${build}/war" parallel="true">
+				<fileset  dir=".">
+				    <include name="pom.xml"/>
+                </fileset>
+				<arg value="install" />
+		</apply>
+
+        <echo>Copying war file ${build}/war/target/${warfile} to ${dist}...</echo>
+		<copy todir="${dist}">
+            <fileset dir="${build}/war/target">
+                <include name="${warfile}" />
+            </fileset>
+        </copy>
 
 	</target>
 
