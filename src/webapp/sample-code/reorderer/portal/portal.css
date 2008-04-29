@@ -293,13 +293,11 @@ ul.horizontal-list-floated li {
   background:transparent url(images/tab_add.png) no-repeat scroll 0%;
 }
 
-.portal-page-column-inner {
-  min-height:100px;
-  padding-bottom:2em;
+.portal-page-column {
   padding-left:1em;
 }
 
-#inner-column_u15l1s12 {
+#column_u15l1s12 {
   padding-right:1em;    
 }
 
