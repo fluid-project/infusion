@@ -18,9 +18,6 @@ var numOfImages = 14;
 // The id of the form for submitting changes to the server.
 var REORDER_FORM_ID = "reorder-form";
 
-// The base name of the resource bundle for localized strings.
-var MESSAGE_BUNDLE_BASE = "message-bundle:";
-
 // The id of the root node of the lightbox
 var lightboxRootId = "gallery:::gallery-thumbs:::";
 
@@ -131,7 +128,7 @@ var altKeys = {
     
 function createAltKeystrokeLightbox () {
     return fluid.lightbox.createLightbox (fetchLightboxRoot(),
-                                        findOrderableByDivAndId, function () {}, MESSAGE_BUNDLE_BASE, {
+                                        findOrderableByDivAndId, function () {}, {
                                             keysets: [altKeys]
                                         });
 }
@@ -148,7 +145,7 @@ function createMultiKeystrokeLightbox () {
     };
     
     return fluid.lightbox.createLightbox (fetchLightboxRoot(),
-                                        findOrderableByDivAndId, function () {}, MESSAGE_BUNDLE_BASE, {
+                                        findOrderableByDivAndId, function () {}, {
                                             keysets: [altKeys, altKeys2]
                                         });
 }
@@ -165,7 +162,7 @@ function createMultiOverlappingKeystrokeLightbox () {
     };
     
     return fluid.lightbox.createLightbox (fetchLightboxRoot(),
-                                        findOrderableByDivAndId, function () {}, MESSAGE_BUNDLE_BASE, {
+                                        findOrderableByDivAndId, function () {}, {
                                             keysets: [altKeys, altKeys2]
                                         });
 }

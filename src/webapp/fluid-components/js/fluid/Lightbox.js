@@ -67,7 +67,7 @@ var fluid = fluid || {};
          * @param {String} instructionMessageId The id of the DOM element containing instructional text for Lightbox users
          * @param {Object} options (optional) extra options for the Reorderer
          */
-        createLightbox: function (container, itemFinderFn, orderChangedFn, instructionMessageId, options) {
+        createLightbox: function (container, itemFinderFn, orderChangedFn, options) {
             // Remove the anchors from the taborder.
             jQuery ("a", container).tabindex (-1);
             addThumbnailActivateHandler (container);
@@ -77,7 +77,6 @@ var fluid = fluid || {};
             });
 
             var reordererOptions = {
-                instructionMessageId : instructionMessageId,
                 role : fluid.roles.GRID
             };            
             fluid.mixin (reordererOptions, options);
@@ -92,12 +91,12 @@ var fluid = fluid || {};
          * @param {String} containerId The id of the DOM element that represents the Lightbox
          * @param {String} instructionMessageId The id of the DOM element containing instructional text for Lightbox users
          */
-        createLightboxFromIds: function (containerId, instructionMessageId) {
+        createLightboxFromIds: function (containerId) {
             var parentNode = document.getElementById (containerId);
             var itemFinder = createItemFinder(parentNode, containerId);
             var orderChangedCallback = fluid.lightbox.defaultOrderChangedCallback (parentNode);
             
-            return fluid.lightbox.createLightbox (parentNode, itemFinder, orderChangedCallback, instructionMessageId);
+            return fluid.lightbox.createLightbox (parentNode, itemFinder, orderChangedCallback);
         }
     };
 }) (jQuery, document);
