@@ -50,7 +50,7 @@
       <!--
         Orderable items are divs denoted by ids in the following form.
         [lightbox-container-id] + lightbox-cell: + [index] + :
-        The createLightboxFromIds() function expects this format when attaching the javascript behaviour of the Lightbox.
+        The createLightboxFromId() function expects this format when attaching the javascript behaviour of the Lightbox.
       -->
       <div id="gallerylightbox-cell:0:" title="Dragonfruit thumbnail">
           <div class="image-inner-container">
@@ -228,9 +228,9 @@
         </div>
       </div>
 
-      <!--  Attach the javascript functionality to the markup by using createLightboxFromIds() -->
+      <!--  Attach the javascript functionality to the markup by using createLightboxFromId() -->
       <script type="text/javascript">
-        fluid.lightbox.createLightboxFromIds ("gallery", "message-bundle:");
+        fluid.lightbox.createLightboxFromId ("gallery");
       </script>
     </form>
   </body>

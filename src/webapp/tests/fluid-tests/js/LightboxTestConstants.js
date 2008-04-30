@@ -128,9 +128,8 @@ var altKeys = {
     
 function createAltKeystrokeLightbox () {
     return fluid.lightbox.createLightbox (fetchLightboxRoot(),
-                                        findOrderableByDivAndId, function () {}, {
-                                            keysets: [altKeys]
-                                        });
+                                        findOrderableByDivAndId,
+                                        { keysets: [altKeys] });
 }
 
 function createMultiKeystrokeLightbox () {
@@ -145,9 +144,8 @@ function createMultiKeystrokeLightbox () {
     };
     
     return fluid.lightbox.createLightbox (fetchLightboxRoot(),
-                                        findOrderableByDivAndId, function () {}, {
-                                            keysets: [altKeys, altKeys2]
-                                        });
+                                        findOrderableByDivAndId,
+                                        { keysets: [altKeys, altKeys2] });
 }
 
 function createMultiOverlappingKeystrokeLightbox () {
@@ -162,7 +160,6 @@ function createMultiOverlappingKeystrokeLightbox () {
     };
     
     return fluid.lightbox.createLightbox (fetchLightboxRoot(),
-                                        findOrderableByDivAndId, function () {}, {
-                                            keysets: [altKeys, altKeys2]
-                                        });
+                                        findOrderableByDivAndId,
+                                        { keysets: [altKeys, altKeys2] });
 }

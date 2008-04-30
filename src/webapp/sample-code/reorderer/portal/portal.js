@@ -68,8 +68,6 @@ var demo = demo || {};
     
         return fluid.lightbox.createLightbox (fluid.utils.jById("gallery"),
                                               orderableFinderFunction,
-                                              function () {},
-                                              "gallery-instructions",
                                               {cssClassNames: cssClassNames});
     };
 }) (fluid);

@@ -91,6 +91,9 @@ var fluid = fluid || {};
         return ((!obj || obj.jquery) ? obj : jQuery (obj)); 
     };
     
+    fluid.unwrap = function (obj) {
+        return (obj.jquery) ? obj[0] : obj; // Unwrap the element if it's a jQuery.
+    };
     /*
      * Utilities object for providing various general convenience functions
      */

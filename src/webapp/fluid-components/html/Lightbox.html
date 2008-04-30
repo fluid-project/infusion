@@ -47,7 +47,7 @@
           <!--  
             Orderable items are divs denoted by ids in the following form.
             [lightbox-container-id] + lightbox-cell: + [index] + :  
-            The createLightboxFromIds() function expects this format when attaching the javascript behaviour of the Lightbox. 
+            The createLightboxFromId() function expects this format when attaching the javascript behaviour of the Lightbox. 
           -->
           <div rsf:id="lightbox-cell:" id="gallery:::gallery-thumbs:::lightbox-cell:0:">
         
@@ -258,9 +258,9 @@
 		      </div>
 		    </div>
         
-        <!--  Attach the javascript functionality to the markup by using createLightboxFromIds() -->
+        <!--  Attach the javascript functionality to the markup by using createLightboxFromId() -->
         <script type="text/javascript"  rsf:id="init-script">
-          fluid.lightbox.createLightboxFromIds ("gallery:::gallery-thumbs:::", "message-bundle:");
+          fluid.lightbox.createLightboxFromId ("gallery:::gallery-thumbs:::");
         </script>
       </div>
       
