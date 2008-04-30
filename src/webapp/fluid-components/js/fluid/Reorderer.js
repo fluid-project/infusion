@@ -26,6 +26,20 @@ var fluid = fluid || {};
         avatar: "orderable-avatar"
     };
     
+    var initCssClassNames = function (classNames) {
+        if (!classNames) {
+            return defaultCssClassNames;
+        }
+        var cssClassNames = {};
+        for (var className in defaultCssClassNames) {
+            if (defaultCssClassNames.hasOwnProperty (className)) {
+                cssClassNames[className] = classNames[className] || defaultCssClassNames[className];
+            }
+        }
+
+        return cssClassNames;
+    };
+    
     var defaultAvatarCreator = function(item) {
         var avatar = jQuery (item).clone ();
         avatar.removeAttr ("id");
@@ -39,8 +53,8 @@ var fluid = fluid || {};
 //                    avatar.droppable ("destroy");
         avatar.removeClass ("ui-droppable");
         return avatar;
-    };
-
+    };   
+    
     function firstSelectable (findItems) {
         var selectables = fluid.wrap (findItems.selectables());
         if (selectables.length <= 0) {
@@ -114,6 +128,33 @@ var fluid = fluid || {};
         return userKeysets || defaultKeysets;
     };
     
+    /**
+     * @param container - the root node of the Reorderer.
+     * @param findItems - a function that returns all of the movable elements in the container OR
+     *        findItems - an object containing the functions:
+     *                    movables - a function that returns all of the movable elements in the container
+     *                    selectables (optional) - a function that returns all of the selectable elements
+     *                    dropTargets (optional) - a function that returns all of the elements that can be used as drop targets
+     *                    grabHandle (optional) - a function that returns the element within the given movable that is to be used as a 'handle' for the mouse-based drag and drop of the movable. 
+     * @param layoutHandler - an instance of a Layout Handler.
+     * @param options - an object containing any of the available options:
+     *                  role - indicates the role, or general use, for this instance of the Reorderer
+     *                  instructionMessageId - the ID of the element containing any instructional messages
+     *                  keysets - an object containing sets of keycodes to use for directional navigation. Must contain:
+     *                            modifier - a function that returns a boolean, indicating whether or not the required modifier(s) are activated
+     *                            up
+     *                            down
+     *                            right
+     *                            left
+     *                  cssClassNames - an object containing class names for styling the Reorderer
+     *                                  defaultStyle
+     *                                  selected
+     *                                  dragging
+     *                                  hover
+     *                                  dropMarker
+     *                                  avatar
+     *                  avatarCreator - a function that returns a valid DOM node to be used as the dragging avatar
+     */
     fluid.Reorderer = function (container, findItems, layoutHandler, options) {
         // Reliable 'this'.
         var thisReorderer = this;
@@ -128,7 +169,7 @@ var fluid = fluid || {};
         var role = options.role || defaultContainerRole;
         var instructionMessageId = options.instructionMessageId || defaultInstructionMessageId;
         var keysets = setupKeysets(fluid.defaultKeysets, options.keysets);
-        this.cssClasses = options.cssClassNames || defaultCssClassNames;
+        this.cssClasses = initCssClassNames (options.cssClassNames);
         var avatarCreator = options.avatarCreator || defaultAvatarCreator;
 
         this.focusActiveItem = function (evt) {

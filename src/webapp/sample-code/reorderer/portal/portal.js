@@ -11,7 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var demo = demo || {};
     
-(function (fluid) {
+(function (jQuery, fluid) {
     var layout = { 
         id:"portalPageBody",
         columns:[
@@ -40,10 +40,6 @@ var demo = demo || {};
 
     demo.initPortletReordererWithAvatarClone = function() {
         var classNames = {
-            defaultStyle: "orderable-default",
-            selected: "orderable-selected",
-            dragging: "orderable-dragging",
-            hover: "orderable-hover",
             dropMarker: "orderable-drop-marker-box",
             avatar: "orderable-avatar-clone"
         };
@@ -68,6 +64,7 @@ var demo = demo || {};
     
         return fluid.lightbox.createLightbox (fluid.utils.jById("gallery"),
                                               orderableFinderFunction,
-                                              {cssClassNames: cssClassNames});
+                                              {cssClassNames: cssClassNames,
+                                               orderChangedCallback: function () {}});
     };
-}) (fluid);
+}) (jQuery, fluid);
