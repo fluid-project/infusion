@@ -12,7 +12,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var fluid = fluid || {};
 
 (function (fluid) {
-    fluid.initLayoutCustomizer = function (layout, perms, grabHandle, orderChangedCallbackUrl) {
+    var createLayoutCustomizer = function (layout, perms, grabHandle, orderChangedCallbackUrl, options) {
         var reordererRoot = fluid.utils.jById (fluid.moduleLayout.containerId (layout));
     
         var items = fluid.moduleLayout.createFindItems (layout, perms, grabHandle);
@@ -25,13 +25,30 @@ var fluid = fluid || {};
         }
     
         var layoutHandler = new fluid.ModuleLayoutHandler (layout, perms, lhOptions);
-        var rOptions = {
-            role : fluid.roles.GRID,
-            avatarCreator : function (item) {
-                return document.createElement ("div");
-            }
-        };
-        
+
+        var rOptions = options || {};
+        rOptions.role = fluid.roles.GRID;
+
         return new fluid.Reorderer (reordererRoot, items, layoutHandler, rOptions);
+    };
+    
+    /*
+     * 
+     */
+    fluid.initLayoutCustomizer = function (layout, perms, grabHandle, orderChangedCallbackUrl, options) {
+        var avatarFn = function (item) {
+            return document.createElement ("div");
+        };
+        var opts = options || {};
+        opts.avatarCreator = avatarFn;
+                
+        return createLayoutCustomizer (layout, perms, grabHandle, orderChangedCallbackUrl, opts);
+    };
+    
+    /*
+     * 
+     */
+    fluid.initLayoutCustomizerDefaultAvatar = function (layout, perms, grabHandle, orderChangedCallbackUrl, options) {        
+        return createLayoutCustomizer (layout, perms, grabHandle, orderChangedCallbackUrl, options);
     };
 }) (fluid);

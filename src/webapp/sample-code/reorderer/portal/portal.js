@@ -11,7 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var demo = demo || {};
     
-demo.initPortletReorderer = function() {
+(function (fluid) {
     var layout = { 
         id:"portalPageBody",
         columns:[
@@ -34,26 +34,42 @@ demo.initPortletReorderer = function() {
         return jQuery ("[id=toolbar_" + item.id.split ("_")[1] + "]");
     };
 
-    return fluid.initLayoutCustomizer (layout, dropTargetPerms, grabHandle);
-};
+    demo.initPortletReorderer = function() {
+        return fluid.initLayoutCustomizer (layout, dropTargetPerms, grabHandle);
+    };
 
-demo.initLightboxReorderer = function () {
-    var cssClassNames = {
-        defaultStyle: "lb-orderable-default",
-        selected: "lb-orderable-selected",
-        dragging: "lb-orderable-dragging",
-        hover: "lb-orderable-hover",
-        dropMarker: "lb-orderable-drop-marker",
-        avatar: "lb-orderable-avatar"
-    };  
-    
-    var orderableFinderFunction = function () {
-        return jQuery("#gallery > [id^=thumb-]");
+    demo.initPortletReordererWithAvatarClone = function() {
+        var classNames = {
+            defaultStyle: "orderable-default",
+            selected: "orderable-selected",
+            dragging: "orderable-dragging",
+            hover: "orderable-hover",
+            dropMarker: "orderable-drop-marker-box",
+            avatar: "orderable-avatar-clone"
+        };
+        var options = { cssClassNames: classNames };
+
+        return fluid.initLayoutCustomizerDefaultAvatar (layout, dropTargetPerms, grabHandle, null, options);
     };
     
-    return fluid.lightbox.createLightbox (fluid.utils.jById("gallery"),
-                                            orderableFinderFunction,
-                                            function () {},
-                                            "gallery-instructions",
-                                            {cssClassNames: cssClassNames});
-};
+    demo.initLightboxReorderer = function () {
+        var cssClassNames = {
+            defaultStyle: "lb-orderable-default",
+            selected: "lb-orderable-selected",
+            dragging: "lb-orderable-dragging",
+            hover: "lb-orderable-hover",
+            dropMarker: "lb-orderable-drop-marker",
+            avatar: "lb-orderable-avatar"
+        };  
+    
+        var orderableFinderFunction = function () {
+            return jQuery("#gallery > [id^=thumb-]");
+        };
+    
+        return fluid.lightbox.createLightbox (fluid.utils.jById("gallery"),
+                                              orderableFinderFunction,
+                                              function () {},
+                                              "gallery-instructions",
+                                              {cssClassNames: cssClassNames});
+    };
+}) (fluid);

@@ -575,11 +575,16 @@ div .orderable-drop-marker{
   background-color: #fa7019;
 }
 
-
-
-
-
-
-
-
+.orderable-avatar-clone {
+  height: 200px;
+  width: 400px;
+  opacity: .6;	
+}
+ 
+.orderable-drop-marker-box {
+  height: 200px !important;
+  width: 100%;
+  border: 2px solid #666;
+  margin-bottom: 1em;
+}
 
