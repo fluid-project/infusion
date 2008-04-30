@@ -26,7 +26,6 @@
  * - make fields configurable
  * - add scroll to bottom
  * - fix resume
- * - move utility scripts to Fluid.js: percent, filesize, debug (what else?)
  */
 
 /* ABOUT RUNNING IN LOCAL TEST MODE
@@ -114,7 +113,7 @@ var swfObj = {};
 		row.fadeOut('fast',function(){
 			var fileId = row.attr('id');
 			var file = swfObj.getFile(fileId);
-			totalSizeOfQueue(-file.size);
+			queueSize (-file.size);
 			status.totalCount--;
 			swfObj.cancelUpload(fileId);
 			row.remove();
@@ -134,7 +133,7 @@ var swfObj = {};
 	 * Updates the total number of bytes in the UI
 	 */
 	var updateTotalBytes = function() {
-		$(elements.txtTotalBytes).text(filesize(totalSizeOfQueue()));
+		$(elements.txtTotalBytes).text(fluid.utils.filesizeStr (queueSize ()));
 	};
 	 
 
@@ -193,12 +192,12 @@ var swfObj = {};
 		try {
 			// make a new jQuery object
 			// add the size of the file to the variable maintaining the total size
-			totalSizeOfQueue(file.size);
+			queueSize (file.size);
 
 			// make a new row
 			var queue_row = $('<tr id="'+ file.id +'">'
 				+ '<td class="fileName">' + file.name + '</td>' 
-				+ '<td class="fileSize">' + filesize(file.size) + '</td>'
+				+ '<td class="fileSize">' + fluid.utils.filesizeStr (file.size) + '</td>'
 				+ '<td class="fileStatus">Ready to Upload</td>' 
 				+ '<td class="fileRemove"><button type="button" class="removeFileBtn" /></td></tr>');
 				
@@ -229,15 +228,15 @@ var swfObj = {};
 			
 			// set the height but only if it's over the maximum
 			// this because max-height doesn't seem to work for tbody
-			if ($('.fluid-uploader-queue tbody').height() > options.queueListMaxHeight) {
-				$('.fluid-uploader-queue tbody').height(options.queueListMaxHeight);
+			if ($(elements.elmFileQueue + ' tbody').height() > options.queueListMaxHeight) {
+				$(elements.elmFileQueue + ' tbody').height(options.queueListMaxHeight);
 			}
 			updateStatusClass();
 			updateNumFiles();
 			updateTotalBytes();
 			
 		} catch (ex) {
-			this.debug(ex);
+			fluid.utils.debug (ex);
 		}
 	}
 
@@ -245,7 +244,7 @@ var swfObj = {};
 		try {
 			// do nothing
 		} catch (ex) {
-			this.debug(ex);
+			fluid.utils.debug (ex);
 		}
 	}
 
@@ -257,7 +256,7 @@ var swfObj = {};
 			updateBrowseBtnText();
 			debugStatus();
 		} catch (ex) {
-			this.debug(ex);
+			fluid.utils.debug (ex);
 		}
 	}
 
@@ -282,9 +281,9 @@ var swfObj = {};
 				break;
 			}
 			var error_string = error_name + ":File ID: " + (typeof(file) === "object" && file !== null ? file.id : "na") + ":" + message;
-			debug('error_string = ' + error_string);
+			fluid.utils.debug ('error_string = ' + error_string);
 		} catch (ex) {
-			this.debug(ex);
+			fluid.utils.debug (ex);
 		}
 	}	
 
@@ -292,8 +291,8 @@ var swfObj = {};
 		status.currError = ''; // zero out the error so we can check it later
 		status.currCount++;
 		updateProgress(0,fileObj.name,0,status.currCount,status.totalCount);
-		debug(
-			"Starting Upload: " + status.currCount + ' (' + fileObj.id + ')' + ' [' + fileObj.size + ']' + ' ' + fileObj.name + ''
+		fluid.utils.debug (
+			"Starting Upload: " + status.currCount + ' (' + fileObj.id + ')' + ' [' + fileObj.size + ']' + ' ' + fileObj.name
 		);
 	};
 
@@ -337,22 +336,26 @@ var swfObj = {};
 				status.currError = "Error Code: " + error_code + ", File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
 				break;
 			}
-			debug(status.currError);
+			fluid.utils.debug (status.currError);
 		} catch (ex) {
-	        this.debug(ex);
+	        fluid.utils.debug (ex);
 	    }
 	};
 
 	var uploadProgress = function(fileObj,bytes,totalBytes) {
-		debug('File Status :: bytes = ' + bytes + ' :: totalBytes = ' + totalBytes);
-		debug('Total Status :: currBytes = ' + (status.currTotalBytes + bytes)  + ' :: totalBytes = ' + totalSizeOfQueue());
-		updateProgress(derivePercent(bytes,totalBytes),fileObj.name,derivePercent(status.currTotalBytes + bytes,totalSizeOfQueue()),status.currCount,status.totalCount);
+		fluid.utils.debug ('File Status :: bytes = ' + bytes + ' :: totalBytes = ' + totalBytes);
+		fluid.utils.debug ('Total Status :: currBytes = ' + (status.currTotalBytes + bytes)  + ' :: totalBytes = ' + queueSize ());
+		updateProgress(fluid.utils.derivePercent (bytes,totalBytes),
+                       fileObj.name,
+                       fluid.utils.derivePercent (status.currTotalBytes + bytes, queueSize ()),
+                       status.currCount,
+                       status.totalCount);
 	};
 	
 	var uploadComplete = function(file) {
 		if (!status.currError) {
 			
-			if ((file.index + 1) == status.totalCount) { // we're at the end
+			if ((file.index + 1) === status.totalCount) { // we're at the end
 				updateProgress(100,file.name,100,status.totalCount,status.totalCount);
 				fileQueueComplete();
 				
@@ -365,7 +368,7 @@ var swfObj = {};
 			markRowComplete($('tr#' + file.id));
 
 		} else {
-			debug(status.currError);
+			fluid.utils.debug (status.currError);
 			hideProgress(true);
 		}
 	};
@@ -378,23 +381,32 @@ var swfObj = {};
 		}
 	};
 
-	/* DATA 
-	 * 
-	 */
-	
-	 var totalSizeOfQueue = function(delta) {
-		if (typeof delta == 'number') {
+    /*
+     * Return the queue size. If a number is passed in, increment the size first.
+     */
+	 var queueSize = function (delta) {
+		if (typeof delta === 'number') {
 			status.totalBytes += delta;
 		}
 		return status.totalBytes;
 	};
 
 	var whichOS = function() {
-		if (navigator.appVersion.indexOf("Win")!=-1) return "Windows";
-		if (navigator.appVersion.indexOf("Mac")!=-1) return "MacOS";
-		if (navigator.appVersion.indexOf("X11")!=-1) return "UNIX";
-		if (navigator.appVersion.indexOf("Linux")!=-1) return "Linux";
-		else return "unknown";
+		if (navigator.appVersion.indexOf("Win") !== -1) {
+            return "Windows";
+        }
+		if (navigator.appVersion.indexOf("Mac") !== -1) {
+            return "MacOS";
+        }
+		if (navigator.appVersion.indexOf("X11") !== -1) {
+            return "UNIX";
+        }
+		if (navigator.appVersion.indexOf("Linux") !== -1) {
+            return "Linux";
+        }
+        else {
+            return "unknown";
+        }
 	};
 
 	function numFilesToUpload() {
@@ -402,23 +414,13 @@ var swfObj = {};
 	}
 	
 	function numFilesInQueue() {
-		return $('.fluid-uploader-queue tbody tr:not(".fluid-uploader-row-placeholder")').length ;
+		return $(elements.elmFileQueue + ' tbody tr:not("' + elements.elmEmptyRow + '")').length ;
 	}
 
 	function numFilesUploaded() {
-		return $('.fluid-uploader-queue tbody tr.dim').length;
+		return $(elements.elmFileQueue + ' tbody tr.dim').length;
 	}
 
-	function derivePercent(num,total) {
-		return Math.round((num*100)/total);
-	}
-
-	// simple function for return kbytes
-	// probably should do something fancy that shows MBs if the number is huge
-	function filesize(bytes) {
-		return Math.round(bytes/1028) + ' KB';
-	}
-	
 	/* PROGRESS
 	 * 
 	 */
@@ -441,7 +443,6 @@ var swfObj = {};
 	};
 	
 	var hideProgress = function(justDoIt) {
-		justDoIt = (justDoIt) ? true : false;
 	 	fluid.Progress.hide(elements.progress, justDoIt);
 	};
 
@@ -450,8 +451,8 @@ var swfObj = {};
 	 */
 	
 	function debugStatus() {
-		debug(
-			"\n status.totalBytes = " + totalSizeOfQueue() + 
+		fluid.utils.debug (
+			"\n status.totalBytes = " + queueSize () + 
 			"\n status.totalCount = " + status.totalCount + 
 			"\n status.currCount = " + status.currCount + 
 			"\n status.currTotalBytes = " + status.currTotalBytes + 
@@ -466,9 +467,9 @@ var swfObj = {};
 	var updateObj = {};
 
 	var demoUpload = function() {
-		debug(numFilesToUpload());
+		fluid.utils.debug (numFilesToUpload());
 		if (status.stop === true) {
-			totalSizeOfQueue(-status.currTotalBytes);
+			queueSize (-status.currTotalBytes);
 			updateTotalBytes();
 			updateNumFiles();
 			demoStop();
@@ -476,14 +477,14 @@ var swfObj = {};
 			updateObj.bytes = 0;
 			updateObj.byteChunk = 200000; // used to break the demo upload into byte-sized chunks
 			// set up data
-			updateObj.row = $('.fluid-uploader-queue tbody tr:not(".fluid-uploader-placeholder"):not(".dim)').eq(0);
+			updateObj.row = $(elements.elmFileQueue + ' tbody tr:not(".fluid-uploader-placeholder"):not(".dim)').eq(0);
 			
 			updateObj.fileId = jQuery(updateObj.row).attr('id');
 			updateObj.fileObj = swfObj.getFile(updateObj.fileId);
 			updateObj.bytes = 0;
 			updateObj.totalBytes = updateObj.fileObj.size;
 			updateObj.numChunks = Math.ceil(updateObj.totalBytes / updateObj.byteChunk);
-			debug('DEMO :: ' + updateObj.fileId + ' :: totalBytes = ' + updateObj.totalBytes + ' numChunks = ' + updateObj.numChunks);
+			fluid.utils.debug ('DEMO :: ' + updateObj.fileId + ' :: totalBytes = ' + updateObj.totalBytes + ' numChunks = ' + updateObj.numChunks);
 			
 			// start the demo upload
 			uploadStart(updateObj.fileObj);
@@ -502,7 +503,7 @@ var swfObj = {};
 			var delay = Math.floor(Math.random() * 5000 + 1) > 1;
 			var tmpBytes = (updateObj.bytes + updateObj.byteChunk);
 			if (tmpBytes < updateObj.totalBytes) {
-				debug('tmpBytes = ' + tmpBytes + ' totalBytes = ' + updateObj.totalBytes);
+				fluid.utils.debug ('tmpBytes = ' + tmpBytes + ' totalBytes = ' + updateObj.totalBytes);
 				uploadProgress(updateObj.fileObj, tmpBytes, updateObj.totalBytes);
 				updateObj.bytes = tmpBytes;
 				var pause = setTimeout(demoProgress, delay);
@@ -584,7 +585,7 @@ var swfObj = {};
 		//jQUploaderObj = $(options.elmUploader);
 		
 		// set the text difference for the instructions based on Mac or Windows
-		if (whichOS() == 'MacOS') {
+		if (whichOS() === 'MacOS') {
 			$(elements.osModifierKey).text(strings.macControlKey);
 		}
 		
@@ -628,12 +629,16 @@ var swfObj = {};
 	fluid.uploader.test = function() {
 		var str = "";
 		for (key in options) {
-			str += key + ' = ' + options[key] + '\n';
+            if (options.hasOwnProperty(key)) {
+                str += key + ' = ' + options[key] + '\n';
+            }
 		}
 		for (key in elements) {
-			str += key + ' = ' + elements[key] + '\n';
+           if (elements.hasOwnProperty(key)) {
+               str += key + ' = ' + elements[key] + '\n';
+           }
 		}
-		debug(str);
+		fluid.utils.debug (str);
 	};
 	
 })(jQuery,fluid);
@@ -647,7 +652,7 @@ fluid.Progress = function ($) {
 	
 	$(document).ready(function() {
 		$('.progress-mask').css('opacity',0.80);
-		$('.progress-mask-btm').height($(".fluid-progress").height() - 14);
+		$('.progress-mask-btm').height($('.fluid-progress').height() - 14);
 	 });
 	 
 	 function animateToWidth(elm,width) {
@@ -674,7 +679,7 @@ fluid.Progress = function ($) {
 			if ($(which).css("display") === "none") {
 				$(which).fadeIn('slow');
 			}
-			debug('percent = ' + percent + ' lastPercent = ' + lastPercent);
+			fluid.utils.debug ('percent = ' + percent + ' lastPercent = ' + lastPercent);
 			
 			//update the label of the indicator
 			labelElm.html(label);
@@ -710,12 +715,6 @@ fluid.Progress = function ($) {
 }(jQuery);
 
 //fluid.Progress.update('.fluid-progress','.file-progress',40,"Label Change");
-
-function debug(str) {
-	if (window.console) {
-		console.log(str);
-	}
-}
 
 
 /* GRAVEYARD and SCRATCH

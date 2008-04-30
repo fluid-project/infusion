@@ -153,4 +153,25 @@ var fluid = fluid || {};
     fluid.utils.jById = function (id) {
         return jQuery ("[id=" + id + "]");
     };
+
+    fluid.utils.debug = function (str) {
+    	if (window.console) {
+            if (console.debug) {
+                console.debug (str);
+            } else {
+                console.log (str);
+            }
+    	}
+    };
+
+	fluid.utils.derivePercent = function (num,total) {
+		return Math.round((num*100)/total);
+	};
+
+	// simple function for return kbytes
+	// probably should do something fancy that shows MBs if the number is huge
+	fluid.utils.filesizeStr = function (bytes) {
+		return Math.round(bytes/1028) + ' KB';
+	};
+	
 }) (jQuery, fluid);
