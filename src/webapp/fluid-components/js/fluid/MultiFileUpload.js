@@ -39,6 +39,8 @@ var swfObj = {};
 	
 	// TODO: for now this is a single object but well re-factor to handle multiple uploaders in the next pass
 	var jQUploaderObj = {};
+    
+    var progressBar = {};
 	
 	var options = options || {};
 
@@ -290,7 +292,7 @@ var swfObj = {};
 	var uploadStart = function(fileObj) {
 		status.currError = ''; // zero out the error so we can check it later
 		status.currCount++;
-		updateProgress(0,fileObj.name,0,status.currCount,status.totalCount);
+		updateProgress(progressBar,0,fileObj.name,0,status.currCount,status.totalCount);
 		fluid.utils.debug (
 			"Starting Upload: " + status.currCount + ' (' + fileObj.id + ')' + ' [' + fileObj.size + ']' + ' ' + fileObj.name
 		);
@@ -323,16 +325,16 @@ var swfObj = {};
 				if (this.getStats().files_queued === 0) {
 					document.getElementById(this.customSettings.cancelButtonId).disabled = true;
 				}
-				progress.SetStatus("Cancelled");
-				progress.SetCancelled();
+//				progress.SetStatus("Cancelled");
+//				progress.SetCancelled();
 				break;
 			case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
 				status.currError = "Upload Stopped by user input";
-				progress.SetStatus("Stopped");
-				hideProgress(true);
+//				progress.SetStatus("Stopped");
+				hideProgress(progressBar,true);
 				break;
 			default:
-				progress.SetStatus("Unhandled Error: " + error_code);
+//				progress.SetStatus("Unhandled Error: " + error_code);
 				status.currError = "Error Code: " + error_code + ", File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
 				break;
 			}
@@ -345,7 +347,7 @@ var swfObj = {};
 	var uploadProgress = function(fileObj,bytes,totalBytes) {
 		fluid.utils.debug ('File Status :: bytes = ' + bytes + ' :: totalBytes = ' + totalBytes);
 		fluid.utils.debug ('Total Status :: currBytes = ' + (status.currTotalBytes + bytes)  + ' :: totalBytes = ' + queueSize ());
-		updateProgress(fluid.utils.derivePercent (bytes,totalBytes),
+		updateProgress(progressBar,fluid.utils.derivePercent (bytes,totalBytes),
                        fileObj.name,
                        fluid.utils.derivePercent (status.currTotalBytes + bytes, queueSize ()),
                        status.currCount,
@@ -355,13 +357,14 @@ var swfObj = {};
 	var uploadComplete = function(file) {
 		if (!status.currError) {
 			
-			if ((file.index + 1) === status.totalCount) { // we're at the end
-				updateProgress(100,file.name,100,status.totalCount,status.totalCount);
+			if ((file.index + 1) === status.totalCount) { 
+                // we've completed all the files in this upload
+                updateProgress(progressBar,100,file.name,100,status.totalCount,status.totalCount);
 				fileQueueComplete();
-				
 			} else {
+                // there are still files to go, fire off the next one
 				status.currTotalBytes += file.size; // now update currTotalBytes with the actual file size
-				updateProgress(100,file.name);
+				updateProgress(progressBar,100,file.name);
 				swfObj.startUpload(); // if there hasn't been an error then start up the next upload
 			}
 			
@@ -369,13 +372,13 @@ var swfObj = {};
 
 		} else {
 			fluid.utils.debug (status.currError);
-			hideProgress(true);
+			hideProgress(progressBar,true);
 		}
 	};
 	
 	var fileQueueComplete = function() {
 		updateStatusClass('done');
-		hideProgress(false);
+		hideProgress(progressBar,false);
 		if (options.continueAfterUpload) {
 			variableAction(options.whenDone);
 		}
@@ -425,11 +428,12 @@ var swfObj = {};
 	 * 
 	 */
 
-	var updateProgress = function(filePercent, fileName, totalPercent, fileIndex, totalFileNum){
+	var updateProgress = function(progressBar,filePercent, fileName, totalPercent, fileIndex, totalFileNum){
+        
 		//<span class="file_name">&nbsp;</span> :: 0</span>% complete
 		// update file information
 		var fileLabel = '<span class="file_name">' + fileName + '</span> :: <span class="percent">' + filePercent + '</span>% complete';
-		fluid.Progress.update(elements.progress, elements.fileProgress, filePercent, fileLabel);
+		progressBar.update(elements.progress, elements.fileProgress, filePercent, fileLabel);
 		
 		// update total info
 		if (totalPercent) {
@@ -437,13 +441,13 @@ var swfObj = {};
 			+ '</span>% [<span class="file_index">' + fileIndex 
 			+ '</span> of <span class="total_file_num">' + totalFileNum 
 			+ '</span> files]';
-			fluid.Progress.update(elements.progress, elements.totalProgress, totalPercent, totalLabel);
+			progressBar.update(elements.progress, elements.totalProgress, totalPercent, totalLabel);
 			// if we've completed the progress then hide the progress after a delay
 		}
 	};
 	
-	var hideProgress = function(justDoIt) {
-	 	fluid.Progress.hide(elements.progress, justDoIt);
+	var hideProgress = function(progressBar,justDoIt) {
+	 	progressBar.hide(elements.progress, justDoIt);
 	};
 
 	/* DEV CODE
@@ -527,7 +531,7 @@ var swfObj = {};
 	}
 	
 	function demoStop() {
-		hideProgress(true);
+		hideProgress(progressBar,true);
 		status.stop = false;
 		status.currCount = 0;
 		status.currTotalBytes = 0;
@@ -614,6 +618,9 @@ var swfObj = {};
 		$(elements.elmCancel).click(function(){
 			variableAction(options.whenCancel);
 		});
+        
+        // get ourselves a Progress bar
+        progressBar = new fluid.Progress();
 		
 		// this is a local override to do a fake upload
 		if (options.uploadUrl === '') {
@@ -648,7 +655,6 @@ var swfObj = {};
 */
 
 fluid.Progress = function ($) {
-	var lastPercent = 0;
 	
 	$(document).ready(function() {
 		$('.progress-mask').css('opacity',0.80);
@@ -661,11 +667,17 @@ fluid.Progress = function ($) {
 			queue: false
 		 }, 200 );
 	}
+    
+    var hideNow = function(which){
+        $(which).fadeOut('slow');
+    };      
 	 
 	 /* Public API */
 	
-	return {
-		update : function(which, indicator, percent, label, text) {
+	return function () {
+    	var lastPercent = 0;
+
+		this.update = function(which, indicator, percent, label, text) {
 			var percentpercent = percent+'%';
 			var labelElm = $(which + ' ' + indicator + ' .progress-label');
 			var progressElm = $(which + ' ' + indicator + ' .progress-indicator');
@@ -698,18 +710,22 @@ fluid.Progress = function ($) {
 		  		}, 200 );
 			}
 			lastPercent = percent;
-		},	
-		hide: function(which, justDoIt) {
+		};
+               
+		this.hide = function(which, dontPause) {
 			var delay = 1600;
-			if (justDoIt) {
-				$(which).fadeOut('slow');
+			if (dontPause) {
+				hideNow(which);
 			} else {
-				var timeOut = setTimeout("fluid.Progress.hide('"+which+"'," + true + ")",delay);
+				var timeOut = setTimeout(function(){
+                    hideNow(which);
+                }, delay);
 			}
-		},
-		show: function(which) {
+		};
+        
+		this.show = function(which) {
 			$(which).fadeIn('slow');
-		}
+		};
 	};
 	
 }(jQuery);
