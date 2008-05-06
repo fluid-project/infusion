@@ -614,6 +614,16 @@ var fluid = fluid || {};
 		});
     };
     
+    var enableDemoMode = function () {
+		// this is a local override to do a fake upload
+		swfObj.startUpload = function(){
+			demoUpload();
+		};
+		swfObj.stopUpload = function(){
+			status.stop = true;
+		};
+    };
+    
 	/* Public API */
 	fluid.uploader = {};
 	
@@ -626,24 +636,20 @@ var fluid = fluid || {};
 		
         setKeyboardModifierString();
         
+        // Bind all our event handlers.
         var allowMultipleFiles = (options.fileQueueLimit !== 1);
         bindEvents(allowMultipleFiles, options.whenDone, options.whenCancel);
         
-        // get ourselves a Progress bar
+        // Get ourselves a new Progress bar.
         progressBar = new fluid.Progress();
 		
-		// this is a local override to do a fake upload
-		if (uploadURL === '') {
-			swfObj.startUpload = function(){
-				demoUpload();
-			};
-			swfObj.stopUpload = function(){
-				status.stop = true;
-			};
-		}
+        // If we've been given an empty URL, kick into demo mode.
+        if (uploadURL === '') {
+            enableDemoMode();
+        }
 	};
 	
-    // temporary debuggin code to be removed after beta
+    // temporary debuggin' code to be removed after beta
     // USE: call from the console to check the current state of the options and elements objects
     
 	fluid.uploader._test = function() {
