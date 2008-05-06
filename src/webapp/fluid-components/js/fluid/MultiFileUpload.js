@@ -545,15 +545,8 @@ var swfObj = {};
 		status.totalCount = numFilesToUpload();
 	}
 
-	/* Public API */
-	
-	fluid.uploader = {};
-	
-	fluid.uploader.init = function(uploadURL, flashURL, settings){
-		options = $.extend({}, uploadDefaults, settings);
-		
+    function initSWFUpload(uploadURL, flashURL, options) {
 		var swf_settings = {
-		
 			// File Upload Settings
 			upload_url: uploadURL,
 			flash_url: flashURL,
@@ -576,8 +569,8 @@ var swfObj = {};
 			upload_error_handler: uploadError,
 			
 			/*
-		 upload_success_handler : FeaturesDemoHandlers.uploadSuccess,
-		 */
+		    upload_success_handler : FeaturesDemoHandlers.uploadSuccess,
+		     */
 			// Debug setting
 			debug: options.debug
 		};
@@ -585,10 +578,20 @@ var swfObj = {};
 		// Initialize the uploader SWF component
 		// Check to see if SWFUpload is available
 		if (typeof(SWFUpload) === "undefined") {
-			return;
+			return null;
 		}
-		swfObj = new SWFUpload(swf_settings);
-				
+        
+		return new SWFUpload(swf_settings);
+    }
+    
+	/* Public API */
+	fluid.uploader = {};
+	
+	fluid.uploader.init = function(uploadURL, flashURL, settings){
+		options = $.extend({}, uploadDefaults, settings);
+	    
+        swfObj = initSWFUpload(uploadURL, flashURL, options);
+        
 		// set the text difference for the instructions based on Mac or Windows
 		if (whichOS() === 'MacOS') {
 			$(elements.osModifierKey).text(strings.macControlKey);
