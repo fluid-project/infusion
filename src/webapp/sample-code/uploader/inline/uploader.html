@@ -17,7 +17,6 @@
 	    // set to empty to use demo upload js code instead actual server side upload handlers
 		// uploadURL = "../../sample-code/uploader/php/upload.php"; // relative to the swf file
 	    var uploadURL = "";
-        
         var flashURL = "../../../fluid-components/swfupload/swfupload_f9.swf";
         
 		var settings =   {
@@ -27,8 +26,10 @@
 			debug: true
 		};
 		
+        var myUpload; // mostly used for testing
+        
 		$(document).ready(function() {
-        	fluid.uploader.init(uploadURL, flashURL, settings);
+            myUpload = new fluid.Uploader(uploadURL, flashURL, settings);
     	});
 	</script>
 </head>

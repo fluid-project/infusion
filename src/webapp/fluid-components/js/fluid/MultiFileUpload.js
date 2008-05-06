@@ -625,9 +625,7 @@ var fluid = fluid || {};
     };
     
 	/* Public API */
-	fluid.uploader = {};
-	
-	fluid.uploader.init = function(uploadURL, flashURL, settings){
+	fluid.Uploader = function(uploadURL, flashURL, settings){
         // Mix user's settings in with our defaults.
 		options = $.extend({}, uploadDefaults, settings);
         
@@ -652,7 +650,7 @@ var fluid = fluid || {};
     // temporary debuggin' code to be removed after beta
     // USE: call from the console to check the current state of the options and elements objects
     
-	fluid.uploader._test = function() {
+	fluid.Uploader.prototype._test = function() {
 		var str = "";
 		for (key in options) {
             if (options.hasOwnProperty(key)) {
