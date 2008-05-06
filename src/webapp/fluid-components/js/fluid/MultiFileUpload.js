@@ -21,7 +21,7 @@
 */
 
 /* TODO:
- * - abstract the swfObj and the jQUploaderObj to handle multiple instances
+ * - abstract the swfObj to handle multiple instances
  * - handle duplicate file error
  * - make fields configurable
  * - add scroll to bottom
@@ -38,9 +38,8 @@ var swfObj = {};
 (function ($,fluid) {
 	
 	// TODO: for now this is a single object but well re-factor to handle multiple uploaders in the next pass
-	var jQUploaderObj = {};
     
-    var progressBar = {};
+    var progressBar;
 	
 	var options = options || {};
 
@@ -584,10 +583,7 @@ var swfObj = {};
 			return;
 		}
 		swfObj = new SWFUpload(swf_settings);
-		
-		// define the uploader we're working with 
-		//jQUploaderObj = $(options.elmUploader);
-		
+				
 		// set the text difference for the instructions based on Mac or Windows
 		if (whichOS() === 'MacOS') {
 			$(elements.osModifierKey).text(strings.macControlKey);
@@ -762,11 +758,4 @@ fluid.Progress = function ($) {
 		Excel:"*.xls",
 	}
 	
-	// code for finding current element
-	var uploaderElm = function(elmClass) {
-		return $(jQUploaderObj + ' ' + elmClass);
-	}
-
-
-
 */
