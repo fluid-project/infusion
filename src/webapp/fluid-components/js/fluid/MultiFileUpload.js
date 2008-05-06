@@ -38,11 +38,25 @@ var swfObj = {};
 (function ($,fluid) {
 	
 	// TODO: for now this is a single object but well re-factor to handle multiple uploaders in the next pass
+  
+    /********************
+     * Member variables *
+     ********************/
     
     var progressBar;
-	
+
+	var status = {
+		totalBytes:0,
+		totalCount:0,
+		currCount:0,
+		currTotalBytes:0,
+		currError:'',
+		stop: false
+	};
+    	
 	var options = options || {};
 
+    // Default configuration options.
 	var uploadDefaults = {
 		uploadUrl : "",
 		flashUrl : "",
@@ -81,19 +95,11 @@ var swfObj = {};
 		txtTotalBytes: ".fluid-uploader-totalBytes",
 		osModifierKey: ".fluid-uploader-modifierKey",
 		txtFileStatus: ".fileStatus",
+        
+        // Move these into the Progress object.
 		progress : '.fluid-progress',
 		fileProgress: '.file-progress',
 		totalProgress: '.total-progress'
-	};
-	
-	
-	var status = {
-		totalBytes:0,
-		totalCount:0,
-		currCount:0,
-		currTotalBytes:0,
-		currError:'',
-		stop: false
 	};
 	
 	var strings = {
@@ -107,11 +113,11 @@ var swfObj = {};
 
 	/** 
 	* removes the defined row from the file queue 
-	* @param {Object} row	a jQuery object for the row
-	* @return {Object}	returns the same jQuery object
+	* @param {jQuery} row	a jQuery object for the row
+	* @return {jQuery}	returns the same jQuery object
 	*/
 	var removeRow = function(row) {
-		row.fadeOut('fast',function(){
+		row.fadeOut('fast', function (){
 			var fileId = row.attr('id');
 			var file = swfObj.getFile(fileId);
 			queueSize (-file.size);
@@ -134,7 +140,7 @@ var swfObj = {};
 	 * Updates the total number of bytes in the UI
 	 */
 	var updateTotalBytes = function() {
-		$(elements.txtTotalBytes).text(fluid.utils.filesizeStr (queueSize ()));
+		$(elements.txtTotalBytes).text(fluid.utils.filesizeStr(queueSize()));
 	};
 	 
 
@@ -183,7 +189,7 @@ var swfObj = {};
 		}
 	};
 	
-	// SWF Upload Actions
+	// SWF Upload Callback Handlers
 	
 	var beginUpload = function() {
 		swfObj.startUpload();
@@ -203,7 +209,7 @@ var swfObj = {};
 				+ '<td class="fileRemove"><button type="button" class="removeFileBtn" /></td></tr>');
 				
 			// add a hover to the row
-			$(queue_row).css('display','none').hover(
+			queue_row.css('display','none').hover(
 				function(){
 					if (!$(this).hasClass('dim')) {
 						$(this).addClass('hover') ;
@@ -217,7 +223,7 @@ var swfObj = {};
 			);
 			
 			// add the queue to the list right before the placeholder which is always at the end
-			$(queue_row).insertBefore(elements.elmEmptyRow);
+			queue_row.insertBefore(elements.elmEmptyRow);
 			
 			// add remove action to the button
 			$('#'+ file.id + ' .removeFileBtn').click(function(){
