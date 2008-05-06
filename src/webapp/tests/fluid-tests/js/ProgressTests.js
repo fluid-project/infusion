@@ -10,19 +10,21 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-$(document).ready (function () {
-    var progressTests = new jqUnit.TestCase ("Progress Tests");
+(function ($) {
+    $(document).ready (function () {
+        var progressTests = new jqUnit.TestCase ("Progress Tests");
 
-    progressTests.test ("Update", function () {                
-        var progressBar = new fluid.Progress();
-        var text = "File 10%";
-        jqUnit.assertFalse("Ensure update text doesn't exist", jQuery(":contains(" + text+")")[0]);
+        progressTests.test ("Update", function () {                
+            var progressBar = new fluid.Progress();
+            var label = "label";
+            var text = "File 10%";
+            jqUnit.notVisible("Ensure progress bar is not visible", ".fluid-progress");
+            jqUnit.notExists("Ensure update text doesn't exist", ":contains(" + label+")");
 
-        progressBar.update('.fluid-progress', '.total-progress', 10, text);
-        jqUnit.assertTrue("Look for the update text", jQuery(":contains(" + text+")"));
-        
+            progressBar.update('.fluid-progress', '.total-progress', 10, label, text);
+            jqUnit.isVisible("Make sure the progress bar is visible", ".fluid-progress");
+            jqUnit.exists("Look for the update text", ":contains(" + label+")");
+       
+        });
     });
-     
-    
-});
-
+}) (jQuery);

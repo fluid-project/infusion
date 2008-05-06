@@ -651,7 +651,8 @@ var swfObj = {};
 })(jQuery,fluid);
 
 /* PROGRESS
- * 
+ * Currently, Progress is 'contextless' in that it requires the element which contains the progress bar to be 
+ * passed in however, it is not fully stateless in that it holds a 'lastPercent' variable. 
 */
 
 fluid.Progress = function ($) {
@@ -672,8 +673,7 @@ fluid.Progress = function ($) {
         $(which).fadeOut('slow');
     };      
 	 
-	 /* Public API */
-	
+	 /* Constructor */
 	return function () {
     	var lastPercent = 0;
 

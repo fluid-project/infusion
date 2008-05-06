@@ -34,6 +34,27 @@ var jqUnit = jqUnit || {};
     // Mix these compatibility functions into the jqUnit namespace.
     $.extend(jqUnit, jsUnitCompat);
 
+    var testFns = {
+        isVisible: function (msg, selector) {
+            jqUnit.ok($(selector + ":visible")[0], msg);
+        },
+        
+        notVisible: function (msg, selector) {
+            jqUnit.ok(!$(selector + ":visible")[0], msg);
+        }, 
+        
+        exists: function (msg, selector) {
+            jqUnit.ok($(selector)[0], msg);
+        },
+        
+        notExists: function (msg, selector) {
+            jqUnit.ok(!$(selector)[0], msg);
+        }
+    };
+    
+    // Mix these test functions into the jqUnit namespace.
+    $.extend(jqUnit, testFns);
+    
     // TestCase object
     function TestCase (moduleName, setUpFn, tearDownFn) {
         this.moduleName = moduleName;
