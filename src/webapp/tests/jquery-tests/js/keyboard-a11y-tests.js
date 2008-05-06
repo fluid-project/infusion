@@ -55,7 +55,7 @@
         menu.container.focus ();
 
         // Sanity check.
-        if (!selectionOptions || selectionOptions.shouldSelectOnFocus) {
+        if (!selectionOptions || selectionOptions.autoSelectFirstItem) {
             keyboardA11y.assertSelected (getFirstMenuItem ());
         } else {
             keyboardA11y.assertNotSelected (getFirstMenuItem ());
@@ -205,7 +205,7 @@
     jqUnit.test ("Selects first item when container is focussed--explicit argument", function () {
         // Explicitly set the selectFirstItemOnFocus option.
         var options = {
-            shouldSelectOnFocus: true
+            autoSelectFirstItem: true
         };
         var menu = makeMenuSelectable(options);
         keyboardA11y.assertFirstMenuItemIsSelectedOnFocus (menu);
@@ -213,7 +213,7 @@
 
     jqUnit.test ("Doesn't select first item when container is focussed--boolean arg", function () {
         var options = {
-            shouldSelectOnFocus: false
+            autoSelectFirstItem: false
         };
 
         var menu = makeMenuSelectable(options);
@@ -231,12 +231,12 @@
 
     jqUnit.test ("Doesn't select first item when container is focussed--function arg", function () {
         // Pass in a function that will be called to determine if the first item should be focussed.
-        var shouldSelectOnFocus = function () {
+        var autoSelectFirstItem = function () {
             return false;
         };
 
         var options = {
-            shouldSelectOnFocus: shouldSelectOnFocus
+            autoSelectFirstItem: autoSelectFirstItem
         };
 
         var menu = makeMenuSelectable(options);
@@ -279,7 +279,7 @@
     jqUnit.test ("Allows selection via programmatic focus() calls.", function () {
         // Setup a menu, then programmatically throw focus onto the selectables. They should be correctly selected.
         var options = {
-            shouldSelectOnFocus: false
+            autoSelectFirstItem: false
         };
         var menu = createAndFocusMenu (options);
 

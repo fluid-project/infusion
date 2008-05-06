@@ -96,7 +96,7 @@ fluid.accessiblemenubar = function () {
         // Make the sub menus selectable with up/down arrow keys and activatable with Enter & Space.
         var subMenuOptions = {
             direction: jQuery.a11y.orientation.VERTICAL,
-            shouldSelectOnFocus: false,
+            autoSelectFirstItem: false,
             rememberSelectionState: false
         };
 

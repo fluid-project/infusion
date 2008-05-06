@@ -225,9 +225,9 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         return keyMap;
     };
 
-    var containerFocusHandler = function (selectionContext, container, shouldSelectOnFocus) {
+    var containerFocusHandler = function (selectionContext, container, shouldAutoSelectFirstChild) {
         return function (evt) {
-            var shouldSelect = (shouldSelectOnFocus.constructor === Function) ? shouldSelectOnFocus () : shouldSelectOnFocus;
+            var shouldSelect = (shouldAutoSelectFirstChild.constructor === Function) ? shouldAutoSelectFirstChild () : shouldAutoSelectFirstChild;
 
             // Override the autoselection if we're on the way out of the container.
             if (selectionContext.focusIsLeavingContainer) {
@@ -322,7 +322,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         // Add various handlers to the container.
         container.keydown (arrowKeyHandler (selectionContext, keyMap, handlers));
         container.keydown (tabKeyHandler (handlers, selectionContext, mergedOptions.rememberSelectionState));
-        container.focus (containerFocusHandler (selectionContext, container, mergedOptions.shouldSelectOnFocus));
+        container.focus (containerFocusHandler (selectionContext, container, mergedOptions.autoSelectFirstItem));
         container.blur (containerBlurHandler (selectionContext));
 
         // Remove selectables from the tab order and add focus/blur handlers
@@ -404,7 +404,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     /**
      * Makes all matched elements selectable with the arrow keys.
      * Supply your own handlers object with willSelect: and willUnselect: properties for custom behaviour.
-     * Options provide configurability, including direction: and shouldSelectOnFocus:
+     * Options provide configurability, including direction: and autoSelectFirstItem:
      * Currently supported directions are jQuery.a11y.directions.HORIZONTAL and VERTICAL.
      */
     $.fn.selectable = function (container, handlers, options) {
@@ -472,7 +472,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
     $.fn.selectable.defaults = {
         direction: this.VERTICAL,
-        shouldSelectOnFocus: true,
+        autoSelectFirstItem: true,
         rememberSelectionState: true
     };
 }) (jQuery);
