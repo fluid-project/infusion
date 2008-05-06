@@ -303,6 +303,8 @@ var swfObj = {};
 		);
 	};
 
+    // This code was taken from a SWFUpload example.
+    // The commented-out lines will be implemented or removed based on our own progress bar code.
 	var uploadError = function(file, error_code, message) {
 		status.currError = '';
 		try {
@@ -451,12 +453,12 @@ var swfObj = {};
 		}
 	};
 	
-	var hideProgress = function(progressBar,justDoIt) {
-	 	progressBar.hide(elements.progress, justDoIt);
+	var hideProgress = function(progressBar,dontPause) {
+	 	progressBar.hide(elements.progress, dontPause);
 	};
 
 	/* DEV CODE
-	 * 
+	 * to be removed after beta or factored into unit tests
 	 */
 	
 	function debugStatus() {
@@ -547,17 +549,16 @@ var swfObj = {};
 	
 	fluid.uploader = {};
 	
-	fluid.uploader.init = function(settings){
+	fluid.uploader.init = function(uploadURL, flashURL, settings){
 		options = $.extend({}, uploadDefaults, settings);
 		
 		var swf_settings = {
 		
 			// File Upload Settings
-			upload_url: options.uploadUrl,
-			flash_url: options.flashUrl,
-			post_params: options.postParams,
+			upload_url: uploadURL,
+			flash_url: flashURL,
+            post_params: options.postParams,
 			
-			// File Upload Settings
 			file_size_limit: options.fileSizeLimit,
 			file_types: options.fileTypes,
 			file_types_description: options.fileTypesDescription,
@@ -625,7 +626,7 @@ var swfObj = {};
         progressBar = new fluid.Progress();
 		
 		// this is a local override to do a fake upload
-		if (options.uploadUrl === '') {
+		if (uploadURL === '') {
 			swfObj.startUpload = function(){
 				demoUpload();
 			};
