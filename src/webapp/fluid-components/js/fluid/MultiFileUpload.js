@@ -33,7 +33,6 @@
  */
 
 var fluid = fluid || {};
-var swfObj = {};
 
 (function ($,fluid) {
 	
@@ -42,7 +41,7 @@ var swfObj = {};
     /********************
      * Member variables *
      ********************/
-    
+    var swfObj;
     var progressBar;
 
 	var status = {
@@ -401,24 +400,6 @@ var swfObj = {};
 		return status.totalBytes;
 	};
 
-	var whichOS = function() {
-		if (navigator.appVersion.indexOf("Win") !== -1) {
-            return "Windows";
-        }
-		if (navigator.appVersion.indexOf("Mac") !== -1) {
-            return "MacOS";
-        }
-		if (navigator.appVersion.indexOf("X11") !== -1) {
-            return "UNIX";
-        }
-		if (navigator.appVersion.indexOf("Linux") !== -1) {
-            return "Linux";
-        }
-        else {
-            return "unknown";
-        }
-	};
-
 	function numFilesToUpload() {
 		return numFilesInQueue() - numFilesUploaded();
 	}
@@ -584,27 +565,36 @@ var swfObj = {};
 		return new SWFUpload(swf_settings);
     }
     
-	/* Public API */
-	fluid.uploader = {};
-	
-	fluid.uploader.init = function(uploadURL, flashURL, settings){
-		options = $.extend({}, uploadDefaults, settings);
-	    
-        swfObj = initSWFUpload(uploadURL, flashURL, options);
-        
-		// set the text difference for the instructions based on Mac or Windows
+    var whichOS = function () {
+		if (navigator.appVersion.indexOf("Win") !== -1) {
+            return "Windows";
+        }
+		if (navigator.appVersion.indexOf("Mac") !== -1) {
+            return "MacOS";
+        }
+		if (navigator.appVersion.indexOf("X11") !== -1) {
+            return "UNIX";
+        }
+		if (navigator.appVersion.indexOf("Linux") !== -1) {
+            return "Linux";
+        }
+        else {
+            return "unknown";
+        }
+	};
+    
+    var setKeyboardModifierString = function () {
+        // set the text difference for the instructions based on Mac or Windows
 		if (whichOS() === 'MacOS') {
 			$(elements.osModifierKey).text(strings.macControlKey);
 		}
-		
-		$(elements.elmBrowse).click(function() {
-			if (options.fileQueueLimit === 1) {
-				return swfObj.selectFile() ;
-			} else {
-				return swfObj.selectFiles() ; 
-			}
+    };
+    
+    var bindEvents = function (allowMultipleFiles, whenDone, whenCancel) {
+		$(elements.elmBrowse).click(function () {
+            return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
 		});
-		
+        
 		$(elements.elmUpload).click(function(){
 			if (status.totalCount > 0) {
 				beginUpload();
@@ -616,12 +606,28 @@ var swfObj = {};
 		});
 		
 		$(elements.elmDone).click(function(){
-			variableAction(options.whenDone);
+			variableAction(whenDone);
 		});
 		
 		$(elements.elmCancel).click(function(){
-			variableAction(options.whenCancel);
+			variableAction(whenCancel);
 		});
+    };
+    
+	/* Public API */
+	fluid.uploader = {};
+	
+	fluid.uploader.init = function(uploadURL, flashURL, settings){
+        // Mix user's settings in with our defaults.
+		options = $.extend({}, uploadDefaults, settings);
+        
+        // Create a new SWFUpload instance.
+        swfObj = initSWFUpload(uploadURL, flashURL, options);
+		
+        setKeyboardModifierString();
+        
+        var allowMultipleFiles = (options.fileQueueLimit !== 1);
+        bindEvents(allowMultipleFiles, options.whenDone, options.whenCancel);
         
         // get ourselves a Progress bar
         progressBar = new fluid.Progress();
