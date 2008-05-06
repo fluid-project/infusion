@@ -582,8 +582,6 @@ var swfObj = {};
 			debug: options.debug
 		};
 		
-		// if (debug) fluid.uploader.test();
-		
 		// Initialize the uploader SWF component
 		// Check to see if SWFUpload is available
 		if (typeof(SWFUpload) === "undefined") {
@@ -635,8 +633,11 @@ var swfObj = {};
 			};
 		}
 	};
-		
-	fluid.uploader.test = function() {
+	
+    // temporary debuggin code to be removed after beta
+    // USE: call from the console to check the current state of the options and elements objects
+    
+	fluid.uploader._test = function() {
 		var str = "";
 		for (key in options) {
             if (options.hasOwnProperty(key)) {
@@ -658,7 +659,7 @@ var swfObj = {};
  * passed in however, it is not fully stateless in that it holds a 'lastPercent' variable. 
 */
 
-fluid.Progress = function ($) {
+(function ($) {
 	
 	$(document).ready(function() {
 		$('.progress-mask').css('opacity',0.80);
@@ -677,61 +678,67 @@ fluid.Progress = function ($) {
     };      
 	 
 	 /* Constructor */
-	return function () {
-    	var lastPercent = 0;
-
-		this.update = function(which, indicator, percent, label, text) {
-			var percentpercent = percent+'%';
-			var labelElm = $(which + ' ' + indicator + ' .progress-label');
-			var progressElm = $(which + ' ' + indicator + ' .progress-indicator');
-			
-			// if there is a separate text indicator then update the text
-			if (text) {
-				var textElm = $(which + ' ' + indicator + ' .progress-text');
-				textElm.html(text);
-			}
-			
-			if ($(which).css("display") === "none") {
-				$(which).fadeIn('slow');
-			}
-			fluid.utils.debug ('percent = ' + percent + ' lastPercent = ' + lastPercent);
-			
-			//update the label of the indicator
-			labelElm.html(label);
-			
-			// de-queue any left over animations
-			progressElm.queue("fx", []); 
-			
-			if (percent === 0) {
-				progressElm.width(1);
-			} else if (percent < lastPercent) {
-				progressElm.width(percentpercent);
-			} else {
-				progressElm.animate({ 
-		    		width: percentpercent,
-					queue: false
-		  		}, 200 );
-			}
-			lastPercent = percent;
-		};
-               
-		this.hide = function(which, dontPause) {
-			var delay = 1600;
-			if (dontPause) {
-				hideNow(which);
-			} else {
-				var timeOut = setTimeout(function(){
-                    hideNow(which);
-                }, delay);
-			}
-		};
-        
-		this.show = function(which) {
+	fluid.Progress = function () {
+    	this.lastPercent = 0;
+        // other states to be added
+        // opacity
+        // delay
+        // anamitation style
+        // initialization function to handle css display effects
+        // options for element selectors inside the container
+	};
+    
+    fluid.Progress.prototype.update = function(which, indicator, percent, label, text) {
+		var percentpercent = percent+'%';
+		var labelElm = $(which + ' ' + indicator + ' .progress-label');
+		var progressElm = $(which + ' ' + indicator + ' .progress-indicator');
+		
+		// if there is a separate text indicator then update the text
+		if (text) {
+			var textElm = $(which + ' ' + indicator + ' .progress-text');
+			textElm.html(text);
+		}
+		
+		if ($(which).css("display") === "none") {
 			$(which).fadeIn('slow');
-		};
+		}
+		fluid.utils.debug ('percent = ' + percent + ' lastPercent = ' + this.lastPercent);
+		
+		//update the label of the indicator
+		labelElm.html(label);
+		
+		// de-queue any left over animations
+		progressElm.queue("fx", []); 
+		
+		if (percent === 0) {
+			progressElm.width(1);
+		} else if (percent < this.lastPercent) {
+			progressElm.width(percentpercent);
+		} else {
+			progressElm.animate({ 
+	    		width: percentpercent,
+				queue: false
+	  		}, 200 );
+		}
+		this.lastPercent = percent;
+	};
+        
+    fluid.Progress.prototype.hide = function(which, dontPause) {
+		var delay = 1600;
+		if (dontPause) {
+			hideNow(which);
+		} else {
+			var timeOut = setTimeout(function(){
+                hideNow(which);
+            }, delay);
+		}
+	};
+    
+    fluid.Progress.prototype.show = function(which) {
+		$(which).fadeIn('slow');
 	};
 	
-}(jQuery);
+})(jQuery);
 
 //fluid.Progress.update('.fluid-progress','.file-progress',40,"Label Change");
 
