@@ -244,6 +244,10 @@ $(document).ready (function () {
         isItemDraggedTest("After ctrl-down, ", firstReorderableId);
         isItemDefaultTest("After ctrl-down, ", secondReorderableId);
         isItemDefaultTest("After ctrl-down, ", secondLastReorderableId);
+        jqUnit.assertEquals("After ctrl-down, " + secondReorderableId + " should have ARIA dropeffect of 'move'", "move",
+            fluid.utils.jById (secondReorderableId).ariaState ("dropeffect"));  
+        jqUnit.assertEquals("After ctrl-down, " + secondLastReorderableId + " should have ARIA dropeffect of 'move'", "move",
+            fluid.utils.jById (secondLastReorderableId).ariaState ("dropeffect"));  
             
         // right arrow down - all the dragging states should remain the same
         lightbox.handleKeyDown(fluid.testUtils.createEvtCtrlRightArrow (firstReorderable[0]));
@@ -262,6 +266,10 @@ $(document).ready (function () {
         isItemFocusedTest("After ctrl-up ", firstReorderableId);
         isItemDefaultTest("After ctrl-up ", secondReorderableId);
         isItemDefaultTest("After ctrl-up ", secondLastReorderableId);
+        jqUnit.assertEquals("After ctrl-p, " + secondReorderableId + " should have ARIA dropeffect of 'none'", "none",
+            fluid.utils.jById (secondReorderableId).ariaState ("dropeffect"));  
+        jqUnit.assertEquals("After ctrl-p, " + secondLastReorderableId + " should have ARIA dropeffect of 'none'", "none",
+            fluid.utils.jById (secondLastReorderableId).ariaState ("dropeffect"));  
     });
     
     lightboxTests.test ("HandleKeyUpAndHandleKeyDownItemMovement", function () {

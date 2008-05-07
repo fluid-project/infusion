@@ -200,6 +200,11 @@ var fluid = fluid || {};
             return (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0);
         };
         
+        var setDropEffects = function (value) {
+            var dropTargets = fluid.wrap (findItems.dropTargets());
+            dropTargets.ariaState ("dropeffect", value);
+        };
+        
         this.handleKeyDown = function (evt) {
             if (!thisReorderer.activeItem || (thisReorderer.activeItem !== evt.target)) {
                 return true;
@@ -212,7 +217,8 @@ var fluid = fluid || {};
                     jActiveItem.removeClass (thisReorderer.cssClasses.selected);
                     jActiveItem.addClass (thisReorderer.cssClasses.dragging);
                     jActiveItem.ariaState ("grab", "true");
-                    
+                    setDropEffects("move");
+//                    jActiveItem.ariaState ("dropeffect", "none");
                 }
                 return false;
             }
@@ -231,6 +237,7 @@ var fluid = fluid || {};
                     jActiveItem.removeClass (thisReorderer.cssClasses.dragging);
                     jActiveItem.addClass (thisReorderer.cssClasses.selected);
                     jActiveItem.ariaState ("grab", "supported");
+                    setDropEffects("none");
                     return false;
                 }
             }
@@ -397,6 +404,7 @@ var fluid = fluid || {};
                     item.removeClass (thisReorderer.cssClasses.selected);
                     item.addClass (thisReorderer.cssClasses.dragging);
                     item.ariaState ("grab", "true");
+                    setDropEffects ("move");
                 
                     // In order to create valid html, the drop marker is the same type as the node being dragged.
                     // This creates a confusing UI in cases such as an ordered list. 
@@ -412,6 +420,7 @@ var fluid = fluid || {};
                     dropMarker.remove();
                     ui.helper = null;
                     currentDroppable = null;
+                    setDropEffects ("none");
                 },
                 handle: findItems.grabHandle (item[0])
             });
@@ -421,7 +430,7 @@ var fluid = fluid || {};
          * Takes a jQuery object and a selector that matches movable items
          */
         function initDropTarget (item, selector) {
-            item.ariaState ("dropeffect", "move");
+            item.ariaState ("dropeffect", "none");
 
             item.droppable ({
                 accept: selector,

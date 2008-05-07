@@ -72,25 +72,14 @@
           declares the id of the active thumbnail, and is provided here for documentation.  The
           actual value is set by the JavaScript as the user navigates among the thumbnails.
         -->
-        <div rsf:id="lightbox-temp-container:" id="gallery:::gallery-thumbs:::" class="image-container"
-          role="wairole:grid"
-          aaa:multiselectable="false"
-          aaa:readonly="false"
-          aaa:activedescendent="gallery:::gallery-thumbs:::lightbox-cell:0:"
-          aaa:disabled="false">
+        <div rsf:id="lightbox-temp-container:" id="gallery:::gallery-thumbs:::" class="image-container">
          
           <!--  
             Orderable items are divs denoted by ids in the following form.
             [lightbox-container-id] + lightbox-cell: + [index] + :  
             The createLightboxFromIds() function expects this format when attaching the javascript behaviour of the Lightbox. 
           -->
-          <div rsf:id="lightbox-cell:" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:0:" 
-            role="wairole:gridcell"
-            aaa:selected="true"
-            aaa:readonly="false"
-            aaa:disabled="false"
-            aaa:grab="supported"
-            aaa:dropeffect="move">
+          <div rsf:id="lightbox-cell:" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:0:">
         
             <div rsf:id="lightbox-client-cell:">
             
@@ -116,13 +105,7 @@
           </div>
     
           <!--  The remainder of the lightbox cells are used for the stand alone lightbox and the tests, not the RSF gallery -->
-          <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:1:"
-            role="wairole:gridcell"
-            aaa:selected="true"
-            aaa:readonly="false"
-            aaa:disabled="false"
-            aaa:grab="supported"
-            aaa:dropeffect="move">
+          <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:1:">
             <div>
               <div class="image-inner-container">
                 <a href="../../fluid-components/images/Kiwano.jpg" >
@@ -136,13 +119,7 @@
             <input id="gallery:::gallery-thumbs:::lightbox-cell:1:reorder-index" value="1" type="hidden"/>      
           </div>
               
-          <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:2:"
-              role="wairole:gridcell"
-	          aaa:selected="true"
-	          aaa:readonly="false"
-	          aaa:disabled="false"
-	          aaa:grab="supported"
-	          aaa:dropeffect="move">
+          <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:2:">
 		        <div>
 		          <div class="image-inner-container">
 		            <a href="../../fluid-components/images/Blackberry.jpg" >
@@ -156,13 +133,7 @@
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:2:reorder-index" value="2" type="hidden"/>
 		      </div>
       
-		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:3:"
-	          role="wairole:gridcell"
-	          aaa:selected="true"
-	          aaa:readonly="false"
-	          aaa:disabled="false"
-	          aaa:grab="supported"
-	          aaa:dropeffect="move">
+		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:3:">
 	          <div>
 		          <div class="image-inner-container">
 		            <a href="../../fluid-components/images/Cherry.jpg">
@@ -176,12 +147,7 @@
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:3:reorder-index" value="3" type="hidden"/>
 		      </div>
       
-		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:4:"
-	          role="wairole:gridcell"
-	          aaa:selected="true"
-	          aaa:readonly="false"
-	          aaa:disabled="false"
-	          aaa:grab="supported"           aaa:dropeffect="move">
+		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:4:">
 		        <div>
 		          <div class="image-inner-container">
 		            <a href="../../fluid-components/images/Fig.jpg">
@@ -195,13 +161,7 @@
 	          <input id="gallery:::gallery-thumbs:::lightbox-cell:4:reorder-index" value="4" type="hidden"/>        
 		      </div>
       
-		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:5:"
-   	          role="wairole:gridcell"
-	          aaa:selected="true"
-	          aaa:readonly="false"
-	          aaa:disabled="false"
-	          aaa:grab="supported"
-	          aaa:dropeffect="move">
+		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:5:">
 		        <div>
 		          <div class="image-inner-container">
 		            <a href="../../fluid-components/images/Grapes.jpg">
@@ -215,13 +175,7 @@
 	          <input id="gallery:::gallery-thumbs:::lightbox-cell:5:reorder-index" value="5" type="hidden"/>
 		      </div>
       
-		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:6:"
-	          role="wairole:gridcell"
-	          aaa:selected="true"
-	          aaa:readonly="false"
-	          aaa:disabled="false"
-	          aaa:grab="supported"
-	          aaa:dropeffect="move">
+		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:6:">
 		        <div>
 		          <div class="image-inner-container">
 		            <a href="../../fluid-components/images/Kiwi.jpg" >
@@ -235,13 +189,7 @@
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:6:reorder-index" value="6" type="hidden"/>
 		      </div>
       
-		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:7:"
-	          role="wairole:gridcell"
-	          aaa:selected="true"
-	          aaa:readonly="false"
-	          aaa:disabled="false"
-	          aaa:grab="supported"
-	          aaa:dropeffect="move">
+		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:7:">
 		        <div>
 		          <div class="image-inner-container">
 		            <a href="../../fluid-components/images/Kumquat.jpg">
@@ -255,13 +203,7 @@
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:7:reorder-index" value="7" type="hidden"/>
 		      </div>
       
-		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:8:"
-	          role="wairole:gridcell"
-	          aaa:selected="true"
-	          aaa:readonly="false"
-	          aaa:disabled="false"
-	          aaa:grab="supported"
-	          aaa:dropeffect="move">
+		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:8:">
 		        <div>
 		          <div class="image-inner-container">
 		            <a href="../../fluid-components/images/Lemon.jpg">
@@ -275,13 +217,7 @@
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:8:reorder-index" value="8" type="hidden"/>
 		      </div>
       
-		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:9:"
-	          role="wairole:gridcell"
-	          aaa:selected="true"
-	          aaa:readonly="false"
-	          aaa:disabled="false"
-	          aaa:grab="supported"
-	          aaa:dropeffect="move">
+		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:9:">
 		        <div>
 		          <div class="image-inner-container">
 		            <a href="../../fluid-components/images/Orange.jpg">
@@ -295,13 +231,7 @@
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:9:reorder-index" value="9" type="hidden"/>
 		      </div>
       
-		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:10:"
-	          role="wairole:gridcell"
-	          aaa:selected="true"
-	          aaa:readonly="false"
-	          aaa:disabled="false"
-	          aaa:grab="supported"
-	          aaa:dropeffect="move">
+		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:10:">
 		        <div>
 		          <div class="image-inner-container">
 		            <a href="../../fluid-components/images/RedApple.jpg">
@@ -315,13 +245,7 @@
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:10:reorder-index" value="10" type="hidden"/>
 		      </div>
       
-		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:11:"
-	          role="wairole:gridcell"
-	          aaa:selected="true"
-	          aaa:readonly="false"
-	          aaa:disabled="false"
-	          aaa:grab="supported"
-	          aaa:dropeffect="move">
+		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:11:">
 		        <div>
 		          <div class="image-inner-container">
 		            <a href="../../fluid-components/images/Tamarillo.jpg">
@@ -335,12 +259,7 @@
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:11:reorder-index" value="11" type="hidden"/>
 		      </div>
       
-		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:12:"
-	          role="wairole:gridcell"
-	          aaa:selected="true"
-	          aaa:readonly="false"
-	          aaa:disabled="false"
-	          aaa:grab="supported"           aaa:dropeffect="move">
+		      <div rsf:id="scr=ignore" class="float orderable-default" id="gallery:::gallery-thumbs:::lightbox-cell:12:">
 		        <div>
 		          <div class="image-inner-container">
 		            <a href="../../fluid-components/images/Mangosteen.jpg">
@@ -354,13 +273,7 @@
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:12:reorder-index" value="12" type="hidden"/>
 		      </div>
       
-		      <div rsf:id="scr=ignore" class="float orderable-default orderable" id="gallery:::gallery-thumbs:::lightbox-cell:13:"
-	          role="wairole:gridcell"
-	          aaa:selected="true"
-	          aaa:readonly="false"
-	          aaa:disabled="false"
-	          aaa:grab="supported"
-	          aaa:dropeffect="move">
+		      <div rsf:id="scr=ignore" class="float orderable-default orderable" id="gallery:::gallery-thumbs:::lightbox-cell:13:">
 		        <div>
 		          <div class="image-inner-container">
 		            <a href="../../fluid-components/images/Banana.jpg">
