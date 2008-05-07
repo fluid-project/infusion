@@ -452,75 +452,82 @@ var fluid = fluid || {};
 	 * this is code that fakes an upload with out a server
 	 */
 
-	var updateObj = {};
-
-	var demoUpload = function() {
-		fluid.utils.debug (numFilesToUpload());
+ 
+    // need to pass in status
+    // need to pass in current uploader
+    
+    var demoUpload = function () {
+        var demoState = {};
+        
+        fluid.utils.debug (numFilesToUpload()); // check the current state 
+        
 		if (status.stop === true) {
 			queueSize (-status.currTotalBytes);
 			updateTotalBytes();
 			updateNumFiles();
 			demoStop();
 		} else if (numFilesToUpload()) { // there are still files to upload
-			updateObj.bytes = 0;
-			updateObj.byteChunk = 200000; // used to break the demo upload into byte-sized chunks
+			demoState.bytes = 0;
+			demoState.byteChunk = 200000; // used to break the demo upload into byte-sized chunks
 			// set up data
-			updateObj.row = $(elements.elmFileQueue + ' tbody tr:not(".fluid-uploader-placeholder"):not(".dim)').eq(0);
+			demoState.row = $(elements.elmFileQueue + ' tbody tr:not(".fluid-uploader-placeholder"):not(".dim)').eq(0);
 			
-			updateObj.fileId = jQuery(updateObj.row).attr('id');
-			updateObj.fileObj = swfObj.getFile(updateObj.fileId);
-			updateObj.bytes = 0;
-			updateObj.totalBytes = updateObj.fileObj.size;
-			updateObj.numChunks = Math.ceil(updateObj.totalBytes / updateObj.byteChunk);
-			fluid.utils.debug ('DEMO :: ' + updateObj.fileId + ' :: totalBytes = ' + updateObj.totalBytes + ' numChunks = ' + updateObj.numChunks);
+			demoState.fileId = jQuery(demoState.row).attr('id');
+			demoState.fileObj = swfObj.getFile(demoState.fileId);
+			demoState.bytes = 0;
+			demoState.totalBytes = demoState.fileObj.size;
+			demoState.numChunks = Math.ceil(demoState.totalBytes / demoState.byteChunk);
+			fluid.utils.debug ('DEMO :: ' + demoState.fileId + ' :: totalBytes = ' 
+                + demoState.totalBytes + ' numChunks = ' + demoState.numChunks);
 			
 			// start the demo upload
-			uploadStart(updateObj.fileObj);
+			uploadStart(demoState.fileObj);
 			
 			// perform demo progress
 			demoProgress();
 		} else { // no more files to upload close the display
 			fileQueueComplete();
 		}
-	};
 
-	var demoProgress = function() {
-		if (status.stop === true) {
-			demoStop();
-		} else {
-			var delay = Math.floor(Math.random() * 5000 + 1) > 1;
-			var tmpBytes = (updateObj.bytes + updateObj.byteChunk);
-			if (tmpBytes < updateObj.totalBytes) {
-				fluid.utils.debug ('tmpBytes = ' + tmpBytes + ' totalBytes = ' + updateObj.totalBytes);
-				uploadProgress(updateObj.fileObj, tmpBytes, updateObj.totalBytes);
-				updateObj.bytes = tmpBytes;
-				var pause = setTimeout(demoProgress, delay);
-			}
-			else {
-				uploadProgress(updateObj.fileObj, updateObj.totalBytes, updateObj.totalBytes);
-				var timer = setTimeout(demoComplete,delay);
-			}
-		}  
-	};
-
-	function demoComplete() {
-		var row = $('tr#'+ updateObj.fileObj.id);
-		// mark the row completed
-		markRowComplete(row);
-		
-		status.currTotalBytes += updateObj.fileObj.size; 
-		updateNumFiles();
-		updateTotalBytes();
-		var pause = setTimeout(demoUpload,1200); // if there hasn't been an error then start up the next upload	
-	}
-	
-	function demoStop() {
-		hideProgress(progressBar,true);
-		status.stop = false;
-		status.currCount = 0;
-		status.currTotalBytes = 0;
-		status.totalCount = numFilesToUpload();
-	}
+        function demoProgress() {
+    		if (status.stop === true) {
+    			demoStop();
+    		} else {
+    			var delay = Math.floor(Math.random() * 5000 + 1) > 1;
+    			var tmpBytes = (demoState.bytes + demoState.byteChunk);
+    			if (tmpBytes < demoState.totalBytes) {
+    				fluid.utils.debug ('tmpBytes = ' + tmpBytes + ' totalBytes = ' + demoState.totalBytes);
+    				uploadProgress(demoState.fileObj, tmpBytes, demoState.totalBytes);
+    				demoState.bytes = tmpBytes;
+    				var pause = setTimeout(demoProgress, delay);
+    			}
+    			else {
+    				uploadProgress(demoState.fileObj, demoState.totalBytes, demoState.totalBytes);
+    				var timer = setTimeout(demoComplete,delay);
+    			}
+    		}  
+    	}
+        
+        function demoComplete() {
+    		var row = $('tr#'+ demoState.fileObj.id);
+    		// mark the row completed
+    		markRowComplete(row);
+    		
+    		status.currTotalBytes += demoState.fileObj.size; 
+    		updateNumFiles();
+    		updateTotalBytes();
+    		var pause = setTimeout(demoUpload,1200); // if there hasn't been an error then start up the next upload	
+    	}
+        
+	    function demoStop () {
+    		hideProgress(progressBar,true);
+    		status.stop = false;
+    		status.currCount = 0;
+    		status.currTotalBytes = 0;
+    		status.totalCount = numFilesToUpload();
+    	}
+        
+     };    
 
     function initSWFUpload(uploadURL, flashURL, options) {
 		var swf_settings = {
@@ -579,6 +586,7 @@ var fluid = fluid || {};
         }
 	};
     
+    // osModifierKey need to be passed in
     var setKeyboardModifierString = function () {
         // set the text difference for the instructions based on Mac or Windows
 		if (whichOS() === 'MacOS') {
@@ -612,7 +620,7 @@ var fluid = fluid || {};
 		});
     };
     
-    var enableDemoMode = function () {
+    var enableDemoMode = function (swfObj) {
 		// this is a local override to do a fake upload
 		swfObj.startUpload = function(){
 			demoUpload();
@@ -641,7 +649,7 @@ var fluid = fluid || {};
 		
         // If we've been given an empty URL, kick into demo mode.
         if (uploadURL === '') {
-            enableDemoMode();
+            enableDemoMode(swfObj);
         }
 	};
     
