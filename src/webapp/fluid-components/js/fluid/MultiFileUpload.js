@@ -17,8 +17,7 @@
  * DOCUMENTATION
  * Technical documentation is available at: http://wiki.fluidproject.org/x/d4ck
  * 
- * 
-*/
+ */
 
 /* TODO:
  * - abstract the swfObj to handle multiple instances
@@ -198,7 +197,7 @@ var fluid = fluid || {};
 
 			// make a new row
 			var queue_row = $('<tr id="'+ file.id +'">'
-				+ '<td class="fileName">' + file.name + '</td>' 
+				+ '<th class="fileName" scope="row">' + file.name + '</th>' 
 				+ '<td class="fileSize">' + fluid.utils.filesizeStr (file.size) + '</td>'
 				+ '<td class="fileStatus">Ready to Upload</td>' 
 				+ '<td class="fileRemove"><button type="button" class="removeFileBtn" /></td></tr>');
