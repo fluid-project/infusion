@@ -189,10 +189,6 @@ var fluid = fluid || {};
 	};
 	
 	// SWF Upload Callback Handlers
-	
-	var beginUpload = function() {
-		swfObj.startUpload();
-	};
 
 	function fileQueued(file) {
 		try {
@@ -590,14 +586,16 @@ var fluid = fluid || {};
 		}
     };
     
-    var bindEvents = function (allowMultipleFiles, whenDone, whenCancel) {
+    // elements needs to be passed in
+    // status needs to be passed in
+    var bindEvents = function (uploader, swfObj, allowMultipleFiles, whenDone, whenCancel) {
 		$(elements.elmBrowse).click(function () {
             return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
 		});
         
 		$(elements.elmUpload).click(function(){
 			if (status.totalCount > 0) {
-				beginUpload();
+				uploader.beginUpload();
 			}
 		});
 		
@@ -636,7 +634,7 @@ var fluid = fluid || {};
         
         // Bind all our event handlers.
         var allowMultipleFiles = (options.fileQueueLimit !== 1);
-        bindEvents(allowMultipleFiles, options.whenDone, options.whenCancel);
+        bindEvents(this, swfObj, allowMultipleFiles, options.whenDone, options.whenCancel);
         
         // Get ourselves a new Progress bar.
         progressBar = new fluid.Progress();
@@ -645,6 +643,10 @@ var fluid = fluid || {};
         if (uploadURL === '') {
             enableDemoMode();
         }
+	};
+    
+    fluid.Uploader.prototype.beginUpload = function() {
+		swfObj.startUpload();
 	};
 	
     // temporary debuggin' code to be removed after beta
