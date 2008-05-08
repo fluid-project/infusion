@@ -16,15 +16,32 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         progressTests.test ("Update", function () {                
             var progressBar = new fluid.Progress();
-            var label = "label";
-            var text = "File 10%";
-            jqUnit.notVisible("Ensure progress bar is not visible", ".fluid-progress");
-            jqUnit.notExists("Ensure update text doesn't exist", ":contains(" + label+")");
+	        var indicator = $('.progress-indicator');
+            
+            var label = "test label";
+            var text = "test text";
+            jqUnit.notVisible("Before update, ensure progress bar is not visible", ".fluid-progress");
+            jqUnit.notExists("Before update, ensure label doesn't exist", ":contains(" + label+")");
+            jqUnit.notExists("Before update, ensure update text doesn't exist", ":contains(" + text+")");
 
-            progressBar.update('.fluid-progress', '.total-progress', 10, label, text);
-            jqUnit.isVisible("Make sure the progress bar is visible", ".fluid-progress");
-            jqUnit.exists("Look for the update text", ":contains(" + label+")");
-       
+            var updateValue = 0;
+            progressBar.update('.fluid-progress', '.total-progress', updateValue, label, text);
+            jqUnit.isVisible("After update, make sure the progress bar is visible", ".fluid-progress");
+            jqUnit.exists("After update, look for the label", ":contains(" + label+")");
+            jqUnit.exists("After update, look for the update text", ":contains(" + text+")");
+            jqUnit.assertEquals("After update to "+updateValue+", lastPercent should be " + updateValue, updateValue, progressBar.lastPercent);
+            jqUnit.assertEquals("After update to "+updateValue+", indicator width should be 1", 1, indicator.width());
+
+            updateValue = 20;
+            var styleString = "width: "+updateValue+"%;";
+            progressBar.update('.fluid-progress', '.total-progress', updateValue, label, text);
+            jqUnit.assertEquals("After update to "+updateValue+", lastPercent should be " + updateValue, updateValue, progressBar.lastPercent);
+
+            updateValue = 10;
+            styleString = "width: "+updateValue+"%;";
+            progressBar.update('.fluid-progress', '.total-progress', updateValue, label, text);
+            jqUnit.assertTrue("After an update to a smaller value ("+updateValue+"), style should include '" + styleString + "'",
+                indicator.attr("style").indexOf(styleString) > -1);
         });
     });
 }) (jQuery);
