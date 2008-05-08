@@ -42,15 +42,6 @@ var fluid = fluid || {};
      ********************/
     var swfObj;
     var progressBar;
-
-	var status = {
-		totalBytes:0,
-		totalCount:0,
-		currCount:0,
-		currTotalBytes:0,
-		currError:'',
-		stop: false
-	};
     	
 	var options = options || {};
 
@@ -114,18 +105,18 @@ var fluid = fluid || {};
 	* @param {jQuery} row	a jQuery object for the row
 	* @return {jQuery}	returns the same jQuery object
 	*/
-	var removeRow = function(row) {
+	var removeRow = function(row, status) {
 		row.fadeOut('fast', function (){
 			var fileId = row.attr('id');
 			var file = swfObj.getFile(fileId);
-			queueSize (-file.size);
+			queueSize (status, -file.size);
 			status.totalCount--;
 			swfObj.cancelUpload(fileId);
 			row.remove();
 			updateNumFiles();
 			updateStatusClass();
-			updateTotalBytes();
-			updateBrowseBtnText();
+			updateTotalBytes(status);
+			updateBrowseBtnText(status);
 		});
 		return row;
 	};
@@ -137,8 +128,8 @@ var fluid = fluid || {};
 	/**
 	 * Updates the total number of bytes in the UI
 	 */
-	var updateTotalBytes = function() {
-		$(elements.txtTotalBytes).text(fluid.utils.filesizeStr(queueSize()));
+	var updateTotalBytes = function(status) {
+		$(elements.txtTotalBytes).text(fluid.utils.filesizeStr(queueSize(status)));
 	};
 	 
 
@@ -151,7 +142,7 @@ var fluid = fluid || {};
 		$(options.elmUploader + " > div").attr('className',status);
 	};
 	
-	var updateBrowseBtnText = function() {
+	var updateBrowseBtnText = function(status) {
 		if (status.totalCount > 0) {
 			$(elements.elmBrowse).text(strings.addMoreText);
 		} else {
@@ -189,57 +180,61 @@ var fluid = fluid || {};
 	
 	// SWF Upload Callback Handlers
 
-	function fileQueued(file) {
-		try {
-			// make a new jQuery object
-			// add the size of the file to the variable maintaining the total size
-			queueSize (file.size);
-
-			// make a new row
-			var queue_row = $('<tr id="'+ file.id +'">'
-				+ '<th class="fileName" scope="row">' + file.name + '</th>' 
-				+ '<td class="fileSize">' + fluid.utils.filesizeStr (file.size) + '</td>'
-				+ '<td class="fileStatus">Ready to Upload</td>' 
-				+ '<td class="fileRemove"><button type="button" class="removeFileBtn" /></td></tr>');
-				
-			// add a hover to the row
-			queue_row.css('display','none').hover(
-				function(){
-					if (!$(this).hasClass('dim')) {
-						$(this).addClass('hover') ;
-					}
-				},
-				function(){
-					if (!$(this).hasClass('dim')) {
-						$(this).removeClass('hover');
-					}
-				}
-			);
-			
-			// add the queue to the list right before the placeholder which is always at the end
-			queue_row.insertBefore(elements.elmEmptyRow);
-			
-			// add remove action to the button
-			$('#'+ file.id + ' .removeFileBtn').click(function(){
-				removeRow($(this).parents('tr'));
-			});
-			
-			// show the row
-			$('#'+ file.id).fadeIn('slow');
-			
-			// set the height but only if it's over the maximum
-			// this because max-height doesn't seem to work for tbody
-			if ($(elements.elmFileQueue + ' tbody').height() > options.queueListMaxHeight) {
-				$(elements.elmFileQueue + ' tbody').height(options.queueListMaxHeight);
-			}
-			updateStatusClass();
-			updateNumFiles();
-			updateTotalBytes();
-			
-		} catch (ex) {
-			fluid.utils.debug (ex);
-		}
-	}
+	var createFileQueuedHandler = function (status) {
+        return function(file){
+            try {
+                // make a new jQuery object
+                // add the size of the file to the variable maintaining the total size
+                queueSize(status, file.size);
+                
+                // make a new row
+                var queue_row = $('<tr id="' + file.id + '">' +
+                '<td class="fileName" scope="row">' +
+                file.name +
+                '</td>' +
+                '<td class="fileSize">' +
+                fluid.utils.filesizeStr(file.size) +
+                '</td>' +
+                '<td class="fileStatus">Ready to Upload</td>' +
+                '<td class="fileRemove"><button type="button" class="removeFileBtn" /></td></tr>');
+                
+                // add a hover to the row
+                queue_row.css('display', 'none').hover(function(){
+                    if (!$(this).hasClass('dim')) {
+                        $(this).addClass('hover');
+                    }
+                }, function(){
+                    if (!$(this).hasClass('dim')) {
+                        $(this).removeClass('hover');
+                    }
+                });
+                
+                // add the queue to the list right before the placeholder which is always at the end
+                queue_row.insertBefore(elements.elmEmptyRow);
+                
+                // add remove action to the button
+                $('#' + file.id + ' .removeFileBtn').click(function(){
+                    removeRow($(this).parents('tr'), status);
+                });
+                
+                // show the row
+                $('#' + file.id).fadeIn('slow');
+                
+                // set the height but only if it's over the maximum
+                // this because max-height doesn't seem to work for tbody
+                if ($(elements.elmFileQueue + ' tbody').height() > options.queueListMaxHeight) {
+                    $(elements.elmFileQueue + ' tbody').height(options.queueListMaxHeight);
+                }
+                updateStatusClass();
+                updateNumFiles();
+                updateTotalBytes(status);
+                
+            } 
+            catch (ex) {
+                fluid.utils.debug(ex);
+            }
+        };
+	};
 
 	function fileDialogStart() {
 		try {
@@ -249,17 +244,20 @@ var fluid = fluid || {};
 		}
 	}
 
-	function fileDialogComplete(numSelected, numQueued) {
-		try {
-			status.currCount = 0;
-			status.currTotalBytes = 0;
-			status.totalCount = numFilesToUpload();
-			updateBrowseBtnText();
-			debugStatus();
-		} catch (ex) {
-			fluid.utils.debug (ex);
-		}
-	}
+	var createFileDialogCompleteHandler = function (status) {
+        return function(numSelected, numQueued){
+            try {
+                status.currCount = 0;
+                status.currTotalBytes = 0;
+                status.totalCount = numFilesToUpload();
+                updateBrowseBtnText(status);
+                debugStatus(status);
+            } 
+            catch (ex) {
+                fluid.utils.debug(ex);
+            }
+        };
+	};
 
 	function fileQueueError(file, error_code, message) {
 		try {
@@ -288,7 +286,13 @@ var fluid = fluid || {};
 		}
 	}	
 
-	var uploadStart = function(fileObj) {
+    var createUploadStartHandler = function (status) {
+        return function (fileObj) {
+            uploadStart (fileObj, status);
+        };
+    };
+    
+	var uploadStart = function(fileObj, status) {
 		status.currError = ''; // zero out the error so we can check it later
 		status.currCount++;
 		updateProgress(progressBar,0,fileObj.name,0,status.currCount,status.totalCount);
@@ -299,82 +303,95 @@ var fluid = fluid || {};
 
     // This code was taken from a SWFUpload example.
     // The commented-out lines will be implemented or removed based on our own progress bar code.
-	var uploadError = function(file, error_code, message) {
-		status.currError = '';
-		try {
-			switch (error_code) {
-			case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
-				status.currError = "Error Code: HTTP Error, File name: " + file.name + ", Message: " + message;
-				break;
-			case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
-				status.currError = "Error Code: Upload Failed, File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
-				break;
-			case SWFUpload.UPLOAD_ERROR.IO_ERROR:
-				status.currError = "Error Code: IO Error, File name: " + file.name + ", Message: " + message;
-				break;
-			case SWFUpload.UPLOAD_ERROR.SECURITY_ERROR:
-				status.currError = "Error Code: Security Error, File name: " + file.name + ", Message: " + message;
-				break;
-			case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
-				status.currError = "Error Code: Upload Limit Exceeded, File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
-				break;
-			case SWFUpload.UPLOAD_ERROR.FILE_VALIDATION_FAILED:
-				status.currError = "Error Code: File Validation Failed, File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
-				break;
-			case SWFUpload.UPLOAD_ERROR.FILE_CANCELLED:
-				// If there aren't any files left (they were all cancelled) disable the cancel button
-				if (this.getStats().files_queued === 0) {
-					document.getElementById(this.customSettings.cancelButtonId).disabled = true;
-				}
-//				progress.SetStatus("Cancelled");
-//				progress.SetCancelled();
-				break;
-			case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
-				status.currError = "Upload Stopped by user input";
-//				progress.SetStatus("Stopped");
-				hideProgress(progressBar,true);
-				break;
-			default:
-//				progress.SetStatus("Unhandled Error: " + error_code);
-				status.currError = "Error Code: " + error_code + ", File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
-				break;
-			}
-			fluid.utils.debug (status.currError);
-		} catch (ex) {
-	        fluid.utils.debug (ex);
-	    }
+	var createUploadErrorHandler = function (status) {
+        return function(file, error_code, message){
+            status.currError = '';
+            try {
+                switch (error_code) {
+                    case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
+                        status.currError = "Error Code: HTTP Error, File name: " + file.name + ", Message: " + message;
+                        break;
+                    case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
+                        status.currError = "Error Code: Upload Failed, File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
+                        break;
+                    case SWFUpload.UPLOAD_ERROR.IO_ERROR:
+                        status.currError = "Error Code: IO Error, File name: " + file.name + ", Message: " + message;
+                        break;
+                    case SWFUpload.UPLOAD_ERROR.SECURITY_ERROR:
+                        status.currError = "Error Code: Security Error, File name: " + file.name + ", Message: " + message;
+                        break;
+                    case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
+                        status.currError = "Error Code: Upload Limit Exceeded, File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
+                        break;
+                    case SWFUpload.UPLOAD_ERROR.FILE_VALIDATION_FAILED:
+                        status.currError = "Error Code: File Validation Failed, File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
+                        break;
+                    case SWFUpload.UPLOAD_ERROR.FILE_CANCELLED:
+                        // If there aren't any files left (they were all cancelled) disable the cancel button
+                        if (this.getStats().files_queued === 0) {
+                            document.getElementById(this.customSettings.cancelButtonId).disabled = true;
+                        }
+                        //				progress.SetStatus("Cancelled");
+                        //				progress.SetCancelled();
+                        break;
+                    case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
+                        status.currError = "Upload Stopped by user input";
+                        //				progress.SetStatus("Stopped");
+                        hideProgress(progressBar, true);
+                        break;
+                    default:
+                        //				progress.SetStatus("Unhandled Error: " + error_code);
+                        status.currError = "Error Code: " + error_code + ", File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
+                        break;
+                }
+                fluid.utils.debug(status.currError);
+            } 
+            catch (ex) {
+                fluid.utils.debug(ex);
+            }
+        };
 	};
 
-	var uploadProgress = function(fileObj,bytes,totalBytes) {
+	var uploadProgress = function(fileObj,bytes,totalBytes, status) {
 		fluid.utils.debug ('File Status :: bytes = ' + bytes + ' :: totalBytes = ' + totalBytes);
-		fluid.utils.debug ('Total Status :: currBytes = ' + (status.currTotalBytes + bytes)  + ' :: totalBytes = ' + queueSize ());
+		fluid.utils.debug ('Total Status :: currBytes = ' + (status.currTotalBytes + bytes)  + ' :: totalBytes = ' + queueSize (status));
 		updateProgress(progressBar,fluid.utils.derivePercent (bytes,totalBytes),
                        fileObj.name,
-                       fluid.utils.derivePercent (status.currTotalBytes + bytes, queueSize ()),
+                       fluid.utils.derivePercent (status.currTotalBytes + bytes, queueSize (status)),
                        status.currCount,
                        status.totalCount);
 	};
 	
-	var uploadComplete = function(file) {
-		if (!status.currError) {
-			
-			if ((file.index + 1) === status.totalCount) { 
-                // we've completed all the files in this upload
-                updateProgress(progressBar,100,file.name,100,status.totalCount,status.totalCount);
-				fileQueueComplete();
-			} else {
-                // there are still files to go, fire off the next one
-				status.currTotalBytes += file.size; // now update currTotalBytes with the actual file size
-				updateProgress(progressBar,100,file.name);
-				swfObj.startUpload(); // if there hasn't been an error then start up the next upload
-			}
-			
-			markRowComplete($('tr#' + file.id));
-
-		} else {
-			fluid.utils.debug (status.currError);
-			hideProgress(progressBar,true);
-		}
+    var createUploadProgressHandler = function (status) {
+        return function(fileObj, bytes, totalBytes) {
+            uploadProgress (fileObj, bytes, totalBytes, status);
+        };
+    };
+    
+	var createUploadCompleteHandler = function (status) {
+        return function(file){
+            if (!status.currError) {
+            
+                if ((file.index + 1) === status.totalCount) {
+                    // we've completed all the files in this upload
+                    updateProgress(progressBar, 100, file.name, 100, status.totalCount, status.totalCount);
+                    fileQueueComplete();
+                }
+                else {
+                    // there are still files to go, fire off the next one
+                    status.currTotalBytes += file.size; // now update currTotalBytes with the actual file size
+                    updateProgress(progressBar, 100, file.name);
+                    swfObj.startUpload(); // if there hasn't been an error then start up the next upload
+                }
+                
+                markRowComplete($('tr#' + file.id));
+                
+            }
+            else {
+                fluid.utils.debug(status.currError);
+                hideProgress(progressBar, true);
+            }
+        };
 	};
 	
 	var fileQueueComplete = function() {
@@ -388,7 +405,7 @@ var fluid = fluid || {};
     /*
      * Return the queue size. If a number is passed in, increment the size first.
      */
-	 var queueSize = function (delta) {
+	 var queueSize = function (status, delta) {
 		if (typeof delta === 'number') {
 			status.totalBytes += delta;
 		}
@@ -437,9 +454,9 @@ var fluid = fluid || {};
 	 * to be removed after beta or factored into unit tests
 	 */
 	
-	function debugStatus() {
+	function debugStatus(status) {
 		fluid.utils.debug (
-			"\n status.totalBytes = " + queueSize () + 
+			"\n status.totalBytes = " + queueSize (status) + 
 			"\n status.totalCount = " + status.totalCount + 
 			"\n status.currCount = " + status.currCount + 
 			"\n status.currTotalBytes = " + status.currTotalBytes + 
@@ -452,17 +469,16 @@ var fluid = fluid || {};
 	 */
 
  
-    // need to pass in status
     // need to pass in current uploader
     
-    var demoUpload = function () {
+    var demoUpload = function (status) {
         var demoState = {};
         
         fluid.utils.debug (numFilesToUpload()); // check the current state 
         
 		if (status.stop === true) {
-			queueSize (-status.currTotalBytes);
-			updateTotalBytes();
+			queueSize (status, -status.currTotalBytes);
+			updateTotalBytes(status);
 			updateNumFiles();
 			demoStop();
 		} else if (numFilesToUpload()) { // there are still files to upload
@@ -480,7 +496,7 @@ var fluid = fluid || {};
                 + demoState.totalBytes + ' numChunks = ' + demoState.numChunks);
 			
 			// start the demo upload
-			uploadStart(demoState.fileObj);
+			uploadStart(demoState.fileObj, status);
 			
 			// perform demo progress
 			demoProgress();
@@ -496,12 +512,12 @@ var fluid = fluid || {};
     			var tmpBytes = (demoState.bytes + demoState.byteChunk);
     			if (tmpBytes < demoState.totalBytes) {
     				fluid.utils.debug ('tmpBytes = ' + tmpBytes + ' totalBytes = ' + demoState.totalBytes);
-    				uploadProgress(demoState.fileObj, tmpBytes, demoState.totalBytes);
+    				uploadProgress(demoState.fileObj, tmpBytes, demoState.totalBytes, status);
     				demoState.bytes = tmpBytes;
     				var pause = setTimeout(demoProgress, delay);
     			}
     			else {
-    				uploadProgress(demoState.fileObj, demoState.totalBytes, demoState.totalBytes);
+    				uploadProgress(demoState.fileObj, demoState.totalBytes, demoState.totalBytes, status);
     				var timer = setTimeout(demoComplete,delay);
     			}
     		}  
@@ -514,8 +530,11 @@ var fluid = fluid || {};
     		
     		status.currTotalBytes += demoState.fileObj.size; 
     		updateNumFiles();
-    		updateTotalBytes();
-    		var pause = setTimeout(demoUpload,1200); // if there hasn't been an error then start up the next upload	
+    		updateTotalBytes(status);
+            var dUpload = function () {
+                demoUpload(status);
+            };
+    		var pause = setTimeout(dUpload,1200); // if there hasn't been an error then start up the next upload	
     	}
         
 	    function demoStop () {
@@ -528,7 +547,7 @@ var fluid = fluid || {};
         
      };    
 
-    function initSWFUpload(uploadURL, flashURL, options) {
+    function initSWFUpload(uploadURL, flashURL, status, options) {
 		var swf_settings = {
 			// File Upload Settings
 			upload_url: uploadURL,
@@ -543,13 +562,13 @@ var fluid = fluid || {};
 			
 			// Event Handler Settings
 			file_dialog_start_handler: fileDialogStart,
-			file_queued_handler: fileQueued,
+			file_queued_handler: createFileQueuedHandler (status),
 			file_queue_error_handler: fileQueueError,
-			file_dialog_complete_handler: fileDialogComplete,
-			upload_start_handler: uploadStart,
-			upload_progress_handler: uploadProgress,
-			upload_complete_handler: uploadComplete,
-			upload_error_handler: uploadError,
+			file_dialog_complete_handler: createFileDialogCompleteHandler (status),
+			upload_start_handler: createUploadStartHandler (status),
+			upload_progress_handler: createUploadProgressHandler (status),
+			upload_complete_handler: createUploadCompleteHandler (status),
+			upload_error_handler: createUploadErrorHandler (status),
 			
 			/*
 		    upload_success_handler : FeaturesDemoHandlers.uploadSuccess,
@@ -594,14 +613,13 @@ var fluid = fluid || {};
     };
     
     // elements needs to be passed in
-    // status needs to be passed in
     var bindEvents = function (uploader, swfObj, allowMultipleFiles, whenDone, whenCancel) {
 		$(elements.elmBrowse).click(function () {
             return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
 		});
         
 		$(elements.elmUpload).click(function(){
-			if (status.totalCount > 0) {
+			if (uploader.status.totalCount > 0) {
 				uploader.beginUpload();
 			}
 		});
@@ -619,10 +637,10 @@ var fluid = fluid || {};
 		});
     };
     
-    var enableDemoMode = function (swfObj) {
+    var enableDemoMode = function (swfObj, status) {
 		// this is a local override to do a fake upload
 		swfObj.startUpload = function(){
-			demoUpload();
+			demoUpload(status);
 		};
 		swfObj.stopUpload = function(){
 			status.stop = true;
@@ -634,8 +652,17 @@ var fluid = fluid || {};
         // Mix user's settings in with our defaults.
 		options = $.extend({}, uploadDefaults, settings);
         
+        this.status = {
+    		totalBytes:0,
+	    	totalCount:0,
+		    currCount:0,
+	    	currTotalBytes:0,
+		    currError:'',
+		    stop: false
+	    };
+    
         // Create a new SWFUpload instance.
-        swfObj = initSWFUpload(uploadURL, flashURL, options);
+        swfObj = initSWFUpload(uploadURL, flashURL, this.status, options);
 		
         setKeyboardModifierString();
         
@@ -648,7 +675,7 @@ var fluid = fluid || {};
 		
         // If we've been given an empty URL, kick into demo mode.
         if (uploadURL === '') {
-            enableDemoMode(swfObj);
+            enableDemoMode(swfObj, this.status);
         }
 	};
     
