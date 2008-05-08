@@ -20,7 +20,7 @@
  */
 
 /* TODO:
- * - abstract the swfObj to handle multiple instances
+ * - handle multiple instances
  * - handle duplicate file error
  * - make fields configurable
  * - add scroll to bottom
@@ -40,7 +40,6 @@ var fluid = fluid || {};
     /********************
      * Member variables *
      ********************/
-    var swfObj;
     var progressBar;
     	
 	var options = options || {};
@@ -103,9 +102,11 @@ var fluid = fluid || {};
 	/** 
 	* removes the defined row from the file queue 
 	* @param {jQuery} row	a jQuery object for the row
+	* @param {SWFUpload} swfObj	the SWF upload object
+	* @param {Object} status	the status object to be updated
 	* @return {jQuery}	returns the same jQuery object
 	*/
-	var removeRow = function(row, status) {
+	var removeRow = function(row, swfObj, status) {
 		row.fadeOut('fast', function (){
 			var fileId = row.attr('id');
 			var file = swfObj.getFile(fileId);
@@ -182,6 +183,7 @@ var fluid = fluid || {};
 
 	var createFileQueuedHandler = function (status) {
         return function(file){
+            var swfObj = this;
             try {
                 // make a new jQuery object
                 // add the size of the file to the variable maintaining the total size
@@ -214,7 +216,7 @@ var fluid = fluid || {};
                 
                 // add remove action to the button
                 $('#' + file.id + ' .removeFileBtn').click(function(){
-                    removeRow($(this).parents('tr'), status);
+                    removeRow($(this).parents('tr'), swfObj, status);  
                 });
                 
                 // show the row
@@ -381,7 +383,8 @@ var fluid = fluid || {};
                     // there are still files to go, fire off the next one
                     status.currTotalBytes += file.size; // now update currTotalBytes with the actual file size
                     updateProgress(progressBar, 100, file.name);
-                    swfObj.startUpload(); // if there hasn't been an error then start up the next upload
+                    this.startUpload(); // if there hasn't been an error then start up the next upload
+                                        // in this handler, 'this' is the SWFUpload object
                 }
                 
                 markRowComplete($('tr#' + file.id));
@@ -471,7 +474,7 @@ var fluid = fluid || {};
  
     // need to pass in current uploader
     
-    var demoUpload = function (status) {
+    var demoUpload = function (swfObj, status) {
         var demoState = {};
         
         fluid.utils.debug (numFilesToUpload()); // check the current state 
@@ -532,7 +535,7 @@ var fluid = fluid || {};
     		updateNumFiles();
     		updateTotalBytes(status);
             var dUpload = function () {
-                demoUpload(status);
+                demoUpload(swfObj, status);
             };
     		var pause = setTimeout(dUpload,1200); // if there hasn't been an error then start up the next upload	
     	}
@@ -548,6 +551,12 @@ var fluid = fluid || {};
      };    
 
     function initSWFUpload(uploadURL, flashURL, status, options) {
+		// Initialize the uploader SWF component
+		// Check to see if SWFUpload is available
+		if (typeof(SWFUpload) === "undefined") {
+			return null;
+		}
+        
 		var swf_settings = {
 			// File Upload Settings
 			upload_url: uploadURL,
@@ -577,13 +586,7 @@ var fluid = fluid || {};
 			debug: options.debug
 		};
 		
-		// Initialize the uploader SWF component
-		// Check to see if SWFUpload is available
-		if (typeof(SWFUpload) === "undefined") {
-			return null;
-		}
-        
-		return new SWFUpload(swf_settings);
+        return new SWFUpload(swf_settings);
     }
     
     var whichOS = function () {
@@ -640,7 +643,7 @@ var fluid = fluid || {};
     var enableDemoMode = function (swfObj, status) {
 		// this is a local override to do a fake upload
 		swfObj.startUpload = function(){
-			demoUpload(status);
+			demoUpload(swfObj, status);
 		};
 		swfObj.stopUpload = function(){
 			status.stop = true;
@@ -662,25 +665,26 @@ var fluid = fluid || {};
 	    };
     
         // Create a new SWFUpload instance.
-        swfObj = initSWFUpload(uploadURL, flashURL, this.status, options);
+        // swfObj is only public to keep things working for now. It will eventually be made a private instance variable.
+        this.swfObj = initSWFUpload(uploadURL, flashURL, this.status, options);
 		
         setKeyboardModifierString();
         
         // Bind all our event handlers.
         var allowMultipleFiles = (options.fileQueueLimit !== 1);
-        bindEvents(this, swfObj, allowMultipleFiles, options.whenDone, options.whenCancel);
+        bindEvents(this, this.swfObj, allowMultipleFiles, options.whenDone, options.whenCancel);
         
         // Get ourselves a new Progress bar.
         progressBar = new fluid.Progress();
 		
         // If we've been given an empty URL, kick into demo mode.
         if (uploadURL === '') {
-            enableDemoMode(swfObj, this.status);
+            enableDemoMode(this.swfObj, this.status);
         }
 	};
     
     fluid.Uploader.prototype.beginUpload = function() {
-		swfObj.startUpload();
+		this.swfObj.startUpload();
 	};
 	
     // temporary debuggin' code to be removed after beta
