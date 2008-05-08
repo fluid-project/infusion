@@ -623,7 +623,7 @@ var fluid = fluid || {};
         
 		$(elements.elmUpload).click(function(){
 			if (uploader.status.totalCount > 0) {
-				uploader.beginUpload();
+				uploader.actions.beginUpload();
 			}
 		});
 		
@@ -666,27 +666,25 @@ var fluid = fluid || {};
     
         // Create a new SWFUpload instance.
         // swfObj is only public to keep things working for now. It will eventually be made a private instance variable.
-        this.swfObj = initSWFUpload(uploadURL, flashURL, this.status, options);
+        swfObj = initSWFUpload(uploadURL, flashURL, this.status, options);
 		
+        this.actions = new fluid.SWFWrapper(swfObj);
+        
         setKeyboardModifierString();
         
         // Bind all our event handlers.
         var allowMultipleFiles = (options.fileQueueLimit !== 1);
-        bindEvents(this, this.swfObj, allowMultipleFiles, options.whenDone, options.whenCancel);
+        bindEvents(this, swfObj, allowMultipleFiles, options.whenDone, options.whenCancel);
         
         // Get ourselves a new Progress bar.
         progressBar = new fluid.Progress();
 		
         // If we've been given an empty URL, kick into demo mode.
         if (uploadURL === '') {
-            enableDemoMode(this.swfObj, this.status);
+            enableDemoMode(swfObj, this.status);
         }
 	};
     
-    fluid.Uploader.prototype.beginUpload = function() {
-		this.swfObj.startUpload();
-	};
-	
     // temporary debuggin' code to be removed after beta
     // USE: call from the console to check the current state of the options and elements objects
     
@@ -705,6 +703,13 @@ var fluid = fluid || {};
 		fluid.utils.debug (str);
 	};
 	
+    fluid.SWFWrapper = function (swfObject) {
+        this.swfObj = swfObject;
+    };
+    fluid.SWFWrapper.prototype.beginUpload = function() {
+		this.swfObj.startUpload();
+	};
+    
 })(jQuery,fluid);
 
 /* PROGRESS
