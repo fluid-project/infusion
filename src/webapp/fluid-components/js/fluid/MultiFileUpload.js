@@ -45,17 +45,15 @@ var fluid = fluid || {};
 	  
 	/* these are the internal UI elements of the Uploader as defined in the 
 	 * default HTML for the Fluid Uploader
-	 * the master upload container is used for styling and not for funcitonal reference
-	 * as there could be more than one uploader
 	 */
 	var defaultSelectors = {
-		elmUpload: ".fluid-uploader-upload",
-		elmPause: ".fluid-uploader-pause",
-		elmBrowse: ".fluid-uploader-browse",
-		elmDone: ".fluid-uploader-done",
-		elmCancel: ".fluid-uploader-cancel",
-		elmFileQueue: ".fluid-uploader-queue",
-		elmEmptyRow : ".fluid-uploader-row-placeholder",
+		upload: ".fluid-uploader-upload",
+		pause: ".fluid-uploader-pause",
+		browse: ".fluid-uploader-browse",
+		done: ".fluid-uploader-done",
+		cancel: ".fluid-uploader-cancel",
+		fileQueue: ".fluid-uploader-queue",
+		emptyRow : ".fluid-uploader-row-placeholder",
 		txtTotalFiles: ".fluid-uploader-totalFiles",
 		txtTotalBytes: ".fluid-uploader-totalBytes",
 		osModifierKey: ".fluid-uploader-modifierKey",
@@ -113,10 +111,10 @@ var fluid = fluid || {};
 			status.totalCount--;
 			swfObj.cancelUpload(fileId);
 			row.remove();
-			updateNumFiles(fragmentSelectors.txtTotalFiles, fragmentSelectors.elmFileQueue, fragmentSelectors.elmEmptyRow);
-			updateState(uploaderSelector, fragmentSelectors.elmFileQueue, fragmentSelectors.elmEmptyRow);
+			updateNumFiles(fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
+			updateState(uploaderSelector, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
 			updateTotalBytes(fragmentSelectors.txtTotalBytes, status);
-			updateBrowseBtnText(fragmentSelectors.elmBrowse, status);
+			updateBrowseBtnText(fragmentSelectors.browse, status);
 		});
 		return row;
 	};
@@ -220,7 +218,7 @@ var fluid = fluid || {};
                 });
                 
                 // add the queue to the list right before the placeholder which is always at the end
-                queue_row.insertBefore(fragmentSelectors.elmEmptyRow);
+                queue_row.insertBefore(fragmentSelectors.emptyRow);
                 
                 // add remove action to the button
                 $('#' + file.id + ' .removeFileBtn').click(function(){
@@ -232,11 +230,11 @@ var fluid = fluid || {};
                 
                 // set the height but only if it's over the maximum
                 // this because max-height doesn't seem to work for tbody
-                if ($(fragmentSelectors.elmFileQueue + ' tbody').height() > maxHeight) {
-                    $(fragmentSelectors.elmFileQueue + ' tbody').height(maxHeight);
+                if ($(fragmentSelectors.fileQueue + ' tbody').height() > maxHeight) {
+                    $(fragmentSelectors.fileQueue + ' tbody').height(maxHeight);
                 }
-                updateState(uploaderSelector, fragmentSelectors.elmFileQueue, fragmentSelectors.elmEmptyRow);
-                updateNumFiles(fragmentSelectors.txtTotalFiles, fragmentSelectors.elmFileQueue, fragmentSelectors.elmEmptyRow);
+                updateState(uploaderSelector, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
+                updateNumFiles(fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
                 updateTotalBytes(fragmentSelectors.txtTotalBytes, status);
                 
             } 
@@ -259,8 +257,8 @@ var fluid = fluid || {};
             try {
                 status.currCount = 0;
                 status.currTotalBytes = 0;
-                status.totalCount = numFilesToUpload(fragmentSelectors.elmFileQueue, fragmentSelectors.elmEmptyRow);
-                updateBrowseBtnText(fragmentSelectors.elmBrowse, status);
+                status.totalCount = numFilesToUpload(fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
+                updateBrowseBtnText(fragmentSelectors.browse, status);
                 debugStatus(status);
             } 
             catch (ex) {
@@ -408,7 +406,7 @@ var fluid = fluid || {};
 	};
 	
 	var fileQueueComplete = function(options, progressBar, fragmentSelectors) {
-		updateState(options.elmUploader, fragmentSelectors.elmFileQueue, fragmentSelectors.elmEmptyRow, 'done');
+		updateState(options.elmUploader, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow, 'done');
 		hideProgress(progressBar, fragmentSelectors.progress, false);
 		if (options.continueAfterUpload) {
 			variableAction(options.whenDone);
@@ -487,18 +485,18 @@ var fluid = fluid || {};
     var demoUpload = function (swfObj, progressBar, options, fragmentSelectors, status) {
         var demoState = {};
         
-        fluid.utils.debug (numFilesToUpload(fragmentSelectors.elmFileQueue, fragmentSelectors.elmEmptyRow)); // check the current state 
+        fluid.utils.debug (numFilesToUpload(fragmentSelectors.fileQueue, fragmentSelectors.emptyRow)); // check the current state 
         
 		if (status.stop === true) {
 			queueSize (status, -status.currTotalBytes);
 			updateTotalBytes(fragmentSelectors.txtTotalBytes, status);
-			updateNumFiles(fragmentSelectors.txtTotalFiles, fragmentSelectors.elmFileQueue, fragmentSelectors.elmEmptyRow);
+			updateNumFiles(fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
 			demoStop();
-		} else if (numFilesToUpload(fragmentSelectors.elmFileQueue, fragmentSelectors.elmEmptyRow)) { // there are still files to upload
+		} else if (numFilesToUpload(fragmentSelectors.fileQueue, fragmentSelectors.emptyRow)) { // there are still files to upload
 			demoState.bytes = 0;
 			demoState.byteChunk = 200000; // used to break the demo upload into byte-sized chunks
 			// set up data
-			demoState.row = $(fragmentSelectors.elmFileQueue + ' tbody tr:not(".fluid-uploader-placeholder"):not(".dim)').eq(0);
+			demoState.row = $(fragmentSelectors.fileQueue + ' tbody tr:not(".fluid-uploader-placeholder"):not(".dim)').eq(0);
 			
 			demoState.fileId = jQuery(demoState.row).attr('id');
 			demoState.fileObj = swfObj.getFile(demoState.fileId);
@@ -542,7 +540,7 @@ var fluid = fluid || {};
     		markRowComplete(row, fragmentSelectors.txtFileStatus);
     		
     		status.currTotalBytes += demoState.fileObj.size; 
-    		updateNumFiles(fragmentSelectors.txtTotalFiles, fragmentSelectors.elmFileQueue, fragmentSelectors.elmEmptyRow);
+    		updateNumFiles(fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
     		updateTotalBytes(fragmentSelectors.txtTotalBytes, status);
             var dUpload = function () {
                 demoUpload(swfObj, progressBar, options, fragmentSelectors, status);
@@ -555,7 +553,7 @@ var fluid = fluid || {};
     		status.stop = false;
     		status.currCount = 0;
     		status.currTotalBytes = 0;
-    		status.totalCount = numFilesToUpload(fragmentSelectors.elmFileQueue, fragmentSelectors.elmEmptyRow);
+    		status.totalCount = numFilesToUpload(fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
     	}
         
      };    
@@ -625,25 +623,25 @@ var fluid = fluid || {};
     };
     
     var bindEvents = function (uploader, swfObj, allowMultipleFiles, whenDone, whenCancel) {
-		$(uploader.fragmentSelectors.elmBrowse).click(function () {
+		$(uploader.fragmentSelectors.browse).click(function () {
             return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
 		});
         
-		$(uploader.fragmentSelectors.elmUpload).click(function(){
+		$(uploader.fragmentSelectors.upload).click(function(){
 			if (uploader.status.totalCount > 0) {
 				uploader.actions.beginUpload();
 			}
 		});
 		
-		$(uploader.fragmentSelectors.elmPause).click(function(){
+		$(uploader.fragmentSelectors.pause).click(function(){
 			swfObj.stopUpload();
 		});
 		
-		$(uploader.fragmentSelectors.elmDone).click(function(){
+		$(uploader.fragmentSelectors.done).click(function(){
 			variableAction(whenDone);
 		});
 		
-		$(uploader.fragmentSelectors.elmCancel).click(function(){
+		$(uploader.fragmentSelectors.cancel).click(function(){
 			variableAction(whenCancel);
 		});
     };
