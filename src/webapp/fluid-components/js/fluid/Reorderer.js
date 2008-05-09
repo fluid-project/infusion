@@ -26,20 +26,6 @@ var fluid = fluid || {};
         avatar: "orderable-avatar"
     };
     
-    var initCssClassNames = function (classNames) {
-        if (!classNames) {
-            return defaultCssClassNames;
-        }
-        var cssClassNames = {};
-        for (var className in defaultCssClassNames) {
-            if (defaultCssClassNames.hasOwnProperty (className)) {
-                cssClassNames[className] = classNames[className] || defaultCssClassNames[className];
-            }
-        }
-
-        return cssClassNames;
-    };
-    
     var defaultAvatarCreator = function(item) {
         var avatar = jQuery (item).clone ();
         avatar.removeAttr ("id");
@@ -169,7 +155,7 @@ var fluid = fluid || {};
         var role = options.role || defaultContainerRole;
         var instructionMessageId = options.instructionMessageId || defaultInstructionMessageId;
         var keysets = setupKeysets(fluid.defaultKeysets, options.keysets);
-        this.cssClasses = initCssClassNames (options.cssClassNames);
+        this.cssClasses = fluid.utils.initCssClassNames (defaultCssClassNames, options.cssClassNames);
         var avatarCreator = options.avatarCreator || defaultAvatarCreator;
 
         this.focusActiveItem = function (evt) {

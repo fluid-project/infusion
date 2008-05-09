@@ -57,13 +57,8 @@ var fluid = fluid || {};
 		txtTotalFiles: ".fluid-uploader-totalFiles",
 		txtTotalBytes: ".fluid-uploader-totalBytes",
 		osModifierKey: ".fluid-uploader-modifierKey",
-		txtFileStatus: ".fileStatus",
-        
-        // Move these into the Progress object.
-		progress : '.fluid-progress',
-		fileProgress: '.file-progress',
-		totalProgress: '.total-progress'
-	};
+		txtFileStatus: ".fileStatus"
+    };
 	
     // Default configuration options.
 	var uploadDefaults = {
@@ -294,16 +289,16 @@ var fluid = fluid || {};
 		}
 	}	
 
-    var createUploadStartHandler = function (progressBar, fragmentSelectors, status) {
+    var createUploadStartHandler = function (progressBar, status) {
         return function (fileObj) {
-            uploadStart (fileObj, progressBar, fragmentSelectors, status);
+            uploadStart (fileObj, progressBar, status);
         };
     };
     
-	var uploadStart = function(fileObj, progressBar, fragmentSelectors, status) {
+	var uploadStart = function(fileObj, progressBar, status) {
 		status.currError = ''; // zero out the error so we can check it later
 		status.currCount++;
-		updateProgress(progressBar, fragmentSelectors, 0,fileObj.name,0,status.currCount,status.totalCount);
+		updateProgress(progressBar, 0,fileObj.name,0,status.currCount,status.totalCount);
 		fluid.utils.debug (
 			"Starting Upload: " + status.currCount + ' (' + fileObj.id + ')' + ' [' + fileObj.size + ']' + ' ' + fileObj.name
 		);
@@ -345,7 +340,7 @@ var fluid = fluid || {};
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
                         status.currError = "Upload Stopped by user input";
                         //				progress.SetStatus("Stopped");
-                        hideProgress(progressBar, fragmentSelectors.progress, true);
+                        hideProgress(progressBar, true);
                         break;
                     default:
                         //				progress.SetStatus("Unhandled Error: " + error_code);
@@ -364,7 +359,6 @@ var fluid = fluid || {};
 		fluid.utils.debug ('File Status :: bytes = ' + bytes + ' :: totalBytes = ' + totalBytes);
 		fluid.utils.debug ('Total Status :: currBytes = ' + (status.currTotalBytes + bytes)  + ' :: totalBytes = ' + queueSize (status));
 		updateProgress(progressBar,
-                       fragmentSelectors,
                        fluid.utils.derivePercent (bytes,totalBytes),
                        fileObj.name,
                        fluid.utils.derivePercent (status.currTotalBytes + bytes, queueSize (status)),
@@ -384,13 +378,13 @@ var fluid = fluid || {};
             
                 if ((file.index + 1) === status.totalCount) {
                     // we've completed all the files in this upload
-                    updateProgress(progressBar, fragmentSelectors, 100, file.name, 100, status.totalCount, status.totalCount);
+                    updateProgress(progressBar, 100, file.name, 100, status.totalCount, status.totalCount);
                     fileQueueComplete(options, progressBar, fragmentSelectors);
                 }
                 else {
                     // there are still files to go, fire off the next one
                     status.currTotalBytes += file.size; // now update currTotalBytes with the actual file size
-                    updateProgress(progressBar, fragmentSelectors, 100, file.name);
+                    updateProgress(progressBar, 100, file.name);
                     this.startUpload(); // if there hasn't been an error then start up the next upload
                                         // in this handler, 'this' is the SWFUpload object
                 }
@@ -400,14 +394,14 @@ var fluid = fluid || {};
             }
             else {
                 fluid.utils.debug(status.currError);
-                hideProgress(progressBar, fragmentSelectors.progress, true);
+                hideProgress(progressBar, true);
             }
         };
 	};
 	
 	var fileQueueComplete = function(options, progressBar, fragmentSelectors) {
 		updateState(options.elmUploader, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow, 'done');
-		hideProgress(progressBar, fragmentSelectors.progress, false);
+		hideProgress(progressBar, false);
 		if (options.continueAfterUpload) {
 			variableAction(options.whenDone);
 		}
@@ -439,12 +433,12 @@ var fluid = fluid || {};
 	 * 
 	 */
 
-	var updateProgress = function(progressBar, fragmentSelectors, filePercent, fileName, totalPercent, fileIndex, totalFileNum){
+	var updateProgress = function(progressBar, filePercent, fileName, totalPercent, fileIndex, totalFileNum){
         
 		//<span class="file_name">&nbsp;</span> :: 0</span>% complete
 		// update file information
 		var fileLabel = '<span class="file_name">' + fileName + '</span> :: <span class="percent">' + filePercent + '</span>% complete';
-		progressBar.update(fragmentSelectors.progress, fragmentSelectors.fileProgress, filePercent, fileLabel);
+		progressBar.update(progressBar.fragmentSelectors.fileProgress, filePercent, fileLabel);
 		
 		// update total info
 		if (totalPercent) {
@@ -452,13 +446,13 @@ var fluid = fluid || {};
 			+ '</span>% [<span class="file_index">' + fileIndex 
 			+ '</span> of <span class="total_file_num">' + totalFileNum 
 			+ '</span> files]';
-			progressBar.update(fragmentSelectors.progress, fragmentSelectors.totalProgress, totalPercent, totalLabel);
+			progressBar.update(progressBar.fragmentSelectors.totalProgress, totalPercent, totalLabel);
 			// if we've completed the progress then hide the progress after a delay
 		}
 	};
 	
-	var hideProgress = function(progressBar, progressSelector, dontPause) {
-	 	progressBar.hide(progressSelector, dontPause);
+	var hideProgress = function(progressBar, dontPause) {
+	 	progressBar.hide(dontPause);
 	};
 
 	/* DEV CODE
@@ -507,7 +501,7 @@ var fluid = fluid || {};
                 + demoState.totalBytes + ' numChunks = ' + demoState.numChunks);
 			
 			// start the demo upload
-			uploadStart(demoState.fileObj, progressBar, fragmentSelectors, status);
+			uploadStart(demoState.fileObj, progressBar, status);
 			
 			// perform demo progress
 			demoProgress();
@@ -549,7 +543,7 @@ var fluid = fluid || {};
     	}
         
 	    function demoStop () {
-    		hideProgress(progressBar, fragmentSelectors.progress, true);
+    		hideProgress(progressBar, true);
     		status.stop = false;
     		status.currCount = 0;
     		status.currTotalBytes = 0;
@@ -582,7 +576,7 @@ var fluid = fluid || {};
 			file_queued_handler: createFileQueuedHandler (options.elmUploader, fragmentSelectors, options.queueListMaxHeight, status),
 			file_queue_error_handler: fileQueueError,
 			file_dialog_complete_handler: createFileDialogCompleteHandler (fragmentSelectors, status),
-			upload_start_handler: createUploadStartHandler (progressBar, fragmentSelectors, status),
+			upload_start_handler: createUploadStartHandler (progressBar, status),
 			upload_progress_handler: createUploadProgressHandler (progressBar, fragmentSelectors, status),
 			upload_complete_handler: createUploadCompleteHandler (progressBar, fragmentSelectors, status),
 			upload_error_handler: createUploadErrorHandler (progressBar, fragmentSelectors, status),
@@ -728,10 +722,12 @@ var fluid = fluid || {};
 
 (function ($) {
 	
-	$(document).ready(function() {
-		$('.progress-mask').css('opacity',0.80);
-		$('.progress-mask-btm').height($('.fluid-progress').height() - 14);
-	 });
+    var defaultSelectors = {
+		progress : '.fluid-progress',
+		fileProgress: '.file-progress',
+		totalProgress: '.total-progress'
+    };
+
 	 
 	 function animateToWidth(elm,width) {
 		elm.animate({ 
@@ -743,9 +739,19 @@ var fluid = fluid || {};
     var hideNow = function(which){
         $(which).fadeOut('slow');
     };      
-	 
+	
+    // This should probably be done in the CSS style sheet rather than in javascript
+    var createInitScript = function (fragmentSelectors) {
+        return function() {
+	    	$('.progress-mask').css('opacity',0.80);
+		    $('.progress-mask-btm').height($(fragmentSelectors.progress).height() - 14);
+	     };
+    };
+ 
 	 /* Constructor */
-	fluid.Progress = function () {
+	fluid.Progress = function (options) {
+        this.fragmentSelectors = (options) ? fluid.utils.initCssClassNames(defaultSelectors, options.fragmentSelectors) : defaultSelectors;
+        
     	this.lastPercent = 0;
         // other states to be added
         // opacity
@@ -753,21 +759,25 @@ var fluid = fluid || {};
         // anamitation style
         // initialization function to handle css display effects
         // options for element selectors inside the container
+
+    	$(document).ready(createInitScript(this.fragmentSelectors));
+
 	};
     
-    fluid.Progress.prototype.update = function(which, indicator, percent, label, text) {
+    fluid.Progress.prototype.update = function(indicator, percent, label, text) {
 		var percentpercent = percent+'%';
-		var labelElm = $(which + ' ' + indicator + ' .progress-label');
-		var progressElm = $(which + ' ' + indicator + ' .progress-indicator');
+        // we may want to pull out the 'progress' element and use it to constrain the other searches.
+		var labelElm = $(this.fragmentSelectors.progress + ' ' + indicator + ' .progress-label');
+		var progressElm = $(this.fragmentSelectors.progress + ' ' + indicator + ' .progress-indicator');
 		
 		// if there is a separate text indicator then update the text
 		if (text) {
-			var textElm = $(which + ' ' + indicator + ' .progress-text');
+			var textElm = $(this.fragmentSelectors.progress + ' ' + indicator + ' .progress-text');
 			textElm.html(text);
 		}
 		
-		if ($(which).css("display") === "none") {
-			$(which).fadeIn('slow');
+		if ($(this.fragmentSelectors.progress).css("display") === "none") {
+			$(this.fragmentSelectors.progress).fadeIn('slow');
 		}
 		fluid.utils.debug ('percent = ' + percent + ' lastPercent = ' + this.lastPercent);
 		
@@ -790,19 +800,20 @@ var fluid = fluid || {};
 		this.lastPercent = percent;
 	};
         
-    fluid.Progress.prototype.hide = function(which, dontPause) {
+    fluid.Progress.prototype.hide = function(dontPause) {
+        var progressSelector = this.fragmentSelectors.progress;
 		var delay = 1600;
 		if (dontPause) {
-			hideNow(which);
+			hideNow(progressSelector);
 		} else {
 			var timeOut = setTimeout(function(){
-                hideNow(which);
+                hideNow(progressSelector);
             }, delay);
 		}
 	};
     
-    fluid.Progress.prototype.show = function(which) {
-		$(which).fadeIn('slow');
+    fluid.Progress.prototype.show = function() {
+		$(this.fragmentSelectors.progress).fadeIn('slow');
 	};
 	
 })(jQuery);

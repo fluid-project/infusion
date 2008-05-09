@@ -25,7 +25,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.notExists("Before update, ensure update text doesn't exist", ":contains(" + text+")");
 
             var updateValue = 0;
-            progressBar.update('.fluid-progress', '.total-progress', updateValue, label, text);
+            progressBar.update('.total-progress', updateValue, label, text);
             jqUnit.isVisible("After update, make sure the progress bar is visible", ".fluid-progress");
             jqUnit.exists("After update, look for the label", ":contains(" + label+")");
             jqUnit.exists("After update, look for the update text", ":contains(" + text+")");
@@ -34,12 +34,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
             updateValue = 20;
             var styleString = "width: "+updateValue+"%;";
-            progressBar.update('.fluid-progress', '.total-progress', updateValue, label, text);
+            progressBar.update('.total-progress', updateValue, label, text);
             jqUnit.assertEquals("After update to "+updateValue+", lastPercent should be " + updateValue, updateValue, progressBar.lastPercent);
 
             updateValue = 10;
             styleString = "width: "+updateValue+"%;";
-            progressBar.update('.fluid-progress', '.total-progress', updateValue, label, text);
+            progressBar.update('.total-progress', updateValue, label, text);
             jqUnit.assertTrue("After an update to a smaller value ("+updateValue+"), style should include '" + styleString + "'",
                 indicator.attr("style").indexOf(styleString) > -1);
         });

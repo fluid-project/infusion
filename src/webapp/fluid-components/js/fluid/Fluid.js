@@ -177,4 +177,17 @@ var fluid = fluid || {};
 		return Math.round(bytes/1028) + ' KB';
 	};
 	
+    fluid.utils.initCssClassNames = function (defaultNames, classNames) {
+        if (!classNames) {
+            return defaultNames;
+        }
+        var cssClassNames = {};
+        for (var className in defaultNames) {
+            if (defaultNames.hasOwnProperty (className)) {
+                cssClassNames[className] = classNames[className] || defaultNames[className];
+            }
+        }
+
+        return cssClassNames;
+    };
 }) (jQuery, fluid);
