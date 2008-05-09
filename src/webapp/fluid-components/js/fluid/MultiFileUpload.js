@@ -34,14 +34,10 @@
 var fluid = fluid || {};
 
 (function ($,fluid) {
-	
-	// TODO: for now this is a single object but well re-factor to handle multiple uploaders in the next pass
-  
+	  
     /********************
      * Member variables *
-     ********************/
-    var progressBar;
-    	
+     ********************/    	
 	var options = options || {};
 
     // Default configuration options.
@@ -288,13 +284,13 @@ var fluid = fluid || {};
 		}
 	}	
 
-    var createUploadStartHandler = function (status) {
+    var createUploadStartHandler = function (progressBar, status) {
         return function (fileObj) {
-            uploadStart (fileObj, status);
+            uploadStart (fileObj, progressBar, status);
         };
     };
     
-	var uploadStart = function(fileObj, status) {
+	var uploadStart = function(fileObj, progressBar, status) {
 		status.currError = ''; // zero out the error so we can check it later
 		status.currCount++;
 		updateProgress(progressBar,0,fileObj.name,0,status.currCount,status.totalCount);
@@ -305,7 +301,7 @@ var fluid = fluid || {};
 
     // This code was taken from a SWFUpload example.
     // The commented-out lines will be implemented or removed based on our own progress bar code.
-	var createUploadErrorHandler = function (status) {
+	var createUploadErrorHandler = function (progressBar, status) {
         return function(file, error_code, message){
             status.currError = '';
             try {
@@ -354,7 +350,7 @@ var fluid = fluid || {};
         };
 	};
 
-	var uploadProgress = function(fileObj,bytes,totalBytes, status) {
+	var uploadProgress = function(progressBar, fileObj,bytes,totalBytes, status) {
 		fluid.utils.debug ('File Status :: bytes = ' + bytes + ' :: totalBytes = ' + totalBytes);
 		fluid.utils.debug ('Total Status :: currBytes = ' + (status.currTotalBytes + bytes)  + ' :: totalBytes = ' + queueSize (status));
 		updateProgress(progressBar,fluid.utils.derivePercent (bytes,totalBytes),
@@ -364,20 +360,20 @@ var fluid = fluid || {};
                        status.totalCount);
 	};
 	
-    var createUploadProgressHandler = function (status) {
+    var createUploadProgressHandler = function (progressBar, status) {
         return function(fileObj, bytes, totalBytes) {
-            uploadProgress (fileObj, bytes, totalBytes, status);
+            uploadProgress (progressBar, fileObj, bytes, totalBytes, status);
         };
     };
     
-	var createUploadCompleteHandler = function (status) {
+	var createUploadCompleteHandler = function (progressBar, status) {
         return function(file){
             if (!status.currError) {
             
                 if ((file.index + 1) === status.totalCount) {
                     // we've completed all the files in this upload
                     updateProgress(progressBar, 100, file.name, 100, status.totalCount, status.totalCount);
-                    fileQueueComplete();
+                    fileQueueComplete(progressBar);
                 }
                 else {
                     // there are still files to go, fire off the next one
@@ -397,7 +393,7 @@ var fluid = fluid || {};
         };
 	};
 	
-	var fileQueueComplete = function() {
+	var fileQueueComplete = function(progressBar) {
 		updateStatusClass('done');
 		hideProgress(progressBar,false);
 		if (options.continueAfterUpload) {
@@ -474,7 +470,7 @@ var fluid = fluid || {};
  
     // need to pass in current uploader
     
-    var demoUpload = function (swfObj, status) {
+    var demoUpload = function (swfObj, progressBar, status) {
         var demoState = {};
         
         fluid.utils.debug (numFilesToUpload()); // check the current state 
@@ -499,12 +495,12 @@ var fluid = fluid || {};
                 + demoState.totalBytes + ' numChunks = ' + demoState.numChunks);
 			
 			// start the demo upload
-			uploadStart(demoState.fileObj, status);
+			uploadStart(demoState.fileObj, progressBar, status);
 			
 			// perform demo progress
 			demoProgress();
 		} else { // no more files to upload close the display
-			fileQueueComplete();
+			fileQueueComplete(progressBar);
 		}
 
         function demoProgress() {
@@ -515,12 +511,12 @@ var fluid = fluid || {};
     			var tmpBytes = (demoState.bytes + demoState.byteChunk);
     			if (tmpBytes < demoState.totalBytes) {
     				fluid.utils.debug ('tmpBytes = ' + tmpBytes + ' totalBytes = ' + demoState.totalBytes);
-    				uploadProgress(demoState.fileObj, tmpBytes, demoState.totalBytes, status);
+    				uploadProgress(progressBar, demoState.fileObj, tmpBytes, demoState.totalBytes, status);
     				demoState.bytes = tmpBytes;
     				var pause = setTimeout(demoProgress, delay);
     			}
     			else {
-    				uploadProgress(demoState.fileObj, demoState.totalBytes, demoState.totalBytes, status);
+    				uploadProgress(progressBar, demoState.fileObj, demoState.totalBytes, demoState.totalBytes, status);
     				var timer = setTimeout(demoComplete,delay);
     			}
     		}  
@@ -535,7 +531,7 @@ var fluid = fluid || {};
     		updateNumFiles();
     		updateTotalBytes(status);
             var dUpload = function () {
-                demoUpload(swfObj, status);
+                demoUpload(swfObj, progressBar, status);
             };
     		var pause = setTimeout(dUpload,1200); // if there hasn't been an error then start up the next upload	
     	}
@@ -550,7 +546,7 @@ var fluid = fluid || {};
         
      };    
 
-    function initSWFUpload(uploadURL, flashURL, status, options) {
+    function initSWFUpload(uploadURL, flashURL, progressBar, status, options) {
 		// Initialize the uploader SWF component
 		// Check to see if SWFUpload is available
 		if (typeof(SWFUpload) === "undefined") {
@@ -574,10 +570,10 @@ var fluid = fluid || {};
 			file_queued_handler: createFileQueuedHandler (status),
 			file_queue_error_handler: fileQueueError,
 			file_dialog_complete_handler: createFileDialogCompleteHandler (status),
-			upload_start_handler: createUploadStartHandler (status),
-			upload_progress_handler: createUploadProgressHandler (status),
-			upload_complete_handler: createUploadCompleteHandler (status),
-			upload_error_handler: createUploadErrorHandler (status),
+			upload_start_handler: createUploadStartHandler (progressBar, status),
+			upload_progress_handler: createUploadProgressHandler (progressBar, status),
+			upload_complete_handler: createUploadCompleteHandler (progressBar, status),
+			upload_error_handler: createUploadErrorHandler (progressBar, status),
 			
 			/*
 		    upload_success_handler : FeaturesDemoHandlers.uploadSuccess,
@@ -640,10 +636,10 @@ var fluid = fluid || {};
 		});
     };
     
-    var enableDemoMode = function (swfObj, status) {
+    var enableDemoMode = function (swfObj, progressBar, status) {
 		// this is a local override to do a fake upload
 		swfObj.startUpload = function(){
-			demoUpload(swfObj, status);
+			demoUpload(swfObj, progressBar, status);
 		};
 		swfObj.stopUpload = function(){
 			status.stop = true;
@@ -664,9 +660,9 @@ var fluid = fluid || {};
 		    stop: false
 	    };
     
-        // Create a new SWFUpload instance.
-        // swfObj is only public to keep things working for now. It will eventually be made a private instance variable.
-        swfObj = initSWFUpload(uploadURL, flashURL, this.status, options);
+        var progressBar = new fluid.Progress();
+
+        var swfObj = initSWFUpload(uploadURL, flashURL, progressBar, this.status, options);
 		
         this.actions = new fluid.SWFWrapper(swfObj);
         
@@ -676,12 +672,10 @@ var fluid = fluid || {};
         var allowMultipleFiles = (options.fileQueueLimit !== 1);
         bindEvents(this, swfObj, allowMultipleFiles, options.whenDone, options.whenCancel);
         
-        // Get ourselves a new Progress bar.
-        progressBar = new fluid.Progress();
 		
         // If we've been given an empty URL, kick into demo mode.
         if (uploadURL === '') {
-            enableDemoMode(swfObj, this.status);
+            enableDemoMode(swfObj, progressBar, this.status);
         }
 	};
     
