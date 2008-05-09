@@ -139,7 +139,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 				<arg line="-jar" />
 				<arg path="${yuicompressor}" />
 				<srcfile/>
-
+				<arg line="--nomunge" />
 				<!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
 				<arg line="${lineBreakArg}" />
 				<arg line="-o" />
