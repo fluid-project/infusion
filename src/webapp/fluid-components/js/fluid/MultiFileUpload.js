@@ -21,10 +21,18 @@
 
 /* TODO:
  * - handle multiple instances
+ * - determine strategy for markup: assumed, or pluggable?
  * - handle duplicate file error
  * - make fields configurable
+ *	   - CSS class names
+ *	   - strings (for i18n)
+ * - remove hard-coding of css class names
+ * - refactor 'options' into more than one object as needed
+ * - add container constraint to class-based selections
  * - add scroll to bottom
  * - fix resume
+ * - clean up debug code
+ * - remove commented-out code
  */
 
 /* ABOUT RUNNING IN LOCAL TEST MODE
@@ -35,11 +43,6 @@ var fluid = fluid || {};
 
 (function ($,fluid) {
 	  
-    /********************
-     * Member variables *
-     ********************/    	
-	var options = options || {};
-
     // Default configuration options.
 	var uploadDefaults = {
 		uploadUrl : "",
@@ -102,7 +105,7 @@ var fluid = fluid || {};
 	* @param {Object} status	the status object to be updated
 	* @return {jQuery}	returns the same jQuery object
 	*/
-	var removeRow = function(row, swfObj, status) {
+	var removeRow = function(uploaderSelector, row, swfObj, status) {
 		row.fadeOut('fast', function (){
 			var fileId = row.attr('id');
 			var file = swfObj.getFile(fileId);
@@ -111,7 +114,7 @@ var fluid = fluid || {};
 			swfObj.cancelUpload(fileId);
 			row.remove();
 			updateNumFiles();
-			updateStatusClass();
+			updateState(uploaderSelector);
 			updateTotalBytes(status);
 			updateBrowseBtnText(status);
 		});
@@ -129,14 +132,18 @@ var fluid = fluid || {};
 		$(elements.txtTotalBytes).text(fluid.utils.filesizeStr(queueSize(status)));
 	};
 	 
-
-	var updateStatusClass = function(status) {
-		// sets the status for the top level element, not sure that this is a good way to do this given multiple instances
-		if (status === undefined) {
-			status = (numFilesInQueue() > 0) ? "loaded" : "empty";
+    /*
+     * Sets the state (using a css class) for the top level element
+     * @param {String} uploaderSelector    the selector for the uploader container
+     * @param {String} stateClass    optional class to be assigned.
+     *                               If not specified, either 'loaded' or 'empty' will be used.
+     */
+	var updateState = function(uploaderSelector, stateClass) {
+		if (stateClass === undefined) {
+			stateClass = (numFilesInQueue() > 0) ? "loaded" : "empty";
 		}
-		// TODO: refactor for multiple instances
-		$(options.elmUploader + " > div").attr('className',status);
+
+		$(uploaderSelector + " > div").attr('className',stateClass);
 	};
 	
 	var updateBrowseBtnText = function(status) {
@@ -177,7 +184,12 @@ var fluid = fluid || {};
 	
 	// SWF Upload Callback Handlers
 
-	var createFileQueuedHandler = function (status) {
+    /*
+     * @param {String} uploaderSelector    the selector for the uploader container
+     * @param {int} maxHeight    maximum height in pixels for the file queue before scrolling
+     * @param {Object} status    
+     */
+	var createFileQueuedHandler = function (uploaderSelector, maxHeight, status) {
         return function(file){
             var swfObj = this;
             try {
@@ -212,7 +224,7 @@ var fluid = fluid || {};
                 
                 // add remove action to the button
                 $('#' + file.id + ' .removeFileBtn').click(function(){
-                    removeRow($(this).parents('tr'), swfObj, status);  
+                    removeRow(uploaderSelector, $(this).parents('tr'), swfObj, status);  
                 });
                 
                 // show the row
@@ -220,10 +232,10 @@ var fluid = fluid || {};
                 
                 // set the height but only if it's over the maximum
                 // this because max-height doesn't seem to work for tbody
-                if ($(elements.elmFileQueue + ' tbody').height() > options.queueListMaxHeight) {
-                    $(elements.elmFileQueue + ' tbody').height(options.queueListMaxHeight);
+                if ($(elements.elmFileQueue + ' tbody').height() > maxHeight) {
+                    $(elements.elmFileQueue + ' tbody').height(maxHeight);
                 }
-                updateStatusClass();
+                updateState(uploaderSelector);
                 updateNumFiles();
                 updateTotalBytes(status);
                 
@@ -373,7 +385,7 @@ var fluid = fluid || {};
                 if ((file.index + 1) === status.totalCount) {
                     // we've completed all the files in this upload
                     updateProgress(progressBar, 100, file.name, 100, status.totalCount, status.totalCount);
-                    fileQueueComplete(progressBar);
+                    fileQueueComplete(options, progressBar);
                 }
                 else {
                     // there are still files to go, fire off the next one
@@ -393,8 +405,8 @@ var fluid = fluid || {};
         };
 	};
 	
-	var fileQueueComplete = function(progressBar) {
-		updateStatusClass('done');
+	var fileQueueComplete = function(options, progressBar) {
+		updateState(options.elmUploader, 'done');
 		hideProgress(progressBar,false);
 		if (options.continueAfterUpload) {
 			variableAction(options.whenDone);
@@ -470,7 +482,7 @@ var fluid = fluid || {};
  
     // need to pass in current uploader
     
-    var demoUpload = function (swfObj, progressBar, status) {
+    var demoUpload = function (swfObj, progressBar, options, status) {
         var demoState = {};
         
         fluid.utils.debug (numFilesToUpload()); // check the current state 
@@ -500,7 +512,7 @@ var fluid = fluid || {};
 			// perform demo progress
 			demoProgress();
 		} else { // no more files to upload close the display
-			fileQueueComplete(progressBar);
+			fileQueueComplete(options, progressBar);
 		}
 
         function demoProgress() {
@@ -531,7 +543,7 @@ var fluid = fluid || {};
     		updateNumFiles();
     		updateTotalBytes(status);
             var dUpload = function () {
-                demoUpload(swfObj, progressBar, status);
+                demoUpload(swfObj, progressBar, options, status);
             };
     		var pause = setTimeout(dUpload,1200); // if there hasn't been an error then start up the next upload	
     	}
@@ -567,7 +579,7 @@ var fluid = fluid || {};
 			
 			// Event Handler Settings
 			file_dialog_start_handler: fileDialogStart,
-			file_queued_handler: createFileQueuedHandler (status),
+			file_queued_handler: createFileQueuedHandler (options.elmUploader, options.queueListMaxHeight, status),
 			file_queue_error_handler: fileQueueError,
 			file_dialog_complete_handler: createFileDialogCompleteHandler (status),
 			upload_start_handler: createUploadStartHandler (progressBar, status),
@@ -636,10 +648,10 @@ var fluid = fluid || {};
 		});
     };
     
-    var enableDemoMode = function (swfObj, progressBar, status) {
+    var enableDemoMode = function (swfObj, progressBar, options, status) {
 		// this is a local override to do a fake upload
 		swfObj.startUpload = function(){
-			demoUpload(swfObj, progressBar, status);
+			demoUpload(swfObj, progressBar, options, status);
 		};
 		swfObj.stopUpload = function(){
 			status.stop = true;
@@ -649,8 +661,11 @@ var fluid = fluid || {};
 	/* Public API */
 	fluid.Uploader = function(uploadURL, flashURL, settings){
         // Mix user's settings in with our defaults.
-		options = $.extend({}, uploadDefaults, settings);
+        // temporarily public; to be made private after beta
+		this.options = $.extend({}, uploadDefaults, settings);
         
+        // Should the status object be more self-aware? Should various functions that operate on
+        // it (and do little else) be encapsulated in it?
         this.status = {
     		totalBytes:0,
 	    	totalCount:0,
@@ -662,20 +677,20 @@ var fluid = fluid || {};
     
         var progressBar = new fluid.Progress();
 
-        var swfObj = initSWFUpload(uploadURL, flashURL, progressBar, this.status, options);
+        var swfObj = initSWFUpload(uploadURL, flashURL, progressBar, this.status, this.options);
 		
         this.actions = new fluid.SWFWrapper(swfObj);
         
         setKeyboardModifierString();
         
         // Bind all our event handlers.
-        var allowMultipleFiles = (options.fileQueueLimit !== 1);
-        bindEvents(this, swfObj, allowMultipleFiles, options.whenDone, options.whenCancel);
+        var allowMultipleFiles = (this.options.fileQueueLimit !== 1);
+        bindEvents(this, swfObj, allowMultipleFiles, this.options.whenDone, this.options.whenCancel);
         
 		
         // If we've been given an empty URL, kick into demo mode.
         if (uploadURL === '') {
-            enableDemoMode(swfObj, progressBar, this.status);
+            enableDemoMode(swfObj, progressBar, this.options, this.status);
         }
 	};
     
