@@ -14,19 +14,20 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(document).ready (function () {
         var progressTests = new jqUnit.TestCase ("Progress Tests");
 
-        progressTests.test ("Update", function () {                
-            var progressBar = new fluid.Progress();
+        progressTests.test ("Update", function () {      
+            var progressSelector = ".fluid-progress";          
+            var progressBar = new fluid.Progress(progressSelector);
 	        var indicator = $('.progress-indicator');
             
             var label = "test label";
             var text = "test text";
-            jqUnit.notVisible("Before update, ensure progress bar is not visible", ".fluid-progress");
+            jqUnit.notVisible("Before update, ensure progress bar is not visible", progressSelector);
             jqUnit.notExists("Before update, ensure label doesn't exist", ":contains(" + label+")");
             jqUnit.notExists("Before update, ensure update text doesn't exist", ":contains(" + text+")");
 
             var updateValue = 0;
             progressBar.update('.total-progress', updateValue, label, text);
-            jqUnit.isVisible("After update, make sure the progress bar is visible", ".fluid-progress");
+            jqUnit.isVisible("After update, make sure the progress bar is visible", progressSelector);
             jqUnit.exists("After update, look for the label", ":contains(" + label+")");
             jqUnit.exists("After update, look for the update text", ":contains(" + text+")");
             jqUnit.assertEquals("After update to "+updateValue+", lastPercent should be " + updateValue, updateValue, progressBar.lastPercent);

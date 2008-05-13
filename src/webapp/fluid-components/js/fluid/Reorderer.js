@@ -36,6 +36,7 @@ var fluid = fluid || {};
 // droppable ("destroy") should take care of this, but it doesn't seem to remove
 // the class, which is what is checked, so we remove it manually
 // (see http://dev.jquery.com/ticket/2599)
+// 2008-05-12: 2599 has been fixed now in trunk
 //                    avatar.droppable ("destroy");
         avatar.removeClass ("ui-droppable");
         return avatar;
