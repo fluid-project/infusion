@@ -9,7 +9,90 @@ You may obtain a copy of the GPL and MIT License at
 https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 */
 
+// Tabindex normalization
 (function ($) {
+    // -- Private functions --
+    
+    var normalizeTabindexName = function () {
+	    return $.browser.msie ? "tabIndex" : "tabindex";
+	};
+
+	var getValue = function (elements) {
+        if (elements.length <= 0) {
+            return undefined;
+        }
+
+		if (!elements.hasTabindexAttr ()) {
+		    return canHaveDefaultTabindex (elements) ? Number (0) : undefined;
+		}
+
+        // Get the attribute (.attr () doesn't work for tabIndex in IE) and return it as a number value.
+		var value = elements[0].getAttribute (normalizeTabindexName ());
+		return Number (value);
+	};
+
+	var setValue = function (elements, toIndex) {
+		return elements.each (function (i, item) {
+			$ (item).attr (normalizeTabindexName (), toIndex);
+		});
+	};
+
+	var canHaveDefaultTabindex = function (elements) {
+       if (elements.length <= 0) {
+           return false;
+       }
+
+	   return jQuery (elements[0]).is ("a, input, button, select, area, textarea, object");
+	};
+    
+    // -- Public API --
+    
+    /**
+     * Gets the value of the tabindex attribute for the first item, or sets the tabindex value of all elements
+     * if toIndex is specified.
+     * 
+     * @param {String|Number} toIndex
+     */
+    $.fn.tabindex = function (toIndex) {
+		if (toIndex !== null && toIndex !== undefined) {
+			return setValue (this, toIndex);
+		} else {
+			return getValue (this);
+		}
+	};
+
+    /**
+     * Removes the tabindex attribute altogether from each element.
+     */
+	$.fn.removeTabindex = function () {
+		return this.each(function (i, item) {
+			$ (item).removeAttr (normalizeTabindexName ());
+		});
+	};
+
+    /**
+     * Determines if an element actually has a tabindex attribute present.
+     */
+	$.fn.hasTabindexAttr = function () {
+	    if (this.length <= 0) {
+	        return false;
+	    }
+
+	    var attributeNode = this[0].getAttributeNode (normalizeTabindexName ());
+        return attributeNode ? attributeNode.specified : false;
+	};
+
+    /**
+     * Determines if an element either has a tabindex attribute or is naturally tab-focussable.
+     */
+	$.fn.hasTabindex = function () {
+        return this.hasTabindexAttr () || canHaveDefaultTabindex (this);
+	};
+})(jQuery);
+
+
+// Keyboard navigation
+(function ($) {    
     // Public, static constants needed by the rest of the library.
     $.a11y = $.a11y || {};
 
@@ -49,38 +132,6 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     };
 
     // Private functions.
-	var normalizeTabindexName = function () {
-	    return $.browser.msie ? "tabIndex" : "tabindex";
-	};
-
-	var getValue = function (elements) {
-        if (elements.length <= 0) {
-            return undefined;
-        }
-
-		if (!elements.hasTabindexAttr ()) {
-		    return canHaveDefaultTabindex (elements) ? Number (0) : undefined;
-		}
-
-        // Get the attribute (.attr () doesn't work for tabIndex in IE) and return it as a number value.
-		var value = elements[0].getAttribute (normalizeTabindexName ());
-		return Number (value);
-	};
-
-	var setValue = function (elements, toIndex) {
-		return elements.each (function (i, item) {
-			$ (item).attr (normalizeTabindexName (), toIndex);
-		});
-	};
-
-	var canHaveDefaultTabindex = function (elements) {
-       if (elements.length <= 0) {
-           return false;
-       }
-
-	   return jQuery (elements[0]).is ("a, input, button, select, area, textarea, object");
-	};
-
     var unwrap = function (element) {
         return (element.jquery) ? element[0] : element; // Unwrap the element if it's a jQuery.
     };
@@ -366,33 +417,6 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     };
 
     // Public API.
-	$.fn.tabindex = function (toIndex) {
-		if (toIndex !== null && toIndex !== undefined) {
-			return setValue (this, toIndex);
-		} else {
-			return getValue (this);
-		}
-	};
-
-	$.fn.removeTabindex = function () {
-		return this.each(function (i, item) {
-			$ (item).removeAttr (normalizeTabindexName ());
-		});
-	};
-
-	$.fn.hasTabindexAttr = function () {
-	    if (this.length <= 0) {
-	        return false;
-	    }
-
-	    var attributeNode = this[0].getAttributeNode (normalizeTabindexName ());
-        return attributeNode ? attributeNode.specified : false;
-	};
-
-	$.fn.hasTabindex = function () {
-        return this.hasTabindexAttr () || canHaveDefaultTabindex (this);
-	};
-
     /**
      * Makes all matched elements available in the tab order by setting their tabindices to "0".
      */
