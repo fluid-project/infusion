@@ -40,6 +40,7 @@ var demo = demo || {};
 
     demo.initPortletReordererWithAvatarClone = function() {
         var classNames = {
+            mouseDrag: "orderable-mouse-drag",
             dropMarker: "orderable-drop-marker-box",
             avatar: "orderable-avatar-clone"
         };

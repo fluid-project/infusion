@@ -21,6 +21,7 @@ var fluid = fluid || {};
         defaultStyle: "orderable-default",
         selected: "orderable-selected",
         dragging: "orderable-dragging",
+        mouseDrag: "orderable-dragging",
         hover: "orderable-hover",
         dropMarker: "orderable-drop-marker",
         avatar: "orderable-avatar"
@@ -401,19 +402,21 @@ var fluid = fluid || {};
                 start: function (e, ui) {
                     item.focus ();
                     item.removeClass (thisReorderer.cssClasses.selected);
-                    item.addClass (thisReorderer.cssClasses.dragging);
+                    item.addClass (thisReorderer.cssClasses.mouseDrag);
                     item.ariaState ("grab", "true");
                     setDropEffects ("move");
-                
                 },
                 stop: function(e, ui) {
-                    item.removeClass (thisReorderer.cssClasses.dragging);
+                    item.removeClass (thisReorderer.cssClasses.mouseDrag);
                     item.addClass (thisReorderer.cssClasses.selected);
                     jQuery (thisReorderer.activeItem).ariaState ("grab", "supported");
                     dropMarker.hide();
                     ui.helper = null;
                     currentDroppable = null;
                     setDropEffects ("none");
+                    
+                    // refocus on the active item because moving places focus on the body
+                    thisReorderer.activeItem.focus();
                 },
                 handle: findItems.grabHandle (item[0])
             });
@@ -443,8 +446,6 @@ var fluid = fluid || {};
                     var position = layoutHandler.dropPosition(item[0], ui.draggable[0], e.clientX, e.pageY);
                     var dropTarget = (position === fluid.position.USE_LAST_KNOWN?  currentDroppable[0] : item[0]);
                     layoutHandler.mouseMoveItem (ui.draggable[0], dropTarget, e.clientX, e.pageY);
-                    // refocus on the active item because moving places focus on the body
-                    thisReorderer.activeItem.focus();
                 }
             });
         }
