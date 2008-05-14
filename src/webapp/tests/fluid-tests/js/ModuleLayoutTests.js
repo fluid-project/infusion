@@ -474,5 +474,12 @@ $(document).ready (function () {
         jqUnit.assertTrue ("Portlet 9 should be a drop target", fluid.moduleLayout.internals.isDropTarget (10, demo.portal.dropTargetPerms));
         
     });
+    
+    moduleLayoutTests.test ("lastItemInCol", function () {
+        jqUnit.assertEquals ("last item in column 1 should be portlet 4", portlet4id, fluid.moduleLayout.lastItemInCol (column1id, demo.portal.layout));
+        jqUnit.assertEquals ("last item in column 2 should be portlet 6", portlet6id, fluid.moduleLayout.lastItemInCol (column2id, demo.portal.layout));
+        jqUnit.assertEquals ("last item in column 3 should be portlet 9", portlet9id, fluid.moduleLayout.lastItemInCol (column3id, demo.portal.layout));
+        jqUnit.assertEquals ("last item in column 4 should be undefined", undefined, fluid.moduleLayout.lastItemInCol (column4id, demo.portal.layout));
+    });
 
 });

@@ -45,11 +45,15 @@ var fluid = fluid || {};
     	VERTICAL: "vert"
     };
     
+    /**
+     * This is the position, relative to a given drop target, that a dragged item should be dropped.
+     */
     fluid.position = {
-    	BEFORE: 0,
+    	BEFORE: 0, 
     	AFTER: 1,
     	INSIDE: 2,
-    	NO_TARGET: -1
+    	USE_LAST_KNOWN: 3,  // given configuration meaningless, use last known drop target
+        DISALLOWED: -1      // cannot drop in given configuration
     };
     
     /**

@@ -318,11 +318,23 @@ var fluid = fluid || {};
         };
 
         // Drag and drop set code starts here. This needs to be refactored to be better contained.
-        var dropMarker; // instantiated below in item.draggable.start().
+        var dropMarker;
+
+        var createDropMarker = function (tagName) {
+            var dropMarker = jQuery(document.createElement (tagName));
+            dropMarker.addClass (thisReorderer.cssClasses.dropMarker);
+            dropMarker.hide();
+            return dropMarker;
+        };
+
         // Storing the current droppable to work around the issue where the avatar is below the mouse pointer and blocks events
         // See FLUID-407
         var currentDroppable;
         
+        /**
+         * Creates an event handler for mouse move events that moves, shows and hides the drop marker accordingly
+         * @param {Object} dropTargets    a list of valid drop targets
+         */
         var createTrackMouse = function (dropTargets){
             dropTargets = fluid.wrap (dropTargets);
             var avatarId = dndFunctions.createAvatarId(thisReorderer.domNode.id);
@@ -345,7 +357,7 @@ var fluid = fluid || {};
                             jQuery(target).append(dropMarker);
                             dropMarker.show();
                         }
-                        else { // must be NO_TARGET
+                        else if (position === fluid.position.DISALLOWED) {
                             dropMarker.hide();
                         }
                     }
@@ -393,18 +405,12 @@ var fluid = fluid || {};
                     item.ariaState ("grab", "true");
                     setDropEffects ("move");
                 
-                    // In order to create valid html, the drop marker is the same type as the node being dragged.
-                    // This creates a confusing UI in cases such as an ordered list. 
-                    // drop marker functionality should be made pluggable. 
-                    dropMarker = jQuery(document.createElement (item[0].tagName));
-                    dropMarker.addClass (thisReorderer.cssClasses.dropMarker);
-                    dropMarker.hide();
                 },
                 stop: function(e, ui) {
                     item.removeClass (thisReorderer.cssClasses.dragging);
                     item.addClass (thisReorderer.cssClasses.selected);
                     jQuery (thisReorderer.activeItem).ariaState ("grab", "supported");
-                    dropMarker.remove();
+                    dropMarker.hide();
                     ui.helper = null;
                     currentDroppable = null;
                     setDropEffects ("none");
@@ -426,10 +432,17 @@ var fluid = fluid || {};
                 over: function (e, ui) {
                     // Store the droppable for the case when the avatar gets the mouse move instead of the droppable below it.
                     // See FLUID-407
-                    currentDroppable = ui.element;
+                    var position = layoutHandler.dropPosition(item[0], ui.draggable[0], e.clientX, e.pageY);
+                    if (position === fluid.position.DISALLOWED) {
+                        currentDroppable = null;
+                    } else if (position !== fluid.position.USE_LAST_KNOWN) {
+                        currentDroppable = ui.element;
+                    }
                 },
                 drop: function (e, ui) {
-                    layoutHandler.mouseMoveItem (ui.draggable[0], item[0], e.clientX, e.pageY);
+                    var position = layoutHandler.dropPosition(item[0], ui.draggable[0], e.clientX, e.pageY);
+                    var dropTarget = (position === fluid.position.USE_LAST_KNOWN?  currentDroppable[0] : item[0]);
+                    layoutHandler.mouseMoveItem (ui.draggable[0], dropTarget, e.clientX, e.pageY);
                     // refocus on the active item because moving places focus on the body
                     thisReorderer.activeItem.focus();
                 }
@@ -472,6 +485,14 @@ var fluid = fluid || {};
                 var item = movables[i];
                 initMovable (jQuery (item));
             }
+
+            // In order to create valid html, the drop marker is the same type as the node being dragged.
+            // This creates a confusing UI in cases such as an ordered list. 
+            // drop marker functionality should be made pluggable. 
+            if (movables.length > 0) {
+                dropMarker = createDropMarker(movables[0].tagName);
+            }
+
         
             // Create a simple predicate function that will identify valid drop targets.
             var droppablePredicate = function (potentialDroppable) {
@@ -877,21 +898,35 @@ var fluid = fluid || {};
 	    
         this.dropPosition = function (target, moving, x, y) {
             if (fluid.moduleLayout.isColumn (target.id, layout)) {
-                return fluid.position.INSIDE;
+                var lastItemInColId = fluid.moduleLayout.lastItemInCol(target.id, layout);
+                if (lastItemInColId === undefined) {
+                    return fluid.position.INSIDE;
+                }
+                var lastItem = fluid.utils.jById(lastItemInColId);
+                var topOfEmptySpace = lastItem.offset().top + lastItem.height();
+                
+                if (y > topOfEmptySpace) {
+                    return fluid.position.INSIDE;
+                } else {
+                    return fluid.position.USE_LAST_KNOWN;
+                }
             }
+            
             var position = mousePosition (target, orientation, x, y);
             var canDrop = fluid.moduleLayout.canMove (moving.id, target.id, position, layout, targetPerms);
 	    	if (canDrop) {
                 return position;
 	    	}
 	    	else {
-	    		return fluid.position.NO_TARGET;
+	    		return fluid.position.DISALLOWED;
 	    	}
         };
 
         this.mouseMoveItem = function (moving, target, x, y) {
             var dropIt = this.dropPosition (target, moving, x, y);
-            if (dropIt !== fluid.position.NO_TARGET) {
+            if (dropIt === fluid.position.DISALLOWED) {
+                return;
+            } else {
                 move (moving, target, dropIt);
             }
         };
@@ -1107,7 +1142,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
         * permissions information.
         */
     	canMove: function (itemId, targetItemId, position, layout, perms) {
-    	    if (position === fluid.position.NO_TARGET) {
+    	    if ((position === fluid.position.USE_LAST_KNOWN) || (position === fluid.position.DISALLOWED)) {
     	        return false;
     	    }
     	    if (position === fluid.position.INSIDE) {
@@ -1273,6 +1308,16 @@ fluid.moduleLayout = function (jQuery, fluid) {
         
         containerId: function (layout) {
             return layout.id;
+        },
+        
+        lastItemInCol: function (colId, layout) {
+            var colIndex = internals.findColIndex(colId, layout);
+            var col = layout.columns[colIndex];
+            var numChildren = col.children.length;
+            if (numChildren > 0) {
+                return col.children[numChildren-1];                
+            }
+            return undefined;
         }
     };	
 } (jQuery, fluid);
