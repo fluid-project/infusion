@@ -443,8 +443,7 @@ var fluid = fluid || {};
                     }
                 },
                 drop: function (e, ui) {
-                    var position = layoutHandler.dropPosition(item[0], ui.draggable[0], e.clientX, e.pageY);
-                    var dropTarget = (position === fluid.position.USE_LAST_KNOWN?  currentDroppable[0] : item[0]);
+                    var dropTarget = currentDroppable ? currentDroppable[0] : item[0];
                     layoutHandler.mouseMoveItem (ui.draggable[0], dropTarget, e.clientX, e.pageY);
                 }
             });

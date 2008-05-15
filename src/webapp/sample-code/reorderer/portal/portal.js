@@ -54,6 +54,7 @@ var demo = demo || {};
             defaultStyle: "lb-orderable-default",
             selected: "lb-orderable-selected",
             dragging: "lb-orderable-dragging",
+            mouseDrag: "lb-orderable-dragging",
             hover: "lb-orderable-hover",
             dropMarker: "lb-orderable-drop-marker",
             avatar: "lb-orderable-avatar"
