@@ -558,6 +558,11 @@ div#calendar-channel .datepicker_links {
   cursor: move;
 }
 
+.orderable-dragging{
+   	opacity: .2;
+	filter: alpha(opacity=20);
+}
+
 .orderable-selected{
   border: 2px solid #666;
 }
@@ -584,8 +589,9 @@ div .orderable-drop-marker{
 .orderable-drop-marker-box {
   height: 200px !important;
   width: 100%;
-  border: 2px solid #666;
+  border: 2px dashed red;
   margin-bottom: 1em;
+  background-color: #ffd7d7
 }
 
 .orderable-mouse-drag {
