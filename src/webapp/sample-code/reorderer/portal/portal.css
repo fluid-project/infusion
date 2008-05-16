@@ -594,16 +594,32 @@ div .orderable-drop-marker{
 .orderable-avatar-clone {
   height: 200px;
   width: 400px;
+  filter: alpha(opacity=60);
   opacity: .6;	
 }
- 
+
+.orderable-drop-warning {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    border: 2px solid red;
+    background-color: #ffd7d7;
+    display: none;
+    padding: 10px;
+    margin: 5px;
+}
+
+.orderable-avatar-clone.orderable-drop-warning {
+}
+
 .orderable-drop-marker-box {
   height: 200px !important;
   width: 100%;
   border: 2px dashed red;
   margin-bottom: 1em;
-  background-color: #ffd7d7
+  background-color: #ffd7d7;
 }
+
 
 .orderable-mouse-drag {
     display: none;
