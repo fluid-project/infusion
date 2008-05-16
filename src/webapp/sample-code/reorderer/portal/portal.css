@@ -303,8 +303,12 @@ ul.horizontal-list-floated li {
 
 /* Portlet styles */
 
-.portlet-container {
+.portlet-container, .portlet-container-locked {
   margin-bottom:1em;
+}
+
+.portlet-container-locked {
+  border-bottom: solid 1px;  
 }
 
 .portlet-top {
@@ -317,9 +321,16 @@ ul.horizontal-list-floated li {
 }
 
 .portlet-toolbar, .portlet-toolbar-locked {
-  background-color:#000099;
   white-space:nowrap;
   position:relative;
+}
+
+.portlet-toolbar {
+  background-color:#000099;    
+}
+
+.portlet-toolbar-locked {
+  background-color:#6600FF;
 }
 
 .portlet-toolbar h2 {
