@@ -72,6 +72,7 @@ var fluid = fluid || {};
 		elmUploaderControl: "",
 		whenDone: "", // forces a refresh
 		whenCancel: "", // forces a refresh
+		whenFileUploaded: function(fileName, serverResponse) {},
 		postParams: {},
 		httpUploadElm: "",
 		continueAfterUpload: true,
@@ -372,7 +373,7 @@ var fluid = fluid || {};
         };
     };
     
-	var createUploadCompleteHandler = function (uploaderContainer, progressBar,  fragmentSelectors, status) {
+	var createUploadCompleteHandler = function (uploaderContainer, progressBar,  fragmentSelectors, status, options) {
         return function(file){
             if (!status.currError) {
             
@@ -398,6 +399,12 @@ var fluid = fluid || {};
             }
         };
 	};
+	
+	var createUploadSuccessHandler =  function(whenFileUploaded){
+		return function(file, server_data) {
+			whenFileUploaded(file.name, server_data);
+		};
+	};	
 	
 	var fileQueueComplete = function(uploaderContainer, options, progressBar, fragmentSelectors) {
 		updateState(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow, 'done');
@@ -578,15 +585,12 @@ var fluid = fluid || {};
 			file_dialog_complete_handler: createFileDialogCompleteHandler (uploaderContainer, fragmentSelectors, status),
 			upload_start_handler: createUploadStartHandler (progressBar, status),
 			upload_progress_handler: createUploadProgressHandler (progressBar, fragmentSelectors, status),
-			upload_complete_handler: createUploadCompleteHandler (uploaderContainer, progressBar, fragmentSelectors, status),
+			upload_complete_handler: createUploadCompleteHandler (uploaderContainer, progressBar, fragmentSelectors, status, options),
 			upload_error_handler: createUploadErrorHandler (progressBar, fragmentSelectors, status),
-			
-			/*
-		    upload_success_handler : FeaturesDemoHandlers.uploadSuccess,
-		     */
+			upload_success_handler: createUploadSuccessHandler (options.whenFileUploaded),
 			// Debug setting
 			debug: options.debug
-		};
+		}; 
 		
         return new SWFUpload(swf_settings);
     }
