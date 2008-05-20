@@ -159,7 +159,8 @@ var fluid = fluid || {};
         var keysets = setupKeysets(fluid.defaultKeysets, options.keysets);
         this.cssClasses = fluid.utils.initCssClassNames (defaultCssClassNames, options.cssClassNames);
         var avatarCreator = options.avatarCreator || defaultAvatarCreator;
-
+        var dropWarning = fluid.utils.jById(options.dropWarningId);
+        
         this.focusActiveItem = function (evt) {
             // If the active item has not been set yet, set it to the first selectable.
             if (!thisReorderer.activeItem) {
@@ -349,21 +350,26 @@ var fluid = fluid || {};
                         if (position === fluid.position.BEFORE) {
                             jQuery(target).before(dropMarker);
                             dropMarker.show();
+                            dropWarning.hide();
                         }
                         else if (position === fluid.position.AFTER) {
                             jQuery(target).after(dropMarker);
                             dropMarker.show();
+                            dropWarning.hide();
                         }
                         else if (position === fluid.position.INSIDE) {
                             jQuery(target).append(dropMarker);
                             dropMarker.show();
+                            dropWarning.hide();
                         }
                         else if (position === fluid.position.DISALLOWED) {
                             dropMarker.hide();
+                            dropWarning.show();
                         }
                     }
                     else {
                         dropMarker.hide();
+                        dropWarning.hide();
                     }
                 }
             };
