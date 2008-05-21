@@ -84,7 +84,7 @@ var fluid = fluid || {};
 	
 	var strings = {
 		macControlKey: "Command",
-		browseText: "Add files",
+		browseText: "Browse files",
 		addMoreText: "Add more",
 		fileUploaded: "File Uploaded"
 	};
@@ -149,8 +149,8 @@ var fluid = fluid || {};
 	};
 	
 	 var markRowComplete = function(row, fileStatusSelector) {
-		// dim the row
-		row.addClass('dim');
+		// mark the row uploaded
+		row.addClass('uploaded');
 		// add Complete text status
 		setRowStatus(row, fileStatusSelector, strings.fileUploaded);
 	};
@@ -193,22 +193,21 @@ var fluid = fluid || {};
                 
                 // make a new row
                 var queue_row = $('<tr id="' + file.id + '">' +
-                '<td class="fileName" scope="row">' +
+                '<th class="fileName" scope="row">' +
                 file.name +
-                '</td>' +
+                '</th>' +
                 '<td class="fileSize">' +
                 fluid.utils.filesizeStr(file.size) +
                 '</td>' +
-                '<td class="fileStatus">Ready to Upload</td>' +
-                '<td class="fileRemove"><button type="button" class="removeFileBtn" /></td></tr>');
+                '<td class="fileRemove"><button type="button" class="removeFile" /></td></tr>');
                 
                 // add a hover to the row
                 queue_row.css('display', 'none').hover(function(){
-                    if (!$(this).hasClass('dim')) {
+                    if (!$(this).hasClass('uploaded')) {
                         $(this).addClass('hover');
                     }
                 }, function(){
-                    if (!$(this).hasClass('dim')) {
+                    if (!$(this).hasClass('uploaded')) {
                         $(this).removeClass('hover');
                     }
                 });
@@ -217,7 +216,7 @@ var fluid = fluid || {};
                 queue_row.insertBefore($(fragmentSelectors.emptyRow, uploaderContainer));
                 
                 // add remove action to the button
-                $('#' + file.id + ' .removeFileBtn').click(function(){
+                $('#' + file.id + ' .removeFile').click(function(){
                     removeRow(uploaderContainer, fragmentSelectors, $(this).parents('tr'), swfObj, status);  
                 });
                 
@@ -433,7 +432,7 @@ var fluid = fluid || {};
 	}
 
 	function numFilesUploaded(uploaderContainer, fileQueueSelector) {
-		return $(fileQueueSelector + ' tbody tr.dim', uploaderContainer).length;
+		return $(fileQueueSelector + ' tbody tr.uploaded', uploaderContainer).length;
 	}
 
 	/* PROGRESS
@@ -497,7 +496,7 @@ var fluid = fluid || {};
 			demoState.bytes = 0;
 			demoState.byteChunk = 200000; // used to break the demo upload into byte-sized chunks
 			// set up data
-			demoState.row = $(fragmentSelectors.fileQueue + ' tbody tr:not(".fluid-uploader-placeholder"):not(".dim)', uploaderContainer).eq(0);
+			demoState.row = $(fragmentSelectors.fileQueue + ' tbody tr:not(".fluid-uploader-placeholder"):not(".uploaded)', uploaderContainer).eq(0);
 			
 			demoState.fileId = jQuery(demoState.row).attr('id');
 			demoState.fileObj = swfObj.getFile(demoState.fileId);

@@ -3,35 +3,40 @@
  */
 
 .fluid-uploader { 
+	position: relative;
 	margin-top: 2em;
 	padding: 1em 2em;
 	display: block;
 	clear: both;
+	width: 434px;
 }
 
-.fluid-uploader button.bigbtn {
-	height: 2.7em;
-	padding-left: 2em;
-	padding-right: 2em;
-	margin-right: 1em;
-	margin-top: 0.6em;
-	outline: none;
-}
-
-.fluid-uploader button.fluid-uploader-browse {
+.fluid-uploader a.fluid-uploader-browse {
 	background-image: url(../images/uploader/add.png);
 	background-attachment: scroll;
 	background-repeat: no-repeat;
-	background-position: 2px 1px;
-	padding-left: 20px;
+	background-position: 4px 3px;
+	padding: 3px 6px 3px 25px;
+	border: 1px solid transparent;
+	white-space: nowrap;
+	color: #427ABE;
+	font-weight: normal;
+	cursor: pointer;
 }
 
-.fluid-uploader-queue {
-	width: 480px;
-	border-left: 1px solid #BBB;
-	border-bottom: 1px solid #BBB;
-	border-right: 1px solid #BBB;	
+.fluid-uploader a.fluid-uploader-browse:hover {
+	border: 1px solid #CCC;
+	background-color: #FFF;
 }
+
+/* FILE QUEUE TABLE STYLES */
+
+.fluid-uploader-queue {
+	width: 100%;
+	border-bottom: 1px solid #999;
+}
+
+/* caption */
 
 .fluid-uploader-queue caption {
 	font-weight: bolder;
@@ -39,78 +44,134 @@
 	margin: 1em 0;
 }
 
-.fluid-uploader-queue tr {
-	background-color: #DFDFDF;
+/* thead */
+
+.fluid-uploader-queue thead {
+	background-color: transparent;
 }
+
+.fluid-uploader-queue thead th { 
+	text-align: left;
+	padding: 6px;
+	border-bottom: 1px solid #999;
+	color: #666;
+}
+
+/* tfoot */
+
+.fluid-uploader-queue tfoot {
+	background-color: #E6E6E6;
+}
+
+.fluid-uploader-queue tfoot td {
+	padding: 6px;
+	height: 2.6em;
+	border-top: 1px solid #999;
+	vertical-align: middle;
+	font-size: 1.1em;
+	font-weight: bolder;
+	color: #666;
+	text-align: right;
+}
+
+.fluid-uploader-queue tfoot td:last-child {
+	border-right: 1px solid #999;
+}
+
+.fluid-uploader-queue tfoot td:first-child {
+	text-align: left;
+	border-left: 1px solid #999;
+}
+
+/* tbody */
 
 .fluid-uploader-queue tbody {
 	overflow-x: hidden;
 	overflow-y: auto;
 	width: 465px;
+	font-size: 0.9em;
+	color: #333;
 }
 
 .fluid-uploader-queue tbody tr {
 	background-color: white;
 }
 
-.fluid-uploader-queue tr.hover {
+.fluid-uploader-queue tbody tr.hover {
 	background-color: #FBFFDC;
 }
 
-.fluid-uploader-queue tr.dim {
+.fluid-uploader-queue tbody tr.dim {
 	color: #666;
 }
 
-.fluid-uploader-queue td, .fluid-uploader-queue th { 
+.fluid-uploader-queue tbody td, .fluid-uploader-queue tbody th { 
 	text-align: left;
-	padding: 6px;
-	border-top: 1px solid #CCC;
+	padding: 3px 6px;
+	border-top: 1px solid #BBCFDC;
 }
 
-.fluid-uploader-queue th { 
-	text-align: left;
-	padding: 6px;
-	border-left: 1px solid #CCC;
+.fluid-uploader-queue tbody th {
+	border-left: 1px solid #999;
 }
 
-.fluid-uploader-queue th:first-child { 
-	border-left: none;
+.fluid-uploader-queue tbody td:last-child {
+	border-right: 1px solid #999;
 }
 
-.fluid-uploader-queue td {
-	border-right: none;
+.fluid-uploader-queue tbody tr:first-child td, .fluid-uploader-queue tbody tr:first-child th { 
+	border-top: none;
 }
 
-.fluid-uploader-queue tfoot td {
-	text-align: right;
-	padding: 3px;
-}
-
-.fluid-uploader-queue tfoot td:first-child {
-	text-align: left;
-	padding: 2px;
-}
 
 .fluid-uploader-queue .fileName {
-	max-width: 256px;
+	width: 264px;
 	overflow: hidden;
 }
 
-.fluid-uploader-queue .removeFileBtn {
-	border: none;
-	height: 16px;
-	width: 16px;
+.fluid-uploader-queue .removeFile {
+	border: 1px solid transparent;
+	height: 20px;
+	width: 20px;
 	overflow: hidden;
-	background: url(../images/uploader/btn-delete-blu.gif) scroll no-repeat 0px 0px;
+	background: url(../images/uploader/remove.png) scroll no-repeat 1px 1px;
 	outline: 0;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
 }
 
-.fluid-uploader-queue .removeFileBtn:hover {
-	background: url(../images/uploader/btn-delete-on.gif) scroll no-repeat 0px 0px;
+.fluid-uploader-queue .removeFile:hover {
+	border: 1px solid #CCC;
+	background-color: #FFF;
+}
+
+
+.fluid-uploader-queue .uploaded .removeFile {
+	background: url(../images/uploader/tick.png) scroll no-repeat 1px 1px;
+	cursor: auto;
+}
+
+.fluid-uploader-queue .uploaded .removeFile:hover {
+	cursor: auto;
+	background: url(../images/uploader/tick.png) scroll no-repeat 1px 1px;
+	border: 1px solid transparent;
+	background-color: transparent;
+}
+
+.fluid-uploader-queue .error .removeFile {
+	background: url(../images/uploader/error.png) scroll no-repeat 1px 1px;
+}
+
+.fluid-uploader-queue .error .removeFile:hover {
+	cursor: pointer;
+	background: url(../images/uploader/error.png) scroll no-repeat 1px 1px;
+	border: 1px solid transparent;
+	background-color: transparent;
 }
 
 .fluid-uploader-queue td.fileRemove {
-	width: 2em;
+	width: 4em;
 	text-align: center;
 }
 
@@ -118,20 +179,24 @@
 	white-space: nowrap;
 }
 
-.fluid-uploader-queue td.fileSize { 
-	text-align: center;
+.fluid-uploader-queue .fileSize { 
+	text-align: right;
 	white-space: nowrap;
 }
 
 
-.fluid-uploader-row-placeholder td {
-	background-color: #E1EFEF;
-	padding: 0;
-	font-size: 0.6em;
+.fluid-uploader-queue tbody .fluid-uploader-row-placeholder td {
+	background-color: #F0F9FF;
+	color: #666;
+	text-align: center;
+	border-left: 1px solid #999;
+	border-right: 1px solid #999;
+	padding: 6px;
 }
 
-.fluid-uploader-row-placeholder button, .fluid-uploader-queue .dim button {
-	display: none;
+.fluid-uploader-btns {
+	text-align: right;
+	margin-top: 0.6em;
 }
 
 /* STATES
@@ -142,36 +207,23 @@
  * done - all files have been uploaded
  */
 
-.fluid-uploader .start .fluid-uploader-browse {
-	background-color: #82ACFD;
-}
-
-/*
-.fluid-uploader .start table, .fluid-uploader .start .fluid-uploader-upload {
-	display: none;
-}
-*/
-
-.fluid-uploader .loaded .fluid-uploader-upload {
-	background-color: #82ACFD;
-}
-
 .fluid-uploader .empty .fluid-uploader-upload, .fluid-uploader .done .fluid-uploader-upload, .fluid-uploader .start .fluid-uploader-done, .fluid-uploader .start .fluid-uploader-upload {
-	color: #666;
-	border: 1px solid #CCC;
+	background-color: #CCC;
+	border-color: #999;
 }
 
-.fluid-uploader .instructions  {
-	display: none;
-	width: 300px;
-}
-
-.fluid-uploader .start .instructions  {
-	display: block;
+.fluid-uploader .empty .fluid-uploader-upload:hover, .fluid-uploader .done .fluid-uploader-upload:hover, .fluid-uploader .start .fluid-uploader-done, .fluid-uploader .start .fluid-uploader-upload {
+	background-color: #CCC !important;
+	border-color: #999 !important;
 }
 
 .fluid-uploader .loaded .fluid-uploader-row-placeholder td, .fluid-uploader .done .fluid-uploader-row-placeholder td {
-	font-size: 0.2em;
+	display: none;
+}
+
+.fluid-uploader .done .fluid-uploader-done {
+	background-color: #74B74A;
+	border-color: #006838;
 }
 
 /* 
