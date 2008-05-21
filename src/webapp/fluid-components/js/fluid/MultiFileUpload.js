@@ -84,8 +84,8 @@ var fluid = fluid || {};
 	
 	var strings = {
 		macControlKey: "Command",
-		browseText: "Browse"+unescape('%u2026'),
-		addMoreText: "Browse"+unescape('%u2026'),
+		browseText: "Add files",
+		addMoreText: "Add more",
 		fileUploaded: "File Uploaded"
 	};
 		
