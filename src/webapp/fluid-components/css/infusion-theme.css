@@ -1,0 +1,74 @@
+/* The beginnings of a Fluid theme CSS file for jQuery UI */
+
+/*
+ * Title Bar :: #427ABE
+ * Table header type, Total Area border, Table borders :: #999
+ * Total bar :: #E6E6E6
+ * Total bar type :: #666 
+ * Total bar type highlight :: #333
+ * Row lines :: #BBCFDC
+ * Button background :: #4F99D3;
+ * Button border :: #2A3990;
+ * Default Button background :: #74B74A
+ * Default Button border :: #006838 
+ * Cancel Button background :: #D03E4F
+ * Cancel Button border :: #BF1E2D
+ * Button type color :: #FFF
+ * Dialog Outer border :: #7C7E80
+ * Link Type color :: #427ABE
+ * Keyboard Focus color :: #142B8C (or #2A3990)
+ */
+
+.infusion {
+	font-family: "Trebuchet MS", Helvetica, Arial, sans-serif;
+}
+
+.infusion button {
+	background-color: #4F99D3;
+	border-color: #2A3990;
+	border-width: 1px;
+	border-style: solid;
+	font-weight: bolder;
+	font-size: 1.1em;
+	color: #FFF;
+	height: 32px;
+	padding-left: 2em;
+	padding-right: 2em;
+	margin-right: 1em;
+	outline: none;
+	cursor: pointer;
+}
+
+.infusion button.default {
+	background-color: #74B74A;
+	border-color: #006838;
+}
+
+.infusion button.default:hover {
+	background-color: #54932B;
+	border-color: #142B8C;
+}
+
+.infusion button.cancel {
+	background-color: #D03E4F;
+	border-color: #BF1E2D;
+}
+
+.infusion button.cancel:hover {
+	background-color: #9E182B;
+	border-color: #142B8C;
+}
+
+.infusion button.dim {
+	background-color: #999;
+}
+
+.infusion button.dim:hover {
+	background-color: #999;
+}
+
+.infusion table {
+	/*
+border-collapse: collapse;
+*/
+}
