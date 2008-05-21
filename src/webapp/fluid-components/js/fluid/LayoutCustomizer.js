@@ -36,8 +36,10 @@ var fluid = fluid || {};
      * 
      */
     fluid.initLayoutCustomizer = function (layout, perms, grabHandle, orderChangedCallbackUrl, options) {
-        var avatarFn = function (item) {
-            return document.createElement ("div");
+        var avatarFn = function (item, className) {
+            var avatar = jQuery (document.createElement ("div"));
+            avatar.addClass(className);
+            return avatar;
         };
         var opts = options || {};
         opts.avatarCreator = avatarFn;

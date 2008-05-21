@@ -598,7 +598,7 @@ div .orderable-drop-marker{
   opacity: .6;	
 }
 
-.orderable-drop-warning {
+.drop-warning {
     position: absolute;
     top: 50px;
     left: 10px;
@@ -607,9 +607,6 @@ div .orderable-drop-marker{
     display: none;
     padding: 10px;
     margin: 5px;
-}
-
-.orderable-avatar-clone.orderable-drop-warning {
 }
 
 .orderable-drop-marker-box {

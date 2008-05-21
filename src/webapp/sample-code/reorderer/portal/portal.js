@@ -44,7 +44,7 @@ var demo = demo || {};
             dropMarker: "orderable-drop-marker-box",
             avatar: "orderable-avatar-clone"
         };
-        var options = { cssClassNames: classNames };
+        var options = { cssClassNames: classNames, dropWarningId: "drop-warning" };
 
         return fluid.initLayoutCustomizerDefaultAvatar (layout, dropTargetPerms, grabHandle, null, options);
     };

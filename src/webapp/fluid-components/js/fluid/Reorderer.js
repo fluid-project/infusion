@@ -27,7 +27,7 @@ var fluid = fluid || {};
         avatar: "orderable-avatar"
     };
     
-    var defaultAvatarCreator = function(item) {
+    var defaultAvatarCreator = function(item, cssClass, dropWarning) {
         var avatar = jQuery (item).clone ();
         avatar.removeAttr ("id");
         jQuery ("[id]", avatar).removeAttr ("id");
@@ -40,7 +40,17 @@ var fluid = fluid || {};
 // 2008-05-12: 2599 has been fixed now in trunk
 //                    avatar.droppable ("destroy");
         avatar.removeClass ("ui-droppable");
-        return avatar;
+        avatar.addClass (cssClass);
+        
+        if (dropWarning) {
+            // Will a 'div' always be valid in this position?
+            var avatarContainer = jQuery (document.createElement("div"));
+            avatarContainer.append(avatar);
+            avatarContainer.append(dropWarning);
+            return avatarContainer;
+        } else {
+            return avatar;
+        }
     };   
     
     function firstSelectable (findItems) {
@@ -409,8 +419,7 @@ var fluid = fluid || {};
                 refreshPositions: true,
                 scroll: true,
                 helper: function () {
-                    var avatar = jQuery (avatarCreator (item[0]));
-                    avatar.addClass (thisReorderer.cssClasses.avatar);
+                    var avatar = jQuery (avatarCreator (item[0], thisReorderer.cssClasses.avatar, dropWarning[0]));
                     avatar.attr("id", dndFunctions.createAvatarId(thisReorderer.domNode.id));
                     return avatar;
                 },
