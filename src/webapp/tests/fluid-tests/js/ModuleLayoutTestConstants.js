@@ -34,7 +34,14 @@ var emptyLayout = { id:"t3", columns:[ ] };
 
 var portletRootClone;
 var portletHandler;
+var layoutClone;
 
+function initReorderer() {
+    var options = {dropWarningId: "drop-warning"};
+    return fluid.initLayoutCustomizer (layoutClone, demo.portal.dropTargetPerms, undefined, undefined, options);
+}
+        
+        
 /*
  * This setUp will be called before each of the tests that are included in portlets.html 
  * layout and dropTargetPerms are defined in portlets.js
@@ -42,7 +49,7 @@ var portletHandler;
 function setUp() {
 	var table = fluid.utils.jById (portalRootId);
     portletRootClone = table.clone();
-    var layoutClone = fluid.testUtils.cloneObj(demo.portal.layout);
+    layoutClone = fluid.testUtils.cloneObj(demo.portal.layout);
     
     portletHandler = new fluid.ModuleLayoutHandler (layoutClone, demo.portal.dropTargetPerms);
 }

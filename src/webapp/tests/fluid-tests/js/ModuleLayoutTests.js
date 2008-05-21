@@ -250,69 +250,69 @@ $(document).ready (function () {
         jqUnit.assertNull ("Item index greater than number of items in column should give null result", itemId);
     });
     
-    moduleLayoutTests.test ("NearestNextMoveableTarget", function () {
+    moduleLayoutTests.test ("TargetAndPositionBelow", function () {
         
         // portlet3's nearest next is portlet4.
-        var actual = fluid.moduleLayout.internals.nearestNextMoveableTarget (portlet3id, demo.portal.layout, demo.portal.dropTargetPerms);
+        var actual = fluid.moduleLayout.targetAndPositionBelow (portlet3id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet3's nearest next target should be portlet4", portlet4id, actual.id);
     
         // portlet1 is fixed; its nearest next is itself
-        actual = fluid.moduleLayout.internals.nearestNextMoveableTarget (portlet1id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionBelow (portlet1id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet1's nearest next target should be itself", portlet1id, actual.id);
     
         // portlet2 is fixed; its nearest next is itself
-        actual = fluid.moduleLayout.internals.nearestNextMoveableTarget (portlet2id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionBelow (portlet2id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet2's nearest next target should be portlet2", portlet2id, actual.id);
     
         // portlet7's nearest next is portlet8.
-        actual = fluid.moduleLayout.internals.nearestNextMoveableTarget (portlet7id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionBelow (portlet7id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet7's nearest next target should be portlet8", portlet8id, actual.id);
     
         // portlet8's nearest next is portlet9.
-        actual = fluid.moduleLayout.internals.nearestNextMoveableTarget (portlet8id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionBelow (portlet8id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet7's nearest next target should be portlet8", portlet9id, actual.id);
     
         // portlet9 has no next since it is at the bottom of a column.
-        actual = fluid.moduleLayout.internals.nearestNextMoveableTarget (portlet9id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionBelow (portlet9id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet9 has no next since it is at the bottom of a column", portlet9id, actual.id);
     
         // portlet4 has no next since it is at the bottom of a column.
-        actual = fluid.moduleLayout.internals.nearestNextMoveableTarget (portlet4id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionBelow (portlet4id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet9 has no next since it is at the bottom of a column", portlet4id, actual.id);
     
         // portlet6 has no next since it is at the bottom of a column.
-        actual = fluid.moduleLayout.internals.nearestNextMoveableTarget (portlet6id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionBelow (portlet6id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet6 has no next since it is at the bottom of a column", portlet6id, actual.id);
     });
     
-    moduleLayoutTests.test ("NearestPreviousMoveableTarget", function () {
+    moduleLayoutTests.test ("TargetAndPositionAbove", function () {
         
         // portlet3's can't move up since the portlets above it are fixed.
-        var actual = fluid.moduleLayout.internals.nearestPreviousMoveableTarget (portlet3id, demo.portal.layout, demo.portal.dropTargetPerms);
+        var actual = fluid.moduleLayout.targetAndPositionAbove (portlet3id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet3's can't move up; nearest previous should be itself", portlet3id, actual.id);
     
         // portlet4 can't move up since portlet3 has greater precedence.
-        actual = fluid.moduleLayout.internals.nearestPreviousMoveableTarget (portlet4id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionAbove (portlet4id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet4's can't move up; nearest previous should be itself", portlet4id, actual.id);
     
         // portlet1 is fixed; its nearest preivious is itself
-        actual = fluid.moduleLayout.internals.nearestPreviousMoveableTarget (portlet1id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionAbove (portlet1id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portle12's nearest next target should be portlet2", portlet1id, actual.id);
     
         // portlet2 is fixed; its nearest preivious is itself
-        actual = fluid.moduleLayout.internals.nearestPreviousMoveableTarget (portlet2id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionAbove (portlet2id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet2's nearest next target should be portlet2", portlet2id, actual.id);
     
         // portlet7 is at the top of the column.
-        actual = fluid.moduleLayout.internals.nearestPreviousMoveableTarget (portlet7id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionAbove (portlet7id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet7 has no previous since it is at the top of a column", portlet7id, actual.id);
     
         // portlet8's can't be moved up since portlet7 has greater precedence.
-        actual = fluid.moduleLayout.internals.nearestPreviousMoveableTarget (portlet8id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionAbove (portlet8id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet8's 't be moved up since portlet7 has greater precedence", portlet8id, actual.id);
     
         // portlet9's nearest previous is portlet8.
-        actual = fluid.moduleLayout.internals.nearestPreviousMoveableTarget (portlet9id, demo.portal.layout, demo.portal.dropTargetPerms);
+        actual = fluid.moduleLayout.targetAndPositionAbove (portlet9id, demo.portal.layout, demo.portal.dropTargetPerms);
         jqUnit.assertEquals ("portlet9's nearest previous target should be portlet6", portlet8id, actual.id);
     });
     

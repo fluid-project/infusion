@@ -29,6 +29,7 @@
   <!-- TABLE -->
 
     <div class="reorderer_container">
+      <div id="drop-warning" style="display:none;">The portlet being moved cannot be dropped in this position</div>
       <table id="portlet-reorderer-root">
         <tbody>
           <tr>
@@ -82,7 +83,7 @@
     </div>
 
     <script type="text/javascript">    
-        var aPortletReorderer = fluid.initLayoutCustomizer (demo.portal.layout, demo.portal.dropTargetPerms, null, "portalServerStub.js");
+        var aPortletReorderer = fluid.initLayoutCustomizer (demo.portal.layout, demo.portal.dropTargetPerms, null, "portalServerStub.js", {dropWarningId: "drop-warning"});
     </script>
   </body>
 </html>

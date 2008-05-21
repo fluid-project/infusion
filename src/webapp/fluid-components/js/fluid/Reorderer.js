@@ -176,8 +176,7 @@ var fluid = fluid || {};
         };
 
         var isMove = function (evt) {
-            var i = 0;
-            for (i; i < keysets.length; i++) {
+            for (var i = 0; i < keysets.length; i++) {
                 if (keysets[i].modifier(evt)) {
                     return true;
                 }
@@ -207,7 +206,6 @@ var fluid = fluid || {};
                     jActiveItem.addClass (thisReorderer.cssClasses.dragging);
                     jActiveItem.ariaState ("grab", "true");
                     setDropEffects("move");
-//                    jActiveItem.ariaState ("dropeffect", "none");
                 }
                 return false;
             }
@@ -220,8 +218,13 @@ var fluid = fluid || {};
                 return true;
             }
             var jActiveItem = jQuery (thisReorderer.activeItem);
+            
+            // Handle a key up event for the modifier
             if (jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && !isMove(evt)) {
+                dropWarning.hide();
                 // Don't treat the active item as dragging unless it is a movable.
+                // How would the active item have a dragging state if it's not a movable???? 
+                // Shouldn't we just handle this regardlesss?
                 if (isActiveItemMovable ()) {
                     jActiveItem.removeClass (thisReorderer.cssClasses.dragging);
                     jActiveItem.addClass (thisReorderer.cssClasses.selected);
@@ -230,12 +233,18 @@ var fluid = fluid || {};
                     return false;
                 }
             }
+            
+            return false;
         };
 
         var moveItem = function (moveFunc){
-             if (isActiveItemMovable ()) {
-                 moveFunc(thisReorderer.activeItem);
-                 // refocus on the active item because moving places focus on the body
+            if (isActiveItemMovable ()) {
+                var pos = moveFunc(thisReorderer.activeItem);
+				// This functionality is in the wrong place. The layout handler should deal with hiding and showing the dropWarning
+                if (pos === fluid.position.DISALLOWED) {
+                    dropWarning.show();
+                }
+                // refocus on the active item because moving places focus on the body
                 thisReorderer.activeItem.focus();
                 jQuery(thisReorderer.activeItem).removeClass(thisReorderer.cssClasses.selected);
             }
@@ -847,12 +856,13 @@ var fluid = fluid || {};
                 return;
             }           
             if (position === fluid.position.BEFORE) {
-                jQuery (relatedItem).before (item);
+                jQuery(relatedItem).before(item);
             } else if (position === fluid.position.AFTER) {
-                jQuery (relatedItem).after (item);
-            } else {  // must be INSIDE
-                jQuery (relatedItem).append (item);
-            }
+                jQuery(relatedItem).after(item);
+            } else if (position === fluid.position.INSIDE) {
+                jQuery(relatedItem).append(item);
+            }  // otherwise it's either DISALLOWED or USE_LAST_KNOWN
+            
             fluid.moduleLayout.updateLayout (item.id, relatedItem.id, position, layout);
             orderChangedCallback (); 
         };
@@ -863,10 +873,12 @@ var fluid = fluid || {};
             move (item, targetItem, targetInfo.position);
         };
         
-        var moveVertically = function (item, direction /* PREVIOUS, NEXT */) {
-            var target = fluid.moduleLayout.nearestMoveableTarget (item.id, direction, layout, targetPerms);
-            var targetItem = fluid.utils.jById (target.id)[0];
-            move (item, targetItem, target.position);
+        var moveVertically = function (item, targetFunc) {
+            var targetAndPos = targetFunc(item.id, layout, targetPerms);
+            var target = fluid.utils.jById(targetAndPos.id)[0]; 
+	        move (item, target, targetAndPos.position);
+            
+            return targetAndPos.position;            
         };
         
         // Public Methods
@@ -891,7 +903,7 @@ var fluid = fluid || {};
 	    };
 	    
 	    this.moveItemUp = function (item) {
-	        moveVertically (item, fluid.direction.PREVIOIUS);
+            return moveVertically(item, fluid.moduleLayout.targetAndPositionAbove);
 	    };
 	        
 	    this.getItemBelow = function (item) {
@@ -899,7 +911,7 @@ var fluid = fluid || {};
 	    };
 	
 	    this.moveItemDown = function (item) {
-	        moveVertically (item, fluid.direction.NEXT);
+            return moveVertically(item, fluid.moduleLayout.targetAndPositionBelow);
 	    };
 	    
         this.dropPosition = function (target, moving, x, y) {
@@ -1044,58 +1056,6 @@ fluid.moduleLayout = function (jQuery, fluid) {
             return foundIndices;     
         },
         
-        nearestNextMoveableTarget: function (itemId, layout, perms) {
-            // default return value is "the item itself".
-            var nextPossibleTarget = { id: itemId, position: fluid.position.AFTER };
-            var found = false;
-            var startCoords = internals.findColumnAndItemIndices (itemId, layout);
-            
-            // Safety check findColumnAndItemIndices() returns either valid indices or negative
-            // values.  If the column index is negative, set found.
-            if (startCoords.columnIndex < 0) {
-                found = true;
-            }
-            
-            if (!found) {
-                // Loop thru the target column's items, starting with the item just after the given item
-                // looking for an item that can be moved to (after).
-                var idsInCol = layout.columns[startCoords.columnIndex].children;
-                for (var i = startCoords.itemIndex + 1; (i < idsInCol.length) && !found; i++) {
-                    var possibleTargetId = idsInCol[i];
-                    if ((found = fluid.moduleLayout.canMove (itemId, possibleTargetId, fluid.position.AFTER, layout, perms))) {
-                        nextPossibleTarget.id = possibleTargetId;
-                    }
-                }
-            }
-            return nextPossibleTarget;
-        },
-        
-        nearestPreviousMoveableTarget: function (itemId, layout, perms) {
-            // default return value is "the item itself".
-            var previousPossibleTarget = { id: itemId, position: fluid.position.BEFORE };
-            var found = false;
-            var startCoords = internals.findColumnAndItemIndices (itemId, layout);
-            
-            // Safety check findColumnAndItemIndices() returns either valid indices or negative
-            // values.  If the column index is negative, set found.
-            if (startCoords.columnIndex < 0)  {
-                found = true;
-            }
-
-            if (!found) {
-                // Loop thru the target column's items, starting with the item just before the given item,
-                // looking for an item that can be moved to (before).
-                var idsInCol = layout.columns[startCoords.columnIndex].children;
-                for (var i = startCoords.itemIndex - 1; (i > -1) && !found; i--) {
-                    var possibleTargetId = idsInCol[i];
-                    if ((found = fluid.moduleLayout.canMove (itemId, possibleTargetId, fluid.position.BEFORE, layout, perms))) {
-                        previousPossibleTarget.id = possibleTargetId;
-                    }
-                }
-            }
-            return previousPossibleTarget;
-        },
-        
         /**
          * Return the item in the given column (index) and at the given position (index)
          * in that column.  If either of the column or item index is out of bounds, this
@@ -1132,8 +1092,44 @@ fluid.moduleLayout = function (jQuery, fluid) {
                 }
             }
             return false;
+        },
+        
+        targetAndPos: function(itemId, position, layout, perms){
+            var inc = (position === fluid.position.BEFORE) ? -1 : 1;            
+            var startCoords = internals.findColumnAndItemIndices (itemId, layout);
+            
+            // If invalid column, return disallowed
+            if (startCoords.columnIndex < 0) {
+                return {
+                    id: itemId,
+                    position: fluid.position.DISALLOWED
+                };
+            }
+            
+            // Loop thru the target column's items, starting with the item adjacent to the given item,
+            // looking for an item that can be moved to.
+            var idsInCol = layout.columns[startCoords.columnIndex].children;
+            for (var i = startCoords.itemIndex + inc; i > -1 && i < idsInCol.length; i = i + inc) {
+                var targetId = idsInCol[i];
+                if (fluid.moduleLayout.canMove (itemId, targetId, position, layout, perms)) {
+                    // Found a valid move - return
+                    return {
+                        id: targetId,
+                        position: position
+                    };
+                }
+            }
+        
+            // Didn't find a valid move so returning disallowed
+            return {
+                id: itemId,
+                position: fluid.position.DISALLOWED
+            };                
+        
         }
+
     };   
+    
 	// Public API.
     return {
         internals: internals,
@@ -1255,13 +1251,26 @@ fluid.moduleLayout = function (jQuery, fluid) {
             return { id: targetCol.id, position: fluid.position.INSIDE };
         },
 
-        nearestMoveableTarget: function (itemId, /* NEXT, PREVIOUS */ direction, layout, perms) {
-            if (direction === fluid.direction.NEXT) {
-                return internals.nearestNextMoveableTarget (itemId, layout, perms);
-            }
-            else {
-                return internals.nearestPreviousMoveableTarget (itemId, layout, perms);
-            }
+        /**
+         * Returns a valid drop target and position above the item being moved.
+         * @param {Object} itemId The id of the item being moved
+         * @param {Object} layout 
+         * @param {Object} perms
+         * @returns {Object} id: the target id, position: a 'fluid.position' value relative to the target
+         */
+        targetAndPositionAbove: function (itemId, layout, perms) {
+            return internals.targetAndPos (itemId, fluid.position.BEFORE, layout, perms);
+        },
+        
+        /**
+         * Returns a valid drop target and position below the item being moved.
+         * @param {Object} itemId The id of the item being moved
+         * @param {Object} layout 
+         * @param {Object} perms
+         * @returns {Object} id: the target id, position: a 'fluid.position' value relative to the target
+         */
+        targetAndPositionBelow: function (itemId, layout, perms) {
+            return internals.targetAndPos (itemId, fluid.position.AFTER, layout, perms);
         },
         
         /**
