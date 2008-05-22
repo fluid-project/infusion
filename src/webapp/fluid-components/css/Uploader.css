@@ -4,11 +4,6 @@
 
 .fluid-uploader { 
 	position: relative;
-	margin-top: 2em;
-	padding: 1em 2em;
-	display: block;
-	clear: both;
-	width: 434px;
 }
 
 .fluid-uploader a.fluid-uploader-browse {
@@ -36,6 +31,10 @@
 	border-bottom: 1px solid #999;
 }
 
+.fluid-uploader-queue table {
+	width: 100%;
+}
+
 /* caption */
 
 .fluid-uploader-queue caption {
@@ -52,6 +51,8 @@
 
 .fluid-uploader-queue thead th { 
 	text-align: left;
+	font-size: 0.94em;
+	font-weight: normal;
 	padding: 6px;
 	border-bottom: 1px solid #999;
 	color: #666;
@@ -65,7 +66,7 @@
 
 .fluid-uploader-queue tfoot td {
 	padding: 6px;
-	height: 2.6em;
+	height: 2.4em;
 	border-top: 1px solid #999;
 	vertical-align: middle;
 	font-size: 1.1em;
@@ -85,9 +86,12 @@
 
 /* tbody */
 
-.fluid-uploader-queue tbody {
+.fluid-scoller-table-body {
 	overflow-x: hidden;
 	overflow-y: auto;
+}
+
+.fluid-uploader-queue tbody {
 	width: 465px;
 	font-size: 0.9em;
 	color: #333;
@@ -196,7 +200,7 @@
 
 .fluid-uploader-btns {
 	text-align: right;
-	margin-top: 0.6em;
+	margin-top: 1.3em;
 }
 
 /* STATES

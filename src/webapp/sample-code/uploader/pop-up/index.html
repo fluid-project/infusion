@@ -2,17 +2,18 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<title>Fluid Multi-File Uploader Sample</title>
+	<title>Fluid Multi-File Uploader Pop-up Sample</title>
 
 	<link href="../upload-sample.css" type="text/css" rel="stylesheet" media="all" />
+	<link href="../../../fluid-components/css/infusion-theme.css" rel="stylesheet" type="text/css" />
 	<link href="../../../fluid-components/css/Uploader.css" rel="stylesheet" type="text/css" />
-
     <link rel="stylesheet" href="../../shared/jquery/flora.dialog.css" type="text/css" media="screen" title="Flora (Default)" />
  
 	<script src="../../../fluid-components/js/jquery/jquery-1.2.3.js" type="text/javascript"></script>
 	<script src="../../../fluid-components/js/jquery/jquery.dimensions.js" type="text/javascript"></script>
 	<script src="../../../fluid-components/js/jquery/ui.base.js" type="text/javascript"></script>
 	<script src="../../../fluid-components/js/jquery/ui.dialog.js" type="text/javascript"></script>
+	<script src="../../../fluid-components/js/jquery/ui.draggable.js" type="text/javascript"></script>
 	<script src="../../../fluid-components/js/swfupload/swfupload.js" type="text/javascript"></script>
 	<script src="../../../fluid-components/js/fluid/Fluid.js" type="text/javascript"></script>
 	<script src="../../../fluid-components/js/fluid/Uploader.js" type="text/javascript"></script>
@@ -23,12 +24,23 @@
 	    var uploadURL = "";
         var flashURL = "../../../fluid-components/swfupload/swfupload_f9.swf";
         
-		var settings =   {
+		var settings = {
 			whenDone: "index.html",
 			whenCancel: "index.html",
 			continueAfterUpload: false,
 			dialogDisplay: true,
+			queueListMaxHeight: 190,
 			debug: false
+		};
+		
+		var dialog_settings = {
+			title: "Upload Files", 
+			width: 482,
+			height: '',
+			position: 'top',
+			draggable: true, 
+			modal:true, 
+			resizable: false
 		};
 		
         var myUpload; // mostly used for testing
@@ -37,8 +49,9 @@
 			jQuery("#single-popup-fluid-uploader").hide();
             myUpload = new fluid.Uploader("#single-popup-fluid-uploader", uploadURL, flashURL, settings);
 			jQuery(".add-btn").click(function () {
-				jQuery("#single-popup-fluid-uploader").dialog({title: "Upload files...", width: 482, draggable: true, modal:true, resizable: false}).show();
+				jQuery("#single-popup-fluid-uploader").dialog(dialog_settings).show();
 			});
+			jQuery("#single-popup-fluid-uploader").dialog(dialog_settings).show(); // DEBUG
     	});
 	</script>
 	<style type="text/css">
@@ -48,6 +61,11 @@
 			font-size: 12px;
 			cursor: hand;
 		}
+		
+		caption {
+			display: none;
+		}
+				
 	</style>
 </head>
 <body>
@@ -55,29 +73,42 @@
 		<h2>Fluid Multi-File Uploader Sample</h2>
 		<p>Imagine your application here with a nice little <button class="add-btn" type="button">Add Files</button> button.</p>
  	
-	<form id="single-popup-fluid-uploader" class="fluid-uploader flora" method="get" enctype="multipart/form-data">
+	<form id="single-popup-fluid-uploader" class="fluid-uploader infusion" method="get" enctype="multipart/form-data">
 		<div class="inner-container start">
-			<!-- <div><input type="checkbox" class="add-collection"/><label for="add-collection">Also add image to the current collection <em>Week 1</em></label></div>-->
-			<table cellspacing="0" class="fluid-uploader-queue">
-				<caption>File Queue:</caption>
-				<thead>
-					<tr>
-						<th scope="col">File Name</th><th scope="col">Size</th><th scope="col">Status</th><th scope="col">Remove</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr class="fluid-uploader-row-placeholder"><td class="fileName">&nbsp;</td><td class="fileSize">&nbsp;</td><td class="fileStatus">&nbsp;</td><td class="fileRemove"><button type="button" class="removeFileBtn" /></td></tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan="1" align="left"><button type="button" class="targetbtn fluid-uploader-browse" >Browse&#0133;</button></td>
-						<td colspan="3" align="right">Files to upload: <strong class="fluid-uploader-totalFiles">0</strong> (<span class="fluid-uploader-totalBytes">0</span>)</td>
-					</tr>
-				</tfoot>
-			</table>
-			<p class="instructions">After clicking the <em>Browse</em> button, you can select multiple files using the <em>Shift</em> or <em class="fluid-uploader-modifierKey">Control</em> keys.</p>
-						
-			<button type="button" class="fluid-uploader-cancel bigbtn targetbtn" >Cancel</button><button type="button" class="fluid-uploader-upload bigbtn" >Upload&#0133;</button>
+			<div class="fluid-scroller-table fluid-uploader-queue">
+				<div class="fluid-scoller-table-head">
+					<table cellspacing="0" cellpadding="0">
+						<caption>File Queue:</caption>
+						<thead>
+							<tr>
+								<th scope="col">File Name</th><th scope="col" class="fileSize">Size</th><th scope="col">&nbsp;</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+				<div class="fluid-scoller-table-body">
+					<table cellspacing="0">
+						<tbody>
+							<tr class="fluid-uploader-row-placeholder"><td colspan="3"> click <em>Browse files</em> to add files to the queue </td></tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="fluid-scoller-table-foot">
+					<table cellspacing="0" cellpadding="0">
+						<tfoot>
+							<tr>
+								<td colspan="1">Total: <span class="fluid-uploader-totalFiles">0</span> files (<span class="fluid-uploader-totalBytes">0 KB</span>)</td>
+								<td colspan="2" align="left"><a class="fluid-uploader-browse">Browse files</a></td>
+		
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>			
+			<div class="fluid-uploader-btns">
+				<button type="button" class="fluid-uploader-cancel cancel" >Cancel</button>
+				<button type="button" class="fluid-uploader-upload default" >Upload</button>
+			</div>
 			
 			<div class="fluid-progress">
 				<div class="progress-content">
@@ -95,7 +126,7 @@
 						<div class="progress-indicator">&nbsp;</div>
 					</div>
 					<div align="right">
-						<button type="button" class="fluid-uploader-pause bigbtn targetbtn">Pause Upload</button>
+						<button type="button" class="fluid-uploader-pause default">Pause Upload</button>
 					</div>
 				</div>
 				<div class="progress-mask">

@@ -52,6 +52,7 @@ var fluid = fluid || {};
 		done: ".fluid-uploader-done",
 		cancel: ".fluid-uploader-cancel",
 		fileQueue: ".fluid-uploader-queue",
+		scrollingElement: ".fluid-scoller-table-body",
 		emptyRow : ".fluid-uploader-row-placeholder",
 		txtTotalFiles: ".fluid-uploader-totalFiles",
 		txtTotalBytes: ".fluid-uploader-totalBytes",
@@ -106,7 +107,7 @@ var fluid = fluid || {};
 			status.totalCount--;
 			swfObj.cancelUpload(fileId);
 			row.remove();
-			updateQueueHeight($(fragmentSelectors.fileQueue + ' tbody', uploaderContainer), maxHeight);
+			updateQueueHeight($(fragmentSelectors.scrollingElement, uploaderContainer), maxHeight);
 			updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
 			updateState(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
 			updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
@@ -117,10 +118,9 @@ var fluid = fluid || {};
 	
 	// set the height but only if it's over the maximum
     // this because max-height doesn't seem to work for tbody
-	var updateQueueHeight = function(fileQueueObj, maxHeight){
-		var objInnerHeight = fileQueueObj[0].scrollHeight;
-		var setHeight = (objInnerHeight > maxHeight) ? maxHeight : '';
-		fileQueueObj.height( setHeight ) ;
+	var updateQueueHeight = function(scrollingElm, maxHeight){
+		var setHeight = (scrollingElm.children('table').height() > maxHeight) ? maxHeight : '';
+		scrollingElm.height( setHeight ) ;
 	};
 	
 	var updateNumFiles = function(uploaderContainer, totalFilesSelector, fileQueueSelector, emptyRowSelector) {
@@ -232,7 +232,7 @@ var fluid = fluid || {};
                 // show the row
                 $('#' + file.id, uploaderContainer).fadeIn('slow');
                 
-				updateQueueHeight($(fragmentSelectors.fileQueue + ' tbody', uploaderContainer), maxHeight);
+				updateQueueHeight($(fragmentSelectors.scrollingElement, uploaderContainer), maxHeight);
                 
                 updateState(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
                 updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
