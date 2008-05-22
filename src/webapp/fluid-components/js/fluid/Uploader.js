@@ -117,12 +117,10 @@ var fluid = fluid || {};
 	
 	// set the height but only if it's over the maximum
     // this because max-height doesn't seem to work for tbody
-	var updateQueueHeight = function(uploaderContainer, maxHeight){
-		if (uploaderContainer.height() > maxHeight) {
-	        uploaderContainer.height(maxHeight);
-	    } else {
-			uploaderContainer.height('');
-		}
+	var updateQueueHeight = function(fileQueueObj, maxHeight){
+		var objInnerHeight = fileQueueObj[0].scrollHeight;
+		var setHeight = (objInnerHeight > maxHeight) ? maxHeight : '';
+		fileQueueObj.height( setHeight ) ;
 	};
 	
 	var updateNumFiles = function(uploaderContainer, totalFilesSelector, fileQueueSelector, emptyRowSelector) {
