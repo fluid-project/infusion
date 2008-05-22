@@ -351,6 +351,7 @@ var fluid = fluid || {};
         // Storing the current droppable to work around the issue where the avatar is below the mouse pointer and blocks events
         // See FLUID-407
         var currentDroppable;
+        var currentTargetAndPos;
         
         /**
          * Creates an event handler for mouse move events that moves, shows and hides the drop marker accordingly
@@ -366,24 +367,27 @@ var fluid = fluid || {};
                     
                     if (target) {
                         var position = layoutHandler.dropPosition(target, thisReorderer.activeItem, evt.clientX, evt.pageY);
-                        if (position === fluid.position.BEFORE) {
-                            jQuery(target).before(dropMarker);
-                            dropMarker.show();
-                            dropWarning.hide();
-                        }
-                        else if (position === fluid.position.AFTER) {
-                            jQuery(target).after(dropMarker);
-                            dropMarker.show();
-                            dropWarning.hide();
-                        }
-                        else if (position === fluid.position.INSIDE) {
-                            jQuery(target).append(dropMarker);
-                            dropMarker.show();
-                            dropWarning.hide();
-                        }
-                        else if (position === fluid.position.DISALLOWED) {
-                            dropMarker.hide();
+                        if (position === fluid.position.DISALLOWED) {
                             dropWarning.show();
+                        } 
+                        else {
+                            dropWarning.hide();
+                            if (position !== fluid.position.USE_LAST_KNOWN) {
+                                currentTargetAndPos = {
+                                    target: target,
+                                    position: position
+                                };
+                                if (currentTargetAndPos.position === fluid.position.BEFORE) {
+                                    jQuery(target).before(dropMarker);
+                                }
+                                else if (position === fluid.position.AFTER) {
+                                    jQuery(target).after(dropMarker);
+                                }
+                                else if (position === fluid.position.INSIDE) {
+                                    jQuery(target).append(dropMarker);
+                                }
+                            }
+                            dropMarker.show();
                         }
                     }
                     else {
@@ -437,6 +441,7 @@ var fluid = fluid || {};
                     dropMarker.hide();
                     ui.helper = null;
                     currentDroppable = null;
+                    currentTargetAndPos = null;
                     setDropEffects ("none");
                     
                     // refocus on the active item because moving places focus on the body
@@ -459,16 +464,10 @@ var fluid = fluid || {};
                 over: function (e, ui) {
                     // Store the droppable for the case when the avatar gets the mouse move instead of the droppable below it.
                     // See FLUID-407
-                    var position = layoutHandler.dropPosition(item[0], ui.draggable[0], e.clientX, e.pageY);
-                    if (position === fluid.position.DISALLOWED) {
-                        currentDroppable = null;
-                    } else if (position !== fluid.position.USE_LAST_KNOWN) {
-                        currentDroppable = ui.element;
-                    }
+                    currentDroppable = ui.element;
                 },
                 drop: function (e, ui) {
-                    var dropTarget = currentDroppable ? currentDroppable[0] : item[0];
-                    layoutHandler.mouseMoveItem (ui.draggable[0], dropTarget, e.clientX, e.pageY);
+                    layoutHandler.mouseMoveItem (ui.draggable[0], currentTargetAndPos.target, e.clientX, e.pageY, currentTargetAndPos.position);
                 }
             });
         }
@@ -860,8 +859,7 @@ var fluid = fluid || {};
 	    	    
         // This should probably be part of the public API so it can be configured.
         var move = function (item, relatedItem, position /* BEFORE, AFTER or INSIDE */) {
-            if (!item || !relatedItem || 
-                !fluid.moduleLayout.canMove (item.id, relatedItem.id, position, layout, targetPerms)) {
+            if (!item || !relatedItem) {
                 return;
             }           
             if (position === fluid.position.BEFORE) {
@@ -949,13 +947,8 @@ var fluid = fluid || {};
 	    	}
         };
 
-        this.mouseMoveItem = function (moving, target, x, y) {
-            var dropIt = this.dropPosition (target, moving, x, y);
-            if (dropIt === fluid.position.DISALLOWED) {
-                return;
-            } else {
-                move (moving, target, dropIt);
-            }
+        this.mouseMoveItem = function (moving, target, x, y, position) {
+            move(moving, target, position);
         };
         
     }; // End ModuleLayoutHandler
