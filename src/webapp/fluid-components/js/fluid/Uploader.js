@@ -98,7 +98,7 @@ var fluid = fluid || {};
 	* @param {Object} status	the status object to be updated
 	* @return {jQuery}	returns the same jQuery object
 	*/
-	var removeRow = function(uploaderContainer, fragmentSelectors, row, swfObj, status) {
+	var removeRow = function(uploaderContainer, fragmentSelectors, row, swfObj, status, maxHeight) {
 		row.fadeOut('fast', function (){
 			var fileId = row.attr('id');
 			var file = swfObj.getFile(fileId);
@@ -106,12 +106,23 @@ var fluid = fluid || {};
 			status.totalCount--;
 			swfObj.cancelUpload(fileId);
 			row.remove();
+			updateQueueHeight($(fragmentSelectors.fileQueue + ' tbody', uploaderContainer), maxHeight);
 			updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
 			updateState(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
 			updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
 			updateBrowseBtnText(uploaderContainer, fragmentSelectors.browse, status);
 		});
 		return row;
+	};
+	
+	// set the height but only if it's over the maximum
+    // this because max-height doesn't seem to work for tbody
+	var updateQueueHeight = function(uploaderContainer, maxHeight){
+		if (uploaderContainer.height() > maxHeight) {
+	        uploaderContainer.height(maxHeight);
+	    } else {
+			uploaderContainer.height('');
+		}
 	};
 	
 	var updateNumFiles = function(uploaderContainer, totalFilesSelector, fileQueueSelector, emptyRowSelector) {
@@ -217,17 +228,14 @@ var fluid = fluid || {};
                 
                 // add remove action to the button
                 $('#' + file.id + ' .removeFile').click(function(){
-                    removeRow(uploaderContainer, fragmentSelectors, $(this).parents('tr'), swfObj, status);  
+                    removeRow(uploaderContainer, fragmentSelectors, $(this).parents('tr'), swfObj, status, maxHeight);  
                 });
                 
                 // show the row
                 $('#' + file.id, uploaderContainer).fadeIn('slow');
                 
-                // set the height but only if it's over the maximum
-                // this because max-height doesn't seem to work for tbody
-                if ($(fragmentSelectors.fileQueue + ' tbody', uploaderContainer).height() > maxHeight) {
-                    $(fragmentSelectors.fileQueue + ' tbody', uploaderContainer).height(maxHeight);
-                }
+				updateQueueHeight($(fragmentSelectors.fileQueue + ' tbody', uploaderContainer), maxHeight);
+                
                 updateState(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
                 updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
                 updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
