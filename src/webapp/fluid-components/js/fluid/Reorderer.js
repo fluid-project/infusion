@@ -467,7 +467,11 @@ var fluid = fluid || {};
                 tolerance: "pointer",
                 over: function (e, ui) {
                     // Store the last target for the case when the avatar gets the mouse move instead of the droppable below it.
-                    targetOver = ui.element[0];
+                    // We do not want to store the value if the position is 'USE_LAST_KNOWN'
+                    var position = layoutHandler.dropPosition(item[0], ui.draggable[0], e.clientX, e.pageY);
+                    if (position !== fluid.position.USE_LAST_KNOWN) {
+                        targetOver = ui.element[0];
+                    }
                 },
                 drop: function (e, ui) {
                     if (validTargetAndPos) {
