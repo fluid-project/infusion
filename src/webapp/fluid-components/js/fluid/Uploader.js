@@ -77,6 +77,8 @@ var fluid = fluid || {};
 		postParams: {},
 		httpUploadElm: "",
 		continueAfterUpload: true,
+		continueDelay: 2000, //in milles
+		browseOnInit: false, 
 		queueListMaxHeight : 190,
         fragmentSelectors: defaultSelectors,
 		debug: false
@@ -242,6 +244,19 @@ var fluid = fluid || {};
                 fluid.utils.debug(ex);
             }
         };
+	};
+	
+	var createSWFReadyHandler = function swfReady(browseOnInit, allowMultipleFiles) {
+		return function(){
+			if (browseOnInit) {
+				if (allowMultipleFiles) {
+					this.selectFiles();
+				}
+				else {
+					this.selectFile();
+				}
+			}
+		};
 	};
 
 	function fileDialogStart() {
@@ -413,8 +428,11 @@ var fluid = fluid || {};
 	var fileQueueComplete = function(uploaderContainer, options, progressBar, fragmentSelectors) {
 		updateState(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow, 'done');
 		hideProgress(progressBar, false);
+		options.continueDelay = (!options.continueDelay) ? 0 : options.continueDelay;
 		if (options.continueAfterUpload) {
-			variableAction(options.whenDone);
+			setTimeout(function(){
+				variableAction(options.whenDone);
+			},options.continueDelay);
 		}
 	};
 
@@ -563,7 +581,7 @@ var fluid = fluid || {};
         
      };    
 
-    function initSWFUpload(uploaderContainer, uploadURL, flashURL, progressBar, status, fragmentSelectors, options) {
+    function initSWFUpload(uploaderContainer, uploadURL, flashURL, progressBar, status, fragmentSelectors, options, allowMultipleFiles) {
 		// Initialize the uploader SWF component
 		// Check to see if SWFUpload is available
 		if (typeof(SWFUpload) === "undefined") {
@@ -583,6 +601,7 @@ var fluid = fluid || {};
 			file_queue_limit: options.fileQueueLimit,
 			
 			// Event Handler Settings
+			swfupload_loaded_handler : createSWFReadyHandler(options.browseOnInit, allowMultipleFiles),
 			file_dialog_start_handler: fileDialogStart,
 			file_queued_handler: createFileQueuedHandler (uploaderContainer, fragmentSelectors, options.queueListMaxHeight, status),
 			file_queue_error_handler: fileQueueError,
@@ -682,17 +701,17 @@ var fluid = fluid || {};
 	    };
     
         var progressBar = new fluid.Progress(progressSelector);
+		
+		var allowMultipleFiles = (this.options.fileQueueLimit !== 1);
 
-        var swfObj = initSWFUpload(this.uploaderContainer, uploadURL, flashURL, progressBar, this.status, this.fragmentSelectors, this.options);
+        var swfObj = initSWFUpload(this.uploaderContainer, uploadURL, flashURL, progressBar, this.status, this.fragmentSelectors, this.options, allowMultipleFiles);
 		
         this.actions = new fluid.SWFWrapper(swfObj);
         
         setKeyboardModifierString(this.uploaderContainer, this.fragmentSelectors.osModifierKey);
         
         // Bind all our event handlers.
-        var allowMultipleFiles = (this.options.fileQueueLimit !== 1);
         bindEvents(this, this.uploaderContainer, swfObj, allowMultipleFiles, this.options.whenDone, this.options.whenCancel);
-        
 		
         // If we've been given an empty URL, kick into demo mode.
         if (uploadURL === '') {
