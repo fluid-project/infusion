@@ -150,6 +150,7 @@ var fluid = fluid || {};
      *                                  dragging
      *                                  hover
      *                                  dropMarker
+     *                                  mouseDrag
      *                                  avatar
      *                  avatarCreator - a function that returns a valid DOM node to be used as the dragging avatar
      */
@@ -232,16 +233,11 @@ var fluid = fluid || {};
             // Handle a key up event for the modifier
             if (jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && !isMove(evt)) {
                 dropWarning.hide();
-                // Don't treat the active item as dragging unless it is a movable.
-                // How would the active item have a dragging state if it's not a movable???? 
-                // Shouldn't we just handle this regardlesss?
-                if (isActiveItemMovable ()) {
-                    jActiveItem.removeClass (thisReorderer.cssClasses.dragging);
-                    jActiveItem.addClass (thisReorderer.cssClasses.selected);
-                    jActiveItem.ariaState ("grab", "supported");
-                    setDropEffects("none");
-                    return false;
-                }
+                jActiveItem.removeClass (thisReorderer.cssClasses.dragging);
+                jActiveItem.addClass (thisReorderer.cssClasses.selected);
+                jActiveItem.ariaState ("grab", "supported");
+                setDropEffects("none");
+                return false;
             }
             
             return false;
@@ -249,11 +245,7 @@ var fluid = fluid || {};
 
         var moveItem = function (moveFunc){
             if (isActiveItemMovable ()) {
-                var pos = moveFunc(thisReorderer.activeItem);
-				// This functionality is in the wrong place. The layout handler should deal with hiding and showing the dropWarning
-                if (pos === fluid.position.DISALLOWED) {
-                    dropWarning.show();
-                }
+                moveFunc(thisReorderer.activeItem);
                 // refocus on the active item because moving places focus on the body
                 thisReorderer.activeItem.focus();
                 jQuery(thisReorderer.activeItem).removeClass(thisReorderer.cssClasses.selected);
@@ -824,22 +816,22 @@ var fluid = fluid || {};
      */
     fluid.ModuleLayoutHandler = function (layout, targetPerms, options) {
         var orientation = fluid.orientation.VERTICAL;
-        var orderChangedCallback = function () {};
         
-        // Check if any optional parameters were sent
-        if (options) {
-            if (options.orderChangedCallbackUrl) {
-                // Create the orderChangedCallback function
-                orderChangedCallback = function () {
-                    jQuery.post (options.orderChangedCallbackUrl, 
-                        JSON.stringify (layout),
-                        function (data, textStatus) { 
-                            targetPerms = data; 
-                        }, 
-                        "json");
-                };
-            }
-        }
+        // Configure optional parameters
+        options = options || {};
+        var orderChangedCallback = options.orderChangedCallback || function () {};
+        if (options.orderChangedCallbackUrl) {
+            // Create the orderChangedCallback function
+            orderChangedCallback = function () {
+                jQuery.post (options.orderChangedCallbackUrl, 
+                    JSON.stringify (layout),
+                    function (data, textStatus) { 
+                        targetPerms = data; 
+                    }, 
+                    "json");
+            };
+        } 
+        var dropWarning = fluid.utils.jById(options.dropWarningId);
         
         // Private Methods.
         /*
@@ -892,9 +884,11 @@ var fluid = fluid || {};
         var moveVertically = function (item, targetFunc) {
             var targetAndPos = targetFunc(item.id, layout, targetPerms);
             var target = fluid.utils.jById(targetAndPos.id)[0]; 
-	        move (item, target, targetAndPos.position);
-            
-            return targetAndPos.position;            
+            if (targetAndPos.position === fluid.position.DISALLOWED) {
+                dropWarning.show();
+            } else {
+                move(item, target, targetAndPos.position);
+            }
         };
         
         // Public Methods
@@ -919,7 +913,7 @@ var fluid = fluid || {};
 	    };
 	    
 	    this.moveItemUp = function (item) {
-            return moveVertically(item, fluid.moduleLayout.targetAndPositionAbove);
+            moveVertically(item, fluid.moduleLayout.targetAndPositionAbove);
 	    };
 	        
 	    this.getItemBelow = function (item) {
@@ -927,7 +921,7 @@ var fluid = fluid || {};
 	    };
 	
 	    this.moveItemDown = function (item) {
-            return moveVertically(item, fluid.moduleLayout.targetAndPositionBelow);
+            moveVertically(item, fluid.moduleLayout.targetAndPositionBelow);
 	    };
 	    
         this.dropPosition = function (target, moving, x, y) {

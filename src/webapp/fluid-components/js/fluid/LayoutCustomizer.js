@@ -13,21 +13,17 @@ var fluid = fluid || {};
 
 (function (fluid) {
     var createLayoutCustomizer = function (layout, perms, grabHandle, orderChangedCallbackUrl, options) {
-        var reordererRoot = fluid.utils.jById (fluid.moduleLayout.containerId (layout));
-    
-        var items = fluid.moduleLayout.createFindItems (layout, perms, grabHandle);
-    
-        var lhOptions;
-        if (orderChangedCallbackUrl) {
-            lhOptions = {
-                orderChangedCallbackUrl: orderChangedCallbackUrl
-            };
-        }
-    
-        var layoutHandler = new fluid.ModuleLayoutHandler (layout, perms, lhOptions);
-
+        // Configure options
         var rOptions = options || {};
         rOptions.role = fluid.roles.GRID;
+
+        var lhOptions = {};
+        lhOptions.orderChangedCallbackUrl = orderChangedCallbackUrl;
+        lhOptions.dropWarningId = rOptions.dropWarningId;
+
+        var reordererRoot = fluid.utils.jById (fluid.moduleLayout.containerId (layout));
+        var items = fluid.moduleLayout.createFindItems (layout, perms, grabHandle);    
+        var layoutHandler = new fluid.ModuleLayoutHandler (layout, perms, lhOptions);
 
         return new fluid.Reorderer (reordererRoot, items, layoutHandler, rOptions);
     };
