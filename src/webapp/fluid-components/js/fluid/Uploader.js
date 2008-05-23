@@ -77,8 +77,7 @@ var fluid = fluid || {};
 		postParams: {},
 		httpUploadElm: "",
 		continueAfterUpload: true,
-		dialogDisplay: false,
-		queueListMaxHeight : 200,
+		queueListMaxHeight : 190,
         fragmentSelectors: defaultSelectors,
 		debug: false
 	};
