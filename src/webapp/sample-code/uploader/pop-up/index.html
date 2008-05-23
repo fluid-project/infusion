@@ -19,17 +19,21 @@
 	<script src="../../../fluid-components/js/fluid/Uploader.js" type="text/javascript"></script>
 	<script language="JavaScript" type="text/javascript">
 	    
-	    // set to empty to use demo upload js code instead actual server side upload handlers
+	    // set uploadURL to empty to use demo upload js code instead actual server side upload handlers
 		// uploadURL = "../../sample-code/uploader/php/upload.php"; // relative to the swf file
 	    var uploadURL = "";
+		
         var flashURL = "../../../fluid-components/swfupload/swfupload_f9.swf";
+		var myDialog;
         
 		var settings = {
-			whenDone: "index.html",
+			whenDone: function() {
+				jQuery(myDialog).dialog('close');
+			},
 			whenCancel: "index.html",
-			continueAfterUpload: false,
 			dialogDisplay: true,
 			queueListMaxHeight: 190,
+			browseOnInit: true,
 			debug: false
 		};
 		
@@ -41,7 +45,7 @@
 			draggable: true, 
 			modal: true, 
 			resizable: false,
-			autoOpen: false
+			autoOpen: true
 		};
 		
         var myUpload; // mostly used for testing
@@ -49,14 +53,12 @@
 		// this shows positioning the dialog relative to the button clicked on, and not relative to the viewport
         
 		$(document).ready(function() {
-			//jQuery("#single-popup-fluid-uploader").hide();
 			dialog_settings.position = [jQuery(".add-btn").offset().left,jQuery(".add-btn").offset().top];
-			var myDialog = jQuery("#single-popup-fluid-uploader").dialog(dialog_settings);
+			myDialog = jQuery("#single-popup-fluid-uploader").dialog(dialog_settings);
             myUpload = new fluid.Uploader("#single-popup-fluid-uploader", uploadURL, flashURL, settings);
 			jQuery(".add-btn").click(function () {
 				jQuery(myDialog).dialog('open');
-			});
-			
+			});	
     	});
 	</script>
 	<style type="text/css">
@@ -142,6 +144,10 @@
 		</div>
 	</form>
 
+	</div>
+	
+	<div id="fluid-templates">
+		
 	</div>
 </body>
 </html>
