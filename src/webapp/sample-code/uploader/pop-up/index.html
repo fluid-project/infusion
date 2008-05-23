@@ -37,21 +37,26 @@
 			title: "Upload Files", 
 			width: 482,
 			height: '',
-			position: 'top',
+			position: '',
 			draggable: true, 
-			modal:true, 
-			resizable: false
+			modal: true, 
+			resizable: false,
+			autoOpen: false
 		};
 		
         var myUpload; // mostly used for testing
         
+		// this shows positioning the dialog relative to the button clicked on, and not relative to the viewport
+        
 		$(document).ready(function() {
-			jQuery("#single-popup-fluid-uploader").hide();
+			//jQuery("#single-popup-fluid-uploader").hide();
+			dialog_settings.position = [jQuery(".add-btn").offset().left,jQuery(".add-btn").offset().top];
+			var myDialog = jQuery("#single-popup-fluid-uploader").dialog(dialog_settings);
             myUpload = new fluid.Uploader("#single-popup-fluid-uploader", uploadURL, flashURL, settings);
 			jQuery(".add-btn").click(function () {
-				jQuery("#single-popup-fluid-uploader").dialog(dialog_settings).show();
+				jQuery(myDialog).dialog('open');
 			});
-			jQuery("#single-popup-fluid-uploader").dialog(dialog_settings).show(); // DEBUG
+			
     	});
 	</script>
 	<style type="text/css">
@@ -99,7 +104,6 @@
 							<tr>
 								<td colspan="1">Total: <span class="fluid-uploader-totalFiles">0</span> files (<span class="fluid-uploader-totalBytes">0 KB</span>)</td>
 								<td colspan="2" align="left"><a class="fluid-uploader-browse">Browse files</a></td>
-		
 							</tr>
 						</tfoot>
 					</table>
