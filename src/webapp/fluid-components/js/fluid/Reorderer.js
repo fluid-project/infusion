@@ -95,7 +95,7 @@ var fluid = fluid || {};
     // This is the start of refactoring the drag and drop code out into its own space. 
     // These are the private stateless functions.
     var dndFunctions = {};
-    dndFunctions.findTarget = function (element, dropTargets, avatarId, currentDroppable) {
+    dndFunctions.findTarget = function (element, dropTargets, avatarId, lastTarget) {
         var isAvatar = function (el) {
             return (el && el.id === avatarId);
         };
@@ -108,7 +108,7 @@ var fluid = fluid || {};
         
         // If the avatar was the target of the event, use the last known drop target instead.
         if (isAvatar(target)) {
-            target = currentDroppable ? currentDroppable[0] : null;        
+            target = lastTarget;        
         }
         return target;
     };
@@ -348,10 +348,11 @@ var fluid = fluid || {};
             return dropMarker;
         };
 
-        // Storing the current droppable to work around the issue where the avatar is below the mouse pointer and blocks events
-        // See FLUID-407
-        var currentDroppable;
-        var currentTargetAndPos;
+        // Storing the last target that gets an 'over' event to work around the issue where
+        // the avatar is below the mouse pointer and blocks events
+        var targetOver;
+        // Storing the most recent valid target and drop position to implement correct behaviour for locked modules
+        var validTargetAndPos;
         
         /**
          * Creates an event handler for mouse move events that moves, shows and hides the drop marker accordingly
@@ -362,38 +363,41 @@ var fluid = fluid || {};
             var avatarId = dndFunctions.createAvatarId(thisReorderer.domNode.id);
            
             return function (evt){
-                if (currentDroppable) {
-                    var target = dndFunctions.findTarget (evt.target, dropTargets, avatarId, currentDroppable);
-                    
-                    if (target) {
-                        var position = layoutHandler.dropPosition(target, thisReorderer.activeItem, evt.clientX, evt.pageY);
-                        if (position === fluid.position.DISALLOWED) {
-                            dropWarning.show();
-                        } 
-                        else {
-                            dropWarning.hide();
-                            if (position !== fluid.position.USE_LAST_KNOWN) {
-                                currentTargetAndPos = {
-                                    target: target,
-                                    position: position
-                                };
-                                if (currentTargetAndPos.position === fluid.position.BEFORE) {
-                                    jQuery(target).before(dropMarker);
-                                }
-                                else if (position === fluid.position.AFTER) {
-                                    jQuery(target).after(dropMarker);
-                                }
-                                else if (position === fluid.position.INSIDE) {
-                                    jQuery(target).append(dropMarker);
-                                }
-                            }
-                            dropMarker.show();
-                        }
-                    }
+                // Bail if we are not over a target
+                if (!targetOver) {
+                    return;
+                }
+                
+                var target = dndFunctions.findTarget (evt.target, dropTargets, avatarId, targetOver);
+                
+                if (target) {
+                    var position = layoutHandler.dropPosition(target, thisReorderer.activeItem, evt.clientX, evt.pageY);
+                    if (position === fluid.position.DISALLOWED) {
+                        dropWarning.show();
+                    } 
                     else {
-                        dropMarker.hide();
                         dropWarning.hide();
+                        if (position !== fluid.position.USE_LAST_KNOWN) {
+                            validTargetAndPos = {
+                                target: target,
+                                position: position
+                            };
+                            if (validTargetAndPos.position === fluid.position.BEFORE) {
+                                jQuery(target).before(dropMarker);
+                            }
+                            else if (validTargetAndPos.position === fluid.position.AFTER) {
+                                jQuery(target).after(dropMarker);
+                            }
+                            else if (validTargetAndPos.position === fluid.position.INSIDE) {
+                                jQuery(target).append(dropMarker);
+                            }
+                        }
+                        dropMarker.show();
                     }
+                }
+                else {
+                    dropMarker.hide();
+                    dropWarning.hide();
                 }
             };
         };
@@ -440,8 +444,8 @@ var fluid = fluid || {};
                     jQuery (thisReorderer.activeItem).ariaState ("grab", "supported");
                     dropMarker.hide();
                     ui.helper = null;
-                    currentDroppable = null;
-                    currentTargetAndPos = null;
+                    targetOver = null;
+                    validTargetAndPos = null;
                     setDropEffects ("none");
                     
                     // refocus on the active item because moving places focus on the body
@@ -462,12 +466,13 @@ var fluid = fluid || {};
                 greedy: true,
                 tolerance: "pointer",
                 over: function (e, ui) {
-                    // Store the droppable for the case when the avatar gets the mouse move instead of the droppable below it.
-                    // See FLUID-407
-                    currentDroppable = ui.element;
+                    // Store the last target for the case when the avatar gets the mouse move instead of the droppable below it.
+                    targetOver = ui.element[0];
                 },
                 drop: function (e, ui) {
-                    layoutHandler.mouseMoveItem (ui.draggable[0], currentTargetAndPos.target, e.clientX, e.pageY, currentTargetAndPos.position);
+                    if (validTargetAndPos) {
+                        layoutHandler.mouseMoveItem(ui.draggable[0], validTargetAndPos.target, e.clientX, e.pageY, validTargetAndPos.position);
+                    }
                 }
             });
         }
