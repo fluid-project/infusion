@@ -78,10 +78,28 @@ var fluid = fluid || {};
 		httpUploadElm: "",
 		continueAfterUpload: true,
 		continueDelay: 2000, //in milles
-		browseOnInit: false, 
 		queueListMaxHeight : 190,
         fragmentSelectors: defaultSelectors,
+		// when to show the File browser
+		// if false then the browser shows when the Browse button is clicked
+		// if true
+			// if using dialog then browser will show immediately
+			// else browser will show as soon as dialog shows
+		browseOnInit: false, 
+		// dialog settings
+		dialogDisplay: false,
+		addFilesBtn: ".fluid-add-files-btn", // used in conjunction with dialog display to activate the Uploader
 		debug: false
+	};
+	
+	var dialog_settings = {
+		title: "Upload Files", 
+		width: 482,
+		height: '', // left empty so that the dialog will auto-resize
+		draggable: true, 
+		modal: true, 
+		resizable: false,
+		autoOpen: false
 	};
 	
 	var strings = {
@@ -246,18 +264,22 @@ var fluid = fluid || {};
         };
 	};
 	
-	var createSWFReadyHandler = function swfReady(browseOnInit, allowMultipleFiles) {
+	var createSWFReadyHandler = function (browseOnInit, allowMultipleFiles, useDialog) {
 		return function(){
-			if (browseOnInit) {
-				if (allowMultipleFiles) {
-					this.selectFiles();
-				}
-				else {
-					this.selectFile();
-				}
+			if (browseOnInit && !useDialog) {
+				browseForFiles(this,allowMultipleFiles);
 			}
 		};
 	};
+	
+	function browseForFiles(swfObj,allowMultipleFiles) {
+		if (allowMultipleFiles) {
+			this.selectFiles();
+		}
+		else {
+			this.selectFile();
+		}
+	}
 
 	function fileDialogStart() {
 		try {
@@ -267,7 +289,7 @@ var fluid = fluid || {};
 		}
 	}
 
-	var createFileDialogCompleteHandler = function (uploaderContainer, fragmentSelectors, status) {
+	var createFileDialogCompleteHandler = function(uploaderContainer, fragmentSelectors, status) {
         return function(numSelected, numQueued){
             try {
                 status.currCount = 0;
@@ -392,14 +414,14 @@ var fluid = fluid || {};
         };
     };
     
-	var createUploadCompleteHandler = function (uploaderContainer, progressBar,  fragmentSelectors, status, options) {
+	var createUploadCompleteHandler = function (uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj) {
         return function(file){
             if (!status.currError) {
             
                 if ((file.index + 1) === status.totalCount) {
                     // we've completed all the files in this upload
                     updateProgress(progressBar, 100, file.name, 100, status.totalCount, status.totalCount);
-                    fileQueueComplete(uploaderContainer, options, progressBar, fragmentSelectors);
+                    fileQueueComplete(uploaderContainer, options, progressBar, fragmentSelectors, dialogObj);
                 }
                 else {
                     // there are still files to go, fire off the next one
@@ -433,7 +455,9 @@ var fluid = fluid || {};
 			setTimeout(function(){
 				variableAction(options.whenDone);
 			},options.continueDelay);
+			if (dialogObj) closeDialog(dialogObj);
 		}
+		
 	};
 
     /*
@@ -483,6 +507,25 @@ var fluid = fluid || {};
 	var hideProgress = function(progressBar, dontPause) {
 	 	progressBar.hide(dontPause);
 	};
+	
+	/* DIALOG
+	 * 
+	 */
+	
+ 	var initDialog = function(uploaderSelector, addBtnSelector, browseOnInit, uploaderContainer, fileBrowseSelector) {
+		dialogObj = $(uploaderSelector).dialog(dialog_settings);
+		$(addBtnSelector).click(function(){
+			$(dialogObj).dialog("open");
+			if (browseOnInit) {
+				$(fileBrowseSelector, uploaderContainer).click();
+			}
+		});
+		return dialogObj;
+	};
+		
+	var closeDialog = function(dialogObj) {
+		$(dialogObj).dialog("close");
+	};
 
 	/* DEV CODE
 	 * to be removed after beta or factored into unit tests
@@ -505,7 +548,7 @@ var fluid = fluid || {};
  
     // need to pass in current uploader
     
-    var demoUpload = function (uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status) {
+    var demoUpload = function (uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status, dialogObj) {
         var demoState = {};
         
         fluid.utils.debug (numFilesToUpload(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow)); // check the current state 
@@ -535,7 +578,7 @@ var fluid = fluid || {};
 			// perform demo progress
 			demoProgress();
 		} else { // no more files to upload close the display
-			fileQueueComplete(uploaderContainer, options, progressBar, fragmentSelectors);
+			fileQueueComplete(uploaderContainer, options, progressBar, fragmentSelectors, dialogObj);
 		}
 
         function demoProgress() {
@@ -566,7 +609,7 @@ var fluid = fluid || {};
     		updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
     		updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
             var dUpload = function () {
-                demoUpload(uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status);
+                demoUpload(uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status, dialogObj);
             };
     		var pause = setTimeout(dUpload,1200); // if there hasn't been an error then start up the next upload	
     	}
@@ -581,7 +624,7 @@ var fluid = fluid || {};
         
      };    
 
-    function initSWFUpload(uploaderContainer, uploadURL, flashURL, progressBar, status, fragmentSelectors, options, allowMultipleFiles) {
+    function initSWFUpload(uploaderContainer, uploadURL, flashURL, progressBar, status, fragmentSelectors, options, allowMultipleFiles, dialogObj) {
 		// Initialize the uploader SWF component
 		// Check to see if SWFUpload is available
 		if (typeof(SWFUpload) === "undefined") {
@@ -601,14 +644,14 @@ var fluid = fluid || {};
 			file_queue_limit: options.fileQueueLimit,
 			
 			// Event Handler Settings
-			swfupload_loaded_handler : createSWFReadyHandler(options.browseOnInit, allowMultipleFiles),
+			swfupload_loaded_handler : createSWFReadyHandler(options.browseOnInit, allowMultipleFiles, options.dialogDisplay),
 			file_dialog_start_handler: fileDialogStart,
 			file_queued_handler: createFileQueuedHandler (uploaderContainer, fragmentSelectors, options.queueListMaxHeight, status),
 			file_queue_error_handler: fileQueueError,
 			file_dialog_complete_handler: createFileDialogCompleteHandler (uploaderContainer, fragmentSelectors, status),
 			upload_start_handler: createUploadStartHandler (progressBar, status),
 			upload_progress_handler: createUploadProgressHandler (progressBar, fragmentSelectors, status),
-			upload_complete_handler: createUploadCompleteHandler (uploaderContainer, progressBar, fragmentSelectors, status, options),
+			upload_complete_handler: createUploadCompleteHandler (uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj),
 			upload_error_handler: createUploadErrorHandler (progressBar, fragmentSelectors, status),
 			upload_success_handler: createUploadSuccessHandler (options.whenFileUploaded),
 			// Debug setting
@@ -644,33 +687,39 @@ var fluid = fluid || {};
     };
     
     var bindEvents = function (uploader, uploaderContainer, swfObj, allowMultipleFiles, whenDone, whenCancel) {
+
+		// browse button
 		$(uploader.fragmentSelectors.browse, uploaderContainer).click(function () {
             return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
 		});
         
+		// upload button
 		$(uploader.fragmentSelectors.upload, uploaderContainer).click(function(){
 			if (uploader.status.totalCount > 0) {
 				uploader.actions.beginUpload();
 			}
 		});
 		
+		// pause button
 		$(uploader.fragmentSelectors.pause, uploaderContainer).click(function(){
 			swfObj.stopUpload();
 		});
 		
+		// done button
 		$(uploader.fragmentSelectors.done, uploaderContainer).click(function(){
 			variableAction(whenDone);
 		});
 		
+		// cancel button
 		$(uploader.fragmentSelectors.cancel, uploaderContainer).click(function(){
 			variableAction(whenCancel);
 		});
     };
     
-    var enableDemoMode = function (uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status) {
+    var enableDemoMode = function (uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status, dialogObj) {
 		// this is a local override to do a fake upload
 		swfObj.startUpload = function(){
-			demoUpload(uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status);
+			demoUpload(uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status, dialogObj);
 		};
 		swfObj.stopUpload = function(){
 			status.stop = true;
@@ -701,10 +750,15 @@ var fluid = fluid || {};
 	    };
     
         var progressBar = new fluid.Progress(progressSelector);
-		
+				
 		var allowMultipleFiles = (this.options.fileQueueLimit !== 1);
 
-        var swfObj = initSWFUpload(this.uploaderContainer, uploadURL, flashURL, progressBar, this.status, this.fragmentSelectors, this.options, allowMultipleFiles);
+ 		// displaying Uploader in a dialog
+		if (this.options.dialogDisplay) {
+			var dialogObj = initDialog(uploaderSelector, this.options.addFilesBtn, this.options.browseOnInit, this.uploaderContainer, this.fragmentSelectors.browse);
+		}
+
+        var swfObj = initSWFUpload(this.uploaderContainer, uploadURL, flashURL, progressBar, this.status, this.fragmentSelectors, this.options, allowMultipleFiles, dialogObj);
 		
         this.actions = new fluid.SWFWrapper(swfObj);
         
@@ -713,9 +767,9 @@ var fluid = fluid || {};
         // Bind all our event handlers.
         bindEvents(this, this.uploaderContainer, swfObj, allowMultipleFiles, this.options.whenDone, this.options.whenCancel);
 		
-        // If we've been given an empty URL, kick into demo mode.
+       // If we've been given an empty URL, kick into demo mode.
         if (uploadURL === '') {
-            enableDemoMode(this.uploaderContainer, swfObj, progressBar, this.options, this.fragmentSelectors, this.status);
+            enableDemoMode(this.uploaderContainer, swfObj, progressBar, this.options, this.fragmentSelectors, this.status, dialogObj);
         }
 	};
     
@@ -740,6 +794,7 @@ var fluid = fluid || {};
     fluid.SWFWrapper = function (swfObject) {
         this.swfObj = swfObject;
     };
+	
     fluid.SWFWrapper.prototype.beginUpload = function() {
 		this.swfObj.startUpload();
 	};
