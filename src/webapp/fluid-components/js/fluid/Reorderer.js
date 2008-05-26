@@ -886,7 +886,7 @@ var fluid = fluid || {};
             var target = fluid.utils.jById(targetAndPos.id)[0]; 
             if (targetAndPos.position === fluid.position.DISALLOWED) {
                 dropWarning.show();
-            } else {
+            } else if (targetAndPos.position !== fluid.position.USE_LAST_KNOWN) {
                 move(item, target, targetAndPos.position);
             }
         };
@@ -1102,18 +1102,20 @@ fluid.moduleLayout = function (jQuery, fluid) {
         targetAndPos: function(itemId, position, layout, perms){
             var inc = (position === fluid.position.BEFORE) ? -1 : 1;            
             var startCoords = internals.findColumnAndItemIndices (itemId, layout);
-            
-            // If invalid column, return disallowed
-            if (startCoords.columnIndex < 0) {
-                return {
+            var defaultTarg = {
                     id: itemId,
-                    position: fluid.position.DISALLOWED
+                    position: fluid.position.USE_LAST_KNOWN
                 };
+            
+            // If invalid column, return USE_LAST_KNOWN
+            if (startCoords.columnIndex < 0) {
+                return defaultTarg;
             }
             
             // Loop thru the target column's items, starting with the item adjacent to the given item,
             // looking for an item that can be moved to.
             var idsInCol = layout.columns[startCoords.columnIndex].children;
+            var firstTarg;
             for (var i = startCoords.itemIndex + inc; i > -1 && i < idsInCol.length; i = i + inc) {
                 var targetId = idsInCol[i];
                 if (fluid.moduleLayout.canMove (itemId, targetId, position, layout, perms)) {
@@ -1122,15 +1124,13 @@ fluid.moduleLayout = function (jQuery, fluid) {
                         id: targetId,
                         position: position
                     };
+                } else if (!firstTarg) {
+                    firstTarg = { id: targetId, position: fluid.position.DISALLOWED};
                 }
             }
         
-            // Didn't find a valid move so returning disallowed
-            return {
-                id: itemId,
-                position: fluid.position.DISALLOWED
-            };                
-        
+            // Didn't find a valid move so return the first target
+            return firstTarg || defaultTarg;                        
         }
 
     };   

@@ -64,7 +64,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         // try to move portlet 8 down from the bottom position.
         reorderer.handleDirectionKeyDown(ctrlDownEvt);
-        jqUnit.isVisible ("After trying to move portlet 8 down, drop warning should be visible", "#drop-warning"); 
+        jqUnit.notVisible ("After trying to move portlet 8 down, drop warning should not be visible", "#drop-warning"); 
 
         // release the ctrl key
         ctrlUpEvt = fluid.testUtils.createEvtCTRLUp(portlet8[0]);
