@@ -31,22 +31,8 @@ var fluid = fluid || {};
     /*
      * 
      */
-    fluid.initLayoutCustomizer = function (layout, perms, grabHandle, orderChangedCallbackUrl, options) {
-        var avatarFn = function (item, className) {
-            var avatar = jQuery (document.createElement ("div"));
-            avatar.addClass(className);
-            return avatar;
-        };
-        var opts = options || {};
-        opts.avatarCreator = avatarFn;
-                
-        return createLayoutCustomizer (layout, perms, grabHandle, orderChangedCallbackUrl, opts);
-    };
-    
-    /*
-     * 
-     */
-    fluid.initLayoutCustomizerDefaultAvatar = function (layout, perms, grabHandle, orderChangedCallbackUrl, options) {        
+    fluid.initLayoutCustomizer = function (layout, perms, grabHandle, orderChangedCallbackUrl, options) {        
         return createLayoutCustomizer (layout, perms, grabHandle, orderChangedCallbackUrl, options);
     };
+    
 }) (fluid);

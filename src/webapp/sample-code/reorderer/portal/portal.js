@@ -35,10 +35,6 @@ var demo = demo || {};
     };
 
     demo.initPortletReorderer = function() {
-        return fluid.initLayoutCustomizer (layout, dropTargetPerms, grabHandle);
-    };
-
-    demo.initPortletReordererWithAvatarClone = function() {
         var classNames = {
             mouseDrag: "orderable-mouse-drag",
             dropMarker: "orderable-drop-marker-box",
@@ -46,7 +42,7 @@ var demo = demo || {};
         };
         var options = { cssClassNames: classNames, dropWarningId: "drop-warning" };
 
-        return fluid.initLayoutCustomizerDefaultAvatar (layout, dropTargetPerms, grabHandle, null, options);
+        return fluid.initLayoutCustomizer (layout, dropTargetPerms, grabHandle, null, options);
     };
     
     demo.initLightboxReorderer = function () {

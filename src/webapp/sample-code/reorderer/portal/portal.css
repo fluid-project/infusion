@@ -570,12 +570,13 @@ div#calendar-channel .datepicker_links {
 }
 
 .orderable-dragging{
+    width: auto;
    	opacity: .2;
 	filter: alpha(opacity=20);
 }
 
 .orderable-selected{
-  border: 2px solid #666;
+  border: 2px dashed #000;
 }
 
 .orderable-avatar {
