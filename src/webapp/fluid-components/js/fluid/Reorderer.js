@@ -315,6 +315,7 @@ var fluid = fluid || {};
                 var keyset = keysets[i];
                 var didProcessKey = false;
                 if (keyset.modifier (evt)) {
+                    dropWarning.hide();
                     didProcessKey = moveItemForKeyCode (evt.keyCode, keyset, layoutHandler);
             
                 } else if (noModifier(evt)) {
