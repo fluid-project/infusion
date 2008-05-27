@@ -170,7 +170,8 @@ var fluid = fluid || {};
         var keysets = setupKeysets(fluid.defaultKeysets, options.keysets);
         this.cssClasses = fluid.utils.initCssClassNames (defaultCssClassNames, options.cssClassNames);
         var avatarCreator = options.avatarCreator || defaultAvatarCreator;
-        var dropWarning = fluid.utils.jById(options.dropWarningId);
+        var kbDropWarning = fluid.utils.jById(options.dropWarningId);
+        var mouseDropWarning = kbDropWarning.clone();
         
         this.focusActiveItem = function (evt) {
             // If the active item has not been set yet, set it to the first selectable.
@@ -232,7 +233,7 @@ var fluid = fluid || {};
             
             // Handle a key up event for the modifier
             if (jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && !isMove(evt)) {
-                dropWarning.hide();
+                kbDropWarning.hide();
                 jActiveItem.removeClass (thisReorderer.cssClasses.dragging);
                 jActiveItem.addClass (thisReorderer.cssClasses.selected);
                 jActiveItem.ariaState ("grab", "supported");
@@ -315,7 +316,7 @@ var fluid = fluid || {};
                 var keyset = keysets[i];
                 var didProcessKey = false;
                 if (keyset.modifier (evt)) {
-                    dropWarning.hide();
+                    kbDropWarning.hide();
                     didProcessKey = moveItemForKeyCode (evt.keyCode, keyset, layoutHandler);
             
                 } else if (noModifier(evt)) {
@@ -366,10 +367,10 @@ var fluid = fluid || {};
                 if (target) {
                     var position = layoutHandler.dropPosition(target, thisReorderer.activeItem, evt.clientX, evt.pageY);
                     if (position === fluid.position.DISALLOWED) {
-                        dropWarning.show();
+                        mouseDropWarning.show();
                     } 
                     else {
-                        dropWarning.hide();
+                        mouseDropWarning.hide();
                         if (position !== fluid.position.USE_LAST_KNOWN) {
                             validTargetAndPos = {
                                 target: target,
@@ -390,7 +391,7 @@ var fluid = fluid || {};
                 }
                 else {
                     dropMarker.hide();
-                    dropWarning.hide();
+                    mouseDropWarning.hide();
                 }
             };
         };
@@ -420,7 +421,7 @@ var fluid = fluid || {};
                 refreshPositions: true,
                 scroll: true,
                 helper: function () {
-                    var avatar = jQuery (avatarCreator (item[0], thisReorderer.cssClasses.avatar, dropWarning[0]));
+                    var avatar = jQuery (avatarCreator (item[0], thisReorderer.cssClasses.avatar, mouseDropWarning[0]));
                     avatar.attr("id", dndFunctions.createAvatarId(thisReorderer.domNode.id));
                     return avatar;
                 },
@@ -806,6 +807,14 @@ var fluid = fluid || {};
         
 	}; // End of GridLayoutHandler
     
+    var defaultWillShowKBDropWarning = function (item, dropWarning) {
+        var offset = jQuery(item).offset();
+        dropWarning = jQuery(dropWarning);
+        dropWarning.css("position", "absolute");
+        dropWarning.css("top", offset.top);
+        dropWarning.css("left", offset.left);
+    };
+
     /*
      * Module Layout Handler for reordering content modules.
      * 
@@ -833,6 +842,7 @@ var fluid = fluid || {};
             };
         } 
         var dropWarning = fluid.utils.jById(options.dropWarningId);
+        var willShowKBDropWarning = options.willShowKBDropWarning || defaultWillShowKBDropWarning;
         
         // Private Methods.
         /*
@@ -886,6 +896,7 @@ var fluid = fluid || {};
             var targetAndPos = targetFunc(item.id, layout, targetPerms);
             var target = fluid.utils.jById(targetAndPos.id)[0]; 
             if (targetAndPos.position === fluid.position.DISALLOWED) {
+                willShowKBDropWarning(item, dropWarning[0]);
                 dropWarning.show();
             } else if (targetAndPos.position !== fluid.position.USE_LAST_KNOWN) {
                 move(item, target, targetAndPos.position);

@@ -608,6 +608,7 @@ div .orderable-drop-marker{
     display: none;
     padding: 10px;
     margin: 5px;
+    z-index: 65535;
 }
 
 .orderable-drop-marker-box {
