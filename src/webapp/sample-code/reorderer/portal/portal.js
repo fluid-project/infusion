@@ -13,7 +13,7 @@ var demo = demo || {};
     
 (function (jQuery, fluid) {
     var layout = { 
-        id:"portalPageBody",
+        id:"portalPageBodyColumns",
         columns:[
             { id:"column_u15l1s9", children:["portlet_u15l1n10", "portlet_u15l1n11"]},
             { id:"column_u15l1s12", children:["portlet_u15l1n13","portlet_u15l1n14","portlet_u15l1n15"]}
