@@ -214,6 +214,8 @@ var fluid = fluid || {};
             if (!jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && isMove(evt)) {
                // Don't treat the active item as dragging unless it is a movable.
                 if (isActiveItemMovable ()) {
+                    // IE will only respond to opacity styling if the element has an explicit width or height
+                    jActiveItem.css("height", jActiveItem[0].offsetHeight);
                     jActiveItem.removeClass (thisReorderer.cssClasses.selected);
                     jActiveItem.addClass (thisReorderer.cssClasses.dragging);
                     jActiveItem.ariaState ("grab", "true");
@@ -236,6 +238,7 @@ var fluid = fluid || {};
                 kbDropWarning.hide();
                 jActiveItem.removeClass (thisReorderer.cssClasses.dragging);
                 jActiveItem.addClass (thisReorderer.cssClasses.selected);
+                jActiveItem.css("height", "auto");
                 jActiveItem.ariaState ("grab", "supported");
                 setDropEffects("none");
                 return false;
