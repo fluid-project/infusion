@@ -59,7 +59,11 @@ var fluid = fluid || {};
 		osModifierKey: ".fluid-uploader-modifierKey",
 		txtFileStatus: ".fileStatus",
 		progress : '.fluid-progress',
-		rowTemplate: '#queue-row-tmplt'
+		qRowTemplate: '#queue-row-tmplt',
+		qRowFileName: '.fileName',
+		qRowFileSize: '.fileSize',
+		qRowRemove: '.fileRemove',
+		debug: false
     };
 	
     // Default configuration options.
@@ -221,11 +225,11 @@ var fluid = fluid || {};
                 queueSize(status, file.size);
                 
                 // make a new row
-				var newQueueRow = $(fragmentSelectors.rowTemplate).clone();
+				var newQueueRow = $(fragmentSelectors.qRowTemplate).clone();
 				// update the file name
-				$(newQueueRow).children('.fileName').text(file.name);
+				$(newQueueRow).children(fragmentSelectors.qRowFileName).text(file.name);
 				// update the file size
-				$(newQueueRow).children('.fileSize').text(fluid.utils.filesizeStr(file.size));
+				$(newQueueRow).children(fragmentSelectors.qRowFileSize).text(fluid.utils.filesizeStr(file.size));
 				// update the file id and add the hover action
 				newQueueRow.attr('id',file.id).css('display', 'none').hover(function(){
                     if (!$(this).hasClass('uploaded')) {
@@ -240,7 +244,7 @@ var fluid = fluid || {};
 				newQueueRow.insertBefore($(fragmentSelectors.emptyRow, uploaderContainer));
 				
                 // add remove action to the button
-                $('#' + file.id + ' .removeFile', uploaderContainer).click(function(){
+                $('#' + file.id, uploaderContainer).children(fragmentSelectors.qRowRemove).click(function(){
                     removeRow(uploaderContainer, fragmentSelectors, $(this).parents('tr'), swfObj, status, maxHeight);  
                 });
                 
@@ -509,13 +513,15 @@ var fluid = fluid || {};
 	 */
 	
  	var initDialog = function(uploaderSelector, addBtnSelector, browseOnInit, uploaderContainer, fileBrowseSelector) {
-		dialogObj = $(uploaderSelector).dialog(dialog_settings);
+		dialogObj = $(uploaderSelector).dialog(dialog_settings).css('display','block');
 		$(addBtnSelector).click(function(){
 			$(dialogObj).dialog("open");
-			if (browseOnInit) {
-				$(fileBrowseSelector, uploaderContainer).click();
-			}
 		});
+		
+		if (browseOnInit) {
+			$(fileBrowseSelector, uploaderContainer).click();
+		}
+		
 		return dialogObj;
 	};
 		
