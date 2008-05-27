@@ -58,7 +58,8 @@ var fluid = fluid || {};
 		txtTotalBytes: ".fluid-uploader-totalBytes",
 		osModifierKey: ".fluid-uploader-modifierKey",
 		txtFileStatus: ".fileStatus",
-		progress : '.fluid-progress'
+		progress : '.fluid-progress',
+		rowTemplate: '#queue-row-tmplt'
     };
 	
     // Default configuration options.
@@ -220,17 +221,13 @@ var fluid = fluid || {};
                 queueSize(status, file.size);
                 
                 // make a new row
-                var queue_row = $('<tr id="' + file.id + '">' +
-                '<th class="fileName" scope="row">' +
-                file.name +
-                '</th>' +
-                '<td class="fileSize">' +
-                fluid.utils.filesizeStr(file.size) +
-                '</td>' +
-                '<td class="fileRemove"><button type="button" class="removeFile" /></td></tr>');
-                
-                // add a hover to the row
-                queue_row.css('display', 'none').hover(function(){
+				var newQueueRow = $(fragmentSelectors.rowTemplate).clone();
+				// update the file name
+				$(newQueueRow).children('.fileName').text(file.name);
+				// update the file size
+				$(newQueueRow).children('.fileSize').text(fluid.utils.filesizeStr(file.size));
+				// update the file id and add the hover action
+				newQueueRow.attr('id',file.id).css('display', 'none').hover(function(){
                     if (!$(this).hasClass('uploaded')) {
                         $(this).addClass('hover');
                     }
@@ -239,16 +236,15 @@ var fluid = fluid || {};
                         $(this).removeClass('hover');
                     }
                 });
-                
-                // add the queue to the list right before the placeholder which is always at the end
-                queue_row.insertBefore($(fragmentSelectors.emptyRow, uploaderContainer));
-                
+                // insert the new row into the file queue
+				newQueueRow.insertBefore($(fragmentSelectors.emptyRow, uploaderContainer));
+				
                 // add remove action to the button
-                $('#' + file.id + ' .removeFile').click(function(){
+                $('#' + file.id + ' .removeFile', uploaderContainer).click(function(){
                     removeRow(uploaderContainer, fragmentSelectors, $(this).parents('tr'), swfObj, status, maxHeight);  
                 });
                 
-                // show the row
+                // display the new row
                 $('#' + file.id, uploaderContainer).fadeIn('slow');
                 
 				updateQueueHeight($(fragmentSelectors.scrollingElement, uploaderContainer), maxHeight);
