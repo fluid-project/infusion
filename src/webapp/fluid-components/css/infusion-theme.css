@@ -11,6 +11,8 @@
  * Button border :: #2A3990;
  * Default Button background :: #74B74A
  * Default Button border :: #006838 
+ * Default Hover background color :: #519325
+ * Ddfault Hover border color: #142B8C
  * Cancel Button background :: #D03E4F
  * Cancel Button border :: #BF1E2D
  * Button type color :: #FFF
@@ -18,6 +20,10 @@
  * Link Type color :: #427ABE
  * Keyboard Focus color :: #142B8C (or #2A3990)
  */
+
+.fluid-templates {
+	display: none;
+}
 
 .infusion {
 	font-family: "Trebuchet MS", Helvetica, Arial, sans-serif;
@@ -39,13 +45,17 @@
 	cursor: pointer;
 }
 
+.influsion button:hover {
+	background-color: #0B3A5E;
+}
+
 .infusion button.default {
 	background-color: #74B74A;
 	border-color: #006838;
 }
 
 .infusion button.default:hover {
-	background-color: #54932B;
+	background-color: #519325;
 	border-color: #142B8C;
 }
 
@@ -109,7 +119,7 @@
 .infusion .ui-dialog .ui-dialog-titlebar-close-hover,
 .infusion.ui-dialog .ui-dialog-titlebar-close-hover {
 	background: url(../images/infusion-theme/x-close-lrg.png) no-repeat 1px 1px;
-	background-color: #1E67BE;
+	background-color: #095CBE;
 	border: 1px solid #CCC;
 }
 
