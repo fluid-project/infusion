@@ -57,7 +57,7 @@ var fluid = fluid || {};
 		txtTotalFiles: ".fluid-uploader-totalFiles",
 		txtTotalBytes: ".fluid-uploader-totalBytes",
 		osModifierKey: ".fluid-uploader-modifierKey",
-		txtFileStatus: ".fileStatus",
+		txtFileStatus: ".removeFile",
 		progress : '.fluid-progress',
 		qRowTemplate: '#queue-row-tmplt',
 		qRowFileName: '.fileName',
@@ -187,9 +187,16 @@ var fluid = fluid || {};
 		// add Complete text status
 		setRowStatus(row, fileStatusSelector, strings.fileUploaded);
 	};
-
+	
+	var markRowError = function(row, fileStatusSelector) {
+		// mark the row uploaded
+		row.addClass('error');
+		// add Error text status
+		setRowStatus(row, fileStatusSelector, 'File Upload Error');
+	};
+	
 	 var setRowStatus = function(row, fileStatusSelector, str) {
-		$(row).children(fileStatusSelector).text(str);
+		$(row).find(fileStatusSelector).attr('title',str);
 	};
 	
 	// UTILITY SCRIPTS
@@ -348,7 +355,7 @@ var fluid = fluid || {};
 
     // This code was taken from a SWFUpload example.
     // The commented-out lines will be implemented or removed based on our own progress bar code.
-	var createUploadErrorHandler = function (progressBar, fragmentSelectors, status) {
+	var createUploadErrorHandler = function (uploaderContainer, progressBar, fragmentSelectors, status) {
         return function(file, error_code, message){
             status.currError = '';
             try {
@@ -389,7 +396,10 @@ var fluid = fluid || {};
                         status.currError = "Error Code: " + error_code + ", File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
                         break;
                 }
-                fluid.utils.debug(status.currError);
+				
+				markRowError($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus);
+                
+				fluid.utils.debug(status.currError);
             } 
             catch (ex) {
                 fluid.utils.debug(ex);
@@ -654,7 +664,7 @@ var fluid = fluid || {};
 			upload_start_handler: createUploadStartHandler (progressBar, status),
 			upload_progress_handler: createUploadProgressHandler (progressBar, fragmentSelectors, status),
 			upload_complete_handler: createUploadCompleteHandler (uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj),
-			upload_error_handler: createUploadErrorHandler (progressBar, fragmentSelectors, status),
+			upload_error_handler: createUploadErrorHandler (uploaderContainer, progressBar, fragmentSelectors, status),
 			upload_success_handler: createUploadSuccessHandler (options.whenFileUploaded),
 			// Debug setting
 			debug: options.debug
