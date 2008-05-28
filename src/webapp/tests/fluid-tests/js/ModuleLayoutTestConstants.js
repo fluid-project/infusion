@@ -58,3 +58,14 @@ function tearDown() {
     fluid.utils.jById (portalRootId).replaceWith (portletRootClone);
 }
 
+function container() {
+    return jQuery("#" + portalRootId);
+}
+
+function allColumns() {
+    return jQuery("[id^=c]");
+}
+
+function allPortlets() {
+    return jQuery("div[id^=portlet]");
+}

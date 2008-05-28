@@ -497,4 +497,67 @@ $(document).ready (function () {
         jqUnit.assertEquals ("last item in column 4 should be undefined", undefined, fluid.moduleLayout.lastItemInCol (column4id, demo.portal.layout));
     });
 
+    moduleLayoutTests.test ("buildEmptyPerms", function () {
+        // No columns or portlets.
+        var columns = jQuery([]);
+        var portlets = jQuery([]);
+        
+        var perms = fluid.moduleLayout.buildEmptyPerms(columns, portlets);
+        jqUnit.ok(perms, "For an empty set of columns and portlets, the perms object should be truthy");
+        jqUnit.equals(perms.length, 0, "The perms object should be an empty array.");
+        
+        columns = allColumns();
+        portlets = allPortlets();
+
+        perms = fluid.moduleLayout.buildEmptyPerms(columns, portlets);
+        jqUnit.ok(perms, "The perms object should be truthy");
+        jqUnit.equals(perms.length, 9, "There are 9 portlets so there should be 9 rows of perms");
+        
+        // Test a couple of rows--they should be filled with 1s.
+        function testRow(row) {
+            jqUnit.equals(row.length, 13, "There are 9 portlets and 4 columns, so there should be 13 permission bits.");
+            jQuery(row).each(function (idx) {
+                jqUnit.equals(row[idx], 1, "Each permission bit should be set to 1."); 
+            });
+        }
+
+        testRow(perms[0]);
+        testRow(perms[5]);
+        testRow(perms[8]);
+    });
+    
+    moduleLayoutTests.test ("findPortletsInColumn", function () {
+        var columns = allColumns();
+        var portlets = allPortlets();
+        
+        var portletsInColumn1 = fluid.moduleLayout.internals.findPortletsInColumn(portlets, columns.eq(0));
+        jqUnit.equals(portletsInColumn1.length, 4, "Portlets 1-4 are located in column 1.");
+        jqUnit.equals(portletsInColumn1[0].id, portlet1id, "Portlets 1-4 are located in column 1.");
+        jqUnit.equals(portletsInColumn1[1].id, portlet2id, "Portlets 1-4 are located in column 1.");
+        jqUnit.equals(portletsInColumn1[2].id, portlet3id, "Portlets 1-4 are located in column 1.");
+        jqUnit.equals(portletsInColumn1[3].id, portlet4id, "Portlets 1-4 are located in column 1.");
+
+        var portletsInColumn4 = fluid.moduleLayout.internals.findPortletsInColumn(portlets, columns.eq(3));
+        jqUnit.equals(portletsInColumn4.length, 0, "Column 4 is empty.");
+    });
+    
+    moduleLayoutTests.test ("buildLayout", function () {
+        var layout = fluid.moduleLayout.buildLayout(container(), allColumns(), allPortlets());
+        
+        var containerId = fluid.moduleLayout.containerId(layout);
+        jqUnit.equals(containerId, portalRootId, "The layout should have a valid container id.");
+        
+        jqUnit.ok(fluid.moduleLayout.isColumn(column1id, layout), "Valid columns are represented as columns.");
+        jqUnit.ok(fluid.moduleLayout.isColumn(column2id, layout), "Valid columns are represented as columns.");
+        jqUnit.ok(fluid.moduleLayout.isColumn(column4id, layout), "Valid columns are represented as columns.");
+        jqUnit.ok(!fluid.moduleLayout.isColumn(portlet7id, layout), "A portlet is not represented as a column.");
+        jqUnit.ok(!fluid.moduleLayout.isColumn("foo", layout), "foo is not a column.");
+        
+        var portlet1 = fluid.moduleLayout.internals.getItemAt(0, 0, layout);
+        jqUnit.equals(portlet1, portlet1id, "Portlet 1 is the first portlet.");
+        var portlet5 = fluid.moduleLayout.internals.getItemAt(1, 0, layout);
+        jqUnit.equals(portlet5, portlet5id, "Portlet 5 is the first portlet in the second column.");
+        var portlet9 = fluid.moduleLayout.internals.getItemAt(2, 2, layout);
+        jqUnit.equals(portlet9, portlet9id, "Portlet 9 is the last portlet.");
+    });
 });

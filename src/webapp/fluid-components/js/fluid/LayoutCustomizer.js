@@ -28,11 +28,32 @@ var fluid = fluid || {};
         return new fluid.Reorderer (reordererRoot, items, layoutHandler, rOptions);
     };
     
-    /*
-     * 
+
+    /**
+     * Creates a layout customizer from a combination of a layout and permissions object.
+     * @param {Object} layout a layout object. See http://wiki.fluidproject.org/x/FYsk for more details
+     * @param {Object} perms a permissions data structure. See the above documentation
      */
     fluid.initLayoutCustomizer = function (layout, perms, grabHandle, orderChangedCallbackUrl, options) {        
         return createLayoutCustomizer (layout, perms, grabHandle, orderChangedCallbackUrl, options);
     };
-    
+
+    /**
+     * Simple way to create a layout customizer.
+     * @param {selector} a selector for the layout container
+     * @param {Object} a map of selectors for columns and portlets within the layout
+     * @param {Object} additional configuration options
+     */
+    fluid.reorderLayout = function(containerSelector, layoutSelectors, options) {
+        options = options || {};
+        
+        var container = jQuery(containerSelector);
+        var columns = jQuery(layoutSelectors.columns, container);
+        var portlets = jQuery(layoutSelectors.portlets, container);
+        
+        var layout = fluid.moduleLayout.buildLayout(container, columns, portlets);
+        var perms = fluid.moduleLayout.buildEmptyPerms(columns, portlets);
+        
+        return fluid.initLayoutCustomizer(layout, perms, null, options.callbackUrl, options.warningId);
+    };    
 }) (fluid);

@@ -1169,6 +1169,28 @@ fluid.moduleLayout = function (jQuery, fluid) {
         
             // Didn't find a valid move so return the first target
             return firstTarg || defaultTarg;                        
+        },
+            
+        findPortletsInColumn: function (portlets, column) {
+            var portletsForColumn = [];
+            portlets.each(function (idx, portlet) {
+                if (jQuery("[id=" + portlet.id + "]", column)[0]) {
+                    portletsForColumn.push(portlet);
+                }
+            });
+            
+            return portletsForColumn;
+        },
+    
+    	columnStructure: function (column, portletsInColumn) {
+            var structure = {};
+            structure.id = column.id;
+            structure.children = [];
+            jQuery(portletsInColumn).each(function (idx, portlet) {
+                structure.children.push(portlet.id);
+            });
+            
+            return structure;
         }
 
     };   
@@ -1376,6 +1398,46 @@ fluid.moduleLayout = function (jQuery, fluid) {
                 return col.children[numChildren-1];                
             }
             return undefined;
+        },
+        
+        /**
+         * Builds a fake permission object stuffed with 1s.
+         * @param {jQuery} columns
+         * @param {jQuery} portlets
+         */
+        buildEmptyPerms: function (columns, portlets) {
+            var permsStructure = [];
+            // Each column has a drop target at its top.
+            // Each portlet has a drop target below it.
+            var numItemsInBitmap = columns.length + portlets.length;
+            portlets.each(function () {
+                var rowForPortlet = [];
+                // Stuff the whole structure with 1s to dispense with permissions altogether.
+                for (var i = 0; i < numItemsInBitmap; i++) {
+                    rowForPortlet.push(1);
+                }
+                permsStructure.push(rowForPortlet);
+            });
+            
+            return permsStructure;
+        },
+    
+        /**
+         * Builds a layout object from a set of columns and portlets.
+         * @param {jQuery} container
+         * @param {jQuery} columns
+         * @param {jQuery} portlets
+         */
+        buildLayout: function (container, columns, portlets) {
+            var layoutStructure = {};
+            layoutStructure.id = container[0].id;
+            layoutStructure.columns = [];
+            columns.each(function (idx, column) {
+                var portletsInColumn = internals.findPortletsInColumn(portlets, column);
+                layoutStructure.columns.push(internals.columnStructure(column, portletsInColumn));
+            });
+            
+            return layoutStructure;
         }
     };	
 } (jQuery, fluid);
