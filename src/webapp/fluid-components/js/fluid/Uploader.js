@@ -140,12 +140,36 @@ var fluid = fluid || {};
 		return row;
 	};
 	
-	// set the height but only if it's over the maximum
-    // this because max-height doesn't seem to work for tbody
 	var updateQueueHeight = function(scrollingElm, maxHeight){
-		var setHeight = (scrollingElm.children('table').height() > maxHeight) ? maxHeight : '';
+		var overMaxHeight = (scrollingElm.children().eq(0).height() > maxHeight);
+		var setHeight = (overMaxHeight) ? maxHeight : '';
 		scrollingElm.height( setHeight ) ;
-		return (setHeight !== '');
+		return overMaxHeight;
+	};
+	
+	var scrollBottom = function(scrollingElm){
+		// cast potentially a jQuery obj to a regular obj
+		scrollingElm = $(scrollingElm)[0];
+		// set the scrollTop to the scrollHeight
+		scrollingElm.scrollTop = scrollingElm.scrollHeight;
+	};
+	
+	var scrollTo = function(scrollingElm,row){
+		var rowPosTop = $(row)[0].offsetTop;
+		var rowHeight = $(row).height();
+		var containerScrollTop = $(scrollingElm)[0].scrollTop;
+		var containerHeight = $(scrollingElm).height();
+		
+		// if the top of the row is ABOVE the view port move the row into position
+		if (rowPosTop < containerScrollTop) {
+			$(scrollingElm)[0].scrollTop = rowPosTop;
+		};
+		
+		// if the bottom of the row is BELOW the viewport then scroll it into position
+		if ((rowPosTop + rowHeight) > (containerScrollTop + containerHeight)) {
+			$(scrollingElm)[0].scrollTop = (rowPosTop - containerHeight + rowHeight);
+		}
+		//$(scrollingElm)[0].scrollTop = $(row)[0].offsetTop;
 	};
 	
 	var updateNumFiles = function(uploaderContainer, totalFilesSelector, fileQueueSelector, emptyRowSelector) {
@@ -276,10 +300,12 @@ var fluid = fluid || {};
 				
 				var scrollingElm = $(fragmentSelectors.scrollingElement, uploaderContainer);
                 
-				updateQueueHeight(scrollingElm, maxHeight);
+				var scrolling = updateQueueHeight(scrollingElm, maxHeight);
                 
 				// scroll to the bottom to reviel element
-				scrollBottom(scrollElm);
+				if (scrolling) {
+					scrollBottom(scrollingElm);
+				}
 				
                 updateState(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
                 updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
@@ -359,16 +385,17 @@ var fluid = fluid || {};
 		}
 	}	
 
-    var createUploadStartHandler = function (progressBar, status) {
+    var createUploadStartHandler = function (uploaderContainer, fragmentSelectors, progressBar, status) {
         return function (fileObj) {
-            uploadStart (fileObj, progressBar, status);
+            uploadStart (fileObj, uploaderContainer, fragmentSelectors, progressBar, status);
         };
     };
     
-	var uploadStart = function(fileObj, progressBar, status) {
+	var uploadStart = function(fileObj, uploaderContainer, fragmentSelectors, progressBar, status) {
 		status.currError = ''; // zero out the error so we can check it later
 		status.currCount++;
-		updateProgress(progressBar, 0,fileObj.name,0,status.currCount,status.totalCount);
+		scrollTo($(fragmentSelectors.scrollingElement, uploaderContainer),$("#"+fileObj.id, uploaderContainer));
+		updateProgress(progressBar, 0, fileObj.name, 0, status.currCount, status.totalCount);
 		fluid.utils.debug (
 			"Starting Upload: " + status.currCount + ' (' + fileObj.id + ')' + ' [' + fileObj.size + ']' + ' ' + fileObj.name
 		);
@@ -619,7 +646,7 @@ var fluid = fluid || {};
                 + demoState.totalBytes + ' numChunks = ' + demoState.numChunks);
 			
 			// start the demo upload
-			uploadStart(demoState.fileObj, progressBar, status);
+			uploadStart(demoState.fileObj, uploaderContainer, fragmentSelectors, progressBar, status);
 			
 			// perform demo progress
 			demoProgress();
@@ -695,7 +722,7 @@ var fluid = fluid || {};
 			file_queued_handler: createFileQueuedHandler (uploaderContainer, fragmentSelectors, options.queueListMaxHeight, status),
 			file_queue_error_handler: fileQueueError,
 			file_dialog_complete_handler: createFileDialogCompleteHandler (uploaderContainer, fragmentSelectors, status),
-			upload_start_handler: createUploadStartHandler (progressBar, status),
+			upload_start_handler: createUploadStartHandler (uploaderContainer, fragmentSelectors, progressBar, status),
 			upload_progress_handler: createUploadProgressHandler (progressBar, fragmentSelectors, status),
 			upload_complete_handler: createUploadCompleteHandler (uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj),
 			upload_error_handler: createUploadErrorHandler (uploaderContainer, progressBar, fragmentSelectors, options.queueListMaxHeight, status),
