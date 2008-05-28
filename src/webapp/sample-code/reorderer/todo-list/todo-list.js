@@ -13,14 +13,5 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 
 demo.initTodoList = function () {
-    var todoListContainer = fluid.utils.jById ("todo-list");
-
-    // The orderable finder identifies the orderable element by their unique id prefix.
-    var myOrderableFinder = function () {
-        return jQuery ("[id^=myUniquePrefix]", todoListContainer);
-    };
-
-    var layoutHandler = new fluid.ListLayoutHandler (myOrderableFinder);
-
-    return new fluid.Reorderer (todoListContainer, myOrderableFinder, layoutHandler);
+    return fluid.reorderList("#todo-list", "[id^=myUniquePrefix]");
 };
