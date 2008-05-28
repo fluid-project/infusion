@@ -230,6 +230,15 @@
 	border-color: #006838;
 }
 
+/* ERRORS
+ * 
+ */
+
+.fluid-uploader-queue .queue-error-row td {
+	border-top: 1px dotted #E6E6E6;
+	border-left: 1px solid #999;
+}
+
 /* 
  * PROGRESS INDICATOR
  */

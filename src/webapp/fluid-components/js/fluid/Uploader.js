@@ -145,6 +145,7 @@ var fluid = fluid || {};
 	var updateQueueHeight = function(scrollingElm, maxHeight){
 		var setHeight = (scrollingElm.children('table').height() > maxHeight) ? maxHeight : '';
 		scrollingElm.height( setHeight ) ;
+		return (setHeight !== '');
 	};
 	
 	var updateNumFiles = function(uploaderContainer, totalFilesSelector, fileQueueSelector, emptyRowSelector) {
@@ -181,21 +182,35 @@ var fluid = fluid || {};
 		}
 	};
 	
-	 var markRowComplete = function(row, fileStatusSelector) {
+	 var markRowComplete = function(row, fileStatusSelector, removeBtnSelector) {
 		// mark the row uploaded
-		row.addClass('uploaded');
+		row.addClass('uploaded').unbind('click');
 		// add Complete text status
 		setRowStatus(row, fileStatusSelector, strings.fileUploaded);
 	};
 	
-	var markRowError = function(row, fileStatusSelector) {
+	var markRowError = function(row, fileStatusSelector, removeBtnSelector, scrollingElm, maxHeight, humanError) {
 		// mark the row uploaded
 		row.addClass('error');
+		
+		updateQueueHeight(scrollingElm, maxHeight);
+		
+		$(row).find(removeBtnSelector).unbind('click')
+		
+		if (humanError !== '') displayHumanReableError(row,humanError);
+		
 		// add Error text status
 		setRowStatus(row, fileStatusSelector, 'File Upload Error');
+		
 	};
 	
-	 var setRowStatus = function(row, fileStatusSelector, str) {
+	var displayHumanReableError = function(row, humanError) {
+		var newErrorRow = $('#queue-error-tmplt').clone();
+		$(newErrorRow).find('.queue-error').html(humanError)
+		$(newErrorRow).removeAttr('id').insertAfter(row);
+	};
+	
+	var setRowStatus = function(row, fileStatusSelector, str) {
 		$(row).find(fileStatusSelector).attr('title',str);
 	};
 	
@@ -249,6 +264,7 @@ var fluid = fluid || {};
                 });
                 // insert the new row into the file queue
 				newQueueRow.insertBefore($(fragmentSelectors.emptyRow, uploaderContainer));
+				$
 				
                 // add remove action to the button
                 $('#' + file.id, uploaderContainer).children(fragmentSelectors.qRowRemove).click(function(){
@@ -257,9 +273,14 @@ var fluid = fluid || {};
                 
                 // display the new row
                 $('#' + file.id, uploaderContainer).fadeIn('slow');
+				
+				var scrollingElm = $(fragmentSelectors.scrollingElement, uploaderContainer);
                 
-				updateQueueHeight($(fragmentSelectors.scrollingElement, uploaderContainer), maxHeight);
+				updateQueueHeight(scrollingElm, maxHeight);
                 
+				// scroll to the bottom to reviel element
+				scrollBottom(scrollElm);
+				
                 updateState(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
                 updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
                 updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
@@ -355,13 +376,18 @@ var fluid = fluid || {};
 
     // This code was taken from a SWFUpload example.
     // The commented-out lines will be implemented or removed based on our own progress bar code.
-	var createUploadErrorHandler = function (uploaderContainer, progressBar, fragmentSelectors, status) {
+	var createUploadErrorHandler = function (uploaderContainer, progressBar, fragmentSelectors, maxHeight, status) {
         return function(file, error_code, message){
             status.currError = '';
+			var humanErrorMsg = '';
+			var queueContinueOnError = false;
             try {
                 switch (error_code) {
                     case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
                         status.currError = "Error Code: HTTP Error, File name: " + file.name + ", Message: " + message;
+						humanErrorMsg = 'An upload error occured. Mostly likely because the file is already in your collection.' + 
+						formatErrorCode(message);
+						queueContinueOnError = true;
                         break;
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
                         status.currError = "Error Code: Upload Failed, File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
@@ -385,6 +411,7 @@ var fluid = fluid || {};
                         }
                         //				progress.SetStatus("Cancelled");
                         //				progress.SetCancelled();
+
                         break;
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
                         status.currError = "Upload Stopped by user input";
@@ -396,15 +423,22 @@ var fluid = fluid || {};
                         status.currError = "Error Code: " + error_code + ", File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
                         break;
                 }
+								
+				markRowError($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove, $(fragmentSelectors.scrollingElement, uploaderContainer), maxHeight, humanErrorMsg);
 				
-				markRowError($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus);
-                
-				fluid.utils.debug(status.currError);
+				// if the file upload error is very file specific then start the next upload
+				if (queueContinueOnError) this.startUpload();
+				
+				fluid.utils.debug(status.currError + '\n' + humanErrorMsg);
             } 
             catch (ex) {
                 fluid.utils.debug(ex);
             }
         };
+	};
+	
+	var formatErrorCode = function(str) {
+		return " (Error code: " + str + ")";
 	};
 
 	var uploadProgress = function(progressBar, fileObj,bytes,totalBytes, fragmentSelectors, status) {
@@ -441,7 +475,7 @@ var fluid = fluid || {};
                                         // in this handler, 'this' is the SWFUpload object
                 }
                 
-                markRowComplete($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus);
+                markRowComplete($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove);
                 
             }
             else {
@@ -664,7 +698,7 @@ var fluid = fluid || {};
 			upload_start_handler: createUploadStartHandler (progressBar, status),
 			upload_progress_handler: createUploadProgressHandler (progressBar, fragmentSelectors, status),
 			upload_complete_handler: createUploadCompleteHandler (uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj),
-			upload_error_handler: createUploadErrorHandler (uploaderContainer, progressBar, fragmentSelectors, status),
+			upload_error_handler: createUploadErrorHandler (uploaderContainer, progressBar, fragmentSelectors, options.queueListMaxHeight, status),
 			upload_success_handler: createUploadSuccessHandler (options.whenFileUploaded),
 			// Debug setting
 			debug: options.debug
