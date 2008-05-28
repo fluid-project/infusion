@@ -17,6 +17,7 @@
     <script type="text/javascript" src="../../fluid-components/js/jquery/jARIA.js"></script>
     <script type="text/javascript" src="../../fluid-components/js/fluid/Fluid.js"></script>
     <script type="text/javascript" src="../../fluid-components/js/fluid/Reorderer.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/firebuglite/firebug.js"></script>
 
     <!--  These are the jqUnit test files -->
     <link rel="Stylesheet" media="screen" href="../jqUnit/testsuite.css" />
@@ -27,6 +28,7 @@
     <script type="text/javascript" src="js/TestUtils.js"></script>
     <script type="text/javascript" src="js/UnorderedListTestConstants.js"></script>
     <script type="text/javascript" src="js/ListLayoutHandlerTests.js"></script>
+    <script type="text/javascript" src="js/ReorderListTests.js"></script>
 
     <!--  Ensure jQuery plays nice with other toolkits -
           must be called after all the javascript is loaded. -->
@@ -40,25 +42,25 @@
     <h2 id="userAgent"></h2>
     
     <ol id="tests"></ol>
-    <div id="main" style="display: none;">
+    <div id="main">
 
     <h1>Unordered List (vertical)</h1>
 
     <div id="list1" class="reorderer_container">
       <p> This is a simple example of using the Reorderer with a list. </p>
       <ul>
-        <li id="list1item1" class="orderable orderable-default">Item 1</li>
-        <li id="list1item2" class="orderable orderable-default">Item 2</li>
-        <li id="list1item3" class="orderable orderable-default">Item 3</li>
-        <li id="list1item4" class="orderable orderable-default">Item 4</li>
-        <li id="list1item5" class="orderable orderable-default">Item 5</li>
+        <li id="list1item1" class="orderable">Item 1</li>
+        <li id="list1item2" class="orderable">Item 2</li>
+        <li id="list1item3" class="orderable">Item 3</li>
+        <li id="list1item4" class="orderable">Item 4</li>
+        <li id="list1item5" class="orderable">Item 5</li>
       </ul>
     </div>
 
     <h1>Unordered List No Reorderer </h1>
     <div id="list2" class="reorderer_container">
       <p>This is an example of an unordered list that is visually laid out
-         vertically with no Reorderer attached to it.
+         vertically.
       </p>
       <ul>
         <li class="orderable">An Item 1</li>

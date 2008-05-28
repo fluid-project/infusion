@@ -95,11 +95,10 @@ $(document).ready (function () {
             
     });
     
-    // TODO: expand the movement test 
     listLHTests.test ("Movement", function () {
         var listItems = jQuery("li", jQuery("#list1"));
         
-        jqUnit.assertUndefined("Before move, orderChangedCallback should not have been called", orderChangedCallbackWasCalled);
+        jqUnit.assertFalse("Before move, orderChangedCallback should not have been called", orderChangedCallbackWasCalled);
         jqUnit.assertEquals("Before moving anything, expect first is first", firstItemId, listItems[0].id);
         jqUnit.assertEquals("Before moving anything, expect second is second", secondItemId, listItems[1].id);
         jqUnit.assertEquals("Before moving anything, expect third is third", thirdItemId, listItems[2].id);

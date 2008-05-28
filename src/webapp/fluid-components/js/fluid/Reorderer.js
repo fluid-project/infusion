@@ -563,6 +563,29 @@ var fluid = fluid || {};
         jItem.ariaState ("selected", "true");
         this.domNode.ariaState ("activedescendent", anItem.id);
     };
+    
+    // Simplified API for reordering lists and grids.
+    var simpleInit = function (containerSelector, itemSelector, layoutHandlerFn, orderChangedCallback) {
+        var container = jQuery(containerSelector);
+        var itemFinder = function () {
+            return jQuery(itemSelector, container);
+        };
+        
+        var options = {
+            orderChangedCallback: orderChangedCallback
+        };
+        var layoutHandler = new layoutHandlerFn(itemFinder, options);
+        
+        return new fluid.Reorderer(container, itemFinder, layoutHandler);
+    };
+    
+    fluid.reorderList = function (containerSelector, itemSelector, orderChangedCallback) {
+        return simpleInit(containerSelector, itemSelector, fluid.ListLayoutHandler, orderChangedCallback);
+    };
+    
+    fluid.reorderGrid = function (containerSelector, itemSelector, orderChangedCallback) {
+        return simpleInit(containerSelector, itemSelector, fluid.GridLayoutHandler, orderChangedCallback); 
+    };
 }) (jQuery, fluid);
 
 /*******************

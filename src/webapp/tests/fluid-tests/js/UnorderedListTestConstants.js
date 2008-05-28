@@ -22,21 +22,22 @@ var lastItemId = "list1item5";
 var nonOrderabeItemId = "reorderer-script";       
 
 var listHandler1;
+var orderChangedCallbackWasCalled;
 
 // This setUp will be called before each of the tests that are included in unordered-list.html 
 function setUp () {
+    orderChangedCallbackWasCalled = false;
     listHandler1 = createListLayoutHandler();
 }
 
-
-var findList1 = function () { return jQuery ("#list1")[0]; };
-
-var orderChangedCallbackWasCalled;
+var findList1 = function () { 
+    return jQuery("#list1")[0]; 
+};
 
 var listMovableFinder = function  () {
     // This is returning the list instead of a jQuery object to ensure that people 
     // can use an orderable finder function that doesn't use jQuery
-    return jQuery ("[id^=list1item]", findList1 ()).get ();
+    return jQuery("[id^=list1item]", findList1()).get();
 };
 
 var callbackConfirmer = function () {
@@ -44,7 +45,9 @@ var callbackConfirmer = function () {
 };
 
 var createListLayoutHandler = function  () {
-        return new fluid.ListLayoutHandler (listMovableFinder, {
-                orderChangedCallback: callbackConfirmer
-            });
+    var options = {
+        orderChangedCallback: callbackConfirmer
     };
+    
+    return new fluid.ListLayoutHandler(listMovableFinder, options);
+};
