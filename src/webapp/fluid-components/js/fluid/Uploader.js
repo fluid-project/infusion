@@ -795,11 +795,11 @@ var fluid = fluid || {};
     var bindEvents = function (uploader, uploaderContainer, swfObj, allowMultipleFiles, whenDone, whenCancel) {
 
 		// browse button
-		$(uploader.fragmentSelectors.browse, uploaderContainer).click(function () {
+        var activateBrowse = function () {
             return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
-		}).activatable(function () {
-            return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
-		});
+		};
+        
+		$(uploader.fragmentSelectors.browse, uploaderContainer).click(activateBrowse).activatable(activateBrowse);
         
 		// upload button
 		$(uploader.fragmentSelectors.upload, uploaderContainer).click(function(){
