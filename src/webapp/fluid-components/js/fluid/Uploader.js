@@ -47,12 +47,13 @@ var fluid = fluid || {};
 	 */
 	var defaultSelectors = {
 		upload: ".fluid-uploader-upload",
+		resume: ".fluid-uploader-resume",
 		pause: ".fluid-uploader-pause",
-		browse: ".fluid-uploader-browse",
 		done: ".fluid-uploader-done",
 		cancel: ".fluid-uploader-cancel",
+		browse: ".fluid-uploader-browse",
 		fileQueue: ".fluid-uploader-queue",
-		scrollingElement: ".fluid-scoller-table-body",
+		scrollingElement: ".fluid-scoller",
 		emptyRow : ".fluid-uploader-row-placeholder",
 		txtTotalFiles: ".fluid-uploader-totalFiles",
 		txtTotalBytes: ".fluid-uploader-totalBytes",
@@ -133,7 +134,7 @@ var fluid = fluid || {};
 			row.remove();
 			updateQueueHeight($(fragmentSelectors.scrollingElement, uploaderContainer), maxHeight);
 			updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
-			updateStateByState(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
+			updateStateByState(uploaderContainer,fragmentSelectors.fileQueue);
 			updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
 			updateBrowseBtnText(uploaderContainer, fragmentSelectors.browse, status);
 		});
@@ -172,7 +173,7 @@ var fluid = fluid || {};
 		//$(scrollingElm)[0].scrollTop = $(row)[0].offsetTop;
 	};
 	
-	var updateNumFiles = function(uploaderContainer, totalFilesSelector, fileQueueSelector, emptyRowSelector) {
+	var updateNumFiles = function(uploaderContainer, totalFilesSelector, fileQueueSelector) {
 		$(totalFilesSelector, uploaderContainer).text(numFilesToUpload(uploaderContainer, fileQueueSelector));
 	};
 	
@@ -189,10 +190,24 @@ var fluid = fluid || {};
      * @param {String} stateClass    optional class to be assigned.
      *                               If not specified, either 'loaded' or 'empty' will be used.
      */
-	var updateStateByState = function(uploaderContainer, fileQueueSelector, emptyRowSelector) {
-		stateClass = (numFilesInQueue(uploaderContainer, fileQueueSelector, emptyRowSelector) > 0) ? "loaded" : "empty";
-		updateState(uploaderContainer, stateClass);
+	var updateStateByState = function(uploaderContainer, fileQueueSelector) {
+		var totalRows = numberOfRows(uploaderContainer, fileQueueSelector);
+		var rowsUploaded = numFilesUploaded(uploaderContainer, fileQueueSelector);
+		var rowsReady = numFilesToUpload(uploaderContainer, fileQueueSelector);
+		
+		if (rowsUploaded > 0) {
+			if (rowsReady === 0) {
+				updateState(uploaderContainer, 'empty');
+			} else {
+				updateState(uploaderContainer, 'reloaded');
+			}
+		} else if (numberOfRows(uploaderContainer, fileQueueSelector) === 0) {
+			updateState(uploaderContainer, 'start');
+		} else {
+			updateState(uploaderContainer, 'loaded');
+		}
 	};
+	
 	
 	var updateState = function(uploaderContainer, stateClass) {
 		$(uploaderContainer).children("div:first").attr('className',stateClass);
@@ -278,7 +293,7 @@ var fluid = fluid || {};
 				// update the file size
 				$(newQueueRow).children(fragmentSelectors.qRowFileSize).text(fluid.utils.filesizeStr(file.size));
 				// update the file id and add the hover action
-				newQueueRow.attr('id',file.id).css('display','none').addClass("ready").hover(function(){
+				newQueueRow.attr('id',file.id).css('display','none').addClass("ready row").hover(function(){
                     if ($(this).hasClass('ready')) {
                         $(this).addClass('hover');
                     }
@@ -308,7 +323,8 @@ var fluid = fluid || {};
 					scrollBottom(scrollingElm);
 				}
 				
-                updateStateByState(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
+				
+				updateStateByState(uploaderContainer, fragmentSelectors.fileQueue);
                 updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fileQueue, fragmentSelectors.emptyRow);
                 updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
                 
@@ -336,13 +352,16 @@ var fluid = fluid || {};
 		}
 	}
 
-	function fileDialogStart() {
-		try {
-			// do nothing
-		} catch (ex) {
-			fluid.utils.debug (ex);
-		}
-	}
+	var createFileDialogStartHandler = function(uploaderContainer){
+		return function(){
+			try {
+				$(uploaderContainer).children("div:first").addClass('browsing');
+			} 
+			catch (ex) {
+				fluid.utils.debug(ex);
+			}
+		};
+	};
 
 	var createFileDialogCompleteHandler = function(uploaderContainer, fragmentSelectors, status) {
         return function(numSelected, numQueued){
@@ -351,6 +370,7 @@ var fluid = fluid || {};
                 status.currTotalBytes = 0;
                 status.totalCount = numFilesToUpload(uploaderContainer, fragmentSelectors.fileQueue);
                 updateBrowseBtnText(uploaderContainer, fragmentSelectors.browse, status);
+				$(uploaderContainer).children("div:first").removeClass('browsing');
                 debugStatus(status);
             } 
             catch (ex) {
@@ -397,6 +417,7 @@ var fluid = fluid || {};
 		status.currCount++;
 		scrollTo($(fragmentSelectors.scrollingElement, uploaderContainer),$("#"+fileObj.id, uploaderContainer));
 		updateProgress(progressBar, 0, fileObj.name, 0, status.currCount, status.totalCount);
+		updateState(uploaderContainer,'uploading');
 		fluid.utils.debug (
 			"Starting Upload: " + status.currCount + ' (' + fileObj.id + ')' + ' [' + fileObj.size + ']' + ' ' + fileObj.name
 		);
@@ -444,6 +465,7 @@ var fluid = fluid || {};
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
                         status.currError = "Upload Stopped by user input";
                         //				progress.SetStatus("Stopped");
+						updateState(uploaderContainer,'paused');
                         hideProgress(progressBar, true);
                         break;
                     default:
@@ -541,9 +563,13 @@ var fluid = fluid || {};
 		}
 		return status.totalBytes;
 	};
+	
+	function numberOfRows(uploaderContainer, fileQueueSelector) {
+		return $(fileQueueSelector, uploaderContainer).find('.row').length ;
+	}
 
 	function numFilesToUpload(uploaderContainer, fileQueueSelector) {
-		return $(fileQueueSelector,uploaderContainer).find('.ready').length ;
+		return $(fileQueueSelector, uploaderContainer).find('.ready').length ;
 	}
 	
 	function numFilesUploaded(uploaderContainer, fileQueueSelector) {
@@ -691,6 +717,11 @@ var fluid = fluid || {};
     		status.currCount = 0;
     		status.currTotalBytes = 0;
     		status.totalCount = numFilesToUpload(uploaderContainer, fragmentSelectors.fileQueue);
+			if (status.totalCount > 0) {
+				updateState(uploaderContainer,'paused');
+			} else {
+				updateState(uploaderContainer,'done');
+			}
     	}
         
      };    
@@ -716,7 +747,7 @@ var fluid = fluid || {};
 			
 			// Event Handler Settings
 			swfupload_loaded_handler : createSWFReadyHandler(options.browseOnInit, allowMultipleFiles, options.dialogDisplay),
-			file_dialog_start_handler: fileDialogStart,
+			file_dialog_start_handler: createFileDialogStartHandler (uploaderContainer),
 			file_queued_handler: createFileQueuedHandler (uploaderContainer, fragmentSelectors, options.queueListMaxHeight, status),
 			file_queue_error_handler: fileQueueError,
 			file_dialog_complete_handler: createFileDialogCompleteHandler (uploaderContainer, fragmentSelectors, status),
@@ -766,7 +797,14 @@ var fluid = fluid || {};
         
 		// upload button
 		$(uploader.fragmentSelectors.upload, uploaderContainer).click(function(){
-			if (uploader.status.totalCount > 0) {
+			if ($(uploader.fragmentSelectors.upload, uploaderContainer).css('cursor') === 'pointer') {
+				uploader.actions.beginUpload();
+			}
+		});
+		
+		// resume button
+		$(uploader.fragmentSelectors.resume, uploaderContainer).click(function(){
+			if ($(uploader.fragmentSelectors.resume, uploaderContainer).css('cursor') === 'pointer') {
 				uploader.actions.beginUpload();
 			}
 		});

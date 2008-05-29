@@ -24,12 +24,9 @@
 	    var uploadURL = "";
 		
         var flashURL = "../../../fluid-components/swfupload/swfupload_f9.swf";
-		var myDialog;
         
 		var settings = {
-			whenDone: function() {
-				// do nothing
-			},
+			whenDone: "index.html",
 			whenCancel: "index.html",
 			dialogDisplay: true,
 			browseOnInit: true,
@@ -81,7 +78,7 @@
 							</thead>
 						</table>
 					</div>
-					<div class="fluid-scoller-table-body">
+					<div class="fluid-scoller">
 						<!-- the first and only child element of the scroller must be a block element -->
 						<table cellspacing="0">
 							<tbody>
@@ -101,8 +98,11 @@
 					</div>
 				</div>			
 				<div class="fluid-uploader-btns">
-					<button type="button" class="fluid-uploader-cancel cancel" >Cancel</button>
 					<button type="button" class="fluid-uploader-upload default" >Upload</button>
+					<button type="button" class="fluid-uploader-resume default" >Resume</button>
+					<button type="button" class="fluid-uploader-pause" >Pause</button>
+					<button type="button" class="fluid-uploader-cancel cancel" >Cancel</button>
+					<button type="button" class="fluid-uploader-done" >Done</button>
 				</div>
 				
 				<div class="fluid-progress">

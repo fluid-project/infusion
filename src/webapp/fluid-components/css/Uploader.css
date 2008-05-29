@@ -86,7 +86,7 @@
 
 /* tbody */
 
-.fluid-scoller-table-body {
+.fluid-scoller {
 	overflow-x: hidden;
 	overflow-y: auto;
 }
@@ -201,33 +201,146 @@
 .fluid-uploader-btns {
 	text-align: right;
 	margin-top: 1.3em;
+	height: 32px;
+}
+
+.fluid-uploader-btns .fluid-uploader-upload, .fluid-uploader-btns .fluid-uploader-resume,  .fluid-uploader-btns .fluid-uploader-pause {
+	width: 8.4em;
+}
+
+.fluid-uploader-btns .fluid-uploader-done, .fluid-uploader-btns .fluid-uploader-cancel {
+	width: 7.6em;
+}
+
+.fluid-uploader-btns .fluid-uploader-pause {
+	padding-right: 1em;
+	background-image: url('../images/uploader/pause.png');	
+	background-position: 74% center;
+	background-repeat: no-repeat;
+}
+
+.fluid-uploader-btns button {
+	display: none;
+	float: right;
+	padding-left: 0;
+	padding-right: 0;
 }
 
 /* STATES
- * start - before the first click of the Browse button
- * ready - no files in the queue; case where there were files but they've been removed
+ * start - initial state of the uploader, no rows, or all rows removed
+ * browsing - the OS dialog is being displayed or we're still updating the queue with new files
  * loaded - files in the queue, but the Upload button has not been clicked
- * partial - some files uploaded, some still in the queue
+ * uploading - we're in the process of uploading
+ * pause - some files uploaded, some still in the queue
+ * reloaded - some files uploaded, new files in the queue
+ * empty - some files uploaded, no files in the queue
  * done - all files have been uploaded
  */
 
-.fluid-uploader .empty .fluid-uploader-upload, .fluid-uploader .done .fluid-uploader-upload, .fluid-uploader .start .fluid-uploader-done, .fluid-uploader .start .fluid-uploader-upload {
-	background-color: #CCC;
-	border-color: #999;
-}
-
-.fluid-uploader .empty .fluid-uploader-upload:hover, .fluid-uploader .done .fluid-uploader-upload:hover, .fluid-uploader .start .fluid-uploader-done, .fluid-uploader .start .fluid-uploader-upload {
-	background-color: #CCC !important;
-	border-color: #999 !important;
-}
-
-.fluid-uploader .loaded .fluid-uploader-row-placeholder td, .fluid-uploader .done .fluid-uploader-row-placeholder td {
+.fluid-uploader .fluid-uploader-row-placeholder td {
 	display: none;
 }
 
-.fluid-uploader .done .fluid-uploader-done {
+.fluid-uploader .start .fluid-uploader-row-placeholder td {
+	display: table-cell;
+}
+
+/* start */
+
+.start .fluid-uploader-btns .fluid-uploader-cancel {
+	display: block;
+}
+
+.start .fluid-uploader-btns .fluid-uploader-upload, 
+  .start .fluid-uploader-btns .fluid-uploader-upload:hover {
+	display: block;
+	background-color: #CCC !important;
+	border-color: #999 !important;
+	cursor: auto;
+}
+
+/* loaded */
+
+.loaded .fluid-uploader-btns .fluid-uploader-upload {
+	display: block;
+}
+
+.loaded .fluid-uploader-btns .fluid-uploader-cancel {
+	display: block;
+}
+
+/* uploading */
+
+.uploading .fluid-uploader-btns .fluid-uploader-pause {
+	display: block;
+}
+
+.uploading .fluid-uploader-btns .fluid-uploader-done,
+  .uploading .fluid-uploader-btns .fluid-uploader-done:hover {
+	display: block;
+	background-color: #CCC !important;
+	border-color: #999 !important;
+	cursor: auto;
+}
+
+/* paused */
+
+.paused .fluid-uploader-btns .fluid-uploader-resume {
+	display: block;
+}
+
+.paused .fluid-uploader-btns .fluid-uploader-done {
+	display: block;
+}
+
+/* empty */
+
+.empty .fluid-uploader-btns .fluid-uploader-done {
+	display: block;
+}
+
+.empty .fluid-uploader-btns .fluid-uploader-resume, 
+  .empty .fluid-uploader-btns .fluid-uploader-resume:hover {
+	display: block;
+	background-color: #CCC !important;
+	border-color: #999 !important;
+	cursor: auto;
+}
+
+/* reloaded */
+
+.reloaded .fluid-uploader-btns .fluid-uploader-resume {
+	display: block;
+}
+
+.reloaded .fluid-uploader-btns .fluid-uploader-done {
+	display: block;
+}
+
+/* done */
+
+.done .fluid-uploader-btns .fluid-uploader-resume,
+  .done .fluid-uploader-btns .fluid-uploader-resume:hover {
+	display: block;
+	background-color: #CCC !important;
+	border-color: #999 !important;
+	cursor: auto;
+}
+
+.done .fluid-uploader-btns .fluid-uploader-done {
 	background-color: #74B74A;
 	border-color: #006838;
+}
+
+/* browsing 
+ * all buttons are dimmed
+ */ 
+
+.fluid-uploader .browsing button,
+  .fluid-uploader .browsing button:hover {
+	background-color: #CCC !important;
+	border-color: #999 !important;
+	cursor: auto;
 }
 
 /* ERRORS
