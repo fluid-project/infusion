@@ -62,98 +62,101 @@
 	</style>
 </head>
 <body>
-	<div>
-		<h2>Fluid Multi-File Uploader Sample</h2>
-		<p>Imagine your application here with a nice little <button class="fluid-add-files-btn" type="button" tabindex="0" >Add Files</button> button.</p>
- 	
-		<form id="single-popup-fluid-uploader" class="fluid-uploader infusion" method="get" enctype="multipart/form-data">
-			<div class="inner-container start">
-				<div class="fluid-scroller-table fluid-uploader-queue">
-					<div class="fluid-scoller-table-head">
-						<table cellspacing="0" cellpadding="0">
-							<caption>File Queue:</caption>
-							<thead>
-								<tr>
-									<th scope="col">File Name</th><th scope="col" class="fileSize">Size</th><th scope="col">&nbsp;</th>
-								</tr>
-							</thead>
-						</table>
-					</div>
-					<div class="fluid-scoller">
-						<!-- the first and only child element of the scroller must be a block element -->
-						<table cellspacing="0">
-							<tbody>
-								<tr class="fluid-uploader-row-placeholder"><td colspan="3"> click <em>Browse files</em> to add files to the queue </td></tr>
-							</tbody>
-						</table>
-					</div>
-					<div class="fluid-scoller-table-foot">
-						<table cellspacing="0" cellpadding="0">
-							<tfoot>
-								<tr>
-									<td colspan="1">Total: <span class="fluid-uploader-totalFiles">0</span> files (<span class="fluid-uploader-totalBytes">0 KB</span>)</td>
-									<td colspan="2" align="left"><a class="fluid-uploader-browse" tabindex="0" >Browse files</a></td>
-								</tr>
-							</tfoot>
-						</table>
-					</div>
-				</div>			
-				<div class="fluid-uploader-btns">
-					<button type="button" class="fluid-uploader-upload default" tabindex="0" >Upload</button>
-					<button type="button" class="fluid-uploader-resume default" tabindex="0" >Resume</button>
-					<button type="button" class="fluid-uploader-pause" tabindex="0" >Pause</button>
-					<button type="button" class="fluid-uploader-cancel cancel" tabindex="0" >Cancel</button>
-					<button type="button" class="fluid-uploader-done" tabindex="0" >Done</button>
-				</div>
-				
-				<div class="fluid-progress">
-					<div class="progress-content">
-						<h2>Uploading Files...</h2>
-						<div class="file-progress progressor">
-							<label class="progress-label">
-								<span class="file_name">&nbsp;</span> :: <span class="percent">0</span>% complete
-							</label>
-							<div class="progress-indicator"><span>&nbsp;</span></div>
-						</div>
-						<div class="total-progress progressor">
-							<label class="progress-label">
-								Total Progress: <span class="percent">0</span>% [<span class="file_index">0</span> of <span class="total_file_num">0</span> files]
-							</label>
-							<div class="progress-indicator">&nbsp;</div>
-						</div>
-						<div align="right">
-							<button type="button" class="fluid-uploader-pause default">Pause Upload</button>
-						</div>
-					</div>
-					<div class="progress-mask">
-						<div class="progress-mask-top">&nbsp;</div>
-						<div class="progress-mask-btm">&nbsp;</div>
-					</div>
-				</div>
-				
-			</div>
-		</form>
-
-	</div>
+<div>
+	<h2>Fluid Multi-File Uploader Sample</h2>
+	<p>Imagine your application here with a nice little <button class="fluid-add-files-btn" type="button" tabindex="0" >Add Files</button> button.</p>
 	
-	<div class="fluid-templates">
+	<form id="single-popup-fluid-uploader" class="fluid-uploader infusion" method="get" enctype="multipart/form-data">
+		<div class="inner-container start">
+			<div class="fluid-scroller-table fluid-uploader-queue-wrapper">
+				<div class="fluid-scoller-table-head">
+					<table cellspacing="0" cellpadding="0">
+						<caption>File Queue:</caption>
+						<thead>
+							<tr>
+								<th scope="col">File Name</th><th scope="col" class="fileSize">Size</th><th scope="col">&nbsp;</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+				<div class="fluid-scoller">
+					<!-- the first and only child element of the scroller must be a block element -->
+					<table cellspacing="0" class="fluid-uploader-queue">
+						<tbody>
+							
+						</tbody>
+					</table>
+				</div>
+				
+				<div class="fluid-uploader-row-placeholder"> click <em>Browse files</em> to add files to the queue </div>
 
-		<table id="fluid-uploader">
+				<div class="fluid-scoller-table-foot">
+					<table cellspacing="0" cellpadding="0">
+						<tfoot>
+							<tr>
+								<td colspan="1">Total: <span class="fluid-uploader-totalFiles">0</span> files (<span class="fluid-uploader-totalBytes">0 KB</span>)</td>
+								<td colspan="2" align="left"><a class="fluid-uploader-browse" tabindex="0" >Browse files</a></td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+			<div class="fluid-uploader-btns">
+				<button type="button" class="fluid-uploader-upload default" tabindex="0" >Upload</button>
+				<button type="button" class="fluid-uploader-resume default" tabindex="0" >Resume</button>
+				<button type="button" class="fluid-uploader-pause" tabindex="0" >Pause</button>
+				<button type="button" class="fluid-uploader-cancel cancel" tabindex="0" >Cancel</button>
+				<button type="button" class="fluid-uploader-done" tabindex="0" >Done</button>
+			</div>
 			
-			<tr id="queue-row-tmplt">
-				<th class="fileName" scope="row">File Name Placeholder</th>
-                <td class="fileSize">0 KB</td>
-                <td class="fileRemove">
-                    <button type="button" class="removeFile" title="Remove File" tabindex="0">
-                        <span class="text-description">Remove file from queue</span>
-                    </button>
-                </td>
-			</tr>
+			<div class="fluid-progress">
+				<div class="progress-content">
+					<h2>Uploading Files...</h2>
+					<div class="file-progress progressor">
+						<label class="progress-label">
+							<span class="file_name">&nbsp;</span> :: <span class="percent">0</span>% complete
+						</label>
+						<div class="progress-indicator"><span>&nbsp;</span></div>
+					</div>
+					<div class="total-progress progressor">
+						<label class="progress-label">
+							Total Progress: <span class="percent">0</span>% [<span class="file_index">0</span> of <span class="total_file_num">0</span> files]
+						</label>
+						<div class="progress-indicator">&nbsp;</div>
+					</div>
+					<div align="right">
+						<button type="button" class="fluid-uploader-pause default">Pause Upload</button>
+					</div>
+				</div>
+				<div class="progress-mask">
+					<div class="progress-mask-top">&nbsp;</div>
+					<div class="progress-mask-btm">&nbsp;</div>
+				</div>
+			</div>
 			
-			<tr id="queue-error-tmplt" class="queue-error-row"><td colspan="3" class="queue-error"></td></tr>
+		</div>
+	</form>
 
-		</table>
+</div>
 
-	</div>
+<div class="fluid-templates">
+
+	<table id="fluid-uploader">
+		
+		<tr id="queue-row-tmplt">
+			<th class="fileName" scope="row">File Name Placeholder</th>
+            <td class="fileSize">0 KB</td>
+            <td class="fileRemove">
+                <button type="button" class="removeFile" title="Remove File" tabindex="0">
+                    <span class="text-description">Remove file from queue</span>
+                </button>
+            </td>
+		</tr>
+		
+		<tr id="queue-error-tmplt" class="queue-error-row"><td colspan="3" class="queue-error"></td></tr>
+
+	</table>
+
+</div>
 </body>
 </html>

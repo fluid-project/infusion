@@ -53,7 +53,7 @@
 		<div class="inner-container start">
 			<div>Upload images from your Computer to <em>All Images</em></div>
 			<!-- <div><input type="checkbox" class="add-collection"/><label for="add-collection">Also add image to the current collection <em>Week 1</em></label></div>-->
-			<div class="fluid-scroller-table fluid-uploader-queue">
+			<div class="fluid-scroller-table fluid-uploader-queue-wrapper">
 				<div class="fluid-scoller-table-head">
 					<table cellspacing="0" cellpadding="0">
 						<caption>File Queue:</caption>
@@ -66,24 +66,26 @@
 				</div>
 				<div class="fluid-scoller">
 					<!-- the first and only child element of the scroller must be a block element -->
-					<table cellspacing="0">
+					<table cellspacing="0" class="fluid-uploader-queue">
 						<tbody>
-							<tr class="fluid-uploader-row-placeholder"><td colspan="3"> click <em>Browse files</em> to add files to the queue </td></tr>
+							
 						</tbody>
 					</table>
 				</div>
+				
+				<div class="fluid-uploader-row-placeholder"> click <em>Browse files</em> to add files to the queue </div>
+
 				<div class="fluid-scoller-table-foot">
 					<table cellspacing="0" cellpadding="0">
 						<tfoot>
 							<tr>
 								<td colspan="1">Total: <span class="fluid-uploader-totalFiles">0</span> files (<span class="fluid-uploader-totalBytes">0 KB</span>)</td>
 								<td colspan="2" align="left"><a class="fluid-uploader-browse" tabindex="0">Browse files</a></td>
-		
 							</tr>
 						</tfoot>
 					</table>
 				</div>
-			</div>									
+			</div>
 			<div class="fluid-uploader-btns">
 				<button type="button" class="fluid-uploader-upload default" >Upload</button>
 				<button type="button" class="fluid-uploader-resume default" >Resume</button>

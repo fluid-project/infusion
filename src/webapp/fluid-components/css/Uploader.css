@@ -31,18 +31,18 @@
 
 /* FILE QUEUE TABLE STYLES */
 
-.fluid-uploader-queue {
+.fluid-uploader-queue-wrapper {
 	width: 100%;
 	border-bottom: 1px solid #999;
 }
 
-.fluid-uploader-queue table {
+.fluid-uploader-queue-wrapper table {
 	width: 100%;
 }
 
 /* caption */
 
-.fluid-uploader-queue caption {
+.fluid-uploader-queue-wrapper caption {
 	font-weight: bolder;
 	text-align: left;
 	margin: 1em 0;
@@ -50,11 +50,11 @@
 
 /* thead */
 
-.fluid-uploader-queue thead {
+.fluid-uploader-queue-wrapper thead {
 	background-color: transparent;
 }
 
-.fluid-uploader-queue thead th { 
+.fluid-uploader-queue-wrapper thead th { 
 	text-align: left;
 	font-size: 0.94em;
 	font-weight: normal;
@@ -65,11 +65,11 @@
 
 /* tfoot */
 
-.fluid-uploader-queue tfoot {
+.fluid-uploader-queue-wrapper tfoot {
 	background-color: #E6E6E6;
 }
 
-.fluid-uploader-queue tfoot td {
+.fluid-uploader-queue-wrapper tfoot td {
 	padding: 6px;
 	height: 2.4em;
 	border-top: 1px solid #999;
@@ -80,11 +80,11 @@
 	text-align: right;
 }
 
-.fluid-uploader-queue tfoot td:last-child {
+.fluid-uploader-queue-wrapper tfoot td:last-child {
 	border-right: 1px solid #999;
 }
 
-.fluid-uploader-queue tfoot td:first-child {
+.fluid-uploader-queue-wrapper tfoot td:first-child {
 	text-align: left;
 	border-left: 1px solid #999;
 }
@@ -96,39 +96,39 @@
 	overflow-y: auto;
 }
 
-.fluid-uploader-queue tbody {
+.fluid-uploader-queue {
 	width: 465px;
 	font-size: 0.9em;
 	color: #333;
 }
 
-.fluid-uploader-queue tbody tr {
+.fluid-uploader-queue tr {
 	background-color: white;
 }
 
-.fluid-uploader-queue tbody tr.hover {
+.fluid-uploader-queue tr.hover {
 	background-color: #FBFFDC;
 }
 
-.fluid-uploader-queue tbody tr.dim {
+.fluid-uploader-queue tr.dim {
 	color: #666;
 }
 
-.fluid-uploader-queue tbody td, .fluid-uploader-queue tbody th { 
+.fluid-uploader-queue td, .fluid-uploader-queue th { 
 	text-align: left;
 	padding: 3px 6px;
 	border-top: 1px solid #BBCFDC;
 }
 
-.fluid-uploader-queue tbody th {
+.fluid-uploader-queue th {
 	border-left: 1px solid #999;
 }
 
-.fluid-uploader-queue tbody td:last-child {
+.fluid-uploader-queue td:last-child {
 	border-right: 1px solid #999;
 }
 
-.fluid-uploader-queue tbody tr:first-child td, .fluid-uploader-queue tbody tr:first-child th { 
+.fluid-uploader-queue tr:first-child td, .fluid-uploader-queue tr:first-child th { 
 	border-top: none;
 }
 
@@ -204,7 +204,7 @@
 }
 
 
-.fluid-uploader-queue tbody .fluid-uploader-row-placeholder td {
+.fluid-uploader-queue-wrapper .fluid-uploader-row-placeholder {
 	background-color: #F0F9FF;
 	color: #666;
 	text-align: center;
@@ -257,14 +257,13 @@
  * done - all files have been uploaded
  */
 
-.fluid-uploader .fluid-uploader-row-placeholder td {
+.fluid-uploader .fluid-uploader-row-placeholder {
 	display: none;
 }
 
-.fluid-uploader .start .fluid-uploader-row-placeholder td {
-	display: table-cell;
+.fluid-uploader .start .fluid-uploader-row-placeholder {
+	display: block;
 }
-
 /* start */
 
 .start .fluid-uploader-btns .fluid-uploader-cancel {
@@ -381,12 +380,11 @@
 	position: fixed;
 	top: 100px;
 	left: auto;
-	overflow: hidden;
 }
 
 .progress-content {
 	position: relative;
-	padding: 1em 1.2em 1.4em;
+	padding: 0.6em 1.2em 0.2em;
 	z-index: 400;
 }
 
@@ -401,7 +399,7 @@
 
 .progressor {
 	position: relative;
-	margin: 5px 0;
+	margin: 5px 0 10px;
 	background-color: white;
 	color: black;
 }
@@ -446,9 +444,13 @@
 
 .progress-mask-top {
 	height: 14px;
-	background: url(../images/progress/rounded_overlay_top.png) no-repeat top right;
+	background: url(../images/progress/rounded_overlay_top.png) no-repeat top;
 }
 
 .progress-mask-btm {
-	background: url(../images/progress/rounded_overlay_btm.png) no-repeat bottom right;
+	background-image: url(../images/progress/rounded_overlay_btm.png); 
+	background-attachment: scroll;
+	background-repeat: no-repeat;
+	background-position: bottom;
+	height: 100%;
 }
