@@ -38,7 +38,7 @@ var layoutClone;
 
 function initReorderer() {
     var options = {dropWarningId: "drop-warning"};
-    return fluid.initLayoutCustomizer (layoutClone, demo.portal.dropTargetPerms, undefined, undefined, options);
+    return fluid.initLayoutCustomizer (layoutClone, demo.portal.dropTargetPerms, undefined, options);
 }
         
         

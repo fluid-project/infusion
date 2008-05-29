@@ -40,9 +40,13 @@ var demo = demo || {};
             dropMarker: "orderable-drop-marker-box",
             avatar: "orderable-avatar-clone"
         };
-        var options = { cssClassNames: classNames, dropWarningId: "drop-warning" };
+        var options = { 
+            cssClassNames: classNames, 
+            dropWarningId: "drop-warning",
+            grabHandle: grabHandle 
+        };
 
-        return fluid.initLayoutCustomizer (layout, dropTargetPerms, grabHandle, null, options);
+        return fluid.initLayoutCustomizer (layout, dropTargetPerms, null, options);
     };
     
     demo.initLightboxReorderer = function () {
