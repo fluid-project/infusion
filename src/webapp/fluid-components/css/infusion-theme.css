@@ -49,6 +49,11 @@
 	background-color: #0B3A5E;
 }
 
+.influsion button:focus {
+	border-width: 3px;
+	border-color: #142B8C;
+}
+
 .infusion button.default {
 	background-color: #74B74A;
 	border-color: #006838;

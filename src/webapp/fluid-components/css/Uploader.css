@@ -24,6 +24,11 @@
 	background-color: #FFF;
 }
 
+.fluid-uploader a.fluid-uploader-browse:focus {
+	border: 2px solid #142B8C;
+	background-color: #FFF;
+}
+
 /* FILE QUEUE TABLE STYLES */
 
 .fluid-uploader-queue {
@@ -138,11 +143,16 @@
 	height: 20px;
 	width: 20px;
 	overflow: hidden;
-	background: url(../images/uploader/remove.png) scroll no-repeat 1px 1px;
+	background-color: transparent;
+	background-image: url(../images/uploader/remove.png);
+	background-attachment: scroll;
+	background-repeat: no-repeat;
+	background-position: 1px 1px;
 	outline: 0;
 	padding: 0;
 	margin: 0;
 	cursor: pointer;
+	outline: none;
 }
 
 .fluid-uploader-queue .removeFile:hover {
@@ -150,24 +160,29 @@
 	background-color: #FFF;
 }
 
+.fluid-uploader-queue .removeFile:focus {
+	background-color: #4F99D3;
+	outline: none;
+}
 
 .fluid-uploader-queue .uploaded .removeFile {
 	background: url(../images/uploader/tick.png) scroll no-repeat 1px 1px;
 	cursor: auto;
 }
 
-.fluid-uploader-queue .uploaded .removeFile:hover {
+.fluid-uploader-queue .uploaded .removeFile:hover, .fluid-uploader-queue .uploaded .removeFile:focus {
 	cursor: auto;
 	background: url(../images/uploader/tick.png) scroll no-repeat 1px 1px;
 	border: 1px solid transparent;
 	background-color: transparent;
 }
 
+
 .fluid-uploader-queue .error .removeFile {
 	background: url(../images/uploader/error.png) scroll no-repeat 1px 1px;
 }
 
-.fluid-uploader-queue .error .removeFile:hover {
+.fluid-uploader-queue .error .removeFile:hover, .fluid-uploader-queue .error .removeFile:focus {
 	cursor: pointer;
 	background: url(../images/uploader/error.png) scroll no-repeat 1px 1px;
 	border: 1px solid transparent;
@@ -224,6 +239,11 @@
 	float: right;
 	padding-left: 0;
 	padding-right: 0;
+}
+
+.fluid-uploader-btns button:focus {
+	border-width: 3px;
+	border-color: #142B8C;
 }
 
 /* STATES

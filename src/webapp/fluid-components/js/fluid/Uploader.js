@@ -425,7 +425,7 @@ var fluid = fluid || {};
 
     // This code was taken from a SWFUpload example.
     // The commented-out lines will be implemented or removed based on our own progress bar code.
-	var createUploadErrorHandler = function (uploaderContainer, progressBar, fragmentSelectors, maxHeight, status) {
+	var createUploadErrorHandler = function (uploaderContainer, progressBar, fragmentSelectors, maxHeight, status, options) {
         return function(file, error_code, message){
             status.currError = '';
 			var humanErrorMsg = '';
@@ -434,7 +434,7 @@ var fluid = fluid || {};
                 switch (error_code) {
                     case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
                         status.currError = "Error Code: HTTP Error, File name: " + file.name + ", Message: " + message;
-						humanErrorMsg = 'An upload error occured. Mostly likely because the file is already in your collection.' + 
+						humanErrorMsg = 'An upload error occurred. Mostly likely because the file is already in your collection.' + 
 						formatErrorCode(message);
 						queueContinueOnError = true;
                         break;
@@ -480,6 +480,9 @@ var fluid = fluid || {};
 				if (queueContinueOnError) this.startUpload();
 				
 				fluid.utils.debug(status.currError + '\n' + humanErrorMsg);
+				
+				// override continueAfterUpload
+				options.continueAfterUpload = false;
             } 
             catch (ex) {
                 fluid.utils.debug(ex);
@@ -611,11 +614,12 @@ var fluid = fluid || {};
 		dialogObj = $(uploaderSelector).dialog(dialog_settings).css('display','block');
 		$(addBtnSelector).click(function(){
 			$(dialogObj).dialog("open");
+			if (browseOnInit) {
+				$(fileBrowseSelector, uploaderSelector).click();
+			}
 		});
 		
-		if (browseOnInit) {
-			$(fileBrowseSelector, uploaderContainer).click();
-		}
+		
 		
 		return dialogObj;
 	};
@@ -754,7 +758,7 @@ var fluid = fluid || {};
 			upload_start_handler: createUploadStartHandler (uploaderContainer, fragmentSelectors, progressBar, status),
 			upload_progress_handler: createUploadProgressHandler (progressBar, fragmentSelectors, status),
 			upload_complete_handler: createUploadCompleteHandler (uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj),
-			upload_error_handler: createUploadErrorHandler (uploaderContainer, progressBar, fragmentSelectors, options.queueListMaxHeight, status),
+			upload_error_handler: createUploadErrorHandler (uploaderContainer, progressBar, fragmentSelectors, options.queueListMaxHeight, status, options),
 			upload_success_handler: createUploadSuccessHandler (options.whenFileUploaded),
 			// Debug setting
 			debug: options.debug
@@ -792,6 +796,8 @@ var fluid = fluid || {};
 
 		// browse button
 		$(uploader.fragmentSelectors.browse, uploaderContainer).click(function () {
+            return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
+		}).activatable(function () {
             return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
 		});
         
@@ -876,7 +882,10 @@ var fluid = fluid || {};
         // Bind all our event handlers.
         bindEvents(this, this.uploaderContainer, swfObj, allowMultipleFiles, this.options.whenDone, this.options.whenCancel);
 		
-       // If we've been given an empty URL, kick into demo mode.
+		// Beginning of keyboard bindings
+		$('button',this.uploaderContainer).tabbable();
+		
+        // If we've been given an empty URL, kick into demo mode.
         if (uploadURL === '') {
             enableDemoMode(this.uploaderContainer, swfObj, progressBar, this.options, this.fragmentSelectors, this.status, dialogObj);
         }
