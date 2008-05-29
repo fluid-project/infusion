@@ -562,26 +562,25 @@ var fluid = fluid || {};
     };
     
     // Simplified API for reordering lists and grids.
-    var simpleInit = function (containerSelector, itemSelector, layoutHandlerFn, orderChangedCallback) {
+    var simpleInit = function (containerSelector, itemSelector, layoutHandlerFn, orderChangedCallback, options) {
         var container = jQuery(containerSelector);
         var itemFinder = function () {
             return jQuery(itemSelector, container);
         };
         
-        var options = {
-            orderChangedCallback: orderChangedCallback
-        };
-        var layoutHandler = new layoutHandlerFn(itemFinder, options);
+        var lOptions = options || {};
+        lOptions.orderChangedCallback = orderChangedCallback;
+        var layoutHandler = new layoutHandlerFn(itemFinder, lOptions);
         
-        return new fluid.Reorderer(container, itemFinder, layoutHandler);
+        return new fluid.Reorderer(container, itemFinder, layoutHandler, options);
     };
     
-    fluid.reorderList = function (containerSelector, itemSelector, orderChangedCallback) {
-        return simpleInit(containerSelector, itemSelector, fluid.ListLayoutHandler, orderChangedCallback);
+    fluid.reorderList = function (containerSelector, itemSelector, orderChangedCallback, options) {
+        return simpleInit(containerSelector, itemSelector, fluid.ListLayoutHandler, orderChangedCallback, options);
     };
     
-    fluid.reorderGrid = function (containerSelector, itemSelector, orderChangedCallback) {
-        return simpleInit(containerSelector, itemSelector, fluid.GridLayoutHandler, orderChangedCallback); 
+    fluid.reorderGrid = function (containerSelector, itemSelector, orderChangedCallback, options) {
+        return simpleInit(containerSelector, itemSelector, fluid.GridLayoutHandler, orderChangedCallback, options); 
     };
 }) (jQuery, fluid);
 

@@ -43,4 +43,21 @@ $(document).ready (function () {
 
     });
     
+    tests.test ("reorderList with option", function () {
+        var options = {
+            cssClassNames: {
+                defaultStyle: "myDefault",
+                selected: "mySelected"
+            }
+        };
+        
+        var listReorderer = fluid.reorderList("#list1", "li", callbackConfirmer, options);
+        
+        jqUnit.assertEquals("default class is myDefault", "myDefault", listReorderer.cssClasses.defaultStyle);
+        jqUnit.assertEquals("selected class is mySelected", "mySelected", listReorderer.cssClasses.selected);
+        jqUnit.assertEquals("dragging class is orderable-dragging", "orderable-dragging", listReorderer.cssClasses.dragging);
+        jqUnit.assertEquals("mouseDrag class is orderable-dragging", "orderable-dragging", listReorderer.cssClasses.mouseDrag);
+        
+    });    
+
 });

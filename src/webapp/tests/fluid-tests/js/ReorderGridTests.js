@@ -48,5 +48,22 @@ $(document).ready (function () {
         jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", eleventhImageId, items[10].id);
         jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", twelvethImageId, items[11].id);
     });
-    
+
+    tests.test ("reorderGrid with option", function () {
+        var options = {
+            cssClassNames: {
+                defaultStyle: "myDefault",
+                selected: "mySelected"
+            }
+        };
+        
+        var containerSelector = "[id='" + lightboxRootId + "']";
+        var gridReorderer = fluid.reorderGrid(containerSelector, ".float", function () {}, options);
+        
+        jqUnit.assertEquals("default class is myDefault", "myDefault", gridReorderer.cssClasses.defaultStyle);
+        jqUnit.assertEquals("selected class is mySelected", "mySelected", gridReorderer.cssClasses.selected);
+        jqUnit.assertEquals("dragging class is orderable-dragging", "orderable-dragging", gridReorderer.cssClasses.dragging);
+        jqUnit.assertEquals("mouseDrag class is orderable-dragging", "orderable-dragging", gridReorderer.cssClasses.mouseDrag);
+        
+    });    
 });
