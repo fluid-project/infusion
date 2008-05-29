@@ -328,8 +328,7 @@
 }
 
 .done .fluid-uploader-btns .fluid-uploader-done {
-	background-color: #74B74A;
-	border-color: #006838;
+	display: block;
 }
 
 /* browsing 
