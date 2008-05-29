@@ -882,9 +882,6 @@ var fluid = fluid || {};
         // Bind all our event handlers.
         bindEvents(this, this.uploaderContainer, swfObj, allowMultipleFiles, this.options.whenDone, this.options.whenCancel);
 		
-		// Beginning of keyboard bindings
-		$('button',this.uploaderContainer).tabbable();
-		
         // If we've been given an empty URL, kick into demo mode.
         if (uploadURL === '') {
             enableDemoMode(this.uploaderContainer, swfObj, progressBar, this.options, this.fragmentSelectors, this.status, dialogObj);
