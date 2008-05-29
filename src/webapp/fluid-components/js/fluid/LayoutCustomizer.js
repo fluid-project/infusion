@@ -14,12 +14,14 @@ var fluid = fluid || {};
 (function (fluid) {
     var createLayoutCustomizer = function (layout, perms, orderChangedCallbackUrl, options) {
         // Configure options
-        var rOptions = options || {};
+        options = options || {};
+        var rOptions = options;
         rOptions.role = fluid.roles.GRID;
 
         var lhOptions = {};
         lhOptions.orderChangedCallbackUrl = orderChangedCallbackUrl;
-        lhOptions.dropWarningId = rOptions.dropWarningId;
+        lhOptions.orderChangedCallback = options.orderChangedCallback;
+        lhOptions.dropWarningId = options.dropWarningId;
 
         var reordererRoot = fluid.utils.jById (fluid.moduleLayout.containerId (layout));
         var items = fluid.moduleLayout.createFindItems (layout, perms, rOptions.grabHandle);    
@@ -42,10 +44,12 @@ var fluid = fluid || {};
      * Simple way to create a layout customizer.
      * @param {selector} a selector for the layout container
      * @param {Object} a map of selectors for columns and portlets within the layout
+     * @param {Function} a callback to be called when the order changes 
      * @param {Object} additional configuration options
      */
-    fluid.reorderLayout = function(containerSelector, layoutSelectors, options) {
+    fluid.reorderLayout = function(containerSelector, layoutSelectors, orderChangedCallback, options) {
         options = options || {};
+        options.orderChangedCallback = orderChangedCallback;
         
         var container = jQuery(containerSelector);
         var columns = jQuery(layoutSelectors.columns, container);
@@ -53,6 +57,6 @@ var fluid = fluid || {};
         
         var layout = fluid.moduleLayout.buildLayout(container, columns, portlets);
         
-        return fluid.initLayoutCustomizer(layout, null, options.callbackUrl, options);
+        return fluid.initLayoutCustomizer(layout, null, null, options);
     };    
 }) (fluid);

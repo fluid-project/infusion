@@ -831,11 +831,13 @@ var fluid = fluid || {};
 	}; // End of GridLayoutHandler
     
     var defaultWillShowKBDropWarning = function (item, dropWarning) {
-        var offset = jQuery(item).offset();
-        dropWarning = jQuery(dropWarning);
-        dropWarning.css("position", "absolute");
-        dropWarning.css("top", offset.top);
-        dropWarning.css("left", offset.left);
+        if (dropWarning) {
+            var offset = jQuery(item).offset();
+            dropWarning = jQuery(dropWarning);
+            dropWarning.css("position", "absolute");
+            dropWarning.css("top", offset.top);
+            dropWarning.css("left", offset.left);
+        }
     };
 
     /*
