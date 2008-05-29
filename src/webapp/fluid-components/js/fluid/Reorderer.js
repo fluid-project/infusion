@@ -561,12 +561,41 @@ var fluid = fluid || {};
         this.domNode.ariaState ("activedescendent", anItem.id);
     };
     
+    var buildFnFromSelector = function (selector, container) {
+        return function () {
+            return jQuery(selector, container);
+        };
+    };
+    
+    var buildFindItems = function (itemSelectors, container) {
+        // If a single selector has been passed in we just need to wrap it in a function.
+        if (typeof itemSelectors === 'string') {
+            return buildFnFromSelector(itemSelectors, container);
+        } 
+
+        // This code is very similar to fluid.utils.adaptFindItems. 
+        // It would be nice if adaptFindItems could take in either functions or selectors. 
+        var findItems = {};
+        // TODO: We should check if there is no movable and throw an error.
+        findItems.movables = buildFnFromSelector(itemSelectors.movables, container);
+        if (itemSelectors.selectables) {
+            findItems.selectables = buildFnFromSelector(itemSelectors.selectables, container);
+        }
+        if (itemSelectors.dropTargets) {
+            findItems.dropTargets = buildFnFromSelector(itemSelectors.dropTargets, container);
+        }
+        if (itemSelectors.grabHandle) {
+            findItems.grabHandle = function (item) {
+                return jQuery(itemSelectors.grabHandle, item);
+            };
+        }
+        return findItems;
+    };
+    
     // Simplified API for reordering lists and grids.
     var simpleInit = function (containerSelector, itemSelector, layoutHandlerFn, orderChangedCallback, options) {
         var container = jQuery(containerSelector);
-        var itemFinder = function () {
-            return jQuery(itemSelector, container);
-        };
+        var itemFinder = buildFindItems(itemSelector, container);
         
         var lOptions = options || {};
         lOptions.orderChangedCallback = orderChangedCallback;
