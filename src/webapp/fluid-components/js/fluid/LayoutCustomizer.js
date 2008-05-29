@@ -43,7 +43,7 @@ var fluid = fluid || {};
     /**
      * Simple way to create a layout customizer.
      * @param {selector} a selector for the layout container
-     * @param {Object} a map of selectors for columns and portlets within the layout
+     * @param {Object} a map of selectors for columns and modules within the layout
      * @param {Function} a callback to be called when the order changes 
      * @param {Object} additional configuration options
      */
@@ -53,9 +53,9 @@ var fluid = fluid || {};
         
         var container = jQuery(containerSelector);
         var columns = jQuery(layoutSelectors.columns, container);
-        var portlets = jQuery(layoutSelectors.portlets, container);
+        var modules = jQuery(layoutSelectors.modules, container);
         
-        var layout = fluid.moduleLayout.buildLayout(container, columns, portlets);
+        var layout = fluid.moduleLayout.buildLayout(container, columns, modules);
         
         return fluid.initLayoutCustomizer(layout, null, null, options);
     };    
