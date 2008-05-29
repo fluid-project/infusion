@@ -82,6 +82,9 @@
 	background-color: #999;
 }
 
+.infusion button span.text-description {
+    display: none;
+}
 
 /* jQuery UI dialog */
 
