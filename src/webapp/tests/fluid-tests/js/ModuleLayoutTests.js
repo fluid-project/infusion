@@ -90,6 +90,11 @@ $(document).ready (function () {
         jqUnit.assertEquals("Number of columns in empty layout should be 0", 0, fluid.moduleLayout.internals.numColumns (emptyLayout));
     });
     
+    moduleLayoutTests.test("NumModules", function () {
+        jqUnit.assertEquals("There are 9 modules in the layout", 9, fluid.moduleLayout.internals.numModules (demo.portal.layout));
+        jqUnit.assertEquals("The empty layout has 9 modules", 0, fluid.moduleLayout.internals.numModules (emptyLayout));
+    });
+
     moduleLayoutTests.test ("UpdateLayout", function () {
         var item = jQuery ("#" + portlet3id)[0];
         var relatedItem = jQuery ("#" + portlet6id)[0];
@@ -502,14 +507,14 @@ $(document).ready (function () {
         var columns = jQuery([]);
         var portlets = jQuery([]);
         
-        var perms = fluid.moduleLayout.buildEmptyPerms(columns, portlets);
+        var perms = fluid.moduleLayout.buildEmptyPerms(emptyLayout);
         jqUnit.ok(perms, "For an empty set of columns and portlets, the perms object should be truthy");
         jqUnit.equals(perms.length, 0, "The perms object should be an empty array.");
         
         columns = allColumns();
         portlets = allPortlets();
 
-        perms = fluid.moduleLayout.buildEmptyPerms(columns, portlets);
+        perms = fluid.moduleLayout.buildEmptyPerms(layoutClone);
         jqUnit.ok(perms, "The perms object should be truthy");
         jqUnit.equals(perms.length, 9, "There are 9 portlets so there should be 9 rows of perms");
         

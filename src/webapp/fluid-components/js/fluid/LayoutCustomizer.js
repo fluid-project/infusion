@@ -52,8 +52,7 @@ var fluid = fluid || {};
         var portlets = jQuery(layoutSelectors.portlets, container);
         
         var layout = fluid.moduleLayout.buildLayout(container, columns, portlets);
-        var perms = fluid.moduleLayout.buildEmptyPerms(columns, portlets);
         
-        return fluid.initLayoutCustomizer(layout, perms, null, options.callbackUrl, options.warningId);
+        return fluid.initLayoutCustomizer(layout, null, null, options.callbackUrl, options.warningId);
     };    
 }) (fluid);

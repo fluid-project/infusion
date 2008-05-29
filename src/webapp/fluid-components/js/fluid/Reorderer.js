@@ -851,6 +851,7 @@ var fluid = fluid || {};
         var orientation = fluid.orientation.VERTICAL;
         
         // Configure optional parameters
+        targetPerms = targetPerms || fluid.moduleLayout.buildEmptyPerms(layout);
         options = options || {};
         var orderChangedCallback = options.orderChangedCallback || function () {};
         if (options.orderChangedCallbackUrl) {
@@ -1037,6 +1038,14 @@ fluid.moduleLayout = function (jQuery, fluid) {
         
         numColumns: function (layout) {
             return layout.columns.length;
+        },
+        
+        numModules: function (layout) {
+            var numModules = 0;
+            for (var col = 0; col < layout.columns.length; col++) {
+                numModules += layout.columns[col].children.length;
+            }
+            return numModules;
         },
         
         isColumnIndex: function (index, layout) {
@@ -1340,6 +1349,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
          * in the layout and permission objects.
          */
         createFindItems: function (layout, perms, grabHandle) {
+            perms = perms || fluid.moduleLayout.buildEmptyPerms(layout);
             var findItems = {};
             findItems.grabHandle = grabHandle;
             
@@ -1399,22 +1409,24 @@ fluid.moduleLayout = function (jQuery, fluid) {
         
         /**
          * Builds a fake permission object stuffed with 1s.
-         * @param {jQuery} columns
-         * @param {jQuery} portlets
+         * @param {Object} layout
          */
-        buildEmptyPerms: function (columns, portlets) {
+        buildEmptyPerms: function (layout) {
+            var numCols = internals.numColumns(layout);
+            var numModules = internals.numModules(layout);
+            
             var permsStructure = [];
             // Each column has a drop target at its top.
             // Each portlet has a drop target below it.
-            var numItemsInBitmap = columns.length + portlets.length;
-            portlets.each(function () {
+            var numItemsInBitmap = numCols + numModules;
+            for (var i = 0; i < numModules; i++) {
                 var rowForPortlet = [];
                 // Stuff the whole structure with 1s to dispense with permissions altogether.
-                for (var i = 0; i < numItemsInBitmap; i++) {
+                for (var j = 0; j < numItemsInBitmap; j++) {
                     rowForPortlet.push(1);
                 }
-                permsStructure.push(rowForPortlet);
-            });
+                permsStructure.push(rowForPortlet);                
+            }
             
             return permsStructure;
         },

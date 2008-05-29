@@ -190,5 +190,44 @@ $(document).ready (function () {
         jqUnit.assertEquals ("After move portlet 6 is in third position column 2", portlet6id, col2PortletList[2].id);
     
     });
+    
+    portletLHTests.test("DefaultPerms", function () {
+        var layoutHandler = new fluid.ModuleLayoutHandler(layoutClone);
+        var portlet1 = fluid.utils.jById(portlet1id)[0];
+        var portlet2 = fluid.utils.jById(portlet2id)[0];
+
+        // Sniff test the layout handler that was created. 
+        var itemAbove = layoutHandler.getItemAbove(portlet2);
+        jqUnit.assertEquals("portlet 1 is above portlet 2", portlet1id, itemAbove.id);
+        
+        var itemBelow = layoutHandler.getItemBelow(portlet2);
+    	jqUnit.assertEquals("portlet 3 is below portlet 2", portlet3id, itemBelow.id);
+
+    	var leftSibling = layoutHandler.getLeftSibling(portlet2);
+    	jqUnit.assertEquals("nothing is left of portlet 2", portlet2id, leftSibling.id);
+        
+        var rightSibling = layoutHandler.getRightSibling(portlet2);
+    	jqUnit.assertEquals("portlet 5 is right of portlet 2", portlet5id, rightSibling.id);
+
+        var portletList = jQuery("div[id^=portlet]");
+        jqUnit.assertEquals("Before move, order is 1, 2, 3, 4", portlet1id, portletList[0].id);
+        jqUnit.assertEquals("Before move, order is 1, 2, 3, 4", portlet2id, portletList[1].id);
+        jqUnit.assertEquals("Before move, order is 1, 2, 3, 4", portlet3id, portletList[2].id);
+        jqUnit.assertEquals("Before move, order is 1, 2, 3, 4", portlet4id, portletList[3].id);
+    
+    	layoutHandler.moveItemUp(portlet2);
+    	portletList = jQuery("div[id^=portlet]");
+        jqUnit.assertEquals("After move, order is 2, 1, 3, 4", portlet2id, portletList[0].id);
+        jqUnit.assertEquals("After move, order is 2, 1, 3, 4", portlet1id, portletList[1].id);
+        jqUnit.assertEquals("After move, order is 2, 1, 3, 4", portlet3id, portletList[2].id);
+        jqUnit.assertEquals("After move, order is 2, 1, 3, 4", portlet4id, portletList[3].id);
+        
+    	layoutHandler.moveItemDown(portlet1);
+    	portletList = jQuery("div[id^=portlet]");
+        jqUnit.assertEquals("After move down, order is 2, 3, 1, 4", portlet2id, portletList[0].id);
+        jqUnit.assertEquals("After move down, order is 2, 3, 1, 4", portlet3id, portletList[1].id);
+        jqUnit.assertEquals("After move down, order is 2, 3, 1, 4", portlet1id, portletList[2].id);
+        jqUnit.assertEquals("After move down, order is 2, 3, 1, 4", portlet4id, portletList[3].id);
+    });
 
 });
