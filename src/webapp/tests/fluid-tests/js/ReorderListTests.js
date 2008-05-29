@@ -78,7 +78,7 @@ $(document).ready (function () {
 
         jqUnit.assertTrue("focus on item1", item1.hasClass ("orderable-selected"));
 /*
- * There is currently a bug where we don't originally put the 'default' class onto things that are
+ * There is currently a bug (FLUID-676) where we don't originally put the 'default' class onto things that are
  * selectable but not movable. After they get focus and then lose focus they will have the 'default' style.
  * Once this bug is fixed the following line should be uncommented
  */
@@ -110,7 +110,7 @@ $(document).ready (function () {
         jqUnit.assertEquals("after ctrl-down on movable, expect order 1, 2, 4, 3", "list2item2", items[1].id);
         jqUnit.assertEquals("after ctrl-down on movable, expect order 1, 2, 4, 3", "list2item4", items[2].id);
 /*
- * There is currently a bug in the keyboard reordering: when a selectable is a drop targets but is not movable 
+ * There is currently a bug (FLUID-677) in the keyboard reordering: when a selectable is a drop targets but is not movable 
  * the item being moved is placed after the next movable item rather then after the next selectable item.
  * When the bug is fixed, the next line should be uncommented and the line following should be removed.
  */
