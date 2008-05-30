@@ -427,6 +427,7 @@ var fluid = fluid || {};
         return function(file, error_code, message){
             status.currError = '';
 			var humanErrorMsg = '';
+			var markError = true;
 			var queueContinueOnError = false;
             try {
                 switch (error_code) {
@@ -465,6 +466,7 @@ var fluid = fluid || {};
                         //				progress.SetStatus("Stopped");
 						updateState(uploaderContainer,'paused');
                         hideProgress(progressBar, true);
+						markError = false;
                         break;
                     default:
                         //				progress.SetStatus("Unhandled Error: " + error_code);
@@ -472,7 +474,7 @@ var fluid = fluid || {};
                         break;
                 }
 								
-				markRowError($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove, $(fragmentSelectors.scrollingElement, uploaderContainer), maxHeight, humanErrorMsg);
+				if (markError) markRowError($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove, $(fragmentSelectors.scrollingElement, uploaderContainer), maxHeight, humanErrorMsg);
 				
 				// if the file upload error is very file specific then start the next upload
 				if (queueContinueOnError) this.startUpload();
@@ -977,6 +979,7 @@ var fluid = fluid || {};
 		
 		if (this.progressContainer.css("display") === "none") {
 			this.progressContainer.fadeIn('slow');
+			$('.fluid-uploader-pause',this.progressContainer).focus();
 		}
 		fluid.utils.debug ('percent = ' + percent + ' lastPercent = ' + this.lastPercent);
 		
