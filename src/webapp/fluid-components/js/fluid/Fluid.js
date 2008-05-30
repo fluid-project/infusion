@@ -1,6 +1,6 @@
 /*
 Copyright 2007 University of Cambridge
-Copyright 2007 University of Toronto
+Copyright 2007-2008 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -98,6 +98,7 @@ var fluid = fluid || {};
     fluid.unwrap = function (obj) {
         return (obj.jquery) ? obj[0] : obj; // Unwrap the element if it's a jQuery.
     };
+    
     /*
      * Utilities object for providing various general convenience functions
      */

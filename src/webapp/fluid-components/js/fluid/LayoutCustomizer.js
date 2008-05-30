@@ -44,7 +44,7 @@ var fluid = fluid || {};
      * Simple way to create a layout customizer.
      * @param {selector} a selector for the layout container
      * @param {Object} a map of selectors for columns and modules within the layout
-     * @param {Function} a callback to be called when the order changes 
+     * @param {Function} a function to be called when the order changes 
      * @param {Object} additional configuration options
      */
     fluid.reorderLayout = function(containerSelector, layoutSelectors, orderChangedCallback, options) {

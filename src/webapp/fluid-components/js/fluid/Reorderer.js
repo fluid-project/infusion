@@ -332,7 +332,7 @@ var fluid = fluid || {};
             return true;
         };
 
-        // Drag and drop set code starts here. This needs to be refactored to be better contained.
+        // Drag and drop setup code starts here. This needs to be refactored to be better contained.
         var dropMarker;
 
         var createDropMarker = function (tagName) {
@@ -506,7 +506,7 @@ var fluid = fluid || {};
             var dropTargets = fluid.wrap (findItems.dropTargets());
             initSelectables (fluid.wrap (findItems.selectables ()));
         
-            // Setup moveables
+            // Setup movables
             for (i = 0; i < movables.length; i++) {
                 var item = movables[i];
                 initMovable (jQuery (item));
@@ -519,8 +519,7 @@ var fluid = fluid || {};
                 dropMarker = createDropMarker(movables[0].tagName);
             }
 
-        
-            // Create a simple predicate function that will identify valid drop targets.
+            // Create a simple predicate function that will identify items that can be dropped.
             var droppablePredicate = function (potentialDroppable) {
                 return (movables.index(potentialDroppable[0]) > -1);    
             };
