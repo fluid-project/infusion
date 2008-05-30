@@ -160,7 +160,7 @@ var fluid = fluid || {};
 		// if the top of the row is ABOVE the view port move the row into position
 		if (rowPosTop < containerScrollTop) {
 			$(scrollingElm)[0].scrollTop = rowPosTop;
-		};
+		}
 		
 		// if the bottom of the row is BELOW the viewport then scroll it into position
 		if ((rowPosTop + rowHeight) > (containerScrollTop + containerHeight)) {
@@ -231,7 +231,9 @@ var fluid = fluid || {};
 		
 		updateQueueHeight(scrollingElm, maxHeight);
 		
-		if (humanError !== '') displayHumanReableError(row,humanError);		
+		if (humanError !== '') {
+            displayHumanReableError(row, humanError);
+        }	
 	};
 	
 	/* rows can only go from ready to error or uploaded */
@@ -249,7 +251,7 @@ var fluid = fluid || {};
 	
 	var displayHumanReableError = function(row, humanError) {
 		var newErrorRow = $('#queue-error-tmplt').clone();
-		$(newErrorRow).find('.queue-error').html(humanError)
+		$(newErrorRow).find('.queue-error').html(humanError);
 		$(newErrorRow).removeAttr('id').insertAfter(row);
 	};
 		
@@ -474,11 +476,15 @@ var fluid = fluid || {};
                         break;
                 }
 								
-				if (markError) markRowError($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove, $(fragmentSelectors.scrollingElement, uploaderContainer), maxHeight, humanErrorMsg);
-				
+				if (markError) {
+                    markRowError($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove, $(fragmentSelectors.scrollingElement, uploaderContainer), maxHeight, humanErrorMsg);
+                }
+                
 				// if the file upload error is very file specific then start the next upload
-				if (queueContinueOnError) this.startUpload();
-				
+				if (queueContinueOnError) {
+                    this.startUpload();
+                }
+                
 				fluid.utils.debug(status.currError + '\n' + humanErrorMsg);
 				
 				// override continueAfterUpload
@@ -552,7 +558,9 @@ var fluid = fluid || {};
 			setTimeout(function(){
 				variableAction(options.whenDone);
 			},options.continueDelay);
-			if (dialogObj) closeDialog(dialogObj);
+			if (dialogObj) {
+                closeDialog(dialogObj);
+            }
 		}
 		
 	};
