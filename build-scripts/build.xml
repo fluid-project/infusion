@@ -232,7 +232,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		</copy>
         
         <antcall target="concatAllJS">
-            <param name="toDir" value="${src-dist-components}/js/all" />
+            <param name="toDir" value="${src-dist-components}/js" />
         </antcall>
         
         <antcall target="copyDistroFiles">
