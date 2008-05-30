@@ -467,7 +467,7 @@ var fluid = fluid || {};
                         status.currError = "Upload Stopped by user input";
                         //				progress.SetStatus("Stopped");
 						updateState(uploaderContainer,'paused');
-                        hideProgress(progressBar, true);
+                        hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
 						markError = false;
                         break;
                     default:
@@ -539,7 +539,7 @@ var fluid = fluid || {};
             }
             else {
                 fluid.utils.debug(status.currError);
-                hideProgress(progressBar, true);
+                hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
             }
         };
 	};
@@ -552,7 +552,7 @@ var fluid = fluid || {};
 	
 	var fileQueueComplete = function(uploaderContainer, options, progressBar, fragmentSelectors) {
 		updateState(uploaderContainer, 'done');
-		hideProgress(progressBar, false);
+		hideProgress(progressBar, false, $(fragmentSelectors.done, uploaderContainer));
 		options.continueDelay = (!options.continueDelay) ? 0 : options.continueDelay;
 		if (options.continueAfterUpload) {
 			setTimeout(function(){
@@ -610,8 +610,9 @@ var fluid = fluid || {};
 		}
 	};
 	
-	var hideProgress = function(progressBar, dontPause) {
+	var hideProgress = function(progressBar, dontPause, focusAfterHide) {
 	 	progressBar.hide(dontPause);
+        focusAfterHide.focus();
 	};
 	
 	/* DIALOG
@@ -724,7 +725,7 @@ var fluid = fluid || {};
     	}
         
 	    function demoStop () {
-    		hideProgress(progressBar, true);
+    		hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
     		status.stop = false;
     		status.currCount = 0;
     		status.currTotalBytes = 0;
@@ -933,7 +934,8 @@ var fluid = fluid || {};
 	
     var defaultSelectors = {
 		fileProgress: '.file-progress',
-		totalProgress: '.total-progress'
+		totalProgress: '.total-progress',
+        pause: ".fluid-uploader-pause"
     };
 
 	 
@@ -987,7 +989,7 @@ var fluid = fluid || {};
 		
 		if (this.progressContainer.css("display") === "none") {
 			this.progressContainer.fadeIn('slow');
-			$('.fluid-uploader-pause',this.progressContainer).focus();
+			$(this.fragmentSelectors.pause, this.progressContainer).focus();
 		}
 		fluid.utils.debug ('percent = ' + percent + ' lastPercent = ' + this.lastPercent);
 		
