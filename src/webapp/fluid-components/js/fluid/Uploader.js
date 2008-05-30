@@ -20,16 +20,10 @@
  */
 
 /* TODO:
- * - handle multiple instances
- * - determine strategy for markup: assumed, or pluggable?
  * - handle duplicate file error
  * - make fields configurable
  *	   - strings (for i18n)
- * - remove hard-coding of css class names
  * - refactor 'options' into more than one object as needed
- * - add container constraint to class-based selections
- * - add scroll to bottom
- * - fix resume
  * - clean up debug code
  * - remove commented-out code
  */
@@ -1023,18 +1017,6 @@ var fluid = fluid || {};
 
 
 /* GRAVEYARD and SCRATCH
- 
-	// alternate progress handler, look at ways of parameterizing this
-	var setProgress = function(filePercent,fileName,totalPercent,fileIndex,totalFileNum) {
-		// update file information
-		if (fileName) jQuery('#file-progress #file_name').text(fileName);
-		updateProgress('#file-progress',filePercent);
-		// update total info
-		if (totalPercent) updateProgress('#total-progress',totalPercent);
-		if (totalFileNum) jQuery('#total-progress #total_file_num').text(totalFileNum);
-		if (fileIndex) jQuery('#total-progress #file_index').text(fileIndex);
-		jQuery('.progress').fadeIn('fast');
-	};
 	
 	// eventually used to create fileTypes sets.
 	var fileTypes = {
