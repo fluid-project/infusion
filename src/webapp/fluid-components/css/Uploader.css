@@ -50,50 +50,49 @@
 
 /* thead */
 
-.fluid-uploader-queue-wrapper thead {
+.fluid-scroller-table-head {
 	background-color: transparent;
-}
-
-.fluid-uploader-queue-wrapper thead th { 
-	text-align: left;
-	font-size: 0.94em;
-	font-weight: normal;
-	padding: 6px;
 	border-bottom: 1px solid #999;
 	color: #666;
 }
 
-/* tfoot */
-
-.fluid-uploader-queue-wrapper tfoot {
-	background-color: #E6E6E6;
+.fluid-scroller-table-head th { 
+	text-align: left;
+	font-size: 0.94em;
+	font-weight: normal;
+	padding: 6px;
 }
 
-.fluid-uploader-queue-wrapper tfoot td {
+/* tfoot */
+
+.fluid-scroller-table-foot {
+	background-color: #E6E6E6;
+	border-top: 1px solid #999;
+	border-right: 1px solid #999;
+	border-left: 1px solid #999;
+}
+
+.fluid-scroller-table-foot td {
 	padding: 6px;
 	height: 2.4em;
-	border-top: 1px solid #999;
 	vertical-align: middle;
 	font-size: 1.1em;
 	font-weight: bolder;
 	color: #666;
+}
+
+.fluid-scroller-table-foot td.footer-button {
 	text-align: right;
 }
 
-.fluid-uploader-queue-wrapper tfoot td:last-child {
-	border-right: 1px solid #999;
-}
-
-.fluid-uploader-queue-wrapper tfoot td:first-child {
-	text-align: left;
-	border-left: 1px solid #999;
-}
 
 /* tbody */
 
-.fluid-scoller {
+.fluid-scroller {
 	overflow-x: hidden;
 	overflow-y: auto;
+	border-right: 1px solid #999;
+	border-left: 1px solid #999;
 }
 
 .fluid-uploader-queue {
@@ -120,22 +119,20 @@
 	border-top: 1px solid #BBCFDC;
 }
 
-.fluid-uploader-queue th {
-	border-left: 1px solid #999;
-}
-
-.fluid-uploader-queue td:last-child {
-	border-right: 1px solid #999;
-}
-
 .fluid-uploader-queue tr:first-child td, .fluid-uploader-queue tr:first-child th { 
 	border-top: none;
 }
 
 
-.fluid-uploader-queue .fileName {
-	width: 264px;
+.fluid-uploader-queue-wrapper .fileName {
+	width: 322px;
 	overflow: hidden;
+}
+
+.fluid-uploader-queue-wrapper .fileSize {
+	text-align: right;
+	width: 4em;
+	white-space: nowrap;
 }
 
 .fluid-uploader-queue .removeFile {
@@ -189,20 +186,13 @@
 	background-color: transparent;
 }
 
-.fluid-uploader-queue td.fileRemove {
-	width: 4em;
+.fluid-uploader-queue-wrapper td.fileRemove, .fluid-uploader-queue-wrapper th.fileRemove {
 	text-align: center;
 }
 
 .fluid-uploader-queue td.fileRemove, .fluid-uploader-queue td.fileStatus { 
 	white-space: nowrap;
 }
-
-.fluid-uploader-queue .fileSize { 
-	text-align: right;
-	white-space: nowrap;
-}
-
 
 .fluid-uploader-queue-wrapper .fluid-uploader-row-placeholder {
 	background-color: #F0F9FF;

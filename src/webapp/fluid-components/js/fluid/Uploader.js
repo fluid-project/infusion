@@ -26,6 +26,7 @@
  * - refactor 'options' into more than one object as needed
  * - clean up debug code
  * - remove commented-out code
+ * - use swfObj status to check states, etc. > drop our status obj
  */
 
 /* ABOUT RUNNING IN LOCAL TEST MODE
@@ -48,7 +49,7 @@ var fluid = fluid || {};
 		browse: ".fluid-uploader-browse",
 		fluidUploader: ".fluid-uploader-queue-wrapper",
 		fileQueue: ".fluid-uploader-queue",
-		scrollingElement: ".fluid-scoller",
+		scrollingElement: ".fluid-scroller",
 		emptyRow : ".fluid-uploader-row-placeholder",
 		txtTotalFiles: ".fluid-uploader-totalFiles",
 		txtTotalBytes: ".fluid-uploader-totalBytes",
@@ -182,8 +183,7 @@ var fluid = fluid || {};
     /*
      * Sets the state (using a css class) for the top level element
      * @param {String} uploaderContainer    the uploader container
-     * @param {String} stateClass    optional class to be assigned.
-     *                               If not specified, either 'loaded' or 'empty' will be used.
+     * @param {String} fileQueueSelector    the file queue used to test numbers.
      */
 	var updateStateByState = function(uploaderContainer, fileQueueSelector) {
 		var totalRows = numberOfRows(uploaderContainer, fileQueueSelector);
@@ -203,7 +203,11 @@ var fluid = fluid || {};
 		}
 	};
 	
-	
+    /*
+     * Sets the state (using a css class) for the top level element
+     * @param {String} uploaderContainer    the uploader container
+     * @param {String} stateClass    the file queue used to test numbers.
+     */
 	var updateState = function(uploaderContainer, stateClass) {
 		$(uploaderContainer).children("div:first").attr('className',stateClass);
 	};
@@ -308,6 +312,8 @@ var fluid = fluid || {};
                 // display the new row
                 $('#' + file.id, uploaderContainer).fadeIn('slow');
 				
+				updateStateByState(uploaderContainer, fragmentSelectors.fluidUploader);
+
 				var scrollingElm = $(fragmentSelectors.scrollingElement, uploaderContainer);
                 
 				var scrolling = updateQueueHeight(scrollingElm, maxHeight);
@@ -317,8 +323,6 @@ var fluid = fluid || {};
 					scrollBottom(scrollingElm);
 				}
 				
-				
-				updateStateByState(uploaderContainer, fragmentSelectors.fluidUploader);
                 updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fluidUploader, fragmentSelectors.emptyRow);
                 updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
                 
@@ -1032,5 +1036,8 @@ var fluid = fluid || {};
 		Word:"*.doc;*.xdoc",
 		Excel:"*.xls",
 	}
-	
+
+	// for use in a better way of setting state to simplify structure
+	states: "start uploading browse loaded reloaded paused empty done",
+
 */
