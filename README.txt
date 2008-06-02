@@ -1,34 +1,24 @@
 
-Fluid Infusion v0.3 BETA
-========================
-http://fluidproject.org
-
-
-This Release is a BETA
-======================
-
-This is an early, BETA version of Fluid Infusion v0.3. The contents of this distribution are a snapshot of the Fluid code and documentation as of April 25, 2008. A number of tasks will be carried out between this BETA and the actual release:
-
-* Blocker issues will be addressed (see Known Issues below).
-  To monitor the status of bug resolutions, see the Fluid Issue Tracker, at
-      http://issues.fluidproject.org
-
-* The documentation will be completed.
-  There are known gaps in the documentation that is included in this BETA.
-  If you're eager to see updated documentation before the release, keep an eye on the wiki, at
-      http://wiki.fluidproject.org
-
+Fluid Infusion v0.3
+===================
+Main Project Site:  http://fluidproject.org
+User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
 
 What's in this Release
 ======================
 
-The "fluid-0.3.zip" has the following organization:
+This release is available in two forms:
+    fluid-0.3.zip - deployment bundle
+    fluid-0.3-src.zip - source code bundle
+    
+Both bundles have the following organization:
         fluid-components/
         sample-code/
         tests/
-        documentation/
         LICENSE.txt
         README.txt
+
+The deployment bundle also includes a war file suitable for deployment: fluid-components-0.3.war
 
 Source Code
 -----------
@@ -40,6 +30,14 @@ The full source code for the Fluid component library, including JavaScript, HTML
            js/
            swfupload/
 
+Both bundles include a single JavaScript file, fluid-components/js/Fluid-all.js, that is a
+combination of all other source files. Developers can include this single file in their pages to
+provide all the necessary support for the Fluid component Library.
+
+In the deployment bundle, the JavaScript source has been minified: comments and whitespace
+have been removed. Developers wishing to learn about the Fluid code, or debug their applications,
+should use the source code bundle.
+
 Sample Code
 -----------
 Sample code illustrating how Fluid components can be used:
@@ -47,30 +45,46 @@ Sample code illustrating how Fluid components can be used:
            keyboard-a11y/
            reorderer/
            uploader/
+           shared/
 
 Tests
 -----
         tests/
-
-Documentation
--------------
-The Fluid Project uses a wiki for documentation and project collaboration: http://wiki.fluidproject.org.
-A collection of pages from the wiki, providing documentation for this release, is included in PDF format:
-    documentation/Fluid-0.3.pdf
-
-The PDF documentation contains the user experience toolkit, tutorials on how to use Fluid components, and API documentation.
-
-Note that some links in this PDF file will redirect the user to Fluid's live wiki space.
+            fluid-tests/
+            jquery-tests/
+            jqUnit/
+            utils/
 
 License
 -------
-Fluid code is licensed under a dual ECL 2.0 / BSD license. The specific licenses can be found in the license file:
+Fluid code is licensed under a dual ECL 2.0 / BSD license. The specific licenses can be found
+in the license file:
     LICENSE.txt
 
 Readme
 ------
 This file.
     README.txt
+
+
+Documentation
+=============
+
+    http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
+
+The Fluid Project uses a wiki for documentation and project collaboration: http://wiki.fluidproject.org.
+
+The User Manual for Fluid releases consists of a number of information pages stored in the Fluid Wiki.
+The pages fall into a number of categories, including tutorials, API descriptions, testing procedures,
+and data-gathering approaches. To make the manual pages easy to locate, identify, and peruse,
+we have set up the following aids to navigation:
+
+    * Manual pages are all flagged with the tag manual for easy identification.
+    * An organized table of contents is provided for the reader, with links to
+      all manual pages, each with a brief description of the page contents.
+    * A link to the table of contents appears at the top of the left-side wiki navigation
+      bar with the name User Manual ToC. This makes it easy to return to the table of
+      contents from anywhere in the wiki hierarchical structure.
 
 
 Supported Browsers
@@ -83,16 +97,26 @@ Internet Explorer 6.x, 7.x: full support
 
 Known Issues
 ============
-The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org. Some of the known issues in this BETA release are described here:
+The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
+Some of the known issues in this release are described here:
 
-* Multi-file Uploader: The Multi-file Uploader is still in early ALPHA state. In the v0.3 release of Infusion, it will be in BETA.
+* Reorderer: Once focus is within the group of reorderable elements, shift-tab cannot
+  be used to move focus out again. Tabbing forward must be used.
 
-* Reorderer: Once focus is within the group of reorderable elements, shift-tab cannot be used to move focus out again. Tabbing forward must be used.
+* Reorderer: Drag-and-drop avatar location: In some cases, the drag avatar is disconcertingly
+  far away from the cursor.
 
-* Layout Customizer: There are a number of refinements needed to the interface of the uPortal reorderable portlets example.
+* Reorderer: Reordering either via mouse-based drag-and-drop, or using the keyboard, is sometimes
+  slow when there are a relatively large number of orderable items.  In short, the Reorderer
+  does not scale well with respect to the number of orderable items.
 
-* Reorderer: Drag-and-drop avatar location: In some cases, the drag avatar is disconcertingly far away from the cursor.
+* Reorderer: Reordering via mouse-based drag-and-drop, attempting to drop outside the space of
+  existing items sometimes incorrectly displays a drop location indicator, despite the fact
+  that a drop is not permitted in this case.
 
-* Reorderer: Reordering either via mouse-based drag-and-drop, or using the keyboard, is sometimes slow when there are a relatively large number of orderable items.  In short, the Reorderer does not scale well with respect to the number of orderable items.
+* Uploader (preview): Error feedback is currently minimal.
 
-* Reorderer: Reordering via mouse-based drag-and-drop, attempting to drop outside the space of existing items sometimes incorrectly displays a drop location indicator, despite the fact that a drop is not permitted in this case.
+* Uploader (preview): The progress bar does not update correctly.
+
+* Uploader (preview): In Internet Explorer 6.x, rendering is incorrect.
+
