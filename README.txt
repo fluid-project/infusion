@@ -61,6 +61,9 @@ Fluid code is licensed under a dual ECL 2.0 / BSD license. The specific licenses
 in the license file:
     LICENSE.txt
 
+Fluid also depends upon some third party open source modules. These are contained in their own folders 
+with their respective licenses inside the fluid source code.
+
 Readme
 ------
 This file.
