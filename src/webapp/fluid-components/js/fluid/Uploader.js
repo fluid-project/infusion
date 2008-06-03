@@ -181,7 +181,9 @@ var fluid = fluid || {};
 	};
 	 
     /*
-     * Sets the state (using a css class) for the top level element
+     * Figures out the state of the uploader based on 
+     * the number of files in the queue, and the number of files uploaded, 
+     * or have errored, or are still to be uploaded
      * @param {String} uploaderContainer    the uploader container
      * @param {String} fileQueueSelector    the file queue used to test numbers.
      */
@@ -757,7 +759,7 @@ var fluid = fluid || {};
 			file_types_description: options.fileTypesDescription,
 			file_upload_limit: options.fileUploadLimit,
 			file_queue_limit: options.fileQueueLimit,
-			
+						
 			// Event Handler Settings
 			swfupload_loaded_handler : createSWFReadyHandler(options.browseOnInit, allowMultipleFiles, options.dialogDisplay),
 			file_dialog_start_handler: createFileDialogStartHandler (uploaderContainer),
@@ -766,9 +768,10 @@ var fluid = fluid || {};
 			file_dialog_complete_handler: createFileDialogCompleteHandler (uploaderContainer, fragmentSelectors, status),
 			upload_start_handler: createUploadStartHandler (uploaderContainer, fragmentSelectors, progressBar, status),
 			upload_progress_handler: createUploadProgressHandler (progressBar, fragmentSelectors, status),
-			upload_complete_handler: createUploadCompleteHandler (uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj),
 			upload_error_handler: createUploadErrorHandler (uploaderContainer, progressBar, fragmentSelectors, options.queueListMaxHeight, status, options),
 			upload_success_handler: createUploadSuccessHandler (options.whenFileUploaded),
+			upload_complete_handler: createUploadCompleteHandler (uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj),
+			// debug_handler : debug_function,
 			// Debug setting
 			debug: options.debug
 		}; 
