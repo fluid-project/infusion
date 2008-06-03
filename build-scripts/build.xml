@@ -21,6 +21,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     <property name="base-dir" location=".." />
     <property name="products" location="${base-dir}/products" />
 	<property name="src" location="${base-dir}/src/webapp/fluid-components" />
+	<property name="samples" location="${base-dir}/src/webapp/sample-code" />
 	<property name="jquery-src" location="${src}/js/jquery" />
 	<property name="swfupload-src" location="${src}/swfupload" />
 	<property name="swfupload-js-src" location="${src}/js/swfupload" />
@@ -30,6 +31,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="build" location="${base-dir}/build" />
 	<property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
 	<property name="components-build" location="${build}/fluid-components" />
+	<property name="samples-build" location="${build}/sample-code" />
 	<property name="jquery-build" location="${components-build}/js/jquery" />
 	<property name="swfupload-build" location="${components-build}/swfupload" />
 	<property name="swfupload-js-build" location="${components-build}/js/swfupload" />
@@ -309,4 +311,49 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         </jslint>
 	</target>
 
+    <!-- Target: samples -->
+    <target name="samples" depends="clean, createDistro">
+		<copy todir="${components-build}">
+			<dirset dir="${samples}">
+				<include name="**/*" />
+			</dirset>
+		</copy>
+		
+		<copy todir="${build}/war/src/webapp/fluid-components" >
+			<fileset dir="${components-build}"/>
+		</copy>
+
+		<copy todir="${build}/war/src/webapp/sample-code" >
+			<fileset dir="${components-build}"/>
+		</copy>
+
+		<copy todir="${build}/war/src/webapp/WEB-INF" >
+			<fileset dir="${web-inf}"/>
+		</copy>
+
+		<copy todir="${build}/war">
+			<fileset dir="..">
+				<include name="pom.xml" />
+				<include name="project.xml" />
+				<include name="maven.xml" />
+				<include name="project.properties" />
+			</fileset>
+		</copy>
+
+        <echo>Building war file...</echo>
+		<apply executable="mvn" dir="${build}/war" parallel="true">
+				<fileset  dir=".">
+				    <include name="pom.xml"/>
+                </fileset>
+				<arg value="install" />
+		</apply>
+
+        <echo>Copying war file ${build}/war/target/${warfile} to ${dist}...</echo>
+		<copy todir="${dist}">
+            <fileset dir="${build}/war/target">
+                <include name="${warfile}" />
+            </fileset>
+        </copy>
+    </target>
+    
 </project>
