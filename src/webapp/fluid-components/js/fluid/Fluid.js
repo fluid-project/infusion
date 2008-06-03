@@ -37,7 +37,8 @@ var fluid = fluid || {};
      */  
     fluid.roles = {
         GRID: { container: "grid", item: "gridcell" },
-        LIST: { container: "list", item: "listitem" }
+        LIST: { container: "list", item: "listitem" },
+        REGIONS: { container: "section", item: "region" }
     };
     
     fluid.orientation = {
