@@ -16,7 +16,7 @@ var fluid = fluid || {};
         // Configure options
         options = options || {};
         var rOptions = options;
-        rOptions.role = fluid.roles.REGIONS;
+        rOptions.role = rOptions.role || fluid.roles.REGIONS;
 
         var lhOptions = {};
         lhOptions.orderChangedCallbackUrl = orderChangedCallbackUrl;
