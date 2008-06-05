@@ -177,10 +177,19 @@ var fluid = fluid || {};
 		return Math.round((num*100)/total);
 	};
 
-	// simple function for return kbytes
+	// simple function for return kbytes and megabytes from a number of bytes
 	// probably should do something fancy that shows MBs if the number is huge
 	fluid.utils.filesizeStr = function (bytes) {
-		return Math.round(bytes/1028) + ' KB';
+		/*
+		if (bytes < 1024){
+			return bytes + " bytes";
+		} else
+		*/
+		if (bytes < 1048576) {
+			return Math.ceil(bytes/1024*10)/10 + ' KB';
+		} else {
+			return Math.ceil(bytes/1048576*10)/10 + ' MB';
+		}
 	};
 	
     fluid.utils.initCssClassNames = function (defaultNames, classNames) {
