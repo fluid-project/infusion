@@ -185,11 +185,19 @@ var fluid = fluid || {};
 			return bytes + " bytes";
 		} else
 		*/
-		if (bytes < 1048576) {
-			return Math.ceil(bytes/1024*10)/10 + ' KB';
-		} else {
-			return Math.ceil(bytes/1048576*10)/10 + ' MB';
+		if (typeof bytes === "number") {
+			if (bytes === 0) {
+				return "0.0 KB";
+			} else if (bytes > 0) {
+				if (bytes < 1048576) {
+					return (Math.ceil(bytes / 1024 * 10) / 10).toFixed(1) + ' KB';
+				}
+				else {
+					return (Math.ceil(bytes / 1048576 * 10) / 10).toFixed(1) + ' MB';
+				}
+			}
 		}
+		return '';
 	};
 	
     fluid.utils.initCssClassNames = function (defaultNames, classNames) {
