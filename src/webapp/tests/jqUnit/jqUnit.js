@@ -40,7 +40,7 @@ var jqUnit = jqUnit || {};
         },
         
         notVisible: function (msg, selector) {
-            jqUnit.ok(!$(selector + ":visible")[0], msg);
+            jqUnit.ok($(selector + ":hidden")[0], msg);
         }, 
         
         exists: function (msg, selector) {

@@ -120,6 +120,9 @@ var fluid = fluid || {};
         
         // Add ARIA support.
         aria(this.text, this.editContainer);
+        
+        // Hide the edit container to start
+        this.editContainer.hide();
     };
     
     fluid.InlineEdit.prototype.edit = function () {

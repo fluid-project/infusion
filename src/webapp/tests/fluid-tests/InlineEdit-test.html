@@ -3,6 +3,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 		<title>InlineEdit Test Suite</title>
+        <link rel="stylesheet" href="css/InlineEdit.css" type="text/css" media="screen" charset="utf-8" />
         
         <!--  These are the required javascript modules for the Uploader -->
         <script type="text/javascript" src="../../fluid-components/js/jquery/jquery-1.2.3.js"></script>
@@ -27,15 +28,21 @@
       <ol id="tests"></ol>
 
     <!-- Test HTML -->
-    <div id="main" style="display: none;">
+    <div id="main">
 
 	    <form id="inline-edit">
-	        <div class="text">Click me to edit...</div>
-            <div class="editContainer">
-                <input type="text" class="edit" value="Click me to edit..." />
+	        <div id="display" class="text">Click me to edit...</div>
+            <div id="edit-container" class="editContainer">
+                <input id="edit" type="text" class="edit" value="Click me to edit..." />
             </div>
 	    </form>
         
+	    <form id="inline-edit-custom">
+	        <div id="display-custom" class="customText">Click me to edit...</div>
+            <div id="edit-container-custom" class="customEditContainer">
+                <input id="edit-custom" type="text" class="customEdit" value="Click me to edit..." />
+            </div>
+	    </form>
     </div>
 
 	</body>
