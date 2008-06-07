@@ -110,7 +110,10 @@ var fluid = fluid || {};
 		macControlKey: "Command",
 		browseText: "Browse files",
 		addMoreText: "Add more",
-		fileUploaded: "File Uploaded"
+		fileUploaded: "File Uploaded",
+		totalLabel: "Total",
+		uploadingLabel: "Uploading",
+		pausedLabel: "Paused at"
 	};
 		
 	/* DOM Manipulation */
@@ -375,8 +378,6 @@ var fluid = fluid || {};
 	var createFileDialogCompleteHandler = function(uploaderContainer, fragmentSelectors, status) {
         return function(numSelected, numQueued){
             try {
-                status.currCount = 0;
-                status.currBytes = 0;
                 status.totalCount = numFilesToUpload(uploaderContainer, fragmentSelectors.fluidUploader);
                 updateBrowseBtnText(uploaderContainer, fragmentSelectors.browse, status);
 				$(uploaderContainer).children("div:first").removeClass('browsing');
@@ -417,8 +418,8 @@ var fluid = fluid || {};
 	}	
 
     var createUploadStartHandler = function (uploaderContainer, fragmentSelectors, progressBar, status) {
-        return function (fileObj) {
-            uploadStart (fileObj, uploaderContainer, fragmentSelectors, progressBar, status);
+        return function (file) {
+            uploadStart (file, uploaderContainer, fragmentSelectors, progressBar, status);
         };
     };
     
@@ -509,10 +510,18 @@ var fluid = fluid || {};
 	var formatErrorCode = function(str) {
 		return " (Error code: " + str + ")";
 	};
+	
+	/* File and Queue Upload Progress */
 
+    var createUploadProgressHandler = function (progressBar, fragmentSelectors, status) {
+        return function(fileObj, bytes, totalBytes) {
+            uploadProgress (progressBar, fileObj, bytes, totalBytes, fragmentSelectors, status);
+        };
+    };
+    
 	var uploadProgress = function(progressBar, fileObj,bytes,totalBytes, fragmentSelectors, status) {
 		fluid.utils.debug ('File Status :: bytes = ' + bytes + ' :: totalBytes = ' + totalBytes);
-		fluid.utils.debug ('Total Status :: currBytes = ' + (status.currBytes + bytes)  + ' :: totalBytes = ' + queuedBytes (status));
+		fluid.utils.debug ('Total Status :: currBytes = ' + (status.currBytes + bytes)  + ' :: totalBytes = ' + queuedBytes(status));
 		updateProgress(progressBar,
                        fluid.utils.derivePercent (bytes,totalBytes),
                        fileObj.name,
@@ -521,46 +530,51 @@ var fluid = fluid || {};
                        status.totalCount);
 	};
 	
-    var createUploadProgressHandler = function (progressBar, fragmentSelectors, status) {
-        return function(fileObj, bytes, totalBytes) {
-            uploadProgress (progressBar, fileObj, bytes, totalBytes, fragmentSelectors, status);
-        };
-    };
-    
-	var createUploadCompleteHandler = function (uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj) {
-        return function(file){
-			
-            if (!status.currError) {
-                markRowComplete($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove);
- 
-          
-                if ((file.index + 1) === status.totalCount) {
-                    // we've completed all the files in this upload
-                    updateProgress(progressBar, 100, file.name, 100, status.totalCount, status.totalCount);
-                    fileQueueComplete(uploaderContainer, options, progressBar, fragmentSelectors, dialogObj);
-                }
-                else {
-                    // there are still files to go, fire off the next one
-                    status.currBytes += file.size; // now update currBytes with the actual file size
-                    updateProgress(progressBar, 100, file.name);
-                    this.startUpload(); // if there hasn't been an error then start up the next upload
-                                        // in this handler, 'this' is the SWFUpload object
-                }
-                
-                
-            }
-            else {
-                fluid.utils.debug(status.currError);
-                hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
-            }
-        };
-	};
+	/* File Upload Success */
 	
 	var createUploadSuccessHandler =  function(whenFileUploaded){
 		return function(file, server_data) {
 			whenFileUploaded(file.name, server_data);
 		};
 	};	
+	
+	
+	/* File Upload Complete */
+	
+	var createUploadCompleteHandler = function (uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj) {
+        return function(file){
+			uploadComplete(this, file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
+        };
+	};
+	
+	var uploadComplete = function (swfObj, file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj) {
+		// update the bytes whether or not there is success, because we're really tracking were we are in the queue
+		status.currBytes += file.size; 
+		
+        if (!status.currError) {
+            markRowComplete($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove);
+      
+            if ((file.index + 1) === status.totalCount) {
+                // we've completed all the files in this upload
+                updateProgress(progressBar, 100, file.name, 100, status.totalCount, status.totalCount);
+                fileQueueComplete(uploaderContainer, options, progressBar, fragmentSelectors, dialogObj);
+            }
+            else {
+                // there are still files to go, fire off the next one
+                
+                updateProgress(progressBar, 100, file.name);
+                swfObj.startUpload(); // if there hasn't been an error then start up the next upload
+                                    // in this handler, 'this' is the SWFUpload object
+            }
+            
+        }
+        else {
+            fluid.utils.debug(status.currError);
+            hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
+        }
+	};
+	
+	/* File Queue Complete */
 	
 	var fileQueueComplete = function(uploaderContainer, options, progressBar, fragmentSelectors) {
 		updateState(uploaderContainer, 'done');
@@ -687,7 +701,6 @@ var fluid = fluid || {};
         fluid.utils.debug("num of ready files = " + numFilesToUpload(uploaderContainer, fragmentSelectors.fluidUploader)); // check the current state 
         
 		if (status.stop === true) {
-			queuedBytes (status, -status.currBytes);
 			updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
 			updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fluidUploader, fragmentSelectors.emptyRow);
 			demoStop();
@@ -709,51 +722,54 @@ var fluid = fluid || {};
 			uploadStart(demoState.fileObj, uploaderContainer, fragmentSelectors, progressBar, status);
 			
 			// perform demo progress
-			demoProgress();
+			demoProgress(demoState, swfObj, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
 		} else { // no more files to upload close the display
 			fileQueueComplete(uploaderContainer, options, progressBar, fragmentSelectors, dialogObj);
 		}
 
-        function demoProgress() {
-    		if (status.stop === true) {
+        function demoProgress(demoState, swfObj, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj) {
+   			if (status.stop === true) { // user paused the upload
     			demoStop();
     		} else {
     			var delay = Math.floor(Math.random() * 5000 + 1) > 1;
     			var tmpBytes = (demoState.bytes + demoState.byteChunk);
-    			if (tmpBytes < demoState.totalBytes) {
+    			if (tmpBytes < demoState.totalBytes) { // we're still in the progress loop
     				fluid.utils.debug ('tmpBytes = ' + tmpBytes + ' totalBytes = ' + demoState.totalBytes);
     				uploadProgress(progressBar, demoState.fileObj, tmpBytes, demoState.totalBytes, fragmentSelectors, status);
     				demoState.bytes = tmpBytes;
-    				var pause = setTimeout(demoProgress, delay);
+    				var pause = setTimeout(function(){
+						demoProgress(demoState, swfObj, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
+					}, delay);
     			}
-    			else {
+    			else { // progress is complete
     				uploadProgress(progressBar, demoState.fileObj, demoState.totalBytes, demoState.totalBytes, fragmentSelectors, status);
-    				var timer = setTimeout(demoComplete,delay);
+    				var timer = setTimeout(function(){
+						uploadComplete(swfObj, demoState.fileObj, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
+					},delay);
     			}
     		}  
     	}
         
-        function demoComplete() {
+        /*
+function demoComplete() {
+			uploadComplete(file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
     		var row = $('tr#'+ demoState.fileObj.id, uploaderContainer);
     		// mark the row completed
     		markRowComplete(row, fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove);
     		
     		status.currBytes += demoState.fileObj.size; 
-    		updateNumFiles(uploaderContainer, fragmentSelectors.txtTotalFiles, fragmentSelectors.fluidUploader, fragmentSelectors.emptyRow);
-    		updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
+			status.currTotal++ ;
             var dUpload = function () {
                 demoUpload(uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status, dialogObj);
             };
     		var pause = setTimeout(dUpload,1200); // if there hasn't been an error then start up the next upload	
     	}
+*/
         
 	    function demoStop () {
     		hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
     		status.stop = false;
-    		status.currCount = 0;
-    		status.currBytes = 0;
-    		status.totalCount = numFilesToUpload(uploaderContainer, fragmentSelectors.fluidUploader);
-			if (status.totalCount > 0) {
+			if (numberOfRows(uploaderContainer, fragmentSelectors.fluidUploader) > 0) {
 				updateState(uploaderContainer,'paused');
 			} else {
 				updateState(uploaderContainer,'done');
