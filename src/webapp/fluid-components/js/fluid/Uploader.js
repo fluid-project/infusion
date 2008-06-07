@@ -458,16 +458,16 @@ var fluid = fluid || {};
 	var createUploadErrorHandler = function (uploaderContainer, progressBar, fragmentSelectors, maxHeight, status, options) {
         return function(file, error_code, message){
             status.currError = '';
+			status.continueOnError = false;
 			var humanErrorMsg = '';
 			var markError = true;
-			var queueContinueOnError = false;
             try {
                 switch (error_code) {
                     case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
                         status.currError = "Error Code: HTTP Error, File name: " + file.name + ", Message: " + message;
 						humanErrorMsg = 'An upload error occurred. Mostly likely because the file is already in your collection.' + 
 						formatErrorCode(message);
-						queueContinueOnError = true;
+						status.continueOnError = true;
                         break;
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
                         status.currError = "Error Code: Upload Failed, File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
@@ -485,21 +485,15 @@ var fluid = fluid || {};
                         status.currError = "Error Code: File Validation Failed, File name: " + file.name + ", File size: " + file.size + ", Message: " + message;
                         break;
                     case SWFUpload.UPLOAD_ERROR.FILE_CANCELLED:
-                        // If there aren't any files left (they were all cancelled) disable the cancel button
-                        if (this.getStats().files_queued === 0) {
-                            document.getElementById(this.customSettings.cancelButtonId).disabled = true;
-                        }
+                        status.currError = "File Paused by user";
+                        updateState(uploaderContainer,'paused');
                         markError = false;
-                        //	progress.SetStatus("Cancelled");
-                        //	progress.SetCancelled();
-
                         break;
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
                         status.currError = "Upload Stopped by user input";
                         //				progress.SetStatus("Stopped");
 						updateState(uploaderContainer,'paused');
-                        hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
-						markError = false;
+ 						markError = false;
                         break;
                     default:
                         //				progress.SetStatus("Unhandled Error: " + error_code);
@@ -509,11 +503,6 @@ var fluid = fluid || {};
 								
 				if (markError) {
                     markRowError($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove, $(fragmentSelectors.scrollingElement, uploaderContainer), maxHeight, humanErrorMsg);
-                }
-                
-				// if the file upload error is very file specific then start the next upload
-				if (queueContinueOnError) {
-                    this.startUpload();
                 }
                 
 				fluid.utils.debug(status.currError + '\n' + humanErrorMsg);
@@ -569,9 +558,14 @@ var fluid = fluid || {};
             }
             
         }
-        else {
-            fluid.utils.debug(status.currError);
-            hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
+        else { // there has been an error, the question is, do we continue or stop
+        	fluid.utils.debug(status.currError + status.continueOnError);
+    		// if the file upload error is file specific then start the next upload
+			if (status.continueOnError) {
+                swfObj.startUpload();
+            } else {
+				hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
+			}
         }
 	};
 	
@@ -685,7 +679,9 @@ var fluid = fluid || {};
 			"\n status.totalCount = " + status.totalCount + 
 			"\n status.currCount = " + status.currCount + 
 			"\n status.currBytes = " + status.currBytes + 
-			"\n status.currError = " + status.currError
+			"\n status.currError = " + status.currError +
+			"\n status.continueOnError = " + status.continueOnError
+			
 		);
 	}
 	
@@ -911,6 +907,7 @@ function demoComplete() {
 		    currCount:0,
 	    	currBytes:0,
 		    currError:'',
+			continueOnError: false,
 		    stop: false
 	    };
     
