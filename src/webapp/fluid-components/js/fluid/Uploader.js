@@ -434,8 +434,27 @@ var fluid = fluid || {};
 		);
 	};
 
-    // This code was taken from a SWFUpload example.
-    // The commented-out lines will be implemented or removed based on our own progress bar code.
+	
+	/* File and Queue Upload Progress */
+
+    var createUploadProgressHandler = function (progressBar, fragmentSelectors, status) {
+        return function(fileObj, bytes, totalBytes) {
+            uploadProgress (progressBar, fileObj, bytes, totalBytes, fragmentSelectors, status);
+        };
+    };
+    
+	var uploadProgress = function(progressBar, fileObj,bytes,totalBytes, fragmentSelectors, status) {
+		fluid.utils.debug ('File Status :: bytes = ' + bytes + ' :: totalBytes = ' + totalBytes);
+		fluid.utils.debug ('Total Status :: currBytes = ' + (status.currBytes + bytes)  + ' :: totalBytes = ' + queuedBytes(status));
+		updateProgress(progressBar,
+                       fluid.utils.derivePercent (bytes,totalBytes),
+                       fileObj.name,
+                       fluid.utils.derivePercent (status.currBytes + bytes, queuedBytes (status)),
+                       status.currCount,
+                       status.totalCount);
+	};
+	
+	/* File Upload Error */
 	var createUploadErrorHandler = function (uploaderContainer, progressBar, fragmentSelectors, maxHeight, status, options) {
         return function(file, error_code, message){
             status.currError = '';
@@ -470,8 +489,9 @@ var fluid = fluid || {};
                         if (this.getStats().files_queued === 0) {
                             document.getElementById(this.customSettings.cancelButtonId).disabled = true;
                         }
-                        //				progress.SetStatus("Cancelled");
-                        //				progress.SetCancelled();
+                        markError = false;
+                        //	progress.SetStatus("Cancelled");
+                        //	progress.SetCancelled();
 
                         break;
                     case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
@@ -509,25 +529,6 @@ var fluid = fluid || {};
 	
 	var formatErrorCode = function(str) {
 		return " (Error code: " + str + ")";
-	};
-	
-	/* File and Queue Upload Progress */
-
-    var createUploadProgressHandler = function (progressBar, fragmentSelectors, status) {
-        return function(fileObj, bytes, totalBytes) {
-            uploadProgress (progressBar, fileObj, bytes, totalBytes, fragmentSelectors, status);
-        };
-    };
-    
-	var uploadProgress = function(progressBar, fileObj,bytes,totalBytes, fragmentSelectors, status) {
-		fluid.utils.debug ('File Status :: bytes = ' + bytes + ' :: totalBytes = ' + totalBytes);
-		fluid.utils.debug ('Total Status :: currBytes = ' + (status.currBytes + bytes)  + ' :: totalBytes = ' + queuedBytes(status));
-		updateProgress(progressBar,
-                       fluid.utils.derivePercent (bytes,totalBytes),
-                       fileObj.name,
-                       fluid.utils.derivePercent (status.currBytes + bytes, queuedBytes (status)),
-                       status.currCount,
-                       status.totalCount);
 	};
 	
 	/* File Upload Success */
