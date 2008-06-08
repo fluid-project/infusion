@@ -162,6 +162,10 @@
 	outline: none;
 }
 
+.fluid-uploader-queue .uploaded th {
+	border-left: 4px solid #74B74A;
+}
+
 .fluid-uploader-queue .uploaded .removeFile {
 	background: url(../images/uploader/tick.png) scroll no-repeat 1px 1px;
 	cursor: auto;
@@ -174,6 +178,10 @@
 	background-color: transparent;
 }
 
+
+.fluid-uploader-queue .error th {
+	border-left: 4px solid #F5E392;
+}
 
 .fluid-uploader-queue .error .removeFile {
 	background: url(../images/uploader/error.png) scroll no-repeat 1px 1px;
@@ -357,7 +365,7 @@
 
 .fluid-uploader-queue .queue-error-row td {
 	border-top: 1px dotted #E6E6E6;
-	border-left: 1px solid #999;
+	border-left: 4px solid #F5E392;
 }
 
 /* 
