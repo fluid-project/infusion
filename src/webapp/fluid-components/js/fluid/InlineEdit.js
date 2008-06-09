@@ -19,7 +19,13 @@ var fluid = fluid || {};
         text.removeClass(invitationStyle);
         text.hide();
         editContainer.show();
-        editField.focus();
+
+        // Work around for FLUID-726
+        // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.       
+        setTimeout(function () {
+          editField.focus();    
+        }, 0);
+        
     }
     
      function finish(editContainer, editField, text, finishedFn) {
