@@ -654,7 +654,7 @@ var fluid = fluid || {};
 		progressBar.update(progressBar.fragmentSelectors.fileProgress, filePercent, fileLabel);
 		
 		// update total info
-		if (totalPercent) {
+		if (totalPercent !== undefined) {
 			var totalLabel = 'Total Progress: <span class="percent">' + totalPercent 
 			+ '</span>% [<span class="file_index">' + fileIndex 
 			+ '</span> of <span class="total_file_num">' + totalFileNum 
@@ -1048,7 +1048,7 @@ function demoComplete() {
 			this.progressContainer.fadeIn('slow');
 			$(this.fragmentSelectors.pause, this.progressContainer).focus();
 		}
-		fluid.utils.debug ('percent = ' + percent + ' lastPercent = ' + this.lastPercent);
+		fluid.utils.debug ('"' + label + '" :: percent = ' + percent + ' lastPercent = ' + this.lastPercent);
 		
 		//update the label of the indicator
 		labelElm.html(label);
