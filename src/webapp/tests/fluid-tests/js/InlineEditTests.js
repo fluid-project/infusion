@@ -71,4 +71,83 @@ https://source.fluidproject.org/svn/LICENSE.txt
         jqUnit.notVisible("Minimal constructor - edit field is not visible", "#edit-container-custom");
     });
 
+    inlineEditTests.test("Edit-Finish", function () {
+        var display = $("#display");
+        var edit = $("#edit");
+        var inlineEditor = new fluid.InlineEdit("inline-edit");
+        
+        jqUnit.isVisible("Before edit, display field should be visible", "#display");
+        jqUnit.notVisible("Before edit, edit field should not be visible", "#edit-container");
+
+        inlineEditor.edit();
+        jqUnit.notVisible("After edit, display field should not be visible", "#display");
+        jqUnit.isVisible("After edit, edit field should be visible", "#edit-container");
+        jqUnit.assertEquals("After edit, edit field should contain same text as display field", display.text(), edit.attr("value"));
+
+        var testString = "This is new text.";
+        edit.attr("value", testString);
+        inlineEditor.finish();
+        jqUnit.isVisible("After finish, display field should be visible", "#display");
+        jqUnit.notVisible("After finish, edit field should not be visible", "#edit-container");
+        jqUnit.assertEquals("After edit, display field should contain new test string", testString, display.text());
+    });
+
+/*
+    inlineEditTests.test("Keyboard navigation, edit", function () {
+        var display = $("#display");
+        var edit = $("#edit");
+        var editContainer = $("#edit-container");
+        var inlineEditor = new fluid.InlineEdit("inline-edit");
+        jqUnit.assertTrue("Display should be tabbable", display.tabindex()>=0);
+        jqUnit.assertFalse("Before focus, display field should not have the focus style", display.hasClass(inlineEditor.styles.focus));
+
+        display.focus();
+        jqUnit.assertTrue("After focus, display field should have the focus style", display.hasClass(inlineEditor.styles.focus));
+
+        var enterEvent = fluid.testUtils.createUnmodifiedKeyEvent ($.a11y.keys.ENTER);
+        
+        display.triggerHandler('keypress', enterEvent);
+        jqUnit.notVisible("After enter pressed, display field should not be visible", "#display");
+        jqUnit.isVisible("After enter pressed, edit field should be visible", "#edit-container");
+        jqUnit.assertEquals("After enter pressed, edit field should contain same text as display field", display.text(), edit.attr("value"));
+
+        var testString = "This is new text.";
+        edit.attr("value", testString);
+        editContainer.triggerHandler('keypress', enterEvent);
+        jqUnit.isVisible("After changing text and pressing enter, display field should be visible", "#display");
+        jqUnit.notVisible("After changing text and pressing enter, edit field should not be visible", "#edit-container");
+        jqUnit.assertEquals("After changing text and pressing enter, display field should contain new test string", testString, display.text());
+
+        display.blur();
+        jqUnit.assertFalse("After blur, display field should not have the focus style", display.hasClass(inlineEditor.styles.focus));
+        
+    });
+*/
+    
+    inlineEditTests.test("Hover", function () {
+        var display = $("#display");
+        var inlineEditor = new fluid.InlineEdit("inline-edit");
+
+        jqUnit.assertFalse("Before hover, display field should not have the invitation style", display.hasClass(inlineEditor.styles.invitation));
+
+        display.mouseover();
+        jqUnit.assertTrue("During hover, display field should have the invitation style", display.hasClass(inlineEditor.styles.invitation));
+
+        display.mouseout();
+        jqUnit.assertFalse("After hover, display field should not have the invitation style", display.hasClass(inlineEditor.styles.invitation));
+    });
+    
+    inlineEditTests.test("Click", function () {
+        var display = $("#display");
+        var edit = $("#edit");
+        var inlineEditor = new fluid.InlineEdit("inline-edit");
+
+        jqUnit.isVisible("Before click, display field should be visible", "#display");
+        jqUnit.notVisible("Before click, edit field should not be visible", "#edit-container");
+
+        display.click();
+        jqUnit.notVisible("After click, display field should not be visible", "#display");
+        jqUnit.isVisible("After click, edit field should be visible", "#edit-container");
+        jqUnit.assertEquals("After click, edit field should contain same text as display field", display.text(), edit.attr("value"));
+    });
 });

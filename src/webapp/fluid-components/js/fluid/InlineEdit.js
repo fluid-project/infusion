@@ -13,17 +13,12 @@ var fluid = fluid || {};
 
 (function ($) {
     
-    function show(element) {
-        element.show();
-        element.focus();
-    }
-    
     function edit(text, editContainer, editField, invitationStyle, paddings) {
 		editField.val(text.text());
 		editField.width(Math.max(text.width() + paddings.add, paddings.minimum));
         text.removeClass(invitationStyle);
         text.hide();
-        show(editContainer);
+        editContainer.show();
         editField.focus();
     }
     
@@ -31,7 +26,8 @@ var fluid = fluid || {};
         finishedFn(edit);
         text.text(editField.val());
         editContainer.hide();
-        show(text);
+        text.show();
+        text.focus();
     }
     
     function editHandler(text, editContainer, editField, invitationStyle, paddings) {
@@ -77,14 +73,15 @@ var fluid = fluid || {};
         text.blur(toggleFocusStyle);
     }
     
-    function keyNav(text, editContainer, editField, focusStyle) {
+    function keyNav(text, editContainer, editField, styles, paddings) {
         text.tabbable();
-        bindKeyHighlight(text, focusStyle);
-        text.activatable(editHandler(text, editContainer, editField));
+        bindKeyHighlight(text, styles.focus);
+        text.activatable(editHandler(text, editContainer, editField, styles.invitation, paddings));
     } 
     
     function bindEditFinish(editContainer, editField, text, finishedFn) {
         var finishHandler = function (evt) {
+ 
             if (evt.which && evt.which != jQuery.a11y.keys.ENTER) {
                 return true;
             }
@@ -115,7 +112,7 @@ var fluid = fluid || {};
         
         // Add event handlers.
         mouse(this.text, this.editContainer, this.editField, this.styles, this.paddings, this.finishedEditing);
-        keyNav(this.text, this.editContainer, this.editField, this.styles.focus);
+        keyNav(this.text, this.editContainer, this.editField, this.styles, this.paddings);
         bindEditFinish(this.editContainer, this.editField, this.text, this.finishedEditing);
         
         // Add ARIA support.
