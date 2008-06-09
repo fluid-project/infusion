@@ -92,11 +92,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
         jqUnit.assertEquals("After edit, display field should contain new test string", testString, display.text());
     });
 
-/*
     inlineEditTests.test("Keyboard navigation, edit", function () {
         var display = $("#display");
         var edit = $("#edit");
-        var editContainer = $("#edit-container");
         var inlineEditor = new fluid.InlineEdit("inline-edit");
         jqUnit.assertTrue("Display should be tabbable", display.tabindex()>=0);
         jqUnit.assertFalse("Before focus, display field should not have the focus style", display.hasClass(inlineEditor.styles.focus));
@@ -104,25 +102,24 @@ https://source.fluidproject.org/svn/LICENSE.txt
         display.focus();
         jqUnit.assertTrue("After focus, display field should have the focus style", display.hasClass(inlineEditor.styles.focus));
 
-        var enterEvent = fluid.testUtils.createUnmodifiedKeyEvent ($.a11y.keys.ENTER);
-        
-        display.triggerHandler('keypress', enterEvent);
+        display.simulate("keydown", {keyCode: $.a11y.keys.ENTER});
+            
         jqUnit.notVisible("After enter pressed, display field should not be visible", "#display");
         jqUnit.isVisible("After enter pressed, edit field should be visible", "#edit-container");
         jqUnit.assertEquals("After enter pressed, edit field should contain same text as display field", display.text(), edit.attr("value"));
 
         var testString = "This is new text.";
         edit.attr("value", testString);
-        editContainer.triggerHandler('keypress', enterEvent);
+        edit.simulate("keypress", {keyCode: $.a11y.keys.ENTER});
+
         jqUnit.isVisible("After changing text and pressing enter, display field should be visible", "#display");
         jqUnit.notVisible("After changing text and pressing enter, edit field should not be visible", "#edit-container");
         jqUnit.assertEquals("After changing text and pressing enter, display field should contain new test string", testString, display.text());
 
         display.blur();
-        jqUnit.assertFalse("After blur, display field should not have the focus style", display.hasClass(inlineEditor.styles.focus));
+//        jqUnit.assertFalse("After blur, display field should not have the focus style", display.hasClass(inlineEditor.styles.focus));
         
     });
-*/
     
     inlineEditTests.test("Hover", function () {
         var display = $("#display");
