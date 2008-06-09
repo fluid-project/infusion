@@ -729,15 +729,15 @@ var fluid = fluid || {};
 			demoState.row = $(fragmentSelectors.fileQueue + ' tbody tr:not(".fluid-uploader-placeholder"):not(".uploaded)', uploaderContainer).eq(0);
 			
 			demoState.fileId = jQuery(demoState.row).attr('id');
-			demoState.fileObj = swfObj.getFile(demoState.fileId);
+			demoState.file = swfObj.getFile(demoState.fileId);
 			demoState.bytes = 0;
-			demoState.totalBytes = demoState.fileObj.size;
+			demoState.totalBytes = demoState.file.size;
 			demoState.numChunks = Math.ceil(demoState.totalBytes / demoState.byteChunk);
 			fluid.utils.debug ('DEMO :: ' + demoState.fileId + ' :: totalBytes = ' 
                 + demoState.totalBytes + ' numChunks = ' + demoState.numChunks);
 			
 			// start the demo upload
-			uploadStart(demoState.fileObj, uploaderContainer, fragmentSelectors, progressBar, status);
+			uploadStart(demoState.file, uploaderContainer, fragmentSelectors, progressBar, status);
 			
 			// perform demo progress
 			demoProgress(demoState, swfObj, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
@@ -753,16 +753,16 @@ var fluid = fluid || {};
     			var tmpBytes = (demoState.bytes + demoState.byteChunk);
     			if (tmpBytes < demoState.totalBytes) { // we're still in the progress loop
     				fluid.utils.debug ('tmpBytes = ' + tmpBytes + ' totalBytes = ' + demoState.totalBytes);
-    				uploadProgress(progressBar, uploaderContainer, demoState.fileObj, tmpBytes, demoState.totalBytes, fragmentSelectors, status);
+    				uploadProgress(progressBar, uploaderContainer, demoState.file, tmpBytes, demoState.totalBytes, fragmentSelectors, status);
     				demoState.bytes = tmpBytes;
     				var pause = setTimeout(function(){
 						demoProgress(demoState, swfObj, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
 					}, delay);
     			}
     			else { // progress is complete
-    				uploadProgress(progressBar, uploaderContainer, demoState.fileObj, demoState.totalBytes, demoState.totalBytes, fragmentSelectors, status);
+    				uploadProgress(progressBar, uploaderContainer, demoState.file, demoState.totalBytes, demoState.totalBytes, fragmentSelectors, status);
     				var timer = setTimeout(function(){
-						uploadComplete(swfObj, demoState.fileObj, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
+						uploadComplete(swfObj, demoState.file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
 					},delay);
     			}
     		}  
@@ -771,11 +771,11 @@ var fluid = fluid || {};
         /*
 function demoComplete() {
 			uploadComplete(file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
-    		var row = $('tr#'+ demoState.fileObj.id, uploaderContainer);
+    		var row = $('tr#'+ demoState.file.id, uploaderContainer);
     		// mark the row completed
     		markRowComplete(row, fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove);
     		
-    		status.currBytes += demoState.fileObj.size; 
+    		status.currBytes += demoState.file.size; 
 			status.currTotal++ ;
             var dUpload = function () {
                 demoUpload(uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status, dialogObj);
