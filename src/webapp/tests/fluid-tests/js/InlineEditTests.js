@@ -116,8 +116,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
         jqUnit.notVisible("After changing text and pressing enter, edit field should not be visible", "#edit-container");
         jqUnit.assertEquals("After changing text and pressing enter, display field should contain new test string", testString, display.text());
 
-        display.blur();
-//        jqUnit.assertFalse("After blur, display field should not have the focus style", display.hasClass(inlineEditor.styles.focus));
+        // focus on something else to cause a blur on the display field
+        jQuery("#display-custom").focus();
+        jqUnit.assertFalse("After blur, display field should not have the focus style", display.hasClass(inlineEditor.styles.focus));
         
     });
     
