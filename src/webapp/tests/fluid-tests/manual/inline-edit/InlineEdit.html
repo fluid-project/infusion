@@ -10,18 +10,41 @@
         <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../../fluid-components/js/jquery/jARIA.js"></script>
         <script type="text/javascript" src="../../../../fluid-components/js/fluid/InlineEdit.js"></script>
+        <script type="text/javascript" src="../../../../tests/utils/DebugFocus.js"></script>
 
 	</head>
 	<body>
-	    <form id="inline-edit">
-	        <div class="text">Click me to edit...</div>
-            <div class="editContainer">
-                <input type="text" class="edit" />
+      <p>
+	    <form id="inline-edit1">
+	        <div class="text" id="text1">Click me to edit...</div>
+            <div class="editContainer" id="editContainer1">
+                <input type="text" class="edit" id="edit1" value="I am the hidden text of the first edit"/>
             </div>
 	    </form>
+      </p>
         
+      <p>
+	    <form id="inline-edit2">
+	        <div class="text" id="text2">No, click me instead!</div>
+            <div class="editContainer" id="editContainer2">
+                <input type="text" class="edit" id="edit2" value="I am the hidden text of the second edit"/>
+            </div>
+	    </form>
+      </p>
+
+      <p>
+	    <form id="inline-edit3">
+	        <div class="text" id="text3">Oh, pick me! Pick me!</div>
+            <div class="editContainer" id="editContainer3">
+                <input type="text" class="edit" id="edit3" value="I am the hidden text of the third edit"/>
+            </div>
+	    </form>
+      </p>
+
         <script type="text/javascript">
-            new fluid.InlineEdit("inline-edit");
+            new fluid.InlineEdit("inline-edit1");
+            new fluid.InlineEdit("inline-edit2");
+            new fluid.InlineEdit("inline-edit3");
         </script>
 	</body>
 </html>
