@@ -104,11 +104,12 @@ var fluid = fluid || {};
         // Need to add ARIA roles and states.
     }
     
-    fluid.InlineEdit = function (componentContainerId, selectors, styles, paddings) {
+    fluid.InlineEdit = function (componentContainerId, options) {
         // Mix in the user's configuration options.
-        selectors = jQuery.extend({}, this.defaults.selectors, selectors);
-        this.styles = jQuery.extend({}, this.defaults.styles, styles);
-        this.paddings = jQuery.extend({}, this.defaults.paddings, paddings);
+        options = options || {};
+        selectors = jQuery.extend({}, this.defaults.selectors, options.selectors);
+        this.styles = jQuery.extend({}, this.defaults.styles, options.styles);
+        this.paddings = jQuery.extend({}, this.defaults.paddings, options.paddings);
 		
         // Bind to the DOM.
         this.container = jQuery("#" + componentContainerId);
