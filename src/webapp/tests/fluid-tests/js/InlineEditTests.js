@@ -128,10 +128,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         jqUnit.assertFalse("Before hover, display field should not have the invitation style", display.hasClass(inlineEditor.styles.invitation));
 
-        display.mouseover();
+        display.trigger("mouseenter");
         jqUnit.assertTrue("During hover, display field should have the invitation style", display.hasClass(inlineEditor.styles.invitation));
 
-        display.mouseout();
+        display.trigger("mouseleave");
         jqUnit.assertFalse("After hover, display field should not have the invitation style", display.hasClass(inlineEditor.styles.invitation));
     });
     
