@@ -4,6 +4,8 @@
 
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="files/portal.css" type="text/css" rel="stylesheet" media="all">
+        <link href="files/ann/tool_base.css" type="text/css" rel="stylesheet" media="all">
+        <link href="files/ann/tool.css" type="text/css" rel="stylesheet" media="all">
 <!-- this caises problems for layout nneds investihating -->
     <link href="files/portalstyles.css" type="text/css" rel="stylesheet" media="all">
 <!--[if gte IE 5]><![if lt IE 7]>
@@ -11,10 +13,13 @@
 <![endif]><![endif]-->
 
     <meta http-equiv="Content-Style-Type" content="text/css">
-    <title>Sakai Fluid Demonstration Site : Fluid Demo : Announcements</title>
-     <script type="text/javascript" language="JavaScript" src="files/headscripts.js"></script>
-     <script type="text/javascript" language="JavaScript" src="files/jquery-1.js"></script>
+    <title>Demonstration: Fluid Inline Edit in Sakai Announcements</title>
+     <script type="text/javascript" language="JavaScript" src="../../fluid-components/js/jquery/jquery-1.2.3.js"></script>
 <script type="text/javascript" language="JavaScript" src="files/portalscripts.js"></script>
+        <script type="text/javascript" src="../../fluid-components/js/jquery/jquery-1.2.3.js"></script>
+        <script type="text/javascript" src="../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../fluid-components/js/jquery/jARIA.js"></script>
+        <script type="text/javascript" src="../../fluid-components/js/fluid/InlineEdit.js"></script>
 
 </head><body class="portalBody">
 	<script type="text/javascript" language="JavaScript">
@@ -47,7 +52,7 @@
 		</div>
 		<div id="mastLogin">
 	<div id="loginLinks">
-		<a href="http://build.fluidproject.org/portal/logout" title="Logout" id="loginLink1">Logout</a>
+		<a href="#" title="Logout" id="loginLink1">Logout</a>
 	</div>
 		</div>
 	</div>
@@ -59,10 +64,10 @@
 			<a id="sitetabs" class="skip" name="sitetabs"></a>
 			<h1 class="skip">Worksites begin here</h1>
 			<ul id="siteLinkList">
-				<li><a href="http://build.fluidproject.org/portal/site/%7Eadmin" title="My Workspace"><span>My Workspace</span></a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/citationsAdmin" title="citationsAdmin"><span>citationsAdmin</span></a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/%21admin" title="Administration Workspace"><span>Administration Workspace</span></a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/60e74078-3d9d-4410-a287-707887a8efa7" title="Art on Film"><span>Art on Film</span></a></li>
+				<li><a href="#" title="My Workspace"><span>My Workspace</span></a></li>
+				<li><a href="#" title="citationsAdmin"><span>citationsAdmin</span></a></li>
+				<li><a href="#" title="Administration Workspace"><span>Administration Workspace</span></a></li>
+				<li><a href="#" title="Art on Film"><span>Art on Film</span></a></li>
 				<li class="selectedTab"><a href="#"><span>Fluid Demo</span></a></li>
 				<li class="more-tab"><a href="#" onclick="return dhtml_more_tabs();" title="- more -"><span class="outer"><span class="inner">My Active Sites</span></span></a></li>
 			</ul>
@@ -81,19 +86,19 @@
 						<div class="termContainer">
    				<h4>OTHER</h4>
 						<ul>
-				<li><a href="http://build.fluidproject.org/portal/site/%7Eadmin" title="My Workspace">
+				<li><a href="#" title="My Workspace">
 					<span>My Workspace</span>
 				</a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/%21admin" title="Administration Workspace">
+				<li><a href="#" title="Administration Workspace">
 					<span>Administration Workspace</span>
 				</a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/Test" title="Fluid Demo">
+				<li><a href="#" title="Fluid Demo">
 					<span>Fluid Demo</span>
 				</a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/mercury" title="mercury site">
+				<li><a href="#" title="mercury site">
 					<span>mercury site</span>
 				</a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/PortfolioAdmin" title="Portfolio Admin">
+				<li><a href="#" title="Portfolio Admin">
 					<span>Portfolio Admin</span>
 				</a></li>
 			</ul>
@@ -101,25 +106,25 @@
 			<div class="termContainer">
    				<h4>PROJECTS</h4>
 						<ul>
-				<li><a href="http://build.fluidproject.org/portal/site/60e74078-3d9d-4410-a287-707887a8efa7" title="Art on Film">
+				<li><a href="#" title="Art on Film">
 					<span>Art on Film</span>
 				</a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/citationsAdmin" title="citationsAdmin">
+				<li><a href="#" title="citationsAdmin">
 					<span>citationsAdmin</span>
 				</a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/3365aeac-8cde-4c4e-bd2f-1a61c0abad92" title="Contemporary Art">
+				<li><a href="#" title="Contemporary Art">
 					<span>Contemporary Art</span>
 				</a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/1d9090e0-d493-4070-9fd5-97aa11443840" title="Exhibition Project">
+				<li><a href="#" title="Exhibition Project">
 					<span>Exhibition Project</span>
 				</a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/6e6896cb-5810-4763-aef3-eaf927a9c4b8" title="Museum Studies">
+				<li><a href="#" title="Museum Studies">
 					<span>Museum Studies</span>
 				</a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/49446eea-854f-447e-9b29-e29420e15984" title="Research Methods">
+				<li><a href="#" title="Research Methods">
 					<span>Research Methods</span>
 				</a></li>
-				<li><a href="http://build.fluidproject.org/portal/site/e0edba5d-230e-4086-a441-c12e4147ee7e" title="Test Site 1">
+				<li><a href="#e" title="Test Site 1">
 					<span>Test Site 1</span>
 				</a></li>
 			</ul>
@@ -144,21 +149,19 @@
 		<div id="toolMenu">
 			<ul>
      			<li>
-			<a class="icon-sakai-gallery" href="http://build.fluidproject.org/portal/site/Test/page/900fc0d1-72e2-4199-8098-67f5091b8e30"><span>Gallery</span></a>
+			<a class="icon-sakai-gallery" href="#"><span>Gallery</span></a>
 			</li>
           			<li>
-			<a class="icon-sakai-resources" href="http://build.fluidproject.org/portal/site/Test/page/dbd73441-b528-4ace-0042-e4d104716f8e"><span>Resources</span></a>
+			<a class="icon-sakai-resources" href="#"><span>Resources</span></a>
 			</li>
           			<li>
-			<a class="icon-sakai-siteinfo" href="http://build.fluidproject.org/portal/site/Test/page/903e04e0-fa70-499d-00de-fe7ded0a8eb3"><span>Site Info</span></a>
+			<a class="icon-sakai-siteinfo" href="#"><span>Site Info</span></a>
 			</li>
        				<li class="selectedTool">
 				<span class="icon-sakai-announcements">Announcements</span>
 				</li>
       				<li>
-				<a class="icon-sakai-help" accesskey="6" href="http://build.fluidproject.org/portal/help/main" target="_blank" onclick="openWindow('http://build.fluidproject.org/portal/help/main', 
-					'Help', 'resizable=yes,toolbar=no,scrollbars=yes,menubar=yes,width=800,height=600'); 
-					return false">
+				<a class="icon-sakai-help" accesskey="6" href="#" target="_blank">
 					<span>Help</span>
 				</a>
 				</li>
@@ -175,20 +178,162 @@
 	<div class="portletTitleWrap">
 		<div class="portletTitle">
 			<div class="title">
-                <a href="http://build.fluidproject.org/portal/tool-reset/ann/?panel=Main" target="Maina4320d7bx768ax4e0bxa4c3xdd68aa64d68e" title="Reset">
+                <a href="#" target="Maina4320d7bx768ax4e0bxa4c3xdd68aa64d68e" title="Reset">
                         <img src="files/transparent.gif" alt="Reset" border="1"></a>
 				<h2>Announcements</h2>
 			</div>
 			<div class="action">
-			<a accesskey="h" href="http://build.fluidproject.org/portal/help/main?help=sakai.announcements" title="Help" target="_blank" onclick="openWindow('http://build.fluidproject.org/portal/help/main?help=sakai.announcements', 'Help',
-		  'resizable=yes,toolbar=no,scrollbars=yes,menubar=yes,width=800,height=600'); return false">
+			<a accesskey="h" href="#" title="Help" target="_blank">
 				<img src="files/transparent.gif" alt="Help" border="0"></a>
 			</div>
 		</div>
 	</div>
 	<div class="portletMainWrap">
-	    <iframe style="height: 1362px;" name="Maina4320d7bx768ax4e0bxa4c3xdd68aa64d68e" id="Maina4320d7bx768ax4e0bxa4c3xdd68aa64d68e" title="Announcements " class="portletMainIframe" marginwidth="0" marginheight="0" src="files/ann.html" frameborder="0" height="50" scrolling="auto" width="100%">
-</iframe>
+
+
+
+        <div class="portletBody">
+            <div class="navIntraTool">
+                <a href="#tocontent" title="Add">Add</a>
+                <a href="#" title="Merge"> Merge</a>
+                <a href="#" title="Options"> Options</a>
+                <a href="#" title="Permissions"> Permissions</a>
+            </div>
+            <h3>Announcements</h3>
+            <div class="navPanel">
+                <div class="viewNav">
+                    <form name="viewForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
+                        <input name="eventSubmit_doView" value="view" type="hidden">
+                        <label for="view">
+                            View
+                        </label>
+                        <span class="skip">Press alt + up and down arrows to scroll through menu</span>
+                        <select id="view" name="view" size="1" onchange="blur();document.viewForm.submit();">
+                            <option value="view.all">All</option>
+                            <option value="view.public">Public</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="listNav">
+                    <div class="instruction">
+                        Viewing 1 - 2 of  2 items
+                    </div>
+                    <form name="firstpageForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
+                        <input name="eventSubmit_doList_first" value="|&lt;" disabled="disabled" type="submit">
+                    </form>
+                    <form name="prevpageForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
+                        <input name="eventSubmit_doList_prev" value="&lt;" disabled="disabled" type="submit">
+                    </form>
+                    <form name="pagesizeForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
+                        <input name="eventSubmit_doChange_pagesize" value="changepagesize" type="hidden"><span class="skip">Press alt + up and down arrows to scroll through menu</span>
+                        <select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+                            <option value="5">show 5 items...</option>
+                            <option value="10" selected="selected">show 10 items...</option>
+                            <option value="20">show 20 items...</option>
+                            <option value="50">show 50 items...</option>
+                            <option value="100">show 100 items...</option>
+                            <option value="200">show 200 items....</option>
+                        </select>
+                    </form>
+                    <form name="nextpageForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
+                        <input name="eventSubmit_doList_next" value="&gt;" disabled="disabled" type="submit">
+                    </form>
+                    <form name="lastpageForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
+                        <input name="eventSubmit_doList_last" value="&gt;|" disabled="disabled" type="submit">
+                    </form>
+                </div>
+            </div>
+            <form name="announcementListForm" action="http://build.fluidproject.org/portal/tool/ann?panel=Main" method="post">
+                <table class="listHier" summary="Table contains a list of announcements. It is five or six columns wide and each row contains a single announcement. Column one indicates if the announcement has an attachment, column two contains the title of the announcement, column three has the name of the author, column four shows the recipient, column five contains the date and time of publication, column six, if present, contains a checkbox - selecting it will mean you want to remove this announcement. The following row will contain announcement text if site owner has set it to be so." border="0" cellspacing="0">
+                    <tbody>
+                        <tr>
+                            <th id="attach" class="attach">
+                            </th>
+                            <th id="subject">
+                                <a href="#" title="Sort by subject">Subject</a>
+                            </th>
+                            <th id="author">
+                                <a href="#"title="Sort by author">From</a>
+                            </th>
+                            <th id="channel">
+                                <a href="#"title="Sort by audience">For</a>
+                            </th>
+                            <th id="date">
+                                <a href="#"title="Sort by date ascending">Date <img src="ann/sortascending.gif" alt="Sort by date ascending" border="0"></a>
+                            </th>
+                            <th class="screenOnly" id="checkbox">
+                                Remove?
+                            </th>
+                        </tr>
+                        <tr>
+                            <td headers="attach" class="attach">
+                                &nbsp;
+                            </td>
+                            <td headers="subject" id="announcement1">
+                                <h4 class="text">Lecture Room Change</h4>
+                                <div class="editContainer">
+                                    <input type="text" class="edit" />
+                                </div>
+                            </td>
+                            <td headers="author">
+                                George O'Malley
+                            </td>
+                            <td>
+                                site
+                            </td>
+                            <td headers="date">
+                                Jun 10, 2008 1:12 pm
+                            </td>
+                            <td headers="checkbox" class="screenOnly">
+                                <label for="check-1" class="skip">
+                                    Select to remove
+                                </label>
+                                <input title="Select to remove" id="check-1" name="selectedMembers" value="/announcement/msg/Test/main/855a683b-1bcc-4662-89c1-c8cd3e4cee11" type="checkbox">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td headers="attach" class="attach">
+                                &nbsp;
+                            </td>
+                            <td headers="subject" id="announcement2">
+                                <h4 class="text">Reading for Tuesday's Lab</h4>
+                                <div class="editContainer">
+                                    <input type="text" class="edit" />
+                                </div>
+                            </td>
+                            <td headers="author">
+                                Meredith Grey
+                            </td>
+                            <td>
+                                site
+                            </td>
+                            <td headers="date">
+                                Jun 6, 2008 1:12 pm
+                            </td>
+                            <td headers="checkbox" class="screenOnly">
+                                <label for="check-2" class="skip">
+                                    Select to remove
+                                </label>
+                                <input title="Select to remove" id="check-2" name="selectedMembers" value="/announcement/msg/Test/main/b8f4d602-56bd-4303-8900-e6b17a74eb3e" type="checkbox">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="act">
+                    <input class="active" name="eventSubmit_doDeleteannouncement" value="Update" accesskey="s" type="submit"><input name="reset" id="reset" value="Cancel" accesskey="x" type="reset">
+                </p>
+
+                <script type="text/javascript">
+                    new fluid.InlineEdit("announcement1");
+                    new fluid.InlineEdit("announcement2");
+                </script>
+
+            </form>
+        </div>
+
+
+
+
 	</div>
 </div>
 		</div>
@@ -197,7 +342,7 @@
 <div id="footer">
 	<div class="footerExtNav" align="center">
 		|
-		<a href="https://localhost/portal/site/%21gateway">Gateway</a>  | 
+		<a href="#">Gateway</a>  | 
 		<a href="http://www.sakaiproject.org/" target="_blank">The Sakai Project</a>  | 
 	</div>
 	<div id="footerInfo">
