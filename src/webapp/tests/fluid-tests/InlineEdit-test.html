@@ -17,6 +17,8 @@
         <script type="text/javascript" src="../jqUnit/jqUnit.js"></script>
 
         <!--  These are tests that have been written using this page as data and test supports -->
+	    <script type="text/javascript" src="../../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="js/TestUtils.js"></script>
         <script type="text/javascript" src="../jqUnit/jquery.simulate.js"></script>        
         <script type="text/javascript" src="js/InlineEditTests.js"></script>
 
@@ -33,14 +35,14 @@
 	    <form id="inline-edit">
 	        <div id="display" class="text">Click me to edit...</div>
             <div id="edit-container" class="editContainer">
-                <input id="edit" type="text" class="edit" value="" />
+                <input id="edit" type="text" class="edit" value="this is the hidden text for the first editor" />
             </div>
 	    </form>
         
 	    <form id="inline-edit-custom">
 	        <div id="display-custom" class="customText">Click me to edit...</div>
             <div id="edit-container-custom" class="customEditContainer">
-                <input id="edit-custom" type="text" class="customEdit" value="" />
+                <input id="edit-custom" type="text" class="customEdit" value="this is the hidden text for the second editor" />
             </div>
 	    </form>
       </div>

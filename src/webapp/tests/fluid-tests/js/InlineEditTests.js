@@ -153,4 +153,22 @@ https://source.fluidproject.org/svn/LICENSE.txt
         jqUnit.isVisible("After click, edit field is visible", "#edit-container");
         jqUnit.assertEquals("After click, edit field contains same text as display field", display.text(), edit.attr("value"));
     });
+    
+    inlineEditTests.test("Arrow Keys while Editing", function() {
+        var display = $("#display");
+        var edit = $("#edit");
+        var inlineEditor = new fluid.InlineEdit("inline-edit");
+
+        display.focus();
+        display.simulate("keydown", {keyCode: $.a11y.keys.ENTER});
+        jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
+        jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
+        jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));
+
+        // note: this simulate works in FFX, but not IE7
+        edit.simulate("keypress", {keyCode: fluid.keys.LEFT});
+        jqUnit.notVisible("After left-arrow pressed, display field is still hidden", "#display");
+        jqUnit.isVisible("After left-arrow pressed, edit field is still visible", "#edit-container");
+
+    });
 });

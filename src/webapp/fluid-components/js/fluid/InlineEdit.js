@@ -87,8 +87,8 @@ var fluid = fluid || {};
     
     function bindEditFinish(editContainer, editField, text, finishedFn) {
         var finishHandler = function (evt) {
- 
-            if (evt.which && evt.which != jQuery.a11y.keys.ENTER) {
+            var code = (evt.keyCode? evt.keyCode : (evt.which? evt.which : 0));
+            if (code != jQuery.a11y.keys.ENTER) {
                 return true;
             }
             
