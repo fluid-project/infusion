@@ -2,36 +2,34 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title>InlineEdit Test Suite</title>
+		<title>Inline Edit Test Suite</title>
         <link rel="stylesheet" href="css/InlineEdit.css" type="text/css" media="screen" charset="utf-8" />
         
-        <!--  These are the required javascript modules for the Uploader -->
+        <!--  These are the required javascript modules for the Inline Edit -->
         <script type="text/javascript" src="../../fluid-components/js/jquery/jquery-1.2.3.js"></script>
         <script type="text/javascript" src="../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../fluid-components/js/jquery/jARIA.js"></script>
 	    <script type="text/javascript" src="../../fluid-components/js/fluid/InlineEdit.js"></script>
 
-        <!--  These are the jqUnit test files -->
+        <!--  These are the jqUnit test framework files -->
         <link rel="Stylesheet" media="screen" href="../jqUnit/testsuite.css" />
         <script type="text/javascript" src="../jqUnit/testrunner.js"></script>
         <script type="text/javascript" src="../jqUnit/jqUnit.js"></script>
 
-        <!--  These are tests that have been written using this page as data -->
-        <script type="text/javascript" src="js/TestUtils.js"></script>
+        <!--  These are tests that have been written using this page as data and test supports -->
         <script type="text/javascript" src="../jqUnit/jquery.simulate.js"></script>        
         <script type="text/javascript" src="js/InlineEditTests.js"></script>
 
 	</head>
 	<body>
-
+      <!-- This is the markup that jqUnit will look for when running tests and displaying the results -->
       <h1 id="header">InlineEdit Test Suite</h1>
       <h2 id="banner"></h2>
       <h2 id="userAgent"></h2>
       <ol id="tests"></ol>
+      <div id="main">
 
-    <!-- Test HTML -->
-    <div id="main">
-
+        <!-- This is the test data -->
 	    <form id="inline-edit">
 	        <div id="display" class="text">Click me to edit...</div>
             <div id="edit-container" class="editContainer">
@@ -45,7 +43,7 @@
                 <input id="edit-custom" type="text" class="customEdit" value="" />
             </div>
 	    </form>
-    </div>
+      </div>
 
 	</body>
 </html>
