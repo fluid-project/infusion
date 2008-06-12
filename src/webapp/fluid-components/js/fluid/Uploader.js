@@ -116,11 +116,10 @@ var fluid = fluid || {};
 		browseText: "Browse files",
 		addMoreText: "Add more",
 		fileUploaded: "File Uploaded",
-		totalLabel: "Total",
-		uploadingLabel: "Uploading",
-		pausedLabel: "Paused at: %0 of %1 files (%2 of %3)",
-		totalProgress: "Uploading: %0 of %1 files (%2 of %3)", // markers are replaced dynamically, see fluid.util.replaceString
-		completedProgress: "Uploaded: %0 files (%1)" // markers are replaced dynamically, see fluid.util.replaceString
+		 	// tokens replaced by fluid.util.stringTemplate
+		pausedLabel: "Paused at: %curFileN of %totalFilesN files (%currBytes of %totalBytes)",
+		totalLabel: "Uploading: %curFileN of %totalFilesN files (%currBytes of %totalBytes)", 
+		completedLabel: "Uploaded: %curFileN files (%totalCurrBytes)"
 	};
 		
 	/* DOM Manipulation */
@@ -495,11 +494,12 @@ var fluid = fluid || {};
                     break;
                 case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
                     status.currError = "Upload Stopped by user input";
-					var successfulUploads = numFilesUploaded(uploaderContainer,fragmentSelectors.fileQueue);
-					var totalFiles = numberOfRows(uploaderContainer,fragmentSelectors.fileQueue);
-					var currentBytes = fluid.utils.filesizeStr(status.currBytes);
-					var totalBytes = fluid.utils.filesizeStr(status.totalBytes);
-					var pauseStrings = [successfulUploads, totalFiles, currentBytes, totalBytes];
+					var pauseStrings = {
+						curFileN: numFilesUploaded(uploaderContainer,fragmentSelectors.fileQueue), 
+						totalFilesN: numberOfRows(uploaderContainer,fragmentSelectors.fileQueue), 
+						currBytes: fluid.utils.filesizeStr(status.currBytes), 
+						totalBytes: fluid.utils.filesizeStr(status.totalBytes)
+					};
 					var pausedString = fluid.utils.stringTemplate(strings.pausedLabel,pauseStrings);
 					$(fragmentSelectors.totalProgressText, uploaderContainer).html(pausedString);
 
@@ -601,10 +601,12 @@ var fluid = fluid || {};
 	var fileQueueComplete = function(uploaderContainer, swfObj, options, progressBar, fragmentSelectors, dialogObj, status) {
 		updateState(uploaderContainer, 'done');
 		var stats = swfObj.getStats();
-		var successfulUploads = stats.successful_uploads;
-		var uploadBytes = fluid.utils.filesizeStr(status.totalBytes); 
-		var finishedString = fluid.utils.stringTemplate(strings.completedProgress,[successfulUploads,uploadBytes]);
-		$(fragmentSelectors.totalProgressText, uploaderContainer).html(finishedString);
+		var newStrings = {
+			curFileN: stats.successful_uploads,
+			totalCurrBytes: fluid.utils.filesizeStr(status.totalBytes)
+		};
+		 
+		$(fragmentSelectors.totalProgressText, uploaderContainer).html(fluid.utils.stringTemplate(strings.completedLabel,newStrings));
 		hideProgress(progressBar, false, $(fragmentSelectors.done, uploaderContainer));
 		options.continueDelay = (!options.continueDelay) ? 0 : options.continueDelay;
 		if (options.continueAfterUpload) {
@@ -671,10 +673,15 @@ var fluid = fluid || {};
 		progressBar.updateProgress("total", totalPercent, totalHTML);		
 	};
 	
-	function totalStr(fileIndex,numRows,bytes,totalBytes) {
-		bytes = fluid.utils.filesizeStr(bytes);
-		totalBytes = fluid.utils.filesizeStr(totalBytes);
-		return fluid.utils.stringTemplate(strings.totalProgress,[fileIndex,numRows,bytes,totalBytes]);
+	function totalStr(fileIndex,numRows,bytes,totalBytes) {		
+		var newStrings = {
+			curFileN: fileIndex, 
+			totalFilesN: numRows, 
+			currBytes: fluid.utils.filesizeStr(bytes), 
+			totalBytes: fluid.utils.filesizeStr(totalBytes)
+		};
+		
+		return fluid.utils.stringTemplate(strings.totalLabel, newStrings);
 	}
 	
 	var hideProgress = function(progressBar, dontPause, focusAfterHide) {
