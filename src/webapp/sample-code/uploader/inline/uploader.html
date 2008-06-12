@@ -67,12 +67,14 @@
 					</table>
 				</div>
 				<div class="fluid-scroller">
-					<!-- the first and only child element of the scroller must be a block element -->
-					<table cellspacing="0" class="fluid-uploader-queue">
-						<tbody>
-							
-						</tbody>
-					</table>
+					<div class="scroller-inner">
+						<table cellspacing="0" class="fluid-uploader-queue">
+							<tbody>
+								
+							</tbody>
+						</table>
+						<div class="file-progress"><span class="file-progress-text">76%</span></div>
+					</div>
 				</div>
 				
 				<div class="fluid-uploader-row-placeholder"> click <em>Browse files</em> to add files to the queue </div>
@@ -86,6 +88,7 @@
 							</tr>
 						</tfoot>
 					</table>
+					<div class="total-progress">&nbsp;</div>
 				</div>
 			</div>
 			<div class="fluid-uploader-btns">
@@ -94,31 +97,6 @@
 				<button type="button" class="fluid-uploader-pause" >Pause</button>
 				<button type="button" class="fluid-uploader-cancel cancel" >Cancel</button>
 				<button type="button" class="fluid-uploader-done" >Done</button>
-			</div>
-			
-			<div class="fluid-progress">
-				<div class="progress-content">
-					<h2>Uploading Files...</h2>
-					<div class="file-progress progressor">
-						<label class="progress-label">
-							<span class="file_name">&nbsp;</span> :: <span class="percent">0</span>% complete
-						</label>
-						<div class="progress-indicator"><span>&nbsp;</span></div>
-					</div>
-					<div class="total-progress progressor">
-						<label class="progress-label">
-							Total Progress: <span class="percent">0</span>% [<span class="file_index">0</span> of <span class="total_file_num">0</span> files]
-						</label>
-						<div class="progress-indicator">&nbsp;</div>
-					</div>
-					<div align="right">
-						<button type="button" class="fluid-uploader-pause default">Pause Upload</button>
-					</div>
-				</div>
-				<div class="progress-mask">
-					<div class="progress-mask-top">&nbsp;</div>
-					<div class="progress-mask-btm">&nbsp;</div>
-				</div>
 			</div>
 			
 		</div>

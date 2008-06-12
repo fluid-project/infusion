@@ -66,10 +66,16 @@
 /* tfoot */
 
 .fluid-scroller-table-foot {
+	position: relative;
 	background-color: #E6E6E6;
 	border-top: 1px solid #999;
 	border-right: 1px solid #999;
 	border-left: 1px solid #999;
+}
+
+.fluid-scroller-table-foot table { 
+	position:relative;
+	z-index:6;
 }
 
 .fluid-scroller-table-foot td {
@@ -89,20 +95,27 @@
 /* tbody */
 
 .fluid-scroller {
+	background-color: white;
 	overflow-x: hidden;
 	overflow-y: auto;
 	border-right: 1px solid #999;
 	border-left: 1px solid #999;
 }
 
+.fluid-scroller .scroller-inner {
+	position: relative;
+}
+		
 .fluid-uploader-queue {
+	position: relative;
 	width: 465px;
 	font-size: 0.9em;
 	color: #333;
+	z-index: 6;
 }
 
 .fluid-uploader-queue tr {
-	background-color: white;
+	background-color: transparent;
 }
 
 .fluid-uploader-queue tr.hover {
@@ -122,7 +135,6 @@
 .fluid-uploader-queue tr:first-child td, .fluid-uploader-queue tr:first-child th { 
 	border-top: none;
 }
-
 
 .fluid-uploader-queue-wrapper .fileName {
 	width: 322px;
@@ -368,62 +380,41 @@
 	border-left: 4px solid #F5E392;
 }
 
-/* 
- * PROGRESS INDICATOR
- */
 
-.fluid-progress {
+/* PROGRESS */
+
+.file-progress, .total-progress {
 	display: none;
-	width: 453px;
-	position: fixed;
-	top: 100px;
-	left: auto;
-}
-
-.progress-content {
-	position: relative;
-	padding: 0.6em 1.2em 0.2em;
-	z-index: 400;
-}
-
-.progress-content h2 {
-	margin: 0 0 .6em;
-	color: white;
-}
-
-.progress-content p {
-	color: white
-}
-
-.progressor {
-	position: relative;
-	margin: 5px 0 10px;
-	background-color: white;
-	color: black;
-}
-
-.progress-label {
-	display: block;
-	position: relative;
-	background: transparent;
-	border: 1px solid #CCC;
-	padding: 3px 0;
-	font-weight: bolder;
-	text-align: center;
-	z-index: 400;
-}
-
-.progress-indicator {
-	position: absolute;
-	top: 0;
+	background-attachment: scroll;
+	background-position: bottom left;
+	background-repeat: repeat-x;
+	overflow: hidden;
 	left: 0;
-	background-image: url('../images/uploader/upload.gif');	
-	height: 100%;
-	width: 1%;
-	z-index: 350;
+	position: absolute;
+	z-index:4;
 }
 
-/* mask */
+.file-progress {
+	background-image: url('../images/progress/gradient-file.png');
+	background-color: #D1D6DD;
+	width:76%;
+}
+
+.file-progress .file-progress-text {
+	display: none;
+}
+
+.total-progress {
+	top: 0;
+	height: 100%;
+	background-image: url('../images/progress/gradient-total.png');
+	background-color: #BDBFC1;
+	width:76%;
+}
+
+
+/* MASK */
+
 .progress-mask {
 	position: absolute;
 	top: 0;
