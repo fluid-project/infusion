@@ -213,4 +213,21 @@ var fluid = fluid || {};
 
         return cssClassNames;
     };
+	
+    /**
+     * simple string template system
+     * returns a new string with markers replaced with new strings
+     * @param {String}	template	a string (can be HTML) that contains markers embedded into it (markers are formatted as %0, %1, etc. and must be consecutive)
+     * @param {array}	strings		simple array of strings (number of array elements should match the number of markers
+     */
+	fluid.utils.stringTemplate = function (template, strings) {
+		var newString = template;
+		var count = 0;
+		for(index in strings) {
+			var searchStr = "%"+index;
+		  	newString = newString.replace(searchStr,strings[index]);
+		}
+		return newString;
+	};
+
 }) (jQuery, fluid);
