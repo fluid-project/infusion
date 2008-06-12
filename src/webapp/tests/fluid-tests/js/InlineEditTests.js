@@ -11,13 +11,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
  */
 
  $(document).ready (function () {
-    function setUp () {
-    }
     
-    function tearDown () {
-    }
-    
-    var inlineEditTests = new jqUnit.TestCase ("InlineEdit Tests", setUp, tearDown);
+    var inlineEditTests = new jqUnit.TestCase ("InlineEdit Tests");
 
     inlineEditTests.test("Minimal Construction", function () {
         var container = jQuery("#inline-edit");
@@ -169,6 +164,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
         edit.simulate("keypress", {keyCode: fluid.keys.LEFT});
         jqUnit.notVisible("After left-arrow pressed, display field is still hidden", "#display");
         jqUnit.isVisible("After left-arrow pressed, edit field is still visible", "#edit-container");
-
     });
+    
+    inlineEditTests.test("Finished Editing Callback", function() {
+        var options = {
+            finishedEditing: function() {
+                fluid.finishedEditingCallbackCalled = true;
+            }
+        };
+        var inlineEditor = new fluid.InlineEdit("inline-edit", options);
+        jqUnit.assertFalse("Initially, callback has not been called", fluid.finishedEditingCallbackCalled);
+        inlineEditor.finish();
+        jqUnit.assertTrue("Callback was called", fluid.finishedEditingCallbackCalled);
+    });
+
+    
 });

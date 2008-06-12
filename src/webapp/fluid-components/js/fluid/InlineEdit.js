@@ -87,6 +87,7 @@ var fluid = fluid || {};
     
     function bindEditFinish(editContainer, editField, text, finishedFn) {
         var finishHandler = function (evt) {
+            // Fix for handling arrow key presses see FLUID-760
             var code = (evt.keyCode? evt.keyCode : (evt.which? evt.which : 0));
             if (code != jQuery.a11y.keys.ENTER) {
                 return true;
@@ -110,9 +111,10 @@ var fluid = fluid || {};
         selectors = jQuery.extend({}, this.defaults.selectors, options.selectors);
         this.styles = jQuery.extend({}, this.defaults.styles, options.styles);
         this.paddings = jQuery.extend({}, this.defaults.paddings, options.paddings);
-		
+		this.finishedEditing = options.finishedEditing || function () {};
+        
         // Bind to the DOM.
-        this.container = jQuery("#" + componentContainerId);
+        this.container = fluid.utils.jById(componentContainerId);
         this.text = jQuery(selectors.text, this.container);
         this.editContainer = jQuery(selectors.editContainer, this.container);
         this.editField = jQuery(selectors.edit, this.editContainer);
@@ -154,9 +156,5 @@ var fluid = fluid || {};
 			minimum: 80
 		}
     };
-    
-    fluid.InlineEdit.prototype.finishedEditing = function (editField) {
-        // Do nothing by default. Replace this function to add your own custom callback.
-    };
-    
+        
 }) (jQuery, fluid);
