@@ -1,0 +1,33 @@
+table {
+    width: 100%;
+}
+
+thead {
+    color: #343499;
+    background-color: #CDCDEE;
+}
+
+td {
+    padding: .5em .2em;
+}
+
+input {
+    width: 3em;
+}
+
+.pager-top {
+    padding: .5em;
+    color: #0099CC;
+    background-color: #EEEEEE;
+    font-size: .9em;
+    text-align: center;
+}
+
+.pager-top li {
+	display:inline;
+    padding-right:.3em;
+}
+
+.previous,.next {
+    padding: 0 1.3em 0 1em !important;
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <link href="pager.css" type="text/css" rel="stylesheet" />
+        <script type="text/javascript" src="../../fluid-components/js/jquery/jquery-1.2.3.js"></script>
+        <script type="text/javascript" src="../../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../fluid-components/js/fluid/Pager.js"></script>
+
+		<title>Gradebook Example</title>
+	</head>
+	<body>
+	    <div id="gradebook">
+	      <form>
+    	    <ul id="pager" class="pager-top">
+    	        <li class="previous">&lt; previous</li>
+    	        <li class="next">next &gt;</li>
+    	    </ul>
+            <table summary="student grades" id="students">
+              <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>User Id</td>
+                    <td>Points</td>
+                    <td>Comments</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>Ahn, Jason</td>
+                    <td>15234314</td>
+                    <td><input type="text" value="87" /></td
+                    <td>Great job, Jason! Very excited to see a big jump.</td>
+                </tr>
+                <tr>
+                    <td>Azer, Tamer</td>
+                    <td>19206726</td>
+                    <td><input type="text" value="68" /></td
+                    <td>Lorem ipsum</td>
+                </tr>
+                <tr>
+                    <td>Bellefuille, Elaine</td>
+                    <td>19286942</td>
+                    <td><input type="text" value="90" /></td
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Braganza, Sherman</td>
+                    <td>19446940</td>
+                    <td><input type="text" value="84" /></td
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Campaign, Leslie</td>
+                    <td>19283721</td>
+                    <td><input type="text" value="79" /></td
+                    <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <script type="text/javascript">
+            new fluid.Pager("gradebook", 43);
+        </script>
+	</body>
+</html>
