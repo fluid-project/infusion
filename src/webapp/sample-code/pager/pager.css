@@ -15,11 +15,16 @@ input {
     width: 3em;
 }
 
+a {
+    color: #0099CC;
+    font-size: .9em;
+    text-decoration:none;
+    border-bottom: solid .1em;
+}
+
 .pager-top {
     padding: .5em;
-    color: #0099CC;
     background-color: #EEEEEE;
-    font-size: .9em;
     text-align: center;
 }
 
@@ -30,4 +35,8 @@ input {
 
 .previous,.next {
     padding: 0 1.3em 0 1em !important;
+}
+
+.current-page {
+    color: #000000;
 }

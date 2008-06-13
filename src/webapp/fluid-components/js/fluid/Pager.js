@@ -15,29 +15,34 @@ var fluid = fluid || {};
     
     // Currently puts in all the page links
     // Need to deal with only showing some page links - provide different strategies. 
-    // Need to put in an AJAX anchor around the number so server can refresh the pane
+    // Need to bind the anchor to a change page handler
+    // Should we take an optional link creator function? Or pull a template from the markup?
     function addPageElements(previous, num) {
         var tagName = previous[0].tagName;
         for (var i = num; i > 0; i--) {
             var el = document.createElement(tagName);
-            el.innerHTML = i;
+            var a = document.createElement("a");
+            a.innerHTML = i;
+            jQuery(el).append(a);
             previous.after(el);
-        }    
+        }
     }
 
-    // Should clean the clone - get rid of ids etc. 
+    // Should clean the clone - get rid of ids, set a reasonable id etc. 
     // Should we add the bottom to the top's parent instead of the container? 
     function addPagerBottom(container, pagerTop) {
         var pagerBottom = pagerTop.clone();
         pagerBottom.removeAttr("id");
         container.append(pagerBottom);
     }
-    
+        
     fluid.Pager = function (componentContainerId, numOfPages, options) {
         this.numOfPages = numOfPages;
         // Mix in the user's configuration options.
         options = options || {};
         selectors = $.extend({}, this.defaults.selectors, options.selectors);
+        this.styles = $.extend({}, this.defaults.styles, options.styles);
+        this.pageChangedCallback = options.pageChangedCallback || this.defaults.pageChangedCallback; 
 
         // Bind to the DOM.
         this.container = fluid.utils.jById(componentContainerId);
@@ -45,8 +50,9 @@ var fluid = fluid || {};
         this.previous = $(selectors.previous, this.container);
         this.next = $(selectors.next, this.container);
         
-        addPageElements(this.previous, this.numOfPages);
-        addPagerBottom(this.container, this.pagerTop);       
+        addPageElements(this.previous, this.numOfPages, "#");
+        addPagerBottom(this.container, this.pagerTop);
+        this.selectPage(1);     
     };
     
     fluid.Pager.prototype.defaults = {
@@ -54,12 +60,21 @@ var fluid = fluid || {};
             pagerTop: ".pager-top",
             previous: ".previous",
             next: ".next"
+        },
+
+        styles: {
+            currentPage: "current-page"
+        },
+
+        pageChangedCallback: function (pageNum) {
+            // AJAX call here
         }
     };
     
-    // Change styling and disable a particular page number
-    // Set next and previous
+    // Need to change styling and disable a particular page number
+    // Need to set next and previous
     fluid.Pager.prototype.selectPage = function (pageNum) {
+        this.pageChangedCallback(pageNum);
     };
         
 }) (jQuery, fluid);

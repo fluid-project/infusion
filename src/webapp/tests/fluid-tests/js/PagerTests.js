@@ -21,8 +21,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var pagerTop = jQuery("#pager-top", container);
         var topLis = jQuery("li", pagerTop);        
 
-        jqUnit.assertEquals("10 pages + next + previous", 12, topLis.length);        
         jqUnit.assertEquals("Both top and bottom pagers are on the page", 2, jQuery("ul", container).length);
+        jqUnit.assertEquals("10 page links are showing + next + previous", 12, topLis.length); 
+        
+        var firstPage = jQuery(topLis[1]);
+    //    jqUnit.assertTrue("First page is selected", firstPage.hasClass(fluid.Pager.prototype.defaults.selectedPage));
     });
     
 });
