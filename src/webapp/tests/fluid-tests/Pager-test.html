@@ -1,0 +1,79 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+  <head>
+    <title>Pager Tests</title>
+
+    <script type="text/javascript" src="../../fluid-components/js/jquery/jquery-1.2.3.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/fluid/Pager.js"></script>
+
+    <!--  These are the jqUnit test files -->
+    <link rel="Stylesheet" media="screen" href="../jqUnit/testsuite.css" />
+    <script type="text/javascript" src="../jqUnit/testrunner.js"></script>
+    <script type="text/javascript" src="../jqUnit/jqUnit.js"></script>
+  
+    <!--  These are used for tests that have been written using this page as data -->
+    <script type="text/javascript" src="js/PagerTests.js"></script>
+  </head>
+
+  <body>
+     <h1 id="header">Pager Test Suite</h1>
+    <h2 id="banner"></h2>
+    <h2 id="userAgent"></h2>
+    
+    <ol id="tests"></ol>
+    <div id="main" style="display:none;">
+
+	    <div id="gradebook">
+    	    <ul id="pager-top" class="pager-top">
+    	        <li class="previous">&lt; previous</li>
+    	        <li class="next">next &gt;</li>
+    	    </ul>
+            <table summary="student grades" id="students">
+              <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>User Id</td>
+                    <td>Points</td>
+                    <td>Comments</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>Ahn, Jason</td>
+                    <td>15234314</td>
+                    <td>87</td>
+                    <td>Great job, Jason! Very excited to see a big jump.</td>
+                </tr>
+                <tr>
+                    <td>Azer, Tamer</td>
+                    <td>19206726</td>
+                    <td>68</td>
+                    <td>Lorem ipsum</td>
+                </tr>
+                <tr>
+                    <td>Bellefuille, Elaine</td>
+                    <td>19286942</td>
+                    <td>90</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Braganza, Sherman</td>
+                    <td>19446940</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Campaign, Leslie</td>
+                    <td>19283721</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+    </div>
+  </body>
+</html>
