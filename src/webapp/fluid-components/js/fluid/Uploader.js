@@ -162,6 +162,11 @@ var fluid = fluid || {};
 	};
 	
 	var scrollTo = function(scrollingElm,row){
+		if ($(row).prev().length) {
+			var nextRow = $(row).next();
+			row = (nextRow.length === 0) ? row : nextRow ;
+		}
+		
 		var rowPosTop = $(row)[0].offsetTop;
 		var rowHeight = $(row).height();
 		var containerScrollTop = $(scrollingElm)[0].scrollTop;
