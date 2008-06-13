@@ -337,10 +337,8 @@ var fluid = fluid || {};
 
 				var scrollingElm = $(fragmentSelectors.scrollingElement, uploaderContainer);
                 
-				var scrolling = updateQueueHeight(scrollingElm, maxHeight);
-                
 				// scroll to the bottom to reviel element
-				if (scrolling) {
+				if (updateQueueHeight(scrollingElm, maxHeight)) {
 					scrollBottom(scrollingElm);
 				}
 				
@@ -1054,13 +1052,13 @@ var fluid = fluid || {};
 	
 	fluid.Progress.prototype.updateProgress = function(which, percent, text) {
 		if (which === 'file') {
-			this.setProgress(percent, text, this.fileProgressElm, this.currRowElm, this.fileTextElm);
+			setProgress(percent, text, this.fileProgressElm, this.currRowElm, this.fileTextElm);
 		} else {
-			this.setProgress(percent, text, this.totalProgressElm, this.totalProgressContainer, this.totalTextElm);
+			setProgress(percent, text, this.totalProgressElm, this.totalProgressContainer, this.totalTextElm);
 		}
 	};
 
-    fluid.Progress.prototype.setProgress = function(percent, text, progressElm, containerElm, textElm) {
+    var setProgress = function(percent, text, progressElm, containerElm, textElm) {
 		
 		var containerWidth = containerElm.width();
 		var currWidth = progressElm.width();
