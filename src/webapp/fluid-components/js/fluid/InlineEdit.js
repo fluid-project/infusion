@@ -11,7 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var fluid = fluid || {};
 
-(function ($) {
+(function ($, fluid) {
     
     function edit(text, editContainer, editField, invitationStyle, paddings) {
 		editField.val(text.text());
@@ -64,7 +64,7 @@ var fluid = fluid || {};
         
         // Bind a global click listener that checks for the user click outside of the edit field.
         $("body").click(function (evt) {
-            if (jQuery("*", editContainer).index(evt.target) === -1) {
+            if ($("*", editContainer).index(evt.target) === -1) {
                 finish(editContainer, editField, text, finishFn);
                 text.toggleClass(styles.focus);
             }   
@@ -89,7 +89,7 @@ var fluid = fluid || {};
         var finishHandler = function (evt) {
             // Fix for handling arrow key presses see FLUID-760
             var code = (evt.keyCode? evt.keyCode : (evt.which? evt.which : 0));
-            if (code != jQuery.a11y.keys.ENTER) {
+            if (code != $.a11y.keys.ENTER) {
                 return true;
             }
             
@@ -108,16 +108,16 @@ var fluid = fluid || {};
     fluid.InlineEdit = function (componentContainerId, options) {
         // Mix in the user's configuration options.
         options = options || {};
-        selectors = jQuery.extend({}, this.defaults.selectors, options.selectors);
-        this.styles = jQuery.extend({}, this.defaults.styles, options.styles);
-        this.paddings = jQuery.extend({}, this.defaults.paddings, options.paddings);
+        selectors = $.extend({}, this.defaults.selectors, options.selectors);
+        this.styles = $.extend({}, this.defaults.styles, options.styles);
+        this.paddings = $.extend({}, this.defaults.paddings, options.paddings);
 		this.finishedEditing = options.finishedEditing || function () {};
         
         // Bind to the DOM.
         this.container = fluid.utils.jById(componentContainerId);
-        this.text = jQuery(selectors.text, this.container);
-        this.editContainer = jQuery(selectors.editContainer, this.container);
-        this.editField = jQuery(selectors.edit, this.editContainer);
+        this.text = $(selectors.text, this.container);
+        this.editContainer = $(selectors.editContainer, this.container);
+        this.editField = $(selectors.edit, this.editContainer);
         
         // Add event handlers.
         mouse(this.text, this.editContainer, this.editField, this.styles, this.paddings, this.finishedEditing);
