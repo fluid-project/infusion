@@ -10,39 +10,99 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+function percentToPixels(containerWidth,percent) {
+	return (containerWidth*percent)/100;
+}
+
 (function ($) {
     $(document).ready (function () {
         var progressTests = new jqUnit.TestCase ("Progress Tests");
-
-        progressTests.test ("Update", function () {      
-            var progressSelector = ".fluid-progress";          
-            var progressBar = new fluid.Progress(progressSelector);
-	        var indicator = $('.progress-indicator');
-            
-            var label = "test label";
+		
+		var options, progressBar;
+		
+		var createProgressBar = function () {
+			options = {
+				progress: "#progress-container",
+				fileProgressor: ".file-progress-indicator",
+				fileText: ".file-text",
+				totalProgressor: ".total-progress-indicator",
+				totalText: ".total-text",
+				totalProgressContainer: ".total-progress-container"
+			};
+				
+			progressBar = new fluid.Progress(options);
+		};
+		
+		progressTests.test ("Progress: invisible upon instantiation", function () {
+			createProgressBar();
+			
+			jqUnit.notVisible("Before update, ensure file progress bar is not visible", 
+							  options.fileProgressor);
+            jqUnit.notVisible("Before update, ensure total progress bar is not visible", 
+							  options.totalProgressor);
+		});
+		
+		progressTests.test ("Progress: initialization", function () {
+			createProgressBar();
+			
             var text = "test text";
-            jqUnit.notVisible("Before update, ensure progress bar is not visible", progressSelector);
-            jqUnit.notExists("Before update, ensure label doesn't exist", ":contains(" + label+")");
-            jqUnit.notExists("Before update, ensure update text doesn't exist", ":contains(" + text+")");
-
-            var updateValue = 0;
-            progressBar.update('.total-progress', updateValue, label, text);
-            jqUnit.isVisible("After update, make sure the progress bar is visible", progressSelector);
-            jqUnit.exists("After update, look for the label", ":contains(" + label+")");
-            jqUnit.exists("After update, look for the update text", ":contains(" + text+")");
-            jqUnit.assertEquals("After update to "+updateValue+", lastPercent should be " + updateValue, updateValue, progressBar.lastPercent);
-            jqUnit.assertEquals("After update to "+updateValue+", indicator width should be 1", 1, indicator.width());
-
-            updateValue = 20;
-            var styleString = "width: "+updateValue+"%;";
-            progressBar.update('.total-progress', updateValue, label, text);
-            jqUnit.assertEquals("After update to "+updateValue+", lastPercent should be " + updateValue, updateValue, progressBar.lastPercent);
-
-            updateValue = 10;
-            styleString = "width: "+updateValue+"%;";
-            progressBar.update('.total-progress', updateValue, label, text);
-            jqUnit.assertTrue("After an update to a smaller value ("+updateValue+"), style should include '" + styleString + "'",
-                indicator.attr("style").indexOf(styleString) > -1);
+			progressBar.init(".file-progress-container");
+           	jqUnit.notExists("Before update, ensure update text doesn't exist", 
+							 ":contains(" + text + ")");
+		});
+		
+		progressTests.test ("Progress: file progress update", function () {
+			createProgressBar();
+			
+			// Set the update value to 50% and calculate the appropriate pixels.
+			var text = "test text";
+			progressBar.init(".file-progress-container");
+			var updateValue = 50; 
+			var pixels = percentToPixels($(".file-progress-container").width(),updateValue);
+        	
+			progressBar.updateProgress("file",updateValue,text); 
+			
+			// Progress bar should be visible and should be the correct length.
+			jqUnit.isVisible("After file update, file progress bar is visible", 
+							 options.fileProgressor);
+			var msg = "After file update to " +
+					  updateValue + 
+					  ", indicator width should be " + 
+					  pixels;
+			
+			// fails because Progress uses an animation and we need to wait for the animation to complete
+			jqUnit.assertEquals(msg, pixels, $(options.fileProgressor).width());
+			
+			 msg = "After file progress update to the context of the file progress string should be &quot;" + text + "&quot;";
+			jqUnit.assertEquals(msg, text, $(options.fileText).text());
         });
+
+		progressTests.test ("Progress: total progress update", function () {
+			createProgressBar();
+			
+			// Set the update value to 50% and calculate the appropriate pixels.
+			var text = "test text";
+			progressBar.init(".file-progress-container");
+			var updateValue = 50; 
+			var pixels = percentToPixels($(".total-progress-container").width(),updateValue);
+        	
+			progressBar.updateProgress("total",updateValue,text); 
+			
+			// Total progress bar should be visible and should be the correct length.
+			jqUnit.isVisible("After total update, total progress bar is visible", 
+							 options.totalProgressor);
+			var msg = "After total update to " +
+					  updateValue + 
+					  ", indicator width should be " + 
+					  pixels;
+			
+			// fails because Progress uses an animation and we need to wait for the animation to complete
+			jqUnit.assertEquals(msg, pixels, $(options.totalProgressor).width());
+			
+			 msg = "After total progress update to the context of the total progress string should be &quot;" + text + "&quot;";
+			jqUnit.assertEquals(msg, text, $(options.totalText).text());
+        });
+		
+
     });
 }) (jQuery);

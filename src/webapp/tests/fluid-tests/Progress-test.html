@@ -20,27 +20,63 @@
 
         <!--  These are tests that have been written using this page as data -->
         <script type="text/javascript" src="js/ProgressTests.js"></script>
+		<style type="text/css">
+			
+			#main {
+				width: 200px;
+				margin: 20px;
+			}
+			.file-progress-container, .total-progress-container {
+				position: relative;
+				width: 100px;
+				border: 2px solid black;
+				margin: 10px;
+				height: 20px;
+			}
+			
+			.file-progress-indicator, .total-progress-indicator {
+				display: block;
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+			}
+						
+			.file-progress-indicator {
+				background-color: #06B;
+			}
+			
+			.total-progress-indicator {
+				background-color: #CF9B00;
+			}
+		</style>
 
 	</head>
 	<body>
-	        <h1 id="header">Progress Test Suite</h1>
+	<h1 id="header">Progress Test Suite</h1>
     <h2 id="banner"></h2>
     <h2 id="userAgent"></h2>
     <ol id="tests"></ol>
 
     <!-- Test HTML -->
     <div id="main">
-        <div class="fluid-progress">
-            <div class="total-progress">
-                <label class="progress-label">
-				    
-				</label>
-                <p class="progress-text">
-                    
-                </p>
-                <div class="progress-indicator"><span>&nbsp;</span></div>
-            </div>
-        </div>
+    	<div id="progress-container">
+	    	<p>File Progressor</p>
+			<div class="file-progress-container">
+				<div class="file-progress-indicator" id="file-ind">
+					<span class="file-text">&nbsp;</span>
+				</div>
+			</div>
+			
+			<p>Total Progressor</p>
+			<div class="total-progress-container">
+				<div class="total-progress-indicator" id="total-ind">
+					<span class="total-text">&nbsp;</span>
+				</div>
+			</div>
+			
+		</div>
     </div>
 
 	</body>

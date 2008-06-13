@@ -1060,10 +1060,9 @@ var fluid = fluid || {};
 
     var setProgress = function(percent, text, progressElm, containerElm, textElm) {
 		
-		var containerWidth = containerElm.width();
+		var containerWidth = containerElm.width();	
 		var currWidth = progressElm.width();
-		
-		var newWidth =  ((percent * containerWidth)/100);
+		var newWidth = ((percent * containerWidth)/100);
 		
 		// de-queue any left over animations
 		progressElm.queue("fx", []); 
