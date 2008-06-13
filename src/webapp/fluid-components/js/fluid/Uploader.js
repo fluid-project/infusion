@@ -433,11 +433,12 @@ var fluid = fluid || {};
     };
     
 	var uploadStart = function(file, uploaderContainer, fragmentSelectors, progressBar, status) {
+		fluid.utils.debug("Upload Start Handler");
 		updateState(uploaderContainer,'uploading');
 		status.currError = ''; // zero out the error so we can check it later
-		scrollTo($(fragmentSelectors.scrollingElement, uploaderContainer),$("#"+file.id, uploaderContainer));
-		progressBar.init('#'+file.id);
 		$("#"+file.id,uploaderContainer).addClass("uploading");
+		progressBar.init('#'+file.id);
+		scrollTo($(fragmentSelectors.scrollingElement, uploaderContainer),$("#"+file.id, uploaderContainer));
 		uploadProgress(progressBar, uploaderContainer, file, 0, file.size, fragmentSelectors, status);
 		fluid.utils.debug (
 			"Starting Upload: " + (file.index + 1) + ' (' + file.id + ')' + ' [' + file.size + ']' + ' ' + file.name
@@ -461,6 +462,7 @@ var fluid = fluid || {};
 	};
 	
 	var uploadError = function (file, error_code, message, uploaderContainer, progressBar, fragmentSelectors, maxHeight, status, options) {
+		fluid.utils.debug("Upload Error Handler");
 		status.currError = '';
 		status.continueOnError = false;
 		var humanErrorMsg = '';
@@ -490,6 +492,7 @@ var fluid = fluid || {};
                     break;
                 case SWFUpload.UPLOAD_ERROR.FILE_CANCELLED:
                     status.currError = "File cancelled by user";
+					status.continueOnError = true;
                     markError = false;
                     break;
                 case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
@@ -533,11 +536,25 @@ var fluid = fluid || {};
 	
 	/* File Upload Success */
 	
-	var createUploadSuccessHandler =  function(whenFileUploaded){
+	var createUploadSuccessHandler =  function(uploaderContainer, progressBar, fragmentSelectors, whenFileUploaded, status){
 		return function(file, server_data) {
-			whenFileUploaded(file.name, server_data);
+			uploadSuccess(uploaderContainer, file, progressBar, fragmentSelectors, status, whenFileUploaded, server_data);
 		};
 	};	
+	
+	var uploadSuccess = function (uploaderContainer, file, progressBar, fragmentSelectors, status, whenFileUploaded, server_data){
+		fluid.utils.debug("Upload Success Handler");
+		
+  		uploadProgress(progressBar, uploaderContainer, file, file.size, file.size, fragmentSelectors, status);
+       	markRowComplete($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove);
+		
+ 		try {
+			whenFileUploaded(file.name, server_data);
+		} 
+		catch (ex) {
+			 fluid.utils.debug(ex);
+		}
+	};
 	
 	
 	/* File Upload Complete */
@@ -549,6 +566,7 @@ var fluid = fluid || {};
 	};
 	
 	var uploadComplete = function (swfObj, file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj) {
+		fluid.utils.debug("Upload Complete Handler");
 		
 		$("#"+file.id,uploaderContainer).removeClass("uploading");
 		
@@ -562,43 +580,27 @@ var fluid = fluid || {};
 		"\ncurrStats.upload_errors = " + currStats.upload_errors
 		);
 				
-       	if (!status.currError) {
-            markRowComplete($('tr#' + file.id, uploaderContainer), fragmentSelectors.txtFileStatus, fragmentSelectors.qRowRemove);
-      		uploadProgress(progressBar, uploaderContainer, file, file.size, file.size, fragmentSelectors, status);
-            if (currStats.files_queued === 0) {
-                // we've completed all the files in this upload
-                return fileQueueComplete(uploaderContainer, swfObj, options, progressBar, fragmentSelectors, dialogObj, status);
-            }
-            else { // there are still files to go, fire off the next one
-				uploadedBytes(status,file.size); // update the number of bytes that have actually be uploaded so far
-                return swfObj.startUpload(); 
-            }
-            
+    	if (currStats.files_queued === 0) {
+            // we've completed all the files in this upload
+            return fileQueueComplete(uploaderContainer, swfObj, options, progressBar, fragmentSelectors, dialogObj, status);
         }
-        else { // there has been an error, the question is, do we continue or stop
-        	if (currStats.files_queued === 0) {
-                // we've completed all the files in this upload
-                return fileQueueComplete(uploaderContainer, swfObj, options, progressBar, fragmentSelectors, dialogObj, status);
-            }
-        	fluid.utils.debug(status.currError + status.continueOnError);
-    		// if the file upload error is file specific then start the next upload
-			if (status.continueOnError) {
-				// update the number of bytes because even though we didn't complete 
-				// the upload it's still part of the total for progress
-				uploadedBytes(status,file.size);
-				
-                return swfObj.startUpload();
-            } else {
-				// note: do not update the bytes because we didn't complete that last file
-				
-				return hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
-			}
+       	else if (!status.currError || status.continueOnError) {
+			// there was no error and there are still files to go
+			uploadedBytes(status,file.size); // update the number of bytes that have actually be uploaded so far
+            return swfObj.startUpload();  
+        }
+        else { 
+			// there has been an error that we should stop on
+        	// note: do not update the bytes because we didn't complete that last file
+			return hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
         }
 	};
 	
 	/* File Queue Complete */
 	
 	var fileQueueComplete = function(uploaderContainer, swfObj, options, progressBar, fragmentSelectors, dialogObj, status) {
+		fluid.utils.debug("File Queue Complete Handler");
+		
 		updateState(uploaderContainer, 'done');
 		var stats = swfObj.getStats();
 		var newStrings = {
@@ -607,7 +609,7 @@ var fluid = fluid || {};
 		};
 		 
 		$(fragmentSelectors.totalProgressText, uploaderContainer).html(fluid.utils.stringTemplate(strings.completedLabel,newStrings));
-		hideProgress(progressBar, false, $(fragmentSelectors.done, uploaderContainer));
+		hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
 		options.continueDelay = (!options.continueDelay) ? 0 : options.continueDelay;
 		if (options.continueAfterUpload) {
 			setTimeout(function(){
@@ -655,6 +657,8 @@ var fluid = fluid || {};
 	 */
 	
 	var uploadProgress = function(progressBar, uploaderContainer, file, fileBytes, totalFileBytes, fragmentSelectors, status) {
+		fluid.utils.debug("Upload Progress Handler");
+		
 		fluid.utils.debug ('Upload Status : \n' + file.name + ' : ' + fileBytes + ' of ' + totalFileBytes + " bytes : \ntotal : " + (status.currBytes + fileBytes)  + ' of ' + queuedBytes(status) + " bytes");
 		
 		// update file progress
@@ -732,6 +736,7 @@ var fluid = fluid || {};
     // need to pass in current uploader
     
     var demoUpload = function (uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status, dialogObj) {
+		fluid.utils.debug("demoUpload Handler");
         var demoState = {};
 		
 		// used to break the demo upload into byte-sized chunks
@@ -748,6 +753,7 @@ var fluid = fluid || {};
 		if (status.stop === true) { // we're pausing
 			demoPause(swfObj, demoState.file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj, 0);
 		} else if (numFilesToUpload(uploaderContainer, fragmentSelectors.fileQueue)) { // there are still files to upload
+			status.stop = false;
 			demoState.bytes = 0;
 			demoState.totalBytes = demoState.file.size;
 			demoState.numChunks = Math.ceil(demoState.totalBytes / demoState.byteChunk);
@@ -764,38 +770,42 @@ var fluid = fluid || {};
 		}
 
         function demoProgress(demoState, swfObj, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj) {
+			var timer;
+			var delay = Math.floor(Math.random() * 1000 + 100);
    			if (status.stop === true) { // user paused the upload
    				// throw the pause error
  				demoPause(swfObj, demoState.file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj, delay);
     		} else {
-    			var delay = Math.floor(Math.random() * 1000 + 100);
+				status.stop = false;
     			var tmpBytes = (demoState.bytes + demoState.byteChunk);
 				
     			if (tmpBytes < demoState.totalBytes) { // we're still in the progress loop
     				fluid.utils.debug ('tmpBytes = ' + tmpBytes + ' totalBytes = ' + demoState.totalBytes);
     				uploadProgress(progressBar, uploaderContainer, demoState.file, tmpBytes, demoState.totalBytes, fragmentSelectors, status);
     				demoState.bytes = tmpBytes;
-    				var pause = setTimeout(function(){
+    				timer = setTimeout(function(){
 						demoProgress(demoState, swfObj, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
-					}, delay);
+					}, delay);			
     			}
     			else { // progress is complete
-    				demoStop(swfObj, demoState.file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj, delay);
-    			}
+    				// one last progress update just for nice
+					uploadSuccess(uploaderContainer, demoState.file, progressBar, fragmentSelectors, status);
+    				// change Stats here
+    				timer = setTimeout(function(){
+						uploadComplete(swfObj, demoState.file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
+    				}, delay);
+					// remove the file from the queue
+					swfObj.cancelUpload(demoState.fileId);
+				}
     		}  
+			status.stop = false;
     	}
         
 		function demoPause (swfObj, file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj, delay) {
 			uploadError(file, -290, "", uploaderContainer, progressBar, fragmentSelectors, options.queueListMaxHeight, status, options);
-    		demoStop(swfObj, file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj, delay);
+    		uploadComplete(swfObj, file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
+			status.stop = false;
 		}
-		
-	    function demoStop (swfObj, file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj, delay) {
-			var timer = setTimeout(function(){
-				uploadComplete(swfObj, file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
-			},delay);  
-	    	status.stop = false;
-    	}
         
      };    
 
@@ -827,9 +837,9 @@ var fluid = fluid || {};
 			upload_start_handler: createUploadStartHandler (uploaderContainer, fragmentSelectors, progressBar, status),
 			upload_progress_handler: createUploadProgressHandler (progressBar, uploaderContainer, fragmentSelectors, status),
 			upload_error_handler: createUploadErrorHandler (uploaderContainer, progressBar, fragmentSelectors, options.queueListMaxHeight, status, options),
-			upload_success_handler: createUploadSuccessHandler (options.whenFileUploaded),
+			upload_success_handler: createUploadSuccessHandler (uploaderContainer, progressBar, fragmentSelectors, options.whenFileUploaded, status),
 			upload_complete_handler: createUploadCompleteHandler (uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj),
-			// debug_handler : debug_function,
+			// debug_handler : debug_function, // a new event handler in swfUpload that we don't really know what to do with yet
 			// Debug setting
 			debug: options.debug
 		}; 
@@ -965,7 +975,7 @@ var fluid = fluid || {};
             enableDemoMode(this.uploaderContainer, swfObj, progressBar, this.options, this.fragmentSelectors, this.status, dialogObj);
         }
 	};
-    
+	
     // temporary debuggin' code to be removed after beta
     // USE: call from the console to check the current state of the options and fragmentSelectors objects
     
@@ -1032,7 +1042,7 @@ var fluid = fluid || {};
 		this.currRowElm = $(fileRowSelector,this.progressContainer);
 		
 		// hide file progress in case it is showing
-		this.fileProgressElm.hide();
+		this.fileProgressElm.width(this.minWidth);
 		
 		// set up the file row
 		this.fileProgressElm.css('top',(this.currRowElm.position().top)).height(this.currRowElm.height()).width(this.minWidth);
@@ -1089,6 +1099,9 @@ var fluid = fluid || {};
 	};
 	
 })(jQuery);
+
+
+
 
 //fluid.Progress.update('.fluid-progress','.file-progress',40,"Label Change");
 
