@@ -48,7 +48,7 @@
 	margin: 1em 0;
 }
 
-/* thead */
+/* header rows */
 
 .fluid-scroller-table-head {
 	background-color: transparent;
@@ -63,7 +63,7 @@
 	padding: 6px;
 }
 
-/* tfoot */
+/* footer rows */
 
 .fluid-scroller-table-foot {
 	position: relative;
@@ -95,15 +95,23 @@
 /* tbody */
 
 .fluid-scroller {
+	display: block;
+	position: relative;
 	background-color: white;
+	overflow: auto;
 	overflow-x: hidden;
 	overflow-y: auto;
 	border-right: 1px solid #999;
 	border-left: 1px solid #999;
 }
 
+.fluid-scroller thead {
+	display: none;
+}
+
 .fluid-scroller .scroller-inner {
 	position: relative;
+	overflow: hidden;
 }
 		
 .fluid-uploader-queue {
