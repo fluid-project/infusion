@@ -10,15 +10,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
  
  */
 
- $(document).ready (function () {
+/*global $*/
+/*global fluid*/
+/*global jqUnit*/
+
+$(document).ready(function () {
     
-    var inlineEditTests = new jqUnit.TestCase ("InlineEdit Tests");
+    var inlineEditTests = new jqUnit.TestCase("InlineEdit Tests");
 
     inlineEditTests.test("Minimal Construction", function () {
-        var container = jQuery("#inline-edit");
-        var display = jQuery("#display");
-        var editContainer = jQuery("#edit-container");
-        var editField = jQuery("#edit");
+        var container = $("#inline-edit");
+        var display = $("#display");
+        var editContainer = $("#edit-container");
+        var editField = $("#edit");
         var inlineEditor = new fluid.InlineEdit("inline-edit");
 
         jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
@@ -53,10 +57,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             paddings: testPaddings 
         };
         
-        var container = jQuery("#inline-edit-custom");
-        var display = jQuery("#display-custom");
-        var editContainer = jQuery("#edit-container-custom");
-        var editField = jQuery("#edit-custom");
+        var container = $("#inline-edit-custom");
+        var display = $("#display-custom");
+        var editContainer = $("#edit-container-custom");
+        var editField = $("#edit-custom");
         var inlineEditor = new fluid.InlineEdit("inline-edit-custom", options);
 
         jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
@@ -96,7 +100,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var display = $("#display");
         var edit = $("#edit");
         var inlineEditor = new fluid.InlineEdit("inline-edit");
-        jqUnit.assertTrue("Display is tabbable", display.tabindex()>=0);
+        jqUnit.assertTrue("Display is tabbable", display.tabindex() >= 0);
         jqUnit.assertFalse("Initially display field is not focussed", display.hasClass(inlineEditor.styles.focus));
 
         display.focus();
@@ -113,11 +117,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
         edit.simulate("keypress", {keyCode: $.a11y.keys.ENTER});
 
         jqUnit.isVisible("After changing text and pressing enter, display field is visible", "#display");
+        jqUnit.assertTrue("After changing text and pressing enter, display has focus style", display.hasClass(inlineEditor.styles.focus));
         jqUnit.notVisible("After changing text and pressing enter, edit field is hidden", "#edit-container");
         jqUnit.assertEquals("After changing text and pressing enter, display field contains new text", testString, display.text());
 
-        // focus on something else to cause a blur on the display field
-        jQuery("#display-custom").focus();
+        display.blur();
         jqUnit.assertFalse("After blur, display field is not focussed", display.hasClass(inlineEditor.styles.focus));
         
     });
@@ -149,7 +153,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         jqUnit.assertEquals("After click, edit field contains same text as display field", display.text(), edit.attr("value"));
     });
     
-    inlineEditTests.test("Arrow Keys while Editing", function() {
+    inlineEditTests.test("Arrow Keys while Editing", function () {
         var display = $("#display");
         var edit = $("#edit");
         var inlineEditor = new fluid.InlineEdit("inline-edit");
@@ -166,9 +170,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
         jqUnit.isVisible("After left-arrow pressed, edit field is still visible", "#edit-container");
     });
     
-    inlineEditTests.test("Finished Editing Callback", function() {
+    inlineEditTests.test("Finished Editing Callback", function () {
         var options = {
-            finishedEditing: function() {
+            finishedEditing: function () {
                 fluid.finishedEditingCallbackCalled = true;
             }
         };

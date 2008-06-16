@@ -75,11 +75,15 @@ fluid = fluid || {};
     }
     
     function bindKeyHighlight(text, focusStyle) {
-        var toggleFocusStyle = function () {
-            text.toggleClass(focusStyle);    
+        var focusOn = function () {
+            text.addClass(focusStyle);    
         };
-        text.focus(toggleFocusStyle);
-        text.blur(toggleFocusStyle);
+        var focusOff = function () {
+            text.removeClass(focusStyle);    
+        };
+        
+        text.focus(focusOn);
+        text.blur(focusOff);
     }
     
     function keyNav(text, editContainer, editField, styles, paddings) {
