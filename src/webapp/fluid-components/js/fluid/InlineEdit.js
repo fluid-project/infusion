@@ -9,7 +9,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-var fluid = fluid || {};
+/*global jQuery*/
+
+/*global fluid*/
+fluid = fluid || {};
 
 (function ($, fluid) {
     
@@ -23,12 +26,12 @@ var fluid = fluid || {};
         // Work around for FLUID-726
         // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.       
         setTimeout(function () {
-          editField.focus();    
+            editField.focus();    
         }, 0);
         
     }
     
-     function finish(editContainer, editField, text, finishedFn) {
+    function finish(editContainer, editField, text, finishedFn) {
         finishedFn(edit);
         text.text(editField.val());
         editContainer.hide();
@@ -89,7 +92,7 @@ var fluid = fluid || {};
         var finishHandler = function (evt) {
             // Fix for handling arrow key presses see FLUID-760
             var code = (evt.keyCode? evt.keyCode : (evt.which? evt.which : 0));
-            if (code != $.a11y.keys.ENTER) {
+            if (code !== $.a11y.keys.ENTER) {
                 return true;
             }
             
@@ -108,7 +111,7 @@ var fluid = fluid || {};
     fluid.InlineEdit = function (componentContainerId, options) {
         // Mix in the user's configuration options.
         options = options || {};
-        selectors = $.extend({}, this.defaults.selectors, options.selectors);
+        var selectors = $.extend({}, this.defaults.selectors, options.selectors);
         this.styles = $.extend({}, this.defaults.styles, options.styles);
         this.paddings = $.extend({}, this.defaults.paddings, options.paddings);
 		this.finishedEditing = options.finishedEditing || function () {};
@@ -157,4 +160,4 @@ var fluid = fluid || {};
 		}
     };
         
-}) (jQuery, fluid);
+})(jQuery, fluid);
