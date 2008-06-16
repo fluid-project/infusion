@@ -43,7 +43,7 @@ SWFUpload.prototype.initSWFUpload = function (settings) {
 /* *************** */
 SWFUpload.instances = {};
 SWFUpload.movieCount = 0;
-SWFUpload.version = "2.1.0 beta 1";
+SWFUpload.version = "2.1.0";
 SWFUpload.QUEUE_ERROR = {
 	QUEUE_LIMIT_EXCEEDED	  		: -100,
 	FILE_EXCEEDS_SIZE_LIMIT  		: -110,
@@ -219,6 +219,47 @@ SWFUpload.prototype.buildParamString = function () {
 	return paramStringPairs.join("&amp;");
 };
 
+// Public: Used to remove a SWFUpload instance from the page. This method strives to remove
+// all references to the SWF, and other objects so memory is properly freed.
+// Returns true if everything was destroyed. Returns a false if a failure occurs leaving SWFUpload in an inconsistant state.
+SWFUpload.prototype.destroy = function () {
+	try {
+		// Make sure Flash is done before we try to remove it
+		this.stopUpload();
+		
+		// Remove the SWFUpload DOM nodes
+		var movieElement = null;
+		try {
+			movieElement = this.getMovieElement();
+		} catch (ex) {
+		}
+		
+		if (movieElement != undefined && movieElement.parentNode != undefined && typeof(movieElement.parentNode.removeChild) === "function") {
+			var container = movieElement.parentNode;
+			if (container != undefined) {
+				container.removeChild(movieElement);
+				if (container.parentNode != undefined && typeof(container.parentNode.removeChild) === "function") {
+					container.parentNode.removeChild(container);
+				}
+			}
+		}
+		
+		// Destroy references
+		SWFUpload.instances[this.movieName] = null;
+		delete SWFUpload.instances[this.movieName];
+
+		delete this.movieElement;
+		delete this.settings;
+		delete this.customSettings;
+		delete this.eventQueue;
+		delete this.movieName;
+		
+		return true;
+	} catch (ex1) {
+		return false;
+	}
+};
+
 // Public: displayDebugInfo prints out settings and configuration
 // information about this SWFUpload instance.
 // This function (and any references to it) can be deleted when placing
@@ -284,11 +325,7 @@ SWFUpload.prototype.getSetting = function (name) {
 // Private: callFlash handles function calls made to the Flash element.
 // Calls are made with a setTimeout for some functions to work around
 // bugs in the ExternalInterface library.
-
-// NOTE: if we don't need to call StartUpload with a timeout anymore then we can simplify this
-// function and remove all the withTimeout stuff
-SWFUpload.prototype.callFlash = function (functionName, withTimeout, argumentArray) {
-	withTimeout = !!withTimeout || false;
+SWFUpload.prototype.callFlash = function (functionName, argumentArray) {
 	argumentArray = argumentArray || [];
 	
 	var self = this;
@@ -320,11 +357,7 @@ SWFUpload.prototype.callFlash = function (functionName, withTimeout, argumentArr
 		}
 	};
 	
-	if (withTimeout) {
-		setTimeout(callFunction, 0);
-	} else {
-		return callFunction();
-	}
+	return callFunction();
 };
 
 
@@ -353,16 +386,14 @@ SWFUpload.prototype.selectFiles = function () {
 // Public: startUpload starts uploading the first file in the queue unless
 // the optional parameter 'fileID' specifies the ID 
 SWFUpload.prototype.startUpload = function (fileID) {
-	// NOTE: Testing this without using a setTimeout. Since StartUpload was reworked to use ReturnUploadStart
-	// it might not be necessary anymore
-	this.callFlash("StartUpload", false, [fileID]);
+	this.callFlash("StartUpload", [fileID]);
 };
 
 /* Cancels a the file upload.  You must specify a file_id */
 // Public: cancelUpload cancels any queued file.  The fileID parameter
 // must be specified.
 SWFUpload.prototype.cancelUpload = function (fileID) {
-	this.callFlash("CancelUpload", false, [fileID]);
+	this.callFlash("CancelUpload", [fileID]);
 };
 
 // Public: stopUpload stops the current upload and requeues the file at the beginning of the queue.
@@ -379,7 +410,7 @@ SWFUpload.prototype.stopUpload = function () {
  *   effect.
  * *********************** */
 
-// Public: getStats gets the file statistics object.  It looks like this (where n is a number):
+// Public: getStats gets the file statistics object.
 SWFUpload.prototype.getStats = function () {
 	return this.callFlash("GetStats");
 };
@@ -389,23 +420,16 @@ SWFUpload.prototype.getStats = function () {
 // affect SWFUpload accept for the successful_uploads count which is used
 // by the upload_limit setting to determine how many files the user may upload.
 SWFUpload.prototype.setStats = function (statsObject) {
-	this.callFlash("SetStats", false, [statsObject]);
-};
-
-// Public: setCredentials that will be used to authenticate to the upload_url.
-// Note: This feature does not work.  It has been added in anticipation of
-// the Flex 3 SDK which has not been released yet.
-SWFUpload.prototype.setCredentials = function (name, password) {
-	this.callFlash("SetCrednetials", false, [name, password]);
+	this.callFlash("SetStats", [statsObject]);
 };
 
 // Public: getFile retrieves a File object by ID or Index.  If the file is
 // not found then 'null' is returned.
 SWFUpload.prototype.getFile = function (fileID) {
 	if (typeof(fileID) === "number") {
-		return this.callFlash("GetFileByIndex", false, [fileID]);
+		return this.callFlash("GetFileByIndex", [fileID]);
 	} else {
-		return this.callFlash("GetFile", false, [fileID]);
+		return this.callFlash("GetFile", [fileID]);
 	}
 };
 
@@ -413,86 +437,86 @@ SWFUpload.prototype.getFile = function (fileID) {
 // file specified by the Files ID.  If the name already exists then the
 // exiting value will be overwritten.
 SWFUpload.prototype.addFileParam = function (fileID, name, value) {
-	return this.callFlash("AddFileParam", false, [fileID, name, value]);
+	return this.callFlash("AddFileParam", [fileID, name, value]);
 };
 
 // Public: removeFileParam removes a previously set (by addFileParam) name/value
 // pair from the specified file.
 SWFUpload.prototype.removeFileParam = function (fileID, name) {
-	this.callFlash("RemoveFileParam", false, [fileID, name]);
+	this.callFlash("RemoveFileParam", [fileID, name]);
 };
 
 // Public: setUploadUrl changes the upload_url setting.
 SWFUpload.prototype.setUploadURL = function (url) {
 	this.settings.upload_url = url.toString();
-	this.callFlash("SetUploadURL", false, [url]);
+	this.callFlash("SetUploadURL", [url]);
 };
 
 // Public: setPostParams changes the post_params setting
 SWFUpload.prototype.setPostParams = function (paramsObject) {
 	this.settings.post_params = paramsObject;
-	this.callFlash("SetPostParams", false, [paramsObject]);
+	this.callFlash("SetPostParams", [paramsObject]);
 };
 
 // Public: addPostParam adds post name/value pair.  Each name can have only one value.
 SWFUpload.prototype.addPostParam = function (name, value) {
 	this.settings.post_params[name] = value;
-	this.callFlash("SetPostParams", false, [this.settings.post_params]);
+	this.callFlash("SetPostParams", [this.settings.post_params]);
 };
 
 // Public: removePostParam deletes post name/value pair.
 SWFUpload.prototype.removePostParam = function (name) {
 	delete this.settings.post_params[name];
-	this.callFlash("SetPostParams", false, [this.settings.post_params]);
+	this.callFlash("SetPostParams", [this.settings.post_params]);
 };
 
 // Public: setFileTypes changes the file_types setting and the file_types_description setting
 SWFUpload.prototype.setFileTypes = function (types, description) {
 	this.settings.file_types = types;
 	this.settings.file_types_description = description;
-	this.callFlash("SetFileTypes", false, [types, description]);
+	this.callFlash("SetFileTypes", [types, description]);
 };
 
 // Public: setFileSizeLimit changes the file_size_limit setting
 SWFUpload.prototype.setFileSizeLimit = function (fileSizeLimit) {
 	this.settings.file_size_limit = fileSizeLimit;
-	this.callFlash("SetFileSizeLimit", false, [fileSizeLimit]);
+	this.callFlash("SetFileSizeLimit", [fileSizeLimit]);
 };
 
 // Public: setFileUploadLimit changes the file_upload_limit setting
 SWFUpload.prototype.setFileUploadLimit = function (fileUploadLimit) {
 	this.settings.file_upload_limit = fileUploadLimit;
-	this.callFlash("SetFileUploadLimit", false, [fileUploadLimit]);
+	this.callFlash("SetFileUploadLimit", [fileUploadLimit]);
 };
 
 // Public: setFileQueueLimit changes the file_queue_limit setting
 SWFUpload.prototype.setFileQueueLimit = function (fileQueueLimit) {
 	this.settings.file_queue_limit = fileQueueLimit;
-	this.callFlash("SetFileQueueLimit", false, [fileQueueLimit]);
+	this.callFlash("SetFileQueueLimit", [fileQueueLimit]);
 };
 
 // Public: setFilePostName changes the file_post_name setting
 SWFUpload.prototype.setFilePostName = function (filePostName) {
 	this.settings.file_post_name = filePostName;
-	this.callFlash("SetFilePostName", false, [filePostName]);
+	this.callFlash("SetFilePostName", [filePostName]);
 };
 
 // Public: setUseQueryString changes the use_query_string setting
 SWFUpload.prototype.setUseQueryString = function (useQueryString) {
 	this.settings.use_query_string = useQueryString;
-	this.callFlash("SetUseQueryString", false, [useQueryString]);
+	this.callFlash("SetUseQueryString", [useQueryString]);
 };
 
 // Public: setRequeueOnError changes the requeue_on_error setting
 SWFUpload.prototype.setRequeueOnError = function (requeueOnError) {
 	this.settings.requeue_on_error = requeueOnError;
-	this.callFlash("SetRequeueOnError", false, [requeueOnError]);
+	this.callFlash("SetRequeueOnError", [requeueOnError]);
 };
 
 // Public: setDebugEnabled changes the debug_enabled setting
 SWFUpload.prototype.setDebugEnabled = function (debugEnabled) {
 	this.settings.debug_enabled = debugEnabled;
-	this.callFlash("SetDebugEnabled", false, [debugEnabled]);
+	this.callFlash("SetDebugEnabled", [debugEnabled]);
 };
 
 
@@ -535,12 +559,15 @@ SWFUpload.prototype.queueEvent = function (handlerName, argumentArray) {
 	}
 };
 
+// Private: Causes the next event in the queue to be executed.  Since events are queued using a setTimeout
+// we must queue them in order to garentee that they are executed in order.
 SWFUpload.prototype.executeNextEvent = function () {
 	// Warning: Don't call this.debug inside here or you'll create an infinite loop
 
-	var  f = this.eventQueue.shift();
-	f.apply(this);
-	
+	var  f = this.eventQueue ? this.eventQueue.shift() : null;
+	if (typeof(f) === "function") {
+		f.apply(this);
+	}
 };
 
 // Private: unescapeFileParams is part of a workaround for a flash bug where objects passed through ExternalInterfance cannot have
@@ -551,18 +578,21 @@ SWFUpload.prototype.unescapeFilePostParams = function (file) {
 	var unescapedPost = {};
 	var uk;
 
-	for (var k in file.post) {
-		if (file.post.hasOwnProperty(k)) {
-			uk = k;
-			var match;
-			while ((match = reg.exec(uk)) !== null) {
-				uk = uk.replace(match[0], String.fromCharCode(parseInt("0x"+match[1], 16)));
+	if (file != undefined) {
+		for (var k in file.post) {
+			if (file.post.hasOwnProperty(k)) {
+				uk = k;
+				var match;
+				while ((match = reg.exec(uk)) !== null) {
+					uk = uk.replace(match[0], String.fromCharCode(parseInt("0x"+match[1], 16)));
+				}
+				unescapedPost[uk] = file.post[k];
 			}
-			unescapedPost[uk] = file.post[k];
 		}
+
+		file.post = unescapedPost;
 	}
 
-	file.post = unescapedPost;
 	return file;
 };
 
@@ -624,7 +654,7 @@ SWFUpload.prototype.returnUploadStart = function (file) {
 	
 	returnValue = !!returnValue;
 	
-	this.callFlash("ReturnUploadStart", false, [returnValue]);
+	this.callFlash("ReturnUploadStart", [returnValue]);
 };
 
 
