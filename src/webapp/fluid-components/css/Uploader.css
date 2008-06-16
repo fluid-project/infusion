@@ -79,7 +79,8 @@
 }
 
 .fluid-scroller-table-foot td {
-	padding: 6px;
+	padding-left: 6px;
+	padding-right: 6px;
 	height: 2.4em;
 	vertical-align: middle;
 	font-size: 1.1em;

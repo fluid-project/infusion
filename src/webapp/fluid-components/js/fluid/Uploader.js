@@ -1034,7 +1034,7 @@ var fluid = fluid || {};
 		this.totalTextElm = $(options.totalText, this.progressContainer);
 		this.totalProgressContainer = $(options.totalProgressContainer, this.progressContainer);
 		
-		this.totalProgressElm.width(this.minWidth);		
+		this.totalProgressElm.width(this.minWidth);
 		
 		this.fileProgressElm.hide();
 		this.totalProgressElm.hide();
@@ -1049,6 +1049,10 @@ var fluid = fluid || {};
 		
 		// set up the file row
 		this.fileProgressElm.css('top',(this.currRowElm.position().top)).height(this.currRowElm.height()).width(this.minWidth);
+		// here to make up for an IE6 bug
+		if ($.browser.msie && $.browser.version < 7) {
+			this.totalProgressElm.height(this.totalProgressElm.siblings().height());
+		}	
 		
 		// show both
 		this.totalProgressElm.show();
