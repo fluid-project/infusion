@@ -197,5 +197,22 @@ $(document).ready(function () {
         jqUnit.assertTrue("Callback was called", fluid.finishedEditingCallbackCalled);
     });
 
+    inlineEditTests.test("Blur", function () {
+        jqUnit.expect(4);
+        
+        var display = $("#display");
+        var edit = $("#edit");
+        var inlineEditor = new fluid.InlineEdit("inline-edit");
+
+        display.click();
+        jqUnit.isVisible("Edit field is visible", "#edit-container");
+        
+        var testString = "This is new text.";
+        edit.attr("value", testString);
+        edit.blur();
+        jqUnit.notVisible("After blur, edit field is hidden", "#edit-container");
+        jqUnit.assertEquals("Blur cancels the edit", "Click me to edit...", display.text());
+        jqUnit.assertFalse("Blur cancels the edit", edit.text() === display.text());
+    });
     
 });

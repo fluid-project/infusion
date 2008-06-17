@@ -1,5 +1,5 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 		<title>Inline Edit Manual Test Page</title>
@@ -15,32 +15,24 @@
 
 	</head>
 	<body>
-      <p>
-	    <form id="inline-edit1">
+	    <form id="inline-edit1" action="#">
 	        <div class="text" id="text1">Click me to edit...</div>
             <div class="editContainer" id="editContainer1">
                 <input type="text" class="edit" id="edit1" value="I am the hidden text of the first edit"/>
             </div>
 	    </form>
-      </p>
-        
-      <p>
-	    <form id="inline-edit2">
+	    <form id="inline-edit2" action="#">
 	        <div class="text" id="text2">No, click me instead!</div>
             <div class="editContainer" id="editContainer2">
                 <input type="text" class="edit" id="edit2" value="I am the hidden text of the second edit"/>
             </div>
 	    </form>
-      </p>
-
-      <p>
-	    <form id="inline-edit3">
+	    <form id="inline-edit3" action="#">
 	        <div class="text" id="text3">Oh, pick me! Pick me!</div>
             <div class="editContainer" id="editContainer3">
                 <input type="text" class="edit" id="edit3" value="I am the hidden text of the third edit"/>
             </div>
 	    </form>
-      </p>
 
         <script type="text/javascript">
             new fluid.InlineEdit("inline-edit1");

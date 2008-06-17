@@ -16,10 +16,12 @@ fluid = fluid || {};
 
 (function ($, fluid) {
     
-    function edit(text, editContainer, editField, invitationStyle, paddings) {
+    // Is paddings doing what we want? Should it be in the CSS file instead?
+    function edit(text, editContainer, editField, invitationStyle, focusStyle, paddings) {
 		editField.val(text.text());
 		editField.width(Math.max(text.width() + paddings.add, paddings.minimum));
         text.removeClass(invitationStyle);
+        text.removeClass(focusStyle);
         text.hide();
         editContainer.show();
 
@@ -31,39 +33,39 @@ fluid = fluid || {};
         
     }
     
-    function finish(editContainer, editField, text, finishedFn) {
-        finishedFn(edit);
-        text.text(editField.val());
+    function view(editContainer, text) {
         editContainer.hide();
         text.show();
+    }
+
+    function finish(editContainer, editField, text, finishedFn) {
+        finishedFn(editField);
+        text.text(editField.val());
+        view(editContainer, text);
         text.focus();
     }
-    
-    function editHandler(text, editContainer, editField, invitationStyle, paddings) {
+        
+    function editHandler(text, editContainer, editField, invitationStyle, focusStyle, paddings) {
         return function () {
-            edit(text, editContainer, editField, invitationStyle, paddings);
+            edit(text, editContainer, editField, invitationStyle, focusStyle, paddings);
             return false;
         }; 
     }
     
-    function hoverHandlers(text, invitationStyle) {
-        return {
-            over: function (evt) {
-                text.addClass(invitationStyle);
-            },
-            out: function (evt) {
-                text.removeClass(invitationStyle);
-            }
+    function bindHoverHandlers(text, invitationStyle) {
+        var over = function (evt) {
+            text.addClass(invitationStyle);
+        };     
+        var out = function (evt) {
+            text.removeClass(invitationStyle);
         };
+
+        text.hover(over, out);
     }
     
     function mouse(text, editContainer, editField, styles, paddings, finishFn) {
-         // Hover over for an invitation to click.
-        var textHover = hoverHandlers(text, styles.invitation);
-        text.hover(textHover.over, textHover.out);
-        
-        // Handle a click.
-        text.click(editHandler(text, editContainer, editField, styles.invitation, paddings));
+        bindHoverHandlers(text, styles.invitation);
+        text.click(editHandler(text, editContainer, editField, styles.invitation, styles.focus, paddings));
     }
     
     function bindKeyHighlight(text, focusStyle) {
@@ -81,7 +83,7 @@ fluid = fluid || {};
     function keyNav(text, editContainer, editField, styles, paddings) {
         text.tabbable();
         bindKeyHighlight(text, styles.focus);
-        text.activatable(editHandler(text, editContainer, editField, styles.invitation, paddings));
+        text.activatable(editHandler(text, editContainer, editField, styles.invitation, styles.focus, paddings));
     } 
     
     function bindEditFinish(editContainer, editField, text, finishedFn) {
@@ -95,9 +97,17 @@ fluid = fluid || {};
             finish(editContainer, editField, text, finishedFn);
             return false;
         };
-        
-        editContainer.blur(finishHandler);
+
         editContainer.keypress(finishHandler);
+    }
+    
+    function bindCancel(editContainer, editField, text) {
+        var cancelHandler = function (evt) {
+            view(editContainer, text);
+            return false;
+        };
+
+        editField.blur(cancelHandler);        
     }
     
     function aria(text, editContainer) {
@@ -122,6 +132,7 @@ fluid = fluid || {};
         mouse(this.text, this.editContainer, this.editField, this.styles, this.paddings, this.finishedEditing);
         keyNav(this.text, this.editContainer, this.editField, this.styles, this.paddings);
         bindEditFinish(this.editContainer, this.editField, this.text, this.finishedEditing);
+        bindCancel(this.editContainer, this.editField, this.text);
         
         // Add ARIA support.
         aria(this.text, this.editContainer);
@@ -130,8 +141,9 @@ fluid = fluid || {};
         this.editContainer.hide();
     };
     
+    // Seems a bit strange that we put edit and finish on the prototype but internally we just use the private functions
     fluid.InlineEdit.prototype.edit = function () {
-        edit(this.text, this.editContainer, this.editField, this.styles.invitation, this.paddings);
+        edit(this.text, this.editContainer, this.editField, this.styles.invitation, this.styles.focus, this.paddings);
     };
     
     fluid.InlineEdit.prototype.finish = function () {
