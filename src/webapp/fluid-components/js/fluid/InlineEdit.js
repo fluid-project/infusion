@@ -64,14 +64,6 @@ fluid = fluid || {};
         
         // Handle a click.
         text.click(editHandler(text, editContainer, editField, styles.invitation, paddings));
-        
-        // Bind a global click listener that checks for the user click outside of the edit field.
-        $("body").click(function (evt) {
-            if ($("*", editContainer).index(evt.target) === -1) {
-                finish(editContainer, editField, text, finishFn);
-                text.toggleClass(styles.focus);
-            }   
-        });
     }
     
     function bindKeyHighlight(text, focusStyle) {
@@ -95,7 +87,7 @@ fluid = fluid || {};
     function bindEditFinish(editContainer, editField, text, finishedFn) {
         var finishHandler = function (evt) {
             // Fix for handling arrow key presses see FLUID-760
-            var code = (evt.keyCode? evt.keyCode : (evt.which? evt.which : 0));
+            var code = (evt.keyCode ? evt.keyCode : (evt.which ? evt.which : 0));
             if (code !== $.a11y.keys.ENTER) {
                 return true;
             }

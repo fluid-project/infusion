@@ -18,7 +18,27 @@ $(document).ready(function () {
     
     var inlineEditTests = new jqUnit.TestCase("InlineEdit Tests");
 
+    var customOptions = {selectors: {
+            text: ".customText",
+            editContainer: ".customEditContainer",
+            edit: ".customEdit"
+        },
+        styles: {
+            invitation: "customInvitation",
+            focus: "customFocus"
+        },		
+		paddings: {
+			add: 20,
+			minimum: 40
+		},
+        finishedEditing: function () {
+            fluid.finishedEditingCallbackCalled = true;
+        }      
+    };
+    
     inlineEditTests.test("Minimal Construction", function () {
+        jqUnit.expect(10);
+
         var container = $("#inline-edit");
         var display = $("#display");
         var editContainer = $("#edit-container");
@@ -38,44 +58,29 @@ $(document).ready(function () {
     });
 
     inlineEditTests.test("Customized Construction", function () {
-        var testSelectors = {
-            text: ".customText",
-            editContainer: ".customEditContainer",
-            edit: ".customEdit"
-        };
-        var testStyles = {
-            invitation: "customInvitation",
-            focus: "customFocus"
-        };		
-		var testPaddings = {
-			add: 20,
-			minimum: 40
-		};
-        var options = {
-            selectors: testSelectors,
-            styles: testStyles,
-            paddings: testPaddings 
-        };
-        
+        jqUnit.expect(10);
+
         var container = $("#inline-edit-custom");
         var display = $("#display-custom");
         var editContainer = $("#edit-container-custom");
         var editField = $("#edit-custom");
-        var inlineEditor = new fluid.InlineEdit("inline-edit-custom", options);
+        var inlineEditor = new fluid.InlineEdit("inline-edit-custom", customOptions);
 
         jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
         jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.text[0].id);
         jqUnit.assertEquals("Edit container is set to", editContainer[0].id, inlineEditor.editContainer[0].id);
         jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
-        jqUnit.assertEquals("Focus style is custom", testStyles.focus, inlineEditor.styles.focus);
-        jqUnit.assertEquals("Invitation style is custom", testStyles.invitation, inlineEditor.styles.invitation);
-        jqUnit.assertEquals("Paddings add is set to", testPaddings.add, inlineEditor.paddings.add);
-        jqUnit.assertEquals("Paddings minimum is set to", testPaddings.minimum, inlineEditor.paddings.minimum);
+        jqUnit.assertEquals("Focus style is custom", customOptions.styles.focus, inlineEditor.styles.focus);
+        jqUnit.assertEquals("Invitation style is custom", customOptions.styles.invitation, inlineEditor.styles.invitation);
+        jqUnit.assertEquals("Paddings add is set to", customOptions.paddings.add, inlineEditor.paddings.add);
+        jqUnit.assertEquals("Paddings minimum is set to", customOptions.paddings.minimum, inlineEditor.paddings.minimum);
         jqUnit.isVisible("Display field is visible", "#display-custom");
         jqUnit.notVisible("Edit field is hidden", "#edit-container-custom");
     });
 
     inlineEditTests.test("Edit-Finish", function () {
+        jqUnit.expect(8);
+
         var display = $("#display");
         var edit = $("#edit");
         var inlineEditor = new fluid.InlineEdit("inline-edit");
@@ -97,6 +102,8 @@ $(document).ready(function () {
     });
 
     inlineEditTests.test("Keyboard Navigation Edit", function () {
+        jqUnit.expect(11);
+
         var display = $("#display");
         var edit = $("#edit");
         var inlineEditor = new fluid.InlineEdit("inline-edit");
@@ -127,6 +134,8 @@ $(document).ready(function () {
     });
     
     inlineEditTests.test("Hover", function () {
+        jqUnit.expect(3);
+
         var display = $("#display");
         var inlineEditor = new fluid.InlineEdit("inline-edit");
 
@@ -140,6 +149,8 @@ $(document).ready(function () {
     });
     
     inlineEditTests.test("Click", function () {
+        jqUnit.expect(5);
+
         var display = $("#display");
         var edit = $("#edit");
         var inlineEditor = new fluid.InlineEdit("inline-edit");
@@ -154,6 +165,8 @@ $(document).ready(function () {
     });
     
     inlineEditTests.test("Arrow Keys while Editing", function () {
+        jqUnit.expect(5);
+
         var display = $("#display");
         var edit = $("#edit");
         var inlineEditor = new fluid.InlineEdit("inline-edit");
@@ -171,6 +184,8 @@ $(document).ready(function () {
     });
     
     inlineEditTests.test("Finished Editing Callback", function () {
+        jqUnit.expect(2);
+
         var options = {
             finishedEditing: function () {
                 fluid.finishedEditingCallbackCalled = true;
