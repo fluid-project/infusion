@@ -79,11 +79,9 @@
 }
 
 .fluid-scroller-table-foot td {
-	padding-left: 6px;
-	padding-right: 6px;
-	height: 2.4em;
+	padding: 8px 6px;
 	vertical-align: middle;
-	font-size: 1.1em;
+	font-size: 1.07em;
 	font-weight: bolder;
 	color: #666;
 }
@@ -280,10 +278,11 @@
 	display: none;
 }
 
+/* start */
+
 .fluid-uploader .start .fluid-uploader-row-placeholder {
 	display: block;
 }
-/* start */
 
 .start .fluid-uploader-btns .fluid-uploader-cancel {
 	display: block;
@@ -377,6 +376,13 @@
   .fluid-uploader .browsing button:hover {
 	background-color: #CCC !important;
 	border-color: #999 !important;
+	cursor: auto;
+}
+
+.fluid-uploader .browsing button.removeFile,
+  .fluid-uploader .browsing button.removeFile:hover {
+	background-color: transparent !important;
+	border-color: transparent !important;
 	cursor: auto;
 }
 
