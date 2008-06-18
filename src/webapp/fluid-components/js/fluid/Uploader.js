@@ -934,7 +934,6 @@ var fluid = fluid || {};
 		this.options = $.extend({}, uploadDefaults, settings);
         
         this.fragmentSelectors = this.options.fragmentSelectors;
-        var progressSelector = this.fragmentSelectors.progress;
         
         // Should the status object be more self-aware? Should various functions that operate on
         // it (and do little else) be encapsulated in it?
