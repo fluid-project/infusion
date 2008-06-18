@@ -374,7 +374,7 @@ table.listHier td {
 
 table.listHier td span {
     padding:0.1em 0.2em;
-	border: 1px solid transparent;
+	border: 1px solid white;
 }
 
 .listHier th h3, .listHier th h4, .listHier th h5, .listHier th h6, .listHier td h3, .listHier td h4, .listHier td h5, .listHier td h6 {
