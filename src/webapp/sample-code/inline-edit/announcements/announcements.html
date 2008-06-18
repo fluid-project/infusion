@@ -246,7 +246,7 @@
                                 &nbsp;
                             </td>
                             <td headers="subject" id="announcement1">
-                                <h4 class="text">Lecture Room Change</h4>
+                                <span class="text">Lecture Room Change</span>
                                 <div class="editContainer">
                                     <input type="text" class="edit" />
                                 </div>
@@ -272,7 +272,7 @@
                                 &nbsp;
                             </td>
                             <td headers="subject" id="announcement2">
-                                <h4 class="text">Reading for Tuesday's Lab</h4>
+                                <span class="text">Reading for Tuesday's Lab</span>
                                 <div class="editContainer">
                                     <input type="text" class="edit" />
                                 </div>
@@ -293,6 +293,32 @@
                                 <input title="Select to remove" id="check-2" name="selectedMembers" value="/announcement/msg/Test/main/b8f4d602-56bd-4303-8900-e6b17a74eb3e" type="checkbox">
                             </td>
                         </tr>
+                        <tr>
+                            <td headers="attach" class="attach">
+                                &nbsp;
+                            </td>
+                            <td headers="subject" id="announcement3">
+                                <span class="text">DNA Polymorphism Exam on Thursday</span>
+                                <div class="editContainer">
+                                    <input type="text" class="edit" />
+                                </div>
+                            </td>
+                            <td headers="author">
+                                Meredith Grey
+                            </td>
+                            <td>
+                                site
+                            </td>
+                            <td headers="date">
+                                Jun 4, 2008 10:00 am
+                            </td>
+                            <td headers="checkbox" class="screenOnly">
+                                <label for="check-2" class="skip">
+                                    Select to remove
+                                </label>
+                                <input title="Select to remove" id="check-2" name="selectedMembers" value="/announcement/msg/Test/main/b8f4d602-56bd-4303-8900-e6b17a74eb3e" type="checkbox">
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <p class="act">
@@ -302,6 +328,7 @@
                 <script type="text/javascript">
                     new fluid.InlineEdit("announcement1");
                     new fluid.InlineEdit("announcement2");
+					new fluid.InlineEdit("announcement3");
                 </script>
 
             </form>

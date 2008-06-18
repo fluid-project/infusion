@@ -372,6 +372,11 @@ table.listHier td {
     padding:0.3em;
 }
 
+table.listHier td span {
+    padding:0.1em 0.2em;
+	border: 1px solid transparent;
+}
+
 .listHier th h3, .listHier th h4, .listHier th h5, .listHier th h6, .listHier td h3, .listHier td h4, .listHier td h5, .listHier td h6 {
     background:transparent none repeat scroll 0%;
     color:#000000;
@@ -423,8 +428,10 @@ table.listHier td {
 
 .invitation {
     background-color: #FFECB3 !important;
+	border: 1px solid #CCC !important;
 }
 
 .focus {
     border: 2px solid #777777;
 }
+
