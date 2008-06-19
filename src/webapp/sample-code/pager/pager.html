@@ -11,10 +11,17 @@
 	</head>
 	<body>
 	    <div id="gradebook">
-	      <form>
-    	    <ul id="pager" class="pager-top">
+	      <form action="#">
+    	    <ul id="pager-top" class="pager-top">
+    	        <li class="page-link">1</li>
+    	        <li class="page-link"><a href="#">2</a></li>
+    	        <li class="page-link"><a href="#">3</a></li>
+    	        <li class="page-link"><a href="#">4</a></li>
+    	        <li class="page-link"><a href="#">5</a></li>
+    	        <li class="page-link"><a href="#">6</a></li>
+    	        <li class="page-link"><a href="#">7 (last)</a></li>
     	        <li class="previous">&lt; previous</li>
-    	        <li class="next">next &gt;</li>
+    	        <li class="next"><a href="#">next &gt;</a></li>
     	    </ul>
             <table summary="student grades" id="students">
               <thead>
@@ -29,39 +36,51 @@
                 <tr>
                     <td>Ahn, Jason</td>
                     <td>15234314</td>
-                    <td><input type="text" value="87" /></td
+                    <td><input type="text" value="87" /></td>
                     <td>Great job, Jason! Very excited to see a big jump.</td>
                 </tr>
                 <tr>
                     <td>Azer, Tamer</td>
                     <td>19206726</td>
-                    <td><input type="text" value="68" /></td
+                    <td><input type="text" value="68" /></td>
                     <td>Lorem ipsum</td>
                 </tr>
                 <tr>
                     <td>Bellefuille, Elaine</td>
                     <td>19286942</td>
-                    <td><input type="text" value="90" /></td
+                    <td><input type="text" value="90" /></td>
                     <td></td>
                 </tr>
                 <tr>
                     <td>Braganza, Sherman</td>
                     <td>19446940</td>
-                    <td><input type="text" value="84" /></td
+                    <td><input type="text" value="84" /></td>
                     <td></td>
                 </tr>
                 <tr>
                     <td>Campaign, Leslie</td>
                     <td>19283721</td>
-                    <td><input type="text" value="79" /></td
+                    <td><input type="text" value="79" /></td>
                     <td></td>
                 </tr>
               </tbody>
             </table>
+            <ul id="pager-bottom" class="pager-bottom">
+    	        <li class="page-link">1</li>
+    	        <li class="page-link"><a href="#">2</a></li>
+    	        <li class="page-link"><a href="#">3</a></li>
+    	        <li class="page-link"><a href="#">4</a></li>
+    	        <li class="page-link"><a href="#">5</a></li>
+    	        <li class="page-link"><a href="#">6</a></li>
+    	        <li class="page-link"><a href="#">7 (last)</a></li>
+    	        <li class="previous">&lt; previous</li>
+    	        <li class="next"><a href="#">next &gt;</a></li>
+    	    </ul>
+
           </form>
         </div>
         <script type="text/javascript">
-            new fluid.Pager("gradebook", 43);
+            new fluid.Pager("gradebook");
         </script>
 	</body>
 </html>

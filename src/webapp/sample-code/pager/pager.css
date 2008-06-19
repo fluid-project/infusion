@@ -22,13 +22,13 @@ a {
     border-bottom: solid .1em;
 }
 
-.pager-top {
+.pager-top,.pager-bottom {
     padding: .5em;
     background-color: #EEEEEE;
     text-align: center;
 }
 
-.pager-top li {
+.pager-top li,.pager-bottom li {
 	display:inline;
     padding-right:.3em;
 }

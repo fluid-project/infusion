@@ -9,55 +9,97 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-var fluid = fluid || {};
+/*global jQuery*/
+
+/*global fluid*/
+fluid = fluid || {};
 
 (function ($, fluid) {
     
-    // Currently puts in all the page links
-    // Need to deal with only showing some page links - provide different strategies. 
-    // Need to bind the anchor to a change page handler
-    // Should we take an optional link creator function? Or pull a template from the markup?
-    function addPageElements(previous, num) {
-        var tagName = previous[0].tagName;
-        for (var i = num; i > 0; i--) {
-            var el = document.createElement(tagName);
-            var a = document.createElement("a");
-            a.innerHTML = i;
-            jQuery(el).append(a);
-            previous.after(el);
-        }
-    }
-
-    // Should clean the clone - get rid of ids, set a reasonable id etc. 
-    // Should we add the bottom to the top's parent instead of the container? 
-    function addPagerBottom(container, pagerTop) {
-        var pagerBottom = pagerTop.clone();
-        pagerBottom.removeAttr("id");
-        container.append(pagerBottom);
-    }
+    /*
+     * Start Pager Link Display 
+     */
+    
+    /**   Private stateless functions   **/
+   
+    function bindLinkHandlers(link, currentPageStyle, pageChangedCallback) {
+        var jLink = $(link);
+        jLink.click(function (evt) {
+            jLink.addClass(currentPageStyle);
+            pageChangedCallback(link);
+        });
         
-    fluid.Pager = function (componentContainerId, numOfPages, options) {
-        this.numOfPages = numOfPages;
+        // Needs to bind hover
+    }
+   
+    /**   Pager Link Display creator   **/
+   
+    fluid.pagerLinkDisplay = function (pageLinks, previous, next, currentPageStyle, pageChangedCallback) {
+        // Bind handlers
+        bindLinkHandlers(previous, currentPageStyle, pageChangedCallback);
+        bindLinkHandlers(next, currentPageStyle, pageChangedCallback);
+        pageLinks.each(function () {
+            bindLinkHandlers(this, currentPageStyle, pageChangedCallback);
+        });
+        
+        return {
+            pageLinks: pageLinks,
+            previous: previous,
+            next: next
+        };
+    };
+   
+    /*
+     * Start of Pager Bar
+     */
+
+    /**   Pager Bar creator   **/
+
+    fluid.pagerBar = function (bar, selectors, currentPageStyle, pageChangedCallback) {        
+        var pageLinks = $(selectors.pageLinks, bar);
+        var previous = $(selectors.previous, bar);
+        var next = $(selectors.next, bar);
+        
+        var linkDisplay = fluid.pagerLinkDisplay(pageLinks, previous, next, currentPageStyle, pageChangedCallback);
+        
+        return {
+            bar: bar,
+            linkDisplay: linkDisplay
+        };
+    };
+
+    /* 
+     * Start of the Pager
+     */
+    
+    /**   Constructor  **/ 
+               
+    fluid.Pager = function (componentContainerId, options) {
         // Mix in the user's configuration options.
         options = options || {};
-        selectors = $.extend({}, this.defaults.selectors, options.selectors);
+        var selectors = $.extend({}, this.defaults.selectors, options.selectors);
         this.styles = $.extend({}, this.defaults.styles, options.styles);
         this.pageChangedCallback = options.pageChangedCallback || this.defaults.pageChangedCallback; 
 
         // Bind to the DOM.
         this.container = fluid.utils.jById(componentContainerId);
-        this.pagerTop = $(selectors.pagerTop, this.container);
-        this.previous = $(selectors.previous, this.container);
-        this.next = $(selectors.next, this.container);
         
-        addPageElements(this.previous, this.numOfPages, "#");
-        addPagerBottom(this.container, this.pagerTop);
-        this.selectPage(1);     
+        // Create pager bars
+        // For now, expose the bars so the placeholder test can be written. 
+        // Need to develop the Pager API and hide the implementation details.
+        var pagerTop = $(selectors.pagerTop, this.container);
+        this.topBar = fluid.pagerBar(pagerTop, selectors, this.styles.currentPage, this.pageChangedCallback);
+        var pagerBottom = $(selectors.pagerBottom, this.container);
+        this.bottomBar = fluid.pagerBar(pagerBottom, selectors, this.styles.currentPage, this.pageChangedCallback);
     };
-    
+ 
+     /**   Public stuff   **/   
+     
     fluid.Pager.prototype.defaults = {
         selectors: {
             pagerTop: ".pager-top",
+            pagerBottom: ".pager-bottom",
+            pageLinks: ".page-link",
             previous: ".previous",
             next: ".next"
         },
@@ -66,7 +108,7 @@ var fluid = fluid || {};
             currentPage: "current-page"
         },
 
-        pageChangedCallback: function (pageNum) {
+        pageChangedCallback: function (link) {
             // AJAX call here
         }
     };
@@ -74,7 +116,6 @@ var fluid = fluid || {};
     // Need to change styling and disable a particular page number
     // Need to set next and previous
     fluid.Pager.prototype.selectPage = function (pageNum) {
-        this.pageChangedCallback(pageNum);
     };
         
-}) (jQuery, fluid);
+})(jQuery, fluid);

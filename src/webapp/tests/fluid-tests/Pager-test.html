@@ -1,5 +1,4 @@
-<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
   <head>
@@ -28,8 +27,11 @@
 
 	    <div id="gradebook">
     	    <ul id="pager-top" class="pager-top">
-    	        <li class="previous">&lt; previous</li>
-    	        <li class="next">next &gt;</li>
+       	        <li id="top1" class="page-link"><a href="#">1</a></li>
+    	        <li id="top2" class="page-link"><a href="#">2</a></li>
+    	        <li id="top3" class="page-link"><a href="#">3</a></li>
+    	        <li id="previous-top" class="previous">&lt; previous</li>
+    	        <li id="next-top" class="next">next &gt;</li>
     	    </ul>
             <table summary="student grades" id="students">
               <thead>
@@ -73,6 +75,13 @@
                 </tr>
               </tbody>
             </table>
+            <ul id="pager-bottom" class="pager-bottom">
+       	        <li class="page-link"><a href="#">1</a></li>
+    	        <li class="page-link"><a href="#">2</a></li>
+    	        <li class="page-link"><a href="#">3</a></li>
+    	        <li id="previous-bottom" class="previous">&lt; previous</li>
+    	        <li id="next-bottom" class="next">next &gt;</li>
+    	    </ul>
         </div>
     </div>
   </body>
