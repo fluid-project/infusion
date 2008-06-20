@@ -370,10 +370,10 @@ var fluid = fluid || {};
 	
 	function browseForFiles(swfObj,allowMultipleFiles) {
 		if (allowMultipleFiles) {
-			this.selectFiles();
+			swfObj.selectFiles();
 		}
 		else {
-			this.selectFile();
+			swfObj.selectFile();
 		}
 	}
 
