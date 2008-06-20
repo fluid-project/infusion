@@ -157,5 +157,69 @@ https://source.fluidproject.org/svn/LICENSE.txt
 			var result = fluid.utils.stringTemplate(template, data);
 			jqUnit.assertEquals("The template strings should match.", expected, result);
 		});
+
+ 		fluidJSTests.test("initCssClassNames: mix-in css values in an object: empty classNames", function () {
+			var defaultNames = {
+				t1: 'a1',
+				t2: 'a2',
+				t3: 'a3',
+				t4: 'a4'
+			};	
+			
+			var classNames = {};
+			
+			var options = fluid.utils.initCssClassNames(defaultNames, classNames);
+			
+			var expected = defaultNames.t1 + "," + defaultNames.t2 + "," + defaultNames.t3 + "," + defaultNames.t4;
+			var result = options.t1 + "," + options.t2 + "," + options.t3 + "," + options.t4;
+			
+			jqUnit.assertEquals("The values in the options object should match those in defaults.", expected, result);
+
+		});
+
+		fluidJSTests.test("initCssClassNames: mix-in css values in an object: trying to insert a new value", function () {
+			var defaultNames = {
+				t1: 'a1',
+				t2: 'a2',
+				t3: 'a3',
+				t4: 'a4'
+			};	
+			
+			var classNames = {
+				t5: "a5"
+			};
+			
+			var options = fluid.utils.initCssClassNames(defaultNames, classNames);
+						
+			jqUnit.assertUndefined("t5 should be undefined in options.", options.t5);
+
+		});
+
+		fluidJSTests.test("initCssClassNames: mix-in css values in an object: trying to insert a new value", function () {
+			var defaultNames = {
+				t1: 'a1',
+				t2: 'a2',
+				t3: 'a3',
+				t4: 'a4'
+			};	
+			
+			var classNames = {
+				t1: 'b1',
+				t2: 'b2',
+				t3: 'b3',
+				t4: 'b4',
+				t5: "b5"
+			};
+			
+			var options = fluid.utils.initCssClassNames(defaultNames, classNames);
+						
+			var expected = "b1,b2,b3,b4";
+			var result = options.t1 + "," + options.t2 + "," + options.t3 + "," + options.t4;
+
+			jqUnit.assertUndefined("t5 should be undefined in options.", options.t5);
+			jqUnit.assertEquals("The values in the options object should match those in classNames.", expected, result);
+
+		});
+
    });
 }) (jQuery);
