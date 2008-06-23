@@ -10,11 +10,16 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-(function ($) {
-    $(document).ready (function () {
-        var fluidJSTests = new jqUnit.TestCase ("Fluid JS Tests");
+/*global jQuery*/
+/*global fluid*/
+/*global jqUnit*/
 
-        fluidJSTests.test ("fileSizer", function () {      
+
+(function ($) {
+    $(document).ready(function () {
+        var fluidJSTests = new jqUnit.TestCase("Fluid JS Tests");
+
+        fluidJSTests.test("fileSizer", function () {      
             
 			function testFileSize(testVal, expected) {
 				jqUnit.assertEquals("File size " + testVal + " bytes ", expected, fluid.utils.filesizeStr(testVal));
@@ -140,7 +145,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 			jqUnit.assertEquals("The template strings should match.", expected, result);
 		});
 
- 		fluidJSTests.test("stringTemplate: missing token", function () {
+        fluidJSTests.test("stringTemplate: missing token", function () {
 			var template = "Paused at: %atFile of files (%atSize of %totalSize)";
 			
 			var data = {
@@ -158,7 +163,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 			jqUnit.assertEquals("The template strings should match.", expected, result);
 		});
 
- 		fluidJSTests.test("initCssClassNames: mix-in css values in an object: empty classNames", function () {
+        fluidJSTests.test("initCssClassNames: mix-in css values in an object: empty classNames", function () {
 			var defaultNames = {
 				t1: 'a1',
 				t2: 'a2',
@@ -221,5 +226,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 		});
 
-   });
-}) (jQuery);
+        fluidJSTests.test("jById id not found", function () {
+            var invalidIdElement = fluid.utils.jById("this-id-does-not-exitst");
+            jqUnit.assertEquals("element not found", null, invalidIdElement);
+        });
+    });
+
+})(jQuery);

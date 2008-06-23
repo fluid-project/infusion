@@ -10,6 +10,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+// Declare dependencies.
+/*global jQuery*/
+
+/*global fluid*/
 var fluid = fluid || {};
 
 (function (jQuery, fluid) {
@@ -86,18 +90,18 @@ var fluid = fluid || {};
     
     fluid.mixin = function (target, args) {
         for (var arg in args) {
-            if (args.hasOwnProperty (arg)) {
+            if (args.hasOwnProperty(arg)) {
                 target[arg] = args[arg];
             }
         }
     };
     
     fluid.wrap = function (obj) {
-        return ((!obj || obj.jquery) ? obj : jQuery (obj)); 
+        return ((!obj || obj.jquery) ? obj : jQuery(obj)); 
     };
     
     fluid.unwrap = function (obj) {
-        return (obj.jquery) ? obj[0] : obj; // Unwrap the element if it's a jQuery.
+        return obj.jquery ? obj[0] : obj; // Unwrap the element if it's a jQuery.
     };
     
     /*
@@ -110,24 +114,24 @@ var fluid = fluid || {};
     // is broken http://trac.dojotoolkit.org/ticket/3520#preview, this is all
     // it might do anyway, and this will be plenty fast.
     fluid.utils.seekNodesById = function (rootnode, tagname, idmatch) {
-        var inputs = rootnode.getElementsByTagName (tagname);
+        var inputs = rootnode.getElementsByTagName(tagname);
         var togo = [];
         for (var i = 0; i < inputs.length; ++ i) {
             var input = inputs[i];
             var id = input.id;
-            if (id && id.match (idmatch)) {
-                togo.push (input);
+            if (id && id.match(idmatch)) {
+                togo.push(input);
             }
         }
         return togo;
     };
           
-    fluid.utils.escapeSelector = function(id) {
-        return id.replace (/\:/g,"\\:");
+    fluid.utils.escapeSelector = function (id) {
+        return id.replace(/\:/g,"\\:");
     };
       
     fluid.utils.findForm = function (element) {
-        while(element) {
+        while (element) {
             if (element.nodeName.toLowerCase() === "form") {
                 return element;
             }
@@ -160,21 +164,26 @@ var fluid = fluid || {};
      * Returns a jQuery object given the id of a DOM node
      */
     fluid.utils.jById = function (id) {
-        return jQuery ("[id=" + id + "]");
+        var el = jQuery("[id=" + id + "]");
+        if (el[0] && el[0].id === id) {
+            return el;        
+        }       
+        
+        return null;
     };
 
     fluid.utils.debug = function (str) {
     	if (window.console) {
             if (console.debug) {
-                console.debug (str);
+                console.debug(str);
             } else {
-                console.log (str);
+                console.log(str);
             }
     	}
     };
 
-	fluid.utils.derivePercent = function (num,total) {
-		return Math.round((num*100)/total);
+	fluid.utils.derivePercent = function (num, total) {
+		return Math.round((num * 100) / total);
 	};
 
 	// simple function for return kbytes and megabytes from a number of bytes
@@ -206,7 +215,7 @@ var fluid = fluid || {};
         }
         var cssClassNames = {};
         for (var className in defaultNames) {
-            if (defaultNames.hasOwnProperty (className)) {
+            if (defaultNames.hasOwnProperty(className)) {
                 cssClassNames[className] = classNames[className] || defaultNames[className];
             }
         }
@@ -223,13 +232,13 @@ var fluid = fluid || {};
      * @param {String}	template	a string (can be HTML) that contains tokens embedded into it
      * @param {object}	values		a collection of token keys and values
 	 */
-     fluid.utils.stringTemplate = function (template, values) {
-		var newString = template;
-		for(key in values) {
-			var searchStr = "%"+key;
-		  	newString = newString.replace(searchStr,values[key]);
+    fluid.utils.stringTemplate = function (template, values) {
+	    var newString = template;
+		for (var key in values) {
+			var searchStr = "%" + key;
+            newString = newString.replace(searchStr, values[key]);
 		}
 		return newString;
 	};
 
-}) (jQuery, fluid);
+})(jQuery, fluid);

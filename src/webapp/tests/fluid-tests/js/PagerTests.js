@@ -18,6 +18,12 @@ $(document).ready(function () {
     
     var tests = new jqUnit.TestCase("Pager Tests");
     
+    var options = {
+        pageWillChange: function (pageLink) {
+            fluid.pageChangedTo = pageLink.id;
+        }
+    };
+
     // This is a placeholder test. It knows too much about the implementation details. 
     // This will be replaced with a better test as the public API of the Pager is developed
     tests.test("Pager setup", function () {
@@ -38,17 +44,19 @@ $(document).ready(function () {
         linkDisplay = pagerBottom.linkDisplay;
         jqUnit.assertEquals("Page Links are set", 3, linkDisplay.pageLinks.length);        
         jqUnit.assertEquals("Previous is set", "previous-bottom", linkDisplay.previous[0].id);        
-        jqUnit.assertEquals("Next is set", "next-bottom", linkDisplay.next[0].id);        
+        jqUnit.assertEquals("Next is set", "next-bottom", linkDisplay.next[0].id);
 
     });
     
-    tests.test("Click link", function () {
-        var options = {
-            pageChangedCallback: function (pageLink) {
-                fluid.pageChangedTo = pageLink.id;
-            }
-        };
+    tests.test("First selected", function () {
+        var pager = new fluid.Pager("gradebook");
+        var firstLink = $("#top1");
         
+  //      jqUnit.assertTrue("First is selected", firstLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
+    });
+    
+    tests.test("Click link", function () {      
+        fluid.pageChangedTo = false;  
         var pager = new fluid.Pager("gradebook", options);
         
         var link2 = $("#top2");
@@ -58,10 +66,23 @@ $(document).ready(function () {
         
     });
     
+    tests.test("Links between top and bottom", function () {
+        fluid.pageChangedTo = false;  
+        var pager = new fluid.Pager("plants", options);
+        var nonPageLink = $("#chives");
+        var pageLink = $("#plants-bottom2");
+        
+        jqUnit.assertFalse("Initially, no link has been clicked", fluid.pageChangedTo);
+        nonPageLink.click();
+        jqUnit.assertFalse("Still, no page link has been clicked", fluid.pageChangedTo);
+        pageLink.click();
+        jqUnit.assertEquals("Link 2 has been clicked", "plants-bottom2", fluid.pageChangedTo);
+    });
+    
     tests.test("Pager Bar", function () {
         var pagerTop = $("#pager-top");
         var pagerBar = fluid.pagerBar(pagerTop, {});
-        jqUnit.assertEquals("Pager bar is set", pagerTop, pagerBar.bar);        
+        jqUnit.assertEquals("Pager bar is set", "pager-top", pagerBar.bar[0].id);        
     });
     
     tests.test("Pager Link Display", function () {
@@ -71,8 +92,8 @@ $(document).ready(function () {
         var next = $("#next-top");
         
         var linkDisplay = fluid.pagerLinkDisplay(pageLinks, previous, next);
-        jqUnit.assertEquals("Link Display DOM: pageLinks are set", 3, linkDisplay.pageLinks.length);        
-        jqUnit.assertEquals("Link Display DOM: previous is set", "previous-top", linkDisplay.previous[0].id);        
-        jqUnit.assertEquals("Link Display DOM: next is set", "next-top", linkDisplay.next[0].id);        
+        jqUnit.assertEquals("PageLinks are set", 3, linkDisplay.pageLinks.length);        
+        jqUnit.assertEquals("Previous is set", "previous-top", linkDisplay.previous[0].id);        
+        jqUnit.assertEquals("Next is set", "next-top", linkDisplay.next[0].id);        
     });
 });

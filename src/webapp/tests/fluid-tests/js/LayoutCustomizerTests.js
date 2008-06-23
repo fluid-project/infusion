@@ -8,21 +8,26 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
  
- */
+*/
 
- $(document).ready (function () {
-    var layoutCustomizerTests = new jqUnit.TestCase ("LayoutCustomizer Tests", setUp, tearDown);
+/*global $*/
+/*global fluid*/
+/*global demo*/
+/*global jqUnit*/
+
+$(document).ready(function () {
+    var layoutCustomizerTests = new jqUnit.TestCase("LayoutCustomizer Tests", setUp, tearDown);
     
     layoutCustomizerTests.test("Bubble keystrokes inside module", function () {
-        var reorderer = fluid.initLayoutCustomizer (demo.portal.layout, demo.portal.dropTargetPerms);
+        var reorderer = fluid.initLayoutCustomizer(demo.portal.layout, demo.portal.dropTargetPerms);
         
-        fluid.utils.jById (portlet2id).focus();
-        fluid.utils.jById ("#text-2").focus ();
-        var keyEvent = fluid.testUtils.createUnmodifiedKeyEvent (fluid.keys.m);
-        reorderer.handleKeyDown (keyEvent);
-        reorderer.handleKeyUp (keyEvent);
+        fluid.utils.jById(portlet2id).focus();
+        fluid.utils.jById("text-2").focus();
+        var keyEvent = fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.m);
+        reorderer.handleKeyDown(keyEvent);
+        reorderer.handleKeyUp(keyEvent);
         
-        jqUnit.assertEquals ("After typing M into text field, portlet 2 should still be the active item", portlet2id, reorderer.activeItem.id);
+        jqUnit.assertEquals("After typing M into text field, portlet 2 should still be the active item", portlet2id, reorderer.activeItem.id);
     });
     
     layoutCustomizerTests.test("Drop warning visibility for up and down", function () {

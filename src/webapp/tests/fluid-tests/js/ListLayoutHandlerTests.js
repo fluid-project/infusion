@@ -9,6 +9,11 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+/*global $*/
+/*global fluid*/
+/*global demo*/
+/*global jqUnit*/
+
 $(document).ready (function () {
     var listLHTests = new jqUnit.TestCase ("ListLayoutHandler Tests", setUp);
 
@@ -77,9 +82,9 @@ $(document).ready (function () {
     });
     
     listLHTests.test ("NextItemForNonOrderableReturnsTheFirstItem", function () {
-        var rightSibling = listHandler1.getRightSibling(fluid.testUtils.byId(nonOrderabeItemId));
+        var rightSibling = listHandler1.getRightSibling(fluid.utils.jById(nonOrderabeItemId)[0]);
         jqUnit.assertEquals("When a non-orderable is passed to getRightSibling the first orderable should be returned.", 
-            fluid.testUtils.byId(firstItemId), rightSibling);  
+            fluid.utils.jById(firstItemId)[0], rightSibling);  
             
         var leftSibling = listHandler1.getLeftSibling(fluid.testUtils.byId(nonOrderabeItemId));
         jqUnit.assertEquals("When a non-orderable is passed to getLeftSibling the first orderable should be returned.", 

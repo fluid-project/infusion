@@ -22,24 +22,27 @@ fluid = fluid || {};
     
     /**   Private stateless functions   **/
    
-    function bindLinkHandlers(link, currentPageStyle, pageChangedCallback) {
+    var bindLinkHandlers = function (link, currentPageStyle, pageWillChange) {
         var jLink = $(link);
         jLink.click(function (evt) {
             jLink.addClass(currentPageStyle);
-            pageChangedCallback(link);
+            if (pageWillChange) {
+                pageWillChange(link);
+            }
+            return false;
         });
         
         // Needs to bind hover
-    }
+    };
    
     /**   Pager Link Display creator   **/
    
-    fluid.pagerLinkDisplay = function (pageLinks, previous, next, currentPageStyle, pageChangedCallback) {
+    fluid.pagerLinkDisplay = function (pageLinks, previous, next, currentPageStyle, pageWillChange) {
         // Bind handlers
-        bindLinkHandlers(previous, currentPageStyle, pageChangedCallback);
-        bindLinkHandlers(next, currentPageStyle, pageChangedCallback);
+        bindLinkHandlers(previous, currentPageStyle, pageWillChange);
+        bindLinkHandlers(next, currentPageStyle, pageWillChange);
         pageLinks.each(function () {
-            bindLinkHandlers(this, currentPageStyle, pageChangedCallback);
+            bindLinkHandlers(this, currentPageStyle, pageWillChange);
         });
         
         return {
@@ -55,12 +58,12 @@ fluid = fluid || {};
 
     /**   Pager Bar creator   **/
 
-    fluid.pagerBar = function (bar, selectors, currentPageStyle, pageChangedCallback) {        
+    fluid.pagerBar = function (bar, selectors, currentPageStyle, pageWillChange) {        
         var pageLinks = $(selectors.pageLinks, bar);
         var previous = $(selectors.previous, bar);
         var next = $(selectors.next, bar);
         
-        var linkDisplay = fluid.pagerLinkDisplay(pageLinks, previous, next, currentPageStyle, pageChangedCallback);
+        var linkDisplay = fluid.pagerLinkDisplay(pageLinks, previous, next, currentPageStyle, pageWillChange);
         
         return {
             bar: bar,
@@ -79,7 +82,7 @@ fluid = fluid || {};
         options = options || {};
         var selectors = $.extend({}, this.defaults.selectors, options.selectors);
         this.styles = $.extend({}, this.defaults.styles, options.styles);
-        this.pageChangedCallback = options.pageChangedCallback || this.defaults.pageChangedCallback; 
+        this.pageWillChange = options.pageWillChange || this.defaults.pageWillChange; 
 
         // Bind to the DOM.
         this.container = fluid.utils.jById(componentContainerId);
@@ -88,9 +91,9 @@ fluid = fluid || {};
         // For now, expose the bars so the placeholder test can be written. 
         // Need to develop the Pager API and hide the implementation details.
         var pagerTop = $(selectors.pagerTop, this.container);
-        this.topBar = fluid.pagerBar(pagerTop, selectors, this.styles.currentPage, this.pageChangedCallback);
+        this.topBar = fluid.pagerBar(pagerTop, selectors, this.styles.currentPage, this.pageWillChange);
         var pagerBottom = $(selectors.pagerBottom, this.container);
-        this.bottomBar = fluid.pagerBar(pagerBottom, selectors, this.styles.currentPage, this.pageChangedCallback);
+        this.bottomBar = fluid.pagerBar(pagerBottom, selectors, this.styles.currentPage, this.pageWillChange);
     };
  
      /**   Public stuff   **/   
@@ -107,8 +110,8 @@ fluid = fluid || {};
         styles: {
             currentPage: "current-page"
         },
-
-        pageChangedCallback: function (link) {
+        
+        pageWillChange: function (link) {
             // AJAX call here
         }
     };
@@ -117,5 +120,7 @@ fluid = fluid || {};
     // Need to set next and previous
     fluid.Pager.prototype.selectPage = function (pageNum) {
     };
-        
+   // next
+   
+   // previous     
 })(jQuery, fluid);

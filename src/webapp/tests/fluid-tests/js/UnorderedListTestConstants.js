@@ -9,6 +9,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+/*global jQuery*/
+/*global fluid*/
+
+
 /**
  * This file contains test constants and setup and teardown functions that are used when testing with the data in the unordered-list.html file.
  */
@@ -19,16 +23,10 @@ var secondItemId = "list1item2";
 var thirdItemId = "list1item3";
 var fourthItemId = "list1item4";
 var lastItemId = "list1item5"; 
-var nonOrderabeItemId = "reorderer-script";       
+var nonOrderabeItemId = "para1";       
 
 var listHandler1;
 var orderChangedCallbackWasCalled;
-
-// This setUp will be called before each of the tests that are included in unordered-list.html 
-function setUp () {
-    orderChangedCallbackWasCalled = false;
-    listHandler1 = createListLayoutHandler();
-}
 
 var findList1 = function () { 
     return jQuery("#list1")[0]; 
@@ -51,3 +49,9 @@ var createListLayoutHandler = function  () {
     
     return new fluid.ListLayoutHandler(listMovableFinder, options);
 };
+
+// This setUp will be called before each of the tests that are included in unordered-list.html 
+function setUp() {
+    orderChangedCallbackWasCalled = false;
+    listHandler1 = createListLayoutHandler();
+}
