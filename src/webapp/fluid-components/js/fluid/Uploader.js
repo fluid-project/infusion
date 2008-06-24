@@ -62,7 +62,6 @@ var fluid = fluid || {};
 		qRowFileName: '.fileName',
 		qRowFileSize: '.fileSize',
 		qRowRemove: '.fileRemove',
-		progress: ".fluid-uploader-queue-wrapper",
 		fileProgressor: '.file-progress',
 		fileProgressText: ".file-progress-text",
 		totalProgressor: '.total-progress',
@@ -946,7 +945,7 @@ var fluid = fluid || {};
 	    };
 		
 		var progressOptions = {
-			progress: this.fragmentSelectors.progress,
+			progress: uploaderSelector,
 			fileProgressor: this.fragmentSelectors.fileProgressor,
 			fileText: this.fragmentSelectors.fileProgressText,
 			totalProgressor: this.fragmentSelectors.totalProgressor,
