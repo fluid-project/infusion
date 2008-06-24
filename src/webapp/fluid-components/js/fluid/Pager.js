@@ -21,15 +21,25 @@ fluid = fluid || {};
      */
     
     /**   Private stateless functions   **/
-   
-    var styleSelectedLink = function (link, oldLink, currentPageStyle) {
-        link.addClass(currentPageStyle); 
-        if (oldLink) {
+    var updateStyles = function (pageLinks, currentPageStyle, pageNum, oldPageNum) {
+        var pageLink = $(pageLinks[pageNum - 1]);
+        pageLink.addClass(currentPageStyle); 
+
+        if (oldPageNum) {
+            var oldLink = $(pageLinks[oldPageNum - 1]);
             oldLink.removeClass(currentPageStyle);
+        }
+        
+        if (pageNum === 1) {
+            // disable previous
+        }
+        if (pageNum === pageLinks.length) {
+            // disable next
         }
     };
 
     var selectLink = function (link, oldLink, currentPageStyle, pageWillChange) {
+        // Do we really want to pass the DOM element or do we just want the page number?
         if (pageWillChange) {
             pageWillChange(link[0]);
         }
@@ -39,20 +49,20 @@ fluid = fluid || {};
     /**   Pager Link Display creator   **/
    
     fluid.pagerLinkDisplay = function (pageLinks, previous, next, currentPageStyle, pageWillChange) {
-        
+
         return {
             pageLinks: pageLinks,
             previous: previous,
             next: next,
             selectPage: function (pageNum, oldPageNum) {
-                var pageLink = $(pageLinks[pageNum - 1]);
-                var oldLink = $(pageLinks[oldPageNum - 1]);
-                selectLink(pageLink, oldLink, currentPageStyle, pageWillChange);
+                if (pageWillChange) {
+                    var pageLink = $(pageLinks[pageNum - 1]);
+                    pageWillChange(pageLink[0]);
+                }
+                updateStyles(pageLinks, currentPageStyle, pageNum, oldPageNum);        
             },
             pageIsSelected: function (pageNum, oldPageNum) {
-                var pageLink = $(pageLinks[pageNum - 1]);
-                var oldLink = oldPageNum ? $(pageLinks[oldPageNum - 1]) : undefined;
-                styleSelectedLink(pageLink, oldLink, currentPageStyle);
+                updateStyles(pageLinks, currentPageStyle, pageNum, oldPageNum);        
             }
 
         };
@@ -71,6 +81,16 @@ fluid = fluid || {};
         
         var linkDisplay = fluid.pagerLinkDisplay(pageLinks, previous, next, currentPageStyle, pageWillChange);
         
+        var isPageLink = function (element) {
+            return pageLinks.index(element) > -1;
+        };
+        var isNext = function (element) {
+            return (element === next[0]);
+        };
+        var isPrevious = function (element) {
+            return (element === previous[0]);
+        };
+    
         return {
             bar: bar,
             linkDisplay: linkDisplay,
@@ -81,11 +101,14 @@ fluid = fluid || {};
                 linkDisplay.pageIsSelected(pageNum, oldPageNum);
             },
             pageNumOfLink: function (link) {
-                var test = function (elementOfArray, indexInArray) {
-                    return pageLinks.index(elementOfArray) > -1;
-                };
-                link = fluid.utils.findAncestor(link, test);
+                link = fluid.utils.findAncestor(link, isPageLink);
                 return pageLinks.index(link) + 1;
+            },
+            isNext: function (link) {
+                return !!fluid.utils.findAncestor(link, isNext);
+            },
+            isPrevious: function (link) {
+                return !!fluid.utils.findAncestor(link, isPrevious);
             }
         };
     };
@@ -97,15 +120,20 @@ fluid = fluid || {};
     /**   Private stateless functions   **/
     var bindSelectHandler = function (pager) {
         var selectHandler = function (evt) {
-            // is next? call next
-            
-            // is previous? call previous
-            
+            // We need a better way of checking top and bottom bar. This is so repetitive.
+            if (pager.topBar.isNext(evt.target) || pager.bottomBar.isNext(evt.target)) {
+                pager.next();
+                return false;
+            }
+            if (pager.topBar.isPrevious(evt.target) || pager.bottomBar.isPrevious(evt.target)) {
+                pager.previous();
+                return false;
+            }
             var newPageNum = pager.topBar.pageNumOfLink(evt.target) || pager.bottomBar.pageNumOfLink(evt.target);
             if (newPageNum < 1) {
                 return true;
             }
-            
+
             pager.selectPage(newPageNum);
             return false;
         };
@@ -168,11 +196,16 @@ fluid = fluid || {};
     };
     
     fluid.Pager.prototype.next = function () {
-        this.selectPage(this.pageNum + 1);
+        // this test needs to be refactored - we know too much about the implementation I think
+        if (this.pageNum < this.topBar.linkDisplay.pageLinks.length) {
+            this.selectPage(this.pageNum + 1);
+        }
     };
    
     fluid.Pager.prototype.previous = function () {
-        this.selectPage(this.pageNum - 1);
+        if (this.pageNum > 1) {
+            this.selectPage(this.pageNum - 1);
+        }
     };
     
 })(jQuery, fluid);

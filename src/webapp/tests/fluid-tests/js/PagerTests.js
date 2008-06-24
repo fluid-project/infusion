@@ -138,4 +138,36 @@ $(document).ready(function () {
         jqUnit.assertEquals("Next is set", "next-top", linkDisplay.next[0].id);        
     });
     
+    tests.test("Pager Next/Previous", function () {
+        var pager = new fluid.Pager("gradebook");
+        var nextLink = $("#next-top");
+        var previousLink = $("#previous-top");
+        var firstLink = $("#top1");
+        var secondLink = $("#top2");
+        var lastLink = $("#top3");
+
+        jqUnit.assertTrue("Initially, first is selected", 
+            firstLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+//        jqUnit.assertTrue("Initially, next link is disabled", 
+  //          nextLink.hasClass(fluid.Pager.prototype.defaults.styles.???));
+        nextLink.simulate("click");
+        jqUnit.assertTrue("After clicking next, second is selected",
+            secondLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+        jqUnit.assertFalse("After clicking next, first is not selected",
+            firstLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+        previousLink.simulate("click");
+        jqUnit.assertTrue("After clicking previous, first is selected",
+            firstLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+        jqUnit.assertFalse("After clicking previous, second is not selected",
+            secondLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+        previousLink.simulate("click");
+        jqUnit.assertTrue("After clicking previous when on the first page, first is still selected",
+            firstLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+        lastLink.simulate("click");
+        nextLink.simulate("click");
+        jqUnit.assertTrue("After clicking next when on the last page, last is still selected",
+            lastLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+
+    });
+    
 });
