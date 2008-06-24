@@ -116,7 +116,7 @@ var fluid = fluid || {};
     fluid.utils.seekNodesById = function (rootnode, tagname, idmatch) {
         var inputs = rootnode.getElementsByTagName(tagname);
         var togo = [];
-        for (var i = 0; i < inputs.length; ++ i) {
+        for (var i = 0; i < inputs.length; i += 1) {
             var input = inputs[i];
             var id = input.id;
             if (id && id.match(idmatch)) {
@@ -127,7 +127,7 @@ var fluid = fluid || {};
     };
           
     fluid.utils.escapeSelector = function (id) {
-        return id.replace(/\:/g,"\\:");
+        return id.replace(/\:/g, "\\:");
     };
       
     fluid.utils.findForm = function (element) {
@@ -155,7 +155,10 @@ var fluid = fluid || {};
         findItems.movables = findItems.movables || finderFn;
         findItems.selectables = findItems.selectables || findItems.movables;
         findItems.dropTargets = findItems.dropTargets || findItems.movables;
-        findItems.grabHandle = findItems.grabHandle || function (item) { return item; };
+        findItems.grabHandle = findItems.grabHandle ||
+            function (item) {
+                return item;
+            };
             
         return findItems;
     };
@@ -235,10 +238,21 @@ var fluid = fluid || {};
     fluid.utils.stringTemplate = function (template, values) {
 	    var newString = template;
 		for (var key in values) {
-			var searchStr = "%" + key;
-            newString = newString.replace(searchStr, values[key]);
+            if (values.hasOwnProperty(key)) {
+    			var searchStr = "%" + key;
+                newString = newString.replace(searchStr, values[key]);
+            }
 		}
 		return newString;
 	};
 
+    /**
+     * Finds the ancestor of the element that passes the test
+     * @param {Element} element DOM element
+     * @param {Function} test A function which takes an element as a parameter and return true or false for some test
+     */
+    fluid.utils.findAncestor = function (element, test) {
+        return test(element) ? element : jQuery.grep(jQuery(element).parents(), test)[0];
+    };
+    
 })(jQuery, fluid);

@@ -22,49 +22,37 @@ fluid = fluid || {};
     
     /**   Private stateless functions   **/
    
-    var styleSelectedLink = function (link, currentPageStyle) {
-        link.addClass(currentPageStyle);        
+    var styleSelectedLink = function (link, oldLink, currentPageStyle) {
+        link.addClass(currentPageStyle); 
+        if (oldLink) {
+            oldLink.removeClass(currentPageStyle);
+        }
     };
 
-    var selectLink = function (link, currentPageStyle, pageWillChange) {
+    var selectLink = function (link, oldLink, currentPageStyle, pageWillChange) {
         if (pageWillChange) {
             pageWillChange(link[0]);
         }
-        styleSelectedLink(link, currentPageStyle);        
-    };
-    
-    var bindLinkHandlers = function (link, currentPageStyle, pageWillChange) {
-        link.click(function (evt) {
-            if (!link.hasClass(currentPageStyle)) {
-                selectLink(link, currentPageStyle, pageWillChange);
-            }
-            return false;
-        });
-        
-        // Needs to bind hover
+        styleSelectedLink(link, oldLink, currentPageStyle);        
     };
    
     /**   Pager Link Display creator   **/
    
     fluid.pagerLinkDisplay = function (pageLinks, previous, next, currentPageStyle, pageWillChange) {
-        // Bind handlers
-        bindLinkHandlers(previous, currentPageStyle, pageWillChange);
-        bindLinkHandlers(next, currentPageStyle, pageWillChange);
-        pageLinks.each(function () {
-            bindLinkHandlers($(this), currentPageStyle, pageWillChange);
-        });
         
         return {
             pageLinks: pageLinks,
             previous: previous,
             next: next,
-            selectPage: function (pageNum) {
-                var pageLink = $(pageLinks[pageNum-1]);
-                selectLink(pageLink, currentPageStyle, pageWillChange);
+            selectPage: function (pageNum, oldPageNum) {
+                var pageLink = $(pageLinks[pageNum - 1]);
+                var oldLink = $(pageLinks[oldPageNum - 1]);
+                selectLink(pageLink, oldLink, currentPageStyle, pageWillChange);
             },
-            pageIsSelected: function (pageNum) {
-                var pageLink = $(pageLinks[pageNum-1]);
-                styleSelectedLink(pageLink, currentPageStyle);
+            pageIsSelected: function (pageNum, oldPageNum) {
+                var pageLink = $(pageLinks[pageNum - 1]);
+                var oldLink = oldPageNum ? $(pageLinks[oldPageNum - 1]) : undefined;
+                styleSelectedLink(pageLink, oldLink, currentPageStyle);
             }
 
         };
@@ -86,13 +74,19 @@ fluid = fluid || {};
         return {
             bar: bar,
             linkDisplay: linkDisplay,
-            selectPage: function (pageNum) {
-                linkDisplay.selectPage(pageNum);
+            selectPage: function (pageNum, oldPageNum) {
+                linkDisplay.selectPage(pageNum, oldPageNum);
             },
-            pageIsSelected: function (pageNum) {
-                linkDisplay.pageIsSelected(pageNum);
+            pageIsSelected: function (pageNum, oldPageNum) {
+                linkDisplay.pageIsSelected(pageNum, oldPageNum);
+            },
+            pageNumOfLink: function (link) {
+                var test = function (elementOfArray, indexInArray) {
+                    return pageLinks.index(elementOfArray) > -1;
+                };
+                link = fluid.utils.findAncestor(link, test);
+                return pageLinks.index(link) + 1;
             }
-
         };
     };
 
@@ -100,6 +94,25 @@ fluid = fluid || {};
      * Start of the Pager
      */
     
+    /**   Private stateless functions   **/
+    var bindSelectHandler = function (pager) {
+        var selectHandler = function (evt) {
+            // is next? call next
+            
+            // is previous? call previous
+            
+            var newPageNum = pager.topBar.pageNumOfLink(evt.target) || pager.bottomBar.pageNumOfLink(evt.target);
+            if (newPageNum < 1) {
+                return true;
+            }
+            
+            pager.selectPage(newPageNum);
+            return false;
+        };
+
+        pager.container.click(selectHandler);
+    };
+
     /**   Constructor  **/ 
                
     fluid.Pager = function (componentContainerId, options) {
@@ -118,9 +131,11 @@ fluid = fluid || {};
         var bottom = $(selectors.pagerBottom, this.container);
         this.bottomBar = fluid.pagerBar(bottom, selectors, this.styles.currentPage, this.pageWillChange);
 
-        this.topBar.pageIsSelected(1);
-        this.bottomBar.pageIsSelected(1);
+        this.pageNum = 1;
+        this.topBar.pageIsSelected(this.pageNum);
+        this.bottomBar.pageIsSelected(this.pageNum);
         
+        bindSelectHandler(this);
     };
  
      /**   Public stuff   **/   
@@ -143,11 +158,21 @@ fluid = fluid || {};
         }
     };
     
-    // Need to change styling and disable a particular page number
-    // Need to set next and previous
     fluid.Pager.prototype.selectPage = function (pageNum) {
+        if (pageNum === this.pageNum) {
+            return;
+        }
+        this.topBar.selectPage(pageNum, this.pageNum);
+        this.bottomBar.pageIsSelected(pageNum, this.pageNum);
+        this.pageNum = pageNum;
     };
-   // next
+    
+    fluid.Pager.prototype.next = function () {
+        this.selectPage(this.pageNum + 1);
+    };
    
-   // previous     
+    fluid.Pager.prototype.previous = function () {
+        this.selectPage(this.pageNum - 1);
+    };
+    
 })(jQuery, fluid);

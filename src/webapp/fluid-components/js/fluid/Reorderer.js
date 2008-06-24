@@ -107,7 +107,7 @@ fluid = fluid || {};
             return ((dropTargets.index (el) > -1) || isAvatar (el));
         };
 
-        var target = isTargetOrAvatar(element) ? element : jQuery.grep(jQuery(element).parents(), isTargetOrAvatar)[0];
+        var target = fluid.utils.findAncestor(element, isTargetOrAvatar);
         
         // If the avatar was the target of the event, use the last known drop target instead.
         if (isAvatar(target)) {

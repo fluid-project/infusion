@@ -67,13 +67,14 @@ $(document).ready(function () {
         var link1 = $("#top1");        
         var link1Bottom = $("#bottom1");        
         var link2 = $("#top2");
+        var anchor2 = $("a", link2);
         var link2Bottom = $("#bottom2");
         
         jqUnit.assertFalse("Initially, no link has been clicked", fluid.pageChangedTo);
-        link2.click();
+        anchor2.simulate("click");
         jqUnit.assertEquals("Link 2 has been clicked", "top2", fluid.pageChangedTo);        
-        // Test for functionality that isn't implemented yet.
-/*        jqUnit.assertTrue("Link 2 top is styled as current", 
+
+        jqUnit.assertTrue("Link 2 top is styled as current", 
             link2.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
         jqUnit.assertTrue("Link 2 bottom is styled as current", 
             link2Bottom.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
@@ -82,9 +83,9 @@ $(document).ready(function () {
             link1.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
         jqUnit.assertFalse("Link 1 bottom not current", 
             link1Bottom.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
-*/            
+            
         fluid.pageChangedTo = false;   
-        link2.click();
+        anchor2.simulate("click");
         jqUnit.assertFalse("Link 2 clicked again - callback not called", fluid.pageChangedTo);        
         
     });
@@ -92,19 +93,37 @@ $(document).ready(function () {
     tests.test("Links between top and bottom", function () {
         var pager = new fluid.Pager("plants", options);
         var nonPageLink = $("#chives");
+        var topLink = $("#plants-top2");
         var pageLink = $("#plants-bottom2");
         
         jqUnit.assertFalse("Initially, no link has been clicked", fluid.pageChangedTo);
-        nonPageLink.click();
+        nonPageLink.simulate("click");
         jqUnit.assertFalse("Non page link clicked", fluid.pageChangedTo);
-        pageLink.click();
-        jqUnit.assertEquals("Link 2 has been clicked", "plants-bottom2", fluid.pageChangedTo);
+        pageLink.simulate("click");
+        // the following assert uses knowledge that the callback is always applied to the top bar
+        jqUnit.assertEquals("Link 2 has been clicked", "plants-top2", fluid.pageChangedTo);
+        jqUnit.assertTrue("Link 2 top is styled as current", 
+            topLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
+        jqUnit.assertTrue("Link 2 bottom is styled as current", 
+            pageLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
     });
     
-    tests.test("Pager Bar", function () {
+    tests.test("Pager Bar Init", function () {
         var pagerTop = $("#pager-top");
         var pagerBar = fluid.pagerBar(pagerTop, {});
-        jqUnit.assertEquals("Pager bar is set", "pager-top", pagerBar.bar[0].id);        
+        jqUnit.assertEquals("Pager bar is set", "pager-top", pagerBar.bar[0].id);    
+    });
+    
+    tests.test("Pager Bar pageNumOfLink", function () {
+        var pagerTop = $("#pager-top");
+        var pagerBar = fluid.pagerBar(pagerTop, {pageLinks: ".page-link"});
+
+        var nonPageLink = $("#chives");
+        var topLinks = $(".page-link", pagerTop);
+        jqUnit.assertEquals("First link is page 1", 1, pagerBar.pageNumOfLink(topLinks[0]));
+        jqUnit.assertEquals("Anchor in second link is page 2", 2, pagerBar.pageNumOfLink($("a", topLinks[1])[0]));
+        jqUnit.assertEquals("Last link is page 3", 3, pagerBar.pageNumOfLink(topLinks[2]));
+        jqUnit.assertEquals("Page number of non-existant page is 0", 0, pagerBar.pageNumOfLink(nonPageLink));
     });
     
     tests.test("Pager Link Display", function () {
@@ -118,4 +137,5 @@ $(document).ready(function () {
         jqUnit.assertEquals("Previous is set", "previous-top", linkDisplay.previous[0].id);        
         jqUnit.assertEquals("Next is set", "next-top", linkDisplay.next[0].id);        
     });
+    
 });

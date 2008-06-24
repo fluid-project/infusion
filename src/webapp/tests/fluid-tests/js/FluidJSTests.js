@@ -230,6 +230,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var invalidIdElement = fluid.utils.jById("this-id-does-not-exitst");
             jqUnit.assertEquals("element not found", null, invalidIdElement);
         });
+
+        fluidJSTests.test("findAncestor", function () {
+            var testFunc = function (elementOfArray, indexInArray) {
+                return elementOfArray.id === "top1";
+            };
+            jqUnit.assertEquals("Ancestor should be 'top1'", "top1", fluid.utils.findAncestor($("#page-link-1"), testFunc).id);
+        });
     });
 
 })(jQuery);
