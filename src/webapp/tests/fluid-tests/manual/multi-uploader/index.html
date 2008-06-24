@@ -21,7 +21,7 @@
 	    // set to empty to use demo upload js code instead actual server side upload handlers
 		// uploadURL = "../../sample-code/uploader/php/upload.php"; // relative to the swf file
 	    var uploadURL = "";
-        var flashURL = "../../../fluid-components/swfupload/swfupload_f9.swf";
+        var flashURL = "../../../../fluid-components/swfupload/swfupload_f9.swf";
         
 		var settings =   {
 			whenDone: "index.html",
@@ -34,8 +34,8 @@
         var uploadTwo; // used for testing
         
 		$(document).ready(function() {
-            uploadOne = new fluid.Uploader("#fluid-uploader-one", uploadURL, flashURL, settings);
-            uploadTwo = new fluid.Uploader("#fluid-uploader-two", uploadURL, flashURL, settings);
+            uploadOne = new fluid.Uploader("fluid-uploader-one", uploadURL, flashURL, settings);
+            uploadTwo = new fluid.Uploader("fluid-uploader-two", uploadURL, flashURL, settings);
     	});
 	</script>
 	<style type="text/css">

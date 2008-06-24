@@ -699,12 +699,12 @@ var fluid = fluid || {};
 	 * 
 	 */
 	
- 	var initDialog = function(uploaderSelector, addBtnSelector, browseOnInit, uploaderContainer, fileBrowseSelector) {
-		dialogObj = $(uploaderSelector).dialog(dialog_settings).css('display','block');
+ 	var initDialog = function(uploaderContainer, addBtnSelector, browseOnInit, fileBrowseSelector) {
+		dialogObj = uploaderContainer.dialog(dialog_settings).css('display','block');
 		$(addBtnSelector).click(function(){
 			$(dialogObj).dialog("open");
 			if (browseOnInit) {
-				$(fileBrowseSelector, uploaderSelector).click();
+				$(fileBrowseSelector, uploaderContainer).click();
 			}
 		});
 
@@ -924,11 +924,11 @@ var fluid = fluid || {};
     };
     
 	/* Public API */
-	fluid.Uploader = function(uploaderSelector, uploadURL, flashURL, settings){
+	fluid.Uploader = function(uploaderContainerId, uploadURL, flashURL, settings){
         
-        this.uploaderContainer = $(uploaderSelector);
-        
-        // Mix user's settings in with our defaults.
+        this.uploaderContainer = fluid.utils.jById(uploaderContainerId);
+		
+		// Mix user's settings in with our defaults.
         // temporarily public; to be made private after beta
 		this.options = $.extend({}, uploadDefaults, settings);
         
@@ -945,7 +945,7 @@ var fluid = fluid || {};
 	    };
 		
 		var progressOptions = {
-			progress: uploaderSelector,
+			progress: this.uploaderContainer,
 			fileProgressor: this.fragmentSelectors.fileProgressor,
 			fileText: this.fragmentSelectors.fileProgressText,
 			totalProgressor: this.fragmentSelectors.totalProgressor,
@@ -959,7 +959,7 @@ var fluid = fluid || {};
 
  		// displaying Uploader in a dialog
 		if (this.options.dialogDisplay) {
-			var dialogObj = initDialog(uploaderSelector, this.options.addFilesBtn, this.options.browseOnInit, this.uploaderContainer, this.fragmentSelectors.browse);
+			var dialogObj = initDialog(this.uploaderContainer, this.options.addFilesBtn, this.options.browseOnInit, this.fragmentSelectors.browse);
 		}
 
         var swfObj = initSWFUpload(this.uploaderContainer, uploadURL, flashURL, progressBar, this.status, this.fragmentSelectors, this.options, allowMultipleFiles, dialogObj);
@@ -1025,7 +1025,7 @@ var fluid = fluid || {};
 	 /* Constructor */
 	fluid.Progress = function (options) {
 		this.minWidth = 5;
-        this.progressContainer = $(options.progress);
+        this.progressContainer = options.progress;
   		this.fileProgressElm = $(options.fileProgressor, this.progressContainer);
 		this.fileTextElm = $(options.fileText, this.progressContainer);
 		this.totalProgressElm = $(options.totalProgressor, this.progressContainer);
