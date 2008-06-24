@@ -15,6 +15,10 @@ input {
     width: 3em;
 }
 
+.hidden {
+    display: none;
+}
+
 .pager-top,.pager-bottom {
     padding: .5em;
     background-color: #EEEEEE;
@@ -29,7 +33,7 @@ input {
 .page-link a {
     color: #0099CC;
     font-size: .9em;
-    text-decoration:none;
+    text-decoration: none;
     border-bottom: solid .1em;
 }
 
@@ -40,6 +44,6 @@ input {
 .current-page a {
     color: #000000;
     border: 0;
-    text-decoration:none;
-    cursor:default;
+    text-decoration: none;
+    cursor: default;
 }
