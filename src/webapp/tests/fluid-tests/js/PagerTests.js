@@ -15,8 +15,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global jqUnit*/
 
 $(document).ready(function () {
+    var setUp = function () {
+        fluid.pageChangedTo = false;
+    };
     
-    var tests = new jqUnit.TestCase("Pager Tests");
+    var tests = new jqUnit.TestCase("Pager Tests", setUp);
     
     var options = {
         pageWillChange: function (pageLink) {
@@ -48,33 +51,52 @@ $(document).ready(function () {
 
     });
     
-    tests.test("First selected", function () {
+    tests.test("Initially First Selected", function () {
         var pager = new fluid.Pager("gradebook");
         var firstLink = $("#top1");
+        var firstLinkBottom = $("#bottom1");
         
-  //      jqUnit.assertTrue("First is selected", firstLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
+        jqUnit.assertTrue("First is selected - top", 
+            firstLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
+        jqUnit.assertTrue("First is selected - bottom", 
+            firstLinkBottom.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
     });
     
     tests.test("Click link", function () {      
-        fluid.pageChangedTo = false;  
         var pager = new fluid.Pager("gradebook", options);
-        
+        var link1 = $("#top1");        
+        var link1Bottom = $("#bottom1");        
         var link2 = $("#top2");
+        var link2Bottom = $("#bottom2");
+        
         jqUnit.assertFalse("Initially, no link has been clicked", fluid.pageChangedTo);
         link2.click();
         jqUnit.assertEquals("Link 2 has been clicked", "top2", fluid.pageChangedTo);        
+        // Test for functionality that isn't implemented yet.
+/*        jqUnit.assertTrue("Link 2 top is styled as current", 
+            link2.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
+        jqUnit.assertTrue("Link 2 bottom is styled as current", 
+            link2Bottom.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+
+        jqUnit.assertFalse("Link 1 not current", 
+            link1.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
+        jqUnit.assertFalse("Link 1 bottom not current", 
+            link1Bottom.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+*/            
+        fluid.pageChangedTo = false;   
+        link2.click();
+        jqUnit.assertFalse("Link 2 clicked again - callback not called", fluid.pageChangedTo);        
         
     });
     
     tests.test("Links between top and bottom", function () {
-        fluid.pageChangedTo = false;  
         var pager = new fluid.Pager("plants", options);
         var nonPageLink = $("#chives");
         var pageLink = $("#plants-bottom2");
         
         jqUnit.assertFalse("Initially, no link has been clicked", fluid.pageChangedTo);
         nonPageLink.click();
-        jqUnit.assertFalse("Still, no page link has been clicked", fluid.pageChangedTo);
+        jqUnit.assertFalse("Non page link clicked", fluid.pageChangedTo);
         pageLink.click();
         jqUnit.assertEquals("Link 2 has been clicked", "plants-bottom2", fluid.pageChangedTo);
     });

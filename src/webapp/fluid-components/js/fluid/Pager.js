@@ -22,12 +22,21 @@ fluid = fluid || {};
     
     /**   Private stateless functions   **/
    
+    var styleSelectedLink = function (link, currentPageStyle) {
+        link.addClass(currentPageStyle);        
+    };
+
+    var selectLink = function (link, currentPageStyle, pageWillChange) {
+        if (pageWillChange) {
+            pageWillChange(link[0]);
+        }
+        styleSelectedLink(link, currentPageStyle);        
+    };
+    
     var bindLinkHandlers = function (link, currentPageStyle, pageWillChange) {
-        var jLink = $(link);
-        jLink.click(function (evt) {
-            jLink.addClass(currentPageStyle);
-            if (pageWillChange) {
-                pageWillChange(link);
+        link.click(function (evt) {
+            if (!link.hasClass(currentPageStyle)) {
+                selectLink(link, currentPageStyle, pageWillChange);
             }
             return false;
         });
@@ -42,13 +51,22 @@ fluid = fluid || {};
         bindLinkHandlers(previous, currentPageStyle, pageWillChange);
         bindLinkHandlers(next, currentPageStyle, pageWillChange);
         pageLinks.each(function () {
-            bindLinkHandlers(this, currentPageStyle, pageWillChange);
+            bindLinkHandlers($(this), currentPageStyle, pageWillChange);
         });
         
         return {
             pageLinks: pageLinks,
             previous: previous,
-            next: next
+            next: next,
+            selectPage: function (pageNum) {
+                var pageLink = $(pageLinks[pageNum-1]);
+                selectLink(pageLink, currentPageStyle, pageWillChange);
+            },
+            pageIsSelected: function (pageNum) {
+                var pageLink = $(pageLinks[pageNum-1]);
+                styleSelectedLink(pageLink, currentPageStyle);
+            }
+
         };
     };
    
@@ -67,7 +85,14 @@ fluid = fluid || {};
         
         return {
             bar: bar,
-            linkDisplay: linkDisplay
+            linkDisplay: linkDisplay,
+            selectPage: function (pageNum) {
+                linkDisplay.selectPage(pageNum);
+            },
+            pageIsSelected: function (pageNum) {
+                linkDisplay.pageIsSelected(pageNum);
+            }
+
         };
     };
 
@@ -88,12 +113,14 @@ fluid = fluid || {};
         this.container = fluid.utils.jById(componentContainerId);
         
         // Create pager bars
-        // For now, expose the bars so the placeholder test can be written. 
-        // Need to develop the Pager API and hide the implementation details.
-        var pagerTop = $(selectors.pagerTop, this.container);
-        this.topBar = fluid.pagerBar(pagerTop, selectors, this.styles.currentPage, this.pageWillChange);
-        var pagerBottom = $(selectors.pagerBottom, this.container);
-        this.bottomBar = fluid.pagerBar(pagerBottom, selectors, this.styles.currentPage, this.pageWillChange);
+        var top = $(selectors.pagerTop, this.container);
+        this.topBar = fluid.pagerBar(top, selectors, this.styles.currentPage, this.pageWillChange);
+        var bottom = $(selectors.pagerBottom, this.container);
+        this.bottomBar = fluid.pagerBar(bottom, selectors, this.styles.currentPage, this.pageWillChange);
+
+        this.topBar.pageIsSelected(1);
+        this.bottomBar.pageIsSelected(1);
+        
     };
  
      /**   Public stuff   **/   

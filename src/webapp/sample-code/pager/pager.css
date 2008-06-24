@@ -15,13 +15,6 @@ input {
     width: 3em;
 }
 
-a {
-    color: #0099CC;
-    font-size: .9em;
-    text-decoration:none;
-    border-bottom: solid .1em;
-}
-
 .pager-top,.pager-bottom {
     padding: .5em;
     background-color: #EEEEEE;
@@ -33,10 +26,20 @@ a {
     padding-right:.3em;
 }
 
+.page-link a {
+    color: #0099CC;
+    font-size: .9em;
+    text-decoration:none;
+    border-bottom: solid .1em;
+}
+
 .previous,.next {
     padding: 0 1.3em 0 1em !important;
 }
 
-.current-page {
+.current-page a {
     color: #000000;
+    border: 0;
+    text-decoration:none;
+    cursor:default;
 }
