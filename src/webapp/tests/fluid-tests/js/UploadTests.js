@@ -29,6 +29,49 @@ function percentToPixels(containerWidth,percent) {
 		
 		
 		uploadTests.test ("Upload: init uploader in inline mode", function () {
+			
+			// initialize the Uploader
+            var myUpload = new fluid.Uploader("#fluid-uploader", uploadURL, flashURL);
+			
+			// test the DOM based state
+			jqUnit.assertEquals("init an uploader: status class is <em>start</em>", 
+							  true,$('#fluid-uploader>div').hasClass("start"));
+			
+			// Cancel button is showing
+			jqUnit.isVisible("init an uploader: Cancel button is showing", 
+							  '.fluid-uploader-cancel');
+							  
+			// Upload button is enabled
+			jqUnit.assertEquals("init an uploader: Cancel button is <em>enabled</em>", 
+							  'pointer',$('.fluid-uploader-cancel').css("cursor"));
+			
+			// Upload button is showing
+			jqUnit.isVisible("init an uploader: Upload button is showing", 
+							  '.fluid-uploader-upload');
+			
+			// Upload button is disabled
+			jqUnit.assertEquals("init an uploader: Upload button is <em>disabled</em>", 
+							  'auto',$('.fluid-uploader-upload').css("cursor"));
+			
+			// Done button is hidden
+			jqUnit.notVisible("init an uploader: Done button is <em>not</em> showing", 
+							  '.fluid-uploader-done');
+			
+			// Resume button is hidden
+			jqUnit.notVisible("init an uploader: Resume button is <em>not</em> showing", 
+							  '.fluid-uploader-resume');
+			
+			// Pause button is hidden
+			jqUnit.notVisible("init an uploader: Pause button is <em>not</em> showing", 
+							  '.fluid-uploader-pause');
+							  
+			// Instructions are visible
+			jqUnit.isVisible("init an uploader: Instructions are showing", 
+							  '.fluid-uploader-row-placeholder');
+           
+		});
+		
+		uploadTests.test ("Upload: Buttons have the correct events", function () {
 			testVariable = ''; // used to test the whenDone and whenCancel variables
 			
 			var settings =   {
@@ -45,42 +88,25 @@ function percentToPixels(containerWidth,percent) {
 			
 			// initialize the Uploader
             var myUpload = new fluid.Uploader("#fluid-uploader", uploadURL, flashURL, settings);
-			
-			// test the DOM based state
-			jqUnit.assertEquals("that the uploader status class is <em>start</em>", 
-							  true,$('#fluid-uploader>div').hasClass("start"));
-			
+										  
 			// test that the variable that we use for the Cancel button has not been set
-			jqUnit.assertEquals("that testVariable is empty", 
+			jqUnit.assertEquals("Uploader Events: that testVariable is empty", 
 							  '',testVariable);
 			
-			// Cancel button is showing
-			jqUnit.isVisible("Cancel button is showing", 
-							  '.fluid-uploader-cancel');
-							  
-			// Upload button is enabled
-			jqUnit.assertEquals("Cancel button is <em>enabled</em>", 
-							  'pointer',$('.fluid-uploader-cancel').css("cursor"));
-			
-			// Upload button is showing
-			jqUnit.isVisible("Upload button is showing", 
-							  '.fluid-uploader-upload');
-			
-			// Upload button is disabled
-			jqUnit.assertEquals("Upload button is <em>disabled</em>", 
-							  'auto',$('.fluid-uploader-upload').css("cursor"));
-			
-			// Done button is hidden
-			// Resume button is hidden
-			// Pause button is hidden
-							  
 			// click the Cancel button
 			$('.fluid-uploader-cancel').click();
 			
 			// test that the variable that we use for the Cancel button has not been set
-			jqUnit.assertEquals("after clicking cancel, testVariable = <em>Cancel</em>", 
+			jqUnit.assertEquals("after clicking Cancel, testVariable = <em>Cancel</em>", 
 							  'Cancel',testVariable);
            
+			
+			// click the Done button
+			$('.fluid-uploader-done').click();
+			
+			// test that the variable that we use for the Cancel button has not been set
+			jqUnit.assertEquals("after clicking Done, testVariable = <em>Done</em>", 
+							  'Done',testVariable);
 		});
 		
 		/*
