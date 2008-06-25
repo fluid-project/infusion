@@ -1057,16 +1057,16 @@ var fluid = fluid || {};
 		this.fileProgressElm.show();
 	};
 	
-	fluid.Progress.prototype.updateProgress = function(which, percent, text) {
+	fluid.Progress.prototype.updateProgress = function(which, percent, text, dontAnimate) {
 		if (which === 'file') {
-			setProgress(percent, text, this.fileProgressElm, this.currRowElm, this.fileTextElm);
+			setProgress(percent, text, this.fileProgressElm, this.currRowElm, this.fileTextElm, dontAnimate);
 		} else {
-			setProgress(percent, text, this.totalProgressElm, this.totalProgressContainer, this.totalTextElm);
+			setProgress(percent, text, this.totalProgressElm, this.totalProgressContainer, this.totalTextElm, dontAnimate);
 		}
 	};
 
-    var setProgress = function(percent, text, progressElm, containerElm, textElm) {
-		
+    var setProgress = function(percent, text, progressElm, containerElm, textElm, dontAnimate) {
+			
 		var containerWidth = containerElm.width();	
 		var currWidth = progressElm.width();
 		var newWidth = ((percent * containerWidth)/100);
@@ -1078,7 +1078,7 @@ var fluid = fluid || {};
 		
 		if (percent === 0) {
 			progressElm.width(this.minWidth);
-		} else if (newWidth < currWidth) {
+		} else if (newWidth < currWidth || dontAnimate) {
 			progressElm.width(newWidth);
 		} else {
 			animateToWidth(progressElm,newWidth);

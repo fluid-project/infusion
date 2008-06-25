@@ -50,6 +50,12 @@
 			.total-progress-indicator {
 				background-color: #CF9B00;
 			}
+			
+			#progress-container, #progress-container-two {
+				border: 1px solid #EFEFEF;
+				margin-right: 10px;
+			}
+			
 		</style>
 
 	</head>
@@ -77,6 +83,23 @@
 			</div>
 			
 		</div>
+		
+    	<div id="progress-container-two">
+	    	<p>File Progressor</p>
+			<div class="file-progress-container">
+				<div class="file-progress-indicator" id="file-ind">
+					<span class="file-text">&nbsp;</span>
+				</div>
+			</div>
+			
+			<p>Total Progressor</p>
+			<div class="total-progress-container">
+				<div class="total-progress-indicator" id="total-ind">
+					<span class="total-text">&nbsp;</span>
+				</div>
+			</div>
+			
+		</div>		
     </div>
 
 	</body>

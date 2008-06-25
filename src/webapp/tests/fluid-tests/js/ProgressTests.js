@@ -55,16 +55,17 @@ function percentToPixels(containerWidth,percent) {
 			createProgressBar();
 			
 			// Set the update value to 50% and calculate the appropriate pixels.
-			var text = "test text";
+			var testString = "test text";
 			progressBar.init(".file-progress-container");
 			var updateValue = 50; 
 			var pixels = percentToPixels($(".file-progress-container").width(),updateValue);
         	
-			progressBar.updateProgress("file",updateValue,text); 
+			progressBar.updateProgress("file",updateValue,testString,true); 
 			
 			// Progress bar should be visible and should be the correct length.
 			jqUnit.isVisible("After file update, file progress bar is visible", 
 							 options.fileProgressor);
+							 
 			var msg = "After file update to " +
 					  updateValue + 
 					  ", indicator width should be " + 
@@ -73,8 +74,8 @@ function percentToPixels(containerWidth,percent) {
 			// fails because Progress uses an animation and we need to wait for the animation to complete
 			jqUnit.assertEquals(msg, pixels, $(options.fileProgressor).width());
 			
-			 msg = "After file progress update to the context of the file progress string should be &quot;" + text + "&quot;";
-			jqUnit.assertEquals(msg, text, $(options.fileText).text());
+			msg = "After file progress update to the context of the file progress string should be &quot;" + testString + "&quot;";
+			jqUnit.assertEquals(msg, testString, $(options.fileText).html());
         });
 
 		progressTests.test ("Progress: total progress update", function () {
@@ -86,7 +87,7 @@ function percentToPixels(containerWidth,percent) {
 			var updateValue = 50; 
 			var pixels = percentToPixels($(".total-progress-container").width(),updateValue);
         	
-			progressBar.updateProgress("total",updateValue,text); 
+			progressBar.updateProgress("total",updateValue,text,true); 
 			
 			// Total progress bar should be visible and should be the correct length.
 			jqUnit.isVisible("After total update, total progress bar is visible", 
@@ -100,9 +101,8 @@ function percentToPixels(containerWidth,percent) {
 			jqUnit.assertEquals(msg, pixels, $(options.totalProgressor).width());
 			
 			 msg = "After total progress update to the context of the total progress string should be &quot;" + text + "&quot;";
-			jqUnit.assertEquals(msg, text, $(options.totalText).text());
+			jqUnit.assertEquals(msg, text, $(options.totalText).html());
         });
-		
 
     });
 }) (jQuery);
