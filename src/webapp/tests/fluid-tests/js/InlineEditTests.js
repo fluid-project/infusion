@@ -211,8 +211,8 @@ $(document).ready(function () {
         edit.attr("value", testString);
         edit.blur();
         jqUnit.notVisible("After blur, edit field is hidden", "#edit-container");
-        jqUnit.assertEquals("Blur cancels the edit", "Click me to edit...", display.text());
-        jqUnit.assertFalse("Blur cancels the edit", edit.text() === display.text());
+        jqUnit.assertEquals("Blur saves the edit", testString, display.text());
+        jqUnit.assertFalse("Blur saves the edit", edit.text() === display.text());
     });
     
 });

@@ -101,13 +101,13 @@ fluid = fluid || {};
         editContainer.keypress(finishHandler);
     }
     
-    function bindCancel(editContainer, editField, text) {
-        var cancelHandler = function (evt) {
-            view(editContainer, text);
+    function bindBlurHandler(editContainer, editField, text, finishedFn) {
+        var blurHandler = function (evt) {
+            finish(editContainer, editField, text, finishedFn);
             return false;
         };
 
-        editField.blur(cancelHandler);        
+        editField.blur(blurHandler);        
     }
     
     function aria(text, editContainer) {
@@ -132,7 +132,7 @@ fluid = fluid || {};
         mouse(this.text, this.editContainer, this.editField, this.styles, this.paddings, this.finishedEditing);
         keyNav(this.text, this.editContainer, this.editField, this.styles, this.paddings);
         bindEditFinish(this.editContainer, this.editField, this.text, this.finishedEditing);
-        bindCancel(this.editContainer, this.editField, this.text);
+        bindBlurHandler(this.editContainer, this.editField, this.text, this.finishedEditing);
         
         // Add ARIA support.
         aria(this.text, this.editContainer);
