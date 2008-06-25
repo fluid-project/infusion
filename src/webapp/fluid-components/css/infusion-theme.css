@@ -45,13 +45,13 @@
 	cursor: pointer;
 }
 
-.influsion button:hover {
-	background-color: #0B3A5E;
-}
-
-.influsion button:focus {
+.infusion button:focus {
 	border-width: 3px;
 	border-color: #142B8C;
+}
+
+.infusion button:hover {
+	background-color: #115F8F;
 }
 
 .infusion button.default {
