@@ -473,8 +473,8 @@ var fluid = fluid || {};
             switch (error_code) {
                 case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
                     status.currError = "Error Code: HTTP Error, File name: " + file.name + ", Message: " + message;
-					humanErrorMsg = 'An upload error occurred. Mostly likely because the file is already in your collection.' + 
-					formatErrorCode(message);
+					humanErrorMsg = 'An error occurred on the server during upload. It could be that the file already exists on the server.' + 
+						formatErrorCode(message);
 					status.continueOnError = true;
                     break;
                 case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
@@ -482,6 +482,9 @@ var fluid = fluid || {};
                     break;
                 case SWFUpload.UPLOAD_ERROR.IO_ERROR:
                     status.currError = "Error Code: IO Error, File name: " + file.name + ", Message: " + message;
+                    humanErrorMsg = 'An error occurred attempting to read the file from disk. The file was not uploaded.' + 
+						formatErrorCode(message);
+					status.continueOnError = true;
                     break;
                 case SWFUpload.UPLOAD_ERROR.SECURITY_ERROR:
                     status.currError = "Error Code: Security Error, File name: " + file.name + ", Message: " + message;
@@ -804,7 +807,7 @@ var fluid = fluid || {};
     	}
         
 		function demoPause (swfObj, file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj, delay) {
-			uploadError(file, -290, "", uploaderContainer, progressBar, fragmentSelectors, options.queueListMaxHeight, status, options);
+			uploadError(swfObj, file, -290, "", uploaderContainer, progressBar, fragmentSelectors, options.queueListMaxHeight, status, options);
     		uploadComplete(swfObj, file, uploaderContainer, progressBar, fragmentSelectors, status, options, dialogObj);
 			status.stop = false;
 		}
