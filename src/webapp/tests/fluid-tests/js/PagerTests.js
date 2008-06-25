@@ -27,6 +27,27 @@ $(document).ready(function () {
         }
     };
 
+    /** Convenience test functions **/
+    var enabled = function (str, link) {
+        jqUnit.assertFalse(str + " link is enabled", 
+            link.hasClass(fluid.Pager.prototype.defaults.styles.disabled));    
+    };
+
+    var disabled = function (str, link) {
+        jqUnit.assertTrue(str + " link is disabled", 
+            link.hasClass(fluid.Pager.prototype.defaults.styles.disabled));    
+    };
+
+    var current = function (str, link) {
+        jqUnit.assertTrue(str + " link is selected", 
+            link.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
+    };
+
+    var notCurrent = function (str, link) {
+        jqUnit.assertFalse(str + " link is not selected", 
+            link.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
+    };
+
     // This is a placeholder test. It knows too much about the implementation details. 
     // This will be replaced with a better test as the public API of the Pager is developed
     tests.test("Pager setup", function () {
@@ -53,13 +74,20 @@ $(document).ready(function () {
     
     tests.test("Initially First Selected", function () {
         var pager = new fluid.Pager("gradebook");
+        
         var firstLink = $("#top1");
         var firstLinkBottom = $("#bottom1");
+        var previous = $("#previous-top");
+        var next = $("#next-top");
+        var previousBottom = $("#previous-bottom");
+        var nextBottom = $("#next-bottom");
         
-        jqUnit.assertTrue("First is selected - top", 
-            firstLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
-        jqUnit.assertTrue("First is selected - bottom", 
-            firstLinkBottom.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
+        current("First top", firstLink);        
+        current("First bottom", firstLinkBottom);        
+        disabled("Previous top", previous);
+        disabled("Previous bottom", previousBottom);
+        enabled("Next top", next);
+        enabled("Next bottom", nextBottom);        
     });
     
     tests.test("Click link", function () {      
@@ -69,21 +97,24 @@ $(document).ready(function () {
         var link2 = $("#top2");
         var anchor2 = $("a", link2);
         var link2Bottom = $("#bottom2");
-        
+        var previous = $("#previous-top");
+        var next = $("#next-top");
+        var previousBottom = $("#previous-bottom");
+        var nextBottom = $("#next-bottom");
+
         jqUnit.assertFalse("Initially, no link has been clicked", fluid.pageChangedTo);
         anchor2.simulate("click");
         jqUnit.assertEquals("Link 2 has been clicked", "top2", fluid.pageChangedTo);        
 
-        jqUnit.assertTrue("Link 2 top is styled as current", 
-            link2.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
-        jqUnit.assertTrue("Link 2 bottom is styled as current", 
-            link2Bottom.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
-
-        jqUnit.assertFalse("Link 1 not current", 
-            link1.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));        
-        jqUnit.assertFalse("Link 1 bottom not current", 
-            link1Bottom.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
-            
+        current("Link 2 top", link2);
+        current("Link 2 bottom", link2Bottom);
+        notCurrent("Link 1", link1);
+        notCurrent("Link 1 bottom", link1Bottom);
+        enabled("Next top", next);        
+        enabled("Next bottom", nextBottom);
+        enabled("Previous top", previous);
+        enabled("Previous bottom", previousBottom);
+        
         fluid.pageChangedTo = false;   
         anchor2.simulate("click");
         jqUnit.assertFalse("Link 2 clicked again - callback not called", fluid.pageChangedTo);        
@@ -140,33 +171,43 @@ $(document).ready(function () {
     
     tests.test("Pager Next/Previous", function () {
         var pager = new fluid.Pager("gradebook");
+
         var nextLink = $("#next-top");
         var previousLink = $("#previous-top");
         var firstLink = $("#top1");
         var secondLink = $("#top2");
         var lastLink = $("#top3");
+        
+        current("Initially, first", firstLink);
+        disabled("Initially, previous", previousLink);
+        enabled("Initially, next", nextLink);
 
-        jqUnit.assertTrue("Initially, first is selected", 
-            firstLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
-//        jqUnit.assertTrue("Initially, next link is disabled", 
-  //          nextLink.hasClass(fluid.Pager.prototype.defaults.styles.???));
         nextLink.simulate("click");
-        jqUnit.assertTrue("After clicking next, second is selected",
-            secondLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
-        jqUnit.assertFalse("After clicking next, first is not selected",
-            firstLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+        current("After clicking next, second", secondLink);
+        notCurrent("After clicking next, first", firstLink);
+        enabled("After clicking next, previous", previousLink);
+        enabled("After clicking next, next", nextLink);
+
         previousLink.simulate("click");
-        jqUnit.assertTrue("After clicking previous, first is selected",
-            firstLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
-        jqUnit.assertFalse("After clicking previous, second is not selected",
-            secondLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+        current("After clicking previous, first", firstLink);
+        notCurrent("After clicking previous, second", secondLink);
+        disabled("After clicking previous, previous", previousLink);
+        enabled("After clicking previous, next", nextLink);
+            
         previousLink.simulate("click");
-        jqUnit.assertTrue("After clicking previous when on the first page, first is still selected",
-            firstLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+        current("After clicking previous on first page, first is still", firstLink);
+        disabled("After clicking previous on first page, previous", previousLink);
+
         lastLink.simulate("click");
+        current("After clicking last, last", lastLink);
+        notCurrent("After clicking last, first", firstLink);
+        enabled("After clicking last, previous", previousLink);
+        disabled("After clicking last, next", nextLink);
+        
         nextLink.simulate("click");
-        jqUnit.assertTrue("After clicking next when on the last page, last is still selected",
-            lastLink.hasClass(fluid.Pager.prototype.defaults.styles.currentPage));
+        current("After clicking next on last page, last is still", lastLink);
+        enabled("After clicking next on last page, previous", previousLink);
+        disabled("After clicking next on last page, next", nextLink);
 
     });
     
