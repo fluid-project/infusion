@@ -1,5 +1,5 @@
 
-Fluid Infusion v0.4 BETA
+Fluid Infusion v0.4beta1
 ========================
 Main Project Site:  http://fluidproject.org
 User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
@@ -25,8 +25,8 @@ What's in this Release
 ======================
 
 This release is available in two forms:
-    fluid-0.4.zip - deployment bundle
-    fluid-0.4-src.zip - source code bundle
+    fluid-0.4beta1.zip - deployment bundle
+    fluid-0.4beta1-src.zip - source code bundle
     
 Both bundles have the following organization:
         fluid-components/
@@ -35,7 +35,7 @@ Both bundles have the following organization:
         LICENSE.txt
         README.txt
 
-The deployment bundle also includes a war file suitable for deployment: fluid-components-0.4.war
+The deployment bundle also includes a war file suitable for deployment: fluid-components-0.4beta1.war
 
 Source Code
 -----------
@@ -112,8 +112,6 @@ we have set up the following aids to navigation:
 Supported Browsers
 ==================
 Firefox 2.x, 3.x: full support
-Safari 2.x, 3.x: keyboard support not available
-Camino 1.5.x: reordering by keyboard not supported.
 Internet Explorer 6.x, 7.x: full support
 
 
@@ -125,8 +123,6 @@ not yet implemented.
 
 The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
 Some of the known issues in this release are described here:
-
-* Pager: The 'next' and 'previous' links are not disabled when on the last or first page respectively
 
 * Reorderer: Once focus is within the group of reorderable elements, shift-tab cannot
   be used to move focus out again. Tabbing forward must be used.
