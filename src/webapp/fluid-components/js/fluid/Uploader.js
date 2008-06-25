@@ -122,13 +122,49 @@ var fluid = fluid || {};
 	};
 		
 	/* DOM Manipulation */
+	
+	/** 
+	* adds a new file to the file queue in DOM
+	* note: there are cases where a file will be added to the file queue but will not be in the actual queue 
+	*/
+	var addFileToQueue = function(uploaderContainer, file, fragmentSelectors, swfObj, status, maxHeight) {
+		// make a new row
+		var newQueueRow = $(fragmentSelectors.qRowTemplate).clone();
+		// update the file name
+		$(newQueueRow).children(fragmentSelectors.qRowFileName).text(file.name);
+		// update the file size
+		$(newQueueRow).children(fragmentSelectors.qRowFileSize).text(fluid.utils.filesizeStr(file.size));
+		// update the file id and add the hover action
+		newQueueRow.attr('id',file.id).css('display','none').addClass("ready row").hover(function(){
+            if ($(this).hasClass('ready') && !$(this).hasClass('uploading')) {
+                $(this).addClass('hover');
+            }
+        }, function(){
+            if ($(this).hasClass('ready') && !$(this).hasClass('uploading')) {
+                $(this).removeClass('hover');
+            }
+        });
+        // insert the new row into the file queue
+		$(fragmentSelectors.fileQueue, uploaderContainer).append(newQueueRow);
+		
+        // add remove action to the button
+        $('#' + file.id, uploaderContainer).children(fragmentSelectors.qRowRemove).click(function(){
+            removeRow(uploaderContainer, fragmentSelectors, $(this).parents('tr'), swfObj, status, maxHeight);  
+        });
+        
+        // display the new row
+        $('#' + file.id, uploaderContainer).fadeIn('slow');
+	};
+
 
 	/** 
 	* removes the defined row from the file queue 
-	* @param {jQuery} row	a jQuery object for the row
-	* @param {SWFUpload} swfObj	the SWF upload object
-	* @param {Object} status	the status object to be updated
-	* @return {jQuery}	returns the same jQuery object
+	* @param {jQuery} 	uploaderContainer
+	* @param {Object} 	fragmentSelectors	collection of Uploader DOM selectors 
+	* @param {jQuery} 	row					a jQuery object for the row
+	* @param {SWFUpload} swfObj				the SWF upload object
+	* @param {Object} 	status				the status object to be updated
+	* @return {jQuery}	returns row			the same jQuery object
 	*/
 	var removeRow = function(uploaderContainer, fragmentSelectors, row, swfObj, status, maxHeight) {
 		row.fadeOut('fast', function (){
@@ -310,32 +346,8 @@ var fluid = fluid || {};
 				// what have we got?
                 fluid.utils.debug(file.name + " file.size = " + file.size); // DEBUG
                 
-                // make a new row
-				var newQueueRow = $(fragmentSelectors.qRowTemplate).clone();
-				// update the file name
-				$(newQueueRow).children(fragmentSelectors.qRowFileName).text(file.name);
-				// update the file size
-				$(newQueueRow).children(fragmentSelectors.qRowFileSize).text(fluid.utils.filesizeStr(file.size));
-				// update the file id and add the hover action
-				newQueueRow.attr('id',file.id).css('display','none').addClass("ready row").hover(function(){
-                    if ($(this).hasClass('ready') && !$(this).hasClass('uploading')) {
-                        $(this).addClass('hover');
-                    }
-                }, function(){
-                    if ($(this).hasClass('ready') && !$(this).hasClass('uploading')) {
-                        $(this).removeClass('hover');
-                    }
-                });
-                // insert the new row into the file queue
-				$(fragmentSelectors.fileQueue, uploaderContainer).append(newQueueRow);
-				
-                // add remove action to the button
-                $('#' + file.id, uploaderContainer).children(fragmentSelectors.qRowRemove).click(function(){
-                    removeRow(uploaderContainer, fragmentSelectors, $(this).parents('tr'), swfObj, status, maxHeight);  
-                });
-                
-                // display the new row
-                $('#' + file.id, uploaderContainer).fadeIn('slow');
+                // add the file to the queue
+				addFileToQueue(uploaderContainer, file, fragmentSelectors, swfObj, status, maxHeight);
 				
 				updateStateByState(uploaderContainer, fragmentSelectors.fileQueue);
 
@@ -358,7 +370,7 @@ var fluid = fluid || {};
             }
         };
 	};
-	
+		
 	var createSWFReadyHandler = function (browseOnInit, allowMultipleFiles, useDialog) {
 		return function(){
 			if (browseOnInit && !useDialog) {
