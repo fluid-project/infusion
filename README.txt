@@ -1,15 +1,32 @@
 
-Fluid Infusion v0.3
-===================
+Fluid Infusion v0.4 BETA
+========================
 Main Project Site:  http://fluidproject.org
 User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
+
+This Release is a BETA
+======================
+
+This is an early, BETA version of Fluid Infusion v0.4. The contents of this distribution are
+a snapshot of the Fluid code as of June 26, 2008. A number of tasks will be carried out between
+this BETA and the actual release:
+
+* Blocker issues will be addressed (see Known Issues below).
+  To monitor the status of bug resolutions, see the Fluid Issue Tracker, at
+      http://issues.fluidproject.org
+
+* The documentation will be completed.
+  There are known gaps in the documentation that is included in this BETA.
+  If you're eager to see updated documentation before the release, keep an eye on the wiki, at
+      http://wiki.fluidproject.org
+
 
 What's in this Release
 ======================
 
 This release is available in two forms:
-    fluid-0.3.zip - deployment bundle
-    fluid-0.3-src.zip - source code bundle
+    fluid-0.4.zip - deployment bundle
+    fluid-0.4-src.zip - source code bundle
     
 Both bundles have the following organization:
         fluid-components/
@@ -18,7 +35,7 @@ Both bundles have the following organization:
         LICENSE.txt
         README.txt
 
-The deployment bundle also includes a war file suitable for deployment: fluid-components-0.3.war
+The deployment bundle also includes a war file suitable for deployment: fluid-components-0.4.war
 
 Source Code
 -----------
@@ -42,7 +59,9 @@ Sample Code
 -----------
 Sample code illustrating how Fluid components can be used:
         sample-code/
+           inline-edit/
            keyboard-a11y/
+           pager/
            reorderer/
            uploader/
            shared/
@@ -100,26 +119,18 @@ Internet Explorer 6.x, 7.x: full support
 
 Known Issues
 ============
+
+The new Inline Edit and Pager components are very preliminary: Much of the functionality is
+not yet implemented.
+
 The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
 Some of the known issues in this release are described here:
+
+* Pager: The 'next' and 'previous' links are not disabled when on the last or first page respectively
 
 * Reorderer: Once focus is within the group of reorderable elements, shift-tab cannot
   be used to move focus out again. Tabbing forward must be used.
 
 * Reorderer: Drag-and-drop avatar location: In some cases, the drag avatar is disconcertingly
   far away from the cursor.
-
-* Reorderer: Reordering either via mouse-based drag-and-drop, or using the keyboard, is sometimes
-  slow when there are a relatively large number of orderable items.  In short, the Reorderer
-  does not scale well with respect to the number of orderable items.
-
-* Reorderer: Reordering via mouse-based drag-and-drop, attempting to drop outside the space of
-  existing items sometimes incorrectly displays a drop location indicator, despite the fact
-  that a drop is not permitted in this case.
-
-* Uploader (preview): Error feedback is currently minimal.
-
-* Uploader (preview): The progress bar does not update correctly.
-
-* Uploader (preview): In Internet Explorer 6.x, rendering is incorrect.
 
