@@ -1,5 +1,5 @@
 
-Fluid Infusion v0.4beta1
+Fluid Infusion 0.4beta1
 ========================
 Main Project Site:  http://fluidproject.org
 User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
@@ -7,7 +7,7 @@ User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table
 This Release is a BETA
 ======================
 
-This is an early, BETA version of Fluid Infusion v0.4. The contents of this distribution are
+This is an early, BETA version of Fluid Infusion 0.4. The contents of this distribution are
 a snapshot of the Fluid code as of June 26, 2008. A number of tasks will be carried out between
 this BETA and the actual release:
 
