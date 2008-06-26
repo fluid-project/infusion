@@ -8,7 +8,7 @@
   <artifactId>fluid-components</artifactId>
   <name>Fluid Components</name>
   <groupId>org.fluidproject</groupId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4beta1</version>
 
   <organization>
     <name>Fluid Project</name>
