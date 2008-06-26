@@ -124,6 +124,20 @@ not yet implemented.
 The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
 Some of the known issues in this release are described here:
 
+* Uploader: Using the sample Uploader from a local file system requires that you change some
+  Flash settings. See the file: sample-code/uploader/ReadMe.txt
+
+* Uploader: There are number of client-side and server-side errors which are not communicated to
+  the user in a graceful way.
+
+* Uploader: The current Java-based Uploader reference application sometimes throws an error if the
+  Uploader is resumed after pausing an upload.
+
+* Uploader: Uploader code will not warn you if you have the wrong version of Flash installed, or no
+  version of Flash.
+
+* Uploader: Keyboard handlers and ARIA support are preliminary.
+
 * Reorderer: Once focus is within the group of reorderable elements, shift-tab cannot
   be used to move focus out again. Tabbing forward must be used.
 
