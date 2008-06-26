@@ -127,8 +127,6 @@ Some of the known issues in this release are described here:
 * Uploader: Using the sample Uploader from a local file system requires that you change some
   Flash settings. See the file: sample-code/uploader/ReadMe.txt
 
-* Uploader: Pausing upload sometimes causes the browser to hang.
-
 * Uploader: There are number of client-side and server-side errors which are not communicated to
   the user in a graceful way.
 
