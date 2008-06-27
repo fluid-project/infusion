@@ -237,6 +237,37 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             jqUnit.assertEquals("Ancestor should be 'top1'", "top1", fluid.utils.findAncestor($("#page-link-1"), testFunc).id);
         });
+        
+         
+        fluidJSTests.test("Defaults: store and retrieve default values", function () {
+            var testDefaults = {
+                foo: "bar"    
+            };
+            
+            // Assign a collection of defaults for the first time.
+            fluid.defaults("test", testDefaults);
+            jqUnit.assertEquals("defaults() should return the specified defaults", 
+                                testDefaults, fluid.defaults("test"));
+            
+            // Re-assign the defaults with a new collection.
+            testDefaults = {
+                baz: "foo"
+            };
+            fluid.defaults("test", testDefaults);
+            jqUnit.assertEquals("defaults() should return the new defaults", 
+                                testDefaults, fluid.defaults("test"));
+            jqUnit.assertEquals("Foo should no longer be a property of the tabs defaults.", 
+                                undefined, fluid.defaults("test").foo);
+            
+            // Nullify the defaults altogether.
+            fluid.defaults("test", null);
+            jqUnit.assertNull("The test defaults should be null.", 
+                              fluid.defaults("test"));
+            
+            // Try to access defaults for a component that doesn't exist.
+            jqUnit.assertNull("The defaults for a nonexistent component should be null.", 
+                              fluid.defaults("timemachine"));
+        });
     });
 
 })(jQuery);

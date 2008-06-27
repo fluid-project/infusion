@@ -104,6 +104,16 @@ var fluid = fluid || {};
         return obj.jquery ? obj[0] : obj; // Unwrap the element if it's a jQuery.
     };
     
+    var defaultsStore = {};
+    fluid.defaults = function (componentName, defaultsObject) {
+        if (arguments.length > 1) {
+            defaultsStore[componentName] = defaultsObject;   
+            return defaultsObject;
+        }
+        
+        return defaultsStore[componentName];
+    };
+    
     /*
      * Utilities object for providing various general convenience functions
      */
