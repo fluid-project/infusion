@@ -215,4 +215,52 @@ $(document).ready(function () {
         jqUnit.assertFalse("Blur saves the edit", edit.text() === display.text());
     });
     
+    // Multiple Inline Editors tests
+    (function () {
+        var inlineEditsSel = "form.inlineEditable";
+        var editor1Sels = {
+            display: "#display",
+            edit: "#edit-container"  
+        };
+        
+        var editor2Sels = {
+            display: "#display2",
+            edit: "#edit-container2"
+        };
+       
+        var instantiateInlineEdits = function () {
+            return fluid.inlineEdits("main", {
+               selectors: {
+                   editables: inlineEditsSel
+               }
+            });
+        };
+        
+        inlineEditTests.test("inlineEdits(): instantiate more than one", function () {
+           jqUnit.expect(1);
+
+           var editors = instantiateInlineEdits();
+           jqUnit.assertEquals("There should be two inline editors on the page.",
+                               2, editors.length);
+        });
+        
+        inlineEditTests.test("inlineEdits(): call to edit affects only one at a time", function () {
+            jqUnit.expect(8);
+            
+            var editors = instantiateInlineEdits();
+            
+            // First check that the displays are shown and the edits are hidden.
+            jqUnit.isVisible("Initially, display field #1 is visible", editor1Sels.display);
+            jqUnit.isVisible("Initially, display field #2 is visible", editor2Sels.display);
+            jqUnit.notVisible("Initially, edit field #1 is hidden", editor1Sels.edit);
+            jqUnit.notVisible("Initially, edit field #2 is hidden", editor2Sels.edit);
+            
+            editors[0].edit();
+            
+            jqUnit.notVisible("Display field #1 should be hidden", editor1Sels.display);
+            jqUnit.isVisible("Edit field #1 should be visible", editor1Sels.edit);
+            jqUnit.isVisible("Display field #2 should be visible", editor2Sels.display);
+            jqUnit.notVisible("Edit field #2 should be hidden", editor2Sels.edit);
+        });
+    })();
 });

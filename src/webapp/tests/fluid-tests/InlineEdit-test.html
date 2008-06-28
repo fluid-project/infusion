@@ -31,17 +31,24 @@
       <div id="main">
 
         <!-- This is the test data -->
-	    <form id="inline-edit" action="#">
+	    <form id="inline-edit" action="#" class="inlineEditable">
 	        <div id="display" class="text">Click me to edit...</div>
             <div id="edit-container" class="editContainer">
                 <input id="edit" type="text" class="edit" value="this is the hidden text for the first editor" />
             </div>
 	    </form>
         
+        <form id="inline-edit2" action="#" class="inlineEditable">
+	        <div id="display2" class="text">Click me to edit...</div>
+            <div id="edit-container2" class="editContainer">
+                <input id="edit2" type="text" class="edit" value="this is the hidden text for the second editor" />
+            </div>
+	    </form>
+        
 	    <form id="inline-edit-custom" action="#">
 	        <div id="display-custom" class="customText">Click me to edit...</div>
             <div id="edit-container-custom" class="customEditContainer">
-                <input id="edit-custom" type="text" class="customEdit" value="this is the hidden text for the second editor" />
+                <input id="edit-custom" type="text" class="customEdit" value="this is the hidden text for the custom editor" />
             </div>
 	    </form>
       </div>

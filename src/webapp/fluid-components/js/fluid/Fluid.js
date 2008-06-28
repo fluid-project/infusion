@@ -104,6 +104,37 @@ var fluid = fluid || {};
         return obj.jquery ? obj[0] : obj; // Unwrap the element if it's a jQuery.
     };
     
+    /**
+     * Fetches a single container element and returns it as a jQuery.
+     * 
+     * @param {String||jQuery||Element} an id string, a single-element jQuery, or a DOM element specifying a unique container
+     * @return a single-element jQuery of container
+     */
+    fluid.container = function (container) {
+        if (!container.jquery && (typeof container === "string")) {
+            container = fluid.utils.jById(container);
+        } else if (container instanceof Element) {
+            container = jQuery(container);
+        }
+        
+        // Throw an exception if we've got more or less than one element.
+        if (!container || !container.jquery || container.length !== 1) {
+            throw {
+                name: "NotOne",
+                message: "A single container element was not found."
+            };
+        }
+        
+        return container;
+    };
+    
+    /**
+     * Retreives and stores a component's default settings centrally.
+     * 
+     * @param {String} componentName the name of the component
+     * @param {Object} (optional) an container of key/value pairs to set
+     * 
+     */
     var defaultsStore = {};
     fluid.defaults = function (componentName, defaultsObject) {
         if (arguments.length > 1) {

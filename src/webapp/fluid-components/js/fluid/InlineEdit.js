@@ -114,19 +114,26 @@ fluid = fluid || {};
         // Need to add ARIA roles and states.
     }
     
-    fluid.InlineEdit = function (componentContainerId, options) {
+    var mixDefaults = function(instance, defaults, options) {
+        instance.selectors = $.extend({}, defaults.selectors, options.selectors);
+        instance.styles = $.extend({}, defaults.styles, options.styles);
+        instance.paddings = $.extend({}, defaults.paddings, options.paddings);
+        instance.finishedEditing = options.finishedEditing || function () {};    
+    };
+    
+    var bindToDom = function (instance, container) {
+        // Bind to the DOM.
+        instance.container = fluid.container(container);
+        instance.text = $(instance.selectors.text, instance.container);
+        instance.editContainer = $(instance.selectors.editContainer, instance.container);
+        instance.editField = $(instance.selectors.edit, instance.editContainer);
+    };
+    
+    fluid.InlineEdit = function (componentContainer, options) {
         // Mix in the user's configuration options.
         options = options || {};
-        var selectors = $.extend({}, this.defaults.selectors, options.selectors);
-        this.styles = $.extend({}, this.defaults.styles, options.styles);
-        this.paddings = $.extend({}, this.defaults.paddings, options.paddings);
-		this.finishedEditing = options.finishedEditing || function () {};
-        
-        // Bind to the DOM.
-        this.container = fluid.utils.jById(componentContainerId);
-        this.text = $(selectors.text, this.container);
-        this.editContainer = $(selectors.editContainer, this.container);
-        this.editField = $(selectors.edit, this.editContainer);
+        mixDefaults(this, this.defaults, options);
+        bindToDom(this, componentContainer);
         
         // Add event handlers.
         mouse(this.text, this.editContainer, this.editField, this.styles, this.paddings, this.finishedEditing);
@@ -141,7 +148,6 @@ fluid = fluid || {};
         this.editContainer.hide();
     };
     
-    // Seems a bit strange that we put edit and finish on the prototype but internally we just use the private functions
     fluid.InlineEdit.prototype.edit = function () {
         edit(this.text, this.editContainer, this.editField, this.styles.invitation, this.styles.focus, this.paddings);
     };
@@ -167,5 +173,34 @@ fluid = fluid || {};
 			minimum: 80
 		}
     };
+    
+    /**
+     * A set of inline edit fields.
+     */
+    var setupInlineEdits = function  (editables, options) {
+        var editors = [];
+        editables.each(function (idx, editable) {
+            editors.push(new fluid.InlineEdit(jQuery(editable), options));
+        });
         
+        return editors;
+    };
+
+    fluid.inlineEdits = function (componentContainerId, options) {
+        var that = {};
+        options = options || {};
+        that.selectors = $.extend({}, fluid.defaults("inlineEdits").selectors, options.selectors);
+        
+        // Bind to the DOM.
+        var container = fluid.utils.jById(componentContainerId);
+        var editables = $(that.selectors.editables, container);
+        
+        return setupInlineEdits(editables, options);
+    };
+    
+    fluid.defaults("inlineEdits", {
+        selectors: {
+            editables: ".inlineEditable"
+        }
+    });
 })(jQuery, fluid);

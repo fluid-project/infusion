@@ -238,6 +238,57 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Ancestor should be 'top1'", "top1", fluid.utils.findAncestor($("#page-link-1"), testFunc).id);
         });
         
+        fluidJSTests.test("Container: bind to an id", function () {
+            // Give it a valid id string.
+            var result = fluid.container("main");
+            jqUnit.assertTrue("One element should be returned when specifying a container id",
+                              1, result.length);
+          
+            // Now try with a invalid string... a CSS selector. container() should only accept ids and single-member jQueries            
+            try {
+                result = fluid.container(".container");
+                jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
+            } catch (e) {
+                jqUnit.assertEquals("The exception should be a NotOne.", "NotOne", e.name);
+            }
+        });
+    
+        fluidJSTests.test("container(): bind to a single jQuery", function() {
+            // Try with a single-item jQuery.
+            var oneContainer = jQuery("#main");
+            var result = fluid.container(oneContainer);
+            jqUnit.assertEquals("If a single-element jQuery is used, it should be immediately returned.",
+                         oneContainer, result);
+             
+            // Now try with a two-element jQuery, which should cause an exception.
+            var twoContainers = jQuery(".container");
+            try {
+                result = fluid.container(twoContainers);
+                jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
+            } catch (e) {
+                jqUnit.assertEquals("The exception should be a NotOne.", "NotOne", e.name);
+            }
+        });
+        
+        fluidJSTests.test("container(): bind to a DOM element", function () {
+            var container = document.getElementById("main");
+            var result = fluid.container(container);
+            jqUnit.assertEquals("If a single DOM element is used, it should be wrapped in a jQuery.",
+                                container, result[0]);
+        });
+        
+        fluidJSTests.test("container(): garbage object", function () {
+            // Random objects should fail.
+            var container = {foo: "bar"};
+
+            try {
+                var result = fluid.container(container);
+                jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
+            } catch (e) {
+                jqUnit.assertEquals("The exception should be a NotOne.", "NotOne", e.name);
+            }
+        });
+        
          
         fluidJSTests.test("Defaults: store and retrieve default values", function () {
             var testDefaults = {
@@ -269,5 +320,4 @@ https://source.fluidproject.org/svn/LICENSE.txt
                               fluid.defaults("timemachine"));
         });
     });
-
 })(jQuery);

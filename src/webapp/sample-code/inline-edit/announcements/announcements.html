@@ -220,7 +220,7 @@
                 </div>
             </div>
             <form name="announcementListForm" action="http://build.fluidproject.org/portal/tool/ann?panel=Main" method="post">
-                <table class="listHier" summary="Table contains a list of announcements. It is five or six columns wide and each row contains a single announcement. Column one indicates if the announcement has an attachment, column two contains the title of the announcement, column three has the name of the author, column four shows the recipient, column five contains the date and time of publication, column six, if present, contains a checkbox - selecting it will mean you want to remove this announcement. The following row will contain announcement text if site owner has set it to be so." border="0" cellspacing="0">
+                <table id="announcements" class="listHier" summary="Table contains a list of announcements. It is five or six columns wide and each row contains a single announcement. Column one indicates if the announcement has an attachment, column two contains the title of the announcement, column three has the name of the author, column four shows the recipient, column five contains the date and time of publication, column six, if present, contains a checkbox - selecting it will mean you want to remove this announcement. The following row will contain announcement text if site owner has set it to be so." border="0" cellspacing="0">
                     <tbody>
                         <tr>
                             <th id="attach" class="attach">
@@ -245,7 +245,7 @@
                             <td headers="attach" class="attach">
                                 &nbsp;
                             </td>
-                            <td headers="subject" id="announcement1">
+                            <td headers="subject" class="inlineEditable">
                                 <span class="text">Lecture Room Change</span>
                                 <div class="editContainer">
                                     <input type="text" class="edit" />
@@ -271,7 +271,7 @@
                             <td headers="attach" class="attach">
                                 &nbsp;
                             </td>
-                            <td headers="subject" id="announcement2">
+                            <td headers="subject" class="inlineEditable">
                                 <span class="text">Reading for Tuesday's Lab</span>
                                 <div class="editContainer">
                                     <input type="text" class="edit" />
@@ -297,7 +297,7 @@
                             <td headers="attach" class="attach">
                                 &nbsp;
                             </td>
-                            <td headers="subject" id="announcement3">
+                            <td headers="subject" class="inlineEditable">
                                 <span class="text">DNA Polymorphism Exam on Thursday</span>
                                 <div class="editContainer">
                                     <input type="text" class="edit" />
@@ -326,9 +326,7 @@
                 </p>
 
                 <script type="text/javascript">
-                    new fluid.InlineEdit("announcement1");
-                    new fluid.InlineEdit("announcement2");
-					new fluid.InlineEdit("announcement3");
+                    fluid.inlineEdits("announcements");
                 </script>
 
             </form>
