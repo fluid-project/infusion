@@ -29,8 +29,7 @@ fluid = fluid || {};
         // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.       
         setTimeout(function () {
             editField.focus();    
-        }, 0);
-        
+        }, 0);    
     }
     
     function view(editContainer, text) {
@@ -111,14 +110,15 @@ fluid = fluid || {};
     }
     
     function aria(text, editContainer) {
-        // Need to add ARIA roles and states.
+        text.ariaRole("button");
     }
     
     var mixDefaults = function(instance, defaults, options) {
         instance.selectors = $.extend({}, defaults.selectors, options.selectors);
         instance.styles = $.extend({}, defaults.styles, options.styles);
         instance.paddings = $.extend({}, defaults.paddings, options.paddings);
-        instance.finishedEditing = options.finishedEditing || function () {};    
+        instance.finishedEditing = options.finishedEditing || function () {};
+        instance.editModeInjector = options.editModeInjector || defaults.editModeInjector;
     };
     
     var bindToDom = function (instance, container) {
@@ -126,9 +126,43 @@ fluid = fluid || {};
         instance.container = fluid.container(container);
         instance.text = $(instance.selectors.text, instance.container);
         instance.editContainer = $(instance.selectors.editContainer, instance.container);
-        instance.editField = $(instance.selectors.edit, instance.editContainer);
+        
+        // If an edit container is found in the markup, use it. Otherwise generate one based on the view text.
+        if (instance.editContainer.length >= 1) {
+            instance.editField = $(instance.selectors.edit, instance.editContainer);
+        } else {
+            var editElms = instance.editModeInjector(instance.container.attr("id"), instance.text);
+            instance.editContainer = editElms.container;
+            instance.editField = editElms.field;
+        }
     };
     
+    var defaultEditModeInjector = function (componentContainerId, view) {
+        var editModeTemplate = "<div><input type='text' /></div>";
+        var editContainerIdSuffix = "-edit-container";
+        var editFieldIdSuffix = "-edit";
+        
+        var editContainer = $(editModeTemplate);
+        var editField = jQuery("input", editContainer);
+        
+        editContainer.attr("id", (componentContainerId + editContainerIdSuffix));
+        editField.attr("id", (componentContainerId + editFieldIdSuffix));
+        editField.attr("value", view.text());
+        
+        editContainer.insertAfter(view);
+        
+        return {
+            container: editContainer,
+            field: editField
+        };
+    };
+    
+    /**
+     * Instantiates a new Inline Edit component
+     * 
+     * @param {Object} componentContainer a unique id, jquery, or a dom element representing the component's container
+     * @param {Object} options a collection of options settings
+     */
     fluid.InlineEdit = function (componentContainer, options) {
         // Mix in the user's configuration options.
         options = options || {};
@@ -171,7 +205,9 @@ fluid = fluid || {};
 		paddings: {
 			add: 10,
 			minimum: 80
-		}
+		},
+        
+        editModeInjector: defaultEditModeInjector
     };
     
     /**

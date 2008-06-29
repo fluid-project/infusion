@@ -107,13 +107,13 @@ var fluid = fluid || {};
     /**
      * Fetches a single container element and returns it as a jQuery.
      * 
-     * @param {String||jQuery||Element} an id string, a single-element jQuery, or a DOM element specifying a unique container
+     * @param {String||jQuery||element} an id string, a single-element jQuery, or a DOM element specifying a unique container
      * @return a single-element jQuery of container
      */
     fluid.container = function (container) {
         if (!container.jquery && (typeof container === "string")) {
             container = fluid.utils.jById(container);
-        } else if (container instanceof Element) {
+        } else if (container.nodeType && (container.nodeType === 1  || container.nodeType === 9)) {
             container = jQuery(container);
         }
         
