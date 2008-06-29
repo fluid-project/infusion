@@ -228,11 +228,13 @@ $(document).ready(function () {
             edit: "#edit-container2"
         };
        
-        var instantiateInlineEdits = function () {
+        var instantiateInlineEdits = function (callback) {
             return fluid.inlineEdits("main", {
                selectors: {
                    editables: inlineEditsSel
-               }
+               },
+               
+               finishedEditing: callback
             });
         };
         
@@ -261,6 +263,40 @@ $(document).ready(function () {
             jqUnit.isVisible("Edit field #1 should be visible", editor1Sels.edit);
             jqUnit.isVisible("Display field #2 should be visible", editor2Sels.display);
             jqUnit.notVisible("Edit field #2 should be hidden", editor2Sels.edit);
+        });
+        
+        var toggleEditOnAndOff = function (editor) {
+            editor.edit();
+            editor.finish();
+        };
+        
+        inlineEditTests.test("inlineEdits(): finished editing callback; one for all fields", function () {
+            jqUnit.expect(5);
+            
+            var textFieldIds = [];
+            var finishedCallback = function (formField) {
+                textFieldIds.push(formField.attr("id"));    
+            };
+            
+            var editors = instantiateInlineEdits(finishedCallback);
+            
+            // Sanity check
+            jqUnit.assertUndefined("Initially, the callback should not have been called.", textFieldIds[0]);
+
+            // Edit the first field.            
+            toggleEditOnAndOff(editors[0]);
+            jqUnit.assertTrue("After finishing, the callback should have been called only once.", 
+                              1, textFieldIds.length);
+            jqUnit.assertEquals("After finishing, the callback should not have been with the first form field.", 
+                                "edit", textFieldIds[0]);
+            
+            // Edit the last field.  
+            textFieldIds = [];          
+            toggleEditOnAndOff(editors[1]);
+            jqUnit.assertTrue("After finishing, the callback should have been called only once.", 
+                              1, textFieldIds.length);
+            jqUnit.assertEquals("After finishing, the callback should not have been with the first form field.", 
+                                "edit2", textFieldIds[0]);
         });
     })();
 });
