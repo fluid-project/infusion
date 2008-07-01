@@ -184,10 +184,12 @@ $(document).ready(function () {
     });
     
     inlineEditTests.test("Finished Editing Callback", function () {
-        jqUnit.expect(2);
+        jqUnit.expect(4);
 
         var options = {
-            finishedEditing: function () {
+            finishedEditing: function (edit, text) {
+                jqUnit.assertEquals("The edit field should be passed along in the callback.", $("#edit")[0], edit[0]);
+                jqUnit.assertEquals("The text view should also be passed along in the callback.", $("#display")[0], text[0]);
                 fluid.finishedEditingCallbackCalled = true;
             }
         };

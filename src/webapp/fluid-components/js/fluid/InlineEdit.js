@@ -39,7 +39,7 @@ fluid = fluid || {};
     }
 
     function finish(editContainer, editField, text, finishedFn) {
-        finishedFn(editField);
+        finishedFn(editField, text);
         text.text(editField.val());
         view(editContainer, text);
         text.focus();
