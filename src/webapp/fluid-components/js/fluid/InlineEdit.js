@@ -28,7 +28,7 @@ fluid = fluid || {};
         // Work around for FLUID-726
         // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.       
         setTimeout(function () {
-            editField.focus();    
+            editField.focus();   
         }, 0);    
     }
     
@@ -38,7 +38,7 @@ fluid = fluid || {};
     }
 
     function finish(editContainer, editField, text, finishedFn) {
-        finishedFn(editField, text);
+        finishedFn(editField[0], text[0]);
         text.text(editField.val());
         view(editContainer, text);
         text.focus();
@@ -143,7 +143,6 @@ fluid = fluid || {};
         // Template strings.
         var editModeTemplate = "<div><input type='text' /></div>";
 
-        
         // Create the edit container and pull out the textfield.
         var editContainer = $(editModeTemplate);
         var editField = jQuery("input", editContainer);
