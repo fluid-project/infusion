@@ -301,4 +301,65 @@ $(document).ready(function () {
                                 "edit2", textFieldIds[0]);
         });
     })();
+    
+    /**
+     * Tests for self-rendering the edit mode.
+     */
+    (function () {
+        var containerId = "inline-edit-self-render";
+        var editContainerSel = "#inline-edit-self-render-edit-container";
+        var editSel = "#inline-edit-self-render-edit";
+        var textSel = "#display-self-render";
+        
+        var selfRenderingInlineEdit = function () {        
+            // Fire off an inline edit against a container which does not contain an edit form.
+            return new fluid.InlineEdit(containerId);
+        };
+        
+        inlineEditTests.test("Self-rendering edit mode: instantiation", function () {
+            jqUnit.expect(4);
+            
+            var editor = selfRenderingInlineEdit();
+            var editContainer = $(editContainerSel);
+            // There should now be a hidden edit mode. Using the default edit injector,
+            // we expect an edit container div and an inner textfield.
+            jqUnit.assertNotUndefined("The self-rendered edit container should not be undefined.", editContainer);
+            jqUnit.assertEquals("There should be one new element matching 'inline-edit-self-render-edit-container'",
+                               1, editContainer.length);
+                               
+            var editField = $("input", editContainer);
+            jqUnit.assertEquals("There should be one new text field within the edit container.", 
+                                1, editField.length);
+            
+            var expectedEditId = containerId + "-edit";
+            jqUnit.assertEquals("The text field's id should match 'inline-edit-self-render-edit'",
+                                expectedEditId, editField.attr("id"));
+        });
+        
+        var assertInViewMode = function () {
+            jqUnit.isVisible("Initially, the view mode should be visible.", textSel);
+            jqUnit.notVisible("Initially, the edit mode should be hidden.", editContainerSel);    
+        };
+        
+        var assertInEditMode = function () {
+            jqUnit.isVisible("During editing, the edit mode should be visible.", editContainerSel);
+            jqUnit.notVisible("During editing, the view mode should be hidden.", textSel);    
+        };
+        
+        inlineEditTests.test("Self-rendering edit mode: edit() and finish()", function () {
+            jqUnit.expect(7);
+            
+            var editor = selfRenderingInlineEdit();
+            assertInViewMode();
+            
+            editor.edit();
+            assertInEditMode();
+            
+            jqUnit.assertEquals("The contents of the edit field should be the same as the view text.",
+                                $(textSel).text(), $(editSel).attr("value"));
+            editor.finish();
+            assertInViewMode();
+        });
+    })();
+ 
 });
