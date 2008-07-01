@@ -17,7 +17,7 @@ fluid = fluid || {};
 (function ($, fluid) {
     
     // Is paddings doing what we want? Should it be in the CSS file instead?
-    function edit(text, editContainer, editField, invitationStyle, focusStyle, paddings) {
+    function edit(text, editContainer, editField, invitationStyle, focusStyle, paddings, selectOnEdit) {
 		editField.val(text.text());
 		editField.width(Math.max(text.width() + paddings.add, paddings.minimum));
         text.removeClass(invitationStyle);
@@ -28,7 +28,10 @@ fluid = fluid || {};
         // Work around for FLUID-726
         // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.       
         setTimeout(function () {
-            editField.focus();   
+            editField.focus();  
+            if (selectOnEdit) {
+                editField[0].select();
+            }
         }, 0);    
     }
     
@@ -44,9 +47,9 @@ fluid = fluid || {};
         text.focus();
     }
         
-    function editHandler(text, editContainer, editField, invitationStyle, focusStyle, paddings) {
+    function editHandler(text, editContainer, editField, invitationStyle, focusStyle, paddings, selectOnEdit) {
         return function () {
-            edit(text, editContainer, editField, invitationStyle, focusStyle, paddings);
+            edit(text, editContainer, editField, invitationStyle, focusStyle, paddings, selectOnEdit);
             return false;
         }; 
     }
@@ -62,9 +65,9 @@ fluid = fluid || {};
         text.hover(over, out);
     }
     
-    function mouse(text, editContainer, editField, styles, paddings, finishFn) {
+    function mouse(text, editContainer, editField, styles, paddings, finishFn, selectOnEdit) {
         bindHoverHandlers(text, styles.invitation);
-        text.click(editHandler(text, editContainer, editField, styles.invitation, styles.focus, paddings));
+        text.click(editHandler(text, editContainer, editField, styles.invitation, styles.focus, paddings, selectOnEdit));
     }
     
     function bindKeyHighlight(text, focusStyle) {
@@ -72,17 +75,17 @@ fluid = fluid || {};
             text.addClass(focusStyle);    
         };
         var focusOff = function () {
-            text.removeClass(focusStyle);    
+            text.removeClass(focusStyle);
         };
         
         text.focus(focusOn);
         text.blur(focusOff);
     }
     
-    function keyNav(text, editContainer, editField, styles, paddings) {
+    function keyNav(text, editContainer, editField, styles, paddings, selectOnEdit) {
         text.tabbable();
         bindKeyHighlight(text, styles.focus);
-        text.activatable(editHandler(text, editContainer, editField, styles.invitation, styles.focus, paddings));
+        text.activatable(editHandler(text, editContainer, editField, styles.invitation, styles.focus, paddings, selectOnEdit));
     } 
     
     function bindEditFinish(editContainer, editField, text, finishedFn) {
@@ -180,8 +183,8 @@ fluid = fluid || {};
         bindToDom(this, componentContainer);
         
         // Add event handlers.
-        mouse(this.text, this.editContainer, this.editField, this.styles, this.paddings, this.finishedEditing);
-        keyNav(this.text, this.editContainer, this.editField, this.styles, this.paddings);
+        mouse(this.text, this.editContainer, this.editField, this.styles, this.paddings, this.finishedEditing, options.selectOnEdit);
+        keyNav(this.text, this.editContainer, this.editField, this.styles, this.paddings, options.selectOnEdit);
         bindEditFinish(this.editContainer, this.editField, this.text, this.finishedEditing);
         bindBlurHandler(this.editContainer, this.editField, this.text, this.finishedEditing);
         
@@ -217,7 +220,9 @@ fluid = fluid || {};
 			minimum: 80
 		},
         
-        editModeInjector: defaultEditModeInjector
+        editModeInjector: defaultEditModeInjector,
+        
+        selectOnEdit: false
     };
     
     /**
