@@ -22,10 +22,10 @@
             </div>
 	    </form>
 	    <form id="inline-edit2" action="#">
-	        <div class="text" id="text2">No, click me instead!</div>
-            <div class="editContainer" id="editContainer2">
+	        <span class="text" id="text2">No, click me instead!</span>
+            <span class="editContainer" id="editContainer2">
                 <input type="text" class="edit" id="edit2" value="I am the hidden text of the second edit"/>
-            </div>
+            </span>
 	    </form>
 	    <form id="inline-edit3" action="#">
 	        <div class="text" id="text3">Oh, pick me! Pick me!</div>
@@ -34,10 +34,23 @@
             </div>
 	    </form>
 
+	    <div id="inline-edit4">
+            <span class="text" id="text3">I don't have a built-in input field.</span>
+        </div>
+        
+        <div id="multiple-edits">
+            <span class="inlineEditable"><span class="text">We are all</span></span>
+            <span class="inlineEditable"><span class="text">setup with</span></span>
+            <span class="inlineEditable"><span class="text">a single</span></span>
+            <span class="inlineEditable"><span class="text">function call.</span></span>
+        </div>
+        
         <script type="text/javascript">
             new fluid.InlineEdit("inline-edit1");
-            new fluid.InlineEdit("inline-edit2");
-            new fluid.InlineEdit("inline-edit3");
+            new fluid.InlineEdit(jQuery("#inline-edit2"));
+            new fluid.InlineEdit(document.getElementById("inline-edit3"));
+            new fluid.InlineEdit("inline-edit4");
+            fluid.inlineEdits("multiple-edits");
         </script>
 	</body>
 </html>
