@@ -144,7 +144,7 @@ fluid = fluid || {};
     
     var defaultEditModeInjector = function (componentContainerId, view) {
         // Template strings.
-        var editModeTemplate = "<div><input type='text' /></div>";
+        var editModeTemplate = "<span><input type='text' /></span>";
 
         // Create the edit container and pull out the textfield.
         var editContainer = $(editModeTemplate);
