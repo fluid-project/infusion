@@ -42,7 +42,9 @@
             <span class="inlineEditable"><span class="text">We are all</span></span>
             <span class="inlineEditable"><span class="text">setup with</span></span>
             <span class="inlineEditable"><span class="text">a single</span></span>
-            <span class="inlineEditable"><span class="text">function call.</span></span>
+            <span class="inlineEditable"><span class="text">function call</span></span>
+            <span class="inlineEditable"><span class="text">and with</span></span>
+            <span class="inlineEditable"><span class="text">selectOnEdit true.</span></span>
         </div>
         
         <script type="text/javascript">
@@ -50,7 +52,7 @@
             new fluid.InlineEdit(jQuery("#inline-edit2"));
             new fluid.InlineEdit(document.getElementById("inline-edit3"));
             new fluid.InlineEdit("inline-edit4");
-            fluid.inlineEdits("multiple-edits");
+            fluid.inlineEdits("multiple-edits", {selectOnEdit:true});
         </script>
 	</body>
 </html>
