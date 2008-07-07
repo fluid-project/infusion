@@ -26,6 +26,7 @@
                     <li id="inner1-item3">Two point three</li>
                     <li id="inner1-item4">Two point four</li>
                     <script type="text/javascript">
+                        console.log("initializing Reorderer for 'inner1'");
                         fluid.reorderList("#inner1", "[id^=inner1-item]");
                     </script>
                 </ul>
@@ -39,6 +40,7 @@
                     <li id="inner2-item4">Four point four</li>
                     <script type="text/javascript">
                         function init2 () {
+                            console.log("initializing Reorderer for 'inner2'");
                             fluid.reorderList("#inner2", "[id^=inner2-item]");
                         }
                         init2();
@@ -53,6 +55,7 @@
     // If this was production code, this would be in a separate file but since this is a very simple manual test I'm leaving it here.    
     function init(){
         // initialize the outer one
+        console.log("initializing Reorderer for 'outer'");
         fluid.reorderList("#outer", "[id^=outer-item]");
     }
     init();
