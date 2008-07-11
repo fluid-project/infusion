@@ -48,7 +48,7 @@ var ariaStateAttr = (function() {
 		return function(jq, attr, val) {
 			if (typeof val != "undefined") {
 				jq.each(function(i, el) {
-					el.setAttributeNS(ariaStatesNS, attr, val);
+					el.setAttributeNS(ariaStatesNS, "aaa:" + attr, val);
 				});
   			} else {
  				return jq.get(0).getAttributeNS(ariaStatesNS, attr);

@@ -541,7 +541,7 @@ fluid = fluid || {};
 
             // Create a simple predicate function that will identify items that can be dropped.
             var droppablePredicate = function (potentialDroppable) {
-                return (movables.index(potentialDroppable[0]) > -1);    
+                return (movables.index(potentialDroppable) > -1);    
             };
         
             // Setup dropTargets

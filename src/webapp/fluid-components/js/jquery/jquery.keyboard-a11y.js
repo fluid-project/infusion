@@ -26,8 +26,8 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 		    return canHaveDefaultTabindex (elements) ? Number (0) : undefined;
 		}
 
-        // Get the attribute (.attr () doesn't work for tabIndex in IE) and return it as a number value.
-		var value = elements[0].getAttribute (normalizeTabindexName ());
+        // Get the attribute and return it as a number value.
+		var value = elements.attr (normalizeTabindexName ());
 		return Number (value);
 	};
 

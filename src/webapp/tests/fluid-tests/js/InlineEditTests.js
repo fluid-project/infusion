@@ -14,352 +14,354 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global fluid*/
 /*global jqUnit*/
 
-$(document).ready(function () {
-    
-    var inlineEditTests = new jqUnit.TestCase("InlineEdit Tests");
-
-    var customOptions = {selectors: {
-            text: ".customText",
-            editContainer: ".customEditContainer",
-            edit: ".customEdit"
-        },
-        styles: {
-            invitation: "customInvitation",
-            focus: "customFocus"
-        },		
-		paddings: {
-			add: 20,
-			minimum: 40
-		},
-        finishedEditing: function () {
-            fluid.finishedEditingCallbackCalled = true;
-        }      
-    };
-    
-    inlineEditTests.test("Minimal Construction", function () {
-        jqUnit.expect(10);
-
-        var container = $("#inline-edit");
-        var display = $("#display");
-        var editContainer = $("#edit-container");
-        var editField = $("#edit");
-        var inlineEditor = new fluid.InlineEdit("inline-edit");
-
-        jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
-        jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.text[0].id);
-        jqUnit.assertEquals("Edit container is set to", editContainer[0].id, inlineEditor.editContainer[0].id);
-        jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
-        jqUnit.assertEquals("Focus style is default", fluid.InlineEdit.prototype.defaults.styles.focus, inlineEditor.styles.focus);
-        jqUnit.assertEquals("Invitation style is default", fluid.InlineEdit.prototype.defaults.styles.invitation, inlineEditor.styles.invitation);
-        jqUnit.assertEquals("Paddings add is default", fluid.InlineEdit.prototype.defaults.paddings.add, inlineEditor.paddings.add);
-        jqUnit.assertEquals("Paddings minimum is default", fluid.InlineEdit.prototype.defaults.paddings.minimum, inlineEditor.paddings.minimum);
-        jqUnit.isVisible("Display field is visible", "#display");
-        jqUnit.notVisible("Edit field is hidden", "#edit-container");
-    });
-
-    inlineEditTests.test("Customized Construction", function () {
-        jqUnit.expect(10);
-
-        var container = $("#inline-edit-custom");
-        var display = $("#display-custom");
-        var editContainer = $("#edit-container-custom");
-        var editField = $("#edit-custom");
-        var inlineEditor = new fluid.InlineEdit("inline-edit-custom", customOptions);
-
-        jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
-        jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.text[0].id);
-        jqUnit.assertEquals("Edit container is set to", editContainer[0].id, inlineEditor.editContainer[0].id);
-        jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
-        jqUnit.assertEquals("Focus style is custom", customOptions.styles.focus, inlineEditor.styles.focus);
-        jqUnit.assertEquals("Invitation style is custom", customOptions.styles.invitation, inlineEditor.styles.invitation);
-        jqUnit.assertEquals("Paddings add is set to", customOptions.paddings.add, inlineEditor.paddings.add);
-        jqUnit.assertEquals("Paddings minimum is set to", customOptions.paddings.minimum, inlineEditor.paddings.minimum);
-        jqUnit.isVisible("Display field is visible", "#display-custom");
-        jqUnit.notVisible("Edit field is hidden", "#edit-container-custom");
-    });
-
-    inlineEditTests.test("Edit-Finish", function () {
-        jqUnit.expect(8);
-
-        var display = $("#display");
-        var edit = $("#edit");
-        var inlineEditor = new fluid.InlineEdit("inline-edit");
+(function ($) {
+    $(document).ready(function () {
         
-        jqUnit.isVisible("Initially display field is visible", "#display");
-        jqUnit.notVisible("Initially edit field is hidden", "#edit-container");
-
-        inlineEditor.edit();
-        jqUnit.notVisible("After edit, display field is hidden", "#display");
-        jqUnit.isVisible("After edit, edit field is visible", "#edit-container");
-        jqUnit.assertEquals("After edit, edit field has the same text as display field", display.text(), edit.attr("value"));
-
-        var testString = "This is new text.";
-        edit.attr("value", testString);
-        inlineEditor.finish();
-        jqUnit.isVisible("After finish, display field is visible", "#display");
-        jqUnit.notVisible("After finish, edit field is hidden", "#edit-container");
-        jqUnit.assertEquals("After finish, display field contains new text", testString, display.text());
-    });
-
-    inlineEditTests.test("Keyboard Navigation Edit", function () {
-        jqUnit.expect(11);
-
-        var display = $("#display");
-        var edit = $("#edit");
-        var inlineEditor = new fluid.InlineEdit("inline-edit");
-        jqUnit.assertTrue("Display is tabbable", display.tabindex() >= 0);
-        jqUnit.assertFalse("Initially display field is not focussed", display.hasClass(inlineEditor.styles.focus));
-
-        display.focus();
-        jqUnit.assertTrue("After focus, display is focussed", display.hasClass(inlineEditor.styles.focus));
-
-        display.simulate("keydown", {keyCode: $.a11y.keys.ENTER});
-            
-        jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
-        jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
-        jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));
-
-        var testString = "This is new text.";
-        edit.attr("value", testString);
-        edit.simulate("keypress", {keyCode: $.a11y.keys.ENTER});
-
-        jqUnit.isVisible("After changing text and pressing enter, display field is visible", "#display");
-        jqUnit.assertTrue("After changing text and pressing enter, display has focus style", display.hasClass(inlineEditor.styles.focus));
-        jqUnit.notVisible("After changing text and pressing enter, edit field is hidden", "#edit-container");
-        jqUnit.assertEquals("After changing text and pressing enter, display field contains new text", testString, display.text());
-
-        display.blur();
-        jqUnit.assertFalse("After blur, display field is not focussed", display.hasClass(inlineEditor.styles.focus));
-        
-    });
+        var inlineEditTests = new jqUnit.TestCase("InlineEdit Tests");
     
-    inlineEditTests.test("Hover", function () {
-        jqUnit.expect(3);
-
-        var display = $("#display");
-        var inlineEditor = new fluid.InlineEdit("inline-edit");
-
-        jqUnit.assertFalse("Initially, display field does not have the invitation style", display.hasClass(inlineEditor.styles.invitation));
-
-        display.trigger("mouseenter");
-        jqUnit.assertTrue("During hover, display field has the invitation style", display.hasClass(inlineEditor.styles.invitation));
-
-        display.trigger("mouseleave");
-        jqUnit.assertFalse("After hover, display field does not have the invitation style", display.hasClass(inlineEditor.styles.invitation));
-    });
-    
-    inlineEditTests.test("Click", function () {
-        jqUnit.expect(5);
-
-        var display = $("#display");
-        var edit = $("#edit");
-        var inlineEditor = new fluid.InlineEdit("inline-edit");
-
-        jqUnit.isVisible("Initially, display field is visible", "#display");
-        jqUnit.notVisible("Initially, edit field is hidden", "#edit-container");
-
-        display.click();
-        jqUnit.notVisible("After click, display field is hidden", "#display");
-        jqUnit.isVisible("After click, edit field is visible", "#edit-container");
-        jqUnit.assertEquals("After click, edit field contains same text as display field", display.text(), edit.attr("value"));
-    });
-    
-    inlineEditTests.test("Arrow Keys while Editing", function () {
-        jqUnit.expect(5);
-
-        var display = $("#display");
-        var edit = $("#edit");
-        var inlineEditor = new fluid.InlineEdit("inline-edit");
-
-        display.focus();
-        display.simulate("keydown", {keyCode: $.a11y.keys.ENTER});
-        jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
-        jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
-        jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));
-
-        // note: this simulate works in FFX, but not IE7
-        edit.simulate("keypress", {keyCode: fluid.keys.LEFT});
-        jqUnit.notVisible("After left-arrow pressed, display field is still hidden", "#display");
-        jqUnit.isVisible("After left-arrow pressed, edit field is still visible", "#edit-container");
-    });
-    
-    inlineEditTests.test("Finished Editing Callback", function () {
-        jqUnit.expect(4);
-
-        var options = {
-            finishedEditing: function (edit, text) {
-                jqUnit.assertEquals("The edit field should be passed along in the callback.", $("#edit")[0], edit);
-                jqUnit.assertEquals("The text view should also be passed along in the callback.", $("#display")[0], text);
+        var customOptions = {selectors: {
+                text: ".customText",
+                editContainer: ".customEditContainer",
+                edit: ".customEdit"
+            },
+            styles: {
+                invitation: "customInvitation",
+                focus: "customFocus"
+            },		
+    		paddings: {
+    			add: 20,
+    			minimum: 40
+    		},
+            finishedEditing: function () {
                 fluid.finishedEditingCallbackCalled = true;
-            }
+            }      
         };
-        var inlineEditor = new fluid.InlineEdit("inline-edit", options);
-        jqUnit.assertFalse("Initially, callback has not been called", fluid.finishedEditingCallbackCalled);
-        inlineEditor.finish();
-        jqUnit.assertTrue("Callback was called", fluid.finishedEditingCallbackCalled);
-    });
-
-    inlineEditTests.test("Blur", function () {
-        jqUnit.expect(4);
         
-        var display = $("#display");
-        var edit = $("#edit");
-        var inlineEditor = new fluid.InlineEdit("inline-edit");
-
-        display.click();
-        jqUnit.isVisible("Edit field is visible", "#edit-container");
-        
-        var testString = "This is new text.";
-        edit.attr("value", testString);
-        edit.blur();
-        jqUnit.notVisible("After blur, edit field is hidden", "#edit-container");
-        jqUnit.assertEquals("Blur saves the edit", testString, display.text());
-        jqUnit.assertFalse("Blur saves the edit", edit.text() === display.text());
-    });
+        inlineEditTests.test("Minimal Construction", function () {
+            jqUnit.expect(10);
     
-    // Multiple Inline Editors tests
-    (function () {
-        var inlineEditsSel = "form.inlineEditable";
-        var editor1Sels = {
-            display: "#display",
-            edit: "#edit-container"  
-        };
-        
-        var editor2Sels = {
-            display: "#display2",
-            edit: "#edit-container2"
-        };
-       
-        var instantiateInlineEdits = function (callback) {
-            return fluid.inlineEdits("main", {
-               selectors: {
-                   editables: inlineEditsSel
-               },
-               
-               finishedEditing: callback
-            });
-        };
-        
-        inlineEditTests.test("inlineEdits(): instantiate more than one", function () {
-           jqUnit.expect(1);
-
-           var editors = instantiateInlineEdits();
-           jqUnit.assertEquals("There should be two inline editors on the page.",
-                               2, editors.length);
+            var container = $("#inline-edit");
+            var display = $("#display");
+            var editContainer = $("#edit-container");
+            var editField = $("#edit");
+            var inlineEditor = new fluid.InlineEdit("inline-edit");
+    
+            jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
+            jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.text[0].id);
+            jqUnit.assertEquals("Edit container is set to", editContainer[0].id, inlineEditor.editContainer[0].id);
+            jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
+            jqUnit.assertEquals("Focus style is default", fluid.InlineEdit.prototype.defaults.styles.focus, inlineEditor.styles.focus);
+            jqUnit.assertEquals("Invitation style is default", fluid.InlineEdit.prototype.defaults.styles.invitation, inlineEditor.styles.invitation);
+            jqUnit.assertEquals("Paddings add is default", fluid.InlineEdit.prototype.defaults.paddings.add, inlineEditor.paddings.add);
+            jqUnit.assertEquals("Paddings minimum is default", fluid.InlineEdit.prototype.defaults.paddings.minimum, inlineEditor.paddings.minimum);
+            jqUnit.isVisible("Display field is visible", "#display");
+            jqUnit.notVisible("Edit field is hidden", "#edit-container");
         });
-        
-        inlineEditTests.test("inlineEdits(): call to edit affects only one at a time", function () {
+    
+        inlineEditTests.test("Customized Construction", function () {
+            jqUnit.expect(10);
+    
+            var container = $("#inline-edit-custom");
+            var display = $("#display-custom");
+            var editContainer = $("#edit-container-custom");
+            var editField = $("#edit-custom");
+            var inlineEditor = new fluid.InlineEdit("inline-edit-custom", customOptions);
+    
+            jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
+            jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.text[0].id);
+            jqUnit.assertEquals("Edit container is set to", editContainer[0].id, inlineEditor.editContainer[0].id);
+            jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
+            jqUnit.assertEquals("Focus style is custom", customOptions.styles.focus, inlineEditor.styles.focus);
+            jqUnit.assertEquals("Invitation style is custom", customOptions.styles.invitation, inlineEditor.styles.invitation);
+            jqUnit.assertEquals("Paddings add is set to", customOptions.paddings.add, inlineEditor.paddings.add);
+            jqUnit.assertEquals("Paddings minimum is set to", customOptions.paddings.minimum, inlineEditor.paddings.minimum);
+            jqUnit.isVisible("Display field is visible", "#display-custom");
+            jqUnit.notVisible("Edit field is hidden", "#edit-container-custom");
+        });
+    
+        inlineEditTests.test("Edit-Finish", function () {
             jqUnit.expect(8);
-            
-            var editors = instantiateInlineEdits();
-            
-            // First check that the displays are shown and the edits are hidden.
-            jqUnit.isVisible("Initially, display field #1 is visible", editor1Sels.display);
-            jqUnit.isVisible("Initially, display field #2 is visible", editor2Sels.display);
-            jqUnit.notVisible("Initially, edit field #1 is hidden", editor1Sels.edit);
-            jqUnit.notVisible("Initially, edit field #2 is hidden", editor2Sels.edit);
-            
-            editors[0].edit();
-            
-            jqUnit.notVisible("Display field #1 should be hidden", editor1Sels.display);
-            jqUnit.isVisible("Edit field #1 should be visible", editor1Sels.edit);
-            jqUnit.isVisible("Display field #2 should be visible", editor2Sels.display);
-            jqUnit.notVisible("Edit field #2 should be hidden", editor2Sels.edit);
-        });
-        
-        var toggleEditOnAndOff = function (editor) {
-            editor.edit();
-            editor.finish();
-        };
-        
-        inlineEditTests.test("inlineEdits(): finished editing callback; one for all fields", function () {
-            jqUnit.expect(5);
-            
-            var textFieldIds = [];
-            var finishedCallback = function (formField) {
-                textFieldIds.push($(formField).attr("id"));    
-            };
-            
-            var editors = instantiateInlineEdits(finishedCallback);
-            
-            // Sanity check
-            jqUnit.assertUndefined("Initially, the callback should not have been called.", textFieldIds[0]);
-
-            // Edit the first field.            
-            toggleEditOnAndOff(editors[0]);
-            jqUnit.assertTrue("After finishing, the callback should have been called only once.", 
-                              1, textFieldIds.length);
-            jqUnit.assertEquals("After finishing, the callback should not have been with the first form field.", 
-                                "edit", textFieldIds[0]);
-            
-            // Edit the last field.  
-            textFieldIds = [];          
-            toggleEditOnAndOff(editors[1]);
-            jqUnit.assertTrue("After finishing, the callback should have been called only once.", 
-                              1, textFieldIds.length);
-            jqUnit.assertEquals("After finishing, the callback should not have been with the first form field.", 
-                                "edit2", textFieldIds[0]);
-        });
-    })();
     
-    /**
-     * Tests for self-rendering the edit mode.
-     */
-    (function () {
-        var containerId = "inline-edit-self-render";
-        var editContainerSel = "#inline-edit-self-render-edit-container";
-        var editSel = "#inline-edit-self-render-edit";
-        var textSel = "#display-self-render";
+            var display = $("#display");
+            var edit = $("#edit");
+            var inlineEditor = new fluid.InlineEdit("inline-edit");
+            
+            jqUnit.isVisible("Initially display field is visible", "#display");
+            jqUnit.notVisible("Initially edit field is hidden", "#edit-container");
+    
+            inlineEditor.edit();
+            jqUnit.notVisible("After edit, display field is hidden", "#display");
+            jqUnit.isVisible("After edit, edit field is visible", "#edit-container");
+            jqUnit.assertEquals("After edit, edit field has the same text as display field", display.text(), edit.attr("value"));
+    
+            var testString = "This is new text.";
+            edit.attr("value", testString);
+            inlineEditor.finish();
+            jqUnit.isVisible("After finish, display field is visible", "#display");
+            jqUnit.notVisible("After finish, edit field is hidden", "#edit-container");
+            jqUnit.assertEquals("After finish, display field contains new text", testString, display.text());
+        });
+    
+        inlineEditTests.test("Keyboard Navigation Edit", function () {
+            jqUnit.expect(11);
+    
+            var display = $("#display");
+            var edit = $("#edit");
+            var inlineEditor = new fluid.InlineEdit("inline-edit");
+            jqUnit.assertTrue("Display is tabbable", display.tabindex() >= 0);
+            jqUnit.assertFalse("Initially display field is not focussed", display.hasClass(inlineEditor.styles.focus));
+    
+            display.focus();
+            jqUnit.assertTrue("After focus, display is focussed", display.hasClass(inlineEditor.styles.focus));
+    
+            display.simulate("keydown", {keyCode: $.a11y.keys.ENTER});
+                
+            jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
+            jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
+            jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));
+    
+            var testString = "This is new text.";
+            edit.attr("value", testString);
+            edit.simulate("keypress", {keyCode: $.a11y.keys.ENTER});
+    
+            jqUnit.isVisible("After changing text and pressing enter, display field is visible", "#display");
+            jqUnit.assertTrue("After changing text and pressing enter, display has focus style", display.hasClass(inlineEditor.styles.focus));
+            jqUnit.notVisible("After changing text and pressing enter, edit field is hidden", "#edit-container");
+            jqUnit.assertEquals("After changing text and pressing enter, display field contains new text", testString, display.text());
+    
+            display.blur();
+            jqUnit.assertFalse("After blur, display field is not focussed", display.hasClass(inlineEditor.styles.focus));
+            
+        });
         
-        var selfRenderingInlineEdit = function () {        
-            // Fire off an inline edit against a container which does not contain an edit form.
-            return new fluid.InlineEdit(containerId);
-        };
+        inlineEditTests.test("Hover", function () {
+            jqUnit.expect(3);
+    
+            var display = $("#display");
+            var inlineEditor = new fluid.InlineEdit("inline-edit");
+    
+            jqUnit.assertFalse("Initially, display field does not have the invitation style", display.hasClass(inlineEditor.styles.invitation));
+    
+            display.trigger("mouseenter");
+            jqUnit.assertTrue("During hover, display field has the invitation style", display.hasClass(inlineEditor.styles.invitation));
+    
+            display.trigger("mouseleave");
+            jqUnit.assertFalse("After hover, display field does not have the invitation style", display.hasClass(inlineEditor.styles.invitation));
+        });
         
-        inlineEditTests.test("Self-rendering edit mode: instantiation", function () {
+        inlineEditTests.test("Click", function () {
+            jqUnit.expect(5);
+    
+            var display = $("#display");
+            var edit = $("#edit");
+            var inlineEditor = new fluid.InlineEdit("inline-edit");
+    
+            jqUnit.isVisible("Initially, display field is visible", "#display");
+            jqUnit.notVisible("Initially, edit field is hidden", "#edit-container");
+    
+            display.click();
+            jqUnit.notVisible("After click, display field is hidden", "#display");
+            jqUnit.isVisible("After click, edit field is visible", "#edit-container");
+            jqUnit.assertEquals("After click, edit field contains same text as display field", display.text(), edit.attr("value"));
+        });
+        
+        inlineEditTests.test("Arrow Keys while Editing", function () {
+            jqUnit.expect(5);
+    
+            var display = $("#display");
+            var edit = $("#edit");
+            var inlineEditor = new fluid.InlineEdit("inline-edit");
+    
+            display.focus();
+            display.simulate("keydown", {keyCode: $.a11y.keys.ENTER});
+            jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
+            jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
+            jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));
+    
+            // note: this simulate works in FFX, but not IE7
+            edit.simulate("keypress", {keyCode: fluid.keys.LEFT});
+            jqUnit.notVisible("After left-arrow pressed, display field is still hidden", "#display");
+            jqUnit.isVisible("After left-arrow pressed, edit field is still visible", "#edit-container");
+        });
+        
+        inlineEditTests.test("Finished Editing Callback", function () {
+            jqUnit.expect(4);
+    
+            var options = {
+                finishedEditing: function (edit, text) {
+                    jqUnit.assertEquals("The edit field should be passed along in the callback.", $("#edit")[0], edit);
+                    jqUnit.assertEquals("The text view should also be passed along in the callback.", $("#display")[0], text);
+                    fluid.finishedEditingCallbackCalled = true;
+                }
+            };
+            var inlineEditor = new fluid.InlineEdit("inline-edit", options);
+            jqUnit.assertFalse("Initially, callback has not been called", fluid.finishedEditingCallbackCalled);
+            inlineEditor.finish();
+            jqUnit.assertTrue("Callback was called", fluid.finishedEditingCallbackCalled);
+        });
+    
+        inlineEditTests.test("Blur", function () {
             jqUnit.expect(4);
             
-            var editor = selfRenderingInlineEdit();
-            var editContainer = $(editContainerSel);
-            // There should now be a hidden edit mode. Using the default edit injector,
-            // we expect an edit container div and an inner textfield.
-            jqUnit.assertNotUndefined("The self-rendered edit container should not be undefined.", editContainer);
-            jqUnit.assertEquals("There should be one new element matching 'inline-edit-self-render-edit-container'",
-                               1, editContainer.length);
-                               
-            var editField = $("input", editContainer);
-            jqUnit.assertEquals("There should be one new text field within the edit container.", 
-                                1, editField.length);
+            var display = $("#display");
+            var edit = $("#edit");
+            var inlineEditor = new fluid.InlineEdit("inline-edit");
+    
+            display.click();
+            jqUnit.isVisible("Edit field is visible", "#edit-container");
             
-            var expectedEditId = containerId + "-edit";
-            jqUnit.assertEquals("The text field's id should match 'inline-edit-self-render-edit'",
-                                expectedEditId, editField.attr("id"));
+            var testString = "This is new text.";
+            edit.attr("value", testString);
+            edit.blur();
+            jqUnit.notVisible("After blur, edit field is hidden", "#edit-container");
+            jqUnit.assertEquals("Blur saves the edit", testString, display.text());
+            jqUnit.assertFalse("Blur saves the edit", edit.text() === display.text());
         });
         
-        var assertInViewMode = function () {
-            jqUnit.isVisible("Initially, the view mode should be visible.", textSel);
-            jqUnit.notVisible("Initially, the edit mode should be hidden.", editContainerSel);    
-        };
+        // Multiple Inline Editors tests
+        (function () {
+            var inlineEditsSel = "form.inlineEditable";
+            var editor1Sels = {
+                display: "#display",
+                edit: "#edit-container"  
+            };
+            
+            var editor2Sels = {
+                display: "#display2",
+                edit: "#edit-container2"
+            };
+           
+            var instantiateInlineEdits = function (callback) {
+                return fluid.inlineEdits("main", {
+                   selectors: {
+                       editables: inlineEditsSel
+                   },
+                   
+                   finishedEditing: callback
+                });
+            };
+            
+            inlineEditTests.test("inlineEdits(): instantiate more than one", function () {
+               jqUnit.expect(1);
+    
+               var editors = instantiateInlineEdits();
+               jqUnit.assertEquals("There should be two inline editors on the page.",
+                                   2, editors.length);
+            });
+            
+            inlineEditTests.test("inlineEdits(): call to edit affects only one at a time", function () {
+                jqUnit.expect(8);
+                
+                var editors = instantiateInlineEdits();
+                
+                // First check that the displays are shown and the edits are hidden.
+                jqUnit.isVisible("Initially, display field #1 is visible", editor1Sels.display);
+                jqUnit.isVisible("Initially, display field #2 is visible", editor2Sels.display);
+                jqUnit.notVisible("Initially, edit field #1 is hidden", editor1Sels.edit);
+                jqUnit.notVisible("Initially, edit field #2 is hidden", editor2Sels.edit);
+                
+                editors[0].edit();
+                
+                jqUnit.notVisible("Display field #1 should be hidden", editor1Sels.display);
+                jqUnit.isVisible("Edit field #1 should be visible", editor1Sels.edit);
+                jqUnit.isVisible("Display field #2 should be visible", editor2Sels.display);
+                jqUnit.notVisible("Edit field #2 should be hidden", editor2Sels.edit);
+            });
+            
+            var toggleEditOnAndOff = function (editor) {
+                editor.edit();
+                editor.finish();
+            };
+            
+            inlineEditTests.test("inlineEdits(): finished editing callback; one for all fields", function () {
+                jqUnit.expect(5);
+                
+                var textFieldIds = [];
+                var finishedCallback = function (formField) {
+                    textFieldIds.push($(formField).attr("id"));    
+                };
+                
+                var editors = instantiateInlineEdits(finishedCallback);
+                
+                // Sanity check
+                jqUnit.assertUndefined("Initially, the callback should not have been called.", textFieldIds[0]);
+    
+                // Edit the first field.            
+                toggleEditOnAndOff(editors[0]);
+                jqUnit.assertTrue("After finishing, the callback should have been called only once.", 
+                                  1, textFieldIds.length);
+                jqUnit.assertEquals("After finishing, the callback should not have been with the first form field.", 
+                                    "edit", textFieldIds[0]);
+                
+                // Edit the last field.  
+                textFieldIds = [];          
+                toggleEditOnAndOff(editors[1]);
+                jqUnit.assertTrue("After finishing, the callback should have been called only once.", 
+                                  1, textFieldIds.length);
+                jqUnit.assertEquals("After finishing, the callback should not have been with the first form field.", 
+                                    "edit2", textFieldIds[0]);
+            });
+        })();
         
-        var assertInEditMode = function () {
-            jqUnit.isVisible("During editing, the edit mode should be visible.", editContainerSel);
-            jqUnit.notVisible("During editing, the view mode should be hidden.", textSel);    
-        };
-        
-        inlineEditTests.test("Self-rendering edit mode: edit() and finish()", function () {
-            jqUnit.expect(7);
+        /**
+         * Tests for self-rendering the edit mode.
+         */
+        (function () {
+            var containerId = "inline-edit-self-render";
+            var editContainerSel = "#inline-edit-self-render-edit-container";
+            var editSel = "#inline-edit-self-render-edit";
+            var textSel = "#display-self-render";
             
-            var editor = selfRenderingInlineEdit();
-            assertInViewMode();
+            var selfRenderingInlineEdit = function () {        
+                // Fire off an inline edit against a container which does not contain an edit form.
+                return new fluid.InlineEdit(containerId);
+            };
             
-            editor.edit();
-            assertInEditMode();
+            inlineEditTests.test("Self-rendering edit mode: instantiation", function () {
+                jqUnit.expect(4);
+                
+                var editor = selfRenderingInlineEdit();
+                var editContainer = $(editContainerSel);
+                // There should now be a hidden edit mode. Using the default edit injector,
+                // we expect an edit container div and an inner textfield.
+                jqUnit.assertNotUndefined("The self-rendered edit container should not be undefined.", editContainer);
+                jqUnit.assertEquals("There should be one new element matching 'inline-edit-self-render-edit-container'",
+                                   1, editContainer.length);
+                                   
+                var editField = $("input", editContainer);
+                jqUnit.assertEquals("There should be one new text field within the edit container.", 
+                                    1, editField.length);
+                
+                var expectedEditId = containerId + "-edit";
+                jqUnit.assertEquals("The text field's id should match 'inline-edit-self-render-edit'",
+                                    expectedEditId, editField.attr("id"));
+            });
             
-            jqUnit.assertEquals("The contents of the edit field should be the same as the view text.",
-                                $(textSel).text(), $(editSel).attr("value"));
-            editor.finish();
-            assertInViewMode();
-        });
-    })();
- 
-});
+            var assertInViewMode = function () {
+                jqUnit.isVisible("Initially, the view mode should be visible.", textSel);
+                jqUnit.notVisible("Initially, the edit mode should be hidden.", editContainerSel);    
+            };
+            
+            var assertInEditMode = function () {
+                jqUnit.isVisible("During editing, the edit mode should be visible.", editContainerSel);
+                jqUnit.notVisible("During editing, the view mode should be hidden.", textSel);    
+            };
+            
+            inlineEditTests.test("Self-rendering edit mode: edit() and finish()", function () {
+                jqUnit.expect(7);
+                
+                var editor = selfRenderingInlineEdit();
+                assertInViewMode();
+                
+                editor.edit();
+                assertInEditMode();
+                
+                jqUnit.assertEquals("The contents of the edit field should be the same as the view text.",
+                                    $(textSel).text(), $(editSel).attr("value"));
+                editor.finish();
+                assertInViewMode();
+            });
+        })();
+     
+    });
+})(jQuery);

@@ -115,13 +115,13 @@ $.extend($.simulate.prototype, {
 			options = this.options,	x = Math.floor(center.x), y = Math.floor(center.y), 
 			dx = options.dx || 0, dy = options.dy || 0, target = this.target;
 		var coord = { clientX: x, clientY: y };
-		this.simulateEvent(target, "mouseover");
 		this.simulateEvent(target, "mousedown", coord);
+		coord = { clientX: x + 1, clientY: y + 1 };
+		this.simulateEvent(document, "mousemove", coord);
 		coord = { clientX: x + dx, clientY: y + dy };
 		this.simulateEvent(document, "mousemove", coord);
 		this.simulateEvent(document, "mousemove", coord);
 		this.simulateEvent(target, "mouseup", coord);
-		this.simulateEvent(target, "mouseout");
 	},
 	findCenter: function(el) {
 		var el = $(this.target), o = el.offset();
@@ -135,7 +135,18 @@ $.extend($.simulate.prototype, {
 $.extend($.simulate, {
 	defaults: {
 		speed: 'sync'
-	}
+	},
+	VK_TAB: 9,
+	VK_ENTER: 13,
+	VK_ESC: 27,
+	VK_PGUP: 33,
+	VK_PGDN: 34,
+	VK_END: 35,
+	VK_HOME: 36,
+	VK_LEFT: 37,
+	VK_UP: 38,
+	VK_RIGHT: 39,
+	VK_DOWN: 40
 });
 
 })(jQuery);
