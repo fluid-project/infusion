@@ -22,7 +22,7 @@
         <script type="text/javascript" src="js/InlineEditTests.js"></script>
 
 	</head>
-	<body>
+	<body id="body">
       <!-- This is the markup that jqUnit will look for when running tests and displaying the results -->
       <h1 id="header">InlineEdit Test Suite</h1>
       <h2 id="banner"></h2>
@@ -56,7 +56,12 @@
         <form id="inline-edit-self-render" action="#">
 	        <div id="display-self-render" class="text">Click me to edit...</div>
 	    </form>
-      </div>
 
+        <!-- empty inline edit, requiring "invitation text" or padding -->
+	    <form id="empty-inline-edit" action="#">
+	        <div id="empty-display" class="text"></div>
+	    </form>
+
+      </div>
 	</body>
 </html>

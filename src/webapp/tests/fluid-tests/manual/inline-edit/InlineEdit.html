@@ -35,24 +35,40 @@
 	    </form>
 
 	    <div id="inline-edit4">
-            <span class="text" id="text3">I don't have a built-in input field.</span>
+            <span class="text" id="text4">I don't have a built-in input field.</span>
         </div>
         
-        <div id="multiple-edits">
-            <span class="inlineEditable"><span class="text">We are all</span></span>
-            <span class="inlineEditable"><span class="text">setup with</span></span>
-            <span class="inlineEditable"><span class="text">a single</span></span>
+        <p id="inline-edit5">The following line is an empty inline edit with default invitation text:
+            <span class="text" id="text5"></span>
+        </p>
+        
+        <p id="inline-edit6">The following line is an empty inline edit with custom invitation text:
+            <span class="text" id="text6"></span>
+        </p>
+
+        <p id="multiple-edits">
+            <span class="inlineEditable"><span class="text">These edit fields</span></span>
+            <span class="inlineEditable"><span class="text">are all set up</span></span>
+            <span class="inlineEditable"><span class="text">with a single</span></span>
             <span class="inlineEditable"><span class="text">function call</span></span>
             <span class="inlineEditable"><span class="text">and with</span></span>
             <span class="inlineEditable"><span class="text">selectOnEdit true.</span></span>
         </div>
         
+        <p id="inline-edit7">The following text is an empty inline edit 'span' with NO invitation text:
+            <span class="text" id="text7"></span>
+            This text is after the inline edit.
+        </p>
+
         <script type="text/javascript">
             new fluid.InlineEdit("inline-edit1");
             new fluid.InlineEdit(jQuery("#inline-edit2"));
             new fluid.InlineEdit(document.getElementById("inline-edit3"));
             new fluid.InlineEdit("inline-edit4");
+            new fluid.InlineEdit("inline-edit5");
+            new fluid.InlineEdit("inline-edit6", {defaultViewText: "Go ahead, try it - click on me..."});
             fluid.inlineEdits("multiple-edits", {selectOnEdit:true});
+            new fluid.InlineEdit("inline-edit7", {useDefaultViewText: false});
         </script>
 	</body>
 </html>

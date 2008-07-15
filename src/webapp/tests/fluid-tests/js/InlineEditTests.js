@@ -47,7 +47,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var inlineEditor = new fluid.InlineEdit("inline-edit");
     
             jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
-            jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.text[0].id);
+            jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.viewEl[0].id);
             jqUnit.assertEquals("Edit container is set to", editContainer[0].id, inlineEditor.editContainer[0].id);
             jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
             jqUnit.assertEquals("Focus style is default", fluid.InlineEdit.prototype.defaults.styles.focus, inlineEditor.styles.focus);
@@ -68,7 +68,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var inlineEditor = new fluid.InlineEdit("inline-edit-custom", customOptions);
     
             jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
-            jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.text[0].id);
+            jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.viewEl[0].id);
             jqUnit.assertEquals("Edit container is set to", editContainer[0].id, inlineEditor.editContainer[0].id);
             jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
             jqUnit.assertEquals("Focus style is custom", customOptions.styles.focus, inlineEditor.styles.focus);
@@ -79,6 +79,71 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.notVisible("Edit field is hidden", "#edit-container-custom");
         });
     
+        inlineEditTests.test("Invitation text (Default)", function () {
+            jqUnit.expect(8);
+    
+            var display = $("#empty-display");
+            jqUnit.assertEquals("Before initialization of empty display, display is empty", "", display.text());
+            var inlineEditor = new fluid.InlineEdit("empty-inline-edit");
+            jqUnit.assertEquals("After initialization of empty display, display has invitation text: ", fluid.InlineEdit.prototype.defaults.defaultViewText, display.text());
+            jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.styles.defaultViewText));
+    
+            var testText = "This is test text.";
+            var edit = $("#empty-inline-edit-edit");
+            inlineEditor.edit();
+            jqUnit.assertEquals("After switching into edit mode, edit field should be empty: ", "", edit.val());
+            edit.attr("value", testText);
+            inlineEditor.finish();
+            jqUnit.assertEquals("After editing the field, display should have test text ", testText, display.text());
+            jqUnit.assertFalse("Test text shouldn't have invitation text style", display.hasClass(inlineEditor.styles.defaultViewText));
+    
+            inlineEditor.edit();
+            edit.attr("value", "");
+            inlineEditor.finish();
+            jqUnit.assertEquals("After clearing the field, display should have invitation text again: ", fluid.InlineEdit.prototype.defaults.defaultViewText, display.text());
+            jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.styles.defaultViewText));
+    
+        });
+        
+        inlineEditTests.test("Invitation text (custom)", function () {
+            jqUnit.expect(2);
+    
+            var display = $("#empty-display");
+            var customInvitation = "This is custom invitation text";
+            jqUnit.assertEquals("Before initialization, display is empty", "", display.text());
+    
+            var inlineEditor = new fluid.InlineEdit("empty-inline-edit", {defaultViewText: customInvitation});
+            jqUnit.assertEquals("After initialization, display has custom invitation text.", customInvitation, display.text());
+        });
+        
+        inlineEditTests.test("Invitation text (none)", function () {
+            jqUnit.expect(10);
+    
+            var display = $("#empty-display");
+            jqUnit.assertFalse("Before initialization, display is empty", display.text());
+            jqUnit.assertFalse("The display field has no padding.", display.css("padding"));
+    
+            var inlineEditor = new fluid.InlineEdit("empty-inline-edit", {useDefaultViewText: false});
+            jqUnit.assertEquals("After initialization, display is still empty", "", display.text());
+            jqUnit.assertEquals("The display field padding is ", fluid.InlineEdit.prototype.defaults.paddings.minimumView, parseFloat(display.css("padding-right")));
+    
+            var testText = "This is test text that is a bit long.";
+            var edit = $("#empty-inline-edit-edit");
+            inlineEditor.edit();
+            jqUnit.assertFalse("Upon entering edit mode, edit field should be fully empty", edit.attr("value"));
+            edit.attr("value", testText);
+            inlineEditor.finish();
+            jqUnit.assertEquals("After editing the field, display should have test text ", testText, display.text());
+            jqUnit.assertEquals("The display field has no padding.", 0, parseFloat(display.css("padding-right")));
+    
+            inlineEditor.edit();
+            jqUnit.assertEquals("Upon entering edit mode but before clearing, edit field should be have test text", testText, edit.attr("value"));
+            edit.attr("value", "");
+            inlineEditor.finish();
+            jqUnit.assertEquals("After clearing the field, display should be empty again: ", "", display.text());
+            jqUnit.assertEquals("The display field padding is ", fluid.InlineEdit.prototype.defaults.paddings.minimumView, parseFloat(display.css("padding-right")));
+        });
+        
         inlineEditTests.test("Edit-Finish", function () {
             jqUnit.expect(8);
     

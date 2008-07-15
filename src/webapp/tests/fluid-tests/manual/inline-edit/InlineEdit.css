@@ -10,6 +10,9 @@ form, #inline-edit4 {
     background-color: #FFECB3;
 }
 
+.invitation-text {
+    color: #999999;
+}
 .focus {
     border: 2px solid #777777;
 }
