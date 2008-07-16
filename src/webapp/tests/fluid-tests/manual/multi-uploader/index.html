@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Multi-File Uploader Inline Sample</title>
+	<title>Multiple Uploaders in a Table</title>
 	<link href="../../../../sample-code/uploader/upload-sample.css" type="text/css" rel="stylesheet" media="all" />
 	<link href="../../../../fluid-components/css/infusion-theme.css" rel="stylesheet" type="text/css" />
 	<link href="../../../../fluid-components/css/Uploader.css" rel="stylesheet" type="text/css" />
@@ -56,6 +56,10 @@
 <body>
 <div>
 	
+    <table>
+    <tr>
+    <td>
+        
  	<form id="fluid-uploader-one" class="fluid-uploader infusion" method="get" enctype="multipart/form-data">
 		<div class="start">
 			<div class="fluid-uploader-queue-wrapper">
@@ -106,6 +110,9 @@
 			
 		</div>
 	</form>
+
+    </td><td>
+
  	<form id="fluid-uploader-two" class="fluid-uploader infusion" method="get" enctype="multipart/form-data">
 		<div class="start">
 			<div class="fluid-uploader-queue-wrapper">
@@ -157,6 +164,9 @@
 		</div>
 	</form>
 
+    </td>    
+    </tr>
+    </table>
 
 	<div class="fluid-templates">
 

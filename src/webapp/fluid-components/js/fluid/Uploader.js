@@ -149,7 +149,7 @@ var fluid = fluid || {};
 		
         // add remove action to the button
         $('#' + file.id, uploaderContainer).children(fragmentSelectors.qRowRemove).click(function(){
-            removeRow(uploaderContainer, fragmentSelectors, $(this).parents('tr'), swfObj, status, maxHeight);  
+            removeRow(uploaderContainer, fragmentSelectors, $(this).parents('#'+file.id), swfObj, status, maxHeight);  
         });
         
         // display the new row
