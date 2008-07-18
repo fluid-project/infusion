@@ -104,12 +104,14 @@ fluid = fluid || {};
         viewEl.click(editHandler(viewEl, editContainer, editField, styles.invitation, styles.focus, paddings, defaultViewText, selectOnEdit));
     }
     
-    function bindKeyHighlight(viewEl, focusStyle) {
+    function bindKeyHighlight(viewEl, focusStyle, invitationStyle) {
         var focusOn = function () {
-            viewEl.addClass(focusStyle);    
+            viewEl.addClass(focusStyle);
+            viewEl.addClass(invitationStyle); 
         };
         var focusOff = function () {
             viewEl.removeClass(focusStyle);
+            viewEl.removeClass(invitationStyle);
         };
         viewEl.focus(focusOn);
         viewEl.blur(focusOff);
@@ -117,7 +119,7 @@ fluid = fluid || {};
     
     function keyNav(viewEl, editContainer, editField, styles, paddings, defaultViewText, selectOnEdit) {
         viewEl.tabbable();
-        bindKeyHighlight(viewEl, styles.focus);
+        bindKeyHighlight(viewEl, styles.focus, styles.invitation);
         viewEl.activatable(editHandler(viewEl, editContainer, editField, styles.invitation, styles.focus, paddings, defaultViewText, selectOnEdit));
     } 
     
