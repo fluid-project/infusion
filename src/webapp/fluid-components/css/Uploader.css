@@ -459,3 +459,35 @@
 	background-position: bottom;
 	height: 100%;
 }
+
+/* extracted from style tag */
+
+.add-btn {
+	background: url(../images/add.png) no-repeat 3px 2px;
+	padding: 2px 2px 1px 21px;
+	font-size: 12px;
+	cursor: hand;
+}
+
+caption {
+	display: none;
+}
+
+#single-popup-fluid-uploader {
+	display: none;
+}
+
+
+.myAddButton {
+	background-color:#EBEBEB;
+	border:1px solid #CCCCCC;
+	padding:2px 5px;	
+}
+
+
+
+
+
+
+
+

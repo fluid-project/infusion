@@ -716,12 +716,21 @@ var fluid = fluid || {};
 	
  	var initDialog = function(uploaderContainer, addBtnSelector, browseOnInit, fileBrowseSelector) {
 		dialogObj = uploaderContainer.dialog(dialog_settings).css('display','block');
-		$(addBtnSelector).click(function(){
-			$(dialogObj).dialog("open");
+		
+		var clickBehaviour = function(){
+            // set timeout is required for keyboard a11y. Without it, the dialog does not appear.
+			setTimeout(function(){
+                $(dialogObj).dialog("open");
+            }, 0);
 			if (browseOnInit) {
 				$(fileBrowseSelector, uploaderContainer).click();
 			}
-		});
+		};
+
+		var addBtn = $(addBtnSelector);
+		addBtn.click(clickBehaviour);
+		addBtn.activatable(clickBehaviour);				
+									
 
 		return dialogObj;
 	};
@@ -895,8 +904,10 @@ var fluid = fluid || {};
         var activateBrowse = function () {
             return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
 		};
-        
-		$(uploader.fragmentSelectors.browse, uploaderContainer).click(activateBrowse).activatable(activateBrowse);
+        var browseButton = $(uploader.fragmentSelectors.browse, uploaderContainer);		
+		browseButton.click(activateBrowse);
+        browseButton.tabbable();
+		
         
 		// upload button
 		$(uploader.fragmentSelectors.upload, uploaderContainer).click(function(){

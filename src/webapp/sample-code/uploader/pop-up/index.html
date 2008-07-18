@@ -46,28 +46,11 @@
     	});
 		
 	</script>
-	<style type="text/css">
-		.add-btn {
-			background: url(../images/add.png) no-repeat 3px 2px;
-			padding: 2px 2px 1px 21px;
-			font-size: 12px;
-			cursor: hand;
-		}
-		
-		caption {
-			display: none;
-		}
-		
-		#single-popup-fluid-uploader {
-			display: none;
-		}
-			
-	</style>
 </head>
 <body>
 <div>
 	<h2>Fluid Multi-File Uploader Sample</h2>
-	<p>Imagine your application here with a nice little <button class="fluid-add-files-btn" type="button" tabindex="0" >Add Files</button> button.</p>
+	<p>Imagine your application here with a nice little <span class="fluid-add-files-btn myAddButton" type="button" tabindex="0" >Add Files</span> button.</p>
 	
 	<form id="single-popup-fluid-uploader" class="fluid-uploader infusion" method="get" enctype="multipart/form-data" action="">
 		<div class="start">
@@ -103,7 +86,7 @@
 						
 							<tr>
 								<td class="footer-total">Total: <span class="fluid-uploader-totalFiles">0</span> files (<span class="fluid-uploader-totalBytes">0 KB</span>)</td>
-								<td class="footer-button" align="right" ><a class="fluid-uploader-browse">Browse files</a></td>
+								<td class="footer-button" align="right" ><a href="#_bottom" class="fluid-uploader-browse">Browse files</a></td>
 							</tr>
 						
 					</table>
