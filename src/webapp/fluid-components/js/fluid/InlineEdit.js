@@ -21,6 +21,7 @@ fluid = fluid || {};
         var displayText = viewEl.text();
 		editField.val(displayText === defaultViewText ? "" : displayText);
 		editField.width(Math.max(viewEl.width() + paddings.edit, paddings.minimumEdit));
+
         viewEl.removeClass(invitationStyle);
         viewEl.removeClass(focusStyle);
         viewEl.hide();
@@ -29,11 +30,11 @@ fluid = fluid || {};
         // Work around for FLUID-726
         // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.       
         setTimeout(function () {
-            editField.focus();  
+            editField.focus();
             if (selectOnEdit) {
                 editField[0].select();
             }
-        }, 0);    
+        }, 0);  
     }
     
     function view(editContainer, viewEl) {
@@ -76,9 +77,8 @@ fluid = fluid || {};
         } else {
             showNothing(viewEl, paddings, originalViewPadding);
         }
-
+        
         view(editContainer, viewEl);
-        viewEl.focus();
     }
         
     function editHandler(viewEl, editContainer, editField, invitationStyle, focusStyle, paddings, defaultViewText, selectOnEdit) {
@@ -111,7 +111,6 @@ fluid = fluid || {};
         var focusOff = function () {
             viewEl.removeClass(focusStyle);
         };
-        
         viewEl.focus(focusOn);
         viewEl.blur(focusOff);
     }
@@ -131,6 +130,7 @@ fluid = fluid || {};
             }
             
             finish(editContainer, editField, viewEl, finishedFn, defaultViewText, defaultViewTextStyle, paddings, existingPadding);
+            viewEl.focus();  // Moved here from inside "finish" to fix FLUID-857
             return false;
         };
 
@@ -142,8 +142,7 @@ fluid = fluid || {};
             finish(editContainer, editField, viewEl, finishedFn, defaultViewText, defaultViewTextStyle, paddings, existingPadding);
             return false;
         };
-
-        editField.blur(blurHandler);        
+      editField.blur(blurHandler);
     }
     
     function aria(viewEl, editContainer) {
