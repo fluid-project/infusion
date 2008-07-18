@@ -3,6 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link href="announcements.css" type="text/css" rel="stylesheet" media="all" />
+    <link href="../../../fluid-components/css/jquery.tooltip.css" type="text/css" rel="stylesheet" media="all" />
 
     <title>Demonstration: Fluid Inline Edit in Sakai Announcements</title>
     <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
@@ -10,6 +11,7 @@
     <script type="text/javascript" src="../../../fluid-components/js/jquery/jARIA.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/InlineEdit.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.tooltip.js"></script>
 
   </head>
   <body class="portalBody">
@@ -32,10 +34,10 @@
 <div id="siteNavWrapper" class="undeterminedSiteType">
 	<div id="mastHead">
 		<div id="mastLogo">
-			<img title="Logo" alt="Logo" src="images/logo_inst.gif">
+			<img title="Logo" alt="Logo" src="images/logo_inst.gif"/>
 		</div>
 		<div id="mastBanner">
-			<img title="Banner" alt="Banner" src="images/banner_inst.gif">
+			<img title="Banner" alt="Banner" src="images/banner_inst.gif"/>
 		</div>
 		<div id="mastLogin">
 	<div id="loginLinks">
@@ -179,7 +181,7 @@
             <div class="navPanel">
                 <div class="viewNav">
                     <form name="viewForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
-                        <input name="eventSubmit_doView" value="view" type="hidden">
+                        <input name="eventSubmit_doView" value="view" type="hidden"/>
                         <label for="view">
                             View
                         </label>
@@ -195,13 +197,13 @@
                         Viewing 1 - 2 of  2 items
                     </div>
                     <form name="firstpageForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
-                        <input name="eventSubmit_doList_first" value="|&lt;" disabled="disabled" type="submit">
+                        <input name="eventSubmit_doList_first" value="|&lt;" disabled="disabled" type="submit"/>
                     </form>
                     <form name="prevpageForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
-                        <input name="eventSubmit_doList_prev" value="&lt;" disabled="disabled" type="submit">
+                        <input name="eventSubmit_doList_prev" value="&lt;" disabled="disabled" type="submit"/>
                     </form>
                     <form name="pagesizeForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
-                        <input name="eventSubmit_doChange_pagesize" value="changepagesize" type="hidden"><span class="skip">Press alt + up and down arrows to scroll through menu</span>
+                        <input name="eventSubmit_doChange_pagesize" value="changepagesize" type="hidden"/><span class="skip">Press alt + up and down arrows to scroll through menu</span>
                         <select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
                             <option value="5">show 5 items...</option>
                             <option value="10" selected="selected">show 10 items...</option>
@@ -212,10 +214,10 @@
                         </select>
                     </form>
                     <form name="nextpageForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
-                        <input name="eventSubmit_doList_next" value="&gt;" disabled="disabled" type="submit">
+                        <input name="eventSubmit_doList_next" value="&gt;" disabled="disabled" type="submit"/>
                     </form>
                     <form name="lastpageForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
-                        <input name="eventSubmit_doList_last" value="&gt;|" disabled="disabled" type="submit">
+                        <input name="eventSubmit_doList_last" value="&gt;|" disabled="disabled" type="submit"/>
                     </form>
                 </div>
             </div>
@@ -235,7 +237,7 @@
                                 <a href="#"title="Sort by audience">For</a>
                             </th>
                             <th id="date">
-                                <a href="#"title="Sort by date ascending">Date <img src="images/sortascending.gif" alt="Sort by date ascending" border="0"></a>
+                                <a href="#"title="Sort by date ascending">Date <img src="images/sortascending.gif" alt="Sort by date ascending" border="0"/></a>
                             </th>
                             <th class="screenOnly" id="checkbox">
                                 Remove?
@@ -264,7 +266,7 @@
                                 <label for="check-1" class="skip">
                                     Select to remove
                                 </label>
-                                <input title="Select to remove" id="check-1" name="selectedMembers" value="/announcement/msg/Test/main/855a683b-1bcc-4662-89c1-c8cd3e4cee11" type="checkbox">
+                                <input title="Select to remove" id="check-1" name="selectedMembers" value="/announcement/msg/Test/main/855a683b-1bcc-4662-89c1-c8cd3e4cee11" type="checkbox"/>
                             </td>
                         </tr>
                         <tr>
@@ -290,7 +292,7 @@
                                 <label for="check-2" class="skip">
                                     Select to remove
                                 </label>
-                                <input title="Select to remove" id="check-2" name="selectedMembers" value="/announcement/msg/Test/main/b8f4d602-56bd-4303-8900-e6b17a74eb3e" type="checkbox">
+                                <input title="Select to remove" id="check-2" name="selectedMembers" value="/announcement/msg/Test/main/b8f4d602-56bd-4303-8900-e6b17a74eb3e" type="checkbox"/>
                             </td>
                         </tr>
                         <tr>
@@ -316,17 +318,17 @@
                                 <label for="check-2" class="skip">
                                     Select to remove
                                 </label>
-                                <input title="Select to remove" id="check-2" name="selectedMembers" value="/announcement/msg/Test/main/b8f4d602-56bd-4303-8900-e6b17a74eb3e" type="checkbox">
+                                <input title="Select to remove" id="check-2" name="selectedMembers" value="/announcement/msg/Test/main/b8f4d602-56bd-4303-8900-e6b17a74eb3e" type="checkbox"/>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <p class="act">
-                    <input class="active" name="eventSubmit_doDeleteannouncement" value="Update" accesskey="s" type="submit"><input name="reset" id="reset" value="Cancel" accesskey="x" type="reset">
+                    <input class="active" name="eventSubmit_doDeleteannouncement" value="Update" accesskey="s" type="submit"><input name="reset" id="reset" value="Cancel" accesskey="x" type="reset"/>
                 </p>
 
                 <script type="text/javascript">
-                    fluid.inlineEdits("announcements");
+                    fluid.inlineEdits("announcements", {useTooltip: true});
                 </script>
 
             </form>
@@ -349,12 +351,12 @@
 	<div id="footerInfo">
 		<span class="skip">Opens in a new window</span>	
 		<a href="http://sakaiproject.org/" target="_blank">
-				<img src="images/sakai_powered.gif" alt="Powered by Sakai" border="0"></a>
+				<img src="images/sakai_powered.gif" alt="Powered by Sakai" border="0"/></a>
 	</div>
 	<div class="sakaiCopyrightInfo">Copyright
 2003-2006 The Sakai Foundation. All rights reserved. Portions of Sakai
 are copyrighted by other parties as described in the Acknowledgments
-screen.<br>
+screen.<br/>
 	Sakai Fluid Demonstration Site - dev - Sakai dev - Server localhost
 	</div>
 </div>

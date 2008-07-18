@@ -426,16 +426,16 @@ table.listHier td span {
 
 /* Fluid Inline Edit Styles */
 
-.invitation {
+.inlineEdit-invitation {
     background-color: #FFECB3 !important;
 	border: 1px solid #CCC !important;
 }
 
-.focus {
+.inlineEdit-focus {
     border: 2px solid #777777;
 }
 
-.invitation-text {
+.inlineEdit-invitation-text {
     color: #999999;
 }
 

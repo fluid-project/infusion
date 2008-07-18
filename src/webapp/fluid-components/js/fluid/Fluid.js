@@ -150,6 +150,20 @@ var fluid = fluid || {};
      */
     fluid.utils = {};
     
+    /** Returns the absolute position of a supplied DOM node in pixels.
+     * Implementation taken from quirksmode http://www.quirksmode.org/js/findpos.html
+     */
+    fluid.computeAbsolutePosition = function (element) {
+        var curleft = curtop = 0;
+        if (element.offsetParent) {
+            do {
+                curleft += element.offsetLeft;
+                curtop += element.offsetTop;
+                } while (element = element.offsetParent);
+            return [curleft, curtop];
+        }
+    }
+    
     // Custom query method seeks all tags descended from a given root with a 
     // particular tag name, whose id matches a regex. The Dojo query parser
     // is broken http://trac.dojotoolkit.org/ticket/3520#preview, this is all

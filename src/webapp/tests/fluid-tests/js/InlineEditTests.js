@@ -50,10 +50,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.viewEl[0].id);
             jqUnit.assertEquals("Edit container is set to", editContainer[0].id, inlineEditor.editContainer[0].id);
             jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
-            jqUnit.assertEquals("Focus style is default", fluid.inlineEditDefaults.styles.focus, inlineEditor.styles.focus);
-            jqUnit.assertEquals("Invitation style is default", fluid.inlineEditDefaults.styles.invitation, inlineEditor.styles.invitation);
-            jqUnit.assertEquals("Paddings add is default", fluid.inlineEditDefaults.paddings.add, inlineEditor.paddings.add);
-            jqUnit.assertEquals("Paddings minimum is default", fluid.inlineEditDefaults.paddings.minimum, inlineEditor.paddings.minimum);
+            jqUnit.assertEquals("Focus style is default", fluid.inlineEditDefaults.styles.focus, inlineEditor.options.styles.focus);
+            jqUnit.assertEquals("Invitation style is default", fluid.inlineEditDefaults.styles.invitation, inlineEditor.options.styles.invitation);
+            jqUnit.assertEquals("Paddings add is default", fluid.inlineEditDefaults.paddings.add, inlineEditor.options.paddings.add);
+            jqUnit.assertEquals("Paddings minimum is default", fluid.inlineEditDefaults.paddings.minimum, inlineEditor.options.paddings.minimum);
             jqUnit.isVisible("Display field is visible", "#display");
             jqUnit.notVisible("Edit field is hidden", "#edit-container");
         });
@@ -71,10 +71,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.viewEl[0].id);
             jqUnit.assertEquals("Edit container is set to", editContainer[0].id, inlineEditor.editContainer[0].id);
             jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
-            jqUnit.assertEquals("Focus style is custom", customOptions.styles.focus, inlineEditor.styles.focus);
-            jqUnit.assertEquals("Invitation style is custom", customOptions.styles.invitation, inlineEditor.styles.invitation);
-            jqUnit.assertEquals("Paddings add is set to", customOptions.paddings.add, inlineEditor.paddings.add);
-            jqUnit.assertEquals("Paddings minimum is set to", customOptions.paddings.minimum, inlineEditor.paddings.minimum);
+            jqUnit.assertEquals("Focus style is custom", customOptions.styles.focus, inlineEditor.options.styles.focus);
+            jqUnit.assertEquals("Invitation style is custom", customOptions.styles.invitation, inlineEditor.options.styles.invitation);
+            jqUnit.assertEquals("Paddings add is set to", customOptions.paddings.add, inlineEditor.options.paddings.add);
+            jqUnit.assertEquals("Paddings minimum is set to", customOptions.paddings.minimum, inlineEditor.options.paddings.minimum);
             jqUnit.isVisible("Display field is visible", "#display-custom");
             jqUnit.notVisible("Edit field is hidden", "#edit-container-custom");
         });
@@ -86,7 +86,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Before initialization of empty display, display is empty", "", display.text());
             var inlineEditor = fluid.inlineEdit("empty-inline-edit");
             jqUnit.assertEquals("After initialization of empty display, display has invitation text: ", fluid.inlineEditDefaults.defaultViewText, display.text());
-            jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.styles.defaultViewText));
+            jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewText));
     
             var testText = "This is test text.";
             var edit = $("#empty-inline-edit-edit");
@@ -95,13 +95,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             edit.attr("value", testText);
             inlineEditor.finish();
             jqUnit.assertEquals("After editing the field, display should have test text ", testText, display.text());
-            jqUnit.assertFalse("Test text shouldn't have invitation text style", display.hasClass(inlineEditor.styles.defaultViewText));
+            jqUnit.assertFalse("Test text shouldn't have invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewText));
     
             inlineEditor.edit();
             edit.attr("value", "");
             inlineEditor.finish();
             jqUnit.assertEquals("After clearing the field, display should have invitation text again: ", fluid.inlineEditDefaults.defaultViewText, display.text());
-            jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.styles.defaultViewText));
+            jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewText));
     
         });
         
@@ -174,10 +174,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var edit = $("#edit");
             var inlineEditor = fluid.inlineEdit("inline-edit");
             jqUnit.assertTrue("Display is tabbable", display.tabindex() >= 0);
-            jqUnit.assertFalse("Initially display field is not focussed", display.hasClass(inlineEditor.styles.focus));
+            jqUnit.assertFalse("Initially display field is not focussed", display.hasClass(inlineEditor.options.styles.focus));
     
             display.focus();
-            jqUnit.assertTrue("After focus, display is focussed", display.hasClass(inlineEditor.styles.focus));
+            jqUnit.assertTrue("After focus, display is focussed", display.hasClass(inlineEditor.options.styles.focus));
     
             display.simulate("keydown", {keyCode: $.a11y.keys.ENTER});
                 
@@ -190,12 +190,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             edit.simulate("keypress", {keyCode: $.a11y.keys.ENTER});
     
             jqUnit.isVisible("After changing text and pressing enter, display field is visible", "#display");
-            jqUnit.assertTrue("After changing text and pressing enter, display has focus style", display.hasClass(inlineEditor.styles.focus));
+            jqUnit.assertTrue("After changing text and pressing enter, display has focus style", display.hasClass(inlineEditor.options.styles.focus));
             jqUnit.notVisible("After changing text and pressing enter, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("After changing text and pressing enter, display field contains new text", testString, display.text());
     
             display.blur();
-            jqUnit.assertFalse("After blur, display field is not focussed", display.hasClass(inlineEditor.styles.focus));
+            jqUnit.assertFalse("After blur, display field is not focussed", display.hasClass(inlineEditor.options.styles.focus));
             
         });
         
@@ -205,13 +205,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var display = $("#display");
             var inlineEditor = fluid.inlineEdit("inline-edit");
     
-            jqUnit.assertFalse("Initially, display field does not have the invitation style", display.hasClass(inlineEditor.styles.invitation));
+            jqUnit.assertFalse("Initially, display field does not have the invitation style", display.hasClass(inlineEditor.options.styles.invitation));
     
             display.trigger("mouseenter");
-            jqUnit.assertTrue("During hover, display field has the invitation style", display.hasClass(inlineEditor.styles.invitation));
+            jqUnit.assertTrue("During hover, display field has the invitation style", display.hasClass(inlineEditor.options.styles.invitation));
     
             display.trigger("mouseleave");
-            jqUnit.assertFalse("After hover, display field does not have the invitation style", display.hasClass(inlineEditor.styles.invitation));
+            jqUnit.assertFalse("After hover, display field does not have the invitation style", display.hasClass(inlineEditor.options.styles.invitation));
         });
         
         inlineEditTests.test("Click", function () {

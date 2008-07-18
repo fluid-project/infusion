@@ -17,30 +17,32 @@ fluid = fluid || {};
 (function ($, fluid) {
     
     // Is paddings doing what we want? Should it be in the CSS file instead?
-    function edit(viewEl, editContainer, editField, invitationStyle, focusStyle, paddings, defaultViewText, selectOnEdit) {
+    function edit(that) {
+        var viewEl = that.viewEl;
+        var editField = that.editField;
         var displayText = viewEl.text();
-		editField.val(displayText === defaultViewText ? "" : displayText);
-		editField.width(Math.max(viewEl.width() + paddings.edit, paddings.minimumEdit));
+		editField.val(displayText === that.options.defaultViewText ? "" : displayText);
+		editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit));
 
-        viewEl.removeClass(invitationStyle);
-        viewEl.removeClass(focusStyle);
+        viewEl.removeClass(that.options.styles.invitationStyle);
+        viewEl.removeClass(that.options.styles.focusStyle);
         viewEl.hide();
-        editContainer.show();
+        that.editContainer.show();
+        if (that.tooltipEnabled()) {
+            $("#"+that.options.tooltipId).hide();
+        }
 
         // Work around for FLUID-726
         // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.       
         setTimeout(function () {
-            editField.focus();
-            if (selectOnEdit) {
-                editField[0].select();
+            that.editField.focus();
+            if (that.options.selectOnEdit) {
+                that.editField[0].select();
             }
-        }, 0);  
+        }, 0);
     }
     
-    function view(editContainer, viewEl) {
-        editContainer.hide();
-        viewEl.show();
-    }
+
 
     function clearEmptyViewStyles(textEl, defaultViewStyle, originalViewPadding) {
         textEl.removeClass(defaultViewStyle);
@@ -66,24 +68,27 @@ fluid = fluid || {};
             textEl.css('padding-right', paddings.minimumView);
         }
     }
-    
-    function finish(editContainer, editField, viewEl, finishedFn, defaultViewText, defaultViewStyle, paddings, originalViewPadding) {
-        finishedFn(editField[0], viewEl[0]);
-        var editVal = editField.val();
+
+    function finish(that) {
+        if (that.options.finishedEditing) {
+          that.options.finishedEditing(that.editField[0], that.viewEl[0]);
+        }
+        var editVal = that.editField.val();
         if (editVal) {
-            showEditedText(editVal, viewEl, defaultViewStyle, originalViewPadding);
-        } else if (defaultViewText){
-            showDefaultViewText(defaultViewText, viewEl, defaultViewStyle);
+            showEditedText(editVal, that.viewEl, that.options.defaultViewStyle, that.existingPadding);
+        } else if (that.options.defaultViewText) {
+            showDefaultViewText(that.options.defaultViewText, that.viewEl, that.options.styles.defaultViewText);
         } else {
-            showNothing(viewEl, paddings, originalViewPadding);
+            showNothing(that.viewEl, that.options.paddings, that.existingPadding);
         }
         
-        view(editContainer, viewEl);
+        that.editContainer.hide();
+        that.viewEl.show();
     }
         
-    function editHandler(viewEl, editContainer, editField, invitationStyle, focusStyle, paddings, defaultViewText, selectOnEdit) {
+    function makeEditHandler(that) {
         return function () {
-            edit(viewEl, editContainer, editField, invitationStyle, focusStyle, paddings, defaultViewText, selectOnEdit);
+            edit(that);
             return false;
         }; 
     }
@@ -99,9 +104,9 @@ fluid = fluid || {};
         viewEl.hover(over, out);
     }
     
-    function mouse(viewEl, editContainer, editField, styles, paddings, finishFn, defaultViewText, selectOnEdit) {
-        bindHoverHandlers(viewEl, styles.invitation);
-        viewEl.click(editHandler(viewEl, editContainer, editField, styles.invitation, styles.focus, paddings, defaultViewText, selectOnEdit));
+    function mouse(that) {
+        bindHoverHandlers(that.viewEl, that.options.styles.invitation);
+        that.viewEl.click(makeEditHandler(that));
     }
     
     function bindKeyHighlight(viewEl, focusStyle, invitationStyle) {
@@ -117,13 +122,13 @@ fluid = fluid || {};
         viewEl.blur(focusOff);
     }
     
-    function keyNav(viewEl, editContainer, editField, styles, paddings, defaultViewText, selectOnEdit) {
-        viewEl.tabbable();
-        bindKeyHighlight(viewEl, styles.focus, styles.invitation);
-        viewEl.activatable(editHandler(viewEl, editContainer, editField, styles.invitation, styles.focus, paddings, defaultViewText, selectOnEdit));
+    function keyNav(that) {
+        that.viewEl.tabbable();
+        bindKeyHighlight(that.viewEl, that.options.styles.focus, that.options.styles.invitation);
+        that.viewEl.activatable(makeEditHandler(that));
     } 
     
-    function bindEditFinish(editContainer, editField, viewEl, finishedFn, defaultViewText, defaultViewTextStyle, paddings, existingPadding) {
+    function bindEditFinish(that) {
         var finishHandler = function (evt) {
             // Fix for handling arrow key presses see FLUID-760
             var code = (evt.keyCode ? evt.keyCode : (evt.which ? evt.which : 0));
@@ -131,52 +136,46 @@ fluid = fluid || {};
                 return true;
             }
             
-            finish(editContainer, editField, viewEl, finishedFn, defaultViewText, defaultViewTextStyle, paddings, existingPadding);
-            viewEl.focus();  // Moved here from inside "finish" to fix FLUID-857
+            finish(that);
+            that.viewEl.focus();  // Moved here from inside "finish" to fix FLUID-857
             return false;
         };
-
-        editContainer.keypress(finishHandler);
+        that.editContainer.keypress(finishHandler);
     }
     
-    function bindBlurHandler(editContainer, editField, viewEl, finishedFn, defaultViewText, defaultViewTextStyle, paddings, existingPadding) {
+    function bindBlurHandler(that) {
         var blurHandler = function (evt) {
-            finish(editContainer, editField, viewEl, finishedFn, defaultViewText, defaultViewTextStyle, paddings, existingPadding);
+            finish(that);
             return false;
         };
-      editField.blur(blurHandler);
+      that.editField.blur(blurHandler);
     }
     
     function aria(viewEl, editContainer) {
         viewEl.ariaRole("button");
     }
     
-    var mixDefaults = function(instance, defaults, options) {
-        instance.selectors = $.extend({}, defaults.selectors, options.selectors);
-        instance.styles = $.extend({}, defaults.styles, options.styles);
-        instance.paddings = $.extend({}, defaults.paddings, options.paddings);
-        instance.finishedEditing = options.finishedEditing || function () {};
-        instance.editModeInjector = options.editModeInjector || defaults.editModeInjector;
-        
-        var useDefaultViewText = (options.useDefaultViewText !== undefined ? options.useDefaultViewText : defaults.useDefaultViewText);
-        instance.defaultViewText = useDefaultViewText ? (options.defaultViewText || defaults.defaultViewText) : null;
-    };
+    var mixDefaults = function(that, defaults, options) {
+        that.options = {};
+        $.extend(that.options, defaults);
+        $.extend(that.options, options);
+        };
     
-    var bindToDom = function (instance, container) {
+    var bindToDom = function (that, container) {
         // Bind to the DOM.
-        instance.container = fluid.container(container);
-        instance.viewEl = $(instance.selectors.text, instance.container);
+        that.container = fluid.container(container);
+        that.viewEl = $(that.options.selectors.text, that.container);
 
         // If an edit container is found in the markup, use it. Otherwise generate one based on the view text.
-        instance.editContainer = $(instance.selectors.editContainer, instance.container);
-        if (instance.editContainer.length >= 1) {
-            var isEditSameAsContainer = instance.editContainer.is(instance.selectors.edit);
-            var containerConstraint =  isEditSameAsContainer ? instance.container : instance.editContainer;
-            instance.editField =  $(instance.selectors.edit, containerConstraint);
+        that.editContainer = $(that.options.selectors.editContainer, that.container);
+        if (that.editContainer.length >= 1) {
+            var isEditSameAsContainer = that.editContainer.is(that.options.selectors.edit);
+            var containerConstraint =  isEditSameAsContainer ? that.container : that.editContainer;
+            that.editField =  $(that.options.selectors.edit, containerConstraint);
         } else {
-            var editElms = instance.editModeInjector(instance.container.attr("id"), instance.viewEl);
-            instance.editContainer = editElms.container;
-            instance.editField = editElms.field;
+            var editElms = that.options.editModeInjector(that.container.attr("id"), that.viewEl);
+            that.editContainer = editElms.container;
+            that.editField = editElms.field;
         }
     };
     
@@ -208,29 +207,32 @@ fluid = fluid || {};
         };
     };
     
-    var setupViewMode = function (instance) {
-        var displayText = instance.viewEl.text();
-        instance.existingPadding = parseFloat(instance.viewEl.css("padding-right"));
+    var setupViewMode = function (that) {
+        var displayText = that.viewEl.text();
+        that.existingPadding = parseFloat(that.viewEl.css("padding-right"));
         if (!displayText) {
-            if (instance.defaultViewText) {
-                showDefaultViewText(instance.defaultViewText, instance.viewEl, instance.styles.defaultViewText);
+            if (that.options.defaultViewText) {
+                showDefaultViewText(that.options.defaultViewText, that.viewEl, 
+                    that.options.styles.defaultViewText);
             } else {
-                showNothing(instance.viewEl, instance.paddings, instance.existingPadding);
+                showNothing(that.viewEl, that.options.paddings, that.existingPadding);
             }
         }
     };
     
     fluid.inlineEditDefaults = {
+        
         selectors: {
             text: ".text",
             editContainer: ".editContainer",
-            edit: ".edit"
+            edit: ".edit",
         },
         
         styles: {
-            invitation: "invitation",
-            defaultViewText: "invitation-text",
-            focus: "focus"
+            invitation: "inlineEdit-invitation",
+            defaultViewText: "inlineEdit-invitation-text",
+            tooltip: "inlineEdit-tooltip",
+            focus: "inlineEdit-focus"
         },
         
         paddings: {
@@ -245,6 +247,14 @@ fluid = fluid || {};
         
         useDefaultViewText: true,
         
+        tooltipText: "Click item to edit",
+        
+        tooltipId: "tooltip",
+        
+        useTooltip: false,
+        
+        tooltipDelay: 2000,
+        
         selectOnEdit: false
     };
     
@@ -255,40 +265,50 @@ fluid = fluid || {};
      * @param {Object} componentContainer a unique id, jquery, or a dom element representing the component's container
      * @param {Object} options a collection of options settings
      */
-    fluid.inlineEdit = function (componentContainer, options) {
+    fluid.inlineEdit = function (componentContainer, userOptions) {
         var that = {};
+        // Mix in the user's configuration options.
+        that.options = {};
+        $.extend(true, that.options, fluid.inlineEditDefaults);
+        if (userOptions) {
+          $.extend(true, that.options, userOptions);
+        }
+        if (!that.options.useDefaultViewText) {
+            that.options.defaultViewText = ""; // TODO: do we really want to support this?
+        }
         
         that.edit = function () {
-            edit(that.viewEl, that.editContainer, that.editField, that.styles.invitation, 
-            that.styles.focus, that.paddings, that.defaultViewText);
+            edit(that);
         };
         
         that.finish = function () {
-          finish(that.editContainer, that.editField, that.viewEl, that.finishedEditing, that.defaultViewText,
-               that.styles.defaultViewText, that.paddings, that.existingPadding);
-          };
-        
-        // Mix in the user's configuration options.
-        options = options || {};
-        mixDefaults(that, fluid.inlineEditDefaults, options);
+            finish(that);
+            };
+            
+        that.tooltipEnabled = function() {
+            return that.options.useTooltip && $.fn.tooltip;
+        }
+
         bindToDom(that, componentContainer);
         setupViewMode(that);
         
         // Add event handlers.
-        mouse(that.viewEl, that.editContainer, that.editField, that.styles, 
-          that.paddings, that.finishedEditing, that.defaultViewText, 
-              options.selectOnEdit);
-        keyNav(that.viewEl, that.editContainer, that.editField, that.styles, 
-          that.paddings, that.defaultViewText, options.selectOnEdit);
-        bindEditFinish(that.editContainer, that.editField, that.viewEl, 
-          that.finishedEditing, that.defaultViewText, 
-          that.styles.defaultViewText, that.paddings, that.existingPadding);
-        bindBlurHandler(that.editContainer, that.editField, that.viewEl, 
-          that.finishedEditing, that.defaultViewText, 
-          that.styles.defaultViewText, that.paddings, that.existingPadding);
+        mouse(that);
+        keyNav(that);
+        bindEditFinish(that);
+        bindBlurHandler(that);
         
         // Add ARIA support.
         aria(that.viewEl, that.editContainer);
+        // Add tooltip handler if required and available
+        if (that.tooltipEnabled()) {
+          $(componentContainer).tooltip({
+              delay: that.options.tooltipDelay,
+              extraClass: that.options.styles.tooltip,
+              bodyHandler: function () { return that.options.tooltipText; },
+              id: that.options.tooltipId
+          });
+        }
         
         // Hide the edit container to start
         that.editContainer.hide();
