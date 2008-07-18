@@ -220,46 +220,7 @@ fluid = fluid || {};
         }
     };
     
-    /**
-     * Instantiates a new Inline Edit component
-     * 
-     * @param {Object} componentContainer a unique id, jquery, or a dom element representing the component's container
-     * @param {Object} options a collection of options settings
-     */
-    fluid.InlineEdit = function (componentContainer, options) {
-        // Mix in the user's configuration options.
-        options = options || {};
-        mixDefaults(this, this.defaults, options);
-        bindToDom(this, componentContainer);
-        setupViewMode(this);
-        
-        // Add event handlers.
-        mouse(this.viewEl, this.editContainer, this.editField, this.styles, this.paddings, this.finishedEditing, this.defaultViewText, 
-              options.selectOnEdit);
-        keyNav(this.viewEl, this.editContainer, this.editField, this.styles, this.paddings, this.defaultViewText, 
-               options.selectOnEdit);
-        bindEditFinish(this.editContainer, this.editField, this.viewEl, this.finishedEditing, this.defaultViewText, 
-                       this.styles.defaultViewText, this.paddings, this.existingPadding);
-        bindBlurHandler(this.editContainer, this.editField, this.viewEl, this.finishedEditing, this.defaultViewText, 
-                        this.styles.defaultViewText, this.paddings, this.existingPadding);
-        
-        // Add ARIA support.
-        aria(this.viewEl, this.editContainer);
-        
-        // Hide the edit container to start
-        this.editContainer.hide();
-    };
-    
-    fluid.InlineEdit.prototype.edit = function () {
-        edit(this.viewEl, this.editContainer, this.editField, this.styles.invitation, this.styles.focus, this.paddings, this.defaultViewText);
-    };
-    
-    fluid.InlineEdit.prototype.finish = function () {
-        finish(this.editContainer, this.editField, this.viewEl, this.finishedEditing, this.defaultViewText,
-               this.styles.defaultViewText, this.paddings, this.existingPadding);
-    };
-    
-    fluid.InlineEdit.prototype.defaults = {
+    fluid.inlineEditDefaults = {
         selectors: {
             text: ".text",
             editContainer: ".editContainer",
@@ -271,7 +232,7 @@ fluid = fluid || {};
             defaultViewText: "invitation-text",
             focus: "focus"
         },
-		
+        
         paddings: {
             edit: 10,
             minimumEdit: 80,
@@ -287,13 +248,60 @@ fluid = fluid || {};
         selectOnEdit: false
     };
     
+    
+    /**
+     * Instantiates a new Inline Edit component
+     * 
+     * @param {Object} componentContainer a unique id, jquery, or a dom element representing the component's container
+     * @param {Object} options a collection of options settings
+     */
+    fluid.inlineEdit = function (componentContainer, options) {
+        var that = {};
+        
+        that.edit = function () {
+            edit(that.viewEl, that.editContainer, that.editField, that.styles.invitation, 
+            that.styles.focus, that.paddings, that.defaultViewText);
+        };
+        
+        that.finish = function () {
+          finish(that.editContainer, that.editField, that.viewEl, that.finishedEditing, that.defaultViewText,
+               that.styles.defaultViewText, that.paddings, that.existingPadding);
+          };
+        
+        // Mix in the user's configuration options.
+        options = options || {};
+        mixDefaults(that, fluid.inlineEditDefaults, options);
+        bindToDom(that, componentContainer);
+        setupViewMode(that);
+        
+        // Add event handlers.
+        mouse(that.viewEl, that.editContainer, that.editField, that.styles, 
+          that.paddings, that.finishedEditing, that.defaultViewText, 
+              options.selectOnEdit);
+        keyNav(that.viewEl, that.editContainer, that.editField, that.styles, 
+          that.paddings, that.defaultViewText, options.selectOnEdit);
+        bindEditFinish(that.editContainer, that.editField, that.viewEl, 
+          that.finishedEditing, that.defaultViewText, 
+          that.styles.defaultViewText, that.paddings, that.existingPadding);
+        bindBlurHandler(that.editContainer, that.editField, that.viewEl, 
+          that.finishedEditing, that.defaultViewText, 
+          that.styles.defaultViewText, that.paddings, that.existingPadding);
+        
+        // Add ARIA support.
+        aria(that.viewEl, that.editContainer);
+        
+        // Hide the edit container to start
+        that.editContainer.hide();
+        return that;
+    };
+    
     /**
      * A set of inline edit fields.
      */
     var setupInlineEdits = function  (editables, options) {
         var editors = [];
         editables.each(function (idx, editable) {
-            editors.push(new fluid.InlineEdit(jQuery(editable), options));
+            editors.push(fluid.inlineEdit(jQuery(editable), options));
         });
         
         return editors;

@@ -61,14 +61,14 @@
         </p>
 
         <script type="text/javascript">
-            new fluid.InlineEdit("inline-edit1");
-            new fluid.InlineEdit(jQuery("#inline-edit2"));
-            new fluid.InlineEdit(document.getElementById("inline-edit3"));
-            new fluid.InlineEdit("inline-edit4");
-            new fluid.InlineEdit("inline-edit5");
-            new fluid.InlineEdit("inline-edit6", {defaultViewText: "Go ahead, try it - click on me..."});
+            fluid.inlineEdit("inline-edit1");
+            fluid.inlineEdit(jQuery("#inline-edit2"));
+            fluid.inlineEdit(document.getElementById("inline-edit3"));
+            fluid.inlineEdit("inline-edit4");
+            fluid.inlineEdit("inline-edit5");
+            fluid.inlineEdit("inline-edit6", {defaultViewText: "Go ahead, try it - click on me..."});
             fluid.inlineEdits("multiple-edits", {selectOnEdit:true});
-            new fluid.InlineEdit("inline-edit7", {useDefaultViewText: false});
+            fluid.inlineEdit("inline-edit7", {useDefaultViewText: false});
         </script>
 	</body>
 </html>

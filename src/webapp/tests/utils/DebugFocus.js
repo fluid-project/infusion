@@ -7,7 +7,7 @@ fluid.debug = function () {
 
     var outputEventDetails = function (eventType, event, caughtBy) {
         if (typeof console !== 'undefined') {
-            console.debug (eventType + " was called on target " + printId (event.target) + ", caught by " + printId (caughtBy));
+            console.debug (new Date() + " " + eventType + " was called on target " + printId (event.target) + ", caught by " + printId (caughtBy));
         }
     };
 
