@@ -283,6 +283,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("Blur saves the edit", edit.text() === display.text());
         });
         
+        inlineEditTests.test("ARIA", function () {
+            jqUnit.expect(2);
+
+            var display = $("#display");
+            jqUnit.assertFalse("Before initialization, display should have no role.", display.ariaRole());
+            var inlineEditor = new fluid.InlineEdit("inline-edit");
+            jqUnit.assertEquals("After initialization, display role should be ", "button", display.ariaRole());
+            
+        });
+        
         // Multiple Inline Editors tests
         (function () {
             var inlineEditsSel = "form.inlineEditable";

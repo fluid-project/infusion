@@ -147,7 +147,7 @@ fluid = fluid || {};
     }
     
     function aria(viewEl, editContainer) {
-        // Need to add ARIA roles and states.
+        viewEl.ariaRole("button");
     }
     
     var mixDefaults = function(instance, defaults, options) {
