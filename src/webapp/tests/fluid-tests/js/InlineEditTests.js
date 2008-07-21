@@ -123,7 +123,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("Before initialization, display is empty", display.text());
             jqUnit.assertFalse("The display field has no padding.", display.css("padding"));
     
-            var inlineEditor = fluid.inlineEdit("empty-inline-edit", {useDefaultViewText: false});
+            var inlineEditor = fluid.inlineEdit("empty-inline-edit", {defaultViewText: ""});
             jqUnit.assertEquals("After initialization, display is still empty", "", display.text());
             jqUnit.assertEquals("The display field padding is ", fluid.defaults("inlineEdit").paddings.minimumView, parseFloat(display.css("padding-right")));
     

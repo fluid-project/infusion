@@ -24,8 +24,8 @@ fluid = fluid || {};
 		editField.val(displayText === that.options.defaultViewText ? "" : displayText);
 		editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit));
 
-        viewEl.removeClass(that.options.styles.invitationStyle);
-        viewEl.removeClass(that.options.styles.focusStyle);
+        viewEl.removeClass(that.options.styles.invitation);
+        viewEl.removeClass(that.options.styles.focus);
         viewEl.hide();
         that.editContainer.show();
         if (that.tooltipEnabled()) {
@@ -244,8 +244,6 @@ fluid = fluid || {};
         
         defaultViewText: "Click here to edit",
         
-        useDefaultViewText: true,
-        
         tooltipText: "Click item to edit",
         
         tooltipId: "tooltip",
@@ -298,10 +296,7 @@ fluid = fluid || {};
         if (userOptions) {
           $.extend(true, that.options, userOptions);
         }
-        if (!that.options.useDefaultViewText) {
-            that.options.defaultViewText = "";
-        }
-        
+       
         that.edit = function () {
             edit(that);
         };
