@@ -5,9 +5,11 @@
 		<title>Inline Edit Manual Test Page</title>
         
         <link rel="stylesheet" href="InlineEdit.css" type="text/css" media="screen" charset="utf-8" />
+        <link href="../../../../fluid-components/css/jquery.tooltip.css" type="text/css" rel="stylesheet" media="all" />
         
         <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
         <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery.tooltip.js"></script>
         <script type="text/javascript" src="../../../../fluid-components/js/jquery/jARIA.js"></script>
 	    <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
         <script type="text/javascript" src="../../../../fluid-components/js/fluid/InlineEdit.js"></script>
@@ -60,6 +62,14 @@
             This text is after the inline edit.
         </p>
 
+	    <p id="inline-edit8">
+            <span class="text" id="text8">This text has a tooltip with the default text.</span>
+        </p>
+
+	    <p id="inline-edit9">
+           <span class="text" id="text9">This text has a tooltip with custom text.</span>
+        </div>
+
         <script type="text/javascript">
             fluid.inlineEdit("inline-edit1");
             fluid.inlineEdit(jQuery("#inline-edit2"));
@@ -68,7 +78,9 @@
             fluid.inlineEdit("inline-edit5");
             fluid.inlineEdit("inline-edit6", {defaultViewText: "Go ahead, try it - click on me..."});
             fluid.inlineEdits("multiple-edits", {selectOnEdit:true});
-            fluid.inlineEdit("inline-edit7", {useDefaultViewText: false});
+            fluid.inlineEdit("inline-edit7", {defaultViewText: false});
+            fluid.inlineEdit("inline-edit8", {useTooltip: true});
+            fluid.inlineEdit("inline-edit9", {useTooltip: true, tooltipText:"Go on, I dares ya - click on it..."});
         </script>
 	</body>
 </html>
