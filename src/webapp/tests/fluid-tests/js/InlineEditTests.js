@@ -50,10 +50,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.viewEl[0].id);
             jqUnit.assertEquals("Edit container is set to", editContainer[0].id, inlineEditor.editContainer[0].id);
             jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
-            jqUnit.assertEquals("Focus style is default", fluid.inlineEditDefaults.styles.focus, inlineEditor.options.styles.focus);
-            jqUnit.assertEquals("Invitation style is default", fluid.inlineEditDefaults.styles.invitation, inlineEditor.options.styles.invitation);
-            jqUnit.assertEquals("Paddings add is default", fluid.inlineEditDefaults.paddings.add, inlineEditor.options.paddings.add);
-            jqUnit.assertEquals("Paddings minimum is default", fluid.inlineEditDefaults.paddings.minimum, inlineEditor.options.paddings.minimum);
+            jqUnit.assertEquals("Focus style is default", fluid.defaults("inlineEdit").styles.focus, inlineEditor.options.styles.focus);
+            jqUnit.assertEquals("Invitation style is default", fluid.defaults("inlineEdit").styles.invitation, inlineEditor.options.styles.invitation);
+            jqUnit.assertEquals("Paddings add is default", fluid.defaults("inlineEdit").paddings.add, inlineEditor.options.paddings.add);
+            jqUnit.assertEquals("Paddings minimum is default", fluid.defaults("inlineEdit").paddings.minimum, inlineEditor.options.paddings.minimum);
             jqUnit.isVisible("Display field is visible", "#display");
             jqUnit.notVisible("Edit field is hidden", "#edit-container");
         });
@@ -85,7 +85,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var display = $("#empty-display");
             jqUnit.assertEquals("Before initialization of empty display, display is empty", "", display.text());
             var inlineEditor = fluid.inlineEdit("empty-inline-edit");
-            jqUnit.assertEquals("After initialization of empty display, display has invitation text: ", fluid.inlineEditDefaults.defaultViewText, display.text());
+            jqUnit.assertEquals("After initialization of empty display, display has invitation text: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
             jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewText));
     
             var testText = "This is test text.";
@@ -100,7 +100,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             inlineEditor.edit();
             edit.attr("value", "");
             inlineEditor.finish();
-            jqUnit.assertEquals("After clearing the field, display should have invitation text again: ", fluid.inlineEditDefaults.defaultViewText, display.text());
+            jqUnit.assertEquals("After clearing the field, display should have invitation text again: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
             jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewText));
     
         });
@@ -125,7 +125,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             var inlineEditor = fluid.inlineEdit("empty-inline-edit", {useDefaultViewText: false});
             jqUnit.assertEquals("After initialization, display is still empty", "", display.text());
-            jqUnit.assertEquals("The display field padding is ", fluid.inlineEditDefaults.paddings.minimumView, parseFloat(display.css("padding-right")));
+            jqUnit.assertEquals("The display field padding is ", fluid.defaults("inlineEdit").paddings.minimumView, parseFloat(display.css("padding-right")));
     
             var testText = "This is test text that is a bit long.";
             var edit = $("#empty-inline-edit-edit");
@@ -141,7 +141,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             edit.attr("value", "");
             inlineEditor.finish();
             jqUnit.assertEquals("After clearing the field, display should be empty again: ", "", display.text());
-            jqUnit.assertEquals("The display field padding is ", fluid.inlineEditDefaults.paddings.minimumView, parseFloat(display.css("padding-right")));
+            jqUnit.assertEquals("The display field padding is ", fluid.defaults("inlineEdit").paddings.minimumView, parseFloat(display.css("padding-right")));
         });
         
         inlineEditTests.test("Edit-Finish", function () {

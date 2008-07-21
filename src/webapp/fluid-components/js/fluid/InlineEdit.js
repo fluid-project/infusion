@@ -159,7 +159,7 @@ fluid = fluid || {};
         that.options = {};
         $.extend(that.options, defaults);
         $.extend(that.options, options);
-        };
+    };
     
     var bindToDom = function (that, container) {
         // Bind to the DOM.
@@ -220,12 +220,11 @@ fluid = fluid || {};
         }
     };
     
-    fluid.inlineEditDefaults = {
-        
+    fluid.defaults("inlineEdit", {  
         selectors: {
             text: ".text",
             editContainer: ".editContainer",
-            edit: ".edit",
+            edit: ".edit"
         },
         
         styles: {
@@ -256,39 +255,9 @@ fluid = fluid || {};
         tooltipDelay: 2000,
         
         selectOnEdit: false
-    };
+    });
     
-    
-    /**
-     * Instantiates a new Inline Edit component
-     * 
-     * @param {Object} componentContainer a unique id, jquery, or a dom element representing the component's container
-     * @param {Object} options a collection of options settings
-     */
-    fluid.inlineEdit = function (componentContainer, userOptions) {
-        var that = {};
-        // Mix in the user's configuration options.
-        that.options = {};
-        $.extend(true, that.options, fluid.inlineEditDefaults);
-        if (userOptions) {
-          $.extend(true, that.options, userOptions);
-        }
-        if (!that.options.useDefaultViewText) {
-            that.options.defaultViewText = ""; // TODO: do we really want to support this?
-        }
-        
-        that.edit = function () {
-            edit(that);
-        };
-        
-        that.finish = function () {
-            finish(that);
-            };
-            
-        that.tooltipEnabled = function() {
-            return that.options.useTooltip && $.fn.tooltip;
-        }
-
+    var setupInlineEdit = function (componentContainer, that) {
         bindToDom(that, componentContainer);
         setupViewMode(that);
         
@@ -300,6 +269,7 @@ fluid = fluid || {};
         
         // Add ARIA support.
         aria(that.viewEl, that.editContainer);
+        
         // Add tooltip handler if required and available
         if (that.tooltipEnabled()) {
           $(componentContainer).tooltip({
@@ -312,6 +282,40 @@ fluid = fluid || {};
         
         // Hide the edit container to start
         that.editContainer.hide();
+    };
+    
+    /**
+     * Instantiates a new Inline Edit component
+     * 
+     * @param {Object} componentContainer a unique id, jquery, or a dom element representing the component's container
+     * @param {Object} options a collection of options settings
+     */
+    fluid.inlineEdit = function (componentContainer, userOptions) {
+        var that = {};
+        // Mix in the user's configuration options.
+        that.options = {};
+        $.extend(true, that.options, fluid.defaults("inlineEdit"));
+        if (userOptions) {
+          $.extend(true, that.options, userOptions);
+        }
+        if (!that.options.useDefaultViewText) {
+            that.options.defaultViewText = "";
+        }
+        
+        that.edit = function () {
+            edit(that);
+        };
+        
+        that.finish = function () {
+            finish(that);
+        };
+            
+        that.tooltipEnabled = function() {
+            return that.options.useTooltip && $.fn.tooltip;
+        };
+
+        setupInlineEdit(componentContainer, that);
+        
         return that;
     };
     
@@ -328,13 +332,12 @@ fluid = fluid || {};
     };
 
     fluid.inlineEdits = function (componentContainerId, options) {
-        var that = {};
         options = options || {};
-        that.selectors = $.extend({}, fluid.defaults("inlineEdits").selectors, options.selectors);
+        var selectors = $.extend({}, fluid.defaults("inlineEdits").selectors, options.selectors);
         
         // Bind to the DOM.
         var container = fluid.utils.jById(componentContainerId);
-        var editables = $(that.selectors.editables, container);
+        var editables = $(selectors.editables, container);
         
         return setupInlineEdits(editables, options);
     };
