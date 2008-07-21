@@ -8,6 +8,9 @@ form, #inline-edit4 {
 
 .inlineEdit-invitation {
     background-color: #FFECB3;
+        /* See http://www.quirksmode.org/css/cursor.html#note for cross-platform recommendation */
+    cursor: pointer;
+    cursor: hand;
 }
 
 .inlineEdit-invitation-text {

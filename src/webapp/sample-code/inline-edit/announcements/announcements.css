@@ -429,6 +429,9 @@ table.listHier td span {
 .inlineEdit-invitation {
     background-color: #FFECB3 !important;
 	border: 1px solid #CCC !important;
+	/* See http://www.quirksmode.org/css/cursor.html#note for cross-platform recommendation */
+	cursor: pointer;
+    cursor: hand;
 }
 
 .inlineEdit-focus {
