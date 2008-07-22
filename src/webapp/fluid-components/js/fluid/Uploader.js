@@ -61,7 +61,7 @@ var fluid = fluid || {};
 		qRowTemplate: '#queue-row-tmplt',
 		qRowFileName: '.fileName',
 		qRowFileSize: '.fileSize',
-		qRowRemove: '.fileRemove',
+		qRowRemove: '.removeFile',
 		fileProgressor: '.file-progress',
 		fileProgressText: ".file-progress-text",
 		totalProgressor: '.total-progress',
@@ -148,7 +148,7 @@ var fluid = fluid || {};
 		$(fragmentSelectors.fileQueue, uploaderContainer).append(newQueueRow);
 		
         // add remove action to the button
-        $('#' + file.id, uploaderContainer).children(fragmentSelectors.qRowRemove).click(function(){
+        $('#' + file.id, uploaderContainer).find(fragmentSelectors.qRowRemove).click(function(){
             removeRow(uploaderContainer, fragmentSelectors, $(this).parents('#'+file.id), swfObj, status, maxHeight);  
         });
         
@@ -304,6 +304,11 @@ var fluid = fluid || {};
 		
 		// remove click event on Remove button
 		$(row).find(removeBtnSelector).unbind('click');
+		
+		// remove the state on the Remove button
+		
+		// remove the tabFocus on the Remove button
+		$(row).find(removeBtnSelector).tabindex(-1);
 		
 		// add text status
 		$(row).find(fileStatusSelector).attr('title',stateMessage);
