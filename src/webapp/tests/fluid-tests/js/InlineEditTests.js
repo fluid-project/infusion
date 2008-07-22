@@ -44,7 +44,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var display = $("#display");
             var editContainer = $("#edit-container");
             var editField = $("#edit");
-            var inlineEditor = fluid.inlineEdit("inline-edit");
+            var inlineEditor = fluid.inlineEdit("#inline-edit");
     
             jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
             jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.viewEl[0].id);
@@ -65,7 +65,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var display = $("#display-custom");
             var editContainer = $("#edit-container-custom");
             var editField = $("#edit-custom");
-            var inlineEditor = fluid.inlineEdit("inline-edit-custom", customOptions);
+            var inlineEditor = fluid.inlineEdit("#inline-edit-custom", customOptions);
     
             jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
             jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.viewEl[0].id);
@@ -84,7 +84,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             var display = $("#empty-display");
             jqUnit.assertEquals("Before initialization of empty display, display is empty", "", display.text());
-            var inlineEditor = fluid.inlineEdit("empty-inline-edit");
+            var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
             jqUnit.assertEquals("After initialization of empty display, display has invitation text: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
             jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewText));
     
@@ -112,7 +112,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var customInvitation = "This is custom invitation text";
             jqUnit.assertEquals("Before initialization, display is empty", "", display.text());
     
-            var inlineEditor = fluid.inlineEdit("empty-inline-edit", {defaultViewText: customInvitation});
+            var inlineEditor = fluid.inlineEdit("#empty-inline-edit", {defaultViewText: customInvitation});
             jqUnit.assertEquals("After initialization, display has custom invitation text.", customInvitation, display.text());
         });
         
@@ -123,7 +123,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("Before initialization, display is empty", display.text());
             jqUnit.assertFalse("The display field has no padding.", display.css("padding"));
     
-            var inlineEditor = fluid.inlineEdit("empty-inline-edit", {defaultViewText: ""});
+            var inlineEditor = fluid.inlineEdit("#empty-inline-edit", {defaultViewText: ""});
             jqUnit.assertEquals("After initialization, display is still empty", "", display.text());
             jqUnit.assertEquals("The display field padding is ", fluid.defaults("inlineEdit").paddings.minimumView, parseFloat(display.css("padding-right")));
     
@@ -149,7 +149,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             var display = $("#display");
             var edit = $("#edit");
-            var inlineEditor = fluid.inlineEdit("inline-edit");
+            var inlineEditor = fluid.inlineEdit("#inline-edit");
             
             jqUnit.isVisible("Initially display field is visible", "#display");
             jqUnit.notVisible("Initially edit field is hidden", "#edit-container");
@@ -172,7 +172,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             var display = $("#display");
             var edit = $("#edit");
-            var inlineEditor = fluid.inlineEdit("inline-edit");
+            var inlineEditor = fluid.inlineEdit("#inline-edit");
             jqUnit.assertTrue("Display is tabbable", display.tabindex() >= 0);
             jqUnit.assertFalse("Initially display field is not focussed", display.hasClass(inlineEditor.options.styles.focus));
     
@@ -203,7 +203,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.expect(3);
     
             var display = $("#display");
-            var inlineEditor = fluid.inlineEdit("inline-edit");
+            var inlineEditor = fluid.inlineEdit("#inline-edit");
     
             jqUnit.assertFalse("Initially, display field does not have the invitation style", display.hasClass(inlineEditor.options.styles.invitation));
     
@@ -219,7 +219,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             var display = $("#display");
             var edit = $("#edit");
-            var inlineEditor = fluid.inlineEdit("inline-edit");
+            var inlineEditor = fluid.inlineEdit("#inline-edit");
     
             jqUnit.isVisible("Initially, display field is visible", "#display");
             jqUnit.notVisible("Initially, edit field is hidden", "#edit-container");
@@ -235,7 +235,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             var display = $("#display");
             var edit = $("#edit");
-            var inlineEditor = fluid.inlineEdit("inline-edit");
+            var inlineEditor = fluid.inlineEdit("#inline-edit");
     
             display.focus();
             display.simulate("keydown", {keyCode: $.a11y.keys.ENTER});
@@ -259,7 +259,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     fluid.finishedEditingCallbackCalled = true;
                 }
             };
-            var inlineEditor = fluid.inlineEdit("inline-edit", options);
+            var inlineEditor = fluid.inlineEdit("#inline-edit", options);
             jqUnit.assertFalse("Initially, callback has not been called", fluid.finishedEditingCallbackCalled);
             inlineEditor.finish();
             jqUnit.assertTrue("Callback was called", fluid.finishedEditingCallbackCalled);
@@ -270,7 +270,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             var display = $("#display");
             var edit = $("#edit");
-            var inlineEditor = fluid.inlineEdit("inline-edit");
+            var inlineEditor = fluid.inlineEdit("#inline-edit");
     
             display.click();
             jqUnit.isVisible("Edit field is visible", "#edit-container");
@@ -288,7 +288,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
             var display = $("#display");
             jqUnit.assertFalse("Before initialization, display should have no role.", display.ariaRole());
-            var inlineEditor = fluid.inlineEdit("inline-edit");
+            var inlineEditor = fluid.inlineEdit("#inline-edit");
             jqUnit.assertEquals("After initialization, display role should be ", "button", display.ariaRole());
             
         });
@@ -389,7 +389,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             var selfRenderingInlineEdit = function () {        
                 // Fire off an inline edit against a container which does not contain an edit form.
-                return fluid.inlineEdit(containerId);
+                return fluid.inlineEdit(fluid.utils.jById(containerId));
             };
             
             inlineEditTests.test("Self-rendering edit mode: instantiation", function () {

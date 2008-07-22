@@ -111,9 +111,8 @@ var fluid = fluid || {};
      * @return a single-element jQuery of container
      */
     fluid.container = function (container) {
-        if (!container.jquery && (typeof container === "string")) {
-            container = fluid.utils.jById(container);
-        } else if (container.nodeType && (container.nodeType === 1  || container.nodeType === 9)) {
+        if (typeof container === "string" || 
+          container.nodeType && (container.nodeType === 1  || container.nodeType === 9)) {
             container = jQuery(container);
         }
         

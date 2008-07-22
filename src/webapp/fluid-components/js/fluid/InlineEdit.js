@@ -285,7 +285,7 @@ fluid = fluid || {};
     /**
      * Instantiates a new Inline Edit component
      * 
-     * @param {Object} componentContainer a unique id, jquery, or a dom element representing the component's container
+     * @param {Object} componentContainer a selector, jquery, or a dom element representing the component's container
      * @param {Object} options a collection of options settings
      */
     fluid.inlineEdit = function (componentContainer, userOptions) {
@@ -317,7 +317,7 @@ fluid = fluid || {};
     /**
      * A set of inline edit fields.
      */
-    var setupInlineEdits = function  (editables, options) {
+    var setupInlineEdits = function (editables, options) {
         var editors = [];
         editables.each(function (idx, editable) {
             editors.push(fluid.inlineEdit(jQuery(editable), options));
@@ -326,12 +326,12 @@ fluid = fluid || {};
         return editors;
     };
 
-    fluid.inlineEdits = function (componentContainerId, options) {
+    fluid.inlineEdits = function (componentContainer, options) {
         options = options || {};
         var selectors = $.extend({}, fluid.defaults("inlineEdits").selectors, options.selectors);
         
         // Bind to the DOM.
-        var container = fluid.utils.jById(componentContainerId);
+        var container = fluid.container(componentContainer);
         var editables = $(selectors.editables, container);
         
         return setupInlineEdits(editables, options);

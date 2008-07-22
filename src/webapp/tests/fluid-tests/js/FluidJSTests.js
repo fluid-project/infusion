@@ -240,11 +240,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         fluidJSTests.test("Container: bind to an id", function () {
             // Give it a valid id string.
-            var result = fluid.container("main");
-            jqUnit.assertTrue("One element should be returned when specifying a container id",
+            var result = fluid.container("#main");
+            jqUnit.assertTrue("One element should be returned when specifying a selector",
                               1, result.length);
           
-            // Now try with a invalid string... a CSS selector. container() should only accept ids and single-member jQueries            
+            // Now try with a invalid string... a CSS selector matching two elements
             try {
                 result = fluid.container(".container");
                 jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
