@@ -23,8 +23,8 @@
         var flashURL = "../../../../fluid-components/swfupload/swfupload_f9.swf";
         
 		var settings =   {
-			whenDone: "index.html",
-			whenCancel: "index.html",
+			whenDone: function(){ alert("you've clicked Done for this uploader");},
+			whenCancel: function(){ alert("you've clicked Done for this uploader");},
 			continueAfterUpload: false,
 			debug: false
 		};
