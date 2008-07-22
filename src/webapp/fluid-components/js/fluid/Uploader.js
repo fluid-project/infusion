@@ -105,7 +105,7 @@ var fluid = fluid || {};
 		width: 482,
 		height: '', // left empty so that the dialog will auto-resize
 		draggable: true, 
-		modal: true, 
+		modal: false, 
 		resizable: false,
 		autoOpen: false
 	};
