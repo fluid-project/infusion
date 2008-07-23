@@ -135,7 +135,7 @@ var fluid = fluid || {};
         // update the file size
         $(newQueueRow).children(fragmentSelectors.qRowFileSize).text(fluid.utils.filesizeStr(file.size));
         // update the file id and add the hover action
-        newQueueRow.attr('id',file.id).css('display','none').addClass("ready row").hover(function(){
+        newQueueRow.attr('id', file.id).css('display','none').addClass("ready row").hover(function(){
             if ($(this).hasClass('ready') && !$(this).hasClass('uploading')) {
                 $(this).addClass('hover');
             }
@@ -147,11 +147,17 @@ var fluid = fluid || {};
         // insert the new row into the file queue
         $(fragmentSelectors.fileQueue, uploaderContainer).append(newQueueRow);
         
-        // add remove action to the button
-        $('#' + file.id, uploaderContainer).find(fragmentSelectors.qRowRemove).click(function(){
-            removeRow(uploaderContainer, fragmentSelectors, $(this).parents('#'+file.id), swfObj, status, maxHeight);  
-        });
+        var removeThisRow = function() {
+            removeRow(uploaderContainer, fragmentSelectors, newQueueRow, swfObj, status, maxHeight);
+            };
         
+        // add remove action to the button
+        $('#' + file.id, uploaderContainer).find(fragmentSelectors.qRowRemove).click(removeThisRow);
+
+        newQueueRow.activatable(null, {additionalBindings: [
+          {key: $.a11y.keys.DELETE, activateHandler: removeThisRow}
+        ]});
+        updateSelectable(uploaderContainer);
         // display the new row
         $('#' + file.id, uploaderContainer).fadeIn('slow');
     };
@@ -178,9 +184,14 @@ var fluid = fluid || {};
             updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
             updateStateByState(uploaderContainer,fragmentSelectors.fileQueue);
             updateBrowseBtnText(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.browse, status);
+            updateSelectable(uploaderContainer);
         });
         return row;
     };
+    
+    var updateSelectable = function(container) {
+        container.getSelectableContext().refresh();
+    }
     
     var updateQueueHeight = function(scrollingElm, maxHeight){
         var overMaxHeight = (scrollingElm.children().eq(0).height() > maxHeight);
@@ -913,6 +924,7 @@ var fluid = fluid || {};
         browseButton.click(activateBrowse);
         browseButton.tabbable();
         
+        uploaderContainer.selectable({selectableSelector: ".ready"});
         
         // upload button
         $(uploader.fragmentSelectors.upload, uploaderContainer).click(function(){

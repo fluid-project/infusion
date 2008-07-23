@@ -103,6 +103,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         RIGHT: 39,
         SPACE: 32,
         ENTER: 13,
+        DELETE: 46,
         TAB: 9,
         CTRL: 17,
         SHIFT: 16,
@@ -376,12 +377,19 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
             options: options
         };
 
+        that.selectablesUpdated = function() {
+          // Remove selectables from the tab order and add focus/blur handlers
+          that.selectables.tabindex(-1);
+          that.selectables.focus (selectableFocusHandler (that));
+          that.selectables.blur (selectableBlurHandler (that));
+        }
 
         that.refresh = function() {
           if (!that.options.selectableSelector) {
               throw ("Cannot refresh selectable context which was not initialised by a selector");
           }
           that.selectables = container.find(options.selectableSelector);
+          that.selectablesUpdated();
         };
         
         // Add various handlers to the container.
@@ -389,11 +397,8 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         container.keydown (tabKeyHandler (that));
         container.focus (containerFocusHandler (that, options.autoSelectFirstItem));
         container.blur (containerBlurHandler (that));
-
-        // Remove selectables from the tab order and add focus/blur handlers
-        selectableElements.tabindex(-1);
-        selectableElements.focus (selectableFocusHandler (that));
-        selectableElements.blur (selectableBlurHandler (that));
+        
+        that.selectablesUpdated();
 
         return that;
     };
