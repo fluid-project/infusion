@@ -148,8 +148,10 @@ var fluid = fluid || {};
         $(fragmentSelectors.fileQueue, uploaderContainer).append(newQueueRow);
         
         var removeThisRow = function() {
-            removeRow(uploaderContainer, fragmentSelectors, newQueueRow, swfObj, status, maxHeight);
-            };
+            if (uploadState(uploaderContainer) !== "uploading") {
+                removeRow(uploaderContainer, fragmentSelectors, newQueueRow, swfObj, status, maxHeight);
+            }
+        };
         
         // add remove action to the button
         $('#' + file.id, uploaderContainer).find(fragmentSelectors.qRowRemove).click(removeThisRow);
@@ -281,6 +283,10 @@ var fluid = fluid || {};
      */
     var updateState = function(uploaderContainer, stateClass) {
         $(uploaderContainer).children("div:first").attr('className',stateClass);
+    };
+    
+    var uploadState = function(uploaderContainer) {
+        return $(uploaderContainer).children("div:first").attr('className');
     };
     
     var updateBrowseBtnText = function(uploaderContainer, fileQueueSelector, browseButtonSelector, status) {
@@ -928,7 +934,9 @@ var fluid = fluid || {};
 
         // browse button
         var activateBrowse = function () {
-            return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
+            if (uploadState(uploaderContainer) !== "uploading") {
+                return (allowMultipleFiles) ? swfObj.selectFiles() : swfObj.selectFile();
+            }
         };
         var browseButton = $(uploader.fragmentSelectors.browse, uploaderContainer);		
         browseButton.click(activateBrowse);
@@ -957,7 +965,9 @@ var fluid = fluid || {};
         
         // done button
         $(uploader.fragmentSelectors.done, uploaderContainer).click(function(){
-            variableAction(whenDone);
+            if (uploadState(uploaderContainer) !== "uploading") {
+                variableAction(whenDone);
+            }
         });
         
         // cancel button
