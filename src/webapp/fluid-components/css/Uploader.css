@@ -7,6 +7,10 @@
     position: relative;
 }
 
+.fluid-uploader form {
+    height: auto !important;
+}
+
 .fluid-uploader a.fluid-uploader-browse {
     background-image: url(../images/uploader/add.png);
     background-attachment: scroll;
@@ -232,9 +236,7 @@
 }
 
 .fluid-uploader-btns {
-    text-align: right;
-    margin-top: 1.3em;
-    height: 32px;
+    margin-top: 1em;
 }
 
 .fluid-uploader-btns .fluid-uploader-upload, .fluid-uploader-btns .fluid-uploader-resume,  .fluid-uploader-btns .fluid-uploader-pause {
