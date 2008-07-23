@@ -1052,8 +1052,22 @@ var fluid = fluid || {};
     var hideNow = function(which){
         $(which).fadeOut('slow');
     };      
+
+	var initARIA = function(container){
+		container.ariaRole("progressbar");
+		container.ariaState("valuemin","0");
+		container.ariaState("valuemax","100");
+		container.ariaState("live","assertive");
+		container.ariaState("busy","false");
+		container.ariaState("valuenow","0");
+	};
     
-     /* Constructor */
+    var updateARIA = function(container, percent){
+        container.ariaState("busy",(percent < 100 && percent > 0));			
+	    container.ariaState("valuenow",percent);	
+	};
+
+    /* Constructor */
     fluid.Progress = function (options) {
         this.minWidth = 5;
         this.progressContainer = options.progress;
@@ -1067,6 +1081,8 @@ var fluid = fluid || {};
         
         this.fileProgressElm.hide();
         this.totalProgressElm.hide();
+
+	    initARIA(this.totalProgressContainer);
     };
     
     fluid.Progress.prototype.init = function(fileRowSelector){
@@ -1097,7 +1113,6 @@ var fluid = fluid || {};
     };
 
     var setProgress = function(percent, text, progressElm, containerElm, textElm, dontAnimate) {
-            
         var containerWidth = containerElm.width();	
         var currWidth = progressElm.width();
         var newWidth = ((percent * containerWidth)/100);
@@ -1114,6 +1129,7 @@ var fluid = fluid || {};
         } else {
             animateToWidth(progressElm,newWidth);
         }
+        updateARIA(containerElm, percent);
     };
         
     fluid.Progress.prototype.hide = function(dontPause) {
