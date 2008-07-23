@@ -424,6 +424,9 @@ var fluid = fluid || {};
             try {
                 updateBrowseBtnText(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.browse, status);
                 $(uploaderContainer).children("div:first").removeClass('browsing');
+                if (numberOfRows(uploaderContainer, fragmentSelectors.fileQueue)){
+                    $(fragmentSelectors.upload, uploaderContainer).focus();
+                }
                 debugStatus(status);
             } 
             catch (ex) {
@@ -477,6 +480,7 @@ var fluid = fluid || {};
         fluid.utils.debug (
             "Starting Upload: " + (file.index + 1) + ' (' + file.id + ')' + ' [' + file.size + ']' + ' ' + file.name
         );
+        $(fragmentSelectors.pause, uploaderContainer).focus();
     };
 
     
@@ -629,7 +633,7 @@ var fluid = fluid || {};
         else { 
             // there has been an error that we should stop on
             // note: do not update the bytes because we didn't complete that last file
-            return hideProgress(progressBar, true, $(fragmentSelectors.done, uploaderContainer));
+            return hideProgress(progressBar, true, $(fragmentSelectors.resume, uploaderContainer));
         }
     };
     
@@ -745,6 +749,7 @@ var fluid = fluid || {};
             } else {
                 setTimeout(function(){
                     $(dialogObj).dialog("open");
+                    $(fileBrowseSelector).focus();
                 }, 0);
             }
         };
