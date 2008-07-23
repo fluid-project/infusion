@@ -355,12 +355,16 @@ var fluid = fluid || {};
      * @param {int} maxHeight    maximum height in pixels for the file queue before scrolling
      * @param {Object} status    
      */
-    var createFileQueuedHandler = function (uploaderContainer, fragmentSelectors, maxHeight, status) {
+    var createFileQueuedHandler = function (uploaderContainer, fragmentSelectors, maxHeight, status, dialogObj) {
         return function(file){
             var swfObj = this;
             try {
                 // what have we got?
                 fluid.utils.debug(file.name + " file.size = " + file.size); // DEBUG
+                
+                if (dialogObj) {
+                    $(dialogObj).dialog("open");
+                }
                 
                 // add the file to the queue
                 addFileToQueue(uploaderContainer, file, fragmentSelectors, swfObj, status, maxHeight);
@@ -735,9 +739,7 @@ var fluid = fluid || {};
         
         var clickBehaviour = function(){
             // set timeout is required for keyboard a11y. Without it, the dialog does not appear.
-            setTimeout(function(){
-                $(dialogObj).dialog("open");
-            }, 0);
+            
             if (browseOnInit) {
                 $(fileBrowseSelector, uploaderContainer).click();
             }
@@ -747,7 +749,6 @@ var fluid = fluid || {};
         addBtn.click(clickBehaviour);
         addBtn.activatable(clickBehaviour);				
                                     
-
         return dialogObj;
     };
         
@@ -873,7 +874,7 @@ var fluid = fluid || {};
             // Event Handler Settings
             swfupload_loaded_handler : createSWFReadyHandler(options.browseOnInit, allowMultipleFiles, options.dialogDisplay),
             file_dialog_start_handler: createFileDialogStartHandler (uploaderContainer),
-            file_queued_handler: createFileQueuedHandler (uploaderContainer, fragmentSelectors, options.queueListMaxHeight, status),
+            file_queued_handler: createFileQueuedHandler (uploaderContainer, fragmentSelectors, options.queueListMaxHeight, status, dialogObj),
             file_queue_error_handler: fileQueueError,
             file_dialog_complete_handler: createFileDialogCompleteHandler (uploaderContainer, fragmentSelectors, status),
             upload_start_handler: createUploadStartHandler (uploaderContainer, fragmentSelectors, progressBar, status),
