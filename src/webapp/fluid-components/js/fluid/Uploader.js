@@ -742,6 +742,10 @@ var fluid = fluid || {};
             
             if (browseOnInit) {
                 $(fileBrowseSelector, uploaderContainer).click();
+            } else {
+                setTimeout(function(){
+                    $(dialogObj).dialog("open");
+                }, 0);
             }
         };
 
