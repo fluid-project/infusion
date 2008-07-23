@@ -9,6 +9,8 @@ You may obtain a copy of the GPL and MIT License at
 https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 */
 
+/*global jQuery*/
+
 // Tabindex normalization
 (function ($) {
     // -- Private functions --
@@ -17,6 +19,14 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 	    return $.browser.msie ? "tabIndex" : "tabindex";
 	};
 
+	var canHaveDefaultTabindex = function (elements) {
+       if (elements.length <= 0) {
+           return false;
+       }
+
+	   return jQuery (elements[0]).is ("a, input, button, select, area, textarea, object");
+	};
+    
 	var getValue = function (elements) {
         if (elements.length <= 0) {
             return undefined;
@@ -35,14 +45,6 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 		return elements.each (function (i, item) {
 			$ (item).attr (normalizeTabindexName (), toIndex);
 		});
-	};
-
-	var canHaveDefaultTabindex = function (elements) {
-       if (elements.length <= 0) {
-           return false;
-       }
-
-	   return jQuery (elements[0]).is ("a, input, button, select, area, textarea, object");
 	};
     
     // -- Public API --
@@ -134,12 +136,12 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
     // Private functions.
     var unwrap = function (element) {
-        return (element.jquery) ? element[0] : element; // Unwrap the element if it's a jQuery.
+        return element.jquery ? element[0] : element; // Unwrap the element if it's a jQuery.
     };
 
     var cleanUpWhenLeavingContainer = function (selectionContext) {
         if (selectionContext.onLeaveContainer) {
-            userHandlers.onLeaveContainer (selectionContext.activeItem);
+            selectionContext.onLeaveContainer (selectionContext.activeItem);
         } else if (selectionContext.onUnselect) {
             selectionContext.onUnselect (selectionContext.activeItem);
         }
@@ -382,7 +384,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
           that.selectables.tabindex(-1);
           that.selectables.focus (selectableFocusHandler (that));
           that.selectables.blur (selectableBlurHandler (that));
-        }
+        };
 
         that.refresh = function() {
           if (!that.options.selectableSelector) {
@@ -458,7 +460,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     
     $.fn.getSelectableContext = function() {
         return getData(this, CONTEXT_KEY);
-    }
+    };
 
     /**
      * Makes all matched elements activatable with the Space and Enter keys.
