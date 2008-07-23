@@ -134,6 +134,24 @@
     background-color: #FBFFDC;
 }
 
+.fluid-uploader-queue tr:focus {
+    background-color: #FFF;
+}
+
+.fluid-uploader-queue tr:focus td, .fluid-uploader-queue tr:focus th {
+    border-top: 2px solid blue;
+    border-bottom: 2px solid blue;
+    padding: 2px 4px;
+}
+
+.fluid-uploader-queue tr:focus td:last-child {
+    border-right: 2px solid blue;
+}
+
+.fluid-uploader-queue tr:focus th {
+    border-left: 2px solid blue;
+}
+
 .fluid-uploader-queue tr.dim {
     color: #666;
 }
