@@ -79,8 +79,8 @@ var fluid = fluid || {};
         fileUploadLimit : 0,
         fileQueueLimit : 0,
         elmUploaderControl: "",
-        whenDone: "", // forces a refresh
-        whenCancel: "", // forces a refresh
+        whenDone: "", // this can be a URL [String], or a function, "" will refresh the page
+        whenCancel: "", // this can be a URL [String], or a function, "" will refresh the page
         whenFileUploaded: function(fileName, serverResponse) {},
         postParams: {},
         httpUploadElm: "",
