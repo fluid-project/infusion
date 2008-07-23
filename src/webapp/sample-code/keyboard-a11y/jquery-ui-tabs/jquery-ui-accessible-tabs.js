@@ -42,7 +42,10 @@ var fluid = fluid || {};
             //  * Pass in the container for the tabs (the <ul>)--the plugin binds keyboard handlers to this.
             //  * utilize option willSelect: to make the tab actually selected.
             //  * lastly, the options object allows to simply specify the direction (which defaults to vertical)
-            tabs.selectable (tablist, {willSelect: keyboardSelect}, {direction: $.a11y.orientation.HORIZONTAL});
+            tablist.selectable ({ 
+                  selectableElements: tabs,
+                  onSelect: keyboardSelect,
+                  direction: $.a11y.orientation.HORIZONTAL});
         },
 
         addARIA: function (tabsId, panelsId) {

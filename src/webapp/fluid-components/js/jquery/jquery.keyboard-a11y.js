@@ -136,14 +136,14 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         return (element.jquery) ? element[0] : element; // Unwrap the element if it's a jQuery.
     };
 
-    var cleanUpWhenLeavingContainer = function (userHandlers, selectionContext, shouldRememberSelectionState) {
-        if (userHandlers.willLeaveContainer) {
-            userHandlers.willLeaveContainer (selectionContext.activeItem);
-        } else if (userHandlers.willUnselect) {
-            userHandlers.willUnselect (selectionContext.activeItem);
+    var cleanUpWhenLeavingContainer = function (selectionContext) {
+        if (selectionContext.onLeaveContainer) {
+            userHandlers.onLeaveContainer (selectionContext.activeItem);
+        } else if (selectionContext.onUnselect) {
+            selectionContext.onUnselect (selectionContext.activeItem);
         }
 
-        if (!shouldRememberSelectionState) {
+        if (!selectionContext.options.rememberSelectionState) {
             selectionContext.activeItem = null;
         }
     };
@@ -189,14 +189,14 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         }
     };
 
-    var unselectElement = function (selectedElement, selectionContext, userHandlers) {
-        eraseSelection (selectedElement, userHandlers.willUnselect);
+    var unselectElement = function (selectedElement, selectionContext) {
+        eraseSelection (selectedElement, selectionContext.options.onUnselect);
     };
 
-    var selectElement = function (elementToSelect, selectionContext, userHandlers) {
+    var selectElement = function (elementToSelect, selectionContext) {
         // It's possible that we're being called programmatically, in which case we should clear any previous selection.
         if (selectionContext.activeItem) {
-            unselectElement (selectionContext.activeItem, selectionContext, userHandlers);
+            unselectElement (selectionContext.activeItem, selectionContext);
         }
 
         elementToSelect = unwrap (elementToSelect);
@@ -208,21 +208,21 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
         // Select the new element.
         selectionContext.activeItem = elementToSelect;
-        drawSelection (elementToSelect, userHandlers.willSelect);
+        drawSelection (elementToSelect, selectionContext.options.onSelect);
     };
 
-    var selectableFocusHandler = function (selectionContext, userHandlers) {
+    var selectableFocusHandler = function (selectionContext) {
         return function (evt) {
-            selectElement (evt.target, selectionContext, userHandlers);
+            selectElement (evt.target, selectionContext);
 
             // Force focus not to bubble on some browsers.
             return evt.stopPropagation ();
         };
     };
 
-    var selectableBlurHandler = function (selectionContext, userHandlers) {
+    var selectableBlurHandler = function (selectionContext) {
         return function (evt) {
-            unselectElement (evt.target, selectionContext, userHandlers);
+            unselectElement (evt.target, selectionContext);
 
             // Force blur not to bubble on some browsers.
             return evt.stopPropagation ();
@@ -276,9 +276,11 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         return keyMap;
     };
 
-    var containerFocusHandler = function (selectionContext, container, shouldAutoSelectFirstChild) {
+    var containerFocusHandler = function (selectionContext) {
         return function (evt) {
-            var shouldSelect = (shouldAutoSelectFirstChild.constructor === Function) ? shouldAutoSelectFirstChild () : shouldAutoSelectFirstChild;
+            var shouldOrig = selectionContext.options.autoSelectFirstItem;
+            var shouldSelect = typeof(shouldOrig) === "function" ? 
+               shouldOrig () : shouldOrig;
 
             // Override the autoselection if we're on the way out of the container.
             if (selectionContext.focusIsLeavingContainer) {
@@ -286,7 +288,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
             }
 
             // This target check works around the fact that sometimes focus bubbles, even though it shouldn't.
-            if (shouldSelect && evt.target === container.get(0)) {
+            if (shouldSelect && evt.target === selectionContext.container.get(0)) {
                 if (!selectionContext.activeItem) {
                     focusNextElement (selectionContext);
                 } else {
@@ -341,13 +343,13 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         }
     };
 
-    var tabKeyHandler = function (userHandlers, selectionContext, shouldRememberSelectionState) {
+    var tabKeyHandler = function (selectionContext) {
         return function (evt) {
             if (evt.which !== $.a11y.keys.TAB) {
                 return;
             }
 
-            cleanUpWhenLeavingContainer (userHandlers, selectionContext, shouldRememberSelectionState);
+            cleanUpWhenLeavingContainer (selectionContext);
 
             // Catch Shift-Tab and note that focus is on its way out of the container.
             if (evt.shiftKey) {
@@ -356,32 +358,44 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         };
     };
 
-    var makeElementsSelectable = function (container, selectableElements, handlers, defaults, options) {
-        // Create empty an handlers and use default options where not specified.
-        handlers = handlers || {};
-        var mergedOptions = $.extend ({}, defaults, options);
+    var makeElementsSelectable = function (container, defaults, userOptions) {
 
-        var keyMap = getKeyMapForDirection (mergedOptions.direction);
+        var options = $.extend (true, {}, defaults, userOptions);
 
+        var keyMap = getKeyMapForDirection (options.direction);
+
+        var selectableElements = options.selectableElements? options.selectableElements :
+          container.find(options.selectableSelector);
+          
         // Context stores the currently active item (undefined to start) and list of selectables.
-        var selectionContext = {
+        var that = {
+            container: container,
             activeItem: undefined,
             selectables: selectableElements,
-            focusIsLeavingContainer: false
+            focusIsLeavingContainer: false,
+            options: options
         };
 
+
+        that.refresh = function() {
+          if (!that.options.selectableSelector) {
+              throw ("Cannot refresh selectable context which was not initialised by a selector");
+          }
+          that.selectables = container.find(options.selectableSelector);
+        };
+        
         // Add various handlers to the container.
-        container.keydown (arrowKeyHandler (selectionContext, keyMap, handlers));
-        container.keydown (tabKeyHandler (handlers, selectionContext, mergedOptions.rememberSelectionState));
-        container.focus (containerFocusHandler (selectionContext, container, mergedOptions.autoSelectFirstItem));
-        container.blur (containerBlurHandler (selectionContext));
+        container.keydown (arrowKeyHandler (that, keyMap));
+        container.keydown (tabKeyHandler (that));
+        container.focus (containerFocusHandler (that, options.autoSelectFirstItem));
+        container.blur (containerBlurHandler (that));
 
         // Remove selectables from the tab order and add focus/blur handlers
         selectableElements.tabindex(-1);
-        selectableElements.focus (selectableFocusHandler (selectionContext, handlers));
-        selectableElements.blur (selectableBlurHandler (selectionContext, handlers));
+        selectableElements.focus (selectableFocusHandler (that));
+        selectableElements.blur (selectableBlurHandler (that));
 
-        return selectionContext;
+        return that;
     };
 
     var createDefaultActivationHandler = function (activatables, userActivateHandler) {
@@ -427,20 +441,23 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
     /**
      * Makes all matched elements selectable with the arrow keys.
-     * Supply your own handlers object with willSelect: and willUnselect: properties for custom behaviour.
+     * Supply your own handlers object with onSelect: and onUnselect: properties for custom behaviour.
      * Options provide configurability, including direction: and autoSelectFirstItem:
      * Currently supported directions are jQuery.a11y.directions.HORIZONTAL and VERTICAL.
      */
-    $.fn.selectable = function (container, handlers, options) {
-        var ctx = makeElementsSelectable ($ (container), this, handlers, this.selectable.defaults, options);
-        setData (this, CONTEXT_KEY, ctx);
-        setData (this, HANDLERS_KEY, handlers);
+    $.fn.selectable = function (options) {
+        var that = makeElementsSelectable (this, this.selectable.defaults, options);
+        setData (this, CONTEXT_KEY, that);
         return this;
     };
+    
+    $.fn.getSelectableContext = function() {
+        return getData(this, CONTEXT_KEY);
+    }
 
     /**
      * Makes all matched elements activatable with the Space and Enter keys.
-     * Provide your own hanlder function for custom behaviour.
+     * Provide your own handler function for custom behaviour.
      * Options allow you to provide a list of additionalActivationKeys.
      */
     $.fn.activatable = function (fn, options) {
@@ -497,6 +514,11 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     $.fn.selectable.defaults = {
         direction: this.VERTICAL,
         autoSelectFirstItem: true,
-        rememberSelectionState: true
+        rememberSelectionState: true,
+        selectableSelector: ".selectable",
+        selectableElements: null,
+        onSelect: null,
+        onUnselect: null,
+        onLeaveContainer: null
     };
 }) (jQuery);

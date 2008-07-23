@@ -64,12 +64,13 @@ fluid.accessiblecheckbox =  function () {
             replaceInputsWithGraphics (boxes);
 
             // Make them key navigable and activatable.
-            var selectionHandlers = {
-                willSelect: selectCheckbox,
-                willUnselect: unselectCheckbox,
-                willLeaveContainer: leaveCheckboxes
+            var options = {
+                selectableElements: boxes,
+                onSelect: selectCheckbox,
+                onUnselect: unselectCheckbox,
+                onLeaveContainer: leaveCheckboxes
             };
-            boxes.selectable (checkboxContainer, selectionHandlers);
+            checkboxContainer.selectable (options);
             boxes.activatable (selectCheckboxHandler);
             clickable (boxes);
         }
