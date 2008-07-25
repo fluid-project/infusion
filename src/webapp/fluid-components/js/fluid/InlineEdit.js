@@ -267,20 +267,27 @@ fluid = fluid || {};
         
         // Add ARIA support.
         aria(that.viewEl, that.editContainer);
-        
-        // Add tooltip handler if required and available
-        if (that.tooltipEnabled()) {
-          $(componentContainer).tooltip({
-              delay: that.options.tooltipDelay,
-              extraClass: that.options.styles.tooltip,
-              bodyHandler: function () { return that.options.tooltipText; },
-              id: that.options.tooltipId
-          });
-        }
-        
+                
         // Hide the edit container to start
         that.editContainer.hide();
+        
+        var initTooltip = function() {
+            // Add tooltip handler if required and available
+            if (that.tooltipEnabled()) {
+              $(componentContainer).tooltip({
+                  delay: that.options.tooltipDelay,
+                  extraClass: that.options.styles.tooltip,
+                  bodyHandler: function () { return that.options.tooltipText; },
+                  id: that.options.tooltipId
+              });
+            }
+        };
+
+        // when the document is ready, initialize the tooltip
+        // see http://issues.fluidproject.org/browse/FLUID-1030
+        jQuery(initTooltip);
     };
+    
     
     /**
      * Instantiates a new Inline Edit component
