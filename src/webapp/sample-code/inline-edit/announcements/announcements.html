@@ -328,7 +328,9 @@
                 </p>
 
                 <script type="text/javascript">
-                    fluid.inlineEdits("#announcements", {useTooltip: true});
+                    jQuery(document).ready(function(){
+                        fluid.inlineEdits("#announcements", {useTooltip: true});
+                    });
                 </script>
 
             </form>
