@@ -1038,6 +1038,9 @@ var fluid = fluid || {};
 
         var swfObj = initSWFUpload(this.uploaderContainer, uploadURL, flashURL, progressBar, this.status, this.fragmentSelectors, this.options, allowMultipleFiles, dialogObj);
         
+        // remove the swfObj from the focusable elements (mostly for IE6)
+        $('#' + swfObj.movieName).tabindex('-1');
+        
         this.actions = new fluid.SWFWrapper(swfObj);
         
         setKeyboardModifierString(this.uploaderContainer, this.fragmentSelectors.osModifierKey);
