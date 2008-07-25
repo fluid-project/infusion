@@ -307,7 +307,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
            
             var instantiateInlineEdits = function (callback) {
-                return fluid.inlineEdits("main", {
+                return fluid.inlineEdits("#main", {
                    selectors: {
                        editables: inlineEditsSel
                    },
