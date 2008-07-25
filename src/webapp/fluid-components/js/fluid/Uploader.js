@@ -49,6 +49,7 @@ var fluid = fluid || {};
         browse: ".fluid-uploader-browse",
         fluidUploader: ".fluid-uploader-queue-wrapper",
         fileQueue: ".fluid-uploader-queue",
+        queueRow: "tr",
         scrollingElement: ".fluid-scroller",
         emptyRow : ".fluid-uploader-row-placeholder",
         txtTotalFiles: ".fluid-uploader-totalFiles",
@@ -145,7 +146,8 @@ var fluid = fluid || {};
             }
         });
         // insert the new row into the file queue
-        $(fragmentSelectors.fileQueue, uploaderContainer).append(newQueueRow);
+        var fileQueue = $(fragmentSelectors.fileQueue, uploaderContainer);
+        fileQueue.append(newQueueRow);
         
         var removeThisRow = function() {
             if (uploadState(uploaderContainer) !== "uploading") {
@@ -157,9 +159,14 @@ var fluid = fluid || {};
         $('#' + file.id, uploaderContainer).find(fragmentSelectors.qRowRemove).click(removeThisRow);
 
         newQueueRow.activatable(null, {additionalBindings: [
-          {key: $.a11y.keys.DELETE, activateHandler: removeThisRow}
+          {key: $.a11y.keys.DELETE, activateHandler: function(){
+                  $('#' + file.id, uploaderContainer).find(fragmentSelectors.qRowRemove).click();
+              }
+          }
         ]});
-        updateSelectable(uploaderContainer);
+        
+        updateSelectable(fileQueue);
+        
         // display the new row
         $('#' + file.id, uploaderContainer).fadeIn('slow');
     };
@@ -186,14 +193,14 @@ var fluid = fluid || {};
             updateTotalBytes(uploaderContainer, fragmentSelectors.txtTotalBytes, status);
             updateStateByState(uploaderContainer,fragmentSelectors.fileQueue);
             updateBrowseBtnText(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.browse, status);
-            updateSelectable(uploaderContainer);
+            updateSelectable($(fragmentSelectors.fileQueue, uploaderContainer));
         });
         return row;
     };
     
     var updateSelectable = function(container) {
         container.getSelectableContext().refresh();
-    }
+    };
     
     var updateQueueHeight = function(scrollingElm, maxHeight){
         var overMaxHeight = (scrollingElm.children().eq(0).height() > maxHeight);
@@ -942,7 +949,10 @@ var fluid = fluid || {};
         browseButton.click(activateBrowse);
         browseButton.tabbable();
         
-        uploaderContainer.selectable({selectableSelector: ".ready"});
+        fluid.utils.debug();
+        
+        var fileQueue = $(uploader.fragmentSelectors.fileQueue, uploaderContainer);
+        fileQueue.selectable({selectableSelector: uploader.fragmentSelectors.queueRow });
         
         // upload button
         $(uploader.fragmentSelectors.upload, uploaderContainer).click(function(){
@@ -1033,6 +1043,9 @@ var fluid = fluid || {};
         
         // Bind all our event handlers.
         bindEvents(this, this.uploaderContainer, swfObj, allowMultipleFiles, this.options.whenDone, this.options.whenCancel);
+        
+        // make the file queue tabbable
+        $(this.fragmentSelectors.fileQueue).tabbable();
         
         // If we've been given an empty URL, kick into demo mode.
         if (uploadURL === '') {
