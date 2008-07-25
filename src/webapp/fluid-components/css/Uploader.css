@@ -126,6 +126,10 @@
     z-index: 6;
 }
 
+.fluid-uploader-queue:focus {
+    border: 1px solid #142B8C;
+}
+
 .fluid-uploader-queue tr {
     background-color: transparent;
 }
