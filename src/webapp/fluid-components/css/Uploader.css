@@ -194,7 +194,7 @@
     outline: none;
 }
 
-.fluid-uploader-queue .removeFile:hover {
+.fluid-uploader-queue .removeFile:hover, .fluid-uploader-queue tr.ready:focus .removeFile {
     border: 1px solid #CCC;
     background-color: #FFF;
 }
@@ -204,7 +204,7 @@
     outline: none;
 }
 
-.fluid-uploader-queue .uploaded th {
+.fluid-uploader-queue .uploaded th, .fluid-uploader-queue tr.uploaded:focus th  {
     border-left: 4px solid #74B74A;
 }
 
@@ -213,7 +213,7 @@
     cursor: auto;
 }
 
-.fluid-uploader-queue .uploaded .removeFile:hover, .fluid-uploader-queue .uploaded .removeFile:focus {
+.fluid-uploader-queue .uploaded .removeFile:hover {
     cursor: auto;
     background-image: url(../images/uploader/tick.png);
     border: 1px solid transparent;
@@ -229,7 +229,7 @@
     background-image: url(../images/uploader/error.png);
 }
 
-.fluid-uploader-queue .error .removeFile:hover, .fluid-uploader-queue .error .removeFile:focus {
+.fluid-uploader-queue .error .removeFile:hover {
     cursor: pointer;
     background-image: url(../images/uploader/error.png);
     border: 1px solid transparent;
