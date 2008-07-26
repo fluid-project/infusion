@@ -504,4 +504,22 @@
         jqUnit.ok("The current selection should be a jQuery instance.", selectedItem.jQuery);
         jqUnit.assertEquals("The current selection should be the second menu item.", secondMenuItem[0], selectedItem[0]);
     });
+    
+    jqUnit.test("destructibleList and refresh()", function () {
+        var menuContainer = jQuery(MENU_SEL);
+        var selThat = jQuery(MENU_SEL).selectable(
+          jQuery.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers())).getSelectableContext();
+        menuContainer.focus();
+        var firstMenuItem = getFirstMenuItem();
+        keyboardA11y.assertSelected(firstMenuItem);
+        firstMenuItem.remove();
+        selThat.refresh();
+        var secondMenuItem = getSecondMenuItem();
+        keyboardA11y.assertSelected(secondMenuItem);        
+        secondMenuItem.remove();
+        selThat.refresh();
+        var thirdMenuItem = getThirdMenuItem();
+        keyboardA11y.assertSelected(thirdMenuItem); 
+      });
+    
 }) ();

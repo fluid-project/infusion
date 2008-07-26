@@ -123,6 +123,8 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     var CONTEXT_KEY = "selectionContext";
     var HANDLERS_KEY = "userHandlers";
     var ACTIVATE_KEY = "defaultActivate";
+    
+    var NO_SELECTION = -32768;
 
     var UP_DOWN_KEYMAP = {
         next: $.a11y.keys.DOWN,
@@ -141,13 +143,15 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
     var cleanUpWhenLeavingContainer = function (selectionContext) {
         if (selectionContext.onLeaveContainer) {
-            selectionContext.onLeaveContainer (selectionContext.activeItem);
+            selectionContext.onLeaveContainer (
+              selectionContext.selectables[selectionContext.activeItemIndex]);
         } else if (selectionContext.onUnselect) {
-            selectionContext.onUnselect (selectionContext.activeItem);
+            selectionContext.onUnselect (
+            selectionContext.selectables[selectionContext.activeItemIndex]);
         }
 
         if (!selectionContext.options.rememberSelectionState) {
-            selectionContext.activeItem = null;
+            selectionContext.activeItemIndex = NO_SELECTION;
         }
     };
 
@@ -179,7 +183,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
      */
     var drawSelection = function (elementToSelect, handler) {
         if (handler) {
-            handler (elementToSelect);
+            handler(elementToSelect);
         }
     };
 
@@ -187,8 +191,8 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
      * Does does the work of unselecting an element and delegating to the client handler.
      */
     var eraseSelection = function (selectedElement, handler) {
-        if (handler) {
-            handler (selectedElement);
+        if (handler && selectedElement) {
+            handler(selectedElement);
         }
     };
 
@@ -198,19 +202,18 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
     var selectElement = function (elementToSelect, selectionContext) {
         // It's possible that we're being called programmatically, in which case we should clear any previous selection.
-        if (selectionContext.activeItem) {
-            unselectElement (selectionContext.activeItem, selectionContext);
-        }
+        unselectElement(selectionContext.selectedElement(), selectionContext);
 
-        elementToSelect = unwrap (elementToSelect);
+        elementToSelect = unwrap(elementToSelect);
+        var newIndex = selectionContext.selectables.index(elementToSelect);
 
         // Next check if the element is a known selectable. If not, do nothing.
-        if (selectionContext.selectables.index(elementToSelect) === -1) {
+        if (newIndex === -1) {
            return;
         }
 
         // Select the new element.
-        selectionContext.activeItem = elementToSelect;
+        selectionContext.activeItemIndex = newIndex;
         drawSelection (elementToSelect, selectionContext.options.onSelect);
     };
 
@@ -232,26 +235,36 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         };
     };
 
-    var focusNextElement = function (selectionContext) {
-        var elements = selectionContext.selectables;
-        var activeItem = selectionContext.activeItem;
+    var reifyIndex = function(sc_that) {
+      var elements = sc_that.selectables;
+      if (sc_that.activeItemIndex >= elements.length) {
+        sc_that.activeItemIndex = 0;
+      }
+      if (sc_that.activeItemIndex < 0 && sc_that.activeItemIndex !== NO_SELECTION) {
+        sc_that.activeItemIndex = elements.length - 1;
+      }
+      if (sc_that.activeItemIndex >= 0) {
+        $(elements[sc_that.activeItemIndex]).focus();
+      }
+    }
 
-        var currentSelectionIdx = (!activeItem) ? -1 : elements.index (activeItem);
-        var nextIndex = currentSelectionIdx + 1;
-        nextIndex = (nextIndex >= elements.length) ? nextIndex = 0 : nextIndex; // Wrap around to the beginning if needed.
+    var prepareShift = function(selectionContext) {
+        unselectElement(selectionContext.selectedElement(), selectionContext);
+        if (selectionContext.activeItemIndex === NO_SELECTION) {
+          selectionContext.activeItemIndex = -1;
+        }
+    }
 
-        elements.eq (nextIndex).focus ();
+    var focusNextElement = function(selectionContext) {
+        prepareShift(selectionContext);
+        ++selectionContext.activeItemIndex;
+        reifyIndex(selectionContext);
     };
 
-    var focusPreviousElement = function (selectionContext) {
-        var elements = selectionContext.selectables;
-        var activeItem = selectionContext.activeItem;
-
-        var currentSelectionIdx = (!activeItem) ? 0 : elements.index (activeItem);
-        var previousIndex = currentSelectionIdx - 1;
-        previousIndex = (previousIndex < 0) ? elements.length - 1 : previousIndex; // Wrap around to the end if necessary.
-
-        elements.eq (previousIndex).focus ();
+    var focusPreviousElement = function(selectionContext) {
+        prepareShift(selectionContext);
+        --selectionContext.activeItemIndex;
+        reifyIndex(selectionContext);
     };
 
     var arrowKeyHandler = function (selectionContext, keyMap, userHandlers) {
@@ -292,12 +305,12 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
             // This target check works around the fact that sometimes focus bubbles, even though it shouldn't.
             if (shouldSelect && evt.target === selectionContext.container.get(0)) {
-                if (!selectionContext.activeItem) {
-                    focusNextElement (selectionContext);
-                } else {
-                    jQuery (selectionContext.activeItem).focus ();
+                if (selectionContext.activeItemIndex === NO_SELECTION) {
+                    selectionContext.activeItemIndex = 0;
                 }
+                $(selectionContext.selectables[selectionContext.activeItemIndex]).focus();
             }
+
 
            // Force focus not to bubble on some browsers.
            return evt.stopPropagation ();
@@ -373,7 +386,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         // Context stores the currently active item (undefined to start) and list of selectables.
         var that = {
             container: container,
-            activeItem: undefined,
+            activeItemIndex: NO_SELECTION,
             selectables: selectableElements,
             focusIsLeavingContainer: false,
             options: options
@@ -381,9 +394,12 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
         that.selectablesUpdated = function() {
           // Remove selectables from the tab order and add focus/blur handlers
-          that.selectables.tabindex(-1);
-          that.selectables.focus (selectableFocusHandler (that));
-          that.selectables.blur (selectableBlurHandler (that));
+            that.selectables.tabindex(-1);
+            that.selectables.unbind("focus." + NAMESPACE_KEY);
+            that.selectables.unbind("blur." + NAMESPACE_KEY);
+            that.selectables.bind("focus."+ NAMESPACE_KEY, selectableFocusHandler(that));
+            that.selectables.bind("blur." + NAMESPACE_KEY, selectableBlurHandler(that));
+            reifyIndex(that);
         };
 
         that.refresh = function() {
@@ -394,10 +410,14 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
           that.selectablesUpdated();
         };
         
+        that.selectedElement = function() {
+            return that.activeItemIndex < 0? null : that.selectables[that.activeItemIndex];
+        }
+        
         // Add various handlers to the container.
         container.keydown (arrowKeyHandler (that, keyMap));
         container.keydown (tabKeyHandler (that));
-        container.focus (containerFocusHandler (that, options.autoSelectFirstItem));
+        container.focus (containerFocusHandler (that));
         container.blur (containerBlurHandler (that));
         
         that.selectablesUpdated();
@@ -485,7 +505,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
      * Selects the next matched element.
      */
     $.fn.selectNext = function () {
-        focusNextElement (getData (this, CONTEXT_KEY));
+        focusNextElement(getData(this, CONTEXT_KEY));
         return this;
     };
 
@@ -493,7 +513,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
      * Selects the previous matched element.
      */
     $.fn.selectPrevious = function () {
-        focusPreviousElement (getData (this, CONTEXT_KEY));
+        focusPreviousElement(getData(this, CONTEXT_KEY));
         return this;
     };
 
@@ -501,7 +521,8 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
      * Returns the currently selected item wrapped as a jQuery object.
      */
     $.fn.currentSelection = function () {
-        return $ (getData (this, CONTEXT_KEY).activeItem);
+        var that = getData(this, CONTEXT_KEY);
+        return $(that.selectedElement());
     };
 
     /**
