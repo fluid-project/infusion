@@ -5,6 +5,7 @@
  * LEGAL
  * 
  * Copyright 2008 University of California, Berkeley
+ * Copyright 2008 University of Cambridge
  * Copyright 2008 University of Toronto
  * 
  * Licensed under the Educational Community License (ECL), Version 2.0 or the New
