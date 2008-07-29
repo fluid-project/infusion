@@ -1,3 +1,7 @@
+// Declare dependencies.
+/*global jQuery*/
+/*global jqUnit*/
+
 (function () {
     var keyboardA11y = new jqUnit.TestCase("keyboard-a11y");
 
@@ -13,6 +17,22 @@
     var LINK_AFTER_SEL = "#linkAfter";
 
     // Helper functions.
+    function getFirstMenuItem() {
+        return jQuery(FIRST_MENU_ITEM_SEL);
+    }
+
+    function getSecondMenuItem() {
+        return jQuery(SECOND_MENU_ITEM_SEL);
+    }
+
+    function getLastMenuItem() {
+        return jQuery(LAST_MENU_ITEM_SEL);
+    }
+
+    function getThirdMenuItem() {
+        return getLastMenuItem();
+    }
+
     var setupHandlers = function () {
         var focusHandler = function (element) {
             jQuery(element).addClass("selected");
@@ -46,7 +66,7 @@
 
         return {
             container: menuContainer,
-            items: menuItems,
+            items: menuItems
         };
     };
 
@@ -55,7 +75,7 @@
         menu.container.focus();
 
         // Sanity check.
-        if(!selectionOptions || selectionOptions.autoSelectFirstItem) {
+        if (!selectionOptions || selectionOptions.autoSelectFirstItem) {
             keyboardA11y.assertSelected(getFirstMenuItem());
         } else {
             keyboardA11y.assertNotSelected(getFirstMenuItem());
@@ -80,15 +100,15 @@
 
     function simulateKeyDown(onElement, withKeycode, modifier) {
         var modifiers = {
-            ctrl:(modifier === jQuery.a11y.keys.CTRL) ? true : false,
-            shift:(modifier === jQuery.a11y.keys.SHIFT) ? true : false,
-            alt:(modifier === jQuery.a11y.keys.ALT) ? true : false
+            ctrl: (modifier === jQuery.a11y.keys.CTRL) ? true : false,
+            shift: (modifier === jQuery.a11y.keys.SHIFT) ? true : false,
+            alt: (modifier === jQuery.a11y.keys.ALT) ? true : false
         };
 
-        var keyEvent = document.createEvent("KeyEvents")
+        var keyEvent = document.createEvent("KeyEvents");
         keyEvent.initKeyEvent("keydown", true, true, window, modifiers.ctrl, modifiers.alt, modifiers.shift, false, withKeycode, 0);
 
-        if(onElement.jquery) {
+        if (onElement.jquery) {
             onElement = onElement[0];
         }
 
@@ -108,22 +128,6 @@
 
         // Move focus back to the menu.
         menu.container.focus();
-    }
-
-    function getFirstMenuItem() {
-        return jQuery(FIRST_MENU_ITEM_SEL);
-    }
-
-    function getSecondMenuItem() {
-        return jQuery(SECOND_MENU_ITEM_SEL);
-    }
-
-    function getLastMenuItem() {
-        return jQuery(LAST_MENU_ITEM_SEL);
-    }
-
-    function getThirdMenuItem() {
-        return getLastMenuItem();
     }
 
     // Mix in additional test-specific asserts.
@@ -338,7 +342,7 @@
         menu.container.focus();
 
         // Invoke selectNext twice. We should be on the last item.
-        for(var x = 0; x < 2; x++) {
+        for (var x = 0; x < 2; x += 1) {
             menu.container.selectNext();
         }
         keyboardA11y.assertSelected(getLastMenuItem());
@@ -361,7 +365,7 @@
 
     jqUnit.test("Focus persists after leaving container", function () {
         var menu = createAndFocusMenu();
-        selectMiddleChildThenLeaveAndRefocus(menu)
+        selectMiddleChildThenLeaveAndRefocus(menu);
 
         // Ensure that the middle child still has focus.
         keyboardA11y.assertSelected(getSecondMenuItem());
@@ -397,7 +401,7 @@
 
     jqUnit.test("activate with Enter key", function () {
         // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-        if(!jQuery.browser.mozilla) {
+        if (!jQuery.browser.mozilla) {
             return;
         }
 
@@ -408,7 +412,7 @@
 
     jqUnit.test("activate with Spacebar", function () {
         // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-        if(!jQuery.browser.mozilla) {
+        if (!jQuery.browser.mozilla) {
             return;
         }
 
@@ -419,9 +423,11 @@
 
     jqUnit.test("One custom activate binding", function () {
         // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-        if(!jQuery.browser.mozilla) {
+        if (!jQuery.browser.mozilla) {
             return;
         }
+
+        var menu = createAndFocusMenu();
 
         var defaultActivate = function (element) {
             menu.wasActivated = false;
@@ -441,7 +447,6 @@
             additionalBindings: downKeyBinding
         };
 
-        var menu = createAndFocusMenu();
         menu.items.activatable(defaultActivate, options);
 
         simulateKeyDown(getFirstMenuItem(), jQuery.a11y.keys.DOWN);
@@ -451,9 +456,11 @@
 
     jqUnit.test("Multiple custom activate bindings", function () {
         // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-        if(!jQuery.browser.mozilla) {
+        if (!jQuery.browser.mozilla) {
             return;
         }
+
+        var menu = createAndFocusMenu();
 
         // Define additional key bindings.
         var downBinding = {
@@ -473,14 +480,12 @@
 
         var defaultActivate = function () {
             menu.wasActivated = false;
-        }
+        };
 
         var options = {
             additionalBindings: [downBinding, upBinding]
         };
 
-        // Set up the menu.
-        var menu = createAndFocusMenu();
         menu.items.activatable(defaultActivate, options);
 
         // Test that the down arrow works.
@@ -520,6 +525,6 @@
         selThat.refresh();
         var thirdMenuItem = getThirdMenuItem();
         keyboardA11y.assertSelected(thirdMenuItem); 
-      });
+    });
     
-}) ();
+})();
