@@ -1,4 +1,5 @@
 /*
+Copyright 2008 University of Cambridge
 Copyright 2008 University of Toronto
 
 Licensed under the GNU General Public License or the MIT license.
