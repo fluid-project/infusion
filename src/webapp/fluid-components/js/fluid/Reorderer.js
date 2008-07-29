@@ -792,7 +792,7 @@ fluid = fluid || {};
         this.moveItemRight = function (item) {
         	var rightSiblingInfo = itemInfoFinders.getRightSiblingInfo (item, findItems.movables ());
             moveItem (item, rightSiblingInfo, fluid.position.AFTER, fluid.position.BEFORE);
-            orderChangedCallback();
+            orderChangedCallback(item);
         };
     
         this.getLeftSibling = function (item) {
@@ -802,7 +802,7 @@ fluid = fluid || {};
         this.moveItemLeft = function (item) {
          	var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo (item, findItems.movables ());
             moveItem (item, leftSiblingInfo, fluid.position.BEFORE, fluid.position.AFTER);
-            orderChangedCallback();
+            orderChangedCallback(item);
         };
     
         this.getItemBelow = this.getRightSibling;
@@ -824,7 +824,7 @@ fluid = fluid || {};
             } else if (whereTo === fluid.position.AFTER) {
                 jQuery (target).after (moving);
             }
-            orderChangedCallback();
+            orderChangedCallback(moving);
         };
         
     }; // End ListLayoutHandler
@@ -856,7 +856,7 @@ fluid = fluid || {};
 	    this.moveItemDown = function (item) {
 	    	var itemBelow = itemInfoFinders.getItemInfoBelow (item, findItems.movables ());
 	        moveItem (item, itemBelow, fluid.position.AFTER, fluid.position.BEFORE);
-            orderChangedCallback(); 
+            orderChangedCallback(item);
 	    };
 	            
 	    this.getItemAbove = function (item) {
@@ -866,7 +866,7 @@ fluid = fluid || {};
 	    this.moveItemUp = function (item) {
 	    	var itemAbove = itemInfoFinders.getItemInfoAbove (item, findItems.movables ());
 	        moveItem (item, itemAbove, fluid.position.BEFORE, fluid.position.AFTER);
-            orderChangedCallback(); 
+            orderChangedCallback(item);
 	    };
 	                
 	    // We need to override ListLayoutHandler.dropPosition to ensure that the local private
@@ -905,7 +905,7 @@ fluid = fluid || {};
         var orderChangedCallback = options.orderChangedCallback || function () {};
         if (options.orderChangedCallbackUrl) {
             // Create the orderChangedCallback function
-            orderChangedCallback = function () {
+            orderChangedCallback = function (item) {
                 jQuery.post (options.orderChangedCallbackUrl, 
                     JSON.stringify (layout),
                     function (data, textStatus) { 
@@ -956,7 +956,7 @@ fluid = fluid || {};
             }  // otherwise it's either DISALLOWED or USE_LAST_KNOWN
             
             fluid.moduleLayout.updateLayout (item.id, relatedItem.id, position, layout);
-            orderChangedCallback (); 
+            orderChangedCallback(item);
         };
         
         var moveHorizontally = function (item, direction /* PREVIOUS, NEXT */) {

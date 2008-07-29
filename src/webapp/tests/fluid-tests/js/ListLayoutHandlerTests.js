@@ -105,6 +105,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var listItems = jQuery("li", jQuery("#list1"));
             
             jqUnit.assertFalse("Before move, orderChangedCallback should not have been called", orderChangedCallbackWasCalled);
+            jqUnit.assertFalse("No item was moved yet", itemThatWasMoved);
             jqUnit.assertEquals("Before moving anything, expect first is first", firstItemId, listItems[0].id);
             jqUnit.assertEquals("Before moving anything, expect second is second", secondItemId, listItems[1].id);
             jqUnit.assertEquals("Before moving anything, expect third is third", thirdItemId, listItems[2].id);
@@ -116,6 +117,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var listItemsAfterMove = jQuery("li", jQuery("#list1"));
             
             jqUnit.assertTrue("After, callback should have been called", orderChangedCallbackWasCalled);
+            jqUnit.assertEquals("The first item was moved", listItems[0].id, itemThatWasMoved.id);
             jqUnit.assertEquals("After, expect second is first", secondItemId, listItemsAfterMove[0].id);
             jqUnit.assertEquals("After, expect first is second", firstItemId, listItemsAfterMove[1].id);
             jqUnit.assertEquals("After, expect third is third", thirdItemId, listItemsAfterMove[2].id);

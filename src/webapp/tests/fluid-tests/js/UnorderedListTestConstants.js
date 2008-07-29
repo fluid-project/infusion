@@ -27,6 +27,7 @@ var nonOrderabeItemId = "para1";
 
 var listHandler1;
 var orderChangedCallbackWasCalled;
+var itemThatWasMoved;
 
 var findList1 = function () { 
     return jQuery("#list1")[0]; 
@@ -38,8 +39,9 @@ var listMovableFinder = function  () {
     return jQuery("[id^=list1item]", findList1()).get();
 };
 
-var callbackConfirmer = function () {
+var callbackConfirmer = function(item){
     orderChangedCallbackWasCalled = true;
+    itemThatWasMoved = item;
 };
 
 var createListLayoutHandler = function  () {
