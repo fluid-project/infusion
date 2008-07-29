@@ -133,17 +133,19 @@ function percentToPixels(containerWidth,percent) {
 
             var updateValue = 10;
             progressBar.updateProgress("total",updateValue,"Some Text",true); 
-            jqUnit.assertEquals("Working: busy should be ", "true", container.ariaState("busy"));
+            var busyVal = container.ariaState("busy");
+            jqUnit.assertTrue("Working: busy should be true", busyVal === "true" || busyVal === true);
             jqUnit.assertEquals("Working: valuenow should be ", updateValue, container.ariaState("valuenow"));
 
             updateValue = 50;
             progressBar.updateProgress("total",updateValue,"Some Text",true); 
-            jqUnit.assertEquals("Working: busy should be ", "true", container.ariaState("busy"));
+            jqUnit.assertTrue("Working: busy should be true", container.ariaState("busy"));
             jqUnit.assertEquals("Working: valuenow should be ", updateValue, container.ariaState("valuenow"));
 
             updateValue = 100;
             progressBar.updateProgress("total",updateValue,"Some Text",true); 
-            jqUnit.assertEquals("Done: busy should be ", "false", container.ariaState("busy"));
+            busyVal = container.ariaState("busy");
+            jqUnit.assertTrue("Done: busy should be false", busyVal === "false" || !busyVal);
             jqUnit.assertEquals("Done: valuenow should be ", updateValue, container.ariaState("valuenow"));
         });
 
