@@ -1,32 +1,15 @@
 
-Fluid Infusion 0.4beta1
-========================
+Fluid Infusion 0.4
+==================
 Main Project Site:  http://fluidproject.org
 User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
-
-This Release is a BETA
-======================
-
-This is an early, BETA version of Fluid Infusion 0.4. The contents of this distribution are
-a snapshot of the Fluid code as of June 26, 2008. A number of tasks will be carried out between
-this BETA and the actual release:
-
-* Blocker issues will be addressed (see Known Issues below).
-  To monitor the status of bug resolutions, see the Fluid Issue Tracker, at
-      http://issues.fluidproject.org
-
-* The documentation will be completed.
-  There are known gaps in the documentation that is included in this BETA.
-  If you're eager to see updated documentation before the release, keep an eye on the wiki, at
-      http://wiki.fluidproject.org
-
 
 What's in this Release
 ======================
 
 This release is available in two forms:
-    fluid-0.4beta1.zip - deployment bundle
-    fluid-0.4beta1-src.zip - source code bundle
+    fluid-0.4.zip - deployment bundle
+    fluid-0.4-src.zip - source code bundle
     
 Both bundles have the following organization:
         fluid-components/
@@ -35,7 +18,7 @@ Both bundles have the following organization:
         LICENSE.txt
         README.txt
 
-The deployment bundle also includes a war file suitable for deployment: fluid-components-0.4beta1.war
+The deployment bundle also includes a war file suitable for deployment: fluid-components-0.4.war
 
 Source Code
 -----------
@@ -135,8 +118,6 @@ Some of the known issues in this release are described here:
 
 * Uploader: Uploader code will not warn you if you have the wrong version of Flash installed, or no
   version of Flash.
-
-* Uploader: Keyboard handlers and ARIA support are preliminary.
 
 * Reorderer: Once focus is within the group of reorderable elements, shift-tab cannot
   be used to move focus out again. Tabbing forward must be used.
