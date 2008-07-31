@@ -20,10 +20,9 @@ fluid = fluid || {};
     // Is paddings doing what we want? Should it be in the CSS file instead?
     function edit(that) {
         var viewEl = that.viewEl;
-        var editField = that.editField;
         var displayText = viewEl.text();
-		editField.val(displayText === that.options.defaultViewText ? "" : displayText);
-		editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit));
+        that.updateModel(displayText === that.options.defaultViewText? "" : displayText);
+        that.editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit));
 
         viewEl.removeClass(that.options.styles.invitation);
         viewEl.removeClass(that.options.styles.focus);
@@ -42,7 +41,6 @@ fluid = fluid || {};
             }
         }, 0);
     }
-    
 
 
     function clearEmptyViewStyles(textEl, defaultViewStyle, originalViewPadding) {
@@ -50,45 +48,39 @@ fluid = fluid || {};
         textEl.css('padding-right', originalViewPadding);
     }
     
-    function showEditedText(editedVal, textEl, defaultViewStyle, originalViewPadding) {
-        // The user entered something into the text field, so we want to reflect that in the view mode.
-        textEl.text(editedVal);
-        clearEmptyViewStyles(textEl, defaultViewStyle, originalViewPadding);
+    
+    function showDefaultViewText(that) {
+        that.viewEl.text(that.options.defaultViewText);
+        that.viewEl.addClass(that.options.styles.defaultViewText);
     }
     
-    function showDefaultViewText(defaultViewText, textEl, defaultViewStyle) {
-        textEl.text(defaultViewText);
-        textEl.addClass(defaultViewStyle);
-    }
-    
-    function showNothing(textEl, paddings, originalViewPadding) {
-       
+
+    function showNothing(that) {
+        that.viewEl.text("");
        // workaround for FLUID-938, IE can not style an empty inline element, so force element to be display: inline-block
        
         if ($.browser.msie) {
-            if (textEl.css('display') === 'inline') {
-                textEl.css('display', "inline-block");
+            if (that.viewEl.css('display') === 'inline') {
+                that.viewEl.css('display', "inline-block");
             }
         }
         
         // If necessary, pad the view element enough that it will be evident to the user.
-        if (originalViewPadding < paddings.minimumView) {
-            textEl.css('padding-right', paddings.minimumView);
+        if (that.existingPadding < that.options.paddings.minimumView) {
+            that.viewEl.css('padding-right',  that.options.paddings.minimumView);
         }
+    }
+
+    function showEditedText(that) {
+        that.viewEl.text(that.model.value);
+        clearEmptyViewStyles(that.viewEl, that.options.defaultViewStyle, that.existingPadding);
     }
 
     function finish(that) {
         if (that.options.finishedEditing) {
           that.options.finishedEditing(that.editField[0], that.viewEl[0]);
         }
-        var editVal = that.editField.val();
-        if (editVal) {
-            showEditedText(editVal, that.viewEl, that.options.defaultViewStyle, that.existingPadding);
-        } else if (that.options.defaultViewText) {
-            showDefaultViewText(that.options.defaultViewText, that.viewEl, that.options.styles.defaultViewText);
-        } else {
-            showNothing(that.viewEl, that.options.paddings, that.existingPadding);
-        }
+        that.updateModel(that.editField.val());
         
         that.editContainer.hide();
         that.viewEl.show();
@@ -112,7 +104,7 @@ fluid = fluid || {};
         viewEl.hover(over, out);
     }
     
-    function mouse(that) {
+    function bindMouseHandlers(that) {
         bindHoverHandlers(that.viewEl, that.options.styles.invitation);
         that.viewEl.click(makeEditHandler(that));
     }
@@ -130,7 +122,7 @@ fluid = fluid || {};
         viewEl.blur(focusOff);
     }
     
-    function keyNav(that) {
+    function bindKeyboardHandlers(that) {
         that.viewEl.tabbable();
         bindKeyHighlight(that.viewEl, that.options.styles.focus, that.options.styles.invitation);
         that.viewEl.activatable(makeEditHandler(that));
@@ -178,16 +170,16 @@ fluid = fluid || {};
         that.editContainer = $(that.options.selectors.editContainer, that.container);
         if (that.editContainer.length >= 1) {
             var isEditSameAsContainer = that.editContainer.is(that.options.selectors.edit);
-            var containerConstraint =  isEditSameAsContainer ? that.container : that.editContainer;
+            var containerConstraint = isEditSameAsContainer ? that.container : that.editContainer;
             that.editField =  $(that.options.selectors.edit, containerConstraint);
         } else {
-            var editElms = that.options.editModeInjector(that.container.attr("id"), that.viewEl);
+            var editElms = that.options.editModeRenderer(that);
             that.editContainer = editElms.container;
             that.editField = editElms.field;
         }
     };
     
-    var defaultEditModeInjector = function (componentContainerId, view) {
+    var defaultEditModeRenderer = function (that) {
         // Template strings.
         var editModeTemplate = "<span><input type='text' /></span>";
 
@@ -195,6 +187,7 @@ fluid = fluid || {};
         var editContainer = $(editModeTemplate);
         var editField = jQuery("input", editContainer);
         
+        var componentContainerId = that.container.attr("id");
         // Give the container and textfield a reasonable set of ids if necessary.
         if (componentContainerId) {
             var editContainerId = componentContainerId +"-edit-container";
@@ -203,10 +196,10 @@ fluid = fluid || {};
             editField.attr("id", editFieldId); 
         }
         
-        editField.attr("value", view.text());
+        editField.val(that.model.value);
         
         // Inject it into the DOM.
-        editContainer.insertAfter(view);
+        that.container.append(editContainer);
         
         // Package up the container and field for the component.
         return {
@@ -215,61 +208,15 @@ fluid = fluid || {};
         };
     };
     
-    var setupViewMode = function (that) {
-        var displayText = that.viewEl.text();
-        that.existingPadding = parseFloat(that.viewEl.css("padding-right"));
-        if (!displayText) {
-            if (that.options.defaultViewText) {
-                showDefaultViewText(that.options.defaultViewText, that.viewEl, 
-                    that.options.styles.defaultViewText);
-            } else {
-                showNothing(that.viewEl, that.options.paddings, that.existingPadding);
-            }
-        }
-    };
-    
-    fluid.defaults("inlineEdit", {  
-        selectors: {
-            text: ".text",
-            editContainer: ".editContainer",
-            edit: ".edit"
-        },
-        
-        styles: {
-            invitation: "inlineEdit-invitation",
-            defaultViewText: "inlineEdit-invitation-text",
-            tooltip: "inlineEdit-tooltip",
-            focus: "inlineEdit-focus"
-        },
-        
-        paddings: {
-            edit: 10,
-            minimumEdit: 80,
-            minimumView: 60
-        },
-        
-        editModeInjector: defaultEditModeInjector,
-        
-        defaultViewText: "Click here to edit",
-        
-        tooltipText: "Click item to edit",
-        
-        tooltipId: "tooltip",
-        
-        useTooltip: false,
-        
-        tooltipDelay: 2000,
-        
-        selectOnEdit: false
-    });
     
     var setupInlineEdit = function (componentContainer, that) {
         bindToDom(that, componentContainer);
-        setupViewMode(that);
+        that.existingPadding = parseFloat(that.viewEl.css("padding-right"));
+        that.updateModel(that.viewEl.text());
         
         // Add event handlers.
-        mouse(that);
-        keyNav(that);
+        bindMouseHandlers(that);
+        bindKeyboardHandlers(that);
         bindEditFinish(that);
         bindBlurHandler(that);
         
@@ -312,6 +259,10 @@ fluid = fluid || {};
           $.extend(true, that.options, userOptions);
         }
        
+        that.model = {value: ""};
+       
+        that.modelFirer = fluid.event.getEventFirer();
+        
         that.edit = function () {
             edit(that);
         };
@@ -323,6 +274,31 @@ fluid = fluid || {};
         that.tooltipEnabled = function() {
             return that.options.useTooltip && $.fn.tooltip;
         };
+        
+        that.render = function(source) {
+           if (that.model.value) {
+             showEditedText(that);
+           } 
+           else if (that.options.defaultViewText) {
+             showDefaultViewText(that);
+           } 
+           else {
+             showNothing(that);
+           }
+          
+          if (that.editField && that.editField.index(source) === -1) {
+            that.editField.val(that.model.value);
+          }
+        }
+        
+        that.updateModel = function(newValue, source) {
+          var change = that.model.value !== newValue;
+          if (change) {
+            that.model.value = newValue;
+            that.modelFirer.fireEvent(newValue);
+          }
+          that.render(source); // Always render, because of possibility of initial event
+        }
 
         setupInlineEdit(componentContainer, that);
         
@@ -351,6 +327,42 @@ fluid = fluid || {};
         
         return setupInlineEdits(editables, options);
     };
+    
+    fluid.defaults("inlineEdit", {  
+        selectors: {
+            text: ".text",
+            editContainer: ".editContainer",
+            edit: ".edit"
+        },
+        
+        styles: {
+            invitation: "inlineEdit-invitation",
+            defaultViewText: "inlineEdit-invitation-text",
+            tooltip: "inlineEdit-tooltip",
+            focus: "inlineEdit-focus"
+        },
+        
+        paddings: {
+            edit: 10,
+            minimumEdit: 80,
+            minimumView: 60
+        },
+        
+        editModeRenderer: defaultEditModeRenderer,
+        
+        defaultViewText: "Click here to edit",
+        
+        tooltipText: "Click item to edit",
+        
+        tooltipId: "tooltip",
+        
+        useTooltip: false,
+        
+        tooltipDelay: 2000,
+        
+        selectOnEdit: false
+    });
+    
     
     fluid.defaults("inlineEdits", {
         selectors: {

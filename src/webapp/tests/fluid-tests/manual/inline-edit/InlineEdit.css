@@ -19,3 +19,7 @@ form, #inline-edit4 {
 .inlineEdit-focus {
     border: 2px solid #777777;
 }
+
+.fluid-undo {
+	  font-size: smaller;
+}

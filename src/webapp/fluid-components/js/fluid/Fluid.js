@@ -46,18 +46,18 @@ var fluid = fluid || {};
     };
     
     fluid.orientation = {
-    	HORIZONTAL: "horiz",
-    	VERTICAL: "vert"
+        HORIZONTAL: "horiz",
+        VERTICAL: "vert"
     };
     
     /**
      * This is the position, relative to a given drop target, that a dragged item should be dropped.
      */
     fluid.position = {
-    	BEFORE: 0, 
-    	AFTER: 1,
-    	INSIDE: 2,
-    	USE_LAST_KNOWN: 3,  // given configuration meaningless, use last known drop target
+        BEFORE: 0, 
+        AFTER: 1,
+        INSIDE: 2,
+        USE_LAST_KNOWN: 3,  // given configuration meaningless, use last known drop target
         DISALLOWED: -1      // cannot drop in given configuration
     };
     
@@ -71,7 +71,7 @@ var fluid = fluid || {};
     
     fluid.defaultKeysets = [{
         modifier : function (evt) {
-	        return evt.ctrlKey;
+            return evt.ctrlKey;
         },
         up : fluid.keys.UP,
         down : fluid.keys.DOWN,
@@ -80,21 +80,13 @@ var fluid = fluid || {};
     },
     {
         modifier : function (evt) {
-	        return evt.ctrlKey;
+            return evt.ctrlKey;
         },
         up : fluid.keys.i,
         down : fluid.keys.m,
         right : fluid.keys.k,
         left : fluid.keys.j
     }];
-    
-    fluid.mixin = function (target, args) {
-        for (var arg in args) {
-            if (args.hasOwnProperty(arg)) {
-                target[arg] = args[arg];
-            }
-        }
-    };
     
     fluid.wrap = function (obj) {
         return ((!obj || obj.jquery) ? obj : jQuery(obj)); 
@@ -144,6 +136,69 @@ var fluid = fluid || {};
         return defaultsStore[componentName];
     };
     
+    var fluid_guid = 1;
+    
+    // A hash of (jQuery data id) elements to "true" indicating whether the corresponding
+    // DOM element is the source of an event for the current cycle.
+    var fluid_sourceElements = {};
+    
+    fluid.event = {};
+    
+    fluid.event.getEventFirer = function () {
+      var log = fluid.utils.debug;
+      var listeners = {};
+      return {
+        addListener: function (listener, namespace, exclusions) {
+          if (!namespace) {
+            if (!listener.$$guid) listener.$$guid = fluid_guid++;
+            namespace = listener.$$guid;
+            }
+
+          excludeids = [];
+          if (exclusions) {
+            for (var i in exclusions) {
+              excludeids.push(jQuery.data(exclusions[i]));
+              }
+            }
+          listeners[namespace] = {listener: listener, exclusions: excludeids};
+          },
+          
+        removeListener: function (listener) {
+          if (typeof(listener) === 'string') {
+            delete listeners[listener];
+          }
+          else if (typeof(listener) === 'object' && listener.$$guid){
+            delete listeners[listener.$$guid];
+          }
+        },
+        
+        fireEvent: function() {
+          for (var i in listeners) {
+            var lisrec = listeners[i];
+            var excluded = false;
+            for (var j in lisrec.exclusions) {
+              var exclusion = lisrec.exclusions[j];
+              log("Checking exclusion for " + exclusion);
+              if (fluid_sourceElements[exclusion]) {
+                log("Excluded");
+                excluded = true; break;
+                }
+              }
+          if (!excluded) {
+            try {
+              log("Firing to listener " + i + " with arguments " + arguments);
+              lisrec.listener.apply(null, arguments);
+              }
+            catch (e) {
+              log("FireEvent received exception " + e.message + " e " +e + " firing to listener " + i);
+               throw (e);       
+              }
+            }
+          }
+        }
+      };
+    }
+    
     /*
      * Utilities object for providing various general convenience functions
      */
@@ -152,7 +207,7 @@ var fluid = fluid || {};
     /** Returns the absolute position of a supplied DOM node in pixels.
      * Implementation taken from quirksmode http://www.quirksmode.org/js/findpos.html
      */
-    fluid.computeAbsolutePosition = function (element) {
+    fluid.utils.computeAbsolutePosition = function (element) {
         var curleft = curtop = 0;
         if (element.offsetParent) {
             do {
@@ -229,43 +284,63 @@ var fluid = fluid || {};
         return null;
     };
 
+    var fluid_logging = false;
+
     fluid.utils.debug = function (str) {
-    	if (window.console) {
-            if (console.debug) {
-                console.debug(str);
-            } else {
-                console.log(str);
-            }
-    	}
+      if (fluid_logging) {
+        if (typeof(console) != "undefined") {
+          if (console.debug) {
+            console.debug(str);
+          } else {
+            console.log(str);
+          }
+        }
+        else if (typeof(YAHOO) != "undefined") {
+          YAHOO.log(message);
+          }
+        else if (typeof(opera) != "undefined") {
+        opera.postError(message);
+        }
+      }
+    };
+    
+     /** method to allow user to enable logging (off by default) */
+    fluid.utils.setLogging = function(enabled) {
+      if (typeof enabled === "boolean") {
+        fluid_logging = enabled;
+        } else {
+        fluid_logging = false;
+        }
+      };
+    
+
+    fluid.utils.derivePercent = function (num, total) {
+        return Math.round((num * 100) / total);
     };
 
-	fluid.utils.derivePercent = function (num, total) {
-		return Math.round((num * 100) / total);
-	};
-
-	// simple function for return kbytes and megabytes from a number of bytes
-	// probably should do something fancy that shows MBs if the number is huge
-	fluid.utils.filesizeStr = function (bytes) {
-		/*
-		if (bytes < 1024){
-			return bytes + " bytes";
-		} else
-		*/
-		if (typeof bytes === "number") {
-			if (bytes === 0) {
-				return "0.0 KB";
-			} else if (bytes > 0) {
-				if (bytes < 1048576) {
-					return (Math.ceil(bytes / 1024 * 10) / 10).toFixed(1) + ' KB';
-				}
-				else {
-					return (Math.ceil(bytes / 1048576 * 10) / 10).toFixed(1) + ' MB';
-				}
-			}
-		}
-		return '';
-	};
-	
+    // simple function for return kbytes and megabytes from a number of bytes
+    // probably should do something fancy that shows MBs if the number is huge
+    fluid.utils.filesizeStr = function (bytes) {
+        /*
+        if (bytes < 1024){
+            return bytes + " bytes";
+        } else
+        */
+        if (typeof bytes === "number") {
+            if (bytes === 0) {
+                return "0.0 KB";
+            } else if (bytes > 0) {
+                if (bytes < 1048576) {
+                    return (Math.ceil(bytes / 1024 * 10) / 10).toFixed(1) + ' KB';
+                }
+                else {
+                    return (Math.ceil(bytes / 1048576 * 10) / 10).toFixed(1) + ' MB';
+                }
+            }
+        }
+        return '';
+    };
+    
     fluid.utils.initCssClassNames = function (defaultNames, classNames) {
         if (!classNames) {
             return defaultNames;
@@ -279,26 +354,26 @@ var fluid = fluid || {};
 
         return cssClassNames;
     };
-	
+    
     /**
      * Simple string template system. 
      * Takes a template string containing tokens in the form of "%value".
      * Returns a new string with the tokens replaced by the specified values.
      * Keys and values can be of any data type that can be coerced into a string. Arrays will work here as well.
      * 
-     * @param {String}	template	a string (can be HTML) that contains tokens embedded into it
-     * @param {object}	values		a collection of token keys and values
-	 */
+     * @param {String}    template    a string (can be HTML) that contains tokens embedded into it
+     * @param {object}    values        a collection of token keys and values
+     */
     fluid.utils.stringTemplate = function (template, values) {
-	    var newString = template;
-		for (var key in values) {
+        var newString = template;
+        for (var key in values) {
             if (values.hasOwnProperty(key)) {
-    			var searchStr = "%" + key;
+                var searchStr = "%" + key;
                 newString = newString.replace(searchStr, values[key]);
             }
-		}
-		return newString;
-	};
+        }
+        return newString;
+    };
 
     /**
      * Finds the ancestor of the element that passes the test

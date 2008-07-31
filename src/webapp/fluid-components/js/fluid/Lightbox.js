@@ -93,7 +93,7 @@ var fluid = fluid || {};
             var reordererOptions = {
                 role : fluid.roles.GRID
             };            
-            fluid.mixin (reordererOptions, options);
+            jQuery.extend(true, reordererOptions, options);
             
             return new fluid.Reorderer (container, itemFinderFn, layoutHandler, reordererOptions);
         },
