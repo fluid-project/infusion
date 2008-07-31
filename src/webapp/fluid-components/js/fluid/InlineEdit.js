@@ -62,7 +62,14 @@ fluid = fluid || {};
     }
     
     function showNothing(textEl, paddings, originalViewPadding) {
-        textEl.text("");
+       
+       // workaround for FLUID-938, IE can not style an empty inline element, so force element to be display: inline-block
+       
+        if ($.browser.msie) {
+            if (textEl.css('display') === 'inline') {
+                textEl.css('display', "inline-block");
+            }
+        }
         
         // If necessary, pad the view element enough that it will be evident to the user.
         if (originalViewPadding < paddings.minimumView) {
