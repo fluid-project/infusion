@@ -136,6 +136,24 @@ var fluid = fluid || {};
         return defaultsStore[componentName];
     };
     
+    fluid.initialiseThat = function(componentName, container, userOptions) {
+      var that = {};
+      userOptions = userOptions || {};
+      that.options = jQuery.extend(true, {}, fluid.defaults(componentName), userOptions);
+      if (container) {
+        that.container = fluid.container(container);
+      }
+      that.select = function(name) {
+        var togo = jQuery(that.options.selectors[name], that.container);
+        if (togo.length === 0 || togo.get(0) === document) {
+          throw ("Selector " + name + " with value " + that.options.selectors 
+            + " did not find any elements with container " + that.container);
+        }
+        return togo;
+      };
+      return that;
+    }
+    
     var fluid_guid = 1;
     
     // A hash of (jQuery data id) elements to "true" indicating whether the corresponding
@@ -197,6 +215,20 @@ var fluid = fluid || {};
           }
         }
       };
+    }
+    
+    fluid.model = {};
+    
+    /** Destroy a model to an empty condition**/
+    fluid.model.contund = function(target) {
+      for (var i in target) {
+        delete target[i];
+      }
+    }
+    /** Copy a source "model" onto a target **/
+    fluid.model.copyModel = function copyModel(target, source) {
+      fluid.model.contund(target);
+      jQuery.extend(true, target, source);
     }
     
     /*

@@ -155,16 +155,9 @@ fluid = fluid || {};
         viewEl.ariaRole("button");
     }
     
-    var mixDefaults = function(that, defaults, options) {
-        that.options = {};
-        $.extend(that.options, defaults);
-        $.extend(that.options, options);
-    };
-    
     var bindToDom = function (that, container) {
         // Bind to the DOM.
-        that.container = fluid.container(container);
-        that.viewEl = $(that.options.selectors.text, that.container);
+        that.viewEl = that.select("text");
 
         // If an edit container is found in the markup, use it. Otherwise generate one based on the view text.
         that.editContainer = $(that.options.selectors.editContainer, that.container);
@@ -211,7 +204,8 @@ fluid = fluid || {};
     
     var setupInlineEdit = function (componentContainer, that) {
         bindToDom(that, componentContainer);
-        that.existingPadding = parseFloat(that.viewEl.css("padding-right"));
+        var padding = that.viewEl.css("padding-right");
+        that.existingPadding = padding? parseFloat(padding) : 0;
         that.updateModel(that.viewEl.text());
         
         // Add event handlers.
@@ -251,13 +245,8 @@ fluid = fluid || {};
      * @param {Object} options a collection of options settings
      */
     fluid.inlineEdit = function (componentContainer, userOptions) {
-        var that = {};
-        // Mix in the user's configuration options.
-        that.options = {};
-        $.extend(true, that.options, fluid.defaults("inlineEdit"));
-        if (userOptions) {
-          $.extend(true, that.options, userOptions);
-        }
+      
+        var that = fluid.initialiseThat("inlineEdit", componentContainer, userOptions);
        
         that.model = {value: ""};
        

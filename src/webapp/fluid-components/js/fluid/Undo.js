@@ -15,23 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid = fluid || {};
 
 (function ($, fluid) {
-    function contund(target) {
-      for (var i in target) {
-        delete target[i];
-      }
-    }
-
-    function copyModel(target, source) {
-      contund(target);
-      jQuery.extend(true, target, source);
-    }
     
-    function addDomBinder(that) {
-      that.select = function(name) {
-        return $(that.options.selectors[name], that.container);
-      };
-    }
-  
   // The three states of the undo component
     var STATE_INITIAL = "state_initial", 
         STATE_CHANGED = "state_changed",
@@ -71,15 +55,15 @@ fluid = fluid || {};
       
       that.select("undoControl").click( 
         function() {
-          copyModel(that.extremalModel, that.component.model);
-          copyModel(that.component.model, that.initialModel);
+          fluid.model.copyModel(that.extremalModel, that.component.model);
+          fluid.model.copyModel(that.component.model, that.initialModel);
           that.component.render();
           that.state = STATE_REVERTED;
           render(that);
         });
       that.select("redoControl").click( 
         function() {
-          copyModel(that.component.model, that.extremalModel);
+          fluid.model.copyModel(that.component.model, that.extremalModel);
           that.component.render();
           that.state = STATE_CHANGED;
           render(that);
@@ -92,22 +76,15 @@ fluid = fluid || {};
      * @param {Object} options a collection of options settings
      */
     fluid.infuseUndoability = function (component, userOptions) {
-        var that = {};
-        // Mix in the user's configuration options.
-        that.options = {};
-        $.extend(true, that.options, fluid.defaults("undo"));
-        if (userOptions) {
-          $.extend(true, that.options, userOptions);
-        }
+        var that = fluid.initialiseThat("undo", null, userOptions);
+        that.container = that.options.renderer(that, component.container);
         
         that.component = component;
         that.initialModel = {};
         that.extremalModel = {};
-        copyModel(that.initialModel, component.model);
+        fluid.model.copyModel(that.initialModel, component.model);
         
         that.state = STATE_INITIAL;
-        that.container = that.options.renderer(that, component.container);
-        addDomBinder(that);
         
         render(that);
         bindHandlers(that);
