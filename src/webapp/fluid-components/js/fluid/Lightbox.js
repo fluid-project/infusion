@@ -86,16 +86,16 @@ var fluid = fluid || {};
             
             var orderChangedFn = options.orderChangedCallback || fluid.lightbox.defaultOrderChangedCallback (fluid.unwrap(container));
 
-            var layoutHandler = new fluid.GridLayoutHandler (itemFinderFn, {
+            var layoutHandler = fluid.gridLayoutHandler (itemFinderFn, {
                 orderChangedCallback: orderChangedFn
             });
 
             var reordererOptions = {
-                role : fluid.roles.GRID
+                containerRole : fluid.roles.GRID
             };            
             jQuery.extend(true, reordererOptions, options);
             
-            return new fluid.Reorderer (container, itemFinderFn, layoutHandler, reordererOptions);
+            return fluid.reorderer(container, itemFinderFn, layoutHandler, reordererOptions);
         },
         
         /**

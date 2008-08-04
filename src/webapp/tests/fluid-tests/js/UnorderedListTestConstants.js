@@ -49,7 +49,7 @@ var createListLayoutHandler = function  () {
         orderChangedCallback: callbackConfirmer
     };
     
-    return new fluid.ListLayoutHandler(listMovableFinder, options);
+    return fluid.listLayoutHandler(listMovableFinder, options);
 };
 
 // This setUp will be called before each of the tests that are included in unordered-list.html 

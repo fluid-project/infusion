@@ -99,10 +99,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
         	var reorderer = fluid.Scheduler.initScheduler (SchedulerTests.conferenceContainerId);
         	
         	// Make sure we have a container.
-        	jqUnit.assertNotNull ("The Reorderer's domNode should not be null.", reorderer.domNode.get (0));
+        	jqUnit.assertNotNull ("The Reorderer's domNode should not be null.", reorderer.container);
         	jqUnit.assertEquals("The Reorderer's domNode should be the sortableSchedule element",
         				 SchedulerTests.conferenceContainerId,
-        				 reorderer.domNode.attr ("id"));
+        				 reorderer.container.attr("id"));
         
         	// TODO: This test used to check whether parameters that are passed in are sucessfully set in the Reorderer. 
         	// Now these parameters (layoutHandler, findMovables) are private and cannot be accessed directly from the test

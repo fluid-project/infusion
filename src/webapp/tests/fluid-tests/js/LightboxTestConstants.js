@@ -93,7 +93,7 @@ function findOrderableByDivAndId (containerEl) {
 }
 
 function findNoOrderables() {
-	return [];
+    return [];
 }
 
 function findImgsInLightbox() {
@@ -101,19 +101,19 @@ function findImgsInLightbox() {
 }
     
 function createLightbox() {
-	var lightboxRoot = fetchLightboxRoot ();
-    var layoutHandler = new fluid.GridLayoutHandler (findOrderableByDivAndId);
-    return new fluid.Reorderer (lightboxRoot, findOrderableByDivAndId, layoutHandler, { role : fluid.roles.GRID });
+    var lightboxRoot = fetchLightboxRoot ();
+    var layoutHandler = fluid.gridLayoutHandler (findOrderableByDivAndId);
+    return fluid.reorderer (lightboxRoot, findOrderableByDivAndId, layoutHandler, { containerRole : fluid.roles.GRID });
 }
 
 function createLightboxWithNoOrderables() {
-	var lightboxRoot = fetchLightboxRoot ();
-    var layoutHandler = new fluid.GridLayoutHandler (findNoOrderables);
-	return new fluid.Reorderer (lightboxRoot, findNoOrderables, layoutHandler, { role : fluid.roles.GRID });
+    var lightboxRoot = fetchLightboxRoot ();
+    var layoutHandler = fluid.gridLayoutHandler (findNoOrderables);
+    return fluid.reorderer (lightboxRoot, findNoOrderables, layoutHandler, { containerRole : fluid.roles.GRID });
 }
 
 function createGridLayoutHandler () {
-    return new fluid.GridLayoutHandler (findOrderableByDivAndId);
+    return fluid.gridLayoutHandler (findOrderableByDivAndId);
 }
 
 var altKeys = { 

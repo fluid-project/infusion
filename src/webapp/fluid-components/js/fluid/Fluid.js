@@ -373,20 +373,6 @@ var fluid = fluid || {};
         return '';
     };
     
-    fluid.utils.initCssClassNames = function (defaultNames, classNames) {
-        if (!classNames) {
-            return defaultNames;
-        }
-        var cssClassNames = {};
-        for (var className in defaultNames) {
-            if (defaultNames.hasOwnProperty(className)) {
-                cssClassNames[className] = classNames[className] || defaultNames[className];
-            }
-        }
-
-        return cssClassNames;
-    };
-    
     /**
      * Simple string template system. 
      * Takes a template string containing tokens in the form of "%value".

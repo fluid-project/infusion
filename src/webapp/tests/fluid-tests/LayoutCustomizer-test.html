@@ -41,7 +41,8 @@
 
   <!-- TABLE -->
 
-    <div class="reorderer_container">
+    <div class="reorderer_container" id="reorderer-container">
+    <!-- TODO the id is required since moduleLayout.containerId attempts to determine it and use as a selector -->
       <div id="drop-warning" style="display:none;">The portlet being moved cannot be dropped in this position</div>
       <table id="portlet-reorderer-root">
         <tbody>

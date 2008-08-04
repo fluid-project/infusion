@@ -46,7 +46,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         tests.test ("reorderList with option", function () {
             var options = {
-                cssClassNames: {
+                cssClasses: {
                     defaultStyle: "myDefault",
                     selected: "mySelected"
                 }
@@ -54,10 +54,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             var listReorderer = fluid.reorderList("#list1", "li", callbackConfirmer, options);
             
-            jqUnit.assertEquals("default class is myDefault", "myDefault", listReorderer.cssClasses.defaultStyle);
-            jqUnit.assertEquals("selected class is mySelected", "mySelected", listReorderer.cssClasses.selected);
-            jqUnit.assertEquals("dragging class is orderable-dragging", "orderable-dragging", listReorderer.cssClasses.dragging);
-            jqUnit.assertEquals("mouseDrag class is orderable-dragging", "orderable-dragging", listReorderer.cssClasses.mouseDrag);
+            jqUnit.assertEquals("default class is myDefault", "myDefault", listReorderer.options.cssClasses.defaultStyle);
+            jqUnit.assertEquals("selected class is mySelected", "mySelected", listReorderer.options.cssClasses.selected);
+            jqUnit.assertEquals("dragging class is orderable-dragging", "orderable-dragging", listReorderer.options.cssClasses.dragging);
+            jqUnit.assertEquals("mouseDrag class is orderable-dragging", "orderable-dragging", listReorderer.options.cssClasses.mouseDrag);
             
         });    
     

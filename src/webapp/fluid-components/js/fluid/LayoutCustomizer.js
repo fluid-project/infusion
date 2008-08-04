@@ -25,9 +25,9 @@ var fluid = fluid || {};
 
         var reordererRoot = fluid.utils.jById (fluid.moduleLayout.containerId (layout));
         var items = fluid.moduleLayout.createFindItems (layout, perms, rOptions.grabHandle);    
-        var layoutHandler = new fluid.ModuleLayoutHandler (layout, perms, lhOptions);
+        var layoutHandler = fluid.moduleLayoutHandler (layout, perms, lhOptions);
 
-        return new fluid.Reorderer (reordererRoot, items, layoutHandler, rOptions);
+        return fluid.reorderer(reordererRoot, items, layoutHandler, rOptions);
     };
     
 

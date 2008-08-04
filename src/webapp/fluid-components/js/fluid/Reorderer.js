@@ -17,18 +17,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid = fluid || {};
 
 (function (jQuery, fluid) {
-    var defaultContainerRole = fluid.roles.LIST;
-    var defaultInstructionMessageId = "message-bundle:";
-    
-    var defaultCssClassNames = {
-        defaultStyle: "orderable-default",
-        selected: "orderable-selected",
-        dragging: "orderable-dragging",
-        mouseDrag: "orderable-dragging",
-        hover: "orderable-hover",
-        dropMarker: "orderable-drop-marker",
-        avatar: "orderable-avatar"
-    };
     
     var defaultAvatarCreator = function(item, cssClass, dropWarning) {
         var avatar = jQuery (item).clone ();
@@ -36,12 +24,12 @@ fluid = fluid || {};
         jQuery ("[id]", avatar).removeAttr ("id");
         jQuery (":hidden", avatar).remove();
         jQuery ("input", avatar).attr ("disabled", "true");
-// dropping in the same column fails if the avatar is considered a droppable.
-// droppable ("destroy") should take care of this, but it doesn't seem to remove
-// the class, which is what is checked, so we remove it manually
-// (see http://dev.jquery.com/ticket/2599)
-// 2008-05-12: 2599 has been fixed now in trunk
-//                    avatar.droppable ("destroy");
+        // dropping in the same column fails if the avatar is considered a droppable.
+        // droppable ("destroy") should take care of this, but it doesn't seem to remove
+        // the class, which is what is checked, so we remove it manually
+        // (see http://dev.jquery.com/ticket/2599)
+        // 2008-05-12: 2599 has been fixed now in trunk
+        //                    avatar.droppable ("destroy");
         avatar.removeClass ("ui-droppable");
         avatar.addClass (cssClass);
         
@@ -55,6 +43,22 @@ fluid = fluid || {};
             return avatar;
         }
     };   
+    
+    fluid.defaults("reorderer", {
+        containerRole: fluid.roles.LIST,
+        instructionMessageId: "message-bundle:",
+        cssClasses: {
+            defaultStyle: "orderable-default",
+            selected: "orderable-selected",
+            dragging: "orderable-dragging",
+            mouseDrag: "orderable-dragging",
+            hover: "orderable-hover",
+            dropMarker: "orderable-drop-marker",
+            avatar: "orderable-avatar"
+            },
+        avatarCreator: defaultAvatarCreator,
+        keysets: fluid.defaultKeysets
+    });
     
     function firstSelectable (findItems) {
         var selectables = fluid.wrap (findItems.selectables());
@@ -104,7 +108,7 @@ fluid = fluid || {};
         };
             
         var isTargetOrAvatar = function (el) {
-            return ((dropTargets.index (el) > -1) || isAvatar (el));
+            return ((dropTargets.index(el) > -1) || isAvatar(el));
         };
 
         var target = fluid.utils.findAncestor(element, isTargetOrAvatar);
@@ -121,12 +125,10 @@ fluid = fluid || {};
         return parentId + "_avatar";
     };
     
-    var setupKeysets = function (defaultKeysets, userKeysets) {
-        // Check if the user has given us an array of keysets or a single keyset.
-        if (userKeysets && !(userKeysets instanceof Array)) {
-            userKeysets = [userKeysets];    
+    var adaptKeysets = function (options) {
+        if (options.keysets && !(options.keysets instanceof Array)) {
+            options.keysets = [opstions.keysets];    
         }
-        return userKeysets || defaultKeysets;
     };
     
     /**
@@ -147,7 +149,7 @@ fluid = fluid || {};
      *                            down
      *                            right
      *                            left
-     *                  cssClassNames - an object containing class names for styling the Reorderer
+     *                  cssClasses - an object containing class names for styling the Reorderer
      *                                  defaultStyle
      *                                  selected
      *                                  dragging
@@ -157,43 +159,36 @@ fluid = fluid || {};
      *                                  avatar
      *                  avatarCreator - a function that returns a valid DOM node to be used as the dragging avatar
      */
-    fluid.Reorderer = function (container, findItems, layoutHandler, options) {
-        // Reliable 'this'.
-        var thisReorderer = this;
+    fluid.reorderer = function (container, findItems, layoutHandler, options) {
+        var thatReorderer = fluid.initialiseThat("reorderer", container, options);
         
-        // Basic setup
-        this.domNode = jQuery (container);
-        this.activeItem = undefined;
+        thatReorderer.activeItem = undefined;
         findItems = fluid.utils.adaptFindItems (findItems); // For backwards API compatibility
 
-        // Configure default properties.
-        options = options || {};
-        var role = options.role || defaultContainerRole;
-        var instructionMessageId = options.instructionMessageId || defaultInstructionMessageId;
-        var keysets = setupKeysets(fluid.defaultKeysets, options.keysets);
-        this.cssClasses = fluid.utils.initCssClassNames (defaultCssClassNames, options.cssClassNames);
-        var avatarCreator = options.avatarCreator || defaultAvatarCreator;
-        var kbDropWarning = fluid.utils.jById(options.dropWarningId);
+        adaptKeysets(thatReorderer.options);
+ 
+        var kbDropWarning = fluid.utils.jById(thatReorderer.options.dropWarningId);
         var mouseDropWarning;
         if (kbDropWarning) {
             mouseDropWarning = kbDropWarning.clone();
         }
         
-        this.focusActiveItem = function (evt) {
+        thatReorderer.focusActiveItem = function (evt) {
             // If the active item has not been set yet, set it to the first selectable.
-            if (!thisReorderer.activeItem) {
+            if (!thatReorderer.activeItem) {
                 var first = firstSelectable(findItems);
                 if (!first) {  
                     return evt.stopPropagation();
                 }
                 jQuery(first).focus ();
             } else {
-                jQuery (thisReorderer.activeItem).focus ();
+                jQuery(thatReorderer.activeItem).focus ();
             }
             return evt.stopPropagation();
         };
 
         var isMove = function (evt) {
+            var keysets = thatReorderer.options.keysets;
             for (var i = 0; i < keysets.length; i++) {
                 if (keysets[i].modifier(evt)) {
                     return true;
@@ -203,48 +198,51 @@ fluid = fluid || {};
         };
         
         var isActiveItemMovable = function () {
-            return (jQuery.inArray (thisReorderer.activeItem, findItems.movables()) >= 0);
+            return (jQuery.inArray (thatReorderer.activeItem, findItems.movables()) >= 0);
         };
         
         var setDropEffects = function (value) {
-            var dropTargets = fluid.wrap (findItems.dropTargets());
+            var dropTargets = fluid.wrap(findItems.dropTargets());
             dropTargets.ariaState ("dropeffect", value);
         };
         
-        this.handleKeyDown = function (evt) {
-            if (!thisReorderer.activeItem || (thisReorderer.activeItem !== evt.target)) {
+        var cssClasses = thatReorderer.options.cssClasses;
+        
+        thatReorderer.handleKeyDown = function (evt) {
+            if (!thatReorderer.activeItem || (thatReorderer.activeItem !== evt.target)) {
                 return true;
             }
             // If the key pressed is ctrl, and the active item is movable we want to restyle the active item.
-            var jActiveItem = jQuery (thisReorderer.activeItem);
-            if (!jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && isMove(evt)) {
+            var jActiveItem = jQuery (thatReorderer.activeItem);
+            if (!jActiveItem.hasClass(cssClasses.dragging) && isMove(evt)) {
                // Don't treat the active item as dragging unless it is a movable.
-                if (isActiveItemMovable ()) {
-                    jActiveItem.removeClass (thisReorderer.cssClasses.selected);
-                    jActiveItem.addClass (thisReorderer.cssClasses.dragging);
+                if (isActiveItemMovable()) {
+                    jActiveItem.removeClass (cssClasses.selected);
+                    jActiveItem.addClass (cssClasses.dragging);
                     jActiveItem.ariaState ("grab", "true");
                     setDropEffects("move");
                 }
                 return false;
             }
             // The only other keys we listen for are the arrows.
-            return thisReorderer.handleDirectionKeyDown(evt);
+            return thatReorderer.handleDirectionKeyDown(evt);
         };
 
-        this.handleKeyUp = function (evt) {
-            if (!thisReorderer.activeItem || (thisReorderer.activeItem !== evt.target)) {
+        thatReorderer.handleKeyUp = function (evt) {
+          
+            if (!thatReorderer.activeItem || (thatReorderer.activeItem !== evt.target)) {
                 return true;
             }
-            var jActiveItem = jQuery (thisReorderer.activeItem);
+            var jActiveItem = jQuery (thatReorderer.activeItem);
             
             // Handle a key up event for the modifier
-            if (jActiveItem.hasClass(thisReorderer.cssClasses.dragging) && !isMove(evt)) {
+            if (jActiveItem.hasClass(cssClasses.dragging) && !isMove(evt)) {
                 if (kbDropWarning) {
                     kbDropWarning.hide();
                 }
-                jActiveItem.removeClass (thisReorderer.cssClasses.dragging);
-                jActiveItem.addClass (thisReorderer.cssClasses.selected);
-                jActiveItem.ariaState ("grab", "supported");
+                jActiveItem.removeClass(cssClasses.dragging);
+                jActiveItem.addClass(cssClasses.selected);
+                jActiveItem.ariaState("grab", "supported");
                 setDropEffects("none");
                 return false;
             }
@@ -254,10 +252,10 @@ fluid = fluid || {};
 
         var moveItem = function (moveFunc){
             if (isActiveItemMovable ()) {
-                moveFunc(thisReorderer.activeItem);
+                moveFunc(thatReorderer.activeItem);
                 // refocus on the active item because moving places focus on the body
-                thisReorderer.activeItem.focus();
-                jQuery(thisReorderer.activeItem).removeClass(thisReorderer.cssClasses.selected);
+                thatReorderer.activeItem.focus();
+                jQuery(thatReorderer.activeItem).removeClass(thatReorderer.options.cssClasses.selected);
             }
         };
         
@@ -315,11 +313,11 @@ fluid = fluid || {};
             return didFocus;
         };
         
-        this.handleDirectionKeyDown = function (evt) {
-            if (!thisReorderer.activeItem) {
+        thatReorderer.handleDirectionKeyDown = function (evt) {
+            if (!thatReorderer.activeItem) {
                 return true;
             }
-            
+            var keysets = thatReorderer.options.keysets;
             for (var i = 0; i < keysets.length; i++) {
                 var keyset = keysets[i];
                 var didProcessKey = false;
@@ -330,7 +328,7 @@ fluid = fluid || {};
                     didProcessKey = moveItemForKeyCode (evt.keyCode, keyset, layoutHandler);
             
                 } else if (noModifier(evt)) {
-                    didProcessKey = focusItemForKeyCode (evt.keyCode, keyset, layoutHandler, thisReorderer.activeItem);
+                    didProcessKey = focusItemForKeyCode (evt.keyCode, keyset, layoutHandler, thatReorderer.activeItem);
                 }
                 
                 // We got the right key press. Bail right away by swallowing the event.
@@ -347,7 +345,7 @@ fluid = fluid || {};
 
         var createDropMarker = function (tagName) {
             var dropMarker = jQuery(document.createElement (tagName));
-            dropMarker.addClass (thisReorderer.cssClasses.dropMarker);
+            dropMarker.addClass(thatReorderer.options.cssClasses.dropMarker);
             dropMarker.hide();
             return dropMarker;
         };
@@ -363,8 +361,8 @@ fluid = fluid || {};
          * @param {Object} dropTargets    a list of valid drop targets
          */
         var createTrackMouse = function (dropTargets){
-            dropTargets = fluid.wrap (dropTargets);
-            var avatarId = dndFunctions.createAvatarId(thisReorderer.domNode.id);
+            dropTargets = fluid.wrap(dropTargets);
+            var avatarId = dndFunctions.createAvatarId(thatReorderer.container.id);
            
             return function (evt){
                 // Bail if we are not over a target
@@ -375,7 +373,7 @@ fluid = fluid || {};
                 var target = dndFunctions.findTarget (evt.target, dropTargets, avatarId, targetOver);
                 
                 if (target) {
-                    var position = layoutHandler.dropPosition(target, thisReorderer.activeItem, evt.clientX, evt.pageY);
+                    var position = layoutHandler.dropPosition(target, thatReorderer.activeItem, evt.clientX, evt.pageY);
                     if (position === fluid.position.DISALLOWED) {
                         if (mouseDropWarning) {
                             mouseDropWarning.show();
@@ -416,20 +414,21 @@ fluid = fluid || {};
          * Takes a jQuery object and adds 'movable' functionality to it
          */
         function initMovable (item) {
-            item.addClass (thisReorderer.cssClasses.defaultStyle);
+            var cssClasses = thatReorderer.options.cssClasses;
+            item.addClass (cssClasses.defaultStyle);
             item.ariaState ("grab", "supported");
 
             item.mouseover ( 
                 function () {
                     var handle = jQuery (findItems.grabHandle (item[0]));
-                    handle.addClass (thisReorderer.cssClasses.hover);
+                    handle.addClass(cssClasses.hover);
                 }
             );
         
             item.mouseout (  
                 function () {
                     var handle = jQuery (findItems.grabHandle (item[0]));
-                    handle.removeClass (thisReorderer.cssClasses.hover);
+                    handle.removeClass(cssClasses.hover);
                 }
             );
         
@@ -441,21 +440,21 @@ fluid = fluid || {};
                     if (mouseDropWarning) {
                         dropWarningEl = mouseDropWarning[0];
                     }
-                    var avatar = jQuery (avatarCreator (item[0], thisReorderer.cssClasses.avatar, dropWarningEl));
-                    avatar.attr("id", dndFunctions.createAvatarId(thisReorderer.domNode.id));
+                    var avatar = jQuery(thatReorderer.avatarCreator(item[0], cssClasses.avatar, dropWarningEl));
+                    avatar.attr("id", dndFunctions.createAvatarId(thatReorderer.container.id));
                     return avatar;
                 },
                 start: function (e, ui) {
                     item.focus ();
-                    item.removeClass (thisReorderer.cssClasses.selected);
-                    item.addClass (thisReorderer.cssClasses.mouseDrag);
+                    item.removeClass (thatReorderer.cssClasses.selected);
+                    item.addClass (thatReorderer.cssClasses.mouseDrag);
                     item.ariaState ("grab", "true");
                     setDropEffects ("move");
                 },
                 stop: function(e, ui) {
-                    item.removeClass (thisReorderer.cssClasses.mouseDrag);
-                    item.addClass (thisReorderer.cssClasses.selected);
-                    jQuery (thisReorderer.activeItem).ariaState ("grab", "supported");
+                    item.removeClass (thatReorderer.cssClasses.mouseDrag);
+                    item.addClass (thatReorderer.cssClasses.selected);
+                    jQuery (thatReorderer.activeItem).ariaState ("grab", "supported");
                     dropMarker.hide();
                     ui.helper = null;
                     targetOver = null;
@@ -463,7 +462,7 @@ fluid = fluid || {};
                     setDropEffects ("none");
                     
                     // refocus on the active item because moving places focus on the body
-                    thisReorderer.activeItem.focus();
+                    thatReorderer.activeItem.focus();
                 },
                 handle: findItems.grabHandle (item[0])
             });
@@ -497,12 +496,12 @@ fluid = fluid || {};
    
         var initSelectables = function (selectables) {
             var handleBlur = function (evt) {
-                changeSelectedToDefault (jQuery(this), thisReorderer.cssClasses);
+                changeSelectedToDefault (jQuery(this), thatReorderer.options.cssClasses);
                 return evt.stopPropagation();
             };
         
             var handleFocus = function (evt) {
-                thisReorderer.selectItem (this);
+                thatReorderer.selectItem (this);
                 return evt.stopPropagation();
             };
         
@@ -514,7 +513,7 @@ fluid = fluid || {};
                 item.blur (handleBlur);
                 item.focus (handleFocus);
             
-                item.ariaRole (role.item);
+                item.ariaRole (thatReorderer.options.containerRole.item);
                 item.ariaState ("selected", "false");
                 item.ariaState ("disabled", "false");
             }
@@ -551,34 +550,38 @@ fluid = fluid || {};
         };
 
         // Final initialization of the Reorderer at the end of the construction process 
-        if (this.domNode) {
-            bindHandlersToContainer (this.domNode, 
-                thisReorderer.focusActiveItem,
-                thisReorderer.handleKeyDown,
-                thisReorderer.handleKeyUp,
+        if (thatReorderer.container) {
+            bindHandlersToContainer (thatReorderer.container, 
+                thatReorderer.focusActiveItem,
+                thatReorderer.handleKeyDown,
+                thatReorderer.handleKeyUp,
                 createTrackMouse (findItems.dropTargets()));
-            addRolesToContainer (this.domNode, findItems, role);
+            addRolesToContainer (thatReorderer.container, findItems, thatReorderer.options.containerRole);
             // ensure that the Reorderer container is in the tab order
-            if (!this.domNode.hasTabindex() || (this.domNode.tabindex() < 0)) {
-                this.domNode.tabindex("0");
+            if (!thatReorderer.container.hasTabindex() || (thatReorderer.container.tabindex() < 0)) {
+                thatReorderer.container.tabindex("0");
             }
             initItems();
         }
-    };
+       var cssClasses = thatReorderer.options.cssClasses;
+       thatReorderer.selectItem = function (anItem) {
+           // Set the previous active item back to its default state.
+           if (thatReorderer.activeItem && thatReorderer.activeItem !== anItem) {
+               changeSelectedToDefault (jQuery(thatReorderer.activeItem), cssClasses);
+           }
+           // Then select the new item.
+           thatReorderer.activeItem = anItem;
+           var jItem = jQuery(anItem);
+           jItem.removeClass (cssClasses.defaultStyle);
+           jItem.addClass (cssClasses.selected);
+           jItem.ariaState ("selected", "true");
+           thatReorderer.container.ariaState ("activedescendent", anItem.id);
+           };
+           
+       return thatReorderer;
+       };
     
-    fluid.Reorderer.prototype.selectItem = function (anItem) {
-        // Set the previous active item back to its default state.
-        if (this.activeItem && this.activeItem !== anItem) {
-            changeSelectedToDefault (jQuery (this.activeItem), this.cssClasses);
-        }
-        // Then select the new item.
-        this.activeItem = anItem;
-        var jItem = jQuery(anItem);
-        jItem.removeClass (this.cssClasses.defaultStyle);
-        jItem.addClass (this.cssClasses.selected);
-        jItem.ariaState ("selected", "true");
-        this.domNode.ariaState ("activedescendent", anItem.id);
-    };
+
     
     var buildFnFromSelector = function (selector, container) {
         return function () {
@@ -618,17 +621,17 @@ fluid = fluid || {};
         
         var lOptions = options || {};
         lOptions.orderChangedCallback = orderChangedCallback;
-        var layoutHandler = new layoutHandlerFn(itemFinder, lOptions);
+        var layoutHandler = layoutHandlerFn(itemFinder, lOptions);
         
-        return new fluid.Reorderer(container, itemFinder, layoutHandler, options);
+        return fluid.reorderer(container, itemFinder, layoutHandler, options);
     };
     
     fluid.reorderList = function (containerSelector, itemSelector, orderChangedCallback, options) {
-        return simpleInit(containerSelector, itemSelector, fluid.ListLayoutHandler, orderChangedCallback, options);
+        return simpleInit(containerSelector, itemSelector, fluid.listLayoutHandler, orderChangedCallback, options);
     };
     
     fluid.reorderGrid = function (containerSelector, itemSelector, orderChangedCallback, options) {
-        return simpleInit(containerSelector, itemSelector, fluid.GridLayoutHandler, orderChangedCallback, options); 
+        return simpleInit(containerSelector, itemSelector, fluid.gridLayoutHandler, orderChangedCallback, options); 
     };
 }) (jQuery, fluid);
 
@@ -656,7 +659,7 @@ fluid = fluid || {};
      * "before" means "above".  For a horizontally oriented set, "before" means
      * "left of".
      */
-    var mousePosition = function (droppableEl, orientation, x, y) {    	
+    var mousePosition = function (droppableEl, orientation, x, y) {        
         var mid;
         var isBefore;
         if (orientation === fluid.orientation.VERTICAL) {
@@ -707,7 +710,7 @@ fluid = fluid || {};
          * the row that the given item is in
          */
         getRightSiblingInfo: function (item, orderables) {
-            return this.getSiblingInfo (item, orderables, fluid.direction.NEXT);
+            return itemInfoFinders.getSiblingInfo (item, orderables, fluid.direction.NEXT);
         },
         
         /*
@@ -716,7 +719,7 @@ fluid = fluid || {};
          * the row that the given item is in
          */
         getLeftSiblingInfo: function (item, orderables) {
-            return this.getSiblingInfo (item, orderables, fluid.direction.PREVIOUS);
+            return itemInfoFinders.getSiblingInfo (item, orderables, fluid.direction.PREVIOUS);
         },
         
         /*
@@ -776,7 +779,7 @@ fluid = fluid || {};
     };
     
     // Public layout handlers.
-    fluid.ListLayoutHandler = function (findItems, options) {
+    fluid.listLayoutHandler = function (findItems, options) {
         findItems = fluid.utils.adaptFindItems (findItems);
         var orderChangedCallback = function () {};
         var orientation = fluid.orientation.VERTICAL;
@@ -784,40 +787,41 @@ fluid = fluid || {};
             orderChangedCallback = options.orderChangedCallback || orderChangedCallback;
             orientation = options.orientation || orientation;
         }
-                
-        this.getRightSibling = function (item) {
-            return itemInfoFinders.getRightSiblingInfo (item, findItems.selectables ()).item;
-        };
+        var that = {
+            getRightSibling: function (item) {
+                return itemInfoFinders.getRightSiblingInfo (item, findItems.selectables()).item;
+            },
         
-        this.moveItemRight = function (item) {
-        	var rightSiblingInfo = itemInfoFinders.getRightSiblingInfo (item, findItems.movables ());
-            moveItem (item, rightSiblingInfo, fluid.position.AFTER, fluid.position.BEFORE);
-            orderChangedCallback(item);
+            moveItemRight: function (item) {
+                var rightSiblingInfo = itemInfoFinders.getRightSiblingInfo (item, findItems.movables ());
+                moveItem(item, rightSiblingInfo, fluid.position.AFTER, fluid.position.BEFORE);
+                orderChangedCallback(item);
+            },
+    
+            getLeftSibling: function (item) {
+                return itemInfoFinders.getLeftSiblingInfo(item, findItems.selectables()).item;
+            },
+    
+            moveItemLeft: function (item) {
+                var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo (item, findItems.movables ());
+                moveItem(item, leftSiblingInfo, fluid.position.BEFORE, fluid.position.AFTER);
+                orderChangedCallback(item);
+            }
         };
     
-        this.getLeftSibling = function (item) {
-            return itemInfoFinders.getLeftSiblingInfo(item, findItems.selectables ()).item;
-        };
+        that.getItemBelow = that.getRightSibling;
     
-        this.moveItemLeft = function (item) {
-         	var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo (item, findItems.movables ());
-            moveItem (item, leftSiblingInfo, fluid.position.BEFORE, fluid.position.AFTER);
-            orderChangedCallback(item);
-        };
-    
-        this.getItemBelow = this.getRightSibling;
-    
-        this.getItemAbove = this.getLeftSibling;
+        that.getItemAbove = that.getLeftSibling;
         
-        this.moveItemUp = this.moveItemLeft;
+        that.moveItemUp = that.moveItemLeft;
         
-        this.moveItemDown = this.moveItemRight;
+        that.moveItemDown = that.moveItemRight;
     
-        this.dropPosition = function (target, moving, x, y) {
+        that.dropPosition = function (target, moving, x, y) {
             return mousePosition (target, orientation, x, y);
         };
         
-        this.mouseMoveItem = function (moving, target, x, y) {
+        that.mouseMoveItem = function (moving, target, x, y) {
             var whereTo = this.dropPosition (target, moving, x, y);
             if (whereTo === fluid.position.BEFORE) {
                 jQuery (target).before (moving);
@@ -827,18 +831,19 @@ fluid = fluid || {};
             orderChangedCallback(moving);
         };
         
+        return that;
     }; // End ListLayoutHandler
     
-	/*
-	 * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
-	 * changes dimensions when the window changes size. As a result, when the user presses the up or
-	 * down arrow key, what lies above or below depends on the current window size.
-	 * 
-	 * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
-	 * in the window, and of informing the Lightbox of which items surround a given item.
-	 */
-	fluid.GridLayoutHandler = function (findItems, options) {
-        fluid.ListLayoutHandler.call (this, findItems, options);
+    /*
+     * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
+     * changes dimensions when the window changes size. As a result, when the user presses the up or
+     * down arrow key, what lies above or below depends on the current window size.
+     * 
+     * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
+     * in the window, and of informing the Lightbox of which items surround a given item.
+     */
+    fluid.gridLayoutHandler = function (findItems, options) {
+        var that = fluid.listLayoutHandler(findItems, options);
 
         findItems = fluid.utils.adaptFindItems (findItems);
         
@@ -849,33 +854,34 @@ fluid = fluid || {};
         
         var orientation = fluid.orientation.HORIZONTAL;
                 
-	    this.getItemBelow = function(item) {
-	        return itemInfoFinders.getItemInfoBelow (item, findItems.selectables ()).item;
-	    };
-	
-	    this.moveItemDown = function (item) {
-	    	var itemBelow = itemInfoFinders.getItemInfoBelow (item, findItems.movables ());
-	        moveItem (item, itemBelow, fluid.position.AFTER, fluid.position.BEFORE);
+        that.getItemBelow = function(item) {
+            return itemInfoFinders.getItemInfoBelow (item, findItems.selectables ()).item;
+        };
+    
+        that.moveItemDown = function (item) {
+            var itemBelow = itemInfoFinders.getItemInfoBelow (item, findItems.movables ());
+            moveItem (item, itemBelow, fluid.position.AFTER, fluid.position.BEFORE);
             orderChangedCallback(item);
-	    };
-	            
-	    this.getItemAbove = function (item) {
-	        return itemInfoFinders.getItemInfoAbove (item, findItems.selectables ()).item;   
-	    }; 
-	    
-	    this.moveItemUp = function (item) {
-	    	var itemAbove = itemInfoFinders.getItemInfoAbove (item, findItems.movables ());
-	        moveItem (item, itemAbove, fluid.position.BEFORE, fluid.position.AFTER);
+        };
+                
+        that.getItemAbove = function (item) {
+            return itemInfoFinders.getItemInfoAbove (item, findItems.selectables ()).item;   
+        }; 
+        
+        that.moveItemUp = function (item) {
+            var itemAbove = itemInfoFinders.getItemInfoAbove (item, findItems.movables ());
+            moveItem (item, itemAbove, fluid.position.BEFORE, fluid.position.AFTER);
             orderChangedCallback(item);
-	    };
-	                
-	    // We need to override ListLayoutHandler.dropPosition to ensure that the local private
-	    // orientation is used.
-        this.dropPosition = function (target, moving, x, y) {
+        };
+                    
+        // We need to override ListLayoutHandler.dropPosition to ensure that the local private
+        // orientation is used.
+        that.dropPosition = function (target, moving, x, y) {
             return mousePosition (target, orientation, x, y);
         };
+        return that;
         
-	}; // End of GridLayoutHandler
+    }; // End of GridLayoutHandler
     
     var defaultWillShowKBDropWarning = function (item, dropWarning) {
         if (dropWarning) {
@@ -896,7 +902,7 @@ fluid = fluid || {};
      * - Moving sideways will always move to the top available drop target in the column
      * - Wrapping is not necessary at this first pass, but is ok
      */
-    fluid.ModuleLayoutHandler = function (layout, targetPerms, options) {
+    fluid.moduleLayoutHandler = function (layout, targetPerms, options) {
         var orientation = fluid.orientation.VERTICAL;
         
         // Configure optional parameters
@@ -919,29 +925,29 @@ fluid = fluid || {};
         
         // Private Methods.
         /*
-	     * Find an item's sibling in the vertical direction based on the
-	     * layout.  This assumes that there is no wrapping the top and
-	     * bottom of the columns, and returns the given item if at top
-	     * and seeking the previous item, or at the bottom and seeking
-	     * the next item.
-	     */
-	    var getVerticalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
-	    	var siblingId = fluid.moduleLayout.itemAboveBelow (item.id, direction, layout);
+         * Find an item's sibling in the vertical direction based on the
+         * layout.  This assumes that there is no wrapping the top and
+         * bottom of the columns, and returns the given item if at top
+         * and seeking the previous item, or at the bottom and seeking
+         * the next item.
+         */
+        var getVerticalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
+            var siblingId = fluid.moduleLayout.itemAboveBelow (item.id, direction, layout);
             return fluid.utils.jById (siblingId)[0];
-	    };
-	
-	    /*
-	     * Find an item's sibling in the horizontal direction based on the
-	     * layout.  This assumes that there is no wrapping the ends of
-	     * the rows, and returns the given item if left most and
-	     * seeking the previous item, or if right most and seeking
-	     * the next item.
-	     */
-	    var getHorizontalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
-	        var itemId = fluid.moduleLayout.firstItemInAdjacentColumn (item.id, direction, layout);
-	        return fluid.utils.jById (itemId)[0];
         };
-	    	    
+    
+        /*
+         * Find an item's sibling in the horizontal direction based on the
+         * layout.  This assumes that there is no wrapping the ends of
+         * the rows, and returns the given item if left most and
+         * seeking the previous item, or if right most and seeking
+         * the next item.
+         */
+        var getHorizontalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
+            var itemId = fluid.moduleLayout.firstItemInAdjacentColumn (item.id, direction, layout);
+            return fluid.utils.jById (itemId)[0];
+        };
+                
         // This should probably be part of the public API so it can be configured.
         var move = function (item, relatedItem, position /* BEFORE, AFTER or INSIDE */) {
             if (!item || !relatedItem) {
@@ -978,40 +984,42 @@ fluid = fluid || {};
             }
         };
         
+        var that = {};
+        
         // Public Methods
-	    this.getRightSibling = function (item) {
-	        return getHorizontalSibling (item, fluid.direction.NEXT);
-	    };
-	    
-	    this.moveItemRight = function (item) {
-	    	moveHorizontally (item, fluid.direction.NEXT);
-	    };
-	
-	    this.getLeftSibling = function (item) {
-	        return getHorizontalSibling (item, fluid.direction.PREVIOUS);
-	    };
-	
-	    this.moveItemLeft = function (item) {
+        that.getRightSibling = function (item) {
+            return getHorizontalSibling (item, fluid.direction.NEXT);
+        };
+        
+        that.moveItemRight = function (item) {
+            moveHorizontally (item, fluid.direction.NEXT);
+        };
+    
+        that.getLeftSibling = function (item) {
+            return getHorizontalSibling (item, fluid.direction.PREVIOUS);
+        };
+    
+        that.moveItemLeft = function (item) {
             moveHorizontally (item, fluid.direction.PREVIOUS);
-	    };
-	
-	    this.getItemAbove = function (item) {
-	    	return getVerticalSibling (item, fluid.direction.PREVIOUS);
-	    };
-	    
-	    this.moveItemUp = function (item) {
+        };
+    
+        that.getItemAbove = function (item) {
+            return getVerticalSibling (item, fluid.direction.PREVIOUS);
+        };
+        
+        that.moveItemUp = function (item) {
             moveVertically(item, fluid.moduleLayout.targetAndPositionAbove);
-	    };
-	        
-	    this.getItemBelow = function (item) {
-	    	return getVerticalSibling (item, fluid.direction.NEXT);
-	    };
-	
-	    this.moveItemDown = function (item) {
+        };
+            
+        that.getItemBelow = function (item) {
+            return getVerticalSibling (item, fluid.direction.NEXT);
+        };
+    
+        that.moveItemDown = function (item) {
             moveVertically(item, fluid.moduleLayout.targetAndPositionBelow);
-	    };
-	    
-        this.dropPosition = function (target, moving, x, y) {
+        };
+        
+        that.dropPosition = function (target, moving, x, y) {
             if (fluid.moduleLayout.isColumn (target.id, layout)) {
                 var lastItemInColId = fluid.moduleLayout.lastItemInCol(target.id, layout);
                 if (lastItemInColId === undefined) {
@@ -1029,18 +1037,19 @@ fluid = fluid || {};
             
             var position = mousePosition (target, orientation, x, y);
             var canDrop = fluid.moduleLayout.canMove (moving.id, target.id, position, layout, targetPerms);
-	    	if (canDrop) {
+            if (canDrop) {
                 return position;
-	    	}
-	    	else {
-	    		return fluid.position.DISALLOWED;
-	    	}
+            }
+            else {
+                return fluid.position.DISALLOWED;
+            }
         };
 
-        this.mouseMoveItem = function (moving, target, x, y, position) {
+        that.mouseMoveItem = function (moving, target, x, y, position) {
             move(moving, target, position);
         };
         
+        return that;
     }; // End ModuleLayoutHandler
 }) (jQuery, fluid);
 
@@ -1239,7 +1248,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
             return portletsForColumn;
         },
     
-    	columnStructure: function (column, portletsInColumn) {
+        columnStructure: function (column, portletsInColumn) {
             var structure = {};
             structure.id = column.id;
             structure.children = [];
@@ -1252,7 +1261,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
 
     };   
     
-	// Public API.
+    // Public API.
     return {
         internals: internals,
 
@@ -1265,14 +1274,14 @@ fluid.moduleLayout = function (jQuery, fluid) {
         * Determine if a given item can move before or after the given target position, given the
         * permissions information.
         */
-    	canMove: function (itemId, targetItemId, position, layout, perms) {
-    	    if ((position === fluid.position.USE_LAST_KNOWN) || (position === fluid.position.DISALLOWED)) {
-    	        return false;
-    	    }
-    	    if (position === fluid.position.INSIDE) {
-    	        return true;
-    	    }
-    		var indices = internals.findItemAndTargetIndices (itemId, targetItemId, position, layout);
+        canMove: function (itemId, targetItemId, position, layout, perms) {
+            if ((position === fluid.position.USE_LAST_KNOWN) || (position === fluid.position.DISALLOWED)) {
+                return false;
+            }
+            if (position === fluid.position.INSIDE) {
+                return true;
+            }
+            var indices = internals.findItemAndTargetIndices (itemId, targetItemId, position, layout);
             return (!!perms[indices.itemIndex][indices.targetIndex]); 
         },
         
@@ -1316,7 +1325,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
                         return idsInCol[siblingIndex];
                     }
                 }
-        	};
+            };
 
             return internals.layoutWalker (findItemAboveBelow, layout) || itemId;
         },
@@ -1351,7 +1360,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
         findTarget: function (itemId, /* NEXT, PREVIOUS */ direction, layout, perms) {
             var targetColIndex = internals.findColumnAndItemIndices (itemId, layout).columnIndex + direction;
             var targetCol = layout.columns[targetColIndex];
-			
+            
             // If column is invalid, bail returning the current position.
             if (targetColIndex < 0 || targetColIndex >= internals.numColumns (layout)) {
                 return { id: itemId, position: fluid.position.BEFORE };               
@@ -1368,7 +1377,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
                     return { id: targetId, position: fluid.position.AFTER };
                 }
             }
-			
+            
             // no valid modules found, so target is the column itself
             return { id: targetCol.id, position: fluid.position.INSIDE };
         },
@@ -1421,7 +1430,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
                         movablesSelector = movablesSelector ? movablesSelector + "," + idSelector : idSelector; 
                     }
                     if (internals.isDropTarget (indices.targetIndex, perms)) {
-                    	dropTargets = dropTargets ? dropTargets + "," + idSelector : idSelector;
+                        dropTargets = dropTargets ? dropTargets + "," + idSelector : idSelector;
                     }
                 }
                 // now add the column itself
@@ -1499,5 +1508,5 @@ fluid.moduleLayout = function (jQuery, fluid) {
             
             return layoutStructure;
         }
-    };	
+    };
 } (jQuery, fluid);

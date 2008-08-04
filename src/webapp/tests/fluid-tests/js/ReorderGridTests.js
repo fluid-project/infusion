@@ -52,7 +52,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
         tests.test ("reorderGrid with option", function () {
             var options = {
-                cssClassNames: {
+                cssClasses: {
                     defaultStyle: "myDefault",
                     selected: "mySelected"
                 }
@@ -61,10 +61,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var containerSelector = "[id='" + lightboxRootId + "']";
             var gridReorderer = fluid.reorderGrid(containerSelector, ".float", function () {}, options);
             
-            jqUnit.assertEquals("default class is myDefault", "myDefault", gridReorderer.cssClasses.defaultStyle);
-            jqUnit.assertEquals("selected class is mySelected", "mySelected", gridReorderer.cssClasses.selected);
-            jqUnit.assertEquals("dragging class is orderable-dragging", "orderable-dragging", gridReorderer.cssClasses.dragging);
-            jqUnit.assertEquals("mouseDrag class is orderable-dragging", "orderable-dragging", gridReorderer.cssClasses.mouseDrag);
+            jqUnit.assertEquals("default class is myDefault", "myDefault", gridReorderer.options.cssClasses.defaultStyle);
+            jqUnit.assertEquals("selected class is mySelected", "mySelected", gridReorderer.options.cssClasses.selected);
+            jqUnit.assertEquals("dragging class is orderable-dragging", "orderable-dragging", gridReorderer.options.cssClasses.dragging);
+            jqUnit.assertEquals("mouseDrag class is orderable-dragging", "orderable-dragging", gridReorderer.options.cssClasses.mouseDrag);
             
         });    
     });

@@ -16,7 +16,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready (function () {
-        var listLHTests = new jqUnit.TestCase ("ListLayoutHandler Tests", setUp);
+        var listLHTests = new jqUnit.TestCase("ListLayoutHandler Tests", setUp);
     
         listLHTests.test ("GetRightSibling", function () {
         	var rightSibling = listHandler1.getRightSibling(fluid.testUtils.byId(firstItemId));

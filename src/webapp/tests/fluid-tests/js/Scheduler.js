@@ -10,80 +10,80 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 fluid.Scheduler = function () {
-	var fetchReordererContainer = function (id) {
-		return fluid.utils.jById (id);
-	};
-	return {
+    var fetchReordererContainer = function (id) {
+        return fluid.utils.jById (id);
+    };
+    return {
         initScheduler: function (containerId) {
             var movableFinder = fluid.Scheduler.createCSSOrderableFinderForClass ("movableTopic");
             var jsonCallback = fluid.Scheduler.createJSONOrderChangedCallback (movableFinder);            
             var container = fetchReordererContainer (containerId);
             
-            var layoutHandler = new fluid.ListLayoutHandler (movableFinder, {
-                                            orderChangedCallback: jsonCallback
+            var layoutHandler = fluid.listLayoutHandler (movableFinder, {
+                                        orderChangedCallback: jsonCallback
                                         });
 
-            return new fluid.Reorderer (container, movableFinder, layoutHandler);
+            return fluid.reorderer(container, movableFinder, layoutHandler);
         },
 
-		createJSONOrderChangedCallback: function (orderableFinder, urlToPostJSON) {
-		    return function () {
-		        var orderMapJSONString = fluid.Scheduler.generateJSONStringForOrderables(orderableFinder());
+        createJSONOrderChangedCallback: function (orderableFinder, urlToPostJSON) {
+            return function () {
+                var orderMapJSONString = fluid.Scheduler.generateJSONStringForOrderables(orderableFinder());
 
-		        // Then POST it back to the server via XHR.
-		        fluid.Scheduler.postOrder(orderMapJSONString, urlToPostJSON);
-		    };
-		},
+                // Then POST it back to the server via XHR.
+                fluid.Scheduler.postOrder(orderMapJSONString, urlToPostJSON);
+            };
+        },
 
-		generateJSONStringForOrderables: function (orderables) {
-		    // Create a simple data structure keyed by element id and with the ordinal number as value.
-		    var orderMap = {};
-		    jQuery.each (orderables, function (index, element) {
-		        orderMap[jQuery(element).attr("id")] = index;
-		    });
+        generateJSONStringForOrderables: function (orderables) {
+            // Create a simple data structure keyed by element id and with the ordinal number as value.
+            var orderMap = {};
+            jQuery.each (orderables, function (index, element) {
+                orderMap[jQuery(element).attr("id")] = index;
+            });
 
-		    // Then serialize it to a JSON string.
-		    return JSON.stringify(orderMap);
-		},
+            // Then serialize it to a JSON string.
+            return JSON.stringify(orderMap);
+        },
 
-		createCSSOrderableFinderForClass: function (className) {
-		    return function () {
-		        var orderableSelector = "." + className;
-		        return jQuery (orderableSelector);
-		    };
-		},
+        createCSSOrderableFinderForClass: function (className) {
+            return function () {
+                var orderableSelector = "." + className;
+                return jQuery(orderableSelector);
+            };
+        },
 
-		createPortalSafeFinder: function (containerId, orderableName, numOrderables, delimiter) {
-		    return function (containerElement) {
-		        if (!delimiter) {
-		            delimiter = ":";
-		        }
+        createPortalSafeFinder: function (containerId, orderableName, numOrderables, delimiter) {
+            return function (containerElement) {
+                if (!delimiter) {
+                    delimiter = ":";
+                }
 
-		        // Escape the selector, since delimiters tend to be punctuation that will confuse jQuery.
-		        delimiter = "\\" + delimiter;
-		        var orderablePrefix = containerId + delimiter + orderableName;
+                // Escape the selector, since delimiters tend to be punctuation that will confuse jQuery.
+                delimiter = "\\" + delimiter;
+                var orderablePrefix = containerId + delimiter + orderableName;
 
-		        var orderables = [];
-		        for (var idx = 0; idx < numOrderables; idx++) {
-		            var idSelector = "#" + orderablePrefix + idx;
+                var orderables = [];
+                for (var idx = 0; idx < numOrderables; idx++) {
+                    var idSelector = "#" + orderablePrefix + idx;
 
-		            var foundElement = jQuery (idSelector, containerElement).get (0);
-		            if (foundElement) {
-		                orderables.push (foundElement);
-		            }
-		        }
+                    var foundElement = jQuery (idSelector, containerElement).get (0);
+                    if (foundElement) {
+                        orderables.push (foundElement);
+                    }
+                }
 
-		        return orderables;
-		    };
-		},
+                return orderables;
+            };
+        },
 
-		postOrder: function (jsonString, urlToPostJSON) {
-		    /*
-		     * By default this does nothing since we don't have a server to respond to this POST request.
-		     * But if you did want to actually post the JSON data, you'd just call the following method:
-		     *
-		     *     jQuery.post (urlToPostJSON, {order: jsonString});
-		     */
-		}
-	};
+        postOrder: function (jsonString, urlToPostJSON) {
+            /*
+             * By default this does nothing since we don't have a server to respond to this POST request.
+             * But if you did want to actually post the JSON data, you'd just call the following method:
+             *
+             *     jQuery.post (urlToPostJSON, {order: jsonString});
+             */
+        }
+    };
 } ();

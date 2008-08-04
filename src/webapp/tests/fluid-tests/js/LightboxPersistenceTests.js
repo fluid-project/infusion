@@ -22,7 +22,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
          * @author Fluid
          */
         lbPersistenceTests.test ("IsOrderChangedCallbackCalled", function () {
-        	var lightboxContainer = fluid.utils.jById (lightboxRootId);
+            var lightboxContainer = fluid.utils.jById (lightboxRootId);
         
             // Define a "persistence" callback that simply creates a known
             // input element with id 'callbackCalled'.  Later, we can test
@@ -32,16 +32,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 newInputElement.id = "callbackCalled";
                 jQuery ("[id=para1]").after (newInputElement);
             };
-            var layoutHandler = new fluid.GridLayoutHandler (findOrderableByDivAndId, {
+            var layoutHandler = fluid.gridLayoutHandler (findOrderableByDivAndId, {
                 orderChangedCallback: testOrderChangedCallback
             });
-        	var lightbox = new fluid.Reorderer (lightboxContainer, findOrderableByDivAndId, layoutHandler);
+            var lightbox = fluid.reorderer (lightboxContainer, findOrderableByDivAndId, layoutHandler);
             focusLightbox ();
-        	
-        	// Perform a move
-        	lightbox.handleDirectionKeyDown (fluid.testUtils.createEvtCtrlRightArrow ());
-        	jqUnit.assertNotNull ("order changed callback is not called when a move is performed", 
-        		fluid.testUtils.byId ("callbackCalled"));
+            
+            // Perform a move
+            lightbox.handleDirectionKeyDown (fluid.testUtils.createEvtCtrlRightArrow ());
+            jqUnit.assertNotNull ("order changed callback is not called when a move is performed", 
+                fluid.testUtils.byId ("callbackCalled"));
         });
     
     });

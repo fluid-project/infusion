@@ -47,11 +47,11 @@ function initReorderer() {
  * layout and dropTargetPerms are defined in portlets.js
  */
 function setUp() {
-	var table = fluid.utils.jById (portalRootId);
+    var table = fluid.utils.jById (portalRootId);
     portletRootClone = table.clone();
     layoutClone = fluid.testUtils.cloneObj(demo.portal.layout);
     
-    portletHandler = new fluid.ModuleLayoutHandler (layoutClone, demo.portal.dropTargetPerms);
+    portletHandler = fluid.moduleLayoutHandler (layoutClone, demo.portal.dropTargetPerms);
 }
 
 function tearDown() {

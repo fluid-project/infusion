@@ -19,13 +19,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals (portlet8id+" should be above "+portlet9id,
                 portlet8id, itemAbove.id);
         
-        	itemAbove = portletHandler.getItemAbove (jQuery ("#" + portlet1id)[0]);
-        	jqUnit.assertEquals (portlet1id +" is at the top of the column, so nothing is 'above' it",
-        		jQuery ("#" + portlet1id)[0], itemAbove);
+            itemAbove = portletHandler.getItemAbove (jQuery ("#" + portlet1id)[0]);
+            jqUnit.assertEquals (portlet1id +" is at the top of the column, so nothing is 'above' it",
+                jQuery ("#" + portlet1id)[0], itemAbove);
         
-        	itemAbove = portletHandler.getItemAbove (jQuery ("#" + portlet7id)[0]);
-        	jqUnit.assertEquals (portlet7id +" is at the top of the column, expected nothing 'above' it but got " + itemAbove.id,
-        		jQuery ("#" + portlet7id)[0], itemAbove);
+            itemAbove = portletHandler.getItemAbove (jQuery ("#" + portlet7id)[0]);
+            jqUnit.assertEquals (portlet7id +" is at the top of the column, expected nothing 'above' it but got " + itemAbove.id,
+                jQuery ("#" + portlet7id)[0], itemAbove);
         
             itemAbove = portletHandler.getItemAbove (jQuery ("#" + portlet4id)[0]);
             jqUnit.assertEquals (portlet3id+" should be above "+portlet4id,
@@ -41,25 +41,25 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         portletLHTests.test ("GetItemBelow", function () {
-        	var itemBelow = portletHandler.getItemBelow(jQuery ("#" + portlet3id)[0]);
-        	jqUnit.assertEquals(portlet4id+" should be below "+portlet3id,
-        		jQuery ("#" + portlet4id)[0], itemBelow);
+            var itemBelow = portletHandler.getItemBelow(jQuery ("#" + portlet3id)[0]);
+            jqUnit.assertEquals(portlet4id+" should be below "+portlet3id,
+                jQuery ("#" + portlet4id)[0], itemBelow);
         
-        	itemBelow = portletHandler.getItemBelow(jQuery ("#" + portlet7id)[0]);
-        	jqUnit.assertEquals(portlet8id+" should be below "+portlet7id,
-        		jQuery ("#" + portlet8id)[0], itemBelow);
+            itemBelow = portletHandler.getItemBelow(jQuery ("#" + portlet7id)[0]);
+            jqUnit.assertEquals(portlet8id+" should be below "+portlet7id,
+                jQuery ("#" + portlet8id)[0], itemBelow);
         
-        	itemBelow = portletHandler.getItemBelow(jQuery ("#" + portlet8id)[0]);
-        	jqUnit.assertEquals(portlet9id+" should be below "+portlet8id,
-        		jQuery ("#" + portlet9id)[0], itemBelow);
+            itemBelow = portletHandler.getItemBelow(jQuery ("#" + portlet8id)[0]);
+            jqUnit.assertEquals(portlet9id+" should be below "+portlet8id,
+                jQuery ("#" + portlet9id)[0], itemBelow);
         
-        	itemBelow = portletHandler.getItemBelow(jQuery ("#" + portlet4id)[0]);
-        	jqUnit.assertEquals(portlet4id.id+" is at the bottom of the column, so nothing is 'below' it",
-        		jQuery ("#" + portlet4id)[0], itemBelow);
+            itemBelow = portletHandler.getItemBelow(jQuery ("#" + portlet4id)[0]);
+            jqUnit.assertEquals(portlet4id.id+" is at the bottom of the column, so nothing is 'below' it",
+                jQuery ("#" + portlet4id)[0], itemBelow);
         
-        	itemBelow = portletHandler.getItemBelow(jQuery ("#" + portlet9id)[0]);
-        	jqUnit.assertEquals(portlet9id.id+" is at the bottom of the column, so nothing is 'below' it",
-        		jQuery ("#" + portlet9id)[0], itemBelow);
+            itemBelow = portletHandler.getItemBelow(jQuery ("#" + portlet9id)[0]);
+            jqUnit.assertEquals(portlet9id.id+" is at the bottom of the column, so nothing is 'below' it",
+                jQuery ("#" + portlet9id)[0], itemBelow);
         
             itemBelow = portletHandler.getItemBelow (jQuery ("#" + portlet1id)[0]);
             jqUnit.assertEquals (portlet2id+" should be below "+portlet1id,
@@ -68,47 +68,47 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         portletLHTests.test ("GetLeftSibling", function () {
-        	var leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet5id)[0]);
-        	jqUnit.assertEquals(portlet1id+" should to the left of "+portlet5id,
-        		jQuery ("#" + portlet1id)[0], leftSibling);
+            var leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet5id)[0]);
+            jqUnit.assertEquals(portlet1id+" should to the left of "+portlet5id,
+                jQuery ("#" + portlet1id)[0], leftSibling);
         
-        	leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet6id)[0]);
-        	jqUnit.assertEquals(portlet1id+" should to the left of "+portlet6id,
-        		jQuery ("#" + portlet1id)[0], leftSibling);
+            leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet6id)[0]);
+            jqUnit.assertEquals(portlet1id+" should to the left of "+portlet6id,
+                jQuery ("#" + portlet1id)[0], leftSibling);
         
-        	leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet9id)[0]);
-        	jqUnit.assertEquals(portlet5id+" should to the left of "+portlet9id,
-        		jQuery ("#" + portlet5id)[0], leftSibling);
+            leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet9id)[0]);
+            jqUnit.assertEquals(portlet5id+" should to the left of "+portlet9id,
+                jQuery ("#" + portlet5id)[0], leftSibling);
         
-        	leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet1id)[0]);
-        	jqUnit.assertEquals(portlet1id+" is at the far left, so nothing is to the left",
-        		jQuery ("#" + portlet1id)[0], leftSibling);
+            leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet1id)[0]);
+            jqUnit.assertEquals(portlet1id+" is at the far left, so nothing is to the left",
+                jQuery ("#" + portlet1id)[0], leftSibling);
         
-        	leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet3id)[0]);
-        	jqUnit.assertEquals(portlet3id+" is at the far left, so nothing is to the left",
-        		jQuery ("#" + portlet3id)[0], leftSibling);
+            leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet3id)[0]);
+            jqUnit.assertEquals(portlet3id+" is at the far left, so nothing is to the left",
+                jQuery ("#" + portlet3id)[0], leftSibling);
         });
         
         portletLHTests.test ("GetRightSibling", function () {
-        	var rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet2id)[0]);
-        	jqUnit.assertEquals(portlet5id+" should to the right of "+portlet2id,
-        		jQuery ("#" + portlet5id)[0], rightSibling);
+            var rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet2id)[0]);
+            jqUnit.assertEquals(portlet5id+" should to the right of "+portlet2id,
+                jQuery ("#" + portlet5id)[0], rightSibling);
         
-        	rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet4id)[0]);
-        	jqUnit.assertEquals(portlet5id+" should to the right of "+portlet4id,
-        		jQuery ("#" + portlet5id)[0], rightSibling);
+            rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet4id)[0]);
+            jqUnit.assertEquals(portlet5id+" should to the right of "+portlet4id,
+                jQuery ("#" + portlet5id)[0], rightSibling);
         
-        	rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet6id)[0]);
-        	jqUnit.assertEquals(portlet8id+" should to the right of "+portlet6id,
-        		jQuery ("#" + portlet7id)[0], rightSibling);
+            rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet6id)[0]);
+            jqUnit.assertEquals(portlet8id+" should to the right of "+portlet6id,
+                jQuery ("#" + portlet7id)[0], rightSibling);
         
-        	rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet7id)[0]);
-        	jqUnit.assertEquals(portlet7id+" is at the far right, so nothing is to the right",
-        		jQuery ("#" + portlet7id)[0], rightSibling);
+            rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet7id)[0]);
+            jqUnit.assertEquals(portlet7id+" is at the far right, so nothing is to the right",
+                jQuery ("#" + portlet7id)[0], rightSibling);
         
-        	rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet9id)[0]);
-        	jqUnit.assertEquals(portlet9id+" is at the far right, so nothing is to the right",
-        		jQuery ("#" + portlet9id)[0], rightSibling);
+            rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet9id)[0]);
+            jqUnit.assertEquals(portlet9id+" is at the far right, so nothing is to the right",
+                jQuery ("#" + portlet9id)[0], rightSibling);
         });
         
         portletLHTests.test ("MoveItemDown", function () {
@@ -116,9 +116,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Before move, portlet 3 should be at index 2", portlet3id, portletList[2].id);
             jqUnit.assertEquals("Before move, portlet 4 should be at index 3", portlet4id, portletList[3].id);
         
-        	portletHandler.moveItemDown (jQuery ("#"+portlet3id)[0]);
-        	portletList = jQuery("div[id^=portlet]");
-        	jqUnit.assertEquals("After move, portlet 4 should be at index 2", portlet4id, portletList[2].id);
+            portletHandler.moveItemDown (jQuery ("#"+portlet3id)[0]);
+            portletList = jQuery("div[id^=portlet]");
+            jqUnit.assertEquals("After move, portlet 4 should be at index 2", portlet4id, portletList[2].id);
             jqUnit.assertEquals("After move, portlet 3 should be at index 3", portlet3id, portletList[3].id);
         
         });
@@ -143,7 +143,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         portletLHTests.test ("MoveItemRight", function () {
-        	var cols = jQuery ("td");
+            var cols = jQuery ("td");
             var col1PortletList = jQuery ("div[id^=portlet]", cols.get (0));
             var col2PortletList = jQuery ("div[id^=portlet]", cols.get (1));
         
@@ -193,7 +193,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         portletLHTests.test("DefaultPerms", function () {
-            var layoutHandler = new fluid.ModuleLayoutHandler(layoutClone);
+            var layoutHandler = fluid.moduleLayoutHandler(layoutClone);
             var portlet1 = fluid.utils.jById(portlet1id)[0];
             var portlet2 = fluid.utils.jById(portlet2id)[0];
     
@@ -202,13 +202,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("portlet 1 is above portlet 2", portlet1id, itemAbove.id);
             
             var itemBelow = layoutHandler.getItemBelow(portlet2);
-        	jqUnit.assertEquals("portlet 3 is below portlet 2", portlet3id, itemBelow.id);
+            jqUnit.assertEquals("portlet 3 is below portlet 2", portlet3id, itemBelow.id);
     
-        	var leftSibling = layoutHandler.getLeftSibling(portlet2);
-        	jqUnit.assertEquals("nothing is left of portlet 2", portlet2id, leftSibling.id);
+            var leftSibling = layoutHandler.getLeftSibling(portlet2);
+            jqUnit.assertEquals("nothing is left of portlet 2", portlet2id, leftSibling.id);
             
             var rightSibling = layoutHandler.getRightSibling(portlet2);
-        	jqUnit.assertEquals("portlet 5 is right of portlet 2", portlet5id, rightSibling.id);
+            jqUnit.assertEquals("portlet 5 is right of portlet 2", portlet5id, rightSibling.id);
     
             var portletList = jQuery("div[id^=portlet]");
             jqUnit.assertEquals("Before move, order is 1, 2, 3, 4", portlet1id, portletList[0].id);
@@ -216,15 +216,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Before move, order is 1, 2, 3, 4", portlet3id, portletList[2].id);
             jqUnit.assertEquals("Before move, order is 1, 2, 3, 4", portlet4id, portletList[3].id);
         
-        	layoutHandler.moveItemUp(portlet2);
-        	portletList = jQuery("div[id^=portlet]");
+            layoutHandler.moveItemUp(portlet2);
+            portletList = jQuery("div[id^=portlet]");
             jqUnit.assertEquals("After move, order is 2, 1, 3, 4", portlet2id, portletList[0].id);
             jqUnit.assertEquals("After move, order is 2, 1, 3, 4", portlet1id, portletList[1].id);
             jqUnit.assertEquals("After move, order is 2, 1, 3, 4", portlet3id, portletList[2].id);
             jqUnit.assertEquals("After move, order is 2, 1, 3, 4", portlet4id, portletList[3].id);
             
-        	layoutHandler.moveItemDown(portlet1);
-        	portletList = jQuery("div[id^=portlet]");
+            layoutHandler.moveItemDown(portlet1);
+            portletList = jQuery("div[id^=portlet]");
             jqUnit.assertEquals("After move down, order is 2, 3, 1, 4", portlet2id, portletList[0].id);
             jqUnit.assertEquals("After move down, order is 2, 3, 1, 4", portlet3id, portletList[1].id);
             jqUnit.assertEquals("After move down, order is 2, 3, 1, 4", portlet1id, portletList[2].id);
