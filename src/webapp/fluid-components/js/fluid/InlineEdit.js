@@ -174,7 +174,7 @@ fluid = fluid || {};
     
     var defaultEditModeRenderer = function (that) {
         // Template strings.
-        var editModeTemplate = "<span><input type='text' /></span>";
+        var editModeTemplate = "<span><input type='text' class='edit'/></span>";
 
         // Create the edit container and pull out the textfield.
         var editContainer = $(editModeTemplate);
@@ -186,7 +186,7 @@ fluid = fluid || {};
             var editContainerId = componentContainerId +"-edit-container";
             var editFieldId = componentContainerId + "-edit";   
             editContainer.attr("id", editContainerId);
-            editField.attr("id", editFieldId); 
+            editField.attr("id", editFieldId);
         }
         
         editField.val(that.model.value);

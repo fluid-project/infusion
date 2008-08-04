@@ -45,12 +45,12 @@ var jqUnit = jqUnit || {};
 
     var testFns = {
         isVisible: function (msg, selector) {
-            jqUnit.ok($(selector + ":visible")[0], msg);
+            jqUnit.ok($(selector).is(':visible'), msg);
         },
         
         notVisible: function (msg, selector) {
-            jqUnit.ok($(selector + ":hidden")[0], msg);
-        }, 
+            jqUnit.ok($(selector).is(':hidden'), msg);
+        },
         
         exists: function (msg, selector) {
             jqUnit.ok($(selector)[0], msg);

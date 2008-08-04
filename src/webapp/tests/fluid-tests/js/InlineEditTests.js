@@ -437,6 +437,61 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 editor.finish();
                 assertInViewMode();
             });
+            
+            function assertVisibility(state, name, selector) {
+              if (state) {
+                jqUnit.isVisible(name + " should be visible", selector);
+              }
+              else {
+                jqUnit.notVisible(name + " should not be visible", selector);
+              }
+            }
+            
+            function insistSingle(message, container, selector) {
+              var togo = $(selector, container);
+              jqUnit.assertEquals(message, 1, togo.length);
+              return togo;
+            }
+            
+            function insistSelect(message, that, name) {
+              var togo = that.select(name);
+              jqUnit.assertEquals(message, 1, togo.length);
+              return togo;
+            }
+            
+            inlineEditTests.test("Self-rendering with undo control", function () {
+                var initialValue = "Initial Value";
+                var newValue = "New Value";
+                $("#display-undoable").text(initialValue);
+                jqUnit.expect(15);
+                var editor = fluid.inlineEdit("#inline-edit-undo");
+                var undoer = fluid.infuseUndoability(editor);
+                var undo = insistSelect("There should be an undo container", undoer, "undoContainer");
+                var redo = insistSelect("There should be a redo container", undoer, "redoContainer");
+                function assertState(uv, rv) {
+                  assertVisibility(uv, "undo container", undo);
+                  assertVisibility(rv, "redo container", redo);
+                }
+                assertState(false, false); // 4
+                
+                var edit = insistSelect("There should be an edit control", editor, "edit");
+                editor.edit();
+                edit.val(newValue);
+                editor.finish();
+                assertState(true, false); // 7
+                
+                var undoControl = insistSelect("There should be an undo control", undoer, "undoControl"); // 8
+                undoControl.click();
+                assertState(false, true); // 10
+                jqUnit.assertEquals("Model state should now be " + initialValue, initialValue, editor.model.value); // 11
+                
+                var redoControl = insistSelect("There should be an redo control", undoer, "redoControl"); // 12
+                redoControl.click();
+                assertState(true, false); // 14
+                jqUnit.assertEquals("Model state should now be " + newValue, newValue, editor.model.value); // 15
+                                
+            });
+                
         })();
      
     });

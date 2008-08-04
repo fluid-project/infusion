@@ -88,6 +88,7 @@ fluid = fluid || {};
         
         render(that);
         bindHandlers(that);
+        return that;
     }
   
     fluid.defaults("undo", {  

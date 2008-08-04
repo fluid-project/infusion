@@ -146,7 +146,7 @@ var fluid = fluid || {};
       that.select = function(name) {
         var togo = jQuery(that.options.selectors[name], that.container);
         if (togo.length === 0 || togo.get(0) === document) {
-          throw ("Selector " + name + " with value " + that.options.selectors 
+          throw ("Selector " + name + " with value " + that.options.selectors[name] 
             + " did not find any elements with container " + that.container);
         }
         return togo;
