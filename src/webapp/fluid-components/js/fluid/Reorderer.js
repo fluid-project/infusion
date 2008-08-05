@@ -440,20 +440,20 @@ fluid = fluid || {};
                     if (mouseDropWarning) {
                         dropWarningEl = mouseDropWarning[0];
                     }
-                    var avatar = jQuery(thatReorderer.avatarCreator(item[0], cssClasses.avatar, dropWarningEl));
+                    var avatar = jQuery(thatReorderer.options.avatarCreator(item[0], cssClasses.avatar, dropWarningEl));
                     avatar.attr("id", dndFunctions.createAvatarId(thatReorderer.container.id));
                     return avatar;
                 },
                 start: function (e, ui) {
                     item.focus ();
-                    item.removeClass (thatReorderer.cssClasses.selected);
-                    item.addClass (thatReorderer.cssClasses.mouseDrag);
+                    item.removeClass (thatReorderer.options.cssClasses.selected);
+                    item.addClass (thatReorderer.options.cssClasses.mouseDrag);
                     item.ariaState ("grab", "true");
                     setDropEffects ("move");
                 },
                 stop: function(e, ui) {
-                    item.removeClass (thatReorderer.cssClasses.mouseDrag);
-                    item.addClass (thatReorderer.cssClasses.selected);
+                    item.removeClass (thatReorderer.options.cssClasses.mouseDrag);
+                    item.addClass (thatReorderer.options.cssClasses.selected);
                     jQuery (thatReorderer.activeItem).ariaState ("grab", "supported");
                     dropMarker.hide();
                     ui.helper = null;
