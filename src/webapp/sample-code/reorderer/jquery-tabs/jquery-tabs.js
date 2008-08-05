@@ -40,9 +40,9 @@ demo.initJqueryTabs = function () {
         return jQuery ("[id^=tab_]", tabList);
     };
     
-    var layoutHandler = new fluid.ListLayoutHandler (findOrderableTabs, {
+    var layoutHandler = new fluid.listLayoutHandler (findOrderableTabs, {
         orientation: fluid.orientation.HORIZONTAL
     });
     
-    return new fluid.Reorderer (tabList, findOrderableTabs, layoutHandler, {cssClassNames: cssClassNames});
+    return new fluid.reorderer (tabList, findOrderableTabs, layoutHandler, {cssClasses: cssClassNames});
 };
