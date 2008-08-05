@@ -1110,11 +1110,18 @@ var fluid = fluid || {};
 		container.ariaState("live","assertive");
 		container.ariaState("busy","false");
 		container.ariaState("valuenow","0");
+		container.ariaState("valuetext","");
 	};
     
     var updateARIA = function(container, percent){
-        container.ariaState("busy",(percent < 100 && percent > 0));			
+        var busy = percent < 100 && percent > 0;
+        container.ariaState("busy",busy);
 	    container.ariaState("valuenow",percent);	
+        if (busy){
+            container.ariaState("valuetext", "Upload is "+percent+" percent complete");
+        } else if (percent === 100) {
+            container.ariaState("valuetext", "Upload is complete. To upload more files, click the Add More button.");
+        }
 	};
 
     /* Constructor */
@@ -1159,6 +1166,7 @@ var fluid = fluid || {};
             setProgress(percent, text, this.fileProgressElm, this.currRowElm, this.fileTextElm, dontAnimate);
         } else {
             setProgress(percent, text, this.totalProgressElm, this.totalProgressContainer, this.totalTextElm, dontAnimate);
+            updateARIA(this.totalProgressContainer, percent);
         }
     };
 
@@ -1179,7 +1187,6 @@ var fluid = fluid || {};
         } else {
             animateToWidth(progressElm,newWidth);
         }
-        updateARIA(containerElm, percent);
     };
         
     fluid.Progress.prototype.hide = function(dontPause) {

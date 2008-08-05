@@ -125,7 +125,7 @@ function percentToPixels(containerWidth,percent) {
 
         });
 
-        progressTests.test("ARIA update", function() {
+        progressTests.test("ARIA numeric update", function() {
             var container = $("#progress-container .total-progress-container");
             createProgressBar();
             jqUnit.assertEquals("Start: busy should be ", "false", container.ariaState("busy"));
@@ -149,5 +149,22 @@ function percentToPixels(containerWidth,percent) {
             jqUnit.assertEquals("Done: valuenow should be ", updateValue, container.ariaState("valuenow"));
         });
 
+        progressTests.test("ARIA verbose update", function() {
+            var container = $("#progress-container .total-progress-container");
+            createProgressBar();
+            jqUnit.assertEquals("Start: valuetext should read ", "", container.ariaState("valuetext"));
+
+            var updateValue = 0;
+            progressBar.updateProgress("total",updateValue,"Some Text",true); 
+            jqUnit.assertEquals("Working: valuetext should still read ", "", container.ariaState("valuetext"));
+
+            updateValue = 10;
+            progressBar.updateProgress("total",updateValue,"Some Text",true); 
+            jqUnit.assertEquals("Working: valuetext should read ", "Upload is "+updateValue+" percent complete", container.ariaState("valuetext"));
+
+            updateValue = 100;
+            progressBar.updateProgress("total",updateValue,"Some Text",true); 
+            jqUnit.assertEquals("Working: valuetext should read ", "Upload is complete. To upload more files, click the Add More button.", container.ariaState("valuetext"));
+        });
     });
 }) (jQuery);
