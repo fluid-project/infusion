@@ -99,7 +99,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         moduleLayoutTests.test ("UpdateLayout", function () {
             var item = jQuery ("#" + portlet3id)[0];
             var relatedItem = jQuery ("#" + portlet6id)[0];
-            var layoutClone = fluid.testUtils.cloneObj (demo.portal.layout);
+            var layoutClone = jQuery.extend(true, {}, demo.portal.layout);
             
             isOriginalOrderTest("Before doing anyting", layoutClone);    
         

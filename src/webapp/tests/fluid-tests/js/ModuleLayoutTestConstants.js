@@ -49,7 +49,7 @@ function initReorderer() {
 function setUp() {
     var table = fluid.utils.jById (portalRootId);
     portletRootClone = table.clone();
-    layoutClone = fluid.testUtils.cloneObj(demo.portal.layout);
+    layoutClone = jQuery.extend(true, {}, demo.portal.layout);
     
     portletHandler = fluid.moduleLayoutHandler (layoutClone, demo.portal.dropTargetPerms);
 }
