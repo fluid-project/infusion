@@ -33,11 +33,11 @@
         <tbody>
           <tr>
             <td id="c1">
-                <div class="portlet orderable-default" id="portlet1">
+                <div class="portlet locked orderable-default" id="portlet1">
 					<div class="title">portlet 1</div>
 					<div class="content">prec 90</div>
 				</div>
-				<div class="portlet orderable-default" id="portlet2">
+				<div class="portlet locked orderable-default" id="portlet2">
 					<div class="title">portlet 2</div>
 					<div class="content">prec 80</div>
 				</div>
@@ -51,7 +51,7 @@
 				</div>
 			</td>
 			<td id="c2">
-				<div class="portlet orderable-default" id="portlet5">
+				<div class="portlet locked orderable-default" id="portlet5">
 					<div class="title">portlet 5</div>
 					<div class="content">prec 70</div>
 				</div>
@@ -83,6 +83,16 @@
 
     <script type="text/javascript">    
         var aPortletReorderer = fluid.initLayoutCustomizer (demo.portal.layout, demo.portal.dropTargetPerms, "portalServerStub.js", {dropWarningId: "drop-warning"});
+       
+       //Uncomment this and comment out the previous line to test the simple layout reorderer concept of locking 
+       /* jQuery(document).ready(function () {
+            fluid.reorderLayout ("#portlet-reorderer-root", {
+                columns: "td",
+                modules: "td > div",
+                lockedModules: ".locked"
+            });
+        });
+        */
     </script>
   </body>
 </html>

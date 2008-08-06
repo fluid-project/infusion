@@ -9,7 +9,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-var fluid = fluid || {};
+/*global jQuery*/
+/*global fluid*/
+fluid = fluid || {};
 
 (function (fluid) {
     var createLayoutCustomizer = function (layout, perms, orderChangedCallbackUrl, options) {
@@ -23,8 +25,8 @@ var fluid = fluid || {};
         lhOptions.orderChangedCallback = options.orderChangedCallback;
         lhOptions.dropWarningId = options.dropWarningId;
 
-        var reordererRoot = fluid.utils.jById (fluid.moduleLayout.containerId (layout));
-        var items = fluid.moduleLayout.createFindItems (layout, perms, rOptions.grabHandle);    
+        var reordererRoot = fluid.utils.jById(fluid.moduleLayout.containerId(layout));
+        var items = fluid.moduleLayout.createFindItems(layout, perms, rOptions.grabHandle);    
         var layoutHandler = fluid.moduleLayoutHandler (layout, perms, lhOptions);
 
         return fluid.reorderer(reordererRoot, items, layoutHandler, rOptions);
@@ -37,7 +39,7 @@ var fluid = fluid || {};
      * @param {Object} perms a permissions data structure. See the above documentation
      */
     fluid.initLayoutCustomizer = function (layout, perms, orderChangedCallbackUrl, options) {        
-        return createLayoutCustomizer (layout, perms, orderChangedCallbackUrl, options);
+        return createLayoutCustomizer(layout, perms, orderChangedCallbackUrl, options);
     };
 
     /**
@@ -47,16 +49,17 @@ var fluid = fluid || {};
      * @param {Function} a function to be called when the order changes 
      * @param {Object} additional configuration options
      */
-    fluid.reorderLayout = function(containerSelector, layoutSelectors, orderChangedCallback, options) {
+    fluid.reorderLayout = function (containerSelector, layoutSelectors, orderChangedCallback, options) {
         options = options || {};
         options.orderChangedCallback = orderChangedCallback;
         
         var container = jQuery(containerSelector);
         var columns = jQuery(layoutSelectors.columns, container);
         var modules = jQuery(layoutSelectors.modules, container);
-        
+        var lockedModules = jQuery(layoutSelectors.lockedModules, container);
         var layout = fluid.moduleLayout.buildLayout(container, columns, modules);
+        var perms = fluid.moduleLayout.buildPermsForLockedModules(lockedModules, layout);
         
-        return fluid.initLayoutCustomizer(layout, null, null, options);
+        return fluid.initLayoutCustomizer(layout, perms, null, options);
     };    
-}) (fluid);
+})(fluid);

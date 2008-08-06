@@ -1492,7 +1492,65 @@ fluid.moduleLayout = function (jQuery, fluid) {
         },
     
         /**
-         * Builds a layout object from a set of columns and portlets.
+         * Builds a permissions object that captures a simple set of rules for locked modules.
+         * This permissions object is designed to support modules that are locked at the top of columns.
+         * In this definition of locked, the modules cannot be picked up by mouse or keyboard,
+         * and if they are at the top of a column, nothing can be placed above them.
+         * 
+         * @param {jQuery} lockedModules
+         * @param {Object} layout
+         */
+        buildPermsForLockedModules: function (lockedModules, layout) {            
+            if (lockedModules.length <= 0) {
+                return fluid.moduleLayout.buildEmptyPerms(layout);
+            }
+            
+            function isLocked(id) {
+                return jQuery.grep(lockedModules, function (el) {return el.id === id;})[0];   
+            }
+            
+            // Build the perms rows
+            var permsRow = []; 
+            var lockedPermsRow = [];
+            var moduleIds = [];
+
+            // Walk the layout and create two interim data structures: 
+            // one for unlocked modules and another for locked modules.
+            for (var col = 0; col < layout.columns.length; col += 1) {
+                var idsInCol = layout.columns[col].children;
+                var prevId = null;
+                for (var i = 0; i < idsInCol.length; i += 1) {
+                    var id = idsInCol[i];
+                    moduleIds.push(id);
+                    // Check if we're locked at the top of column, or the thing above is locked.
+                    if (isLocked(id) && (!prevId || isLocked(prevId))) {
+                        permsRow.push(0);
+                    } else {
+                       permsRow.push(1);
+                    } 
+                    lockedPermsRow.push(0);
+                    prevId = id; 
+                }
+                permsRow.push(1);
+                lockedPermsRow.push(0);
+            }
+
+            // Based on the locked and unlock rows, build up the final permissions object.
+            var permsStructure = [];
+            for (i = 0; i < moduleIds.length; i += 1) {
+                if (isLocked(moduleIds[i])) {
+                    permsStructure.push(lockedPermsRow);
+                }
+                else {
+                    permsStructure.push(permsRow);
+                }
+            }
+            
+            return permsStructure;
+        },
+         
+        /**
+         * Builds a layout object from a set of columns and modules.
          * @param {jQuery} container
          * @param {jQuery} columns
          * @param {jQuery} portlets

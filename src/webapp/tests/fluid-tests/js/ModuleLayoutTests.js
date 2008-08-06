@@ -532,6 +532,41 @@ https://source.fluidproject.org/svn/LICENSE.txt
             testRow(perms[8]);
         });
         
+        moduleLayoutTests.test("buildPermsForLockedModules", function () {
+            var lockedPortlets = jQuery(".locked");
+            
+            // No columns or portlets.
+            var columns = jQuery([]);
+            var portlets = jQuery([]);
+            
+            var perms = fluid.moduleLayout.buildPermsForLockedModules(lockedPortlets, emptyLayout);
+            jqUnit.equals(perms.length, 0, "The perms object should be an empty array.");
+            
+            columns = allColumns();
+            portlets = allPortlets();
+    
+            perms = fluid.moduleLayout.buildPermsForLockedModules(lockedPortlets, layoutClone);
+            jqUnit.equals(perms.length, 9, "There are 9 portlets so there should be 9 rows of perms");
+            
+            function testRow(expectedRow, row){
+                jqUnit.assertEquals("Check number of perms in a row", expectedRow.length, row.length);
+                
+                for (var i = 0; i < expectedRow.length; i += 1) {
+                    jqUnit.assertEquals("Check perm bit at index " + i, expectedRow[i], row[i]);
+                }
+            }
+
+            var expectedRow = [0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1];
+            var expectedLockedRow = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                
+            // Test a couple of rows -- the first two are for locked portlets, rows 6 and 9 are not locked.
+            testRow(expectedLockedRow, perms[0]);
+            testRow(expectedLockedRow, perms[1]);
+            testRow(expectedRow, perms[5]);
+            testRow(expectedRow, perms[8]);
+  
+        });
+        
         moduleLayoutTests.test ("findPortletsInColumn", function () {
             var columns = allColumns();
             var portlets = allPortlets();
