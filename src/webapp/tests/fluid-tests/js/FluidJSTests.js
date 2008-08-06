@@ -19,6 +19,33 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(document).ready(function () {
         var fluidJSTests = new jqUnit.TestCase("Fluid JS Tests");
 
+        fluidJSTests.test("merge", function() {
+          var bit1 = {prop1: "thing1"};
+          var bit2 = {prop2: "thing2"};
+          var bits = {prop1: "thing1", prop2: "thing2"};
+          jqUnit.assertDeepEq("Simple merge 1",
+             bits, fluid.utils.merge({}, {}, bit1, bit2));
+          jqUnit.assertDeepEq("Simple merge 2",
+             bits, fluid.utils.merge({}, {}, bit2, bit1));
+          jqUnit.assertDeepEq("Simple merge 3",
+             bits, fluid.utils.merge({}, {}, {}, bit1, bit2));
+          jqUnit.assertDeepEq("Simple merge 4",
+             bits, fluid.utils.merge({}, {}, {}, bit2, bit1));
+             
+          jqUnit.assertDeepNeq(bit1, bit2);
+          
+          jqUnit.assertDeepEq("Contund 1", 
+            bit1, fluid.utils.merge({"": "contund"}, {}, bits, bit1));
+            
+          jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
+            fluid.utils.merge({}, {}, [bit1, bit2], [bit2, bit1, bits]));
+          
+          jqUnit.assertDeepEq("Value fetch", [bits, bits], 
+            fluid.utils.merge({"0.prop1": "1.prop1",
+                               "1.prop2": "0.prop2"}, {}, [bit2, bit1], {}));  
+          
+        });
+
         fluidJSTests.test("fileSizer", function () {      
             
             function testFileSize(testVal, expected) {

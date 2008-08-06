@@ -146,13 +146,13 @@ var fluid = fluid || {};
       that.select = function(name) {
         var togo = jQuery(that.options.selectors[name], that.container);
         if (togo.length === 0 || togo.get(0) === document) {
-          throw ("Selector " + name + " with value " + that.options.selectors[name] 
-            + " did not find any elements with container " + that.container);
+          throw ("Selector " + name + " with value " + that.options.selectors[name] +
+            " did not find any elements with container " + that.container);
         }
         return togo;
       };
       return that;
-    }
+    };
     
     var fluid_guid = 1;
     
@@ -168,11 +168,11 @@ var fluid = fluid || {};
       return {
         addListener: function (listener, namespace, exclusions) {
           if (!namespace) {
-            if (!listener.$$guid) listener.$$guid = fluid_guid++;
+            if (!listener.$$guid) { listener.$$guid = fluid_guid++; }
             namespace = listener.$$guid;
             }
 
-          excludeids = [];
+          var excludeids = [];
           if (exclusions) {
             for (var i in exclusions) {
               excludeids.push(jQuery.data(exclusions[i]));
@@ -215,22 +215,42 @@ var fluid = fluid || {};
           }
         }
       };
-    }
+    };
     
     fluid.model = {};
     
-    /** Destroy a model to an empty condition**/
-    fluid.model.contund = function(target) {
-      for (var i in target) {
-        delete target[i];
-      }
-    }
+   
     /** Copy a source "model" onto a target **/
     fluid.model.copyModel = function copyModel(target, source) {
-      fluid.model.contund(target);
+      fluid.utils.contund(target);
       jQuery.extend(true, target, source);
-    }
+    };
     
+    fluid.model.parseEL = function(EL) {
+      return EL.split('.');
+      };
+  
+    /** This function implements the RSF "DARApplier" **/
+    fluid.model.setBeanValue = function(root, EL, newValue) {
+      var segs = fluid.model.parseEL(EL);
+      for (var i = 0; i < segs.length - 1; ++ i) {
+        if (!root[segs[i]]) {
+          root[segs[i]] = {};
+          }
+        root = root[segs[i]];
+        }
+      root[segs[segs.length - 1]] = newValue;
+      };
+      
+    fluid.model.getBeanValue = function(root, EL) {
+      var segs = fluid.model.parseEL(EL);
+      for (var i = 0; i < segs.length; ++ i) {
+        root = root[segs[i]];
+        if (!root) return root;
+        }
+      return root;
+      };
+      
     /*
      * Utilities object for providing various general convenience functions
      */
@@ -240,7 +260,7 @@ var fluid = fluid || {};
      * Implementation taken from quirksmode http://www.quirksmode.org/js/findpos.html
      */
     fluid.utils.computeAbsolutePosition = function (element) {
-        var curleft = curtop = 0;
+        var curleft = 0; var curtop = 0;
         if (element.offsetParent) {
             do {
                 curleft += element.offsetLeft;
@@ -248,7 +268,7 @@ var fluid = fluid || {};
                 } while (element = element.offsetParent);
             return [curleft, curtop];
         }
-    }
+    };
     
     // Custom query method seeks all tags descended from a given root with a 
     // particular tag name, whose id matches a regex. The Dojo query parser
@@ -278,6 +298,60 @@ var fluid = fluid || {};
             }
             element = element.parentNode;
         }
+    };
+    
+    /** Destroy an object to an empty condition**/
+    fluid.utils.contund = function(target) {
+      for (var i in target) {
+        delete target[i];
+      }
+    };
+    
+    function mergeImpl(policy, basePath, target, source) {
+      var thisPolicy = policy[basePath];
+      if (typeof(thisPolicy) === "function") {
+          thisPolicy.apply(null, target, source);
+          return target;
+        }
+      if (thisPolicy === "contund") {
+         fluid.utils.contund(target);
+         }
+      
+      for (var name in source) {
+        var path = (basePath? basePath + ".": "") + name;
+        var thisTarget = target[name];
+        var thisSource = source[name];
+
+        if (thisSource !== undefined) {
+          if (typeof(thisSource) === 'object') {
+            if (!thisTarget) {
+              target[name] = thisTarget = {};
+            }
+            mergeImpl(policy, path, thisTarget, thisSource);
+          }
+          else {
+            target[name] = thisSource;
+          }
+        }
+      }
+      return target;    
+    }
+    
+    fluid.utils.merge = function(policy, target) {
+      var path = "";
+      
+      for (var i = 2; i < arguments.length; ++ i) {
+        var source = arguments[i];
+        mergeImpl(policy, path, target, source);
+        for (var key in policy) {
+          var elrh = policy[key];
+          if (typeof(elrh) === 'string' && elrh !== "contund") {
+            var value = fluid.model.getBeanValue(target, elrh);
+            fluid.model.setBeanValue(target, key, value);
+          }
+        }
+      }
+      return target;     
     };
     
     /**
