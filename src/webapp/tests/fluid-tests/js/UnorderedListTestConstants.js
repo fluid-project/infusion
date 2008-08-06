@@ -33,7 +33,7 @@ var findList1 = function () {
     return jQuery("#list1")[0]; 
 };
 
-var listMovableFinder = function  () {
+var listMovableFinder = function() {
     // This is returning the list instead of a jQuery object to ensure that people 
     // can use an orderable finder function that doesn't use jQuery
     return jQuery("[id^=list1item]", findList1()).get();
@@ -49,7 +49,8 @@ var createListLayoutHandler = function  () {
         orderChangedCallback: callbackConfirmer
     };
     
-    return fluid.listLayoutHandler(listMovableFinder, options);
+    return fluid.listLayoutHandler(
+       {select: listMovableFinder}, options);
 };
 
 // This setUp will be called before each of the tests that are included in unordered-list.html 

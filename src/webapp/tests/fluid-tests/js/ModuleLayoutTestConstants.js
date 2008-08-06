@@ -50,8 +50,15 @@ function setUp() {
     var table = fluid.utils.jById (portalRootId);
     portletRootClone = table.clone();
     layoutClone = jQuery.extend(true, {}, demo.portal.layout);
+    var options = {
+      moduleLayout: {
+        layout: layoutClone,
+        permissions: demo.portal.dropTargetPerms 
+      }
+    } 
+
     
-    portletHandler = fluid.moduleLayoutHandler (layoutClone, demo.portal.dropTargetPerms);
+    portletHandler = fluid.moduleLayoutHandler (null, options);
 }
 
 function tearDown() {

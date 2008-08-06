@@ -193,7 +193,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         portletLHTests.test("DefaultPerms", function () {
-            var layoutHandler = fluid.moduleLayoutHandler(layoutClone);
+            var layoutHandler = fluid.moduleLayoutHandler(null, {moduleLayout: {layout: layoutClone}});
             var portlet1 = fluid.utils.jById(portlet1id)[0];
             var portlet2 = fluid.utils.jById(portlet2id)[0];
     

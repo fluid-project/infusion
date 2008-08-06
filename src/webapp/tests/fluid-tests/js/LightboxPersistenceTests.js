@@ -15,14 +15,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready (function () {
-        var lbPersistenceTests = new jqUnit.TestCase ("Lightbox Persistence Tests", setUp, tearDown);
+        var lbPersistenceTests = new jqUnit.TestCase("Lightbox Persistence Tests", setUp, tearDown);
     
         /**
          * Test to see that callback function is called after a "move item" key press.
          * @author Fluid
          */
-        lbPersistenceTests.test ("IsOrderChangedCallbackCalled", function () {
-            var lightboxContainer = fluid.utils.jById (lightboxRootId);
+        lbPersistenceTests.test("IsOrderChangedCallbackCalled", function () {
+            var lightboxContainer = fluid.utils.jById(lightboxRootId);
         
             // Define a "persistence" callback that simply creates a known
             // input element with id 'callbackCalled'.  Later, we can test
@@ -30,18 +30,23 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var testOrderChangedCallback = function() {
                 var newInputElement = document.createElement("input");
                 newInputElement.id = "callbackCalled";
-                jQuery ("[id=para1]").after (newInputElement);
+                jQuery("[id=para1]").after(newInputElement);
             };
-            var layoutHandler = fluid.gridLayoutHandler (findOrderableByDivAndId, {
-                orderChangedCallback: testOrderChangedCallback
-            });
-            var lightbox = fluid.reorderer (lightboxContainer, findOrderableByDivAndId, layoutHandler);
+            var options = {
+                layoutHandlerName: "fluid.gridLayoutHandler",
+                orderChangedCallback: testOrderChangedCallback,
+                selectors: {
+                  movables: findOrderableByDivAndId
+               }
+            };
+
+            var lightbox = fluid.reorderer(lightboxContainer, options);
             focusLightbox ();
             
             // Perform a move
-            lightbox.handleDirectionKeyDown (fluid.testUtils.createEvtCtrlRightArrow ());
-            jqUnit.assertNotNull ("order changed callback is not called when a move is performed", 
-                fluid.testUtils.byId ("callbackCalled"));
+            lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
+            jqUnit.assertNotNull("order changed callback is not called when a move is performed", 
+                fluid.testUtils.byId("callbackCalled"));
         });
     
     });

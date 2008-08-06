@@ -18,12 +18,15 @@ fluid.Scheduler = function () {
             var movableFinder = fluid.Scheduler.createCSSOrderableFinderForClass ("movableTopic");
             var jsonCallback = fluid.Scheduler.createJSONOrderChangedCallback (movableFinder);            
             var container = fetchReordererContainer (containerId);
+            var options = {
+                layoutHandlerName: "fluid.listLayoutHandler",
+                selectors: {
+                    movables: movableFinder
+                },
+                orderChangedCallback: jsonCallback
+              }
             
-            var layoutHandler = fluid.listLayoutHandler (movableFinder, {
-                                        orderChangedCallback: jsonCallback
-                                        });
-
-            return fluid.reorderer(container, movableFinder, layoutHandler);
+            return fluid.reorderer(container, options);
         },
 
         createJSONOrderChangedCallback: function (orderableFinder, urlToPostJSON) {

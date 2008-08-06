@@ -24,7 +24,7 @@ var fluid = fluid || {};
             }
         };
         
-        jQuery (lightboxContainer).keypress (enterKeyHandler);
+        jQuery (lightboxContainer).keypress(enterKeyHandler);
     };
     
     var createItemFinder = function (parentNode, containerId) {
@@ -32,7 +32,7 @@ var fluid = fluid || {};
         var lightboxCellNamePattern = "^" + deriveLightboxCellBase (containerId, "[0-9]+") +"$";
         
         return function () {
-            return fluid.utils.seekNodesById (parentNode, "div", lightboxCellNamePattern);
+            return fluid.utils.seekNodesById(parentNode, "div", lightboxCellNamePattern);
         };
     };
     
@@ -48,7 +48,7 @@ var fluid = fluid || {};
          * @param {Element} lightboxContainer The DOM element containing the form that is POSTed back to the server upon order change 
          */
         defaultOrderChangedCallback: function (lightboxContainer) {
-            var reorderform = fluid.utils.findForm (lightboxContainer);
+            var reorderform = fluid.utils.findForm(lightboxContainer);
             
             return function () {
                 var inputs = fluid.utils.seekNodesById(
@@ -78,24 +78,25 @@ var fluid = fluid || {};
          * @param {String} instructionMessageId The id of the DOM element containing instructional text for Lightbox users
          * @param {Object} options (optional) extra options for the Reorderer
          */
-        createLightbox: function (container, itemFinderFn, options) {
-            options = options || {};
+        createLightbox: function (container, itemFinderFn, userOptions) {
+            userOptions = userOptions || {};
             // Remove the anchors from the taborder.
             jQuery ("a", container).tabindex (-1);
-            addThumbnailActivateHandler (container);
+            addThumbnailActivateHandler(container);
             
-            var orderChangedFn = options.orderChangedCallback || fluid.lightbox.defaultOrderChangedCallback (fluid.unwrap(container));
-
-            var layoutHandler = fluid.gridLayoutHandler (itemFinderFn, {
-                orderChangedCallback: orderChangedFn
-            });
+            var orderChangedFn = userOptions.orderChangedCallback || fluid.lightbox.defaultOrderChangedCallback (fluid.unwrap(container));
 
             var reordererOptions = {
-                containerRole : fluid.roles.GRID
+                layoutHandlerName: "fluid.gridLayoutHandler",
+                containerRole: fluid.roles.GRID,
+                orderChangedCallback: orderChangedFn,
+                selectors: {
+                  movables: itemFinderFn
+                }
             };            
-            jQuery.extend(true, reordererOptions, options);
+            jQuery.extend(true, reordererOptions, userOptions);
             
-            return fluid.reorderer(container, itemFinderFn, layoutHandler, reordererOptions);
+            return fluid.reorderer(container, reordererOptions);
         },
         
         /**

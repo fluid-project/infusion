@@ -27,22 +27,22 @@ demo.initJqueryTabs = function () {
     var tabList = fluid.utils.jById ("tabList");
     addTabActivateHandler (tabList);
 
-    var cssClassNames = {
+    var options = {
+      layoutHandlerName: "fluid.listLayoutHandler",
+      orientation: fluid.orientation.HORIZONTAL,
+      styles: {
         defaultStyle: "default-tab",
         selected: "selected-tab",
         dragging: "dragging-tab",
         hover: "hover-tab",
         dropMarker: "drop-marker-tab",
         avatar: "avatar-tab"
+        },
+      selectors: {
+        movables: "[id^=tab_]"
+      }
     };
-    // Identifies the orderable elements by their unique id prefix.
-    var findOrderableTabs = function  () {
-        return jQuery ("[id^=tab_]", tabList);
-    };
+
     
-    var layoutHandler = new fluid.listLayoutHandler (findOrderableTabs, {
-        orientation: fluid.orientation.HORIZONTAL
-    });
-    
-    return new fluid.reorderer (tabList, findOrderableTabs, layoutHandler, {cssClasses: cssClassNames});
+    return new fluid.reorderer (tabList, options);
 };

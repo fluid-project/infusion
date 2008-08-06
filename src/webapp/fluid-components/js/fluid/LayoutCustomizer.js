@@ -14,22 +14,26 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid = fluid || {};
 
 (function (fluid) {
-    var createLayoutCustomizer = function (layout, perms, orderChangedCallbackUrl, options) {
+    var createLayoutCustomizer = function (layout, perms, orderChangedCallbackUrl, userOptions) {
         // Configure options
-        options = options || {};
-        var rOptions = options;
-        rOptions.containerRole = rOptions.containerRole || fluid.roles.REGIONS;
-
-        var lhOptions = {};
-        lhOptions.orderChangedCallbackUrl = orderChangedCallbackUrl;
-        lhOptions.orderChangedCallback = options.orderChangedCallback;
-        lhOptions.dropWarningId = options.dropWarningId;
-
+        userOptions = userOptions || {};
+        var selectors = fluid.moduleLayout.inferSelectors(layout, perms, userOptions.grabHandle);
+        var assembleOptions = {
+          containerRole: fluid.roles.REGIONS,
+          orderChangedCallbackUrl: orderChangedCallbackUrl,
+          layoutHandlerName: "fluid.moduleLayoutHandler",
+          moduleLayout: {
+            permissions: perms,
+            layout: layout
+          },
+          selectors: selectors
+        };
+        
+        var options = jQuery.extend({}, assembleOptions, userOptions);
+        
         var reordererRoot = fluid.utils.jById(fluid.moduleLayout.containerId(layout));
-        var items = fluid.moduleLayout.createFindItems(layout, perms, rOptions.grabHandle);    
-        var layoutHandler = fluid.moduleLayoutHandler (layout, perms, lhOptions);
 
-        return fluid.reorderer(reordererRoot, items, layoutHandler, rOptions);
+        return fluid.reorderer(reordererRoot, options);
     };
     
 

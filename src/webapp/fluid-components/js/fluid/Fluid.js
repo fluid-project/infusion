@@ -136,21 +136,39 @@ var fluid = fluid || {};
         return defaultsStore[componentName];
     };
     
-    fluid.initialiseThat = function(componentName, container, userOptions) {
-      var that = {};
-      userOptions = userOptions || {};
-      that.options = jQuery.extend(true, {}, fluid.defaults(componentName), userOptions);
-      if (container) {
-        that.container = fluid.container(container);
-      }
-      that.select = function(name) {
-        var togo = jQuery(that.options.selectors[name], that.container);
+    fluid.fail = function(message) {
+      fluid.utils.setLogging(true);
+      fluid.utils.debug(message);
+      message.fail(true);
+    }
+    
+    fluid.createDomBinder = function (container, selectors) {
+      return function(name, localContainer) {
+        var selector = selectors[name];
+        var thisContainer = localContainer? localContainer: container;
+        if (!selector) {
+          return thisContainer;
+        }
+        if (typeof(selector) === "function") {
+          return selector.call(null, thisContainer);
+        }
+        var togo = jQuery(selector, thisContainer);
         if (togo.length === 0 || togo.get(0) === document) {
-          throw ("Selector " + name + " with value " + that.options.selectors[name] +
-            " did not find any elements with container " + that.container);
+          fluid.fail("Selector " + name + " with value " + selectors[name] +
+            " did not find any elements with container " + container);
         }
         return togo;
       };
+    }
+    
+    fluid.initialiseThat = function(componentName, container, userOptions) {
+      var that = {};
+      var defaults = fluid.defaults(componentName); 
+      that.options = fluid.utils.merge(defaults.mergePolicy, {}, defaults, userOptions);
+      if (container) {
+        that.container = fluid.container(container);
+      }
+      that.select = fluid.createDomBinder(that.container, that.options.selectors);
       return that;
     };
     
@@ -302,13 +320,18 @@ var fluid = fluid || {};
     
     /** Destroy an object to an empty condition**/
     fluid.utils.contund = function(target) {
-      for (var i in target) {
-        delete target[i];
+      if (target instanceof Array) {
+        target.length = 0;
+      }
+      else {
+        for (var i in target) {
+          delete target[i];
+        }
       }
     };
     
     function mergeImpl(policy, basePath, target, source) {
-      var thisPolicy = policy[basePath];
+      var thisPolicy = policy? policy[basePath] : policy;
       if (typeof(thisPolicy) === "function") {
           thisPolicy.apply(null, target, source);
           return target;
@@ -323,9 +346,9 @@ var fluid = fluid || {};
         var thisSource = source[name];
 
         if (thisSource !== undefined) {
-          if (typeof(thisSource) === 'object') {
+          if (thisSource !== null && typeof(thisSource) === 'object') {
             if (!thisTarget) {
-              target[name] = thisTarget = {};
+              target[name] = thisTarget = thisSource instanceof Array? [] : {};
             }
             mergeImpl(policy, path, thisTarget, thisSource);
           }
@@ -343,39 +366,20 @@ var fluid = fluid || {};
       for (var i = 2; i < arguments.length; ++ i) {
         var source = arguments[i];
         mergeImpl(policy, path, target, source);
+      }
+      if (policy) {
         for (var key in policy) {
           var elrh = policy[key];
           if (typeof(elrh) === 'string' && elrh !== "contund") {
-            var value = fluid.model.getBeanValue(target, elrh);
-            fluid.model.setBeanValue(target, key, value);
+            var oldValue = fluid.model.getBeanValue(target, key);
+            if (oldValue === null || oldValue === undefined) {
+              var value = fluid.model.getBeanValue(target, elrh);
+              fluid.model.setBeanValue(target, key, value);
+            }
           }
         }
       }
       return target;     
-    };
-    
-    /**
-     * Adapt 'findItems' object given either a 'findItems' object or a 'findMovables' function 
-     **/
-    fluid.utils.adaptFindItems = function (finder) {
-        var finderFn = function () {};
-        var findItems = {};
-        
-        if (typeof finder === 'function') {
-            finderFn = finder;
-        } else {
-            findItems = finder;
-        }
-    
-        findItems.movables = findItems.movables || finderFn;
-        findItems.selectables = findItems.selectables || findItems.movables;
-        findItems.dropTargets = findItems.dropTargets || findItems.movables;
-        findItems.grabHandle = findItems.grabHandle ||
-            function (item) {
-                return item;
-            };
-            
-        return findItems;
     };
     
     /**

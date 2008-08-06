@@ -458,14 +458,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });   // end testItemAboveBelow().
         
         moduleLayoutTests.test ("CreateFindItems", function () {
-            var findItems = fluid.moduleLayout.createFindItems (demo.portal.layout, demo.portal.dropTargetPerms);
-            var selectables = fluid.wrap (findItems.selectables ());
+            var selectors = fluid.moduleLayout.inferSelectors(demo.portal.layout, demo.portal.dropTargetPerms);
+            var binder = fluid.createDomBinder(fluid.utils.jById(demo.portal.layout.id), selectors);
+            var selectables = binder("selectables");
             jqUnit.assertEquals ("There are 9 selectable portlets", 9, selectables.length);
         
-            var movables = fluid.wrap (findItems.movables ());
+            var movables = binder("movables");
             jqUnit.assertEquals ("6 portlets can be moved", 6, movables.length);
             
-            var dropTargets = fluid.wrap (findItems.dropTargets ());
+            var dropTargets = binder("dropTargets");
             jqUnit.assertEquals ("there should be 12 drop targets", 12, dropTargets.length);
             
         });   // end testCreateFindItems().

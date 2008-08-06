@@ -15,10 +15,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var gridLHTests = new jqUnit.TestCase ("GridLayoutHandler Tests", setUp, tearDown);
     
         gridLHTests.test ("GetItemBelow", function () {
-            var gridHandler = createGridLayoutHandler ();
+            var gridHandler = createGridLayoutHandler();
             
             var item = gridHandler.getItemBelow(fluid.testUtils.byId(firstReorderableId));
-            jqUnit.assertEquals("Since there are 3 colums in the grid, the item below the first image should be the fourth image", 
+            jqUnit.assertEquals("Since there are 3 columns in the grid, the item below the first image should be the fourth image", 
                 fluid.testUtils.byId(fourthReorderableId), item);
         
             item = gridHandler.getItemBelow(fluid.testUtils.byId(thirdReorderableId));
@@ -31,7 +31,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         gridLHTests.test ("GetItemBelowWrapped", function () {
-            var gridHandler = createGridLayoutHandler ();
+            var gridHandler = createGridLayoutHandler();
         
             var item = gridHandler.getItemBelow(fluid.testUtils.byId(thirdLastReorderableId));
             jqUnit.assertEquals("the item below the third last image should be the third image", 
@@ -48,7 +48,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         gridLHTests.test ("GetItemBelowOneRow", function () {
             var container = fluid.utils.jById (lightboxRootId);
-            var gridHandler = createGridLayoutHandler ();
+            var gridHandler = createGridLayoutHandler();
             container.addClass ("width-all-thumb");
             
             var item = gridHandler.getItemBelow(fluid.testUtils.byId(firstReorderableId));
@@ -67,7 +67,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         gridLHTests.test ("GetItemAbove", function () {
         	var container = fluid.utils.jById (lightboxRootId);
-            var gridHandler = createGridLayoutHandler ();
+            var gridHandler = createGridLayoutHandler();
         	container.removeClass ("width-3-thumb");
         	container.addClass ("width-4-thumb");
         		
@@ -99,7 +99,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         gridLHTests.test ("GetItemAboveWrapped", function () {
             var container = fluid.utils.jById (lightboxRootId);
-            var gridHandler = createGridLayoutHandler ();
+            var gridHandler = createGridLayoutHandler();
             container.removeClass ("width-3-thumb");
             container.addClass ("width-4-thumb");
         
@@ -135,7 +135,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         gridLHTests.test ("GetItemAboveOneRow", function () {
         	var container = fluid.utils.jById (lightboxRootId);
-            var gridHandler = createGridLayoutHandler ();
+            var gridHandler = createGridLayoutHandler();
         	container.addClass ("width-all-thumb");
         	
         	var item = gridHandler.getItemAbove(fluid.testUtils.byId(firstReorderableId));

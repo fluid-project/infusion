@@ -65,7 +65,7 @@ var draggingClass="orderable-dragging";
 var imgListClone;
 
 function fetchLightboxRoot () {
-    return fluid.utils.jById (lightboxRootId);
+    return fluid.utils.jById(lightboxRootId);
 }
 
 function focusLightbox () {
@@ -89,8 +89,9 @@ function tearDown() {
 }
 
 function findOrderableByDivAndId (containerEl) {
-    return jQuery (selectByDivAndId, containerEl);
+    return jQuery(selectByDivAndId, containerEl);
 }
+
 
 function findNoOrderables() {
     return [];
@@ -99,22 +100,45 @@ function findNoOrderables() {
 function findImgsInLightbox() {
     return jQuery("img", fetchLightboxRoot());
 }
-    
+
 function createLightbox() {
     var lightboxRoot = fetchLightboxRoot ();
     var layoutHandler = fluid.gridLayoutHandler (findOrderableByDivAndId);
-    return fluid.reorderer (lightboxRoot, findOrderableByDivAndId, layoutHandler, { containerRole : fluid.roles.GRID });
+    return fluid.reorderer (lightboxRoot,
+      { layoutHandlerName: "fluid.gridLayoutHandler",
+        selectors: {
+          movables: findOrderableByDivAndId
+          },
+        containerRole : fluid.roles.GRID }
+        );
 }
 
 function createLightboxWithNoOrderables() {
     var lightboxRoot = fetchLightboxRoot ();
     var layoutHandler = fluid.gridLayoutHandler (findNoOrderables);
-    return fluid.reorderer (lightboxRoot, findNoOrderables, layoutHandler, { containerRole : fluid.roles.GRID });
-}
+     return fluid.reorderer (lightboxRoot,
+      { layoutHandlerName: "fluid.gridLayoutHandler",
+        selectors: {
+          movables: findNoOrderables
+          },
+        containerRole : fluid.roles.GRID }
+        );
+     }
 
 function createGridLayoutHandler () {
-    return fluid.gridLayoutHandler (findOrderableByDivAndId);
-}
+    var selectors = {
+        movables: findOrderableByDivAndId,
+        selectables: findOrderableByDivAndId
+        };
+    var binder = {
+        select: fluid.createDomBinder(fluid.utils.jById(lightboxRootId), selectors)
+        };
+    return fluid.gridLayoutHandler(
+      binder, {
+        selectors: selectors
+      }
+    );
+  }
 
 var altKeys = { 
     modifier: function (evt) {
