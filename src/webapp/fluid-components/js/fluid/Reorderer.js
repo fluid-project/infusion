@@ -489,13 +489,14 @@ fluid = fluid || {};
                 },
                 handle: thatReorderer.locate("grabHandle", item[0])
             });
-        }   
-
+        }
+           
+        var lastOverTarget;
         /**
          * Takes a jQuery object and a selector that matches movable items
          */
         function initDropTarget (item, selector) {
-            var lastOverTarget;
+
             
             item.ariaState ("dropeffect", "none");
 
@@ -510,8 +511,8 @@ fluid = fluid || {};
                     if (position !== fluid.position.USE_LAST_KNOWN) {
                         targetOver = ui.element[0];
                     }
+                    fluid.utils.debug("Over " + fluid.dumpEl(ui.element[0]) + " replacing " + fluid.dumpEl(lastOverTarget));
                     lastOverTarget = ui.element[0];
-                    fluid.utils.debug("Over " + fluid.dumpEl(ui.element[0]));
                 },
                 out: function (e, ui) {
                     fluid.utils.debug("Out " + fluid.dumpEl(ui.element[0]));
