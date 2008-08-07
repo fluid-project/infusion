@@ -545,7 +545,12 @@ fluid.moduleLayout = fluid.moduleLayout || {};
      * - Moving sideways will always move to the top available drop target in the column
      * - Wrapping is not necessary at this first pass, but is ok
      */
-    fluid.moduleLayoutHandler = function (binder, options) {
+    fluid.moduleLayoutHandler = function (container, options) {
+            
+        var that = fluid.initView("fluid.moduleLayoutHandler", container, options);
+        // TODO: actually place some defaults in this structure, and resolve the way
+        // that defaults from subsidiary components (layouts) could interact with
+        // defaults at a higher level. 
         var orientation = fluid.orientation.VERTICAL;
         
         // Configure optional parameters
@@ -564,7 +569,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                     }, 
                     "json");
             };
-        } 
+        }
         var dropWarning = fluid.utils.jById(options.dropWarningId);
         var willShowKBDropWarning = options.willShowKBDropWarning || defaultWillShowKBDropWarning;
         
@@ -628,8 +633,6 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                 move(item, target, targetAndPos.position);
             }
         };
-        
-        var that = {};
         
         // Public Methods
         that.getRightSibling = function (item) {

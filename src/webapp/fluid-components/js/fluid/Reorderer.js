@@ -171,10 +171,10 @@ fluid = fluid || {};
      *                  avatarCreator - a function that returns a valid DOM node to be used as the dragging avatar
      */
     fluid.reorderer = function (container, options) {
-        var thatReorderer = fluid.initialiseThat("reorderer", container, options);
+        var thatReorderer = fluid.initView("reorderer", container, options);
         
-        thatReorderer.layoutHandler = fluid.model.getBeanValue(window, 
-          thatReorderer.options.layoutHandlerName).call(null, thatReorderer, thatReorderer.options);
+        thatReorderer.layoutHandler = fluid.utils.invokeGlobalFunction(
+           thatReorderer.options.layoutHandlerName, [container, thatReorderer.options]);
         
         thatReorderer.activeItem = undefined;
 
@@ -607,7 +607,7 @@ fluid = fluid || {};
     var simpleInit = function (container, itemSelector, layoutHandlerName, orderChangedCallback, userOptions) {
         var options = fluid.utils.merge({}, {}, defaultInitOptions, userOptions);  
         options.orderChangedCallback = orderChangedCallback;
-        if (typeof itemSelector === "string") {
+        if (typeof itemSelector === "string" || typeof itemSelector == "function") {
           options.selectors.movables = itemSelector;
         }
         else {
@@ -751,34 +751,35 @@ fluid = fluid || {};
     };
     
     // Public layout handlers.
-    fluid.listLayoutHandler = function (binder, options) {
+    fluid.listLayoutHandler = function (container, options) {
+        var that = fluid.initView("fluid.listLayoutHandler", container, options);
+      
         var orderChangedCallback = function () {};
         var orientation = fluid.orientation.VERTICAL;
         if (options) {
             orderChangedCallback = options.orderChangedCallback || orderChangedCallback;
             orientation = options.orientation || orientation;
         }
-        var that = {
-            getRightSibling: function (item) {
-                return itemInfoFinders.getRightSiblingInfo(item, binder.select("selectables")).item;
-            },
         
-            moveItemRight: function (item) {
-                var rightSiblingInfo = itemInfoFinders.getRightSiblingInfo (item, binder.select("movables"));
-                moveItem(item, rightSiblingInfo, fluid.position.AFTER, fluid.position.BEFORE);
-                orderChangedCallback(item);
-            },
+        that.getRightSibling = function (item) {
+            return itemInfoFinders.getRightSiblingInfo(item, that.select("selectables")).item;
+            };
+        
+        that.moveItemRight = function (item) {
+            var rightSiblingInfo = itemInfoFinders.getRightSiblingInfo (item, that.select("movables"));
+            moveItem(item, rightSiblingInfo, fluid.position.AFTER, fluid.position.BEFORE);
+            orderChangedCallback(item);
+            };
     
-            getLeftSibling: function (item) {
-                return itemInfoFinders.getLeftSiblingInfo(item, binder.select("selectables")).item;
-            },
+        that.getLeftSibling = function (item) {
+            return itemInfoFinders.getLeftSiblingInfo(item, that.select("selectables")).item;
+            };
     
-            moveItemLeft: function (item) {
-                var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo(item, binder.select("movables"));
-                moveItem(item, leftSiblingInfo, fluid.position.BEFORE, fluid.position.AFTER);
-                orderChangedCallback(item);
-            }
-        };
+        that.moveItemLeft = function (item) {
+            var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo(item, that.select("movables"));
+            moveItem(item, leftSiblingInfo, fluid.position.BEFORE, fluid.position.AFTER);
+            orderChangedCallback(item);
+            };
     
         that.getItemBelow = that.getRightSibling;
     
@@ -813,8 +814,8 @@ fluid = fluid || {};
      * The GridLayoutHandler is responsible for handling changes to this virtual 'grid' of items
      * in the window, and of informing the Lightbox of which items surround a given item.
      */
-    fluid.gridLayoutHandler = function (binder, options) {
-        var that = fluid.listLayoutHandler(binder, options);
+    fluid.gridLayoutHandler = function (container, options) {
+        var that = fluid.listLayoutHandler(container, options);
 
         var orderChangedCallback = function () {};
         if (options) {
@@ -824,21 +825,21 @@ fluid = fluid || {};
         var orientation = fluid.orientation.HORIZONTAL;
         
         that.getItemBelow = function(item) {
-            return itemInfoFinders.getItemInfoBelow(item, binder.select("selectables")).item;
+            return itemInfoFinders.getItemInfoBelow(item, that.select("selectables")).item;
         };
     
         that.moveItemDown = function (item) {
-            var itemBelow = itemInfoFinders.getItemInfoBelow(item, binder.select("movables"));
+            var itemBelow = itemInfoFinders.getItemInfoBelow(item, that.select("movables"));
             moveItem(item, itemBelow, fluid.position.AFTER, fluid.position.BEFORE);
             orderChangedCallback(item);
         };
                 
         that.getItemAbove = function (item) {
-            return itemInfoFinders.getItemInfoAbove (item, binder.select("selectables")).item;   
+            return itemInfoFinders.getItemInfoAbove (item, that.select("selectables")).item;   
         }; 
         
         that.moveItemUp = function (item) {
-            var itemAbove = itemInfoFinders.getItemInfoAbove(item, binder.select("movables"));
+            var itemAbove = itemInfoFinders.getItemInfoAbove(item, that.select("movables"));
             moveItem(item, itemAbove, fluid.position.BEFORE, fluid.position.AFTER);
             orderChangedCallback(item);
         };

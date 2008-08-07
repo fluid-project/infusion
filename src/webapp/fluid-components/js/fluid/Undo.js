@@ -76,7 +76,7 @@ fluid = fluid || {};
      * @param {Object} options a collection of options settings
      */
     fluid.infuseUndoability = function (component, userOptions) {
-        var that = fluid.initialiseThat("undo", null, userOptions);
+        var that = fluid.initView("undo", null, userOptions);
         that.container = that.options.renderer(that, component.container);
         
         that.component = component;

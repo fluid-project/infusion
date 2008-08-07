@@ -46,11 +46,14 @@ var callbackConfirmer = function(item){
 
 var createListLayoutHandler = function  () {
     var options = {
-        orderChangedCallback: callbackConfirmer
+        orderChangedCallback: callbackConfirmer,
+        selectors: {
+          movables: listMovableFinder,
+          selectables: listMovableFinder
+        }
     };
     
-    return fluid.listLayoutHandler(
-       {select: listMovableFinder}, options);
+    return fluid.listLayoutHandler(findList1(), options);
 };
 
 // This setUp will be called before each of the tests that are included in unordered-list.html 

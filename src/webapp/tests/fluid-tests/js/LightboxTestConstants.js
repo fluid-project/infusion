@@ -64,12 +64,12 @@ var draggingClass="orderable-dragging";
 
 var imgListClone;
 
-function fetchLightboxRoot () {
+function fetchLightboxRoot() {
     return fluid.utils.jById(lightboxRootId);
 }
 
 function focusLightbox () {
-    fetchLightboxRoot ().focus ();
+    fetchLightboxRoot().focus();
 }
 
 // This setUp will be called before each of the tests that are included in Lightbox.html 
@@ -102,8 +102,7 @@ function findImgsInLightbox() {
 }
 
 function createLightbox() {
-    var lightboxRoot = fetchLightboxRoot ();
-    var layoutHandler = fluid.gridLayoutHandler (findOrderableByDivAndId);
+    var lightboxRoot = fetchLightboxRoot();
     return fluid.reorderer (lightboxRoot,
       { layoutHandlerName: "fluid.gridLayoutHandler",
         selectors: {
@@ -114,8 +113,7 @@ function createLightbox() {
 }
 
 function createLightboxWithNoOrderables() {
-    var lightboxRoot = fetchLightboxRoot ();
-    var layoutHandler = fluid.gridLayoutHandler (findNoOrderables);
+    var lightboxRoot = fetchLightboxRoot();
      return fluid.reorderer (lightboxRoot,
       { layoutHandlerName: "fluid.gridLayoutHandler",
         selectors: {
@@ -130,11 +128,8 @@ function createGridLayoutHandler () {
         movables: findOrderableByDivAndId,
         selectables: findOrderableByDivAndId
         };
-    var binder = {
-        select: fluid.createDomBinder(fluid.utils.jById(lightboxRootId), selectors)
-        };
     return fluid.gridLayoutHandler(
-      binder, {
+      fluid.utils.jById(lightboxRootId), {
         selectors: selectors
       }
     );
@@ -150,13 +145,13 @@ var altKeys = {
     left: fluid.keys.j
 };
     
-function createAltKeystrokeLightbox () {
+function createAltKeystrokeLightbox() {
     return fluid.lightbox.createLightbox (fetchLightboxRoot(),
                                         findOrderableByDivAndId,
                                         { keysets: [altKeys] });
 }
 
-function createMultiKeystrokeLightbox () {
+function createMultiKeystrokeLightbox() {
     var altKeys2 = { 
         modifier: function (evt) {
                 return (evt.altKey);
@@ -172,7 +167,7 @@ function createMultiKeystrokeLightbox () {
                                         { keysets: [altKeys, altKeys2] });
 }
 
-function createMultiOverlappingKeystrokeLightbox () {
+function createMultiOverlappingKeystrokeLightbox() {
     var altKeys2 = { 
         modifier: function (evt) {
                 return (evt.ctrlKey);

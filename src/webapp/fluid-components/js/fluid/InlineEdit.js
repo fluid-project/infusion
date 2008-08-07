@@ -246,7 +246,7 @@ fluid = fluid || {};
      */
     fluid.inlineEdit = function (componentContainer, userOptions) {
       
-        var that = fluid.initialiseThat("inlineEdit", componentContainer, userOptions);
+        var that = fluid.initView("inlineEdit", componentContainer, userOptions);
        
         that.model = {value: ""};
        

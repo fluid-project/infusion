@@ -217,7 +217,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 result = fluid.container(".container");
                 jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
             } catch (e) {
-                jqUnit.assertEquals("The exception should be a NotOne.", "NotOne", e.name);
+                jqUnit.assertTrue("We should have received an exception", !!e);
             }
         });
     
@@ -234,7 +234,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 result = fluid.container(twoContainers);
                 jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
             } catch (e) {
-                jqUnit.assertEquals("The exception should be a NotOne.", "NotOne", e.name);
+                jqUnit.assertTrue("We should have received an exception", !!e);
             }
         });
         
@@ -253,7 +253,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var result = fluid.container(container);
                 jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
             } catch (e) {
-                jqUnit.assertEquals("The exception should be a NotOne.", "NotOne", e.name);
+                jqUnit.assertTrue("We should have received an exception", !!e);
             }
         });
         

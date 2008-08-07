@@ -110,10 +110,10 @@ var fluid = fluid || {};
         
         // Throw an exception if we've got more or less than one element.
         if (!container || !container.jquery || container.length !== 1) {
-            throw {
+            fluid.fail( {
                 name: "NotOne",
                 message: "A single container element was not found."
-            };
+            });
         }
         
         return container;
@@ -138,7 +138,7 @@ var fluid = fluid || {};
     
     fluid.fail = function(message) {
       fluid.utils.setLogging(true);
-      fluid.utils.debug(message);
+      fluid.utils.debug(message.message? message.message : message);
       message.fail(true);
     }
     
@@ -161,10 +161,10 @@ var fluid = fluid || {};
       };
     }
     
-    fluid.initialiseThat = function(componentName, container, userOptions) {
+    fluid.initView = function(componentName, container, userOptions) {
       var that = {};
       var defaults = fluid.defaults(componentName); 
-      that.options = fluid.utils.merge(defaults.mergePolicy, {}, defaults, userOptions);
+      that.options = fluid.utils.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);
       if (container) {
         that.container = fluid.container(container);
       }
@@ -400,6 +400,11 @@ var fluid = fluid || {};
         }
       }
       return target;     
+    };
+    
+    fluid.utils.invokeGlobalFunction = function(functionPath, args) {
+        return fluid.model.getBeanValue(window, 
+          functionPath).apply(null, args);
     };
     
     /**
