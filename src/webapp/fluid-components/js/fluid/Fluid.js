@@ -150,7 +150,7 @@ var fluid = fluid || {};
           return thisContainer;
         }
         if (typeof(selector) === "function") {
-          return selector.call(null, thisContainer);
+          return jQuery(selector.call(null, fluid.unwrap(thisContainer)));
         }
         var togo = jQuery(selector, thisContainer);
         if (togo.length === 0 || togo.get(0) === document) {
@@ -287,6 +287,26 @@ var fluid = fluid || {};
             return [curleft, curtop];
         }
     };
+    
+    /**
+     * Useful for drag-and-drop during a drag:  is the mouse over the "before" half
+     * of the droppable?  In the case of a vertically oriented set of orderables,
+     * "before" means "above".  For a horizontally oriented set, "before" means
+     * "left of".
+     */
+    fluid.utils.mousePosition = function (droppableEl, orientation, x, y) {        
+        var mid;
+        var isBefore;
+        if (orientation === fluid.orientation.VERTICAL) {
+            mid = jQuery (droppableEl).offset().top + (droppableEl.offsetHeight / 2);
+            isBefore = y < mid;
+        } else {
+            mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
+            isBefore = x < mid;
+        }
+        
+        return (isBefore ? fluid.position.BEFORE : fluid.position.AFTER);
+    };  
     
     // Custom query method seeks all tags descended from a given root with a 
     // particular tag name, whose id matches a regex. The Dojo query parser

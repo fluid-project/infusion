@@ -93,7 +93,7 @@ var fluid = fluid || {};
                 selectors: {
                   movables: itemFinderFn
                 }
-            };            
+            };
             jQuery.extend(true, reordererOptions, userOptions);
             
             return fluid.reorderer(container, reordererOptions);
