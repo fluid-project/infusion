@@ -41,7 +41,7 @@ var demo = demo || {};
             avatar: "orderable-avatar-clone"
         };
         var options = { 
-            cssClasses: classNames, 
+            styles: classNames, 
             dropWarningId: "drop-warning",
             grabHandle: grabHandle 
         };
@@ -66,7 +66,7 @@ var demo = demo || {};
     
         return fluid.lightbox.createLightbox (fluid.utils.jById("gallery"),
                                               orderableFinderFunction,
-                                              {cssClasses: cssClassNames,
+                                              {styles: cssClassNames,
                                                orderChangedCallback: function () {}});
     };
 }) (jQuery, fluid);
