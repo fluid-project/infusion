@@ -113,19 +113,27 @@ fluid = fluid || {};
     // This is the start of refactoring the drag and drop code out into its own space. 
     // These are the private stateless functions.
     var dndFunctions = {};
+    
     dndFunctions.findTarget = function (element, dropTargets, avatarId, lastTarget) {
-        var isAvatar = function (el) {
-            return (el && el.id === avatarId);
-        };
-            
+//        var isAvatar = function (el) {
+//            return (el && el.id === avatarId);
+ //       };
+        if (!lastTarget) {
+          return null;
+        }
         var isTargetOrAvatar = function (el) {
-            return ((dropTargets.index(el) > -1) || isAvatar(el));
+            return ((dropTargets.index(el) > -1)
+            // || isAvatar(el)
+            );
         };
 
         var target = fluid.utils.findAncestor(element, isTargetOrAvatar);
         
+        //fluid.utils.debug("findTarget computed " + fluid.dumpEl(target) 
+        //   + " isAvatar " + isAvatar(target));
+        
         // If the avatar was the target of the event, use the last known drop target instead.
-        if (isAvatar(target)) {
+        if (!target) {
             target = lastTarget;        
         }
         return target;
@@ -362,27 +370,32 @@ fluid = fluid || {};
             return dropMarker;
         };
 
-        // Storing the last target that gets an 'over' event to work around the issue where
-        // the avatar is below the mouse pointer and blocks events
+        // Stores the last drop target that received an "over" event, without having
+        // also received a matching "out". Therefore when this is set, it corresponds
+        // to the knowledge that i) a drag operation is in progress, and ii) its
+        // most recent and therefore expected "drop target". This signals from the
+        // drophandler further below, and the raw mouse handler written here.
+        
         var targetOver;
         // Storing the most recent valid target and drop position to implement correct behaviour for locked modules
         var validTargetAndPos;
+        
+        fluid.utils.setLogging(true);
         
         /**
          * Creates an event handler for mouse move events that moves, shows and hides the drop marker accordingly
          * @param {Object} dropTargets    a list of valid drop targets
          */
-        var createTrackMouse = function (dropTargets){
+        var createTrackMouse = function(dropTargets) {
             dropTargets = fluid.wrap(dropTargets);
             var avatarId = dndFunctions.createAvatarId(thatReorderer.container.id);
            
-            return function (evt){
-                // Bail if we are not over a target
-                if (!targetOver) {
-                    return;
-                }
+            return function(evt) {
+//                fluid.utils.debug("target " + fluid.dumpEl(evt.target) + " targetOver " + fluid.dumpEl(targetOver) + " X " + evt.clientX + " Y " + evt.pageY);
                 
-                var target = dndFunctions.findTarget (evt.target, dropTargets, avatarId, targetOver);
+                var target = dndFunctions.findTarget(evt.target, dropTargets, avatarId, targetOver);
+                
+                //fluid.utils.debug("Computed target: " + fluid.dumpEl(target));
                 
                 if (target) {
                     var position = thatReorderer.layoutHandler.dropPosition(target, thatReorderer.activeItem, evt.clientX, evt.pageY);
@@ -482,6 +495,8 @@ fluid = fluid || {};
          * Takes a jQuery object and a selector that matches movable items
          */
         function initDropTarget (item, selector) {
+            var lastOverTarget;
+            
             item.ariaState ("dropeffect", "none");
 
             item.droppable ({
@@ -494,6 +509,15 @@ fluid = fluid || {};
                     var position = thatReorderer.layoutHandler.dropPosition(item[0], ui.draggable[0], e.clientX, e.pageY);
                     if (position !== fluid.position.USE_LAST_KNOWN) {
                         targetOver = ui.element[0];
+                    }
+                    lastOverTarget = ui.element[0];
+                    fluid.utils.debug("Over " + fluid.dumpEl(ui.element[0]));
+                },
+                out: function (e, ui) {
+                    fluid.utils.debug("Out " + fluid.dumpEl(ui.element[0]));
+                    if (ui.element[0] === lastOverTarget) {
+                      targetOver = null;
+                      fluid.utils.debug("Cancelled");
                     }
                 },
                 drop: function (e, ui) {

@@ -136,6 +136,19 @@ var fluid = fluid || {};
         return defaultsStore[componentName];
     };
     
+    fluid.dumpEl = function(element) {
+      if (!element) return "null";
+      element = jQuery(element);
+      var togo = element.get(0).tagName;
+      if (element.attr("id")) {
+        togo += "#" + element.attr("id");
+      }
+      if (element.attr("class")) {
+        togo += "." + element.attr("class");
+      }
+      return togo;
+    }
+    
     fluid.fail = function(message) {
       fluid.utils.setLogging(true);
       fluid.utils.debug(message.message? message.message : message);
