@@ -504,7 +504,7 @@ fluid = fluid || {};
             });
         }
    
-        var initSelectables = function (selectables) {
+        var initSelectables = function () {
             var handleBlur = function (evt) {
                 changeSelectedToDefault (jQuery(this), thatReorderer.options.styles);
                 return evt.stopPropagation();
