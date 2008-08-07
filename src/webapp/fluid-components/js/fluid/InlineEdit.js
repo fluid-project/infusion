@@ -157,7 +157,7 @@ fluid = fluid || {};
     
     var bindToDom = function (that, container) {
         // Bind to the DOM.
-        that.viewEl = that.select("text");
+        that.viewEl = that.locate("text");
 
         // If an edit container is found in the markup, use it. Otherwise generate one based on the view text.
         that.editContainer = $(that.options.selectors.editContainer, that.container);

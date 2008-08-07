@@ -72,7 +72,7 @@ fluid = fluid || {};
     });
     
     function firstSelectable (that) {
-        var selectables = that.select("selectables");
+        var selectables = that.locate("selectables");
         if (selectables.length <= 0) {
             return null;
         }
@@ -94,7 +94,7 @@ fluid = fluid || {};
     }
     
     function addRolesToContainer(that) {
-        var first = (that.select("selectables")[0]);
+        var first = (that.locate("selectables")[0]);
         if (first) {
             that.container.ariaState("activedescendent", first.id);
         }
@@ -211,11 +211,11 @@ fluid = fluid || {};
         };
         
         var isActiveItemMovable = function () {
-            return (jQuery.inArray(thatReorderer.activeItem, thatReorderer.select("movables")) >= 0);
+            return (jQuery.inArray(thatReorderer.activeItem, thatReorderer.locate("movables")) >= 0);
         };
         
         var setDropEffects = function (value) {
-            thatReorderer.select("dropTargets").ariaState ("dropeffect", value);
+            thatReorderer.locate("dropTargets").ariaState ("dropeffect", value);
         };
         
         var styles = thatReorderer.options.styles;
@@ -432,18 +432,18 @@ fluid = fluid || {};
 
             item.mouseover ( 
                 function () {
-                    thatReorderer.select("grabHandle", jQuery(item[0])).addClass(styles.hover);
+                    thatReorderer.locate("grabHandle", jQuery(item[0])).addClass(styles.hover);
                 }
             );
         
             item.mouseout (  
                 function () {
-                    thatReorderer.select("grabHandle", jQuery(item[0])).removeClass(styles.hover);
+                    thatReorderer.locate("grabHandle", jQuery(item[0])).removeClass(styles.hover);
                 }
             );
         
             item.draggable ({
-                refreshPositions: true,
+                refreshPositions: false,
                 scroll: true,
                 helper: function () {
                     var dropWarningEl;
@@ -474,7 +474,7 @@ fluid = fluid || {};
                     // refocus on the active item because moving places focus on the body
                     thatReorderer.activeItem.focus();
                 },
-                handle: thatReorderer.select("grabHandle", item[0])
+                handle: thatReorderer.locate("grabHandle", item[0])
             });
         }   
 
@@ -515,7 +515,7 @@ fluid = fluid || {};
                 return evt.stopPropagation();
             };
             
-            var selectables = thatReorderer.select("selectables");
+            var selectables = thatReorderer.locate("selectables");
             // set up selectables 
             // Remove the selectables from the taborder
             for (var i = 0; i < selectables.length; i++) {
@@ -531,8 +531,8 @@ fluid = fluid || {};
         };
     
         var initItems = function () {
-            var movables = thatReorderer.select("movables");
-            var dropTargets = thatReorderer.select("dropTargets");
+            var movables = thatReorderer.locate("movables");
+            var dropTargets = thatReorderer.locate("dropTargets");
             initSelectables();
         
             // Setup movables
@@ -565,7 +565,7 @@ fluid = fluid || {};
                 thatReorderer.focusActiveItem,
                 thatReorderer.handleKeyDown,
                 thatReorderer.handleKeyUp,
-                createTrackMouse(thatReorderer.select("dropTargets")));
+                createTrackMouse(thatReorderer.locate("dropTargets")));
             addRolesToContainer(thatReorderer);
             // ensure that the Reorderer container is in the tab order
             if (!thatReorderer.container.hasTabindex() || (thatReorderer.container.tabindex() < 0)) {
@@ -762,21 +762,21 @@ fluid = fluid || {};
         }
         
         that.getRightSibling = function (item) {
-            return itemInfoFinders.getRightSiblingInfo(item, that.select("selectables")).item;
+            return itemInfoFinders.getRightSiblingInfo(item, that.locate("selectables")).item;
             };
         
         that.moveItemRight = function (item) {
-            var rightSiblingInfo = itemInfoFinders.getRightSiblingInfo (item, that.select("movables"));
+            var rightSiblingInfo = itemInfoFinders.getRightSiblingInfo (item, that.locate("movables"));
             moveItem(item, rightSiblingInfo, fluid.position.AFTER, fluid.position.BEFORE);
             orderChangedCallback(item);
             };
     
         that.getLeftSibling = function (item) {
-            return itemInfoFinders.getLeftSiblingInfo(item, that.select("selectables")).item;
+            return itemInfoFinders.getLeftSiblingInfo(item, that.locate("selectables")).item;
             };
     
         that.moveItemLeft = function (item) {
-            var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo(item, that.select("movables"));
+            var leftSiblingInfo = itemInfoFinders.getLeftSiblingInfo(item, that.locate("movables"));
             moveItem(item, leftSiblingInfo, fluid.position.BEFORE, fluid.position.AFTER);
             orderChangedCallback(item);
             };
@@ -825,21 +825,21 @@ fluid = fluid || {};
         var orientation = fluid.orientation.HORIZONTAL;
         
         that.getItemBelow = function(item) {
-            return itemInfoFinders.getItemInfoBelow(item, that.select("selectables")).item;
+            return itemInfoFinders.getItemInfoBelow(item, that.locate("selectables")).item;
         };
     
         that.moveItemDown = function (item) {
-            var itemBelow = itemInfoFinders.getItemInfoBelow(item, that.select("movables"));
+            var itemBelow = itemInfoFinders.getItemInfoBelow(item, that.locate("movables"));
             moveItem(item, itemBelow, fluid.position.AFTER, fluid.position.BEFORE);
             orderChangedCallback(item);
         };
                 
         that.getItemAbove = function (item) {
-            return itemInfoFinders.getItemInfoAbove (item, that.select("selectables")).item;   
+            return itemInfoFinders.getItemInfoAbove (item, that.locate("selectables")).item;   
         }; 
         
         that.moveItemUp = function (item) {
-            var itemAbove = itemInfoFinders.getItemInfoAbove(item, that.select("movables"));
+            var itemAbove = itemInfoFinders.getItemInfoAbove(item, that.locate("movables"));
             moveItem(item, itemAbove, fluid.position.BEFORE, fluid.position.AFTER);
             orderChangedCallback(item);
         };

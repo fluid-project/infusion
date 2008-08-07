@@ -168,7 +168,7 @@ var fluid = fluid || {};
       if (container) {
         that.container = fluid.container(container);
       }
-      that.select = fluid.createDomBinder(that.container, that.options.selectors);
+      that.locate = fluid.createDomBinder(that.container, that.options.selectors);
       return that;
     };
     

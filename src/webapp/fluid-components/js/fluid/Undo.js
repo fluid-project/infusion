@@ -33,16 +33,16 @@ fluid = fluid || {};
   
     function render(that) {
         if (that.state === STATE_INITIAL) {
-          that.select("undoContainer").hide();
-          that.select("redoContainer").hide();
+          that.locate("undoContainer").hide();
+          that.locate("redoContainer").hide();
         }
         else if (that.state === STATE_CHANGED) {
-          that.select("undoContainer").show();
-          that.select("redoContainer").hide();
+          that.locate("undoContainer").show();
+          that.locate("redoContainer").hide();
         }
         else if (that.state === STATE_REVERTED) {
-          that.select("undoContainer").hide();
-          that.select("redoContainer").show();          
+          that.locate("undoContainer").hide();
+          that.locate("redoContainer").show();          
         }
     }
     
@@ -53,7 +53,7 @@ fluid = fluid || {};
           render(that);
         });
       
-      that.select("undoControl").click( 
+      that.locate("undoControl").click( 
         function() {
           fluid.model.copyModel(that.extremalModel, that.component.model);
           fluid.model.copyModel(that.component.model, that.initialModel);
@@ -61,7 +61,7 @@ fluid = fluid || {};
           that.state = STATE_REVERTED;
           render(that);
         });
-      that.select("redoControl").click( 
+      that.locate("redoControl").click( 
         function() {
           fluid.model.copyModel(that.component.model, that.extremalModel);
           that.component.render();

@@ -454,7 +454,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             }
             
             function insistSelect(message, that, name) {
-              var togo = that.select(name);
+              var togo = that.locate(name);
               jqUnit.assertEquals(message, 1, togo.length);
               return togo;
             }
