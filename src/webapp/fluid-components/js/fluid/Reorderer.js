@@ -110,35 +110,8 @@ fluid = fluid || {};
         jItem.ariaState("selected", "false");
     }
     
-    // This is the start of refactoring the drag and drop code out into its own space. 
-    // These are the private stateless functions.
-    var dndFunctions = {};
-    
-    dndFunctions.findTarget = function (element, dropTargets, avatarId, lastTarget) {
-//        var isAvatar = function (el) {
-//            return (el && el.id === avatarId);
- //       };
-        if (!lastTarget) {
-          return null;
-        }
-        var isTargetOrAvatar = function (el) {
-            return ((dropTargets.index(el) > -1)
-            // || isAvatar(el)
-            );
-        };
 
-        var target = fluid.utils.findAncestor(element, isTargetOrAvatar);
-        
-        //fluid.utils.debug("findTarget computed " + fluid.dumpEl(target) 
-        //   + " isAvatar " + isAvatar(target));
-        
-        // If the avatar was the target of the event, use the last known drop target instead.
-        if (!target) {
-            target = lastTarget;        
-        }
-        return target;
-    };
-    dndFunctions.createAvatarId = function (parentId) {
+    function createAvatarId (parentId) {
         // Generating the avatar's id to be containerId_avatar
         // This is safe since there is only a single avatar at a time
         return parentId + "_avatar";
@@ -370,13 +343,7 @@ fluid = fluid || {};
             return dropMarker;
         };
 
-        // Stores the last drop target that received an "over" event, without having
-        // also received a matching "out". Therefore when this is set, it corresponds
-        // to the knowledge that i) a drag operation is in progress, and ii) its
-        // most recent and therefore expected "drop target". This signals from the
-        // drophandler further below, and the raw mouse handler written here.
-        
-        var targetOver;
+        var dragManager = fluid.dragManager();
         // Storing the most recent valid target and drop position to implement correct behaviour for locked modules
         var validTargetAndPos;
         
@@ -388,12 +355,12 @@ fluid = fluid || {};
          */
         var createTrackMouse = function(dropTargets) {
             dropTargets = fluid.wrap(dropTargets);
-            var avatarId = dndFunctions.createAvatarId(thatReorderer.container.id);
+            var avatarId = createAvatarId(thatReorderer.container.id);
            
             return function(evt) {
 //                fluid.utils.debug("target " + fluid.dumpEl(evt.target) + " targetOver " + fluid.dumpEl(targetOver) + " X " + evt.clientX + " Y " + evt.pageY);
                 
-                var target = dndFunctions.findTarget(evt.target, dropTargets, avatarId, targetOver);
+                var target = dragManager.computeTopTarget();
                 
                 //fluid.utils.debug("Computed target: " + fluid.dumpEl(target));
                 
@@ -464,7 +431,7 @@ fluid = fluid || {};
                         dropWarningEl = mouseDropWarning[0];
                     }
                     var avatar = jQuery(thatReorderer.options.avatarCreator(item[0], styles.avatar, dropWarningEl));
-                    avatar.attr("id", dndFunctions.createAvatarId(thatReorderer.container.id));
+                    avatar.attr("id", createAvatarId(thatReorderer.container.id));
                     return avatar;
                 },
                 start: function (e, ui) {
@@ -473,6 +440,7 @@ fluid = fluid || {};
                     item.addClass (thatReorderer.options.styles.mouseDrag);
                     item.ariaState ("grab", "true");
                     setDropEffects ("move");
+                    dragManager.startDrag();
                 },
                 stop: function(e, ui) {
                     item.removeClass (thatReorderer.options.styles.mouseDrag);
@@ -483,6 +451,7 @@ fluid = fluid || {};
                     targetOver = null;
                     validTargetAndPos = null;
                     setDropEffects ("none");
+                    dragManager.contund();
                     
                     // refocus on the active item because moving places focus on the body
                     thatReorderer.activeItem.focus();
@@ -490,13 +459,11 @@ fluid = fluid || {};
                 handle: thatReorderer.locate("grabHandle", item[0])
             });
         }
-           
-        var lastOverTarget;
+
         /**
          * Takes a jQuery object and a selector that matches movable items
          */
         function initDropTarget (item, selector) {
-
             
             item.ariaState ("dropeffect", "none");
 
@@ -511,15 +478,10 @@ fluid = fluid || {};
                     if (position !== fluid.position.USE_LAST_KNOWN) {
                         targetOver = ui.element[0];
                     }
-                    fluid.utils.debug("Over " + fluid.dumpEl(ui.element[0]) + " replacing " + fluid.dumpEl(lastOverTarget));
-                    lastOverTarget = ui.element[0];
+                    dragManager.recordOver(ui.element[0]);
                 },
                 out: function (e, ui) {
-                    fluid.utils.debug("Out " + fluid.dumpEl(ui.element[0]));
-                    if (ui.element[0] === lastOverTarget) {
-                      targetOver = null;
-                      fluid.utils.debug("Cancelled");
-                    }
+                    dragManager.recordOut(ui.element[0]);
                 },
                 drop: function (e, ui) {
                     if (validTargetAndPos) {

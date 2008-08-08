@@ -301,6 +301,15 @@ var fluid = fluid || {};
         }
     };
     
+    fluid.utils.computeDomDepth = function (element) {
+        var depth = 0;
+        while (element) {
+        element = element.parentNode;
+            ++depth;
+            }
+        return depth;
+        }
+    
     /**
      * Useful for drag-and-drop during a drag:  is the mouse over the "before" half
      * of the droppable?  In the case of a vertically oriented set of orderables,
