@@ -454,10 +454,10 @@ var fluid = fluid || {};
           }
         }
         else if (typeof(YAHOO) != "undefined") {
-          YAHOO.log(message);
+          YAHOO.log(str);
           }
         else if (typeof(opera) != "undefined") {
-        opera.postError(message);
+        opera.postError(str);
         }
       }
     };
