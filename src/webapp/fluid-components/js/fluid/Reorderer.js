@@ -362,9 +362,9 @@ fluid = fluid || {};
                 
                 var target = dragManager.computeTopTarget();
                 
-                //fluid.utils.debug("Computed target: " + fluid.dumpEl(target));
-                
                 if (target) {
+                    //fluid.utils.debug("Computed target: " + fluid.dumpEl(target));
+                
                     var position = thatReorderer.layoutHandler.dropPosition(target, thatReorderer.activeItem, evt.clientX, evt.pageY);
                     if (position === fluid.position.DISALLOWED) {
                         if (mouseDropWarning) {
@@ -375,7 +375,7 @@ fluid = fluid || {};
                         if (mouseDropWarning) {
                             mouseDropWarning.hide();
                         }
-                        if (position !== fluid.position.USE_LAST_KNOWN) {
+                        //if (position !== fluid.position.USE_LAST_KNOWN) {
                             validTargetAndPos = {
                                 target: target,
                                 position: position
@@ -389,7 +389,7 @@ fluid = fluid || {};
                             else if (validTargetAndPos.position === fluid.position.INSIDE) {
                                 jQuery(target).append(dropMarker);
                             }
-                        }
+                        //}
                         dropMarker.show();
                     }
                 }
@@ -410,13 +410,13 @@ fluid = fluid || {};
             item.addClass (styles.defaultStyle);
             item.ariaState ("grab", "supported");
 
-            item.mouseover ( 
+            item.mouseover( 
                 function () {
                     thatReorderer.locate("grabHandle", jQuery(item[0])).addClass(styles.hover);
                 }
             );
         
-            item.mouseout (  
+            item.mouseout(  
                 function () {
                     thatReorderer.locate("grabHandle", jQuery(item[0])).removeClass(styles.hover);
                 }
@@ -443,12 +443,15 @@ fluid = fluid || {};
                     dragManager.startDrag();
                 },
                 stop: function(e, ui) {
+                    if (validTargetAndPos) {
+                        thatReorderer.layoutHandler.mouseMoveItem(this, validTargetAndPos.target, e.clientX, e.pageY, validTargetAndPos.position);
+                    }
+                    fluid.utils.debug("Drag stopped");
                     item.removeClass (thatReorderer.options.styles.mouseDrag);
                     item.addClass (thatReorderer.options.styles.selected);
                     jQuery (thatReorderer.activeItem).ariaState ("grab", "supported");
                     dropMarker.hide();
                     ui.helper = null;
-                    targetOver = null;
                     validTargetAndPos = null;
                     setDropEffects ("none");
                     dragManager.contund();
@@ -472,22 +475,11 @@ fluid = fluid || {};
                 greedy: true,
                 tolerance: "pointer",
                 over: function (e, ui) {
-                    // Store the last target for the case when the avatar gets the mouse move instead of the droppable below it.
-                    // We do not want to store the value if the position is 'USE_LAST_KNOWN'
-                    var position = thatReorderer.layoutHandler.dropPosition(item[0], ui.draggable[0], e.clientX, e.pageY);
-                    if (position !== fluid.position.USE_LAST_KNOWN) {
-                        targetOver = ui.element[0];
-                    }
                     dragManager.recordOver(ui.element[0]);
                 },
                 out: function (e, ui) {
                     dragManager.recordOut(ui.element[0]);
                 },
-                drop: function (e, ui) {
-                    if (validTargetAndPos) {
-                        thatReorderer.layoutHandler.mouseMoveItem(ui.draggable[0], validTargetAndPos.target, e.clientX, e.pageY, validTargetAndPos.position);
-                    }
-                }
             });
         }
    
@@ -525,7 +517,7 @@ fluid = fluid || {};
             // Setup movables
             for (var i = 0; i < movables.length; i++) {
                 var item = movables[i];
-                initMovable(jQuery (item));
+                initMovable(jQuery(item));
             }
 
             // In order to create valid html, the drop marker is the same type as the node being dragged.

@@ -445,6 +445,7 @@ var fluid = fluid || {};
 
     fluid.utils.debug = function (str) {
       if (fluid_logging) {
+        str = new Date().toTimeString() + ":  " + str;
         if (typeof(console) != "undefined") {
           if (console.debug) {
             console.debug(str);

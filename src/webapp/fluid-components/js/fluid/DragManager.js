@@ -46,16 +46,16 @@ fluid = fluid || {};
     var that = {};
   
     that.computeTopTarget = function() {
-        var minDepth = 9999;
-        var minEl;
+        var maxDepth = 0;
+        var maxEl;
         for (var i in lightMap) {
           var light = lightMap[i];
-          if (light.depth < minDepth) {
-            minDepth = light.depth;
-            minEl = light.element;
+          if (light.depth > maxDepth) {
+            maxDepth = light.depth;
+            maxEl = light.element;
           }
         }
-        return minEl;
+        return maxEl;
       };
         
     that.startDrag = function() {
