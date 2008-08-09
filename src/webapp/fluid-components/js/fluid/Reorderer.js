@@ -19,23 +19,23 @@ fluid = fluid || {};
 (function (jQuery, fluid) {
     
     var defaultAvatarCreator = function(item, cssClass, dropWarning) {
-        var avatar = jQuery (item).clone ();
-        avatar.removeAttr ("id");
-        jQuery ("[id]", avatar).removeAttr ("id");
-        jQuery (":hidden", avatar).remove();
-        jQuery ("input", avatar).attr ("disabled", "true");
+        var avatar = jQuery(item).clone();
+        avatar.removeAttr("id");
+        jQuery("[id]", avatar).removeAttr("id");
+        jQuery(":hidden", avatar).remove();
+        jQuery("input", avatar).attr("disabled", "true");
         // dropping in the same column fails if the avatar is considered a droppable.
         // droppable ("destroy") should take care of this, but it doesn't seem to remove
         // the class, which is what is checked, so we remove it manually
         // (see http://dev.jquery.com/ticket/2599)
         // 2008-05-12: 2599 has been fixed now in trunk
         //                    avatar.droppable ("destroy");
-        avatar.removeClass ("ui-droppable");
-        avatar.addClass (cssClass);
+        avatar.removeClass("ui-droppable");
+        avatar.addClass(cssClass);
         
         if (dropWarning) {
             // Will a 'div' always be valid in this position?
-            var avatarContainer = jQuery (document.createElement("div"));
+            var avatarContainer = jQuery(document.createElement("div"));
             avatarContainer.append(avatar);
             avatarContainer.append(dropWarning);
             return avatarContainer;
@@ -104,9 +104,9 @@ fluid = fluid || {};
         that.container.ariaState("disabled", "false");
     }
     
-    function changeSelectedToDefault (jItem, styles) {
-        jItem.removeClass (styles.selected);
-        jItem.addClass (styles.defaultStyle);
+    function changeSelectedToDefault(jItem, styles) {
+        jItem.removeClass(styles.selected);
+        jItem.addClass(styles.defaultStyle);
         jItem.ariaState("selected", "false");
     }
     
@@ -174,9 +174,9 @@ fluid = fluid || {};
                 if (!first) {  
                     return evt.stopPropagation();
                 }
-                jQuery(first).focus ();
+                jQuery(first).focus();
             } else {
-                jQuery(thatReorderer.activeItem).focus ();
+                jQuery(thatReorderer.activeItem).focus();
             }
             return evt.stopPropagation();
         };
@@ -196,7 +196,7 @@ fluid = fluid || {};
         };
         
         var setDropEffects = function (value) {
-            thatReorderer.locate("dropTargets").ariaState ("dropeffect", value);
+            thatReorderer.locate("dropTargets").ariaState("dropeffect", value);
         };
         
         var styles = thatReorderer.options.styles;
@@ -206,13 +206,13 @@ fluid = fluid || {};
                 return true;
             }
             // If the key pressed is ctrl, and the active item is movable we want to restyle the active item.
-            var jActiveItem = jQuery (thatReorderer.activeItem);
+            var jActiveItem = jQuery(thatReorderer.activeItem);
             if (!jActiveItem.hasClass(styles.dragging) && isMove(evt)) {
                // Don't treat the active item as dragging unless it is a movable.
                 if (isActiveItemMovable()) {
-                    jActiveItem.removeClass (styles.selected);
-                    jActiveItem.addClass (styles.dragging);
-                    jActiveItem.ariaState ("grab", "true");
+                    jActiveItem.removeClass(styles.selected);
+                    jActiveItem.addClass(styles.dragging);
+                    jActiveItem.ariaState("grab", "true");
                     setDropEffects("move");
                 }
                 return false;
@@ -226,7 +226,7 @@ fluid = fluid || {};
             if (!thatReorderer.activeItem || (thatReorderer.activeItem !== evt.target)) {
                 return true;
             }
-            var jActiveItem = jQuery (thatReorderer.activeItem);
+            var jActiveItem = jQuery(thatReorderer.activeItem);
             
             // Handle a key up event for the modifier
             if (jActiveItem.hasClass(styles.dragging) && !isMove(evt)) {
@@ -243,8 +243,8 @@ fluid = fluid || {};
             return false;
         };
 
-        var moveItem = function (moveFunc){
-            if (isActiveItemMovable ()) {
+        var moveItem = function(moveFunc) {
+            if (isActiveItemMovable()) {
                 moveFunc(thatReorderer.activeItem);
                 // refocus on the active item because moving places focus on the body
                 thatReorderer.activeItem.focus();
@@ -260,19 +260,19 @@ fluid = fluid || {};
             var didMove = false;
             switch (keyCode) {
                 case keyset.up:
-                    moveItem (layoutHandler.moveItemUp);
+                    moveItem(layoutHandler.moveItemUp);
                     didMove = true;
                     break;
                 case keyset.down:
-                    moveItem (layoutHandler.moveItemDown);
+                    moveItem(layoutHandler.moveItemDown);
                     didMove = true;
                     break;
                 case keyset.left:
-                    moveItem (layoutHandler.moveItemLeft);
+                    moveItem(layoutHandler.moveItemLeft);
                     didMove = true;
                     break;
                 case keyset.right:
-                    moveItem (layoutHandler.moveItemRight);
+                    moveItem(layoutHandler.moveItemRight);
                     didMove = true;
                     break;
             }
@@ -285,23 +285,23 @@ fluid = fluid || {};
             var item;
             switch (keyCode) {
                 case keyset.up:
-                    item = layoutHandler.getItemAbove (activeItem);
+                    item = layoutHandler.getItemAbove(activeItem);
                     didFocus = true;
                     break;
                 case keyset.down:
-                    item = layoutHandler.getItemBelow (activeItem);
+                    item = layoutHandler.getItemBelow(activeItem);
                     didFocus = true;
                     break;
                 case keyset.left:
-                    item = layoutHandler.getLeftSibling (activeItem);
+                    item = layoutHandler.getLeftSibling(activeItem);
                     didFocus = true;
                     break;
                 case keyset.right:
-                    item = layoutHandler.getRightSibling (activeItem);
+                    item = layoutHandler.getRightSibling(activeItem);
                     didFocus = true;
                     break;
             }
-            jQuery (item).focus ();
+            jQuery(item).focus();
             
             return didFocus;
         };
@@ -314,14 +314,14 @@ fluid = fluid || {};
             for (var i = 0; i < keysets.length; i++) {
                 var keyset = keysets[i];
                 var didProcessKey = false;
-                if (keyset.modifier (evt)) {
+                if (keyset.modifier(evt)) {
                     if (kbDropWarning) {
                         kbDropWarning.hide();
                     }
-                    didProcessKey = moveItemForKeyCode (evt.keyCode, keyset, thatReorderer.layoutHandler);
+                    didProcessKey = moveItemForKeyCode(evt.keyCode, keyset, thatReorderer.layoutHandler);
             
                 } else if (noModifier(evt)) {
-                    didProcessKey = focusItemForKeyCode (evt.keyCode, keyset, thatReorderer.layoutHandler, thatReorderer.activeItem);
+                    didProcessKey = focusItemForKeyCode(evt.keyCode, keyset, thatReorderer.layoutHandler, thatReorderer.activeItem);
                 }
                 
                 // We got the right key press. Bail right away by swallowing the event.
@@ -337,7 +337,7 @@ fluid = fluid || {};
         var dropMarker;
 
         var createDropMarker = function (tagName) {
-            var dropMarker = jQuery(document.createElement (tagName));
+            var dropMarker = jQuery(document.createElement(tagName));
             dropMarker.addClass(thatReorderer.options.styles.dropMarker);
             dropMarker.hide();
             return dropMarker;
@@ -407,8 +407,8 @@ fluid = fluid || {};
          */
         function initMovable (item) {
             var styles = thatReorderer.options.styles;
-            item.addClass (styles.defaultStyle);
-            item.ariaState ("grab", "supported");
+            item.addClass(styles.defaultStyle);
+            item.ariaState("grab", "supported");
 
             item.mouseover( 
                 function () {
@@ -435,11 +435,11 @@ fluid = fluid || {};
                     return avatar;
                 },
                 start: function (e, ui) {
-                    item.focus ();
-                    item.removeClass (thatReorderer.options.styles.selected);
-                    item.addClass (thatReorderer.options.styles.mouseDrag);
-                    item.ariaState ("grab", "true");
-                    setDropEffects ("move");
+                    item.focus();
+                    item.removeClass(thatReorderer.options.styles.selected);
+                    item.addClass(thatReorderer.options.styles.mouseDrag);
+                    item.ariaState("grab", "true");
+                    setDropEffects("move");
                     dragManager.startDrag();
                 },
                 stop: function(e, ui) {
@@ -447,13 +447,13 @@ fluid = fluid || {};
                         thatReorderer.layoutHandler.mouseMoveItem(this, validTargetAndPos.target, e.clientX, e.pageY, validTargetAndPos.position);
                     }
                     fluid.utils.debug("Drag stopped");
-                    item.removeClass (thatReorderer.options.styles.mouseDrag);
-                    item.addClass (thatReorderer.options.styles.selected);
-                    jQuery (thatReorderer.activeItem).ariaState ("grab", "supported");
+                    item.removeClass(thatReorderer.options.styles.mouseDrag);
+                    item.addClass(thatReorderer.options.styles.selected);
+                    jQuery(thatReorderer.activeItem).ariaState("grab", "supported");
                     dropMarker.hide();
                     ui.helper = null;
                     validTargetAndPos = null;
-                    setDropEffects ("none");
+                    setDropEffects("none");
                     dragManager.contund();
                     
                     // refocus on the active item because moving places focus on the body
@@ -468,9 +468,9 @@ fluid = fluid || {};
          */
         function initDropTarget (item, selector) {
             
-            item.ariaState ("dropeffect", "none");
+            item.ariaState("dropeffect", "none");
 
-            item.droppable ({
+            item.droppable({
                 accept: selector,
                 greedy: true,
                 tolerance: "pointer",
@@ -534,7 +534,7 @@ fluid = fluid || {};
         
             // Setup dropTargets
             for (i = 0; i < dropTargets.length; i++) {
-                initDropTarget (jQuery (dropTargets[i]), droppablePredicate);
+                initDropTarget(jQuery (dropTargets[i]), droppablePredicate);
             }         
         };
 
@@ -561,25 +561,18 @@ fluid = fluid || {};
            // Then select the new item.
            thatReorderer.activeItem = anItem;
            var jItem = jQuery(anItem);
-           jItem.removeClass (styles.defaultStyle);
-           jItem.addClass (styles.selected);
-           jItem.ariaState ("selected", "true");
-           thatReorderer.container.ariaState ("activedescendent", anItem.id);
+           jItem.removeClass(styles.defaultStyle);
+           jItem.addClass(styles.selected);
+           jItem.ariaState("selected", "true");
+           thatReorderer.container.ariaState("activedescendent", anItem.id);
            };
            
        return thatReorderer;
        };
     
-
-    
-    var buildFnFromSelector = function (selector, container) {
-        return function () {
-            return jQuery(selector, container);
-        };
-    };
     
     var defaultInitOptions = {
-      selectors: {}
+        selectors: {}
     };
     
     // Simplified API for reordering lists and grids.
@@ -632,7 +625,7 @@ fluid = fluid || {};
          * decrement, respectively, of the index of the given item.
          */
         getSiblingInfo: function (item, orderables, /* NEXT, PREVIOUS */ direction) {
-            var index = jQuery (orderables).index (item) + direction;
+            var index = jQuery(orderables).index (item) + direction;
             var hasWrapped = false;
                 
             // Handle wrapping to 'before' the beginning. 
@@ -661,7 +654,7 @@ fluid = fluid || {};
          * the row that the given item is in
          */
         getRightSiblingInfo: function (item, orderables) {
-            return itemInfoFinders.getSiblingInfo (item, orderables, fluid.direction.NEXT);
+            return itemInfoFinders.getSiblingInfo(item, orderables, fluid.direction.NEXT);
         },
         
         /*
@@ -670,7 +663,7 @@ fluid = fluid || {};
          * the row that the given item is in
          */
         getLeftSiblingInfo: function (item, orderables) {
-            return itemInfoFinders.getSiblingInfo (item, orderables, fluid.direction.PREVIOUS);
+            return itemInfoFinders.getSiblingInfo(item, orderables, fluid.direction.PREVIOUS);
         },
         
         /*
@@ -681,13 +674,13 @@ fluid = fluid || {};
          * after the item changes if the process wrapped around the column.
          */
         getItemInfoBelow: function (inItem, orderables) {
-            var curCoords = jQuery (inItem).offset();
+            var curCoords = jQuery(inItem).offset();
             var i, iCoords;
             var firstItemInColumn, currentItem;
             
             for (i = 0; i < orderables.length; i++) {
                 currentItem = orderables [i];
-                iCoords = jQuery (orderables[i]).offset();
+                iCoords = jQuery(orderables[i]).offset();
                 if (iCoords.left === curCoords.left) {
                     firstItemInColumn = firstItemInColumn || currentItem;
                     if (iCoords.top > curCoords.top) {
@@ -708,13 +701,13 @@ fluid = fluid || {};
          * after the item changes if the process wrapped around the column.
          */
          getItemInfoAbove: function (inItem, orderables) {
-            var curCoords = jQuery (inItem).offset();
+            var curCoords = jQuery(inItem).offset();
             var i, iCoords;
             var lastItemInColumn, currentItem;
             
             for (i = orderables.length - 1; i > -1; i--) {
                 currentItem = orderables [i];
-                iCoords = jQuery (orderables[i]).offset();
+                iCoords = jQuery(orderables[i]).offset();
                 if (iCoords.left === curCoords.left) {
                     lastItemInColumn = lastItemInColumn || currentItem;
                     if (curCoords.top > iCoords.top) {
@@ -769,15 +762,15 @@ fluid = fluid || {};
         that.moveItemDown = that.moveItemRight;
     
         that.dropPosition = function (target, moving, x, y) {
-            return fluid.utils.mousePosition (target, orientation, x, y);
+            return fluid.utils.mousePosition(target, orientation, x, y);
         };
         
         that.mouseMoveItem = function (moving, target, x, y) {
-            var whereTo = this.dropPosition (target, moving, x, y);
+            var whereTo = this.dropPosition(target, moving, x, y);
             if (whereTo === fluid.position.BEFORE) {
-                jQuery (target).before (moving);
+                jQuery(target).before(moving);
             } else if (whereTo === fluid.position.AFTER) {
-                jQuery (target).after (moving);
+                jQuery(target).after(moving);
             }
             orderChangedCallback(moving);
         };
