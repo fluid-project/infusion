@@ -55,7 +55,8 @@
             <span class="inlineEditable"><span class="text">with a single</span></span>
             <span class="inlineEditable"><span class="text">function call</span></span>
             <span class="inlineEditable"><span class="text">and with</span></span>
-            <span class="inlineEditable"><span class="text">selectOnEdit true.</span></span>
+            <span class="inlineEditable"><span class="text">selectOnEdit true.</span></span>,
+            as well as each being individually undoable.
         </p>
         
         <p id="inline-edit7">The following text is an empty inline edit 'span' with NO invitation text:
@@ -76,18 +77,18 @@
       </p>
         <script type="text/javascript">
             var editor1 = fluid.inlineEdit("#inline-edit1");
-            fluid.infuseUndoability(editor1);
+            fluid.undoDecorator(editor1);
             fluid.inlineEdit(jQuery("#inline-edit2"));
             fluid.inlineEdit(document.getElementById("inline-edit3"));
             fluid.inlineEdit("#inline-edit4");
             fluid.inlineEdit("#inline-edit5");
             fluid.inlineEdit("#inline-edit6", {defaultViewText: "Go ahead, try it - click on me..."});
-            fluid.inlineEdits("#multiple-edits", {selectOnEdit:true});
+            fluid.inlineEdits("#multiple-edits", {selectOnEdit: true, componentDecorators: "fluid.undoDecorator"});
             fluid.inlineEdit("#inline-edit7", {defaultViewText: false});
             fluid.inlineEdit("#inline-edit8", {useTooltip: true});
             fluid.inlineEdit("#inline-edit9", {useTooltip: true, tooltipText:"Go on, I dares ya - click on it..."});
             var e10 = fluid.inlineEdit("#inline-edit10");
-            fluid.infuseUndoability(e10);
+            fluid.undoDecorator(e10);
         </script>
 	</body>
 </html>

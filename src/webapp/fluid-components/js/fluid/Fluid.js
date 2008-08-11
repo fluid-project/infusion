@@ -159,6 +159,9 @@ var fluid = fluid || {};
       return function(name, localContainer) {
         var selector = selectors[name];
         var thisContainer = localContainer? localContainer: container;
+        if (!thisContainer) {
+          fluid.fail("DOM binder invoked for selector " + name + " without container");
+        }
         if (!selector) {
           return thisContainer;
         }
@@ -175,15 +178,34 @@ var fluid = fluid || {};
     }
     
     fluid.initView = function(componentName, container, userOptions) {
-      var that = {};
-      var defaults = fluid.defaults(componentName); 
-      that.options = fluid.utils.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);
-      if (container) {
-        that.container = fluid.container(container);
-      }
-      that.locate = fluid.createDomBinder(that.container, that.options.selectors);
-      return that;
+        var that = {};
+        var defaults = fluid.defaults(componentName); 
+        that.options = fluid.utils.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);
+        if (container) {
+            that.container = fluid.container(container);
+            }
+        if (container) {
+            fluid.initDomBinder(that);
+            }
+        return that;
+        };
+    
+    fluid.initDomBinder = function(that) {
+        that.locate = fluid.createDomBinder(that.container, that.options.selectors);      
     };
+    
+    fluid.initDecorators = function(that) {
+        var decorators = that.options.componentDecorators;
+        if (!decorators) return;
+      
+        if (typeof(decorators) === 'string') {
+            decorators = [decorators];
+            }
+        for (var i = 0; i < decorators.length; ++ i) {
+            var decoratorName = decorators[i];
+            fluid.utils.invokeGlobalFunction(decoratorName, [that, that.options[decoratorName]]);
+            }
+        }
     
     var fluid_guid = 1;
     
@@ -401,6 +423,10 @@ var fluid = fluid || {};
       }
       return target;    
     }
+    
+    fluid.utils.permute = function() {
+      
+    };
     
     fluid.utils.merge = function(policy, target) {
       var path = "";

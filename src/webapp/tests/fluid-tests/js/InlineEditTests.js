@@ -37,6 +37,28 @@ https://source.fluidproject.org/svn/LICENSE.txt
             }      
         };
         
+       function insistSelect(message, that, name) {
+          var togo = that.locate(name);
+          jqUnit.assertEquals(message, 1, togo.length);
+          return togo;
+        }
+        
+        
+       function assertVisibility(state, name, selector) {
+          if (state) {
+            jqUnit.isVisible(name + " should be visible", selector);
+          }
+          else {
+            jqUnit.notVisible(name + " should not be visible", selector);
+          }
+        }
+        
+       function assertVisState(undo, redo, uv, rv) {
+           assertVisibility(uv, "undo container", undo);
+           assertVisibility(rv, "redo container", redo);
+           }
+    
+     
         inlineEditTests.test("Minimal Construction", function () {
             jqUnit.expect(10);
     
@@ -438,14 +460,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 assertInViewMode();
             });
             
-            function assertVisibility(state, name, selector) {
-              if (state) {
-                jqUnit.isVisible(name + " should be visible", selector);
-              }
-              else {
-                jqUnit.notVisible(name + " should not be visible", selector);
-              }
-            }
             
             function insistSingle(message, container, selector) {
               var togo = $(selector, container);
@@ -453,45 +467,71 @@ https://source.fluidproject.org/svn/LICENSE.txt
               return togo;
             }
             
-            function insistSelect(message, that, name) {
-              var togo = that.locate(name);
-              jqUnit.assertEquals(message, 1, togo.length);
-              return togo;
-            }
-            
+
+           
             inlineEditTests.test("Self-rendering with undo control", function () {
                 var initialValue = "Initial Value";
                 var newValue = "New Value";
-                $("#display-undoable").text(initialValue);
                 jqUnit.expect(15);
+                
+                $("#display-undoable").text(initialValue);
+
                 var editor = fluid.inlineEdit("#inline-edit-undo");
-                var undoer = fluid.infuseUndoability(editor);
+                var undoer = fluid.undoDecorator(editor);
                 var undo = insistSelect("There should be an undo container", undoer, "undoContainer");
                 var redo = insistSelect("There should be a redo container", undoer, "redoContainer");
-                function assertState(uv, rv) {
-                  assertVisibility(uv, "undo container", undo);
-                  assertVisibility(rv, "redo container", redo);
-                }
-                assertState(false, false); // 4
+
+                assertVisState(undo, redo, false, false); // 4
                 
                 var edit = insistSelect("There should be an edit control", editor, "edit");
                 editor.edit();
                 edit.val(newValue);
                 editor.finish();
-                assertState(true, false); // 7
+                assertVisState(undo, redo, true, false); // 7
                 
                 var undoControl = insistSelect("There should be an undo control", undoer, "undoControl"); // 8
                 undoControl.click();
-                assertState(false, true); // 10
+                assertVisState(undo, redo, false, true); // 10
                 jqUnit.assertEquals("Model state should now be " + initialValue, initialValue, editor.model.value); // 11
                 
                 var redoControl = insistSelect("There should be an redo control", undoer, "redoControl"); // 12
                 redoControl.click();
-                assertState(true, false); // 14
+                assertVisState(undo, redo, true, false); // 14
                 jqUnit.assertEquals("Model state should now be " + newValue, newValue, editor.model.value); // 15
-                                
             });
+            
+            inlineEditTests.test("Multiple undo controls", function () {
+                var initialValue = "Initial Value";
+                var newValue = "New Value";
+                jqUnit.expect(15);
+                $("#display-undoable").text(initialValue);
+    
+                var editor1 = fluid.inlineEdit("#inline-edit-undo");
+                var undoer1 = fluid.undoDecorator(editor1);
+                var undo1 = insistSelect("There should be an undo container", undoer1, "undoContainer"); // 1
+                var redo1 = insistSelect("There should be a redo container", undoer1, "redoContainer"); // 2
+                assertVisState(undo1, redo1, false, false); // 4
                 
+                $("#display-undoable2").text(initialValue);
+                var editor2 = fluid.inlineEdit("#inline-edit-undo2");
+                var undoer2 = fluid.undoDecorator(editor2);
+                
+                var undo2 = insistSelect("There should be an undo container", undoer2, "undoContainer"); // 5
+                var redo2 = insistSelect("There should be a redo container", undoer2, "redoContainer"); // 6
+                assertVisState(undo2, redo2, false, false); // 8
+    
+                jqUnit.assertTrue("Undo containers should be distinct", undo1 !== undo2); // 9
+                jqUnit.assertTrue("Redo containers should be distinct", redo1 !== redo2); // 10
+                
+                var edit1 = insistSelect("There should be an edit control", editor1, "edit"); // 11
+                editor1.edit();
+                edit1.val(newValue);
+                editor1.finish();
+                assertVisState(undo1, redo1, true, false); // 13
+                assertVisState(undo2, redo2, false, false); // 15
+                });
+            
+            
         })();
      
     });

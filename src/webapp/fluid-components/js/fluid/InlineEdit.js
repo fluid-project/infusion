@@ -291,6 +291,8 @@ fluid = fluid || {};
 
         setupInlineEdit(componentContainer, that);
         
+        fluid.initDecorators(that);
+        
         return that;
     };
     

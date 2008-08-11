@@ -75,9 +75,10 @@ fluid = fluid || {};
      * @param {Object} component a "model-bearing" standard Fluid component to receive the "undo" functionality
      * @param {Object} options a collection of options settings
      */
-    fluid.infuseUndoability = function (component, userOptions) {
+    fluid.undoDecorator = function (component, userOptions) {
         var that = fluid.initView("undo", null, userOptions);
         that.container = that.options.renderer(that, component.container);
+        fluid.initDomBinder(that);
         
         that.component = component;
         that.initialModel = {};
