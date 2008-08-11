@@ -375,21 +375,20 @@ fluid = fluid || {};
                         if (mouseDropWarning) {
                             mouseDropWarning.hide();
                         }
-                        //if (position !== fluid.position.USE_LAST_KNOWN) {
-                            validTargetAndPos = {
-                                target: target,
-                                position: position
-                            };
-                            if (validTargetAndPos.position === fluid.position.BEFORE) {
-                                jQuery(target).before(dropMarker);
-                            }
-                            else if (validTargetAndPos.position === fluid.position.AFTER) {
-                                jQuery(target).after(dropMarker);
-                            }
-                            else if (validTargetAndPos.position === fluid.position.INSIDE) {
-                                jQuery(target).append(dropMarker);
-                            }
-                        //}
+
+                        validTargetAndPos = {
+                            target: target,
+                            position: position
+                        };
+                        if (validTargetAndPos.position === fluid.position.BEFORE) {
+                            jQuery(target).before(dropMarker);
+                        }
+                        else if (validTargetAndPos.position === fluid.position.AFTER) {
+                            jQuery(target).after(dropMarker);
+                        }
+                        else if (validTargetAndPos.position === fluid.position.INSIDE) {
+                            jQuery(target).append(dropMarker);
+                        }
                         dropMarker.show();
                     }
                 }
@@ -398,6 +397,7 @@ fluid = fluid || {};
                     if (mouseDropWarning) {
                         mouseDropWarning.hide();
                     }
+                    validTargetAndPos = null;
                 }
             };
         };
@@ -611,9 +611,9 @@ fluid = fluid || {};
         }
         
         if (itemPlacement === fluid.position.AFTER) {
-            jQuery (relatedItemInfo.item).after (item);
+            jQuery(relatedItemInfo.item).after(item);
         } else {
-            jQuery (relatedItemInfo.item).before (item);
+            jQuery(relatedItemInfo.item).before(item);
         } 
     };
     
@@ -807,7 +807,7 @@ fluid = fluid || {};
         };
                 
         that.getItemAbove = function (item) {
-            return itemInfoFinders.getItemInfoAbove (item, that.locate("selectables")).item;   
+            return itemInfoFinders.getItemInfoAbove(item, that.locate("selectables")).item;   
         }; 
         
         that.moveItemUp = function (item) {
