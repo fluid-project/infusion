@@ -19,7 +19,7 @@
 	</head>
 	<body>
 	    <form id="inline-edit1" action="#">
-	        <div class="text" id="text1">Click me to edit...</div>
+	        <div class="text" id="text1">Click me to edit (you'll be able to undo)...</div>
             <div class="editContainer" id="editContainer1">
                 <input type="text" class="edit" id="edit1" value="I am the hidden text of the first edit"/>
             </div>
@@ -75,7 +75,8 @@
         <span class="text" id="text10">This control features an undoable edit mode</span>
       </p>
         <script type="text/javascript">
-            fluid.inlineEdit("#inline-edit1");
+            var editor1 = fluid.inlineEdit("#inline-edit1");
+            fluid.infuseUndoability(editor1);
             fluid.inlineEdit(jQuery("#inline-edit2"));
             fluid.inlineEdit(document.getElementById("inline-edit3"));
             fluid.inlineEdit("#inline-edit4");
