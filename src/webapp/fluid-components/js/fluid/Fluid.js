@@ -110,7 +110,7 @@ var fluid = fluid || {};
         
         // Throw an exception if we've got more or less than one element.
         if (!container || !container.jquery || container.length !== 1) {
-            fluid.fail( {
+            fluid.fail({
                 name: "NotOne",
                 message: "A single container element was not found."
             });
@@ -136,76 +136,80 @@ var fluid = fluid || {};
         return defaultsStore[componentName];
     };
     
-    fluid.dumpEl = function(element) {
-      if (!element) return "null";
-      element = jQuery(element);
-      var togo = element.get(0).tagName;
-      if (element.attr("id")) {
-        togo += "#" + element.attr("id");
-      }
-      if (element.attr("class")) {
-        togo += "." + element.attr("class");
-      }
-      return togo;
-    }
-    
-    fluid.fail = function(message) {
-      fluid.utils.setLogging(true);
-      fluid.utils.debug(message.message? message.message : message);
-      message.fail(true);
-    }
-    
-    fluid.createDomBinder = function (container, selectors) {
-      return function(name, localContainer) {
-        var selector = selectors[name];
-        var thisContainer = localContainer? localContainer: container;
-        if (!thisContainer) {
-          fluid.fail("DOM binder invoked for selector " + name + " without container");
+    fluid.dumpEl = function (element) {
+        if (!element) {
+            return "null";
         }
-        if (!selector) {
-          return thisContainer;
+        element = jQuery(element);
+        var togo = element.get(0).tagName;
+        if (element.attr("id")) {
+            togo += "#" + element.attr("id");
         }
-        if (typeof(selector) === "function") {
-          return jQuery(selector.call(null, fluid.unwrap(thisContainer)));
-        }
-        var togo = jQuery(selector, thisContainer);
-        if (togo.length === 0 || togo.get(0) === document) {
-          fluid.fail("Selector " + name + " with value " + selectors[name] +
-            " did not find any elements with container " + container);
+        if (element.attr("class")) {
+            togo += "." + element.attr("class");
         }
         return togo;
-      };
-    }
+    };
     
-    fluid.initView = function(componentName, container, userOptions) {
+    fluid.fail = function (message) {
+        fluid.utils.setLogging(true);
+        fluid.utils.debug(message.message? message.message : message);
+        message.fail(true);
+    };
+    
+    fluid.createDomBinder = function (container, selectors) {
+        return function (name, localContainer) {
+            var selector = selectors[name];
+            var thisContainer = localContainer? localContainer: container;
+            if (!thisContainer) {
+                fluid.fail("DOM binder invoked for selector " + name + " without container");
+            }
+            if (!selector) {
+                return thisContainer;
+            }
+            if (typeof(selector) === "function") {
+                return jQuery(selector.call(null, fluid.unwrap(thisContainer)));
+            }
+            var togo = jQuery(selector, thisContainer);
+            if (togo.length === 0 || togo.get(0) === document) {
+                fluid.fail("Selector " + name + " with value " + selectors[name] +
+                            " did not find any elements with container " + container);
+            }
+            return togo;
+        };
+    };
+    
+    fluid.initView = function (componentName, container, userOptions) {
         var that = {};
         var defaults = fluid.defaults(componentName); 
         that.options = fluid.utils.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);
         if (container) {
             that.container = fluid.container(container);
-            }
+        }
         if (container) {
             fluid.initDomBinder(that);
-            }
+        }
         return that;
-        };
+    };
     
-    fluid.initDomBinder = function(that) {
+    fluid.initDomBinder = function (that) {
         that.locate = fluid.createDomBinder(that.container, that.options.selectors);      
     };
     
-    fluid.initDecorators = function(that) {
+    fluid.initDecorators = function (that) {
         var decorators = that.options.componentDecorators;
-        if (!decorators) return;
+        if (!decorators) {
+            return;
+        }
       
         if (typeof(decorators) === 'string') {
             decorators = [decorators];
-            }
-        for (var i = 0; i < decorators.length; ++ i) {
-            var decoratorName = decorators[i];
-            fluid.utils.invokeGlobalFunction(decoratorName, [that, that.options[decoratorName]]);
-            }
         }
+        for (var i = 0; i < decorators.length; i += 1) {
+            var decoratorName = decorators[i];
+            fluid.utils.invokeGlobalfunction(decoratorName, [that, that.options[decoratorName]]);
+        }
+    };
     
     var fluid_guid = 1;
     
@@ -216,58 +220,61 @@ var fluid = fluid || {};
     fluid.event = {};
     
     fluid.event.getEventFirer = function () {
-      var log = fluid.utils.debug;
-      var listeners = {};
-      return {
-        addListener: function (listener, namespace, exclusions) {
-          if (!namespace) {
-            if (!listener.$$guid) { listener.$$guid = fluid_guid++; }
-            namespace = listener.$$guid;
-            }
-
-          var excludeids = [];
-          if (exclusions) {
-            for (var i in exclusions) {
-              excludeids.push(jQuery.data(exclusions[i]));
-              }
-            }
-          listeners[namespace] = {listener: listener, exclusions: excludeids};
-          },
-          
-        removeListener: function (listener) {
-          if (typeof(listener) === 'string') {
-            delete listeners[listener];
-          }
-          else if (typeof(listener) === 'object' && listener.$$guid){
-            delete listeners[listener.$$guid];
-          }
-        },
-        
-        fireEvent: function() {
-          for (var i in listeners) {
-            var lisrec = listeners[i];
-            var excluded = false;
-            for (var j in lisrec.exclusions) {
-              var exclusion = lisrec.exclusions[j];
-              log("Checking exclusion for " + exclusion);
-              if (fluid_sourceElements[exclusion]) {
-                log("Excluded");
-                excluded = true; break;
+        var log = fluid.utils.debug;
+        var listeners = {};
+        return {
+            addListener: function (listener, namespace, exclusions) {
+                if (!namespace) {
+                    if (!listener.$$guid) {
+                        listener.$$guid = fluid_guid += 1;
+                    }
+                    namespace = listener.$$guid;
                 }
-              }
-          if (!excluded) {
-            try {
-              log("Firing to listener " + i + " with arguments " + arguments);
-              lisrec.listener.apply(null, arguments);
-              }
-            catch (e) {
-              log("FireEvent received exception " + e.message + " e " +e + " firing to listener " + i);
-               throw (e);       
-              }
+
+                var excludeids = [];
+                if (exclusions) {
+                    for (var i in exclusions) {
+                        excludeids.push(jQuery.data(exclusions[i]));
+                    }
+                }
+                listeners[namespace] = {listener: listener, exclusions: excludeids};
+            },
+
+            removeListener: function (listener) {
+                if (typeof(listener) === 'string') {
+                    delete listeners[listener];
+                }
+                else if (typeof(listener) === 'object' && listener.$$guid) {
+                    delete listeners[listener.$$guid];
+                }
+            },
+        
+            fireEvent: function () {
+                for (var i in listeners) {
+                    var lisrec = listeners[i];
+                    var excluded = false;
+                    for (var j in lisrec.exclusions) {
+                        var exclusion = lisrec.exclusions[j];
+                        log("Checking exclusion for " + exclusion);
+                        if (fluid_sourceElements[exclusion]) {
+                            log("Excluded");
+                            excluded = true;
+                            break;
+                        }
+                    }
+                    if (!excluded) {
+                        try {
+                            log("Firing to listener " + i + " with arguments " + arguments);
+                            lisrec.listener.apply(null, arguments);
+                        }
+                        catch (e) {
+                            log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
+                            throw (e);       
+                        }
+                    }
+                }
             }
-          }
-        }
-      };
+        };
     };
     
     fluid.model = {};
@@ -275,34 +282,36 @@ var fluid = fluid || {};
    
     /** Copy a source "model" onto a target **/
     fluid.model.copyModel = function copyModel(target, source) {
-      fluid.utils.contund(target);
-      jQuery.extend(true, target, source);
+        fluid.utils.contund(target);
+        jQuery.extend(true, target, source);
     };
     
-    fluid.model.parseEL = function(EL) {
-      return EL.split('.');
-      };
+    fluid.model.parseEL = function (EL) {
+        return EL.split('.');
+    };
   
     /** This function implements the RSF "DARApplier" **/
-    fluid.model.setBeanValue = function(root, EL, newValue) {
-      var segs = fluid.model.parseEL(EL);
-      for (var i = 0; i < segs.length - 1; ++ i) {
-        if (!root[segs[i]]) {
-          root[segs[i]] = {};
-          }
-        root = root[segs[i]];
+    fluid.model.setBeanValue = function (root, EL, newValue) {
+        var segs = fluid.model.parseEL(EL);
+        for (var i = 0; i < segs.length - 1; i += 1) {
+            if (!root[segs[i]]) {
+                root[segs[i]] = {};
+            }
+            root = root[segs[i]];
         }
-      root[segs[segs.length - 1]] = newValue;
-      };
+        root[segs[segs.length - 1]] = newValue;
+    };
       
-    fluid.model.getBeanValue = function(root, EL) {
-      var segs = fluid.model.parseEL(EL);
-      for (var i = 0; i < segs.length; ++ i) {
-        root = root[segs[i]];
-        if (!root) return root;
+    fluid.model.getBeanValue = function (root, EL) {
+        var segs = fluid.model.parseEL(EL);
+        for (var i = 0; i < segs.length; i += 1) {
+            root = root[segs[i]];
+            if (!root) {
+                return root;
+            }
         }
-      return root;
-      };
+        return root;
+    };
       
     /*
      * Utilities object for providing various general convenience functions
@@ -314,23 +323,23 @@ var fluid = fluid || {};
      */
     fluid.utils.computeAbsolutePosition = function (element) {
         var curleft = 0; var curtop = 0;
-        if (element.offsetParent) {
-            do {
-                curleft += element.offsetLeft;
-                curtop += element.offsetTop;
-                } while (element = element.offsetParent);
-            return [curleft, curtop];
-        }
-    };
+	    if (element.offsetParent) {
+	        do {
+	            curleft += element.offsetLeft;
+	            curtop += element.offsetTop;
+	        } while (element = element.offsetParent);
+	        return [curleft, curtop];
+	    }
+	};
     
     fluid.utils.computeDomDepth = function (element) {
         var depth = 0;
         while (element) {
-        element = element.parentNode;
-            ++depth;
-            }
-        return depth;
+            element = element.parentNode;
+            depth += 1;
         }
+        return depth;
+    };
     
     /**
      * Useful for drag-and-drop during a drag:  is the mouse over the "before" half
@@ -342,10 +351,10 @@ var fluid = fluid || {};
         var mid;
         var isBefore;
         if (orientation === fluid.orientation.VERTICAL) {
-            mid = jQuery (droppableEl).offset().top + (droppableEl.offsetHeight / 2);
+            mid = jQuery(droppableEl).offset().top + (droppableEl.offsetHeight / 2);
             isBefore = y < mid;
         } else {
-            mid = jQuery (droppableEl).offset().left + (droppableEl.offsetWidth / 2);
+            mid = jQuery(droppableEl).offset().left + (droppableEl.offsetWidth / 2);
             isBefore = x < mid;
         }
         
@@ -383,76 +392,75 @@ var fluid = fluid || {};
     };
     
     /** Destroy an object to an empty condition**/
-    fluid.utils.contund = function(target) {
-      if (target instanceof Array) {
-        target.length = 0;
-      }
-      else {
-        for (var i in target) {
-          delete target[i];
+    fluid.utils.contund = function (target) {
+        if (target instanceof Array) {
+            target.length = 0;
         }
-      }
+        else {
+            for (var i in target) {
+                delete target[i];
+            }
+        }
     };
     
     function mergeImpl(policy, basePath, target, source) {
-      var thisPolicy = policy? policy[basePath] : policy;
-      if (typeof(thisPolicy) === "function") {
-          thisPolicy.apply(null, target, source);
-          return target;
+        var thisPolicy = policy? policy[basePath] : policy;
+        if (typeof(thisPolicy) === "function") {
+            thisPolicy.apply(null, target, source);
+            return target;
         }
-      if (thisPolicy === "contund") {
-         fluid.utils.contund(target);
-         }
+        if (thisPolicy === "contund") {
+            fluid.utils.contund(target);
+        }
       
-      for (var name in source) {
-        var path = (basePath? basePath + ".": "") + name;
-        var thisTarget = target[name];
-        var thisSource = source[name];
-
-        if (thisSource !== undefined) {
-          if (thisSource !== null && typeof(thisSource) === 'object') {
-            if (!thisTarget) {
-              target[name] = thisTarget = thisSource instanceof Array? [] : {};
+        for (var name in source) {
+            var path = (basePath? basePath + ".": "") + name;
+            var thisTarget = target[name];
+            var thisSource = source[name];
+    
+            if (thisSource !== undefined) {
+                if (thisSource !== null && typeof(thisSource) === 'object') {
+                    if (!thisTarget) {
+                        target[name] = thisTarget = thisSource instanceof Array? [] : {};
+                    }
+                    mergeImpl(policy, path, thisTarget, thisSource);
+                }
+                else {
+                    target[name] = thisSource;
+                }
             }
-            mergeImpl(policy, path, thisTarget, thisSource);
-          }
-          else {
-            target[name] = thisSource;
-          }
         }
-      }
-      return target;    
+        return target;    
     }
     
-    fluid.utils.permute = function() {
+    fluid.utils.permute = function () {
       
     };
     
-    fluid.utils.merge = function(policy, target) {
-      var path = "";
-      
-      for (var i = 2; i < arguments.length; ++ i) {
-        var source = arguments[i];
-        mergeImpl(policy, path, target, source);
-      }
-      if (policy) {
-        for (var key in policy) {
-          var elrh = policy[key];
-          if (typeof(elrh) === 'string' && elrh !== "contund") {
-            var oldValue = fluid.model.getBeanValue(target, key);
-            if (oldValue === null || oldValue === undefined) {
-              var value = fluid.model.getBeanValue(target, elrh);
-              fluid.model.setBeanValue(target, key, value);
-            }
-          }
+    fluid.utils.merge = function (policy, target) {
+        var path = "";
+        
+        for (var i = 2; i < arguments.length; i += 1) {
+            var source = arguments[i];
+            mergeImpl(policy, path, target, source);
         }
-      }
-      return target;     
+        if (policy) {
+            for (var key in policy) {
+                var elrh = policy[key];
+                if (typeof(elrh) === 'string' && elrh !== "contund") {
+                    var oldValue = fluid.model.getBeanValue(target, key);
+                    if (oldValue === null || oldValue === undefined) {
+                        var value = fluid.model.getBeanValue(target, elrh);
+                        fluid.model.setBeanValue(target, key, value);
+                    }
+                }
+            }
+        }
+        return target;     
     };
     
-    fluid.utils.invokeGlobalFunction = function(functionPath, args) {
-        return fluid.model.getBeanValue(window, 
-          functionPath).apply(null, args);
+    fluid.utils.invokeGlobalFunction = function (functionPath, args) {
+        return fluid.model.getBeanValue(window, functionPath).apply(null, args);
     };
     
     /**
@@ -470,32 +478,32 @@ var fluid = fluid || {};
     var fluid_logging = false;
 
     fluid.utils.debug = function (str) {
-      if (fluid_logging) {
-        str = new Date().toTimeString() + ":  " + str;
-        if (typeof(console) != "undefined") {
-          if (console.debug) {
-            console.debug(str);
-          } else {
-            console.log(str);
-          }
+        if (fluid_logging) {
+            str = new Date().toTimeString() + ":  " + str;
+            if (typeof(console) !== "undefined") {
+                if (console.debug) {
+                    console.debug(str);
+                } else {
+                    console.log(str);
+                }
+            }
+            else if (typeof(YAHOO) !== "undefined") {
+                YAHOO.log(str);
+            }
+            else if (typeof(opera) !== "undefined") {
+                opera.postError(str);
+            }
         }
-        else if (typeof(YAHOO) != "undefined") {
-          YAHOO.log(str);
-          }
-        else if (typeof(opera) != "undefined") {
-        opera.postError(str);
-        }
-      }
     };
     
      /** method to allow user to enable logging (off by default) */
-    fluid.utils.setLogging = function(enabled) {
-      if (typeof enabled === "boolean") {
-        fluid_logging = enabled;
+    fluid.utils.setLogging = function (enabled) {
+        if (typeof enabled === "boolean") {
+            fluid_logging = enabled;
         } else {
-        fluid_logging = false;
+            fluid_logging = false;
         }
-      };
+    };
     
 
     fluid.utils.derivePercent = function (num, total) {
