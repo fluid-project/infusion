@@ -479,7 +479,7 @@ fluid = fluid || {};
                 },
                 out: function (e, ui) {
                     dragManager.recordOut(ui.element[0]);
-                },
+                }
             });
         }
    
