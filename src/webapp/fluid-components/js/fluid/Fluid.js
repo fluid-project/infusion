@@ -207,7 +207,7 @@ var fluid = fluid || {};
         }
         for (var i = 0; i < decorators.length; i += 1) {
             var decoratorName = decorators[i];
-            fluid.utils.invokeGlobalfunction(decoratorName, [that, that.options[decoratorName]]);
+            fluid.utils.invokeGlobalFunction(decoratorName, [that, that.options[decoratorName]]);
         }
     };
     
