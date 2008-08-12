@@ -196,7 +196,7 @@ fluid = fluid || {};
         };
         
         var setDropEffects = function (value) {
-            thatReorderer.locate("dropTargets").ariaState("dropeffect", value);
+            thatReorderer.dom.fastLocate("dropTargets").ariaState("dropeffect", value);
         };
         
         var styles = thatReorderer.options.styles;
@@ -405,20 +405,20 @@ fluid = fluid || {};
         /**
          * Takes a jQuery object and adds 'movable' functionality to it
          */
-        function initMovable (item) {
+        function initMovable(item) {
             var styles = thatReorderer.options.styles;
             item.addClass(styles.defaultStyle);
             item.ariaState("grab", "supported");
 
             item.mouseover( 
                 function () {
-                    thatReorderer.locate("grabHandle", jQuery(item[0])).addClass(styles.hover);
+                    thatReorderer.dom.fastLocate("grabHandle", jQuery(item[0])).addClass(styles.hover);
                 }
             );
         
             item.mouseout(  
                 function () {
-                    thatReorderer.locate("grabHandle", jQuery(item[0])).removeClass(styles.hover);
+                    thatReorderer.dom.fastLocate("grabHandle", jQuery(item[0])).removeClass(styles.hover);
                 }
             );
         
@@ -552,6 +552,7 @@ fluid = fluid || {};
             }
             initItems();
         }
+        
        thatReorderer.selectItem = function (anItem) {
            var styles = thatReorderer.options.styles;
            // Set the previous active item back to its default state.
@@ -566,6 +567,13 @@ fluid = fluid || {};
            jItem.ariaState("selected", "true");
            thatReorderer.container.ariaState("activedescendent", anItem.id);
            };
+           
+       thatReorderer.refresh = function() {
+           thatReorderer.dom.refresh("grabHandle", thatReorderer.locate("movables"));
+           thatReorderer.dom.refresh("dropTargets");
+       }
+       
+       thatReorderer.refresh();
            
        return thatReorderer;
        };

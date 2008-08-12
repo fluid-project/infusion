@@ -188,7 +188,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
             var firstTarg;
             for (var i = startCoords.itemIndex + inc; i > -1 && i < idsInCol.length; i = i + inc) {
                 var targetId = idsInCol[i];
-                if (fluid.moduleLayout.canMove (itemId, targetId, position, layout, perms)) {
+                if (fluid.moduleLayout.canMove(itemId, targetId, position, layout, perms)) {
                     // Found a valid move - return
                     return {
                         id: targetId,
@@ -562,8 +562,8 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         if (options.orderChangedCallbackUrl) {
             // Create the orderChangedCallback function
             orderChangedCallback = function (item) {
-                jQuery.post (options.orderChangedCallbackUrl, 
-                    JSON.stringify (layout),
+                jQuery.post(options.orderChangedCallbackUrl, 
+                    JSON.stringify(layout),
                     function (data, textStatus) { 
                         targetPerms = data; 
                     }, 
@@ -582,8 +582,8 @@ fluid.moduleLayout = fluid.moduleLayout || {};
          * the next item.
          */
         var getVerticalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
-            var siblingId = fluid.moduleLayout.itemAboveBelow (item.id, direction, layout);
-            return fluid.utils.jById (siblingId)[0];
+            var siblingId = fluid.moduleLayout.itemAboveBelow(item.id, direction, layout);
+            return fluid.utils.jById(siblingId)[0];
         };
     
         /*
@@ -594,8 +594,8 @@ fluid.moduleLayout = fluid.moduleLayout || {};
          * the next item.
          */
         var getHorizontalSibling = function (item, /* NEXT, PREVIOUS */ direction) {
-            var itemId = fluid.moduleLayout.firstItemInAdjacentColumn (item.id, direction, layout);
-            return fluid.utils.jById (itemId)[0];
+            var itemId = fluid.moduleLayout.firstItemInAdjacentColumn(item.id, direction, layout);
+            return fluid.utils.jById(itemId)[0];
         };
                 
         // This should probably be part of the public API so it can be configured.
@@ -611,14 +611,14 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                 jQuery(relatedItem).append(item);
             }  // otherwise it's either DISALLOWED or USE_LAST_KNOWN
             
-            fluid.moduleLayout.updateLayout (item.id, relatedItem.id, position, layout);
+            fluid.moduleLayout.updateLayout(item.id, relatedItem.id, position, layout);
             orderChangedCallback(item);
         };
         
         var moveHorizontally = function (item, direction /* PREVIOUS, NEXT */) {
-            var targetInfo = fluid.moduleLayout.findTarget (item.id, direction, layout, targetPerms);
-            var targetItem = fluid.utils.jById (targetInfo.id)[0];
-            move (item, targetItem, targetInfo.position);
+            var targetInfo = fluid.moduleLayout.findTarget(item.id, direction, layout, targetPerms);
+            var targetItem = fluid.utils.jById(targetInfo.id)[0];
+            move(item, targetItem, targetInfo.position);
         };
         
         var moveVertically = function (item, targetFunc) {
@@ -636,23 +636,23 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         
         // Public Methods
         that.getRightSibling = function (item) {
-            return getHorizontalSibling (item, fluid.direction.NEXT);
+            return getHorizontalSibling(item, fluid.direction.NEXT);
         };
         
         that.moveItemRight = function (item) {
-            moveHorizontally (item, fluid.direction.NEXT);
+            moveHorizontally(item, fluid.direction.NEXT);
         };
     
         that.getLeftSibling = function (item) {
-            return getHorizontalSibling (item, fluid.direction.PREVIOUS);
+            return getHorizontalSibling(item, fluid.direction.PREVIOUS);
         };
     
         that.moveItemLeft = function (item) {
-            moveHorizontally (item, fluid.direction.PREVIOUS);
+            moveHorizontally(item, fluid.direction.PREVIOUS);
         };
     
         that.getItemAbove = function (item) {
-            return getVerticalSibling (item, fluid.direction.PREVIOUS);
+            return getVerticalSibling(item, fluid.direction.PREVIOUS);
         };
         
         that.moveItemUp = function (item) {
@@ -660,7 +660,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         };
             
         that.getItemBelow = function (item) {
-            return getVerticalSibling (item, fluid.direction.NEXT);
+            return getVerticalSibling(item, fluid.direction.NEXT);
         };
     
         that.moveItemDown = function (item) {
@@ -683,8 +683,8 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                 }
             }
             
-            var position = fluid.utils.mousePosition (target, orientation, x, y);
-            var canDrop = fluid.moduleLayout.canMove (moving.id, target.id, position, layout, targetPerms);
+            var position = fluid.utils.mousePosition(target, orientation, x, y);
+            var canDrop = fluid.moduleLayout.canMove(moving.id, target.id, position, layout, targetPerms);
             if (canDrop) {
                 return position;
             }

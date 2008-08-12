@@ -158,7 +158,15 @@ var fluid = fluid || {};
     };
     
     fluid.createDomBinder = function (container, selectors) {
-        return function (name, localContainer) {
+        var cache = {};
+        function cacheKey(name, thisContainer) {
+            return jQuery.data(fluid.unwrap(thisContainer)) + "-" + name;
+        }
+        function record(name, thisContainer, result) {
+            cache[cacheKey(name, thisContainer)] = result;
+        }
+        var that = {};
+        that.locate = function (name, localContainer) {
             var selector = selectors[name];
             var thisContainer = localContainer? localContainer: container;
             if (!thisContainer) {
@@ -167,16 +175,45 @@ var fluid = fluid || {};
             if (!selector) {
                 return thisContainer;
             }
+            var togo;
             if (typeof(selector) === "function") {
-                return jQuery(selector.call(null, fluid.unwrap(thisContainer)));
+                togo = jQuery(selector.call(null, fluid.unwrap(thisContainer)));
             }
-            var togo = jQuery(selector, thisContainer);
-            if (togo.length === 0 || togo.get(0) === document) {
-                fluid.fail("Selector " + name + " with value " + selectors[name] +
-                            " did not find any elements with container " + container);
+            else {
+                togo = jQuery(selector, thisContainer);
             }
+            if (togo.get(0) === document) {
+                togo = [];
+                //fluid.fail("Selector " + name + " with value " + selectors[name] +
+                //            " did not find any elements with container " + fluid.dumpEl(container));
+            }
+            record(name, thisContainer, togo);
             return togo;
         };
+        that.fastLocate = function (name, localContainer) {
+            var thisContainer = localContainer? localContainer: container;
+            var key = cacheKey(name, thisContainer);
+            var togo = cache[key];
+            return togo? togo : that.locate(name, localContainer);
+        };
+        that.clear = function () {
+            cache = {};
+        };
+        that.refresh = function(names, localContainer) {
+           if (typeof names === "string") {
+               names = [names];
+           }
+           if (! (localContainer instanceof Array)) {
+               localContainer = [localContainer];
+           }
+           for (var i = 0; i < names.length; ++ i) {
+               for (var j = 0; j < localContainer.length; ++ j) {
+                   that.locate(names[i], localContainer[j]);
+               }
+           }
+        };
+        
+        return that;
     };
     
     fluid.initView = function (componentName, container, userOptions) {
@@ -193,7 +230,8 @@ var fluid = fluid || {};
     };
     
     fluid.initDomBinder = function (that) {
-        that.locate = fluid.createDomBinder(that.container, that.options.selectors);      
+        that.dom = fluid.createDomBinder(that.container, that.options.selectors);
+        that.locate = that.dom.locate;      
     };
     
     fluid.initDecorators = function (that) {

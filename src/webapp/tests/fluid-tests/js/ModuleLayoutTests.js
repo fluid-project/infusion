@@ -460,13 +460,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
         moduleLayoutTests.test ("CreateFindItems", function () {
             var selectors = fluid.moduleLayout.inferSelectors(demo.portal.layout, demo.portal.dropTargetPerms);
             var binder = fluid.createDomBinder(fluid.utils.jById(demo.portal.layout.id), selectors);
-            var selectables = binder("selectables");
+            var selectables = binder.locate("selectables");
             jqUnit.assertEquals ("There are 9 selectable portlets", 9, selectables.length);
         
-            var movables = binder("movables");
+            var movables = binder.locate("movables");
             jqUnit.assertEquals ("6 portlets can be moved", 6, movables.length);
             
-            var dropTargets = binder("dropTargets");
+            var dropTargets = binder.locate("dropTargets");
             jqUnit.assertEquals ("there should be 12 drop targets", 12, dropTargets.length);
             
         });   // end testCreateFindItems().
