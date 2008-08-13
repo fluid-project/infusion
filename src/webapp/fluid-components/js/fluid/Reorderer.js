@@ -20,10 +20,17 @@ fluid = fluid || {};
     
     var defaultAvatarCreator = function(item, cssClass, dropWarning) {
         var avatar = jQuery(item).clone();
+        fluid.iterateDom(avatar.get(0), function(node) {
+            node.removeAttribute("id");
+            if (node.tagName === "input") {
+                node.setAttribute("disabled", "disabled");
+                }
+            }
+          );
         avatar.removeAttr("id");
-        jQuery("[id]", avatar).removeAttr("id");
-        jQuery(":hidden", avatar).remove();
-        jQuery("input", avatar).attr("disabled", "true");
+        //jQuery("[id]", avatar).removeAttr("id");
+        //jQuery(":hidden", avatar).remove();
+        //jQuery("input", avatar).attr("disabled", "true");
         // dropping in the same column fails if the avatar is considered a droppable.
         // droppable ("destroy") should take care of this, but it doesn't seem to remove
         // the class, which is what is checked, so we remove it manually
@@ -44,7 +51,7 @@ fluid = fluid || {};
         }
     };   
     
-    fluid.defaults("reorderer", {
+    fluid.defaults("fluid.reorderer", {
         containerRole: fluid.roles.LIST,
         instructionMessageId: "message-bundle:",
         styles: {
@@ -152,7 +159,7 @@ fluid = fluid || {};
      *                  avatarCreator - a function that returns a valid DOM node to be used as the dragging avatar
      */
     fluid.reorderer = function (container, options) {
-        var thatReorderer = fluid.initView("reorderer", container, options);
+        var thatReorderer = fluid.initView("fluid.reorderer", container, options);
         
         thatReorderer.layoutHandler = fluid.utils.invokeGlobalFunction(
            thatReorderer.options.layoutHandlerName, [container, thatReorderer.options]);

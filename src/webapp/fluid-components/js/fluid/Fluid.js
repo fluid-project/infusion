@@ -157,6 +157,37 @@ var fluid = fluid || {};
         message.fail(true);
     };
     
+    function getNextNode(iterator) {
+      if (iterator.node.firstChild) {
+        iterator.node = iterator.node.firstChild;
+        iterator.depth++;
+        return iterator;
+        }
+      while (iterator.node) {
+       if (iterator.node.nextSibling) {
+          iterator.node = iterator.node.nextSibling;
+          return iterator;
+          }
+        iterator.node = iterator.node.parentNode;
+        iterator.depth--;
+        }
+      return iterator;
+      }
+    
+    // Work around IE circular DOM issue. This is the default max DOM depth on IE.
+    // http://msdn2.microsoft.com/en-us/library/ms761392(VS.85).aspx
+    fluid.DOM_BAIL_DEPTH = 256;
+    
+    fluid.iterateDom = function (node, acceptor) {
+        var currentNode = {node: node, depth: 0};
+        while (currentNode.node != null && currentNode.depth >= 0 && currentNode.depth < fluid.DOM_BAIL_DEPTH) {
+            if (currentNode.nodeType === 1) {
+                acceptor(currentNode.node, currentNode.depth);
+                }
+            currentNode = getNextNode(currentNode);
+            }
+        };
+    
     fluid.createDomBinder = function (container, selectors) {
         var cache = {};
         function cacheKey(name, thisContainer) {
@@ -215,6 +246,16 @@ var fluid = fluid || {};
         
         return that;
     };
+    
+    /** The central initialisation method called as the first act of every Fluid
+     * component.
+     * @param {String} componentName The unique "name" of the component, which will be used
+     * to fetch the default options from store. By recommendation, this should be the global
+     * name of the component's creator function.
+     * @param {jQueryable} container A specifier for the single root "container node" in the
+     * DOM which will house all the markup for this component.
+     * @param {Object} userOptions The configuration options for this component.
+     */
     
     fluid.initView = function (componentName, container, userOptions) {
         var that = {};
