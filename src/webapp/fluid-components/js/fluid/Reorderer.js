@@ -122,7 +122,7 @@ fluid = fluid || {};
         // Generating the avatar's id to be containerId_avatar
         // This is safe since there is only a single avatar at a time
         return parentId + "_avatar";
-    };
+    }
     
     var adaptKeysets = function (options) {
         if (options.keysets && !(options.keysets instanceof Array)) {
@@ -578,7 +578,7 @@ fluid = fluid || {};
        thatReorderer.refresh = function() {
            thatReorderer.dom.refresh("grabHandle", thatReorderer.locate("movables"));
            thatReorderer.dom.refresh("dropTargets");
-       }
+       };
        
        thatReorderer.refresh();
            
@@ -750,7 +750,7 @@ fluid = fluid || {};
         
         that.getGeometricInfo = function () {
           var geometry = {};
-        }
+        };
         
         that.getRightSibling = function (item) {
             return itemInfoFinders.getRightSiblingInfo(item, that.locate("selectables")).item;

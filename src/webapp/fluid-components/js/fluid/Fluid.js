@@ -180,7 +180,7 @@ var fluid = fluid || {};
     
     fluid.iterateDom = function (node, acceptor) {
         var currentNode = {node: node, depth: 0};
-        while (currentNode.node != null && currentNode.depth >= 0 && currentNode.depth < fluid.DOM_BAIL_DEPTH) {
+        while (currentNode.node !== null && currentNode.depth >= 0 && currentNode.depth < fluid.DOM_BAIL_DEPTH) {
             if (currentNode.nodeType === 1) {
                 acceptor(currentNode.node, currentNode.depth);
                 }

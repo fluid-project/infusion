@@ -73,9 +73,9 @@ fluid = fluid || {};
     
     that.contund = function() {
       lightMap = {};
-    }
+    };
     
     return that;
-}  
+  };
   
 }) (jQuery, fluid);

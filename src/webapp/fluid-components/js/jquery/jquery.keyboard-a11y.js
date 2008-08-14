@@ -247,14 +247,14 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
       if (sc_that.activeItemIndex >= 0) {
         $(elements[sc_that.activeItemIndex]).focus();
       }
-    }
+    };
 
     var prepareShift = function(selectionContext) {
         unselectElement(selectionContext.selectedElement(), selectionContext);
         if (selectionContext.activeItemIndex === NO_SELECTION) {
           selectionContext.activeItemIndex = -1;
         }
-    }
+    };
 
     var focusNextElement = function(selectionContext) {
         prepareShift(selectionContext);
@@ -413,7 +413,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         
         that.selectedElement = function() {
             return that.activeItemIndex < 0? null : that.selectables[that.activeItemIndex];
-        }
+        };
         
         // Add various handlers to the container.
         container.keydown (arrowKeyHandler (that, keyMap));

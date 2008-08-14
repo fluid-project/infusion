@@ -22,6 +22,6 @@ fluid = fluid || {};
   fluid.dropManager = function(geometricInfo) {
 
     return that;
-}  
+  };  
   
 }) (jQuery, fluid);

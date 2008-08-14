@@ -278,7 +278,7 @@ fluid = fluid || {};
           if (that.editField && that.editField.index(source) === -1) {
             that.editField.val(that.model.value);
           }
-        }
+        };
         
         that.updateModel = function(newValue, source) {
           var change = that.model.value !== newValue;
@@ -287,7 +287,7 @@ fluid = fluid || {};
             that.modelFirer.fireEvent(newValue);
           }
           that.render(source); // Always render, because of possibility of initial event
-        }
+        };
 
         setupInlineEdit(componentContainer, that);
         

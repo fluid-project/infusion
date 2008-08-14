@@ -90,7 +90,7 @@ fluid = fluid || {};
         render(that);
         bindHandlers(that);
         return that;
-    }
+    };
   
     fluid.defaults("undo", {  
         selectors: {
@@ -100,7 +100,7 @@ fluid = fluid || {};
             redoControl: ".redoControl"
             },
                     
-        renderer: defaultRenderer,
+        renderer: defaultRenderer
         }
       );
         

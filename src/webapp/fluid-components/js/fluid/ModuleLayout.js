@@ -407,7 +407,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
           selectables: selectablesSelector,
           dropTargets: dropTargets,
           grabHandle: grabHandle
-        }
+        };
                   
         return togo;
     };
