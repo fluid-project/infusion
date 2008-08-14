@@ -1,22 +1,23 @@
 /*
-Copyright 2007 - 2008 University of Toronto
+Copyright 2008 University of Toronto
 
-Licensed under the Educational Community License (ECL), Version 2.0 or the New
-BSD license. You may not use this file except in compliance with one these
+Licensed under the GNU General Public License or the MIT license.
+You may not use this file except in compliance with one these
 Licenses.
 
-You may obtain a copy of the ECL 2.0 License and BSD License at
-https://source.fluidproject.org/svn/LICENSE.txt
+You may obtain a copy of the GPL and MIT License at
+https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 */
+
+/*global jQuery*/
 
 var fluid = fluid || {};
 
 (function ($) {
-
     // Private functions.
     var createActiveDescendentHandler = function (tablist) {
         return function (event, ui) {
-            tablist.ariaState ("activedescendant", $(ui.tab).parent().attr("id"));
+            tablist.ariaState("activedescendant", $(ui.tab).parent().attr("id"));
         };
     };
     
@@ -32,20 +33,21 @@ var fluid = fluid || {};
 
             // Put the tablist in the tab focus order. Take each tab *out* of the tab order
             // so that they can be navigated with the arrow keys instead of the tab key.
-            tablist.tabbable ();
+            tablist.tabbable();
 
             var keyboardSelect = function (tabToSelect) {
-                tablist.tabs ('select', tabs.index(tabToSelect));
+                tablist.tabs('select', tabs.index(tabToSelect));
             };
             
             // Make the tabs selectable:
             //  * Pass in the container for the tabs (the <ul>)--the plugin binds keyboard handlers to this.
             //  * utilize option willSelect: to make the tab actually selected.
             //  * lastly, the options object allows to simply specify the direction (which defaults to vertical)
-            tablist.selectable ({ 
-                  selectableElements: tabs,
-                  onSelect: keyboardSelect,
-                  direction: $.a11y.orientation.HORIZONTAL});
+            tablist.selectable({ 
+                selectableElements: tabs,
+            	onSelect: keyboardSelect,
+            	direction: $.a11y.orientation.HORIZONTAL
+            });
         },
 
         addARIA: function (tabsId, panelsId) {
@@ -59,7 +61,7 @@ var fluid = fluid || {};
             // Each tab should have a role of Tab, 
             // and a "position in set" property describing its order within the tab list.
             tabs.each (function(i, tab) {
-            	$(tab).ariaRole("tab").ariaState("posinset", i);
+            	$(tab).ariaRole("tab");
             });
 
             // Give each panel a role of tabpanel
@@ -67,7 +69,7 @@ var fluid = fluid || {};
             
             // And associate each panel with its tab using the labelledby relation.
 			panels.each (function (i, panel) {
-				$(panel).ariaState("posinset", i).ariaState("labelledby", panel.id.split("Panel")[0] + "Tab");
+				$(panel).ariaState("labelledby", panel.id.split("Panel")[0] + "Tab");
 			});
 			
             // Listen for tab selection and set the tab list's active descendent property.
