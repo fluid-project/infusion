@@ -38,7 +38,7 @@ fluid = fluid || {};
     // An incrementing integer representing a unique identifier for any current
     // drag operation. This will eventually become a global proxy for a 
     // "DOM modification counter".
-    var dragId = 0;           
+    var dragId = 0;
     // A map of jQuery data ids to the set of active drop targets - that is,
     // those ones for which we have received an "over" but not an out.
     var lightMap = {};

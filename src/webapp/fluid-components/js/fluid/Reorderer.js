@@ -748,6 +748,10 @@ fluid = fluid || {};
             orientation = options.orientation || orientation;
         }
         
+        that.getGeometricInfo = function () {
+          var geometry = {};
+        }
+        
         that.getRightSibling = function (item) {
             return itemInfoFinders.getRightSiblingInfo(item, that.locate("selectables")).item;
             };
