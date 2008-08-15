@@ -17,13 +17,16 @@
   <body class="flora">
     <h1>Accessible jQuery UI Tabs</h1>
 
+    <!-- A list of anchors that will be turned into a jQuery UI tabs widget. -->
+    <!-- The href of each anchor points to the id its associated panel.      --> 
     <ul id="tabs">
-        <li id="catsTab"><a href="#catsPanel" tabindex="-1"><span>Cats</span></a></li>
-        <li id="dogsTab"><a href="#dogsPanel" tabindex="-1"><span>Dogs</span></a></li>
-        <li id="hamstersTab"><a href="#hamstersPanel" tabindex="-1"><span>Hamsters</span></a></li>
-        <li id="alligatorsTab"><a href="#alligatorsPanel" tabindex="-1"><span>Alligators</span></a></li>
+        <li id="catsTab"><a href="#catsPanel"><span>Cats</span></a></li>
+        <li id="dogsTab"><a href="#dogsPanel"><span>Dogs</span></a></li>
+        <li id="hamstersTab"><a href="#hamstersPanel"><span>Hamsters</span></a></li>
+        <li id="alligatorsTab"><a href="#alligatorsPanel"><span>Alligators</span></a></li>
     </ul>
 
+    <!-- A collection of divs that represent the panel beneath each tab. -->
     <div id="panels">
       <div id="catsPanel">
         Cats meow.
@@ -38,5 +41,6 @@
         Alligators bite.
       </div>
     </div>
+    
   </body>
 </html>
