@@ -4,9 +4,14 @@ body{
     font-size: 1em;
 }
 
-ol > li {
+ol li {
     padding: 5px;
     margin: 5px;
+}
+
+ul li {
+    margin:0px;
+    padding:0px;
 }
 
 .orderable-default{
@@ -32,10 +37,14 @@ ol > li {
     border: 0;
 }
 
-.orderable-drop-marker{
-    background-color: red;
-    height: 2px;
-    margin: -4px;
-    padding: 0px;
+.orderable-drop-marker {
+    background-color : red !important;
+    height:2px !important;
+    padding:0 0 0 0 !important;
+    border-width: 0px !important;
+    margin: 0 0 -2px -2px;
+    list-style-type:none;
+    font-size:0px;
+    line-height:0px;
+    overflow:hidden;
 }
-
