@@ -14,7 +14,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global jQuery*/
 /*global fluid*/
 
-fluid = fluid || {};
+var fluid = fluid || {};
 
 (function (jQuery, fluid) {
 

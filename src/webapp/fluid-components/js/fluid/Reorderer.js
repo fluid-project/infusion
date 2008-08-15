@@ -466,7 +466,7 @@ fluid = fluid || {};
                     // refocus on the active item because moving places focus on the body
                     thatReorderer.activeItem.focus();
                 },
-                handle: thatReorderer.locate("grabHandle", item[0])
+                handle: thatReorderer.dom.fastLocate("grabHandle", item[0])
             });
         }
 

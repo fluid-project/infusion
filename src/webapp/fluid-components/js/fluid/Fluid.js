@@ -575,6 +575,8 @@ var fluid = fluid || {};
         }
     };
     
+    fluid.log = fluid.utils.debug;
+    
      /** method to allow user to enable logging (off by default) */
     fluid.utils.setLogging = function (enabled) {
         if (typeof enabled === "boolean") {
