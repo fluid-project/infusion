@@ -75,6 +75,24 @@
       <p id="inline-edit10">
         <span class="text" id="text10">This control features an undoable edit mode</span>
       </p>
+
+        <table id="inline-edit11">
+            <tr>
+                <td class="inlineEditable">
+                    <span class="text">This an editable a table cell.</span>
+                    <div class="editContainer">
+                        <input type="text" class="edit" />
+                    </div>
+                </td>
+                <td class="inlineEditable">
+                    <span class="text">This another editable a table cell.</span>
+                    <div class="editContainer">
+                        <input type="text" class="edit" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+        
         <script type="text/javascript">
             var editor1 = fluid.inlineEdit("#inline-edit1");
             fluid.undoDecorator(editor1);
@@ -89,6 +107,7 @@
             fluid.inlineEdit("#inline-edit9", {useTooltip: true, tooltipText:"Go on, I dares ya - click on it..."});
             var e10 = fluid.inlineEdit("#inline-edit10");
             fluid.undoDecorator(e10);
+            fluid.inlineEdits("#inline-edit11", {useTooltip: true});
         </script>
 	</body>
 </html>
