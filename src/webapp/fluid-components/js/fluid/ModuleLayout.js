@@ -306,7 +306,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         var itemIndices = internals.findColumnAndItemIndices(itemId, layout);
         layout.columns[itemIndices.columnIndex].children.splice(itemIndices.itemIndex, 1);
         var targetCol;
-        if (position === fluid.position.INSIDE) {
+        if (position === fluid.position.INSIDE || position === fluid.position.USE_LAST_KNOWN) {
             targetCol = layout.columns[internals.findColIndex(targetId, layout)].children;
             targetCol.splice (targetCol.length, 0, itemId);
 
