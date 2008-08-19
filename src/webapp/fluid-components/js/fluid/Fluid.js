@@ -247,8 +247,26 @@ var fluid = fluid || {};
         return that;
     };
     
-    /** The central initialisation method called as the first act of every Fluid
-     * component.
+    /**
+     * Merges the component's declared defaults, as obtained from fluid.defaults(),
+     * with the user's specified overrides.
+     * 
+     * @param {Object} that the instance to attach the options to
+     * @param {String} componentName the unique "name" of the component, which will be used
+     * to fetch the default options from store. By recommendation, this should be the global
+     * name of the component's creator function.
+     * @param {Object} userOptions the user-specified configuration options for this component
+     */
+    fluid.mergeComponentOptions = function (that, componentName, userOptions) {
+        var defaults = fluid.defaults(componentName); 
+        that.options = fluid.utils.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);    
+    };
+    
+    /** 
+     * The central initialisation method called as the first act of every 
+     * Fluid view. This function automatically merges user options with defaults
+     * and attaches a DOM Binder to the instance.
+     * 
      * @param {String} componentName The unique "name" of the component, which will be used
      * to fetch the default options from store. By recommendation, this should be the global
      * name of the component's creator function.
@@ -256,17 +274,15 @@ var fluid = fluid || {};
      * DOM which will house all the markup for this component.
      * @param {Object} userOptions The configuration options for this component.
      */
-    
     fluid.initView = function (componentName, container, userOptions) {
         var that = {};
-        var defaults = fluid.defaults(componentName); 
-        that.options = fluid.utils.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);
+        fluid.mergeComponentOptions(that, componentName, userOptions);
+        
         if (container) {
             that.container = fluid.container(container);
-        }
-        if (container) {
             fluid.initDomBinder(that);
         }
+
         return that;
     };
     
