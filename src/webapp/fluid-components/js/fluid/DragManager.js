@@ -71,7 +71,7 @@ var fluid = fluid || {};
         delete lightMap[jQuery.data(element)];
     };
     
-    that.contund = function() {
+    that.clear = function() {
       lightMap = {};
     };
     

@@ -37,8 +37,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
              
           jqUnit.assertDeepNeq("Anticorruption check", bit1, bit2);
           
-          jqUnit.assertDeepEq("Contund 1", 
-            bit1, fluid.utils.merge({"": "contund"}, {}, bits, bit1));
+          jqUnit.assertDeepEq("Replace 1", 
+            bit1, fluid.utils.merge({"": "replace"}, {}, bits, bit1));
             
           jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
             fluid.utils.merge({}, {}, [bit1, bit2], null, [bit2, bit1, bits]));

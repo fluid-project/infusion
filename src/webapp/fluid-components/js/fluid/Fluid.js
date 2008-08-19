@@ -377,7 +377,7 @@ var fluid = fluid || {};
    
     /** Copy a source "model" onto a target **/
     fluid.model.copyModel = function copyModel(target, source) {
-        fluid.utils.contund(target);
+        fluid.utils.clear(target);
         jQuery.extend(true, target, source);
     };
     
@@ -487,7 +487,7 @@ var fluid = fluid || {};
     };
     
     /** Destroy an object to an empty condition**/
-    fluid.utils.contund = function (target) {
+    fluid.utils.clear = function (target) {
         if (target instanceof Array) {
             target.length = 0;
         }
@@ -504,8 +504,8 @@ var fluid = fluid || {};
             thisPolicy.apply(null, target, source);
             return target;
         }
-        if (thisPolicy === "contund") {
-            fluid.utils.contund(target);
+        if (thisPolicy === "replace") {
+            fluid.utils.clear(target);
         }
       
         for (var name in source) {
@@ -542,7 +542,7 @@ var fluid = fluid || {};
         if (policy) {
             for (var key in policy) {
                 var elrh = policy[key];
-                if (typeof(elrh) === 'string' && elrh !== "contund") {
+                if (typeof(elrh) === 'string' && elrh !== "replace") {
                     var oldValue = fluid.model.getBeanValue(target, key);
                     if (oldValue === null || oldValue === undefined) {
                         var value = fluid.model.getBeanValue(target, elrh);

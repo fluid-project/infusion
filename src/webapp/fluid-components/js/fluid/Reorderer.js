@@ -72,7 +72,7 @@ fluid = fluid || {};
         layoutHandlerName: "fluid.listLayoutHandler",
         
         mergePolicy: {
-          keysets: "contund",
+          keysets: "replace",
           "selectors.selectables": "selectors.movables",
           "selectors.dropTargets": "selectors.movables"
         }
@@ -461,7 +461,7 @@ fluid = fluid || {};
                     ui.helper = null;
                     validTargetAndPos = null;
                     setDropEffects("none");
-                    dragManager.contund();
+                    dragManager.clear();
                     
                     // refocus on the active item because moving places focus on the body
                     thatReorderer.activeItem.focus();
