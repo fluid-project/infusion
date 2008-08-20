@@ -486,7 +486,11 @@ var fluid = fluid || {};
         }
     };
     
-    /** Destroy an object to an empty condition**/
+    /** 
+     * Clears an object or array of its contents. For objects, each property is deleted.
+     * 
+     * @param {Object|Array} target the thing to clear
+     */
     fluid.utils.clear = function (target) {
         if (target instanceof Array) {
             target.length = 0;
