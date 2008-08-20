@@ -89,9 +89,11 @@
        //Uncomment this and comment out the previous line to test the simple layout reorderer concept of locking 
        /* jQuery(document).ready(function () {
             fluid.reorderLayout ("#portlet-reorderer-root", {
-                columns: "td",
-                modules: "td > div",
-                lockedModules: ".locked"
+                selectors: {
+                    columns: "td",
+                    modules: "td > div",
+                    lockedModules: ".locked"
+                }
             });
         });
         */

@@ -18,12 +18,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var tests = new jqUnit.TestCase("Reorder Layout Tests");
     
         tests.test("reorderLayout API", function () {
-            var layoutSelectors = {
-                columns: "[id^='c']",
-                modules: ".portlet"            
+            var options = {
+                selectors: {
+                    columns: "[id^='c']",
+                    modules: ".portlet"
+                }
             };
             
-            var layoutReorderer = fluid.reorderLayout(".reorderer_container", layoutSelectors, function () {});
+            var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
             var item2 = fluid.utils.jById(portlet2id).focus();
             var item3 = fluid.utils.jById(portlet3id);
             var downArrow = fluid.testUtils.createEvtDownArrow(); 
@@ -52,20 +54,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", portlet9id, items[8].id);
         });
     
-        tests.test("reorderLayout with option", function () {
+        tests.test("reorderLayout with optional styles", function () {
             var options = {
+                selectors: {
+                    columns: "[id^='c']",
+                    modules: ".portlet"            
+                },
                 styles: {
                     defaultStyle: "myDefault",
                     selected: "mySelected"
                 }
             };
-            
-            var layoutSelectors = {
-                columns: "[id^='c']",
-                modules: ".portlet"            
-            };
     
-            var layoutReorderer = fluid.reorderLayout(".reorderer_container", layoutSelectors, function () {}, options);
+            var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
             
             jqUnit.assertEquals("default class is myDefault", "myDefault", layoutReorderer.options.styles.defaultStyle);
             jqUnit.assertEquals("selected class is mySelected", "mySelected", layoutReorderer.options.styles.selected);
@@ -75,13 +76,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         tests.test("reorderLayout with locked portlets", function () {
-            var layoutSelectors = {
-                columns: "[id^='c']",
-                modules: ".portlet",
-                lockedModules: ".locked"            
+            var options = {
+                selectors: {
+                    columns: "[id^='c']",
+                    modules: ".portlet",
+                    lockedModules: ".locked"
+                }
             };
 
-            var layoutReorderer = fluid.reorderLayout(".reorderer_container", layoutSelectors, function () {});
+            var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
             var item2 = fluid.utils.jById(portlet2id).focus();
             var item3 = fluid.utils.jById(portlet3id);
             var ctrlDownArrow = fluid.testUtils.createEvtCtrlDownArrow();

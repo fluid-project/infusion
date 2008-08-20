@@ -1,5 +1,6 @@
 /*
 Copyright 2007 - 2008 University of Toronto
+Copyright 2008 University of Cambridge
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -48,22 +49,31 @@ fluid = fluid || {};
 
     /**
      * Simple way to create a layout customizer.
-     * @param {selector} a selector for the layout container
-     * @param {Object} a map of selectors for columns and modules within the layout
-     * @param {Function} a function to be called when the order changes 
-     * @param {Object} additional configuration options
+     * @param {Object} container a selector, jquery, or a dom element representing the component's container
+     * @param {Object} options a collection of options settings.  
      */
-    fluid.reorderLayout = function (containerSelector, layoutSelectors, orderChangedCallback, options) {
+    fluid.reorderLayout = function (container, options) {
         options = options || {};
-        options.orderChangedCallback = orderChangedCallback;
+        var selectors = fluid.utils.merge({}, {}, fluid.defaults("reorderLayout").selectors, options.selectors);
         
-        var container = jQuery(containerSelector);
-        var columns = jQuery(layoutSelectors.columns, container);
-        var modules = jQuery(layoutSelectors.modules, container);
-        var lockedModules = jQuery(layoutSelectors.lockedModules, container);
+        container = fluid.container(container);
+        var columns = jQuery(selectors.columns, container);
+        var modules = jQuery(selectors.modules, container);
+        var lockedModules = jQuery(selectors.lockedModules, container);
         var layout = fluid.moduleLayout.buildLayout(container, columns, modules);
         var perms = fluid.moduleLayout.buildPermsForLockedModules(lockedModules, layout);
         
+        // clear the selectors because they aren't needed by the reorderer and in fact confuse matters 
+        options.selectors = undefined;
         return fluid.initLayoutCustomizer(layout, perms, null, options);
-    };    
+    };
+    
+    fluid.defaults("reorderLayout", {  
+        selectors: {
+            columns: ".columns",
+            modules: ".modules",
+            lockedModules: ".lockedModules"
+        }
+    });
+        
 })(fluid);
