@@ -13,5 +13,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 
 demo.initTodoList = function () {
-    return fluid.reorderList("#todo-list", "[id^=myUniquePrefix]");
+    var options = {
+        selectors: {
+            movables: "[id^=myUniquePrefix]"
+        }
+    };
+    return fluid.reorderList("#todo-list", options);
 };

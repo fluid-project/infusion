@@ -14,8 +14,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var tests = new jqUnit.TestCase ("Reorder Grid Tests", setUp, tearDown);
     
         tests.test ("reorderGrid API", function () {
+            var options = {
+                selectors: {
+                    movables: ".float"
+                }
+            };
             var containerSelector = "[id='" + lightboxRootId + "']";
-            var gridReorderer = fluid.reorderGrid(containerSelector, ".float", function () {});
+            var gridReorderer = fluid.reorderGrid(containerSelector, options);
             var item2 = fluid.utils.jById(secondReorderableId).focus();
             var item3 = fluid.utils.jById(thirdReorderableId);
             var item5 = fluid.utils.jById(fifthReorderableId);
@@ -50,8 +55,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", twelvethImageId, items[11].id);
         });
     
-        tests.test ("reorderGrid with option", function () {
+        tests.test ("reorderGrid with optional styles", function () {
             var options = {
+                selectors: {
+                    movables: ".float"
+                },
                 styles: {
                     defaultStyle: "myDefault",
                     selected: "mySelected"
@@ -59,7 +67,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             
             var containerSelector = "[id='" + lightboxRootId + "']";
-            var gridReorderer = fluid.reorderGrid(containerSelector, ".float", function () {}, options);
+            var gridReorderer = fluid.reorderGrid(containerSelector, options);
             
             jqUnit.assertEquals("default class is myDefault", "myDefault", gridReorderer.options.styles.defaultStyle);
             jqUnit.assertEquals("selected class is mySelected", "mySelected", gridReorderer.options.styles.selected);

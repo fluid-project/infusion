@@ -1,6 +1,6 @@
 /*
 Copyright 2007 - 2008 University of Toronto
-Copyright 2007 University of Cambridge
+Copyright 2007 - 2008 University of Cambridge
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -131,32 +131,10 @@ fluid = fluid || {};
     };
     
     /**
-     * @param container - the root node of the Reorderer.
-     * @param findItems - a function that returns all of the movable elements in the container OR
-     *        findItems - an object containing the functions:
-     *                    movables - a function that returns all of the movable elements in the container
-     *                    selectables (optional) - a function that returns all of the selectable elements
-     *                    dropTargets (optional) - a function that returns all of the elements that can be used as drop targets
-     *                    grabHandle (optional) - a function that returns the element within the given movable that is to be used as a 'handle' for the mouse-based drag and drop of the movable. 
-     * @param layoutHandler - an instance of a Layout Handler.
-     * @param options - an object containing any of the available options:
-     *                  role - indicates the role, or general use, for this instance of the Reorderer
-     *                  instructionMessageId - the ID of the element containing any instructional messages
-     *                  keysets - an object containing sets of keycodes to use for directional navigation. Must contain:
-     *                            modifier - a function that returns a boolean, indicating whether or not the required modifier(s) are activated
-     *                            up
-     *                            down
-     *                            right
-     *                            left
-     *                  styles - an object containing class names for styling the Reorderer
-     *                                  defaultStyle
-     *                                  selected
-     *                                  dragging
-     *                                  hover
-     *                                  dropMarker
-     *                                  mouseDrag
-     *                                  avatar
-     *                  avatarCreator - a function that returns a valid DOM node to be used as the dragging avatar
+     * Creates a reorderer
+     * 
+     * @param {Object} container a selector, jquery, or a dom element representing the component's container
+     * @param {Object} options a collection of options settings. See http://wiki.fluidproject.org/x/Woo7 
      */
     fluid.reorderer = function (container, options) {
         var thatReorderer = fluid.initView("fluid.reorderer", container, options);
@@ -591,26 +569,18 @@ fluid = fluid || {};
     };
     
     // Simplified API for reordering lists and grids.
-    var simpleInit = function (container, itemSelector, layoutHandlerName, orderChangedCallback, userOptions) {
-        var options = fluid.utils.merge({}, {}, defaultInitOptions, userOptions);  
-        options.orderChangedCallback = orderChangedCallback;
-        if (typeof itemSelector === "string" || typeof itemSelector == "function") {
-          options.selectors.movables = itemSelector;
-        }
-        else {
-          options.selectors = itemSelector;
-        }
+    var simpleInit = function (container, layoutHandlerName, options) {
+        options = fluid.utils.merge({}, {}, defaultInitOptions, options);  
         options.layoutHandlerName = layoutHandlerName;
-        
         return fluid.reorderer(container, options);
     };
     
-    fluid.reorderList = function (containerSelector, itemSelector, orderChangedCallback, options) {
-        return simpleInit(containerSelector, itemSelector, "fluid.listLayoutHandler", orderChangedCallback, options);
+    fluid.reorderList = function (container, options) {
+        return simpleInit(container, "fluid.listLayoutHandler", options);
     };
     
-    fluid.reorderGrid = function (containerSelector, itemSelector, orderChangedCallback, options) {
-        return simpleInit(containerSelector, itemSelector, "fluid.gridLayoutHandler", orderChangedCallback, options); 
+    fluid.reorderGrid = function (container, options) {
+        return simpleInit(container, "fluid.gridLayoutHandler", options); 
     };
 }) (jQuery, fluid);
 

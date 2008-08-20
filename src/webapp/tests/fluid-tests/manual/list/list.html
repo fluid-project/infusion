@@ -14,6 +14,7 @@
     <script type="text/javascript" src="../../../../fluid-components/js/jquery/ui.droppable.js"></script>
     <script type="text/javascript" src="../../../../fluid-components/js/jquery/jARIA.js"></script>
     <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/DragManager.js"></script>    
     <script type="text/javascript" src="../../../../fluid-components/js/fluid/Reorderer.js"></script>
 
     <!--  Ensure jQuery plays nice with other toolkits -
@@ -55,8 +56,18 @@
       </ul>
     </div>
     <script type="text/javascript">
-        fluid.reorderList("#list1", "li");
-        fluid.reorderList("#list2", {movables: ".orderable", selectables: "li", dropTargets: "li"});
+        fluid.reorderList("#list1", {
+            selectors: {
+                movables: "li"
+            }
+        });
+        fluid.reorderList("#list2", {
+            selectors: {
+                movables: ".orderable",
+                selectables: "li",
+                dropTargets: "li"
+            }
+        });
     </script>
   </body>
 </html>

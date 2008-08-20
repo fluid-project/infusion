@@ -27,7 +27,11 @@
                     <li id="inner1-item4">Two point four</li>
                     <script type="text/javascript">
                         console.log("initializing Reorderer for 'inner1'");
-                        fluid.reorderList("#inner1", "[id^=inner1-item]");
+                        fluid.reorderList("#inner1", {
+                            selectors: {
+                                movables: "[id^=inner1-item]"
+                            }
+                        });
                     </script>
                 </ul>
             </li>
@@ -41,7 +45,11 @@
                     <script type="text/javascript">
                         function init2 () {
                             console.log("initializing Reorderer for 'inner2'");
-                            fluid.reorderList("#inner2", "[id^=inner2-item]");
+                            fluid.reorderList("#inner2", {
+                                selectors: {
+                                    movables: "[id^=inner2-item]"
+                                }
+                            });
                         }
                         init2();
                     </script>
@@ -56,7 +64,11 @@
     function init(){
         // initialize the outer one
         console.log("initializing Reorderer for 'outer'");
-        fluid.reorderList("#outer", "[id^=outer-item]");
+        fluid.reorderList("#outer", {
+            selectors: {
+                movables: "[id^=outer-item]"
+            }
+        });
     }
     init();
     </script>

@@ -14,7 +14,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var tests = new jqUnit.TestCase ("Reorder List Tests", setUp);
     
         tests.test ("reorderList API", function () {
-            var listReorderer = fluid.reorderList("#list1", "li", callbackConfirmer);
+            var options = {
+                selectors: {
+                    movables: "li"
+                },
+                orderChangedCallback: callbackConfirmer
+            };
+            var listReorderer = fluid.reorderList("#list1", options);
             var item2 = jQuery("#list1item2").focus();
             var item3 = jQuery("#list1item3");
             var downArrow = fluid.testUtils.createEvtDownArrow(); 
@@ -44,15 +50,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
         });
         
-        tests.test ("reorderList with option", function () {
+        tests.test ("reorderList with optional styles", function () {
             var options = {
+                selectors: {
+                    movables: "li"
+                },
+                orderChangedCallback: callbackConfirmer,
                 styles: {
                     defaultStyle: "myDefault",
                     selected: "mySelected"
                 }
             };
             
-            var listReorderer = fluid.reorderList("#list1", "li", callbackConfirmer, options);
+            var listReorderer = fluid.reorderList("#list1", options);
             
             jqUnit.assertEquals("default class is myDefault", "myDefault", listReorderer.options.styles.defaultStyle);
             jqUnit.assertEquals("selected class is mySelected", "mySelected", listReorderer.options.styles.selected);
@@ -62,13 +72,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });    
     
         tests.test ("reorderList with multi selectors", function () {
-            var selectors = {
-                movables: ".orderable",
-                selectables: "li", 
-                dropTargets: "li" 
+            var options = {
+                selectors: {
+                    movables: ".orderable",
+                    selectables: "li", 
+                    dropTargets: "li"
+                }, 
+                orderChangedCallback: callbackConfirmer 
             };
     
-            var listReorderer = fluid.reorderList("#list2", selectors, callbackConfirmer);
+            var listReorderer = fluid.reorderList("#list2", options);
             
             var item1 = jQuery("#list2item1").focus();
             var item2 = jQuery("#list2item2");
