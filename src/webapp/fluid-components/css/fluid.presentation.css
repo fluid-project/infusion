@@ -1,0 +1,43 @@
+/*
+    THEMES:
+    Themes are sets of visual properties that represent items both at rest and in action
+    CSS allows for powerful blending and combinations of visual properties (Cascadence) 
+*/
+/*  HIGH CONTRAST: black and white */
+.-fluid-theme-highContrast h1 {
+    font            : bold 3em "Times,serif";
+    color           : #fff;
+    background-color: #000;
+}
+
+.-fluid-theme-highContrast h2 {
+    font            : bold 2.0em "Times,serif";
+    color           : #fff;
+    background-color: #000;
+}
+.-fluid-theme-highContrast a:link {
+    font-weight     : bold;
+    color           : white;
+    background-color: black;
+}
+
+.-fluid-theme-highContrast a:visited {
+    font-weight     : bold;
+    color           : black;
+    background-color: white;
+}
+
+.-fluid-theme-highContrast a:hover {
+    font-weight     : bold;
+    color           : black;
+    background-color: white;
+    border-bottom   : 3px double black;
+}
+/*  HIGH CONTRAST: blue and yellow */
+
+
+
+/*  BREEZE: white, blue, light gray */
+.-fluid-theme-breeze {
+    background-color : white;
+}
