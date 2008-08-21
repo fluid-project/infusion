@@ -32,15 +32,19 @@
                 /******************************************/
                 // Example 1, grab by class names and id
                     fluid.reorderLayout ("#fluid-LayoutCustomizer-sample1", {
-                    columns: ".myColumn",
-                    modules: ".mySortable"
-                });
+                        selectors: {
+                            columns: ".myColumn",
+                            modules: ".mySortable"
+                        }
+                    });
                 
                 /******************************************/
                 // Example 2, different selectors
                 fluid.reorderLayout ("#fluid-LayoutCustomizer-sample2", {
-                    columns: "> div",
-                    modules: "> div > div"
+                    selectors: {
+                        columns: "> div",
+                        modules: "> div > div"                        
+                    }
                 });
               
               
