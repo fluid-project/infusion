@@ -9,12 +9,12 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/**
- * Need tests for fluid.lightbox.createLightboxFromIds().
- */
+/*global jQuery*/
+/*global jqUnit*/
+/*global fluid*/
 
 (function ($) {
-    $(document).ready (function () {
+    $(document).ready(function () {
         var lbPersistenceTests = new jqUnit.TestCase("Lightbox Persistence Tests", setUp, tearDown);
     
         /**
@@ -22,26 +22,27 @@ https://source.fluidproject.org/svn/LICENSE.txt
          * @author Fluid
          */
         lbPersistenceTests.test("IsOrderChangedCallbackCalled", function () {
-            var lightboxContainer = fluid.utils.jById(lightboxRootId);
+            var lightboxContainer, testOrderChangedCallback, options, lightbox;
+            lightboxContainer = fluid.utils.jById(lightboxRootId);
         
             // Define a "persistence" callback that simply creates a known
             // input element with id 'callbackCalled'.  Later, we can test
             // whether the callback was called by looking for the element.
-            var testOrderChangedCallback = function() {
+            testOrderChangedCallback = function () {
                 var newInputElement = document.createElement("input");
                 newInputElement.id = "callbackCalled";
                 jQuery("[id=para1]").after(newInputElement);
             };
-            var options = {
+            options = {
                 layoutHandlerName: "fluid.gridLayoutHandler",
                 orderChangedCallback: testOrderChangedCallback,
                 selectors: {
-                  movables: findOrderableByDivAndId
-               }
+                    movables: findOrderableByDivAndId
+                }
             };
 
-            var lightbox = fluid.reorderer(lightboxContainer, options);
-            focusLightbox ();
+            lightbox = fluid.reorderer(lightboxContainer, options);
+            focusLightbox();
             
             // Perform a move
             lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlRightArrow());

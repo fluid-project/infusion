@@ -22,6 +22,7 @@
     <script type="text/javascript" src="../js/jquery/ui.droppable.js" rsf:id="scr=contribute-script"></script>
     <script type="text/javascript" src="../js/jquery/jARIA.js" rsf:id="scr=contribute-script"></script>
     <script type="text/javascript" src="../js/fluid/Fluid.js" rsf:id="scr=contribute-script"></script>
+    <script type="text/javascript" src="../js/fluid/DragManager.js"></script>
     <script type="text/javascript" src="../js/fluid/Reorderer.js" rsf:id="scr=contribute-script"></script>
     <script type="text/javascript" src="../js/fluid/Lightbox.js" rsf:id="scr=contribute-script"></script>
     
@@ -259,7 +260,7 @@
         
         <!--  Attach the javascript functionality to the markup by using createLightboxFromId() -->
         <script type="text/javascript"  rsf:id="init-script">
-          fluid.lightbox.createLightboxFromId ("gallery:::gallery-thumbs:::");
+          fluid.lightbox("[id='gallery:::gallery-thumbs:::']");
         </script>
       </div>
       
