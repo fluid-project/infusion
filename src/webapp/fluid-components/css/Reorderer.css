@@ -1,5 +1,3 @@
-/* CSS for the example document */
-/* CSS specifically for the examples document */
 h1 {
     clear   : both; 
     padding : 40px 0 0; 
@@ -19,30 +17,37 @@ h1 {
     padding         : 0 0 5px 25px;
     position        : relative; /* see note below. this helps contain the abs. positioned drop marker */
 }
-    #myTabs li {        
-        list-style-type : none;
-        display         : inline !important;
-        margin-right    : -5px;        
-    }
-    #myTabs li a {
-        padding     : 5px 8px;
-        border      : 1px solid #ccc;
-        background  : #ebebeb;
-        cursor      : move;
-    }
-    #myTabs li.activeTab a {
-        border-bottom-color : #fff;
-        background          : #fff;
-    }
-    .tabsContent {
-        clear       : left;
-        border      : 1px solid #ccc;
-        border-top  : none;
-        padding     : 15px;
-    }
+
+#myTabs li {        
+    list-style-type : none;
+    display         : inline !important;
+    margin-right    : -5px;        
+}
+
+#myTabs li a {
+    padding     : 5px 8px;
+    border      : 1px solid #ccc;
+    background  : #ebebeb;
+    cursor      : move;
+}
+
+#myTabs li.activeTab a {
+    border-bottom-color : #fff;
+    background          : #fff;
+}
+
+.tabsContent {
+    clear       : left;
+    border      : 1px solid #ccc;
+    border-top  : none;
+    padding     : 15px;
+}
     
-    /* position the drop marker as absolute ensures its visibility over the tabs, which have no space between themselves */
-    #myTabs .orderable-drop-marker {position:absolute; height:90%;}
+/* position the drop marker as absolute ensures its visibility over the tabs, which have no space between themselves */
+#myTabs .orderable-drop-marker {
+    position: absolute; 
+    height: 90%;
+}
     
 #myGrid {
     width   : 300px;
@@ -62,9 +67,6 @@ h1 {
 
 /* local theme options specifically for this component */
 
-
-
-
 h1 {
     clear   : both; 
     padding : 40px 0 0; 
@@ -85,45 +87,54 @@ h1 {
     padding         : 0 0 5px 25px;
     position        : relative; /* see note below. this helps contain the abs. positioned drop marker */
 }
-    #myTabs li {        
-        list-style-type : none;
-        display         : inline !important;
-        margin-right    : -5px;        
-    }
-    #myTabs li a {
-        padding     : 5px 8px;
-        border      : 1px solid #ccc;
-        background  : #ebebeb;
-        cursor      : move;
-    }
-    #myTabs li.activeTab a {
-        border-bottom-color : #fff;
-        background          : #fff;
-    }
-    .tabsContent {
-        clear       : left;
-        border      : 1px solid #ccc;
-        border-top  : none;
-        padding     : 15px;
-    }
-    
-    /* position the drop marker as absolute ensures its visibility over the tabs, which have no space between themselves */
-    #myTabs .orderable-drop-marker {position:absolute; height:90%;}
+
+#myTabs li {        
+    list-style-type : none;
+    display         : inline !important;
+    margin-right    : -5px;        
+}
+
+#myTabs li a {
+    padding     : 5px 8px;
+    border      : 1px solid #ccc;
+    background  : #ebebeb;
+    cursor      : move;
+}
+
+#myTabs li.activeTab a {
+    border-bottom-color : #fff;
+    background          : #fff;
+}
+
+.tabsContent {
+    clear       : left;
+    border      : 1px solid #ccc;
+    border-top  : none;
+    padding     : 15px;
+}
+
+
+/* position the drop marker as absolute ensures its visibility over the tabs, which have no space between themselves */
+#myTabs .orderable-drop-marker {
+    position: absolute; 
+    height: 90%;
+}
     
 #myGrid {
     width   : 300px;
     height  : 300px;
     border  : 1px solid #CCC;
 }
-    #myGrid p {
-        background  : #ebebeb;
-        width       : 30%;
-        height      : 30%;
-        margin      : 1.5%;        
-        text-align  : center;
-        display     : inline;
-        float       : left;        
-    }
+
+#myGrid p {
+    background  : #ebebeb;
+    width       : 30%;
+    height      : 30%;
+    margin      : 1.5%;        
+    text-align  : center;
+    display     : inline;
+    float       : left;        
+}
 
 
 /* local theme options specifically for this component */

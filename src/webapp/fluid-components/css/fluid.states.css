@@ -56,4 +56,22 @@
     overflow        : hidden;
 }
 
+
 /*************************************/
+/* Inline Edit */
+/* hover effect over editable element */
+.inlineEdit-invitation {
+    border      : 1px solid #999;
+    background  : lightyellow;
+    cursor      : pointer;
+}
+.inlineEdit-tooltip {
+    position    : absolute;
+    background  : #CCC;
+    border      : 1px solid #999;
+    font        : normal 75% sans-serif;
+    padding     : 3px 5px;
+}
+.viewport-bottom {
+}
+
