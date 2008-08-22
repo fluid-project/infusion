@@ -154,6 +154,7 @@ var fluid = fluid || {};
     fluid.fail = function (message) {
         fluid.utils.setLogging(true);
         fluid.utils.debug(message.message? message.message : message);
+        message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
     };
     
     function getNextNode(iterator) {
