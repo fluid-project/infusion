@@ -12,9 +12,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 /*global jQuery*/
+/*global fluid_0_5*/
 
-/*global fluid*/
-var fluid = fluid || {};
+var fluid_0_5 = fluid_0_5 || {};
+var fluid = fluid_0_5;
 
 (function (jQuery, fluid) {
     fluid.keys = {
@@ -158,21 +159,21 @@ var fluid = fluid || {};
     };
     
     function getNextNode(iterator) {
-      if (iterator.node.firstChild) {
-        iterator.node = iterator.node.firstChild;
-        iterator.depth++;
+        if (iterator.node.firstChild) {
+            iterator.node = iterator.node.firstChild;
+            iterator.depth += 1;
+            return iterator;
+        }
+        while (iterator.node) {
+            if (iterator.node.nextSibling) {
+                iterator.node = iterator.node.nextSibling;
+                return iterator;
+            }
+            iterator.node = iterator.node.parentNode;
+            iterator.depth -= 1;
+        }
         return iterator;
-        }
-      while (iterator.node) {
-       if (iterator.node.nextSibling) {
-          iterator.node = iterator.node.nextSibling;
-          return iterator;
-          }
-        iterator.node = iterator.node.parentNode;
-        iterator.depth--;
-        }
-      return iterator;
-      }
+    }
     
     // Work around IE circular DOM issue. This is the default max DOM depth on IE.
     // http://msdn2.microsoft.com/en-us/library/ms761392(VS.85).aspx
@@ -183,34 +184,38 @@ var fluid = fluid || {};
         while (currentNode.node !== null && currentNode.depth >= 0 && currentNode.depth < fluid.DOM_BAIL_DEPTH) {
             if (currentNode.nodeType === 1) {
                 acceptor(currentNode.node, currentNode.depth);
-                }
-            currentNode = getNextNode(currentNode);
             }
-        };
+            currentNode = getNextNode(currentNode);
+        }
+    };
     
     fluid.createDomBinder = function (container, selectors) {
-        var cache = {};
+        var cache = {}, that = {};
+        
         function cacheKey(name, thisContainer) {
             return jQuery.data(fluid.unwrap(thisContainer)) + "-" + name;
         }
+
         function record(name, thisContainer, result) {
             cache[cacheKey(name, thisContainer)] = result;
         }
-        var that = {};
+
         that.locate = function (name, localContainer) {
-            var selector = selectors[name];
-            var thisContainer = localContainer? localContainer: container;
+            var selector, thisContainer, togo;
+            
+            selector = selectors[name];
+            thisContainer = localContainer? localContainer: container;
             if (!thisContainer) {
                 fluid.fail("DOM binder invoked for selector " + name + " without container");
             }
+
             if (!selector) {
                 return thisContainer;
             }
-            var togo;
+
             if (typeof(selector) === "function") {
                 togo = jQuery(selector.call(null, fluid.unwrap(thisContainer)));
-            }
-            else {
+            } else {
                 togo = jQuery(selector, thisContainer);
             }
             if (togo.get(0) === document) {
@@ -230,18 +235,18 @@ var fluid = fluid || {};
         that.clear = function () {
             cache = {};
         };
-        that.refresh = function(names, localContainer) {
-           if (typeof names === "string") {
-               names = [names];
-           }
-           if (! (localContainer instanceof Array)) {
-               localContainer = [localContainer];
-           }
-           for (var i = 0; i < names.length; ++ i) {
-               for (var j = 0; j < localContainer.length; ++ j) {
-                   that.locate(names[i], localContainer[j]);
-               }
-           }
+        that.refresh = function (names, localContainer) {
+            if (typeof names === "string") {
+                names = [names];
+            }
+            if (! (localContainer instanceof Array)) {
+                localContainer = [localContainer];
+            }
+            for (var i = 0; i < names.length; ++ i) {
+                for (var j = 0; j < localContainer.length; ++ j) {
+                    that.locate(names[i], localContainer[j]);
+                }
+            }
         };
         
         return that;
@@ -417,7 +422,7 @@ var fluid = fluid || {};
      * Implementation taken from quirksmode http://www.quirksmode.org/js/findpos.html
      */
     fluid.utils.computeAbsolutePosition = function (element) {
-        var curleft = 0; var curtop = 0;
+        var curleft = 0, curtop = 0;
 	    if (element.offsetParent) {
 	        do {
 	            curleft += element.offsetLeft;
@@ -663,4 +668,4 @@ var fluid = fluid || {};
         return test(element) ? element : jQuery.grep(jQuery(element).parents(), test)[0];
     };
     
-})(jQuery, fluid);
+})(jQuery, fluid_0_5);
