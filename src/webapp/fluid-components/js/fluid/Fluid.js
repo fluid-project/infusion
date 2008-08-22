@@ -154,7 +154,6 @@ var fluid = fluid || {};
     fluid.fail = function (message) {
         fluid.utils.setLogging(true);
         fluid.utils.debug(message.message? message.message : message);
-        message.fail(true);
     };
     
     function getNextNode(iterator) {
