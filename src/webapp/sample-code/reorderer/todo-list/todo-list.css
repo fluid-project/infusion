@@ -33,8 +33,8 @@ ul li {
 
 .orderable-avatar {
     opacity: 0.55;
-    width: 300px;
     border: 0;
+    list-style-type: none;
 }
 
 .orderable-drop-marker {
@@ -42,7 +42,6 @@ ul li {
     height:2px !important;
     padding:0 0 0 0 !important;
     border-width: 0px !important;
-    margin: 0 0 -2px -2px;
     list-style-type:none;
     font-size:0px;
     line-height:0px;
