@@ -18,6 +18,16 @@ fluid_0_5 = fluid_0_5 || {};
 fluid = fluid || fluid_0_5;
 
 (function ($, fluid) {
+    function setCaretToStart(control) {
+        if (control.createTextRange) {
+            var range = control.createTextRange();
+            range.collapse(true);
+            range.select();
+        } else if (control.setSelectionRange) {
+            control.focus();
+            control.setSelectionRange(0, 0);
+        }
+    }
     
     // Is paddings doing what we want? Should it be in the CSS file instead?
     function edit(that) {
@@ -41,8 +51,12 @@ fluid = fluid || fluid_0_5;
             if (that.options.selectOnEdit) {
                 that.editField[0].select();
             }
+            else {
+                setCaretToStart(that.editField[0]);
+            }
         }, 0);
     }
+
 
 
     function clearEmptyViewStyles(textEl, defaultViewStyle, originalViewPadding) {
