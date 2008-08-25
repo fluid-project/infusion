@@ -34,7 +34,12 @@
  * To run locally using a fake upload, set uploadDefaults.uploadUrl to ''
  */
 
-var fluid = fluid || {};
+/*global jQuery*/
+/*global fluid*/
+/*global fluid_0_5*/
+
+fluid_0_5 = fluid_0_5 || {};
+fluid = fluid || fluid_0_5;
 
 (function ($,fluid) {
       
@@ -1206,7 +1211,7 @@ var fluid = fluid || {};
         this.progressContainer.fadeIn('slow');
     };
     
-})(jQuery);
+})(jQuery, fluid_0_5);
 
 
 

@@ -10,9 +10,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-
 /*global fluid*/
-fluid = fluid || {};
+/*global fluid_0_5*/
+
+fluid_0_5 = fluid_0_5 || {};
+fluid = fluid || fluid_0_5;
 
 (function ($, fluid) {
     
@@ -22,11 +24,13 @@ fluid = fluid || {};
     
     /**   Private stateless functions   **/
     var updateStyles = function (pageLinks, currentPageStyle, pageNum, oldPageNum) {
-        var pageLink = $(pageLinks[pageNum - 1]);
+        var pageLink, oldLink;
+        
+        pageLink = $(pageLinks[pageNum - 1]);
         pageLink.addClass(currentPageStyle); 
 
         if (oldPageNum) {
-            var oldLink = $(pageLinks[oldPageNum - 1]);
+            oldLink = $(pageLinks[oldPageNum - 1]);
             oldLink.removeClass(currentPageStyle);
         }
         
@@ -77,20 +81,22 @@ fluid = fluid || {};
 
     /**   Pager Bar creator   **/
 
-    fluid.pagerBar = function (bar, selectors, currentPageStyle, disabledStyle, pageWillChange) {        
-        var pageLinks = $(selectors.pageLinks, bar);
-        var previous = $(selectors.previous, bar);
-        var next = $(selectors.next, bar);
+    fluid.pagerBar = function (bar, selectors, currentPageStyle, disabledStyle, pageWillChange) {  
+        var pageLinks, previous, next, linkDisplay, isPageLink, isNext, isPrevious;
+              
+        pageLinks = $(selectors.pageLinks, bar);
+        previous = $(selectors.previous, bar);
+        next = $(selectors.next, bar);
         
-        var linkDisplay = fluid.pagerLinkDisplay(pageLinks, previous, next, currentPageStyle, disabledStyle, pageWillChange);
+        linkDisplay = fluid.pagerLinkDisplay(pageLinks, previous, next, currentPageStyle, disabledStyle, pageWillChange);
         
-        var isPageLink = function (element) {
+        isPageLink = function (element) {
             return pageLinks.index(element) > -1;
         };
-        var isNext = function (element) {
+        isNext = function (element) {
             return (element === next[0]);
         };
-        var isPrevious = function (element) {
+        isPrevious = function (element) {
             return (element === previous[0]);
         };
     
@@ -147,9 +153,11 @@ fluid = fluid || {};
     /**   Constructor  **/ 
                
     fluid.Pager = function (componentContainerId, options) {
+        var selectors, top, bottom;
+        
         // Mix in the user's configuration options.
         options = options || {};
-        var selectors = $.extend({}, this.defaults.selectors, options.selectors);
+        selectors = $.extend({}, this.defaults.selectors, options.selectors);
         this.styles = $.extend({}, this.defaults.styles, options.styles);
         this.pageWillChange = options.pageWillChange || this.defaults.pageWillChange; 
 
@@ -157,9 +165,9 @@ fluid = fluid || {};
         this.container = fluid.utils.jById(componentContainerId);
         
         // Create pager bars
-        var top = $(selectors.pagerTop, this.container);
+        top = $(selectors.pagerTop, this.container);
         this.topBar = fluid.pagerBar(top, selectors, this.styles.currentPage, this.styles.disabled, this.pageWillChange);
-        var bottom = $(selectors.pagerBottom, this.container);
+        bottom = $(selectors.pagerBottom, this.container);
         this.bottomBar = fluid.pagerBar(bottom, selectors, this.styles.currentPage, this.styles.disabled, this.pageWillChange);
 
         this.pageNum = 1;
@@ -212,4 +220,4 @@ fluid = fluid || {};
         }
     };
     
-})(jQuery, fluid);
+})(jQuery, fluid_0_5);

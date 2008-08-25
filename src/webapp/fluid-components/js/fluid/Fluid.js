@@ -12,7 +12,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 /*global jQuery*/
-/*global fluid_0_5*/
 
 var fluid_0_5 = fluid_0_5 || {};
 var fluid = fluid_0_5;

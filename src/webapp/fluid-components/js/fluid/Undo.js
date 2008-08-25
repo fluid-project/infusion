@@ -1,4 +1,6 @@
 /*
+
+Copyright 2008 University of Cambridge
 Copyright 2008 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -10,9 +12,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-
 /*global fluid*/
-fluid = fluid || {};
+/*global fluid_0_5*/
+
+fluid_0_5 = fluid_0_5 || {};
+fluid = fluid || fluid_0_5;
 
 (function ($, fluid) {
     
@@ -33,41 +37,44 @@ fluid = fluid || {};
   
     function render(that) {
         if (that.state === STATE_INITIAL) {
-          that.locate("undoContainer").hide();
-          that.locate("redoContainer").hide();
+            that.locate("undoContainer").hide();
+            that.locate("redoContainer").hide();
         }
         else if (that.state === STATE_CHANGED) {
-          that.locate("undoContainer").show();
-          that.locate("redoContainer").hide();
+            that.locate("undoContainer").show();
+            that.locate("redoContainer").hide();
         }
         else if (that.state === STATE_REVERTED) {
-          that.locate("undoContainer").hide();
-          that.locate("redoContainer").show();          
+            that.locate("undoContainer").hide();
+            that.locate("redoContainer").show();          
         }
     }
     
     function bindHandlers(that) {
-      that.component.modelFirer.addListener(
-        function() {
-          that.state = STATE_CHANGED;
-          render(that);
-        });
-      
-      that.locate("undoControl").click( 
-        function() {
-          fluid.model.copyModel(that.extremalModel, that.component.model);
-          fluid.model.copyModel(that.component.model, that.initialModel);
-          that.component.render();
-          that.state = STATE_REVERTED;
-          render(that);
-        });
-      that.locate("redoControl").click( 
-        function() {
-          fluid.model.copyModel(that.component.model, that.extremalModel);
-          that.component.render();
-          that.state = STATE_CHANGED;
-          render(that);
-        });
+        that.component.modelFirer.addListener(
+            function () {
+                that.state = STATE_CHANGED;
+                render(that);
+            }
+        );
+        
+        that.locate("undoControl").click( 
+            function () {
+                fluid.model.copyModel(that.extremalModel, that.component.model);
+                fluid.model.copyModel(that.component.model, that.initialModel);
+                that.component.render();
+                that.state = STATE_REVERTED;
+                render(that);
+            }
+        );
+        that.locate("redoControl").click( 
+            function () {
+                fluid.model.copyModel(that.component.model, that.extremalModel);
+                that.component.render();
+                that.state = STATE_CHANGED;
+                render(that);
+            }
+        );
     }
     /**
      * Decorates a target component with the function of "undoability"
@@ -98,10 +105,9 @@ fluid = fluid || {};
             undoControl: ".undoControl",
             redoContainer: ".redoContainer",
             redoControl: ".redoControl"
-            },
+        },
                     
         renderer: defaultRenderer
-        }
-      );
+    });
         
-})(jQuery, fluid);
+})(jQuery, fluid_0_5);

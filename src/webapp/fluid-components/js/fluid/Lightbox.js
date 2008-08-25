@@ -1,5 +1,6 @@
 /*
 Copyright 2007 - 2008 University of Toronto
+Copyright 2007 - 2008 University of Cambridge
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -11,10 +12,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery*/
 /*global fluid*/
+/*global fluid_0_5*/
 
-fluid = fluid || {};
+fluid_0_5 = fluid_0_5 || {};
+fluid = fluid || fluid_0_5;
 
-(function (jQuery, document) {
+(function (jQuery, fluid) {
     var deriveLightboxCellBase, addThumbnailActivateHandler, createItemFinder, defaultOrderChangedCallback;
     
     deriveLightboxCellBase = function (namebase, index) {
@@ -107,4 +110,4 @@ fluid = fluid || {};
         return fluid.reorderer(container, reordererOptions);
     };
         
-})(jQuery, document);
+})(jQuery, fluid_0_5);

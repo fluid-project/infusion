@@ -1,6 +1,6 @@
 /*
-Copyright 2007 - 2008 University of Toronto
-Copyright 2007 University of Cambridge
+Copyright 2008 University of Toronto
+Copyright 2007 - 2008 University of Cambridge
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -13,8 +13,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery*/
 /*global fluid*/
+/*global fluid_0_5*/
 
-var fluid = fluid || {};
+fluid_0_5 = fluid_0_5 || {};
+fluid = fluid || fluid_0_5;
 
 (function (jQuery, fluid) {
 
@@ -78,4 +80,4 @@ var fluid = fluid || {};
     return that;
   };
   
-}) (jQuery, fluid);
+}) (jQuery, fluid_0_5);

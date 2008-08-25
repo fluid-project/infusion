@@ -12,27 +12,31 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery*/
 /*global fluid*/
-fluid = fluid || {};
+/*global fluid_0_5*/
 
-(function (fluid) {
+fluid_0_5 = fluid_0_5 || {};
+fluid = fluid || fluid_0_5;
+
+(function (jQuery, fluid) {
     var createLayoutCustomizer = function (layout, perms, orderChangedCallbackUrl, userOptions) {
+        var selectors, assembleOptions, options, reordererRoot;
+        
         // Configure options
         userOptions = userOptions || {};
-        var selectors = fluid.moduleLayout.inferSelectors(layout, perms, userOptions.grabHandle);
-        var assembleOptions = {
-          containerRole: fluid.roles.REGIONS,
-          orderChangedCallbackUrl: orderChangedCallbackUrl,
-          layoutHandlerName: "fluid.moduleLayoutHandler",
-          moduleLayout: {
-            permissions: perms,
-            layout: layout
-          },
-          selectors: selectors
+        selectors = fluid.moduleLayout.inferSelectors(layout, perms, userOptions.grabHandle);
+        assembleOptions = {
+            containerRole: fluid.roles.REGIONS,
+            orderChangedCallbackUrl: orderChangedCallbackUrl,
+            layoutHandlerName: "fluid.moduleLayoutHandler",
+            moduleLayout: {
+                permissions: perms,
+                layout: layout
+            },
+            selectors: selectors
         };
+        options = jQuery.extend({}, assembleOptions, userOptions);
         
-        var options = jQuery.extend({}, assembleOptions, userOptions);
-        
-        var reordererRoot = fluid.utils.jById(fluid.moduleLayout.containerId(layout));
+        reordererRoot = fluid.utils.jById(fluid.moduleLayout.containerId(layout));
 
         return fluid.reorderer(reordererRoot, options);
     };
@@ -53,15 +57,17 @@ fluid = fluid || {};
      * @param {Object} options a collection of options settings.  
      */
     fluid.reorderLayout = function (container, options) {
+        var selectors, columns, modules, lockedModules, layout, perms;
+        
         options = options || {};
-        var selectors = fluid.utils.merge({}, {}, fluid.defaults("reorderLayout").selectors, options.selectors);
+        selectors = fluid.utils.merge({}, {}, fluid.defaults("reorderLayout").selectors, options.selectors);
         
         container = fluid.container(container);
-        var columns = jQuery(selectors.columns, container);
-        var modules = jQuery(selectors.modules, container);
-        var lockedModules = jQuery(selectors.lockedModules, container);
-        var layout = fluid.moduleLayout.buildLayout(container, columns, modules);
-        var perms = fluid.moduleLayout.buildPermsForLockedModules(lockedModules, layout);
+        columns = jQuery(selectors.columns, container);
+        modules = jQuery(selectors.modules, container);
+        lockedModules = jQuery(selectors.lockedModules, container);
+        layout = fluid.moduleLayout.buildLayout(container, columns, modules);
+        perms = fluid.moduleLayout.buildPermsForLockedModules(lockedModules, layout);
         
         // clear the selectors because they aren't needed by the reorderer and in fact confuse matters 
         options.selectors = undefined;
@@ -76,4 +82,4 @@ fluid = fluid || {};
         }
     });
         
-})(fluid);
+})(jQuery, fluid_0_5);

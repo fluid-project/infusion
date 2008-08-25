@@ -11,9 +11,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-
 /*global fluid*/
-fluid = fluid || {};
+/*global fluid_0_5*/
+
+fluid_0_5 = fluid_0_5 || {};
+fluid = fluid || fluid_0_5;
 
 (function ($, fluid) {
     
@@ -29,7 +31,7 @@ fluid = fluid || {};
         viewEl.hide();
         that.editContainer.show();
         if (that.tooltipEnabled()) {
-            $("#"+that.options.tooltipId).hide();
+            $("#" + that.options.tooltipId).hide();
         }
 
         // Work around for FLUID-726
@@ -78,7 +80,7 @@ fluid = fluid || {};
 
     function finish(that) {
         if (that.options.finishedEditing) {
-          that.options.finishedEditing(that.editField[0], that.viewEl[0]);
+            that.options.finishedEditing(that.editField[0], that.viewEl[0]);
         }
         that.updateModel(that.editField.val());
         
@@ -148,7 +150,7 @@ fluid = fluid || {};
             finish(that);
             return false;
         };
-      that.editField.blur(blurHandler);
+        that.editField.blur(blurHandler);
     }
     
     function aria(viewEl, editContainer) {
@@ -183,7 +185,7 @@ fluid = fluid || {};
         var componentContainerId = that.container.attr("id");
         // Give the container and textfield a reasonable set of ids if necessary.
         if (componentContainerId) {
-            var editContainerId = componentContainerId +"-edit-container";
+            var editContainerId = componentContainerId + "-edit-container";
             var editFieldId = componentContainerId + "-edit";   
             editContainer.attr("id", editContainerId);
             editField.attr("id", editFieldId);
@@ -220,15 +222,17 @@ fluid = fluid || {};
         // Hide the edit container to start
         that.editContainer.hide();
         
-        var initTooltip = function() {
+        var initTooltip = function () {
             // Add tooltip handler if required and available
             if (that.tooltipEnabled()) {
-              $(componentContainer).tooltip({
-                  delay: that.options.tooltipDelay,
-                  extraClass: that.options.styles.tooltip,
-                  bodyHandler: function () { return that.options.tooltipText; },
-                  id: that.options.tooltipId
-              });
+                $(componentContainer).tooltip({
+                    delay: that.options.tooltipDelay,
+                    extraClass: that.options.styles.tooltip,
+                    bodyHandler: function () { 
+                        return that.options.tooltipText; 
+                    },
+                    id: that.options.tooltipId
+                });
             }
         };
 
@@ -260,33 +264,31 @@ fluid = fluid || {};
             finish(that);
         };
             
-        that.tooltipEnabled = function() {
+        that.tooltipEnabled = function () {
             return that.options.useTooltip && $.fn.tooltip;
         };
         
-        that.render = function(source) {
-           if (that.model.value) {
-             showEditedText(that);
-           } 
-           else if (that.options.defaultViewText) {
-             showDefaultViewText(that);
-           } 
-           else {
-             showNothing(that);
-           }
+        that.render = function (source) {
+            if (that.model.value) {
+                showEditedText(that);
+            } else if (that.options.defaultViewText) {
+                showDefaultViewText(that);
+            } else {
+                showNothing(that);
+            }
           
-          if (that.editField && that.editField.index(source) === -1) {
-            that.editField.val(that.model.value);
-          }
+            if (that.editField && that.editField.index(source) === -1) {
+                that.editField.val(that.model.value);
+            }
         };
         
-        that.updateModel = function(newValue, source) {
-          var change = that.model.value !== newValue;
-          if (change) {
-            that.model.value = newValue;
-            that.modelFirer.fireEvent(newValue);
-          }
-          that.render(source); // Always render, because of possibility of initial event
+        that.updateModel = function (newValue, source) {
+            var change = that.model.value !== newValue;
+            if (change) {
+                that.model.value = newValue;
+                that.modelFirer.fireEvent(newValue);
+            }
+            that.render(source); // Always render, because of possibility of initial event
         };
 
         setupInlineEdit(componentContainer, that);
@@ -360,4 +362,4 @@ fluid = fluid || {};
             editables: ".inlineEditable"
         }
     });
-})(jQuery, fluid);
+})(jQuery, fluid_0_5);
