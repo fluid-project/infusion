@@ -159,6 +159,14 @@ table.narrowTable tr th {
     font-size: 1.2em;
 }
 
+.inlineEdit-invitation {
+    background-color:#FFECB3;
+    cursor:pointer;
+}
 
+.inlineEditable span {
+    display: block;
+    padding: 0.2em 0;
+}
 
 
