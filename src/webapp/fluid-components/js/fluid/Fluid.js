@@ -614,29 +614,6 @@ var fluid = fluid_0_5;
     fluid.utils.derivePercent = function (num, total) {
         return Math.round((num * 100) / total);
     };
-
-    // simple function for return kbytes and megabytes from a number of bytes
-    // probably should do something fancy that shows MBs if the number is huge
-    fluid.utils.filesizeStr = function (bytes) {
-        /*
-        if (bytes < 1024){
-            return bytes + " bytes";
-        } else
-        */
-        if (typeof bytes === "number") {
-            if (bytes === 0) {
-                return "0.0 KB";
-            } else if (bytes > 0) {
-                if (bytes < 1048576) {
-                    return (Math.ceil(bytes / 1024 * 10) / 10).toFixed(1) + ' KB';
-                }
-                else {
-                    return (Math.ceil(bytes / 1048576 * 10) / 10).toFixed(1) + ' MB';
-                }
-            }
-        }
-        return '';
-    };
     
     /**
      * Simple string template system. 

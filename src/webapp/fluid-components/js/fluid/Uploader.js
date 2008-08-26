@@ -140,7 +140,7 @@ fluid = fluid || fluid_0_5;
         // update the file name
         $(newQueueRow).children(fragmentSelectors.qRowFileName).text(file.name);
         // update the file size
-        $(newQueueRow).children(fragmentSelectors.qRowFileSize).text(fluid.utils.filesizeStr(file.size));
+        $(newQueueRow).children(fragmentSelectors.qRowFileSize).text(fluid.utils.formatFileSize(file.size));
         // update the file id and add the hover action
         newQueueRow.attr('id', file.id).css('display','none').addClass("ready row").hover(function(){
             if ($(this).hasClass('ready') && !$(this).hasClass('uploading')) {
@@ -257,7 +257,7 @@ fluid = fluid || fluid_0_5;
      * Updates the total number of bytes in the UI
      */
     var updateTotalBytes = function(uploaderContainer, totalBytesSelector, status) {
-        $(totalBytesSelector, uploaderContainer).text(fluid.utils.filesizeStr(queuedBytes(status)));
+        $(totalBytesSelector, uploaderContainer).text(fluid.utils.formatFileSize(queuedBytes(status)));
     };
      
     /*
@@ -561,8 +561,8 @@ fluid = fluid || fluid_0_5;
                     var pauseStrings = {
                         curFileN: numFilesUploaded(uploaderContainer,fragmentSelectors.fileQueue), 
                         totalFilesN: numberOfRows(uploaderContainer,fragmentSelectors.fileQueue), 
-                        currBytes: fluid.utils.filesizeStr(status.currBytes), 
-                        totalBytes: fluid.utils.filesizeStr(status.totalBytes)
+                        currBytes: fluid.utils.formatFileSize(status.currBytes), 
+                        totalBytes: fluid.utils.formatFileSize(status.totalBytes)
                     };
                     var pausedString = fluid.utils.stringTemplate(strings.pausedLabel,pauseStrings);
                     $(fragmentSelectors.totalProgressText, uploaderContainer).html(pausedString);
@@ -666,7 +666,7 @@ fluid = fluid || fluid_0_5;
         var stats = swfObj.getStats();
         var newStrings = {
             curFileN: stats.successful_uploads,
-            totalCurrBytes: fluid.utils.filesizeStr(status.totalBytes)
+            totalCurrBytes: fluid.utils.formatFileSize(status.totalBytes)
         };
          
         $(fragmentSelectors.totalProgressText, uploaderContainer).html(fluid.utils.stringTemplate(strings.completedLabel,newStrings));
@@ -742,8 +742,8 @@ fluid = fluid || fluid_0_5;
         var newStrings = {
             curFileN: fileIndex, 
             totalFilesN: numRows, 
-            currBytes: fluid.utils.filesizeStr(bytes), 
-            totalBytes: fluid.utils.filesizeStr(totalBytes)
+            currBytes: fluid.utils.formatFileSize(bytes), 
+            totalBytes: fluid.utils.formatFileSize(totalBytes)
         };
         
         return fluid.utils.stringTemplate(strings.totalLabel, newStrings);
@@ -1209,6 +1209,33 @@ fluid = fluid || fluid_0_5;
     
     fluid.Progress.prototype.show = function() {
         this.progressContainer.fadeIn('slow');
+    };
+    
+    /*****************************
+     * Public Utility Functions. *
+     *****************************/
+    
+    fluid.utils = fluid.utils || {};
+    
+    /**
+     * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
+     * 
+     * @param {Number} bytes the files size, specified as in number bytes.
+     */
+    fluid.utils.formatFileSize = function (bytes) {
+        if (typeof bytes === "number") {
+            if (bytes === 0) {
+                return "0.0 KB";
+            } else if (bytes > 0) {
+                if (bytes < 1048576) {
+                    return (Math.ceil(bytes / 1024 * 10) / 10).toFixed(1) + " KB";
+                }
+                else {
+                    return (Math.ceil(bytes / 1048576 * 10) / 10).toFixed(1) + " MB";
+                }
+            }
+        }
+        return "";
     };
     
 })(jQuery, fluid_0_5);

@@ -48,40 +48,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                "1.prop2": "0.prop2"}, {}, [bit2, bit1], {}));  
           
         });
-
-        fluidJSTests.test("fileSizer", function () {      
-            
-            function testFileSize(testVal, expected) {
-                jqUnit.assertEquals("File size " + testVal + " bytes ", expected, fluid.utils.filesizeStr(testVal));
-            }
-            
-            testFileSize(0, "0.0 KB");
-            testFileSize(1, "0.1 KB");
-            testFileSize(10, "0.1 KB");
-            testFileSize(50, "0.1 KB");
-            testFileSize(100, "0.1 KB");
-            testFileSize(150, "0.2 KB");
-            testFileSize(200, "0.2 KB");
-            testFileSize(400, "0.4 KB");
-            testFileSize(600, "0.6 KB");
-            testFileSize(800, "0.8 KB");
-            testFileSize(900, "0.9 KB");
-            testFileSize(910, "0.9 KB");
-            testFileSize(950, "1.0 KB");
-            testFileSize(999, "1.0 KB");
-            testFileSize(1023, "1.0 KB");
-            testFileSize(1024, "1.0 KB");
-            testFileSize(1025, "1.1 KB");
-            testFileSize(10000, "9.8 KB");
-            testFileSize(100000, "97.7 KB");
-            testFileSize(1000000, "976.6 KB");
-            testFileSize(10000000, "9.6 MB");
-            testFileSize(100000000, "95.4 MB");
-            testFileSize(10000000000, "9536.8 MB");
-            testFileSize(-1024, "");
-            testFileSize("string", "");
-            
-        });
         
         fluidJSTests.test("stringTemplate: array of string values", function () {
             var template = "Paused at: %0 of %1 files (%2 of %3)";
