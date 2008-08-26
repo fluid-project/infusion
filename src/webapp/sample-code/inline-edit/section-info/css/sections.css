@@ -148,7 +148,7 @@ table.narrowTable tr th {
     margin-left: -15em;
     background-color: #FFF4D8;
     border: 2px solid #333;
-    padding: 0.4em 1em;
+    padding: 0.4em 1.3em 0.3em;
     -moz-border-radius: 1em;
     -webkit-border-radius: 1em;
     width: 30em;
@@ -156,7 +156,15 @@ table.narrowTable tr th {
 }
 
 #demo-message p {
-    font-size: 1.2em;
+    font-size: 1.3em;
+}
+
+#demo-message h2 {
+    font-size: 1.5em;
+}
+
+#demo-message input {
+    font-size: 100%;
 }
 
 .inlineEdit-invitation {
@@ -178,4 +186,10 @@ table.narrowTable tr th {
 
 .sectionName { 
     padding: 0.1em 0.4em 0.1em 0.2em;
+}
+
+#tooltip {
+    border: 1px solid #888;
+    padding: 0.2em 0.4em;
+    font-size: 1.2em;
 }
