@@ -6,6 +6,7 @@
         <link href="css/tool_base.css" type="text/css" rel="stylesheet" media="all" />
         <link href="css/sections.css" type="text/css" rel="stylesheet" media="all" />
         <link href="css/tool.css" type="text/css" rel="stylesheet" media="all" />
+        <link href="../../../fluid-components/css/jquery.tooltip.css" type="text/css" rel="stylesheet" media="all" />
         <script type="text/javascript" language="JavaScript" src="../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
         <script type="text/javascript" language="JavaScript" src="js/headscripts.js"></script>
         <script type="text/javascript" language="JavaScript" src="js/sections.js"></script>
@@ -14,14 +15,19 @@
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.tooltip.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/InlineEdit.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/Undo.js"></script>
         <script type="text/javascript">
             jQuery(document).ready(function(){
-            
+                
                 var sectionNameEdits = fluid.inlineEdits(".sectionTable", {
-                
-                    useTooltip: true
+                    useTooltip: true,
+                    selectOnEdit: true,
+                    componentDecorators: "fluid.undoDecorator",
+                    "fluid.undoDecorator": {
+                        renderer: myUndoRenderer
+                    }
                 });
-                
+            
                 $(".remove-btn").click(function(){
                     $(this).parents("tr").css("background-color", "#FFE59F").fadeOut("slow", function(){
                         $(this).remove();
@@ -49,6 +55,16 @@
             var hideMessage = function () {
                 $("#demo-overlay").hide();
                 return false;
+            };
+            
+            var myUndoRenderer = function (that, targetContainer) {
+                var markup = "<span class='fluid-undo'>" + 
+                  "<span class='undoContainer'><a href='#' class='undoControl'><img src='images/undo.png' alt='Undo your edit' title='Undo your edit' /></a></span>" + 
+                  "<span class='redoContainer'><a href='#' class='redoControl'><img src='images/redo.png' alt='Redo your edit' title='Redo your edit' /></a></span>" + 
+                "</span>";
+                var markupNode = $(markup);
+                targetContainer.prepend(markupNode);
+                return markupNode;
             };
         </script>
     </head>
@@ -115,7 +131,7 @@
                         <tr class="groupRow">
                             <td class="leftIndent">
                                 <div class="inlineEditable">
-                                    <span class="text">Astronomy 7A P 001 LEC</span>
+                                    <span class="text sectionName">Astronomy 7A P 001 LEC</span>
                                 </div>
                                 <div class="itemAction">
                                     <a href="#" class="dummy">Edit Details</a>
@@ -174,7 +190,7 @@
                         <tr class="groupRow">
                             <td class="leftIndent">
                                 <div class="inlineEditable">
-                                    <span class="text">Astronomy 7A S 102 LEC</span>
+                                    <span class="text sectionName">Astronomy 7A S 102 LEC</span>
                                 </div>
                                 <div class="itemAction">
                                     <a href="#" class="dummy">Edit Details</a>
@@ -221,7 +237,7 @@
                         <tr class="groupRow">
                             <td class="leftIndent">
                                 <div class="inlineEditable">
-                                    <span class="text">Astronomy 7A S 103 LEC</span>
+                                    <span class="text sectionName">Astronomy 7A S 103 LEC</span>
                                 </div>
                                 <div class="itemAction">
                                     <a href="#" class="dummy">Edit Details</a>
@@ -268,7 +284,7 @@
                         <tr class="groupRow">
                             <td class="leftIndent">
                                 <div class="inlineEditable">
-                                    <span class="text">Astronomy 7A S 104 LEC</span>
+                                    <span class="text sectionName">Astronomy 7A S 104 LEC</span>
                                 </div>
                                 <div class="itemAction">
                                     <a href="#" class="dummy">Edit Details</a>
@@ -315,7 +331,7 @@
                         <tr class="groupRow">
                             <td class="leftIndent">
                                 <div class="inlineEditable">
-                                    <span class="text">Astronomy 7A S 105 LEC</span>
+                                    <span class="text sectionName">Astronomy 7A S 105 LEC</span>
                                 </div>
                                 <div class="itemAction">
                                     <a href="#" class="dummy">Edit Details</a>

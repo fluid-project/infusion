@@ -164,9 +164,18 @@ table.narrowTable tr th {
     cursor:pointer;
 }
 
+/*
 .inlineEditable span {
     display: block;
     padding: 0.2em 0;
 }
+*/
 
+.undoContainer, .redoContainer {
+    display: inline;
+    float: right;
+}
 
+.sectionName { 
+    padding: 0.1em 0.4em 0.1em 0.2em;
+}
