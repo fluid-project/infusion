@@ -12,10 +12,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery*/
 /*global fluid*/
-/*global fluid_0_5*/
 
-fluid_0_5 = fluid_0_5 || {};
-fluid = fluid || fluid_0_5;
+fluid = fluid || {};
 
 (function (jQuery, fluid) {
     var createLayoutCustomizer = function (layout, perms, orderChangedCallbackUrl, userOptions) {
@@ -82,4 +80,4 @@ fluid = fluid || fluid_0_5;
         }
     });
         
-})(jQuery, fluid_0_5);
+})(jQuery, fluid);

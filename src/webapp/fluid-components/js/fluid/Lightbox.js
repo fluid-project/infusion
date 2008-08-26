@@ -12,10 +12,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery*/
 /*global fluid*/
-/*global fluid_0_5*/
 
-fluid_0_5 = fluid_0_5 || {};
-fluid = fluid || fluid_0_5;
+fluid = fluid || {};
 
 (function (jQuery, fluid) {
     var deriveLightboxCellBase, addThumbnailActivateHandler, createItemFinder, defaultOrderChangedCallback;
@@ -110,4 +108,4 @@ fluid = fluid || fluid_0_5;
         return fluid.reorderer(container, reordererOptions);
     };
         
-})(jQuery, fluid_0_5);
+})(jQuery, fluid);

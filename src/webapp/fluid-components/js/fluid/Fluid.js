@@ -13,8 +13,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery*/
 
-var fluid_0_5 = fluid_0_5 || {};
-var fluid = fluid_0_5;
+var fluid = fluid || {};
 
 (function (jQuery, fluid) {
     fluid.keys = {
@@ -644,4 +643,4 @@ var fluid = fluid_0_5;
         return test(element) ? element : jQuery.grep(jQuery(element).parents(), test)[0];
     };
     
-})(jQuery, fluid_0_5);
+})(jQuery, fluid);
