@@ -7,9 +7,12 @@ User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table
 This Release is a BETA
 ======================
 
-This is an early, BETA version of Fluid Infusion 0.5. The contents of this distribution are
-a snapshot of the Fluid code as of August 28, 2008. A number of tasks will be carried out between
-this BETA and the actual 0.5 release:
+This is an early, BETA version of Fluid Infusion 0.5, intended to give users a heads-up regarding
+changes that wil be happening in the 0.5 release. Our APIs will are changing significantly, to
+standardize and consolidate each component's "look and feel."
+
+The contents of this distribution are a snapshot of the Fluid code as of August 28, 2008.
+A number of tasks will be carried out between this BETA and the actual 0.5 release:
 
 * Blocker issues will be addressed (see Known Issues below).
   To monitor the status of bug resolutions, see the Fluid Issue Tracker, at
