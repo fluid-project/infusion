@@ -1,5 +1,5 @@
 
-Fluid Infusion 0.4beta1
+Fluid Infusion 0.5beta1
 ========================
 Main Project Site:  http://fluidproject.org
 User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
@@ -7,9 +7,9 @@ User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table
 This Release is a BETA
 ======================
 
-This is an early, BETA version of Fluid Infusion 0.4. The contents of this distribution are
-a snapshot of the Fluid code as of June 26, 2008. A number of tasks will be carried out between
-this BETA and the actual release:
+This is an early, BETA version of Fluid Infusion 0.5. The contents of this distribution are
+a snapshot of the Fluid code as of August 28, 2008. A number of tasks will be carried out between
+this BETA and the actual 0.5 release:
 
 * Blocker issues will be addressed (see Known Issues below).
   To monitor the status of bug resolutions, see the Fluid Issue Tracker, at
@@ -25,8 +25,8 @@ What's in this Release
 ======================
 
 This release is available in two forms:
-    fluid-0.4beta1.zip - deployment bundle
-    fluid-0.4beta1-src.zip - source code bundle
+    fluid-0.5beta1.zip - deployment bundle
+    fluid-0.5beta1-src.zip - source code bundle
     
 Both bundles have the following organization:
         fluid-components/
@@ -35,7 +35,7 @@ Both bundles have the following organization:
         LICENSE.txt
         README.txt
 
-The deployment bundle also includes a war file suitable for deployment: fluid-components-0.4beta1.war
+The deployment bundle also includes a war file suitable for deployment: fluid-components-0.5beta1.war
 
 Source Code
 -----------
@@ -101,7 +101,6 @@ The pages fall into a number of categories, including tutorials, API description
 and data-gathering approaches. To make the manual pages easy to locate, identify, and peruse,
 we have set up the following aids to navigation:
 
-    * Manual pages are all flagged with the tag manual for easy identification.
     * An organized table of contents is provided for the reader, with links to
       all manual pages, each with a brief description of the page contents.
     * A link to the table of contents appears at the top of the left-side wiki navigation
@@ -113,34 +112,27 @@ Supported Browsers
 ==================
 Firefox 2.x, 3.x: full support
 Internet Explorer 6.x, 7.x: full support
+Safari 3.1, Opera 9.5: support (except keyboard interaction)
 
 
 Known Issues
 ============
 
-The new Inline Edit and Pager components are very preliminary: Much of the functionality is
-not yet implemented.
+The new Pager component is very preliminary: Much of the functionality is
+not yet implemented. The Inline Edit component is in development. Some features are present, but
+more are planned.
 
 The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
 Some of the known issues in this release are described here:
 
-* Uploader: Using the sample Uploader from a local file system requires that you change some
-  Flash settings. See the file: sample-code/uploader/ReadMe.txt
+* Reorderer: Dragging an image offscreen or out of the frame has some unexpected
+             (non-fatal) results.
 
-* Uploader: There are number of client-side and server-side errors which are not communicated to
-  the user in a graceful way.
+* Reorderer: JAWS difficulty exiting Virual PC Cursor to navigate in Lightbox
 
-* Uploader: The current Java-based Uploader reference application sometimes throws an error if the
-  Uploader is resumed after pausing an upload.
+* Layout Customizer: Modules are required to have IDs
 
-* Uploader: Uploader code will not warn you if you have the wrong version of Flash installed, or no
-  version of Flash.
+* Layout Customizer: Nested reorderers may freeze on during drag and drop
 
-* Uploader: Keyboard handlers and ARIA support are preliminary.
-
-* Reorderer: Once focus is within the group of reorderable elements, shift-tab cannot
-  be used to move focus out again. Tabbing forward must be used.
-
-* Reorderer: Drag-and-drop avatar location: In some cases, the drag avatar is disconcertingly
-  far away from the cursor.
+* Uploader: After pausing, queue sometimes won't resume
 
