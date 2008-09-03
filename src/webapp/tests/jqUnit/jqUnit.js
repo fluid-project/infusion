@@ -69,6 +69,51 @@ var jqUnit = jqUnit || {};
     jqUnit.deepEqDiag = function(thing1, thing2) {
         return deepEqDiag(thing1, thing2);
     };
+    
+    /**
+     * Keeps track of the order of function invocations. The transcript contains information about
+     * each invocation, including its name and the arguments that were supplied to it.
+     */
+    jqUnit.invocationTracker = function (){
+        var that = {};
+        
+        /**
+         * An array containing an ordered list of details about each function invocation.
+         */
+        that.transcript = [];
+        
+        /**
+         * Called to listen for a function's invocation and record its details in the transcript.
+         * 
+         * @param {Object} fnName the function name to listen for
+         * @param {Object} onObject the object on which to invoke the method
+         */
+        that.intercept = function (fnName, onObject) {
+            onObject = onObject || window;
+            
+            var wrappedFn = onObject[fnName];
+            onObject[fnName] = function (){
+                that.transcript.push({
+                    name: fnName,
+                    args: arguments
+                });
+                wrappedFn.apply(onObject, arguments);
+            };
+        };
+        
+        /**
+         * Intercepts all the functions on the specified object.
+         * 
+         * @param {Object} obj
+         */
+        that.interceptAll = function (obj) {
+            for (fnName in obj) {
+                that.intercept(fnName, obj);
+            }
+        };
+        
+        return that;
+    };
 
 
     /***********************
