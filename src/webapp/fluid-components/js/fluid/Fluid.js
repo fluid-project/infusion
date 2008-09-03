@@ -293,6 +293,17 @@ var fluid = fluid || {};
         that.dom = fluid.createDomBinder(that.container, that.options.selectors);
         that.locate = that.dom.locate;      
     };
+   
+    /**
+     * Instantiates a new object by invoking the specified function name reflectively.
+     * The name should be a fully qualified path (a.k.a. "EL path expression").
+     * 
+     * @param {Object} name a fully-qualified creator function name, for example, "fluid.uploader"
+     * @param {Object} creatorArgs the arguments you want to pass to the creator function
+     */
+    fluid.createObjectForName = function (name, creatorArgs) {
+        return fluid.utils.invokeGlobalFunction(name, $.makeArray(creatorArgs));
+    };
     
     fluid.initDecorators = function (that) {
         var decorators = that.options.componentDecorators;
@@ -305,8 +316,33 @@ var fluid = fluid || {};
         }
         for (var i = 0; i < decorators.length; i += 1) {
             var decoratorName = decorators[i];
-            fluid.utils.invokeGlobalFunction(decoratorName, [that, that.options[decoratorName]]);
+            fluid.createObjectForName(decoratorName, [that, that.options[decoratorName]]);
         }
+    };
+    
+    /**
+     * Creates a new callback function that invokes the specified function, then
+     * calls a user-specified callback afterwards. 
+     * 
+     * This is a naive form of "after advice" in AOP jargon.
+     * 
+     * @param {Object} fn the function to call first
+     * @param {Object} callbackName the name of the callack method to call after fn has been invoked
+     * @param {Object} onObject the callback object in which the method lives
+     */
+    fluid.delegateAfter = function (fn, callbackName, onObject) {
+        return function () {
+            if (fn) {
+                fn.apply(null, arguments);    
+            }
+            
+            if (onObject) {
+                var callbackFn = onObject[callbackName];
+                if (callbackFn) {
+                    onObject[callbackName].apply(null, arguments);    
+                }
+            }
+        };
     };
     
     var fluid_guid = 1;
