@@ -112,6 +112,10 @@ var jqUnit = jqUnit || {};
             }
         };
         
+        that.clearTranscript = function () {
+            that.transcript = [];
+        };
+        
         return that;
     };
 
