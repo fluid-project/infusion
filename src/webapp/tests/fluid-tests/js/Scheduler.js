@@ -16,20 +16,20 @@ fluid.Scheduler = function () {
     return {
         initScheduler: function (containerId) {
             var movableFinder = fluid.Scheduler.createCSSOrderableFinderForClass ("movableTopic");
-            var jsonCallback = fluid.Scheduler.createJSONOrderChangedCallback (movableFinder);            
+            var jsonCallback = fluid.Scheduler.createJSONafterMoveCallback (movableFinder);            
             var container = fetchReordererContainer (containerId);
             var options = {
                 layoutHandlerName: "fluid.listLayoutHandler",
                 selectors: {
                     movables: movableFinder
                 },
-                orderChangedCallback: jsonCallback
+                afterMoveCallback: jsonCallback
               }
             
             return fluid.reorderer(container, options);
         },
 
-        createJSONOrderChangedCallback: function (orderableFinder, urlToPostJSON) {
+        createJSONafterMoveCallback: function (orderableFinder, urlToPostJSON) {
             return function () {
                 var orderMapJSONString = fluid.Scheduler.generateJSONStringForOrderables(orderableFinder());
 

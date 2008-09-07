@@ -18,7 +18,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 selectors: {
                     movables: "li"
                 },
-                orderChangedCallback: callbackConfirmer
+                afterMoveCallback: callbackConfirmer
             };
             var listReorderer = fluid.reorderList("#list1", options);
             var item2 = jQuery("#list1item2").focus();
@@ -30,12 +30,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             jqUnit.assertTrue("focus on item2", item2.hasClass ("orderable-selected"));
             jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass ("orderable-default"));
-            jqUnit.assertFalse("order hasn't change", orderChangedCallbackWasCalled);
+            jqUnit.assertFalse("order hasn't change", afterMoveCallbackWasCalled);
     
             listReorderer.handleDirectionKeyDown(downArrow);
             jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass ("orderable-default"));
             jqUnit.assertTrue("down arrow - item3 should be selected", item3.hasClass ("orderable-selected"));
-            jqUnit.assertFalse("order shouldn't change", orderChangedCallbackWasCalled);
+            jqUnit.assertFalse("order shouldn't change", afterMoveCallbackWasCalled);
     
             listReorderer.handleDirectionKeyDown(ctrlDownArrow);
     
@@ -46,7 +46,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5", "list1item3", items[3].id);
             jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5", "list1item5", items[4].id);
     
-            jqUnit.assertTrue("order should change", orderChangedCallbackWasCalled);
+            jqUnit.assertTrue("order should change", afterMoveCallbackWasCalled);
     
         });
         
@@ -55,7 +55,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 selectors: {
                     movables: "li"
                 },
-                orderChangedCallback: callbackConfirmer,
+                afterMoveCallback: callbackConfirmer,
                 styles: {
                     defaultStyle: "myDefault",
                     selected: "mySelected"
@@ -78,7 +78,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     selectables: "li", 
                     dropTargets: "li"
                 }, 
-                orderChangedCallback: callbackConfirmer 
+                afterMoveCallback: callbackConfirmer 
             };
     
             var listReorderer = fluid.reorderList("#list2", options);
@@ -98,12 +98,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
      */
     //        jqUnit.assertTrue("focus on item1 - item2 should be default", item2.hasClass ("orderable-default"));
             jqUnit.assertFalse("focus on item1 - item2 should not be selected", item2.hasClass ("orderable-selected"));
-            jqUnit.assertFalse("order hasn't change", orderChangedCallbackWasCalled);
+            jqUnit.assertFalse("order hasn't change", afterMoveCallbackWasCalled);
     
             listReorderer.handleDirectionKeyDown(downArrow);
             jqUnit.assertTrue("down arrow to item2 - item1 should be default", item1.hasClass ("orderable-default"));
             jqUnit.assertTrue("down arrow to item2 - item2 should be selected", item2.hasClass ("orderable-selected"));
-            jqUnit.assertFalse("order shouldn't change", orderChangedCallbackWasCalled);
+            jqUnit.assertFalse("order shouldn't change", afterMoveCallbackWasCalled);
             
             listReorderer.handleDirectionKeyDown(ctrlDownArrow);
             var items = jQuery("li", jQuery("#list2"));
@@ -111,12 +111,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("after ctrl-down on non-movable, expect order 1, 2, 3, 4", "list2item2", items[1].id);
             jqUnit.assertEquals("after ctrl-down on non-movable, expect order 1, 2, 3, 4", "list2item3", items[2].id);
             jqUnit.assertEquals("after ctrl-down on non-movable, expect order 1, 2, 3, 4", "list2item4", items[3].id);
-            jqUnit.assertFalse("after ctrl-down on non-movable, order shouldn't change", orderChangedCallbackWasCalled);
+            jqUnit.assertFalse("after ctrl-down on non-movable, order shouldn't change", afterMoveCallbackWasCalled);
     
             listReorderer.handleDirectionKeyDown(downArrow);
             jqUnit.assertTrue("down arrow to item3 - item2 should be default", item2.hasClass ("orderable-default"));
             jqUnit.assertTrue("down arrow to item3 - item3 should be selected", item3.hasClass ("orderable-selected"));
-            jqUnit.assertFalse("order shouldn't change", orderChangedCallbackWasCalled);
+            jqUnit.assertFalse("order shouldn't change", afterMoveCallbackWasCalled);
     
             listReorderer.handleDirectionKeyDown(ctrlDownArrow);
             items = jQuery("li", jQuery("#list2"));
@@ -130,7 +130,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
      */
     //        jqUnit.assertEquals("after ctrl-down on movable, expect order 1, 2, 4, 3", "list2item3", items[3].id);
             jqUnit.assertEquals("after ctrl-down on movable, expect order 1, 2, 4, 3", "list2item3", items[4].id);
-            jqUnit.assertTrue("after ctrl-down on movable, order should change", orderChangedCallbackWasCalled);
+            jqUnit.assertTrue("after ctrl-down on movable, order should change", afterMoveCallbackWasCalled);
     
         });
     });

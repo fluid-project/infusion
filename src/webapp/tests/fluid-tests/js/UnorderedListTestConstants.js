@@ -26,7 +26,7 @@ var lastItemId = "list1item5";
 var nonOrderabeItemId = "para1";       
 
 var listHandler1;
-var orderChangedCallbackWasCalled;
+var afterMoveCallbackWasCalled;
 var itemThatWasMoved;
 
 var findList1 = function () { 
@@ -40,13 +40,13 @@ var listMovableFinder = function() {
 };
 
 var callbackConfirmer = function(item){
-    orderChangedCallbackWasCalled = true;
+    afterMoveCallbackWasCalled = true;
     itemThatWasMoved = item;
 };
 
 var createListLayoutHandler = function  () {
     var options = {
-        orderChangedCallback: callbackConfirmer,
+        afterMoveCallback: callbackConfirmer,
         selectors: {
           movables: listMovableFinder,
           selectables: listMovableFinder
@@ -58,6 +58,6 @@ var createListLayoutHandler = function  () {
 
 // This setUp will be called before each of the tests that are included in unordered-list.html 
 function setUp() {
-    orderChangedCallbackWasCalled = false;
+    afterMoveCallbackWasCalled = false;
     listHandler1 = createListLayoutHandler();
 }

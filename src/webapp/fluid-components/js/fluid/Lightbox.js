@@ -16,7 +16,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid = fluid || {};
 
 (function (jQuery, fluid) {
-    var deriveLightboxCellBase, addThumbnailActivateHandler, createItemFinder, defaultOrderChangedCallback;
+    var deriveLightboxCellBase, addThumbnailActivateHandler, createItemFinder, defaultafterMoveCallback;
     
     deriveLightboxCellBase = function (namebase, index) {
         return namebase + "lightbox-cell:" + index + ":";
@@ -51,7 +51,7 @@ fluid = fluid || {};
      * 
      * @param {Element} lightboxContainer The DOM element containing the form that is POSTed back to the server upon order change 
      */
-    defaultOrderChangedCallback = function (lightboxContainer) {
+    defaultafterMoveCallback = function (lightboxContainer) {
         var reorderform = fluid.utils.findForm(lightboxContainer);
         
         return function () {
@@ -91,13 +91,13 @@ fluid = fluid || {};
         addThumbnailActivateHandler(container);
         
         containerEl = fluid.unwrap(container);
-        orderChangedFn = options.orderChangedCallback || defaultOrderChangedCallback(containerEl);
+        orderChangedFn = options.afterMoveCallback || defaultafterMoveCallback(containerEl);
         itemFinderFn = (options.selectors && options.selectors.movables) || createItemFinder(containerEl, containerEl.id);
 
         reordererOptions = {
             layoutHandlerName: "fluid.gridLayoutHandler",
             containerRole: fluid.roles.GRID,
-            orderChangedCallback: orderChangedFn,
+            afterMoveCallback: orderChangedFn,
             selectors: {
                 movables: itemFinderFn
             }

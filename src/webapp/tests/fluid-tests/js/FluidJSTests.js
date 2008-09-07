@@ -17,6 +17,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
+        fluid.utils.setLogging(true);
         var fluidJSTests = new jqUnit.TestCase("Fluid JS Tests");
 
         fluidJSTests.test("merge", function() {

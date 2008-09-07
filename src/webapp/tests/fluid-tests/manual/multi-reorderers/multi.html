@@ -13,7 +13,7 @@
     <script type="text/javascript" src="../../../../fluid-components/js/jquery/ui.droppable.js"></script>
     <script type="text/javascript" src="../../../../fluid-components/js/jquery/jARIA.js"></script>
     <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
-    <script type="text/javascript" src="../../../../fluid-components/js/fluid/DragManager.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/GeometricManager.js"></script>
     <script type="text/javascript" src="../../../../fluid-components/js/fluid/Reorderer.js"></script>
 
   </head>
@@ -39,27 +39,8 @@
     
     // If this was production code, this would be in a separate file but since this is a very simple manual test I'm leaving it here.    
     function init () {
-        var divContainer = jQuery("#div-reorderer");
-
-        // The orderable finder identifies the orderable element by their unique id prefix.
-        var divOrderableFinder = function () {
-            return jQuery ("[id^=div-item-]", divContainer);
-        };
-
-        var divLayoutHandler = new fluid.ListLayoutHandler (divOrderableFinder);
-
-        new fluid.Reorderer (divContainer, divOrderableFinder, divLayoutHandler);
-        
-        // init the list reorderer
-        var listContainer = jQuery("#list-reorderer");
-
-        var listOrderableFinder = function () {
-            return jQuery ("li", listContainer);
-        };
-
-        var listLayoutHandler = new fluid.ListLayoutHandler (listOrderableFinder);
-
-        new fluid.Reorderer (listContainer, listOrderableFinder, listLayoutHandler);
+        fluid.reorderList("#div-reorderer", "[id^=div-item-]");
+        fluid.reorderList("#list-reorderer", "li");
     }
     
     init();

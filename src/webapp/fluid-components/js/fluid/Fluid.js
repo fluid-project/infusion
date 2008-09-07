@@ -44,30 +44,6 @@ var fluid = fluid || {};
         REGIONS: { container: "main", item: "article" }
     };
     
-    fluid.orientation = {
-        HORIZONTAL: "horiz",
-        VERTICAL: "vert"
-    };
-    
-    /**
-     * This is the position, relative to a given drop target, that a dragged item should be dropped.
-     */
-    fluid.position = {
-        BEFORE: 0, 
-        AFTER: 1,
-        INSIDE: 2,
-        USE_LAST_KNOWN: 3,  // given configuration meaningless, use last known drop target
-        DISALLOWED: -1      // cannot drop in given configuration
-    };
-    
-    /**
-     * For incrementing/decrementing a count or index.
-     */
-    fluid.direction = {
-        NEXT: 1,
-        PREVIOUS: -1
-    };
-    
     fluid.defaultKeysets = [{
         modifier : function (evt) {
             return evt.ctrlKey;
@@ -92,7 +68,7 @@ var fluid = fluid || {};
     };
     
     fluid.unwrap = function (obj) {
-        return obj.jquery ? obj[0] : obj; // Unwrap the element if it's a jQuery.
+        return obj && obj.jquery && obj.length === 1 ? obj[0] : obj; // Unwrap the element if it's a jQuery.
     };
     
     /**
@@ -118,6 +94,42 @@ var fluid = fluid || {};
         return container;
     };
     
+    fluid.transform = function(list) {
+        var togo = [];
+        for (var i = 0; i < list.length; ++ i) {
+            var transit = list[i];
+            for (var j = 0; j < arguments.length - 1; ++ j) {
+                transit = arguments[j + 1](transit, i);
+            }
+            togo[togo.length] = transit;
+        }
+        return togo;
+    };
+    
+    fluid.find = function(list, fn, deflt) {
+       for (var i = 0; i < list.length; ++ i) {
+           var transit = fn(list[i], i);
+           if (transit !== null && transit !== undefined) return transit;
+       }
+       return deflt;
+    };
+    
+    fluid.accumulate = function(list, fn, arg) {
+       for (var i = 0; i < list.length; ++ i) {
+           var arg = fn(list[i], arg, i);
+       }
+       return arg;
+    };
+    
+    fluid.remove_if = function(list, fn) {
+        for (var i = 0; i < list.length; ++ i) {
+            if (fn(list[i], i)) {
+                list.splice(i, 1);
+            }
+        }
+        return list;
+    };
+    
     /**
      * Retreives and stores a component's default settings centrally.
      * 
@@ -135,9 +147,27 @@ var fluid = fluid || {};
         return defaultsStore[componentName];
     };
     
+    /** Dump a DOM element into a readily recognisable form for debugging - produces a
+     * "semi-selector" summarising its tag name, class and id, whichever are set.
+     * @param {jQueryable} element The element to be dumped
+     * @return A string representing the element.
+     */
     fluid.dumpEl = function (element) {
         if (!element) {
             return "null";
+        }
+        if (element.nodeType === 3 || element.nodeType === 8) {
+          return "[data: " + element.data + "]";
+        } 
+        if (element.length) {
+            var togo = "[";
+            for (var i = 0; i < element.length; ++ i) {
+                togo += fluid.dumpEl(element[i]);
+                if (i < element.length - 1) {
+                    togo += ", ";
+                }
+          }
+          return togo + "]";
         }
         element = jQuery(element);
         var togo = element.get(0).tagName;
@@ -179,10 +209,17 @@ var fluid = fluid || {};
     
     fluid.iterateDom = function (node, acceptor) {
         var currentNode = {node: node, depth: 0};
+        var prevNode = node;
         while (currentNode.node !== null && currentNode.depth >= 0 && currentNode.depth < fluid.DOM_BAIL_DEPTH) {
-            if (currentNode.nodeType === 1) {
-                acceptor(currentNode.node, currentNode.depth);
+            var deleted = false;
+            if (currentNode.node.nodeType === 1) {
+                deleted = acceptor(currentNode.node, currentNode.depth);
             }
+            if (deleted) {
+               currentNode.node.parentNode.removeChild(currentNode.node);
+               currentNode.node = prevNode;
+            }
+            prevNode = currentNode.node;
             currentNode = getNextNode(currentNode);
         }
     };
@@ -233,18 +270,19 @@ var fluid = fluid || {};
         that.clear = function () {
             cache = {};
         };
-        that.refresh = function (names, localContainer) {
-            if (typeof names === "string") {
-                names = [names];
-            }
-            if (! (localContainer instanceof Array)) {
-                localContainer = [localContainer];
-            }
-            for (var i = 0; i < names.length; ++ i) {
-                for (var j = 0; j < localContainer.length; ++ j) {
-                    that.locate(names[i], localContainer[j]);
-                }
-            }
+        that.refresh = function(names, localContainer) {
+           var thisContainer = localContainer? localContainer: container;
+           if (typeof names === "string") {
+               names = [names];
+           }
+           if (thisContainer.length === undefined) {
+               thisContainer = [thisContainer];
+           }
+           for (var i = 0; i < names.length; ++ i) {
+               for (var j = 0; j < thisContainer.length; ++ j) {
+                   that.locate(names[i], thisContainer[j]);
+               }
+           }
         };
         
         return that;
@@ -269,7 +307,72 @@ var fluid = fluid || {};
      * The central initialisation method called as the first act of every 
      * Fluid view. This function automatically merges user options with defaults
      * and attaches a DOM Binder to the instance.
-     * 
+     */
+    fluid.isContainer = function (container, containee) {
+        for(; containee; containee = containee.parentNode) {
+            if (container === containee) return true;
+        }
+        return false;
+    };
+    
+    /** Mockup of a missing DOM function **/  
+    fluid.insertAfter = function (newChild, refChild) {
+        var nextSib = refChild.nextSibling;
+        if (!nextSib) {
+            refChild.parentNode.appendChild(newChild);
+        }
+        else {
+            refChild.parentNode.insertBefore(newChild, nextSib);
+        }
+    };
+    // The following two functions taken from http://developer.mozilla.org/En/Whitespace_in_the_DOM
+    /**
+     * Determine whether a node's text content is entirely whitespace.
+     *
+     * @param node  A node implementing the |CharacterData| interface (i.e.,
+     *              a |Text|, |Comment|, or |CDATASection| node
+     * @return     True if all of the text content of |nod| is whitespace,
+     *             otherwise false.
+     */
+    fluid.isWhitespaceNode = function (node) {
+       // Use ECMA-262 Edition 3 String and RegExp features
+        return !(/[^\t\n\r ]/.test(node.data));
+    };
+
+
+    /** Cleanse the children of a DOM node by removing all <script> tags.
+     * This is necessary to prevent the possibility that these blocks are
+     * reevaluated if the node were reattached to the document. 
+     */
+    fluid.cleanseScripts = function (element) {
+        var cleansed = jQuery.data(element, fluid.cleanseScripts.MARKER);
+        if (!cleansed) {
+            fluid.iterateDom(element, function(node) {
+                return (node.tagName.toLowerCase() === "script");
+            });
+            jQuery.data(element, fluid.cleanseScripts.MARKER, true);
+        }
+    }
+
+    fluid.cleanseScripts.MARKER = "fluid-scripts-cleansed";
+
+    /**
+     * Determine if a node should be ignored by the iterator functions.
+     *
+     * @param nod  An object implementing the DOM1 |Node| interface.
+     * @return     true if the node is:
+     *                1) A |Text| node that is all whitespace
+     *                2) A |Comment| node
+     *             and otherwise false.
+     */
+
+    fluid.isIgnorableNode = function (node) {
+        return (node.nodeType == 8) || // A comment node
+         ( (node.nodeType == 3) && fluid.isWhitespaceNode(node) ); // a text node, all ws
+    };
+    
+    /** The central initialiation method called as the first act of every Fluid
+     * component.
      * @param {String} componentName The unique "name" of the component, which will be used
      * to fetch the default options from store. By recommendation, this should be the global
      * name of the component's creator function.
@@ -358,6 +461,7 @@ var fluid = fluid || {};
         var listeners = {};
         return {
             addListener: function (listener, namespace, exclusions) {
+                if (!listener) return;
                 if (!namespace) {
                     if (!listener.$$guid) {
                         listener.$$guid = fluid_guid += 1;
@@ -398,7 +502,6 @@ var fluid = fluid || {};
                     }
                     if (!excluded) {
                         try {
-                            log("Firing to listener " + i + " with arguments " + arguments);
                             lisrec.listener.apply(null, arguments);
                         }
                         catch (e) {
@@ -412,7 +515,6 @@ var fluid = fluid || {};
     };
     
     fluid.model = {};
-    
    
     /** Copy a source "model" onto a target **/
     fluid.model.copyModel = function copyModel(target, source) {
@@ -452,48 +554,26 @@ var fluid = fluid || {};
      */
     fluid.utils = {};
     
+    fluid.utils.findKey = function (hash, value) {
+        for (var key in hash) {
+            if (hash[key] === value) return key;
+        }
+        return null;
+    };
+    
     /** Returns the absolute position of a supplied DOM node in pixels.
      * Implementation taken from quirksmode http://www.quirksmode.org/js/findpos.html
      */
     fluid.utils.computeAbsolutePosition = function (element) {
         var curleft = 0, curtop = 0;
-	    if (element.offsetParent) {
-	        do {
-	            curleft += element.offsetLeft;
-	            curtop += element.offsetTop;
-	        } while (element = element.offsetParent);
-	        return [curleft, curtop];
-	    }
-	};
-    
-    fluid.utils.computeDomDepth = function (element) {
-        var depth = 0;
-        while (element) {
-            element = element.parentNode;
-            depth += 1;
+        if (element.offsetParent) {
+            do {
+                curleft += element.offsetLeft;
+                curtop += element.offsetTop;
+            } while (element = element.offsetParent);
+            return [curleft, curtop];
         }
-        return depth;
     };
-    
-    /**
-     * Useful for drag-and-drop during a drag:  is the mouse over the "before" half
-     * of the droppable?  In the case of a vertically oriented set of orderables,
-     * "before" means "above".  For a horizontally oriented set, "before" means
-     * "left of".
-     */
-    fluid.utils.mousePosition = function (droppableEl, orientation, x, y) {        
-        var mid;
-        var isBefore;
-        if (orientation === fluid.orientation.VERTICAL) {
-            mid = jQuery(droppableEl).offset().top + (droppableEl.offsetHeight / 2);
-            isBefore = y < mid;
-        } else {
-            mid = jQuery(droppableEl).offset().left + (droppableEl.offsetWidth / 2);
-            isBefore = x < mid;
-        }
-        
-        return (isBefore ? fluid.position.BEFORE : fluid.position.AFTER);
-    };  
     
     // Custom query method seeks all tags descended from a given root with a 
     // particular tag name, whose id matches a regex. The Dojo query parser
@@ -528,7 +608,7 @@ var fluid = fluid || {};
     /** 
      * Clears an object or array of its contents. For objects, each property is deleted.
      * 
-     * @param {Object|Array} target the thing to clear
+     * @param {Object|Array} target the target to be cleared
      */
     fluid.utils.clear = function (target) {
         if (target instanceof Array) {
@@ -571,10 +651,6 @@ var fluid = fluid || {};
         return target;    
     }
     
-    fluid.utils.permute = function () {
-      
-    };
-    
     fluid.utils.merge = function (policy, target) {
         var path = "";
         
@@ -605,14 +681,27 @@ var fluid = fluid || {};
      * Returns a jQuery object given the id of a DOM node
      */
     fluid.utils.jById = function (id) {
-        var el = jQuery("[id=" + id + "]");
-        if (el[0] && el[0].id === id) {
-            return el;        
-        }       
-        
-        return null;
+        var element = fluid.byId(id);
+        return element? jQuery(element) : null;
     };
-
+    
+    fluid.byId = function (id) {
+        var el = document.getElementById(id);
+        if (el) {
+            if (el.getAttribute("id") !== id) {
+                fluid.fail("Problem in document structure - picked up element " +
+                  fluid.dumpEl(el) + " for id " + id +  
+                  " without this id - most likely the element has a name which conflicts with this id");
+            }
+            return el;
+        }
+        else return null;
+    };
+    
+    fluid.getId = function (element) {
+        return fluid.unwrap(element).getAttribute("id");
+    };
+    
     var fluid_logging = false;
 
     fluid.utils.debug = function (str) {
