@@ -278,6 +278,7 @@ fluid = fluid || {};
                 
                 var dirnum = fluid.keycodeDirection[keydir];
                 var relativeItem = thatReorderer.layoutHandler.getRelativePosition(thatReorderer.activeItem, dirnum);
+                if (!relativeItem) continue;
                 if (keyset.modifier(evt)) {
                     if (kbDropWarning) {
                         kbDropWarning.hide();
@@ -292,7 +293,6 @@ fluid = fluid || {};
                 }
                 return false;
             }
-            
             return true;
         }
 
@@ -366,6 +366,8 @@ fluid = fluid || {};
                     item.removeClass(options.styles.mouseDrag);
                     item.addClass(options.styles.selected);
                     jQuery(thatReorderer.activeItem).ariaState("grab", "supported");
+                    //var markerNode = fluid.unwrap(dropMarker);
+                    //markerNode.parentNode.removeChild(markerNode);
                     dropMarker.hide();
                     ui.helper = null;
                     setDropEffects("none");
@@ -515,25 +517,14 @@ fluid = fluid || {};
         return simpleInit(container, "fluid.gridLayoutHandler", options); 
     };
     
-    fluid.reorderer.getSiblingInfo = function getSiblingInfo (item, orderables, /* NEXT, PREVIOUS */ direction) {
-        var index = jQuery(orderables).index(item) + direction;
-        if (index < 0) {
-            index += orderables.length;
-        }
-        index %= orderables.length;
-        return {element: orderables[index], position: fluid.direction.REPLACE};
-    }
-    
     fluid.reorderer.relativeInfoGetter = function(orientation, dropManager, dom) {
         return function(item, direction) {
             var dirorient = fluid.directionOrientation(direction);
             if (orientation === fluid.orientation.UNORIENTED || dirorient === orientation) {
-               var selectables = dropManager.getOwningSpan(item);
-               var folded = fluid.directionSign(direction);
-               return fluid.reorderer.getSiblingInfo(item, selectables, folded);
+            	 return dropManager.projectFrom(item, direction);
            }
            else {
-               return dropManager.projectFrom(item, direction);
+               return null;
            }
         };
     };
@@ -559,7 +550,7 @@ fluid = fluid || {};
         options.orientation = options.orientation || fluid.orientation.VERTICAL;
 
         that.getRelativePosition = 
-          fluid.reorderer.relativeInfoGetter(fluid.orientation.UNORIENTED, dropManager, dom);
+          fluid.reorderer.relativeInfoGetter(options.orientation, dropManager, dom);
         
         that.getGeometricInfo = geometricInfoGetter(options.orientation, dom);
         
@@ -579,7 +570,7 @@ fluid = fluid || {};
         options.orientation = options.orientation || fluid.orientation.HORIZONTAL;
 
         that.getRelativePosition = 
-           fluid.reorderer.relativeInfoGetter(options.orientation, dropManager, dom);
+           fluid.reorderer.relativeInfoGetter(fluid.orientation.UNORIENTED, dropManager, dom);
         
         that.getGeometricInfo = geometricInfoGetter(options.orientation, dom);
         
