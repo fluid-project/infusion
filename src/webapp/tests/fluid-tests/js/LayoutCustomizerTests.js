@@ -10,7 +10,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
  
 */
 
-/*global $*/
+/*global jQuery*/
 /*global fluid*/
 /*global demo*/
 /*global jqUnit*/
@@ -34,56 +34,56 @@ https://source.fluidproject.org/svn/LICENSE.txt
         layoutCustomizerTests.test("Drop warning visibility for up and down", function () {
             var reorderer = initReorderer();
     
-            jqUnit.notVisible ("On first load the warning should not be visible", "#drop-warning");
+            jqUnit.notVisible("On first load the warning should not be visible", "#drop-warning");
             
             // focus on portlet 3 - it is underneath a locked portlet
-            var portlet3 = fluid.utils.jById (portlet3id);
+            var portlet3 = fluid.utils.jById(portlet3id);
             portlet3.focus();
             
             // try to move portlet 3 up
             // Press the ctrl key
-            reorderer.handleKeyDown(fluid.testUtils.createEvtCTRL (portlet3[0]));
-            jqUnit.notVisible ("After ctrl down, the warning should not be visible", "#drop-warning");
+            reorderer.handleKeyDown(fluid.testUtils.createEvtCTRL(portlet3[0]));
+            jqUnit.notVisible("After ctrl down, the warning should not be visible", "#drop-warning");
             
             // Press the up arrow key while holding down ctrl
             var ctrlUpArrowEvt = fluid.testUtils.createEvtCtrlUpArrow();
             reorderer.handleDirectionKeyDown(ctrlUpArrowEvt);
-            jqUnit.isVisible ("After ctrl + up arrow, drop warning should be visible", "#drop-warning"); 
+            jqUnit.isVisible("After ctrl + up arrow, drop warning should be visible", "#drop-warning"); 
     
             // release the ctrl key
             var ctrlUpEvt = fluid.testUtils.createEvtCTRLUp(portlet3[0]);
             reorderer.handleKeyUp(ctrlUpEvt);
-            jqUnit.notVisible ("After ctrl is released, drop warning should not be visible", "#drop-warning"); 
+            jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning"); 
     
             // Press the up arrow key while holding down ctrl again
             reorderer.handleDirectionKeyDown(ctrlUpArrowEvt);
-            jqUnit.isVisible ("After ctrl + up arrow, drop warning should be visible", "#drop-warning"); 
+            jqUnit.isVisible("After ctrl + up arrow, drop warning should be visible", "#drop-warning"); 
     
             // Press the down arrow key while holding down ctrl
             var ctrlDownArrowEvt = fluid.testUtils.createEvtCtrlDownArrow();
             reorderer.handleDirectionKeyDown(ctrlDownArrowEvt);
-            jqUnit.notVisible ("After ctrl + down arrow, drop warning should NOT be visible", "#drop-warning"); 
+            jqUnit.notVisible("After ctrl + down arrow, drop warning should NOT be visible", "#drop-warning"); 
     
             // focus on portlet 8 
-            var portlet8 = fluid.utils.jById (portlet8id);
+            var portlet8 = fluid.utils.jById(portlet8id);
             portlet8.focus();
     
             // move portlet 8 down
             // Press the ctrl key
-            reorderer.handleKeyDown(fluid.testUtils.createEvtCTRL (portlet8[0]));
-            jqUnit.notVisible ("After ctrl down, the warning should not be visible", "#drop-warning");
+            reorderer.handleKeyDown(fluid.testUtils.createEvtCTRL(portlet8[0]));
+            jqUnit.notVisible("After ctrl down, the warning should not be visible", "#drop-warning");
     
             reorderer.handleDirectionKeyDown(ctrlDownArrowEvt);
-            jqUnit.notVisible ("After moving portlet 8 down, drop warning should not be visible", "#drop-warning"); 
+            jqUnit.notVisible("After moving portlet 8 down, drop warning should not be visible", "#drop-warning"); 
     
             // try to move portlet 8 down from the bottom position.
             reorderer.handleDirectionKeyDown(ctrlDownArrowEvt);
-            jqUnit.notVisible ("After trying to move portlet 8 down, drop warning should not be visible", "#drop-warning"); 
+            jqUnit.notVisible("After trying to move portlet 8 down, drop warning should not be visible", "#drop-warning"); 
     
             // release the ctrl key
             ctrlUpEvt = fluid.testUtils.createEvtCTRLUp(portlet8[0]);
             reorderer.handleKeyUp(ctrlUpEvt);
-            jqUnit.notVisible ("After ctrl is released, drop warning should not be visible", "#drop-warning"); 
+            jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning"); 
     
         });
     

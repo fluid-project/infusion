@@ -14,6 +14,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
  * testing with the data in the portlets.html file.
  */
  
+/*global jQuery*/
+/*global fluid*/
+/*global demo*/
+ 
 var portalRootId = "portlet-reorderer-root";
 
 var portlet1id = "portlet1";
@@ -55,7 +59,7 @@ function setUp() {
         layout: layoutClone,
         permissions: demo.portal.dropTargetPerms 
       }
-    } 
+    }; 
 
     
     portletHandler = fluid.moduleLayoutHandler (null, options);

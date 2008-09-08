@@ -138,6 +138,8 @@ fluid.moduleLayout = fluid.moduleLayout || {};
      * - Wrapping is not necessary at this first pass, but is ok
      */
     fluid.moduleLayoutHandler = function (container, options, dropManager, dom) {
+        options.selectors = options.selectors || {};
+        
         var that = {};
         that.options = options || {};
         that.options.orientation = that.options.orientation || fluid.orientation.VERTICAL;
