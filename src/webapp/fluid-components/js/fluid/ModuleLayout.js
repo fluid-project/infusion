@@ -177,7 +177,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         var willShowKBDropWarning = options.willShowKBDropWarning || defaultWillShowKBDropWarning;
 
         that.getRelativePosition  = 
-           fluid.reorderer.relativeInfoGetter(that.options.orientation, dropManager, dom);
+           fluid.reorderer.relativeInfoGetter(fluid.orientation.UNORIENTED, dropManager, dom);
         
         that.getGeometricInfo = function () {
             var togo = [];
