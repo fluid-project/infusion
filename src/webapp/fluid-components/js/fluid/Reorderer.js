@@ -48,10 +48,10 @@ fluid = fluid || {};
             var avatarContainer = jQuery(document.createElement("div"));
             avatarContainer.append(avatar);
             avatarContainer.append(dropWarning);
-            return avatarContainer;
-        } else {
-            return avatar;
+            avatar = avatarContainer;
         }
+        jQuery("body").append(avatar);
+        return avatar;
     };   
     
     fluid.defaults("fluid.reorderer", {
@@ -277,14 +277,16 @@ fluid = fluid || {};
                 if (!keydir) {
                     continue;
                 }
+                var isMovement = keyset.modifier(evt);
                 
                 var dirnum = fluid.keycodeDirection[keydir];
-                var relativeItem = thatReorderer.layoutHandler.getRelativePosition(thatReorderer.activeItem, dirnum);
+                var relativeItem = thatReorderer.layoutHandler.getRelativePosition(thatReorderer.activeItem, 
+                        dirnum, !isMovement);
                 if (!relativeItem) {
                     continue;
                 }
                 
-                if (keyset.modifier(evt)) {
+                if (isMovement) {
                     if (kbDropWarning) {
                         kbDropWarning.hide();
                     }
@@ -525,10 +527,10 @@ fluid = fluid || {};
     };
     
     fluid.reorderer.relativeInfoGetter = function(orientation, dropManager, dom) {
-        return function(item, direction) {
+        return function(item, direction, includeLocked) {
             var dirorient = fluid.directionOrientation(direction);
             if (orientation === fluid.orientation.UNORIENTED || dirorient === orientation) {
-            	 return dropManager.projectFrom(item, direction);
+            	 return dropManager.projectFrom(item, direction, includeLocked);
            }
            else {
                return null;

@@ -374,10 +374,10 @@ var fluid = fluid || {};
             };
         };
         
-        that.projectFrom = function(element, direction) {
+        that.projectFrom = function(element, direction, includeLocked) {
             that.updateGeometry(lastGeometry);
             var cacheelem = cache[cacheKey(element)];
-            var projected = fluid.geom.projectFrom(cacheelem.rect, direction, targets);
+            var projected = fluid.geom.projectFrom(cacheelem.rect, direction, targets, includeLocked);
             var retpos = projected.cacheelem.position;
             return {element: projected.cacheelem.element[0], 
                      position: retpos? retpos : fluid.position.BEFORE 
@@ -440,7 +440,7 @@ var fluid = fluid || {};
      * for which the member <code>rect</code> is the holder of the rectangle to be tested.
      * @return The cache element which is the most appropriate for the requested motion.
      */
-    fluid.geom.projectFrom = function (baserect, direction, targets) {
+    fluid.geom.projectFrom = function (baserect, direction, targets, includeLocked) {
         var axis = fluid.directionAxis(direction);
         var frontSide = fluid.rectSides[direction];
         var backSide = fluid.rectSides[axis * 15 + 5 - direction];
@@ -477,20 +477,22 @@ var fluid = fluid || {};
             if (elem.clazz === "hidden") {
                 continue;
             }
-            else if (elem.clazz === "locked") {
+            else if (elem.clazz === "locked" && !includeLocked) {
                 accPen(lockedcollect, elem, 1);
             }
             else {
                 accPen(collect, elem, 1);
                 accPen(backcollect, elem, -1);
             }
-//            fluid.log("Element " + i + " " + dumpelem(elem) + " mindist " + collect.mindist);
+            // fluid.log("Element " + i + " " + dumpelem(elem) + " mindist " + collect.mindist);
         }
+        var wrap = !collect.minelem || backcollect.mindist < collect.mindist;
+        var minelem = wrap? backcollect.minelem: collect.minelem;
         var togo = {
-            wrapped: !collect.minelem,
-            cacheelem: collect.minelem? collect.minelem : backcollect.minelem
+            wrapped: wrap,
+            cacheelem: minelem
         };
-        if (lockedcollect.mindist < collect.mindist) {
+        if (lockedcollect.mindist < minelem.mindist) {
             togo.lockedelem = lockedcollect.minelem;
         }
         return togo;
