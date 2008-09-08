@@ -316,7 +316,7 @@ fluid = fluid || {};
 
         thatReorderer.requestMovement = function(requestedPosition, item) {
         	  // Temporary censoring to get around ModuleLayout inability to update relative to self.
-            if (fluid.unwrap(requestedPosition.element) === fluid.unwrap(item)) {
+            if (!requestedPosition || fluid.unwrap(requestedPosition.element) === fluid.unwrap(item)) {
                 return;
             }
             thatReorderer.events.onMove.fireEvent(item, requestedPosition);
@@ -377,7 +377,9 @@ fluid = fluid || {};
                     item.addClass(options.styles.selected);
                     jQuery(thatReorderer.activeItem).ariaState("grab", "supported");
                     var markerNode = fluid.unwrap(dropMarker);
-                    markerNode.parentNode.removeChild(markerNode);
+                    if (markerNode.parentNode) {
+                        markerNode.parentNode.removeChild(markerNode);
+                    }
                     ui.helper = null;
                     setDropEffects("none");
                     dropManager.endDrag();
