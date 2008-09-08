@@ -172,6 +172,16 @@ var fluid = fluid || {};
         }
 
     };
+  
+    var curCss = function(a, name) {
+        return window.getComputedStyle? window.getComputedStyle(a, null).getPropertyValue(name) : 
+          a.currentStyle[name];
+    };
+    
+    var fastHidden = function(a) {
+    	  return "hidden"==a.type || curCss(a,"display") === "none" || 
+    	    curCss(a,"visibility") === "hidden";
+    	    };
     
 
     var computeGeometry = function(element, orientation, disposition) {
@@ -181,17 +191,18 @@ var fluid = fluid || {};
         if (disposition === fluid.position.INSIDE) {
             elem.position = disposition;
         }
+        var el = fluid.unwrap(element);
         // These measurements taken from ui.droppable.js
         elem.visible = element.is(":visible");
-        if (!elem.visible) {
+        if (fastHidden(el)) {
             elem.clazz = "hidden";
         }
-        var offset = element.offset();
-        var width = element.outerWidth();
-        var height = element.outerHeight();
-        elem.rect = offset;
-        elem.rect.right = offset.left + width;
-        elem.rect.bottom = offset.top + height;
+        var pos = fluid.utils.computeAbsolutePosition(el) || [0, 0];
+        var width = el.offsetWidth;
+        var height = el.offsetHeight;
+        elem.rect = {left: pos[0], top: pos[1]};
+        elem.rect.right = pos[0] + width;
+        elem.rect.bottom = pos[1] + height;
         return elem;
     };
     

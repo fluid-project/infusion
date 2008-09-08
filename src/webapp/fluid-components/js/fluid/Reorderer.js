@@ -308,7 +308,10 @@ fluid = fluid || {};
         fluid.utils.setLogging(true);
 
         thatReorderer.requestMovement = function(requestedPosition, item) {
-            if (fluid.unwrap(requestedPosition.element) === fluid.unwrap(item)) return;
+        	  // Temporary censoring to get around ModuleLayout inability to update relative to self.
+            if (fluid.unwrap(requestedPosition.element) === fluid.unwrap(item)) {
+                return;
+            }
             thatReorderer.events.onMove.fireEvent(item, requestedPosition);
             dropManager.geometricMove(item, requestedPosition.element, requestedPosition.position);
             thatReorderer.refresh();
@@ -398,12 +401,12 @@ fluid = fluid || {};
    
         var initSelectables = function () {
             var handleBlur = function (evt) {
-                changeSelectedToDefault (jQuery(this), options.styles);
+                changeSelectedToDefault(jQuery(this), options.styles);
                 return evt.stopPropagation();
             };
         
             var handleFocus = function (evt) {
-                selectItem (this);
+                selectItem(this);
                 return evt.stopPropagation();
             };
             
