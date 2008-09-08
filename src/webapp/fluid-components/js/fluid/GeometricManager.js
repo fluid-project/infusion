@@ -193,15 +193,12 @@ var fluid = fluid || {};
         if (disposition === fluid.position.INSIDE) {
             elem.position = disposition;
         }
-        var el = fluid.unwrap(element);
-        // These measurements taken from ui.droppable.js
-        elem.visible = element.is(":visible");
-        if (fastHidden(el)) {
+        if (fastHidden(element)) {
             elem.clazz = "hidden";
         }
-        var pos = fluid.utils.computeAbsolutePosition(el) || [0, 0];
-        var width = el.offsetWidth;
-        var height = el.offsetHeight;
+        var pos = fluid.utils.computeAbsolutePosition(element) || [0, 0];
+        var width = element.offsetWidth;
+        var height = element.offsetHeight;
         elem.rect = {left: pos[0], top: pos[1]};
         elem.rect.right = pos[0] + width;
         elem.rect.bottom = pos[1] + height;
@@ -213,10 +210,12 @@ var fluid = fluid || {};
 
 
     function dumpelem(cacheelem) {
-      return "Rect top: " + cacheelem.rect.top +
+      if (!cacheelem || !cacheelem.rect) return "null";
+      else return "Rect top: " + cacheelem.rect.top +
                  " left: " + cacheelem.rect.left + 
                " bottom: " + cacheelem.rect.bottom +
-                " right: " + cacheelem.rect.right + " for " + fluid.dumpEl(cacheelem.element);
+                " right: " + cacheelem.rect.right + " position: " +
+                cacheelem.position + " for " + fluid.dumpEl(cacheelem.element);
     }
     
     fluid.dropManager = function () {
@@ -243,12 +242,36 @@ var fluid = fluid || {};
             targets[targets.length] = elemCopy;
         }
         
+        function splitElement(targets, sides, cacheelem, disposition, clazz1, clazz2) {
+            var elem1 = jQuery.extend(true, {}, cacheelem);
+            var elem2 = jQuery.extend(true, {}, cacheelem);
+            var midpoint = (elem1.rect[sides[0]] + elem1.rect[sides[1]]) / 2;
+            elem1.rect[sides[1]] = midpoint; elem1.position = fluid.position.BEFORE;
+            elem2.rect[sides[0]] = midpoint; elem2.position = fluid.position.AFTER;
+            elem1.clazz = clazz1;
+            elem2.clazz = clazz2;
+            targets[targets.length] = elem1;
+            targets[targets.length] = elem2;
+        }
+       
+        // Expand this configuration point if we ever go back to a full "permissions" model
+        function getRelativeClass(thisElements, index, relative, thisclazz, mapper) {
+           index += relative;
+           if (index < 0 && thisclazz === "locked") return "locked";
+           if (index >= thisElements.length || mapper == null) return null;
+           else {
+             var relative = thisElements[index];
+             return mapper(relative) == "locked" && thisclazz == "locked"? "locked" : null;
+           }
+        }
+        
         var lastGeometry;
         
         that.updateGeometry = function(geometricInfo) {
             lastGeometry = geometricInfo;
             targets = [];
             cache = {};
+            var mapper = geometricInfo.elementMapper;
             for (var i = 0; i < geometricInfo.length; ++ i) {
                 var thisInfo = geometricInfo[i];
                 var orientation = thisInfo.orientation;
@@ -259,14 +282,22 @@ var fluid = fluid || {};
                 }
                 var sides = fluid.rectSides[orientation];
                 for (var j = 0; j < thisInfo.elements.length; ++ j) {
-                    var element = jQuery(thisInfo.elements[j]);
+                    var element = thisInfo.elements[j];
                     var cacheelem = computeGeometry(element, orientation, disposition);
                     cacheelem.owner = thisInfo;
-                    if (cacheelem.clazz !== "hidden" && geometricInfo.elementMapper) {
-                        cacheelem.clazz = geometricInfo.elementMapper(thisInfo.elements[j]);
+                    if (cacheelem.clazz !== "hidden" && mapper) {
+                        cacheelem.clazz = mapper(thisInfo.elements[j]);
                     }
-                    targets[targets.length] = cacheelem;
-                    cache[element.data("")] = cacheelem;
+                    cache[jQuery.data(element)] = cacheelem;
+                    if (disposition === fluid.position.INSIDE) {
+                        targets[targets.length] = cacheelem;
+                    }
+                    else {
+                        splitElement(targets, sides, cacheelem, disposition, 
+                          getRelativeClass(thisInfo.elements, j, fluid.position.BEFORE, cacheelem.clazz, mapper),
+                          getRelativeClass(thisInfo.elements, j, fluid.position.AFTER, cacheelem.clazz, mapper)
+                          );
+                    }
                     // deal with sentinel blocks by creating near-copies of the end elements
                     if (j === 0) {
                         sentinelizeElement(targets, sides, cacheelem, 1, disposition);
@@ -342,25 +373,13 @@ var fluid = fluid || {};
             if (!minelem) {
                 return minelem;
             }
-            
-            var position = minelem.position;
-            if (!position) {
-                if (minelem.orientation === fluid.orientation.HORIZONTAL) {
-                    position = x < (minelem.rect.left + minelem.rect.right) / 2?
-                        fluid.position.BEFORE : fluid.position.AFTER;
-                }
-                else if (minelem.orientation === fluid.orientation.VERTICAL) {
-                    position = y < (minelem.rect.top + minelem.rect.bottom) / 2?
-                        fluid.position.BEFORE : fluid.position.AFTER;
-                }
-            }
             if (minlockeddistance >= mindistance) {
                 minlockedelem = blankHolder;
             }
-//            fluid.log("PRE: mindistance " + mindistance + " element " + 
-//                fluid.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
-//                + fluid.dumpEl(minlockedelem.element));
-            if (lastClosest && lastClosest.position === position &&
+            //fluid.log("PRE: mindistance " + mindistance + " element " + 
+            //    fluid.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
+            //    + " locked elem " + dumpelem(minlockedelem));
+            if (lastClosest && lastClosest.position === minelem.position &&
                 fluid.unwrap(lastClosest.element) === fluid.unwrap(minelem.element) &&
                 fluid.unwrap(lastClosest.lockedelem) === fluid.unwrap(minlockedelem.element)
                 ) {
@@ -368,7 +387,7 @@ var fluid = fluid || {};
             }
             //fluid.log("mindistance " + mindistance + " minlockeddistance " + minlockeddistance);
             return {
-                position: position,
+                position: minelem.position,
                 element: minelem.element,
                 lockedelem: minlockedelem.element
             };
