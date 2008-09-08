@@ -398,7 +398,7 @@ var fluid = fluid || {};
             var cacheelem = cache[cacheKey(element)];
             var projected = fluid.geom.projectFrom(cacheelem.rect, direction, targets, includeLocked);
             var retpos = projected.cacheelem.position;
-            return {element: projected.cacheelem.element[0], 
+            return {element: projected.cacheelem.element, 
                      position: retpos? retpos : fluid.position.BEFORE 
                      //(projected.wrapped? fluid.position.AFTER : fluid.position.BEFORE)
                      };
