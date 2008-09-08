@@ -70,7 +70,7 @@ var fluid = fluid || {};
     
     fluid.directionOrientation = function(direction) {
         return fluid.directionAxis(direction)? fluid.orientation.VERTICAL : fluid.orientation.HORIZONTAL;
-        }  
+    };
     
     fluid.keycodeDirection = {
         up: fluid.direction.UP,
@@ -79,17 +79,18 @@ var fluid = fluid || {};
         right: fluid.direction.RIGHT
     };
     
-    
     // moves a single node in the DOM to a new position relative to another
     fluid.moveDom = function(source, target, position) {
         source = fluid.unwrap(source);
         target = fluid.unwrap(target);
+        
+        var scan;
         // fluid.log("moveDom source " + fluid.dumpEl(source) + " target " + fluid.dumpEl(target) + " position " + position);     
         if (position === fluid.position.INSIDE) {
             target.appendChild(source);
         }
         else if (position === fluid.position.BEFORE) {
-           for (var scan = target.previousSibling; ; scan = scan.previousSibling) {
+           for (scan = target.previousSibling; ; scan = scan.previousSibling) {
                if (!scan || !fluid.isIgnorableNode(scan)) {
                    if (scan !== source) {
                        fluid.cleanseScripts(source);
@@ -100,13 +101,13 @@ var fluid = fluid || {};
            }
         }
         else if (position === fluid.position.AFTER) {
-            for (var scan = target.nextSibling; ; scan = scan.nextSibling) {
+            for (scan = target.nextSibling; ; scan = scan.nextSibling) {
                 if (!scan || !fluid.isIgnorableNode(scan)) {
                     if (scan !== source) {
                         fluid.cleanseScripts(source);
                         fluid.insertAfter(source, target);
                     }
-                break;
+                    break;
                 }
             }
         }
@@ -148,8 +149,9 @@ var fluid = fluid || {};
         
         // perform the leftward-moving, AFTER shift
         var frontlimit = samespan? targeti - 1: sourceelements.length - 2;
+        var i;
         if (!samespan || targeti > sourcei) {
-            for (var i = frontlimit; i > sourcei; -- i) {
+            for (i = frontlimit; i > sourcei; -- i) {
                 fluid.moveDom(sourceelements[i + 1], sourceelements[i], fluid.position.AFTER);
             }
             if (sourcei + 1 < sourceelements.length) {
@@ -163,7 +165,7 @@ var fluid = fluid || {};
            targeti++;
         }
         if (!samespan || targeti < sourcei) {
-            for (var i = targeti; i < backlimit; ++ i) {
+            for (i = targeti; i < backlimit; ++ i) {
                 fluid.moveDom(targetelements[i], targetelements[i + 1], fluid.position.BEFORE);
             }
             if (backlimit >=0 && backlimit < targetelements.length - 1) {
@@ -284,7 +286,7 @@ var fluid = fluid || {};
         
         that.lastPosition = function() {
             return lastClosest;
-        }
+        };
         
         that.endDrag = function() {
             jQuery("").unbind("mousemove.fluid-dropManager");
@@ -336,7 +338,10 @@ var fluid = fluid || {};
                     }
                 }
             }
-            if (!minelem) return minelem;
+            if (!minelem) {
+                return minelem;
+            }
+            
             var position = minelem.position;
             if (!position) {
                 if (minelem.orientation === fluid.orientation.HORIZONTAL) {
@@ -380,7 +385,7 @@ var fluid = fluid || {};
         
         that.getOwningSpan = function(element) {
             return cache[cacheKey(element)].owner.elements;
-        }
+        };
         
         that.geometricMove = function(element, target, position) {
            var sourceElements = that.getOwningSpan(element);
@@ -415,14 +420,14 @@ var fluid = fluid || {};
         var dy = rect1.bottom < rect2.top? rect2.top - rect1.bottom : 
                  rect2.bottom < rect1.top? rect1.top - rect2.bottom :0;
         return dx * dx + dy * dy;
-    }
+    };
     
-    function makePenCollect() {
+    var makePenCollect = function () {
         return {
             mindist: Number.MAX_VALUE,
             minrdist: Number.MAX_VALUE
-        }
-    }
+        };
+    };
 
     /** Determine the one amongst a set of rectangle targets which is the "best fit"
      * for an axial motion from a "base rectangle" (commonly arising from the case
@@ -452,7 +457,9 @@ var fluid = fluid || {};
             var rdist = -dirSign * backSign * (baserect[backSign === 1? frontSide:backSide] 
                                              - thisrect[backSign === 1? backSide:frontSide]);
             if (pdist <= collect.mindist && rdist > 0) {
-                if (pdist == collect.mindist && rdist*backSign > collect.minrdist) return;
+                if (pdist == collect.mindist && rdist * backSign > collect.minrdist) {
+                    return;
+                }
                 collect.minrdist = rdist*backSign;
                 collect.mindist = pdist;
                 collect.minelem = cacheelem;
@@ -483,6 +490,5 @@ var fluid = fluid || {};
             togo.lockedelem = lockedcollect.minelem;
         }
         return togo;
-    }
-  
+    };
 }) (jQuery, fluid);

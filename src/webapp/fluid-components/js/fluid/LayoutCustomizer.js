@@ -21,7 +21,7 @@ fluid = fluid || {};
             moduleLayout: {
                 permissions: perms,
                 layout: layout
-          },
+          }
         };
         var options = jQuery.extend(true, assembleOptions, userOptions);
         return fluid.reorderer(container, options);
@@ -45,7 +45,7 @@ fluid = fluid || {};
      */
     fluid.reorderLayout = function (container, userOptions) {
         var assembleOptions = {
-            layoutHandlerName: "fluid.moduleLayoutHandler",
+            layoutHandlerName: "fluid.moduleLayoutHandler"
         };
         var options = jQuery.extend(true, assembleOptions, userOptions);
         return fluid.reorderer(container, options);

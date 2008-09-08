@@ -109,14 +109,16 @@ var fluid = fluid || {};
     fluid.find = function(list, fn, deflt) {
        for (var i = 0; i < list.length; ++ i) {
            var transit = fn(list[i], i);
-           if (transit !== null && transit !== undefined) return transit;
+           if (transit !== null && transit !== undefined) {
+               return transit;
+           }
        }
        return deflt;
     };
     
     fluid.accumulate = function(list, fn, arg) {
        for (var i = 0; i < list.length; ++ i) {
-           var arg = fn(list[i], arg, i);
+           arg = fn(list[i], arg, i);
        }
        return arg;
     };
@@ -153,6 +155,8 @@ var fluid = fluid || {};
      * @return A string representing the element.
      */
     fluid.dumpEl = function (element) {
+        var togo;
+        
         if (!element) {
             return "null";
         }
@@ -160,7 +164,7 @@ var fluid = fluid || {};
           return "[data: " + element.data + "]";
         } 
         if (element.length) {
-            var togo = "[";
+            togo = "[";
             for (var i = 0; i < element.length; ++ i) {
                 togo += fluid.dumpEl(element[i]);
                 if (i < element.length - 1) {
@@ -170,7 +174,7 @@ var fluid = fluid || {};
           return togo + "]";
         }
         element = jQuery(element);
-        var togo = element.get(0).tagName;
+        togo = element.get(0).tagName;
         if (element.attr("id")) {
             togo += "#" + element.attr("id");
         }
@@ -310,7 +314,9 @@ var fluid = fluid || {};
      */
     fluid.isContainer = function (container, containee) {
         for(; containee; containee = containee.parentNode) {
-            if (container === containee) return true;
+            if (container === containee) {
+                return true;
+            }
         }
         return false;
     };
@@ -352,7 +358,7 @@ var fluid = fluid || {};
             });
             jQuery.data(element, fluid.cleanseScripts.MARKER, true);
         }
-    }
+    };
 
     fluid.cleanseScripts.MARKER = "fluid-scripts-cleansed";
 
@@ -461,7 +467,9 @@ var fluid = fluid || {};
         var listeners = {};
         return {
             addListener: function (listener, namespace, exclusions) {
-                if (!listener) return;
+                if (!listener) {
+                    return;
+                }
                 if (!namespace) {
                     if (!listener.$$guid) {
                         listener.$$guid = fluid_guid += 1;
@@ -556,7 +564,9 @@ var fluid = fluid || {};
     
     fluid.utils.findKey = function (hash, value) {
         for (var key in hash) {
-            if (hash[key] === value) return key;
+            if (hash[key] === value) {
+                return key;
+            }
         }
         return null;
     };

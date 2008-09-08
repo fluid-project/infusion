@@ -184,7 +184,7 @@ fluid = fluid || {};
             mouseDropWarning = kbDropWarning.clone();
         }
         
-        function focusActiveItem (evt) {
+        var focusActiveItem = function (evt) {
             // If the active item has not been set yet, set it to the first selectable.
             if (!thatReorderer.activeItem) {
                 var first = firstSelectable(thatReorderer);
@@ -206,7 +206,7 @@ fluid = fluid || {};
                 }
             }
             return false;
-        }
+        };
         
         var isActiveItemMovable = function () {
             return (jQuery.inArray(thatReorderer.activeItem, thatReorderer.locate("movables")) >= 0);
@@ -236,7 +236,7 @@ fluid = fluid || {};
             }
             // The only other keys we listen for are the arrows.
             return thatReorderer.handleDirectionKeyDown(evt);
-        }
+        };
 
         thatReorderer.handleKeyUp = function(evt) {
             if (!thatReorderer.activeItem || (thatReorderer.activeItem !== evt.target)) {
@@ -257,7 +257,7 @@ fluid = fluid || {};
             }
             
             return false;
-        }
+        };
 
         
         var noModifier = function (evt) {
@@ -274,11 +274,16 @@ fluid = fluid || {};
                 var keyset = keysets[i];
                 var didProcessKey = false;
                 var keydir = fluid.utils.findKey(keyset, evt.keyCode);
-                if (!keydir) continue;
+                if (!keydir) {
+                    continue;
+                }
                 
                 var dirnum = fluid.keycodeDirection[keydir];
                 var relativeItem = thatReorderer.layoutHandler.getRelativePosition(thatReorderer.activeItem, dirnum);
-                if (!relativeItem) continue;
+                if (!relativeItem) {
+                    continue;
+                }
+                
                 if (keyset.modifier(evt)) {
                     if (kbDropWarning) {
                         kbDropWarning.hide();
@@ -294,7 +299,7 @@ fluid = fluid || {};
                 return false;
             }
             return true;
-        }
+        };
 
         var dropMarker;
 
@@ -384,7 +389,7 @@ fluid = fluid || {};
         }
    
            
-       function selectItem(anItem) {
+       var selectItem = function (anItem) {
            var styles = options.styles;
            // Set the previous active item back to its default state.
            if (thatReorderer.activeItem && thatReorderer.activeItem !== anItem) {
@@ -397,9 +402,9 @@ fluid = fluid || {};
            jItem.addClass(styles.selected);
            jItem.ariaState("selected", "true");
            thatReorderer.container.ariaState("activedescendent", anItem.id);
-           }
+       };
    
-        var initSelectables = function () {
+       var initSelectables = function () {
             var handleBlur = function (evt) {
                 changeSelectedToDefault(jQuery(this), options.styles);
                 return evt.stopPropagation();
@@ -436,7 +441,7 @@ fluid = fluid || {};
                      mouseDropWarning.hide();
                  }
              }
-        }
+        };
     
         var initItems = function () {
             var movables = thatReorderer.locate("movables");

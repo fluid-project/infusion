@@ -20,11 +20,11 @@ fluid.moduleLayout = fluid.moduleLayout || {};
 
 (function (jQuery, fluid) {
 
-        /**
-         * Calculate the location of the item and the column in which it resides.
-         * @return  An object with column index and item index (within that column) properties.
-         *          These indices are -1 if the item does not exist in the grid.
-         */
+    /**
+     * Calculate the location of the item and the column in which it resides.
+     * @return  An object with column index and item index (within that column) properties.
+     *          These indices are -1 if the item does not exist in the grid.
+     */
       var findColumnAndItemIndices = function (item, layout) {
           return fluid.find(layout.columns,
               function(column, colIndex) {
@@ -41,8 +41,8 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         };
 
     /**
-      * Move an item within the layout object. 
-      */
+     * Move an item within the layout object. 
+     */
     fluid.moduleLayout.updateLayout = function (item, target, position, layout) {
         item = fluid.unwrap(item);
         target = fluid.unwrap(target);
@@ -64,12 +64,12 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         }
       };
        
-      /**
-       * Builds a layout object from a set of columns and modules.
-       * @param {jQuery} container
-       * @param {jQuery} columns
-       * @param {jQuery} portlets
-       */
+    /**
+     * Builds a layout object from a set of columns and modules.
+     * @param {jQuery} container
+     * @param {jQuery} columns
+     * @param {jQuery} portlets
+     */
     fluid.moduleLayout.layoutFromFlat = function (container, columns, portlets) {
         var layout = {};
         layout.container = container;
@@ -86,9 +86,9 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         return layout;
       };
       
-      /**
-       * Builds a layout object from a serialisable "layout" object consisting of id lists
-       */
+    /**
+     * Builds a layout object from a serialisable "layout" object consisting of id lists
+     */
     fluid.moduleLayout.layoutFromIds = function (idLayout) {
         return {
             container: fluid.byId(idLayout.id),
@@ -102,7 +102,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
             };
       };
       
-   /**
+    /**
      * Serializes the current layout into a structure of ids
      */
     fluid.moduleLayout.layoutToIds = function (idLayout) {
@@ -128,7 +128,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         }
     };
     
-    /*
+    /**
      * Module Layout Handler for reordering content modules.
      * 
      * General movement guidelines:
