@@ -210,6 +210,14 @@ var fluid = fluid || {};
     
     // A "suitable large" value for the sentinel blocks at the ends of spans
     var SENTINEL_DIMENSION = 10000;
+
+
+    function dumpelem(cacheelem) {
+      return "Rect top: " + cacheelem.rect.top +
+                 " left: " + cacheelem.rect.left + 
+               " bottom: " + cacheelem.rect.bottom +
+                " right: " + cacheelem.rect.right + " for " + fluid.dumpEl(cacheelem.element);
+    }
     
     fluid.dropManager = function () {
         var targets = [];
@@ -218,20 +226,13 @@ var fluid = fluid || {};
         
         var lastClosest;
         
-        function dumpelem(cacheelem) {
-          return "Rect top: " + cacheelem.rect.top +
-                     " left: " + cacheelem.rect.left + 
-                   " bottom: " + cacheelem.rect.bottom +
-                    " right: " + cacheelem.rect.right + " for " + fluid.dumpEl(cacheelem.element);
-        }
-        
         function cacheKey(element) {
             return jQuery(element).data("");
         }
         
         function sentinelizeElement(targets, sides, cacheelem, fc, disposition) {
             var elemCopy = jQuery.extend(true, {}, cacheelem);
-            elemCopy.rect[sides[fc]] = elemCopy.rect[sides[1 - fc]];
+            elemCopy.rect[sides[fc]] = elemCopy.rect[sides[1 - fc]] + (fc? 1: -1);
             elemCopy.rect[sides[1 - fc]] = (fc? -1 : 1) * SENTINEL_DIMENSION;
             elemCopy.position = disposition === fluid.position.INSIDE?
                disposition : (fc? fluid.position.BEFORE : fluid.position.AFTER);
@@ -273,7 +274,7 @@ var fluid = fluid || {};
                     if (j === thisInfo.elements.length - 1) {
                         sentinelizeElement(targets, sides, cacheelem, 0, disposition);
                     }
-                //    fluid.log(dumpelem(cacheelem));
+                    // fluid.log(dumpelem(cacheelem));
                 }
             }   
         };
@@ -374,6 +375,7 @@ var fluid = fluid || {};
         };
         
         that.projectFrom = function(element, direction) {
+            that.updateGeometry(lastGeometry);
             var cacheelem = cache[cacheKey(element)];
             var projected = fluid.geom.projectFrom(cacheelem.rect, direction, targets);
             var retpos = projected.cacheelem.position;
@@ -456,7 +458,8 @@ var fluid = fluid || {};
             var pdist = fluid.geom.minRectRect(penrect, thisrect);
             var rdist = -dirSign * backSign * (baserect[backSign === 1? frontSide:backSide] 
                                              - thisrect[backSign === 1? backSide:frontSide]);
-            if (pdist <= collect.mindist && rdist > 0) {
+            // the oddity in the rdist comparison is intended to express "half-open"-ness of rectangles
+            if (pdist <= collect.mindist && rdist >= (backSign === 1? 0 : 1)) {
                 if (pdist == collect.mindist && rdist * backSign > collect.minrdist) {
                     return;
                 }
@@ -481,6 +484,7 @@ var fluid = fluid || {};
                 accPen(collect, elem, 1);
                 accPen(backcollect, elem, -1);
             }
+//            fluid.log("Element " + i + " " + dumpelem(elem) + " mindist " + collect.mindist);
         }
         var togo = {
             wrapped: !collect.minelem,
