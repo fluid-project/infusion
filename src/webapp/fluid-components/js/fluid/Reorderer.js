@@ -321,13 +321,14 @@ fluid = fluid || {};
             }
             thatReorderer.events.onMove.fireEvent(item, requestedPosition);
             dropManager.geometricMove(item, requestedPosition.element, requestedPosition.position);
-            thatReorderer.refresh();
-
-            dropManager.updateGeometry(thatReorderer.layoutHandler.getGeometricInfo());
-            jQuery(thatReorderer.activeItem).removeClass(options.styles.selected);
+            //jQuery(thatReorderer.activeItem).removeClass(options.styles.selected);
            
             // refocus on the active item because moving places focus on the body
             thatReorderer.activeItem.focus();
+            
+            thatReorderer.refresh();
+            
+            dropManager.updateGeometry(thatReorderer.layoutHandler.getGeometricInfo());
 
             thatReorderer.events.afterMove.fireEvent(item, requestedPosition);
         };
