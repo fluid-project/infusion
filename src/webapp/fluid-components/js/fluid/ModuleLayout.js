@@ -188,7 +188,8 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                 var thisEls = {
                     orientation: that.options.orientation,
                     disposition: column.elements.length === 0? fluid.position.INSIDE: fluid.position.INTERLEAVED,
-                    elements: column.elements.length === 0? jQuery(column.container) : jQuery.makeArray(column.elements)
+                    elements: jQuery.makeArray(column.elements),
+                    parentElement: column.container
                 };
                 fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements));
                 togo.push(thisEls);

@@ -180,9 +180,17 @@ var fluid = fluid || {};
           a.currentStyle[name];
     };
     
-    var fastHidden = function(a) {
-    	  return "hidden"==a.type || curCss(a,"display") === "none" || 
-    	    curCss(a,"visibility") === "hidden";
+    var isAttached = function(node) {
+        while(node) {
+            if (node.tagName.toLowerCase() === "body") return true;
+            node = node.parentNode;
+        }
+        return false;
+    };
+    
+    var generalHidden = function(a) {
+    	  return "hidden" == a.type || curCss(a,"display") === "none" || 
+    	    curCss(a,"visibility") === "hidden" || !isAttached(a);
     	    };
     
 
@@ -193,7 +201,7 @@ var fluid = fluid || {};
         if (disposition === fluid.position.INSIDE) {
             elem.position = disposition;
         }
-        if (fastHidden(element)) {
+        if (generalHidden(element)) {
             elem.clazz = "hidden";
         }
         var pos = fluid.utils.computeAbsolutePosition(element) || [0, 0];
@@ -235,10 +243,6 @@ var fluid = fluid || {};
             elemCopy.rect[sides[1 - fc]] = (fc? -1 : 1) * SENTINEL_DIMENSION;
             elemCopy.position = disposition === fluid.position.INSIDE?
                disposition : (fc? fluid.position.BEFORE : fluid.position.AFTER);
-            if (fc === 0) {
-               // HACK for now to ensure that a column with only locked portlets can be entered 
-               elemCopy.clazz = null; 
-            }
             targets[targets.length] = elemCopy;
         }
         
@@ -275,18 +279,13 @@ var fluid = fluid || {};
             for (var i = 0; i < geometricInfo.length; ++ i) {
                 var thisInfo = geometricInfo[i];
                 var orientation = thisInfo.orientation;
-                var disposition = thisInfo.disposition;
-                if (disposition === fluid.position.INSIDE && thisInfo.elements.length !== 1) {
-                    fluid.fail("Expanse at index " + i 
-                    + " has been requested for INSIDE disposition, but does not have length 1");
-                }
                 var sides = fluid.rectSides[orientation];
-                for (var j = 0; j < thisInfo.elements.length; ++ j) {
-                    var element = thisInfo.elements[j];
+                
+                function processElement(element, sentB, sentF, disposition, j) {
                     var cacheelem = computeGeometry(element, orientation, disposition);
                     cacheelem.owner = thisInfo;
                     if (cacheelem.clazz !== "hidden" && mapper) {
-                        cacheelem.clazz = mapper(thisInfo.elements[j]);
+                        cacheelem.clazz = mapper(element);
                     }
                     cache[jQuery.data(element)] = cacheelem;
                     if (disposition === fluid.position.INSIDE) {
@@ -299,13 +298,27 @@ var fluid = fluid || {};
                           );
                     }
                     // deal with sentinel blocks by creating near-copies of the end elements
-                    if (j === 0) {
+                    if (sentB) {
                         sentinelizeElement(targets, sides, cacheelem, 1, disposition);
                     }
-                    if (j === thisInfo.elements.length - 1) {
+                    if (sentF) {
                         sentinelizeElement(targets, sides, cacheelem, 0, disposition);
                     }
-                    // fluid.log(dumpelem(cacheelem));
+                    //fluid.log(dumpelem(cacheelem));
+                    return cacheelem;
+                }
+                var allHidden = true;
+                for (var j = 0; j < thisInfo.elements.length; ++ j) {
+                    var element = thisInfo.elements[j];
+                    var cacheelem = processElement(element, j === 0, j === thisInfo.elements.length - 1, 
+                            fluid.position.INTERLEAVED, j);
+                    if (cacheelem.clazz !== "hidden") {
+                       allHidden = false;
+                    }
+                }
+                if (allHidden && thisInfo.parentElement) {
+                    processElement(thisInfo.parentElement, true, true, 
+                            fluid.position.INSIDE);
                 }
             }   
         };
@@ -404,13 +417,15 @@ var fluid = fluid || {};
                      };
         };
         
-        that.getOwningSpan = function(element) {
-            return cache[cacheKey(element)].owner.elements;
+        that.getOwningSpan = function(element, position) {
+            var owner = cache[cacheKey(element)].owner; 
+            return position === fluid.position.INSIDE? [owner.parentElement] 
+              : owner.elements;
         };
         
         that.geometricMove = function(element, target, position) {
            var sourceElements = that.getOwningSpan(element);
-           var targetElements = that.getOwningSpan(target);
+           var targetElements = that.getOwningSpan(target, position);
            fluid.permuteDom(element, target, position, sourceElements, targetElements);
         };
         
