@@ -163,7 +163,7 @@ var fluid = fluid || {};
         if (element.nodeType === 3 || element.nodeType === 8) {
           return "[data: " + element.data + "]";
         } 
-        if (element.length) {
+        if (typeof(element.length) === "number") {
             togo = "[";
             for (var i = 0; i < element.length; ++ i) {
                 togo += fluid.dumpEl(element[i]);
