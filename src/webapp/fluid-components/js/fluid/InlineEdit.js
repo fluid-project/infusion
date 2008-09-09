@@ -206,7 +206,7 @@ fluid = fluid || {};
         editField.val(that.model.value);
         
         // Inject it into the DOM.
-        that.container.append(editContainer);
+        that.viewEl.after(editContainer);
         
         // Package up the container and field for the component.
         return {
