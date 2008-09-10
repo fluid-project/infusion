@@ -51,6 +51,7 @@ fluid = fluid || {};
             avatar = avatarContainer;
         }
         jQuery("body").append(avatar);
+        avatar.hide();
         return avatar;
     };   
     
@@ -352,6 +353,7 @@ fluid = fluid || {};
                     thatReorderer.dom.fastLocate("grabHandle", jQuery(item[0])).removeClass(styles.hover);
                 }
             );
+            var avatar;
         
             item.draggable({
                 refreshPositions: false,
@@ -361,7 +363,7 @@ fluid = fluid || {};
                     if (mouseDropWarning) {
                         dropWarningEl = mouseDropWarning[0];
                     }
-                    var avatar = jQuery(options.avatarCreator(item[0], styles.avatar, dropWarningEl));
+                    avatar = jQuery(options.avatarCreator(item[0], styles.avatar, dropWarningEl));
                     avatar.attr("id", createAvatarId(thatReorderer.container.id));
                     return avatar;
                 },
@@ -371,7 +373,8 @@ fluid = fluid || {};
                     item.addClass(options.styles.mouseDrag);
                     item.ariaState("grab", "true");
                     setDropEffects("move");
-                    dropManager.startDrag();  
+                    dropManager.startDrag();
+                    avatar.show();  
                 },
                 stop: function(e, ui) {
                     item.removeClass(options.styles.mouseDrag);
