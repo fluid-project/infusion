@@ -29,11 +29,21 @@
 
 .drop-marker-tab {
     background-color: red;
-    height: 10px;
-    width: 5px;
+    height: 25px;
+    width: 3px;
 }
 
-.avatar-tab {
+.avatar-tab{
     opacity: 0.55;
+    filter:alpha(opacity=55);
     border: 0;
+    list-style-type:none;
+    background: url(../../shared/jquery/i/tabs.png) no-repeat scroll 0 0;
+    
+}
+.avatar-tab a {
+    padding:0 12px;
+    text-decoration:none;
+    color:white;
+    font: bold 12px "Trebuchet MS",Trebuchet,Verdana,Helvetica,Arial,sans-serif;   
 }
