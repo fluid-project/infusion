@@ -272,6 +272,7 @@ var fluid = fluid || {};
         }
         
         var lastGeometry;
+        var displacementX, displacementY;
         
         that.updateGeometry = function(geometricInfo) {
             lastGeometry = geometricInfo;
@@ -325,9 +326,11 @@ var fluid = fluid || {};
             }   
         };
         
-        that.startDrag = function() {
+        that.startDrag = function(dX, dY) {
             that.updateGeometry(lastGeometry);
             lastClosest = null;
+            displacementX = dX;
+            displacementY = dY;
             jQuery("").bind("mousemove.fluid-dropManager", that.mouseMove);
         };
         
@@ -340,8 +343,8 @@ var fluid = fluid || {};
         };
         
         that.mouseMove = function(evt) {
-            var x = evt.pageX;
-            var y = evt.pageY;
+            var x = evt.pageX + displacementX;
+            var y = evt.pageY + displacementY;
             //fluid.log("Mouse x " + x + " y " + y );
             
             var closestTarget = that.closestTarget(x, y, lastClosest);

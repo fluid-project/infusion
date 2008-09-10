@@ -375,8 +375,12 @@ fluid = fluid || {};
                     item.addClass(options.styles.mouseDrag);
                     item.ariaState("grab", "true");
                     setDropEffects("move");
-                    dropManager.startDrag();
-                    avatar.show();  
+                    var draggableItem = item.data("draggable");
+                    var relativeClick = draggableItem.offset.click;
+                    var helperProportions = draggableItem.helperProportions;
+                    dropManager.startDrag(helperProportions.width / 2 - relativeClick.left, 
+                                          helperProportions.height / 2 - relativeClick.top);
+                    avatar.show();
                 },
                 stop: function(e, ui) {
                     item.removeClass(options.styles.mouseDrag);
