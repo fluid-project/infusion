@@ -168,9 +168,9 @@ var jqUnit = jqUnit || {};
     $.extend(jqUnit, jsUnitCompat);
 
 
-    /************************
-     * Other helpful checks *
-     ************************/
+    /***************************
+     * Other helpful functions *
+     ***************************/
     
     var testFns = {
         isVisible: function (msg, selector) {
@@ -187,6 +187,19 @@ var jqUnit = jqUnit || {};
         
         notExists: function (msg, selector) {
             jqUnit.ok(!$(selector)[0], msg);
+        },
+        
+        // Overrides jQuery's animation routines to be synchronous. Careful!
+        subvertAnimations: function () {
+            $.fn.fadeIn = function (speed, callback) {
+                this.show();
+                callback();
+            };
+            
+            $.fn.fadeOut = function (speed, callback) {
+                this.hide();
+                callback();
+            };
         }
     };
     
