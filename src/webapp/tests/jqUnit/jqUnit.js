@@ -193,12 +193,16 @@ var jqUnit = jqUnit || {};
         subvertAnimations: function () {
             $.fn.fadeIn = function (speed, callback) {
                 this.show();
-                callback();
+                if (callback) {
+                    callback();
+                }
             };
             
             $.fn.fadeOut = function (speed, callback) {
                 this.hide();
-                callback();
+                if (callback) {
+                    callback();
+                }
             };
         }
     };
