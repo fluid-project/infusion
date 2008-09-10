@@ -613,7 +613,7 @@ div .orderable-drop-marker{
 
 .orderable-drop-marker-box {
   height: 200px !important;
-  width: 100%;
+  /*width: 100%;*/
   border: 2px dashed red;
   margin-bottom: 1em;
   background-color: #ffd7d7;
