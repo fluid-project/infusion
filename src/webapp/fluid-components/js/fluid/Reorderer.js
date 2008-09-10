@@ -51,7 +51,9 @@ fluid = fluid || {};
             avatar = avatarContainer;
         }
         jQuery("body").append(avatar);
-        avatar.hide();
+        if (jQuery.browser.opera) { // FLUID-5504. Without this detect, curCSS explodes on the avatar on Firefox.
+            avatar.hide();
+        }
         return avatar;
     };   
     
