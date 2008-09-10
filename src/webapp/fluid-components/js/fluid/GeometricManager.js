@@ -20,7 +20,7 @@ var fluid = fluid || {};
     
     fluid.orientation = {
         HORIZONTAL: 4,
-        VERTICAL: 1,
+        VERTICAL: 1
     };
     
     fluid.rectSides = {
