@@ -290,9 +290,9 @@ fluid = fluid || {};
                     if (kbDropWarning) {
                         kbDropWarning.hide();
                     }
-                    if (relativeItem.position !== fluid.position.INSIDE) {
-                        relativeItem.position = fluid.position.REPLACE;
-                    }
+                 //   if (relativeItem.position !== fluid.position.INSIDE) {
+                 //       relativeItem.position = fluid.position.REPLACE;
+                 //   }
                     thatReorderer.requestMovement(relativeItem, thatReorderer.activeItem);
             
                 } else if (noModifier(evt)) {
@@ -529,13 +529,34 @@ fluid = fluid || {};
         return simpleInit(container, "fluid.gridLayoutHandler", options); 
     };
     
-    fluid.reorderer.relativeInfoGetter = function(orientation, dropManager, dom) {
+    
+    fluid.reorderer.getSiblingInfo = function getSiblingInfo (item, orderables, /* NEXT, PREVIOUS */ direction) {
+        var index = jQuery(orderables).index(item) + direction;
+        if (index < 0) {
+            index += orderables.length;
+        }
+        index %= orderables.length;
+        return {element: orderables[index], position: fluid.position.REPLACE};
+    }
+    
+    fluid.reorderer.GEOMETRIC_STRATEGY = "geometric";
+    fluid.reorderer.LOGICAL_STRATEGY = "logical";
+    fluid.reorderer.NO_STRATEGY = null;
+    
+    fluid.reorderer.relativeInfoGetter = function(orientation, coStrategy, contraStrategy, dropManager, dom) {
         return function(item, direction, includeLocked) {
             var dirorient = fluid.directionOrientation(direction);
-            if (orientation === fluid.orientation.UNORIENTED || dirorient === orientation) {
+            var strategy = dirorient === orientation? coStrategy: contraStrategy;
+            
+            if (strategy === fluid.reorderer.GEOMETRIC_STRATEGY) {
             	 return dropManager.projectFrom(item, direction, includeLocked);
-           }
-           else {
+            }
+            else if (strategy === fluid.reorderer.LOGICAL_STRATEGY) {
+               var selectables = dropManager.getOwningSpan(item, fluid.position.INTERLEAVED, includeLocked);
+               var folded = fluid.directionSign(direction);
+               return fluid.reorderer.getSiblingInfo(item, selectables, folded);
+            }
+            else {
                return null;
            }
         };
@@ -552,7 +573,10 @@ fluid = fluid || {};
         return function() {
            return [{orientation : orientation, 
                       disposition: fluid.position.INTERLEAVED, 
-                      elements   : dom.fastLocate("dropTargets")}];
+                      elements   : dom.fastLocate("dropTargets"),
+                      elementMapper:      function(element) {
+                        return jQuery.inArray(element, dom.fastLocate("movables")) === -1? "locked": null;
+                        }}];
         };
     }
     
@@ -562,7 +586,8 @@ fluid = fluid || {};
         options.orientation = options.orientation || fluid.orientation.VERTICAL;
 
         that.getRelativePosition = 
-          fluid.reorderer.relativeInfoGetter(options.orientation, dropManager, dom);
+          fluid.reorderer.relativeInfoGetter(options.orientation, 
+                fluid.reorderer.LOGICAL_STRATEGY, null, dropManager, dom);
         
         that.getGeometricInfo = geometricInfoGetter(options.orientation, dom);
         
@@ -582,7 +607,9 @@ fluid = fluid || {};
         options.orientation = options.orientation || fluid.orientation.HORIZONTAL;
 
         that.getRelativePosition = 
-           fluid.reorderer.relativeInfoGetter(fluid.orientation.UNORIENTED, dropManager, dom);
+           fluid.reorderer.relativeInfoGetter(options.orientation, 
+                 fluid.reorderer.LOGICAL_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY, 
+                 dropManager, dom);
         
         that.getGeometricInfo = geometricInfoGetter(options.orientation, dom);
         

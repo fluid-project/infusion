@@ -179,8 +179,10 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         var willShowKBDropWarning = options.willShowKBDropWarning || defaultWillShowKBDropWarning;
 
         that.getRelativePosition  = 
-           fluid.reorderer.relativeInfoGetter(fluid.orientation.UNORIENTED, dropManager, dom);
-        
+           fluid.reorderer.relativeInfoGetter(options.orientation, 
+                 fluid.reorderer.LOGICAL_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY, 
+                 dropManager, dom);
+                 
         that.getGeometricInfo = function () {
             var togo = [];
             for (var col = 0; col < layout.columns.length; col++) {

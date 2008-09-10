@@ -21,7 +21,6 @@ var fluid = fluid || {};
     fluid.orientation = {
         HORIZONTAL: 4,
         VERTICAL: 1,
-        UNORIENTED: 5
     };
     
     fluid.rectSides = {
@@ -216,13 +215,16 @@ var fluid = fluid || {};
     // A "suitable large" value for the sentinel blocks at the ends of spans
     var SENTINEL_DIMENSION = 10000;
 
+    function dumprect(rect) {
+        return "Rect top: " + rect.top +
+                 " left: " + rect.left + 
+               " bottom: " + rect.bottom +
+                " right: " + rect.right;
+    }
 
     function dumpelem(cacheelem) {
       if (!cacheelem || !cacheelem.rect) return "null";
-      else return "Rect top: " + cacheelem.rect.top +
-                 " left: " + cacheelem.rect.left + 
-               " bottom: " + cacheelem.rect.bottom +
-                " right: " + cacheelem.rect.right + " position: " +
+      else return dumprect(cacheelem.rect) + " position: " +
                 cacheelem.position + " for " + fluid.dumpEl(cacheelem.element);
     }
     
@@ -417,15 +419,22 @@ var fluid = fluid || {};
                      };
         };
         
-        that.getOwningSpan = function(element, position) {
+        that.getOwningSpan = function(element, position, includeLocked) {
             var owner = cache[cacheKey(element)].owner; 
-            return position === fluid.position.INSIDE? [owner.parentElement] 
+            var elements = position === fluid.position.INSIDE? [owner.parentElement] 
               : owner.elements;
+            if (!includeLocked && lastGeometry.elementMapper) {
+                   elements = jQuery.makeArray(elements);
+                   fluid.remove_if(elements, function(element) {
+                       return lastGeometry.elementMapper(element) === "locked";
+                   });
+               }
+            return elements;
         };
         
         that.geometricMove = function(element, target, position) {
-           var sourceElements = that.getOwningSpan(element);
-           var targetElements = that.getOwningSpan(target, position);
+           var sourceElements = that.getOwningSpan(element, null, true);
+           var targetElements = that.getOwningSpan(target, position, true);
            fluid.permuteDom(element, target, position, sourceElements, targetElements);
         };
         
@@ -480,10 +489,11 @@ var fluid = fluid || {};
         var backSide = fluid.rectSides[axis * 15 + 5 - direction];
         var dirSign = fluid.directionSign(direction);
         
-        var penrect = {left: (5*baserect.left + 3*baserect.right)/8,
-                       right: (3*baserect.left + 5*baserect.right)/8,
-                       top: (5*baserect.top + 3*baserect.bottom)/8,
-                       bottom: (3*baserect.top + 5*baserect.bottom)/8};
+        var penrect = {left: (7*baserect.left + 1*baserect.right)/8,
+                       right: (5*baserect.left + 3*baserect.right)/8,
+                       top: (7*baserect.top + 1*baserect.bottom)/8,
+                       bottom: (5*baserect.top + 3*baserect.bottom)/8};
+         
         penrect[frontSide] = dirSign * SENTINEL_DIMENSION;
         penrect[backSide] = -penrect[frontSide];
         
@@ -492,8 +502,10 @@ var fluid = fluid || {};
             var pdist = fluid.geom.minRectRect(penrect, thisrect);
             var rdist = -dirSign * backSign * (baserect[backSign === 1? frontSide:backSide] 
                                              - thisrect[backSign === 1? backSide:frontSide]);
+            // fluid.log("pdist: " + pdist + " rdist: " + rdist);
             // the oddity in the rdist comparison is intended to express "half-open"-ness of rectangles
-            if (pdist <= collect.mindist && rdist >= (backSign === 1? 0 : 1)) {
+            // (backSign === 1? 0 : 1) - this is now gone - must be possible to move to perpendicularly abutting regions
+            if (pdist <= collect.mindist && rdist >= 0) {
                 if (pdist == collect.mindist && rdist * backSign > collect.minrdist) {
                     return;
                 }
@@ -518,7 +530,7 @@ var fluid = fluid || {};
                 accPen(collect, elem, 1);
                 accPen(backcollect, elem, -1);
             }
-            // fluid.log("Element " + i + " " + dumpelem(elem) + " mindist " + collect.mindist);
+            //fluid.log("Element " + i + " " + dumpelem(elem) + " mindist " + collect.mindist);
         }
         var wrap = !collect.minelem || backcollect.mindist < collect.mindist;
         var minelem = wrap? backcollect.minelem: collect.minelem;
