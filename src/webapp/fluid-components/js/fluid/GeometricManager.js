@@ -188,9 +188,9 @@ var fluid = fluid || {};
     };
     
     var generalHidden = function(a) {
-    	  return "hidden" == a.type || curCss(a,"display") === "none" || 
-    	    curCss(a,"visibility") === "hidden" || !isAttached(a);
-    	    };
+        return "hidden" == a.type || curCss(a,"display") === "none" || 
+          curCss(a,"visibility") === "hidden" || !isAttached(a);
+          };
     
 
     var computeGeometry = function(element, orientation, disposition) {
@@ -262,13 +262,13 @@ var fluid = fluid || {};
        
         // Expand this configuration point if we ever go back to a full "permissions" model
         function getRelativeClass(thisElements, index, relative, thisclazz, mapper) {
-           index += relative;
-           if (index < 0 && thisclazz === "locked") return "locked";
-           if (index >= thisElements.length || mapper == null) return null;
-           else {
-             var relative = thisElements[index];
-             return mapper(relative) == "locked" && thisclazz == "locked"? "locked" : null;
-           }
+            index += relative;
+            if (index < 0 && thisclazz === "locked") return "locked";
+            if (index >= thisElements.length || mapper === null) return null;
+            else {
+                var relative = thisElements[index];
+                return mapper(relative) === "locked" && thisclazz === "locked"? "locked" : null;
+            }
         }
         
         var lastGeometry;
@@ -279,8 +279,8 @@ var fluid = fluid || {};
             targets = [];
             cache = {};
             var mapper = geometricInfo.elementMapper;
-            for (var i = 0; i < geometricInfo.length; ++ i) {
-                var thisInfo = geometricInfo[i];
+            for (var i = 0; i < geometricInfo.extents.length; ++ i) {
+                var thisInfo = geometricInfo.extents[i];
                 var orientation = thisInfo.orientation;
                 var sides = fluid.rectSides[orientation];
                 
@@ -326,7 +326,11 @@ var fluid = fluid || {};
             }   
         };
         
-        that.startDrag = function(dX, dY) {
+        that.startDrag = function(event, handlePos, handleWidth, handleHeight) {
+            var handleMidX = handlePos[0] + handleWidth / 2;
+            var handleMidY = handlePos[1] + handleHeight / 2;
+            var dX = handleMidX - event.pageX;
+            var dY = handleMidY - event.pageY;
             that.updateGeometry(lastGeometry);
             lastClosest = null;
             displacementX = dX;
@@ -394,16 +398,16 @@ var fluid = fluid || {};
             if (minlockeddistance >= mindistance) {
                 minlockedelem = blankHolder;
             }
-            //fluid.log("PRE: mindistance " + mindistance + " element " + 
-            //    fluid.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
-            //    + " locked elem " + dumpelem(minlockedelem));
+            fluid.log("PRE: mindistance " + mindistance + " element " + 
+                fluid.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
+                + " locked elem " + dumpelem(minlockedelem));
             if (lastClosest && lastClosest.position === minelem.position &&
                 fluid.unwrap(lastClosest.element) === fluid.unwrap(minelem.element) &&
                 fluid.unwrap(lastClosest.lockedelem) === fluid.unwrap(minlockedelem.element)
                 ) {
                 return fluid.dropManager.NO_CHANGE;
             }
-            //fluid.log("mindistance " + mindistance + " minlockeddistance " + minlockeddistance);
+            fluid.log("mindistance " + mindistance + " minlockeddistance " + minlockeddistance);
             return {
                 position: minelem.position,
                 element: minelem.element,

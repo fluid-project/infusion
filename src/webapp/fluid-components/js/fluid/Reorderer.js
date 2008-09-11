@@ -318,7 +318,7 @@ fluid = fluid || {};
         fluid.utils.setLogging(true);
 
         thatReorderer.requestMovement = function(requestedPosition, item) {
-        	  // Temporary censoring to get around ModuleLayout inability to update relative to self.
+          // Temporary censoring to get around ModuleLayout inability to update relative to self.
             if (!requestedPosition || fluid.unwrap(requestedPosition.element) === fluid.unwrap(item)) {
                 return;
             }
@@ -370,16 +370,16 @@ fluid = fluid || {};
                     return avatar;
                 },
                 start: function (e, ui) {
+                    var handle = thatReorderer.dom.fastLocate("grabHandle", item)[0];
+                    var handlePos = fluid.utils.computeAbsolutePosition(handle);
+                    var handleWidth = handle.offsetWidth;
+                    var handleHeight = handle.offsetHeight;
                     item.focus();
                     item.removeClass(options.styles.selected);
                     item.addClass(options.styles.mouseDrag);
                     item.ariaState("grab", "true");
                     setDropEffects("move");
-                    var draggableItem = item.data("draggable");
-                    var relativeClick = draggableItem.offset.click;
-                    var helperProportions = draggableItem.helperProportions;
-                    dropManager.startDrag(helperProportions.width / 2 - relativeClick.left, 
-                                          helperProportions.height / 2 - relativeClick.top);
+                    dropManager.startDrag(e, handlePos, handleWidth, handleHeight);
                     avatar.show();
                 },
                 stop: function(e, ui) {
@@ -398,7 +398,7 @@ fluid = fluid || {};
                     // refocus on the active item because moving places focus on the body
                     thatReorderer.activeItem.focus();
                 },
-                handle: thatReorderer.dom.fastLocate("grabHandle", item[0])
+                handle: thatReorderer.dom.fastLocate("grabHandle", item)
             });
         }
    
@@ -558,15 +558,15 @@ fluid = fluid || {};
             var strategy = dirorient === orientation? coStrategy: contraStrategy;
             
             if (strategy === fluid.reorderer.GEOMETRIC_STRATEGY) {
-            	 return dropManager.projectFrom(item, direction, includeLocked);
+                 return dropManager.projectFrom(item, direction, includeLocked);
             }
             else if (strategy === fluid.reorderer.LOGICAL_STRATEGY) {
-               var selectables = dropManager.getOwningSpan(item, fluid.position.INTERLEAVED, includeLocked);
-               var folded = fluid.directionSign(direction);
-               return fluid.reorderer.getSiblingInfo(item, selectables, folded);
+                var selectables = dropManager.getOwningSpan(item, fluid.position.INTERLEAVED, includeLocked);
+                var folded = fluid.directionSign(direction);
+                return fluid.reorderer.getSiblingInfo(item, selectables, folded);
             }
             else {
-               return null;
+                return null;
            }
         };
     };
@@ -580,12 +580,15 @@ fluid = fluid || {};
 
     function geometricInfoGetter(orientation, dom) {
         return function() {
-           return [{orientation : orientation, 
-                      disposition: fluid.position.INTERLEAVED, 
-                      elements   : dom.fastLocate("dropTargets"),
-                      elementMapper:      function(element) {
+           return {
+               extents:[{orientation : orientation, 
+                         disposition: fluid.position.INTERLEAVED, 
+                         elements   : dom.fastLocate("dropTargets"),
+                         }
+                         ],
+                elementMapper: function(element) {
                         return jQuery.inArray(element, dom.fastLocate("movables")) === -1? "locked": null;
-                        }}];
+                        }};
         };
     }
     

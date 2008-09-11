@@ -184,7 +184,8 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                  dropManager, dom);
                  
         that.getGeometricInfo = function () {
-            var togo = [];
+        	  var extents = [];
+            var togo = {extents: extents};
             for (var col = 0; col < layout.columns.length; col++) {
                 var column = layout.columns[col];
                 var thisEls = {
@@ -194,7 +195,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                     parentElement: column.container
                 };
                 fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements));
-                togo.push(thisEls);
+                extents.push(thisEls);
                 togo.elementMapper = function(element) {
                     return isLocked(element)? "locked" : null;
                 };
