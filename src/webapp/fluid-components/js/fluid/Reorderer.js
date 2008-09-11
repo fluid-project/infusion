@@ -586,7 +586,7 @@ fluid = fluid || {};
            return {
                extents:[{orientation : orientation, 
                          disposition: fluid.position.INTERLEAVED, 
-                         elements   : dom.fastLocate("dropTargets"),
+                         elements   : dom.fastLocate("dropTargets")
                          }
                          ],
                 elementMapper: function(element) {
