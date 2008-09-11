@@ -51,7 +51,7 @@ fluid = fluid || {};
             avatar = avatarContainer;
         }
         jQuery("body").append(avatar);
-        if (jQuery.browser.opera) { // FLUID-5504. Without this detect, curCSS explodes on the avatar on Firefox.
+        if (jQuery.browser.opera) { // FLUID-1490. Without this detect, curCSS explodes on the avatar on Firefox.
             avatar.hide();
         }
         return avatar;
@@ -85,7 +85,7 @@ fluid = fluid || {};
     });
     
     function firstSelectable (that) {
-        var selectables = that.locate("selectables");
+        var selectables = that.dom.fastLocate("selectables");
         if (selectables.length <= 0) {
             return null;
         }
@@ -107,7 +107,7 @@ fluid = fluid || {};
     }
     
     function addRolesToContainer(that) {
-        var first = (that.locate("selectables")[0]);
+        var first = (that.dom.fastLocate("selectables")[0]);
         if (first) {
             that.container.ariaState("activedescendent", first.id);
         }
@@ -212,7 +212,7 @@ fluid = fluid || {};
         };
         
         var isActiveItemMovable = function () {
-            return (jQuery.inArray(thatReorderer.activeItem, thatReorderer.locate("movables")) >= 0);
+            return (jQuery.inArray(thatReorderer.activeItem, thatReorderer.dom.fastLocate("movables")) >= 0);
         };
         
         var setDropEffects = function (value) {
@@ -346,13 +346,13 @@ fluid = fluid || {};
 
             item.mouseover( 
                 function () {
-                    thatReorderer.dom.fastLocate("grabHandle", jQuery(item[0])).addClass(styles.hover);
+                    thatReorderer.dom.fastLocate("grabHandle", item).addClass(styles.hover);
                 }
             );
         
             item.mouseout(  
                 function () {
-                    thatReorderer.dom.fastLocate("grabHandle", jQuery(item[0])).removeClass(styles.hover);
+                    thatReorderer.dom.fastLocate("grabHandle", item).removeClass(styles.hover);
                 }
             );
             var avatar;
@@ -390,6 +390,7 @@ fluid = fluid || {};
                     if (markerNode.parentNode) {
                         markerNode.parentNode.removeChild(markerNode);
                     }
+                    avatar.hide();
                     ui.helper = null;
                     setDropEffects("none");
                     dropManager.endDrag();
@@ -429,7 +430,7 @@ fluid = fluid || {};
                 return evt.stopPropagation();
             };
             
-            var selectables = thatReorderer.locate("selectables");
+            var selectables = thatReorderer.dom.fastLocate("selectables");
             // set up selectables 
             // Remove the selectables from the taborder
             for (var i = 0; i < selectables.length; i++) {
@@ -458,8 +459,8 @@ fluid = fluid || {};
         };
     
         var initItems = function () {
-            var movables = thatReorderer.locate("movables");
-            var dropTargets = thatReorderer.locate("dropTargets");
+            var movables = thatReorderer.dom.fastLocate("movables");
+            var dropTargets = thatReorderer.dom.fastLocate("dropTargets");
             initSelectables();
         
             // Setup movables
@@ -514,7 +515,9 @@ fluid = fluid || {};
         }
        
        thatReorderer.refresh = function() {
-           thatReorderer.dom.refresh("grabHandle", thatReorderer.locate("movables"));
+       	   thatReorderer.dom.refresh("movables");
+       	   thatReorderer.dom.refresh("selectables");
+           thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
            thatReorderer.dom.refresh("dropTargets");
        };
        
