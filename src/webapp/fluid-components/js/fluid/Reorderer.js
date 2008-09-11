@@ -51,6 +51,8 @@ fluid = fluid || {};
             avatar = avatarContainer;
         }
         jQuery("body").append(avatar);
+        avatar.css("display", "block").width(item.offsetWidth).height(item.offsetHeight);
+        
         if (jQuery.browser.opera) { // FLUID-1490. Without this detect, curCSS explodes on the avatar on Firefox.
             avatar.hide();
         }

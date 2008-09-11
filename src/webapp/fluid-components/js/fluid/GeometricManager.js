@@ -239,12 +239,13 @@ var fluid = fluid || {};
             return jQuery(element).data("");
         }
         
-        function sentinelizeElement(targets, sides, cacheelem, fc, disposition) {
+        function sentinelizeElement(targets, sides, cacheelem, fc, disposition, clazz) {
             var elemCopy = jQuery.extend(true, {}, cacheelem);
             elemCopy.rect[sides[fc]] = elemCopy.rect[sides[1 - fc]] + (fc? 1: -1);
             elemCopy.rect[sides[1 - fc]] = (fc? -1 : 1) * SENTINEL_DIMENSION;
             elemCopy.position = disposition === fluid.position.INSIDE?
                disposition : (fc? fluid.position.BEFORE : fluid.position.AFTER);
+            elemCopy.clazz = clazz;
             targets[targets.length] = elemCopy;
         }
         
@@ -291,21 +292,20 @@ var fluid = fluid || {};
                         cacheelem.clazz = mapper(element);
                     }
                     cache[jQuery.data(element)] = cacheelem;
+                    var backClass = getRelativeClass(thisInfo.elements, j, fluid.position.BEFORE, cacheelem.clazz, mapper); 
+                    var frontClass = getRelativeClass(thisInfo.elements, j, fluid.position.AFTER, cacheelem.clazz, mapper); 
                     if (disposition === fluid.position.INSIDE) {
                         targets[targets.length] = cacheelem;
                     }
                     else {
-                        splitElement(targets, sides, cacheelem, disposition, 
-                          getRelativeClass(thisInfo.elements, j, fluid.position.BEFORE, cacheelem.clazz, mapper),
-                          getRelativeClass(thisInfo.elements, j, fluid.position.AFTER, cacheelem.clazz, mapper)
-                          );
+                        splitElement(targets, sides, cacheelem, disposition, backClass, frontClass);
                     }
                     // deal with sentinel blocks by creating near-copies of the end elements
                     if (sentB) {
-                        sentinelizeElement(targets, sides, cacheelem, 1, disposition);
+                        sentinelizeElement(targets, sides, cacheelem, 1, disposition, backClass);
                     }
                     if (sentF) {
-                        sentinelizeElement(targets, sides, cacheelem, 0, disposition);
+                        sentinelizeElement(targets, sides, cacheelem, 0, disposition, frontClass);
                     }
                     //fluid.log(dumpelem(cacheelem));
                     return cacheelem;
