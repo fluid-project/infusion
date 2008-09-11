@@ -593,7 +593,7 @@ div .orderable-drop-marker{
 }
 
 .orderable-avatar-clone {
-  height: 200px;
+  height: auto;
   width: 400px;
   filter: alpha(opacity=60);
   opacity: .6;	
