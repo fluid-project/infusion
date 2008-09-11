@@ -398,16 +398,16 @@ var fluid = fluid || {};
             if (minlockeddistance >= mindistance) {
                 minlockedelem = blankHolder;
             }
-            fluid.log("PRE: mindistance " + mindistance + " element " + 
-                fluid.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
-                + " locked elem " + dumpelem(minlockedelem));
+            //fluid.log("PRE: mindistance " + mindistance + " element " + 
+            //   fluid.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
+            //    + " locked elem " + dumpelem(minlockedelem));
             if (lastClosest && lastClosest.position === minelem.position &&
                 fluid.unwrap(lastClosest.element) === fluid.unwrap(minelem.element) &&
                 fluid.unwrap(lastClosest.lockedelem) === fluid.unwrap(minlockedelem.element)
                 ) {
                 return fluid.dropManager.NO_CHANGE;
             }
-            fluid.log("mindistance " + mindistance + " minlockeddistance " + minlockeddistance);
+            //fluid.log("mindistance " + mindistance + " minlockeddistance " + minlockeddistance);
             return {
                 position: minelem.position,
                 element: minelem.element,

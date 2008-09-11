@@ -194,7 +194,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                     elements: jQuery.makeArray(column.elements),
                     parentElement: column.container
                 };
-                fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements));
+                // fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements));
                 extents.push(thisEls);
                 togo.elementMapper = function(element) {
                     return isLocked(element)? "locked" : null;
