@@ -35,17 +35,16 @@ var demo = demo || {};
     };
 
     demo.initPortletReorderer = function() {
-        var classNames = {
-            mouseDrag: "orderable-mouse-drag",
-            dropMarker: "orderable-drop-marker-box",
-            avatar: "orderable-avatar-clone"
-        };
         var options = { 
-            styles: classNames, 
-            dropWarningId: "drop-warning",
-            selectors: {
+            styles:  {
+                mouseDrag: "orderable-mouse-drag",
+                dropMarker: "orderable-drop-marker-box",
+                avatar: "orderable-avatar-clone",
+            },
+             selectors: {
                 grabHandle: grabHandle,
-                lockedModules: "#portlet_u15l1n10"
+                lockedModules: "#portlet_u15l1n10",
+                dropWarning: jQuery("#drop-warning")
             }
         };
 
@@ -53,19 +52,16 @@ var demo = demo || {};
     };
     
     demo.initLightboxReorderer = function () {
-        var cssClassNames = {
-            defaultStyle: "lb-orderable-default",
-            selected: "lb-orderable-selected",
-            dragging: "lb-orderable-dragging",
-            mouseDrag: "lb-orderable-dragging",
-            hover: "lb-orderable-hover",
-            dropMarker: "lb-orderable-drop-marker",
-            avatar: "lb-orderable-avatar"
-        };  
-    
-        return fluid.lightbox(fluid.utils.jById("gallery"), {
-            styles: cssClassNames,
-            afterMoveCallback: function () {},
+        return fluid.lightbox("#gallery", {
+            styles: {
+                defaultStyle: "lb-orderable-default",
+                selected: "lb-orderable-selected",
+                dragging: "lb-orderable-dragging",
+                mouseDrag: "lb-orderable-dragging",
+                hover: "lb-orderable-hover",
+                dropMarker: "lb-orderable-drop-marker",
+                avatar: "lb-orderable-avatar"
+            },
             selectors: {
                 movables: "[id^=thumb-]"
             }

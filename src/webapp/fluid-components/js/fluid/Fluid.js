@@ -228,85 +228,7 @@ var fluid = fluid || {};
         }
     };
     
-    fluid.createDomBinder = function (container, selectors) {
-        var cache = {}, that = {};
         
-        function cacheKey(name, thisContainer) {
-            return jQuery.data(fluid.unwrap(thisContainer)) + "-" + name;
-        }
-
-        function record(name, thisContainer, result) {
-            cache[cacheKey(name, thisContainer)] = result;
-        }
-
-        that.locate = function (name, localContainer) {
-            var selector, thisContainer, togo;
-            
-            selector = selectors[name];
-            thisContainer = localContainer? localContainer: container;
-            if (!thisContainer) {
-                fluid.fail("DOM binder invoked for selector " + name + " without container");
-            }
-
-            if (!selector) {
-                return thisContainer;
-            }
-
-            if (typeof(selector) === "function") {
-                togo = jQuery(selector.call(null, fluid.unwrap(thisContainer)));
-            } else {
-                togo = jQuery(selector, thisContainer);
-            }
-            if (togo.get(0) === document) {
-                togo = [];
-                //fluid.fail("Selector " + name + " with value " + selectors[name] +
-                //            " did not find any elements with container " + fluid.dumpEl(container));
-            }
-            record(name, thisContainer, togo);
-            return togo;
-        };
-        that.fastLocate = function (name, localContainer) {
-            var thisContainer = localContainer? localContainer: container;
-            var key = cacheKey(name, thisContainer);
-            var togo = cache[key];
-            return togo? togo : that.locate(name, localContainer);
-        };
-        that.clear = function () {
-            cache = {};
-        };
-        that.refresh = function(names, localContainer) {
-           var thisContainer = localContainer? localContainer: container;
-           if (typeof names === "string") {
-               names = [names];
-           }
-           if (thisContainer.length === undefined) {
-               thisContainer = [thisContainer];
-           }
-           for (var i = 0; i < names.length; ++ i) {
-               for (var j = 0; j < thisContainer.length; ++ j) {
-                   that.locate(names[i], thisContainer[j]);
-               }
-           }
-        };
-        
-        return that;
-    };
-    
-    /**
-     * Merges the component's declared defaults, as obtained from fluid.defaults(),
-     * with the user's specified overrides.
-     * 
-     * @param {Object} that the instance to attach the options to
-     * @param {String} componentName the unique "name" of the component, which will be used
-     * to fetch the default options from store. By recommendation, this should be the global
-     * name of the component's creator function.
-     * @param {Object} userOptions the user-specified configuration options for this component
-     */
-    fluid.mergeComponentOptions = function (that, componentName, userOptions) {
-        var defaults = fluid.defaults(componentName); 
-        that.options = fluid.utils.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);    
-    };
-    
     /** 
      * The central initialisation method called as the first act of every 
      * Fluid view. This function automatically merges user options with defaults
@@ -377,6 +299,110 @@ var fluid = fluid || {};
          ( (node.nodeType == 3) && fluid.isWhitespaceNode(node) ); // a text node, all ws
     };
     
+    fluid.createDomBinder = function (container, selectors) {
+        var cache = {}, that = {};
+        
+        function cacheKey(name, thisContainer) {
+            return jQuery.data(fluid.unwrap(thisContainer)) + "-" + name;
+        }
+
+        function record(name, thisContainer, result) {
+            cache[cacheKey(name, thisContainer)] = result;
+        }
+
+        that.locate = function (name, localContainer) {
+            var selector, thisContainer, togo;
+            
+            selector = selectors[name];
+            thisContainer = localContainer? localContainer: container;
+            if (!thisContainer) {
+                fluid.fail("DOM binder invoked for selector " + name + " without container");
+            }
+
+            if (!selector) {
+                return thisContainer;
+            }
+
+            if (typeof(selector) === "function") {
+                togo = jQuery(selector.call(null, fluid.unwrap(thisContainer)));
+            } else {
+                togo = jQuery(selector, thisContainer);
+            }
+            if (togo.get(0) === document) {
+                togo = [];
+                //fluid.fail("Selector " + name + " with value " + selectors[name] +
+                //            " did not find any elements with container " + fluid.dumpEl(container));
+            }
+            record(name, thisContainer, togo);
+            return togo;
+        };
+        that.fastLocate = function (name, localContainer) {
+            var thisContainer = localContainer? localContainer: container;
+            var key = cacheKey(name, thisContainer);
+            var togo = cache[key];
+            return togo? togo : that.locate(name, localContainer);
+        };
+        that.clear = function () {
+            cache = {};
+        };
+        that.refresh = function(names, localContainer) {
+           var thisContainer = localContainer? localContainer: container;
+           if (typeof names === "string") {
+               names = [names];
+           }
+           if (thisContainer.length === undefined) {
+               thisContainer = [thisContainer];
+           }
+           for (var i = 0; i < names.length; ++ i) {
+               for (var j = 0; j < thisContainer.length; ++ j) {
+                   that.locate(names[i], thisContainer[j]);
+               }
+           }
+        };
+        
+        return that;
+    };
+    
+    fluid.mergeListeners = function(events, listeners) {
+        if (listeners) {
+            for (var key in listeners) {
+                if (!events[key]) {
+                    events[key] = fluid.event.getEventFirer();
+                }   
+                var firer = events[key];
+                var value = listeners[key];
+                if (typeof(value) === "function") {
+                    firer.addListener(value);
+                }
+                else if (value && typeof(value.length) === "number") {
+                    for (var i = 0; i < value.length; ++ i) {
+                        firer.addListener(value[i]);
+                    }
+                }
+            }
+        }    
+    }
+    
+    fluid.instantiateFirers = function (that, options) {
+        that.events = {};
+        fluid.mergeListeners(that.events, options.listeners);
+    };
+    
+    /**
+     * Merges the component's declared defaults, as obtained from fluid.defaults(),
+     * with the user's specified overrides.
+     * 
+     * @param {Object} that the instance to attach the options to
+     * @param {String} componentName the unique "name" of the component, which will be used
+     * to fetch the default options from store. By recommendation, this should be the global
+     * name of the component's creator function.
+     * @param {Object} userOptions the user-specified configuration options for this component
+     */
+    fluid.mergeComponentOptions = function (that, componentName, userOptions) {
+        var defaults = fluid.defaults(componentName); 
+        that.options = fluid.utils.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);    
+    };
+    
     /** The central initialiation method called as the first act of every Fluid
      * component.
      * @param {String} componentName The unique "name" of the component, which will be used
@@ -394,6 +420,7 @@ var fluid = fluid || {};
             that.container = fluid.container(container);
             fluid.initDomBinder(that);
         }
+        fluid.instantiateFirers(that, that.options);
 
         return that;
     };
@@ -495,7 +522,7 @@ var fluid = fluid || {};
                 }
             },
         
-            fireEvent: function () {
+            fire: function () {
                 for (var i in listeners) {
                     var lisrec = listeners[i];
                     var excluded = false;
@@ -647,7 +674,8 @@ var fluid = fluid || {};
             var thisSource = source[name];
     
             if (thisSource !== undefined) {
-                if (thisSource !== null && typeof(thisSource) === 'object') {
+                if (thisSource !== null && typeof(thisSource) === 'object' 
+                      && !thisSource.nodeType && !thisSource.jquery) {
                     if (!thisTarget) {
                         target[name] = thisTarget = thisSource instanceof Array? [] : {};
                     }

@@ -298,7 +298,7 @@ fluid = fluid || {};
             var change = that.model.value !== newValue;
             if (change) {
                 that.model.value = newValue;
-                that.modelFirer.fireEvent(newValue);
+                that.modelFirer.fire(newValue);
             }
             that.render(source); // Always render, because of possibility of initial event
         };

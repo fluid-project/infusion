@@ -118,7 +118,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
             };
       };
     
-    var defaultWillShowKBDropWarning = function (item, dropWarning) {
+    var defaultOnShowKeyboardDropWarning = function (item, dropWarning) {
         if (dropWarning) {
             var offset = jQuery(item).offset();
             dropWarning = jQuery(dropWarning);
@@ -139,12 +139,12 @@ fluid.moduleLayout = fluid.moduleLayout || {};
      */
     fluid.moduleLayoutHandler = function (container, options, dropManager, dom) {
         options.selectors = options.selectors || {};
+        options.listeners = options.listeners || {};
         
         var that = {};
         that.options = options || {};
         that.options.orientation = that.options.orientation || fluid.orientation.VERTICAL;
         that.options.containerRole = that.options.containerRole || fluid.roles.REGIONS;
-        
         var layout;
         
         if (that.options.selectors.modules) {
@@ -175,12 +175,9 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         options.selectors.movables = options.selectors.dropTargets = computeModules(false);
         options.selectors.selectables = computeModules(true);
 
-        var dropWarning = fluid.utils.jById(options.dropWarningId);
-        var willShowKBDropWarning = options.willShowKBDropWarning || defaultWillShowKBDropWarning;
-
         that.getRelativePosition  = 
            fluid.reorderer.relativeInfoGetter(options.orientation, 
-                 fluid.reorderer.LOGICAL_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY, 
+                 fluid.reorderer.WRAP_LOCKED_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY, 
                  dropManager, dom);
                  
         that.getGeometricInfo = function () {
@@ -203,8 +200,11 @@ fluid.moduleLayout = fluid.moduleLayout || {};
             return togo;
         };
         
-        that.onMoveListener = function(item, requestedPosition) {
-           fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
+        that.listeners = {
+            onMove: function(item, requestedPosition) {
+                fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
+                },
+            onShowKeyboardDropWarning: defaultOnShowKeyboardDropWarning
         };
         
         that.getModel = function() {

@@ -355,7 +355,7 @@ var fluid = fluid || {};
             if (closestTarget && closestTarget !== fluid.dropManager.NO_CHANGE) {
                lastClosest = closestTarget;
               
-               that.dropChangeFirer.fireEvent(closestTarget);
+               that.dropChangeFirer.fire(closestTarget);
             }
         };
         
@@ -425,6 +425,36 @@ var fluid = fluid || {};
                      //(projected.wrapped? fluid.position.AFTER : fluid.position.BEFORE)
                      };
         };
+        
+        function getRelativeElement(element, direction, elements) {
+           var folded = fluid.directionSign(direction);
+      
+           var index = jQuery(elements).index(element) + folded;
+           if (index < 0) {
+               index += elements.length;
+               }
+           index %= elements.length;
+           return elements[index];            
+        }
+        
+        that.logicalFrom = function(element, direction, includeLocked) {
+           var orderables = that.getOwningSpan(element, fluid.position.INTERLEAVED, includeLocked);
+           return {element: getRelativeElement(element, direction, orderables), 
+              position: fluid.position.REPLACE};
+           }
+           
+        that.lockedWrapFrom = function(element, direction, includeLocked) {
+           var base = that.logicalFrom(element, direction, includeLocked);
+           var selectables = that.getOwningSpan(element, fluid.position.INTERLEAVED, includeLocked);
+           var allElements = cache[cacheKey(element)].owner.elements;
+           if (includeLocked || selectables[0] === allElements[0]) return base;
+           var directElement = getRelativeElement(element, direction, allElements);
+           if (lastGeometry.elementMapper(directElement) === "locked") {
+               base.element = null;
+               base.clazz = "locked";  
+           }
+           return base;
+           } 
         
         that.getOwningSpan = function(element, position, includeLocked) {
             var owner = cache[cacheKey(element)].owner; 

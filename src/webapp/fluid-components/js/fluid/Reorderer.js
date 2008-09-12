@@ -72,17 +72,24 @@ fluid = fluid || {};
             avatar: "orderable-avatar"
             },
         selectors: {
-          movables: ".movables",
-          grabHandle: ""
+            dropWarning: ".drop-warning",
+            movables: ".movables",
+            grabHandle: ""
         },
         avatarCreator: defaultAvatarCreator,
         keysets: fluid.defaultKeysets,
         layoutHandlerName: "fluid.listLayoutHandler",
         
+        listeners: {
+           onShowKeyboardDropWarning: null,
+           onMove: null,
+           afterMove: null
+        },
+        
         mergePolicy: {
-          keysets: "replace",
-          "selectors.selectables": "selectors.movables",
-          "selectors.dropTargets": "selectors.movables"
+            keysets: "replace",
+            "selectors.selectables": "selectors.movables",
+            "selectors.dropTargets": "selectors.movables"
         }
     });
     
@@ -179,11 +186,13 @@ fluid = fluid || {};
             options.layoutHandlerName, 
                [container, options, dropManager, thatReorderer.dom]);
         
+        fluid.mergeListeners(thatReorderer.events, thatReorderer.layoutHandler.listeners);
+        
         thatReorderer.activeItem = undefined;
 
         adaptKeysets(options);
  
-        var kbDropWarning = fluid.utils.jById(options.dropWarningId);
+        var kbDropWarning = thatReorderer.locate("dropWarning")
         var mouseDropWarning;
         if (kbDropWarning) {
             mouseDropWarning = kbDropWarning.clone();
@@ -293,12 +302,17 @@ fluid = fluid || {};
                 
                 if (isMovement) {
                     if (kbDropWarning) {
-                        kbDropWarning.hide();
+                        if (relativeItem.clazz === "locked") {
+                            thatReorderer.events.onShowKeyboardDropWarning.fire(thatReorderer.activeItem, kbDropWarning);
+                            kbDropWarning.show();                       
+                        }
+                        else {
+                            kbDropWarning.hide();
+                        }
                     }
-                 //   if (relativeItem.position !== fluid.position.INSIDE) {
-                 //       relativeItem.position = fluid.position.REPLACE;
-                 //   }
-                    thatReorderer.requestMovement(relativeItem, thatReorderer.activeItem);
+                    if (relativeItem.element) {
+                        thatReorderer.requestMovement(relativeItem, thatReorderer.activeItem);
+                    }
             
                 } else if (noModifier(evt)) {
                     jQuery(relativeItem.element).focus();
@@ -324,7 +338,7 @@ fluid = fluid || {};
             if (!requestedPosition || fluid.unwrap(requestedPosition.element) === fluid.unwrap(item)) {
                 return;
             }
-            thatReorderer.events.onMove.fireEvent(item, requestedPosition);
+            thatReorderer.events.onMove.fire(item, requestedPosition);
             dropManager.geometricMove(item, requestedPosition.element, requestedPosition.position);
             //jQuery(thatReorderer.activeItem).removeClass(options.styles.selected);
            
@@ -335,7 +349,7 @@ fluid = fluid || {};
             
             dropManager.updateGeometry(thatReorderer.layoutHandler.getGeometricInfo());
 
-            thatReorderer.events.afterMove.fireEvent(item, requestedPosition);
+            thatReorderer.events.afterMove.fire(item, requestedPosition);
         };
 
         /**
@@ -498,13 +512,7 @@ fluid = fluid || {};
             }
             initItems();
         }
-       
-       thatReorderer.events = {};
-       thatReorderer.events.onMove = fluid.event.getEventFirer();
-       thatReorderer.events.onMove.addListener(thatReorderer.layoutHandler.onMoveListener); 
-       thatReorderer.events.afterMove = fluid.event.getEventFirer();
-       thatReorderer.events.afterMove.addListener(options.afterMoveCallback);
-  
+
        if (options.afterMoveCallbackUrl) {
             thatReorderer.events.afterMove.addListener(
               function () {
@@ -543,36 +551,16 @@ fluid = fluid || {};
         return simpleInit(container, "fluid.gridLayoutHandler", options); 
     };
     
-    
-    fluid.reorderer.getSiblingInfo = function getSiblingInfo (item, orderables, /* NEXT, PREVIOUS */ direction) {
-        var index = jQuery(orderables).index(item) + direction;
-        if (index < 0) {
-            index += orderables.length;
-        }
-        index %= orderables.length;
-        return {element: orderables[index], position: fluid.position.REPLACE};
-    }
-    
-    fluid.reorderer.GEOMETRIC_STRATEGY = "geometric";
-    fluid.reorderer.LOGICAL_STRATEGY = "logical";
+    fluid.reorderer.GEOMETRIC_STRATEGY   = "projectFrom";
+    fluid.reorderer.LOGICAL_STRATEGY     = "logicalFrom";
+    fluid.reorderer.WRAP_LOCKED_STRATEGY = "lockedWrapFrom"
     fluid.reorderer.NO_STRATEGY = null;
     
     fluid.reorderer.relativeInfoGetter = function(orientation, coStrategy, contraStrategy, dropManager, dom) {
         return function(item, direction, includeLocked) {
             var dirorient = fluid.directionOrientation(direction);
             var strategy = dirorient === orientation? coStrategy: contraStrategy;
-            
-            if (strategy === fluid.reorderer.GEOMETRIC_STRATEGY) {
-                 return dropManager.projectFrom(item, direction, includeLocked);
-            }
-            else if (strategy === fluid.reorderer.LOGICAL_STRATEGY) {
-                var selectables = dropManager.getOwningSpan(item, fluid.position.INTERLEAVED, includeLocked);
-                var folded = fluid.directionSign(direction);
-                return fluid.reorderer.getSiblingInfo(item, selectables, folded);
-            }
-            else {
-                return null;
-           }
+            return strategy !== null? dropManager[strategy](item, direction, includeLocked) : null;
         };
     };
     
