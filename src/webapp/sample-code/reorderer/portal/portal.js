@@ -39,7 +39,7 @@ var demo = demo || {};
             styles:  {
                 mouseDrag: "orderable-mouse-drag",
                 dropMarker: "orderable-drop-marker-box",
-                avatar: "orderable-avatar-clone",
+                avatar: "orderable-avatar-clone"
             },
              selectors: {
                 grabHandle: grabHandle,
