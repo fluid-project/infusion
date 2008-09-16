@@ -557,10 +557,10 @@ fluid = fluid || {};
     fluid.reorderer.NO_STRATEGY = null;
     
     fluid.reorderer.relativeInfoGetter = function(orientation, coStrategy, contraStrategy, dropManager, dom) {
-        return function(item, direction, includeLocked) {
+        return function(item, direction, forSelection) {
             var dirorient = fluid.directionOrientation(direction);
             var strategy = dirorient === orientation? coStrategy: contraStrategy;
-            return strategy !== null? dropManager[strategy](item, direction, includeLocked) : null;
+            return strategy !== null? dropManager[strategy](item, direction, forSelection) : null;
         };
     };
     

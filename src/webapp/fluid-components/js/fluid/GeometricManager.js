@@ -39,7 +39,6 @@ var fluid = fluid || {};
      */
     fluid.position = {
         BEFORE: -1,
-        INTERLEAVED: 0,
         AFTER: 1,
         INSIDE: 2,
         REPLACE: 3
@@ -520,7 +519,7 @@ var fluid = fluid || {};
      * for which the member <code>rect</code> is the holder of the rectangle to be tested.
      * @return The cache element which is the most appropriate for the requested motion.
      */
-    fluid.geom.projectFrom = function (baserect, direction, targets, includeLocked) {
+    fluid.geom.projectFrom = function (baserect, direction, targets, forSelection) {
         var axis = fluid.directionAxis(direction);
         var frontSide = fluid.rectSides[direction];
         var backSide = fluid.rectSides[axis * 15 + 5 - direction];
@@ -557,10 +556,11 @@ var fluid = fluid || {};
 
         for (var i = 0; i < targets.length; ++ i) {
             var elem = targets[i];
-            if (elem.clazz === "hidden") {
+            var isPure = elem.element === elem.owner.parentElement;
+            if (elem.clazz === "hidden" || forSelection && isPure) {
                 continue;
             }
-            else if (elem.clazz === "locked" && !includeLocked) {
+            else if (!forSelection && elem.clazz === "locked") {
                 accPen(lockedcollect, elem, 1);
             }
             else {
