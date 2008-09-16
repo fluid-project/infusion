@@ -314,7 +314,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	</target>
 
     <!-- Target: fullWar -->
-    <target name="fullWar" depends="clean, createSrcDistro">
+    <target name="fullWar" depends="clean, createDistro">
 		<copy todir="${sample-code-build}">
 			<fileset dir="${sample-code}">
 				<include name="**/*" />
