@@ -4,8 +4,11 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>Inline Edit Examples</title>
 
-        <link rel="stylesheet" type="text/css" href="../css/fluid.presentation.css" />
+        <!-- <link rel="stylesheet" type="text/css" href="../css/fluid.presentation.css" /> -->
+        <link rel="stylesheet" type="text/css" href="../css/fluid.reset.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.layout.css" />
         <link rel="stylesheet" type="text/css" href="../css/fluid.states.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.themes.css" />
         <link rel="stylesheet" type="text/css" href="../css/InlineEdit.css" />
         
         <script type="text/javascript" src="../js/jquery/jquery-1.2.6.js"></script>
@@ -44,6 +47,13 @@
                         editables : "p"
                     }
                 });
+                /* Example 4 - utilizing selectors to make a clean selection without extra classes or ids */
+                var multiEdit2 = fluid.inlineEdits("#themedExample", {
+                    selectors : {
+                        text : "span",
+                        editables : "td:first-child"
+                    }
+                });
             });
         </script>
 
@@ -80,6 +90,38 @@
         <p>The over <strong class="editableText">quick</strong> brown fox jumped  the lazy dogs and then...</p>
     </blockquote>
 
+
+<div id="themedExample" class="fl-theme-mist fl-component-inlineEdit">
+    <h1> Example 4. Themed Inline Edit Scenarios</h1>
+    <form>
+        <table>
+            <tr>
+                <th>Subject</th>
+                <th>From</th>
+                <th>Date</th>
+                <th>Delete?</th>            
+            </tr>
+            <tr>
+                <td><span>Lecture Room Change</span></td>
+                <td>George O'Malley </td>
+                <td> Jun 10, 2008 1:12 pm </td>
+                <td><input type="checkbox" name="" value="" /></td>
+            </tr>
+            <tr>
+                <td><span>Reading for Tuesday's Lab</span></td>
+                <td>Meredith Grey </td>
+                <td>Jun 6, 2008 1:12 pm </td>
+                <td><input type="checkbox" name="" value="" /></td>
+            </tr>        
+            <tr>
+                <td><span>DNA Polymorphism Exam on Thursday</span></td>
+                <td>Meredith Grey </td>
+                <td> Jun 4, 2008 10:00 am </td>
+                <td><input type="checkbox" name="" value="" /></td>
+            </tr>        
+        </table>
+    </form>
+</div>
 
     </body>
 </html>

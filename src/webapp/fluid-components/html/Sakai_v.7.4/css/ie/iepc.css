@@ -1,0 +1,138 @@
+/*
+	CSS: Internet Explorer
+	Project: Sakai Foundation
+	Developer: Deyan Todorov
+	E-mail: office@websitebg.info
+*/
+body {
+	behavior: url("css/ie/csshover.htc");
+} 
+*html #body,
+*html #body-hide {
+  width:expression(document.body.clientWidth < 815? "814px" : "auto"); 
+}
+*html #body2,
+*html #body-hide2,
+*html #body-hide5 {
+  width:expression(document.body.clientWidth < 911? "910px" : "auto"); 
+}
+*html #body3,
+*html #body-hide3 {
+  width:expression(document.body.clientWidth < 961? "960px" : "auto"); 
+}
+/*
+	=Grid
+*/
+.clear, 
+.block,
+#wrapper,
+#container,
+#left,
+#sidebar,
+#header2,
+#wrapper2,
+#container2,
+#left2,
+#sidebar2,
+#header3,
+#wrapper3,
+#container3,
+.header3-up,
+.header3-down, 
+.header-up, 
+.header-down,
+#wrapper5,
+#container5,
+#sidebar5,
+.widget1, 
+.widget1-head, 
+.widget1-head-left, 
+.widget1-head-right, 
+.widget1-subhead, 
+.widget1-subhead-left, 
+.widget1-subhead-right, 
+.widget1-content-in,
+.lightbox-header,
+.mp-nav {
+  zoom: 1; /* IE fix */
+}
+#wrapper {
+  width: auto;
+  margin-bottom: 16px;
+}
+.widget1 {
+  float: none;
+  width: auto;
+}
+*html a#show-sidebar {
+	position: absolute;
+	top: -74px;
+	right: 189px;
+}
+.add-widget-footer {
+	clear: both;
+	margin: 30px 0 0 295px;
+	padding: 0;
+}
+.create-site-build-course-2 a.fs11 {
+	position: relative;
+	top: -4px;
+	text-decoration: underline;
+}
+div.cns5s {
+	padding-bottom: 0px;
+}
+* html .sign-in-widget-input input {
+	width: 220px;
+}
+*html .site-settings-general span {
+	right: 27px;
+}
+.ssg-table a.ssg-link2 {
+	top: -14px;
+}
+.ssg-table a.ssg-link3 {
+	top: -4px;
+}
+*html .ss-members span.ss-button {
+	right: 18px;
+}
+*html .site-tool-edit span.ss-button {
+	right: 18px;
+}
+.ss-foot-right select {
+	margin-top: 3px;
+}
+.ss-backup .pref-table td select.multiple {
+	height: auto;
+}
+.ste-right-up2 select {
+	top: 16px;
+}
+.wperm div strong {
+	position:relative;
+	top:-2px;
+	margin-right: 10px;
+}
+.wperm div a {
+	position:relative;
+	top:5px;
+	left:10px;
+}
+.stjr_p2_td_2 div a {
+	position: relative;
+	top: 7px;
+	left: 7px;
+}
+/* 
+ IE 5.5 PC Styles
+ ----------------------------------------------- */
+@media tty {
+i{content:"\";/*" "*/}}@m; @import 'iepc5x.css'; @import 'iepc55.css'; /*";}
+}/* */
+
+/* IE 5.0 PC Styles
+ ----------------------------------------------- */
+@media tty {
+i{content:"\";/*" "*/}}; @import 'iepc5x.css'; @import 'iepc50.css'; {;}/*";}
+}/* */

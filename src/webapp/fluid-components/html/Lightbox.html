@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Lightbox Example</title>
+
+        <link rel="stylesheet" type="text/css" href="../css/fluid.presentation.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.states.css" />
+        <link rel="stylesheet" type="text/css" href="../css/Lightbox.css" />
+        
+        <script type="text/javascript" src="../js/jquery/jquery-1.2.6.js"></script>
+        <script type="text/javascript" src="../js/jquery/jARIA.js"></script>
+        <script type="text/javascript" src="../js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../js/jquery/ui.core.js"></script>
+        <script type="text/javascript" src="../js/jquery/ui.draggable.js"></script>
+        <script type="text/javascript" src="../js/jquery/ui.droppable.js"></script>
+        <script type="text/javascript" src="../js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../js/fluid/DragManager.js"></script>
+        <script type="text/javascript" src="../js/fluid/Reorderer.js"></script>
+        <script type="text/javascript" src="../js/fluid/Lightbox.js"></script>
+        
+        <script type="text/javascript">
+            /*
+            // to use a callback, perhaps build into reorderer?
+            var storeSeries = function(container,items,needle) {
+                var keys, arrayOfElements, hashTable;
+                
+                arrayOfElements = $(items,container);
+                // key is an attribute string extracted from items - get needle from items in haystack
+                if (needle) { 
+                    keys = items.contents().find(needle)
+                } else {
+                    
+                }
+                
+                // create hash of elements and keys for serialized callback
+                // DROP MARKER WILL SKEW SERIALIZATION - must be removed before operation
+                hashTable = [];                
+                for(var i=0; i<=arrayOfElements.length; i++){
+                    hashTable.push({key:'',value:i});
+                }
+            
+                // return an array for storing the elements, their identifier, and their order            
+            }
+            
+            var serialize = function (){
+            
+            }
+            */
+            jQuery(document).ready(function () {
+                /* simple sortable gallery */
+                
+                var gallery_1 = fluid.reorderGrid('#gallery_1', {
+                    selectors : {
+                        movables : 'li'
+                    }
+                });
+                
+                var gallery_2 = fluid.lightbox('#gallery_2');
+                
+            });
+        </script>
+        
+	</head>
+	<body>
+	    
+        <h1>Example 1. A simple gallery with captions</h1>
+        <p>You can drag any image around. Images are intentionally stretched to fit a specific width and height in a grid.</p>
+        
+	    <div id="gallery_1" class="fluid-horizontal-order">
+            <li class="galleryItem">
+                <a href="#">
+                    <img src="../images/Banana.jpg" title="Bannana" />
+                    <span class="caption">Bannana</span>
+                </a>
+            </li>
+            <li class="galleryItem">
+                <a href="#">
+                    <img src="../images/Blackberry.jpg" title="Blackberry" />
+                    <span class="caption">Blackberry</span>
+                </a>
+            </li>
+            <li class="galleryItem">
+                <a href="#">
+                    <img src="../images/Cherry.jpg" title="Cherry" />
+                    <span class="caption">Cherry</span>
+                </a>
+            </li>
+            <li class="galleryItem">
+                <a href="#">
+                    <img src="../images/Dragonfruit.jpg" title="Dragonfruit" />
+                    <span class="caption">Dragonfruit</span>
+                </a>
+            </li>
+            <li class="galleryItem">
+                <a href="#">
+                    <img src="../images/Tamarillo.jpg" title="Tamarillo" />
+                    <span class="caption">Tamarillo</span>
+                </a>
+            </li>
+            <li class="galleryItem">
+                <a href="#">
+                    <img src="../images/Fig.jpg" title="Fig" />
+                    <span class="caption">Fig</span>
+                </a>
+            </li>
+            <li class="galleryItem">
+                <a href="#">
+                    <img src="../images/Grapes.jpg" title="Grapes" />
+                    <span class="caption">Grapes</span>
+                </a>
+            </li>
+            <li class="galleryItem">
+                <a href="#">
+                    <img src="../images/Kiwano.jpg" title="Kiwano" />
+                    <span class="caption">Kiwano</span>
+                </a>
+            </li>
+            <li class="galleryItem">
+                <a href="#">
+                    <img src="../images/Kiwi.jpg" title="Kiwi" />
+                    <span class="caption">Kiwi</span>
+                </a>
+            </li>
+            <li class="galleryItem">
+                <a href="#">
+                    <img src="../images/Kumquat.jpg" title="Kumquat" />
+                    <span class="caption">Kumquat</span>
+                </a>
+            </li>
+            <li class="galleryItem">
+                <a href="#">
+                    <img src="../images/Lemon.jpg" title="Lemon" />
+                    <span class="caption">Lemon</span>
+                </a>
+            </li>
+            <li class="galleryItem">
+                <a href="#">
+                    <img src="../images/RedApple.jpg" title="Red Apple" />
+                    <span class="caption">Red Apple</span>
+                </a>
+            </li>
+        </div>
+
+
+        <h1>Example 1. A simple gallery with captions</h1>
+        <p>You can drag any image around. Images are intentionally stretched to fit a specific width and height in a grid.</p>
+
+	    <div id="gallery_2" class="fluid-horizontal-order">
+	        
+            <div id="gallery_2lightbox-cell:1:" class="galleryItem">
+                <a href="#">
+                    <img src="../images/Banana.jpg" title="This is a gallery item" />
+                    <span class="caption">Bannana</span>
+                </a>
+            </div>
+            <div id="gallery_2lightbox-cell:2:" class="galleryItem">
+                <a href="#">
+                    <img src="../images/Blackberry.jpg" title="This is a gallery item" />
+                    <span class="caption">Blackberry</span>
+                </a>
+            </div>
+            <div id="gallery_2lightbox-cell:3:" class="galleryItem">
+                <a href="#">
+                    <img src="../images/Cherry.jpg" title="This is a gallery item" />
+                    <span class="caption">Cherry</span>
+                </a>
+            </div>
+            <div id="gallery_2lightbox-cell:4:" class="galleryItem">
+                <a href="#">
+                    <img src="../images/Dragonfruit.jpg" title="This is a gallery item" />
+                    <span class="caption">Dragonfruit</span>
+                </a>
+            </div>
+            
+        </div>        
+	</body>
+</html>
+

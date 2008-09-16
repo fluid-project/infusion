@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.themes.css" />
+
+		<title>Sakai Redux</title>
+        
+        <style type="text/css">
+            /* Sakai specific overrides to framework */
+            html, body {}
+            /* column technique from ALA : http://alistapart.com/articles/holygrail*/
+            .content        {padding:0 300px;}
+            .midColumn      {width:100%;}
+            .rightColumn    {margin-right:-300px; position:relative;}
+            .leftColumn     {margin-left:-100%; position:relative; right:300px; } 
+            * html .leftColumn {left: 300px;}  /* IE6 right column fix */
+            /*---------------------------------------------------------------------*/
+           
+            .sakai-widget-container {padding:5px; margin:5px;}
+        </style>
+        
+	</head>
+	<body class="fl-theme-debug">
+        <!-- Three column layout -->
+        <div class="fl-container-flex header">
+            <h1>My Dashboard</h1>
+            <p>
+                Joe Instructor
+                <ul>
+                    <li><a href="#">(Sign Out)</a></li>
+                    <li><a href="#">Preferences</a></li>
+                    <li><a href="#">Help</a>
+                </ul>
+            </p>
+        </div>
+        <!-- Column Management -->
+        <div class="content">            
+            <div class="fl-force-left midColumn">
+                <div class="sakai-widget-container"></div>
+            </div>
+            
+            <div class="fl-container-300 fl-force-left leftColumn">
+                <div class="sakai-widget-container"></div>
+            </div>
+
+            <div class="fl-container-300 fl-force-left rightColumn">
+                <div class="sakai-widget-container"></div>
+            </div>
+            
+        </div>
+        <!-- utility markup -->
+        <div id="addwidgetslightbox" class="overlay-lightbox" style="display: none;"></div>
+	</body>
+</html>
+

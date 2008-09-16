@@ -4,7 +4,9 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>Reorder Examples</title>
 
-        <link rel="stylesheet" type="text/css" href="../css/fluid.presentation.css" />
+        <!-- <link rel="stylesheet" type="text/css" href="../css/fluid.presentation.css" /> -->
+        <link rel="stylesheet" type="text/css" href="../css/fluid.reset.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.layout.css" />
         <link rel="stylesheet" type="text/css" href="../css/fluid.states.css" />
         <link rel="stylesheet" type="text/css" href="../css/Reorderer.css" />
         
@@ -29,8 +31,9 @@
                 /* only specific list items are sortable */
                 var reorder_example_b = fluid.reorderList('#myTabs',  {
                     selectors : {
-                        movables : 'li'
-                    }
+                        movables : 'a'
+                    },
+                    orientation : fluid.orientation.HORIZONTAL
                 });
                 
                 /* two-dimensional sorting in a grid */                
