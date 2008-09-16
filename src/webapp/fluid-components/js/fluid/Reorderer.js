@@ -575,7 +575,6 @@ fluid = fluid || {};
         return function() {
            return {
                extents:[{orientation : orientation, 
-                         disposition: fluid.position.INTERLEAVED, 
                          elements   : dom.fastLocate("dropTargets")
                          }
                          ],

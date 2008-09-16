@@ -187,7 +187,6 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                 var column = layout.columns[col];
                 var thisEls = {
                     orientation: that.options.orientation,
-                    disposition: column.elements.length === 0? fluid.position.INSIDE: fluid.position.INTERLEAVED,
                     elements: jQuery.makeArray(column.elements),
                     parentElement: column.container
                 };
