@@ -53,6 +53,7 @@ fluid = fluid || {};
                 setCaretToStart(that.editField[0]);
             }
         }, 0);
+        that.events.afterBeginEdit.fire();
     }
 
 
@@ -102,6 +103,8 @@ fluid = fluid || {};
         
     function makeEditHandler(that) {
         return function () {
+            var prevent = that.events.onBeginEdit.fire();
+            if (prevent) return true;
             edit(that);
             return false;
         }; 
@@ -266,8 +269,6 @@ fluid = fluid || {};
        
         that.model = {value: ""};
        
-        that.modelFirer = fluid.event.getEventFirer();
-        
         that.edit = function () {
             edit(that);
         };
@@ -280,7 +281,7 @@ fluid = fluid || {};
             return that.options.useTooltip && $.fn.tooltip;
         };
         
-        that.render = function (source) {
+        that.refreshView = function (source) {
             if (that.model.value) {
                 showEditedText(that);
             } else if (that.options.defaultViewText) {
@@ -298,14 +299,14 @@ fluid = fluid || {};
             var change = that.model.value !== newValue;
             if (change) {
                 that.model.value = newValue;
-                that.modelFirer.fire(newValue);
+                that.events.modelChanged.fire(newValue);
             }
-            that.render(source); // Always render, because of possibility of initial event
+            that.refreshView(source); // Always render, because of possibility of initial event
         };
 
         setupInlineEdit(componentContainer, that);
         
-        fluid.initDecorators(that);
+        that.decorators = fluid.initComponents(fluid, that, "componentDecorators", that, fluid.COMPONENT_OPTIONS);
         
         return that;
     };
@@ -345,6 +346,12 @@ fluid = fluid || {};
             defaultViewText: "inlineEdit-invitation-text",
             tooltip: "inlineEdit-tooltip",
             focus: "inlineEdit-focus"
+        },
+        
+        events: {
+            modelChanged: null,
+            onBeginEdit: "preventable",
+            afterBeginEdit: null,
         },
         
         paddings: {

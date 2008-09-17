@@ -33,7 +33,7 @@ fluid = fluid || {};
         return markupNode;
     }
   
-    function render(that) {
+    function refreshView(that) {
         if (that.state === STATE_INITIAL) {
             that.locate("undoContainer").hide();
             that.locate("redoContainer").hide();
@@ -47,32 +47,36 @@ fluid = fluid || {};
             that.locate("redoContainer").show();          
         }
     }
+   
     
     function bindHandlers(that) {
-        that.component.modelFirer.addListener(
-            function () {
-                that.state = STATE_CHANGED;
-                render(that);
-            }
-        );
-        
+      
         that.locate("undoControl").click( 
             function () {
                 fluid.model.copyModel(that.extremalModel, that.component.model);
                 fluid.model.copyModel(that.component.model, that.initialModel);
-                that.component.render();
+                that.component.refreshView();
                 that.state = STATE_REVERTED;
-                render(that);
+                refreshView(that);
             }
         );
         that.locate("redoControl").click( 
             function () {
                 fluid.model.copyModel(that.component.model, that.extremalModel);
-                that.component.render();
+                that.component.refreshView();
                 that.state = STATE_CHANGED;
-                render(that);
+                refreshView(that);
             }
         );
+        return {
+            modelChanged: function () {
+                that.state = STATE_CHANGED;
+                refreshView(that);
+            },
+            onBeginEdit: function () {
+                fluid.model.copyModel(that.initialModel, that.component.model);
+            }
+        }
     }
     /**
      * Decorates a target component with the function of "undoability"
@@ -91,9 +95,12 @@ fluid = fluid || {};
         fluid.model.copyModel(that.initialModel, component.model);
         
         that.state = STATE_INITIAL;
+        refreshView(that);
+        var listeners = bindHandlers(that);
         
-        render(that);
-        bindHandlers(that);
+        that.returnedOptions = {
+            listeners: listeners
+        };
         return that;
     };
   

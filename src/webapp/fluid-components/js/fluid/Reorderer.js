@@ -74,13 +74,14 @@ fluid = fluid || {};
         selectors: {
             dropWarning: ".drop-warning",
             movables: ".movables",
-            grabHandle: ""
+            grabHandle: "",
+            stylisticOffset: ""
         },
         avatarCreator: defaultAvatarCreator,
         keysets: fluid.defaultKeysets,
         layoutHandlerName: "fluid.listLayoutHandler",
         
-        listeners: {
+        events: {
            onShowKeyboardDropWarning: null,
            onMove: null,
            afterMove: null
@@ -184,7 +185,7 @@ fluid = fluid || {};
         
         thatReorderer.layoutHandler = fluid.utils.invokeGlobalFunction(
             options.layoutHandlerName, 
-               [container, options, dropManager, thatReorderer.dom]);
+               [container, options, dropManager, thatReorderer.dom], {fluid: fluid});
         
         fluid.mergeListeners(thatReorderer.events, thatReorderer.layoutHandler.listeners);
         
@@ -527,6 +528,7 @@ fluid = fluid || {};
        thatReorderer.refresh = function() {
        	   thatReorderer.dom.refresh("movables");
        	   thatReorderer.dom.refresh("selectables");
+           thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
            thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
            thatReorderer.dom.refresh("dropTargets");
        };

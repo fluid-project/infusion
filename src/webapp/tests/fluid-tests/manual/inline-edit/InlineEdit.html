@@ -94,8 +94,7 @@
         </table>
         
         <script type="text/javascript">
-            var editor1 = fluid.inlineEdit("#inline-edit1");
-            fluid.undoDecorator(editor1);
+            var editor1 = fluid.inlineEdit("#inline-edit1", {componentDecorators: "fluid.undoDecorator"});
             fluid.inlineEdit(jQuery("#inline-edit2"));
             fluid.inlineEdit(document.getElementById("inline-edit3"));
             fluid.inlineEdit("#inline-edit4");
@@ -105,8 +104,7 @@
             fluid.inlineEdit("#inline-edit7", {defaultViewText: false});
             fluid.inlineEdit("#inline-edit8", {useTooltip: true});
             fluid.inlineEdit("#inline-edit9", {useTooltip: true, tooltipText:"Go on, I dares ya - click on it..."});
-            var e10 = fluid.inlineEdit("#inline-edit10");
-            fluid.undoDecorator(e10);
+            fluid.inlineEdit("#inline-edit10", {componentDecorators: "fluid.undoDecorator"});
             fluid.inlineEdits("#inline-edit11", {useTooltip: true});
         </script>
 	</body>

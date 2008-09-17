@@ -385,6 +385,12 @@ var fluid = fluid || {};
     
     fluid.instantiateFirers = function (that, options) {
         that.events = {};
+        if (options.events) {
+            for (var event in options.events) {
+                var eventType = options.events[event];
+                that.events[event] = fluid.event.getEventFirer(eventType === "unicast", eventType === "preventable");
+            }
+        }
         fluid.mergeListeners(that.events, options.listeners);
     };
     
@@ -425,6 +431,41 @@ var fluid = fluid || {};
         return that;
     };
     
+    fluid.COMPONENT_OPTIONS = {};
+    
+    fluid.initComponents = function (fluid, that, className) {
+        var entry = that.options[className];
+        if (!entry) return;
+        var entries = jQuery.makeArray(entry);
+        args = [];
+        var optindex = -1;
+        var togo = [];
+        for (var i = 3; i < arguments.length; ++ i) {
+            if (arguments[i] === fluid.COMPONENT_OPTIONS) {
+                optindex = i - 3;
+            }
+            else {
+                args[i - 3] = arguments[i];
+            }
+        }
+        for (var i = 0; i < entries.length; ++ i) {
+            var entry = entries[i];
+            if (optindex !== -1 && entry.options) {
+                args[optindex] = entry.options;
+            }
+            var entryType = typeof(entry) === "string"? entry : entry.type;
+            togo[i] = fluid.utils.invokeGlobalFunction(entryType, args, {fluid: fluid});
+            var returnedOptions = togo[i].returnedOptions;
+            if (returnedOptions) {
+                jQuery.extend(that.options, returnedOptions);
+                if (returnedOptions.listeners) {
+                    fluid.mergeListeners(that.events, returnedOptions.listeners);
+                }
+            }
+        }
+        return togo;
+    };
+    
     fluid.initDomBinder = function (that) {
         that.dom = fluid.createDomBinder(that.container, that.options.selectors);
         that.locate = that.dom.locate;      
@@ -437,11 +478,11 @@ var fluid = fluid || {};
      * @param {Object} name a fully-qualified creator function name, for example, "fluid.uploader"
      * @param {Object} creatorArgs the arguments you want to pass to the creator function
      */
-    fluid.createObjectForName = function (name, creatorArgs) {
-        return fluid.utils.invokeGlobalFunction(name, $.makeArray(creatorArgs));
+    fluid.createObjectForName = function (name, creatorArgs, environment) {
+        return fluid.utils.invokeGlobalFunction(name, $.makeArray(creatorArgs), environment);
     };
     
-    fluid.initDecorators = function (that) {
+    fluid.initDecorators = function (that, environment) {
         var decorators = that.options.componentDecorators;
         if (!decorators) {
             return;
@@ -452,7 +493,7 @@ var fluid = fluid || {};
         }
         for (var i = 0; i < decorators.length; i += 1) {
             var decoratorName = decorators[i];
-            fluid.createObjectForName(decoratorName, [that, that.options[decoratorName]]);
+            fluid.createObjectForName(decoratorName, [that, that.options[decoratorName]], environment);
         }
     };
     
@@ -489,13 +530,16 @@ var fluid = fluid || {};
     
     fluid.event = {};
     
-    fluid.event.getEventFirer = function () {
+    fluid.event.getEventFirer = function (unicast, preventable) {
         var log = fluid.utils.debug;
         var listeners = {};
         return {
             addListener: function (listener, namespace, exclusions) {
                 if (!listener) {
                     return;
+                }
+                if (unicast) {
+                    namespace = "unicast";
                 }
                 if (!namespace) {
                     if (!listener.$$guid) {
@@ -537,7 +581,10 @@ var fluid = fluid || {};
                     }
                     if (!excluded) {
                         try {
-                            lisrec.listener.apply(null, arguments);
+                            var ret = lisrec.listener.apply(null, arguments);
+                            if (preventable && ret === true) {
+                                return true;
+                            }
                         }
                         catch (e) {
                             log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
@@ -552,7 +599,7 @@ var fluid = fluid || {};
     fluid.model = {};
    
     /** Copy a source "model" onto a target **/
-    fluid.model.copyModel = function copyModel(target, source) {
+    fluid.model.copyModel = function (target, source) {
         fluid.utils.clear(target);
         jQuery.extend(true, target, source);
     };
@@ -573,10 +620,17 @@ var fluid = fluid || {};
         root[segs[segs.length - 1]] = newValue;
     };
       
-    fluid.model.getBeanValue = function (root, EL) {
+    fluid.model.getBeanValue = function (root, EL, environment) {
         var segs = fluid.model.parseEL(EL);
         for (var i = 0; i < segs.length; i += 1) {
-            root = root[segs[i]];
+            var segment = segs[i];
+            if (environment && environment[segment]) {
+                root = environment[segment];
+                environment = null;
+            }
+            else {
+                root = root[segs[i]];
+            }
             if (!root) {
                 return root;
             }
@@ -711,8 +765,8 @@ var fluid = fluid || {};
         return target;     
     };
     
-    fluid.utils.invokeGlobalFunction = function (functionPath, args) {
-        return fluid.model.getBeanValue(window, functionPath).apply(null, args);
+    fluid.utils.invokeGlobalFunction = function (functionPath, args, environment) {
+        return fluid.model.getBeanValue(window, functionPath, environment).apply(null, args);
     };
     
     /**

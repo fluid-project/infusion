@@ -22,9 +22,10 @@
                 var sectionNameEdits = fluid.inlineEdits(".sectionTable", {
                     useTooltip: true,
                     selectOnEdit: true,
-                    componentDecorators: "fluid.undoDecorator",
-                    "fluid.undoDecorator": {
-                        renderer: myUndoRenderer
+                    componentDecorators: {type: "fluid.undoDecorator",
+                                          options: {
+                                              renderer: myUndoRenderer
+                                              }
                     }
                 });
             

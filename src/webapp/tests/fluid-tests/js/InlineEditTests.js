@@ -476,8 +476,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
                 $("#display-undoable").text(initialValue);
 
-                var editor = fluid.inlineEdit("#inline-edit-undo");
-                var undoer = fluid.undoDecorator(editor);
+                var editor = fluid.inlineEdit("#inline-edit-undo", {componentDecorators: "fluid.undoDecorator"});
+                var undoer = editor.decorators[0];
+                
                 var undo = insistSelect("There should be an undo container", undoer, "undoContainer");
                 var redo = insistSelect("There should be a redo container", undoer, "redoContainer");
 
@@ -506,15 +507,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.expect(15);
                 $("#display-undoable").text(initialValue);
     
-                var editor1 = fluid.inlineEdit("#inline-edit-undo");
-                var undoer1 = fluid.undoDecorator(editor1);
+                var editor1 = fluid.inlineEdit("#inline-edit-undo", {componentDecorators: "fluid.undoDecorator"});
+                var undoer1 = editor1.decorators[0];
                 var undo1 = insistSelect("There should be an undo container", undoer1, "undoContainer"); // 1
                 var redo1 = insistSelect("There should be a redo container", undoer1, "redoContainer"); // 2
                 assertVisState(undo1, redo1, false, false); // 4
                 
                 $("#display-undoable2").text(initialValue);
-                var editor2 = fluid.inlineEdit("#inline-edit-undo2");
-                var undoer2 = fluid.undoDecorator(editor2);
+                var editor2 = fluid.inlineEdit("#inline-edit-undo2", {componentDecorators: "fluid.undoDecorator"});
+                var undoer2 = editor2.decorators[0];
                 
                 var undo2 = insistSelect("There should be an undo container", undoer2, "undoContainer"); // 5
                 var redo2 = insistSelect("There should be a redo container", undoer2, "redoContainer"); // 6
