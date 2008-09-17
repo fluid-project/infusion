@@ -464,7 +464,7 @@ fluid = fluid || {};
     
         var dropChangeListener = function(dropTarget) {
              fluid.moveDom(dropMarker, dropTarget.element, dropTarget.position);
-             dropMarker.show();
+             dropMarker.css("display","");
              if (mouseDropWarning) {
                  if (dropTarget.lockedelem) {
                      mouseDropWarning.show();
