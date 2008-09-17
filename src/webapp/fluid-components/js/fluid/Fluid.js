@@ -137,19 +137,29 @@ var fluid = fluid || {};
     
     /**
      * Retreives and stores a component's default settings centrally.
-     * 
+     * @param {boolean} (options) if true, manipulate a global option (for the head
+     *   component) rather than instance options.
      * @param {String} componentName the name of the component
      * @param {Object} (optional) an container of key/value pairs to set
      * 
      */
     var defaultsStore = {};
-    fluid.defaults = function (componentName, defaultsObject) {
-        if (arguments.length > 1) {
-            defaultsStore[componentName] = defaultsObject;   
+    var globalDefaultsStore = {};
+    fluid.defaults = function () {
+        var offset = 0;
+        var store = defaultsStore;
+        if (typeof(arguments[0]) === "boolean") {
+          store = globalDefaultsStore;
+          offset = 1;
+        }
+        var componentName = arguments[offset];
+        var defaultsObject = arguments[offset + 1];
+        if (defaultsObject) {
+            store[componentName] = defaultsObject;   
             return defaultsObject;
         }
         
-        return defaultsStore[componentName];
+        return store[componentName];
     };
     
     /** Dump a DOM element into a readily recognisable form for debugging - produces a
@@ -436,19 +446,20 @@ var fluid = fluid || {};
     
     fluid.COMPONENT_OPTIONS = {};
     
-    fluid.initComponents = function (fluid, that, className) {
+    
+    fluid.initComponent = function (that, className, args) {
+        return fluid.initComponents(that, className, args)[0];
+    }
+    
+    fluid.initComponents = function (that, className, args) {
         var entry = that.options[className];
         if (!entry) return;
         var entries = jQuery.makeArray(entry);
-        args = [];
         var optindex = -1;
         var togo = [];
-        for (var i = 3; i < arguments.length; ++ i) {
-            if (arguments[i] === fluid.COMPONENT_OPTIONS) {
+        for (var i = 0; i < args.length; ++ i) {
+            if (args[i] === fluid.COMPONENT_OPTIONS) {
                 optindex = i - 3;
-            }
-            else {
-                args[i - 3] = arguments[i];
             }
         }
         for (var i = 0; i < entries.length; ++ i) {
@@ -457,10 +468,13 @@ var fluid = fluid || {};
                 args[optindex] = entry.options;
             }
             var entryType = typeof(entry) === "string"? entry : entry.type;
+            var globDef = fluid.defaults(true, entryType);
+            fluid.utils.merge("reverse", that.options, globDef);
+            
             togo[i] = fluid.utils.invokeGlobalFunction(entryType, args, {fluid: fluid});
             var returnedOptions = togo[i].returnedOptions;
             if (returnedOptions) {
-                jQuery.extend(that.options, returnedOptions);
+                fluid.utils.merge(that.options.mergePolicy, that.options, returnedOptions);
                 if (returnedOptions.listeners) {
                     fluid.mergeListeners(that.events, returnedOptions.listeners);
                 }
@@ -716,7 +730,7 @@ var fluid = fluid || {};
     };
     
     function mergeImpl(policy, basePath, target, source) {
-        var thisPolicy = policy? policy[basePath] : policy;
+        var thisPolicy = policy && typeof(policy) !== "string"? policy[basePath] : policy;
         if (typeof(thisPolicy) === "function") {
             thisPolicy.apply(null, target, source);
             return target;
@@ -739,7 +753,9 @@ var fluid = fluid || {};
                     mergeImpl(policy, path, thisTarget, thisSource);
                 }
                 else {
-                    target[name] = thisSource;
+                    if (thisTarget === null || thisTarget === undefined || thisPolicy !== "reverse") {
+                       target[name] = thisSource;
+                    }
                 }
             }
         }
@@ -749,11 +765,13 @@ var fluid = fluid || {};
     fluid.utils.merge = function (policy, target) {
         var path = "";
         
-        for (var i = 2; i < arguments.length; i += 1) {
+        for (var i = 2; i < arguments.length; ++i) {
             var source = arguments[i];
-            mergeImpl(policy, path, target, source);
+            if (source !== null && source !== undefined) {
+                mergeImpl(policy, path, target, source);
+            }
         }
-        if (policy) {
+        if (policy && typeof(policy) !== "string") {
             for (var key in policy) {
                 var elrh = policy[key];
                 if (typeof(elrh) === 'string' && elrh !== "replace") {

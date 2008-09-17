@@ -60,7 +60,6 @@ fluid = fluid || {};
     };   
     
     fluid.defaults("fluid.reorderer", {
-        containerRole: fluid.roles.LIST,
         instructionMessageId: "message-bundle:",
         styles: {
             defaultStyle: "orderable-default",
@@ -79,7 +78,7 @@ fluid = fluid || {};
         },
         avatarCreator: defaultAvatarCreator,
         keysets: fluid.defaultKeysets,
-        layoutHandlerName: "fluid.listLayoutHandler",
+        layoutHandler: "fluid.listLayoutHandler",
         
         events: {
            onShowKeyboardDropWarning: null,
@@ -183,11 +182,8 @@ fluid = fluid || {};
         
         var dropManager = fluid.dropManager();
         
-        thatReorderer.layoutHandler = fluid.utils.invokeGlobalFunction(
-            options.layoutHandlerName, 
-               [container, options, dropManager, thatReorderer.dom], {fluid: fluid});
-        
-        fluid.mergeListeners(thatReorderer.events, thatReorderer.layoutHandler.listeners);
+        thatReorderer.layoutHandler = fluid.initComponent(thatReorderer,
+            "layoutHandler", [container, options, dropManager, thatReorderer.dom]);
         
         thatReorderer.activeItem = undefined;
 
@@ -526,8 +522,8 @@ fluid = fluid || {};
         }
        
        thatReorderer.refresh = function() {
-       	   thatReorderer.dom.refresh("movables");
-       	   thatReorderer.dom.refresh("selectables");
+           thatReorderer.dom.refresh("movables");
+           thatReorderer.dom.refresh("selectables");
            thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
            thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
            thatReorderer.dom.refresh("dropTargets");
@@ -539,9 +535,9 @@ fluid = fluid || {};
        };
     
     // Simplified API for reordering lists and grids.
-    var simpleInit = function (container, layoutHandlerName, options) {
+    var simpleInit = function (container, layoutHandler, options) {
         options = options || {};
-        options.layoutHandlerName = layoutHandlerName;
+        options.layoutHandler = layoutHandler;
         return fluid.reorderer(container, options);
     };
     
@@ -586,10 +582,14 @@ fluid = fluid || {};
         };
     }
     
+    fluid.defaults(true, "fluid.listLayoutHandler", 
+        {orientation:   fluid.orientation.VERTICAL,
+         containerRole: fluid.roles.LIST
+        });
+    
     // Public layout handlers.
     fluid.listLayoutHandler = function (container, options, dropManager, dom) {
         var that = {};
-        options.orientation = options.orientation || fluid.orientation.VERTICAL;
 
         that.getRelativePosition = 
           fluid.reorderer.relativeInfoGetter(options.orientation, 
@@ -600,6 +600,9 @@ fluid = fluid || {};
         return that;
     }; // End ListLayoutHandler
 
+    fluid.defaults(true, "fluid.gridLayoutHandler", 
+        {orientation:  fluid.orientation.HORIZONTAL,
+         containerRole: fluid.roles.GRID});
     /*
      * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
      * changes dimensions when the window changes size. As a result, when the user presses the up or
@@ -610,7 +613,6 @@ fluid = fluid || {};
      */
     fluid.gridLayoutHandler = function (container, options, dropManager, dom) {
         var that = {};
-        options.orientation = options.orientation || fluid.orientation.HORIZONTAL;
 
         that.getRelativePosition = 
            fluid.reorderer.relativeInfoGetter(options.orientation, 

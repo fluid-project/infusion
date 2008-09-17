@@ -95,8 +95,7 @@ fluid = fluid || {};
         itemFinderFn = (options.selectors && options.selectors.movables) || createItemFinder(containerEl, containerEl.id);
 
         reordererOptions = {
-            layoutHandlerName: "fluid.gridLayoutHandler",
-            containerRole: fluid.roles.GRID,
+            layoutHandler: "fluid.gridLayoutHandler",
             afterMoveCallback: orderChangedFn,
             selectors: {
                 movables: itemFinderFn

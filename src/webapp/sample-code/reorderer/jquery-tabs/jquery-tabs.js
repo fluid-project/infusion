@@ -28,7 +28,7 @@ demo.initJqueryTabs = function () {
     addTabActivateHandler (tabList);
 
     var options = {
-      layoutHandlerName: "fluid.listLayoutHandler",
+      layoutHandler: "fluid.listLayoutHandler",
       orientation: fluid.orientation.HORIZONTAL,
       styles: {
         defaultStyle: "default-tab",

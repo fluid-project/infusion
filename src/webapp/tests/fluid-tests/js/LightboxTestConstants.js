@@ -109,7 +109,7 @@ function findImgsInLightbox() {
 function createLightbox() {
     var lightboxRoot = fetchLightboxRoot();
     return fluid.reorderer(lightboxRoot, {
-        layoutHandlerName: "fluid.gridLayoutHandler",
+        layoutHandler: "fluid.gridLayoutHandler",
         selectors: {
             movables: findOrderableByDivAndId
         },
@@ -120,7 +120,7 @@ function createLightbox() {
 function createLightboxWithNoOrderables() {
     var lightboxRoot = fetchLightboxRoot();
     return fluid.reorderer(lightboxRoot, {
-        layoutHandlerName: "fluid.gridLayoutHandler",
+        layoutHandler: "fluid.gridLayoutHandler",
         selectors: {
             movables: findNoOrderables
         },

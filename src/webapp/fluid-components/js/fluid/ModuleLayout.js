@@ -128,6 +128,10 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         }
     };
     
+    fluid.defaults(true, "fluid.moduleLayoutHandler", 
+        {orientation: fluid.orientation.VERTICAL,
+         containerRole: fluid.roles.REGIONS});
+    
     /**
      * Module Layout Handler for reordering content modules.
      * 
@@ -138,16 +142,10 @@ fluid.moduleLayout = fluid.moduleLayout || {};
      * - Wrapping is not necessary at this first pass, but is ok
      */
     fluid.moduleLayoutHandler = function (container, options, dropManager, dom) {
-        options.selectors = options.selectors || {};
-        options.listeners = options.listeners || {};
-        
         var that = {};
-        that.options = options || {};
-        that.options.orientation = that.options.orientation || fluid.orientation.VERTICAL;
-        that.options.containerRole = that.options.containerRole || fluid.roles.REGIONS;
         var layout;
         
-        if (that.options.selectors.modules) {
+        if (options.selectors.modules) {
             layout = fluid.moduleLayout.layoutFromFlat(container, dom.locate("columns"), dom.locate("modules"));
         }
         if (!layout) {
@@ -156,24 +154,9 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         }
 
         function isLocked(item) {
-            var lockedModules = that.options.selectors.lockedModules? dom.fastLocate("lockedModules") : [];
+            var lockedModules = options.selectors.lockedModules? dom.fastLocate("lockedModules") : [];
             return jQuery.inArray(item, lockedModules) !== -1;
             }
-      
-        function computeModules(all) {
-            return function() {
-                var modules = fluid.accumulate(layout.columns, function(column, list) {
-                    return list.concat(column.elements); // note that concat will not work on a jQuery
-                    }, []);
-                if (!all) {
-                   fluid.remove_if(modules, isLocked);
-                }
-                return modules;
-            };
-        }
-
-        options.selectors.movables = options.selectors.dropTargets = computeModules(false);
-        options.selectors.selectables = computeModules(true);
 
         that.getRelativePosition  = 
            fluid.reorderer.relativeInfoGetter(options.orientation, 
@@ -186,7 +169,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
             for (var col = 0; col < layout.columns.length; col++) {
                 var column = layout.columns[col];
                 var thisEls = {
-                    orientation: that.options.orientation,
+                    orientation: options.orientation,
                     elements: jQuery.makeArray(column.elements),
                     parentElement: column.container
                 };
@@ -199,11 +182,30 @@ fluid.moduleLayout = fluid.moduleLayout || {};
             return togo;
         };
         
-        that.listeners = {
-            onMove: function(item, requestedPosition) {
-                fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
-                },
-            onShowKeyboardDropWarning: defaultOnShowKeyboardDropWarning
+        function computeModules(all) {
+            return function() {
+                var modules = fluid.accumulate(layout.columns, function(column, list) {
+                    return list.concat(column.elements); // note that concat will not work on a jQuery
+                    }, []);
+                if (!all) {
+                   fluid.remove_if(modules, isLocked);
+                }
+                return modules;
+            };
+        }
+        
+        that.returnedOptions = {
+            selectors: {
+                movables: computeModules(false),
+                dropTargets: computeModules(false),
+                selectables: computeModules(true)
+            },
+            listeners: {
+                onMove: function(item, requestedPosition) {
+                    fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
+                    },
+                onShowKeyboardDropWarning: defaultOnShowKeyboardDropWarning
+             }
         };
         
         that.getModel = function() {

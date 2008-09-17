@@ -306,7 +306,8 @@ fluid = fluid || {};
 
         setupInlineEdit(componentContainer, that);
         
-        that.decorators = fluid.initComponents(fluid, that, "componentDecorators", that, fluid.COMPONENT_OPTIONS);
+        that.decorators = fluid.initComponents(fluid, that, "componentDecorators", 
+            [that, fluid.COMPONENT_OPTIONS]);
         
         return that;
     };
