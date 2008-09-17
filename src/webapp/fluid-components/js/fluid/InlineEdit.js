@@ -351,7 +351,7 @@ fluid = fluid || {};
         events: {
             modelChanged: null,
             onBeginEdit: "preventable",
-            afterBeginEdit: null,
+            afterBeginEdit: null
         },
         
         paddings: {
