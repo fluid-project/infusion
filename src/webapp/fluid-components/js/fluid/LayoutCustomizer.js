@@ -14,19 +14,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid = fluid || {};
 
 (function (fluid) {
-    var createLayoutCustomizer = function (container, layout, perms, afterMoveCallbackUrl, userOptions) {
-        var assembleOptions = {
-            afterMoveCallbackUrl: afterMoveCallbackUrl,
-            layoutHandler: "fluid.moduleLayoutHandler",
-            moduleLayout: {
-                permissions: perms,
-                layout: layout
-          }
-        };
-        var options = jQuery.extend(true, assembleOptions, userOptions);
-        return fluid.reorderer(container, options);
-    };
-
+ 
     /**
      * Simple way to create a layout customizer.
      * @param {selector} a selector for the layout container
