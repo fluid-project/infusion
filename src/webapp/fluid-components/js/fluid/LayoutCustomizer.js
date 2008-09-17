@@ -28,15 +28,6 @@ fluid = fluid || {};
     };
 
     /**
-     * Creates a layout customizer from a combination of a layout and permissions object.
-     * @param {Object} layout a layout object. See http://wiki.fluidproject.org/x/FYsk for more details
-     * @param {Object} perms a permissions data structure. See the above documentation
-     */
-    fluid.initLayoutCustomizer = function (layout, perms, afterMoveCallbackUrl, options) {
-        return createLayoutCustomizer("#" + layout.id, layout, perms, afterMoveCallbackUrl, options);
-    };
-
-    /**
      * Simple way to create a layout customizer.
      * @param {selector} a selector for the layout container
      * @param {Object} a map of selectors for columns and modules within the layout

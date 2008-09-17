@@ -34,6 +34,9 @@ var column2id = "c2";
 var column3id = "c3";
 var column4id = "c4";
 
+var columnSelector = "[id^='c']";
+var portletSelector = "[id^='portlet']";
+
 var emptyLayout = { id:"t3", columns:[ ] };   
 
 var portletRootClone;
@@ -41,8 +44,15 @@ var portletHandler;
 var layoutClone;
 
 function initReorderer() {
-    var options = {dropWarningId: "drop-warning"};
-    return fluid.initLayoutCustomizer (layoutClone, demo.portal.dropTargetPerms, undefined, options);
+    var options = {
+        selectors: {
+            columns: columnSelector,
+            modules: portletSelector,
+            lockedModules: ".locked"
+        },
+        dropWarningId: "drop-warning"
+    };
+    return fluid.reorderLayout ("#" + portalRootId, options);
 }
         
         

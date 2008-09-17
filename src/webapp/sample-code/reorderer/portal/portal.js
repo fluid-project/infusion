@@ -12,22 +12,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
     
 (function (jQuery, fluid) {
-    var layout = { 
-        id: "portalPageBodyColumns",
-        columns:[
-            { id:"column_u15l1s9", children:["portlet_u15l1n10", "portlet_u15l1n11"]},
-            { id:"column_u15l1s12", children:["portlet_u15l1n13","portlet_u15l1n14","portlet_u15l1n15"]}
-        ]
-    };
-
-    var dropTargetPerms = [
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1],
-        [0, 1, 1, 1, 1, 1, 1],
-        [0, 1, 1, 1, 1, 1, 1],
-        [0, 1, 1, 1, 1, 1, 1]
-    ];
-
     var grabHandle = function (item) {        
         // the handle is the toolbar. The toolbar id is the same as the portlet id, with the
         // "portlet_" prefix replaced by "toolbar_".
@@ -42,13 +26,15 @@ var demo = demo || {};
                 avatar: "orderable-avatar-clone"
             },
              selectors: {
+                columns: "[id^='column']",
+                modules: "[class^='portlet-container']",
                 grabHandle: grabHandle,
                 lockedModules: "#portlet_u15l1n10",
                 dropWarning: jQuery("#drop-warning")
             }
         };
 
-        return fluid.initLayoutCustomizer (layout, dropTargetPerms, null, options);
+        return fluid.reorderLayout("#portalPageBodyColumns", options);
     };
     
     demo.initLightboxReorderer = function () {

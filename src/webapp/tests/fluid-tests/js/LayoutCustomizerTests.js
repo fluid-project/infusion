@@ -20,7 +20,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var layoutCustomizerTests = new jqUnit.TestCase("LayoutCustomizer Tests", setUp, tearDown);
         
         layoutCustomizerTests.test("Bubble keystrokes inside module", function () {
-            var reorderer = fluid.initLayoutCustomizer(demo.portal.layout, demo.portal.dropTargetPerms);
+            var reorderer = fluid.reorderLayout("#" + portalRootId, {
+                        selectors: {
+                            columns: columnSelector,
+                            modules: portletSelector
+                        }
+                    });
             
             fluid.utils.jById(portlet2id).focus();
             fluid.utils.jById("text-2").focus();
