@@ -16,6 +16,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var fluid = fluid || {};
 
 (function (jQuery, fluid) {
+    
+    fluid.version = "Infusion 0.5";
+    
     fluid.keys = {
         TAB: 9,
         ENTER: 13,
