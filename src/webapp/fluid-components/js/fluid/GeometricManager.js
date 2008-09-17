@@ -418,10 +418,10 @@ var fluid = fluid || {};
             that.updateGeometry(lastGeometry);
             var cacheelem = cache[cacheKey(element)];
             var projected = fluid.geom.projectFrom(cacheelem.rect, direction, targets, includeLocked);
+            if (!projected.cacheelem) return null;
             var retpos = projected.cacheelem.position;
             return {element: projected.cacheelem.element, 
                      position: retpos? retpos : fluid.position.BEFORE 
-                     //(projected.wrapped? fluid.position.AFTER : fluid.position.BEFORE)
                      };
         };
         
@@ -570,12 +570,12 @@ var fluid = fluid || {};
             //fluid.log("Element " + i + " " + dumpelem(elem) + " mindist " + collect.mindist);
         }
         var wrap = !collect.minelem || backcollect.mindist < collect.mindist;
-        var minelem = wrap? backcollect.minelem: collect.minelem;
+        var mincollect = wrap? backcollect: collect;
         var togo = {
             wrapped: wrap,
-            cacheelem: minelem
+            cacheelem: mincollect.minelem
         };
-        if (lockedcollect.mindist < minelem.mindist) {
+        if (lockedcollect.mindist < mincollect.mindist) {
             togo.lockedelem = lockedcollect.minelem;
         }
         return togo;
