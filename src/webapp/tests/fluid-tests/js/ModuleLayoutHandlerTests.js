@@ -194,8 +194,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         portletLHTests.test("DefaultPerms", function () {
             var layoutHandler = fluid.moduleLayoutHandler(null, {moduleLayout: {layout: layoutClone}});
-            var portlet1 = fluid.utils.jById(portlet1id)[0];
-            var portlet2 = fluid.utils.jById(portlet2id)[0];
+            var portlet1 = fluid.jById(portlet1id)[0];
+            var portlet2 = fluid.jById(portlet2id)[0];
     
             // Sniff test the layout handler that was created. 
             var itemAbove = layoutHandler.getItemAbove(portlet2);

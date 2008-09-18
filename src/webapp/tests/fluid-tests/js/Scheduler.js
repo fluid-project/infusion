@@ -11,7 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 fluid.Scheduler = function () {
     var fetchReordererContainer = function (id) {
-        return fluid.utils.jById (id);
+        return fluid.jById (id);
     };
     return {
         initScheduler: function (containerId) {

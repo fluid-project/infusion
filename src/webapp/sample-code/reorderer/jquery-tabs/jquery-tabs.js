@@ -24,7 +24,7 @@ demo.initJqueryTabs = function () {
         jQuery(container).keypress(enterKeyHandler);
     };
 
-    var tabList = fluid.utils.jById("tabList");
+    var tabList = fluid.jById("tabList");
     addTabActivateHandler(tabList);
 
     var options = {

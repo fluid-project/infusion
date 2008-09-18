@@ -27,8 +27,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                         }
                     });
             
-            fluid.utils.jById(portlet2id).focus();
-            fluid.utils.jById("text-2").focus();
+            fluid.jById(portlet2id).focus();
+            fluid.jById("text-2").focus();
             var keyEvent = fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.m);
             reorderer.handleKeyDown(keyEvent);
             reorderer.handleKeyUp(keyEvent);
@@ -42,7 +42,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.notVisible("On first load the warning should not be visible", "#drop-warning");
             
             // focus on portlet 3 - it is underneath a locked portlet
-            var portlet3 = fluid.utils.jById(portlet3id);
+            var portlet3 = fluid.jById(portlet3id);
             portlet3.focus();
             
             // try to move portlet 3 up
@@ -70,7 +70,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.notVisible("After ctrl + down arrow, drop warning should NOT be visible", "#drop-warning"); 
     
             // focus on portlet 8 
-            var portlet8 = fluid.utils.jById(portlet8id);
+            var portlet8 = fluid.jById(portlet8id);
             portlet8.focus();
     
             // move portlet 8 down

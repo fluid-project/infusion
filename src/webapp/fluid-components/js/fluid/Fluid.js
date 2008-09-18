@@ -717,40 +717,6 @@ var fluid = fluid || {};
     fluid.utils.invokeGlobalFunction = function (functionPath, args, environment) {
         return fluid.model.getBeanValue(window, functionPath, environment).apply(null, args);
     };
-    
-    /**
-     * Returns a jQuery object given the id of a DOM node
-     */
-    fluid.utils.jById = function (id) {
-        var element = fluid.byId(id);
-        return element? jQuery(element) : null;
-    };
-    
-    /**
-     * Returns an DOM element quickly, given an id
-     * 
-     * @param {Object} id the id of the DOM node to find
-     */
-    fluid.byId = function (id) {
-        var el = document.getElementById(id);
-        if (el) {
-            if (el.getAttribute("id") !== id) {
-                fluid.fail("Problem in document structure - picked up element " +
-                fluid.dumpEl(el) +
-                " for id " +
-                id +
-                " without this id - most likely the element has a name which conflicts with this id");
-            }
-            return el;
-        }
-        else {
-            return null;
-        }
-    };
-    
-    fluid.getId = function (element) {
-        return fluid.unwrap(element).getAttribute("id");
-    };
 
 
     // Logging
@@ -795,13 +761,50 @@ var fluid = fluid || {};
         return newString;
     };
 
+
+    // DOM Utilities.
+    
     /**
      * Finds the ancestor of the element that passes the test
      * @param {Element} element DOM element
      * @param {Function} test A function which takes an element as a parameter and return true or false for some test
      */
-    fluid.utils.findAncestor = function (element, test) {
+    fluid.findAncestor = function (element, test) {
         return test(element) ? element : jQuery.grep(jQuery(element).parents(), test)[0];
+    };
+    
+    /**
+     * Returns a jQuery object given the id of a DOM node
+     */
+    fluid.jById = function (id) {
+        var element = fluid.byId(id);
+        return element? jQuery(element) : null;
+    };
+    
+    /**
+     * Returns an DOM element quickly, given an id
+     * 
+     * @param {Object} id the id of the DOM node to find
+     */
+    fluid.byId = function (id) {
+        var el = document.getElementById(id);
+        if (el) {
+            if (el.getAttribute("id") !== id) {
+                fluid.fail("Problem in document structure - picked up element " +
+                fluid.dumpEl(el) +
+                " for id " +
+                id +
+                " without this id - most likely the element has a name which conflicts with this id");
+            }
+            return el;
+        }
+        else {
+            return null;
+        }
+    };
+    
+    fluid.getId = function (element) {
+        return fluid.unwrap(element).getAttribute("id");
     };
     
 })(jQuery, fluid);

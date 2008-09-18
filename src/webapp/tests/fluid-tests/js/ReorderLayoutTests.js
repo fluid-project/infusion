@@ -26,8 +26,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
-            var item2 = fluid.utils.jById(portlet2id).focus();
-            var item3 = fluid.utils.jById(portlet3id);
+            var item2 = fluid.jById(portlet2id).focus();
+            var item3 = fluid.jById(portlet3id);
             var downArrow = fluid.testUtils.createEvtDownArrow(); 
             var ctrlDownArrow = fluid.testUtils.createEvtCtrlDownArrow();
             
@@ -85,8 +85,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
 
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
-            var item2 = fluid.utils.jById(portlet2id).focus();
-            var item3 = fluid.utils.jById(portlet3id);
+            var item2 = fluid.jById(portlet2id).focus();
+            var item3 = fluid.jById(portlet3id);
             var ctrlDownArrow = fluid.testUtils.createEvtCtrlDownArrow();
 
             // Sniff test the reorderer that was created - locked portlet shouldn't move

@@ -61,7 +61,7 @@ function initReorderer() {
  * layout and dropTargetPerms are defined in portlets.js
  */
 function setUp() {
-    var table = fluid.utils.jById (portalRootId);
+    var table = fluid.jById (portalRootId);
     portletRootClone = table.clone();
     layoutClone = jQuery.extend(true, {}, demo.portal.layout);
     var options = {
@@ -76,7 +76,7 @@ function setUp() {
 }
 
 function tearDown() {
-    fluid.utils.jById (portalRootId).replaceWith (portletRootClone);
+    fluid.jById (portalRootId).replaceWith (portletRootClone);
 }
 
 function container() {

@@ -32,7 +32,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         }
         
         function isItemDefaultTest(message, itemId) {
-            var item = fluid.utils.jById(itemId);
+            var item = fluid.jById(itemId);
             
             jqUnit.assertTrue(message + itemId  +  " should be default", item.hasClass(defaultClass));
             jqUnit.assertFalse(message + itemId  +  " should not be selected", item.hasClass(selectedClass));
@@ -40,7 +40,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         }
         
         function isItemFocusedTest(message, itemId) {
-            var item = fluid.utils.jById(itemId);
+            var item = fluid.jById(itemId);
             
             jqUnit.assertTrue(message + itemId  +  " should be selected", item.hasClass(selectedClass));   
             jqUnit.assertFalse(message + itemId  +  " should not be default", item.hasClass(defaultClass));
@@ -48,7 +48,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         }
         
         function isItemDraggedTest(message, itemId) {
-            var item = fluid.utils.jById(itemId);
+            var item = fluid.jById(itemId);
             
             jqUnit.assertTrue(message + itemId  +  " should be dragging", item.hasClass(draggingClass));  
             jqUnit.assertFalse(message + itemId  +  " should not be default",item.hasClass(defaultClass));
@@ -56,7 +56,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         function verticalNavigationTest(lightbox, upEvt, downEvt) {
             // setup: force the grid to have four columns
-            var lightboxRoot = fluid.utils.jById(lightboxRootId);
+            var lightboxRoot = fluid.jById(lightboxRootId);
             
             lightboxRoot.removeClass("width-3-thumb");
             lightboxRoot.addClass("width-4-thumb");
@@ -66,7 +66,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             isItemFocusedTest("Initially ", firstReorderableId);
         
             // the test framework doesn't seem to properly focus, so we force the issue
-            fluid.utils.jById(firstReorderableId)[0].focus();
+            fluid.jById(firstReorderableId)[0].focus();
         
             // Test: down arrow to the fifth image
             lightbox.handleDirectionKeyDown(downEvt);
@@ -96,7 +96,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             isItemDefaultTest("Initially ", secondReorderableId);
         
             // the test framework doesn't seem to properly focus, so we force the issue
-            fluid.utils.jById(firstReorderableId)[0].focus();
+            fluid.jById(firstReorderableId)[0].focus();
         
             // Test: right arrow to the second image
             lightbox.handleDirectionKeyDown(rightEvt);
@@ -231,7 +231,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         lightboxTests.test("HandleKeyUpAndHandleKeyDownChangesState", function() {
             var lightbox = createLightbox();
-            var firstReorderable = fluid.utils.jById(firstReorderableId);
+            var firstReorderable = fluid.jById(firstReorderableId);
             focusLightbox();
         
             // check that none of the images are currently being moved.
@@ -245,9 +245,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             isItemDefaultTest("After ctrl-down, ", secondReorderableId);
             isItemDefaultTest("After ctrl-down, ", secondLastReorderableId);
             jqUnit.assertEquals("After ctrl-down, " + secondReorderableId + " should have ARIA dropeffect of 'move'", "move",
-                fluid.utils.jById(secondReorderableId).ariaState("dropeffect"));  
+                fluid.jById(secondReorderableId).ariaState("dropeffect"));  
             jqUnit.assertEquals("After ctrl-down, " + secondLastReorderableId + " should have ARIA dropeffect of 'move'", "move",
-                fluid.utils.jById(secondLastReorderableId).ariaState("dropeffect"));  
+                fluid.jById(secondLastReorderableId).ariaState("dropeffect"));  
                 
             // right arrow down - all the dragging states should remain the same
             lightbox.handleKeyDown(fluid.testUtils.createEvtCtrlRightArrow(firstReorderable[0]));
@@ -267,9 +267,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             isItemDefaultTest("After ctrl-up ", secondReorderableId);
             isItemDefaultTest("After ctrl-up ", secondLastReorderableId);
             jqUnit.assertEquals("After ctrl-up, " + secondReorderableId + " should have ARIA dropeffect of 'none'", "none",
-                fluid.utils.jById(secondReorderableId).ariaState("dropeffect"));  
+                fluid.jById(secondReorderableId).ariaState("dropeffect"));  
             jqUnit.assertEquals("After ctrl-up, " + secondLastReorderableId + " should have ARIA dropeffect of 'none'", "none",
-                fluid.utils.jById(secondLastReorderableId).ariaState("dropeffect"));  
+                fluid.jById(secondLastReorderableId).ariaState("dropeffect"));  
         });
         
         lightboxTests.test("HandleKeyUpAndHandleKeyDownItemMovement", function() {
@@ -318,7 +318,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // Calling blur because the test framework doesn't behave like the browsers do. 
             // The browsers will call blur when something else gets focus.
-            fluid.utils.jById(firstReorderableId).blur();
+            fluid.jById(firstReorderableId).blur();
         
             // Change focus to the input1, then back to the lightbox
             newInputElement.focus();
@@ -329,16 +329,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
             isItemFocusedTest("When lightbox has focus again ", firstReorderableId);
             isItemDefaultTest("When lightbox has focus again ", secondReorderableId);
             
-            fluid.utils.jById(firstReorderableId).blur();
+            fluid.jById(firstReorderableId).blur();
         
             // set focus to another image.
-            fluid.utils.jById(secondReorderableId).focus();
+            fluid.jById(secondReorderableId).focus();
             isItemFocusedTest("Changed focus to second ", secondReorderableId);
             isItemDefaultTest("Changed focus to second ", firstReorderableId);
             
             // Change focus to the input1
             newInputElement.focus();
-            fluid.utils.jById(secondReorderableId).blur();
+            fluid.jById(secondReorderableId).blur();
     
             isItemDefaultTest("Lightbox blur with second selected ", secondReorderableId);
         
@@ -350,7 +350,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         lightboxTests.test("ItemFocusBlur ", function() {
             var lightbox = createLightbox();
-            var testItem = fluid.utils.jById(firstReorderableId);
+            var testItem = fluid.jById(firstReorderableId);
             
             isItemDefaultTest("Before test item gets focus, it should be in default state", firstReorderableId);
             
@@ -418,7 +418,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         lightboxTests.test("UpdateAriaStates", function() {
             var lightbox = createLightbox();
             var lbRoot = fetchLightboxRoot();
-            var firstImage = fluid.utils.jById(firstReorderableId);
+            var firstImage = fluid.jById(firstReorderableId);
             jqUnit.assertEquals("before first lightbox focus, first item should be activedescendent", firstReorderableId, lbRoot.ariaState("activedescendent"));
             jqUnit.assertEquals("before first lightbox focus, first item should not be selected", "false", firstImage.ariaState("selected"));
         
@@ -426,7 +426,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("after first lightbox focus, first image should be activedescendent", firstReorderableId, lbRoot.ariaState("activedescendent"));
             jqUnit.assertEquals("after first lightbox focus, first image should be selected", "true", firstImage.ariaState("selected"));
             
-            var thirdImage = fluid.utils.jById(thirdReorderableId);
+            var thirdImage = fluid.jById(thirdReorderableId);
             thirdImage.focus();
             jqUnit.assertEquals("after setting active item to third image, third image should be activedescendent", thirdReorderableId, lbRoot.ariaState("activedescendent"));
             jqUnit.assertEquals("after setting active item to third image, first image should not be selected", "false", firstImage.ariaState("selected"));
@@ -437,7 +437,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             jQuery("[id=para1]").after(newInputElement);
             jQuery("[id=input1]").get(0).focus();
-            fluid.utils.jById(thirdReorderableId).blur();
+            fluid.jById(thirdReorderableId).blur();
             jqUnit.assertEquals("after removing focus from lightbox, third image should still be activedescendent", thirdReorderableId, lbRoot.ariaState("activedescendent"));
             jqUnit.assertEquals("after removing focus from lightbox, third image should not be selected", "false", thirdImage.ariaState("selected"));
         });
@@ -445,7 +445,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         lightboxTests.test("UpdateGrabProperty", function() {
             var lightbox = createLightbox();
             var lbRoot = fetchLightboxRoot();
-            var testItem = fluid.utils.jById(firstReorderableId);
+            var testItem = fluid.jById(firstReorderableId);
             jqUnit.assertEquals("before any action, test item should have grab of supported", "supported", testItem.ariaState("grab"));
             
             focusLightbox();
@@ -509,7 +509,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                     fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.k),
                                     fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.j));
                                     
-            fluid.utils.jById(firstReorderableId).focus();
+            fluid.jById(firstReorderableId).focus();
             verticalNavigationTest(lightbox,
                                     fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.i),
                                     fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.m));
@@ -522,7 +522,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             horizontalMovementTest(lightbox,
                                     fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.k),
                                     fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.j));
-            fluid.utils.jById(firstReorderableId).focus();
+            fluid.jById(firstReorderableId).focus();
             verticalMovementTest(lightbox,
                                     fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.i),
                                     fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.m));
@@ -536,17 +536,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                     fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.k),
                                     fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.j));
     
-            fluid.utils.jById(firstReorderableId).focus();
+            fluid.jById(firstReorderableId).focus();
             horizontalNavigationTest(lightbox,
                                     fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.RIGHT),
                                     fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.LEFT));
                                     
-            fluid.utils.jById(firstReorderableId).focus();
+            fluid.jById(firstReorderableId).focus();
             verticalNavigationTest(lightbox,
                                     fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.i),
                                     fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.m));
     
-            fluid.utils.jById(firstReorderableId).focus();
+            fluid.jById(firstReorderableId).focus();
             verticalNavigationTest(lightbox,
                                     fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.UP),
                                     fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.DOWN));
@@ -560,17 +560,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                     fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.k),
                                     fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.j));
     
-            fluid.utils.jById(firstReorderableId).focus();
+            fluid.jById(firstReorderableId).focus();
             horizontalMovementTest(lightbox,
                                     fluid.testUtils.createAltKeyEvent(fluid.keys.RIGHT),
                                     fluid.testUtils.createAltKeyEvent(fluid.keys.LEFT));
     
-            fluid.utils.jById(firstReorderableId).focus();
+            fluid.jById(firstReorderableId).focus();
             verticalMovementTest(lightbox,
                                     fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.i),
                                     fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.m));
     
-            fluid.utils.jById(firstReorderableId).focus();
+            fluid.jById(firstReorderableId).focus();
             verticalMovementTest(lightbox,
                                     fluid.testUtils.createAltKeyEvent(fluid.keys.UP),
                                     fluid.testUtils.createAltKeyEvent(fluid.keys.DOWN));
@@ -614,17 +614,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                     fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.k),
                                     fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.j));
     
-            fluid.utils.jById(firstReorderableId).focus();
+            fluid.jById(firstReorderableId).focus();
             horizontalMovementTest(lightbox,
                                     fluid.testUtils.createCtrlKeyEvent(fluid.keys.RIGHT),
                                     fluid.testUtils.createCtrlKeyEvent(fluid.keys.LEFT));
     
-            fluid.utils.jById(firstReorderableId).focus();
+            fluid.jById(firstReorderableId).focus();
             verticalMovementTest(lightbox,
                                     fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.i),
                                     fluid.testUtils.createCtrlShiftKeyEvent(fluid.keys.m));
     
-            fluid.utils.jById(firstReorderableId).focus();
+            fluid.jById(firstReorderableId).focus();
             verticalMovementTest(lightbox,
                                     fluid.testUtils.createCtrlKeyEvent(fluid.keys.UP),
                                     fluid.testUtils.createCtrlKeyEvent(fluid.keys.DOWN));
@@ -632,5 +632,3 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
     });
 })(jQuery);
-
-

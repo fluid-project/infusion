@@ -52,7 +52,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals (portlet9id + " should be in 3rd column", 2, fluid.moduleLayout.internals.findColumnAndItemIndices (portlet9id, demo.portal.layout).columnIndex);
             
             // Not in any column.
-            var item = fluid.utils.jById (portalRootId);
+            var item = fluid.jById (portalRootId);
             jqUnit.assertEquals (portalRootId + " should not be in any column", -1, fluid.moduleLayout.internals.findColumnAndItemIndices (item.id, demo.portal.layout).columnIndex);
             
             // Tests for item index:    
@@ -459,7 +459,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         moduleLayoutTests.test ("CreateFindItems", function () {
             var selectors = fluid.moduleLayout.inferSelectors(demo.portal.layout, demo.portal.dropTargetPerms);
-            var binder = fluid.createDomBinder(fluid.utils.jById(demo.portal.layout.id), selectors);
+            var binder = fluid.createDomBinder(fluid.jById(demo.portal.layout.id), selectors);
             var selectables = binder.locate("selectables");
             jqUnit.assertEquals ("There are 9 selectable portlets", 9, selectables.length);
         

@@ -162,7 +162,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 
         fluidJSTests.test("jById id not found", function () {
-            var invalidIdElement = fluid.utils.jById("this-id-does-not-exitst");
+            var invalidIdElement = fluid.jById("this-id-does-not-exitst");
             jqUnit.assertEquals("element not found", null, invalidIdElement);
         });
 
@@ -170,7 +170,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var testFunc = function (elementOfArray, indexInArray) {
                 return elementOfArray.id === "top1";
             };
-            jqUnit.assertEquals("Ancestor should be 'top1'", "top1", fluid.utils.findAncestor($("#page-link-1"), testFunc).id);
+            jqUnit.assertEquals("Ancestor should be 'top1'", "top1", fluid.findAncestor($("#page-link-1"), testFunc).id);
         });
         
         fluidJSTests.test("Container: bind to an id", function () {

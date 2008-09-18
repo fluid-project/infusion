@@ -412,7 +412,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             var selfRenderingInlineEdit = function () {        
                 // Fire off an inline edit against a container which does not contain an edit form.
-                return fluid.inlineEdit(fluid.utils.jById(containerId));
+                return fluid.inlineEdit(fluid.jById(containerId));
             };
             
             inlineEditTests.test("Self-rendering edit mode: instantiation", function () {

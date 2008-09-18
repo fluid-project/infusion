@@ -21,9 +21,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             var containerSelector = "[id='" + lightboxRootId + "']";
             var gridReorderer = fluid.reorderGrid(containerSelector, options);
-            var item2 = fluid.utils.jById(secondReorderableId).focus();
-            var item3 = fluid.utils.jById(thirdReorderableId);
-            var item5 = fluid.utils.jById(fifthReorderableId);
+            var item2 = fluid.jById(secondReorderableId).focus();
+            var item3 = fluid.jById(thirdReorderableId);
+            var item5 = fluid.jById(fifthReorderableId);
             var downArrow = fluid.testUtils.createEvtDownArrow(); 
             var ctrlDownArrow = fluid.testUtils.createEvtCtrlDownArrow();
             

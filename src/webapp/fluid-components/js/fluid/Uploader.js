@@ -1014,7 +1014,7 @@ fluid = fluid || {};
     /* Public API */
     fluid.Uploader = function(uploaderContainerId, uploadURL, flashURL, settings){
         
-        this.uploaderContainer = fluid.utils.jById(uploaderContainerId);
+        this.uploaderContainer = fluid.jById(uploaderContainerId);
         
         // Mix user's settings in with our defaults.
         // temporarily public; to be made private after beta

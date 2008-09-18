@@ -59,7 +59,7 @@ function testSpeeds() {
     var reps = 200;
     var time = new Date();
     for (var i = 0; i < reps; ++ i) {
-        var it = fluid.utils.jById("fluid.img.5");
+        var it = fluid.jById("fluid.img.5");
     }
     var delay = (new Date() - time);
 //  alert(delay);
@@ -73,7 +73,7 @@ function testSpeeds2() {
     for (var i = 0; i < reps; ++ i) {
         var it = document.getElementById("fluid.img.5");
         if (it.getAttribute("id") !== "fluid.img.5") {
-          it = fluid.utils.jById("fluid.img.2");
+          it = fluid.jById("fluid.img.2");
         }
     }
     var delay = (new Date() - time);

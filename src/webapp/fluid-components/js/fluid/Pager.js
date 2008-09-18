@@ -108,14 +108,14 @@ fluid = fluid || {};
                 linkDisplay.pageIsSelected(pageNum, oldPageNum);
             },
             pageNumOfLink: function (link) {
-                link = fluid.utils.findAncestor(link, isPageLink);
+                link = fluid.findAncestor(link, isPageLink);
                 return pageLinks.index(link) + 1;
             },
             isNext: function (link) {
-                return !!fluid.utils.findAncestor(link, isNext);
+                return !!fluid.findAncestor(link, isNext);
             },
             isPrevious: function (link) {
-                return !!fluid.utils.findAncestor(link, isPrevious);
+                return !!fluid.findAncestor(link, isPrevious);
             }
         };
     };
@@ -160,7 +160,7 @@ fluid = fluid || {};
         this.pageWillChange = options.pageWillChange || this.defaults.pageWillChange; 
 
         // Bind to the DOM.
-        this.container = fluid.utils.jById(componentContainerId);
+        this.container = fluid.jById(componentContainerId);
         
         // Create pager bars
         top = $(selectors.pagerTop, this.container);

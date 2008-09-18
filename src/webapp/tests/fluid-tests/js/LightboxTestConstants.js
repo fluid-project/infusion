@@ -68,7 +68,7 @@ var draggingClass = "orderable-dragging";
 var imgListClone;
 
 function fetchLightboxRoot() {
-    return fluid.utils.jById(lightboxRootId);
+    return fluid.jById(lightboxRootId);
 }
 
 function focusLightbox() {
@@ -133,7 +133,7 @@ function createGridLayoutHandler() {
         movables: findOrderableByDivAndId,
         selectables: findOrderableByDivAndId
     };
-    return fluid.gridLayoutHandler(fluid.utils.jById(lightboxRootId), {
+    return fluid.gridLayoutHandler(fluid.jById(lightboxRootId), {
         selectors: selectors
     });
 }
