@@ -334,7 +334,7 @@ fluid = fluid || {};
             
             dropManager.updateGeometry(thatReorderer.layoutHandler.getGeometricInfo());
 
-            thatReorderer.events.afterMove.fire(item, requestedPosition, thatReorderer.fastLocate("movables"));
+            thatReorderer.events.afterMove.fire(item, requestedPosition, thatReorderer.dom.fastLocate("movables"));
         };
 
         var hoverStyleHandler = function(item, state) {
