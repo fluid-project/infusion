@@ -313,7 +313,7 @@ fluid = fluid || {};
             //jQuery(thatReorderer.activeItem).removeClass(options.styles.selected);
            
             // refocus on the active item because moving places focus on the body
-            thatReorderer.activeItem.focus();
+            $(thatReorderer.activeItem).focus();
             
             thatReorderer.refresh();
             
@@ -432,7 +432,12 @@ fluid = fluid || {};
             
             selectables.blur(handleBlur);
             selectables.focus(handleFocus);
-            selectables.click(function(evt) {selectItem(this)});
+            selectables.click(function(evt) {
+                var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
+                if (fluid.isContainer(handle, evt.target)) {
+                    jQuery(this).focus()
+                }
+                });
             
             selectables.ariaRole(options.containerRole.item);
             selectables.ariaState("selected", "false");
