@@ -82,6 +82,7 @@ fluid = fluid || {};
         
         events: {
            onShowKeyboardDropWarning: null,
+           onSelect: null,
            onBeginMove: "preventable",
            onMove: null,
            afterMove: null,
@@ -333,7 +334,7 @@ fluid = fluid || {};
             
             dropManager.updateGeometry(thatReorderer.layoutHandler.getGeometricInfo());
 
-            thatReorderer.events.afterMove.fire(item, requestedPosition);
+            thatReorderer.events.afterMove.fire(item, requestedPosition, thatReorderer.fastLocate("movables"));
         };
 
         var hoverStyleHandler = function(item, state) {
@@ -409,7 +410,7 @@ fluid = fluid || {};
         }
            
        var selectItem = function (anItem) {
-           fluid.log("selectItem " + fluid.dumpEl(anItem));
+           thatReorderer.events.onSelect.fire(anItem);
            var styles = options.styles;
            // Set the previous active item back to its default state.
            if (thatReorderer.activeItem && thatReorderer.activeItem !== anItem) {
