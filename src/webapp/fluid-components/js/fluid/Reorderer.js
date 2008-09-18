@@ -148,16 +148,8 @@ fluid = fluid || {};
     
     /**
      * @param container - the root node of the Reorderer.
-     * @param findItems - a function that returns all of the movable elements in the container OR
-     *        findItems - an object containing the functions:
-     *                    movables - a function that returns all of the movable elements in the container
-     *                    selectables (optional) - a function that returns all of the selectable elements
-     *                    dropTargets (optional) - a function that returns all of the elements that can be used as drop targets
-     *                    grabHandle (optional) - a function that returns the element within the given movable that is to be used as a 'handle' for the mouse-based drag and drop of the movable. 
-     * @param layoutHandler - an instance of a Layout Handler.
      * @param options - an object containing any of the available options:
-     *                  role - indicates the role, or general use, for this instance of the Reorderer
-     *                  instructionMessageId - the ID of the element containing any instructional messages
+     *                  containerRole - indicates the role, or general use, for this instance of the Reorderer
      *                  keysets - an object containing sets of keycodes to use for directional navigation. Must contain:
      *                            modifier - a function that returns a boolean, indicating whether or not the required modifier(s) are activated
      *                            up
