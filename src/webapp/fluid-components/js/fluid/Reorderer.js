@@ -127,13 +127,6 @@ fluid = fluid || {};
         that.container.ariaState("disabled", "false");
     }
     
-    function changeSelectedToDefault(jItem, styles) {
-        jItem.removeClass(styles.selected);
-        jItem.addClass(styles.defaultStyle);
-        jItem.ariaState("selected", "false");
-    }
-    
-
     function createAvatarId (parentId) {
         // Generating the avatar's id to be containerId_avatar
         // This is safe since there is only a single avatar at a time
@@ -398,6 +391,13 @@ fluid = fluid || {};
                 },
                 handle: thatReorderer.dom.fastLocate("grabHandle", item)
             });
+        }
+           
+        function changeSelectedToDefault(jItem, styles) {
+            jItem.removeClass(styles.selected);
+            jItem.removeClass(styles.dragging);
+            jItem.addClass(styles.defaultStyle);
+            jItem.ariaState("selected", "false");
         }
            
        var selectItem = function (anItem) {
