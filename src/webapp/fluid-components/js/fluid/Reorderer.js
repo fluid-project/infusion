@@ -440,6 +440,7 @@ fluid = fluid || {};
             
             selectables.blur(handleBlur);
             selectables.focus(handleFocus);
+            selectables.click(function(evt) {selectItem(this)});
             
             selectables.ariaRole(options.containerRole.item);
             selectables.ariaState("selected", "false");
