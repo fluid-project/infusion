@@ -11,15 +11,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 // Declare dependencies.
-/*global jQuery*/
+/*global $*/
 /*global fluid*/
 
 fluid = fluid || {};
 
-(function (jQuery, fluid) {
+(function ($, fluid) {
     
     var defaultAvatarCreator = function(item, cssClass, dropWarning) {
-        var avatar = jQuery(item).clone();
+        var avatar = $(item).clone();
         fluid.iterateDom(avatar.get(0), function(node) {
             if (node.tagName.toLowerCase() === "script") {
                 return true;
@@ -31,13 +31,13 @@ fluid = fluid || {};
             }
           );
         avatar.removeAttr("id");
-        //jQuery("[id]", avatar).removeAttr("id");
-        //jQuery(":hidden", avatar).remove();
-        //jQuery("input", avatar).attr("disabled", "true");
+        //$("[id]", avatar).removeAttr("id");
+        //$(":hidden", avatar).remove();
+        //$("input", avatar).attr("disabled", "true");
         // dropping in the same column fails if the avatar is considered a droppable.
         // droppable ("destroy") should take care of this, but it doesn't seem to remove
         // the class, which is what is checked, so we remove it manually
-        // (see http://dev.jquery.com/ticket/2599)
+        // (see http://dev.$.com/ticket/2599)
         // 2008-05-12: 2599 has been fixed now in trunk
         //                    avatar.droppable ("destroy");
         avatar.removeClass("ui-droppable");
@@ -45,15 +45,15 @@ fluid = fluid || {};
         
         if (dropWarning) {
             // Will a 'div' always be valid in this position?
-            var avatarContainer = jQuery(document.createElement("div"));
+            var avatarContainer = $(document.createElement("div"));
             avatarContainer.append(avatar);
             avatarContainer.append(dropWarning);
             avatar = avatarContainer;
         }
-        jQuery("body").append(avatar);
+        $("body").append(avatar);
         avatar.css("display", "block").width(item.offsetWidth).height(item.offsetHeight);
         
-        if (jQuery.browser.opera) { // FLUID-1490. Without this detect, curCSS explodes on the avatar on Firefox.
+        if ($.browser.opera) { // FLUID-1490. Without this detect, curCSS explodes on the avatar on Firefox.
             avatar.hide();
         }
         return avatar;
@@ -110,7 +110,7 @@ fluid = fluid || {};
         // FLUID-143. Disable text selection for the reorderer.
         // ondrag() and onselectstart() are Internet Explorer specific functions.
         // Override them so that drag+drop actions don't also select text in IE.
-        if (jQuery.browser.msie) {
+        if ($.browser.msie) {
             container[0].ondrag = function () { return false; }; 
             container[0].onselectstart = function () { return false; };
         } 
@@ -192,7 +192,7 @@ fluid = fluid || {};
         };
         
         var isActiveItemMovable = function () {
-            return jQuery.inArray(thatReorderer.activeItem, thatReorderer.dom.fastLocate("movables")) >= 0;
+            return $.inArray(thatReorderer.activeItem, thatReorderer.dom.fastLocate("movables")) >= 0;
         };
         
         var setDropEffects = function (value) {
@@ -206,7 +206,7 @@ fluid = fluid || {};
                 return true;
             }
             // If the key pressed is ctrl, and the active item is movable we want to restyle the active item.
-            var jActiveItem = jQuery(thatReorderer.activeItem);
+            var jActiveItem = $(thatReorderer.activeItem);
             if (!jActiveItem.hasClass(styles.dragging) && isMove(evt)) {
                // Don't treat the active item as dragging unless it is a movable.
                 if (isActiveItemMovable()) {
@@ -225,7 +225,7 @@ fluid = fluid || {};
             if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
                 return true;
             }
-            var jActiveItem = jQuery(thatReorderer.activeItem);
+            var jActiveItem = $(thatReorderer.activeItem);
             
             // Handle a key up event for the modifier
             if (jActiveItem.hasClass(styles.dragging) && !isMove(evt)) {
@@ -285,7 +285,7 @@ fluid = fluid || {};
                     }
             
                 } else if (noModifier(evt)) {
-                    jQuery(relativeItem.element).focus();
+                    $(relativeItem.element).focus();
                 }
                 return false;
             }
@@ -295,7 +295,7 @@ fluid = fluid || {};
         var dropMarker;
 
         var createDropMarker = function (tagName) {
-            var dropMarker = jQuery(document.createElement(tagName));
+            var dropMarker = $(document.createElement(tagName));
             dropMarker.addClass(options.styles.dropMarker);
             dropMarker.hide();
             return dropMarker;
@@ -310,7 +310,7 @@ fluid = fluid || {};
             }
             thatReorderer.events.onMove.fire(item, requestedPosition);
             dropManager.geometricMove(item, requestedPosition.element, requestedPosition.position);
-            //jQuery(thatReorderer.activeItem).removeClass(options.styles.selected);
+            //$(thatReorderer.activeItem).removeClass(options.styles.selected);
            
             // refocus on the active item because moving places focus on the body
             $(thatReorderer.activeItem).focus();
@@ -326,7 +326,7 @@ fluid = fluid || {};
             thatReorderer.dom.fastLocate("grabHandle", item)[state?"addClass":"removeClass"](styles.hover);
         };
         /**
-         * Takes a jQuery object and adds 'movable' functionality to it
+         * Takes a $ object and adds 'movable' functionality to it
          */
         function initMovable(item) {
             var styles = options.styles;
@@ -353,7 +353,7 @@ fluid = fluid || {};
                     if (mouseDropWarning) {
                         dropWarningEl = mouseDropWarning[0];
                     }
-                    avatar = jQuery(options.avatarCreator(item[0], styles.avatar, dropWarningEl));
+                    avatar = $(options.avatarCreator(item[0], styles.avatar, dropWarningEl));
                     avatar.attr("id", createAvatarId(thatReorderer.container.id));
                     return avatar;
                 },
@@ -375,7 +375,7 @@ fluid = fluid || {};
                 stop: function(e, ui) {
                     item.removeClass(options.styles.mouseDrag);
                     item.addClass(options.styles.selected);
-                    jQuery(thatReorderer.activeItem).ariaState("grab", "supported");
+                    $(thatReorderer.activeItem).ariaState("grab", "supported");
                     var markerNode = fluid.unwrap(dropMarker);
                     if (markerNode.parentNode) {
                         markerNode.parentNode.removeChild(markerNode);
@@ -405,11 +405,11 @@ fluid = fluid || {};
            var styles = options.styles;
            // Set the previous active item back to its default state.
            if (thatReorderer.activeItem && thatReorderer.activeItem !== anItem) {
-               changeSelectedToDefault(jQuery(thatReorderer.activeItem), styles);
+               changeSelectedToDefault($(thatReorderer.activeItem), styles);
            }
            // Then select the new item.
            thatReorderer.activeItem = anItem;
-           var jItem = jQuery(anItem);
+           var jItem = $(anItem);
            jItem.removeClass(styles.defaultStyle);
            jItem.addClass(styles.selected);
            jItem.ariaState("selected", "true");
@@ -418,7 +418,7 @@ fluid = fluid || {};
    
        var initSelectables = function () {
             var handleBlur = function (evt) {
-                changeSelectedToDefault(jQuery(this), options.styles);
+                changeSelectedToDefault($(this), options.styles);
                 return evt.stopPropagation();
             };
         
@@ -435,7 +435,7 @@ fluid = fluid || {};
             selectables.click(function(evt) {
                 var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
                 if (fluid.isContainer(handle, evt.target)) {
-                    jQuery(this).focus()
+                    $(this).focus()
                 }
                 });
             
@@ -471,7 +471,7 @@ fluid = fluid || {};
             // Setup movables
             for (var i = 0; i < movables.length; i++) {
                 var item = movables[i];
-                initMovable(jQuery(item));
+                initMovable($(item));
             }
 
             // In order to create valid html, the drop marker is the same type as the node being dragged.
@@ -504,7 +504,7 @@ fluid = fluid || {};
                   var layoutHandler = thatReorderer.layoutHandler;
                   var model = layoutHandler.getModel? layoutHandler.getModel():
                         options.acquireModel(thatReorderer);
-                  jQuery.post(options.afterMoveCallbackUrl, JSON.stringify(model));
+                  $.post(options.afterMoveCallbackUrl, JSON.stringify(model));
             }, "postModel");
        }
        thatReorderer.events.onHover.addListener(hoverStyleHandler, "style");
@@ -552,12 +552,12 @@ fluid = fluid || {};
         };
     };
     
-}) (jQuery, fluid);
+}) ($, fluid);
 
 /*******************
  * Layout Handlers *
  *******************/
-(function (jQuery, fluid) {
+(function ($, fluid) {
 
     function geometricInfoGetter(orientation, dom) {
         return function() {
@@ -567,7 +567,7 @@ fluid = fluid || {};
                          }
                          ],
                 elementMapper: function(element) {
-                        return jQuery.inArray(element, dom.fastLocate("movables")) === -1? "locked": null;
+                        return $.inArray(element, dom.fastLocate("movables")) === -1? "locked": null;
                         }};
         };
     }
