@@ -154,7 +154,7 @@ var fluid = fluid || {};
         }
         var componentName = arguments[offset];
         var defaultsObject = arguments[offset + 1];
-        if (defaultsObject) {
+        if (defaultsObject !== undefined) {
             store[componentName] = defaultsObject;   
             return defaultsObject;
         }
