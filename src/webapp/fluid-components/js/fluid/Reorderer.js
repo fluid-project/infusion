@@ -183,7 +183,7 @@ fluid = fluid || {};
         
         var dropManager = fluid.dropManager();
         
-        thatReorderer.layoutHandler = fluid.initComponent(thatReorderer,
+        thatReorderer.layoutHandler = fluid.initSubcomponent(thatReorderer,
             "layoutHandler", [container, options, dropManager, thatReorderer.dom]);
         
         thatReorderer.activeItem = undefined;

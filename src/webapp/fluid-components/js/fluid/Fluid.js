@@ -453,11 +453,11 @@ var fluid = fluid || {};
     fluid.COMPONENT_OPTIONS = {};
     
     
-    fluid.initComponent = function (that, className, args) {
-        return fluid.initComponents(that, className, args)[0];
+    fluid.initSubcomponent = function (that, className, args) {
+        return fluid.initSubcomponents(that, className, args)[0];
     }
     
-    fluid.initComponents = function (that, className, args) {
+    fluid.initSubcomponents = function (that, className, args) {
         var entry = that.options[className];
         if (!entry) return;
         var entries = jQuery.makeArray(entry);
