@@ -16,13 +16,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid = fluid || {};
 
 (function (jQuery, fluid) {
-    var deriveLightboxCellBase, addThumbnailActivateHandler, createItemFinder, defaultafterMoveCallback;
     
-    deriveLightboxCellBase = function (namebase, index) {
+    var deriveLightboxCellBase = function (namebase, index) {
         return namebase + "lightbox-cell:" + index + ":";
     };
             
-    addThumbnailActivateHandler = function (lightboxContainer) {
+    var addThumbnailActivateHandler = function (lightboxContainer) {
         var enterKeyHandler = function (evt) {
             if (evt.which === fluid.keys.ENTER) {
                 var thumbnailAnchors = jQuery("a", evt.target);
@@ -33,12 +32,27 @@ fluid = fluid || {};
         jQuery(lightboxContainer).keypress(enterKeyHandler);
     };
     
-    createItemFinder = function (parentNode, containerId) {
+    // Custom query method seeks all tags descended from a given root with a 
+    // particular tag name, whose id matches a regex.
+    var seekNodesById = function (rootnode, tagname, idmatch) {
+        var inputs = rootnode.getElementsByTagName(tagname);
+        var togo = [];
+        for (var i = 0; i < inputs.length; i += 1) {
+            var input = inputs[i];
+            var id = input.id;
+            if (id && id.match(idmatch)) {
+                togo.push(input);
+            }
+        }
+        return togo;
+    };
+    
+    var createItemFinder = function (parentNode, containerId) {
         // This orderable finder knows that the lightbox thumbnails are 'div' elements
         var lightboxCellNamePattern = "^" + deriveLightboxCellBase(containerId, "[0-9]+") + "$";
         
         return function () {
-            return fluid.utils.seekNodesById(parentNode, "div", lightboxCellNamePattern);
+            return seekNodesById(parentNode, "div", lightboxCellNamePattern);
         };
     };
     
@@ -51,7 +65,7 @@ fluid = fluid || {};
      * 
      * @param {Element} lightboxContainer The DOM element containing the form that is POSTed back to the server upon order change 
      */
-    defaultafterMoveCallback = function (lightboxContainer) {
+    var defaultafterMoveCallback = function (lightboxContainer) {
         var reorderform = fluid.utils.findForm(lightboxContainer);
         
         return function () {

@@ -640,23 +640,6 @@ var fluid = fluid || {};
             return [curleft, curtop];
         }
     };
-    
-    // Custom query method seeks all tags descended from a given root with a 
-    // particular tag name, whose id matches a regex. The Dojo query parser
-    // is broken http://trac.dojotoolkit.org/ticket/3520#preview, this is all
-    // it might do anyway, and this will be plenty fast.
-    fluid.utils.seekNodesById = function (rootnode, tagname, idmatch) {
-        var inputs = rootnode.getElementsByTagName(tagname);
-        var togo = [];
-        for (var i = 0; i < inputs.length; i += 1) {
-            var input = inputs[i];
-            var id = input.id;
-            if (id && id.match(idmatch)) {
-                togo.push(input);
-            }
-        }
-        return togo;
-    };
           
     fluid.utils.escapeSelector = function (id) {
         return id.replace(/\:/g, "\\:");
