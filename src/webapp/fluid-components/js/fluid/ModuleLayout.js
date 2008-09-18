@@ -49,7 +49,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         var itemIndices = findColumnAndItemIndices(item, layout);
         layout.columns[itemIndices.columnIndex].elements.splice(itemIndices.itemIndex, 1);
         var targetCol;
-        if (position === fluid.position.INSIDE || position === fluid.position.USE_LAST_KNOWN) {
+        if (position === fluid.position.INSIDE) {
             targetCol = layout.columns[findColIndex(target, layout)].elements;
             targetCol.splice(targetCol.length, 0, item);
 
