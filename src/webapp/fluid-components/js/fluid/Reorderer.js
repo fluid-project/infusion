@@ -337,7 +337,6 @@ fluid = fluid || {};
          */
         function initMovable(item) {
             var styles = options.styles;
-            item.addClass(styles.defaultStyle);
             item.ariaState("grab", "supported");
 
             item.mouseover(
@@ -429,6 +428,7 @@ fluid = fluid || {};
             };
             
             var selectables = thatReorderer.dom.fastLocate("selectables");
+            selectables.addClass(styles.defaultStyle);
             
             selectables.blur(handleBlur);
             selectables.focus(handleFocus);
