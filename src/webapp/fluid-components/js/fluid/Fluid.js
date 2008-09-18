@@ -379,17 +379,23 @@ var fluid = fluid || {};
     fluid.mergeListeners = function(events, listeners) {
         if (listeners) {
             for (var key in listeners) {
+                var value = listeners[key];
+                var keydot = key.indexOf(".");
+                var namespace;
+                if (keydot !== -1) {
+                    namespace = key.substring(keydot + 1);
+                    key = key.substring(0, keydot);
+                }
                 if (!events[key]) {
                     events[key] = fluid.event.getEventFirer();
                 }   
                 var firer = events[key];
-                var value = listeners[key];
                 if (typeof(value) === "function") {
-                    firer.addListener(value);
+                    firer.addListener(value, namespace);
                 }
                 else if (value && typeof(value.length) === "number") {
                     for (var i = 0; i < value.length; ++ i) {
-                        firer.addListener(value[i]);
+                        firer.addListener(value[i], namespace);
                     }
                 }
             }

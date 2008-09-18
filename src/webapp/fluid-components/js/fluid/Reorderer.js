@@ -83,7 +83,8 @@ fluid = fluid || {};
         events: {
            onShowKeyboardDropWarning: null,
            onMove: null,
-           afterMove: null
+           afterMove: null,
+           onHover: null
         },
         
         mergePolicy: {
@@ -204,7 +205,7 @@ fluid = fluid || {};
         };
         
         var isActiveItemMovable = function () {
-            return (jQuery.inArray(thatReorderer.activeItem, thatReorderer.dom.fastLocate("movables")) >= 0);
+            return jQuery.inArray(thatReorderer.activeItem, thatReorderer.dom.fastLocate("movables")) >= 0;
         };
         
         var setDropEffects = function (value) {
@@ -214,7 +215,7 @@ fluid = fluid || {};
         var styles = options.styles;
         
         thatReorderer.handleKeyDown = function(evt) {
-            if (!thatReorderer.activeItem || (thatReorderer.activeItem !== evt.target)) {
+            if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
                 return true;
             }
             // If the key pressed is ctrl, and the active item is movable we want to restyle the active item.
@@ -234,7 +235,7 @@ fluid = fluid || {};
         };
 
         thatReorderer.handleKeyUp = function(evt) {
-            if (!thatReorderer.activeItem || (thatReorderer.activeItem !== evt.target)) {
+            if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
                 return true;
             }
             var jActiveItem = jQuery(thatReorderer.activeItem);
@@ -258,7 +259,6 @@ fluid = fluid || {};
         var noModifier = function (evt) {
             return (!evt.ctrlKey && !evt.altKey && !evt.shiftKey && !evt.metaKey);
         };
-      
         
         thatReorderer.handleDirectionKeyDown = function (evt) {
             if (!thatReorderer.activeItem) {
@@ -333,6 +333,9 @@ fluid = fluid || {};
             thatReorderer.events.afterMove.fire(item, requestedPosition);
         };
 
+        var hoverStyleHandler = function(item, state) {
+            thatReorderer.dom.fastLocate("grabHandle", item)[state?"addClass":"removeClass"](styles.hover);
+        };
         /**
          * Takes a jQuery object and adds 'movable' functionality to it
          */
@@ -341,15 +344,15 @@ fluid = fluid || {};
             item.addClass(styles.defaultStyle);
             item.ariaState("grab", "supported");
 
-            item.mouseover( 
+            item.mouseover(
                 function () {
-                    thatReorderer.dom.fastLocate("grabHandle", item).addClass(styles.hover);
+                    thatReorderer.events.onHover.fire(item, true);
                 }
             );
         
-            item.mouseout(  
+            item.mouseout(
                 function () {
-                    thatReorderer.dom.fastLocate("grabHandle", item).removeClass(styles.hover);
+                    thatReorderer.events.onHover.fire(item, false);
                 }
             );
             var avatar;
@@ -399,7 +402,6 @@ fluid = fluid || {};
                 handle: thatReorderer.dom.fastLocate("grabHandle", item)
             });
         }
-   
            
        var selectItem = function (anItem) {
            fluid.log("selectItem " + fluid.dumpEl(anItem));
@@ -497,11 +499,11 @@ fluid = fluid || {};
               function () {
                   var layoutHandler = thatReorderer.layoutHandler;
                   var model = layoutHandler.getModel? layoutHandler.getModel():
-                     options.acquireModel(thatReorderer);
-                  jQuery.post(options.afterMoveCallbackUrl, 
-                    JSON.stringify(model));
-            });
-        }
+                        options.acquireModel(thatReorderer);
+                  jQuery.post(options.afterMoveCallbackUrl, JSON.stringify(model));
+            }, "postModel");
+       }
+       thatReorderer.events.onHover.addListener(hoverStyleHandler, "style");
        
        thatReorderer.refresh = function() {
            thatReorderer.dom.refresh("movables");

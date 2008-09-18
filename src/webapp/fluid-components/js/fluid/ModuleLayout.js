@@ -206,7 +206,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                 onMove: function(item, requestedPosition) {
                     fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
                     },
-                onShowKeyboardDropWarning: defaultOnShowKeyboardDropWarning
+                "onShowKeyboardDropWarning.setPosition": defaultOnShowKeyboardDropWarning
              }
         };
         
