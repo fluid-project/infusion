@@ -101,11 +101,9 @@ fluid = fluid || {};
         return selectables[0];
     }
     
-    function bindHandlersToContainer(container, focusHandler, keyDownHandler, keyUpHandler, mouseMoveHandler) {
-        container.focus(focusHandler);
+    function bindHandlersToContainer(container, keyDownHandler, keyUpHandler, mouseMoveHandler) {
         container.keydown(keyDownHandler);
         container.keyup(keyUpHandler);
-        //container.mousemove(mouseMoveHandler);
         // FLUID-143. Disable text selection for the reorderer.
         // ondrag() and onselectstart() are Internet Explorer specific functions.
         // Override them so that drag+drop actions don't also select text in IE.
@@ -194,20 +192,6 @@ fluid = fluid || {};
         if (kbDropWarning) {
             mouseDropWarning = kbDropWarning.clone();
         }
-        
-        var focusActiveItem = function (evt) {
-            // If the active item has not been set yet, set it to the first selectable.
-            if (!thatReorderer.activeItem) {
-                var first = firstSelectable(thatReorderer);
-                if (!first) {  
-                    return evt.stopPropagation();
-                }
-                jQuery(first).focus();
-            } else {
-                jQuery(thatReorderer.activeItem).focus();
-            }
-            return evt.stopPropagation();
-        };
 
         var isMove = function (evt) {
             var keysets = options.keysets;
@@ -444,19 +428,19 @@ fluid = fluid || {};
             };
             
             var selectables = thatReorderer.dom.fastLocate("selectables");
-            // set up selectables 
-            // Remove the selectables from the taborder
-            for (var i = 0; i < selectables.length; i++) {
-                var item = jQuery(selectables[i]);
-                
-                item.tabindex(thatReorderer.options.selectablesTabindex);
-                item.blur(handleBlur);
-                item.focus(handleFocus);
             
-                item.ariaRole(options.containerRole.item);
-                item.ariaState("selected", "false");
-                item.ariaState("disabled", "false");
-            }
+            selectables.blur(handleBlur);
+            selectables.focus(handleFocus);
+            
+            selectables.ariaRole(options.containerRole.item);
+            selectables.ariaState("selected", "false");
+            selectables.ariaState("disabled", "false");
+                
+            thatReorderer.container.selectable(
+              {selectableElements: selectables,
+               selectablesTabindex: thatReorderer.options.selectablesTabindex,
+               direction: null});
+            thatReorderer.selectableContext = thatReorderer.container.getSelectableContext();
         };
     
         var dropChangeListener = function(dropTarget) {
@@ -500,14 +484,10 @@ fluid = fluid || {};
         // Final initialization of the Reorderer at the end of the construction process 
         if (thatReorderer.container) {
             bindHandlersToContainer(thatReorderer.container, 
-                focusActiveItem,
                 thatReorderer.handleKeyDown,
                 thatReorderer.handleKeyUp);
             addRolesToContainer(thatReorderer);
-            // ensure that the Reorderer container is in the tab order
-            if (!thatReorderer.container.hasTabindex() || (thatReorderer.container.tabindex() < 0)) {
-                thatReorderer.container.tabindex("0");
-            }
+            thatReorderer.container.tabbable();
             initItems();
         }
 
@@ -528,6 +508,8 @@ fluid = fluid || {};
            thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
            thatReorderer.dom.refresh("stylisticOffset", thatReorderer.dom.fastLocate("movables"));
            thatReorderer.dom.refresh("dropTargets");
+           thatReorderer.selectableContext.selectables = thatReorderer.dom.fastLocate("selectables");
+           thatReorderer.selectableContext.selectablesUpdated();
        };
        
        thatReorderer.refresh();

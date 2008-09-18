@@ -361,7 +361,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         }
 
         // Add listeners for each key binding.
-        for (var i = 0; i < bindings.length; i = i + 1) {
+        for (var i = 0; i < bindings.length; ++ i) {
             var binding = bindings[i];
             elements.keydown(activationHandler(binding));
         }
