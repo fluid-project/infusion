@@ -148,7 +148,7 @@ var fluid = fluid || {};
     fluid.defaults = function () {
         var offset = 0;
         var store = defaultsStore;
-        if (typeof(arguments[0]) === "boolean") {
+        if (typeof arguments[0] === "boolean") {
 	        store = globalDefaultsStore;
 	        offset = 1;
         }
@@ -176,7 +176,7 @@ var fluid = fluid || {};
         if (element.nodeType === 3 || element.nodeType === 8) {
             return "[data: " + element.data + "]";
         } 
-        if (typeof(element.length) === "number") {
+        if (typeof element.length === "number") {
             togo = "[";
             for (var i = 0; i < element.length; ++ i) {
                 togo += fluid.dumpEl(element[i]);
@@ -393,7 +393,7 @@ var fluid = fluid || {};
                 if (typeof(value) === "function") {
                     firer.addListener(value, namespace);
                 }
-                else if (value && typeof(value.length) === "number") {
+                else if (value && typeof value.length === "number") {
                     for (var i = 0; i < value.length; ++ i) {
                         firer.addListener(value[i], namespace);
                     }
@@ -718,7 +718,7 @@ var fluid = fluid || {};
             var thisSource = source[name];
     
             if (thisSource !== undefined) {
-                if (thisSource !== null && typeof(thisSource) === 'object' &&
+                if (thisSource !== null && typeof thisSource === 'object' &&
                       !thisSource.nodeType && !thisSource.jquery) {
                     if (!thisTarget) {
                         target[name] = thisTarget = thisSource instanceof Array? [] : {};
