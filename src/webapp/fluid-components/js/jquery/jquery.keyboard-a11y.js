@@ -557,7 +557,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     };
 
     $.fn.selectable.defaults = {
-        direction: this.VERTICAL,
+        direction: $.a11y.orientation.VERTICAL,
         selectablesTabindex: -1,
         autoSelectFirstItem: true,
         rememberSelectionState: true,
