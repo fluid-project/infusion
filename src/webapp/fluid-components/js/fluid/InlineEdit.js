@@ -26,6 +26,17 @@ fluid = fluid || {};
             control.setSelectionRange(0, 0);
         }
     }
+    function setCaretToEnd(control) {
+        var pos = control.value.length;
+        if (control.createTextRange) {
+            var range = control.createTextRange();
+            range.move("character", pos);
+            range.select();
+        } else if (control.setSelectionRange) {
+            control.focus();
+            control.setSelectionRange(pos, pos);
+        }
+    }
     
     // Is paddings doing what we want? Should it be in the CSS file instead?
     function edit(that) {
@@ -50,7 +61,7 @@ fluid = fluid || {};
                 that.editField[0].select();
             }
             else {
-                setCaretToStart(that.editField[0]);
+                setCaretToEnd(that.editField[0]);
             }
         }, 0);
         that.events.afterBeginEdit.fire();
