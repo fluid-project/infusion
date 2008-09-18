@@ -402,6 +402,7 @@ fluid = fluid || {};
    
            
        var selectItem = function (anItem) {
+           fluid.log("selectItem " + fluid.dumpEl(anItem));
            var styles = options.styles;
            // Set the previous active item back to its default state.
            if (thatReorderer.activeItem && thatReorderer.activeItem !== anItem) {
@@ -509,7 +510,7 @@ fluid = fluid || {};
            thatReorderer.dom.refresh("stylisticOffset", thatReorderer.dom.fastLocate("movables"));
            thatReorderer.dom.refresh("dropTargets");
            thatReorderer.selectableContext.selectables = thatReorderer.dom.fastLocate("selectables");
-           thatReorderer.selectableContext.selectablesUpdated();
+           thatReorderer.selectableContext.selectablesUpdated(thatReorderer.activeItem);
        };
        
        thatReorderer.refresh();

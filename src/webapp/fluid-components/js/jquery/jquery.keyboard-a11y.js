@@ -400,7 +400,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
             options: options
         };
 
-        that.selectablesUpdated = function() {
+        that.selectablesUpdated = function(focusedItem) {
           // Remove selectables from the tab order and add focus/blur handlers
             if (typeof(that.options.selectablesTabindex) === "number") {
                 that.selectables.tabindex(that.options.selectablesTabindex);
@@ -409,7 +409,12 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
             that.selectables.unbind("blur." + NAMESPACE_KEY);
             that.selectables.bind("focus."+ NAMESPACE_KEY, selectableFocusHandler(that));
             that.selectables.bind("blur." + NAMESPACE_KEY, selectableBlurHandler(that));
-            reifyIndex(that);
+            if (focusedItem) {
+                selectElement(focusedItem, that);
+            }
+            else {
+                reifyIndex(that);
+            }
         };
 
         that.refresh = function() {
