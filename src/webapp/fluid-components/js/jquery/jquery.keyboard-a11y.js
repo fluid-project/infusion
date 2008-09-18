@@ -13,38 +13,38 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 /*global jQuery*/
 
 // Tabindex normalization
-(function ($) {
+(function($) {
     // -- Private functions --
     
-    var normalizeTabindexName = function () {
+    var normalizeTabindexName = function() {
         return $.browser.msie ? "tabIndex" : "tabindex";
     };
 
-    var canHaveDefaultTabindex = function (elements) {
+    var canHaveDefaultTabindex = function(elements) {
        if (elements.length <= 0) {
            return false;
        }
 
-       return jQuery (elements[0]).is ("a, input, button, select, area, textarea, object");
+       return jQuery(elements[0]).is("a, input, button, select, area, textarea, object");
     };
     
-    var getValue = function (elements) {
+    var getValue = function(elements) {
         if (elements.length <= 0) {
             return undefined;
         }
 
-        if (!elements.hasTabindexAttr ()) {
-            return canHaveDefaultTabindex (elements) ? Number (0) : undefined;
+        if (!elements.hasTabindexAttr()) {
+            return canHaveDefaultTabindex(elements) ? Number(0) : undefined;
         }
 
         // Get the attribute and return it as a number value.
-        var value = elements.attr (normalizeTabindexName ());
-        return Number (value);
+        var value = elements.attr(normalizeTabindexName());
+        return Number(value);
     };
 
-    var setValue = function (elements, toIndex) {
-        return elements.each (function (i, item) {
-            $ (item).attr (normalizeTabindexName (), toIndex);
+    var setValue = function(elements, toIndex) {
+        return elements.each(function(i, item) {
+            $(item).attr(normalizeTabindexName(), toIndex);
         });
     };
     
@@ -56,46 +56,46 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
      * 
      * @param {String|Number} toIndex
      */
-    $.fn.tabindex = function (toIndex) {
+    $.fn.tabindex = function(toIndex) {
         if (toIndex !== null && toIndex !== undefined) {
-            return setValue (this, toIndex);
+            return setValue(this, toIndex);
         } else {
-            return getValue (this);
+            return getValue(this);
         }
     };
 
     /**
      * Removes the tabindex attribute altogether from each element.
      */
-    $.fn.removeTabindex = function () {
-        return this.each(function (i, item) {
-            $ (item).removeAttr (normalizeTabindexName ());
+    $.fn.removeTabindex = function() {
+        return this.each(function(i, item) {
+            $(item).removeAttr(normalizeTabindexName());
         });
     };
 
     /**
      * Determines if an element actually has a tabindex attribute present.
      */
-    $.fn.hasTabindexAttr = function () {
+    $.fn.hasTabindexAttr = function() {
         if (this.length <= 0) {
             return false;
         }
 
-        var attributeNode = this[0].getAttributeNode (normalizeTabindexName ());
+        var attributeNode = this[0].getAttributeNode(normalizeTabindexName());
         return attributeNode ? attributeNode.specified : false;
     };
 
     /**
      * Determines if an element either has a tabindex attribute or is naturally tab-focussable.
      */
-    $.fn.hasTabindex = function () {
-        return this.hasTabindexAttr () || canHaveDefaultTabindex (this);
+    $.fn.hasTabindex = function() {
+        return this.hasTabindexAttr() || canHaveDefaultTabindex(this);
     };
 })(jQuery);
 
 
 // Keyboard navigation
-(function ($) {    
+(function($) {    
     // Public, static constants needed by the rest of the library.
     $.a11y = $.a11y || {};
 
@@ -138,16 +138,16 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     };
 
     // Private functions.
-    var unwrap = function (element) {
+    var unwrap = function(element) {
         return element.jquery ? element[0] : element; // Unwrap the element if it's a jQuery.
     };
 
-    var cleanUpWhenLeavingContainer = function (selectionContext) {
+    var cleanUpWhenLeavingContainer = function(selectionContext) {
         if (selectionContext.onLeaveContainer) {
-            selectionContext.onLeaveContainer (
+            selectionContext.onLeaveContainer(
               selectionContext.selectables[selectionContext.activeItemIndex]);
         } else if (selectionContext.onUnselect) {
-            selectionContext.onUnselect (
+            selectionContext.onUnselect(
             selectionContext.selectables[selectionContext.activeItemIndex]);
         }
 
@@ -156,32 +156,32 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         }
     };
 
-    var checkForModifier = function (binding, evt) {
+    var checkForModifier = function(binding, evt) {
         // If no modifier was specified, just return true.
         if (!binding.modifier) {
             return true;
         }
 
         var modifierKey = binding.modifier;
-        var isCtrlKeyPresent = (modifierKey && evt.ctrlKey);
-        var isAltKeyPresent = (modifierKey && evt.altKey);
-        var isShiftKeyPresent = (modifierKey && evt.shiftKey);
+        var isCtrlKeyPresent = modifierKey && evt.ctrlKey;
+        var isAltKeyPresent = modifierKey && evt.altKey;
+        var isShiftKeyPresent = modifierKey && evt.shiftKey;
 
-        return (isCtrlKeyPresent || isAltKeyPresent || isShiftKeyPresent);
+        return isCtrlKeyPresent || isAltKeyPresent || isShiftKeyPresent;
     };
 
-    var activationHandler = function (binding) {
-        return function (evt) {
+    var activationHandler = function(binding) {
+        return function(evt) {
 // The following 'if' clause works in the real world, but there's a bug in the jQuery simulation
 // that causes keyboard simulation to fail in Safari, causing our tests to fail:
 //     http://ui.jquery.com/bugs/ticket/3229
 // The replacement 'if' clause works around this bug.
 // When this issue is resolved, we should revert to the original clause.
-//            if (evt.which === binding.key && binding.activateHandler && checkForModifier (binding, evt)) {
-            var code = (evt.which? evt.which : evt.keyCode);
-            if (code === binding.key && binding.activateHandler && checkForModifier (binding, evt)) {
-                binding.activateHandler (evt.target, evt);
-                evt.preventDefault ();
+//            if (evt.which === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
+            var code = evt.which? evt.which : evt.keyCode;
+            if (code === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
+                binding.activateHandler(evt.target, evt);
+                evt.preventDefault();
             }
         };
     };
@@ -189,7 +189,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     /**
      * Does the work of selecting an element and delegating to the client handler.
      */
-    var drawSelection = function (elementToSelect, handler) {
+    var drawSelection = function(elementToSelect, handler) {
         if (handler) {
             handler(elementToSelect);
         }
@@ -198,17 +198,17 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     /**
      * Does does the work of unselecting an element and delegating to the client handler.
      */
-    var eraseSelection = function (selectedElement, handler) {
+    var eraseSelection = function(selectedElement, handler) {
         if (handler && selectedElement) {
             handler(selectedElement);
         }
     };
 
-    var unselectElement = function (selectedElement, selectionContext) {
-        eraseSelection (selectedElement, selectionContext.options.onUnselect);
+    var unselectElement = function(selectedElement, selectionContext) {
+        eraseSelection(selectedElement, selectionContext.options.onUnselect);
     };
 
-    var selectElement = function (elementToSelect, selectionContext) {
+    var selectElement = function(elementToSelect, selectionContext) {
         // It's possible that we're being called programmatically, in which case we should clear any previous selection.
         unselectElement(selectionContext.selectedElement(), selectionContext);
 
@@ -222,38 +222,38 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
         // Select the new element.
         selectionContext.activeItemIndex = newIndex;
-        drawSelection (elementToSelect, selectionContext.options.onSelect);
+        drawSelection(elementToSelect, selectionContext.options.onSelect);
     };
 
-    var selectableFocusHandler = function (selectionContext) {
-        return function (evt) {
-            selectElement (evt.target, selectionContext);
+    var selectableFocusHandler = function(selectionContext) {
+        return function(evt) {
+            selectElement(evt.target, selectionContext);
 
             // Force focus not to bubble on some browsers.
-            return evt.stopPropagation ();
+            return evt.stopPropagation();
         };
     };
 
-    var selectableBlurHandler = function (selectionContext) {
-        return function (evt) {
-            unselectElement (evt.target, selectionContext);
+    var selectableBlurHandler = function(selectionContext) {
+        return function(evt) {
+            unselectElement(evt.target, selectionContext);
 
             // Force blur not to bubble on some browsers.
-            return evt.stopPropagation ();
+            return evt.stopPropagation();
         };
     };
 
     var reifyIndex = function(sc_that) {
-      var elements = sc_that.selectables;
-      if (sc_that.activeItemIndex >= elements.length) {
-        sc_that.activeItemIndex = 0;
-      }
-      if (sc_that.activeItemIndex < 0 && sc_that.activeItemIndex !== NO_SELECTION) {
-        sc_that.activeItemIndex = elements.length - 1;
-      }
-      if (sc_that.activeItemIndex >= 0) {
-        $(elements[sc_that.activeItemIndex]).focus();
-      }
+        var elements = sc_that.selectables;
+        if (sc_that.activeItemIndex >= elements.length) {
+            sc_that.activeItemIndex = 0;
+        }
+        if (sc_that.activeItemIndex < 0 && sc_that.activeItemIndex !== NO_SELECTION) {
+            sc_that.activeItemIndex = elements.length - 1;
+        }
+        if (sc_that.activeItemIndex >= 0) {
+            $(elements[sc_that.activeItemIndex]).focus();
+        }
     };
 
     var prepareShift = function(selectionContext) {
@@ -275,24 +275,25 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         reifyIndex(selectionContext);
     };
 
-    var arrowKeyHandler = function (selectionContext, keyMap, userHandlers) {
-        return function (evt) {
+    var arrowKeyHandler = function(selectionContext, keyMap, userHandlers) {
+        return function(evt) {
             if (evt.which === keyMap.next) {
-                focusNextElement (selectionContext);
-                evt.preventDefault ();
+                focusNextElement(selectionContext);
+                evt.preventDefault();
             } else if (evt.which === keyMap.previous) {
-                focusPreviousElement (selectionContext);
-                evt.preventDefault ();
+                focusPreviousElement(selectionContext);
+                evt.preventDefault();
             }
         };
     };
 
-    var getKeyMapForDirection = function (direction) {
+    var getKeyMapForDirection = function(direction) {
         // Determine the appropriate mapping for next and previous based on the specified direction.
         var keyMap;
         if (direction === $.a11y.orientation.HORIZONTAL) {
             keyMap = LEFT_RIGHT_KEYMAP;
-        } else {
+        } 
+        else if (direction === $.a11y.orientation.VERTICAL) {
             // Assume vertical in any other case.
             keyMap = UP_DOWN_KEYMAP;
         }
@@ -300,11 +301,11 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         return keyMap;
     };
 
-    var containerFocusHandler = function (selectionContext) {
-        return function (evt) {
+    var containerFocusHandler = function(selectionContext) {
+        return function(evt) {
             var shouldOrig = selectionContext.options.autoSelectFirstItem;
             var shouldSelect = typeof(shouldOrig) === "function" ? 
-               shouldOrig () : shouldOrig;
+                 shouldOrig() : shouldOrig;
 
             // Override the autoselection if we're on the way out of the container.
             if (selectionContext.focusIsLeavingContainer) {
@@ -319,36 +320,35 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
                 $(selectionContext.selectables[selectionContext.activeItemIndex]).focus();
             }
 
-
            // Force focus not to bubble on some browsers.
-           return evt.stopPropagation ();
+           return evt.stopPropagation();
         };
     };
 
-    var containerBlurHandler = function (selectionContext) {
-        return function (evt) {
+    var containerBlurHandler = function(selectionContext) {
+        return function(evt) {
             selectionContext.focusIsLeavingContainer = false;
 
             // Force blur not to bubble on some browsers.
-            return evt.stopPropagation ();
+            return evt.stopPropagation();
         };
     };
 
-    var makeElementsTabFocussable = function (elements) {
+    var makeElementsTabFocussable = function(elements) {
         // If each element doesn't have a tabindex, or has one set to a negative value, set it to 0.
-        elements.each (function (idx, item) {
-            item = $ (item);
-            if (!item.hasTabindex () || (item.tabindex () < 0)) {
-                item.tabindex (0);
+        elements.each(function(idx, item) {
+            item = $(item);
+            if (!item.hasTabindex() || item.tabindex() < 0) {
+                item.tabindex(0);
             }
         });
     };
 
-    var makeElementsActivatable = function (elements, onActivateHandler, defaultKeys, options) {
+    var makeElementsActivatable = function(elements, onActivateHandler, defaultKeys, options) {
         // Create bindings for each default key.
         var bindings = [];
-        $ (defaultKeys).each (function (index, key) {
-            bindings.push ({
+        $(defaultKeys).each(function(index, key) {
+            bindings.push({
                 modifier: null,
                 key: key,
                 activateHandler: onActivateHandler
@@ -357,23 +357,23 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
         // Merge with any additional key bindings.
         if (options && options.additionalBindings) {
-            bindings = bindings.concat (options.additionalBindings);
+            bindings = bindings.concat(options.additionalBindings);
         }
 
         // Add listeners for each key binding.
         for (var i = 0; i < bindings.length; i = i + 1) {
             var binding = bindings[i];
-            elements.keydown (activationHandler (binding));
+            elements.keydown(activationHandler(binding));
         }
     };
 
-    var tabKeyHandler = function (selectionContext) {
-        return function (evt) {
+    var tabKeyHandler = function(selectionContext) {
+        return function(evt) {
             if (evt.which !== $.a11y.keys.TAB) {
                 return;
             }
 
-            cleanUpWhenLeavingContainer (selectionContext);
+            cleanUpWhenLeavingContainer(selectionContext);
 
             // Catch Shift-Tab and note that focus is on its way out of the container.
             if (evt.shiftKey) {
@@ -382,16 +382,16 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         };
     };
 
-    var makeElementsSelectable = function (container, defaults, userOptions) {
+    var makeElementsSelectable = function(container, defaults, userOptions) {
 
-        var options = $.extend (true, {}, defaults, userOptions);
+        var options = $.extend(true, {}, defaults, userOptions);
 
-        var keyMap = getKeyMapForDirection (options.direction);
+        var keyMap = getKeyMapForDirection(options.direction);
 
         var selectableElements = options.selectableElements? options.selectableElements :
-          container.find(options.selectableSelector);
+              container.find(options.selectableSelector);
           
-        // Context stores the currently active item (undefined to start) and list of selectables.
+        // Context stores the currently active item(undefined to start) and list of selectables.
         var that = {
             container: container,
             activeItemIndex: NO_SELECTION,
@@ -402,7 +402,9 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
         that.selectablesUpdated = function() {
           // Remove selectables from the tab order and add focus/blur handlers
-            that.selectables.tabindex(-1);
+            if (typeof(that.options.selectablesTabindex) === "number") {
+                that.selectables.tabindex(that.options.selectablesTabindex);
+            }
             that.selectables.unbind("focus." + NAMESPACE_KEY);
             that.selectables.unbind("blur." + NAMESPACE_KEY);
             that.selectables.bind("focus."+ NAMESPACE_KEY, selectableFocusHandler(that));
@@ -411,11 +413,11 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         };
 
         that.refresh = function() {
-          if (!that.options.selectableSelector) {
-              throw ("Cannot refresh selectable context which was not initialised by a selector");
-          }
-          that.selectables = container.find(options.selectableSelector);
-          that.selectablesUpdated();
+            if (!that.options.selectableSelector) {
+                throw("Cannot refresh selectable context which was not initialised by a selector");
+            }
+            that.selectables = container.find(options.selectableSelector);
+            that.selectablesUpdated();
         };
         
         that.selectedElement = function() {
@@ -423,54 +425,56 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         };
         
         // Add various handlers to the container.
-        container.keydown (arrowKeyHandler (that, keyMap));
-        container.keydown (tabKeyHandler (that));
-        container.focus (containerFocusHandler (that));
-        container.blur (containerBlurHandler (that));
+        if (keyMap) {
+            container.keydown(arrowKeyHandler(that, keyMap));
+        }
+        container.keydown(tabKeyHandler(that));
+        container.focus(containerFocusHandler(that));
+        container.blur(containerBlurHandler(that));
         
         that.selectablesUpdated();
 
         return that;
     };
 
-    var createDefaultActivationHandler = function (activatables, userActivateHandler) {
-        return function (elementToActivate) {
+    var createDefaultActivationHandler = function(activatables, userActivateHandler) {
+        return function(elementToActivate) {
             if (!userActivateHandler) {
                 return;
             }
 
-            elementToActivate = unwrap (elementToActivate);
-            if (activatables.index (elementToActivate) === -1) {
+            elementToActivate = unwrap(elementToActivate);
+            if (activatables.index(elementToActivate) === -1) {
                 return;
             }
 
-            userActivateHandler (elementToActivate);
+            userActivateHandler(elementToActivate);
         };
     };
 
     /**
      * Gets stored state from the jQuery instance's data map.
      */
-    var getData = function (aJQuery, key) {
-        var data = aJQuery.data (NAMESPACE_KEY);
+    var getData = function(aJQuery, key) {
+        var data = aJQuery.data(NAMESPACE_KEY);
         return data ? data[key] : undefined;
     };
 
     /**
      * Stores state in the jQuery instance's data map.
      */
-    var setData = function (aJQuery, key, value) {
-        var data = aJQuery.data (NAMESPACE_KEY) || {};
+    var setData = function(aJQuery, key, value) {
+        var data = aJQuery.data(NAMESPACE_KEY) || {};
         data[key] = value;
-        aJQuery.data (NAMESPACE_KEY, data);
+        aJQuery.data(NAMESPACE_KEY, data);
     };
 
     // Public API.
     /**
      * Makes all matched elements available in the tab order by setting their tabindices to "0".
      */
-    $.fn.tabbable = function () {
-        makeElementsTabFocussable (this);
+    $.fn.tabbable = function() {
+        makeElementsTabFocussable(this);
         return this;
     };
 
@@ -480,9 +484,9 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
      * Options provide configurability, including direction: and autoSelectFirstItem:
      * Currently supported directions are jQuery.a11y.directions.HORIZONTAL and VERTICAL.
      */
-    $.fn.selectable = function (options) {
-        var that = makeElementsSelectable (this, this.selectable.defaults, options);
-        setData (this, CONTEXT_KEY, that);
+    $.fn.selectable = function(options) {
+        var that = makeElementsSelectable(this, this.selectable.defaults, options);
+        setData(this, CONTEXT_KEY, that);
         return this;
     };
     
@@ -495,24 +499,24 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
      * Provide your own handler function for custom behaviour.
      * Options allow you to provide a list of additionalActivationKeys.
      */
-    $.fn.activatable = function (fn, options) {
-        makeElementsActivatable (this, fn, this.activatable.defaults.keys, options);
-        setData (this, ACTIVATE_KEY, createDefaultActivationHandler (this, fn));
+    $.fn.activatable = function(fn, options) {
+        makeElementsActivatable(this, fn, this.activatable.defaults.keys, options);
+        setData(this, ACTIVATE_KEY, createDefaultActivationHandler(this, fn));
         return this;
     };
 
     /**
      * Selects the specified element.
      */
-    $.fn.select = function (elementToSelect) {
-        elementToSelect.focus ();
+    $.fn.select = function(elementToSelect) {
+        elementToSelect.focus();
         return this;
     };
 
     /**
      * Selects the next matched element.
      */
-    $.fn.selectNext = function () {
+    $.fn.selectNext = function() {
         focusNextElement(getData(this, CONTEXT_KEY));
         return this;
     };
@@ -520,7 +524,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     /**
      * Selects the previous matched element.
      */
-    $.fn.selectPrevious = function () {
+    $.fn.selectPrevious = function() {
         focusPreviousElement(getData(this, CONTEXT_KEY));
         return this;
     };
@@ -528,7 +532,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     /**
      * Returns the currently selected item wrapped as a jQuery object.
      */
-    $.fn.currentSelection = function () {
+    $.fn.currentSelection = function() {
         var that = getData(this, CONTEXT_KEY);
         return $(that.selectedElement());
     };
@@ -536,9 +540,9 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     /**
      * Activates the specified element.
      */
-    $.fn.activate = function (elementToActivate) {
-        var handler = getData (this, ACTIVATE_KEY);
-        handler (elementToActivate);
+    $.fn.activate = function(elementToActivate) {
+        var handler = getData(this, ACTIVATE_KEY);
+        handler(elementToActivate);
         return this;
     };
 
@@ -549,6 +553,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
     $.fn.selectable.defaults = {
         direction: this.VERTICAL,
+        selectablesTabindex: -1,
         autoSelectFirstItem: true,
         rememberSelectionState: true,
         selectableSelector: ".selectable",
@@ -557,4 +562,4 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         onUnselect: null,
         onLeaveContainer: null
     };
-}) (jQuery);
+})(jQuery);

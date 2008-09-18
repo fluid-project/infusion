@@ -93,7 +93,7 @@ fluid = fluid || {};
         }
     });
     
-    function firstSelectable (that) {
+    function firstSelectable(that) {
         var selectables = that.dom.fastLocate("selectables");
         if (selectables.length <= 0) {
             return null;
@@ -101,7 +101,7 @@ fluid = fluid || {};
         return selectables[0];
     }
     
-    function bindHandlersToContainer (container, focusHandler, keyDownHandler, keyUpHandler, mouseMoveHandler) {
+    function bindHandlersToContainer(container, focusHandler, keyDownHandler, keyUpHandler, mouseMoveHandler) {
         container.focus(focusHandler);
         container.keydown(keyDownHandler);
         container.keyup(keyUpHandler);
@@ -448,7 +448,8 @@ fluid = fluid || {};
             // Remove the selectables from the taborder
             for (var i = 0; i < selectables.length; i++) {
                 var item = jQuery(selectables[i]);
-                item.tabindex("-1");
+                
+                item.tabindex(thatReorderer.options.selectablesTabindex);
                 item.blur(handleBlur);
                 item.focus(handleFocus);
             
@@ -525,7 +526,7 @@ fluid = fluid || {};
            thatReorderer.dom.refresh("movables");
            thatReorderer.dom.refresh("selectables");
            thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
-           thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
+           thatReorderer.dom.refresh("stylisticOffset", thatReorderer.dom.fastLocate("movables"));
            thatReorderer.dom.refresh("dropTargets");
        };
        
@@ -572,8 +573,8 @@ fluid = fluid || {};
     function geometricInfoGetter(orientation, dom) {
         return function() {
            return {
-               extents:[{orientation : orientation, 
-                         elements   : dom.fastLocate("dropTargets")
+               extents: [{orientation : orientation, 
+                         elements     : dom.fastLocate("dropTargets")
                          }
                          ],
                 elementMapper: function(element) {
@@ -583,8 +584,9 @@ fluid = fluid || {};
     }
     
     fluid.defaults(true, "fluid.listLayoutHandler", 
-        {orientation:   fluid.orientation.VERTICAL,
-         containerRole: fluid.roles.LIST
+        {orientation:         fluid.orientation.VERTICAL,
+         containerRole:       fluid.roles.LIST,
+         selectablesTabindex: -1
         });
     
     // Public layout handlers.
@@ -601,8 +603,10 @@ fluid = fluid || {};
     }; // End ListLayoutHandler
 
     fluid.defaults(true, "fluid.gridLayoutHandler", 
-        {orientation:  fluid.orientation.HORIZONTAL,
-         containerRole: fluid.roles.GRID});
+        {orientation:        fluid.orientation.HORIZONTAL,
+         containerRole:      fluid.roles.GRID,
+         selectablesTabindex: -1
+         });
     /*
      * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
      * changes dimensions when the window changes size. As a result, when the user presses the up or
