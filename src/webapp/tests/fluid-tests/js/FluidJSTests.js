@@ -254,52 +254,5 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertNull("The defaults for a nonexistent component should be null.", 
                               fluid.defaults("timemachine"));
         });
-        
-        fluidJSTests.test("delegateAfter", function () {
-            var functions = {
-                first: function () { },
-                second: function () { }
-            };
-            
-            var tracker = jqUnit.invocationTracker();
-            tracker.interceptAll(functions);
-            
-            var resultingFn = fluid.delegateAfter(functions.first, "second", functions);
-            
-            // Test with zero args. Order should be correct.
-            resultingFn();
-            jqUnit.assertEquals("There should be two function invocations resulting from delegateAfter.",
-                       	        2, tracker.transcript.length);
-            jqUnit.assertEquals("The first function should be called first.", "first", tracker.transcript[0].name);
-            jqUnit.assertEquals("The second function should be called after the first.", "second", tracker.transcript[1].name);
-            
-            // Ensure we're getting the correct arguments.
-            tracker.clearTranscript();
-            resultingFn("a", "b");
-            jqUnit.assertEquals("The first function should have received the first argument.", 
-                                "a", tracker.transcript[0].args[0]);
-            jqUnit.assertEquals("The second function should have received the first argument.", 
-                                "a", tracker.transcript[1].args[0]);
-            jqUnit.assertEquals("The first function should have received the second argument.", 
-                                "b", tracker.transcript[0].args[1]);
-            jqUnit.assertEquals("The second function should have received the second argument.", 
-                                "b", tracker.transcript[1].args[1]);
-                                
-            // Error case: no first argument. Second should still be invoked.
-            tracker.clearTranscript();
-            resultingFn = fluid.delegateAfter(null, "second", functions);
-            resultingFn();
-            jqUnit.assertEquals("The delegate function should still be called even if the first fn wasn't specified.",
-                       	        1, tracker.transcript.length);
-            jqUnit.assertEquals("The second function should have been called.", "second", tracker.transcript[0].name);
-            
-           // Error case: no delegate function argument. First should still be invoked.
-            tracker.clearTranscript();
-            resultingFn = fluid.delegateAfter(functions.first);
-            resultingFn();
-            jqUnit.assertEquals("The first function should still be called even if the delegate fn wasn't specified.",
-                       	        1, tracker.transcript.length);
-            jqUnit.assertEquals("The first function should have been called.", "first", tracker.transcript[0].name);
-        });
     });
 })(jQuery);

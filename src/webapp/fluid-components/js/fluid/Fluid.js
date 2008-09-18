@@ -493,17 +493,6 @@ var fluid = fluid || {};
         that.dom = fluid.createDomBinder(that.container, that.options.selectors);
         that.locate = that.dom.locate;      
     };
-   
-    /**
-     * Instantiates a new object by invoking the specified function name reflectively.
-     * The name should be a fully qualified path (a.k.a. "EL path expression").
-     * 
-     * @param {Object} name a fully-qualified creator function name, for example, "fluid.uploader"
-     * @param {Object} creatorArgs the arguments you want to pass to the creator function
-     */
-    fluid.createObjectForName = function (name, creatorArgs, environment) {
-        return fluid.utils.invokeGlobalFunction(name, $.makeArray(creatorArgs), environment);
-    };
     
     fluid.initDecorators = function (that, environment) {
         var decorators = that.options.componentDecorators;
@@ -520,38 +509,13 @@ var fluid = fluid || {};
         }
     };
     
-    /**
-     * Creates a new callback function that invokes the specified function, then
-     * calls a user-specified callback afterwards. 
-     * 
-     * This is a naive form of "after advice" in AOP jargon.
-     * 
-     * @param {Object} fn the function to call first
-     * @param {Object} callbackName the name of the callack method to call after fn has been invoked
-     * @param {Object} onObject the callback object in which the method lives
-     */
-    fluid.delegateAfter = function (fn, callbackName, onObject) {
-        return function () {
-            if (fn) {
-                fn.apply(null, arguments);    
-            }
-            
-            if (onObject) {
-                var callbackFn = onObject[callbackName];
-                if (callbackFn) {
-                    onObject[callbackName].apply(null, arguments);    
-                }
-            }
-        };
-    };
-    
+    fluid.event = {};
+        
     var fluid_guid = 1;
     
     // A hash of (jQuery data id) elements to "true" indicating whether the corresponding
     // DOM element is the source of an event for the current cycle.
     var fluid_sourceElements = {};
-    
-    fluid.event = {};
     
     fluid.event.getEventFirer = function (unicast, preventable) {
         var log = fluid.utils.debug;
