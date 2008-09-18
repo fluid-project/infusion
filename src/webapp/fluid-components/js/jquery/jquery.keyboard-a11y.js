@@ -17,36 +17,36 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     // -- Private functions --
     
     var normalizeTabindexName = function () {
-	    return $.browser.msie ? "tabIndex" : "tabindex";
-	};
+        return $.browser.msie ? "tabIndex" : "tabindex";
+    };
 
-	var canHaveDefaultTabindex = function (elements) {
+    var canHaveDefaultTabindex = function (elements) {
        if (elements.length <= 0) {
            return false;
        }
 
-	   return jQuery (elements[0]).is ("a, input, button, select, area, textarea, object");
-	};
+       return jQuery (elements[0]).is ("a, input, button, select, area, textarea, object");
+    };
     
-	var getValue = function (elements) {
+    var getValue = function (elements) {
         if (elements.length <= 0) {
             return undefined;
         }
 
-		if (!elements.hasTabindexAttr ()) {
-		    return canHaveDefaultTabindex (elements) ? Number (0) : undefined;
-		}
+        if (!elements.hasTabindexAttr ()) {
+            return canHaveDefaultTabindex (elements) ? Number (0) : undefined;
+        }
 
         // Get the attribute and return it as a number value.
-		var value = elements.attr (normalizeTabindexName ());
-		return Number (value);
-	};
+        var value = elements.attr (normalizeTabindexName ());
+        return Number (value);
+    };
 
-	var setValue = function (elements, toIndex) {
-		return elements.each (function (i, item) {
-			$ (item).attr (normalizeTabindexName (), toIndex);
-		});
-	};
+    var setValue = function (elements, toIndex) {
+        return elements.each (function (i, item) {
+            $ (item).attr (normalizeTabindexName (), toIndex);
+        });
+    };
     
     // -- Public API --
     
@@ -57,40 +57,40 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
      * @param {String|Number} toIndex
      */
     $.fn.tabindex = function (toIndex) {
-		if (toIndex !== null && toIndex !== undefined) {
-			return setValue (this, toIndex);
-		} else {
-			return getValue (this);
-		}
-	};
+        if (toIndex !== null && toIndex !== undefined) {
+            return setValue (this, toIndex);
+        } else {
+            return getValue (this);
+        }
+    };
 
     /**
      * Removes the tabindex attribute altogether from each element.
      */
-	$.fn.removeTabindex = function () {
-		return this.each(function (i, item) {
-			$ (item).removeAttr (normalizeTabindexName ());
-		});
-	};
+    $.fn.removeTabindex = function () {
+        return this.each(function (i, item) {
+            $ (item).removeAttr (normalizeTabindexName ());
+        });
+    };
 
     /**
      * Determines if an element actually has a tabindex attribute present.
      */
-	$.fn.hasTabindexAttr = function () {
-	    if (this.length <= 0) {
-	        return false;
-	    }
+    $.fn.hasTabindexAttr = function () {
+        if (this.length <= 0) {
+            return false;
+        }
 
-	    var attributeNode = this[0].getAttributeNode (normalizeTabindexName ());
+        var attributeNode = this[0].getAttributeNode (normalizeTabindexName ());
         return attributeNode ? attributeNode.specified : false;
-	};
+    };
 
     /**
      * Determines if an element either has a tabindex attribute or is naturally tab-focussable.
      */
-	$.fn.hasTabindex = function () {
+    $.fn.hasTabindex = function () {
         return this.hasTabindexAttr () || canHaveDefaultTabindex (this);
-	};
+    };
 })(jQuery);
 
 
