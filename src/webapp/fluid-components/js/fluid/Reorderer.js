@@ -82,6 +82,7 @@ fluid = fluid || {};
         
         events: {
            onShowKeyboardDropWarning: null,
+           onBeginMove: "preventable",
            onMove: null,
            afterMove: null,
            onHover: null
@@ -261,7 +262,8 @@ fluid = fluid || {};
         };
         
         thatReorderer.handleDirectionKeyDown = function (evt) {
-            if (!thatReorderer.activeItem) {
+            var item = thatReorderer.activeItem;
+            if (!item) {
                 return true;
             }
             var keysets = options.keysets;
@@ -275,16 +277,17 @@ fluid = fluid || {};
                 var isMovement = keyset.modifier(evt);
                 
                 var dirnum = fluid.keycodeDirection[keydir];
-                var relativeItem = thatReorderer.layoutHandler.getRelativePosition(thatReorderer.activeItem, 
-                        dirnum, !isMovement);
+                var relativeItem = thatReorderer.layoutHandler.getRelativePosition(item, dirnum, !isMovement);
                 if (!relativeItem) {
                     continue;
                 }
                 
                 if (isMovement) {
+                    var prevent = thatReorderer.events.onBeginMove.fire(item);
+                    if (prevent) return false;
                     if (kbDropWarning) {
                         if (relativeItem.clazz === "locked") {
-                            thatReorderer.events.onShowKeyboardDropWarning.fire(thatReorderer.activeItem, kbDropWarning);
+                            thatReorderer.events.onShowKeyboardDropWarning.fire(item, kbDropWarning);
                             kbDropWarning.show();                       
                         }
                         else {
@@ -292,7 +295,7 @@ fluid = fluid || {};
                         }
                     }
                     if (relativeItem.element) {
-                        thatReorderer.requestMovement(relativeItem, thatReorderer.activeItem);
+                        thatReorderer.requestMovement(relativeItem, item);
                     }
             
                 } else if (noModifier(evt)) {
@@ -370,6 +373,8 @@ fluid = fluid || {};
                     return avatar;
                 },
                 start: function (e, ui) {
+                    var prevent = thatReorderer.events.onBeginMove.fire(item);
+                    if (prevent) return false;
                     var handle = thatReorderer.dom.fastLocate("grabHandle", item)[0];
                     var handlePos = fluid.utils.computeAbsolutePosition(handle);
                     var handleWidth = handle.offsetWidth;
