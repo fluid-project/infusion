@@ -479,7 +479,7 @@ var fluid = fluid || {};
             var globDef = fluid.defaults(true, entryType);
             fluid.utils.merge("reverse", that.options, globDef);
             
-            togo[i] = fluid.utils.invokeGlobalFunction(entryType, args, {fluid: fluid});
+            togo[i] = fluid.invokeGlobalFunction(entryType, args, {fluid: fluid});
             var returnedOptions = togo[i].returnedOptions;
             if (returnedOptions) {
                 fluid.utils.merge(that.options.mergePolicy, that.options, returnedOptions);
@@ -714,7 +714,7 @@ var fluid = fluid || {};
         return target;     
     };
     
-    fluid.utils.invokeGlobalFunction = function (functionPath, args, environment) {
+    fluid.invokeGlobalFunction = function (functionPath, args, environment) {
         return fluid.model.getBeanValue(window, functionPath, environment).apply(null, args);
     };
 
