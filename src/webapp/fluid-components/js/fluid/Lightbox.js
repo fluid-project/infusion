@@ -56,6 +56,15 @@ fluid = fluid || {};
         };
     };
     
+    var findForm = function (element) {
+        while (element) {
+            if (element.nodeName.toLowerCase() === "form") {
+                return element;
+            }
+            element = element.parentNode;
+        }
+    };
+    
     /**
      * Returns the default Lightbox order change callback. This callback is used by the Lightbox
      * to send any changes in image order back to the server. It is implemented by nesting
@@ -66,7 +75,7 @@ fluid = fluid || {};
      * @param {Element} lightboxContainer The DOM element containing the form that is POSTed back to the server upon order change 
      */
     var defaultafterMoveCallback = function (lightboxContainer) {
-        var reorderform = fluid.utils.findForm(lightboxContainer);
+        var reorderform = findForm(lightboxContainer);
         
         return function () {
             var inputs, i;

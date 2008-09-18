@@ -640,15 +640,6 @@ var fluid = fluid || {};
             return [curleft, curtop];
         }
     };
-      
-    fluid.utils.findForm = function (element) {
-        while (element) {
-            if (element.nodeName.toLowerCase() === "form") {
-                return element;
-            }
-            element = element.parentNode;
-        }
-    };
     
     /** 
      * Clears an object or array of its contents. For objects, each property is deleted.
