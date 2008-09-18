@@ -198,8 +198,8 @@ var fluid = fluid || {};
     };
     
     fluid.fail = function (message) {
-        fluid.utils.setLogging(true);
-        fluid.utils.debug(message.message? message.message : message);
+        fluid.logEnabled = true;
+        fluid.log(message.message? message.message : message);
         message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
     };
     
@@ -505,7 +505,7 @@ var fluid = fluid || {};
     var fluid_sourceElements = {};
     
     fluid.event.getEventFirer = function (unicast, preventable) {
-        var log = fluid.utils.debug;
+        var log = fluid.log;
         var listeners = {};
         return {
             addListener: function (listener, namespace, exclusions) {
@@ -726,6 +726,11 @@ var fluid = fluid || {};
         return element? jQuery(element) : null;
     };
     
+    /**
+     * Returns an DOM element quickly, given an id
+     * 
+     * @param {Object} id the id of the DOM node to find
+     */
     fluid.byId = function (id) {
         var el = document.getElementById(id);
         if (el) {
@@ -746,11 +751,13 @@ var fluid = fluid || {};
     fluid.getId = function (element) {
         return fluid.unwrap(element).getAttribute("id");
     };
-    
-    var fluid_logging = false;
 
-    fluid.utils.debug = function (str) {
-        if (fluid_logging) {
+
+    // Logging
+    
+    fluid.logEnabled = false;
+    fluid.log = function (str) {
+        if (fluid.logEnabled) {
             str = new Date().toTimeString() + ":  " + str;
             if (typeof(console) !== "undefined") {
                 if (console.debug) {
@@ -767,18 +774,6 @@ var fluid = fluid || {};
             }
         }
     };
-    
-    fluid.log = fluid.utils.debug;
-    
-     /** method to allow user to enable logging (off by default) */
-    fluid.utils.setLogging = function (enabled) {
-        if (typeof enabled === "boolean") {
-            fluid_logging = enabled;
-        } else {
-            fluid_logging = false;
-        }
-    };
-    
 
     fluid.utils.derivePercent = function (num, total) {
         return Math.round((num * 100) / total);

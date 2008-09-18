@@ -301,7 +301,7 @@ fluid = fluid || {};
             return dropMarker;
         };
 
-        fluid.utils.setLogging(true);
+        fluid.logEnabled = true;
 
         thatReorderer.requestMovement = function(requestedPosition, item) {
           // Temporary censoring to get around ModuleLayout inability to update relative to self.
