@@ -11,7 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 // Declare dependencies.
-/*global jQuery*/
+/*global jQuery, YAHOO, opera*/
 
 var fluid = fluid || {};
 
@@ -97,7 +97,7 @@ var fluid = fluid || {};
         return container;
     };
     
-    fluid.transform = function(list) {
+    fluid.transform = function (list) {
         var togo = [];
         for (var i = 0; i < list.length; ++ i) {
             var transit = list[i];
@@ -109,24 +109,24 @@ var fluid = fluid || {};
         return togo;
     };
     
-    fluid.find = function(list, fn, deflt) {
-       for (var i = 0; i < list.length; ++ i) {
-           var transit = fn(list[i], i);
-           if (transit !== null && transit !== undefined) {
-               return transit;
-           }
-       }
-       return deflt;
+    fluid.find = function (list, fn, deflt) {
+        for (var i = 0; i < list.length; ++ i) {
+            var transit = fn(list[i], i);
+            if (transit !== null && transit !== undefined) {
+                return transit;
+            }
+        }
+        return deflt;
     };
     
-    fluid.accumulate = function(list, fn, arg) {
-       for (var i = 0; i < list.length; ++ i) {
-           arg = fn(list[i], arg, i);
-       }
-       return arg;
+    fluid.accumulate = function (list, fn, arg) {
+	    for (var i = 0; i < list.length; ++ i) {
+	        arg = fn(list[i], arg, i);
+	    }
+	    return arg;
     };
     
-    fluid.remove_if = function(list, fn) {
+    fluid.remove_if = function (list, fn) {
         for (var i = 0; i < list.length; ++ i) {
             if (fn(list[i], i)) {
                 list.splice(i, 1);
@@ -149,8 +149,8 @@ var fluid = fluid || {};
         var offset = 0;
         var store = defaultsStore;
         if (typeof(arguments[0]) === "boolean") {
-          store = globalDefaultsStore;
-          offset = 1;
+	        store = globalDefaultsStore;
+	        offset = 1;
         }
         var componentName = arguments[offset];
         var defaultsObject = arguments[offset + 1];
@@ -174,7 +174,7 @@ var fluid = fluid || {};
             return "null";
         }
         if (element.nodeType === 3 || element.nodeType === 8) {
-          return "[data: " + element.data + "]";
+            return "[data: " + element.data + "]";
         } 
         if (typeof(element.length) === "number") {
             togo = "[";
@@ -183,8 +183,8 @@ var fluid = fluid || {};
                 if (i < element.length - 1) {
                     togo += ", ";
                 }
-          }
-          return togo + "]";
+            }
+            return togo + "]";
         }
         element = jQuery(element);
         togo = element.get(0).tagName;
@@ -233,8 +233,8 @@ var fluid = fluid || {};
                 deleted = acceptor(currentNode.node, currentNode.depth);
             }
             if (deleted) {
-               currentNode.node.parentNode.removeChild(currentNode.node);
-               currentNode.node = prevNode;
+                currentNode.node.parentNode.removeChild(currentNode.node);
+                currentNode.node = prevNode;
             }
             prevNode = currentNode.node;
             currentNode = getNextNode(currentNode);
@@ -248,7 +248,7 @@ var fluid = fluid || {};
      * and attaches a DOM Binder to the instance.
      */
     fluid.isContainer = function (container, containee) {
-        for(; containee; containee = containee.parentNode) {
+        for (; containee; containee = containee.parentNode) {
             if (container === containee) {
                 return true;
             }
@@ -288,7 +288,7 @@ var fluid = fluid || {};
     fluid.cleanseScripts = function (element) {
         var cleansed = jQuery.data(element, fluid.cleanseScripts.MARKER);
         if (!cleansed) {
-            fluid.iterateDom(element, function(node) {
+            fluid.iterateDom(element, function (node) {
                 return (node.tagName.toLowerCase() === "script");
             });
             jQuery.data(element, fluid.cleanseScripts.MARKER, true);
@@ -308,8 +308,8 @@ var fluid = fluid || {};
      */
 
     fluid.isIgnorableNode = function (node) {
-        return (node.nodeType == 8) || // A comment node
-         ( (node.nodeType == 3) && fluid.isWhitespaceNode(node) ); // a text node, all ws
+        return (node.nodeType === 8) || // A comment node
+         ((node.nodeType === 3) && fluid.isWhitespaceNode(node)); // a text node, all ws
     };
     
     fluid.createDomBinder = function (container, selectors) {
@@ -358,25 +358,25 @@ var fluid = fluid || {};
         that.clear = function () {
             cache = {};
         };
-        that.refresh = function(names, localContainer) {
-           var thisContainer = localContainer? localContainer: container;
-           if (typeof names === "string") {
-               names = [names];
-           }
-           if (thisContainer.length === undefined) {
-               thisContainer = [thisContainer];
-           }
-           for (var i = 0; i < names.length; ++ i) {
-               for (var j = 0; j < thisContainer.length; ++ j) {
-                   that.locate(names[i], thisContainer[j]);
-               }
-           }
+        that.refresh = function (names, localContainer) {
+            var thisContainer = localContainer? localContainer: container;
+            if (typeof names === "string") {
+                names = [names];
+            }
+            if (thisContainer.length === undefined) {
+                thisContainer = [thisContainer];
+            }
+            for (var i = 0; i < names.length; ++ i) {
+                for (var j = 0; j < thisContainer.length; ++ j) {
+                    that.locate(names[i], thisContainer[j]);
+                }
+            }
         };
         
         return that;
     };
     
-    fluid.mergeListeners = function(events, listeners) {
+    fluid.mergeListeners = function (events, listeners) {
         if (listeners) {
             for (var key in listeners) {
                 var value = listeners[key];
@@ -718,8 +718,8 @@ var fluid = fluid || {};
             var thisSource = source[name];
     
             if (thisSource !== undefined) {
-                if (thisSource !== null && typeof(thisSource) === 'object' 
-                      && !thisSource.nodeType && !thisSource.jquery) {
+                if (thisSource !== null && typeof(thisSource) === 'object' &&
+                      !thisSource.nodeType && !thisSource.jquery) {
                     if (!thisTarget) {
                         target[name] = thisTarget = thisSource instanceof Array? [] : {};
                     }
@@ -727,12 +727,12 @@ var fluid = fluid || {};
                 }
                 else {
                     if (thisTarget === null || thisTarget === undefined || thisPolicy !== "reverse") {
-                       target[name] = thisSource;
+                        target[name] = thisSource;
                     }
                 }
             }
         }
-        return target;    
+        return target;
     }
     
     fluid.utils.merge = function (policy, target) {
