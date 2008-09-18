@@ -16,33 +16,33 @@ demo.initJqueryTabs = function () {
     var addTabActivateHandler = function (container) {
         var enterKeyHandler = function (evt) {
             if (evt.which === fluid.keys.ENTER) {
-                var tabAnchors = jQuery ("a", evt.target);
+                var tabAnchors = jQuery("a", evt.target);
                 fragmentUrl = tabAnchors.attr ('href');
                 jQuery("#tabList").tabs("select", fragmentUrl);
             }
         };
-        jQuery (container).keypress (enterKeyHandler);
+        jQuery(container).keypress(enterKeyHandler);
     };
 
-    var tabList = fluid.utils.jById ("tabList");
-    addTabActivateHandler (tabList);
+    var tabList = fluid.utils.jById("tabList");
+    addTabActivateHandler(tabList);
 
     var options = {
-      layoutHandler: "fluid.listLayoutHandler",
-      orientation: fluid.orientation.HORIZONTAL,
-      styles: {
-        defaultStyle: "default-tab",
-        selected: "selected-tab",
-        dragging: "dragging-tab",
-        hover: "hover-tab",
-        dropMarker: "drop-marker-tab",
-        avatar: "avatar-tab"
-        },
-      selectors: {
-        movables: "[id^=tab_]"
-      }
+        layoutHandler: "fluid.listLayoutHandler",
+        orientation: fluid.orientation.HORIZONTAL,
+        styles: {
+            defaultStyle: "default-tab",
+            selected: "selected-tab",
+            dragging: "dragging-tab",
+            hover: "hover-tab",
+            dropMarker: "drop-marker-tab",
+            avatar: "avatar-tab"
+            },
+        selectors: {
+            movables: "[id^=tab_]"
+        }
     };
 
     
-    return new fluid.reorderer (tabList, options);
+    return new fluid.reorderer(tabList, options);
 };

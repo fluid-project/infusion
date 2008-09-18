@@ -21,7 +21,7 @@
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.core.js"></script>
-        <script type="text/javascript" src="../../shared/jquery//ui.tabs.js"></script>
+        <script type="text/javascript" src="../../shared/jquery/ui.tabs.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.draggable.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jARIA.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
@@ -91,17 +91,19 @@
                 </ul>
             </div>
         </div>
-
+        
+        <a href="http://ponder.org.uk">Focus trap</a>
         
         <script type="text/javascript">
             // <![CDATA[
             $(window).bind('load', function() {
                 $('#container-1 > ul').tabs();
+                $("#container-1 a").tabindex(-1);
             });
             // ]]>
         </script>
     <script type="text/javascript">
-        demo.initJqueryTabs ();
+        demo.initJqueryTabs();
     </script>
     </body>
 </html>
