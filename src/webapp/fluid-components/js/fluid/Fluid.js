@@ -640,10 +640,6 @@ var fluid = fluid || {};
             return [curleft, curtop];
         }
     };
-          
-    fluid.utils.escapeSelector = function (id) {
-        return id.replace(/\:/g, "\\:");
-    };
       
     fluid.utils.findForm = function (element) {
         while (element) {
