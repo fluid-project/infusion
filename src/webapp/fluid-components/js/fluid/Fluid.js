@@ -496,21 +496,6 @@ var fluid = fluid || {};
         that.locate = that.dom.locate;      
     };
     
-    fluid.initDecorators = function (that, environment) {
-        var decorators = that.options.componentDecorators;
-        if (!decorators) {
-            return;
-        }
-      
-        if (typeof(decorators) === 'string') {
-            decorators = [decorators];
-        }
-        for (var i = 0; i < decorators.length; i += 1) {
-            var decoratorName = decorators[i];
-            fluid.createObjectForName(decoratorName, [that, that.options[decoratorName]], environment);
-        }
-    };
-    
     fluid.event = {};
         
     var fluid_guid = 1;
