@@ -400,7 +400,7 @@ var fluid = fluid || {};
                 }
             }
         }    
-    }
+    };
     
     fluid.instantiateFirers = function (that, options) {
         that.events = {};
@@ -455,11 +455,13 @@ var fluid = fluid || {};
     
     fluid.initSubcomponent = function (that, className, args) {
         return fluid.initSubcomponents(that, className, args)[0];
-    }
+    };
     
     fluid.initSubcomponents = function (that, className, args) {
         var entry = that.options[className];
-        if (!entry) return;
+        if (!entry) {
+            return;
+        }
         var entries = jQuery.makeArray(entry);
         var optindex = -1;
         var togo = [];
@@ -468,8 +470,8 @@ var fluid = fluid || {};
                 optindex = i - 3;
             }
         }
-        for (var i = 0; i < entries.length; ++ i) {
-            var entry = entries[i];
+        for (i = 0; i < entries.length; ++ i) {
+            entry = entries[i];
             if (optindex !== -1 && entry.options) {
                 args[optindex] = entry.options;
             }
@@ -648,7 +650,8 @@ var fluid = fluid || {};
             do {
                 curleft += element.offsetLeft;
                 curtop += element.offsetTop;
-            } while (element = element.offsetParent);
+                element = element.offsetParent;
+            } while (element);
             return [curleft, curtop];
         }
     };
@@ -773,12 +776,16 @@ var fluid = fluid || {};
         if (el) {
             if (el.getAttribute("id") !== id) {
                 fluid.fail("Problem in document structure - picked up element " +
-                  fluid.dumpEl(el) + " for id " + id +  
-                  " without this id - most likely the element has a name which conflicts with this id");
+                fluid.dumpEl(el) +
+                " for id " +
+                id +
+                " without this id - most likely the element has a name which conflicts with this id");
             }
             return el;
         }
-        else return null;
+        else {
+            return null;
+        }
     };
     
     fluid.getId = function (element) {
