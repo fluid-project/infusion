@@ -128,6 +128,11 @@ fluid = fluid || {};
         
     /* DOM Manipulation */
     
+    
+    var derivePercent = function (num, total) {
+        return Math.round((num * 100) / total);
+    };
+    
     /** 
     * adds a new file to the file queue in DOM
     * note: there are cases where a file will be added to the file queue but will not be in the actual queue 
@@ -728,13 +733,13 @@ fluid = fluid || {};
         fluid.log ('Upload Status : \n' + file.name + ' : ' + fileBytes + ' of ' + totalFileBytes + " bytes : \ntotal : " + (status.currBytes + fileBytes)  + ' of ' + queuedBytes(status) + " bytes");
         
         // update file progress
-        var filePercent = fluid.utils.derivePercent(fileBytes,totalFileBytes);
+        var filePercent = derivePercent(fileBytes,totalFileBytes);
         progressBar.updateProgress("file", filePercent, filePercent+"%");
         
         // update total 
         var totalQueueBytes = queuedBytes(status);
         var currQueueBytes = status.currBytes + fileBytes;
-        var totalPercent = fluid.utils.derivePercent(currQueueBytes, totalQueueBytes);
+        var totalPercent = derivePercent(currQueueBytes, totalQueueBytes);
         var fileIndex = file.index + 1;
         var numFilesInQueue = numberOfRows(uploaderContainer, fragmentSelectors.fileQueue);
         

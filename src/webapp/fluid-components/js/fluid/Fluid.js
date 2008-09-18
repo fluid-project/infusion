@@ -774,10 +774,6 @@ var fluid = fluid || {};
             }
         }
     };
-
-    fluid.utils.derivePercent = function (num, total) {
-        return Math.round((num * 100) / total);
-    };
     
     /**
      * Simple string template system. 
