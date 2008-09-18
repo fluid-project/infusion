@@ -68,6 +68,16 @@
 					<!-- the first and only child element of the scroller must be a block element -->
 						<table cellspacing="0" class="fluid-uploader-queue" tabindex="0" >
 							<tbody>
+								<!-- Template markup for the file queue rows -->
+                			    <tr id="queue-row-tmplt" class="fluid-templates">
+                    				<th class="fileName" scope="row">File Name Placeholder</th>
+                                    <td class="fileSize">0 KB</td>
+                                    <td class="fileRemove">
+                                        <button type="button" class="removeFile" title="Remove File" tabindex="-1">
+                                            <span class="text-description">Remove file from queue</span>
+                                        </button>
+                                    </td>
+                    		    </tr>								
 								
 							</tbody>
 						</table>
@@ -106,17 +116,7 @@
 <div class="fluid-templates">
 	<div id="fluid-uploader">
 		<table summary="only here to hold templates">
-			
-			<tr id="queue-row-tmplt">
-				<th class="fileName" scope="row">File Name Placeholder</th>
-	            <td class="fileSize">0 KB</td>
-	            <td class="fileRemove">
-	                <button type="button" class="removeFile" title="Remove File" tabindex="-1">
-	                    <span class="text-description">Remove file from queue</span>
-	                </button>
-	            </td>
-			</tr>
-			
+	
 			<tr id="queue-error-tmplt" class="queue-error-row"><td colspan="3" class="queue-error"></td></tr>
 		
 		</table>

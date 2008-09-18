@@ -33,19 +33,11 @@
             myUpload = new fluid.Uploader("single-inline-fluid-uploader", uploadURL, flashURL, settings);
     	});
 	</script>
-	<style type="text/css">
-		.fluid-uploader {
-			margin-top: 2em;
-			padding: 1em 2em;
-			display: block;
-			clear: both;
-		}
-	</style>
 </head>
 <body>
 <div>
 	
- 	<form id="single-inline-fluid-uploader" class="fluid-uploader infusion" method="get" enctype="multipart/form-data">
+ 	<form id="single-inline-fluid-uploader" class="fluid-uploader infusion fluid-uploader-inline" method="get" enctype="multipart/form-data">
 		<div class="start">
 			<div>Upload images from your Computer to <em>All Images</em></div>
 			<!-- <div><input type="checkbox" class="add-collection"/><label for="add-collection">Also add image to the current collection <em>Week 1</em></label></div>-->
@@ -64,9 +56,18 @@
 				</div>
 				<div class="fluid-scroller" tabindex="-1">
 					<div class="scroller-inner">
-						<table cellspacing="0" class="fluid-uploader-queue" tabindex="-1">
+						<table cellspacing="0" class="fluid-uploader-queue" tabindex="-1" summary="Queue of files to upload.">
 							<tbody>
-								
+								<!-- Template markup for the file queue rows -->
+                			    <tr id="queue-row-tmplt" class="fluid-templates">
+                    				<th class="fileName" scope="row">File Name Placeholder</th>
+                                    <td class="fileSize">0 KB</td>
+                                    <td class="fileRemove">
+                                        <button type="button" class="removeFile" title="Remove File" tabindex="-1">
+                                            <span class="text-description">Remove file from queue</span>
+                                        </button>
+                                    </td>
+                    		    </tr>								
 							</tbody>
 						</table>
 						<div class="file-progress"><span class="file-progress-text">76%</span></div>
@@ -97,24 +98,13 @@
 		</div>
 	</form>
 
+        <!-- Other templates -->
 	<div class="fluid-templates">
-
-		<table id="fluid-uploader">
-			
-			<tr id="queue-row-tmplt">
-				<th class="fileName" scope="row">File Name Placeholder</th>
-                <td class="fileSize">0 KB</td>
-                <td class="fileRemove">
-                    <button type="button" class="removeFile" title="Remove File" tabindex="-1">
-                        <span class="text-description">Remove file from queue</span>
-                    </button>
-                </td>
-			</tr>
-			
-			<tr id="queue-error-tmplt" class="queue-error-row"><td colspan="3" class="queue-error"></td></tr>
-
+		<table id="fluid-uploader" summary="Invisible placeholder for Uploader templates.">
+			<tr id="queue-error-tmplt" class="queue-error-row">
+			    <td colspan="3" class="queue-error"></td>
+            </tr>
 		</table>
-
 	</div>
 </div>
 

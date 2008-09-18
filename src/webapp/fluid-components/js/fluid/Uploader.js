@@ -53,7 +53,7 @@ fluid = fluid || {};
         browse: ".fluid-uploader-browse",
         fluidUploader: ".fluid-uploader-queue-wrapper",
         fileQueue: ".fluid-uploader-queue",
-        queueRow: "tr",
+        queueRow: "tr:not(#queue-row-tmplt)",
         scrollingElement: ".fluid-scroller",
         emptyRow : ".fluid-uploader-row-placeholder",
         txtTotalFiles: ".fluid-uploader-totalFiles",
@@ -139,16 +139,23 @@ fluid = fluid || {};
         $(newQueueRow).children(fragmentSelectors.qRowFileName).text(file.name);
         // update the file size
         $(newQueueRow).children(fragmentSelectors.qRowFileSize).text(fluid.utils.formatFileSize(file.size));
-        // update the file id and add the hover action
-        newQueueRow.attr('id', file.id).css('display','none').addClass("ready row").hover(function(){
-            if ($(this).hasClass('ready') && !$(this).hasClass('uploading')) {
-                $(this).addClass('hover');
-            }
-        }, function(){
-            if ($(this).hasClass('ready') && !$(this).hasClass('uploading')) {
-                $(this).removeClass('hover');
-            }
-        });
+		
+        // hide the row, update the file id and classess
+        newQueueRow.attr('id', file.id).hide().addClass("ready row");
+		
+        // for IE6 add a hover effect
+		if ($.browser.msie && $.browser.version < 7) {
+	        newQueueRow.hover(function(){
+	            if ($(this).hasClass('ready') && !$(this).hasClass('uploading')) {
+	                $(this).addClass('hover');
+	            }
+	        }, function(){
+	            if ($(this).hasClass('ready') && !$(this).hasClass('uploading')) {
+	                $(this).removeClass('hover');
+	            }
+	        });
+		}
+
         // insert the new row into the file queue
         var fileQueue = $(fragmentSelectors.fileQueue, uploaderContainer);
         fileQueue.append(newQueueRow);
@@ -812,8 +819,8 @@ fluid = fluid || {};
         // used to break the demo upload into byte-sized chunks
         demoState.byteChunk = 200000; 
         
-        // set up data
-        demoState.row = $(fragmentSelectors.fileQueue + ' tbody tr:not(".fluid-uploader-placeholder"):not(".uploaded):not(".error)', uploaderContainer).eq(0);
+        // set up data 
+        demoState.row = $(fragmentSelectors.fileQueue + ' tbody tr:not(".fluid-uploader-placeholder"):not(".uploaded"):not(".error"):not(".fluid-templates")', uploaderContainer).eq(0);
         
         demoState.fileId = jQuery(demoState.row).attr('id');
         demoState.file = swfObj.getFile(demoState.fileId);

@@ -5,6 +5,13 @@
 .fluid-uploader { 
     width: 434px;
     position: relative;
+	display: block;
+	clear: both;
+}
+
+.fluid-uploader-inline {
+	margin-top: 2em;
+	padding: 1em 2em;
 }
 
 .fluid-uploader form {
@@ -36,14 +43,6 @@
 
 /* FILE QUEUE TABLE STYLES */
 
-.fluid-uploader-queue-wrapper {
-    width: 100%;
-    border-bottom: 1px solid #999;
-}
-
-.fluid-uploader-queue-wrapper table {
-    width: 100%;
-}
 
 /* caption */
 
@@ -57,7 +56,6 @@
 
 .fluid-scroller-table-head {
     background-color: transparent;
-    border-bottom: 1px solid #999;
     color: #666;
 }
 
@@ -73,12 +71,11 @@
 .fluid-scroller-table-foot {
     position: relative;
     background-color: #E6E6E6;
-    border-top: 1px solid #999;
-    border-right: 1px solid #999;
-    border-left: 1px solid #999;
+    border: 1px solid #999;
 }
 
 .fluid-scroller-table-foot table { 
+	width: 100%;
     position:relative;
     z-index:6;
 }
@@ -105,8 +102,9 @@
     overflow: auto;
     overflow-x: hidden;
     overflow-y: auto;
-    border-right: 1px solid #999;
-    border-left: 1px solid #999;
+	border-width: 1px 1px 0;
+	border-style: solid;
+	border-color: #999;
 }
 
 .fluid-scroller thead {
@@ -120,10 +118,14 @@
         
 .fluid-uploader-queue {
     position: relative;
-    width: 465px;
     font-size: 0.9em;
     color: #333;
     z-index: 6;
+}
+
+/* hidden from IE6 */
+html>body .fluid-uploader-queue {
+	width: 100%;	
 }
 
 .fluid-uploader-queue:focus {
@@ -134,12 +136,14 @@
     background-color: transparent;
 }
 
-.fluid-uploader-queue tr.hover {
-    background-color: #FBFFDC;
+/* second CSS selector is added only for IE6 */
+
+.fluid-uploader-queue tr.ready:hover, .fluid-uploader-queue tr.hover  {
+    background-color: #FFF9DC;
 }
 
 .fluid-uploader-queue tr:focus {
-    background-color: #FBFFDC;
+    background-color: #FFF9DC;
 }
 
 .fluid-uploader-queue tr:focus td, .fluid-uploader-queue tr:focus th {
@@ -163,11 +167,7 @@
 .fluid-uploader-queue td, .fluid-uploader-queue th { 
     text-align: left;
     padding: 3px 6px;
-    border-top: 1px solid #BBCFDC;
-}
-
-.fluid-uploader-queue tr:first-child td, .fluid-uploader-queue tr:first-child th { 
-    border-top: none;
+    border-bottom: 1px solid #BBCFDC;
 }
 
 .fluid-uploader-queue-wrapper .fileName {
@@ -196,6 +196,10 @@
     margin: 0;
     cursor: pointer;
     outline: none;
+}
+
+.fluid-uploader-queue .uploading .removeFile {
+	display: none;
 }
 
 .fluid-uploader-queue .removeFile:hover, .fluid-uploader-queue tr.ready:focus .removeFile {
