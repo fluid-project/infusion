@@ -501,15 +501,12 @@ var fluid = fluid || {};
         
     var fluid_guid = 1;
     
-    // A hash of (jQuery data id) elements to "true" indicating whether the corresponding
-    // DOM element is the source of an event for the current cycle.
-    var fluid_sourceElements = {};
     
     fluid.event.getEventFirer = function (unicast, preventable) {
         var log = fluid.log;
         var listeners = {};
         return {
-            addListener: function (listener, namespace, exclusions) {
+            addListener: function (listener, namespace) {
                 if (!listener) {
                     return;
                 }
@@ -523,13 +520,7 @@ var fluid = fluid || {};
                     namespace = listener.$$guid;
                 }
 
-                var excludeids = [];
-                if (exclusions) {
-                    for (var i in exclusions) {
-                        excludeids.push(jQuery.data(exclusions[i]));
-                    }
-                }
-                listeners[namespace] = {listener: listener, exclusions: excludeids};
+                listeners[namespace] = {listener: listener};
             },
 
             removeListener: function (listener) {
@@ -544,27 +535,15 @@ var fluid = fluid || {};
             fire: function () {
                 for (var i in listeners) {
                     var lisrec = listeners[i];
-                    var excluded = false;
-                    for (var j in lisrec.exclusions) {
-                        var exclusion = lisrec.exclusions[j];
-                        log("Checking exclusion for " + exclusion);
-                        if (fluid_sourceElements[exclusion]) {
-                            log("Excluded");
-                            excluded = true;
-                            break;
+                    try {
+                        var ret = lisrec.listener.apply(null, arguments);
+                        if (preventable && ret === true) {
+                            return true;
                         }
                     }
-                    if (!excluded) {
-                        try {
-                            var ret = lisrec.listener.apply(null, arguments);
-                            if (preventable && ret === true) {
-                                return true;
-                            }
-                        }
-                        catch (e) {
-                            log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
-                            throw (e);       
-                        }
+                    catch (e) {
+                        log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
+                        throw (e);       
                     }
                 }
             }
