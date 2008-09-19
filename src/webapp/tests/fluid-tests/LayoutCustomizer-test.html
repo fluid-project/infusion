@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
   <head>
     <title>Layout Customizer Tests</title>
-    <link href="../../markup-examples.css" type="text/css" rel="stylesheet" media="all" />
+    <link href="manual/portal/porlets.css" type="text/css" rel="stylesheet" media="all" />
 
     <script type="text/javascript" src="../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
     <script type="text/javascript" src="../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
@@ -12,12 +12,10 @@
     <script type="text/javascript" src="../../fluid-components/js/jquery/ui.draggable.js"></script>
     <script type="text/javascript" src="../../fluid-components/js/jquery/jARIA.js"></script>
     <script type="text/javascript" src="../../fluid-components/js/fluid/Fluid.js"></script>
-    <script type="text/javascript" src="../../fluid-components/js/json/json2.js"></script>
     <script type="text/javascript" src="../../fluid-components/js/fluid/GeometricManager.js"></script>
     <script type="text/javascript" src="../../fluid-components/js/fluid/Reorderer.js"></script>
-    <script type="text/javascript" src="../../fluid-components/js/fluid/ModuleLayout.js"></script>
     <script type="text/javascript" src="../../fluid-components/js/fluid/LayoutCustomizer.js"></script>
-    <script type="text/javascript" src="manual/portal/portlets.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/fluid/ModuleLayout.js"></script>
 
     <!--  These are the jqUnit test files -->
     <link rel="Stylesheet" media="screen" href="../jqUnit/testsuite.css" />
@@ -31,6 +29,7 @@
     <script type="text/javascript" src="js/ModuleLayoutHandlerTests.js"></script>
     <script type="text/javascript" src="js/ModuleLayoutTests.js"></script>
     <script type="text/javascript" src="js/ReorderLayoutTests.js"></script>
+
   </head>
   <body>
      <h1 id="header">LayoutCustomizer Test Suite</h1>
@@ -43,12 +42,11 @@
   <!-- TABLE -->
 
     <div class="reorderer_container" id="reorderer-container">
-    <!-- TODO the id is required since moduleLayout.containerId attempts to determine it and use as a selector -->
-      <div id="drop-warning" style="display:none;">The portlet being moved cannot be dropped in this position</div>
       <table id="portlet-reorderer-root">
         <tbody>
           <tr>
             <td id="c1">
+                <div id="drop-warning" style="display:none;">The portlet being moved cannot be dropped in this position</div>
                 <div class="portlet locked" id="portlet1">
 					<div class="title">portlet 1</div>
 					<div class="content">prec 90</div>

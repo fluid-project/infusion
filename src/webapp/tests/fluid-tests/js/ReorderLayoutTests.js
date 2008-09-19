@@ -15,9 +15,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        var tests = new jqUnit.TestCase("Reorder Layout Tests");
-    
-        tests.test("reorderLayout API", function () {
+   //     var tests = new jqUnit.TestCase("Reorder Layout Tests");
+            jqUnit.module ("Reorder Layout");
+
+        jqUnit.test("reorderLayout API", function () {
             var options = {
                 selectors: {
                     columns: "[id^='c']",
@@ -54,7 +55,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", portlet9id, items[8].id);
         });
     
-        tests.test("reorderLayout with optional styles", function () {
+        jqUnit.test("reorderLayout with optional styles", function () {
             var options = {
                 selectors: {
                     columns: "[id^='c']",
@@ -75,7 +76,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });
         
-        tests.test("reorderLayout with locked portlets", function () {
+        jqUnit.test("reorderLayout with locked portlets", function () {
             var options = {
                 selectors: {
                     columns: "[id^='c']",

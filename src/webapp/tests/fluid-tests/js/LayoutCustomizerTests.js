@@ -15,11 +15,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global demo*/
 /*global jqUnit*/
 
-(function ($) {
-    $(document).ready(function () {
-        var layoutCustomizerTests = new jqUnit.TestCase("LayoutCustomizer Tests", setUp, tearDown);
-        
-        layoutCustomizerTests.test("Bubble keystrokes inside module", function () {
+(function () {
+    jQuery(document).ready(function () {
+        jqUnit.module ("Layout Customizer");
+
+        jqUnit.test("Bubble keystrokes inside module", function () {
             var reorderer = fluid.reorderLayout("#" + portalRootId, {
                         selectors: {
                             columns: columnSelector,
@@ -36,7 +36,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("After typing M into text field, portlet 2 should still be the active item", portlet2id, reorderer.activeItem.id);
         });
         
-        layoutCustomizerTests.test("Drop warning visibility for up and down", function () {
+        jqUnit.test("Drop warning visibility for up and down", function () {
             var reorderer = initReorderer();
     
             jqUnit.notVisible("On first load the warning should not be visible", "#drop-warning");
@@ -89,8 +89,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             ctrlUpEvt = fluid.testUtils.createEvtCTRLUp(portlet8[0]);
             reorderer.handleKeyUp(ctrlUpEvt);
             jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning"); 
-    
-        });
-    
-    });
-})(jQuery);
+   
+        });    
+   });
+})();

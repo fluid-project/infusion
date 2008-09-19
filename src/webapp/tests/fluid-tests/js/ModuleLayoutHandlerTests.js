@@ -12,9 +12,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready (function () {
-        var portletLHTests = new jqUnit.TestCase ("ModuleLayoutHandler Tests", setUp, tearDown);
-    
-        portletLHTests.test ("GetItemAbove", function () {
+    //    var portletLHTests = new jqUnit.TestCase ("ModuleLayoutHandler Tests", setUp, tearDown);
+            jqUnit.module ("Module Layout Handler");
+
+        jqUnit.test ("GetItemAbove", function () {
             var itemAbove = portletHandler.getItemAbove (jQuery ("#" + portlet9id)[0]);
             jqUnit.assertEquals (portlet8id+" should be above "+portlet9id,
                 portlet8id, itemAbove.id);
@@ -40,7 +41,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jQuery ("#" + portlet1id)[0], itemAbove);
         });
         
-        portletLHTests.test ("GetItemBelow", function () {
+        jqUnit.test ("GetItemBelow", function () {
             var itemBelow = portletHandler.getItemBelow(jQuery ("#" + portlet3id)[0]);
             jqUnit.assertEquals(portlet4id+" should be below "+portlet3id,
                 jQuery ("#" + portlet4id)[0], itemBelow);
@@ -67,7 +68,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         });
         
-        portletLHTests.test ("GetLeftSibling", function () {
+        jqUnit.test ("GetLeftSibling", function () {
             var leftSibling = portletHandler.getLeftSibling(jQuery ("#" + portlet5id)[0]);
             jqUnit.assertEquals(portlet1id+" should to the left of "+portlet5id,
                 jQuery ("#" + portlet1id)[0], leftSibling);
@@ -89,7 +90,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jQuery ("#" + portlet3id)[0], leftSibling);
         });
         
-        portletLHTests.test ("GetRightSibling", function () {
+        jqUnit.test ("GetRightSibling", function () {
             var rightSibling = portletHandler.getRightSibling(jQuery ("#" + portlet2id)[0]);
             jqUnit.assertEquals(portlet5id+" should to the right of "+portlet2id,
                 jQuery ("#" + portlet5id)[0], rightSibling);
@@ -111,7 +112,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jQuery ("#" + portlet9id)[0], rightSibling);
         });
         
-        portletLHTests.test ("MoveItemDown", function () {
+        jqUnit.test ("MoveItemDown", function () {
             var portletList = jQuery("div[id^=portlet]");
             jqUnit.assertEquals("Before move, portlet 3 should be at index 2", portlet3id, portletList[2].id);
             jqUnit.assertEquals("Before move, portlet 4 should be at index 3", portlet4id, portletList[3].id);
@@ -123,7 +124,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         });
         
-        portletLHTests.test ("MoveItemUp", function () {
+        jqUnit.test ("MoveItemUp", function () {
             var portletList = jQuery("div[id^=portlet]");
             jqUnit.assertEquals("Before move portlet 3 is in third position", portlet3id, portletList[2].id);
             jqUnit.assertEquals("Before move portlet 4 is in fourth position", portlet4id, portletList[3].id);
@@ -142,7 +143,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("After move portlet 4 is in fourth position", portlet4id, portletList[3].id);
         });
         
-        portletLHTests.test ("MoveItemRight", function () {
+        jqUnit.test ("MoveItemRight", function () {
             var cols = jQuery ("td");
             var col1PortletList = jQuery ("div[id^=portlet]", cols.get (0));
             var col2PortletList = jQuery ("div[id^=portlet]", cols.get (1));
@@ -167,7 +168,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         });
         
-        portletLHTests.test ("MoveItemLeft", function () {
+        jqUnit.test ("MoveItemLeft", function () {
             var cols = jQuery ("td");
             var col2PortletList = jQuery ("div[id^=portlet]", cols.get (1));
             var col3PortletList = jQuery ("div[id^=portlet]", cols.get (2));
@@ -192,7 +193,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         });
         
-        portletLHTests.test("DefaultPerms", function () {
+        jqUnit.test("DefaultPerms", function () {
             var layoutHandler = fluid.moduleLayoutHandler(null, {moduleLayout: {layout: layoutClone}});
             var portlet1 = fluid.jById(portlet1id)[0];
             var portlet2 = fluid.jById(portlet2id)[0];

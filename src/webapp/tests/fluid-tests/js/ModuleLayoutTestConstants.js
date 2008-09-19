@@ -16,7 +16,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
  
 /*global jQuery*/
 /*global fluid*/
-/*global demo*/
  
 var portalRootId = "portlet-reorderer-root";
 
@@ -41,6 +40,16 @@ var emptyLayout = { id:"t3", columns:[ ] };
 
 var portletRootClone;
 var portletHandler;
+var layout = { 
+    "id":"portlet-reorderer-root",
+    "columns":[
+        { "id":"c1", "children":["portlet1","portlet2","portlet3","portlet4"]},
+        { "id":"c2", "children":["portlet5","portlet6"]},
+        { "id":"c3", "children":["portlet7","portlet8","portlet9"]},
+        { "id":"c4", "children":[]}
+    ]
+};
+
 var layoutClone;
 
 function initReorderer() {
@@ -48,9 +57,9 @@ function initReorderer() {
         selectors: {
             columns: columnSelector,
             modules: portletSelector,
-            lockedModules: ".locked"
-        },
-        dropWarningId: "drop-warning"
+            lockedModules: ".locked",
+            dropWarning: "#drop-warning"
+        }
     };
     return fluid.reorderLayout ("#" + portalRootId, options);
 }
@@ -63,11 +72,10 @@ function initReorderer() {
 function setUp() {
     var table = fluid.jById (portalRootId);
     portletRootClone = table.clone();
-    layoutClone = jQuery.extend(true, {}, demo.portal.layout);
+    layoutClone = jQuery.extend(true, {}, layout);
     var options = {
       moduleLayout: {
-        layout: layoutClone,
-        permissions: demo.portal.dropTargetPerms 
+        layout: layoutClone
       }
     }; 
 

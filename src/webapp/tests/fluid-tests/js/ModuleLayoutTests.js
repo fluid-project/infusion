@@ -12,8 +12,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready (function () {
-        var moduleLayoutTests = new jqUnit.TestCase ("ModuleLayout Tests", setUp, tearDown);
-    
+//        var moduleLayoutTests = new jqUnit.TestCase ("ModuleLayout Tests", setUp, tearDown);
+                jqUnit.module ("Module Layout");
+
         function isOriginalOrderTest(testStr, layoutObj) {
             jqUnit.assertEquals (testStr + ", Portlet1 should be 1st in column 1", portlet1id, layoutObj.columns[0].children[0]);
             jqUnit.assertEquals (testStr + ", Portlet2 should be 2nd in column 1", portlet2id, layoutObj.columns[0].children[1]);
@@ -27,14 +28,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         }
          
-        moduleLayoutTests.test ("FindColIndex", function () {
+        jqUnit.test ("FindColIndex", function () {
             jqUnit.assertEquals (column1id + " should be in 1st column", 0, fluid.moduleLayout.internals.findColIndex (column1id, demo.portal.layout));
             jqUnit.assertEquals (column2id + " should be in 2nd column", 1, fluid.moduleLayout.internals.findColIndex (column2id, demo.portal.layout));
             jqUnit.assertEquals (column3id + " should be in 3rd column", 2, fluid.moduleLayout.internals.findColIndex (column3id, demo.portal.layout));
             jqUnit.assertEquals (column4id + " should be in 4th column", 3, fluid.moduleLayout.internals.findColIndex (column4id, demo.portal.layout));
         });
         
-        moduleLayoutTests.test ("FindColumnAndItemIndices", function () {
+        jqUnit.test ("FindColumnAndItemIndices", function () {
             // Tests for column index:
             // Column 0
             jqUnit.assertEquals (portlet1id + " should be in 1st column", 0, fluid.moduleLayout.internals.findColumnAndItemIndices (portlet1id, demo.portal.layout).columnIndex);
@@ -68,7 +69,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });   // end testCalcNextColumnIndex().
          
-        moduleLayoutTests.test ("FindItemAndTargetIndices", function () {    
+        jqUnit.test ("FindItemAndTargetIndices", function () {    
             var indices = fluid.moduleLayout.internals.findItemAndTargetIndices (portlet1id, portlet1id, fluid.position.BEFORE, demo.portal.layout);
             jqUnit.assertEquals ("Item index of portlet 1 should be 0", 0, indices.itemIndex);
             jqUnit.assertEquals ("Target index of portlet 1 should be 0", 0, indices.targetIndex);
@@ -86,17 +87,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals ("Target index of an undefined portlet should be -1", -1, indices.targetIndex);    
         });
         
-        moduleLayoutTests.test ("NumColumns", function () {
+        jqUnit.test ("NumColumns", function () {
             jqUnit.assertEquals("Number of columns in test layout should be 4", 4, fluid.moduleLayout.internals.numColumns (demo.portal.layout));
             jqUnit.assertEquals("Number of columns in empty layout should be 0", 0, fluid.moduleLayout.internals.numColumns (emptyLayout));
         });
         
-        moduleLayoutTests.test("NumModules", function () {
+        jqUnit.test("NumModules", function () {
             jqUnit.assertEquals("There are 9 modules in the layout", 9, fluid.moduleLayout.internals.numModules (demo.portal.layout));
             jqUnit.assertEquals("The empty layout has 9 modules", 0, fluid.moduleLayout.internals.numModules (emptyLayout));
         });
     
-        moduleLayoutTests.test ("UpdateLayout", function () {
+        jqUnit.test ("UpdateLayout", function () {
             var item = jQuery ("#" + portlet3id)[0];
             var relatedItem = jQuery ("#" + portlet6id)[0];
             var layoutClone = jQuery.extend(true, {}, demo.portal.layout);
@@ -129,7 +130,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         
-        moduleLayoutTests.test ("FindTargetIsColumn", function () {
+        jqUnit.test ("FindTargetIsColumn", function () {
             var moveRight = fluid.direction.NEXT;
             var moveLeft = fluid.direction.PREVIOUS;
         
@@ -160,7 +161,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals ("...moving portlet3 left, should find INSIDE (2)", expected.position, actual.position);
         });
         
-        moduleLayoutTests.test ("FindTarget", function () {
+        jqUnit.test ("FindTarget", function () {
             var moveRight = fluid.direction.NEXT;
             var moveLeft = fluid.direction.PREVIOUS;
         
@@ -208,7 +209,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals ("...moving portlet6 right, should find AFTER (1)", expected.position, actual.position);   
         });
         
-        moduleLayoutTests.test ("CanMove", function () {
+        jqUnit.test ("CanMove", function () {
             jqUnit.assertFalse (fluid.moduleLayout.canMove (portlet1id, portlet1id, fluid.position.BEFORE, demo.portal.layout, demo.portal.dropTargetPerms));
             jqUnit.assertFalse (fluid.moduleLayout.canMove (portlet1id, portlet1id, fluid.position.AFTER, demo.portal.layout, demo.portal.dropTargetPerms));
         
@@ -225,7 +226,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 fluid.moduleLayout.canMove (portlet9id, portlet9id, fluid.position.AFTER, demo.portal.layout, demo.portal.dropTargetPerms));
         });
         
-        moduleLayoutTests.test ("GetItemAt", function () {
+        jqUnit.test ("GetItemAt", function () {
         
             // top-left corner should be portlet1.
             var itemId = fluid.moduleLayout.internals.getItemAt (0, 0, demo.portal.layout);
@@ -256,7 +257,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertNull ("Item index greater than number of items in column should give null result", itemId);
         });
         
-        moduleLayoutTests.test ("TargetAndPositionBelow", function () {
+        jqUnit.test ("TargetAndPositionBelow", function () {
             
             // portlet3's nearest next is portlet4.
             var actual = fluid.moduleLayout.targetAndPositionBelow (portlet3id, demo.portal.layout, demo.portal.dropTargetPerms);
@@ -299,7 +300,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals ("portlet 6 has nothing below it - use last known", fluid.position.USE_LAST_KNOWN, actual.position);
         });
         
-        moduleLayoutTests.test ("TargetAndPositionAbove", function () {
+        jqUnit.test ("TargetAndPositionAbove", function () {
             
             // portlet3's can't move up since the portlets above it are fixed.
             var actual = fluid.moduleLayout.targetAndPositionAbove (portlet3id, demo.portal.layout, demo.portal.dropTargetPerms);
@@ -337,7 +338,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals ("portlet 8 is above portlet 9", fluid.position.BEFORE, actual.position);
         });
         
-        moduleLayoutTests.test ("FirstItemInAdjacentColumnSkipColumn", function () {
+        jqUnit.test ("FirstItemInAdjacentColumnSkipColumn", function () {
             var smallLayout = { 
                 id:"t2",
                 columns:[
@@ -356,7 +357,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
         });
         
-        moduleLayoutTests.test ("FirstItemInAdjacentColumn", function () {
+        jqUnit.test ("FirstItemInAdjacentColumn", function () {
         
             // portlet1 has no left neighbour, portlet5 is at the top of the next column.
             var actualId = fluid.moduleLayout.firstItemInAdjacentColumn (portlet1id, fluid.direction.PREVIOUS, demo.portal.layout);
@@ -401,7 +402,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals ("portlet9 has not right neighbour since it is in the right-most column", portlet9id, actualId);   
         });
         
-        moduleLayoutTests.test ("ItemAboveBelow", function () {
+        jqUnit.test ("ItemAboveBelow", function () {
             var above = fluid.direction.PREVIOUS;
             var below = fluid.direction.NEXT;
             
@@ -457,7 +458,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         });   // end testItemAboveBelow().
         
-        moduleLayoutTests.test ("CreateFindItems", function () {
+        jqUnit.test ("CreateFindItems", function () {
             var selectors = fluid.moduleLayout.inferSelectors(demo.portal.layout, demo.portal.dropTargetPerms);
             var binder = fluid.createDomBinder(fluid.jById(demo.portal.layout.id), selectors);
             var selectables = binder.locate("selectables");
@@ -471,7 +472,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });   // end testCreateFindItems().
         
-        moduleLayoutTests.test ("CanItemMove", function () {
+        jqUnit.test ("CanItemMove", function () {
             jqUnit.assertFalse ("Portlet 1 should not be movable", fluid.moduleLayout.internals.canItemMove (0, demo.portal.dropTargetPerms));
             jqUnit.assertFalse ("Portlet 2 should not be movable", fluid.moduleLayout.internals.canItemMove (1, demo.portal.dropTargetPerms));
             jqUnit.assertTrue ("Portlet 3 should be movable", fluid.moduleLayout.internals.canItemMove (2, demo.portal.dropTargetPerms));
@@ -484,7 +485,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });
         
-        moduleLayoutTests.test ("IsDropTarget", function () {
+        jqUnit.test ("IsDropTarget", function () {
             jqUnit.assertFalse ("Portlet 1 should not be a drop target", fluid.moduleLayout.internals.isDropTarget (0, demo.portal.dropTargetPerms));
             jqUnit.assertTrue ("Portlet 2 should be a drop target", fluid.moduleLayout.internals.isDropTarget (1, demo.portal.dropTargetPerms));
             jqUnit.assertTrue ("Portlet 3 should be a drop target", fluid.moduleLayout.internals.isDropTarget (2, demo.portal.dropTargetPerms));
@@ -497,14 +498,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });
         
-        moduleLayoutTests.test ("lastItemInCol", function () {
+        jqUnit.test ("lastItemInCol", function () {
             jqUnit.assertEquals ("last item in column 1 should be portlet 4", portlet4id, fluid.moduleLayout.lastItemInCol (column1id, demo.portal.layout));
             jqUnit.assertEquals ("last item in column 2 should be portlet 6", portlet6id, fluid.moduleLayout.lastItemInCol (column2id, demo.portal.layout));
             jqUnit.assertEquals ("last item in column 3 should be portlet 9", portlet9id, fluid.moduleLayout.lastItemInCol (column3id, demo.portal.layout));
             jqUnit.assertEquals ("last item in column 4 should be undefined", undefined, fluid.moduleLayout.lastItemInCol (column4id, demo.portal.layout));
         });
     
-        moduleLayoutTests.test ("buildEmptyPerms", function () {
+        jqUnit.test ("buildEmptyPerms", function () {
             // No columns or portlets.
             var columns = jQuery([]);
             var portlets = jQuery([]);
@@ -533,7 +534,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             testRow(perms[8]);
         });
         
-        moduleLayoutTests.test("buildPermsForLockedModules", function () {
+        jqUnit.test("buildPermsForLockedModules", function () {
             var lockedPortlets = jQuery(".locked");
             
             // No columns or portlets.
@@ -568,7 +569,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
   
         });
         
-        moduleLayoutTests.test ("findPortletsInColumn", function () {
+        jqUnit.test ("findPortletsInColumn", function () {
             var columns = allColumns();
             var portlets = allPortlets();
             
@@ -583,7 +584,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.equals(portletsInColumn4.length, 0, "Column 4 is empty.");
         });
         
-        moduleLayoutTests.test ("buildLayout", function () {
+        jqUnit.test ("buildLayout", function () {
             var layout = fluid.moduleLayout.buildLayout(container(), allColumns(), allPortlets());
             
             var containerId = fluid.moduleLayout.containerId(layout);

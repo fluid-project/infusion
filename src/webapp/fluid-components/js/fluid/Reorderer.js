@@ -271,7 +271,7 @@ fluid = fluid || {};
                 if (isMovement) {
                     var prevent = thatReorderer.events.onBeginMove.fire(item);
                     if (prevent) return false;
-                    if (kbDropWarning) {
+                    if (kbDropWarning.length > 0) {
                         if (relativeItem.clazz === "locked") {
                             thatReorderer.events.onShowKeyboardDropWarning.fire(item, kbDropWarning);
                             kbDropWarning.show();                       
