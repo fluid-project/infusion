@@ -57,18 +57,10 @@
                         columns: ".myColumn",
                         modules: "> div > div",
                         lockedModules: ".locked",
-				    dropWarning: ".dropWarning"
+                        dropWarning: ".dropWarning"
                     }
                 });
               
-                /******************************************/
-                // Example 4, different portlet content
-                fluid.reorderLayout ("#fluid-LayoutCustomizer-sample4", {
-                    selectors: {
-                        columns: "> div",
-                        modules: "> div > div"
-                    }
-                });
             });
         </script>
 	</head>
@@ -135,7 +127,7 @@
     
             <div id="fluid-LayoutCustomizer-sample3" class="columnSetup3 fluid-vertical-order">
             	 <!-- invalid drag n drop message template -->
-                <div class="dropWarning"> Cannot place content here </div>
+                <div class="dropWarning">Can't place about locked portlet</div>
 
                 <div class="myColumn">
                     <h2>Column A</h2>
@@ -159,80 +151,6 @@
                     <div>Content Portal C4</div>
                 </div>
             </div>
-        </div>
-
-        <div class="example fl-theme-mist">
-            <h1>Example 4: A simple set of sortable elements within columns, with Fluid theme</h1>
-            <p>This uses the Fluid Mist theme together with the Fluid Modular CSS Framework.</p>
-            <p>For Fluid themes to work and properly hook into your code, there are a few things to keep in mind:</p>
-            <dl>
-                <dt>Content should be as semantic and lean as possible</dt>
-                <dd>Use the most appropriate tag for what your communicating (&lt;h1&gt; instead of &lt;span class="title"&gt;)</dd>
-                <dd>Use the available tools sparingly (unless you have a very complicated layout, there should be no need to pepper your document with the same layout classes many times)</dd>
-                <dt>Review the tools</dt>
-                <dd>There are helper classes to speed up your designs, so use them wisely</dd>
-            </dl>
-            
-            <div id="fluid-LayoutCustomizer-sample4" class="fl-container-flex fluid-vertical-order">
-                <div class="fl-container-flex30 fl-force-left">
-                    <h2>Column A</h2>
-                    <div class="weatherWidget fl-wrapper-widget">
-                        
-                        <h1 class="fl-grababble">The Weather Widget</h1>
-                        <p class="temperature"> <strong>25 &deg;</strong>Toronto (YYZ)</p>
-                        <ul class="fl-tabs fl-tabs-center">
-                            <li>Sun</li>
-                            <li class="fl-activeTab">Mon</li>
-                            <li>Tues</li>
-                            <li>Wed</li>
-                            <li>Thur</li>
-                            <li>Fri</li>
-                            <li>Sat</li>
-                        </ul>
-                        <div class="information fl-tab-content">
-                            <ul>
-                                <li> <a href="http://www.theweathernetwork.com/index.php?product=glossary&amp;placecode=caon0696&amp;pagecontent=feelslike">Feels Like</a>: - </li>
-                                <li> <a href="http://www.theweathernetwork.com/index.php?product=glossary&amp;placecode=caon0696&amp;pagecontent=wind">Wind</a>: SW 20km/h </li>
-                                <li><strong>Sunrise: </strong> 6:50 </li>
-                                <li><strong>Sunset: </strong>19:40</li>
-                            </ul>
-                            <ul>
-                                <li> <a href="http://www.theweathernetwork.com/index.php?product=glossary&amp;placecode=caon0696&amp;pagecontent=relativehumidity">Relative Humidity: </a> 68% </li>
-                                <li> <a href="http://www.theweathernetwork.com/index.php?product=glossary&amp;placecode=caon0696&amp;pagecontent=pressure">Pressure</a>: 101.94 kPa </li>
-                                <li> <a href="http://www.theweathernetwork.com/index.php?product=glossary&amp;placecode=caon0696&amp;pagecontent=visibility">Visibility</a>: 24.0 km </li>
-                                <li> <a href="http://www.theweathernetwork.com/index.php?product=glossary&amp;placecode=caon0696&amp;pagecontent=ceiling">Ceiling</a>: unlimited </li>
-                            </ul>
-                        </div>
-                        
-                    </div>
-                    <div>Drag me! Content goes here...</div>
-                    <div>Drag me! Content goes here...</div>
-                    <div>Drag me! Content goes here...</div>
-                </div>
-                <div class="fl-container-flex30 fl-force-left">
-                    <h2>Column B</h2>
-                    <div>Drag me! Content goes here...</div>
-                    <div>Drag me! Content goes here...</div>
-                    <div>
-                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec nec nisi quis leo aliquet tincidunt. Donec sagittis ante a dui. Aenean pellentesque lacus ut velit. Vivamus nec orci. Mauris at erat vel sem euismod tempor. Curabitur quis ligula. Fusce et urna ut nisl sagittis auctor. Morbi in dui. Nulla accumsan, nisl eu laoreet fermentum, nisi augue imperdiet nibh, in pellentesque velit mauris at odio. Integer sit amet mauris. Proin a augue ut urna iaculis porttitor. Integer laoreet, ipsum eu commodo ornare, urna lacus auctor velit, vel volutpat diam urna et velit. Aliquam erat volutpat. Proin eget turpis vel libero condimentum bibendum.</p>
-                        <blockquote class="fl-wrapper-callout">
-                            Here goes something important!
-                        </blockquote>
-                        <p>Aliquam tristique, ligula non lacinia venenatis, est urna porttitor lectus, vel rutrum odio ligula vitae pede. Nulla mollis. Morbi fringilla laoreet odio. Suspendisse potenti. Maecenas vitae diam. Aenean volutpat sem eu massa. Mauris posuere venenatis massa. Nunc pellentesque dolor. Praesent at lectus eget sem fringilla gravida. Suspendisse vel nisi. Integer sagittis consectetuer dolor. Maecenas eu urna a enim euismod convallis. Maecenas tempus, nunc at interdum posuere, ipsum turpis tristique nulla, facilisis placerat quam elit eu diam. Aliquam quis purus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;</p>
-                        <p>Maecenas risus sapien, laoreet nec, sodales id, fringilla vitae, elit. Nulla accumsan, dui a sollicitudin iaculis, diam lorem sollicitudin nunc, sed rhoncus lorem turpis et ipsum. Nunc nec ipsum a tellus euismod porta. Nam massa pede, accumsan eu, rhoncus nec, blandit vitae, velit. Aenean pretium. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec et sapien. Nunc eget elit at dolor aliquam imperdiet. Vestibulum facilisis urna non lorem. Sed at tortor. Sed at orci. Etiam hendrerit. Nunc sed lacus. Mauris neque purus, consequat sit amet, vehicula sit amet, commodo sit amet, risus. Etiam consequat magna et nunc. Cras facilisis. Integer sit amet urna vel libero auctor ornare. Sed auctor.                         </p>
-                    </div>
-                    <div>Drag me! Content goes here...</div>
-                </div>
-                <div class="fl-container-flex30 fl-force-left">
-                    <h2>Column C</h2>
-                    <div>Drag me! Content goes here...</div>
-                    <div>Drag me! Content goes here...</div>
-                    <div>Drag me! Content goes here...</div>
-                    <div>Drag me! Content goes here...</div>
-                </div>
-            </div>
-            
-            
         </div>
 
                 
