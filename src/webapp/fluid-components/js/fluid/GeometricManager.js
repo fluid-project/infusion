@@ -556,7 +556,7 @@ var fluid = fluid || {};
 
         for (var i = 0; i < targets.length; ++ i) {
             var elem = targets[i];
-            var isPure = elem.element === elem.owner.parentElement;
+            var isPure = elem.owner && elem.element === elem.owner.parentElement;
             if (elem.clazz === "hidden" || forSelection && isPure) {
                 continue;
             }
