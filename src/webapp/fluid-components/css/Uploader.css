@@ -36,7 +36,7 @@
     background-color: #FFF;
 }
 
-.fluid-uploader a.fluid-uploader-browse:focus {
+.fluid-uploader a.fluid-uploader-browse:focus, .fluid-uploader a.fluid-uploader-browse.focus {
     border: 2px solid #142B8C;
     background-color: #FFF;
 }
@@ -128,7 +128,8 @@ html>body .fluid-uploader-queue {
 	width: 100%;	
 }
 
-.fluid-uploader-queue:focus {
+/* this style is here for debugging, if everything is working right the list items are focusable but the list not. */
+.fluid-uploader-queue:focus, .fluid-uploader-queue.focus {
     border: 1px solid #142B8C;
 }
 
@@ -142,21 +143,21 @@ html>body .fluid-uploader-queue {
     background-color: #FFF9DC;
 }
 
-.fluid-uploader-queue tr:focus {
+.fluid-uploader-queue tr:focus, .fluid-uploader-queue tr.focus {
     background-color: #FFF9DC;
 }
 
-.fluid-uploader-queue tr:focus td, .fluid-uploader-queue tr:focus th {
+.fluid-uploader-queue tr:focus td, .fluid-uploader-queue tr:focus th, .fluid-uploader-queue tr.focus td, .fluid-uploader-queue tr.focus th {
     border-top: 2px solid #142B8C;
     border-bottom: 2px solid #142B8C;
     padding: 2px 4px;
 }
 
-.fluid-uploader-queue tr:focus td:last-child {
+.fluid-uploader-queue tr:focus td:last-child,.fluid-uploader-queue tr.focus td:last-child {
     border-right: 2px solid #142B8C;
 }
 
-.fluid-uploader-queue tr:focus th {
+.fluid-uploader-queue tr:focus th, .fluid-uploader-queue tr.focus th {
     border-left: 2px solid #142B8C;
 }
 
@@ -202,17 +203,17 @@ html>body .fluid-uploader-queue {
 	display: none;
 }
 
-.fluid-uploader-queue .removeFile:hover, .fluid-uploader-queue tr.ready:focus .removeFile {
+.fluid-uploader-queue .removeFile:hover, .fluid-uploader-queue tr.ready:focus .removeFile, .fluid-uploader-queue tr.focus .removeFile {
     border: 1px solid #CCC;
     background-color: #FFF;
 }
 
-.fluid-uploader-queue .removeFile:focus {
+.fluid-uploader-queue .removeFile:focus, .fluid-uploader-queue .removeFile.focus {
     background-color: #4F99D3;
     outline: none;
 }
 
-.fluid-uploader-queue .uploaded th, .fluid-uploader-queue tr.uploaded:focus th  {
+.fluid-uploader-queue .uploaded th, .fluid-uploader-queue tr.uploaded:focus th, .fluid-uploader-queue tr.focus th   {
     border-left: 4px solid #74B74A;
 }
 
@@ -286,7 +287,7 @@ html>body .fluid-uploader-queue {
     padding: 0;
 }
 
-.fluid-uploader-btns button:focus {
+.fluid-uploader-btns button:focus, .fluid-uploader-btns button.focus {
     border-width: 3px;
     border-color: #142B8C;
 }
@@ -371,7 +372,7 @@ html>body .fluid-uploader-queue {
     background-color: transparent;
 }
 
-.fluid-uploader .uploading a.fluid-uploader-browse:focus {
+.fluid-uploader .uploading a.fluid-uploader-browse:focus, .fluid-uploader .uploading a.fluid-uploader-browse.focus {
     border: 1px solid transparent;
     background-color: transparent;
 }

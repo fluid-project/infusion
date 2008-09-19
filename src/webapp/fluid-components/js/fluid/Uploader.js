@@ -455,6 +455,7 @@ fluid = fluid || {};
                 updateBrowseBtnText(uploaderContainer, fragmentSelectors.fileQueue, fragmentSelectors.browse, status);
                 $(uploaderContainer).children("div:first").removeClass('browsing');
                 if (numberOfRows(uploaderContainer, fragmentSelectors.fileQueue)){
+					$(fragmentSelectors.browse, uploaderContainer).blur();
                     $(fragmentSelectors.upload, uploaderContainer).focus();
                 }
                 debugStatus(status);
@@ -953,6 +954,17 @@ fluid = fluid || {};
             $(modifierKeySelector, uploaderContainer).text(strings.macControlKey);
         }
     };
+	
+	function bindKeyHighlight(viewEl, focusStyle) {
+        var focusOn = function () {
+            viewEl.addClass(focusStyle);
+        };
+        var focusOff = function () {
+            viewEl.removeClass(focusStyle);
+        };
+        viewEl.focus(focusOn);
+        viewEl.blur(focusOff);
+    }
     
     var bindEvents = function (uploader, uploaderContainer, swfObj, allowMultipleFiles, whenDone, whenCancel) {
 
@@ -965,40 +977,51 @@ fluid = fluid || {};
         var browseButton = $(uploader.fragmentSelectors.browse, uploaderContainer);		
         browseButton.click(activateBrowse);
         browseButton.tabbable();
+		bindKeyHighlight(browseButton,"focus");
         
         var fileQueue = $(uploader.fragmentSelectors.fileQueue, uploaderContainer);
         fileQueue.selectable({selectableSelector: uploader.fragmentSelectors.queueRow });
         
         // upload button
-        $(uploader.fragmentSelectors.upload, uploaderContainer).click(function(){
-            if ($(uploader.fragmentSelectors.upload, uploaderContainer).css('cursor') === 'pointer') {
+        var uploadButton = $(uploader.fragmentSelectors.upload, uploaderContainer);
+        uploadButton.click(function(){
+            if (uploadButton.css('cursor') === 'pointer') {
                 uploader.actions.beginUpload();
             }
         });
-        
+        bindKeyHighlight(uploadButton,"focus");
+		
         // resume button
-        $(uploader.fragmentSelectors.resume, uploaderContainer).click(function(){
-            if ($(uploader.fragmentSelectors.resume, uploaderContainer).css('cursor') === 'pointer') {
+		var resumeButton = $(uploader.fragmentSelectors.resume, uploaderContainer);
+        resumeButton.click(function(){
+            if (resumeButton.css('cursor') === 'pointer') {
                 uploader.actions.beginUpload();
             }
         });
+		bindKeyHighlight(resumeButton,"focus");
         
         // pause button
-        $(uploader.fragmentSelectors.pause, uploaderContainer).click(function(){
+        var pauseButton = $(uploader.fragmentSelectors.pause, uploaderContainer);
+        pauseButton.click(function(){
             swfObj.stopUpload();
         });
+		bindKeyHighlight(pauseButton,"focus");
         
         // done button
-        $(uploader.fragmentSelectors.done, uploaderContainer).click(function(){
+        var doneButton = $(uploader.fragmentSelectors.done, uploaderContainer);
+        doneButton.click(function(){
             if (uploadState(uploaderContainer) !== "uploading") {
                 variableAction(whenDone);
             }
         });
-        
+        bindKeyHighlight(doneButton,"focus");
+		
         // cancel button
-        $(uploader.fragmentSelectors.cancel, uploaderContainer).click(function(){
+        var cancelButton = $(uploader.fragmentSelectors.cancel, uploaderContainer);
+        cancelButton.click(function(){
             variableAction(whenCancel);
         });
+		bindKeyHighlight(cancelButton,"focus");
     };
     
     var enableDemoMode = function (uploaderContainer, swfObj, progressBar, options, fragmentSelectors, status, dialogObj) {
