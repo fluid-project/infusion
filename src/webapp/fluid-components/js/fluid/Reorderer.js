@@ -51,7 +51,10 @@ fluid = fluid || {};
             avatar = avatarContainer;
         }
         $("body").append(avatar);
-        avatar.css("display", "block").width(item.offsetWidth).height(item.offsetHeight);
+        if (!$.browser.safari) {
+            // FLUID-1597: Safari appears incapable of correctly determining the dimensions of elements
+            avatar.css("display", "block").width(item.offsetWidth).height(item.offsetHeight);
+        }
         
         if ($.browser.opera) { // FLUID-1490. Without this detect, curCSS explodes on the avatar on Firefox.
             avatar.hide();
