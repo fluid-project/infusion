@@ -218,7 +218,7 @@ fluid = fluid || {};
                 return false;
             }
             // The only other keys we listen for are the arrows.
-            return thatReorderer.handleDirectionKeyDown(evt);
+            return handleDirectionKeyDown(evt);
         };
 
         thatReorderer.handleKeyUp = function(evt) {
@@ -247,7 +247,7 @@ fluid = fluid || {};
             return (!evt.ctrlKey && !evt.altKey && !evt.shiftKey && !evt.metaKey);
         };
         
-        thatReorderer.handleDirectionKeyDown = function (evt) {
+        var handleDirectionKeyDown = function (evt) {
             var item = thatReorderer.activeItem;
             if (!item) {
                 return true;

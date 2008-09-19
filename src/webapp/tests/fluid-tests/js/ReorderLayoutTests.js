@@ -15,10 +15,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-   //     var tests = new jqUnit.TestCase("Reorder Layout Tests");
-            jqUnit.module ("Reorder Layout");
-
-        jqUnit.test("reorderLayout API", function () {
+      
+        function expectOrder(message, order) {
+           var items = fluid.transform(jQuery(".portlet"), fluid.getId);
+           var expected = fluid.transform(order, function(item) {return portletids[item];});
+           jqUnit.assertDeepEq(message, expected, items);
+        }
+      
+        var tests = new jqUnit.TestCase("Reorder Layout Tests");
+    
+        tests.test("reorderLayout API", function () {
             var options = {
                 selectors: {
                     columns: "[id^='c']",
@@ -27,35 +33,26 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
-            var item2 = fluid.jById(portlet2id).focus();
-            var item3 = fluid.jById(portlet3id);
-            var downArrow = fluid.testUtils.createEvtDownArrow(); 
-            var ctrlDownArrow = fluid.testUtils.createEvtCtrlDownArrow();
+            var item2 = fluid.jById(portletids[2]).focus();
+            var item3 = fluid.jById(portletids[3]);
             
             // Sniff test the reorderer that was created - keyboard selection and movement
     
             jqUnit.assertTrue("focus on item2", item2.hasClass("orderable-selected"));
             jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("orderable-default"));
     
-            layoutReorderer.handleDirectionKeyDown(downArrow);
+            layoutReorderer.handleKeyDown(fluid.testUtils.createEvtDownArrow(item2));
             jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("orderable-default"));
             jqUnit.assertTrue("down arrow - item3 should be selected", item3.hasClass("orderable-selected"));
     
-            layoutReorderer.handleDirectionKeyDown(ctrlDownArrow);
+            layoutReorderer.handleKeyDown(fluid.testUtils.createEvtCTRL(item3));
+            layoutReorderer.handleKeyDown(fluid.testUtils.createEvtCtrlDownArrow(item3));
     
-            var items = jQuery(".portlet");
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", portlet1id, items[0].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", portlet2id, items[1].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", portlet4id, items[2].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", portlet3id, items[3].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", portlet5id, items[4].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", portlet6id, items[5].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", portlet7id, items[6].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", portlet8id, items[7].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", portlet9id, items[8].id);
+            expectOrder("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", 
+                [1, 2, 4, 3, 5, 6, 7, 8, 9]);
         });
     
-        jqUnit.test("reorderLayout with optional styles", function () {
+        tests.test("reorderLayout with optional styles", function () {
             var options = {
                 selectors: {
                     columns: "[id^='c']",
@@ -76,7 +73,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });
         
-        jqUnit.test("reorderLayout with locked portlets", function () {
+        tests.test("reorderLayout with locked portlets", function () {
             var options = {
                 selectors: {
                     columns: "[id^='c']",
@@ -86,30 +83,22 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
 
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
-            var item2 = fluid.jById(portlet2id).focus();
-            var item3 = fluid.jById(portlet3id);
-            var ctrlDownArrow = fluid.testUtils.createEvtCtrlDownArrow();
+            var item2 = fluid.jById(portletids[2]).focus();
+            var item3 = fluid.jById(portletids[3]);
+            var ctrlDownArrow = fluid.testUtils.createEvtCtrlDownArrow(item3);
 
-            // Sniff test the reorderer that was created - locked portlet shouldn't move
-    
             jqUnit.assertTrue("focus on item2", item2.hasClass("orderable-selected"));
-            layoutReorderer.handleDirectionKeyDown(ctrlDownArrow);
+            layoutReorderer.handleKeyDown(fluid.testUtils.createEvtCTRL(item2));
+            layoutReorderer.handleKeyDown(fluid.testUtils.createEvtCtrlDownArrow(item2));
 
-            var items = jQuery(".portlet");
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4", portlet1id, items[0].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4", portlet2id, items[1].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4", portlet3id, items[2].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4", portlet4id, items[3].id);
+            expectOrder("after ctrl-down, expect order 1, 2, 3, 4", [1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
             item3.focus();
             jqUnit.assertTrue("focus on item3", item3.hasClass("orderable-selected"));
-            layoutReorderer.handleDirectionKeyDown(ctrlDownArrow);
+            layoutReorderer.handleKeyDown(fluid.testUtils.createEvtCTRL(item3));
+            layoutReorderer.handleKeyDown(ctrlDownArrow);
 
-            items = jQuery(".portlet");
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3", portlet1id, items[0].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3", portlet2id, items[1].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3", portlet4id, items[2].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 4, 3", portlet3id, items[3].id);
+            expectOrder("after ctrl-down, expect order 1, 2, 4, 3", [1, 2, 4, 3, 5, 6, 7, 8, 9]);
 
         });
     });

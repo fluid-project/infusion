@@ -74,7 +74,7 @@ fluid.testUtils.createUnmodifiedKeyEvent = function (inKeyCode, target) {
 
 fluid.testUtils.createKeyEvent = function (inKeyCode, inCtrlKey, inShiftKey, inAltKey, target) {
     return {keyCode: inKeyCode, ctrlKey: inCtrlKey, shiftKey: inShiftKey, altKey: inAltKey, 
-            target: target,
+            target: fluid.unwrap(target),
             preventDefault: function(){}, stopPropagation: function(){} };
 };
 
@@ -87,5 +87,5 @@ fluid.testUtils.assertNotNullAndNotUndefined = function (message, value) {
  * Returns the actual element.
  */
 fluid.testUtils.byId = function (id) {
-	return fluid.jById(id)[0];
+	return fluid.utils.jById(id)[0];
 };

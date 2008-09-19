@@ -1,7 +1,7 @@
 /*
 Copyright 2007-2008 University of Toronto
 
-Licensed under the Educational Community License (ECL), Version 2.0 or the New
+Licensed under the Educational Community License(ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
@@ -16,18 +16,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
  
 /*global jQuery*/
 /*global fluid*/
+/*global demo*/
  
 var portalRootId = "portlet-reorderer-root";
 
-var portlet1id = "portlet1";
-var portlet2id = "portlet2";
-var portlet3id = "portlet3";
-var portlet4id = "portlet4";
-var portlet5id = "portlet5";
-var portlet6id = "portlet6";
-var portlet7id = "portlet7";
-var portlet8id = "portlet8";
-var portlet9id = "portlet9";
+var portletids = ["portlet0", "portlet1", "portlet2", "portlet3", "portlet4", "portlet5", "portlet6", "portlet7", "portlet8", "portlet9"];
+
 var column1id = "c1";
 var column2id = "c2";
 var column3id = "c3";
@@ -36,20 +30,10 @@ var column4id = "c4";
 var columnSelector = "[id^='c']";
 var portletSelector = "[id^='portlet']";
 
-var emptyLayout = { id:"t3", columns:[ ] };   
+var emptyLayout = { id:"t3", columns: [] };   
 
 var portletRootClone;
 var portletHandler;
-var layout = { 
-    "id":"portlet-reorderer-root",
-    "columns":[
-        { "id":"c1", "children":["portlet1","portlet2","portlet3","portlet4"]},
-        { "id":"c2", "children":["portlet5","portlet6"]},
-        { "id":"c3", "children":["portlet7","portlet8","portlet9"]},
-        { "id":"c4", "children":[]}
-    ]
-};
-
 var layoutClone;
 
 function initReorderer() {
@@ -57,11 +41,11 @@ function initReorderer() {
         selectors: {
             columns: columnSelector,
             modules: portletSelector,
-            lockedModules: ".locked",
-            dropWarning: "#drop-warning"
-        }
+            dropWarning: jQuery("#drop-warning"),
+            lockedModules: ".locked"
+        },
     };
-    return fluid.reorderLayout ("#" + portalRootId, options);
+    return fluid.reorderLayout("#" + portalRootId, options);
 }
         
         
@@ -70,21 +54,18 @@ function initReorderer() {
  * layout and dropTargetPerms are defined in portlets.js
  */
 function setUp() {
-    var table = fluid.jById (portalRootId);
+    var table = fluid.jById(portalRootId);
     portletRootClone = table.clone();
-    layoutClone = jQuery.extend(true, {}, layout);
+    layoutClone = jQuery.extend(true, {}, demo.portal.layout);
     var options = {
-      moduleLayout: {
-        layout: layoutClone
-      }
+        moduleLayout: {
+            layout: layoutClone,
+            permissions: demo.portal.dropTargetPerms
+        }
     }; 
-
+    var reorderer = fluid.reorderLayout("#" + portalRootId, options);
     
-    portletHandler = fluid.moduleLayoutHandler (null, options);
-}
-
-function tearDown() {
-    fluid.jById (portalRootId).replaceWith (portletRootClone);
+    portletHandler = reorderer.layoutHandler;
 }
 
 function container() {
