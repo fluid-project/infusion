@@ -4,22 +4,24 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>Simple Layout Customizer Sample</title>
         
-        <link rel="stylesheet" type="text/css" href="../css/fluid.presentation.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.reset.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.layout.css" />
         <link rel="stylesheet" type="text/css" href="../css/fluid.states.css" />
-        <link rel="stylesheet" type="text/css" href="../css/LayoutCustomizer.css" />        
+        <link rel="stylesheet" type="text/css" href="../css/fluid.themes.css" />
+        <link rel="stylesheet" type="text/css" href="../css/LayoutCustomizer.css" />
         
-        <script type="text/javascript" src="../js/jquery/jquery-1.2.6.js"></script>
-        <script type="text/javascript" src="../js/jquery/jARIA.js"></script>
-        <script type="text/javascript" src="../js/jquery/jquery.keyboard-a11y.js"></script>
-        <script type="text/javascript" src="../js/jquery/ui.core.js"></script>
-        <script type="text/javascript" src="../js/jquery/ui.draggable.js"></script>
-        <script type="text/javascript" src="../js/json/json2.js"></script>
+        <script type="text/javascript" src="../fluid-components/js/jquery/jquery-1.2.6.js"></script>
+        <script type="text/javascript" src="../fluid-components/js/jquery/jARIA.js"></script>
+        <script type="text/javascript" src="../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../fluid-components/js/jquery/ui.core.js"></script>
+        <script type="text/javascript" src="../fluid-components/js/jquery/ui.draggable.js"></script>
+        <script type="text/javascript" src="../fluid-components/js/json/json2.js"></script>
         
-        <script type="text/javascript" src="../js/fluid/Fluid.js"></script>
-        <script type="text/javascript" src="../js/fluid/GeometricManager.js"></script>
-        <script type="text/javascript" src="../js/fluid/Reorderer.js"></script>
-        <script type="text/javascript" src="../js/fluid/LayoutCustomizer.js"></script>
-        <script type="text/javascript" src="../js/fluid/ModuleLayout.js"></script>
+        <script type="text/javascript" src="../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../fluid-components/js/fluid/GeometricManager.js"></script>        
+        <script type="text/javascript" src="../fluid-components/js/fluid/Reorderer.js"></script>
+        <script type="text/javascript" src="../fluid-components/js/fluid/LayoutCustomizer.js"></script>
+        <script type="text/javascript" src="../fluid-components/js/fluid/ModuleLayout.js"></script>
 
         <script type="text/javascript">
             // all elements (columns and sortable portlets) must have a unique ID as of Fluid 0.4
@@ -29,7 +31,7 @@
             // you can use any css selector pattern to find columns and modules, as long as jQuery selectors support it
             jQuery(document).ready(function () {
                 /******************************************/
-                // Example 1, grab by class names and id
+                // Example 1, grab by class names
                     fluid.reorderLayout ("#fluid-LayoutCustomizer-sample1", {
                         selectors: {
                             columns: ".myColumn",
@@ -39,106 +41,200 @@
                 
                 /******************************************/
                 // Example 2, different selectors
+                // columns = DIV 1st decendant (children) of the container
+                // modules = DIV 2nd decendant (grandchildren) of the container
                 fluid.reorderLayout ("#fluid-LayoutCustomizer-sample2", {
                     selectors: {
                         columns: "> div",
                         modules: "> div > div"                        
                     }
                 });
-              
-              
+                
                 /******************************************/
                 // Example 3, the most robust layout system with locked portlets
                 fluid.reorderLayout ("#fluid-LayoutCustomizer-sample3", {
                     selectors: {
-                        columns: "[id^='column']",
-                        modules: "[id^='sortable']",
-                        lockedModules: ".locked"
+                        columns: ".myColumn",
+                        modules: "> div > div",
+                        lockedModules: ".locked",
+				    dropWarning: ".dropWarning"
+                    }
+                });
+              
+                /******************************************/
+                // Example 4, different portlet content
+                fluid.reorderLayout ("#fluid-LayoutCustomizer-sample4", {
+                    selectors: {
+                        columns: "> div",
+                        modules: "> div > div"
                     }
                 });
             });
         </script>
 	</head>
 	<body>
-        <h1>Example 1: A simple set of sortable elements within columns</h1>
-        <p>Sortable elements are also sometimes called "portlets".</p>
-        <div id="fluid-LayoutCustomizer-sample1" class="columnSetup1 fluid-vertical-order">
-            <div id="col1" class="myColumn">
-                <h2>Column A</h2>
-                <div id="el1" class="mySortable">Drag me! Content goes here...</div>
-                <div id="el2" class="mySortable">Drag me! Content goes here...</div>
-                <div id="el3" class="mySortable">Drag me! Content goes here...</div>
-                <div id="el4" class="mySortable">Drag me! Content goes here...</div>
-            </div>
-            <div id="col2" class="myColumn">
-                <h2>Column B</h2>
-                <div id="el6" class="mySortable">Drag me! Content goes here...</div>
-                <div id="el7" class="mySortable">Drag me! Content goes here...</div>
-                <div id="el8" class="mySortable">Drag me! Content goes here...</div>
-                <div id="el9" class="mySortable">Drag me! Content goes here...</div>
-            </div>
-            <div id="col3" class="myColumn">
-                <h2>Column C</h2>
-                <div id="el11" class="mySortable">Drag me! Content goes here...</div>
-                <div id="el12" class="mySortable">Drag me! Content goes here...</div>
-                <div id="el13" class="mySortable">Drag me! Content goes here...</div>
-                <div id="el14" class="mySortable">Drag me! Content goes here...</div>
-            </div>
-        </div>
-
-        <h1>Example 2: Another example</h1>
-        <p>Unsortable elements mixed with sortable elements, and our high contrast accessbility theme</p>        
-        
-        <div id="fluid-LayoutCustomizer-sample2" class="columnSetup2 -fluid-theme-highContrast fluid-vertical-order">
-            <div id="unique_1">
-                <h2>Column A</h2>
-                <div id="unique_2">Draggable Element</div>
-                <div id="unique_3">Draggable Element</div>
-                <p id="unique_4">Static</p>
-                <p id="unique_5">Static</p>
-            </div>
-            <div id="unique_6">
-                <h2>Column B</h2>
-                <div id="unique_7">Draggable Element</div>
-                <p id="unique_8">Static</p>
-                <p id="unique_9">Static</p>
-                <div id="unique_10">Draggable Element</div>
-            </div>
-            <div id="unique_11">
-                <h2>Column C</h2>
-                <div id="unique_12">Draggable Element</div>
-                <p id="unique_13">Static</p>
-                <div id="unique_14">Draggable Element</div>
-                <div id="unique_15">Draggable Element</div>
+	    <div class="example">
+            <h1>Example 1: A simple set of sortable elements within columns</h1>
+            <p>Sortable elements are also sometimes called "portlets".</p>
+            <div id="fluid-LayoutCustomizer-sample1" class="columnSetup1 fluid-vertical-order">
+                <div class="myColumn fl-container-flex30 fl-force-left">
+                    <h2>Column A</h2>
+                    <div class="mySortable">Draggable Content (1)</div>
+                    <div class="mySortable">Draggable Content (2)</div>
+                    <div class="mySortable">Draggable Content (3)</div>
+                    <div class="mySortable">Draggable Content (4)</div>
+                    <div class="mySortable">Draggable Content (5)</div>
+                </div>
+                <div class="myColumn fl-container-flex30 fl-force-left">
+                    <h2>Column B</h2>
+                    <div class="mySortable">Draggable Content (6)</div>
+                    <div class="mySortable">Draggable Content (7)</div>
+                </div>
+                <div class="myColumn fl-container-flex30 fl-force-left">
+                    <h2>Column C</h2>
+                    <div class="mySortable">Draggable Content (8)</div>
+                    <div class="mySortable">Draggable Content (9)</div>
+                    <div class="mySortable">Draggable Content (10)</div>
+                </div>
             </div>
         </div>
 
-        <h1>Example 3: Complex sorting</h1>
-        <p>The most robust sorting mechanism. Includes locked portlets.</p>
-
-        <div id="fluid-LayoutCustomizer-sample3" class="columnSetup3 fluid-vertical-order">
-            <div id="column_1" class="myColumn">
-                <h2>Column A</h2>
-                <div id="sortable_1" class="locked">Content Portal A1 (Locked)</div>
-                <div id="sortable_2">Content Portal A2</div>
-                <div id="sortable_3">Content Portal A3</div>
-                <div id="sortable_4">Content Portal A4</div>
-            </div>
-            <div id="column_2" class="myColumn">
-                <h2>Column B</h2>
-                <div id="sortable_5" class="locked">Content Portal B1 (Locked)</div>
-                <div id="sortable_6">Content Portal B2</div>
-                <div id="sortable_7">Content Portal B3</div>
-                <div id="sortable_8">Content Portal B4</div>
-            </div>
-            <div id="column_3" class="myColumn">
-                <h2>Column C</h2>
-                <div id="sortable_9">Content Portal C1</div>
-                <div id="sortable_10">Content Portal C2</div>
-                <div id="sortable_11">Content Portal C3</div>
-                <div id="sortable_12">Content Portal C4</div>
+        <div class="example">
+            <h1>Example 2: Another example</h1>
+            <p>Unsortable elements mixed with sortable elements</p>        
+            
+            <div id="fluid-LayoutCustomizer-sample2" class="columnSetup2 -fluid-theme-highContrast fluid-vertical-order">
+                <div>
+                    <h2>Column A</h2>
+                    <div>Draggable DIV a1</div>
+                    <div>Draggable DIV a2</div>
+                    <p>Static P</p>
+                    <p>Static P</p>
+                </div>
+                <div>
+                    <h2>Column B</h2>
+                    <div>Draggable DIV b1</div>
+                    <p>Static P</p>
+                    <p>Static P</p>
+                    <div>Draggable DIV b2</div>
+                </div>
+                <div>
+                    <h2>Column C</h2>
+                    <div>Draggable DIV c1</div>
+                    <p>Static P</p>
+                    <div>Draggable DIV c2</div>
+                    <div>Draggable DIV c3</div>
+                </div>
             </div>
         </div>
+
+
+        <div class="example">
+            <h1>Example 3: Complex sorting</h1>
+            <p>The most robust sorting mechanism. Includes locked portlets.</p>
+    
+            <div id="fluid-LayoutCustomizer-sample3" class="columnSetup3 fluid-vertical-order">
+            	 <!-- invalid drag n drop message template -->
+                <div class="dropWarning"> Cannot place content here </div>
+
+                <div class="myColumn">
+                    <h2>Column A</h2>
+                    <div class="locked">Content Portal A1 (Locked)</div>
+                    <div>Content Portal A2</div>
+                    <div>Content Portal A3</div>
+                    <div>Content Portal A4</div>
+                </div>
+                <div class="myColumn">
+                    <h2>Column B</h2>
+                    <div class="locked">Content Portal B1 (Locked)</div>
+                    <div>Content Portal B2</div>
+                    <div>Content Portal B3</div>
+                    <div>Content Portal B4</div>
+                </div>
+                <div class="myColumn">
+                    <h2>Column C</h2>
+                    <div>Content Portal C1</div>
+                    <div>Content Portal C2</div>
+                    <div>Content Portal C3</div>
+                    <div>Content Portal C4</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="example fl-theme-mist">
+            <h1>Example 4: A simple set of sortable elements within columns, with Fluid theme</h1>
+            <p>This uses the Fluid Mist theme together with the Fluid Modular CSS Framework.</p>
+            <p>For Fluid themes to work and properly hook into your code, there are a few things to keep in mind:</p>
+            <dl>
+                <dt>Content should be as semantic and lean as possible</dt>
+                <dd>Use the most appropriate tag for what your communicating (&lt;h1&gt; instead of &lt;span class="title"&gt;)</dd>
+                <dd>Use the available tools sparingly (unless you have a very complicated layout, there should be no need to pepper your document with the same layout classes many times)</dd>
+                <dt>Review the tools</dt>
+                <dd>There are helper classes to speed up your designs, so use them wisely</dd>
+            </dl>
+            
+            <div id="fluid-LayoutCustomizer-sample4" class="fl-container-flex fluid-vertical-order">
+                <div class="fl-container-flex30 fl-force-left">
+                    <h2>Column A</h2>
+                    <div class="weatherWidget fl-wrapper-widget">
+                        
+                        <h1 class="fl-grababble">The Weather Widget</h1>
+                        <p class="temperature"> <strong>25 &deg;</strong>Toronto (YYZ)</p>
+                        <ul class="fl-tabs fl-tabs-center">
+                            <li>Sun</li>
+                            <li class="fl-activeTab">Mon</li>
+                            <li>Tues</li>
+                            <li>Wed</li>
+                            <li>Thur</li>
+                            <li>Fri</li>
+                            <li>Sat</li>
+                        </ul>
+                        <div class="information fl-tab-content">
+                            <ul>
+                                <li> <a href="http://www.theweathernetwork.com/index.php?product=glossary&amp;placecode=caon0696&amp;pagecontent=feelslike">Feels Like</a>: - </li>
+                                <li> <a href="http://www.theweathernetwork.com/index.php?product=glossary&amp;placecode=caon0696&amp;pagecontent=wind">Wind</a>: SW 20km/h </li>
+                                <li><strong>Sunrise: </strong> 6:50 </li>
+                                <li><strong>Sunset: </strong>19:40</li>
+                            </ul>
+                            <ul>
+                                <li> <a href="http://www.theweathernetwork.com/index.php?product=glossary&amp;placecode=caon0696&amp;pagecontent=relativehumidity">Relative Humidity: </a> 68% </li>
+                                <li> <a href="http://www.theweathernetwork.com/index.php?product=glossary&amp;placecode=caon0696&amp;pagecontent=pressure">Pressure</a>: 101.94 kPa </li>
+                                <li> <a href="http://www.theweathernetwork.com/index.php?product=glossary&amp;placecode=caon0696&amp;pagecontent=visibility">Visibility</a>: 24.0 km </li>
+                                <li> <a href="http://www.theweathernetwork.com/index.php?product=glossary&amp;placecode=caon0696&amp;pagecontent=ceiling">Ceiling</a>: unlimited </li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                    <div>Drag me! Content goes here...</div>
+                    <div>Drag me! Content goes here...</div>
+                    <div>Drag me! Content goes here...</div>
+                </div>
+                <div class="fl-container-flex30 fl-force-left">
+                    <h2>Column B</h2>
+                    <div>Drag me! Content goes here...</div>
+                    <div>Drag me! Content goes here...</div>
+                    <div>
+                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec nec nisi quis leo aliquet tincidunt. Donec sagittis ante a dui. Aenean pellentesque lacus ut velit. Vivamus nec orci. Mauris at erat vel sem euismod tempor. Curabitur quis ligula. Fusce et urna ut nisl sagittis auctor. Morbi in dui. Nulla accumsan, nisl eu laoreet fermentum, nisi augue imperdiet nibh, in pellentesque velit mauris at odio. Integer sit amet mauris. Proin a augue ut urna iaculis porttitor. Integer laoreet, ipsum eu commodo ornare, urna lacus auctor velit, vel volutpat diam urna et velit. Aliquam erat volutpat. Proin eget turpis vel libero condimentum bibendum.</p>
+                        <blockquote class="fl-wrapper-callout">
+                            Here goes something important!
+                        </blockquote>
+                        <p>Aliquam tristique, ligula non lacinia venenatis, est urna porttitor lectus, vel rutrum odio ligula vitae pede. Nulla mollis. Morbi fringilla laoreet odio. Suspendisse potenti. Maecenas vitae diam. Aenean volutpat sem eu massa. Mauris posuere venenatis massa. Nunc pellentesque dolor. Praesent at lectus eget sem fringilla gravida. Suspendisse vel nisi. Integer sagittis consectetuer dolor. Maecenas eu urna a enim euismod convallis. Maecenas tempus, nunc at interdum posuere, ipsum turpis tristique nulla, facilisis placerat quam elit eu diam. Aliquam quis purus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;</p>
+                        <p>Maecenas risus sapien, laoreet nec, sodales id, fringilla vitae, elit. Nulla accumsan, dui a sollicitudin iaculis, diam lorem sollicitudin nunc, sed rhoncus lorem turpis et ipsum. Nunc nec ipsum a tellus euismod porta. Nam massa pede, accumsan eu, rhoncus nec, blandit vitae, velit. Aenean pretium. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec et sapien. Nunc eget elit at dolor aliquam imperdiet. Vestibulum facilisis urna non lorem. Sed at tortor. Sed at orci. Etiam hendrerit. Nunc sed lacus. Mauris neque purus, consequat sit amet, vehicula sit amet, commodo sit amet, risus. Etiam consequat magna et nunc. Cras facilisis. Integer sit amet urna vel libero auctor ornare. Sed auctor.                         </p>
+                    </div>
+                    <div>Drag me! Content goes here...</div>
+                </div>
+                <div class="fl-container-flex30 fl-force-left">
+                    <h2>Column C</h2>
+                    <div>Drag me! Content goes here...</div>
+                    <div>Drag me! Content goes here...</div>
+                    <div>Drag me! Content goes here...</div>
+                    <div>Drag me! Content goes here...</div>
+                </div>
+            </div>
+            
+            
+        </div>
+
                 
 	</body>
 </html>
