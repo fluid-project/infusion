@@ -130,6 +130,7 @@ var fluid = fluid || {};
         for (var i = 0; i < list.length; ++ i) {
             if (fn(list[i], i)) {
                 list.splice(i, 1);
+                --i;
             }
         }
         return list;

@@ -168,6 +168,9 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         that.getGeometricInfo = function () {
         	  var extents = [];
             var togo = {extents: extents};
+            togo.elementMapper = function(element) {
+                return isLocked(element)? "locked" : null;
+                };
             for (var col = 0; col < layout.columns.length; col++) {
                 var column = layout.columns[col];
                 var thisEls = {
@@ -175,12 +178,11 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                     elements: jQuery.makeArray(column.elements),
                     parentElement: column.container
                 };
-                // fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements));
+                //fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements) + " isLocked [" + 
+                //     fluid.transform(thisEls.elements, togo.elementMapper).join(", ") + "]");
                 extents.push(thisEls);
-                togo.elementMapper = function(element) {
-                    return isLocked(element)? "locked" : null;
-                };
             }
+
             return togo;
         };
         
@@ -190,7 +192,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                     return list.concat(column.elements); // note that concat will not work on a jQuery
                     }, []);
                 if (!all) {
-                   fluid.remove_if(modules, isLocked);
+                    fluid.remove_if(modules, isLocked);
                 }
                 return modules;
             };

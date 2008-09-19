@@ -18,36 +18,48 @@ https://source.fluidproject.org/svn/LICENSE.txt
 (function ($) {
     $(document).ready(function () {
         fluid.logEnabled = true;
+        
         var fluidJSTests = new jqUnit.TestCase("Fluid JS Tests");
+        
+        fluidJSTests.test("remove_if", function() {
+            function isOdd(i) {return i % 2 === 1;}
+            jqUnit.assertDeepEq("Remove nothing", [2, 4, 6, 8], fluid.remove_if([2, 4, 6, 8], isOdd));
+            jqUnit.assertDeepEq("Remove first ", [2, 4, 6, 8], fluid.remove_if([1, 2, 4, 6, 8], isOdd));
+            jqUnit.assertDeepEq("Remove last ", [2, 4, 6, 8], fluid.remove_if([2, 4, 6, 8, 9], isOdd));
+            jqUnit.assertDeepEq("Remove first two ", [2, 4, 6, 8], fluid.remove_if([7, 1, 2, 4, 6, 8], isOdd));
+            jqUnit.assertDeepEq("Remove last two ", [2, 4, 6, 8], fluid.remove_if([2, 4, 6, 8, 9, 11], isOdd));
+            jqUnit.assertDeepEq("Remove all ", [], fluid.remove_if([1, 3, 5, 7], isOdd));
+            jqUnit.assertDeepEq("Remove from nothing ", [], fluid.remove_if([], isOdd));    
+        });
 
         fluidJSTests.test("merge", function() {
           
-          jqUnit.expect(8);
-          
-          var bit1 = {prop1: "thing1"};
-          var bit2 = {prop2: "thing2"};
-          var bits = {prop1: "thing1", prop2: "thing2"};
-          jqUnit.assertDeepEq("Simple merge 1",
-             bits, fluid.utils.merge({}, {}, bit1, null, bit2));
-          jqUnit.assertDeepEq("Simple merge 2",
-             bits, fluid.utils.merge({}, {}, bit2, bit1, undefined));
-          jqUnit.assertDeepEq("Simple merge 3",
-             bits, fluid.utils.merge({}, {}, {}, bit1, bit2));
-          jqUnit.assertDeepEq("Simple merge 4",
-             bits, fluid.utils.merge({}, {}, {}, bit2, bit1));
-             
-          jqUnit.assertDeepNeq("Anticorruption check", bit1, bit2);
-          
-          jqUnit.assertDeepEq("Replace 1", 
-            bit1, fluid.utils.merge({"": "replace"}, {}, bits, bit1));
+            jqUnit.expect(8);
             
-          jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
-            fluid.utils.merge({}, {}, [bit1, bit2], null, [bit2, bit1, bits]));
-          
-          jqUnit.assertDeepEq("Value fetch", [bits, bits], 
-            fluid.utils.merge({"0.prop1": "1.prop1",
-                               "1.prop2": "0.prop2"}, {}, [bit2, bit1], {}));  
-          
+            var bit1 = {prop1: "thing1"};
+            var bit2 = {prop2: "thing2"};
+            var bits = {prop1: "thing1", prop2: "thing2"};
+            jqUnit.assertDeepEq("Simple merge 1",
+               bits, fluid.utils.merge({}, {}, bit1, null, bit2));
+            jqUnit.assertDeepEq("Simple merge 2",
+               bits, fluid.utils.merge({}, {}, bit2, bit1, undefined));
+            jqUnit.assertDeepEq("Simple merge 3",
+               bits, fluid.utils.merge({}, {}, {}, bit1, bit2));
+            jqUnit.assertDeepEq("Simple merge 4",
+               bits, fluid.utils.merge({}, {}, {}, bit2, bit1));
+               
+            jqUnit.assertDeepNeq("Anticorruption check", bit1, bit2);
+            
+            jqUnit.assertDeepEq("Replace 1", 
+              bit1, fluid.utils.merge({"": "replace"}, {}, bits, bit1));
+              
+            jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
+              fluid.utils.merge({}, {}, [bit1, bit2], null, [bit2, bit1, bits]));
+            
+            jqUnit.assertDeepEq("Value fetch", [bits, bits], 
+              fluid.utils.merge({"0.prop1": "1.prop1",
+                                 "1.prop2": "0.prop2"}, {}, [bit2, bit1], {}));  
+            
         });
         
         fluidJSTests.test("stringTemplate: array of string values", function () {
