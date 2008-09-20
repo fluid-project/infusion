@@ -12,9 +12,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid*/
+/*global fluid_0_5*/
 
-fluid = fluid || {};
+fluid_0_5 = fluid_0_5 || {};
 
 (function ($, fluid) {
     
@@ -49,8 +49,7 @@ fluid = fluid || {};
     }
    
     
-    function bindHandlers(that) {
-      
+    var bindHandlers = function (that) { 
         that.locate("undoControl").click( 
             function () {
                 fluid.model.copyModel(that.extremalModel, that.component.model);
@@ -76,8 +75,9 @@ fluid = fluid || {};
             onBeginEdit: function () {
                 fluid.model.copyModel(that.initialModel, that.component.model);
             }
-        }
-    }
+        };
+    };
+    
     /**
      * Decorates a target component with the function of "undoability"
      * 
@@ -115,4 +115,4 @@ fluid = fluid || {};
         renderer: defaultRenderer
     });
         
-})(jQuery, fluid);
+})(jQuery, fluid_0_5);

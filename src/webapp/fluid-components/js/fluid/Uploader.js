@@ -35,9 +35,9 @@
  */
 
 /*global jQuery*/
-/*global fluid*/
+/*global fluid_0_5*/
 
-fluid = fluid || {};
+fluid_0_5 = fluid_0_5 || {};
 
 (function ($,fluid) {
       
@@ -1269,32 +1269,4 @@ fluid = fluid || {};
         return "";
     };
     
-})(jQuery, fluid);
-
-
-
-
-//fluid.Progress.update('.fluid-progress','.file-progress',40,"Label Change");
-
-
-/* GRAVEYARD and SCRATCH
-    
-    // eventually used to create fileTypes sets.
-    var fileTypes = {
-        all: {
-            ext: "*.*",
-            desc: 'all files'
-        },
-        images: {
-            ext: "*.gif;*.jpeg;*.jpg;*.png;*.tiff",
-            desc: "image files"
-        },
-        text:"*.txt;*.text",
-        Word:"*.doc;*.xdoc",
-        Excel:"*.xls",
-    }
-
-    // for use in a better way of setting state to simplify structure
-    states: "start uploading browse loaded reloaded paused empty done",
-
-*/
+})(jQuery, fluid_0_5);

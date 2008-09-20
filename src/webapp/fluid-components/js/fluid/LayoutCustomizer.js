@@ -10,8 +10,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid*/
-fluid = fluid || {};
+/*global fluid_0_5*/
+fluid_0_5 = fluid_0_5 || {};
 
 (function (fluid) {
  
@@ -29,4 +29,4 @@ fluid = fluid || {};
         var options = jQuery.extend(true, assembleOptions, userOptions);
         return fluid.reorderer(container, options);
     };    
-})(fluid);
+})(fluid_0_5);

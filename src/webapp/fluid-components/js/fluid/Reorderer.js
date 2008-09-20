@@ -12,9 +12,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 /*global $*/
-/*global fluid*/
+/*global fluid_0_5*/
 
-fluid = fluid || {};
+fluid_0_5 = fluid_0_5 || {};
 
 (function ($, fluid) {
     
@@ -554,13 +554,11 @@ fluid = fluid || {};
             return strategy !== null? dropManager[strategy](item, direction, forSelection) : null;
         };
     };
-    
-}) ($, fluid);
 
-/*******************
- * Layout Handlers *
- *******************/
-(function ($, fluid) {
+
+    /*******************
+     * Layout Handlers *
+     *******************/
 
     function geometricInfoGetter(orientation, dom) {
         return function() {
@@ -620,4 +618,4 @@ fluid = fluid || {};
         return that;
     }; // End of GridLayoutHandler
 
-}) (jQuery, fluid);
+}) (jQuery, fluid_0_5);
