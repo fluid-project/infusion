@@ -202,7 +202,7 @@ var fluid_0_5 = fluid_0_5 || {};
         if (generalHidden(element)) {
             elem.clazz = "hidden";
         }
-        var pos = fluid.utils.computeAbsolutePosition(element) || [0, 0];
+        var pos = fluid.computeAbsolutePosition(element) || [0, 0];
         var width = element.offsetWidth;
         var height = element.offsetHeight;
         elem.rect = {left: pos[0], top: pos[1]};

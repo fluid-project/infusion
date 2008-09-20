@@ -79,7 +79,7 @@ fluid_0_5 = fluid_0_5 || {};
         
         return function () {
             var inputs, i;
-            inputs = fluid.utils.seekNodesById(
+            inputs = seekNodesById(
                 reorderform, 
                 "input", 
                 "^" + deriveLightboxCellBase(lightboxContainer.id, "[^:]*") + "reorder-index$");

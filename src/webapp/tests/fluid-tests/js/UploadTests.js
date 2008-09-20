@@ -111,7 +111,7 @@ function percentToPixels(containerWidth,percent) {
         
         uploadTests.test("formatFileSize()", function () {          
             function testFileSize(testVal, expected) {
-                jqUnit.assertEquals("File size " + testVal + " bytes ", expected, fluid.utils.formatFileSize(testVal));
+                jqUnit.assertEquals("File size " + testVal + " bytes ", expected, fluid.Uploader.formatFileSize(testVal));
             }
             
             testFileSize(0, "0.0 KB");

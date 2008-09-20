@@ -259,7 +259,7 @@ fluid_0_5 = fluid_0_5 || {};
             for (var i = 0; i < keysets.length; i++) {
                 var keyset = keysets[i];
                 var didProcessKey = false;
-                var keydir = fluid.utils.findKey(keyset, evt.keyCode);
+                var keydir = fluid.findKeyInObject(keyset, evt.keyCode);
                 if (!keydir) {
                     continue;
                 }
@@ -362,9 +362,11 @@ fluid_0_5 = fluid_0_5 || {};
                 },
                 start: function (e, ui) {
                     var prevent = thatReorderer.events.onBeginMove.fire(item);
-                    if (prevent) return false;
+                    if (prevent) {
+                        return false;
+                    }
                     var handle = thatReorderer.dom.fastLocate("grabHandle", item)[0];
-                    var handlePos = fluid.utils.computeAbsolutePosition(handle);
+                    var handlePos = fluid.computeAbsolutePosition(handle);
                     var handleWidth = handle.offsetWidth;
                     var handleHeight = handle.offsetHeight;
                     item.focus();

@@ -87,5 +87,5 @@ fluid.testUtils.assertNotNullAndNotUndefined = function (message, value) {
  * Returns the actual element.
  */
 fluid.testUtils.byId = function (id) {
-	return fluid.utils.jById(id)[0];
+	return fluid.jById(id)[0];
 };

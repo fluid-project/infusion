@@ -427,7 +427,7 @@ var fluid = fluid || fluid_0_5;
      */
     fluid.mergeComponentOptions = function (that, componentName, userOptions) {
         var defaults = fluid.defaults(componentName); 
-        that.options = fluid.utils.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);    
+        that.options = fluid.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);    
     };
     
     /** The central initialiation method called as the first act of every Fluid
@@ -479,12 +479,12 @@ var fluid = fluid || fluid_0_5;
             }
             var entryType = typeof(entry) === "string"? entry : entry.type;
             var globDef = fluid.defaults(true, entryType);
-            fluid.utils.merge("reverse", that.options, globDef);
+            fluid.merge("reverse", that.options, globDef);
             
             togo[i] = fluid.invokeGlobalFunction(entryType, args, {fluid: fluid});
             var returnedOptions = togo[i].returnedOptions;
             if (returnedOptions) {
-                fluid.utils.merge(that.options.mergePolicy, that.options, returnedOptions);
+                fluid.merge(that.options.mergePolicy, that.options, returnedOptions);
                 if (returnedOptions.listeners) {
                     fluid.mergeListeners(that.events, returnedOptions.listeners);
                 }
@@ -555,7 +555,7 @@ var fluid = fluid || fluid_0_5;
    
     /** Copy a source "model" onto a target **/
     fluid.model.copyModel = function (target, source) {
-        fluid.utils.clear(target);
+        fluid.clear(target);
         jQuery.extend(true, target, source);
     };
     
@@ -592,25 +592,21 @@ var fluid = fluid || fluid_0_5;
         }
         return root;
     };
-      
-    /*
-     * Utilities object for providing various general convenience functions
-     */
-    fluid.utils = {};
     
-    fluid.utils.findKey = function (hash, value) {
-        for (var key in hash) {
-            if (hash[key] === value) {
+    fluid.findKeyInObject = function (obj, value) {
+        for (var key in obj) {
+            if (obj[key] === value) {
                 return key;
             }
         }
         return null;
     };
     
-    /** Returns the absolute position of a supplied DOM node in pixels.
+    /** 
+     * Returns the absolute position of a supplied DOM node in pixels.
      * Implementation taken from quirksmode http://www.quirksmode.org/js/findpos.html
      */
-    fluid.utils.computeAbsolutePosition = function (element) {
+    fluid.computeAbsolutePosition = function (element) {
         var curleft = 0, curtop = 0;
         if (element.offsetParent) {
             do {
@@ -627,7 +623,7 @@ var fluid = fluid || fluid_0_5;
      * 
      * @param {Object|Array} target the target to be cleared
      */
-    fluid.utils.clear = function (target) {
+    fluid.clear = function (target) {
         if (target instanceof Array) {
             target.length = 0;
         }
@@ -645,7 +641,7 @@ var fluid = fluid || fluid_0_5;
             return target;
         }
         if (thisPolicy === "replace") {
-            fluid.utils.clear(target);
+            fluid.clear(target);
         }
       
         for (var name in source) {
@@ -671,7 +667,7 @@ var fluid = fluid || fluid_0_5;
         return target;
     }
     
-    fluid.utils.merge = function (policy, target) {
+    fluid.merge = function (policy, target) {
         var path = "";
         
         for (var i = 2; i < arguments.length; ++i) {
@@ -731,7 +727,7 @@ var fluid = fluid || fluid_0_5;
      * @param {String}    template    a string (can be HTML) that contains tokens embedded into it
      * @param {object}    values        a collection of token keys and values
      */
-    fluid.utils.stringTemplate = function (template, values) {
+    fluid.stringTemplate = function (template, values) {
         var newString = template;
         for (var key in values) {
             if (values.hasOwnProperty(key)) {
