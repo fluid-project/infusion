@@ -20,60 +20,65 @@ var fluid = fluid || fluid_0_5;
     
     fluid.version = "Infusion 0.5";
     
-    fluid.keys = {
-        TAB: 9,
-        ENTER: 13,
-        SHIFT: 16,
-        CTRL: 17,
-        ALT: 18,
-        META: 19,
-        SPACE: 32,
-        LEFT: 37,
-        UP: 38,
-        RIGHT: 39,
-        DOWN: 40,
-        i: 73,
-        j: 74,
-        k: 75,
-        m: 77
+    /**
+     * Causes an error message to be logged to the console and a real runtime error to be thrown.
+     * This is to work around the fact that FireBug won't stop on thrown Errors.
+     * Note that this function forces a runtime error to occur by invoking a method that is known
+     * not to exist.
+     * 
+     * @param {String|Error} message the error message to log
+     */
+    fluid.fail = function (message) {
+        fluid.logEnabled = true;
+        fluid.log(message.message? message.message : message);
+        message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
     };
     
     /**
-     * These roles are used to add ARIA roles to orderable items. This list can be extended as needed,
-     * but the values of the container and item roles must match ARIA-specified roles.
-     */  
-    fluid.roles = {
-        GRID: { container: "grid", item: "gridcell" },
-        LIST: { container: "list", item: "listitem" },
-        REGIONS: { container: "main", item: "article" }
-    };
-    
-    fluid.defaultKeysets = [{
-        modifier : function (evt) {
-            return evt.ctrlKey;
-        },
-        up : fluid.keys.UP,
-        down : fluid.keys.DOWN,
-        right : fluid.keys.RIGHT,
-        left : fluid.keys.LEFT
-    },
-    {
-        modifier : function (evt) {
-            return evt.ctrlKey;
-        },
-        up : fluid.keys.i,
-        down : fluid.keys.m,
-        right : fluid.keys.k,
-        left : fluid.keys.j
-    }];
-    
+     * Wraps an object in a jQuery if it isn't already one.
+     * 
+     * @param {Object} obj the object to wrap in a jQuery
+     */
     fluid.wrap = function (obj) {
         return ((!obj || obj.jquery) ? obj : jQuery(obj)); 
     };
     
+    /**
+     * If obj is a jQuery, this function will return the first DOM element within it.
+     * 
+     * @param {jQuery} obj the jQuery instance to unwrap into a pure DOM element
+     */
     fluid.unwrap = function (obj) {
         return obj && obj.jquery && obj.length === 1 ? obj[0] : obj; // Unwrap the element if it's a jQuery.
     };
+    
+    fluid.findKeyInObject = function (obj, value) {
+        for (var key in obj) {
+            if (obj[key] === value) {
+                return key;
+            }
+        }
+        return null;
+    };
+    
+    /** 
+     * Clears an object or array of its contents. For objects, each property is deleted.
+     * 
+     * @param {Object|Array} target the target to be cleared
+     */
+    fluid.clear = function (target) {
+        if (target instanceof Array) {
+            target.length = 0;
+        }
+        else {
+            for (var i in target) {
+                delete target[i];
+            }
+        }
+    };
+    
+    
+    // Framework and instantiation functions.
     
     /**
      * Fetches a single container element and returns it as a jQuery.
@@ -96,45 +101,6 @@ var fluid = fluid || fluid_0_5;
         }
         
         return container;
-    };
-    
-    fluid.transform = function (list) {
-        var togo = [];
-        for (var i = 0; i < list.length; ++ i) {
-            var transit = list[i];
-            for (var j = 0; j < arguments.length - 1; ++ j) {
-                transit = arguments[j + 1](transit, i);
-            }
-            togo[togo.length] = transit;
-        }
-        return togo;
-    };
-    
-    fluid.find = function (list, fn, deflt) {
-        for (var i = 0; i < list.length; ++ i) {
-            var transit = fn(list[i], i);
-            if (transit !== null && transit !== undefined) {
-                return transit;
-            }
-        }
-        return deflt;
-    };
-    
-    fluid.accumulate = function (list, fn, arg) {
-	    for (var i = 0; i < list.length; ++ i) {
-	        arg = fn(list[i], arg, i);
-	    }
-	    return arg;
-    };
-    
-    fluid.remove_if = function (list, fn) {
-        for (var i = 0; i < list.length; ++ i) {
-            if (fn(list[i], i)) {
-                list.splice(i, 1);
-                --i;
-            }
-        }
-        return list;
     };
     
     /**
@@ -164,156 +130,12 @@ var fluid = fluid || fluid_0_5;
         return store[componentName];
     };
     
-    /** Dump a DOM element into a readily recognisable form for debugging - produces a
-     * "semi-selector" summarising its tag name, class and id, whichever are set.
-     * @param {jQueryable} element The element to be dumped
-     * @return A string representing the element.
-     */
-    fluid.dumpEl = function (element) {
-        var togo;
-        
-        if (!element) {
-            return "null";
-        }
-        if (element.nodeType === 3 || element.nodeType === 8) {
-            return "[data: " + element.data + "]";
-        } 
-        if (typeof element.length === "number") {
-            togo = "[";
-            for (var i = 0; i < element.length; ++ i) {
-                togo += fluid.dumpEl(element[i]);
-                if (i < element.length - 1) {
-                    togo += ", ";
-                }
-            }
-            return togo + "]";
-        }
-        element = jQuery(element);
-        togo = element.get(0).tagName;
-        if (element.attr("id")) {
-            togo += "#" + element.attr("id");
-        }
-        if (element.attr("class")) {
-            togo += "." + element.attr("class");
-        }
-        return togo;
-    };
-    
-    fluid.fail = function (message) {
-        fluid.logEnabled = true;
-        fluid.log(message.message? message.message : message);
-        message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
-    };
-    
-    function getNextNode(iterator) {
-        if (iterator.node.firstChild) {
-            iterator.node = iterator.node.firstChild;
-            iterator.depth += 1;
-            return iterator;
-        }
-        while (iterator.node) {
-            if (iterator.node.nextSibling) {
-                iterator.node = iterator.node.nextSibling;
-                return iterator;
-            }
-            iterator.node = iterator.node.parentNode;
-            iterator.depth -= 1;
-        }
-        return iterator;
-    }
-    
-    // Work around IE circular DOM issue. This is the default max DOM depth on IE.
-    // http://msdn2.microsoft.com/en-us/library/ms761392(VS.85).aspx
-    fluid.DOM_BAIL_DEPTH = 256;
-    
-    fluid.iterateDom = function (node, acceptor) {
-        var currentNode = {node: node, depth: 0};
-        var prevNode = node;
-        while (currentNode.node !== null && currentNode.depth >= 0 && currentNode.depth < fluid.DOM_BAIL_DEPTH) {
-            var deleted = false;
-            if (currentNode.node.nodeType === 1) {
-                deleted = acceptor(currentNode.node, currentNode.depth);
-            }
-            if (deleted) {
-                currentNode.node.parentNode.removeChild(currentNode.node);
-                currentNode.node = prevNode;
-            }
-            prevNode = currentNode.node;
-            currentNode = getNextNode(currentNode);
-        }
-    };
-    
-        
-    /** 
-     * The central initialisation method called as the first act of every 
-     * Fluid view. This function automatically merges user options with defaults
-     * and attaches a DOM Binder to the instance.
-     */
-    fluid.isContainer = function (container, containee) {
-        for (; containee; containee = containee.parentNode) {
-            if (container === containee) {
-                return true;
-            }
-        }
-        return false;
-    };
-    
-    /** Mockup of a missing DOM function **/  
-    fluid.insertAfter = function (newChild, refChild) {
-        var nextSib = refChild.nextSibling;
-        if (!nextSib) {
-            refChild.parentNode.appendChild(newChild);
-        }
-        else {
-            refChild.parentNode.insertBefore(newChild, nextSib);
-        }
-    };
-    // The following two functions taken from http://developer.mozilla.org/En/Whitespace_in_the_DOM
     /**
-     * Determine whether a node's text content is entirely whitespace.
-     *
-     * @param node  A node implementing the |CharacterData| interface (i.e.,
-     *              a |Text|, |Comment|, or |CDATASection| node
-     * @return     True if all of the text content of |nod| is whitespace,
-     *             otherwise false.
+     * Creates a new DOM Binder instance, used to locate elements in the DOM by name.
+     * 
+     * @param {Object} container the root element in which to locate named elements
+     * @param {Object} selectors a collection of named jQuery selectors
      */
-    fluid.isWhitespaceNode = function (node) {
-       // Use ECMA-262 Edition 3 String and RegExp features
-        return !(/[^\t\n\r ]/.test(node.data));
-    };
-
-
-    /** Cleanse the children of a DOM node by removing all <script> tags.
-     * This is necessary to prevent the possibility that these blocks are
-     * reevaluated if the node were reattached to the document. 
-     */
-    fluid.cleanseScripts = function (element) {
-        var cleansed = jQuery.data(element, fluid.cleanseScripts.MARKER);
-        if (!cleansed) {
-            fluid.iterateDom(element, function (node) {
-                return (node.tagName.toLowerCase() === "script");
-            });
-            jQuery.data(element, fluid.cleanseScripts.MARKER, true);
-        }
-    };
-
-    fluid.cleanseScripts.MARKER = "fluid-scripts-cleansed";
-
-    /**
-     * Determine if a node should be ignored by the iterator functions.
-     *
-     * @param nod  An object implementing the DOM1 |Node| interface.
-     * @return     true if the node is:
-     *                1) A |Text| node that is all whitespace
-     *                2) A |Comment| node
-     *             and otherwise false.
-     */
-
-    fluid.isIgnorableNode = function (node) {
-        return (node.nodeType === 8) || // A comment node
-         ((node.nodeType === 3) && fluid.isWhitespaceNode(node)); // a text node, all ws
-    };
-    
     fluid.createDomBinder = function (container, selectors) {
         var cache = {}, that = {};
         
@@ -378,6 +200,12 @@ var fluid = fluid || fluid_0_5;
         return that;
     };
     
+    /**
+     * Attaches the user's listeners to a set of events.
+     * 
+     * @param {Object} events a collection of named event firers
+     * @param {Object} listeners optional listeners to add
+     */
     fluid.mergeListeners = function (events, listeners) {
         if (listeners) {
             for (var key in listeners) {
@@ -404,6 +232,17 @@ var fluid = fluid || fluid_0_5;
         }    
     };
     
+    /**
+     * Sets up a component's declared events.
+     * Events are specified in the options object by name. There are three different types of events that can be
+     * specified: 
+     * 1. an ordinary multicast event, specified by "null. 
+     * 2. a unicast event, which allows only one listener to be registered
+     * 3. a preventable event
+     * 
+     * @param {Object} that the component
+     * @param {Object} options the component's options structure, containing the declared event names and types
+     */
     fluid.instantiateFirers = function (that, options) {
         that.events = {};
         if (options.events) {
@@ -430,8 +269,11 @@ var fluid = fluid || fluid_0_5;
         that.options = fluid.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);    
     };
     
-    /** The central initialiation method called as the first act of every Fluid
-     * component.
+    /** 
+     * The central initialiation method called as the first act of every Fluid
+     * component. This function automatically merges user options with defaults,
+     * attaches a DOM Binder to the instance, and configures events.
+     * 
      * @param {String} componentName The unique "name" of the component, which will be used
      * to fetch the default options from store. By recommendation, this should be the global
      * name of the component's creator function.
@@ -493,147 +335,17 @@ var fluid = fluid || fluid_0_5;
         return togo;
     };
     
+    /**
+     * Creates a new DOM Binder instance for the specified component and mixes it in.
+     * 
+     * @param {Object} that the compoennt instance to attach the new DOM Binder to
+     */
     fluid.initDomBinder = function (that) {
         that.dom = fluid.createDomBinder(that.container, that.options.selectors);
         that.locate = that.dom.locate;      
     };
     
-    fluid.event = {};
         
-    var fluid_guid = 1;
-    
-    
-    fluid.event.getEventFirer = function (unicast, preventable) {
-        var log = fluid.log;
-        var listeners = {};
-        return {
-            addListener: function (listener, namespace) {
-                if (!listener) {
-                    return;
-                }
-                if (unicast) {
-                    namespace = "unicast";
-                }
-                if (!namespace) {
-                    if (!listener.$$guid) {
-                        listener.$$guid = fluid_guid += 1;
-                    }
-                    namespace = listener.$$guid;
-                }
-
-                listeners[namespace] = {listener: listener};
-            },
-
-            removeListener: function (listener) {
-                if (typeof(listener) === 'string') {
-                    delete listeners[listener];
-                }
-                else if (typeof(listener) === 'object' && listener.$$guid) {
-                    delete listeners[listener.$$guid];
-                }
-            },
-        
-            fire: function () {
-                for (var i in listeners) {
-                    var lisrec = listeners[i];
-                    try {
-                        var ret = lisrec.listener.apply(null, arguments);
-                        if (preventable && ret === true) {
-                            return true;
-                        }
-                    }
-                    catch (e) {
-                        log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
-                        throw (e);       
-                    }
-                }
-            }
-        };
-    };
-    
-    fluid.model = {};
-   
-    /** Copy a source "model" onto a target **/
-    fluid.model.copyModel = function (target, source) {
-        fluid.clear(target);
-        jQuery.extend(true, target, source);
-    };
-    
-    fluid.model.parseEL = function (EL) {
-        return EL.split('.');
-    };
-  
-    /** This function implements the RSF "DARApplier" **/
-    fluid.model.setBeanValue = function (root, EL, newValue) {
-        var segs = fluid.model.parseEL(EL);
-        for (var i = 0; i < segs.length - 1; i += 1) {
-            if (!root[segs[i]]) {
-                root[segs[i]] = {};
-            }
-            root = root[segs[i]];
-        }
-        root[segs[segs.length - 1]] = newValue;
-    };
-      
-    fluid.model.getBeanValue = function (root, EL, environment) {
-        var segs = fluid.model.parseEL(EL);
-        for (var i = 0; i < segs.length; i += 1) {
-            var segment = segs[i];
-            if (environment && environment[segment]) {
-                root = environment[segment];
-                environment = null;
-            }
-            else {
-                root = root[segs[i]];
-            }
-            if (!root) {
-                return root;
-            }
-        }
-        return root;
-    };
-    
-    fluid.findKeyInObject = function (obj, value) {
-        for (var key in obj) {
-            if (obj[key] === value) {
-                return key;
-            }
-        }
-        return null;
-    };
-    
-    /** 
-     * Returns the absolute position of a supplied DOM node in pixels.
-     * Implementation taken from quirksmode http://www.quirksmode.org/js/findpos.html
-     */
-    fluid.computeAbsolutePosition = function (element) {
-        var curleft = 0, curtop = 0;
-        if (element.offsetParent) {
-            do {
-                curleft += element.offsetLeft;
-                curtop += element.offsetTop;
-                element = element.offsetParent;
-            } while (element);
-            return [curleft, curtop];
-        }
-    };
-    
-    /** 
-     * Clears an object or array of its contents. For objects, each property is deleted.
-     * 
-     * @param {Object|Array} target the target to be cleared
-     */
-    fluid.clear = function (target) {
-        if (target instanceof Array) {
-            target.length = 0;
-        }
-        else {
-            for (var i in target) {
-                delete target[i];
-            }
-        }
-    };
-    
     function mergeImpl(policy, basePath, target, source) {
         var thisPolicy = policy && typeof(policy) !== "string"? policy[basePath] : policy;
         if (typeof(thisPolicy) === "function") {
@@ -694,6 +406,105 @@ var fluid = fluid || fluid_0_5;
     fluid.invokeGlobalFunction = function (functionPath, args, environment) {
         return fluid.model.getBeanValue(window, functionPath, environment).apply(null, args);
     };
+    
+    
+    // The Model Events system.
+    
+    fluid.event = {};
+        
+    var fluid_guid = 1;
+    fluid.event.getEventFirer = function (unicast, preventable) {
+        var log = fluid.log;
+        var listeners = {};
+        return {
+            addListener: function (listener, namespace) {
+                if (!listener) {
+                    return;
+                }
+                if (unicast) {
+                    namespace = "unicast";
+                }
+                if (!namespace) {
+                    if (!listener.$$guid) {
+                        listener.$$guid = fluid_guid += 1;
+                    }
+                    namespace = listener.$$guid;
+                }
+
+                listeners[namespace] = {listener: listener};
+            },
+
+            removeListener: function (listener) {
+                if (typeof(listener) === 'string') {
+                    delete listeners[listener];
+                }
+                else if (typeof(listener) === 'object' && listener.$$guid) {
+                    delete listeners[listener.$$guid];
+                }
+            },
+        
+            fire: function () {
+                for (var i in listeners) {
+                    var lisrec = listeners[i];
+                    try {
+                        var ret = lisrec.listener.apply(null, arguments);
+                        if (preventable && ret === true) {
+                            return true;
+                        }
+                    }
+                    catch (e) {
+                        log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
+                        throw (e);       
+                    }
+                }
+            }
+        };
+    };
+    
+    
+    // Model functions
+    
+    fluid.model = {};
+   
+    /** Copy a source "model" onto a target **/
+    fluid.model.copyModel = function (target, source) {
+        fluid.clear(target);
+        jQuery.extend(true, target, source);
+    };
+    
+    fluid.model.parseEL = function (EL) {
+        return EL.split('.');
+    };
+  
+    /** This function implements the RSF "DARApplier" **/
+    fluid.model.setBeanValue = function (root, EL, newValue) {
+        var segs = fluid.model.parseEL(EL);
+        for (var i = 0; i < segs.length - 1; i += 1) {
+            if (!root[segs[i]]) {
+                root[segs[i]] = {};
+            }
+            root = root[segs[i]];
+        }
+        root[segs[segs.length - 1]] = newValue;
+    };
+      
+    fluid.model.getBeanValue = function (root, EL, environment) {
+        var segs = fluid.model.parseEL(EL);
+        for (var i = 0; i < segs.length; i += 1) {
+            var segment = segs[i];
+            if (environment && environment[segment]) {
+                root = environment[segment];
+                environment = null;
+            }
+            else {
+                root = root[segs[i]];
+            }
+            if (!root) {
+                return root;
+            }
+        }
+        return root;
+    };
 
 
     // Logging
@@ -718,26 +529,6 @@ var fluid = fluid || fluid_0_5;
         }
     };
     
-    /**
-     * Simple string template system. 
-     * Takes a template string containing tokens in the form of "%value".
-     * Returns a new string with the tokens replaced by the specified values.
-     * Keys and values can be of any data type that can be coerced into a string. Arrays will work here as well.
-     * 
-     * @param {String}    template    a string (can be HTML) that contains tokens embedded into it
-     * @param {object}    values        a collection of token keys and values
-     */
-    fluid.stringTemplate = function (template, values) {
-        var newString = template;
-        for (var key in values) {
-            if (values.hasOwnProperty(key)) {
-                var searchStr = "%" + key;
-                newString = newString.replace(searchStr, values[key]);
-            }
-        }
-        return newString;
-    };
-
 
     // DOM Utilities.
     
@@ -782,6 +573,227 @@ var fluid = fluid || fluid_0_5;
     
     fluid.getId = function (element) {
         return fluid.unwrap(element).getAttribute("id");
+    };
+    
+    /** 
+     * Returns the absolute position of a supplied DOM node in pixels.
+     * Implementation taken from quirksmode http://www.quirksmode.org/js/findpos.html
+     */
+    fluid.computeAbsolutePosition = function (element) {
+        var curleft = 0, curtop = 0;
+        if (element.offsetParent) {
+            do {
+                curleft += element.offsetLeft;
+                curtop += element.offsetTop;
+                element = element.offsetParent;
+            } while (element);
+            return [curleft, curtop];
+        }
+    };
+    
+    function getNextNode(iterator) {
+        if (iterator.node.firstChild) {
+            iterator.node = iterator.node.firstChild;
+            iterator.depth += 1;
+            return iterator;
+        }
+        while (iterator.node) {
+            if (iterator.node.nextSibling) {
+                iterator.node = iterator.node.nextSibling;
+                return iterator;
+            }
+            iterator.node = iterator.node.parentNode;
+            iterator.depth -= 1;
+        }
+        return iterator;
+    }
+    
+    // Work around IE circular DOM issue. This is the default max DOM depth on IE.
+    // http://msdn2.microsoft.com/en-us/library/ms761392(VS.85).aspx
+    fluid.DOM_BAIL_DEPTH = 256;
+    
+    fluid.iterateDom = function (node, acceptor) {
+        var currentNode = {node: node, depth: 0};
+        var prevNode = node;
+        while (currentNode.node !== null && currentNode.depth >= 0 && currentNode.depth < fluid.DOM_BAIL_DEPTH) {
+            var deleted = false;
+            if (currentNode.node.nodeType === 1) {
+                deleted = acceptor(currentNode.node, currentNode.depth);
+            }
+            if (deleted) {
+                currentNode.node.parentNode.removeChild(currentNode.node);
+                currentNode.node = prevNode;
+            }
+            prevNode = currentNode.node;
+            currentNode = getNextNode(currentNode);
+        }
+    };
+ 
+    fluid.isContainer = function (container, containee) {
+        for (; containee; containee = containee.parentNode) {
+            if (container === containee) {
+                return true;
+            }
+        }
+        return false;
+    };
+    
+    /** Mockup of a missing DOM function **/  
+    fluid.insertAfter = function (newChild, refChild) {
+        var nextSib = refChild.nextSibling;
+        if (!nextSib) {
+            refChild.parentNode.appendChild(newChild);
+        }
+        else {
+            refChild.parentNode.insertBefore(newChild, nextSib);
+        }
+    };
+    
+    // The following two functions taken from http://developer.mozilla.org/En/Whitespace_in_the_DOM
+    /**
+     * Determine whether a node's text content is entirely whitespace.
+     *
+     * @param node  A node implementing the |CharacterData| interface (i.e.,
+     *              a |Text|, |Comment|, or |CDATASection| node
+     * @return     True if all of the text content of |nod| is whitespace,
+     *             otherwise false.
+     */
+    fluid.isWhitespaceNode = function (node) {
+       // Use ECMA-262 Edition 3 String and RegExp features
+        return !(/[^\t\n\r ]/.test(node.data));
+    };
+
+
+    /** 
+     * Cleanse the children of a DOM node by removing all <script> tags.
+     * This is necessary to prevent the possibility that these blocks are
+     * reevaluated if the node were reattached to the document. 
+     */
+    fluid.cleanseScripts = function (element) {
+        var cleansed = jQuery.data(element, fluid.cleanseScripts.MARKER);
+        if (!cleansed) {
+            fluid.iterateDom(element, function (node) {
+                return (node.tagName.toLowerCase() === "script");
+            });
+            jQuery.data(element, fluid.cleanseScripts.MARKER, true);
+        }
+    };
+
+    fluid.cleanseScripts.MARKER = "fluid-scripts-cleansed";
+
+    /**
+     * Determine if a node should be ignored by the iterator functions.
+     *
+     * @param nod  An object implementing the DOM1 |Node| interface.
+     * @return     true if the node is:
+     *                1) A |Text| node that is all whitespace
+     *                2) A |Comment| node
+     *             and otherwise false.
+     */
+    fluid.isIgnorableNode = function (node) {
+        return (node.nodeType === 8) || // A comment node
+         ((node.nodeType === 3) && fluid.isWhitespaceNode(node)); // a text node, all ws
+    };
+    
+    /** 
+     * Dump a DOM element into a readily recognisable form for debugging - produces a
+     * "semi-selector" summarising its tag name, class and id, whichever are set.
+     * 
+     * @param {jQueryable} element The element to be dumped
+     * @return A string representing the element.
+     */
+    fluid.dumpEl = function (element) {
+        var togo;
+        
+        if (!element) {
+            return "null";
+        }
+        if (element.nodeType === 3 || element.nodeType === 8) {
+            return "[data: " + element.data + "]";
+        } 
+        if (typeof element.length === "number") {
+            togo = "[";
+            for (var i = 0; i < element.length; ++ i) {
+                togo += fluid.dumpEl(element[i]);
+                if (i < element.length - 1) {
+                    togo += ", ";
+                }
+            }
+            return togo + "]";
+        }
+        element = jQuery(element);
+        togo = element.get(0).tagName;
+        if (element.attr("id")) {
+            togo += "#" + element.attr("id");
+        }
+        if (element.attr("class")) {
+            togo += "." + element.attr("class");
+        }
+        return togo;
+    };
+    
+    // Functional programming utilities.
+    
+    fluid.transform = function (list) {
+        var togo = [];
+        for (var i = 0; i < list.length; ++ i) {
+            var transit = list[i];
+            for (var j = 0; j < arguments.length - 1; ++ j) {
+                transit = arguments[j + 1](transit, i);
+            }
+            togo[togo.length] = transit;
+        }
+        return togo;
+    };
+    
+    fluid.find = function (list, fn, deflt) {
+        for (var i = 0; i < list.length; ++ i) {
+            var transit = fn(list[i], i);
+            if (transit !== null && transit !== undefined) {
+                return transit;
+            }
+        }
+        return deflt;
+    };
+    
+    fluid.accumulate = function (list, fn, arg) {
+	    for (var i = 0; i < list.length; ++ i) {
+	        arg = fn(list[i], arg, i);
+	    }
+	    return arg;
+    };
+    
+    fluid.remove_if = function (list, fn) {
+        for (var i = 0; i < list.length; ++ i) {
+            if (fn(list[i], i)) {
+                list.splice(i, 1);
+                --i;
+            }
+        }
+        return list;
+    };
+    
+    
+    // Other useful helpers.
+    
+    /**
+     * Simple string template system. 
+     * Takes a template string containing tokens in the form of "%value".
+     * Returns a new string with the tokens replaced by the specified values.
+     * Keys and values can be of any data type that can be coerced into a string. Arrays will work here as well.
+     * 
+     * @param {String}    template    a string (can be HTML) that contains tokens embedded into it
+     * @param {object}    values        a collection of token keys and values
+     */
+    fluid.stringTemplate = function (template, values) {
+        var newString = template;
+        for (var key in values) {
+            if (values.hasOwnProperty(key)) {
+                var searchStr = "%" + key;
+                newString = newString.replace(searchStr, values[key]);
+            }
+        }
+        return newString;
     };
     
 })(jQuery, fluid_0_5);

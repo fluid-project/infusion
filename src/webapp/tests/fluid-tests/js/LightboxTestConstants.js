@@ -113,7 +113,7 @@ function createLightbox() {
         selectors: {
             movables: findOrderableByDivAndId
         },
-        containerRole: fluid.roles.GRID
+        containerRole: fluid.reorderer.roles.GRID
     });
 }
 
@@ -124,7 +124,7 @@ function createLightboxWithNoOrderables() {
         selectors: {
             movables: findNoOrderables
         },
-        containerRole: fluid.roles.GRID
+        containerRole: fluid.reorderer.roles.GRID
     });
 }
 
@@ -142,10 +142,10 @@ var altKeys = {
     modifier: function (evt) {
         return (evt.ctrlKey && evt.shiftKey);
     }, 
-    up: fluid.keys.i, 
-    down: fluid.keys.m,
-    right: fluid.keys.k,
-    left: fluid.keys.j
+    up: fluid.reorderer.keys.i, 
+    down: fluid.reorderer.keys.m,
+    right: fluid.reorderer.keys.k,
+    left: fluid.reorderer.keys.j
 };
     
 function createAltKeystrokeLightbox() {
@@ -162,10 +162,10 @@ function createMultiKeystrokeLightbox() {
         modifier: function (evt) {
             return evt.altKey;
         }, 
-        up: fluid.keys.UP, 
-        down: fluid.keys.DOWN,
-        right: fluid.keys.RIGHT,
-        left: fluid.keys.LEFT
+        up: fluid.reorderer.keys.UP, 
+        down: fluid.reorderer.keys.DOWN,
+        right: fluid.reorderer.keys.RIGHT,
+        left: fluid.reorderer.keys.LEFT
     };
     
     return fluid.lightbox(fetchLightboxRoot(), {
@@ -181,10 +181,10 @@ function createMultiOverlappingKeystrokeLightbox() {
         modifier: function (evt) {
             return evt.ctrlKey;
         }, 
-        up: fluid.keys.UP, 
-        down: fluid.keys.DOWN,
-        right: fluid.keys.RIGHT,
-        left: fluid.keys.LEFT
+        up: fluid.reorderer.keys.UP, 
+        down: fluid.reorderer.keys.DOWN,
+        right: fluid.reorderer.keys.RIGHT,
+        left: fluid.reorderer.keys.LEFT
     };
     
     return fluid.lightbox("[id=" + lightboxRootId + "]", {

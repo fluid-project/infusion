@@ -17,43 +17,43 @@ fluid.testUtils = fluid.testUtils || {};
  * stroke combinations.
  */
 fluid.testUtils.createEvtDownArrow = function(target) {
-	return this.createUnmodifiedKeyEvent(fluid.keys.DOWN, target);					
+	return this.createUnmodifiedKeyEvent(40, target);					
 };
 
 fluid.testUtils.createEvtUpArrow = function(target) {
-	return this.createUnmodifiedKeyEvent(fluid.keys.UP, target);				
+	return this.createUnmodifiedKeyEvent(38, target);				
 }; 
 
 fluid.testUtils.createEvtRightArrow = function(target) {
-	return this.createUnmodifiedKeyEvent(fluid.keys.RIGHT, target);			
+	return this.createUnmodifiedKeyEvent(39, target);			
 }; 
 
 fluid.testUtils.createEvtLeftArrow = function(target) {
-	return this.createUnmodifiedKeyEvent(fluid.keys.LEFT, target);		
+	return this.createUnmodifiedKeyEvent(37, target);		
 }; 
 
 fluid.testUtils.createEvtCTRLUp = function(target) {
-    return this.createUnmodifiedKeyEvent(fluid.keys.CTRL, target);    
+    return this.createUnmodifiedKeyEvent(17, target);    
 };
 
 fluid.testUtils.createEvtCTRL = function(target) {
-	return this.createCtrlKeyEvent(fluid.keys.CTRL, target);	
+	return this.createCtrlKeyEvent(17, target);	
 };
 
 fluid.testUtils.createEvtCtrlLeftArrow = function(target) {
-	return this.createCtrlKeyEvent(fluid.keys.LEFT, target);
+	return this.createCtrlKeyEvent(37, target);
 };
 
 fluid.testUtils.createEvtCtrlRightArrow = function(target) {
-	return this.createCtrlKeyEvent(fluid.keys.RIGHT, target);
+	return this.createCtrlKeyEvent(39, target);
 };
 
 fluid.testUtils.createEvtCtrlDownArrow = function(target) {
-	return this.createCtrlKeyEvent(fluid.keys.DOWN, target);
+	return this.createCtrlKeyEvent(40, target);
 };
 
 fluid.testUtils.createEvtCtrlUpArrow = function(target) {
-	return this.createCtrlKeyEvent(fluid.keys.UP, target);
+	return this.createCtrlKeyEvent(38, target);
 };
 
 fluid.testUtils.createAltKeyEvent = function (inKeyCode, target) {

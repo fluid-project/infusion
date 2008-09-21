@@ -62,43 +62,6 @@ fluid_0_5 = fluid_0_5 || {};
         return avatar;
     };   
     
-    fluid.defaults("fluid.reorderer", {
-        instructionMessageId: "message-bundle:",
-        styles: {
-            defaultStyle: "orderable-default",
-            selected: "orderable-selected",
-            dragging: "orderable-dragging",
-            mouseDrag: "orderable-dragging",
-            hover: "orderable-hover",
-            dropMarker: "orderable-drop-marker",
-            avatar: "orderable-avatar"
-            },
-        selectors: {
-            dropWarning: ".drop-warning",
-            movables: ".movables",
-            grabHandle: "",
-            stylisticOffset: ""
-        },
-        avatarCreator: defaultAvatarCreator,
-        keysets: fluid.defaultKeysets,
-        layoutHandler: "fluid.listLayoutHandler",
-        
-        events: {
-           onShowKeyboardDropWarning: null,
-           onSelect: null,
-           onBeginMove: "preventable",
-           onMove: null,
-           afterMove: null,
-           onHover: null
-        },
-        
-        mergePolicy: {
-            keysets: "replace",
-            "selectors.selectables": "selectors.movables",
-            "selectors.dropTargets": "selectors.movables"
-        }
-    });
-    
     function firstSelectable(that) {
         var selectables = that.dom.fastLocate("selectables");
         if (selectables.length <= 0) {
@@ -527,7 +490,60 @@ fluid_0_5 = fluid_0_5 || {};
        thatReorderer.refresh();
            
        return thatReorderer;
-       };
+    };
+    
+    /**
+     * Constants for key codes in events.
+     */    
+    fluid.reorderer.keys = {
+        TAB: 9,
+        ENTER: 13,
+        SHIFT: 16,
+        CTRL: 17,
+        ALT: 18,
+        META: 19,
+        SPACE: 32,
+        LEFT: 37,
+        UP: 38,
+        RIGHT: 39,
+        DOWN: 40,
+        i: 73,
+        j: 74,
+        k: 75,
+        m: 77
+    };
+    
+    /**
+     * The default key sets for the Reorderer. Should be moved into the proper component defaults.
+     */
+    fluid.reorderer.defaultKeysets = [{
+        modifier : function (evt) {
+            return evt.ctrlKey;
+        },
+        up : fluid.reorderer.keys.UP,
+        down : fluid.reorderer.keys.DOWN,
+        right : fluid.reorderer.keys.RIGHT,
+        left : fluid.reorderer.keys.LEFT
+    },
+    {
+        modifier : function (evt) {
+            return evt.ctrlKey;
+        },
+        up : fluid.reorderer.keys.i,
+        down : fluid.reorderer.keys.m,
+        right : fluid.reorderer.keys.k,
+        left : fluid.reorderer.keys.j
+    }];
+    
+    /**
+     * These roles are used to add ARIA roles to orderable items. This list can be extended as needed,
+     * but the values of the container and item roles must match ARIA-specified roles.
+     */  
+    fluid.reorderer.roles = {
+        GRID: { container: "grid", item: "gridcell" },
+        LIST: { container: "list", item: "listitem" },
+        REGIONS: { container: "main", item: "article" }
+    };
     
     // Simplified API for reordering lists and grids.
     var simpleInit = function (container, layoutHandler, options) {
@@ -556,6 +572,43 @@ fluid_0_5 = fluid_0_5 || {};
             return strategy !== null? dropManager[strategy](item, direction, forSelection) : null;
         };
     };
+    
+    fluid.defaults("fluid.reorderer", {
+        instructionMessageId: "message-bundle:",
+        styles: {
+            defaultStyle: "orderable-default",
+            selected: "orderable-selected",
+            dragging: "orderable-dragging",
+            mouseDrag: "orderable-dragging",
+            hover: "orderable-hover",
+            dropMarker: "orderable-drop-marker",
+            avatar: "orderable-avatar"
+            },
+        selectors: {
+            dropWarning: ".drop-warning",
+            movables: ".movables",
+            grabHandle: "",
+            stylisticOffset: ""
+        },
+        avatarCreator: defaultAvatarCreator,
+        keysets: fluid.reorderer.defaultKeysets,
+        layoutHandler: "fluid.listLayoutHandler",
+        
+        events: {
+           onShowKeyboardDropWarning: null,
+           onSelect: null,
+           onBeginMove: "preventable",
+           onMove: null,
+           afterMove: null,
+           onHover: null
+        },
+        
+        mergePolicy: {
+            keysets: "replace",
+            "selectors.selectables": "selectors.movables",
+            "selectors.dropTargets": "selectors.movables"
+        }
+    });
 
 
     /*******************
@@ -577,7 +630,7 @@ fluid_0_5 = fluid_0_5 || {};
     
     fluid.defaults(true, "fluid.listLayoutHandler", 
         {orientation:         fluid.orientation.VERTICAL,
-         containerRole:       fluid.roles.LIST,
+         containerRole:       fluid.reorderer.roles.LIST,
          selectablesTabindex: -1
         });
     
@@ -596,7 +649,7 @@ fluid_0_5 = fluid_0_5 || {};
 
     fluid.defaults(true, "fluid.gridLayoutHandler", 
         {orientation:        fluid.orientation.HORIZONTAL,
-         containerRole:      fluid.roles.GRID,
+         containerRole:      fluid.reorderer.roles.GRID,
          selectablesTabindex: -1
          });
     /*

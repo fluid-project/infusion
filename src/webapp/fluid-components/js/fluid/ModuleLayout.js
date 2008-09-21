@@ -130,7 +130,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
     
     fluid.defaults(true, "fluid.moduleLayoutHandler", 
         {orientation: fluid.orientation.VERTICAL,
-         containerRole: fluid.roles.REGIONS,
+         containerRole: fluid.reorderer.roles.REGIONS,
          selectablesTabindex: 0
          });
     

@@ -267,7 +267,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));
     
             // note: this simulate works in FFX, but not IE7
-            edit.simulate("keypress", {keyCode: fluid.keys.LEFT});
+            edit.simulate("keypress", {keyCode: 37}); // 37 is the left arrow key.
             jqUnit.notVisible("After left-arrow pressed, display field is still hidden", "#display");
             jqUnit.isVisible("After left-arrow pressed, edit field is still visible", "#edit-container");
         });

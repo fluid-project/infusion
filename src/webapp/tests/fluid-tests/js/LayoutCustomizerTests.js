@@ -29,7 +29,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             fluid.jById(portletids[2]).focus();
             fluid.jById("text-2").focus();
-            var keyEvent = fluid.testUtils.createUnmodifiedKeyEvent(fluid.keys.m);
+            var keyEvent = fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.m);
             reorderer.handleKeyDown(keyEvent);
             reorderer.handleKeyUp(keyEvent);
             
