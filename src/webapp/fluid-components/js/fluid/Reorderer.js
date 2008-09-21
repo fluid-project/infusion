@@ -20,7 +20,7 @@ fluid_0_5 = fluid_0_5 || {};
     
     var defaultAvatarCreator = function(item, cssClass, dropWarning) {
         var avatar = $(item).clone();
-        fluid.iterateDom(avatar.get(0), function(node) {
+        fluid.dom.iterateDom(avatar.get(0), function(node) {
             if (node.tagName.toLowerCase() === "script") {
                 return true;
             }
@@ -329,7 +329,7 @@ fluid_0_5 = fluid_0_5 || {};
                         return false;
                     }
                     var handle = thatReorderer.dom.fastLocate("grabHandle", item)[0];
-                    var handlePos = fluid.computeAbsolutePosition(handle);
+                    var handlePos = fluid.dom.computeAbsolutePosition(handle);
                     var handleWidth = handle.offsetWidth;
                     var handleHeight = handle.offsetHeight;
                     item.focus();
@@ -402,7 +402,7 @@ fluid_0_5 = fluid_0_5 || {};
             selectables.focus(handleFocus);
             selectables.click(function(evt) {
                 var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
-                if (fluid.isContainer(handle, evt.target)) {
+                if (fluid.dom.isContainer(handle, evt.target)) {
                     $(this).focus()
                 }
                 });

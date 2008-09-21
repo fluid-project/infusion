@@ -83,15 +83,15 @@ var fluid_0_5 = fluid_0_5 || {};
         target = fluid.unwrap(target);
         
         var scan;
-        // fluid.log("moveDom source " + fluid.dumpEl(source) + " target " + fluid.dumpEl(target) + " position " + position);     
+        // fluid.log("moveDom source " + fluid.dom.dumpEl(source) + " target " + fluid.dom.dumpEl(target) + " position " + position);     
         if (position === fluid.position.INSIDE) {
             target.appendChild(source);
         }
         else if (position === fluid.position.BEFORE) {
            for (scan = target.previousSibling; ; scan = scan.previousSibling) {
-               if (!scan || !fluid.isIgnorableNode(scan)) {
+               if (!scan || !fluid.dom.isIgnorableNode(scan)) {
                    if (scan !== source) {
-                       fluid.cleanseScripts(source);
+                       fluid.dom.cleanseScripts(source);
                        target.parentNode.insertBefore(source, target);    
                    }
                break;
@@ -100,10 +100,10 @@ var fluid_0_5 = fluid_0_5 || {};
         }
         else if (position === fluid.position.AFTER) {
             for (scan = target.nextSibling; ; scan = scan.nextSibling) {
-                if (!scan || !fluid.isIgnorableNode(scan)) {
+                if (!scan || !fluid.dom.isIgnorableNode(scan)) {
                     if (scan !== source) {
-                        fluid.cleanseScripts(source);
-                        fluid.insertAfter(source, target);
+                        fluid.dom.cleanseScripts(source);
+                        fluid.dom.insertAfter(source, target);
                     }
                     break;
                 }
@@ -127,13 +127,13 @@ var fluid_0_5 = fluid_0_5 || {};
         target = fluid.unwrap(target);
         var sourcei = jQuery.inArray(element, sourceelements);
         if (sourcei === -1) {
-            fluid.fail("Error in permuteDom: source element " + fluid.dumpEl(element) 
-               + " not found in source list " + fluid.dumpEl(sourceelements));
+            fluid.fail("Error in permuteDom: source element " + fluid.dom.dumpEl(element) 
+               + " not found in source list " + fluid.dom.dumpEl(sourceelements));
         }
         var targeti = jQuery.inArray(target, targetelements);
         if (targeti === -1) {
-            fluid.fail("Error in permuteDom: target element " + fluid.dumpEl(target) 
-               + " not found in source list " + fluid.dumpEl(targetelements));
+            fluid.fail("Error in permuteDom: target element " + fluid.dom.dumpEl(target) 
+               + " not found in source list " + fluid.dom.dumpEl(targetelements));
         }
         var samespan = sourceelements === targetelements;
         position = fluid.normalisePosition(position, samespan, targeti, sourcei);
@@ -202,7 +202,7 @@ var fluid_0_5 = fluid_0_5 || {};
         if (generalHidden(element)) {
             elem.clazz = "hidden";
         }
-        var pos = fluid.computeAbsolutePosition(element) || [0, 0];
+        var pos = fluid.dom.computeAbsolutePosition(element) || [0, 0];
         var width = element.offsetWidth;
         var height = element.offsetHeight;
         elem.rect = {left: pos[0], top: pos[1]};
@@ -224,7 +224,7 @@ var fluid_0_5 = fluid_0_5 || {};
     function dumpelem(cacheelem) {
       if (!cacheelem || !cacheelem.rect) return "null";
       else return dumprect(cacheelem.rect) + " position: " +
-                cacheelem.position + " for " + fluid.dumpEl(cacheelem.element);
+                cacheelem.position + " for " + fluid.dom.dumpEl(cacheelem.element);
     }
     
     fluid.dropManager = function () {
@@ -398,7 +398,7 @@ var fluid_0_5 = fluid_0_5 || {};
                 minlockedelem = blankHolder;
             }
             //fluid.log("PRE: mindistance " + mindistance + " element " + 
-            //   fluid.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
+            //   fluid.dom.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
             //    + " locked elem " + dumpelem(minlockedelem));
             if (lastClosest && lastClosest.position === minelem.position &&
                 fluid.unwrap(lastClosest.element) === fluid.unwrap(minelem.element) &&

@@ -79,7 +79,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                     container: column,
                     elements: jQuery.makeArray(portlets.filter(function() {
                     	  // is this a bug in filter? would have expected "this" to be 1st arg
-                        return fluid.isContainer(column, this);
+                        return fluid.dom.isContainer(column, this);
                     }))
                 };
             });
@@ -178,7 +178,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                     elements: jQuery.makeArray(column.elements),
                     parentElement: column.container
                 };
-              //  fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements) + " isLocked [" + 
+              //  fluid.log("Geometry col " + col + " elements " + fluid.dom.dumpEl(thisEls.elements) + " isLocked [" + 
               //       fluid.transform(thisEls.elements, togo.elementMapper).join(", ") + "]");
                 extents.push(thisEls);
             }
