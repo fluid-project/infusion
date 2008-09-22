@@ -39,21 +39,11 @@
                             modules: ".mySortable"
                         }
                     });
-                
-                /******************************************/
-                // Example 2, different selectors
-                // columns = DIV 1st decendant (children) of the container
-                // modules = DIV 2nd decendant (grandchildren) of the container
-                fluid.reorderLayout ("#fluid-LayoutCustomizer-sample2", {
-                    selectors: {
-                        columns: "> div",
-                        modules: "> div > div"                        
-                    }
-                });
+                               
                 
                 /******************************************/
                 // Example 3, the most robust layout system with locked portlets
-                fluid.reorderLayout ("#fluid-LayoutCustomizer-sample3", {
+                fluid.reorderLayout ("#fluid-LayoutCustomizer-sample2", {
                     selectors: {
                         columns: ".myColumn",
                         modules: "> div > div",
@@ -90,43 +80,13 @@
                     <div class="mySortable">Draggable Content (10)</div>
                 </div>
             </div>
-        </div>
+        </div>     
 
         <div class="example">
-            <h1>Example 2: Another example</h1>
-            <p>Unsortable elements mixed with sortable elements</p>        
-            
-            <div id="fluid-LayoutCustomizer-sample2" class="columnSetup2 -fluid-theme-highContrast fluid-vertical-order">
-                <div>
-                    <h2>Column A</h2>
-                    <div>Draggable DIV a1</div>
-                    <div>Draggable DIV a2</div>
-                    <p>Static P</p>
-                    <p>Static P</p>
-                </div>
-                <div>
-                    <h2>Column B</h2>
-                    <div>Draggable DIV b1</div>
-                    <p>Static P</p>
-                    <p>Static P</p>
-                    <div>Draggable DIV b2</div>
-                </div>
-                <div>
-                    <h2>Column C</h2>
-                    <div>Draggable DIV c1</div>
-                    <p>Static P</p>
-                    <div>Draggable DIV c2</div>
-                    <div>Draggable DIV c3</div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="example">
-            <h1>Example 3: Complex sorting</h1>
+            <h1>Example 2: Complex sorting</h1>
             <p>The most robust sorting mechanism. Includes locked portlets.</p>
     
-            <div id="fluid-LayoutCustomizer-sample3" class="columnSetup3 fluid-vertical-order">
+            <div id="fluid-LayoutCustomizer-sample2" class="columnSetup3 fluid-vertical-order">
             	 <!-- invalid drag n drop message template -->
                 <div class="dropWarning">Can't place about locked portlet</div>
 
