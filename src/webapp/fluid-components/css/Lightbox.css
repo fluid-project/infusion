@@ -89,7 +89,8 @@ img {
 
 div .orderable-drop-marker{
   height: 160px !important;
-  width: 4px;
+  padding-right:3px;
+  margin-left:-3px;
   background-color: red;
   float: left;
 }
