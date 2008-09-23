@@ -57,6 +57,7 @@ fluid_0_5 = fluid_0_5 || {};
                 that.component.refreshView();
                 that.state = STATE_REVERTED;
                 refreshView(that);
+                that.locate("redoControl").focus();
             }
         );
         that.locate("redoControl").click( 
@@ -65,6 +66,7 @@ fluid_0_5 = fluid_0_5 || {};
                 that.component.refreshView();
                 that.state = STATE_CHANGED;
                 refreshView(that);
+                that.locate("undoControl").focus();
             }
         );
         return {
