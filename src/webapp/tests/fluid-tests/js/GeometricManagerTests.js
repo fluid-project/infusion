@@ -77,7 +77,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         selfPermuteTest("REPLACE left hop",    7, 8, fluid.position.REPLACE, "0123A4568B7");
         selfPermuteTest("REPLACE left two",    0, 1, fluid.position.REPLACE, "1023A4567B8");
         selfPermuteTest("REPLACE right two",   1, 0, fluid.position.REPLACE, "1023A4567B8");
-        selfPermuteTest("REPLACE left four",    4, 5, fluid.position.REPLACE, "0123A5467B8");
+        selfPermuteTest("REPLACE left four",   4, 5, fluid.position.REPLACE, "0123A5467B8");
 
         // Original order:                                            "0123A4567B8", "abCc"
         crossPermuteTest("1->2 BEFORE", 1, 2, fluid.position.BEFORE,  "0234A5678B",  "abC1c");

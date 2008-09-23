@@ -13,45 +13,58 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(document).ready(function() {
         var lightboxTests = new jqUnit.TestCase("Lightbox Tests", setUp, tearDown);
     
-        function itemsInOriginalPositionTest(desc) {
-            var thumbArray = findImgsInLightbox();
-            jqUnit.assertEquals(desc + " expect first image to be first", firstImageId, thumbArray[0].id);
-            jqUnit.assertEquals(desc + " expect second image to be second", secondImageId, thumbArray[1].id);
-            jqUnit.assertEquals(desc + " expect third image to be third", thirdImageId, thumbArray[2].id);
-            jqUnit.assertEquals(desc + " expect fourth image to be fourth", fourthImageId, thumbArray[3].id);
-            jqUnit.assertEquals(desc + " expect fifth image to be fifth", fifthImageId, thumbArray[4].id);
-            jqUnit.assertEquals(desc + " expect sixth image to be sixth", sixthImageId, thumbArray[5].id);
-            jqUnit.assertEquals(desc + " expect seventh image to be seventh", seventhImageId, thumbArray[6].id);
-            jqUnit.assertEquals(desc + " expect eighth image to be eighth", eighthImageId, thumbArray[7].id);
-            jqUnit.assertEquals(desc + " expect ninth image to be ninth", ninthImageId, thumbArray[8].id);
-            jqUnit.assertEquals(desc + " expect tenth image to be tenth", tenthImageId, thumbArray[9].id);
-            jqUnit.assertEquals(desc + " expect fourth last image to be fourth last", eleventhImageId, thumbArray[10].id);
-            jqUnit.assertEquals(desc + " expect third last image to be third last", twelvethImageId, thumbArray[11].id);
-            jqUnit.assertEquals(desc + " expect second last image to be second last", secondLastImageId, thumbArray[12].id);
-            jqUnit.assertEquals(desc + " expect last image to be last", lastImageId, thumbArray[13].id);
+        function assertItemsInOriginalPosition(desc) {
+            var thumbArray = findImagesInLightbox();
+            var thumbIds = fluid.transform(thumbArray, fluid.getId);
+            jqUnit.assertDeepEq(desc + " expect items in original order", imageIds, thumbIds);
+            }
+            
+        function assertItemsInOrder(message, expectOrder) {
+            var thumbArray = findImagesInLightbox();
+            var thumbIds = fluid.transform(thumbArray, fluid.getId);
+            var expectIds = makeImageIds(expectOrder);
+            jqUnit.assertDeepEq(message, expectIds, thumbIds);
         }
         
-        function isItemDefaultTest(message, itemId) {
+        function assertItemDefault(message, index) {
+            var itemId = orderableIds[index];
             var item = fluid.jById(itemId);
             
-            jqUnit.assertTrue(message + itemId  +  " should be default", item.hasClass(defaultClass));
-            jqUnit.assertFalse(message + itemId  +  " should not be selected", item.hasClass(selectedClass));
-            jqUnit.assertFalse(message + itemId  +  " should not be dragging", item.hasClass(draggingClass));
+            jqUnit.assertTrue(message + itemId + " should be default", item.hasClass(defaultClass));
+            jqUnit.assertFalse(message + itemId + " should not be selected", item.hasClass(selectedClass));
+            jqUnit.assertFalse(message + itemId + " should not be dragging", item.hasClass(draggingClass));
         }
         
-        function isItemFocusedTest(message, itemId) {
+        function assertItemFocused(message, index) {
+            var itemId = orderableIds[index];
             var item = fluid.jById(itemId);
             
-            jqUnit.assertTrue(message + itemId  +  " should be selected", item.hasClass(selectedClass));   
-            jqUnit.assertFalse(message + itemId  +  " should not be default", item.hasClass(defaultClass));
-            jqUnit.assertFalse(message + itemId  +  " should not be dragging", item.hasClass(draggingClass));
+            jqUnit.assertTrue(message + itemId + " should be selected", item.hasClass(selectedClass));   
+            jqUnit.assertFalse(message + itemId + " should not be default", item.hasClass(defaultClass));
+            jqUnit.assertFalse(message + itemId + " should not be dragging", item.hasClass(draggingClass));
         }
         
-        function isItemDraggedTest(message, itemId) {
+        function assertItemDragged(message, index) {
+            var itemId = orderableIds[index];
             var item = fluid.jById(itemId);
             
-            jqUnit.assertTrue(message + itemId  +  " should be dragging", item.hasClass(draggingClass));  
-            jqUnit.assertFalse(message + itemId  +  " should not be default",item.hasClass(defaultClass));
+            jqUnit.assertTrue(message + itemId + " should be dragging", item.hasClass(draggingClass));  
+            jqUnit.assertFalse(message + itemId + " should not be default",item.hasClass(defaultClass));
+        }
+        
+        function ctrlKeyDown(lightbox, event, targetIndex) {
+            keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("CTRL"), targetIndex);
+            keyDown(lightbox, event, targetIndex);
+        }        
+        
+        function keyDown(lightbox, event, targetIndex) {
+            event.target = fluid.byId(orderableIds[targetIndex]);
+            lightbox.handleKeyDown(event);
+        }
+        
+        function keyUp(lightbox, event, targetIndex) {
+            event.target = fluid.byId(orderableIds[targetIndex]);
+            lightbox.handleKeyUp(event);
         }
         
         function verticalNavigationTest(lightbox, upEvt, downEvt) {
@@ -63,124 +76,120 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             focusLightbox();
             
-            isItemFocusedTest("Initially ", firstReorderableId);
+            assertItemFocused("Initially ", 0);
         
             // the test framework doesn't seem to properly focus, so we force the issue
-            fluid.jById(firstReorderableId)[0].focus();
+            fluid.byId(orderableIds[0]).focus();
         
             // Test: down arrow to the fifth image
-            lightbox.handleDirectionKeyDown(downEvt);
-            isItemDefaultTest("After down arrow ", firstReorderableId);
-            isItemFocusedTest("After down arrow ", fifthReorderableId);
+            keyDown(lightbox, downEvt, 0);
+            assertItemDefault("After down arrow ", 0);
+            assertItemFocused("After down arrow ", 4);
         
             // Test: up arrow to the first image
-            lightbox.handleDirectionKeyDown(upEvt);
-            isItemFocusedTest("After up arrow ", firstReorderableId);
-            isItemDefaultTest("After up arrow ", fifthReorderableId);
+            keyDown(lightbox, upEvt, 4);
+            assertItemFocused("After up arrow ", 0);
+            assertItemDefault("After up arrow ", 4);
         
             // Test: up arrow to the second last image
-            lightbox.handleDirectionKeyDown(upEvt);
-            isItemDefaultTest("After up arrow wrap ", firstReorderableId);
-            isItemFocusedTest("After up arrow wrap ", secondLastReorderableId);
+            keyDown(lightbox, upEvt, 0);
+            assertItemDefault("After up arrow wrap ", 0);
+            assertItemFocused("After up arrow wrap ", 12);
         
             // Test: down arrow to the first image
-            lightbox.handleDirectionKeyDown(downEvt);
-            isItemFocusedTest("After down arrow wrap ", firstReorderableId);
-            isItemDefaultTest("After down arrow wrap ", secondLastReorderableId);
+            keyDown(lightbox, downEvt, 12);
+            assertItemFocused("After down arrow wrap ", 0);
+            assertItemDefault("After down arrow wrap ", 12);
         }
         
         function horizontalNavigationTest(lightbox, rightEvt, leftEvt) {
             focusLightbox();        
         
-            isItemFocusedTest("Initially ", firstReorderableId);
-            isItemDefaultTest("Initially ", secondReorderableId);
+            assertItemFocused("Initially ", 0);
+            assertItemDefault("Initially ", 1);
         
             // the test framework doesn't seem to properly focus, so we force the issue
-            fluid.jById(firstReorderableId)[0].focus();
+            fluid.byId(orderableIds[0]).focus();
         
             // Test: right arrow to the second image
-            lightbox.handleDirectionKeyDown(rightEvt);
-            isItemFocusedTest("After right ", secondReorderableId);
-            isItemDefaultTest("After right ", firstReorderableId);
+            keyDown(lightbox, rightEvt, 0);
+            assertItemFocused("After right ", 1);
+            assertItemDefault("After right ", 0);
         
             // Test: right arrow to the last image
-            for(focusPosition = 2; focusPosition < numOfImages; focusPosition++ ) {
-                lightbox.handleDirectionKeyDown(rightEvt);
+            for (focusPosition = 2; focusPosition < numOfImages; focusPosition++ ) {
+                keyDown(lightbox, rightEvt, focusPosition - 1);
             }
-            isItemFocusedTest("Right to last ", lastReorderableId);
-            isItemDefaultTest("Right to last ", firstReorderableId);
-            isItemDefaultTest("Right to last ", secondReorderableId);
+            assertItemFocused("Right to last ", 13);
+            assertItemDefault("Right to last ", 0);
+            assertItemDefault("Right to last ", 1);
             
             // Test: left arrow to the previous image
-            lightbox.handleDirectionKeyDown(leftEvt);
-            isItemFocusedTest("Left to second last ", secondLastReorderableId);
-            isItemDefaultTest("Left to second last ", firstReorderableId);
-            isItemDefaultTest("Left to second last ", lastReorderableId);
+            keyDown(lightbox, leftEvt, 13);
+            assertItemFocused("Left to second last ", 12);
+            assertItemDefault("Left to second last ", 0);
+            assertItemDefault("Left to second last ", 0);
             
             // Test: right arrow past the last image - expect wrap to the first image
-            lightbox.handleDirectionKeyDown(rightEvt);
-            lightbox.handleDirectionKeyDown(rightEvt);
-            isItemFocusedTest("Right wrap ", firstReorderableId);
-            isItemDefaultTest("Right wrap ", secondReorderableId);
-            isItemDefaultTest("Right wrap ", lastReorderableId);
+            keyDown(lightbox, rightEvt, 12);
+            keyDown(lightbox, rightEvt, 13);
+            assertItemFocused("Right wrap ", 0);
+            assertItemDefault("Right wrap ", 1);
+            assertItemDefault("Right wrap ", 13);
         
             // Test: left arrow on the first image - expect wrap to the last image
-            lightbox.handleDirectionKeyDown(leftEvt);
-            isItemFocusedTest("Left wrap ", lastReorderableId);
-            isItemDefaultTest("Left wrap ", firstReorderableId);
-            isItemDefaultTest("Left wrap ", secondReorderableId);
-        
+            keyDown(lightbox, leftEvt, 0);
+            assertItemFocused("Left wrap ", 13);
+            assertItemDefault("Left wrap ", 0);
+            assertItemDefault("Left wrap ", 1);
         }
         
         function verticalMovementTest(lightbox, modifiedUpEvt, modifiedDownEvt) {
             // Default width is 3 thumbnails.
-    
             focusLightbox();
-            lightbox.handleDirectionKeyDown(modifiedDownEvt);
+            ctrlKeyDown(lightbox, modifiedDownEvt, 0);
+            assertItemsInOrder("after modified-down", [1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
     
-            // Refocus the lightbox because of a strange 5 pixel shift which happens only in tests after moving down
-            focusLightbox();
-            var thumbArray = findImgsInLightbox();
-            jqUnit.assertEquals("after modified-down, expect second image to be first", secondImageId, thumbArray[0].id);
-            jqUnit.assertEquals("after modified-down, expect first image to be fourth", firstImageId, thumbArray[3].id);
-            jqUnit.assertEquals("after modified-down, expect fifth image to be fifth", fifthImageId, thumbArray[4].id);
-            jqUnit.assertEquals("after modified-down, expect last image to be last", lastImageId, thumbArray[numOfImages - 1].id);
-    
-            lightbox.handleDirectionKeyDown(modifiedUpEvt);
-    
-            // Refocus the lightbox because of a strange 5 pixel shift which happens only in tests after moving up
-            focusLightbox();
-            itemsInOriginalPositionTest("after modified-up");        
+            ctrlKeyDown(lightbox, modifiedUpEvt, 0);
+            assertItemsInOriginalPosition("after modified-up");        
         }
         
         function horizontalMovementTest(lightbox, modifiedRightEvt, modifiedLeftEvt) {
             focusLightbox();
             
             // Test: ctrl right arrow - expect first and second image to swap
-            lightbox.handleDirectionKeyDown(modifiedRightEvt);
-        
-            var thumbArray = findImgsInLightbox();
-            jqUnit.assertEquals("after modified-right, expect second image to be first", secondImageId, thumbArray[0].id);
-            jqUnit.assertEquals("after modified-right, expect first image to be second", firstImageId, thumbArray[1].id);
-            jqUnit.assertEquals("after modified-right, expect last image to be last", lastImageId, thumbArray[numOfImages - 1].id);
-            
+            ctrlKeyDown(lightbox, modifiedRightEvt, 0);
+            assertItemsInOrder("after modified-right", [1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+
             // Test: ctrl left arrow - expect first and second image to swap back to original order
-            lightbox.handleDirectionKeyDown(modifiedLeftEvt);
-            itemsInOriginalPositionTest("after modified-left");
+            ctrlKeyDown(lightbox, modifiedLeftEvt, 0);
+            assertItemsInOriginalPosition("after modified-left");
         
             // Test: ctrl left arrow - expect first image to move to last place,
             //       second image to move to first place and last image to move to second-last place
-            lightbox.handleDirectionKeyDown(modifiedLeftEvt);
-        
-            thumbArray = findImgsInLightbox();
-            jqUnit.assertEquals("after modified-left on first image, expect first last to be last", firstImageId, thumbArray[numOfImages - 1].id);
-            jqUnit.assertEquals("after modified-left on first image, expect second to be first", secondImageId, thumbArray[0].id);
-            jqUnit.assertEquals("after modified-left on first image, expect last to be second-last", lastImageId, thumbArray[numOfImages - 2].id);
-        
+            ctrlKeyDown(lightbox, modifiedLeftEvt, 0);
+            assertItemsInOrder("after modified-right", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 0]);
+
             // Test: ctrl right arrow - expect first image to move back to first place,
             //       second image to move to back second place and thumbLast to move to back last place
-            lightbox.handleDirectionKeyDown(modifiedRightEvt);
-            itemsInOriginalPositionTest("after modified-left");
+            ctrlKeyDown(lightbox, modifiedRightEvt, 0);
+            assertItemsInOriginalPosition("after modified-right");
+        }
+        
+        function findImagesInLightbox() {
+            return jQuery("img", fetchLightboxRoot());
+            }
+        
+        function expectOrder(message, expectedOrder) {
+            var images = findImagesInLightbox();
+            var ids = fluid.transform(images, fluid.getId);
+            var expectedIds = makeImageIds(expectedOrder);
+            jqUnit.assertDeepEq(message, expectedIds, ids);
+        }
+        
+        function sendCtrlKeyEvent(lightbox, key, targetIndex) {
+            lightbox.handleKeyDown(fluid.testUtils.ctrlKeyEvent("CTRL", fluid.byId(orderableIds[targetIndex]))); 
+            lightbox.handleKeyDown(fluid.testUtils.ctrlKeyEvent(key, fluid.byId(orderableIds[targetIndex])));
         }
         
         /*
@@ -190,37 +199,23 @@ https://source.fluidproject.org/svn/LICENSE.txt
         lightboxTests.test("HandleArrowKeyDownMoveThumbDown", function() {
             var lightbox = createLightbox();
             focusLightbox();
-        
             // Test: ctrl down arrow - move the first image down
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlDownArrow());
-            
-            var thumbArray = findImgsInLightbox();
-            jqUnit.assertEquals("after ctrl-down-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
-            jqUnit.assertEquals("after ctrl-down-arrow, expect third image to be second", thirdImageId, thumbArray[1].id);
-            jqUnit.assertEquals("after ctrl-down-arrow, expect fourth image to be third", fourthImageId, thumbArray[2].id);
-            jqUnit.assertEquals("after ctrl-down-arrow, expect first image to be fourth", firstImageId, thumbArray[3].id);
-            jqUnit.assertEquals("after ctrl-down-arrow, expect fifth image to still be fifth", fifthImageId, thumbArray[4].id);
-         });
+            sendCtrlKeyEvent(lightbox, "DOWN", 0);
+            expectOrder("after ctrl-down-arrow", [1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+        });
          
-         lightboxTests.test("HandleArrowKeyDownWrapThumbUp", function() {
+        lightboxTests.test("HandleArrowKeyDownWrapThumbUp", function() {
             // Test: ctrl up arrow - move the first image 'up'
             var lightbox = createLightbox();
             focusLightbox();
         
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlUpArrow());
-            
-            var thumbArray = findImgsInLightbox();
-            jqUnit.assertEquals("after ctrl-up-arrow, expect second image to be first", secondImageId, thumbArray[0].id);
-            jqUnit.assertEquals("after ctrl-up-arrow, expect third image to be second", thirdImageId, thumbArray[1].id);
-            jqUnit.assertEquals("after ctrl-up-arrow, expect fifth image to be fourth", fifthImageId, thumbArray[3].id);
-            jqUnit.assertEquals("after ctrl-up-arrow, expect first image to be second last", firstImageId, thumbArray[12].id);
-            jqUnit.assertEquals("after ctrl-up-arrow, expect last image to still be last", lastImageId, thumbArray[13].id);
+            sendCtrlKeyEvent(lightbox, "UP", 0);
+            expectOrder("after ctrl-up-arrow", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 13]);
         });
         
         lightboxTests.test("HandleArrowKeyDownForUpAndDown", function() {
             var lightbox = createLightbox();
             verticalNavigationTest(lightbox, fluid.testUtils.createEvtUpArrow(), fluid.testUtils.createEvtDownArrow());
-        
         });
         
         lightboxTests.test("HandleArrowKeyDownForLeftAndRight", function() {
@@ -231,45 +226,49 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         lightboxTests.test("HandleKeyUpAndHandleKeyDownChangesState", function() {
             var lightbox = createLightbox();
-            var firstReorderable = fluid.jById(firstReorderableId);
             focusLightbox();
         
             // check that none of the images are currently being moved.
-            isItemFocusedTest("Initially ", firstReorderableId);
-            isItemDefaultTest("Initially ", secondReorderableId);
-            isItemDefaultTest("Initially ", secondLastReorderableId);
+            assertItemFocused("Initially ", 0);
+            assertItemDefault("Initially ", 1);
+            assertItemDefault("Initially ", 12);
             
             // ctrl down - expect dragging state to start
-            lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL(firstReorderable[0]));
-            isItemDraggedTest("After ctrl-down, ", firstReorderableId);
-            isItemDefaultTest("After ctrl-down, ", secondReorderableId);
-            isItemDefaultTest("After ctrl-down, ", secondLastReorderableId);
-            jqUnit.assertEquals("After ctrl-down, " + secondReorderableId + " should have ARIA dropeffect of 'move'", "move",
-                fluid.jById(secondReorderableId).ariaState("dropeffect"));  
-            jqUnit.assertEquals("After ctrl-down, " + secondLastReorderableId + " should have ARIA dropeffect of 'move'", "move",
-                fluid.jById(secondLastReorderableId).ariaState("dropeffect"));  
+            keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("CTRL"), 0);
+            assertItemDragged("After ctrl-down, ", 0);
+            assertItemDefault("After ctrl-down, ", 1);
+            assertItemDefault("After ctrl-down, ", 12);
+            jqUnit.assertEquals("After ctrl-down, " + orderableIds[1] + " should have ARIA dropeffect of 'move'", "move",
+                fluid.jById(orderableIds[1]).ariaState("dropeffect"));  
+            jqUnit.assertEquals("After ctrl-down, " + orderableIds[12] + " should have ARIA dropeffect of 'move'", "move",
+                fluid.jById(orderableIds[12]).ariaState("dropeffect"));  
                 
             // right arrow down - all the dragging states should remain the same
-            lightbox.handleKeyDown(fluid.testUtils.createEvtCtrlRightArrow(firstReorderable[0]));
-            isItemDraggedTest("After ctrl-down right arrow down, ", firstReorderableId);
-            isItemDefaultTest("After ctrl-down right arrow down, ", secondReorderableId);
-            isItemDefaultTest("After ctrl-down right arrow down, ", secondLastReorderableId);
+            //fluid.log("keyDown");
+            keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("RIGHT"), 0);
+            //fluid.log("keyDown complete: " + fluid.dumpEl(lightbox.activeItem));
+            assertItemDragged("After ctrl-down right arrow down, ", 0);
+            assertItemDefault("After ctrl-down right arrow down, ", 1);
+            assertItemDefault("After ctrl-down right arrow down, ", 12);
             
+            //fluid.log("keyUp 1");
+            //fluid.log("before KeyUp: " + fluid.dumpEl(lightbox.activeItem));
             // right arrow with key-up event handler. The dragging states should remain the same.
-            lightbox.handleKeyUp(fluid.testUtils.createEvtCtrlRightArrow(firstReorderable[0]));
-            isItemDraggedTest("After ctrl-down right arrow up, ", firstReorderableId);
-            isItemDefaultTest("After ctrl-down right arrow up, ", secondReorderableId);
-            isItemDefaultTest("After ctrl-down right arrow up, ", secondLastReorderableId);
+            keyUp(lightbox, fluid.testUtils.ctrlKeyEvent("RIGHT"), 0);
+            assertItemDragged("After ctrl-down right arrow up, ", 0);
+            assertItemDefault("After ctrl-down right arrow up, ", 1);
+            assertItemDefault("After ctrl-down right arrow up, ", 12);
         
             // ctrl up - expect dragging to end
-            lightbox.handleKeyUp(fluid.testUtils.createEvtCTRLUp(firstReorderable[0]));
-            isItemFocusedTest("After ctrl-up ", firstReorderableId);
-            isItemDefaultTest("After ctrl-up ", secondReorderableId);
-            isItemDefaultTest("After ctrl-up ", secondLastReorderableId);
-            jqUnit.assertEquals("After ctrl-up, " + secondReorderableId + " should have ARIA dropeffect of 'none'", "none",
-                fluid.jById(secondReorderableId).ariaState("dropeffect"));  
-            jqUnit.assertEquals("After ctrl-up, " + secondLastReorderableId + " should have ARIA dropeffect of 'none'", "none",
-                fluid.jById(secondLastReorderableId).ariaState("dropeffect"));  
+            //fluid.log("keyUp 2");
+            keyUp(lightbox, fluid.testUtils.keyEvent("CTRL"), 0);
+            assertItemFocused("After ctrl-up ", 0);
+            assertItemDefault("After ctrl-up ", 1);
+            assertItemDefault("After ctrl-up ", 12);
+            jqUnit.assertEquals("After ctrl-up, " + orderableIds[1] + " should have ARIA dropeffect of 'none'", "none",
+                fluid.jById(orderableIds[1]).ariaState("dropeffect"));  
+            jqUnit.assertEquals("After ctrl-up, " + orderableIds[12] + " should have ARIA dropeffect of 'none'", "none",
+                fluid.jById(orderableIds[12]).ariaState("dropeffect"));  
         });
         
         lightboxTests.test("HandleKeyUpAndHandleKeyDownItemMovement", function() {
@@ -278,11 +277,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
             // after ctrl down, order should not change
             lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL());
-            itemsInOriginalPositionTest("after ctrl-down");
+            assertItemsInOriginalPosition("after ctrl-down");
             
             // after ctrl up, order should not change
             lightbox.handleKeyUp(fluid.testUtils.createEvtCTRLUp());
-            itemsInOriginalPositionTest("after ctrl-up");
+            assertItemsInOriginalPosition("after ctrl-up");
         });
         
         /*
@@ -309,64 +308,64 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             jQuery("[id=para1]").after(newInputElement);
             
-            isItemDefaultTest("Initially ", firstReorderableId);
+            assertItemDefault("Initially ", 0);
         
             // Focus the lightbox and make sure the first thumb nail is selected
             lbRoot.focus();
-            isItemFocusedTest("When lightbox has focus ", firstReorderableId);
-            isItemDefaultTest("When lightbox has focus ", secondReorderableId);
+            assertItemFocused("When lightbox has focus ", 0);
+            assertItemDefault("When lightbox has focus ", 1);
             
             // Calling blur because the test framework doesn't behave like the browsers do. 
             // The browsers will call blur when something else gets focus.
-            fluid.jById(firstReorderableId).blur();
+            fluid.jById(orderableIds[0]).blur();
         
             // Change focus to the input1, then back to the lightbox
             newInputElement.focus();
-            isItemDefaultTest("After focus leaves the lightbox ", firstReorderableId);
+            assertItemDefault("After focus leaves the lightbox ", 0);
             
             // Change focus to the lightbox and check that the first thumb nail is still movable.
             lbRoot.focus();
-            isItemFocusedTest("When lightbox has focus again ", firstReorderableId);
-            isItemDefaultTest("When lightbox has focus again ", secondReorderableId);
+            assertItemFocused("When lightbox has focus again ", 0);
+            assertItemDefault("When lightbox has focus again ", 1);
             
-            fluid.jById(firstReorderableId).blur();
+            fluid.jById(orderableIds[0]).blur();
         
             // set focus to another image.
-            fluid.jById(secondReorderableId).focus();
-            isItemFocusedTest("Changed focus to second ", secondReorderableId);
-            isItemDefaultTest("Changed focus to second ", firstReorderableId);
+            fluid.jById(orderableIds[1]).focus();
+            assertItemFocused("Changed focus to second ", 1);
+            assertItemDefault("Changed focus to second ", 0);
             
             // Change focus to the input1
             newInputElement.focus();
-            fluid.jById(secondReorderableId).blur();
+            fluid.jById(orderableIds[1]).blur();
     
-            isItemDefaultTest("Lightbox blur with second selected ", secondReorderableId);
+            assertItemDefault("Lightbox blur with second selected ", 1);
         
             // Focus the lightbox and check that the second thumb nail is still movable
             lbRoot.focus();
-            isItemFocusedTest("Lightbox refocused with second selected ", secondReorderableId);
-            isItemDefaultTest("Lightbox refocused with second selected ", firstReorderableId);
+            assertItemFocused("Lightbox refocused with second selected ", 1);
+            assertItemDefault("Lightbox refocused with second selected ", 0);
         });
         
         lightboxTests.test("ItemFocusBlur ", function() {
             var lightbox = createLightbox();
-            var testItem = fluid.jById(firstReorderableId);
+            var testItem = fluid.jById(orderableIds[0]);
             
-            isItemDefaultTest("Before test item gets focus, it should be in default state", firstReorderableId);
+            assertItemDefault("Before test item gets focus, it should be in default state", 0);
             
             testItem.focus();    
-            isItemFocusedTest("After test item gets focus, it should be in selected state", firstReorderableId);
+            assertItemFocused("After test item gets focus, it should be in selected state", 0);
         
             testItem.blur();    
-            isItemDefaultTest("After test item gets blur, it should be in default state", firstReorderableId);
+            assertItemDefault("After test item gets blur, it should be in default state", 0);
         });
         
         lightboxTests.test("LightboxFocussed", function() {
             var lightbox = createLightbox();
         
-            isItemDefaultTest("Initially ", firstReorderableId);
+            assertItemDefault("Initially ", 0);
             focusLightbox();
-            isItemFocusedTest("After select active item ", firstReorderableId);
+            assertItemFocused("After select active item ", 0);
             
             // Now, test it with no reorderables.
             var lightboxWithNoOrderables = createLightboxWithNoOrderables();
@@ -465,39 +464,39 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // Test arrow keys
             lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtRightArrow());
-            isItemFocusedTest("After right arrow ", firstReorderableId);
-            isItemDefaultTest("After right arrow ", secondReorderableId);
+            assertItemFocused("After right arrow ", firstReorderableId);
+            assertItemDefault("After right arrow ", secondReorderableId);
     
             lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtLeftArrow());
-            isItemFocusedTest("After left arrow ", firstReorderableId);
-            isItemDefaultTest("After left arrow ", lastReorderableId);
+            assertItemFocused("After left arrow ", firstReorderableId);
+            assertItemDefault("After left arrow ", lastReorderableId);
     
             lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtUpArrow());
-            isItemFocusedTest("After up arrow ", firstReorderableId);
-            isItemDefaultTest("After up arrow ", secondLastReorderableId);
+            assertItemFocused("After up arrow ", firstReorderableId);
+            assertItemDefault("After up arrow ", secondLastReorderableId);
     
             lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtDownArrow());
-            isItemFocusedTest("After down arrow ", firstReorderableId);
-            isItemDefaultTest("After down arrow ", fourthReorderableId);
+            assertItemFocused("After down arrow ", firstReorderableId);
+            assertItemDefault("After down arrow ", fourthReorderableId);
              
             // Test CTRL
             lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL());
-            isItemFocusedTest("After ctrl-down, ", firstReorderableId);
+            assertItemFocused("After ctrl-down, ", firstReorderableId);
             lightbox.handleKeyUp(fluid.testUtils.createEvtCTRLUp());
-            isItemFocusedTest("After ctrl-up, ", firstReorderableId);
+            assertItemFocused("After ctrl-up, ", firstReorderableId);
     
             // Test CTRL arrow keys  
             lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
-            itemsInOriginalPositionTest("After ctrl right arrow");
+            assertItemsInOriginalPosition("After ctrl right arrow");
     
             lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlLeftArrow());
-            itemsInOriginalPositionTest("After ctrl left arrow");
+            assertItemsInOriginalPosition("After ctrl left arrow");
     
             lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlUpArrow());
-            itemsInOriginalPositionTest("After ctrl up arrow");
+            assertItemsInOriginalPosition("After ctrl up arrow");
     
             lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlDownArrow());
-            itemsInOriginalPositionTest("After ctrl down arrow");
+            assertItemsInOriginalPosition("After ctrl down arrow");
             
         });    
     
@@ -582,27 +581,27 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // Test: alt k - expect no movement
             lightbox.handleDirectionKeyDown(fluid.testUtils.createAltKeyEvent(fluid.reorderer.keys.k));
-            itemsInOriginalPositionTest("after alt-k");
-            isItemFocusedTest("After failed move, ", firstReorderableId);
-            isItemDefaultTest("After failed move, ", secondReorderableId);
+            assertItemsInOriginalPosition("after alt-k");
+            assertItemFocused("After failed move, ", firstReorderableId);
+            assertItemDefault("After failed move, ", secondReorderableId);
         
             // Test: alt m - expect no movement
             lightbox.handleDirectionKeyDown(fluid.testUtils.createAltKeyEvent(fluid.reorderer.keys.m));
-            itemsInOriginalPositionTest("after alt-m");
-            isItemFocusedTest("After failed move, ", firstReorderableId);
-            isItemDefaultTest("After failed move, ", secondReorderableId);
+            assertItemsInOriginalPosition("after alt-m");
+            assertItemFocused("After failed move, ", firstReorderableId);
+            assertItemDefault("After failed move, ", secondReorderableId);
     
             // Test: ctrl shift left arrow - expect no movement
             lightbox.handleDirectionKeyDown(fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.LEFT));
-            itemsInOriginalPositionTest("after ctrl shift left arrow");
-            isItemFocusedTest("After failed move, ", firstReorderableId);
-            isItemDefaultTest("After failed move, ", secondReorderableId);
+            assertItemsInOriginalPosition("after ctrl shift left arrow");
+            assertItemFocused("After failed move, ", firstReorderableId);
+            assertItemDefault("After failed move, ", secondReorderableId);
     
             // Test: ctrl shift up arrow - expect no movement
             lightbox.handleDirectionKeyDown(fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.UP));
-            itemsInOriginalPositionTest("after ctrl shift up arrow");
-            isItemFocusedTest("After failed move, ", firstReorderableId);
-            isItemDefaultTest("After failed move, ", secondReorderableId);
+            assertItemsInOriginalPosition("after ctrl shift up arrow");
+            assertItemFocused("After failed move, ", firstReorderableId);
+            assertItemDefault("After failed move, ", secondReorderableId);
     
         });   
         
