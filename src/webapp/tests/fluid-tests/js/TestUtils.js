@@ -67,10 +67,10 @@ fluid.testUtils.createCtrlKeyEvent = function(inKeyCode, target) {
 /** NEW **/
 
 fluid.testUtils.ctrlKeyEvent = function(keyCode, target) {
-    var togo = fluid.testUtils.keyEvent(fluid.keys[keyCode], target);
+    var togo = fluid.testUtils.keyEvent(fluid.reorderer.keys[keyCode], target);
     togo.ctrlKey = true;
     return togo;
-}
+};
 
 fluid.testUtils.keyEvent = function(keyCode, target) {
     return {

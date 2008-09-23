@@ -13,7 +13,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 (function($) {
     $(document).ready(function() {
         
-        var moduleLayoutTests = new jqUnit.TestCase("ModuleLayout Tests", setUp);
+        var moduleLayoutTests = new jqUnit.TestCase("ModuleLayout Tests");
     
         function isOriginalOrderTest(testStr, layoutObj) {
             var portlet = fluid.transform(portletids, fluid.byId);

@@ -43,7 +43,7 @@ function initReorderer() {
             modules: portletSelector,
             dropWarning: jQuery("#drop-warning"),
             lockedModules: ".locked"
-        },
+        }
     };
     return fluid.reorderLayout("#" + portalRootId, options);
 }

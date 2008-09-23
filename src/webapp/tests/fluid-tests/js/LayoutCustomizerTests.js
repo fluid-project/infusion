@@ -17,7 +17,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        var layoutCustomizerTests = new jqUnit.TestCase("LayoutCustomizer Tests", setUp);
+        var layoutCustomizerTests = new jqUnit.TestCase("LayoutCustomizer Tests");
         
         layoutCustomizerTests.test("Bubble keystrokes inside module", function () {
             var reorderer = fluid.reorderLayout("#" + portalRootId, {
