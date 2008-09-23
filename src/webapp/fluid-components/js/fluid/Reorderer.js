@@ -11,25 +11,26 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 // Declare dependencies.
-/*global $*/
+/*global $, jQuery*/
 /*global fluid_0_5*/
 
 fluid_0_5 = fluid_0_5 || {};
 
 (function ($, fluid) {
     
-    var defaultAvatarCreator = function(item, cssClass, dropWarning) {
+    var defaultAvatarCreator = function (item, cssClass, dropWarning) {
         var avatar = $(item).clone();
-        fluid.dom.iterateDom(avatar.get(0), function(node) {
+        
+        fluid.dom.iterateDom(avatar.get(0), function (node) {
             if (node.tagName.toLowerCase() === "script") {
                 return true;
             }
             node.removeAttribute("id");
             if (node.tagName.toLowerCase() === "input") {
                 node.setAttribute("disabled", "disabled");
-                }
             }
-          );
+        });
+        
         avatar.removeAttr("id");
         //$("[id]", avatar).removeAttr("id");
         //$(":hidden", avatar).remove();
@@ -77,13 +78,17 @@ fluid_0_5 = fluid_0_5 || {};
         // ondrag() and onselectstart() are Internet Explorer specific functions.
         // Override them so that drag+drop actions don't also select text in IE.
         if ($.browser.msie) {
-            container[0].ondrag = function () { return false; }; 
-            container[0].onselectstart = function () { return false; };
+            container[0].ondrag = function () { 
+                return false; 
+            }; 
+            container[0].onselectstart = function () { 
+                return false; 
+            };
         } 
     }
     
     function addRolesToContainer(that) {
-        var first = (that.dom.fastLocate("selectables")[0]);
+        var first = that.dom.fastLocate("selectables")[0];
         if (first) {
             that.container.ariaState("activedescendent", first.id);
         }
@@ -93,7 +98,7 @@ fluid_0_5 = fluid_0_5 || {};
         that.container.ariaState("disabled", "false");
     }
     
-    function createAvatarId (parentId) {
+    function createAvatarId(parentId) {
         // Generating the avatar's id to be containerId_avatar
         // This is safe since there is only a single avatar at a time
         return parentId + "_avatar";
@@ -141,7 +146,7 @@ fluid_0_5 = fluid_0_5 || {};
 
         adaptKeysets(options);
  
-        var kbDropWarning = thatReorderer.locate("dropWarning")
+        var kbDropWarning = thatReorderer.locate("dropWarning");
         var mouseDropWarning;
         if (kbDropWarning) {
             mouseDropWarning = kbDropWarning.clone();
@@ -167,7 +172,7 @@ fluid_0_5 = fluid_0_5 || {};
         
         var styles = options.styles;
         
-        thatReorderer.handleKeyDown = function(evt) {
+        thatReorderer.handleKeyDown = function (evt) {
             if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
                 return true;
             }
@@ -187,7 +192,7 @@ fluid_0_5 = fluid_0_5 || {};
             return handleDirectionKeyDown(evt);
         };
 
-        thatReorderer.handleKeyUp = function(evt) {
+        thatReorderer.handleKeyUp = function (evt) {
             if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
                 return true;
             }
@@ -236,7 +241,9 @@ fluid_0_5 = fluid_0_5 || {};
                 
                 if (isMovement) {
                     var prevent = thatReorderer.events.onBeginMove.fire(item);
-                    if (prevent) return false;
+                    if (prevent) {
+                        return false;
+                    }
                     if (kbDropWarning.length > 0) {
                         if (relativeItem.clazz === "locked") {
                             thatReorderer.events.onShowKeyboardDropWarning.fire(item, kbDropWarning);
@@ -269,7 +276,7 @@ fluid_0_5 = fluid_0_5 || {};
 
         fluid.logEnabled = true;
 
-        thatReorderer.requestMovement = function(requestedPosition, item) {
+        thatReorderer.requestMovement = function (requestedPosition, item) {
           // Temporary censoring to get around ModuleLayout inability to update relative to self.
             if (!requestedPosition || fluid.unwrap(requestedPosition.element) === fluid.unwrap(item)) {
                 return;
@@ -288,7 +295,7 @@ fluid_0_5 = fluid_0_5 || {};
             thatReorderer.events.afterMove.fire(item, requestedPosition, thatReorderer.dom.fastLocate("movables"));
         };
 
-        var hoverStyleHandler = function(item, state) {
+        var hoverStyleHandler = function (item, state) {
             thatReorderer.dom.fastLocate("grabHandle", item)[state?"addClass":"removeClass"](styles.hover);
         };
         /**
@@ -340,7 +347,7 @@ fluid_0_5 = fluid_0_5 || {};
                     dropManager.startDrag(e, handlePos, handleWidth, handleHeight);
                     avatar.show();
                 },
-                stop: function(e, ui) {
+                stop: function (e, ui) {
                     item.removeClass(options.styles.mouseDrag);
                     item.addClass(options.styles.selected);
                     $(thatReorderer.activeItem).ariaState("grab", "supported");
@@ -368,23 +375,23 @@ fluid_0_5 = fluid_0_5 || {};
             jItem.ariaState("selected", "false");
         }
            
-       var selectItem = function (anItem) {
-           thatReorderer.events.onSelect.fire(anItem);
-           var styles = options.styles;
-           // Set the previous active item back to its default state.
-           if (thatReorderer.activeItem && thatReorderer.activeItem !== anItem) {
-               changeSelectedToDefault($(thatReorderer.activeItem), styles);
-           }
-           // Then select the new item.
-           thatReorderer.activeItem = anItem;
-           var jItem = $(anItem);
-           jItem.removeClass(styles.defaultStyle);
-           jItem.addClass(styles.selected);
-           jItem.ariaState("selected", "true");
-           thatReorderer.container.ariaState("activedescendent", anItem.id);
-       };
+        var selectItem = function (anItem) {
+            thatReorderer.events.onSelect.fire(anItem);
+            var styles = options.styles;
+            // Set the previous active item back to its default state.
+            if (thatReorderer.activeItem && thatReorderer.activeItem !== anItem) {
+                changeSelectedToDefault($(thatReorderer.activeItem), styles);
+            }
+            // Then select the new item.
+            thatReorderer.activeItem = anItem;
+            var jItem = $(anItem);
+            jItem.removeClass(styles.defaultStyle);
+            jItem.addClass(styles.selected);
+            jItem.ariaState("selected", "true");
+            thatReorderer.container.ariaState("activedescendent", anItem.id);
+        };
    
-       var initSelectables = function () {
+        var initSelectables = function () {
             var handleBlur = function (evt) {
                 changeSelectedToDefault($(this), options.styles);
                 return evt.stopPropagation();
@@ -400,35 +407,36 @@ fluid_0_5 = fluid_0_5 || {};
             
             selectables.blur(handleBlur);
             selectables.focus(handleFocus);
-            selectables.click(function(evt) {
+            selectables.click(function (evt) {
                 var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
                 if (fluid.dom.isContainer(handle, evt.target)) {
-                    $(this).focus()
+                    $(this).focus();
                 }
-                });
+            });
             
             selectables.ariaRole(options.containerRole.item);
             selectables.ariaState("selected", "false");
             selectables.ariaState("disabled", "false");
                 
-            thatReorderer.container.selectable(
-              {selectableElements: selectables,
-               selectablesTabindex: thatReorderer.options.selectablesTabindex,
-               direction: null});
+            thatReorderer.container.selectable({
+                selectableElements: selectables,
+                selectablesTabindex: thatReorderer.options.selectablesTabindex,
+                direction: null
+            });
             thatReorderer.selectableContext = thatReorderer.container.getSelectableContext();
         };
     
-        var dropChangeListener = function(dropTarget) {
-             fluid.moveDom(dropMarker, dropTarget.element, dropTarget.position);
-             dropMarker.css("display","");
-             if (mouseDropWarning) {
-                 if (dropTarget.lockedelem) {
-                     mouseDropWarning.show();
-                     }
-                 else {
-                     mouseDropWarning.hide();
-                 }
-             }
+        var dropChangeListener = function (dropTarget) {
+            fluid.moveDom(dropMarker, dropTarget.element, dropTarget.position);
+            dropMarker.css("display", "");
+            if (mouseDropWarning) {
+                if (dropTarget.lockedelem) {
+                    mouseDropWarning.show();
+                }
+                else {
+                    mouseDropWarning.hide();
+                }
+            }
         };
     
         var initItems = function () {
@@ -466,30 +474,29 @@ fluid_0_5 = fluid_0_5 || {};
             initItems();
         }
 
-       if (options.afterMoveCallbackUrl) {
-            thatReorderer.events.afterMove.addListener(
-              function () {
-                  var layoutHandler = thatReorderer.layoutHandler;
-                  var model = layoutHandler.getModel? layoutHandler.getModel():
-                        options.acquireModel(thatReorderer);
-                  $.post(options.afterMoveCallbackUrl, JSON.stringify(model));
+        if (options.afterMoveCallbackUrl) {
+            thatReorderer.events.afterMove.addListener(function () {
+                var layoutHandler = thatReorderer.layoutHandler;
+                var model = layoutHandler.getModel? layoutHandler.getModel():
+                     options.acquireModel(thatReorderer);
+                $.post(options.afterMoveCallbackUrl, JSON.stringify(model));
             }, "postModel");
-       }
-       thatReorderer.events.onHover.addListener(hoverStyleHandler, "style");
-       
-       thatReorderer.refresh = function() {
-           thatReorderer.dom.refresh("movables");
-           thatReorderer.dom.refresh("selectables");
-           thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
-           thatReorderer.dom.refresh("stylisticOffset", thatReorderer.dom.fastLocate("movables"));
-           thatReorderer.dom.refresh("dropTargets");
-           thatReorderer.selectableContext.selectables = thatReorderer.dom.fastLocate("selectables");
-           thatReorderer.selectableContext.selectablesUpdated(thatReorderer.activeItem);
-       };
-       
-       thatReorderer.refresh();
-           
-       return thatReorderer;
+        }
+        thatReorderer.events.onHover.addListener(hoverStyleHandler, "style");
+
+        thatReorderer.refresh = function () {
+            thatReorderer.dom.refresh("movables");
+            thatReorderer.dom.refresh("selectables");
+            thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
+            thatReorderer.dom.refresh("stylisticOffset", thatReorderer.dom.fastLocate("movables"));
+            thatReorderer.dom.refresh("dropTargets");
+            thatReorderer.selectableContext.selectables = thatReorderer.dom.fastLocate("selectables");
+            thatReorderer.selectableContext.selectablesUpdated(thatReorderer.activeItem);
+        };
+
+        thatReorderer.refresh();
+
+        return thatReorderer;
     };
     
     /**
@@ -562,11 +569,11 @@ fluid_0_5 = fluid_0_5 || {};
     
     fluid.reorderer.GEOMETRIC_STRATEGY   = "projectFrom";
     fluid.reorderer.LOGICAL_STRATEGY     = "logicalFrom";
-    fluid.reorderer.WRAP_LOCKED_STRATEGY = "lockedWrapFrom"
+    fluid.reorderer.WRAP_LOCKED_STRATEGY = "lockedWrapFrom";
     fluid.reorderer.NO_STRATEGY = null;
     
-    fluid.reorderer.relativeInfoGetter = function(orientation, coStrategy, contraStrategy, dropManager, dom) {
-        return function(item, direction, forSelection) {
+    fluid.reorderer.relativeInfoGetter = function (orientation, coStrategy, contraStrategy, dropManager, dom) {
+        return function (item, direction, forSelection) {
             var dirorient = fluid.directionOrientation(direction);
             var strategy = dirorient === orientation? coStrategy: contraStrategy;
             return strategy !== null? dropManager[strategy](item, direction, forSelection) : null;
@@ -583,7 +590,7 @@ fluid_0_5 = fluid_0_5 || {};
             hover: "orderable-hover",
             dropMarker: "orderable-drop-marker",
             avatar: "orderable-avatar"
-            },
+        },
         selectors: {
             dropWarning: ".drop-warning",
             movables: ".movables",
@@ -595,12 +602,12 @@ fluid_0_5 = fluid_0_5 || {};
         layoutHandler: "fluid.listLayoutHandler",
         
         events: {
-           onShowKeyboardDropWarning: null,
-           onSelect: null,
-           onBeginMove: "preventable",
-           onMove: null,
-           afterMove: null,
-           onHover: null
+            onShowKeyboardDropWarning: null,
+            onSelect: null,
+            onBeginMove: "preventable",
+            onMove: null,
+            afterMove: null,
+            onHover: null
         },
         
         mergePolicy: {
@@ -616,15 +623,16 @@ fluid_0_5 = fluid_0_5 || {};
      *******************/
 
     function geometricInfoGetter(orientation, dom) {
-        return function() {
-           return {
-               extents: [{orientation : orientation, 
-                         elements     : dom.fastLocate("dropTargets")
-                         }
-                         ],
-                elementMapper: function(element) {
-                        return $.inArray(element, dom.fastLocate("movables")) === -1? "locked": null;
-                        }};
+        return function () {
+            return {
+                extents: [{
+                    orientation: orientation,
+                    elements: dom.fastLocate("dropTargets")
+                }],
+                elementMapper: function (element) {
+                    return $.inArray(element, dom.fastLocate("movables")) === -1 ? "locked" : null;
+                }
+            };
         };
     }
     
@@ -673,4 +681,4 @@ fluid_0_5 = fluid_0_5 || {};
         return that;
     }; // End of GridLayoutHandler
 
-}) (jQuery, fluid_0_5);
+})(jQuery, fluid_0_5);
