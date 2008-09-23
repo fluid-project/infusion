@@ -313,6 +313,7 @@ ul.horizontal-list-floated li {
 
 .portlet-top {
   background:#000099 url(images/portlet_corner_topleft.png) no-repeat scroll left top;
+  cursor:move;
 }
 
 .portlet-top-inner {
@@ -326,7 +327,8 @@ ul.horizontal-list-floated li {
 }
 
 .portlet-toolbar {
-  background-color:#000099;    
+  background-color:#000099;
+  cursor:move;    
 }
 
 .portlet-toolbar-locked {
