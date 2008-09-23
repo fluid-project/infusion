@@ -172,48 +172,6 @@ fluid_0_5 = fluid_0_5 || {};
         
         var styles = options.styles;
         
-        thatReorderer.handleKeyDown = function (evt) {
-            if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
-                return true;
-            }
-            // If the key pressed is ctrl, and the active item is movable we want to restyle the active item.
-            var jActiveItem = $(thatReorderer.activeItem);
-            if (!jActiveItem.hasClass(styles.dragging) && isMove(evt)) {
-               // Don't treat the active item as dragging unless it is a movable.
-                if (isActiveItemMovable()) {
-                    jActiveItem.removeClass(styles.selected);
-                    jActiveItem.addClass(styles.dragging);
-                    jActiveItem.ariaState("grab", "true");
-                    setDropEffects("move");
-                }
-                return false;
-            }
-            // The only other keys we listen for are the arrows.
-            return handleDirectionKeyDown(evt);
-        };
-
-        thatReorderer.handleKeyUp = function (evt) {
-            if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
-                return true;
-            }
-            var jActiveItem = $(thatReorderer.activeItem);
-            
-            // Handle a key up event for the modifier
-            if (jActiveItem.hasClass(styles.dragging) && !isMove(evt)) {
-                if (kbDropWarning) {
-                    kbDropWarning.hide();
-                }
-                jActiveItem.removeClass(styles.dragging);
-                jActiveItem.addClass(styles.selected);
-                jActiveItem.ariaState("grab", "supported");
-                setDropEffects("none");
-                return false;
-            }
-            
-            return false;
-        };
-
-        
         var noModifier = function (evt) {
             return (!evt.ctrlKey && !evt.altKey && !evt.shiftKey && !evt.metaKey);
         };
@@ -263,6 +221,47 @@ fluid_0_5 = fluid_0_5 || {};
                 return false;
             }
             return true;
+        };
+
+        thatReorderer.handleKeyDown = function (evt) {
+            if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
+                return true;
+            }
+            // If the key pressed is ctrl, and the active item is movable we want to restyle the active item.
+            var jActiveItem = $(thatReorderer.activeItem);
+            if (!jActiveItem.hasClass(styles.dragging) && isMove(evt)) {
+               // Don't treat the active item as dragging unless it is a movable.
+                if (isActiveItemMovable()) {
+                    jActiveItem.removeClass(styles.selected);
+                    jActiveItem.addClass(styles.dragging);
+                    jActiveItem.ariaState("grab", "true");
+                    setDropEffects("move");
+                }
+                return false;
+            }
+            // The only other keys we listen for are the arrows.
+            return handleDirectionKeyDown(evt);
+        };
+
+        thatReorderer.handleKeyUp = function (evt) {
+            if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
+                return true;
+            }
+            var jActiveItem = $(thatReorderer.activeItem);
+            
+            // Handle a key up event for the modifier
+            if (jActiveItem.hasClass(styles.dragging) && !isMove(evt)) {
+                if (kbDropWarning) {
+                    kbDropWarning.hide();
+                }
+                jActiveItem.removeClass(styles.dragging);
+                jActiveItem.addClass(styles.selected);
+                jActiveItem.ariaState("grab", "supported");
+                setDropEffects("none");
+                return false;
+            }
+            
+            return false;
         };
 
         var dropMarker;
