@@ -51,22 +51,12 @@ var defaultClass = "orderable-default";
 var selectedClass = "orderable-selected";
 var draggingClass = "orderable-dragging";
 
-var imgListClone;
-
 function fetchLightboxRoot() {
     return fluid.jById(lightboxRootId);
 }
 
 function focusLightbox() {
     fetchLightboxRoot().focus();
-}
-
-// This setUp will be called before each of the tests that are included in Lightbox.html 
-function setUp() {
-    imgListClone = document.getElementById(lightboxRootId).cloneNode(true);
-    
-    // Force the grid size to three thumbnails wide
-    fetchLightboxRoot().addClass("width-3-thumb");
 }
 
 function findOrderableByDivAndId(containerEl) {
