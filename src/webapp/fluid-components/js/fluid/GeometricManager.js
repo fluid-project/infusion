@@ -300,10 +300,10 @@ var fluid_0_5 = fluid_0_5 || {};
                         splitElement(targets, sides, cacheelem, disposition, backClass, frontClass);
                     }
                     // deal with sentinel blocks by creating near-copies of the end elements
-                    if (sentB) {
+                    if (sentB && geometricInfo.sentinelize) {
                         sentinelizeElement(targets, sides, cacheelem, 1, disposition, backClass);
                     }
-                    if (sentF) {
+                    if (sentF && geometricInfo.sentinelize) {
                         sentinelizeElement(targets, sides, cacheelem, 0, disposition, frontClass);
                     }
                     //fluid.log(dumpelem(cacheelem));

@@ -621,24 +621,24 @@ fluid_0_5 = fluid_0_5 || {};
      * Layout Handlers *
      *******************/
 
-    function geometricInfoGetter(orientation, dom) {
-        return function () {
-            return {
-                extents: [{
-                    orientation: orientation,
-                    elements: dom.fastLocate("dropTargets")
-                }],
-                elementMapper: function (element) {
-                    return $.inArray(element, dom.fastLocate("movables")) === -1 ? "locked" : null;
-                }
-            };
+    function geometricInfoGetter(orientation, sentinelize, dom) {
+        return function() {
+           return {
+               sentinelize: sentinelize,
+               extents: [{orientation : orientation, 
+                         elements     : dom.fastLocate("dropTargets")
+                         }],
+               elementMapper: function(element) {
+                        return $.inArray(element, dom.fastLocate("movables")) === -1? "locked": null;
+                        }};
         };
     }
     
     fluid.defaults(true, "fluid.listLayoutHandler", 
         {orientation:         fluid.orientation.VERTICAL,
          containerRole:       fluid.reorderer.roles.LIST,
-         selectablesTabindex: -1
+         selectablesTabindex: -1,
+         sentinelize:         true
         });
     
     // Public layout handlers.
@@ -649,15 +649,16 @@ fluid_0_5 = fluid_0_5 || {};
           fluid.reorderer.relativeInfoGetter(options.orientation, 
                 fluid.reorderer.LOGICAL_STRATEGY, null, dropManager, dom);
         
-        that.getGeometricInfo = geometricInfoGetter(options.orientation, dom);
+        that.getGeometricInfo = geometricInfoGetter(options.orientation, options.sentinelize, dom);
         
         return that;
     }; // End ListLayoutHandler
 
     fluid.defaults(true, "fluid.gridLayoutHandler", 
-        {orientation:        fluid.orientation.HORIZONTAL,
-         containerRole:      fluid.reorderer.roles.GRID,
-         selectablesTabindex: -1
+        {orientation:         fluid.orientation.HORIZONTAL,
+         containerRole:       fluid.reorderer.roles.GRID,
+         selectablesTabindex: -1,
+         sentinelize:         false
          });
     /*
      * Items in the Lightbox are stored in a list, but they are visually presented as a grid that
@@ -675,7 +676,7 @@ fluid_0_5 = fluid_0_5 || {};
                  fluid.reorderer.LOGICAL_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY, 
                  dropManager, dom);
         
-        that.getGeometricInfo = geometricInfoGetter(options.orientation, dom);
+        that.getGeometricInfo = geometricInfoGetter(options.orientation, options.sentinelize, dom);
         
         return that;
     }; // End of GridLayoutHandler

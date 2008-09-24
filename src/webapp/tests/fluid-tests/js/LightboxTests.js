@@ -13,13 +13,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(document).ready(function() {
         var lightboxTests = new jqUnit.TestCase("Lightbox Tests");
     
+        function findImagesInLightbox() {
+            return jQuery("img", fetchLightboxRoot());
+        }
+    
         function assertItemsInOriginalPosition(desc) {
             return fluid.testUtils.reorderer.assertItemsInOriginalPosition(desc, 
                findImagesInLightbox(), imageIds);
-            }
+        }
             
-        function assertItemsInOrder(message, expectOrder) {
-            return fluid.testUtils.reorderer.assertItemsInOrder(message, expectOrder, 
+        function assertItemsInOrder(message, assertItemsInOrder) {
+            return fluid.testUtils.reorderer.assertItemsInOrder(message, assertItemsInOrder, 
                findImagesInLightbox(), "fluid.img.");
         }
        
@@ -83,6 +87,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
             keyDown(lightbox, downEvt, 12);
             assertItemFocused("After down arrow wrap ", 0);
             assertItemDefault("After down arrow wrap ", 12);
+            
+            // Tests for FLUID-1589
+            fluid.byId(orderableIds[2]).focus();
+            keyDown(lightbox, upEvt, 2);
+            assertItemFocused("After up arrow wrap irregular ", 10);
+            assertItemDefault("After up arrow wrap irregular ", 2);
+            
+            keyDown(lightbox, downEvt, 10);
+            assertItemFocused("After up arrow wrap irregular ", 2);
+            assertItemDefault("After up arrow wrap irregular ", 10);
         }
         
         function horizontalNavigationTest(lightbox, rightEvt, leftEvt) {
@@ -111,7 +125,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             keyDown(lightbox, leftEvt, 13);
             assertItemFocused("Left to second last ", 12);
             assertItemDefault("Left to second last ", 0);
-            assertItemDefault("Left to second last ", 0);
+            assertItemDefault("Left to second last ", 1);
             
             // Test: right arrow past the last image - expect wrap to the first image
             keyDown(lightbox, rightEvt, 12);
@@ -159,17 +173,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             assertItemsInOriginalPosition("after modified-right");
         }
         
-        function findImagesInLightbox() {
-            return jQuery("img", fetchLightboxRoot());
-            }
-        
-        function expectOrder(message, expectedOrder) {
-            var images = findImagesInLightbox();
-            var ids = fluid.transform(images, fluid.getId);
-            var expectedIds = makeImageIds(expectedOrder);
-            jqUnit.assertDeepEq(message, expectedIds, ids);
-        }
-        
         /*
          * This test tests the movement of images, and does not concern itself
          * with changes of state(i.e. dragging, etc.)
@@ -179,7 +182,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             focusLightbox();
             // Test: ctrl down arrow - move the first image down
             compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("DOWN"), 0);
-            expectOrder("after ctrl-down-arrow", [1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
+            assertItemsInOrder("after ctrl-down-arrow", [1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
         });
          
         lightboxTests.test("HandleArrowKeyDownWrapThumbUp", function() {
@@ -188,7 +191,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             focusLightbox();
         
             compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("UP"), 0);
-            expectOrder("after ctrl-up-arrow", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 13]);
+            assertItemsInOrder("after ctrl-up-arrow", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 13]);
         });
         
         lightboxTests.test("HandleArrowKeyDownForUpAndDown", function() {

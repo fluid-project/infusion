@@ -131,7 +131,8 @@ fluid.moduleLayout = fluid.moduleLayout || {};
     fluid.defaults(true, "fluid.moduleLayoutHandler", 
         {orientation: fluid.orientation.VERTICAL,
          containerRole: fluid.reorderer.roles.REGIONS,
-         selectablesTabindex: 0
+         selectablesTabindex: 0,
+         sentinelize:         true
          });
     
     /**
@@ -167,7 +168,8 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                  
         that.getGeometricInfo = function () {
         	  var extents = [];
-            var togo = {extents: extents};
+            var togo = {extents: extents,
+                        sentinelize: options.sentinelize};
             togo.elementMapper = function(element) {
                 return isLocked(element)? "locked" : null;
                 };
