@@ -11,7 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function($) {
     $(document).ready(function() {
-        var lightboxTests = new jqUnit.TestCase("Lightbox Tests", setUp);
+        var lightboxTests = new jqUnit.TestCase("Lightbox Tests");
     
         function assertItemsInOriginalPosition(desc) {
             return fluid.testUtils.reorderer.assertItemsInOriginalPosition(desc, 

@@ -11,7 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function($) {
     $(document).ready(function() {
-        var tests = new jqUnit.TestCase("Reorder Grid Tests", setUp);
+        var tests = new jqUnit.TestCase("Reorder Grid Tests");
         
         var k = fluid.testUtils.reorderer.bindReorderer(orderableIds);
     

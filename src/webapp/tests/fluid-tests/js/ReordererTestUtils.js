@@ -85,7 +85,7 @@ var fluid = fluid || fluid_0_5;
             keyDown: function (reorderer, event, targetIndex) {
                 return fluid.testUtils.reorderer.keyDown(reorderer, event, 
                    fluid.byId(ids[targetIndex]));
-            },
+            }
         }
     }
   

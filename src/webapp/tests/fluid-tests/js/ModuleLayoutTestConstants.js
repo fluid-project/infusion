@@ -47,26 +47,6 @@ function initReorderer() {
     };
     return fluid.reorderLayout("#" + portalRootId, options);
 }
-        
-        
-/*
- * This setUp will be called before each of the tests that are included in portlets.html 
- * layout and dropTargetPerms are defined in portlets.js
- */
-function setUp() {
-    var table = fluid.jById(portalRootId);
-    portletRootClone = table.clone();
-    layoutClone = jQuery.extend(true, {}, demo.portal.layout);
-    var options = {
-        moduleLayout: {
-            layout: layoutClone,
-            permissions: demo.portal.dropTargetPerms
-        }
-    }; 
-    var reorderer = fluid.reorderLayout("#" + portalRootId, options);
-    
-    portletHandler = reorderer.layoutHandler;
-}
 
 function container() {
     return jQuery("#" + portalRootId);
