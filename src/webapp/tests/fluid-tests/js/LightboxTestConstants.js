@@ -69,16 +69,6 @@ function setUp() {
     fetchLightboxRoot().addClass("width-3-thumb");
 }
 
-// This tearDown will be called after each of the tests that are included in Lightbox.html 
-function tearDown() {
-    var fluidLightboxDOMNode, lightboxParent;
-    
-    fluidLightboxDOMNode = document.getElementById(lightboxRootId);
-    lightboxParent = document.getElementById(lightboxParentId);
-    lightboxParent.removeChild(fluidLightboxDOMNode);
-    lightboxParent.appendChild(imgListClone);
-}
-
 function findOrderableByDivAndId(containerEl) {
     return jQuery(selectByDivAndId, containerEl);
 }

@@ -18,7 +18,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
       
         function expectOrder(message, order) {
            var items = fluid.transform(jQuery(".portlet"), fluid.getId);
-           var expected = fluid.transform(order, function(item) {return portletids[item];});
+           var expected = fluid.transform(order, function(item) {return portletIds[item];});
            jqUnit.assertDeepEq(message, expected, items);
         }
       
@@ -33,20 +33,20 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
-            var item2 = fluid.jById(portletids[2]).focus();
-            var item3 = fluid.jById(portletids[3]);
+            var item2 = fluid.jById(portletIds[2]).focus();
+            var item3 = fluid.jById(portletIds[3]);
             
             // Sniff test the reorderer that was created - keyboard selection and movement
     
             jqUnit.assertTrue("focus on item2", item2.hasClass("orderable-selected"));
             jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("orderable-default"));
     
-            layoutReorderer.handleKeyDown(fluid.testUtils.createEvtDownArrow(item2));
+            layoutReorderer.handleKeyDown(fluid.testUtils.keyEvent("DOWN", item2));
             jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("orderable-default"));
             jqUnit.assertTrue("down arrow - item3 should be selected", item3.hasClass("orderable-selected"));
     
-            layoutReorderer.handleKeyDown(fluid.testUtils.createEvtCTRL(item3));
-            layoutReorderer.handleKeyDown(fluid.testUtils.createEvtCtrlDownArrow(item3));
+            layoutReorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("CTRL", item3));
+            layoutReorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("DOWN", item3));
     
             expectOrder("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", 
                 [1, 2, 4, 3, 5, 6, 7, 8, 9]);
@@ -83,20 +83,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
 
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
-            var item2 = fluid.jById(portletids[2]).focus();
-            var item3 = fluid.jById(portletids[3]);
-            var ctrlDownArrow = fluid.testUtils.createEvtCtrlDownArrow(item3);
+            var item2 = fluid.jById(portletIds[2]).focus();
+            var item3 = fluid.jById(portletIds[3]);
 
             jqUnit.assertTrue("focus on item2", item2.hasClass("orderable-selected"));
-            layoutReorderer.handleKeyDown(fluid.testUtils.createEvtCTRL(item2));
-            layoutReorderer.handleKeyDown(fluid.testUtils.createEvtCtrlDownArrow(item2));
+            layoutReorderer.handleKeyDown(fluid.testUtils.keyEvent("CTRL", item2));
+            layoutReorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("DOWN", item2));
 
             expectOrder("after ctrl-down, expect order 1, 2, 3, 4", [1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
             item3.focus();
             jqUnit.assertTrue("focus on item3", item3.hasClass("orderable-selected"));
-            layoutReorderer.handleKeyDown(fluid.testUtils.createEvtCTRL(item3));
-            layoutReorderer.handleKeyDown(ctrlDownArrow);
+            layoutReorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("CTRL", item3));
+            layoutReorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("DOWN", item3));
 
             expectOrder("after ctrl-down, expect order 1, 2, 4, 3", [1, 2, 4, 3, 5, 6, 7, 8, 9]);
 

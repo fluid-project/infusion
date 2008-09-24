@@ -18,11 +18,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
  */
 
 // The ids of the items in the first list
-var firstItemId = "list1item1";
-var secondItemId = "list1item2";
-var thirdItemId = "list1item3";
-var fourthItemId = "list1item4";
-var lastItemId = "list1item5"; 
+var itemIds = ["list1item1", "list1item2", "list1item3", "list1item4", "list1item5"];
+
+var itemIds2 = fluid.testUtils.reorderer.prepend("list2item", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
 var nonOrderabeItemId = "para1";       
 
 var listHandler1;

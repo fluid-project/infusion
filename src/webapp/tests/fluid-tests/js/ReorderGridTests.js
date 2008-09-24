@@ -1,7 +1,7 @@
 /*
 Copyright 2008 University of Toronto
 
-Licensed under the Educational Community License (ECL), Version 2.0 or the New
+Licensed under the Educational Community License(ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
 Licenses.
 
@@ -9,11 +9,13 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-(function ($) {
-    $(document).ready (function () {
-        var tests = new jqUnit.TestCase ("Reorder Grid Tests", setUp, tearDown);
+(function($) {
+    $(document).ready(function() {
+        var tests = new jqUnit.TestCase("Reorder Grid Tests", setUp);
+        
+        var k = fluid.testUtils.reorderer.bindReorderer(orderableIds);
     
-        tests.test ("reorderGrid API", function () {
+        tests.test("reorderGrid API", function() {
             var options = {
                 selectors: {
                     movables: ".float"
@@ -21,41 +23,30 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             var containerSelector = "[id='" + lightboxRootId + "']";
             var gridReorderer = fluid.reorderGrid(containerSelector, options);
-            var item2 = fluid.jById(secondReorderableId).focus();
-            var item3 = fluid.jById(thirdReorderableId);
-            var item5 = fluid.jById(fifthReorderableId);
-            var downArrow = fluid.testUtils.createEvtDownArrow(); 
-            var ctrlDownArrow = fluid.testUtils.createEvtCtrlDownArrow();
+            var item2 = fluid.jById(orderableIds[1]).focus();
+            var item3 = fluid.jById(orderableIds[2]);
+            var item5 = fluid.jById(orderableIds[4]);
+            var ctrlDownArrow = fluid.testUtils.ctrlKeyEvent("DOWN");
             
             // Sniff test the reorderer that was created - keyboard selection and movement
     
-            jqUnit.assertTrue("focus on item2", item2.hasClass ("orderable-selected"));
-            jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass ("orderable-default"));
-            jqUnit.assertTrue("focus on item2 - item5 should be default", item5.hasClass ("orderable-default"));
+            jqUnit.assertTrue("focus on item2", item2.hasClass("orderable-selected"));
+            jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("orderable-default"));
+            jqUnit.assertTrue("focus on item2 - item5 should be default", item5.hasClass("orderable-default"));
     
-            gridReorderer.handleDirectionKeyDown(downArrow);
-            jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass ("orderable-default"));
-            jqUnit.assertTrue("down arrow - item3 should be default", item3.hasClass ("orderable-default"));
-            jqUnit.assertTrue("down arrow - grid is 3 wide - item5 should be selected", item5.hasClass ("orderable-selected"));
+            k.keyDown(gridReorderer, fluid.testUtils.keyEvent("DOWN"), 1);
+            jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("orderable-default"));
+            jqUnit.assertTrue("down arrow - item3 should be default", item3.hasClass("orderable-default"));
+            jqUnit.assertTrue("down arrow - grid is 3 wide - item5 should be selected", item5.hasClass("orderable-selected"));
     
-            gridReorderer.handleDirectionKeyDown(ctrlDownArrow);
+            k.compositeKey(gridReorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), 4);
+            
+            fluid.testUtils.reorderer.assertItemsInOrder("after ctrl-down", [0, 1, 2, 3, 5, 6, 7, 4, 8, 9, 10, 11, 12, 13], 
+                jQuery("img", jQuery(containerSelector)), "fluid.img.");
+        
+            });
     
-            var items = jQuery("img", jQuery(containerSelector));
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", firstImageId, items[0].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", secondImageId, items[1].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", thirdImageId, items[2].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", fourthImageId, items[3].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", sixthImageId, items[4].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", seventhImageId, items[5].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", eighthImageId, items[6].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", fifthImageId, items[7].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", ninthImageId, items[8].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", tenthImageId, items[9].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", eleventhImageId, items[10].id);
-            jqUnit.assertEquals("after ctrl-down, expect order 1, 2, 3, 4, 6, 7, 8, 5, 9, 10, 11, 12", twelvethImageId, items[11].id);
-        });
-    
-        tests.test ("reorderGrid with optional styles", function () {
+        tests.test("reorderGrid with optional styles", function() {
             var options = {
                 selectors: {
                     movables: ".float"

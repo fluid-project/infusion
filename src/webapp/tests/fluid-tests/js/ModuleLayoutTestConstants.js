@@ -19,8 +19,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global demo*/
  
 var portalRootId = "portlet-reorderer-root";
-
-var portletids = ["portlet0", "portlet1", "portlet2", "portlet3", "portlet4", "portlet5", "portlet6", "portlet7", "portlet8", "portlet9"];
+// portlet0 does not actually exist, it is in this array for padding
+var portletIds = ["portlet0", "portlet1", "portlet2", "portlet3", "portlet4", "portlet5", "portlet6", "portlet7", "portlet8", "portlet9"];
 
 var column1id = "c1";
 var column2id = "c2";

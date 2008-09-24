@@ -11,62 +11,45 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function($) {
     $(document).ready(function() {
-        var lightboxTests = new jqUnit.TestCase("Lightbox Tests", setUp, tearDown);
+        var lightboxTests = new jqUnit.TestCase("Lightbox Tests", setUp);
     
         function assertItemsInOriginalPosition(desc) {
-            var thumbArray = findImagesInLightbox();
-            var thumbIds = fluid.transform(thumbArray, fluid.getId);
-            jqUnit.assertDeepEq(desc + " expect items in original order", imageIds, thumbIds);
+            return fluid.testUtils.reorderer.assertItemsInOriginalPosition(desc, 
+               findImagesInLightbox(), imageIds);
             }
             
         function assertItemsInOrder(message, expectOrder) {
-            var thumbArray = findImagesInLightbox();
-            var thumbIds = fluid.transform(thumbArray, fluid.getId);
-            var expectIds = makeImageIds(expectOrder);
-            jqUnit.assertDeepEq(message, expectIds, thumbIds);
+            return fluid.testUtils.reorderer.assertItemsInOrder(message, expectOrder, 
+               findImagesInLightbox(), "fluid.img.");
         }
-        
+       
         function assertItemDefault(message, index) {
-            var itemId = orderableIds[index];
-            var item = fluid.jById(itemId);
-            
-            jqUnit.assertTrue(message + itemId + " should be default", item.hasClass(defaultClass));
-            jqUnit.assertFalse(message + itemId + " should not be selected", item.hasClass(selectedClass));
-            jqUnit.assertFalse(message + itemId + " should not be dragging", item.hasClass(draggingClass));
+            return fluid.testUtils.reorderer.assertItemDefault(message, index, orderableIds);
         }
         
         function assertItemFocused(message, index) {
-            var itemId = orderableIds[index];
-            var item = fluid.jById(itemId);
-            
-            jqUnit.assertTrue(message + itemId + " should be selected", item.hasClass(selectedClass));   
-            jqUnit.assertFalse(message + itemId + " should not be default", item.hasClass(defaultClass));
-            jqUnit.assertFalse(message + itemId + " should not be dragging", item.hasClass(draggingClass));
+            return fluid.testUtils.reorderer.assertItemFocused(message, index, orderableIds);
         }
         
         function assertItemDragged(message, index) {
-            var itemId = orderableIds[index];
-            var item = fluid.jById(itemId);
-            
-            jqUnit.assertTrue(message + itemId + " should be dragging", item.hasClass(draggingClass));  
-            jqUnit.assertFalse(message + itemId + " should not be default",item.hasClass(defaultClass));
+            return fluid.testUtils.reorderer.assertItemDragged(message, index, orderableIds);
         }
         
-        function ctrlKeyDown(lightbox, event, targetIndex) {
-            keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("CTRL"), targetIndex);
-            keyDown(lightbox, event, targetIndex);
-        }        
-        
-        function keyDown(lightbox, event, targetIndex) {
-            event.target = fluid.byId(orderableIds[targetIndex]);
-            lightbox.handleKeyDown(event);
+        function compositeKey(reorderer, event, targetIndex) {
+           return fluid.testUtils.reorderer.compositeKey(reorderer, event, 
+               fluid.byId(orderableIds[targetIndex]));
         }
         
-        function keyUp(lightbox, event, targetIndex) {
-            event.target = fluid.byId(orderableIds[targetIndex]);
-            lightbox.handleKeyUp(event);
+        function keyDown(reorderer, event, targetIndex) {
+           return fluid.testUtils.reorderer.keyDown(reorderer, event, 
+               fluid.byId(orderableIds[targetIndex]));
         }
         
+        function keyUp(reorderer, event, targetIndex) {
+           return fluid.testUtils.reorderer.keyUp(reorderer, event, 
+               fluid.byId(orderableIds[targetIndex]));
+        }
+          
         function verticalNavigationTest(lightbox, upEvt, downEvt) {
             // setup: force the grid to have four columns
             var lightboxRoot = fluid.jById(lightboxRootId);
@@ -147,10 +130,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
         function verticalMovementTest(lightbox, modifiedUpEvt, modifiedDownEvt) {
             // Default width is 3 thumbnails.
             focusLightbox();
-            ctrlKeyDown(lightbox, modifiedDownEvt, 0);
+            compositeKey(lightbox, modifiedDownEvt, 0);
             assertItemsInOrder("after modified-down", [1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
     
-            ctrlKeyDown(lightbox, modifiedUpEvt, 0);
+            compositeKey(lightbox, modifiedUpEvt, 0);
             assertItemsInOriginalPosition("after modified-up");        
         }
         
@@ -158,21 +141,21 @@ https://source.fluidproject.org/svn/LICENSE.txt
             focusLightbox();
             
             // Test: ctrl right arrow - expect first and second image to swap
-            ctrlKeyDown(lightbox, modifiedRightEvt, 0);
+            compositeKey(lightbox, modifiedRightEvt, 0);
             assertItemsInOrder("after modified-right", [1, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
 
             // Test: ctrl left arrow - expect first and second image to swap back to original order
-            ctrlKeyDown(lightbox, modifiedLeftEvt, 0);
+            compositeKey(lightbox, modifiedLeftEvt, 0);
             assertItemsInOriginalPosition("after modified-left");
         
             // Test: ctrl left arrow - expect first image to move to last place,
             //       second image to move to first place and last image to move to second-last place
-            ctrlKeyDown(lightbox, modifiedLeftEvt, 0);
+            compositeKey(lightbox, modifiedLeftEvt, 0);
             assertItemsInOrder("after modified-right", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 0]);
 
             // Test: ctrl right arrow - expect first image to move back to first place,
             //       second image to move to back second place and thumbLast to move to back last place
-            ctrlKeyDown(lightbox, modifiedRightEvt, 0);
+            compositeKey(lightbox, modifiedRightEvt, 0);
             assertItemsInOriginalPosition("after modified-right");
         }
         
@@ -187,11 +170,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertDeepEq(message, expectedIds, ids);
         }
         
-        function sendCtrlKeyEvent(lightbox, key, targetIndex) {
-            lightbox.handleKeyDown(fluid.testUtils.ctrlKeyEvent("CTRL", fluid.byId(orderableIds[targetIndex]))); 
-            lightbox.handleKeyDown(fluid.testUtils.ctrlKeyEvent(key, fluid.byId(orderableIds[targetIndex])));
-        }
-        
         /*
          * This test tests the movement of images, and does not concern itself
          * with changes of state(i.e. dragging, etc.)
@@ -200,7 +178,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var lightbox = createLightbox();
             focusLightbox();
             // Test: ctrl down arrow - move the first image down
-            sendCtrlKeyEvent(lightbox, "DOWN", 0);
+            compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("DOWN"), 0);
             expectOrder("after ctrl-down-arrow", [1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
         });
          
@@ -209,19 +187,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var lightbox = createLightbox();
             focusLightbox();
         
-            sendCtrlKeyEvent(lightbox, "UP", 0);
+            compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("UP"), 0);
             expectOrder("after ctrl-up-arrow", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 13]);
         });
         
         lightboxTests.test("HandleArrowKeyDownForUpAndDown", function() {
             var lightbox = createLightbox();
-            verticalNavigationTest(lightbox, fluid.testUtils.createEvtUpArrow(), fluid.testUtils.createEvtDownArrow());
+            verticalNavigationTest(lightbox, fluid.testUtils.keyEvent("UP"), fluid.testUtils.keyEvent("DOWN"));
         });
         
         lightboxTests.test("HandleArrowKeyDownForLeftAndRight", function() {
             var lightbox = createLightbox();
         
-            horizontalNavigationTest(lightbox, fluid.testUtils.createEvtRightArrow(), fluid.testUtils.createEvtLeftArrow());
+            horizontalNavigationTest(lightbox, fluid.testUtils.keyEvent("RIGHT"), fluid.testUtils.keyEvent("LEFT"));
         });
         
         lightboxTests.test("HandleKeyUpAndHandleKeyDownChangesState", function() {
@@ -276,11 +254,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             focusLightbox();
         
             // after ctrl down, order should not change
-            lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL());
+            keyDown(lightbox, fluid.testUtils.keyEvent("CTRL"), 0);
             assertItemsInOriginalPosition("after ctrl-down");
             
             // after ctrl up, order should not change
-            lightbox.handleKeyUp(fluid.testUtils.createEvtCTRLUp());
+            keyUp(lightbox, fluid.testUtils.keyEvent("CTRL"), 0);
             assertItemsInOriginalPosition("after ctrl-up");
         });
         
@@ -290,13 +268,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
          */
         lightboxTests.test("HandleArrowCtrlArrowKeyDown", function() {  
             var lightbox = createLightbox();
-            horizontalMovementTest(lightbox,
-                                    fluid.testUtils.createEvtCtrlRightArrow(),
-                                    fluid.testUtils.createEvtCtrlLeftArrow());
+            horizontalMovementTest(lightbox,  fluid.testUtils.ctrlKeyEvent("RIGHT"), 
+                                              fluid.testUtils.ctrlKeyEvent("LEFT"));
                                     
-            verticalMovementTest(lightbox,
-                                  fluid.testUtils.createEvtCtrlUpArrow(),
-                                  fluid.testUtils.createEvtCtrlDownArrow());
+            verticalMovementTest(lightbox,    fluid.testUtils.ctrlKeyEvent("UP"), 
+                                              fluid.testUtils.ctrlKeyEvent("DOWN"));
         });
         
         lightboxTests.test("PersistFocus ", function() {
@@ -380,54 +356,54 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertUndefined("Lightbox's activeItem member should not be set", lightboxWithNoOrderables.activeItem);
                 
             // Test left arrow, right arrow, etc. with and without control key.
-            lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
-            jqUnit.assertUndefined("After ctrl-right, activeItem member should not be set",
-                lightboxWithNoOrderables.activeItem);   
-            lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlLeftArrow());
+            compositeKey(lightboxWithNoOrderables, fluid.testUtils.ctrlKeyEvent("LEFT"), 0); 
             jqUnit.assertUndefined("After ctrl-left, activeItem member should not be set",
-                lightboxWithNoOrderables.activeItem);   
-            lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlUpArrow());
+                lightboxWithNoOrderables.activeItem);
+            compositeKey(lightboxWithNoOrderables, fluid.testUtils.ctrlKeyEvent("RIGHT"), 0); 
+            jqUnit.assertUndefined("After ctrl-right, activeItem member should not be set",
+                lightboxWithNoOrderables.activeItem);
+            compositeKey(lightboxWithNoOrderables, fluid.testUtils.ctrlKeyEvent("UP"), 0);
             jqUnit.assertUndefined("After ctrl-up, activeItem member should not be set",
-                lightboxWithNoOrderables.activeItem);   
-            lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlDownArrow());
+                lightboxWithNoOrderables.activeItem);
+            compositeKey(lightboxWithNoOrderables, fluid.testUtils.ctrlKeyEvent("DOWN"), 0);
             jqUnit.assertUndefined("After ctrl-down, activeItem member should not be set",
-                lightboxWithNoOrderables.activeItem);   
+                lightboxWithNoOrderables.activeItem);
         
-            lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtLeftArrow());
+            keyDown(lightboxWithNoOrderables, fluid.testUtils.keyEvent("LEFT"), 0); 
             jqUnit.assertUndefined("After left, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
-            lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtRightArrow());
+            keyDown(lightboxWithNoOrderables, fluid.testUtils.keyEvent("RIGHT"), 0); 
             jqUnit.assertUndefined("After right, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
-            lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtUpArrow());
+            keyDown(lightboxWithNoOrderables, fluid.testUtils.keyEvent("UP"), 0);
             jqUnit.assertUndefined("After up, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);   
-            lightboxWithNoOrderables.handleDirectionKeyDown(fluid.testUtils.createEvtDownArrow());
+            keyDown(lightboxWithNoOrderables, fluid.testUtils.keyEvent("DOWN"), 0);
             jqUnit.assertUndefined("After down, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
             
-            lightboxWithNoOrderables.handleKeyDown(fluid.testUtils.createEvtCTRL());
+            keyDown(lightboxWithNoOrderables, fluid.testUtils.keyEvent("CTRL"), 0);
             jqUnit.assertUndefined("After ctrl pressed, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
-            lightboxWithNoOrderables.handleKeyUp(fluid.testUtils.createEvtCTRLUp());
-            jqUnit.assertUndefined("After key released w, activeItem member should not be set",
+            keyUp(lightboxWithNoOrderables, fluid.testUtils.keyEvent("CTRL"), 0);
+            jqUnit.assertUndefined("After key released, activeItem member should not be set",
                 lightboxWithNoOrderables.activeItem);
         });
         
         lightboxTests.test("UpdateAriaStates", function() {
             var lightbox = createLightbox();
             var lbRoot = fetchLightboxRoot();
-            var firstImage = fluid.jById(firstReorderableId);
-            jqUnit.assertEquals("before first lightbox focus, first item should be activedescendent", firstReorderableId, lbRoot.ariaState("activedescendent"));
+            var firstImage = fluid.jById(orderableIds[0]);
+            jqUnit.assertEquals("before first lightbox focus, first item should be activedescendent", orderableIds[0], lbRoot.ariaState("activedescendent"));
             jqUnit.assertEquals("before first lightbox focus, first item should not be selected", "false", firstImage.ariaState("selected"));
         
             focusLightbox();
-            jqUnit.assertEquals("after first lightbox focus, first image should be activedescendent", firstReorderableId, lbRoot.ariaState("activedescendent"));
+            jqUnit.assertEquals("after first lightbox focus, first image should be activedescendent", orderableIds[0], lbRoot.ariaState("activedescendent"));
             jqUnit.assertEquals("after first lightbox focus, first image should be selected", "true", firstImage.ariaState("selected"));
             
-            var thirdImage = fluid.jById(thirdReorderableId);
+            var thirdImage = fluid.jById(orderableIds[2]);
             thirdImage.focus();
-            jqUnit.assertEquals("after setting active item to third image, third image should be activedescendent", thirdReorderableId, lbRoot.ariaState("activedescendent"));
+            jqUnit.assertEquals("after setting active item to third image, third image should be activedescendent", orderableIds[2], lbRoot.ariaState("activedescendent"));
             jqUnit.assertEquals("after setting active item to third image, first image should not be selected", "false", firstImage.ariaState("selected"));
             jqUnit.assertEquals("after setting active item to third image, third image should be selected", "true", thirdImage.ariaState("selected"));
         
@@ -436,25 +412,26 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             jQuery("[id=para1]").after(newInputElement);
             jQuery("[id=input1]").get(0).focus();
-            fluid.jById(thirdReorderableId).blur();
-            jqUnit.assertEquals("after removing focus from lightbox, third image should still be activedescendent", thirdReorderableId, lbRoot.ariaState("activedescendent"));
+            fluid.jById(orderableIds[2]).blur();
+            jqUnit.assertEquals("after removing focus from lightbox, third image should still be activedescendent", orderableIds[2], lbRoot.ariaState("activedescendent"));
             jqUnit.assertEquals("after removing focus from lightbox, third image should not be selected", "false", thirdImage.ariaState("selected"));
         });
         
         lightboxTests.test("UpdateGrabProperty", function() {
             var lightbox = createLightbox();
             var lbRoot = fetchLightboxRoot();
-            var testItem = fluid.jById(firstReorderableId);
+            var testItem = fluid.jById(orderableIds[0]);
+            
             jqUnit.assertEquals("before any action, test item should have grab of supported", "supported", testItem.ariaState("grab"));
             
             focusLightbox();
-            lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL(testItem[0]));
+            keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("CTRL"), 0);
             jqUnit.assertEquals("while CTRL held down, test item should have grab of true", "true", testItem.ariaState("grab"));
         
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlRightArrow(testItem[0]));
+            keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("RIGHT"), 0);
             jqUnit.assertEquals("after arrow while CTRL still held down, test item should have grab of true", "true", testItem.ariaState("grab"));
             
-            lightbox.handleKeyUp(fluid.testUtils.createEvtCTRLUp(testItem[0]));
+            keyUp(lightbox, fluid.testUtils.keyEvent("CTRL"), 0);
             jqUnit.assertEquals("after CTRL released, test item should have grab of supported", "supported", testItem.ariaState("grab"));
         });
     
@@ -463,39 +440,39 @@ https://source.fluidproject.org/svn/LICENSE.txt
             focusLightbox();
             
             // Test arrow keys
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtRightArrow());
-            assertItemFocused("After right arrow ", firstReorderableId);
-            assertItemDefault("After right arrow ", secondReorderableId);
+            keyDown(lightbox, fluid.testUtils.keyEvent("RIGHT"), 0);
+            assertItemFocused("After right arrow ", 0);
+            assertItemDefault("After right arrow ", 1);
     
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtLeftArrow());
-            assertItemFocused("After left arrow ", firstReorderableId);
-            assertItemDefault("After left arrow ", lastReorderableId);
+            keyDown(lightbox, fluid.testUtils.keyEvent("LEFT"), 0);
+            assertItemFocused("After left arrow ", 0);
+            assertItemDefault("After left arrow ", 13);
     
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtUpArrow());
-            assertItemFocused("After up arrow ", firstReorderableId);
-            assertItemDefault("After up arrow ", secondLastReorderableId);
+            keyDown(lightbox, fluid.testUtils.keyEvent("UP"), 0);
+            assertItemFocused("After up arrow ", 0);
+            assertItemDefault("After up arrow ", 12);
     
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtDownArrow());
-            assertItemFocused("After down arrow ", firstReorderableId);
-            assertItemDefault("After down arrow ", fourthReorderableId);
+            keyDown(lightbox, fluid.testUtils.keyEvent("DOWN"), 0);
+            assertItemFocused("After down arrow ", 0);
+            assertItemDefault("After down arrow ", 3);
              
             // Test CTRL
-            lightbox.handleKeyDown(fluid.testUtils.createEvtCTRL());
-            assertItemFocused("After ctrl-down, ", firstReorderableId);
-            lightbox.handleKeyUp(fluid.testUtils.createEvtCTRLUp());
-            assertItemFocused("After ctrl-up, ", firstReorderableId);
+            keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("CTRL"), 0);
+            assertItemFocused("After ctrl-down, ", 0);
+            keyUp(lightbox, fluid.testUtils.keyEvent("CTRL"), 0);
+            assertItemFocused("After ctrl-up, ", 0);
     
             // Test CTRL arrow keys  
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlRightArrow());
+            compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("RIGHT"), 0);
             assertItemsInOriginalPosition("After ctrl right arrow");
     
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlLeftArrow());
+            compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("LEFT"), 0);
             assertItemsInOriginalPosition("After ctrl left arrow");
     
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlUpArrow());
+            compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("UP"), 0);
             assertItemsInOriginalPosition("After ctrl up arrow");
     
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createEvtCtrlDownArrow());
+            compositeKey(lightbox, fluid.testUtils.ctrlKeyEvent("DOWN"), 0);
             assertItemsInOriginalPosition("After ctrl down arrow");
             
         });    
@@ -504,72 +481,57 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var lightbox = createAltKeystrokeLightbox();
             focusLightbox();
             
-            horizontalNavigationTest(lightbox,
-                                    fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.k),
-                                    fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.j));
+            horizontalNavigationTest(lightbox, fluid.testUtils.keyEvent("k"), fluid.testUtils.keyEvent("j"));
                                     
-            fluid.jById(firstReorderableId).focus();
-            verticalNavigationTest(lightbox,
-                                    fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.i),
-                                    fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.m));
+            fluid.jById(orderableIds[0]).focus();
+            verticalNavigationTest(lightbox, fluid.testUtils.keyEvent("i"), fluid.testUtils.keyEvent("m"));
            });
            
         lightboxTests.test("AlternativeKeySetMovement", function() {
             var lightbox = createAltKeystrokeLightbox();
             focusLightbox();
             
-            horizontalMovementTest(lightbox,
-                                    fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.k),
-                                    fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.j));
-            fluid.jById(firstReorderableId).focus();
-            verticalMovementTest(lightbox,
-                                    fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.i),
-                                    fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.m));
+            horizontalMovementTest(lightbox, fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "k"),
+                                             fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "j"));
+            fluid.jById(orderableIds[0]).focus();
+            verticalMovementTest(lightbox,   fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "i"),
+                                             fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "m"));
            });
      
         lightboxTests.test("MultiKeySetNavigation", function() {
             var lightbox = createMultiKeystrokeLightbox();
             focusLightbox();
             
-            horizontalNavigationTest(lightbox,
-                                    fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.k),
-                                    fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.j));
+            horizontalNavigationTest(lightbox, fluid.testUtils.keyEvent("k"), fluid.testUtils.keyEvent("j"));
     
-            fluid.jById(firstReorderableId).focus();
-            horizontalNavigationTest(lightbox,
-                                    fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.RIGHT),
-                                    fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.LEFT));
+            fluid.jById(orderableIds[0]).focus();
+            horizontalNavigationTest(lightbox, fluid.testUtils.keyEvent("RIGHT"), fluid.testUtils.keyEvent("LEFT"));
                                     
-            fluid.jById(firstReorderableId).focus();
-            verticalNavigationTest(lightbox,
-                                    fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.i),
-                                    fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.m));
+            fluid.jById(orderableIds[0]).focus();
+            verticalNavigationTest(lightbox, fluid.testUtils.keyEvent("i"), fluid.testUtils.keyEvent("m"));
     
-            fluid.jById(firstReorderableId).focus();
-            verticalNavigationTest(lightbox,
-                                    fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.UP),
-                                    fluid.testUtils.createUnmodifiedKeyEvent(fluid.reorderer.keys.DOWN));
+            fluid.jById(orderableIds[0]).focus();
+            verticalNavigationTest(lightbox, fluid.testUtils.keyEvent("UP"), fluid.testUtils.keyEvent("DOWN"));
+    
            });
            
         lightboxTests.test("MultiKeySetMovement", function() {
             var lightbox = createMultiKeystrokeLightbox();
             focusLightbox();
             
-            horizontalMovementTest(lightbox,
-                                    fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.k),
-                                    fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.j));
+            horizontalMovementTest(lightbox, fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "k"), 
+                                             fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "j"));
     
-            fluid.jById(firstReorderableId).focus();
+            fluid.jById(orderableIds[0]).focus();
             horizontalMovementTest(lightbox,
                                     fluid.testUtils.createAltKeyEvent(fluid.reorderer.keys.RIGHT),
                                     fluid.testUtils.createAltKeyEvent(fluid.reorderer.keys.LEFT));
     
-            fluid.jById(firstReorderableId).focus();
-            verticalMovementTest(lightbox,
-                                    fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.i),
-                                    fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.m));
+            fluid.jById(orderableIds[0]).focus();
+            verticalMovementTest(lightbox,   fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "i"), 
+                                             fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "m"));
     
-            fluid.jById(firstReorderableId).focus();
+            fluid.jById(orderableIds[0]).focus();
             verticalMovementTest(lightbox,
                                     fluid.testUtils.createAltKeyEvent(fluid.reorderer.keys.UP),
                                     fluid.testUtils.createAltKeyEvent(fluid.reorderer.keys.DOWN));
@@ -580,28 +542,28 @@ https://source.fluidproject.org/svn/LICENSE.txt
             focusLightbox();
             
             // Test: alt k - expect no movement
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createAltKeyEvent(fluid.reorderer.keys.k));
+            compositeKey(lightbox, fluid.testUtils.modKeyEvent("ALT", "k"), 0);
             assertItemsInOriginalPosition("after alt-k");
-            assertItemFocused("After failed move, ", firstReorderableId);
-            assertItemDefault("After failed move, ", secondReorderableId);
+            assertItemFocused("After failed move, ", 0);
+            assertItemDefault("After failed move, ", 1);
         
             // Test: alt m - expect no movement
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createAltKeyEvent(fluid.reorderer.keys.m));
+            compositeKey(lightbox, fluid.testUtils.modKeyEvent("ALT", "m"), 0);
             assertItemsInOriginalPosition("after alt-m");
-            assertItemFocused("After failed move, ", firstReorderableId);
-            assertItemDefault("After failed move, ", secondReorderableId);
+            assertItemFocused("After failed move, ", 0);
+            assertItemDefault("After failed move, ", 1);
     
             // Test: ctrl shift left arrow - expect no movement
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.LEFT));
+            compositeKey(lightbox, fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "LEFT"), 0);
             assertItemsInOriginalPosition("after ctrl shift left arrow");
-            assertItemFocused("After failed move, ", firstReorderableId);
-            assertItemDefault("After failed move, ", secondReorderableId);
+            assertItemFocused("After failed move, ", 0);
+            assertItemDefault("After failed move, ", 1);
     
             // Test: ctrl shift up arrow - expect no movement
-            lightbox.handleDirectionKeyDown(fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.UP));
+            compositeKey(lightbox, fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "UP"), 0);
             assertItemsInOriginalPosition("after ctrl shift up arrow");
-            assertItemFocused("After failed move, ", firstReorderableId);
-            assertItemDefault("After failed move, ", secondReorderableId);
+            assertItemFocused("After failed move, ", 0);
+            assertItemDefault("After failed move, ", 1);
     
         });   
         
@@ -609,24 +571,20 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var lightbox = createMultiOverlappingKeystrokeLightbox();
             focusLightbox();
             
-            horizontalMovementTest(lightbox,
-                                    fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.k),
-                                    fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.j));
+            horizontalMovementTest(lightbox, fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "k"), 
+                                             fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "j"));
     
-            fluid.jById(firstReorderableId).focus();
-            horizontalMovementTest(lightbox,
-                                    fluid.testUtils.createCtrlKeyEvent(fluid.reorderer.keys.RIGHT),
-                                    fluid.testUtils.createCtrlKeyEvent(fluid.reorderer.keys.LEFT));
+            fluid.jById(orderableIds[0]).focus();
+            horizontalMovementTest(lightbox, fluid.testUtils.ctrlKeyEvent("RIGHT"),
+                                             fluid.testUtils.ctrlKeyEvent("LEFT"));
     
-            fluid.jById(firstReorderableId).focus();
-            verticalMovementTest(lightbox,
-                                    fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.i),
-                                    fluid.testUtils.createCtrlShiftKeyEvent(fluid.reorderer.keys.m));
+            fluid.jById(orderableIds[0]).focus();
+            verticalMovementTest(lightbox,   fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "i"), 
+                                             fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "m"));
     
-            fluid.jById(firstReorderableId).focus();
-            verticalMovementTest(lightbox,
-                                    fluid.testUtils.createCtrlKeyEvent(fluid.reorderer.keys.UP),
-                                    fluid.testUtils.createCtrlKeyEvent(fluid.reorderer.keys.DOWN));
+            fluid.jById(orderableIds[0]).focus();
+            verticalMovementTest(lightbox, fluid.testUtils.ctrlKeyEvent("UP"),
+                                           fluid.testUtils.ctrlKeyEvent("DOWN"));
         });
     
     });
