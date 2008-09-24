@@ -1,3 +1,18 @@
+/*
+Copyright 2008 University of Cambridge
+Copyright 2008 University of Toronto
+
+Licensed under the Educational Community License (ECL), Version 2.0 or the New
+BSD license. You may not use this file except in compliance with one these
+Licenses.
+
+You may obtain a copy of the ECL 2.0 License and BSD License at
+https://source.fluidproject.org/svn/LICENSE.txt
+ 
+*/
+
+/*global jQuery, jqUnit*/
+
 var fluid_0_5 = fluid_0_5 || {};
 var fluid = fluid || fluid_0_5;
 
@@ -6,21 +21,23 @@ var fluid = fluid || fluid_0_5;
     fluid.testUtils = fluid.testUtils || {};
     fluid.testUtils.reorderer = fluid.testUtils.reorderer || {};
 
-    fluid.testUtils.reorderer.prepend = function(prefix, indices) {
+    fluid.testUtils.reorderer.prepend = function (prefix, indices) {
         return fluid.transform(indices, 
-            function(index) {return prefix + index;});
-        };
+            function (index) {
+                return prefix + index;
+            });
+    };
 
-    fluid.testUtils.reorderer.assertItemsInOriginalPosition = function(desc, thumbArray, imageIds) {
+    fluid.testUtils.reorderer.assertItemsInOriginalPosition = function (desc, thumbArray, imageIds) {
         var thumbIds = fluid.transform(thumbArray, fluid.getId);
         jqUnit.assertDeepEq(desc + " expect items in original order", imageIds, thumbIds);
-        };
+    };
             
     fluid.testUtils.reorderer.assertItemsInOrder = function (message, expectOrder, thumbArray, prefix) {
         var thumbIds = fluid.transform(thumbArray, fluid.getId);
         var expectIds = fluid.testUtils.reorderer.prepend(prefix, expectOrder);
         jqUnit.assertDeepEq(message, expectIds, thumbIds);
-        };
+    };
         
     fluid.testUtils.reorderer.assertItemDefault = function (message, index) {
         var itemId = orderableIds[index];
@@ -29,7 +46,7 @@ var fluid = fluid || fluid_0_5;
         jqUnit.assertTrue(message + itemId + " should be default", item.hasClass(defaultClass));
         jqUnit.assertFalse(message + itemId + " should not be selected", item.hasClass(selectedClass));
         jqUnit.assertFalse(message + itemId + " should not be dragging", item.hasClass(draggingClass));
-        };
+    };
         
     fluid.testUtils.reorderer.assertItemFocused = function (message, index) {
         var itemId = orderableIds[index];
@@ -38,15 +55,15 @@ var fluid = fluid || fluid_0_5;
         jqUnit.assertTrue(message + itemId + " should be selected", item.hasClass(selectedClass));   
         jqUnit.assertFalse(message + itemId + " should not be default", item.hasClass(defaultClass));
         jqUnit.assertFalse(message + itemId + " should not be dragging", item.hasClass(draggingClass));
-        };
+    };
         
     fluid.testUtils.reorderer.assertItemDragged = function (message, index) {
         var itemId = orderableIds[index];
         var item = fluid.jById(itemId);
             
         jqUnit.assertTrue(message + itemId + " should be dragging", item.hasClass(draggingClass));  
-        jqUnit.assertFalse(message + itemId + " should not be default",item.hasClass(defaultClass));
-        };
+        jqUnit.assertFalse(message + itemId + " should not be default", item.hasClass(defaultClass));
+    };
         
         /** Break down the process of firing a particular modified key into the separate events
          * of firing the modifier followed by the modified key itself, to give realism to the process
@@ -60,17 +77,17 @@ var fluid = fluid || fluid_0_5;
         fluid.testUtils.reorderer.keyDown(reorderer, event, target);
         modifierEvent.ctrlKey = modifierEvent.shiftKey = modifierEvent.altKey = undefined;
         fluid.testUtils.reorderer.keyUp(reorderer, modifierEvent, target);
-        };       
+    };       
         
     fluid.testUtils.reorderer.keyDown = function (reorderer, event, target) {
         event.target = target;
         reorderer.handleKeyDown(event);
-        };
+    };
         
     fluid.testUtils.reorderer.keyUp = function (reorderer, event, target) {
-        event.target = target
+        event.target = target;
         reorderer.handleKeyUp(event);
-        };
+    };
         
     fluid.testUtils.reorderer.bindReorderer = function (ids) {
         return {
@@ -86,7 +103,7 @@ var fluid = fluid || fluid_0_5;
                 return fluid.testUtils.reorderer.keyDown(reorderer, event, 
                    fluid.byId(ids[targetIndex]));
             }
-        }
-    }
+        };
+    };
   
 })(jQuery, fluid_0_5);
