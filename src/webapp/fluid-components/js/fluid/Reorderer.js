@@ -72,8 +72,9 @@ fluid_0_5 = fluid_0_5 || {};
     }
     
     function bindHandlersToContainer(container, keyDownHandler, keyUpHandler, mouseMoveHandler) {
-        container.keydown(keyDownHandler);
-        container.keyup(keyUpHandler);
+        var actualKeyDown = keyDownHandler;
+        var advancedPrevention = false;
+
         // FLUID-143. Disable text selection for the reorderer.
         // ondrag() and onselectstart() are Internet Explorer specific functions.
         // Override them so that drag+drop actions don't also select text in IE.
@@ -84,7 +85,26 @@ fluid_0_5 = fluid_0_5 || {};
             container[0].onselectstart = function () { 
                 return false; 
             };
-        } 
+        }
+        // FLUID-1598 and others: Opera will refuse to honour a "preventDefault" on a keydown.
+        // http://forums.devshed.com/javascript-development-115/onkeydown-preventdefault-opera-485371.html
+        if ($.browser.opera) {
+           container.keypress(function(evt) {
+               if (advancedPrevention) {
+                   advancedPrevention = false;
+                   evt.preventDefault();
+                   return false;
+               }
+           });
+           actualKeyDown = function(evt) {
+               var oldret = keyDownHandler(evt);
+               if (oldret === false) {
+                   advancedPrevention = true;
+               }
+           }
+        }
+        container.keydown(actualKeyDown);
+        container.keyup(keyUpHandler);
     }
     
     function addRolesToContainer(that) {
