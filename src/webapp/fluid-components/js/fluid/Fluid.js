@@ -312,7 +312,7 @@ var fluid = fluid || fluid_0_5;
         var togo = [];
         for (var i = 0; i < args.length; ++ i) {
             if (args[i] === fluid.COMPONENT_OPTIONS) {
-                optindex = i - 3;
+                optindex = i;
             }
         }
         for (i = 0; i < entries.length; ++ i) {
