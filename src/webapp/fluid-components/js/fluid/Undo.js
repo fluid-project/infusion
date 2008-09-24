@@ -74,8 +74,10 @@ fluid_0_5 = fluid_0_5 || {};
                 that.state = STATE_CHANGED;
                 refreshView(that);
             },
-            onBeginEdit: function () {
-                fluid.model.copyModel(that.initialModel, that.component.model);
+            onFinish: function () {
+                if (that.component.model === that.extremalModel) {
+                    fluid.model.copyModel(that.initialModel, that.component.model);
+                }
             }
         };
     };
