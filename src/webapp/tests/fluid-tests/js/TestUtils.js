@@ -17,32 +17,6 @@ fluid.testUtils = fluid.testUtils || {};
  * stroke combinations.
  */
 
-fluid.testUtils.createEvtCTRL = function(target) {
-	return this.createCtrlKeyEvent(17, target);	
-};
-
-fluid.testUtils.createEvtCtrlLeftArrow = function(target) {
-	return this.createCtrlKeyEvent(37, target);
-};
-
-fluid.testUtils.createEvtCtrlRightArrow = function(target) {
-	return this.createCtrlKeyEvent(39, target);
-};
-
-fluid.testUtils.createEvtCtrlDownArrow = function(target) {
-	return this.createCtrlKeyEvent(40, target);
-};
-
-fluid.testUtils.createAltKeyEvent = function(inKeyCode, target) {
-    return this.createKeyEvent(inKeyCode, false, false, true /* alt key is down */, target);
-};
-
-fluid.testUtils.createCtrlKeyEvent = function(inKeyCode, target) {
-    return fluid.testUtils.createKeyEvent(inKeyCode, true /* control key is down */, false, false, target);
-};
-
-/** NEW **/
-
 fluid.testUtils.ctrlKeyEvent = function(keyCode, target) {
     return fluid.testUtils.modKeyEvent("CTRL", keyCode, target);
 };
@@ -70,16 +44,6 @@ fluid.testUtils.modKeyEvent = function(modifier, keyCode, target) {
         }
     }
     return togo;
-};
-
-fluid.testUtils.createUnmodifiedKeyEvent = function(inKeyCode, target) {
-    return this.createKeyEvent(inKeyCode, false /* no control key modifier */, false, false, target);
-};
-
-fluid.testUtils.createKeyEvent = function(inKeyCode, inCtrlKey, inShiftKey, inAltKey, target) {
-    return {keyCode: inKeyCode, ctrlKey: inCtrlKey, shiftKey: inShiftKey, altKey: inAltKey, 
-            target: fluid.unwrap(target),
-            preventDefault: function(){}, stopPropagation: function(){} };
 };
 
 

@@ -523,18 +523,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                              fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "j"));
     
             fluid.jById(orderableIds[0]).focus();
-            horizontalMovementTest(lightbox,
-                                    fluid.testUtils.createAltKeyEvent(fluid.reorderer.keys.RIGHT),
-                                    fluid.testUtils.createAltKeyEvent(fluid.reorderer.keys.LEFT));
+            horizontalMovementTest(lightbox, fluid.testUtils.modKeyEvent("ALT", "RIGHT"),
+                                             fluid.testUtils.modKeyEvent("ALT", "LEFT"));
     
             fluid.jById(orderableIds[0]).focus();
             verticalMovementTest(lightbox,   fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "i"), 
                                              fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "m"));
     
             fluid.jById(orderableIds[0]).focus();
-            verticalMovementTest(lightbox,
-                                    fluid.testUtils.createAltKeyEvent(fluid.reorderer.keys.UP),
-                                    fluid.testUtils.createAltKeyEvent(fluid.reorderer.keys.DOWN));
+            verticalMovementTest(lightbox,   fluid.testUtils.modKeyEvent("ALT", "UP"),
+                                             fluid.testUtils.modKeyEvent("ALT", "DOWN"));
         });
     
         lightboxTests.test("MultiKeySetWrongModifier", function() {

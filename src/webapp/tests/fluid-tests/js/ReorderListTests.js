@@ -32,7 +32,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var listReorderer = fluid.reorderList("#list1", options);
             var item2 = jQuery("#list1item2").focus();
             var item3 = jQuery("#list1item3");
-            var ctrlDownArrow = fluid.testUtils.createEvtCtrlDownArrow();
             
             // Sniff test the reorderer that was created - keyboard selection and movement
     
@@ -104,11 +103,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var item4 = jQuery("#list2item4");
     
             jqUnit.assertTrue("focus on item1", item1.hasClass("orderable-selected"));
-    /*
-     * There is currently a bug(FLUID-676) where we don't originally put the 'default' class onto things that are
-     * selectable but not movable. After they get focus and then lose focus they will have the 'default' style.
-     * Once this bug is fixed the following line should be uncommented
-     */
+
             jqUnit.assertTrue("focus on item1 - item2 should be default", item2.hasClass("orderable-default"));
             jqUnit.assertFalse("focus on item1 - item2 should not be selected", item2.hasClass("orderable-selected"));
             jqUnit.assertFalse("order hasn't changed", afterMoveCallbackWasCalled);
@@ -129,11 +124,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             k2.compositeKey(listReorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), 2);
             assertItemsInOrder2("after ctrl-down on non-movable, expect order ", [1, 2, 4, 5, 3, 6, 7, 8, 9, 10]);
-    /*
-     * There is currently a bug (FLUID-677) in the keyboard reordering: when a selectable is a drop targets but is not movable 
-     * the item being moved is placed after the next movable item rather then after the next selectable item.
-     * When the bug is fixed, the next line should be uncommented and the line following should be removed.
-     */
+
             jqUnit.assertTrue("after ctrl-down on movable, order should change", afterMoveCallbackWasCalled);
     
         });
