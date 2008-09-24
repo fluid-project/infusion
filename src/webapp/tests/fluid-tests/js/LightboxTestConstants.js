@@ -18,26 +18,24 @@ https://source.fluidproject.org/svn/LICENSE.txt
  
 var numOfImages = 14;
 
-// The id of the form for submitting changes to the server.
-var REORDER_FORM_ID = "reorder-form";
-
 // The id of the root node of the lightbox
 var lightboxRootId = "gallery:::gallery-thumbs:::";
 
-// The id of the parent of the lightbox
-var lightboxParentId = "lightbox-parent";
-
 var orderableIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
-var makeOrderableIds = function(indices) {
+var makeOrderableIds = function (indices) {
     return fluid.transform(indices, 
-        function(index) {return "gallery:::gallery-thumbs:::lightbox-cell:" + index + ":";});
-}
+        function (index) {
+            return "gallery:::gallery-thumbs:::lightbox-cell:" + index + ":";
+        });
+};
 
-var makeImageIds = function(indices) {
+var makeImageIds = function (indices) {
     return fluid.transform(indices, 
-        function(index) {return "fluid.img." + index;});
-}
+        function (index) {
+            return "fluid.img." + index;
+        });
+};
 
 var orderableIds = makeOrderableIds(orderableIndices);
 
@@ -87,16 +85,6 @@ function createLightboxWithNoOrderables() {
             movables: findNoOrderables
         },
         containerRole: fluid.reorderer.roles.GRID
-    });
-}
-
-function createGridLayoutHandler() {
-    var selectors = {
-        movables: findOrderableByDivAndId,
-        selectables: findOrderableByDivAndId
-    };
-    return fluid.gridLayoutHandler(fluid.jById(lightboxRootId), {
-        selectors: selectors
     });
 }
 
