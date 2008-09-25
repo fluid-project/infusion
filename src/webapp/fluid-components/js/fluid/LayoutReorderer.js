@@ -16,7 +16,7 @@ fluid_0_5 = fluid_0_5 || {};
 (function (fluid) {
  
     /**
-     * Simple way to create a layout customizer.
+     * Simple way to create a layout reorderer.
      * @param {selector} a selector for the layout container
      * @param {Object} a map of selectors for columns and modules within the layout
      * @param {Function} a function to be called when the order changes 

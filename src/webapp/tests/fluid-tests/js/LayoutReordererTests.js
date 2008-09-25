@@ -17,11 +17,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        var layoutCustomizerTests = new jqUnit.TestCase("LayoutCustomizer Tests");
+        var layoutReordererTests = new jqUnit.TestCase("LayoutReorderer Tests");
         
         var k = fluid.testUtils.reorderer.bindReorderer(portletIds);
         
-        layoutCustomizerTests.test("Bubble keystrokes inside module", function () {
+        layoutReordererTests.test("Bubble keystrokes inside module", function () {
             var reorderer = fluid.reorderLayout("#" + portalRootId, {
                         selectors: {
                             columns: columnSelector,
@@ -36,7 +36,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("After typing M into text field, portlet 2 should still be the active item", portletIds[2], reorderer.activeItem.id);
         });
         
-        layoutCustomizerTests.test("Drop warning visibility for up and down", function () {
+        layoutReordererTests.test("Drop warning visibility for up and down", function () {
             var reorderer = initReorderer();
     
             jqUnit.notVisible("On first load the warning should not be visible", "#drop-warning");

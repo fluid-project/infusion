@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>Simple Layout Customizer Sample</title>
+		<title>Simple Layout Reorderer Sample</title>
         
         <link rel="stylesheet" type="text/css" href="../css/fluid.reset.css" />
         <link rel="stylesheet" type="text/css" href="../css/fluid.layout.css" />
         <link rel="stylesheet" type="text/css" href="../css/fluid.states.css" />
         <link rel="stylesheet" type="text/css" href="../css/fluid.themes.css" />
-        <link rel="stylesheet" type="text/css" href="../css/LayoutCustomizer.css" />
+        <link rel="stylesheet" type="text/css" href="../css/LayoutReorderer.css" />
         
         <script type="text/javascript" src="../js/jquery/jquery-1.2.6.js"></script>
         <script type="text/javascript" src="../js/jquery/jARIA.js"></script>
@@ -21,7 +21,7 @@
         <script type="text/javascript" src="../js/fluid/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../js/fluid/GeometricManager.js"></script>        
         <script type="text/javascript" src="../js/fluid/Reorderer.js"></script>
-        <script type="text/javascript" src="../js/fluid/LayoutCustomizer.js"></script>
+        <script type="text/javascript" src="../js/fluid/LayoutReorderer.js"></script>
         <script type="text/javascript" src="../js/fluid/ModuleLayout.js"></script>
 
         <script type="text/javascript">
@@ -33,7 +33,7 @@
             jQuery(document).ready(function () {
                 /******************************************/
                 // Example 1, grab by class names
-                    fluid.reorderLayout ("#fluid-LayoutCustomizer-sample1", {
+                    fluid.reorderLayout ("#fluid-LayoutReorderer-sample1", {
                         selectors: {
                             columns: ".myColumn",
                             modules: ".mySortable"
@@ -43,7 +43,7 @@
                 
                 /******************************************/
                 // Example 3, the most robust layout system with locked portlets
-                fluid.reorderLayout ("#fluid-LayoutCustomizer-sample2", {
+                fluid.reorderLayout ("#fluid-LayoutReorderer-sample2", {
                     selectors: {
                         columns: ".myColumn",
                         modules: "> div > div",
@@ -59,7 +59,7 @@
 	    <div class="example">
             <h1>Example 1: A simple set of sortable elements within columns</h1>
             <p>Sortable elements are also sometimes called "portlets".</p>
-            <div id="fluid-LayoutCustomizer-sample1" class="columnSetup1 fluid-vertical-order">
+            <div id="fluid-LayoutReorderer-sample1" class="columnSetup1 fluid-vertical-order">
                 <div class="myColumn fl-container-flex30 fl-force-left">
                     <h2>Column A</h2>
                     <div class="mySortable">Draggable Content (1)</div>
@@ -86,7 +86,7 @@
             <h1>Example 2: Complex sorting</h1>
             <p>The most robust sorting mechanism. Includes locked portlets.</p>
     
-            <div id="fluid-LayoutCustomizer-sample2" class="columnSetup3 fluid-vertical-order">
+            <div id="fluid-LayoutReorderer-sample2" class="columnSetup3 fluid-vertical-order">
             	 <!-- invalid drag n drop message template -->
                 <div class="dropWarning">Can't place about locked portlet</div>
 
