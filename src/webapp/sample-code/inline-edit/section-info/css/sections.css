@@ -180,8 +180,9 @@ table.narrowTable tr th {
 */
 
 .undoContainer, .redoContainer {
-    display: inline;
+/*    display: inline;
     float: right;
+*/
 }
 
 .sectionName { 
