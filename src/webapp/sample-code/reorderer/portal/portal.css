@@ -489,7 +489,7 @@ div#calendar-channel .datepicker_links {
   text-decoration: underline;
 }
 
-.lightbox-instructions{
+.image-reorderer-instructions{
 	color: #666;
 	background-color: lightyellow;
 	padding: 3px;
@@ -499,7 +499,7 @@ div#calendar-channel .datepicker_links {
     margin: 0px 0px 0px auto;
 }
 
-.lightbox-downarrow{
+.image-reorderer-downarrow{
 	font-size: 0px; line-height: 0%; width: 0px;
 	margin: 5px 8px 30px 0;
 	float: left;
@@ -508,7 +508,7 @@ div#calendar-channel .datepicker_links {
 	border-right: 10px solid lightyellow;
 }
 
-/* Lightbox Reorderer Styles */
+/* Image Reorderer Styles */
 .lb-orderable-default{
   height: 150px !important;
 	width: 150px;

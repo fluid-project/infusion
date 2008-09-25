@@ -95,7 +95,7 @@ div .orderable-drop-marker{
   float: left;
 }
 
-.lightbox-instructions{
+.image-reorderer-instructions{
 	color: #666;
 	background-color: lightyellow;
 	padding: 3px;
@@ -107,7 +107,7 @@ div .orderable-drop-marker{
 	width: 340px;
 }
 
-.lightbox-downarrow{
+.image-reorderer-downarrow{
 	font-size: 0px; line-height: 0%; width: 0px;
 	margin: 5px 8px 30px 0;
 	float: left;

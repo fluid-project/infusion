@@ -55,11 +55,11 @@ Layout Helpers
  * Lightbox: a quick picture grid layout
  * Dependency: list-based markup ?
  */
-.fl-lightbox {padding:2px;}
-.fl-lightbox li {list-style-type:none; display:inline;}
-.fl-lightbox li {float:left; width:18%; margin:2px; height:150px; overflow:hidden; position:relative; display:inline;}
-.fl-lightbox li img {display:block; margin:0 auto;}
-.fl-lightbox li .caption {position:absolute; left:0px; bottom:0px; width:100%; text-align:center; height:1em; padding:3px 0;}
+.fl-image-reorderer {padding:2px;}
+.fl-image-reorderer li {list-style-type:none; display:inline;}
+.fl-image-reorderer li {float:left; width:18%; margin:2px; height:150px; overflow:hidden; position:relative; display:inline;}
+.fl-image-reorderer li img {display:block; margin:0 auto;}
+.fl-image-reorderer li .caption {position:absolute; left:0px; bottom:0px; width:100%; text-align:center; height:1em; padding:3px 0;}
 
 
 /*

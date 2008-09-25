@@ -158,13 +158,13 @@
 .fl-theme-mist .fl-listmenu .fl-activemenu,
 .fl-theme-mist .fl-listmenu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
 
-/* Helper: Lightbox */
-.fl-theme-mist .fl-lightbox {border:2px solid #4070a1; background-color:#fff;}
-.fl-theme-mist .fl-lightbox li {background-color:#dfefff; border:1px solid #4070a1}
-.fl-theme-mist .fl-lightbox .caption {background-color:#dfefff; color:#5a95cf; }
+/* Helper: Image Reorderer */
+.fl-theme-mist .fl-image-reorderer {border:2px solid #4070a1; background-color:#fff;}
+.fl-theme-mist .fl-image-reorderer li {background-color:#dfefff; border:1px solid #4070a1}
+.fl-theme-mist .fl-image-reorderer .caption {background-color:#dfefff; color:#5a95cf; }
 /*
-.fl-theme-mist .fl-lightbox a:hover,
-.fl-theme-mist .fl-lightbox a:hover .caption {background-color:#5a95cf; color:#fff;}
+.fl-theme-mist .fl-image-reorderer a:hover,
+.fl-theme-mist .fl-image-reorderer a:hover .caption {background-color:#5a95cf; color:#fff;}
 */
 
 /* Helper: Dialogs */
