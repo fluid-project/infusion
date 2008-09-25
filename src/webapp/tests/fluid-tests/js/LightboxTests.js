@@ -89,7 +89,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             assertItemDefault("After down arrow wrap ", 12);
             
             // Tests for FLUID-1589
-            fluid.byId(orderableIds[2]).focus();
+            var box2 = fluid.jById(orderableIds[2]).focus()
             keyDown(lightbox, upEvt, 2);
             assertItemFocused("After up arrow wrap irregular ", 10);
             assertItemDefault("After up arrow wrap irregular ", 2);
