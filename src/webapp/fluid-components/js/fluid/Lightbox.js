@@ -104,7 +104,7 @@ fluid_0_5 = fluid_0_5 || {};
      * @param {Object} container 
      * @param {Object} options 
      */
-    fluid.lightbox = function (container, options) {
+    fluid.reorderImages = function (container, options) {
         var containerEl, orderChangedFn, itemFinderFn, reordererOptions;
         options = options || {};
         container = fluid.container(container);
@@ -129,5 +129,9 @@ fluid_0_5 = fluid_0_5 || {};
         
         return fluid.reorderer(container, reordererOptions);
     };
+    
+    // This function now deprecated. Please use fluid.reorderImages() instead.
+    fluid.lightbox = fluid.reorderImages;
+    
         
 })(jQuery, fluid_0_5);

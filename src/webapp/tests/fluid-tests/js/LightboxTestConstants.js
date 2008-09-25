@@ -99,7 +99,7 @@ var altKeys = {
 };
     
 function createAltKeystrokeLightbox() {
-    return fluid.lightbox(fetchLightboxRoot(), {
+    return fluid.reorderImages(fetchLightboxRoot(), {
         keysets: [altKeys],
         selectors: {
             movables: findOrderableByDivAndId
@@ -118,7 +118,7 @@ function createMultiKeystrokeLightbox() {
         left: fluid.reorderer.keys.LEFT
     };
     
-    return fluid.lightbox(fetchLightboxRoot(), {
+    return fluid.reorderImages(fetchLightboxRoot(), {
         keysets: [altKeys, altKeys2],
         selectors: {
             movables: findOrderableByDivAndId
@@ -137,7 +137,7 @@ function createMultiOverlappingKeystrokeLightbox() {
         left: fluid.reorderer.keys.LEFT
     };
     
-    return fluid.lightbox("[id=" + lightboxRootId + "]", {
+    return fluid.reorderImages("[id=" + lightboxRootId + "]", {
         keysets: [altKeys, altKeys2],
         selectors: {
             movables: findOrderableByDivAndId
