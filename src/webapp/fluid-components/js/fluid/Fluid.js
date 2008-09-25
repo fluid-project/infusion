@@ -36,6 +36,7 @@ var fluid = fluid || fluid_0_5;
     };
     
     /**
+     * Deprecated: please use jQuery to wrap an object - this will be removed in 0.6
      * Wraps an object in a jQuery if it isn't already one.
      * 
      * @param {Object} obj the object to wrap in a jQuery
