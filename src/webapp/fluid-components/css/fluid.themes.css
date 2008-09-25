@@ -149,7 +149,6 @@
 .fl-theme-mist .fl-tab-content {background-color:#ffffff; color:#000;}
 
 /* Helper: Menu */
-
 .fl-theme-mist .fl-listmenu {border:1px solid #4070a1; background-color:#fff;}
 .fl-theme-mist .fl-listmenu li,
 .fl-theme-mist .fl-listmenu li a  {font-weight:bold; color:#4070a1; background-color:#dfefff; border-color:#4070a1; text-decoration:none;}
@@ -158,13 +157,13 @@
 .fl-theme-mist .fl-listmenu .fl-activemenu,
 .fl-theme-mist .fl-listmenu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
 
-/* Helper: Image Reorderer */
-.fl-theme-mist .fl-image-reorderer {border:2px solid #4070a1; background-color:#fff;}
-.fl-theme-mist .fl-image-reorderer li {background-color:#dfefff; border:1px solid #4070a1}
-.fl-theme-mist .fl-image-reorderer .caption {background-color:#dfefff; color:#5a95cf; }
+/* Helper: Thumbnail Grid */
+.fl-theme-mist .fl-grid {border:2px solid #4070a1; background-color:#fff;}
+.fl-theme-mist .fl-grid li {background-color:#dfefff; border:1px solid #4070a1}
+.fl-theme-mist .fl-grid .caption {background-color:#dfefff; color:#5a95cf; }
 /*
-.fl-theme-mist .fl-image-reorderer a:hover,
-.fl-theme-mist .fl-image-reorderer a:hover .caption {background-color:#5a95cf; color:#fff;}
+.fl-theme-mist .fl-grid a:hover,
+.fl-theme-mist .fl-grid a:hover .caption {background-color:#5a95cf; color:#fff;}
 */
 
 /* Helper: Dialogs */
