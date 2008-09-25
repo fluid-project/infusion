@@ -4,8 +4,8 @@
 <html xmlns:xhtml10="http://www.w3.org/1999/xhtml">
 
   <head>
-    <title>Generic Lightbox</title>
-    <link href="../../../fluid-components/css/Lightbox.css" type="text/css" rel="stylesheet" media="all" />
+    <title>Image Reorderer</title>
+    <link href="../../../fluid-components/css/ImageReorderer.css" type="text/css" rel="stylesheet" media="all" />
 
     <!--  Required javascript modules for the Lightbox which can be replaced with the build generated file Fluid-all.js -->
     <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
@@ -17,7 +17,7 @@
     <script type="text/javascript" src="../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/GeometricManager.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/Reorderer.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/fluid/Lightbox.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/ImageReorderer.js"></script>
 
     <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. -->
     <script type="text/javascript">
@@ -33,10 +33,10 @@
     to the server, therefore the orderables need to be enclosed in a form.
   -->
   <form id="reorder-form">
-    <p id="para1">This is the Lightbox demo page.</p>
+    <p id="para1">This is the Image Reorderer demo page.</p>
       <!-- Sample instruction message. At runtime, this would be supplied by the server. -->
       <div id="message-bundle:" class="lightbox-instructions" tabindex="1"
-      	   title="Image Lightbox: To use the keyboard: Select an image using i, k, m or j, or the arrow keys. View an image by pressing Enter. Move an image using CTRL + a direction key.">
+      	   title="Image Reorderer: To use the keyboard: Select an image using i, k, m or j, or the arrow keys. View an image by pressing Enter. Move an image using CTRL + a direction key.">
         <div class="lightbox-downarrow"></div><div id="message-bundle:thumbnailInstructions">
           To use the keyboard:<br/>
             Select an image using i, k, m or j, or the arrow keys.<br/>
