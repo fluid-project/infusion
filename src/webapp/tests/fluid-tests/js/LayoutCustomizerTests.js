@@ -43,7 +43,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // focus on portlet 3 - it is underneath a locked portlet
             var portlet3 = fluid.byId(portletIds[3]);
-            portlet3.focus();
+            $(portlet3).focus();
             
             // try to move portlet 3 up
             // Press the ctrl key
@@ -69,7 +69,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             // focus on portlet 8 
             var portlet8 = fluid.byId(portletIds[8]);
-            portlet8.focus();
+            $(portlet8).focus();
     
             // move portlet 8 down
             // Press the ctrl key
