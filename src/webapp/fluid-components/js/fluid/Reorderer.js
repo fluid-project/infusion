@@ -89,19 +89,19 @@ fluid_0_5 = fluid_0_5 || {};
         // FLUID-1598 and others: Opera will refuse to honour a "preventDefault" on a keydown.
         // http://forums.devshed.com/javascript-development-115/onkeydown-preventdefault-opera-485371.html
         if ($.browser.opera) {
-           container.keypress(function(evt) {
-               if (advancedPrevention) {
-                   advancedPrevention = false;
-                   evt.preventDefault();
-                   return false;
-               }
-           });
-           actualKeyDown = function(evt) {
-               var oldret = keyDownHandler(evt);
-               if (oldret === false) {
-                   advancedPrevention = true;
-               }
-           }
+            container.keypress(function (evt) {
+                if (advancedPrevention) {
+                    advancedPrevention = false;
+                    evt.preventDefault();
+                    return false;
+                }
+            });
+            actualKeyDown = function (evt) {
+                var oldret = keyDownHandler(evt);
+                if (oldret === false) {
+                    advancedPrevention = true;
+                }
+            };
         }
         container.keydown(actualKeyDown);
         container.keyup(keyUpHandler);
@@ -642,15 +642,17 @@ fluid_0_5 = fluid_0_5 || {};
      *******************/
 
     function geometricInfoGetter(orientation, sentinelize, dom) {
-        return function() {
-           return {
-               sentinelize: sentinelize,
-               extents: [{orientation : orientation, 
-                         elements     : dom.fastLocate("dropTargets")
-                         }],
-               elementMapper: function(element) {
-                        return $.inArray(element, dom.fastLocate("movables")) === -1? "locked": null;
-                        }};
+        return function () {
+            return {
+                sentinelize: sentinelize,
+                extents: [{
+                    orientation: orientation,
+                    elements: dom.fastLocate("dropTargets")
+                }],
+                elementMapper: function (element) {
+                    return $.inArray(element, dom.fastLocate("movables")) === -1? "locked": null;
+                }
+            };
         };
     }
     
