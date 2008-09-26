@@ -21,7 +21,7 @@
         <script type="text/javascript">
             jQuery(document).ready(function () {
                 /* only specific list items are sortable */
-                var reorder_example_b = fluid.reorderList('#myList', {
+                var reorder_example_list = fluid.reorderList('#myList', {
                     selectors : {
                         movables : 'li.orderable',
                         selectables: 'li',
@@ -30,14 +30,15 @@
                 });
                 
                 /* only specific list items are sortable */
-                var reorder_example_b = fluid.reorderList('#myTabs',  {
+                var reorder_example_tabs = fluid.reorderList('#myTabs',  {
                     selectors : {
                         movables : 'li'
-                    }
+                    },
+					orientation : fluid.orientation.HORIZONTAL
                 });
                 
                 /* two-dimensional sorting in a grid */                
-                var reorder_example_c = fluid.reorderGrid('#myGrid',  {
+                var reorder_example_grid = fluid.reorderGrid('#myGrid',  {
                     selectors : {
                         movables : 'p'
                     }
