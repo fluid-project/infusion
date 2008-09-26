@@ -1,13 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>Reorder Examples</title>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Reorder Examples</title>
 
         <link rel="stylesheet" type="text/css" href="../css/fluid.presentation.css" />
         <link rel="stylesheet" type="text/css" href="../css/fluid.states.css" />
         <link rel="stylesheet" type="text/css" href="../css/Reorderer.css" />
-        
+
         <script type="text/javascript" src="../js/jquery/jquery-1.2.6.js"></script>
         <script type="text/javascript" src="../js/jquery/jARIA.js"></script>
         <script type="text/javascript" src="../js/jquery/jquery.keyboard-a11y.js"></script>
@@ -17,7 +17,7 @@
         <script type="text/javascript" src="../js/fluid/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../js/fluid/GeometricManager.js"></script>
         <script type="text/javascript" src="../js/fluid/Reorderer.js"></script>
-        
+
         <script type="text/javascript">
             jQuery(document).ready(function () {
                 /* only specific list items are sortable */
@@ -28,15 +28,15 @@
                         dropTargets: 'li'
                     }
                 });
-                
+
                 /* only specific list items are sortable */
                 var reorder_example_tabs = fluid.reorderList('#myTabs',  {
                     selectors : {
                         movables : 'li'
                     },
-					orientation : fluid.orientation.HORIZONTAL
+                    orientation : fluid.orientation.HORIZONTAL
                 });
-                
+
                 /* two-dimensional sorting in a grid */                
                 var reorder_example_grid = fluid.reorderGrid('#myGrid',  {
                     selectors : {
@@ -47,13 +47,12 @@
             });
         </script>
 
-
     </head>
-	<body>
+    <body>
         <h1>Example 1. Semi-sortable List</h1>
         <p>This list only has a few sortable items</p>
         <ol id="myList" class="fluid-vertical-order">
-     	  <li class="orderable">I'm sortable</li>
+          <li class="orderable">I'm sortable</li>
 
           <li>Not sortable</li>
 
@@ -95,5 +94,5 @@
             <p>Cat</p>
             <p>Happy</p>
         </div>
-	</body>
+    </body>
 </html>
