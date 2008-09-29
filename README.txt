@@ -77,13 +77,16 @@ with their respective licenses inside the fluid source code.
 
 Sources of Intellectual Property Included in Fluid
 --------------------------------------------------
-	* jQuery javascript library: http://jquery.com/
-	* jQuery UI javascript widget library: http://ui.jquery.com/
-	* QUnit
-	* CSS styling reset from YUI: http://developer.yahoo.com/yui/reset/
-	* jARIA
-    * JSON parsing and stringifying methods
-    * SWFObject: 
+This is a list of publicly available software that is included in the Fluid bundle, along with their licensing terms.
+
+	* jQuery javascript library: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
+	* jQuery UI javascript widget library: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
+	* QUnit testrunner: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
+	* CSS styling reset from YUI: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
+	* jARIA, the jQuery ARIA plugin: http://jqueryjs.googlecode.com/svn/trunk/plugins/jARIA (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * JSON parsing and stringifying methods: http://www.json.org/ (Public Domain)
+    * SWFUpload: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
+    * Real world examples from Sakai (http://sakaiproject.org) and uPortal (http://www.uportal.org/)
     
     
 Readme
