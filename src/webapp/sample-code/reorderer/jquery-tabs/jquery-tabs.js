@@ -44,5 +44,5 @@ demo.initJqueryTabs = function () {
     };
 
     
-    return new fluid.reorderer(tabList, options);
+    return fluid.reorderer(tabList, options);
 };
