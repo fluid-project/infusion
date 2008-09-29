@@ -4,6 +4,14 @@ Fluid Infusion 0.5
 Main Project Site:  http://fluidproject.org
 User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
 
+What's New in 0.5
+=================
+
+This version of Fluid Infusion includes a number of API changes. The Fluid wiki has instructions
+for upgrading your existing 0.4 implementation to use the new 0.5 APIs:
+
+    http://wiki.fluidproject.org/display/fluid/Upgrading+to+version+0.5
+
 What's in this Release
 ======================
 
