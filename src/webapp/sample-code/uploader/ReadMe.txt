@@ -39,16 +39,45 @@ Please note that if you move your installation, you'll need to do this all over 
 
 Also it appears that these settings are global and do not need to repeated for every browser that you are using on that machine. 
 
+KNOWN ISSUES: 
+* The Uploader is currently NOT compatible with the Flash 10 beta. This bugs is caused by
+  a change in Adobe's security protocols for Flash 10, which blocks the SWFUpload code from calling
+  the OS File browser. The SWFUpload community is looking for fixes and work-arounds both in their
+  own code and in Flash, and we anticipate a work-around or fix before Flash 10 goes final.
+  
+* After pausing, the queue sometimes won't resume
+  
 TROUBLE SHOOTING:
 
-If you see this error in your console: 
+* When running the Uploader sample code on a local system without a server, check to make 
+  sure that you have followed the instructions above under "RUNNING THE UPLOADER ON A 
+  LOCAL SYSTEM WITHOUT A SERVER". 
+
+* If you see this error in your console: 
 	[Exception... "'Invalid function name' when calling method: [nsIDOMEventListener::handleEvent]" nsresult: "0x8057001e (NS_ERROR_XPC_JS_THREW_STRING)" location: "<unknown>" data: no]
 	[Break on this error] if ( !event.which && ((event.charCode || event.charCode === 0) ? event.charCod...
 
-The flashUrl setting is probably wrong. Check that first. 
+  The flashUrl setting is probably wrong. Check that first. 
 
 --------------------------------------
 
 RUNNING THE UPLOADER ON A SERVER
 
-To be written
+Two uploader applications have been provided as very rough examples of integrating the Uploader into your applications. This code is not intended for a production environment. 
+
+* JAVA Uploader Reference Application:
+  For our own internal testing the Fluid team wrote the following JAVA application:
+  	https://source.fluidproject.org/svn/fluid/image-gallery/trunk/
+
+  Please read https://source.fluidproject.org/svn/fluid/image-gallery/trunk/development-support/README.txt before proceeding.
+  
+* PHP Uploader Reference Application
+
+  upload.php is a sample PHP reference application provided by the SWFUpload project. 
+  As they say in thier Read Me: "These are sample files for different server 
+  technologies that can help implement SWFUpload. These samples may not be 
+  drop-in solutions for your application but may help you find the direction 
+  you need to solve your particular issue."
+  
+  This file can be found in the php folder of the Uploader sample-code
+  or can be downloaded from: http://code.google.com/p/swfupload/
