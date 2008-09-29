@@ -58,7 +58,7 @@ Notes:
 	}
 
 // Settings
-	$save_path = "/home/elicochr/public_html/sos/uploads/";
+	$save_path = getcwd() . "/uploads/";				// The path were we will save the file (getcwd() may not be reliable and should be tested in your environment)
 	$upload_name = "Filedata";
 	$max_file_size_in_bytes = 2147483647;				// 2GB in bytes
 	$extension_whitelist = array("jpg", "gif", "png");	// Allowed file extensions
@@ -125,7 +125,7 @@ Notes:
 	$file_extension = $path_info["extension"];
 	$is_valid_extension = false;
 	foreach ($extension_whitelist as $extension) {
-		if ($file_extension == $extension) {
+		if (strcasecmp($file_extension, $extension) == 0) {
 			$is_valid_extension = true;
 			break;
 		}
