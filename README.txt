@@ -74,6 +74,18 @@ in the license file:
 Fluid also depends upon some third party open source modules. These are contained in their own folders 
 with their respective licenses inside the fluid source code.
 
+
+Sources of Intellectual Property Included in Fluid
+--------------------------------------------------
+	* jQuery javascript library: http://jquery.com/
+	* jQuery UI javascript widget library: http://ui.jquery.com/
+	* QUnit
+	* CSS styling reset from YUI: http://developer.yahoo.com/yui/reset/
+	* jARIA
+    * JSON parsing and stringifying methods
+    * SWFObject: 
+    
+    
 Readme
 ------
 This file.
@@ -116,13 +128,13 @@ The Inline Edit component is in development. Some features are present, but more
 The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
 Some of the known issues in this release are described here:
 
-* Uploader: The Uploader is currently NOT compatible with the Flash 10 beta. This bugs is caused by
+* Uploader: The Uploader is currently NOT compatible with the Flash 10 beta. This bug is caused by
   a change in Adobe's security protocols for Flash 10, which blocks the SWFUpload code from calling
-  the OS File browser. The SWFUpload community is looking for fixes and work arounds both in their
-  own code and in Flash, and we anticipate a work around or fix before Flash 10 goes final.
+  the OS File browser. The SWFUpload community is looking for fixes and work-arounds both in their
+  own code and in Flash, and we anticipate a work-around or fix before Flash 10 goes final.
 
 * Uploader: After pausing, queue sometimes won't resume
 
 * Reorderer: Nested Reorderers sometimes don't work as expected.
 
-* Keyboard control in the Opera browser is not yet fully supported.
+* Keyboard control in the Safari and Opera browsers is not yet fully supported.
