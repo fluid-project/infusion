@@ -39,8 +39,16 @@
     
     // If this was production code, this would be in a separate file but since this is a very simple manual test I'm leaving it here.    
     function init () {
-        fluid.reorderList("#div-reorderer", "[id^=div-item-]");
-        fluid.reorderList("#list-reorderer", "li");
+        fluid.reorderList("#div-reorderer", {
+            selectors: {
+                movables: "[id^=div-item-]"
+            }
+        });
+        fluid.reorderList("#list-reorderer", {
+            selectors: {
+                movables: "li"
+            }
+        });
     }
     
     init();
