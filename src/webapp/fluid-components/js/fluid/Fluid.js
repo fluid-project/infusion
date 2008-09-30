@@ -19,7 +19,7 @@ var fluid = fluid || fluid_0_5;
 
 (function (jQuery, fluid) {
     
-    fluid.version = "Infusion 0.5";
+    fluid.version = "Infusion 0.6";
     
     /**
      * Causes an error message to be logged to the console and a real runtime error to be thrown.
