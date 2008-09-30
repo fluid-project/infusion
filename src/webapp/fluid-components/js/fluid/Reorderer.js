@@ -12,9 +12,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 /*global $, jQuery*/
-/*global fluid_0_5*/
+/*global fluid_0_6*/
 
-fluid_0_5 = fluid_0_5 || {};
+fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
@@ -703,4 +703,4 @@ fluid_0_5 = fluid_0_5 || {};
         return that;
     }; // End of GridLayoutHandler
 
-})(jQuery, fluid_0_5);
+})(jQuery, fluid_0_6);

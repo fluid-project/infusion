@@ -11,9 +11,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_0_5*/
+/*global fluid_0_6*/
 
-fluid_0_5 = fluid_0_5 || {};
+fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     function setCaretToStart(control) {
@@ -395,4 +395,4 @@ fluid_0_5 = fluid_0_5 || {};
             editables: ".inlineEditable"
         }
     });
-})(jQuery, fluid_0_5);
+})(jQuery, fluid_0_6);

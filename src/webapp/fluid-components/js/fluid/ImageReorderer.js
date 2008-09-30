@@ -11,9 +11,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_0_5*/
+/*global fluid_0_6*/
 
-fluid_0_5 = fluid_0_5 || {};
+fluid_0_6 = fluid_0_6 || {};
 
 (function (jQuery, fluid) {
     
@@ -134,4 +134,4 @@ fluid_0_5 = fluid_0_5 || {};
     fluid.lightbox = fluid.reorderImages;
     
         
-})(jQuery, fluid_0_5);
+})(jQuery, fluid_0_6);

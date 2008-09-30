@@ -14,7 +14,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery, YAHOO, opera*/
 
-var fluid_0_5 = fluid_0_5 || {};
+var fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
@@ -189,4 +189,4 @@ var fluid_0_5 = fluid_0_5 || {};
         }
         return togo;
     };
-})(jQuery, fluid_0_5);
+})(jQuery, fluid_0_6);
