@@ -103,11 +103,11 @@ fluid_0_6 = fluid_0_6 || {};
     }
 
     function finish(that) {
-        that.events.onFinish.fire();
         if (that.options.finishedEditing) {
             that.options.finishedEditing(that.editField[0], that.viewEl[0]);
         }
         that.updateModel(that.editField.val());
+        that.events.afterFinish.fire();
         
         that.editContainer.hide();
         that.viewEl.show();
@@ -365,7 +365,7 @@ fluid_0_6 = fluid_0_6 || {};
             modelChanged: null,
             onBeginEdit: "preventable",
             afterBeginEdit: null,
-            onFinish: null
+            afterFinish: null
         },
         
         paddings: {

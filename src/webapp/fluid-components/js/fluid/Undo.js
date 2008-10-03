@@ -74,10 +74,11 @@ fluid_0_6 = fluid_0_6 || {};
                 that.state = STATE_CHANGED;
                 refreshView(that);
             },
-            onFinish: function () {
-                if (that.component.model === that.extremalModel) {
-                    fluid.model.copyModel(that.initialModel, that.component.model);
+            afterFinish: function () {
+                if (that.component.model.value !== that.extremalModel.value) {
+                    fluid.model.copyModel(that.initialModel, that.extremalModel);
                 }
+                fluid.model.copyModel(that.extremalModel, that.component.model);
             }
         };
     };
@@ -97,6 +98,7 @@ fluid_0_6 = fluid_0_6 || {};
         that.initialModel = {};
         that.extremalModel = {};
         fluid.model.copyModel(that.initialModel, component.model);
+        fluid.model.copyModel(that.extremalModel, component.model);
         
         that.state = STATE_INITIAL;
         refreshView(that);
