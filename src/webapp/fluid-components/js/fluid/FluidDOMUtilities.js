@@ -12,7 +12,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 // Declare dependencies.
-/*global jQuery, YAHOO, opera*/
+/*global jQuery */
 
 var fluid_0_6 = fluid_0_6 || {};
 
