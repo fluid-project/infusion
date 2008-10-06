@@ -137,6 +137,19 @@ var fluid_0_6 = fluid_0_6 || {};
          ((node.nodeType === 3) && fluid.dom.isWhitespaceNode(node)); // a text node, all ws
     };
     
+    /** Return the element text from the supplied DOM node as a single String */
+    fluid.dom.getElementText = function(element) {
+        var nodes = element.childNodes;
+        var text = "";
+        for (var i = 0; i < nodes.length; ++ i) {
+          var child = nodes[i];
+          if (child.nodeType == 3) {
+            text = text + child.nodeValue;
+            }
+          }
+        return text; 
+    };
+    
     /** 
      * Cleanse the children of a DOM node by removing all <script> tags.
      * This is necessary to prevent the possibility that these blocks are

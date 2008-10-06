@@ -507,13 +507,21 @@ var fluid = fluid || fluid_0_6;
         }
         return root;
     };
-
-
-    // Logging
     
-    fluid.logEnabled = false;
+    
+    // Logging
+    var logging;
+    /** method to allow user to enable logging (off by default) */
+    fluid.setLogging = function(enabled) {
+      if (typeof enabled == "boolean") {
+        logging = enabled;
+        } else {
+        logging = false;
+        }
+      };
+
     fluid.log = function (str) {
-        if (fluid.logEnabled) {
+        if (logging) {
             str = new Date().toTimeString() + ":  " + str;
             if (typeof(console) !== "undefined") {
                 if (console.debug) {
