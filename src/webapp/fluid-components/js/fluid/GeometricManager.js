@@ -83,7 +83,7 @@ var fluid_0_6 = fluid_0_6 || {};
         target = fluid.unwrap(target);
         
         var scan;
-        // fluid.log("moveDom source " + fluid.dom.dumpEl(source) + " target " + fluid.dom.dumpEl(target) + " position " + position);     
+        // fluid.log("moveDom source " + fluid.dumpEl(source) + " target " + fluid.dumpEl(target) + " position " + position);     
         if (position === fluid.position.INSIDE) {
             target.appendChild(source);
         }
@@ -127,13 +127,13 @@ var fluid_0_6 = fluid_0_6 || {};
         target = fluid.unwrap(target);
         var sourcei = jQuery.inArray(element, sourceelements);
         if (sourcei === -1) {
-            fluid.fail("Error in permuteDom: source element " + fluid.dom.dumpEl(element) 
-               + " not found in source list " + fluid.dom.dumpEl(sourceelements));
+            fluid.fail("Error in permuteDom: source element " + fluid.dumpEl(element) 
+               + " not found in source list " + fluid.dumpEl(sourceelements));
         }
         var targeti = jQuery.inArray(target, targetelements);
         if (targeti === -1) {
-            fluid.fail("Error in permuteDom: target element " + fluid.dom.dumpEl(target) 
-               + " not found in source list " + fluid.dom.dumpEl(targetelements));
+            fluid.fail("Error in permuteDom: target element " + fluid.dumpEl(target) 
+               + " not found in source list " + fluid.dumpEl(targetelements));
         }
         var samespan = sourceelements === targetelements;
         position = fluid.normalisePosition(position, samespan, targeti, sourcei);
@@ -224,7 +224,7 @@ var fluid_0_6 = fluid_0_6 || {};
     function dumpelem(cacheelem) {
       if (!cacheelem || !cacheelem.rect) return "null";
       else return dumprect(cacheelem.rect) + " position: " +
-                cacheelem.position + " for " + fluid.dom.dumpEl(cacheelem.element);
+                cacheelem.position + " for " + fluid.dumpEl(cacheelem.element);
     }
     
     fluid.dropManager = function () {
@@ -398,7 +398,7 @@ var fluid_0_6 = fluid_0_6 || {};
                 minlockedelem = blankHolder;
             }
             //fluid.log("PRE: mindistance " + mindistance + " element " + 
-            //   fluid.dom.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
+            //   fluid.dumpEl(minelem.element) + " minlockeddistance " + minlockeddistance
             //    + " locked elem " + dumpelem(minlockedelem));
             if (lastClosest && lastClosest.position === minelem.position &&
                 fluid.unwrap(lastClosest.element) === fluid.unwrap(minelem.element) &&

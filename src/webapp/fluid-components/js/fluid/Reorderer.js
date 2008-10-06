@@ -32,15 +32,6 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         avatar.removeAttr("id");
-        //$("[id]", avatar).removeAttr("id");
-        //$(":hidden", avatar).remove();
-        //$("input", avatar).attr("disabled", "true");
-        // dropping in the same column fails if the avatar is considered a droppable.
-        // droppable ("destroy") should take care of this, but it doesn't seem to remove
-        // the class, which is what is checked, so we remove it manually
-        // (see http://dev.$.com/ticket/2599)
-        // 2008-05-12: 2599 has been fixed now in trunk
-        //                    avatar.droppable ("destroy");
         avatar.removeClass("ui-droppable");
         avatar.addClass(cssClass);
         

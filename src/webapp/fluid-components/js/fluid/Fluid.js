@@ -36,8 +36,9 @@ var fluid = fluid || fluid_0_6;
     };
     
     /**
-     * Deprecated: please use jQuery to wrap an object - this will be removed in 0.6
-     * Wraps an object in a jQuery if it isn't already one.
+     * Wraps an object in a jQuery if it isn't already one. This function is useful since
+     * it ensures to wrap a null or otherwise falsy argument to itself, rather than the
+     * often unhelpful jQuery default of returning the overall document node.
      * 
      * @param {Object} obj the object to wrap in a jQuery
      */
@@ -54,6 +55,13 @@ var fluid = fluid || fluid_0_6;
         return obj && obj.jquery && obj.length === 1 ? obj[0] : obj; // Unwrap the element if it's a jQuery.
     };
     
+    /** Searches through the supplied object for the first value which matches the one supplied.
+     * @param obj {Object} the Object to be searched through
+     * @param value {Object} the value to be found. This will be compared against the object's
+     * member using === equality.
+     * @return {String} The first key whose value matches the one supplied, or <code>null</code> if no
+     * such key is found.
+     */
     fluid.findKeyInObject = function (obj, value) {
         for (var key in obj) {
             if (obj[key] === value) {
@@ -296,12 +304,38 @@ var fluid = fluid || fluid_0_6;
         return that;
     };
     
+    /** A special "marker object" which is recognised as one of the arguments to 
+     * fluid.initSubcomponents. This object is recognised by reference equality - 
+     * where it is found, it is replaced in the actual argument position supplied
+     * to the specific subcomponent instance, with the particular options block
+     * for that instance attached to the overall "that" object.
+     */
     fluid.COMPONENT_OPTIONS = {};
     
     
     fluid.initSubcomponent = function (that, className, args) {
         return fluid.initSubcomponents(that, className, args)[0];
     };
+    
+    /** Initialise all the "subcomponents" which are configured to be attached to 
+     * the supplied top-level component, which share a particular "class name".
+     * @param {Component} that The top-level component for which sub-components are
+     * to be instantiated. It contains specifications for these subcomponents in its
+     * <code>options</code> structure.
+     * @param {String} className The "class name" or "category" for the subcomponents to
+     * be instantiated. A class name specifies an overall "function" for a class of 
+     * subcomponents and represents a category which accept the same signature of
+     * instantiation arguments.
+     * @param {Array of Object} args The instantiation arguments to be passed to each 
+     * constructed subcomponent. These will typically be members derived from the
+     * top-level <code>that</code> or perhaps globally discovered from elsewhere. One
+     * of these arguments may be <code>fluid.COMPONENT_OPTIONS</code> in which case this
+     * placeholder argument will be replaced by instance-specific options configured
+     * into the member of the top-level <code>options</code> structure named for the
+     * <code>className</code>
+     * @return {Array of Object} The instantiated subcomponents, one for each member
+     * of <code>that.options[className]</code>.
+     */
     
     fluid.initSubcomponents = function (that, className, args) {
         var entry = that.options[className];
@@ -340,7 +374,7 @@ var fluid = fluid || fluid_0_6;
     /**
      * Creates a new DOM Binder instance for the specified component and mixes it in.
      * 
-     * @param {Object} that the compoennt instance to attach the new DOM Binder to
+     * @param {Object} that the component instance to attach the new DOM Binder to
      */
     fluid.initDomBinder = function (that) {
         that.dom = fluid.createDomBinder(that.container, that.options.selectors);
@@ -381,6 +415,21 @@ var fluid = fluid || fluid_0_6;
         return target;
     }
     
+    /** Merge a collection of options structures onto a target, following an optional policy.
+     * This function is typically called automatically, as a result of an invocation of
+     * <code>fluid.iniView</code>. The behaviour of this function is explained more fully on
+     * the page http://wiki.fluidproject.org/display/fluid/Options+Merging+for+Fluid+Components .
+     * @param policy {Object/String} A "policy object" specifiying the type of merge to be performed.
+     * If policy is of type {String} it should take on the value "reverse" or "replace" representing
+     * a static policy. If it is an
+     * Object, it should contain a mapping of EL paths onto these String values, representing a
+     * fine-grained policy. If it is an Object, the values may also themselves be EL paths 
+     * representing that a default value is to be taken from that path.
+     * @param target {Object} The options structure which is to be modified by receiving the merge results.
+     * @param options1, options2, .... {Object} an arbitrary list of options structure which are to
+     * be merged "on top of" the <code>target</code>. These will not be modified.    
+     */
+    
     fluid.merge = function (policy, target) {
         var path = "";
         
@@ -415,6 +464,17 @@ var fluid = fluid || fluid_0_6;
     fluid.event = {};
         
     var fluid_guid = 1;
+    /** Construct an "event firer" object which can be used to register and deregister 
+     * listeners, to which "events" can be fired. These events consist of an arbitrary
+     * function signature. General documentation on the Fluid events system is at
+     * http://wiki.fluidproject.org/display/fluid/The+Fluid+Event+System .
+     * @param {Boolean} unicast If <code>true</code>, this is a "unicast" event which may only accept
+     * a single listener.
+     * @param {Boolean} preventable If <code>true</code> the return value of each handler will 
+     * be checked for <code>true</code> in which case further listeners will be shortcircuited, and this
+     * will be the return value of fire()
+     */
+    
     fluid.event.getEventFirer = function (unicast, preventable) {
         var log = fluid.log;
         var listeners = {};
@@ -474,6 +534,12 @@ var fluid = fluid || fluid_0_6;
         jQuery.extend(true, target, source);
     };
     
+    /** Parse an EL expression separated by periods (.) into its component segments.
+     * @param {String} EL The EL expression to be split
+     * @return {Array of String} the component path expressions.
+     * TODO: This needs to be upgraded to handle (the same) escaping rules (as RSF), so that
+     * path segments containing periods and backslashes etc. can be processed.
+     */
     fluid.model.parseEL = function (EL) {
         return EL.split('.');
     };
@@ -520,6 +586,11 @@ var fluid = fluid || fluid_0_6;
         }
       };
 
+    /** Log a message to a suitable environmental console. If the standard "console" 
+     * stream is available, the message will be sent there - otherwise either the
+     * YAHOO logger or the Opera "postError" stream will be used. Logging must first
+     * be enabled with a call fo the fluid.setLogging(true) function.
+     */
     fluid.log = function (str) {
         if (logging) {
             str = new Date().toTimeString() + ":  " + str;
@@ -539,6 +610,42 @@ var fluid = fluid || fluid_0_6;
         }
     };
     
+    /** 
+     * Dumps a DOM element into a readily recognisable form for debugging - produces a
+     * "semi-selector" summarising its tag name, class and id, whichever are set.
+     * 
+     * @param {jQueryable} element The element to be dumped
+     * @return A string representing the element.
+     */
+    fluid.dumpEl = function (element) {
+        var togo;
+        
+        if (!element) {
+            return "null";
+        }
+        if (element.nodeType === 3 || element.nodeType === 8) {
+            return "[data: " + element.data + "]";
+        } 
+        if (typeof element.length === "number") {
+            togo = "[";
+            for (var i = 0; i < element.length; ++ i) {
+                togo += fluid.dumpEl(element[i]);
+                if (i < element.length - 1) {
+                    togo += ", ";
+                }
+            }
+            return togo + "]";
+        }
+        element = jQuery(element);
+        togo = element.get(0).tagName;
+        if (element.attr("id")) {
+            togo += "#" + element.attr("id");
+        }
+        if (element.attr("class")) {
+            togo += "." + element.attr("class");
+        }
+        return togo;
+    };
 
     // DOM Utilities.
     
@@ -593,6 +700,16 @@ var fluid = fluid || fluid_0_6;
         
     // Functional programming utilities.
     
+    /** Return a list of objects, transformed by one or more functions.
+     * @param list {Array} The initial array of objects to be transformed.
+     * @param fn1, fn2, etc. {Function} An arbitrary number of optional further arguments,
+     * all of type Function, accepting the signature (object, index), where object is the
+     * list member to be transformed, and index is its list index. Each function will be
+     * applied in turn to each list member, which will be replaced by the return value
+     * from the function.
+     * @return The finally transformed list, where each member has been replaced by the
+     * original member acted on by the function or functions.
+     */
     fluid.transform = function (list) {
         var togo = [];
         for (var i = 0; i < list.length; ++ i) {
@@ -605,6 +722,17 @@ var fluid = fluid || fluid_0_6;
         return togo;
     };
     
+    /** Scan through a list of objects, terminating on and returning the first member which
+     * matches a predicate function.
+     * @param list {Array} The list of objects to be searched.
+     * @param fn {Function} A predicate function, acting on a list member. A predicate which
+     * returns any value which is not <code>null</code> or <code>undefined</code> will terminate
+     * the search. The function accepts (object, index).
+     * @param deflt {Object} A value to be returned in the case no predicate function matches
+     * a list member. The default will be the natural value of <code>undefined</code>
+     * @return The first return value from the predicate function which is not <code>null</code>
+     * or <code>undefined</code>
+     */
     fluid.find = function (list, fn, deflt) {
         for (var i = 0; i < list.length; ++ i) {
             var transit = fn(list[i], i);
@@ -615,6 +743,15 @@ var fluid = fluid || fluid_0_6;
         return deflt;
     };
     
+    /** Scan through a list of objects, "accumulating" a value over them 
+     * (may be a straightforward "sum" or some other chained computation).
+     * @param list {Array} The list of objects to be accumulated over.
+     * @param fn {Function} An "accumulation function" accepting the signature (object, total, index) where
+     * object is the list member, total is the "running total" object (which is the return value from the previous function),
+     * and index is the index number.
+     * @param arg {Object} The initial value for the "running total" object.
+     * @return {Object} the final running total object as returned from the final invocation of the function on the last list member.
+     */
     fluid.accumulate = function (list, fn, arg) {
 	    for (var i = 0; i < list.length; ++ i) {
 	        arg = fn(list[i], arg, i);
@@ -622,6 +759,14 @@ var fluid = fluid || fluid_0_6;
 	    return arg;
     };
     
+    /** Can through a list of objects, removing those which match a predicate.
+     * @param list {Array} The list of objects to be scanned over.
+     * @param fn {Function} A predicate function determining whether an element should be
+     * removed. This accepts the standard signature (object, index) and returns a "truthy"
+     * result in order to determine that the supplied object should be removed from the list.
+     * @return The list, transformed by the operation of removing the matched elements. The
+     * supplied list is modified by this operation.
+     */
     fluid.remove_if = function (list, fn) {
         for (var i = 0; i < list.length; ++ i) {
             if (fn(list[i], i)) {

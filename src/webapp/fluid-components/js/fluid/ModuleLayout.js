@@ -180,7 +180,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                     elements: jQuery.makeArray(column.elements),
                     parentElement: column.container
                 };
-              //  fluid.log("Geometry col " + col + " elements " + fluid.dom.dumpEl(thisEls.elements) + " isLocked [" + 
+              //  fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements) + " isLocked [" + 
               //       fluid.transform(thisEls.elements, togo.elementMapper).join(", ") + "]");
                 extents.push(thisEls);
             }

@@ -166,40 +166,4 @@ var fluid_0_6 = fluid_0_6 || {};
     };  
     fluid.dom.cleanseScripts.MARKER = "fluid-scripts-cleansed";
     
-    /** 
-     * Dumps a DOM element into a readily recognisable form for debugging - produces a
-     * "semi-selector" summarising its tag name, class and id, whichever are set.
-     * 
-     * @param {jQueryable} element The element to be dumped
-     * @return A string representing the element.
-     */
-    fluid.dom.dumpEl = function (element) {
-        var togo;
-        
-        if (!element) {
-            return "null";
-        }
-        if (element.nodeType === 3 || element.nodeType === 8) {
-            return "[data: " + element.data + "]";
-        } 
-        if (typeof element.length === "number") {
-            togo = "[";
-            for (var i = 0; i < element.length; ++ i) {
-                togo += fluid.dumpEl(element[i]);
-                if (i < element.length - 1) {
-                    togo += ", ";
-                }
-            }
-            return togo + "]";
-        }
-        element = jQuery(element);
-        togo = element.get(0).tagName;
-        if (element.attr("id")) {
-            togo += "#" + element.attr("id");
-        }
-        if (element.attr("class")) {
-            togo += "." + element.attr("class");
-        }
-        return togo;
-    };
 })(jQuery, fluid_0_6);
