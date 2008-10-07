@@ -1,0 +1,16 @@
+/* Blue 2 Scheme */
+body, input, select, .blq-solidbg, .blq-solidbg * {color:#00f !important;background-color:#9fcfff !important;}
+* {color:#00f !important;border-color:#00f !important;background-color:transparent !important;}
+a:link, a:link * {color:#fff !important;background-color:#9fcfff !important;}
+a:visited, a:visited * {color:#000080 !important;}
+a:active, a:active * {color:#0000ce !important;}
+a:hover, a:hover * {color:#354f60 !important;}
+#blq-accesslinks li.hide a:focus, #blq-accesslinks li.hide a:active, .blq-toplink a:focus, .blq-toplink a:active {background-color:#9fcfff !important;}
+#blq-accesslinks p * {color:#9fcfff !important;background-color:#9fcfff !important;}
+body .altcolour1, body .altcolour1 * {background-color:#c5cfff !important;}
+body .altcolour2, body .altcolour2 * {background-color:#c8cac6 !important;}
+body .altcolour3, body .altcolour3 * {background-color:#aec2ce !important;}
+
+/* Automatic low-graphics */
+* {background-image:none !important;}
+* {filter:none !important;opacity:1 !important;-moz-opacity:1 !important;}

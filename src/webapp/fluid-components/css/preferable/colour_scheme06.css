@@ -1,0 +1,16 @@
+/* Reversed Scheme */
+body, input, select, .blq-solidbg, .blq-solidbg * {color:#ffffff !important;background-color:#112233 !important;}
+* {color:#ffffff !important;border-color:#ffffff !important;background-color:transparent !important;}
+a:link, a:link * {color:#ffcc33 !important;background-color:#112233 !important;}
+a:visited, a:visited * {color:#f48eff !important;}
+a:active, a:active * {color:#ff8000 !important;}
+a:hover, a:hover * {color:#00ff00 !important;}
+#blq-accesslinks li.hide a:focus, #blq-accesslinks li.hide a:active, .blq-toplink a:focus, .blq-toplink a:active {background-color:#112233 !important;border-color:white;}
+#blq-accesslinks p * {color:#112233 !important;background-color:#112233 !important;}
+body .altcolour1, body .altcolour1 * {background-color:#114428 !important;}
+body .altcolour2, body .altcolour2 * {background-color:#11224a !important;}
+body .altcolour3, body .altcolour3 * {background-color:#393433 !important;}
+
+/* Automatic low-graphics */
+* {background-image:none !important;}
+* {filter:none !important;opacity:1 !important;-moz-opacity:1 !important;}
