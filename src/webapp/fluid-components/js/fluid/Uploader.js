@@ -120,7 +120,7 @@ fluid_0_6 = fluid_0_6 || {};
         browseText: "Browse files",
         addMoreText: "Add more",
         fileUploaded: "File Uploaded",
-            // tokens replaced by fluid.util.stringTemplate
+            // tokens replaced by fluid.stringTemplate
         pausedLabel: "Paused at: %curFileN of %totalFilesN files (%currBytes of %totalBytes)",
         totalLabel: "Uploading: %curFileN of %totalFilesN files (%currBytes of %totalBytes)", 
         completedLabel: "Uploaded: %curFileN files (%totalCurrBytes)"
