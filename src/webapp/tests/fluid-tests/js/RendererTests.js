@@ -37,7 +37,7 @@ fluid.tests = fluid.tests || {};
     
     var renderTests = new jqUnit.TestCase ("Selector Render Test");
     
-    renderTests.test("Test", function() {
+    renderTests.test("Selector-based render test", function() {
       var tree = {"header:": []};
       var reps = 5;
       for (var i = 0; i < reps; ++ i) {
@@ -62,5 +62,30 @@ fluid.tests = fluid.tests || {};
     
       });
     
+    renderTests.test("ID-based render test", function() {
+      var contentTree = {
+        "data-row:" : [
+            {"species": "Man", "score": 7.44 },
+            {"species": "Dolphin", "score": 5.31 },
+            {"species": "Chimpanzee", "score": 2.49 },
+            {"species": "Rhesus Monkey", "score": 2.09 },
+            {"species": "Elephant", "score": 1.87 },
+            {"species": "Whale", "score": 1.76 },
+            {"species": "Dog", "score": 1.17 },
+            {"species": "CATT", "score": 1.00 },
+            {"species": "Horse", "score": 0.86 },
+            {"species": "Sheep", "score": 0.81 },
+            {"species": "Mouse", "score": 0.50 },
+            {"species": "Rat", "score": 0.40 },
+            {"species": "Rabbit", "score": 0.40 }             ]
+        };
+
+      fluid.selfRender($(".paged-content"), contentTree);
+      var rows = $(".paged-content tr").length;
+      jqUnit.assertEquals("Rendered row count", 14, rows);
+      var cells = $(".paged-content td").length;
+      jqUnit.assertEquals("Rendered cell count", 26, cells);
+      
+    });
     };
   })(jQuery); 
