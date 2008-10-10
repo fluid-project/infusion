@@ -39,11 +39,15 @@ fluid.preferable.presets = {
         "Wider": {"body *": {
                  "letter-spacing": "0.05em",
                  "word-spacing" : "0.15em"}},
-        "Widest": {"body *": {
-                 "letter-spacing": "0.06em",
-                 "word-spacing" : "0.2em"},
-                  "p, li, dd, dt, blockquote, th, td, pre":
-                  {"line-height": "150%"}},
+        "Widest": {
+            "body *": {
+                "letter-spacing": "0.06em",
+                "word-spacing": "0.2em"
+            },
+            "p, li, dd, dt, blockquote, th, td, pre": {
+                "line-height": "150%"
+            }
+        }
     },
     "Font": {
          "Default": {},
@@ -82,8 +86,15 @@ fluid.preferable.presets = {
        }
     }
 };
-  
-    
+
+
+    fluid.preferable.render = function () {
+        var contentTree = {
+            "opts": {}
+        };    
+        fluid.selfRender($("#opts_container"), contentTree);
+    };
+
 })(jQuery, fluid_0_6);
 
   

@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Preferable Template</title>
+        
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.layout.css" />
+
+        <script type="text/javascript" src="../../js/jquery/jquery-1.2.6.js"></script>
+        <script type="text/javascript" src="../../js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../js/fluid/renderer/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../js/fluid/renderer/fluidParser.js"></script>
+        <script type="text/javascript" src="../../js/fluid/renderer/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../js/fluid/preferable/preferable.js"></script>
+
+	</head>
+<body>
+	    <div id="opts_container" class="fl-container-flex50 fl-force-left">
+	    <form id="options" rsf:id="opts" action="set.shtml" method="get">
+		<h2>Options</h2>
+				
+		<fieldset id="text_size" >
+			<legend>Text Size </legend>
+			<ul>
+				<li class="first">
+					<label for="radio5" class="minustwo">-2</label>
+
+					<input type="radio" id="radio5" name="c" value="12"/>
+					
+				</li>
+				<li>
+					<label for="radio6" class="minusone">-1</label>
+					<input type="radio" id="radio6" name="c" value="11"/>
+					
+					
+				</li>
+				<li class="default">
+					<label for="radio7" class="default">Default</label>
+
+					<input type="radio" id="radio7" name="c" value="00" checked="checked"/>
+					
+				</li>
+				<li>
+					<label for="radio8" class="plusone">+1</label>
+					<input type="radio" id="radio8" name="c" value="01"/>
+					
+				</li>
+				<li>
+					<label for="radio9" class="plustwo">+2</label>
+
+					<input type="radio" id="radio9" name="c" value="02"/>
+					
+				</li>
+				<li>
+					<label for="radio10" class="plusthree">+3</label>
+					<input type="radio" id="radio10" name="c" value="03"/>
+					
+				</li>
+				<li>
+					<label for="radio11" class="plusfour">+4</label>
+
+					<input type="radio" id="radio11" name="c" value="04"/>
+					
+				</li>
+				<li>
+					<label for="radio110" class="plusfive">+5</label>
+					<input type="radio" id="radio110" name="c" value="05"/>
+					
+				</li>
+				<li>
+					<label for="radio111" class="plussix">+6</label>
+
+					<input type="radio" id="radio111" name="c" value="06"/>
+					
+				</li>
+			</ul>
+		</fieldset>
+	</form>
+    </div>
+    <div class="fl-force-right fl-container-flex50">
+			<h1>Preview</h1>
+			<div id="sePreviewArea">
+			    <h2 id="sePreviewHeading">
+			      Level 2 headings will appear like this.
+			    </h2>
+
+				<p id="sePreviewText">
+					This preview shows a sample of how pages will appear when your new preferences are saved.
+				</p>
+
+				<p id="sePreviewText2">
+				Link colours will look like <a href="#" id="sePreviewLink">this link</a>, and body text will appear like this.
+				</p>
+
+			</div>
+    </div>
+    <script type="text/javascript">
+        fluid.preferable.render();
+    </script>    
+</body>
+</html>
