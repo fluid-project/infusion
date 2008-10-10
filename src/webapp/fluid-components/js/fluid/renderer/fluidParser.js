@@ -334,23 +334,23 @@ fluid_0_6 = fluid_0_6 || {};
    * entry.
    */
   fluid.fetchResources = function(resourceSpecs, callback) {
+    var resourceCallback = function (thisSpec) {
+      return {
+        success: function(response) {
+          thisSpec.resourceText = response;
+          thisSpec.resourceKey = thisSpec.href;
+          thisSpec.queued = false; 
+          fluid.fetchResources(resourceSpecs, callback);
+          }
+        }
+      };
+    
     var complete = true;
     for (var key in resourceSpecs) {
       var resourceSpec = resourceSpecs[key];
       if (resourceSpec.href && !resourceSpec.resourceText) {
-        var templateCallback = function () {
-          var thisSpec = resourceSpec;
-          return {
-            success: function(response) {
-              thisSpec.resourceText = response.responseText;
-              thisSpec.resourceKey = resourceSpec.href;
-              thisSpec.queued = false; 
-              fluid.fetchResources(resourceSpecs, callback);
-              }
-            }
-          }();
          if (!resourceSpec.queued) {
-           $.ajax({url: resourceSpec.href, success: templateCallback.success});
+           $.ajax({url: resourceSpec.href, success: resourceCallback(resourceSpec).success});
            resourceSpec.queued = true;
          }
          complete = false;             
@@ -390,6 +390,76 @@ fluid_0_6 = fluid_0_6 || {};
       target[key] = target[key].concat(source[key]);
     }
   };
+  
+  var unUnicode = /(\\u[\dabcdef]{4}|\\x[\dabcdef]{2})/g;
+  
+  fluid.unescapeProperties = function (string) {
+    string = string.replace(unUnicode, function(match) {
+      var code = match.substring(2);
+      var parsed = parseInt(code, 16);
+      return String.fromCharCode(parsed);
+      }
+    );
+    var pos = 0;
+    while (true) {
+        var backpos = string.indexOf("\\", pos);
+        if (backpos === -1) break;
+        if (backpos === string.length - 1) {
+          return [string.substring(0, string.length - 1), true];
+        }
+        var replace = string.charAt(backpos + 1);
+        if (replace === "n") replace = "\n";
+        if (replace === "r") replace = "\r";
+        if (replace === "t") replace = "\t";
+        string = string.substring(0, backpos) + replace + string.substring(backpos + 2);
+        pos = backpos + 1;
+    }
+    return [string, false];
+  }
+  
+  var breakPos = /[^\\][\s:=]/;
+  fluid.parseJavaProperties = function(text) {
+    // File format described at http://java.sun.com/javase/6/docs/api/java/util/Properties.html#load(java.io.Reader)
+    var togo = {};
+    text = text.replace(/\r\n/g, "\n")
+    text = text.replace(/\r/g, "\n");
+    lines = text.split("\n");
+    var contin, key, valueComp, valueRaw, valueEsc;
+    for (var i = 0; i < lines.length; ++ i) {
+      var line = fluid.trim(lines[i]);
+      if (!line || line.charAt(0) === "#" || line.charAt(0) === '!') continue;
+      if (!contin) {
+        valueComp = "";
+        var breakpos = line.search(breakPos);
+        if (breakpos === -1) {
+          key = line;
+          valueRaw = "";
+          }
+        else {
+          key = fluid.trim(line.substring(0, breakpos + 1)); // +1 since first char is escape exclusion
+          valueRaw = fluid.trim(line.substring(breakpos + 2));
+          if (valueRaw.charAt(0) === ":" || valueRaw.charAt(0) === "=") {
+            valueRaw = fluid.trim(valueRaw.substring(1));
+          }
+        }
+      
+        key = fluid.unescapeProperties(key)[0];
+        valueEsc = fluid.unescapeProperties(valueRaw);
+      }
+      else {
+        valueEsc = fluid.unescapeProperties(line);
+      }
+
+      contin = valueEsc[1];
+      if (!valueEsc[1]) { // this line was not a continuation line - store the value
+        togo[key] = valueComp + valueEsc[0];
+      }
+      else {
+        valueComp += valueEsc[0];
+      }
+    }
+    return togo;
+  }
   
   /** Returns a "template structure", with globalmap in the root, and a list
    * of entries {href, template, cutpoints} for each parsed template.

@@ -129,5 +129,29 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertEquals("Target undisturbed", "target2", label.attr("for"));
     });
     
+    renderTests.test("Properties unescaping", function() {
+      
+      jqUnit.assertEquals("Simple unescaping", "This is a thing", 
+          fluid.unescapeProperties("This\\ is\\ a\\ thing")[0]);
+      jqUnit.assertEquals("Unicode unescaping", "\u30b5\u30a4\u30c8\u304b\u3089\u3053\u306e\u30da\u30fc\u30b8\u3092\u524a\u9664",
+          fluid.unescapeProperties("\\u30b5\\u30a4\\u30c8\\u304b\\u3089\\u3053\\u306e\\u30da\\u30fc\\u30b8\\u3092\\u524a\\u9664")[0])
+          // 10 slashes ACTUALLY means 5 REAL \ characters 
+      jqUnit.assertDeepEq("Random junk", ["\\\\\\\\\\ \t\nThing\x53\u0000", true],
+          fluid.unescapeProperties("\\\\\\\\\\\\\\\\\\\\\ \\t\\nThing\\x53\\u0000\\"));
+      });
+
+    var resourceSpec = {properties: {href: "data/testProperties.properties"},
+                              json: {href: "data/testProperties.json"}};    
+    fluid.fetchResources(resourceSpec, function() {
+        renderTests.test("Properties file parsing", function() {
+            jqUnit.assertNotNull("Fetched properties file", resourceSpec.properties.resourceText);
+            jqUnit.assertNotNull("Fetched JSON file", resourceSpec.json.resourceText);
+            var json = JSON.parse(resourceSpec.json.resourceText);
+            var properties = fluid.parseJavaProperties(resourceSpec.properties.resourceText);
+            jqUnit.assertDeepEq("Parsed properties equivalent", json, properties);        
+        });
+      
+      });
+          
     };
   })(jQuery); 
