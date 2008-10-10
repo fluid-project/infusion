@@ -90,11 +90,11 @@ fluid.preferable.presets = {
 
     fluid.preferable.render = function () {
         var contentTree = {
-            "opts": {
-                "textsize": {
-                    textsize_name: "taille des textes"
-                }
-            }
+            "opts": null,
+            "textsize": null,
+            "textsize_name": "taille des textes"
+            
+            
         };    
         fluid.selfRender($("#opts_container"), contentTree);
     };
