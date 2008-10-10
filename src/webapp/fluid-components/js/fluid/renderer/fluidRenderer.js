@@ -93,13 +93,15 @@ fluid_0_6 = fluid_0_6 || {};
     choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
   
   function unzipComponent(component) {
-    for (var key in duckMap) {
-      if (component[key] !== undefined) {
-        component.componentType = duckMap[key];
-        break;
+    if (component) {
+      for (var key in duckMap) {
+        if (component[key] !== undefined) {
+          component.componentType = duckMap[key];
+          break;
+        }
       }
     }
-    if (component.componentType === undefined) {
+    if (!component || component.componentType === undefined) {
       component = {componentType: "UIContainer", children: component};
     }
     if (component.componentType === "UIContainer") {
@@ -114,7 +116,7 @@ fluid_0_6 = fluid_0_6 || {};
   }
   
   function fixupTree(tree) {
-    if (tree.componentType === undefined) {
+    if (!tree || tree.componentType === undefined) {
       tree = unzipComponent(tree);
       }
     
@@ -175,12 +177,17 @@ fluid_0_6 = fluid_0_6 || {};
     }
   var globalmap = {};
   var branchmap = {};
+  var rewritemap = {}; // map of rewritekey (for original id in template) to full ID 
   var seenset = {};
   var collected = {};
   var out = "";
   var debugMode = false;
   var directFossils = {}; // map of submittingname to {EL, submittingname, oldvalue}
   
+  function getRewriteKey(template, parent, id) {
+    return template.resourceKey + parent.fullID + id;
+  }
+  // returns: lump
   function resolveInScope(searchID, defprefix, scope, child) {
     var deflump;
     var scopelook = scope? scope[searchID] : null;
@@ -197,7 +204,7 @@ fluid_0_6 = fluid_0_6 || {};
     }
     return deflump;
   }
-  
+  // returns: lump
   function resolveCall(sourcescope, child) {
     var searchID = child.jointID? child.jointID : child.ID;
     var split = fluid.SplitID(searchID);
@@ -225,16 +232,41 @@ fluid_0_6 = fluid_0_6 || {};
         var resolved = resolveCall(parentlump, branch);
         if (resolved) {
           branchmap[branch.fullID] = resolved;
+          var id = resolved.attributemap.id;
+          if (id !== undefined) {
+            rewritemap[getRewriteKey(parentlump.parent, basecontainer, id)] = branchfullID;
+          }
           // on server-side this is done separately
           noteCollected(resolved.parent);
           resolveRecurse(branch, resolved);
         }
       }
     }
+    // collect any rewritten ids for the purpose of later rewriting
+    if (parentlump.downmap) {
+      for (var id in parentlump.downmap) {
+        if (id.indexOf(":") === -1) {
+          var lumps = parentlump.downmap[id];
+          for (var i = 0; i < lumps.length; ++ i) {
+            var lump = lumps[i];
+            var lumpid = lump.attributemap["id"];
+            if (lumpid !== undefined && lump.rsfID !== undefined) {
+              var resolved = fetchComponent(basecontainer, lump.rsfID);
+              if (resolved !== null) {
+                rewritemap[getRewriteKey(parentlump.parent, basecontainer,
+                    lumpid)] = resolved.fullID;
+              }
+            }
+          }
+        }
+      }
+    }
+      
   }
   
   function resolveBranches(globalmapp, basecontainer, parentlump) {
     branchmap = {};
+    rewritemap = {};
     globalmap = globalmapp;
     branchmap[basecontainer.fullID] = parentlump;
     resolveRecurse(basecontainer, parentlump);
@@ -266,7 +298,7 @@ fluid_0_6 = fluid_0_6 || {};
       var lump = lumps[renderindex];
       if (lump.nestingdepth < basedepth)
         break;
-      if (lump.rsfID) {
+      if (lump.rsfID !== undefined) {
         if (!insideleaf) break;
         if (insideleaf && lump.nestingdepth > basedepth + (closeparent?0:1) ) {
           fluid.log("Error in component tree - leaf component found to contain further components - at " +
@@ -285,6 +317,9 @@ fluid_0_6 = fluid_0_6 || {};
     //target.write(buffer, start, limit - start);
     return renderindex;
   }
+  // In RSF Client, this is a "flyweight" "global" object that is reused for every tag, 
+  // to avoid generating garbage. In RSF Server, it is an argument to the following rendering
+  // methods of type "TagRenderContext".
   
   var trc = {};
   
@@ -365,6 +400,7 @@ fluid_0_6 = fluid_0_6 || {};
   }
   
   /*** END TRC METHODS**/
+  
   function isPlaceholder(value) {
     // TODO: equivalent of server-side "placeholder" system
     return false;
@@ -396,8 +432,8 @@ fluid_0_6 = fluid_0_6 || {};
       }
     }
   }
-    
-  fluid.NULL_STRING = "\u25a9null\u25a9"; // TODO:check on Javascript Unicode escapes
+  
+  fluid.NULL_STRING = "\u25a9null\u25a9"; // TODO: check on Javascript Unicode escapes
     
   function renderComponent(torender) {
     var attrcopy = trc.attrcopy;
@@ -503,7 +539,7 @@ fluid_0_6 = fluid_0_6 || {};
     else if (torender.markup !== undefined) { // detect UIVerbatim
       var rendered = torender.markup;
       if (rendered == null) {
-        //TODO, doesn't quite work due to attr folding cf Java code
+        // TODO, doesn't quite work due to attr folding cf Java code
           out += fluid.dumpAttributes(attrcopy);
           out +=">";
           renderUnchanged(); 
@@ -529,7 +565,29 @@ fluid_0_6 = fluid_0_6 || {};
       }
     }
   
-  function renderComponentSystem(torendero, lump) {
+  function rewriteIDRelation(context) {
+    var attrname;
+    var attrval = trc.attrcopy["for"];
+    if (attrval !== undefined) {
+       attrname = "for";
+    }
+    else {
+      attrval = trc.attrcopy["headers"];
+      if (attrval !== undefined) {
+        attrname = "headers";
+      }
+    }
+    if (!attrname) return;
+    var tagname = trc.uselump.tagname;
+    if (attrname === "for" && tagname !== "label") return;
+    if (attrname === "headers" && tagname !== "td" && tagname !== "th") return;
+    var rewritten = rewritemap[getRewriteKey(trc.uselump.parent, context, attrval)];
+    if (rewritten !== undefined) {
+      trc.attrcopy[attrname] = rewritten;
+    }
+  }
+  
+ function renderComponentSystem(context, torendero, lump) {
     var lumpindex = lump.lumpindex;
     var lumps = lump.parent.lumps;
     var nextpos = -1;
@@ -540,15 +598,31 @@ fluid_0_6 = fluid_0_6 || {};
 
     var payloadlist = lump.downmap? lump.downmap["payload-component"] : null;
     var payload = payloadlist? payloadlist[0] : null;
+    
+    var iselide = lump.rsfID.charCodeAt(0) === 126 // "~"
+    
+    var endopen = outerendopen;
+    var close = outerclose;
+    var uselump = lump;
+    var attrcopy = {};
+    $.extend(true, attrcopy, lump.attributemap);
+    
+    trc.attrcopy = attrcopy;
+    trc.uselump = uselump;
+    trc.endopen = endopen;
+    trc.close = close;
+    trc.nextpos = nextpos;
+    trc.iselide = iselide;
+    
+    rewriteIDRelation(context);
+    
     if (torendero == null) {
     	// no support for SCR yet
     }
     else {
     	// else there IS a component and we are going to render it. First make
       // sure we render any preamble.
-      var endopen = outerendopen;
-      var close = outerclose;
-      var uselump = lump;
+
       if (payload) {
         endopen = lumps[payload.lumpindex + 1];
         close = payload.close_tag;
@@ -557,17 +631,9 @@ fluid_0_6 = fluid_0_6 || {};
         lumpindex = payload.lumpindex;
       }
 
-      var attrcopy = {};
-      $.extend(true, attrcopy, lump.attributemap);
       adjustForID(attrcopy, torendero);
       //decoratormanager.decorate(torendero.decorators, uselump.getTag(), attrcopy);
-      var iselide = lump.rsfID.charCodeAt(0) === 126 // "~"
-      trc.attrcopy = attrcopy;
-      trc.uselump = uselump;
-      trc.endopen = endopen;
-      trc.close = close;
-      trc.nextpos = nextpos;
-      trc.iselide = iselide;
+
       
       // ALWAYS dump the tag name, this can never be rewritten. (probably?!)
       if (!iselide) {
@@ -594,7 +660,7 @@ fluid_0_6 = fluid_0_6 || {};
       dumpBranchHead(child, targetlump);
     }
     else {
-      renderComponentSystem(child, targetlump);
+      renderComponentSystem(child.parent, child, targetlump);
     }
     renderRecurse(child, targetlump, firstchild);
   }
@@ -675,8 +741,8 @@ fluid_0_6 = fluid_0_6 || {};
             }
             else { // repetitive leaf
               var targetlump = findChild(parentlump, child);
-              var renderend = renderComponentSystem(child, targetlump);
-              var wasopentag = t1.lumps[renderend].nestingdepth >= targetlump.nestingdepth;
+              var renderend = renderComponentSystem(basecontainer, child, targetlump);
+              var wasopentag = renderend < t1.lumps.lengtn && t1.lumps[renderend].nestingdepth >= targetlump.nestingdepth;
               var newbase = child.children? child : basecontainer;
               if (wasopentag) {
                 renderRecurse(newbase, targetlump, t1.lumps[renderend]);
@@ -707,7 +773,7 @@ fluid_0_6 = fluid_0_6 || {};
           renderindex = lump.close_tag.lumpindex + 1;
         }
         else {
-          renderindex = renderComponentSystem(component, lump);
+          renderindex = renderComponentSystem(basecontainer, component, lump);
         }
       }
       if (renderindex === t1.lumps.length) {
@@ -821,7 +887,7 @@ fluid_0_6 = fluid_0_6 || {};
       node = node.get(0);
       }
     var resourceSpec = {base: {resourceText: node.innerHTML, 
-                        href: ".", cutpoints: opts.cutpoints}
+                        href: ".", resourceKey: ".", cutpoints: opts.cutpoints}
                         };
     var templates = fluid.parseTemplates(resourceSpec, ["base"], opts);
     var fossils = {};

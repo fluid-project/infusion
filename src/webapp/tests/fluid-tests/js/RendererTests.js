@@ -87,5 +87,47 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertEquals("Rendered cell count", 26, cells);
       
     });
+    
+ //   rendertests.test("Invalid trees", function() {
+ //     var node = $(".RSF-77-test");
+ //     var error;
+ //     try {
+ //      fluid.selfRender(node, {
+ //         "row:": ["Label 1", "Label 2"]
+ //         });
+ //     }
+ //     catch (e) {
+ //      error = e;
+ //     }
+ //     jqUnit.assertNotUndefined("Invalid tree")
+ //   });
+    
+    renderTests.test("ID relation rewriting", function() {
+      // Tests FLUID-1676
+      var node = $(".RSF-77-test");
+      fluid.selfRender(node, {
+        "row:": [{"target": "Label 1"}, {"target": "Label 2"}]
+        });
+      var labels = $(".RSF-77-test label");
+      jqUnit.assertEquals("2 labels", 2, labels.length);
+      var fors = fluid.transform(labels, function(element) {return $(element).attr("for");});
+      var hash = {};
+      for (var i = 0; i < fors.length; ++ i) {
+        jqUnit.assertFalse("Unique targets", hash[fors[i]]);
+        hash[fors[i]] = true;
+        var target = fluid.byId(fors[i]);
+        jqUnit.assertTrue("Target exists in document", target);
+        jqUnit.assertEquals("Target is a span", "span", target.tagName.toLowerCase());
+      }
+      
+    });
+    
+    renderTests.test("ID relation non-interference", function() {
+      // Also tests FLUID-1677
+      fluid.selfRender($(".RSF-111-test"));
+      var label = $(".RSF-111-test label");
+      jqUnit.assertEquals("Target undisturbed", "target2", label.attr("for"));
+    });
+    
     };
   })(jQuery); 

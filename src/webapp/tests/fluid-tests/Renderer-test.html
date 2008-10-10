@@ -1,5 +1,5 @@
 <!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <title>Renderer Tests</title>
@@ -35,23 +35,35 @@
     </div>
   </div>
   
-          <!-- this is the template for the paged content -->
-        <div class="paged-content">
-            <table>
-              <thead>
-                <tr>
-                    <th>Species</th><th>Score</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr rsf:id="data-row:">
-                    <td rsf:id="species">name here</td>
-                    <td rsf:id="score">value here</td>
-                </tr>
-              </tbody>
-            </table>
-        </div>
+  <!-- this is the template for the paged content -->
+  <div class="paged-content">
+    <table>
+      <thead>
+        <tr>
+          <th>Species</th><th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr rsf:id="data-row:">
+          <td rsf:id="species">name here</td>
+          <td rsf:id="score">value here</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   
+  <div class="RSF-111-test">
+   <!-- Test that unmarked labels are not interfered with -->
+    <label for="target2">Label</label> <div id="target2">Target</div>
+  </div>
+  
+  <div class="RSF-77-test">
+  <!-- Test that label targets are correctly rewritten  -->
+    <div rsf:id="row:">
+      <label rsf:id="msg=label" for="target">My Label</label> 
+      <span rsf:id="target" id="target">Labelled span</span>
+    </div>
+  </div>
 </div>
 
 <script>

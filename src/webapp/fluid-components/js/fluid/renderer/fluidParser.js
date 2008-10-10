@@ -59,7 +59,7 @@ fluid_0_6 = fluid_0_6 || {};
   function findTopContainer() {
     for (var i = tagstack.length - 1; i >= 0; --i ) {
       var lump = tagstack[i];
-      if (lump.rsfID) {
+      if (lump.rsfID !== undefined) {
         return lump;
       }
     }
@@ -218,17 +218,22 @@ fluid_0_6 = fluid_0_6 || {};
     headlump.tagname = tagname;
     // NB - attribute names and values are now NOT DECODED!!
     headlump.attributemap = parser.m_attributes;
+    var ID = headlump.attributemap? headlump.attributemap[fluid.ID_ATTRIBUTE] : undefined;
+    if (ID === undefined) {
+      ID = tagStartCut(headlump);
+      }
     for (var attrname in headlump.attributemap) {
       var attrval = headlump.attributemap[attrname];
       if (attrval === "href" || attrval === "src" || attrval === "codebase" || attrval === "action") {
         attrval = rewriteUrl(attrval);
         headlump.attributemap[attrname] = attrval;
         }
+        // port of TPI effect of IDRelationRewriter
+      if (ID === undefined && (attrval === "for" || attrval === "headers")) {
+        ID = headlump.attributemap[fluid.ID_ATTRIBUTE] = "scr=null";
+        }
       }
-    var ID = headlump.attributemap? headlump.attributemap[fluid.ID_ATTRIBUTE] : null;
-    if (ID === null || ID === undefined) {
-      ID = tagStartCut(headlump);
-      }
+
     if (ID) {
       checkContribute(ID, headlump);
       headlump.rsfID = ID;
@@ -284,13 +289,6 @@ fluid_0_6 = fluid_0_6 || {};
   
   fluid.ID_ATTRIBUTE = "rsf:id";
   
-  fluid.HTML_CONSTANTS = {
-    "href": ["a", "link"],
-    "src": ["img", "frame", "script", "iframe", "style", "input", "embed"],
-    "action": ["form"],
-    "codebase": ["applet", "object"]
-  };
-  
   fluid.getPrefix = function(id) {
    var colpos = id.indexOf(':');
    return colpos === -1? id : id.substring(0, colpos);
@@ -345,6 +343,7 @@ fluid_0_6 = fluid_0_6 || {};
           return {
             success: function(response) {
               thisSpec.resourceText = response.responseText;
+              thisSpec.resourceKey = resourceSpec.href;
               thisSpec.queued = false; 
               fluid.fetchResources(resourceSpecs, callback);
               }
@@ -361,6 +360,7 @@ fluid_0_6 = fluid_0_6 || {};
         // upgrade this to somehow detect whether node is "armoured" somehow
         // with comment or CDATA wrapping
         resourceSpec.resourceText = fluid.dom.getElementText(node);
+        resourceSpec.resourceKey = resourceSpec.nodeId;
       }
     }
     if (complete) {
@@ -409,6 +409,7 @@ fluid_0_6 = fluid_0_6 || {};
         }
         template.href = resource.href;
         template.baseURL = baseURL;
+        template.resourceKey = resource.resourceKey;
 
         togo[i] = template;
         fluid.aggregateMMap(togo.globalmap, template.rootlump.downmap);
@@ -423,7 +424,6 @@ fluid_0_6 = fluid_0_6 || {};
     init(baseURL, opts.debugMode, cutpoints_in);
 
     var idpos = template.indexOf(fluid.ID_ATTRIBUTE);
-    if (idpos === -1 && !cutpoints) return t;
     if (scanStart) {
       var brackpos = template.indexOf('>', idpos);
       parser = new XMLP(template.substring(brackpos + 1));
