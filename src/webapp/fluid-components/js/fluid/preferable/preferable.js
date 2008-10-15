@@ -17,7 +17,29 @@ fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
 
-fluid.preferable = fluid.preferable || {};
+    fluid.preferable = function (container, options){
+        if (!container) {
+            fluid.fail("Preferable initialised with no container");
+        }
+        var that = fluid.initView("fluid.preferable", container, options);
+    };
+
+    fluid.defaults("fluid.preferable", {
+        selectors: {
+            textSizeCtrl: ".textsize-control",
+            textSpacingCtrl: ".textspace-control",
+            fontCtrl: ".font-control",
+            colorCtrl: ".color-control",
+            tocCtrl: ".toc-control",
+            preview: ".preview"
+        },
+        events: {
+            onPrefChange: null,
+            afterPreview: null,
+            onSave: null,
+            onCancel: null
+        }
+    });
 
 fluid.preferable.presets = {
     "Text Size": {
@@ -87,16 +109,49 @@ fluid.preferable.presets = {
     }
 };
 
-
     fluid.preferable.render = function () {
+        // hydrated tree
+        var contentTree = {
+            children: [{
+                ID: "opts",
+                value: null
+            },{
+                ID: "textsizeset",
+                value: null
+            },{
+                ID: "textsize_name",
+                value: "taille des textes"
+            },{
+                ID: "textsize",
+                value: null, 
+                valuebinding: "size" // el expression
+            }]
+        };
+        
+/*     dehydrated tree - cannot be used with data binding   
+        
         var contentTree = {
             "opts": null,
-            "textsize": null,
-            "textsize_name": "taille des textes"
-            
-            
-        };    
-        fluid.selfRender($("#opts_container"), contentTree);
+            "textsizeset": null,
+            "textsize_name": "taille des textes",
+            "textsize": null 
+        };
+*/
+        var options = {
+            "bind": [
+                {"size": -2},
+                {"size": -1},
+                {"size": 0},
+                {"size": 1},
+                {"size": 2},
+                {"size": 3},
+                {"size": 4},
+                {"size": 6},
+                {"size": 8}
+            ]
+        };
+        
+        fluid.selfRender($("#opts_container"), contentTree, options);
     };
 
 })(jQuery, fluid_0_6);
