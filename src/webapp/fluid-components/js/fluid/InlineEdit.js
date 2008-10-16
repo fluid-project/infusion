@@ -16,7 +16,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
-    function setCaretToStart(control) {
+    var setCaretToStart = function (control) {
         if (control.createTextRange) {
             var range = control.createTextRange();
             range.collapse(true);
@@ -25,8 +25,9 @@ fluid_0_6 = fluid_0_6 || {};
             control.focus();
             control.setSelectionRange(0, 0);
         }
-    }
-    function setCaretToEnd(control) {
+    };
+    
+    var setCaretToEnd = function (control) {
         var pos = control.value.length;
         if (control.createTextRange) {
             var range = control.createTextRange();
@@ -36,10 +37,10 @@ fluid_0_6 = fluid_0_6 || {};
             control.focus();
             control.setSelectionRange(pos, pos);
         }
-    }
+    };
     
     // Is paddings doing what we want? Should it be in the CSS file instead?
-    function edit(that) {
+    var edit = function (that) {
         var viewEl = that.viewEl;
         var displayText = viewEl.text();
         that.updateModel(displayText === that.options.defaultViewText? "" : displayText);
@@ -65,23 +66,19 @@ fluid_0_6 = fluid_0_6 || {};
             }
         }, 0);
         that.events.afterBeginEdit.fire();
-    }
+    };
 
-
-
-    function clearEmptyViewStyles(textEl, defaultViewStyle, originalViewPadding) {
+    var clearEmptyViewStyles = function (textEl, defaultViewStyle, originalViewPadding) {
         textEl.removeClass(defaultViewStyle);
         textEl.css('padding-right', originalViewPadding);
-    }
+    };
     
-    
-    function showDefaultViewText(that) {
+    var showDefaultViewText = function (that) {
         that.viewEl.text(that.options.defaultViewText);
         that.viewEl.addClass(that.options.styles.defaultViewText);
-    }
-    
+    };
 
-    function showNothing(that) {
+    var showNothing = function (that) {
         that.viewEl.text("");
        // workaround for FLUID-938, IE can not style an empty inline element, so force element to be display: inline-block
        
@@ -95,14 +92,14 @@ fluid_0_6 = fluid_0_6 || {};
         if (that.existingPadding < that.options.paddings.minimumView) {
             that.viewEl.css('padding-right',  that.options.paddings.minimumView);
         }
-    }
+    };
 
-    function showEditedText(that) {
+    var showEditedText = function (that) {
         that.viewEl.text(that.model.value);
         clearEmptyViewStyles(that.viewEl, that.options.defaultViewStyle, that.existingPadding);
-    }
+    };
 
-    function finish(that) {
+    var finish = function (that) {
         if (that.options.finishedEditing) {
             that.options.finishedEditing(that.editField[0], that.viewEl[0]);
         }
@@ -111,18 +108,21 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.editContainer.hide();
         that.viewEl.show();
-    }
+    };
         
-    function makeEditHandler(that) {
+    var makeEditHandler = function (that) {
         return function () {
             var prevent = that.events.onBeginEdit.fire();
-            if (prevent) return true;
+            if (prevent) {
+                return true;
+            }
             edit(that);
+            
             return false;
         }; 
-    }
+    };
     
-    function bindHoverHandlers(viewEl, invitationStyle) {
+    var bindHoverHandlers = function (viewEl, invitationStyle) {
         var over = function (evt) {
             viewEl.addClass(invitationStyle);
         };     
@@ -131,14 +131,14 @@ fluid_0_6 = fluid_0_6 || {};
         };
 
         viewEl.hover(over, out);
-    }
+    };
     
-    function bindMouseHandlers(that) {
+    var bindMouseHandlers = function (that) {
         bindHoverHandlers(that.viewEl, that.options.styles.invitation);
         that.viewEl.click(makeEditHandler(that));
-    }
+    };
     
-    function bindKeyHighlight(viewEl, focusStyle, invitationStyle) {
+    var bindKeyHighlight = function (viewEl, focusStyle, invitationStyle) {
         var focusOn = function () {
             viewEl.addClass(focusStyle);
             viewEl.addClass(invitationStyle); 
@@ -149,15 +149,15 @@ fluid_0_6 = fluid_0_6 || {};
         };
         viewEl.focus(focusOn);
         viewEl.blur(focusOff);
-    }
+    };
     
-    function bindKeyboardHandlers(that) {
+    var bindKeyboardHandlers = function (that) {
         that.viewEl.tabbable();
         bindKeyHighlight(that.viewEl, that.options.styles.focus, that.options.styles.invitation);
         that.viewEl.activatable(makeEditHandler(that));
-    } 
+    };
     
-    function bindEditFinish(that) {
+    var bindEditFinish = function (that) {
         var finishHandler = function (evt) {
             // Fix for handling arrow key presses see FLUID-760
             var code = (evt.keyCode ? evt.keyCode : (evt.which ? evt.which : 0));
@@ -170,19 +170,19 @@ fluid_0_6 = fluid_0_6 || {};
             return false;
         };
         that.editContainer.keypress(finishHandler);
-    }
+    };
     
-    function bindBlurHandler(that) {
+    var bindBlurHandler = function (that) {
         var blurHandler = function (evt) {
             finish(that);
             return false;
         };
         that.editField.blur(blurHandler);
-    }
+    };
     
-    function aria(viewEl, editContainer) {
+    var aria = function (viewEl, editContainer) {
         viewEl.ariaRole("button");
-    }
+    };
     
     var bindToDom = function (that, container) {
         // Bind to the DOM.
@@ -268,6 +268,17 @@ fluid_0_6 = fluid_0_6 || {};
         jQuery(initTooltip);
     };
     
+    /**
+     * Creates a whole list of inline editors.
+     */
+    var setupInlineEdits = function (editables, options) {
+        var editors = [];
+        editables.each(function (idx, editable) {
+            editors.push(fluid.inlineEdit(jQuery(editable), options));
+        });
+        
+        return editors;
+    };
     
     /**
      * Instantiates a new Inline Edit component
@@ -275,24 +286,43 @@ fluid_0_6 = fluid_0_6 || {};
      * @param {Object} componentContainer a selector, jquery, or a dom element representing the component's container
      * @param {Object} options a collection of options settings
      */
-    fluid.inlineEdit = function (componentContainer, userOptions) {
-      
+    fluid.inlineEdit = function (componentContainer, userOptions) {   
         var that = fluid.initView("inlineEdit", componentContainer, userOptions);
        
+        /**
+         * The current value of the inline editable text. The "model" in MVC terms.
+         */
         that.model = {value: ""};
        
+        /**
+         * Switches to edit mode.
+         */
         that.edit = function () {
             edit(that);
         };
         
+        /**
+         * Finishes editing, switching back to view mode.
+         */
         that.finish = function () {
             finish(that);
         };
             
+        /**
+         * Determines if the tooltip feature is enabled.
+         * 
+         * @return true if the tooltip feature is turned on, false if not
+         */
         that.tooltipEnabled = function () {
             return that.options.useTooltip && $.fn.tooltip;
         };
         
+        /**
+         * Updates the state of the inline editor in the DOM, based on changes that may have
+         * happened to the model.
+         * 
+         * @param {Object} source
+         */
         that.refreshView = function (source) {
             if (that.model.value) {
                 showEditedText(that);
@@ -307,6 +337,13 @@ fluid_0_6 = fluid_0_6 || {};
             }
         };
         
+        /**
+         * Pushes external changes to the model into the inline editor, refreshing its
+         * rendering in the DOM.
+         * 
+         * @param {Object} newValue
+         * @param {Object} source
+         */
         that.updateModel = function (newValue, source) {
             var change = that.model.value !== newValue;
             if (change) {
@@ -325,17 +362,11 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     /**
-     * A set of inline edit fields.
+     * Instantiates a list of InlineEdit components.
+     * 
+     * @param {Object} componentContainer the element containing the inline editors
+     * @param {Object} options configuration options for the components
      */
-    var setupInlineEdits = function (editables, options) {
-        var editors = [];
-        editables.each(function (idx, editable) {
-            editors.push(fluid.inlineEdit(jQuery(editable), options));
-        });
-        
-        return editors;
-    };
-
     fluid.inlineEdits = function (componentContainer, options) {
         options = options || {};
         var selectors = $.extend({}, fluid.defaults("inlineEdits").selectors, options.selectors);
