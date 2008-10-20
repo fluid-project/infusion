@@ -16,18 +16,19 @@ This is a simple test case showing interaction of JQuery UI Core event handlers
   <input class="target" type="text" value="A text control to receive initial focus" size="50"/>
   <br/>
   This is some text within the container.
-  registered. As the document starts up, the container is in the "natural" state with no
+  As the document starts up, the container is in the "natural" state with no
   special handlers registered. Demonstrate that focus and blur for these elements is
   working by clicking on the input field above, and then click on this text, and back again.
   <br/><br/>
   Then click on the button below, which registers a "mouseDown" handler on the the
-  overall container. Try clicking on the input field and this text a few more times - 
+  overall container (for convenience, by making it "draggable"). 
+  Try clicking on the input field and this text a few more times - 
   the status messages indicating focus and blur will not appear. However, it *is* still
   possible to blur the text field element by clicking outside the container entirely,
   that is, on the document below or the status text.
 </div>
 
-<input class="button" type="button" value="mouseDown on"/>
+<input class="button" type="button" value="register mouseDown"/>
 <div class="status">
 </div>
 <script type="text/javascript">
@@ -50,7 +51,7 @@ $("input.button").click(function() {
   $("input.target").focus();
   $("div.status")[0].innerHTML = "";
   registered = !registered;
-  $("input.button").val(registered? "mouseDown off": "mouseDown on");
+  $("input.button").val(registered? "deregister mouseDown": "register mouseDown");
 });
 </script>
 </body>
