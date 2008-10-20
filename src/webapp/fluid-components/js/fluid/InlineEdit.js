@@ -16,6 +16,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
+    
     var setCaretToStart = function (control) {
         if (control.createTextRange) {
             var range = control.createTextRange();
@@ -39,7 +40,6 @@ fluid_0_6 = fluid_0_6 || {};
         }
     };
     
-    // Is paddings doing what we want? Should it be in the CSS file instead?
     var edit = function (that) {
         var viewEl = that.viewEl;
         var displayText = viewEl.text();
@@ -67,6 +67,17 @@ fluid_0_6 = fluid_0_6 || {};
         }, 0);
         that.events.afterBeginEdit.fire();
     };
+    
+    var finish = function (that) {
+        if (that.options.finishedEditing) {
+            that.options.finishedEditing(that.editField[0], that.viewEl[0]);
+        }
+        that.updateModel(that.editField.val());
+        that.events.afterFinish.fire();
+        
+        that.editContainer.hide();
+        that.viewEl.show();
+    };
 
     var clearEmptyViewStyles = function (textEl, defaultViewStyle, originalViewPadding) {
         textEl.removeClass(defaultViewStyle);
@@ -80,8 +91,9 @@ fluid_0_6 = fluid_0_6 || {};
 
     var showNothing = function (that) {
         that.viewEl.text("");
-       // workaround for FLUID-938, IE can not style an empty inline element, so force element to be display: inline-block
-       
+        
+        // workaround for FLUID-938:
+        // IE can not style an empty inline element, so force element to be display: inline-block
         if ($.browser.msie) {
             if (that.viewEl.css('display') === 'inline') {
                 that.viewEl.css('display', "inline-block");
@@ -98,28 +110,28 @@ fluid_0_6 = fluid_0_6 || {};
         that.viewEl.text(that.model.value);
         clearEmptyViewStyles(that.viewEl, that.options.defaultViewStyle, that.existingPadding);
     };
-
-    var finish = function (that) {
-        if (that.options.finishedEditing) {
-            that.options.finishedEditing(that.editField[0], that.viewEl[0]);
+        
+    var refreshView = function (that, source) {
+        if (that.model.value) {
+            showEditedText(that);
+        } else if (that.options.defaultViewText) {
+            showDefaultViewText(that);
+        } else {
+            showNothing(that);
         }
-        that.updateModel(that.editField.val());
-        that.events.afterFinish.fire();
-        
-        that.editContainer.hide();
-        that.viewEl.show();
+      
+        if (that.editField && that.editField.index(source) === -1) {
+            that.editField.val(that.model.value);
+        }
     };
-        
-    var makeEditHandler = function (that) {
-        return function () {
-            var prevent = that.events.onBeginEdit.fire();
-            if (prevent) {
-                return true;
-            }
-            edit(that);
-            
-            return false;
-        }; 
+    
+    var updateModel = function (that, newValue, source) {
+        var change = that.model.value !== newValue;
+        if (change) {
+            that.model.value = newValue;
+            that.events.modelChanged.fire(newValue);
+        }
+        that.refreshView(source); // Always render, because of possibility of initial event
     };
     
     var bindHoverHandlers = function (viewEl, invitationStyle) {
@@ -131,6 +143,18 @@ fluid_0_6 = fluid_0_6 || {};
         };
 
         viewEl.hover(over, out);
+    };
+    
+    var makeEditHandler = function (that) {
+        return function () {
+            var prevent = that.events.onBeginEdit.fire();
+            if (prevent) {
+                return true;
+            }
+            edit(that);
+            
+            return false;
+        }; 
     };
     
     var bindMouseHandlers = function (that) {
@@ -159,7 +183,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     var bindEditFinish = function (that) {
         var finishHandler = function (evt) {
-            // Fix for handling arrow key presses see FLUID-760
+            // Fix for handling arrow key presses. See FLUID-760.
             var code = (evt.keyCode ? evt.keyCode : (evt.which ? evt.which : 0));
             if (code !== $.a11y.keys.ENTER) {
                 return true;
@@ -184,16 +208,13 @@ fluid_0_6 = fluid_0_6 || {};
         viewEl.ariaRole("button");
     };
     
-    var bindToDom = function (that, container) {
-        // Bind to the DOM.
-        that.viewEl = that.locate("text");
-
+    var setupEditContainer = function (that) {
         // If an edit container is found in the markup, use it. Otherwise generate one based on the view text.
-        that.editContainer = $(that.options.selectors.editContainer, that.container);
+        that.editContainer = that.locate("editContainer");
         if (that.editContainer.length >= 1) {
             var isEditSameAsContainer = that.editContainer.is(that.options.selectors.edit);
             var containerConstraint = isEditSameAsContainer ? that.container : that.editContainer;
-            that.editField =  $(that.options.selectors.edit, containerConstraint);
+            that.editField =  that.locate("edit", containerConstraint);
         } else {
             var editElms = that.options.editModeRenderer(that);
             that.editContainer = editElms.container;
@@ -230,9 +251,9 @@ fluid_0_6 = fluid_0_6 || {};
         };
     };
     
-    
     var setupInlineEdit = function (componentContainer, that) {
-        bindToDom(that, componentContainer);
+        that.viewEl = that.locate("text");
+        setupEditContainer(that);
         var padding = that.viewEl.css("padding-right");
         that.existingPadding = padding? parseFloat(padding) : 0;
         that.updateModel(that.viewEl.text());
@@ -249,6 +270,8 @@ fluid_0_6 = fluid_0_6 || {};
         // Hide the edit container to start
         that.editContainer.hide();
         
+        // Initialize the tooltip once the document is ready.
+        // For more details, see http://issues.fluidproject.org/browse/FLUID-1030
         var initTooltip = function () {
             // Add tooltip handler if required and available
             if (that.tooltipEnabled()) {
@@ -262,10 +285,11 @@ fluid_0_6 = fluid_0_6 || {};
                 });
             }
         };
-
-        // when the document is ready, initialize the tooltip
-        // see http://issues.fluidproject.org/browse/FLUID-1030
         jQuery(initTooltip);
+        
+        // Setup any registered decorators for the component.
+        that.decorators = fluid.initSubcomponents(that, "componentDecorators", 
+            [that, fluid.COMPONENT_OPTIONS]);
     };
     
     /**
@@ -324,17 +348,7 @@ fluid_0_6 = fluid_0_6 || {};
          * @param {Object} source
          */
         that.refreshView = function (source) {
-            if (that.model.value) {
-                showEditedText(that);
-            } else if (that.options.defaultViewText) {
-                showDefaultViewText(that);
-            } else {
-                showNothing(that);
-            }
-          
-            if (that.editField && that.editField.index(source) === -1) {
-                that.editField.val(that.model.value);
-            }
+            refreshView(that, source);
         };
         
         /**
@@ -345,19 +359,10 @@ fluid_0_6 = fluid_0_6 || {};
          * @param {Object} source
          */
         that.updateModel = function (newValue, source) {
-            var change = that.model.value !== newValue;
-            if (change) {
-                that.model.value = newValue;
-                that.events.modelChanged.fire(newValue);
-            }
-            that.refreshView(source); // Always render, because of possibility of initial event
+            updateModel(that, newValue, source);
         };
 
         setupInlineEdit(componentContainer, that);
-        
-        that.decorators = fluid.initSubcomponents(that, "componentDecorators", 
-            [that, fluid.COMPONENT_OPTIONS]);
-        
         return that;
     };
     
@@ -426,4 +431,5 @@ fluid_0_6 = fluid_0_6 || {};
             editables: ".inlineEditable"
         }
     });
+    
 })(jQuery, fluid_0_6);
