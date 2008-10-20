@@ -14,6 +14,7 @@
     <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.draggable.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/jquery/jARIA.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/InlineEdit.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/GeometricManager.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/Reorderer.js"></script>
@@ -375,7 +376,7 @@ dignissim suscipit.
                                   </tr>
                                   <tr>
                                     <td class="portlet-form-field-label" colspan="4">
-                                      <strong>Default folder behavior:</strong>
+                                      <strong><span id="inline-editable">Default folder behavior</span>:</strong>
                                     </td>
                                   </tr>
                                   <tr>
@@ -776,6 +777,6 @@ dignissim suscipit.
 </div>
   
   <script type="text/javascript">
-    demo.initPortletReorderer ();
+    demo.initPortletReorderer();
   </script>
 </body></html>

@@ -19,6 +19,7 @@ var demo = demo || {};
     };
 
     demo.initPortletReorderer = function() {
+        fluid.inlineEdit("#Pluto_5_u15l1n13_optionsForm", {selectors: {text: "#inline-editable"}});
         var options = { 
             styles:  {
                 mouseDrag: "orderable-mouse-drag",
