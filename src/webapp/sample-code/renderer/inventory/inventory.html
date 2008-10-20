@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Inventory Table Renderer Example</title>
+        <link rel="stylesheet" type="text/css" href="inventory.css" />
+
+        <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/json/json2.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/jquery/jARIA.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidRenderer.js"></script>
+        <script type="text/javascript" src="inventory.js"></script>
+    </head>
+
+    <body>
+        <h2>Inventory Table rendered using the Fluid Renderer</h1>
+        <p>The table below is, initially, the template that will be used by the Fluid Renderer.
+           Clicking the "Render Table" button will cause the Renderer to render the
+           table using data in the Javascript file.</p>
+        <hr/>
+        <p>
+            <input id="render-simple" type="submit" value="Render Table"/>
+        </p>
+
+        <div rsf:id="table-base:" id="table-base:" class="table-base">
+            <form>
+                <table border="0" cellspacing="0" summary="A grid of sports products.">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Quantity</th>
+                            <th>Item</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr rsf:id="table-row:" class="item-row" style="text-align: left">
+                            <td class="sku-container">
+                                <span rsf:id="sku">sku</span>
+                            </td>
+                            <td class="quantity-container">
+                                <span rsf:id="quantity">quantity</span>
+                            </td>
+                            <td class="item-container">
+                                <span rsf:id="item">product name</span>
+                            </td>
+                            <td class="description-container">
+                                <span rsf:id="description">description of the product</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+
+        <script type="text/javascript">
+            fluid.inventoryExample.setup();
+        </script>
+
+    </body>
+</html>
