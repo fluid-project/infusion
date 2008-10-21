@@ -108,11 +108,14 @@ fluid_0_6 = fluid_0_6 || {};
       
       uri[o.q.name] = {};
       uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
-         if ($1) uri[o.q.name][$1] = $2;
+         if ($1) {
+             uri[o.q.name][$1] = $2;
+         }
       });
       
       return uri;
-   }
+   };
+   
    parseUri.options = {
       strictMode: false,
       key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
@@ -124,14 +127,16 @@ fluid_0_6 = fluid_0_6 || {};
          strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
          loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
       }
-   }
+   };
   
   function rewriteUrl(url) {
     var po = parseUri(url);
     if (po.protocol || url.charAt(0) === '/') {
-      return url;
+        return url;
     }
-    else return baseURL + url;
+    else {
+        return baseURL + url;
+    }
   }
   
   function debugLump(lump) {
@@ -140,7 +145,9 @@ fluid_0_6 = fluid_0_6 || {};
     }
   
   function hasCssClass(clazz, totest) {
-    if (!totest) return false;
+    if (!totest) {
+        return false;
+    }
     // algorithm from JQuery
     return (" " + totest + " ").indexOf(" " + clazz + " ") !== -1;
     }
@@ -177,9 +184,9 @@ fluid_0_6 = fluid_0_6 || {};
             cutstat[cutstat.length] = headlump.nestingdepth;
             if (cutstat.length === cut.tree.length) {
               if (togo !== null) {
-                throw ("Cutpoint specification error - node " 
-                + debugLump(headlump) 
-                + " has already matched with rsf:id of " + togo);
+                throw ("Cutpoint specification error - node " +
+                  debugLump(headlump) +
+                  " has already matched with rsf:id of " + togo);
                 }
               togo = cut.id;
               }
@@ -194,7 +201,7 @@ fluid_0_6 = fluid_0_6 || {};
     if (cutpoints) {
       for (var i = 0; i < cutpoints.length; ++ i) {
         var cutstat = cutstatus[i];
-        if (cutstat.length > 0 && cutstat[cutstat.length - 1] == nestingdepth) {
+        if (cutstat.length > 0 && cutstat[cutstat.length - 1] === nestingdepth) {
           cutstat.length--;
           }
         }
@@ -342,7 +349,7 @@ fluid_0_6 = fluid_0_6 || {};
           thisSpec.queued = false; 
           fluid.fetchResources(resourceSpecs, callback);
           }
-        }
+        };
       };
     
     var complete = true;
@@ -403,7 +410,9 @@ fluid_0_6 = fluid_0_6 || {};
     var pos = 0;
     while (true) {
         var backpos = string.indexOf("\\", pos);
-        if (backpos === -1) break;
+        if (backpos === -1) {
+            break;
+        }
         if (backpos === string.length - 1) {
           return [string.substring(0, string.length - 1), true];
         }
@@ -415,19 +424,21 @@ fluid_0_6 = fluid_0_6 || {};
         pos = backpos + 1;
     }
     return [string, false];
-  }
+  };
   
   var breakPos = /[^\\][\s:=]/;
   fluid.parseJavaProperties = function(text) {
     // File format described at http://java.sun.com/javase/6/docs/api/java/util/Properties.html#load(java.io.Reader)
     var togo = {};
-    text = text.replace(/\r\n/g, "\n")
+    text = text.replace(/\r\n/g, "\n");
     text = text.replace(/\r/g, "\n");
     lines = text.split("\n");
     var contin, key, valueComp, valueRaw, valueEsc;
     for (var i = 0; i < lines.length; ++ i) {
       var line = fluid.trim(lines[i]);
-      if (!line || line.charAt(0) === "#" || line.charAt(0) === '!') continue;
+      if (!line || line.charAt(0) === "#" || line.charAt(0) === '!') {
+          continue;
+      }
       if (!contin) {
         valueComp = "";
         var breakpos = line.search(breakPos);
@@ -459,7 +470,7 @@ fluid_0_6 = fluid_0_6 || {};
       }
     }
     return togo;
-  }
+  };
   
   /** Returns a "template structure", with globalmap in the root, and a list
    * of entries {href, template, cutpoints} for each parsed template.
@@ -474,7 +485,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         var template = fluid.parseTemplate(resource.resourceText, baseURL, 
           opts.scanStart && i === 0, resource.cutpoints, opts);
-        if (i == 0) {
+        if (i === 0) {
           fluid.aggregateMMap(togo.globalmap, template.globalmap);
         }
         template.href = resource.href;
@@ -509,16 +520,16 @@ fluid_0_6 = fluid_0_6 || {};
      
       switch(iEvent) {
         case XMLP._ELM_B:
-          processDefaultTag()
+          processDefaultTag();
           //var text = parser.getContent().substr(parser.getContentBegin(), parser.getContentEnd() - parser.getContentBegin());
           processTagStart(false, "");
           break;
         case XMLP._ELM_E:
-          processDefaultTag()
+          processDefaultTag();
           processTagEnd();
           break;
         case XMLP._ELM_EMP:
-          processDefaultTag()
+          processDefaultTag();
           //var text = parser.getContent().substr(parser.getContentBegin(), parser.getContentEnd() - parser.getContentBegin());    
           processTagStart(true, "");
           break;
@@ -551,7 +562,7 @@ fluid_0_6 = fluid_0_6 || {};
     return t;
 //       alert("document complete: " + chars.length + " chars");
   
-    }
+    };
     
   // ******* SELECTOR ENGINE *********  
     
@@ -615,6 +626,6 @@ fluid_0_6 = fluid_0_6 || {};
       quickClass.lastIndex = childSeg.lastIndex; 
       }
     return togo;
-    }
+    };
     
 })(jQuery, fluid_0_6);
