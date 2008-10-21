@@ -160,6 +160,12 @@ fluid.tests = fluid.tests || {};
         $(".field", node));
       
     });
+    
+    renderTests.test("UISelect tests", function() {
+      
+      
+      
+    });
 
     renderTests.test("Properties unescaping", function() {
       
