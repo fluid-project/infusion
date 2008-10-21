@@ -41,6 +41,80 @@ fluid_0_6 = fluid_0_6 || {};
         }
     });
 
+
+    fluid.a4aPlus = {
+        
+    };
+    
+    fluid.uiAspects = {
+        "textSize": [
+            {
+                "name": "-2",
+                "styles": [{
+                    "selector": "body",
+                    "rules": "font-size: 45%"
+                }]  
+            },
+            {
+                "name": "-1",
+                "styles": [{
+                    "selector": "body",
+                    "rules": "font-size: 55%"
+                }]  
+            },
+            {
+                "name": "Default",
+                "styles": [{
+                    "selector": "body",
+                    "rules": "font-size: 62.5%"
+                }]  
+            },
+            {
+                "name": "+1",
+                "styles": [{
+                    "selector": "body",
+                    "rules": "font-size: 75%"
+                }]  
+            }
+        ],
+        "colorScheme": [
+            {
+                "name": "Black and White",
+                "styles": [{
+                    "selector": "body",
+                    "rules": "background-color: #00000; border-color: #FFFFFF; color: #FFFF00"
+                }]
+            },
+            {
+                "name": "Black and Green",
+                "styles": [{
+                    "selector": "body",
+                    "rules": "background-color: #00000; border-color: #659D32; color: #659D32"
+                }]
+            },
+            {
+                "name": "High Contrast",
+                "styles": [{
+                    "selector": "body",
+                    "rules": "background-color: #00000; border-color: #FFFF00; color: #FFFF00"
+                }]
+            }
+        ]
+    };
+    
+    fluid.skins = [
+        {
+            "name": "Matrix",
+            "text-size": fluid.uiAspects.textSize[2],
+            "color-scheme": fluid.uiAspects.colorScheme[1]
+        },
+        {
+            "name": "High Visibility",
+            "text-size": fluid.uiAspects.textSize[3],
+            "color-scheme": fluid.uiAspects.colorScheme[2]
+        }
+    ];
+    
 fluid.preferable.presets = {
     "Text Size": {
         "-2": {"body": {"font-size" : "45%"}},
