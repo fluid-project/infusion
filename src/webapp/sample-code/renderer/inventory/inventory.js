@@ -42,7 +42,58 @@ fluid.inventoryExample =  function () {
         {sku: "83-38285", quantity: 87,  item: "Hockey Puck", description: "Glow-in-the-dark hockey puck."}
     ];
 
-    var initSimpleTable = function () {
+    var initTableFullTree = function () {
+        var fullTree = {
+            children: [
+                {ID: "table-row:",
+                children: [
+                    {ID: "sku", value: "23-23874"},
+                    {ID: "quantity", value: 43},
+                    {ID: "item", value: "Helmet"},
+                    {ID: "description", value: "Red baseball helmet. Size: Large."}
+                ]},
+                {ID: "table-row:",
+                children: [
+                    {ID: "sku", value: "48-38835"},
+                    {ID: "quantity", value: 84},
+                    {ID: "item", value: "Football"},
+                    {ID: "description", value: "Leather football."}
+                ]},
+                {ID: "table-row:",
+                children: [
+                    {ID: "sku", value: "84-84848"},
+                    {ID: "quantity", value: 31},
+                    {ID: "item", value: "Goggles"},
+                    {ID: "description", value: "Light blue swim goggles."}
+                ]}
+            ]
+        };
+        fluid.selfRender(jQuery("[id=table-base:]"), fullTree);
+    };
+
+    var initTableAbridgedTree = function () {
+        var abridgedTree = {
+            "table-row:": [{
+                "sku": "84-84843",
+                "quantity": 56,
+                "item": "Badminton Set",
+                "description": "Set of 2 badminton rackets, net, and 3 birdies."
+            }, {
+                "sku": "84-39321",
+                "quantity": 128,
+                "item": "Tennis Balls",
+                "description": "Canister of 3 tennis balls."
+            }, {
+                "sku": "39-48949",
+                "quantity": 55,
+                "item": "Snowboard",
+                "description": ""
+            }]
+        };
+        fluid.selfRender(jQuery("[id=table-base:]"), abridgedTree);
+    };
+    
+    var initTableDataBinding = function () {
         var tree = [];
         for (var i = 0; i < dataTable.length; i++) {
             var item = dataTable[i];
@@ -61,9 +112,19 @@ fluid.inventoryExample =  function () {
 
     return {
         setup: function () {
+            var fullEl = fluid.byId("render-full");
+            fullEl.onclick = function () {
+                initTableFullTree();
+            };
+
+            var abridgedEl = fluid.byId("render-abridged");
+            abridgedEl.onclick = function () {
+                initTableAbridgedTree();
+            };
+
             var simpel = fluid.byId("render-simple");
             simpel.onclick = function () {
-                initSimpleTable();
+                initTableDataBinding();
             };
         }
     };
