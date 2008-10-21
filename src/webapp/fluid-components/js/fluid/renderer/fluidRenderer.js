@@ -372,7 +372,7 @@ fluid_0_6 = fluid_0_6 || {};
   }
 
   function rewriteLeaf(value) {
-    if (value && !isPlaceholder(value))
+    if (isValue(value))
       replaceBody(value);
     else
       replaceAttributes();
@@ -383,7 +383,7 @@ fluid_0_6 = fluid_0_6 || {};
       rewriteLeaf(trc.value);
     }
     else {
-      if (value)
+      if (isValue(value)) 
         replaceBody(value);
       else
         replaceAttributesOpen();
@@ -400,6 +400,10 @@ fluid_0_6 = fluid_0_6 || {};
   }
   
   /*** END TRC METHODS**/
+  
+  function isValue(value) {
+    return value !== null && value !== undefined && !isPlaceholder(value);
+  }
   
   function isPlaceholder(value) {
     // TODO: equivalent of server-side "placeholder" system
@@ -433,7 +437,7 @@ fluid_0_6 = fluid_0_6 || {};
     }
   }
   
-  fluid.NULL_STRING = "\u25a9null\u25a9"; // TODO: check on Javascript Unicode escapes
+  fluid.NULL_STRING = "\u25a9null\u25a9";
     
   function renderComponent(torender) {
     var attrcopy = trc.attrcopy;
@@ -448,12 +452,14 @@ fluid_0_6 = fluid_0_6 || {};
           attrcopy.name = torender.submittingname;
           }
       //  }
-      if (typeof(torender.value) === 'boolean') {
-        if (torender.value) {
-          attrcopy.checked = "checked";
-          }
-        else {
-          delete attrcopy.checked;
+      if (typeof(torender.value) === 'boolean' || attrcopy.type === "checkbox") {
+        if (isValue(torender.value)) {
+          if (torender.value) {
+            attrcopy.checked = "checked";
+            }
+          else {
+            delete attrcopy.checked;
+            }
           }
         attrcopy.value = "true";
         rewriteLeaf(null);
@@ -473,7 +479,7 @@ fluid_0_6 = fluid_0_6 || {};
           rewriteLeaf(value);
         }
         else if (trc.uselump.tagname === "input") {
-          if (torender.willinput || !isPlaceholder(value)) {
+          if (torender.willinput || isValue(value)) {
             attrcopy.value = value;
             }
           rewriteLeaf(null);
@@ -849,9 +855,9 @@ fluid_0_6 = fluid_0_6 || {};
     return firstBranch;
     };
     
-  fluid.renderTemplates = function(templates, tree, opts, fossilsIn) {
-    opts = opts || {};
-    debugMode = opts.debugMode;
+  fluid.renderTemplates = function(templates, tree, options, fossilsIn) {
+    options = options || {};
+    debugMode = options.debugMode;
     directFossils = fossilsIn;
 
     tree = fixupTree(tree);
@@ -880,27 +886,49 @@ fluid_0_6 = fluid_0_6 || {};
     $.data(node, fluid.BINDING_ROOT_KEY, {data: data, fossils: fossils});
     },
 
-  // A simple driver for single node self-templating  
-  fluid.selfRender = function(node, tree, opts) {
-    opts = opts || {};
-    if (node.jquery) {
-      node = node.get(0);
-      }
-    var resourceSpec = {base: {resourceText: node.innerHTML, 
-                        href: ".", resourceKey: ".", cutpoints: opts.cutpoints}
-                        };
-    var templates = fluid.parseTemplates(resourceSpec, ["base"], opts);
+  /** A driver to render and bind an already parsed set of templates onto
+   * a node. See documentation for fluid.selfRender.
+   * @param templates A parsed template set, as returned from fluid.selfRender or 
+   * fluid.parseTemplates.
+   */
+
+  fluid.reRender = function(templates, node, tree, options) {
+    options = options || {};
+    node = fluid.unwrap(node);
     var fossils = {};
-    var rendered = fluid.renderTemplates(templates, tree, opts, fossils);
-    if (opts.renderRaw) {
+    var rendered = fluid.renderTemplates(templates, tree, options, fossils);
+    if (options.renderRaw) {
       rendered = fluid.XMLEncode(rendered);
       rendered = rendered.replace(/\n/g, "<br/>");
       }
-    if (opts.bind) {
-      fluid.bindFossils(node, opts.bind, fossils);
+    if (options.bind) {
+      fluid.bindFossils(node, options.bind, fossils);
       }
     node.innerHTML = rendered;
     return templates;
+  },
+
+  /** A simple driver for single node self-templating. Treats the markup for a
+   * node as a template, parses it into a template structure, renders it using
+   * the supplied component tree and options, then replaces the markup in the 
+   * node with the rendered markup, and finally performs any required data
+   * binding. The parsed template is returned for use with a further call to
+   * reRender.
+   * @param node The node both holding the template, and whose markup is to be
+   * replaced with the rendered result.
+   * @param tree The component tree to be rendered.
+   * @param options An options structure to configure the rendering and binding process.
+   * @return A templates structure, suitable for a further call to fluid.reRender or
+   * fluid.renderTemplates.
+   */  
+  fluid.selfRender = function(node, tree, options) {
+    options = options || {};
+    node = fluid.unwrap(node);
+    var resourceSpec = {base: {resourceText: node.innerHTML, 
+                        href: ".", resourceKey: ".", cutpoints: options.cutpoints}
+                        };
+    var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
+    return fluid.reRender(templates, node, tree, options);
   }
   
 })(jQuery, fluid_0_6);

@@ -14,7 +14,7 @@ var fluid = fluid || {};
 fluid.testUtils = fluid.testUtils || {};
 
 /*
- * A number of utility functions for createing "duck-type" events for testing various key
+ * A number of utility functions for creating "duck-type" events for testing various key
  * stroke combinations.
  */
 
@@ -49,7 +49,25 @@ fluid.testUtils.modKeyEvent = function(modifier, keyCode, target) {
 
 
 fluid.testUtils.assertNotNullAndNotUndefined = function(message, value) {
-	jqUnit.assertNotUndefined(message, value);
-	jqUnit.assertNotNull(message, value);
+	  jqUnit.assertTrue(message, value !== null && value !== undefined);
 };
 
+/** Condense a DOM node into a plain Javascript object, to facilitate testing against
+ * a trial, with the use of assertDeepEq or similar
+ */
+fluid.testUtils.assertNode = function(message, expected, node) {
+    var togo = {};
+    if (node.length === 1) {
+        node = node[0];
+    }
+    for (var key in expected) {
+        var attr = node.getAttribute(key);
+        var messageExt = " - attribute " + key + ": ";
+        if (key === "nodeName") {
+           attr = node.tagName.toLowerCase();
+           messageExt = " - node name: "
+        }
+        jqUnit.assertEquals(message + messageExt, expected[key], attr);
+    }
+  
+}

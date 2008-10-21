@@ -129,6 +129,38 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertEquals("Target undisturbed", "target2", label.attr("for"));
     });
     
+  
+    
+    renderTests.test("Simple UIBound tests", function() {
+      var node = $(".FLUID-1696-test");
+      var templates = fluid.selfRender(node, 
+        {checkbox1: true,
+         checkbox2: false, 
+         field: "Value"});
+      fluid.testUtils.assertNode("Render with values", 
+        {nodeName: "input", "class": "checkbox1", type: "checkbox", value: "true", checked: "checked"}, 
+        $(".checkbox1", node));
+      fluid.testUtils.assertNode("Render with values", 
+        {nodeName: "input", "class": "checkbox2", type: "checkbox", value: "true", checked: undefined}, 
+        $(".checkbox2", node));  
+      fluid.testUtils.assertNode("Render with values", 
+        {nodeName: "input", "class": "field", type: "text", value: "Value"}, 
+        $(".field", node));          
+        
+      
+      fluid.reRender(templates, node, {checkbox1: null, checkbox2: null, field: null});
+      fluid.testUtils.assertNode("Render without values", 
+        {nodeName: "input", "class": "checkbox1", type: "checkbox", value: "true", checked: undefined}, 
+        $(".checkbox1", node));
+      fluid.testUtils.assertNode("Render without values", 
+        {nodeName: "input", "class": "checkbox2", type: "checkbox", value: "true", checked: "checked"}, 
+        $(".checkbox2", node));  
+      fluid.testUtils.assertNode("Render without values", 
+        {nodeName: "input", "class": "field", type: "text", value: "Thing"}, 
+        $(".field", node));
+      
+    });
+
     renderTests.test("Properties unescaping", function() {
       
       jqUnit.assertEquals("Simple unescaping", "This is a thing", 
@@ -152,6 +184,7 @@ fluid.tests = fluid.tests || {};
         });
       
       });
-          
+
+    
     };
   })(jQuery); 
