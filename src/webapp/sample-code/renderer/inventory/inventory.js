@@ -25,6 +25,8 @@ have several 'render' buttons that use several different ways:
 
 fluid.inventoryExample =  function () {
 
+    var parsedTemplate = null;
+    
     var dataTable = [
         {sku: "23-23874", quantity: 43,  item: "Helmet", description: "Red baseball helmet. Size: Large."},
         {sku: "48-38835", quantity: 84,  item: "Football", description: "Leather football."},
@@ -68,7 +70,11 @@ fluid.inventoryExample =  function () {
                 ]}
             ]
         };
-        fluid.selfRender(jQuery("[id=table-base:]"), fullTree);
+        if (parsedTemplate) {
+            parsedTemplate = fluid.reRender(parsedTemplate, jQuery("[id=table-base:]"), fullTree);
+        } else {
+            parsedTemplate = fluid.selfRender(jQuery("[id=table-base:]"), fullTree);
+        }
     };
 
     var initTableAbridgedTree = function () {
@@ -90,9 +96,35 @@ fluid.inventoryExample =  function () {
                 "description": ""
             }]
         };
-        fluid.selfRender(jQuery("[id=table-base:]"), abridgedTree);
+        if (parsedTemplate) {
+            parsedTemplate = fluid.reRender(parsedTemplate, jQuery("[id=table-base:]"), abridgedTree);
+        } else {
+            parsedTemplate = fluid.selfRender(jQuery("[id=table-base:]"), abridgedTree);
+        }
     };
-    
+
+    var initTableNoRsfIds = function () {
+        var tree = {
+            "my-row:": [{
+                "my-sku": "84-84843",
+                "my-item": "Badminton Set"
+            }, {
+                "my-sku": "39-48949",
+                "my-item": "Snowboard"
+            }]
+        };
+        var map = [
+            {selector: ".item-row", id: "my-row:"},
+            {selector: ".sku-container span", id: "my-sku"},
+            {selector: ".item-container span", id: "my-item"}
+        ];
+        if (parsedTemplate) {
+            parsedTemplate = fluid.reRender(parsedTemplate, jQuery("[id=table-base:]"), tree, {cutpoints: map});
+        } else {
+            parsedTemplate = fluid.selfRender(jQuery("[id=table-base:]"), tree, {cutpoints: map});
+        }
+    };
+
     var initTableDataBinding = function () {
         var tree = [];
         for (var i = 0; i < dataTable.length; i++) {
@@ -105,9 +137,11 @@ fluid.inventoryExample =  function () {
         }
         tree = { "table-row:": tree };
         
-        fluid.selfRender(jQuery("[id=table-base:]"), tree, {
-            bind: dataTable
-        });
+        if (parsedTemplate) {
+            parsedTemplate = fluid.reRender(parsedTemplate, jQuery("[id=table-base:]"), tree, {bind: dataTable});
+        } else {
+            parsedTemplate = fluid.selfRender(jQuery("[id=table-base:]"), tree, {bind: dataTable});
+        }
     };
 
     return {
@@ -122,8 +156,13 @@ fluid.inventoryExample =  function () {
                 initTableAbridgedTree();
             };
 
-            var simpel = fluid.byId("render-simple");
-            simpel.onclick = function () {
+            var noRsfIdEl = fluid.byId("render-no-rsf-id");
+            noRsfIdEl.onclick = function () {
+                initTableNoRsfIds();
+            };
+
+            var dataBindingEl = fluid.byId("render-daba-binding");
+            dataBindingEl.onclick = function () {
                 initTableDataBinding();
             };
         }
