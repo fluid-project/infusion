@@ -15,6 +15,8 @@ var fluid = fluid || {};
 
 (function ($) {
     
+    var selectOnFocus = false;
+    
     // Private functions.
     var makeTabsSelectable = function (tablist) {
         var tabs = tablist.children("li");
@@ -23,11 +25,11 @@ var fluid = fluid || {};
         // so that they can be navigated with the arrow keys instead of the tab key.
         tablist.tabbable();
 
-        // Use the DHTML Style Guide interaction: as soon as a tab is focused, select it.
-        // Probably not th best approach for Ajax tabs. 
-        // In that case, consider using a separate activatable() handler.
+        // When we're using the Windows style interaction, select the tab as soon as it's focused.
         var selectTab = function (tabToSelect) {
-            tablist.tabs('select', tabs.index(tabToSelect));
+            if (selectOnFocus) {
+                tablist.tabs('select', tabs.index(tabToSelect));
+            }
         };
         
         // Make the tab list selectable with the arrow keys:
@@ -38,6 +40,14 @@ var fluid = fluid || {};
             selectableElements: tabs,
         	onSelect: selectTab,
         	direction: $.a11y.orientation.HORIZONTAL
+        });
+        
+        // Use an activation handler if we are using the "Mac OS" style tab interaction.
+        // In this case, we shouldn't actually select the tab until the Enter or Space key is pressed.
+        tablist.activatable(function (tabToSelect) {
+            if (!selectOnFocus) {
+                tablist.tabs('select', tabs.index(tabToSelect));
+            }
         });
     };
 
@@ -84,8 +94,23 @@ var fluid = fluid || {};
     };
 
     // When the document is loaded, initialize our tabs.
-    $(function(){
+    $(function () {
+        selectOnFocus = false;
+        
+        // Instantiate the tabs widget.
         fluid.accessibletabs("tabs", "panels");
+        
+        // Bind the select on focus link.
+        $("#selectOnFocusLink").click(function (evt) {
+            selectOnFocus = !selectOnFocus;
+            if (selectOnFocus) {
+                $(evt.target).text("Enabled");
+            } else {
+                $(evt.target).text("Disabled");
+            }
+            
+            return false;
+        });
     });
     
 }) (jQuery);
