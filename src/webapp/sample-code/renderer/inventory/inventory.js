@@ -103,28 +103,6 @@ fluid.inventoryExample =  function () {
         }
     };
 
-    var initTableNoRsfIds = function () {
-        var tree = {
-            "my-row:": [{
-                "my-sku": "84-84843",
-                "my-item": "Badminton Set"
-            }, {
-                "my-sku": "39-48949",
-                "my-item": "Snowboard"
-            }]
-        };
-        var map = [
-            {selector: ".item-row", id: "my-row:"},
-            {selector: ".sku-container span", id: "my-sku"},
-            {selector: ".item-container span", id: "my-item"}
-        ];
-        if (parsedTemplate) {
-            parsedTemplate = fluid.reRender(parsedTemplate, jQuery("[id=table-base:]"), tree, {cutpoints: map});
-        } else {
-            parsedTemplate = fluid.selfRender(jQuery("[id=table-base:]"), tree, {cutpoints: map});
-        }
-    };
-
     var initTableDataBinding = function () {
         var tree = [];
         for (var i = 0; i < dataTable.length; i++) {
@@ -154,11 +132,6 @@ fluid.inventoryExample =  function () {
             var abridgedEl = fluid.byId("render-abridged");
             abridgedEl.onclick = function () {
                 initTableAbridgedTree();
-            };
-
-            var noRsfIdEl = fluid.byId("render-no-rsf-id");
-            noRsfIdEl.onclick = function () {
-                initTableNoRsfIds();
             };
 
             var dataBindingEl = fluid.byId("render-daba-binding");
