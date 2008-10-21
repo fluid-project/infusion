@@ -884,7 +884,7 @@ fluid_0_6 = fluid_0_6 || {};
 
   fluid.bindFossils = function(node, data, fossils) {
     $.data(node, fluid.BINDING_ROOT_KEY, {data: data, fossils: fossils});
-    },
+    }
 
   /** A driver to render and bind an already parsed set of templates onto
    * a node. See documentation for fluid.selfRender.
@@ -906,7 +906,7 @@ fluid_0_6 = fluid_0_6 || {};
       }
     node.innerHTML = rendered;
     return templates;
-  },
+  }
 
   /** A simple driver for single node self-templating. Treats the markup for a
    * node as a template, parses it into a template structure, renders it using
