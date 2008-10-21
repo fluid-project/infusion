@@ -43,12 +43,16 @@ fluid_0_6 = fluid_0_6 || {};
 
 
     fluid.a4aPlus = {
-        
+        foregroundColor: "#FFFFFF",
+        backgroundColor: "#000000",
+        highlightColor: "#000000", 
+        fontSize: "12"        
     };
     
     fluid.uiAspects = {
         "textSize": [
             {
+                "prefs": { "fontSize": "8"},
                 "name": "-2",
                 "styles": [{
                     "selector": "body",
@@ -56,6 +60,7 @@ fluid_0_6 = fluid_0_6 || {};
                 }]  
             },
             {
+                "prefs": { "fontSize": "10"},
                 "name": "-1",
                 "styles": [{
                     "selector": "body",
@@ -63,6 +68,7 @@ fluid_0_6 = fluid_0_6 || {};
                 }]  
             },
             {
+                "prefs": { "fontSize": "12"},
                 "name": "Default",
                 "styles": [{
                     "selector": "body",
@@ -70,6 +76,7 @@ fluid_0_6 = fluid_0_6 || {};
                 }]  
             },
             {
+                "prefs": { "fontSize": "14"},
                 "name": "+1",
                 "styles": [{
                     "selector": "body",
@@ -79,13 +86,23 @@ fluid_0_6 = fluid_0_6 || {};
         ],
         "colorScheme": [
             {
+                "prefs": {
+                    "foregroundColor": "#FFFFFF",  // some way of specifying all valid values
+                    "backgroundColor": "#000000",
+                    "highlightColor": "#FFFFFF"
+                },
                 "name": "Black and White",
                 "styles": [{
                     "selector": "body",
-                    "rules": "background-color: #00000; border-color: #FFFFFF; color: #FFFF00"
+                    "rules": "background-color: #00000; border-color: #FFFFFF; color: #FFFFFF"
                 }]
             },
             {
+                "prefs": {
+                    "foregroundColor": "#659D32",  // some way of specifying all valid values
+                    "backgroundColor": "#000000",
+                    "highlightColor": "#659D32"
+                },
                 "name": "Black and Green",
                 "styles": [{
                     "selector": "body",
@@ -93,6 +110,11 @@ fluid_0_6 = fluid_0_6 || {};
                 }]
             },
             {
+                "prefs": {
+                    "foregroundColor": "#FFFF00",  // some way of specifying all valid values
+                    "backgroundColor": "#000000",
+                    "highlightColor": "#FFFF00"
+                },
                 "name": "High Contrast",
                 "styles": [{
                     "selector": "body",
