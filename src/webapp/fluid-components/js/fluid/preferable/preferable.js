@@ -52,74 +52,55 @@ fluid_0_6 = fluid_0_6 || {};
     fluid.uiAspects = {
         "textSize": [
             {
-                "prefs": { "fontSize": "8"},
+                "prefs": { 
+                    "fontSize": "8"    // should the value be a reg exp or an array instead?
+                },
                 "name": "-2",
-                "styles": [{
-                    "selector": "body",
-                    "rules": "font-size: 45%"
-                }]  
+                "stylesheet": "text_size01.css"
             },
             {
                 "prefs": { "fontSize": "10"},
                 "name": "-1",
-                "styles": [{
-                    "selector": "body",
-                    "rules": "font-size: 55%"
-                }]  
+                "stylesheet": "text_size02.css"
             },
             {
                 "prefs": { "fontSize": "12"},
                 "name": "Default",
-                "styles": [{
-                    "selector": "body",
-                    "rules": "font-size: 62.5%"
-                }]  
+                "stylesheet": "text_size03.css"
             },
             {
                 "prefs": { "fontSize": "14"},
                 "name": "+1",
-                "styles": [{
-                    "selector": "body",
-                    "rules": "font-size: 75%"
-                }]  
+                "stylesheet": "text_size04.css"
             }
         ],
         "colorScheme": [
             {
                 "prefs": {
-                    "foregroundColor": "#FFFFFF",  // some way of specifying all valid values
+                    "foregroundColor": "#FFFFFF",  
                     "backgroundColor": "#000000",
                     "highlightColor": "#FFFFFF"
                 },
                 "name": "Black and White",
-                "styles": [{
-                    "selector": "body",
-                    "rules": "background-color: #00000; border-color: #FFFFFF; color: #FFFFFF"
-                }]
+                "stylesheet": "color_scheme01.css"
             },
             {
                 "prefs": {
-                    "foregroundColor": "#659D32",  // some way of specifying all valid values
+                    "foregroundColor": "#659D32",  
                     "backgroundColor": "#000000",
                     "highlightColor": "#659D32"
                 },
                 "name": "Black and Green",
-                "styles": [{
-                    "selector": "body",
-                    "rules": "background-color: #00000; border-color: #659D32; color: #659D32"
-                }]
+                "stylesheet": "color_scheme02.css"
             },
             {
                 "prefs": {
-                    "foregroundColor": "#FFFF00",  // some way of specifying all valid values
+                    "foregroundColor": "#FFFF00",  
                     "backgroundColor": "#000000",
                     "highlightColor": "#FFFF00"
                 },
                 "name": "High Contrast",
-                "styles": [{
-                    "selector": "body",
-                    "rules": "background-color: #00000; border-color: #FFFF00; color: #FFFF00"
-                }]
+                "stylesheet": "color_scheme03.css"
             }
         ]
     };
@@ -137,74 +118,6 @@ fluid_0_6 = fluid_0_6 || {};
         }
     ];
     
-fluid.preferable.presets = {
-    "Text Size": {
-        "-2": {"body": {"font-size" : "45%"}},
-        "-1": {"body": {"font-size" : "55%"}},
-        "Default": {}, // 62.5%
-        "+1": {"body": {"font-size" : "75%"}},
-        "+2": {"body": {"font-size" : "87.5%"}},
-        "+3": {"body": {"font-size" : "95%"}},
-        "+4": {"body": {"font-size" : "100%"}},
-        "+5": {"body": {"font-size" : "105%"}},
-        "+6": {"body": {"font-size" : "110%"}}
-    },
-    "Text Spacing": {
-        "Default": {},
-        "Wide": {"body *": {
-                    "letter-spacing": "0.04em",
-                     "word-spacing" : "0.1em"}},
-        "Wider": {"body *": {
-                 "letter-spacing": "0.05em",
-                 "word-spacing" : "0.15em"}},
-        "Widest": {
-            "body *": {
-                "letter-spacing": "0.06em",
-                "word-spacing": "0.2em"
-            },
-            "p, li, dd, dt, blockquote, th, td, pre": {
-                "line-height": "150%"
-            }
-        }
-    },
-    "Font": {
-         "Default": {},
-         "Arial":    {"body, body *": {"font-family": "arial,helvetica,sans-serif"}},
-         "Verdana":  {"body, body *": {"font-family": "verdana,arial,helvetica,sans-serif"}},
-         "Courier":  {"body, body *": {"font-family": "\"Courier New\",Courier,monospace"}},
-         "Times":    {"body, body *": {"font-family": "\"Times New Roman\",Times,serif"}}
-    },
-    
-    "Link Hover": {
-       "No Hover": {},
-       "Hover": { "a:hover": {"text-decoration": "underline"}}
-    },
-    
-    "Colour": {
-      "Original": {},
-      "High Viz": {
-          "*": {
-              "background-color": "#00000",
-              "border-color": "#FFFF00",
-              "color":        "#FFFF00"},
-          "a:active, a:focus, a:hover, a:active *, a:active *, a:focus *": {
-              "background-color":  "#000000",
-              "color":            "#00FF00"
-          }
-      },
-      "Blue 1": {
-          "*": {
-              "background-color": "#ECECEC",
-              "border-color": "#010066",
-              "color":        "#010066"},
-          "a:active, a:focus, a:hover, a:active *, a:active *, a:focus *": {
-            "background-color":  "#7196B8",
-            "color":            "#E4E4FF"
-          }
-       }
-    }
-};
-
     fluid.preferable.render = function () {
         // hydrated tree
         var contentTree = {
