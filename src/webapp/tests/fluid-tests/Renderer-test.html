@@ -73,14 +73,23 @@
      <input rsf:id="field" class="field" type="text" value="Thing"/>
   </div>
 
-  <div class="UISelect-test">
+  <div class="UISelect-test-select">
     <select rsf:id="select">
       <option selected="selected" value="Enchiridion">Enchiridion</option>
       <option value="Apocatastasis">ApoCATTastasis</option>
       <option value="Exomologesis">Exomologesis</option>
     </select>
   </div>
- </div>
+  <div class="UISelect-test-radio-1">
+    <span rsf:id="select"><!-- Required "empty" component to render overall selection component --></span>
+    <div rsf:id="radio-row:">
+      <input rsf:id="radio" type="radio" name="vocable" id="radio1" value="Aerumnous"/>
+      <label rsf:id="label" for="radio1">Aerumnous</label>
+    </div>
+  </div>
+</div>
+ 
+  
 <script>
   fluid.tests.testParser();
 </script>

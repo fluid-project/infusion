@@ -130,9 +130,11 @@ fluid_0_6 = fluid_0_6 || {};
           }
         child.parent = tree;
         child.fullID = computeFullID(child);
+        tree.childmap[child.ID] = child;
         var colpos = child.ID.indexOf(":"); 
         if (colpos === -1) {
-          tree.childmap[child.ID] = child;
+        //  tree.childmap[child.ID] = child; // moved out of branch to allow
+        // "relative id expressions" to be easily parsed
         }
         else {
           var prefix = child.ID.substring(0, colpos);
@@ -438,6 +440,22 @@ fluid_0_6 = fluid_0_6 || {};
   }
   
   fluid.NULL_STRING = "\u25a9null\u25a9";
+  
+  function isSelectedValue(torender, value) {
+      var selection = torender.selection;
+      return typeof(selection.value.length) === "Number" ? 
+            $.inArray(value, selection.value, value) !== -1 :
+               selection.value === value;
+  }
+  
+  function getRelativeComponent(component, relativeID) {
+      component = component.parent;
+      if (relativeID.indexOf("..::") === 0) {
+          relativeID = relativeID.substring(4);
+          component = component.parent;
+      }
+      return component.childmap[relativeID];
+  }
     
   function renderComponent(torender) {
     var attrcopy = trc.attrcopy;
@@ -445,30 +463,55 @@ fluid_0_6 = fluid_0_6 || {};
     var lumpindex = trc.uselump.lumpindex;
     
     var componentType = torender.componentType;
+    var tagname = trc.uselump.tagname;
     
-    if (componentType === "UIBound") {
-      //if (torender.willinput) {
-        if (torender.submittingname !== undefined) {
-          attrcopy.name = torender.submittingname;
+    if (componentType === "UIBound" || componentType === "UISelectChoice") {
+      var parent;
+      if (torender.choiceindex !== undefined) {
+          if (torender.parentFullID) {
+             parent = getAbsoluteComponent(view, torender.parentFullID);
           }
-      //  }
-      if (typeof(torender.value) === 'boolean' || attrcopy.type === "checkbox") {
-        if (isValue(torender.value)) {
-          if (torender.value) {
-            attrcopy.checked = "checked";
-            }
+          else if (torender.parentRelativeID !== undefined){
+             parent = getRelativeComponent(torender, torender.parentRelativeID);
+          }
           else {
-            delete attrcopy.checked;
-            }
+            fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID 
+            + " does not have either parentFullID or parentRelativeID set");
           }
-        attrcopy.value = "true";
+      }
+      var submittingname = parent? parent.selection.submittingname : torender.submittingname;
+      if (tagname === "input" || tagname === "textarea") {
+          if (torender.submittingname !== undefined) {
+              attrcopy.name = torender.submittingname;
+              }
+          }
+
+      if (typeof(torender.value) === 'boolean' || attrcopy.type === "radio" 
+             || attrcopy.type === "checkbox") {
+        var value = torender.value;
+        
+        if (torender.choiceindex !== undefined) {
+            var value = parent.optionlist.value[torender.choiceindex];
+            value = isSelectedValue(parent, value);
+        }
+        if (isValue(torender.value)) {
+            if (torender.value) {
+                attrcopy.checked = "checked";
+                }
+            else {
+                delete attrcopy.checked;
+                }
+            }
+        if (attrcopy.type !== "radio") {
+            attrcopy.value = "true";
+            }
         rewriteLeaf(null);
         }
       else if (torender.value instanceof Array) {
         // Cannot be rendered directly, must be fake
         renderUnchanged();
         }
-      else {
+      else { // String value
         var value = torender.value;
         if (trc.uselump.tagname === "textarea") {
           if (isPlaceholder(value) && torender.willinput) {
@@ -524,8 +567,7 @@ fluid_0_6 = fluid_0_6 || {};
           if (value === null)
             value = fluid.NULL_STRING;
           out += fluid.XMLEncode(value);
-          if (ismultiple? ($.inArray(value, torender.selection.value, value) !== -1) :
-            (torender.selection.value === value)) {
+          if (isSelectedValue(torender, value)) {
             out += "\" selected=\"selected";
             }
           out += "\">";
@@ -541,6 +583,28 @@ fluid_0_6 = fluid_0_6 || {};
       dumpBoundFields(torender.selection);
       dumpBoundFields(torender.optionlist);
       dumpBoundFields(torender.optionnames);
+    }
+    else if (componentType === "UISelectChoice") {
+      var parent;
+      if (torender.parentFullID) {
+         parent = getAbsoluteComponent(view, torender.parentFullID);
+      }
+      else if (torender.parentRelativeID !== undefined){
+         parent = getRelativeComponent(torender, torender.parentRelativeID);
+      }
+      else {
+        fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID 
+        + " does not have either parentFullID or parentRelativeID set");
+      }
+      var value = parent.optionlist.value[torender.choiceindex];
+      // peers with <input type="radio"/> or <input type="checkbox"/>
+      attrcopy.name = parent.selection.submittingname;
+      attrcopy.value = value;
+      delete attrcopy["checked"];
+      if (isSelectedValue(parent, value)) {
+        attrcopy.put("checked", "checked");
+      }
+      replaceAttributes();
     }
     else if (torender.markup !== undefined) { // detect UIVerbatim
       var rendered = torender.markup;

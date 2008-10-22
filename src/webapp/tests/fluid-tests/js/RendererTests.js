@@ -161,16 +161,17 @@ fluid.tests = fluid.tests || {};
       
     });
     
-    renderTests.test("UISelect tests", function() {
-      var node = $(".UISelect-test");
-      var tree = {
+    var selection_tree = {
         select: {
           selection: "Apocatastasis",
           optionlist: ["Enchiridion", "Apocatastasis", "Exomologesis"],
           optionnames: ["Enchiridion", "ApoCATTastasis", "Exomologesis"]
         }
-      };
-      var templates = fluid.selfRender(node, tree);
+      }; 
+    
+    renderTests.test("UISelect tests with HTML select", function() {
+      var node = $(".UISelect-test-select");
+      var templates = fluid.selfRender(node, $.extend(true, {}, selection_tree));
       var options = $("option", node);
       fluid.testUtils.assertNode("Render UISelect", 
         [{nodeName: "option", selected: undefined, value: "Enchiridion", nodeText: "Enchiridion"},
@@ -178,6 +179,27 @@ fluid.tests = fluid.tests || {};
          {nodeName: "option", selected: undefined, value: "Exomologesis", nodeText: "Exomologesis"}],
          options);
     });
+
+    renderTests.test("UISelect tests with radio buttons", function() {
+      var node = $(".UISelect-test-radio-1");
+      var tree = $.extend(true, {}, selection_tree, 
+        fluid.transform(selection_tree.select.optionlist, function(option, index) {
+          return {
+          "radio-row:": {
+              children: [
+                 {ID: "radio", parentRelativeID: "..::select", choiceindex: index},
+                 {ID: "label", parentRelativeID: "..::select", choiceindex: index}]
+        }};
+      }));
+      var templates = fluid.selfRender(node, selection_tree);
+      var inputs = $("input", node);
+      fluid.testUtils.assertNode("Render UISelect as radio buttons", 
+        [{nodeName: "input", checked: undefined, value: "Enchiridion", nodeText: "Enchiridion"},
+         {nodeName: "input", checked: "checked", value: "Apocatastasis", nodeText: "ApoCATTastasis"},
+         {nodeName: "input", checked: undefined, value: "Exomologesis", nodeText: "Exomologesis"}],
+         inputs);
+    });
+
 
     renderTests.test("Properties unescaping", function() {
       
