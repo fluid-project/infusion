@@ -517,7 +517,7 @@ fluid_0_6 = fluid_0_6 || {};
       if (ishtmlselect) {
         out += ">";
         var values = torender.optionlist.value;
-        var names = torender.optionnames ? values: torender.optionnames.value;
+        var names = torender.optionnames === null || torender.optionnames === undefined ? values: torender.optionnames.value;
         for (var i = 0; i < names.length; ++i) {
           out += "<option value=\"";
           var value = values[i];

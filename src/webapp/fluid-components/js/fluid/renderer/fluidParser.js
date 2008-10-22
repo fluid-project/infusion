@@ -435,7 +435,7 @@ fluid_0_6 = fluid_0_6 || {};
     lines = text.split("\n");
     var contin, key, valueComp, valueRaw, valueEsc;
     for (var i = 0; i < lines.length; ++ i) {
-      var line = fluid.trim(lines[i]);
+      var line = $.trim(lines[i]);
       if (!line || line.charAt(0) === "#" || line.charAt(0) === '!') {
           continue;
       }
@@ -447,10 +447,10 @@ fluid_0_6 = fluid_0_6 || {};
           valueRaw = "";
           }
         else {
-          key = fluid.trim(line.substring(0, breakpos + 1)); // +1 since first char is escape exclusion
-          valueRaw = fluid.trim(line.substring(breakpos + 2));
+          key = $.trim(line.substring(0, breakpos + 1)); // +1 since first char is escape exclusion
+          valueRaw = $.trim(line.substring(breakpos + 2));
           if (valueRaw.charAt(0) === ":" || valueRaw.charAt(0) === "=") {
-            valueRaw = fluid.trim(valueRaw.substring(1));
+            valueRaw = $.trim(valueRaw.substring(1));
           }
         }
       
@@ -576,14 +576,9 @@ fluid_0_6 = fluid_0_6 || {};
   var childSeg = new RegExp("\\s*(>)?\\s*", "g");
   var whiteSpace = new RegExp("^\\w*$");
 
-
-  fluid.trim = function( text ) {
-    return (text || "").replace( /^\s+|\s+$/g, "" );
-    };
-
   fluid.parseSelector = function(selstring) {
     var togo = [];
-    selstring = fluid.trim(selstring);
+    selstring = $.trim(selstring);
     //ws-(ss*)[ws/>]
     quickClass.lastIndex = 0;
     var lastIndex = 0;

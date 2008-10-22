@@ -60,14 +60,26 @@ fluid.testUtils.assertNode = function(message, expected, node) {
     if (node.length === 1) {
         node = node[0];
     }
-    for (var key in expected) {
-        var attr = node.getAttribute(key);
-        var messageExt = " - attribute " + key + ": ";
-        if (key === "nodeName") {
-           attr = node.tagName.toLowerCase();
-           messageExt = " - node name: "
+    if (node.length > 1) {
+        jqUnit.assertEquals("Unexpected number of nodes " + message, expected.length, node.length);
+        for (var i = 0; i < node.length; ++ i) {
+            fluid.testUtils.assertNode(message + ": node " + i + ": ", expected[i], node[i]);
         }
-        jqUnit.assertEquals(message + messageExt, expected[key], attr);
+        
+    }
+    else {
+        for (var key in expected) {
+            var attr = node.getAttribute(key);
+            var messageExt = " - attribute " + key + ": ";
+            if (key === "nodeName") {
+               attr = node.tagName.toLowerCase();
+               messageExt = " - node name: "
+            }
+            if (key === "nodeText") {
+               attr = jQuery.trim(fluid.dom.getElementText(node));
+            }
+            jqUnit.assertEquals(message + messageExt, expected[key], attr);
+        }
     }
   
 }

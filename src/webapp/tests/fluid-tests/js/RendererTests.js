@@ -162,9 +162,21 @@ fluid.tests = fluid.tests || {};
     });
     
     renderTests.test("UISelect tests", function() {
-      
-      
-      
+      var node = $(".UISelect-test");
+      var tree = {
+        select: {
+          selection: "Apocatastasis",
+          optionlist: ["Enchiridion", "Apocatastasis", "Exomologesis"],
+          optionnames: ["Enchiridion", "ApoCATTastasis", "Exomologesis"]
+        }
+      };
+      var templates = fluid.selfRender(node, tree);
+      var options = $("option", node);
+      fluid.testUtils.assertNode("Render UISelect", 
+        [{nodeName: "option", selected: undefined, value: "Enchiridion", nodeText: "Enchiridion"},
+         {nodeName: "option", selected: "selected", value: "Apocatastasis", nodeText: "ApoCATTastasis"},
+         {nodeName: "option", selected: undefined, value: "Exomologesis", nodeText: "Exomologesis"}],
+         options);
     });
 
     renderTests.test("Properties unescaping", function() {
