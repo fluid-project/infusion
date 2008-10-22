@@ -22,7 +22,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var k = fluid.testUtils.reorderer.bindReorderer(portletIds);
         
-        layoutReordererTests.test("Bubble keystrokes inside module", function () {
+        layoutReordererTests.test("Events within module", function () {
             var reorderer = fluid.reorderLayout("#" + portalRootId, {
                         selectors: {
                             columns: columnSelector,
@@ -35,6 +35,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
             text2.simulate("keypress", {keyCode: fluid.reorderer.keys.m});
             
             jqUnit.assertEquals("After typing M into text field, portlet 2 should still be the active item", portletIds[2], reorderer.activeItem.id);
+// This test for FLUID-1690 cannot be made to work in the jqUnit environment yet          
+//            var blurred = false;
+//            text2.blur(function() {blurred = true;});
+            
+//            $("#portlet2 .title").simulate("mousedown");
+//            $("#portlet2 .title").simulate("mouseup");
+//            jqUnit.assertTrue("After mouseDown on title, text field should be blurred", blurred);
+            
         });
         
         layoutReordererTests.test("Drop warning visibility for up and down", function () {
