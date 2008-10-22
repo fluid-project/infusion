@@ -301,7 +301,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     /*
-     * Sets the state (using a css class) for the top level element
+     * Sets the (using a css class) for the top level element
      * @param {String} uploaderContainer    the uploader container
      * @param {String} stateClass    the file queue used to test numbers.
      */
