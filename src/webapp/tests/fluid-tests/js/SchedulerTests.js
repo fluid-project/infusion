@@ -59,8 +59,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         	// Make sure they're all good and correct orderables.
         	for(var i = 0; i < SchedulerTests.numMoveables; i++) {
         		var element = foundOrderables[i];
-        		fluid.testUtils.assertNotNullAndNotUndefined("Orderable should be a valid element.", 
-        		                                             foundOrderables[i]);
+        		jqUnit.assertValue("Orderable should be a valid element.", foundOrderables[i]);
         		jqUnit.assertTrue("Orderable should have the moveable class.", jQuery(element).hasClass(SchedulerTests.moveableClass));
         	}
         	

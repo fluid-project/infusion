@@ -21,7 +21,7 @@ fluid.tests = fluid.tests || {};
         
       });
       
-    var parserTests = new jqUnit.TestCase ("Selector Parser Test");
+    var parserTests = new jqUnit.TestCase("Selector Parser Test");
     
     parserTests.test("Test", function() {
       var tree = fluid.parseSelector("  div span#id  > .class");
@@ -35,7 +35,7 @@ fluid.tests = fluid.tests || {};
     
       });
     
-    var renderTests = new jqUnit.TestCase ("Selector Render Test");
+    var renderTests = new jqUnit.TestCase("Selector Render Test");
     
     renderTests.test("Selector-based render test", function() {
       var tree = {"header:": []};
@@ -162,16 +162,15 @@ fluid.tests = fluid.tests || {};
     });
     
     var selection_tree = {
-        select: {
-          selection: "Apocatastasis",
-          optionlist: ["Enchiridion", "Apocatastasis", "Exomologesis"],
-          optionnames: ["Enchiridion", "ApoCATTastasis", "Exomologesis"]
-        }
-      }; 
+        ID: "select",
+        selection: "Apocatastasis",
+        optionlist: ["Enchiridion", "Apocatastasis", "Exomologesis"],
+        optionnames: ["Enchiridion", "ApoCATTastasis", "Exomologesis"]
+        }; 
     
     renderTests.test("UISelect tests with HTML select", function() {
       var node = $(".UISelect-test-select");
-      var templates = fluid.selfRender(node, $.extend(true, {}, selection_tree));
+      var templates = fluid.selfRender(node, {children: [fluid.copy(selection_tree)]});
       var options = $("option", node);
       fluid.testUtils.assertNode("Render UISelect", 
         [{nodeName: "option", selected: undefined, value: "Enchiridion", nodeText: "Enchiridion"},
@@ -179,25 +178,30 @@ fluid.tests = fluid.tests || {};
          {nodeName: "option", selected: undefined, value: "Exomologesis", nodeText: "Exomologesis"}],
          options);
     });
-
+    
     renderTests.test("UISelect tests with radio buttons", function() {
       var node = $(".UISelect-test-radio-1");
-      var tree = $.extend(true, {}, selection_tree, 
-        fluid.transform(selection_tree.select.optionlist, function(option, index) {
+      var tree = {children: [fluid.copy(selection_tree)].concat( 
+        fluid.transform(selection_tree.optionlist, function(option, index) {
           return {
-          "radio-row:": {
-              children: [
+            ID: "radio-row:", 
+            children: [
                  {ID: "radio", parentRelativeID: "..::select", choiceindex: index},
                  {ID: "label", parentRelativeID: "..::select", choiceindex: index}]
-        }};
-      }));
-      var templates = fluid.selfRender(node, selection_tree);
+        };
+      }))};
+      var templates = fluid.selfRender(node, tree);
       var inputs = $("input", node);
       fluid.testUtils.assertNode("Render UISelect as radio buttons", 
-        [{nodeName: "input", checked: undefined, value: "Enchiridion", nodeText: "Enchiridion"},
-         {nodeName: "input", checked: "checked", value: "Apocatastasis", nodeText: "ApoCATTastasis"},
-         {nodeName: "input", checked: undefined, value: "Exomologesis", nodeText: "Exomologesis"}],
+        [{nodeName: "input", checked: undefined, value: "Enchiridion", type: "radio"},
+         {nodeName: "input", checked: "checked", value: "Apocatastasis", type: "radio"},
+         {nodeName: "input", checked: undefined, value: "Exomologesis", type: "radio"}],
          inputs);
+      var names = fluid.transform(inputs, function(node) {return $(node).attr("name");});
+      jqUnit.assertValue("Name should be assigned", names[0]);
+      jqUnit.assertTrue("Name should have been rewritten", names[0] !== "vocable");
+      jqUnit.assertEquals("Names should be identical", names[0], names[1]);
+      jqUnit.assertEquals("Names should be identical", names[1], names[2]);
     });
 
 

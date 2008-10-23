@@ -115,6 +115,13 @@ fluid_0_6 = fluid_0_6 || {};
     return component;
   }
   
+  // When a component
+  function assignSubmittingName(component) {
+      if (component.submittingname === undefined) {
+          component.submittingname = component.fullID;
+      }
+  }
+  
   function fixupTree(tree) {
     if (!tree || tree.componentType === undefined) {
       tree = unzipComponent(tree);
@@ -168,9 +175,7 @@ fluid_0_6 = fluid_0_6 || {};
           }
         else if (componentType == "UIBound") {
          // TODO: fetching bound values on fixup, and UISelect names
-          if (child.submittingname === undefined && child.valuebinding !== undefined) {
-            child.submittingname = child.fullID;
-            }
+
           }
         fixupTree(child);
         }
@@ -478,33 +483,34 @@ fluid_0_6 = fluid_0_6 || {};
             fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID 
             + " does not have either parentFullID or parentRelativeID set");
           }
+          assignSubmittingName(parent.selection);
       }
+
       var submittingname = parent? parent.selection.submittingname : torender.submittingname;
       if (tagname === "input" || tagname === "textarea") {
-          if (torender.submittingname !== undefined) {
-              attrcopy.name = torender.submittingname;
+          if (submittingname !== undefined) {
+              attrcopy.name = submittingname;
               }
           }
 
       if (typeof(torender.value) === 'boolean' || attrcopy.type === "radio" 
              || attrcopy.type === "checkbox") {
-        var value = torender.value;
+        var underlyingValue;
+        var directValue = torender.value;
         
         if (torender.choiceindex !== undefined) {
-            var value = parent.optionlist.value[torender.choiceindex];
-            value = isSelectedValue(parent, value);
+            underlyingValue = parent.optionlist.value[torender.choiceindex];
+            directValue = isSelectedValue(parent, underlyingValue);
         }
-        if (isValue(torender.value)) {
-            if (torender.value) {
+        if (isValue(directValue)) {
+            if (directValue) {
                 attrcopy.checked = "checked";
                 }
             else {
                 delete attrcopy.checked;
                 }
             }
-        if (attrcopy.type !== "radio") {
-            attrcopy.value = "true";
-            }
+        attrcopy.value = underlyingValue? underlyingValue: "true";
         rewriteLeaf(null);
         }
       else if (torender.value instanceof Array) {
@@ -550,9 +556,10 @@ fluid_0_6 = fluid_0_6 || {};
         }
       
       if (ishtmlselect) {
+      	assignSubmittingName(torender.selection);
         // The HTML submitted value from a <select> actually corresponds
         // with the selection member, not the top-level component.
-        if (torender.selection.willinput && torender.selection.submittingname !== undefined) {
+        if (torender.selection.willinput !== false) {
           attrcopy.name = torender.selection.submittingname;
         }
       }
@@ -583,28 +590,6 @@ fluid_0_6 = fluid_0_6 || {};
       dumpBoundFields(torender.selection);
       dumpBoundFields(torender.optionlist);
       dumpBoundFields(torender.optionnames);
-    }
-    else if (componentType === "UISelectChoice") {
-      var parent;
-      if (torender.parentFullID) {
-         parent = getAbsoluteComponent(view, torender.parentFullID);
-      }
-      else if (torender.parentRelativeID !== undefined){
-         parent = getRelativeComponent(torender, torender.parentRelativeID);
-      }
-      else {
-        fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID 
-        + " does not have either parentFullID or parentRelativeID set");
-      }
-      var value = parent.optionlist.value[torender.choiceindex];
-      // peers with <input type="radio"/> or <input type="checkbox"/>
-      attrcopy.name = parent.selection.submittingname;
-      attrcopy.value = value;
-      delete attrcopy["checked"];
-      if (isSelectedValue(parent, value)) {
-        attrcopy.put("checked", "checked");
-      }
-      replaceAttributes();
     }
     else if (torender.markup !== undefined) { // detect UIVerbatim
       var rendered = torender.markup;

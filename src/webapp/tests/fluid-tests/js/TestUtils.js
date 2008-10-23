@@ -47,11 +47,6 @@ fluid.testUtils.modKeyEvent = function(modifier, keyCode, target) {
     return togo;
 };
 
-
-fluid.testUtils.assertNotNullAndNotUndefined = function(message, value) {
-	  jqUnit.assertTrue(message, value !== null && value !== undefined);
-};
-
 /** Condense a DOM node into a plain Javascript object, to facilitate testing against
  * a trial, with the use of assertDeepEq or similar
  */

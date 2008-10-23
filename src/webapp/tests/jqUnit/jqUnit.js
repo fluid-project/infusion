@@ -126,31 +126,35 @@ var jqUnit = jqUnit || {};
     
     var jsUnitCompat = {
         assertEquals: function (msg, expected, actual) {
-            jqUnit.equals (actual, expected, msg);
+            jqUnit.equals(actual, expected, msg);
         },
 
-        assertTrue: function (msg, expected) {
-            jqUnit.ok (expected, msg);
+        assertTrue: function (msg, value) {
+            jqUnit.ok(value, msg);
         },
 
-        assertFalse: function (msg, expected) {
-            jqUnit.ok (!expected, msg);
+        assertFalse: function (msg, value) {
+            jqUnit.ok(!value, msg);
         },
 
-        assertUndefined: function (msg, expected) {
-            jqUnit.equals ((typeof expected), 'undefined', msg);
+        assertUndefined: function (msg, value) {
+            jqUnit.ok(typeof value === 'undefined', msg);
         },
 
-        assertNotUndefined: function (msg, expected) {
-            jqUnit.ok (!(typeof expected === 'undefined'), msg);
+        assertNotUndefined: function (msg, value) {
+            jqUnit.ok(typeof value !== 'undefined', msg);
         },
 
-        assertNull: function (msg, expected) {
-            jqUnit.equals (expected, null, msg);
+        assertValue: function (msg, value) {
+        	  jqUnit.ok(value !== null && value !== undefined, msg);
+        },
+        
+        assertNull: function (msg, value) {
+            jqUnit.equals(value, null, msg);
         },
 
-        assertNotNull: function (msg, expected) {
-            jqUnit.ok (!(expected === null), msg);
+        assertNotNull: function (msg, value) {
+            jqUnit.ok(value !== null, msg);
         },
         
         assertDeepEq: function (msg, expected, actual) {

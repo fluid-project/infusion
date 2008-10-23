@@ -17,7 +17,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var fluid_0_6 = fluid_0_6 || {};
 var fluid = fluid || fluid_0_6;
 
-(function (jQuery, fluid) {
+(function ($, fluid) {
     
     fluid.version = "Infusion 0.6";
     
@@ -43,7 +43,7 @@ var fluid = fluid || fluid_0_6;
      * @param {Object} obj the object to wrap in a jQuery
      */
     fluid.wrap = function (obj) {
-        return ((!obj || obj.jquery) ? obj : jQuery(obj)); 
+        return ((!obj || obj.jquery) ? obj : $(obj)); 
     };
     
     /**
@@ -99,7 +99,7 @@ var fluid = fluid || fluid_0_6;
     fluid.container = function (container) {
         if (typeof container === "string" || 
           container.nodeType && (container.nodeType === 1  || container.nodeType === 9)) {
-            container = jQuery(container);
+            container = $(container);
         }
         
         // Throw an exception if we've got more or less than one element.
@@ -150,7 +150,7 @@ var fluid = fluid || fluid_0_6;
         var cache = {}, that = {};
         
         function cacheKey(name, thisContainer) {
-            return jQuery.data(fluid.unwrap(thisContainer)) + "-" + name;
+            return $.data(fluid.unwrap(thisContainer)) + "-" + name;
         }
 
         function record(name, thisContainer, result) {
@@ -171,9 +171,9 @@ var fluid = fluid || fluid_0_6;
             }
 
             if (typeof(selector) === "function") {
-                togo = jQuery(selector.call(null, fluid.unwrap(thisContainer)));
+                togo = $(selector.call(null, fluid.unwrap(thisContainer)));
             } else {
-                togo = jQuery(selector, thisContainer);
+                togo = $(selector, thisContainer);
             }
             if (togo.get(0) === document) {
                 togo = [];
@@ -342,7 +342,7 @@ var fluid = fluid || fluid_0_6;
         if (!entry) {
             return;
         }
-        var entries = jQuery.makeArray(entry);
+        var entries = $.makeArray(entry);
         var optindex = -1;
         var togo = [];
         for (var i = 0; i < args.length; ++ i) {
@@ -454,6 +454,12 @@ var fluid = fluid || fluid_0_6;
         return target;     
     };
     
+    /** Performs a deep copy (clone) of its argument **/
+    
+    fluid.copy = function (tocopy) {
+        return $.extend(true, {}, tocopy);
+    }
+    
     fluid.invokeGlobalFunction = function (functionPath, args, environment) {
         return fluid.model.getBeanValue(window, functionPath, environment).apply(null, args);
     };
@@ -531,7 +537,7 @@ var fluid = fluid || fluid_0_6;
     /** Copy a source "model" onto a target **/
     fluid.model.copyModel = function (target, source) {
         fluid.clear(target);
-        jQuery.extend(true, target, source);
+        $.extend(true, target, source);
     };
     
     /** Parse an EL expression separated by periods (.) into its component segments.
@@ -636,7 +642,7 @@ var fluid = fluid || fluid_0_6;
             }
             return togo + "]";
         }
-        element = jQuery(element);
+        element = $(element);
         togo = element.get(0).tagName;
         if (element.attr("id")) {
             togo += "#" + element.attr("id");
@@ -655,7 +661,7 @@ var fluid = fluid || fluid_0_6;
      * @param {Function} test A function which takes an element as a parameter and return true or false for some test
      */
     fluid.findAncestor = function (element, test) {
-        return test(element) ? element : jQuery.grep(jQuery(element).parents(), test)[0];
+        return test(element) ? element : $.grep($(element).parents(), test)[0];
     };
     
     /**
@@ -663,7 +669,7 @@ var fluid = fluid || fluid_0_6;
      */
     fluid.jById = function (id) {
         var element = fluid.byId(id);
-        return element? jQuery(element) : null;
+        return element? $(element) : null;
     };
     
     /**
