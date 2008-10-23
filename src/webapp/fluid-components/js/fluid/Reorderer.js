@@ -62,16 +62,6 @@ fluid_0_6 = fluid_0_6 || {};
         return selectables[0];
     }
     
-    if (!$.ui.mouse["PATCHED_FLUID_1690"]) {
-       var old = $.ui.mouse.mouseDown;
-       var replaced = function() {
-         old.apply(this, arguments);
-       };
-       $.ui.mouse.mouseDown = replaced;
-       $.ui.draggable.prototype.mouseDown = replaced;
-       $.ui.mouse["PATCHED_FLUID_1690"] = true;
-    }
-    
     function bindHandlersToContainer(container, keyDownHandler, keyUpHandler, mouseMoveHandler) {
         var actualKeyDown = keyDownHandler;
         var advancedPrevention = false;
@@ -338,7 +328,7 @@ fluid_0_6 = fluid_0_6 || {};
             );
             var avatar;
         
-            item.draggable({
+            thatReorderer.dom.fastLocate("grabHandle", item).draggable({
                 refreshPositions: false,
                 scroll: true,
                 helper: function () {
