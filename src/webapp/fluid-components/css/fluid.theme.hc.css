@@ -30,25 +30,25 @@
 .fl-theme-hc span input {background-color:#000; color:#fff; border: 1px solid #fff; padding:3px; margin:-1px;}
 
 /* Wrappers and Callouts  */
-.fl-theme-hc .fl-wrapper-widget { border:3px solid #dfefff; background-color:#333; color:#fff;}
-.fl-theme-hc .fl-wrapper-callout { border-color:#999999; background-color:#dfefff; }
+.fl-theme-hc .fl-wrapper-widget { border:3px solid #000; background-color:#fff; color:#000;}
+.fl-theme-hc .fl-wrapper-callout { border-color:#fff; background-color:#999; }
 
 /* Helper: Tabs */
-.fl-theme-hc .fl-tabs {border-bottom-color:#4070a1;}
+.fl-theme-hc .fl-tabs {border-bottom-color:#000;}
 
-.fl-theme-hc .fl-tabs li  {background-color:#dfefff;}
+.fl-theme-hc .fl-tabs li  {background-color:#000;}
 .fl-theme-hc .fl-tabs li,
-.fl-theme-hc .fl-tabs li a  {font-weight:bold; color:#4070a1; border-color:#4070a1; border-bottom-color:#4070a1; text-decoration:none;}
+.fl-theme-hc .fl-tabs li a  {font-weight:bold; color:#fff; background-color:#000; border-color:#000; border-bottom-color:#000; text-decoration:none;}
 
 
 .fl-theme-hc .fl-tabs li:hover,
 .fl-theme-hc .fl-tabs li:hover a,
-.fl-theme-hc .fl-tabs li a:hover {background-color:#5a95cf; color:#fff;}
+.fl-theme-hc .fl-tabs li a:hover {background-color:#fff; color:#000;}
 
 .fl-theme-hc .fl-tabs li.fl-activeTab,
 .fl-theme-hc .fl-tabs li.fl-activeTab:hover,
 .fl-theme-hc .fl-tabs li.fl-activeTab a,
-.fl-theme-hc .fl-tabs li.fl-activeTab a:hover {background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
+.fl-theme-hc .fl-tabs li.fl-activeTab a:hover {background-color: #fff; border-bottom-color:#fff; color:#000;}
 
 .fl-theme-hc .fl-tab-content {background-color:#ffffff; color:#000;}
 
