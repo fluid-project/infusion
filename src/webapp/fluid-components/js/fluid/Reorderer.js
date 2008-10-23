@@ -423,26 +423,33 @@ fluid_0_6 = fluid_0_6 || {};
             };
             
             var selectables = thatReorderer.dom.fastLocate("selectables");
-            selectables.addClass(styles.defaultStyle);
+            for (var i = 0; i < selectables.length; ++ i) {
+                var selectable = $(selectables[i]);
+                if (!jQuery.data(selectable[0], "fluid.reorderer.selectable-initialised")) { 
+                    selectable.addClass(styles.defaultStyle);
             
-            selectables.blur(handleBlur);
-            selectables.focus(handleFocus);
-            selectables.click(function (evt) {
-                var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
-                if (fluid.dom.isContainer(handle, evt.target)) {
-                    $(this).focus();
+                    selectables.blur(handleBlur);
+                    selectables.focus(handleFocus);
+                    selectables.click(function (evt) {
+                        var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
+                        if (fluid.dom.isContainer(handle, evt.target)) {
+                            $(this).focus();
+                        }
+                    });
+                    
+                    selectables.ariaRole(options.containerRole.item);
+                    selectables.ariaState("selected", "false");
+                    selectables.ariaState("disabled", "false");
+                    jQuery.data(jQuery.data(selectable[0], "fluid.reorderer.selectable-initialised", true));
                 }
-            });
-            
-            selectables.ariaRole(options.containerRole.item);
-            selectables.ariaState("selected", "false");
-            selectables.ariaState("disabled", "false");
-                
-            thatReorderer.container.selectable({
-                selectableElements: selectables,
-                selectablesTabindex: thatReorderer.options.selectablesTabindex,
-                direction: null
-            });
+            }
+            if (!thatReorderer.selectableContext) {   
+                thatReorderer.container.selectable({
+                    selectableElements: selectables,
+                    selectablesTabindex: thatReorderer.options.selectablesTabindex,
+                    direction: null
+                });
+            }
             thatReorderer.selectableContext = thatReorderer.container.getSelectableContext();
         };
     
@@ -467,22 +474,27 @@ fluid_0_6 = fluid_0_6 || {};
             // Setup movables
             for (var i = 0; i < movables.length; i++) {
                 var item = movables[i];
-                initMovable($(item));
+                if (!jQuery.data(item, "fluid.reorderer.movable-initialised")) { 
+                    initMovable($(item));
+                    jQuery.data(item, "fluid.reorderer.movable-initialised", true)
+                }
             }
 
             // In order to create valid html, the drop marker is the same type as the node being dragged.
             // This creates a confusing UI in cases such as an ordered list. 
             // drop marker functionality should be made pluggable. 
-            if (movables.length > 0) {
+            if (movables.length > 0 && !dropMarker) {
                 dropMarker = createDropMarker(movables[0].tagName);
             }
             
             dropManager.updateGeometry(thatReorderer.layoutHandler.getGeometricInfo());
             
-            dropManager.dropChangeFirer.addListener(dropChangeListener);
+            dropManager.dropChangeFirer.addListener(dropChangeListener, "fluid.Reorderer");
             // Setup dropTargets
-            dropTargets.ariaState("dropeffect", "none");
+            dropTargets.ariaState("dropeffect", "none");  
+
         };
+
 
         // Final initialization of the Reorderer at the end of the construction process 
         if (thatReorderer.container) {
@@ -510,6 +522,7 @@ fluid_0_6 = fluid_0_6 || {};
             thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
             thatReorderer.dom.refresh("stylisticOffset", thatReorderer.dom.fastLocate("movables"));
             thatReorderer.dom.refresh("dropTargets");
+            initItems();
             thatReorderer.selectableContext.selectables = thatReorderer.dom.fastLocate("selectables");
             thatReorderer.selectableContext.selectablesUpdated(thatReorderer.activeItem);
         };
