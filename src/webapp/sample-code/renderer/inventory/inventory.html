@@ -28,36 +28,27 @@
             <input id="render-daba-binding" type="submit" value="Render Data Binding"/>
         </p>
 
-        <div rsf:id="table-base:" id="table-base:" class="table-base">
-            <form>
-                <table border="0" cellspacing="0" summary="A grid of sports products.">
-                    <thead>
-                        <tr>
-                            <th>SKU</th>
-                            <th>Quantity</th>
-                            <th>Item</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr rsf:id="table-row:" class="item-row" style="text-align: left">
-                            <td class="sku-container">
-                                <span rsf:id="sku">sku</span>
-                            </td>
-                            <td class="quantity-container">
-                                <span rsf:id="quantity">quantity</span>
-                            </td>
-                            <td class="item-container">
-                                <span rsf:id="item">product name</span>
-                            </td>
-                            <td class="description-container">
-                                <span rsf:id="description">description of the product</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
-        </div>
+        <!-- This table is the root node of the template -->
+        <table rsf:id="table-base:" id="table-base:" class="table-base" border="0" cellspacing="0" summary="A grid of sports products.">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Quantity</th>
+                    <th>Item</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- This row element is the template for each row that will be rendered. -->
+                <!-- The rsf:id will map the HTML element to a component in the component tree. -->
+                <tr rsf:id="table-row:" class="item-row" style="text-align: left">
+                    <td class="sku-container" rsf:id="sku">sku</td>
+                    <td class="quantity-container" rsf:id="quantity">quantity</td>
+                    <td class="item-container" rsf:id="item">product name</td>
+                    <td class="description-container" rsf:id="description">description of the product</td>
+                </tr>
+            </tbody>
+        </table>
 
         <script type="text/javascript">
             fluid.inventoryExample.setup();
