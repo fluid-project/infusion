@@ -284,6 +284,29 @@ fluid.tests = fluid.tests || {};
       
     });
 
+    var model = {
+        values: ["Enchiridion", "Apocatastasis", "Exomologesis"],
+        names: ["Enchiridion", "ApoCATTastasis", "Exomologesis"]
+    };
+
+    var binding_tree = {
+      children: [{
+        ID: "select",
+        selection: {valuebinding: "model.value"},
+        optionlist: {valuebinding: "model.values"},
+        optionnames: {valuebinding: "model.names"}
+        }]
+    };
+
+    renderTests.test("UISelect binding tests with HTML select", function() {
+      var node = $(".UISelect-test-select");
+      var model1 = $.extend(true, {}, model, {choice: "Enchiridion"});
+
+      var templates = fluid.selfRender(node, fluid.copy(binding_tree));
+      var options = $("option", node);
+      
+      });
+
 
     renderTests.test("Properties unescaping", function() {
       
