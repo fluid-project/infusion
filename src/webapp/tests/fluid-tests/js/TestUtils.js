@@ -52,29 +52,29 @@ fluid.testUtils.modKeyEvent = function(modifier, keyCode, target) {
  */
 fluid.testUtils.assertNode = function(message, expected, node) {
     var togo = {};
-    if (node.length === 1) {
-        node = node[0];
-    }
-    if (node.length > 1) {
-        jqUnit.assertEquals("Unexpected number of nodes " + message, expected.length, node.length);
-        for (var i = 0; i < node.length; ++ i) {
-            fluid.testUtils.assertNode(message + ": node " + i + ": ", expected[i], node[i]);
+    if (!node.nodeType) { // Some types of DOM nodes (e.g. select) have a valid "length" property
+        if (node.length === 1) {
+            node = node[0];
         }
-        
-    }
-    else {
-        for (var key in expected) {
-            var attr = node.getAttribute(key);
-            var messageExt = " - attribute " + key + ": ";
-            if (key === "nodeName") {
-               attr = node.tagName.toLowerCase();
-               messageExt = " - node name: "
+        else if (node.length > 1) {
+            jqUnit.assertEquals("Expected number of nodes " + message, expected.length, node.length);
+            for (var i = 0; i < node.length; ++ i) {
+                fluid.testUtils.assertNode(message + ": node " + i + ": ", expected[i], node[i]);
             }
-            if (key === "nodeText") {
-               attr = jQuery.trim(fluid.dom.getElementText(node));
-            }
-            jqUnit.assertEquals(message + messageExt, expected[key], attr);
+            return;
         }
+    }
+    for (var key in expected) {
+        var attr = node.getAttribute(key);
+        var messageExt = " - attribute " + key + "";
+        if (key === "nodeName") {
+           attr = node.tagName.toLowerCase();
+           messageExt = " - node name"
+        }
+        if (key === "nodeText") {
+           attr = jQuery.trim(fluid.dom.getElementText(node));
+        }
+        jqUnit.assertEquals(message + messageExt, expected[key], attr);
     }
   
 }

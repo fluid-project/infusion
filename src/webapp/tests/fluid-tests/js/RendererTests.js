@@ -166,18 +166,38 @@ fluid.tests = fluid.tests || {};
         selection: "Apocatastasis",
         optionlist: ["Enchiridion", "Apocatastasis", "Exomologesis"],
         optionnames: ["Enchiridion", "ApoCATTastasis", "Exomologesis"]
-        }; 
+        };
+        
+    var multiple_selection_tree = fluid.copy(selection_tree);
+    multiple_selection_tree.selection = ["Enchiridion", "Apocatastasis"];
     
     renderTests.test("UISelect tests with HTML select", function() {
       var node = $(".UISelect-test-select");
       var templates = fluid.selfRender(node, {children: [fluid.copy(selection_tree)]});
       var options = $("option", node);
-      fluid.testUtils.assertNode("Render UISelect", 
+      fluid.testUtils.assertNode("Render UISelect options", 
         [{nodeName: "option", selected: undefined, value: "Enchiridion", nodeText: "Enchiridion"},
          {nodeName: "option", selected: "selected", value: "Apocatastasis", nodeText: "ApoCATTastasis"},
          {nodeName: "option", selected: undefined, value: "Exomologesis", nodeText: "Exomologesis"}],
          options);
+      var select = $("select", node);
+      fluid.testUtils.assertNode("Render UISelect select", 
+        {nodeName: "select", multiple: undefined}, select);
     });
+    
+   renderTests.test("UISelect tests with HTML multiple select", function() {
+      var node = $(".UISelect-test-select");
+      var templates = fluid.selfRender(node, {children: [fluid.copy(multiple_selection_tree)]});
+      var options = $("option", node);
+      fluid.testUtils.assertNode("Render UISelect", 
+        [{nodeName: "option", selected: "selected", value: "Enchiridion", nodeText: "Enchiridion"},
+         {nodeName: "option", selected: "selected", value: "Apocatastasis", nodeText: "ApoCATTastasis"},
+         {nodeName: "option", selected: undefined, value: "Exomologesis", nodeText: "Exomologesis"}],
+         options);
+      var select = $("select", node);
+      fluid.testUtils.assertNode("Render UISelect select", 
+        {nodeName: "select", multiple: "multiple"}, select);
+   });
     
     renderTests.test("UISelect tests with radio buttons", function() {
       var node = $(".UISelect-test-radio-1");
@@ -196,6 +216,31 @@ fluid.tests = fluid.tests || {};
         [{nodeName: "input", checked: undefined, value: "Enchiridion", type: "radio"},
          {nodeName: "input", checked: "checked", value: "Apocatastasis", type: "radio"},
          {nodeName: "input", checked: undefined, value: "Exomologesis", type: "radio"}],
+         inputs);
+      var names = fluid.transform(inputs, function(node) {return $(node).attr("name");});
+      jqUnit.assertValue("Name should be assigned", names[0]);
+      jqUnit.assertTrue("Name should have been rewritten", names[0] !== "vocable");
+      jqUnit.assertEquals("Names should be identical", names[0], names[1]);
+      jqUnit.assertEquals("Names should be identical", names[1], names[2]);
+    });
+    
+        renderTests.test("UISelect tests with checkboxes", function() {
+      var node = $(".UISelect-test-check-1");
+      var tree = {children: [fluid.copy(multiple_selection_tree)].concat( 
+        fluid.transform(selection_tree.optionlist, function(option, index) {
+          return {
+            ID: "checkbox-row:", 
+            children: [
+                 {ID: "checkbox", parentRelativeID: "..::select", choiceindex: index},
+                 {ID: "label", parentRelativeID: "..::select", choiceindex: index}]
+        };
+      }))};
+      var templates = fluid.selfRender(node, tree);
+      var inputs = $("input", node);
+      fluid.testUtils.assertNode("Render UISelect as checkboxes", 
+        [{nodeName: "input", checked: "checked", value: "Enchiridion", type: "checkbox"},
+         {nodeName: "input", checked: "checked", value: "Apocatastasis", type: "checkbox"},
+         {nodeName: "input", checked: undefined, value: "Exomologesis", type: "checkbox"}],
          inputs);
       var names = fluid.transform(inputs, function(node) {return $(node).attr("name");});
       jqUnit.assertValue("Name should be assigned", names[0]);
