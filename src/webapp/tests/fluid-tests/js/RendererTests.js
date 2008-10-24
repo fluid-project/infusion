@@ -106,7 +106,7 @@ fluid.tests = fluid.tests || {};
       // Tests FLUID-1676
       var node = $(".RSF-77-test");
       fluid.selfRender(node, {
-        "row:": [{"target": "Label 1"}, {"target": "Label 2"}]
+        "row:": [{ID: "target", value: "Label 1"}, {ID: "target", value: "Label 2"}]
         });
       var labels = $(".RSF-77-test label");
       jqUnit.assertEquals("2 labels", 2, labels.length);
@@ -129,7 +129,6 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertEquals("Target undisturbed", "target2", label.attr("for"));
     });
     
-  
     
     renderTests.test("Simple UIBound tests", function() {
       var node = $(".FLUID-1696-test");
@@ -224,7 +223,7 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertEquals("Names should be identical", names[1], names[2]);
     });
     
-        renderTests.test("UISelect tests with checkboxes", function() {
+    renderTests.test("UISelect tests with checkboxes", function() {
       var node = $(".UISelect-test-check-1");
       var tree = {children: [fluid.copy(multiple_selection_tree)].concat( 
         fluid.transform(selection_tree.optionlist, function(option, index) {
@@ -247,6 +246,42 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertTrue("Name should have been rewritten", names[0] !== "vocable");
       jqUnit.assertEquals("Names should be identical", names[0], names[1]);
       jqUnit.assertEquals("Names should be identical", names[1], names[2]);
+    });
+
+    renderTests.test("UILink rendering", function() {
+      var tree = {children: [
+         {ID: "link-1", target:"dynamic-target.html"},
+         {ID: "link-2", target:"dynamic-target-2.jpg"}
+       ]};
+      var node = $(".link-test-1");
+      var templates = fluid.selfRender(node, fluid.copy(tree));
+      var link = $("a", node);
+      jqUnit.assertTrue("Link rendered", link.length > 0);
+      jqUnit.assertEquals("Rewritten target", "dynamic-target.html", link.attr("href"));
+      var img = $("img", link);
+      jqUnit.assertTrue("Image rendered", img.length > 0);
+      jqUnit.assertEquals("Rewritten target", "dynamic-target-2.jpg", img.attr("src"));
+      
+      tree.children[0].linktext = "Dynamic text";
+      fluid.reRender(templates, node, fluid.copy(tree));
+      
+      var link = $("a", node);
+      fluid.testUtils.assertNode("UILink text material overwrite", 
+        {nodeName: "a", href: "dynamic-target.html", nodeText: "Dynamic text"}, link);
+      var img = $("img", node);
+      jqUnit.assertTrue("Image not rendered", img.length === 0);
+      
+      var node2 = $(".link-test-2");
+      fluid.selfRender(node2, fluid.copy(tree));
+      
+      var link2 = $("a", node2);
+      fluid.testUtils.assertNode("UILink text material overwrite", 
+        {nodeName: "a", href: "dynamic-target.html", nodeText: "Dynamic text"}, link2);
+        
+      var form = $("form", node2);
+      jqUnit.assertTrue("Form rendered", form.length > 0);
+      jqUnit.assertEquals("Rewritten target", "dynamic-target-2.jpg", form.attr("action"));
+      
     });
 
 

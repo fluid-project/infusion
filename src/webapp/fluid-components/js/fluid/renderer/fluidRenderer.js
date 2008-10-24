@@ -48,8 +48,13 @@ fluid_0_6 = fluid_0_6 || {};
       }
     else {
       var unzip = unzipComponent(value);
-      unzip.ID = key;
-      return unzip; 
+      if (unzip.ID) {
+        return {ID: key, componentType: "UIContainer", children: [unzip]};
+      }
+      else {
+        unzip.ID = key;
+        return unzip;
+        } 
       }    
     }
   
@@ -89,7 +94,7 @@ fluid_0_6 = fluid_0_6 || {};
     }
   
   var duckMap = {children: "UIContainer", 
-    value: "UIBound", markup: "UIVerbatim", selection: "UISelect",
+    value: "UIBound", markup: "UIVerbatim", selection: "UISelect", target: "UILink",
     choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
   
   function unzipComponent(component) {
@@ -417,6 +422,11 @@ fluid_0_6 = fluid_0_6 || {};
     return false;
   }
   
+  function rewriteURL(template, URL) {
+    // TODO: rebasing of "relative URLs" discovered/issued from subcomponent templates
+    return URL;
+  }
+  
   function dumpHiddenField(/** UIParameter **/ todump) {
     out += "<input type=\"hidden\" ";
     var isvirtual = todump.virtual;
@@ -445,6 +455,13 @@ fluid_0_6 = fluid_0_6 || {};
   }
   
   fluid.NULL_STRING = "\u25a9null\u25a9";
+  
+  var LINK_ATTRIBUTES = {
+    a: "href", link: "href", img: "src", frame: "src", script: "src", style: "src", input: "src", embed: "src",
+    form: "action",
+    applet: "codebase", object: "codebase"
+  };
+
   
   function isSelectedValue(torender, value) {
       var selection = torender.selection;
@@ -519,7 +536,7 @@ fluid_0_6 = fluid_0_6 || {};
         }
       else { // String value
         var value = torender.value;
-        if (trc.uselump.tagname === "textarea") {
+        if (tagname === "textarea") {
           if (isPlaceholder(value) && torender.willinput) {
             // FORCE a blank value for input components if nothing from
             // model, if input was intended.
@@ -527,7 +544,7 @@ fluid_0_6 = fluid_0_6 || {};
           }
           rewriteLeaf(value);
         }
-        else if (trc.uselump.tagname === "input") {
+        else if (tagname === "input") {
           if (torender.willinput || isValue(value)) {
             attrcopy.value = value;
             }
@@ -545,7 +562,7 @@ fluid_0_6 = fluid_0_6 || {};
         // TODO: This is an irregularity, should probably remove for 0.8
         attrcopy.id = torender.selection.fullID;
         }
-      var ishtmlselect = trc.uselump.tagname === "select";
+      var ishtmlselect = tagname === "select";
       var ismultiple = false;
 
       if (torender.selection.value instanceof Array) {
@@ -591,6 +608,27 @@ fluid_0_6 = fluid_0_6 || {};
       dumpBoundFields(torender.optionlist);
       dumpBoundFields(torender.optionnames);
     }
+    else if (componentType === "UILink") {
+      var attrname = LINK_ATTRIBUTES[tagname];
+      if (attrname) {
+        var target= torender.target;
+        if (!isValue(target)) {
+          target = attrcopy[attname];
+          }
+        else {
+          target = rewriteURL(trc.uselump.parent, target);
+          }
+        attrcopy[attrname] = target;
+      }
+      var value = torender.linktext;
+      if (!isValue(value)) {
+        replaceAttributesOpen();
+      }
+      else {
+        rewriteLeaf(value);
+      }
+    }
+    
     else if (torender.markup !== undefined) { // detect UIVerbatim
       var rendered = torender.markup;
       if (rendered == null) {
