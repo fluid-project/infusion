@@ -29,6 +29,7 @@ fluid_0_6 = fluid_0_6 || {};
         that.locate("browseButton").click(function () {
             that.uploadManager.browseForFiles();
         });
+        
         that.locate("uploadButton").click(function () {
             that.uploadManager.start();
         });
@@ -84,9 +85,13 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     fluid.defaults("fluid.uploader", {
-        uploadManager: "fluid.swfUploadManager",
+        uploadManager: {
+            type: "fluid.swfUploadManager"
+        },
         
-        fileQueueView: "fluid.fileQueueView",
+        fileQueueView: {
+            type: "fluid.fileQueueView"
+        },
         
         selectors: {
             fileQueue: ".fluid-uploader-queue",
