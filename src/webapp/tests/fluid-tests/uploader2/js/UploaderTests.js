@@ -2,8 +2,7 @@
 
 
 (function ($) {
-    $(document).ready (function () {
-        
+    $(document).ready(function () {      
          // Test files.
         var file1 = {
             id: 0,
@@ -22,7 +21,9 @@
 
         var uploaderTests = new jqUnit.TestCase("Uploader Basic Tests");
 
-        uploaderTests.test ("Initialize Default", function () {
+        uploaderTests.test("Initialize Default", function () {
+            jqUnit.expect(2);
+            
             var testUploader = fluid.uploader("#single-inline-fluid-uploader");
              
             jqUnit.assertEquals("Upload Manager queue is empty at the start",
@@ -32,36 +33,36 @@
                                    testUploader.uploadManager.invokeAfterRandomDelay);
         });
        
-		 uploaderTests.test ("Initialize DemoUploadManager", function () {
-           
-            var testUploader = fluid.uploader("#single-inline-fluid-uploader",{
+		uploaderTests.test("Initialize DemoUploadManager", function () {
+            jqUnit.expect(2);
+            
+            var testUploader = fluid.uploader("#single-inline-fluid-uploader", {
                 uploadManager: "fluid.demoUploadManager"
             });
             
-             jqUnit.assertEquals("Upload Manager queue is empty at the start",
-                                 0,
-                                 testUploader.uploadManager.queue.byteSize());
-             jqUnit.assertNotUndefined("Upload Manager should have an invokeAfterRandomDelay() method", 
-                                       testUploader.uploadManager.invokeAfterRandomDelay);
-                      
+            jqUnit.assertEquals("Upload Manager queue is empty at the start",
+                                0,
+                                testUploader.uploadManager.queue.byteSize());
+            jqUnit.assertNotUndefined("Upload Manager should have an invokeAfterRandomDelay() method", 
+                                      testUploader.uploadManager.invokeAfterRandomDelay);        
         });
         
-        uploaderTests.test ("Test queue byteSize()", function () {
-           
+        uploaderTests.test("Test queue byteSize()", function () {       
+            jqUnit.expect(2);
             var testUploader = fluid.uploader("#single-inline-fluid-uploader");
             
             jqUnit.assertEquals("Upload Manager queue should be empty at the start",
                                 0,
                                 testUploader.uploadManager.queue.byteSize());
-            // add some files
+                                
+            // Add some files & check that the total size is correct.
             testUploader.uploadManager.queue.files = [file1, file2, file3];
-            // test the sizes
             jqUnit.assertEquals("With three files in the queue, the byte size should be big and fat.",
                                 1800000,
                                 testUploader.uploadManager.queue.byteSize());            
         });
         
-        // Test formatFileSize() ;
+        // Test formatFileSize()
         uploaderTests.test("formatFileSize()", function () {          
             var testFileSize = function (testVal, expected) {
                 jqUnit.assertEquals("File size " + testVal + " bytes ", expected, 
@@ -104,7 +105,7 @@
                                     uploaderStateElm.attr("class"));
             };
             
-             var uploaderStateContainsTest = function (testVal) {
+            var uploaderStateContainsTest = function (testVal) {
                 jqUnit.assertTrue("State should contain: " + testVal, uploaderStateElm.hasClass(testVal));
             };
             
@@ -125,7 +126,6 @@
             // uploading	 	 
             // done	 	 
             // error
-        });
-         
+        });   
     });
 })(jQuery);
