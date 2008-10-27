@@ -247,14 +247,15 @@ fluid.tests = fluid.tests || {};
         multipleSelectionRenderTests(node);
     });
     
-    renderTests.test("UISelect binding tests with HTML multiple select", function() {
+    makeBindingTest("UISelect binding tests with HTML multiple select", function(opts) {
         var node = $(".UISelect-test-select");
         var model2 =  $.extend(true, {}, model, {choice: ["Enchiridion", "Apocatastasis"]});
-        var templates = fluid.selfRender(node, fluid.copy(binding_tree), {model: model2});
+        var templates = fluid.selfRender(node, fluid.copy(binding_tree), merge({model: model2}, opts));
         multipleSelectionRenderTests(node);
         var select = $("select", node);
         select.val(["Exomologesis", "Apocatastasis"]);
-        fluid.applyChange(select);
+        select.change();
+        if (!opts) {fluid.applyChange(select);}
         jqUnit.assertDeepEq("Applied value to model", ["Apocatastasis", "Exomologesis"], model2.choice);
     });
     
@@ -291,17 +292,18 @@ fluid.tests = fluid.tests || {};
         singleSelectionRadioRenderTests(node);
     });
     
-    renderTests.test("UISelect binding tests with radio buttons", function() {
+    makeBindingTest("UISelect binding tests with radio buttons", function(opts) {
         var node = $(".UISelect-test-radio-1");
         var model3 = $.extend(true, {}, model, {choice: "Apocatastasis"});
         var tree = fluid.copy(binding_tree);
         tree.children = tree.children.concat(
               explodeSelectionToInputs(selection_tree.optionlist, "radio-row:", "radio", "label"));
-        fluid.selfRender(node, tree, {model: model3});
+        fluid.selfRender(node, tree, merge({model: model3}, opts));
         singleSelectionRadioRenderTests(node);
         var inputs = $("input", node);
         fluid.value(inputs, "Enchiridion");
-        fluid.applyChange(inputs);
+        $(inputs[0]).change();
+        if (!opts) {fluid.applyChange(inputs);}
         jqUnit.assertEquals("Applied value to model", "Enchiridion", model3.choice);
     });
     
@@ -327,17 +329,18 @@ fluid.tests = fluid.tests || {};
       multipleSelectionCheckboxRenderTests(node);
     });
     
-    renderTests.test("UISelect binding tests with checkboxes", function() {
+    makeBindingTest("UISelect binding tests with checkboxes", function(opts) {
       var node = $(".UISelect-test-check-1");
       var model4 = $.extend(true, {}, model, {choice: ["Enchiridion", "Apocatastasis"]});
       var tree = fluid.copy(binding_tree);
       tree.children = tree.children.concat( 
         explodeSelectionToInputs(selection_tree.optionlist, "checkbox-row:", "checkbox", "label"));
-      fluid.selfRender(node, tree, {model: model4});
+      fluid.selfRender(node, tree, merge({model: model4}, opts));
       multipleSelectionCheckboxRenderTests(node);
       var inputs = $("input", node);
       fluid.value(inputs, ["Exomologesis", "Apocatastasis"]);
-      fluid.applyChange(inputs);
+      $(inputs[0]).change();
+      if (!opts) {fluid.applyChange(inputs);}
       jqUnit.assertDeepEq("Applied value to model", ["Apocatastasis", "Exomologesis"], model4.choice);
     });
 

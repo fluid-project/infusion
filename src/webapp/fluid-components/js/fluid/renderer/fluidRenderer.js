@@ -142,7 +142,7 @@ fluid_0_6 = fluid_0_6 || {};
   
   // When a component
   function assignSubmittingName(component) {
-      if (component.submittingname === undefined) {
+      if (component.submittingname === undefined && component.willinput !== false) {
           component.submittingname = component.fullID;
       }
   }
@@ -476,13 +476,16 @@ fluid_0_6 = fluid_0_6 || {};
       }    
   }
   
-  function dumpBoundFields(/** UIBound**/ torender) {
+  function dumpBoundFields(/** UIBound**/ torender, parent) {
       if (torender) {
-          if (directFossils && torender.submittingname && torender.valuebinding) {
-              directFossils[torender.submittingname] = {
-                name: torender.submittingname,
-                EL: torender.valuebinding,
-                oldvalue: torender.value};
+          var holder = parent? parent : torender;
+          if (directFossils && holder.submittingname && holder.valuebinding) {
+            // TODO: this will store multiple times for each member of a UISelect
+              directFossils[holder.submittingname] = {
+                name: holder.submittingname,
+                EL: holder.valuebinding,
+                oldvalue: holder.value};
+            // But this has to happen multiple times
               applyAutoBind(torender, torender.fullID);
           }
           if (torender.fossilizedbinding) {
@@ -617,6 +620,7 @@ fluid_0_6 = fluid_0_6 || {};
 
         var submittingname = parent? parent.selection.submittingname : torender.submittingname;
         if (tagname === "input" || tagname === "textarea") {
+            assignSubmittingName(torender);
             if (submittingname !== undefined) {
                 attrcopy.name = submittingname;
                 }
@@ -670,7 +674,7 @@ fluid_0_6 = fluid_0_6 || {};
             rewriteLeafOpen(value);
             }
           }
-        dumpBoundFields(torender);
+        dumpBoundFields(torender, parent? parent.selection : null);
         }
     else if (componentType === "UISelect") {
       // need to do this first to see whether we need to write out an ID or not
