@@ -5,6 +5,8 @@ fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
+    /* uploader state */
+    
     var setState = function (that, stateClass) {
         that.stateDisplay.attr("className", stateClass);
     };
@@ -25,6 +27,26 @@ fluid_0_6 = fluid_0_6 || {};
         }
     };
     
+    /* Progress */
+   
+    progressStart = function (that) {
+        console.debug("showing progress");
+        that.totalProgress.show();
+    };
+        
+    progressUpdate = function (that) {
+         console.debug("updating progress"); 
+    };
+        
+    progressComplete = function (that) {
+        console.debug("complete progress"); 
+        console.debug("hide progress"); 
+        that.totalProgress.hide();
+    };
+        
+   
+    /* bind events */
+   
     var bindDOMEvents = function (that) {
         that.locate("browseButton").click(function () {
             that.uploadManager.browseForFiles();
@@ -45,6 +67,24 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.events.afterFileQueued.addListener(that.fileQueueView.addFile);
+        
+        // Progress
+        
+        that.events.onUploadStart.addListener(function(){
+            progressStart(that);
+        });
+        
+        that.events.onFileProgress.addListener(function(){
+            progressUpdate(that);
+        });
+        
+        that.events.afterFileUploaded.addListener(function(){
+            progressUpdate(that);
+        });
+        //**** need a different event here to tell the whole upload is done, not just the file
+        that.events.afterUploadComplete.addListener(function(){
+            progressComplete(that);
+        });
     };
    
     var setupUploader = function (that) {
@@ -58,8 +98,11 @@ fluid_0_6 = fluid_0_6 || {};
                                                     [that.locate("fileQueue"), 
                                                     that.uploadManager,
                                                     fluid.COMPONENT_OPTIONS]);
+                                                    
         that.stateDisplay = that.locate("stateDisplay");
         
+        that.totalProgress = fluid.progress(that.locate("totalFileProgressBar"));
+
         bindDOMEvents(that);
         bindModelEvents(that);
     };
@@ -144,7 +187,15 @@ fluid_0_6 = fluid_0_6 || {};
             onUploadError: null,
             afterFileUploaded: null,
             afterUploadComplete: null
+        },
+
+        progressStrings: {
+             // tokens replaced by fluid.stringTemplate
+             pausedLabel: "Paused at: %curFileN of %totalFilesN files (%currBytes of %totalBytes)",
+             totalLabel: "Uploading: %curFileN of %totalFilesN files (%currBytes of %totalBytes)", 
+             completedLabel: "Uploaded: %curFileN files (%totalCurrBytes)"
         }
+
     });
         
 })(jQuery, fluid_0_6);
