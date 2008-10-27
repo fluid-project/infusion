@@ -187,6 +187,16 @@ fluid.tests = fluid.tests || {};
     var multiple_selection_tree = fluid.copy(selection_tree);
     multiple_selection_tree.selection = ["Enchiridion", "Apocatastasis"];
     
+    
+    function makeBindingTest(message, testfunc) {
+        renderTests.test(message, function () {testfunc(null);});
+        renderTests.test(message + " with autobind", function() {testfunc({autoBind: true});});
+    }
+    
+    function merge(target, source) {
+      return $.extend(true, target, source);
+    }
+    
     function singleSelectionRenderTests(node) {
       var options = $("option", node);
       fluid.testUtils.assertNode("Render UISelect options", 
@@ -200,21 +210,22 @@ fluid.tests = fluid.tests || {};
     }
     
     renderTests.test("UISelect tests with HTML select", function() {
-      var node = $(".UISelect-test-select");
-      fluid.selfRender(node, {children: [fluid.copy(selection_tree)]});
-      singleSelectionRenderTests(node);
+        var node = $(".UISelect-test-select");
+        fluid.selfRender(node, {children: [fluid.copy(selection_tree)]});
+        singleSelectionRenderTests(node);
     });
     
     
-    renderTests.test("UISelect binding tests with HTML select", function() {
+    makeBindingTest("UISelect binding tests with HTML select", function(opts) {
         var node = $(".UISelect-test-select");
         var model1 = $.extend(true, {}, model, {choice: "Apocatastasis"});
   
-        fluid.selfRender(node, fluid.copy(binding_tree), {model: model1});
+        fluid.selfRender(node, fluid.copy(binding_tree), merge({model: model1}, opts));
         singleSelectionRenderTests(node);
         var select = $("select", node);
         select.val("Enchiridion");
-        fluid.applyChange(select);
+        select.change();
+        if (!opts) {fluid.applyChange(select);}
         jqUnit.assertEquals("Applied value to model", "Enchiridion", model1.choice);
         });
       
@@ -271,7 +282,7 @@ fluid.tests = fluid.tests || {};
                      {ID: labelname, parentRelativeID: "..::select", choiceindex: index}]
            }});
     }
-    
+   
     renderTests.test("UISelect tests with radio buttons", function() {
         var node = $(".UISelect-test-radio-1");
         var tree = {children: [fluid.copy(selection_tree)].concat(

@@ -1,0 +1,57 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca" xmlns:rsf="http://ponder.org.uk/rsf">
+  <head>
+    <title>Test Renderer</title>
+    <link href="../../../../sample-code/reorderer/markup-examples.css" type="text/css" rel="stylesheet" media="all" />
+
+    <!--  These are the required javascript modules for the Reorderer and can be replaced with Fluid-all.js -->
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fastXmlPull.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fluidParser.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fluidRenderer.js"></script>
+   
+
+  </head>
+  <body>
+    <h1>Renderer selection test with autobinding</h1>
+    
+    <div class="UISelect-test-select">
+    <select rsf:id="select" size="3">
+      <option selected="selected" value="Enchiridion">Enchiridion</option>
+      <option value="Apocatastasis">ApoCATTastasis</option>
+      <option value="Exomologesis">Exomologesis</option>
+    </select>
+  </div>
+    
+  <input class="submit" type="button" value="Submit"/>
+  <br/>
+  You selected value: <span class="output-value"></span>  
+    
+  <script language="JavaScript">
+      var binding_tree = {
+      children: [{
+        ID: "select",
+        selection: {valuebinding: "choice"},
+        optionlist: {valuebinding: "values"},
+        optionnames: {valuebinding: "names"}
+        }]
+    };
+    
+      var model = {
+        choice: "Apocatastasis",
+        values: ["Enchiridion", "Apocatastasis", "Exomologesis"],
+        names: ["Enchiridion", "ApoCATTastasis", "Exomologesis"]
+    };
+    
+    fluid.selfRender($(".UISelect-test-select"), binding_tree, {model: model, autoBind: true});
+    
+    $(".submit").click(function() {
+      $(".output-value").text(model.names[$.inArray(model.choice, model.values)]);
+      });
+  </script>  
+  </body>
+  </html>

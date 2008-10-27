@@ -213,6 +213,8 @@ fluid_0_6 = fluid_0_6 || {};
   var out = "";
   var debugMode = false;
   var directFossils = {}; // map of submittingname to {EL, submittingname, oldvalue}
+  var renderOptions = {};
+  var decoratorQueue = [];
   
   var renderedbindings = {}; // map of fullID to true for UISelects which have already had bindings written
   
@@ -297,31 +299,31 @@ fluid_0_6 = fluid_0_6 || {};
   }
   
   function resolveBranches(globalmapp, basecontainer, parentlump) {
-    branchmap = {};
-    rewritemap = {};
-    seenset = {};
-    collected = {};
-    globalmap = globalmapp;
-    branchmap[basecontainer.fullID] = parentlump;
-    resolveRecurse(basecontainer, parentlump);
+      branchmap = {};
+      rewritemap = {};
+      seenset = {};
+      collected = {};
+      globalmap = globalmapp;
+      branchmap[basecontainer.fullID] = parentlump;
+      resolveRecurse(basecontainer, parentlump);
   }
   
   function dumpBranchHead(branch, targetlump) {
-    var attrcopy = {};
-    $.extend(true, attrcopy, targetlump.attributemap);
-    adjustForID(attrcopy, branch);
-    out += "<" + targetlump.tagname + " ";
-    out += fluid.dumpAttributes(attrcopy);
-    out += "/>";
+      var attrcopy = {};
+      $.extend(true, attrcopy, targetlump.attributemap);
+      adjustForID(attrcopy, branch);
+      out += "<" + targetlump.tagname + " ";
+      out += fluid.dumpAttributes(attrcopy);
+      out += "/>";
   }
   
   function dumpTillLump(lumps, start, limit) {
-    for (; start < limit; ++ start) {
-      var text = lumps[start].text;
-      if (text) { // guard against "undefined" lumps from "justended"
-        out += lumps[start].text;
+      for (; start < limit; ++ start) {
+          var text = lumps[start].text;
+          if (text) { // guard against "undefined" lumps from "justended"
+              out += lumps[start].text;
+          }
       }
-    }
   }
 
   function dumpScan(lumps, renderindex, basedepth, closeparent, insideleaf) {
@@ -406,31 +408,31 @@ fluid_0_6 = fluid_0_6 || {};
   }
 
   function rewriteLeaf(value) {
-    if (isValue(value))
-      replaceBody(value);
-    else
-      replaceAttributes();
+      if (isValue(value))
+          replaceBody(value);
+      else
+          replaceAttributes();
   }
 
   function rewriteLeafOpen(value) {
-  	if (trc.iselide) {
-      rewriteLeaf(trc.value);
-    }
-    else {
-      if (isValue(value)) 
-        replaceBody(value);
-      else
-        replaceAttributesOpen();
-    }
+    	if (trc.iselide) {
+          rewriteLeaf(trc.value);
+      }
+      else {
+          if (isValue(value)) 
+              replaceBody(value);
+          else
+              replaceAttributesOpen();
+      }
   }
   
   function replaceBody(value) {
-    out += fluid.dumpAttributes(trc.attrcopy);
-    if (!trc.iselide) {
-      out += ">";
-    }
-    out += fluid.XMLEncode(value.toString());
-    closeTag();
+      out += fluid.dumpAttributes(trc.attrcopy);
+      if (!trc.iselide) {
+          out += ">";
+      }
+      out += fluid.XMLEncode(value.toString());
+      closeTag();
   }
   
   /*** END TRC METHODS**/
@@ -459,6 +461,16 @@ fluid_0_6 = fluid_0_6 || {};
       out += " />\n";
   }
   
+  function applyAutoBind(torender, finalID) {
+      var tagname = trc.uselump.tagname;
+      if (renderOptions.autoBind && (tagname === "input" || tagname === "select")) {
+          outDecoratorsImpl(torender, [{
+            jQuery: ["change", function() {
+              fluid.applyChange(fluid.byId(finalID));}]
+          }])
+      }    
+  }
+  
   function dumpBoundFields(/** UIBound**/ torender) {
       if (torender) {
           if (directFossils && torender.submittingname && torender.valuebinding) {
@@ -466,6 +478,7 @@ fluid_0_6 = fluid_0_6 || {};
                 name: torender.submittingname,
                 EL: torender.valuebinding,
                 oldvalue: torender.value};
+              applyAutoBind(torender, torender.fullID);
           }
           if (torender.fossilizedbinding) {
               dumpHiddenField(torender.fossilizedbinding);
@@ -509,6 +522,66 @@ fluid_0_6 = fluid_0_6 || {};
       }
       return component.childmap[relativeID];
   }
+  
+  function explodeDecorators(decorators) {
+      var togo = [];
+      for (var key in decorators) {
+          if (key === "$") key = "jQuery";
+          var value = decorators[key];
+          var decorator = {
+            type: key
+          };
+          if (key === "jQuery") {
+              decorator.func = value[0];
+              decorator.args = value.slice(1);
+          }
+          else if (key === "addClass") {
+              decorator.classes = value;
+          }
+          else if (key === "attrs") {
+              decorator.attributes = value;
+          }
+      togo[togo.length] = decorator;
+      }
+      return togo;
+  }
+  
+  function outDecoratorsImpl(torender, decorators) {
+      for (var i = 0; i < decorators.length; ++ i) {
+          var decorator = decorators[i];
+          var type = decorator.type;
+          if (!type) {
+              var decorators = explodeDecorators(decorator);
+              outDecoratorsImpl(torender, decorators);
+          }
+          if (type === "jQuery" || type === "event") {
+              var id = adjustForID(trc.attrcopy, torender, true);
+              var outdec = $.extend(true, {id: id}, decorator);
+              decoratorQueue[decoratorQueue.length] = outdec;
+          }
+          // honour these remaining types immediately
+          else if (type === "attrs") {
+              $.extend(true, trc.attrcopy, decorator.attributes);
+          }
+          else if (type === "addClass") {
+              var fakeNode = {
+                nodeType: 1,
+                className: trc.attrcopy.className
+              }
+              $(fakeNode).addClass(decorator.classes);
+              trc.attrcopy.className = fakeNode.className;
+          }
+      }
+  }
+  
+  function outDecorators(torender) {
+      if (!torender.decorators) return;
+      if (torender.decorators.length === undefined) {
+          torender.decorators = explodeDecorators(torender.decorators);
+      }
+      outDecoratorsImpl(torender, torender.decorators);
+  }
+    
     
   function renderComponent(torender) {
     var attrcopy = trc.attrcopy;
@@ -517,6 +590,8 @@ fluid_0_6 = fluid_0_6 || {};
     
     var componentType = torender.componentType;
     var tagname = trc.uselump.tagname;
+    
+    outDecorators(torender, tagname, componentType);
     
     if (componentType === "UIBound" || componentType === "UISelectChoice") {
         var parent;
@@ -544,31 +619,31 @@ fluid_0_6 = fluid_0_6 || {};
   
         if (typeof(torender.value) === 'boolean' || attrcopy.type === "radio" 
                || attrcopy.type === "checkbox") {
-          var underlyingValue;
-          var directValue = torender.value;
-          
-          if (torender.choiceindex !== undefined) {
-              if (!parent.optionlist.value) {
-                  fluid.fail("Error in component tree - selection control with full ID " + parent.fullID + " has no values");
-              }
-              underlyingValue = parent.optionlist.value[torender.choiceindex];
-              directValue = isSelectedValue(parent, underlyingValue);
-          }
-          if (isValue(directValue)) {
-              if (directValue) {
-                  attrcopy.checked = "checked";
-                  }
-              else {
-                  delete attrcopy.checked;
-                  }
-              }
-          attrcopy.value = underlyingValue? underlyingValue: "true";
-          rewriteLeaf(null);
-          }
+            var underlyingValue;
+            var directValue = torender.value;
+            
+            if (torender.choiceindex !== undefined) {
+                if (!parent.optionlist.value) {
+                    fluid.fail("Error in component tree - selection control with full ID " + parent.fullID + " has no values");
+                }
+                underlyingValue = parent.optionlist.value[torender.choiceindex];
+                directValue = isSelectedValue(parent, underlyingValue);
+            }
+            if (isValue(directValue)) {
+                if (directValue) {
+                    attrcopy.checked = "checked";
+                    }
+                else {
+                    delete attrcopy.checked;
+                    }
+                }
+            attrcopy.value = underlyingValue? underlyingValue: "true";
+            rewriteLeaf(null);
+        }
         else if (torender.value instanceof Array) {
-          // Cannot be rendered directly, must be fake
-          renderUnchanged();
-          }
+            // Cannot be rendered directly, must be fake
+            renderUnchanged();
+        }
         else { // String value
           var value = torender.value;
           if (tagname === "textarea") {
@@ -593,6 +668,7 @@ fluid_0_6 = fluid_0_6 || {};
         dumpBoundFields(torender);
         }
     else if (componentType === "UISelect") {
+      applyAutoBind(torender, torender.selection.fullID);
       if (attrcopy.id) {
         // TODO: This is an irregularity, should probably remove for 0.8
         attrcopy.id = torender.selection.fullID;
@@ -683,11 +759,14 @@ fluid_0_6 = fluid_0_6 || {};
       }
     }
   
-  function adjustForID(attrcopy, component) {
-    delete attrcopy["rsf:id"];
-    if (attrcopy.id) {
-      attrcopy.id = component.fullID;
-      }
+  function adjustForID(attrcopy, component, late) {
+    if (!late) {
+        delete attrcopy["rsf:id"];
+    }
+    if (attrcopy.id || late) {
+        attrcopy.id = component.fullID;
+        }
+    return attrcopy.id;
     }
   
   function rewriteIDRelation(context) {
@@ -779,50 +858,50 @@ fluid_0_6 = fluid_0_6 || {};
   }
   
   function renderContainer(child, targetlump) {
-    var t2 = targetlump.parent;
-    var firstchild = t2.lumps[targetlump.lumpindex + 1];
-    if (child.children !== undefined) {
-      dumpBranchHead(child, targetlump);
-    }
-    else {
-      renderComponentSystem(child.parent, child, targetlump);
-    }
-    renderRecurse(child, targetlump, firstchild);
+      var t2 = targetlump.parent;
+      var firstchild = t2.lumps[targetlump.lumpindex + 1];
+      if (child.children !== undefined) {
+          dumpBranchHead(child, targetlump);
+      }
+      else {
+          renderComponentSystem(child.parent, child, targetlump);
+      }
+      renderRecurse(child, targetlump, firstchild);
   }
   
   function fetchComponent(basecontainer, id, lump) {
-    if (id.indexOf("msg=") === 0) {
-      var key = id.substring(4);
-      return {componentType: "UIBound"};
-      // TODO messages
-    }
-    while (basecontainer) {
-      var togo = basecontainer.childmap[id];
-      if (togo)
-        return togo;
-      basecontainer = basecontainer.parent;
-    }
-    return null;
+      if (id.indexOf("msg=") === 0) {
+          var key = id.substring(4);
+          return {componentType: "UIBound"};
+          // TODO messages
+      }
+      while (basecontainer) {
+          var togo = basecontainer.childmap[id];
+          if (togo)
+              return togo;
+          basecontainer = basecontainer.parent;
+      }
+      return null;
   }
 
   function fetchComponents(basecontainer, id) {
-    var togo;
-    while (basecontainer) {
-      togo = basecontainer.childmap[id];
-      if (togo)
-        break;
-      basecontainer = basecontainer.parent;
-    }
-    return togo;
+      var togo;
+      while (basecontainer) {
+          togo = basecontainer.childmap[id];
+          if (togo)
+              break;
+          basecontainer = basecontainer.parent;
+      }
+      return togo;
   }
 
   function findChild(sourcescope, child) {
-    var split = fluid.SplitID(child.ID);
-    var headlumps = sourcescope.downmap[child.ID];
-    if (headlumps == null) {
-      headlumps = sourcescope.downmap[split.prefix + ":"];
-    }
-    return headlumps == null ? null : headlumps[0];
+      var split = fluid.SplitID(child.ID);
+      var headlumps = sourcescope.downmap[child.ID];
+      if (headlumps == null) {
+          headlumps = sourcescope.downmap[split.prefix + ":"];
+      }
+      return headlumps == null ? null : headlumps[0];
   }
   
   function renderRecurse(basecontainer, parentlump, baselump) {
@@ -916,6 +995,20 @@ fluid_0_6 = fluid_0_6 || {};
           var collist = collected[key];
           for (var i = 0; i < collist.length; ++ i) {
               renderCollect(collist[i]);
+          }
+      }
+  }
+  
+  function processDecoratorQueue() {
+      for (var i = 0; i < decoratorQueue.length; ++ i) {
+          var decorator = decoratorQueue[i];
+          var node = fluid.byId(decorator.id);
+          if (decorator.type === "jQuery") {
+              var jnode = $(node);
+              jnode[decorator.func].apply(jnode, decorator.args);
+          }
+          else if (decorator.type === "event") {
+            node[decorator.event] = decorator.handler; 
           }
       }
   }
@@ -1043,12 +1136,14 @@ fluid_0_6 = fluid_0_6 || {};
       options = options || {};
       debugMode = options.debugMode;
       directFossils = fossilsIn;
+      decoratorQueue = [];
   
       tree = fixupTree(tree, options.model);
       var template = templates[0];
       resolveBranches(templates.globalmap, tree, template.rootlump);
       out = "";
       renderedbindings = {};
+      renderOptions = options;
       renderCollects();
       renderRecurse(tree, template.rootlump, template.lumps[template.firstdocumentindex]);
       return out;
@@ -1090,6 +1185,7 @@ fluid_0_6 = fluid_0_6 || {};
           fluid.bindFossils(node, options.model, fossils);
           }
       node.innerHTML = rendered;
+      processDecoratorQueue();
       return templates;
   }
 
