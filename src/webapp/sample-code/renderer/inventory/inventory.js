@@ -24,6 +24,9 @@ fluid.inventoryExample =  function () {
      * Renders the HTML table using a fully fleshed-out component tree.
      */
     var initTableFullTree = function () {
+        /*
+         * This component tree fully identifies each component by its ID.
+         */
         var fullTree = {
             children: [
                 {ID: "table-row:",
@@ -58,10 +61,12 @@ fluid.inventoryExample =  function () {
 
     /**
      * Renders the HTML table using an abridged form of the component tree.
-     * In this form of the component tree, the 'keys' are assumed to be rsf:ids, and the
-     * values are assumed to be the values for those elements in the table.
      */
     var initTableAbridgedTree = function () {
+        /*
+         * This component tree is in 'short-hand' form. In this form, the 'keys' are assumed
+         * to be rsf:ids, and the values are assumed to be the values for those elements in the table.
+         */
         var abridgedTree = {
             "table-row:": [{
                 "sku": "84-84843",
@@ -114,10 +119,9 @@ fluid.inventoryExample =  function () {
         var tree = [];
         for (var i = 0; i < dataTable.length; i++) {
             var item = dataTable[i];
-            var row = fluid.explode(item, i).concat([{
-                ID: "select",
-                value: false
-            }]);
+            // The explode() function converts the hash (in this case, a single row from the data
+            // table) into a full-fledged component sub-tree, and adds to it .
+            var row = fluid.explode(item, i);
             tree[tree.length] = row;
         }
         tree = { "table-row:": tree };
