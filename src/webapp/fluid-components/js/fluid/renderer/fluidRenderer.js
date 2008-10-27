@@ -41,9 +41,15 @@ fluid_0_6 = fluid_0_6 || {};
     return togo;
   }
   
+  function isPrimitive(value) {
+      var valueType = typeof(value);
+      return !value || valueType === "string" || valueType === "boolean" || 
+          valueType == "number" || value instanceof Array 
+             && (value.length === 0 || typeof(value[0]) === "string");
+  }
+  
   function processChild(value, key) {
-    var valueType = typeof(value);
-    if (!value || valueType === "string" || valueType === "boolean" || valueType == "number") {
+    if (isPrimitive(value)) {
       return {componentType: "UIBound", value: value, ID: key};
       }
     else {
@@ -82,22 +88,29 @@ fluid_0_6 = fluid_0_6 || {};
     else return children;
   }
   
-  function upgradeBound(holder, property) {
+  function fixupValue(uibound, model) {
+      if (model && uibound.value === undefined && uibound.valuebinding !== undefined) {
+          uibound.value = fluid.model.getBeanValue(model, uibound.valuebinding);
+          }
+      }
+  
+  function upgradeBound(holder, property, model) {
     if (holder[property] !== undefined) {
-      if (holder[property].value === undefined) {
+      if (isPrimitive(holder[property])) {
         holder[property] = {value: holder[property]};
         }
       }
     else {
       holder[property] = {value: null}
-      }  
+      }
+      fixupValue(holder[property], model);
     }
   
   var duckMap = {children: "UIContainer", 
-    value: "UIBound", markup: "UIVerbatim", selection: "UISelect", target: "UILink",
-    choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
+        value: "UIBound", markup: "UIVerbatim", selection: "UISelect", target: "UILink",
+        choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
   
-  function unzipComponent(component) {
+  function unzipComponent(component, model) {
     if (component) {
       for (var key in duckMap) {
         if (component[key] !== undefined) {
@@ -107,15 +120,15 @@ fluid_0_6 = fluid_0_6 || {};
       }
     }
     if (!component || component.componentType === undefined) {
-      component = {componentType: "UIContainer", children: component};
+        component = {componentType: "UIContainer", children: component};
     }
     if (component.componentType === "UIContainer") {
-      component.children = fixChildren(component.children);
+        component.children = fixChildren(component.children);
     }
     else if (component.componentType === "UISelect") {
-      upgradeBound(component, "selection");
-      upgradeBound(component, "optionlist");
-      upgradeBound(component, "optionnames");
+        upgradeBound(component, "selection", model);
+        upgradeBound(component, "optionlist", model);
+        upgradeBound(component, "optionnames", model);
     }
     return component;
   }
@@ -127,9 +140,9 @@ fluid_0_6 = fluid_0_6 || {};
       }
   }
   
-  function fixupTree(tree) {
+  function fixupTree(tree, model) {
     if (!tree || tree.componentType === undefined) {
-      tree = unzipComponent(tree);
+      tree = unzipComponent(tree, model);
       }
     
     if (tree.children) {
@@ -137,7 +150,7 @@ fluid_0_6 = fluid_0_6 || {};
       for (var i = 0; i < tree.children.length; ++ i) {
         var child = tree.children[i];
         if (child.componentType === undefined) {
-          child = unzipComponent(child);
+          child = unzipComponent(child, model);
           tree.children[i] = child;
           }
         child.parent = tree;
@@ -179,10 +192,9 @@ fluid_0_6 = fluid_0_6 || {};
           child.componentType = "UIVerbatim";
           }
         else if (componentType == "UIBound") {
-         // TODO: fetching bound values on fixup, and UISelect names
-
-          }
-        fixupTree(child);
+            fixupValue(child, model);
+            }
+        fixupTree(child, model);
         }
       }
     return tree;
@@ -890,71 +902,78 @@ fluid_0_6 = fluid_0_6 || {};
 
   fluid.ComponentReference = function(reference) {
       this.reference = reference;
-    };
+      };
     
   // Explodes a raw "hash" into a list of UIOutput/UIBound entries
   fluid.explode = function(hash, basepath) {
-    var togo = [];
-    for (var key in hash) {
-      var binding = basepath === undefined? key : basepath + "." + key;
-      togo[togo.length] = {ID: key, value: hash[key], valuebinding: binding};
-    }
-    return togo;
-  };
+      var togo = [];
+      for (var key in hash) {
+          var binding = basepath === undefined? key : basepath + "." + key;
+          togo[togo.length] = {ID: key, value: hash[key], valuebinding: binding};
+      }
+      return togo;
+    };
   
   /** "Automatically" apply to whatever part of the data model is
    * relevant, the changed value received at the given DOM node*/
   fluid.applyChange = function(node, newValue) {
-    var root = fluid.findData(node, fluid.BINDING_ROOT_KEY);
-    var name = node.name;
-    var EL = root.fossils[name].EL;
-    fluid.setBeanValue(root.data, EL, newValue);    
-    };
+      node = fluid.unwrap(node);
+      if (newValue === undefined) {
+          newValue = $(node).val();
+      }
+      var root = fluid.findData(node, fluid.BINDING_ROOT_KEY);
+      if (!root) {
+          fluid.fail("Bound data could not be discovered in any node above " + fluid.dumpEl(node));
+      }
+      var name = node.name;
+      var EL = root.fossils[name].EL;
+      fluid.model.setBeanValue(root.data, EL, newValue);    
+      };
     
   fluid.makeBranches = function() {
-    var firstBranch;
-    var thisBranch;
-    for (var i = 0; i < arguments.length; ++ i) {
-      var thisarg = arguments[i];
-      var nextBranch;
-      if (typeof(thisarg) === "string") {
-        nextBranch = {ID: thisarg}; 
-        }
-      else if (thisarg instanceof Array) {
-        nextBranch = {ID: thisarg[0], jointID: thisarg[1]};
-        }
-      else {
-        $.extend(true, thisBranch, thisarg);
-        nextBranch = thisBranch;
-        } 
-      if (thisBranch && nextBranch !== thisBranch) {
-        if (!thisBranch.children) {
-          thisBranch.children = [];
+      var firstBranch;
+      var thisBranch;
+      for (var i = 0; i < arguments.length; ++ i) {
+          var thisarg = arguments[i];
+          var nextBranch;
+          if (typeof(thisarg) === "string") {
+              nextBranch = {ID: thisarg}; 
+              }
+          else if (thisarg instanceof Array) {
+              nextBranch = {ID: thisarg[0], jointID: thisarg[1]};
+              }
+          else {
+              $.extend(true, thisBranch, thisarg);
+              nextBranch = thisBranch;
+              } 
+          if (thisBranch && nextBranch !== thisBranch) {
+              if (!thisBranch.children) {
+                  thisBranch.children = [];
+              }
+              thisBranch.children[thisBranch.children.length] = nextBranch;
           }
-        thisBranch.children[thisBranch.children.length] = nextBranch;
-        }
-      thisBranch = nextBranch;
-      if (!firstBranch) {
-        firstBranch = nextBranch;
-        }
+          thisBranch = nextBranch;
+          if (!firstBranch) {
+             firstBranch = nextBranch;
+          }
       }
     
     return firstBranch;
-    };
+  };
     
   fluid.renderTemplates = function(templates, tree, options, fossilsIn) {
-    options = options || {};
-    debugMode = options.debugMode;
-    directFossils = fossilsIn;
-
-    tree = fixupTree(tree);
-    var template = templates[0];
-    resolveBranches(templates.globalmap, tree, template.rootlump);
-    out = "";
-    renderCollects();
-    renderRecurse(tree, template.rootlump, template.lumps[template.firstdocumentindex]);
-    return out;
-    };
+      options = options || {};
+      debugMode = options.debugMode;
+      directFossils = fossilsIn;
+  
+      tree = fixupTree(tree, options.model);
+      var template = templates[0];
+      resolveBranches(templates.globalmap, tree, template.rootlump);
+      out = "";
+      renderCollects();
+      renderRecurse(tree, template.rootlump, template.lumps[template.firstdocumentindex]);
+      return out;
+      };
   
   fluid.BINDING_ROOT_KEY = "fluid-binding-root";
   
@@ -970,8 +989,8 @@ fluid_0_6 = fluid_0_6 || {};
     }
 
   fluid.bindFossils = function(node, data, fossils) {
-    $.data(node, fluid.BINDING_ROOT_KEY, {data: data, fossils: fossils});
-    }
+      $.data(node, fluid.BINDING_ROOT_KEY, {data: data, fossils: fossils});
+      }
 
   /** A driver to render and bind an already parsed set of templates onto
    * a node. See documentation for fluid.selfRender.
@@ -980,19 +999,19 @@ fluid_0_6 = fluid_0_6 || {};
    */
 
   fluid.reRender = function(templates, node, tree, options) {
-    options = options || {};
-    node = fluid.unwrap(node);
-    var fossils = {};
-    var rendered = fluid.renderTemplates(templates, tree, options, fossils);
-    if (options.renderRaw) {
-      rendered = fluid.XMLEncode(rendered);
-      rendered = rendered.replace(/\n/g, "<br/>");
-      }
-    if (options.bind) {
-      fluid.bindFossils(node, options.bind, fossils);
-      }
-    node.innerHTML = rendered;
-    return templates;
+      options = options || {};
+      node = fluid.unwrap(node);
+      var fossils = {};
+      var rendered = fluid.renderTemplates(templates, tree, options, fossils);
+      if (options.renderRaw) {
+          rendered = fluid.XMLEncode(rendered);
+          rendered = rendered.replace(/\n/g, "<br/>");
+          }
+      if (options.model) {
+          fluid.bindFossils(node, options.model, fossils);
+          }
+      node.innerHTML = rendered;
+      return templates;
   }
 
   /** A simple driver for single node self-templating. Treats the markup for a
@@ -1009,13 +1028,13 @@ fluid_0_6 = fluid_0_6 || {};
    * fluid.renderTemplates.
    */  
   fluid.selfRender = function(node, tree, options) {
-    options = options || {};
-    node = fluid.unwrap(node);
-    var resourceSpec = {base: {resourceText: node.innerHTML, 
-                        href: ".", resourceKey: ".", cutpoints: options.cutpoints}
-                        };
-    var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
-    return fluid.reRender(templates, node, tree, options);
-  }
+      options = options || {};
+      node = fluid.unwrap(node);
+      var resourceSpec = {base: {resourceText: node.innerHTML, 
+                          href: ".", resourceKey: ".", cutpoints: options.cutpoints}
+                          };
+      var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
+      return fluid.reRender(templates, node, tree, options);
+    }
   
 })(jQuery, fluid_0_6);

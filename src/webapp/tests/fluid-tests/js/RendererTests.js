@@ -160,6 +160,8 @@ fluid.tests = fluid.tests || {};
       
     });
     
+    // Common data for all the tests which deal with UISelect components
+    
     var selection_tree = {
         ID: "select",
         selection: "Apocatastasis",
@@ -167,12 +169,25 @@ fluid.tests = fluid.tests || {};
         optionnames: ["Enchiridion", "ApoCATTastasis", "Exomologesis"]
         };
         
+        
+    var model = {
+        values: ["Enchiridion", "Apocatastasis", "Exomologesis"],
+        names: ["Enchiridion", "ApoCATTastasis", "Exomologesis"]
+    };
+
+    var binding_tree = {
+      children: [{
+        ID: "select",
+        selection: {valuebinding: "choice"},
+        optionlist: {valuebinding: "values"},
+        optionnames: {valuebinding: "names"}
+        }]
+    };
+        
     var multiple_selection_tree = fluid.copy(selection_tree);
     multiple_selection_tree.selection = ["Enchiridion", "Apocatastasis"];
     
-    renderTests.test("UISelect tests with HTML select", function() {
-      var node = $(".UISelect-test-select");
-      var templates = fluid.selfRender(node, {children: [fluid.copy(selection_tree)]});
+    function singleSelectionRenderTests(node) {
       var options = $("option", node);
       fluid.testUtils.assertNode("Render UISelect options", 
         [{nodeName: "option", selected: undefined, value: "Enchiridion", nodeText: "Enchiridion"},
@@ -181,8 +196,28 @@ fluid.tests = fluid.tests || {};
          options);
       var select = $("select", node);
       fluid.testUtils.assertNode("Render UISelect select", 
-        {nodeName: "select", multiple: undefined}, select);
+        {nodeName: "select", multiple: undefined}, select);      
+    }
+    
+    renderTests.test("UISelect tests with HTML select", function() {
+      var node = $(".UISelect-test-select");
+      fluid.selfRender(node, {children: [fluid.copy(selection_tree)]});
+      singleSelectionRenderTests(node);
     });
+    
+    
+    renderTests.test("UISelect binding tests with HTML select", function() {
+      var node = $(".UISelect-test-select");
+      var model1 = $.extend(true, {}, model, {choice: "Apocatastasis"});
+
+      fluid.selfRender(node, fluid.copy(binding_tree), {model: model1});
+      singleSelectionRenderTests(node);
+      var select = $("select", node);
+      select.val("Enchiridion");
+      fluid.applyChange(select);
+      jqUnit.assertEquals("Applied value to model", "Enchiridion", model1.choice);
+      
+      });
     
    renderTests.test("UISelect tests with HTML multiple select", function() {
       var node = $(".UISelect-test-select");
@@ -283,30 +318,6 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertEquals("Rewritten target", "dynamic-target-2.jpg", form.attr("action"));
       
     });
-
-    var model = {
-        values: ["Enchiridion", "Apocatastasis", "Exomologesis"],
-        names: ["Enchiridion", "ApoCATTastasis", "Exomologesis"]
-    };
-
-    var binding_tree = {
-      children: [{
-        ID: "select",
-        selection: {valuebinding: "model.value"},
-        optionlist: {valuebinding: "model.values"},
-        optionnames: {valuebinding: "model.names"}
-        }]
-    };
-
-    renderTests.test("UISelect binding tests with HTML select", function() {
-      var node = $(".UISelect-test-select");
-      var model1 = $.extend(true, {}, model, {choice: "Enchiridion"});
-
-      var templates = fluid.selfRender(node, fluid.copy(binding_tree));
-      var options = $("option", node);
-      
-      });
-
 
     renderTests.test("Properties unescaping", function() {
       
