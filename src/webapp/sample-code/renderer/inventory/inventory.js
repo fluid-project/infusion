@@ -122,6 +122,9 @@ fluid.inventoryExample =  function () {
             // The explode() function converts the hash (in this case, a single row from the data
             // table) into a full-fledged component sub-tree, and adds to it .
             var row = fluid.explode(item, i);
+            if (i % 2 === 1) {
+              row.decorators = {addClass: "odd-row"};
+            }
             tree[tree.length] = row;
         }
         tree = { "table-row:": tree };

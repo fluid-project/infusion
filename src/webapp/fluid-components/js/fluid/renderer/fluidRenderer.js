@@ -124,7 +124,10 @@ fluid_0_6 = fluid_0_6 || {};
       }
     }
     if (!component || component.componentType === undefined) {
+        var decorators = component.decorators;
+        if (decorators) delete component.decorators;
         component = {componentType: "UIContainer", children: component};
+        component.decorators = decorators;
     }
     if (component.componentType === "UIContainer") {
         component.children = fixChildren(component.children);
@@ -312,6 +315,7 @@ fluid_0_6 = fluid_0_6 || {};
       var attrcopy = {};
       $.extend(true, attrcopy, targetlump.attributemap);
       adjustForID(attrcopy, branch);
+      outDecorators(branch, attrcopy);
       out += "<" + targetlump.tagname + " ";
       out += fluid.dumpAttributes(attrcopy);
       out += "/>";
@@ -546,40 +550,40 @@ fluid_0_6 = fluid_0_6 || {};
       return togo;
   }
   
-  function outDecoratorsImpl(torender, decorators) {
+  function outDecoratorsImpl(torender, decorators, attrcopy) {
       for (var i = 0; i < decorators.length; ++ i) {
           var decorator = decorators[i];
           var type = decorator.type;
           if (!type) {
               var decorators = explodeDecorators(decorator);
-              outDecoratorsImpl(torender, decorators);
+              outDecoratorsImpl(torender, decorators, attrcopy);
           }
           if (type === "jQuery" || type === "event") {
-              var id = adjustForID(trc.attrcopy, torender, true);
+              var id = adjustForID(attrcopy, torender, true);
               var outdec = $.extend(true, {id: id}, decorator);
               decoratorQueue[decoratorQueue.length] = outdec;
           }
           // honour these remaining types immediately
           else if (type === "attrs") {
-              $.extend(true, trc.attrcopy, decorator.attributes);
+              $.extend(true, attrcopy, decorator.attributes);
           }
           else if (type === "addClass") {
               var fakeNode = {
                 nodeType: 1,
-                className: trc.attrcopy.className
+                className: attrcopy["class"] || ""
               }
               $(fakeNode).addClass(decorator.classes);
-              trc.attrcopy.className = fakeNode.className;
+              attrcopy["class"] = fakeNode.className;
           }
       }
   }
   
-  function outDecorators(torender) {
+  function outDecorators(torender, attrcopy) {
       if (!torender.decorators) return;
       if (torender.decorators.length === undefined) {
           torender.decorators = explodeDecorators(torender.decorators);
       }
-      outDecoratorsImpl(torender, torender.decorators);
+      outDecoratorsImpl(torender, torender.decorators, attrcopy);
   }
     
     
@@ -591,7 +595,7 @@ fluid_0_6 = fluid_0_6 || {};
     var componentType = torender.componentType;
     var tagname = trc.uselump.tagname;
     
-    outDecorators(torender, tagname, componentType);
+    outDecorators(torender, attrcopy);
     
     if (componentType === "UIBound" || componentType === "UISelectChoice") {
         var parent;
