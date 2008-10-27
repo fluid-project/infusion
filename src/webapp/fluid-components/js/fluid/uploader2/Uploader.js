@@ -84,6 +84,27 @@ fluid_0_6 = fluid_0_6 || {};
         return that;  
     };
     
+    /**
+     * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
+     * 
+     * @param {Number} bytes the files size, specified as in number bytes.
+     */
+    fluid.uploader.formatFileSize = function (bytes) {
+        if (typeof bytes === "number") {
+            if (bytes === 0) {
+                return "0.0 KB";
+            } else if (bytes > 0) {
+                if (bytes < 1048576) {
+                    return (Math.ceil(bytes / 1024 * 10) / 10).toFixed(1) + " KB";
+                }
+                else {
+                    return (Math.ceil(bytes / 1048576 * 10) / 10).toFixed(1) + " MB";
+                }
+            }
+        }
+        return "";
+    };
+    
     fluid.defaults("fluid.uploader", {
         uploadManager: {
             type: "fluid.swfUploadManager"
@@ -125,26 +146,5 @@ fluid_0_6 = fluid_0_6 || {};
             afterUploadComplete: null
         }
     });
-    
-   /**
-     * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
-     * 
-     * @param {Number} bytes the files size, specified as in number bytes.
-     */
-    fluid.uploader.formatFileSize = function (bytes) {
-        if (typeof bytes === "number") {
-            if (bytes === 0) {
-                return "0.0 KB";
-            } else if (bytes > 0) {
-                if (bytes < 1048576) {
-                    return (Math.ceil(bytes / 1024 * 10) / 10).toFixed(1) + " KB";
-                }
-                else {
-                    return (Math.ceil(bytes / 1048576 * 10) / 10).toFixed(1) + " MB";
-                }
-            }
-        }
-        return "";
-    };
         
 })(jQuery, fluid_0_6);
