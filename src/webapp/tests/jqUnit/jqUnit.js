@@ -19,11 +19,17 @@ var jqUnit = jqUnit || {};
         return el? "path " + el: "root path";
     }
     
+    function reportType(obj) {
+        var type = typeof(obj);
+        return type === "string" || type === "number" || type === "boolean"? type + " ("+obj+")"
+          : type;
+    }
+    
     function deepEqImpl(thing1, thing2, basename) {
         basename = basename || "";
         
         if (typeof(thing1) !== typeof(thing2)) {
-            return "Type mismatch at " + path(basename) + ": " + typeof(thing1) + " to " + typeof(thing2);
+            return "Type mismatch at " + path(basename) + ": " + reportType(thing1) + " to " + reportType(thing2);
         }
         
         if (thing1 === null ^ thing2 === null) {

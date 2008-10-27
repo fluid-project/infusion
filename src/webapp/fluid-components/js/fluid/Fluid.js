@@ -706,7 +706,8 @@ var fluid = fluid || fluid_0_6;
         
     // Functional programming utilities.
     
-    /** Return a list of objects, transformed by one or more functions.
+    /** Return a list of objects, transformed by one or more functions. Similar to
+     * jQuery.map, only will accept an arbitrary list of transformation functions.
      * @param list {Array} The initial array of objects to be transformed.
      * @param fn1, fn2, etc. {Function} An arbitrary number of optional further arguments,
      * all of type Function, accepting the signature (object, index), where object is the
@@ -765,7 +766,9 @@ var fluid = fluid || fluid_0_6;
 	    return arg;
     };
     
-    /** Can through a list of objects, removing those which match a predicate.
+    /** Can through a list of objects, removing those which match a predicate. Similar to
+     * jQuery.grep, only acts on the list in-place by removal, rather than by creating
+     * a new list by inclusion.
      * @param list {Array} The list of objects to be scanned over.
      * @param fn {Function} A predicate function determining whether an element should be
      * removed. This accepts the standard signature (object, index) and returns a "truthy"

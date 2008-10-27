@@ -207,69 +207,94 @@ fluid.tests = fluid.tests || {};
     
     
     renderTests.test("UISelect binding tests with HTML select", function() {
-      var node = $(".UISelect-test-select");
-      var model1 = $.extend(true, {}, model, {choice: "Apocatastasis"});
-
-      fluid.selfRender(node, fluid.copy(binding_tree), {model: model1});
-      singleSelectionRenderTests(node);
-      var select = $("select", node);
-      select.val("Enchiridion");
-      fluid.applyChange(select);
-      jqUnit.assertEquals("Applied value to model", "Enchiridion", model1.choice);
+        var node = $(".UISelect-test-select");
+        var model1 = $.extend(true, {}, model, {choice: "Apocatastasis"});
+  
+        fluid.selfRender(node, fluid.copy(binding_tree), {model: model1});
+        singleSelectionRenderTests(node);
+        var select = $("select", node);
+        select.val("Enchiridion");
+        fluid.applyChange(select);
+        jqUnit.assertEquals("Applied value to model", "Enchiridion", model1.choice);
+        });
       
-      });
+    function multipleSelectionRenderTests(node) {
+        var options = $("option", node);
+        fluid.testUtils.assertNode("Render UISelect", 
+          [{nodeName: "option", selected: "selected", value: "Enchiridion", nodeText: "Enchiridion"},
+           {nodeName: "option", selected: "selected", value: "Apocatastasis", nodeText: "ApoCATTastasis"},
+           {nodeName: "option", selected: undefined, value: "Exomologesis", nodeText: "Exomologesis"}],
+           options);
+        var select = $("select", node);
+        fluid.testUtils.assertNode("Render UISelect select", 
+          {nodeName: "select", multiple: "multiple"}, select);  
+     }
     
-   renderTests.test("UISelect tests with HTML multiple select", function() {
-      var node = $(".UISelect-test-select");
-      var templates = fluid.selfRender(node, {children: [fluid.copy(multiple_selection_tree)]});
-      var options = $("option", node);
-      fluid.testUtils.assertNode("Render UISelect", 
-        [{nodeName: "option", selected: "selected", value: "Enchiridion", nodeText: "Enchiridion"},
-         {nodeName: "option", selected: "selected", value: "Apocatastasis", nodeText: "ApoCATTastasis"},
-         {nodeName: "option", selected: undefined, value: "Exomologesis", nodeText: "Exomologesis"}],
-         options);
-      var select = $("select", node);
-      fluid.testUtils.assertNode("Render UISelect select", 
-        {nodeName: "select", multiple: "multiple"}, select);
-   });
-    
-    renderTests.test("UISelect tests with radio buttons", function() {
-      var node = $(".UISelect-test-radio-1");
-      var tree = {children: [fluid.copy(selection_tree)].concat( 
-        fluid.transform(selection_tree.optionlist, function(option, index) {
-          return {
-            ID: "radio-row:", 
-            children: [
-                 {ID: "radio", parentRelativeID: "..::select", choiceindex: index},
-                 {ID: "label", parentRelativeID: "..::select", choiceindex: index}]
-        };
-      }))};
-      var templates = fluid.selfRender(node, tree);
-      var inputs = $("input", node);
-      fluid.testUtils.assertNode("Render UISelect as radio buttons", 
-        [{nodeName: "input", checked: undefined, value: "Enchiridion", type: "radio"},
-         {nodeName: "input", checked: "checked", value: "Apocatastasis", type: "radio"},
-         {nodeName: "input", checked: undefined, value: "Exomologesis", type: "radio"}],
-         inputs);
-      var names = fluid.transform(inputs, function(node) {return $(node).attr("name");});
-      jqUnit.assertValue("Name should be assigned", names[0]);
-      jqUnit.assertTrue("Name should have been rewritten", names[0] !== "vocable");
-      jqUnit.assertEquals("Names should be identical", names[0], names[1]);
-      jqUnit.assertEquals("Names should be identical", names[1], names[2]);
+    renderTests.test("UISelect tests with HTML multiple select", function() {
+        var node = $(".UISelect-test-select");
+        var templates = fluid.selfRender(node, {children: [fluid.copy(multiple_selection_tree)]});
+        multipleSelectionRenderTests(node);
     });
     
-    renderTests.test("UISelect tests with checkboxes", function() {
-      var node = $(".UISelect-test-check-1");
-      var tree = {children: [fluid.copy(multiple_selection_tree)].concat( 
-        fluid.transform(selection_tree.optionlist, function(option, index) {
-          return {
-            ID: "checkbox-row:", 
-            children: [
-                 {ID: "checkbox", parentRelativeID: "..::select", choiceindex: index},
-                 {ID: "label", parentRelativeID: "..::select", choiceindex: index}]
-        };
-      }))};
-      var templates = fluid.selfRender(node, tree);
+    renderTests.test("UISelect binding tests with HTML multiple select", function() {
+        var node = $(".UISelect-test-select");
+        var model2 =  $.extend(true, {}, model, {choice: ["Enchiridion", "Apocatastasis"]});
+        var templates = fluid.selfRender(node, fluid.copy(binding_tree), {model: model2});
+        multipleSelectionRenderTests(node);
+        var select = $("select", node);
+        select.val(["Exomologesis", "Apocatastasis"]);
+        fluid.applyChange(select);
+        jqUnit.assertDeepEq("Applied value to model", ["Apocatastasis", "Exomologesis"], model2.choice);
+    });
+    
+    function singleSelectionRadioRenderTests(node) {
+        var inputs = $("input", node);
+        fluid.testUtils.assertNode("Render UISelect as radio buttons", 
+          [{nodeName: "input", checked: undefined, value: "Enchiridion", type: "radio"},
+           {nodeName: "input", checked: "checked", value: "Apocatastasis", type: "radio"},
+           {nodeName: "input", checked: undefined, value: "Exomologesis", type: "radio"}],
+           inputs);
+        var names = fluid.transform(inputs, function(node) {return $(node).attr("name");});
+        jqUnit.assertValue("Name should be assigned", names[0]);
+        jqUnit.assertTrue("Name should have been rewritten", names[0] !== "vocable");
+        jqUnit.assertEquals("Names should be identical", names[0], names[1]);
+        jqUnit.assertEquals("Names should be identical", names[1], names[2]);      
+    }
+    // common utility function to make a simple view of rows, where each row has a selection
+    // control and a label
+    function explodeSelectionToInputs(optionlist, rowname, inputname, labelname) {
+         return fluid.transform(optionlist, function(option, index) {
+              return {
+                ID: rowname, 
+                children: [
+                     {ID: inputname, parentRelativeID: "..::select", choiceindex: index},
+                     {ID: labelname, parentRelativeID: "..::select", choiceindex: index}]
+           }});
+    }
+    
+    renderTests.test("UISelect tests with radio buttons", function() {
+        var node = $(".UISelect-test-radio-1");
+        var tree = {children: [fluid.copy(selection_tree)].concat(
+              explodeSelectionToInputs(selection_tree.optionlist, "radio-row:", "radio", "label"))};
+        fluid.selfRender(node, tree);
+        singleSelectionRadioRenderTests(node);
+    });
+    
+    renderTests.test("UISelect binding tests with radio buttons", function() {
+        var node = $(".UISelect-test-radio-1");
+        var model3 = $.extend(true, {}, model, {choice: "Apocatastasis"});
+        var tree = fluid.copy(binding_tree);
+        tree.children = tree.children.concat(
+              explodeSelectionToInputs(selection_tree.optionlist, "radio-row:", "radio", "label"));
+        fluid.selfRender(node, tree, {model: model3});
+        singleSelectionRadioRenderTests(node);
+        var inputs = $("input", node);
+        fluid.value(inputs, "Enchiridion");
+        fluid.applyChange(inputs);
+        jqUnit.assertEquals("Applied value to model", "Enchiridion", model3.choice);
+    });
+    
+    function multipleSelectionCheckboxRenderTests(node) {
       var inputs = $("input", node);
       fluid.testUtils.assertNode("Render UISelect as checkboxes", 
         [{nodeName: "input", checked: "checked", value: "Enchiridion", type: "checkbox"},
@@ -280,7 +305,29 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertValue("Name should be assigned", names[0]);
       jqUnit.assertTrue("Name should have been rewritten", names[0] !== "vocable");
       jqUnit.assertEquals("Names should be identical", names[0], names[1]);
-      jqUnit.assertEquals("Names should be identical", names[1], names[2]);
+      jqUnit.assertEquals("Names should be identical", names[1], names[2]);      
+    }
+    
+    renderTests.test("UISelect tests with checkboxes", function() {
+      var node = $(".UISelect-test-check-1");
+      var tree = {children: [fluid.copy(multiple_selection_tree)].concat( 
+        explodeSelectionToInputs(selection_tree.optionlist, "checkbox-row:", "checkbox", "label"))};
+      fluid.selfRender(node, tree);
+      multipleSelectionCheckboxRenderTests(node);
+    });
+    
+    renderTests.test("UISelect binding tests with checkboxes", function() {
+      var node = $(".UISelect-test-check-1");
+      var model4 = $.extend(true, {}, model, {choice: ["Enchiridion", "Apocatastasis"]});
+      var tree = fluid.copy(binding_tree);
+      tree.children = tree.children.concat( 
+        explodeSelectionToInputs(selection_tree.optionlist, "checkbox-row:", "checkbox", "label"));
+      fluid.selfRender(node, tree, {model: model4});
+      multipleSelectionCheckboxRenderTests(node);
+      var inputs = $("input", node);
+      fluid.value(inputs, ["Exomologesis", "Apocatastasis"]);
+      fluid.applyChange(inputs);
+      jqUnit.assertDeepEq("Applied value to model", ["Apocatastasis", "Exomologesis"], model4.choice);
     });
 
     renderTests.test("UILink rendering", function() {

@@ -32,6 +32,10 @@ fluid_0_6 = fluid_0_6 || {};
         }
       if (move.noID === undefined) {
         var ID = move.ID;
+        if (ID === undefined) {
+          fluid.fail("Error in component tree - component found with no ID as child of "
+            + (parent.fullID? "component with full ID " + parent.fullID : "root") + ": please check structure");
+        }
         var colpos = ID.indexOf(":");        
         var prefix = colpos === -1? ID : ID.substring(0, colpos);
         togo = prefix + ":" + (move.localID === undefined ? "" : move.localID) + ":" + togo;
@@ -199,6 +203,8 @@ fluid_0_6 = fluid_0_6 || {};
       }
     return tree;
     }
+  // private renderer state variables, stored in this outer closure location to reduce argument
+  // parsing. Renderer is non-reentrant.
   var globalmap = {};
   var branchmap = {};
   var rewritemap = {}; // map of rewritekey (for original id in template) to full ID 
@@ -207,6 +213,8 @@ fluid_0_6 = fluid_0_6 || {};
   var out = "";
   var debugMode = false;
   var directFossils = {}; // map of submittingname to {EL, submittingname, oldvalue}
+  
+  var renderedbindings = {}; // map of fullID to true for UISelects which have already had bindings written
   
   function getRewriteKey(template, parent, id) {
     return template.resourceKey + parent.fullID + id;
@@ -291,6 +299,8 @@ fluid_0_6 = fluid_0_6 || {};
   function resolveBranches(globalmapp, basecontainer, parentlump) {
     branchmap = {};
     rewritemap = {};
+    seenset = {};
+    collected = {};
     globalmap = globalmapp;
     branchmap[basecontainer.fullID] = parentlump;
     resolveRecurse(basecontainer, parentlump);
@@ -426,52 +436,61 @@ fluid_0_6 = fluid_0_6 || {};
   /*** END TRC METHODS**/
   
   function isValue(value) {
-    return value !== null && value !== undefined && !isPlaceholder(value);
+      return value !== null && value !== undefined && !isPlaceholder(value);
   }
   
   function isPlaceholder(value) {
-    // TODO: equivalent of server-side "placeholder" system
-    return false;
+      // TODO: equivalent of server-side "placeholder" system
+      return false;
   }
   
   function rewriteURL(template, URL) {
-    // TODO: rebasing of "relative URLs" discovered/issued from subcomponent templates
-    return URL;
+      // TODO: rebasing of "relative URLs" discovered/issued from subcomponent templates
+      return URL;
   }
   
   function dumpHiddenField(/** UIParameter **/ todump) {
-    out += "<input type=\"hidden\" ";
-    var isvirtual = todump.virtual;
-    var outattrs = {};
-    outattrs[isvirtual? "id" : "name"] = todump.name;
-    outattrs.value = todump.value;
-    out += fluid.dumpAttributes(outattrs);
-    out += " />\n";
+      out += "<input type=\"hidden\" ";
+      var isvirtual = todump.virtual;
+      var outattrs = {};
+      outattrs[isvirtual? "id" : "name"] = todump.name;
+      outattrs.value = todump.value;
+      out += fluid.dumpAttributes(outattrs);
+      out += " />\n";
   }
   
   function dumpBoundFields(/** UIBound**/ torender) {
-    if (torender) {
-      if (directFossils && torender.submittingname && torender.valuebinding) {
-        directFossils[torender.submittingname] = {
-          name: torender.submittingname,
-          EL: torender.valuebinding,
-          oldvalue: torender.value};
-        }
-      if (torender.fossilizedbinding) {
-        dumpHiddenField(torender.fossilizedbinding);
+      if (torender) {
+          if (directFossils && torender.submittingname && torender.valuebinding) {
+              directFossils[torender.submittingname] = {
+                name: torender.submittingname,
+                EL: torender.valuebinding,
+                oldvalue: torender.value};
+          }
+          if (torender.fossilizedbinding) {
+              dumpHiddenField(torender.fossilizedbinding);
+          }
+          if (torender.fossilizedshaper) {
+              dumpHiddenField(torender.fossilizedshaper);
+          }
       }
-      if (torender.fossilizedshaper) {
-        dumpHiddenField(torender.fossilizedshaper);
+  }
+  
+  function dumpSelectionBindings(uiselect) {
+      if (!renderedbindings[uiselect.fullID]) {
+          dumpBoundFields(uiselect.selection);
+          dumpBoundFields(uiselect.optionlist);
+          dumpBoundFields(uiselect.optionnames);
+          renderedbindings[uiselect.fullID] = true;
       }
-    }
   }
   
   fluid.NULL_STRING = "\u25a9null\u25a9";
   
   var LINK_ATTRIBUTES = {
-    a: "href", link: "href", img: "src", frame: "src", script: "src", style: "src", input: "src", embed: "src",
-    form: "action",
-    applet: "codebase", object: "codebase"
+      a: "href", link: "href", img: "src", frame: "src", script: "src", style: "src", input: "src", embed: "src",
+      form: "action",
+      applet: "codebase", object: "codebase"
   };
 
   
@@ -500,75 +519,79 @@ fluid_0_6 = fluid_0_6 || {};
     var tagname = trc.uselump.tagname;
     
     if (componentType === "UIBound" || componentType === "UISelectChoice") {
-      var parent;
-      if (torender.choiceindex !== undefined) {
-          if (torender.parentFullID) {
-             parent = getAbsoluteComponent(view, torender.parentFullID);
-          }
-          else if (torender.parentRelativeID !== undefined){
-             parent = getRelativeComponent(torender, torender.parentRelativeID);
-          }
-          else {
-            fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID 
-            + " does not have either parentFullID or parentRelativeID set");
-          }
-          assignSubmittingName(parent.selection);
-      }
-
-      var submittingname = parent? parent.selection.submittingname : torender.submittingname;
-      if (tagname === "input" || tagname === "textarea") {
-          if (submittingname !== undefined) {
-              attrcopy.name = submittingname;
-              }
-          }
-
-      if (typeof(torender.value) === 'boolean' || attrcopy.type === "radio" 
-             || attrcopy.type === "checkbox") {
-        var underlyingValue;
-        var directValue = torender.value;
-        
+        var parent;
         if (torender.choiceindex !== undefined) {
-            underlyingValue = parent.optionlist.value[torender.choiceindex];
-            directValue = isSelectedValue(parent, underlyingValue);
-        }
-        if (isValue(directValue)) {
-            if (directValue) {
-                attrcopy.checked = "checked";
-                }
+            if (torender.parentFullID) {
+                parent = getAbsoluteComponent(view, torender.parentFullID);
+            }
+            else if (torender.parentRelativeID !== undefined){
+                parent = getRelativeComponent(torender, torender.parentRelativeID);
+            }
             else {
-                delete attrcopy.checked;
+                fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID 
+                + " does not have either parentFullID or parentRelativeID set");
+            }
+            assignSubmittingName(parent.selection);
+            dumpSelectionBindings(parent);
+        }
+
+        var submittingname = parent? parent.selection.submittingname : torender.submittingname;
+        if (tagname === "input" || tagname === "textarea") {
+            if (submittingname !== undefined) {
+                attrcopy.name = submittingname;
                 }
             }
-        attrcopy.value = underlyingValue? underlyingValue: "true";
-        rewriteLeaf(null);
-        }
-      else if (torender.value instanceof Array) {
-        // Cannot be rendered directly, must be fake
-        renderUnchanged();
-        }
-      else { // String value
-        var value = torender.value;
-        if (tagname === "textarea") {
-          if (isPlaceholder(value) && torender.willinput) {
-            // FORCE a blank value for input components if nothing from
-            // model, if input was intended.
-            value = "";
+  
+        if (typeof(torender.value) === 'boolean' || attrcopy.type === "radio" 
+               || attrcopy.type === "checkbox") {
+          var underlyingValue;
+          var directValue = torender.value;
+          
+          if (torender.choiceindex !== undefined) {
+              if (!parent.optionlist.value) {
+                  fluid.fail("Error in component tree - selection control with full ID " + parent.fullID + " has no values");
+              }
+              underlyingValue = parent.optionlist.value[torender.choiceindex];
+              directValue = isSelectedValue(parent, underlyingValue);
           }
-          rewriteLeaf(value);
-        }
-        else if (tagname === "input") {
-          if (torender.willinput || isValue(value)) {
-            attrcopy.value = value;
-            }
+          if (isValue(directValue)) {
+              if (directValue) {
+                  attrcopy.checked = "checked";
+                  }
+              else {
+                  delete attrcopy.checked;
+                  }
+              }
+          attrcopy.value = underlyingValue? underlyingValue: "true";
           rewriteLeaf(null);
           }
-        else {
-          delete attrcopy.name;
-          rewriteLeafOpen(value);
+        else if (torender.value instanceof Array) {
+          // Cannot be rendered directly, must be fake
+          renderUnchanged();
           }
+        else { // String value
+          var value = torender.value;
+          if (tagname === "textarea") {
+            if (isPlaceholder(value) && torender.willinput) {
+              // FORCE a blank value for input components if nothing from
+              // model, if input was intended.
+              value = "";
+            }
+            rewriteLeaf(value);
+          }
+          else if (tagname === "input") {
+            if (torender.willinput || isValue(value)) {
+              attrcopy.value = value;
+              }
+            rewriteLeaf(null);
+            }
+          else {
+            delete attrcopy.name;
+            rewriteLeafOpen(value);
+            }
+          }
+        dumpBoundFields(torender);
         }
-      dumpBoundFields(torender);
-      }
     else if (componentType === "UISelect") {
       if (attrcopy.id) {
         // TODO: This is an irregularity, should probably remove for 0.8
@@ -584,8 +607,8 @@ fluid_0_6 = fluid_0_6 || {};
           }
         }
       
+      assignSubmittingName(torender.selection);
       if (ishtmlselect) {
-      	assignSubmittingName(torender.selection);
         // The HTML submitted value from a <select> actually corresponds
         // with the selection member, not the top-level component.
         if (torender.selection.willinput !== false) {
@@ -615,10 +638,7 @@ fluid_0_6 = fluid_0_6 || {};
       else {
         dumpTemplateBody();
       }
-
-      dumpBoundFields(torender.selection);
-      dumpBoundFields(torender.optionlist);
-      dumpBoundFields(torender.optionnames);
+      dumpSelectionBindings(torender);
     }
     else if (componentType === "UILink") {
       var attrname = LINK_ATTRIBUTES[tagname];
@@ -692,7 +712,7 @@ fluid_0_6 = fluid_0_6 || {};
     }
   }
   
- function renderComponentSystem(context, torendero, lump) {
+  function renderComponentSystem(context, torendero, lump) {
     var lumpindex = lump.lumpindex;
     var lumps = lump.parent.lumps;
     var nextpos = -1;
@@ -888,21 +908,21 @@ fluid_0_6 = fluid_0_6 || {};
   }
   
   function renderCollect(collump) {
-    dumpTillLump(collump.parent.lumps, collump.lumpindex, collump.close_tag.lumpindex + 1);
+      dumpTillLump(collump.parent.lumps, collump.lumpindex, collump.close_tag.lumpindex + 1);
   }
   
   function renderCollects() {
-    for (var key in collected) {
-      var collist = collected[key];
-      for (var i = 0; i < collist.length; ++ i) {
-        renderCollect(collist[i]);
+      for (var key in collected) {
+          var collist = collected[key];
+          for (var i = 0; i < collist.length; ++ i) {
+              renderCollect(collist[i]);
+          }
       }
-    }
   }
 
   fluid.ComponentReference = function(reference) {
       this.reference = reference;
-      };
+  };
     
   // Explodes a raw "hash" into a list of UIOutput/UIBound entries
   fluid.explode = function(hash, basepath) {
@@ -914,18 +934,76 @@ fluid_0_6 = fluid_0_6 || {};
       return togo;
     };
   
+  fluid.findForm = function (node) {
+    return fluid.findAncestor(node, 
+        function(element) {return element.nodeName.toLowerCase() === "form"});
+  }
+  
+  /** A generalisation of jQuery.val to correctly handle the case of acquiring and
+   * setting the value of clustered radio button/checkbox sets, potentially, given
+   * a node corresponding to just one element.
+   */
+  fluid.value = function (nodeIn, newValue) {
+      var node = fluid.unwrap(nodeIn);
+      var multiple = false;
+      if (node.nodeType === undefined && node.length > 1) {
+          node = node[0];
+          multiple = true;
+      }
+      var jNode = $(node);
+      if ("input" !== node.nodeName.toLowerCase()
+         || ! /radio|checkbox/.test(node.type)) return $(node).val(newValue);
+      var name = node.name;
+      if (name === undefined) {
+          fluid.fail("Cannot acquire value from node " + fluid.dumpEl(node) + " which does not have name attribute set");
+      }
+      var elements;
+      if (multiple) {
+          elements = nodeIn;
+      }
+      else {
+          var elements = document.getElementsByName(name);
+          var scope = fluid.findForm(node);
+          elements = jQuery.grep(elements, 
+            function(element) {
+              if (element.name !== name) return false;
+              return !(scope && fluid.dom.isContainer(scope, element));
+            });
+      }
+      if (newValue !== undefined) {
+        // jQuery gets this partially right, but when dealing with radio button array will
+        // set all of their values to "newValue" rather than setting the checked property
+        // of the corresponding control. 
+          jQuery.each(elements, function() {
+             this.checked = (newValue instanceof Array? 
+               jQuery.inArray(this.value, newValue) !== -1 : newValue === this.value);
+          });
+      }
+      else { // this part jQuery will not do - extracting value from <input> array
+          var checked = jQuery.map(elements, function(element) {
+            return element.checked? element.value : null;
+          });
+          return node.type === "radio"? checked[0] : checked;
+          }
+     }
+  
   /** "Automatically" apply to whatever part of the data model is
    * relevant, the changed value received at the given DOM node*/
   fluid.applyChange = function(node, newValue) {
       node = fluid.unwrap(node);
       if (newValue === undefined) {
-          newValue = $(node).val();
+          newValue = fluid.value(node);
       }
+      if (node.nodeType === undefined && node.length > 0) node = node[0]; // assume here that they share name and parent
       var root = fluid.findData(node, fluid.BINDING_ROOT_KEY);
       if (!root) {
           fluid.fail("Bound data could not be discovered in any node above " + fluid.dumpEl(node));
       }
       var name = node.name;
+      var fossil = root.fossils[name];
+      if (!fossil) {
+          fluid.fail("No fossil discovered for name " + name + " in fossil record above " + fluid.dumpEl(node));
+      }
       var EL = root.fossils[name].EL;
       fluid.model.setBeanValue(root.data, EL, newValue);    
       };
@@ -970,6 +1048,7 @@ fluid_0_6 = fluid_0_6 || {};
       var template = templates[0];
       resolveBranches(templates.globalmap, tree, template.rootlump);
       out = "";
+      renderedbindings = {};
       renderCollects();
       renderRecurse(tree, template.rootlump, template.lumps[template.firstdocumentindex]);
       return out;
@@ -981,12 +1060,12 @@ fluid_0_6 = fluid_0_6 || {};
    * in its DOM hierarchy **/
    
   fluid.findData = function(elem, name) {
-    while (elem) {
-      var data = $.data(elem, name);
-      if (data) return data;
-      elem = elem.parentNode;
+      while (elem) {
+          var data = $.data(elem, name);
+          if (data) return data;
+          elem = elem.parentNode;
+          }
       }
-    }
 
   fluid.bindFossils = function(node, data, fossils) {
       $.data(node, fluid.BINDING_ROOT_KEY, {data: data, fossils: fossils});
