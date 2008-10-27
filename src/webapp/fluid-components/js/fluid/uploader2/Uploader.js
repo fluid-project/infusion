@@ -191,13 +191,13 @@ fluid_0_6 = fluid_0_6 || {};
             afterUploadComplete: null
         },
 
-        progressStrings: {
-             // tokens replaced by fluid.stringTemplate
-             pausedLabel: "Paused at: %curFileN of %totalFilesN files (%currBytes of %totalBytes)",
-             totalLabel: "Uploading: %curFileN of %totalFilesN files (%currBytes of %totalBytes)", 
-             completedLabel: "Uploaded: %curFileN files (%totalCurrBytes)"
+        strings: {
+            progress: {
+                pausedLabel: "Paused at: %curFileN of %totalFilesN files (%currBytes of %totalBytes)",
+                totalLabel: "Uploading: %curFileN of %totalFilesN files (%currBytes of %totalBytes)", 
+                completedLabel: "Uploaded: %curFileN files (%totalCurrBytes)"
+            }
         }
-
     });
         
 })(jQuery, fluid_0_6);
