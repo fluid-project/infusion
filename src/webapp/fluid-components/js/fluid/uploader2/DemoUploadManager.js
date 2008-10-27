@@ -49,16 +49,16 @@ fluid_0_6 = fluid_0_6 || {};
     finishUploadingFile = function (that, file) {
         var nextFile;
         
-        that.events.afterFileUploaded.fire(file);
+        that.events.onFileSuccess.fire(file);
         that.invokeAfterRandomDelay(function () {
-            that.events.afterUploadComplete.fire(file);
+            that.events.afterFileComplete.fire(file);
 
             nextFile = that.demoState.fileIdx + 1;
             if (nextFile < that.queue.files.length) {
                 startUploadingFile(that, nextFile);
                 simulateUpload(that);       
             } else {
-                that.queue.files.length = 0; // We're done. Clear out the file queue.            
+                that.events.afterUploadComplete.fire(that.queue.files);            
             }    
         });     
     };
@@ -70,7 +70,7 @@ fluid_0_6 = fluid_0_6 || {};
         events.onUploadError.fire(demoState.currentFile, 
                                   SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED, 
                                   "The demo upload was paused by the user.");
-        events.afterUploadComplete.fire(demoState.currentFile);
+        events.afterFileComplete.fire(demoState.currentFile);
     };
     
     var initDemoUploadManager = function (events, options) {

@@ -58,11 +58,11 @@ fluid_0_6 = fluid_0_6 || {};
     };
         
     var bindModelEvents = function (that) {
-        that.events.onFileBrowse.addListener(function () {
+        that.events.onFileDialog.addListener(function () {
             addState(that, that.options.styles.queueBrowsingState);
         });
         
-        that.events.afterFileBrowse.addListener(function () {
+        that.events.afterFileDialog.addListener(function () {
             that.refreshView();
         });
         
@@ -78,9 +78,10 @@ fluid_0_6 = fluid_0_6 || {};
             progressUpdate(that);
         });
         
-        that.events.afterFileUploaded.addListener(function(){
+        that.events.afterFileComplete.addListener(function(){
             progressUpdate(that);
         });
+        
         //**** need a different event here to tell the whole upload is done, not just the file
         that.events.afterUploadComplete.addListener(function(){
             progressComplete(that);
@@ -177,15 +178,16 @@ fluid_0_6 = fluid_0_6 || {};
         
         events: {
             afterReady: null,
-            onFileBrowse: null,
+            onFileDialog: null,
             afterFileQueued: null,
             afterFileRemoved: null,
             onQueueError: null,
-            afterFileBrowse: null,
+            afterFileDialog: null,
             onUploadStart: null,
             onFileProgress: null,
-            onUploadError: null,
-            afterFileUploaded: null,
+            onFileError: null,
+            onFileSuccess: null,
+            afterFileComplete: null,
             afterUploadComplete: null
         },
 

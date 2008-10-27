@@ -114,13 +114,13 @@
             
             // browsing
             // fire browsing event check if we contain the browsing class
-            testUploader.events.onFileBrowse.fire();
+            testUploader.events.onFileDialog.fire();
             uploaderStateContainsTest("browsing");
             
             // loaded
             // add some files and set the state
             testUploader.uploadManager.queue.files = [file1, file2, file3];
-            testUploader.events.afterFileBrowse.fire();
+            testUploader.events.afterFileDialog.fire();
             uploaderStateIsTest("loaded");
             
             // uploading	 	 

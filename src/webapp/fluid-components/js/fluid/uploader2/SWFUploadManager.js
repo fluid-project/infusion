@@ -31,10 +31,6 @@ fluid_0_6 = fluid_0_6 || {};
         }          
         return totalBytes;
     };
-
-    /********************
-     * SWFUploadManager *
-     ********************/
     
     // Maps SWFUpload's setting names to our component's setting names.
     var swfUploadOptionsMap = {
@@ -52,15 +48,15 @@ fluid_0_6 = fluid_0_6 || {};
     // Maps SWFUpload's callback names to our component's callback names.
     var swfUploadEventMap = {
         afterReady: "swfupload_loaded_handler",
-        onFileBrowse: "file_dialog_start_handler",
+        onFileDialog: "file_dialog_start_handler",
         afterFileQueued: "file_queued_handler",
         onQueueError: "file_queue_error_handler",
-        afterFileBrowse: "file_dialog_complete_handler",
+        afterFileDialog: "file_dialog_complete_handler",
         onUploadStart: "upload_start_handler",
         onFileProgress: "upload_progress_handler",
-        onUploadError: "upload_error_handler",
-        afterFileUploaded: "upload_success_handler",
-        afterUploadComplete: "upload_complete_handler"
+        onFileError: "upload_error_handler",
+        onFileSuccess: "upload_success_handler",
+        afterFileUploaded: "upload_complete_handler"
     };
     
     var mapNames = function (nameMap, source, target) {

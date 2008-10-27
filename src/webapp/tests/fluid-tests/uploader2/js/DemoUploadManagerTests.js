@@ -30,9 +30,9 @@
             var listeners = {
                 onUploadStart: emptyFunction,
                 onFileProgress: emptyFunction,
-                afterFileUploaded: emptyFunction,
-                afterUploadComplete: emptyFunction,
-                onUploadError: emptyFunction
+                onFileSuccess: emptyFunction,
+                afterFileComplete: emptyFunction,
+                afterUploadComplete: emptyFunction
             };
             
             var tracker = jqUnit.invocationTracker();
@@ -54,12 +54,13 @@
             demoManager.queue.files = files;
             demoManager.start();
             
+            tracker.transcript.files = files;
+            
             return tracker.transcript;    
         };
         
         var uploadFirstFile = function () {
             return uploadFiles([file1]);
-
         };
         
         var uploadAllFiles = function () {
@@ -94,10 +95,10 @@
             var lastEvent = transcript.length - 1;
             jqUnit.assertEquals("We should get onUploadStart first.",
                                 "onUploadStart", transcript[0].name);    
-            jqUnit.assertEquals("The second to last even should be afterFileUploaded.",
-                                "afterFileUploaded", transcript[lastEvent - 1].name);      
-            jqUnit.assertEquals("And the last event should be afterUploadComplete.",
-                                "afterUploadComplete", transcript[lastEvent].name);
+            jqUnit.assertEquals("The second to last event should be onFileSuccess.",
+                                "onFileSuccess", transcript[lastEvent - 1].name);      
+            jqUnit.assertEquals("And the last event should be afterFileComplete.",
+                                "afterFileComplete", transcript[lastEvent].name);
             for (i = 1; i < lastEvent - 1; i++) {
                 jqUnit.assertEquals("Then an onFileProgress.",
                                     "onFileProgress", transcript[i].name);      
@@ -107,13 +108,16 @@
         demoUploadTests.test("Simulated upload flow: sequence of events.", function () {
             // Test with just one file.
             var transcript = uploadFirstFile();
-            jqUnit.assertEquals("We should have received five upload events.", 5, transcript.length);
+            jqUnit.assertEquals("We should have received six upload events.", 6, transcript.length);
             
-            checkEventSequenceForFile(transcript, file1);
-                               
+            checkEventSequenceForFile(transcript.slice(0, transcript.length -1), file1);
+            jqUnit.assertEquals("The last event of a batch should be afterUploadComplete.",
+                         "afterUploadComplete", transcript[transcript.length - 1].name);
+            jqUnit.assertEquals("The argument to afterUploadComplete should be the full list of files.",
+                                transcript.files, transcript[transcript.length - 1].args[0]);
             // Now upload them all.
             transcript = uploadAllFiles();
-            jqUnit.assertEquals("We should have received eighteen upload events.", 18, transcript.length);
+            jqUnit.assertEquals("We should have received nineteen upload events.", 19, transcript.length);
             
             checkEventSequenceForFile(transcript.slice(0, 5), file1);
             checkEventSequenceForFile(transcript.slice(5, 11), file2);
