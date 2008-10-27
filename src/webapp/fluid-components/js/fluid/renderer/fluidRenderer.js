@@ -148,12 +148,12 @@ fluid_0_6 = fluid_0_6 || {};
   }
   
   function fixupTree(tree, model) {
-    if (!tree || tree.componentType === undefined) {
+    if (tree.componentType === undefined) {
       tree = unzipComponent(tree, model);
       }
     
     if (tree.children) {
-    	 tree.childmap = {};
+       tree.childmap = {};
       for (var i = 0; i < tree.children.length; ++ i) {
         var child = tree.children[i];
         if (child.componentType === undefined) {
@@ -170,13 +170,13 @@ fluid_0_6 = fluid_0_6 || {};
         }
         else {
           var prefix = child.ID.substring(0, colpos);
-        	var childlist = tree.childmap[prefix]; 
-        	if (!childlist) {
-        		childlist = [];
-        		tree.childmap[prefix] = childlist;
-        	}
+          var childlist = tree.childmap[prefix]; 
+          if (!childlist) {
+            childlist = [];
+            tree.childmap[prefix] = childlist;
+          }
        
-        	childlist[childlist.length] = child;
+          childlist[childlist.length] = child;
         }
 
         var componentType = child.componentType;
@@ -372,7 +372,7 @@ fluid_0_6 = fluid_0_6 || {};
   }
 
   function renderUnchanged() {
-  	// TODO needs work since we don't keep attributes in text
+    // TODO needs work since we don't keep attributes in text
     dumpTillLump(trc.uselump.parent.lumps, trc.uselump.lumpindex + 1,
         trc.close.lumpindex + (trc.iselide ? 0 : 1));
   }
@@ -419,7 +419,7 @@ fluid_0_6 = fluid_0_6 || {};
   }
 
   function rewriteLeafOpen(value) {
-    	if (trc.iselide) {
+      if (trc.iselide) {
           rewriteLeaf(trc.value);
       }
       else {
@@ -467,11 +467,12 @@ fluid_0_6 = fluid_0_6 || {};
   
   function applyAutoBind(torender, finalID) {
       var tagname = trc.uselump.tagname;
-      if (renderOptions.autoBind && (tagname === "input" || tagname === "select")) {
+      if (renderOptions.autoBind && (tagname === "input" || tagname === "select") 
+            && !renderedbindings[finalID]) {
           outDecoratorsImpl(torender, [{
             jQuery: ["change", function() {
               fluid.applyChange(fluid.byId(finalID));}]
-          }])
+          }], trc.attrcopy, finalID)
       }    
   }
   
@@ -494,11 +495,11 @@ fluid_0_6 = fluid_0_6 || {};
   }
   
   function dumpSelectionBindings(uiselect) {
-      if (!renderedbindings[uiselect.fullID]) {
+      if (!renderedbindings[uiselect.selection.fullID]) {
+          renderedbindings[uiselect.selection.fullID] = true; // set this true early so that selection does not autobind twice
           dumpBoundFields(uiselect.selection);
           dumpBoundFields(uiselect.optionlist);
           dumpBoundFields(uiselect.optionnames);
-          renderedbindings[uiselect.fullID] = true;
       }
   }
   
@@ -550,16 +551,16 @@ fluid_0_6 = fluid_0_6 || {};
       return togo;
   }
   
-  function outDecoratorsImpl(torender, decorators, attrcopy) {
+  function outDecoratorsImpl(torender, decorators, attrcopy, finalID) {
       for (var i = 0; i < decorators.length; ++ i) {
           var decorator = decorators[i];
           var type = decorator.type;
           if (!type) {
               var decorators = explodeDecorators(decorator);
-              outDecoratorsImpl(torender, decorators, attrcopy);
+              outDecoratorsImpl(torender, decorators, attrcopy, finalID);
           }
           if (type === "jQuery" || type === "event") {
-              var id = adjustForID(attrcopy, torender, true);
+              var id = adjustForID(attrcopy, torender, true, finalID);
               var outdec = $.extend(true, {id: id}, decorator);
               decoratorQueue[decoratorQueue.length] = outdec;
           }
@@ -672,6 +673,7 @@ fluid_0_6 = fluid_0_6 || {};
         dumpBoundFields(torender);
         }
     else if (componentType === "UISelect") {
+      // need to do this first to see whether we need to write out an ID or not
       applyAutoBind(torender, torender.selection.fullID);
       if (attrcopy.id) {
         // TODO: This is an irregularity, should probably remove for 0.8
@@ -759,17 +761,22 @@ fluid_0_6 = fluid_0_6 || {};
         }    
       }
       else {
-      	
+        
       }
     }
   
-  function adjustForID(attrcopy, component, late) {
+  function adjustForID(attrcopy, component, late, forceID) {
     if (!late) {
         delete attrcopy["rsf:id"];
     }
-    if (attrcopy.id || late) {
-        attrcopy.id = component.fullID;
-        }
+    if (forceID !== undefined) {
+        attrcopy.id = forceID;
+    }
+    else {
+        if (attrcopy.id || late) {
+            attrcopy.id = component.fullID;
+            }
+    }
     return attrcopy.id;
     }
   
@@ -825,10 +832,10 @@ fluid_0_6 = fluid_0_6 || {};
     rewriteIDRelation(context);
     
     if (torendero == null) {
-    	// no support for SCR yet
+      // no support for SCR yet
     }
     else {
-    	// else there IS a component and we are going to render it. First make
+      // else there IS a component and we are going to render it. First make
       // sure we render any preamble.
 
       if (payload) {
@@ -1138,6 +1145,7 @@ fluid_0_6 = fluid_0_6 || {};
     
   fluid.renderTemplates = function(templates, tree, options, fossilsIn) {
       options = options || {};
+      tree = tree || {};
       debugMode = options.debugMode;
       directFossils = fossilsIn;
       decoratorQueue = [];
