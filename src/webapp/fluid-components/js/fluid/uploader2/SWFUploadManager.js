@@ -6,32 +6,6 @@ fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
-    var numReadyFiles = function (that) {
-        var count = 0;
-        for (var i = 0; i < that.queue.files.length; i++) {
-            count += (that.queue.files[i].filestatus > SWFUpload.FILE_STATUS.COMPLETE);
-        }  
-        return count;  
-    };
-    
-    var sizeOfUploadedFiles = function (that) {
-        var totalBytes = 0;
-        for (var i = 0; i < that.queue.files.length; i++) {
-            var file = that.queue.files[i];
-            totalBytes += (file.filestatus === SWFUpload.FILE_STATUS.COMPLETE) ? file.size : 0;
-        }          
-        return totalBytes;
-    };
-        
-    var sizeOfReadyFiles = function (that) {
-        var totalBytes = 0;
-        for (var i = 0; i < that.queue.files.length; i++) {
-            var file = that.queue.files[i];
-            totalBytes += (file.filestatus < SWFUpload.FILE_STATUS.COMPLETE) ? file.size : 0;
-        }          
-        return totalBytes;
-    };
-    
     // Maps SWFUpload's setting names to our component's setting names.
     var swfUploadOptionsMap = {
         uploadURL: "upload_url",
@@ -52,31 +26,63 @@ fluid_0_6 = fluid_0_6 || {};
         afterFileQueued: "file_queued_handler",
         onQueueError: "file_queue_error_handler",
         afterFileDialog: "file_dialog_complete_handler",
-        onUploadStart: "upload_start_handler",
+        onFileStart: "upload_start_handler",
         onFileProgress: "upload_progress_handler",
         onFileError: "upload_error_handler",
         onFileSuccess: "upload_success_handler",
-        afterFileUploaded: "upload_complete_handler"
+        afterFileComplete: "upload_complete_handler"
     };
     
     var mapNames = function (nameMap, source, target) {
         var result = target || {};
         for (var key in source) {
             var mappedKey = nameMap[key];
-            result[mappedKey] = source[key];
+            if (mappedKey) {
+                result[mappedKey] = source[key];
+            }
         }
         
         return result;
     };
     
+    var start = function (that) {
+        that.queue.updateCurrentBatch();
+        that.events.onUploadStart.fire(that.queue.currentBatch.files); 
+        that.uploadNextFile();
+    };
+    
+    var finishUploading = function (that) {
+        that.events.afterUploadComplete.fire(that.queue.currentBatch.files);
+        that.queue.clearCurrentBatch();
+    };
+    
     // For each event type, hand the fire function to SWFUpload so it can fire the event at the right time for us.
-    var mapEvents = function (nameMap, events, target) {
+    var mapEvents = function (that, nameMap, target) {
         var result = target || {};
-        for (var eventType in events) {
-            var fireFn = events[eventType].fire;
+        for (var eventType in that.events) {
+            var fireFn = that.events[eventType].fire;
             var mappedName = nameMap[eventType];
-            result[mappedName] = fireFn;
+            if (mappedName) {
+                result[mappedName] = fireFn;
+            }   
         }
+
+        var fireAfterFileComplete = result.upload_complete_handler;
+        var fileCompleteWrapper = function (file) {
+            var batch = that.queue.currentBatch;
+            batch.numFilesCompleted++;
+            
+            fireAfterFileComplete(file);
+            
+            if (batch.numFilesCompleted < batch.files.length) {
+                // Upload the next file.
+            } else {
+                finishUploading(that);
+            }
+        };
+        result.upload_complete_handler = fileCompleteWrapper;
+        
+        return result;
     };
 
     // Invokes the OS browse files dialog, allowing either single or multiple select based on the options.
@@ -106,11 +112,11 @@ fluid_0_6 = fluid_0_6 || {};
         that.queue = fluid.fileQueue();
         
         // Map the event and settings names to SWFUpload's expectations.
-        var settings = mapNames(swfUploadOptionsMap, that.options);
-        mapEvents(swfUploadEventMap, that.events, settings);
+        that.swfUploadSettings = mapNames(swfUploadOptionsMap, that.options);
+        mapEvents(that, swfUploadEventMap, that.swfUploadSettings);
         
         // Setup the instance.
-        that.swfUploader = new SWFUpload(settings);
+        that.swfUploader = new SWFUpload(that.swfUploadSettings);
         that.currentStats = {
             bytesUploaded: 0  
         };
@@ -153,7 +159,11 @@ fluid_0_6 = fluid_0_6 || {};
          * Starts uploading all queued files to the server.
          */
         that.start = function () {
-
+            start(that);
+        };
+        
+        that.uploadNextFile = function () {
+            
         };
         
         /**

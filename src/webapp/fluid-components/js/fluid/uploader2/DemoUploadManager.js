@@ -19,15 +19,14 @@ fluid_0_6 = fluid_0_6 || {};
         events.onFileProgress.fire(file, demoState.bytesUploaded, file.size);
     };
     
-    var startUploadingFile = function (that, fileIdx) {
+    var startUploadingFile = function (that) {
         // Reset our upload stats for each new file.
-        that.demoState.fileIdx = fileIdx;
-        that.demoState.currentFile = that.queue.files[fileIdx];
+        that.demoState.currentFile = that.queue.files[that.demoState.fileIdx];
         that.demoState.chunksForCurrentFile = Math.ceil(that.demoState.currentFile / that.demoState.chunkSize);
         that.demoState.bytesUploaded = 0;
         that.demoState.shouldPause = false;
         
-        that.events.onUploadStart.fire(that.demoState.currentFile);    
+        that.events.onFileStart.fire(that.demoState.currentFile);    
     };
     
     // Declare finishUploadingFile up front because of the circular references.
@@ -51,14 +50,11 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.events.onFileSuccess.fire(file);
         that.invokeAfterRandomDelay(function () {
-            that.events.afterFileComplete.fire(file);
+            that.swfUploadSettings.upload_complete_handler(file); // this is a hack that needs to be addressed.
 
-            nextFile = that.demoState.fileIdx + 1;
-            if (nextFile < that.queue.files.length) {
-                startUploadingFile(that, nextFile);
-                simulateUpload(that);       
-            } else {
-                that.events.afterUploadComplete.fire(that.queue.files);            
+            that.demoState.fileIdx++;
+            if (that.demoState.fileIdx < that.queue.files.length) {
+                that.uploadNextFile();    
             }    
         });     
     };
@@ -70,7 +66,7 @@ fluid_0_6 = fluid_0_6 || {};
         events.onUploadError.fire(demoState.currentFile, 
                                   SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED, 
                                   "The demo upload was paused by the user.");
-        events.afterFileComplete.fire(demoState.currentFile);
+        that.swfUploadSettings.upload_complete_handler(demoState.currentFile); // this is a hack that needs to be addressed.
     };
     
     var initDemoUploadManager = function (events, options) {
@@ -80,6 +76,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         // Initialize state for our upload simulation.
         that.demoState = {
+            fileIdx: 0,
             chunkSize: 200000
         };
         
@@ -94,12 +91,8 @@ fluid_0_6 = fluid_0_6 || {};
     fluid.demoUploadManager = function (events, options) {
         var that = initDemoUploadManager(events, options);
         
-        /**
-         * Starts a simulated upload of all the files in the queue. 
-         * This method overrides the default behaviour in SWFUploadManager.
-         */
-        that.start = function () {
-            startUploadingFile(that, 0);
+        that.uploadNextFile = function () {
+            startUploadingFile(that);
             simulateUpload(that);
         };
         

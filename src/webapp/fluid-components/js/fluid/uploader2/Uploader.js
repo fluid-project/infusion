@@ -70,7 +70,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         // Progress
         
-        that.events.onUploadStart.addListener(function(){
+        that.events.onFileStart.addListener(function(){
             progressStart(that);
         });
         
@@ -184,6 +184,7 @@ fluid_0_6 = fluid_0_6 || {};
             onQueueError: null,
             afterFileDialog: null,
             onUploadStart: null,
+            onFileStart: null,
             onFileProgress: null,
             onFileError: null,
             onFileSuccess: null,

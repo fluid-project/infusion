@@ -6,48 +6,57 @@ fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
-    var totalBytes = function (that) {
-        var bytes = 0;
-        for (var i = 0; i < that.files.length; i++) {
-            var file = that.files[i];
-            bytes += file.size;
-        }  
+    var filterFiles = function (files, filterFn) {
+        var filteredFiles = [];
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            if (filterFn(file) === true) {
+                filteredFiles.push(file);
+            }
+        }
         
-        return bytes;
+        return filteredFiles;
     };
     
-    var numReadyFiles = function (that) {
-        var count = 0;
-        for (var i = 0; i < that.queue.files.length; i++) {
-            count += (that.queue.files[i].filestatus > fileQueue.fileStatusConstants.COMPLETE);
-        }  
-        return count;  
+    var getUploadedFiles = function (that) {
+        return filterFiles(that.files, function (file) {
+            return (file.filestatus === fluid.fileQueue.fileStatusConstants.COMPLETE);
+        });
     };
     
-    var sizeOfUploadedFiles = function (that) {
-        var totalBytes = 0;
-        for (var i = 0; i < that.queue.files.length; i++) {
-            var file = that.queue.files[i];
-            totalBytes += (file.filestatus === fileQueue.fileStatusConstants.COMPLETE) ? file.size : 0;
-        }          
-        return totalBytes;
+    var getReadyFiles = function (that) {
+        return filterFiles(that.files, function (file) {
+            return (file.filestatus === fluid.fileQueue.fileStatusConstants.QUEUED);
+        });
     };
-        
-    var sizeOfReadyFiles = function (that) {
-        var totalBytes = 0;
-        for (var i = 0; i < that.queue.files.length; i++) {
-            var file = that.queue.files[i];
-            totalBytes += (file.filestatus < fileQueue.fileStatusConstants.COMPLETE) ? file.size : 0;
-        }          
-        return totalBytes;
-    };
-    
+
     var removeFile = function (that, file) {
         // Remove the file from the collection and tell the world about it.
         var idx = $.inArray(file, that.files);
         that.files.splice(idx, 1);
     };
     
+    var clearCurrentBatch = function (that) {
+        that.currentBatch = {
+        	files: [],
+        	totalBytes: 0,
+        	numFilesCompleted: 0,
+        	bytesUploaded: 0
+        };
+    };
+    
+    var updateCurrentBatch = function (that) {
+        var readyFiles = that.getReadyFiles();
+        var sizeOfReadyFiles = fluid.fileQueue.sizeOfFiles(readyFiles);
+        
+        that.currentBatch = {
+        	files: readyFiles,
+        	totalBytes: sizeOfReadyFiles,
+        	numFilesCompleted: 0,
+        	bytesUploaded: 0
+        };
+    };
+     
     fluid.fileQueue = function () {
         var that = {};
         that.files = [];
@@ -61,10 +70,35 @@ fluid_0_6 = fluid_0_6 || {};
         };
         
         that.totalBytes = function () {
-            return totalBytes(that); 
+            return fluid.fileQueue.sizeOfFiles(that.files);
+        };
+        
+        that.getReadyFiles = function () {
+            return getReadyFiles(that);
+        };
+        
+        that.sizeOfReadyFiles = function () {
+            return sizeOfFiles(that.getReadyFiles());
+        };
+        
+        that.clearCurrentBatch = function () {
+            clearCurrentBatch(that);
+        };
+        
+        that.updateCurrentBatch = function () {
+            updateCurrentBatch(that);
         };
                 
         return that;
+    };
+    
+    fluid.fileQueue.sizeOfFiles = function (files) {
+        var totalBytes = 0;
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            totalBytes += file.size;
+        }        
+        return totalBytes;
     };
     
     fluid.fileQueue.fileStatusConstants = {
@@ -73,6 +107,6 @@ fluid_0_6 = fluid_0_6 || {};
 	    ERROR: -3,
         COMPLETE: -4,
         CANCELLED: -5
-    }
+    };
           
 })(jQuery, fluid_0_6);
