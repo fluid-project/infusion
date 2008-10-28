@@ -111,7 +111,7 @@ fluid_0_6 = fluid_0_6 || {};
   }
   
   var duckMap = {children: "UIContainer", 
-        value: "UIBound", markup: "UIVerbatim", selection: "UISelect", target: "UILink",
+        value: "UIBound", valuebinding: "UIBound", markup: "UIVerbatim", selection: "UISelect", target: "UILink",
         choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
   
   function unzipComponent(component, model) {
@@ -145,6 +145,7 @@ fluid_0_6 = fluid_0_6 || {};
       if (component.submittingname === undefined && component.willinput !== false) {
           component.submittingname = component.fullID;
       }
+      return component.submittingname;
   }
   
   function fixupTree(tree, model) {
@@ -622,11 +623,17 @@ fluid_0_6 = fluid_0_6 || {};
 
         var submittingname = parent? parent.selection.submittingname : torender.submittingname;
         if (tagname === "input" || tagname === "textarea") {
-            assignSubmittingName(torender);
+            if (!parent) {
+                submittingname = assignSubmittingName(torender);
+            }
             if (submittingname !== undefined) {
                 attrcopy.name = submittingname;
                 }
             }
+        // this needs to happen early on the client, since it may cause the allocation of the
+        // id in the case of a "deferred decorator". However, for server-side bindings, this 
+        // will be an inappropriate time, unless we shift the timing of emitting the opening tag.
+        dumpBoundFields(torender, parent? parent.selection : null);
   
         if (typeof(torender.value) === 'boolean' || attrcopy.type === "radio" 
                || attrcopy.type === "checkbox") {
@@ -678,7 +685,6 @@ fluid_0_6 = fluid_0_6 || {};
             rewriteLeafOpen(value);
             }
           }
-        dumpBoundFields(torender, parent? parent.selection : null);
         }
     else if (componentType === "UISelect") {
       // need to do this first to see whether we need to write out an ID or not
@@ -1022,6 +1028,10 @@ fluid_0_6 = fluid_0_6 || {};
       for (var i = 0; i < decoratorQueue.length; ++ i) {
           var decorator = decoratorQueue[i];
           var node = fluid.byId(decorator.id);
+          if (!node) {
+            fluid.fail("Error during rendering - component with id " + id 
+             + " which has a queued decorator was not found in the output markup");
+          }
           if (decorator.type === "jQuery") {
               var jnode = $(node);
               jnode[decorator.func].apply(jnode, decorator.args);
@@ -1083,6 +1093,9 @@ fluid_0_6 = fluid_0_6 || {};
             });
       }
       if (newValue !== undefined) {
+          if (typeof(newValue) === "boolean") {
+              newValue === newValue? "true" : "false";
+          }
         // jQuery gets this partially right, but when dealing with radio button array will
         // set all of their values to "newValue" rather than setting the checked property
         // of the corresponding control. 
@@ -1093,7 +1106,7 @@ fluid_0_6 = fluid_0_6 || {};
       }
       else { // this part jQuery will not do - extracting value from <input> array
           var checked = jQuery.map(elements, function(element) {
-            return element.checked? element.value : null;
+              return element.checked? element.value : null;
           });
           return node.type === "radio"? checked[0] : checked;
           }
@@ -1115,6 +1128,9 @@ fluid_0_6 = fluid_0_6 || {};
       var fossil = root.fossils[name];
       if (!fossil) {
           fluid.fail("No fossil discovered for name " + name + " in fossil record above " + fluid.dumpEl(node));
+      }
+      if (typeof(fossil.oldvalue) === "boolean") { // deal with the case of an "isolated checkbox"
+          newValue = newValue? true: false;
       }
       var EL = root.fossils[name].EL;
       fluid.model.setBeanValue(root.data, EL, newValue);    

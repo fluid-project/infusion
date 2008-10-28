@@ -386,6 +386,31 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertEquals("Rewritten target", "dynamic-target-2.jpg", form.attr("action"));
       
     });
+    
+    renderTests.test("Basic input rendering and binding", function() {
+      var model = { "string": "value", "boolean": false };      
+      var tree = {children: [
+         {ID: "input", valuebinding: "string"},
+         {ID: "checkbox", valuebinding: "boolean"}
+       ]};
+      var node = $(".basic-input-1");
+      fluid.selfRender(node, tree, {model: model, autoBind: true});
+      
+      var text = $(".text", node);
+      fluid.testUtils.assertNode("Rendered field", 
+        {nodeName: "input", type: "text", value: "value"}, text);
+      text.val("New value");
+      text.change();
+      jqUnit.assertEquals("Model updated", "New value", model.string);
+      
+      var checkbox = $(".checkbox");
+      fluid.testUtils.assertNode("Rendered field", 
+        {nodeName: "input", type: "checkbox", value: "true", checked: undefined}, checkbox);
+      fluid.value(checkbox, true); // irregularity in jQuery.val() would force us to use jQuery.checked otherwise 
+      checkbox.change();
+      jqUnit.assertEquals("Model updated", true, model["boolean"]);
+      
+    });
 
     renderTests.test("Properties unescaping", function() {
       
