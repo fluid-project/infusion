@@ -62,7 +62,7 @@
             jqUnit.subvertAnimations();
         };
         
-        var fileQueueViewTests = new jqUnit.TestCase("FileQueue Tests", setupFunction);
+        var fileQueueViewTests = new jqUnit.TestCase("FileQueueView Tests", setupFunction);
 
         fileQueueViewTests.test("Scrollability", function () {
             var q = createFileQueue(qEl);
