@@ -134,6 +134,10 @@ var jqUnit = jqUnit || {};
         assertEquals: function (msg, expected, actual) {
             jqUnit.equals(actual, expected, msg);
         },
+        
+        assertNotEquals: function (msg, value1, value2) {
+            jqUnit.ok(value1 != value2, msg);
+        },
 
         assertTrue: function (msg, value) {
             jqUnit.ok(value, msg);

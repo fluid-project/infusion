@@ -270,9 +270,16 @@ fluid.tests = fluid.tests || {};
         jqUnit.assertValue("Name should be assigned", names[0]);
         jqUnit.assertTrue("Name should have been rewritten", names[0] !== "vocable");
         jqUnit.assertEquals("Names should be identical", names[0], names[1]);
-        jqUnit.assertEquals("Names should be identical", names[1], names[2]);      
+        jqUnit.assertEquals("Names should be identical", names[1], names[2]);
+        jqUnit.assertNotEquals("IDs should be different", inputs[0].id, inputs[1].id);
+        jqUnit.assertNotEquals("IDs should be different", inputs[1].id, inputs[2].id);
+        var labels = $("label", node);
+        fluid.testUtils.assertNode("Labels and relations",
+        [{nodeName: "label", "for": inputs[0].id, "nodeText": "Enchiridion"},
+         {nodeName: "label", "for": inputs[1].id, "nodeText": "ApoCATTastasis"},
+         {nodeName: "label", "for": inputs[2].id, "nodeText": "Exomologesis"}], labels);
     }
-    // common utility function to make a simple view of rows, where each row has a selection
+    // commn utility function to make a simple view of rows, where each row has a selection
     // control and a label
     function explodeSelectionToInputs(optionlist, rowname, inputname, labelname) {
          return fluid.transform(optionlist, function(option, index) {

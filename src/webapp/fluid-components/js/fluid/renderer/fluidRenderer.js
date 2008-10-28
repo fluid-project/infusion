@@ -76,10 +76,10 @@ fluid_0_6 = fluid_0_6 || {};
         if (value instanceof Array) {
           for (var i = 0; i < value.length; ++ i) {
             var processed = processChild(value[i], key);
-            if (processed.componentType === "UIContainer" &&
-              processed.localID === undefined) {
-              processed.localID = i;
-            }
+//            if (processed.componentType === "UIContainer" &&
+//              processed.localID === undefined) {
+//              processed.localID = i;
+//            }
             togo[togo.length] = processed;
             }
           }
@@ -95,20 +95,20 @@ fluid_0_6 = fluid_0_6 || {};
   function fixupValue(uibound, model) {
       if (model && uibound.value === undefined && uibound.valuebinding !== undefined) {
           uibound.value = fluid.model.getBeanValue(model, uibound.valuebinding);
-          }
       }
+  }
   
   function upgradeBound(holder, property, model) {
-    if (holder[property] !== undefined) {
-      if (isPrimitive(holder[property])) {
-        holder[property] = {value: holder[property]};
-        }
+      if (holder[property] !== undefined) {
+          if (isPrimitive(holder[property])) {
+              holder[property] = {value: holder[property]};
+          }
       }
-    else {
-      holder[property] = {value: null}
+      else {
+          holder[property] = {value: null}
       }
       fixupValue(holder[property], model);
-    }
+  }
   
   var duckMap = {children: "UIContainer", 
         value: "UIBound", markup: "UIVerbatim", selection: "UISelect", target: "UILink",
@@ -161,7 +161,6 @@ fluid_0_6 = fluid_0_6 || {};
           tree.children[i] = child;
           }
         child.parent = tree;
-        child.fullID = computeFullID(child);
         tree.childmap[child.ID] = child;
         var colpos = child.ID.indexOf(":"); 
         if (colpos === -1) {
@@ -175,9 +174,12 @@ fluid_0_6 = fluid_0_6 || {};
             childlist = [];
             tree.childmap[prefix] = childlist;
           }
-       
+          if (child.localID === undefined && childlist.length != 0) {
+              child.localID = childlist.length;
+          }
           childlist[childlist.length] = child;
         }
+        child.fullID = computeFullID(child);
 
         var componentType = child.componentType;
         if (componentType == "UISelect") {
@@ -654,7 +656,9 @@ fluid_0_6 = fluid_0_6 || {};
             renderUnchanged();
         }
         else { // String value
-          var value = torender.value;
+          var value = parent? 
+              parent[tagname === "textarea" || tagname === "input" ? "optionlist" : "optionnames"].value[torender.choiceindex] : 
+                torender.value;
           if (tagname === "textarea") {
             if (isPlaceholder(value) && torender.willinput) {
               // FORCE a blank value for input components if nothing from
