@@ -15,55 +15,84 @@ var fluid = fluid || {};
 
 fluid.dataBindingExample = function () {
 
-    var populateCheeses = function () {
-        var checkboxTree = {
+    var renderMenu = function () {
+        var locationTree = {
             children: [
-                {ID: "check-select", optionlist: ["Enchiridion", "Apocatastasis", "Exomologesis"],
-                               optionnames: ["Enchiridion", "ApoCATTastasis", "Exomologesis"],
-                               selection: ["Enchiridion", "Apocatastasis"]},
-                {ID: "checkbox-row:", children: [
-                    {ID: "checkbox", choiceindex: 0, parentRelativeID: "..::check-select"},
-                    {ID: "check-label", choiceindex: 0, parentRelativeID: "..::check-select"}
+                {ID: "location", optionlist: ["library", "parlour", "dining-room"],
+                               optionnames: ["Library", "Parlour", "Dining Room"],
+                               selection: ["parlour"]},
+                {ID: "location-row:", children: [
+                    {ID: "location", choiceindex: 0, parentRelativeID: "..::location"},
+                    {ID: "location-label", choiceindex: 0, parentRelativeID: "..::location"}
                 ]},
-                {ID: "checkbox-row:", children: [
-                    {ID: "checkbox", choiceindex: 1, parentRelativeID: "..::check-select"},
-                    {ID: "check-label", choiceindex: 1, parentRelativeID: "..::check-select"}
+                {ID: "location-row:", children: [
+                    {ID: "location", choiceindex: 1, parentRelativeID: "..::location"},
+                    {ID: "location-label", choiceindex: 1, parentRelativeID: "..::location"}
                 ]},
-                {ID: "checkbox-row:", children: [
-                    {ID: "checkbox", choiceindex: 2, parentRelativeID: "..::check-select"},
-                    {ID: "check-label", choiceindex: 2, parentRelativeID: "..::check-select"}
+                {ID: "location-row:", children: [
+                    {ID: "location", choiceindex: 2, parentRelativeID: "..::location"},
+                    {ID: "location-label", choiceindex: 2, parentRelativeID: "..::location"}
                 ]}
             ]
         };
         
-        fluid.selfRender(jQuery(".UISelect-test-check-1"), checkboxTree, {debugMode: true});
-        
-        var radioTree = {
+        fluid.selfRender(jQuery("#location"), locationTree, {debugMode: true});
+
+        var menuTree = {
             children: [
-                {ID: "radio-select", optionlist: ["Enchiridion", "Apocatastasis", "Exomologesis"],
-                               optionnames: ["Enchiridion", "ApoCATTastasis", "Exomologesis"],
-                               selection: ["Apocatastasis"]},
-                {ID: "radio-row:", children: [
-                    {ID: "checkbox", choiceindex: 0, parentRelativeID: "..::radio-select"},
-                    {ID: "radio-label", choiceindex: 0, parentRelativeID: "..::radio-select"}
+                {ID: "wine-checkboxes", optionlist: ["berg-rottland-riesline", "weissbergunder", "pinot-grigio", "gewurztraminer-turkheim"],
+                               optionnames: ["Berg Rottland Riesling", "Weissbergunder", "Pinot Grigio", "Gewurztraminer Turkheim"],
+                               selection: []},
+                {ID: "wine-row:", children: [
+                    {ID: "wine", choiceindex: 0, parentRelativeID: "..::wine-checkboxes"},
+                    {ID: "wine-label", choiceindex: 0, parentRelativeID: "..::wine-checkboxes"}
                 ]},
-                {ID: "radio-row:", children: [
-                    {ID: "checkbox", choiceindex: 1, parentRelativeID: "..::radio-select"},
-                    {ID: "radio-label", choiceindex: 1, parentRelativeID: "..::radio-select"}
+                {ID: "wine-row:", children: [
+                    {ID: "wine", choiceindex: 1, parentRelativeID: "..::wine-checkboxes"},
+                    {ID: "wine-label", choiceindex: 1, parentRelativeID: "..::wine-checkboxes"}
                 ]},
-                {ID: "radio-row:", children: [
-                    {ID: "checkbox", choiceindex: 2, parentRelativeID: "..::radio-select"},
-                    {ID: "radio-label", choiceindex: 2, parentRelativeID: "..::radio-select"}
+                {ID: "wine-row:", children: [
+                    {ID: "wine", choiceindex: 2, parentRelativeID: "..::wine-checkboxes"},
+                    {ID: "wine-label", choiceindex: 2, parentRelativeID: "..::wine-checkboxes"}
+                ]},
+                {ID: "wine-row:", children: [
+                    {ID: "wine", choiceindex: 3, parentRelativeID: "..::wine-checkboxes"},
+                    {ID: "wine-label", choiceindex: 3, parentRelativeID: "..::wine-checkboxes"}
+                ]},
+                {ID: "cheese-checkboxes", optionlist: ["castelo-branco", "chevre-noir", "camembert", "la-sauvagine", "pastorella"],
+                               optionnames: ["Castelo Branco", "Chevre noir", "Camembert", "La Sauvagine", "Pastorella"],
+                               selection: []},
+                {ID: "cheese-row:", children: [
+                    {ID: "cheese", choiceindex: 0, parentRelativeID: "..::cheese-checkboxes"},
+                    {ID: "cheese-label", choiceindex: 0, parentRelativeID: "..::cheese-checkboxes"}
+                ]},
+                {ID: "cheese-row:", children: [
+                    {ID: "cheese", choiceindex: 1, parentRelativeID: "..::cheese-checkboxes"},
+                    {ID: "cheese-label", choiceindex: 1, parentRelativeID: "..::cheese-checkboxes"}
+                ]},
+                {ID: "cheese-row:", children: [
+                    {ID: "cheese", choiceindex: 2, parentRelativeID: "..::cheese-checkboxes"},
+                    {ID: "cheese-label", choiceindex: 2, parentRelativeID: "..::cheese-checkboxes"}
+                ]},
+                {ID: "cheese-row:", children: [
+                    {ID: "cheese", choiceindex: 3, parentRelativeID: "..::cheese-checkboxes"},
+                    {ID: "cheese-label", choiceindex: 3, parentRelativeID: "..::cheese-checkboxes"}
+                ]},
+                {ID: "cheese-row:", children: [
+                    {ID: "cheese", choiceindex: 4, parentRelativeID: "..::cheese-checkboxes"},
+                    {ID: "cheese-label", choiceindex: 4, parentRelativeID: "..::cheese-checkboxes"}
                 ]}
-            ]
-        };
-        
-        fluid.selfRender(jQuery(".UISelect-test-radio-1"), radioTree, {debugMode: true});
+        ]};
+
+        fluid.selfRender(jQuery(".#menu"), menuTree, {debugMode: true});        
     };
     
     return {
         setup: function () {
-            populateCheeses();
+            var fullEl = fluid.byId("render");
+            fullEl.onclick = function () {
+                renderMenu();
+            };
         }
     };
 }();

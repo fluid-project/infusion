@@ -3,6 +3,7 @@
     <head>
         <title>Data-Binding Example</title>
         <link rel="stylesheet" type="text/css" href="data-binding.css" />
+        
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/json/json2.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
@@ -15,21 +16,38 @@
     </head>
     <body>
         <h1>Data-binding example</h1>
+        <p>
+            <input id="render" type="submit" value="Render"/>
+        </p>
+
         <form name="myform" action="http://www.mydomain.com/myformhandler.cgi" method="POST">
 
-            <div class="UISelect-test-check-1">
-                <div rsf:id="checkbox-row:">
-                    <input rsf:id="checkbox" type="checkbox" name="vocable" id="check1" value="Aerumnous"/>
-                    <label rsf:id="check-label" for="check1">Aerumnous</label>
-                </div>
+        <p>Serve drinks in the
+            <span id="location">
+                <span rsf:id="location-row:">
+                    <input rsf:id="location" type="radio" name="vocable" id="location" value="Location"/>
+                    <label rsf:id="location-label" for="radio1">Location</label>
+                </span>
+            </span>
+        </p>
+            
+    <div id="menu">
+        <fieldset id="wine-list" class="menu-group">
+            <legend>Wines</legend>
+            <div rsf:id="wine-row:">
+                <input rsf:id="wine" type="checkbox" name="vocable" id="wine" value="Wine"/>
+                <label rsf:id="wine-label" for="cheese">Wine</label>
             </div>
+        </fieldset>
 
-            <div class="UISelect-test-radio-1">
-                <div rsf:id="radio-row:">
-                    <input rsf:id="radio" type="radio" name="vocable" id="radio1" value="Aerumnous"/>
-                    <label rsf:id="radio-label" for="radio1">Aerumnous</label>
-                </div>
+        <fieldset id="cheese-list" class="menu-group">
+            <legend>Cheeses</legend>
+            <div rsf:id="cheese-row:">
+                <input rsf:id="cheese" type="checkbox" name="vocable" id="cheese" value="Cheese"/>
+                <label rsf:id="cheese-label" for="cheese">Cheese</label>
             </div>
+        </fieldset>
+    </div>
             
         <script type="text/javascript">
             fluid.dataBindingExample.setup();
