@@ -15,7 +15,7 @@ fluid_0_6 = fluid_0_6 || {};
             return;
         }
         
-        demoState.bytesUploaded = demoState.bytesUploaded + demoState.chunkSize;
+        demoState.bytesUploaded = Math.min(demoState.bytesUploaded + Math.min(demoState.chunkSize,file.size),file.size);
         events.onFileProgress.fire(file, demoState.bytesUploaded, file.size);
     };
     
