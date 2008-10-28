@@ -28,7 +28,7 @@
              
             jqUnit.assertEquals("Upload Manager queue is empty at the start",
                                 0,
-                                testUploader.uploadManager.queue.byteSize());
+                                testUploader.uploadManager.queue.totalBytes());
             jqUnit.assertUndefined("Upload Manager should not have an invokeAfterRandomDelay() method", 
                                    testUploader.uploadManager.invokeAfterRandomDelay);
         });
@@ -42,24 +42,24 @@
             
             jqUnit.assertEquals("Upload Manager queue is empty at the start",
                                 0,
-                                testUploader.uploadManager.queue.byteSize());
+                                testUploader.uploadManager.queue.totalBytes());
             jqUnit.assertNotUndefined("Upload Manager should have an invokeAfterRandomDelay() method", 
                                       testUploader.uploadManager.invokeAfterRandomDelay);        
         });
         
-        uploaderTests.test("Test queue byteSize()", function () {       
+        uploaderTests.test("Test queue totalBytes()", function () {       
             jqUnit.expect(2);
             var testUploader = fluid.uploader("#single-inline-fluid-uploader");
             
             jqUnit.assertEquals("Upload Manager queue should be empty at the start",
                                 0,
-                                testUploader.uploadManager.queue.byteSize());
+                                testUploader.uploadManager.queue.totalBytes());
                                 
             // Add some files & check that the total size is correct.
             testUploader.uploadManager.queue.files = [file1, file2, file3];
             jqUnit.assertEquals("With three files in the queue, the byte size should be big and fat.",
                                 1800000,
-                                testUploader.uploadManager.queue.byteSize());            
+                                testUploader.uploadManager.queue.totalBytes());            
         });
         
         // Test formatFileSize()
