@@ -16,27 +16,49 @@ var fluid = fluid || {};
 fluid.dataBindingExample = function () {
 
     var populateCheeses = function () {
-        var tree = {
+        var checkboxTree = {
             children: [
-                {ID: "select", optionlist: ["Enchiridion", "Apocatastasis", "Exomologesis"],
+                {ID: "check-select", optionlist: ["Enchiridion", "Apocatastasis", "Exomologesis"],
                                optionnames: ["Enchiridion", "ApoCATTastasis", "Exomologesis"],
                                selection: ["Enchiridion", "Apocatastasis"]},
                 {ID: "checkbox-row:", children: [
-                    {ID: "checkbox", choiceindex: 0, parentRelativeID: "..::select"},
-                    {ID: "label", choiceindex: 0, parentRelativeID: "..::select"}
+                    {ID: "checkbox", choiceindex: 0, parentRelativeID: "..::check-select"},
+                    {ID: "check-label", choiceindex: 0, parentRelativeID: "..::check-select"}
                 ]},
                 {ID: "checkbox-row:", children: [
-                    {ID: "checkbox", choiceindex: 1, parentRelativeID: "..::select"},
-                    {ID: "label", choiceindex: 1, parentRelativeID: "..::select"}
+                    {ID: "checkbox", choiceindex: 1, parentRelativeID: "..::check-select"},
+                    {ID: "check-label", choiceindex: 1, parentRelativeID: "..::check-select"}
                 ]},
                 {ID: "checkbox-row:", children: [
-                    {ID: "checkbox", choiceindex: 2, parentRelativeID: "..::select"},
-                    {ID: "label", choiceindex: 2, parentRelativeID: "..::select"}
+                    {ID: "checkbox", choiceindex: 2, parentRelativeID: "..::check-select"},
+                    {ID: "check-label", choiceindex: 2, parentRelativeID: "..::check-select"}
                 ]}
             ]
         };
         
-        fluid.selfRender(jQuery(".UISelect-test-check-1"), tree, {debugMode: true});
+        fluid.selfRender(jQuery(".UISelect-test-check-1"), checkboxTree, {debugMode: true});
+        
+        var radioTree = {
+            children: [
+                {ID: "radio-select", optionlist: ["Enchiridion", "Apocatastasis", "Exomologesis"],
+                               optionnames: ["Enchiridion", "ApoCATTastasis", "Exomologesis"],
+                               selection: ["Apocatastasis"]},
+                {ID: "radio-row:", children: [
+                    {ID: "checkbox", choiceindex: 0, parentRelativeID: "..::radio-select"},
+                    {ID: "radio-label", choiceindex: 0, parentRelativeID: "..::radio-select"}
+                ]},
+                {ID: "radio-row:", children: [
+                    {ID: "checkbox", choiceindex: 1, parentRelativeID: "..::radio-select"},
+                    {ID: "radio-label", choiceindex: 1, parentRelativeID: "..::radio-select"}
+                ]},
+                {ID: "radio-row:", children: [
+                    {ID: "checkbox", choiceindex: 2, parentRelativeID: "..::radio-select"},
+                    {ID: "radio-label", choiceindex: 2, parentRelativeID: "..::radio-select"}
+                ]}
+            ]
+        };
+        
+        fluid.selfRender(jQuery(".UISelect-test-radio-1"), radioTree, {debugMode: true});
     };
     
     return {
