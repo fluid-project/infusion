@@ -4,10 +4,11 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>Simple Layout Reorderer Sample</title>
         
-        <link rel="stylesheet" type="text/css" href="../css/fluid.reset.css" />
         <link rel="stylesheet" type="text/css" href="../css/fluid.layout.css" />
         <link rel="stylesheet" type="text/css" href="../css/fluid.states.css" />
-        <link rel="stylesheet" type="text/css" href="../css/fluid.themes.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.theme.mist.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.theme.hc.css" />
+        
         <link rel="stylesheet" type="text/css" href="../css/LayoutReorderer.css" />
         
         <script type="text/javascript" src="../js/jquery/jquery-1.2.6.js"></script>
@@ -54,6 +55,13 @@
               
             });
         </script>
+        
+        <style type="text/css">
+            body {font:normal 12px "Arial","Tahoma",sans-serif}
+            h1 {font-size:125%; padding:5px;}
+        </style>
+        
+        
 	</head>
 	<body>
 	    <div class="example">
@@ -90,21 +98,21 @@
             	 <!-- invalid drag n drop message template -->
                 <div class="dropWarning">Can't place about locked portlet</div>
 
-                <div class="myColumn">
+                <div class="myColumn fl-container-flex30 fl-force-left">
                     <h2>Column A</h2>
                     <div class="locked">Content Portal A1 (Locked)</div>
                     <div>Content Portal A2</div>
                     <div>Content Portal A3</div>
                     <div>Content Portal A4</div>
                 </div>
-                <div class="myColumn">
+                <div class="myColumn fl-container-flex30 fl-force-left">
                     <h2>Column B</h2>
                     <div class="locked">Content Portal B1 (Locked)</div>
                     <div>Content Portal B2</div>
                     <div>Content Portal B3</div>
                     <div>Content Portal B4</div>
                 </div>
-                <div class="myColumn">
+                <div class="myColumn fl-container-flex30 fl-force-left">
                     <h2>Column C</h2>
                     <div>Content Portal C1</div>
                     <div>Content Portal C2</div>
