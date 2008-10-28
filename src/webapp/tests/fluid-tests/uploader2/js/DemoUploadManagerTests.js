@@ -23,6 +23,19 @@
             filestatus: SWFUpload.FILE_STATUS.QUEUED
         };
         
+        var file_smallerThanChunkSize =  {
+            id: 3,
+            size: 165432,
+            filestatus: SWFUpload.FILE_STATUS.QUEUED
+        };
+        
+        var file_largerAndNotMultipleOfChunkSize =  {
+            id: 4,
+            size: 812345,
+            filestatus: SWFUpload.FILE_STATUS.QUEUED
+        };
+
+        
         var events = {};
         fluid.mergeListeners(events, fluid.defaults("fluid.uploader").events);
         
@@ -71,6 +84,15 @@
             return uploadFiles([file1, file2, file3]);
         };
         
+        var uploadSmallFile = function () {
+            return uploadFiles([file_smallerThanChunkSize]);
+        };
+        
+        var uploadNotMultipleFile = function () {
+            return uploadFiles([file_largerAndNotMultipleOfChunkSize]);
+        };
+        
+
         demoUploadTests.test("Options merging", function () {
             // Test with no events and no additional options. simulateDelay should be true.
             var demoManager = fluid.demoUploadManager(events);
@@ -121,11 +143,11 @@
                                 
             checkEventSequenceForFile(transcript.slice(1, transcript.length - 1), file1);
             jqUnit.assertEquals("The last event of a batch should be afterUploadComplete.",
-                                "afterUploadComplete", transcript[transcript.length - 1].name);
+                         "afterUploadComplete", transcript[transcript.length - 1].name);
             jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
                                 transcript.files, transcript[transcript.length - 1].args[0]);
         });
-        
+            
         demoUploadTests.test("Simulated upload flow: sequence of events for multiple files.", function () {
             // Upload three files.
             var transcript = uploadAllFiles();
@@ -149,7 +171,7 @@
             jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
                                 transcript.files, transcript[transcript.length - 1].args[0]);
         });
-       
+        
         demoUploadTests.test("Simulated upload flow: onFileProgress data.", function () {
             var transcript = uploadFirstFile();
             
@@ -162,6 +184,35 @@
                                 400000, transcript[3].args[1]);
             jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes in total.",
                                 400000, transcript[3].args[2]);
+        });
+        
+        demoUploadTests.test("Chunking test: smaller files don't get reported larger because of demo file chunking.", function () {
+            var transcript = uploadSmallFile();
+            console.debug(transcript);
+            
+            // Check that we're getting valid progress data for the onFileProgress events.
+            jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes complete.",
+                                165432, transcript[2].args[1]);
+            jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes in total.",
+                                165432, transcript[2].args[2]);
+            jqUnit.assertFalse("There is only one onFileProgress event in the transcript.",transcript[3].name === "onFileProgress");              
+         });
+
+        demoUploadTests.test("Chunking test: files that are not a multiple of the chunk size don't get reported larger because of the chunking.", function () {
+            var transcript = uploadNotMultipleFile();
+            
+            // Check that we're getting valid progress data for the onFileProgress events.
+            jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
+                                200000, transcript[2].args[1]);
+            jqUnit.assertEquals("The second onFileProgress event should have 200000 more bytes complete.",
+                                400000, transcript[3].args[1]);                    
+            jqUnit.assertEquals("The third onFileProgress event should have 200000 more bytes complete.",
+                                600000, transcript[4].args[1]);                    
+            jqUnit.assertEquals("The fourth onFileProgress event should have 200000 more bytes complete.",
+                                800000, transcript[5].args[1]);                    
+            jqUnit.assertEquals("The last onFileProgress event should have 12345 more bytes complete.",
+                                812345, transcript[6].args[1]);                    
+            
         });
     });
 })(jQuery);
