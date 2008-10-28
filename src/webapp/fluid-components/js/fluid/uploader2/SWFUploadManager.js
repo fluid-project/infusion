@@ -75,7 +75,7 @@ fluid_0_6 = fluid_0_6 || {};
             fireAfterFileComplete(file);
             
             if (batch.numFilesCompleted < batch.files.length) {
-                // Upload the next file.
+                that.uploadNextFile();
             } else {
                 finishUploading(that);
             }
@@ -163,7 +163,7 @@ fluid_0_6 = fluid_0_6 || {};
         };
         
         that.uploadNextFile = function () {
-            
+            that.swfUploader.startUpload();
         };
         
         /**

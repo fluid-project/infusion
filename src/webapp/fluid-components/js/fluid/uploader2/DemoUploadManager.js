@@ -50,12 +50,8 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.events.onFileSuccess.fire(file);
         that.invokeAfterRandomDelay(function () {
-            that.swfUploadSettings.upload_complete_handler(file); // this is a hack that needs to be addressed.
-
             that.demoState.fileIdx++;
-            if (that.demoState.fileIdx < that.queue.files.length) {
-                that.uploadNextFile();    
-            }    
+            that.swfUploadSettings.upload_complete_handler(file); // this is a hack that needs to be addressed.
         });     
     };
     
