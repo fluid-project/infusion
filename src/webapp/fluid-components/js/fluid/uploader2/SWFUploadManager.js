@@ -56,18 +56,8 @@ fluid_0_6 = fluid_0_6 || {};
         that.queue.clearCurrentBatch();
     };
     
-    // For each event type, hand the fire function to SWFUpload so it can fire the event at the right time for us.
-    var mapEvents = function (that, nameMap, target) {
-        var result = target || {};
-        for (var eventType in that.events) {
-            var fireFn = that.events[eventType].fire;
-            var mappedName = nameMap[eventType];
-            if (mappedName) {
-                result[mappedName] = fireFn;
-            }   
-        }
-
-        var fireAfterFileComplete = result.upload_complete_handler;
+    var wrapAfterFileComplete = function (that, swfCallbacks) {
+        var fireAfterFileComplete = swfCallbacks.upload_complete_handler;
         var fileCompleteWrapper = function (file) {
             var batch = that.queue.currentBatch;
             batch.numFilesCompleted++;
@@ -80,7 +70,20 @@ fluid_0_6 = fluid_0_6 || {};
                 finishUploading(that);
             }
         };
-        result.upload_complete_handler = fileCompleteWrapper;
+        swfCallbacks.upload_complete_handler = fileCompleteWrapper;
+    };
+    
+    // For each event type, hand the fire function to SWFUpload so it can fire the event at the right time for us.
+    var mapEvents = function (that, nameMap, target) {
+        var result = target || {};
+        for (var eventType in that.events) {
+            var fireFn = that.events[eventType].fire;
+            var mappedName = nameMap[eventType];
+            if (mappedName) {
+                result[mappedName] = fireFn;
+            }   
+        }
+        wrapAfterFileComplete(that, result);
         
         return result;
     };
@@ -117,9 +120,6 @@ fluid_0_6 = fluid_0_6 || {};
         
         // Setup the instance.
         that.swfUploader = new SWFUpload(that.swfUploadSettings);
-        that.currentStats = {
-            bytesUploaded: 0  
-        };
         
         bindEvents(that);
     };
@@ -162,15 +162,12 @@ fluid_0_6 = fluid_0_6 || {};
             start(that);
         };
         
+        /**
+         * Triggers the next file in the current batch to be uploaded.
+         * This function is called internally, and should be moved.
+         */
         that.uploadNextFile = function () {
             that.swfUploader.startUpload();
-        };
-        
-        /**
-         * Pauses an in-progress upload.
-         */
-        that.pause = function () {
-        
         };
         
         /**

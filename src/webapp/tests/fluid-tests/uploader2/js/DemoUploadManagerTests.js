@@ -195,7 +195,8 @@
                                 165432, transcript[2].args[1]);
             jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes in total.",
                                 165432, transcript[2].args[2]);
-            jqUnit.assertFalse("There is only one onFileProgress event in the transcript.",transcript[3].name === "onFileProgress");              
+            jqUnit.assertNotEquals("There is only one onFileProgress event in the transcript.",
+                                   "onFileProgress", transcript[3].name);              
          });
 
         demoUploadTests.test("Chunking test: files that are not a multiple of the chunk size don't get reported larger because of the chunking.", function () {
