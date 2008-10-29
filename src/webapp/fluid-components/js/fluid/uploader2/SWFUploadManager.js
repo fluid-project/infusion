@@ -120,6 +120,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     var removeFile = function (that, file) {
         that.queue.removeFile(file);
+        that.swfUploader.cancelUpload(file.id);
         that.events.afterFileRemoved.fire(file);
     };
     
