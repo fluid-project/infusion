@@ -102,9 +102,12 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.locate("doneButton").click(function () {
-            alert("Done!");
+            events.afterDone.fire();
         });
 
+        that.locate("cancelButton").click(function () {
+            events.afterCancel.fire();
+        });
     };
         
     var bindModelEvents = function (that) {
@@ -127,7 +130,6 @@ fluid_0_6 = fluid_0_6 || {};
         that.events.onUploadStart.addListener(function () {
             setState(that, that.options.styles.queueUploadingState);
             that.locate("browseButton").attr("disabled", "disabled");
-            that.locate("doneButton").attr("disabled", "disabled");
             that.locate("uploadButton").attr("disabled", "disabled");
         });
 
@@ -148,7 +150,6 @@ fluid_0_6 = fluid_0_6 || {};
             progressComplete(that, file);
             refreshView(that);
             that.locate("browseButton").removeAttr("disabled");
-            that.locate("doneButton").removeAttr("disabled");
         });
     };
    
