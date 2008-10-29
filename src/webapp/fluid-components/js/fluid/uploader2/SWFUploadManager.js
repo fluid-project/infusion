@@ -5,6 +5,9 @@
 fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
+    /********************
+     * SWFUploadManager *
+     ********************/
     
     // Maps SWFUpload's setting names to our component's setting names.
     var swfUploadOptionsMap = {

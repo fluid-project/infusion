@@ -20,6 +20,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
 
     var refreshView = function (that) {
+        //**** still needs to get even smarter about the state of the queue
         if (that.uploadManager.queue.files.length) {
             setState(that, that.options.styles.queueLoadedState);
         } else {
@@ -29,23 +30,50 @@ fluid_0_6 = fluid_0_6 || {};
     
     /* Progress */
    
-    progressStart = function (that) {
-        console.debug("showing progress");
+    var derivePercent = function (num, total) {
+        return Math.round((num * 100) / total);
+    };
+    
+    function totalStr(fileIndex,numRows,bytes,totalBytes) {		
+        var newStrings = {
+            curFileN: fileIndex, 
+            totalFilesN: numRows, 
+            currBytes: fluid.Uploader.formatFileSize(bytes), 
+            totalBytes: fluid.Uploader.formatFileSize(totalBytes)
+        };
+        
+        return fluid.stringTemplate(strings.totalLabel, newStrings);
+    }
+   
+    progressStart = function (that, file) {
         that.totalProgress.show();
     };
         
-    progressUpdate = function (that) {
-         console.debug("updating progress. bytesUploaded is: " + 
-                       that.uploadManager.queue.currentBatch.bytesUploaded); 
-    };
+    progressUpdate = function (that,file,fileBytesComplete,fileTotalBytes) {
+        // file progress
+        var filePercent = derivePercent(fileBytesComplete,fileTotalBytes);
         
-    progressComplete = function (that) {
-        console.debug("complete progress"); 
-        console.debug("hide progress"); 
+        file.progress.update(filePercent,filePercent+"%","",true);
+        
+        // total progress
+        var batch = that.uploadManager.queue.currentBatch;
+        
+        var totalPercent = derivePercent(batch.bytesUploaded,batch.totalBytes);
+        
+        var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalLabel, {
+            curFileN: file.index+1, 
+            totalFilesN: batch.files.length, 
+            currBytes: fluid.uploader.formatFileSize(batch.bytesUploaded), 
+            totalBytes: fluid.uploader.formatFileSize(batch.totalBytes)
+        });
+        
+        that.totalProgress.update(totalPercent, totalProgressStr);
+     };
+        
+    progressComplete = function (that, file) {
         that.totalProgress.hide();
     };
-        
-   
+
     /* bind events */
    
     var bindDOMEvents = function (that) {
@@ -71,20 +99,26 @@ fluid_0_6 = fluid_0_6 || {};
         
         // Progress
         
-        that.events.onFileStart.addListener(function(){
-            progressStart(that);
+        that.events.onUploadStart.addListener(function(){
+            setState(that, that.options.styles.queueUploadingState);
+        });
+
+        that.events.onFileStart.addListener(function(file){
+            progressStart(that,file);
         });
         
-        that.events.onFileProgress.addListener(function(){
-            progressUpdate(that);
+        that.events.onFileProgress.addListener(function(file,fileBytesComplete,fileTotalBytes){
+            progressUpdate(that,file,fileBytesComplete,fileTotalBytes);
         });
         
-        that.events.afterFileComplete.addListener(function(){
-            progressUpdate(that);
+        that.events.afterFileComplete.addListener(function(file){
+            progressUpdate(that,file,file.size,file.size);
+            file.progress.hide();
         });
         
-        that.events.afterUploadComplete.addListener(function(){
-            progressComplete(that);
+        that.events.afterUploadComplete.addListener(function(file){
+            progressComplete(that,file);
+            refreshView(that);
         });
     };
    
@@ -96,13 +130,20 @@ fluid_0_6 = fluid_0_6 || {};
                                                     [that.events, fluid.COMPONENT_OPTIONS]);
         that.fileQueueView = fluid.initSubcomponent(that, 
                                                     "fileQueueView", 
-                                                    [that.locate("fileQueue"), 
+                                                    [that.locate("fileQueue"),
+                                                    that.container, 
                                                     that.uploadManager,
                                                     fluid.COMPONENT_OPTIONS]);
                                                     
         that.stateDisplay = that.locate("stateDisplay");
         
-        that.totalProgress = fluid.progress(that.locate("totalFileProgressBar"));
+        that.totalProgress = fluid.progress(that.locate("totalFileProgressBar"),{
+            selectors: {
+     			displayElement: ".total-progress", 
+    			label: ".total-file-progress",
+                indicator: ".total-progress"
+            }
+	    });
 
         bindDOMEvents(that);
         bindModelEvents(that);
@@ -166,14 +207,15 @@ fluid_0_6 = fluid_0_6 || {};
             pauseButton: ".fluid-uploader-pause",
             cancelButton: ".fluid-uploader-cancel",
             doneButton: ".fluid-uploader-done",
-            totalFileProgressBar: ".total-file-progress",
+            totalFileProgressBar: ".fluid-scroller-table-foot",
             stateDisplay: "div:first"
         },
         
         styles: {
             queueEmptyState: "start",
             queueLoadedState: "loaded",
-            queueBrowsingState: "browsing"  
+            queueBrowsingState: "browsing",
+            queueUploadingState: "uploading"
         },
         
         events: {
@@ -200,5 +242,5 @@ fluid_0_6 = fluid_0_6 || {};
             }
         }
     });
-        
+    
 })(jQuery, fluid_0_6);

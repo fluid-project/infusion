@@ -94,7 +94,13 @@ fluid_0_6 = fluid_0_6 || {};
 		label.html(value);
 	};
     
-	var updateProgress = function (that, percent, labelValue, animationForShow) {
+	var updateProgress = function (that, percent, labelValue, animationForShow, updatePosition) {
+        updatePosition = (updatePosition === null) ? that.options.updatePosition : updatePosition;
+        
+        if (updatePosition) {
+            that.indicator.css("top",that.progressBar.position().top);
+            that.indicator.css("left",0);
+        }
 		// show progress before updating, jQuery will handle the case if the object is already displayed
 		showProgress(that, animationForShow);
 			
@@ -171,8 +177,8 @@ fluid_0_6 = fluid_0_6 || {};
          * @param {String} labelValue the value to set for the label; this can be an HTML string
          * @param {Object} animationForShow the animation to use when showing the progress bar if it is hidden
          */
-		that.update = function (percentage, labelValue, animationForShow) {
-			updateProgress(that, percentage, labelValue, animationForShow);
+		that.update = function (percentage, labelValue, animationForShow, updatePosition) {
+			updateProgress(that, percentage, labelValue, animationForShow, updatePosition);
 		};
 				
         return that;  
@@ -211,6 +217,7 @@ fluid_0_6 = fluid_0_6 || {};
 		speed: 200, // default speed for animations, pretty fast
 		animate: "forward", // suppport "forward", "backward", and "both", any other value is no animation either way
 		initiallyHidden: true, // supports progress indicators which may always be present
+		updatePosition: false,
 		
 		ariaBusyText: "Progress is %percentComplete percent complete",
 		ariaDoneText: "Progress is complete."

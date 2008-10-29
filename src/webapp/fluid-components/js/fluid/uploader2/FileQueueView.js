@@ -31,7 +31,7 @@ fluid_0_6 = fluid_0_6 || {};
         row.fadeOut("fast", function () {
             row.remove();
             that.refreshView();   
-        });     
+        }); 
     };
     
     var removeFileForRow = function (that, row) {
@@ -97,7 +97,24 @@ fluid_0_6 = fluid_0_6 || {};
         row.hide();
         that.container.append(row);
         row.fadeIn("slow");
-
+        that.scroller.scrollBottom();
+        
+        // create a new progress bar for the row and position it
+        var rowProgressor = that.locate("rowProgressorTemplate", that.uploadContainer).clone();
+        rowProgressor.attr("id", file.id+"_progress");
+        rowProgressor.css('top',(row.position().top)).height(row.height()).width(5);
+        that.container.after(rowProgressor);
+        
+        // instantiate the progressor to the row
+        file.progress = fluid.progress(that.uploadContainer,{
+            selectors: {
+                progressBar: "#"+file.id,
+     			displayElement: "#"+file.id+"_progress", 
+    			label: "#"+file.id+"_progress .file-progress-text",
+                indicator: "#"+file.id+"_progress"
+            }
+	    });
+        
         that.refreshView();
     };
     
@@ -127,8 +144,10 @@ fluid_0_6 = fluid_0_6 || {};
      * @param {UploadManager} uploadManager an upload manager model instance
      * @param {Object} options configuration options for the view
      */
-    fluid.fileQueueView = function (container, uploadManager, options) {
+    fluid.fileQueueView = function (container, parentContainer, uploadManager, options) {
         var that = fluid.initView("fluid.fileQueueView", container, options);
+        
+        that.uploadContainer = parentContainer;
         
         that.addFile = function (file) {
             addFile(that, file);
@@ -154,7 +173,8 @@ fluid_0_6 = fluid_0_6 || {};
             fileSize: ".fileSize",
             removeButton: ".removeFile",
                   
-            rowTemplate: "#queue-row-tmplt"
+            rowTemplate: "#queue-row-tmplt",
+            rowProgressorTemplate: "#row-progressor-tmplt"
         },
         
         styles: {

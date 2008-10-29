@@ -340,35 +340,24 @@ html>body .fluid-uploader-queue {
 .uploading .fluid-uploader-btns .fluid-uploader-done,
   .uploading .fluid-uploader-btns .fluid-uploader-done:hover {
     display: block;
-    background-color: #CCC !important;
-    border-color: #999 !important;
+    opacity: 0.4;
+    filter:alpha(opacity=40);
     cursor: auto;
 }
 
-.uploading .fluid-uploader-queue .uploaded .removeFile {
+.fluid-uploader-queue .uploaded .removeFile {
     background-image: url(../images/uploader/tick.png);
 }
 
-.uploading .fluid-uploader-queue .error .removeFile {
+.fluid-uploader-queue .error .removeFile {
     background-image: url(../images/uploader/error.png);
 }
 
-.fluid-uploader .uploading a.fluid-uploader-browse {
-    background-image: url(../images/uploader/add-dim.png);
-    color: #7EA7DD;
+.fluid-uploader .uploading a.fluid-uploader-browse, .fluid-uploader .uploading a.fluid-uploader-browse:hover, .fluid-uploader .uploading a.fluid-uploader-browse:focus, .fluid-uploader .uploading a.fluid-uploader-browse.focus {
+    opacity: 0.4;
+    filter:alpha(opacity=40);
     cursor: auto;
 }
-
-.fluid-uploader .uploading a.fluid-uploader-browse:hover {
-    border: 1px solid transparent;
-    background-color: transparent;
-}
-
-.fluid-uploader .uploading a.fluid-uploader-browse:focus, .fluid-uploader .uploading a.fluid-uploader-browse.focus {
-    border: 1px solid transparent;
-    background-color: transparent;
-}
-
 
 /* paused */
 
@@ -423,15 +412,16 @@ html>body .fluid-uploader-queue {
  */ 
 
 .fluid-uploader .browsing button,
-  .fluid-uploader .browsing button:hover {
-    opacity: 0.3;
-    filter:alpha(opacity=30);
+  .fluid-uploader .browsing button:hover,
+  .fluid-uploader .browsing .fluid-uploader-browse {
+    opacity: 0.4;
+    filter:alpha(opacity=40);
     cursor: auto;
 }
 
-.uploading .fluid-uploader-queue .removeFile,
-  .browsing .fluid-uploader-queue .ready button.removeFile,
-  .browsing .fluid-uploader-queue .ready button.removeFile:hover {
+.uploading .removeFile,
+  .browsing .removeFile,
+  .browsing .removeFile:hover {
     opacity: 0.3;
     filter:alpha(opacity=30);
 }
@@ -449,13 +439,13 @@ html>body .fluid-uploader-queue {
 /* PROGRESS */
 
 .file-progress, .total-progress {
+    position: absolute;
     display: none;
     background-attachment: scroll;
     background-position: bottom left;
     background-repeat: repeat-x;
     overflow: hidden;
     left: 0;
-    position: absolute;
     z-index:4;
 }
 
