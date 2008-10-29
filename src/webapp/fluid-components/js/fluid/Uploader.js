@@ -228,11 +228,32 @@ fluid_0_6 = fluid_0_6 || {};
     
     var scrollBottom = function(scrollingElm){
         // cast potentially a jQuery obj to a regular obj
-        $(scrollingElm).scrollTo($(scrollingElm).children().eq(0).height());
+        scrollingElm = $(scrollingElm)[0];
+        // set the scrollTop to the scrollHeight
+        scrollingElm.scrollTop = scrollingElm.scrollHeight;
     };
     
-    var scroller = function(scrollingElm,row){
-        $(scrollingElm).scrollTo($(row),{over: -1});
+    var scrollTo = function(scrollingElm,row){
+        if ($(row).prev().length) {
+            var nextRow = $(row).next();
+            row = (nextRow.length === 0) ? row : nextRow ;
+        }
+        
+        var rowPosTop = $(row)[0].offsetTop;
+        var rowHeight = $(row).height();
+        var containerScrollTop = $(scrollingElm)[0].scrollTop;
+        var containerHeight = $(scrollingElm).height();
+        
+        // if the top of the row is ABOVE the view port move the row into position
+        if (rowPosTop < containerScrollTop) {
+            $(scrollingElm)[0].scrollTop = rowPosTop;
+        }
+        
+        // if the bottom of the row is BELOW the viewport then scroll it into position
+        if ((rowPosTop + rowHeight) > (containerScrollTop + containerHeight)) {
+            $(scrollingElm)[0].scrollTop = (rowPosTop - containerHeight + rowHeight);
+        }
+        //$(scrollingElm)[0].scrollTop = $(row)[0].offsetTop;
     };
     
     /**
@@ -280,7 +301,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     /*
-     * Sets the (using a css class) for the top level element
+     * Sets the state (using a css class) for the top level element
      * @param {String} uploaderContainer    the uploader container
      * @param {String} stateClass    the file queue used to test numbers.
      */
@@ -485,7 +506,7 @@ fluid_0_6 = fluid_0_6 || {};
         status.currError = ''; // zero out the error so we can check it later
         $("#"+file.id,uploaderContainer).addClass("uploading");
         progressBar.init('#'+file.id);
-        scroller($(fragmentSelectors.scrollingElement, uploaderContainer),$("#"+file.id, uploaderContainer));
+        scrollTo($(fragmentSelectors.scrollingElement, uploaderContainer),$("#"+file.id, uploaderContainer));
         uploadProgress(progressBar, uploaderContainer, file, 0, file.size, fragmentSelectors, status);
         fluid.log (
             "Starting Upload: " + (file.index + 1) + ' (' + file.id + ')' + ' [' + file.size + ']' + ' ' + file.name
