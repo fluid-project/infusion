@@ -53,3 +53,8 @@ td > span {
     width: 45%;
     margin: 0 2%;
 }
+
+.model-dump {
+    border: solid 1px;
+    background-color: lightgrey;
+}
