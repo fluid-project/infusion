@@ -105,11 +105,12 @@
     <form rsf:id="link-2" action="other-thing.html"> </form>
   </div>
   
-  <div class="basic-input-1">
-    <input rsf:id="input" class="text" type="text" value="Template-value" />
-    <input rsf:id="checkbox" class="checkbox" type="checkbox" />
-  </div>
-  
+  <form> <!-- Form isolation here tests FLUID-1728 -->
+    <div class="basic-input-1">
+      <input rsf:id="input" class="text" type="text" value="Template-value" />
+      <input rsf:id="checkbox" class="checkbox" type="checkbox" />
+    </div>
+  </form>
 </div>
   
 <script>

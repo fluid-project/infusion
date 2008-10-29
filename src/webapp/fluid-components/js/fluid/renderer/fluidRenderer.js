@@ -1089,7 +1089,7 @@ fluid_0_6 = fluid_0_6 || {};
           elements = jQuery.grep(elements, 
             function(element) {
               if (element.name !== name) return false;
-              return !(scope && fluid.dom.isContainer(scope, element));
+              return !scope || fluid.dom.isContainer(scope, element);
             });
       }
       if (newValue !== undefined) {
