@@ -107,7 +107,7 @@ fluid_0_6 = fluid_0_6 || {};
         });
 
         that.events.onFileStart.addListener(function (file) {
-            that.queue.currentBatch.currentFile = file;
+            that.queue.currentBatch.fileIdx = $.inArray(file, that.queue.currentBatch.files);
             that.queue.currentBatch.previousChunk = 0; 
         });
         
@@ -189,7 +189,7 @@ fluid_0_6 = fluid_0_6 || {};
          * Cancels an in-progress upload.
          */
         that.cancel = function () {
-        
+            that.swfUploader.stopUpload();
         };
         
         setupSwfUploadManager(that, events);

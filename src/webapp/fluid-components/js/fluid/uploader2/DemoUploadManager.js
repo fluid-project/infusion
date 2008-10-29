@@ -93,10 +93,10 @@ fluid_0_6 = fluid_0_6 || {};
         };
         
         /**
-         * Pauses a simulated upload.
+         * Cancels a simulated upload.
          * This method overrides the default behaviour in SWFUploadManager.
          */
-        that.pause = function () {
+        that.cancel = function () {
             pauseDemo(that.events, that.demoState);
         };
         
