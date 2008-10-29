@@ -136,8 +136,9 @@ fluid_0_6 = fluid_0_6 || {};
             }
 	    });
         
-        that.totalProgress  = fluid.progress(that.locate("totalFileProgressBar"), {
+        that.totalProgress  = fluid.progress(that.container, {
             selectors: {
+                progressBar: ".fluid-scroller-table-foot",
                 displayElement: ".total-progress", 
         		label: ".total-file-progress",
                 indicator: ".total-progress"

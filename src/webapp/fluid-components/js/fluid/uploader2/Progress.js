@@ -179,8 +179,8 @@ fluid_0_6 = fluid_0_6 || {};
          * @param {String} labelValue the value to set for the label; this can be an HTML string
          * @param {Object} animationForShow the animation to use when showing the progress bar if it is hidden
          */
-		that.update = function (percentage, labelValue, animationForShow, updatePosition) {
-			updateProgress(that, percentage, labelValue, animationForShow, updatePosition);
+		that.update = function (percentage, labelValue, animationForShow) {
+			updateProgress(that, percentage, labelValue, animationForShow);
 		};
         
         that.refresh = function (newProgressBarElm) {
