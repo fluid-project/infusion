@@ -20,21 +20,30 @@ fluid_0_6 = fluid_0_6 || {};
     };
 
     var refreshView = function (that) {
+        var currState = currentUploaderQueueState(that);
+        setState(that, currState);
+        if (currState !== that.options.styles.queueDoneState){
+            that.locate("uploadButton").removeAttr("disabled");
+        }
+    };
+    
+    var currentUploaderQueueState = function (that) {
         var numFilesInQueue = that.uploadManager.queue.files.length;
         var numFilesReady = that.uploadManager.queue.getReadyFiles().length;
         var numFilesComplete = (numFilesInQueue - numFilesReady);
         
         if (numFilesInQueue) {
             if (numFilesReady === 0) {
-                setState(that, that.options.styles.queueDoneState);
+                return that.options.styles.queueDoneState;
             } else if (numFilesInQueue === numFilesReady) {
-                setState(that, that.options.styles.queueLoadedState);
+                return that.options.styles.queueLoadedState;
             } else {
-                setState(that, that.options.styles.queueReloadedState);
+                return that.options.styles.queueReloadedState;
             }
         } else {
-            setState(that, that.options.styles.queueEmptyState);
+            return that.options.styles.queueEmptyState;
         }
+        
     };
     
     /* Progress */
@@ -85,6 +94,10 @@ fluid_0_6 = fluid_0_6 || {};
             that.uploadManager.start();
         });
         
+         that.locate("doneButton").click(function () {
+            alert("Done!");
+        });
+
     };
         
     var bindModelEvents = function (that) {
@@ -102,6 +115,9 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.events.onUploadStart.addListener(function () {
             setState(that, that.options.styles.queueUploadingState);
+            that.locate("browseButton").attr("disabled","disabled");
+            that.locate("doneButton").attr("disabled","disabled");
+            that.locate("uploadButton").attr("disabled","disabled");
         });
 
         that.events.onFileStart.addListener(function (file) {
@@ -120,6 +136,8 @@ fluid_0_6 = fluid_0_6 || {};
         that.events.afterUploadComplete.addListener(function (file) {
             progressComplete(that, file);
             refreshView(that);
+            that.locate("browseButton").removeAttr("disabled");
+            that.locate("doneButton").removeAttr("disabled");
         });
     };
    

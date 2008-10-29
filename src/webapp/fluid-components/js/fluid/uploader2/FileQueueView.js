@@ -115,6 +115,16 @@ fluid_0_6 = fluid_0_6 || {};
     
     var bindEvents = function (that) {
         
+        that.events.onUploadStart.addListener(function () {
+             // add disabled attributes to all the remove buttons
+            that.locate("removeButton").attr("disabled","disabled");
+        });
+        
+        that.events.afterUploadComplete.addListener(function () {
+            // remove all the disabled attributes from all the remove buttons
+            that.locate("removeButton").removeAttr("disabled");
+        });
+        
         that.events.onFileSuccess.addListener(function (file) {
             var row = rowForFile(that, file);
             // remove click event on Remove button
