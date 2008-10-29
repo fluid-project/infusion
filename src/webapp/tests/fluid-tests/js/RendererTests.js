@@ -108,24 +108,18 @@ fluid.tests = fluid.tests || {};
         message3: "Every {0} has {1} {2}(s)"
     }
     
-    renderTests.test("ID relation rewriting", function() {
+    renderTests.test("ID relation rewriting and template messaging", function() {
       // Tests FLUID-1676
       var node = $(".RSF-77-test");
       fluid.selfRender(node, {
-        "row:": [{ID: "target", value: "Label 1"}, {ID: "target", value: "Label 2"}]
-        });
-      var labels = $(".RSF-77-test label");
-      jqUnit.assertEquals("2 labels", 2, labels.length);
-      var fors = fluid.transform(labels, function(element) {return $(element).attr("for");});
-      var hash = {};
-      for (var i = 0; i < fors.length; ++ i) {
-        jqUnit.assertFalse("Unique targets", hash[fors[i]]);
-        hash[fors[i]] = true;
-        var target = fluid.byId(fors[i]);
-        jqUnit.assertTrue("Target exists in document", target);
-        jqUnit.assertEquals("Target is a span", "span", target.tagName.toLowerCase());
-      }
-      
+        "row:": [{ID: "target", value: "Target 1"}, {ID: "target", value: "Target 2"}]
+        }, {messageSource: {type: "data", messages: messageBase}});
+      var targets = $("span", node);
+      jqUnit.assertNotEquals("Unique target ids", targets[0].id, targets[1].id);
+      var labels = $("label", node);
+      fluid.testUtils.assertNode("Rendered messages", 
+          [{nodeText: messageBase.message1, "for": targets[0].id}, 
+           {nodeText: messageBase.message1, "for": targets[1].id}], labels)
     });
     
     renderTests.test("ID relation non-interference", function() {

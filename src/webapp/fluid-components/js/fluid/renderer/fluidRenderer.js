@@ -919,7 +919,7 @@ fluid_0_6 = fluid_0_6 || {};
   function fetchComponent(basecontainer, id, lump) {
       if (id.indexOf("msg=") === 0) {
           var key = id.substring(4);
-          return {componentType: "UIBound"};
+          return {componentType: "UIMessage", messagekey: key};
           // TODO messages
       }
       while (basecontainer) {
