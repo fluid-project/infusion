@@ -18,128 +18,111 @@ var fluid = fluid || {};
 
 fluid.dataBindingExample = function () {
 
-    var canapeModel = {
-        values: ["asparagus", "chicken", "shrimp", "beef", "peppers", "figs"],
-        names: ["Filo Wrapped Asparagus", "Chicken Ballotine with Carrot Raita and Pomegranate Chutney", "Spicy Shrimp Crostini", "Broiled Beef Fillet Croutes with Salsa Verde", "Roasted Marinated Peppers with Goat Cheese", "Gorgonzola Stuffed Figs"],
-        choice: ["asparagus", "shrimp", "figs"]
+    var drinksModel = {
+        values: ["library", "parlour", "dining-room", "riesling", "weissbergunder", "pinot-grigio", "gewurztraminer"],
+        names: ["Library", "Parlour", "Dining Room", "Berg Rottland Riesling", "Weissbergunder", "Pinot Grigio", "Gewurztraminer Turkheim"],
+        choice: ["parlour", "riesling", "pinot-grigio"]
     };
-
+    
+    var foodModel = {
+        values: ["castelo-branco", "chevre-noir", "camembert", "la-sauvagine", "pastorella","asparagus", "chicken", "shrimp", "beef", "peppers", "figs"],
+        names: ["Castelo Branco", "Chevre noir", "Camembert", "La Sauvagine", "Pastorella","Filo Wrapped Asparagus", "Chicken Ballotine with Carrot Raita and Pomegranate Chutney", "Spicy Shrimp Crostini", "Broiled Beef Fillet Croutes with Salsa Verde", "Roasted Marinated Peppers with Goat Cheese", "Gorgonzola Stuffed Figs"],
+        choice: ["chevre-noir","asparagus", "shrimp", "figs"]
+    };
+    
     var dumpModel = function (model, el) {
         el.text(JSON.stringify(model, ["choice"]));
     };
 
     var renderMenu = function () {
-        var locationTree = {
+        var drinksTree = {
             children: [
-                {ID: "location", optionlist: ["library", "parlour", "dining-room"],
-                               optionnames: ["Library", "Parlour", "Dining Room"],
-                               selection: ["parlour"]},
+                {ID: "drinks", optionlist: {valuebinding: "values"},
+                               optionnames: {valuebinding: "names"},
+                               selection: {valuebinding: "choice"}},
                 {ID: "location-row:", children: [
-                    {ID: "location", choiceindex: 0, parentRelativeID: "..::location"},
-                    {ID: "location-label", choiceindex: 0, parentRelativeID: "..::location"}
+                    {ID: "location", choiceindex: 0, parentRelativeID: "..::drinks"},
+                    {ID: "location-label", choiceindex: 0, parentRelativeID: "..::drinks"}
                 ]},
                 {ID: "location-row:", children: [
-                    {ID: "location", choiceindex: 1, parentRelativeID: "..::location"},
-                    {ID: "location-label", choiceindex: 1, parentRelativeID: "..::location"}
+                    {ID: "location", choiceindex: 1, parentRelativeID: "..::drinks"},
+                    {ID: "location-label", choiceindex: 1, parentRelativeID: "..::drinks"}
                 ]},
                 {ID: "location-row:", children: [
-                    {ID: "location", choiceindex: 2, parentRelativeID: "..::location"},
-                    {ID: "location-label", choiceindex: 2, parentRelativeID: "..::location"}
+                    {ID: "location", choiceindex: 2, parentRelativeID: "..::drinks"},
+                    {ID: "location-label", choiceindex: 2, parentRelativeID: "..::drinks"}
+                ]},
+                {ID: "wine-row:", children: [
+                    {ID: "wine", choiceindex: 3, parentRelativeID: "..::drinks"},
+                    {ID: "wine-label", choiceindex: 3, parentRelativeID: "..::drinks"}
+                ]},
+                {ID: "wine-row:", children: [
+                    {ID: "wine", choiceindex: 4, parentRelativeID: "..::drinks"},
+                    {ID: "wine-label", choiceindex: 4, parentRelativeID: "..::drinks"}
+                ]},
+                {ID: "wine-row:", children: [
+                    {ID: "wine", choiceindex: 5, parentRelativeID: "..::drinks"},
+                    {ID: "wine-label", choiceindex: 5, parentRelativeID: "..::drinks"}
+                ]},
+                {ID: "wine-row:", children: [
+                    {ID: "wine", choiceindex: 6, parentRelativeID: "..::drinks"},
+                    {ID: "wine-label", choiceindex: 6, parentRelativeID: "..::drinks"}
                 ]}
             ]
         };
-        
-        fluid.selfRender(jQuery("#location"), locationTree, {debugMode: true});
-
-        var unboundTree = {
+                    
+        var foodTree = {
             children: [
-                {ID: "wine-checkboxes", optionlist: ["berg-rottland-riesline", "weissbergunder", "pinot-grigio", "gewurztraminer-turkheim"],
-                               optionnames: ["Berg Rottland Riesling", "Weissbergunder", "Pinot Grigio", "Gewurztraminer Turkheim"],
-                               selection: []},
-                {ID: "wine-row:", children: [
-                    {ID: "wine", choiceindex: 0, parentRelativeID: "..::wine-checkboxes"},
-                    {ID: "wine-label", choiceindex: 0, parentRelativeID: "..::wine-checkboxes"}
-                ]},
-                {ID: "wine-row:", children: [
-                    {ID: "wine", choiceindex: 1, parentRelativeID: "..::wine-checkboxes"},
-                    {ID: "wine-label", choiceindex: 1, parentRelativeID: "..::wine-checkboxes"}
-                ]},
-                {ID: "wine-row:", children: [
-                    {ID: "wine", choiceindex: 2, parentRelativeID: "..::wine-checkboxes"},
-                    {ID: "wine-label", choiceindex: 2, parentRelativeID: "..::wine-checkboxes"}
-                ]},
-                {ID: "wine-row:", children: [
-                    {ID: "wine", choiceindex: 3, parentRelativeID: "..::wine-checkboxes"},
-                    {ID: "wine-label", choiceindex: 3, parentRelativeID: "..::wine-checkboxes"}
-                ]}
-            ]};
-            
-        var boundTree = {
-            children: [
-                {ID: "cheese-checkboxes", optionlist: {valuebinding: "values"},
+                {ID: "food", optionlist: {valuebinding: "values"},
                                optionnames: {valuebinding: "names"},
                                selection: {valuebinding: "choice"}},
                 {ID: "cheese-row:", children: [
-                    {ID: "cheese", choiceindex: 0, parentRelativeID: "..::cheese-checkboxes"},
-                    {ID: "cheese-label", choiceindex: 0, parentRelativeID: "..::cheese-checkboxes"}
+                    {ID: "cheese", choiceindex: 0, parentRelativeID: "..::food"},
+                    {ID: "cheese-label", choiceindex: 0, parentRelativeID: "..::food"}
                 ]},
                 {ID: "cheese-row:", children: [
-                    {ID: "cheese", choiceindex: 1, parentRelativeID: "..::cheese-checkboxes"},
-                    {ID: "cheese-label", choiceindex: 1, parentRelativeID: "..::cheese-checkboxes"}
+                    {ID: "cheese", choiceindex: 1, parentRelativeID: "..::food"},
+                    {ID: "cheese-label", choiceindex: 1, parentRelativeID: "..::food"}
                 ]},
                 {ID: "cheese-row:", children: [
-                    {ID: "cheese", choiceindex: 2, parentRelativeID: "..::cheese-checkboxes"},
-                    {ID: "cheese-label", choiceindex: 2, parentRelativeID: "..::cheese-checkboxes"}
+                    {ID: "cheese", choiceindex: 2, parentRelativeID: "..::food"},
+                    {ID: "cheese-label", choiceindex: 2, parentRelativeID: "..::food"}
                 ]},
                 {ID: "cheese-row:", children: [
-                    {ID: "cheese", choiceindex: 3, parentRelativeID: "..::cheese-checkboxes"},
-                    {ID: "cheese-label", choiceindex: 3, parentRelativeID: "..::cheese-checkboxes"}
+                    {ID: "cheese", choiceindex: 3, parentRelativeID: "..::food"},
+                    {ID: "cheese-label", choiceindex: 3, parentRelativeID: "..::food"}
                 ]},
                 {ID: "cheese-row:", children: [
-                    {ID: "cheese", choiceindex: 4, parentRelativeID: "..::cheese-checkboxes"},
-                    {ID: "cheese-label", choiceindex: 4, parentRelativeID: "..::cheese-checkboxes"}
+                    {ID: "cheese", choiceindex: 4, parentRelativeID: "..::food"},
+                    {ID: "cheese-label", choiceindex: 4, parentRelativeID: "..::food"}
+                ]},
+                {ID: "canape-row:", children: [
+                    {ID: "canape", choiceindex: 5, parentRelativeID: "..::food"},
+                    {ID: "canape-label", choiceindex: 5, parentRelativeID: "..::food"}
+                ]},
+                {ID: "canape-row:", children: [
+                    {ID: "canape", choiceindex: 6, parentRelativeID: "..::food"},
+                    {ID: "canape-label", choiceindex: 6, parentRelativeID: "..::food"}
+                ]},
+                {ID: "canape-row:", children: [
+                    {ID: "canape", choiceindex: 7, parentRelativeID: "..::food"},
+                    {ID: "canape-label", choiceindex: 7, parentRelativeID: "..::food"}
+                ]},
+                {ID: "canape-row:", children: [
+                    {ID: "canape", choiceindex: 8, parentRelativeID: "..::food"},
+                    {ID: "canape-label", choiceindex: 8, parentRelativeID: "..::food"}
+                ]},
+                {ID: "canape-row:", children: [
+                    {ID: "canape", choiceindex: 9, parentRelativeID: "..::food"},
+                    {ID: "canape-label", choiceindex: 9, parentRelativeID: "..::food"}
+                ]},
+                {ID: "canape-row:", children: [
+                    {ID: "canape", choiceindex: 10, parentRelativeID: "..::food"},
+                    {ID: "canape-label", choiceindex: 10, parentRelativeID: "..::food"}
                 ]}
             ]};
-        var cheeseModel = {
-            values: ["castelo-branco", "chevre-noir", "camembert", "la-sauvagine", "pastorella"],
-            names: ["Castelo Branco", "Chevre noir", "Camembert", "La Sauvagine", "Pastorella"],
-            choice: "chevre-noir"
-        };
-
-        var autoBoundTree = {
-            children: [
-                {ID: "canape-checkboxes", optionlist: {valuebinding: "values"},
-                               optionnames: {valuebinding: "names"},
-                               selection: {valuebinding: "choice"}},
-                {ID: "canape-row:", children: [
-                    {ID: "canape", choiceindex: 0, parentRelativeID: "..::canape-checkboxes"},
-                    {ID: "canape-label", choiceindex: 0, parentRelativeID: "..::canape-checkboxes"}
-                ]},
-                {ID: "canape-row:", children: [
-                    {ID: "canape", choiceindex: 1, parentRelativeID: "..::canape-checkboxes"},
-                    {ID: "canape-label", choiceindex: 1, parentRelativeID: "..::canape-checkboxes"}
-                ]},
-                {ID: "canape-row:", children: [
-                    {ID: "canape", choiceindex: 2, parentRelativeID: "..::canape-checkboxes"},
-                    {ID: "canape-label", choiceindex: 2, parentRelativeID: "..::canape-checkboxes"}
-                ]},
-                {ID: "canape-row:", children: [
-                    {ID: "canape", choiceindex: 3, parentRelativeID: "..::canape-checkboxes"},
-                    {ID: "canape-label", choiceindex: 3, parentRelativeID: "..::canape-checkboxes"}
-                ]},
-                {ID: "canape-row:", children: [
-                    {ID: "canape", choiceindex: 4, parentRelativeID: "..::canape-checkboxes"},
-                    {ID: "canape-label", choiceindex: 4, parentRelativeID: "..::canape-checkboxes"}
-                ]},
-                {ID: "canape-row:", children: [
-                    {ID: "canape", choiceindex: 5, parentRelativeID: "..::canape-checkboxes"},
-                    {ID: "canape-label", choiceindex: 5, parentRelativeID: "..::canape-checkboxes"}
-                ]}
-            ]};
-        fluid.selfRender(jQuery("#wine-list"), unboundTree);
-        fluid.selfRender(jQuery("#cheese-list"), boundTree, {model: cheeseModel});
-        fluid.selfRender(jQuery("#canape-list"), autoBoundTree, {model: canapeModel, autoBind: true});
-        dumpModel(canapeModel, jQuery("#autobound-model"));
+        fluid.selfRender(jQuery("#drinks-list"), drinksTree, {model: drinksModel});
+        fluid.selfRender(jQuery("#food-list"), foodTree, {model: foodModel, autoBind: true});
     };
     
     return {
@@ -149,9 +132,16 @@ fluid.dataBindingExample = function () {
                 renderMenu();
             };
             
-            var dumpButton = fluid.byId("dump-autobound");
-            dumpButton.onclick = function () {
-                dumpModel(canapeModel, jQuery("#autobound-model"));
+            var dumpButton1 = fluid.byId("dump-bound");
+            dumpButton1.onclick = function () {
+                console.log("Foo!");
+                dumpModel(drinksModel, jQuery("#bound-model"));
+            };
+
+            var dumpButton2 = fluid.byId("dump-autobound");
+            dumpButton2.onclick = function () {
+                console.log("Bar!");
+                dumpModel(foodModel, jQuery("#autobound-model"));
             };
         }
     };
