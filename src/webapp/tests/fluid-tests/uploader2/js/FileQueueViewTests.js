@@ -11,14 +11,6 @@
             }
         };
         
-        var events = {};
-      
-        var createFileQueue = function (qEl) {
-            var q = fluid.fileQueueView(qEl, events, $("#main"), mockUploadManager);
-            
-            return q;
-        };
-        
         var mountainTestFile = {
              id : 0, // SWFUpload file id, used for starting or cancelling and upload 
              index : 0, // The index of this file for use in getFile(i) 
@@ -59,12 +51,23 @@
                                 sizeForRow(q, row));    
         };
         
+        var events = {};
+      
+        var createFileQueue = function (qEl) {
+            var q = fluid.fileQueueView(qEl, events, $("#main"), mockUploadManager);
+            
+            return q;
+        };
+        
         // File Queue test case
         var setupFunction = function () {
             events = {
+                onUploadStart: fluid.event.getEventFirer(),
                 onFileSuccess: fluid.event.getEventFirer(),
-                onFileError: fluid.event.getEventFirer()
+                onFileError: fluid.event.getEventFirer(),
+                afterUploadComplete: fluid.event.getEventFirer()
             };
+            
             qEl = $("#main .fluid-uploader-queue");
             jqUnit.subvertAnimations();
         };
