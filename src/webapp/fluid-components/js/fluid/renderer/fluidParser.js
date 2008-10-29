@@ -184,10 +184,13 @@ fluid_0_6 = fluid_0_6 || {};
             cutstat[cutstat.length] = headlump.nestingdepth;
             if (cutstat.length === cut.tree.length) {
               if (togo !== null) {
-                throw ("Cutpoint specification error - node " +
+                fluid.fail("Cutpoint specification error - node " +
                   debugLump(headlump) +
                   " has already matched with rsf:id of " + togo);
                 }
+              if (cut.id === undefined || cut.id === null) {
+                  fluid.fail("Error in cutpoints list - entry at position " + i + " does not have an id set");
+              }
               togo = cut.id;
               }
             }
@@ -608,7 +611,7 @@ fluid_0_6 = fluid_0_6 || {};
       var childMatch = childSeg.exec(selstring);
       if (!childMatch || childMatch.index !== lastIndex) {
         var remainder = selstring.substring(lastIndex);
-        throw ("Error in selector string - can not match child selector expression at " + remainder);
+        fluid.fail("Error in selector string - can not match child selector expression at " + remainder);
         }
       if (childMatch[1] === ">") {
         fullAtNode.child = true;
