@@ -5,4 +5,6 @@ body {
 
 .menu-group {
     float: left;
+    width: 30%;
+    margin: 0 1.5%;
 }

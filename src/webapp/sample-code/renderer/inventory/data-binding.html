@@ -9,18 +9,20 @@
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jARIA.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidParser.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/json/json2.js"></script>
         <script type="text/javascript" src="data-binding.js"></script>
     </head>
     <body>
         <h1>Data-binding example</h1>
         <p>
-            <input id="render" type="submit" value="Render"/>
+            <input id="render" type="button" value="Render"/>
         </p>
 
-        <form name="myform" action="http://www.mydomain.com/myformhandler.cgi" method="POST">
+        <form name="myform" action="" method="POST" onsubmit="false;">
 
         <p>Serve drinks in the
             <span id="location">
@@ -32,29 +34,39 @@
         </p>
             
     <div id="menu">
-        <fieldset id="wine-list" class="menu-group">
+      <div class="menu-group">
+        <fieldset id="wine-list">
             <legend>Wines</legend>
             <div rsf:id="wine-row:">
-                <input rsf:id="wine" type="checkbox" name="vocable" id="wine" value="Wine"/>
+                <input rsf:id="wine" type="checkbox" id="wine" value="Wine"/>
                 <label rsf:id="wine-label" for="cheese">Wine</label>
             </div>
         </fieldset>
+      </div>
 
-        <fieldset id="cheese-list" class="menu-group">
+      <div class="menu-group">
+        <fieldset id="cheese-list">
             <legend>Cheeses</legend>
             <div rsf:id="cheese-row:">
-                <input rsf:id="cheese" type="checkbox" name="vocable" id="cheese" value="Cheese"/>
+                <input rsf:id="cheese" type="checkbox" id="cheese" value="Cheese"/>
                 <label rsf:id="cheese-label" for="cheese">Cheese</label>
             </div>
         </fieldset>
+      </div>
 
-        <fieldset id="canape-list" class="menu-group">
+      <div class="menu-group">
+        <fieldset id="canape-list">
             <legend>Canapes</legend>
             <div rsf:id="canape-row:">
-                <input rsf:id="canape" type="checkbox" name="vocable" id="canape" value="Canape"/>
+                <input rsf:id="canape" type="checkbox" id="canape" value="Canape"/>
                 <label rsf:id="canape-label" for="canape">Canape</label>
             </div>
         </fieldset>
+
+        <p><input id="dump-autobound" type="button" value="Display current model"/></p>
+        <p id="autobound-model">This is where the auto-bound model will be displayed.</p>
+      </div>
+
     </div>
             
         <script type="text/javascript">

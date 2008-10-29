@@ -15,6 +15,16 @@ var fluid = fluid || {};
 
 fluid.dataBindingExample = function () {
 
+    var canapeModel = {
+        values: ["asparagus", "chicken", "shrimp", "beef", "peppers", "figs"],
+        names: ["Filo Wrapped Asparagus", "Chicken Ballotine with Carrot Raita and Pomegranate Chutney", "Spicy Shrimp Crostini", "Broiled Beef Fillet Croutes with Salsa Verde", "Roasted Marinated Peppers with Goat Cheese", "Gorgonzola Stuffed Figs"],
+        choice: ["asparagus", "shrimp", "figs"]
+    };
+
+    var dumpModel = function (model, el) {
+        el.text(JSON.stringify(model, ["choice"]));
+    };
+
     var renderMenu = function () {
         var locationTree = {
             children: [
@@ -122,15 +132,10 @@ fluid.dataBindingExample = function () {
                     {ID: "canape-label", choiceindex: 5, parentRelativeID: "..::canape-checkboxes"}
                 ]}
             ]};
-        var canapeModel = {
-            values: ["asparagus", "chicken-ballotine", "shrimp-crostini", "beef-salsa-verde", "peppers-goat-cheese", "gorgonzola-figs"],
-            names: ["Filo Wrapped Asparagus", "Chicken Ballotine with Carrot Raita and Pomegranate Chutney", "Spicy Shrimp Crostini", "Broiled Beef Fillet Croutes with Salsa Verde", "Roasted Marinated Peppers with Goat Cheese", "Gorgonzola Stuffed Figs"],
-            choice: ["asparagus", "shrimp-crostini", "gorgonzola-figs"]
-        };
-
         fluid.selfRender(jQuery("#wine-list"), unboundTree);
         fluid.selfRender(jQuery("#cheese-list"), boundTree, {model: cheeseModel});
         fluid.selfRender(jQuery("#canape-list"), autoBoundTree, {model: canapeModel, autoBind: true});
+        dumpModel(canapeModel, jQuery("#autobound-model"));
     };
     
     return {
@@ -138,6 +143,11 @@ fluid.dataBindingExample = function () {
             var fullEl = fluid.byId("render");
             fullEl.onclick = function () {
                 renderMenu();
+            };
+            
+            var dumpButton = fluid.byId("dump-autobound");
+            dumpButton.onclick = function () {
+                dumpModel(canapeModel, jQuery("#autobound-model"));
             };
         }
     };
