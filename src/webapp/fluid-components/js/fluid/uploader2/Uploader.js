@@ -33,44 +33,34 @@ fluid_0_6 = fluid_0_6 || {};
     var derivePercent = function (num, total) {
         return Math.round((num * 100) / total);
     };
-    
-    function totalStr(fileIndex,numRows,bytes,totalBytes) {		
-        var newStrings = {
-            curFileN: fileIndex, 
-            totalFilesN: numRows, 
-            currBytes: fluid.Uploader.formatFileSize(bytes), 
-            totalBytes: fluid.Uploader.formatFileSize(totalBytes)
-        };
-        
-        return fluid.stringTemplate(strings.totalLabel, newStrings);
-    }
-   
-    progressStart = function (that, file) {
+       
+    var progressStart = function (that, file) {
         that.totalProgress.show();
     };
         
-    progressUpdate = function (that,file,fileBytesComplete,fileTotalBytes) {
+    var progressUpdate = function (that, file, fileBytesComplete, fileTotalBytes) {
         // file progress
-        var filePercent = derivePercent(fileBytesComplete,fileTotalBytes);
+        var filePercent = derivePercent(fileBytesComplete, fileTotalBytes);
+        var filePercentStr = filePercent + "%";
         
-        file.progress.update(filePercent,filePercent+"%","",true);
+        file.progress.update(filePercent, filePercentStr, "", true);
         
         // total progress
         var batch = that.uploadManager.queue.currentBatch;
         
-        var totalPercent = derivePercent(batch.bytesUploaded,batch.totalBytes);
+        var totalPercent = derivePercent(batch.bytesUploaded, batch.totalBytes);
         
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalLabel, {
-            curFileN: file.index+1, 
+            curFileN: file.index + 1, 
             totalFilesN: batch.files.length, 
             currBytes: fluid.uploader.formatFileSize(batch.bytesUploaded), 
             totalBytes: fluid.uploader.formatFileSize(batch.totalBytes)
         });
         
         that.totalProgress.update(totalPercent, totalProgressStr);
-     };
+    };
         
-    progressComplete = function (that, file) {
+    var progressComplete = function (that, file) {
         that.totalProgress.hide();
     };
 
@@ -99,25 +89,25 @@ fluid_0_6 = fluid_0_6 || {};
         
         // Progress
         
-        that.events.onUploadStart.addListener(function(){
+        that.events.onUploadStart.addListener(function () {
             setState(that, that.options.styles.queueUploadingState);
         });
 
-        that.events.onFileStart.addListener(function(file){
-            progressStart(that,file);
+        that.events.onFileStart.addListener(function (file) {
+            progressStart(that, file);
         });
         
-        that.events.onFileProgress.addListener(function(file,fileBytesComplete,fileTotalBytes){
-            progressUpdate(that,file,fileBytesComplete,fileTotalBytes);
+        that.events.onFileProgress.addListener(function (file, fileBytesComplete, fileTotalBytes) {
+            progressUpdate(that, file, fileBytesComplete, fileTotalBytes); 
         });
         
-        that.events.afterFileComplete.addListener(function(file){
-            progressUpdate(that,file,file.size,file.size);
-            file.progress.hide();
+        that.events.afterFileComplete.addListener(function (file) {
+            progressUpdate(that, file, file.size, file.size);
+            file.progress.hide(); 
         });
         
-        that.events.afterUploadComplete.addListener(function(file){
-            progressComplete(that,file);
+        that.events.afterUploadComplete.addListener(function (file) {
+            progressComplete(that, file);
             refreshView(that);
         });
     };
@@ -137,10 +127,10 @@ fluid_0_6 = fluid_0_6 || {};
                                                     
         that.stateDisplay = that.locate("stateDisplay");
         
-        that.totalProgress = fluid.progress(that.locate("totalFileProgressBar"),{
+        that.totalProgress = fluid.progress(that.locate("totalFileProgressBar"), {
             selectors: {
-     			displayElement: ".total-progress", 
-    			label: ".total-file-progress",
+                displayElement: ".total-progress", 
+        		label: ".total-file-progress",
                 indicator: ".total-progress"
             }
 	    });
