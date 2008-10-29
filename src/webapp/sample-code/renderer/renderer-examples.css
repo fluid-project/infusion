@@ -47,3 +47,9 @@ td > span {
 	padding: 3px 5px 2px 5px;
 	border: 1px solid white;
 }
+
+.menu-group {
+    float: left;
+    width: 30%;
+    margin: 0 1.5%;
+}
