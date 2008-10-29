@@ -306,7 +306,7 @@ html>body .fluid-uploader-queue {
 
 /* start */
 
-.fluid-uploader .start .fluid-uploader-row-placeholder {
+.fluid-uploader .start .fluid-uploader-row-placeholder, .fluid-uploader .empty .fluid-uploader-row-placeholder {
     display: block;
 }
 

@@ -19,14 +19,6 @@ fluid_0_6 = fluid_0_6 || {};
         that.stateDisplay.removeClass(stateClass);
     };
 
-    var refreshView = function (that) {
-        var currState = currentUploaderQueueState(that);
-        setState(that, currState);
-        if (currState !== that.options.styles.queueDoneState){
-            that.locate("uploadButton").removeAttr("disabled");
-        }
-    };
-    
     var currentUploaderQueueState = function (that) {
         var numFilesInQueue = that.uploadManager.queue.files.length;
         var numFilesReady = that.uploadManager.queue.getReadyFiles().length;
@@ -45,6 +37,22 @@ fluid_0_6 = fluid_0_6 || {};
         }
         
     };
+    
+    var refreshView = function (that) {
+        var currState = currentUploaderQueueState(that);
+        setState(that, currState);
+        switch (currState) {
+	    case that.options.styles.queueEmptyState:
+	    case that.options.styles.queueDoneState:
+            that.locate("uploadButton").attr("disabled", "disabled");
+	        break;
+	    case that.options.styles.queueLoadedState:
+	    case that.options.styles.queueReloadedState:
+            that.locate("uploadButton").removeAttr("disabled");
+	        break;
+        }
+    };
+    
     
     /* Progress */
    
@@ -94,7 +102,7 @@ fluid_0_6 = fluid_0_6 || {};
             that.uploadManager.start();
         });
         
-         that.locate("doneButton").click(function () {
+        that.locate("doneButton").click(function () {
             alert("Done!");
         });
 
@@ -111,13 +119,17 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.events.afterFileQueued.addListener(that.fileQueueView.addFile);
         
+        that.events.afterFileRemoved.addListener(function () {
+            that.refreshView();
+        });
+        
         // Progress
         
         that.events.onUploadStart.addListener(function () {
             setState(that, that.options.styles.queueUploadingState);
-            that.locate("browseButton").attr("disabled","disabled");
-            that.locate("doneButton").attr("disabled","disabled");
-            that.locate("uploadButton").attr("disabled","disabled");
+            that.locate("browseButton").attr("disabled", "disabled");
+            that.locate("doneButton").attr("disabled", "disabled");
+            that.locate("uploadButton").attr("disabled", "disabled");
         });
 
         that.events.onFileStart.addListener(function (file) {
