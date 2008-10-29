@@ -92,7 +92,6 @@
             return uploadFiles([file_largerAndNotMultipleOfChunkSize]);
         };
         
-
         demoUploadTests.test("Options merging", function () {
             // Test with no events and no additional options. simulateDelay should be true.
             var demoManager = fluid.demoUploadManager(events);
@@ -147,7 +146,8 @@
             jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
                                 transcript.files, transcript[transcript.length - 1].args[0]);
         });
-            
+        
+    
         demoUploadTests.test("Simulated upload flow: sequence of events for multiple files.", function () {
             // Upload three files.
             var transcript = uploadAllFiles();
@@ -185,10 +185,9 @@
             jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes in total.",
                                 400000, transcript[3].args[2]);
         });
-        
+    
         demoUploadTests.test("Chunking test: smaller files don't get reported larger because of demo file chunking.", function () {
             var transcript = uploadSmallFile();
-            console.debug(transcript);
             
             // Check that we're getting valid progress data for the onFileProgress events.
             jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes complete.",
@@ -213,7 +212,7 @@
                                 800000, transcript[5].args[1]);                    
             jqUnit.assertEquals("The last onFileProgress event should have 12345 more bytes complete.",
                                 812345, transcript[6].args[1]);                    
-            
         });
+
     });
 })(jQuery);

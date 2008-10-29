@@ -102,6 +102,17 @@ fluid_0_6 = fluid_0_6 || {};
         that.events.afterFileQueued.addListener(function (file) {
             that.queue.addFile(file); 
         });
+
+        that.events.onFileStart.addListener(function (file) {
+            that.queue.currentBatch.currentFile = file;
+            that.queue.currentBatch.previousChunk = 0; 
+        });
+        
+        that.events.onFileProgress.addListener(function (file, currentBytes, totalBytes) {
+            var currentBatch = that.queue.currentBatch;
+            currentBatch.bytesUploaded += currentBytes - currentBatch.previousChunk;
+            currentBatch.previousChunk = currentBytes;
+        });
     };
     
     var removeFile = function (that, file) {

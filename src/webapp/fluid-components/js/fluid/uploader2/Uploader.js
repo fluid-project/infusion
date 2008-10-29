@@ -35,7 +35,8 @@ fluid_0_6 = fluid_0_6 || {};
     };
         
     progressUpdate = function (that) {
-         console.debug("updating progress"); 
+         console.debug("updating progress. bytesUploaded is: " + 
+                       that.uploadManager.queue.currentBatch.bytesUploaded); 
     };
         
     progressComplete = function (that) {
@@ -82,7 +83,6 @@ fluid_0_6 = fluid_0_6 || {};
             progressUpdate(that);
         });
         
-        //**** need a different event here to tell the whole upload is done, not just the file
         that.events.afterUploadComplete.addListener(function(){
             progressComplete(that);
         });
