@@ -115,7 +115,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     var bindEvents = function (that) {
         
-        that.uploadManager.events.onFileSuccess.addListener(function (file) {
+        that.events.onFileSuccess.addListener(function (file) {
             var row = rowForFile(that, file);
             // remove click event on Remove button
             that.locate("removeButton", row).unbind('click');
@@ -125,7 +125,7 @@ fluid_0_6 = fluid_0_6 || {};
             changeRowState(row, that.options.styles.uploaded);
         });
         
-        that.uploadManager.events.onFileError.addListener(function (file) {
+        that.events.onFileError.addListener(function (file) {
             var row = rowForFile(that, file);
             changeRowState(row, that.options.styles.error);
         });
@@ -159,10 +159,10 @@ fluid_0_6 = fluid_0_6 || {};
      * @param {UploadManager} uploadManager an upload manager model instance
      * @param {Object} options configuration options for the view
      */
-    fluid.fileQueueView = function (container, parentContainer, uploadManager, options) {
+    fluid.fileQueueView = function (container, events, parentContainer, uploadManager, options) {
         var that = fluid.initView("fluid.fileQueueView", container, options);
-        
         that.uploadContainer = parentContainer;
+        that.events = events;
         
         that.addFile = function (file) {
             addFile(that, file);

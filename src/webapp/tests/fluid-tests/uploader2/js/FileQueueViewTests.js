@@ -4,6 +4,12 @@
     $(function () {
         
         var removedFile = null;
+        
+        var events = {
+            onFileSuccess: fluid.event.getEventFirer(),
+            onFileError: fluid.event.getEventFirer()
+        };
+        
         var mockUploadManager = {
             removeFile: function(file){
                 removedFile = file;
@@ -11,7 +17,7 @@
         };
         
         var createFileQueue = function (qEl) {
-            var q = fluid.fileQueueView(qEl, mockUploadManager);
+            var q = fluid.fileQueueView(qEl, events, $("#main"), mockUploadManager);
             
             return q;
         };
