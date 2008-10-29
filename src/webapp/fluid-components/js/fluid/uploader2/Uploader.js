@@ -35,7 +35,8 @@ fluid_0_6 = fluid_0_6 || {};
     };
        
     var progressStart = function (that, file) {
-        that.totalProgress.show();
+        var fileRowElm = $("tr#" + file.id);
+        that.fileProgress.refresh(fileRowElm);
     };
         
     var progressUpdate = function (that, file, fileBytesComplete, fileTotalBytes) {
@@ -43,7 +44,7 @@ fluid_0_6 = fluid_0_6 || {};
         var filePercent = derivePercent(fileBytesComplete, fileTotalBytes);
         var filePercentStr = filePercent + "%";
         
-        file.progress.update(filePercent, filePercentStr, "", true);
+        that.fileProgress.update(filePercent, filePercentStr);
         
         // total progress
         var batch = that.uploadManager.queue.currentBatch;
@@ -102,8 +103,8 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.events.afterFileComplete.addListener(function (file) {
-            progressUpdate(that, file, file.size, file.size);
-            file.progress.hide(); 
+            //progressUpdate(that, file, file.size, file.size);
+            that.fileProgress.hide(); 
         });
         
         that.events.afterUploadComplete.addListener(function (file) {
@@ -127,7 +128,15 @@ fluid_0_6 = fluid_0_6 || {};
                                                     
         that.stateDisplay = that.locate("stateDisplay");
         
-        that.totalProgress = fluid.progress(that.locate("totalFileProgressBar"), {
+        that.fileProgress = fluid.progress(that.container, {
+            selectors: {
+                displayElement: ".file-progress", 
+        		label: ".file-progress-text",
+                indicator: ".file-progress"
+            }
+	    });
+        
+        that.totalProgress  = fluid.progress(that.locate("totalFileProgressBar"), {
             selectors: {
                 displayElement: ".total-progress", 
         		label: ".total-file-progress",

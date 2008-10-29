@@ -94,13 +94,14 @@ fluid_0_6 = fluid_0_6 || {};
 		label.html(value);
 	};
     
-	var updateProgress = function (that, percent, labelValue, animationForShow, updatePosition) {
-        updatePosition = (updatePosition === null) ? that.options.updatePosition : updatePosition;
+    var repositionIndicator = function(that) {
+        that.indicator.css("top",that.progressBar.position().top);
+        that.indicator.css("left",0);
+        that.indicator.height(that.progressBar.height());
+    };
+    
+	var updateProgress = function (that, percent, labelValue, animationForShow) {
         
-        if (updatePosition) {
-            that.indicator.css("top",that.progressBar.position().top);
-            that.indicator.css("left",0);
-        }
 		// show progress before updating, jQuery will handle the case if the object is already displayed
 		showProgress(that, animationForShow);
 			
@@ -180,6 +181,11 @@ fluid_0_6 = fluid_0_6 || {};
 		that.update = function (percentage, labelValue, animationForShow, updatePosition) {
 			updateProgress(that, percentage, labelValue, animationForShow, updatePosition);
 		};
+        
+        that.refresh = function (newProgressBarElm) {
+            that.progressBar = newProgressBarElm;
+            repositionIndicator(that);
+        };
 				
         return that;  
     };

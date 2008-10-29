@@ -106,6 +106,7 @@ fluid_0_6 = fluid_0_6 || {};
         that.container.after(rowProgressor);
         
         // instantiate the progressor to the row
+        /*
         file.progress = fluid.progress(that.uploadContainer,{
             selectors: {
                 progressBar: "#"+file.id,
@@ -114,6 +115,7 @@ fluid_0_6 = fluid_0_6 || {};
                 indicator: "#"+file.id+"_progress"
             }
 	    });
+        */
         
         that.refreshView();
     };
