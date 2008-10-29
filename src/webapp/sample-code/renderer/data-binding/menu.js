@@ -18,64 +18,72 @@ var fluid = fluid || {};
 
 fluid.dataBindingExample = function () {
 
-    var drinksModel = {
-        values: ["library", "parlour", "dining-room", "riesling", "weissbergunder", "pinot-grigio", "gewurztraminer"],
-        names: ["Library", "Parlour", "Dining Room", "Berg Rottland Riesling", "Weissbergunder", "Pinot Grigio", "Gewurztraminer Turkheim"],
-        choice: ["parlour", "riesling", "pinot-grigio"]
+    var dumpModel = function (model, el) {
+        el.text(JSON.stringify(model, ["choice"]));
     };
-    
+
+    var wineModel = {
+        values: ["riesling", "weissbergunder", "pinot-grigio", "gewurztraminer"],
+        names: ["Berg Rottland Riesling", "Weissbergunder", "Pinot Grigio", "Gewurztraminer Turkheim"],
+        choice: ["riesling", "pinot-grigio"]
+    };
+
     var foodModel = {
         values: ["castelo-branco", "chevre-noir", "camembert", "la-sauvagine", "pastorella","asparagus", "chicken", "shrimp", "beef", "peppers", "figs"],
         names: ["Castelo Branco", "Chevre noir", "Camembert", "La Sauvagine", "Pastorella","Filo Wrapped Asparagus", "Chicken Ballotine with Carrot Raita and Pomegranate Chutney", "Spicy Shrimp Crostini", "Broiled Beef Fillet Croutes with Salsa Verde", "Roasted Marinated Peppers with Goat Cheese", "Gorgonzola Stuffed Figs"],
         choice: ["chevre-noir","asparagus", "shrimp", "figs"]
     };
-    
-    var dumpModel = function (model, el) {
-        el.text(JSON.stringify(model, ["choice"]));
-    };
 
     var renderMenu = function () {
-        var drinksTree = {
+        var locationTree = {
             children: [
-                {ID: "drinks", optionlist: {valuebinding: "values"},
-                               optionnames: {valuebinding: "names"},
-                               selection: {valuebinding: "choice"}},
+                {ID: "locations", optionlist: ["library", "parlour", "dining-room"],
+                                  optionnames: ["Library", "Parlour", "Dining Room"],
+                                  selection: ["parlour"]},
                 {ID: "location-row:", children: [
-                    {ID: "location", choiceindex: 0, parentRelativeID: "..::drinks"},
-                    {ID: "location-label", choiceindex: 0, parentRelativeID: "..::drinks"}
-                ]},
-                {ID: "location-row:", children: [
-                    {ID: "location", choiceindex: 1, parentRelativeID: "..::drinks"},
-                    {ID: "location-label", choiceindex: 1, parentRelativeID: "..::drinks"}
+                    {ID: "location", choiceindex: 0, parentRelativeID: "..::locations"},
+                    {ID: "location-label", choiceindex: 0, parentRelativeID: "..::locations"}
                 ]},
                 {ID: "location-row:", children: [
-                    {ID: "location", choiceindex: 2, parentRelativeID: "..::drinks"},
-                    {ID: "location-label", choiceindex: 2, parentRelativeID: "..::drinks"}
+                    {ID: "location", choiceindex: 1, parentRelativeID: "..::locations"},
+                    {ID: "location-label", choiceindex: 1, parentRelativeID: "..::locations"}
                 ]},
-                {ID: "wine-row:", children: [
-                    {ID: "wine", choiceindex: 3, parentRelativeID: "..::drinks"},
-                    {ID: "wine-label", choiceindex: 3, parentRelativeID: "..::drinks"}
-                ]},
-                {ID: "wine-row:", children: [
-                    {ID: "wine", choiceindex: 4, parentRelativeID: "..::drinks"},
-                    {ID: "wine-label", choiceindex: 4, parentRelativeID: "..::drinks"}
-                ]},
-                {ID: "wine-row:", children: [
-                    {ID: "wine", choiceindex: 5, parentRelativeID: "..::drinks"},
-                    {ID: "wine-label", choiceindex: 5, parentRelativeID: "..::drinks"}
-                ]},
-                {ID: "wine-row:", children: [
-                    {ID: "wine", choiceindex: 6, parentRelativeID: "..::drinks"},
-                    {ID: "wine-label", choiceindex: 6, parentRelativeID: "..::drinks"}
+                {ID: "location-row:", children: [
+                    {ID: "location", choiceindex: 2, parentRelativeID: "..::locations"},
+                    {ID: "location-label", choiceindex: 2, parentRelativeID: "..::locations"}
                 ]}
             ]
         };
-                    
+        
+        var wineTree = {
+            children: [
+                {ID: "wines", optionlist: {valuebinding: "values"},
+                              optionnames: {valuebinding: "names"},
+                              selection: {valuebinding: "choice"}},
+                {ID: "wine-row:", children: [
+                    {ID: "wine", choiceindex: 0, parentRelativeID: "..::wines"},
+                    {ID: "wine-label", choiceindex: 0, parentRelativeID: "..::wines"}
+                ]},
+                {ID: "wine-row:", children: [
+                    {ID: "wine", choiceindex: 1, parentRelativeID: "..::wines"},
+                    {ID: "wine-label", choiceindex: 1, parentRelativeID: "..::wines"}
+                ]},
+                {ID: "wine-row:", children: [
+                    {ID: "wine", choiceindex: 2, parentRelativeID: "..::wines"},
+                    {ID: "wine-label", choiceindex: 2, parentRelativeID: "..::wines"}
+                ]},
+                {ID: "wine-row:", children: [
+                    {ID: "wine", choiceindex: 3, parentRelativeID: "..::wines"},
+                    {ID: "wine-label", choiceindex: 3, parentRelativeID: "..::wines"}
+                ]}
+            ]
+        };
+
         var foodTree = {
             children: [
                 {ID: "food", optionlist: {valuebinding: "values"},
-                               optionnames: {valuebinding: "names"},
-                               selection: {valuebinding: "choice"}},
+                             optionnames: {valuebinding: "names"},
+                             selection: {valuebinding: "choice"}},
                 {ID: "cheese-row:", children: [
                     {ID: "cheese", choiceindex: 0, parentRelativeID: "..::food"},
                     {ID: "cheese-label", choiceindex: 0, parentRelativeID: "..::food"}
@@ -121,26 +129,36 @@ fluid.dataBindingExample = function () {
                     {ID: "canape-label", choiceindex: 10, parentRelativeID: "..::food"}
                 ]}
             ]};
-        fluid.selfRender(jQuery("#drinks-list"), drinksTree, {model: drinksModel});
+
+       fluid.selfRender(jQuery("#location"), locationTree);
+
+        fluid.selfRender(jQuery("#wine-list"), wineTree, {model: wineModel});
+        dumpModel(wineModel, jQuery("#bound-model"));
+        
         fluid.selfRender(jQuery("#food-list"), foodTree, {model: foodModel, autoBind: true});
+        dumpModel(foodModel, jQuery("#autobound-model"));
     };
-    
+
     return {
         setup: function () {
             var fullEl = fluid.byId("render");
             fullEl.onclick = function () {
                 renderMenu();
             };
-            
+
+            var applyButton = fluid.byId("apply-change");
+            applyButton.onclick = function () {
+                var inputs = $("input", jQuery("#wine-list"));
+                fluid.applyChange(inputs);
+            };
+
             var dumpButton1 = fluid.byId("dump-bound");
             dumpButton1.onclick = function () {
-                console.log("Foo!");
-                dumpModel(drinksModel, jQuery("#bound-model"));
+                dumpModel(wineModel, jQuery("#bound-model"));
             };
 
             var dumpButton2 = fluid.byId("dump-autobound");
             dumpButton2.onclick = function () {
-                console.log("Bar!");
                 dumpModel(foodModel, jQuery("#autobound-model"));
             };
         }

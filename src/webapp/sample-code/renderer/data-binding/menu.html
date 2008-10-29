@@ -22,7 +22,7 @@
             <input id="render" type="button" value="Render"/>
         </p>
 
-        <div id="drinks-list" class="menu-group">
+        <div class="menu-group">
             <p>Serve drinks in the<br/>
             <span id="location">
                 <span rsf:id="location-row:">
@@ -39,14 +39,15 @@
                     <label rsf:id="wine-label" for="cheese">Wine</label>
                 </div>
             </fieldset>
-
-            <p><input id="dump-bound" type="button" value="Display current model"/></p>
-            <p id="bound-model">
-                This is where the bound model will be displayed.
+            <p><input id="apply-change" type="button" value="Apply change to model"/>
+               <input id="dump-bound" type="button" value="Display current model of selected items"/></p>
+            <p>Model:<br/><span id="bound-model" class="model-dump">
+                This is where the bound model will be displayed.</span>
             </p>
         </div>
 
-        <div id="food-list" class="menu-group">
+      <div class="menu-group">
+        <div id="food-list">
             <fieldset id="cheese-list">
                 <legend>Cheeses</legend>
                 <div rsf:id="cheese-row:">
@@ -62,12 +63,13 @@
                     <label rsf:id="canape-label" for="canape">Canape</label>
                 </div>
             </fieldset>
-
-            <p><input id="dump-autobound" type="button" value="Display current model"/></p>
-            <p id="autobound-model">
-                This is where the auto-bound model will be displayed.
-            </p>
         </div>
+
+        <p><input id="dump-autobound" type="button" value="Display current model of selected items"/></p>
+        <p>Model:<br/><span id="autobound-model" class="model-dump">
+            This is where the auto-bound model will be displayed.</span>
+        </p>
+      </div>
 
         <script type="text/javascript">
             fluid.dataBindingExample.setup();
