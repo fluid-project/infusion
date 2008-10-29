@@ -5,17 +5,14 @@
         
         var removedFile = null;
         
-        var events = {
-            onFileSuccess: fluid.event.getEventFirer(),
-            onFileError: fluid.event.getEventFirer()
-        };
-        
         var mockUploadManager = {
             removeFile: function(file){
                 removedFile = file;
             }
         };
         
+        var events = {};
+      
         var createFileQueue = function (qEl) {
             var q = fluid.fileQueueView(qEl, events, $("#main"), mockUploadManager);
             
@@ -64,6 +61,10 @@
         
         // File Queue test case
         var setupFunction = function () {
+            events = {
+                onFileSuccess: fluid.event.getEventFirer(),
+                onFileError: fluid.event.getEventFirer()
+            };
             qEl = $("#main .fluid-uploader-queue");
             jqUnit.subvertAnimations();
         };

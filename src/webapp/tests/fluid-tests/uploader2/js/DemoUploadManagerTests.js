@@ -2,7 +2,14 @@
 
 (function ($) {
     $(function () {
-        var demoUploadTests = new jqUnit.TestCase("DemoUploadManager Tests");
+        
+        var events;
+        var setupFunction = function () {
+            events = {};
+            fluid.mergeListeners(events, fluid.defaults("fluid.uploader").events);
+        };
+        
+        var demoUploadTests = new jqUnit.TestCase("DemoUploadManager Tests", setupFunction);
         
         // Test files.
         var file1 = {
@@ -34,10 +41,7 @@
             size: 812345,
             filestatus: SWFUpload.FILE_STATUS.QUEUED
         };
-
         
-        var events = {};
-        fluid.mergeListeners(events, fluid.defaults("fluid.uploader").events);
         
         // Silly little data structure for capturing the sequence and parameters of the upload flow.
         var eventTracker = function () {

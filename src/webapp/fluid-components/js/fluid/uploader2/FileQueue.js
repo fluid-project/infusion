@@ -45,18 +45,17 @@ fluid_0_6 = fluid_0_6 || {};
         };
     };
     
-    var updateCurrentBatch = function (that) {
-        var readyFiles = that.getReadyFiles();
-        var sizeOfReadyFiles = fluid.fileQueue.sizeOfFiles(readyFiles);
-        
-        that.currentBatch = {
-        	files: readyFiles,
-        	totalBytes: sizeOfReadyFiles,
-        	numFilesCompleted: 0,
-        	bytesUploaded: 0
-        };
+    var setupCurrentBatch = function (that) {
+        clearCurrentBatch(that);
+        updateCurrentBatch(that);
     };
      
+    var updateCurrentBatch = function (that) {
+        var readyFiles = that.getReadyFiles();
+        that.currentBatch.files = readyFiles;
+        that.currentBatch.totalBytes = fluid.fileQueue.sizeOfFiles(readyFiles);
+    };
+    
     fluid.fileQueue = function () {
         var that = {};
         that.files = [];
@@ -79,6 +78,10 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.sizeOfReadyFiles = function () {
             return sizeOfFiles(that.getReadyFiles());
+        };
+        
+        that.setupCurrentBatch = function () {
+            setupCurrentBatch(that);
         };
         
         that.clearCurrentBatch = function () {

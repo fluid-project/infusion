@@ -46,10 +46,6 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     finishUploadingFile = function (that, file) {
-        var nextFile;
-        
-        file.filestatus = fluid.fileQueue.fileStatusConstants.COMPLETE;
-        
         that.events.onFileSuccess.fire(file);
         that.invokeAfterRandomDelay(function () {
             that.demoState.fileIdx++;

@@ -49,7 +49,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var start = function (that) {
-        that.queue.updateCurrentBatch();
+        that.queue.setupCurrentBatch();
         that.events.onUploadStart.fire(that.queue.currentBatch.files); 
         that.uploadNextFile();
     };
