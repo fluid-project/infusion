@@ -786,6 +786,47 @@ var fluid = fluid || fluid_0_6;
         return list;
     };
     
+    /** 
+     * Expand a message string with respect to a set of arguments, following a basic
+     * subset of the Java MessageFormat rules. 
+     * http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html
+     * 
+     * The message string is expected to contain replacement specifications such
+     * as {0}, {1}, {2}, etc.
+     * @param messageString {String} The message key to be expanded
+     * @param args {String/Array of String} An array of arguments to be substituted into the message.
+     * @return The expanded message string. 
+     */
+    fluid.formatMessage = function(messageString, args) {
+        if (!args) return messageString;
+        if (typeof(args) === "string") {
+            args = [args];
+            }
+        for (var i = 0; i < args.length; ++ i) {
+            messageString = messageString.replace("{" + i + "}", args[i]);
+        }
+        return messageString;
+    }
+    
+    /** Converts a data structure consisting of a mapping of keys to message strings,
+     * into a "messageLocator" function which maps an array of message codes, to be 
+     * tried in sequence until a key is found, and an array of substitution arguments,
+     * into a substituted message string.
+     */
+    fluid.messageLocator = function(messageBase) {
+        return function(messagecodes, args) {
+            if (typeof(messagecodes) === "string") {
+                messagecodes = [messagecodes];
+            }
+            for (var i = 0; i < messagecodes.length; ++ i) {
+                var code = messagecodes[i];
+                var message = messageBase[code];
+                if (message === undefined) continue;
+                return fluid.formatMessage(message, args);
+            }
+            return "[Message string for key " + messagecodes[0] + " not found]";
+        }
+    };
     
     // Other useful helpers.
     

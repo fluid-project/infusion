@@ -102,6 +102,12 @@ fluid.tests = fluid.tests || {};
  //     jqUnit.assertNotUndefined("Invalid tree")
  //   });
     
+    var messageBase = {
+        message1: "A simple message",
+        message2: "A second message",
+        message3: "Every {0} has {1} {2}(s)"
+    }
+    
     renderTests.test("ID relation rewriting", function() {
       // Tests FLUID-1676
       var node = $(".RSF-77-test");
@@ -127,6 +133,25 @@ fluid.tests = fluid.tests || {};
       fluid.selfRender($(".RSF-111-test"));
       var label = $(".RSF-111-test label");
       jqUnit.assertEquals("Target undisturbed", "target2", label.attr("for"));
+    });
+    
+   
+    renderTests.test("UIMessage tests", function() {
+        var node = $(".UIMessage-test");
+        function expectMessage(message) {
+            var messageNode = $("span", node);
+            fluid.testUtils.assertNode("Rendered message", {nodeText: message}, messageNode);
+        }
+        var tree = { ID: "message", messagekey: "message1"};
+        var options = {messageSource: {type: "data", messages: messageBase}};
+        var templates = fluid.selfRender(node, tree, options);
+        expectMessage(messageBase.message1);
+        
+        fluid.reRender(templates, node, { ID: "message", messagekey: ["junk1", "junk2", "message2"]}, options);
+        expectMessage(messageBase.message2);
+        
+        fluid.reRender(templates, node, { ID: "message", messagekey: "message3", args: ["CATT", "four", "leg"]}, options);
+        expectMessage("Every CATT has four leg(s)");
     });
     
     

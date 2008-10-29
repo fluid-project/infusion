@@ -17,6 +17,10 @@ fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
   
+  function debugPosition(component) {
+     return "as child of " + (component.parent.fullID? "component with full ID " + component.parent.fullID : "root");
+  }
+  
   function computeFullID(component) {
     var togo = "";
     var move = component;
@@ -33,8 +37,8 @@ fluid_0_6 = fluid_0_6 || {};
       if (move.noID === undefined) {
         var ID = move.ID;
         if (ID === undefined) {
-          fluid.fail("Error in component tree - component found with no ID as child of "
-            + (parent.fullID? "component with full ID " + parent.fullID : "root") + ": please check structure");
+          fluid.fail("Error in component tree - component found with no ID "
+            + debugPosition(parent) + ": please check structure");
         }
         var colpos = ID.indexOf(":");        
         var prefix = colpos === -1? ID : ID.substring(0, colpos);
@@ -111,7 +115,8 @@ fluid_0_6 = fluid_0_6 || {};
   }
   
   var duckMap = {children: "UIContainer", 
-        value: "UIBound", valuebinding: "UIBound", markup: "UIVerbatim", selection: "UISelect", target: "UILink",
+        value: "UIBound", valuebinding: "UIBound", messagekey: "UIMessage", 
+        markup: "UIVerbatim", selection: "UISelect", target: "UILink",
         choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
   
   function unzipComponent(component, model) {
@@ -152,6 +157,9 @@ fluid_0_6 = fluid_0_6 || {};
     if (tree.componentType === undefined) {
       tree = unzipComponent(tree, model);
       }
+    if (tree.componentType !== "UIContainer" && !tree.parent) {
+      tree = {children: [tree]};
+    }
     
     if (tree.children) {
        tree.childmap = {};
@@ -162,6 +170,9 @@ fluid_0_6 = fluid_0_6 || {};
           tree.children[i] = child;
           }
         child.parent = tree;
+        if (child.ID === undefined) {
+           fluid.fail("Error in component tree: component found with no ID " + debugPosition(child));
+        }
         tree.childmap[child.ID] = child;
         var colpos = child.ID.indexOf(":"); 
         if (colpos === -1) {
@@ -603,6 +614,17 @@ fluid_0_6 = fluid_0_6 || {};
     var tagname = trc.uselump.tagname;
     
     outDecorators(torender, attrcopy);
+    
+    if (componentType === "UIMessage") {
+        // degrade UIMessage to UIBound by resolving the message
+        componentType = "UIBound";
+        if (!renderOptions.messageLocator) {
+           torender.value = "[No messageLocator is configured in options - please consult documentation on options.messageSource]";
+        }
+        else {
+           torender.value = renderOptions.messageLocator(torender.messagekey, torender.args);
+        }
+    }
     
     if (componentType === "UIBound" || componentType === "UISelectChoice") {
         var parent;
@@ -1061,6 +1083,17 @@ fluid_0_6 = fluid_0_6 || {};
         function(element) {return element.nodeName.toLowerCase() === "form"});
   }
   
+  fluid.resolveMessageSource = function (messageSource) {
+      if (messageSource.type = "data") {
+          if (messageSource.url === undefined) {
+              return fluid.messageLocator(messageSource.messages);
+          }
+          else {
+            // TODO: fetch via AJAX, and convert format if necessary
+          }
+      }
+  }
+  
   /** A generalisation of jQuery.val to correctly handle the case of acquiring and
    * setting the value of clustered radio button/checkbox sets, potentially, given
    * a node corresponding to just one element.
@@ -1171,6 +1204,9 @@ fluid_0_6 = fluid_0_6 || {};
       options = options || {};
       tree = tree || {};
       debugMode = options.debugMode;
+      if (!options.messageLocator && options.messageSource) {
+          options.messageLocator = fluid.resolveMessageSource(options.messageSource);
+      }
       directFossils = fossilsIn;
       decoratorQueue = [];
   
