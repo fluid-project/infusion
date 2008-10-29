@@ -95,9 +95,10 @@ fluid_0_6 = fluid_0_6 || {};
 	};
     
     var repositionIndicator = function(that) {
-        that.indicator.css("top",that.progressBar.position().top);
-        that.indicator.css("left",0);
-        that.indicator.height(that.progressBar.height());
+        that.indicator.css("top",that.progressBar.position().top)
+            .css("left",0)
+            .height(that.progressBar.height())
+            .width(that.options.minWidth);
     };
     
 	var updateProgress = function (that, percent, labelValue, animationForShow) {

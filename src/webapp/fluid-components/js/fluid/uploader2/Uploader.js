@@ -104,7 +104,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.events.afterFileComplete.addListener(function (file) {
             //progressUpdate(that, file, file.size, file.size);
-            that.fileProgress.hide(); 
+            that.fileProgress.hide(0, false); // no delay, no animation 
         });
         
         that.events.afterUploadComplete.addListener(function (file) {
