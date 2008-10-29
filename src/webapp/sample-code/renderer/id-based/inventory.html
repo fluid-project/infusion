@@ -17,14 +17,17 @@
 
     <body>
         <h2>Renderer Example: ID-based Rendering</h2>
-        <p>The table below is, initially, the template that will be used by the Fluid Renderer.
-           Each of the "Render..." buttons will render the table using a different variation
-           of the possible ways of using the Renderer.</p>
-       <p>NOTE: Each rendering internally starts with a clean version of the template.</p>
+        <div class="info">
+            <p>The table below is, initially, the template that will be used by the Fluid Renderer.
+               The elements in the mark-up have an "rsf:id" attribute to identify them to the renderer.</p>
+            <p>Each of the "Render..." buttons will render the table using a different version of the component
+               tree.</p>
+           <p>NOTE: Each rendering internally starts with a clean version of the template.</p>
+        </div>
         <hr/>
         <p>
-            <input id="render-full" type="submit" value="Render Full"/>
-            <input id="render-abridged" type="submit" value="Render Abridged"/>
+            <input id="render-full" type="submit" value="Render Using Full Component Tree"/>
+            <input id="render-abridged" type="submit" value="Render Using Abridged Component Tree"/>
         </p>
 
         <!-- This table is the root node of the template. -->

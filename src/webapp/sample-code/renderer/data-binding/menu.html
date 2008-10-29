@@ -18,11 +18,16 @@
     </head>
     <body>
         <h1>Renderer Example: Data-binding</h1>
-        <p>
+        <p class="info">The mark-up below is, initially, the template that will be used to render data.
+           When the "Render" button is clicked, the template will be replaced by the rendered data. The model used
+           to render the data will also be displayed below each column.</p>
+        <hr/>
+        <p class="render-button">
             <input id="render" type="button" value="Render"/>
         </p>
 
         <div class="menu-group">
+            <p class="info">The wine list in this column is bound to its model. The model is <em>not</em> updated when the values of the inputs are changed. This must be triggered manually.</p>
             <p>Serve drinks in the<br/>
             <span id="location">
                 <span rsf:id="location-row:">
@@ -47,6 +52,7 @@
         </div>
 
       <div class="menu-group">
+        <p class="info">The food lists in this column are bound to a model, which is automatically updated when the values of the inputs are changed.</p>
         <div id="food-list">
             <fieldset id="cheese-list">
                 <legend>Cheeses</legend>
