@@ -42,17 +42,16 @@ fluid_0_6 = fluid_0_6 || {};
         var currState = currentUploaderQueueState(that);
         setState(that, currState);
         switch (currState) {
-	    case that.options.styles.queueEmptyState:
-	    case that.options.styles.queueDoneState:
+        case that.options.styles.queueEmptyState:
+        case that.options.styles.queueDoneState:
             that.locate("uploadButton").attr("disabled", "disabled");
-	        break;
-	    case that.options.styles.queueLoadedState:
-	    case that.options.styles.queueReloadedState:
+            break;
+        case that.options.styles.queueLoadedState:
+        case that.options.styles.queueReloadedState:
             that.locate("uploadButton").removeAttr("disabled");
-	        break;
+            break;
         }
     };
-    
     
     /* Progress */
    
