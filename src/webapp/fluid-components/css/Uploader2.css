@@ -294,9 +294,9 @@ html>body .fluid-uploader-queue {
  * browsing - the OS dialog is being displayed or we're still updating the queue with new files
  * loaded - files in the queue, but the Upload button has not been clicked
  * uploading - we're in the process of uploading
- * pause - some files uploaded, some still in the queue
+ * pause - some files uploaded, some still in the queue -- NOT FOR BETA
  * reloaded - some files uploaded, new files in the queue
- * empty - some files uploaded, no files in the queue
+ * empty - no files uploaded, no files in the queue -- NOT FOR BETA
  * done - all files have been uploaded
  */
 
@@ -334,12 +334,10 @@ html>body .fluid-uploader-queue {
 
 /* uploading */
 
-.uploading .fluid-uploader-btns .fluid-uploader-pause {
-    display: block;
-}
-
 .uploading .fluid-uploader-btns .fluid-uploader-done,
-  .uploading .fluid-uploader-btns .fluid-uploader-done:hover {
+  .uploading .fluid-uploader-btns .fluid-uploader-done:hover,
+  .uploading .fluid-uploader-btns .fluid-uploader-upload,
+  .uploading .fluid-uploader-btns .fluid-uploader-upload:hover {
     display: block;
     opacity: 0.4;
     filter:alpha(opacity=40);
@@ -376,8 +374,8 @@ html>body .fluid-uploader-queue {
     display: block;
 }
 
-.empty .fluid-uploader-btns .fluid-uploader-resume, 
-  .empty .fluid-uploader-btns .fluid-uploader-resume:hover {
+.empty .fluid-uploader-btns .fluid-uploader-upload, 
+  .empty .fluid-uploader-btns .fluid-uploader-upload:hover {
     display: block;
     background-color: #CCC !important;
     border-color: #999 !important;
@@ -386,7 +384,7 @@ html>body .fluid-uploader-queue {
 
 /* reloaded */
 
-.reloaded .fluid-uploader-btns .fluid-uploader-resume {
+.reloaded .fluid-uploader-btns .fluid-uploader-upload {
     display: block;
 }
 
@@ -396,8 +394,8 @@ html>body .fluid-uploader-queue {
 
 /* done */
 
-.done .fluid-uploader-btns .fluid-uploader-resume,
-  .done .fluid-uploader-btns .fluid-uploader-resume:hover {
+.done .fluid-uploader-btns .fluid-uploader-upload,
+  .done .fluid-uploader-btns .fluid-uploader-upload:hover {
     display: block;
     background-color: #CCC !important;
     border-color: #999 !important;

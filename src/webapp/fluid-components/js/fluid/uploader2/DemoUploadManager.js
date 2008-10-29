@@ -15,7 +15,7 @@ fluid_0_6 = fluid_0_6 || {};
             return;
         }
         
-        demoState.bytesUploaded = Math.min(demoState.bytesUploaded + Math.min(demoState.chunkSize,file.size),file.size);
+        demoState.bytesUploaded = Math.min(demoState.bytesUploaded + Math.min(demoState.chunkSize, file.size), file.size);
         events.onFileProgress.fire(file, demoState.bytesUploaded, file.size);
     };
     
@@ -47,6 +47,8 @@ fluid_0_6 = fluid_0_6 || {};
     
     finishUploadingFile = function (that, file) {
         var nextFile;
+        
+        file.filestatus = fluid.fileQueue.fileStatusConstants.COMPLETE;
         
         that.events.onFileSuccess.fire(file);
         that.invokeAfterRandomDelay(function () {

@@ -20,9 +20,18 @@ fluid_0_6 = fluid_0_6 || {};
     };
 
     var refreshView = function (that) {
-        //**** still needs to get even smarter about the state of the queue
-        if (that.uploadManager.queue.files.length) {
-            setState(that, that.options.styles.queueLoadedState);
+        var numFilesInQueue = that.uploadManager.queue.files.length;
+        var numFilesReady = that.uploadManager.queue.getReadyFiles().length;
+        var numFilesComplete = (numFilesInQueue - numFilesReady);
+        
+        if (numFilesInQueue) {
+            if (numFilesReady === 0) {
+                setState(that, that.options.styles.queueDoneState);
+            } else if (numFilesInQueue === numFilesReady) {
+                setState(that, that.options.styles.queueLoadedState);
+            } else {
+                setState(that, that.options.styles.queueReloadedState);
+            }
         } else {
             setState(that, that.options.styles.queueEmptyState);
         }
@@ -52,7 +61,7 @@ fluid_0_6 = fluid_0_6 || {};
         var totalPercent = derivePercent(batch.bytesUploaded, batch.totalBytes);
         
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalLabel, {
-            curFileN: file.index + 1, 
+            curFileN: batch.fileIdx + 1, 
             totalFilesN: batch.files.length, 
             currBytes: fluid.uploader.formatFileSize(batch.bytesUploaded), 
             totalBytes: fluid.uploader.formatFileSize(batch.totalBytes)
@@ -75,6 +84,7 @@ fluid_0_6 = fluid_0_6 || {};
         that.locate("uploadButton").click(function () {
             that.uploadManager.start();
         });
+        
     };
         
     var bindModelEvents = function (that) {
@@ -215,6 +225,8 @@ fluid_0_6 = fluid_0_6 || {};
         styles: {
             queueEmptyState: "start",
             queueLoadedState: "loaded",
+            queueReloadedState: "reloaded",
+            queueDoneState: "done",
             queueBrowsingState: "browsing",
             queueUploadingState: "uploading"
         },
