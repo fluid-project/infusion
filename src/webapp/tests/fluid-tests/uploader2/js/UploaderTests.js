@@ -6,17 +6,20 @@
          // Test files.
         var file1 = {
             id: 0,
-            size: 400000
+            size: 400000,
+            filestatus: -1
         };
                
         var file2 = {
             id: 1,
-            size: 600000
+            size: 600000,
+            filestatus: -1
         };
                 
         var file3 =  {
             id: 2,
-            size: 800000
+            size: 800000,
+            filestatus: -1
         };
 
         var uploaderTests = new jqUnit.TestCase("Uploader Basic Tests");
@@ -127,5 +130,7 @@
             // done	 	 
             // error
         });   
+
+       
     });
 })(jQuery);
