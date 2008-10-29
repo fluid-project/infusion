@@ -419,7 +419,7 @@ html>body .fluid-uploader-queue {
     cursor: auto;
 }
 
-.uploading .removeFile,
+.uploading .ready .removeFile,
   .browsing .removeFile,
   .browsing .removeFile:hover {
     opacity: 0.3;

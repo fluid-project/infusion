@@ -105,19 +105,30 @@ fluid_0_6 = fluid_0_6 || {};
         rowProgressor.css('top',(row.position().top)).height(row.height()).width(5);
         that.container.after(rowProgressor);
         
-        // instantiate the progressor to the row
-        /*
-        file.progress = fluid.progress(that.uploadContainer,{
-            selectors: {
-                progressBar: "#"+file.id,
-     			displayElement: "#"+file.id+"_progress", 
-    			label: "#"+file.id+"_progress .file-progress-text",
-                indicator: "#"+file.id+"_progress"
-            }
-	    });
-        */
-        
         that.refreshView();
+    };
+    
+    var changeRowState = function (row, newState) {
+        // remove the ready status and add the new status
+        row.removeClass('ready').removeClass('error').addClass(newState);
+    };
+    
+    var bindEvents = function (that) {
+        
+        that.uploadManager.events.onFileSuccess.addListener(function (file) {
+            var row = rowForFile(that, file);
+            // remove click event on Remove button
+            that.locate("removeButton", row).unbind('click');
+            // remove the tabFocus on the Remove button
+            that.locate("removeButton", row).tabindex(-1);
+            // change row class
+            changeRowState(row, that.options.styles.uploaded);
+        });
+        
+        that.uploadManager.events.onFileError.addListener(function (file) {
+            var row = rowForFile(that, file);
+            changeRowState(row, that.options.styles.error);
+        });
     };
     
     var setupFileQueue = function (that, uploadManager) {
@@ -137,6 +148,8 @@ fluid_0_6 = fluid_0_6 || {};
                 $(selectedItem).removeClass(that.options.styles.selected);
             }
         });
+        
+        bindEvents(that);
     };
     
     /**
@@ -184,7 +197,9 @@ fluid_0_6 = fluid_0_6 || {};
             ready: "ready",
             uploading: "uploading",
             hover: "hover",
-            selected: "selected"
+            selected: "selected",
+            uploaded: "uploaded",
+            error: "error"
         }
     });
    
