@@ -131,10 +131,11 @@ The Inline Edit component is in development. Some features are present, but more
 The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
 Some of the known issues in this release are described here:
 
-* Uploader: The Uploader is currently NOT compatible with the Flash 10 beta. This bug is caused by
-  a change in Adobe's security protocols for Flash 10, which blocks the SWFUpload code from calling
-  the OS File browser. The SWFUpload community is looking for fixes and work-arounds both in their
-  own code and in Flash, and we anticipate a work-around or fix before Flash 10 goes final.
+* Uploader: The Uploader is currently NOT COMPATIBLE with Flash 10 (released on 9/26/2008). This 
+  bug is caused by a change in Adobe's security protocols for Flash 10, which block the SWFUpload 
+  code from calling the OS File browser. The SWFUpload community is still implementing a fix based 
+  on overlaying a transparent Flash object over the HTML Browse button. The Uploader in Fluid 0.6 
+  will include this fix, or a fix of our own. 
 
 * Uploader: After pausing, queue sometimes won't resume
 
