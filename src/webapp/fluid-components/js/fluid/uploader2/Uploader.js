@@ -87,6 +87,15 @@ fluid_0_6 = fluid_0_6 || {};
     };
         
     var progressComplete = function (that, file) {
+        var batch = that.uploadManager.queue.currentBatch;
+        
+        var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.completedLabel, {
+            curFileN: batch.fileIdx + 1, 
+            totalCurrBytes: fluid.uploader.formatFileSize(batch.totalBytes)
+        });
+        
+        that.totalProgress.update(100, totalProgressStr);
+        
         that.totalProgress.hide();
     };
 
