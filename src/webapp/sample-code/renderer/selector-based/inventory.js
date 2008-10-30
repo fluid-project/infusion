@@ -25,10 +25,17 @@ fluid.inventoryExample =  function () {
      */
     var initTableFullTree = function () {
         /*
-         * This component tree fully identifies each component by its ID.
+         * This component tree fully identifies each component by its rsf ID.
+         * Compare this to the abridged tree used by initTableAbridgedTree(), which implies
+         * the rsf IDs by using them as keys.
          */
         var fullTree = {
             children: [
+                // The colon (:) at the end of the rsf ID identifies the component as a repeating
+                // component. In this full tree, there is one object for each repeated component.
+                // In this selector-based example, these rsf IDs are not present in the HTML template.
+                // The selectorMap below maps these components to the elements in the template
+                // via selectors.
                 {ID: "table-row:",
                 children: [
                     {ID: "sku", value: "23-23874"},
@@ -53,12 +60,17 @@ fluid.inventoryExample =  function () {
             ]
         };
 
+        // This object maps the HTML elements in the template (identified by the selector)
+        // to the component in the component tree (identified by the id).
         var selectorMap = [{selector: ".item-row", id: "table-row:"},
                            {selector: ".sku-container", id: "sku"},
                            {selector: ".quantity-container", id: "quantity"},
                            {selector: ".item-container", id: "item"},
                            {selector: ".description-container", id: "description"}];
 
+        // fluid.selfRender() and fluid.reRender() return the original template. This template
+        // can be re-used by fluid.reRender().
+        // The selectorMap is provided to the renderer through the options parameter.
         if (parsedTemplate) {
             parsedTemplate = fluid.reRender(parsedTemplate, jQuery("[id=table-base:]"), fullTree, {cutpoints: selectorMap});
         } else {
@@ -73,8 +85,13 @@ fluid.inventoryExample =  function () {
         /*
          * This component tree is in 'short-hand' form. In this form, the 'keys' are assumed
          * to be rsf:ids, and the values are assumed to be the values for those elements in the table.
+         * Compare this tree to the full tree used by initTableFullTree(). The renderer will expand
+         * this tree to one that has the same form as that used by initTableFullTree().
          */
         var abridgedTree = {
+            // In this selector-based example, these rsf IDs are not present in the HTML template.
+            // The selectorMap below maps these components to the elements in the template
+            // via selectors.
             "table-row:": [{
                 "sku": "84-84843",
                 "quantity": 56,
@@ -93,38 +110,23 @@ fluid.inventoryExample =  function () {
             }]
         };
 
+        // This object maps the HTML elements in the template (identified by the selector)
+        // to the component in the component tree (identified by the id).
         var selectorMap = [{selector: ".item-row", id: "table-row:"},
                            {selector: ".sku-container", id: "sku"},
                            {selector: ".quantity-container", id: "quantity"},
                            {selector: ".item-container", id: "item"},
                            {selector: ".description-container", id: "description"}];
 
+        // fluid.selfRender() and fluid.reRender() return the original template. This template
+        // can be re-used by fluid.reRender().
+        // The selectorMap is provided to the renderer through the options parameter.
         if (parsedTemplate) {
             parsedTemplate = fluid.reRender(parsedTemplate, jQuery("[id=table-base:]"), abridgedTree, {cutpoints: selectorMap});
         } else {
             parsedTemplate = fluid.selfRender(jQuery("[id=table-base:]"), abridgedTree, {cutpoints: selectorMap});
         }
     };
-
-    /**
-     * Data used to generate a component tree, and to bind to the mark-up.
-     */
-    var dataTable = [
-        {sku: "23-23874", quantity: 43,  item: "Helmet", description: "Red baseball helmet. Size: Large."},
-        {sku: "48-38835", quantity: 84,  item: "Football", description: "Leather football."},
-        {sku: "84-84848", quantity: 31,  item: "Goggles", description: "Light blue swim goggles"},
-        {sku: "84-84843", quantity: 56,  item: "Badminton Set", description: "Set of 2 badminton rackets, net, and 3 birdies."},
-        {sku: "84-39321", quantity: 128, item: "Tennis Balls", description: "Canister of 3 tennis balls."},
-        {sku: "39-48949", quantity: 55,  item: "Snowboard", description: ""},
-        {sku: "99-28128", quantity: 77,  item: "Cleats", description: "Soccer cleats. Size: 10."},
-        {sku: "83-48281", quantity: 65,  item: "Volleyball", description: ""},
-        {sku: "89-32811", quantity: 67,  item: "Sweatband", description: "Blue sweatband. Size: Medium."},
-        {sku: "28-22847", quantity: 43,  item: "Golf Set", description: "Set of 9 golf clubs and bag."},
-        {sku: "38-38281", quantity: 35,  item: "Basketball Shorts", description: "Green basketball shorts. Size: Small."},
-        {sku: "82-38333", quantity: 288, item: "Lip balm", description: "Lip balm. Flavor: Cherry."},
-        {sku: "21-38485", quantity: 177, item: "Ping Pong Ball", description: ""},
-        {sku: "83-38285", quantity: 87,  item: "Hockey Puck", description: "Glow-in-the-dark hockey puck."}
-    ];
 
     return {
         setup: function () {

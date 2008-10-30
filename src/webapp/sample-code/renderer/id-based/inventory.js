@@ -25,10 +25,14 @@ fluid.inventoryExample =  function () {
      */
     var initTableFullTree = function () {
         /*
-         * This component tree fully identifies each component by its ID.
+         * This component tree fully identifies each component by its rsf ID.
+         * Compare this to the abridged tree used by initTableAbridgedTree(), which implies
+         * the rsf IDs by using them as keys.
          */
         var fullTree = {
             children: [
+                // The colon (:) at the end of the rsf ID identifies the component as a repeating
+                // component. In this full tree, there is one object for each repeated component.
                 {ID: "table-row:",
                 children: [
                     {ID: "sku", value: "23-23874"},
@@ -52,6 +56,9 @@ fluid.inventoryExample =  function () {
                 ]}
             ]
         };
+
+        // fluid.selfRender() and fluid.reRender() return the original template. This template
+        // can be re-used by fluid.reRender().
         if (parsedTemplate) {
             parsedTemplate = fluid.reRender(parsedTemplate, jQuery("[id=table-base:]"), fullTree);
         } else {
@@ -65,9 +72,15 @@ fluid.inventoryExample =  function () {
     var initTableAbridgedTree = function () {
         /*
          * This component tree is in 'short-hand' form. In this form, the 'keys' are assumed
-         * to be rsf:ids, and the values are assumed to be the values for those elements in the table.
+         * to be rsf IDs, and the values are assumed to be the values for those elements in the table.
+         * Compare this tree to the full tree used by initTableFullTree(). The renderer will expand
+         * this tree to one that has the same form as that used by initTableFullTree().
          */
         var abridgedTree = {
+            // The colon (:) at the end of the rsf ID identifies the component as a repeating
+            // component. In this abridged tree, instead of one object per repeated component,
+            // there is a single object identifying the repeated element, with an array of object
+            // identifying the repeated contents.
             "table-row:": [{
                 "sku": "84-84843",
                 "quantity": 56,
@@ -85,6 +98,9 @@ fluid.inventoryExample =  function () {
                 "description": ""
             }]
         };
+
+        // fluid.selfRender() and fluid.reRender() return the original template. This template
+        // can be re-used by fluid.reRender().
         if (parsedTemplate) {
             parsedTemplate = fluid.reRender(parsedTemplate, jQuery("[id=table-base:]"), abridgedTree);
         } else {

@@ -18,10 +18,18 @@ var fluid = fluid || {};
 
 fluid.dataBindingExample = function () {
 
+    /*
+     * Utility function to display the selected items, which are identified
+     * by the "choice" member.
+     */
     var dumpModel = function (model, el) {
         el.text(JSON.stringify(model, ["choice"]));
     };
 
+    // The following two data models will be bound to the input elements in the markup.
+    // The 'values' member identifies the value attributes to be used for the inputs.
+    // The 'names' member identifies the strings that will be displayed.
+    // The 'coice' member identifies which input elements should initally be selected.
     var wineModel = {
         values: ["riesling", "weissbergunder", "pinot-grigio", "gewurztraminer"],
         names: ["Berg Rottland Riesling", "Weissbergunder", "Pinot Grigio", "Gewurztraminer Turkheim"],
@@ -35,12 +43,26 @@ fluid.dataBindingExample = function () {
     };
 
     var renderMenu = function () {
+        // This component tree will not be bound to a data model; the data to be used is specified
+        // directly in the tree.
         var locationTree = {
             children: [
+                // The first item in the component tree defines the container for the input elements.
+                // Note that this component does NOT map to any HTML element in the template.
+                // The presence of the optionlist, optionnames and selection members identifies this
+                // component as a Selection component.
+                // The 'optionlist' member identifies the value attributes to be used for the inputs.
+                // The 'optionnames' member identifies the strings that will be displayed.
+                // The 'selection' member identifies which input elements should initally be selected.
                 {ID: "locations", optionlist: ["library", "parlour", "dining-room"],
                                   optionnames: ["Library", "Parlour", "Dining Room"],
                                   selection: ["parlour"]},
+                // Each of the following components identifies one member of the selection inputs.
+                // Note that these components do not define the data to be used - they reference
+                // the data in the parent component defined above, using the parentRelativeID and
+                // the choiceindex.
                 {ID: "location-row:", children: [
+                    // The parentRelativeID uses a special format
                     {ID: "location", choiceindex: 0, parentRelativeID: "..::locations"},
                     {ID: "location-label", choiceindex: 0, parentRelativeID: "..::locations"}
                 ]},
@@ -55,6 +77,11 @@ fluid.dataBindingExample = function () {
             ]
         };
         
+        // This component tree will be bound to a data model; instead of providing the data directly
+        // in the tree, a valuebinding member is used to identify which member of the model should
+        // be bound to the optionlist, optionnames, and selection.
+        // The model itself will be identified to the renderer through the options parameter to
+        // fluid.selfRender().
         var wineTree = {
             children: [
                 {ID: "wines", optionlist: {valuebinding: "values"},
@@ -79,6 +106,11 @@ fluid.dataBindingExample = function () {
             ]
         };
 
+        // This component tree will be bound to a data model; instead of providing the data directly
+        // in the tree, a valuebinding member is used to identify which member of the model should
+        // be bound to the optionlist, optionnames, and selection.
+        // The model itself will be identified to the renderer through the options parameter to
+        // fluid.selfRender().
         var foodTree = {
             children: [
                 {ID: "food", optionlist: {valuebinding: "values"},
@@ -130,11 +162,18 @@ fluid.dataBindingExample = function () {
                 ]}
             ]};
 
-       fluid.selfRender(jQuery("#location"), locationTree);
+        // The location tree is not bound to a data model, so only the tree itself is passed to
+        // fluid.selfRender().
+        fluid.selfRender(jQuery("#location"), locationTree);
 
+        // The wine list and food list trees will be bound to a data model, which is passed to
+        // fluid.selfRender() in the options parameter.
         fluid.selfRender(jQuery("#wine-list"), wineTree, {model: wineModel});
         dumpModel(wineModel, jQuery("#bound-model"));
         
+        // The autoBind option tells the renderer to automatically update the model when the value
+        // of an input changes. Without this parameter, the model must be updated manually through
+        // a call to fluid.applyChange().
         fluid.selfRender(jQuery("#food-list"), foodTree, {model: foodModel, autoBind: true});
         dumpModel(foodModel, jQuery("#autobound-model"));
     };
@@ -146,6 +185,8 @@ fluid.dataBindingExample = function () {
                 renderMenu();
             };
 
+            // This call to fluid.applyChange() will update the model associated with the inputs
+            // with whatever the current value of the inputs are.
             var applyButton = fluid.byId("apply-change");
             applyButton.onclick = function () {
                 var inputs = $("input", jQuery("#wine-list"));
