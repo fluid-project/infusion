@@ -1,63 +1,66 @@
-FLUID MULTI-FILE UPLOAD READ ME
+FLUID UPLOADER READ ME
 
-1) Running the Uploader with out a Server
-2) Setting up the Uploader on a Server
+1) Known Issues
+2) Troubleshooting
+3) Running the Uploader with out a Server
+4) Setting up the Uploader on a Server
+
+--------------------------------------
+
+KNOWN ISSUES: 
+
+* The Uploader is currently NOT COMPATIBLE with Flash 10 (released on 9/26/2008). This 
+  bug is caused by a change in Adobe's security protocols for Flash 10, which block the SWFUpload 
+  code from calling the OS File browser. The SWFUpload community is still implementing a fix based 
+  on overlaying a transparent Flash object over the HTML Browse button. The Uploader in Fluid 0.6 
+  will include this fix, or a fix of our own.
+  
+* After pausing, the queue sometimes won't resume
+  
+--------------------------------------
+
+TROUBLE SHOOTING:
+
+* When running the Uploader sample code on a local system without a server, check to make 
+  sure that you have followed the instructions below under "RUNNING THE UPLOADER ON A 
+  LOCAL SYSTEM WITHOUT A SERVER". 
+
+* If you see this error in your console: 
+  [Exception... "'Invalid function name' when calling method: [nsIDOMEventListener::handleEvent]" nsresult: "0x8057001e (NS_ERROR_XPC_JS_THREW_STRING)" location: "<unknown>" data: no]
+  [Break on this error] if ( !event.which && ((event.charCode || event.charCode === 0) ? event.charCod...
+
+  The flashUrl option is probably wrong. Check that first. 
 
 --------------------------------------
 
 RUNNING THE UPLOADER ON A LOCAL SYSTEM WITHOUT A SERVER
 
-NOTE: Running the Uploader locally without a server is officially an invalid configuration for anything other than UI development and testing. The browsing portion of the workflow is fine, but the upload portion is done with smoke and mirrors and fakery. Do not do QA while running locally.
+NOTE: Running the Uploader locally without a server is not a valid configuration for anything other than UI development and testing. The browsing portion of the workflow is fine, but the upload portion is done with smoke and mirrors and a bit of hand-waving. Do not do QA while running locally.
 
-Additionally in order to run locally you will need to make some minor modifications to your Flash settings in order to allow the Flash component to run with out a server.
+The Uploader sample files in the sample-code/uploader/ directory are configured for running locally. An empty uploadURL option indicates to the Uploader that the code is running with out a server. You may also need to ensure that the path for the flashURL option is set correctly. 
 
-SET UP:
-
-1. Pull down a copy of the Fluid Multi-File Uploader to your local machine from SVN
-2. Open sample-code/uploader/uploader.html
-3. Check the following strings in settings:
         var settings =   {
             uploadUrl : "",
             flashUrl : "../../../fluid-components/swfupload/swfupload_f9.swf"
 
-  ** uploadUrl must be empty.
-  ** flashUrl must be a relative path to the swfupload_f9.swf file.
 
-4. Open your browser
-5. Browse to:
+Additionally, you may need to modify some of your Flash settings to allow the local SWFUpload object to access your file system. To do so, follow these directions:
+
+1. Open your browser
+2. Browse to:
    http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html
 
-6. In the Flash Settings panel, click "Edit locations..."
-7. Select "Add location..."
-8. Click "Browse for files..."
-9. Select the swfupload_f9.swf file that is in your local /src/webapp/fluid-components/swfupload/ directory
-10. Restart your browser
+3. In the Flash Settings panel, click "Edit locations..."
+4. Select "Add location..."
+5. Click "Browse for files..."
+6. Select the swfupload_f9.swf file that is in your local /src/webapp/fluid-components/swfupload/ directory
+7. Restart your browser
 
-Now you should be good to run the uploader files in sample-code/uploader/
+You should be good to go! 
 
-Please note that if you move your installation, you'll need to do this all over again. There are settings that will allow the file to be run from any location on your local machine but these instructions are the minimum settings and therefor pose the smallest security hole. (If a security hole even exists at all.)
+However, if you move your installation, you'll need to do this all over again. There are settings that will allow the file to be run from any location on your local machine but these instructions are the minimum settings and therefor pose the smallest security hole. (If a security hole even exists at all.)
 
-Also it appears that these settings are global and do not need to repeated for every browser that you are using on that machine. 
-
-KNOWN ISSUES: 
-* The Uploader is currently NOT compatible with the Flash 10 beta. This bugs is caused by
-  a change in Adobe's security protocols for Flash 10, which blocks the SWFUpload code from calling
-  the OS File browser. The SWFUpload community is looking for fixes and work-arounds both in their
-  own code and in Flash, and we anticipate a work-around or fix before Flash 10 goes final.
-  
-* After pausing, the queue sometimes won't resume
-  
-TROUBLE SHOOTING:
-
-* When running the Uploader sample code on a local system without a server, check to make 
-  sure that you have followed the instructions above under "RUNNING THE UPLOADER ON A 
-  LOCAL SYSTEM WITHOUT A SERVER". 
-
-* If you see this error in your console: 
-	[Exception... "'Invalid function name' when calling method: [nsIDOMEventListener::handleEvent]" nsresult: "0x8057001e (NS_ERROR_XPC_JS_THREW_STRING)" location: "<unknown>" data: no]
-	[Break on this error] if ( !event.which && ((event.charCode || event.charCode === 0) ? event.charCod...
-
-  The flashUrl setting is probably wrong. Check that first. 
+Also it appears that these settings are global and do not need to repeated for every browser on a given system. 
 
 --------------------------------------
 
@@ -67,7 +70,7 @@ Two uploader applications have been provided as very rough examples of integrati
 
 * JAVA Uploader Reference Application:
   For our own internal testing the Fluid team wrote the following JAVA application:
-  	https://source.fluidproject.org/svn/fluid/image-gallery/trunk/
+      https://source.fluidproject.org/svn/fluid/image-gallery/trunk/
 
   Please read https://source.fluidproject.org/svn/fluid/image-gallery/trunk/development-support/README.txt before proceeding.
   
