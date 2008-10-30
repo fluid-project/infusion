@@ -109,12 +109,21 @@ fluid_0_6 = fluid_0_6 || {};
         that.events.onFileStart.addListener(function (file) {
             that.queue.currentBatch.fileIdx++;
             that.queue.currentBatch.previousChunk = 0; 
+            that.queue.currentBatch.bytesUploadedForFile = 0;
         });
         
         that.events.onFileProgress.addListener(function (file, currentBytes, totalBytes) {
             var currentBatch = that.queue.currentBatch;
-            currentBatch.bytesUploaded += currentBytes - currentBatch.previousChunk;
+            var byteIncrement = currentBytes - currentBatch.previousChunk;
+            currentBatch.bytesUploaded += byteIncrement;
+            currentBatch.bytesUploadedForFile += byteIncrement;
             currentBatch.previousChunk = currentBytes;
+        });
+        
+        that.events.onFileSuccess.addListener(function (file) {
+            if (that.queue.currentBatch.bytesUploadedForFile === 0) {
+                that.queue.currentBatch.bytesUploaded = file.size;
+            }
         });
     };
     
