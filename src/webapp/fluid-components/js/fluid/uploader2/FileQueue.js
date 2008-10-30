@@ -38,6 +38,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     var clearCurrentBatch = function (that) {
         that.currentBatch = {
+            fileIdx: -1,
         	files: [],
         	totalBytes: 0,
         	numFilesCompleted: 0,
