@@ -75,7 +75,7 @@
     border      : 1px solid #999;
     background  : lightyellow;
     cursor      : pointer;
-    margin      : -1px;
+    /*margin      : -1px;*/
 }
 .inlineEdit-tooltip {
     position    : absolute;
