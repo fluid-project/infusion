@@ -122,9 +122,9 @@ fluid.inventoryExample =  function () {
         // can be re-used by fluid.reRender().
         // The selectorMap is provided to the renderer through the options parameter.
         if (parsedTemplate) {
-            parsedTemplate = fluid.reRender(parsedTemplate, jQuery("[id=table-base:]"), abridgedTree, {cutpoints: selectorMap});
+            parsedTemplate = fluid.reRender(parsedTemplate, jQuery("#inventory-table"), abridgedTree, {cutpoints: selectorMap});
         } else {
-            parsedTemplate = fluid.selfRender(jQuery("[id=table-base:]"), abridgedTree, {cutpoints: selectorMap});
+            parsedTemplate = fluid.selfRender(jQuery("#inventory-table"), abridgedTree, {cutpoints: selectorMap});
         }
     };
 
