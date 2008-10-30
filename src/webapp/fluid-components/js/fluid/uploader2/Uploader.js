@@ -43,10 +43,16 @@ fluid_0_6 = fluid_0_6 || {};
         setState(that, currState);
         switch (currState) {
         case that.options.styles.queueEmptyState:
+            that.locate("uploadButton").attr("disabled", "disabled");
+            that.locate("browseButton").text("Browse Files");
+            break;
         case that.options.styles.queueDoneState:
             that.locate("uploadButton").attr("disabled", "disabled");
             break;
         case that.options.styles.queueLoadedState:
+            that.locate("browseButton").text(that.options.strings.buttons.addMore);
+            that.locate("uploadButton").removeAttr("disabled");
+            break;
         case that.options.styles.queueReloadedState:
             that.locate("uploadButton").removeAttr("disabled");
             break;
@@ -291,6 +297,9 @@ fluid_0_6 = fluid_0_6 || {};
                 pausedLabel: "Paused at: %curFileN of %totalFilesN files (%currBytes of %totalBytes)",
                 totalLabel: "Uploading: %curFileN of %totalFilesN files (%currBytes of %totalBytes)", 
                 completedLabel: "Uploaded: %curFileN files (%totalCurrBytes)"
+            },
+            buttons: {
+                addMore: "Add More"
             }
         }
     });
