@@ -26,7 +26,8 @@ Both bundles have the following organization:
         LICENSE.txt
         README.txt
 
-The deployment bundle also includes a war file suitable for deployment: fluid-components-0.6beta1.war
+The deployment bundle also includes a WAR file suitable for deployment in Java-based containers: 
+	fluid-components-0.6beta1.war
 
 Source Code
 -----------
@@ -38,9 +39,10 @@ The full source code for the Fluid component library, including JavaScript, HTML
            js/
            swfupload/
 
-Both bundles include a single JavaScript file, fluid-components/js/Fluid-all.js, that is a
-combination of all other source files. Developers can include this single file in their pages to
-provide all the necessary support for the Fluid component Library.
+Both bundles also include a single JavaScript file, fluid-components/js/Fluid-all.js, that is a
+combination of all other source files. This script is compressed and suitable for production use.
+Developers can include this single file in their pages to provide all the necessary support for the 
+Fluid component Library.
 
 In the deployment bundle, the JavaScript source has been minified: comments and whitespace
 have been removed. Developers wishing to learn about the Fluid code, or debug their applications,
@@ -76,19 +78,20 @@ Fluid also depends upon some third party open source modules. These are containe
 with their respective licenses inside the fluid source code.
 
 
-Sources of Intellectual Property Included in Fluid
---------------------------------------------------
+Third Party Software in Fluid
+------------------------------
 This is a list of publicly available software that is included in the Fluid bundle, along with their licensing terms.
 
 	* jQuery javascript library: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
 	* jQuery UI javascript widget library: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
-	* QUnit testrunner: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
+	* jQuery QUnit testrunner: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
 	* CSS styling reset from YUI: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
 	* jARIA, the jQuery ARIA plugin: http://jqueryjs.googlecode.com/svn/trunk/plugins/jARIA (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * JSON parsing and stringifying methods: http://www.json.org/ (Public Domain)
+    * Douglas Crockford's JSON parsing and stringifying methods: http://www.json.org/ (Public Domain)
     * SWFUpload: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
-    * Real world examples from Sakai (http://sakaiproject.org) and uPortal (http://www.uportal.org/)
-    
+    * XML for Script's Fast Pull Parser (LGPL licensed http://xmljs.sourceforge.net/)
+    * Sample markup and stylesheets from Sakai (http://sakaiproject.org) and uPortal (http://www.uportal.org/)
+
     
 Readme
 ------
@@ -119,7 +122,7 @@ Supported Browsers
 ==================
 Firefox 2.x, 3.x: full support
 Internet Explorer 6.x, 7.x: full support
-Safari 3.1, Opera 9.5: support (except keyboard interaction)
+Safari 3.1, Opera 9.5: full support (except keyboard interaction, which is not supported by these browsers)
 
 
 Known Issues
@@ -128,8 +131,10 @@ Known Issues
 The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
 Some of the known issues in this release are described here:
 
-
-* Renderer: The Renderer only works in FireFox and Safari at this time.
+* Renderer: The Fluid renderer is provided in this release as a "sneak peek" of the features we have planned.
+  It is not intended for production use, and its APIs will change significantly over the course of the next few 
+  releases. Try it out and share your early feedback with us, but don't rely on it for daily use yet. 
+  At the moment, the Renderer only works in FireFox and Safari.
 
 * Uploader: The Uploader is currently NOT COMPATIBLE with Flash 10 (released on 9/26/2008). This 
   bug is caused by a change in Adobe's security protocols for Flash 10, which block the SWFUpload 
@@ -144,8 +149,3 @@ Some of the known issues in this release are described here:
 * Keyboard accessibility jQuery plug-in: There is a naming clash with jQuery UI's ui.selectable.js
 
 * Keyboard control in the Safari and Opera browsers is not yet fully supported.
-
-The Inline Edit component is in development. Some features are present, but more are planned.
-
-The new Pager component is very preliminary: Much of the functionality is not yet implemented.
-
