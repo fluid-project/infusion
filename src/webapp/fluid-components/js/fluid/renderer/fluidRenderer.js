@@ -332,7 +332,7 @@ fluid_0_6 = fluid_0_6 || {};
       outDecorators(branch, attrcopy);
       out += "<" + targetlump.tagname + " ";
       out += fluid.dumpAttributes(attrcopy);
-      out += "/>";
+      out += ">";
   }
   
   function dumpTillLump(lumps, start, limit) {
@@ -1256,7 +1256,7 @@ fluid_0_6 = fluid_0_6 || {};
       if (options.model) {
           fluid.bindFossils(node, options.model, fossils);
           }
-      node.innerHTML = rendered;
+      $(node).html(rendered);
       processDecoratorQueue();
       return templates;
   }

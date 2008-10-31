@@ -617,7 +617,8 @@ fluid_0_6 = fluid_0_6 || {};
         fullAtNode.child = true;
         }
       togo[togo.length] = fullAtNode;
-      if (childSeg.lastIndex === selstring.length) {
+      // >= test here to compensate for IE bug http://blog.stevenlevithan.com/archives/exec-bugs
+      if (childSeg.lastIndex >= selstring.length) {
         break;
         }
       lastIndex = childSeg.lastIndex;

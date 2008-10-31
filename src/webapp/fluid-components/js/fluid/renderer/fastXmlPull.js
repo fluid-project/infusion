@@ -167,7 +167,9 @@ XMLP.prototype._parse = function() {
   }
   
 var nameRegex = /([^\s>]+)/g;
-var attrRegex = /\s*([\w:]+)=\"([^\"]*)\"\s*/gm;
+var attrStartRegex = /\s*([\w:]+)/gm;
+var attrValRegex = /\"([^\"]*)\"\s*/gm; // "normal" XHTML attribute values
+var attrValIERegex = /([^\>\s]+)\s*/gm; // "stupid" unquoted IE attribute values (sometimes)
 var closeRegex = /\s*<\//g;
 
 XMLP.prototype._parseElement = function(iB) { 
@@ -202,25 +204,40 @@ XMLP.prototype._parseElement = function(iB) {
   if (nameRegex.lastIndex < iDE) {
     this.m_iP = nameRegex.lastIndex;
     while (this.m_iP < iDE) {
-      attrRegex.lastIndex = this.m_iP;
-      var attrMatch = attrRegex.exec(this.m_xml);
+      attrStartRegex.lastIndex = this.m_iP;
+      var attrMatch = attrStartRegex.exec(this.m_xml);
       if (!attrMatch) {
         return this._setErr(XMLP.ERR_ATT_VALUES)
         }
-      var attrname = attrMatch[1];
-      var attrval = attrMatch[2];
+      var attrname = attrMatch[1].toLowerCase();
+      var attrval;
+      if (this.m_xml.charCodeAt(attrStartRegex.lastIndex) === 61) { // = 
+        var valRegex = this.m_xml.charCodeAt(attrStartRegex.lastIndex + 1) === 34? attrValRegex : attrValIERegex; // "
+        valRegex.lastIndex = attrStartRegex.lastIndex + 1;
+        attrMatch = valRegex.exec(this.m_xml);
+        if (!attrMatch) {
+          return this._setErr(XMLP.ERR_ATT_VALUES)
+          }
+        attrval = attrMatch[1];
+        }
+      else { // accommodate insanity on unvalued IE attributes
+        attrval = attrname;
+        valRegex = attrStartRegex;
+        }
       if (!this.m_attributes[attrname]) {
         this.m_attributes[attrname] = attrval;
         }
       else { 
         return this._setErr(XMLP.ERR_ATT_DUP);
       }
-      this.m_iP = attrRegex.lastIndex;
+      this.m_iP = valRegex.lastIndex;
+        
       }
     }
   if (strN.indexOf("<") != -1) { 
     return this._setErr(XMLP.ERR_ELM_LT_NAME);
     }
+  strN = strN.toLowerCase();
   this.m_name = strN; 
   this.m_iP = iE + 1;
   // Check for corrupted "closed tags" from innerHTML
@@ -253,7 +270,7 @@ XMLP.prototype._parseComment = function(iB) {
   if (iE == -1) { 
     return this._setErr(XMLP.ERR_CLOSE_COMMENT);
     }
-  this._setContent(XMLP._CONT_XML, iB, iE); 
+  this._setContent(XMLP._CONT_XML, iB - 4, iE + 3); 
   this.m_iP = iE + 3; 
   return XMLP._COMMENT;
   }

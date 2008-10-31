@@ -65,7 +65,8 @@ fluid.testUtils.assertNode = function(message, expected, node) {
         }
     }
     for (var key in expected) {
-        var attr = node.getAttribute(key);
+        // mustn't use DOM getAttribute because of numerous bugs (in particular http://www.quirksmode.org/bugreports/archives/2007/03/getAttributefor_is_always_null_in_Internet_Explore.html )
+        var attr = jQuery.attr(node, key);
         var messageExt = " - attribute " + key + "";
         if (key === "nodeName") {
            attr = node.tagName.toLowerCase();
@@ -74,7 +75,13 @@ fluid.testUtils.assertNode = function(message, expected, node) {
         if (key === "nodeText") {
            attr = jQuery.trim(fluid.dom.getElementText(node));
         }
-        jqUnit.assertEquals(message + messageExt, expected[key], attr);
+        var evalue = expected[key];
+        var pass = evalue === attr;
+        if (attr === false || attr === true) { // support for IE refusing to honour XHTML values
+            pass = !!evalue === attr;
+            }
+        
+        jqUnit.assertTrue(message + messageExt + " expected: " + evalue + " actual: " + attr, pass);
     }
   
 }
