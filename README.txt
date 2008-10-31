@@ -1,23 +1,23 @@
 
-Fluid Infusion 0.5
+Fluid Infusion 0.6beta1
 ========================
 Main Project Site:  http://fluidproject.org
 User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
 
-What's New in 0.5
-=================
+What's New in 0.6beta1
+======================
 
-This version of Fluid Infusion includes a number of API changes. The Fluid wiki has instructions
-for upgrading your existing 0.4 implementation to use the new 0.5 APIs:
-
-    http://wiki.fluidproject.org/display/fluid/Upgrading+to+version+0.5
+This beta release includes
+  * A sneak peak at the Fluid Client-side Renderer (working in FireFox and Safari)
+  * A preview of the Fluid Skinning System
+  * Numerous bug fixes
 
 What's in this Release
 ======================
 
 This release is available in two forms:
-    fluid-0.5.zip - deployment bundle
-    fluid-0.5-src.zip - source code bundle
+    fluid-0.6beta1.zip - deployment bundle
+    fluid-0.6beta1-src.zip - source code bundle
     
 Both bundles have the following organization:
         fluid-components/
@@ -26,7 +26,7 @@ Both bundles have the following organization:
         LICENSE.txt
         README.txt
 
-The deployment bundle also includes a war file suitable for deployment: fluid-components-0.5.war
+The deployment bundle also includes a war file suitable for deployment: fluid-components-0.6beta1.war
 
 Source Code
 -----------
@@ -53,6 +53,7 @@ Sample code illustrating how Fluid components can be used:
            inline-edit/
            keyboard-a11y/
            pager/
+           renderer/
            reorderer/
            uploader/
            shared/
@@ -107,11 +108,11 @@ The pages fall into a number of categories, including tutorials, API description
 and data-gathering approaches. To make the manual pages easy to locate, identify, and peruse,
 we have set up the following aids to navigation:
 
-    * An organized table of contents is provided for the reader, with links to
+    * An organized Table of Contents is provided for the reader, with links to
       all manual pages, each with a brief description of the page contents.
-    * A link to the table of contents appears at the top of the left-side wiki navigation
-      bar with the name User Manual ToC. This makes it easy to return to the table of
-      contents from anywhere in the wiki hierarchical structure.
+    * A link to the Table of Contents appears at the top of the left-side wiki navigation
+      bar with the name "User Manual". This makes it easy to return to the Table of
+      Contents from anywhere in the wiki hierarchical structure.
 
 
 Supported Browsers
@@ -124,12 +125,11 @@ Safari 3.1, Opera 9.5: support (except keyboard interaction)
 Known Issues
 ============
 
-The new Pager component is very preliminary: Much of the functionality is not yet implemented.
-
-The Inline Edit component is in development. Some features are present, but more are planned.
-
 The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
 Some of the known issues in this release are described here:
+
+
+* Renderer: The Renderer only works in FireFox and Safari at this time.
 
 * Uploader: The Uploader is currently NOT COMPATIBLE with Flash 10 (released on 9/26/2008). This 
   bug is caused by a change in Adobe's security protocols for Flash 10, which block the SWFUpload 
@@ -141,4 +141,11 @@ Some of the known issues in this release are described here:
 
 * Reorderer: Nested Reorderers sometimes don't work as expected.
 
+* Keyboard accessibility jQuery plug-in: There is a naming clash with jQuery UI's ui.selectable.js
+
 * Keyboard control in the Safari and Opera browsers is not yet fully supported.
+
+The Inline Edit component is in development. Some features are present, but more are planned.
+
+The new Pager component is very preliminary: Much of the functionality is not yet implemented.
+
