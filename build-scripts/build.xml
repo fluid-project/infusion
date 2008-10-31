@@ -26,6 +26,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="jquery-src" location="${src}/js/jquery" />
 	<property name="swfupload-src" location="${src}/swfupload" />
 	<property name="swfupload-js-src" location="${src}/js/swfupload" />
+	<property name="renderer-src" location="${src}/js/fluid/renderer" />
 	<property name="dist" location="${products}/dist" />
     <property name="src-dist" location="${products}/src-dist" />
     <property name="src-dist-components" location="${src-dist}/fluid-components" />
@@ -37,6 +38,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="jquery-build" location="${components-build}/js/jquery" />
 	<property name="swfupload-build" location="${components-build}/swfupload" />
 	<property name="swfupload-js-build" location="${components-build}/js/swfupload" />
+	<property name="renderer-build" location="${components-build}/js/fluid/renderer" />
 	<property name="lint" location="${src}"/>
 
 	<!-- the filename for the package to output -->
@@ -114,6 +116,11 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         </copy>
         <copy todir="${swfupload-js-build}">
             <fileset dir="${swfupload-js-src}">
+                <include name="LICENSE.txt" />
+            </fileset>
+        </copy>
+        <copy todir="${renderer-build}">
+            <fileset dir="${renderer-src}">
                 <include name="LICENSE.txt" />
             </fileset>
         </copy>
