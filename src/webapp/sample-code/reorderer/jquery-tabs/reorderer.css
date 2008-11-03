@@ -47,3 +47,5 @@
     color:white;
     font: bold 12px "Trebuchet MS",Trebuchet,Verdana,Helvetica,Arial,sans-serif;   
 }
+
+.ui-draggable a {cursor:move;}
