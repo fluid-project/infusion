@@ -19,18 +19,27 @@
         <script type="text/javascript">
             jQuery(document).ready(function(){
                 
-                var sectionNameEdits = fluid.inlineEdits(".sectionTable", {
+                var markupNode; // hack to determine the 
+                
+                 sectionNameEdits = fluid.inlineEdits(".sectionTable", {
                     useTooltip: true,
                     selectOnEdit: true,
                     tooltipText: "Click to edit section name",
                     tooltipDelay: 800,
                    
-                         componentDecorators: {type: "fluid.undoDecorator"/*,
+                         componentDecorators: {type: "fluid.undoDecorator",
                                           options: {
                                               renderer: myUndoRenderer
-                                              }*/
+                                              }
 
-                    }
+                    },
+                      listeners: {
+                          afterFinish: function () {
+                              /*$(".editSaved").fadeIn("slow",function (){
+                                  $(".editSaved").fadeOut("slow");
+                              });*/
+                          }
+                      }
                 });
             
                 $(".remove-btn").click(function(){
@@ -50,6 +59,11 @@
                     return false;
                 });
                 
+                $(".editInstructions a").click(function (){
+                    $(".editInstructions").slideUp();
+                    return false;
+                });
+                
             });
             
             var showMessage = function () {
@@ -64,13 +78,15 @@
             
             var myUndoRenderer = function (that, targetContainer) {
                 var markup = "<span class='fluid-undo'>" + 
-                  "<span class='undoContainer'><a href='#' class='undoControl'><img src='images/undo.png' alt='Undo your edit' title='Undo your edit' /></a></span>" + 
-                  "<span class='redoContainer'><a href='#' class='redoControl'><img src='images/redo.png' alt='Redo your edit' title='Redo your edit' /></a></span>" + 
+                  "<span class='undoContainer'><a href='#' class='undoControl'><span class='label'>Undo</span></a></span>" + 
+                  "<span class='redoContainer'><a href='#' class='redoControl'><span class='label'>Redo</span></a></span>" + 
                 "</span>";
                 var markupNode = $(markup);
                 targetContainer.append(markupNode);
                 return markupNode;
             };
+            
+           
         </script>
     </head>
     <body>
@@ -91,6 +107,10 @@
                 </table>
                 <div class="instructions">
                     <h3 class="instructions">Instructor's Overview</h3>
+                    <div class="editInstructions">
+                        <p>Editable items will highlight as you mouse over them. To edit an item click on the item.</p>
+                        <div><a href="">Don't show me this message again</a></div>
+                    </div>
                 </div>
                 <table id="overviewForm:sectionsTable" class="listHier sectionTable" cellpadding="0" cellspacing="0" width="100%" summary="Sections">
                     <thead>
@@ -137,6 +157,7 @@
                             <td class="leftIndent">
                                 <div class="inlineEditable">
                                     <span class="text sectionName">Astronomy 7A P 001 LEC</span>
+                                    <span class="editSaved" style=""><span class="savedControl" href="#"><span class="label">Undo</span></span></span>
                                 </div>
                                 <div class="itemAction">
                                     <!--<a href="#" class="dummy">Edit Details</a>

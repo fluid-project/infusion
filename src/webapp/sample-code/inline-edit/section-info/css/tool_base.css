@@ -146,7 +146,7 @@ table.listHier{
 	font-size: 1em;
 	width: 100%;
 	clear: both;
-	margin-top: .5em;
+	margin-top: 0;
 	border:none; /*keep ff from giving it a border*/
 }
 

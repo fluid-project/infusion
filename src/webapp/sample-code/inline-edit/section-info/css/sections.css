@@ -11,7 +11,7 @@
 .verticalPadding {margin-top:20px;}
 
 /* Headings display close to their instructions */
-.instructions {margin-bottom:1em;}
+.instructions {margin-bottom:0.8em;}
 h3.instructions {margin-bottom:0em !important;}
 
 /* Student View section table */
@@ -170,12 +170,79 @@ table.narrowTable tr th {
 }
 
 .inlineEdit-invitation {
-    background-color:#FFECB3;
-    border: 1px solid #CCC;
-    cursor:pointer;
+    background-color:#FFD;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #666666 #DDDDDD #DDDDDD #666666 !important;
+    cursor: text;
 }
 
-.undoContainer, .redoContainer {}
+
+.inlineEditable {
+    position: relative;
+}
+
+
+.inlineEditable > span:first-child {
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    padding: 2px;
+    height: 100%;
+    width: 100%
+}
+
+.inlineEditable input {
+    font-family: Arial,Helvetica,Verdana,Geneva,sans-serif;
+    font-size: 1em !important;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #666666 #DDDDDD #DDDDDD #666666 !important;
+    padding: 2px;
+    margin:-3px -1px;
+}
+
+.fluid-undo {
+    position:absolute;
+    top: -2px;
+}
+
+.fluid-undo span.label {
+    display: none;   
+}
+
+.undoControl, .redoControl {
+    background-attachment: scroll;
+    background-repeat: no-repeat;
+    background-position: top left;
+    display: block;
+    position: relative;
+    width: 22px;
+    height: 18px;
+    outline: none;
+    opacity: 0.6;
+}
+
+a.undoControl:hover, a.redoControl:hover {
+    width: 48px;
+    opacity: 0.92;
+}
+
+a.undoControl {
+    background-image: url(../images/il-undo-sm.png);
+}
+
+a.undoControl:hover {
+    background-image: url(../images/il-undo-lg.png);
+}
+
+a.redoControl {
+    background-image: url(../images/il-redo-sm.png);
+}
+
+a.redoControl:hover {
+    background-image: url(../images/il-redo-lg.png);
+}
 
 .sectionName { 
     padding: 0.1em 0.4em 0.1em 0.2em;
@@ -185,4 +252,47 @@ table.narrowTable tr th {
     border: 1px solid #888;
     padding: 0.2em 0.4em;
     font-size: 1.2em;
+}
+
+.editInstructions {
+    border: 2px solid #FC7317;
+    background-color: #FFD;
+    padding: 0 0.6em 0.8em 0.6em;
+    margin: 0 auto;
+    width:33%;
+    text-align: center;
+}
+
+.editInstructions p {
+    background-image: url(../images/information.png);
+    background-attachment: scroll;
+    background-position: left top;
+    background-repeat: no-repeat; 
+    padding-left: 20px;
+    text-align: left;   
+}
+
+/* */
+
+.editSaved {
+    position:absolute;
+    top: -2px;
+    display: none;
+}
+
+.editSaved span.label {
+    display: none;   
+}
+
+.savedControl {
+    background-image: url(../images/il-edit-saved.png);
+    background-attachment: scroll;
+    background-repeat: no-repeat;
+    background-position: top left;
+    display: block;
+    position: relative;
+    width: 83px;
+    height: 18px;
+    outline: none;
+    opacity: 0.9;
 }
