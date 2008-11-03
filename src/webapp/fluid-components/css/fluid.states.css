@@ -21,8 +21,7 @@
 
 /* automatically applied the keyboard selected re-orderable item */
 .orderable-dragging {
-    background     :#999 !important;
-    color          :#fff !important;
+    background     :#ccc !important;    
 }
 
 .orderable-avatar {
