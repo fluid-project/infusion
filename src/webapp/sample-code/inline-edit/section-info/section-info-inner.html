@@ -18,48 +18,49 @@
         <script type="text/javascript" src="../../../fluid-components/js/fluid/Undo.js"></script>
         <script type="text/javascript">
             jQuery(document).ready(function(){
-                
-                var markupNode; // hack to determine the 
-                
+
                  sectionNameEdits = fluid.inlineEdits(".sectionTable", {
                     useTooltip: true,
                     selectOnEdit: true,
                     tooltipText: "Click to edit section name",
                     tooltipDelay: 800,
                    
-                         componentDecorators: {type: "fluid.undoDecorator",
-                                          options: {
-                                              renderer: myUndoRenderer
-                                              }
+                     componentDecorators: {type: "fluid.undoDecorator",
+                                      options: {
+                                          renderer: myUndoRenderer
+                                          }
 
                     },
                       listeners: {
-                          afterFinishEdit: function () {
-                              /*$(".editSaved").fadeIn("slow",function (){
-                                  $(".editSaved").fadeOut("slow");
-                              });*/
+                          afterFinishEdit: function (newValue, editField, oldValue, viewElement) {
+                              if (oldValue !== newValue) {
+                                  $(viewElement).siblings(".savedControl").fadeIn("slow",function (){
+                                      $(".savedControl").fadeOut(4000);
+                                  });
+                              }
                           }
                       }
                 });
             
-                $(".remove-btn").click(function(){
+                $(".remove-btn").click(function () {
                     $(this).parents("tr").css("background-color", "#FFE59F").fadeOut("slow", function(){
                         $(this).remove();
                     });
                     return false;
                 });
                 
-                $(".dummy").click(function(){
+                $(".dummy").click(function () {
                     showMessage();
+                    $("#continue").focus();
                     return false;
                 });
                 
-                $("#continue").click(function(){
+                $("#continue").click(function () {
                     hideMessage();
                     return false;
                 });
                 
-                $(".editInstructions a").click(function (){
+                $(".editInstructions a").click(function () {
                     $(".editInstructions").slideUp();
                     return false;
                 });
@@ -68,6 +69,7 @@
             
             var showMessage = function () {
                 $("#demo-overlay").show();
+                
                 return false;
             };
             
@@ -157,7 +159,7 @@
                             <td class="leftIndent">
                                 <div class="inlineEditable">
                                     <span class="text sectionName">Astronomy 7A P 001 LEC</span>
-                                    <span class="editSaved" style=""><span class="savedControl" href="#"><span class="label">Undo</span></span></span>
+                                    <span class="savedControl"><span class="label">Edit Saved</span></span>
                                 </div>
                                 <div class="itemAction">
                                     <!--<a href="#" class="dummy">Edit Details</a>
@@ -217,6 +219,7 @@
                             <td class="leftIndent">
                                 <div class="inlineEditable">
                                     <span class="text sectionName">Astronomy 7A S 102 LEC</span>
+                                    <span class="savedControl"><span class="label">Edit Saved</span></span>
                                 </div>
                                 <div class="itemAction">
                                     <!--<a href="#" class="dummy">Edit Details</a>                                     | -->
@@ -263,6 +266,7 @@
                             <td class="leftIndent">
                                 <div class="inlineEditable">
                                     <span class="text sectionName">Astronomy 7A S 103 LEC</span>
+                                    <span class="savedControl"><span class="label">Edit Saved</span></span>
                                 </div>
                                 <div class="itemAction">
                                     <!--<a href="#" class="dummy">Edit Details</a>                                     | -->
@@ -309,6 +313,7 @@
                             <td class="leftIndent">
                                 <div class="inlineEditable">
                                     <span class="text sectionName">Astronomy 7A S 104 LEC</span>
+                                    <span class="savedControl"><span class="label">Edit Saved</span></span>
                                 </div>
                                 <div class="itemAction">
                                     <!--<a href="#" class="dummy">Edit Details</a>                                     | -->
@@ -355,6 +360,7 @@
                             <td class="leftIndent">
                                 <div class="inlineEditable">
                                     <span class="text sectionName">Astronomy 7A S 105 LEC</span>
+                                    <span class="savedControl"><span class="label">Edit Saved</span></span>
                                 </div>
                                 <div class="itemAction">
                                     <!--<a href="#" class="dummy">Edit Details</a>                                     | -->

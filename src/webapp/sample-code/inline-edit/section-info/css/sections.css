@@ -212,9 +212,10 @@ table.narrowTable tr th {
 }
 
 .undoControl, .redoControl {
+    background-image: url(../images/all-edit-buttons.png);
+    background-position: 0 0;
     background-attachment: scroll;
     background-repeat: no-repeat;
-    background-position: top left;
     display: block;
     position: relative;
     width: 22px;
@@ -223,25 +224,25 @@ table.narrowTable tr th {
     opacity: 0.6;
 }
 
-a.undoControl:hover, a.redoControl:hover {
+a.undoControl:hover, a.redoControl:hover, a.undoControl:focus, a.redoControl:focus {
     width: 48px;
     opacity: 0.92;
 }
 
 a.undoControl {
-    background-image: url(../images/il-undo-sm.png);
+    background-position: 0 -40px;
 }
 
-a.undoControl:hover {
-    background-image: url(../images/il-undo-lg.png);
+a.undoControl:hover, a.undoControl:focus {
+    background-position: 0 -80px;
 }
 
 a.redoControl {
-    background-image: url(../images/il-redo-sm.png);
+    background-position: 0 -160px;
 }
 
-a.redoControl:hover {
-    background-image: url(../images/il-redo-lg.png);
+a.redoControl:hover, a.redoControl:focus {
+    background-position: 0 -200px;
 }
 
 .sectionName { 
@@ -274,25 +275,22 @@ a.redoControl:hover {
 
 /* */
 
-.editSaved {
-    position:absolute;
-    top: -2px;
-    display: none;
-}
-
-.editSaved span.label {
+.savedControl span.label {
     display: none;   
 }
 
 .savedControl {
-    background-image: url(../images/il-edit-saved.png);
+    display: none;
+    position:absolute;
+    top: -2px;
+    z-index: 400;
+    margin-left: 23px;
+    background-image: url(../images/all-edit-buttons.png);
     background-attachment: scroll;
     background-repeat: no-repeat;
     background-position: top left;
-    display: block;
-    position: relative;
     width: 83px;
     height: 18px;
     outline: none;
-    opacity: 0.9;
+    opacity: 1;
 }
