@@ -69,11 +69,19 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var finish = function (that) {
-        if (that.options.finishedEditing) {
-            that.options.finishedEditing(that.editField[0], that.viewEl[0]);
+        var newValue = that.editField.val();
+        var oldValue = that.model.value;
+
+        var viewNode = that.viewEl[0];
+        var editNode = that.editField[0];
+        var ret = that.events.onFinishEdit.fire(newValue, oldValue, editNode, viewNode);
+        if (ret) return;
+        
+        if (that.options.finishedEditing) { // This call is deprecated by FLUID-1770
+            that.options.finishedEditing(editNode, viewNode);
         }
-        that.updateModel(that.editField.val());
-        that.events.afterFinish.fire();
+        that.updateModel(newValue);
+        that.events.afterFinishEdit.fire(newValue, oldValue, editNode, viewNode);
         
         that.editContainer.hide();
         that.viewEl.show();
@@ -110,7 +118,7 @@ fluid_0_6 = fluid_0_6 || {};
         that.viewEl.text(that.model.value);
         clearEmptyViewStyles(that.viewEl, that.options.defaultViewStyle, that.existingPadding);
     };
-        
+    
     var refreshView = function (that, source) {
         if (that.model.value) {
             showEditedText(that);
@@ -125,13 +133,19 @@ fluid_0_6 = fluid_0_6 || {};
         }
     };
     
+    var initModel = function (that, value) {
+        that.model.value = value;
+        that.refreshView();
+    };
+    
     var updateModel = function (that, newValue, source) {
         var change = that.model.value !== newValue;
         if (change) {
+            var oldModel = $.extend(true, {}, that.model);
             that.model.value = newValue;
-            that.events.modelChanged.fire(newValue);
+            that.events.modelChanged.fire(that.model, oldModel, source);
         }
-        that.refreshView(source); // Always render, because of possibility of initial event
+        that.refreshView(source);
     };
     
     var bindHoverHandlers = function (viewEl, invitationStyle) {
@@ -256,7 +270,7 @@ fluid_0_6 = fluid_0_6 || {};
         setupEditContainer(that);
         var padding = that.viewEl.css("padding-right");
         that.existingPadding = padding? parseFloat(padding) : 0;
-        that.updateModel(that.viewEl.text());
+        initModel(that, that.viewEl.text());
         
         // Add event handlers.
         bindMouseHandlers(that);
@@ -401,7 +415,8 @@ fluid_0_6 = fluid_0_6 || {};
             modelChanged: null,
             onBeginEdit: "preventable",
             afterBeginEdit: null,
-            afterFinish: null
+            onFinishEdit: "preventable",
+            afterFinishEdit: null
         },
         
         paddings: {

@@ -53,8 +53,7 @@ fluid_0_6 = fluid_0_6 || {};
         that.locate("undoControl").click( 
             function () {
                 fluid.model.copyModel(that.extremalModel, that.component.model);
-                fluid.model.copyModel(that.component.model, that.initialModel);
-                that.component.refreshView();
+                that.component.updateModel(that.initialModel.value, that);
                 that.state = STATE_REVERTED;
                 refreshView(that);
                 that.locate("redoControl").focus();
@@ -62,23 +61,21 @@ fluid_0_6 = fluid_0_6 || {};
         );
         that.locate("redoControl").click( 
             function () {
-                fluid.model.copyModel(that.component.model, that.extremalModel);
-                that.component.refreshView();
+                that.component.updateModel(that.extremalModel.value, that);
                 that.state = STATE_CHANGED;
                 refreshView(that);
                 that.locate("undoControl").focus();
             }
         );
         return {
-            modelChanged: function () {
-                that.state = STATE_CHANGED;
-                refreshView(that);
-            },
-            afterFinish: function () {
-                if (that.component.model.value !== that.extremalModel.value) {
-                    fluid.model.copyModel(that.initialModel, that.extremalModel);
+            modelChanged: function (newModel, oldModel, source) {
+                if (source !== that) {
+                    that.state = STATE_CHANGED;
+                
+                    fluid.model.copyModel(that.initialModel, oldModel);
+                
+                    refreshView(that);
                 }
-                fluid.model.copyModel(that.extremalModel, that.component.model);
             }
         };
     };

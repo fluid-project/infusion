@@ -533,6 +533,37 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 assertVisState(undo2, redo2, false, false); // 15
                 });
             
+            function setValue(editor, edit, newValue) {
+                editor.edit();
+                edit.val(newValue);
+                editor.finish();
+            }
+            
+            inlineEditTests.test("State/event FLUID-1661, FLUID-1662, FLUID-1772", function () {
+                var changeCount = 0; // count calls to modelChanged
+                var editor = fluid.inlineEdit("#inline-edit-undo", 
+                    {componentDecorators: "fluid.undoDecorator",
+                     listeners: {
+                       modelChanged: function() { ++ changeCount; }
+                       }});
+                jqUnit.assertEquals("No modelChanged on startup", 0, changeCount); // FLUID-1772
+                var undoer = editor.decorators[0];
+                var edit = insistSelect("There should be an edit control", editor, "edit");
+                var undoControl = insistSelect("There should be an undo control", undoer, "undoControl"); // 8
+                setValue(editor, edit, "Change 1");
+                jqUnit.assertEquals("modelChanged 1", 1, changeCount);
+                
+                setValue(editor, edit, "Change 2");
+                jqUnit.assertEquals("modelChanged 2", 2, changeCount);
+                undoControl.click();
+                jqUnit.assertEquals("modelChanged 3", 3, changeCount);
+                jqUnit.assertEquals("Undo 1", "Change 1", editor.model.value);
+                setValue(editor, edit, "Change 3");
+                jqUnit.assertEquals("modelChanged 4", 4, changeCount);
+                undoControl.click();
+                jqUnit.assertEquals("modelChanged 5", 5, changeCount);
+                jqUnit.assertEquals("Undo 1", "Change 1", editor.model.value);
+            });
             
         })();
      
