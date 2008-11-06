@@ -1,19 +1,24 @@
 .fl-baseFont {font-size:100%;}
 .fl-largeFont {font-size:150%;}
 
-.fl-font-size-70 {font-size:70%;}
-.fl-font-size-80 {font-size:80%;}
-.fl-font-size-90 {font-size:90%;}
-.fl-font-size-100 {font-size:100%;}
-.fl-font-size-110 {font-size:110%;}
-.fl-font-size-120 {font-size:120%;}
-.fl-font-size-130 {font-size:130%;}
-.fl-font-size-140 {font-size:140%;}
-.fl-font-size-150 {font-size:150%;}
+.fl-font-size-70 {font-size:0.7em !important; line-height:1em !important;}
+.fl-font-size-80 {font-size:0.8em !important; line-height:1em !important;}
+.fl-font-size-90 {font-size:0.9em !important; line-height:1em !important;}
+.fl-font-size-100 {font-size:1.0em !important; line-height:1em !important;}
+.fl-font-size-110 {font-size:1.1em !important; line-height:1em !important;}
+.fl-font-size-120 {font-size:1.2em !important; line-height:1em !important;}
+.fl-font-size-130 {font-size:1.3em !important; line-height:1em !important;}
+.fl-font-size-140 {font-size:1.4em !important; line-height:1em !important;}
+.fl-font-size-150 {font-size:1.5em !important; line-height:1em !important;}
 
 .fl-font-serif     {font-family:"Georgia, Times, Times New Roman, Book Antiqua", serif;}
 .fl-font-sans      {font-family:"Tahoma, Verdana, Helvetica", sans-serif;}
 .fl-font-monospace {font-family:"Courier New, Courier", monospace;}
+
+.fl-font-Arial   {font-family:"Arial";}
+.fl-font-Verdana {font-family:"Verdana";}
+.fl-font-Times   {font-family:"Times, Times New Roman";}
+.fl-font-Courier {font-family:"Courier New, Courier";}
 
 .fl-font-aqua {color: aqua;}
 .fl-font-black {color: black;}
@@ -31,8 +36,6 @@
 .fl-font-teal {color: teal;}
 .fl-font-white {color:white;}
 .fl-font-yellow {color: yellow;}
-
-
 
 .fl-font-spacing-0 {letter-spacing:0em}
 .fl-font-spacing-1 {letter-spacing:0.1em}
