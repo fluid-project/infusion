@@ -75,7 +75,9 @@ fluid_0_6 = fluid_0_6 || {};
         var viewNode = that.viewEl[0];
         var editNode = that.editField[0];
         var ret = that.events.onFinishEdit.fire(newValue, oldValue, editNode, viewNode);
-        if (ret) return;
+        if (ret) {
+            return;
+        }
         
         if (that.options.finishedEditing) { // This call is deprecated by FLUID-1770
             that.options.finishedEditing(editNode, viewNode);
@@ -138,13 +140,13 @@ fluid_0_6 = fluid_0_6 || {};
         that.refreshView();
     };
     
-     var updateModel = function (that, newValue, source) {
-         if (that.model.value !== newValue) {
-             var oldModel = $.extend(true, {}, that.model);
-             that.model.value = newValue;
-             that.events.modelChanged.fire(that.model, oldModel, source);
-             that.refreshView(source);
-         }
+    var updateModel = function (that, newValue, source) {
+        if (that.model.value !== newValue) {
+            var oldModel = $.extend(true, {}, that.model);
+            that.model.value = newValue;
+            that.events.modelChanged.fire(that.model, oldModel, source);
+            that.refreshView(source);
+        }
     };
         
     var bindHoverHandlers = function (viewEl, invitationStyle) {
