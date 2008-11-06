@@ -32,9 +32,9 @@
 
                     },
                       listeners: {
-                          afterFinishEdit: function (newValue, editField, oldValue, viewElement) {
+                          afterFinishEdit: function (newValue, oldValue, editNode, viewNode) {
                               if (oldValue !== newValue) {
-                                  $(viewElement).siblings(".savedControl").fadeIn("slow",function (){
+                                  $(viewNode).siblings(".savedControl").fadeIn("slow",function (){
                                       $(".savedControl").fadeOut(4000);
                                   });
                               }
