@@ -224,16 +224,20 @@ table.narrowTable tr th {
     opacity: 0.6;
 }
 
-a.undoControl:hover, a.redoControl:hover, a.undoControl:focus, a.redoControl:focus {
+a.undoControl:hover, a.redoControl:hover {
     width: 48px;
     opacity: 0.92;
+}
+
+a.undoControl:focus, a.redoControl:focus {
+    outline: 2px solid blue;
 }
 
 a.undoControl {
     background-position: 0 -40px;
 }
 
-a.undoControl:hover, a.undoControl:focus {
+a.undoControl:hover {
     background-position: 0 -80px;
 }
 
@@ -241,7 +245,7 @@ a.redoControl {
     background-position: 0 -160px;
 }
 
-a.redoControl:hover, a.redoControl:focus {
+a.redoControl:hover {
     background-position: 0 -200px;
 }
 
@@ -280,7 +284,6 @@ a.redoControl:hover, a.redoControl:focus {
 }
 
 .savedControl {
-    display: none;
     position:absolute;
     top: -2px;
     z-index: 400;
@@ -292,5 +295,6 @@ a.redoControl:hover, a.redoControl:focus {
     width: 83px;
     height: 18px;
     outline: none;
-    opacity: 1;
+    opacity: 0;
+    background-position: 0 0;
 }

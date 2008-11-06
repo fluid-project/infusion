@@ -31,15 +31,28 @@
                                           }
 
                     },
-                      listeners: {
-                          afterFinishEdit: function (newValue, oldValue, editNode, viewNode) {
-                              if (oldValue !== newValue) {
-                                  $(viewNode).siblings(".savedControl").fadeIn("slow",function (){
-                                      $(".savedControl").fadeOut(4000);
-                                  });
-                              }
-                          }
-                      }
+                    listeners: {
+                        afterFinishEdit: function (newValue, oldValue, editNode, viewNode) {
+                            if (oldValue !== newValue) {
+                                var savedMsg = $(viewNode).siblings(".savedControl");
+                                savedMsg.css("background-position","0px 0px");
+                                displayEditUpdateMsg(savedMsg);
+                            }
+                        },
+                        modelChanged: function (newValue, oldValue, that) {
+                            if (that !== undefined) { // we're probably coming from an Undo/Redo situation
+                                if (oldValue !== newValue) {
+                                    var savedMsg = that.container.siblings(".savedControl");
+                                    if (savedMsg.css("background-position") !== "0px -120px") {
+                                        savedMsg.css("background-position","0px -120px");
+                                    } else {
+                                        savedMsg.css("background-position","0px -240px");
+                                    }
+                                    displayEditUpdateMsg(savedMsg);
+                                }  
+                            }
+                        }
+                    }
                 });
             
                 $(".remove-btn").click(function () {
@@ -88,6 +101,12 @@
                 return markupNode;
             };
             
+            var displayEditUpdateMsg = function (msgElm) {
+                msgElm.stop().css("opacity",0);
+                msgElm.animate({opacity: 1},"slow","",function (){
+                    msgElm.animate({opacity: 0},4000);
+                });
+            };
            
         </script>
     </head>
