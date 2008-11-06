@@ -138,16 +138,15 @@ fluid_0_6 = fluid_0_6 || {};
         that.refreshView();
     };
     
-    var updateModel = function (that, newValue, source) {
-        var change = that.model.value !== newValue;
-        if (change) {
-            var oldModel = $.extend(true, {}, that.model);
-            that.model.value = newValue;
-            that.events.modelChanged.fire(that.model, oldModel, source);
-        }
-        that.refreshView(source);
+     var updateModel = function (that, newValue, source) {
+         if (that.model.value !== newValue) {
+             var oldModel = $.extend(true, {}, that.model);
+             that.model.value = newValue;
+             that.events.modelChanged.fire(that.model, oldModel, source);
+             that.refreshView(source);
+         }
     };
-    
+        
     var bindHoverHandlers = function (viewEl, invitationStyle) {
         var over = function (evt) {
             viewEl.addClass(invitationStyle);
