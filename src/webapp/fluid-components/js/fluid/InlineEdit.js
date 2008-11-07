@@ -28,21 +28,24 @@ fluid_0_6 = fluid_0_6 || {};
         }
     };
     
-    var setCaretToEnd = function (control) {
-        var pos = control.value.length;
+    var setCaretToEnd = function (control, value) {
+        var pos = value.length;
         if (control.createTextRange) {
             var range = control.createTextRange();
             range.move("character", pos);
             range.select();
         } else if (control.setSelectionRange) {
             control.focus();
-            control.setSelectionRange(pos, pos);
+            try {
+                control.setSelectionRange(pos, pos);
+            }
+            catch (e) {}
         }
     };
     
     var edit = function (that) {
         var viewEl = that.viewEl;
-        var displayText = viewEl.text();
+        var displayText = that.displayView.value();
         that.updateModel(displayText === that.options.defaultViewText? "" : displayText);
         that.editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit));
 
@@ -62,14 +65,14 @@ fluid_0_6 = fluid_0_6 || {};
                 that.editField[0].select();
             }
             else {
-                setCaretToEnd(that.editField[0]);
+                setCaretToEnd(that.editField[0], that.editView.value());
             }
         }, 0);
         that.events.afterBeginEdit.fire();
     };
     
     var finish = function (that) {
-        var newValue = that.editField.val();
+        var newValue = that.editView.value();
         var oldValue = that.model.value;
 
         var viewNode = that.viewEl[0];
@@ -95,12 +98,12 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var showDefaultViewText = function (that) {
-        that.viewEl.text(that.options.defaultViewText);
+        that.displayView.value(that.options.defaultViewText);
         that.viewEl.addClass(that.options.styles.defaultViewText);
     };
 
     var showNothing = function (that) {
-        that.viewEl.text("");
+        that.displayView.value("");
         
         // workaround for FLUID-938:
         // IE can not style an empty inline element, so force element to be display: inline-block
@@ -117,7 +120,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
 
     var showEditedText = function (that) {
-        that.viewEl.text(that.model.value);
+        that.displayView.value(that.model.value);
         clearEmptyViewStyles(that.viewEl, that.options.defaultViewStyle, that.existingPadding);
     };
     
@@ -131,7 +134,7 @@ fluid_0_6 = fluid_0_6 || {};
         }
       
         if (that.editField && that.editField.index(source) === -1) {
-            that.editField.val(that.model.value);
+            that.editView.value(that.model.value);
         }
     };
     
@@ -177,7 +180,7 @@ fluid_0_6 = fluid_0_6 || {};
         that.viewEl.click(makeEditHandler(that));
     };
     
-    var bindKeyHighlight = function (viewEl, focusStyle, invitationStyle) {
+    var bindHighlightHandler = function (viewEl, focusStyle, invitationStyle) {
         var focusOn = function () {
             viewEl.addClass(focusStyle);
             viewEl.addClass(invitationStyle); 
@@ -192,7 +195,6 @@ fluid_0_6 = fluid_0_6 || {};
     
     var bindKeyboardHandlers = function (that) {
         that.viewEl.tabbable();
-        bindKeyHighlight(that.viewEl, that.options.styles.focus, that.options.styles.invitation);
         that.viewEl.activatable(makeEditHandler(that));
     };
     
@@ -229,12 +231,16 @@ fluid_0_6 = fluid_0_6 || {};
         if (that.editContainer.length >= 1) {
             var isEditSameAsContainer = that.editContainer.is(that.options.selectors.edit);
             var containerConstraint = isEditSameAsContainer ? that.container : that.editContainer;
-            that.editField =  that.locate("edit", containerConstraint);
+            that.editField = that.locate("edit", containerConstraint);
         } else {
             var editElms = that.options.editModeRenderer(that);
             that.editContainer = editElms.container;
             that.editField = editElms.field;
         }
+        if (that.options.submitOnEnter === undefined) {
+            that.options.submitOnEnter = "textarea" !== fluid.unwrap(that.editField).nodeName.toLowerCase();
+        }
+        that.editView = makeStandardView(that.editField);
     };
     
     var defaultEditModeRenderer = function (that) {
@@ -268,15 +274,20 @@ fluid_0_6 = fluid_0_6 || {};
     
     var setupInlineEdit = function (componentContainer, that) {
         that.viewEl = that.locate("text");
+        that.displayView = makeStandardView(that.viewEl);
         setupEditContainer(that);
         var padding = that.viewEl.css("padding-right");
         that.existingPadding = padding? parseFloat(padding) : 0;
-        initModel(that, that.viewEl.text());
+        initModel(that, that.displayView.value());
         
         // Add event handlers.
         bindMouseHandlers(that);
         bindKeyboardHandlers(that);
-        bindEditFinish(that);
+        if (that.options.submitOnEnter) {
+            bindEditFinish(that);
+        }
+        bindHighlightHandler(that.viewEl, that.options.styles.focus, that.options.styles.invitation);
+        
         bindBlurHandler(that);
         
         // Add ARIA support.
@@ -318,6 +329,16 @@ fluid_0_6 = fluid_0_6 || {};
         
         return editors;
     };
+    
+    function makeStandardView(element) {
+        var nodeName = element[0].nodeName.toLowerCase();
+        var func = "input" === nodeName || "textarea" === nodeName? "val" : "text";
+        return {
+            value: function(newValue) {
+                return $(element)[func](newValue);
+            }
+        }
+    }
     
     /**
      * Instantiates a new Inline Edit component
@@ -425,6 +446,10 @@ fluid_0_6 = fluid_0_6 || {};
             minimumEdit: 80,
             minimumView: 60
         },
+        
+        // set this to true or false to cause unconditional submission, otherwise it will
+        // be inferred from the edit element tag type.
+        submitOnEnter: undefined,
         
         editModeRenderer: defaultEditModeRenderer,
         

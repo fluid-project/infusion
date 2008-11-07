@@ -28,14 +28,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             styles: {
                 invitation: "customInvitation",
                 focus: "customFocus"
-            },		
-    		paddings: {
-    			add: 20,
-    			minimum: 40
-    		},
-            finishedEditing: function () {
-                fluid.finishedEditingCallbackCalled = true;
-            }      
+            },          
+            paddings: {
+                add: 20,
+                minimum: 40
+            }
         };
         
        function insistSelect(message, that, name) {
@@ -102,6 +99,33 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.notVisible("Edit field is hidden", "#edit-container-custom");
         });
     
+        function makeSubmittingTest(name, id, options, shouldsubmit) {
+    
+          inlineEditTests.test(name, function () {
+              var inlineEditor = fluid.inlineEdit(id, $.extend(true, {}, customOptions, options));
+              inlineEditor.edit();
+              var field = inlineEditor.editField;
+              jqUnit.assertEquals("Empty on begin edit", "", field.val());
+              var value = "Thing\nLine 2";
+              // Remove this conditional to verify impossibility of FLUID-890, and observe quite inconsistent behaviour on all browsers
+              if (field[0].nodeName.toLowerCase() === "input") {
+                  value = "Thing"; 
+              }
+              field.val(value);
+              inlineEditor.editContainer.simulate("keypress", {keyCode: $.a11y.keys.ENTER});
+              jqUnit.assertEquals("Unsubmitted", shouldsubmit? value : "", inlineEditor.model.value);
+
+              
+              inlineEditor.finish();
+              jqUnit.assertEquals("Unsubmitted", value, inlineEditor.model.value);
+          });
+        }
+
+        makeSubmittingTest("Textarea autosubmit auto", "#inline-edit-textarea", null, false);
+        makeSubmittingTest("Textarea autosubmit ensure", "#inline-edit-textarea", {submitOnEnter: true}, true);
+        makeSubmittingTest("Input autosubmit auto", "#inline-edit-custom", null, true);
+        makeSubmittingTest("Input autosubmit defeat", "#inline-edit-custom", {submitOnEnter: false}, false);
+
         inlineEditTests.test("Invitation text (Default)", function () {
             jqUnit.expect(8);
     
@@ -275,18 +299,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         inlineEditTests.test("Finished Editing Callback", function () {
             jqUnit.expect(4);
+            var callbackCalled = false;
     
             var options = {
                 finishedEditing: function (edit, text) {
                     jqUnit.assertEquals("The edit field should be passed along in the callback.", $("#edit")[0], edit);
                     jqUnit.assertEquals("The text view should also be passed along in the callback.", $("#display")[0], text);
-                    fluid.finishedEditingCallbackCalled = true;
+                    callbackCalled = true;
                 }
             };
             var inlineEditor = fluid.inlineEdit("#inline-edit", options);
-            jqUnit.assertFalse("Initially, callback has not been called", fluid.finishedEditingCallbackCalled);
+            jqUnit.assertFalse("Initially, callback has not been called", callbackCalled);
             inlineEditor.finish();
-            jqUnit.assertTrue("Callback was called", fluid.finishedEditingCallbackCalled);
+            jqUnit.assertTrue("Callback was called", callbackCalled);
         });
     
         inlineEditTests.test("Blur", function () {
