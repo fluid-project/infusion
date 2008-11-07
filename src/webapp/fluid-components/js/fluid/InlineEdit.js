@@ -35,7 +35,18 @@ fluid_0_6 = fluid_0_6 || {};
         if (control.setSelectionRange) {
             control.focus();
             try {
-                control.setSelectionRange(pos, pos);
+                if ($.browser.mozilla && pos > 0) {
+                  // ludicrous fix for Firefox failure to scroll to selection position, inspired by
+                  // http://bytes.com/forum/thread496726.html
+                    control.setSelectionRange(pos-1, pos);
+                    var kE = document.createEvent("KeyEvents");
+                    var lastChar = value.charCodeAt(pos - 1);
+                    kE.initKeyEvent("keypress",1,1,null,0,0,0,0, lastChar, lastChar);
+                    control.dispatchEvent(kE);
+                }
+                else {
+                    control.setSelectionRange(pos, pos);
+                }
             }
             catch (e) {}
         }
@@ -50,7 +61,7 @@ fluid_0_6 = fluid_0_6 || {};
         var viewEl = that.viewEl;
         var displayText = that.displayView.value();
         that.updateModel(displayText === that.options.defaultViewText? "" : displayText);
-        that.editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit));
+        that.editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit) - 50);
 
         viewEl.removeClass(that.options.styles.invitation);
         viewEl.removeClass(that.options.styles.focus);
