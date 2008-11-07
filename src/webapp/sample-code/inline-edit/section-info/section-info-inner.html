@@ -24,12 +24,11 @@
                     selectOnEdit: true,
                     tooltipText: "Click to edit section name",
                     tooltipDelay: 800,
-                   
-                     componentDecorators: {type: "fluid.undoDecorator",
-                                      options: {
-                                          renderer: myUndoRenderer
-                                          }
-
+                    componentDecorators: {
+                         type: "fluid.undoDecorator",
+                         options: {
+                             renderer: myUndoRenderer
+                         }
                     },
                     listeners: {
                         afterFinishEdit: function (newValue, oldValue, editNode, viewNode) {
