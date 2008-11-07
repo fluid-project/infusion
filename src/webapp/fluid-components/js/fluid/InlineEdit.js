@@ -75,11 +75,9 @@ fluid_0_6 = fluid_0_6 || {};
         // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.       
         setTimeout(function () {
             that.editField.focus();
+            setCaretToEnd(that.editField[0], that.editView.value());
             if (that.options.selectOnEdit) {
                 that.editField[0].select();
-            }
-            else {
-                setCaretToEnd(that.editField[0], that.editView.value());
             }
         }, 0);
         that.events.afterBeginEdit.fire();
