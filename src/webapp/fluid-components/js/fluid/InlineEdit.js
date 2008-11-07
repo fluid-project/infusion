@@ -18,29 +18,32 @@ fluid_0_6 = fluid_0_6 || {};
 (function ($, fluid) {
     
     var setCaretToStart = function (control) {
-        if (control.createTextRange) {
+       if (control.setSelectionRange) {
+            control.focus();
+            control.setSelectionRange(0, 0);
+        }
+        else if (control.createTextRange) {
             var range = control.createTextRange();
             range.collapse(true);
             range.select();
-        } else if (control.setSelectionRange) {
-            control.focus();
-            control.setSelectionRange(0, 0);
         }
     };
     
     var setCaretToEnd = function (control, value) {
         var pos = value.length;
-        if (control.createTextRange) {
-            var range = control.createTextRange();
-            range.move("character", pos);
-            range.select();
-        } else if (control.setSelectionRange) {
+        // see http://www.quirksmode.org/dom/range_intro.html - in Opera, must detect setSelectionRange first, since its support for Microsoft TextRange is buggy
+        if (control.setSelectionRange) {
             control.focus();
             try {
                 control.setSelectionRange(pos, pos);
             }
             catch (e) {}
         }
+        else if (control.createTextRange) {
+            var range = control.createTextRange();
+            range.move("character", pos);
+            range.select();
+        } 
     };
     
     var edit = function (that) {
