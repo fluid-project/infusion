@@ -31,7 +31,7 @@ fluid_0_6 = fluid_0_6 || {};
         row.fadeOut("fast", function () {
             row.remove();
             that.refreshView();   
-        }); 
+        });
     };
     
     var removeFileForRow = function (that, row) {
@@ -104,7 +104,7 @@ fluid_0_6 = fluid_0_6 || {};
         rowProgressor.attr("id", file.id+"_progress");
         rowProgressor.css('top',(row.position().top)).height(row.height()).width(5);
         that.container.after(rowProgressor);
-        
+                
         that.refreshView();
     };
     
@@ -214,6 +214,14 @@ fluid_0_6 = fluid_0_6 || {};
             selected: "selected",
             uploaded: "uploaded",
             error: "error"
+        },
+        
+        strings: {
+            progress: {
+                toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)", 
+                singleFile: "file",
+                pluralFiles: "files"
+            }
         }
     });
    

@@ -78,7 +78,7 @@ fluid_0_6 = fluid_0_6 || {};
         };
         
         that.sizeOfReadyFiles = function () {
-            return sizeOfFiles(that.getReadyFiles());
+            return fluid.fileQueue.sizeOfFiles(that.getReadyFiles());
         };
         
         that.setupCurrentBatch = function () {
