@@ -61,7 +61,7 @@ fluid_0_6 = fluid_0_6 || {};
         var viewEl = that.viewEl;
         var displayText = that.displayView.value();
         that.updateModel(displayText === that.options.defaultViewText? "" : displayText);
-        that.editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit) - 50);
+        that.editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit));
 
         viewEl.removeClass(that.options.styles.invitation);
         viewEl.removeClass(that.options.styles.focus);
