@@ -1,15 +1,45 @@
-.fl-baseFont {font-size:100%;}
-.fl-largeFont {font-size:150%;}
 
-.fl-font-size-70 {font-size:0.7em !important; line-height:0.9em !important;}
-.fl-font-size-80 {font-size:0.8em !important; line-height:1em !important;}
-.fl-font-size-90 {font-size:0.9em !important; line-height:1.1em !important;}
-.fl-font-size-100 {font-size:1.0em !important; line-height:1.2em !important;}
-.fl-font-size-110 {font-size:1.1em !important; line-height:1.3em !important;}
-.fl-font-size-120 {font-size:1.2em !important; line-height:1.4em !important;}
-.fl-font-size-130 {font-size:1.3em !important; line-height:1.5em !important;}
-.fl-font-size-140 {font-size:1.4em !important; line-height:1.6em !important;}
-.fl-font-size-150 {font-size:1.5em !important; line-height:1.7em !important;}
+/* line-height is 0.2 em larger than font size */
+.fl-font-size-70, 
+.fl-font-size-70 input, 
+.fl-font-size-70 select, 
+.fl-font-size-70 textarea {font-size:0.7em !important; line-height:0.9em !important;}
+
+.fl-font-size-80, 
+.fl-font-size-80 input, 
+.fl-font-size-80 select, 
+.fl-font-size-80 textarea {font-size:0.8em !important; line-height:1em !important;}
+
+.fl-font-size-90, 
+.fl-font-size-90 input, 
+.fl-font-size-90 select, 
+.fl-font-size-90 textarea {font-size:0.9em !important; line-height:1.1em !important;}
+
+.fl-font-size-100, 
+.fl-font-size-100 input, 
+.fl-font-size-100 select, 
+.fl-font-size-100 textarea {font-size:1em !important; line-height:1.2em !important;}
+
+.fl-font-size-110, 
+.fl-font-size-110 input, 
+.fl-font-size-110 select, 
+.fl-font-size-110 textarea {font-size:1.1em !important; line-height:1.3em !important;}
+
+.fl-font-size-120, 
+.fl-font-size-120 input, 
+.fl-font-size-120 select, 
+.fl-font-size-120 textarea {font-size:1.2em !important; line-height:1.4em !important;}
+
+.fl-font-size-130, 
+.fl-font-size-130 input, 
+.fl-font-size-130 select, 
+.fl-font-size-130 textarea {font-size:1.3em !important; line-height:1.5em !important;}
+
+.fl-font-size-140, 
+.fl-font-size-140 input, 
+.fl-font-size-140 select, 
+.fl-font-size-140 textarea {font-size:1.4em !important; line-height:1.6em !important;}
+
 
 .fl-font-serif     {font-family:"Georgia, Times, Times New Roman, Book Antiqua", serif;}
 .fl-font-sans      {font-family:"Tahoma, Verdana, Helvetica", sans-serif;}
