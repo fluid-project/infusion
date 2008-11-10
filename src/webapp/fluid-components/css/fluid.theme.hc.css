@@ -12,7 +12,7 @@
 .fl-theme-hc :focus,
 .fl-theme-hc .selectable  {
    /* themed focus indicator */
-   outline: 2px solid #f00;
+   outline: 0.2em solid #f00;
 }
 
 .fl-theme-hc, .fl-theme-hc * {color:#000000 !important; background-color:#ffffff; background-image:none !important; border-color:#000 /* !important;*/}
@@ -41,18 +41,16 @@
 
 /* Helper: Tabs */
 .fl-theme-hc .fl-tabs {border-bottom-color:#000;}
-.fl-theme-hc .fl-tabs li  {background-color:#000;}
 .fl-theme-hc .fl-tabs li,
-.fl-theme-hc .fl-tabs li a  {font-weight:bold; color:#fff; background-color:#000; border-color:#000; border-bottom-color:#000; text-decoration:none;}
+.fl-theme-hc .fl-tabs li *  {font-weight:bold; color:#fff !important; background-color:#000 !important; border-color:#000; border-bottom-color:#000; text-decoration:none;}
 .fl-theme-hc .fl-tabs li:hover,
-.fl-theme-hc .fl-tabs li:hover a,
-.fl-theme-hc .fl-tabs li a:hover {background-color:#fff; color:#000;}
+.fl-theme-hc .fl-tabs li:hover *,
+.fl-theme-hc .fl-tabs li a:hover {color:#000 !important; background-color:#fff !important;}
 .fl-theme-hc .fl-tabs li.fl-activeTab,
 .fl-theme-hc .fl-tabs li.fl-activeTab:hover,
 .fl-theme-hc .fl-tabs li.fl-activeTab a,
-.fl-theme-hc .fl-tabs li.fl-activeTab a:hover {background-color: #fff; border-bottom-color:#fff; color:#000;}
+.fl-theme-hc .fl-tabs li.fl-activeTab a:hover {background-color: #fff !important; border-bottom-color:#fff; color:#000 !important;}
 .fl-theme-hc .fl-tab-content {background-color:#ffffff; color:#000;}
-
 
 /* Helper: Menu */
 .fl-theme-hc .fl-listmenu {border:1px solid #000; background-color:#fff;}
@@ -68,4 +66,7 @@
 .fl-theme-hc .fl-grid li {background-color:#dfefff; border:1px solid #4070a1}
 .fl-theme-hc .fl-grid .caption {background-color:#dfefff; color:#5a95cf; }
 
+
+/* States */
+.fl-theme-hc .orderable-drop-marker {background-color:#f00 !important;}
 
