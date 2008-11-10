@@ -59,6 +59,16 @@
             as well as each being individually undoable.
         </p>
         
+        <p id="multiple-edits-2">
+            <span class="inlineEditable"><span class="text">These edit fields</span></span>
+            <span class="inlineEditable"><span class="text">are all set up</span></span>
+            <span class="inlineEditable"><span class="text">with a single</span></span>
+            <span class="inlineEditable"><span class="text">function call</span></span>
+            <span class="inlineEditable"><span class="text">and with</span></span>
+            <span class="inlineEditable"><span class="text">selectOnEdit true.</span>(2nd copy)</span>,
+            as well as each being individually undoable.
+        </p>
+        
         <p id="inline-edit7">The following text is an empty inline edit 'span' with NO invitation text:
             <span class="text" id="text7"></span>
             This text is after the inline edit.
@@ -101,6 +111,7 @@
             fluid.inlineEdit("#inline-edit5");
             fluid.inlineEdit("#inline-edit6", {defaultViewText: "Go ahead, try it - click on me..."});
             fluid.inlineEdits("#multiple-edits", {selectOnEdit: true, componentDecorators: "fluid.undoDecorator"});
+            fluid.inlineEdits("#multiple-edits-2", {selectOnEdit: true, componentDecorators: "fluid.undoDecorator"});            
             fluid.inlineEdit("#inline-edit7", {defaultViewText: false});
             fluid.inlineEdit("#inline-edit8", {useTooltip: true});
             fluid.inlineEdit("#inline-edit9", {useTooltip: true, tooltipText:"Go on, I dares ya - click on it..."});
