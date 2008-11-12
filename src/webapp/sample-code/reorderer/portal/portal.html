@@ -7,7 +7,12 @@
     <meta content="portal, uPortal, academic, higher education, open source, enterprise, JA-SIG, JASIG" name="keywords" />
     <link rel="stylesheet" href="portal.css" type="text/css" />
 
-    <!--  Required javascript modules for the Lightbox which can be replaced with the build generated file Fluid-all.js -->
+    <!-- Required stylesheets for using a Fluid skin -->
+    <link rel="stylesheet" href="../../../fluid-components/css/fluid.text.css" type="text/css" />
+    <link rel="stylesheet" href="../../../fluid-components/css/fluid.theme.hc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../fluid-components/css/fluid.theme.mist.css" type="text/css" />
+
+    <!--  Required javascript modules for the Reorderer which can be replaced with the build generated file Fluid-all.js -->
     <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.core.js"></script>
@@ -21,6 +26,11 @@
     <script type="text/javascript" src="../../../fluid-components/js/fluid/LayoutReorderer.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/ModuleLayout.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/ImageReorderer.js"></script>
+    
+    <!-- Required javascript file for dynamically changing skins -->
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/Skin.js"></script>
+    
+    <!-- Javascript file containing initialization scripts for the Fluid components in this example -->
     <script type="text/javascript" src="portal.js"></script>
 
   </head>
@@ -136,26 +146,21 @@
                     <div xmlns:upauth="xalan://org.jasig.portal.security.xslt.XalanAuthorizationHelper" id="portalCustomizationLinks">
                       <h3>Customize My Portal</h3>
                       <ul>
-                        <li id="portalCustomizationLinksAddContent">
-                          <a title="To add content to this tab" href="#" id="contentDialogLink">
-                            <span>Add Content</span>
-                          </a>
-                          <span class="portal-pipe">|</span>
-                        </li>
                         <li id="portalCustomizationLinksChangeLayout">
-                          <a title="To change your page layout" href="#" id="layoutDialogLink">
-                            <span>Page Layout</span>
+                          <a title="Change to mist skin" href="#" id="mist-skin">
+                            <span>Mist Skin</span>
                           </a>
                           <span class="portal-pipe">|</span>
                         </li>
                         <li id="portalCustomizationLinksChooseSkin">
-                          <a title="To choose a different skin" href="#" id="skinDialogLink">
-                            <span>Select Skin</span>
+                          <a title="Change to high contrast skin" href="#" id="hc-skin">
+                            <span>High Contrast Skin</span>
                           </a>
+                          <span class="portal-pipe">|</span>
                         </li>
                         <li id="portalCustomizationLinksAddTab">
-                          <a title="To add a tab to your layout" href="#" id="addTabLink">
-                            <span>Add tab</span>
+                          <a title="Remove Skin" href="#" id="remove-skin">
+                            <span>Remove Skin</span>
                           </a>
                         </li>
                       </ul>
@@ -777,6 +782,8 @@ dignissim suscipit.
 </div>
   
   <script type="text/javascript">
+      // Initialize the Fluid components on this page.
     demo.initPortletReorderer();
+    demo.initSkinChange();
   </script>
 </body></html>

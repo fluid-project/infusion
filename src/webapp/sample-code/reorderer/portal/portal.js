@@ -54,6 +54,44 @@ var demo = demo || {};
             }
         });
     };
+    
+    /**
+     * Skin settings for high contrast, large font skin
+     */
+    demo.hcLargeFontSkin = {
+        textSize: "+3",
+        textFont: "Courier",
+        textSpacing: "Wide",
+        colorScheme: "High Contrast"
+    };
+    
+    /**
+     * Skin settings for mist, small font skin
+     */
+    demo.mistSmallFontSkin = {
+        textSize: "-1",
+        textFont: "Default",
+        textSpacing: "Default",
+        colorScheme: "Mist"       
+    };
+    
+    /**
+     * Initialization script for dynamically changing skins
+     */
+    demo.initSkinChange = function () {
+        jQuery("#hc-skin").click(function () {
+            fluid.applySkin(demo.hcLargeFontSkin);
+        });  
+        
+        jQuery("#mist-skin").click(function () {
+            fluid.applySkin(demo.mistSmallFontSkin);
+        });  
+
+        jQuery("#remove-skin").click(function () {
+            fluid.skin.removeStyling();
+        });  
+
+    };
 }) (jQuery, fluid);
 
 function testSpeeds() {
