@@ -1,131 +1,99 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta name="generator" content="HTML Tidy, see www.w3.org" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.layout.css" />
         <link rel="stylesheet" type="text/css" href="../../css/fluid.text.css" />
         <link rel="stylesheet" type="text/css" href="../../css/fluid.theme.hc.css" />
         <link rel="stylesheet" type="text/css" href="../../css/fluid.theme.mist.css" />
 
-		<title>UI Options</title>                                
+        <style type="text/css">
+            /*{border-bottom:1px solid #ccc; }*/
+            fieldset {font-family:Tahoma,Arial, sans-serif;}
+            legend {font-size:1.2em;}            
+            .optionsCluster {}
+            .optionsCluster li {list-style-type:none;}
+            .optionsCluster input, .optionsCluster label {cursor:pointer;}
+        </style>
 
+
+        <title>UI Options</title>
         <script type="text/javascript" src="../../js/jquery/jquery-1.2.6.js"></script>
         <script type="text/javascript" src="../../js/fluid/Fluid.js"></script>
         <script type="text/javascript" src="../../js/fluid/Skin.js"></script>
         <script type="text/javascript" src="../../js/fluid/UIOptions.js"></script>
-
+        
+        <script type="text/javascript">
+            $().ready(function(){
+                fluid.uiOptions("body");    
+            });
+        </script>
     </head>
-    <body class="fl-theme-mist fl-font-size-90 fl-font-default fl-text-space">
-   		<h1>User Interface Options</h1>
 
-        <form id="options">
-    		
-   			<h2>Color</h2>
-    		<fieldset class="color-control">
-                <div class="opt">
-    			<input type="radio" id="c1" name="color" value="Mist" checked="checked"/>
-    			<label for="c1">Mist</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="c2" name="color" value="High Contrast" />
-    			<label for="c2">High Contrast</label>
-                </div>
-    		</fieldset>
+    <body class="">
+        <h1>User Interface Options</h1>
 
-   			<h2>Text</h2>
-    		<fieldset class="font-control">
-    		    <h3>Font</h3>
-                <div class="opt">
-    			<input type="radio" id="tf1" name="font" value="Default" checked="checked"/>
-    			<label for="tf1">Default</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="tf2" name="font" value="Arial" />
-    			<label for="tf2">Arial</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="tf3" name="font" value="Verdana" />
-    			<label for="tf3">Verdana</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="tf4" name="font" value="Courier" />
-    			<label for="tf4">Courier</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="tf5" name="font" value="Times" />
-    			<label for="tf5">Times</label>
-                </div>
-    		</fieldset>
-
-    		<fieldset class="textsize-control">
-    			<h3>Size</h3>
-                <div class="opt">
-    			<input type="radio" id="tz1" name="textsize" value="-2" />
-    			<label for="tz1">-2</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="tz2" name="textsize" value="-1" />
-    			<label for="tz2">-1</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="tz3" name="textsize" value="Default" checked="checked"/>
-    			<label for="tz3">Default</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="tz4" name="textsize" value="+1" />
-    			<label for="tz4">+1</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="tz5" name="textsize" value="+2" />
-    			<label for="tz5">+2</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="tz6" name="textsize" value="+3" />
-    			<label for="tz6">+3</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="tz7" name="textsize" value="+4" />
-    			<label for="tz7">+4</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="tz8" name="textsize" value="+5" />
-    			<label for="tz8">+5</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="tz9" name="textsize" value="+6" />
-    			<label for="tz9">+6</label>
-                </div>
-    		</fieldset>
-
-    		<fieldset class="textspace-control">
-    			<h3>Spacing</h3>
-                <div class="opt">
-    			<input type="radio" id="ts1" name="textspace" value="Default" checked="checked"/>
-    			<label for="ts1">Default</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="ts2" name="textspace" value="Wide" />
-    			<label for="ts2">Wide</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="ts3" name="textspace" value="Wider" />
-    			<label for="ts3">Wider</label>
-                </div>
-                <div class="opt">
-    			<input type="radio" id="ts4" name="textspace" value="Widest" />
-    			<label for="ts4">Widest</label>
-                </div>
-    		</fieldset>
+        <form id="options" action="" method="">
+            <p>customize the template by setting preferences to suit your needs. Changes will be reflected in the preview window.</p>
             
+            <div class="optionsCluster fl-container-300">
+                <fieldset class="color-control">
+                    <legend>Colors</legend>
+                    <ol>
+                        <li><label><input type="radio" name="color" value="Mist" checked="checked" />Mist</label></li>
+                        <li><label><input type="radio" name="color" value="High Contrast" />High Contrast</label></li>
+                    </ol>
+                </fieldset>
+            </div>
+            <div class="optionsCluster fl-container-400">
+                <fieldset class="font-control fl-container-flex30 fl-force-left">
+                    <legend>Font Family</legend>
+                    <ol>
+                        <li class="fl-font-serif"><label><input type="radio" name="font" value="Default" checked="checked" />Default</label></li>
+                        <li class="fl-font-sans"><label><input type="radio" name="font" value="Arial" />Arial</label></li>
+                        <li class="fl-font-sans"><label><input type="radio" name="font" value="Verdana" />Verdana</label></li>
+                        <li class="fl-font-monospace"><label><input type="radio" name="font" value="Courier" />Courier</label></li>
+                        <li class="fl-font-serif"><label><input type="radio" name="font" value="Times" />Times</label></li>
+                    </ol>
+                </fieldset>
+    
+    
+                <fieldset class="textsize-control fl-container-flex30 fl-force-left">
+                    <legend>Font Size</legend>
+                    <ol>
+                        <li><label><input type="radio" name="textsize" value="-2"/>-2</label></li>
+                        <li><label><input type="radio" name="textsize" value="-1" />-1</label></li>
+                        <li><label><input type="radio" name="textsize" value="Default" checked="checked" />Default</label></li>
+                        <li><label><input type="radio" name="textsize" value="+1" />+1</label></li>
+                        <li><label><input type="radio" name="textsize" value="+2" />+2</label></li>
+                        <li><label><input type="radio" name="textsize" value="+3" />+3</label></li>
+                        <li><label><input type="radio" name="textsize" value="+4" />+4</label></li>
+                        <li><label><input type="radio" name="textsize" value="+5" />+5</label></li>
+                        <li><label><input type="radio" name="textsize" value="+6" />+6</label></li>
+                    </ol>
+                </fieldset>
+    
+                <fieldset class="textspace-control fl-container-flex30 fl-force-left">
+                    <legend>Font Spacing</legend>
+                    <ol>
+                        <li><label><input type="radio" name="textspace" value="Default" checked="checked" />Default</label></li>
+                        <li><label><input type="radio" name="textspace" value="Wide" />Wide</label></li>
+                        <li><label><input type="radio" name="textspace" value="Wider" />Wider</label></li>
+                        <li><label><input type="radio" name="textspace" value="Widest" />Widest</label></li>
+                    </li>                
+                </fieldset>
+            </div>
             <input class="save" type="button" value="Save and apply your preferences" />
         </form>
+
         <div class="preview">
             <h1>title</h1>
             This is a preview
         </div>
-        
-        <script type="text/javascript">
-            fluid.uiOptions("body");
-        </script>
+
     </body>
 </html>
+
