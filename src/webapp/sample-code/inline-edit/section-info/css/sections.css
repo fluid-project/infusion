@@ -231,6 +231,7 @@ a.undoControl:hover, a.redoControl:hover {
     width: 48px;
     opacity: 0.92;
     filter: alpha(opacity=92);
+    z-index: 500;
 }
 
 a.undoControl:focus, a.redoControl:focus, a.undoControl.focus, a.redoControl.focus {
