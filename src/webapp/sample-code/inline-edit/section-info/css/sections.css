@@ -169,18 +169,15 @@ table.narrowTable tr th {
     font-size: 100%;
 }
 
+
 .inlineEditable {
     position: relative;
+    display: block;
 }
 
-
-.inlineEditable > span:first-child {
-    border-width: 1px;
-    border-style: solid;
-    border-color: transparent;
-    padding: 2px;
-    height: 100%;
-    width: 100%
+.inlineEditable span.text {
+    padding: 3px;
+    display: inline-block;
 }
 
 .inlineEdit-invitation {
@@ -192,6 +189,7 @@ table.narrowTable tr th {
     padding: 2px !important;
 }
 
+
 .inlineEditable input {
     font-family: Arial,Helvetica,Verdana,Geneva,sans-serif;
     font-size: 1em !important;
@@ -202,8 +200,13 @@ table.narrowTable tr th {
 }
 
 .fluid-undo {
-    position:absolute;
-    top: -2px;
+    position: absolute;
+    top: 0;
+    left: 86%;
+}
+
+html>body .fluid-undo {
+    left: 96%;    
 }
 
 .fluid-undo span.label {
@@ -230,7 +233,7 @@ a.undoControl:hover, a.redoControl:hover {
     filter: alpha(opacity=92);
 }
 
-a.undoControl:focus, a.redoControl:focus {
+a.undoControl:focus, a.redoControl:focus, a.undoControl.focus, a.redoControl.focus {
     outline: 2px solid blue;
 }
 
@@ -265,7 +268,7 @@ a.redoControl:hover {
     background-color: #FFD;
     padding: 0.8em 0.6em;
     margin: 0 auto;
-    width:33%;
+    width: 33%;
     text-align: center;
 }
 
@@ -275,7 +278,7 @@ a.redoControl:hover {
     background-position: left top;
     background-repeat: no-repeat; 
     padding-left: 20px;
-    text-align: left;   
+    text-align: left;
     margin: 0 0 0.4em;
 }
 
@@ -287,9 +290,10 @@ a.redoControl:hover {
 
 .savedControl {
     position:absolute;
-    top: -2px;
+    left: 86%;
+    top: 0;
     z-index: 400;
-    margin-left: 23px;
+    margin-left: 20px;
     background-image: url(../images/all-edit-buttons.png);
     background-attachment: scroll;
     background-repeat: no-repeat;
@@ -300,4 +304,8 @@ a.redoControl:hover {
     opacity: 0;
     filter:alpha(opacity=0);
     background-position: 0 0;
+}
+
+html>body .savedControl {
+    left: 96%;
 }
