@@ -169,15 +169,6 @@ table.narrowTable tr th {
     font-size: 100%;
 }
 
-.inlineEdit-invitation {
-    background-color:#FFD;
-    border-width: 1px;
-    border-style: solid;
-    border-color: #666666 #DDDDDD #DDDDDD #666666 !important;
-    cursor: text;
-}
-
-
 .inlineEditable {
     position: relative;
 }
@@ -192,6 +183,15 @@ table.narrowTable tr th {
     width: 100%
 }
 
+.inlineEdit-invitation {
+    background-color:#FFD;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #666666 #DDDDDD #DDDDDD #666666 !important;
+    cursor: text;
+    padding: 2px !important;
+}
+
 .inlineEditable input {
     font-family: Arial,Helvetica,Verdana,Geneva,sans-serif;
     font-size: 1em !important;
@@ -199,7 +199,6 @@ table.narrowTable tr th {
     border-style: solid;
     border-color: #666666 #DDDDDD #DDDDDD #666666 !important;
     padding: 2px;
-    margin:-3px -1px;
 }
 
 .fluid-undo {
