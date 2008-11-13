@@ -47,7 +47,6 @@ fluid_0_6 = fluid_0_6 || {};
     
     finishUploadingFile = function (that, file) {
         that.events.onFileSuccess.fire(file);
-        file.filestatus = fluid.fileQueue.fileStatusConstants.COMPLETE;
         that.invokeAfterRandomDelay(function () {
             that.demoState.fileIdx++;
             that.swfUploadSettings.upload_complete_handler(file); // this is a hack that needs to be addressed.

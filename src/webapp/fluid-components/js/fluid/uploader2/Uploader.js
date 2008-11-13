@@ -56,25 +56,8 @@ fluid_0_6 = fluid_0_6 || {};
             that.locate("uploadButton").removeAttr("disabled");
             break;
         }
-        refreshFileTotal(that);
     };
     
-    var refreshFileTotal = function (that) {
-        var readyFiles = that.uploadManager.queue.getReadyFiles();
-        var numReadyFiles = readyFiles.length;
-        var bytesReadyFiles = that.uploadManager.queue.sizeOfReadyFiles();
-        
-        var fileLabelStr = (numReadyFiles === 1) ? that.options.strings.progress.singleFile : that.options.strings.progress.pluralFiles;
-        
-        var totalStateStr = fluid.stringTemplate(that.options.strings.progress.toUploadLabel, {
-            fileCount: numReadyFiles, 
-            fileLabel: fileLabelStr, 
-            totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles)
-        });
-        $(".total-file-progress").html(totalStateStr);
-    };
-
-        
     /* Progress */
    
     var derivePercent = function (num, total) {
@@ -134,7 +117,6 @@ fluid_0_6 = fluid_0_6 || {};
     };
         
     var bindModelEvents = function (that) {
-        
         that.events.onFileDialog.addListener(function () {
             addState(that, that.options.styles.queueBrowsingState);
         });
