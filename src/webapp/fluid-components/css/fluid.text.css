@@ -40,6 +40,10 @@
 .fl-font-size-140 select, 
 .fl-font-size-140 textarea {font-size:1.4em !important; line-height:1.6em !important;}
 
+.fl-font-size-150, 
+.fl-font-size-150 input, 
+.fl-font-size-150 select, 
+.fl-font-size-150 textarea {font-size:1.5em !important; line-height:1.7em !important;}
 
 .fl-font-serif     {font-family:"Georgia, Times, Times New Roman, Book Antiqua", serif;}
 .fl-font-sans      {font-family:"Tahoma, Verdana, Helvetica", sans-serif;}

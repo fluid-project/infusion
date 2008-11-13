@@ -45,8 +45,14 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.locate("save").click(function () {
             // TODO: save event needs to be dispatched
-            that.skin = createSkin(that);
             fluid.applySkin(that.skin);
+        });
+        
+        that.locate("options").click(function () {
+            that.skin = createSkin(that);
+            var preview = that.locate("preview");
+            fluid.skin.removeStyling(preview);
+            fluid.skin.style(preview, that.skin);
         });
     };
 
@@ -62,7 +68,7 @@ fluid_0_6 = fluid_0_6 || {};
             textSpacingCtrl: ".textspace-control",
             fontCtrl: ".font-control",
             colorCtrl: ".color-control",
-            optionSelector: "input",    // This one is special in that it is relative to the option control instead of the main container
+            options: "input",
             tocCtrl: ".toc-control",
             preview: ".preview", 
             save: ".save"
