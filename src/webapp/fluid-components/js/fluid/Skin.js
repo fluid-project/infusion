@@ -35,7 +35,8 @@ fluid_0_6 = fluid_0_6 || {};
      * @param {Object} skin
      */
     // TODO: this implementation should be improved
-    fluid.skin.style = function (element, skin) {
+    fluid.skin.style = function (skin, element) {
+        element = element || $("body");
         element.addClass(fluid.skin.settings.textSize[skin.textSize]);
         element.addClass(fluid.skin.settings.textFont[skin.textFont]);
         element.addClass(fluid.skin.settings.textSpacing[skin.textSpacing]);
@@ -46,10 +47,10 @@ fluid_0_6 = fluid_0_6 || {};
      * Removes all existing classes which start with 'fl-' before restyling the page.
      * @param {Object} skin
      */
-    fluid.applySkin = function (skin) {
-        var body = $("body");
-        fluid.skin.removeStyling(body);
-        fluid.skin.style(body, skin);
+    fluid.applySkin = function (skin, element) {
+        element = element || $("body");
+        fluid.skin.removeStyling(element);
+        fluid.skin.style(skin, element);
     };
         
     fluid.skin.settings = {

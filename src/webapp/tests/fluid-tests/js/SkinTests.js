@@ -51,7 +51,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             var main = $("#main");
             
-            fluid.skin.style(main, hcLargeFontSkin);
+            fluid.skin.style(hcLargeFontSkin, main);
             jqUnit.assertTrue("main has large text size class", main.hasClass("fl-font-size-120"));
             jqUnit.assertTrue("main has courier font class", main.hasClass("fl-font-monospace"));
             jqUnit.assertTrue("main has wide text spacing class", main.hasClass("fl-font-spacing-1"));

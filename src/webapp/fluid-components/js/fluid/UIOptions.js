@@ -25,16 +25,32 @@ fluid_0_6 = fluid_0_6 || {};
         return checked.eq(0).attr("value"); 
     };
 
-    var createSkin = function (that) {
+    var updateSkin = function (that) {
         // glue between UI and model (skin)
         // will go away with use of the renderer
-        var skin = {};
-        skin.textSize = selectedSetting(that.locate("textSizeCtrl"));
-        skin.textFont = selectedSetting(that.locate("fontCtrl"));
-        skin.textSpacing = selectedSetting(that.locate("textSpacingCtrl"));
-        skin.colorScheme = selectedSetting(that.locate("colorCtrl"));
-
-        return skin;
+        that.model.textSize = selectedSetting(that.locate("textSizeCtrl"));
+        that.model.textFont = selectedSetting(that.locate("fontCtrl"));
+        that.model.textSpacing = selectedSetting(that.locate("textSpacingCtrl"));
+        that.model.colorScheme = selectedSetting(that.locate("colorCtrl"));
+        
+        that.events.afterSkinChange.fire(that.model);
+    };
+    
+    var initPreviewView = function (that) {
+        that.events.afterSkinChange.addListener(function (skin) {
+            fluid.applySkin(skin, that.locate("preview")); 
+        });        
+    };
+    
+    var bindHandlers = function (that) {
+        that.locate("save").click(function () {
+            that.events.onSave.fire(that.model);
+            fluid.applySkin(that.model);
+        });
+        
+        that.locate("options").click(function () {
+            updateSkin(that);
+        });        
     };
     
     fluid.uiOptions = function (container, options) {
@@ -42,18 +58,10 @@ fluid_0_6 = fluid_0_6 || {};
             fluid.fail("UI Options initialised with no container");
         }
         var that = fluid.initView("fluid.uiOptions", container, options);
+        that.model = that.options.skin;
         
-        that.locate("save").click(function () {
-            // TODO: save event needs to be dispatched
-            fluid.applySkin(that.skin);
-        });
-        
-        that.locate("options").click(function () {
-            that.skin = createSkin(that);
-            var preview = that.locate("preview");
-            fluid.skin.removeStyling(preview);
-            fluid.skin.style(preview, that.skin);
-        });
+        bindHandlers(that);
+        initPreviewView(that);
     };
 
     fluid.defaults("fluid.uiOptions", {
@@ -74,7 +82,7 @@ fluid_0_6 = fluid_0_6 || {};
             save: ".save"
         },
         events: {
-            onPrefChange: null,
+            afterSkinChange: null,
             afterPreview: null,
             onSave: null,
             onCancel: null
