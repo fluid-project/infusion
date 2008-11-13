@@ -2,46 +2,48 @@
 
 (function ($) {
     $(function () {
+        // Test files.
+        var file1 = {
+            id: 0,
+            size: 400000
+        };
+               
+        var file2 = {
+            id: 1,
+            size: 600000
+        };
+                
+        var file3 =  {
+            id: 2,
+            size: 800000
+        };
+        
+        var file_smallerThanChunkSize =  {
+            id: 3,
+            size: 165432
+        };
+        
+        var file_largerAndNotMultipleOfChunkSize =  {
+            id: 4,
+            size: 812345
+        };
+        
+        var allFiles = [file1, file2, file3, file_smallerThanChunkSize, file_largerAndNotMultipleOfChunkSize];
+        
+        var resetStatusForAllFiles = function () {
+            for (var i = 0; i < allFiles.length; i++) {
+                allFiles[i].filestatus = fluid.fileQueue.fileStatusConstants.QUEUED;
+            }
+        };
         
         var events;
         var setupFunction = function () {
             events = {};
             fluid.mergeListeners(events, fluid.defaults("fluid.uploader").events);
+            resetStatusForAllFiles();
         };
         
         var demoUploadTests = new jqUnit.TestCase("DemoUploadManager Tests", setupFunction);
-        
-        // Test files.
-        var file1 = {
-            id: 0,
-            size: 400000,
-            filestatus: SWFUpload.FILE_STATUS.QUEUED
-        };
-               
-        var file2 = {
-            id: 1,
-            size: 600000,
-            filestatus: SWFUpload.FILE_STATUS.QUEUED
-        };
-                
-        var file3 =  {
-            id: 2,
-            size: 800000,
-            filestatus: SWFUpload.FILE_STATUS.QUEUED
-        };
-        
-        var file_smallerThanChunkSize =  {
-            id: 3,
-            size: 165432,
-            filestatus: SWFUpload.FILE_STATUS.QUEUED
-        };
-        
-        var file_largerAndNotMultipleOfChunkSize =  {
-            id: 4,
-            size: 812345,
-            filestatus: SWFUpload.FILE_STATUS.QUEUED
-        };
-        
         
         // Silly little data structure for capturing the sequence and parameters of the upload flow.
         var eventTracker = function () {

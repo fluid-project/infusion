@@ -5,10 +5,7 @@
 fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
-    /********************
-     * SWFUploadManager *
-     ********************/
-    
+
     // Maps SWFUpload's setting names to our component's setting names.
     var swfUploadOptionsMap = {
         uploadURL: "upload_url",
@@ -48,12 +45,6 @@ fluid_0_6 = fluid_0_6 || {};
         return result;
     };
     
-    var start = function (that) {
-        that.queue.setupCurrentBatch();
-        that.events.onUploadStart.fire(that.queue.currentBatch.files); 
-        that.uploadNextFile();
-    };
-    
     var finishUploading = function (that) {
         that.events.afterUploadComplete.fire(that.queue.currentBatch.files);
         that.queue.clearCurrentBatch();
@@ -91,6 +82,12 @@ fluid_0_6 = fluid_0_6 || {};
         return result;
     };
 
+    var start = function (that) {
+        that.queue.setupCurrentBatch();
+        that.events.onUploadStart.fire(that.queue.currentBatch.files); 
+        that.uploadNextFile();
+    };
+    
     // Invokes the OS browse files dialog, allowing either single or multiple select based on the options.
     var browse = function (swfUploader, fileQueueLimit) {              
         if (fileQueueLimit === 1) {
@@ -122,7 +119,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.events.onFileSuccess.addListener(function (file) {
             if (that.queue.currentBatch.bytesUploadedForFile === 0) {
-                that.queue.currentBatch.bytesUploaded = file.size;
+                that.queue.currentBatch.bytesUploaded += file.size;
             }
         });
     };

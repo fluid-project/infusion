@@ -39,11 +39,19 @@ fluid_0_6 = fluid_0_6 || {};
     var clearCurrentBatch = function (that) {
         that.currentBatch = {
             fileIdx: -1,
-        	files: [],
-        	totalBytes: 0,
-        	numFilesCompleted: 0,
-        	bytesUploaded: 0
+            files: [],
+            totalBytes: 0,
+            numFilesCompleted: 0,
+            bytesUploadedForFile: 0,
+            previousChunk: 0,
+            totalBytesUploaded: 0
         };
+    };
+    
+    var updateCurrentBatch = function (that) {
+        var readyFiles = that.getReadyFiles();
+        that.currentBatch.files = readyFiles;
+        that.currentBatch.totalBytes = fluid.fileQueue.sizeOfFiles(readyFiles);
     };
     
     var setupCurrentBatch = function (that) {
@@ -51,12 +59,6 @@ fluid_0_6 = fluid_0_6 || {};
         updateCurrentBatch(that);
     };
      
-    var updateCurrentBatch = function (that) {
-        var readyFiles = that.getReadyFiles();
-        that.currentBatch.files = readyFiles;
-        that.currentBatch.totalBytes = fluid.fileQueue.sizeOfFiles(readyFiles);
-    };
-    
     fluid.fileQueue = function () {
         var that = {};
         that.files = [];
@@ -75,10 +77,6 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.getReadyFiles = function () {
             return getReadyFiles(that);
-        };
-        
-        that.sizeOfReadyFiles = function () {
-            return sizeOfFiles(that.getReadyFiles());
         };
         
         that.setupCurrentBatch = function () {

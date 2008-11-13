@@ -101,37 +101,32 @@ fluid_0_6 = fluid_0_6 || {};
         
         // create a new progress bar for the row and position it
         var rowProgressor = that.locate("rowProgressorTemplate", that.uploadContainer).clone();
-        rowProgressor.attr("id", file.id+"_progress");
-        rowProgressor.css('top',(row.position().top)).height(row.height()).width(5);
+        rowProgressor.attr("id", file.id + "_progress");
+        rowProgressor.css("top", row.position().top);
+        rowProgressor.height(row.height()).width(5);
         that.container.after(rowProgressor);
         
         that.refreshView();
     };
     
     var changeRowState = function (row, newState) {
-        // remove the ready status and add the new status
-        row.removeClass('ready').removeClass('error').addClass(newState);
+        row.removeClass("ready").removeClass("error").addClass(newState);
     };
     
     var bindEvents = function (that) {
         
         that.events.onUploadStart.addListener(function () {
-             // add disabled attributes to all the remove buttons
-            that.locate("removeButton").attr("disabled","disabled");
+            that.locate("removeButton").attr("disabled", "disabled");
         });
         
         that.events.afterUploadComplete.addListener(function () {
-            // remove all the disabled attributes from all the remove buttons
             that.locate("removeButton").removeAttr("disabled");
         });
         
         that.events.onFileSuccess.addListener(function (file) {
             var row = rowForFile(that, file);
-            // remove click event on Remove button
-            that.locate("removeButton", row).unbind('click');
-            // remove the tabFocus on the Remove button
+            that.locate("removeButton", row).unbind("click");
             that.locate("removeButton", row).tabindex(-1);
-            // change row class
             changeRowState(row, that.options.styles.uploaded);
         });
         

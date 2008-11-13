@@ -5,47 +5,32 @@
 fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
-
-    /*********************
-     * DemoUploadManager *
-     *********************/
     
     var updateProgress = function (file, events, demoState) {
         if (demoState.shouldPause) {
             return;
         }
         
-        demoState.bytesUploaded = Math.min(demoState.bytesUploaded + Math.min(demoState.chunkSize, file.size), file.size);
+        var chunk = Math.min(demoState.chunkSize, file.size);
+        demoState.bytesUploaded = Math.min(demoState.bytesUploaded + chunk, file.size);
         events.onFileProgress.fire(file, demoState.bytesUploaded, file.size);
     };
     
-    var startUploadingFile = function (that) {
+    var startUploading = function (that) {
         // Reset our upload stats for each new file.
         that.demoState.currentFile = that.queue.files[that.demoState.fileIdx];
         that.demoState.chunksForCurrentFile = Math.ceil(that.demoState.currentFile / that.demoState.chunkSize);
         that.demoState.bytesUploaded = 0;
         that.demoState.shouldPause = false;
         
-        that.events.onFileStart.fire(that.demoState.currentFile);    
+        that.events.onFileStart.fire(that.demoState.currentFile);
+        that.demoState.currentFile.filestatus = fluid.fileQueue.fileStatusConstants.IN_PROGRESS;
+        simulateUpload(that);
     };
     
-    // Declare finishUploadingFile up front because of the circular references.
-    var finishUploadingFile;
-    
-    var simulateUpload = function (that) {
+    var finishUploading = function (that) {
         var file = that.demoState.currentFile;
-        
-        that.invokeAfterRandomDelay(function () {
-            if (that.demoState.bytesUploaded < file.size) {
-                updateProgress(file, that.events, that.demoState);
-                simulateUpload(that);
-            } else {
-                finishUploadingFile(that, file);
-            }
-        });
-    };
-    
-    finishUploadingFile = function (that, file) {
+        file.filestatus = fluid.fileQueue.fileStatusConstants.COMPLETE;
         that.events.onFileSuccess.fire(file);
         that.invokeAfterRandomDelay(function () {
             that.demoState.fileIdx++;
@@ -53,14 +38,28 @@ fluid_0_6 = fluid_0_6 || {};
         });     
     };
     
-    var pauseDemo = function (events, demoState) {
-        demoState.shouldPause = true;
+    var simulateUpload = function (that) {
+        var file = that.demoState.currentFile;
+        that.invokeAfterRandomDelay(function () {
+            if (that.demoState.bytesUploaded < file.size) {
+                updateProgress(file, that.events, that.demoState);
+                simulateUpload(that);
+            } else {
+                finishUploading(that);
+            }
+        });
+    };
+    
+    var pauseDemo = function (that) {
+        that.demoState.shouldPause = true;
+        that.demoState.currentFile.filestatus = fluid.fileQueue.fileStatusConstants.CANCELLED;
         
         // In SWFUpload's world, pausing is a combinination of an UPLOAD_STOPPED error and a complete.
-        events.onUploadError.fire(demoState.currentFile, 
-                                  SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED, 
-                                  "The demo upload was paused by the user.");
-        that.swfUploadSettings.upload_complete_handler(demoState.currentFile); // this is a hack that needs to be addressed.
+        that.events.onUploadError.fire(that.demoState.currentFile, 
+                                       SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED, 
+                                       "The demo upload was paused by the user.");
+        // This is a hack that needs to be addressed.
+        that.swfUploadSettings.upload_complete_handler(that.demoState.currentFile);
     };
     
     var initDemoUploadManager = function (events, options) {
@@ -86,8 +85,7 @@ fluid_0_6 = fluid_0_6 || {};
         var that = initDemoUploadManager(events, options);
         
         that.uploadNextFile = function () {
-            startUploadingFile(that);
-            simulateUpload(that);
+            startUploading(that);
         };
         
         /**
@@ -95,7 +93,7 @@ fluid_0_6 = fluid_0_6 || {};
          * This method overrides the default behaviour in SWFUploadManager.
          */
         that.cancel = function () {
-            pauseDemo(that.events, that.demoState);
+            pauseDemo(that);
         };
         
         /**
