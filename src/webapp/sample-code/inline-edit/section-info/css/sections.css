@@ -221,11 +221,13 @@ table.narrowTable tr th {
     height: 18px;
     outline: none;
     opacity: 0.6;
+    filter:alpha(opacity=60);
 }
 
 a.undoControl:hover, a.redoControl:hover {
     width: 48px;
     opacity: 0.92;
+    filter: alpha(opacity=92);
 }
 
 a.undoControl:focus, a.redoControl:focus {
@@ -261,7 +263,7 @@ a.redoControl:hover {
 .editInstructions {
     border: 2px solid #FC7317;
     background-color: #FFD;
-    padding: 0 0.6em 0.8em 0.6em;
+    padding: 0.8em 0.6em;
     margin: 0 auto;
     width:33%;
     text-align: center;
@@ -274,6 +276,7 @@ a.redoControl:hover {
     background-repeat: no-repeat; 
     padding-left: 20px;
     text-align: left;   
+    margin: 0 0 0.4em;
 }
 
 /* */
@@ -295,5 +298,6 @@ a.redoControl:hover {
     height: 18px;
     outline: none;
     opacity: 0;
+    filter:alpha(opacity=0);
     background-position: 0 0;
 }
