@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Inline Edit Examples</title>
+
+        <link rel="stylesheet" type="text/css" href="../css/fluid.layout.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.states.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.text.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.theme.mist.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.theme.hc.css" />
+
+        
+        <script type="text/javascript" src="../js/jquery/jquery-1.2.6.js"></script>
+        <script type="text/javascript" src="../js/jquery/jARIA.js"></script>
+        <script type="text/javascript" src="../js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../js/swfupload/swfupload.js"></script>
+        <script type="text/javascript" src="../js/fluid/Fluid.js"></script>
+
+        <script type="text/javascript" src="../js/fluid/uploader2/FileQueue.js"></script>
+        <script type="text/javascript" src="../js/fluid/uploader2/SWFUploadManager.js"></script>
+        <script type="text/javascript" src="../js/fluid/uploader2/DemoUploadManager.js"></script>
+        <script type="text/javascript" src="../js/fluid/uploader2/Scroller.js"></script>
+        <script type="text/javascript" src="../js/fluid/uploader2/Progress.js"></script>
+        <script type="text/javascript" src="../js/fluid/uploader2/FileQueueView.js"></script>
+        <script type="text/javascript" src="../js/fluid/uploader2/Uploader.js"></script>
+        
+        
+        <script type="text/javascript">
+            jQuery(document).ready(function () {
+                fluid.setLogging(true);
+                var myUploader = fluid.uploader("#simple", {
+                    debug: true,
+                    uploadManager: {
+                        type: "fluid.demoUploadManager",
+                        options: {
+                            flashURL: "../swfupload/swfupload_f9.swf",
+                            fileTypes: "*.*"
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <style type="text/css">
+            /* CSS specific to this page */
+            body {font:normal 12px "Arial","Tahoma",sans-serif}
+            h1 {font-size:125%; padding:5px;}
+            table {border-collapse:collapse;}
+            
+            
+            .fluid-templates {display:none;}
+            
+        </style>  
+    </head>
+    <body>
+    
+        <div id="simple">
+            <h1>Basic Uploader</h1>
+            
+            <form method="get" enctype="multipart/form-data">
+                <div class="start">
+                    <!-- FILE QUEUE -->
+                    <div class="fluid-uploader-queue-wrapper">
+                        <!-- QUEUE HEADER -->
+    	                <div class="fluid-scroller-table-head">
+            				<table summary="Headers for the file queue.">
+            					<caption>File Queue:</caption>
+            					<thead>
+            						<tr>
+            							<th scope="col" class="fileName">File Name</th>
+            							<th scope="col" class="fileSize">Size&nbsp;&nbsp;</th>
+            							<th scope="col" class="fileRemove">&nbsp;</th>
+            						</tr>
+            					</thead>
+            				</table>
+            			</div>
+                        
+                        <!-- QUEUE CONTENTS -->
+            			<div class="fluid-scroller">
+            				<div class="scroller-inner">
+            					<table class="fluid-uploader-queue" summary="Queue of files to upload.">
+            						<tbody>
+    	                                <!-- Rows will be rendered in here. -->
+                                        
+    	                                <!-- Template markup for the file queue rows -->
+                        			    <tr id="queue-row-tmplt" class="fluid-templates">
+                            				<th class="fileName" scope="row">File Name Placeholder</th>
+                                            <td class="fileSize">0 KB</td>
+                                            <td class="fileRemove">
+                                                <button type="button" class="removeFile" title="Remove File" tabindex="-1">
+                                                    <span class="text-description">Remove file from queue</span>
+                                                </button>
+                                            </td>
+                            		    </tr>
+            						</tbody>
+            					</table>
+            					<div class="file-progress">
+            					    <span class="file-progress-text">0%</span>
+                                </div>
+            				</div>
+            			</div>
+                        
+                        <!-- QUEUE INSTRUCTIONS -->
+            			<div class="fluid-uploader-row-placeholder">
+            			    Choose <em>Browse files</em> to add files to the queue 
+                        </div>
+                        
+                        <!-- QUEUE FOOTER -->
+            			<div class="fluid-scroller-table-foot">
+                            <div class="total-file-progress">
+            					Total: 
+                                <span class="fluid-uploader-totalFiles">0</span> files
+                                (<span class="fluid-uploader-totalBytes">0 KB</span>)
+                            </div>
+                            <a href="#" class="fluid-uploader-browse">Browse files</a>
+            				<div class="total-progress">&nbsp;</div>
+            			</div>
+                    </div>
+                    
+                    <!-- UPLOADER BUTTONS -->
+            		<div class="fluid-uploader-btns">
+            			<button type="button" class="fluid-uploader-upload default" >Upload</button>
+            			<button type="button" class="fluid-uploader-resume default" >Resume</button>
+            			<button type="button" class="fluid-uploader-pause" >Pause</button>
+            			<button type="button" class="fluid-uploader-cancel cancel" >Cancel</button>
+            			<button type="button" class="fluid-uploader-done" >Done</button>
+            		</div>
+                    
+                </div>
+            </form>
+    
+            <!-- Other templates -->
+        	<div class="fluid-templates">
+        		<table id="fluid-uploader" summary="Invisible placeholder for Uploader templates.">
+        			<tr id="queue-error-tmplt" class="queue-error-row">
+        			    <td colspan="3" class="queue-error"></td>
+                    </tr>
+        		</table>
+        	</div>
+        </div>
+
+
+        <div id="themed_full">
+            <h1>Themed Uploader</h1>            
+            <form id="uploader-mist" method="get" enctype="multipart/form-data"> 
+            </form>
+        </div>        
+        
+    </body>
+</html>
