@@ -24,9 +24,10 @@ fluid_0_6 = fluid_0_6 || {};
     // TODO: This currently causes an error in IE.
     fluid.skin.removeStyling = function (element) {
         element = element || $("body");
-        $('[class*=fl-]', element).andSelf().each(function (i) {
-            var attr = this.getAttribute('class').replace(/\bfl-\S+/g, '');
-            this.setAttribute('class', attr);
+        $('[class*=fl-]', element).andSelf().each(function (i) {            
+            var attr = ($.browser.msie === false) ? 'class' : 'className' ; 
+            var cleansed = this.getAttribute(attr).replace(/\bfl-\S+/g, '');
+            this.setAttribute(attr, cleansed);
         });
     };
      
