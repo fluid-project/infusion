@@ -62,7 +62,6 @@
         // File Queue test case
         var setupFunction = function () {
             events = {
-                afterFileQueued: fluid.event.getEventFirer(),
                 onUploadStart: fluid.event.getEventFirer(),
                 onFileSuccess: fluid.event.getEventFirer(),
                 onFileError: fluid.event.getEventFirer(),

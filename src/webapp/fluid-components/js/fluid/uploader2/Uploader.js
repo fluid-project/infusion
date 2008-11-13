@@ -81,7 +81,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         var totalPercent = derivePercent(batch.bytesUploaded, batch.totalBytes);
         
-        var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalProgressLabel, {
+        var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalLabel, {
             curFileN: batch.fileIdx + 1, 
             totalFilesN: batch.files.length, 
             currBytes: fluid.uploader.formatFileSize(batch.bytesUploaded), 
@@ -124,6 +124,8 @@ fluid_0_6 = fluid_0_6 || {};
         that.events.afterFileDialog.addListener(function () {
             that.refreshView();
         });
+        
+        that.events.afterFileQueued.addListener(that.fileQueueView.addFile);
         
         that.events.afterFileRemoved.addListener(function () {
             that.refreshView();
@@ -282,11 +284,8 @@ fluid_0_6 = fluid_0_6 || {};
         strings: {
             progress: {
                 pausedLabel: "Paused at: %curFileN of %totalFilesN files (%currBytes of %totalBytes)",
-                toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)", 
-                totalProgressLabel: "Uploading: %curFileN of %totalFilesN files (%currBytes of %totalBytes)", 
-                completedLabel: "Uploaded: %curFileN files (%totalCurrBytes)",
-                singleFile: "file",
-                pluralFiles: "files"
+                totalLabel: "Uploading: %curFileN of %totalFilesN files (%currBytes of %totalBytes)", 
+                completedLabel: "Uploaded: %curFileN files (%totalCurrBytes)"
             },
             buttons: {
                 addMore: "Add More"
