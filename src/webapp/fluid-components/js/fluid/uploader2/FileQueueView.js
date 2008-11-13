@@ -102,8 +102,7 @@ fluid_0_6 = fluid_0_6 || {};
         // create a new progress bar for the row and position it
         var rowProgressor = that.locate("rowProgressorTemplate", that.uploadContainer).clone();
         rowProgressor.attr("id", file.id + "_progress");
-        rowProgressor.css("top", row.position().top);
-        rowProgressor.height(row.height()).width(5);
+        rowProgressor.css('top',(row.position().top)).height(row.height()).width(5);
         that.container.after(rowProgressor);
         
         that.refreshView();
@@ -114,6 +113,10 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var bindEvents = function (that) {
+        
+        that.events.afterFileQueued.addListener(function (file) {
+            addFile(that, file);
+        });
         
         that.events.onUploadStart.addListener(function () {
             that.locate("removeButton").attr("disabled", "disabled");
@@ -205,6 +208,14 @@ fluid_0_6 = fluid_0_6 || {};
             selected: "selected",
             uploaded: "uploaded",
             error: "error"
+        },
+        
+        strings: {
+            progress: {
+                toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)", 
+                singleFile: "file",
+                pluralFiles: "files"
+        	}
         }
     });
    

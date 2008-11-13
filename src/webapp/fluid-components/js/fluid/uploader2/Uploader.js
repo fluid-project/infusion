@@ -56,8 +56,25 @@ fluid_0_6 = fluid_0_6 || {};
             that.locate("uploadButton").removeAttr("disabled");
             break;
         }
+        refreshFileTotal(that);
     };
     
+    var refreshFileTotal = function (that) {
+        var readyFiles = that.uploadManager.queue.getReadyFiles();
+        var numReadyFiles = readyFiles.length;
+        var bytesReadyFiles = that.uploadManager.queue.sizeOfReadyFiles();
+        
+        var fileLabelStr = (numReadyFiles === 1) ? that.options.strings.progress.singleFile : that.options.strings.progress.pluralFiles;
+        
+        var totalStateStr = fluid.stringTemplate(that.options.strings.progress.toUploadLabel, {
+            fileCount: numReadyFiles, 
+            fileLabel: fileLabelStr, 
+            totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles)
+        });
+        $(".total-file-progress").html(totalStateStr);
+    };
+
+        
     /* Progress */
    
     var derivePercent = function (num, total) {
@@ -81,7 +98,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         var totalPercent = derivePercent(batch.bytesUploaded, batch.totalBytes);
         
-        var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalLabel, {
+        var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalProgressLabel, {
             curFileN: batch.fileIdx + 1, 
             totalFilesN: batch.files.length, 
             currBytes: fluid.uploader.formatFileSize(batch.bytesUploaded), 
@@ -124,8 +141,6 @@ fluid_0_6 = fluid_0_6 || {};
         that.events.afterFileDialog.addListener(function () {
             that.refreshView();
         });
-        
-        that.events.afterFileQueued.addListener(that.fileQueueView.addFile);
         
         that.events.afterFileRemoved.addListener(function () {
             that.refreshView();
@@ -284,8 +299,11 @@ fluid_0_6 = fluid_0_6 || {};
         strings: {
             progress: {
                 pausedLabel: "Paused at: %curFileN of %totalFilesN files (%currBytes of %totalBytes)",
-                totalLabel: "Uploading: %curFileN of %totalFilesN files (%currBytes of %totalBytes)", 
-                completedLabel: "Uploaded: %curFileN files (%totalCurrBytes)"
+                toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)", 
+                totalProgressLabel: "Uploading: %curFileN of %totalFilesN files (%currBytes of %totalBytes)", 
+                completedLabel: "Uploaded: %curFileN files (%totalCurrBytes)",
+                singleFile: "file",
+                pluralFiles: "files"
             },
             buttons: {
                 addMore: "Add More"
