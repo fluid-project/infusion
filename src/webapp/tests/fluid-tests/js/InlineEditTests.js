@@ -133,7 +133,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Before initialization of empty display, display is empty", "", display.text());
             var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
             jqUnit.assertEquals("After initialization of empty display, display has invitation text: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
-            jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewText));
+            jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
     
             var testText = "This is test text.";
             var edit = $("#empty-inline-edit-edit");
@@ -148,7 +148,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             edit.attr("value", "");
             inlineEditor.finish();
             jqUnit.assertEquals("After clearing the field, display should have invitation text again: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
-            jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewText));
+            jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
     
         });
         

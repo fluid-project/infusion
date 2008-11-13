@@ -111,7 +111,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     var showDefaultViewText = function (that) {
         that.displayView.value(that.options.defaultViewText);
-        that.viewEl.addClass(that.options.styles.defaultViewText);
+        that.viewEl.addClass(that.options.styles.defaultViewStyle);
     };
 
     var showNothing = function (that) {
@@ -133,7 +133,7 @@ fluid_0_6 = fluid_0_6 || {};
 
     var showEditedText = function (that) {
         that.displayView.value(that.model.value);
-        clearEmptyViewStyles(that.viewEl, that.options.defaultViewStyle, that.existingPadding);
+        clearEmptyViewStyles(that.viewEl, that.options.styles.defaultViewStyle, that.existingPadding);
     };
     
     var refreshView = function (that, source) {
@@ -349,7 +349,7 @@ fluid_0_6 = fluid_0_6 || {};
             value: function(newValue) {
                 return $(element)[func](newValue);
             }
-        }
+        };
     }
     
     /**
@@ -440,7 +440,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         styles: {
             invitation: "inlineEdit-invitation",
-            defaultViewText: "inlineEdit-invitation-text",
+            defaultViewStyle: "inlineEdit-invitation-text",
             tooltip: "inlineEdit-tooltip",
             focus: "inlineEdit-focus"
         },
