@@ -102,7 +102,8 @@ fluid_0_6 = fluid_0_6 || {};
         // create a new progress bar for the row and position it
         var rowProgressor = that.locate("rowProgressorTemplate", that.uploadContainer).clone();
         rowProgressor.attr("id", file.id + "_progress");
-        rowProgressor.css('top',(row.position().top)).height(row.height()).width(5);
+        rowProgressor.css("top", row.position().top);
+        rowProgressor.height(row.height()).width(5);
         that.container.after(rowProgressor);
         
         that.refreshView();

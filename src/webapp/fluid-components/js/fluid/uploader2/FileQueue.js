@@ -48,17 +48,17 @@ fluid_0_6 = fluid_0_6 || {};
         };
     };
     
-    var setupCurrentBatch = function (that) {
-        clearCurrentBatch(that);
-        updateCurrentBatch(that);
-    };
-     
     var updateCurrentBatch = function (that) {
         var readyFiles = that.getReadyFiles();
         that.currentBatch.files = readyFiles;
         that.currentBatch.totalBytes = fluid.fileQueue.sizeOfFiles(readyFiles);
     };
     
+    var setupCurrentBatch = function (that) {
+        clearCurrentBatch(that);
+        updateCurrentBatch(that);
+    };
+     
     fluid.fileQueue = function () {
         var that = {};
         that.files = [];

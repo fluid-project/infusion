@@ -96,19 +96,19 @@ fluid_0_6 = fluid_0_6 || {};
         // total progress
         var batch = that.uploadManager.queue.currentBatch;
         
-        var totalPercent = derivePercent(batch.bytesUploaded, batch.totalBytes);
+        var totalPercent = derivePercent(batch.totalBytesUploaded, batch.totalBytes);
         
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalProgressLabel, {
             curFileN: batch.fileIdx + 1, 
             totalFilesN: batch.files.length, 
-            currBytes: fluid.uploader.formatFileSize(batch.bytesUploaded), 
+            currBytes: fluid.uploader.formatFileSize(batch.bytesUploadedForFile), 
             totalBytes: fluid.uploader.formatFileSize(batch.totalBytes)
         });
         
         that.totalProgress.update(totalPercent, totalProgressStr);
     };
         
-    var progressComplete = function (that, file) {
+    var progressComplete = function (that) {
         var batch = that.uploadManager.queue.currentBatch;
         
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.completedLabel, {
@@ -163,12 +163,11 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.events.afterFileComplete.addListener(function (file) {
-            //progressUpdate(that, file, file.size, file.size);
             that.fileProgress.hide(0, false); // no delay, no animation 
         });
         
-        that.events.afterUploadComplete.addListener(function (file) {
-            progressComplete(that, file);
+        that.events.afterUploadComplete.addListener(function () {
+            progressComplete(that);
             refreshView(that);
             that.locate("browseButton").removeAttr("disabled");
         });
