@@ -30,8 +30,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 focus: "customFocus"
             },          
             paddings: {
-                add: 20,
-                minimum: 40
+                edit: 20,
+                minimumEdit: 40
             }
         };
         
@@ -72,8 +72,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
             jqUnit.assertEquals("Focus style is default", fluid.defaults("inlineEdit").styles.focus, inlineEditor.options.styles.focus);
             jqUnit.assertEquals("Invitation style is default", fluid.defaults("inlineEdit").styles.invitation, inlineEditor.options.styles.invitation);
-            jqUnit.assertEquals("Paddings add is default", fluid.defaults("inlineEdit").paddings.add, inlineEditor.options.paddings.add);
-            jqUnit.assertEquals("Paddings minimum is default", fluid.defaults("inlineEdit").paddings.minimum, inlineEditor.options.paddings.minimum);
+            jqUnit.assertEquals("Paddings add is default", fluid.defaults("inlineEdit").paddings.edit, inlineEditor.options.paddings.edit);
+            jqUnit.assertEquals("Paddings minimum is default", fluid.defaults("inlineEdit").paddings.minimumEdit, inlineEditor.options.paddings.minimumEdit);
             jqUnit.isVisible("Display field is visible", "#display");
             jqUnit.notVisible("Edit field is hidden", "#edit-container");
         });
@@ -93,8 +93,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
             jqUnit.assertEquals("Focus style is custom", customOptions.styles.focus, inlineEditor.options.styles.focus);
             jqUnit.assertEquals("Invitation style is custom", customOptions.styles.invitation, inlineEditor.options.styles.invitation);
-            jqUnit.assertEquals("Paddings add is set to", customOptions.paddings.add, inlineEditor.options.paddings.add);
-            jqUnit.assertEquals("Paddings minimum is set to", customOptions.paddings.minimum, inlineEditor.options.paddings.minimum);
+            jqUnit.assertEquals("Paddings add is set to", customOptions.paddings.edit, inlineEditor.options.paddings.edit);
+            jqUnit.assertEquals("Paddings minimum is set to", customOptions.paddings.minimumEdit, inlineEditor.options.paddings.minimumEdit);
             jqUnit.isVisible("Display field is visible", "#display-custom");
             jqUnit.notVisible("Edit field is hidden", "#edit-container-custom");
         });
