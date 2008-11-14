@@ -6,6 +6,28 @@ fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
+    // file progress
+    
+    var fileProgressStart = function (that, file) {
+        var fileRowElm = $("tr#" + file.id);
+        that.fileProgress.refresh(fileRowElm);
+    };
+    
+    var hideFileProgress = function (that, file) {
+        var fileRowElm = $("tr#" + file.id);
+        that.fileProgress.hide(0, false); // no delay, no animation 
+    };
+    
+    var fileProgressUpdate = function (that, file, fileBytesComplete, fileTotalBytes) {
+        // file progress
+        var filePercent = fluid.uploader.derivePercent(fileBytesComplete, fileTotalBytes);
+        var filePercentStr = filePercent + "%";
+        
+        //file.progress.update(filePercent, filePercentStr, "", true);
+        
+        that.fileProgress.update(filePercent, filePercentStr);
+    };
+    
     // Real data binding would be nice to replace these two pairs.
     var rowForFile = function (that, file) {
         return that.locate("fileQueue").find("#" + file.id);
@@ -123,6 +145,18 @@ fluid_0_6 = fluid_0_6 || {};
             that.locate("removeButton").attr("disabled", "disabled");
         });
         
+        that.events.onFileStart.addListener(function (file) {
+            fileProgressStart(that, file);
+        });
+        
+        that.events.onFileProgress.addListener(function (file, fileBytesComplete, fileTotalBytes) {
+            fileProgressUpdate(that, file, fileBytesComplete, fileTotalBytes); 
+        });
+
+        that.events.afterFileComplete.addListener(function (file) {
+            hideFileProgress(that, file);
+        });
+        
         that.events.afterUploadComplete.addListener(function () {
             that.locate("removeButton").removeAttr("disabled");
         });
@@ -157,6 +191,14 @@ fluid_0_6 = fluid_0_6 || {};
                 $(selectedItem).removeClass(that.options.styles.selected);
             }
         });
+        
+        that.fileProgress = fluid.progress(that.uploadContainer, {
+            selectors: {
+                displayElement: ".file-progress", 
+        		label: ".file-progress-text",
+                indicator: ".file-progress"
+            }
+	    });
         
         bindEvents(that);
     };

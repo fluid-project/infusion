@@ -46,7 +46,7 @@ fluid_0_6 = fluid_0_6 || {};
         }
     };
     
-    var refreshFileTotal = function (that) {
+    var refreshUploadTotal = function (that) {
         var readyFiles = that.uploadManager.queue.getReadyFiles();
         var numReadyFiles = readyFiles.length;
         var bytesReadyFiles = that.uploadManager.queue.sizeOfReadyFiles();
@@ -63,27 +63,12 @@ fluid_0_6 = fluid_0_6 || {};
 
         
     /* Progress */
-   
-    var derivePercent = function (num, total) {
-        return Math.round((num * 100) / total);
-    };
-       
-    var progressStart = function (that, file) {
-        var fileRowElm = $("tr#" + file.id);
-        that.fileProgress.refresh(fileRowElm);
-    };
         
-    var progressUpdate = function (that, file, fileBytesComplete, fileTotalBytes) {
-        // file progress
-        var filePercent = derivePercent(fileBytesComplete, fileTotalBytes);
-        var filePercentStr = filePercent + "%";
+    var totalProgressUpdate = function (that) {
         
-        that.fileProgress.update(filePercent, filePercentStr);
-        
-        // total progress
         var batch = that.uploadManager.queue.currentBatch;
         
-        var totalPercent = derivePercent(batch.totalBytesUploaded, batch.totalBytes);
+        var totalPercent = fluid.uploader.derivePercent(batch.totalBytesUploaded, batch.totalBytes);
         
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalProgressLabel, {
             curFileN: batch.fileIdx + 1, 
@@ -132,7 +117,7 @@ fluid_0_6 = fluid_0_6 || {};
                 updateUploaderViewState(that, that.options.styles.queueLoadedState);
             }
             
-            refreshFileTotal(that);
+            refreshUploadTotal(that);
         });
         
         that.events.afterFileRemoved.addListener(function () {
@@ -140,7 +125,7 @@ fluid_0_6 = fluid_0_6 || {};
                 updateUploaderViewState(that, that.options.styles.queueEmptyState);
             }
             
-            refreshFileTotal(that);
+            refreshUploadTotal(that);
         });
         
         // Progress
@@ -151,16 +136,8 @@ fluid_0_6 = fluid_0_6 || {};
             that.locate("uploadButton").attr("disabled", "disabled");
         });
 
-        that.events.onFileStart.addListener(function (file) {
-            progressStart(that, file);
-        });
-        
-        that.events.onFileProgress.addListener(function (file, fileBytesComplete, fileTotalBytes) {
-            progressUpdate(that, file, fileBytesComplete, fileTotalBytes); 
-        });
-        
-        that.events.afterFileComplete.addListener(function (file) {
-            that.fileProgress.hide(0, false); // no delay, no animation 
+        that.events.onFileProgress.addListener(function () {
+            totalProgressUpdate(that); 
         });
         
         that.events.afterUploadComplete.addListener(function () {
@@ -185,14 +162,6 @@ fluid_0_6 = fluid_0_6 || {};
                                                     
         that.stateDisplay = that.locate("stateDisplay");
         
-        that.fileProgress = fluid.progress(that.container, {
-            selectors: {
-                displayElement: ".file-progress", 
-        		label: ".file-progress-text",
-                indicator: ".file-progress"
-            }
-	    });
-        
         that.totalProgress  = fluid.progress(that.container, {
             selectors: {
                 progressBar: ".fluid-scroller-table-foot",
@@ -201,6 +170,9 @@ fluid_0_6 = fluid_0_6 || {};
                 indicator: ".total-progress"
             }
 	    });
+        
+        // Upload button should not be enabled until there are files to upload
+        that.locate("uploadButton").attr("disabled", "disabled");
 
         bindDOMEvents(that);
         bindModelEvents(that);
@@ -214,14 +186,7 @@ fluid_0_6 = fluid_0_6 || {};
      */
     fluid.uploader = function (container, options) {
         var that = fluid.initView("fluid.uploader", container, options);
-        
-        /**
-         * Refreshes the CSS states for the Uploader based on actual states in the model.
-         */
-        that.refreshView = function () {
-            refreshView(that);
-        };
-        
+         
         setupUploader(that);
         return that;  
     };
@@ -247,6 +212,10 @@ fluid_0_6 = fluid_0_6 || {};
         return "";
     };
     
+    fluid.uploader.derivePercent = function (num, total) {
+        return Math.round((num * 100) / total);
+    };
+
     fluid.defaults("fluid.uploader", {
         uploadManager: {
             type: "fluid.swfUploadManager"

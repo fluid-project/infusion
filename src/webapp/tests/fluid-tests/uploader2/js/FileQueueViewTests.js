@@ -64,8 +64,11 @@
             events = {
                 afterFileQueued: fluid.event.getEventFirer(),
                 onUploadStart: fluid.event.getEventFirer(),
+                onFileStart: fluid.event.getEventFirer(),
+                onFileProgress: fluid.event.getEventFirer(),
                 onFileSuccess: fluid.event.getEventFirer(),
                 onFileError: fluid.event.getEventFirer(),
+                afterFileComplete: fluid.event.getEventFirer(),
                 afterUploadComplete: fluid.event.getEventFirer()
             };
             
