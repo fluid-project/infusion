@@ -106,7 +106,7 @@ var fluid = fluid || fluid_0_6;
         if (!container || !container.jquery || container.length !== 1) {
             fluid.fail({
                 name: "NotOne",
-                message: "A single container element was not found."
+                message: "A single container element was not found for selector " + container
             });
         }
         
