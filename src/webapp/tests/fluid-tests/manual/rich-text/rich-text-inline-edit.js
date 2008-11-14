@@ -81,8 +81,25 @@
             }
         };
         
+       fluid.selectbox = {};
       
-        var MCEoptions = {
+       fluid.selectbox.editModeRenderer = function(that) {
+           var id = fluid.allocateSimpleId(that.editField);
+           that.editField.selectbox({finishHandler: function() {that.finish();}});
+           return {
+               container: that.editContainer,
+               field: $("input.selectbox", that.editContainer) 
+           }
+       }
+       
+       fluid.selectbox.blurHandlerBinder = function(that) {
+           fluid.deadMansBlur(that.editField, $("div.selectbox-wrapper li", that.editContainer),
+              function() {that.cancel()});
+       }
+      
+      
+      
+       var MCEoptions = {
             useTooltip: true,
             selectors: {
                 edit: "textarea" 
@@ -108,7 +125,16 @@
             displayAccessor: "fluid.inlineEdit.richTextViewAccessor",
             editAccessor: "fluid.FCKEditor.inlineEditViewAccessor",
             editModeRenderer: fluid.FCKEditor.editModeRenderer
-        }
+        };
+        
+        var selectoptions = {
+            selectors: {
+                edit: "#myselectbox"
+            },
+            applyEditPadding: false,
+            blurHandlerBinder: fluid.selectbox.blurHandlerBinder,
+            editModeRenderer: fluid.selectbox.editModeRenderer
+        };
 
         function makeButtons(editor) {
             $(".save", editor.container).click(function(){
@@ -141,6 +167,7 @@
           ));
         makeButtons(richEditor4);
         
+        var comboeditor = fluid.inlineEdit("#combo-editable", selectoptions);
     });
 })(jQuery);
 

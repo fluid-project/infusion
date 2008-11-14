@@ -35,7 +35,12 @@ fluid_0_6 = fluid_0_6 || {};
         control.dispatchEvent(kE);
     }
     
-    var setCaretToEnd = function (control, value) {
+    /** Set the caret position to the end of a text field's value, also taking care
+     * to scroll the field so that this position is visible.
+     * @param {DOM node} control The control to be scrolled (input, or possibly textarea)
+     * @param value The current value of the control
+     */
+    fluid.setCaretToEnd = function (control, value) {
         var pos = value? value.length : 0;
         // see http://www.quirksmode.org/dom/range_intro.html - in Opera, must detect setSelectionRange first, since its support for Microsoft TextRange is buggy
         if (control.setSelectionRange) {
@@ -59,11 +64,28 @@ fluid_0_6 = fluid_0_6 || {};
         } 
     };
     
+    fluid.deadMansBlur = function (control, exclusions, handler) {
+        var blurPending = false;
+        $(control).blur(function() {
+            blurPending = true;
+            setTimeout(function() {
+                if (blurPending) {
+                    handler(control);
+                }
+            }, 150);
+        });
+        var canceller = function() {blurPending = false;};
+        exclusions.focus(canceller);
+        exclusions.click(canceller);
+    }
+    
     var edit = function (that) {
         var viewEl = that.viewEl;
         var displayText = that.displayView.value();
         that.updateModel(displayText === that.options.defaultViewText? "" : displayText);
-        that.editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit));
+        if (that.options.applyEditPadding) {
+            that.editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit));
+        }
 
         viewEl.removeClass(that.options.styles.invitation);
         viewEl.removeClass(that.options.styles.focus);
@@ -77,7 +99,7 @@ fluid_0_6 = fluid_0_6 || {};
         // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.       
         setTimeout(function () {
             that.editField.focus();
-            setCaretToEnd(that.editField[0], that.editView.value());
+            fluid.setCaretToEnd(that.editField[0], that.editView.value());
             if (that.options.selectOnEdit) {
                 that.editField[0].select();
             }
@@ -245,11 +267,16 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var bindBlurHandler = function (that) {
-        var blurHandler = function (evt) {
-            finish(that);
-            return false;
-        };
-        that.editField.blur(blurHandler);
+        if (that.options.blurHandlerBinder) {
+            that.options.blurHandlerBinder(that);
+        }
+        else {
+            var blurHandler = function (evt) {
+                finish(that);
+                return false;
+            };
+            that.editField.blur(blurHandler);
+        }
     };
     
     var aria = function (viewEl, editContainer) {
@@ -549,6 +576,9 @@ fluid_0_6 = fluid_0_6 || {};
             minimumView: 60
         },
         
+        applyEditPadding: true,
+        
+        blurHandlerBinder: null,
         // set this to true or false to cause unconditional submission, otherwise it will
         // be inferred from the edit element tag type.
         submitOnEnter: undefined,
