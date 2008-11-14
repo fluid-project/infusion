@@ -343,7 +343,7 @@ fluid_0_6 = fluid_0_6 || {};
         var initTooltip = function () {
             // Add tooltip handler if required and available
             if (that.tooltipEnabled()) {
-                $(componentContainer).tooltip({
+                that.viewEl.tooltip({
                     delay: that.options.tooltipDelay,
                     extraClass: that.options.styles.tooltip,
                     bodyHandler: function () { 
