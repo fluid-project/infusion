@@ -18,45 +18,32 @@ fluid_0_6 = fluid_0_6 || {};
     var removeState  = function (that, stateClass) {
         that.stateDisplay.removeClass(stateClass);
     };
-
-    var currentUploaderQueueState = function (that) {
-        var numFilesInQueue = that.uploadManager.queue.files.length;
-        var numFilesReady = that.uploadManager.queue.getReadyFiles().length;
-        var numFilesComplete = (numFilesInQueue - numFilesReady);
-        
-        if (numFilesInQueue) {
-            if (numFilesReady === 0) {
-                return that.options.styles.queueDoneState;
-            } else if (numFilesInQueue === numFilesReady) {
-                return that.options.styles.queueLoadedState;
-            } else {
-                return that.options.styles.queueReloadedState;
-            }
-        } else {
-            return that.options.styles.queueEmptyState;
-        }
-    };
     
-    var refreshView = function (that) {
-        var currState = currentUploaderQueueState(that);
-        setState(that, currState);
-        switch (currState) {
+    var updateUploaderViewState = function (that, state) {
+        switch (state) {
+        // all files have been removed
         case that.options.styles.queueEmptyState:
             that.locate("uploadButton").attr("disabled", "disabled");
-            that.locate("browseButton").text("Browse Files");
+            if (that.uploadManager.queue.files.length === 0) {
+                that.locate("browseButton").text("Browse Files");
+                setState(that, state);
+            }
             break;
+        // all files have been uploaded
         case that.options.styles.queueDoneState:
             that.locate("uploadButton").attr("disabled", "disabled");
+            that.locate("browseButton").removeAttr("disabled");
+            setState(that, state);
+        
             break;
+        // files have been added to the queue
         case that.options.styles.queueLoadedState:
             that.locate("browseButton").text(that.options.strings.buttons.addMore);
             that.locate("uploadButton").removeAttr("disabled");
-            break;
-        case that.options.styles.queueReloadedState:
-            that.locate("uploadButton").removeAttr("disabled");
+            setState(that, state);
+        
             break;
         }
-        refreshFileTotal(that);
     };
     
     var refreshFileTotal = function (that) {
@@ -139,11 +126,21 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.events.afterFileDialog.addListener(function () {
-            that.refreshView();
+            removeState(that, that.options.styles.queueBrowsingState);
+
+            if (that.uploadManager.queue.getReadyFiles().length > 0) {
+                updateUploaderViewState(that, that.options.styles.queueLoadedState);
+            }
+            
+            refreshFileTotal(that);
         });
         
         that.events.afterFileRemoved.addListener(function () {
-            that.refreshView();
+            if (that.uploadManager.queue.getReadyFiles().length === 0) {
+                updateUploaderViewState(that, that.options.styles.queueEmptyState);
+            }
+            
+            refreshFileTotal(that);
         });
         
         // Progress
@@ -168,8 +165,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.events.afterUploadComplete.addListener(function () {
             progressComplete(that);
-            refreshView(that);
-            that.locate("browseButton").removeAttr("disabled");
+            updateUploaderViewState(that, that.options.styles.queueDoneState);
         });
     };
    
