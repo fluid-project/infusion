@@ -20,7 +20,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(document).ready(function () {
         var tests = new jqUnit.TestCase("Skin Tests");
         
-        tests.test("Remove Styling", function() {
+        tests.test("Remove Styling", function () {
+            jqUnit.expect(4);
+
             jqUnit.assertEquals("Initially fluid classes are in the markup", 4, $(".fl-font-size-90").length);
             fluid.skin.removeStyling($("#inner-div"));
             jqUnit.assertEquals("Fluid classes on and in the inner div have been removed", 1, $(".fl-font-size-90").length);
@@ -28,7 +30,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
 
-        tests.test("Remove Styling - dynamically added classes to the container", function() {
+        tests.test("Remove Styling - dynamically added classes to the container", function () {
+            jqUnit.expect(4);
+
             var main = $("#main");
             main.addClass("fl-blah");
             main.addClass("fl-blip");
@@ -42,7 +46,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         });
 
-        tests.test("Style", function() {
+        tests.test("Style", function () {
+            jqUnit.expect(4);
+
             var hcLargeFontSkin = {
                 textSize: "+3",
                 textFont: "Courier",

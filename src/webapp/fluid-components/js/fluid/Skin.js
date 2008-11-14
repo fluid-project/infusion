@@ -24,8 +24,10 @@ fluid_0_6 = fluid_0_6 || {};
     fluid.skin.removeStyling = function (element) {
         element = element || $("body");
         $('[class*=fl-]', element).andSelf().each(function (i) {    
-            var attr = ($.browser.msie === false) ? 'class' : 'className' ; 
-            if (this.getAttribute(attr)) this.setAttribute(attr, this.getAttribute(attr).replace(/\bfl-\S+/g, ''));
+            var attr = ($.browser.msie === false) ? 'class' : 'className'; 
+            if (this.getAttribute(attr)) {
+                this.setAttribute(attr, this.getAttribute(attr).replace(/\bfl-\S+/g, ''));
+            }
         });        
     };
      
