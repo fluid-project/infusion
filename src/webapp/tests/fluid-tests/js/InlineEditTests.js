@@ -54,10 +54,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
        function assertVisState(undo, redo, uv, rv) {
            assertVisibility(uv, "undo container", undo);
            assertVisibility(rv, "redo container", redo);
-           }
+       }
     
      
-        inlineEditTests.test("Minimal Construction", function () {
+       inlineEditTests.test("Minimal Construction", function () {
             jqUnit.expect(10);
     
             var container = $("#inline-edit");
@@ -142,7 +142,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             edit.attr("value", testText);
             inlineEditor.finish();
             jqUnit.assertEquals("After editing the field, display should have test text ", testText, display.text());
-            jqUnit.assertFalse("Test text shouldn't have invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewText));
+            jqUnit.assertFalse("Test text shouldn't have invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
     
             inlineEditor.edit();
             edit.attr("value", "");
@@ -192,7 +192,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("The display field padding is ", fluid.defaults("inlineEdit").paddings.minimumView, parseFloat(display.css("padding-right")));
         });
         
-        inlineEditTests.test("Edit-Finish", function () {
+        inlineEditTests.test("isEditing", function () {
+            jqUnit.expect(3);
+            var inlineEditor = fluid.inlineEdit("#inline-edit");
+            jqUnit.assertFalse("We should be in view mode by default.", inlineEditor.isEditing());
+            
+            inlineEditor.edit();
+            jqUnit.assertTrue("When in edit mode, isEditing() should return true.", inlineEditor.isEditing());
+            
+            inlineEditor.finish();
+            jqUnit.assertFalse("After editing is finished, isEditing() should return false.", inlineEditor.isEditing());
+        });
+        
+        inlineEditTests.test("Edit Finish", function () {
             jqUnit.expect(8);
     
             var display = $("#display");
@@ -213,6 +225,27 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.isVisible("After finish, display field is visible", "#display");
             jqUnit.notVisible("After finish, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("After finish, display field contains new text", testString, display.text());
+        });
+        
+        inlineEditTests.test("Edit Cancel", function () {
+            var editField = $("#edit");
+            var text = $("#display");
+            var defaultValue = "Click me to edit...";
+            
+            var inlineEditor = fluid.inlineEdit("#inline-edit");
+            
+            // Sanity check first.
+            jqUnit.assertEquals("Before editing, the model should have the default value.", 
+                                defaultValue, inlineEditor.model.value);
+            
+            // Now edit and cancel. The default value should be restored.
+            inlineEditor.edit();
+            editField.val("foo");
+            inlineEditor.cancel();
+            jqUnit.assertEquals("After cancelling, the model's value should be the default again.", 
+                                defaultValue, inlineEditor.model.value);
+            jqUnit.assertEquals("After cancelling, the view text should return to its default.", 
+                                defaultValue, text.text());
         });
     
         inlineEditTests.test("Keyboard Navigation Edit", function () {
@@ -349,11 +382,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 display: "#display",
                 edit: "#edit-container"  
             };
-            
-            var editor2Sels = {
-                display: "#display2",
-                edit: "#edit-container2"
-            };
            
             var instantiateInlineEdits = function (callback) {
                 return fluid.inlineEdits("#main", {
@@ -380,16 +408,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
                 // First check that the displays are shown and the edits are hidden.
                 jqUnit.isVisible("Initially, display field #1 is visible", editor1Sels.display);
-                jqUnit.isVisible("Initially, display field #2 is visible", editor2Sels.display);
+                jqUnit.isVisible("Initially, display field #2 is visible", editors[1].viewEl);
                 jqUnit.notVisible("Initially, edit field #1 is hidden", editor1Sels.edit);
-                jqUnit.notVisible("Initially, edit field #2 is hidden", editor2Sels.edit);
+                jqUnit.notVisible("Initially, edit field #2 is hidden", editors[1].editField);
                 
                 editors[0].edit();
                 
                 jqUnit.notVisible("Display field #1 should be hidden", editor1Sels.display);
                 jqUnit.isVisible("Edit field #1 should be visible", editor1Sels.edit);
-                jqUnit.isVisible("Display field #2 should be visible", editor2Sels.display);
-                jqUnit.notVisible("Edit field #2 should be hidden", editor2Sels.edit);
+                jqUnit.isVisible("Display field #2 should be visible", editors[1].viewEl);
+                jqUnit.notVisible("Edit field #2 should be hidden", editors[1].editField);
             });
             
             var toggleEditOnAndOff = function (editor) {
@@ -492,8 +520,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
               jqUnit.assertEquals(message, 1, togo.length);
               return togo;
             }
-            
-
            
             inlineEditTests.test("Self-rendering with undo control", function () {
                 var initialValue = "Initial Value";
@@ -589,6 +615,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertEquals("modelChanged 5", 5, changeCount);
                 jqUnit.assertEquals("Undo 1", "Change 1", editor.model.value);
             });
+            
+            inlineEditTests.test("Self-container", function() {
+                var editor = fluid.inlineEdit("#inline-edit2");
+                var edit = $("#inline-edit2 .edit")[0];
+                jqUnit.assertEquals("Container is field", edit, editor.editContainer[0]);
+                jqUnit.assertEquals("Container is field", edit, editor.editField[0]);
+            });
+            
             
         })();
      

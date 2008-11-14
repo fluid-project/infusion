@@ -30,7 +30,7 @@ var fluid = fluid || fluid_0_6;
      * @param {String|Error} message the error message to log
      */
     fluid.fail = function (message) {
-        fluid.logEnabled = true;
+        fluid.setLogging(true);
         fluid.log(message.message? message.message : message);
         message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
     };
@@ -345,6 +345,7 @@ var fluid = fluid || fluid_0_6;
         var entries = $.makeArray(entry);
         var optindex = -1;
         var togo = [];
+        args = $.makeArray(args);
         for (var i = 0; i < args.length; ++ i) {
             if (args[i] === fluid.COMPONENT_OPTIONS) {
                 optindex = i;
@@ -355,11 +356,16 @@ var fluid = fluid || fluid_0_6;
             if (optindex !== -1 && entry.options) {
                 args[optindex] = entry.options;
             }
-            var entryType = typeof(entry) === "string"? entry : entry.type;
-            var globDef = fluid.defaults(true, entryType);
-            fluid.merge("reverse", that.options, globDef);
-            
-            togo[i] = fluid.invokeGlobalFunction(entryType, args, {fluid: fluid});
+            if (typeof(entry) !== "function") {
+                var entryType = typeof(entry) === "string"? entry : entry.type;
+                var globDef = fluid.defaults(true, entryType);
+                fluid.merge("reverse", that.options, globDef);
+                togo[i] = fluid.invokeGlobalFunction(entryType, args, {fluid: fluid});
+            }
+            else {
+                togo[i] = entry.apply(null, args);
+            }
+
             var returnedOptions = togo[i].returnedOptions;
             if (returnedOptions) {
                 fluid.merge(that.options.mergePolicy, that.options, returnedOptions);
@@ -461,7 +467,11 @@ var fluid = fluid || fluid_0_6;
     }
     
     fluid.invokeGlobalFunction = function (functionPath, args, environment) {
-        return fluid.model.getBeanValue(window, functionPath, environment).apply(null, args);
+        var func = fluid.model.getBeanValue(window, functionPath, environment);
+        if (!func) {
+            fluid.fail("Error invoking global function: " + functionPath + " could not be located");
+        } 
+        else return func.apply(null, args);
     };
     
     
@@ -702,6 +712,19 @@ var fluid = fluid || fluid_0_6;
     fluid.getId = function (element) {
         return fluid.unwrap(element).getAttribute("id");
     };
+    
+    /** 
+     * Allocate an id to the supplied element if it has none already, by a simple
+     * scheme resulting in ids "fluid-id-nnnn" where nnnn is an increasing integer.
+     */
+    
+    fluid.allocateSimpleId = function (element) {
+        element = fluid.unwrap(element);
+        if (!element.id) {
+            element.id = "fluid-id-" + (fluid_guid++); 
+        }
+        return element.id;
+    }
     
         
     // Functional programming utilities.
