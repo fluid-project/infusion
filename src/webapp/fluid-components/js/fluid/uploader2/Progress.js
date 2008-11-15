@@ -184,7 +184,10 @@ fluid_0_6 = fluid_0_6 || {};
 		};
         
         that.refresh = function (newProgressBarElm) {
-            that.progressBar = newProgressBarElm;
+            if (newProgressBarElm) {
+                that.progressBar = newProgressBarElm;
+            }
+            
             repositionIndicator(that);
         };
 				

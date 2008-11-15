@@ -10,12 +10,16 @@ fluid_0_6 = fluid_0_6 || {};
     
     var fileProgressStart = function (that, file) {
         var fileRowElm = $("tr#" + file.id);
-        that.fileProgress.refresh(fileRowElm);
+        // scroll the new row into view
+        that.scroller.scrollTo(fileRowElm);
+        // update the progressor and make sure that it's in position
+        var progressId = file.id + "_progress"; 
+        that.fileProgressors[progressId].refresh(fileRowElm);
     };
     
     var hideFileProgress = function (that, file) {
-        var fileRowElm = $("tr#" + file.id);
-        that.fileProgress.hide(0, false); // no delay, no animation 
+        var progressId = file.id + "_progress";
+        that.fileProgressors[progressId].hide(); // no delay, no animation 
     };
     
     var fileProgressUpdate = function (that, file, fileBytesComplete, fileTotalBytes) {
@@ -25,7 +29,8 @@ fluid_0_6 = fluid_0_6 || {};
         
         //file.progress.update(filePercent, filePercentStr, "", true);
         
-        that.fileProgress.update(filePercent, filePercentStr);
+        var progressId = file.id + "_progress";
+        that.fileProgressors[progressId].update(filePercent, filePercentStr);
     };
     
     // Real data binding would be nice to replace these two pairs.
@@ -123,11 +128,23 @@ fluid_0_6 = fluid_0_6 || {};
         
         // create a new progress bar for the row and position it
         var rowProgressor = that.locate("rowProgressorTemplate", that.uploadContainer).clone();
-        rowProgressor.attr("id", file.id + "_progress");
+        var progressId = file.id + "_progress";
+        rowProgressor.attr("id", progressId);
         rowProgressor.css("top", row.position().top);
         rowProgressor.height(row.height()).width(5);
         that.container.after(rowProgressor);
+       
+        // instantiate the progressor to the row
         
+        that.fileProgressors[progressId] = fluid.progress(that.uploadContainer, {
+            selectors: {
+                progressBar: "#" + file.id,
+                displayElement: "#" + progressId,
+                label: "#" + progressId + " .file-progress-text",
+                indicator: "#" + progressId
+            }
+        });
+
         that.refreshView();
     };
     
@@ -214,6 +231,8 @@ fluid_0_6 = fluid_0_6 || {};
         var that = fluid.initView("fluid.fileQueueView", container, options);
         that.uploadContainer = parentContainer;
         that.events = events;
+        
+        that.fileProgressors = {};
         
         that.addFile = function (file) {
             addFile(that, file);
