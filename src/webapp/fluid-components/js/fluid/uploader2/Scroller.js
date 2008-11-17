@@ -31,8 +31,12 @@ fluid_0_6 = fluid_0_6 || {};
         var containerHeight = that.scrollingElm.height();
         
         if (that.options.padScroll) {
-            padTop = element.prev().height();
-            padBottom = element.next().height();
+            // if the combined height of the elements is greater than the 
+            // viewport then then scrollTo element would not be in view
+            var prevElmHeight = element.prev().height();
+            padTop = (prevElmHeight + elmHeight <= containerHeight) ? prevElmHeight : 0;
+            var nextElmHeight = element.next().height();
+            padBottom =  (nextElmHeight + elmHeight <= containerHeight) ? nextElmHeight : 0;
         }
         
         // if the top of the row is ABOVE the view port move the row into position
@@ -42,9 +46,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         // if the bottom of the row is BELOW the viewport then scroll it into position
         if (((elmPosTop + elmHeight) + padBottom) > (containerScrollTop + containerHeight)) {
-            if (that.options.padScroll) {
-               scrollPad = element.next().height();
-            }
+            elmHeight = (elmHeight < containerHeight) ? elmHeight : containerHeight;
             that.scrollingElm[0].scrollTop = (elmPosTop - containerHeight + elmHeight + padBottom);
         }
     };
