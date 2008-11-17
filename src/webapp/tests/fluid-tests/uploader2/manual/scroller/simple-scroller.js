@@ -8,21 +8,27 @@
     };
     
     var scrollToHandler = function (textField, list) {
-        return function () {
-            var elementIdx = textField.val();
-            var elementTarget = list.find("li").eq(Number(elementIdx));
-            
-            myScroller.scrollTo(elementTarget);
-        };
+        var elementIdx = textField.val();
+        var elementTarget = list.find("li").eq(Number(elementIdx));
+        
+        myScroller.scrollTo(elementTarget);
+        textField.focus(); // restore the focus just to make testing easier
     };
     
-    var bindButtonHandlers = function () {
+    var bindEventHandlers = function () {
         var scrollableList = $("#scrollableList");
         var textField = $("#toElementField");
         var scrollButton = $("#toElementButton");
         var scrollBottomButton = $("#bottomButton");
         
-        scrollButton.click(scrollToHandler(textField, scrollableList));
+        scrollButton.click(function () {
+            scrollToHandler(textField, scrollableList);
+        });
+        textField.keydown(function (key) {
+            if (key.which === 13) {
+                scrollToHandler(textField, scrollableList);
+            }
+        });
         scrollBottomButton.click(scrollBottomHandler());
     };
     
@@ -32,6 +38,6 @@
                 wrapper: ".fluid-scroller-outer"
             }
         });
-        bindButtonHandlers();    
+        bindEventHandlers();    
     });
 })(jQuery, fluid);

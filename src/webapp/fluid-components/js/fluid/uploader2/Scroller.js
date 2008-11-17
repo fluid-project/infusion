@@ -21,25 +21,31 @@ fluid_0_6 = fluid_0_6 || {};
         if (!element || element.length < 1) {
             return;
         }
-
-        if (element.prev().length) {
-            var nextElm = element.next();
-            element = (nextElm.length === 0) ? element : nextElm;
-        }
+        
+        var padTop = 0;
+        var padBottom = 0;
         
         var elmPosTop = element[0].offsetTop;
         var elmHeight = element.height();
         var containerScrollTop = that.scrollingElm[0].scrollTop;
         var containerHeight = that.scrollingElm.height();
         
+        if (that.options.padScroll) {
+            padTop = element.prev().height();
+            padBottom = element.next().height();
+        }
+        
         // if the top of the row is ABOVE the view port move the row into position
-        if (elmPosTop < containerScrollTop) {
-            that.scrollingElm[0].scrollTop = elmPosTop;
+        if ((elmPosTop - padTop) < containerScrollTop) {
+            that.scrollingElm[0].scrollTop = elmPosTop - padTop;
         }
         
         // if the bottom of the row is BELOW the viewport then scroll it into position
-        if ((elmPosTop + elmHeight) > (containerScrollTop + containerHeight)) {
-            that.scrollingElm[0].scrollTop = (elmPosTop - containerHeight + elmHeight);
+        if (((elmPosTop + elmHeight) + padBottom) > (containerScrollTop + containerHeight)) {
+            if (that.options.padScroll) {
+               scrollPad = element.next().height();
+            }
+            that.scrollingElm[0].scrollTop = (elmPosTop - containerHeight + elmHeight + padBottom);
         }
     };
     
@@ -104,7 +110,9 @@ fluid_0_6 = fluid_0_6 || {};
             wrapper: ".fluid-scroller"
         },
         
-        maxHeight: 180
+        maxHeight: 180,
+        
+        padScroll: true
     });
     
 })(jQuery, fluid_0_6);

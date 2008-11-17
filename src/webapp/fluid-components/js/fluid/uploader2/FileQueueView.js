@@ -15,6 +15,7 @@ fluid_0_6 = fluid_0_6 || {};
         // update the progressor and make sure that it's in position
         var progressId = file.id + "_progress"; 
         that.fileProgressors[progressId].refresh(fileRowElm);
+        that.fileProgressors[progressId].show();
     };
     
     var hideFileProgress = function (that, file) {
