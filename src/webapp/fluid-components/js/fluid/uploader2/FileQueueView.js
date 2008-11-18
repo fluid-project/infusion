@@ -150,7 +150,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var changeRowState = function (row, newState) {
-        row.removeClass("ready").removeClass("error").addClass(newState);
+        row.removeClass("ready error").addClass(newState);
     };
     
     var bindEvents = function (that) {
@@ -187,8 +187,10 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.events.onFileError.addListener(function (file) {
-            var row = rowForFile(that, file);
-            changeRowState(row, that.options.styles.error);
+            if (file.filestatus === fluid.fileQueue.fileStatusConstants.ERROR) {
+                var row = rowForFile(that, file);
+                changeRowState(row, that.options.styles.error);
+            }
         });
     };
     

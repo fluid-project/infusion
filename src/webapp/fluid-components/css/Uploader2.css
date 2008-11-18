@@ -348,14 +348,6 @@ html>body .fluid-uploader-queue {
     cursor: auto;
 }
 
-.fluid-uploader-queue .uploaded .removeFile {
-    background-image: url(../images/uploader/tick.png);
-}
-
-.fluid-uploader-queue .error .removeFile {
-    background-image: url(../images/uploader/error.png);
-}
-
 .fluid-uploader .uploading a.fluid-uploader-browse, .fluid-uploader .uploading a.fluid-uploader-browse:hover, .fluid-uploader .uploading a.fluid-uploader-browse:focus, .fluid-uploader .uploading a.fluid-uploader-browse.focus {
     opacity: 0.4;
     filter:alpha(opacity=40);
