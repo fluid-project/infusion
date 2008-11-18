@@ -81,17 +81,19 @@ fluid_0_6 = fluid_0_6 || {};
     };
         
     var progressComplete = function (that) {
-        var batch = that.uploadManager.queue.currentBatch;
+        var uploadedFiles = that.uploadManager.queue.getUploadedFiles(); // total uploaded files
+        
         
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.completedLabel, {
-            curFileN: batch.fileIdx + 1, 
-            totalCurrBytes: fluid.uploader.formatFileSize(batch.totalBytes)
+            curFileN: uploadedFiles.length, 
+            totalCurrBytes: fluid.uploader.formatFileSize(that.uploadManager.queue.sizeOfUploadedFiles())
         });
         
         that.totalProgress.update(100, totalProgressStr);
         
         that.totalProgress.hide();
     };
+   
 
     /* bind events */
    
