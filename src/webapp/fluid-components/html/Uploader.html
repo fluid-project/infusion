@@ -54,9 +54,13 @@
             
             .fluid-templates {display:none;}
             
-            .fl-uploader {width:350px; border:1px solid #ccc; overflow:auto;}
-            .fl-uploader-queue {overflow-x:hidden;overflow-y:auto;}
-            .fl-uploader-queue table {}
+            .fl-uploader {width:350px; border:1px solid #ccc;}
+            .fl-uploader-queue {}
+            
+            .fluid-scroller {overflow:auto;}
+            .scroller-inner {overflow:auto;}
+            
+            .fl-uploader-queue table {width:100%;}
             .fl-uploader-queue thead {} 
             .fl-uploader-queue tfoot {display:none;}
             .fl-uploader-queue th {background-color:#eee; color: #000; text-align:left; padding:3px; border-bottom:1px solid #ccc;}
@@ -89,7 +93,7 @@
             <form method="get" enctype="multipart/form-data" class="fl-uploader">
                 <div class="start">
                     <!-- FILE QUEUE -->
-                    <div class="fluid-uploader-queue-wrapper">
+                    <div class="fluid-uploader-queue-wrapper  fl-uploader-queue">
                         <!-- QUEUE CONTENTS -->
     			        <table summary="Upload queue headings">
 						    <tr>
@@ -98,7 +102,7 @@
                                 <th scope="col" class="fileRemove">Remove</th>
                             </tr>
                         </table>
-            			<div class="fluid-scroller fl-uploader-queue">
+            			<div class="fluid-scroller">
             				<div class="scroller-inner">
             					<table class="fluid-uploader-queue fl-container-flex" summary="Queue of files to upload.">
             						<tbody>
@@ -109,7 +113,7 @@
                                             <td class="fileSize">0 KB</td>
                                             <td class="fileRemove">
                                                 <!-- can be compressed using one input and negative text-indent? -->
-                                                <a href="#" type="button" class="removeFile" title="Remove File" tabindex="-1">Remove</a>
+                                                <button type="button" class="removeFile" title="Remove File" tabindex="-1">Remove</button>
                                             </td>
                             		    </tr>                                        
             						</tbody>
