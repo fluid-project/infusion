@@ -64,15 +64,18 @@ Layout Helpers
 
 
 /*
-Component Specific Declarations
+Component Specific
 =============================================
 */
+
 /* INLINE EDIT */
 .fl-component-inlineEdit span input {margin:-2px; padding:0;} /* auto generated input fields */
 
 
 
-
+/* PROGRESSOR */
+.fl-progress-bounds {border-width:1px; border-style:solid; padding:2px;}
+.fl-progress-fill {width:100%;}
 
 
 

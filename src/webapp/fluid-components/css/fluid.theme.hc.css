@@ -70,3 +70,13 @@
 /* States */
 .fl-theme-hc .orderable-drop-marker {background-color:#f00 !important;}
 
+/* Component: PROGRESSOR */
+.fl-progress-bounds {border-color:#000; background-color:#fff;}
+.fl-progress-fill {color:#fff; background-color:#000;}
+
+/* Component: UPLOADER */
+
+
+
+
+
