@@ -98,8 +98,9 @@ fluid_0_6 = fluid_0_6 || {};
     /* bind events */
    
     var bindDOMEvents = function (that) {
-        that.locate("browseButton").click(function () {
+        that.locate("browseButton").click(function (evnt) {            
             that.uploadManager.browseForFiles();
+            evnt.preventDefault();
         });
         
         that.locate("uploadButton").click(function () {
