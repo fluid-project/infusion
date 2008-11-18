@@ -47,7 +47,7 @@
 
         <style type="text/css">
             /* CSS specific to this page */
-            body {font:normal 12px "Arial","Tahoma",sans-serif}
+            body {font:normal 12px "Tahoma",sans-serif}
             h1 {font-size:125%; padding:5px;}
             table {border-collapse:collapse;}
             caption {display:none;}
@@ -57,33 +57,42 @@
             .fl-uploader {width:350px; border:1px solid #ccc;}
             .fl-uploader-queue {}
             
-            .fluid-scroller {overflow:auto;}
+            .fluid-scroller {overflow:auto; position:relative;}
             .scroller-inner {overflow:auto;}
             
             .fl-uploader-queue table {width:100%;}
             .fl-uploader-queue thead {} 
             .fl-uploader-queue tfoot {display:none;}
             .fl-uploader-queue th {background-color:#eee; color: #000; text-align:left; padding:3px; border-bottom:1px solid #ccc;}
-            .fl-uploader-queue td {padding:3px}
+            .fl-uploader-queue td {padding:5px 3px}
             .fl-uploader-queue tr {background-color:#eee; outline:0;}
             .fl-uploader-queue tr.uploaded {background-color:#080; color:#fff;}
             .fl-uploader-queue tr.selected {background-color:#999; color:#fff;}
             .fl-uploader-queue .fileName {}
             .fl-uploader-queue .fileSize {width:60px;}
-            .fl-uploader-queue .fileRemove {width: 85px;}
+            .fl-uploader-queue .fileRemove {width: 50px;}
             .fl-instructions {font-weight:bold; text-align:center; background-color:#ebebeb; display:none;}
             .start .fl-instructions {display:block; padding:10px; margin:2px;}             
             .fl-uploader-totals {background-color:#ccc; padding:5px; overflow:auto;}
-            .fl-btn {padding:3px 5px; border-width:1px; border-style:solid;}
-            .fl-btn-browse {margin-top:-5px;}
-            .fl-uploader-totals .fl-btn-browse{float:right;}
+            .fl-btn {padding:2px 5px; border:1px solid #999; background-color:#fff; text-decoration:none; color:#5FB0FF; zoom:1;}
+            .fl-btn-browse {margin:-2px 0 3px;}
+            .fl-btn-browse{float:right;}
+            .fl-btn-remove {color:#C00}
 
             .fl-progress-bounds {clear:both; height:10px; overflow:hidden;}
             .total-file-progress {float:left;}
-            .total-progress {background-color:#0F0; height:100%;}
-            .fluid-uploader-btns {text-align:right; background-color:#ccc; padding:0 5px;}
-             
-             
+            .total-progress {background-color:#080; height:100%;}
+            .fluid-uploader-btns {text-align:right; background-color:#ccc; padding:0 5px 5px;}
+            .file-progress {position:absolute; border-bottom:3px solid #080; margin-top:-3px; text-align:center; font-weight:bold; color:#fff;}
+            .file-progress .file-progress-text {display:none;}
+            /*
+            .file-progress {position:absolute; background-color:#333; opacity:0.75; filter:alpha(opacity=75); text-align:center; font-weight:bold; color:#fff;}
+            .file-progress .file-progress-text {margin-top:3px;}
+            */
+            
+            .removeFile {}
+            .uploaded .removeFile {display:none;}
+            
         </style>  
     </head>
     <body>
@@ -114,20 +123,20 @@
                                             <td class="fileSize">0 KB</td>
                                             <td class="fileRemove">
                                                 <!-- can be compressed using one input and negative text-indent? -->
-                                                <button type="button" class="removeFile" title="Remove File" tabindex="-1">Remove</button>
+                                                <a href="#" class="removeFile fl-btn fl-btn-remove" title="Remove File" tabindex="-1">Remove</a>
                                             </td>
                             		    </tr>                                        
             						</tbody>
             					</table>
-            					<div class="file-progress">
-            					    <span class="file-progress-text">0%</span>
+            					<div id="row-progressor-tmplt" class="file-progress">
+            					    <p class="file-progress-text">0%</p>
                                 </div>
             				</div>
             			</div>
                         
                         <!-- QUEUE INSTRUCTIONS -->
             			<div class="fluid-uploader-row-placeholder fl-instructions">
-            			    Choose <em>Browse files</em> to add files to the queue 
+            			    Choose <em>Browse</em> to add files to the queue 
                         </div>
                         
                         <!-- QUEUE FOOTER -->
@@ -135,7 +144,7 @@
                             <div class="total-file-progress">
             					Total: <span class="fluid-uploader-totalFiles">0</span> files (<span class="fluid-uploader-totalBytes">0 KB</span>)
                             </div>
-                            <button class="fluid-uploader-browse fl-force-right fl-btn-browse">Browse</button>
+                            <a href="#" class="fluid-uploader-browse fl-force-right fl-btn fl-btn-browse">Browse</a>
                             <div class="fl-progress-bounds">
                 				<div class="total-progress"></div>
                             </div>
@@ -144,7 +153,7 @@
                     
                     <!-- UPLOADER BUTTONS -->
             		<div class="fluid-uploader-btns">
-            			<button type="button" class="fluid-uploader-upload default" >Upload</button>
+            			<a href="#" class="fluid-uploader-upload default fl-btn" >Upload</a>
             		</div>
                     
                 </div>
