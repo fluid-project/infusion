@@ -176,7 +176,7 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.events.afterUploadComplete.addListener(function () {
-            that.locate("removeButton").removeAttr("disabled");
+            that.locate("removeButton").removeAttr("disabled").attr("title",that.options.strings.status.success);
         });
         
         that.events.onFileSuccess.addListener(function (file) {
@@ -278,7 +278,11 @@ fluid_0_6 = fluid_0_6 || {};
                 toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)", 
                 singleFile: "file",
                 pluralFiles: "files"
-        	}
+        	},
+            status: {
+                success: "File Uploaded",
+                error: "File Upload Error"
+            }
         }
     });
    

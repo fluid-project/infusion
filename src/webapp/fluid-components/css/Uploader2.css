@@ -211,6 +211,11 @@ html>body .fluid-uploader-queue {
 
 .fluid-uploader-queue .uploaded th, .fluid-uploader-queue tr.uploaded:focus th, .fluid-uploader-queue tr.focus th   {
     border-left: 4px solid #74B74A;
+    color: #898;
+}
+
+.fluid-uploader-queue .uploaded td {
+    color: #898;
 }
 
 .fluid-uploader-queue .uploaded .removeFile {
