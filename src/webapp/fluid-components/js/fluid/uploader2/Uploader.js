@@ -5,46 +5,55 @@ fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
-    /* uploader state */
+    /* uploader state 
+     * Uploader understands the following states
+     * Start [not set by code, set as the initial class of the component]
+     * Uploading
+     * Browsing
+     * 
+     */
     
-    var setState = function (that, stateClass) {
+    var setChromeState = function (that, stateClass) {
         that.stateDisplay.attr("className", stateClass);
     };
     
-    var addState = function (that, stateClass) {
-        that.stateDisplay.addClass(stateClass);
+    var enableElement = function (elm) {
+        elm.removeAttr("disabled");
     };
     
-    var removeState  = function (that, stateClass) {
-        that.stateDisplay.removeClass(stateClass);
+    var disableElement = function (elm) {
+        elm.attr("disabled", "disabled");
     };
-    
-    var updateUploaderViewState = function (that, state) {
-        switch (state) {
-        // all files have been removed
-        case that.options.styles.queueEmptyState:
-            that.locate("uploadButton").attr("disabled", "disabled");
-            if (that.uploadManager.queue.files.length === 0) {
-                that.locate("browseButton").text("Browse Files");
-                setState(that, state);
-            }
-            break;
-        // all files have been uploaded
-        case that.options.styles.queueDoneState:
-            that.locate("uploadButton").attr("disabled", "disabled");
-            that.locate("browseButton").removeAttr("disabled");
-            setState(that, state);
-        
-            break;
-        // files have been added to the queue
-        case that.options.styles.queueLoadedState:
-            that.locate("browseButton").text(that.options.strings.buttons.addMore);
-            that.locate("uploadButton").removeAttr("disabled");
-            setState(that, state);
-        
-            break;
+     
+    /* state: empty */
+    var setState_EMPTY = function(that){
+        disableElement(that.locate("uploadButton"));
+        if (that.uploadManager.queue.files.length === 0) {
+            that.locate("browseButton").text(that.options.strings.buttons.browse);
+            setChromeState(that, that.options.styles.queueEmptyState);
         }
     };
+    
+    /* state: done */
+    var setState_DONE = function(that){
+        disableElement(that.locate("uploadButton"));
+        enableElement(that.locate("browseButton"));
+        setChromeState(that, that.options.styles.queueDoneState);
+    };
+
+    /* state: loaded */
+    var setState_LOADED = function(that){
+        that.locate("browseButton").text(that.options.strings.buttons.addMore);
+        enableElement(that.locate("uploadButton"));
+        setChromeState(that, that.options.styles.queueLoadedState);
+    };
+    
+     /* state: uploading */
+    var setState_UPLOADING = function(that){
+        setChromeState(that, that.options.styles.queueUploadingState);
+        disableElement(that.locate("browseButton"));
+        disableElement(that.locate("uploadButton"));
+    };         
     
     var refreshUploadTotal = function (that) {
         var readyFiles = that.uploadManager.queue.getReadyFiles();
@@ -110,14 +119,13 @@ fluid_0_6 = fluid_0_6 || {};
         
     var bindModelEvents = function (that) {
         that.events.onFileDialog.addListener(function () {
-            addState(that, that.options.styles.queueBrowsingState);
+            that.stateDisplay.addClass(that.options.styles.queueBrowsingState);
         });
         
         that.events.afterFileDialog.addListener(function () {
-            removeState(that, that.options.styles.queueBrowsingState);
-
+            that.stateDisplay.removeClass(that.options.styles.queueBrowsingState);
             if (that.uploadManager.queue.getReadyFiles().length > 0) {
-                updateUploaderViewState(that, that.options.styles.queueLoadedState);
+                setState_LOADED(that);
             }
             
             refreshUploadTotal(that);
@@ -125,7 +133,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.events.afterFileRemoved.addListener(function () {
             if (that.uploadManager.queue.getReadyFiles().length === 0) {
-                updateUploaderViewState(that, that.options.styles.queueEmptyState);
+                setState_EMPTY(that);
             }
             
             refreshUploadTotal(that);
@@ -134,9 +142,7 @@ fluid_0_6 = fluid_0_6 || {};
         // Progress
         
         that.events.onUploadStart.addListener(function () {
-            setState(that, that.options.styles.queueUploadingState);
-            that.locate("browseButton").attr("disabled", "disabled");
-            that.locate("uploadButton").attr("disabled", "disabled");
+            setState_UPLOADING(that);
         });
 
         that.events.onFileProgress.addListener(function () {
@@ -145,7 +151,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.events.afterUploadComplete.addListener(function () {
             progressComplete(that);
-            updateUploaderViewState(that, that.options.styles.queueDoneState);
+            setState_DONE(that);
         });
     };
    
@@ -273,6 +279,7 @@ fluid_0_6 = fluid_0_6 || {};
                 pluralFiles: "files"
             },
             buttons: {
+                browse: "Browse Files",
                 addMore: "Add More"
             }
         }
