@@ -1,0 +1,149 @@
+/*                Rust
+============================================= 
+
+ * Color Schema:
+ *     DEFINITIONS:
+ *         yellow     : #fffbc2
+ *         gold       : #ffdc84
+ *         light brown: #5a95cf
+ *         dark brown : #4070a1
+ *         white      : #ffffff
+ *         black      : #000000
+ *         
+ *     :focus & .selectable
+ *         text       : white   
+ *         bg         : dark blue
+ *         outline    : light blue
+ *     text           : black
+ *     links
+ *         :link      : med blue
+ *         :active    : med blue
+ *         :visited   : med blue
+ *         :hover     : light blue
+ *     headings
+ *         h1
+ *             text   : dark blue
+ *             border : dark blue
+ *             bg     : light blue
+ *         h2
+ *             text   : med blue
+ *         h3-6
+ *             text   : grey
+ *     tables
+ *         headers
+ *             text    : black
+ *             border  : med blue
+ *             bg      : light blue
+ *          cells
+ *              text   : black
+ *              border : grey
+ *     forms    
+ *         input[text]
+ *             bg       : light blue
+ *             border   : dark blue
+ *         textarea
+ *             bg       : light blue
+ *             border   : dark blue
+ *     tab helper    
+ *         text         : dark blue
+ *         bg           : light blue
+ *         hover        : med blue
+ *         active text  : med blue
+ *         active bg    : white
+ *         active hover : white
+ *         border       : dark blue
+ *     menu helper
+ *         text         : dark blue
+ *         bg           : white
+ *         hover        : light blue
+ *         active text  : white
+ *         active bg    : dark blue
+ *         active hover : dark blue
+
+ */
+.fl-theme-rust :focus,
+.fl-theme-rust .selectable  {
+   /* themed focus indicator */
+  /*
+   outline: 2px solid #dfefff !important;
+   background-color:#4070a1 !important;
+   color: #ffffff !important;
+   */
+}
+
+.fl-theme-rust {color:#000000; background-color:#ffffff; border-color:#4070a1;}
+.fl-theme-rust a {color: #662e0f; /*font-weight:bold;*/}
+.fl-theme-rust a:hover {color: #cf923e;}
+.fl-theme-rust h1 {color:#4070a1; background-color:#dfefff; border-bottom-width:2px; border-bottom-style:solid;} 
+.fl-theme-rust h2 {color: #5a95cf;}
+
+.fl-theme-rust th {border:1px solid #5a95cf; background-color:#dfefff;}
+.fl-theme-rust td {border:1px solid #999999;}
+.fl-theme-rust .fl-textfield {}
+.fl-theme-rust .fl-textarea {}
+
+/* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
+.fl-theme-rust span input {background-color:#dfefff; border: 1px solid #5a95cf; margin:-1px;}
+
+/* Wrappers and Callouts  */
+.fl-theme-rust .fl-wrapper-widget { border:3px solid #dfefff; background-color:#333; color:#fff;}
+.fl-theme-rust .fl-wrapper-callout { border-color:#999999; background-color:#dfefff; }
+
+/* Helper: Tabs */
+.fl-theme-rust .fl-tabs {border-bottom-color:#4070a1;}
+.fl-theme-rust .fl-tabs li  {background-color:#dfefff;}
+.fl-theme-rust .fl-tabs li,
+.fl-theme-rust .fl-tabs li a  {font-weight:bold; color:#4070a1; border-color:#4070a1; border-bottom-color:#4070a1; text-decoration:none;}
+.fl-theme-rust .fl-tabs li:hover,
+.fl-theme-rust .fl-tabs li:hover a,
+.fl-theme-rust .fl-tabs li a:hover {background-color:#5a95cf; color:#fff;}
+.fl-theme-rust .fl-tabs li.fl-activeTab,
+.fl-theme-rust .fl-tabs li.fl-activeTab:hover,
+.fl-theme-rust .fl-tabs li.fl-activeTab a,
+.fl-theme-rust .fl-tabs li.fl-activeTab a:hover {background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
+.fl-theme-rust .fl-tab-content {background-color:#ffffff; color:#000;}
+
+/* Helper: Menu */
+.fl-theme-rust .fl-listmenu {border:1px solid #4070a1; background-color:#fff;}
+.fl-theme-rust .fl-listmenu li,
+.fl-theme-rust .fl-listmenu li a  {font-weight:bold; color:#4070a1; background-color:#dfefff; border-color:#4070a1; text-decoration:none;}
+
+.fl-theme-rust .fl-listmenu a:hover {background-color:#5a95cf; color:#fff;}
+.fl-theme-rust .fl-listmenu .fl-activemenu,
+.fl-theme-rust .fl-listmenu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
+
+/* Helper: Widgets */
+/* Widget core */
+.fl-theme-rust .fl-widget {background:#662e0f url(../images/fluid-theme-rust/widget-earmark.png) no-repeat top left;}
+    .fl-theme-rust .fl-widget ul {}
+    .fl-theme-rust .fl-widget h2 {color:#FFFBC2;}
+    .fl-theme-rust .grabbable {background-image:url('../images/fluid-theme-rust/gripper.png');}
+
+/* Widget title bar */
+.fl-theme-rust .fl-widget-titlebar {/*margin:-5px -5px 0 -5px;*/}
+    .fl-theme-rust .fl-widget-titlebar .icon {background-position:center center;}
+
+/* Widget options */
+.fl-theme-rust .fl-widget-options {}
+    .fl-theme-rust .fl-widget-options ul {} 
+    .fl-theme-rust .fl-widget-options li {border-left:1px solid #cf923e;}
+    .fl-theme-rust .fl-widget-options a {color:#cf923e;}
+    .fl-theme-rust .fl-widget-options .icon {}
+    .fl-theme-rust .fl-widget-options a.icon:hover {background-color:#cf923e; border-color:#fffbc2;}
+
+/* Widget content */
+.fl-theme-rust .fl-widget-content {background-color:#FFFBC2;}
+
+    /* Widget :: Icons */
+    .fl-theme-rust .fl-widget .more  {background-image:url('../images/fluid-theme-rust/icon-widget-More.png'); margin-left:0px;}
+    .fl-theme-rust .fl-widget .close {background-image:url('../images/fluid-theme-rust/icon-widget-Close.png'); margin-right:0px;}
+    .fl-theme-rust .fl-widget .settings {background-image:url('../images/fluid-theme-rust/icon-widget-Settings.png'); margin-right:0px; width:16px; }
+    
+    .fl-theme-rust .fl-widget-options .viewOptions {background-image:url('../images/fluid-theme-rust/icon-options-ListOrGrid.png'); background-color:#FFFBC2;  border:1px solid #cf923e;}
+    /* Widget :: Menus */
+    .fl-theme-rust .fl-widget-content .menu {padding:0px; overflow-y:auto; overflow-x:hidden; border:1px solid #cf923e; border-bottom:none; zoom:1;}
+    .fl-theme-rust .fl-widget-content .menu li {float:left; list-style-type:none; border-bottom:1px solid #cf923e; width:100%; }
+    .fl-theme-rust .fl-widget-content .menu a {position:relative; display:block; text-indent:30px; font-weight:bold; padding:7px 0 7px 0; background-color:transparent;}
+    .fl-theme-rust .fl-widget-content .menu a:hover {background-color:#FFDC84; color:#000;}
+    .fl-theme-rust .fl-widget-content .menu .icon {position:absolute;}
+    .fl-theme-rust .fl-widget-content .menu .delete {background-image: url('../images/fluid-theme-rust/icon-menu-Delete.png');  right:0; top:5px; background-repeat:no-repeat; background-position: top left;}
