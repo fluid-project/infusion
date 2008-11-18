@@ -26,7 +26,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
      
     /* state: empty */
-    var setState_EMPTY = function(that){
+    var setState_EMPTY = function (that) {
         disableElement(that.locate("uploadButton"));
         if (that.uploadManager.queue.files.length === 0) {
             that.locate("browseButton").text(that.options.strings.buttons.browse);
@@ -35,21 +35,21 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     /* state: done */
-    var setState_DONE = function(that){
+    var setState_DONE = function (that) {
         disableElement(that.locate("uploadButton"));
         enableElement(that.locate("browseButton"));
         setChromeState(that, that.options.styles.queueDoneState);
     };
 
     /* state: loaded */
-    var setState_LOADED = function(that){
+    var setState_LOADED = function (that) {
         that.locate("browseButton").text(that.options.strings.buttons.addMore);
         enableElement(that.locate("uploadButton"));
         setChromeState(that, that.options.styles.queueLoadedState);
     };
     
      /* state: uploading */
-    var setState_UPLOADING = function(that){
+    var setState_UPLOADING = function (that) {
         setChromeState(that, that.options.styles.queueUploadingState);
         disableElement(that.locate("browseButton"));
         disableElement(that.locate("uploadButton"));

@@ -176,7 +176,7 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.events.afterUploadComplete.addListener(function () {
-            that.locate("removeButton").removeAttr("disabled").attr("title",that.options.strings.status.success);
+            that.locate("removeButton").removeAttr("disabled").attr("title", that.options.strings.status.success);
         });
         
         that.events.onFileSuccess.addListener(function (file) {
