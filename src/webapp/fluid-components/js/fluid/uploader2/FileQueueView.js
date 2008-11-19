@@ -253,7 +253,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     fluid.defaults("fluid.fileQueueView", {
         selectors: {
-            fileRows: "tr:not(#queue-row-tmplt)",
+            fileRows: ".row:not(#queue-row-tmplt)",
             fileName: ".fileName",
             fileSize: ".fileSize",
             removeButton: ".removeFile",
