@@ -9,7 +9,7 @@ fluid_0_6 = fluid_0_6 || {};
     // file progress
     
     var fileProgressStart = function (that, file) {
-        var fileRowElm = $("tr#" + file.id);
+        var fileRowElm = $("#" + file.id);
         // scroll the new row into view
         that.scroller.scrollTo(fileRowElm);
         // update the progressor and make sure that it's in position
@@ -256,7 +256,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     fluid.defaults("fluid.fileQueueView", {
         selectors: {
-            fileRows: "tr:not(#queue-row-tmplt)",
+            fileRows: ":not(#queue-row-tmplt)",
             fileName: ".fileName",
             fileSize: ".fileSize",
             removeButton: ".removeFile",
