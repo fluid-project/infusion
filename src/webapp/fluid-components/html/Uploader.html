@@ -105,25 +105,25 @@
             
             
             
-            .set_2 .fl-queue-header {padding:3px 5px; background-color:#ccc; font-weight:bold;}
+            .set_2 h2 {padding:3px 5px; background-color:#ccc; font-weight:bold; font-size:1.1em; margin:0;}
             .set_2 .fl-uploader-queue ol {margin:0; padding:5px;}
-            .set_2 .fl-uploader-queue li {display:block; margin:1px 0; overflow:auto;} 
-            .set_2 .fl-uploader-queue .fileName {float:left;}
+            .set_2 .fl-uploader-queue li {display:block; margin:1px 0; padding:3px; overflow:auto;}
+            .set_2 .fl-uploader-queue .fileName {font-weight:normal;}
             .set_2 .fl-uploader-queue .uploaded {background-color:#080; color:#fff;}
             .set_2 .fl-uploader-queue .selected {background-color:#999; color:#fff;}
             .set_2 .fl-instructions {font-weight:bold; text-align:center; background-color:#ebebeb; display:none;}
-            .set_2 .start .fl-instructions {display:block; padding:10px; margin:2px;}             
+            .set_2 .start .fl-instructions {display:block; padding:10px; margin:2px;}
             .set_2 .fl-uploader-totals {background-color:#ccc; padding:5px; overflow:auto;}
             .set_2 .fl-btn {padding:2px 5px; border:1px solid #999; background-color:#fff; text-decoration:none; color:#5FB0FF; zoom:1;}
+            .set_2 .fl-icon {height:16px; width:16px; text-indent:-100px; overflow:hidden; background-position:center center; background-repeat:no-repeat;}
             .set_2 .fl-btn-browse {margin:-2px 0 3px;}
             .set_2 .fl-btn-browse{float:right;}
-            .set_2 .fl-btn-remove {color:#C00; float:right;}
-
+            .set_2 .fl-icon-remove {color:#C00; float:right; background-image:url('../images/uploader/delete.png')}
             .set_2 .fl-progress-bounds {clear:both; height:10px; overflow:hidden;}
             .set_2 .total-file-progress {float:left;}
             .set_2 .total-progress {background-color:#080; height:100%;}
             .set_2 .fluid-uploader-btns {text-align:right; background-color:#ccc; padding:0 5px 5px;}
-            .set_2 .file-progress {position:absolute; border-bottom:3px solid #080; margin-top:-3px; text-align:center; font-weight:bold; color:#fff;}
+            .set_2 .file-progress {position:absolute; border-bottom:3px solid #080; margin:-3px 5px 0; text-align:center; font-weight:bold; color:#fff;}
             .set_2 .file-progress-text {display:none; float:right;}
             /*
             .set_2 .file-progress {position:absolute; background-color:#333; opacity:0.75; filter:alpha(opacity=75); text-align:center; font-weight:bold; color:#fff;}
@@ -216,11 +216,6 @@
 
 
 
-
-
-
-
-
         <div id="simple_uploader2" class="set_2">
             <h1>List based uploader</h1>
             
@@ -228,18 +223,15 @@
                 <div class="start">
                     <!-- FILE QUEUE -->
                     <div class="fluid-uploader-queue-wrapper  fl-uploader-queue">
+                        <h2>Queue:</h2>
             			<div class="fluid-scroller">
-            				<div class="scroller-inner">
-                        
+            				<div class="scroller-inner">                        
                                 <!-- QUEUE CONTENTS -->
-                                <!-- heading -->
-                                <div class="fl-queue-header">Queue:</div>
-                                
                                 <ol class="fluid-uploader-queue fl-uploader-queue">                                    
                                     <!-- file queue template --> 
                                     <li id="queue-row-tmplt" class="fluid-templates">
-                                        <div class="fileName">Name</div>                                        
-                                        <a class="removeFile fl-btn fl-btn-remove" title="Remove File" tabindex="-1" href="#" >Remove</a>
+                                        <a class="removeFile fl-icon fl-icon-remove" title="Remove File" tabindex="-1" href="#" >Remove</a>
+                                        <strong class="fileName">Name</strong>                                        
                                         <span id="row-progressor-tmplt" class="file-progress"></span>
                                         <span class="file-progress-text">0%</span>
                                     </li>
