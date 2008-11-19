@@ -29,6 +29,7 @@
         <script type="text/javascript">
             jQuery(document).ready(function () {
                 fluid.setLogging(true);
+                
                 var myUploader = fluid.uploader("#simple_uploader", {
                     debug: true,
                     uploadManager: {
@@ -39,8 +40,17 @@
                         }
                     }
                 });
-                
-                var Progressor = {};                
+
+                var myUploader2 = fluid.uploader("#simple_uploader2", {
+                    debug: true,
+                    uploadManager: {
+                        type: "fluid.demoUploadManager",
+                        options: {
+                            flashURL: "../swfupload/swfupload_f9.swf",
+                            fileTypes: "*.*"
+                        }
+                    }
+                });
                 
             });
         </script>
@@ -60,43 +70,75 @@
             .fluid-scroller {overflow:auto;}
             .scroller-inner {overflow:auto; position:relative;}
             
-            .fl-uploader-queue table {width:100%;}
-            .fl-uploader-queue thead {} 
-            .fl-uploader-queue tfoot {display:none;}
-            .fl-uploader-queue th {background-color:#eee; color: #000; text-align:left; padding:3px; border-bottom:1px solid #ccc;}
-            .fl-uploader-queue td {padding:5px 3px}
-            .fl-uploader-queue tr {background-color:#eee; outline:0;}
-            .fl-uploader-queue tr.uploaded {background-color:#080; color:#fff;}
-            .fl-uploader-queue tr.selected {background-color:#999; color:#fff;}
-            .fl-uploader-queue .fileName {}
-            .fl-uploader-queue .fileSize {width:60px;}
-            .fl-uploader-queue .fileRemove {width: 50px;}
-            .fl-instructions {font-weight:bold; text-align:center; background-color:#ebebeb; display:none;}
-            .start .fl-instructions {display:block; padding:10px; margin:2px;}             
-            .fl-uploader-totals {background-color:#ccc; padding:5px; overflow:auto;}
-            .fl-btn {padding:2px 5px; border:1px solid #999; background-color:#fff; text-decoration:none; color:#5FB0FF; zoom:1;}
-            .fl-btn-browse {margin:-2px 0 3px;}
-            .fl-btn-browse{float:right;}
-            .fl-btn-remove {color:#C00}
+            .set_1 .fl-uploader-queue table {width:100%;}
+            .set_1 .fl-uploader-queue thead {} 
+            .set_1 .fl-uploader-queue tfoot {display:none;}
+            .set_1 .fl-uploader-queue th {background-color:#eee; color: #000; text-align:left; padding:3px; border-bottom:1px solid #ccc;}
+            .set_1 .fl-uploader-queue td {padding:5px 3px}
+            .set_1 .fl-uploader-queue tr {background-color:#eee; outline:0;}
+            .set_1 .fl-uploader-queue tr.uploaded {background-color:#080; color:#fff;}
+            .set_1 .fl-uploader-queue tr.selected {background-color:#999; color:#fff;}
+            .set_1 .fl-uploader-queue .fileName {}
+            .set_1 .fl-uploader-queue .fileSize {width:60px;}
+            .set_1 .fl-uploader-queue .fileRemove {width: 50px;}
+            .set_1 .fl-instructions {font-weight:bold; text-align:center; background-color:#ebebeb; display:none;}
+            .set_1 .start .fl-instructions {display:block; padding:10px; margin:2px;}             
+            .set_1 .fl-uploader-totals {background-color:#ccc; padding:5px; overflow:auto;}
+            .set_1 .fl-btn {padding:2px 5px; border:1px solid #999; background-color:#fff; text-decoration:none; color:#5FB0FF; zoom:1;}
+            .set_1 .fl-btn-browse {margin:-2px 0 3px;}
+            .set_1 .fl-btn-browse{float:right;}
+            .set_1 .fl-btn-remove {color:#C00}
 
-            .fl-progress-bounds {clear:both; height:10px; overflow:hidden;}
-            .total-file-progress {float:left;}
-            .total-progress {background-color:#080; height:100%;}
-            .fluid-uploader-btns {text-align:right; background-color:#ccc; padding:0 5px 5px;}
-            .file-progress {position:absolute; border-bottom:3px solid #080; margin-top:-3px; text-align:center; font-weight:bold; color:#fff;}
-            .file-progress .file-progress-text {display:none;}
+            .set_1 .fl-progress-bounds {clear:both; height:10px; overflow:hidden;}
+            .set_1 .total-file-progress {float:left;}
+            .set_1 .total-progress {background-color:#080; height:100%;}
+            .set_1 .fluid-uploader-btns {text-align:right; background-color:#ccc; padding:0 5px 5px;}
+            .set_1 .file-progress {position:absolute; border-bottom:3px solid #080; margin-top:-3px; text-align:center; font-weight:bold; color:#fff;}
+            .set_1 .file-progress .file-progress-text {display:none;}
             /*
-            .file-progress {position:absolute; background-color:#333; opacity:0.75; filter:alpha(opacity=75); text-align:center; font-weight:bold; color:#fff;}
-            .file-progress .file-progress-text {margin-top:3px;}
-            */
+            .set_1 .file-progress {position:absolute; background-color:#333; opacity:0.75; filter:alpha(opacity=75); text-align:center; font-weight:bold; color:#fff;}
+            .set_1 .file-progress .file-progress-text {margin-top:3px;}
+            */            
+            .set_1 .removeFile {}
+            .set_1 .uploaded .removeFile {display:none;}
             
-            .removeFile {}
-            .uploaded .removeFile {display:none;}
+            
+            
+            
+            .set_2 .fl-queue-header {padding:3px 5px; background-color:#ccc; font-weight:bold;}
+            .set_2 .fl-uploader-queue ol {margin:0; padding:5px;}
+            .set_2 .fl-uploader-queue li {display:block; margin:1px 0; overflow:auto;} 
+            .set_2 .fl-uploader-queue .fileName {float:left;}
+            .set_2 .fl-uploader-queue .uploaded {background-color:#080; color:#fff;}
+            .set_2 .fl-uploader-queue .selected {background-color:#999; color:#fff;}
+            .set_2 .fl-instructions {font-weight:bold; text-align:center; background-color:#ebebeb; display:none;}
+            .set_2 .start .fl-instructions {display:block; padding:10px; margin:2px;}             
+            .set_2 .fl-uploader-totals {background-color:#ccc; padding:5px; overflow:auto;}
+            .set_2 .fl-btn {padding:2px 5px; border:1px solid #999; background-color:#fff; text-decoration:none; color:#5FB0FF; zoom:1;}
+            .set_2 .fl-btn-browse {margin:-2px 0 3px;}
+            .set_2 .fl-btn-browse{float:right;}
+            .set_2 .fl-btn-remove {color:#C00; float:right;}
+
+            .set_2 .fl-progress-bounds {clear:both; height:10px; overflow:hidden;}
+            .set_2 .total-file-progress {float:left;}
+            .set_2 .total-progress {background-color:#080; height:100%;}
+            .set_2 .fluid-uploader-btns {text-align:right; background-color:#ccc; padding:0 5px 5px;}
+            .set_2 .file-progress {position:absolute; border-bottom:3px solid #080; margin-top:-3px; text-align:center; font-weight:bold; color:#fff;}
+            .set_2 .file-progress-text {display:none; float:right;}
+            /*
+            .set_2 .file-progress {position:absolute; background-color:#333; opacity:0.75; filter:alpha(opacity=75); text-align:center; font-weight:bold; color:#fff;}
+            .set_2 .file-progress .file-progress-text {margin-top:3px;}
+            */            
+            .set_2 .removeFile {}
+            .set_2 .uploaded .removeFile {display:none;}
+
+
             
         </style>  
     </head>
     <body>
     
+
         <div id="simple_uploader" class="set_1">
             <h1>Basic Uploader</h1>
             
@@ -122,7 +164,6 @@
                             				<td class="fileName">File Name Placeholder</td>
                                             <td class="fileSize">0 KB</td>
                                             <td class="fileRemove">
-                                                <!-- can be compressed using one input and negative text-indent? -->
                                                 <a href="#" class="removeFile fl-btn fl-btn-remove" title="Remove File" tabindex="-1">Remove</a>
                                             </td>
                             		    </tr>                                        
@@ -138,6 +179,76 @@
             			<div class="fluid-uploader-row-placeholder fl-instructions">
             			    Choose <em>Browse</em> to add files to the queue 
                         </div>
+                        
+                        <!-- QUEUE FOOTER -->
+            			<div class="fluid-scroller-table-foot fl-uploader-totals">
+                            <div class="total-file-progress">
+            					Total: <span class="fluid-uploader-totalFiles">0</span> files (<span class="fluid-uploader-totalBytes">0 KB</span>)
+                            </div>
+                            <a href="#" class="fluid-uploader-browse fl-force-right fl-btn fl-btn-browse">Browse</a>
+                            <div class="fl-progress-bounds">
+                				<div class="total-progress"></div>
+                            </div>
+            			</div>
+                    </div>
+                    
+                    <!-- UPLOADER BUTTONS -->
+            		<div class="fluid-uploader-btns">
+            			<a href="#" class="fluid-uploader-upload default fl-btn" >Upload</a>
+            		</div>
+                    
+                </div>
+            </form>
+    
+            <!-- Other templates -->
+        	<div class="fluid-templates">
+        		<table id="fluid-uploader" summary="Invisible placeholder for Uploader templates.">
+        			<tr id="queue-error-tmplt" class="queue-error-row">
+        			    <td colspan="3" class="queue-error"></td>
+                    </tr>
+        		</table>
+        	</div>
+        </div>       
+        
+
+
+
+
+
+
+
+
+
+
+
+        <div id="simple_uploader2" class="set_2">
+            <h1>List based uploader</h1>
+            
+            <form method="get" enctype="multipart/form-data" class="fl-uploader">
+                <div class="start">
+                    <!-- FILE QUEUE -->
+                    <div class="fluid-uploader-queue-wrapper  fl-uploader-queue">
+            			<div class="fluid-scroller">
+            				<div class="scroller-inner">
+                        
+                                <!-- QUEUE CONTENTS -->
+                                <!-- heading -->
+                                <div class="fl-queue-header">Queue:</div>
+                                
+                                <ol class="fluid-uploader-queue fl-uploader-queue">                                    
+                                    <!-- file queue template --> 
+                                    <li id="queue-row-tmplt" class="fluid-templates">
+                                        <div class="fileName">Name</div>                                        
+                                        <a class="removeFile fl-btn fl-btn-remove" title="Remove File" tabindex="-1" href="#" >Remove</a>
+                                        <span id="row-progressor-tmplt" class="file-progress"></span>
+                                        <span class="file-progress-text">0%</span>
+                                    </li>
+                                </ol>
+                                                                
+                            </div>
+                        </div>
+                        <!-- QUEUE INSTRUCTIONS -->
+            			<div class="fluid-uploader-row-placeholder fl-instructions">Choose <em>Browse</em> to add files to the queue </div>
                         
                         <!-- QUEUE FOOTER -->
             			<div class="fluid-scroller-table-foot fl-uploader-totals">
