@@ -30,6 +30,8 @@ fluid_0_6 = fluid_0_6 || {};
         disableElement(that.locate("uploadButton"));
         if (that.uploadManager.queue.files.length === 0) {
             that.locate("browseButton").text(that.options.strings.buttons.browse);
+            setChromeState(that, that.options.styles.queueStartState);
+        } else {
             setChromeState(that, that.options.styles.queueEmptyState);
         }
     };
@@ -244,7 +246,8 @@ fluid_0_6 = fluid_0_6 || {};
         },
         
         styles: {
-            queueEmptyState: "start",
+            queueStartState: "start",
+            queueEmptyState: "empty",
             queueLoadedState: "loaded",
             queueReloadedState: "reloaded",
             queueDoneState: "done",
