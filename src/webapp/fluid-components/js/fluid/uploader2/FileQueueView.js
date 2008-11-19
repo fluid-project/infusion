@@ -8,30 +8,26 @@ fluid_0_6 = fluid_0_6 || {};
     
     // file progress
     
+    var progressorForFile = function (that, file) {
+        var progressId = file.id + "_progress";
+        return that.fileProgressors[progressId];
+    };
+    
+    // TODO: verbafy these function names 
     var fileProgressStart = function (that, file) {
-        var fileRowElm = $("#" + file.id);
-        // scroll the new row into view
+        var fileRowElm = rowForFile(file.id);
         that.scroller.scrollTo(fileRowElm);
+         
         // update the progressor and make sure that it's in position
-        var progressId = file.id + "_progress"; 
-        that.fileProgressors[progressId].refresh(fileRowElm);
-        that.fileProgressors[progressId].show();
+        var fileProgressor = progressorForFile(that,file);
+        fileProgressor.refresh(fileRowElm);
+        fileProgressor.show();
     };
-    
-    var hideFileProgress = function (that, file) {
-        var progressId = file.id + "_progress";
-        that.fileProgressors[progressId].hide(); // no delay, no animation 
-    };
-    
+        
     var fileProgressUpdate = function (that, file, fileBytesComplete, fileTotalBytes) {
-        // file progress
         var filePercent = fluid.uploader.derivePercent(fileBytesComplete, fileTotalBytes);
-        var filePercentStr = filePercent + "%";
-        
-        //file.progress.update(filePercent, filePercentStr, "", true);
-        
-        var progressId = file.id + "_progress";
-        that.fileProgressors[progressId].update(filePercent, filePercentStr);
+        var filePercentStr = filePercent + "%";    
+        progressorForFile(that,file).update(filePercent, filePercentStr);
     };
     
     // Real data binding would be nice to replace these two pairs.
@@ -52,10 +48,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var removeFileAndRow = function (that, file, row) {
-        // Remove the file from the upload queue.
         that.uploadManager.removeFile(file);
-        
-        // And pull it out of the DOM with a nice fade.
         row.fadeOut("fast", function () {
             row.remove();
             that.refreshView();   
@@ -112,8 +105,7 @@ fluid_0_6 = fluid_0_6 || {};
         bindDeleteKey(that, row);
     };
     
-    var addFile = function (that, file) {
-        // Create a new file row from the template and set it up.
+    var createRowFromTemplate = function (that, file) {
         var row = that.locate("rowTemplate").clone();
         that.locate("fileName", row).text(file.name);
         that.locate("fileSize", row).text(fluid.uploader.formatFileSize(file.size));
@@ -121,12 +113,10 @@ fluid_0_6 = fluid_0_6 || {};
         row.addClass(that.options.styles.ready).addClass(that.options.styles.row);
         bindRowHandlers(that, row);
         
-        // Hide the row, add it to the queue, and then fade it in slowly.
-        row.hide();
-        that.container.append(row);
-        row.fadeIn("slow");
-        that.scroller.scrollBottom();
-        
+        return row;    
+    };
+    
+    var createProgressorFromTemplate = function (that, file, row) {
         // create a new progress bar for the row and position it
         var rowProgressor = that.locate("rowProgressorTemplate", that.uploadContainer).clone();
         var progressId = file.id + "_progress";
@@ -135,8 +125,6 @@ fluid_0_6 = fluid_0_6 || {};
         rowProgressor.height(row.height()).width(5);
         that.container.after(rowProgressor);
        
-        // instantiate the progressor to the row
-        
         that.fileProgressors[progressId] = fluid.progress(that.uploadContainer, {
             selectors: {
                 progressBar: "#" + file.id,
@@ -145,6 +133,15 @@ fluid_0_6 = fluid_0_6 || {};
                 indicator: "#" + progressId
             }
         });
+    };
+    
+    var addFile = function (that, file) {
+        var row = createRowFromTemplate(that, file);
+        row.hide();
+        that.container.append(row);
+        row.fadeIn("slow");
+        that.scroller.scrollBottom();
+        createProgressorFromTemplate(that, file, row);
 
         that.refreshView();
     };
@@ -154,7 +151,6 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var bindEvents = function (that) {
-        
         that.events.afterFileQueued.addListener(function (file) {
             addFile(that, file);
         });
@@ -172,7 +168,7 @@ fluid_0_6 = fluid_0_6 || {};
         });
 
         that.events.afterFileComplete.addListener(function (file) {
-            hideFileProgress(that, file);
+            progressorForFile(that,file).hide();
         });
         
         that.events.afterUploadComplete.addListener(function () {
@@ -180,6 +176,7 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.events.onFileSuccess.addListener(function (file) {
+            // TODO: break out into function markRowComplete
             var row = rowForFile(that, file);
             that.locate("removeButton", row).unbind("click");
             that.locate("removeButton", row).tabindex(-1);
