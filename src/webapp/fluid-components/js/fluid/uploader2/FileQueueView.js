@@ -6,30 +6,6 @@ fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
-    // file progress
-    
-    var progressorForFile = function (that, file) {
-        var progressId = file.id + "_progress";
-        return that.fileProgressors[progressId];
-    };
-    
-    // TODO: verbafy these function names 
-    var fileProgressStart = function (that, file) {
-        var fileRowElm = rowForFile(file.id);
-        that.scroller.scrollTo(fileRowElm);
-         
-        // update the progressor and make sure that it's in position
-        var fileProgressor = progressorForFile(that,file);
-        fileProgressor.refresh(fileRowElm);
-        fileProgressor.show();
-    };
-        
-    var fileProgressUpdate = function (that, file, fileBytesComplete, fileTotalBytes) {
-        var filePercent = fluid.uploader.derivePercent(fileBytesComplete, fileTotalBytes);
-        var filePercentStr = filePercent + "%";    
-        progressorForFile(that,file).update(filePercent, filePercentStr);
-    };
-    
     // Real data binding would be nice to replace these two pairs.
     var rowForFile = function (that, file) {
         return that.locate("fileQueue").find("#" + file.id);
@@ -45,6 +21,30 @@ fluid_0_6 = fluid_0_6 || {};
         }
         
         return null;
+    };
+    
+    // file progress
+    
+    var progressorForFile = function (that, file) {
+        var progressId = file.id + "_progress";
+        return that.fileProgressors[progressId];
+    };
+    
+    // TODO: verbafy these function names 
+    var startFileProgress = function (that, file) {
+        var fileRowElm = rowForFile(that, file);
+        that.scroller.scrollTo(fileRowElm);
+         
+        // update the progressor and make sure that it's in position
+        var fileProgressor = progressorForFile(that, file);
+        fileProgressor.refresh(fileRowElm);
+        fileProgressor.show();
+    };
+        
+    var updateFileProgress = function (that, file, fileBytesComplete, fileTotalBytes) {
+        var filePercent = fluid.uploader.derivePercent(fileBytesComplete, fileTotalBytes);
+        var filePercentStr = filePercent + "%";    
+        progressorForFile(that, file).update(filePercent, filePercentStr);
     };
     
     var removeFileAndRow = function (that, file, row) {
@@ -160,15 +160,15 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.events.onFileStart.addListener(function (file) {
-            fileProgressStart(that, file);
+            startFileProgress(that, file);
         });
         
         that.events.onFileProgress.addListener(function (file, fileBytesComplete, fileTotalBytes) {
-            fileProgressUpdate(that, file, fileBytesComplete, fileTotalBytes); 
+            updateFileProgress(that, file, fileBytesComplete, fileTotalBytes); 
         });
 
         that.events.afterFileComplete.addListener(function (file) {
-            progressorForFile(that,file).hide();
+            progressorForFile(that, file).hide();
         });
         
         that.events.afterUploadComplete.addListener(function () {
@@ -253,7 +253,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     fluid.defaults("fluid.fileQueueView", {
         selectors: {
-            fileRows: ":not(#queue-row-tmplt)",
+            fileRows: "tr:not(#queue-row-tmplt)",
             fileName: ".fileName",
             fileSize: ".fileSize",
             removeButton: ".removeFile",
