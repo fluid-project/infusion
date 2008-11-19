@@ -126,9 +126,8 @@ fluid_0_6 = fluid_0_6 || {};
             that.stateDisplay.removeClass(that.options.styles.queueBrowsingState);
             if (that.uploadManager.queue.getReadyFiles().length > 0) {
                 setState_LOADED(that);
+                refreshUploadTotal(that);
             }
-            
-            refreshUploadTotal(that);
         });
         
         that.events.afterFileRemoved.addListener(function () {
