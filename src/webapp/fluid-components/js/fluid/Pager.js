@@ -15,207 +15,188 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
+
+    /******************
+     * Pager Bar View *
+     ******************/
     
-    /*
-     * Start Pager Link Display 
-     */
-    
-    /**   Private stateless functions   **/
-    var updateStyles = function (pageLinks, currentPageStyle, pageNum, oldPageNum) {
+    var updateStyles = function (that, pageNum, oldPageNum) {
         var pageLink, oldLink;
         
-        pageLink = $(pageLinks[pageNum - 1]);
-        pageLink.addClass(currentPageStyle); 
+        pageLink = that.pageLinks.eq(pageNum - 1);
+        pageLink.addClass(that.options.styles.currentPage); 
 
         if (oldPageNum) {
-            oldLink = $(pageLinks[oldPageNum - 1]);
-            oldLink.removeClass(currentPageStyle);
+            oldLink = that.pageLinks.eq(oldPageNum - 1);
+            oldLink.removeClass(that.options.styles.currentPage);
         }
-        
     };
 
-    var updatePreviousNext = function (previous, next, pageNum, numPageLinks, disabledStyle) {
+    var updatePreviousNext = function (that, pageNum) {
         if (pageNum < 2) {
-            previous.addClass(disabledStyle);
+            that.previous.addClass(that.options.styles.disabled);
         } else {
-            previous.removeClass(disabledStyle);
+            that.previous.removeClass(that.options.styles.disabled);
         }
         
-        if (pageNum >= numPageLinks) {
-            next.addClass(disabledStyle);
+        if (pageNum >= that.pageLinks.length) {
+            that.next.addClass(that.options.styles.disabled);
         } else {
-            next.removeClass(disabledStyle);
+            that.next.removeClass(that.options.styles.disabled);
         }
     };
    
-    /**   Pager Link Display creator   **/
-   
-    fluid.pagerLinkDisplay = function (pageLinks, previous, next, currentPageStyle, disabledStyle, pageWillChange) {
-
-        return {
-            pageLinks: pageLinks,
-            previous: previous,
-            next: next,
-            selectPage: function (pageNum, oldPageNum) {
-                // Do we really want to pass the DOM element or do we just want the page number?
-                if (pageWillChange) {
-                    var pageLink = $(pageLinks[pageNum - 1]);
-                    pageWillChange(pageLink[0]);
-                }
-                updateStyles(pageLinks, currentPageStyle, pageNum, oldPageNum);
-                updatePreviousNext(previous, next, pageNum, pageLinks.length, disabledStyle);        
-            },
-            pageIsSelected: function (pageNum, oldPageNum) {
-                updateStyles(pageLinks, currentPageStyle, pageNum, oldPageNum);        
-                updatePreviousNext(previous, next, pageNum, pageLinks.length, disabledStyle);        
-            }
-
+    var selectPage = function (that, pageNum, oldPageNum) {
+        var pageLink = that.pageLinks.eq(pageNum - 1);
+        updateStyles(that, pageNum, oldPageNum);
+        updatePreviousNext(that, pageNum); 
+    };
+    
+    var bindModelEvents = function (that) {
+        that.returnedOptions = {
+            listeners: {
+                onPageChange: that.selectPage
+            }  
         };
     };
    
-    /*
-     * Start of Pager Bar
-     */
-
-    /**   Pager Bar creator   **/
-
-    fluid.pagerBar = function (bar, selectors, currentPageStyle, disabledStyle, pageWillChange) {  
-        var pageLinks, previous, next, linkDisplay, isPageLink, isNext, isPrevious;
-              
-        pageLinks = $(selectors.pageLinks, bar);
-        previous = $(selectors.previous, bar);
-        next = $(selectors.next, bar);
+    var setupPageBar = function (that, events) {
+        that.events = events;
+        bindModelEvents(that);
         
-        linkDisplay = fluid.pagerLinkDisplay(pageLinks, previous, next, currentPageStyle, disabledStyle, pageWillChange);
-        
-        isPageLink = function (element) {
-            return pageLinks.index(element) > -1;
-        };
-        isNext = function (element) {
-            return (element === next[0]);
-        };
-        isPrevious = function (element) {
-            return (element === previous[0]);
-        };
-    
-        return {
-            bar: bar,
-            linkDisplay: linkDisplay,
-            selectPage: function (pageNum, oldPageNum) {
-                linkDisplay.selectPage(pageNum, oldPageNum);
-            },
-            pageIsSelected: function (pageNum, oldPageNum) {
-                linkDisplay.pageIsSelected(pageNum, oldPageNum);
-            },
-            pageNumOfLink: function (link) {
-                link = fluid.findAncestor(link, isPageLink);
-                return pageLinks.index(link) + 1;
-            },
-            isNext: function (link) {
-                return !!fluid.findAncestor(link, isNext);
-            },
-            isPrevious: function (link) {
-                return !!fluid.findAncestor(link, isPrevious);
-            }
-        };
+        that.pageLinks = that.locate("pageLinks");
+        that.previous = that.locate("previous");
+        that.next = that.locate("next");
     };
 
-    /* 
-     * Start of the Pager
-     */
+    fluid.pagerBar = function (container, events, options) {
+        var that = fluid.initView("fluid.pagerBar", container, options);
+        
+        // Private methods.
+        var isPageLink = function (element) {
+            return that.pageLinks.index(element) > -1;
+        };
+        var isNext = function (element) {
+            return (element === that.next[0]);
+        };
+        var isPrevious = function (element) {
+            return (element === that.previous[0]);
+        };
+
+        // Public methods.
+        that.selectPage = function (pageNum, oldPageNum) {
+            selectPage(that, pageNum, oldPageNum);
+        };
+        
+        that.pageNumOfLink = function (link) {
+            link = fluid.findAncestor(link, isPageLink);
+            return that.pageLinks.index(link) + 1;
+        };
+        
+        that.isNext = function (link) {
+            return !!fluid.findAncestor(link, isNext);
+        };
+        
+        that.isPrevious = function (link) {
+            return !!fluid.findAncestor(link, isPrevious);
+        };
+        
+        setupPageBar(that, events);
+        return that;
+    };
     
-    /**   Private stateless functions   **/
-    var bindSelectHandler = function (pager) {
+    fluid.defaults("fluid.pagerBar", {
+       selectors: {
+           pageLinks: ".page-link",
+           previous: ".previous",
+           next: ".next"
+       },
+       
+       styles: {
+           currentPage: "current-page",
+           disabled: "disabled"
+       }
+    });
+
+    /*******************
+     * Pager Component *
+     *******************/
+    
+    var bindDOMEvents = function (that) {
         var selectHandler = function (evt) {
-            // We need a better way of checking top and bottom bar. This is so repetitive.
-            if (pager.topBar.isNext(evt.target) || pager.bottomBar.isNext(evt.target)) {
-                pager.next();
+            // This code should be refactored into pagerBar.
+            if (that.topBar.isNext(evt.target) || that.bottomBar.isNext(evt.target)) {
+                that.next();
                 return false;
             }
-            if (pager.topBar.isPrevious(evt.target) || pager.bottomBar.isPrevious(evt.target)) {
-                pager.previous();
+            if (that.topBar.isPrevious(evt.target) || that.bottomBar.isPrevious(evt.target)) {
+                that.previous();
                 return false;
             }
-            var newPageNum = pager.topBar.pageNumOfLink(evt.target) || pager.bottomBar.pageNumOfLink(evt.target);
+            var newPageNum = that.topBar.pageNumOfLink(evt.target) || that.bottomBar.pageNumOfLink(evt.target);
             if (newPageNum < 1) {
                 return true;
             }
 
-            pager.selectPage(newPageNum);
+            that.selectPage(newPageNum);
             return false;
         };
 
-        pager.container.click(selectHandler);
+        that.container.click(selectHandler);
     };
 
-    /**   Constructor  **/ 
-               
-    fluid.Pager = function (componentContainerId, options) {
-        var selectors, top, bottom;
-        
-        // Mix in the user's configuration options.
-        options = options || {};
-        selectors = $.extend({}, this.defaults.selectors, options.selectors);
-        this.styles = $.extend({}, this.defaults.styles, options.styles);
-        this.pageWillChange = options.pageWillChange || this.defaults.pageWillChange; 
-
-        // Bind to the DOM.
-        this.container = fluid.jById(componentContainerId);
-        
-        // Create pager bars
-        top = $(selectors.pagerTop, this.container);
-        this.topBar = fluid.pagerBar(top, selectors, this.styles.currentPage, this.styles.disabled, this.pageWillChange);
-        bottom = $(selectors.pagerBottom, this.container);
-        this.bottomBar = fluid.pagerBar(bottom, selectors, this.styles.currentPage, this.styles.disabled, this.pageWillChange);
-
-        this.pageNum = 1;
-        this.topBar.pageIsSelected(this.pageNum);
-        this.bottomBar.pageIsSelected(this.pageNum);
-        
-        bindSelectHandler(this);
-    };
+    var setupPager = function (that) {
+        // Setup the top and bottom pager bars.
+        that.topBar = fluid.initSubcomponent(that, "pagerBar", [that.locate("pagerTop"), fluid.COMPONENT_OPTIONS]);
+        that.bottomBar = fluid.initSubcomponent(that, "pagerBar", [that.locate("pagerBottom"), fluid.COMPONENT_OPTIONS]);
  
-     /**   Public stuff   **/   
-     
-    fluid.Pager.prototype.defaults = {
+        bindDOMEvents(that);
+        that.selectPage(1);
+    };
+    
+    fluid.pager = function (container, options) {
+        var that = fluid.initView("fluid.pager", container, options);
+        that.model = {
+           currentPage: undefined  
+        };
+        
+        that.selectPage = function (pageNum) {
+            if (pageNum === that.model.currentPage) {
+                return;
+            }
+            
+            that.events.onPageChange.fire(pageNum, that.model.currentPage);
+            that.model.currentPage = pageNum;
+        };
+        
+        that.next = function () {
+            // this test needs to be refactored - we know too much about the implementation I think
+            if (that.model.currentPage < that.topBar.pageLinks.length) {
+                that.selectPage(that.model.currentPage + 1);
+            }
+        };
+       
+        that.previous = function () {
+            if (that.model.currentPage > 1) {
+                that.selectPage(that.model.currentPage - 1);
+            }
+        };
+    
+        setupPager(that);
+        return that;        
+    };
+    
+    fluid.defaults("fluid.pager", {
+        pagerBar: "fluid.pagerBar",
+        
         selectors: {
             pagerTop: ".pager-top",
-            pagerBottom: ".pager-bottom",
-            pageLinks: ".page-link",
-            previous: ".previous",
-            next: ".next"
-        },
-
-        styles: {
-            currentPage: "current-page",
-            disabled: "disabled"
+            pagerBottom: ".pager-bottom"
         },
         
-        pageWillChange: function (link) {
-            // AJAX call here
+        events: {
+            onPageSelect: null,
+            onPageChange: null
         }
-    };
-    
-    fluid.Pager.prototype.selectPage = function (pageNum) {
-        if (pageNum === this.pageNum) {
-            return;
-        }
-        this.topBar.selectPage(pageNum, this.pageNum);
-        this.bottomBar.pageIsSelected(pageNum, this.pageNum);
-        this.pageNum = pageNum;
-    };
-    
-    fluid.Pager.prototype.next = function () {
-        // this test needs to be refactored - we know too much about the implementation I think
-        if (this.pageNum < this.topBar.linkDisplay.pageLinks.length) {
-            this.selectPage(this.pageNum + 1);
-        }
-    };
-   
-    fluid.Pager.prototype.previous = function () {
-        if (this.pageNum > 1) {
-            this.selectPage(this.pageNum - 1);
-        }
-    };
-    
+    });
 })(jQuery, fluid_0_6);

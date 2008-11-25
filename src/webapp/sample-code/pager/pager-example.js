@@ -18,19 +18,16 @@ var demo = demo || {};
 (function ($, fluid) {
     demo.initPager = function () {
         var selectorPrefix = "#students-page";
-        var currPage = 1;
-        var changePage = function (link) {
-            var oldPage = $(selectorPrefix + currPage);
-            oldPage.addClass("hidden");
-            currPage = link.value;
-            var newPage = $(selectorPrefix + currPage);
-            newPage.removeClass("hidden");
-        };
         
         var options = {
-            pageWillChange: changePage
+            listeners: {
+                onPageChange: function (pageNum, oldPageNum) {
+                    $(selectorPrefix + oldPageNum).addClass("hidden");
+                    $(selectorPrefix + pageNum).removeClass("hidden");
+                }
+            }
         };
         
-        new fluid.Pager("gradebook", options);
+        fluid.pager("#gradebook", options);
     };    
 })(jQuery, fluid);
