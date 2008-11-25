@@ -5,6 +5,8 @@ Generic containers for columns and layouts
 /* Container alignment */
 .fl-force-right {float:right; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
 .fl-force-left {float:left; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
+.fl-layout-linear * {float:none !important; display:block !important;}
+
 
 /* Fixed width containers */
 .fl-container-100 {width: 100px; overflow: auto;}

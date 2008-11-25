@@ -33,6 +33,7 @@ fluid_0_6 = fluid_0_6 || {};
         that.model.textFont = getSetting(that.locate("fontCtrl"));
         that.model.textSpacing = getSetting(that.locate("textSpacingCtrl"));
         that.model.colorScheme = getSetting(that.locate("colorCtrl"));
+        that.model.layout = getSetting(that.locate("layoutCtrl"));
     };    
     
     var pushModelToView = function (that) {
@@ -40,6 +41,7 @@ fluid_0_6 = fluid_0_6 || {};
         setSetting(that.locate("fontCtrl"), that.model.textFont);
         setSetting(that.locate("textSpacingCtrl"), that.model.textSpacing);
         setSetting(that.locate("colorCtrl"), that.model.colorScheme);
+        setSetting(that.locate("layoutCtrl"), that.model.layout);
     };
     
     var updateSkin = function (that) {
@@ -97,6 +99,7 @@ fluid_0_6 = fluid_0_6 || {};
             textSpacingCtrl: ".textspace-control",
             fontCtrl: ".font-control",
             colorCtrl: ".color-control",
+            layoutCtrl: ".layout-control",
             options: "input",
             tocCtrl: ".toc-control",
             preview: ".preview", 

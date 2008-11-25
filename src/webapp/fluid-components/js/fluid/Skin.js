@@ -43,6 +43,7 @@ fluid_0_6 = fluid_0_6 || {};
         element.addClass(fluid.skin.settings.textFont[skin.textFont]);
         element.addClass(fluid.skin.settings.textSpacing[skin.textSpacing]);
         element.addClass(fluid.skin.settings.colorScheme[skin.colorScheme]);        
+        element.addClass(fluid.skin.settings.layout[skin.layout]);        
     };
 
     /**
@@ -83,6 +84,10 @@ fluid_0_6 = fluid_0_6 || {};
         "colorScheme": {
             "Mist": "fl-theme-mist",
             "High Contrast": "fl-theme-hc"
+        }, 
+        "layout": {
+            "Default": "",
+            "Simple": "fl-layout-linear"
         }
     };
 
