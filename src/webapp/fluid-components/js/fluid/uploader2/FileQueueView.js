@@ -98,7 +98,7 @@ fluid_0_6 = fluid_0_6 || {};
 			bindHover(row, that.options.styles);
         }
 		
-        that.locate("removeButton", row).click(function () {
+        that.locate("fileIconBtn", row).click(function () {
             removeFileForRow(that, row);
         });
         
@@ -109,6 +109,7 @@ fluid_0_6 = fluid_0_6 || {};
         var row = that.locate("rowTemplate").clone();
         that.locate("fileName", row).text(file.name);
         that.locate("fileSize", row).text(fluid.uploader.formatFileSize(file.size));
+        that.locate("fileIconBtn", row).addClass(that.options.styles.remove);
         row.attr("id", file.id);
         row.addClass(that.options.styles.ready).addClass(that.options.styles.row);
         bindRowHandlers(that, row);
@@ -156,7 +157,9 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.events.onUploadStart.addListener(function () {
-            that.locate("removeButton").attr("disabled", "disabled");
+            var rowButtons = that.locate("fileIconBtn");
+            rowButtons.attr("disabled", "disabled");
+            rowButtons.addClass("dim");
         });
         
         that.events.onFileStart.addListener(function (file) {
@@ -167,27 +170,34 @@ fluid_0_6 = fluid_0_6 || {};
             updateFileProgress(that, file, fileBytesComplete, fileTotalBytes); 
         });
 
-        that.events.afterFileComplete.addListener(function (file) {
-            progressorForFile(that, file).hide();
-        });
-        
-        that.events.afterUploadComplete.addListener(function () {
-            that.locate("removeButton").removeAttr("disabled").attr("title", that.options.strings.status.success);
-        });
-        
         that.events.onFileSuccess.addListener(function (file) {
             // TODO: break out into function markRowComplete
-            var row = rowForFile(that, file);
-            that.locate("removeButton", row).unbind("click");
-            that.locate("removeButton", row).tabindex(-1);
-            changeRowState(row, that.options.styles.uploaded);
+            var fileRowElm = rowForFile(that, file);
+            var removeFile = that.locate("fileIconBtn", fileRowElm);
+            removeFile.unbind("click");
+            removeFile.tabindex(-1);
+            removeFile.removeClass(that.options.styles.remove);
+            changeRowState(fileRowElm, that.options.styles.uploaded);
+            fileRowElm.attr("title", that.options.strings.status.success);
         });
         
         that.events.onFileError.addListener(function (file) {
             if (file.filestatus === fluid.fileQueue.fileStatusConstants.ERROR) {
-                var row = rowForFile(that, file);
-                changeRowState(row, that.options.styles.error);
+                var fileRowElm = rowForFile(that, file);
+                changeRowState(fileRowElm, that.options.styles.error);
+                // add error information to the title attribute
             }
+        });
+        
+        that.events.afterFileComplete.addListener(function (file) {
+            var fileRowElm = rowForFile(that, file);
+            progressorForFile(that, file).hide();
+            that.locate("fileIconBtn", fileRowElm).removeClass("dim");
+        });
+        
+        that.events.afterUploadComplete.addListener(function () {
+            // re-enable the template button
+            that.locate("fileIconBtn").removeClass("dim");
         });
     };
     
@@ -256,7 +266,7 @@ fluid_0_6 = fluid_0_6 || {};
             fileRows: ".row",
             fileName: ".fileName",
             fileSize: ".fileSize",
-            removeButton: ".removeFile",
+            fileIconBtn: ".iconBtn",            
                   
             rowTemplate: "#queue-row-tmplt",
             rowProgressorTemplate: "#row-progressor-tmplt"
@@ -269,7 +279,8 @@ fluid_0_6 = fluid_0_6 || {};
             hover: "hover",
             selected: "selected",
             uploaded: "uploaded",
-            error: "error"
+            error: "error",
+            remove: "removeFile"
         },
         
         strings: {

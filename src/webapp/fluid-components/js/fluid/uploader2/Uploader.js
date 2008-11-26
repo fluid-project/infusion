@@ -10,51 +10,65 @@ fluid_0_6 = fluid_0_6 || {};
      * Start [not set by code, set as the initial class of the component]
      * Uploading
      * Browsing
-     * 
      */
-    
-    var setChromeState = function (that, stateClass) {
-        that.stateDisplay.attr("className", stateClass);
-    };
-    
-    var enableElement = function (elm) {
+        
+    var enableElement = function (that, elm) {
         elm.removeAttr("disabled");
+        elm.removeClass(that.options.styles.dim);
     };
     
-    var disableElement = function (elm) {
+    var disableElement = function (that, elm) {
         elm.attr("disabled", "disabled");
+        elm.addClass(that.options.styles.dim);
+    };
+    
+    var showElement = function (that, elm) {
+        elm.removeClass(that.options.styles.hidden);
     };
      
+    var hideElement = function (that, elm) {
+        elm.addClass(that.options.styles.hidden);
+    };
+    
     /* state: empty */
-    var setState_EMPTY = function (that) {
-        disableElement(that.locate("uploadButton"));
-        if (that.uploadManager.queue.files.length === 0) {
+    var setStateEmpty = function (that) {
+        // Start and Empty State
+        disableElement(that, that.locate("uploadButton"));
+        showElement(that, that.locate("instructions"));
+            
+        if (that.uploadManager.queue.files.length === 0) { 
+            // Start State
             that.locate("browseButton").text(that.options.strings.buttons.browse);
-            setChromeState(that, that.options.styles.queueStartState);
+            
         } else {
-            setChromeState(that, that.options.styles.queueEmptyState);
+            // Empty state
+            
         }
     };
     
     /* state: done */
-    var setState_DONE = function (that) {
-        disableElement(that.locate("uploadButton"));
-        enableElement(that.locate("browseButton"));
-        setChromeState(that, that.options.styles.queueDoneState);
+    var setStateDone = function (that) {
+        disableElement(that, that.locate("uploadButton"));
+        enableElement(that, that.locate("browseButton"));
+        hideElement(that, that.locate("pauseButton"));
+        showElement(that, that.locate("uploadButton"));
+        
     };
 
     /* state: loaded */
-    var setState_LOADED = function (that) {
+    var setStateLoaded = function (that) {
         that.locate("browseButton").text(that.options.strings.buttons.addMore);
-        enableElement(that.locate("uploadButton"));
-        setChromeState(that, that.options.styles.queueLoadedState);
+        enableElement(that, that.locate("uploadButton"));
+        enableElement(that, that.locate("browseButton"));
+        hideElement(that, that.locate("instructions"));
     };
     
      /* state: uploading */
-    var setState_UPLOADING = function (that) {
-        setChromeState(that, that.options.styles.queueUploadingState);
-        disableElement(that.locate("browseButton"));
-        disableElement(that.locate("uploadButton"));
+    var setStateUploading = function (that) {
+        hideElement(that, that.locate("cancelButton"));
+        hideElement(that, that.locate("uploadButton"));
+        showElement(that, that.locate("pauseButton"));
+        disableElement(that, that.locate("browseButton"));
     };         
     
     var refreshUploadTotal = function (that) {
@@ -117,6 +131,10 @@ fluid_0_6 = fluid_0_6 || {};
         that.locate("uploadButton").click(function () {
             that.uploadManager.start();
         });
+
+        that.locate("pauseButton").click(function () {
+            that.uploadManager.pause();
+        });
     };
         
     var bindModelEvents = function (that) {
@@ -127,14 +145,14 @@ fluid_0_6 = fluid_0_6 || {};
         that.events.afterFileDialog.addListener(function () {
             that.stateDisplay.removeClass(that.options.styles.queueBrowsingState);
             if (that.uploadManager.queue.getReadyFiles().length > 0) {
-                setState_LOADED(that);
+                setStateLoaded(that);
                 refreshUploadTotal(that);
             }
         });
         
         that.events.afterFileRemoved.addListener(function () {
             if (that.uploadManager.queue.getReadyFiles().length === 0) {
-                setState_EMPTY(that);
+                setStateEmpty(that);
             }
             
             refreshUploadTotal(that);
@@ -143,7 +161,7 @@ fluid_0_6 = fluid_0_6 || {};
         // Progress
         
         that.events.onUploadStart.addListener(function () {
-            setState_UPLOADING(that);
+            setStateUploading(that);
         });
 
         that.events.onFileProgress.addListener(function () {
@@ -152,7 +170,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.events.afterUploadComplete.addListener(function () {
             progressComplete(that);
-            setState_DONE(that);
+            setStateDone(that);
         });
     };
    
@@ -239,10 +257,11 @@ fluid_0_6 = fluid_0_6 || {};
             fileQueue: ".fluid-uploader-queue",
             browseButton: ".fluid-uploader-browse",
             uploadButton: ".fluid-uploader-upload",
+            cancelButton: ".fluid-uploader-cancel",
             resumeButton: ".fluid-uploader-resume",
             pauseButton: ".fluid-uploader-pause",
             totalFileProgressBar: ".fluid-scroller-table-foot",
-            stateDisplay: "div:first"
+            instructions: ".fluid-uploader-browse-instructions"
         },
         
         styles: {
@@ -252,7 +271,10 @@ fluid_0_6 = fluid_0_6 || {};
             queueReloadedState: "reloaded",
             queueDoneState: "done",
             queueBrowsingState: "browsing",
-            queueUploadingState: "uploading"
+            queueUploadingState: "uploading",
+            disabled: "disabled",
+            hidden: "hidden",
+            dim: "dim"
         },
         
         events: {
@@ -282,7 +304,10 @@ fluid_0_6 = fluid_0_6 || {};
             },
             buttons: {
                 browse: "Browse Files",
-                addMore: "Add More"
+                addMore: "Add More",
+                stopUpload: "Stop Upload",
+                cancelRemaning: "Cancel remaining Uploads",
+                resumeUpload: "Resume Upload"
             }
         }
     });

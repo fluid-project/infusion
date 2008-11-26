@@ -182,21 +182,30 @@ html>body .fluid-uploader-queue {
     white-space: nowrap;
 }
 
-.fluid-uploader-queue .removeFile {
+.fluid-uploader-queue .iconBtn {
     border: 1px solid transparent;
     height: 20px;
     width: 20px;
     overflow: hidden;
     background-color: transparent;
-    background-image: url(../images/uploader/remove.png);
     background-attachment: scroll;
     background-repeat: no-repeat;
     background-position: 1px 1px;
     outline: 0;
     padding: 0;
     margin: 0;
-    cursor: pointer;
     outline: none;
+}
+
+.fluid-uploader-queue .iconBtn:hover {
+    border: 1px solid transparent;
+    background-color: transparent;
+    cursor: auto;
+}
+
+.fluid-uploader-queue .removeFile {
+    background-image: url(../images/uploader/remove.png);
+    cursor: pointer !important;
 }
 
 .fluid-uploader-queue .removeFile:hover, .fluid-uploader-queue tr.ready:focus .removeFile, .fluid-uploader-queue tr.focus .removeFile {
@@ -211,39 +220,23 @@ html>body .fluid-uploader-queue {
 
 .fluid-uploader-queue .uploaded th, .fluid-uploader-queue tr.uploaded:focus th, .fluid-uploader-queue tr.focus th   {
     border-left: 4px solid #74B74A;
-    color: #898;
+    color: #5E7A5E;
 }
 
 .fluid-uploader-queue .uploaded td {
-    color: #898;
+    color: #5E7A5E;
 }
 
-.fluid-uploader-queue .uploaded .removeFile {
+.fluid-uploader-queue .uploaded .iconBtn {
     background-image: url(../images/uploader/tick.png);
-    cursor: auto;
 }
-
-.fluid-uploader-queue .uploaded .removeFile:hover {
-    cursor: auto;
-    background-image: url(../images/uploader/tick.png);
-    border: 1px solid transparent;
-    background-color: transparent;
-}
-
 
 .fluid-uploader-queue .error th {
     border-left: 4px solid #F5E392;
 }
 
-.fluid-uploader-queue .error .removeFile {
+.fluid-uploader-queue .error .iconBtn {
     background-image: url(../images/uploader/error.png);
-}
-
-.fluid-uploader-queue .error .removeFile:hover {
-    cursor: pointer;
-    background-image: url(../images/uploader/error.png);
-    border: 1px solid transparent;
-    background-color: transparent;
 }
 
 .fluid-uploader-queue-wrapper td.fileRemove, .fluid-uploader-queue-wrapper th.fileRemove {
@@ -254,7 +247,7 @@ html>body .fluid-uploader-queue {
     white-space: nowrap;
 }
 
-.fluid-uploader-queue-wrapper .fluid-uploader-row-placeholder {
+.fluid-uploader-queue-wrapper .fluid-uploader-browse-instructions {
     background-color: #F0F9FF;
     color: #666;
     text-align: center;
@@ -275,15 +268,7 @@ html>body .fluid-uploader-queue {
     width: 7.6em;
 }
 
-.fluid-uploader-btns .fluid-uploader-pause {
-    padding-right: 1em;
-    background-image: url('../images/uploader/pause.png');	
-    background-position: 74% center;
-    background-repeat: no-repeat;
-}
-
 .fluid-uploader-btns button {
-    display: none;
     float: right;
     padding: 0;
 }
@@ -293,132 +278,24 @@ html>body .fluid-uploader-queue {
     border-color: #142B8C;
 }
 
-/* STATES
- * start - initial state of the uploader, no rows, or all rows removed
- * browsing - the OS dialog is being displayed or we're still updating the queue with new files
- * loaded - files in the queue, but the Upload button has not been clicked
- * uploading - we're in the process of uploading
- * pause - some files uploaded, some still in the queue -- NOT FOR BETA
- * reloaded - some files uploaded, new files in the queue
- * empty - no files uploaded, no files in the queue -- NOT FOR BETA
- * done - all files have been uploaded
- */
+/* element states */
 
-.fluid-uploader .fluid-uploader-row-placeholder {
+.disabled, .dim {
+    cursor: auto; 
+}
+
+.disabled {
+    background-color: #CCC !important;
+    border-color: #999 !important;
+}
+
+.dim {
+    opacity: 0.4;
+    filter:alpha(opacity=40);
+}
+
+.hidden {
     display: none;
-}
-
-/* start */
-
-.fluid-uploader .start .fluid-uploader-row-placeholder {
-    display: block;
-}
-
-.start .fluid-uploader-btns .fluid-uploader-cancel {
-    display: block;
-}
-
-.start .fluid-uploader-btns .fluid-uploader-upload, 
-  .start .fluid-uploader-btns .fluid-uploader-upload:hover {
-    display: block;
-    background-color: #CCC !important;
-    border-color: #999 !important;
-    cursor: auto;
-}
-
-/* loaded */
-
-.loaded .fluid-uploader-btns .fluid-uploader-upload {
-    display: block;
-}
-
-.loaded .fluid-uploader-btns .fluid-uploader-cancel {
-    display: block;
-}
-
-/* uploading */
-
-.uploading .fluid-uploader-btns .fluid-uploader-done,
-  .uploading .fluid-uploader-btns .fluid-uploader-done:hover,
-  .uploading .fluid-uploader-btns .fluid-uploader-upload,
-  .uploading .fluid-uploader-btns .fluid-uploader-upload:hover {
-    display: block;
-    opacity: 0.4;
-    filter:alpha(opacity=40);
-    cursor: auto;
-}
-
-.fluid-uploader .uploading a.fluid-uploader-browse, .fluid-uploader .uploading a.fluid-uploader-browse:hover, .fluid-uploader .uploading a.fluid-uploader-browse:focus, .fluid-uploader .uploading a.fluid-uploader-browse.focus {
-    opacity: 0.4;
-    filter:alpha(opacity=40);
-    cursor: auto;
-}
-
-/* paused */
-
-.paused .fluid-uploader-btns .fluid-uploader-resume {
-    display: block;
-}
-
-.paused .fluid-uploader-btns .fluid-uploader-done {
-    display: block;
-}
-
-/* empty */
-
-.empty .fluid-uploader-btns .fluid-uploader-done {
-    display: block;
-}
-
-.empty .fluid-uploader-btns .fluid-uploader-upload, 
-  .empty .fluid-uploader-btns .fluid-uploader-upload:hover {
-    display: block;
-    background-color: #CCC !important;
-    border-color: #999 !important;
-    cursor: auto;
-}
-
-/* reloaded */
-
-.reloaded .fluid-uploader-btns .fluid-uploader-upload {
-    display: block;
-}
-
-.reloaded .fluid-uploader-btns .fluid-uploader-done {
-    display: block;
-}
-
-/* done */
-
-.done .fluid-uploader-btns .fluid-uploader-upload,
-  .done .fluid-uploader-btns .fluid-uploader-upload:hover {
-    display: block;
-    background-color: #CCC !important;
-    border-color: #999 !important;
-    cursor: auto;
-}
-
-.done .fluid-uploader-btns .fluid-uploader-done {
-    display: block;
-}
-
-/* browsing 
- * all buttons are dimmed
- */ 
-
-.fluid-uploader .browsing button,
-  .fluid-uploader .browsing button:hover,
-  .fluid-uploader .browsing .fluid-uploader-browse {
-    opacity: 0.4;
-    filter:alpha(opacity=40);
-    cursor: auto;
-}
-
-.uploading .ready .removeFile,
-  .browsing .removeFile,
-  .browsing .removeFile:hover {
-    opacity: 0.3;
-    filter:alpha(opacity=30);
 }
 
 /* ERRORS
@@ -517,11 +394,3 @@ caption {
     border:1px solid #CCCCCC;
     padding:2px 5px;	
 }
-
-
-
-
-
-
-
-
