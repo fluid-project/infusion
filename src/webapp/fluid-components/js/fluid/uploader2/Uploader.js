@@ -194,7 +194,7 @@ fluid_0_6 = fluid_0_6 || {};
 	    });
         
         // Upload button should not be enabled until there are files to upload
-        that.locate("uploadButton").attr("disabled", "disabled");
+        disableElement(that, that.locate("uploadButton"));
 
         bindDOMEvents(that);
         bindModelEvents(that);
