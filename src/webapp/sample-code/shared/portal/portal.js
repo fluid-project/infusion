@@ -9,16 +9,18 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */   
 
+/*global jQuery, fluid */
 var demo = demo || {};
     
 (function (jQuery, fluid) {
     var grabHandle = function (item) {        
         // the handle is the toolbar. The toolbar id is the same as the portlet id, with the
         // "portlet_" prefix replaced by "toolbar_".
-        return jQuery ("[id=toolbar_" + item.id.split ("_")[1] + "]");
+        return jQuery("[id=toolbar_" + item.id.split("_")[1] + "]");
     };
 
-    demo.initPortletReorderer = function() {
+    
+    var initPortletReorderer = function () {
         fluid.inlineEdit("#Pluto_5_u15l1n13_optionsForm", {selectors: {text: "#inline-editable"}});
         var options = { 
             styles:  {
@@ -26,7 +28,7 @@ var demo = demo || {};
                 dropMarker: "orderable-drop-marker-box",
                 avatar: "orderable-avatar-clone"
             },
-             selectors: {
+            selectors: {
                 columns: "[id^='column']",
                 modules: "[class^='portlet-container']",
                 grabHandle: grabHandle,
@@ -38,7 +40,7 @@ var demo = demo || {};
         return fluid.reorderLayout("#portalPageBodyColumns", options);
     };
     
-    demo.initLightboxReorderer = function () {
+    var initLightboxReorderer = function () {
         return fluid.lightbox("#gallery", {
             styles: {
                 defaultStyle: "lb-orderable-default",
@@ -78,7 +80,7 @@ var demo = demo || {};
     /**
      * Initialization script for dynamically changing skins
      */
-    demo.initSkinChange = function () {
+    var initSkinChange = function () {
         jQuery("#hc-skin").click(function () {
             fluid.applySkin(demo.hcLargeFontSkin);
         });  
@@ -92,7 +94,14 @@ var demo = demo || {};
         });  
 
     };
-}) (jQuery, fluid);
+
+    demo.initFluidComponents = function () {
+        demo.portletReorderer = initPortletReorderer();
+        demo.lightboxReorderer = initLightboxReorderer();
+        initSkinChange();
+    };
+ 
+})(jQuery, fluid);
 
 function testSpeeds() {
     var reps = 200;
@@ -102,7 +111,7 @@ function testSpeeds() {
     }
     var delay = (new Date() - time);
 //  alert(delay);
-    var usdelay = delay / (reps/1000);
+    var usdelay = delay / (reps / 1000);
     fluid.log("jById: " + reps + " reps in " + delay + "ms: " + usdelay + "us/rep");
 }
 
@@ -112,12 +121,12 @@ function testSpeeds2() {
     for (var i = 0; i < reps; ++ i) {
         var it = document.getElementById("fluid.img.5");
         if (it.getAttribute("id") !== "fluid.img.5") {
-          it = fluid.jById("fluid.img.2");
+            it = fluid.jById("fluid.img.2");
         }
     }
     var delay = (new Date() - time);
 //  alert(delay);
-    var usdelay = delay / (reps/1000);
+    var usdelay = delay / (reps / 1000);
     fluid.log("document.byId: " + reps + " reps in " + delay + "ms: " + usdelay + "us/rep");
 }
 
@@ -130,6 +139,6 @@ function testSpeeds3() {
     }
     var delay = (new Date() - time);
 //  alert(delay);
-    var usdelay = delay / (reps/1000);
+    var usdelay = delay / (reps / 1000);
     fluid.log("document.byId: " + reps + " reps in " + delay + "ms: " + usdelay + "us/rep");
 }
