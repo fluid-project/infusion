@@ -157,7 +157,7 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.events.onUploadStart.addListener(function () {
-            var rowButtons = that.locate("fileIconBtn");
+            var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
             rowButtons.attr("disabled", "disabled");
             rowButtons.addClass("dim");
         });
@@ -194,11 +194,7 @@ fluid_0_6 = fluid_0_6 || {};
             progressorForFile(that, file).hide();
             that.locate("fileIconBtn", fileRowElm).removeClass("dim");
         });
-        
-        that.events.afterUploadComplete.addListener(function () {
-            // re-enable the template button
-            that.locate("fileIconBtn").removeClass("dim");
-        });
+ 
     };
     
     var setupFileQueue = function (that, uploadManager) {
