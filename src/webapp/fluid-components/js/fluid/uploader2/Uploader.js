@@ -69,7 +69,7 @@ fluid_0_6 = fluid_0_6 || {};
         hideElement(that, that.locate("uploadButton"));
         showElement(that, that.locate("pauseButton"));
         disableElement(that, that.locate("browseButton"));
-    };         
+    };    
     
     var refreshUploadTotal = function (that) {
         var readyFiles = that.uploadManager.queue.getReadyFiles();
@@ -138,12 +138,8 @@ fluid_0_6 = fluid_0_6 || {};
     };
         
     var bindModelEvents = function (that) {
-        that.events.onFileDialog.addListener(function () {
-            that.stateDisplay.addClass(that.options.styles.queueBrowsingState);
-        });
         
         that.events.afterFileDialog.addListener(function () {
-            that.stateDisplay.removeClass(that.options.styles.queueBrowsingState);
             if (that.uploadManager.queue.getReadyFiles().length > 0) {
                 setStateLoaded(that);
                 refreshUploadTotal(that);
@@ -187,9 +183,7 @@ fluid_0_6 = fluid_0_6 || {};
                                                     that.container, 
                                                     that.uploadManager,
                                                     fluid.COMPONENT_OPTIONS]);
-                                                    
-        that.stateDisplay = that.locate("stateDisplay");
-        
+                                                            
         that.totalProgress  = fluid.progress(that.container, {
             selectors: {
                 progressBar: ".fluid-scroller-table-foot",
