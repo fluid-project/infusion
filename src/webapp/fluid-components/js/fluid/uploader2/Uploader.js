@@ -150,7 +150,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
    
     var setupUploader = function (that) {
-        // Instantiate the upload manager and file queue view, 
+        // Instantiate the upload manager, file queue view, and total file progress bar,
         // passing them smaller chunks of the overall options for the uploader.
         that.uploadManager = fluid.initSubcomponent(that, 
                                                     "uploadManager", 
@@ -160,16 +160,10 @@ fluid_0_6 = fluid_0_6 || {};
                                                     [that.locate("fileQueue"),
                                                     that.container, 
                                                     that.uploadManager,
-                                                    fluid.COMPONENT_OPTIONS]);
-        // make this a subcomponent                                                            
-        that.totalProgress  = fluid.progress(that.container, {
-            selectors: {
-                progressBar: ".fluid-scroller-table-foot",
-                displayElement: ".total-progress", 
-        		label: ".total-file-progress",
-                indicator: ".total-progress"
-            }
-	    });
+                                                    fluid.COMPONENT_OPTIONS]); 
+        that.totalProgress = fluid.initSubcomponent(that,
+                                                    "totalProgressBar",
+                                                    [that.container, fluid.COMPONENT_OPTIONS]);
         
         // Upload button should not be enabled until there are files to upload
         disableElement(that, that.locate("uploadButton"));
@@ -222,6 +216,18 @@ fluid_0_6 = fluid_0_6 || {};
         
         fileQueueView: {
             type: "fluid.fileQueueView"
+        },
+        
+        totalProgressBar: {
+            type: "fluid.progress",
+            options: {
+                selectors: {
+                    progressBar: ".fluid-scroller-table-foot",
+                    displayElement: ".total-progress", 
+            		label: ".total-file-progress",
+                    indicator: ".total-progress"
+                }
+            }
         },
         
         selectors: {
