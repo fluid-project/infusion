@@ -5,13 +5,6 @@ fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
-    /* uploader state 
-     * Uploader understands the following states
-     * Start [not set by code, set as the initial class of the component]
-     * Uploading
-     * Browsing
-     */
-        
     var enableElement = function (that, elm) {
         elm.removeAttr("disabled");
         elm.removeClass(that.options.styles.dim);
@@ -40,16 +33,13 @@ fluid_0_6 = fluid_0_6 || {};
         }
     };
     
-    /* state: done */
     var setStateDone = function (that) {
         disableElement(that, that.locate("uploadButton"));
         enableElement(that, that.locate("browseButton"));
         hideElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("uploadButton"));
-        
     };
 
-    /* state: loaded */
     var setStateLoaded = function (that) {
         that.locate("browseButton").text(that.options.strings.buttons.addMore);
         enableElement(that, that.locate("uploadButton"));
@@ -57,7 +47,6 @@ fluid_0_6 = fluid_0_6 || {};
         hideElement(that, that.locate("instructions"));
     };
     
-     /* state: uploading */
     var setStateUploading = function (that) {
         hideElement(that, that.locate("cancelButton"));
         hideElement(that, that.locate("uploadButton"));
@@ -66,18 +55,18 @@ fluid_0_6 = fluid_0_6 || {};
     };    
     
     var refreshUploadTotal = function (that) {
-        var readyFiles = that.uploadManager.queue.getReadyFiles();
-        var numReadyFiles = readyFiles.length;
+        var numReadyFiles = that.uploadManager.queue.getReadyFiles().length;
         var bytesReadyFiles = that.uploadManager.queue.sizeOfReadyFiles();
         
-        var fileLabelStr = (numReadyFiles === 1) ? that.options.strings.progress.singleFile : that.options.strings.progress.pluralFiles;
-        
+        // Render template for the total file status message.
+        var fileLabelStr = (numReadyFiles === 1) ? that.options.strings.progress.singleFile : 
+                                                   that.options.strings.progress.pluralFiles;
         var totalStateStr = fluid.stringTemplate(that.options.strings.progress.toUploadLabel, {
             fileCount: numReadyFiles, 
             fileLabel: fileLabelStr, 
             totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles)
         });
-        $(".total-file-progress").html(totalStateStr);
+        that.locate("totalFileStatusText").html(totalStateStr);
     };
 
         
@@ -248,6 +237,7 @@ fluid_0_6 = fluid_0_6 || {};
             resumeButton: ".fluid-uploader-resume",
             pauseButton: ".fluid-uploader-pause",
             totalFileProgressBar: ".fluid-scroller-table-foot",
+            totalFileStatusText: ".total-file-progress",
             instructions: ".fluid-uploader-browse-instructions"
         },
         
