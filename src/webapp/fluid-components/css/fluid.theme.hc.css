@@ -60,23 +60,16 @@
 .fl-theme-hc .fl-listmenu .fl-activemenu,
 .fl-theme-hc .fl-listmenu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
 
-
 /* Helper: Thumbnail Grid */
 .fl-theme-hc .fl-grid {border:2px solid #4070a1; background-color:#fff;}
 .fl-theme-hc .fl-grid li {background-color:#dfefff; border:1px solid #4070a1}
 .fl-theme-hc .fl-grid .caption {background-color:#dfefff; color:#5a95cf; }
 
+/* Component: Progressor */
+.fl-theme-hc .fl-progress-bounds {border-color:#000; background-color:#fff;}
+.fl-theme-hc .fl-progress-fill {color:#fff; background-color:#000;}
+
+/* Component: Uploader */
 
 /* States */
 .fl-theme-hc .orderable-drop-marker {background-color:#f00 !important;}
-
-/* Component: PROGRESSOR */
-.fl-progress-bounds {border-color:#000; background-color:#fff;}
-.fl-progress-fill {color:#fff; background-color:#000;}
-
-/* Component: UPLOADER */
-
-
-
-
-
