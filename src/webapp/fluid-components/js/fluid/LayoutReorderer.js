@@ -25,7 +25,11 @@ fluid_0_6 = fluid_0_6 || {};
      */
     fluid.reorderLayout = function (container, userOptions) {
         var assembleOptions = {
-            layoutHandler: "fluid.moduleLayoutHandler"
+            layoutHandler: "fluid.moduleLayoutHandler",
+            selectors: {
+                columns: ".columns",
+                modules: ".modules"
+            }
         };
         var options = jQuery.extend(true, assembleOptions, userOptions);
         return fluid.reorderer(container, options);

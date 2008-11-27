@@ -22,6 +22,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var k = fluid.testUtils.reorderer.bindReorderer(portletIds);
         
+        layoutReordererTests.test("Default selectors", function () {
+            var testReorderer = fluid.reorderLayout("#default-selector-test");
+            var item1 = jQuery("#portlet-1");
+            var item2 = jQuery("#portlet-2").focus();
+            
+            // Sniff test the reorderer that was created - keyboard selection
+            jqUnit.assertTrue("focus on item2", item2.hasClass("orderable-selected"));
+            jqUnit.assertTrue("focus on item2 - item1 should be default", item1.hasClass("orderable-default"));
+        });
+        
         layoutReordererTests.test("Events within module", function () {
             var reorderer = fluid.reorderLayout("#" + portalRootId, {
                         selectors: {
