@@ -182,7 +182,7 @@ fluid_0_6 = fluid_0_6 || {};
         that.returnedOptions = {
             listeners: {
                 afterFileQueued: that.addFile,
-                onUploadStart: that.startUploading,
+                onUploadStart: that.prepareForUpload,
                 onFileStart: that.showFileProgress,
                 onFileProgress: that.updateFileProgress,
                 onFileSuccess: that.markFileComplete,
