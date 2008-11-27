@@ -29,28 +29,32 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var pullModelFromView = function (that) {
-        that.model.textSize = getSetting(that.locate("textSizeCtrl"));
-        that.model.textFont = getSetting(that.locate("fontCtrl"));
-        that.model.textSpacing = getSetting(that.locate("textSpacingCtrl"));
-        that.model.colorScheme = getSetting(that.locate("colorCtrl"));
-        that.model.layout = getSetting(that.locate("layoutCtrl"));
+        var skin = that.model.value;
+        skin.textSize = getSetting(that.locate("textSizeCtrl"));
+        skin.textFont = getSetting(that.locate("fontCtrl"));
+        skin.textSpacing = getSetting(that.locate("textSpacingCtrl"));
+        skin.colorScheme = getSetting(that.locate("colorCtrl"));
+        skin.layout = getSetting(that.locate("layoutCtrl"));
     };    
     
     var pushModelToView = function (that) {
-        setSetting(that.locate("textSizeCtrl"), that.model.textSize);
-        setSetting(that.locate("fontCtrl"), that.model.textFont);
-        setSetting(that.locate("textSpacingCtrl"), that.model.textSpacing);
-        setSetting(that.locate("colorCtrl"), that.model.colorScheme);
-        setSetting(that.locate("layoutCtrl"), that.model.layout);
+        var skin = that.model.value;
+        setSetting(that.locate("textSizeCtrl"), skin.textSize);
+        setSetting(that.locate("fontCtrl"), skin.textFont);
+        setSetting(that.locate("textSpacingCtrl"), skin.textSpacing);
+        setSetting(that.locate("colorCtrl"), skin.colorScheme);
+        setSetting(that.locate("layoutCtrl"), skin.layout);
     };
     
     var updateSkin = function (that) {
+        var oldModel = $.extend(true, {}, that.model);
+
         pullModelFromView(that);
-        that.events.modelChanged.fire(that.model);
+        that.events.modelChanged.fire(that.model, oldModel, that);
     };
 
     var initModel = function (that) {
-        that.model = {};
+        that.model = {value: {}};
         pullModelFromView(that);
     };
     
@@ -65,8 +69,8 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var initPreview = function (that) {
-        that.events.modelChanged.addListener(function (skin) {
-            fluid.applySkin(skin, that.locate("preview")); 
+        that.events.modelChanged.addListener(function (model) {
+            fluid.applySkin(model.value, that.locate("preview")); 
         });        
     };
     
@@ -74,22 +78,33 @@ fluid_0_6 = fluid_0_6 || {};
         initModel(that);
         bindHandlers(that);
         initPreview(that);    
+
+        // Setup any registered decorators for the component.
+        that.decorators = fluid.initSubcomponents(that, "componentDecorators", 
+            [that, fluid.COMPONENT_OPTIONS]);
+
     };
     
     fluid.uiOptions = function (container, options) {
         var that = fluid.initView("fluid.uiOptions", container, options);
              
         that.save = function () {
-            that.events.onSave.fire(that.model);
-            fluid.applySkin(that.model);
+            that.events.onSave.fire(that.model.value);
+            fluid.applySkin(that.model.value);
         };
         
         that.refreshView = function () {
             pushModelToView(that);
         };
         
-        setupUIOptions(that);
+        that.updateModel = function (newValue, source) {
+            var oldModel = $.extend(true, {}, that.model);
+            that.model.value = newValue;
+            that.events.modelChanged.fire(that.model, oldModel, source);
+            that.refreshView();
+        };
         
+        setupUIOptions(that);
         return that;   
     };
 
