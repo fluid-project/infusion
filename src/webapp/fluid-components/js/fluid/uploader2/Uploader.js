@@ -179,7 +179,6 @@ fluid_0_6 = fluid_0_6 || {};
         that.fileQueueView = fluid.initSubcomponent(that, 
                                                     "fileQueueView", 
                                                     [that.locate("fileQueue"),
-                                                    that.events,
                                                     that.container, 
                                                     that.uploadManager,
                                                     fluid.COMPONENT_OPTIONS]);

@@ -50,28 +50,15 @@
                                 fluid.uploader.formatFileSize(file.size), 
                                 sizeForRow(q, row));    
         };
-        
-        var events = {};
       
         var createFileQueue = function (qEl) {
-            var q = fluid.fileQueueView(qEl, events, $("#main"), mockUploadManager);
+            var q = fluid.fileQueueView(qEl, $("#main"), mockUploadManager);
             
             return q;
         };
         
         // File Queue test case
         var setupFunction = function () {
-            events = {
-                afterFileQueued: fluid.event.getEventFirer(),
-                onUploadStart: fluid.event.getEventFirer(),
-                onFileStart: fluid.event.getEventFirer(),
-                onFileProgress: fluid.event.getEventFirer(),
-                onFileSuccess: fluid.event.getEventFirer(),
-                onFileError: fluid.event.getEventFirer(),
-                afterFileComplete: fluid.event.getEventFirer(),
-                afterUploadComplete: fluid.event.getEventFirer()
-            };
-            
             qEl = $("#main .fluid-uploader-queue");
             jqUnit.subvertAnimations();
         };

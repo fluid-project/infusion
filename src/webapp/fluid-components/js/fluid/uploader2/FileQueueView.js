@@ -23,14 +23,11 @@ fluid_0_6 = fluid_0_6 || {};
         return null;
     };
     
-    // file progress
-    
     var progressorForFile = function (that, file) {
         var progressId = file.id + "_progress";
         return that.fileProgressors[progressId];
     };
     
-    // TODO: verbafy these function names 
     var startFileProgress = function (that, file) {
         var fileRowElm = rowForFile(that, file);
         that.scroller.scrollTo(fileRowElm);
@@ -45,6 +42,12 @@ fluid_0_6 = fluid_0_6 || {};
         var filePercent = fluid.uploader.derivePercent(fileBytesComplete, fileTotalBytes);
         var filePercentStr = filePercent + "%";    
         progressorForFile(that, file).update(filePercent, filePercentStr);
+    };
+    
+    var hideFileProgress = function (that, file) {
+        var fileRowElm = rowForFile(that, file);
+        progressorForFile(that, file).hide();
+        that.locate("fileIconBtn", fileRowElm).removeClass("dim");
     };
     
     var removeFileAndRow = function (that, file, row) {
@@ -147,54 +150,46 @@ fluid_0_6 = fluid_0_6 || {};
         that.refreshView();
     };
     
+    var prepareForUpload = function (that) {
+        var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
+        rowButtons.attr("disabled", "disabled");
+        rowButtons.addClass("dim");    
+    };
+        
     var changeRowState = function (row, newState) {
         row.removeClass("ready error").addClass(newState);
     };
     
+    var markRowAsComplete = function (that, file) {
+        var fileRowElm = rowForFile(that, file);
+        var removeFile = that.locate("fileIconBtn", fileRowElm);
+        removeFile.unbind("click");
+        removeFile.tabindex(-1);
+        removeFile.removeClass(that.options.styles.remove);
+        changeRowState(fileRowElm, that.options.styles.uploaded);
+        fileRowElm.attr("title", that.options.strings.status.success);
+    };
+    
+    var showErrorForFile = function (that, file) {
+        if (file.filestatus === fluid.fileQueue.fileStatusConstants.ERROR) {
+            var fileRowElm = rowForFile(that, file);
+            changeRowState(fileRowElm, that.options.styles.error);
+            // add error information to the title attribute
+        }
+    };
+    
     var bindEvents = function (that) {
-        that.events.afterFileQueued.addListener(function (file) {
-            addFile(that, file);
-        });
-        
-        that.events.onUploadStart.addListener(function () {
-            var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
-            rowButtons.attr("disabled", "disabled");
-            rowButtons.addClass("dim");
-        });
-        
-        that.events.onFileStart.addListener(function (file) {
-            startFileProgress(that, file);
-        });
-        
-        that.events.onFileProgress.addListener(function (file, fileBytesComplete, fileTotalBytes) {
-            updateFileProgress(that, file, fileBytesComplete, fileTotalBytes); 
-        });
-
-        that.events.onFileSuccess.addListener(function (file) {
-            // TODO: break out into function markRowComplete
-            var fileRowElm = rowForFile(that, file);
-            var removeFile = that.locate("fileIconBtn", fileRowElm);
-            removeFile.unbind("click");
-            removeFile.tabindex(-1);
-            removeFile.removeClass(that.options.styles.remove);
-            changeRowState(fileRowElm, that.options.styles.uploaded);
-            fileRowElm.attr("title", that.options.strings.status.success);
-        });
-        
-        that.events.onFileError.addListener(function (file) {
-            if (file.filestatus === fluid.fileQueue.fileStatusConstants.ERROR) {
-                var fileRowElm = rowForFile(that, file);
-                changeRowState(fileRowElm, that.options.styles.error);
-                // add error information to the title attribute
+        that.returnedOptions = {
+            listeners: {
+                afterFileQueued: that.addFile,
+                onUploadStart: that.startUploading,
+                onFileStart: that.showFileProgress,
+                onFileProgress: that.updateFileProgress,
+                onFileSuccess: that.markFileComplete,
+                onFileError: that.showErrorForFile,
+                afterFileComplete: that.hideFileProgress
             }
-        });
-        
-        that.events.afterFileComplete.addListener(function (file) {
-            var fileRowElm = rowForFile(that, file);
-            progressorForFile(that, file).hide();
-            that.locate("fileIconBtn", fileRowElm).removeClass("dim");
-        });
- 
+        };
     };
     
     var setupFileQueue = function (that, uploadManager) {
@@ -233,11 +228,9 @@ fluid_0_6 = fluid_0_6 || {};
      * @param {UploadManager} uploadManager an upload manager model instance
      * @param {Object} options configuration options for the view
      */
-    fluid.fileQueueView = function (container, events, parentContainer, uploadManager, options) {
+    fluid.fileQueueView = function (container, parentContainer, uploadManager, options) {
         var that = fluid.initView("fluid.fileQueueView", container, options);
         that.uploadContainer = parentContainer;
-        that.events = events;
-        
         that.fileProgressors = {};
         
         that.addFile = function (file) {
@@ -246,6 +239,30 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.removeFile = function (file) {
             removeRowForFile(that, file);
+        };
+        
+        that.prepareForUpload = function () {
+            prepareForUpload(that);
+        };
+        
+        that.showFileProgress = function (file) {
+            startFileProgress(that, file);
+        };
+        
+        that.updateFileProgress = function (file, fileBytesComplete, fileTotalBytes) {
+            updateFileProgress(that, file, fileBytesComplete, fileTotalBytes); 
+        };
+        
+        that.markFileComplete = function (file) {
+            markRowAsComplete(that, file);
+        };
+        
+        that.showErrorForFile = function (file) {
+            showErrorForFile(that, file);
+        };
+        
+        that.hideFileProgress = function (file) {
+            hideFileProgress(that, file);
         };
         
         that.refreshView = function () {
