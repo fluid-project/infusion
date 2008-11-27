@@ -30,19 +30,13 @@ fluid_0_6 = fluid_0_6 || {};
         elm.addClass(that.options.styles.hidden);
     };
     
-    /* state: empty */
     var setStateEmpty = function (that) {
-        // Start and Empty State
         disableElement(that, that.locate("uploadButton"));
-        showElement(that, that.locate("instructions"));
-            
+        
+        // If the queue is totally empty, treat it specially.
         if (that.uploadManager.queue.files.length === 0) { 
-            // Start State
             that.locate("browseButton").text(that.options.strings.buttons.browse);
-            
-        } else {
-            // Empty state
-            
+            showElement(that, that.locate("instructions"));
         }
     };
     
