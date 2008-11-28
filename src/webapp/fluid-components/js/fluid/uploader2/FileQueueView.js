@@ -178,7 +178,7 @@ fluid_0_6 = fluid_0_6 || {};
         }
     };
     
-    var bindEvents = function (that) {
+    var bindModelEvents = function (that) {
         that.returnedOptions = {
             listeners: {
                 afterFileQueued: that.addFile,
@@ -192,13 +192,7 @@ fluid_0_6 = fluid_0_6 || {};
         };
     };
     
-    var setupFileQueue = function (that, uploadManager) {
-        that.uploadManager = uploadManager;
-        
-        // Make it scrollable.
-        that.scroller = fluid.scroller(that.container);
-        
-        // And add keyboard navigation.
+    var addKeyboardNavigation = function (that) {
         that.container.tabbable();
         that.container.selectable({
             selectableSelector: that.options.selectors.fileRows,
@@ -209,16 +203,13 @@ fluid_0_6 = fluid_0_6 || {};
                 $(selectedItem).removeClass(that.options.styles.selected);
             }
         });
-        
-        that.fileProgress = fluid.progress(that.uploadContainer, {
-            selectors: {
-                displayElement: ".file-progress", 
-        		label: ".file-progress-text",
-                indicator: ".file-progress"
-            }
-	    });
-        
-        bindEvents(that);
+    };
+    
+    var setupFileQueue = function (that, uploadManager) {
+        that.uploadManager = uploadManager;
+        that.scroller = fluid.scroller(that.container);
+        addKeyboardNavigation(that); 
+        bindModelEvents(that);
     };
     
     /**
