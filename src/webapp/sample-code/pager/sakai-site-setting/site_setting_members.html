@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>The Sakai Foundation</title>
+    <meta name="Description" content="The Sakai Foundation" />
+    <meta name="Keywords" content="The Sakai Foundation" />
+
+    <link rel="stylesheet" type="text/css" href="css/base.css" media="screen" />
+    <!--[if IE]><link rel="stylesheet" type="text/css" href="css/ie/iepc.css" media="screen" /><![endif]-->
+    <link rel="stylesheet" type="text/css" href="css/print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="css/yui-datatable.css" media="screen" />
+
+    <script type="text/javascript" src="lib/jquery-1.2.6.js"></script>
+    <script type="text/javascript" src="lib/trimpath.js"></script>
+    <script type="text/javascript" src="lib/querystring.js"></script>
+
+    <!-- Yahoo UI dependencies -->
+	<script type="text/javascript" src="lib/yui_2.6.0-build/yahoo-dom-event/yahoo-dom-event.js"></script>
+	<script type="text/javascript" src="lib/yui_2.6.0-build/element/element-beta-debug.js"></script>
+	<script type="text/javascript" src="lib/yui_2.6.0-build/datasource/datasource-debug.js"></script>
+	<!-- OPTIONAL: JSON Utility (for DataSource) -->
+	<script type="text/javascript" src="lib/yui_2.6.0-build/json/json-debug.js"></script>
+	<!-- Source files -->
+	<script type="text/javascript" src="lib/yui_2.6.0-build/paginator/paginator-debug.js"></script>
+	<script type="text/javascript" src="lib/yui_2.6.0-build/datatable/datatable-debug.js"></script>
+
+	<script type="text/javascript" src="lib/yui_2.6.0-build/logger/logger.js"></script>
+
+</head>
+<body id="body-hide2">
+<script type="text/javascript" src="lib/sdata_alternative.js"></script>
+<script type="text/javascript" src="lib/i18n.js"></script>
+<div id="body2">
+
+<div id="header3">
+    <div class="header3-up">
+        <h1>Site Settings</h1>
+        <ul>
+            <li class="m2-header3-up"><a id="back_site" href="#">Close &amp; Return to <span class="site-title"></span></a></li>
+            <li class="m1-header3-up"><a href="#">Help</a></li>
+        </ul>
+    </div>
+    <div class="block">
+        <ul class="header3-down">
+            <li><a class="site-setting-link" href="#">General</a></li>
+            <li class="on"><a href="#">Members</a></li>
+            <li><a href="#">Roles &amp; Permissions</a></li>
+            <li><a href="#">Site Backup &amp; More</a></li>
+        </ul>
+    </div>
+</div><!-- /header3 -->
+
+<div id="wrapper3">
+<div id="container3">
+<div id="content3">
+
+<div id="main3">
+
+<div class="msg-error" id="msg-error-default" style="display:none;">
+	<div class="msg-text"></div>
+	<div class="msg-remove"><a>Remove</a></div>
+</div>
+<div class="msg-error" id="msg-error-not-found" style="display:none;">
+	<div class="msg-text">The following were not found: <span class="users-not-found"></span></div>
+	<div class="msg-remove"><a>Remove</a></div>
+</div>
+<div class="msg-error" id="msg-error-already-members" style="display:none;">
+	<div class="msg-text">The following were already members: <span class="users-already-members"></span></div>
+	<div class="msg-remove"><a>Remove</a></div>
+</div>
+<div class="msg-success" id="msg-success-default" style="display:none;">
+	<div class="msg-text">Your changes have been saved.</div>
+	<div class="msg-remove"><a>Remove</a></div>
+</div>
+<div class="msg-success" id="msg-success-count" style="display:none;">
+	<div class="msg-text"><span class="added-member-count"></span> members added.</div>
+	<div class="msg-remove"><a>Remove</a></div>
+</div>
+
+<div class="ss-members" style="display:none;">
+<h2>Members <span class="ss-button"><a href="#" class="buttons add-widgets"><span>Add Members</span></a></span></h2>
+<table cellpadding="0" cellspacing="0" border="0" class="ss-table">
+    <tr>
+        <td><div class="ss-table-head">
+            <div class="block">
+                <div class="ssth-left">
+                    <ul>
+                        <li><a href="#" class="selectAllMembers">Select All</a></li>
+                        <li><a href="#" class="selectAllVisibleMembers" >Select All Visible</a></li>
+                        <li><a href="#" class="unselectMembers">Unselect All</a></li>
+                        <li class="ssth-last"><span class="selected-count">0</span> Selected</li>
+                    </ul>
+                </div>
+                <div id="membership-paging" class="ssth-right">
+                    <table>
+                        <tr>
+                            <td><div class="ssth-border">
+                            	<span class="membership-count"></span> Records Total</div>
+                            </div></td>
+                            <td><div class="ssth-select">
+                                <select class="rowsPerPageDropdown">
+                                    <option value="10">View 10 Per Page</option>
+                                    <option value="20">View 20 Per Page</option>
+                                    <option value="30">View 30 Per Page</option>
+                                    <option value="40">View 40 Per Page</option>
+                                </select>
+                            </div></td>
+                            <td><div><a href="#" class="prevPage">Prev</a></div></td>
+                            <td><div class="ssth-select2">
+                                <select class="pageLinksDropdown">
+                                    <option>Page 1 of 30</option>
+                                    <option>Page 2 of 30</option>
+                                    <option>Page 3 of 30</option>
+                                </select>
+                            </div></td>
+                            <td><div><a href="#" class="nextPage">Next</a></div></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div></td>
+    </tr>
+</table>
+
+<div id="membership-table"></div>
+
+<div class="ss-foot">
+    <div class="block">
+        <div class="ss-foot-left">
+            <a id="delete-selected-members" href="#" class="inactive buttons">Delete Selected</a>
+        </div>
+        <div class="ss-foot-right">
+            <select id="command-selected-members" class="inactive" disabled="true">
+                <option value="">Select a command</option>
+                <optgroup label="- - - - - - - - -">
+                <option value="selected-members-active-true">Change status to Active</option>
+                <option value="selected-members-active-false">Change status to Inactive </option>
+                </optgroup>
+                <optgroup id="selected-members-roles" label="- - - - - - - - -">
+                </optgroup>
+            </select>
+            <a id="change-selected-members" href="#" class="inactive buttons">Submit</a>
+        </div>
+    </div>
+</div>
+<div id="selected-members-roles-template" style="display:none"><!--
+	{for role in userRoles}
+		<option value="selected-members-memberRole-${role}">Change role to ${role}</option>
+	{/for}
+--></div>
+
+</div>
+
+
+
+</div><!-- /main3 -->
+
+</div><!-- /content3 -->
+</div><!-- /container3 -->
+</div><!-- /wrapper3 -->
+
+
+	   <div class="overlay-lightbox" style="display:none;">
+	   <div id="default-members-roles-template" style="display:none"><!--
+		{for role in userRoles}
+			<option value="${role}">${role}</option>
+		{/for}
+		--></div>
+
+	   <!-- /// Lightbox Tools /// -->
+
+		   <div class="lightbox size3">
+
+			   <div class="lightbox-header">
+				   <div class="lighbox-header-left"><h3>Add Members</h3></div>
+				   <ul class="lightbox-header-right">
+					   <li class="lhr-help"><a href="#">Help</a></li>
+					   <li class="lhr-close"><a href="#">Close Window &amp; Cancel</a></li>
+				   </ul>
+			   </div><!-- /lightbox-header -->
+
+			   <div class="lightbox-container2">
+
+				   <p class="fs15 c999999 create-site-build-course-p">Provide the following information and click the "Send Invitation" button</p>
+
+				    <div id="add-members-title" class="ssm-add-member">
+						<strong><strong class="fs13 cCC0000">* </strong>Enter Member's Username or Email Address:</strong>
+						<span class="fs11 c999999"><strong class="fs13 cCC0000">*</strong> = Required Information</span>
+				    </div>
+
+				    <div class="ssm-add-member-1">
+						<table cellpadding="0" cellspacing="0" border="0">
+							<tr>
+								<td><div class="ssm-bottom"><textarea id="invitees" rows="3" cols="30"></textarea></div></td>
+							</tr>
+							<tr>
+								<td><div class="fs11 c999999 ssm-bottom2"><strong>Tip:</strong>  To add more than one member, enter a line-break after each one by hitting the return key on your keyboard.</div></td>
+							</tr>
+							<tr>
+								<td><div class="ssm-bottom"><strong>Default Role for These Members:</strong></div></td>
+							</tr>
+							<tr>
+								<td>
+
+								<div class="ssm-bottom2">
+								<select id="default-members-roles" ></div>
+								</td>
+							</tr>
+							<tr>
+								<td><div class="ssm-bottom"><strong>Optional Message:</strong> <a href="#" class="fs11 underline">What is this for?</a></div></td>
+							</tr>
+							<tr>
+								<td><div class="ssm-bottom"><textarea id="message" rows="3" cols="30"></textarea></div></td>
+							</tr>
+							<tr>
+								<td><div class="fs11 c999999 ssm-bottom2">(Max 500 characters)</div></td>
+							</tr>
+						</table>
+				    </div>
+				    <div class="ssm-add-member-2">
+						<div class="block">
+							<a href="#" class="save buttons">Send Invitation</a>
+							<a href="#" class="csbc4-link">Close Window &amp; Cancel</a>
+						</div>
+				    </div>
+
+			   </div><!-- /lightbox-container -->
+		   </div><!-- /lightbox -->
+
+		   </div>
+
+
+<div id="footer-hide">
+    <p>&copy; 2004-2008 The Sakai Foundation<br /> Portions of Sakai are copyrighted by other parties as described in the <a href="#">Acknowledgments screen</a></p>
+</div><!-- /footer -->
+
+</div><!-- /body2 -->
+<script type="text/javascript" src="js/site_setting_members.js"></script>
+</body>
+</html>
