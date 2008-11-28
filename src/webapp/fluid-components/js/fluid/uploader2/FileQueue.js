@@ -43,7 +43,7 @@ fluid_0_6 = fluid_0_6 || {};
             totalBytes: 0,
             numFilesCompleted: 0,
             bytesUploadedForFile: 0,
-            previousChunk: 0,
+            previousBytesUploadedForFile: 0,
             totalBytesUploaded: 0
         };
     };

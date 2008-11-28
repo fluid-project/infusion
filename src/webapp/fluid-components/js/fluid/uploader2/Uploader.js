@@ -54,7 +54,7 @@ fluid_0_6 = fluid_0_6 || {};
         disableElement(that, that.locate("browseButton"));
     };    
     
-    var refreshUploadTotal = function (that) {
+    var renderUploadTotalMessage = function (that) {
         // Render template for the total file status message.
         var numReadyFiles = that.uploadManager.queue.getReadyFiles().length;
         var bytesReadyFiles = that.uploadManager.queue.sizeOfReadyFiles();
@@ -69,7 +69,7 @@ fluid_0_6 = fluid_0_6 || {};
         that.locate("totalFileStatusText").html(totalStateStr);
     };
         
-    var totalProgressUpdate = function (that) {
+    var updateTotalProgress = function (that) {
         var batch = that.uploadManager.queue.currentBatch;        
         var totalPercent = fluid.uploader.derivePercent(batch.totalBytesUploaded, batch.totalBytes);
              
@@ -82,7 +82,7 @@ fluid_0_6 = fluid_0_6 || {};
         that.totalProgress.update(totalPercent, totalProgressStr);
     };
         
-    var progressComplete = function (that) {
+    var hideTotalProgress = function (that) {
         var uploadedFiles = that.uploadManager.queue.getUploadedFiles();
         
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.completedLabel, {
@@ -111,7 +111,7 @@ fluid_0_6 = fluid_0_6 || {};
     var updateStateAfterFileDialog = function (that) {
         if (that.uploadManager.queue.getReadyFiles().length > 0) {
             setStateLoaded(that);
-            refreshUploadTotal(that);
+            renderUploadTotalMessage(that);
         } 
     };
     
@@ -119,11 +119,11 @@ fluid_0_6 = fluid_0_6 || {};
         if (that.uploadManager.queue.getReadyFiles().length === 0) {
             setStateEmpty(that);
         }
-        refreshUploadTotal(that);
+        renderUploadTotalMessage(that);
     };
     
     var updateStateAfterCompletion = function (that) {
-        progressComplete(that);
+        hideTotalProgress(that);
         setStateDone(that);
     };
     
@@ -141,7 +141,7 @@ fluid_0_6 = fluid_0_6 || {};
         });
 
         that.events.onFileProgress.addListener(function () {
-            totalProgressUpdate(that); 
+            updateTotalProgress(that); 
         });
         
         that.events.afterUploadComplete.addListener(function () {
