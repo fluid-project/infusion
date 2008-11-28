@@ -76,7 +76,7 @@ fluid_0_6 = fluid_0_6 || {};
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalProgressLabel, {
             curFileN: batch.fileIdx + 1, 
             totalFilesN: batch.files.length, 
-            currBytes: fluid.uploader.formatFileSize(batch.bytesUploadedForFile), 
+            currBytes: fluid.uploader.formatFileSize(batch.totalBytesUploaded), 
             totalBytes: fluid.uploader.formatFileSize(batch.totalBytes)
         });  
         that.totalProgress.update(totalPercent, totalProgressStr);
