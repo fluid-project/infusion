@@ -105,7 +105,7 @@
             // Ensure our default options are cool.
             jqUnit.assertTrue("simulateDelay should default to true.", demoManager.options.simulateDelay);
             jqUnit.assertEquals("We should have inherited our parent's default options.",
-                                "../../swfupload/swfupload_f9.swf",
+                                "../../flash/swfupload_f9.swf",
                                 demoManager.options.flashURL);
                                 
             // Test an alternative option. simulateDelay should be false.
