@@ -204,7 +204,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     fluid.defaults("fluid.swfUploadManager", {
         uploadURL: "",
-        flashURL: "../../swfupload/swfupload_f9.swf",
+        flashURL: "../../flash/swfupload_f9.swf",
         postParams: {},
         fileSizeLimit: "20480",
         fileTypes: "*.*",

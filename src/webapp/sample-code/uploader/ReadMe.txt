@@ -41,7 +41,7 @@ The Uploader sample files in the sample-code/uploader/ directory are configured 
 
         var settings =   {
             uploadUrl : "",
-            flashUrl : "../../../fluid-components/swfupload/swfupload_f9.swf"
+            flashUrl : "../../../fluid-components/flash/swfupload_f9.swf"
 
 
 Additionally, you may need to modify some of your Flash settings to allow the local SWFUpload object to access your file system. To do so, follow these directions:
@@ -53,7 +53,7 @@ Additionally, you may need to modify some of your Flash settings to allow the lo
 3. In the Flash Settings panel, click "Edit locations..."
 4. Select "Add location..."
 5. Click "Browse for files..."
-6. Select the swfupload_f9.swf file that is in your local /src/webapp/fluid-components/swfupload/ directory
+6. Select the swfupload_f9.swf file that is in your local /src/webapp/fluid-components/flash/ directory
 7. Restart your browser
 
 You should be good to go! 
