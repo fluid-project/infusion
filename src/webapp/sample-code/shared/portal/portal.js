@@ -64,9 +64,21 @@ var demo = demo || {};
         textSize: "+3",
         textFont: "Courier",
         textSpacing: "Wide",
-        colorScheme: "High Contrast"
+        colorScheme: "High Contrast",
+        layout: "Default"
     };
     
+    /**
+     * Skin settings for high contrast, simple layout
+     */
+    demo.hcSimpleLayoutSkin = {
+        textSize: "Default",
+        textFont: "Default",
+        textSpacing: "Default",
+        colorScheme: "High Contrast",
+        layout: "Simple"
+    };
+
     /**
      * Skin settings for mist, small font skin
      */
@@ -74,7 +86,8 @@ var demo = demo || {};
         textSize: "-1",
         textFont: "Default",
         textSpacing: "Default",
-        colorScheme: "Mist"       
+        colorScheme: "Mist",
+        layout: "Default"
     };
     
     /**
@@ -85,6 +98,10 @@ var demo = demo || {};
             fluid.applySkin(demo.hcLargeFontSkin);
         });  
         
+        jQuery("#hcs-skin").click(function () {
+            fluid.applySkin(demo.hcSimpleLayoutSkin);
+        });  
+
         jQuery("#mist-skin").click(function () {
             fluid.applySkin(demo.mistSmallFontSkin);
         });  
