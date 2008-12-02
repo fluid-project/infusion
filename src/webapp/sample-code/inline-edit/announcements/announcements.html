@@ -17,18 +17,17 @@
     <script type="text/javascript" src="../../../tests/utils/DebugFocus.js"></script>
     -->
     <script type="text/javascript">
-        $(document).ready(function(){
-
+        var inlineEditSetup = function(){
             var myUndoRenderer = function (that, targetContainer) {
-                var markup = "<span class='fluid-undo'>" + 
-                  "<span class='undoContainer'><a href='#' class='undoControl'><img src='images/undo.png' alt='Undo your edit' title='Undo your edit' style='border:none' /></a></span>" + 
-                  "<span class='redoContainer'><a href='#' class='redoControl'><img src='images/redo.png' alt='Redo your edit' title='Redo your edit' style='border:none' /></a></span>" + 
+                var markup = "<span class='fluid-undo'>" +
+                "<span class='undoContainer'><a href='#' class='undoControl'><img src='images/undo.png' alt='Undo your edit' title='Undo your edit' style='border:none' /></a></span>" +
+                "<span class='redoContainer'><a href='#' class='redoControl'><img src='images/redo.png' alt='Redo your edit' title='Redo your edit' style='border:none' /></a></span>" +
                 "</span>";
                 var markupNode = $(markup);
                 targetContainer.append(markupNode);
                 return markupNode;
-            };  
-                  
+            };
+            
             fluid.inlineEdits("#announcements", {
                 useTooltip: true,
                 componentDecorators: {
@@ -36,8 +35,12 @@
                     options: {
                         renderer: myUndoRenderer
                     }
-                }            
+                }
             });
+        };
+
+        $(document).ready(function(){
+            inlineEditSetup();
         });
 
     </script>
