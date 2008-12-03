@@ -113,8 +113,17 @@ fluid_0_6 = fluid_0_6 || {};
             swfUploader.selectFiles();
         }  
     };
-    
+        
     var bindEvents = function (that) {
+        var fileStatusUpdater = function(file){
+            fluid.find(that.queue.files, function(potentialMatch){
+                if (potentialMatch.id === file.id) {
+                    potentialMatch.filestatus = file.filestatus;
+                    return true;
+                }
+            });
+        };
+
         // Add a listener that will keep our file queue model in sync with SWFUpload.
         that.events.afterFileQueued.addListener(function (file) {
             that.queue.addFile(file); 
@@ -124,6 +133,7 @@ fluid_0_6 = fluid_0_6 || {};
             that.queue.currentBatch.fileIdx++;
             that.queue.currentBatch.bytesUploadedForFile = 0;
             that.queue.currentBatch.previousBytesUploadedForFile = 0; 
+            fileStatusUpdater(file);
         });
         
         that.events.onFileProgress.addListener(function (file, currentBytes, totalBytes) {
@@ -132,12 +142,16 @@ fluid_0_6 = fluid_0_6 || {};
             currentBatch.totalBytesUploaded += byteIncrement;
             currentBatch.bytesUploadedForFile += byteIncrement;
             currentBatch.previousBytesUploadedForFile = currentBytes;
+            fileStatusUpdater(file);
         });
+        
+        that.events.onFileError.addListener(fileStatusUpdater);
         
         that.events.onFileSuccess.addListener(function (file) {
             if (that.queue.currentBatch.bytesUploadedForFile === 0) {
                 that.queue.currentBatch.totalBytesUploaded += file.size;
             }
+            fileStatusUpdater(file);
         });
     };
     
