@@ -115,8 +115,8 @@ fluid_0_6 = fluid_0_6 || {};
     };
         
     var bindEvents = function (that) {
-        var fileStatusUpdater = function(file){
-            fluid.find(that.queue.files, function(potentialMatch){
+        var fileStatusUpdater = function (file) {
+            fluid.find(that.queue.files, function (potentialMatch) {
                 if (potentialMatch.id === file.id) {
                     potentialMatch.filestatus = file.filestatus;
                     return true;
@@ -263,18 +263,6 @@ fluid_0_6 = fluid_0_6 || {};
         events.onFileProgress.fire(file, demoState.bytesUploaded, file.size);
     };
     
-    var startUploading = function (that) {
-        // Reset our upload stats for each new file.
-        that.demoState.currentFile = that.queue.files[that.demoState.fileIdx];
-        that.demoState.chunksForCurrentFile = Math.ceil(that.demoState.currentFile / that.demoState.chunkSize);
-        that.demoState.bytesUploaded = 0;
-        that.demoState.shouldPause = false;
-        
-        that.events.onFileStart.fire(that.demoState.currentFile);
-        that.demoState.currentFile.filestatus = fluid.fileQueue.fileStatusConstants.IN_PROGRESS;
-        simulateUpload(that);
-    };
-    
     var finishUploading = function (that) {
         var file = that.demoState.currentFile;
         file.filestatus = fluid.fileQueue.fileStatusConstants.COMPLETE;
@@ -297,6 +285,18 @@ fluid_0_6 = fluid_0_6 || {};
         });
     };
     
+    var startUploading = function (that) {
+        // Reset our upload stats for each new file.
+        that.demoState.currentFile = that.queue.files[that.demoState.fileIdx];
+        that.demoState.chunksForCurrentFile = Math.ceil(that.demoState.currentFile / that.demoState.chunkSize);
+        that.demoState.bytesUploaded = 0;
+        that.demoState.shouldPause = false;
+        
+        that.events.onFileStart.fire(that.demoState.currentFile);
+        that.demoState.currentFile.filestatus = fluid.fileQueue.fileStatusConstants.IN_PROGRESS;
+        simulateUpload(that);
+    };
+
     var pauseDemo = function (that) {
         that.demoState.shouldPause = true;
         that.demoState.currentFile.filestatus = fluid.fileQueue.fileStatusConstants.CANCELLED;
