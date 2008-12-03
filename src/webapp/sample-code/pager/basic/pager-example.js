@@ -21,9 +21,9 @@ var demo = demo || {};
         
         var options = {
             listeners: {
-                onPageChange: function (pageNum, oldPageNum) {
-                    $(selectorPrefix + oldPageNum).addClass("hidden");
-                    $(selectorPrefix + pageNum).removeClass("hidden");
+                onModelChange: function (newModel, oldModel) {
+                    $(selectorPrefix + (oldModel.pageIndex + 1)).addClass("hidden");
+                    $(selectorPrefix + (newModel.pageIndex + 1)).removeClass("hidden");
                 }
             }
         };
