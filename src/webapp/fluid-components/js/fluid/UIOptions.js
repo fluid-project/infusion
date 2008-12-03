@@ -25,7 +25,7 @@ fluid_0_6 = fluid_0_6 || {};
 
     var setSetting = function (control, value) {
         var input = $("[value=" + value + "]", control);
-        input.click();        
+        input.attr("checked", true);        
     };
     
     var pullModelFromView = function (that) {
@@ -63,7 +63,7 @@ fluid_0_6 = fluid_0_6 || {};
             that.save();
         });
         
-        that.locate("options").change(function () {
+        that.locate("options").click(function () {
             updateSkin(that);
         });        
     };
