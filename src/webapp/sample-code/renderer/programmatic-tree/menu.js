@@ -37,9 +37,10 @@ fluid.dataBindingExample = function () {
 
     var buildSelectionTreeFromModel = function (model, id) {
         var selectTree = [{
-                ID: id, optionlist: {valuebinding: "values"},
-                              optionnames: {valuebinding: "names"},
-                              selection: {valuebinding: "choice"}
+            ID: id,
+            optionlist: {valuebinding: "values"},
+            optionnames: {valuebinding: "names"},
+            selection: {valuebinding: "choice"}
         }];
         var rows = [];
         for (i=0;i<model.values.length;i++) {
@@ -50,7 +51,7 @@ fluid.dataBindingExample = function () {
         return tree;
     };
 
-    // The following two data models will be bound to the input elements in the markup.
+    // The following data models will be bound to the input elements in the markup.
     // The 'values' member identifies the value attributes to be used for the inputs.
     // The 'names' member identifies the strings that will be displayed.
     // The 'coice' member identifies which input elements should initally be selected.
@@ -72,14 +73,13 @@ fluid.dataBindingExample = function () {
         choice: ["asparagus", "shrimp", "figs"]
     };
 
-    var foodModel = {
-        values: ["castelo-branco", "chevre-noir", "camembert", "la-sauvagine", "pastorella","asparagus", "chicken", "shrimp", "beef", "peppers", "figs"],
-        names: ["Castelo Branco", "Chevre noir", "Camembert", "La Sauvagine", "Pastorella","Filo Wrapped Asparagus", "Chicken Ballotine with Carrot Raita and Pomegranate Chutney", "Spicy Shrimp Crostini", "Broiled Beef Fillet Croutes with Salsa Verde", "Roasted Marinated Peppers with Goat Cheese", "Gorgonzola Stuffed Figs"],
-        choice: ["chevre-noir","asparagus", "shrimp", "figs"]
-    };
-
-    // curry the food model into an event listener that updates the display (after waiting a moment
+    // curry the models into event listeners that update the display (after waiting a moment
     // to give the renderer a chance to actually update the model)
+    var dumpWineModel = function(){
+		var timeOut = setTimeout(function () {
+            dumpModel(wineModel, jQuery("bound-model"));
+		}, 50);
+    };
     var dumpCheeseModel = function(){
 		var timeOut = setTimeout(function () {
             dumpModel(cheeseModel, jQuery("#autobound-cheese-model"));
@@ -90,24 +90,10 @@ fluid.dataBindingExample = function () {
             dumpModel(canapeModel, jQuery("#autobound-canape-model"));
 		}, 50);
     };
-    var dumpFoodModel = function(){
-		var timeOut = setTimeout(function () {
-            dumpModel(foodModel, jQuery("#autobound-model"));
-		}, 50);
-    };
-
-    // curry the wine model into an event listener that updates the display (after waiting a moment
-    // to give the renderer a chance to actually update the model)
-    var dumpWineModel = function(){
-		var timeOut = setTimeout(function () {
-            dumpModel(wineModel, jQuery("bound-model"));
-		}, 50);
-    };
 
     var renderMenu = function () {
 
-        // The wine list and food list trees will be bound to a data model, which is passed to
-        // fluid.selfRender() in the options parameter.
+        // The component trees are generated programmatically from the data model.
         var wineTree = buildSelectionTreeFromModel (wineModel, "wine");
         fluid.selfRender(jQuery("#wine-list"), wineTree, {model: wineModel});
         dumpModel(wineModel, jQuery("#bound-model"));
@@ -125,6 +111,9 @@ fluid.dataBindingExample = function () {
 
         // when the user changes a selection, automatically update the display of the model,
         // to illustrate what happens to the model
+        // Note that the wine-list data model is NOT auto-bound to the UI, and so despite the
+        // input listeners, the user won't see any changes to the model until they
+        // activate the "apply changes" button
         jQuery("#wine-list input").click(dumpWineModel);
         jQuery("#cheese-list input").click(dumpCheeseModel);
         jQuery("#canape-list input").click(dumpCanapeModel);
@@ -138,7 +127,7 @@ fluid.dataBindingExample = function () {
             };
 
             // This call to fluid.applyChange() will update the model associated with the inputs
-            // with whatever the current value of the inputs are.
+            // with whatever the current value of the inputs are, and update the display
             var applyButton = fluid.byId("apply-change");
             applyButton.onclick = function () {
                 var inputs = $("input", jQuery("#wine-list"));
