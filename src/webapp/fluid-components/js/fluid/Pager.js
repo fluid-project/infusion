@@ -37,8 +37,12 @@ fluid_0_6 = fluid_0_6 || {};
        link.bind("click.fluid.pager", function() {events.initiatePageChange.fire(eventArg)});
     }
     
-    fluid.directPageList = function (container, events, options) {
-        var that = fluid.initView("fluid.directPageList", container, options);
+    fluid.pager = function() {
+        fluid.pagerImpl.apply(null, arguments);
+    }
+    
+    fluid.pager.directPageList = function (container, events, options) {
+        var that = fluid.initView("fluid.pager.directPageList", container, options);
         that.pageLinks = that.locate("pageLinks");
         for (var i = 0; i < that.pageLinks.length; ++ i) {
             var pageLink = that.pageLinks.eq(i);
@@ -57,6 +61,18 @@ fluid_0_6 = fluid_0_6 || {};
         return that;
     };
     
+    fluid.pager.rendereredPageList = function(container, events, options) {
+        var that = fluid.initView("fluid.pager.renderedPageList", container, options);
+        var template = 
+        that.pageLinks = that.locate("pageLinks");
+    }
+    
+    fluid.defaults("fluid.pager.rendereredPageList",
+        {
+            linkBody: "a"
+        }
+        );
+    
     var updatePreviousNext = function (that, options, newModel) {
         if (newModel.pageIndex === 0) {
             that.previous.addClass(options.styles.disabled);
@@ -71,8 +87,8 @@ fluid_0_6 = fluid_0_6 || {};
         }
     };
     
-    fluid.previousNext = function (container, events, options) {
-        var that = fluid.initView("fluid.previousNext", container, options);
+    fluid.pager.previousNext = function (container, events, options) {
+        var that = fluid.initView("fluid.pager.previousNext", container, options);
         that.previous = that.locate("previous");
         bindLinkClick(that.previous, events, {relativePage: -1});
         that.next = that.locate("next");
@@ -85,21 +101,54 @@ fluid_0_6 = fluid_0_6 || {};
         return that;
     };
 
-    fluid.pagerBar = function (overallThat, container, options) {
-        var that = fluid.initView("fluid.pagerBar", container, options);
+    fluid.pager.pagerBar = function (overallThat, container, options) {
+        var that = fluid.initView("fluid.pager.pagerBar", container, options);
         that.pageList = fluid.initSubcomponent(that, "pageList", [container, overallThat.events, that.options, fluid.COMPONENT_OPTIONS]);
         that.previousNext = fluid.initSubcomponent(that, "previousNext", [container, overallThat.events, that.options, fluid.COMPONENT_OPTIONS]);
         
         return that;
     };
     
-    fluid.defaults("fluid.pagerBar", {
+    fluid.pager.directModelFilter = function (model, pagerModel) {
+        var togo = [];
+        var limit = Math.min(pagerModel.pageCount, (pagerModel.pageIndex + 1)*pagerModel.pageSize);
+        for (var i = pagerModel.pageIndex * pagerModel.pageSize; i < limit; ++ i) {
+            togo[togo.length] = {index: i, row: model[i]};
+        }
+        return togo;
+    };
+    
+    fluid.pager.selfRender = function (overallThat, options) {
+        var root = $(options.root);
+        var template = fluid.selfRender(root, {}, options.renderOptions);
+        return {
+            returnedOptions: {
+                listeners: {
+                    onModelChange: function (newModel, oldModel) {
+                        var filtered = overallThat.modelFilter(overallThat.model, newModel);
+                        if (options.cells === "explode") {
+                            var tree = fluid.transform(filtered, 
+                                function(filteredRow) {
+                                    return fluid.explode(filteredRow.row, filteredRow.index);
+                                }
+                                );
+                            var fullTree = {};
+                            fullTree[options.row] = tree;
+                            fluid.reRender(template, fullTree, root, options.renderOptions);
+                        }
+                    }
+                }
+            }
+        }
+    };
+    
+    fluid.defaults("fluid.pager.pagerBar", {
             
-       previousNext: "fluid.previousNext",
+       previousNext: "fluid.pager.previousNext",
       
-       pageList: "fluid.directPageList",
+       pageList: "fluid.pager.directPageList",
         
-       pageSizeSelect: "fluid.pageSizeSelect",
+       pageSizeSelect: "fluid.pager.pageSizeSelect",
       
        selectors: {
            pageLinks: ".page-link",
@@ -121,7 +170,7 @@ fluid_0_6 = fluid_0_6 || {};
      * Pager Component *
      *******************/
     
-    fluid.pager = function (container, options) {
+    fluid.pagerImpl = function (container, options) {
         var that = fluid.initView("fluid.pager", container, options);
         
         that.events.initiatePageChange.addListener(
@@ -160,7 +209,9 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     fluid.defaults("fluid.pager", {
-        pagerBar: "fluid.pagerBar",
+        pagerBar: {type: "fluid.pager.pagerBar", options: null},
+        
+        modelFilter: "fluid.pager.directModelFilter",
         
         model: {
             pageIndex: undefined,

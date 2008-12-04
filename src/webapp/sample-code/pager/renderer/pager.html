@@ -1,0 +1,72 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf" lang="en" >
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link href="pager.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/Pager.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fastXmlPull.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidParser.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidRenderer.js"></script>
+    <script type="text/javascript" src="user-data.js"></script>
+    <script type="text/javascript" src="pager-example.js"></script>
+
+		<title>Gradebook Example</title>
+	</head>
+	<body>
+	    <div id="gradebook">
+	      <form action="#">
+    	    <ul id="pager-top" class="pager-top">
+    	        <li value="1" class="page-link"><a href="#">1</a></li>
+    	        <li value="2" class="page-link"><a href="#">2</a></li>
+              <ul id="pager-links">
+    	          <li class="previous"><a href="#">&lt; previous</a></li>
+    	          <li class="next"><a href="#">next &gt;</a></li>
+              </ul>
+    	    </ul>
+            <table summary="student grades" id="students-page1">
+              <thead>
+                <tr>
+                    <td class="name-header">Name</td>
+                    <td class="userid-header">User Id</td>
+                    <td class="points-header">Points</td>
+                    <td class="comments-header">Comments</td>
+                </tr>
+              </thead>
+              <tbody id="body-template">
+                <tr rsf:id="row:">
+                    <td rsf:id="name">Ahn, Jason</td>
+                    <td rsf:id="userid">15234314</td>
+                    <td><input rsf:id="points" type="text" value="87" /></td>
+                    <td rsf:id="comments">Lorem ipsum dolor sit amet.</td>
+                </tr>
+                <tr rsf:id="scr=ignore">
+                    <td>Akerman, Krista</td>
+                    <td>19206726</td>
+                    <td><input type="text" value="79" /></td>
+                    <td>Consectetuer adipiscing elit.</td>
+                </tr>
+              </tbody>
+            </table>
+            <ul id="pager-bottom" class="pager-bottom">
+              <ul id="pager-links">
+    	          <li value="1" class="page-link"><a href="#">1</a></li>
+    	          <li value="2" class="page-link"><a href="#">2</a></li>
+    	          <li value="3" class="page-link"><a href="#">3</a></li>
+    	          <li value="4" class="page-link"><a href="#">4</a></li>
+    	          <li value="5" class="page-link"><a href="#">5</a></li>
+    	          <li value="6" class="page-link"><a href="#">6</a></li>
+    	          <li value="7" class="page-link"><a href="#">7 (last)</a></li>
+              </ul>
+    	        <li class="previous"><a href="#">&lt; previous</a></li>
+    	        <li class="next"><a href="#">next &gt;</a></li>
+    	    </ul>
+
+          </form>
+        </div>
+        <script type="text/javascript">
+            demo.initPager();
+        </script>
+	</body>
+</html>
