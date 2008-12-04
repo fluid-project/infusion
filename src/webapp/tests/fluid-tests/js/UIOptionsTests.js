@@ -56,9 +56,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
             jqUnit.assertFalse("Save hasn't been called", saveCalled);
             uiOptions.save();
-            var body = $("body");
+            var container = $("html");
             jqUnit.assertTrue("Save has been called", saveCalled);
-            jqUnit.assertTrue("Body has the high contrast colour scheme", body.hasClass("fl-theme-hc"));
+            jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-hc"));
 
         });
 

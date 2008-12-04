@@ -22,7 +22,7 @@ fluid_0_6 = fluid_0_6 || {};
      * Removes the classes in the Fluid class namespace: "fl-"
      */
     fluid.skin.removeStyling = function (element) {
-        element = element || $("body");
+        element = element || $("html");
         $('[class*=fl-]', element).andSelf().each(function (i) {    
             var attr = ($.browser.msie === false) ? 'class' : 'className'; 
             if (this.getAttribute(attr)) {
@@ -38,7 +38,7 @@ fluid_0_6 = fluid_0_6 || {};
      */
     // TODO: this implementation should be improved
     fluid.skin.style = function (skin, element) {
-        element = element || $("body");
+        element = element || $("html");
         element.addClass(fluid.skin.settings.textSize[skin.textSize]);
         element.addClass(fluid.skin.settings.textFont[skin.textFont]);
         element.addClass(fluid.skin.settings.textSpacing[skin.textSpacing]);
@@ -51,27 +51,27 @@ fluid_0_6 = fluid_0_6 || {};
      * @param {Object} skin
      */
     fluid.applySkin = function (skin, element) {
-        element = element || $("body");
+        element = element || $("html");
         fluid.skin.removeStyling(element);
         fluid.skin.style(skin, element);
     };
         
     fluid.skin.settings = {
         "textSize": {
-            "-2": "fl-font-size-70",
-            "-1": "fl-font-size-80",
-            "Default": "fl-font-size-90",
-            "+1": "fl-font-size-100",
-            "+2": "fl-font-size-110",
-            "+3": "fl-font-size-120",
-            "+4": "fl-font-size-130",
-            "+5": "fl-font-size-140",
-            "+6": "fl-font-size-150"
+            "-3": "fl-font-size-70",
+            "-2": "fl-font-size-80",
+            "-1": "fl-font-size-90",
+            "0": "",
+            "+1": "fl-font-size-110",
+            "+2": "fl-font-size-120",
+            "+3": "fl-font-size-130",
+            "+4": "fl-font-size-140",
+            "+5": "fl-font-size-150"
         },
         "textFont": {
-            "Default": "fl-font-default",
+            "Default": "fl-font-sans",
             "Ariel": "fl-font-arial",
-            "Verdana": "fl-font-sans",
+            "Verdana": "fl-font-verdana",
             "Courier": "fl-font-monospace",
             "Times": "fl-font-serif"
         },
@@ -82,7 +82,9 @@ fluid_0_6 = fluid_0_6 || {};
             "Widest": "fl-font-spacing-3"
         },
         "colorScheme": {
+            "Default": "",
             "Mist": "fl-theme-mist",
+            "Rust": "fl-theme-rust",
             "High Contrast": "fl-theme-hc"
         }, 
         "layout": {

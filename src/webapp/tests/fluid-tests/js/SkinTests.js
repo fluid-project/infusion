@@ -62,7 +62,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var main = $("#main");
             
             fluid.skin.style(hcLargeFontSkin, main);
-            jqUnit.assertTrue("main has large text size class", main.hasClass("fl-font-size-120"));
+            jqUnit.assertTrue("main has large text size class", main.hasClass("fl-font-size-130"));
             jqUnit.assertTrue("main has courier font class", main.hasClass("fl-font-monospace"));
             jqUnit.assertTrue("main has wide text spacing class", main.hasClass("fl-font-spacing-1"));
             jqUnit.assertTrue("main has high contrast class", main.hasClass("fl-theme-hc"));

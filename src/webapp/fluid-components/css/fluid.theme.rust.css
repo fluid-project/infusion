@@ -64,21 +64,17 @@
 .fl-theme-rust :focus,
 .fl-theme-rust .selectable  {
    /* themed focus indicator */
-  /*
-   outline: 2px solid #dfefff !important;
-   background-color:#4070a1 !important;
-   color: #ffffff !important;
-   */
+    outline: 0.2em solid #662e0f;
 }
 
-.fl-theme-rust {color:#000000; background-color:#fff7e2; border-color:#4070a1;}
-.fl-theme-rust a {color: #662e0f; /*font-weight:bold;*/}
-.fl-theme-rust a:hover {color: #cf923e;}
+.fl-theme-rust {color:#000000 !important; background-color:#fff7e2 !important; border-color:#4070a1;}
+.fl-theme-rust a {color: #662e0f !important; /*font-weight:bold;*/}
+.fl-theme-rust a:hover {color: #cf923e !important;}
 .fl-theme-rust h1 {color:#4070a1; background-color:#dfefff; border-bottom-width:2px; border-bottom-style:solid;} 
 .fl-theme-rust h2 {color: #5a95cf;}
 
-.fl-theme-rust th {border:1px solid #5a95cf; background-color:#dfefff;}
-.fl-theme-rust td {border:1px solid #999999;}
+.fl-theme-rust th {border:0.1em solid #5a95cf; background-color:#dfefff !important;}
+.fl-theme-rust td {border:0.1em solid #999999 !important;}
 .fl-theme-rust .fl-textfield {}
 .fl-theme-rust .fl-textarea {}
 
