@@ -167,7 +167,6 @@
           ));
         makeButtons(richEditor4);
         
-        var comboeditor = fluid.inlineEdit("#combo-editable", selectoptions);
     });
 })(jQuery);
 
