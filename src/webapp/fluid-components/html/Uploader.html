@@ -65,8 +65,8 @@
             .fl-uploader {width:350px; border:1px solid #ccc;}
             .fl-uploader-queue {}
             
-            .fluid-scroller {overflow:auto;}
-            .scroller-inner {overflow:auto; position:relative;}
+            .fluid-scroller {overflow-y:auto; overflow-x:hidden;}
+            .scroller-inner {overflow-y:auto; overflow-x:hidden; position:relative; max-height:180px;}
             
             .set_1 .fl-uploader-queue table {width:100%;}
             .set_1 .fl-uploader-queue thead {} 
@@ -93,13 +93,8 @@
             .set_1 .fluid-uploader-btns {text-align:right; background-color:#ccc; padding:0 5px 5px;}
             .set_1 .file-progress {position:absolute; border-bottom:3px solid #080; margin-top:-3px; text-align:center; font-weight:bold; color:#fff;}
             .set_1 .file-progress .file-progress-text {display:none;}
-            /*
-            .set_1 .file-progress {position:absolute; background-color:#333; opacity:0.75; filter:alpha(opacity=75); text-align:center; font-weight:bold; color:#fff;}
-            .set_1 .file-progress .file-progress-text {margin-top:3px;}
-            */            
             .set_1 .removeFile {}
             .set_1 .uploaded .removeFile {display:none;}
-            
             
             
             
@@ -121,12 +116,8 @@
             .set_2 .total-file-progress {float:left;}
             .set_2 .total-progress {background-color:#080; height:100%;}
             .set_2 .fluid-uploader-btns {text-align:right; background-color:#ccc; padding:0 5px 5px;}
-            .set_2 .file-progress {position:absolute; border-bottom:3px solid #080; margin:-3px 5px 0; text-align:center; font-weight:bold; color:#fff;}
+            .set_2 .file-progress {position:absolute; border-bottom:3px solid #080; margin:3px 0 0 5px; padding:0 3px; text-align:center; font-weight:bold; color:#fff;}
             .set_2 .file-progress-text {display:none; float:right;}
-            /*
-            .set_2 .file-progress {position:absolute; background-color:#333; opacity:0.75; filter:alpha(opacity=75); text-align:center; font-weight:bold; color:#fff;}
-            .set_2 .file-progress .file-progress-text {margin-top:3px;}
-            */            
             .set_2 .removeFile {}
             .set_2 .uploaded .removeFile {display:none;}
 
@@ -234,12 +225,11 @@
                                         <span class="file-progress-text">0%</span>
                                     </li>
                                 </ol>
-                                                                
                             </div>
                         </div>
                         <!-- QUEUE INSTRUCTIONS -->
             			<div class="fluid-uploader-row-placeholder fl-instructions">Choose <em>Browse</em> to add files to the queue </div>
-                        
+
                         <!-- QUEUE FOOTER -->
             			<div class="fluid-scroller-table-foot fl-uploader-totals">
                             <div class="total-file-progress">
