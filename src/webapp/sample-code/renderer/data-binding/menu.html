@@ -29,15 +29,7 @@
         <!-- The mark-up in this file is pure HTML, and can be previewed in a browser before rendering. -->
         <div class="menu-group">
             <p class="info">The wine list in this column is bound to its model. The model is <em>not</em> updated when the values of the inputs are changed. This must be triggered manually.</p>
-            <p>Serve drinks in the<br/>
-            <span id="location">
-                <span rsf:id="location-row:">
-                    <input rsf:id="location" type="radio" name="vocable" id="location" value="Location"/>
-                    <label rsf:id="location-label" for="radio1">Location</label>
-                </span>
-            </span>
-            </p>
-            
+
             <fieldset id="wine-list">
                 <legend>Wines</legend>
                 <div rsf:id="wine-row:">
@@ -45,8 +37,7 @@
                     <label rsf:id="wine-label" for="cheese">Wine</label>
                 </div>
             </fieldset>
-            <p><input id="apply-change" type="button" value="Apply change to model"/>
-               <input id="dump-bound" type="button" value="Display current model of selected items"/></p>
+            <p><input id="apply-change" type="button" value="Apply change to model"/></p>
             <p>Model:<br/><span id="bound-model" class="model-dump">
                 This is where the bound model will be displayed.</span>
             </p>
@@ -72,7 +63,6 @@
             </fieldset>
         </div>
 
-        <p><input id="dump-autobound" type="button" value="Display current model of selected items"/></p>
         <p>Model:<br/><span id="autobound-model" class="model-dump">
             This is where the auto-bound model will be displayed.</span>
         </p>
