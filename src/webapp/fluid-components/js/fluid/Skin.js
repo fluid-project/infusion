@@ -26,7 +26,7 @@ fluid_0_6 = fluid_0_6 || {};
         $('[class*=fl-]', element).andSelf().each(function (i) {    
             var attr = ($.browser.msie === false) ? 'class' : 'className'; 
             if (this.getAttribute(attr)) {
-                this.setAttribute(attr, this.getAttribute(attr).replace(/\bfl-\S+/g, ''));
+                this.setAttribute(attr, this.getAttribute(attr).replace(/\bfl-(layout|font|theme){1}\S+/g, ''));
             }
         });        
     };

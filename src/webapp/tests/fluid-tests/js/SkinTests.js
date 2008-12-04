@@ -21,11 +21,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var tests = new jqUnit.TestCase("Skin Tests");
         
         tests.test("Remove Styling", function () {
-            jqUnit.expect(4);
+            jqUnit.expect(8);
 
             jqUnit.assertEquals("Initially fluid classes are in the markup", 4, $(".fl-font-size-90").length);
+            jqUnit.assertEquals("Initially fluid layout class is in the markup", 1, $(".fl-layout-default").length);
+            jqUnit.assertEquals("Initially fluid theme class is in the markup", 1, $(".fl-theme-mist").length);
             fluid.skin.removeStyling($("#inner-div"));
             jqUnit.assertEquals("Fluid classes on and in the inner div have been removed", 1, $(".fl-font-size-90").length);
+            jqUnit.assertEquals("Fluid layout class is gone", 0, $(".fl-layout-default").length);
+            jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-mist").length);
             jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
@@ -41,8 +45,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.skin.removeStyling(main);
             jqUnit.assertTrue("main has the container class", main.hasClass("container"));
             jqUnit.assertTrue("main has the blop class", main.hasClass("blop"));
-            jqUnit.assertFalse("main doesn't have the fl-blah class", main.hasClass("fl-blah"));
-            jqUnit.assertFalse("main doesn't have the fl-blip class", main.hasClass("fl-blip"));
+            jqUnit.assertTrue("main has the fl-blah class", main.hasClass("fl-blah"));
+            jqUnit.assertTrue("main has the fl-blip class", main.hasClass("fl-blip"));
 
         });
 
