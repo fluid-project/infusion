@@ -260,6 +260,7 @@ fluid_0_6 = fluid_0_6 || {};
         };
         
         that.markFileComplete = function (file) {
+            progressorForFile(that, file).update(100, "100%");
             markRowAsComplete(that, file);
         };
         
