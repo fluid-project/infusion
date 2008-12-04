@@ -10,14 +10,14 @@ version: 2.5.2
  * Percents could work for IE, but for backCompat purposes, we are using keywords.
  * x-small is for IE6/7 quirks mode.
  */
-body {font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}
+body {font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small; overflow:auto;}
 table {font-size:inherit;font:100%;}
 /**
  * Bump up IE to get to 13px equivalent
  */
 pre,code,kbd,samp,tt {font-family:monospace;*font-size:108%;line-height:100%;}
 
-html{color:#000;background:#FFF;}
+html{color:#000;background:#FFF; overflow:auto;}
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}
 table{border-collapse:collapse;border-spacing:0;}
 fieldset,img{border:0;}

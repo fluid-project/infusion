@@ -16,6 +16,7 @@
 }
 
 .fl-theme-hc, .fl-theme-hc * {color:#000000 !important; background-color:#ffffff; background-image:none !important; border-color:#000 /* !important;*/}
+.fl-theme-hc .fl-knockout {background-color:#fff; color:#000;} /* a granular method for basic reset of appearance */
 
 /* Links */
 .fl-theme-hc a  {color: #000 !important; font-weight:bold; background-color:#fff !important;}
@@ -61,9 +62,9 @@
 .fl-theme-hc .fl-listmenu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
 
 /* Helper: Thumbnail Grid */
-.fl-theme-hc .fl-grid {border:2px solid #4070a1; background-color:#fff;}
-.fl-theme-hc .fl-grid li {background-color:#dfefff; border:1px solid #4070a1}
-.fl-theme-hc .fl-grid .caption {background-color:#dfefff; color:#5a95cf; }
+.fl-theme-hc .fl-grid {}
+.fl-theme-hc .fl-grid li {}
+.fl-theme-hc .fl-grid .caption {}
 
 /* Component: Progressor */
 .fl-theme-hc .fl-progress-bounds {border-color:#000; background-color:#fff;}

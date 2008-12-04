@@ -30,6 +30,21 @@
 .fl-font-size-120 select, 
 .fl-font-size-120 textarea {font-size:1.2em !important; line-height:1.5em !important;}
 
+
+/* Apply pixel reset to container, then every relevant child node is set relative to that */
+/*.fl-font-size-130 input, 
+.fl-font-size-130 select, 
+.fl-font-size-130 textarea,
+.fl-font-size-130 * {font-size:1em !important; line-height:1.2em !important;}
+.fl-font-size-130, 
+.fl-font-size-130 body {font-size:16.9px !important; line-height:18px !important;} 
+.fl-font-size-130 h1 {font-size:150% !important; line-height:200% !important;} 
+.fl-font-size-130 h2 {font-size:135% !important; line-height:165% !important;} 
+.fl-font-size-130 h3 {font-size:125% !important; line-height:150% !important;} 
+.fl-font-size-130 h4 {font-size:120% !important; line-height:135% !important;} 
+.fl-font-size-130 h5 {font-size:110% !important; line-height:120% !important;} 
+.fl-font-size-130 h6 {font-size:105% !important; line-height:110% !important;} 
+*/
 .fl-font-size-130, 
 .fl-font-size-130 input, 
 .fl-font-size-130 select, 

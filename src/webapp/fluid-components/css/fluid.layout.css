@@ -5,9 +5,9 @@ Generic containers for columns and layouts
 /* Container alignment */
 .fl-force-right {float:right; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
 .fl-force-left {float:left; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
-.fl-layout-linear * {float:none !important; display:block !important;}
 
 
+.fl-container {}
 /* Fixed width containers */
 .fl-container-100 {width: 100px; overflow: auto;}
 .fl-container-150 {width: 150px; overflow: auto;}
@@ -19,19 +19,39 @@ Generic containers for columns and layouts
 .fl-container-950 {width: 950px; overflow: auto;}
 
 /* Fluid width containers */
-.fl-container-flex {width: 100%; overflow: auto;}
+.fl-container-auto {width: auto; overflow: auto;}
+.fl-container-flex {width: 100%; overflow: auto; clear:both;}
 .fl-container-flex25 {width: 24.5%; overflow: auto; padding-left:0.25%; padding-right:0.25%;}
 .fl-container-flex30 {width: 32%; overflow: auto; padding-right:0.5%; padding-left:0.5%;}
 .fl-container-flex33 {width: 33%; overflow: auto;}
 .fl-container-flex50 {width: 50%; overflow: auto;}
 
 
+/* linearizable containers */
+.fl-layout-linear * {overflow:visible !important; clear: both !important;}
+.fl-layout-linear .fl-container,
+.fl-layout-linear .fl-container-100,
+.fl-layout-linear .fl-container-150,
+.fl-layout-linear .fl-container-200,
+.fl-layout-linear .fl-container-250,
+.fl-layout-linear .fl-container-300,
+.fl-layout-linear .fl-container-400,
+.fl-layout-linear .fl-container-750,
+.fl-layout-linear .fl-container-950,
+.fl-layout-linear .fl-container-auto, 
+.fl-layout-linear .fl-container-flex25, 
+.fl-layout-linear .fl-container-flex30, 
+.fl-layout-linear .fl-container-flex33, 
+.fl-layout-linear .fl-container-flex50 {width:100% !important; margin:auto;}
+.fl-layout-linear .fl-force-left, 
+.fl-layout-linear .fl-force-right,
+.fl-layout-linear li {display:block !important; float:none !important;}
+.fl-layout-linear .fl-linearEnabled {width:100% !important; position:relative;} /* linearization opt in for special cases */
+
 /*
 Layout Helpers
 =============================================
 */
-
-
 /*
  * Tabs: a quick tab system
  * Dependency: list-based markup ?
@@ -63,6 +83,16 @@ Layout Helpers
 .fl-grid li {float:left; width:18%; margin:2px; height:150px; overflow:hidden; position:relative; display:inline;}
 .fl-grid li img {display:block; margin:0 auto;}
 .fl-grid li .caption {position:absolute; left:0px; bottom:0px; width:100%; text-align:center; height:1em; padding:3px 0;}
+
+/*
+ * Buttons: quick sliding door buttons
+ * requires a container with a sub container
+ */
+
+.fl-button-left {float:left; margin-right:10px; padding:0px 0 0px 25px; background-position:left top; background-repeat:no-repeat;}
+.fl-button-left * {float:left; padding: 6px 8px 6px 0; cursor:pointer; background-position:left top; background-repeat:no-repeat;}
+.fl-button-right {float:right;  margin-left:10px; padding:0px 0 0px 25px; background-position:left top; background-repeat:no-repeat;}
+.fl-button-right * {float:left; padding: 6px 8px 6px 0; cursor:pointer; background-position:left top; background-repeat:no-repeat;}
 
 
 /*
