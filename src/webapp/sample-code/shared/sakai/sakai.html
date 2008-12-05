@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" >
-<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en" class="fl-theme-rust">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en" class="fl-theme-mist">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.reset.css" />
@@ -27,27 +27,28 @@
         <title>Sakai</title>
 
         <script type="text/javascript">
-            $(function(){
-                $('.skin').click(function(){
-                    // ajax call to pull the UI Options dialog into a container
-                    var myFunc = function(){
-                        // center dialog
-                        $('#dialog_container').css({
-                            left: ($(window).width()/2) - ($('#dialog_container').width()/2),
-                            top: ($(window).height()/2) - ($('#dialog_container').height()/2)
-                        });
-                        // bind close dialog button
-                        $("#close_dialog").click(function(){
-                            $("#dialog_container").css('display','none');
-                        });
-                        // reveal dialog
-                        $("#dialog_container").css('display','block');
-                        
-                        // instantiate component
-                        fluid.uiOptions(".ui_options_container");
-                    }
-                    $('#dialog_content').load('sakai_uioptions_preview.html div.ui_options_container',myFunc);
-                    
+            $(function () {
+                var initDialog = function () {
+                    // center dialog
+                    $('#dialog_container').css({
+                        left: ($(window).width() / 2) - ($('#dialog_container').width() / 2),
+                        top: ($(window).height() / 2) - ($('#dialog_container').height() / 2)
+                    });
+                    // bind close dialog button
+                    $("#close_dialog").click(function () {
+                        $("#dialog_container").css('display','none');
+                    });
+                
+                    // instantiate component
+                    fluid.uiOptions(".ui_options_container");
+                };
+
+                // ajax call to pull the UI Options dialog into a container
+                $('#dialog_content').load('sakai_uioptions_preview.html div.ui_options_container', initDialog);
+        
+                $('.skin').click(function () {
+                    // reveal dialog
+                    $("#dialog_container").css('display','block');                    
                 });
             });            
         </script>
