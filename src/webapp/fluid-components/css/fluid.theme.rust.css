@@ -3,75 +3,78 @@
 
  * Color Schema:
  *     DEFINITIONS:
- *         yellow     : #fffbc2
- *         gold       : #ffdc84
- *         light brown: #5a95cf
- *         dark brown : #4070a1
+ *         wheat     : #C7B895
+ *         off brown : #917A61
+ *         mocha     : #916535
+ *         reddy     : #914E38
+ *         coffee    : #453A2E
  *         white      : #ffffff
  *         black      : #000000
  *         
  *     :focus & .selectable
- *         text       : white   
- *         bg         : dark blue
- *         outline    : light blue
- *     text           : black
+ *         text       : 
+ *         bg         : 
+ *         outline    : 
+ *     text           : 
  *     links
- *         :link      : med blue
- *         :active    : med blue
- *         :visited   : med blue
- *         :hover     : light blue
+ *         :link      : 
+ *         :active    : 
+ *         :visited   : 
+ *         :hover     : 
  *     headings
  *         h1
- *             text   : dark blue
- *             border : dark blue
- *             bg     : light blue
+ *             text   : 
+ *             border : 
+ *             bg     : 
  *         h2
- *             text   : med blue
+ *             text   : 
  *         h3-6
- *             text   : grey
+ *             text   : 
  *     tables
  *         headers
- *             text    : black
- *             border  : med blue
- *             bg      : light blue
+ *             text    :
+ *             border  :
+ *             bg      :
  *          cells
- *              text   : black
- *              border : grey
+ *              text   :
+ *              border :
  *     forms    
  *         input[text]
- *             bg       : light blue
- *             border   : dark blue
+ *             bg       :
+ *             border   :
  *         textarea
- *             bg       : light blue
- *             border   : dark blue
+ *             bg       :
+ *             border   :
  *     tab helper    
- *         text         : dark blue
- *         bg           : light blue
- *         hover        : med blue
- *         active text  : med blue
- *         active bg    : white
- *         active hover : white
- *         border       : dark blue
+ *         text         :
+ *         bg           :
+ *         hover        :
+ *         active text  :
+ *         active bg    :
+ *         active hover :
+ *         border       :
  *     menu helper
- *         text         : dark blue
- *         bg           : white
- *         hover        : light blue
- *         active text  : white
- *         active bg    : dark blue
- *         active hover : dark blue
+ *         text         :
+ *         bg           :
+ *         hover        :
+ *         active text  :
+ *         active bg    :
+ *         active hover :
 
  */
 .fl-theme-rust :focus,
 .fl-theme-rust .selectable  {
    /* themed focus indicator */
-    outline: 0.2em solid #662e0f;
+   outline: 0.2em solid #662e0f;
 }
 
-.fl-theme-rust {color:#000000 !important; background-color:#fff7e2 !important; border-color:#4070a1;}
-.fl-theme-rust a {color: #662e0f !important; /*font-weight:bold;*/}
-.fl-theme-rust a:hover {color: #cf923e !important;}
-.fl-theme-rust h1 {color:#4070a1; background-color:#dfefff; border-bottom-width:2px; border-bottom-style:solid;} 
-.fl-theme-rust h2 {color: #5a95cf;}
+.fl-theme-rust {color:#000000 !important; background-color:#C6B794 !important; border-color:#916535;}
+.fl-theme-rust .fl-knockout {background:transparent; color:#000;}
+
+.fl-theme-rust a {color: #916535 !important; /*font-weight:bold;*/}
+.fl-theme-rust a:hover {color: #914E38 !important;}
+.fl-theme-rust h1 {color:#000; border-bottom-width:1px; border-bottom-style:dotted;} 
+.fl-theme-rust h2 {color: #453A2E;}
 
 .fl-theme-rust th {border:0.1em solid #5a95cf; background-color:#dfefff !important;}
 .fl-theme-rust td {border:0.1em solid #999999 !important;}

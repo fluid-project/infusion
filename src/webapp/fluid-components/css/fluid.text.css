@@ -60,14 +60,14 @@
 .fl-font-size-150 select, 
 .fl-font-size-150 textarea {font-size:1.5em !important; line-height:1.8em !important;}
 
-.fl-font-serif     {font-family:"Georgia, Times, Times New Roman, Book Antiqua", serif;}
-.fl-font-sans      {font-family:"Tahoma, Verdana, Helvetica", sans-serif;}
-.fl-font-monospace {font-family:"Courier New, Courier", monospace;}
+.fl-font-serif, .fl-font-serif * {font-family: Georgia, Times, "Times New Roman", "Book Antiqua", serif !important;}
+.fl-font-sans, .fl-font-sans * {font-family: Tahoma, Verdana, Helvetica, sans-serif !important;}
+.fl-font-monospace, .fl-font-monospace * {font-family: "Courier New, Courier", monospace !important;}
 
-.fl-font-arial   {font-family:"Arial";}
-.fl-font-verdana {font-family:"Verdana";}
-.fl-font-times   {font-family:"Georgia, Times, Times New Roman";}
-.fl-font-courier {font-family:"Courier New, Courier";}
+.fl-font-arial, .fl-font-arial * {font-family: "Arial" !important;}
+.fl-font-verdana, .fl-font-verdana * {font-family: "Verdana" !important;}
+.fl-font-times, .fl-font-times *   {font-family: Georgia, Times, "Times New Roman", serif !important;}
+.fl-font-courier, .fl-font-courier * {font-family: "Courier New", Courier, monospace !important;}
 
 .fl-font-aqua {color: aqua;}
 .fl-font-black {color: black;}

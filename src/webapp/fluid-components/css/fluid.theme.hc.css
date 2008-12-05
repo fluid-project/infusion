@@ -1,8 +1,6 @@
 /*
               High Contrast
 =============================================
- */
-/*
  * Color Schema:
  *     DEFINITIONS:
  *         white     : #ffffff
@@ -16,7 +14,7 @@
 }
 
 .fl-theme-hc, .fl-theme-hc * {color:#000000 !important; background-color:#ffffff; background-image:none !important; border-color:#000 /* !important;*/}
-.fl-theme-hc .fl-knockout {background-color:#fff; color:#000;} /* a granular method for basic reset of appearance */
+.fl-theme-hc .fl-knockout {background:transparent; color:#000;} /* a granular method for basic reset of appearance */
 
 /* Links */
 .fl-theme-hc a  {color: #000 !important; font-weight:bold; background-color:#fff !important;}

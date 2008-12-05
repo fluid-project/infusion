@@ -1,9 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" >
-<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en" class="fl-theme-mist">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en" class="fl-theme-rust">
     <head>
-    	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.reset.css" />
-        <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.components.uioptions.css" />
         <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.theme.mist.css" />
         <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.theme.hc.css" />
         <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.theme.rust.css" />
@@ -12,20 +11,21 @@
 
         <!-- Local Sakai and Sakai FSS Extensions -->
         <link rel="stylesheet" type="text/css" href="css/sakai.css" />
+        <link rel="stylesheet" type="text/css" href="css/sakai.components.uioptions.css" />        
         <link rel="stylesheet" type="text/css" href="css/sakai.widgets.mist.css" />
         <link rel="stylesheet" type="text/css" href="css/sakai.widgets.rust.css" />
         <link rel="stylesheet" type="text/css" href="css/sakai.widgets.hc.css" />
         <link rel="stylesheet" type="text/css" href="css/sakai.layout.css" />
-    
+
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/Skin.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/Undo.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/UIOptions.js"></script>
-        
-    	<title>Sakai</title>
-        
+
+        <title>Sakai</title>
+
         <script type="text/javascript">
             $(function(){
                 $('.skin').click(function(){
@@ -38,7 +38,7 @@
                         $("#uioptions_container").css('display','block');
                         fluid.uiOptions(".ui_options_container");
                     }
-                    $('#uioptions_container').load('../../../fluid-components/html/templates/UIOptions.html div.ui_options_container',myFunc);
+                    $('#uioptions_container').load('sakai_uioptions_preview.html div.ui_options_container',myFunc);
                     
                 });
             });            
@@ -49,7 +49,7 @@
     <body>
         <div id="uioptions_container"></div>
         
-    	<div class="header fl-knockout">
+        <div class="header fl-knockout">
             <h1>My Dashboard</h1>
             <p>Joe Instructor </p>
             <ul>
@@ -58,30 +58,27 @@
                 <li><a href="#">Help</a>
             </ul> 
         </div>
-        
-        <div class="lookNfeel fl-container">
-    		<a href="#" class="addWidget fl-button-left fl-linearEnabled"><strong>Add </strong></a>
-			<a href="#" class="skin fl-button-left fl-linearEnabled"><strong>Edit Look &amp; Feel</strong></a>
-		</div>
-        
+
+        <!-- WIDGETS COLUMNS CONTAINER -->
         <div class="content fl-container-flex">
             
-        	<div class="fl-container-300 fl-force-left">
+            <!-- COLUMN LEFT -->
+            <div class="fl-container-300 fl-force-left">
+                
+                <!-- WIDGET -->
                 <div class="fl-widget">
                     <div class="fl-widget-titlebar">
                         <a href="#" class="fl-force-left icon more">More</a>
                         <a href="#" class="fl-force-right icon close">Close</a>
                         <a href="#" class="fl-force-right icon settings">Settings</a>
                         <h2>Tools</h2>
-                    </div>    
-                    
+                    </div>                    
                     <div class="fl-widget-options">
                         <ul>
                             <li><a href="#">Add Tools</a></li>
                             <li><a href="#" class="icon viewOptions toggle">Toggle View</a></li>
                         </ul>
-                    </div>
-                    
+                    </div>                    
                     <div class="fl-widget-content">
                         <ul class="menu">
                             <li><a href="#">Home          <span class="icon delete">[remove]</span></a></li>
@@ -94,13 +91,14 @@
                             <li><a href="#">Account       <span class="icon delete">[remove]</span></a></li>
                         </ul>
                     </div>
-                </div>            
-        	</div>
-        
-        
-        
-        
+                </div>
+
+            </div>
+
+            <!-- COLUMN RIGHT -->
             <div class="fl-container-300 fl-force-right">
+
+                <!-- WIDGET -->
                 <div class="fl-widget">
                     <div class="fl-widget-titlebar">
                         <a href="#" class="fl-force-left icon more">More</a>
@@ -108,13 +106,12 @@
                         <a href="#" class="fl-force-right icon settings">Settings</a>
                         <h2 class="grabbable">Poll Tracker</h2>
                     </div>    
-                    
-                    
                     <div class="fl-widget-content empty">
                         <p>No valid poll has been selected</p>
                     </div>
                 </div>
-    
+
+                <!-- WIDGET -->
                 <div class="fl-widget">
                     <div class="fl-widget-titlebar">
                         <a href="#" class="fl-force-left icon more">More</a>
@@ -129,12 +126,11 @@
                         </ul>
                     </div>
                     <div class="fl-widget-content"></div>
-                </div>            
-        	</div>
+                </div>
+            </div>
 
-
-
-        	<div class="center column fl-container">        	    
+            <!-- COLUMN CENTER -->
+            <div class="center column fl-container">
                 <div class="fl-widget">
                     <div class="fl-widget-titlebar grabbable">
                         <a href="#" class="fl-force-left icon more">More</a>
@@ -149,7 +145,6 @@
                             <li><a href="#">Create a Site</a></li>
                         </ul>
                     </div>
-                    
                     <div class="fl-widget-content">
                         <ul>
                             <li><a href="#">Uncategorized</a></li>
@@ -162,14 +157,20 @@
                         </ul>
                     </div>
                 </div>
-        	</div>
-      
-            
+            </div>
             
         </div>
-        <div class="footer fl-container-auto">
-            <p>© 2004-2008 The Sakai Foundation</p>
-            <p>Portions of Sakai are copyrighted by other parties as described in the <a href="#">Acknowledgments screen</a></p>
+
+        <!-- LAYOUT AND APPEARANCE -->
+        <div class="lookNfeel fl-container">
+            <a href="#" class="addWidget fl-button-left fl-linearEnabled"><strong>Add Widgets </strong></a>
+            <a href="#" class="skin fl-button-left fl-linearEnabled"><strong>Edit Appearance</strong></a>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer fl-container-flex fl-knockout">
+            <p>© 2004-2008 The Sakai Foundation <br />
+            Portions of Sakai are copyrighted by other parties as described in the <a href="#">Acknowledgments screen</a></p>
         </div>
     </body>
 </html>

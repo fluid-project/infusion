@@ -1,6 +1,6 @@
 /* CSS Specifically for the UI Options dialog and Preview window */
-.ui_options_container {background-color:#efefef; overflow:auto;}
-.ui_options_container form {float:left;}
+.ui_options_container {background-color:#efefef;}
+.ui_options_container form {float:left; overflow:visible;}
 .ui_options_container fieldset {font-family:Tahoma,Arial, sans-serif; margin:0; padding:0;}
 .ui_options_container legend {font-size:1.2em;}
 .ui_options_container .previewWindow {float:right; /*border:1px solid #ccc;*/ background-color:#fff;}

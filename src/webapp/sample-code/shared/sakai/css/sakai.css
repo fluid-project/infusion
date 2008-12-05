@@ -34,12 +34,12 @@ p {margin:0; padding-bottom:1em;}
 .header ul {margin:0; padding:0; display:none;}
 .header ul li {display:inline;}
 /************************************/
-.lookNfeel {padding:15px 10px 0;}
+.lookNfeel {padding:15px 10px 0; overflow:auto;}
 .lookNfeel .skin {background-image: url('../images/_common/edit-look-feel.png')}
 .lookNfeel .addWidget {background-image: url('../images/_common/add-widgets.png')}
 .lookNfeel a {color:#000;  text-decoration:none;}
 .lookNfeel strong { background: url('../images/_common/buttons-right.png') no-repeat right top; font-weight:normal; }
 
 /************************************/
-.footer { background:url("../images/_common/sakai.png") no-repeat left center; border-top:1px solid #efefef; color:#ccc; font-size:0.8em; padding:15px 0 15px 75px;}
-.footer p {margin:0; padding:0 0 0px;}
+.footer { background:url("../images/_common/sakai.png") no-repeat left center; border-top:1px solid #efefef; color:#ccc; font-size:0.8em; margin:10px 0 0;}
+.footer p {margin:0; padding:0 0 0px; padding:15px 0 15px 75px;}
