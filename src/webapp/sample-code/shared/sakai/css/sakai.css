@@ -17,16 +17,15 @@ p {margin:0; padding-bottom:1em;}
 /************************************/
 #dialog_container {
     position:absolute; 
-    padding:10px; 
     top:0; 
     left:0; 
-    width:715px; 
+    width:800px; 
     display:none; 
     background-color:#efefef; 
     z-index:1000;
     border: 2px solid #000;
 }
-#dialog_container #close_dialog {position:absolute; top:0; right:0; background-color:#000; color:#fff; padding:5px;}
+#dialog_container #close_dialog {position:absolute; top:0; right:0; background-color:#fff; color:#fff; padding:5px; border: 2px solid #000; border-top:none; border-right:none;}
 
 /************************************/
 .header {background:#00A5E3 url('../images/_common/header2.png') no-repeat left top; color:#fff; overflow:auto; padding:20px 0 25px 20px;}
