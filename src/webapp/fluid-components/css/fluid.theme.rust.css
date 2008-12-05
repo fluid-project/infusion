@@ -3,7 +3,7 @@
 
  * Color Schema:
  *     DEFINITIONS:
- *         wheat     : #C7B895
+ *         wheat     : #F2E0B6
  *         off brown : #917A61
  *         mocha     : #916535
  *         reddy     : #914E38
@@ -68,7 +68,7 @@
    outline: 0.2em solid #662e0f;
 }
 
-.fl-theme-rust {color:#000000 !important; background-color:#C6B794 !important; border-color:#916535;}
+.fl-theme-rust {color:#000000 !important; background-color:#F2E0B6 !important; border-color:#916535;}
 .fl-theme-rust .fl-knockout {background:transparent; color:#000;}
 
 .fl-theme-rust a {color: #916535 !important; /*font-weight:bold;*/}
@@ -76,8 +76,8 @@
 .fl-theme-rust h1 {color:#000; border-bottom-width:1px; border-bottom-style:dotted;} 
 .fl-theme-rust h2 {color: #453A2E;}
 
-.fl-theme-rust th {border:0.1em solid #5a95cf; background-color:#dfefff !important;}
-.fl-theme-rust td {border:0.1em solid #999999 !important;}
+.fl-theme-rust th {border:0.1em solid #453A2E; background-color:#917A61 !important; color:#fff !important;}
+.fl-theme-rust td {border:0.1em solid #453A2E !important;}
 .fl-theme-rust .fl-textfield {}
 .fl-theme-rust .fl-textarea {}
 

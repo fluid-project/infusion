@@ -12,8 +12,7 @@
 .ui_options_container .optionsCluster input {margin-right:5px;}
 .ui_options_container .optionsCluster input, .optionsCluster label {cursor:pointer;}
 
-.preview {font-size:13px; background-color:#e8ffea;}
-.preview div {background: url(../../images/uioptions/main_bg.png) no-repeat fixed 400px 96px; padding: 0 10px;}
+.preview {font-size:13px; background:#e8ffea url(../../images/uioptions/main_bg.png) no-repeat fixed 400px 96px; padding: 0 10px;}
 .preview h1 {margin:5px -10px; padding:5px 0 5px 10px;}
 .preview h2 {}
 .preview h3 {}
