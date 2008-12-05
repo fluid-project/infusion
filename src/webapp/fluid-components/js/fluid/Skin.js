@@ -69,14 +69,14 @@ fluid_0_6 = fluid_0_6 || {};
             "+5": "fl-font-size-150"
         },
         "textFont": {
-            "Default": "fl-font-sans",
+            "Default": "",
             "Ariel": "fl-font-arial",
             "Verdana": "fl-font-verdana",
             "Courier": "fl-font-monospace",
             "Times": "fl-font-serif"
         },
         "textSpacing": {
-            "Default": "fl-font-spacing-0",
+            "Default": "",
             "Wide": "fl-font-spacing-1",
             "Wider": "fl-font-spacing-2",
             "Widest": "fl-font-spacing-3"
