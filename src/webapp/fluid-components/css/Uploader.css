@@ -1,7 +1,3 @@
-/* styles used for testing and development
- * TODO: should be moved to tool css for image gallery
- */
-
 .fluid-uploader { 
     width: 434px;
     position: relative;
@@ -43,13 +39,10 @@
 
 /* FILE QUEUE TABLE STYLES */
 
-
 /* caption */
 
 .fluid-uploader-queue-wrapper caption {
-    font-weight: bolder;
-    text-align: left;
-    margin: 1em 0;
+    display: none;
 }
 
 /* header rows */
@@ -203,6 +196,12 @@ html>body .fluid-uploader-queue {
     cursor: auto;
 }
 
+.fluid-uploader-queue .iconBtn.dim {
+    border: 1px solid transparent;
+    background-color: transparent;
+    cursor: auto;
+}
+
 .fluid-uploader-queue .removeFile {
     background-image: url(../images/uploader/remove.png);
     cursor: pointer !important;
@@ -239,11 +238,11 @@ html>body .fluid-uploader-queue {
     background-image: url(../images/uploader/error.png);
 }
 
-.fluid-uploader-queue-wrapper td.fileRemove, .fluid-uploader-queue-wrapper th.fileRemove {
+.fluid-uploader-queue-wrapper td.actions, .fluid-uploader-queue-wrapper th.actions {
     text-align: center;
 }
 
-.fluid-uploader-queue td.fileRemove, .fluid-uploader-queue td.fileStatus { 
+.fluid-uploader-queue td.actions, .fluid-uploader-queue td.fileStatus { 
     white-space: nowrap;
 }
 
@@ -278,6 +277,10 @@ html>body .fluid-uploader-queue {
     border-color: #142B8C;
 }
 
+button span.text-description {
+    display: none;
+}
+
 /* element states */
 
 .disabled, .dim {
@@ -297,6 +300,11 @@ html>body .fluid-uploader-queue {
 .hidden {
     display: none;
 }
+
+.fluid-templates {
+	display: none;
+}
+
 
 /* ERRORS
  * 
@@ -337,60 +345,4 @@ html>body .fluid-uploader-queue {
     background-image: url('../images/progress/gradient-total.png');
     background-color: #BDBFC1;
     width:76%;
-}
-
-
-/* MASK */
-
-.progress-mask {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 300;
-    overflow: visible;
-}
-
-.progress-mask-top, .progress-mask-btm {
-    position: relative;
-    width: 100%;
-    left: 0;
-}
-
-.progress-mask-top {
-    height: 14px;
-    background: url(../images/progress/rounded_overlay_top.png) no-repeat top;
-}
-
-.progress-mask-btm {
-    background-image: url(../images/progress/rounded_overlay_btm.png); 
-    background-attachment: scroll;
-    background-repeat: no-repeat;
-    background-position: bottom;
-    height: 100%;
-}
-
-/* extracted from style tag */
-
-.add-btn {
-    background: url(../images/add.png) no-repeat 3px 2px;
-    padding: 2px 2px 1px 21px;
-    font-size: 12px;
-    cursor: hand;
-}
-
-caption {
-    display: none;
-}
-
-#single-popup-fluid-uploader {
-    display: none;
-}
-
-
-.myAddButton {
-    background-color:#EBEBEB;
-    border:1px solid #CCCCCC;
-    padding:2px 5px;	
 }

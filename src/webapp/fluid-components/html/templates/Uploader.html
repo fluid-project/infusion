@@ -22,10 +22,10 @@
         <script src="../../js/fluid/uploader/Uploader.js" type="text/javascript"></script>
     </head>
     
-    <body>    
+    <body class="infusion">    
     <div id="uploader-contents"> 	
         <form id="single-inline-fluid-uploader" 
-              class="fluid-uploader infusion fluid-uploader-inline" 
+              class="fluid-uploader fluid-uploader-inline" 
               method="get" 
               enctype="multipart/form-data">
                   
@@ -35,7 +35,7 @@
                 <!-- Top of the queue -->
                 <div class="fluid-scroller-table-head">
     				<table cellspacing="0" cellpadding="0" summary="Headers for the file queue.">
-    					<caption>File Queue:</caption>
+    					<caption>File Upload Queue:</caption>
     					<thead>
     						<tr>
     							<th scope="col" class="fileName">File Name</th>
@@ -57,7 +57,7 @@
                 			    <tr id="queue-row-tmplt" class="fluid-templates">
                     				<th class="fileName" scope="row">File Name Placeholder</th>
                                     <td class="fileSize">0 KB</td>
-                                    <td class="fileRemove">
+                                    <td class="actions">
                                         <button type="button" class="iconBtn" title="Remove File" tabindex="-1">
                                             <span class="text-description">Remove file from queue</span>
                                         </button>

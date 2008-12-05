@@ -29,6 +29,9 @@
 	font-family: "Trebuchet MS", Helvetica, Arial, sans-serif;
 }
 
+body.infusion { 
+    font-size: 13px;
+}
 .infusion button {
 	background-color: #4F99D3;
 	border-color: #2A3990;
@@ -72,6 +75,16 @@
 .infusion button.cancel:hover {
 	background-color: #9E182B;
 	border-color: #142B8C;
+}
+
+.infusion button.dim {
+	background-color: #999;
+	border-color: #666666;
+}
+
+.infusion button.dim:hover {
+	background-color: #999;
+	border-color: #666666;
 }
 
 .infusion button span.text-description {

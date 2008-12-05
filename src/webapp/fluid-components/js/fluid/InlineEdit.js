@@ -77,7 +77,7 @@ fluid_0_6 = fluid_0_6 || {};
         var canceller = function() {blurPending = false;};
         exclusions.focus(canceller);
         exclusions.click(canceller);
-    }
+    };
     
     var edit = function (that) {
         var viewEl = that.viewEl;
@@ -493,16 +493,16 @@ fluid_0_6 = fluid_0_6 || {};
             value: function(newValue) {
                 return $(element)[func](newValue);
             }
-        }
-    }
+        };
+    };
     
     fluid.inlineEdit.richTextViewAccessor = function (element) {
         return {
             value: function(newValue) {
                 return $(element).html(newValue);
             }
-        }
-    }
+        };
+    };
     
     fluid.inlineEdit.standardDisplayView = function (viewEl) {
         var that = {
