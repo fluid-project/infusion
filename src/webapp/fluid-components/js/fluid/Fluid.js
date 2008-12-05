@@ -312,6 +312,17 @@ var fluid = fluid || fluid_0_6;
      */
     fluid.COMPONENT_OPTIONS = {};
     
+    /** Construct a dummy or "placeholder" subcomponent, that optionally provides empty
+     * implementations for a set of methods.
+     */
+    fluid.emptySubcomponent = function (options) {
+        var that = {};
+        options = $.makeArray(options);
+        for (var i = 0; i < options.length; ++ i) {
+            that[options[i]] = function () {};
+        }
+        return that;
+    };
     
     fluid.initSubcomponent = function (that, className, args) {
         return fluid.initSubcomponents(that, className, args)[0];
@@ -360,7 +371,9 @@ var fluid = fluid || fluid_0_6;
                 var entryType = typeof(entry) === "string"? entry : entry.type;
                 var globDef = fluid.defaults(true, entryType);
                 fluid.merge("reverse", that.options, globDef);
-                togo[i] = fluid.invokeGlobalFunction(entryType, args, {fluid: fluid});
+                togo[i] = entryType === "fluid.emptySubcomponent"?
+                   fluid.emptySubcomponent(entry.options) : 
+                   fluid.invokeGlobalFunction(entryType, args, {fluid: fluid});
             }
             else {
                 togo[i] = entry.apply(null, args);
@@ -387,6 +400,13 @@ var fluid = fluid || fluid_0_6;
         that.locate = that.dom.locate;      
     };
     
+    
+    /** Returns true if the argument is a primitive type **/
+    fluid.isPrimitive = function (value) {
+        var valueType = typeof(value);
+        return !value || valueType === "string" || valueType === "boolean" || 
+            valueType == "number";
+        };
         
     function mergeImpl(policy, basePath, target, source) {
         var thisPolicy = policy && typeof(policy) !== "string"? policy[basePath] : policy;
@@ -402,17 +422,18 @@ var fluid = fluid || fluid_0_6;
             var path = (basePath? basePath + ".": "") + name;
             var thisTarget = target[name];
             var thisSource = source[name];
+            var primitiveTarget = fluid.isPrimitive(thisTarget);
     
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
-                      !thisSource.nodeType && !thisSource.jquery) {
+                      !thisSource.nodeType && !thisSource.jquery && !primitiveTarget) {
                     if (!thisTarget) {
                         target[name] = thisTarget = thisSource instanceof Array? [] : {};
                     }
                     mergeImpl(policy, path, thisTarget, thisSource);
                 }
                 else {
-                    if (thisTarget === null || thisTarget === undefined || thisPolicy !== "reverse") {
+                    if (primitiveTarget || thisPolicy !== "reverse") {
                         target[name] = thisSource;
                     }
                 }

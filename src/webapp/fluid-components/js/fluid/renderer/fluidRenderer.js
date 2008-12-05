@@ -25,7 +25,8 @@ fluid_0_6 = fluid_0_6 || {};
     var togo = "";
     var move = component;
     if (component.children === undefined) { // not a container
-      togo = component.ID;
+      // unusual case on the client-side, since a repetitive leaf may have localID blasted onto it.
+      togo = component.ID + (component.localID !== undefined? component.localID : "");
       move = component.parent;
       }
     while (move.parent) {
@@ -49,15 +50,13 @@ fluid_0_6 = fluid_0_6 || {};
     return togo;
   }
   
-  function isPrimitive(value) {
-      var valueType = typeof(value);
-      return !value || valueType === "string" || valueType === "boolean" || 
-          valueType == "number" || value instanceof Array 
-             && (value.length === 0 || typeof(value[0]) === "string");
+  function isBoundPrimitive(value) {
+      return fluid.isPrimitive(value) || value instanceof Array 
+             && (value.length === 0 || typeof(value[0]) === "string") 
   }
   
   function processChild(value, key) {
-    if (isPrimitive(value)) {
+    if (isBoundPrimitive(value)) {
       return {componentType: "UIBound", value: value, ID: key};
       }
     else {
@@ -104,7 +103,7 @@ fluid_0_6 = fluid_0_6 || {};
   
   function upgradeBound(holder, property, model) {
       if (holder[property] !== undefined) {
-          if (isPrimitive(holder[property])) {
+          if (isBoundPrimitive(holder[property])) {
               holder[property] = {value: holder[property]};
           }
       }
@@ -813,6 +812,11 @@ fluid_0_6 = fluid_0_6 || {};
             attrcopy.id = component.fullID;
             }
     }
+    var count = 1;
+    var baseid = attrcopy.id;
+    while (renderOptions.document.getElementById(attrcopy.id)) {
+        attrcopy.id = baseid + "-" + (count++); 
+    }
     return attrcopy.id;
     }
   
@@ -856,7 +860,7 @@ fluid_0_6 = fluid_0_6 || {};
     var close = outerclose;
     var uselump = lump;
     var attrcopy = {};
-    $.extend(true, attrcopy, lump.attributemap);
+    $.extend(true, attrcopy, (payload === null? lump : payload).attributemap);
     
     trc.attrcopy = attrcopy;
     trc.uselump = uselump;
@@ -875,9 +879,9 @@ fluid_0_6 = fluid_0_6 || {};
       // sure we render any preamble.
 
       if (payload) {
-        endopen = lumps[payload.lumpindex + 1];
-        close = payload.close_tag;
-        uselump = payload;
+        trc.endopen = lumps[payload.lumpindex + 1];
+        trc.close = payload.close_tag;
+        trc.uselump = payload;
         dumpTillLump(lumps, lumpindex, payload.lumpindex);
         lumpindex = payload.lumpindex;
       }
@@ -888,15 +892,15 @@ fluid_0_6 = fluid_0_6 || {};
       
       // ALWAYS dump the tag name, this can never be rewritten. (probably?!)
       if (!iselide) {
-        out += "<" + uselump.tagname;
+        out += "<" +trc.uselump.tagname;
        }
 
       renderComponent(torendero);
       // if there is a payload, dump the postamble.
       if (payload != null) {
         // the default case is initialised to tag close
-        if (rendercontext.nextpos === nextpos) {
-          dumpTillLump(lumps, close.lumpindex + 1, outerclose.lumpindex + 1);
+        if (trc.nextpos === nextpos) {
+          dumpTillLump(lumps, trc.close.lumpindex + 1, outerclose.lumpindex + 1);
         }
       }
       nextpos = trc.nextpos;
@@ -1207,6 +1211,7 @@ fluid_0_6 = fluid_0_6 || {};
       if (!options.messageLocator && options.messageSource) {
           options.messageLocator = fluid.resolveMessageSource(options.messageSource);
       }
+      options.document = options.document || document;
       directFossils = fossilsIn;
       decoratorQueue = [];
   

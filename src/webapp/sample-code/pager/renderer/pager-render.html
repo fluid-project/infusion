@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf" lang="en" >
     <head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <link href="pager.css" type="text/css" rel="stylesheet" />
+    <link href="pager-render.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/Pager.js"></script>
@@ -10,7 +10,7 @@
     <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidParser.js"></script>
     <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidRenderer.js"></script>
     <script type="text/javascript" src="user-data.js"></script>
-    <script type="text/javascript" src="pager-example.js"></script>
+    <script type="text/javascript" src="pager-render-example.js"></script>
 
 		<title>Gradebook Example</title>
 	</head>
@@ -18,12 +18,15 @@
 	    <div id="gradebook">
 	      <form action="#">
     	    <ul id="pager-top" class="pager-top">
-    	        <li value="1" class="page-link"><a href="#">1</a></li>
-    	        <li value="2" class="page-link"><a href="#">2</a></li>
-              <ul id="pager-links">
-    	          <li class="previous"><a href="#">&lt; previous</a></li>
-    	          <li class="next"><a href="#">next &gt;</a></li>
-              </ul>
+              <li>
+                <ul class="pager-links">
+    	            <li class="page-link"><a href="#">1</a></li>
+    	            <li class="page-link"><a href="#">2</a></li>
+                </ul>
+              </li>
+
+    	        <li class="previous"><a href="#">&lt; previous</a></li>
+    	        <li class="next"><a href="#">next &gt;</a></li>
     	    </ul>
             <table summary="student grades" id="students-page1">
               <thead>
@@ -50,7 +53,8 @@
               </tbody>
             </table>
             <ul id="pager-bottom" class="pager-bottom">
-              <ul id="pager-links">
+              <li>
+              <ul class="pager-links">
     	          <li value="1" class="page-link"><a href="#">1</a></li>
     	          <li value="2" class="page-link"><a href="#">2</a></li>
     	          <li value="3" class="page-link"><a href="#">3</a></li>
@@ -59,10 +63,11 @@
     	          <li value="6" class="page-link"><a href="#">6</a></li>
     	          <li value="7" class="page-link"><a href="#">7 (last)</a></li>
               </ul>
+              </li>
     	        <li class="previous"><a href="#">&lt; previous</a></li>
     	        <li class="next"><a href="#">next &gt;</a></li>
-    	    </ul>
-
+              <span class="pager-summary">1-10 of 500 items</span>
+              </ul>
           </form>
         </div>
         <script type="text/javascript">

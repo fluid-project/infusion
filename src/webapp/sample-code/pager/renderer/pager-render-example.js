@@ -20,17 +20,17 @@ var demo = demo || {};
         var selectorPrefix = "#students-page";
         
         var options = {
-            model: userTable,
+            dataModel: userTable,
             bodyRenderer: {
-              type: "fluid.selfRender",
+              type: "fluid.pager.selfRender",
               options: {
                 root: "#body-template",
                 row: "row:",
                 cells: "explode"
               }
             },
-            pagerBar: {type: "fluid.pagerBar", options: {
-              pageList: {type: "fluid.renderedPageList",
+            pagerBar: {type: "fluid.pager.pagerBar", options: {
+              pageList: {type: "fluid.pager.renderedPageList",
                 options: { 
                   linkBody: "a"
                 }
