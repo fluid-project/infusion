@@ -12,9 +12,9 @@
         <!-- Local Sakai and Sakai FSS Extensions -->
         <link rel="stylesheet" type="text/css" href="css/sakai.css" />
         <link rel="stylesheet" type="text/css" href="css/sakai.components.uioptions.css" />        
-        <link rel="stylesheet" type="text/css" href="css/sakai.widgets.mist.css" />
-        <link rel="stylesheet" type="text/css" href="css/sakai.widgets.rust.css" />
-        <link rel="stylesheet" type="text/css" href="css/sakai.widgets.hc.css" />
+        <link rel="stylesheet" type="text/css" href="css/sakai.theme.mist.css" />
+        <link rel="stylesheet" type="text/css" href="css/sakai.theme.rust.css" />
+        <link rel="stylesheet" type="text/css" href="css/sakai.theme.hc.css" />
         <link rel="stylesheet" type="text/css" href="css/sakai.layout.css" />
 
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
@@ -31,14 +31,22 @@
                 $('.skin').click(function(){
                     // ajax call to pull the UI Options dialog into a container
                     var myFunc = function(){
-                    $('#uioptions_container').css({
-                        left: ($(window).width()/2) - ($('#uioptions_container').width()/2),
-                        top: ($(window).height()/2) - ($('#uioptions_container').height()/2)
-                    });
-                        $("#uioptions_container").css('display','block');
+                        // center dialog
+                        $('#dialog_container').css({
+                            left: ($(window).width()/2) - ($('#dialog_container').width()/2),
+                            top: ($(window).height()/2) - ($('#dialog_container').height()/2)
+                        });
+                        // bind close dialog button
+                        $("#close_dialog").click(function(){
+                            $("#dialog_container").css('display','none');
+                        });
+                        // reveal dialog
+                        $("#dialog_container").css('display','block');
+                        
+                        // instantiate component
                         fluid.uiOptions(".ui_options_container");
                     }
-                    $('#uioptions_container').load('sakai_uioptions_preview.html div.ui_options_container',myFunc);
+                    $('#dialog_content').load('sakai_uioptions_preview.html div.ui_options_container',myFunc);
                     
                 });
             });            
@@ -47,7 +55,10 @@
     </head>
 
     <body>
-        <div id="uioptions_container"></div>
+        <div id="dialog_container">
+            <a id="close_dialog" class="icon close" href="#">Close</a>
+            <div id="dialog_content"></div>
+        </div>
         
         <div class="header fl-knockout">
             <h1>My Dashboard</h1>

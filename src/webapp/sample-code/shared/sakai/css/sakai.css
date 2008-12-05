@@ -15,7 +15,7 @@ p {margin:0; padding-bottom:1em;}
 .center {margin-left:310px; margin-right:310px; padding:0 0px;}
 
 /************************************/
-#uioptions_container {
+#dialog_container {
     position:absolute; 
     padding:10px; 
     top:0; 
@@ -23,9 +23,10 @@ p {margin:0; padding-bottom:1em;}
     width:715px; 
     display:none; 
     background-color:#efefef; 
-    z-index:100000;
+    z-index:1000;
     border: 2px solid #000;
 }
+#dialog_container #close_dialog {position:absolute; top:0; right:0; background-color:#000; color:#fff; padding:5px;}
 
 /************************************/
 .header {background:#00A5E3 url('../images/_common/header2.png') no-repeat left top; color:#fff; overflow:auto; padding:20px 0 25px 20px;}
