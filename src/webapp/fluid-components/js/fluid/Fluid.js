@@ -404,8 +404,7 @@ var fluid = fluid || fluid_0_6;
     /** Returns true if the argument is a primitive type **/
     fluid.isPrimitive = function (value) {
         var valueType = typeof(value);
-        return !value || valueType === "string" || valueType === "boolean" || 
-            valueType == "number";
+        return !value || valueType === "string" || valueType === "boolean" || valueType === "number";
         };
         
     function mergeImpl(policy, basePath, target, source) {
@@ -426,14 +425,14 @@ var fluid = fluid || fluid_0_6;
     
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
-                      !thisSource.nodeType && !thisSource.jquery && !primitiveTarget) {
-                    if (!thisTarget) {
+                      !thisSource.nodeType && !thisSource.jquery) {
+                    if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array? [] : {};
                     }
                     mergeImpl(policy, path, thisTarget, thisSource);
                 }
                 else {
-                    if (primitiveTarget || thisPolicy !== "reverse") {
+                    if (thisTarget === null || thisTarget === undefined || thisPolicy !== "reverse") {
                         target[name] = thisSource;
                     }
                 }

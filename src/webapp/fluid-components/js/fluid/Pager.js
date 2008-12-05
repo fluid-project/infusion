@@ -24,10 +24,10 @@ fluid_0_6 = fluid_0_6 || {};
     function updateStyles(pageListThat, newModel, oldModel) {
         if (oldModel.pageIndex !== undefined) {
             var oldLink = pageListThat.pageLinks.eq(oldModel.pageIndex);
-            oldLink.removeClass(pageListThat.options.styles.pageIndex);
+            oldLink.removeClass(pageListThat.options.styles.currentPage);
         }
         var pageLink = pageListThat.pageLinks.eq(newModel.pageIndex);
-        pageLink.addClass(pageListThat.options.styles.pageIndex); 
+        pageLink.addClass(pageListThat.options.styles.currentPage); 
 
 
     };
@@ -38,7 +38,7 @@ fluid_0_6 = fluid_0_6 || {};
     }
     
     fluid.pager = function() {
-        fluid.pagerImpl.apply(null, arguments);
+        return fluid.pagerImpl.apply(null, arguments);
     }
     
     fluid.pager.directPageList = function (container, events, options) {
@@ -54,7 +54,7 @@ fluid_0_6 = fluid_0_6 || {};
             }
         );
         that.defaultModel = {
-            pageIndex: 0,
+            pageIndex: undefined,
             pageSize: 1,
             totalRange: that.pageLinks.length
         };
@@ -207,7 +207,7 @@ fluid_0_6 = fluid_0_6 || {};
        },
        
        styles: {
-           pageIndex: "current-page",
+           currentPage: "current-page",
            disabled: "disabled"
        }
     });
@@ -263,8 +263,11 @@ fluid_0_6 = fluid_0_6 || {};
                if (newModel.pageIndex >= newModel.pageCount) {
                    newModel.pageIndex = newModel.pageCount - 1;
                }
-               that.events.onModelChange.fire(newModel, that.model, that);
-               fluid.model.copyModel(that.model, newModel);
+               if (newModel.pageIndex !== that.model.pageIndex) {
+                   that.events.onModelChange.fire(newModel, that.model, that);
+                   fluid.model.copyModel(that.model, newModel);
+               }
+
             }
         );
 

@@ -26,40 +26,40 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var options = {
             listeners: {
-                onPageChange: function(newPageNum, oldPageNum){
-                    pageChangeStats.pageNum = newPageNum;
-                    pageChangeStats.oldPageNum = oldPageNum;
+                onModelChange: function(newModel, oldModel){
+                    pageChangeStats.pageNum = newModel.pageIndex;
+                    pageChangeStats.oldPageNum = oldModel.pageIndex;
                 }
             }
         };
     
         var createPagerBar = function (container, options) {
             var mockEvents = {
-                onPageChange: fluid.event.getEventFirer()
+                onModelChange: fluid.event.getEventFirer()
             };
             
-            return fluid.pagerBar(container, mockEvents, options);    
+            return fluid.pager.pagerBar(container, mockEvents, options);    
         };
         
         /** Convenience test functions **/
         var enabled = function (str, link) {
             jqUnit.assertFalse(str + " link is enabled", 
-                link.hasClass(fluid.defaults("fluid.pagerBar").styles.disabled));    
+                link.hasClass(fluid.defaults("fluid.pager.pagerBar").styles.disabled));    
         };
     
         var disabled = function (str, link) {
             jqUnit.assertTrue(str + " link is disabled", 
-                link.hasClass(fluid.defaults("fluid.pagerBar").styles.disabled));    
+                link.hasClass(fluid.defaults("fluid.pager.pagerBar").styles.disabled));    
         };
     
         var current = function (str, link) {
             jqUnit.assertTrue(str + " link is selected", 
-                link.hasClass(fluid.defaults("fluid.pagerBar").styles.currentPage));        
+                link.hasClass(fluid.defaults("fluid.pager.pagerBar").styles.currentPage));        
         };
     
         var notCurrent = function (str, link) {
             jqUnit.assertFalse(str + " link is not selected", 
-                link.hasClass(fluid.defaults("fluid.pagerBar").styles.currentPage));        
+                link.hasClass(fluid.defaults("fluid.pager.pagerBar").styles.currentPage));        
         };
     
         // This is a placeholder test. It knows too much about the implementation details. 
@@ -68,19 +68,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var pager = fluid.pager("#gradebook");
             
             // For now, the pager exposes the objects it contains.
-            var pagerTop = pager.topBar; 
+            var pagerTop = pager.pagerBar; 
             jqUnit.assertEquals("Pager top is set", "pager-top", pagerTop.container[0].id);
     
-            jqUnit.assertEquals("Page Links are set", 3, pagerTop.pageLinks.length);        
-            jqUnit.assertEquals("Previous is set", "previous-top", pagerTop.previous[0].id);        
-            jqUnit.assertEquals("Next is set", "next-top", pagerTop.next[0].id);        
+            jqUnit.assertEquals("Page Links are set", 3, pagerTop.pageList.pageLinks.length);        
+            jqUnit.assertEquals("Previous is set", "previous-top", pagerTop.previousNext.previous[0].id);        
+            jqUnit.assertEquals("Next is set", "next-top", pagerTop.previousNext.next[0].id);        
             
-            var pagerBottom = pager.bottomBar; 
+            var pagerBottom = pager.pagerBarSecondary; 
             jqUnit.assertEquals("Pager bottom is set", "pager-bottom", pagerBottom.container[0].id);
     
-            jqUnit.assertEquals("Page Links are set", 3, pagerBottom.pageLinks.length);        
-            jqUnit.assertEquals("Previous is set", "previous-bottom", pagerBottom.previous[0].id);        
-            jqUnit.assertEquals("Next is set", "next-bottom", pagerBottom.next[0].id);
+            jqUnit.assertEquals("Page Links are set", 3, pagerBottom.pageList.pageLinks.length);        
+            jqUnit.assertEquals("Previous is set", "previous-bottom", pagerBottom.previousNext.previous[0].id);        
+            jqUnit.assertEquals("Next is set", "next-bottom", pagerBottom.previousNext.next[0].id);
     
         });
         
@@ -101,7 +101,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             enabled("Next top", next);
             enabled("Next bottom", nextBottom);
             
-            jqUnit.assertEquals("The onPageChange event should be fired upon initialization.", 1, pageChangeStats.pageNum);
+            jqUnit.assertEquals("The onPageChange event should be fired upon initialization.", 0, pageChangeStats.pageNum);
             jqUnit.assertUndefined("The oldPageNum for the onPageChange event should be undefined.", pageChangeStats.oldPageNum);
         });
         
@@ -118,8 +118,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var nextBottom = $("#next-bottom");
     
             anchor2.simulate("click");
-            jqUnit.assertEquals("Page number is 2.", 2, pageChangeStats.pageNum);      
-            jqUnit.assertEquals("Old page number is 1.", 1, pageChangeStats.oldPageNum);
+            jqUnit.assertEquals("Page number is 1.", 1, pageChangeStats.pageNum);      
+            jqUnit.assertEquals("Old page number is 0.", 0, pageChangeStats.oldPageNum);
             
             current("Link 2 top", link2);
             current("Link 2 bottom", link2Bottom);
@@ -142,38 +142,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var topLink = $("#plants-top2");
             var pageLink = $("#plants-bottom2");
             
-            jqUnit.assertEquals("Initially, the first page should be selected.", 1, pageChangeStats.pageNum);
+            jqUnit.assertEquals("Initially, the first page should be selected.", 0, pageChangeStats.pageNum);
             nonPageLink.simulate("click");
-            jqUnit.assertEquals("When a non-page link is clicked, no events should be fired.", 1, pageChangeStats.pageNum);
+            pageChangeStats = {};   
+            jqUnit.assertUndefined("When a non-page link is clicked, no events should be fired.", pageChangeStats.pageNum);
             pageLink.simulate("click");
 
-            jqUnit.assertEquals("Page number is 2.", 2, pageChangeStats.pageNum);
-            jqUnit.assertEquals("Old page number is 1.", 1, pageChangeStats.oldPageNum);
+            jqUnit.assertEquals("Page number is 1.", 1, pageChangeStats.pageNum);
+            jqUnit.assertEquals("Old page number is 0.", 0, pageChangeStats.oldPageNum);
             jqUnit.assertTrue("Link 2 top is styled as current", 
-                topLink.hasClass(fluid.defaults("fluid.pagerBar").styles.currentPage));        
+                topLink.hasClass(fluid.defaults("fluid.pager.pagerBar").styles.currentPage));        
             jqUnit.assertTrue("Link 2 bottom is styled as current", 
-                pageLink.hasClass(fluid.defaults("fluid.pagerBar").styles.currentPage));
-        });
-        
-        tests.test("Pager Bar Init", function () {
-            var pagerBar = createPagerBar($("#pager-top"));
-            jqUnit.assertEquals("Pager bar is set", "pager-top", pagerBar.container[0].id);    
-        });
-        
-        tests.test("Pager Bar pageNumOfLink", function () {
-            var pagerTop = $("#pager-top");
-            var pagerBar = createPagerBar(pagerTop, {
-                selectors: {
-                    pageLinks: ".page-link"
-                }
-            });
-    
-            var nonPageLink = $("#chives");
-            var topLinks = $(".page-link", pagerTop);
-            jqUnit.assertEquals("First link is page 1", 1, pagerBar.pageNumOfLink(topLinks[0]));
-            jqUnit.assertEquals("Anchor in second link is page 2", 2, pagerBar.pageNumOfLink($("a", topLinks[1])[0]));
-            jqUnit.assertEquals("Last link is page 3", 3, pagerBar.pageNumOfLink(topLinks[2]));
-            jqUnit.assertEquals("Page number of non-existant page is 0", 0, pagerBar.pageNumOfLink(nonPageLink));
+                pageLink.hasClass(fluid.defaults("fluid.pager.pagerBar").styles.currentPage));
         });
         
         tests.test("Pager Next/Previous", function () {
