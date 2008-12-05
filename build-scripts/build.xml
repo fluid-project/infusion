@@ -27,6 +27,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="swfupload-src" location="${src}/flash" />
 	<property name="swfupload-js-src" location="${src}/js/swfupload" />
 	<property name="renderer-src" location="${src}/js/fluid/renderer" />
+	<property name="uploader-src" location="${src}/js/fluid/uploader" />
 	<property name="dist" location="${products}/dist" />
     <property name="src-dist" location="${products}/src-dist" />
     <property name="src-dist-components" location="${src-dist}/fluid-components" />
@@ -39,6 +40,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="swfupload-build" location="${components-build}/flash" />
 	<property name="swfupload-js-build" location="${components-build}/js/swfupload" />
 	<property name="renderer-build" location="${components-build}/js/fluid/renderer" />
+	<property name="uploader-build" location="${components-build}/js/fluid/uploader" />
 	<property name="lint" location="${src}"/>
 
 	<!-- the filename for the package to output -->
@@ -124,6 +126,10 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
                 <include name="LICENSE.txt" />
             </fileset>
         </copy>
+        <copy todir="${uploader-build}">
+            <fileset dir="${uploader-src}">
+            </fileset>
+        </copy>
 	</target>
 
     <target name="concatAllJS">
@@ -131,6 +137,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		    <filelist dir="${src}/js/jquery" files="${jquery_order_of_dependencies}" />
 			<filelist dir="${src}/js/fluid" files="${fluid_order_of_dependencies}" />
 			<filelist dir="${src}/js/fluid/renderer" files="${fluid_renderer_order_of_dependencies}" />
+			<filelist dir="${src}/js/fluid/uploader" files="${fluid_uploader_order_of_dependencies}" />
             <filelist dir="${src}/js/json" files="json2.js" />
             <filelist dir="${src}/js/swfupload" files="swfupload.js" />
 		</concat>    
