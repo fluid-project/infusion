@@ -15,6 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 fluid_0_6 = fluid_0_6 || {};
 
+
 /*******************
  * File Queue View *
  *******************/
@@ -502,6 +503,28 @@ fluid_0_6 = fluid_0_6 || {};
         
         setupUploader(that);
         return that;  
+    };
+    
+    /**
+     * Instantiates a new Uploader component in the progressive enhancement style.
+     * This mode requires another DOM element to be present, the element that is to be enhanced.
+     * This method checks to see if the correct version of Flash is present, and will only
+     * create the Uploader component if so.
+     * 
+     * @param {Object} container the DOM element in which the Uploader component lives
+     * @param {Object} enhanceable the DOM element to show if the system requirements aren't met
+     * @param {Object} options configuration options for the component
+     */
+    fluid.progressiveEnhanceableUploader = function (container, enhanceable, options) {
+        enhanceable = fluid.container(enhanceable);
+        
+        if (swfobject.getFlashPlayerVersion().major > 8) {
+            var uploader = fluid.uploader(container, options);
+            uploader.container.show();   
+            return uploader;
+        } else {
+            enhanceable.show();
+        }
     };
     
     /**

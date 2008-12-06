@@ -94,6 +94,10 @@ Layout Helpers
 .fl-button-right {float:right;  margin-left:10px; padding:0px 0 0px 25px; background-position:left top; background-repeat:no-repeat;}
 .fl-button-right * {float:left; padding: 6px 8px 6px 0; cursor:pointer; background-position:left top; background-repeat:no-repeat;}
 
+/*
+ * Progressive Enhancement
+ */
+.fl-progressive-enhancer {display:none;}
 
 /*
 Component Specific
