@@ -70,7 +70,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     
-    fluid.pager.renderedPageList = function(container, events, pagerBarOptions, options) {
+    fluid.pager.renderedPageList = function(container, events, pagerBarOptions, options, strings) {
         var options = $.extend(true, pagerBarOptions, options);
         var that = fluid.initView("fluid.pager.renderedPageList", container, options);
         var renderOptions = {
@@ -101,6 +101,7 @@ fluid_0_6 = fluid_0_6 || {};
                 if (!oldModel || newModel.pageCount != oldModel.pageCount) {
                     var pages = that.options.pageStrategy(newModel.pageCount);
                     var pageTree = fluid.transform(pages, pageToComponent);
+                    pageTree[pageTree.length - 1].value = pageTree[pageTree.length - 1].value + strings.last;
                     fluid.reRender(template, root, pageTree, renderOptions);
                     // TODO: improve renderer so that it can locate these inline
                     that.pageLinks = that.locate("pageLinks");
@@ -149,10 +150,12 @@ fluid_0_6 = fluid_0_6 || {};
         return that;
     };
 
-    fluid.pager.pagerBar = function (events, container, options) {
+    fluid.pager.pagerBar = function (events, container, options, strings) {
         var that = fluid.initView("fluid.pager.pagerBar", container, options);
-        that.pageList = fluid.initSubcomponent(that, "pageList", [container, events, that.options, fluid.COMPONENT_OPTIONS]);
-        that.previousNext = fluid.initSubcomponent(that, "previousNext", [container, events, that.options, fluid.COMPONENT_OPTIONS]);
+        that.pageList = fluid.initSubcomponent(that, "pageList", 
+           [container, events, that.options, fluid.COMPONENT_OPTIONS, strings]);
+        that.previousNext = fluid.initSubcomponent(that, "previousNext", 
+           [container, events, that.options, fluid.COMPONENT_OPTIONS, strings]);
         
         return that;
     };
@@ -198,8 +201,6 @@ fluid_0_6 = fluid_0_6 || {};
       
        pageList: "fluid.pager.directPageList",
         
-       pageSizeSelect: "fluid.pager.pageSizeSelect",
-       
        selectors: {
            pageLinks: ".page-link",
            previous: ".previous",
@@ -239,6 +240,23 @@ fluid_0_6 = fluid_0_6 || {};
             }
         };
     }
+    
+    fluid.pager.directPageSize = function (that) {
+        var node = that.locate("pageSize");
+        if (node.length > 0) {
+            that.events.onModelChange.addListener(
+                function(newModel, oldModel) {
+                    if (node.val() !== newModel.pageSize) {
+                        node.val(newModel.pageSize);
+                    }
+                }
+            );
+            node.change(function() {
+                that.events.initiatePageSizeChange.fire(node.val());
+                });
+        }
+        return that;
+    };
 
     /*******************
      * Pager Component *
@@ -246,6 +264,17 @@ fluid_0_6 = fluid_0_6 || {};
     
     fluid.pagerImpl = function (container, options) {
         var that = fluid.initView("fluid.pager", container, options);
+        
+        function fireModelChange(newModel) {
+               computePageCount(newModel);
+               if (newModel.pageIndex >= newModel.pageCount) {
+                   newModel.pageIndex = newModel.pageCount - 1;
+               }
+               if (newModel.pageIndex !== that.model.pageIndex || newModel.pageSize != that.model.pageSize) {
+                   that.events.onModelChange.fire(newModel, that.model, that);
+                   fluid.model.copyModel(that.model, newModel);
+               }            
+        }
         
         that.events.initiatePageChange.addListener(
             function(arg) {
@@ -259,32 +288,36 @@ fluid_0_6 = fluid_0_6 || {};
                if (newModel.pageIndex === undefined || newModel.pageIndex < 0) {
                    newModel.pageIndex = 0;
                }
-               computePageCount(newModel);
-               if (newModel.pageIndex >= newModel.pageCount) {
-                   newModel.pageIndex = newModel.pageCount - 1;
-               }
-               if (newModel.pageIndex !== that.model.pageIndex) {
-                   that.events.onModelChange.fire(newModel, that.model, that);
-                   fluid.model.copyModel(that.model, newModel);
-               }
-
+               fireModelChange(newModel);
             }
         );
+        
+        that.events.initiatePageSizeChange.addListener(
+            function(arg) {
+                var newModel = fluid.copy(that.model);
+                newModel.pageSize = arg;
+                fireModelChange(newModel);     
+            }
+            );
 
         // Setup the top and bottom pager bars.
-        that.pagerBar = fluid.initSubcomponent(that, "pagerBar", [that.events, that.locate("pagerBar"), fluid.COMPONENT_OPTIONS]);
-        that.pagerBarSecondary = fluid.initSubcomponent(that, "pagerBar", [that.events, that.locate("pagerBarSecondary"), fluid.COMPONENT_OPTIONS]);
+        that.pagerBar = fluid.initSubcomponent(that, "pagerBar", 
+           [that.events, that.locate("pagerBar"), fluid.COMPONENT_OPTIONS, that.options.strings]);
+        that.pagerBarSecondary = fluid.initSubcomponent(that, "pagerBar", 
+           [that.events, that.locate("pagerBarSecondary"), fluid.COMPONENT_OPTIONS, that.options.strings]);
  
         that.bodyRenderer = fluid.initSubcomponent(that, "bodyRenderer", [that, fluid.COMPONENT_OPTIONS]);
         
         that.summary = fluid.initSubcomponent(that, "summary", [that.dom, fluid.COMPONENT_OPTIONS]);
+        
+        that.pageSize = fluid.initSubcomponent(that, "pageSize", [that]);
  
         that.model = fluid.copy(that.options.model);
         if (that.options.dataModel) {
             that.model.totalRange = that.options.dataModel.length;
         }
         if (that.model.totalRange === undefined) {
-           that.model = that.pagerBar.pageList.defaultModel;
+            that.model = that.pagerBar.pageList.defaultModel;
         }
 
         that.events.initiatePageChange.fire({pageIndex: 0});
@@ -293,11 +326,14 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     fluid.defaults("fluid.pager", {
-        pagerBar: {type: "fluid.pager.pagerBar", options: null},
+        pagerBar: {type: "fluid.pager.pagerBar", 
+            options: null},
         
         summary: {type: "fluid.pager.summary", options: {
             message: "%first-%last of %total items"
-        }}, 
+        }},
+        
+        pageSize: "fluid.pager.directPageSize",
         
         modelFilter: fluid.pager.directModelFilter,
         
@@ -312,11 +348,17 @@ fluid_0_6 = fluid_0_6 || {};
         selectors: {
             pagerBar: ".pager-top",
             pagerBarSecondary: ".pager-bottom",
-            summary: ".pager-summary"
+            summary: ".pager-summary",
+            pageSize: ".pager-page-size"
+        },
+        
+        strings: {
+            last: " (last)"
         },
         
         events: {
             initiatePageChange: null,
+            initiatePageSizeChange: null,
             onModelChange: null
         }
     });
