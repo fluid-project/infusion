@@ -371,8 +371,9 @@ fluid_0_6 = fluid_0_6 || {};
     var setStateUploading = function (that) {
         hideElement(that, that.locate("cancelButton"));
         hideElement(that, that.locate("uploadButton"));
-        showElement(that, that.locate("pauseButton"));
         disableElement(that, that.locate("browseButton"));
+        enableElement(that, that.locate("pauseButton"));
+        showElement(that, that.locate("pauseButton"));
     };    
     
     var renderUploadTotalMessage = function (that) {
@@ -415,7 +416,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
    
     var bindDOMEvents = function (that) {
-        that.locate("browseButton").click(function (evnt) {            
+        that.locate("browseButton").click(function (evnt) {        
             that.uploadManager.browseForFiles();
             evnt.preventDefault();
         });
@@ -425,7 +426,7 @@ fluid_0_6 = fluid_0_6 || {};
         });
 
         that.locate("pauseButton").click(function () {
-            that.uploadManager.pause();
+            that.uploadManager.stop();
         });
     };
 

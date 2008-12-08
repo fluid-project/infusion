@@ -100,10 +100,6 @@
 	border-color: #999;
 }
 
-.fluid-scroller thead {
-    display: none;
-}
-
 .fluid-scroller .scroller-inner {
     position: relative;
     overflow: hidden;

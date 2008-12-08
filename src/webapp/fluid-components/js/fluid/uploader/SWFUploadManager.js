@@ -225,7 +225,7 @@ fluid_0_6 = fluid_0_6 || {};
         /**
          * Cancels an in-progress upload.
          */
-        that.cancel = function () {
+        that.stop = function () {
             that.swfUploader.stopUpload();
         };
         
@@ -274,6 +274,9 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var simulateUpload = function (that) {
+        if (that.demoState.shouldPause) {
+            return;
+        }
         var file = that.demoState.currentFile;
         that.invokeAfterRandomDelay(function () {
             if (that.demoState.bytesUploaded < file.size) {
@@ -302,7 +305,7 @@ fluid_0_6 = fluid_0_6 || {};
         that.demoState.currentFile.filestatus = fluid.fileQueue.fileStatusConstants.CANCELLED;
         
         // In SWFUpload's world, pausing is a combinination of an UPLOAD_STOPPED error and a complete.
-        that.events.onUploadError.fire(that.demoState.currentFile, 
+        that.events.onFileError.fire(that.demoState.currentFile, 
                                        SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED, 
                                        "The demo upload was paused by the user.");
         // This is a hack that needs to be addressed.
@@ -339,7 +342,7 @@ fluid_0_6 = fluid_0_6 || {};
          * Cancels a simulated upload.
          * This method overrides the default behaviour in SWFUploadManager.
          */
-        that.cancel = function () {
+        that.stop = function () {
             pauseDemo(that);
         };
         
