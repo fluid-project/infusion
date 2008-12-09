@@ -110,7 +110,7 @@ fluid_0_6 = fluid_0_6 || {};
         container = fluid.container(container);
 
         // Remove the anchors from the taborder.
-        jQuery("a", container).tabindex(-1);
+        fluid.tabindex(jQuery("a", container), -1);
         addThumbnailActivateHandler(container);
         
         containerEl = fluid.unwrap(container);

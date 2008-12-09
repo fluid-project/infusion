@@ -433,14 +433,13 @@ fluid_0_6 = fluid_0_6 || {};
                     jQuery.data(jQuery.data(selectable[0], "fluid.reorderer.selectable-initialised", true));
                 }
             }
-            if (!thatReorderer.selectableContext) {   
-                thatReorderer.container.selectable({
+            if (!thatReorderer.selectableContext) {
+                thatReorderer.selectableContext = fluid.selectable(thatReorderer.container, {
                     selectableElements: selectables,
                     selectablesTabindex: thatReorderer.options.selectablesTabindex,
                     direction: null
                 });
             }
-            thatReorderer.selectableContext = thatReorderer.container.getSelectableContext();
         };
     
         var dropChangeListener = function (dropTarget) {
@@ -492,7 +491,7 @@ fluid_0_6 = fluid_0_6 || {};
                 thatReorderer.handleKeyDown,
                 thatReorderer.handleKeyUp);
             addRolesToContainer(thatReorderer);
-            thatReorderer.container.tabbable();
+            fluid.tabbable(thatReorderer.container);
             initItems();
         }
 

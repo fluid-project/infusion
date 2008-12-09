@@ -12,9 +12,65 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
 /*global jQuery*/
 
+var fluid_0_6 = fluid_0_6 || {};
+var fluid = fluid || fluid_0_6;
+
+(function ($, fluid) {
+
+    // $().fluid("selectable", args)
+    // $().fluid("selectable".that()
+    // $().fluid("pager.pagerBar", args)
+    // $().fluid("reorderer", options)
+
+/** Create a "bridge" from code written in the Fluid standard "that-ist" style,
+ *  to the standard JQuery UI plugin architecture specified at http://docs.jquery.com/UI/Guidelines .
+ *  Every Fluid component corresponding to the top-level standard signature (JQueryable, options)
+ *  will automatically convert idiomatically to the JQuery UI standard via this adapter. 
+ *  Any return value which is a primitive or array type will become the return value
+ *  of the "bridged" function - however, where this function returns a general hash
+ *  (object) this is interpreted as forming part of the Fluid "return that" pattern,
+ *  and the function will instead be bridged to "return this" as per JQuery standard,
+ *  permitting chaining to occur. However, as a courtesy, the particular "this" returned
+ *  will be augmented with a function that() which will allow the original return
+ *  value to be retrieved if desired.
+ *  @param {String} name The name under which the "plugin space" is to be injected into
+ *  JQuery
+ *  @param {Object} peer The root of the namespace corresponding to the peer object.
+ */
+
+    fluid.thatistBridge = function (name, peer) {
+
+        var togo = function(funcname) {
+            var segs = funcname.split(".");
+            var move = peer;
+            for (var i = 0; i < segs.length; ++i) {
+                move = move[segs[i]];
+            }
+            var args = [this];
+            if (arguments.length === 2) {
+                args = args.concat(jQuery.makeArray(arguments[1]));
+            }
+            var ret = move.apply(null, args);
+            this.that = function() {
+                return ret;
+            }
+            var type = typeof(ret);
+            return !ret || type === "string" || type === "number" || type === "boolean"
+              || ret && ret.length !== undefined? ret: this;
+        };
+        jQuery.fn[name] = togo;
+        return togo;
+    };
+
+    fluid.thatistBridge("fluid", fluid);
+    fluid.thatistBridge("fluid_0_6", fluid_0_6);
+
+
+
 // Tabindex normalization
-(function($) {
+
     // -- Private functions --
+    
     
     var normalizeTabindexName = function() {
         return $.browser.msie ? "tabIndex" : "tabindex";
@@ -33,7 +89,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
             return undefined;
         }
 
-        if (!elements.hasTabindexAttr()) {
+        if (!elements.fluid("tabindex.hasAttr")) {
             return canHaveDefaultTabindex(elements) ? Number(0) : undefined;
         }
 
@@ -56,19 +112,21 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
      * 
      * @param {String|Number} toIndex
      */
-    $.fn.tabindex = function(toIndex) {
+     fluid.tabindex = function(target, toIndex) {
+        target = $(target);
         if (toIndex !== null && toIndex !== undefined) {
-            return setValue(this, toIndex);
+            return setValue(target, toIndex);
         } else {
-            return getValue(this);
+            return getValue(target);
         }
     };
 
     /**
      * Removes the tabindex attribute altogether from each element.
      */
-    $.fn.removeTabindex = function() {
-        return this.each(function(i, item) {
+    fluid.tabindex.remove = function(target) {
+        target = $(target);
+        return target.each(function(i, item) {
             $(item).removeAttr(normalizeTabindexName());
         });
     };
@@ -76,30 +134,34 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     /**
      * Determines if an element actually has a tabindex attribute present.
      */
-    $.fn.hasTabindexAttr = function() {
-        if (this.length <= 0) {
+    fluid.tabindex.hasAttr = function(target) {
+        target = $(target);
+        if (target.length <= 0) {
             return false;
         }
-
-        var attributeNode = this[0].getAttributeNode(normalizeTabindexName());
-        return attributeNode ? attributeNode.specified : false;
+        var togo = target.map(
+            function() {
+                var attributeNode = this.getAttributeNode(normalizeTabindexName());
+                return attributeNode ? attributeNode.specified : false;
+            }
+            );
+        return togo.length === 1? togo[0] : togo;
     };
 
     /**
      * Determines if an element either has a tabindex attribute or is naturally tab-focussable.
      */
-    $.fn.hasTabindex = function() {
-        return this.hasTabindexAttr() || canHaveDefaultTabindex(this);
+    fluid.tabindex.has = function(target) {
+        target = $(target);
+        return fluid.tabindex.hasAttr(target) || canHaveDefaultTabindex(target);
     };
-})(jQuery);
 
 
 // Keyboard navigation
-(function($) {    
     // Public, static constants needed by the rest of the library.
-    $.a11y = $.a11y || {};
+    fluid.a11y = $.a11y || {};
 
-    $.a11y.keys = {
+    fluid.a11y.keys = {
         UP: 38,
         DOWN: 40,
         LEFT: 37,
@@ -113,7 +175,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         ALT: 18
     };
 
-    $.a11y.orientation = {
+    fluid.a11y.orientation = {
         HORIZONTAL: 0,
         VERTICAL: 1,
         BOTH: 2
@@ -128,13 +190,13 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     var NO_SELECTION = -32768;
 
     var UP_DOWN_KEYMAP = {
-        next: $.a11y.keys.DOWN,
-        previous: $.a11y.keys.UP
+        next: fluid.a11y.keys.DOWN,
+        previous: fluid.a11y.keys.UP
     };
 
     var LEFT_RIGHT_KEYMAP = {
-        next: $.a11y.keys.RIGHT,
-        previous: $.a11y.keys.LEFT
+        next: fluid.a11y.keys.RIGHT,
+        previous: fluid.a11y.keys.LEFT
     };
 
     // Private functions.
@@ -290,10 +352,10 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     var getKeyMapForDirection = function(direction) {
         // Determine the appropriate mapping for next and previous based on the specified direction.
         var keyMap;
-        if (direction === $.a11y.orientation.HORIZONTAL) {
+        if (direction === fluid.a11y.orientation.HORIZONTAL) {
             keyMap = LEFT_RIGHT_KEYMAP;
         } 
-        else if (direction === $.a11y.orientation.VERTICAL) {
+        else if (direction === fluid.a11y.orientation.VERTICAL) {
             // Assume vertical in any other case.
             keyMap = UP_DOWN_KEYMAP;
         }
@@ -338,8 +400,8 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         // If each element doesn't have a tabindex, or has one set to a negative value, set it to 0.
         elements.each(function(idx, item) {
             item = $(item);
-            if (!item.hasTabindex() || item.tabindex() < 0) {
-                item.tabindex(0);
+            if (!item.fluid("tabindex.has") || item.fluid("tabindex") < 0) {
+                item.fluid("tabindex", 0);
             }
         });
     };
@@ -369,7 +431,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
     var tabKeyHandler = function(selectionContext) {
         return function(evt) {
-            if (evt.which !== $.a11y.keys.TAB) {
+            if (evt.which !== fluid.a11y.keys.TAB) {
                 return;
             }
 
@@ -403,7 +465,7 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         that.selectablesUpdated = function(focusedItem) {
           // Remove selectables from the tab order and add focus/blur handlers
             if (typeof(that.options.selectablesTabindex) === "number") {
-                that.selectables.tabindex(that.options.selectablesTabindex);
+                that.selectables.fluid("tabindex", that.options.selectablesTabindex);
             }
             that.selectables.unbind("focus." + NAMESPACE_KEY);
             that.selectables.unbind("blur." + NAMESPACE_KEY);
@@ -478,9 +540,9 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
     /**
      * Makes all matched elements available in the tab order by setting their tabindices to "0".
      */
-    $.fn.tabbable = function() {
-        makeElementsTabFocussable(this);
-        return this;
+    fluid.tabbable = function(target) {
+        target = $(target);
+        makeElementsTabFocussable(target);
     };
 
     /**
@@ -489,75 +551,47 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
      * Options provide configurability, including direction: and autoSelectFirstItem:
      * Currently supported directions are jQuery.a11y.directions.HORIZONTAL and VERTICAL.
      */
-    $.fn.selectable = function(options) {
-        var that = makeElementsSelectable(this, this.selectable.defaults, options);
-        setData(this, CONTEXT_KEY, that);
-        return this;
-    };
-    
-    $.fn.getSelectableContext = function() {
-        return getData(this, CONTEXT_KEY);
-    };
-
-    /**
-     * Makes all matched elements activatable with the Space and Enter keys.
-     * Provide your own handler function for custom behaviour.
-     * Options allow you to provide a list of additionalActivationKeys.
-     */
-    $.fn.activatable = function(fn, options) {
-        makeElementsActivatable(this, fn, this.activatable.defaults.keys, options);
-        setData(this, ACTIVATE_KEY, createDefaultActivationHandler(this, fn));
-        return this;
+    fluid.selectable = function(target, options) {
+        target = $(target);
+        var that = makeElementsSelectable(target, fluid.selectable.defaults, options);
+        setData(target, CONTEXT_KEY, that);
+        return that;
     };
 
     /**
      * Selects the specified element.
      */
-    $.fn.select = function(elementToSelect) {
-        elementToSelect.focus();
-        return this;
+    fluid.selectable.select = function(target, toSelect) {
+        $(toSelect).focus();
     };
 
     /**
      * Selects the next matched element.
      */
-    $.fn.selectNext = function() {
-        focusNextElement(getData(this, CONTEXT_KEY));
-        return this;
+    fluid.selectable.selectNext = function(target) {
+        target = $(target);
+        focusNextElement(getData(target, CONTEXT_KEY));
     };
 
     /**
      * Selects the previous matched element.
      */
-    $.fn.selectPrevious = function() {
-        focusPreviousElement(getData(this, CONTEXT_KEY));
-        return this;
+    fluid.selectable.selectPrevious = function(target) {
+        target = $(target);
+        focusPreviousElement(getData(target, CONTEXT_KEY));
     };
 
     /**
      * Returns the currently selected item wrapped as a jQuery object.
      */
-    $.fn.currentSelection = function() {
-        var that = getData(this, CONTEXT_KEY);
+    fluid.selectable.currentSelection = function(target) {
+        target = $(target);
+        var that = getData(target, CONTEXT_KEY);
         return $(that.selectedElement());
     };
 
-    /**
-     * Activates the specified element.
-     */
-    $.fn.activate = function(elementToActivate) {
-        var handler = getData(this, ACTIVATE_KEY);
-        handler(elementToActivate);
-        return this;
-    };
-
-    // Public Defaults.
-    $.fn.activatable.defaults = {
-        keys: [$.a11y.keys.ENTER, $.a11y.keys.SPACE]
-    };
-
-    $.fn.selectable.defaults = {
-        direction: $.a11y.orientation.VERTICAL,
+    fluid.selectable.defaults = {
+        direction: fluid.a11y.orientation.VERTICAL,
         selectablesTabindex: -1,
         autoSelectFirstItem: true,
         rememberSelectionState: true,
@@ -567,4 +601,31 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
         onUnselect: null,
         onLeaveContainer: null
     };
-})(jQuery);
+
+    /**
+     * Makes all matched elements activatable with the Space and Enter keys.
+     * Provide your own handler function for custom behaviour.
+     * Options allow you to provide a list of additionalActivationKeys.
+     */
+    fluid.activatable = function(target, fn, options) {
+        target = $(target);
+        makeElementsActivatable(target, fn, fluid.activatable.defaults.keys, options);
+        setData(target, ACTIVATE_KEY, createDefaultActivationHandler(target, fn));
+    };
+
+    /**
+     * Activates the specified element.
+     */
+    fluid.activate = function(target, elementToActivate) {
+        target = $(target);
+        var handler = getData(target, ACTIVATE_KEY);
+        handler(elementToActivate);
+    };
+
+    // Public Defaults.
+    fluid.activatable.defaults = {
+        keys: [fluid.a11y.keys.ENTER, fluid.a11y.keys.SPACE]
+    };
+
+  
+  })(jQuery, fluid_0_6);

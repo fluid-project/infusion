@@ -112,7 +112,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                   value = "Thing"; 
               }
               field.val(value);
-              inlineEditor.editContainer.simulate("keypress", {keyCode: $.a11y.keys.ENTER});
+              inlineEditor.editContainer.simulate("keypress", {keyCode: fluid.a11y.keys.ENTER});
               jqUnit.assertEquals("Unsubmitted", shouldsubmit? value : "", inlineEditor.model.value);
 
               
@@ -256,13 +256,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var display = $("#display");
             var edit = $("#edit");
             var inlineEditor = fluid.inlineEdit("#inline-edit");
-            jqUnit.assertTrue("Display is tabbable", display.tabindex() >= 0);
+            jqUnit.assertTrue("Display is tabbable", fluid.tabindex(display) >= 0);
             jqUnit.assertFalse("Initially display field is not focussed", display.hasClass(inlineEditor.options.styles.focus));
     
             display.focus();
             jqUnit.assertTrue("After focus, display is focussed", display.hasClass(inlineEditor.options.styles.focus));
     
-            display.simulate("keydown", {keyCode: $.a11y.keys.ENTER});
+            display.simulate("keydown", {keyCode: fluid.a11y.keys.ENTER});
                 
             jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
             jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
@@ -270,7 +270,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             var testString = "This is new text.";
             edit.attr("value", testString);
-            edit.simulate("keypress", {keyCode: $.a11y.keys.ENTER});
+            edit.simulate("keypress", {keyCode: fluid.a11y.keys.ENTER});
     
             jqUnit.isVisible("After changing text and pressing enter, display field is visible", "#display");
             jqUnit.assertTrue("After changing text and pressing enter, display has focus style", display.hasClass(inlineEditor.options.styles.focus));
@@ -321,7 +321,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var inlineEditor = fluid.inlineEdit("#inline-edit");
     
             display.focus();
-            display.simulate("keydown", {keyCode: $.a11y.keys.ENTER});
+            display.simulate("keydown", {keyCode: fluid.a11y.keys.ENTER});
             jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
             jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
             jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));

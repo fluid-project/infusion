@@ -14,41 +14,41 @@ var fluid = fluid || {};
 fluid.accessiblecheckbox =  function () {
     // Private functions.
     var selectCheckbox = function (boxToFocus) {
-        jQuery ("label", boxToFocus).addClass ("focussed");
+        jQuery("label", boxToFocus).addClass("focussed");
     };
 
     var unselectCheckbox = function (boxToBlur) {
-        jQuery ("label", boxToBlur).removeClass ("focussed");
+        jQuery("label", boxToBlur).removeClass("focussed");
     };
 
     var leaveCheckboxes = function (selectedBox) {
-        unselectCheckbox (selectedBox);
+        unselectCheckbox(selectedBox);
     };
 
     var toggleBox = function (box) {
-        box.toggleClass ("checked");
+        box.toggleClass("checked");
     };
 
     var selectCheckboxHandler = function (boxToCheck) {
-        var boxLabel = jQuery ("label", boxToCheck);
-        toggleBox (boxLabel);
+        var boxLabel = jQuery("label", boxToCheck);
+        toggleBox(boxLabel);
     };
 
     var replaceInputsWithGraphics = function (boxes) {
         var replaceFn = function (index, box) {
            // Hide the original input box.
-           jQuery ("input", box).addClass("hiddenBox");
+           jQuery("input", box).addClass("hiddenBox");
 
            // Replace it with a graphic on the label.
-           jQuery ("label", box).addClass("graphicBox");
+           jQuery("label", box).addClass("graphicBox");
         };
 
-        boxes.each (replaceFn);
+        boxes.each(replaceFn);
     };
 
     var clickable = function (boxes) {
-        boxes.mousedown (function (evt) {
-            boxes.activate (this);
+        boxes.mousedown(function (evt) {
+            fluid.activate(this);
         });
     };
 
@@ -56,12 +56,12 @@ fluid.accessiblecheckbox =  function () {
     return {
         initializeCheckboxes: function (checkboxContainerId) {
             // Make the overall container tab-focussable.
-            var checkboxContainer = jQuery ("#" + checkboxContainerId);
-            checkboxContainer.tabbable(checkboxContainer);
+            var checkboxContainer = jQuery("#" + checkboxContainerId);
+            fluid.tabbable(checkboxContainer);
 
             // Find all checkboxes and make them fancy.
             var boxes = checkboxContainer.children ("#checkboxes_0,#checkboxes_1,#checkboxes_2,#checkboxes_3");
-            replaceInputsWithGraphics (boxes);
+            replaceInputsWithGraphics(boxes);
 
             // Make them key navigable and activatable.
             var options = {
@@ -70,9 +70,9 @@ fluid.accessiblecheckbox =  function () {
                 onUnselect: unselectCheckbox,
                 onLeaveContainer: leaveCheckboxes
             };
-            checkboxContainer.selectable (options);
-            boxes.activatable (selectCheckboxHandler);
-            clickable (boxes);
+            fluid.selectable(checkboxContainer, options);
+            fluid.activatable(boxes, selectCheckboxHandler);
+            clickable(boxes);
         }
     }; // End public return.
 }(); // End fluid.accessiblecheckbox namespace.

@@ -241,8 +241,8 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var bindKeyboardHandlers = function (that) {
-        that.viewEl.tabbable();
-        that.viewEl.activatable(makeEditHandler(that));
+        fluid.tabbable(that.viewEl);
+        fluid.activatable(that.viewEl, makeEditHandler(that));
     };
     
     var bindEditFinish = function (that) {
@@ -253,7 +253,7 @@ fluid_0_6 = fluid_0_6 || {};
         var finishHandler = function (evt) {
             // Fix for handling arrow key presses. See FLUID-760.
             var code = (evt.keyCode ? evt.keyCode : (evt.which ? evt.which : 0));
-            if (code !== $.a11y.keys.ENTER) {
+            if (code !== fluid.a11y.keys.ENTER) {
                 return true;
             }
             

@@ -72,7 +72,7 @@ var fluid = fluid || fluid_0_6;
     fluid.testUtils.reorderer.compositeKey = function (reorderer, event, target) {
         var modifierEvent = $.extend(true, {}, event);
         var modifier = event.ctrlKey? "CTRL" : event.shiftKey? "SHIFT" : event.altKey? "ALT" : "";
-        modifierEvent.keyCode = $.a11y.keys[modifier];
+        modifierEvent.keyCode = fluid.a11y.keys[modifier];
         fluid.testUtils.reorderer.keyDown(reorderer, modifierEvent, target);
         fluid.testUtils.reorderer.keyDown(reorderer, event, target);
         modifierEvent.ctrlKey = modifierEvent.shiftKey = modifierEvent.altKey = undefined;

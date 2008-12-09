@@ -90,8 +90,8 @@ fluid_0_6 = fluid_0_6 || {};
         var that = fluid.initView("undo", null, userOptions);
         that.container = that.options.renderer(that, component.container);
         fluid.initDomBinder(that);
-        that.locate("undoControl").tabindex(0);
-        that.locate("redoControl").tabindex(0);
+        fluid.tabindex(that.locate("undoControl"), 0);
+        fluid.tabindex(that.locate("redoControl"), 0);
         
         that.component = component;
         that.initialModel = {};
