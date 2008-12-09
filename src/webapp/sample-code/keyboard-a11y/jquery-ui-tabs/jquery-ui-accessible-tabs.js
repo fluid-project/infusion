@@ -23,7 +23,7 @@ var fluid = fluid || {};
 
         // Put the tablist in the tab focus order. Take each tab *out* of the tab order
         // so that they can be navigated with the arrow keys instead of the tab key.
-        tablist.tabbable();
+        fluid.tabbable(tablist);
 
         // When we're using the Windows style interaction, select the tab as soon as it's focused.
         var selectTab = function (tabToSelect) {
@@ -36,15 +36,15 @@ var fluid = fluid || {};
         //  * Pass in the items you want to make selectable.
         //  * Register your onSelect callback to make the tab actually selected.
         //  * Specify the orientation of the tabs (the default is vertical)
-        tablist.selectable({ 
+        fluid.selectable(tablist, { 
             selectableElements: tabs,
         	onSelect: selectTab,
-        	direction: $.a11y.orientation.HORIZONTAL
+        	direction: fluid.a11y.orientation.HORIZONTAL
         });
         
         // Use an activation handler if we are using the "Mac OS" style tab interaction.
         // In this case, we shouldn't actually select the tab until the Enter or Space key is pressed.
-        tablist.activatable(function (tabToSelect) {
+        fluid.activatable(tablist, function (tabToSelect) {
             if (!selectOnFocus) {
                 tablist.tabs('select', tabs.index(tabToSelect));
             }
@@ -83,7 +83,7 @@ var fluid = fluid || {};
         var tablist = $("#" + tabsId);
         
         // Remove the anchors in the list from the tab order.
-        tablist.find("a").tabindex(-1);
+        fluid.tabindex(tablist.find("a"), -1);
 
         // Turn the list into a jQuery UI tabs widget.
         tablist.tabs();

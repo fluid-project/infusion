@@ -106,9 +106,9 @@ fluid_0_6 = fluid_0_6 || {};
             removeFileForRow(that, row);
         };
        
-        row.activatable(null, {
+        fluid.activatable(row, null, {
             additionalBindings: [{
-                key: $.a11y.keys.DELETE, 
+                key: fluid.a11y.keys.DELETE, 
                 activateHandler: deleteHandler
             }]
         });
@@ -116,9 +116,9 @@ fluid_0_6 = fluid_0_6 || {};
     
     var bindRowHandlers = function (that, row) {
         if ($.browser.msie && $.browser.version < 7) {
-			bindHover(row, that.options.styles);
+            bindHover(row, that.options.styles);
         }
-		
+        
         that.locate("fileIconBtn", row).click(function () {
             removeFileForRow(that, row);
         });
@@ -214,8 +214,8 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var addKeyboardNavigation = function (that) {
-        that.container.tabbable();
-        that.container.selectable({
+        fluid.tabbable(that.container);
+        that.selectableContext = fluid.selectable(that.container, {
             selectableSelector: that.options.selectors.fileRows,
             onSelect: function (itemToSelect) {
                 $(itemToSelect).addClass(that.options.styles.selected);
@@ -279,8 +279,8 @@ fluid_0_6 = fluid_0_6 || {};
         };
         
         that.refreshView = function () {
-    		that.scroller.refreshView();
-            that.container.getSelectableContext().refresh();
+            that.scroller.refreshView();
+            that.selectableContext.refresh();
         };
         
         setupFileQueue(that, uploadManager);     
@@ -314,7 +314,7 @@ fluid_0_6 = fluid_0_6 || {};
                 toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)", 
                 singleFile: "file",
                 pluralFiles: "files"
-        	},
+            },
             status: {
                 success: "File Uploaded",
                 error: "File Upload Error"
@@ -580,7 +580,7 @@ fluid_0_6 = fluid_0_6 || {};
                 selectors: {
                     progressBar: ".fluid-scroller-table-foot",
                     displayElement: ".total-progress", 
-            		label: ".total-file-progress",
+                    label: ".total-file-progress",
                     indicator: ".total-progress"
                 }
             }

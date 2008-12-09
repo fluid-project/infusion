@@ -150,7 +150,7 @@
                                 locateRows(q).eq(0).hasClass(q.options.styles.selected));
                                 
             // And that the second item is also selectable.
-            q.container.selectNext();
+            fluid.selectable.selectNext(q.container);
             jqUnit.assertTrue("The second row should now be selected.",
                                 locateRows(q).eq(1).hasClass(q.options.styles.selected));
             jqUnit.assertFalse("The first row should no longer be selected.",
