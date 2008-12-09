@@ -10,6 +10,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+/*global SWFUpload*/
+/*global swfobject*/
 /*global jQuery*/
 /*global fluid_0_6*/
 
@@ -186,8 +188,11 @@ fluid_0_6 = fluid_0_6 || {};
         fileRowElm.attr("title", that.options.strings.status.success);
     };
     
-    var showErrorForFile = function (that, file) {
+    var showErrorForFile = function (that, file, error) {
+        hideFileProgress(that, file);
         if (file.filestatus === fluid.fileQueue.fileStatusConstants.ERROR) {
+         
+            // file errored
             var fileRowElm = rowForFile(that, file);
             changeRowState(fileRowElm, that.options.styles.error);
             // add error information to the title attribute
@@ -265,8 +270,8 @@ fluid_0_6 = fluid_0_6 || {};
             markRowAsComplete(that, file);
         };
         
-        that.showErrorForFile = function (file) {
-            showErrorForFile(that, file);
+        that.showErrorForFile = function (file, error) {
+            showErrorForFile(that, file, error);
         };
         
         that.hideFileProgress = function (file) {
@@ -466,6 +471,13 @@ fluid_0_6 = fluid_0_6 || {};
             updateTotalProgress(that); 
         });
         
+        that.events.onFileError.addListener(function (file, error) {
+            if (error === SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED) {
+                // user stopped
+                updateStateAfterCompletion(that);
+            }
+        });
+
         that.events.afterUploadComplete.addListener(function () {
             updateStateAfterCompletion(that);
         });

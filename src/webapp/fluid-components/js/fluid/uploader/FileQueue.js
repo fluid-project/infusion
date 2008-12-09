@@ -74,7 +74,8 @@ fluid_0_6 = fluid_0_6 || {};
     fluid.fileQueue = function () {
         var that = {};
         that.files = [];
-       
+        that.isUploading = false;
+        
         that.addFile = function (file) {
             that.files.push(file);    
         };

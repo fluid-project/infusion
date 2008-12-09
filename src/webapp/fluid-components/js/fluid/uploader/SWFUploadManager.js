@@ -74,8 +74,7 @@ fluid_0_6 = fluid_0_6 || {};
             batch.numFilesCompleted++;
             
             fireAfterFileComplete(file);
-            
-            if (batch.numFilesCompleted < batch.files.length) {
+            if (that.queue.isUploading && batch.numFilesCompleted < batch.files.length) {
                 that.uploadNextFile();
             } else {
                 finishUploading(that);
@@ -101,6 +100,7 @@ fluid_0_6 = fluid_0_6 || {};
 
     var start = function (that) {
         that.queue.setupCurrentBatch();
+        that.queue.isUploading = true;
         that.events.onUploadStart.fire(that.queue.currentBatch.files); 
         that.uploadNextFile();
     };
@@ -145,7 +145,12 @@ fluid_0_6 = fluid_0_6 || {};
             fileStatusUpdater(file);
         });
         
-        that.events.onFileError.addListener(fileStatusUpdater);
+        that.events.onFileError.addListener(function (file, error) {
+            if (error === SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED) {
+                that.queue.isUploading = false;
+            }
+            fileStatusUpdater(file, error);
+        });
         
         that.events.onFileSuccess.addListener(function (file) {
             if (that.queue.currentBatch.bytesUploadedForFile === 0) {
