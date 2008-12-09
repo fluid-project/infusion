@@ -118,7 +118,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         </copy>
         <copy todir="${swfupload-js-build}">
             <fileset dir="${swfupload-js-src}">
-                <include name="LICENSE.txt" />
+                <include name="*.txt" />
             </fileset>
         </copy>
         <copy todir="${renderer-build}">
@@ -135,11 +135,11 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     <target name="concatAllJS">
 		<concat destfile="${toDir}/Fluid-all.js" append="true" >
 		    <filelist dir="${src}/js/jquery" files="${jquery_order_of_dependencies}" />
+            <filelist dir="${src}/js/json" files="json2.js" />
+            <filelist dir="${src}/js/swfupload" files="swfobject.js, swfupload.js" />
 			<filelist dir="${src}/js/fluid" files="${fluid_order_of_dependencies}" />
 			<filelist dir="${src}/js/fluid/renderer" files="${fluid_renderer_order_of_dependencies}" />
 			<filelist dir="${src}/js/fluid/uploader" files="${fluid_uploader_order_of_dependencies}" />
-            <filelist dir="${src}/js/json" files="json2.js" />
-            <filelist dir="${src}/js/swfupload" files="swfupload.js" />
 		</concat>    
     </target>
     

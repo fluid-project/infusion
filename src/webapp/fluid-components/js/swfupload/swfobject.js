@@ -1,5 +1,731 @@
-/* SWFObject v2.1 <http://code.google.com/p/swfobject/>
+/*! SWFObject v2.1 <http://code.google.com/p/swfobject/>
 	Copyright (c) 2007-2008 Geoff Stearns, Michael Williams, and Bobby van der Sluis
 	This software is released under the MIT License <http://www.opensource.org/licenses/mit-license.php>
 */
-var swfobject=function(){var b="undefined",Q="object",n="Shockwave Flash",p="ShockwaveFlash.ShockwaveFlash",P="application/x-shockwave-flash",m="SWFObjectExprInst",j=window,K=document,T=navigator,o=[],N=[],i=[],d=[],J,Z=null,M=null,l=null,e=false,A=false;var h=function(){var v=typeof K.getElementById!=b&&typeof K.getElementsByTagName!=b&&typeof K.createElement!=b,AC=[0,0,0],x=null;if(typeof T.plugins!=b&&typeof T.plugins[n]==Q){x=T.plugins[n].description;if(x&&!(typeof T.mimeTypes!=b&&T.mimeTypes[P]&&!T.mimeTypes[P].enabledPlugin)){x=x.replace(/^.*\s+(\S+\s+\S+$)/,"$1");AC[0]=parseInt(x.replace(/^(.*)\..*$/,"$1"),10);AC[1]=parseInt(x.replace(/^.*\.(.*)\s.*$/,"$1"),10);AC[2]=/r/.test(x)?parseInt(x.replace(/^.*r(.*)$/,"$1"),10):0}}else{if(typeof j.ActiveXObject!=b){var y=null,AB=false;try{y=new ActiveXObject(p+".7")}catch(t){try{y=new ActiveXObject(p+".6");AC=[6,0,21];y.AllowScriptAccess="always"}catch(t){if(AC[0]==6){AB=true}}if(!AB){try{y=new ActiveXObject(p)}catch(t){}}}if(!AB&&y){try{x=y.GetVariable("$version");if(x){x=x.split(" ")[1].split(",");AC=[parseInt(x[0],10),parseInt(x[1],10),parseInt(x[2],10)]}}catch(t){}}}}var AD=T.userAgent.toLowerCase(),r=T.platform.toLowerCase(),AA=/webkit/.test(AD)?parseFloat(AD.replace(/^.*webkit\/(\d+(\.\d+)?).*$/,"$1")):false,q=false,z=r?/win/.test(r):/win/.test(AD),w=r?/mac/.test(r):/mac/.test(AD);/*@cc_on q=true;@if(@_win32)z=true;@elif(@_mac)w=true;@end@*/return{w3cdom:v,pv:AC,webkit:AA,ie:q,win:z,mac:w}}();var L=function(){if(!h.w3cdom){return }f(H);if(h.ie&&h.win){try{K.write("<script id=__ie_ondomload defer=true src=//:><\/script>");J=C("__ie_ondomload");if(J){I(J,"onreadystatechange",S)}}catch(q){}}if(h.webkit&&typeof K.readyState!=b){Z=setInterval(function(){if(/loaded|complete/.test(K.readyState)){E()}},10)}if(typeof K.addEventListener!=b){K.addEventListener("DOMContentLoaded",E,null)}R(E)}();function S(){if(J.readyState=="complete"){J.parentNode.removeChild(J);E()}}function E(){if(e){return }if(h.ie&&h.win){var v=a("span");try{var u=K.getElementsByTagName("body")[0].appendChild(v);u.parentNode.removeChild(u)}catch(w){return }}e=true;if(Z){clearInterval(Z);Z=null}var q=o.length;for(var r=0;r<q;r++){o[r]()}}function f(q){if(e){q()}else{o[o.length]=q}}function R(r){if(typeof j.addEventListener!=b){j.addEventListener("load",r,false)}else{if(typeof K.addEventListener!=b){K.addEventListener("load",r,false)}else{if(typeof j.attachEvent!=b){I(j,"onload",r)}else{if(typeof j.onload=="function"){var q=j.onload;j.onload=function(){q();r()}}else{j.onload=r}}}}}function H(){var t=N.length;for(var q=0;q<t;q++){var u=N[q].id;if(h.pv[0]>0){var r=C(u);if(r){N[q].width=r.getAttribute("width")?r.getAttribute("width"):"0";N[q].height=r.getAttribute("height")?r.getAttribute("height"):"0";if(c(N[q].swfVersion)){if(h.webkit&&h.webkit<312){Y(r)}W(u,true)}else{if(N[q].expressInstall&&!A&&c("6.0.65")&&(h.win||h.mac)){k(N[q])}else{O(r)}}}}else{W(u,true)}}}function Y(t){var q=t.getElementsByTagName(Q)[0];if(q){var w=a("embed"),y=q.attributes;if(y){var v=y.length;for(var u=0;u<v;u++){if(y[u].nodeName=="DATA"){w.setAttribute("src",y[u].nodeValue)}else{w.setAttribute(y[u].nodeName,y[u].nodeValue)}}}var x=q.childNodes;if(x){var z=x.length;for(var r=0;r<z;r++){if(x[r].nodeType==1&&x[r].nodeName=="PARAM"){w.setAttribute(x[r].getAttribute("name"),x[r].getAttribute("value"))}}}t.parentNode.replaceChild(w,t)}}function k(w){A=true;var u=C(w.id);if(u){if(w.altContentId){var y=C(w.altContentId);if(y){M=y;l=w.altContentId}}else{M=G(u)}if(!(/%$/.test(w.width))&&parseInt(w.width,10)<310){w.width="310"}if(!(/%$/.test(w.height))&&parseInt(w.height,10)<137){w.height="137"}K.title=K.title.slice(0,47)+" - Flash Player Installation";var z=h.ie&&h.win?"ActiveX":"PlugIn",q=K.title,r="MMredirectURL="+j.location+"&MMplayerType="+z+"&MMdoctitle="+q,x=w.id;if(h.ie&&h.win&&u.readyState!=4){var t=a("div");x+="SWFObjectNew";t.setAttribute("id",x);u.parentNode.insertBefore(t,u);u.style.display="none";var v=function(){u.parentNode.removeChild(u)};I(j,"onload",v)}U({data:w.expressInstall,id:m,width:w.width,height:w.height},{flashvars:r},x)}}function O(t){if(h.ie&&h.win&&t.readyState!=4){var r=a("div");t.parentNode.insertBefore(r,t);r.parentNode.replaceChild(G(t),r);t.style.display="none";var q=function(){t.parentNode.removeChild(t)};I(j,"onload",q)}else{t.parentNode.replaceChild(G(t),t)}}function G(v){var u=a("div");if(h.win&&h.ie){u.innerHTML=v.innerHTML}else{var r=v.getElementsByTagName(Q)[0];if(r){var w=r.childNodes;if(w){var q=w.length;for(var t=0;t<q;t++){if(!(w[t].nodeType==1&&w[t].nodeName=="PARAM")&&!(w[t].nodeType==8)){u.appendChild(w[t].cloneNode(true))}}}}}return u}function U(AG,AE,t){var q,v=C(t);if(v){if(typeof AG.id==b){AG.id=t}if(h.ie&&h.win){var AF="";for(var AB in AG){if(AG[AB]!=Object.prototype[AB]){if(AB.toLowerCase()=="data"){AE.movie=AG[AB]}else{if(AB.toLowerCase()=="styleclass"){AF+=' class="'+AG[AB]+'"'}else{if(AB.toLowerCase()!="classid"){AF+=" "+AB+'="'+AG[AB]+'"'}}}}}var AD="";for(var AA in AE){if(AE[AA]!=Object.prototype[AA]){AD+='<param name="'+AA+'" value="'+AE[AA]+'" />'}}v.outerHTML='<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'+AF+">"+AD+"</object>";i[i.length]=AG.id;q=C(AG.id)}else{if(h.webkit&&h.webkit<312){var AC=a("embed");AC.setAttribute("type",P);for(var z in AG){if(AG[z]!=Object.prototype[z]){if(z.toLowerCase()=="data"){AC.setAttribute("src",AG[z])}else{if(z.toLowerCase()=="styleclass"){AC.setAttribute("class",AG[z])}else{if(z.toLowerCase()!="classid"){AC.setAttribute(z,AG[z])}}}}}for(var y in AE){if(AE[y]!=Object.prototype[y]){if(y.toLowerCase()!="movie"){AC.setAttribute(y,AE[y])}}}v.parentNode.replaceChild(AC,v);q=AC}else{var u=a(Q);u.setAttribute("type",P);for(var x in AG){if(AG[x]!=Object.prototype[x]){if(x.toLowerCase()=="styleclass"){u.setAttribute("class",AG[x])}else{if(x.toLowerCase()!="classid"){u.setAttribute(x,AG[x])}}}}for(var w in AE){if(AE[w]!=Object.prototype[w]&&w.toLowerCase()!="movie"){F(u,w,AE[w])}}v.parentNode.replaceChild(u,v);q=u}}}return q}function F(t,q,r){var u=a("param");u.setAttribute("name",q);u.setAttribute("value",r);t.appendChild(u)}function X(r){var q=C(r);if(q&&(q.nodeName=="OBJECT"||q.nodeName=="EMBED")){if(h.ie&&h.win){if(q.readyState==4){B(r)}else{j.attachEvent("onload",function(){B(r)})}}else{q.parentNode.removeChild(q)}}}function B(t){var r=C(t);if(r){for(var q in r){if(typeof r[q]=="function"){r[q]=null}}r.parentNode.removeChild(r)}}function C(t){var q=null;try{q=K.getElementById(t)}catch(r){}return q}function a(q){return K.createElement(q)}function I(t,q,r){t.attachEvent(q,r);d[d.length]=[t,q,r]}function c(t){var r=h.pv,q=t.split(".");q[0]=parseInt(q[0],10);q[1]=parseInt(q[1],10)||0;q[2]=parseInt(q[2],10)||0;return(r[0]>q[0]||(r[0]==q[0]&&r[1]>q[1])||(r[0]==q[0]&&r[1]==q[1]&&r[2]>=q[2]))?true:false}function V(v,r){if(h.ie&&h.mac){return }var u=K.getElementsByTagName("head")[0],t=a("style");t.setAttribute("type","text/css");t.setAttribute("media","screen");if(!(h.ie&&h.win)&&typeof K.createTextNode!=b){t.appendChild(K.createTextNode(v+" {"+r+"}"))}u.appendChild(t);if(h.ie&&h.win&&typeof K.styleSheets!=b&&K.styleSheets.length>0){var q=K.styleSheets[K.styleSheets.length-1];if(typeof q.addRule==Q){q.addRule(v,r)}}}function W(t,q){var r=q?"visible":"hidden";if(e&&C(t)){C(t).style.visibility=r}else{V("#"+t,"visibility:"+r)}}function g(s){var r=/[\\\"<>\.;]/;var q=r.exec(s)!=null;return q?encodeURIComponent(s):s}var D=function(){if(h.ie&&h.win){window.attachEvent("onunload",function(){var w=d.length;for(var v=0;v<w;v++){d[v][0].detachEvent(d[v][1],d[v][2])}var t=i.length;for(var u=0;u<t;u++){X(i[u])}for(var r in h){h[r]=null}h=null;for(var q in swfobject){swfobject[q]=null}swfobject=null})}}();return{registerObject:function(u,q,t){if(!h.w3cdom||!u||!q){return }var r={};r.id=u;r.swfVersion=q;r.expressInstall=t?t:false;N[N.length]=r;W(u,false)},getObjectById:function(v){var q=null;if(h.w3cdom){var t=C(v);if(t){var u=t.getElementsByTagName(Q)[0];if(!u||(u&&typeof t.SetVariable!=b)){q=t}else{if(typeof u.SetVariable!=b){q=u}}}}return q},embedSWF:function(x,AE,AB,AD,q,w,r,z,AC){if(!h.w3cdom||!x||!AE||!AB||!AD||!q){return }AB+="";AD+="";if(c(q)){W(AE,false);var AA={};if(AC&&typeof AC===Q){for(var v in AC){if(AC[v]!=Object.prototype[v]){AA[v]=AC[v]}}}AA.data=x;AA.width=AB;AA.height=AD;var y={};if(z&&typeof z===Q){for(var u in z){if(z[u]!=Object.prototype[u]){y[u]=z[u]}}}if(r&&typeof r===Q){for(var t in r){if(r[t]!=Object.prototype[t]){if(typeof y.flashvars!=b){y.flashvars+="&"+t+"="+r[t]}else{y.flashvars=t+"="+r[t]}}}}f(function(){U(AA,y,AE);if(AA.id==AE){W(AE,true)}})}else{if(w&&!A&&c("6.0.65")&&(h.win||h.mac)){A=true;W(AE,false);f(function(){var AF={};AF.id=AF.altContentId=AE;AF.width=AB;AF.height=AD;AF.expressInstall=w;k(AF)})}}},getFlashPlayerVersion:function(){return{major:h.pv[0],minor:h.pv[1],release:h.pv[2]}},hasFlashPlayerVersion:c,createSWF:function(t,r,q){if(h.w3cdom){return U(t,r,q)}else{return undefined}},removeSWF:function(q){if(h.w3cdom){X(q)}},createCSS:function(r,q){if(h.w3cdom){V(r,q)}},addDomLoadEvent:f,addLoadEvent:R,getQueryParamValue:function(v){var u=K.location.search||K.location.hash;if(v==null){return g(u)}if(u){var t=u.substring(1).split("&");for(var r=0;r<t.length;r++){if(t[r].substring(0,t[r].indexOf("="))==v){return g(t[r].substring((t[r].indexOf("=")+1)))}}}return""},expressInstallCallback:function(){if(A&&M){var q=C(m);if(q){q.parentNode.replaceChild(M,q);if(l){W(l,true);if(h.ie&&h.win){M.style.display="block"}}M=null;l=null;A=false}}}}}();
+
+var swfobject = function() {
+	
+	var UNDEF = "undefined",
+		OBJECT = "object",
+		SHOCKWAVE_FLASH = "Shockwave Flash",
+		SHOCKWAVE_FLASH_AX = "ShockwaveFlash.ShockwaveFlash",
+		FLASH_MIME_TYPE = "application/x-shockwave-flash",
+		EXPRESS_INSTALL_ID = "SWFObjectExprInst",
+		
+		win = window,
+		doc = document,
+		nav = navigator,
+		
+		domLoadFnArr = [],
+		regObjArr = [],
+		objIdArr = [],
+		listenersArr = [],
+		script,
+		timer = null,
+		storedAltContent = null,
+		storedAltContentId = null,
+		isDomLoaded = false,
+		isExpressInstallActive = false;
+	
+	/* Centralized function for browser feature detection
+		- Proprietary feature detection (conditional compiling) is used to detect Internet Explorer's features
+		- User agent string detection is only used when no alternative is possible
+		- Is executed directly for optimal performance
+	*/	
+	var ua = function() {
+		var w3cdom = typeof doc.getElementById != UNDEF && typeof doc.getElementsByTagName != UNDEF && typeof doc.createElement != UNDEF,
+			playerVersion = [0,0,0],
+			d = null;
+		if (typeof nav.plugins != UNDEF && typeof nav.plugins[SHOCKWAVE_FLASH] == OBJECT) {
+			d = nav.plugins[SHOCKWAVE_FLASH].description;
+			if (d && !(typeof nav.mimeTypes != UNDEF && nav.mimeTypes[FLASH_MIME_TYPE] && !nav.mimeTypes[FLASH_MIME_TYPE].enabledPlugin)) { // navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin indicates whether plug-ins are enabled or disabled in Safari 3+
+				d = d.replace(/^.*\s+(\S+\s+\S+$)/, "$1");
+				playerVersion[0] = parseInt(d.replace(/^(.*)\..*$/, "$1"), 10);
+				playerVersion[1] = parseInt(d.replace(/^.*\.(.*)\s.*$/, "$1"), 10);
+				playerVersion[2] = /r/.test(d) ? parseInt(d.replace(/^.*r(.*)$/, "$1"), 10) : 0;
+			}
+		}
+		else if (typeof win.ActiveXObject != UNDEF) {
+			var a = null, fp6Crash = false;
+			try {
+				a = new ActiveXObject(SHOCKWAVE_FLASH_AX + ".7");
+			}
+			catch(e) {
+				try { 
+					a = new ActiveXObject(SHOCKWAVE_FLASH_AX + ".6");
+					playerVersion = [6,0,21];
+					a.AllowScriptAccess = "always";	 // Introduced in fp6.0.47
+				}
+				catch(e) {
+					if (playerVersion[0] == 6) {
+						fp6Crash = true;
+					}
+				}
+				if (!fp6Crash) {
+					try {
+						a = new ActiveXObject(SHOCKWAVE_FLASH_AX);
+					}
+					catch(e) {}
+				}
+			}
+			if (!fp6Crash && a) { // a will return null when ActiveX is disabled
+				try {
+					d = a.GetVariable("$version");	// Will crash fp6.0.21/23/29
+					if (d) {
+						d = d.split(" ")[1].split(",");
+						playerVersion = [parseInt(d[0], 10), parseInt(d[1], 10), parseInt(d[2], 10)];
+					}
+				}
+				catch(e) {}
+			}
+		}
+		var u = nav.userAgent.toLowerCase(),
+			p = nav.platform.toLowerCase(),
+			webkit = /webkit/.test(u) ? parseFloat(u.replace(/^.*webkit\/(\d+(\.\d+)?).*$/, "$1")) : false, // returns either the webkit version or false if not webkit
+			ie = false,
+			windows = p ? /win/.test(p) : /win/.test(u),
+			mac = p ? /mac/.test(p) : /mac/.test(u);
+		/*@cc_on
+			ie = true;
+			@if (@_win32)
+				windows = true;
+			@elif (@_mac)
+				mac = true;
+			@end
+		@*/
+		return { w3cdom:w3cdom, pv:playerVersion, webkit:webkit, ie:ie, win:windows, mac:mac };
+	}();
+
+	/* Cross-browser onDomLoad
+		- Based on Dean Edwards' solution: http://dean.edwards.name/weblog/2006/06/again/
+		- Will fire an event as soon as the DOM of a page is loaded (supported by Gecko based browsers - like Firefox -, IE, Opera9+, Safari)
+	*/ 
+	var onDomLoad = function() {
+		if (!ua.w3cdom) {
+			return;
+		}
+		addDomLoadEvent(main);
+		if (ua.ie && ua.win) {
+			try {	 // Avoid a possible Operation Aborted error
+				doc.write("<scr" + "ipt id=__ie_ondomload defer=true src=//:></scr" + "ipt>"); // String is split into pieces to avoid Norton AV to add code that can cause errors 
+				script = getElementById("__ie_ondomload");
+				if (script) {
+					addListener(script, "onreadystatechange", checkReadyState);
+				}
+			}
+			catch(e) {}
+		}
+		if (ua.webkit && typeof doc.readyState != UNDEF) {
+			timer = setInterval(function() { if (/loaded|complete/.test(doc.readyState)) { callDomLoadFunctions(); }}, 10);
+		}
+		if (typeof doc.addEventListener != UNDEF) {
+			doc.addEventListener("DOMContentLoaded", callDomLoadFunctions, null);
+		}
+		addLoadEvent(callDomLoadFunctions);
+	}();
+	
+	function checkReadyState() {
+		if (script.readyState == "complete") {
+			script.parentNode.removeChild(script);
+			callDomLoadFunctions();
+		}
+	}
+	
+	function callDomLoadFunctions() {
+		if (isDomLoaded) {
+			return;
+		}
+		if (ua.ie && ua.win) { // Test if we can really add elements to the DOM; we don't want to fire it too early
+			var s = createElement("span");
+			try { // Avoid a possible Operation Aborted error
+				var t = doc.getElementsByTagName("body")[0].appendChild(s);
+				t.parentNode.removeChild(t);
+			}
+			catch (e) {
+				return;
+			}
+		}
+		isDomLoaded = true;
+		if (timer) {
+			clearInterval(timer);
+			timer = null;
+		}
+		var dl = domLoadFnArr.length;
+		for (var i = 0; i < dl; i++) {
+			domLoadFnArr[i]();
+		}
+	}
+	
+	function addDomLoadEvent(fn) {
+		if (isDomLoaded) {
+			fn();
+		}
+		else { 
+			domLoadFnArr[domLoadFnArr.length] = fn; // Array.push() is only available in IE5.5+
+		}
+	}
+	
+	/* Cross-browser onload
+		- Based on James Edwards' solution: http://brothercake.com/site/resources/scripts/onload/
+		- Will fire an event as soon as a web page including all of its assets are loaded 
+	 */
+	function addLoadEvent(fn) {
+		if (typeof win.addEventListener != UNDEF) {
+			win.addEventListener("load", fn, false);
+		}
+		else if (typeof doc.addEventListener != UNDEF) {
+			doc.addEventListener("load", fn, false);
+		}
+		else if (typeof win.attachEvent != UNDEF) {
+			addListener(win, "onload", fn);
+		}
+		else if (typeof win.onload == "function") {
+			var fnOld = win.onload;
+			win.onload = function() {
+				fnOld();
+				fn();
+			};
+		}
+		else {
+			win.onload = fn;
+		}
+	}
+	
+	/* Main function
+		- Will preferably execute onDomLoad, otherwise onload (as a fallback)
+	*/
+	function main() { // Static publishing only
+		var rl = regObjArr.length;
+		for (var i = 0; i < rl; i++) { // For each registered object element
+			var id = regObjArr[i].id;
+			if (ua.pv[0] > 0) {
+				var obj = getElementById(id);
+				if (obj) {
+					regObjArr[i].width = obj.getAttribute("width") ? obj.getAttribute("width") : "0";
+					regObjArr[i].height = obj.getAttribute("height") ? obj.getAttribute("height") : "0";
+					if (hasPlayerVersion(regObjArr[i].swfVersion)) { // Flash plug-in version >= Flash content version: Houston, we have a match!
+						if (ua.webkit && ua.webkit < 312) { // Older webkit engines ignore the object element's nested param elements
+							fixParams(obj);
+						}
+						setVisibility(id, true);
+					}
+					else if (regObjArr[i].expressInstall && !isExpressInstallActive && hasPlayerVersion("6.0.65") && (ua.win || ua.mac)) { // Show the Adobe Express Install dialog if set by the web page author and if supported (fp6.0.65+ on Win/Mac OS only)
+						showExpressInstall(regObjArr[i]);
+					}
+					else { // Flash plug-in and Flash content version mismatch: display alternative content instead of Flash content
+						displayAltContent(obj);
+					}
+				}
+			}
+			else {	// If no fp is installed, we let the object element do its job (show alternative content)
+				setVisibility(id, true);
+			}
+		}
+	}
+	
+	/* Fix nested param elements, which are ignored by older webkit engines
+		- This includes Safari up to and including version 1.2.2 on Mac OS 10.3
+		- Fall back to the proprietary embed element
+	*/
+	function fixParams(obj) {
+		var nestedObj = obj.getElementsByTagName(OBJECT)[0];
+		if (nestedObj) {
+			var e = createElement("embed"), a = nestedObj.attributes;
+			if (a) {
+				var al = a.length;
+				for (var i = 0; i < al; i++) {
+					if (a[i].nodeName == "DATA") {
+						e.setAttribute("src", a[i].nodeValue);
+					}
+					else {
+						e.setAttribute(a[i].nodeName, a[i].nodeValue);
+					}
+				}
+			}
+			var c = nestedObj.childNodes;
+			if (c) {
+				var cl = c.length;
+				for (var j = 0; j < cl; j++) {
+					if (c[j].nodeType == 1 && c[j].nodeName == "PARAM") {
+						e.setAttribute(c[j].getAttribute("name"), c[j].getAttribute("value"));
+					}
+				}
+			}
+			obj.parentNode.replaceChild(e, obj);
+		}
+	}
+	
+	/* Show the Adobe Express Install dialog
+		- Reference: http://www.adobe.com/cfusion/knowledgebase/index.cfm?id=6a253b75
+	*/
+	function showExpressInstall(regObj) {
+		isExpressInstallActive = true;
+		var obj = getElementById(regObj.id);
+		if (obj) {
+			if (regObj.altContentId) {
+				var ac = getElementById(regObj.altContentId);
+				if (ac) {
+					storedAltContent = ac;
+					storedAltContentId = regObj.altContentId;
+				}
+			}
+			else {
+				storedAltContent = abstractAltContent(obj);
+			}
+			if (!(/%$/.test(regObj.width)) && parseInt(regObj.width, 10) < 310) {
+				regObj.width = "310";
+			}
+			if (!(/%$/.test(regObj.height)) && parseInt(regObj.height, 10) < 137) {
+				regObj.height = "137";
+			}
+			doc.title = doc.title.slice(0, 47) + " - Flash Player Installation";
+			var pt = ua.ie && ua.win ? "ActiveX" : "PlugIn",
+				dt = doc.title,
+				fv = "MMredirectURL=" + win.location + "&MMplayerType=" + pt + "&MMdoctitle=" + dt,
+				replaceId = regObj.id;
+			// For IE when a SWF is loading (AND: not available in cache) wait for the onload event to fire to remove the original object element
+			// In IE you cannot properly cancel a loading SWF file without breaking browser load references, also obj.onreadystatechange doesn't work
+			if (ua.ie && ua.win && obj.readyState != 4) {
+				var newObj = createElement("div");
+				replaceId += "SWFObjectNew";
+				newObj.setAttribute("id", replaceId);
+				obj.parentNode.insertBefore(newObj, obj); // Insert placeholder div that will be replaced by the object element that loads expressinstall.swf
+				obj.style.display = "none";
+				var fn = function() {
+					obj.parentNode.removeChild(obj);
+				};
+				addListener(win, "onload", fn);
+			}
+			createSWF({ data:regObj.expressInstall, id:EXPRESS_INSTALL_ID, width:regObj.width, height:regObj.height }, { flashvars:fv }, replaceId);
+		}
+	}
+	
+	/* Functions to abstract and display alternative content
+	*/
+	function displayAltContent(obj) {
+		if (ua.ie && ua.win && obj.readyState != 4) {
+			// For IE when a SWF is loading (AND: not available in cache) wait for the onload event to fire to remove the original object element
+			// In IE you cannot properly cancel a loading SWF file without breaking browser load references, also obj.onreadystatechange doesn't work
+			var el = createElement("div");
+			obj.parentNode.insertBefore(el, obj); // Insert placeholder div that will be replaced by the alternative content
+			el.parentNode.replaceChild(abstractAltContent(obj), el);
+			obj.style.display = "none";
+			var fn = function() {
+				obj.parentNode.removeChild(obj);
+			};
+			addListener(win, "onload", fn);
+		}
+		else {
+			obj.parentNode.replaceChild(abstractAltContent(obj), obj);
+		}
+	} 
+
+	function abstractAltContent(obj) {
+		var ac = createElement("div");
+		if (ua.win && ua.ie) {
+			ac.innerHTML = obj.innerHTML;
+		}
+		else {
+			var nestedObj = obj.getElementsByTagName(OBJECT)[0];
+			if (nestedObj) {
+				var c = nestedObj.childNodes;
+				if (c) {
+					var cl = c.length;
+					for (var i = 0; i < cl; i++) {
+						if (!(c[i].nodeType == 1 && c[i].nodeName == "PARAM") && !(c[i].nodeType == 8)) {
+							ac.appendChild(c[i].cloneNode(true));
+						}
+					}
+				}
+			}
+		}
+		return ac;
+	}
+	
+	/* Cross-browser dynamic SWF creation
+	*/
+	function createSWF(attObj, parObj, id) {
+		var r, el = getElementById(id);
+		if (el) {
+			if (typeof attObj.id == UNDEF) { // if no 'id' is defined for the object element, it will inherit the 'id' from the alternative content
+				attObj.id = id;
+			}
+			if (ua.ie && ua.win) { // IE, the object element and W3C DOM methods do not combine: fall back to outerHTML
+				var att = "";
+				for (var i in attObj) {
+					if (attObj[i] != Object.prototype[i]) { // Filter out prototype additions from other potential libraries, like Object.prototype.toJSONString = function() {}
+						if (i.toLowerCase() == "data") {
+							parObj.movie = attObj[i];
+						}
+						else if (i.toLowerCase() == "styleclass") { // 'class' is an ECMA4 reserved keyword
+							att += ' class="' + attObj[i] + '"';
+						}
+						else if (i.toLowerCase() != "classid") {
+							att += ' ' + i + '="' + attObj[i] + '"';
+						}
+					}
+				}
+				var par = "";
+				for (var j in parObj) {
+					if (parObj[j] != Object.prototype[j]) { // Filter out prototype additions from other potential libraries
+						par += '<param name="' + j + '" value="' + parObj[j] + '" />';
+					}
+				}
+				el.outerHTML = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"' + att + '>' + par + '</object>';
+				objIdArr[objIdArr.length] = attObj.id; // Stored to fix object 'leaks' on unload (dynamic publishing only)
+				r = getElementById(attObj.id);	
+			}
+			else if (ua.webkit && ua.webkit < 312) { // Older webkit engines ignore the object element's nested param elements: fall back to the proprietary embed element
+				var e = createElement("embed");
+				e.setAttribute("type", FLASH_MIME_TYPE);
+				for (var k in attObj) {
+					if (attObj[k] != Object.prototype[k]) { // Filter out prototype additions from other potential libraries
+						if (k.toLowerCase() == "data") {
+							e.setAttribute("src", attObj[k]);
+						}
+						else if (k.toLowerCase() == "styleclass") { // 'class' is an ECMA4 reserved keyword
+							e.setAttribute("class", attObj[k]);
+						}
+						else if (k.toLowerCase() != "classid") { // Filter out IE specific attribute
+							e.setAttribute(k, attObj[k]);
+						}
+					}
+				}
+				for (var l in parObj) {
+					if (parObj[l] != Object.prototype[l]) { // Filter out prototype additions from other potential libraries
+						if (l.toLowerCase() != "movie") { // Filter out IE specific param element
+							e.setAttribute(l, parObj[l]);
+						}
+					}
+				}
+				el.parentNode.replaceChild(e, el);
+				r = e;
+			}
+			else { // Well-behaving browsers
+				var o = createElement(OBJECT);
+				o.setAttribute("type", FLASH_MIME_TYPE);
+				for (var m in attObj) {
+					if (attObj[m] != Object.prototype[m]) { // Filter out prototype additions from other potential libraries
+						if (m.toLowerCase() == "styleclass") { // 'class' is an ECMA4 reserved keyword
+							o.setAttribute("class", attObj[m]);
+						}
+						else if (m.toLowerCase() != "classid") { // Filter out IE specific attribute
+							o.setAttribute(m, attObj[m]);
+						}
+					}
+				}
+				for (var n in parObj) {
+					if (parObj[n] != Object.prototype[n] && n.toLowerCase() != "movie") { // Filter out prototype additions from other potential libraries and IE specific param element
+						createObjParam(o, n, parObj[n]);
+					}
+				}
+				el.parentNode.replaceChild(o, el);
+				r = o;
+			}
+		}
+		return r;
+	}
+	
+	function createObjParam(el, pName, pValue) {
+		var p = createElement("param");
+		p.setAttribute("name", pName);	
+		p.setAttribute("value", pValue);
+		el.appendChild(p);
+	}
+	
+	/* Cross-browser SWF removal
+		- Especially needed to safely and completely remove a SWF in Internet Explorer
+	*/
+	function removeSWF(id) {
+		var obj = getElementById(id);
+		if (obj && (obj.nodeName == "OBJECT" || obj.nodeName == "EMBED")) {
+			if (ua.ie && ua.win) {
+				if (obj.readyState == 4) {
+					removeObjectInIE(id);
+				}
+				else {
+					win.attachEvent("onload", function() {
+						removeObjectInIE(id);
+					});
+				}
+			}
+			else {
+				obj.parentNode.removeChild(obj);
+			}
+		}
+	}
+	
+	function removeObjectInIE(id) {
+		var obj = getElementById(id);
+		if (obj) {
+			for (var i in obj) {
+				if (typeof obj[i] == "function") {
+					obj[i] = null;
+				}
+			}
+			obj.parentNode.removeChild(obj);
+		}
+	}
+	
+	/* Functions to optimize JavaScript compression
+	*/
+	function getElementById(id) {
+		var el = null;
+		try {
+			el = doc.getElementById(id);
+		}
+		catch (e) {}
+		return el;
+	}
+	
+	function createElement(el) {
+		return doc.createElement(el);
+	}
+	
+	/* Updated attachEvent function for Internet Explorer
+		- Stores attachEvent information in an Array, so on unload the detachEvent functions can be called to avoid memory leaks
+	*/	
+	function addListener(target, eventType, fn) {
+		target.attachEvent(eventType, fn);
+		listenersArr[listenersArr.length] = [target, eventType, fn];
+	}
+	
+	/* Flash Player and SWF content version matching
+	*/
+	function hasPlayerVersion(rv) {
+		var pv = ua.pv, v = rv.split(".");
+		v[0] = parseInt(v[0], 10);
+		v[1] = parseInt(v[1], 10) || 0; // supports short notation, e.g. "9" instead of "9.0.0"
+		v[2] = parseInt(v[2], 10) || 0;
+		return (pv[0] > v[0] || (pv[0] == v[0] && pv[1] > v[1]) || (pv[0] == v[0] && pv[1] == v[1] && pv[2] >= v[2])) ? true : false;
+	}
+	
+	/* Cross-browser dynamic CSS creation
+		- Based on Bobby van der Sluis' solution: http://www.bobbyvandersluis.com/articles/dynamicCSS.php
+	*/	
+	function createCSS(sel, decl) {
+		if (ua.ie && ua.mac) {
+			return;
+		}
+		var h = doc.getElementsByTagName("head")[0], s = createElement("style");
+		s.setAttribute("type", "text/css");
+		s.setAttribute("media", "screen");
+		if (!(ua.ie && ua.win) && typeof doc.createTextNode != UNDEF) {
+			s.appendChild(doc.createTextNode(sel + " {" + decl + "}"));
+		}
+		h.appendChild(s);
+		if (ua.ie && ua.win && typeof doc.styleSheets != UNDEF && doc.styleSheets.length > 0) {
+			var ls = doc.styleSheets[doc.styleSheets.length - 1];
+			if (typeof ls.addRule == OBJECT) {
+				ls.addRule(sel, decl);
+			}
+		}
+	}
+	
+	function setVisibility(id, isVisible) {
+		var v = isVisible ? "visible" : "hidden";
+		if (isDomLoaded && getElementById(id)) {
+			getElementById(id).style.visibility = v;
+		}
+		else {
+			createCSS("#" + id, "visibility:" + v);
+		}
+	}
+
+	/* Filter to avoid XSS attacks 
+	*/
+	function urlEncodeIfNecessary(s) {
+		var regex = /[\\\"<>\.;]/;
+		var hasBadChars = regex.exec(s) != null;
+		return hasBadChars ? encodeURIComponent(s) : s;
+	}
+	
+	/* Release memory to avoid memory leaks caused by closures, fix hanging audio/video threads and force open sockets/NetConnections to disconnect (Internet Explorer only)
+	*/
+	var cleanup = function() {
+		if (ua.ie && ua.win) {
+			window.attachEvent("onunload", function() {
+				// remove listeners to avoid memory leaks
+				var ll = listenersArr.length;
+				for (var i = 0; i < ll; i++) {
+					listenersArr[i][0].detachEvent(listenersArr[i][1], listenersArr[i][2]);
+				}
+				// cleanup dynamically embedded objects to fix audio/video threads and force open sockets and NetConnections to disconnect
+				var il = objIdArr.length;
+				for (var j = 0; j < il; j++) {
+					removeSWF(objIdArr[j]);
+				}
+				// cleanup library's main closures to avoid memory leaks
+				for (var k in ua) {
+					ua[k] = null;
+				}
+				ua = null;
+				for (var l in swfobject) {
+					swfobject[l] = null;
+				}
+				swfobject = null;
+			});
+		}
+	}();
+	
+	
+	return {
+		/* Public API
+			- Reference: http://code.google.com/p/swfobject/wiki/SWFObject_2_0_documentation
+		*/ 
+		registerObject: function(objectIdStr, swfVersionStr, xiSwfUrlStr) {
+			if (!ua.w3cdom || !objectIdStr || !swfVersionStr) {
+				return;
+			}
+			var regObj = {};
+			regObj.id = objectIdStr;
+			regObj.swfVersion = swfVersionStr;
+			regObj.expressInstall = xiSwfUrlStr ? xiSwfUrlStr : false;
+			regObjArr[regObjArr.length] = regObj;
+			setVisibility(objectIdStr, false);
+		},
+		
+		getObjectById: function(objectIdStr) {
+			var r = null;
+			if (ua.w3cdom) {
+				var o = getElementById(objectIdStr);
+				if (o) {
+					var n = o.getElementsByTagName(OBJECT)[0];
+					if (!n || (n && typeof o.SetVariable != UNDEF)) {
+							r = o;
+					}
+					else if (typeof n.SetVariable != UNDEF) {
+						r = n;
+					}
+				}
+			}
+			return r;
+		},
+		
+		embedSWF: function(swfUrlStr, replaceElemIdStr, widthStr, heightStr, swfVersionStr, xiSwfUrlStr, flashvarsObj, parObj, attObj) {
+			if (!ua.w3cdom || !swfUrlStr || !replaceElemIdStr || !widthStr || !heightStr || !swfVersionStr) {
+				return;
+			}
+			widthStr += ""; // Auto-convert to string
+			heightStr += "";
+			if (hasPlayerVersion(swfVersionStr)) {
+				setVisibility(replaceElemIdStr, false);
+				var att = {};
+				if (attObj && typeof attObj === OBJECT) {
+					for (var i in attObj) {
+						if (attObj[i] != Object.prototype[i]) { // Filter out prototype additions from other potential libraries
+							att[i] = attObj[i];
+						}
+					}
+				}
+				att.data = swfUrlStr;
+				att.width = widthStr;
+				att.height = heightStr;
+				var par = {}; 
+				if (parObj && typeof parObj === OBJECT) {
+					for (var j in parObj) {
+						if (parObj[j] != Object.prototype[j]) { // Filter out prototype additions from other potential libraries
+							par[j] = parObj[j];
+						}
+					}
+				}
+				if (flashvarsObj && typeof flashvarsObj === OBJECT) {
+					for (var k in flashvarsObj) {
+						if (flashvarsObj[k] != Object.prototype[k]) { // Filter out prototype additions from other potential libraries
+							if (typeof par.flashvars != UNDEF) {
+								par.flashvars += "&" + k + "=" + flashvarsObj[k];
+							}
+							else {
+								par.flashvars = k + "=" + flashvarsObj[k];
+							}
+						}
+					}
+				}
+				addDomLoadEvent(function() {
+					createSWF(att, par, replaceElemIdStr);
+					if (att.id == replaceElemIdStr) {
+						setVisibility(replaceElemIdStr, true);
+					}
+				});
+			}
+			else if (xiSwfUrlStr && !isExpressInstallActive && hasPlayerVersion("6.0.65") && (ua.win || ua.mac)) {
+				isExpressInstallActive = true; // deferred execution
+				setVisibility(replaceElemIdStr, false);
+				addDomLoadEvent(function() {
+					var regObj = {};
+					regObj.id = regObj.altContentId = replaceElemIdStr;
+					regObj.width = widthStr;
+					regObj.height = heightStr;
+					regObj.expressInstall = xiSwfUrlStr;
+					showExpressInstall(regObj);
+				});
+			}
+		},
+		
+		getFlashPlayerVersion: function() {
+			return { major:ua.pv[0], minor:ua.pv[1], release:ua.pv[2] };
+		},
+		
+		hasFlashPlayerVersion: hasPlayerVersion,
+		
+		createSWF: function(attObj, parObj, replaceElemIdStr) {
+			if (ua.w3cdom) {
+				return createSWF(attObj, parObj, replaceElemIdStr);
+			}
+			else {
+				return undefined;
+			}
+		},
+		
+		removeSWF: function(objElemIdStr) {
+			if (ua.w3cdom) {
+				removeSWF(objElemIdStr);
+			}
+		},
+		
+		createCSS: function(sel, decl) {
+			if (ua.w3cdom) {
+				createCSS(sel, decl);
+			}
+		},
+		
+		addDomLoadEvent: addDomLoadEvent,
+		
+		addLoadEvent: addLoadEvent,
+		
+		getQueryParamValue: function(param) {
+			var q = doc.location.search || doc.location.hash;
+			if (param == null) {
+				return urlEncodeIfNecessary(q);
+			}
+			if (q) {
+				var pairs = q.substring(1).split("&");
+				for (var i = 0; i < pairs.length; i++) {
+					if (pairs[i].substring(0, pairs[i].indexOf("=")) == param) {
+						return urlEncodeIfNecessary(pairs[i].substring((pairs[i].indexOf("=") + 1)));
+					}
+				}
+			}
+			return "";
+		},
+		
+		// For internal usage only
+		expressInstallCallback: function() {
+			if (isExpressInstallActive && storedAltContent) {
+				var obj = getElementById(EXPRESS_INSTALL_ID);
+				if (obj) {
+					obj.parentNode.replaceChild(storedAltContent, obj);
+					if (storedAltContentId) {
+						setVisibility(storedAltContentId, true);
+						if (ua.ie && ua.win) {
+							storedAltContent.style.display = "block";
+						}
+					}
+					storedAltContent = null;
+					storedAltContentId = null;
+					isExpressInstallActive = false;
+				}
+			} 
+		}
+	};
+}();
