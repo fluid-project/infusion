@@ -28,7 +28,7 @@ Generic containers for columns and layouts
 
 
 /* linearizable containers */
-.fl-layout-linear * {overflow:visible !important; clear: both !important;}
+.fl-layout-linear * {overflow:visible !important; clear: both !important; float:none !important; position:relative !important;}
 .fl-layout-linear .fl-container,
 .fl-layout-linear .fl-container-100,
 .fl-layout-linear .fl-container-150,
