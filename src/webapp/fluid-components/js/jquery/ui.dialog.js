@@ -80,7 +80,7 @@ $.widget("ui.dialog", {
 				}),
 			
 			uiDialogButtonPane = (this.uiDialogButtonPane = $('<div/>'))
-				.addClass('ui-dialog-buttonpane')
+				.addClass('ui-dialog-buttonpane').css({ position: 'absolute', bottom: 0 })
 				.appendTo(uiDialog);
 		
 		this.uiDialogTitlebarClose = $('.ui-dialog-titlebar-close', uiDialogTitlebar)
@@ -99,9 +99,14 @@ $.widget("ui.dialog", {
 				self.close();
 				return false;
 			});
-		
+
+		this.uiDialogTitlebar.find("*").add(this.uiDialogTitlebar).each(function() {
+			$.ui.disableSelection(this);
+		});
+
 		if ($.fn.draggable) {
 			uiDialog.draggable({
+				cancel: '.ui-dialog-content',
 				helper: options.dragHelper,
 				handle: '.ui-dialog-titlebar',
 				start: function(e, ui) {
@@ -121,7 +126,8 @@ $.widget("ui.dialog", {
 		
 		if ($.fn.resizable) {
 			uiDialog.resizable({
-				proxy: options.resizeHelper,
+				cancel: '.ui-dialog-content',
+				helper: options.resizeHelper,
 				maxWidth: options.maxWidth,
 				maxHeight: options.maxHeight,
 				minWidth: options.minWidth,
@@ -235,8 +241,8 @@ $.widget("ui.dialog", {
 		var container = this.uiDialogContainer,
 			titlebar = this.uiDialogTitlebar,
 			content = this.element,
-			tbMargin = parseInt(content.css('margin-top')) + parseInt(content.css('margin-bottom')),
-			lrMargin = parseInt(content.css('margin-left')) + parseInt(content.css('margin-right'));
+			tbMargin = parseInt(content.css('margin-top'),10) + parseInt(content.css('margin-bottom'),10),
+			lrMargin = parseInt(content.css('margin-left'),10) + parseInt(content.css('margin-right'),10);
 		content.height(container.height() - titlebar.outerHeight() - tbMargin);
 		content.width(container.width() - lrMargin);
 	},
@@ -245,7 +251,7 @@ $.widget("ui.dialog", {
 		if (this.isOpen) { return; }
 		
 		this.overlay = this.options.modal ? new $.ui.dialog.overlay(this) : null;
-		this.uiDialog.appendTo('body');
+		(this.uiDialog.next().length > 0) && this.uiDialog.appendTo('body');
 		this.position(this.options.position);
 		this.uiDialog.show(this.options.show);
 		this.options.autoResize && this.size();
@@ -266,7 +272,7 @@ $.widget("ui.dialog", {
 	// position on open
 	moveToTop: function(force) {
 		if ((this.options.modal && !force)
-			|| (!this.options.stack && !this.options.modal)) { return; }
+			|| (!this.options.stack && !this.options.modal)) { return this.element.triggerHandler("dialogfocus", [null, { options: this.options }], this.options.focus); }
 		
 		var maxZ = this.options.zIndex, options = this.options;
 		$('.ui-dialog:visible').each(function() {
@@ -274,6 +280,8 @@ $.widget("ui.dialog", {
 		});
 		(this.overlay && this.overlay.$el.css('z-index', ++maxZ));
 		this.uiDialog.css('z-index', ++maxZ);
+		
+		this.element.triggerHandler("dialogfocus", [null, { options: this.options }], this.options.focus);
 	},
 	
 	close: function() {
