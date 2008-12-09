@@ -182,7 +182,7 @@ fluid_0_6 = fluid_0_6 || {};
         var fileRowElm = rowForFile(that, file);
         var removeFile = that.locate("fileIconBtn", fileRowElm);
         removeFile.unbind("click");
-        removeFile.tabindex(-1);
+        fluid.tabindex(removeFile, -1);
         removeFile.removeClass(that.options.styles.remove);
         changeRowState(fileRowElm, that.options.styles.uploaded);
         fileRowElm.attr("title", that.options.strings.status.success);
