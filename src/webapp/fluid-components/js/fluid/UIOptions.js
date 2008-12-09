@@ -70,7 +70,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     var initPreview = function (that) {
         that.events.modelChanged.addListener(function (model) {
-            var previewFrame = that.locate("previewFrame").contents(); // !iframe is hardcoded - temp solution to access iframe required in FLUID-1925!
+            var previewFrame = that.locate("previewFrame").contents();
             fluid.applySkin(model.value, that.locate("preview",previewFrame)); 
         });        
     };
