@@ -5,8 +5,9 @@ Generic containers for columns and layouts
 /* Container alignment */
 .fl-force-right {float:right; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
 .fl-force-left {float:left; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
+.fl-centered {margin-left:auto; margin-right:auto;}
 
-
+/* Generic container, proxy for other container effects */
 .fl-container {}
 /* Fixed width containers */
 .fl-container-100 {width: 100px; overflow: auto;}
@@ -18,16 +19,30 @@ Generic containers for columns and layouts
 .fl-container-750 {width: 750px; overflow: auto;}
 .fl-container-950 {width: 950px; overflow: auto;}
 
-/* Fluid width containers */
+/* Flex width containers */
 .fl-container-auto {width: auto; overflow: auto;}
 .fl-container-flex {width: 100%; overflow: auto; clear:both;}
-.fl-container-flex25 {width: 24.5%; overflow: auto; padding-left:0.25%; padding-right:0.25%;}
-.fl-container-flex30 {width: 32%; overflow: auto; padding-right:0.5%; padding-left:0.5%;}
+.fl-container-flex25 {width: 25%; overflow: auto;}
+.fl-container-flex30 {width: 30%; overflow: auto;}
 .fl-container-flex33 {width: 33%; overflow: auto;}
 .fl-container-flex50 {width: 50%; overflow: auto;}
 
+/* Flex width columns (containers with margins and padding) */
+/* magic derivative is 30: every size should be base 30, to perfectly fit up to 5 columns evenly */
+.fl-col {float:left; display:inline;}
+.fl-col-5-flex .fl-col {width:19%; margin:0 0.25%; padding:0 0.25%}
+.fl-col-4-flex .fl-col {width:24%; margin:0 0.25%; padding:0 0.25%}
+.fl-col-3-flex .fl-col {width:32.3%; margin:0 0.25%; padding:0 0.25%}
+.fl-col-2-flex .fl-col {width:49%; margin:0 0.25%; padding:0 0.25%}
+.fl-col-1-flex .fl-col {width:99%; margin:0 0.25%; padding:0 0.25%}
 
-/* linearizable containers */
+.fl-col-3-mixed .fl-col-side {width:200px;}
+.fl-col-3-mixed .fl-col-mid {margin:0 230px;}
+.fl-col-3-mixed .fl-col-side, 
+.fl-col-3-mixed .fl-col-mid {padding:0 10px;}
+
+
+/* linearizable containers & columns */
 .fl-layout-linear * {overflow:visible !important; clear: both !important; float:none !important; position:relative !important;}
 .fl-layout-linear .fl-container,
 .fl-layout-linear .fl-container-100,
@@ -58,20 +73,19 @@ Layout Helpers
  */
 .fl-tabs-center {text-align:center;}
 .fl-tabs-left {text-align:left; padding-left:10px;}
-.fl-tabs-right {text-align:right; padding-right:10px;}
-.fl-tabs {border-bottom: 1px solid}
-.fl-tabs li {border:1px solid}
-
-.fl-tabs {margin:0; padding-bottom:3px;}
-.fl-tabs li {list-style-type:none; display:inline; padding:3px 8px; text-align:center; margin-right:-5px; cursor:pointer;}
+.fl-tabs-right {text-align:right; padding-right:15px;}
+.fl-tabs {margin:5px 0 0px; border-bottom: 1px solid}
+.fl-tabs li {border:1px solid; list-style-type:none; display:inline-block; padding:3px 8px; text-align:center; margin-bottom:-1px; margin-right:-5px; cursor:pointer;}
 .fl-tabs .fl-activeTab {}
+/* IE only selector */
+.fl-tabs li {*display:inline;}
 
 /*
  * Menus: a quick menu
  * Dependency: list-based markup ?
  */
-.fl-listmenu {padding:2px;}
-.fl-listmenu li {margin:0; padding:0;}
+.fl-listmenu {padding:0px;}
+.fl-listmenu li {margin:0; padding:0; list-style-type:none;}
 .fl-listmenu a {padding:5px 5px; display:block; zoom:1;} /* list item needs layout (http://www.brunildo.org/test/IEWlispace.php) */
 
 /*
@@ -93,6 +107,31 @@ Layout Helpers
 .fl-button-left * {float:left; padding: 6px 8px 6px 0; cursor:pointer; background-position:left top; background-repeat:no-repeat;}
 .fl-button-right {float:right;  margin-left:10px; padding:0px 0 0px 25px; background-position:left top; background-repeat:no-repeat;}
 .fl-button-right * {float:left; padding: 6px 8px 6px 0; cursor:pointer; background-position:left top; background-repeat:no-repeat;}
+
+/*
+ * Widgets: modelled after the mycamtools widget model
+ */
+.fl-widget {padding:5px; margin-bottom:10px;}
+.fl-widget .button {margin:0 5px;}
+.fl-widget .fl-widget-titlebar {} /* fixes layout problem in IE6 due to .column {position:relative} setup*/
+.fl-widget .fl-widget-titlebar h2 {padding:0; margin:0; font-size:105%;}
+.fl-widget .fl-widget-controls {margin:-1.3em 0 1.5em 0;}
+.fl-widget .fl-widget-options {margin-top:3px; padding:5px 10px 0px 10px;}
+.fl-widget .fl-widget-options ul {margin:0; padding:0; overflow:hidden; zoom:1;} 
+.fl-widget .fl-widget-options li {list-style-type:none; float:left; display:inline; padding:0 5px 0 5px; margin-left:-5px;}
+.fl-widget .fl-widget-options a {margin-right:5px;}
+.fl-widget .fl-widget-content {zoom:1; margin:5px 0 0 0; overflow: auto;}
+.fl-widget .fl-widget-content ul {}
+.fl-widget .empty * {padding-top:10px; margin-left:auto; margin-right:auto; text-align:center;}
+/* Common widget sub-components */
+.fl-widget .menu 	{margin:0;}
+.fl-widget .grabbable {cursor:move; background-position:center top; background-repeat:no-repeat;}
+.fl-widget h2.grabbable {background-position:center top;}
+.fl-widget .icon 	{text-indent:-5000px; cursor:pointer; display:block; height:16px; width:16px; margin-left:5px; margin-right:5px; background-repeat:no-repeat;}
+.fl-widget .toggle  {width:32px;}
+.fl-widget .on 		{background-position:left top;}
+.fl-widget .off 	{background-position:left bottom;}
+
 
 /*
  * Progressive Enhancement
