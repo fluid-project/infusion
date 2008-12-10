@@ -70,6 +70,7 @@ var fluid = fluid || fluid_0_6;
          * of generating the composite key sequence.
          */
     fluid.testUtils.reorderer.compositeKey = function (reorderer, event, target) {
+        target = fluid.unwrap(target);
         var modifierEvent = $.extend(true, {}, event);
         var modifier = event.ctrlKey? "CTRL" : event.shiftKey? "SHIFT" : event.altKey? "ALT" : "";
         modifierEvent.keyCode = fluid.a11y.keys[modifier];
@@ -77,7 +78,7 @@ var fluid = fluid || fluid_0_6;
         fluid.testUtils.reorderer.keyDown(reorderer, event, target);
         modifierEvent.ctrlKey = modifierEvent.shiftKey = modifierEvent.altKey = undefined;
         fluid.testUtils.reorderer.keyUp(reorderer, modifierEvent, target);
-    };       
+    };
         
     fluid.testUtils.reorderer.keyDown = function (reorderer, event, target) {
         event.target = target;

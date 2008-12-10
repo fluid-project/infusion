@@ -58,7 +58,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.moduleLayout.updateLayout(item, relatedItem, fluid.position.BEFORE, layoutClone);
             jqUnit.assertEquals("After move, Portlet 3 should be before Portlet 7", portlet[3], layoutClone.columns[2].elements[0]);
             jqUnit.assertEquals("After move, Portlet 7 should be second in the column", portlet[7], layoutClone.columns[2].elements[1]);
+            
         });
+
 
     });
 })(jQuery);

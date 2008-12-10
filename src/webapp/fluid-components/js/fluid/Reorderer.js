@@ -511,6 +511,7 @@ fluid_0_6 = fluid_0_6 || {};
             thatReorderer.dom.refresh("grabHandle", thatReorderer.dom.fastLocate("movables"));
             thatReorderer.dom.refresh("stylisticOffset", thatReorderer.dom.fastLocate("movables"));
             thatReorderer.dom.refresh("dropTargets");
+            thatReorderer.events.onRefresh.fire();
             initItems();
             thatReorderer.selectableContext.selectables = thatReorderer.dom.fastLocate("selectables");
             thatReorderer.selectableContext.selectablesUpdated(thatReorderer.activeItem);
@@ -629,7 +630,8 @@ fluid_0_6 = fluid_0_6 || {};
             onBeginMove: "preventable",
             onMove: null,
             afterMove: null,
-            onHover: null
+            onHover: null,
+            onRefresh: null
         },
         
         mergePolicy: {

@@ -146,15 +146,20 @@ fluid.moduleLayout = fluid.moduleLayout || {};
      */
     fluid.moduleLayoutHandler = function (container, options, dropManager, dom) {
         var that = {};
-        var layout;
         
-        if (options.selectors.modules) {
-            layout = fluid.moduleLayout.layoutFromFlat(container, dom.locate("columns"), dom.locate("modules"));
+        function computeLayout() {
+            var togo;
+            if (options.selectors.modules) {
+                togo = fluid.moduleLayout.layoutFromFlat(container, dom.locate("columns"), dom.locate("modules"));
+            }
+            if (!togo) {
+                var idLayout = fluid.model.getBeanValue(options, "moduleLayout.layout");
+                 fluid.moduleLayout.layoutFromIds(idLayout);
+            }
+            return togo;
         }
-        if (!layout) {
-            var idLayout = fluid.model.getBeanValue(options, "moduleLayout.layout");
-            layout = fluid.moduleLayout.layoutFromIds(idLayout);
-        }
+        var layout = computeLayout();
+        that.layout = layout;
 
         function isLocked(item) {
             var lockedModules = options.selectors.lockedModules? dom.fastLocate("lockedModules") : [];
@@ -210,6 +215,10 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                 onMove: function(item, requestedPosition) {
                     fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
                     },
+                onRefresh: function() {
+                    layout = computeLayout();
+                    that.layout = layout;
+                },
                 "onShowKeyboardDropWarning.setPosition": defaultOnShowKeyboardDropWarning
              }
         };
