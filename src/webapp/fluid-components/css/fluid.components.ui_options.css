@@ -10,4 +10,4 @@
 .ui_options_container .optionsCluster input, .optionsCluster label {cursor:pointer;}
 .ui_options_container .previewWindow {float:right; /*border:1px solid #ccc;*/ background-color:#fff;}
 .ui_options_container .previewWindow .previewTitle {margin:0; padding:10px; color:#333; background-color:#ccc}
-.ui_options_container .previewWindow iframe { height:300px; width:100%; border:none; margin:0; padding:0;}         
+.ui_options_container .previewWindow iframe { height:350px; width:100%; border:none; margin:0; padding:0;}         
