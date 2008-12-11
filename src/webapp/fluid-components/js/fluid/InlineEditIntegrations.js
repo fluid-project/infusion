@@ -28,7 +28,6 @@ fluid_0_6 = fluid_0_6 || {};
         return {
             value: function (newValue) {
                 var editor = tinyMCE.get(editField.id);
-                console.log("newValue: " + newValue + " editor " + editor);
                 if (!editor) {
                     return "";
                 }
@@ -55,7 +54,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
       
-    fluid.defaults("fluid.tinyMCE", {
+    fluid.defaults("fluid.inlineTinyMCE", {
         useTooltip: true,
         selectors: {
             edit: "textarea" 
@@ -86,7 +85,7 @@ fluid_0_6 = fluid_0_6 || {};
         // somehow, some properties like Width and Height are set on the object itself
         $.extend(true, oFCKeditor, that.options.FCKEditor);
         oFCKeditor.ReplaceTextarea();
-        $.data(fluid.unwrap(that.editField), "fluid.FCKEditor", oFCKeditor);
+        $.data(fluid.unwrap(that.editField), "fluid.inlineFCKEditor", oFCKeditor);
     };
     
     fluid.FCKEditor.inlineEditViewAccessor = function (editField) {
@@ -110,7 +109,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     
-    fluid.defaults("fluid.FCKEditor", {
+    fluid.defaults("fluid.inlineFCKEditor", {
         selectors: {
             edit: "textarea" 
         },
@@ -160,6 +159,11 @@ fluid_0_6 = fluid_0_6 || {};
         editModeRenderer: fluid.selectbox.editModeRenderer
     });
     
+    var configureInlineEdit = function (configurationName, container, options) {
+        var assembleOptions = $.extend({}, fluid.defaults(configurationName), options);
+        return fluid.inlineEdit(container, assembleOptions);
+    };
+
     /**
      * Instantiate a rich-text InlineEdit component that uses an instance of FCKeditor.
      * 
@@ -167,8 +171,7 @@ fluid_0_6 = fluid_0_6 || {};
      * @param {Object} options configuration options for the components
      */
     fluid.inlineEditFCK = function (container, options) {
-        var assembleOptions = $.extend({}, fluid.defaults("fluid.FCKEditor"), options);
-        return fluid.inlineEdit(container, assembleOptions);
+        return configureInlineEdit("fluid.inlineFCKEditor", container, options);
     };
     
     /**
@@ -178,9 +181,19 @@ fluid_0_6 = fluid_0_6 || {};
      * @param {Object} options configuration options for the components
      */
     fluid.inlineEditTinyMCE = function (container, options) {
-        var assembleOptions = $.extend({}, fluid.defaults("fluid.tinyMCE"), options);
-        return fluid.inlineEdit(container, assembleOptions);
+        return configureInlineEdit("fluid.inlineTinyMCE", container, options);
     };
+    
+    /**
+     * Instantiate a drop-down InlineEdit component
+     * 
+     * @param {Object} container
+     * @param {Object} options
+     */
+    fluid.inlineEditDropdown = function (container, options) {
+        return configureInlineEdit("fluid.selectbox", container, options);
+    };
+
     
 })(jQuery, fluid_0_6);
 
