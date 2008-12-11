@@ -348,19 +348,19 @@ fluid_0_6 = fluid_0_6 || {};
     
     var initializeEditView = function(that, initial) {
         if (!that.editInitialized) { 
-                renderEditContainer(that, !that.options.lazyEditView || !initial);
-                if (!that.options.lazyEditView || !initial) {
-		                that.editView = fluid.initSubcomponent(that, "editView", that.editField);
-		                
-		                $.extend(true, that.editView, fluid.initSubcomponent(that, "editAccessor", that.editField));
-		        
-		                bindEditFinish(that);
-		                bindBlurHandler(that);
-		                that.editView.refreshView(that);
-		                
-		                that.editInitialized = true;
-                }
+            renderEditContainer(that, !that.options.lazyEditView || !initial);
+            if (!that.options.lazyEditView || !initial) {
+                that.editView = fluid.initSubcomponent(that, "editView", that.editField);
+                
+                $.extend(true, that.editView, fluid.initSubcomponent(that, "editAccessor", that.editField));
+        
+                bindEditFinish(that);
+                bindBlurHandler(that);
+                that.editView.refreshView(that);
+                
+                that.editInitialized = true;
             }
+        }
     };
     
     var makeIsEditing = function (that) {
