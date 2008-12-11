@@ -24,12 +24,14 @@ fluid_0_6 = fluid_0_6 || {};
     
     fluid.tinyMCE = {};
     
-    fluid.tinyMCE.inlineEditViewAccessor = function(editField) {
+    fluid.tinyMCE.inlineEditViewAccessor = function (editField) {
         return {
-            value: function(newValue) {
+            value: function (newValue) {
                 var editor = tinyMCE.get(editField.id);
                 console.log("newValue: " + newValue + " editor " + editor);
-                if (!editor) return "";
+                if (!editor) {
+                    return "";
+                }
                 if (newValue) {
                     // without this, there is an intermittent race condition if the editor has been created on this event.
                     $(editField).val(newValue); 
@@ -39,21 +41,21 @@ fluid_0_6 = fluid_0_6 || {};
                     return editor.getContent();
                 }
             }
-        }
+        };
     };
    
-    fluid.tinyMCE.editModeRenderer = function(that) {
+    fluid.tinyMCE.editModeRenderer = function (that) {
         var defaultOptions = {
             mode: "exact", 
-            theme: "simple",
-        }
+            theme: "simple"
+        };
         var options = $.extend(true, defaultOptions, that.options.tinyMCE);
         options.elements = fluid.allocateSimpleId(that.editField);
         tinyMCE.init(options);
     };
     
       
-   fluid.defaults("fluid.tinyMCE", {
+    fluid.defaults("fluid.tinyMCE", {
         useTooltip: true,
         selectors: {
             edit: "textarea" 
@@ -76,7 +78,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     fluid.FCKEditor.complete = fluid.event.getEventFirer();
     
-    fluid.FCKEditor.editModeRenderer = function(that) {
+    fluid.FCKEditor.editModeRenderer = function (that) {
         var id = fluid.allocateSimpleId(that.editField);
         var oFCKeditor = new FCKeditor(id);
         oFCKeditor.BasePath = "fckeditor/";
@@ -85,17 +87,17 @@ fluid_0_6 = fluid_0_6 || {};
         $.extend(true, oFCKeditor, that.options.FCKEditor);
         oFCKeditor.ReplaceTextarea();
         $.data(fluid.unwrap(that.editField), "fluid.FCKEditor", oFCKeditor);
-    }
+    };
     
-    fluid.FCKEditor.inlineEditViewAccessor = function(editField) {
+    fluid.FCKEditor.inlineEditViewAccessor = function (editField) {
         return {
-            value: function(newValue) {
+            value: function (newValue) {
                 var editor = typeof(FCKeditorAPI) === "undefined"? null: FCKeditorAPI.GetInstance(editField.id);
                 if (!editor) {
-                	  if (newValue) {
+                	if (newValue) {
                         $(editField).val(newValue);
-                	  }
-                	  return "";
+                	}
+                	return "";
                 }
                 if (newValue) {
                     editor.SetHTML(newValue);
@@ -104,7 +106,7 @@ fluid_0_6 = fluid_0_6 || {};
                     return editor.GetHTML();
                 }
             }
-        }
+        };
     };
     
     
@@ -126,19 +128,26 @@ fluid_0_6 = fluid_0_6 || {};
     
     fluid.selectbox = {};
   
-    fluid.selectbox.editModeRenderer = function(that) {
-       var id = fluid.allocateSimpleId(that.editField);
-       that.editField.selectbox({finishHandler: function() {that.finish();}});
-       return {
-           container: that.editContainer,
-           field: $("input.selectbox", that.editContainer) 
-       }
-    }
+    fluid.selectbox.editModeRenderer = function (that) {
+        var id = fluid.allocateSimpleId(that.editField);
+        that.editField.selectbox({
+            finishHandler: function () {
+                that.finish();
+            }
+        });
+        return {
+            container: that.editContainer,
+            field: $("input.selectbox", that.editContainer) 
+        };
+    };
    
-    fluid.selectbox.blurHandlerBinder = function(that) {
-       fluid.deadMansBlur(that.editField, $("div.selectbox-wrapper li", that.editContainer),
-          function() {that.cancel()});
-    }
+    fluid.selectbox.blurHandlerBinder = function (that) {
+        fluid.deadMansBlur(that.editField,
+                           $("div.selectbox-wrapper li", that.editContainer),
+                           function () {
+                               that.cancel();
+                            });
+    };
 
 
     
@@ -181,4 +190,4 @@ fluid_0_6 = fluid_0_6 || {};
 // register it with the standard fluid event firer at fluid.FCKEditor.complete
 function FCKeditor_OnComplete(editorInstance) {
     fluid.FCKEditor.complete.fire(editorInstance);
-    }
+}
