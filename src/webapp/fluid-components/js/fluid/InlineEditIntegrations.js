@@ -21,11 +21,24 @@ fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
 
+    var configureInlineEdit = function (configurationName, container, options) {
+        var assembleOptions = $.extend({}, fluid.defaults(configurationName), options);
+        return fluid.inlineEdit(container, assembleOptions);
+    };
+
     // Configuration for integrating tinyMCE
     
-    fluid.tinyMCE = {};
-    
-    fluid.tinyMCE.inlineEditViewAccessor = function (editField) {
+    /**
+     * Instantiate a rich-text InlineEdit component that uses an instance of TinyMCE.
+     * 
+     * @param {Object} componentContainer the element containing the inline editors
+     * @param {Object} options configuration options for the components
+     */
+    fluid.inlineEdit.tinyMCE = function (container, options) {
+        return configureInlineEdit("fluid.inlineEdit.tinyMCE", container, options);
+    };
+        
+    fluid.inlineEdit.tinyMCE.inlineEditViewAccessor = function (editField) {
         return {
             value: function (newValue) {
                 var editor = tinyMCE.get(editField.id);
@@ -44,7 +57,7 @@ fluid_0_6 = fluid_0_6 || {};
         };
     };
    
-    fluid.tinyMCE.editModeRenderer = function (that) {
+    fluid.inlineEdit.tinyMCE.editModeRenderer = function (that) {
         var defaultOptions = {
             mode: "exact", 
             theme: "simple"
@@ -55,7 +68,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
       
-    fluid.defaults("fluid.inlineTinyMCE", {
+    fluid.defaults("fluid.inlineEdit.tinyMCE", {
         useTooltip: true,
         selectors: {
             edit: "textarea" 
@@ -65,20 +78,28 @@ fluid_0_6 = fluid_0_6 || {};
             invitation: null // Override because it causes problems with flickering. Help?
         },
         displayAccessor: "fluid.inlineEdit.richTextViewAccessor",
-        editAccessor: "fluid.tinyMCE.inlineEditViewAccessor",
+        editAccessor: "fluid.inlineEdit.tinyMCE.inlineEditViewAccessor",
         lazyEditView: true,
-        editModeRenderer: fluid.tinyMCE.editModeRenderer
+        editModeRenderer: fluid.inlineEdit.tinyMCE.editModeRenderer
     });
     
     
     
     // Configuration for integrating FCKEditor
     
-    fluid.FCKEditor = {};
+    /**
+     * Instantiate a rich-text InlineEdit component that uses an instance of FCKeditor.
+     * 
+     * @param {Object} componentContainer the element containing the inline editors
+     * @param {Object} options configuration options for the components
+     */
+    fluid.inlineEdit.FCKEditor = function (container, options) {
+        return configureInlineEdit("fluid.inlineEdit.FCKEditor", container, options);
+    };
     
-    fluid.FCKEditor.complete = fluid.event.getEventFirer();
+    fluid.inlineEdit.FCKEditor.complete = fluid.event.getEventFirer();
     
-    fluid.FCKEditor.editModeRenderer = function (that) {
+    fluid.inlineEdit.FCKEditor.editModeRenderer = function (that) {
         var id = fluid.allocateSimpleId(that.editField);
         var oFCKeditor = new FCKeditor(id);
         oFCKeditor.BasePath = "fckeditor/";
@@ -86,10 +107,10 @@ fluid_0_6 = fluid_0_6 || {};
         // somehow, some properties like Width and Height are set on the object itself
         $.extend(true, oFCKeditor, that.options.FCKEditor);
         oFCKeditor.ReplaceTextarea();
-        $.data(fluid.unwrap(that.editField), "fluid.inlineFCKEditor", oFCKeditor);
+        $.data(fluid.unwrap(that.editField), "fluid.inlineEdit.FCKEditor", oFCKeditor);
     };
     
-    fluid.FCKEditor.inlineEditViewAccessor = function (editField) {
+    fluid.inlineEdit.FCKEditor.inlineEditViewAccessor = function (editField) {
         return {
             value: function (newValue) {
                 var editor = typeof(FCKeditorAPI) === "undefined"? null: FCKeditorAPI.GetInstance(editField.id);
@@ -110,7 +131,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     
-    fluid.defaults("fluid.inlineFCKEditor", {
+    fluid.defaults("fluid.inlineEdit.FCKEditor", {
         selectors: {
             edit: "textarea" 
         },
@@ -120,15 +141,25 @@ fluid_0_6 = fluid_0_6 || {};
         },
       
         displayAccessor: "fluid.inlineEdit.richTextViewAccessor",
-        editAccessor: "fluid.FCKEditor.inlineEditViewAccessor",
+        editAccessor: "fluid.inlineEdit.FCKEditor.inlineEditViewAccessor",
         lazyEditView: true,
-        editModeRenderer: fluid.FCKEditor.editModeRenderer
+        editModeRenderer: fluid.inlineEdit.FCKEditor.editModeRenderer
     });
     
     
-    fluid.selectbox = {};
-  
-    fluid.selectbox.editModeRenderer = function (that) {
+    // Configuration for integrating a drop-down editor
+    
+    /**
+     * Instantiate a drop-down InlineEdit component
+     * 
+     * @param {Object} container
+     * @param {Object} options
+     */
+    fluid.inlineEdit.dropdown = function (container, options) {
+        return configureInlineEdit("fluid.inlineEdit.dropdown", container, options);
+    };
+
+    fluid.inlineEdit.dropdown.editModeRenderer = function (that) {
         var id = fluid.allocateSimpleId(that.editField);
         that.editField.selectbox({
             finishHandler: function () {
@@ -141,7 +172,7 @@ fluid_0_6 = fluid_0_6 || {};
         };
     };
    
-    fluid.selectbox.blurHandlerBinder = function (that) {
+    fluid.inlineEdit.dropdown.blurHandlerBinder = function (that) {
         fluid.deadMansBlur(that.editField,
                            $("div.selectbox-wrapper li", that.editContainer),
                            function () {
@@ -151,57 +182,22 @@ fluid_0_6 = fluid_0_6 || {};
 
 
     
-    fluid.defaults("fluid.selectbox", {
+    fluid.defaults("fluid.inlineEdit.dropdown", {
         selectors: {
             edit: "#myselectbox"
         },
         applyEditPadding: false,
-        blurHandlerBinder: fluid.selectbox.blurHandlerBinder,
-        editModeRenderer: fluid.selectbox.editModeRenderer
+        blurHandlerBinder: fluid.inlineEdit.dropdown.blurHandlerBinder,
+        editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer
     });
     
-    var configureInlineEdit = function (configurationName, container, options) {
-        var assembleOptions = $.extend({}, fluid.defaults(configurationName), options);
-        return fluid.inlineEdit(container, assembleOptions);
-    };
-
-    /**
-     * Instantiate a rich-text InlineEdit component that uses an instance of FCKeditor.
-     * 
-     * @param {Object} componentContainer the element containing the inline editors
-     * @param {Object} options configuration options for the components
-     */
-    fluid.inlineEditFCK = function (container, options) {
-        return configureInlineEdit("fluid.inlineFCKEditor", container, options);
-    };
-    
-    /**
-     * Instantiate a rich-text InlineEdit component that uses an instance of TinyMCE.
-     * 
-     * @param {Object} componentContainer the element containing the inline editors
-     * @param {Object} options configuration options for the components
-     */
-    fluid.inlineEditTinyMCE = function (container, options) {
-        return configureInlineEdit("fluid.inlineTinyMCE", container, options);
-    };
-    
-    /**
-     * Instantiate a drop-down InlineEdit component
-     * 
-     * @param {Object} container
-     * @param {Object} options
-     */
-    fluid.inlineEditDropdown = function (container, options) {
-        return configureInlineEdit("fluid.selectbox", container, options);
-    };
-
     
 })(jQuery, fluid_0_6);
 
 
 // This must be written outside any scope as a result of the FCKEditor event model.
 // Do not overwrite this function, if you wish to add your own listener to FCK completion,
-// register it with the standard fluid event firer at fluid.FCKEditor.complete
+// register it with the standard fluid event firer at fluid.inlineEdit.FCKEditor.complete
 function FCKeditor_OnComplete(editorInstance) {
-    fluid.FCKEditor.complete.fire(editorInstance);
+    fluid.inlineEdit.FCKEditor.complete.fire(editorInstance);
 }

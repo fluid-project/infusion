@@ -2,7 +2,7 @@ var fluid = fluid || {};
 
 (function ($) {
     $(function () {
-         var comboeditor = fluid.inlineEditDropdown("#combo-editable");
+         var comboeditor = fluid.inlineEdit.dropdown("#combo-editable");
     });
 })(jQuery);
 
