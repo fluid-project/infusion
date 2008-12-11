@@ -15,6 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global tinyMCE*/
 /*global FCKeditor*/
 /*global FCKeditorAPI*/
+/*global fluid*/ //this global function will refer to whichever version of Fluid Infusion was first loaded
 
 fluid_0_6 = fluid_0_6 || {};
 
