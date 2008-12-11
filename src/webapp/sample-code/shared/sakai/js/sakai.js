@@ -17,7 +17,7 @@
 
                 $('.skin').click(function () {
                     // ajax call to pull the UI Options dialog into a container
-                    $('#dialog_content').load('../../../fluid-components/html/templates/UIOptions.html div.ui_options_container', initDialog);
+                    $('#dialog_content').load('../../../fluid-components/html/templates/UIOptions.html .ui_options_container', initDialog);
                     // reveal dialog
                     $("#dialog_container").css('display','block');                    
                 });
