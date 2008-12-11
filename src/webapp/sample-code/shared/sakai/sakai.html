@@ -23,35 +23,10 @@
         <script type="text/javascript" src="../../../fluid-components/js/fluid/Skin.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/Undo.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/fluid/UIOptions.js"></script>
+        <script type="text/javascript" src="js/sakai.js"></script>
 
         <title>Sakai</title>
 
-        <script type="text/javascript">
-            $(function () {
-                var initDialog = function () {
-                    // center dialog
-                    $('#dialog_container').css({
-                        left: ($(window).width() / 2) - ($('#dialog_container').width() / 2),
-                        top: ($(window).height() / 2) - ($('#dialog_container').height() / 2)
-                    });
-                    // bind close dialog button
-                    $("#close_dialog").click(function () {
-                        $("#dialog_container").css('display','none');
-                    });
-                
-                    // instantiate component
-                    fluid.uiOptions(".ui_options_container");
-                };
-
-                // ajax call to pull the UI Options dialog into a container
-                $('#dialog_content').load('sakai_uioptions_preview.html div.ui_options_container', initDialog);
-        
-                $('.skin').click(function () {
-                    // reveal dialog
-                    $("#dialog_container").css('display','block');                    
-                });
-            });            
-        </script>
        
     </head>
 
