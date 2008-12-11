@@ -10,7 +10,7 @@
              index : 0, // The index of this file for use in getFile(i) 
              name : "Mountain.jpg", // The file name. The path is not included. 
              size : 400000, // The file size in bytes   
-             filestatus: fluid.fileQueue.fileStatusConstants.QUEUED // initial file queued status
+             filestatus: fluid.uploader.fileStatusConstants.QUEUED // initial file queued status
         };
         
         var oceanTestFile = {
@@ -18,7 +18,7 @@
              index : 1, // The index of this file for use in getFile(i) 
              name : "Ocean.jpg", // The file name. The path is not included. 
              size : 950000000, // The file size in bytes   
-             filestatus: fluid.fileQueue.fileStatusConstants.QUEUED // initial file queued status
+             filestatus: fluid.uploader.fileStatusConstants.QUEUED // initial file queued status
         };
         
         // More test files
@@ -53,7 +53,7 @@
         var loadQueue = function (fileArray, queue) {
             for (var i = 0; i < fileArray.length; i++) {
                 queue.addFile(fileArray[i]);
-                queue.files[i].filestatus = fluid.fileQueue.fileStatusConstants.QUEUED;
+                queue.files[i].filestatus = fluid.uploader.fileStatusConstants.QUEUED;
             }
         };
         
@@ -158,7 +158,7 @@
         });
         
         fileQueueViewTests.test("fileQueue: getUploadedFiles() and sizeOfUploadedFiles()", function () {
-            jqUnit.expect(16);
+            jqUnit.expect(24);
             
             var testQueue = fluid.fileQueue();
             jqUnit.assertEquals("getReadyFiles() should contain 0 files at the start",
@@ -190,8 +190,23 @@
                                 0,
                                 testQueue.sizeOfUploadedFiles());
             
-            testQueue.files[0].filestatus = fluid.fileQueue.fileStatusConstants.COMPLETE;
+            testQueue.files[0].filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
             
+            jqUnit.assertEquals("changed status of Mountain to CANCELLED, getReadyFiles() should contain 2 files",
+                                2,
+                                testQueue.getReadyFiles().length);
+            jqUnit.assertEquals("----- and sizeOfReadyFiles() should now return 950400000",
+                                950400000,
+                                testQueue.sizeOfReadyFiles());
+            jqUnit.assertEquals("----- and getUploadedFiles() should contain 0 file",
+                                0,
+                                testQueue.getUploadedFiles().length);
+            jqUnit.assertEquals("----- and sizeOfUploadedFiles() should contain 0",
+                                0,
+                                testQueue.sizeOfUploadedFiles());
+
+            testQueue.files[0].filestatus = fluid.uploader.fileStatusConstants.COMPLETE;
+
             jqUnit.assertEquals("changed status of Mountain to COMPLETE, getReadyFiles() should contain 1 files",
                                 1,
                                 testQueue.getReadyFiles().length);
@@ -205,7 +220,22 @@
                                 400000,
                                 testQueue.sizeOfUploadedFiles());
                                                          
-            testQueue.files[1].filestatus = fluid.fileQueue.fileStatusConstants.COMPLETE;
+            testQueue.files[1].filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
+            
+            jqUnit.assertEquals("changed status of Ocean to CANCELLED, getReadyFiles() should contain 1 files",
+                                1,
+                                testQueue.getReadyFiles().length);
+            jqUnit.assertEquals("----- and sizeOfReadyFiles() should now return 950000000",
+                                950000000,
+                                testQueue.sizeOfReadyFiles());
+            jqUnit.assertEquals("----- and getUploadedFiles() should contain 1 files",
+                                1,
+                                testQueue.getUploadedFiles().length);
+            jqUnit.assertEquals("----- and sizeOfUploadedFiles() should contain 400000",
+                                400000,
+                                testQueue.sizeOfUploadedFiles());
+
+            testQueue.files[1].filestatus = fluid.uploader.fileStatusConstants.COMPLETE;
             
             jqUnit.assertEquals("changed status of Ocean to COMPLETE, getReadyFiles() should contain 0 files",
                                 0,
@@ -258,14 +288,14 @@
                                 0,
                                 testQueue.currentBatch.totalBytes);
             
-            testQueue.files[0].filestatus = fluid.fileQueue.fileStatusConstants.COMPLETE;
+            testQueue.files[0].filestatus = fluid.uploader.fileStatusConstants.COMPLETE;
             testQueue.updateCurrentBatch();
             
             jqUnit.assertEquals("first file COMPLETE, setupCurrentBatch(), currentBatch should contain 4 files",
                                 4,
                                 testQueue.currentBatch.files.length);
                                 
-            testQueue.files[1].filestatus = fluid.fileQueue.fileStatusConstants.COMPLETE;
+            testQueue.files[1].filestatus = fluid.uploader.fileStatusConstants.COMPLETE;
             testQueue.setupCurrentBatch();
             
             jqUnit.assertEquals("second file COMPLETE, updateCurrentBatch(), currentBatch should contain 3 files",

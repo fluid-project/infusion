@@ -32,7 +32,7 @@
         
         var resetStatusForAllFiles = function () {
             for (var i = 0; i < allFiles.length; i++) {
-                allFiles[i].filestatus = fluid.fileQueue.fileStatusConstants.QUEUED;
+                allFiles[i].filestatus = fluid.uploader.fileStatusConstants.QUEUED;
             }
         };
         

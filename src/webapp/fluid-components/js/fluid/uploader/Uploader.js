@@ -114,6 +114,17 @@ fluid_0_6 = fluid_0_6 || {};
         });
     };
     
+    var unbindDeleteKey = function (that, row) {
+        var deleteHandler = null;
+       
+        fluid.activatable(row, null, {
+            additionalBindings: [{
+                key: fluid.a11y.keys.DELETE, 
+                activateHandler: deleteHandler
+            }]
+        });
+    };
+    
     var bindRowHandlers = function (that, row) {
         if ($.browser.msie && $.browser.version < 7) {
             bindHover(row, that.options.styles);
@@ -179,19 +190,19 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var markRowAsComplete = function (that, file) {
-        var fileRowElm = rowForFile(that, file);
-        var removeFile = that.locate("fileIconBtn", fileRowElm);
+        var row = rowForFile(that, file);
+        var removeFile = that.locate("fileIconBtn", row);
         removeFile.unbind("click");
         fluid.tabindex(removeFile, -1);
         removeFile.removeClass(that.options.styles.remove);
-        changeRowState(fileRowElm, that.options.styles.uploaded);
-        fileRowElm.attr("title", that.options.strings.status.success);
+        changeRowState(row, that.options.styles.uploaded);
+        row.attr("title", that.options.strings.status.success);
+        unbindDeleteKey(that,row);
     };
     
     var showErrorForFile = function (that, file, error) {
         hideFileProgress(that, file);
-        if (file.filestatus === fluid.fileQueue.fileStatusConstants.ERROR) {
-         
+        if (file.filestatus === fluid.uploader.fileStatusConstants.ERROR) {
             // file errored
             var fileRowElm = rowForFile(that, file);
             changeRowState(fileRowElm, that.options.styles.error);
@@ -368,6 +379,8 @@ fluid_0_6 = fluid_0_6 || {};
 
     var setStateLoaded = function (that) {
         that.locate("browseButton").text(that.options.strings.buttons.addMore);
+        hideElement(that, that.locate("pauseButton"));
+        showElement(that, that.locate("uploadButton"));
         enableElement(that, that.locate("uploadButton"));
         enableElement(that, that.locate("browseButton"));
         hideElement(that, that.locate("instructions"));
@@ -397,7 +410,7 @@ fluid_0_6 = fluid_0_6 || {};
     };
         
     var updateTotalProgress = function (that) {
-        var batch = that.uploadManager.queue.currentBatch;        
+        var batch = that.uploadManager.queue.currentBatch;
         var totalPercent = fluid.uploader.derivePercent(batch.totalBytesUploaded, batch.totalBytes);
              
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalProgressLabel, {
@@ -451,7 +464,11 @@ fluid_0_6 = fluid_0_6 || {};
     
     var updateStateAfterCompletion = function (that) {
         hideTotalProgress(that);
-        setStateDone(that);
+        if (that.uploadManager.queue.getReadyFiles().length === 0) {
+            setStateDone(that);
+        } else {
+            setStateLoaded(that);
+        }
     };
     
     var bindModelEvents = function (that) {
@@ -471,8 +488,8 @@ fluid_0_6 = fluid_0_6 || {};
             updateTotalProgress(that); 
         });
         
-        that.events.onFileError.addListener(function (file, error) {
-            if (error === SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED) {
+        that.events.onFileError.addListener(function (file, error, message) {
+            if (error === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
                 // user stopped
                 updateStateAfterCompletion(that);
             }
@@ -645,5 +662,26 @@ fluid_0_6 = fluid_0_6 || {};
             }
         }
     });
+    
+    fluid.uploader.errorConstants = {
+        HTTP_ERROR: -200,
+	    MISSING_UPLOAD_URL: -210,
+	    IO_ERROR: -220,
+	    SECURITY_ERROR: -230,
+	    UPLOAD_LIMIT_EXCEEDED: -240,
+	    UPLOAD_FAILED: -250,
+	    SPECIFIED_FILE_ID_NOT_FOUND: -260,
+	    FILE_VALIDATION_FAILED: -270,
+	    FILE_CANCELLED: -280,
+	    UPLOAD_STOPPED: -290
+    };
+    
+    fluid.uploader.fileStatusConstants = {
+        QUEUED: -1,
+	    IN_PROGRESS: -2,
+	    ERROR: -3,
+        COMPLETE: -4,
+        CANCELLED: -5
+    };
     
 })(jQuery, fluid_0_6);

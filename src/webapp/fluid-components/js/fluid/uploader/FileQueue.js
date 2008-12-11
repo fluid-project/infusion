@@ -32,13 +32,13 @@ fluid_0_6 = fluid_0_6 || {};
     
     var getUploadedFiles = function (that) {
         return filterFiles(that.files, function (file) {
-            return (file.filestatus === fluid.fileQueue.fileStatusConstants.COMPLETE);
+            return (file.filestatus === fluid.uploader.fileStatusConstants.COMPLETE);
         });
     };
     
     var getReadyFiles = function (that) {
         return filterFiles(that.files, function (file) {
-            return (file.filestatus === fluid.fileQueue.fileStatusConstants.QUEUED);
+            return (file.filestatus === fluid.uploader.fileStatusConstants.QUEUED || file.filestatus === fluid.uploader.fileStatusConstants.CANCELLED);
         });
     };
 
@@ -54,6 +54,7 @@ fluid_0_6 = fluid_0_6 || {};
             files: [],
             totalBytes: 0,
             numFilesCompleted: 0,
+            numFilesErrored: 0,
             bytesUploadedForFile: 0,
             previousBytesUploadedForFile: 0,
             totalBytesUploaded: 0
@@ -126,14 +127,6 @@ fluid_0_6 = fluid_0_6 || {};
             totalBytes += file.size;
         }        
         return totalBytes;
-    };
-    
-    fluid.fileQueue.fileStatusConstants = {
-        QUEUED: -1,
-	    IN_PROGRESS: -2,
-	    ERROR: -3,
-        COMPLETE: -4,
-        CANCELLED: -5
     };
           
 })(jQuery, fluid_0_6);

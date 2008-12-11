@@ -75,7 +75,7 @@ fluid_0_6 = fluid_0_6 || {};
             
             fireAfterFileComplete(file);
             if (that.queue.isUploading && batch.numFilesCompleted < batch.files.length) {
-                that.uploadNextFile();
+                that.uploadNextFile(batch.files[0].id);
             } else {
                 finishUploading(that);
             }
@@ -146,10 +146,12 @@ fluid_0_6 = fluid_0_6 || {};
         });
         
         that.events.onFileError.addListener(function (file, error) {
-            if (error === SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED) {
+            if (error === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
                 that.queue.isUploading = false;
+            } else if (that.queue.isUploading) {
+                that.queue.currentBatch.numFilesErrored++;
             }
-            fileStatusUpdater(file, error);
+            fileStatusUpdater(file);
         });
         
         that.events.onFileSuccess.addListener(function (file) {
@@ -249,6 +251,7 @@ fluid_0_6 = fluid_0_6 || {};
         fileQueueLimit: 0,
         debug: false
     });
+    
 })(jQuery, fluid_0_6);
 
 
@@ -270,7 +273,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     var finishUploading = function (that) {
         var file = that.demoState.currentFile;
-        file.filestatus = fluid.fileQueue.fileStatusConstants.COMPLETE;
+        file.filestatus = fluid.uploader.fileStatusConstants.COMPLETE;
         that.events.onFileSuccess.fire(file);
         that.invokeAfterRandomDelay(function () {
             that.demoState.fileIdx++;
@@ -301,17 +304,17 @@ fluid_0_6 = fluid_0_6 || {};
         that.demoState.shouldPause = false;
         
         that.events.onFileStart.fire(that.demoState.currentFile);
-        that.demoState.currentFile.filestatus = fluid.fileQueue.fileStatusConstants.IN_PROGRESS;
+        that.demoState.currentFile.filestatus = fluid.uploader.fileStatusConstants.IN_PROGRESS;
         simulateUpload(that);
     };
 
     var pauseDemo = function (that) {
         that.demoState.shouldPause = true;
-        that.demoState.currentFile.filestatus = fluid.fileQueue.fileStatusConstants.CANCELLED;
+        that.demoState.currentFile.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
         
         // In SWFUpload's world, pausing is a combinination of an UPLOAD_STOPPED error and a complete.
         that.events.onFileError.fire(that.demoState.currentFile, 
-                                       SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED, 
+                                       fluid.uploader.errorConstants.UPLOAD_STOPPED, 
                                        "The demo upload was paused by the user.");
         // This is a hack that needs to be addressed.
         that.swfUploadSettings.upload_complete_handler(that.demoState.currentFile);
