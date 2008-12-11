@@ -11,3 +11,19 @@
 .ui_options_container .previewWindow {float:right; /*border:1px solid #ccc;*/ background-color:#fff;}
 .ui_options_container .previewWindow .previewTitle {margin:0; padding:10px; color:#333; background-color:#ccc}
 .ui_options_container .previewWindow iframe { height:350px; width:100%; border:none; margin:0; padding:0;}         
+
+/* Forced nested theme overrides */
+li#fl-theme-hc {background-color:#fff !important;}
+li#fl-theme-hc label {color:#000 !important;}
+li#fl-theme-hc label a {color:#000 !important; font-weight:bold; text-decoration:underline;}
+li#fl-theme-hc label a:hover {background-color:#000 !important; color:#fff !important; font-weight:bold; text-decoration:underline;}
+
+li#fl-theme-mist {background-color:#fff !important;}
+li#fl-theme-mist label {color:#000 !important;}
+li#fl-theme-mist label a {color:#4070A1 !important; font-weight:bold; text-decoration:none;}
+li#fl-theme-mist label a:hover {background-color:#fff !important; color:#6DB5FB !important; font-weight:bold; text-decoration:none;}
+
+li#fl-theme-rust {background-color:#F2E0B6 !important}
+li#fl-theme-rust label {color:#000 !important; background-color:transparent !important;}
+li#fl-theme-rust label a {color:#916535 !important; background-color:transparent !important; font-weight:bold; text-decoration:none;}
+li#fl-theme-rust label a:hover {background-color:transparent !important; color:#914E38 !important; font-weight:bold; text-decoration:none;}
