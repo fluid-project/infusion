@@ -42,10 +42,13 @@ fluid_0_6 = fluid_0_6 || {};
      */
     fluid.setCaretToEnd = function (control, value) {
         var pos = value? value.length : 0;
-        // see http://www.quirksmode.org/dom/range_intro.html - in Opera, must detect setSelectionRange first, since its support for Microsoft TextRange is buggy
-        if (control.setSelectionRange) {
-            control.focus();
-            try {
+
+        try {
+        // see http://www.quirksmode.org/dom/range_intro.html - in Opera, must detect setSelectionRange first, 
+        // since its support for Microsoft TextRange is buggy
+            if (control.setSelectionRange) {
+                control.focus();
+
                 control.setSelectionRange(pos, pos);
                 if ($.browser.mozilla && pos > 0) {
                   // ludicrous fix for Firefox failure to scroll to selection position, inspired by
@@ -55,13 +58,14 @@ fluid_0_6 = fluid_0_6 || {};
                     sendKey(control, "keypress", 8, 0);
                 }
             }
-            catch (e) {}
+
+            else if (control.createTextRange) {
+                var range = control.createTextRange();
+                range.move("character", pos);
+                range.select();
+            }
         }
-        else if (control.createTextRange) {
-            var range = control.createTextRange();
-            range.move("character", pos);
-            range.select();
-        } 
+        catch (e) {} 
     };
     
     fluid.deadMansBlur = function (control, exclusions, handler) {
@@ -80,6 +84,8 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var edit = function (that) {
+        initializeEditView(that, false);
+      
         var viewEl = that.viewEl;
         var displayText = that.displayView.value();
         that.updateModel(displayText === that.options.defaultViewText? "" : displayText);
@@ -129,24 +135,17 @@ fluid_0_6 = fluid_0_6 || {};
 
 
     var cancel = function (that) {
-        if (isEditing(that)) {
+        if (that.isEditing()) {
             // Roll the edit field back to its old value and close it up.
             that.editView.value(that.model.value);
             switchToViewMode(that);
         }
     };
-
-    var isEditing = function (that) {
-        if (that.editContainer.is(':visible')) {
-            return true;
-        }
-     };
       
     var switchToViewMode = function (that) {    
         that.editContainer.hide();
         that.viewEl.show();
         };
-    
 
     var clearEmptyViewStyles = function (textEl, defaultViewStyle, originalViewPadding) {
         textEl.removeClass(defaultViewStyle);
@@ -182,7 +181,9 @@ fluid_0_6 = fluid_0_6 || {};
     
     var refreshView = function (that, source) {
         that.displayView.refreshView(that, source);
-        that.editView.refreshView(that, source);
+        if (that.editView) {
+            that.editView.refreshView(that, source);
+        }
     };
     
     var initModel = function (that, value) {
@@ -224,7 +225,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     var bindMouseHandlers = function (that) {
         bindHoverHandlers(that.viewEl, that.options.styles.invitation);
-        that.viewEl.click(makeEditHandler(that));
+        that.viewEl.click(that.edit);
     };
     
     var bindHighlightHandler = function (viewEl, focusStyle, invitationStyle) {
@@ -242,7 +243,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     var bindKeyboardHandlers = function (that) {
         fluid.tabbable(that.viewEl);
-        fluid.activatable(that.viewEl, makeEditHandler(that));
+        fluid.activatable(that.viewEl, that.edit);
     };
     
     var bindEditFinish = function (that) {
@@ -283,7 +284,7 @@ fluid_0_6 = fluid_0_6 || {};
         viewEl.ariaRole("button");
     };
     
-    var renderEditContainer = function (that) {
+    var renderEditContainer = function (that, really) {
         // If an edit container is found in the markup, use it. Otherwise generate one based on the view text.
         that.editContainer = that.locate("editContainer");
         that.editField = that.locate("edit");
@@ -299,7 +300,8 @@ fluid_0_6 = fluid_0_6 || {};
         }
         if (that.editContainer.length === 1 && !that.editField) {
             that.editField = that.locate("edit", that.editContainer);
-        } 
+        }
+        if (!really) return; // do not invoke the renderer, unless this is the "final" effective time
         var editElms = that.options.editModeRenderer(that);
         if (editElms) {
             that.editContainer = editElms.container;
@@ -344,8 +346,31 @@ fluid_0_6 = fluid_0_6 || {};
         };
     };
     
+    var initializeEditView = function(that, initial) {
+        if (!that.editInitialized) { 
+                renderEditContainer(that, !that.options.lazyEditView || !initial);
+                if (!that.options.lazyEditView || !initial) {
+		                that.editView = fluid.initSubcomponent(that, "editView", that.editField);
+		                
+		                $.extend(true, that.editView, fluid.initSubcomponent(that, "editAccessor", that.editField));
+		        
+		                bindEditFinish(that);
+		                bindBlurHandler(that);
+		                that.editView.refreshView(that);
+		                
+		                that.editInitialized = true;
+                }
+            }
+    };
+    
+    var makeIsEditing = function (that) {
+        var isEditing = false;
+        that.events.onBeginEdit.addListener(function() {isEditing = true;});
+        that.events.afterFinishEdit.addListener(function() {isEditing = false;});
+        return function() {return isEditing;}    	
+    };
+    
     var setupInlineEdit = function (componentContainer, that) {
-
         var padding = that.viewEl.css("padding-right");
         that.existingPadding = padding? parseFloat(padding) : 0;
         initModel(that, that.displayView.value());
@@ -353,17 +378,16 @@ fluid_0_6 = fluid_0_6 || {};
         // Add event handlers.
         bindMouseHandlers(that);
         bindKeyboardHandlers(that);
-        bindEditFinish(that);
         
         bindHighlightHandler(that.viewEl, that.options.styles.focus, that.options.styles.invitation);
         
-        bindBlurHandler(that);
-        
         // Add ARIA support.
-        aria(that.viewEl, that.editContainer);
+        aria(that.viewEl);
                 
         // Hide the edit container to start
-        that.editContainer.hide();
+        if (that.editContainer) {
+            that.editContainer.hide();
+        }
         
         // Initialize the tooltip once the document is ready.
         // For more details, see http://issues.fluidproject.org/browse/FLUID-1030
@@ -412,10 +436,6 @@ fluid_0_6 = fluid_0_6 || {};
         that.displayView = fluid.initSubcomponent(that, "displayView", that.viewEl);
         $.extend(true, that.displayView, fluid.initSubcomponent(that, "displayAccessor", that.viewEl));
         
-        renderEditContainer(that); 
-        that.editView = fluid.initSubcomponent(that, "editView", that.editField);
-        $.extend(true, that.editView, fluid.initSubcomponent(that, "editAccessor", that.editField));
-        
         /**
          * The current value of the inline editable text. The "model" in MVC terms.
          */
@@ -424,18 +444,14 @@ fluid_0_6 = fluid_0_6 || {};
         /**
          * Switches to edit mode.
          */
-        that.edit = function () {
-            edit(that);
-        };
+        that.edit = makeEditHandler(that);
         
         /**
          * Determines if the component is currently in edit mode.
          * 
          * @return true if edit mode shown, false if view mode is shown
          */
-        that.isEditing = function () {
-            return isEditing(that);
-        };
+        that.isEditing = makeIsEditing(that);
         
         /**
          * Finishes editing, switching back to view mode.
@@ -481,6 +497,7 @@ fluid_0_6 = fluid_0_6 || {};
             updateModel(that, newValue, source);
         };
 
+        initializeEditView(that, true);
         setupInlineEdit(componentContainer, that);
         return that;
     };
@@ -592,6 +609,8 @@ fluid_0_6 = fluid_0_6 || {};
         editView: "fluid.inlineEdit.standardEditView",
         
         editModeRenderer: defaultEditModeRenderer,
+        
+        lazyEditView: false,
         
         defaultViewText: "Click here to edit",
         
