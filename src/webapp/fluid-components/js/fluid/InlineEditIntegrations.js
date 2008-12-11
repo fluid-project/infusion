@@ -38,7 +38,7 @@ fluid_0_6 = fluid_0_6 || {};
         return configureInlineEdit("fluid.inlineEdit.tinyMCE", container, options);
     };
         
-    fluid.inlineEdit.tinyMCE.editAccessor = function (editField) {
+    fluid.inlineEdit.tinyMCE.viewAccessor = function (editField) {
         return {
             value: function (newValue) {
                 var editor = tinyMCE.get(editField.id);
@@ -78,7 +78,7 @@ fluid_0_6 = fluid_0_6 || {};
             invitation: null // Override because it causes problems with flickering. Help?
         },
         displayAccessor: "fluid.inlineEdit.richTextViewAccessor",
-        editAccessor: "fluid.inlineEdit.tinyMCE.editAccessor",
+        editAccessor: "fluid.inlineEdit.tinyMCE.viewAccessor",
         lazyEditView: true,
         editModeRenderer: fluid.inlineEdit.tinyMCE.editModeRenderer
     });
@@ -110,7 +110,7 @@ fluid_0_6 = fluid_0_6 || {};
         $.data(fluid.unwrap(that.editField), "fluid.inlineEdit.FCKEditor", oFCKeditor);
     };
     
-    fluid.inlineEdit.FCKEditor.editAccessor = function (editField) {
+    fluid.inlineEdit.FCKEditor.viewAccessor = function (editField) {
         return {
             value: function (newValue) {
                 var editor = typeof(FCKeditorAPI) === "undefined"? null: FCKeditorAPI.GetInstance(editField.id);
@@ -141,7 +141,7 @@ fluid_0_6 = fluid_0_6 || {};
         },
       
         displayAccessor: "fluid.inlineEdit.richTextViewAccessor",
-        editAccessor: "fluid.inlineEdit.FCKEditor.editAccessor",
+        editAccessor: "fluid.inlineEdit.FCKEditor.viewAccessor",
         lazyEditView: true,
         editModeRenderer: fluid.inlineEdit.FCKEditor.editModeRenderer
     });
