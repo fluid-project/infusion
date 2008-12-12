@@ -52,6 +52,7 @@ fluid_0_6 = fluid_0_6 || {};
     var bindHandlers = function (that) { 
         that.locate("undoControl").click( 
             function () {
+                if (that.state === STATE_REVERTED) return; // prevent anomalous event delivery
                 fluid.model.copyModel(that.extremalModel, that.component.model);
                 that.component.updateModel(that.initialModel.value, that);
                 that.state = STATE_REVERTED;
@@ -61,6 +62,7 @@ fluid_0_6 = fluid_0_6 || {};
         );
         that.locate("redoControl").click( 
             function () {
+                if (that.state === STATE_CHANGED) return; // prevent anomalous event delivery
                 that.component.updateModel(that.extremalModel.value, that);
                 that.state = STATE_CHANGED;
                 refreshView(that);
