@@ -8,6 +8,7 @@ Generic containers for columns and layouts
 .fl-centered {margin-left:auto; margin-right:auto;}
 
 /* Generic container, proxy for other container effects */
+.fl-fix {overflow: auto; zoom:1;}
 .fl-container {}
 /* Fixed width containers */
 .fl-container-100 {width: 100px; overflow: auto;}
@@ -27,24 +28,18 @@ Generic containers for columns and layouts
 .fl-container-flex33 {width: 33%; overflow: auto;}
 .fl-container-flex50 {width: 50%; overflow: auto;}
 
-/* Flex width columns (containers with margins and padding) */
-/* magic derivative is 30: every size should be base 30, to perfectly fit up to 5 columns evenly */
-.fl-col {float:left; display:inline;}
-.fl-col-5-flex .fl-col {width:19%; margin:0 0.25%; padding:0 0.25%}
-.fl-col-4-flex .fl-col {width:24%; margin:0 0.25%; padding:0 0.25%}
-.fl-col-3-flex .fl-col {width:32.3%; margin:0 0.25%; padding:0 0.25%}
-.fl-col-2-flex .fl-col {width:49%; margin:0 0.25%; padding:0 0.25%}
-.fl-col-1-flex .fl-col {width:99%; margin:0 0.25%; padding:0 0.25%}
-
-.fl-col-3-mixed .fl-col-side {width:200px;}
-.fl-col-3-mixed .fl-col-mid {margin:0 230px;}
-.fl-col-3-mixed .fl-col-side, 
-.fl-col-3-mixed .fl-col-mid {padding:0 10px;}
-
-
 /* linearizable containers & columns */
 .fl-layout-linear *,
-.fl-layout-linear .fl-linearEnabled {overflow:visible !important; clear: both !important; /*float:none !important;*/ position:relative !important; top:0 !important; left:0 !important;}
+.fl-layout-linear .fl-linearEnabled {
+    overflow:visible !important; 
+    clear: both !important; 
+    /*float:none !important;*/ 
+    position:relative !important; 
+    margin-left:0 !important;  
+    margin-right:0 !important;
+    top:0 !important; 
+    left:0 !important;
+}
 .fl-layout-linear .fl-container,
 .fl-layout-linear .fl-container-100,
 .fl-layout-linear .fl-container-150,
@@ -68,6 +63,33 @@ Generic containers for columns and layouts
 Layout Helpers
 =============================================
 */
+/*
+ * Columns: A quick column grid system
+ */
+/* Flex width columns (containers with margins and padding) */
+/* magic derivative is 30: every size should be base 30, to perfectly fit up to 5 columns evenly */
+.fl-col {float:left; display:inline; overflow:auto; text-align:justify;}
+.fl-col-flex5 .fl-col {width:19%; margin:0 0.25%; padding:0 0.25%}
+.fl-col-flex4 .fl-col {width:24%; margin:0 0.25%; padding:0 0.25%}
+.fl-col-flex3 .fl-col {width:32%; margin:0 0.25%; padding:0 0.25%}
+.fl-col-flex2 .fl-col {width:49%; margin:0 0.25%; padding:0 0.25%}
+
+/* CHANGE TO LAYOUT not COL since this will become a layout helper */
+.fl-col-mixed,
+.fl-col-mixed2,
+.fl-col-mixed3 {overflow:auto; zoom:1;}
+
+.fl-col-mixed .fl-col-side {width:200px;}
+.fl-col-mixed .fl-col-side, 
+.fl-col-mixed .fl-col-main {padding:0 10px;}
+
+.fl-col-mixed2 .fl-col-side {width:200px; padding:0 10px;}
+.fl-col-mixed2 .fl-col-main {margin-left:230px; padding:0 10px;} /* margin goes on whichever side the fixed column goes */
+
+.fl-col-mixed3 .fl-col-main {margin:0 230px;} /* margin goes on whichever side the fixed column goes */
+
+
+
 /*
  * Tabs: a quick tab system
  * Dependency: list-based markup ?
