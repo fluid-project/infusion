@@ -1,67 +1,67 @@
 /* Styles of a Fluid themed jQuery UI dialog */
 
 .ui-dialog {
-	background-color: #FFF;
-	border: 1px solid #7C7E80;
+    background-color: #FFF;
+    border: 1px solid #7C7E80;
 }
 
 .ui-dialog .ui-dialog-titlebar {
-	border-bottom: 1px solid #7C7E80;
-	background: #427ABE;
-	padding: 0px;
-	height: 28px;
-	_height: 29px;
+    border-bottom: 1px solid #7C7E80;
+    background: #427ABE;
+    padding: 0px;
+    height: 28px;
+    _height: 29px;
 }
 
 .ui-dialog.ui-draggable .ui-dialog-titlebar {
-	cursor: move;
+    cursor: move;
 }
 
 .ui-dialog .ui-dialog-titlebar-close {
-	width: 17px;
-	height: 17px;
-	background: url(../images/infusion-theme/x-close-lrg.png) no-repeat 1px 1px;
-	border: 1px solid transparent;
-	position:absolute;
-	top: 6px;
-	right: 7px;
-	cursor: pointer;
+    width: 17px;
+    height: 17px;
+    background: url(../images/infusion-theme/x-close-lrg.png) no-repeat 1px 1px;
+    border: 1px solid transparent;
+    position:absolute;
+    top: 6px;
+    right: 7px;
+    cursor: pointer;
 }
 
 .ui-dialog .ui-dialog-titlebar-close span {
-	display: none;
+    display: none;
 }
 
 .ui-dialog .ui-dialog-titlebar-close-hover {
-	background: url(../images/infusion-theme/x-close-lrg.png) no-repeat 1px 1px;
-	background-color: #095CBE;
-	border: 1px solid #CCC;
+    background: url(../images/infusion-theme/x-close-lrg.png) no-repeat 1px 1px;
+    background-color: #095CBE;
+    border: 1px solid #CCC;
 }
 
 .ui-dialog .ui-dialog-title {
-	margin-left: 5px;
-	color: white;
-	font-weight: normal;
-	position: relative;
-	top: 7px;
-	left: 4px;
-	font-size: 1.16em;
+    margin-left: 5px;
+    color: white;
+    font-weight: normal;
+    position: relative;
+    top: 7px;
+    left: 4px;
+    font-size: 1.16em;
 }
 
 .ui-dialog .ui-dialog-content {
-	margin: 1.2em;
+    margin: 1.2em;
 }
 
 .ui-dialog .ui-dialog-buttonpane {
-	position: absolute;
-	bottom: 8px;
-	right: 12px;
-	width: 100%;
-	text-align: right;
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    width: 100%;
+    text-align: right;
 }
 
 .ui-dialog .ui-dialog-buttonpane button {
-	margin: 6px;
+    margin: 6px;
 }
 
 /* Dialog handle styles */

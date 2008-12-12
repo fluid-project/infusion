@@ -1,8 +1,8 @@
 .fl-uploader { 
     width: 434px;
     position: relative;
-	display: block;
-	clear: both;
+    display: block;
+    clear: both;
     padding: 1em 2em;
 }
 
@@ -19,57 +19,57 @@
 }
 
 .fl-uploader button {
-	background-color: #4F99D3;
-	border-color: #2A3990;
-	border-width: 1px;
-	border-style: solid;
-	font-weight: bolder;
-	font-size: 1.06em;
-	color: #FFF;
-	height: 32px;
-	padding-left: 2em;
-	padding-right: 2em;
-	margin-right: 1em;
-	outline: none;
-	cursor: pointer;
+    background-color: #4F99D3;
+    border-color: #2A3990;
+    border-width: 1px;
+    border-style: solid;
+    font-weight: bolder;
+    font-size: 1.06em;
+    color: #FFF;
+    height: 32px;
+    padding-left: 2em;
+    padding-right: 2em;
+    margin-right: 1em;
+    outline: none;
+    cursor: pointer;
 }
 
 .fl-uploader button:focus, .fl-uploader button.focus {
-	outline: 2px solid #142B8C;
+    outline: 2px solid #142B8C;
 }
 
 .fl-uploader button:hover {
-	background-color: #115F8F;
+    background-color: #115F8F;
 }
 
 .fl-uploader button.default {
-	background-color: #74B74A;
-	border-color: #006838;
+    background-color: #74B74A;
+    border-color: #006838;
 }
 
 .fl-uploader button.default:hover {
-	background-color: #519325;
-	border-color: #142B8C;
+    background-color: #519325;
+    border-color: #142B8C;
 }
 
 .fl-uploader button.cancel {
-	background-color: #D03E4F;
-	border-color: #BF1E2D;
+    background-color: #D03E4F;
+    border-color: #BF1E2D;
 }
 
 .fl-uploader button.cancel:hover {
-	background-color: #9E182B;
-	border-color: #142B8C;
+    background-color: #9E182B;
+    border-color: #142B8C;
 }
 
 .fl-uploader button.dim {
-	background-color: #999;
-	border-color: #666666;
+    background-color: #999;
+    border-color: #666666;
 }
 
 .fl-uploader button.dim:hover {
-	background-color: #999;
-	border-color: #666666;
+    background-color: #999;
+    border-color: #666666;
 }
 
 .fl-uploader button span.text-description {
@@ -136,7 +136,7 @@ html>body .fl-uploader a.fl-uploader-browse {
 }
 
 .fl-scroller-table-foot table { 
-	width: 100%;
+    width: 100%;
     position:relative;
     z-index:6;
 }
@@ -163,9 +163,9 @@ html>body .fl-uploader a.fl-uploader-browse {
     overflow: auto;
     overflow-x: hidden;
     overflow-y: auto;
-	border-width: 1px 1px 0;
-	border-style: solid;
-	border-color: #999;
+    border-width: 1px 1px 0;
+    border-style: solid;
+    border-color: #999;
 }
 
 .fl-scroller .scroller-inner {
@@ -182,7 +182,7 @@ html>body .fl-uploader a.fl-uploader-browse {
 
 /* hidden from IE6 */
 html>body .fl-uploader-queue {
-	width: 100%;	
+    width: 100%;    
 }
 
 /* this style is here for debugging, if everything is working right the list items are focusable but the list not. */
@@ -347,7 +347,7 @@ button span.text-description {
 }
 
 .fluid-templates {
-	display: none;
+    display: none;
 }
 
 

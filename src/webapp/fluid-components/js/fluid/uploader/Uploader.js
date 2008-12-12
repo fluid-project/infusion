@@ -653,21 +653,21 @@ fluid_0_6 = fluid_0_6 || {};
     
     fluid.uploader.errorConstants = {
         HTTP_ERROR: -200,
-	    MISSING_UPLOAD_URL: -210,
-	    IO_ERROR: -220,
-	    SECURITY_ERROR: -230,
-	    UPLOAD_LIMIT_EXCEEDED: -240,
-	    UPLOAD_FAILED: -250,
-	    SPECIFIED_FILE_ID_NOT_FOUND: -260,
-	    FILE_VALIDATION_FAILED: -270,
-	    FILE_CANCELLED: -280,
-	    UPLOAD_STOPPED: -290
+        MISSING_UPLOAD_URL: -210,
+        IO_ERROR: -220,
+        SECURITY_ERROR: -230,
+        UPLOAD_LIMIT_EXCEEDED: -240,
+        UPLOAD_FAILED: -250,
+        SPECIFIED_FILE_ID_NOT_FOUND: -260,
+        FILE_VALIDATION_FAILED: -270,
+        FILE_CANCELLED: -280,
+        UPLOAD_STOPPED: -290
     };
     
     fluid.uploader.fileStatusConstants = {
         QUEUED: -1,
-	    IN_PROGRESS: -2,
-	    ERROR: -3,
+        IN_PROGRESS: -2,
+        ERROR: -3,
         COMPLETE: -4,
         CANCELLED: -5
     };

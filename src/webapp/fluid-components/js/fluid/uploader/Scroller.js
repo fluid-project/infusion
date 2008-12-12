@@ -17,11 +17,11 @@ fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
-	var refreshView = function (that) {
-		var maxHeight = that.options.maxHeight;
-		var isOverMaxHeight = (that.scrollingElm.children().eq(0).height() > maxHeight);
-		var setHeight = (isOverMaxHeight) ? maxHeight : "";
-		that.scrollingElm.height(setHeight);
+    var refreshView = function (that) {
+        var maxHeight = that.options.maxHeight;
+        var isOverMaxHeight = (that.scrollingElm.children().eq(0).height() > maxHeight);
+        var setHeight = (isOverMaxHeight) ? maxHeight : "";
+        that.scrollingElm.height(setHeight);
     };
     
     var scrollBottom = function (that) {
@@ -67,16 +67,16 @@ fluid_0_6 = fluid_0_6 || {};
         
         // We should render our own sensible default if the scrolling element is missing.
         if (!that.scrollingElm.length) {
-			fluid.fail({
+            fluid.fail({
                 name: "Missing Scroller",
                 message: "The scroller wrapper element was not found."
             });
         }
-		
-		// set the height of the scroller unless this is IE6
-		if (!$.browser.msie || $.browser.version > 6) {
-			that.scrollingElm.css("max-height", that.options.maxHeight);
-		}
+        
+        // set the height of the scroller unless this is IE6
+        if (!$.browser.msie || $.browser.version > 6) {
+            that.scrollingElm.css("max-height", that.options.maxHeight);
+        }
     };
     
     /**
@@ -109,9 +109,9 @@ fluid_0_6 = fluid_0_6 || {};
          * Refreshes the scroller's appearance based on any changes to the document.
          */
         that.refreshView = function () {
-			if ($.browser.msie && $.browser.version < 7) {
-				refreshView(that);
-			}
+            if ($.browser.msie && $.browser.version < 7) {
+                refreshView(that);
+            }
         };
         
         that.refreshView();
