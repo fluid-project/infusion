@@ -98,10 +98,12 @@ Layout Helpers
 .fl-tabs-left {text-align:left; padding-left:10px;}
 .fl-tabs-right {text-align:right; padding-right:15px;}
 .fl-tabs {margin:5px 0 0px; border-bottom: 1px solid}
-.fl-tabs li {border:1px solid; list-style-type:none; display:inline-block; padding:3px 8px; text-align:center; margin-bottom:-1px; margin-right:-5px; cursor:pointer;}
 .fl-tabs .fl-activeTab {}
-/* IE only selector */
-.fl-tabs li {*display:inline;}
+.fl-tabs li {border:1px solid; list-style-type:none; padding:3px 8px; text-align:center; margin-bottom:-1px; margin-right:-5px; cursor:pointer;}
+.fl-tabs li, x:-moz-any-link {display:-moz-inline-box;} /* FF2 inline-block workaround */
+.fl-tabs li {display:inline-block;} /* FF3, Opera, Safari, Chrome */
+.fl-tabs li, x:-moz-any-link, x:default {display:inline-block;}  /* reset for FF 3*/
+.fl-tabs li {*display:inline;} /* IE only selector */
 
 /*
  * Menus: a quick menu
