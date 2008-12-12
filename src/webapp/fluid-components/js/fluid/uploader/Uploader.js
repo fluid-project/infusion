@@ -114,17 +114,6 @@ fluid_0_6 = fluid_0_6 || {};
         });
     };
     
-    var unbindDeleteKey = function (that, row) {
-        var deleteHandler = null;
-       
-        fluid.activatable(row, null, {
-            additionalBindings: [{
-                key: fluid.a11y.keys.DELETE, 
-                activateHandler: deleteHandler
-            }]
-        });
-    };
-    
     var bindRowHandlers = function (that, row) {
         if ($.browser.msie && $.browser.version < 7) {
             bindHover(row, that.options.styles);
@@ -197,7 +186,6 @@ fluid_0_6 = fluid_0_6 || {};
         removeFile.removeClass(that.options.styles.remove);
         changeRowState(row, that.options.styles.uploaded);
         row.attr("title", that.options.strings.status.success);
-        unbindDeleteKey(that,row);
     };
     
     var showErrorForFile = function (that, file, error) {

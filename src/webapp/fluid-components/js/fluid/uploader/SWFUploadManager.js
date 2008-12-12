@@ -75,7 +75,7 @@ fluid_0_6 = fluid_0_6 || {};
             
             fireAfterFileComplete(file);
             if (that.queue.isUploading && batch.numFilesCompleted < batch.files.length) {
-                that.uploadNextFile(batch.files[0].id);
+                that.uploadNextFile();
             } else {
                 finishUploading(that);
             }
