@@ -604,7 +604,6 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     fluid.defaults("fluid.reorderer", {
-        instructionMessageId: "message-bundle:",
         styles: {
             defaultStyle: "orderable-default",
             selected: "orderable-selected",
