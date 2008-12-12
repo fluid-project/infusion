@@ -1,3 +1,6 @@
+body {
+    padding: 0 3em 3em;
+}
 .header {
     background-color:rgb(250,200,200);
 }
