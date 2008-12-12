@@ -1,4 +1,4 @@
-/* General styles */
+    /* General styles */
 
 body {
   font-family:Verdana;
@@ -624,4 +624,13 @@ div .orderable-drop-marker{
 
 .orderable-mouse-drag {
     display: none;
+}
+
+.screen-reader-instructions {
+    position:absolute;
+    left:0px;
+    top:-500px;
+    width:1px;
+    height:1px;
+    overflow:hidden;
 }

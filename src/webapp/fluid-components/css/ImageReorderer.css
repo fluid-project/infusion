@@ -116,3 +116,11 @@ div .orderable-drop-marker{
 	border-right: 10px solid lightyellow;
 }
 
+.screen-reader-instructions {
+    position:absolute;
+    left:0px;
+    top:-500px;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+}

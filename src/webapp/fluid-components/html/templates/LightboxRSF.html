@@ -265,9 +265,14 @@
       </div>
       
       <!-- Sample instruction message. In the RSF gallery, this is supplied by the server. -->
-      <div id="message-bundle:" class="image-reorderer-instructions" tabindex="1"
-              title="Image Lightbox: To use the keyboard: Select an image using i, k, m or j, or the arrow keys. View an image by pressing Enter. Move an image using CTRL + a direction key.">
-        <div class="image-reorderer-downarrow"></div><div id="message-bundle:thumbnailInstructions">
+      <div id="message-bundle:" class="image-reorderer-instructions">
+        <div class="screen-reader-instructions" tabindex="1">Image Reorderer: To use the keyboard:
+                  Screen reader users turn off virtual cursor (insert + z).
+                  Select an image using i, k, m or j.
+                  Move an image using CTRL + i, k, m or j.
+                  View an image by pressing Enter.</div>
+        <div class="image-reorderer-downarrow"></div>
+        <div id="message-bundle:thumbnailInstructions" tabindex="-1">
           To use the keyboard:<br/>
             Select an image using i, k, m or j, or the arrow keys.<br/>
             View an image by pressing Enter.<br/>
