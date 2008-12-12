@@ -71,7 +71,6 @@ fluid_0_6 = fluid_0_6 || {};
     var removeFileAndRow = function (that, file, row) {
         that.uploadManager.removeFile(file);
         row.fadeOut("fast", function () {
-            fluid.setLogging(true);
             row.remove();
             that.refreshView();   
         }); 
