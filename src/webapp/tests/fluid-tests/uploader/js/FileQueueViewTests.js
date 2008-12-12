@@ -59,7 +59,7 @@
         
         // File Queue test case
         var setupFunction = function () {
-            qEl = $("#main .fluid-uploader-queue");
+            qEl = $("#main .fl-uploader-queue");
             jqUnit.subvertAnimations();
         };
         
@@ -71,10 +71,10 @@
             jqUnit.assertNotNull("The queue should have a scroller attached to it.", q.scroller);
             jqUnit.assertNotUndefined("The queue should have a scroller attached to it.", q.scroller);
             jqUnit.assertEquals("The queue's container should be scrollable", 
-                                $(".fluid-uploader-queue")[0], 
+                                $(".fl-uploader-queue")[0], 
                                 q.scroller.container[0]);
             jqUnit.assertEquals("The queue's scroller should have a scroller wrapper.", 
-                                $(".fluid-scroller")[0], 
+                                $(".fl-scroller")[0], 
                                 q.scroller.scrollingElm[0]);
         });
         

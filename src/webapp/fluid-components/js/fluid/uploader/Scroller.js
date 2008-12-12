@@ -120,7 +120,7 @@ fluid_0_6 = fluid_0_6 || {};
     
     fluid.defaults("fluid.scroller", {  
         selectors: {
-            wrapper: ".fluid-scroller"
+            wrapper: ".fl-scroller"
         },
         
         maxHeight: 180,

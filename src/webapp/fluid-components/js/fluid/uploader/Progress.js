@@ -204,11 +204,11 @@ fluid_0_6 = fluid_0_6 || {};
       
 	fluid.defaults("fluid.progress", {  
         selectors: {
-			displayElement: ".fluid-progress", // required, the element that gets displayed when progress is displayed, could be the indicator or bar or some larger outer wrapper as in an overlay effect
-			progressBar: ".fluid-progress-bar", //required
-			indicator: ".fluid-progress-indicator", //required
-			label: ".fluid-progress-label", //optional
-			ariaElement: ".fluid-progress-bar" // usually required, except in cases where there are more than one progressor for the same data such as a total and a sub-total
+			displayElement: ".fl-progress", // required, the element that gets displayed when progress is displayed, could be the indicator or bar or some larger outer wrapper as in an overlay effect
+			progressBar: ".fl-progress-bar", //required
+			indicator: ".fl-progress-indicator", //required
+			label: ".fl-progress-label", //optional
+			ariaElement: ".fl-progress-bar" // usually required, except in cases where there are more than one progressor for the same data such as a total and a sub-total
         },
 		
 		// progress display and hide animations, use the jQuery animation primatives, set to false to use no animation

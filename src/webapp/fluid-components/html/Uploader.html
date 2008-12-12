@@ -65,7 +65,7 @@
             .fl-uploader {width:350px; border:1px solid #ccc;}
             .fl-uploader-queue {}
             
-            .fluid-scroller {overflow-y:auto; overflow-x:hidden;}
+            .fl-scroller {overflow-y:auto; overflow-x:hidden;}
             .scroller-inner {overflow-y:auto; overflow-x:hidden; position:relative; max-height:180px;}
             
             .set_1 .fl-uploader-queue table {width:100%;}
@@ -90,7 +90,7 @@
             .set_1 .fl-progress-bounds {clear:both; height:10px; overflow:hidden;}
             .set_1 .total-file-progress {float:left;}
             .set_1 .total-progress {background-color:#080; height:100%;}
-            .set_1 .fluid-uploader-btns {text-align:right; background-color:#ccc; padding:0 5px 5px;}
+            .set_1 .fl-uploader-btns {text-align:right; background-color:#ccc; padding:0 5px 5px;}
             .set_1 .file-progress {position:absolute; border-bottom:3px solid #080; margin-top:-3px; text-align:center; font-weight:bold; color:#fff;}
             .set_1 .file-progress .file-progress-text {display:none;}
             .set_1 .removeFile {}
@@ -115,7 +115,7 @@
             .set_2 .fl-progress-bounds {clear:both; height:10px; overflow:hidden;}
             .set_2 .total-file-progress {float:left;}
             .set_2 .total-progress {background-color:#080; height:100%;}
-            .set_2 .fluid-uploader-btns {text-align:right; background-color:#ccc; padding:0 5px 5px;}
+            .set_2 .fl-uploader-btns {text-align:right; background-color:#ccc; padding:0 5px 5px;}
             .set_2 .file-progress {position:absolute; border-bottom:3px solid #080; margin:3px 0 0 5px; padding:0 3px; text-align:center; font-weight:bold; color:#fff;}
             .set_2 .file-progress-text {display:none; float:right;}
             .set_2 .removeFile {}
@@ -134,7 +134,7 @@
             <form method="get" enctype="multipart/form-data" class="fl-uploader">
                 <div class="start">
                     <!-- FILE QUEUE -->
-                    <div class="fluid-uploader-queue-wrapper  fl-uploader-queue">
+                    <div class="fl-uploader-queue-wrapper  fl-uploader-queue">
                         <!-- QUEUE CONTENTS -->
     			        <table summary="Upload queue headings">
 						    <tr>
@@ -143,9 +143,9 @@
                                 <th scope="col" class="fileRemove">Remove</th>
                             </tr>
                         </table>
-            			<div class="fluid-scroller">
+            			<div class="fl-scroller">
             				<div class="scroller-inner">
-            					<table class="fluid-uploader-queue fl-container-flex" summary="Queue of files to upload.">
+            					<table class="fl-uploader-queue fl-container-flex" summary="Queue of files to upload.">
             						<tbody>
     	                                <!-- Rows will be rendered in here. -->                                        
     	                                <!-- Template markup for the file queue rows -->
@@ -165,16 +165,16 @@
             			</div>
                         
                         <!-- QUEUE INSTRUCTIONS -->
-            			<div class="fluid-uploader-row-placeholder fl-instructions">
+            			<div class="fl-uploader-row-placeholder fl-instructions">
             			    Choose <em>Browse</em> to add files to the queue 
                         </div>
                         
                         <!-- QUEUE FOOTER -->
-            			<div class="fluid-scroller-table-foot fl-uploader-totals">
+            			<div class="fl-scroller-table-foot fl-uploader-totals">
                             <div class="total-file-progress">
-            					Total: <span class="fluid-uploader-totalFiles">0</span> files (<span class="fluid-uploader-totalBytes">0 KB</span>)
+            					Total: <span class="fl-uploader-totalFiles">0</span> files (<span class="fl-uploader-totalBytes">0 KB</span>)
                             </div>
-                            <a href="#" class="fluid-uploader-browse fl-force-right fl-btn fl-btn-browse">Browse</a>
+                            <a href="#" class="fl-uploader-browse fl-force-right fl-btn fl-btn-browse">Browse</a>
                             <div class="fl-progress-bounds">
                 				<div class="total-progress"></div>
                             </div>
@@ -182,8 +182,8 @@
                     </div>
                     
                     <!-- UPLOADER BUTTONS -->
-            		<div class="fluid-uploader-btns">
-            			<a href="#" class="fluid-uploader-upload default fl-btn" >Upload</a>
+            		<div class="fl-uploader-btns">
+            			<a href="#" class="fl-uploader-upload default fl-btn" >Upload</a>
             		</div>
                     
                 </div>
@@ -191,7 +191,7 @@
     
             <!-- Other templates -->
         	<div class="fluid-templates">
-        		<table id="fluid-uploader" summary="Invisible placeholder for Uploader templates.">
+        		<table id="fl-uploader" summary="Invisible placeholder for Uploader templates.">
         			<tr id="queue-error-tmplt" class="queue-error-row">
         			    <td colspan="3" class="queue-error"></td>
                     </tr>
@@ -211,12 +211,12 @@
             <form method="get" enctype="multipart/form-data" class="fl-uploader">
                 <div class="start">
                     <!-- FILE QUEUE -->
-                    <div class="fluid-uploader-queue-wrapper  fl-uploader-queue">
+                    <div class="fl-uploader-queue-wrapper  fl-uploader-queue">
                         <h2>Queue:</h2>
-            			<div class="fluid-scroller">
+            			<div class="fl-scroller">
             				<div class="scroller-inner">                        
                                 <!-- QUEUE CONTENTS -->
-                                <ol class="fluid-uploader-queue fl-uploader-queue">                                    
+                                <ol class="fl-uploader-queue fl-uploader-queue">                                    
                                     <!-- file queue template --> 
                                     <li id="queue-row-tmplt" class="fluid-templates">
                                         <a class="removeFile fl-icon fl-icon-remove" title="Remove File" tabindex="-1" href="#" >Remove</a>
@@ -228,14 +228,14 @@
                             </div>
                         </div>
                         <!-- QUEUE INSTRUCTIONS -->
-            			<div class="fluid-uploader-row-placeholder fl-instructions">Choose <em>Browse</em> to add files to the queue </div>
+            			<div class="fl-uploader-row-placeholder fl-instructions">Choose <em>Browse</em> to add files to the queue </div>
 
                         <!-- QUEUE FOOTER -->
-            			<div class="fluid-scroller-table-foot fl-uploader-totals">
+            			<div class="fl-scroller-table-foot fl-uploader-totals">
                             <div class="total-file-progress">
-            					Total: <span class="fluid-uploader-totalFiles">0</span> files (<span class="fluid-uploader-totalBytes">0 KB</span>)
+            					Total: <span class="fl-uploader-totalFiles">0</span> files (<span class="fl-uploader-totalBytes">0 KB</span>)
                             </div>
-                            <a href="#" class="fluid-uploader-browse fl-force-right fl-btn fl-btn-browse">Browse</a>
+                            <a href="#" class="fl-uploader-browse fl-force-right fl-btn fl-btn-browse">Browse</a>
                             <div class="fl-progress-bounds">
                 				<div class="total-progress"></div>
                             </div>
@@ -243,8 +243,8 @@
                     </div>
                     
                     <!-- UPLOADER BUTTONS -->
-            		<div class="fluid-uploader-btns">
-            			<a href="#" class="fluid-uploader-upload default fl-btn" >Upload</a>
+            		<div class="fl-uploader-btns">
+            			<a href="#" class="fl-uploader-upload default fl-btn" >Upload</a>
             		</div>
                     
                 </div>
@@ -252,7 +252,7 @@
     
             <!-- Other templates -->
         	<div class="fluid-templates">
-        		<table id="fluid-uploader" summary="Invisible placeholder for Uploader templates.">
+        		<table id="fl-uploader" summary="Invisible placeholder for Uploader templates.">
         			<tr id="queue-error-tmplt" class="queue-error-row">
         			    <td colspan="3" class="queue-error"></td>
                     </tr>

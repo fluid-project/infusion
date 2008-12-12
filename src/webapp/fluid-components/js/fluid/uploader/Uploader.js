@@ -583,7 +583,7 @@ fluid_0_6 = fluid_0_6 || {};
             type: "fluid.progress",
             options: {
                 selectors: {
-                    progressBar: ".fluid-scroller-table-foot",
+                    progressBar: ".fl-scroller-table-foot",
                     displayElement: ".total-progress", 
                     label: ".total-file-progress",
                     indicator: ".total-progress"
@@ -592,15 +592,15 @@ fluid_0_6 = fluid_0_6 || {};
         },
         
         selectors: {
-            fileQueue: ".fluid-uploader-queue",
-            browseButton: ".fluid-uploader-browse",
-            uploadButton: ".fluid-uploader-upload",
-            cancelButton: ".fluid-uploader-cancel",
-            resumeButton: ".fluid-uploader-resume",
-            pauseButton: ".fluid-uploader-pause",
-            totalFileProgressBar: ".fluid-scroller-table-foot",
+            fileQueue: ".fl-uploader-queue",
+            browseButton: ".fl-uploader-browse",
+            uploadButton: ".fl-uploader-upload",
+            cancelButton: ".fl-uploader-cancel",
+            resumeButton: ".fl-uploader-resume",
+            pauseButton: ".fl-uploader-pause",
+            totalFileProgressBar: ".fl-scroller-table-foot",
             totalFileStatusText: ".total-file-progress",
-            instructions: ".fluid-uploader-browse-instructions"
+            instructions: ".fl-uploader-browse-instructions"
         },
         
         styles: {
