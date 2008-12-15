@@ -105,6 +105,10 @@ html>body .fl-uploader a.fl-uploader-browse {
     background-color: #FFF;
 }
 
+.fl-uploader .fl-browse-button-overlay {
+    position: absolute;
+    z-index: 1;
+}
 
 /* FILE QUEUE TABLE STYLES */
 

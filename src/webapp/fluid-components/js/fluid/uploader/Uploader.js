@@ -496,6 +496,7 @@ fluid_0_6 = fluid_0_6 || {};
     var setupUploader = function (that) {
         // Instantiate the upload manager, file queue view, and total file progress bar,
         // passing them smaller chunks of the overall options for the uploader.
+        that.decorators = fluid.initSubcomponents(that, "decorators", [that, fluid.COMPONENT_OPTIONS]);
         that.uploadManager = fluid.initSubcomponent(that, 
                                                     "uploadManager", 
                                                     [that.events, fluid.COMPONENT_OPTIONS]);
@@ -540,11 +541,11 @@ fluid_0_6 = fluid_0_6 || {};
      */
     fluid.progressiveEnhanceableUploader = function (container, enhanceable, options) {
         enhanceable = fluid.container(enhanceable);
+        container = fluid.container(container);
         
         if (swfobject.getFlashPlayerVersion().major > 8) {
-            var uploader = fluid.uploader(container, options);
-            uploader.container.show();   
-            return uploader;
+            container.show();
+            return fluid.uploader(container, options);
         } else {
             enhanceable.show();
         }
@@ -576,6 +577,10 @@ fluid_0_6 = fluid_0_6 || {};
     };
 
     fluid.defaults("fluid.uploader", {
+        decorators: {
+            type: "fluid.swfUploadSetupDecorator"
+        },
+        
         uploadManager: {
             type: "fluid.swfUploadManager"
         },

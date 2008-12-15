@@ -16,13 +16,145 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 fluid_0_6 = fluid_0_6 || {};
 
-
-/***********************
- * SWF Upload Manager *
- ***********************/
-
 (function ($, fluid) {
 
+    /*****************************
+     * SWFUpload Setup Decorator *
+     *****************************/
+
+    var addFlash9Compatibility = function () {
+        // There's a bug in SWFUpload 2.2.0b3 that prevents using Flash 9 correctly.
+        // Override the implementation of SWFUpload.callFlash() to use the old 2.1 version.
+        SWFUpload.prototype.callFlash = SWFUpload.callFlash_Flash9Compatibility;
+    };
+    
+    var unbindSelectFiles = function () {
+        // There's a bug in SWFUpload 2.2.0b3 that causes the entire browser to crash 
+        // if selectFile() or selectFiles() is invoked. Remove them so no one will accidently crash their browser.
+        var emptyFunction = function () {};
+        SWFUpload.prototype.selectFile = emptyFunction;
+        SWFUpload.prototype.selectFiles = emptyFunction;
+    };
+    
+    var prepareUpstreamOptions = function (that, uploader) {
+        that.returnedOptions = {
+            uploadManager: {
+                type: uploader.options.uploadManager.type || uploader.options.uploadManager
+            }
+        };
+    };
+    
+    var createAfterReadyHandler = function (that, uploader) {
+        return function () {
+            var flashMovie = $("#" + uploader.uploadManager.swfUploader.movieName, uploader.container);
+            var browseButton = uploader.locate("browseButton");
+            
+            // Do our best to make the Flash movie as accessible as possib
+            fluid.tabindex(flashMovie, 0);
+            flashMovie.ariaRole("button");
+            flashMovie.attr("alt", "Browse files button");
+            
+            if (that.isTransparent) {
+                // Style the Flash movie so that it floats trasparently over the button.
+                flashMovie.addClass(that.options.styles.browseButtonOverlay);
+                flashMovie.css("top", browseButton.position().top);
+                flashMovie.css("left", browseButton.position().left);
+            }
+        };
+    };
+    
+    var setupForFlash9 = function (that, uploader) {
+        addFlash9Compatibility();
+        that.returnedOptions.uploadManager.options = {
+            flashURL: that.options.flash9URL,
+            flashButtonPeerId: ""
+        };
+    };
+    
+    var createButtonPlaceholder = function (browseButton) {
+        var placeholder = $("<span></span>");
+        var placeholderId = fluid.allocateSimpleId(placeholder);
+        browseButton.before(placeholder);
+        unbindSelectFiles();
+        
+        return placeholderId;
+    };
+    
+    var setupForFlash10 = function (that, uploader) {
+        // If we're working in Flash 10 or later, we need to attach the Flash movie to the browse button.
+        var browseButton = uploader.locate("browseButton");
+        fluid.tabindex(browseButton, -1);
+
+        that.isTransparent = that.options.flashButtonAlwaysVisible ? false : 
+                                                                     (!$.browser.msie || that.options.transparentEvenInIE);
+        
+        // If the button is transparent, we'll need an extra placeholder element which will be replaced by the movie.
+        // If the Flash movie is visible, we can just replace the button itself.
+        var peerId = that.isTransparent ? createButtonPlaceholder(browseButton) : fluid.allocateSimpleId(browseButton);
+        
+        that.returnedOptions.uploadManager.options = {
+            flashURL: that.options.flash10URL,
+            flashButtonImageURL: that.isTransparent ? undefined : that.options.flashButtonImageURL, 
+            flashButtonPeerId: peerId,
+            flashButtonHeight: that.isTransparent ? browseButton.outerHeight(): that.options.flashButtonHeight,
+            flashButtonWidth: that.isTransparent ? browseButton.outerWidth(): that.options.flashButtonWidth,
+            flashButtonWindowMode: that.isTransparent ? SWFUpload.WINDOW_MODE.TRANSPARENT : SWFUpload.WINDOW_MODE.WINDOW,
+            flashButtonCursorEffect: SWFUpload.CURSOR.HAND,
+            listeners: {
+                afterReady: createAfterReadyHandler(that, uploader),
+                onUploadStart: function () {
+                    uploader.uploadManager.swfUploader.setButtonDisabled(true);
+                },
+                afterUploadComplete: function () {
+                    uploader.uploadManager.swfUploader.setButtonDisabled(false);
+                }
+            }   
+        };
+    };
+    
+    /**
+     * SWFUploadSetupDecorator is a decorator designed to setup the DOM correctly for SWFUpload and configure
+     * the Uploader component according to the version of Flash and browser currently running.
+     * 
+     * @param {Uploader} uploader the Uploader component to decorate
+     * @param {options} options configuration options for the decorator
+     */
+    fluid.swfUploadSetupDecorator = function (uploader, options) {
+        var that = {};
+        fluid.mergeComponentOptions(that, "fluid.swfUploadSetupDecorator", options);
+               
+        that.flashVersion = swfobject.getFlashPlayerVersion().major;
+        prepareUpstreamOptions(that, uploader);  
+        if (that.flashVersion === 9) {
+            setupForFlash9(that, uploader);
+        } else {
+            setupForFlash10(that, uploader);
+        }
+        
+        return that;
+    };
+    
+    fluid.defaults("fluid.swfUploadSetupDecorator", {
+        flash9URL: "../../flash/swfupload_f9.swf",
+        flash10URL: "../../flash/swfupload_f10.swf",
+        flashButtonAlwaysVisible: true,
+        transparentEvenInIE: false,
+        
+        // Used only when the Flash movie is visible.
+        flashButtonImageURL: "../../images/uploader/browse.png",
+        flashButtonHeight: 22,
+        flashButtonWidth: 106,
+        
+        styles: {
+            browseButtonOverlay: "fl-browse-button-overlay"
+        }
+    });
+    
+    
+    /***********************
+     * SWF Upload Manager *
+     ***********************/
+    
     // Maps SWFUpload's setting names to our component's setting names.
     var swfUploadOptionsMap = {
         uploadURL: "upload_url",
@@ -33,6 +165,12 @@ fluid_0_6 = fluid_0_6 || {};
         fileTypesDescription: "file_types_description",
         fileUploadLimit: "file_upload_limit",
         fileQueueLimit: "file_queue_limit",
+        flashButtonPeerId: "button_placeholder_id",
+        flashButtonImageURL: "button_image_url",
+        flashButtonHeight: "button_height",
+        flashButtonWidth: "button_width",
+        flashButtonWindowMode: "button_window_mode",
+        flashButtonCursorEffect: "button_cursor",
         debug: "debug"
     };
     
@@ -243,6 +381,7 @@ fluid_0_6 = fluid_0_6 || {};
     fluid.defaults("fluid.swfUploadManager", {
         uploadURL: "",
         flashURL: "../../flash/swfupload_f9.swf",
+        flashButtonPeerId: "",
         postParams: {},
         fileSizeLimit: "20480",
         fileTypes: "*.*",
@@ -376,6 +515,6 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     fluid.defaults("fluid.demoUploadManager", {
-        simulateDelay: true 
+        simulateDelay: true
     });
 })(jQuery, fluid_0_6);
