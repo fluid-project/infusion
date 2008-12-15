@@ -104,7 +104,7 @@ Layout Helpers
 .fl-tabs li {display:inline-block;} /* FF3, Opera, Safari, Chrome */
 .fl-tabs li, x:-moz-any-link, x:default {display:inline-block;}  /* reset for FF 3*/
 .fl-tabs li {*display:inline;} /* IE only selector */
-
+.fl-tabs .orderable-drop-marker {width:0.5em; height:1.5em; padding-left:0.2em; padding-right:0.2em; margin:0;}
 /*
  * Menus: a quick menu
  * Dependency: list-based markup ?

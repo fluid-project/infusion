@@ -10,7 +10,7 @@
 .fl-theme-hc :focus,
 .fl-theme-hc .selectable  {
    /* themed focus indicator */
-   outline: 0.2em solid #f00;
+   outline: 0.2em solid #F00;
 }
 
 .fl-theme-hc {color:#000000 !important; background-color:#ffffff !important; background-image:none !important;}
@@ -42,7 +42,10 @@
 /* Helper: Tabs */
 .fl-theme-hc .fl-tabs {border-bottom-color:#000;}
 .fl-theme-hc .fl-tabs li,
-.fl-theme-hc .fl-tabs li *  {font-weight:bold; color:#fff !important; background-color:#000 !important; border-color:#000; border-bottom-color:#000; text-decoration:none;}
+.fl-theme-hc .fl-tabs li *  {border-color:#000; border-bottom-color:#000; }
+.fl-theme-hc .fl-tabs li    {background-color:#000;}
+.fl-theme-hc .fl-tabs li *  {color:#fff !important; font-weight:bold; background-color:#000 !important;text-decoration:none;}
+
 .fl-theme-hc .fl-tabs li:hover,
 .fl-theme-hc .fl-tabs li:hover *,
 .fl-theme-hc .fl-tabs li a:hover {color:#000 !important; background-color:#fff !important;}

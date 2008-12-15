@@ -64,7 +64,7 @@
 .fl-theme-mist :focus,
 .fl-theme-mist .selectable  {
    /* themed focus indicator */
-   outline: 0.2em solid #4070a1;
+   outline: 0.1em solid #F00;
 }
 
 .fl-theme-mist {color:#000000 !important; background-color:#ffffff !important; border-color:#4070a1;}
@@ -114,5 +114,6 @@
 
 /* Component: Uploader */
 
+
 /* States */
-.fl-theme-mist .orderable-drop-marker {background-color:#4070a1 !important;}
+.fl-theme-mist .orderable-drop-marker {background-color:#f00 !important;}
