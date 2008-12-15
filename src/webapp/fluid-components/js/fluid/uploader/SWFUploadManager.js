@@ -261,8 +261,8 @@ fluid_0_6 = fluid_0_6 || {};
 
 (function ($, fluid) {
     
-    var updateProgress = function (file, events, demoState) {
-        if (demoState.shouldPause) {
+    var updateProgress = function (file, events, demoState, isUploading) {
+        if (!isUploading) {
             return;
         }
         
@@ -272,28 +272,31 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var finishUploading = function (that) {
+        if (!that.queue.isUploading) {
+            return;
+        }
+        
         var file = that.demoState.currentFile;
         file.filestatus = fluid.uploader.fileStatusConstants.COMPLETE;
         that.events.onFileSuccess.fire(file);
-        that.invokeAfterRandomDelay(function () {
-            that.demoState.fileIdx++;
-            that.swfUploadSettings.upload_complete_handler(file); // this is a hack that needs to be addressed.
-        });     
+        that.demoState.fileIdx++;
+        that.swfUploadSettings.upload_complete_handler(file); // this is a hack that needs to be addressed.
     };
     
     var simulateUpload = function (that) {
-        if (that.demoState.shouldPause) {
+        if (!that.queue.isUploading) {
             return;
         }
+        
         var file = that.demoState.currentFile;
-        that.invokeAfterRandomDelay(function () {
-            if (that.demoState.bytesUploaded < file.size) {
-                updateProgress(file, that.events, that.demoState);
+        if (that.demoState.bytesUploaded < file.size) {
+            that.invokeAfterRandomDelay(function () {
+                updateProgress(file, that.events, that.demoState, that.queue.isUploading);
                 simulateUpload(that);
-            } else {
-                finishUploading(that);
-            }
-        });
+            });
+        } else {
+            finishUploading(that);
+        } 
     };
     
     var startUploading = function (that) {
@@ -301,17 +304,15 @@ fluid_0_6 = fluid_0_6 || {};
         that.demoState.currentFile = that.queue.files[that.demoState.fileIdx];
         that.demoState.chunksForCurrentFile = Math.ceil(that.demoState.currentFile / that.demoState.chunkSize);
         that.demoState.bytesUploaded = 0;
-        that.demoState.shouldPause = false;
+        that.queue.isUploading = true;
         
         that.events.onFileStart.fire(that.demoState.currentFile);
         that.demoState.currentFile.filestatus = fluid.uploader.fileStatusConstants.IN_PROGRESS;
         simulateUpload(that);
     };
 
-    var pauseDemo = function (that) {
-        that.demoState.shouldPause = true;
+    var stopDemo = function (that) {
         that.demoState.currentFile.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
-        
         // In SWFUpload's world, pausing is a combinination of an UPLOAD_STOPPED error and a complete.
         that.events.onFileError.fire(that.demoState.currentFile, 
                                        fluid.uploader.errorConstants.UPLOAD_STOPPED, 
@@ -351,7 +352,7 @@ fluid_0_6 = fluid_0_6 || {};
          * This method overrides the default behaviour in SWFUploadManager.
          */
         that.stop = function () {
-            pauseDemo(that);
+            stopDemo(that);
         };
         
         /**

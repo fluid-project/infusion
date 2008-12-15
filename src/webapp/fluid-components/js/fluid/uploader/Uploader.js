@@ -451,6 +451,11 @@ fluid_0_6 = fluid_0_6 || {};
         renderUploadTotalMessage(that);
     };
     
+    var updateStateAfterError = function (that) {
+        that.totalProgress.hide();
+        setStateLoaded(that);
+    };
+    
     var updateStateAfterCompletion = function (that) {
         hideTotalProgress(that);
         if (that.uploadManager.queue.getReadyFiles().length === 0) {
@@ -479,8 +484,7 @@ fluid_0_6 = fluid_0_6 || {};
         
         that.events.onFileError.addListener(function (file, error, message) {
             if (error === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
-                // user stopped
-                updateStateAfterCompletion(that);
+                updateStateAfterError(that);
             }
         });
 
