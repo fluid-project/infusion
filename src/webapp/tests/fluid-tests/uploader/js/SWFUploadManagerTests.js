@@ -124,21 +124,27 @@
                                 decorator.returnedOptions.uploadManager.options.flashButtonPeerId);
         };
         
+        swfUploadManagerTests.test("swfUploadSetupDecorator Flash 10 visibility", function () {
+            var decorator = fluid.swfUploadSetupDecorator(mockUploader);
+            checkVisibleSettings(decorator);
+        });
+        
         swfUploadManagerTests.test("swfUploadSetupDecorator Flash 10 transparency", function () {
             // Mock jQuery's browser property to fake IE.
             $.browser.msie = true;
-            var decorator = fluid.swfUploadSetupDecorator(mockUploader);
-            checkVisibleSettings(decorator);
-            
+                        
             // Now try with the transparentEvenInIE option turned on.
             decorator = fluid.swfUploadSetupDecorator(mockUploader, {
+                flashButtonAlwaysVisible: false,
                 transparentEvenInIE: true
             });
             checkTransparentSettings(decorator);
             
             // Mock non-IE browsers.
             $.browser.msie = false;
-            decorator = fluid.swfUploadSetupDecorator(mockUploader);
+            decorator = fluid.swfUploadSetupDecorator(mockUploader, {
+                flashButtonAlwaysVisible: false
+            });
             checkTransparentSettings(decorator);
         });
     });
