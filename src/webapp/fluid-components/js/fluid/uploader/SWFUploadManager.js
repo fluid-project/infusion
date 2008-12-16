@@ -302,6 +302,10 @@ fluid_0_6 = fluid_0_6 || {};
             }
             fileStatusUpdater(file);
         });
+        
+        that.events.afterUploadComplete.addListener(function () {
+            that.queue.isUploading = false; 
+        });
     };
     
     var removeFile = function (that, file) {
