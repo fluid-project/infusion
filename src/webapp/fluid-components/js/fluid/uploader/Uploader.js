@@ -65,7 +65,9 @@ fluid_0_6 = fluid_0_6 || {};
     var hideFileProgress = function (that, file) {
         var fileRowElm = rowForFile(that, file);
         progressorForFile(that, file).hide();
-        that.locate("fileIconBtn", fileRowElm).removeClass("dim");
+        if (file.filestatus === fluid.uploader.fileStatusConstants.COMPLETE) {
+            that.locate("fileIconBtn", fileRowElm).removeClass("dim");
+        } 
     };
     
     var removeFileAndRow = function (that, file, row) {
