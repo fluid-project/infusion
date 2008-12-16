@@ -376,7 +376,6 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     var setStateUploading = function (that) {
-        hideElement(that, that.locate("cancelButton"));
         hideElement(that, that.locate("uploadButton"));
         disableElement(that, that.locate("browseButton"));
         enableElement(that, that.locate("pauseButton"));
@@ -605,7 +604,6 @@ fluid_0_6 = fluid_0_6 || {};
             fileQueue: ".fl-uploader-queue",
             browseButton: ".fl-uploader-browse",
             uploadButton: ".fl-uploader-upload",
-            cancelButton: ".fl-uploader-cancel",
             resumeButton: ".fl-uploader-resume",
             pauseButton: ".fl-uploader-pause",
             totalFileProgressBar: ".fl-scroller-table-foot",
