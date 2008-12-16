@@ -244,11 +244,15 @@ fluid_0_6 = fluid_0_6 || {};
     };
     
     // Invokes the OS browse files dialog, allowing either single or multiple select based on the options.
-    var browse = function (swfUploader, fileQueueLimit) {              
-        if (fileQueueLimit === 1) {
-            swfUploader.selectFile();
+    var browse = function (that) {
+        if (that.queue.isUploading) {
+            return;
+        }
+                   
+        if (that.options.fileQueueLimit === 1) {
+            that.swfUploader.selectFile();
         } else {
-            swfUploader.selectFiles();
+            that.swfUploader.selectFiles();
         }  
     };
         
@@ -340,7 +344,7 @@ fluid_0_6 = fluid_0_6 || {};
          * Opens the native OS browse file dialog.
          */
         that.browseForFiles = function () {
-            browse(that.swfUploader, that.options.fileQueueLimit);
+            browse(that);
         };
         
         /**
