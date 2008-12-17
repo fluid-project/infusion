@@ -183,9 +183,6 @@ fluid_0_6 = fluid_0_6 || {};
 
     
     fluid.defaults("fluid.inlineEdit.dropdown", {
-        selectors: {
-            edit: "#myselectbox"
-        },
         applyEditPadding: false,
         blurHandlerBinder: fluid.inlineEdit.dropdown.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer
