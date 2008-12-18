@@ -1,23 +1,27 @@
 
-Fluid Infusion 0.6beta1
-========================
+Fluid Infusion 0.6
+==================
 Main Project Site:  http://fluidproject.org
 User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
 
-What's New in 0.6beta1
-======================
+What's New in 0.6
+=================
 
-This beta release includes
-  * A sneak peak at the Fluid Client-side Renderer (working in FireFox and Safari)
-  * A preview of the Fluid Skinning System
-  * Numerous bug fixes
+This release includes
+
+    * Completely Refactored Uploader
+    * Two new flavours of Inline Edit: Dropdown and Rich Text
+    * Updated Pager component
+    * Sneak Peek of our new component: User Interface Options
+    * Preview of the Fluid Skinning System
+    * Many bug fixes
 
 What's in this Release
 ======================
 
 This release is available in two forms:
-    fluid-0.6beta1.zip - deployment bundle
-    fluid-0.6beta1-src.zip - source code bundle
+    fluid-0.6.zip - deployment bundle
+    fluid-0.6-src.zip - source code bundle
     
 Both bundles have the following organization:
         fluid-components/
@@ -27,7 +31,7 @@ Both bundles have the following organization:
         README.txt
 
 The deployment bundle also includes a WAR file suitable for deployment in Java-based containers: 
-	fluid-components-0.6beta1.war
+	fluid-components-0.6.war
 
 Source Code
 -----------
@@ -131,21 +135,4 @@ Known Issues
 The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
 Some of the known issues in this release are described here:
 
-* Renderer: The Fluid renderer is provided in this release as a "sneak peek" of the features we have planned.
-  It is not intended for production use, and its APIs will change significantly over the course of the next few 
-  releases. Try it out and share your early feedback with us, but don't rely on it for daily use yet. 
-  At the moment, the Renderer only works in FireFox and Safari.
 
-* Uploader: The Uploader is currently NOT COMPATIBLE with Flash 10 (released on 9/26/2008). This 
-  bug is caused by a change in Adobe's security protocols for Flash 10, which block the SWFUpload 
-  code from calling the OS File browser. The SWFUpload community is still implementing a fix based 
-  on overlaying a transparent Flash object over the HTML Browse button. The Uploader in Fluid 0.6 
-  will include this fix, or a fix of our own. 
-
-* Uploader: After pausing, queue sometimes won't resume
-
-* Reorderer: Nested Reorderers sometimes don't work as expected.
-
-* Keyboard accessibility jQuery plug-in: There is a naming clash with jQuery UI's ui.selectable.js
-
-* Keyboard control in the Safari and Opera browsers is not yet fully supported.
