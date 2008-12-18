@@ -135,4 +135,31 @@ Known Issues
 The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
 Some of the known issues in this release are described here:
 
+Uploader: 
+  For information related to known issues related to Flash 10 compatibility, see http://wiki.fluidproject.org/x/0QFS
+    FLUID-2032 Cannot Tab to the 'Browse More" button with Flash 10, using FF2
+    FLUID-2021 Cannot upload files with the keyboard: Using FF
+    FLUID-1983 Uploader not working with flash 9: using IE
+
+Inline Edit: 
+    FLUID-2017 Cannot click on links in a rich text inline edit field because it changes into edit mode.
+    FLUID-2024 Undo/Redo links set scroll to top
+    FLUID-1600 Pressing the "Tab" key to exit edit mode, places focus on the wrong item
+
+Reorderer: 
+    FLUID-954 Page won't scroll during DnD, using Opera
+    FLUID-148 Edge case: visual position of drop target when droppable is at beginning or end of a row
+    FLUID-118 Dragging an image offscreen or out of the frame has some unexpected results.
+
+Layout Reorderer: 
+    FLUID-1540 Can't use keyboard reordering to move a nested reorderer to the right column, using IE6
+    FLUID-858 Portlet Columns load with no padding between them in IE7
+
+UI Options: 
+    FLUID-1998 The font spacing, on the "Save and apply your preferences" button, does not change
+    FLUID-1997 Preview window displayed to the right of the options in simple layout instead of below: Using IE
+    FLUID-1986 Font size only changes in the preview
+
+Pager: 
+    FLUID-835 Pager links are not in the tab order, using Opera 9.5
 
