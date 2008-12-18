@@ -12,9 +12,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global SWFUpload*/
 /*global jQuery*/
-/*global fluid_0_6*/
+/*global fluid_0_7*/
 
-fluid_0_6 = fluid_0_6 || {};
+fluid_0_7 = fluid_0_7 || {};
 
 (function ($, fluid) {
     
@@ -129,4 +129,4 @@ fluid_0_6 = fluid_0_6 || {};
         return totalBytes;
     };
           
-})(jQuery, fluid_0_6);
+})(jQuery, fluid_0_7);

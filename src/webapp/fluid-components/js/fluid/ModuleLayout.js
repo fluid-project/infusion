@@ -12,9 +12,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 /*global jQuery*/
-/*global fluid_0_6*/
+/*global fluid_0_7*/
 
-fluid_0_6 = fluid_0_6 || {};
+fluid_0_7 = fluid_0_7 || {};
 
 fluid.moduleLayout = fluid.moduleLayout || {};
 
@@ -230,4 +230,4 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         
         return that;
     };
-}) (jQuery, fluid_0_6);
+}) (jQuery, fluid_0_7);

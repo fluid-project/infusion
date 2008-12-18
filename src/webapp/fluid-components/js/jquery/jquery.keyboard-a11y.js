@@ -12,8 +12,8 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
 /*global jQuery*/
 
-var fluid_0_6 = fluid_0_6 || {};
-var fluid = fluid || fluid_0_6;
+var fluid_0_7 = fluid_0_7 || {};
+var fluid = fluid || fluid_0_7;
 
 (function ($, fluid) {
 
@@ -63,7 +63,7 @@ var fluid = fluid || fluid_0_6;
     };
 
     fluid.thatistBridge("fluid", fluid);
-    fluid.thatistBridge("fluid_0_6", fluid_0_6);
+    fluid.thatistBridge("fluid_0_7", fluid_0_7);
 
 
 
@@ -628,4 +628,4 @@ var fluid = fluid || fluid_0_6;
     };
 
   
-  })(jQuery, fluid_0_6);
+  })(jQuery, fluid_0_7);
