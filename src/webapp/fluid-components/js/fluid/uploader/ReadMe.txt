@@ -1,19 +1,54 @@
 FLUID UPLOADER READ ME
 
-1) Known Issues
-2) Troubleshooting
-3) Running the Uploader with out a Server
+
+1) Upgrading
+2) Known Issues
+3) Troubleshooting
+4) Running the Uploader with out a Server
+
+--------------------------------------
+
+UPGRADING: 
+
+This version of the Fluid Uploader for Infusion 0.6 has been extensively re-factored and uses 
+a fresh new API. Please refer to the Uploader API documentation on the Fluid Wiki and the 
+Infusion 0.6 example code before using the Uploader with an existing integration. 
+
 
 --------------------------------------
 
 KNOWN ISSUES: 
 
-* The Uploader is currently NOT COMPATIBLE with Flash 10 (released on 9/26/2008). This 
-  bug is caused by a change in Adobe's security protocols for Flash 10, which block the SWFUpload 
-  code from calling the OS File browser. The SWFUpload community is still implementing a fix based 
-  on overlaying a transparent Flash object over the HTML Browse button. The Uploader in Fluid 0.6 
-  will include this fix, or a fix of our own.
+* To support Flash 10 (released on 9/26/2008), the Uploader required a new version of the SWFUpload 
+  Flash component (2.2.0 beta 3). This new version, still in beta, still has numerous bugs. We have 
+  worked around many of the bugs and inconsistencies in the SWFUpload code, but there are still 
+  significant compromises and issues in this release. For this reason we do not consider this version 
+  of the Uploader to be production-ready. 
+
+  In the previous version of the Uploader, the Flash component worked completely "behind the scenes". 
+  To support Flash 10, the Uploader displays a Flash-based "Browse files..." button in place of a 
+  HTML button. The Flash-based button presents the following quirks:
   
+      In Firefox and IE, the Flash-based Browse button does not size correctly when the text/page 
+      is resized or zoomed.
+
+      In Firefox (FF):
+      - The AIRA role for the Browse button is read correctly as "button" but the text of the button, 
+        "Browse Files", is ignored.
+      - The Flash-based Browse button traps keyboard navigation, refusing to give up focus without a 
+        mouse click. 
+      
+      In Internet Explorer (IE):
+      - The Uploader under IE6 and IE7 *requires* Flash 10.
+      - AIRA is not supported by Internet Explorer.
+
+    We are exploring work-arounds for most of these issues, and will have a patch out as soon 
+    as possible to fix them.
+
+* There continues to be an intermittent bug when using the Uploader with a server that if the user 
+  stops the upload just before a file completes, the upload will "get stuck" and will not resume. 
+
+
 --------------------------------------
 
 TROUBLE SHOOTING:
@@ -27,6 +62,7 @@ TROUBLE SHOOTING:
   nsresult: "0x8057001e (NS_ERROR_XPC_JS_THREW_STRING)" location: "<unknown>" data: no]
 
   The flashUrl option is probably wrong. Check that first. 
+
 
 --------------------------------------
 
