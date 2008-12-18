@@ -23,16 +23,13 @@ var fluid = fluid || fluid_0_6;
     
     /**
      * Causes an error message to be logged to the console and a real runtime error to be thrown.
-     * This is to work around the fact that FireBug won't stop on thrown Errors.
-     * Note that this function forces a runtime error to occur by invoking a method that is known
-     * not to exist.
      * 
      * @param {String|Error} message the error message to log
      */
     fluid.fail = function (message) {
         fluid.setLogging(true);
         fluid.log(message.message? message.message : message);
-        message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+        throw new Error(message);
     };
     
     /**
