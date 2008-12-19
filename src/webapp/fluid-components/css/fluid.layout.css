@@ -33,7 +33,7 @@ Generic containers for columns and layouts
 .fl-layout-linear .fl-linearEnabled {
     overflow:visible !important; 
     clear: both !important; 
-    /*float:none !important;*/ 
+    float:none !important;
     position:relative !important; 
     margin-left:0 !important;  
     margin-right:0 !important;
