@@ -28,7 +28,6 @@ $(function () {
         // instantiate component
         uiOptions = fluid.uiOptions(".ui_options_container");
         
-        $("#dialog_container").css('display', 'block');
     };
 
     $('.skin').click(function () {
@@ -36,5 +35,8 @@ $(function () {
             // ajax call to pull the UI Options dialog into a container
             $('#dialog_content').load('../../../fluid-components/html/templates/UIOptions.html .ui_options_container', initDialog);
         }
+
+        $("#dialog_container").css('display', 'block');
+
     });
 });   
