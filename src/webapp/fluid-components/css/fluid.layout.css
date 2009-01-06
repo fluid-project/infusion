@@ -11,22 +11,22 @@ Generic containers for columns and layouts
 .fl-fix {overflow: auto; zoom:1;}
 .fl-container {}
 /* Fixed width containers */
-.fl-container-100 {width: 100px; overflow: auto;}
-.fl-container-150 {width: 150px; overflow: auto;}
-.fl-container-200 {width: 200px; overflow: auto;}
-.fl-container-250 {width: 250px; overflow: auto;}
-.fl-container-300 {width: 300px; overflow: auto;}
-.fl-container-400 {width: 400px; overflow: auto;}
-.fl-container-750 {width: 750px; overflow: auto;}
-.fl-container-950 {width: 950px; overflow: auto;}
+.fl-container-100 {width: 100px;}
+.fl-container-150 {width: 150px;}
+.fl-container-200 {width: 200px;}
+.fl-container-250 {width: 250px;}
+.fl-container-300 {width: 300px;}
+.fl-container-400 {width: 400px;}
+.fl-container-750 {width: 750px;}
+.fl-container-950 {width: 950px;}
 
 /* Flex width containers */
-.fl-container-auto {width: auto; overflow: auto;}
-.fl-container-flex {width: 100%; overflow: auto; clear:both;}
-.fl-container-flex25 {width: 25%; overflow: auto;}
-.fl-container-flex30 {width: 30%; overflow: auto;}
-.fl-container-flex33 {width: 33%; overflow: auto;}
-.fl-container-flex50 {width: 50%; overflow: auto;}
+.fl-container-auto {width: auto;}
+.fl-container-flex {width: 100%; clear:both;}
+.fl-container-flex25 {width: 25%;}
+.fl-container-flex30 {width: 30%;}
+.fl-container-flex33 {width: 33%;}
+.fl-container-flex50 {width: 50%;}
 
 /* linearizable containers & columns */
 .fl-layout-linear *,
@@ -53,10 +53,15 @@ Generic containers for columns and layouts
 .fl-layout-linear .fl-container-flex25, 
 .fl-layout-linear .fl-container-flex30, 
 .fl-layout-linear .fl-container-flex33, 
-.fl-layout-linear .fl-container-flex50 {width:100% !important; margin:auto;}
+.fl-layout-linear .fl-container-flex50,
+.fl-layout-linear .fl-col,
+.fl-layout-linear .fl-col-side,
+.fl-layout-linear .fl-col-fixed {width:100% !important; margin:auto; padding:0 !important;}
+
 .fl-layout-linear .fl-force-left, 
 .fl-layout-linear .fl-force-right,
 .fl-layout-linear li {display:block !important; float:none !important;}
+
 .fl-layout-linear .fl-linearEnabled {width:100% !important; position:relative;} /* linearization opt in for special cases */
 
 /*
@@ -79,6 +84,7 @@ Layout Helpers
 .fl-col-mixed2,
 .fl-col-mixed3 {overflow:auto; zoom:1;}
 
+/* REMOVE THIS!! */
 .fl-col-mixed .fl-col-side {width:200px;}
 .fl-col-mixed .fl-col-side, 
 .fl-col-mixed .fl-col-main {padding:0 10px;}
@@ -88,6 +94,10 @@ Layout Helpers
 
 .fl-col-mixed3 .fl-col-main {margin:0 230px;} /* margin goes on whichever side the fixed column goes */
 
+/* USE THIS!! */
+/* Simplify the mixed column system, ask ppl to customize the numbers instead of providing them all */
+.fl-col-mixed .fl-col-flex {margin-left:230px; padding:0 10px;}
+.fl-col-mixed .fl-col-fixed {width:200px; padding:0 10px;}
 
 
 /*

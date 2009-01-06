@@ -9,6 +9,13 @@
         <link rel="stylesheet" type="text/css" href="../css/fluid.text.css" />
         <link rel="stylesheet" type="text/css" href="../css/fluid.theme.mist.css" />
         <link rel="stylesheet" type="text/css" href="../css/fluid.theme.hc.css" />
+        <style type="text/css">
+            body {font:normal 12px "Arial","Tahoma",sans-serif}
+            h1 {font-size:125%; padding:5px;}
+            .example {clear:both;}
+            .myColumn {border:1px solid #ccc; background-color:#ebebeb; padding:5px; margin:0 10px;}
+            .myColumn div {padding:10px; background-color:#fff; border:1px solid #ccc; margin:5px 0;}
+        </style>
         
         <script type="text/javascript" src="../js/jquery/jquery-1.2.6.js"></script>
         <script type="text/javascript" src="../js/jquery/jARIA.js"></script>
@@ -23,7 +30,6 @@
         <script type="text/javascript" src="../js/fluid/Reorderer.js"></script>
         <script type="text/javascript" src="../js/fluid/LayoutReorderer.js"></script>
         <script type="text/javascript" src="../js/fluid/ModuleLayout.js"></script>
-
         <script type="text/javascript">
             // all elements (columns and sortable portlets) must have a unique ID as of Fluid 0.4
             // Can this change to either manually or automatically assigning unique identifiers/classnames (avoiding taking over the ID)?
@@ -54,16 +60,6 @@
               
             });
         </script>
-        
-        <style type="text/css">
-            body {font:normal 12px "Arial","Tahoma",sans-serif}
-            h1 {font-size:125%; padding:5px;}
-            .example {clear:both;}
-            .myColumn {border:1px solid #ccc; background-color:#ebebeb; overflow:auto; padding-bottom:5px;}
-            .myColumn div {padding:10px; background-color:#fff; border:1px solid #ccc; margin:5px 0;}
-        </style>
-        
-        
 	</head>
 	<body>
 	    <div class="example">
