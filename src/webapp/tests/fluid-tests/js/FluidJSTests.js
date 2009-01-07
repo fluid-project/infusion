@@ -289,5 +289,59 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertNull("The defaults for a nonexistent component should be null.", 
                               fluid.defaults("timemachine"));
         });
+        
+        var defineTestComponent = function () {
+            fluid.testComponent = function (container, options) {
+                var that = fluid.initView("fluid.testComponent", container, options);
+                that.subcomponent = fluid.initSubcomponent(that, "subcomponent", [that.container, fluid.COMPONENT_OPTIONS]);
+                return that;
+            };
+            
+            fluid.subcomponent = function (container, options) {
+                var that = fluid.initView("fluid.subcomponent", container, options);
+                that.greeting = that.options.greeting;
+                return that;
+            };
+            
+            fluid.defaults("fluid.testComponent", {
+                subcomponent: {
+                    type: "fluid.subcomponent"
+                } 
+            });
+            
+            fluid.defaults("fluid.subcomponent", {
+                greeting: "hello"
+            });
+        };
+        
+        var cleanUpTestComponent = function () {
+            fluid.testComponent = undefined;
+            fluid.subcomponent = undefined;
+            fluid.defaults("fluid.testComponent", null);
+            fluid.defaults("fluid.subcomponent", null);
+        };
+        
+        fluidJSTests.test("initSubcomponents", function () {
+           defineTestComponent();
+           
+           // First, let's check that the defaults are used if no other options are specified.
+           var myComponent = fluid.testComponent("#notmain");
+           jqUnit.assertEquals("The subcomponent should have its default options.", 
+                               "hello", myComponent.subcomponent.greeting);
+           
+           // Now try overriding the subcomponent options with specific options.
+           myComponent = fluid.testComponent("#notmain", {
+               subcomponent: {
+                   options: {
+                       greeting: "bonjour"
+                   }
+               }
+           });
+           jqUnit.assertEquals("The subcomponent's options should have been overridden correctly.", 
+                               "bonjour", myComponent.subcomponent.greeting);
+                               
+           cleanUpTestComponent();
+        });
+        
     });
 })(jQuery);
