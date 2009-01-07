@@ -63,6 +63,28 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });
         
+        fluidJSTests.test("reverse merge", function() {
+            var target = {
+                root: {
+                    prop1: "thing1",
+                    prop2: "thing2"
+              }  
+            };
+            var source = {
+                root: {
+                    prop2: "thing3"
+                }
+            };
+            var target1 = fluid.copy(target);
+            fluid.merge("reverse", target1, source);
+            jqUnit.assertEquals("Property 1 should have been preserved", "thing1", target1.root.prop1);
+            
+            var target2 = fluid.copy(target);
+            fluid.merge(target2, source);
+            jqUnit.assertEquals("Property 1 should have been preserved", "thing1", target2.root.prop1);
+      
+        });
+        
         fluidJSTests.test("stringTemplate: array of string values", function () {
             var template = "Paused at: %0 of %1 files (%2 of %3)";
             
