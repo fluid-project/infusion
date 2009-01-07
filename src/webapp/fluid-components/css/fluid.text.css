@@ -1,61 +1,53 @@
-
-/* line-height is 0.2 em larger than font size */
-.fl-font-size-70, 
+.fl-font-size-70,
+.fl-font-size-70 body,
 .fl-font-size-70 input, 
 .fl-font-size-70 select, 
 .fl-font-size-70 textarea {font-size:0.7em !important; line-height:1em !important;}
 
-.fl-font-size-80, 
+.fl-font-size-80,
+.fl-font-size-80 body, 
 .fl-font-size-80 input, 
 .fl-font-size-80 select, 
 .fl-font-size-80 textarea {font-size:0.8em !important; line-height:1.1em !important;}
 
-.fl-font-size-90, 
-.fl-font-size-90 input, 
-.fl-font-size-90 select, 
+.fl-font-size-90,
+.fl-font-size-90 body,
+.fl-font-size-90 input,
+.fl-font-size-90 select,
 .fl-font-size-90 textarea {font-size:0.9em !important; line-height:1.2em !important;}
 
 .fl-font-size-100, 
+.fl-font-size-100 body,
 .fl-font-size-100 input, 
 .fl-font-size-100 select, 
 .fl-font-size-100 textarea {font-size:1em !important; line-height:1.3em !important;}
 
 .fl-font-size-110, 
+.fl-font-size-110 body, 
 .fl-font-size-110 input, 
 .fl-font-size-110 select, 
 .fl-font-size-110 textarea {font-size:1.1em !important; line-height:1.4em !important;}
 
 .fl-font-size-120, 
+.fl-font-size-120 body, 
 .fl-font-size-120 input, 
 .fl-font-size-120 select, 
 .fl-font-size-120 textarea {font-size:1.2em !important; line-height:1.5em !important;}
 
-
-/* Apply pixel reset to container, then every relevant child node is set relative to that */
-/*.fl-font-size-130 input, 
-.fl-font-size-130 select, 
-.fl-font-size-130 textarea,
-.fl-font-size-130 * {font-size:1em !important; line-height:1.2em !important;}
 .fl-font-size-130, 
-.fl-font-size-130 body {font-size:16.9px !important; line-height:18px !important;} 
-.fl-font-size-130 h1 {font-size:150% !important; line-height:200% !important;} 
-.fl-font-size-130 h2 {font-size:135% !important; line-height:165% !important;} 
-.fl-font-size-130 h3 {font-size:125% !important; line-height:150% !important;} 
-.fl-font-size-130 h4 {font-size:120% !important; line-height:135% !important;} 
-.fl-font-size-130 h5 {font-size:110% !important; line-height:120% !important;} 
-.fl-font-size-130 h6 {font-size:105% !important; line-height:110% !important;} 
-*/
-.fl-font-size-130, 
+.fl-font-size-130 body, 
 .fl-font-size-130 input, 
 .fl-font-size-130 select, 
 .fl-font-size-130 textarea {font-size:1.3em !important; line-height:1.6em !important;}
 
 .fl-font-size-140, 
+.fl-font-size-140 body, 
 .fl-font-size-140 input, 
 .fl-font-size-140 select, 
 .fl-font-size-140 textarea {font-size:1.4em !important; line-height:1.7em !important;}
 
 .fl-font-size-150, 
+.fl-font-size-150 body,
 .fl-font-size-150 input, 
 .fl-font-size-150 select, 
 .fl-font-size-150 textarea {font-size:1.5em !important; line-height:1.8em !important;}
@@ -86,10 +78,48 @@
 .fl-font-white {color:white;}
 .fl-font-yellow {color: yellow;}
 
-.fl-font-spacing-0 {letter-spacing:0em}
-.fl-font-spacing-1 {letter-spacing:0.1em}
-.fl-font-spacing-2 {letter-spacing:0.2em}
-.fl-font-spacing-3 {letter-spacing:0.3em}
-.fl-font-spacing-4 {letter-spacing:0.4em}
-.fl-font-spacing-5 {letter-spacing:0.5em}
-.fl-font-spacing-6 {letter-spacing:0.6em}
+.fl-font-spacing-0, 
+.fl-font-spacing-0 body, 
+.fl-font-spacing-0 input,
+.fl-font-spacing-0 select,
+.fl-font-spacing-0 textarea {letter-spacing:0em}
+
+.fl-font-spacing-1, 
+.fl-font-spacing-1 body, 
+.fl-font-spacing-1 input,
+.fl-font-spacing-1 select,
+.fl-font-spacing-1 textarea {letter-spacing:0.1em}
+
+.fl-font-spacing-2, 
+.fl-font-spacing-2 body, 
+.fl-font-spacing-2 input,
+.fl-font-spacing-2 select,
+.fl-font-spacing-2 textarea {letter-spacing:0.2em}
+
+.fl-font-spacing-3, 
+.fl-font-spacing-3 body, 
+.fl-font-spacing-3 input,
+.fl-font-spacing-3 select,
+.fl-font-spacing-3 textarea {letter-spacing:0.3em}
+
+.fl-font-spacing-4, 
+.fl-font-spacing-4 body, 
+.fl-font-spacing-4 input,
+.fl-font-spacing-4 select,
+.fl-font-spacing-4 textarea {letter-spacing:0.4em}
+
+.fl-font-spacing-5, 
+.fl-font-spacing-5 body, 
+.fl-font-spacing-5 input,
+.fl-font-spacing-5 select,
+.fl-font-spacing-5 textarea {letter-spacing:0.5em}
+
+.fl-font-spacing-6, 
+.fl-font-spacing-6 body, 
+.fl-font-spacing-6 input,
+.fl-font-spacing-6 select,
+.fl-font-spacing-6 textarea {letter-spacing:0.6em}
+
+
+
+
