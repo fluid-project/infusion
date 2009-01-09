@@ -66,8 +66,10 @@ var fluid = fluid || fluid_0_7;
     fluid.thatistBridge("fluid_0_7", fluid_0_7);
 
 
-
-// Tabindex normalization
+/*************************************************************************
+ * Tabindex normalization - compensate for browser differences in naming
+ * and function of "tabindex" attribute and tabbing order.
+ */
 
     // -- Private functions --
     
@@ -89,7 +91,7 @@ var fluid = fluid || fluid_0_7;
             return undefined;
         }
 
-        if (!elements.fluid("tabindex.hasAttr")) {
+        if (!fluid.tabindex.hasAttr(elements)) {
             return canHaveDefaultTabindex(elements) ? Number(0) : undefined;
         }
 
@@ -183,11 +185,23 @@ var fluid = fluid || fluid_0_7;
 
     // Private constants.
     var NAMESPACE_KEY = "keyboard-a11y";
-    var CONTEXT_KEY = "selectionContext";
-    var HANDLERS_KEY = "userHandlers";
-    var ACTIVATE_KEY = "defaultActivate";
     
-    var NO_SELECTION = -32768;
+    /**
+     * Gets stored state from the jQuery instance's data map.
+     */
+    var getData = function(aJQuery, key) {
+        var data = aJQuery.data(NAMESPACE_KEY);
+        return data ? data[key] : undefined;
+    };
+
+    /**
+     * Stores state in the jQuery instance's data map.
+     */
+    var setData = function(aJQuery, key, value) {
+        var data = aJQuery.data(NAMESPACE_KEY) || {};
+        data[key] = value;
+        aJQuery.data(NAMESPACE_KEY, data);
+    };
 
     var UP_DOWN_KEYMAP = {
         next: fluid.a11y.keys.DOWN,
@@ -204,6 +218,34 @@ var fluid = fluid || fluid_0_7;
         return element.jquery ? element[0] : element; // Unwrap the element if it's a jQuery.
     };
 
+
+    var makeElementsTabFocussable = function(elements) {
+        // If each element doesn't have a tabindex, or has one set to a negative value, set it to 0.
+        elements.each(function(idx, item) {
+            item = $(item);
+            if (!item.fluid("tabindex.has") || item.fluid("tabindex") < 0) {
+                item.fluid("tabindex", 0);
+            }
+        });
+    };
+
+    // Public API.
+    /**
+     * Makes all matched elements available in the tab order by setting their tabindices to "0".
+     */
+    fluid.tabbable = function(target) {
+        target = $(target);
+        makeElementsTabFocussable(target);
+    };
+
+    /*********************************************************************** 
+     * Selectable functionality - geometrising a set of nodes such that they
+     * can be navigated (by setting focus) using a set of directional keys
+     */
+
+    var CONTEXT_KEY = "selectionContext";
+    var NO_SELECTION = -32768;
+
     var cleanUpWhenLeavingContainer = function(selectionContext) {
         if (selectionContext.onLeaveContainer) {
             selectionContext.onLeaveContainer(
@@ -216,36 +258,6 @@ var fluid = fluid || fluid_0_7;
         if (!selectionContext.options.rememberSelectionState) {
             selectionContext.activeItemIndex = NO_SELECTION;
         }
-    };
-
-    var checkForModifier = function(binding, evt) {
-        // If no modifier was specified, just return true.
-        if (!binding.modifier) {
-            return true;
-        }
-
-        var modifierKey = binding.modifier;
-        var isCtrlKeyPresent = modifierKey && evt.ctrlKey;
-        var isAltKeyPresent = modifierKey && evt.altKey;
-        var isShiftKeyPresent = modifierKey && evt.shiftKey;
-
-        return isCtrlKeyPresent || isAltKeyPresent || isShiftKeyPresent;
-    };
-
-    var activationHandler = function(binding) {
-        return function(evt) {
-// The following 'if' clause works in the real world, but there's a bug in the jQuery simulation
-// that causes keyboard simulation to fail in Safari, causing our tests to fail:
-//     http://ui.jquery.com/bugs/ticket/3229
-// The replacement 'if' clause works around this bug.
-// When this issue is resolved, we should revert to the original clause.
-//            if (evt.which === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
-            var code = evt.which? evt.which : evt.keyCode;
-            if (code === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
-                binding.activateHandler(evt.target, evt);
-                evt.preventDefault();
-            }
-        };
     };
 
     /**
@@ -363,6 +375,20 @@ var fluid = fluid || fluid_0_7;
         return keyMap;
     };
 
+    var tabKeyHandler = function(selectionContext) {
+        return function(evt) {
+            if (evt.which !== fluid.a11y.keys.TAB) {
+                return;
+            }
+            cleanUpWhenLeavingContainer(selectionContext);
+
+            // Catch Shift-Tab and note that focus is on its way out of the container.
+            if (evt.shiftKey) {
+                selectionContext.focusIsLeavingContainer = true;
+            }
+        };
+    };
+
     var containerFocusHandler = function(selectionContext) {
         return function(evt) {
             var shouldOrig = selectionContext.options.autoSelectFirstItem;
@@ -393,54 +419,6 @@ var fluid = fluid || fluid_0_7;
 
             // Force blur not to bubble on some browsers.
             return evt.stopPropagation();
-        };
-    };
-
-    var makeElementsTabFocussable = function(elements) {
-        // If each element doesn't have a tabindex, or has one set to a negative value, set it to 0.
-        elements.each(function(idx, item) {
-            item = $(item);
-            if (!item.fluid("tabindex.has") || item.fluid("tabindex") < 0) {
-                item.fluid("tabindex", 0);
-            }
-        });
-    };
-
-    var makeElementsActivatable = function(elements, onActivateHandler, defaultKeys, options) {
-        // Create bindings for each default key.
-        var bindings = [];
-        $(defaultKeys).each(function(index, key) {
-            bindings.push({
-                modifier: null,
-                key: key,
-                activateHandler: onActivateHandler
-            });
-        });
-
-        // Merge with any additional key bindings.
-        if (options && options.additionalBindings) {
-            bindings = bindings.concat(options.additionalBindings);
-        }
-
-        // Add listeners for each key binding.
-        for (var i = 0; i < bindings.length; ++ i) {
-            var binding = bindings[i];
-            elements.keydown(activationHandler(binding));
-        }
-    };
-
-    var tabKeyHandler = function(selectionContext) {
-        return function(evt) {
-            if (evt.which !== fluid.a11y.keys.TAB) {
-                return;
-            }
-
-            cleanUpWhenLeavingContainer(selectionContext);
-
-            // Catch Shift-Tab and note that focus is on its way out of the container.
-            if (evt.shiftKey) {
-                selectionContext.focusIsLeavingContainer = true;
-            }
         };
     };
 
@@ -504,47 +482,6 @@ var fluid = fluid || fluid_0_7;
         return that;
     };
 
-    var createDefaultActivationHandler = function(activatables, userActivateHandler) {
-        return function(elementToActivate) {
-            if (!userActivateHandler) {
-                return;
-            }
-
-            elementToActivate = unwrap(elementToActivate);
-            if (activatables.index(elementToActivate) === -1) {
-                return;
-            }
-
-            userActivateHandler(elementToActivate);
-        };
-    };
-
-    /**
-     * Gets stored state from the jQuery instance's data map.
-     */
-    var getData = function(aJQuery, key) {
-        var data = aJQuery.data(NAMESPACE_KEY);
-        return data ? data[key] : undefined;
-    };
-
-    /**
-     * Stores state in the jQuery instance's data map.
-     */
-    var setData = function(aJQuery, key, value) {
-        var data = aJQuery.data(NAMESPACE_KEY) || {};
-        data[key] = value;
-        aJQuery.data(NAMESPACE_KEY, data);
-    };
-
-    // Public API.
-    /**
-     * Makes all matched elements available in the tab order by setting their tabindices to "0".
-     */
-    fluid.tabbable = function(target) {
-        target = $(target);
-        makeElementsTabFocussable(target);
-    };
-
     /**
      * Makes all matched elements selectable with the arrow keys.
      * Supply your own handlers object with onSelect: and onUnselect: properties for custom behaviour.
@@ -601,6 +538,106 @@ var fluid = fluid || fluid_0_7;
         onUnselect: null,
         onLeaveContainer: null
     };
+
+    /********************************************************************
+     *  Activation functionality - declaratively associating actions with 
+     * a set of keyboard bindings.
+     */
+
+    var checkForModifier = function(binding, evt) {
+        // If no modifier was specified, just return true.
+        if (!binding.modifier) {
+            return true;
+        }
+
+        var modifierKey = binding.modifier;
+        var isCtrlKeyPresent = modifierKey && evt.ctrlKey;
+        var isAltKeyPresent = modifierKey && evt.altKey;
+        var isShiftKeyPresent = modifierKey && evt.shiftKey;
+
+        return isCtrlKeyPresent || isAltKeyPresent || isShiftKeyPresent;
+    };
+
+    var makeActivationHandler = function(binding) {
+        return function(evt) {
+// The following 'if' clause works in the real world, but there's a bug in the jQuery simulation
+// that causes keyboard simulation to fail in Safari, causing our tests to fail:
+//     http://ui.jquery.com/bugs/ticket/3229
+// The replacement 'if' clause works around this bug.
+// When this issue is resolved, we should revert to the original clause.
+//            if (evt.which === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
+            var code = evt.which? evt.which : evt.keyCode;
+            if (code === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
+                binding.activateHandler(evt.target, evt);
+                evt.preventDefault();
+            }
+        };
+    };
+
+    var createDefaultActivationHandler = function(activatables, userActivateHandler) {
+        return function(elementToActivate) {
+            if (!userActivateHandler) {
+                return;
+            }
+
+            elementToActivate = unwrap(elementToActivate);
+            if (activatables.index(elementToActivate) === -1) {
+                return;
+            }
+
+            userActivateHandler(elementToActivate);
+        };
+    };
+
+    var checkForModifier = function(binding, evt) {
+        // If no modifier was specified, just return true.
+        if (!binding.modifier) {
+            return true;
+        }
+
+        var modifierKey = binding.modifier;
+        var isCtrlKeyPresent = modifierKey && evt.ctrlKey;
+        var isAltKeyPresent = modifierKey && evt.altKey;
+        var isShiftKeyPresent = modifierKey && evt.shiftKey;
+
+        return isCtrlKeyPresent || isAltKeyPresent || isShiftKeyPresent;
+    };
+
+    var makeActivationHandler = function(binding) {
+        return function(evt) {
+// The following 'if' clause works in the real world, but there's a bug in the jQuery simulation
+            var code = evt.which? evt.which : evt.keyCode;
+            if (code === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
+                binding.activateHandler(evt.target, evt);
+                evt.preventDefault();
+            }
+        };
+    };
+
+    var makeElementsActivatable = function(elements, onActivateHandler, defaultKeys, options) {
+        // Create bindings for each default key.
+        var bindings = [];
+        $(defaultKeys).each(function(index, key) {
+            bindings.push({
+                modifier: null,
+                key: key,
+                activateHandler: onActivateHandler
+            });
+        });
+
+        // Merge with any additional key bindings.
+        if (options && options.additionalBindings) {
+            bindings = bindings.concat(options.additionalBindings);
+        }
+
+        // Add listeners for each key binding.
+        for (var i = 0; i < bindings.length; ++ i) {
+            var binding = bindings[i];
+            elements.keydown(makeActivationHandler(binding));
+        }
+    };
+
+    var ACTIVATE_KEY = "defaultActivate";
 
     /**
      * Makes all matched elements activatable with the Space and Enter keys.
