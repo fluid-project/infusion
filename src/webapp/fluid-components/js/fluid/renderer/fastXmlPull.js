@@ -31,110 +31,112 @@ var whitespace = "\n\r\t ";
 var closedTags = {
     abbr: true, br: true, col: true, img: true, input: true,
     link: true, meta: true, param: true, hr: true, area: true, embed:true
-}
+    };
 
 
 XMLP = function(strXML) { 
 
-        this.m_xml = strXML; 
-        this.m_iP = 0;
-        this.m_iState = XMLP._STATE_PROLOG; 
-        this.m_stack = [];
-        this.m_attributes = {};
-        }
+    this.m_xml = strXML; 
+    this.m_iP = 0;
+    this.m_iState = XMLP._STATE_PROLOG; 
+    this.m_stack = [];
+    this.m_attributes = {};
+    this.m_emitSynthetic = false; // state used for emitting synthetic tags used to correct broken markup (IE)
+    };
         
-    XMLP._NONE = 0; 
-    XMLP._ELM_B = 1; 
-    XMLP._ELM_E = 2; 
-    XMLP._ELM_EMP = 3; 
-    XMLP._ATT = 4; 
-    XMLP._TEXT = 5; 
-    XMLP._ENTITY = 6; 
-    XMLP._PI = 7; 
-    XMLP._CDATA = 8; 
-    XMLP._COMMENT = 9; 
-    XMLP._DTD = 10; 
-    XMLP._ERROR = 11;
-     
-    XMLP._CONT_XML = 0; 
-    XMLP._CONT_ALT = 1; 
-    XMLP._ATT_NAME = 0; 
-    XMLP._ATT_VAL = 1; 
-    
-    XMLP._STATE_PROLOG = 1; 
-    XMLP._STATE_DOCUMENT = 2; 
-    XMLP._STATE_MISC = 3; 
-    XMLP._errs = new Array(); 
-    XMLP._errs[XMLP.ERR_CLOSE_PI = 0 ] = "PI: missing closing sequence"; 
-    XMLP._errs[XMLP.ERR_CLOSE_DTD = 1 ] = "DTD: missing closing sequence"; 
-    XMLP._errs[XMLP.ERR_CLOSE_COMMENT = 2 ] = "Comment: missing closing sequence"; 
-    XMLP._errs[XMLP.ERR_CLOSE_CDATA = 3 ] = "CDATA: missing closing sequence"; 
-    XMLP._errs[XMLP.ERR_CLOSE_ELM = 4 ] = "Element: missing closing sequence"; 
-    XMLP._errs[XMLP.ERR_CLOSE_ENTITY = 5 ] = "Entity: missing closing sequence"; 
-    XMLP._errs[XMLP.ERR_PI_TARGET = 6 ] = "PI: target is required"; 
-    XMLP._errs[XMLP.ERR_ELM_EMPTY = 7 ] = "Element: cannot be both empty and closing"; 
-    XMLP._errs[XMLP.ERR_ELM_NAME = 8 ] = "Element: name must immediatly follow \"<\""; 
-    XMLP._errs[XMLP.ERR_ELM_LT_NAME = 9 ] = "Element: \"<\" not allowed in element names"; 
-    XMLP._errs[XMLP.ERR_ATT_VALUES = 10] = "Attribute: values are required and must be in quotes"; 
-    XMLP._errs[XMLP.ERR_ATT_LT_NAME = 11] = "Element: \"<\" not allowed in attribute names"; 
-    XMLP._errs[XMLP.ERR_ATT_LT_VALUE = 12] = "Attribute: \"<\" not allowed in attribute values"; 
-    XMLP._errs[XMLP.ERR_ATT_DUP = 13] = "Attribute: duplicate attributes not allowed"; 
-    XMLP._errs[XMLP.ERR_ENTITY_UNKNOWN = 14] = "Entity: unknown entity"; 
-    XMLP._errs[XMLP.ERR_INFINITELOOP = 15] = "Infinite loop"; 
-    XMLP._errs[XMLP.ERR_DOC_STRUCTURE = 16] = "Document: only comments, processing instructions, or whitespace allowed outside of document element"; 
-    XMLP._errs[XMLP.ERR_ELM_NESTING = 17] = "Element: must be nested correctly"; 
-    
-    XMLP.prototype._checkStructure = function(iEvent) {
-        var stack = this.m_stack; 
-        if (XMLP._STATE_PROLOG == this.m_iState) {
-            // disabled original check for text node in prologue
-            this.m_iState = XMLP._STATE_DOCUMENT;
+XMLP._NONE = 0;
+XMLP._ELM_B = 1;
+XMLP._ELM_E = 2;
+XMLP._ELM_EMP = 3; 
+XMLP._ATT = 4;
+XMLP._TEXT = 5;
+XMLP._ENTITY = 6; 
+XMLP._PI = 7;
+XMLP._CDATA = 8;
+XMLP._COMMENT = 9; 
+XMLP._DTD = 10;
+XMLP._ERROR = 11;
+ 
+XMLP._CONT_XML = 0; 
+XMLP._CONT_ALT = 1; 
+XMLP._ATT_NAME = 0; 
+XMLP._ATT_VAL = 1;
+
+XMLP._STATE_PROLOG = 1;
+XMLP._STATE_DOCUMENT = 2; 
+XMLP._STATE_MISC = 3;
+
+XMLP._errs = [];
+XMLP._errs[XMLP.ERR_CLOSE_PI = 0 ] = "PI: missing closing sequence"; 
+XMLP._errs[XMLP.ERR_CLOSE_DTD = 1 ] = "DTD: missing closing sequence"; 
+XMLP._errs[XMLP.ERR_CLOSE_COMMENT = 2 ] = "Comment: missing closing sequence"; 
+XMLP._errs[XMLP.ERR_CLOSE_CDATA = 3 ] = "CDATA: missing closing sequence"; 
+XMLP._errs[XMLP.ERR_CLOSE_ELM = 4 ] = "Element: missing closing sequence"; 
+XMLP._errs[XMLP.ERR_CLOSE_ENTITY = 5 ] = "Entity: missing closing sequence"; 
+XMLP._errs[XMLP.ERR_PI_TARGET = 6 ] = "PI: target is required"; 
+XMLP._errs[XMLP.ERR_ELM_EMPTY = 7 ] = "Element: cannot be both empty and closing"; 
+XMLP._errs[XMLP.ERR_ELM_NAME = 8 ] = "Element: name must immediatly follow \"<\""; 
+XMLP._errs[XMLP.ERR_ELM_LT_NAME = 9 ] = "Element: \"<\" not allowed in element names"; 
+XMLP._errs[XMLP.ERR_ATT_VALUES = 10] = "Attribute: values are required and must be in quotes"; 
+XMLP._errs[XMLP.ERR_ATT_LT_NAME = 11] = "Element: \"<\" not allowed in attribute names"; 
+XMLP._errs[XMLP.ERR_ATT_LT_VALUE = 12] = "Attribute: \"<\" not allowed in attribute values"; 
+XMLP._errs[XMLP.ERR_ATT_DUP = 13] = "Attribute: duplicate attributes not allowed"; 
+XMLP._errs[XMLP.ERR_ENTITY_UNKNOWN = 14] = "Entity: unknown entity"; 
+XMLP._errs[XMLP.ERR_INFINITELOOP = 15] = "Infinite loop"; 
+XMLP._errs[XMLP.ERR_DOC_STRUCTURE = 16] = "Document: only comments, processing instructions, or whitespace allowed outside of document element"; 
+XMLP._errs[XMLP.ERR_ELM_NESTING = 17] = "Element: must be nested correctly"; 
+
+XMLP.prototype._checkStructure = function(iEvent) {
+    var stack = this.m_stack; 
+    if (XMLP._STATE_PROLOG == this.m_iState) {
+        // disabled original check for text node in prologue
+        this.m_iState = XMLP._STATE_DOCUMENT;
+        }
+
+    if (XMLP._STATE_DOCUMENT === this.m_iState) {
+        if ((XMLP._ELM_B == iEvent) || (XMLP._ELM_EMP == iEvent)) { 
+            this.m_stack[stack.length] = this.getName();
+            }
+        if ((XMLP._ELM_E == iEvent) || (XMLP._ELM_EMP == iEvent)) {
+            if (stack.length === 0) {
+                //return this._setErr(XMLP.ERR_DOC_STRUCTURE);
+                return XMLP._NONE;
+                }
+            var strTop = stack[stack.length - 1];
+            this.m_stack.length--;
+            if (strTop === null || strTop !== this.getName()) { 
+                return this._setErr(XMLP.ERR_ELM_NESTING);
+                }
             }
 
-        if (XMLP._STATE_DOCUMENT === this.m_iState) {
-            if ((XMLP._ELM_B == iEvent) || (XMLP._ELM_EMP == iEvent)) { 
-                this.m_stack[stack.length] = this.getName();
-                }
-            if ((XMLP._ELM_E == iEvent) || (XMLP._ELM_EMP == iEvent)) {
-                if (stack.length === 0) {
-                    //return this._setErr(XMLP.ERR_DOC_STRUCTURE);
-                    return XMLP._NONE;
-                    }
-                var strTop = stack[stack.length - 1];
-                this.m_stack.length--;
-                if (strTop === null || strTop !== this.getName()) { 
-                    return this._setErr(XMLP.ERR_ELM_NESTING);
-                    }
-                }
-    
-            // disabled original check for text node in epilogue - "MISC" state is disused
-        }
-    return iEvent;
+        // disabled original check for text node in epilogue - "MISC" state is disused
     }
+return iEvent;
+};
     
     
 XMLP.prototype.getColumnNumber = function() { 
     return SAXStrings.getColumnNumber(this.m_xml, this.m_iP);
-    }
+    };
     
 XMLP.prototype.getContent = function() { 
     return (this.m_cSrc == XMLP._CONT_XML) ? this.m_xml : this.m_cAlt;
-    }
+    };
     
-XMLP.prototype.getContentBegin = function() { return this.m_cB;}
-XMLP.prototype.getContentEnd = function() { return this.m_cE;}
+XMLP.prototype.getContentBegin = function() { return this.m_cB;};
+XMLP.prototype.getContentEnd = function() { return this.m_cE;};
 
 XMLP.prototype.getLineNumber = function() { 
     return SAXStrings.getLineNumber(this.m_xml, this.m_iP);
-    }
+    };
     
 XMLP.prototype.getName = function() { 
     return this.m_name;
-    }
+    };
     
 XMLP.prototype.next = function() { 
     return this._checkStructure(this._parse());
-    }
+    };
     
 XMLP.prototype._parse = function() {
     var iP = this.m_iP;
@@ -164,7 +166,7 @@ XMLP.prototype._parse = function() {
     else {
         return this._parseText (iP);
         }
-    }
+    };
     
 var nameRegex = /([^\s>]+)/g;
 var attrStartRegex = /\s*([\w:]+)/gm;
@@ -198,16 +200,28 @@ XMLP.prototype._parseElement = function(iB) {
     if (!nameMatch) {
         return this._setErr(XMLP.ERR_ELM_NAME);
         }
+    strN = nameMatch[1].toLowerCase();
+    // This branch is specially necessary for broken markup in IE. If we see an li
+    // tag apparently directly nested in another, first emit a synthetic close tag
+    // for the earlier one without advancing the pointer, and set a flag to ensure
+    // doing this just once.
+    if ("li" === strN && this.m_stack.length > 0 && 
+        this.m_stack[this.m_stack.length - 1] === "li" && !this.m_emitSynthetic) {
+        this.m_name = "li";
+        this.m_emitSynthetic = true;
+        return XMLP._ELM_E;
+    }
+    // We have acquired the tag name, now set about parsing any attribute list
     this.m_attributes = {};
     this.m_cAlt = ""; 
-    strN = nameMatch[1];
+
     if (nameRegex.lastIndex < iDE) {
         this.m_iP = nameRegex.lastIndex;
         while (this.m_iP < iDE) {
             attrStartRegex.lastIndex = this.m_iP;
             var attrMatch = attrStartRegex.exec(this.m_xml);
             if (!attrMatch) {
-                return this._setErr(XMLP.ERR_ATT_VALUES)
+                return this._setErr(XMLP.ERR_ATT_VALUES);
                 }
             var attrname = attrMatch[1].toLowerCase();
             var attrval;
@@ -216,7 +230,7 @@ XMLP.prototype._parseElement = function(iB) {
                 valRegex.lastIndex = attrStartRegex.lastIndex + 1;
                 attrMatch = valRegex.exec(this.m_xml);
                 if (!attrMatch) {
-                    return this._setErr(XMLP.ERR_ATT_VALUES)
+                    return this._setErr(XMLP.ERR_ATT_VALUES);
                     }
                 attrval = attrMatch[1];
                 }
@@ -237,7 +251,7 @@ XMLP.prototype._parseElement = function(iB) {
     if (strN.indexOf("<") != -1) { 
         return this._setErr(XMLP.ERR_ELM_LT_NAME);
         }
-    strN = strN.toLowerCase();
+
     this.m_name = strN; 
     this.m_iP = iE + 1;
     // Check for corrupted "closed tags" from innerHTML
@@ -253,9 +267,10 @@ XMLP.prototype._parseElement = function(iB) {
                 return XMLP._ELM_EMP;
             }
         }
-    } 
-    return iType;
     }
+    this.m_emitSynthetic = false;
+    return iType;
+    };
     
 XMLP.prototype._parseCDATA = function(iB) { 
     var iE = this.m_xml.indexOf("]]>", iB); 
@@ -263,7 +278,7 @@ XMLP.prototype._parseCDATA = function(iB) {
     this._setContent(XMLP._CONT_XML, iB, iE); 
     this.m_iP = iE + 3; 
     return XMLP._CDATA;
-    }
+    };
     
 XMLP.prototype._parseComment = function(iB) { 
     var iE = this.m_xml.indexOf("-" + "->", iB); 
@@ -273,7 +288,7 @@ XMLP.prototype._parseComment = function(iB) {
     this._setContent(XMLP._CONT_XML, iB - 4, iE + 3); 
     this.m_iP = iE + 3; 
     return XMLP._COMMENT;
-    }
+    };
     
 XMLP.prototype._parseDTD = function(iB) { 
     var iE, strClose, iInt, iLast; 
@@ -296,7 +311,7 @@ XMLP.prototype._parseDTD = function(iB) {
         }
     this.m_iP = iE + strClose.length; 
     return XMLP._DTD;
-    }
+    };
     
 XMLP.prototype._parsePI = function(iB) { 
     var iE, iTB, iTE, iCB, iCE; 
@@ -314,16 +329,15 @@ XMLP.prototype._parsePI = function(iB) {
     this._setContent(XMLP._CONT_XML, iCB, iCE + 1); 
     this.m_iP = iE + 2; 
     return XMLP._PI;
-    }
+    };
     
 XMLP.prototype._parseText = function(iB) { 
-    var iE, iEE;
-    iE = this.m_xml.indexOf("<", iB);
+    var iE = this.m_xml.indexOf("<", iB);
     if (iE == -1) { iE = this.m_xml.length;}
     this._setContent(XMLP._CONT_XML, iB, iE); 
     this.m_iP = iE; 
     return XMLP._TEXT;
-    }
+    };
     
 XMLP.prototype._setContent = function(iSrc) { 
     var args = arguments; 
@@ -339,7 +353,7 @@ XMLP.prototype._setContent = function(iSrc) {
         }
         
     this.m_cSrc = iSrc;
-    }
+    };
     
 XMLP.prototype._setErr = 
     function(iErr) { 
@@ -349,31 +363,30 @@ XMLP.prototype._setErr =
     this.m_cE = strErr.length; 
     this.m_cSrc = XMLP._CONT_ALT; 
     return XMLP._ERROR;
-    }
+    };
     
 
 
-SAXStrings = function() { }
+SAXStrings = {};
 
 SAXStrings.WHITESPACE = " \t\n\r"; 
 SAXStrings.QUOTES = "\"'"; 
-SAXStrings.getColumnNumber = function(strD, iP) { 
+SAXStrings.getColumnNumber = function (strD, iP) { 
     if (!strD) { return -1;}
     iP = iP || strD.length; 
     var arrD = strD.substring(0, iP).split("\n"); 
-    var strLine = arrD[arrD.length - 1]; 
     arrD.length--; 
     var iLinePos = arrD.join("\n").length; 
     return iP - iLinePos;
-    } 
+    };
     
-SAXStrings.getLineNumber = function(strD, iP) { 
+SAXStrings.getLineNumber = function (strD, iP) { 
     if (!strD) { return -1;}
     iP = iP || strD.length; 
     return strD.substring(0, iP).split("\n").length;
-    }
+    };
     
-SAXStrings.indexOfNonWhitespace = function(strD, iB, iE) {
+SAXStrings.indexOfNonWhitespace = function (strD, iB, iE) {
     if (!strD) return -1;
     iB = iB || 0; 
     iE = iE || strD.length; 
@@ -383,10 +396,10 @@ SAXStrings.indexOfNonWhitespace = function(strD, iB, iE) {
         if (c !== ' ' && c !== '\t' && c !== '\n' && c !== '\r') return i;
         }
     return -1;
-    }
+    };
     
     
-SAXStrings.indexOfWhitespace = function(strD, iB, iE) { 
+SAXStrings.indexOfWhitespace = function (strD, iB, iE) { 
     if (!strD) { return -1;}
         iB = iB || 0; 
         iE = iE || strD.length; 
@@ -394,10 +407,10 @@ SAXStrings.indexOfWhitespace = function(strD, iB, iE) {
             if (SAXStrings.WHITESPACE.indexOf(strD.charAt(i)) != -1) { return i;}
         }
     return -1;
-    }
+    };
     
     
-SAXStrings.lastIndexOfNonWhitespace = function(strD, iB, iE) { 
+SAXStrings.lastIndexOfNonWhitespace = function (strD, iB, iE) { 
         if (!strD) { return -1;}
         iB = iB || 0; iE = iE || strD.length; 
         for (var i = iE - 1; i >= iB; i--) { 
@@ -406,14 +419,14 @@ SAXStrings.lastIndexOfNonWhitespace = function(strD, iB, iE) {
             }
         }
     return -1;
-    }
+    };
     
 SAXStrings.replace = function(strD, iB, iE, strF, strR) { 
     if (!strD) { return "";}
     iB = iB || 0; 
     iE = iE || strD.length; 
     return strD.substring(iB, iE).split(strF).join(strR);
-    }
+    };
 
 function __unescapeString(str) {
     return str.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")
@@ -430,5 +443,5 @@ function __escapeString(str) { var escAmpRegEx = /&/g; var escLtRegEx = /</g; va
     str = str.replace(aposRegEx, "&apos;");
 
     return str;
-}
+    }
 
