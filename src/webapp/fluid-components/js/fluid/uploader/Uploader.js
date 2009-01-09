@@ -544,11 +544,14 @@ fluid_0_7 = fluid_0_7 || {};
         enhanceable = fluid.container(enhanceable);
         container = fluid.container(container);
         
-        if (swfobject.getFlashPlayerVersion().major > 8) {
-            container.show();
-            return fluid.uploader(container, options);
-        } else {
+        var flashVersion = swfobject.getFlashPlayerVersion().major;
+        if (flashVersion < 9 || ($.browser.msie && flashVersion < 10)) {
+            // Degrade gracefully.
             enhanceable.show();
+        } else {
+            // Instantiate the component.
+           container.show();
+           return fluid.uploader(container, options);
         }
     };
     
