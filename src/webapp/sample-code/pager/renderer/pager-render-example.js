@@ -16,7 +16,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 
 (function ($, fluid) {
-    demo.initPager = function () {
+    demo.initPager = function (userTable) {
         var selectorPrefix = "#students-page";
         
         var options = {

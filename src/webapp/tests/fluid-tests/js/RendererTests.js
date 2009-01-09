@@ -106,7 +106,7 @@ fluid.tests = fluid.tests || {};
         message1: "A simple message",
         message2: "A second message",
         message3: "Every {0} has {1} {2}(s)"
-    }
+    };
     
     renderTests.test("ID relation rewriting and template messaging", function() {
       // Tests FLUID-1676
@@ -307,7 +307,8 @@ fluid.tests = fluid.tests || {};
                 children: [
                      {ID: inputname, parentRelativeID: "..::select", choiceindex: index},
                      {ID: labelname, parentRelativeID: "..::select", choiceindex: index}]
-           }});
+               };
+           });
     }
    
     renderTests.test("UISelect tests with radio buttons", function() {
@@ -373,7 +374,7 @@ fluid.tests = fluid.tests || {};
     renderTests.test("UILink rendering", function() {
       // must use absolute URLs for tests, since IE will rewrite relative ones by itself
       var link_target = "http://www.site/dynamic-target.html";
-      var link_target_2 = "http://www.site/dynamic-target-2.jpg"
+      var link_target_2 = "http://www.site/dynamic-target-2.jpg";
       var tree = {children: [
          {ID: "link-1", target: link_target},
          {ID: "link-2", target: link_target_2}
@@ -391,7 +392,8 @@ fluid.tests = fluid.tests || {};
       tree.children[0].linktext = "Dynamic text";
       fluid.reRender(templates, node, fluid.copy(tree));
       
-      return;
+      return; // the remainder of this test cannot be supported - browsers will rewrite
+      // hrefs etc. that are attached to the document
       
       var link = $("a", node);
       fluid.testUtils.assertNode("UILink text material overwrite", 
@@ -435,6 +437,41 @@ fluid.tests = fluid.tests || {};
       checkbox.change();
       jqUnit.assertEquals("Model updated", true, model["boolean"]);
       
+    });
+
+    renderTests.test("ul with payload-component (IE innerHTML bug)", function() {
+        var node = $(".FLUID-2046-test");
+        var renderOptions = {
+            cutpoints: [ {
+                id: "page-link:",
+                selector: ".page-link"
+            },
+            {
+                id: "payload-component",
+                selector: "a"
+            }
+            ]};
+        
+        function pageToComponent(page) {
+            return {
+              ID: "page-link:",
+              value: page + 1
+            }
+        }
+        
+        var three = fluid.iota(3);
+        var tree = fluid.transform(three, pageToComponent);
+        
+        fluid.selfRender(node, tree, renderOptions);
+        fluid.testUtils.assertNode("Rendered nodes",
+          [
+          {nodeName: "li", "class": "page-link"},
+          {nodeName: "li", "class": "page-link"},
+          {nodeName: "li", "class": "page-link"}
+          ],
+          $("li", node)
+        );
+        
     });
 
     renderTests.test("Properties unescaping", function() {

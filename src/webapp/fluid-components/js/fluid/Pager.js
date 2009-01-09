@@ -61,14 +61,20 @@ fluid_0_7 = fluid_0_7 || {};
         return that;
     };
     
-    fluid.pager.everyPageStrategy = function (pageCount) {
-        var togo = [];
-        for (var i = 0; i < pageCount; ++ i) {
-            togo[i] = i;
-        }
-        return togo;
-    };
+    /** Returns an array of size count, filled with increasing integers, 
+     *  starting at 0 or at the index specified by first. 
+     */
     
+    fluid.iota = function (count, first) {
+        first = first | 0;
+        var togo = [];
+        for (var i = 0; i < count; ++ i) {
+            togo[togo.length] = first++;
+            }
+        return togo;
+        };
+    
+    fluid.pager.everyPageStrategy = fluid.iota;
     
     fluid.pager.renderedPageList = function(container, events, pagerBarOptions, options, strings) {
         var options = $.extend(true, pagerBarOptions, options);

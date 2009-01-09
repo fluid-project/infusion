@@ -421,13 +421,13 @@ function __unescapeString(str) {
     }
     
 function __escapeString(str) { var escAmpRegEx = /&/g; var escLtRegEx = /</g; var escGtRegEx = />/g; var quotRegEx = /"/g;
-        var aposRegEx = /'/g;
+    var aposRegEx = /'/g;
 
-        str = str.replace(escAmpRegEx, "&amp;");
-        str = str.replace(escLtRegEx, "&lt;");
-        str = str.replace(escGtRegEx, "&gt;");
-        str = str.replace(quotRegEx, "&quot;");
-        str = str.replace(aposRegEx, "&apos;");
+    str = str.replace(escAmpRegEx, "&amp;");
+    str = str.replace(escLtRegEx, "&lt;");
+    str = str.replace(escGtRegEx, "&gt;");
+    str = str.replace(quotRegEx, "&quot;");
+    str = str.replace(aposRegEx, "&apos;");
 
     return str;
 }

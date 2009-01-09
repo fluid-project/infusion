@@ -20,7 +20,7 @@ var userTable = [
   name: "Azer, Tamer", 
   userid: "19446940", 
   points: 68, 
-  comment: "",
+  comment: ""
   },
   {
   name: "Bandali, Salim", 
@@ -56,7 +56,7 @@ var userTable = [
   name: "Campaign, Wesley", 
   userid: "18283721", 
   points: 79,
-  comment: "Venenatis convallis, quam.",
+  comment: "Venenatis convallis, quam."
   },
   {
   name: "Dahn, Jason", 
@@ -134,7 +134,7 @@ var userTable = [
   name: "Falmeida, Elaine", 
   userid: "19289942", 
   points: 92, 
-  comment: "Duis dolor.", 
+  comment: "Duis dolor."
   },
   {        
   name: "Fazer, Tamer", 
@@ -152,7 +152,7 @@ var userTable = [
   name: "Gaumgartner, Joe", 
   userid: "15888314", 
   points: 81, 
-  comment: "Sed porttitor, lacus consectetuer commodo lobortis.",
+  comment: "Sed porttitor, lacus consectetuer commodo lobortis."
   },
   {
   name: "Gellefuille, Eric", 
