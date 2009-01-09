@@ -291,56 +291,62 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         var defineTestComponent = function () {
-            fluid.testComponent = function (container, options) {
-                var that = fluid.initView("fluid.testComponent", container, options);
+            fluid.tests = fluid.tests || {};
+            
+            fluid.tests.testComponent = function (container, options) {
+                var that = fluid.initView("fluid.tests.testComponent", container, options);
                 that.subcomponent = fluid.initSubcomponent(that, "subcomponent", [that.container, fluid.COMPONENT_OPTIONS]);
                 return that;
             };
             
-            fluid.subcomponent = function (container, options) {
-                var that = fluid.initView("fluid.subcomponent", container, options);
+            fluid.tests.subcomponent = function (container, options) {
+                var that = fluid.initView("fluid.tests.subcomponent", container, options);
                 that.greeting = that.options.greeting;
                 return that;
             };
             
-            fluid.defaults("fluid.testComponent", {
+            fluid.defaults("fluid.tests.testComponent", {
                 subcomponent: {
-                    type: "fluid.subcomponent"
+                    type: "fluid.tests.subcomponent"
                 } 
             });
             
-            fluid.defaults("fluid.subcomponent", {
+            fluid.defaults("fluid.tests.subcomponent", {
                 greeting: "hello"
             });
         };
         
-        var cleanUpTestComponent = function () {
-            fluid.testComponent = undefined;
-            fluid.subcomponent = undefined;
-            fluid.defaults("fluid.testComponent", null);
-            fluid.defaults("fluid.subcomponent", null);
+        var componentWithOverridenSubcomponentOptions = function (greeting) {
+            return fluid.tests.testComponent("#notmain", {
+               subcomponent: {
+                   options: {
+                       greeting: greeting
+                   }
+               }
+           });
         };
         
         fluidJSTests.test("initSubcomponents", function () {
            defineTestComponent();
            
            // First, let's check that the defaults are used if no other options are specified.
-           var myComponent = fluid.testComponent("#notmain");
+           var myComponent = fluid.tests.testComponent("#notmain");
            jqUnit.assertEquals("The subcomponent should have its default options.", 
                                "hello", myComponent.subcomponent.greeting);
            
            // Now try overriding the subcomponent options with specific options.
-           myComponent = fluid.testComponent("#notmain", {
-               subcomponent: {
-                   options: {
-                       greeting: "bonjour"
-                   }
-               }
-           });
+           myComponent = componentWithOverridenSubcomponentOptions("bonjour");
            jqUnit.assertEquals("The subcomponent's options should have been overridden correctly.", 
                                "bonjour", myComponent.subcomponent.greeting);
                                
-           cleanUpTestComponent();
+           // Now test with the default type defined in the shorthand format.
+           fluid.defaults("fluid.tests.testComponent", {
+               subcomponent: "fluid.tests.subcomponent"
+           });
+           
+           myComponent = componentWithOverridenSubcomponentOptions("hola");
+           jqUnit.assertEquals("The subcomponent's options should have been overridden correctly.", 
+                               "hola", myComponent.subcomponent.greeting);
         });
         
     });
