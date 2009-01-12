@@ -1,9 +1,10 @@
 /* CSS Specifically for the UI Options dialog and Preview window */
-.ui_options_container {background-color:#efefef; overflow:auto; padding:0 10px 10px;}
-.ui_options_container form {float:left; overflow:visible;}
+.ui_options_container {background-color:#efefef; zoom:1; overflow:hidden; padding:0 10px 10px;}
+.ui_options_container form {float:left;}
 .ui_options_container fieldset {font-family:Tahoma,Arial, sans-serif; margin:0; padding:0;}
 .ui_options_container legend {font-size:1.2em;}
-.ui_options_container .optionsCluster {overflow:auto; padding:5px 0; border-top:1px solid #ccc; margin-bottom:-1px;}
+.ui_options_container input.save {}
+.ui_options_container .optionsCluster {padding:5px 0; border-top:1px solid #ccc; margin-bottom:-1px;}
 .ui_options_container .optionsCluster ol {margin:0; padding:3px;}
 .ui_options_container .optionsCluster li {list-style-type:none;}
 .ui_options_container .optionsCluster input {margin-right:5px;}
