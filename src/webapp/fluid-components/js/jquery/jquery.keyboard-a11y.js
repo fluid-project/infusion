@@ -178,22 +178,17 @@ var fluid = fluid || fluid_0_7;
         return fluid.tabindex.hasAttr(target) || canHaveDefaultTabindex(target);
     };
 
-   var findData = function(elem, name) {
-       var elem = unwrap(elem);
-       while (elem) {
-           var data = getData($(elem), name);
-           if (data) return data;
-           elem = elem.parentNode;
-           }
-       };
-
-
     var ENABLEMENT_KEY = "enablement";
 
+    /** Queries or sets the enabled status of a control. An activatable node
+     * may be "disabled" in which case its keyboard bindings will be inoperable
+     * (but still stored) until it is reenabled again.
+     */
+     
     fluid.enabled = function(target, state) {
+        target = $(target);
         if (state === undefined) {
-            target = $(target);
-            return findData(target, ENABLEMENT_KEY) !== false;
+            return getData(target, ENABLEMENT_KEY) !== false;
         }
         else {
             setData(target, ENABLEMENT_KEY, state);
