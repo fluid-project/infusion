@@ -176,6 +176,13 @@ fluid_0_7 = fluid_0_7 || {};
         rowButtons.attr("disabled", "disabled");
         rowButtons.addClass("dim");    
     };
+
+
+    var repairFromUpload = function (that) {
+        var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
+        rowButtons.removeAttr("disabled");
+        rowButtons.removeClass("dim");    
+    };
         
     var changeRowState = function (row, newState) {
         row.removeClass("ready error").addClass(newState);
@@ -210,7 +217,8 @@ fluid_0_7 = fluid_0_7 || {};
                 onFileProgress: that.updateFileProgress,
                 onFileSuccess: that.markFileComplete,
                 onFileError: that.showErrorForFile,
-                afterFileComplete: that.hideFileProgress
+                afterFileComplete: that.hideFileProgress,
+                afterUploadComplete: that.repairFromUpload
             }
         };
     };
@@ -259,6 +267,10 @@ fluid_0_7 = fluid_0_7 || {};
             prepareForUpload(that);
         };
         
+        that.repairFromUpload = function () {
+            repairFromUpload(that);
+        };
+
         that.showFileProgress = function (file) {
             startFileProgress(that, file);
         };
@@ -544,14 +556,14 @@ fluid_0_7 = fluid_0_7 || {};
         enhanceable = fluid.container(enhanceable);
         container = fluid.container(container);
         
-        var flashVersion = swfobject.getFlashPlayerVersion().major;
+        var flashVersion = swfobject.getFlashPlayerVersion().major;       
         if (flashVersion < 9 || ($.browser.msie && flashVersion < 10)) {
             // Degrade gracefully.
             enhanceable.show();
         } else {
             // Instantiate the component.
-           container.show();
-           return fluid.uploader(container, options);
+            container.show();
+            return fluid.uploader(container, options);
         }
     };
     

@@ -541,10 +541,16 @@ SWFUpload.prototype.startUpload = function (fileID) {
 // If you do not specify a fileID the current uploading file or first file in the queue is cancelled.
 // If you do not want the uploadError event to trigger you can specify false for the triggerErrorEvent parameter.
 SWFUpload.prototype.cancelUpload = function (fileID, triggerErrorEvent) {
-	if (triggerErrorEvent !== false) {
-		triggerErrorEvent = true;
-	}
-	this.callFlash("CancelUpload", [fileID, triggerErrorEvent]);
+    // This section has been commented out, and we've removed the passing of triggerErrorEvent to the Flash side,
+    // because of FLUID-1982. We use a patched version of swfupload.js (this file) which is intended to work with
+    // the Flash movies from both SWFUpload 2.1.0 and 2.2.0b3.
+    // The 2.1.0 version of the movie doesn't expect this second argument and will throw an error.
+    // For more details, see http://issues.fluidproject.org/browse/FLUID-1982.
+    
+	//if (triggerErrorEvent !== false) {
+	//	triggerErrorEvent = true;
+	//}
+	this.callFlash("CancelUpload", [fileID]);
 };
 
 // Public: stopUpload stops the current upload and requeues the file at the beginning of the queue.
