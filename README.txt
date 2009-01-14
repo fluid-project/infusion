@@ -1,18 +1,17 @@
 
-Fluid Infusion 0.6
+Fluid Infusion 0.7
 ==================
 Main Project Site:  http://fluidproject.org
 User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
 
-What's New in 0.6
+What's New in 0.7
 =================
 
 This release includes
 
-    * Completely Refactored Uploader
-    * Two new flavours of Inline Edit: Dropdown and Rich Text
-    * Updated Pager component
-    * Sneak Peek of our new component: User Interface Options
+    * Graceful degradation support in the Uploader
+    * Improved documentation
+    * Sneak Peek of User Interface Options
     * Preview of the Fluid Skinning System
     * Many bug fixes
 
@@ -20,8 +19,8 @@ What's in this Release
 ======================
 
 This release is available in two forms:
-    fluid-0.6.zip - deployment bundle
-    fluid-0.6-src.zip - source code bundle
+    fluid-0.7.zip - deployment bundle
+    fluid-0.7-src.zip - source code bundle
     
 Both bundles have the following organization:
         fluid-components/
@@ -31,7 +30,7 @@ Both bundles have the following organization:
         README.txt
 
 The deployment bundle also includes a WAR file suitable for deployment in Java-based containers: 
-	fluid-components-0.6.war
+	fluid-components-0.7.war
 
 Source Code
 -----------
@@ -138,7 +137,6 @@ Some of the known issues in this release are described here:
 Uploader: 
   For information related to known issues related to Flash 10 compatibility, see http://wiki.fluidproject.org/x/0QFS
     FLUID-2032 Cannot Tab to the 'Browse More" button with Flash 10, using FF2
-    FLUID-2021 Cannot upload files with the keyboard: Using FF
     FLUID-1983 Uploader not working with flash 9: using IE
 
 Inline Edit: 
@@ -156,9 +154,6 @@ Layout Reorderer:
     FLUID-858 Portlet Columns load with no padding between them in IE7
 
 UI Options: 
-    FLUID-1998 The font spacing, on the "Save and apply your preferences" button, does not change
-    FLUID-1997 Preview window displayed to the right of the options in simple layout instead of below: Using IE
-    FLUID-1986 Font size only changes in the preview
 
 Pager: 
     FLUID-835 Pager links are not in the tab order, using Opera 9.5
