@@ -136,6 +136,7 @@ Some of the known issues in this release are described here:
 
 Uploader: 
   For information related to known issues related to Flash 10 compatibility, see http://wiki.fluidproject.org/x/0QFS
+    FLUID-2052 Cannot tab away from the "Browse Files" button with Flash 10; using FF3
     FLUID-2032 Cannot Tab to the 'Browse More" button with Flash 10, using FF2
     FLUID-1983 Uploader not working with flash 9: using IE
 
@@ -154,7 +155,12 @@ Layout Reorderer:
     FLUID-858 Portlet Columns load with no padding between them in IE7
 
 UI Options: 
+    FLUID-2121 Focus is not placed on the first focusable item in the user interfact options dialog
+    FLUID-2118 Cannot tab to "Close" button: using Opera
+    FLUID-2004 Cannot tab to "Edit Appearance": using Opera
 
 Pager: 
+    FLUID-2124 Page links are too close together in the renderer version
+    FLUID-2084 Pointer does not change style over visited page links: using Opera
     FLUID-835 Pager links are not in the tab order, using Opera 9.5
 
