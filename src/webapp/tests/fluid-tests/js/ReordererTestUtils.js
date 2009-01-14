@@ -13,8 +13,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery, jqUnit*/
 
-var fluid_0_7 = fluid_0_7 || {};
-var fluid = fluid || fluid_0_7;
+var fluid_0_8 = fluid_0_8 || {};
+var fluid = fluid || fluid_0_8;
 
 (function ($, fluid) {
 
@@ -107,4 +107,4 @@ var fluid = fluid || fluid_0_7;
         };
     };
   
-})(jQuery, fluid_0_7);
+})(jQuery, fluid_0_8);

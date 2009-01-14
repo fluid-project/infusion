@@ -45,16 +45,16 @@
   
     <script type="text/javascript">
         console.debug("Check sanity...");
-        fluid_0_7.defaults("foofer", {bar: "bat"});
-        console.debug("0.7.defaults: " + fluid_0_7.defaults("foofer"));
+        fluid_0_8.defaults("foofer", {bar: "bat"});
+        console.debug("0.8.defaults: " + fluid_0_8.defaults("foofer"));
         console.debug("0.3.defaults: " + fluid.defaults);
-        console.debug("0.7.model.getBeanValue: " + fluid_0_7.model.getBeanValue);
+        console.debug("0.8.model.getBeanValue: " + fluid_0_8.model.getBeanValue);
         
         // initialize the 0.3 list
         fluid.reorderList("#list-03", "li", function(){});
 
-        // initialize the 0.7 list
-        fluid_0_7.reorderList("#list-05");
+        // initialize the 0.8 list
+        fluid_0_8.reorderList("#list-05");
     </script>
   </body>
 </html>

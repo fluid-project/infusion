@@ -13,9 +13,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global SWFUpload*/
 /*global swfobject*/
 /*global jQuery*/
-/*global fluid_0_7*/
+/*global fluid_0_8*/
 
-fluid_0_7 = fluid_0_7 || {};
+fluid_0_8 = fluid_0_8 || {};
 
 
 /*******************
@@ -336,7 +336,7 @@ fluid_0_7 = fluid_0_7 || {};
         }
     });
    
-})(jQuery, fluid_0_7);
+})(jQuery, fluid_0_8);
 
 
 /************
@@ -697,4 +697,4 @@ fluid_0_7 = fluid_0_7 || {};
         CANCELLED: -5
     };
     
-})(jQuery, fluid_0_7);
+})(jQuery, fluid_0_8);
