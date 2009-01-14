@@ -339,14 +339,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
            jqUnit.assertEquals("The subcomponent's options should have been overridden correctly.", 
                                "bonjour", myComponent.subcomponent.greeting);
                                
-           // Now test with the default type defined in the shorthand format.
-           fluid.defaults("fluid.tests.testComponent", {
-               subcomponent: "fluid.tests.subcomponent"
-           });
-           
-           myComponent = componentWithOverridenSubcomponentOptions("hola");
-           jqUnit.assertEquals("The subcomponent's options should have been overridden correctly.", 
-                               "hola", myComponent.subcomponent.greeting);
         });
         
     });
