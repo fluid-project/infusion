@@ -8,12 +8,12 @@ FLUID UPLOADER READ ME
 
 --------------------------------------
 
-UPGRADING: 
+UPGRADING from Pre-Infusion 0.6 Uploader integrations: 
 
-This version of the Fluid Uploader for Infusion 0.6 has been extensively re-factored and uses 
-a fresh new API. Please refer to the Uploader API documentation on the Fluid Wiki and the 
-Infusion 0.6 example code before using the Uploader with an existing integration. 
+In Infusion 0.6 the Fluid Uploader was extensively re-factored with a fresh new API. 
 
+Please refer to the Uploader API documentation on the Fluid Wiki and the 
+Infusion 0.7 example code before using the Uploader with an existing integration. 
 
 --------------------------------------
 
