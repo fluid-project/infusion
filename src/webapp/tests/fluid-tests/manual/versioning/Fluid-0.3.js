@@ -5481,7 +5481,7 @@ function num(el, prop) {
 })(jQuery);
 /*
 Copyright 2007 University of Cambridge
-Copyright 2007-2008 University of Toronto
+Copyright 2007-2009 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -5678,7 +5678,7 @@ var fluid = fluid || {};
     };
 }) (jQuery, fluid);
 /*
-Copyright 2007 - 2008 University of Toronto
+Copyright 2007-2009 University of Toronto
 Copyright 2007 University of Cambridge
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -7159,7 +7159,7 @@ fluid.moduleLayout = function (jQuery, fluid) {
     };	
 } (jQuery, fluid);
 /*
-Copyright 2007 - 2008 University of Toronto
+Copyright 2007-2009 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -7221,7 +7221,7 @@ var fluid = fluid || {};
     };    
 }) (fluid);
 /*
-Copyright 2007 - 2008 University of Toronto
+Copyright 2007-2009 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -7341,8 +7341,8 @@ var fluid = fluid || {};
  * 
  * LEGAL
  * 
- * Copyright 2008 University of California, Berkeley
- * Copyright 2008 University of Toronto
+ * Copyright 2008-2009 University of California, Berkeley
+ * Copyright 2008-2009 University of Toronto
  * 
  * Licensed under the Educational Community License (ECL), Version 2.0 or the New
  * BSD license. You may not use this file except in compliance with one these
