@@ -108,6 +108,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
             <fileset dir="${jquery-src}">
                 <include name="GPL-LICENSE.txt" />
                 <include name="MIT-LICENSE.txt" />
+                <include name="ui-FLUID-readme.txt" />
             </fileset>
         </copy>
         <copy todir="${swfupload-build}">
