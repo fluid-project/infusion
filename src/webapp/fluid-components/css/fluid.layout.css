@@ -56,6 +56,8 @@ Generic containers for columns and layouts
 .fl-layout-linear .fl-container-flex50,
 .fl-layout-linear .fl-col,
 .fl-layout-linear .fl-col-side,
+.fl-layout-linear .fl-col-flex,
+.fl-layout-linear .fl-col-main,
 .fl-layout-linear .fl-col-fixed {width:100% !important; margin:auto; padding:0 !important;}
 
 .fl-layout-linear .fl-force-left, 
@@ -84,20 +86,37 @@ Layout Helpers
 .fl-col-mixed2,
 .fl-col-mixed3 {overflow:auto; zoom:1;}
 
-/* REMOVE THIS!! */
+/* Old System */
 .fl-col-mixed .fl-col-side {width:200px;}
 .fl-col-mixed .fl-col-side, 
 .fl-col-mixed .fl-col-main {padding:0 10px;}
 
-.fl-col-mixed2 .fl-col-side {width:200px; padding:0 10px;}
-.fl-col-mixed2 .fl-col-main {margin-left:230px; padding:0 10px;} /* margin goes on whichever side the fixed column goes */
+.fl-col-mixed2 .fl-col-side {width:200px; padding:0 10px; float:left;}
+.fl-col-mixed2 .fl-col-main {margin-left:220px; padding:0 10px;} /* margin goes on whichever side the fixed column goes */
 
-.fl-col-mixed3 .fl-col-main {margin:0 230px;} /* margin goes on whichever side the fixed column goes */
+.fl-col-mixed3 .fl-col-main {margin:0 220px;} /* margin goes on whichever side the fixed column goes */
 
-/* USE THIS!! */
-/* Simplify the mixed column system, ask ppl to customize the numbers instead of providing them all */
-.fl-col-mixed .fl-col-flex {margin-left:230px; padding:0 10px;}
+/* New System, requires fl-force-XX */
 .fl-col-mixed .fl-col-fixed {width:200px; padding:0 10px;}
+.fl-col-mixed .fl-col-flex {margin-left:220px; padding:0 10px;}
+
+.fl-col-fixed, .fl-col-flex {padding:0 10px;}
+
+.fl-col-mixed-100 .fl-col-fixed {width:100px;}
+.fl-col-mixed-100 .fl-col-flex {margin-left:120px;}
+
+.fl-col-mixed-150 .fl-col-fixed {width:150px;}
+.fl-col-mixed-150 .fl-col-flex {margin-left:170px;}
+
+.fl-col-mixed-200 .fl-col-fixed {width:200px;}
+.fl-col-mixed-200 .fl-col-flex {margin-left:220px;}
+
+.fl-col-mixed-250 .fl-col-fixed {width:250px;}
+.fl-col-mixed-250 .fl-col-flex {margin-left:270px;}
+
+.fl-col-mixed-300 .fl-col-fixed {width:300px;}
+.fl-col-mixed-300 .fl-col-flex {margin-left:320px;}
+
 
 
 /*
@@ -111,7 +130,7 @@ Layout Helpers
 .fl-tabs .fl-activeTab {}
 .fl-tabs li {border:1px solid; list-style-type:none; padding:3px 8px; text-align:center; margin-bottom:-1px; margin-right:-5px; cursor:pointer;}
 .fl-tabs li, x:-moz-any-link {display:-moz-inline-box;} /* FF2 inline-block workaround */
-.fl-tabs li {display:inline-block;} /* FF3, Opera, Safari, Chrome */
+.fl-tabs li {display:inline-block;} /* Opera, Safari, Chrome */
 .fl-tabs li, x:-moz-any-link, x:default {display:inline-block;}  /* reset for FF 3*/
 .fl-tabs li {*display:inline;} /* IE only selector */
 .fl-tabs .orderable-drop-marker {width:0.5em; height:1.5em; padding-left:0.2em; padding-right:0.2em; margin:0;}
@@ -125,7 +144,7 @@ Layout Helpers
 
 /*
  * Picture Grid: a quick picture grid layout
- * Dependency: list-based markup ?
+ * Dependency: list-based markup
  */
 .fl-grid {padding:2px;}
 .fl-grid li {list-style-type:none; display:inline;}
@@ -134,14 +153,19 @@ Layout Helpers
 .fl-grid li .caption {position:absolute; left:0px; bottom:0px; width:100%; text-align:center; height:1em; padding:3px 0;}
 
 /*
+ * Icons: simple helper for accessible icons
+ */
+.fl-icon {text-indent:-5000px; cursor:pointer; display:block; height:16px; width:16px; margin-left:5px; margin-right:5px; background-repeat:no-repeat;}
+
+/*
  * Buttons: quick sliding door buttons
  * requires a container with a sub container
  */
 
-.fl-button-left {float:left; margin-right:10px; padding:0px 0 0px 25px; background-position:left top; background-repeat:no-repeat;}
-.fl-button-left * {float:left; padding: 6px 8px 6px 0; cursor:pointer; background-position:left top; background-repeat:no-repeat;}
-.fl-button-right {float:right;  margin-left:10px; padding:0px 0 0px 25px; background-position:left top; background-repeat:no-repeat;}
-.fl-button-right * {float:left; padding: 6px 8px 6px 0; cursor:pointer; background-position:left top; background-repeat:no-repeat;}
+.fl-button-left {float:left; margin-right:10px; padding:0 0 0 1.95em; background-position:left top; background-repeat:no-repeat;}
+.fl-button-left * {float:left; padding: 0.5em 0.5em 0.55em 0; cursor:pointer; background-position:left top; background-repeat:no-repeat;}
+.fl-button-right {float:right;  margin-left:10px; padding:0 0 0 1.95em; background-position:left top; background-repeat:no-repeat;}
+.fl-button-right * {float:left; padding: 0.5em 0.5em 0.55em 0; cursor:pointer; background-position:left top; background-repeat:no-repeat;}
 
 /*
  * Widgets: modelled after the mycamtools widget model
