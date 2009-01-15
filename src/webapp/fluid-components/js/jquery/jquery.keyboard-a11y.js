@@ -63,7 +63,7 @@ var fluid = fluid || fluid_0_8;
     };
 
     fluid.thatistBridge("fluid", fluid);
-    fluid.thatistBridge("fluid_0_7", fluid_0_7);
+    fluid.thatistBridge("fluid_0_8", fluid_0_8);
 
     // Private constants.
     var NAMESPACE_KEY = "fluid-keyboard-a11y";
@@ -77,12 +77,16 @@ var fluid = fluid || fluid_0_8;
     };
 
     /**
-     * Stores state in the jQuery instance's data map.
+     * Stores state in the jQuery instance's data map. Unlike jQuery's version,
+     * accepts multiple-element jQueries.
      */
     var setData = function(aJQuery, key, value) {
-        var data = aJQuery.data(NAMESPACE_KEY) || {};
-        data[key] = value;
-        aJQuery.data(NAMESPACE_KEY, data);
+        aJQuery.each(function() {
+            var data = $.data(this, NAMESPACE_KEY) || {};
+            data[key] = value;
+
+            $.data(this, NAMESPACE_KEY, data);
+        });
     };
 
 
@@ -134,7 +138,7 @@ var fluid = fluid || fluid_0_8;
      * 
      * @param {String|Number} toIndex
      */
-     fluid.tabindex = function(target, toIndex) {
+    fluid.tabindex = function(target, toIndex) {
         target = $(target);
         if (toIndex !== null && toIndex !== undefined) {
             return setValue(target, toIndex);
@@ -191,6 +195,14 @@ var fluid = fluid || fluid_0_8;
             return getData(target, ENABLEMENT_KEY) !== false;
         }
         else {
+            $("*", target).each(function() {
+                if (getData(this, ENABLEMENT_KEY) !== undefined) {
+                    setData(this, ENABLEMENT_KEY, state);
+                }
+                else if (/select|textarea|input/i.test(this.nodeName)) {
+                    $(this).attr("disabled", !state);
+                }
+            });
             setData(target, ENABLEMENT_KEY, state);
         }
     }
@@ -639,6 +651,8 @@ var fluid = fluid || fluid_0_8;
         if (options && options.additionalBindings) {
             bindings = bindings.concat(options.additionalBindings);
         }
+
+        setData(elements, ENABLEMENT_KEY, true);
 
         // Add listeners for each key binding.
         for (var i = 0; i < bindings.length; ++ i) {
