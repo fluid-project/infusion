@@ -63,7 +63,27 @@ var fluid = fluid || fluid_0_8;
     };
 
     fluid.thatistBridge("fluid", fluid);
-    fluid.thatistBridge("fluid_0_8", fluid_0_8);
+    fluid.thatistBridge("fluid_0_7", fluid_0_7);
+
+    // Private constants.
+    var NAMESPACE_KEY = "fluid-keyboard-a11y";
+
+    /**
+     * Gets stored state from the jQuery instance's data map.
+     */
+    var getData = function(aJQuery, key) {
+        var data = aJQuery.data(NAMESPACE_KEY);
+        return data ? data[key] : undefined;
+    };
+
+    /**
+     * Stores state in the jQuery instance's data map.
+     */
+    var setData = function(aJQuery, key, value) {
+        var data = aJQuery.data(NAMESPACE_KEY) || {};
+        data[key] = value;
+        aJQuery.data(NAMESPACE_KEY, data);
+    };
 
 
 /*************************************************************************
@@ -158,6 +178,23 @@ var fluid = fluid || fluid_0_8;
         return fluid.tabindex.hasAttr(target) || canHaveDefaultTabindex(target);
     };
 
+    var ENABLEMENT_KEY = "enablement";
+
+    /** Queries or sets the enabled status of a control. An activatable node
+     * may be "disabled" in which case its keyboard bindings will be inoperable
+     * (but still stored) until it is reenabled again.
+     */
+     
+    fluid.enabled = function(target, state) {
+        target = $(target);
+        if (state === undefined) {
+            return getData(target, ENABLEMENT_KEY) !== false;
+        }
+        else {
+            setData(target, ENABLEMENT_KEY, state);
+        }
+    }
+    
 
 // Keyboard navigation
     // Public, static constants needed by the rest of the library.
@@ -181,26 +218,6 @@ var fluid = fluid || fluid_0_8;
         HORIZONTAL: 0,
         VERTICAL: 1,
         BOTH: 2
-    };
-
-    // Private constants.
-    var NAMESPACE_KEY = "keyboard-a11y";
-    
-    /**
-     * Gets stored state from the jQuery instance's data map.
-     */
-    var getData = function(aJQuery, key) {
-        var data = aJQuery.data(NAMESPACE_KEY);
-        return data ? data[key] : undefined;
-    };
-
-    /**
-     * Stores state in the jQuery instance's data map.
-     */
-    var setData = function(aJQuery, key, value) {
-        var data = aJQuery.data(NAMESPACE_KEY) || {};
-        data[key] = value;
-        aJQuery.data(NAMESPACE_KEY, data);
     };
 
     var UP_DOWN_KEYMAP = {
@@ -560,6 +577,10 @@ var fluid = fluid || fluid_0_8;
 
     var makeActivationHandler = function(binding) {
         return function(evt) {
+            var target = evt.target;
+            if (!fluid.enabled(evt.target)) {
+                return;
+            }
 // The following 'if' clause works in the real world, but there's a bug in the jQuery simulation
 // that causes keyboard simulation to fail in Safari, causing our tests to fail:
 //     http://ui.jquery.com/bugs/ticket/3229
@@ -601,17 +622,6 @@ var fluid = fluid || fluid_0_8;
         var isShiftKeyPresent = modifierKey && evt.shiftKey;
 
         return isCtrlKeyPresent || isAltKeyPresent || isShiftKeyPresent;
-    };
-
-    var makeActivationHandler = function(binding) {
-        return function(evt) {
-// The following 'if' clause works in the real world, but there's a bug in the jQuery simulation
-            var code = evt.which? evt.which : evt.keyCode;
-            if (code === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
-                binding.activateHandler(evt.target, evt);
-                evt.preventDefault();
-            }
-        };
     };
 
     var makeElementsActivatable = function(elements, onActivateHandler, defaultKeys, options) {
