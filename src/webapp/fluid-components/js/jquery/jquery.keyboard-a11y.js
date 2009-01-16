@@ -71,8 +71,8 @@ var fluid = fluid || fluid_0_8;
     /**
      * Gets stored state from the jQuery instance's data map.
      */
-    var getData = function(aJQuery, key) {
-        var data = aJQuery.data(NAMESPACE_KEY);
+    var getData = function(target, key) {
+        var data = $(target).data(NAMESPACE_KEY);
         return data ? data[key] : undefined;
     };
 
@@ -80,8 +80,8 @@ var fluid = fluid || fluid_0_8;
      * Stores state in the jQuery instance's data map. Unlike jQuery's version,
      * accepts multiple-element jQueries.
      */
-    var setData = function(aJQuery, key, value) {
-        aJQuery.each(function() {
+    var setData = function(target, key, value) {
+        $(target).each(function() {
             var data = $.data(this, NAMESPACE_KEY) || {};
             data[key] = value;
 

@@ -463,51 +463,61 @@
         jqUnit.assertTrue("The menu should have been activated by the down arrow key.", menu.wasActivated);
     });
 
-    jqUnit.test("Multiple custom activate bindings", function () {
-        // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
-        if (!$.browser.mozilla) {
-            return;
-        }
-
-        var menu = createAndFocusMenu();
-
-        // Define additional key bindings.
-        var downBinding = {
-            key: fluid.a11y.keys.DOWN,
-            activateHandler:  function (element) {
-                menu.wasActivated = true;
+    function makeCustomActivateTest(enabled) {
+        jqUnit.test("Multiple custom activate bindings" + (enabled? "" : " - disabled"), function () {
+            // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
+            if (!$.browser.mozilla) {
+                return;
             }
-        };
-
-        var upBinding = {
-            modifier: fluid.a11y.keys.CTRL,
-            key: fluid.a11y.keys.UP,
-            activateHandler: function (element) {
-                menu.wasActivated = "foo";
+    
+            var menu = createAndFocusMenu();
+    
+            // Define additional key bindings.
+            var downBinding = {
+                key: fluid.a11y.keys.DOWN,
+                activateHandler:  function (element) {
+                    menu.wasActivated = true;
+                }
+            };
+    
+            var upBinding = {
+                modifier: fluid.a11y.keys.CTRL,
+                key: fluid.a11y.keys.UP,
+                activateHandler: function (element) {
+                    menu.wasActivated = "foo";
+                }
+            };
+    
+            var defaultActivate = function () {
+                menu.wasActivated = false;
+            };
+    
+            var options = {
+                additionalBindings: [downBinding, upBinding]
+            };
+            
+            fluid.activatable(menu.items, defaultActivate, options);
+            
+            if (!enabled) {
+                fluid.enabled(menu.container, false);
             }
-        };
-
-        var defaultActivate = function () {
+    
+            // Test that the down arrow works.
+            simulateKeyDown(getFirstMenuItem(), fluid.a11y.keys.DOWN);
+            jqUnit.assertEquals("The menu should " + (enabled? "" : " not ") 
+              + " have been activated by the down arrow key.", enabled? true: undefined, menu.wasActivated);
+    
+            // Reset and try the other key map.
             menu.wasActivated = false;
-        };
-
-        var options = {
-            additionalBindings: [downBinding, upBinding]
-        };
-
-        menu.items.fluid("activatable", [defaultActivate, options]);
-
-        // Test that the down arrow works.
-        simulateKeyDown(getFirstMenuItem(), fluid.a11y.keys.DOWN);
-        jqUnit.assertNotUndefined("The menu should have been activated by the down arrow key.", menu.wasActivated);
-        jqUnit.assertTrue("The menu should have been activated by the down arrow key.", menu.wasActivated);
-
-        // Reset and try the other key map.
-        menu.wasActivated = false;
-        simulateKeyDown(getFirstMenuItem(), fluid.a11y.keys.UP, fluid.a11y.keys.CTRL);
-        jqUnit.assertNotUndefined("The menu should have been activated by the ctrl key.", menu.wasActivated);
-        jqUnit.assertEquals("The menu should have been activated by the ctrl key.", "foo", menu.wasActivated);
-    });
+            simulateKeyDown(getFirstMenuItem(), fluid.a11y.keys.UP, fluid.a11y.keys.CTRL);
+            
+            jqUnit.assertEquals("The menu should " + (enabled? "" : " not ") 
+              + " have been activated by the ctrl key.", enabled? "foo": false, menu.wasActivated);
+        });
+    }
+    
+    makeCustomActivateTest(true);
+    makeCustomActivateTest(false);
 
     jqUnit.test("currentSelection", function () {
         var menu = createAndFocusMenu();
