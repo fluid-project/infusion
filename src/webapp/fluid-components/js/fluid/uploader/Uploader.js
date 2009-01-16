@@ -177,7 +177,6 @@ fluid_0_8 = fluid_0_8 || {};
         rowButtons.addClass("dim");    
     };
 
-
     var repairFromUpload = function (that) {
         var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
         rowButtons.removeAttr("disabled");
@@ -189,13 +188,16 @@ fluid_0_8 = fluid_0_8 || {};
     };
     
     var markRowAsComplete = function (that, file) {
+        // update styles and keyboard bindings for the file row
         var row = rowForFile(that, file);
-        var removeFile = that.locate("fileIconBtn", row);
-        removeFile.unbind("click");
-        fluid.tabindex(removeFile, -1);
-        removeFile.removeClass(that.options.styles.remove);
         changeRowState(row, that.options.styles.uploaded);
         row.attr("title", that.options.strings.status.success);
+        fluid.enabled(row, false);
+        
+        // update the click event and the styling for the file delete button
+        var removeRowBtn = that.locate("fileIconBtn", row);
+        removeRowBtn.unbind("click");
+        removeRowBtn.removeClass(that.options.styles.remove);
     };
     
     var showErrorForFile = function (that, file, error) {
