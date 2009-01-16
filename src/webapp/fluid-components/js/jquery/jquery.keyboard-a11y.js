@@ -677,10 +677,10 @@ var fluid = fluid || fluid_0_8;
     /**
      * Activates the specified element.
      */
-    fluid.activate = function(target, elementToActivate) {
+    fluid.activate = function(target) {
         target = $(target);
         var handler = getData(target, ACTIVATE_KEY);
-        handler(elementToActivate);
+        handler(target);
     };
 
     // Public Defaults.
