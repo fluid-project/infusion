@@ -70,12 +70,19 @@ fluid_0_8 = fluid_0_8 || {};
         } 
     };
     
+    var removeFileProgress = function (that, file) {
+        var fileProgressor = progressorForFile(that, file);
+        var rowProgressor = fileProgressor.displayElement;
+        rowProgressor.remove();
+    };
+    
     var removeFileAndRow = function (that, file, row) {
+        removeFileProgress(that, file);
         that.uploadManager.removeFile(file);
         row.fadeOut("fast", function () {
             row.remove();
             that.refreshView();   
-        }); 
+        });
     };
     
     var removeFileForRow = function (that, row) {
