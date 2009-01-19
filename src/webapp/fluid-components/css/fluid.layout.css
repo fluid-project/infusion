@@ -135,12 +135,21 @@ Layout Helpers
 .fl-tabs li {*display:inline;} /* IE only selector */
 .fl-tabs .orderable-drop-marker {width:0.5em; height:1.5em; padding-left:0.2em; padding-right:0.2em; margin:0;}
 /*
- * Menus: a quick menu
- * Dependency: list-based markup ?
+ * Menus: quick horizontal and vertical menu
+ * Requires list items with anchors
  */
 .fl-listmenu {padding:0px;}
 .fl-listmenu li {margin:0; padding:0; list-style-type:none;}
 .fl-listmenu a {padding:5px 5px; display:block; zoom:1;} /* list item needs layout (http://www.brunildo.org/test/IEWlispace.php) */
+
+.fl-vert-menu {
+    
+}
+
+.fl-horz-menu {
+    
+}
+
 
 /*
  * Picture Grid: a quick picture grid layout
@@ -153,9 +162,21 @@ Layout Helpers
 .fl-grid li .caption {position:absolute; left:0px; bottom:0px; width:100%; text-align:center; height:1em; padding:3px 0;}
 
 /*
- * Icons: simple helper for accessible icons
+ * Icons: quick accessible icon helper
  */
-.fl-icon {text-indent:-5000px; cursor:pointer; display:block; height:16px; width:16px; margin-left:5px; margin-right:5px; background-repeat:no-repeat;}
+.fl-icon {
+    text-indent:-5000px; 
+    overflow:hidden; 
+    cursor:pointer; 
+    display:block; 
+    height:16px; 
+    width:16px; 
+    margin-left:5px; 
+    margin-right:5px;
+    background-position:center center; 
+    background-repeat:no-repeat;
+}
+input.fl-icon {padding-left:16px;}
 
 /*
  * Buttons: quick sliding door buttons
@@ -182,11 +203,12 @@ Layout Helpers
 .fl-widget .fl-widget-content {zoom:1; margin:5px 0 0 0; overflow: auto;}
 .fl-widget .fl-widget-content ul {}
 .fl-widget .empty * {padding-top:10px; margin-left:auto; margin-right:auto; text-align:center;}
+
 /* Common widget sub-components */
 .fl-widget .menu 	{margin:0;}
 .fl-widget .grabbable {cursor:move; background-position:center top; background-repeat:no-repeat;}
 .fl-widget h2.grabbable {background-position:center top;}
-.fl-widget .icon 	{text-indent:-5000px; cursor:pointer; display:block; height:16px; width:16px; margin-left:5px; margin-right:5px; background-repeat:no-repeat;}
+/*.fl-widget .icon 	{text-indent:-5000px; cursor:pointer; display:block; height:16px; width:16px; margin-left:5px; margin-right:5px; background-repeat:no-repeat;}*/
 .fl-widget .toggle  {width:32px;}
 .fl-widget .on 		{background-position:left top;}
 .fl-widget .off 	{background-position:left bottom;}
@@ -210,9 +232,3 @@ Component Specific
 /* PROGRESSOR */
 .fl-progress-bounds {border-width:1px; border-style:solid; padding:2px;}
 .fl-progress-fill {width:100%;}
-
-
-
-
-
-
