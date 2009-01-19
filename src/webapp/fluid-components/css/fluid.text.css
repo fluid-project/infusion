@@ -92,6 +92,19 @@
 .fl-font-times, .fl-font-times *   {font-family: Georgia, Times, "Times New Roman", serif !important;}
 .fl-font-courier, .fl-font-courier * {font-family: "Courier New", Courier, monospace !important;}
 
+.fl-text-align-left {
+    text-align:left;
+}
+.fl-text-align-right {
+    text-align:right;
+}
+.fl-text-align-center {
+    text-align:center;
+}
+.fl-text-align-justify {
+    text-align:justify;
+}
+
 .fl-font-aqua {color: aqua;}
 .fl-font-black {color: black;}
 .fl-font-blue {color: blue;}
