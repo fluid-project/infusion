@@ -111,16 +111,16 @@ fluid_0_8 = fluid_0_8 || {};
 
     fluid.defaults("fluid.uiOptions", {
         selectors: {
-            textSizeCtrl: ".textsize-control",
-            textSpacingCtrl: ".textspace-control",
-            fontCtrl: ".font-control",
-            colorCtrl: ".color-control",
-            layoutCtrl: ".layout-control",
+            textSizeCtrl: ".fl-hook-font-size",
+            textSpacingCtrl: ".fl-hook-font-spacing",
+            fontCtrl: ".fl-hook-font-face",
+            colorCtrl: ".fl-hook-color",
+            layoutCtrl: ".fl-hook-layout",
             options: "input",
             tocCtrl: ".toc-control",
-            preview: ".preview", 
-            previewFrame : ".previewFrame",
-            save: ".save"
+            preview: ".fl-hook-preview-content", 
+            previewFrame : ".fl-hook-preview-frame",
+            save: ".fl-hook-preview-save"
         },
         events: {
             modelChanged: null,

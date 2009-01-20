@@ -70,6 +70,8 @@ fluid_0_8 = fluid_0_8 || {};
         },
         "textFont": {
             "Default": "",
+            "Serif": "fl-font-serif",
+            "Sans-Serif": "fl-font-sans",
             "Ariel": "fl-font-arial",
             "Verdana": "fl-font-verdana",
             "Courier": "fl-font-monospace",
