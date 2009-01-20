@@ -217,6 +217,17 @@ input.fl-icon {padding-left:16px;}
 
 
 /*
+ * Forms and Form Controls
+ * Common arrangements for form inputs
+ */
+/* Alignment requires list of label elements placed before the control */
+.fl-controls-left li {list-style-type:none; text-align:left;}
+.fl-controls-left label {float:left; text-align:left; width:50%; margin-right:5px;}
+.fl-controls-centered li {list-style-type:none; display:block; text-align:left;}
+.fl-controls-centered label {float:left; text-align:right; width:50%; margin-right:5px; color:#0080ff;}
+
+
+/*
  * Progressive Enhancement
  */
 .fl-progressive-enhancer {display:none;}
