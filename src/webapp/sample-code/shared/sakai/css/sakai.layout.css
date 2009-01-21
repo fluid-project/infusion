@@ -36,7 +36,8 @@
 .fl-widget .menu 	{margin:0;}
 .fl-widget .grabbable {cursor:move; background-position:center top; background-repeat:no-repeat;}
 .fl-widget h2.grabbable {background-position:center top;}
-.fl-widget .icon 	{text-indent:-5000px; cursor:pointer; display:block; height:16px; width:16px; margin-left:5px; margin-right:5px; background-repeat:no-repeat;}
+.fl-widget .icon,
+.fl-widget .fl-icon {text-indent:-5000px; cursor:pointer; display:block; height:16px; width:16px; margin-left:5px; margin-right:5px; background-repeat:no-repeat;}
 .fl-widget .toggle  {width:32px;}
 .fl-widget .on 		{background-position:left top;}
 .fl-widget .off 	{background-position:left bottom;}

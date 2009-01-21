@@ -5,7 +5,8 @@
     .fl-theme-hc .fl-widget ul {}
     .fl-theme-hc .fl-widget h2 {color:#fff;}
     .fl-theme-hc .fl-widget a {color:#000;}
-    .fl-theme-hc .fl-widget .icon {color:#000; background-image:none; background-color:#fff; text-indent:0; width:auto; height:auto; margin-left:0px; padding:0 2px; display:inline; font-weight:bold;}
+    .fl-theme-hc .fl-widget .icon,
+	.fl-theme-hc .fl-widget .fl-icon {color:#000; background-image:none; background-color:#fff; text-indent:0; width:auto; height:auto; margin-left:0px; padding:0 2px; display:inline; font-weight:bold;}
         
 /* Widget titlebar */
 .fl-theme-hc .fl-widget .fl-widget-titlebar {margin-bottom:3px;}
@@ -28,4 +29,5 @@
     .fl-theme-hc .fl-widget .fl-widget-content .menu a {position:relative; display:block; text-indent:0.25em; font-weight:bold; padding:7px 0 7px 0; color:#000; background-color:#fff;}
     .fl-theme-hc .fl-widget .fl-widget-content .menu a:hover,
     .fl-theme-hc .fl-widget .fl-widget-content .menu a:hover * {background-color:#000; color:#fff;}    
-    .fl-theme-hc .fl-widget .fl-widget-content .menu .icon {position:absolute; right:0; top:5px; background:none; color:#000;}
+    .fl-theme-hc .fl-widget .fl-widget-content .menu .icon,
+	.fl-theme-hc .fl-widget .fl-widget-content .menu .fl-icon	 {position:absolute; right:0; top:5px; background:none; color:#000;}

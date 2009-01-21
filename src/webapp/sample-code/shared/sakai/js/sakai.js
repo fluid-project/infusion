@@ -26,7 +26,8 @@ $(function () {
         });
     
         // instantiate component
-        uiOptions = fluid.uiOptions(".ui_options_container");
+        uiOptions = fluid.uiOptions(".uiOptions");
+		
         // only show content once ajax call is complete
         $("#dialog_container").css('display', 'block');
     };
@@ -34,7 +35,7 @@ $(function () {
     $('.skin').click(function () {
         if (!uiOptions) {
             // ajax call to pull the UI Options dialog into a container
-            $('#dialog_content').load('../../../fluid-components/html/templates/UIOptions.html .ui_options_container', initDialog);
+            $('#dialog_content').load('../../../fluid-components/html/templates/UIOptions.html .uiOptions', initDialog);
         } else {
             // else content is already loaded, just show it
             $("#dialog_container").css('display', 'block');

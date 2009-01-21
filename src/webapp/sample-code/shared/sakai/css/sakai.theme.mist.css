@@ -32,5 +32,5 @@
     .fl-theme-mist .fl-widget-content .menu li {float:left; list-style-type:none; border-bottom:1px solid #ccc; width:100%; }
     .fl-theme-mist .fl-widget-content .menu a {position:relative; display:block; text-indent:30px; font-weight:bold; padding:7px 0 7px 0; background-color:transparent;}
     .fl-theme-mist .fl-widget-content .menu a:hover {background-color:#dfefff; color:#000;}
-    .fl-theme-mist .fl-widget-content .menu .icon {position:absolute;}
-    .fl-theme-mist .fl-widget-content .menu .delete {background-image: url('../images/fluid-theme-mist/icon-menu-Delete.png');  right:0; top:5px; background-repeat:no-repeat; background-position: top left;}
+    .fl-theme-mist .fl-widget-content .menu .icon {}
+    .fl-theme-mist .fl-widget-content .menu .delete {position:absolute;background-image: url('../images/fluid-theme-mist/icon-menu-Delete.png');  right:0; top:5px; background-repeat:no-repeat; background-position: top left;}
