@@ -4,6 +4,6 @@
 .fl-components-ui-options fieldset legend {font-weight:bold;}
 .fl-components-ui-options fieldset ol {border-top:1px solid #ccc; margin:0; padding:0;}
 .fl-components-ui-options fieldset li {padding:2px 0}
-.fl-components-ui-options .fl-subcomp-preview {padding:0;border:3px solid #ccc; margin:0 -3px; position:relative;}
+.fl-components-ui-options .fl-subcomp-preview {padding:0;border:3px solid #ccc;}
 .fl-components-ui-options .fl-subcomp-preview h2 {font-weight:normal; margin:0; padding:5px; background-color:#ccc; color:#000;}
 .fl-components-ui-options .fl-subcomp-preview iframe {width:100%; height:300px;}
