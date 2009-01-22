@@ -1,7 +1,7 @@
 /* CSS Specifically for the UI Options dialog and Preview window */
 .fl-components-ui-options {padding:10px;}
 .fl-components-ui-options fieldset {margin:0 20px 5px 0; background-color:#f5f5f5;}
-.fl-components-ui-options fieldset h2 {margin:0; padding:0 0 0 24px; background:#ccc url(../images/uioptions/expand_collapse.png) no-repeat left 5px;}
+.fl-components-ui-options fieldset h2 {cursor:pointer; margin:0; padding:0 0 0 24px; background:#ccc url(../images/uioptions/expand_collapse.png) no-repeat left 5px;}
 .fl-components-ui-options fieldset legend {font-weight:bold;}
 .fl-components-ui-options fieldset ol {margin:0; padding:15px 0 0 0; border:3px solid #ccc;}
 .fl-components-ui-options fieldset li {padding:2px 0}
