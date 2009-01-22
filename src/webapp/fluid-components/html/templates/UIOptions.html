@@ -16,6 +16,9 @@
         <title>UI Options</title>
         <script type="text/javascript" src="../../js/jquery/jquery-1.2.6.js"></script>
         <script type="text/javascript" src="../../js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../js/jquery/ui.core.js"></script>
+        <script type="text/javascript" src="../../js/jquery/ui.accordion.js"></script>
+        
         <script type="text/javascript" src="../../js/fluid/Fluid.js"></script>
         <script type="text/javascript" src="../../js/fluid/Skin.js"></script>
         <script type="text/javascript" src="../../js/fluid/Undo.js"></script>
@@ -24,6 +27,9 @@
         <script type="text/javascript">
             $().ready(function(){
                 fluid.uiOptions(".uiOptions");
+                jQuery('.fl-components-ui-options .fl-col:eq(0)').accordion({ 
+                    header: 'h2'
+                });
             });
         </script>
     </head>
@@ -36,7 +42,7 @@
             <!-- column 1, options -->
             <div class="fl-col">
                 <fieldset class="fl-controls-centered">
-                    <legend class="fl-font-size-130">Easier to see</legend>
+                    <h2 class="fl-font-size-130">Easier to see</h2>
                     <ol>
                         <li class="fl-hook-font-face"><label>Font style:</label>
                             <input type="radio" name="font" value="Default" />No Preference
@@ -71,7 +77,7 @@
                 </fieldset>
     
                 <fieldset class="fl-controls-centered">
-                    <legend class="fl-font-size-130">Easier to find</legend>
+                    <h2 class="fl-font-size-130">Easier to find</h2>
                     <ol>
                         <li><label>Table of contents:</label><span>No</span></li>
                         <li><label>Links:</label><span>No Preference</span></li>
