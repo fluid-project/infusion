@@ -87,7 +87,7 @@ fluid_0_8 = fluid_0_8 || {};
     
     var removeFileForRow = function (that, row) {
         var file = fileForRow(that, row);
-        if (!file) return;
+        if (!file || file.filestatus === fluid.uploader.fileStatusConstants.COMPLETE) return;
         removeFileAndRow(that, file, row);
     };
     
