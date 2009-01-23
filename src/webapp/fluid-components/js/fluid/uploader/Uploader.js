@@ -205,6 +205,7 @@ fluid_0_8 = fluid_0_8 || {};
         var removeRowBtn = that.locate("fileIconBtn", row);
         removeRowBtn.unbind("click");
         removeRowBtn.removeClass(that.options.styles.remove);
+		removeRowBtn.attr("title", that.options.strings.status.success); 
     };
     
     var showErrorForFile = function (that, file, error) {
