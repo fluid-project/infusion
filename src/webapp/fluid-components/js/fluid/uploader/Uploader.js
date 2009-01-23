@@ -638,13 +638,6 @@ fluid_0_8 = fluid_0_8 || {};
         },
         
         styles: {
-            queueStartState: "start",
-            queueEmptyState: "empty",
-            queueLoadedState: "loaded",
-            queueReloadedState: "reloaded",
-            queueDoneState: "done",
-            queueBrowsingState: "browsing",
-            queueUploadingState: "uploading",
             disabled: "disabled",
             hidden: "hidden",
             dim: "dim"
