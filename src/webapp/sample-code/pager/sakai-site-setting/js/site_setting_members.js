@@ -493,4 +493,18 @@ sakai.siteSettingsMembers = function(){
 	init();
 };
 
-sdata.registerForLoad("sakai.siteSettingsMembers");
+
+function initSiteSettingTable() {
+  
+  
+    var pager = fluid.pager(".ss-members", {
+        bodyRenderer: {
+          type: "fluid.pager.selfRender",
+          options: {
+            root: ".site-setting-body",
+            cells: cellGenerator
+          }
+        }
+    });
+};
+

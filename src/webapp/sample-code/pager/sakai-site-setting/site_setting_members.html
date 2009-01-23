@@ -78,7 +78,7 @@
 	<div class="msg-remove"><a>Remove</a></div>
 </div>
 
-<div class="ss-members" style="display:none;">
+<div class="ss-members" >
 <h2>Members <span class="ss-button"><a href="#" class="buttons add-widgets"><span>Add Members</span></a></span></h2>
 <table cellpadding="0" cellspacing="0" border="0" class="ss-table">
     <tr>
@@ -97,7 +97,7 @@
                         <tr>
                             <td><div class="ssth-border">
                             	<span class="membership-count"></span> Records Total</div>
-                            </div></td>
+                            </td>
                             <td><div class="ssth-select">
                                 <select class="rowsPerPageDropdown">
                                     <option value="10">View 10 Per Page</option>
@@ -123,7 +123,71 @@
     </tr>
 </table>
 
-<div id="membership-table"></div>
+<div id="membership-table" class="yui-dt">
+<div id="yui-dt0-paginator0" class="yui-dt-paginator yui-pg-container"
+  style="" />
+
+
+<table summary="">
+  <thead>
+    <tr>
+      <th id="yui-dt0-th-member-checked" 
+        class="w28 bgEBECED">
+      <span
+        class="yui-dt-label"><a class=""
+        title="Click to sort" href="#"> </a></span>
+      </th>
+      <th id="yui-dt0-th-userDisplayName" 
+        class="per47 fs13 memberName yui-dt0-col-userDisplayName yui-dt-col-userDisplayName ">
+      <div id="yui-dt0-th-userDisplayName-liner" ><span>
+      <a title="Click to sort" href="#">Members</a></span></div>
+      </th>
+      <th id="yui-dt0-th-userEmail" 
+        class="per23 fs13 ">
+        <a title="Click to sort" href="#">Email</a>
+      </th>
+      <th id="yui-dt0-th-memberRole" 
+        class="per18 memberRole ">
+         <a title="Click to sort" href="#">Role</a>
+      </th>
+      <th id="yui-dt0-th-active" 
+        class="per18 memberStatus ">
+        <a title="Click to sort" href="#">Status</a>
+      </th>
+    </tr>
+  </thead>
+  <tbody class="site-setting-body" xmlns:rsf="http://ponder.org.uk">
+    <tr rsf:id="row:">
+      <td headers="yui-dt0-th-member-checked" class="w28 bgEBECED">
+      <input rsf:id="selection" type="checkbox" />
+      </td>
+      <td headers="yui-dt0-th-userDisplayName"
+        class="per47 fs13 memberName">
+        <a rsf:id="user-link" href="/dev/sn/profile.html?user=6b3fe506-57aa-40a6-ac2f-359c59d219b5">Erica
+      Ackerman</a>
+      </td>
+      <td headers="yui-dt0-th-userEmail"
+        class="per23 fs13 ">
+        <a rsf:id="user-email" href="mailto:ericaack@umich.edu">ericaack@umich.edu</a>
+      </td>
+      <td headers="yui-dt0-th-memberRole"
+        class="per18 memberRole ">
+      <select rsf:id="user-role">
+          <option value="access">access</option>
+          <option value="maintain">maintain</option>
+      </select>
+      </td>
+      <td headers="yui-dt0-th-active"
+        class="per18 memberStatus">
+      <select rsf:id="user-status">
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
+      </select>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
 <div class="ss-foot">
     <div class="block">
