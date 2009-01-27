@@ -1,38 +1,39 @@
 /**
  * WARNING: This is not production code. It is a sketchy placeholder only. It is being replaced with real code soon.  
  */
+
+/*
+ *  TODO: 
+ *  - retrieve the headings in document order
+ *  - indent based on heading level
+ *  - move the template out into UIOptions.html
+ *  - make into a fluid sub component.
+ *  - write tests 
+ *  - get and implement a design for the table of contents 
+ */ 
+
 function generateTOC() {
-    var h1s = jQuery("h1,h2,h3");
-    var toc = jQuery("<ul></ul>");
-    for (var i = 0; i < h1s.length; i++) {
-        toc.append("<li><a href='#" + h1s.eq(i).text() + "'>" + h1s.eq(i).text() + "</a></li>");
-        generateAnchor(h1s.eq(i));
-    }
-//    jQuery("body").prepend(toc);
-
-var parsedTemplate = fluid.selfRender(jQuery("[id=toc]"), fullTree);
-
+    var headers = jQuery("h1,h2,h3");
+    var parsedTemplate = fluid.selfRender(jQuery("[id=toc]"), generateTree(headers));
 }
 
-function generateAnchor(el) {
+function insertAnchor(el) {
     var a = jQuery("<a name='" + el.text() + "' />");
     el.before(a);
 }
 
-        var fullTree = {
-            children: [
-                {ID: "toc_item:",
-                children: [
-                    {ID: "toc_anchor", value: "Amphibians"}
-                ]},
-                {ID: "toc_item:",
-                children: [
-                    {ID: "toc_anchor", value: "Mammals"}
-                ]}
-                
-            ]
-        };
-// abridged:
-// "toc_item:": [ {ID: "toc_anchor" value: "Mammals"},  {ID: "toc_anchor", value: "Amphibian"}] , .etc
-// So, the fullTree might be  {"toc_item:": [ {ID: "toc_anchor", value: "Mammals"},  {ID: "toc_anchor", value: "Amphibian"}]}
+function generateTree(els) {
+    var tree = {}, anchorList = [], i, anchorNode, heading;
 
+    for(i=0; i<els.length; i++) {
+        heading = els.eq(i);
+        insertAnchor(heading);
+        anchorNode = {ID: "toc_anchor"};
+        anchorNode.linktext = heading.text();
+        anchorNode.target = "#" + heading.text();
+        anchorList.push(anchorNode);
+    }
+
+    tree["toc_item:"] = anchorList;    
+    return tree;
+}
