@@ -15,7 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 fluid_0_8 = fluid_0_8 || {};
 
-(function (jQuery, fluid) {
+(function ($, fluid) {
     
     var deriveLightboxCellBase = function (namebase, index) {
         return namebase + "lightbox-cell:" + index + ":";
@@ -24,12 +24,12 @@ fluid_0_8 = fluid_0_8 || {};
     var addThumbnailActivateHandler = function (lightboxContainer) {
         var enterKeyHandler = function (evt) {
             if (evt.which === fluid.reorderer.keys.ENTER) {
-                var thumbnailAnchors = jQuery("a", evt.target);
+                var thumbnailAnchors = $("a", evt.target);
                 document.location = thumbnailAnchors.attr('href');
             }
         };
         
-        jQuery(lightboxContainer).keypress(enterKeyHandler);
+        $(lightboxContainer).keypress(enterKeyHandler);
     };
     
     // Custom query method seeks all tags descended from a given root with a 
@@ -89,8 +89,8 @@ fluid_0_8 = fluid_0_8 || {};
             }
         
             if (reorderform && reorderform.action) {
-                jQuery.post(reorderform.action, 
-                jQuery(reorderform).serialize(),
+                $.post(reorderform.action, 
+                $(reorderform).serialize(),
                 function (type, data, evt) { /* No-op response */ });
             }
         };
@@ -110,7 +110,7 @@ fluid_0_8 = fluid_0_8 || {};
         container = fluid.container(container);
 
         // Remove the anchors from the taborder.
-        fluid.tabindex(jQuery("a", container), -1);
+        fluid.tabindex($("a", container), -1);
         addThumbnailActivateHandler(container);
         
         containerEl = fluid.unwrap(container);
@@ -125,7 +125,7 @@ fluid_0_8 = fluid_0_8 || {};
             }
         };
         
-        jQuery.extend(true, reordererOptions, options);
+        $.extend(true, reordererOptions, options);
         
         return fluid.reorderer(container, reordererOptions);
     };

@@ -14,7 +14,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global fluid_0_8*/
 fluid_0_8 = fluid_0_8 || {};
 
-(function (fluid) {
+(function ($, fluid) {
  
     /**
      * Simple way to create a layout reorderer.
@@ -31,7 +31,7 @@ fluid_0_8 = fluid_0_8 || {};
                 modules: ".modules"
             }
         };
-        var options = jQuery.extend(true, assembleOptions, userOptions);
+        var options = $.extend(true, assembleOptions, userOptions);
         return fluid.reorderer(container, options);
     };    
-})(fluid_0_8);
+})(jQuery, fluid_0_8);

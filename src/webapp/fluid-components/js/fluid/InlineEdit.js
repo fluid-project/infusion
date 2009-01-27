@@ -325,7 +325,7 @@ fluid_0_8 = fluid_0_8 || {};
 
         // Create the edit container and pull out the textfield.
         var editContainer = $(editModeTemplate);
-        var editField = jQuery("input", editContainer);
+        var editField = $("input", editContainer);
         
         var componentContainerId = that.container.attr("id");
         // Give the container and textfield a reasonable set of ids if necessary.
@@ -404,7 +404,7 @@ fluid_0_8 = fluid_0_8 || {};
                 });
             }
         };
-        jQuery(initTooltip);
+        $(initTooltip);
         
         // Setup any registered decorators for the component.
         that.decorators = fluid.initSubcomponents(that, "componentDecorators", 
@@ -417,7 +417,7 @@ fluid_0_8 = fluid_0_8 || {};
     var setupInlineEdits = function (editables, options) {
         var editors = [];
         editables.each(function (idx, editable) {
-            editors.push(fluid.inlineEdit(jQuery(editable), options));
+            editors.push(fluid.inlineEdit($(editable), options));
         });
         
         return editors;

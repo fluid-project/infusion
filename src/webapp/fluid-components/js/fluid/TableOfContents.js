@@ -28,11 +28,11 @@ fluid_0_8 = fluid_0_8 || {};
      */ 
     
     function generateTOC(headings) {
-        var parsedTemplate = fluid.selfRender(jQuery("[id=toc]"), generateTree(headings));
+        var parsedTemplate = fluid.selfRender($("[id=toc]"), generateTree(headings));
     }
     
     function insertAnchor(el) {
-        var a = jQuery("<a name='" + el.text() + "' />");
+        var a = $("<a name='" + el.text() + "' />");
         el.before(a);
     }
     

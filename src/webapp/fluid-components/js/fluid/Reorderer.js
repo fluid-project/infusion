@@ -415,7 +415,7 @@ fluid_0_8 = fluid_0_8 || {};
             var selectables = thatReorderer.dom.fastLocate("selectables");
             for (var i = 0; i < selectables.length; ++ i) {
                 var selectable = $(selectables[i]);
-                if (!jQuery.data(selectable[0], "fluid.reorderer.selectable-initialised")) { 
+                if (!$.data(selectable[0], "fluid.reorderer.selectable-initialised")) { 
                     selectable.addClass(styles.defaultStyle);
             
                     selectables.blur(handleBlur);
@@ -430,7 +430,7 @@ fluid_0_8 = fluid_0_8 || {};
                     selectables.ariaRole(options.containerRole.item);
                     selectables.ariaState("selected", "false");
                     selectables.ariaState("disabled", "false");
-                    jQuery.data(jQuery.data(selectable[0], "fluid.reorderer.selectable-initialised", true));
+                    $.data($.data(selectable[0], "fluid.reorderer.selectable-initialised", true));
                 }
             }
             if (!thatReorderer.selectableContext) {
@@ -463,9 +463,9 @@ fluid_0_8 = fluid_0_8 || {};
             // Setup movables
             for (var i = 0; i < movables.length; i++) {
                 var item = movables[i];
-                if (!jQuery.data(item, "fluid.reorderer.movable-initialised")) { 
+                if (!$.data(item, "fluid.reorderer.movable-initialised")) { 
                     initMovable($(item));
-                    jQuery.data(item, "fluid.reorderer.movable-initialised", true)
+                    $.data(item, "fluid.reorderer.movable-initialised", true)
                 }
             }
 

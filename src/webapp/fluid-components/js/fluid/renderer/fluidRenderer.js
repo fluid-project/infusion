@@ -1123,7 +1123,7 @@ fluid_0_8 = fluid_0_8 || {};
       else {
           var elements = document.getElementsByName(name);
           var scope = fluid.findForm(node);
-          elements = jQuery.grep(elements, 
+          elements = $.grep(elements, 
             function(element) {
               if (element.name !== name) return false;
               return !scope || fluid.dom.isContainer(scope, element);
@@ -1136,13 +1136,13 @@ fluid_0_8 = fluid_0_8 || {};
         // jQuery gets this partially right, but when dealing with radio button array will
         // set all of their values to "newValue" rather than setting the checked property
         // of the corresponding control. 
-          jQuery.each(elements, function() {
+          $.each(elements, function() {
              this.checked = (newValue instanceof Array? 
-               jQuery.inArray(this.value, newValue) !== -1 : newValue === this.value);
+               $.inArray(this.value, newValue) !== -1 : newValue === this.value);
           });
       }
       else { // this part jQuery will not do - extracting value from <input> array
-          var checked = jQuery.map(elements, function(element) {
+          var checked = $.map(elements, function(element) {
               return element.checked? element.value : null;
           });
           return node.type === "radio"? checked[0] : checked;

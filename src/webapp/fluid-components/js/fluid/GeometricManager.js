@@ -16,7 +16,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var fluid_0_8 = fluid_0_8 || {};
 
-(function (jQuery, fluid) {
+(function ($, fluid) {
     
     fluid.orientation = {
         HORIZONTAL: 4,
@@ -125,12 +125,12 @@ var fluid_0_8 = fluid_0_8 || {};
     fluid.permuteDom = function (element, target, position, sourceelements, targetelements) {
         element = fluid.unwrap(element);
         target = fluid.unwrap(target);
-        var sourcei = jQuery.inArray(element, sourceelements);
+        var sourcei = $.inArray(element, sourceelements);
         if (sourcei === -1) {
             fluid.fail("Error in permuteDom: source element " + fluid.dumpEl(element) 
                + " not found in source list " + fluid.dumpEl(sourceelements));
         }
-        var targeti = jQuery.inArray(target, targetelements);
+        var targeti = $.inArray(target, targetelements);
         if (targeti === -1) {
             fluid.fail("Error in permuteDom: target element " + fluid.dumpEl(target) 
                + " not found in source list " + fluid.dumpEl(targetelements));
@@ -235,11 +235,11 @@ var fluid_0_8 = fluid_0_8 || {};
         var lastClosest;
         
         function cacheKey(element) {
-            return jQuery(element).data("");
+            return $(element).data("");
         }
         
         function sentinelizeElement(targets, sides, cacheelem, fc, disposition, clazz) {
-            var elemCopy = jQuery.extend(true, {}, cacheelem);
+            var elemCopy = $.extend(true, {}, cacheelem);
             elemCopy.rect[sides[fc]] = elemCopy.rect[sides[1 - fc]] + (fc? 1: -1);
             elemCopy.rect[sides[1 - fc]] = (fc? -1 : 1) * SENTINEL_DIMENSION;
             elemCopy.position = disposition === fluid.position.INSIDE?
@@ -249,8 +249,8 @@ var fluid_0_8 = fluid_0_8 || {};
         }
         
         function splitElement(targets, sides, cacheelem, disposition, clazz1, clazz2) {
-            var elem1 = jQuery.extend(true, {}, cacheelem);
-            var elem2 = jQuery.extend(true, {}, cacheelem);
+            var elem1 = $.extend(true, {}, cacheelem);
+            var elem2 = $.extend(true, {}, cacheelem);
             var midpoint = (elem1.rect[sides[0]] + elem1.rect[sides[1]]) / 2;
             elem1.rect[sides[1]] = midpoint; elem1.position = fluid.position.BEFORE;
             elem2.rect[sides[0]] = midpoint; elem2.position = fluid.position.AFTER;
@@ -290,7 +290,7 @@ var fluid_0_8 = fluid_0_8 || {};
                     if (cacheelem.clazz !== "hidden" && mapper) {
                         cacheelem.clazz = mapper(element);
                     }
-                    cache[jQuery.data(element)] = cacheelem;
+                    cache[$.data(element)] = cacheelem;
                     var backClass = getRelativeClass(thisInfo.elements, j, fluid.position.BEFORE, cacheelem.clazz, mapper); 
                     var frontClass = getRelativeClass(thisInfo.elements, j, fluid.position.AFTER, cacheelem.clazz, mapper); 
                     if (disposition === fluid.position.INSIDE) {
@@ -334,7 +334,7 @@ var fluid_0_8 = fluid_0_8 || {};
             lastClosest = null;
             displacementX = dX;
             displacementY = dY;
-            jQuery("").bind("mousemove.fluid-dropManager", that.mouseMove);
+            $("").bind("mousemove.fluid-dropManager", that.mouseMove);
         };
         
         that.lastPosition = function() {
@@ -342,7 +342,7 @@ var fluid_0_8 = fluid_0_8 || {};
         };
         
         that.endDrag = function() {
-            jQuery("").unbind("mousemove.fluid-dropManager");
+            $("").unbind("mousemove.fluid-dropManager");
         };
         
         that.mouseMove = function(evt) {
@@ -428,7 +428,7 @@ var fluid_0_8 = fluid_0_8 || {};
         function getRelativeElement(element, direction, elements) {
            var folded = fluid.directionSign(direction);
       
-           var index = jQuery(elements).index(element) + folded;
+           var index = $(elements).index(element) + folded;
            if (index < 0) {
                index += elements.length;
                }
@@ -460,7 +460,7 @@ var fluid_0_8 = fluid_0_8 || {};
             var elements = position === fluid.position.INSIDE? [owner.parentElement] 
               : owner.elements;
             if (!includeLocked && lastGeometry.elementMapper) {
-                   elements = jQuery.makeArray(elements);
+                   elements = $.makeArray(elements);
                    fluid.remove_if(elements, function(element) {
                        return lastGeometry.elementMapper(element) === "locked";
                    });

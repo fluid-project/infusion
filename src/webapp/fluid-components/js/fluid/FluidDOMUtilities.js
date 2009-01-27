@@ -156,12 +156,12 @@ var fluid_0_8 = fluid_0_8 || {};
      * reevaluated if the node were reattached to the document. 
      */
     fluid.dom.cleanseScripts = function (element) {
-        var cleansed = jQuery.data(element, fluid.dom.cleanseScripts.MARKER);
+        var cleansed = $.data(element, fluid.dom.cleanseScripts.MARKER);
         if (!cleansed) {
             fluid.dom.iterateDom(element, function (node) {
                 return (node.tagName.toLowerCase() === "script");
             });
-            jQuery.data(element, fluid.dom.cleanseScripts.MARKER, true);
+            $.data(element, fluid.dom.cleanseScripts.MARKER, true);
         }
     };  
     fluid.dom.cleanseScripts.MARKER = "fluid-scripts-cleansed";

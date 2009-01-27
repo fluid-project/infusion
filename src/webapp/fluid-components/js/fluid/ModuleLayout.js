@@ -18,7 +18,7 @@ fluid_0_8 = fluid_0_8 || {};
 
 fluid.moduleLayout = fluid.moduleLayout || {};
 
-(function (jQuery, fluid) {
+(function ($, fluid) {
 
     /**
      * Calculate the location of the item and the column in which it resides.
@@ -28,7 +28,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
       var findColumnAndItemIndices = function (item, layout) {
           return fluid.find(layout.columns,
               function(column, colIndex) {
-                  var index = jQuery.inArray(item, column.elements);
+                  var index = $.inArray(item, column.elements);
                   return index === -1? null : {columnIndex: colIndex, itemIndex: index};
                   }, {columnIndex: -1, itemIndex: -1});
         };
@@ -77,7 +77,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
             function(column) {
                 return {
                     container: column,
-                    elements: jQuery.makeArray(portlets.filter(function() {
+                    elements: $.makeArray(portlets.filter(function() {
                     	  // is this a bug in filter? would have expected "this" to be 1st arg
                         return fluid.dom.isContainer(column, this);
                     }))
@@ -120,8 +120,8 @@ fluid.moduleLayout = fluid.moduleLayout || {};
     
     var defaultOnShowKeyboardDropWarning = function (item, dropWarning) {
         if (dropWarning) {
-            var offset = jQuery(item).offset();
-            dropWarning = jQuery(dropWarning);
+            var offset = $(item).offset();
+            dropWarning = $(dropWarning);
             dropWarning.css("position", "absolute");
             dropWarning.css("top", offset.top);
             dropWarning.css("left", offset.left);
@@ -163,7 +163,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
 
         function isLocked(item) {
             var lockedModules = options.selectors.lockedModules? dom.fastLocate("lockedModules") : [];
-            return jQuery.inArray(item, lockedModules) !== -1;
+            return $.inArray(item, lockedModules) !== -1;
             }
 
         that.getRelativePosition  = 
@@ -182,7 +182,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                 var column = layout.columns[col];
                 var thisEls = {
                     orientation: options.orientation,
-                    elements: jQuery.makeArray(column.elements),
+                    elements: $.makeArray(column.elements),
                     parentElement: column.container
                 };
               //  fluid.log("Geometry col " + col + " elements " + fluid.dumpEl(thisEls.elements) + " isLocked [" + 

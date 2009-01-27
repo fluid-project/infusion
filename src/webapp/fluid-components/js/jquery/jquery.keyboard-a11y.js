@@ -48,7 +48,7 @@ var fluid = fluid || fluid_0_8;
             }
             var args = [this];
             if (arguments.length === 2) {
-                args = args.concat(jQuery.makeArray(arguments[1]));
+                args = args.concat($.makeArray(arguments[1]));
             }
             var ret = move.apply(null, args);
             this.that = function() {
@@ -58,7 +58,7 @@ var fluid = fluid || fluid_0_8;
             return !ret || type === "string" || type === "number" || type === "boolean"
               || ret && ret.length !== undefined? ret: this;
         };
-        jQuery.fn[name] = togo;
+        $.fn[name] = togo;
         return togo;
     };
 
@@ -107,7 +107,7 @@ var fluid = fluid || fluid_0_8;
            return false;
        }
 
-       return jQuery(elements[0]).is("a, input, button, select, area, textarea, object");
+       return $(elements[0]).is("a, input, button, select, area, textarea, object");
     };
     
     var getValue = function(elements) {
@@ -205,7 +205,7 @@ var fluid = fluid || fluid_0_8;
             });
             setData(target, ENABLEMENT_KEY, state);
         }
-    }
+    };
     
 
 // Keyboard navigation
