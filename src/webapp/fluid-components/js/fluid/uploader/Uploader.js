@@ -72,6 +72,7 @@ fluid_0_8 = fluid_0_8 || {};
     
     var removeFileProgress = function (that, file) {
         var fileProgressor = progressorForFile(that, file);
+        if (!fileProgressor) return;
         var rowProgressor = fileProgressor.displayElement;
         rowProgressor.remove();
     };
