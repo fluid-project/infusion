@@ -1,0 +1,77 @@
+	.toggleAnchor{
+		border:1px solid #cef;
+		background:#cef  !important;
+		padding:5px!important;
+		cursor:pointer
+	}
+	.toggleAnchor:hover,	.toggleAnchorOpen:hover{
+		border:1px solid #9cf;
+	}
+
+	.toggleAnchorOpen{
+		border:1px solid #cef;
+		background:#cef !important;
+		padding:5px!important;
+		cursor:pointer
+	}
+	.toggledContent{
+		margin:0;
+		border:2px solid #cef;
+		border-top:none;
+		padding: 1em
+	}
+	.toggledContent h4{
+		color:#000 !important;
+		width:40em;
+		margin:.5em 0 !important;
+		padding:.3em 0;
+		border-bottom:2px solid #ccc
+	}
+#todo-list tr {
+    width: 100%;
+	display:table;
+ 
+}
+
+/*marks a drop zone*/
+.orderable-drop-marker {
+		background: url(../images/drop.gif) center left no-repeat;
+	 height: 30px;
+	 margin:0 1em;
+}
+/*hover over a selectable item*/
+.orderable-hover {
+    cursor: move;
+		background:#eee !important
+ }
+ .orderable-hover {
+    cursor: move;
+ }
+/*first cell*/
+.orderable-hover td:first-child {
+}
+/*left behind */ 
+ .orderable-dragging {
+		background:#eee;
+    color:#555 !important
+}
+
+/*item being dragged*/
+.orderable-avatar {
+		background:#BBEEAA !important;
+    opacity: 0.55;
+}
+
+.orderable-selected {
+	background:#ffc;
+	outline:1px solid red
+}
+
+.orderable-dragging {
+	outline:1px solid #000
+}
+
+
+.recentMove{
+	background:orange
+	}
