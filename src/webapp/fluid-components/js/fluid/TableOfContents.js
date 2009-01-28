@@ -22,7 +22,6 @@ fluid_0_8 = fluid_0_8 || {};
      *  - retrieve the headings in document order
      *  - indent based on heading level
      *  - move the template out into UIOptions.html
-     *  - write tests 
      *  - get and implement a design for the table of contents 
      *  - integrate table of contents with UI Options
      *  - make the toc template pluggable

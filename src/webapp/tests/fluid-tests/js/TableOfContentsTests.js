@@ -26,10 +26,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
         };
         
         tests.test("TOC Creation", function () {
-            jqUnit.expect(5);
+            jqUnit.expect(6);
             fluid.tableOfContents("#main");
             
             var toc = $("#toc");
+            jqUnit.isVisible("Table of contents should be visible", toc);
+
             var items = $("li", toc);
             jqUnit.assertEquals("10 headings", 10, items.length);
             
@@ -38,6 +40,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
             testTocItem(items[9], "Grouse");
         });
         
-//        tests.test("Anchor insertion", function () {      
+        tests.test("Anchor insertion", function () {
+            jqUnit.expect(5);
+            fluid.tableOfContents("#main");
+
+            var anchors = $("a", "#amphibians-div");
+            jqUnit.assertEquals("5 headings in the amphibians section", 5, anchors.length);
+            
+            var anchor = anchors.eq(0);
+            jqUnit.assertEquals("Name is Amphibians", "Amphibians", anchor.attr("name"));         
+            jqUnit.assertEquals("No text", "", anchor.text());
+            jqUnit.assertUndefined("No href", anchor.attr("href"));
+            jqUnit.assertEquals("The next element in the DOM is the heading", "amphibians", anchor.next().attr("id"));
+        });
     });
 })(jQuery);
