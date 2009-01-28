@@ -1,0 +1,18 @@
+html {
+	height:100%;
+}
+body {
+	height:100%;
+	background:#fff url('../images/960grid_no_ratios.png') repeat left 51px;
+}
+.options {
+	background:#FFFFFF;
+	padding:17px 0;	
+}
+
+.test_containers div {
+	background-color:#999;
+	text-align:center;
+	color:#fff;
+	border-bottom:1px solid #FFFFFF;
+}
