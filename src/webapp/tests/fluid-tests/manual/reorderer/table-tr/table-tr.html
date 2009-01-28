@@ -1,0 +1,112 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+<head>
+<title>Reorder Table</title>
+<link href="../../../../sample-code/reorderer/markup-examples.css"
+  type="text/css" rel="stylesheet" media="all" />
+
+<!--  These are the required javascript modules for the Reorderer and can be replaced with Fluid-all.js -->
+<script type="text/javascript" src="../../../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
+<script type="text/javascript" src="../../../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+<script type="text/javascript" src="../../../../../fluid-components/js/jquery/ui.core.js"></script>
+<script type="text/javascript" src="../../../../../fluid-components/js/jquery/ui.draggable.js"></script>
+<script type="text/javascript" src="../../../../../fluid-components/js/jquery/jARIA.js"></script>
+<script type="text/javascript" src="../../../../../fluid-components/js/fluid/Fluid.js"></script>
+<script type="text/javascript" src="../../../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
+<script type="text/javascript" src="../../../../../fluid-components/js/fluid/GeometricManager.js"></script>
+<script type="text/javascript" src="../../../../../fluid-components/js/fluid/Reorderer.js"></script>
+
+<link href="tool_base.css" type="text/css" rel="stylesheet" media="all" />
+<link href="tool.css" type="text/css" rel="stylesheet" media="all" />
+
+    <style type="text/css">
+      @import url("assignment.css");
+    </style>
+
+</head>
+<body>
+<h1>Bare Table reordering</h1>
+
+<table cellspacing="0" border="0"
+  summary="Table contains a list of announcements. It is five or six columns wide and each row contains a single announcement. Column one indicates if the announcement has an attachment, column two contains the title of the announcement, column three has the name of the author, column four shows the recipient, column five contains the date and time of publication, column six, if present, contains a checkbox - selecting it will mean you want to remove this announcement. The following row will contain announcement text if site owner has set it to be so."
+  class="listHier lines nolines" id="todo-list"
+  activedescendent="myUniquePrefix.orderable1" role="wairole:list"
+  multiselectable="false" readonly="false" disabled="false" tabindex="0">
+  <tbody>
+    <tr>
+      <th class="attach" id="numberField" />
+      <th class="attach" id="attach" />
+      <th id="subject">Subject</th>
+      <th id="author">From</th>
+      <th id="channel">For</th>
+      <th id="date">Date</th>
+      <th id="releaseDate">Beginning Date</th>
+      <th id="retractDate">Ending Date</th>
+      <th />
+    </tr>
+
+
+
+    <tr class="orderable-drop-marker" style="display: none;" />
+    <tr id="myUniquePrefix.orderable1" tabindex="-1"
+      role="wairole:listitem" selected="false" disabled="false"
+      class="ui-draggable ui-droppable orderable-default"
+      grab="supported" dropeffect="none">
+      <td style="white-space: nowrap;" class="attach"
+        headers="numberField"><input type="text" id="index1"
+        value="1" size="3" /> <input type="hidden" value="1"
+        id="holder1" size="3" /></td>
+      <td class="attach" headers="attach"> </td>
+      <td headers="subject">
+      <h4><a title="View announcement zzz"
+        href="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?itemReference=/announcement/msg/545e32b6-62ca-4595-b4b4-7719e740a048/main/a4e088be-059c-4920-8fdd-e7fe8b0aaeb5&panel=Main&sakai_action=doShowmetadata">
+      zzz</a></h4>
+      </td>
+      <td headers="author">Sakai Administrator</td>
+      <td>site</td>
+      <td headers="date">Dec 12, 2008 5:07 pm</td>
+      <td headers="releaseDate"> </td>
+      <td headers="retractDate"> </td>
+      <td><input type="checkbox" class="skip"
+        value="/announcement/msg/545e32b6-62ca-4595-b4b4-7719e740a048/main/a4e088be-059c-4920-8fdd-e7fe8b0aaeb5"
+        name="selectedMembers2" id="check-1" title="Select to remove" />
+      </td>
+    </tr>
+    <tr id="myUniquePrefix.orderable2" tabindex="-1"
+      role="wairole:listitem" selected="false" disabled="false"
+      class="ui-draggable ui-droppable orderable-default"
+      grab="supported" dropeffect="none">
+      <td style="white-space: nowrap;" class="attach"
+        headers="numberField"><input type="text" id="index2"
+        value="2" size="3" /> <input type="hidden" value="2"
+        id="holder2" size="3" /></td>
+      <td class="attach" headers="attach"> </td>
+      <td headers="subject">
+      <h4><a title="View announcement aaa"
+        href="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?itemReference=/announcement/msg/545e32b6-62ca-4595-b4b4-7719e740a048/main/152e0abf-dd26-4b0e-b73a-9fa9943f2b3d&panel=Main&sakai_action=doShowmetadata">
+      aaa</a></h4>
+      </td>
+      <td headers="author">Sakai Administrator</td>
+      <td>site</td>
+      <td headers="date">Dec 12, 2008 5:07 pm</td>
+      <td headers="releaseDate"> </td>
+      <td headers="retractDate"> </td>
+      <td><input type="checkbox" class="skip"
+        value="/announcement/msg/545e32b6-62ca-4595-b4b4-7719e740a048/main/152e0abf-dd26-4b0e-b73a-9fa9943f2b3d"
+        name="selectedMembers2" id="check-2" title="Select to remove" />
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+    <script type="text/javascript">
+        fluid.reorderList("#todo-list", {
+            selectors: {
+                movables: "[id^=myUniquePrefix]"
+            }
+        });
+    </script>
+</body>
+</html>
