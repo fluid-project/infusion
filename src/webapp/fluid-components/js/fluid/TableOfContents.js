@@ -25,37 +25,39 @@ fluid_0_8 = fluid_0_8 || {};
      *  - write tests 
      *  - get and implement a design for the table of contents 
      *  - integrate table of contents with UI Options
+     *  - make the toc template pluggable
      */ 
     
-    function generateTOC(headings) {
-        var parsedTemplate = fluid.selfRender($("[id=toc]"), generateTree(headings));
-    }
     
-    function insertAnchor(el) {
+    var insertAnchor = function (el) {
         var a = $("<a name='" + el.text() + "' />");
         el.before(a);
-    }
+    };
     
-    function generateTree(els) {
-        var tree = {}, anchorList = [], i, anchorNode, heading;
+    var generateTree = function (headings) {
+        var i, tree = {}, tocItems = [], tocItem, heading;
     
-        for(i=0; i<els.length; i++) {
-            heading = els.eq(i);
+        for (i = 0; i < headings.length; i++) {
+            heading = headings.eq(i);
             insertAnchor(heading);
-            anchorNode = {ID: "toc_anchor"};
-            anchorNode.linktext = heading.text();
-            anchorNode.target = "#" + heading.text();
-            anchorList.push(anchorNode);
+            tocItem = {ID: "toc_anchor"};
+            tocItem.linktext = heading.text();
+            tocItem.target = "#" + heading.text();
+            tocItems.push(tocItem);
         }
     
-        tree["toc_item:"] = anchorList;    
+        tree["toc_item:"] = tocItems;    
         return tree;
-    }
+    };
     
+    var buildTOC = function (headings) {
+        var parsedTemplate = fluid.selfRender($("[id=toc]"), generateTree(headings));
+    };
+
     fluid.tableOfContents = function (container, options) {
         var that = fluid.initView("fluid.tableOfContents", container, options);
-        generateTOC(that.locate("headings"));
-    }
+        buildTOC(that.locate("headings"));
+    };
     
     fluid.defaults("fluid.tableOfContents", {  
         selectors: {
