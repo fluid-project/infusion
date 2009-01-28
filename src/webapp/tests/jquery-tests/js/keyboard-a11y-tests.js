@@ -401,10 +401,10 @@
     jqUnit.test("activate()", function () {
         // Tests that we can programmatically activate elements with the default handler.
         var menu = createActivatableMenu();
-        menu.items.fluid("activate", getFirstMenuItem());
+        getFirstMenuItem().fluid("activate");
         jqUnit.assertEquals("The menu.activatedItem should be set to the first item.", getFirstMenuItem()[0], menu.activatedItem);
 
-        menu.items.fluid("activate", getThirdMenuItem());
+        getThirdMenuItem().fluid("activate");
         jqUnit.assertEquals("The menu.activatedItem should be set to the third item.", getThirdMenuItem()[0], menu.activatedItem);
     });
 
