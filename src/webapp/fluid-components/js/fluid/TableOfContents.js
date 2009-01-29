@@ -19,7 +19,6 @@ fluid_0_8 = fluid_0_8 || {};
 
     /*
      *  TODO: 
-     *  - retrieve the headings in document order
      *  - indent based on heading level
      *  - move the template out into UIOptions.html
      *  - get and implement a design for the table of contents 
@@ -60,7 +59,7 @@ fluid_0_8 = fluid_0_8 || {};
     
     fluid.defaults("fluid.tableOfContents", {  
         selectors: {
-            headings: "h1,h2,h3"
+            headings: ":header"
         }
     });
 

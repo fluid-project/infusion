@@ -26,7 +26,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         };
         
         tests.test("TOC Creation", function () {
-            jqUnit.expect(6);
+            jqUnit.expect(22);
             fluid.tableOfContents("#main");
             
             var toc = $("#toc");
@@ -36,7 +36,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("10 headings", 10, items.length);
             
             testTocItem(items[0], "Amphibians");
-            
+            testTocItem(items[1], "Toads");
+            testTocItem(items[2], "Natterjack Toads");
+            testTocItem(items[3], "Salamander");
+            testTocItem(items[4], "Newt");
+            testTocItem(items[5], "Birds");
+            testTocItem(items[6], "Anseriformes");
+            testTocItem(items[7], "Ducks");
+            testTocItem(items[8], "Galliformes");            
             testTocItem(items[9], "Grouse");
         });
         
