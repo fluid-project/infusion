@@ -10,7 +10,15 @@
 		<script type="text/javascript" src="js/toc.js"></script>
 		
 		<script type="text/javascript">
-			var currentTest = 2;
+            // programmatic coloring - access to advanced selectors + requires less maintenance than hardcoded classes
+            $().ready(function(){
+                $('.test_containers > div').css({
+                    'background-color': '#000',
+                    'border-bottom': '1px solid #fff'
+                });
+                $('div[class=fl-col]:odd').css('background-color','#666');
+                $('.fl-col-fixed').css('background-color','#666');                
+            });            
 		</script>
 
 		<title>Test Containers</title>
@@ -48,17 +56,17 @@
 			</div>
 
 
-			<div class="fl-col-mixed-300 noBg">
+			<div class="fl-col-mixed-300">
 				<div class="fl-col-fixed fl-force-left">300px wide fixed column</div>
 				<div class="fl-col-flex">flexible column</div>
 			</div>
-<!--
-			<div class="fl-col-mixed-300 noBg">
+
+			<div class="fl-col-mixed-300">
 				<div class="fl-col-fixed fl-force-left">300px wide fixed column</div>
 				<div class="fl-col-fixed fl-force-right">300px wide fixed column</div>
 				<div class="fl-col-flex">flexible column</div>
 			</div>
--->
+
 
 		</div>		
 

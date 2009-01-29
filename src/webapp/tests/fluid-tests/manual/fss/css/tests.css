@@ -9,16 +9,15 @@ body {
 	background:#FFFFFF;
 	padding:17px 20px;	
 	text-align:right;
+    margin-bottom:50px;
 }
 .options h1 {float:left;margin:0; padding:0;}
 
-
+.test_containers {
+    background-color:#c00;
+}
 .test_containers div {
 	background-color:#999;
 	text-align:center;
 	color:#fff;
-	margin-bottom:1px;
-}
-.test_containers div.noBg {
-	background-color:transparent;
 }

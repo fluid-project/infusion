@@ -1,13 +1,18 @@
 $().ready(function(){
+    // parse the # from the filename
+    var uri = (""+window.location).split(".");
+    var currentTest = uri[uri.length-2];
+    
 	var FSSTestTOC = {
 		tests: [
-			{title: "FSS.Layout.Containers", id:1},
-			{title: "FSS.Layout.Containers", id:2},
+			{title: "FSS.Layout.Containers", id:1, note: "Each container should be as wide as the text inside says"},
+			{title: "FSS.Layout.Containers", id:2, note: "Each container should behave as the text inside says. May require adjusting the browser width."},
 			{title: "FSS.Layout.Advanced", id:1},
 			{title: "FSS.Layout.Advanced", id:2},
 			{title: "FSS.Layout.Advanced", id:3}
 		]
 	}
+
 	var groupTotal = 0, next = '#', prev = '#', thisTest = currentTest-1;
 	$.each(FSSTestTOC.tests, function(i){
 		groupTotal = (FSSTestTOC.tests[i].title === FSSTestTOC.tests[thisTest].title) ? groupTotal + 1 : groupTotal;

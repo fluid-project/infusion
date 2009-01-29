@@ -94,9 +94,9 @@ Layout Helpers
 
 .fl-col-flex2, .fl-col-flex3, .fl-col-flex4, .fl-col-flex5 {overflow:auto; zoom:1;}
 .fl-col {float:left; display:inline; overflow:auto;}
-.fl-col-flex5 .fl-col {width:18.9%; margin:0 0.25%; padding:0 0.25%}
+.fl-col-flex5 .fl-col {width:19%; margin:0 0.25%; padding:0 0.25%}
 .fl-col-flex4 .fl-col {width:24%; margin:0 0.25%; padding:0 0.25%}
-.fl-col-flex3 .fl-col {width:32%; margin:0 0.25%; padding:0 0.25%}
+.fl-col-flex3 .fl-col {width:32.33%; margin:0 0.25%; padding:0 0.25%}
 .fl-col-flex2 .fl-col {width:49%; margin:0 0.25%; padding:0 0.25%}
 
 /* CHANGE TO LAYOUT not COL since this will become a layout helper */

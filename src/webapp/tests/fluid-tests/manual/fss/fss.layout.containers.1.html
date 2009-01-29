@@ -10,7 +10,13 @@
 		<script type="text/javascript" src="js/toc.js"></script>
 
 		<script type="text/javascript">
-			var currentTest = 1;
+            // programmatic coloring - access to advanced selectors + requires less maintenance than hardcoded classes
+            $().ready(function(){
+                $('.test_containers > div').css({
+                    'border-bottom': '1px solid #fff'
+                });
+            });            
+
 		</script>
 		
 		
