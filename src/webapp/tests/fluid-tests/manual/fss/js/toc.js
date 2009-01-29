@@ -18,10 +18,10 @@ $().ready(function(){
 		groupTotal = (FSSTestTOC.tests[i].title === FSSTestTOC.tests[thisTest].title) ? groupTotal + 1 : groupTotal;
 	});
 	if (currentTest < FSSTestTOC.tests.length){
-		next = FSSTestTOC.tests[thisTest+1].title.toLowerCase() + '.' + (FSSTestTOC.tests[thisTest+1].id) + '.html';
+		next = FSSTestTOC.tests[thisTest+1].title.toLowerCase() + '.' + (currentTest+1) + '.html';
 	}
 	if (currentTest > 1){
-		prev = FSSTestTOC.tests[thisTest-1].title.toLowerCase() + '.' + (FSSTestTOC.tests[thisTest-1].id) + '.html';
+		prev = FSSTestTOC.tests[thisTest-1].title.toLowerCase() + '.' + (currentTest-1) + '.html';
 	}
 	
 	// Set links
