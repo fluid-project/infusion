@@ -77,8 +77,12 @@ fluid_0_8 = fluid_0_8 || {};
         styles: {
             invitation: null // Override because it causes problems with flickering. Help?
         },
-        displayAccessor: "fluid.inlineEdit.richTextViewAccessor",
-        editAccessor: "fluid.inlineEdit.tinyMCE.viewAccessor",
+        displayAccessor: {
+            type: "fluid.inlineEdit.richTextViewAccessor"
+        },
+        editAccessor: {
+            type: "fluid.inlineEdit.tinyMCE.viewAccessor"
+        },
         lazyEditView: true,
         editModeRenderer: fluid.inlineEdit.tinyMCE.editModeRenderer
     });
@@ -140,8 +144,12 @@ fluid_0_8 = fluid_0_8 || {};
             invitation: null // Override because it causes problems with flickering. Help?
         },
       
-        displayAccessor: "fluid.inlineEdit.richTextViewAccessor",
-        editAccessor: "fluid.inlineEdit.FCKEditor.viewAccessor",
+        displayAccessor: {
+            type: "fluid.inlineEdit.richTextViewAccessor"
+        },
+        editAccessor: {
+            type: "fluid.inlineEdit.FCKEditor.viewAccessor"
+        },
         lazyEditView: true,
         editModeRenderer: fluid.inlineEdit.FCKEditor.editModeRenderer
     });

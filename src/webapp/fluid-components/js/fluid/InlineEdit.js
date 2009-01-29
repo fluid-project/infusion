@@ -600,13 +600,21 @@ fluid_0_8 = fluid_0_8 || {};
         // be inferred from the edit element tag type.
         submitOnEnter: undefined,
         
-        displayAccessor: "fluid.inlineEdit.standardAccessor",
+        displayAccessor: {
+            type: "fluid.inlineEdit.standardAccessor"
+        },
         
-        displayView: "fluid.inlineEdit.standardDisplayView",
+        displayView: {
+            type: "fluid.inlineEdit.standardDisplayView"
+        },
         
-        editAccessor: "fluid.inlineEdit.standardAccessor",
+        editAccessor: {
+            type: "fluid.inlineEdit.standardAccessor"
+        },
         
-        editView: "fluid.inlineEdit.standardEditView",
+        editView: {
+            type: "fluid.inlineEdit.standardEditView"
+        },
         
         editModeRenderer: defaultEditModeRenderer,
         

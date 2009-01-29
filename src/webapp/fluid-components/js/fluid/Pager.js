@@ -212,9 +212,13 @@ fluid_0_8 = fluid_0_8 || {};
     
     fluid.defaults("fluid.pager.pagerBar", {
             
-       previousNext: "fluid.pager.previousNext",
+       previousNext: {
+           type: "fluid.pager.previousNext"
+       },
       
-       pageList: "fluid.pager.directPageList",
+       pageList: {
+           type: "fluid.pager.directPageList"
+       },
         
        selectors: {
            pageLinks: ".page-link",
@@ -339,11 +343,15 @@ fluid_0_8 = fluid_0_8 || {};
             message: "%first-%last of %total items"
         }},
         
-        pageSize: "fluid.pager.directPageSize",
+        pageSize: {
+            type: "fluid.pager.directPageSize"
+        },
         
         modelFilter: fluid.pager.directModelFilter,
         
-        bodyRenderer: "fluid.emptySubcomponent",
+        bodyRenderer: {
+            type: "fluid.emptySubcomponent"
+        },
         
         model: {
             pageIndex: undefined,

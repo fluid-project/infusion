@@ -621,7 +621,9 @@ fluid_0_8 = fluid_0_8 || {};
         },
         avatarCreator: defaultAvatarCreator,
         keysets: fluid.reorderer.defaultKeysets,
-        layoutHandler: "fluid.listLayoutHandler",
+        layoutHandler: {
+            type: "fluid.listLayoutHandler"
+        },
         
         events: {
             onShowKeyboardDropWarning: null,
