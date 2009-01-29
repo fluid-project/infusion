@@ -30,16 +30,25 @@ fluid_0_8 = fluid_0_8 || {};
         pageLink.addClass(pageListThat.options.styles.currentPage); 
 
 
-    };
+    }
     
     function bindLinkClick(link, events, eventArg) {
        link.unbind("click.fluid.pager");
-       link.bind("click.fluid.pager", function() {events.initiatePageChange.fire(eventArg)});
+       link.bind("click.fluid.pager", function() {events.initiatePageChange.fire(eventArg);});
     }
     
+    // 10 -> 1, 11 -> 2
+    function computePageCount(model) {
+        model.pageCount = Math.floor((model.totalRange - 1)/ model.pageSize) + 1;      
+    }
+    
+    function computePageLimit(model) {
+        return Math.min(model.totalRange, (model.pageIndex + 1)*model.pageSize);
+    }
+
     fluid.pager = function() {
         return fluid.pagerImpl.apply(null, arguments);
-    }
+    };
     
     fluid.pager.directPageList = function (container, events, options) {
         var that = fluid.initView("fluid.pager.directPageList", container, options);
@@ -96,15 +105,15 @@ fluid_0_8 = fluid_0_8 || {};
               ID: "page-link:",
               value: page + 1,
               decorators: {
-                jQuery: ["click", function() {events.initiatePageChange.fire({pageIndex: page})}]
+                jQuery: ["click", function() {events.initiatePageChange.fire({pageIndex: page});}]
               } 
-            }
+            };
         }
         var root = that.locate("root");
         var template = fluid.selfRender(root, {}, renderOptions);
         events.onModelChange.addListener(
             function (newModel, oldModel) {
-                if (!oldModel || newModel.pageCount != oldModel.pageCount) {
+                if (!oldModel || newModel.pageCount !== oldModel.pageCount) {
                     var pages = that.options.pageStrategy(newModel.pageCount);
                     var pageTree = fluid.transform(pages, pageToComponent);
                     pageTree[pageTree.length - 1].value = pageTree[pageTree.length - 1].value + strings.last;
@@ -135,7 +144,7 @@ fluid_0_8 = fluid_0_8 || {};
             that.previous.removeClass(options.styles.disabled);
         }
         
-        if (newModel.pageIndex == newModel.pageCount - 1) {
+        if (newModel.pageIndex === newModel.pageCount - 1) {
             that.next.addClass(options.styles.disabled);
         } else {
             that.next.removeClass(options.styles.disabled);
@@ -198,7 +207,7 @@ fluid_0_8 = fluid_0_8 || {};
                     }
                 }
             }
-        }
+        };
     };
     
     fluid.defaults("fluid.pager.pagerBar", {
@@ -219,15 +228,6 @@ fluid_0_8 = fluid_0_8 || {};
        }
     });
 
-    // 10 -> 1, 11 -> 2
-    function computePageCount(model) {
-        model.pageCount = Math.floor((model.totalRange - 1)/ model.pageSize) + 1;      
-    }
-    
-    function computePageLimit(model) {
-        return Math.min(model.totalRange, (model.pageIndex + 1)*model.pageSize);
-    }
-
     fluid.pager.summary = function (dom, options) {
         var node = dom.locate("summary");
         return {
@@ -245,7 +245,7 @@ fluid_0_8 = fluid_0_8 || {};
                 }
             }
         };
-    }
+    };
     
     fluid.pager.directPageSize = function (that) {
         var node = that.locate("pageSize");
@@ -276,7 +276,7 @@ fluid_0_8 = fluid_0_8 || {};
                if (newModel.pageIndex >= newModel.pageCount) {
                    newModel.pageIndex = newModel.pageCount - 1;
                }
-               if (newModel.pageIndex !== that.model.pageIndex || newModel.pageSize != that.model.pageSize) {
+               if (newModel.pageIndex !== that.model.pageIndex || newModel.pageSize !== that.model.pageSize) {
                    that.events.onModelChange.fire(newModel, that.model, that);
                    fluid.model.copyModel(that.model, newModel);
                }            
