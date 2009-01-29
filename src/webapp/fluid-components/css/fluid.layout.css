@@ -2,26 +2,40 @@
 Generic containers for columns and layouts
 =============================================
  */
+
+/* Container Utilities*/
+.fl-fix {overflow: auto; zoom:1;}
+.fl-push {clear:both;}
+
 /* Container alignment */
 .fl-force-right {float:right; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
 .fl-force-left {float:left; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
 .fl-centered {margin-left:auto; margin-right:auto;}
 
 /* Generic container, proxy for other container effects */
-.fl-fix {overflow: auto; zoom:1;}
 .fl-container {}
+
 /* Fixed width containers */
-.fl-container-100 {width: 100px;}
-.fl-container-150 {width: 150px;}
-.fl-container-200 {width: 200px;}
-.fl-container-250 {width: 250px;}
-.fl-container-300 {width: 300px;}
-.fl-container-400 {width: 400px;}
-.fl-container-500 {width: 500px;}
-.fl-container-600 {width: 600px;}
-.fl-container-700 {width: 700px;}
-.fl-container-750 {width: 750px;}
-.fl-container-950 {width: 950px;}
+.fl-container-50 {width: 50px;} 
+.fl-container-100 {width: 100px;} 
+.fl-container-150 {width: 150px;} 
+.fl-container-200 {width: 200px;} 
+.fl-container-250 {width: 250px;} 
+.fl-container-300 {width: 300px;} 
+.fl-container-350 {width: 350px;} 
+.fl-container-400 {width: 400px;} 
+.fl-container-450 {width: 450px;} 
+.fl-container-500 {width: 500px;} 
+.fl-container-550 {width: 550px;} 
+.fl-container-600 {width: 600px;} 
+.fl-container-650 {width: 650px;} 
+.fl-container-700 {width: 700px;} 
+.fl-container-750 {width: 750px;} 
+.fl-container-800 {width: 800px;} 
+.fl-container-850 {width: 850px;} 
+.fl-container-900 {width: 900px;} 
+.fl-container-950 {width: 950px;} 
+.fl-container-1000 {width: 1000px;} 
 
 /* Flex width containers */
 .fl-container-auto {width: auto;}
@@ -74,13 +88,12 @@ Generic containers for columns and layouts
 Layout Helpers
 =============================================
 */
-/*
- * Columns: A quick column grid system
- */
+/* Columns: A quick column grid system */
 /* Flex width columns (containers with margins and padding) */
-/* magic derivative is 30: every size should be base 30, to perfectly fit up to 5 columns evenly */
+.fl-col-justified {float:left; display:inline; overflow:auto; text-align:justify;} /* redundant: text alignment now in fluid.text.css */
+
+.fl-col-flex2, .fl-col-flex3, .fl-col-flex4, .fl-col-flex5 {overflow:auto; zoom:1;}
 .fl-col {float:left; display:inline; overflow:auto;}
-.fl-col-justified {float:left; display:inline; overflow:auto; text-align:justify;}
 .fl-col-flex5 .fl-col {width:18.9%; margin:0 0.25%; padding:0 0.25%}
 .fl-col-flex4 .fl-col {width:24%; margin:0 0.25%; padding:0 0.25%}
 .fl-col-flex3 .fl-col {width:32%; margin:0 0.25%; padding:0 0.25%}
@@ -101,7 +114,8 @@ Layout Helpers
 
 .fl-col-mixed3 .fl-col-main {margin:0 220px;} /* margin goes on whichever side the fixed column goes */
 
-/* New System, requires fl-force-XX */
+/* New System, requires fl-force-XX, provides some basic numbers to start with */
+/* reduce these examples to the bare minimum required */
 .fl-col-mixed .fl-col-fixed {width:200px; padding:0 10px;}
 .fl-col-mixed .fl-col-flex {margin-left:220px; padding:0 10px;}
 

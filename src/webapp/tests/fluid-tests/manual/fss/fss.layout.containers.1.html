@@ -5,21 +5,24 @@
 		<link href="css/tests.css" rel="stylesheet" />
 		<link href="../../../../fluid-components/css/fluid.reset.css" rel="stylesheet" />
 		<link href="../../../../fluid-components/css/fluid.layout.css" rel="stylesheet" />
+		
+		<script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
+		<script type="text/javascript" src="js/toc.js"></script>
+
+		<script type="text/javascript">
+			var currentTest = 1;
+		</script>
+		
+		
 		<title>Test Containers</title>
 	</head>
 	<body>
 		<div class="options">
+			<h1>Loading test...</h1> <strong>Test 0 of 0</strong>
 			<a href="#prev">Previous Test</a>
-			<a href="#next">Next Test</a>
+			<a href="#next">Next Test</a>			
 		</div>
-<!-- 
-.fl-force-right {float:right; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
-.fl-force-left {float:left; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
-.fl-centered {margin-left:auto; margin-right:auto;}
 
-/* Generic container, proxy for other container effects */
-.fl-fix {overflow: auto; zoom:1;}
--->
 		<div class="test_containers">
 				<div class="fl-container-50">50px wide container</div>
 				<div class="fl-container-100">100px wide container</div>
@@ -45,10 +48,15 @@
 				<div class="fl-container">default width container</div>
 				<div class="fl-container-auto">auto width container</div>
 				<div class="fl-container-flex">100% wide container</div>
-				<div class="fl-container-flex25">25% wide container</div>
-				<div class="fl-container-flex30">30% wide container</div>
-				<div class="fl-container-flex33">33% wide container</div>
 				<div class="fl-container-flex50">50% wide container</div>
+				<div class="fl-container-flex33">33% wide container</div>
+				<div class="fl-container-flex30">30% wide container</div>
+				<div class="fl-container-flex25">25% wide container</div>
+				
+				<div class="fl-container-flex33 fl-force-left">33% wide container floating left</div>
+				<div class="fl-container-flex33 fl-force-right">33% wide container floating right</div>
+
+				<div class="fl-container-950 fl-centered fl-fix">750px wide container centered with overflow fix</div>				
 		</div>		
 		
 	</body>
