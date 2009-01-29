@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<link href="css/tests.css" rel="stylesheet" />
+		<link href="../../../../fluid-components/css/fluid.reset.css" rel="stylesheet" />
+		<link href="../../../../fluid-components/css/fluid.layout.css" rel="stylesheet" />
+		<link href="../../../../fluid-components/css/fluid.text.css" rel="stylesheet" />
+		
+		<script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
+		<script type="text/javascript" src="js/toc.js"></script>
+		
+		<script type="text/javascript">
+            // programmatic coloring - access to advanced selectors + requires less maintenance than hardcoded classes
+            $().ready(function(){
+                $('.test_containers > div:not(.fl-tabs-content)').css({
+                    'background-color': '#000',
+                    'border-bottom': '1px solid #fff'
+                });
+                $('.fl-tabs li').css({'color':'#000'});
+                
+            });            
+		</script>
+
+		<title>Test Containers</title>
+	</head>
+	<body>
+		<div class="options">
+			<h1>Loading test...</h1>
+            <p id="note"></p>
+            <p id="page">Test 0 of 0</p>
+			<a href="#prev">Previous Test</a>
+			<a href="#next">Next Test</a>			
+		</div>
+
+		<div class="test_containers">
+
+            <ul class="fl-tabs fl-tabs-center">
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+
+
+            <ul class="fl-tabs fl-tabs-left">
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+
+            <ul class="fl-tabs fl-tabs-right">
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+
+            <ul class="fl-tabs fl-tabs-center">
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+            <div class="fl-tabs-content"> content </div>
+
+            <div class="fl-widget fl-container-250">
+                <div class="fl-widget-titlebar"><h2>Widget title container</h2></div>
+                <div class="fl-widget-options">Widget options container</div>
+                <div class="fl-widget-content">Widget content container</div>
+            </div>
+
+		</div>		
+
+	</body>
+</html>
+
