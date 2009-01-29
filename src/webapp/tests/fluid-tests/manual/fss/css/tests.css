@@ -17,7 +17,7 @@ body {
 
 .test_containers {
 }
-.test_containers div {
+.test_containers div, .test_containers li {
 	background-color:#999;
 	text-align:center;
 	color:#fff;

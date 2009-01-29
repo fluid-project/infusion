@@ -115,11 +115,10 @@ Layout Helpers
 .fl-col-mixed3 .fl-col-main {margin:0 220px;} /* margin goes on whichever side the fixed column goes */
 
 /* New System, requires fl-force-XX, provides some basic numbers to start with */
-/* reduce these examples to the bare minimum required */
+.fl-col-fixed, .fl-col-flex {padding:0 10px;}
+
 .fl-col-mixed .fl-col-fixed {width:200px; padding:0 10px;}
 .fl-col-mixed .fl-col-flex {margin-left:220px; padding:0 10px;}
-
-.fl-col-fixed, .fl-col-flex {padding:0 10px;}
 
 .fl-col-mixed-100 .fl-col-fixed {width:100px;}
 .fl-col-mixed-100 .fl-col-flex {margin-left:120px;}
@@ -215,7 +214,7 @@ input.fl-icon {padding-left:16px;}
 .fl-widget .fl-widget-titlebar {} /* fixes layout problem in IE6 due to .column {position:relative} setup*/
 .fl-widget .fl-widget-titlebar h2 {padding:0; margin:0; font-size:105%;}
 .fl-widget .fl-widget-controls {margin:-1.3em 0 1.5em 0;}
-.fl-widget .fl-widget-options {margin-top:3px; padding:5px 10px 0px 10px;}
+.fl-widget .fl-widget-options {margin-top:5px; padding:5px 10px 0px 10px;}
 .fl-widget .fl-widget-options ul {margin:0; padding:0; overflow:hidden; zoom:1;} 
 .fl-widget .fl-widget-options li {list-style-type:none; float:left; display:inline; padding:0 5px 0 5px; margin-left:-5px;}
 .fl-widget .fl-widget-options a {margin-right:5px;}
