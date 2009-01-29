@@ -495,14 +495,39 @@ sakai.siteSettingsMembers = function(){
 
 
 function initSiteSettingTable() {
-  
+    var model = {
+        site: {},
+        selecteds: {},
+        users: []
+    }
+    function cellGenerator (row) {
+        return 
+          [{ID: "selection",
+            valuebinding: "selecteds.*.selected"},
+           {ID: "user-link",
+            target: "/dev/sn/profile.html?user=" + row.userId,
+            linktext: row.userDisplayName},
+           {ID: "user-email",
+            valuebinding: "*.userEmail"},
+           {ID: "user-role",
+            selection: {valuebinding: "*.userRole"},
+            optionlist: {valuebinding: "site.userRoles"}
+            },
+           {ID: "user-status",
+            selection: {valuebinding: "*.active"},
+            optionlist: {value: ["Active", "Inactive"]}}
+            ];
+           
+    }
   
     var pager = fluid.pager(".ss-members", {
+        userModel: model,
         bodyRenderer: {
           type: "fluid.pager.selfRender",
           options: {
             root: ".site-setting-body",
-            cells: cellGenerator
+            cells: cellGenerator,
+            cellRoot: "users"
           }
         }
     });
