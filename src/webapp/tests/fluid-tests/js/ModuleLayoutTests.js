@@ -17,7 +17,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var moduleLayoutTests = new jqUnit.TestCase("ModuleLayout Tests");
     
         function isOriginalOrderTest(testStr, layoutObj) {
-            var portlet = fluid.transform(portletIds, fluid.byId);
+            var portlet = fluid.transform(fluid.testUtils.moduleLayout.portletIds, fluid.byId);
             jqUnit.assertEquals(testStr + ", Portlet1 should be 1st in column 1", portlet[1], layoutObj.columns[0].elements[0]);
             jqUnit.assertEquals(testStr + ", Portlet2 should be 2nd in column 1", portlet[2], layoutObj.columns[0].elements[1]);
             jqUnit.assertEquals(testStr + ", Portlet3 should be 3rd in column 1", portlet[3], layoutObj.columns[0].elements[2]);
@@ -31,11 +31,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
         }
 
         moduleLayoutTests.test("UpdateLayout", function() {
-            var portlet = fluid.transform(portletIds, fluid.byId);
+            var portlet = fluid.transform(fluid.testUtils.moduleLayout.portletIds, fluid.byId);
             
             var item = portlet[3]
             var relatedItem = portlet[6];
-            var layout = fluid.moduleLayout.layoutFromIds(demo.portal.layout);
+            var layout = fluid.moduleLayout.layoutFromIds(fluid.testUtils.moduleLayout.fullLayout);
             var layoutClone = jQuery.extend(true, {}, layout);
             
             isOriginalOrderTest("Before doing anything", layoutClone);    

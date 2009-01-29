@@ -20,7 +20,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(document).ready(function () {
         var layoutReordererTests = new jqUnit.TestCase("LayoutReorderer Tests");
         
-        var k = fluid.testUtils.reorderer.bindReorderer(portletIds);
+        var k = fluid.testUtils.reorderer.bindReorderer(fluid.testUtils.moduleLayout.portletIds);
         
         layoutReordererTests.test("Default selectors", function () {
             var testReorderer = fluid.reorderLayout("#default-selector-test");
@@ -33,18 +33,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         layoutReordererTests.test("Events within module", function () {
-            var reorderer = fluid.reorderLayout("#" + portalRootId, {
+            var reorderer = fluid.reorderLayout("#" + fluid.testUtils.moduleLayout.portalRootId, {
                         selectors: {
-                            columns: columnSelector,
-                            modules: portletSelector
+                            columns: fluid.testUtils.moduleLayout.columnSelector,
+                            modules: fluid.testUtils.moduleLayout.portletSelector
                         }
                     });
             
-            fluid.jById(portletIds[2]).focus();
+            fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
             var text2 = fluid.jById("text-2").focus();
             text2.simulate("keypress", {keyCode: fluid.reorderer.keys.m});
             
-            jqUnit.assertEquals("After typing M into text field, portlet 2 should still be the active item", portletIds[2], reorderer.activeItem.id);
+            jqUnit.assertEquals("After typing M into text field, portlet 2 should still be the active item", 
+                fluid.testUtils.moduleLayout.portletIds[2], reorderer.activeItem.id);
 // This test for FLUID-1690 cannot be made to work in the jqUnit environment yet          
 //            var blurred = false;
 //            text2.blur(function() {blurred = true;});
@@ -56,12 +57,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         layoutReordererTests.test("Drop warning visibility for up and down", function () {
-            var reorderer = initReorderer();
+            var reorderer = fluid.testUtils.moduleLayout.initReorderer();
     
             jqUnit.notVisible("On first load the warning should not be visible", "#drop-warning");
             
             // focus on portlet 3 - it is underneath a locked portlet
-            var portlet3 = fluid.byId(portletIds[3]);
+            var portlet3 = fluid.byId(fluid.testUtils.moduleLayout.portletIds[3]);
             $(portlet3).focus();
             
             // try to move portlet 3 up
@@ -87,7 +88,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.notVisible("After ctrl + down arrow, drop warning should NOT be visible", "#drop-warning"); 
     
             // focus on portlet 8 
-            var portlet8 = fluid.byId(portletIds[8]);
+            var portlet8 = fluid.byId(fluid.testUtils.moduleLayout.portletIds[8]);
             $(portlet8).focus();
     
             // move portlet 8 down
@@ -112,7 +113,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
         function expectOrder(message, order) {
            var items = fluid.transform(jQuery(".portlet"), fluid.getId);
-           var expected = fluid.transform(order, function(item) {return portletIds[item];});
+           var expected = fluid.transform(order, function(item) {return fluid.testUtils.moduleLayout.portletIds[item];});
            jqUnit.assertDeepEq(message, expected, items);
         }
       
@@ -127,8 +128,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
-            var item2 = fluid.jById(portletIds[2]).focus();
-            var item3 = fluid.jById(portletIds[3]);
+            var item2 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
+            var item3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
             
             // Sniff test the reorderer that was created - keyboard selection and movement
     
@@ -177,8 +178,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
 
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
-            var item2 = fluid.jById(portletIds[2]).focus();
-            var item3 = fluid.jById(portletIds[3]);
+            var item2 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
+            var item3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
             var key = fluid.testUtils.reorderer.compositeKey;
 
             jqUnit.assertTrue("focus on item2", item2.hasClass("orderable-selected"));

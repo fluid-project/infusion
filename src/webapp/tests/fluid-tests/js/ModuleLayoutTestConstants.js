@@ -14,49 +14,73 @@ https://source.fluidproject.org/svn/LICENSE.txt
  * This file contains test constants and setup and teardown functions that are used when
  * testing with the data in the portlets.html file.
  */
- 
+
 /*global jQuery*/
 /*global fluid*/
-/*global demo*/
  
-var portalRootId = "portlet-reorderer-root";
-// portlet0 does not actually exist, it is in this array for padding
-var portletIds = ["portlet0", "portlet1", "portlet2", "portlet3", "portlet4", "portlet5", "portlet6", "portlet7", "portlet8", "portlet9"];
+var fluid = fluid || {};
+fluid.testUtils = fluid.testUtils || {};
 
-var column1id = "c1";
-var column2id = "c2";
-var column3id = "c3";
-var column4id = "c4";
+fluid.testUtils.moduleLayout = {
 
-var columnSelector = "[id^='c']";
-var portletSelector = "[id^='portlet']";
 
-var emptyLayout = { id:"t3", columns: [] };   
+    portalRootId: "portlet-reorderer-root",
+    portletIds: ["portlet0", "portlet1", "portlet2", "portlet3", "portlet4", "portlet5", "portlet6", "portlet7", "portlet8", "portlet9"],
 
-var portletRootClone;
-var portletHandler;
-var layoutClone;
+    column1id: "c1",
+    column2id: "c2",
+    column3id: "c3",
+    column4id: "c4",
 
-function initReorderer() {
-    var options = {
-        selectors: {
-            columns: columnSelector,
-            modules: portletSelector,
-            dropWarning: jQuery("#drop-warning"),
-            lockedModules: ".locked"
-        }
-    };
-    return fluid.reorderLayout("#" + portalRootId, options);
-}
+    columnSelector: "[id^='c']",
+    portletSelector: "[id^='portlet']",
 
-function container() {
-    return jQuery("#" + portalRootId);
-}
+    emptyLayout: { id:"t3", columns: [] },   
 
-function allColumns() {
-    return jQuery("[id^=c]");
-}
+    fullLayout: { 
+        "id":"portlet-reorderer-root",
+        "columns":[
+            { "id":"c1", "children":["portlet1","portlet2","portlet3","portlet4"]},
+            { "id":"c2", "children":["portlet5","portlet6"]},
+            { "id":"c3", "children":["portlet7","portlet8","portlet9"]},
+            { "id":"c4", "children":[]}
+        ]
+    },
 
-function allPortlets() {
-    return jQuery("div[id^=portlet]");
-}
+// Permissions are no longer supported, this table is listed here for historical reasons
+    dropTargetPerms: [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],   // portlet 1
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],   // portlet 2
+    [0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1],   // portlet 3  
+    [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1],   // portlet 4
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],   // portlet 5
+    [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1],   // portlet 6
+    [0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1],   // portlet 7    
+    [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1],   // portlet 8
+    [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1]    // portlet 9
+    ],
+
+    initReorderer: function () {
+      var options = {
+          selectors: {
+              columns: fluid.testUtils.moduleLayout.columnSelector,
+              modules: fluid.testUtils.moduleLayout.portletSelector,
+              dropWarning: jQuery("#drop-warning"),
+              lockedModules: ".locked"
+          }
+      };
+      return fluid.reorderLayout("#" + fluid.testUtils.moduleLayout.portalRootId, options);
+    },
+
+    container: function () {
+        return jQuery("#" + portalRootId);
+    },
+
+    allColumns: function () {
+        return jQuery("[id^=c]");
+    },
+
+    allPortlets: function () {
+        return jQuery("div[id^=portlet]");
+    }
+};
