@@ -12,12 +12,14 @@ body {
     margin-bottom:50px;
 }
 .options h1 {float:left;margin:0; padding:0;}
+.options #note, .options #page {display:inline; margin:0 10px;}
+.options #page {font-weight:bold;}
 
 .test_containers {
-    background-color:#c00;
 }
 .test_containers div {
 	background-color:#999;
 	text-align:center;
 	color:#fff;
 }
+

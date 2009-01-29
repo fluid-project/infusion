@@ -30,7 +30,9 @@ $().ready(function(){
 	
 	// Set heading
 	$('.options h1').text(FSSTestTOC.tests[thisTest].title);
-	
+    // Set Notes
+    $('#note').text(FSSTestTOC.tests[thisTest].note);
 	// Set test #
-	$('.options strong').text('Test ' + (currentTest) + ' of ' + groupTotal);
+    $('#page').text('Test ' + (currentTest) + ' of ' + FSSTestTOC.tests.length);
+    
 });
