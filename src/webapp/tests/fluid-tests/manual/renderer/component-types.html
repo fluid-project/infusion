@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>Renderer Test: Component Types</title>
+        <!--  These are the required javascript modules for the Renderer and can be replaced with Fluid-all.js -->
+        <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fluidRenderer.js"></script>
+
+        <script type="text/javascript" src="component-types.js"></script>
+	</head>
+
+	<body id="mystuff">
+
+        <div id="toc">            
+        <ul rsf:id="toc-list:">
+            <li rsf:id="toc_item:">
+                <a rsf:id="toc_anchor" href="">1</a>             
+            </li>
+            <ul rsf:id="h2s:">
+                <li rsf:id="h2:">
+                    <a rsf:id="toc_anchor" href="">2</a>             
+                </li>
+                <ul rsf:id="h3s:">
+                    <li rsf:id="h3:">
+                        <a rsf:id="toc_anchor" href="">3</a>             
+                    </li>
+                    <ul rsf:id="h4s:">
+                        <li rsf:id="h4:">
+                            <a rsf:id="toc_anchor" href="">4</a>             
+                        </li>
+                    </ul>
+                </ul>
+            </ul>
+        </ul>
+        
+        
+        
+            <ul rsf:id="toc-list---:">
+                <li rsf:id="toc_item:">
+	                <a rsf:id="toc_anchor" href="">4</a>             
+                </li>
+            </ul>
+        </div>
+        
+        <script type="text/javascript">
+            demo.renderComponents();
+        </script>
+
+	</body>
+</html>
