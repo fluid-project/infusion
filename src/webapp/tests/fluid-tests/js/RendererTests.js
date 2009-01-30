@@ -474,6 +474,16 @@ fluid.tests = fluid.tests || {};
         
     });
 
+  renderTests.test("Single properly closed li bug (FLUID-2173)", function() {
+        var node = $(".FLUID-2173-test");
+        var tree = {
+        "toc-list:": [{
+           "toc_item:": ["foofer", "barbar"]
+         }]
+       };
+       fluid.selfRender(node, tree) 
+  });
+
     renderTests.test("Properties unescaping", function() {
       
       jqUnit.assertEquals("Simple unescaping", "This is a thing", 

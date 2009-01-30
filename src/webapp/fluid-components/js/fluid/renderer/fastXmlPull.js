@@ -205,7 +205,7 @@ XMLP.prototype._parseElement = function(iB) {
     // tag apparently directly nested in another, first emit a synthetic close tag
     // for the earlier one without advancing the pointer, and set a flag to ensure
     // doing this just once.
-    if ("li" === strN && this.m_stack.length > 0 && 
+    if ("li" === strN && iType !== XMLP._ELM_E && this.m_stack.length > 0 && 
         this.m_stack[this.m_stack.length - 1] === "li" && !this.m_emitSynthetic) {
         this.m_name = "li";
         this.m_emitSynthetic = true;
