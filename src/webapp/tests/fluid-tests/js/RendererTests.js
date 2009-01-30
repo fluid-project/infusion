@@ -375,12 +375,15 @@ fluid.tests = fluid.tests || {};
       // must use absolute URLs for tests, since IE will rewrite relative ones by itself
       var link_target = "http://www.site/dynamic-target.html";
       var link_target_2 = "http://www.site/dynamic-target-2.jpg";
+      var model = {
+        "target_2": link_target_2
+      };
       var tree = {children: [
          {ID: "link-1", target: link_target},
-         {ID: "link-2", target: link_target_2}
+         {ID: "link-2", target: {valuebinding: "target_2"}},
        ]};
       var node = $(".link-test-1");
-      var templates = fluid.selfRender(node, fluid.copy(tree));
+      var templates = fluid.selfRender(node, fluid.copy(tree), {model: model});
       var link = $("a", node);
       jqUnit.assertTrue("Link rendered", link.length > 0);
       // can only test endsWith on IE, since it expands relative links to 
@@ -390,7 +393,7 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertEquals("Rewritten target", link_target_2, img.attr("src"));
       
       tree.children[0].linktext = "Dynamic text";
-      fluid.reRender(templates, node, fluid.copy(tree));
+      fluid.reRender(templates, node, fluid.copy(tree), {model: model});
       
       return; // the remainder of this test cannot be supported - browsers will rewrite
       // hrefs etc. that are attached to the document

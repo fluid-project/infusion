@@ -96,7 +96,11 @@ fluid_0_8 = fluid_0_8 || {};
   }
   
   function fixupValue(uibound, model) {
-      if (model && uibound.value === undefined && uibound.valuebinding !== undefined) {
+      if (uibound.value === undefined && uibound.valuebinding !== undefined) {
+          if (!model) {
+              fluid.fail("Cannot perform value fixup for valuebinding " 
+                + uibound.valuebinding + " since no model was supplied to rendering");
+          }
           uibound.value = fluid.model.getBeanValue(model, uibound.valuebinding);
       }
   }
@@ -133,14 +137,20 @@ fluid_0_8 = fluid_0_8 || {};
         component = {componentType: "UIContainer", children: component};
         component.decorators = decorators;
     }
-    if (component.componentType === "UIContainer") {
+    var cType = component.componentType;
+    if (cType === "UIContainer") {
         component.children = fixChildren(component.children);
     }
-    else if (component.componentType === "UISelect") {
+    else if (cType === "UISelect") {
         upgradeBound(component, "selection", model);
         upgradeBound(component, "optionlist", model);
         upgradeBound(component, "optionnames", model);
     }
+    else if (cType === "UILink") {
+        upgradeBound(component, "target", model);
+        upgradeBound(component, "linktext", model);
+    }
+    
     return component;
   }
   
@@ -760,7 +770,7 @@ fluid_0_8 = fluid_0_8 || {};
     else if (componentType === "UILink") {
       var attrname = LINK_ATTRIBUTES[tagname];
       if (attrname) {
-        var target= torender.target;
+        var target= torender.target.value;
         if (!isValue(target)) {
           target = attrcopy[attname];
           }
@@ -769,7 +779,7 @@ fluid_0_8 = fluid_0_8 || {};
           }
         attrcopy[attrname] = target;
       }
-      var value = torender.linktext;
+      var value = torender.linktext.value;
       if (!isValue(value)) {
         replaceAttributesOpen();
       }
