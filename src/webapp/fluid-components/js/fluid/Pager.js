@@ -184,7 +184,33 @@ fluid_0_8 = fluid_0_8 || {};
         return togo;
     };
    
-    /** A body renderer implementation which uses the Fluid renderer to render a table section **/
+    fluid.defaults("fluid.pager.selfRender", {
+        // strategy for generating a tree row, either "explode" or a function accepting data row
+        cells: "explode",
+        // EL root path to be prepended onto exploded paths
+        cellRoot: undefined,
+        // Options passed upstream to the renderer
+        renderOptions: undefined
+       
+      });
+   
+    function expandPath(EL, root) {
+        return EL.replace("*", root);
+    }
+   
+    function expandPaths(tree, root) {
+        for (i in tree) {
+            var val = tree[i];
+            if (i === "valuebinding") {
+               tree[i] = expandPath(tree[i], root);
+            }
+            if (typeof(val) === 'object') {
+                expandTree(val, root);
+            }
+        }
+    }
+   
+    /** A body renderer implementation which ses the Fluid renderer to render a table section **/
    
     fluid.pager.selfRender = function (overallThat, options) {
         var root = $(options.root);
@@ -194,16 +220,21 @@ fluid_0_8 = fluid_0_8 || {};
                 listeners: {
                     onModelChange: function (newModel, oldModel) {
                         var filtered = overallThat.options.modelFilter(overallThat.options.dataModel, newModel);
-                        if (options.cells === "explode") {
-                            var tree = fluid.transform(filtered, 
-                                function(filteredRow) {
-                                    return fluid.explode(filteredRow.row, filteredRow.index);
+                        var tree = fluid.transform(filtered, 
+                            function(filteredRow) {
+                                var root = (cellRoot? cellRoot + ".": "") + filteredRow.index; 
+                                if (options.cells === "explode") {
+                                    return fluid.explode(filteredRow.row, root);
                                 }
-                                );
-                            var fullTree = {};
-                            fullTree[options.row] = tree;
-                            fluid.reRender(template, root, fullTree, options.renderOptions);
-                        }
+                                else if (typeof options.cells === "function") {
+                                    var tree = options.cells(filteredRow.row, filteredRow.index);
+                                    return expandPaths(tree, root);
+                                }
+                            }
+                            );
+                        var fullTree = {};
+                        fullTree[options.row] = tree;
+                        fluid.reRender(template, root, fullTree, options.renderOptions);
                     }
                 }
             }
@@ -358,6 +389,8 @@ fluid_0_8 = fluid_0_8 || {};
             pageSize: 10,
             totalRange: undefined
         },
+        
+        dataModel: undefined,
         
         selectors: {
             pagerBar: ".pager-top",
