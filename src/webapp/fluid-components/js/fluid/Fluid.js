@@ -94,17 +94,21 @@ var fluid = fluid || fluid_0_8;
      * @param {String||jQuery||element} an id string, a single-element jQuery, or a DOM element specifying a unique container
      * @return a single-element jQuery of container
      */
-    fluid.container = function (container) {
-        if (typeof container === "string" || 
-          container.nodeType && (container.nodeType === 1  || container.nodeType === 9)) {
-            container = $(container);
+    fluid.container = function (containerSpec) {
+        var container = containerSpec;
+        if (typeof containerSpec === "string" || 
+          containerSpec.nodeType && (containerSpec.nodeType === 1  || containerSpec.nodeType === 9)) {
+            container = $(containerSpec);
         }
         
         // Throw an exception if we've got more or less than one element.
         if (!container || !container.jquery || container.length !== 1) {
+            if (typeof(containerSpec) !== "string") {
+                containerSpec = container.selector;
+            }
             fluid.fail({
-                name: "NotOne",
-                message: "A single container element was not found for selector " + container
+               name: "NotOne",
+                message: "A single container element was not found for selector " + containerSpec
             });
         }
         
