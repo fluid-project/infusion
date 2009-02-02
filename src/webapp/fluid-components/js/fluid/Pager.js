@@ -194,18 +194,23 @@ fluid_0_8 = fluid_0_8 || {};
        
       });
    
-    function expandPath(EL, root) {
-        return EL.replace("*", root);
+    function expandPath(EL, shortRoot, longRoot) {
+        if (EL.charAt(0) === "*") {
+            return longRoot + EL.substring(1); 
+        }
+        else {
+            return EL.replace("*", shortRoot);
+        }
     }
    
-    function expandPaths(tree, root) {
+    function expandPaths(tree, shortRoot, longRoot) {
         for (i in tree) {
             var val = tree[i];
             if (i === "valuebinding") {
-               tree[i] = expandPath(tree[i], root);
+               tree[i] = expandPath(tree[i], shortRoot, longRoot);
             }
             if (typeof(val) === 'object') {
-                expandTree(val, root);
+                expandTree(val, shortRoot, longRoot);
             }
         }
     }
@@ -222,13 +227,15 @@ fluid_0_8 = fluid_0_8 || {};
                         var filtered = overallThat.options.modelFilter(overallThat.options.dataModel, newModel);
                         var tree = fluid.transform(filtered, 
                             function(filteredRow) {
-                                var root = (cellRoot? cellRoot + ".": "") + filteredRow.index; 
+                                var cellRoot = (options.cellRoot? options.cellRoot + ".": "");
+                                var shortRoot = filteredRow.index;
+                                var longRoot = cellRoot + shortRoot; 
                                 if (options.cells === "explode") {
                                     return fluid.explode(filteredRow.row, root);
                                 }
                                 else if (typeof options.cells === "function") {
                                     var tree = options.cells(filteredRow.row, filteredRow.index);
-                                    return expandPaths(tree, root);
+                                    return expandPaths(tree, shortRoot, longRoot);
                                 }
                             }
                             );

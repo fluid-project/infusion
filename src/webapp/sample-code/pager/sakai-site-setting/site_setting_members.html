@@ -11,26 +11,20 @@
     <link rel="stylesheet" type="text/css" href="css/print.css" media="print" />
     <link rel="stylesheet" type="text/css" href="css/yui-datatable.css" media="screen" />
 
-    <script type="text/javascript" src="lib/jquery-1.2.6.js"></script>
     <script type="text/javascript" src="lib/trimpath.js"></script>
-    <script type="text/javascript" src="lib/querystring.js"></script>
-
-    <!-- Yahoo UI dependencies -->
-	<script type="text/javascript" src="lib/yui_2.6.0-build/yahoo-dom-event/yahoo-dom-event.js"></script>
-	<script type="text/javascript" src="lib/yui_2.6.0-build/element/element-beta-debug.js"></script>
-	<script type="text/javascript" src="lib/yui_2.6.0-build/datasource/datasource-debug.js"></script>
-	<!-- OPTIONAL: JSON Utility (for DataSource) -->
-	<script type="text/javascript" src="lib/yui_2.6.0-build/json/json-debug.js"></script>
-	<!-- Source files -->
-	<script type="text/javascript" src="lib/yui_2.6.0-build/paginator/paginator-debug.js"></script>
-	<script type="text/javascript" src="lib/yui_2.6.0-build/datatable/datatable-debug.js"></script>
-
-	<script type="text/javascript" src="lib/yui_2.6.0-build/logger/logger.js"></script>
+    
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/Pager.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fastXmlPull.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidParser.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidRenderer.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/json/json2.js"></script>
+  
 
 </head>
 <body id="body-hide2">
-<script type="text/javascript" src="lib/sdata_alternative.js"></script>
-<script type="text/javascript" src="lib/i18n.js"></script>
+
 <div id="body2">
 
 <div id="header3">
@@ -301,5 +295,8 @@
 
 </div><!-- /body2 -->
 <script type="text/javascript" src="js/site_setting_members.js"></script>
+<script type="text/javascript">
+    sakai.initFluidSiteSettingTable();
+</script>
 </body>
 </html>
