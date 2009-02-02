@@ -29,7 +29,8 @@ var fluid = fluid || fluid_0_8;
     fluid.fail = function (message) {
         fluid.setLogging(true);
         fluid.log(message.message? message.message : message);
-        throw new Error(message);
+        //throw new Error(message);
+        message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
     };
     
     /**
