@@ -17,7 +17,7 @@ var demo = demo || {};
 
 (function ($, fluid) {
 
-    var myOriginalTree = {
+    var listTree = {
         children: [{
             ID: "H1s:",
             children: [{
@@ -48,8 +48,35 @@ var demo = demo || {};
         }]
     };
        
-
+    var imagesTree = {
+        children: [
+            {ID: "thumb:",
+             children: [
+                 {ID: "image-url",
+                  target: "http://image.ca"},
+                 {ID: "image-thumb-url",
+                  target: "../../../../fluid-components/images/Dragonfruit.jpg",
+                  linktext: "Image 1 alt"},
+                 {ID: "caption-url",
+                  target: "http://image.thumb.ca",
+                  linktext: "Image 1 caption"}
+             ]},
+            {ID: "thumb:",
+             children: [
+                 {ID: "image-url",
+                  target: "http://image2.ca"},
+                 {ID: "image-thumb-url",
+                  target: "../../../../fluid-components/images/Kiwi.jpg",
+                  linktext: "Image 2 alt"},
+                 {ID: "caption-url",
+                  target: "http://image2.ca",
+                  linktext: "Image 2 caption"}
+             ]}
+        ]
+    };
+    
     demo.renderComponents = function () {
-        var parsedTemplate = fluid.selfRender($("[id=toc]"), myOriginalTree);
+        var listTemplate = fluid.selfRender($("[id=toc]"), listTree);
+        var imagesTemplate = fluid.selfRender($(".image-container"), imagesTree);
     };    
 })(jQuery, fluid);

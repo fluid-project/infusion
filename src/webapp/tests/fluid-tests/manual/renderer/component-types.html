@@ -2,6 +2,8 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<link href="../../../../fluid-components/css/ImageReorderer.css" type="text/css" rel="stylesheet" />
+
 		<title>Renderer Test: Component Types</title>
         <!--  These are the required javascript modules for the Renderer and can be replaced with Fluid-all.js -->
         <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.2.6.js"></script>
@@ -16,19 +18,37 @@
 
 	<body id="mystuff">
 
-      <div id="toc">            
-        <ul rsf:id="H1s:">
-             <li rsf:id="H1item:toc">
-                 <a rsf:id="toc_anchor" href="">1</a>
-             </li>
-             <ul rsf:id="H1item:H2s">
-                 <li rsf:id="H2item:toc">
-                     <a rsf:id="toc_anchor" href="">2</a>
+        <h2>Nested List Items</h2>
+          <div id="toc">            
+            <ul rsf:id="H1s:">
+                 <li rsf:id="H1item:toc">
+                     <a rsf:id="toc_anchor" href="">1</a>
                  </li>
+                 <ul rsf:id="H1item:H2s">
+                     <li rsf:id="H2item:toc">
+                         <a rsf:id="toc_anchor" href="">2</a>
+                     </li>
+                 </ul>
              </ul>
-         </ul>
-     </div>
+         </div>
+            
+        <h2>Image thumbnails</h2>
+        <div class="image-container">
+            <div rsf:id="thumb:" class="orderable-default">
+                <div class="image-inner-container">
+                    <a rsf:id="image-url" href="image-url-here">
+                        <img rsf:id="image-thumb-url"
+                             src="thumb url here"/>
+                    </a>
+                </div>
+                <div class="image-title">
+                    <a rsf:id="caption-url" href="image-url-here">Image name here</a>
+                </div>
+                <input type="hidden" value="0"/>
+            </div>
+        </div>
         
+
         <script type="text/javascript">
             demo.renderComponents();
         </script>
