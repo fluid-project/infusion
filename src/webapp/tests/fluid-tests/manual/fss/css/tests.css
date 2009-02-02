@@ -16,6 +16,10 @@ body {
 .options #page {font-weight:bold;}
 
 .test_containers {
+    
+}
+.test_containers a {
+    color: #fff;
 }
 .test_containers div, .test_containers li {
 	background-color:#999;

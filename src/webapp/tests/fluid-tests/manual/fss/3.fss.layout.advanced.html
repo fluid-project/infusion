@@ -17,7 +17,16 @@
                     'background-color': '#000',
                     'border-bottom': '1px solid #fff'
                 });
-                $('.fl-tabs li').css({'color':'#000'});
+                $('li').css({'color':'#000'});                
+                $('.fl-icon:odd').css({'background': '#fff url(images/16x16icon_2.png) no-repeat top left'});
+                $('.fl-icon:even').css({'background': 'transparent url(images/16x16icon.png) no-repeat top left'});                
+                $('*[class^=fl-button]').css({
+                    'background': '#fff url(images/buttons_sliding_cap.png) no-repeat top left'
+                });
+                $('*[class^=fl-button] *').css({
+                    'background': '#fff url(images/buttons_sliding_bg.png) no-repeat top right'
+                });
+                                
                 
             });            
 		</script>
@@ -35,14 +44,13 @@
 
 		<div class="test_containers">
 
-            <ul class="fl-tabs fl-tabs-center">
+            <ul class="fl-tabs fl-tabs-left">
                 <li><a href="#">Tab link</a></li>
                 <li><a href="#">Tab link</a></li>
                 <li><a href="#">Tab link</a></li>
             </ul>
 
-
-            <ul class="fl-tabs fl-tabs-left">
+            <ul class="fl-tabs fl-tabs-center">
                 <li><a href="#">Tab link</a></li>
                 <li><a href="#">Tab link</a></li>
                 <li><a href="#">Tab link</a></li>
@@ -59,13 +67,36 @@
                 <li><a href="#">Tab link</a></li>
                 <li><a href="#">Tab link</a></li>
             </ul>
-            <div class="fl-tabs-content"> content </div>
+            <div class="fl-tabs-content">tab content container</div>
+
+            <ul class="fl-listmenu fl-container-200">
+                <li><a href="#">Tab link</a></li>
+                <li class="fl-activeItem"><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+
 
             <div class="fl-widget fl-container-250">
-                <div class="fl-widget-titlebar"><h2>Widget title container</h2></div>
-                <div class="fl-widget-options">Widget options container</div>
-                <div class="fl-widget-content">Widget content container</div>
+                <div class="fl-widget-titlebar"><h2>Title</h2></div>
+                <div class="fl-widget-options">
+                    <a href="#" class="fl-icon fl-force-right">Icon container</a>
+                    <a href="#" class="fl-icon fl-force-right">Icon container</a>
+                    <a href="#" class="fl-icon fl-force-left">Icon container</a>
+                    <a href="#" class="fl-icon fl-force-left">Icon container</a>
+                    Options w/ icons
+                    </div>
+                <div class="fl-widget-content">Content Content Content Content Content Content Content Content Content Content Content Content Content </div>
             </div>
+
+            <div class="fl-fix">
+                <a href="#" class="fl-button-left"><strong>-</strong></a>
+                <a href="#" class="fl-button-left"><strong>|----------------- Sliding Door Button ---------------|</strong></a>
+                <a href="#" class="fl-button-right"><strong>-</strong></a>
+                <a href="#" class="fl-button-right"><strong>|--------------- Sliding Door Button ---------------|</strong></a>
+            </div>
+            <ul class="fl-container-400 fl-force-left fl-grid">
+                <li><img src="images/48x48icon_document.png"</li>
+            </ul>                
 
 		</div>		
 
