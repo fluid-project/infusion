@@ -18,46 +18,37 @@ var demo = demo || {};
 (function ($, fluid) {
 
     var myOriginalTree = {
-        "toc-list:": [{
-            "toc_item:": [{
-                ID: "toc_anchor",
-                linktext: "Amphibians",
-                target: "#Amphibians"
+        children: [{
+            ID: "H1s:",
+            children: [{
+                ID: "H1item:toc",
+                children: [{
+                    ID: "toc_anchor",
+                    linktext: "foo",
+                    target: "#foo"
+                }]
             }, {
-                ID: "toc_anchor",
-                linktext: "Mammals",
-                target: "#Mammals"
-            }],
-            "h2s:": [{
-                "h3s:": [{
-                     "h3:": [{
+                ID: "H1item:H2s",
+                children: [{
+                    ID: "H2item:toc",
+                    children: [{
                         ID: "toc_anchor",
-                        linktext: "CATTS",
-                        target: "#Amphibians"
-                    }]   
+                        linktext: "bar",
+                        target: "#bar"
+                    }]
+                }]
+            }, {
+                ID: "H1item:toc",
+                children: [{
+                    ID: "toc_anchor",
+                    linktext: "foobar",
+                    target: "#foobar"
                 }]
             }]
-         },
-         {
-            "toc_item:": [{
-                ID: "toc_anchor",
-                linktext: "Amphibians2",
-                target: "#Amphibians2"
-            }, {
-                ID: "toc_anchor",
-                linktext: "Mammals2",
-                target: "#Mammals2"
-            }],
-            "h2s:": [{
-                     "h2:": [{
-                        ID: "toc_anchor",
-                        linktext: "CATTS2",
-                        target: "#Amphibians"
-                    }]   
-            }]
-         }]
-       };
+        }]
+    };
        
+
     demo.renderComponents = function () {
         var parsedTemplate = fluid.selfRender($("[id=toc]"), myOriginalTree);
     };    
