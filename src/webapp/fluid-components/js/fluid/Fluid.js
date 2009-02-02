@@ -178,6 +178,11 @@ var fluid = fluid || fluid_0_8;
                 //fluid.fail("Selector " + name + " with value " + selectors[name] +
                 //            " did not find any elements with container " + fluid.dumpEl(container));
             }
+            if (!togo.selector) {
+                togo.selector = selector;
+                togo.context = thisContainer;
+            }
+            togo.selectorName = name;
             record(name, thisContainer, togo);
             return togo;
         };
@@ -291,6 +296,12 @@ var fluid = fluid || fluid_0_8;
      */
     fluid.initView = function (componentName, container, userOptions) {
         var that = {};
+        if (container && container.length === 0 && container.jquery) {
+            var message = "Error instantiating component with name \"" + componentName 
+            + "\": selector \"" + container.selector + "\" with name " + container.selectorName
+            + " returned no results in context " + fluid.dumpEl(container.context);
+            fluid.fail(message);
+            }
         fluid.mergeComponentOptions(that, componentName, userOptions);
         
         if (container) {
@@ -660,6 +671,9 @@ var fluid = fluid || fluid_0_8;
         if (element.nodeType === 3 || element.nodeType === 8) {
             return "[data: " + element.data + "]";
         } 
+        if (element.nodeType === 9) {
+          return "[document: location " + element.location + "]";
+        }
         if (typeof element.length === "number") {
             togo = "[";
             for (var i = 0; i < element.length; ++ i) {
