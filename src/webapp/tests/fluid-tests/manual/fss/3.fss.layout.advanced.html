@@ -13,7 +13,8 @@
 		<script type="text/javascript">
             // programmatic coloring - access to advanced selectors + requires less maintenance than hardcoded classes
             $().ready(function(){
-                $('.test_containers > div:not(.fl-tabs-content)').css({
+                $('.fl-fix').css('background-color','transparent');
+                $('.test_containers > div:not(.fl-tabs-content):not(.fl-fix)').css({
                     'background-color': '#000',
                     'border-bottom': '1px solid #fff'
                 });
@@ -26,6 +27,7 @@
                 $('*[class^=fl-button] *').css({
                     'background': '#fff url(images/buttons_sliding_bg.png) no-repeat top right'
                 });
+                $('.caption').css('background-color','#000');
                                 
                 
             });            
@@ -89,14 +91,36 @@
             </div>
 
             <div class="fl-fix">
+                <a href="#" class="fl-button-left"><strong>|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sliding Door Button &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</strong></a>
                 <a href="#" class="fl-button-left"><strong>-</strong></a>
-                <a href="#" class="fl-button-left"><strong>|----------------- Sliding Door Button ---------------|</strong></a>
+                <a href="#" class="fl-button-right"><strong>|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sliding Door Button &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</strong></a>
                 <a href="#" class="fl-button-right"><strong>-</strong></a>
-                <a href="#" class="fl-button-right"><strong>|--------------- Sliding Door Button ---------------|</strong></a>
             </div>
-            <ul class="fl-container-400 fl-force-left fl-grid">
-                <li><img src="images/48x48icon_document.png"</li>
-            </ul>                
+
+            <ul class="fl-container-flex fl-grid fl-fix">
+                <li><img src="images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+            </ul>
+
+            <form action="" method="post" class="fl-container-450 fl-centered fl-controls-left">                
+                <li><label class="fl-label">Left aligned labels</label><input type="text" name="" value="" /></li>
+                <li><strong class="fl-label">Left aligned labels</strong><label for="checkbox"><input id="checkbox" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+            </form>
+
+            <form action="" method="post" class="fl-container-450 fl-centered fl-controls-centered">
+                <li><label class="fl-label">Center aligned labels</label><input type="text" name="" value="" /></li>
+                <li><strong class="fl-label">Center aligned labels</strong><label for="checkbox2"><input id="checkbox2" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+            </form>
+            <form action="" method="post" class="fl-container-450 fl-centered fl-controls-right">
+                <li><label class="fl-label">Right aligned labels</label><input type="text" name="" value="" /></li>
+                <li><strong class="fl-label">Right aligned labels</strong><label for="checkbox3"><input id="checkbox3" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+            </form>
+
 
 		</div>		
 

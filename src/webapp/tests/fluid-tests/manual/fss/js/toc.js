@@ -3,7 +3,7 @@ $().ready(function(){
 		tests: [
 			{title: "FSS.Layout.Containers", note: "A test for fixed width containers. Each container should be as wide as the text inside says"},
 			{title: "FSS.Layout.Containers", note: "A test for flexible and fixed width columns. Each container should behave as the text inside says. May require adjusting the browser width."},
-			{title: "FSS.Layout.Advanced"}
+			{title: "FSS.Layout.Advanced", note: "Tests for different advanced layout modules. Each module should be inspected for inconsistencies and non-uniformity."}
 		]
 	}
 

@@ -161,24 +161,19 @@ Layout Helpers
 .fl-listmenu {padding:0px; border-bottom-width:1px; border-bottom-style:solid;}
 .fl-listmenu li {margin:0; padding:0; list-style-type:none; border-width:1px; border-style:solid; border-bottom:none;}
 .fl-listmenu a {padding:5px 5px; display:block; zoom:1;} /* list item needs layout (http://www.brunildo.org/test/IEWlispace.php) */
-
 .fl-vert-menu {
-    
 }
-
 .fl-horz-menu {
-    
 }
-
 
 /*
  * Picture Grid: a quick picture grid layout
  * Dependency: list-based markup
  */
-.fl-grid {padding:2px;}
+ul.fl-grid, .fl-grid ul {padding:0; margin:0;}
 .fl-grid li {list-style-type:none; display:inline;}
-.fl-grid li {float:left; width:18%; margin:2px; height:150px; overflow:hidden; position:relative; display:inline;}
-.fl-grid li img {display:block; margin:0 auto;}
+.fl-grid li {float:left; width:19%; margin:0.5%; height:150px; overflow:hidden; position:relative; display:inline;}
+.fl-grid li img {display:block; margin:5px auto;}
 .fl-grid li .caption {position:absolute; left:0px; bottom:0px; width:100%; text-align:center; height:1em; padding:3px 0;}
 
 /*
@@ -241,8 +236,12 @@ input.fl-icon {padding-left:16px;}
 /* Alignment requires list of label elements placed before the control */
 .fl-controls-left li {list-style-type:none; text-align:left;}
 .fl-controls-left .fl-label {float:left; text-align:left; width:50%; margin-right:5px;}
+
+.fl-controls-right li {list-style-type:none; display:block; text-align:left;}
+.fl-controls-right .fl-label {float:left; text-align:right; width:50%; margin-right:5px;}
+
 .fl-controls-centered li {list-style-type:none; display:block; text-align:left;}
-.fl-controls-centered .fl-label {float:left; text-align:right; width:50%; margin-right:5px; color:#0080ff;}
+.fl-controls-centered .fl-label {float:left; text-align:center; width:50%; margin-right:5px;}
 
 
 /*
