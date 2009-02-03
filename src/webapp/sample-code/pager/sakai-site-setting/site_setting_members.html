@@ -76,7 +76,7 @@
 <h2>Members <span class="ss-button"><a href="#" class="buttons add-widgets"><span>Add Members</span></a></span></h2>
 <table cellpadding="0" cellspacing="0" border="0" class="ss-table">
     <tr>
-        <td><div class="ss-table-head">
+        <td><div class="ss-table-head pager-top">
             <div class="block">
                 <div class="ssth-left">
                     <ul>
@@ -90,25 +90,25 @@
                     <table>
                         <tr>
                             <td><div class="ssth-border">
-                            	<span class="membership-count"></span> Records Total</div>
+                            	<span class="pager-summary"></span> Records Total</div>
                             </td>
                             <td><div class="ssth-select">
-                                <select class="rowsPerPageDropdown">
+                                <select class="pager-page-size">
                                     <option value="10">View 10 Per Page</option>
                                     <option value="20">View 20 Per Page</option>
                                     <option value="30">View 30 Per Page</option>
                                     <option value="40">View 40 Per Page</option>
                                 </select>
                             </div></td>
-                            <td><div><a href="#" class="prevPage">Prev</a></div></td>
+                            <td><div><a href="#" class="previous">Prev</a></div></td>
                             <td><div class="ssth-select2">
-                                <select class="pageLinksDropdown">
+                                <select class="thing">
                                     <option>Page 1 of 30</option>
                                     <option>Page 2 of 30</option>
                                     <option>Page 3 of 30</option>
                                 </select>
                             </div></td>
-                            <td><div><a href="#" class="nextPage">Next</a></div></td>
+                            <td><div><a href="#" class="next">Next</a></div></td>
                         </tr>
                     </table>
                 </div>
@@ -118,8 +118,6 @@
 </table>
 
 <div id="membership-table" class="yui-dt">
-<div id="yui-dt0-paginator0" class="yui-dt-paginator yui-pg-container"
-  style="" />
 
 
 <table summary="">
@@ -189,7 +187,7 @@
             <a id="delete-selected-members" href="#" class="inactive buttons">Delete Selected</a>
         </div>
         <div class="ss-foot-right">
-            <select id="command-selected-members" class="inactive" disabled="true">
+            <select id="command-selected-members" class="inactive" disabled="disabled">
                 <option value="">Select a command</option>
                 <optgroup label="- - - - - - - - -">
                 <option value="selected-members-active-true">Change status to Active</option>
@@ -262,7 +260,7 @@
 								<td>
 
 								<div class="ssm-bottom2">
-								<select id="default-members-roles" ></div>
+								<select id="default-members-roles"> </select> </div>
 								</td>
 							</tr>
 							<tr>

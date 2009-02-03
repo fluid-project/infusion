@@ -39,7 +39,7 @@ fluid_0_8 = fluid_0_8 || {};
     
     // 10 -> 1, 11 -> 2
     function computePageCount(model) {
-        model.pageCount = Math.floor((model.totalRange - 1)/ model.pageSize) + 1;      
+        model.pageCount = Math.max(1, Math.floor((model.totalRange - 1)/ model.pageSize) + 1);
     }
     
     function computePageLimit(model) {
@@ -187,11 +187,8 @@ fluid_0_8 = fluid_0_8 || {};
     fluid.defaults("fluid.pager.selfRender", {
         // strategy for generating a tree row, either "explode" or a function accepting data row
         cells: "explode",
-        // EL root path to be prepended onto exploded paths
-        cellRoot: undefined,
         // Options passed upstream to the renderer
         renderOptions: undefined
-       
       });
    
     function expandPath(EL, shortRoot, longRoot) {
@@ -215,6 +212,11 @@ fluid_0_8 = fluid_0_8 || {};
         }
     }
    
+    function fetchModel(overallThat) {
+        return fluid.model.getBeanValue(overallThat.options.dataModel, 
+            overallThat.options.dataOffset);
+    }
+   
     /** A body renderer implementation which ses the Fluid renderer to render a table section **/
    
     fluid.pager.selfRender = function (overallThat, options) {
@@ -224,10 +226,11 @@ fluid_0_8 = fluid_0_8 || {};
             returnedOptions: {
                 listeners: {
                     onModelChange: function (newModel, oldModel) {
-                        var filtered = overallThat.options.modelFilter(overallThat.options.dataModel, newModel);
+                        var dataModel = fetchModel(overallThat);
+                        var filtered = overallThat.options.modelFilter(dataModel, newModel);
                         var tree = fluid.transform(filtered, 
                             function(filteredRow) {
-                                var cellRoot = (options.cellRoot? options.cellRoot + ".": "");
+                                var cellRoot = (options.dataOffset? options.dataOffset + ".": "");
                                 var shortRoot = filteredRow.index;
                                 var longRoot = cellRoot + shortRoot; 
                                 if (options.cells === "explode") {
@@ -349,10 +352,17 @@ fluid_0_8 = fluid_0_8 || {};
             );
 
         // Setup the top and bottom pager bars.
-        that.pagerBar = fluid.initSubcomponent(that, "pagerBar", 
-           [that.events, that.locate("pagerBar"), fluid.COMPONENT_OPTIONS, that.options.strings]);
-        that.pagerBarSecondary = fluid.initSubcomponent(that, "pagerBar", 
-           [that.events, that.locate("pagerBarSecondary"), fluid.COMPONENT_OPTIONS, that.options.strings]);
+        var pagerBarElement = that.locate("pagerBar");
+        if (pagerBarElement.length > 0) {
+            that.pagerBar = fluid.initSubcomponent(that, "pagerBar", 
+            [that.events, pagerBarElement, fluid.COMPONENT_OPTIONS, that.options.strings]);
+        }
+        
+        var pagerBarSecondaryElement = that.locate("pagerBarSecondary");
+        if (pagerBarSecondaryElement.length > 0) {
+            that.pagerBarSecondary = fluid.initSubcomponent(that, "pagerBar",
+               [that.events, pagerBarSecondaryElement, fluid.COMPONENT_OPTIONS, that.options.strings]);
+        }
  
         that.bodyRenderer = fluid.initSubcomponent(that, "bodyRenderer", [that, fluid.COMPONENT_OPTIONS]);
         
@@ -361,16 +371,21 @@ fluid_0_8 = fluid_0_8 || {};
         that.pageSize = fluid.initSubcomponent(that, "pageSize", [that]);
  
         that.model = fluid.copy(that.options.model);
-        if (that.options.dataModel) {
-            that.model.totalRange = that.options.dataModel.length;
+        var dataModel = fetchModel(that);
+        if (dataModel) {
+            that.model.totalRange = dataModel.length;
         }
         if (that.model.totalRange === undefined) {
+            if (!that.pagerBar) {
+                fluid.fail("Error in Pager configuration - cannot determine total range, "
+                + " since not configured in model.totalRange and no PagerBar is configured");
+            }
             that.model = that.pagerBar.pageList.defaultModel;
         }
 
         that.events.initiatePageChange.fire({pageIndex: 0});
 
-        return that;        
+        return that;
     };
     
     fluid.defaults("fluid.pager", {
@@ -398,6 +413,8 @@ fluid_0_8 = fluid_0_8 || {};
         },
         
         dataModel: undefined,
+        // Offset of the tree's "main" data from the overall dataModel root
+        dataOffset: undefined,
         
         selectors: {
             pagerBar: ".pager-top",

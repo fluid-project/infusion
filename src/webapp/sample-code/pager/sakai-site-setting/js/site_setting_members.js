@@ -40,13 +40,13 @@ sakai.initFluidSiteSettingTable = function() {
         }
   
     var pager = fluid.pager(".ss-members", {
-        userModel: model,
+        dataModel: model,
+        dataOffset: "users.membership_collection",
         bodyRenderer: {
           type: "fluid.pager.selfRender",
           options: {
             root: ".site-setting-body",
             cells: cellGenerator,
-            cellRoot: "users.membership"
           }
         }
     });

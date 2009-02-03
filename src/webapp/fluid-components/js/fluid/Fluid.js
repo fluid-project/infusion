@@ -604,20 +604,29 @@ var fluid = fluid || fluid_0_8;
         }
         root[segs[segs.length - 1]] = newValue;
     };
-      
+    
+    /** Evaluates an EL expression by fetching a dot-separated list of members
+     * recursively from a provided root.
+     * @param root The root data structure in which the EL expression is to be evaluated
+     * @param {string} EL The EL expression to be evaluated
+     * @param environment An optional "environment" which, if it contains any members
+     * at top level, will take priority over the root data structure.
+     * @return The fetched data value.
+     */
+    
     fluid.model.getBeanValue = function (root, EL, environment) {
         var segs = fluid.model.parseEL(EL);
-        for (var i = 0; i < segs.length; i += 1) {
+        for (var i = 0; i < segs.length; ++i) {
+            if (!root) {
+                return root;
+            }
             var segment = segs[i];
             if (environment && environment[segment]) {
                 root = environment[segment];
                 environment = null;
             }
             else {
-                root = root[segs[i]];
-            }
-            if (!root) {
-                return root;
+                root = root[segment];
             }
         }
         return root;
