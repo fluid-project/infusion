@@ -41,7 +41,19 @@ fluid_0_8 = fluid_0_8 || {};
      * Creates the renderer tree that matches the table of contents template
      * @param {jQuery Object} headings - the headings to be put into the table of contents
      */
-    var generateTree = function (headings) {
+    var generateTree = function (headings, levels) {
+        var items = {
+            "children:" : fluid.transform(headings, function(heading) {
+                          return {
+                 ID: "level" + (levels.indexOf(heading.tagName) + 1) + ":item",
+                 children: [{
+                     ID: "anchor",
+                     linktext: heading.innerHTML,
+                     target: "#" + heading.innerHTML
+                 }]
+             }; 
+        })};
+ 
         var tree = {children: []};
         
         // A stack of arrays used for generating the tree
@@ -53,7 +65,7 @@ fluid_0_8 = fluid_0_8 || {};
             var item = {
                 ID: id,
                 children: [{
-                    ID: "anchor",
+                    ID: "link",
                     linktext: text,
                     target: "#" + text
                 }]
@@ -70,8 +82,6 @@ fluid_0_8 = fluid_0_8 || {};
             return node;    
         };
 
-        // Tag names used to create the nested structure of the table of contents
-        var levels = ["H1", "H2", "H3", "H4"]; // hard coded tag names - will be parameterized
         var prevLevel = -1;
         var heading, level, i, tagName, name, node, prefix;
         
@@ -83,43 +93,45 @@ fluid_0_8 = fluid_0_8 || {};
             level = levels.indexOf(tagName);
             
             if (level > prevLevel) {
-                // create the ul node
+                // create the ul nodes
                 while (level > prevLevel ) {
-                    prefix = prevLevel > -1 ? levels[prevLevel] + "item:": null;
+                    // TODO: clean up this name creation stuff
                     prevLevel++;
-                    name = prefix ? prefix + levels[prevLevel] + "-ul": levels[prevLevel] + "-ul:";
+                    prefix = prevLevel > 0 ? "level" + prevLevel + ":": null;
+                    name = prefix ? prefix + "level" + (prevLevel+1) + "s": "level" + (prevLevel+1) + "s:";
                     node = createNode(name);
                     stack[stack.length-1].push(node);
                     stack.push(node.children);
                 }
-                node.children.push(createItem(tagName + "item:li", heading.text()));
+                node.children.push(createItem("level" + (level+1) + ":item", heading.text()));
             } else if (level === prevLevel) {
-                stack[stack.length-1].push(createItem(tagName + "item:li", heading.text()));
+                stack[stack.length-1].push(createItem("level" + (level+1) + ":item", heading.text()));
             } else {
                 while (level < prevLevel) {
                     stack.pop();
                     prevLevel--;                    
                 }
-                 stack[stack.length-1].push(createItem(tagName + "item:li", heading.text()));
+                 stack[stack.length-1].push(createItem("level" + (level+1) + ":item", heading.text()));
             }
         }
 
         return tree;
     };
 
-    var buildTOC = function (headings) {
-        var parsedTemplate2 = fluid.selfRender($("[id=toc]"), generateTree(headings));
+    var buildTOC = function (headings, levels) {
+        var parsedTemplate2 = fluid.selfRender($("[id=toc]"), generateTree(headings, levels));
     };
 
     fluid.tableOfContents = function (container, options) {
         var that = fluid.initView("fluid.tableOfContents", container, options);
-        buildTOC(that.locate("headings"));
+        buildTOC(that.locate("headings"), that.options.levels);
     };
     
     fluid.defaults("fluid.tableOfContents", {  
         selectors: {
             headings: ":header"
-        }
+        }, 
+        levels: ["H1", "H2", "H3", "H4", "H5", "H6"]
     });
 
 })(jQuery, fluid_0_8);
