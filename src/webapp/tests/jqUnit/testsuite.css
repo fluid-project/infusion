@@ -1,6 +1,7 @@
 body, div, h1 { font-family: 'trebuchet ms', verdana, arial; margin: 0; padding: 0 }
 body {font-size: 10pt; }
 h1 { padding: 15px; font-size: large; background-color: #06b; color: white; }
+h1 a { color: white; }
 h2 { padding: 10px; background-color: #eee; color: black; margin: 0; font-size: small; font-weight: normal }
 
 .pass { color: green; } 
@@ -10,6 +11,8 @@ p.result { margin-left: 1em; }
 #banner { height: 2em; border-bottom: 1px solid white; }
 h2.pass { background-color: green; }
 h2.fail { background-color: red; }
+
+div.testrunner-toolbar { background: #eee; border-top: 1px solid black; padding: 10px; }
 
 ol#tests > li > strong { cursor:pointer; }
 
@@ -115,15 +118,3 @@ div.chain.out { background: green; }
 div.chain.out div { background: red; display: none; }
 
 div#show-tests * { display: none; }
-
-form.otherlibs{
-	margin: 20px 0 0 30px;
-}
-	form.otherlibs label{
-		display:block;
-		margin: 5px 0 5px 30px;
-	}
-	form.otherlibs input.submit{
-		margin:30px 0 0 0;
-		
-	}

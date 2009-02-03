@@ -26,7 +26,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         };
         
         tests.test("TOC Creation", function () {
-            jqUnit.expect(22);
+            expect(22);
             fluid.tableOfContents("#main");
             
             var toc = $("#toc");
@@ -48,7 +48,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         tests.test("Anchor insertion", function () {
-            jqUnit.expect(5);
+            expect(5);
             fluid.tableOfContents("#main");
 
             var anchors = $("a", "#amphibians-div");

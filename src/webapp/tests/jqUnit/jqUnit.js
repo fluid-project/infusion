@@ -55,24 +55,24 @@ var jqUnit = jqUnit || {};
     }
 
     function deepEqDiag(thing1, thing2, basename) {
-      var diag1 = deepEqImpl(thing1, thing2, basename);
-      if (diag1) {
-          return diag1;
-      }
-      
-      var diag2 = deepEqImpl(thing2, thing1, basename);
-      if (diag2) {
-          return diag2;
-      }
-      
-      return null;    
+        var diag1 = deepEqImpl(thing1, thing2, basename);
+        if (diag1) {
+            return diag1;
+        }
+        
+        var diag2 = deepEqImpl(thing2, thing1, basename);
+        if (diag2) {
+            return diag2;
+        }
+        
+        return null;    
     }
     
-    jqUnit.deepEq = function(thing1, thing2) {
+    jqUnit.deepEq = function (thing1, thing2) {
         return !deepEqImpl(thing1, thing2) && !deepEqImpl(thing2, thing1);
     };
       
-    jqUnit.deepEqDiag = function(thing1, thing2) {
+    jqUnit.deepEqDiag = function (thing1, thing2) {
         return deepEqDiag(thing1, thing2);
     };
     
@@ -80,7 +80,7 @@ var jqUnit = jqUnit || {};
      * Keeps track of the order of function invocations. The transcript contains information about
      * each invocation, including its name and the arguments that were supplied to it.
      */
-    jqUnit.invocationTracker = function (){
+    jqUnit.invocationTracker = function () {
         var that = {};
         
         /**
@@ -98,7 +98,7 @@ var jqUnit = jqUnit || {};
             onObject = onObject || window;
             
             var wrappedFn = onObject[fnName];
-            onObject[fnName] = function (){
+            onObject[fnName] = function () {
                 that.transcript.push({
                     name: fnName,
                     args: arguments
@@ -132,49 +132,49 @@ var jqUnit = jqUnit || {};
     
     var jsUnitCompat = {
         assertEquals: function (msg, expected, actual) {
-            jqUnit.equals(actual, expected, msg);
+            equals(actual, expected, msg);
         },
         
         assertNotEquals: function (msg, value1, value2) {
-            jqUnit.ok(value1 != value2, msg);
+            ok(value1 != value2, msg);
         },
 
         assertTrue: function (msg, value) {
-            jqUnit.ok(value, msg);
+            ok(value, msg);
         },
 
         assertFalse: function (msg, value) {
-            jqUnit.ok(!value, msg);
+            ok(!value, msg);
         },
 
         assertUndefined: function (msg, value) {
-            jqUnit.ok(typeof value === 'undefined', msg);
+            ok(typeof value === 'undefined', msg);
         },
 
         assertNotUndefined: function (msg, value) {
-            jqUnit.ok(typeof value !== 'undefined', msg);
+            ok(typeof value !== 'undefined', msg);
         },
 
         assertValue: function (msg, value) {
-        	  jqUnit.ok(value !== null && value !== undefined, msg);
+            ok(value !== null && value !== undefined, msg);
         },
         
         assertNull: function (msg, value) {
-            jqUnit.equals(value, null, msg);
+            equals(value, null, msg);
         },
 
         assertNotNull: function (msg, value) {
-            jqUnit.ok(value !== null, msg);
+            ok(value !== null, msg);
         },
         
         assertDeepEq: function (msg, expected, actual) {
-          var diag = deepEqDiag(expected, actual);
-          jqUnit.ok(diag === null, msg + (diag === null? "" : ": " + diag));
+            var diag = deepEqDiag(expected, actual);
+            ok(diag === null, msg + (diag === null? "" : ": " + diag));
         },
         
-        assertDeepNeq: function(msg, unexpected, actual) {
-          var diag = deepEqDiag(unexpected, actual);
-          jqUnit.ok(diag !== null, msg);
+        assertDeepNeq: function (msg, unexpected, actual) {
+            var diag = deepEqDiag(unexpected, actual);
+            ok(diag !== null, msg);
         }
     };
 
@@ -188,19 +188,19 @@ var jqUnit = jqUnit || {};
     
     var testFns = {
         isVisible: function (msg, selector) {
-            jqUnit.ok($(selector).is(':visible'), msg);
+            ok($(selector).is(':visible'), msg);
         },
         
         notVisible: function (msg, selector) {
-            jqUnit.ok($(selector).is(':hidden'), msg);
+            ok($(selector).is(':hidden'), msg);
         },
         
         exists: function (msg, selector) {
-            jqUnit.ok($(selector)[0], msg);
+            ok($(selector)[0], msg);
         },
         
         notExists: function (msg, selector) {
-            jqUnit.ok(!$(selector)[0], msg);
+            ok(!$(selector)[0], msg);
         },
         
         // Overrides jQuery's animation routines to be synchronous. Careful!
@@ -229,26 +229,19 @@ var jqUnit = jqUnit || {};
      * TestCase object *
      *******************/
     
-    function TestCase (moduleName, setUpFn, tearDownFn) {
-        this.moduleName = moduleName;
-        this.setUp = setUpFn || null;
-        this.tearDown = tearDownFn || null;
+    function TestCase(moduleName, setUpFn, tearDownFn) {
 
-        jqUnit.module(this.moduleName);
+        module(moduleName, {
+            setup: setUpFn || function () {},
+            teardown: tearDownFn || function () {}
+        });
     }
 
     TestCase.prototype.test = function (string, testFn) {
-        if (this.setUp) {
-            this.setUp ();
-        }
 
-        jqUnit.test (string, testFn);
-
-        if (this.tearDown) {
-            this.tearDown ();
-        }
+        test(string, testFn);
     };
 
     //  Mix the TestCase type into the jqUnit namespace.
     $.extend(jqUnit, {TestCase: TestCase});
-}) (jQuery);
+})(jQuery);

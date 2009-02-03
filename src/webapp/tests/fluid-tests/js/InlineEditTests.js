@@ -58,7 +58,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
      
        inlineEditTests.test("Minimal Construction", function () {
-            jqUnit.expect(10);
+            expect(10);
     
             var container = $("#inline-edit");
             var display = $("#display");
@@ -79,7 +79,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
     
         inlineEditTests.test("Customized Construction", function () {
-            jqUnit.expect(10);
+            expect(10);
     
             var container = $("#inline-edit-custom");
             var display = $("#display-custom");
@@ -127,7 +127,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         makeSubmittingTest("Input autosubmit defeat", "#inline-edit-custom", {submitOnEnter: false}, false);
 
         inlineEditTests.test("Invitation text (Default)", function () {
-            jqUnit.expect(10);
+            expect(10);
     
             var display = $("#empty-display");
             jqUnit.assertEquals("Before initialization of empty display, display is empty", "", display.text());
@@ -155,7 +155,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("Invitation text (custom)", function () {
-            jqUnit.expect(2);
+            expect(2);
     
             var display = $("#empty-display");
             var customInvitation = "This is custom invitation text";
@@ -166,7 +166,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("Invitation text (none)", function () {
-            jqUnit.expect(10);
+            expect(10);
     
             var display = $("#empty-display");
             jqUnit.assertFalse("Before initialization, display is empty", display.text());
@@ -195,7 +195,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("isEditing", function () {
-            jqUnit.expect(3);
+            expect(3);
             var inlineEditor = fluid.inlineEdit("#inline-edit");
             jqUnit.assertFalse("We should be in view mode by default.", inlineEditor.isEditing());
             
@@ -207,7 +207,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("Edit Finish", function () {
-            jqUnit.expect(8);
+            expect(8);
     
             var display = $("#display");
             var edit = $("#edit");
@@ -251,7 +251,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
     
         inlineEditTests.test("Keyboard Navigation Edit", function () {
-            jqUnit.expect(11);
+            expect(11);
     
             var display = $("#display");
             var edit = $("#edit");
@@ -283,7 +283,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("Hover", function () {
-            jqUnit.expect(3);
+            expect(3);
     
             var display = $("#display");
             var inlineEditor = fluid.inlineEdit("#inline-edit");
@@ -298,7 +298,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("Click", function () {
-            jqUnit.expect(5);
+            expect(5);
     
             var display = $("#display");
             var edit = $("#edit");
@@ -314,7 +314,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("Arrow Keys while Editing", function () {
-            jqUnit.expect(5);
+            expect(5);
     
             var display = $("#display");
             var edit = $("#edit");
@@ -333,7 +333,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("Finished Editing Callback", function () {
-            jqUnit.expect(4);
+            expect(4);
             var callbackCalled = false;
     
             var options = {
@@ -350,7 +350,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
     
         inlineEditTests.test("Blur", function () {
-            jqUnit.expect(4);
+            expect(4);
             
             var display = $("#display");
             var edit = $("#edit");
@@ -368,7 +368,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("ARIA", function () {
-            jqUnit.expect(2);
+            expect(2);
 
             var display = $("#display");
             jqUnit.assertFalse("Before initialization, display should have no role.", display.ariaRole());
@@ -396,7 +396,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             
             inlineEditTests.test("inlineEdits(): instantiate more than one", function () {
-               jqUnit.expect(1);
+               expect(1);
     
                var editors = instantiateInlineEdits();
                jqUnit.assertEquals("There should be two inline editors on the page.",
@@ -404,7 +404,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             });
             
             inlineEditTests.test("inlineEdits(): call to edit affects only one at a time", function () {
-                jqUnit.expect(8);
+                expect(8);
                 
                 var editors = instantiateInlineEdits();
                 
@@ -428,7 +428,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             
             inlineEditTests.test("inlineEdits(): finished editing callback; one for all fields", function () {
-                jqUnit.expect(5);
+                expect(5);
                 
                 var textFieldIds = [];
                 var finishedCallback = function (formField) {
@@ -472,7 +472,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             
             inlineEditTests.test("Self-rendering edit mode: instantiation", function () {
-                jqUnit.expect(4);
+                expect(4);
                 
                 var editor = selfRenderingInlineEdit();
                 var editContainer = $(editContainerSel);
@@ -502,7 +502,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             
             inlineEditTests.test("Self-rendering edit mode: edit() and finish()", function () {
-                jqUnit.expect(7);
+                expect(7);
                 
                 var editor = selfRenderingInlineEdit();
                 assertInViewMode();
@@ -526,7 +526,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             inlineEditTests.test("Self-rendering with undo control", function () {
                 var initialValue = "Initial Value";
                 var newValue = "New Value";
-                jqUnit.expect(15);
+                expect(15);
                 
                 $("#display-undoable").text(initialValue);
 
@@ -558,7 +558,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             inlineEditTests.test("Multiple undo controls", function () {
                 var initialValue = "Initial Value";
                 var newValue = "New Value";
-                jqUnit.expect(15);
+                expect(15);
                 $("#display-undoable").text(initialValue);
     
                 var editor1 = fluid.inlineEdit("#inline-edit-undo", {componentDecorators: "fluid.undoDecorator"});

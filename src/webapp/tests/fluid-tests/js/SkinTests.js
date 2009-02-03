@@ -21,7 +21,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var tests = new jqUnit.TestCase("Skin Tests");
         
         tests.test("Remove Styling", function () {
-            jqUnit.expect(8);
+            expect(8);
 
             jqUnit.assertEquals("Initially fluid classes are in the markup", 4, $(".fl-font-size-90").length);
             jqUnit.assertEquals("Initially fluid layout class is in the markup", 1, $(".fl-layout-default").length);
@@ -35,7 +35,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
 
         tests.test("Remove Styling - dynamically added classes to the container", function () {
-            jqUnit.expect(4);
+            expect(4);
 
             var main = $("#main");
             main.addClass("fl-blah");
@@ -51,7 +51,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
 
         tests.test("Style", function () {
-            jqUnit.expect(4);
+            expect(4);
 
             var hcLargeFontSkin = {
                 textSize: "+3",

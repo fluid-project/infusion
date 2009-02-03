@@ -35,7 +35,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         fluidJSTests.test("merge", function() {
           
-            jqUnit.expect(8);
+            expect(8);
             
             var bit1 = {prop1: "thing1"};
             var bit2 = {prop2: "thing2"};

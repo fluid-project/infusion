@@ -25,7 +25,7 @@
         var uploaderTests = new jqUnit.TestCase("Uploader Basic Tests");
 
         uploaderTests.test("Initialize Default", function () {
-            jqUnit.expect(2);
+            expect(2);
             
             var testUploader = fluid.uploader("#single-inline-fluid-uploader");
              
@@ -37,7 +37,7 @@
         });
        
 		uploaderTests.test("Initialize DemoUploadManager", function () {
-            jqUnit.expect(2);
+            expect(2);
             
             var testUploader = fluid.uploader("#single-inline-fluid-uploader", {
                 uploadManager: "fluid.demoUploadManager"
@@ -51,7 +51,7 @@
         });
         
         uploaderTests.test("Test queue totalBytes()", function () {       
-            jqUnit.expect(2);
+            expect(2);
             var testUploader = fluid.uploader("#single-inline-fluid-uploader");
             
             jqUnit.assertEquals("Upload Manager queue should be empty at the start",

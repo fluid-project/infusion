@@ -35,7 +35,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         GeometricManagerTests.test("Original order", function() {
             var orders = $("#permuteTest .orderable");
           
-            jqUnit.expect(2);
+            expect(2);
             assertOrder("Original order", "permuteTest",  "0123A4567B8");
             assertOrder("Original order", "permuteTest2", "abCc");
         });
@@ -45,7 +45,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var orders = $("#permuteTest .orderable");
           
                 fluid.permuteDom(orders[source], orders[target], position, orders, orders);
-                jqUnit.expect(1);
+                expect(1);
                 assertOrder(name, "permuteTest", expected);
             });            
         }
@@ -57,7 +57,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
           
                 fluid.permuteDom(sourceElements[source], targetElements[target], 
                        position, sourceElements, targetElements);
-                jqUnit.expect(2);
+                expect(2);
                 assertOrder(name, "permuteTest", expected1);
                 assertOrder(name, "permuteTest2", expected2);
             });            
@@ -90,7 +90,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
  
         GeometricManagerTests.test("minPointRectangle", function() {
           
-          jqUnit.expect(6);
+          expect(6);
           
           var rect = {left: -1, right: 5, top: -1, bottom : 1};
           
@@ -116,7 +116,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
       GeometricManagerTests.test("minRectRect", function() {
           
-          jqUnit.expect(6);
+          expect(6);
           
           var rect1 = {left: -1, top: -1, right: 5, bottom: 1};
           var rect2 = {left: 3, top: 2, right: 10, bottom: 3};
@@ -152,7 +152,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
               jqUnit.assertEquals(name + " index", toIndex, proj.cacheelem.index);
               jqUnit.assertEquals(name + " wrapped", wrapped, proj.wrapped);
           }
-          jqUnit.expect(24);  
+          expect(24);  
           assertProject("Right0", 0, "RIGHT", 3, false);
           assertProject("Left3",  3, "LEFT",  0, false);
           assertProject("Right3", 3, "RIGHT", 0, true);

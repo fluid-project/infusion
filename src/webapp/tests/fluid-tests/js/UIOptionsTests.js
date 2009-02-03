@@ -28,7 +28,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         };
             
         tests.test("Init Model", function () {
-            jqUnit.expect(6);
+            expect(6);
             
             var uiOptions = fluid.uiOptions(".ui_options_container");
             var model = uiOptions.model.value;
@@ -41,7 +41,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
 
         tests.test("Save", function () {
-            jqUnit.expect(3);
+            expect(3);
 
             var saveCalled = false;
             var options = {
@@ -63,7 +63,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
 
         tests.test("Refresh View", function () {
-            jqUnit.expect(8);
+            expect(8);
 
             var uiOptions = fluid.uiOptions(".ui_options_container");
             uiOptions.model.value = hcSkin;

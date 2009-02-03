@@ -166,8 +166,8 @@
     };
     jQuery.extend(keyboardA11y, extraAsserts);
 
-    jqUnit.test("tabbable()", function () {
-        jqUnit.expect(4);
+    test("tabbable()", function () {
+        expect(4);
         // Test an element that has no tabindex set.
         var element = jQuery(MENU_SEL);
         element.fluid("tabbable");
@@ -189,7 +189,7 @@
         jqUnit.assertEquals("Tabindex should be reset to 0.", 0, element.fluid("tabindex"));
     });
 
-    jqUnit.test("selectable() sets correct tabindexes", function () {
+    test("selectable() sets correct tabindexes", function () {
         var menuContainer = jQuery(MENU_SEL);
         var menuItems = menuContainer.children(MENU_ITEM_SEL);
 
@@ -209,13 +209,13 @@
         jqUnit.assertFalse(nonSelectableItem.fluid("tabindex.has"));
     });
 
-    jqUnit.test("Selects first item when container is focusssed by default", function () {
+    test("Selects first item when container is focusssed by default", function () {
         // Don't specify any options, just use the default behaviour.
         var menu = makeMenuSelectable();
         keyboardA11y.assertFirstMenuItemIsSelectedOnFocus(menu);
     });
 
-    jqUnit.test("Selects first item when container is focussed--explicit argument", function () {
+    test("Selects first item when container is focussed--explicit argument", function () {
         // Explicitly set the selectFirstItemOnFocus option.
         var options = {
             autoSelectFirstItem: true
@@ -224,7 +224,7 @@
         keyboardA11y.assertFirstMenuItemIsSelectedOnFocus(menu);
     });
 
-    jqUnit.test("Doesn't select first item when container is focussed--boolean arg", function () {
+    test("Doesn't select first item when container is focussed--boolean arg", function () {
         var options = {
             autoSelectFirstItem: false
         };
@@ -242,7 +242,7 @@
         keyboardA11y.assertSelected(getFirstMenuItem());
     });
 
-    jqUnit.test("Doesn't select first item when container is focussed--function arg", function () {
+    test("Doesn't select first item when container is focussed--function arg", function () {
         // Pass in a function that will be called to determine if the first item should be focussed.
         var autoSelectFirstItem = function () {
             return false;
@@ -263,7 +263,7 @@
         keyboardA11y.assertNothingSelected();
     });
 
-    jqUnit.test("select()", function () {
+    test("select()", function () {
         var menu = createAndFocusMenu();
 
         // Select the third item and ensure it was actually selected.
@@ -279,7 +279,7 @@
     });
 
     // Checks behaviour when a user attempts to select something that wasn't initially denoted as selectable.
-    jqUnit.test("Doesn't select non-selectables", function () {
+    test("Doesn't select non-selectables", function () {
         var menu = createAndFocusMenu();
 
         // Try selecting something that isn't selectable. Assume things stay the same.
@@ -289,7 +289,7 @@
         keyboardA11y.assertSelected(getFirstMenuItem());
     });
 
-    jqUnit.test("Allows selection via programmatic focus() calls.", function () {
+    test("Allows selection via programmatic focus() calls.", function () {
         // Setup a menu, then programmatically throw focus onto the selectables. They should be correctly selected.
         var options = {
             autoSelectFirstItem: false
@@ -321,7 +321,7 @@
         keyboardA11y.assertNotSelected(getSecondMenuItem());
     });
 
-    jqUnit.test("selectNext()", function () {
+    test("selectNext()", function () {
         var menu = createAndFocusMenu();
 
         // Select the next item.
@@ -333,7 +333,7 @@
         keyboardA11y.assertNotSelected(getThirdMenuItem());
     });
 
-    jqUnit.test("selectPrevious()", function () {
+    test("selectPrevious()", function () {
         var menu = createAndFocusMenu();
 
         // Select the next item.
@@ -346,7 +346,7 @@
         keyboardA11y.assertSelected(getFirstMenuItem());
     });
 
-    jqUnit.test("selectNext() with wrapping", function () {
+    test("selectNext() with wrapping", function () {
         var menu = makeMenuSelectable();
         menu.container.focus();
 
@@ -361,7 +361,7 @@
         keyboardA11y.assertSelected(getFirstMenuItem());
     });
 
-    jqUnit.test("selectPrevious() with wrapping", function () {
+    test("selectPrevious() with wrapping", function () {
         var menu = createAndFocusMenu();
 
         // Select the previous element.
@@ -372,7 +372,7 @@
         keyboardA11y.assertSelected(getLastMenuItem());
     });
 
-    jqUnit.test("Focus persists after leaving container", function () {
+    test("Focus persists after leaving container", function () {
         var menu = createAndFocusMenu();
         selectMiddleChildThenLeaveAndRefocus(menu);
 
@@ -382,7 +382,7 @@
         keyboardA11y.assertNotSelected(getThirdMenuItem());
     });
 
-    jqUnit.test("Selection is cleaned up upon blur", function () {
+    test("Selection is cleaned up upon blur", function () {
         var menu = createAndFocusMenu();
 
         // Move focus to another element altogether.
@@ -398,7 +398,7 @@
         keyboardA11y.assertNothingSelected();
     });
 
-    jqUnit.test("activate()", function () {
+    test("activate()", function () {
         // Tests that we can programmatically activate elements with the default handler.
         var menu = createActivatableMenu();
         getFirstMenuItem().fluid("activate");
@@ -408,7 +408,7 @@
         jqUnit.assertEquals("The menu.activatedItem should be set to the third item.", getThirdMenuItem()[0], menu.activatedItem);
     });
 
-    jqUnit.test("activate with Enter key", function () {
+    test("activate with Enter key", function () {
         // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
         if (!$.browser.mozilla) {
             return;
@@ -419,7 +419,7 @@
         jqUnit.assertEquals("The menu.activatedItem should be set to the first item.", getFirstMenuItem()[0], menu.activatedItem);
     });
 
-    jqUnit.test("activate with Spacebar", function () {
+    test("activate with Spacebar", function () {
         // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
         if (!$.browser.mozilla) {
             return;
@@ -430,7 +430,7 @@
         jqUnit.assertEquals("The menu.activatedItem should be set to the first item.", getFirstMenuItem()[0], menu.activatedItem);
     });
 
-    jqUnit.test("One custom activate binding", function () {
+    test("One custom activate binding", function () {
         // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
         if (!jQuery.browser.mozilla) {
             return;
@@ -464,7 +464,7 @@
     });
 
     function makeCustomActivateTest(enabled) {
-        jqUnit.test("Multiple custom activate bindings" + (enabled? "" : " - disabled"), function () {
+        test("Multiple custom activate bindings" + (enabled? "" : " - disabled"), function () {
             // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
             if (!$.browser.mozilla) {
                 return;
@@ -519,17 +519,17 @@
     makeCustomActivateTest(true);
     makeCustomActivateTest(false);
 
-    jqUnit.test("currentSelection", function () {
+    test("currentSelection", function () {
         var menu = createAndFocusMenu();
         menu.container.fluid("selectable.selectNext");
         var secondMenuItem = getSecondMenuItem();
         keyboardA11y.assertSelected(secondMenuItem);
         var selectedItem = menu.container.fluid("selectable.currentSelection");
-        jqUnit.ok("The current selection should be a jQuery instance.", selectedItem.jQuery);
+        ok("The current selection should be a jQuery instance.", selectedItem.jQuery);
         jqUnit.assertEquals("The current selection should be the second menu item.", secondMenuItem[0], selectedItem[0]);
     });
     
-    jqUnit.test("destructibleList and refresh()", function () {
+    test("destructibleList and refresh()", function () {
         var menuContainer = $(MENU_SEL);
         var selThat = $(MENU_SEL).fluid("selectable", 
           $.extend({selectableSelector: MENU_ITEM_SEL}, setupHandlers())).that();

@@ -60,7 +60,7 @@
         var fileQueueViewTests = new jqUnit.TestCase("FileQueue Tests");
         
         fileQueueViewTests.test("Initialize fileQueue: everything is empty", function () {
-            jqUnit.expect(2);
+            expect(2);
             
             var testQueue = fluid.fileQueue();
         
@@ -72,7 +72,7 @@
         });
  
         fileQueueViewTests.test("addFiles and removing files", function () {
-            jqUnit.expect(5);
+            expect(5);
             
             var testQueue = fluid.fileQueue();
         
@@ -108,7 +108,7 @@
         });
         
         fileQueueViewTests.test("fileQueue: getReadyFiles() and sizeOfReadyFiles()", function () {
-            jqUnit.expect(10);
+            expect(10);
             
             var testQueue = fluid.fileQueue();
         
@@ -158,7 +158,7 @@
         });
         
         fileQueueViewTests.test("fileQueue: getUploadedFiles() and sizeOfUploadedFiles()", function () {
-            jqUnit.expect(24);
+            expect(24);
             
             var testQueue = fluid.fileQueue();
             jqUnit.assertEquals("getReadyFiles() should contain 0 files at the start",
@@ -253,7 +253,7 @@
         });
 
         fileQueueViewTests.test("fileQueue: setupCurrentBatch(), clearCurrentBatch() and updateCurrentBatch()", function () {
-            jqUnit.expect(10);
+            expect(10);
             
             var testQueue = fluid.fileQueue();
             loadQueue(fileSet, testQueue);
