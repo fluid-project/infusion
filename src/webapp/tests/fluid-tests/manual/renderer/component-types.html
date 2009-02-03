@@ -33,7 +33,7 @@
          </div>
             
         <h2>Image thumbnails</h2>
-        <div class="image-container">
+        <div id="image-container" class="image-container">
             <div rsf:id="thumb:" class="orderable-default">
                 <div class="image-inner-container">
                     <a rsf:id="image-url" href="image-url-here">
@@ -48,6 +48,29 @@
             </div>
         </div>
         
+        <table id="selection-test">
+            <tr>
+                <td>
+                    <select rsf:id="select-test">
+                    </select>
+                </td>
+                <td>
+                    <div rsf:id="select-test-row:">
+                        <input rsf:id="select-test-option" name="group1" id="select-test-radio" type="radio"/>
+                        <label rsf:id="select-test-label" for="select-test-radio">foofer</label>
+                    </div>
+                </td>
+                <!--
+                  While the same component tree can fill in both the select and the radio buttons,
+                  adding a set of check boxes won't work properly: it will be rendered as radio buttons.
+                  -->
+            </tr>
+        </table>    
+        
+        <div id="script">
+            <script rsf:id="script-test" type="text/javascript">
+            </script>
+        </div>
 
         <script type="text/javascript">
             demo.renderComponents();

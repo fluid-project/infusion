@@ -75,8 +75,74 @@ var demo = demo || {};
         ]
     };
     
+    /*
+     * This tree actually seems to cause the function to be executed, but does
+     * NOT result in a <script> tag being rendered to the page. Is that the
+     * correct behaviour??
+     */
+    var scriptTree = {
+        children: [
+            {ID: "script-test",
+             functionname: "demo.testFunc",
+             "arguments": "Hello, I've been rendered!"
+            }
+        ]
+    };
+    
+    var selectionTree = {
+        children: [
+            {ID: "select-test",
+             selection: {value: "bar"},
+             optionlist: {value: ["foo", "bar", "foo-bar"]},
+             optionnames: {value: ["Foo", "Bar", "Foo-Bar"]}
+            },
+            {ID: "select-test-row:",
+             children: [
+                {ID: "select-test-option",
+                 choiceindex:0,
+                 parentRelativeID: "..::select-test"
+                },
+                {ID: "select-test-label",
+                 choiceindex:0,
+                 parentRelativeID: "..::select-test"
+                }
+             ]
+            },
+            {ID: "select-test-row:",
+             children: [
+                {ID: "select-test-option",
+                 choiceindex:1,
+                 parentRelativeID: "..::select-test"
+                },
+                {ID: "select-test-label",
+                 choiceindex:1,
+                 parentRelativeID: "..::select-test"
+                }
+             ]
+            },
+            {ID: "select-test-row:",
+             children: [
+                {ID: "select-test-option",
+                 choiceindex:2,
+                 parentRelativeID: "..::select-test"
+                },
+                {ID: "select-test-label",
+                 choiceindex:2,
+                 parentRelativeID: "..::select-test"
+                }
+             ]
+            }
+        ]
+    };
+
     demo.renderComponents = function () {
-        var listTemplate = fluid.selfRender($("[id=toc]"), listTree);
-        var imagesTemplate = fluid.selfRender($(".image-container"), imagesTree);
+        var listTemplate = fluid.selfRender($("#toc"), listTree);
+        var imagesTemplate = fluid.selfRender($("#image-container"), imagesTree);
+        var selectTemplate = fluid.selfRender($("#selection-test"), selectionTree);
+        var scriptTemplate = fluid.selfRender($("#script"), scriptTree);
     };    
+    
+    demo.testFunc = function () {
+        alert("InitBlock successfully rendered!");
+    };
 })(jQuery, fluid);
