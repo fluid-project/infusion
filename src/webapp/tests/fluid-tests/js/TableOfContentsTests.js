@@ -43,8 +43,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             testTocItem(items[5], "Birds");
             testTocItem(items[6], "Anseriformes");
             testTocItem(items[7], "Ducks");
-            testTocItem(items[8], "Galliformes");            
-            testTocItem(items[9], "Grouse");
+            testTocItem(items[8], "Mammals");            
+            testTocItem(items[9], "CATTS");
         });
         
         tests.test("Anchor insertion", function () {

@@ -84,21 +84,23 @@ fluid_0_8 = fluid_0_8 || {};
             
             if (level > prevLevel) {
                 // create the ul node
-                prefix = prevLevel > -1 ? levels[prevLevel] + "item:": null;
-                name = prefix ? prefix + tagName + "-ul": tagName + "-ul:";
-                node = createNode(name);
+                while (level > prevLevel ) {
+                    prefix = prevLevel > -1 ? levels[prevLevel] + "item:": null;
+                    prevLevel++;
+                    name = prefix ? prefix + levels[prevLevel] + "-ul": levels[prevLevel] + "-ul:";
+                    node = createNode(name);
+                    stack[stack.length-1].push(node);
+                    stack.push(node.children);
+                }
                 node.children.push(createItem(tagName + "item:li", heading.text()));
-
-                stack[stack.length-1].push(node);
-                stack.push(node.children);                
-
-                prevLevel++;
             } else if (level === prevLevel) {
                 stack[stack.length-1].push(createItem(tagName + "item:li", heading.text()));
             } else {
-                stack.pop();
-                stack[stack.length-1].push(createItem(tagName + "item:li", heading.text()));
-                prevLevel--;
+                while (level < prevLevel) {
+                    stack.pop();
+                    prevLevel--;                    
+                }
+                 stack[stack.length-1].push(createItem(tagName + "item:li", heading.text()));
             }
         }
 
