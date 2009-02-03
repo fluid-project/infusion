@@ -29,11 +29,28 @@
     <!-- Test HTML -->
     <div id="main" style="display:none;">
         <!-- Temporary table of contents template -->
-        <ul id="toc">
-            <li rsf:id="toc_item:">
-                <a rsf:id="toc_anchor" href=""></a>             
-            </li>
-        </ul>
+        <div id="toc">
+            <ul rsf:id="H1-ul:">
+                <li rsf:id="H1item:li">
+                    <a rsf:id="anchor" href="">1</a>
+                </li>
+                <ul rsf:id="H1item:H2-ul">
+                    <li rsf:id="H2item:li">
+                        <a rsf:id="anchor" href="">2</a>
+                    </li>
+                    <ul rsf:id="H2item:H3-ul">
+                        <li rsf:id="H3item:li">
+                            <a rsf:id="anchor" href="">3</a>
+                        </li>
+                        <ul rsf:id="H3item:H4-ul">
+                            <li rsf:id="H4item:li">
+                                <a rsf:id="anchor" href="">4</a>
+                            </li>
+                        </ul>
+                    </ul>
+                </ul>
+            </ul>
+        </div>
 
         <div id="amphibians-div">
         <h1 id="amphibians">Amphibians</h1>
