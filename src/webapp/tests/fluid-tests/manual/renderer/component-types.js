@@ -91,11 +91,13 @@ var demo = demo || {};
     
     var selectionTree = {
         children: [
+            // This first child is all that's needed to render the <select> element
             {ID: "select-test",
              selection: {value: "bar"},
              optionlist: {value: ["foo", "bar", "foo-bar"]},
              optionnames: {value: ["Foo", "Bar", "Foo-Bar"]}
             },
+            // the rest of these children are required for the checkboxes/radio buttons
             {ID: "select-test-row:",
              children: [
                 {ID: "select-test-option",
