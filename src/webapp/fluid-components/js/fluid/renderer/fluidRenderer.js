@@ -389,49 +389,49 @@ fluid_0_8 = fluid_0_8 || {};
   /*** TRC METHODS ***/
   
   function closeTag() {
-    if (!trc.iselide) {
-      out += "</" + trc.uselump.tagname + ">";
-    }
+      if (!trc.iselide) {
+          out += "</" + trc.uselump.tagname + ">";
+      }
   }
 
   function renderUnchanged() {
-    // TODO needs work since we don't keep attributes in text
-    dumpTillLump(trc.uselump.parent.lumps, trc.uselump.lumpindex + 1,
-        trc.close.lumpindex + (trc.iselide ? 0 : 1));
+      // TODO needs work since we don't keep attributes in text
+      dumpTillLump(trc.uselump.parent.lumps, trc.uselump.lumpindex + 1,
+          trc.close.lumpindex + (trc.iselide ? 0 : 1));
   }
   
   function replaceAttributes() {
-    if (!trc.iselide) {
-      out += fluid.dumpAttributes(trc.attrcopy);
-    }
-    dumpTemplateBody();
+      if (!trc.iselide) {
+          out += fluid.dumpAttributes(trc.attrcopy);
+      }
+      dumpTemplateBody();
   }
 
   function replaceAttributesOpen() {
-    if (trc.iselide) {
-      replaceAttributes();
-    }
-    else {
-      out += fluid.dumpAttributes(trc.attrcopy);
-      out += trc.endopen.lumpindex === trc.close.lumpindex ? "/>" : ">";
-
-      trc.nextpos = trc.endopen.lumpindex;
-    }
+      if (trc.iselide) {
+          replaceAttributes();
+      }
+      else {
+          out += fluid.dumpAttributes(trc.attrcopy);
+          out += trc.endopen.lumpindex === trc.close.lumpindex ? "/>" : ">";
+    
+          trc.nextpos = trc.endopen.lumpindex;
+      }
   }
 
   function dumpTemplateBody() {
-    if (trc.endopen.lumpindex === trc.close.lumpindex) {
-      if (!trc.iselide) {
-        out += "/>";
+      if (trc.endopen.lumpindex === trc.close.lumpindex) {
+          if (!trc.iselide) {
+              out += "/>";
+          }
       }
-    }
-    else {
-      if (!trc.iselide) {
-        out += ">";
-      }
+      else {
+          if (!trc.iselide) {
+              out += ">";
+          }
       dumpTillLump(trc.uselump.parent.lumps, trc.endopen.lumpindex,
           trc.close.lumpindex + (trc.iselide ? 0 : 1));
-    }
+      }
   }
 
   function rewriteLeaf(value) {
@@ -811,45 +811,60 @@ fluid_0_8 = fluid_0_8 || {};
     }
   
   function adjustForID(attrcopy, component, late, forceID) {
-    if (!late) {
-        delete attrcopy["rsf:id"];
-    }
-    if (forceID !== undefined) {
-        attrcopy.id = forceID;
-    }
-    else {
-        if (attrcopy.id || late) {
-            attrcopy.id = component.fullID;
-            }
-    }
-    var count = 1;
-    var baseid = attrcopy.id;
-    while (renderOptions.document.getElementById(attrcopy.id)) {
-        attrcopy.id = baseid + "-" + (count++); 
-    }
-    return attrcopy.id;
-    }
+      if (!late) {
+          delete attrcopy["rsf:id"];
+      }
+      if (forceID !== undefined) {
+          attrcopy.id = forceID;
+      }
+      else {
+          if (attrcopy.id || late) {
+              attrcopy.id = component.fullID;
+              }
+      }
+      var count = 1;
+      var baseid = attrcopy.id;
+      while (renderOptions.document.getElementById(attrcopy.id)) {
+          attrcopy.id = baseid + "-" + (count++); 
+      }
+      return attrcopy.id;
+  }
   
   function rewriteIDRelation(context) {
-    var attrname;
-    var attrval = trc.attrcopy["for"];
-    if (attrval !== undefined) {
-       attrname = "for";
-    }
-    else {
-      attrval = trc.attrcopy["headers"];
+      var attrname;
+      var attrval = trc.attrcopy["for"];
       if (attrval !== undefined) {
-        attrname = "headers";
+           attrname = "for";
       }
-    }
-    if (!attrname) return;
-    var tagname = trc.uselump.tagname;
-    if (attrname === "for" && tagname !== "label") return;
-    if (attrname === "headers" && tagname !== "td" && tagname !== "th") return;
-    var rewritten = rewritemap[getRewriteKey(trc.uselump.parent, context, attrval)];
-    if (rewritten !== undefined) {
-      trc.attrcopy[attrname] = rewritten;
-    }
+      else {
+          attrval = trc.attrcopy["headers"];
+          if (attrval !== undefined) {
+              attrname = "headers";
+          }
+      }
+      if (!attrname) return;
+      var tagname = trc.uselump.tagname;
+      if (attrname === "for" && tagname !== "label") return;
+      if (attrname === "headers" && tagname !== "td" && tagname !== "th") return;
+      var rewritten = rewritemap[getRewriteKey(trc.uselump.parent, context, attrval)];
+      if (rewritten !== undefined) {
+          trc.attrcopy[attrname] = rewritten;
+      }
+  }
+  
+  function renderComment(message) {
+      out += ("<!-- " + message + "-->");
+  }
+  
+  function renderDebugMessage(message) {
+      out += "<span style=\"background-color:#FF466B;color:white;padding:1px;\">";
+      out += message;
+      out += "</span><br/>";
+  }
+  
+  function reportPath(/*UIComponent*/ branch) {
+      var path = branch.fullID;
+      return !path ? "component tree root" : "full path " + path;
   }
   
   function renderComponentSystem(context, torendero, lump) {
@@ -969,6 +984,9 @@ fluid_0_8 = fluid_0_8 || {};
     var renderindex = baselump.lumpindex;
     var basedepth = parentlump.nestingdepth;
     var t1 = parentlump.parent;
+    if (debugMode) {
+        var rendered = {};
+    }
     while (true) {
       renderindex = dumpScan(t1.lumps, renderindex, basedepth, true, false);
       if (renderindex === t1.lumps.length) { 
@@ -998,14 +1016,35 @@ fluid_0_8 = fluid_0_8 || {};
             if (child.children) { // it is a branch TODO
               var targetlump = branchmap[child.fullID];
               if (targetlump) {
-                renderContainer(child, targetlump);
+                  if (debugMode) {
+                      renderComment("Branching for " + child.fullID + " from "
+                          + fluid.debugLump(lump) + " to " + fluid.debugLump(targetlump));
+                  }
+                  
+                  renderContainer(child, targetlump);
+                  
+                  if (debugMode) {
+                      renderComment("Branch returned for " + child.fullID
+                          + fluid.debugLump(lump) + " to " + fluid.debugLump(targetlump));
+                }
               }
               else if (debugMode){
-                out += "Unable to look up branch for component with id " + child.fullID;
+                    renderDebugMessage(
+                      "No matching template branch found for branch container with full ID "
+                          + child.fullID
+                          + " rendering from parent template branch "
+                          + fluid.debugLump(baselump));
               }
             }
             else { // repetitive leaf
               var targetlump = findChild(parentlump, child);
+              if (!targetlump) {
+                  renderDebugMessage(rsc,
+                    "Repetitive leaf with full ID " + child.fullID
+                        + " could not be rendered from parent template branch "
+                        + fluid.debugLump(baselump));
+                continue;
+              }
               var renderend = renderComponentSystem(basecontainer, child, targetlump);
               var wasopentag = renderend < t1.lumps.lengtn && t1.lumps[renderend].nestingdepth >= targetlump.nestingdepth;
               var newbase = child.children? child : basecontainer;
@@ -1023,14 +1062,31 @@ fluid_0_8 = fluid_0_8 || {};
                 dumpScan(t1.lumps, renderend, targetlump.nestingdepth, true, false);
               }
             }
-          }
+          } // end for each repetitive child
+        }
+        else {
+            if (debugMode) {
+                renderDebugMessage("No branch container with prefix "
+                    + prefix + ": found at "
+                    + reportPath(basecontainer)
+                    + " at template position " + fluid.debugLump(baselump)
+                    + ", skipping");
+            }
         }
         
         renderindex = closefinal.lumpindex + 1;
+        if (debugMode) {
+            renderComment("Stack returned from branch for ID " + id + " to "
+              + fluid.debugLump(baselump) + ": skipping from " + fluid.debugLump(lump)
+              + " to " + fluid.debugLump(closefinal));
+          }
       }
       else {
         var component;
         if (id) {
+            if (debugMode) {
+                rendered[id] = true;
+            }
           component = fetchComponent(basecontainer, id, lump);
         }
         if (component && component.children !== undefined) {
@@ -1045,6 +1101,19 @@ fluid_0_8 = fluid_0_8 || {};
         break;
       }
     }
+    if (debugMode) {
+      var children = basecontainer.children;
+      for (var key in children) {
+        var child = children[key];
+        if (!(child.ID.indexOf(':') !== -1) && !rendered[child.ID]) {
+            renderDebugMessage("Leaf child component "
+              + child.componentType + " with full ID "
+              + child.fullID + " could not be found within template "
+              + fluid.debugLump(baselump));
+        }
+      }
+    }  
+    
   }
   
   function renderCollect(collump) {

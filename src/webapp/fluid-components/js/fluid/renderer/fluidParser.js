@@ -67,32 +67,32 @@ fluid_0_8 = fluid_0_8 || {};
   }
   
   function newLump() {
-    var togo = fluid.XMLLump(lumpindex, nestingdepth);
-    if (debugMode) {
-      togo.line = parser.getLineNumber();
-      togo.column = parser.getColumnNumber();
-    }
-    //togo.parent = t;
-    t.lumps[lumpindex] = togo;
-    ++lumpindex;
-    return togo;
+      var togo = fluid.XMLLump(lumpindex, nestingdepth);
+      if (debugMode) {
+          togo.line = parser.getLineNumber();
+          togo.column = parser.getColumnNumber();
+      }
+      //togo.parent = t;
+      t.lumps[lumpindex] = togo;
+      ++lumpindex;
+      return togo;
   }
   
   function addLump(mmap, ID, lump) {
-  	 var list = mmap[ID];
-  	 if (!list) {
-  	 	 list = [];
-  	 	 mmap[ID] = list;
-  	 }
-  	 list[list.length] = lump;
-  }
-  
-  function checkContribute(ID, lump) {
-    if (ID.indexOf("scr=contribute-") !== -1) {
-      var scr = ID.substring("scr=contribute-".length);
-      addLump(t.collectmap, scr, lump);
+      var list = mmap[ID];
+          if (!list) {
+              list = [];
+              mmap[ID] = list;
+          }
+          list[list.length] = lump;
       }
-    }
+    
+  function checkContribute(ID, lump) {
+      if (ID.indexOf("scr=contribute-") !== -1) {
+          var scr = ID.substring("scr=contribute-".length);
+          addLump(t.collectmap, scr, lump);
+          }
+      }
   
   /* parseUri 1.2; MIT License
    By Steven Levithan <http://stevenlevithan.com> 
@@ -117,26 +117,34 @@ fluid_0_8 = fluid_0_8 || {};
    };
    
    parseUri.options = {
-      strictMode: false,
-      key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
-      q: {
-         name: "queryKey",
-         parser: /(?:^|&)([^&=]*)=?([^&]*)/g
-      },
-      parser: {
-         strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-         loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
-      }
+       strictMode: false,
+       key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+       q: {
+           name: "queryKey",
+           parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+       },
+       parser: {
+           strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+           loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+       }
    };
   
   function rewriteUrl(url) {
-    var po = parseUri(url);
-    if (po.protocol || url.charAt(0) === '/') {
-        return url;
-    }
-    else {
-        return baseURL + url;
-    }
+      var po = parseUri(url);
+      if (po.protocol || url.charAt(0) === '/') {
+          return url;
+      }
+      else {
+          return baseURL + url;
+      }
+  }
+  
+  fluid.debugLump = function(lump) {
+     var togo = lump.text;
+     togo += " at ";
+     togo += "lump line " + lump.line + " column " + lump.column +" index " + lump.lumpindex;
+     togo += parent.href == null? "" : " in file " + parent.href;
+     return togo;
   }
   
   function debugLump(lump) {
