@@ -145,6 +145,6 @@ var demo = demo || {};
     };    
     
     demo.testFunc = function () {
-        alert("InitBlock successfully rendered!");
+        alert(arguments[0]);
     };
 })(jQuery, fluid);
