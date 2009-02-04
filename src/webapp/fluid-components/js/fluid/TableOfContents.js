@@ -25,7 +25,7 @@ fluid_0_8 = fluid_0_8 || {};
      *  - integrate table of contents with UI Options
      *  - make the toc template pluggable
      *  - make sure getting headings using something other then a selector works
-     *  - move interesting parts of the template to the defaults ie. anchor
+     *  - move interesting parts of the template to the defaults ie. link
      */ 
     
 
@@ -39,87 +39,85 @@ fluid_0_8 = fluid_0_8 || {};
     };
     
     /**
+     * Creates a generic tree node
+     */
+    var createNode = function (id) {
+        var node = {
+            ID: id,
+            children: []
+        };
+        return node;
+    };
+
+    /**
      * Creates the renderer tree that matches the table of contents template
      * @param {jQuery Object} headings - the headings to be put into the table of contents
      */
-    var generateTree = function (headings, levels) {
-        // Creates leaf nodes for the renderer tree from the headings
-        var items = {
-            children: fluid.transform(headings, function (heading) {
-                var jHeading = $(heading);
-                var text = $(heading).text();
-                return {
-                    heading: jHeading,
-                    ID: "level" + (levels.indexOf(heading.tagName) + 1) + ":item",
-                    children: [{
-                        ID: "link",
-                        linktext: text,
-                        target: "#" + text
-                    }]
-                };
-            })
-        };
+    var createTree = function (headings, levels) {
         
+        // Builds the tree recursively 
+        var generateTree = function (nodes, items, level) {
+            if (items.length === 0) {
+                return;
+            }
+            
+            var item = items[0];
+            
+            if (level === item.level) {
+                nodes[nodes.length - 1].push(item.leaf);
+                items.shift();
+                return generateTree(nodes, items, level);
+            }
+            
+            if (level < item.level) {
+                var prefix = level > -1 ? "level" + (level + 1) + ":" : "";
+                var postfix = level === -1 ? "s:" : "s";
+                var name = prefix + "level" + (level + 2) + postfix;
+                var myNode = createNode(name);
+                nodes[nodes.length - 1].push(myNode);
+                nodes.push(myNode.children);
+                return generateTree(nodes, items, level + 1);
+            }
+            
+            if (level > item.level) {
+                nodes.pop();
+                return generateTree(nodes, items, level - 1);
+            }
+        };
+
         var tree = {
             children: []
         };
         
-        // A stack of arrays used for generating the tree
-        var stack = [];
-        stack.push(tree.children);
-        
-        // Creates a generic tree node
-        var createNode = function (id) {
-            var node = {
-                ID: id,
-                children: []
-            };
-            return node;
-        };
-        
-        var currLevel = -1;
-        var level, nextLevel, i, name, node, prefix, item;
-        
-        for (i = 0; i < items.children.length; i++) {
-            item = items.children[i];
-            insertAnchor(item.heading);            
-            level = levels.indexOf(item.heading[0].tagName);
-            delete item.heading;
-            
-            if (level > currLevel) {
-                // create the ul nodes
-                while (level > currLevel) {
-                    currLevel++;
-                    nextLevel = currLevel + 1;
-                    prefix = currLevel > 0 ? "level" + currLevel + ":" : null;
-                    name = prefix ? prefix + "level" + nextLevel + "s" : "level" + nextLevel + "s:";
-                    node = createNode(name);
-                    
-                    // attach the ul node to the tree and put it on the stack
-                    stack[stack.length - 1].push(node);
-                    stack.push(node.children);
-                }
-                
-                // attach the current item to the tree
-                stack[stack.length - 1].push(items.children[i]);
-            } else if (level === currLevel) {
-                // attach the current item to the tree
-                stack[stack.length - 1].push(items.children[i]);
-            } else {
-                while (level < currLevel) {
-                    stack.pop();
-                    currLevel--;
-                }
-                // attach the current item to the tree
-                stack[stack.length - 1].push(items.children[i]);
-            }
-        }
+        // Leaf nodes for the renderer tree from the headings
+        var items = fluid.transform(headings, function (heading) {
+                var level = levels.indexOf(heading.tagName);
+                var text = $(heading).text();
+                return {
+                    level: level,
+                    leaf: {
+                        ID: "level" + (level + 1) + ":item",
+                        children: [{
+                            ID: "link",
+                            linktext: text,
+                            target: "#" + text
+                        }]
+                    }
+                };
+            });
+
+        generateTree([tree.children], items, -1);
         
         return tree;
     };
-
+    
     var buildTOC = function (headings, levels) {
-        var parsedTemplate2 = fluid.selfRender($("[id=toc]"), generateTree(headings, levels));
+        // Insert anchors into the page that the table of contents will link to
+        headings.each(function (i, el) {
+            insertAnchor($(el));
+        });
+        
+        fluid.selfRender($("[id=toc]"), createTree(headings, levels));
     };
 
     fluid.tableOfContents = function (container, options) {
