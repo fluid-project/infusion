@@ -13,6 +13,7 @@ body {
 }
 .options h1 {float:left;margin:0; padding:0;}
 .options #note, .options #page {display:inline; margin:0 10px;}
+.options #note a {margin:0 5px;}
 .options #page {font-weight:bold;}
 
 .test_containers {    

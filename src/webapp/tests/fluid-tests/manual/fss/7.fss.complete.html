@@ -14,8 +14,11 @@
 		<script type="text/javascript">
             $().ready(function(){
 				// toggle overlay
-				//$('#page').append('<a href="#">Reveal Grid Overlay</a>');
+				$('<a href="#">Reveal Grid Overlay</a>').appendTo('#note');
 				// toggle outline
+				$('<a href="#">Toggle topographical outline (not in IE)</a>').appendTo('#note').click(function(){
+					$('#full_test').toggleClass('outline');
+				});
             });            
 		</script>
 
