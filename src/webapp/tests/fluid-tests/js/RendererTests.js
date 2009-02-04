@@ -477,15 +477,15 @@ fluid.tests = fluid.tests || {};
         
     });
 
-  renderTests.test("Single properly closed li bug (FLUID-2178)", function() {
-        var node = $(".FLUID-2178-test");
-        var tree = {
-        "toc-list:": [{
-           "toc_item:": ["foofer", "barbar"]
-         }]
-       };
-       fluid.selfRender(node, tree) 
-  });
+    renderTests.test("Single properly closed li bug (FLUID-2178)", function() {
+          var node = $(".FLUID-2178-test");
+          var tree = {
+          "toc-list:": [{
+             "toc_item:": ["foofer", "barbar"]
+           }]
+         };
+         fluid.selfRender(node, tree) 
+    });
 
     renderTests.test("Properties unescaping", function() {
       

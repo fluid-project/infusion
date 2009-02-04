@@ -1098,7 +1098,7 @@ fluid_0_8 = fluid_0_8 || {};
   }
   
   fluid.resolveMessageSource = function (messageSource) {
-      if (messageSource.type = "data") {
+      if (messageSource.type === "data") {
           if (messageSource.url === undefined) {
               return fluid.messageLocator(messageSource.messages);
           }
