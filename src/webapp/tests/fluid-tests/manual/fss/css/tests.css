@@ -21,6 +21,9 @@ body {
 .test_containers a {
     color: #fff;
 }
+.test_containers p {
+	margin:0; padding:5px 0;
+}
 .test_containers div, .test_containers li {
 	background-color:#999;
 	text-align:center;

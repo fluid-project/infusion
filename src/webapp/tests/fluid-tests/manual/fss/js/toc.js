@@ -4,7 +4,9 @@ $().ready(function(){
 			{title: "FSS.Layout.Containers", note: "A test for fixed width containers. Each container should be as wide as the text inside says"},
 			{title: "FSS.Layout.Columns", note: "A test for flexible and fixed width columns. Each container should behave as the text inside says. May require adjusting the browser width."},
 			{title: "FSS.Layout.Advanced", note: "Tests for different advanced layout modules. Each module should be inspected for inconsistencies and non-uniformity."},
-			{title: "FSS.Text.Size", note: "A Test for text size."}
+			{title: "FSS.Text.Size", note: "A Test for text size. No two sizes should look alike."},
+			{title: "FSS.Text.Spacing", note: "A Test for letter spacing/tracking. No two sizes should look alike."},
+			{title: "FSS.Text.Font.Family", note: "A Test for typefaces. Typefaces should match the text name."}
 		]
 	}
 
