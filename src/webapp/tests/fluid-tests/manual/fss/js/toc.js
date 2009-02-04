@@ -6,7 +6,8 @@ $().ready(function(){
 			{title: "FSS.Layout.Advanced", note: "Tests for different advanced layout modules. Each module should be inspected for inconsistencies and non-uniformity."},
 			{title: "FSS.Text.Size", note: "A Test for text size. No two sizes should look alike."},
 			{title: "FSS.Text.Spacing", note: "A Test for letter spacing/tracking. No two sizes should look alike."},
-			{title: "FSS.Text.Font.Family", note: "A Test for typefaces. Typefaces should match the text name."}
+			{title: "FSS.Text.Font.Family", note: "A Test for typefaces. Typefaces should match the text name."},
+			{title: "FSS.Complete", note: "Complete test page. Includes most FSS feature class names."}
 		]
 	}
 

@@ -15,8 +15,7 @@ body {
 .options #note, .options #page {display:inline; margin:0 10px;}
 .options #page {font-weight:bold;}
 
-.test_containers {
-    
+.test_containers {    
 }
 .test_containers a {
     color: #fff;
@@ -30,3 +29,7 @@ body {
 	color:#fff;
 }
 
+#full_test{
+	
+}
+#full_test div {padding-top:10px; padding-bottom:10px;}

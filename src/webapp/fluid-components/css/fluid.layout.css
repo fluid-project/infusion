@@ -40,10 +40,16 @@ Generic containers for columns and layouts
 /* Flex width containers */
 .fl-container-auto {width: auto;}
 .fl-container-flex {width: 100%; clear:both;}
+.fl-container-flex10 {width: 10%;}
+.fl-container-flex20 {width: 20%;}
 .fl-container-flex25 {width: 25%;}
 .fl-container-flex30 {width: 30%;}
 .fl-container-flex33 {width: 33%;}
+.fl-container-flex40 {width: 40%;}
 .fl-container-flex50 {width: 50%;}
+.fl-container-flex60 {width: 60%;}
+.fl-container-flex66 {width: 66%;}
+.fl-container-flex75 {width: 75%;}
 
 /* linearizable containers & columns */
 .fl-layout-linear *,
@@ -93,11 +99,11 @@ Layout Helpers
 .fl-col-justified {float:left; display:inline; overflow:auto; text-align:justify;} /* redundant: text alignment now in fluid.text.css */
 
 .fl-col-flex2, .fl-col-flex3, .fl-col-flex4, .fl-col-flex5 {overflow:auto; zoom:1;}
-.fl-col {float:left; display:inline; overflow:auto;}
-.fl-col-flex5 .fl-col {width:19%; margin:0 0.25%; padding:0 0.25%}
+.fl-col {float:left; display:inline;}
+.fl-col-flex5 .fl-col {width:18.95%; margin:0 0.25%; padding:0 0.25%}
 .fl-col-flex4 .fl-col {width:24%; margin:0 0.25%; padding:0 0.25%}
 .fl-col-flex3 .fl-col {width:32.33%; margin:0 0.25%; padding:0 0.25%}
-.fl-col-flex2 .fl-col {width:49%; margin:0 0.25%; padding:0 0.25%}
+.fl-col-flex2 .fl-col {width:48.85%; margin:0 0.25%; padding:0 0.25%}
 
 /* CHANGE TO LAYOUT not COL since this will become a layout helper */
 .fl-col-mixed,
