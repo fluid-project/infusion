@@ -19,6 +19,7 @@ fluid_0_8 = fluid_0_8 || {};
 
     /*
      *  TODO: 
+     *  - look into IE issues with rendering 
      *  - move the template out into UIOptions.html
      *  - get and implement a design for the table of contents 
      *  - integrate table of contents with UI Options
@@ -42,36 +43,30 @@ fluid_0_8 = fluid_0_8 || {};
      * @param {jQuery Object} headings - the headings to be put into the table of contents
      */
     var generateTree = function (headings, levels) {
+        // Creates leaf nodes for the renderer tree from the headings
         var items = {
-            "children:" : fluid.transform(headings, function(heading) {
-                          return {
-                 ID: "level" + (levels.indexOf(heading.tagName) + 1) + ":item",
-                 children: [{
-                     ID: "anchor",
-                     linktext: heading.innerHTML,
-                     target: "#" + heading.innerHTML
-                 }]
-             }; 
-        })};
- 
-        var tree = {children: []};
+            children: fluid.transform(headings, function (heading) {
+                var jHeading = $(heading);
+                var text = $(heading).text();
+                return {
+                    heading: jHeading,
+                    ID: "level" + (levels.indexOf(heading.tagName) + 1) + ":item",
+                    children: [{
+                        ID: "link",
+                        linktext: text,
+                        target: "#" + text
+                    }]
+                };
+            })
+        };
+        
+        var tree = {
+            children: []
+        };
         
         // A stack of arrays used for generating the tree
         var stack = [];
         stack.push(tree.children);
-        
-        // Creates an item tree node for the table of contents
-        var createItem = function (id, text) {
-            var item = {
-                ID: id,
-                children: [{
-                    ID: "link",
-                    linktext: text,
-                    target: "#" + text
-                }]
-            };
-            return item;
-        };
         
         // Creates a generic tree node
         var createNode = function (id) {
@@ -79,42 +74,47 @@ fluid_0_8 = fluid_0_8 || {};
                 ID: id,
                 children: []
             };
-            return node;    
+            return node;
         };
-
-        var prevLevel = -1;
-        var heading, level, i, tagName, name, node, prefix;
         
-        for (i = 0; i < headings.length; i++) {
-            heading = headings.eq(i);
-            insertAnchor(heading);
-
-            tagName = heading[0].tagName;
-            level = levels.indexOf(tagName);
+        var currLevel = -1;
+        var level, nextLevel, i, name, node, prefix, item;
+        
+        for (i = 0; i < items.children.length; i++) {
+            item = items.children[i];
+            insertAnchor(item.heading);            
+            level = levels.indexOf(item.heading[0].tagName);
+            delete item.heading;
             
-            if (level > prevLevel) {
+            if (level > currLevel) {
                 // create the ul nodes
-                while (level > prevLevel ) {
-                    // TODO: clean up this name creation stuff
-                    prevLevel++;
-                    prefix = prevLevel > 0 ? "level" + prevLevel + ":": null;
-                    name = prefix ? prefix + "level" + (prevLevel+1) + "s": "level" + (prevLevel+1) + "s:";
+                while (level > currLevel) {
+                    currLevel++;
+                    nextLevel = currLevel + 1;
+                    prefix = currLevel > 0 ? "level" + currLevel + ":" : null;
+                    name = prefix ? prefix + "level" + nextLevel + "s" : "level" + nextLevel + "s:";
                     node = createNode(name);
-                    stack[stack.length-1].push(node);
+                    
+                    // attach the ul node to the tree and put it on the stack
+                    stack[stack.length - 1].push(node);
                     stack.push(node.children);
                 }
-                node.children.push(createItem("level" + (level+1) + ":item", heading.text()));
-            } else if (level === prevLevel) {
-                stack[stack.length-1].push(createItem("level" + (level+1) + ":item", heading.text()));
+                
+                // attach the current item to the tree
+                stack[stack.length - 1].push(items.children[i]);
+            } else if (level === currLevel) {
+                // attach the current item to the tree
+                stack[stack.length - 1].push(items.children[i]);
             } else {
-                while (level < prevLevel) {
+                while (level < currLevel) {
                     stack.pop();
-                    prevLevel--;                    
+                    currLevel--;
                 }
-                 stack[stack.length-1].push(createItem("level" + (level+1) + ":item", heading.text()));
+                // attach the current item to the tree
+                stack[stack.length - 1].push(items.children[i]);
             }
         }
-
+        
         return tree;
     };
 
