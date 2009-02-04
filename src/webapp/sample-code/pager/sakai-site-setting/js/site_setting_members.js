@@ -46,6 +46,7 @@ sakai.initFluidSiteSettingTable = function() {
           type: "fluid.pager.selfRender",
           options: {
             root: ".site-setting-body",
+            renderOptions: {debugMode: true},
             cells: cellGenerator,
           }
         }
