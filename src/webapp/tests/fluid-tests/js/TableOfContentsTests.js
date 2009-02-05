@@ -27,12 +27,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         tests.test("TOC Creation", function () {
             expect(22);
-            fluid.tableOfContents("#main");
+            var toc = fluid.tableOfContents("#main", {template: {path: "../../"}});
             
-            var toc = $("#toc");
-            jqUnit.isVisible("Table of contents should be visible", toc);
+            var tocEl = $("#main").children().eq(0);
+            jqUnit.isVisible("Table of contents should be visible", tocEl);
 
-            var items = $("li", toc);
+            var items = $("li", tocEl);
             jqUnit.assertEquals("10 headings", 10, items.length);
             
             testTocItem(items[0], "Amphibians");
@@ -49,7 +49,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         tests.test("Anchor insertion", function () {
             expect(5);
-            fluid.tableOfContents("#main");
+            var toc = fluid.tableOfContents("#main", {template: {path: "../../"}});
 
             var anchors = $("a", "#amphibians-div");
             jqUnit.assertEquals("5 headings in the amphibians section", 5, anchors.length);

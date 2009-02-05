@@ -20,7 +20,6 @@ fluid_0_8 = fluid_0_8 || {};
     /*
      *  TODO: 
      *  - look into IE issues with rendering 
-     *  - move the template out into UIOptions.html
      *  - get and implement a design for the table of contents 
      *  - integrate table of contents with UI Options
      *  - make the toc template pluggable
@@ -111,24 +110,46 @@ fluid_0_8 = fluid_0_8 || {};
         return tree;
     };
     
-    var buildTOC = function (headings, levels) {
+    var buildTOC = function (container, headings, levels, templateURL) {
         // Insert anchors into the page that the table of contents will link to
         headings.each(function (i, el) {
             insertAnchor($(el));
         });
         
-        fluid.selfRender($("[id=toc]"), createTree(headings, levels));
+        // Insert a table of contents element at the top of the container that will be replaced by the renderer
+        var node = $("<div></div>");
+        container.prepend(node);
+
+        // Data structure needed by fetchResources
+        var resources = {
+            toc: {
+                href: templateURL
+            }
+        };
+        
+        // Get the template, create the tree and render the table of contents
+        fluid.fetchResources(resources, function () {
+            var templates = fluid.parseTemplates(resources, ["toc"], {});
+            fluid.reRender(templates, node, createTree(headings, levels), {});
+        });
     };
 
     fluid.tableOfContents = function (container, options) {
         var that = fluid.initView("fluid.tableOfContents", container, options);
-        buildTOC(that.locate("headings"), that.options.levels);
+        var templateHref = that.options.template.path + that.options.template.href;
+        buildTOC(that.container, that.locate("headings"), that.options.levels, templateHref);
+        
+        return that;
     };
     
     fluid.defaults("fluid.tableOfContents", {  
         selectors: {
             headings: ":header"
-        }, 
+        },
+        template: {
+            path: "",
+            href: "fluid-components/html/templates/TableOfContents.html"
+        },
         levels: ["H1", "H2", "H3", "H4", "H5", "H6"]
     });
 
