@@ -517,13 +517,18 @@ fluid_0_8 = fluid_0_8 || {};
         });
     };
    
+    var initUploadManager = function (that) {
+        var manager = fluid.initSubcomponent(that, 
+                                             "uploadManager", 
+                                             [that.events, fluid.COMPONENT_OPTIONS]);
+        return that.options.demo ? fluid.demoUploadManager(manager) : manager;
+    };
+    
     var setupUploader = function (that) {
         // Instantiate the upload manager, file queue view, and total file progress bar,
         // passing them smaller chunks of the overall options for the uploader.
         that.decorators = fluid.initSubcomponents(that, "decorators", [that, fluid.COMPONENT_OPTIONS]);
-        that.uploadManager = fluid.initSubcomponent(that, 
-                                                    "uploadManager", 
-                                                    [that.events, fluid.COMPONENT_OPTIONS]);
+        that.uploadManager = initUploadManager(that);
         that.fileQueueView = fluid.initSubcomponent(that, 
                                                     "fileQueueView", 
                                                     [that.locate("fileQueue"),
@@ -604,9 +609,9 @@ fluid_0_8 = fluid_0_8 || {};
     };
 
     fluid.defaults("fluid.uploader", {
-        decorators: {
-            type: "fluid.swfUploadSetupDecorator"
-        },
+        demo: false,
+        
+        decorators: ["fluid.swfUploadSetupDecorator"],
         
         uploadManager: {
             type: "fluid.swfUploadManager"

@@ -184,8 +184,7 @@ fluid_0_8 = fluid_0_8 || {};
         onFileStart: "upload_start_handler",
         onFileProgress: "upload_progress_handler",
         onFileError: "upload_error_handler",
-        onFileSuccess: "upload_success_handler",
-        afterFileComplete: "upload_complete_handler"
+        onFileSuccess: "upload_success_handler"
     };
     
     var mapNames = function (nameMap, source, target) {
@@ -200,27 +199,6 @@ fluid_0_8 = fluid_0_8 || {};
         return result;
     };
     
-    var finishUploading = function (that) {
-        that.events.afterUploadComplete.fire(that.queue.currentBatch.files);
-        that.queue.clearCurrentBatch();
-    };
-    
-    var wrapAfterFileComplete = function (that, swfCallbacks) {
-        var fireAfterFileComplete = swfCallbacks.upload_complete_handler;
-        var fileCompleteWrapper = function (file) {
-            var batch = that.queue.currentBatch;
-            batch.numFilesCompleted++;
-            
-            fireAfterFileComplete(file);
-            if (that.queue.isUploading && batch.numFilesCompleted < batch.files.length) {
-                that.uploadNextFile();
-            } else {
-                finishUploading(that);
-            }
-        };
-        swfCallbacks.upload_complete_handler = fileCompleteWrapper;
-    };
-    
     // For each event type, hand the fire function to SWFUpload so it can fire the event at the right time for us.
     var mapEvents = function (that, nameMap, target) {
         var result = target || {};
@@ -231,16 +209,17 @@ fluid_0_8 = fluid_0_8 || {};
                 result[mappedName] = fireFn;
             }   
         }
-        wrapAfterFileComplete(that, result);
         
-        return result;
-    };
+        result.upload_complete_handler = function(file){
+            that.queueManager.finishFile(file);
+            if (that.queueManager.shouldUploadNextFile()) {
+                that.swfUploader.startUpload();
+            } else {
+                that.queueManager.complete();
+            }
+        };
 
-    var start = function (that) {
-        that.queue.setupCurrentBatch();
-        that.queue.isUploading = true;
-        that.events.onUploadStart.fire(that.queue.currentBatch.files); 
-        that.uploadNextFile();
+        return result;
     };
     
     // Invokes the OS browse files dialog, allowing either single or multiple select based on the options.
@@ -272,9 +251,7 @@ fluid_0_8 = fluid_0_8 || {};
         });
 
         that.events.onFileStart.addListener(function (file) {
-            that.queue.currentBatch.fileIdx++;
-            that.queue.currentBatch.bytesUploadedForFile = 0;
-            that.queue.currentBatch.previousBytesUploadedForFile = 0; 
+            that.queueManager.startFile();
             fileStatusUpdater(file);
         });
         
@@ -318,6 +295,7 @@ fluid_0_8 = fluid_0_8 || {};
     var setupSwfUploadManager = function (that, events) {
         that.events = events;
         that.queue = fluid.fileQueue();
+        that.queueManager = fluid.fileQueue.manager(that.queue, that.events);
         
         // Map the event and settings names to SWFUpload's expectations.
         that.swfUploadSettings = mapNames(swfUploadOptionsMap, that.options);
@@ -364,14 +342,7 @@ fluid_0_8 = fluid_0_8 || {};
          * Starts uploading all queued files to the server.
          */
         that.start = function () {
-            start(that);
-        };
-        
-        /**
-         * Triggers the next file in the current batch to be uploaded.
-         * This function is called internally, and should be moved.
-         */
-        that.uploadNextFile = function () {
+            that.queueManager.start();
             that.swfUploader.startUpload();
         };
         
@@ -399,130 +370,4 @@ fluid_0_8 = fluid_0_8 || {};
         debug: false
     });
     
-})(jQuery, fluid_0_8);
-
-
-/***********************
- * Demo Upload Manager *
- ***********************/
-
-(function ($, fluid) {
-    
-    var updateProgress = function (file, events, demoState, isUploading) {
-        if (!isUploading) {
-            return;
-        }
-        
-        var chunk = Math.min(demoState.chunkSize, file.size);
-        demoState.bytesUploaded = Math.min(demoState.bytesUploaded + chunk, file.size);
-        events.onFileProgress.fire(file, demoState.bytesUploaded, file.size);
-    };
-    
-    var finishUploading = function (that) {
-        if (!that.queue.isUploading) {
-            return;
-        }
-        
-        var file = that.demoState.currentFile;
-        file.filestatus = fluid.uploader.fileStatusConstants.COMPLETE;
-        that.events.onFileSuccess.fire(file);
-        that.demoState.fileIdx++;
-        that.swfUploadSettings.upload_complete_handler(file); // this is a hack that needs to be addressed.
-    };
-    
-    var simulateUpload = function (that) {
-        if (!that.queue.isUploading) {
-            return;
-        }
-        
-        var file = that.demoState.currentFile;
-        if (that.demoState.bytesUploaded < file.size) {
-            that.invokeAfterRandomDelay(function () {
-                updateProgress(file, that.events, that.demoState, that.queue.isUploading);
-                simulateUpload(that);
-            });
-        } else {
-            finishUploading(that);
-        } 
-    };
-    
-    var startUploading = function (that) {
-        // Reset our upload stats for each new file.
-        that.demoState.currentFile = that.queue.files[that.demoState.fileIdx];
-        that.demoState.chunksForCurrentFile = Math.ceil(that.demoState.currentFile / that.demoState.chunkSize);
-        that.demoState.bytesUploaded = 0;
-        that.queue.isUploading = true;
-        
-        that.events.onFileStart.fire(that.demoState.currentFile);
-        that.demoState.currentFile.filestatus = fluid.uploader.fileStatusConstants.IN_PROGRESS;
-        simulateUpload(that);
-    };
-
-    var stopDemo = function (that) {
-        that.demoState.currentFile.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
-        // In SWFUpload's world, pausing is a combinination of an UPLOAD_STOPPED error and a complete.
-        that.events.onFileError.fire(that.demoState.currentFile, 
-                                       fluid.uploader.errorConstants.UPLOAD_STOPPED, 
-                                       "The demo upload was paused by the user.");
-        // This is a hack that needs to be addressed.
-        that.swfUploadSettings.upload_complete_handler(that.demoState.currentFile);
-    };
-    
-    var initDemoUploadManager = function (events, options) {
-        // Instantiate ourself as a slightly modified ServerUploadManager.
-        var that = fluid.swfUploadManager(events, options);
-        fluid.mergeComponentOptions(that, "fluid.demoUploadManager", that.options);
-        
-        // Initialize state for our upload simulation.
-        that.demoState = {
-            fileIdx: 0,
-            chunkSize: 200000
-        };
-        
-        return that;
-    };
-       
-    /**
-     * The Demo Upload Manager derives from the standard Server Upload Manager, but simulates the upload process.
-     * 
-     * @param {Object} options configuration options
-     */
-    fluid.demoUploadManager = function (events, options) {
-        var that = initDemoUploadManager(events, options);
-        
-        that.uploadNextFile = function () {
-            startUploading(that);
-        };
-        
-        /**
-         * Cancels a simulated upload.
-         * This method overrides the default behaviour in SWFUploadManager.
-         */
-        that.stop = function () {
-            stopDemo(that);
-        };
-        
-        /**
-         * Invokes a function after a random delay by using setTimeout.
-         * If the simulateDelay option is false, the function is invoked immediately.
-         * 
-         * @param {Object} fn the function to invoke
-         */
-        that.invokeAfterRandomDelay = function (fn) {
-            var delay;
-            
-            if (that.options.simulateDelay) {
-                delay = Math.floor(Math.random() * 1000 + 100);
-                setTimeout(fn, delay);
-            } else {
-                fn();
-            }
-        };
-        
-        return that;
-    };
-    
-    fluid.defaults("fluid.demoUploadManager", {
-        simulateDelay: true
-    });
 })(jQuery, fluid_0_8);

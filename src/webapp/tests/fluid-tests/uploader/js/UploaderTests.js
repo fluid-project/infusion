@@ -40,7 +40,8 @@
             expect(2);
             
             var testUploader = fluid.uploader("#single-inline-fluid-uploader", {
-                uploadManager: "fluid.demoUploadManager"
+                demo: true,
+                uploadManager: "fluid.swfUploadManager"
             });
             
             jqUnit.assertEquals("Upload Manager queue is empty at the start",

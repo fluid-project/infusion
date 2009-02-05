@@ -68,17 +68,16 @@
         var uploadFiles = function (files) {      
             var tracker = eventTracker();
             
-            var demoManager = fluid.demoUploadManager(events, {
+            var swfManager = fluid.swfUploadManager(events, {
                 simulateDelay: false,
                 listeners: tracker.listeners
             });
             
-            // Just upload one file.
+            var demoManager = fluid.demoUploadManager(swfManager);
             demoManager.queue.files = files;
             demoManager.start();
             
             tracker.transcript.files = files;
-            
             return tracker.transcript;    
         };
         
@@ -100,7 +99,7 @@
         
         demoUploadTests.test("Options merging", function () {
             // Test with no events and no additional options. simulateDelay should be true.
-            var demoManager = fluid.demoUploadManager(events);
+            var demoManager = fluid.demoUploadManager(fluid.swfUploadManager(events));
             
             // Ensure our default options are cool.
             jqUnit.assertTrue("simulateDelay should default to true.", demoManager.options.simulateDelay);
@@ -109,9 +108,9 @@
                                 demoManager.options.flashURL);
                                 
             // Test an alternative option. simulateDelay should be false.
-            demoManager = fluid.demoUploadManager(events, {
+            demoManager = fluid.demoUploadManager(fluid.gearsUploadManager(events, {
                 simulateDelay: false
-            });
+            }));
             jqUnit.assertFalse("simulateDelay should be false.", demoManager.options.simulateDelay);
         });
         

@@ -128,5 +128,40 @@ fluid_0_8 = fluid_0_8 || {};
         }        
         return totalBytes;
     };
+    
+    fluid.fileQueue.manager = function (queue, events) {
+        var that = {};
+        that.queue = queue;
+        that.events = events;
+        
+        that.start = function () {
+            that.queue.setupCurrentBatch();
+            that.queue.isUploading = true;
+            that.events.onUploadStart.fire(that.queue.currentBatch.files); 
+        };
+        
+        that.startFile = function () {
+            that.queue.currentBatch.fileIdx++;
+            that.queue.currentBatch.bytesUploadedForFile = 0;
+            that.queue.currentBatch.previousBytesUploadedForFile = 0; 
+        };
+        
+        that.finishFile = function (file) {
+            var batch = that.queue.currentBatch;
+            batch.numFilesCompleted++;
+            that.events.afterFileComplete.fire(file); 
+        };
+        
+        that.shouldUploadNextFile = function () {
+            return that.queue.isUploading && that.queue.currentBatch.numFilesCompleted < that.queue.currentBatch.files.length;
+        };
+        
+        that.complete = function () {
+            that.events.afterUploadComplete.fire(that.queue.currentBatch.files);
+            that.queue.clearCurrentBatch();
+        };
+        
+        return that;
+    };
           
 })(jQuery, fluid_0_8);
