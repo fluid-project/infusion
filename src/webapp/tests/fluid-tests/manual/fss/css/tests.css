@@ -31,6 +31,16 @@ body {
 }
 
 #full_test{
-	
+	position:relative;
 }
 #full_test div {padding-top:10px; padding-bottom:10px;}
+#full_test #overlay {
+	display:none;
+	position:absolute; 
+	top:0;
+	left:0;
+	padding:0;
+	outline:none;
+	background:none;
+	z-index:10000;
+}

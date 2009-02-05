@@ -13,8 +13,12 @@
 		
 		<script type="text/javascript">
             $().ready(function(){
+				var overlay = $('<div id="overlay"><img src="images/overlays/firefox3/WinXP.gif" /></div>');
+				overlay.prependTo('#full_test');
 				// toggle overlay
-				$('<a href="#">Reveal Grid Overlay</a>').appendTo('#note');
+				$('<a href="#">Reveal Grid Overlay</a>').appendTo('#note').click(function(){
+					overlay.toggle();
+				});
 				// toggle outline
 				$('<a href="#">Toggle topographical outline (not in IE)</a>').appendTo('#note').click(function(){
 					$('#full_test').toggleClass('outline');
@@ -23,7 +27,7 @@
 					'color': '#000',
 					'text-align':'right'
 				});
-            });            
+            });
 		</script>
 
 		<title>Complete Test</title>
