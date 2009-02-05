@@ -540,7 +540,7 @@ fluid_0_8 = fluid_0_8 || {};
   
   function isSelectedValue(torender, value) {
       var selection = torender.selection;
-      return typeof(selection.value) !== "string" && typeof(selection.value.length) === "number" ? 
+      return selection.value && typeof(selection.value) !== "string" && typeof(selection.value.length) === "number" ? 
             $.inArray(value, selection.value, value) !== -1 :
                selection.value === value;
   }
@@ -746,7 +746,11 @@ fluid_0_8 = fluid_0_8 || {};
       if (ishtmlselect) {
         out += ">";
         var values = torender.optionlist.value;
-        var names = torender.optionnames === null || torender.optionnames === undefined ? values: torender.optionnames.value;
+        var names = torender.optionnames === null || torender.optionnames === undefined || !torender.optionnames.value ? values: torender.optionnames.value;
+        if (!names || !names.length) {
+            fluid.fail("Error in component tree - UISelect component with fullID " 
+                + torender.fullID + " does not have optionnames set");
+        }
         for (var i = 0; i < names.length; ++i) {
           out += "<option value=\"";
           var value = values[i];
@@ -853,7 +857,7 @@ fluid_0_8 = fluid_0_8 || {};
   }
   
   function renderComment(message) {
-      out += ("<!-- " + message + "-->");
+      out += ("<!-- " + fluid.XMLEncode(message) + "-->");
   }
   
   function renderDebugMessage(message) {
@@ -1340,7 +1344,8 @@ fluid_0_8 = fluid_0_8 || {};
       if (options.model) {
           fluid.bindFossils(node, options.model, fossils);
           }
-      $(node).html(rendered);
+      $(node).empty();
+      node.innerHTML = rendered;
       processDecoratorQueue();
       return templates;
   }

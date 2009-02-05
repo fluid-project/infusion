@@ -20,8 +20,7 @@ sakai.initFluidSiteSettingTable = function() {
         };
       
         function cellGenerator (row) {
-          return 
-          [{ID: "selection",
+          return  [{ID: "selection",
             valuebinding: "selecteds.*.selected"},
            {ID: "user-link",
             target: "/dev/sn/profile.html?user=" + row.userId,
@@ -46,7 +45,8 @@ sakai.initFluidSiteSettingTable = function() {
           type: "fluid.pager.selfRender",
           options: {
             root: ".site-setting-body",
-            renderOptions: {debugMode: true},
+            renderOptions: {debugMode: false},
+            row: "row:",
             cells: cellGenerator,
           }
         }

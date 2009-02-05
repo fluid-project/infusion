@@ -174,6 +174,30 @@ fluid_0_8 = fluid_0_8 || {};
         
         return that;
     };
+
+    
+    fluid.defaults("fluid.pager.pagerBar", {
+            
+       previousNext: {
+           type: "fluid.pager.previousNext"
+       },
+      
+       pageList: {
+           type: "fluid.pager.directPageList"
+       },
+        
+       selectors: {
+           pageLinks: ".page-link",
+           previous: ".previous",
+           next: ".next"
+       },
+       
+       styles: {
+           currentPage: "current-page",
+           disabled: "disabled"
+       }
+    });
+
     
     fluid.pager.directModelFilter = function (model, pagerModel) {
         var togo = [];
@@ -207,7 +231,7 @@ fluid_0_8 = fluid_0_8 || {};
                tree[i] = expandPath(tree[i], shortRoot, longRoot);
             }
             if (typeof(val) === 'object') {
-                expandTree(val, shortRoot, longRoot);
+                expandPaths(val, shortRoot, longRoot);
             }
         }
     }
@@ -217,7 +241,7 @@ fluid_0_8 = fluid_0_8 || {};
             overallThat.options.dataOffset);
     }
    
-    /** A body renderer implementation which ses the Fluid renderer to render a table section **/
+    /** A body renderer implementation which uses the Fluid renderer to render a table section **/
    
     fluid.pager.selfRender = function (overallThat, options) {
         var root = $(options.root);
@@ -230,7 +254,7 @@ fluid_0_8 = fluid_0_8 || {};
                         var filtered = overallThat.options.modelFilter(dataModel, newModel);
                         var tree = fluid.transform(filtered, 
                             function(filteredRow) {
-                                var cellRoot = (options.dataOffset? options.dataOffset + ".": "");
+                                var cellRoot = (overallThat.options.dataOffset? overallThat.options.dataOffset + ".": "");
                                 var shortRoot = filteredRow.index;
                                 var longRoot = cellRoot + shortRoot; 
                                 if (options.cells === "explode") {
@@ -238,39 +262,24 @@ fluid_0_8 = fluid_0_8 || {};
                                 }
                                 else if (typeof options.cells === "function") {
                                     var tree = options.cells(filteredRow.row, filteredRow.index);
-                                    return expandPaths(tree, shortRoot, longRoot);
+                                    expandPaths(tree, shortRoot, longRoot);
+                                    return tree;
                                 }
                             }
                             );
                         var fullTree = {};
                         fullTree[options.row] = tree;
+                        options.renderOptions.model = overallThat.options.dataModel;
                         fluid.reRender(template, root, fullTree, options.renderOptions);
                     }
                 }
             }
         };
     };
-    
-    fluid.defaults("fluid.pager.pagerBar", {
-            
-       previousNext: {
-           type: "fluid.pager.previousNext"
-       },
-      
-       pageList: {
-           type: "fluid.pager.directPageList"
-       },
-        
-       selectors: {
-           pageLinks: ".page-link",
-           previous: ".previous",
-           next: ".next"
-       },
-       
-       styles: {
-           currentPage: "current-page",
-           disabled: "disabled"
-       }
+
+    fluid.defaults("fluid.pager.selfRender", {
+       row: "row:",
+       cells: "explode"
     });
 
     fluid.pager.summary = function (dom, options) {
