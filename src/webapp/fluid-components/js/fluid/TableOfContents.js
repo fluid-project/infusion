@@ -116,10 +116,6 @@ fluid_0_8 = fluid_0_8 || {};
             insertAnchor($(el));
         });
         
-        // Insert a table of contents element at the top of the container that will be replaced by the renderer
-        var node = $("<div></div>");
-        container.prepend(node);
-
         // Data structure needed by fetchResources
         var resources = {
             toc: {
@@ -130,7 +126,9 @@ fluid_0_8 = fluid_0_8 || {};
         // Get the template, create the tree and render the table of contents
         fluid.fetchResources(resources, function () {
             var templates = fluid.parseTemplates(resources, ["toc"], {});
+            var node = $("<div></div>");
             fluid.reRender(templates, node, createTree(headings, levels), {});
+            container.prepend(node);
             afterRender.fire();
         });
     };

@@ -24,12 +24,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals(name + " has text", name, a.text());
             jqUnit.assertEquals(name + " has href", "#" + name, a.attr("href"));            
         };
-        
-        tests.test("TOC Creation", function () {
-            expect(22);
-            
-            var theTest = function() { 
-            console.log("I'm running");               
+                    
+        var theTest = function () {
+            tests.test("TOC Creation", function () {
+                expect(22);
+
                 var tocEl = $("#main").children().eq(0);
                 jqUnit.isVisible("Table of contents should be visible", tocEl);
                 
@@ -45,20 +44,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 testTocItem(items[6], "Anseriformes");
                 testTocItem(items[7], "Ducks");
                 testTocItem(items[8], "Mammals");
-                testTocItem(items[9], "CATTS");
-            };
-
-            var options = {
-                listeners: {afterRender: theTest},
-                template: {path: "../../"}
-            };
-
-            var toc = fluid.tableOfContents("#main", options);
-        });
+                testTocItem(items[9], "CATT");
+            });
+        };
         
+        var options = {
+            listeners: {afterRender: theTest},
+            template: {path: "../../"}
+        };
+
+        var toc = fluid.tableOfContents("#main", options);
+       
         tests.test("Anchor insertion", function () {
             expect(5);
-            var toc = fluid.tableOfContents("#main", {template: {path: "../../"}});
 
             var anchors = $("a", "#amphibians-div");
             jqUnit.assertEquals("5 headings in the amphibians section", 5, anchors.length);
