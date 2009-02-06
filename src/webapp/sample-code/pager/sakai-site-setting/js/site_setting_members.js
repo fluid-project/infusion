@@ -47,7 +47,7 @@ sakai.initFluidSiteSettingTable = function() {
             root: ".site-setting-body",
             renderOptions: {debugMode: false},
             row: "row:",
-            cells: cellGenerator,
+            cells: cellGenerator
           }
         }
     });

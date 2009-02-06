@@ -1344,8 +1344,13 @@ fluid_0_8 = fluid_0_8 || {};
       if (options.model) {
           fluid.bindFossils(node, options.model, fossils);
           }
-      $(node).empty();
-      node.innerHTML = rendered;
+      //$(node).empty();
+      if ($.browser.msie) {
+        $(node).html(rendered);
+      }
+      else {
+        node.innerHTML = rendered;
+      }
       processDecoratorQueue();
       return templates;
   }
