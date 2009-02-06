@@ -113,20 +113,24 @@ https://source.fluidproject.org/svn/LICENSE.txt
 			jqUnit.exists("New text with out a percentage update, ensure the new text exists", 
                  ":contains(" + newText + ")");
                  
-            // update with null text. It should be the same.
+            // 4.5
+			// update with null text. It should be the same.
             progressBar.update(null, null);
-            
-			// 4.5
 			jqUnit.exists("After update with null text, ensure the old text remains", 
                  ":contains(" + newText + ")");
             
-			// update with empty text
-			
-			progressBar.update(null, "");
+            // 4.6
+			// update with undefined text
+			progressBar.update(null);
+			jqUnit.exists("After updating the Progressor with out label text defined, the label should be unchanged", 
+                 ":contains(" + newText + ")");
 
             // 4.6
+			// update with empty text
+			progressBar.update(null, "");
 			jqUnit.assertTrue("After updating text with an empty string, the label should be empty", 
                  progressBar.label.text() === "");
+                 
 	    });
 
 		 

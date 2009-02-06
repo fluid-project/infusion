@@ -109,7 +109,7 @@ fluid_0_8 = fluid_0_8 || {};
             .width(that.options.minWidth);
     };
     
-    var updateProgress = function (that, percent, labelValue, animationForShow) {
+    var updateProgress = function (that, percent, labelText, animationForShow) {
         
         // show progress before updating, jQuery will handle the case if the object is already displayed
         showProgress(that, animationForShow);
@@ -119,7 +119,9 @@ fluid_0_8 = fluid_0_8 || {};
             var pixels = Math.max(percentToPixels(that, parseFloat(percent)), that.options.minWidth);   
             updateWidth(that, pixels);
         }
-        updateText(that.label, labelValue);
+        if (labelText !== null) {
+            updateText(that.label, labelText);
+        }
         
         // update ARIA
         if (that.ariaElement) {
