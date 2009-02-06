@@ -27,24 +27,33 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         tests.test("TOC Creation", function () {
             expect(22);
-            var toc = fluid.tableOfContents("#main", {template: {path: "../../"}});
             
-            var tocEl = $("#main").children().eq(0);
-            jqUnit.isVisible("Table of contents should be visible", tocEl);
+            var theTest = function() { 
+            console.log("I'm running");               
+                var tocEl = $("#main").children().eq(0);
+                jqUnit.isVisible("Table of contents should be visible", tocEl);
+                
+                var items = $("li", tocEl);
+                jqUnit.assertEquals("10 headings", 10, items.length);
+                
+                testTocItem(items[0], "Amphibians");
+                testTocItem(items[1], "Toads");
+                testTocItem(items[2], "Natterjack Toads");
+                testTocItem(items[3], "Salamander");
+                testTocItem(items[4], "Newt");
+                testTocItem(items[5], "Birds");
+                testTocItem(items[6], "Anseriformes");
+                testTocItem(items[7], "Ducks");
+                testTocItem(items[8], "Mammals");
+                testTocItem(items[9], "CATTS");
+            };
 
-            var items = $("li", tocEl);
-            jqUnit.assertEquals("10 headings", 10, items.length);
-            
-            testTocItem(items[0], "Amphibians");
-            testTocItem(items[1], "Toads");
-            testTocItem(items[2], "Natterjack Toads");
-            testTocItem(items[3], "Salamander");
-            testTocItem(items[4], "Newt");
-            testTocItem(items[5], "Birds");
-            testTocItem(items[6], "Anseriformes");
-            testTocItem(items[7], "Ducks");
-            testTocItem(items[8], "Mammals");            
-            testTocItem(items[9], "CATTS");
+            var options = {
+                listeners: {afterRender: theTest},
+                template: {path: "../../"}
+            };
+
+            var toc = fluid.tableOfContents("#main", options);
         });
         
         tests.test("Anchor insertion", function () {

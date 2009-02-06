@@ -110,7 +110,7 @@ fluid_0_8 = fluid_0_8 || {};
         return tree;
     };
     
-    var buildTOC = function (container, headings, levels, templateURL) {
+    var buildTOC = function (container, headings, levels, templateURL, afterRender) {
         // Insert anchors into the page that the table of contents will link to
         headings.each(function (i, el) {
             insertAnchor($(el));
@@ -131,13 +131,14 @@ fluid_0_8 = fluid_0_8 || {};
         fluid.fetchResources(resources, function () {
             var templates = fluid.parseTemplates(resources, ["toc"], {});
             fluid.reRender(templates, node, createTree(headings, levels), {});
+            afterRender.fire();
         });
     };
 
     fluid.tableOfContents = function (container, options) {
         var that = fluid.initView("fluid.tableOfContents", container, options);
         var templateHref = that.options.template.path + that.options.template.href;
-        buildTOC(that.container, that.locate("headings"), that.options.levels, templateHref);
+        buildTOC(that.container, that.locate("headings"), that.options.levels, templateHref, that.events.afterRender);
         
         return that;
     };
@@ -145,6 +146,9 @@ fluid_0_8 = fluid_0_8 || {};
     fluid.defaults("fluid.tableOfContents", {  
         selectors: {
             headings: ":header"
+        },
+        events: {
+            afterRender: null
         },
         template: {
             path: "",
