@@ -221,6 +221,7 @@ var fluid = fluid || fluid_0_8;
         ENTER: 13,
         DELETE: 46,
         TAB: 9,
+        ESC: 27,
         CTRL: 17,
         SHIFT: 16,
         ALT: 18

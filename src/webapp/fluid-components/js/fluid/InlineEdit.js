@@ -254,6 +254,10 @@ fluid_0_8 = fluid_0_8 || {};
         var finishHandler = function (evt) {
             // Fix for handling arrow key presses. See FLUID-760.
             var code = (evt.keyCode ? evt.keyCode : (evt.which ? evt.which : 0));
+            if (code === fluid.a11y.keys.ESC) {
+                cancel(that);
+                return false;
+            }
             if (code !== fluid.a11y.keys.ENTER) {
                 return true;
             }
