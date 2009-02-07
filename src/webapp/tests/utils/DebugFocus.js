@@ -31,11 +31,12 @@ fluid.debug = function () {
     };
 
     return {
-        listenForFocusEvents: function () {
+        listenForFocusEvents: function (context) {
             fluid.setLogging(true);
             var focussableElements  = [];
 
-            var everything = jQuery ("*");
+            var everything = context? jQuery("*", context) : jQuery("*");
+            fluid.log("Everything: " + everything.length);
             everything.each(function () {
                //if (jQuery(this).hasTabindex()) {
                    focussableElements.push(this);
@@ -48,4 +49,4 @@ fluid.debug = function () {
 } (); // End of fluid.debug namespace.
 
 // Call listenForFocusEvents when the document is ready.
-jQuery(document).ready(fluid.debug.listenForFocusEvents);
+//jQuery(document).ready(fluid.debug.listenForFocusEvents);

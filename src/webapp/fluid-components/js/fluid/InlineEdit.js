@@ -584,7 +584,8 @@ fluid_0_8 = fluid_0_8 || {};
             onBeginEdit: "preventable",
             afterBeginEdit: null,
             onFinishEdit: "preventable",
-            afterFinishEdit: null
+            afterFinishEdit: null,
+            afterInitEdit: null
         },
         
         paddings: {

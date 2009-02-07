@@ -57,6 +57,39 @@ fluid_0_8 = fluid_0_8 || {};
         };
     };
    
+    fluid.inlineEdit.tinyMCE.blurHandlerBinder = function (that) {
+        function focusEditor(editor) {
+                setTimeout(function() {
+                    tinyMCE.execCommand('mceFocus', false, that.editField[0].id);
+                    editor.selection.select(editor.getBody(), 1);
+                    editor.selection.collapse(0);
+                }, 10);          
+        }
+        
+        that.events.afterInitEdit.addListener(
+            function(editor) {
+                focusEditor(editor);
+                var editorBody = editor.getBody();
+
+                // NB - this section has no effect - on most browsers no focus events
+                // are delivered to the actual body
+                fluid.deadMansBlur(that.editField,
+                          $(editorBody),
+                           function () {
+                               that.cancel();
+                            });
+            }
+        );
+        that.events.afterBeginEdit.addListener(function() {
+            var editor = tinyMCE.get(that.editField[0].id);
+            if (editor) {
+                focusEditor(editor);
+            } 
+        });
+
+    };
+   
+   
     fluid.inlineEdit.tinyMCE.editModeRenderer = function (that) {
         var defaultOptions = {
             mode: "exact", 
@@ -64,6 +97,12 @@ fluid_0_8 = fluid_0_8 || {};
         };
         var options = $.extend(true, defaultOptions, that.options.tinyMCE);
         options.elements = fluid.allocateSimpleId(that.editField);
+        var oldinit = options.init_instance_callback;
+        
+        options.init_instance_callback = function(instance) {
+            that.events.afterInitEdit.fire(instance);
+            if (oldinit) oldinit();
+        } 
         tinyMCE.init(options);
     };
     
@@ -84,6 +123,7 @@ fluid_0_8 = fluid_0_8 || {};
             type: "fluid.inlineEdit.tinyMCE.viewAccessor"
         },
         lazyEditView: true,
+        blurHandlerBinder: fluid.inlineEdit.tinyMCE.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.tinyMCE.editModeRenderer
     });
     
@@ -103,21 +143,62 @@ fluid_0_8 = fluid_0_8 || {};
     
     fluid.inlineEdit.FCKEditor.complete = fluid.event.getEventFirer();
     
+    fluid.inlineEdit.FCKEditor.complete.addListener( function(editor) {
+        var editField = editor.LinkedField;
+        var that = $.data(editField, "fluid.inlineEdit.FCKEditor"); 
+        that.events.afterInitEdit.fire(editor);
+    });
+    
+    fluid.inlineEdit.FCKEditor.blurHandlerBinder = function (that) {
+
+        function focusEditor(editor) {
+               editor.Focus(); 
+        }
+        
+        that.events.afterInitEdit.addListener(
+            function(editor) {
+                focusEditor(editor);
+                var editorBody = editor.EditingArea.TargetElement;
+
+                // NB - this section has no effect - on most browsers no focus events
+                // are delivered to the actual body
+                //fluid.deadMansBlur(that.editField,
+                //         $(editorBody),
+                //           function () {
+                //               that.cancel();
+                //            });
+            }
+        );
+        that.events.afterBeginEdit.addListener(function() {
+            var editor = fluid.inlineEdit.FCKEditor.byId(that.editField[0].id);
+            if (editor) {
+                focusEditor(editor);
+            } 
+        });
+
+    };
+
+    fluid.inlineEdit.FCKEditor.byId = function(id) {
+        var editor = typeof(FCKeditorAPI) === "undefined"? null: FCKeditorAPI.GetInstance(id);
+        return editor;  
+    }   
+    
     fluid.inlineEdit.FCKEditor.editModeRenderer = function (that) {
         var id = fluid.allocateSimpleId(that.editField);
+        $.data(fluid.unwrap(that.editField), "fluid.inlineEdit.FCKEditor", that);
         var oFCKeditor = new FCKeditor(id);
         oFCKeditor.BasePath = "fckeditor/";
         $.extend(true, oFCKeditor.Config, that.options.FCKEditor);
         // somehow, some properties like Width and Height are set on the object itself
         $.extend(true, oFCKeditor, that.options.FCKEditor);
+        oFCKeditor.Config.fluidInstance = that;
         oFCKeditor.ReplaceTextarea();
-        $.data(fluid.unwrap(that.editField), "fluid.inlineEdit.FCKEditor", oFCKeditor);
     };
     
     fluid.inlineEdit.FCKEditor.viewAccessor = function (editField) {
         return {
             value: function (newValue) {
-                var editor = typeof(FCKeditorAPI) === "undefined"? null: FCKeditorAPI.GetInstance(editField.id);
+                var editor = fluid.inlineEdit.FCKEditor.byId(editField.id); 
                 if (!editor) {
                 	if (newValue) {
                         $(editField).val(newValue);
@@ -151,6 +232,7 @@ fluid_0_8 = fluid_0_8 || {};
             type: "fluid.inlineEdit.FCKEditor.viewAccessor"
         },
         lazyEditView: true,
+        blurHandlerBinder: fluid.inlineEdit.FCKEditor.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.FCKEditor.editModeRenderer
     });
     
