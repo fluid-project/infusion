@@ -90,7 +90,7 @@ fluid_0_8 = fluid_0_8 || {};
         
         // Leaf nodes for the renderer tree from the headings
         var items = fluid.transform(headings, function (heading) {
-                var level = levels.indexOf(heading.tagName);
+                var level = $.inArray(heading.tagName, levels);
                 var text = $(heading).text();
                 return {
                     level: level,

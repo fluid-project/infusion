@@ -22,7 +22,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var testTocItem = function (item, name) {
             var a = $("a", item);
             jqUnit.assertEquals(name + " has text", name, a.text());
-            jqUnit.assertEquals(name + " has href", "#" + name, a.attr("href"));            
+            jqUnit.assertTrue(name + " has href", a.attr("href").indexOf("#" + name) > -1);            
         };
                     
         var theTest = function () {
@@ -64,7 +64,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var anchor = anchors.eq(0);
             jqUnit.assertEquals("Name is Amphibians", "Amphibians", anchor.attr("name"));         
             jqUnit.assertEquals("No text", "", anchor.text());
-            jqUnit.assertUndefined("No href", anchor.attr("href"));
+            jqUnit.assertFalse("No href", !!anchor.attr("href"));
             jqUnit.assertEquals("The next element in the DOM is the heading", "amphibians", anchor.next().attr("id"));
         });
     });
