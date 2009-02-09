@@ -153,31 +153,41 @@ var demo = demo || {};
         ]
     };
 
-    var buildSelectChoiceTree = function (model, rootID, rowID, choiceID, labelID) {
+    var selectors3 = {
+        root: ".my-root",
+        row: ".my-row",
+        choice: ".my-choice",
+        label: ".my-label"
+    };
+    
+        var selectorMap = [{selector: selectors3.root, id: "select-choice-root"},
+                           {selector: selectors3.row, id: "select-choice-row:"},
+                           {selector: selectors3.choice, id: "select-choice"},
+                           {selector: selectors3.label, id: "select-choice-label"}];
+
+    var buildSelectChoiceTree = function (model, selectors) {
+        
         var tree = {};
         tree.children = [];
         tree.children[0] = {
-            ID: rootID,
+            ID: "select-choice-root",
             selection: model.selection,
             optionnames: model.optionnames,
             optionlist: model.optionlist
         };
         for (var i = 1; i <= model.optionlist.length; i++) {
             tree.children[i] = {
-                ID: rowID,
+                ID: "select-choice-row:",
                 children: [
-                    {ID: choiceID,
+                    {ID: "select-choice",
                      choiceindex: i-1,
-                     parentRelativeID: "..::"+rootID}
-                ]
-            };
-            if (labelID) {
-                tree.children[i].children[1] = {
-                    ID: labelID,
+                     parentRelativeID: "..::select-choice-root"},
+                      {
+                    ID: "select-choice-label",
                     choiceindex: i-1,
-                    parentRelativeID: "..::"+rootID
-                };
-            }
+                    parentRelativeID: "..::select-choice-root"
+                }]
+            };
         }
         return tree;
     };
@@ -200,8 +210,8 @@ var demo = demo || {};
         var selectTemplate1 = fluid.selfRender($("#selection-test1"), selectionTree1, {debugMode: true});
         var selectTemplate2 = fluid.selfRender($("#selection-test2"), selectionTree2, {debugMode: true});
         var selectTemplate3 = fluid.selfRender($("#selection-test3"),
-                                                buildSelectChoiceTree(selection3model, "select-test3", "select-test-row:", "select-test-option", "select-test-label"),
-                                                {model: selection3model, debugMode: true});
+                                                buildSelectChoiceTree(selection3model, selectors3),
+                                                {model: selection3model, cutpoints: selectorMap, debugMode: true});
         var jointTemplate = fluid.selfRender($("#joint-test"), jointTree, {debugMode: true});
         var scriptTemplate = fluid.selfRender($("#script"), scriptTree, {debugMode: true});
     };    
