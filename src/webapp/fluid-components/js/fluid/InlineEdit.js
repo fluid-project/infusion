@@ -259,7 +259,7 @@ fluid_0_8 = fluid_0_8 || {};
             if (code === fluid.a11y.keys.ESC) {
                 cancel(that);
                 return false;
-            }          
+            }
         }
         var finishHandler = function (evt) {
             var code = keyCode(evt);
