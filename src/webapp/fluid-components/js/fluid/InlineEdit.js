@@ -250,14 +250,19 @@ fluid_0_8 = fluid_0_8 || {};
         if (that.options.submitOnEnter === undefined) {
             that.options.submitOnEnter = "textarea" !== fluid.unwrap(that.editField).nodeName.toLowerCase();
         }
-      
-        var finishHandler = function (evt) {
+        function keyCode(evt) {
             // Fix for handling arrow key presses. See FLUID-760.
-            var code = (evt.keyCode ? evt.keyCode : (evt.which ? evt.which : 0));
+            return evt.keyCode ? evt.keyCode : (evt.which ? evt.which : 0);          
+        }
+        var escHandler = function (evt) {
+            var code = keyCode(evt);
             if (code === fluid.a11y.keys.ESC) {
                 cancel(that);
                 return false;
-            }
+            }          
+        }
+        var finishHandler = function (evt) {
+            var code = keyCode(evt);
             if (code !== fluid.a11y.keys.ENTER) {
                 return true;
             }
@@ -269,6 +274,7 @@ fluid_0_8 = fluid_0_8 || {};
         if (that.options.submitOnEnter) {
             that.editContainer.keypress(finishHandler);
         }
+        that.editContainer.keydown(escHandler);
     };
     
     var bindBlurHandler = function (that) {
