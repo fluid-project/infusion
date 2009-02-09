@@ -37,7 +37,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Text size is set", "Default", model.textSize);
             jqUnit.assertEquals("Text font is set", "Default", model.textFont);
             jqUnit.assertEquals("Text spacing is set", "Default", model.textSpacing);
-            jqUnit.assertEquals("Colour scheme is set", "Mist", model.colorScheme);
+            jqUnit.assertEquals("Colour scheme is set", "Default", model.colorScheme);
         });
 
         tests.test("Save", function () {

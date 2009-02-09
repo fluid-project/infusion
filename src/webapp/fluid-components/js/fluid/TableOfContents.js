@@ -19,7 +19,6 @@ fluid_0_8 = fluid_0_8 || {};
 
     /*
      *  TODO: 
-     *  - look into IE issues with rendering 
      *  - get and implement a design for the table of contents 
      *  - integrate table of contents with UI Options
      *  - make the toc template pluggable

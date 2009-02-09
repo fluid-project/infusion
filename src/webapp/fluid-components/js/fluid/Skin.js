@@ -55,6 +55,36 @@ fluid_0_8 = fluid_0_8 || {};
         fluid.skin.removeStyling(element);
         fluid.skin.style(skin, element);
     };
+    
+    fluid.skin.model = {
+        fontStyleModel: {
+            names: ["No Preference", "Serif", "Sans-Serif"],
+            values: ["Default", "Serif", "Sans-Serif"],
+            selection: "Serif"
+        },
+        fontMinSizeModel: {
+            value: "-1"
+        },
+        textSpacingModel: {
+            value: "103"
+        },
+        contrastModel: {
+            names: ["No Preference", "High Contrast", "Mist"],
+            values: ["Default", "High Contrast", "Mist"],
+            selection: "Default"
+        },
+        backgroundImagesModel: {
+            names: ["Yes", "No"],
+            values: ["yes", "no"],
+            selection: "yes"
+        },
+        layoutModel: {
+            names: ["Yes", "No"],
+            values: ["yes", "no"],
+            selection: "no"
+        }
+    };
+
         
     fluid.skin.settings = {
         "textSize": {
