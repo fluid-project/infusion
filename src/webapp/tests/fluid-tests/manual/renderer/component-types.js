@@ -153,17 +153,55 @@ var demo = demo || {};
         ]
     };
 
+    var buildSelectChoiceTree = function (model, rootID, rowID, choiceID, labelID) {
+        var tree = {};
+        tree.children = [];
+        tree.children[0] = {
+            ID: rootID,
+            selection: model.selection,
+            optionnames: model.optionnames,
+            optionlist: model.optionlist
+        };
+        for (var i = 1; i <= model.optionlist.length; i++) {
+            tree.children[i] = {
+                ID: rowID,
+                children: [
+                    {ID: choiceID,
+                     choiceindex: i-1,
+                     parentRelativeID: "..::"+rootID}
+                ]
+            };
+            if (labelID) {
+                tree.children[i].children[1] = {
+                    ID: labelID,
+                    choiceindex: i-1,
+                    parentRelativeID: "..::"+rootID
+                };
+            }
+        }
+        return tree;
+    };
+
+    var selection3model = {
+        optionnames: ["Hey", "you", "there!"],
+        optionlist: ["foo", "bar", "foo-bar"],
+        selection: ["bar"]
+    };
+ 
     var jointTree = {
         children: [
             {ID:"joint1", jointID: "joint2"}
         ]
     };
-    
+        
     demo.renderComponents = function () {
         var listTemplate = fluid.selfRender($("#toc"), listTree, {debugMode: true});
         var imagesTemplate = fluid.selfRender($("#image-container"), imagesTree, {debugMode: true});
         var selectTemplate1 = fluid.selfRender($("#selection-test1"), selectionTree1, {debugMode: true});
         var selectTemplate2 = fluid.selfRender($("#selection-test2"), selectionTree2, {debugMode: true});
+        var selectTemplate3 = fluid.selfRender($("#selection-test3"),
+                                                buildSelectChoiceTree(selection3model, "select-test3", "select-test-row:", "select-test-option", "select-test-label"),
+                                                {model: selection3model, debugMode: true});
         var jointTemplate = fluid.selfRender($("#joint-test"), jointTree, {debugMode: true});
         var scriptTemplate = fluid.selfRender($("#script"), scriptTree, {debugMode: true});
     };    
