@@ -84,15 +84,31 @@ var demo = demo || {};
         children: [
             {ID: "script-test",
              functionname: "demo.testFunc",
-             "arguments": "Hello, I've been rendered!"
+             "arguments": ["Hello, I've been rendered!"]
             }
         ]
     };
     
-    var selectionTree = {
+    var selectionTree1 = {
+        children: [    // This first child is all that's needed to render the <select> element
+        {
+            ID: "select-test",
+            selection: {
+                value: "bar"
+            },
+            optionlist: {
+                value: ["foo", "bar", "foo-bar"]
+            },
+            optionnames: {
+                value: ["Foo", "Bar", "Foo-Bar"]
+            }
+        }]
+    };
+
+    var selectionTree2 = {
         children: [
             // This first child is all that's needed to render the <select> element
-            {ID: "select-test",
+            {ID: "select-test2",
              selection: {value: "bar"},
              optionlist: {value: ["foo", "bar", "foo-bar"]},
              optionnames: {value: ["Foo", "Bar", "Foo-Bar"]}
@@ -102,11 +118,11 @@ var demo = demo || {};
              children: [
                 {ID: "select-test-option",
                  choiceindex:0,
-                 parentRelativeID: "..::select-test"
+                 parentRelativeID: "..::select-test2"
                 },
                 {ID: "select-test-label",
                  choiceindex:0,
-                 parentRelativeID: "..::select-test"
+                 parentRelativeID: "..::select-test2"
                 }
              ]
             },
@@ -114,11 +130,11 @@ var demo = demo || {};
              children: [
                 {ID: "select-test-option",
                  choiceindex:1,
-                 parentRelativeID: "..::select-test"
+                 parentRelativeID: "..::select-test2"
                 },
                 {ID: "select-test-label",
                  choiceindex:1,
-                 parentRelativeID: "..::select-test"
+                 parentRelativeID: "..::select-test2"
                 }
              ]
             },
@@ -126,22 +142,30 @@ var demo = demo || {};
              children: [
                 {ID: "select-test-option",
                  choiceindex:2,
-                 parentRelativeID: "..::select-test"
+                 parentRelativeID: "..::select-test2"
                 },
                 {ID: "select-test-label",
                  choiceindex:2,
-                 parentRelativeID: "..::select-test"
+                 parentRelativeID: "..::select-test2"
                 }
              ]
             }
         ]
     };
 
+    var jointTree = {
+        children: [
+            {ID:"joint1", jointID: "joint2"}
+        ]
+    };
+    
     demo.renderComponents = function () {
-        var listTemplate = fluid.selfRender($("#toc"), listTree);
-        var imagesTemplate = fluid.selfRender($("#image-container"), imagesTree);
-        var selectTemplate = fluid.selfRender($("#selection-test"), selectionTree);
-        var scriptTemplate = fluid.selfRender($("#script"), scriptTree);
+        var listTemplate = fluid.selfRender($("#toc"), listTree, {debugMode: true});
+        var imagesTemplate = fluid.selfRender($("#image-container"), imagesTree, {debugMode: true});
+        var selectTemplate1 = fluid.selfRender($("#selection-test1"), selectionTree1, {debugMode: true});
+        var selectTemplate2 = fluid.selfRender($("#selection-test2"), selectionTree2, {debugMode: true});
+        var jointTemplate = fluid.selfRender($("#joint-test"), jointTree, {debugMode: true});
+        var scriptTemplate = fluid.selfRender($("#script"), scriptTree, {debugMode: true});
     };    
     
     demo.testFunc = function () {
