@@ -611,7 +611,9 @@ fluid_0_8 = fluid_0_8 || {};
     fluid.defaults("fluid.uploader", {
         demo: false,
         
-        decorators: ["fluid.swfUploadSetupDecorator"],
+        decorators: {
+            type: "fluid.swfUploadSetupDecorator"
+        },
         
         uploadManager: {
             type: "fluid.swfUploadManager"
