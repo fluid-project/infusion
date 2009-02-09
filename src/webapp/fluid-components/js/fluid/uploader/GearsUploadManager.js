@@ -61,7 +61,7 @@ fluid_0_8 = fluid_0_8 || {};
         
         var uploadRequest = google.gears.factory.create('beta.httprequest');
         uploadRequest.open("POST", that.options.uploadURL);
-        uploadRequest.onreadystatechange = createReadyStateChangedHandler;
+        uploadRequest.onreadystatechange = createReadyStateChangedHandler(that, file, uploadRequest);
         uploadRequest.onprogress = that.updateProgress;
         uploadRequest.send(file.blob);     
     };
