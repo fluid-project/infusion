@@ -160,35 +160,28 @@ var demo = demo || {};
         label: ".my-label"
     };
     
-        var selectorMap = [{selector: selectors3.root, id: "select-choice-root"},
-                           {selector: selectors3.row, id: "select-choice-row:"},
-                           {selector: selectors3.choice, id: "select-choice"},
-                           {selector: selectors3.label, id: "select-choice-label"}];
+    var selectorMap = [{selector: selectors3.root, id: "select-choice-root"},
+                       {selector: selectors3.row, id: "select-choice-row:"},
+                       {selector: selectors3.choice, id: "select-choice"},
+                       {selector: selectors3.label, id: "select-choice-label"}];
 
     var buildSelectChoiceTree = function (model, selectors) {
-        
         var tree = {};
-        tree.children = [];
-        tree.children[0] = {
+        tree.children = [{
             ID: "select-choice-root",
             selection: model.selection,
             optionnames: model.optionnames,
             optionlist: model.optionlist
-        };
-        for (var i = 1; i <= model.optionlist.length; i++) {
-            tree.children[i] = {
-                ID: "select-choice-row:",
+        }];
+        var optionChildren = fluid.transform(model.optionlist, function(option, index) {
+    	    return {
+                ID: "select-choice-row:", 
                 children: [
-                    {ID: "select-choice",
-                     choiceindex: i-1,
-                     parentRelativeID: "..::select-choice-root"},
-                      {
-                    ID: "select-choice-label",
-                    choiceindex: i-1,
-                    parentRelativeID: "..::select-choice-root"
-                }]
-            };
-        }
+                    {ID: "select-choice", parentRelativeID: "..::select-choice-root", choiceindex: index},
+                    {ID: "select-choice-label", parentRelativeID: "..::select-choice-root", choiceindex: index}]
+    	        };
+    	    });
+        tree = tree.children.concat(optionChildren);
         return tree;
     };
 
