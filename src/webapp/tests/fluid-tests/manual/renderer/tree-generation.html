@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>Renderer: Tree Generation Testing</title>
+        <!--  These are the required javascript modules for the Renderer and can be replaced with Fluid-all.js -->
+        <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fluidRenderer.js"></script>
+        <script type="text/javascript" src="tree-generation.js"></script>
+	</head>
+
+	<body>
+	    <h2>First set of check boxes</h2>
+        <div id="selection-test">
+            <div class="my-row">
+                <input class="my-choice" name="group1" id="select-test-check" type="checkbox"/>
+                <label class="my-label" for="select-test-check">
+                    foofer
+                </label>
+            </div>
+        </div>
+	    <h2>Second set of check boxes</h2>
+        <div id="selection-test2">
+            <div class="my-row2">
+                <input class="my-choice2" name="group2" id="select-test-check2" type="checkbox"/>
+                <label class="my-label2" for="select-test-check2">
+                    foofer
+                </label>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            genTest.renderComponents();
+        </script>
+
+	</body>
+</html>
