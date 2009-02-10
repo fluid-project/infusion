@@ -13,6 +13,28 @@
 		<script type="text/javascript">
             // programmatic coloring - access to advanced selectors + requires less maintenance than hardcoded classes
             $().ready(function(){
+                // Creation
+                var column, columnA, columnB, columnC;
+                var base = parseFloat($('body').css('fontSize'));
+                
+                //console.log(base, 1/base * base);
+                
+                columnA = $('<div class="fl-col"></div>');
+                columnB = $('<div class="fl-col"></div>');
+                columnC = $('<div class="fl-col"></div>');
+                columnD = $('<div class="fl-col"></div>');
+
+                for(var i=0; i<=6; i++){
+                    columnA.append('<p class="fl-text-align-left fl-font-spacing-' + i + '">Plain inline text</p>');                    
+                    columnB.append('<p class="fl-text-align-left"> <input class="fl-font-spacing-' + i + '" type="submit" value="Button" /></p>');
+                    columnC.append('<p class="fl-text-align-left"> <input class="fl-font-spacing-' + i + '" type="text" value="Text field" /></p>');
+                    columnD.append('<p class="fl-text-align-left"> <textarea class="fl-font-spacing-' + i + '">Text area</textarea></p>');                    
+                }
+                                
+                $('.test_containers').append(columnA);
+                $('.test_containers').append(columnB);
+                $('.test_containers').append(columnC);
+                $('.test_containers').append(columnD); 
             });            
 		</script>
 
@@ -27,7 +49,8 @@
 			<a href="#next">Next Test</a>			
 		</div>
 
-		<div class="test_containers">
+		<div class="test_containers fl-col-flex4">
+		    <!-- 
 			<p class="fl-font-spacing-0">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea> </p>
 			<p class="fl-font-spacing-1">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
 			<p class="fl-font-spacing-2">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
@@ -35,6 +58,7 @@
 			<p class="fl-font-spacing-4">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
 			<p class="fl-font-spacing-5">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
 			<p class="fl-font-spacing-6">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+            -->
 		</div>		
 
 	</body>

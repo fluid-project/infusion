@@ -3,13 +3,18 @@ html {
 }
 body {
 	height:100%;
-	background:#fff url('../images/960grid_no_ratios.png') repeat left 51px;
+	
+}
+.grid_1 {
+    background:#fff url('../images/960grid_no_ratios.png') repeat left top;
+}
+.grid_2 {
+    background:#fff url('../images/grid.gif') repeat left top;
 }
 .options {
 	background:#FFFFFF;
 	padding:17px 20px;	
 	text-align:right;
-    margin-bottom:50px;
 }
 .options h1 {float:left;margin:0; padding:0;}
 .options #note, .options #page {display:inline; margin:0 10px;}
@@ -22,7 +27,8 @@ body {
     color: #fff;
 }
 .test_containers p {
-	margin:0; padding:5px 0;
+	margin:0; 
+    padding:5px 0;
 }
 .test_containers div, .test_containers li {
 	background-color:#999;
@@ -33,7 +39,10 @@ body {
 #full_test{
 	position:relative;
 }
-#full_test div {padding-top:10px; padding-bottom:10px;}
+#full_test div {
+    padding-top:10px; 
+    padding-bottom:10px;
+}
 #full_test #overlay {
 	display:none;
 	position:absolute; 

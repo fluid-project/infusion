@@ -13,7 +13,52 @@
 		<script type="text/javascript">
             // programmatic coloring - access to advanced selectors + requires less maintenance than hardcoded classes
             $().ready(function(){
-            });            
+                // Creation
+                var column, columnA, columnB, columnC;
+                var base = parseFloat($('body').css('fontSize'));
+                
+                //console.log(base, 1/base * base);
+                
+                columnA = $('<div class="fl-col"></div>');
+                columnB = $('<div class="fl-col"></div>');
+                columnC = $('<div class="fl-col"></div>');
+                columnD = $('<div class="fl-col"></div>');
+
+                for(var i=70; i<=150; i += 10){
+                    columnA.append('<p class="fl-text-align-left fl-font-size-' + i + '">Plain inline text</p>');                    
+                    columnB.append('<p class="fl-text-align-left"> <input class="fl-font-size-' + i + '" type="submit" value="Button" /></p>');
+                    columnC.append('<p class="fl-text-align-left"> <input class="fl-font-size-' + i + '" type="text" value="Text field" /></p>');
+                    columnD.append('<p class="fl-text-align-left"> <textarea class="fl-font-size-' + i + '">Text area</textarea></p>');                    
+                }
+                                
+                $('.test_containers').append(columnA);
+                $('.test_containers').append(columnB);
+                $('.test_containers').append(columnC);
+                $('.test_containers').append(columnD);                                
+                
+                // Testing
+                // Since the different browsers report such different numbers for the same visual end result, the only useful test is to see if a size is larger than the previous
+                /*
+                var temp = 0.60;
+                $.each($('*[class*=fl-font]'), function(i,el){
+                    temp += 0.10;                    
+                    expected = temp.toFixed(2);
+                    actual = (parseFloat($(el).css('fontSize')) / base).toFixed(2);
+                    
+                    //$(el).closest("p").append("<strong style='display:block'>Expected: "+ expected +"; Actual: "+ actual +"</strong>");
+                    
+                    if (expected === actual){
+                        $(el).closest("p").css('background-color','#0C0');
+                    } else {
+                        $(el).closest("p").css('background-color','#C00');
+                    }
+
+                    if (temp >= 1.5){
+                        temp = 0.6;
+                    }
+                });
+                */                
+            });
 		</script>
 
 		<title>Test Containers</title>
@@ -24,19 +69,10 @@
             <p id="note"></p>
             <p id="page">Test 0 of 0</p>
 			<a href="#prev">Previous Test</a>
-			<a href="#next">Next Test</a>			
+			<a href="#next">Next Test</a>
 		</div>
 
-		<div class="test_containers">
-			<p class="fl-font-size-70">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea> </p>
-			<p class="fl-font-size-80">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
-			<p class="fl-font-size-90">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
-			<p class="fl-font-size-100">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
-			<p class="fl-font-size-110">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
-			<p class="fl-font-size-120">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
-			<p class="fl-font-size-130">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
-			<p class="fl-font-size-140">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
-			<p class="fl-font-size-150">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+		<div class="test_containers fl-col-flex4">
 		</div>		
 
 	</body>

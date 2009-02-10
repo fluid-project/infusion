@@ -22,11 +22,15 @@
 				// toggle outline
 				$('<a href="#">Toggle topographical outline (not in IE)</a>').appendTo('#note').click(function(){
 					$('#full_test').toggleClass('outline');
-				});	
+				});
+                
 				$('.fl-container div').css({
 					'color': '#000',
-					'text-align':'right'
+                    'border-right':'1px solid #000'
 				});
+                
+                $('.fl-container-1000.fl-centered div').css('padding','1px 0');
+                
             });
 		</script>
 
