@@ -147,17 +147,17 @@ Layout Helpers
  * Tabs: a quick tab system
  * Dependency: list-based markup ?
  */
+.fl-tabs {margin:0.75em 0 0 0; border-bottom:1px solid #000; text-align:center; padding-bottom:0.2em;}
+.fl-tabs li {list-style-type:none; display:inline;}
+.fl-tabs li a {padding:0.25em 1.25em; background-color:#fff; margin-left:-5px; *margin-bottom:-8px; zoom:1; border:1px solid #000; border-bottom:1px solid #fff;}
+.fl-tabs li a:hover {background-color:#c00; color:#fff;}
+.fl-tabs .orderable-drop-marker {padding:0 3px; background-color:#c00;margin:0 5px 0 -5px; zoom:1;}
+
+.fl-tabs .fl-activeTab {}
+
 .fl-tabs-center {text-align:center;}
 .fl-tabs-left {text-align:left; padding-left:10px;}
 .fl-tabs-right {text-align:right; padding-right:15px;}
-.fl-tabs {margin:5px 0 0px; border-bottom: 1px solid}
-.fl-tabs .fl-activeTab {}
-.fl-tabs li {border:1px solid; list-style-type:none; padding:3px 8px; text-align:center; margin-bottom:-1px; margin-right:-5px; cursor:pointer;}
-.fl-tabs li, x:-moz-any-link {display:-moz-inline-box;} /* FF2 inline-block workaround */
-.fl-tabs li {display:inline-block;} /* Opera, Safari, Chrome */
-.fl-tabs li, x:-moz-any-link, x:default {display:inline-block;}  /* reset for FF 3*/
-.fl-tabs li {*display:inline;} /* IE only selector */
-.fl-tabs .orderable-drop-marker {width:0.5em; height:1.5em; padding-left:0.2em; padding-right:0.2em; margin:0;}
 
 
 /*
@@ -255,10 +255,19 @@ input.fl-icon {padding-left:16px;}
  */
 .fl-progressive-enhancer {display:none;}
 
+/**
+ * Knockout Background Images
+ */
+.fl-noBackgroundImages, .fl-noBackgroundImages * {
+    background-image:none !important;
+}
+
+
 /*
 Component Specific
 =============================================
 */
+
 
 /* INLINE EDIT */
 .fl-component-inlineEdit span input {margin:-2px; padding:0;} /* auto generated input fields */
