@@ -17,62 +17,35 @@ fluid_0_8 = fluid_0_8 || {};
 
 (function ($, fluid) {
     
-    var easierToSeeModel = {
-        fontStyleModel: {
-            names: ["No Preference", "Serif", "Sans-Serif"],
-            values: ["Default", "Serif", "Sans-Serif"],
-            selection: "Default"
-        },
-        fontMinSizeModel: {
-            value: "Default"
-        },
-        textSpacingModel: {
-            value: "Default"
-        },
-        contrastModel: {
-            names: ["No Preference", "High Contrast", "Mist"],
-            values: ["Default", "High Contrast", "Mist"],
-            selection: "Default"
-        },
-        backgroundImagesModel: {
-            names: ["Yes", "No"],
-            values: ["yes", "no"],
-            selection: "yes"
-        },
-        layoutModel: {
-            names: ["Yes", "No"],
-            values: ["yes", "no"],
-            selection: "no"
-        }
-    };
-    
+    var easierToSeeModel = fluid.copy(fluid.skin.model);
+
     var tree = {
         children: [
             {
                 ID: "font-style",
-                selection: {valuebinding: "fontStyleModel.selection"},
-                optionlist: {valuebinding: "fontStyleModel.values"},
-                optionnames: {valuebinding: "fontStyleModel.names"}
+                selection: {valuebinding: "textFont.selection"},
+                optionlist: {valuebinding: "textFont.values"},
+                optionnames: {valuebinding: "textFont.names"}
             },
             {
                 ID: "font-min-size",
-                valuebinding: "fontMinSizeModel.value"
+                valuebinding: "textSize.value"
             },
             {
                 ID: "text-spacing",
-                valuebinding: "textSpacingModel.value"
+                valuebinding: "textSpacing.value"
             },
             {
                 ID: "contrast",
-                selection: {valuebinding: "contrastModel.selection"},
-                optionlist: {valuebinding: "contrastModel.values"},
-                optionnames: {valuebinding: "contrastModel.names"}
+                selection: {valuebinding: "contrast.selection"},
+                optionlist: {valuebinding: "contrast.values"},
+                optionnames: {valuebinding: "contrast.names"}
             },
             {
                 ID: "background-images",
-                selection: {valuebinding: "backgroundImagesModel.selection"},
-                optionlist: {valuebinding: "backgroundImagesModel.values"},
-                optionnames: {valuebinding: "backgroundImagesModel.names"}
+                selection: {valuebinding: "backgroundImages.selection"},
+                optionlist: {valuebinding: "backgroundImages.values"},
+                optionnames: {valuebinding: "backgroundImages.names"}
             },
             {
                 ID: "background-images-row:",
@@ -106,9 +79,9 @@ fluid_0_8 = fluid_0_8 || {};
             },
             {
                 ID: "layout",
-                selection: {valuebinding: "layoutModel.selection"},
-                optionlist: {valuebinding: "layoutModel.values"},
-                optionnames: {valuebinding: "layoutModel.names"}
+                selection: {valuebinding: "layout.selection"},
+                optionlist: {valuebinding: "layout.values"},
+                optionnames: {valuebinding: "layout.names"}
             },
             {
                 ID: "layout-row:",
@@ -143,25 +116,25 @@ fluid_0_8 = fluid_0_8 || {};
         ]
     };
         
-    var pullModelFromView = function (that) {
+    var pullSkinFromModel = function (that) {
         var skin = that.model.value;
-        skin.textSize = easierToSeeModel.fontMinSizeModel.value;
-        skin.textFont = easierToSeeModel.fontStyleModel.selection;
-        skin.textSpacing = easierToSeeModel.textSpacingModel.value;
-        skin.colorScheme = easierToSeeModel.contrastModel.selection;
-        skin.layout = easierToSeeModel.layoutModel.selection;
+        skin.textSize = easierToSeeModel.textSize.value;
+        skin.textFont = easierToSeeModel.textFont.selection;
+        skin.textSpacing = easierToSeeModel.textSpacing.value;
+        skin.colorScheme = easierToSeeModel.contrast.selection;
+        skin.layout = easierToSeeModel.layout.selection;
     };    
             
     var updateSkin = function (that) {
         var oldModel = $.extend(true, {}, that.model);
 
-        pullModelFromView(that);
+        pullSkinFromModel(that);
         that.events.modelChanged.fire(that.model, oldModel, that);
     };
 
     var initModel = function (that) {
         that.model = {value: {}};
-        pullModelFromView(that);
+        pullSkinFromModel(that);
     };
     
     var bindHandlers = function (that) {
