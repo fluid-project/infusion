@@ -21,16 +21,22 @@ fluid_0_8 = fluid_0_8 || {};
     /**
      * Removes the classes in the Fluid class namespace: "fl-"
      */
+    // TODO: clearing styling is not correct - we need to clear back to the original state not remove all fss styling
     fluid.skin.removeStyling = function (element) {
         element = element || $("html");
         $('[class*=fl-]', element).andSelf().each(function (i) {    
             var attr = ($.browser.msie === false) ? 'class' : 'className'; 
             if (this.getAttribute(attr)) {
-                this.setAttribute(attr, this.getAttribute(attr).replace(/\bfl-(layout|font|theme){1}\S+/g, ''));
+                this.setAttribute(attr, this.getAttribute(attr).replace(/\bfl-(layout|font|theme|no-background){1}\S+/g, ''));
             }
         });        
     };
-     
+
+    var fssSeek = function (label, value) {
+        var possibleValues = fluid.skin.fssMap[label] || {}; 
+        return possibleValues[value] || "";
+    };
+      
     /**
      * Styles the given element based on the skin passed in
      * @param {Object} element
@@ -39,11 +45,12 @@ fluid_0_8 = fluid_0_8 || {};
     // TODO: this implementation should be improved
     fluid.skin.style = function (skin, element) {
         element = element || $("html");
-        element.addClass(fluid.skin.fssMap.textSize[skin.textSize]);
-        element.addClass(fluid.skin.fssMap.textFont[skin.textFont]);
-        element.addClass(fluid.skin.fssMap.textSpacing[skin.textSpacing]);
-        element.addClass(fluid.skin.fssMap.colorScheme[skin.contrast]);
-        element.addClass(fluid.skin.fssMap.layout[skin.layout]);
+        element.addClass(fssSeek("textSize", skin.textSize));
+        element.addClass(fssSeek("textFont", skin.textFont));
+        element.addClass(fssSeek("textSpacing", skin.textSpacing));
+        element.addClass(fssSeek("colorScheme", skin.contrast));
+        element.addClass(fssSeek("layout", skin.layout));
+        element.addClass(fssSeek("backgroundImages", skin.backgroundImages));
     };
 
     /**
@@ -61,7 +68,6 @@ fluid_0_8 = fluid_0_8 || {};
             "-3": "fl-font-size-70",
             "-2": "fl-font-size-80",
             "-1": "fl-font-size-90",
-            "0": "",
             "+1": "fl-font-size-110",
             "+2": "fl-font-size-120",
             "+3": "fl-font-size-130",
@@ -69,7 +75,6 @@ fluid_0_8 = fluid_0_8 || {};
             "+5": "fl-font-size-150"
         },
         "textFont": {
-            "Default": "",
             "Serif": "fl-font-serif",
             "Sans-Serif": "fl-font-sans",
             "Ariel": "fl-font-arial",
@@ -78,20 +83,20 @@ fluid_0_8 = fluid_0_8 || {};
             "Times": "fl-font-serif"
         },
         "textSpacing": {
-            "Default": "",
             "Wide": "fl-font-spacing-1",
             "Wider": "fl-font-spacing-2",
             "Widest": "fl-font-spacing-3"
         },
         "colorScheme": {
-            "Default": "",
             "Mist": "fl-theme-mist",
             "Rust": "fl-theme-rust",
             "High Contrast": "fl-theme-hc"
         }, 
         "layout": {
-            "Default": "",
             "Simple": "fl-layout-linear"
+        },
+        "backgroundImages": {
+            "No Images": "fl-no-background-images"
         }
     };
 

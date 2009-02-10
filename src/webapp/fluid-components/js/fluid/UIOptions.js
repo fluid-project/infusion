@@ -51,13 +51,13 @@ fluid_0_8 = fluid_0_8 || {};
                 children: [
                     {
                         ID: "images-choice",
-                         choiceindex:0,
-                         parentRelativeID: "..::background-images"
+                        choiceindex: 0,
+                        parentRelativeID: "..::background-images"
                     },
                     {
                         ID: "images-label",
-                         choiceindex:0,
-                         parentRelativeID: "..::background-images"
+                        choiceindex: 0,
+                        parentRelativeID: "..::background-images"
                     }
                 ]
             },
@@ -66,13 +66,13 @@ fluid_0_8 = fluid_0_8 || {};
                 children: [
                     {
                         ID: "images-choice",
-                         choiceindex:1,
-                         parentRelativeID: "..::background-images"
+                        choiceindex: 1,
+                        parentRelativeID: "..::background-images"
                     },
                     {
                         ID: "images-label",
-                         choiceindex:1,
-                         parentRelativeID: "..::background-images"
+                        choiceindex: 1,
+                        parentRelativeID: "..::background-images"
                     }
                 ]
             },
@@ -87,13 +87,13 @@ fluid_0_8 = fluid_0_8 || {};
                 children: [
                     {
                         ID: "layout-choice",
-                         choiceindex:0,
-                         parentRelativeID: "..::layout"
+                        choiceindex: 0,
+                        parentRelativeID: "..::layout"
                     },
                     {
                         ID: "layout-label",
-                         choiceindex:0,
-                         parentRelativeID: "..::layout"
+                        choiceindex: 0,
+                        parentRelativeID: "..::layout"
                     }
                 ]
             },
@@ -102,13 +102,13 @@ fluid_0_8 = fluid_0_8 || {};
                 children: [
                     {
                         ID: "layout-choice",
-                         choiceindex:1,
-                         parentRelativeID: "..::layout"
+                        choiceindex: 1,
+                        parentRelativeID: "..::layout"
                     },
                     {
                         ID: "layout-label",
-                         choiceindex:1,
-                         parentRelativeID: "..::layout"
+                        choiceindex: 1,
+                        parentRelativeID: "..::layout"
                     }
                 ]
             }
@@ -139,7 +139,7 @@ fluid_0_8 = fluid_0_8 || {};
     var initPreview = function (that) {
         that.events.modelChanged.addListener(function (model) {
             var previewFrame = that.locate("previewFrame").contents();
-            fluid.applySkin(model.value, that.locate("preview",previewFrame)); 
+            fluid.applySkin(model.value, that.locate("preview", previewFrame)); 
         });
     };
     
@@ -211,7 +211,7 @@ fluid_0_8 = fluid_0_8 || {};
                 textSize: "Default",
                 textSpacing: "Default",
                 contrast: "Default",
-                backgroundImages: "yes",
+                backgroundImages: "Default",
                 layout: "Default"
             },
             labelMap: {
@@ -230,8 +230,8 @@ fluid_0_8 = fluid_0_8 || {};
                     values: ["Default", "High Contrast", "Mist", "Rust"]
                 },
                 backgroundImages: {
-                    names: ["Yes", "No"],
-                    values: ["yes", "no"]
+                    names: ["No Preference", "No Images"],
+                    values: ["Default", "No Images"]
                 },
                 layout: {
                     names: ["Default", "Simple"],
