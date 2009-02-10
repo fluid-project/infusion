@@ -17,7 +17,7 @@ demo.initJqueryTabs = function () {
         var enterKeyHandler = function (evt) {
             if (evt.which === fluid.reorderer.keys.ENTER) {
                 var tabAnchors = jQuery("a", evt.target);
-                fragmentUrl = tabAnchors.attr ('href');
+                fragmentUrl = tabAnchors.attr('href');
                 jQuery("#tabList").tabs("select", fragmentUrl);
             }
         };

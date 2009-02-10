@@ -1,0 +1,51 @@
+
+.default-tab {
+}
+
+.hover-tab {
+    border-top: 2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+}
+
+.selected-tab {
+     border-bottom: 1px solid #519e2d;
+}
+.selected-tab a, .selected-tab a span {
+    color: #3e9344 !important;
+    background: #ffffff !important;
+}
+
+.dragging-tab {
+    position: relative;
+    border-bottom: 3px solid #94c86e;
+    top: -10px;
+}
+
+.dragging-tab a, .dragging-tab a span {
+    color: #3e9344 !important;
+    background: #ffffff !important;
+}
+
+.drop-marker-tab {
+    background-color: red;
+    height: 25px;
+    width: 3px;
+}
+
+.avatar-tab{
+    opacity: 0.55;
+    filter:alpha(opacity=55);
+    border: 0;
+    list-style-type:none;
+    background: url(../../shared/jquery/i/tabs.png) no-repeat scroll 0 0;
+    
+}
+.avatar-tab a {
+    padding:0 12px;
+    text-decoration:none;
+    color:white;
+    font: bold 12px "Trebuchet MS",Trebuchet,Verdana,Helvetica,Arial,sans-serif;   
+}
+
+.ui-draggable a {cursor:move;}
