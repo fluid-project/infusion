@@ -17,35 +17,34 @@ fluid_0_8 = fluid_0_8 || {};
 
 (function ($, fluid) {
     
-    var easierToSeeModel = fluid.copy(fluid.skin.model);
-
+    // TODO: Generate this tree
     var tree = {
         children: [
             {
                 ID: "font-style",
-                selection: {valuebinding: "textFont.selection"},
-                optionlist: {valuebinding: "textFont.values"},
-                optionnames: {valuebinding: "textFont.names"}
+                selection: {valuebinding: "selectedOptions.textFont"},
+                optionlist: {valuebinding: "labelMap.textFont.values"},
+                optionnames: {valuebinding: "labelMap.textFont.names"}
             },
             {
                 ID: "font-min-size",
-                valuebinding: "textSize.value"
+                valuebinding: "selectedOptions.textSize"
             },
             {
                 ID: "text-spacing",
-                valuebinding: "textSpacing.value"
+                valuebinding: "selectedOptions.textSpacing"
             },
             {
                 ID: "contrast",
-                selection: {valuebinding: "contrast.selection"},
-                optionlist: {valuebinding: "contrast.values"},
-                optionnames: {valuebinding: "contrast.names"}
+                selection: {valuebinding: "selectedOptions.contrast"},
+                optionlist: {valuebinding: "labelMap.contrast.values"},
+                optionnames: {valuebinding: "labelMap.contrast.names"}
             },
             {
                 ID: "background-images",
-                selection: {valuebinding: "backgroundImages.selection"},
-                optionlist: {valuebinding: "backgroundImages.values"},
-                optionnames: {valuebinding: "backgroundImages.names"}
+                selection: {valuebinding: "selectedOptions.backgroundImages"},
+                optionlist: {valuebinding: "labelMap.backgroundImages.values"},
+                optionnames: {valuebinding: "labelMap.backgroundImages.names"}
             },
             {
                 ID: "background-images-row:",
@@ -79,9 +78,9 @@ fluid_0_8 = fluid_0_8 || {};
             },
             {
                 ID: "layout",
-                selection: {valuebinding: "layout.selection"},
-                optionlist: {valuebinding: "layout.values"},
-                optionnames: {valuebinding: "layout.names"}
+                selection: {valuebinding: "selectedOptions.layout"},
+                optionlist: {valuebinding: "labelMap.layout.values"},
+                optionnames: {valuebinding: "labelMap.layout.names"}
             },
             {
                 ID: "layout-row:",
@@ -115,26 +114,10 @@ fluid_0_8 = fluid_0_8 || {};
             }
         ]
     };
-        
-    var pullSkinFromModel = function (that) {
-        var skin = that.model.value;
-        skin.textSize = easierToSeeModel.textSize.value;
-        skin.textFont = easierToSeeModel.textFont.selection;
-        skin.textSpacing = easierToSeeModel.textSpacing.value;
-        skin.colorScheme = easierToSeeModel.contrast.selection;
-        skin.layout = easierToSeeModel.layout.selection;
-    };    
-            
-    var updateSkin = function (that) {
-        var oldModel = $.extend(true, {}, that.model);
-
-        pullSkinFromModel(that);
-        that.events.modelChanged.fire(that.model, oldModel, that);
-    };
 
     var initModel = function (that) {
         that.model = {value: {}};
-        pullSkinFromModel(that);
+        that.model.value = that.renderModel.selectedOptions;
     };
     
     var bindHandlers = function (that) {
@@ -142,8 +125,14 @@ fluid_0_8 = fluid_0_8 || {};
             that.save();
         });
         
+        that.locate("reset").click(function () {
+            that.reset();
+        });
+
+        // TODO: This should probably be removed and use a renderer event instead.
         that.locate("controls").change(function () {
-            updateSkin(that);
+            var oldModel = $.extend(true, {}, that.model);
+            that.events.modelChanged.fire(that.model, oldModel, that);
         });        
     };
     
@@ -152,7 +141,6 @@ fluid_0_8 = fluid_0_8 || {};
             var previewFrame = that.locate("previewFrame").contents();
             fluid.applySkin(model.value, that.locate("preview",previewFrame)); 
         });
-        
     };
     
     var setupUIOptions = function (that) {
@@ -168,13 +156,20 @@ fluid_0_8 = fluid_0_8 || {};
     
     fluid.uiOptions = function (container, options) {
         var that = fluid.initView("fluid.uiOptions", container, options);
-        fluid.selfRender(that.container, tree, {model: easierToSeeModel, autoBind: true, debugMode: true});
+        that.renderModel = that.options.renderModel;
+        var template = fluid.selfRender(that.container, tree, {model: that.renderModel, autoBind: true, debugMode: true});
              
         that.save = function () {
             that.events.onSave.fire(that.model.value);
             fluid.applySkin(that.model.value);
         };
 
+        that.reset = function () {
+          //  that.model.selectedOptions = originalSelectedOptions;
+            // pass the template
+   //         fluid.reRender(that.container, tree, {model: that.renderModel, autoBind: true, debugMode: true});
+        };
+        
         that.refreshView = function () {
         };
         
@@ -200,12 +195,47 @@ fluid_0_8 = fluid_0_8 || {};
             tocCtrl: ".toc-control",
             preview: ".fl-hook-preview-content", 
             previewFrame : ".fl-hook-preview-frame",
-            save: ".fl-hook-preview-save"
+            save: ".fl-hook-preview-save",
+            reset: ".fl-hook-preview-reset"
         },
         events: {
             modelChanged: null,
             onSave: null,
             onCancel: null
+        }, 
+        renderModel: {
+            selectedOptions: {
+                textFont: "Default",
+                textSize: "Default",
+                textSpacing: "Default",
+                contrast: "Default",
+                backgroundImages: "yes",
+                layout: "Default"
+            },
+            labelMap: {
+                textFont: {
+                    names: ["No Preference", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"],
+                    values: ["Default", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"]
+                },
+                textSize: {
+                    values: ["0", "-3", "-2", "-1", "+1", "+2", "+3", "+4", "+5"]
+                },
+                textSpacing: {
+                    values: ["Default", "Wide", "Wider", "Widest"]
+                },
+                contrast: {
+                    names: ["No Preference", "High Contrast", "Mist", "Rust"],
+                    values: ["Default", "High Contrast", "Mist", "Rust"]
+                },
+                backgroundImages: {
+                    names: ["Yes", "No"],
+                    values: ["yes", "no"]
+                },
+                layout: {
+                    names: ["Default", "Simple"],
+                    values: ["Default", "Simple"]
+                }
+            }
         }
     });
 

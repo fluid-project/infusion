@@ -38,15 +38,12 @@ fluid_0_8 = fluid_0_8 || {};
      */
     // TODO: this implementation should be improved
     fluid.skin.style = function (skin, element) {
-        function index(val, vals) {
-            return $.inArray(val, vals);
-        }
         element = element || $("html");
-        element.addClass(fluid.skin.model.textSize.fss[index(skin.textSize, fluid.skin.model.textSize.values)]);
-        element.addClass(fluid.skin.model.textFont.fss[index(skin.textFont, fluid.skin.model.textFont.values)]);
-        element.addClass(fluid.skin.model.textSpacing.fss[index(skin.textSpacing, fluid.skin.model.textSpacing.values)]);
-        element.addClass(fluid.skin.model.contrast.fss[index(skin.colorScheme, fluid.skin.model.contrast.values)]);        
-        element.addClass(fluid.skin.model.layout.fss[index(skin.layout, fluid.skin.model.layout.values)]);        
+        element.addClass(fluid.skin.fssMap.textSize[skin.textSize]);
+        element.addClass(fluid.skin.fssMap.textFont[skin.textFont]);
+        element.addClass(fluid.skin.fssMap.textSpacing[skin.textSpacing]);
+        element.addClass(fluid.skin.fssMap.colorScheme[skin.contrast]);
+        element.addClass(fluid.skin.fssMap.layout[skin.layout]);
     };
 
     /**
@@ -58,41 +55,45 @@ fluid_0_8 = fluid_0_8 || {};
         fluid.skin.removeStyling(element);
         fluid.skin.style(skin, element);
     };
-    
-    fluid.skin.model = {
-        textFont: {
-            names: ["No Preference", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"],
-            values: ["Default", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"],
-            fss: ["", "fl-font-serif", "fl-font-sans", "fl-font-arial", "fl-font-verdana", "fl-font-monospace", "fl-font-serif"],
-            selection: "Default"
+
+    fluid.skin.fssMap = {
+        "textSize": {
+            "-3": "fl-font-size-70",
+            "-2": "fl-font-size-80",
+            "-1": "fl-font-size-90",
+            "0": "",
+            "+1": "fl-font-size-110",
+            "+2": "fl-font-size-120",
+            "+3": "fl-font-size-130",
+            "+4": "fl-font-size-140",
+            "+5": "fl-font-size-150"
         },
-        textSize: {
-            value: "Default",
-            values: ["0", "-3", "-2", "-1", "+1", "+2", "+3", "+4", "+5"], 
-            fss: ["", "fl-font-size-70", "fl-font-size-80", "fl-font-size-90", "fl-font-size-110", "fl-font-size-120", "fl-font-size-130", "fl-font-size-140", "fl-font-size-150"]
+        "textFont": {
+            "Default": "",
+            "Serif": "fl-font-serif",
+            "Sans-Serif": "fl-font-sans",
+            "Ariel": "fl-font-arial",
+            "Verdana": "fl-font-verdana",
+            "Courier": "fl-font-monospace",
+            "Times": "fl-font-serif"
         },
-        textSpacing: {
-            value: "Default",
-            values: ["Default", "Wide", "Wider", "Widest"],
-            fss: ["", "fl-font-spacing-1", "fl-font-spacing-2", "fl-font-spacing-3"]
+        "textSpacing": {
+            "Default": "",
+            "Wide": "fl-font-spacing-1",
+            "Wider": "fl-font-spacing-2",
+            "Widest": "fl-font-spacing-3"
         },
-        contrast: {
-            names: ["No Preference", "High Contrast", "Mist", "Rust"],
-            values: ["Default", "High Contrast", "Mist", "Rust"],
-            selection: "Default",
-            fss: ["", "fl-theme-hc", "fl-theme-mist", "fl=theme-rust"]
-        },
-        backgroundImages: {
-            names: ["Yes", "No"],
-            values: ["yes", "no"],
-            selection: "yes"
-        },
-        layout: {
-            names: ["Yes", "No"],
-            values: ["yes", "no"],
-            selection: "no", 
-            fss: ["fl-layout-linear", ""]
+        "colorScheme": {
+            "Default": "",
+            "Mist": "fl-theme-mist",
+            "Rust": "fl-theme-rust",
+            "High Contrast": "fl-theme-hc"
+        }, 
+        "layout": {
+            "Default": "",
+            "Simple": "fl-layout-linear"
         }
     };
+
 
 })(jQuery, fluid_0_8);
