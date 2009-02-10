@@ -57,7 +57,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 textSize: "+3",
                 textFont: "Courier",
                 textSpacing: "Wide",
-                colorScheme: "High Contrast"
+                contrast: "High Contrast"
             };
             var main = $("#main");
             
