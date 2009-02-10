@@ -230,12 +230,12 @@ fluid_0_8 = fluid_0_8 || {};
                     values: ["Default", "High Contrast", "Mist", "Rust"]
                 },
                 backgroundImages: {
-                    names: ["No Preference", "No Images"],
+                    names: ["Yes", "No"],
                     values: ["Default", "No Images"]
                 },
                 layout: {
-                    names: ["Default", "Simple"],
-                    values: ["Default", "Simple"]
+                    names: ["Yes", "No"],
+                    values: ["Simple", "Default"]
                 }
             }
         }
