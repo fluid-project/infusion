@@ -1138,7 +1138,7 @@ fluid_0_8 = fluid_0_8 || {};
           var decorator = decoratorQueue[i];
           var node = fluid.byId(decorator.id);
           if (!node) {
-            fluid.fail("Error during rendering - component with id " + id 
+            fluid.fail("Error during rendering - component with id " + decorator.id 
              + " which has a queued decorator was not found in the output markup");
           }
           if (decorator.type === "jQuery") {
