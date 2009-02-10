@@ -112,11 +112,12 @@ input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;
 /*************************************************************************************/
 /* Prevent unecessary scrollbars in IE */
 /* Put font data on the HTML element to allow overrides on the body */
-html {overflow:auto; font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}
+html {overflow:auto; font:13px/1.231 arial,helvetica,clean,sans-serif;}
 
 /*to enable resizing for IE*/
 input,textarea,select{
     *font-size:100%;
+    *font-family:sans-serif;
 }
 
 /* IE rendering fix for extra padding on buttons. Padding can now be set safely */
