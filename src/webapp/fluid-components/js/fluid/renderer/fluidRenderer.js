@@ -155,9 +155,9 @@ fluid_0_8 = fluid_0_8 || {};
   }
   
   // When a component
-  function assignSubmittingName(component) {
+  function assignSubmittingName(component, defaultname) {
       if (component.submittingname === undefined && component.willinput !== false) {
-          component.submittingname = component.fullID;
+          component.submittingname = defaultname? defaultname: component.fullID;
       }
       return component.submittingname;
   }
@@ -288,7 +288,7 @@ fluid_0_8 = fluid_0_8 || {};
   function resolveRecurse(basecontainer, parentlump) {
     for (var i = 0; i < basecontainer.children.length; ++ i) {
       var branch = basecontainer.children[i];
-      if (branch.children) { // it is a branch TODO
+      if (branch.children) { // it is a branch
         var resolved = resolveCall(parentlump, branch);
         if (resolved) {
           branchmap[branch.fullID] = resolved;
@@ -635,18 +635,27 @@ fluid_0_8 = fluid_0_8 || {};
         }
     }
     
+    function makeFail(torender, end) {
+        fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID + end);
+    } 
+    
     if (componentType === "UIBound" || componentType === "UISelectChoice") {
         var parent;
         if (torender.choiceindex !== undefined) {
             if (torender.parentFullID) {
                 parent = getAbsoluteComponent(view, torender.parentFullID);
+                if (!parent) {
+                    makeFail(torender, " has parentFullID of " + torender.parentFullID + " which cannot be resolved");
+                }
             }
             else if (torender.parentRelativeID !== undefined){
                 parent = getRelativeComponent(torender, torender.parentRelativeID);
+                if (!parent) {
+                    makeFail(torender, " has parentRelativeID of " + torender.parentRelativeID + " which cannot be resolved");
+                }
             }
             else {
-                fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID 
-                + " does not have either parentFullID or parentRelativeID set");
+                makeFail(torender, " does not have either parentFullID or parentRelativeID set");
             }
             assignSubmittingName(parent.selection);
             dumpSelectionBindings(parent);
@@ -720,10 +729,10 @@ fluid_0_8 = fluid_0_8 || {};
     else if (componentType === "UISelect") {
       // need to do this first to see whether we need to write out an ID or not
       applyAutoBind(torender, torender.selection.fullID);
-      if (attrcopy.id) {
+      //if (attrcopy.id) {
         // TODO: This is an irregularity, should probably remove for 0.8
-        attrcopy.id = torender.selection.fullID;
-        }
+        //attrcopy.id = torender.selection.fullID;
+        //}
       var ishtmlselect = tagname === "select";
       var ismultiple = false;
 
@@ -733,8 +742,9 @@ fluid_0_8 = fluid_0_8 || {};
           attrcopy.multiple = "multiple";
           }
         }
-      
-      assignSubmittingName(torender.selection);
+      // since in HTML this name may end up in a global namespace, we make sure to take account
+      // of any uniquifying done by adjustForID upstream of applyAutoBind
+      assignSubmittingName(torender.selection, attrcopy.id);
       if (ishtmlselect) {
         // The HTML submitted value from a <select> actually corresponds
         // with the selection member, not the top-level component.
@@ -824,7 +834,7 @@ fluid_0_8 = fluid_0_8 || {};
       else {
           if (attrcopy.id || late) {
               attrcopy.id = component.fullID;
-              }
+          }
       }
       var count = 1;
       var baseid = attrcopy.id;
@@ -953,7 +963,6 @@ fluid_0_8 = fluid_0_8 || {};
       if (id.indexOf("msg=") === 0) {
           var key = id.substring(4);
           return {componentType: "UIMessage", messagekey: key};
-          // TODO messages
       }
       while (basecontainer) {
           var togo = basecontainer.childmap[id];
@@ -1017,7 +1026,7 @@ fluid_0_8 = fluid_0_8 || {};
         if (children) {
           for (var i = 0; i < children.length; ++ i) {
             var child = children[i];
-            if (child.children) { // it is a branch TODO
+            if (child.children) { // it is a branch 
               var targetlump = branchmap[child.fullID];
               if (targetlump) {
                   if (debugMode) {
@@ -1163,6 +1172,19 @@ fluid_0_8 = fluid_0_8 || {};
           togo[togo.length] = {ID: key, value: hash[key], valuebinding: binding};
       }
       return togo;
+    };
+    
+    // commn utility function to make a simple view of rows, where each row has a selection
+    // control and a label
+   fluid.explodeSelectionToInputs = function(optionlist, opts) {
+         return fluid.transform(optionlist, function(option, index) {
+              return {
+                ID: opts.rowID, 
+                children: [
+                     {ID: opts.inputID, parentRelativeID: "..::" + opts.selectID, choiceindex: index},
+                     {ID: opts.labelID, parentRelativeID: "..::" + opts.selectID, choiceindex: index}]
+               };
+           });
     };
   
   fluid.findForm = function (node) {
@@ -1334,7 +1356,10 @@ fluid_0_8 = fluid_0_8 || {};
 
   fluid.reRender = function(templates, node, tree, options) {
       options = options || {};
+           //$(node).empty(); - this operation is very slow.
+      // Empty the node first, to head off any potential id collisions when rendering
       node = fluid.unwrap(node);
+      node.innerHTML = "";
       var fossils = {};
       var rendered = fluid.renderTemplates(templates, tree, options, fossils);
       if (options.renderRaw) {
@@ -1344,7 +1369,6 @@ fluid_0_8 = fluid_0_8 || {};
       if (options.model) {
           fluid.bindFossils(node, options.model, fossils);
           }
-      //$(node).empty();
       if ($.browser.msie) {
         $(node).html(rendered);
       }

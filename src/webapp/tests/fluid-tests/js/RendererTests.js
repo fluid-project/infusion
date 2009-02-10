@@ -188,6 +188,14 @@ fluid.tests = fluid.tests || {};
         optionnames: ["Enchiridion", "ApoCATTastasis", "Exomologesis"]
         };
         
+    var explode_options = function(type) {
+        return {
+        selectID: "select",
+        rowID: type + "-row:",
+        inputID: type,
+        labelID: "label"
+        };
+    };
         
     var model = {
         values: ["Enchiridion", "Apocatastasis", "Exomologesis"],
@@ -239,13 +247,14 @@ fluid.tests = fluid.tests || {};
         var node = $(".UISelect-test-select");
         var model1 = $.extend(true, {}, model, {choice: "Apocatastasis"});
   
-        fluid.selfRender(node, fluid.copy(binding_tree), merge({model: model1}, opts));
+        var template = fluid.selfRender(node, fluid.copy(binding_tree), merge({model: model1}, opts));
         singleSelectionRenderTests(node);
         var select = $("select", node);
         select.val("Enchiridion");
         select.change();
         if (!opts) {fluid.applyChange(select);}
         jqUnit.assertEquals("Applied value to model", "Enchiridion", model1.choice);
+        fluid.reRender(template, node, fluid.copy(binding_tree), merge({model: model1}, opts));
         });
       
     function multipleSelectionRenderTests(node) {
@@ -298,23 +307,12 @@ fluid.tests = fluid.tests || {};
          {nodeName: "label", "for": inputs[1].id, "nodeText": "ApoCATTastasis"},
          {nodeName: "label", "for": inputs[2].id, "nodeText": "Exomologesis"}], labels);
     }
-    // commn utility function to make a simple view of rows, where each row has a selection
-    // control and a label
-    function explodeSelectionToInputs(optionlist, rowname, inputname, labelname) {
-         return fluid.transform(optionlist, function(option, index) {
-              return {
-                ID: rowname, 
-                children: [
-                     {ID: inputname, parentRelativeID: "..::select", choiceindex: index},
-                     {ID: labelname, parentRelativeID: "..::select", choiceindex: index}]
-               };
-           });
-    }
+
    
     renderTests.test("UISelect tests with radio buttons", function() {
         var node = $(".UISelect-test-radio-1");
         var tree = {children: [fluid.copy(selection_tree)].concat(
-              explodeSelectionToInputs(selection_tree.optionlist, "radio-row:", "radio", "label"))};
+              fluid.explodeSelectionToInputs(selection_tree.optionlist, explode_options("radio")))};
         fluid.selfRender(node, tree);
         singleSelectionRadioRenderTests(node);
     });
@@ -324,8 +322,8 @@ fluid.tests = fluid.tests || {};
         var model3 = $.extend(true, {}, model, {choice: "Apocatastasis"});
         var tree = fluid.copy(binding_tree);
         tree.children = tree.children.concat(
-              explodeSelectionToInputs(selection_tree.optionlist, "radio-row:", "radio", "label"));
-        fluid.selfRender(node, tree, merge({model: model3}, opts));
+              fluid.explodeSelectionToInputs(selection_tree.optionlist, explode_options("radio")));
+        var template = fluid.selfRender(node, tree, merge({model: model3}, opts));
         singleSelectionRadioRenderTests(node);
         var inputs = $("input", node);
         fluid.value(inputs, "Enchiridion");
@@ -351,7 +349,7 @@ fluid.tests = fluid.tests || {};
     renderTests.test("UISelect tests with checkboxes", function() {
       var node = $(".UISelect-test-check-1");
       var tree = {children: [fluid.copy(multiple_selection_tree)].concat( 
-        explodeSelectionToInputs(selection_tree.optionlist, "checkbox-row:", "checkbox", "label"))};
+        fluid.explodeSelectionToInputs(selection_tree.optionlist, explode_options("checkbox")))};
       fluid.selfRender(node, tree);
       multipleSelectionCheckboxRenderTests(node);
     });
@@ -361,7 +359,7 @@ fluid.tests = fluid.tests || {};
       var model4 = $.extend(true, {}, model, {choice: ["Enchiridion", "Apocatastasis"]});
       var tree = fluid.copy(binding_tree);
       tree.children = tree.children.concat( 
-        explodeSelectionToInputs(selection_tree.optionlist, "checkbox-row:", "checkbox", "label"));
+        fluid.explodeSelectionToInputs(selection_tree.optionlist, explode_options("checkbox")));
       fluid.selfRender(node, tree, merge({model: model4}, opts));
       multipleSelectionCheckboxRenderTests(node);
       var inputs = $("input", node);
