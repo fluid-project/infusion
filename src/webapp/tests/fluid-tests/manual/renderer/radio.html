@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>Renderer Test: Radio Buttons</title>
+        <!--  These are the required javascript modules for the Renderer and can be replaced with Fluid-all.js -->
+        <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fluidRenderer.js"></script>
+
+	</head>
+
+	<body>
+        <div class="UISelect-test-radio-1">
+<!--
+            <div rsf:id="select">
+            </div>
+-->
+            <div rsf:id="radio-row:">
+                <input rsf:id="radio" type="radio" name="vocable" id="radio1" value="Aerumnous"/>
+                <label rsf:id="label" for="radio1">Aerumnous</label>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            function explodeSelectionToInputs(optionlist, rowname, inputname, labelname) {
+                 return fluid.transform(optionlist, function(option, index) {
+                      return {
+                        ID: rowname, 
+                        children: [
+                             {ID: inputname, parentRelativeID: "..::select", choiceindex: index},
+                             {ID: labelname, parentRelativeID: "..::select", choiceindex: index}]
+                       };
+                   });
+            }
+            var selection_tree = {
+                ID: "select",
+                selection: "Apocatastasis",
+                optionlist: ["Enchiridion", "Apocatastasis", "Exomologesis"],
+                optionnames: ["Enchiridion", "ApoCATTastasis", "Exomologesis"]
+                };
+            var radioTree = {children: [fluid.copy(selection_tree)].concat(
+                  explodeSelectionToInputs(selection_tree.optionlist, "radio-row:", "radio", "label"))};
+        
+            var radioTemplate = fluid.selfRender($(".UISelect-test-radio-1"), radioTree, {debugMode: true});
+        </script>
+
+	</body>
+
+</html>
