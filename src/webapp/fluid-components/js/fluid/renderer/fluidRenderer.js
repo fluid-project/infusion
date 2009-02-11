@@ -1356,10 +1356,14 @@ fluid_0_8 = fluid_0_8 || {};
 
   fluid.reRender = function(templates, node, tree, options) {
       options = options || {};
-           //$(node).empty(); - this operation is very slow.
-      // Empty the node first, to head off any potential id collisions when rendering
+            // Empty the node first, to head off any potential id collisions when rendering
       node = fluid.unwrap(node);
-      node.innerHTML = "";
+      if ($.browser.msie) {
+          $(node).empty(); //- this operation is very slow.
+      }
+      else {
+          node.innerHTML = "";
+      }
       var fossils = {};
       var rendered = fluid.renderTemplates(templates, tree, options, fossils);
       if (options.renderRaw) {
