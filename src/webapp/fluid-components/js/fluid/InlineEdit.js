@@ -154,6 +154,7 @@ fluid_0_8 = fluid_0_8 || {};
     
     var showDefaultViewText = function (that) {
         that.displayView.value(that.options.defaultViewText);
+        that.viewEl.css('padding-right', that.existingPadding);
         that.viewEl.addClass(that.options.styles.defaultViewStyle);
     };
 
@@ -166,11 +167,6 @@ fluid_0_8 = fluid_0_8 || {};
             if (that.viewEl.css('display') === 'inline') {
                 that.viewEl.css('display', "inline-block");
             }
-        }
-        
-        // If necessary, pad the view element enough that it will be evident to the user.
-        if (that.existingPadding < that.options.paddings.minimumView) {
-            that.viewEl.css('padding-right', that.options.paddings.minimumView);
         }
     };
 
@@ -540,6 +536,11 @@ fluid_0_8 = fluid_0_8 || {};
                     showDefaultViewText(componentThat);
                 } else {
                     showNothing(componentThat);
+                }
+                // If necessary, pad the view element enough that it will be evident to the user.
+                if (($.trim(componentThat.viewEl.text()).length === 0) &&
+                    (componentThat.existingPadding < componentThat.options.paddings.minimumView)) {
+                    componentThat.viewEl.css('padding-right', componentThat.options.paddings.minimumView);
                 }
             }
         };
