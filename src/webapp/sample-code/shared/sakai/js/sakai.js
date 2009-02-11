@@ -15,16 +15,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
 $(function () {
     var uiOptions;
     var initDialog = function () {
-        // center dialog
-        $('#dialog_container').css({
-            left: ($(window).width() / 2) - ($('#dialog_container').width() / 2),
-            top: ($(window).height() / 2) - ($('#dialog_container').height() / 2)
-        });
-        // bind close dialog button
-        $("#close_dialog").click(function () {
-            $("#dialog_container").css('display', 'none');
-        });
-    
         var options = {
             renderModel: {
                 selectedOptions: {
@@ -36,9 +26,13 @@ $(function () {
         // instantiate component
         uiOptions = fluid.uiOptions(".uiOptions", options);
 		
-        // only show content once ajax call is complete
-        $("#dialog_container").css('display', 'block');
-        
+        // only show content once ajax call is complete        
+        $("#ui_dialog_container").dialog({
+            width: 700,
+    		modal: true,
+            dialogClass: 'dialog'
+    	});
+
         //ajax call is not bringing this in with the uioptions dialog
         $('.fl-components-ui-options .fl-col:eq(0)').accordion({ 
             header: 'h2'
@@ -48,13 +42,10 @@ $(function () {
     $('.skin').click(function () {
         if (!uiOptions) {
             // ajax call to pull the UI Options dialog into a container
-            $('#dialog_content').load('../../../fluid-components/html/templates/UIOptions.html .uiOptions', initDialog);
+            $('#ui_dialog_container').load('../../../fluid-components/html/templates/UIOptions.html .uiOptions', initDialog);
         } else {
             // else content is already loaded, just show it
-            $("#dialog_container").css('display', 'block');
+            $(".dialog").css('display', 'block');
         }
-
-        
-
     });
-});   
+});

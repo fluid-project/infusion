@@ -37,6 +37,8 @@ p {margin:0; padding-bottom:1em;}
 	border-top:none; 
 	border-right:none;
 }
+.dialog {background-color:#fff; border:1px solid #000}
+.ui-dialog-titlebar {text-align:right; background-color:#fff;}
 
 /************************************/
 .header {background:#00A5E3 url('../images/_common/header2.png') no-repeat left top; color:#fff; overflow:auto; padding:20px 0 25px 20px;}
