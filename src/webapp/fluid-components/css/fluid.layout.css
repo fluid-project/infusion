@@ -100,10 +100,10 @@ Layout Helpers
 
 .fl-col-flex2, .fl-col-flex3, .fl-col-flex4, .fl-col-flex5 {overflow:auto; zoom:1;}
 .fl-col {float:left; display:inline;}
-.fl-col-flex5 .fl-col {width:18.95%; margin:0 0.25%; padding:0 0.25%}
-.fl-col-flex4 .fl-col {width:24%; margin:0 0.25%; padding:0 0.25%}
-.fl-col-flex3 .fl-col {width:32.33%; margin:0 0.25%; padding:0 0.25%}
-.fl-col-flex2 .fl-col {width:48.85%; margin:0 0.25%; padding:0 0.25%}
+.fl-col-flex5 .fl-col {width:18.95%; margin-left:0.25%;margin-right:0.25%; padding-left:0.25%; padding-right:0.25%}
+.fl-col-flex4 .fl-col {width:24%; margin-left:0.25%;margin-right:0.25%; padding-left:0.25%; padding-right:0.25%}
+.fl-col-flex3 .fl-col {width:32.33%; margin-left:0.25%;margin-right:0.25%; padding-left:0.25%; padding-right:0.25%}
+.fl-col-flex2 .fl-col {width:48.85%; margin-left:0.25%;margin-right:0.25%; padding-left:0.25%; padding-right:0.25%}
 
 /* CHANGE TO LAYOUT not COL since this will become a layout helper */
 .fl-col-mixed,
@@ -150,7 +150,7 @@ Layout Helpers
 .fl-tabs {margin:0.75em 0 0 0; border-bottom:1px solid #000; text-align:center; padding-bottom:0.2em;}
 .fl-tabs li {list-style-type:none; display:inline;}
 .fl-tabs li a {padding:0.25em 1.25em; background-color:#fff; margin-left:-5px; *margin-bottom:-8px; zoom:1; border:1px solid #000; border-bottom:1px solid #fff;}
-.fl-tabs li a:hover {background-color:#c00; color:#fff;}
+.fl-tabs li a:hover {}
 .fl-tabs .orderable-drop-marker {padding:0 3px; background-color:#c00;margin:0 5px 0 -5px; zoom:1;}
 
 .fl-tabs .fl-activeTab {}
