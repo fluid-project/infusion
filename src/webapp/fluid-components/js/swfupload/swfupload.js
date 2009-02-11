@@ -3,7 +3,7 @@
  *
  * mmSWFUpload 1.0: Flash upload dialog - http://profandesign.se/swfupload/,  http://www.vinterwebb.se/
  *
- * SWFUpload is (c) 2006-2007 Lars Huring, Olov Nilzï¿½n and Mammon Media and is released under the MIT License:
+ * SWFUpload is (c) 2006-2007 Lars Huring, Olov Nilzén and Mammon Media and is released under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  *
  * SWFUpload 2 is (c) 2007-2008 Jake Roberts and is released under the MIT License:
@@ -50,7 +50,7 @@ SWFUpload.prototype.initSWFUpload = function (settings) {
 /* *************** */
 SWFUpload.instances = {};
 SWFUpload.movieCount = 0;
-SWFUpload.version = "2.2.0 Beta 3";
+SWFUpload.version = "2.2.0 Beta 5 2008-01-29";
 SWFUpload.QUEUE_ERROR = {
 	QUEUE_LIMIT_EXCEEDED	  		: -100,
 	FILE_EXCEEDS_SIZE_LIMIT  		: -110,
@@ -118,7 +118,7 @@ SWFUpload.prototype.initSettings = function () {
 	this.ensureDefault("file_queue_limit", 0);
 
 	// Flash Settings
-	this.ensureDefault("flash_url", "swfupload_f10.swf");
+	this.ensureDefault("flash_url", "swfupload.swf");
 	this.ensureDefault("prevent_swf_caching", true);
 	
 	// Button Settings
@@ -131,7 +131,7 @@ SWFUpload.prototype.initSettings = function () {
 	this.ensureDefault("button_text_left_padding", 0);
 	this.ensureDefault("button_action", SWFUpload.BUTTON_ACTION.SELECT_FILES);
 	this.ensureDefault("button_disabled", false);
-	this.ensureDefault("button_placeholder_id", null);
+	this.ensureDefault("button_placeholder_id", "");
 	this.ensureDefault("button_cursor", SWFUpload.CURSOR.ARROW);
 	this.ensureDefault("button_window_mode", SWFUpload.WINDOW_MODE.WINDOW);
 	
@@ -161,57 +161,15 @@ SWFUpload.prototype.initSettings = function () {
 	this.customSettings = this.settings.custom_settings;
 	
 	// Update the flash url if needed
-	if (this.settings.prevent_swf_caching) {
-		this.settings.flash_url = this.settings.flash_url + "?swfuploadrnd=" + Math.floor(Math.random() * 999999999);
+	if (!!this.settings.prevent_swf_caching) {
+		this.settings.flash_url = this.settings.flash_url + (this.settings.flash_url.indexOf("?") < 0 ? "?" : "&") + "preventswfcaching=" + new Date().getTime();
 	}
 	
 	delete this.ensureDefault;
 };
 
+// Private: loadFlash replaces the button_placeholder element with the flash movie.
 SWFUpload.prototype.loadFlash = function () {
-	if (this.settings.button_placeholder_id !== "") {
-		this.replaceWithFlash();
-	} else {
-		this.appendFlash();
-	}
-};
-
-// Private: appendFlash gets the HTML tag for the Flash
-// It then appends the flash to the body
-SWFUpload.prototype.appendFlash = function () {
-	var targetElement, container;
-
-	// Make sure an element with the ID we are going to use doesn't already exist
-	if (document.getElementById(this.movieName) !== null) {
-		throw "ID " + this.movieName + " is already in use. The Flash Object could not be added";
-	}
-
-	// Get the body tag where we will be adding the flash movie
-	targetElement = document.getElementsByTagName("body")[0];
-
-	if (targetElement == undefined) {
-		throw "Could not find the 'body' element.";
-	}
-
-	// Append the container and load the flash
-	container = document.createElement("div");
-	container.style.width = "1px";
-	container.style.height = "1px";
-	container.style.overflow = "hidden";
-
-	targetElement.appendChild(container);
-	container.innerHTML = this.getFlashHTML();	// Using innerHTML is non-standard but the only sensible way to dynamically add Flash in IE (and maybe other browsers)
-
-	// Fix IE Flash/Form bug
-	if (window[this.movieName] == undefined) {
-		window[this.movieName] = this.getMovieElement();
-	}
-	
-	
-};
-
-// Private: replaceWithFlash replaces the button_placeholder element with the flash movie.
-SWFUpload.prototype.replaceWithFlash = function () {
 	var targetElement, tempParent;
 
 	// Make sure an element with the ID we are going to use doesn't already exist
@@ -223,7 +181,7 @@ SWFUpload.prototype.replaceWithFlash = function () {
 	targetElement = document.getElementById(this.settings.button_placeholder_id);
 
 	if (targetElement == undefined) {
-		throw "Could not find the placeholder element.";
+		throw "Could not find the placeholder element: " + this.settings.button_placeholder_id;
 	}
 
 	// Append the container and load the flash
@@ -242,7 +200,7 @@ SWFUpload.prototype.replaceWithFlash = function () {
 SWFUpload.prototype.getFlashHTML = function () {
 	// Flash Satay object syntax: http://www.alistapart.com/articles/flashsatay
 	return ['<object id="', this.movieName, '" type="application/x-shockwave-flash" data="', this.settings.flash_url, '" width="', this.settings.button_width, '" height="', this.settings.button_height, '" class="swfupload">',
-				'<param name="wmode" value="', this.settings.button_window_mode , '" />',
+				'<param name="wmode" value="', this.settings.button_window_mode, '" />',
 				'<param name="movie" value="', this.settings.flash_url, '" />',
 				'<param name="quality" value="high" />',
 				'<param name="menu" value="false" />',
@@ -325,11 +283,12 @@ SWFUpload.prototype.destroy = function () {
 		// Make sure Flash is done before we try to remove it
 		this.cancelUpload(null, false);
 		
+
 		// Remove the SWFUpload DOM nodes
 		var movieElement = null;
 		movieElement = this.getMovieElement();
 		
-		if (movieElement) {
+		if (movieElement && typeof(movieElement.CallFunction) === "unknown") { // We only want to do this in IE
 			// Loop through all the movie's properties and remove all function references (DOM/JS IE 6/7 memory leak workaround)
 			for (var i in movieElement) {
 				try {
@@ -344,7 +303,6 @@ SWFUpload.prototype.destroy = function () {
 				movieElement.parentNode.removeChild(movieElement);
 			} catch (ex) {}
 		}
-		
 		
 		// Remove IE form fix reference
 		window[this.movieName] = null;
@@ -361,10 +319,11 @@ SWFUpload.prototype.destroy = function () {
 		
 		
 		return true;
-	} catch (ex1) {
+	} catch (ex2) {
 		return false;
 	}
 };
+
 
 // Public: displayDebugInfo prints out settings and configuration
 // information about this SWFUpload instance.
@@ -468,44 +427,6 @@ SWFUpload.prototype.callFlash = function (functionName, argumentArray) {
 	return returnValue;
 };
 
-/**
- * Version of callFlash that is compatible with Flash 9.
- */
-SWFUpload.callFlash_Flash9Compatibility = function (functionName, argumentArray) {
-	argumentArray = argumentArray || [];
-	
-	var self = this;
-	var callFunction = function () {
-		var movieElement = self.getMovieElement();
-		var returnValue;
-		if (typeof(movieElement[functionName]) === "function") {
-			// We have to go through all this if/else stuff because the Flash functions don't have apply() and only accept the exact number of arguments.
-			if (argumentArray.length === 0) {
-				returnValue = movieElement[functionName]();
-			} else if (argumentArray.length === 1) {
-				returnValue = movieElement[functionName](argumentArray[0]);
-			} else if (argumentArray.length === 2) {
-				returnValue = movieElement[functionName](argumentArray[0], argumentArray[1]);
-			} else if (argumentArray.length === 3) {
-				returnValue = movieElement[functionName](argumentArray[0], argumentArray[1], argumentArray[2]);
-			} else {
-				throw "Too many arguments";
-			}
-			
-			// Unescape file post param values
-			if (returnValue != undefined && typeof(returnValue.post) === "object") {
-				returnValue = self.unescapeFilePostParams(returnValue);
-			}
-			
-			return returnValue;
-		} else {
-			throw "Invalid function name";
-		}
-	};
-	
-	return callFunction();
-};
-
 
 /* *****************************
 	-- Flash control methods --
@@ -541,16 +462,10 @@ SWFUpload.prototype.startUpload = function (fileID) {
 // If you do not specify a fileID the current uploading file or first file in the queue is cancelled.
 // If you do not want the uploadError event to trigger you can specify false for the triggerErrorEvent parameter.
 SWFUpload.prototype.cancelUpload = function (fileID, triggerErrorEvent) {
-    // This section has been commented out, and we've removed the passing of triggerErrorEvent to the Flash side,
-    // because of FLUID-1982. We use a patched version of swfupload.js (this file) which is intended to work with
-    // the Flash movies from both SWFUpload 2.1.0 and 2.2.0b3.
-    // The 2.1.0 version of the movie doesn't expect this second argument and will throw an error.
-    // For more details, see http://issues.fluidproject.org/browse/FLUID-1982.
-    
-	//if (triggerErrorEvent !== false) {
-	//	triggerErrorEvent = true;
-	//}
-	this.callFlash("CancelUpload", [fileID]);
+	if (triggerErrorEvent !== false) {
+		triggerErrorEvent = true;
+	}
+	this.callFlash("CancelUpload", [fileID, triggerErrorEvent]);
 };
 
 // Public: stopUpload stops the current upload and requeues the file at the beginning of the queue.
@@ -820,24 +735,63 @@ SWFUpload.prototype.unescapeFilePostParams = function (file) {
 	return file;
 };
 
+// Private: Called by Flash to see if JS can call in to Flash (test if External Interface is working)
+SWFUpload.prototype.testExternalInterface = function () {
+	try {
+		return this.callFlash("TestExternalInterface");
+	} catch (ex) {
+		return false;
+	}
+};
+
+// Private: This event is called by Flash when it has finished loading. Don't modify this.
+// Use the swfupload_loaded_handler event setting to execute custom code when SWFUpload has loaded.
 SWFUpload.prototype.flashReady = function () {
 	// Check that the movie element is loaded correctly with its ExternalInterface methods defined
 	var movieElement = this.getMovieElement();
 
-	// Pro-actively unhook all the Flash functions
-	if (typeof(movieElement.CallFunction) === "unknown") { // We only want to do this in IE
-		this.debug("Removing Flash functions hooks (this should only run in IE and should prevent memory leaks)");
-		for (var key in movieElement) {
-			try {
-				if (typeof(movieElement[key]) === "function") {
-					movieElement[key] = null;
-				}
-			} catch (ex) {
-			}
-		}
+	if (!movieElement) {
+		this.debug("Flash called back ready but the flash movie can't be found.");
+		return;
 	}
+
+	this.cleanUp(movieElement);
 	
 	this.queueEvent("swfupload_loaded_handler");
+};
+
+// Private: removes Flash added fuctions to the DOM node to prevent memory leaks in IE.
+// This function is called by Flash each time the ExternalInterface functions are created.
+SWFUpload.prototype.cleanUp = function (movieElement) {
+	// Pro-actively unhook all the Flash functions
+	try {
+		if (this.movieElement && typeof(movieElement.CallFunction) === "unknown") { // We only want to do this in IE
+			this.debug("Removing Flash functions hooks (this should only run in IE and should prevent memory leaks)");
+			for (var key in movieElement) {
+				try {
+					if (typeof(movieElement[key]) === "function") {
+						movieElement[key] = null;
+					}
+				} catch (ex) {
+				}
+			}
+		}
+	} catch (ex1) {
+	
+	}
+
+	// Fix Flashes own cleanup code so if the SWFMovie was removed from the page
+	// it doesn't display errors.
+	window["__flash__removeCallback"] = function (instance, name) {
+		try {
+			if (instance) {
+				instance[name] = null;
+			}
+		} catch (flashEx) {
+		
+		}
+	};
+
 };
 
 

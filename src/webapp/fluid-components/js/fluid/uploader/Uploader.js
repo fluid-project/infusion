@@ -571,9 +571,8 @@ fluid_0_8 = fluid_0_8 || {};
     fluid.progressiveEnhanceableUploader = function (container, enhanceable, options) {
         enhanceable = fluid.container(enhanceable);
         container = fluid.container(container);
-        
-        var flashVersion = swfobject.getFlashPlayerVersion().major;       
-        if (flashVersion < 9 || ($.browser.msie && flashVersion < 10)) {
+              
+        if (swfobject.getFlashPlayerVersion().major < 9) {
             // Degrade gracefully.
             enhanceable.show();
         } else {

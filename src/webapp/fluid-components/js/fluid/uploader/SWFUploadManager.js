@@ -21,12 +21,6 @@ fluid_0_8 = fluid_0_8 || {};
     /*****************************
      * SWFUpload Setup Decorator *
      *****************************/
-
-    var addFlash9Compatibility = function () {
-        // There's a bug in SWFUpload 2.2.0b3 that prevents using Flash 9 correctly.
-        // Override the implementation of SWFUpload.callFlash() to use the old 2.1 version.
-        SWFUpload.prototype.callFlash = SWFUpload.callFlash_Flash9Compatibility;
-    };
     
     var unbindSelectFiles = function () {
         // There's a bug in SWFUpload 2.2.0b3 that causes the entire browser to crash 
@@ -63,12 +57,28 @@ fluid_0_8 = fluid_0_8 || {};
         };
     };
     
+    var createFlash9MovieContainer = function () {
+        // Create a hidden container and a placeholder element for SWFUpload to replace.
+        var container = $("<div class='fl-uploader-flash9-container'></div>");
+        var placeholder = $("<span></span>");
+        var placeholderId = fluid.allocateSimpleId(placeholder);
+        container.append(placeholder);
+        $("body").append(container);
+        return placeholderId;
+    };
+    
     var setupForFlash9 = function (that, uploader) {
-        addFlash9Compatibility();
         that.returnedOptions.uploadManager.options = {
-            flashURL: that.options.flash9URL,
-            flashButtonPeerId: ""
+            flashURL: that.options.flash9URL || undefined,
+            flashButtonPeerId: createFlash9MovieContainer()
         };
+    };
+    
+    var createEmptyPlaceholder = function () {
+        var placeholder = $("<span></span>");
+        fluid.allocateSimpleId(placeholder);
+        
+        return placeholder;
     };
     
     var createButtonPlaceholder = function (browseButton) {
@@ -93,7 +103,7 @@ fluid_0_8 = fluid_0_8 || {};
         var peerId = that.isTransparent ? createButtonPlaceholder(browseButton) : fluid.allocateSimpleId(browseButton);
         
         that.returnedOptions.uploadManager.options = {
-            flashURL: that.options.flash10URL,
+            flashURL: that.options.flash10URL || undefined,
             flashButtonImageURL: that.isTransparent ? undefined : that.options.flashButtonImageURL, 
             flashButtonPeerId: peerId,
             flashButtonHeight: that.isTransparent ? browseButton.outerHeight(): that.options.flashButtonHeight,
@@ -135,8 +145,7 @@ fluid_0_8 = fluid_0_8 || {};
     };
     
     fluid.defaults("fluid.swfUploadSetupDecorator", {
-        flash9URL: "../../flash/swfupload_f9.swf",
-        flash10URL: "../../flash/swfupload_f10.swf",
+        // The flash9URL and flash10URLs are now deprecated in favour of the flashURL option in upload manager.
         flashButtonAlwaysVisible: true,
         transparentEvenInIE: false,
         
@@ -359,7 +368,7 @@ fluid_0_8 = fluid_0_8 || {};
     
     fluid.defaults("fluid.swfUploadManager", {
         uploadURL: "",
-        flashURL: "../../flash/swfupload_f9.swf",
+        flashURL: "../../flash/swfupload.swf",
         flashButtonPeerId: "",
         postParams: {},
         fileSizeLimit: "20480",

@@ -396,3 +396,11 @@ button span.text-description {
     background-color: #BDBFC1;
     width:76%;
 }
+
+/* Hidden SWF for Flash 9*/
+
+.fl-uploader-flash9-container {
+    overflow: hidden; 
+    width: 1px; 
+    height: 1px;
+}
