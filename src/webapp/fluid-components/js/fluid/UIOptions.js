@@ -118,6 +118,8 @@ fluid_0_8 = fluid_0_8 || {};
     var initModel = function (that) {
         that.model = {value: {}};
         that.model.value = that.renderModel.selectedOptions;
+        that.originalModel = fluid.copy(that.model);
+
     };
     
     var bindHandlers = function (that) {
@@ -157,7 +159,6 @@ fluid_0_8 = fluid_0_8 || {};
     fluid.uiOptions = function (container, options) {
         var that = fluid.initView("fluid.uiOptions", container, options);
         that.renderModel = that.options.renderModel;
-        that.originalModel = fluid.copy(that.renderModel.selectedOptions);
         var template = fluid.selfRender(that.container, tree, {model: that.renderModel, autoBind: true, debugMode: true});
              
         that.save = function () {
@@ -167,7 +168,6 @@ fluid_0_8 = fluid_0_8 || {};
 
         that.reset = function () {
             that.model.value = that.originalModel;
-//            that.renderModel.selectedOptions = that.originalModel;
             that.refreshView();
         };
         
