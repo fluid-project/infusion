@@ -167,7 +167,7 @@ fluid_0_8 = fluid_0_8 || {};
         };
 
         that.reset = function () {
-            that.model.value = that.originalModel;
+            that.model = that.originalModel;
             that.refreshView();
         };
         
@@ -226,7 +226,7 @@ fluid_0_8 = fluid_0_8 || {};
                     values: ["Default", "Wide", "Wider", "Widest"]
                 },
                 contrast: {
-                    names: ["No Preference", "High Contrast", "Mist", "Rust"],
+                    names: ["Medium Contrast", "High Contrast", "Mist", "Rust"],
                     values: ["Default", "High Contrast", "Mist", "Rust"]
                 },
                 backgroundImages: {
