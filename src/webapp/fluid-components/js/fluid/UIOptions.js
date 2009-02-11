@@ -28,11 +28,15 @@ fluid_0_8 = fluid_0_8 || {};
             },
             {
                 ID: "font-min-size",
-                valuebinding: "selectedOptions.textSize"
+                selection: {valuebinding: "selectedOptions.textSize"},
+                optionlist: {valuebinding: "labelMap.textSize.values"},
+                optionnames: {valuebinding: "labelMap.textSize.names"}
             },
             {
                 ID: "text-spacing",
-                valuebinding: "selectedOptions.textSpacing"
+                selection: {valuebinding: "selectedOptions.textSpacing"},
+                optionlist: {valuebinding: "labelMap.textSpacing.values"},
+                optionnames: {valuebinding: "labelMap.textSpacing.names"}
             },
             {
                 ID: "contrast",
@@ -220,9 +224,11 @@ fluid_0_8 = fluid_0_8 || {};
                     values: ["Default", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"]
                 },
                 textSize: {
+                    names: ["No Preference", "-3", "-2", "-1", "+1", "+2", "+3", "+4", "+5"],
                     values: ["0", "-3", "-2", "-1", "+1", "+2", "+3", "+4", "+5"]
                 },
                 textSpacing: {
+                    names: ["No Preference", "Wide", "Wider", "Widest"],
                     values: ["Default", "Wide", "Wider", "Widest"]
                 },
                 contrast: {
