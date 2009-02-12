@@ -31,7 +31,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             expect(6);
             
             var uiOptions = fluid.uiOptions(".ui_options_container");
-            var model = uiOptions.model.value;
+            var model = uiOptions.model;
             jqUnit.assertNotNull("Model is not null", model);
             jqUnit.assertNotUndefined("Model is not undefined", model);
             jqUnit.assertEquals("Text size is set", "Default", model.textSize);
@@ -52,7 +52,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 }
             };
             var uiOptions = fluid.uiOptions(".ui_options_container", options);
-            uiOptions.model.value = hcSkin;
+            uiOptions.updateModel(hcSkin);
 
             jqUnit.assertFalse("Save hasn't been called", saveCalled);
             uiOptions.save();
@@ -66,7 +66,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             expect(8);
 
             var uiOptions = fluid.uiOptions(".ui_options_container");
-            uiOptions.model.value = hcSkin;
+            uiOptions.updateModel(hcSkin);
             
             uiOptions.refreshView();
             jqUnit.assertTrue("Default size not checked", !$("#sdefault").attr("checked"));
