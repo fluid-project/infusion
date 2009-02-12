@@ -171,12 +171,17 @@ fluid_0_8 = fluid_0_8 || {};
         };
 
         that.reset = function () {
-            that.model = that.originalModel;
+            $.extend(true, that.model, that.originalModel);
+            that.save();
             that.refreshView();
         };
         
         that.refreshView = function () {
             fluid.reRender(template, that.container, tree, {model: that.renderModel, autoBind: true, debugMode: true});
+            // TODO: this should not be necessary. 
+            // We should fill in the tree with the handlers so that we don't need to rebind when we reRender
+            bindHandlers(that);
+            initPreview(that);    
         };
         
         that.updateModel = function (newValue, source) {
