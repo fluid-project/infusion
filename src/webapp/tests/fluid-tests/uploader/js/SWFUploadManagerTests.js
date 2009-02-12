@@ -37,23 +37,10 @@
         
         
         var swfUploadManagerTests = new jqUnit.TestCase("SWFUploadManager and SWFUploadSetupDecorator Tests", setup);
-
-        swfUploadManagerTests.test("Flash 9 compatibility function is present", function () {
-            // Ensure that the callFlash() compatibility function for Flash 9 is present on the SWFUpload namespace.
-            jqUnit.assertNotUndefined("There should be a version of callFlash() available that is compatible with Flash 9.",
-                                      SWFUpload.callFlash_Flash9Compatibility);                      
-        });
         
         swfUploadManagerTests.test("swfUploadSetupDecorator Flash 10: compatibility should be turned off.", function () {
             var decorator = fluid.swfUploadSetupDecorator(mockUploader);
             jqUnit.assertNotEquals("The Flash 9-compatible version of callFlash() should not be in place.",
-                                   SWFUpload.callFlash_Flash9Compatibility, SWFUpload.prototype.callFlash);
-        });
-        
-        swfUploadManagerTests.test("swfUploadSetupDecorator Flash 9: compatibility should be turned on.", function () {
-            flashPlayerVersion.major = 9;
-            var decorator = fluid.swfUploadSetupDecorator(mockUploader);
-            jqUnit.assertEquals("The Flash 9-compatible version of callFlash() should be in place.",
                                    SWFUpload.callFlash_Flash9Compatibility, SWFUpload.prototype.callFlash);
         });
         
@@ -83,8 +70,8 @@
         swfUploadManagerTests.test("swfUploadSetupDecorator Flash 9 configuration", function () {
             flashPlayerVersion.major = 9;
             var decorator = fluid.swfUploadSetupDecorator(mockUploader);
-            jqUnit.assertEquals("With Flash 9, the flashButtonPeerId should be an empty string.", 
-                                "", decorator.returnedOptions.uploadManager.options.flashButtonPeerId);
+            jqUnit.assertNotEquals("With Flash 9, the flashButtonPeerId should not be empty.", 
+                                   "", decorator.returnedOptions.uploadManager.options.flashButtonPeerId);
             jqUnit.assertEquals("We should have specified the Flash 9 movie URL.", 
                                 fluid.defaults("fluid.swfUploadSetupDecorator").flash9URL,
                                 decorator.returnedOptions.uploadManager.options.flashURL);   

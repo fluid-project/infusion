@@ -70,7 +70,8 @@
             
             var swfManager = fluid.swfUploadManager(events, {
                 simulateDelay: false,
-                listeners: tracker.listeners
+                listeners: tracker.listeners,
+                flashButtonPeerId: "swfUploadLovesDestroyingInnocentDomElements"
             });
             
             var demoManager = fluid.demoUploadManager(swfManager);
@@ -99,12 +100,14 @@
         
         demoUploadTests.test("Options merging", function () {
             // Test with no events and no additional options. simulateDelay should be true.
-            var demoManager = fluid.demoUploadManager(fluid.swfUploadManager(events));
+            var demoManager = fluid.demoUploadManager(fluid.swfUploadManager(events, {
+                flashButtonPeerId: "swfUploadLovesDestroyingInnocentDomElements"
+            }));
             
             // Ensure our default options are cool.
             jqUnit.assertTrue("simulateDelay should default to true.", demoManager.options.simulateDelay);
             jqUnit.assertEquals("We should have inherited our parent's default options.",
-                                "../../flash/swfupload_f9.swf",
+                                "../../flash/swfupload.swf",
                                 demoManager.options.flashURL);
                                 
             // Test an alternative option. simulateDelay should be false.
