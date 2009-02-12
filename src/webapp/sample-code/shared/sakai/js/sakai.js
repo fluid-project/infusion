@@ -16,8 +16,11 @@ $(function () {
     var uiOptions;
     var initDialog = function () {
         var options = {
+            savedSelections: {
+                contrast: "Mist"
+            },
             renderModel: {
-                selectedOptions: {
+                selections: {
                     contrast: "Mist"
                 }
             }
@@ -30,7 +33,10 @@ $(function () {
         $("#ui_dialog_container").dialog({
             width: 700,
     		modal: true,
-            dialogClass: 'dialog'
+            dialogClass: 'dialog',
+            close: function () {
+                uiOptions.cancel();
+            }
     	});
 
         //ajax call is not bringing this in with the uioptions dialog
