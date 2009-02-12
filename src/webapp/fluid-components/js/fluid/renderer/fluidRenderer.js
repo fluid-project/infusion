@@ -1163,7 +1163,9 @@ fluid_0_8 = fluid_0_8 || {};
   fluid.ComponentReference = function(reference) {
       this.reference = reference;
   };
-    
+  
+  fluid.VALUE = {};
+  
   // Explodes a raw "hash" into a list of UIOutput/UIBound entries
   fluid.explode = function(hash, basepath) {
       var togo = [];

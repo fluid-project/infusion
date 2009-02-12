@@ -26,7 +26,7 @@ var demo = demo || {};
               options: {
                 root: "#body-template",
                 row: "row:",
-                cells: "explode"
+                columnDefs: "explode"
               }
             },
             pagerBar: {type: "fluid.pager.pagerBar", options: {

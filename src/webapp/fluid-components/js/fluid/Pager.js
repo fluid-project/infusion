@@ -208,13 +208,7 @@ fluid_0_8 = fluid_0_8 || {};
         return togo;
     };
    
-    fluid.defaults("fluid.pager.selfRender", {
-        // strategy for generating a tree row, either "explode" or a function accepting data row
-        cells: "explode",
-        // Options passed upstream to the renderer
-        renderOptions: undefined
-      });
-   
+  
     function expandPath(EL, shortRoot, longRoot) {
         if (EL.charAt(0) === "*") {
             return longRoot + EL.substring(1); 
@@ -223,17 +217,93 @@ fluid_0_8 = fluid_0_8 || {};
             return EL.replace("*", shortRoot);
         }
     }
-   
-    function expandPaths(tree, shortRoot, longRoot) {
-        for (i in tree) {
-            var val = tree[i];
-            if (i === "valuebinding") {
-               tree[i] = expandPath(tree[i], shortRoot, longRoot);
+    
+    function expandVariables(value, opts) {
+        var togo = "";
+        var index = 0;
+        while (true) {
+            var nextindex = value.indexOf("${", index);
+            if (nextindex === -1) {
+                togo += value.substring(index);
+                break;
             }
-            if (typeof(val) === 'object') {
-                expandPaths(val, shortRoot, longRoot);
+            else {
+                togo += value.substring(index, nextindex);
+                var endi = value.indexOf("}", nextindex + 2);
+                var EL = value.substring(nextindex + 2, endi);
+                if (EL === "VALUE") {
+                    EL = opts.EL;
+                }
+                else {
+                    EL = expandPath(EL, opts.shortRoot, opts.longRoot);
+                }
+
+                var value = fluid.model.getBeanValue(opts.dataModel, EL)
+                togo += value;
+                index = endi + 1;
             }
         }
+        return togo;
+    }
+   
+    function expandPaths(target, tree, opts) {
+        for (i in tree) {
+            var val = tree[i];
+            if (val === fluid.VALUE) {
+                if (i === "valuebinding") {
+                    target[i] = opts.EL;
+                }
+                else {
+                    target[i] = {"valuebinding" : opts.EL};
+                }
+            }
+            else if (i === "valuebinding") {
+                target[i] = expandPath(tree[i], opts);
+            }
+            else if (typeof(val) === 'object') {
+                 target[i] = val.length !== undefined? [] : {};
+                 expandPaths(target[i], val, opts);
+            }
+            else if (typeof(val) === 'string') {
+                target[i] = expandVariables(val, opts);
+            }
+            else target[i] = tree[i];
+        }
+        return target;
+    }
+   
+    function expandColumnDefs(filteredRow, opts) {
+        var options = opts.options;
+        var tree = fluid.transform(options.columnDefs, function(columnDef){
+            var EL = columnDef.valuebinding;
+            var key = columnDef.key;
+            if (!EL) {
+                fluid.fail("Error in definition for column with key " + key + ": valuebinding is not set");
+            }
+            opts.EL = expandPath(EL, opts.shortRoot, opts.longRoot);
+            if (!key) {
+                var segs = fluid.model.parseEL(EL);
+                key = segs[segs.length - 1];
+            }
+            var ID = (options.keyPrefix? options.keyPrefix : "") + key;
+            var togo;
+            if (!columnDef.components) {
+              return {
+                  ID: ID,
+                  valuebinding: opts.EL
+              };
+            }
+            else if (typeof columnDef.components === 'function'){
+                togo = columnDef.components(filteredRow.row, filteredRow.index);
+            }
+            else {
+                togo = columnDef.components;
+            }
+            togo = expandPaths({}, togo, opts);
+            togo.ID = ID;
+            return togo;
+        });
+        return tree;
     }
    
     function fetchModel(overallThat) {
@@ -252,24 +322,28 @@ fluid_0_8 = fluid_0_8 || {};
                     onModelChange: function (newModel, oldModel) {
                         var dataModel = fetchModel(overallThat);
                         var filtered = overallThat.options.modelFilter(dataModel, newModel);
+                        var dataModel = overallThat.options.dataModel;
                         var tree = fluid.transform(filtered, 
                             function(filteredRow) {
                                 var cellRoot = (overallThat.options.dataOffset? overallThat.options.dataOffset + ".": "");
                                 var shortRoot = filteredRow.index;
                                 var longRoot = cellRoot + shortRoot; 
-                                if (options.cells === "explode") {
+                                if (options.columnDefs === "explode") {
                                     return fluid.explode(filteredRow.row, root);
                                 }
-                                else if (typeof options.cells === "function") {
-                                    var tree = options.cells(filteredRow.row, filteredRow.index);
-                                    expandPaths(tree, shortRoot, longRoot);
+                                else if (options.columnDefs.length) {
+                                    var tree = expandColumnDefs(filteredRow, {shortRoot: shortRoot,
+                                        longRoot: longRoot,
+                                        dataModel: dataModel,
+                                        options: options});
                                     return tree;
                                 }
                             }
                             );
                         var fullTree = {};
                         fullTree[options.row] = tree;
-                        options.renderOptions.model = overallThat.options.dataModel;
+                        options.renderOptions = options.renderOptions || {};
+                        options.renderOptions.model = dataModel;
                         fluid.reRender(template, root, fullTree, options.renderOptions);
                     }
                 }
@@ -278,9 +352,14 @@ fluid_0_8 = fluid_0_8 || {};
     };
 
     fluid.defaults("fluid.pager.selfRender", {
-       row: "row:",
-       cells: "explode"
-    });
+         // strategy for generating a tree row, either "explode" or a function accepting data row
+        columnDefs: "explode",
+        keyStrategy: "id",
+        keyPrefix: "",
+        // Options passed upstream to the renderer
+        renderOptions: undefined
+      });
+
 
     fluid.pager.summary = function (dom, options) {
         var node = dom.locate("summary");
@@ -423,7 +502,7 @@ fluid_0_8 = fluid_0_8 || {};
         
         dataModel: undefined,
         // Offset of the tree's "main" data from the overall dataModel root
-        dataOffset: undefined,
+        dataOffset: "",
         
         selectors: {
             pagerBar: ".pager-top",

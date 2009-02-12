@@ -325,6 +325,11 @@ var fluid = fluid || fluid_0_8;
      */
     fluid.COMPONENT_OPTIONS = {};
     
+    /** Another special "marker object" representing that a distinguished 
+     * (probably context-dependent) value should be substituted.
+     */
+    fluid.VALUE = {};
+    
     /** Construct a dummy or "placeholder" subcomponent, that optionally provides empty
      * implementations for a set of methods.
      */
@@ -438,7 +443,7 @@ var fluid = fluid || fluid_0_8;
     
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
-                      !thisSource.nodeType && !thisSource.jquery) {
+                      !thisSource.nodeType && !thisSource.jquery && thisSource !== fluid.VALUE) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array? [] : {};
                     }
@@ -615,6 +620,9 @@ var fluid = fluid || fluid_0_8;
      */
     
     fluid.model.getBeanValue = function (root, EL, environment) {
+        if (EL === "" || EL === null || EL === undefined) {
+            return root;
+        }
         var segs = fluid.model.parseEL(EL);
         for (var i = 0; i < segs.length; ++i) {
             if (!root) {

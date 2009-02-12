@@ -18,25 +18,43 @@ sakai.initFluidSiteSettingTable = function() {
             selecteds: [],
             users: JSON.parse(resources.users.resourceText)
         };
-      
-        function cellGenerator (row) {
-          return  [{ID: "selection",
-            valuebinding: "selecteds.*.selected"},
-           {ID: "user-link",
-            target: "/dev/sn/profile.html?user=" + row.userId,
-            linktext: row.userDisplayName},
-           {ID: "user-email",
-            valuebinding: "*.userEmail"},
-           {ID: "user-role",
-            selection: {valuebinding: "*.userRole"},
-            optionlist: {valuebinding: "site.userRoles"}
+        var columnDefs = [ 
+           {key: "selection",
+            valuebinding: "selecteds.*.selected",
+            sortable: true
             },
-           {ID: "user-status",
-            selection: {valuebinding: "*.active"},
-            optionlist: {value: ["Active", "Inactive"]}}
-            ];
+           {key: "user-link",
+            valuebinding: "*.userDisplayName",  
+            components: {
+                target: "/dev/sn/profile.html?user=${*.userId}",
+                linktext: fluid.VALUE},
+            sortable:true
+            },
+           {key: "user-email",
+            valuebinding: "*.userEmail",
+            sortable: true,
+            components: {
+                linktext: fluid.VALUE,
+                target: "mailto:${VALUE}"
+                }
+            },
+           {key: "user-role",
+            valuebinding: "*.memberRole",
+            components: {
+                selection: fluid.VALUE, 
+                optionlist: {valuebinding: "site.userRoles"}
+               },
+            sortable: true
+           },
+           {key: "user-status",
+            valuebinding: "*.active",
+            components: {
+                selection: fluid.VALUE,
+                optionlist: {value: ["Active", "Inactive"]}
+            },
+            sortable: true}
+          ];
            
-        }
   
     var pager = fluid.pager(".ss-members", {
         dataModel: model,
@@ -47,7 +65,7 @@ sakai.initFluidSiteSettingTable = function() {
             root: ".site-setting-body",
             renderOptions: {debugMode: false},
             row: "row:",
-            cells: cellGenerator
+            columnDefs: columnDefs
           }
         }
     });
