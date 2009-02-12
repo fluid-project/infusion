@@ -137,6 +137,7 @@ fluid_0_8 = fluid_0_8 || {};
         that.start = function () {
             that.queue.setupCurrentBatch();
             that.queue.isUploading = true;
+            that.queue.stopUploadOnFileComplete = false;
             that.events.onUploadStart.fire(that.queue.currentBatch.files); 
         };
         
@@ -153,7 +154,7 @@ fluid_0_8 = fluid_0_8 || {};
         };
         
         that.shouldUploadNextFile = function () {
-            return that.queue.isUploading && that.queue.currentBatch.numFilesCompleted < that.queue.currentBatch.files.length;
+            return !that.queue.stopUploadOnFileComplete && that.queue.isUploading && that.queue.currentBatch.numFilesCompleted < that.queue.currentBatch.files.length;
         };
         
         that.complete = function () {

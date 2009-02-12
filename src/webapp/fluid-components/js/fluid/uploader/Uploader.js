@@ -659,6 +659,7 @@ fluid_0_8 = fluid_0_8 || {};
             onQueueError: null,
             afterFileDialog: null,
             onUploadStart: null,
+            onUploadStop: null,
             onFileStart: null,
             onFileProgress: null,
             onFileError: null,

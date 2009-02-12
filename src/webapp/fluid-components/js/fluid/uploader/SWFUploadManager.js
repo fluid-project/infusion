@@ -219,11 +219,14 @@ fluid_0_8 = fluid_0_8 || {};
             }   
         }
         
-        result.upload_complete_handler = function(file){
+        result.upload_complete_handler = function (file) {
             that.queueManager.finishFile(file);
             if (that.queueManager.shouldUploadNextFile()) {
                 that.swfUploader.startUpload();
             } else {
+                if (that.queueManager.queue.stopUploadOnFileComplete) {
+                    that.swfUploader.stopUpload();
+                }
                 that.queueManager.complete();
             }
         };
@@ -242,6 +245,16 @@ fluid_0_8 = fluid_0_8 || {};
         } else {
             that.swfUploader.selectFiles();
         }  
+    };
+    
+    /* FLUID-822: while stopping the upload cycle while a file is in mid-upload should be possible
+     * in practice, it sets up a state where when the upload cycle is restarted SWFUpload will get stuck
+     * therefor we only stop the upload after a file has completed but before the next file begins. 
+     */
+    
+    var stopUpload = function (that) {
+        that.queue.stopUploadOnFileComplete = true;
+        that.events.onUploadStop.fire();
     };
         
     var bindEvents = function (that) {
@@ -359,7 +372,7 @@ fluid_0_8 = fluid_0_8 || {};
          * Cancels an in-progress upload.
          */
         that.stop = function () {
-            that.swfUploader.stopUpload();
+            stopUpload(that);
         };
         
         setupSwfUploadManager(that, events);
