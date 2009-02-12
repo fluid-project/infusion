@@ -59,6 +59,7 @@ fluid_0_8 = fluid_0_8 || {};
                     refreshView(that);
                     that.locate("redoControl").focus();
                 }
+				return false;
             }
         );
         that.locate("redoControl").click( 
@@ -69,6 +70,7 @@ fluid_0_8 = fluid_0_8 || {};
                     refreshView(that);
                     that.locate("undoControl").focus();
                 }
+				return false;
             }
         );
         return {
