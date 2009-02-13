@@ -50,12 +50,10 @@ input {
     color: #000000;
     border: 0;
     text-decoration: none;
-    cursor: default;
 }
 
 .disabled a {
     color: #777777;
     border: 0;
     text-decoration: none;
-    cursor: default;
 }
