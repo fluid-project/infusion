@@ -182,7 +182,6 @@ fluid_0_8 = fluid_0_8 || {};
 
         that.reset = function () {
             $.extend(true, that.model, that.originalModel);
-            that.save();
             that.refreshView();
         };
         
