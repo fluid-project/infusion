@@ -44,10 +44,10 @@ fluid_0_8 = fluid_0_8 || {};
         var pos = value? value.length : 0;
 
         try {
+            control.focus();
         // see http://www.quirksmode.org/dom/range_intro.html - in Opera, must detect setSelectionRange first, 
         // since its support for Microsoft TextRange is buggy
             if (control.setSelectionRange) {
-                control.focus();
 
                 control.setSelectionRange(pos, pos);
                 if ($.browser.mozilla && pos > 0) {

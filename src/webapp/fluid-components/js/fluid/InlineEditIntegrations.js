@@ -61,6 +61,13 @@ fluid_0_8 = fluid_0_8 || {};
         function focusEditor(editor) {
                 setTimeout(function() {
                     tinyMCE.execCommand('mceFocus', false, that.editField[0].id);
+                    if ($.browser.mozilla && $.browser.version.substring(0, 3) === "1.8") {
+                        var body = editor.getBody();
+                        // Have not yet found any way to make this work on FF2.x - best to do nothing,
+                        // for FLUID-2206
+                        //fluid.setCaretToEnd(body.firstChild, "");
+                        return;
+                    }
                     editor.selection.select(editor.getBody(), 1);
                     editor.selection.collapse(0);
                 }, 10);          
