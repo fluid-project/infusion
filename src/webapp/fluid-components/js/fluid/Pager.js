@@ -85,14 +85,49 @@ fluid_0_8 = fluid_0_8 || {};
     
     fluid.pager.everyPageStrategy = fluid.iota;
     
+    fluid.pager.gappedPageStrategy = function(locality, midLocality) {
+        if (!locality) {
+            locality = 3;
+        }
+        if (!midLocality) {
+            midLocality = locality;
+        }
+        return function(count, first, mid) {
+            var togo = [];
+            var j = 0;
+            var lastSkip = false;
+            for (var i = 0; i < count; ++ i) {
+                if (i < locality || (count - i - 1) < locality || (i >= mid - midLocality && i <= mid + midLocality)) {
+                    togo[j++] = i;
+                    lastSkip = false;
+                }
+                else if (!lastSkip){
+                    togo[j++] = -1;
+                    lastSkip = true;
+                }
+            }
+            return togo;
+        }
+    };
+    
     fluid.pager.renderedPageList = function(container, events, pagerBarOptions, options, strings) {
         var options = $.extend(true, pagerBarOptions, options);
         var that = fluid.initView("fluid.pager.renderedPageList", container, options);
+        options = that.options; // pick up any defaults
         var renderOptions = {
             cutpoints: [ {
-              id: "page-link:",
+              id: "page-link:link",
               selector: pagerBarOptions.selectors.pageLinks
-            }]};
+            },
+            {
+              id: "page-link:skip",
+              selector: pagerBarOptions.selectors.pageLinkSkip
+            },
+            {
+              id: "page-link:disabled",
+              selector: pagerBarOptions.selectors.pageLinkDisabled
+            }
+            ]};
         
         if (options.linkBody) {
             renderOptions.cutpoints[renderOptions.cutpoints.length] = {
@@ -100,23 +135,33 @@ fluid_0_8 = fluid_0_8 || {};
                 selector: options.linkBody
             };
           }
-        function pageToComponent(page) {
-            return {
-              ID: "page-link:",
+        function pageToComponent(current) {
+          return function(page) {
+            return page === -1? {
+              ID: "page-link:skip"
+            } : 
+              {
+              ID: page === current? "page-link:link": "page-link:link",
               value: page + 1,
-              decorators: {
-                jQuery: ["click", function() {events.initiatePageChange.fire({pageIndex: page});}]
-              } 
+              pageIndex: page,
+              decorators: [
+                {type: "jQuery",
+                 func: "click", 
+                 args: [function() {events.initiatePageChange.fire({pageIndex: page});}]}]
             };
+          };
         }
         var root = that.locate("root");
+        fluid.expectFilledSelector(root, "Error finding root template for fluid.pager.renderedPageList");
+        
         var template = fluid.selfRender(root, {}, renderOptions);
         events.onModelChange.addListener(
             function (newModel, oldModel) {
-                if (!oldModel || newModel.pageCount !== oldModel.pageCount) {
-                    var pages = that.options.pageStrategy(newModel.pageCount);
-                    var pageTree = fluid.transform(pages, pageToComponent);
+                if (!oldModel || newModel.pageCount !== oldModel.pageCount || newModel.pageIndex !== oldModel.pageIndex) {
+                    var pages = that.options.pageStrategy(newModel.pageCount, 0, newModel.pageIndex);
+                    var pageTree = fluid.transform(pages, pageToComponent(newModel.pageIndex));
                     pageTree[pageTree.length - 1].value = pageTree[pageTree.length - 1].value + strings.last;
+                    events.onRenderPageLinks.fire(pageTree);
                     fluid.reRender(template, root, pageTree, renderOptions);
                     // TODO: improve renderer so that it can locate these inline
                     that.pageLinks = that.locate("pageLinks");
@@ -188,6 +233,8 @@ fluid_0_8 = fluid_0_8 || {};
         
        selectors: {
            pageLinks: ".page-link",
+           pageLinkSkip: ".page-link-skip",
+           pageLinkDisabled: ".page-link-disabled",
            previous: ".previous",
            next: ".next"
        },
@@ -238,8 +285,8 @@ fluid_0_8 = fluid_0_8 || {};
                     EL = expandPath(EL, opts.shortRoot, opts.longRoot);
                 }
 
-                var value = fluid.model.getBeanValue(opts.dataModel, EL)
-                togo += value;
+                var val = fluid.model.getBeanValue(opts.dataModel, EL)
+                togo += val;
                 index = endi + 1;
             }
         }
@@ -311,39 +358,40 @@ fluid_0_8 = fluid_0_8 || {};
             overallThat.options.dataOffset);
     }
    
+    function getRoots(target, overallThat, index) {
+        var cellRoot = (overallThat.options.dataOffset? overallThat.options.dataOffset + ".": "");
+        target.shortRoot = index;
+        target.longRoot = cellRoot + target.shortRoot;
+    }
+   
     /** A body renderer implementation which uses the Fluid renderer to render a table section **/
    
     fluid.pager.selfRender = function (overallThat, options) {
         var root = $(options.root);
         var template = fluid.selfRender(root, {}, options.renderOptions);
+        var expOpts = {options: options, dataModel: overallThat.options.dataModel};
+        var directModel = fetchModel(overallThat);
         return {
             returnedOptions: {
                 listeners: {
                     onModelChange: function (newModel, oldModel) {
-                        var dataModel = fetchModel(overallThat);
-                        var filtered = overallThat.options.modelFilter(dataModel, newModel);
-                        var dataModel = overallThat.options.dataModel;
+
+                        var filtered = overallThat.options.modelFilter(directModel, newModel);
                         var tree = fluid.transform(filtered, 
                             function(filteredRow) {
-                                var cellRoot = (overallThat.options.dataOffset? overallThat.options.dataOffset + ".": "");
-                                var shortRoot = filteredRow.index;
-                                var longRoot = cellRoot + shortRoot; 
+                                var roots = getRoots(expOpts, overallThat, filteredRow.index);
                                 if (options.columnDefs === "explode") {
                                     return fluid.explode(filteredRow.row, root);
                                 }
                                 else if (options.columnDefs.length) {
-                                    var tree = expandColumnDefs(filteredRow, {shortRoot: shortRoot,
-                                        longRoot: longRoot,
-                                        dataModel: dataModel,
-                                        options: options});
-                                    return tree;
+                                    return expandColumnDefs(filteredRow, expOpts);
                                 }
                             }
                             );
                         var fullTree = {};
                         fullTree[options.row] = tree;
                         options.renderOptions = options.renderOptions || {};
-                        options.renderOptions.model = dataModel;
+                        options.renderOptions.model = expOpts.dataModel;
                         fluid.reRender(template, root, fullTree, options.renderOptions);
                     }
                 }
@@ -396,6 +444,59 @@ fluid_0_8 = fluid_0_8 || {};
         }
         return that;
     };
+
+
+    fluid.pager.rangeAnnotator = function (that, options) {
+        var roots = {};
+        that.events.onRenderPageLinks.addListener( function (tree) {
+            var column = that.options.annotateColumnRange;
+            var dataModel = that.options.dataModel;
+            // TODO: reaching into another component's options like this is a bit unfortunate
+            var columnDefs = that.options.bodyRenderer.options.columnDefs;
+
+            if (!column || !dataModel || !columnDefs) {
+                return;
+            }
+            var columnDef = $.grep(columnDefs, function(def) {
+              return def.key === column;
+            })[0];
+            function fetchValue(index) {
+                getRoots(roots, that, index);
+                var path = expandPath(columnDef.valuebinding, roots.shortRoot, roots.longRoot);
+                return fluid.model.getBeanValue(dataModel, path);
+            }
+            var tModel = {};
+            fluid.model.copyModel(tModel, that.model);
+            
+            fluid.transform(tree, function (cell) {
+                if (cell.ID === "page-link:link") {
+                    var page = cell.pageIndex;
+                    var start = page * that.model.pageSize;
+                    tModel.pageIndex = page;
+                    var limit = computePageLimit(tModel);
+                    var iValue = fetchValue(start);
+                    var lValue = fetchValue(limit - 1);
+                    
+                    var text = "<b>" + iValue + "</b><br/>&mdash;<br/><b>" + lValue + "</b>";
+                    
+                    var decorator = {
+                        type: "jQuery",
+                        func: "tooltip",
+                        args: {
+                            delay: that.options.tooltipDelay,
+                            extraClass: that.options.styles.tooltip,
+                            bodyHandler: function () { 
+                                return text; 
+                            },
+                            showURL: false,
+                            id: that.options.tooltipId
+                            }
+                        };
+                    cell.decorators.push(decorator);
+                    };
+              
+            });
+    });};
 
     /*******************
      * Pager Component *
@@ -457,6 +558,8 @@ fluid_0_8 = fluid_0_8 || {};
         that.summary = fluid.initSubcomponent(that, "summary", [that.dom, fluid.COMPONENT_OPTIONS]);
         
         that.pageSize = fluid.initSubcomponent(that, "pageSize", [that]);
+        
+        that.rangeAnnotator = fluid.initSubcomponent(that, "rangeAnnotator", [that, fluid.COMPONENT_OPTIONS]);
  
         that.model = fluid.copy(that.options.model);
         var dataModel = fetchModel(that);
@@ -504,11 +607,25 @@ fluid_0_8 = fluid_0_8 || {};
         // Offset of the tree's "main" data from the overall dataModel root
         dataOffset: "",
         
+        annotateColumnRange: undefined,
+        
+        tooltipDelay: 300,
+        
+        tooltipId: "tooltip",
+        
+        rangeAnnotator: {
+            type: "fluid.pager.rangeAnnotator"
+        },
+        
         selectors: {
             pagerBar: ".pager-top",
             pagerBarSecondary: ".pager-bottom",
             summary: ".pager-summary",
             pageSize: ".pager-page-size"
+        },
+        
+        styles: {
+            tooltip: "pager-tooltip",
         },
         
         strings: {
@@ -518,7 +635,8 @@ fluid_0_8 = fluid_0_8 || {};
         events: {
             initiatePageChange: null,
             initiatePageSizeChange: null,
-            onModelChange: null
+            onModelChange: null,
+            onRenderPageLinks: null
         }
     });
 })(jQuery, fluid_0_8);

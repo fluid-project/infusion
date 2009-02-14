@@ -28,7 +28,7 @@ sakai.initFluidSiteSettingTable = function() {
             components: {
                 target: "/dev/sn/profile.html?user=${*.userId}",
                 linktext: fluid.VALUE},
-            sortable:true
+            sortable:true,
             },
            {key: "user-email",
             valuebinding: "*.userEmail",
@@ -56,9 +56,24 @@ sakai.initFluidSiteSettingTable = function() {
           ];
            
   
+    var pagerBarOptions = {
+          type: "fluid.pager.pagerBar",
+          options: {
+            pageList: {
+               type: "fluid.pager.renderedPageList",
+               options: {
+                 pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
+                 }
+               }            
+            }
+        };
+  
     var pager = fluid.pager(".ss-members", {
         dataModel: model,
         dataOffset: "users.membership_collection",
+        annotateColumnRange: "user-link",
+        pagerBar: pagerBarOptions,
+
         bodyRenderer: {
           type: "fluid.pager.selfRender",
           options: {

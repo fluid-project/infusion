@@ -2481,10 +2481,29 @@ label.ssg-label1 {
 	width: 144px;
 	margin: 0 10px 0 12px;
 }
-.ssth-select2 select {
-	width: 144px;
+.pager-links {
+	width: 200px;
 	margin: 0 10px 0 10px;
 }
+
+.pager-links li {
+  margin: 0 2px 0 2px;
+}
+
+.current-page a {
+    color: #000000;
+    border: 0;
+    text-decoration: none;
+    cursor: default;
+}
+
+a.disabled {
+    color: #000000;
+    border: 0;
+    text-decoration: none;
+    cursor: default;
+}
+
 .ss-table2 {
 	width: 100%;
 	border-bottom: 1px solid #d0d3d7;

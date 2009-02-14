@@ -123,35 +123,38 @@ fluid_0_8 = fluid_0_8 || {};
         choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
   
   function unzipComponent(component, model) {
-    if (component) {
-      for (var key in duckMap) {
-        if (component[key] !== undefined) {
-          component.componentType = duckMap[key];
-          break;
-        }
+      if (component) {
+          for (var key in duckMap) {
+              if (component[key] !== undefined) {
+                  component.componentType = duckMap[key];
+                  break;
+              }
+          }
+          if (component.componentType === undefined && component.ID !== undefined) {
+              component.componentType = "UIBound";
+          }
       }
-    }
-    if (!component || component.componentType === undefined) {
-        var decorators = component.decorators;
-        if (decorators) delete component.decorators;
-        component = {componentType: "UIContainer", children: component};
-        component.decorators = decorators;
-    }
-    var cType = component.componentType;
-    if (cType === "UIContainer") {
-        component.children = fixChildren(component.children);
-    }
-    else if (cType === "UISelect") {
-        upgradeBound(component, "selection", model);
-        upgradeBound(component, "optionlist", model);
-        upgradeBound(component, "optionnames", model);
-    }
-    else if (cType === "UILink") {
-        upgradeBound(component, "target", model);
-        upgradeBound(component, "linktext", model);
-    }
-    
-    return component;
+      if (!component || component.componentType === undefined) {
+          var decorators = component.decorators;
+          if (decorators) delete component.decorators;
+          component = {componentType: "UIContainer", children: component};
+          component.decorators = decorators;
+      }
+      var cType = component.componentType;
+      if (cType === "UIContainer") {
+          component.children = fixChildren(component.children);
+      }
+      else if (cType === "UISelect") {
+          upgradeBound(component, "selection", model);
+          upgradeBound(component, "optionlist", model);
+          upgradeBound(component, "optionnames", model);
+      }
+      else if (cType === "UILink") {
+          upgradeBound(component, "target", model);
+          upgradeBound(component, "linktext", model);
+      }
+      
+      return component;
   }
   
   // When a component
@@ -1052,10 +1055,12 @@ fluid_0_8 = fluid_0_8 || {};
             else { // repetitive leaf
               var targetlump = findChild(parentlump, child);
               if (!targetlump) {
-                  renderDebugMessage(rsc,
-                    "Repetitive leaf with full ID " + child.fullID
+                  if (debugMode) {
+                      renderDebugMessage(
+                        "Repetitive leaf with full ID " + child.fullID
                         + " could not be rendered from parent template branch "
                         + fluid.debugLump(baselump));
+                  }
                 continue;
               }
               var renderend = renderComponentSystem(basecontainer, child, targetlump);
@@ -1152,7 +1157,7 @@ fluid_0_8 = fluid_0_8 || {};
           }
           if (decorator.type === "jQuery") {
               var jnode = $(node);
-              jnode[decorator.func].apply(jnode, decorator.args);
+              jnode[decorator.func].apply(jnode, $.makeArray(decorator.args));
           }
           else if (decorator.type === "event") {
             node[decorator.event] = decorator.handler; 

@@ -286,6 +286,18 @@ var fluid = fluid || fluid_0_8;
         that.options = fluid.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);    
     };
     
+    
+    /** Expect that an output from the DOM binder has resulted in a non-empty set of 
+     * results. If none are found, this function will fail with a diagnostic message, 
+     * with the supplied message prepended.
+     */
+    fluid.expectFilledSelector = function (result, message) {
+        if (result && result.length === 0 && result.jquery) {
+        fluid.fail(message + ": selector \"" + result.selector + "\" with name " + result.selectorName
+            + " returned no results in context " + fluid.dumpEl(result.context));
+        }
+    }
+    
     /** 
      * The central initialiation method called as the first act of every Fluid
      * component. This function automatically merges user options with defaults,
@@ -300,12 +312,7 @@ var fluid = fluid || fluid_0_8;
      */
     fluid.initView = function (componentName, container, userOptions) {
         var that = {};
-        if (container && container.length === 0 && container.jquery) {
-            var message = "Error instantiating component with name \"" + componentName 
-            + "\": selector \"" + container.selector + "\" with name " + container.selectorName
-            + " returned no results in context " + fluid.dumpEl(container.context);
-            fluid.fail(message);
-            }
+        fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName); 
         fluid.mergeComponentOptions(that, componentName, userOptions);
         
         if (container) {
@@ -397,7 +404,7 @@ var fluid = fluid || fluid_0_8;
                 togo[i] = entry.apply(null, args);
             }
 
-            var returnedOptions = togo[i].returnedOptions;
+            var returnedOptions = togo[i]? togo[i].returnedOptions : null;
             if (returnedOptions) {
                 fluid.merge(that.options.mergePolicy, that.options, returnedOptions);
                 if (returnedOptions.listeners) {
@@ -595,8 +602,12 @@ var fluid = fluid || fluid_0_8;
      * path segments containing periods and backslashes etc. can be processed.
      */
     fluid.model.parseEL = function (EL) {
-        return EL.split('.');
+        return EL.toString().split('.');
     };
+    
+    fluid.model.composePath = function (prefix, suffix) {
+        return prefix === ""? suffix : prefix + "." + suffix;
+    }
   
     /** This function implements the RSF "DARApplier" **/
     fluid.model.setBeanValue = function (root, EL, newValue) {
