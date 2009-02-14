@@ -337,10 +337,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var callbackCalled = false;
     
             var options = {
-                finishedEditing: function (edit, text) {
+                listeners: {
+                  afterFinishEdit: function (newValue, oldValue, edit, text) {
                     jqUnit.assertEquals("The edit field should be passed along in the callback.", $("#edit")[0], edit);
                     jqUnit.assertEquals("The text view should also be passed along in the callback.", $("#display")[0], text);
                     callbackCalled = true;
+                  }
                 }
             };
             var inlineEditor = fluid.inlineEdit("#inline-edit", options);
@@ -390,8 +392,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
                    selectors: {
                        editables: inlineEditsSel
                    },
-                   
-                   finishedEditing: callback
+                   listeners: {
+                       afterFinishEdit: callback
+                   }
                 });
             };
             
@@ -431,7 +434,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 expect(5);
                 
                 var textFieldIds = [];
-                var finishedCallback = function (formField) {
+                var finishedCallback = function (newValue, oldValue, formField) {
                     textFieldIds.push($(formField).attr("id"));    
                 };
                 
@@ -444,7 +447,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 toggleEditOnAndOff(editors[0]);
                 jqUnit.assertTrue("After finishing, the callback should have been called only once.", 
                                   1, textFieldIds.length);
-                jqUnit.assertEquals("After finishing, the callback should not have been with the first form field.", 
+                jqUnit.assertEquals("After finishing, the callback should have been called with the first form field.", 
                                     "edit", textFieldIds[0]);
                 
                 // Edit the last field.  
@@ -452,7 +455,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 toggleEditOnAndOff(editors[1]);
                 jqUnit.assertTrue("After finishing, the callback should have been called only once.", 
                                   1, textFieldIds.length);
-                jqUnit.assertEquals("After finishing, the callback should not have been with the first form field.", 
+                jqUnit.assertEquals("After finishing, the callback should have been called with the first form field.", 
                                     "edit2", textFieldIds[0]);
             });
         })();

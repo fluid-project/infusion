@@ -124,9 +124,6 @@ fluid_0_8 = fluid_0_8 || {};
             return;
         }
         
-        if (that.options.finishedEditing) { // This call is deprecated by FLUID-1770
-            that.options.finishedEditing(editNode, viewNode);
-        }
         that.updateModel(newValue);
         that.events.afterFinishEdit.fire(newValue, oldValue, editNode, viewNode);
         
