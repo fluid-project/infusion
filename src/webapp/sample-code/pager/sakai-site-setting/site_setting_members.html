@@ -126,35 +126,32 @@
 <div id="membership-table" class="yui-dt">
 
 
-<table summary="">
+<table class="site-setting-body" summary=""  xmlns:rsf="http://ponder.org.uk">
   <thead>
-    <tr>
+    <tr rsf:id="header:">
       <th id="yui-dt0-th-member-checked" 
         class="w28 bgEBECED">
-      <span
-        class="yui-dt-label"><a class=""
-        title="Click to sort" href="#"> </a></span>
+      <a rsf:id="selection" title="Click to sort" href="#"> </a>
       </th>
       <th id="yui-dt0-th-userDisplayName" 
-        class="per47 fs13 memberName yui-dt0-col-userDisplayName yui-dt-col-userDisplayName ">
-      <div id="yui-dt0-th-userDisplayName-liner" ><span>
-      <a title="Click to sort" href="#">Members</a></span></div>
+        class="per47 fs13" >
+      <a rsf:id="user-link" title="Click to sort" href="#">Members</a>
       </th>
       <th id="yui-dt0-th-userEmail" 
         class="per23 fs13 ">
-        <a title="Click to sort" href="#">Email</a>
+        <a rsf:id="user-email" title="Click to sort" href="#">Email</a>
       </th>
       <th id="yui-dt0-th-memberRole" 
         class="per18 memberRole ">
-         <a title="Click to sort" href="#">Role</a>
+         <a rsf:id="user-role" title="Click to sort" href="#">Role</a>
       </th>
       <th id="yui-dt0-th-active" 
         class="per18 memberStatus ">
-        <a title="Click to sort" href="#">Status</a>
+        <a rsf:id="user-status" title="Click to sort" href="#">Status</a>
       </th>
     </tr>
   </thead>
-  <tbody class="site-setting-body" xmlns:rsf="http://ponder.org.uk">
+  <tbody>
     <tr rsf:id="row:">
       <td headers="yui-dt0-th-member-checked" class="w28 bgEBECED">
       <input rsf:id="selection" type="checkbox" />
@@ -165,7 +162,7 @@
       Ackerman</a>
       </td>
       <td headers="yui-dt0-th-userEmail"
-        class="per23 fs13 memberEmail">
+        class="per23 fs13">
         <a rsf:id="user-email" href="mailto:ericaack@umich.edu">ericaack@umich.edu</a>
       </td>
       <td headers="yui-dt0-th-memberRole"

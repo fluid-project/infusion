@@ -1085,9 +1085,9 @@ fluid_0_8 = fluid_0_8 || {};
         else {
             if (debugMode) {
                 renderDebugMessage("No branch container with prefix "
-                    + prefix + ": found at "
+                    + prefix + ": found in container "
                     + reportPath(basecontainer)
-                    + " at template position " + fluid.debugLump(baselump)
+                    + " rendering at template position " + fluid.debugLump(baselump)
                     + ", skipping");
             }
         }

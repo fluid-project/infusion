@@ -147,7 +147,7 @@ fluid_0_8 = fluid_0_8 || {};
               decorators: [
                 {type: "jQuery",
                  func: "click", 
-                 args: [function() {events.initiatePageChange.fire({pageIndex: page});}]}]
+                 args: function() {events.initiatePageChange.fire({pageIndex: page});}}]
             };
           };
         }
@@ -319,20 +319,26 @@ fluid_0_8 = fluid_0_8 || {};
         return target;
     }
    
-    function expandColumnDefs(filteredRow, opts) {
+   // sets opts.EL, returns ID
+    function IDforColumn(columnDef, opts) {
         var options = opts.options;
-        var tree = fluid.transform(options.columnDefs, function(columnDef){
-            var EL = columnDef.valuebinding;
-            var key = columnDef.key;
-            if (!EL) {
-                fluid.fail("Error in definition for column with key " + key + ": valuebinding is not set");
-            }
-            opts.EL = expandPath(EL, opts.shortRoot, opts.longRoot);
-            if (!key) {
-                var segs = fluid.model.parseEL(EL);
-                key = segs[segs.length - 1];
-            }
-            var ID = (options.keyPrefix? options.keyPrefix : "") + key;
+        var EL = columnDef.valuebinding;
+        var key = columnDef.key;
+        if (!EL) {
+            fluid.fail("Error in definition for column with key " + key + ": valuebinding is not set");
+        }
+        opts.EL = expandPath(EL, opts.shortRoot, opts.longRoot);
+        if (!key) {
+            var segs = fluid.model.parseEL(EL);
+            key = segs[segs.length - 1];
+        }
+        var ID = (options.keyPrefix? options.keyPrefix : "") + key;
+        return ID;
+    }
+   
+    function expandColumnDefs(filteredRow, opts) {
+        var tree = fluid.transform(opts.options.columnDefs, function(columnDef){
+            var ID = IDforColumn(columnDef, opts);
             var togo;
             if (!columnDef.components) {
               return {
@@ -364,18 +370,48 @@ fluid_0_8 = fluid_0_8 || {};
         target.longRoot = cellRoot + target.shortRoot;
     }
    
+    function generateColumnClick(overallThat, columnDef, opts) {
+        return function () {
+            var model = overallThat.model;
+            if (columnDef.key !== model.sortKey) {
+                model.sortKey = columnDef.key;
+                model.sortDir = 1;
+            }
+            else if (model.sortKey === columnDef.key) {
+                model.sortDir = -1 * model.sortDir;
+            }
+            return false;
+        }
+    }
+   
+    function generateHeader(overallThat, columnDefs, opts) {
+        return {
+            children:  
+            fluid.transform(columnDefs, function(columnDef) {
+            return {
+                 ID: IDforColumn(columnDef, opts),
+                 value: columnDef.label,
+                 decorators: {
+                     jQuery: ["click", generateColumnClick(overallThat, columnDef, opts)]}
+                 };
+            }
+        )};
+    }
+   
     /** A body renderer implementation which uses the Fluid renderer to render a table section **/
    
     fluid.pager.selfRender = function (overallThat, options) {
+        var that = fluid.initView("fluid.pager.selfRender", overallThat.container, options);
+        var options = that.options;
         var root = $(options.root);
         var template = fluid.selfRender(root, {}, options.renderOptions);
+        root.addClass("fl-components-pager");
         var expOpts = {options: options, dataModel: overallThat.options.dataModel};
         var directModel = fetchModel(overallThat);
         return {
             returnedOptions: {
                 listeners: {
                     onModelChange: function (newModel, oldModel) {
-
                         var filtered = overallThat.options.modelFilter(directModel, newModel);
                         var tree = fluid.transform(filtered, 
                             function(filteredRow) {
@@ -390,6 +426,7 @@ fluid_0_8 = fluid_0_8 || {};
                             );
                         var fullTree = {};
                         fullTree[options.row] = tree;
+                        fullTree[options.header] = generateHeader(overallThat, options.columnDefs, expOpts);
                         options.renderOptions = options.renderOptions || {};
                         options.renderOptions.model = expOpts.dataModel;
                         fluid.reRender(template, root, fullTree, options.renderOptions);
@@ -404,6 +441,8 @@ fluid_0_8 = fluid_0_8 || {};
         columnDefs: "explode",
         keyStrategy: "id",
         keyPrefix: "",
+        row: "row:",
+        header: "header:",
         // Options passed upstream to the renderer
         renderOptions: undefined
       });
