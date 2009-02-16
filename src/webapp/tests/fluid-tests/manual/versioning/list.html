@@ -34,7 +34,7 @@
         <li class="orderable">Item 5</li>
     </ul>
   
-    <h3>Sortable List using Fluid trunk (0.5 at time of writing)</h3>
+    <h3>Sortable List using Fluid trunk (0.8 at time of writing)</h3>
     <ul id="list-05">
         <li class="movables">Item 1</li>
         <li class="movables">Item 2</li>
@@ -44,11 +44,12 @@
     </ul>
   
     <script type="text/javascript">
-        console.debug("Check sanity...");
+        fluid_0_8.setLogging(true);
+        fluid_0_8.log("Check sanity...");
         fluid_0_8.defaults("foofer", {bar: "bat"});
-        console.debug("0.8.defaults: " + fluid_0_8.defaults("foofer"));
-        console.debug("0.3.defaults: " + fluid.defaults);
-        console.debug("0.8.model.getBeanValue: " + fluid_0_8.model.getBeanValue);
+        fluid_0_8.log("0.8.defaults: " + fluid_0_8.defaults("foofer"));
+        fluid_0_8.log("0.3.defaults: " + fluid.defaults);
+        fluid_0_8.log("0.8.model.getBeanValue: " + fluid_0_8.model.getBeanValue);
         
         // initialize the 0.3 list
         fluid.reorderList("#list-03", "li", function(){});
