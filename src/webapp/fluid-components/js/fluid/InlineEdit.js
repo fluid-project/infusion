@@ -218,7 +218,18 @@ fluid_0_8 = fluid_0_8 || {};
     
     var bindMouseHandlers = function (that) {
         bindHoverHandlers(that.viewEl, that.options.styles.invitation);
-        that.viewEl.click(that.edit);
+        var viewEl = fluid.unwrap(that.viewEl);
+        that.viewEl.click(
+            function(event) {
+                  // FLUID-2017 - avoid triggering edit mode when operating standard HTML controls. Ultimately this
+                  // might need to be extensible, in more complex authouring scenarios.
+                var outer = fluid.findAncestor(event.target, function (elem) {
+                    if (/input|select|textarea|button|a/i.test(elem.nodeName) || elem == viewEl) return true;
+                });
+                if (outer === viewEl) {
+                    that.edit();
+                    return false;
+                }});
     };
     
     var bindHighlightHandler = function (viewEl, focusStyle, invitationStyle) {
@@ -370,7 +381,7 @@ fluid_0_8 = fluid_0_8 || {};
         var isEditing = false;
         that.events.onBeginEdit.addListener(function() {isEditing = true;});
         that.events.afterFinishEdit.addListener(function() {isEditing = false;});
-        return function() {return isEditing;}    	
+        return function() {return isEditing;}
     };
     
     var setupInlineEdit = function (componentContainer, that) {
