@@ -575,18 +575,23 @@ fluid_0_8 = fluid_0_8 || {};
           else if (key === "attrs") {
               decorator.attributes = value;
           }
+          else if (key === "identify") {
+              decorator.key = value;
+          }
       togo[togo.length] = decorator;
       }
       return togo;
   }
   
   function outDecoratorsImpl(torender, decorators, attrcopy, finalID) {
+  	  renderOptions.idMap = renderOptions.idMap || {};
       for (var i = 0; i < decorators.length; ++ i) {
           var decorator = decorators[i];
           var type = decorator.type;
           if (!type) {
-              var decorators = explodeDecorators(decorator);
-              outDecoratorsImpl(torender, decorators, attrcopy, finalID);
+              var explodedDecorators = explodeDecorators(decorator);
+              outDecoratorsImpl(torender, explodedDecorators, attrcopy, finalID);
+              continue;
           }
           if (type === "jQuery" || type === "event") {
               var id = adjustForID(attrcopy, torender, true, finalID);
@@ -604,6 +609,10 @@ fluid_0_8 = fluid_0_8 || {};
               }
               $(fakeNode).addClass(decorator.classes);
               attrcopy["class"] = fakeNode.className;
+          }
+          else if (type === "identify") {
+              var id = adjustForID(attrcopy, torender, true, finalID);
+              renderOptions.idMap[decorator.key] = id;
           }
       }
   }

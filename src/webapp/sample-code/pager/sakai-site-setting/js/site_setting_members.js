@@ -71,6 +71,7 @@ sakai.initFluidSiteSettingTable = function() {
     var pager = fluid.pager(".ss-members", {
         dataModel: model,
         dataOffset: "users.membership_collection",
+        columnDefs: columnDefs,
         annotateColumnRange: "user-link",
         pagerBar: pagerBarOptions,
 
@@ -78,10 +79,7 @@ sakai.initFluidSiteSettingTable = function() {
           type: "fluid.pager.selfRender",
           options: {
             root: ".site-setting-body",
-            renderOptions: {debugMode: true},
-            row: "row:",
-            //header: "header:",
-            columnDefs: columnDefs
+            renderOptions: {debugMode: true}
           }
         }
     });

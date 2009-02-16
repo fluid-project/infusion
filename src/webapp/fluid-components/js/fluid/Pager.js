@@ -22,6 +22,9 @@ fluid_0_8 = fluid_0_8 || {};
 
     
     function updateStyles(pageListThat, newModel, oldModel) {
+    	  if (!pageListThat.pageLinks) {
+    	      return;
+    	  }
         if (oldModel.pageIndex !== undefined) {
             var oldLink = pageListThat.pageLinks.eq(oldModel.pageIndex);
             oldLink.removeClass(pageListThat.options.styles.currentPage);
@@ -147,7 +150,10 @@ fluid_0_8 = fluid_0_8 || {};
               decorators: [
                 {type: "jQuery",
                  func: "click", 
-                 args: function() {events.initiatePageChange.fire({pageIndex: page});}}]
+                 args: function() {events.initiatePageChange.fire({pageIndex: page});}},
+                {type: page === current? "addClass" : "",
+                 classes: that.options.styles.currentPage} 
+                 ]
             };
           };
         }
@@ -157,16 +163,12 @@ fluid_0_8 = fluid_0_8 || {};
         var template = fluid.selfRender(root, {}, renderOptions);
         events.onModelChange.addListener(
             function (newModel, oldModel) {
-                if (!oldModel || newModel.pageCount !== oldModel.pageCount || newModel.pageIndex !== oldModel.pageIndex) {
-                    var pages = that.options.pageStrategy(newModel.pageCount, 0, newModel.pageIndex);
-                    var pageTree = fluid.transform(pages, pageToComponent(newModel.pageIndex));
-                    pageTree[pageTree.length - 1].value = pageTree[pageTree.length - 1].value + strings.last;
-                    events.onRenderPageLinks.fire(pageTree);
-                    fluid.reRender(template, root, pageTree, renderOptions);
-                    // TODO: improve renderer so that it can locate these inline
-                    that.pageLinks = that.locate("pageLinks");
-                }
-               updateStyles(that, newModel, oldModel);
+                var pages = that.options.pageStrategy(newModel.pageCount, 0, newModel.pageIndex);
+                var pageTree = fluid.transform(pages, pageToComponent(newModel.pageIndex));
+                pageTree[pageTree.length - 1].value = pageTree[pageTree.length - 1].value + strings.last;
+                events.onRenderPageLinks.fire(pageTree);
+                fluid.reRender(template, root, pageTree, renderOptions);
+                updateStyles(that, newModel, oldModel);
             }
         );
         return that;
@@ -245,12 +247,60 @@ fluid_0_8 = fluid_0_8 || {};
        }
     });
 
+    function getColumnDefs(that) {
+        return that.options.columnDefs;
+    }
+
+    fluid.pager.findColumnDef = function(columnDefs, key) {
+        var columnDef = $.grep(columnDefs, function(def) {
+              return def.key === key;
+            })[0];
+        return columnDef;
+    };
     
-    fluid.pager.directModelFilter = function (model, pagerModel) {
+    function getRoots(target, overallThat, index) {
+        var cellRoot = (overallThat.options.dataOffset? overallThat.options.dataOffset + ".": "");
+        target.shortRoot = index;
+        target.longRoot = cellRoot + target.shortRoot;
+    }
+    
+    fluid.pager.fetchValue = function(that, dataModel, index, path, roots) {
+        getRoots(roots, that, index);
+
+        var path = expandPath(path, roots.shortRoot, roots.longRoot);
+        return fluid.model.getBeanValue(dataModel, path);
+    };
+    
+
+    fluid.pager.basicSorter = function (overallThat, model) {
+          var dataModel = overallThat.options.dataModel;
+          var roots = {};
+          var columnDefs = getColumnDefs(overallThat);
+          var columnDef = fluid.pager.findColumnDef(columnDefs, model.sortKey);
+          var sortrecs = [];
+          for (var i = 0; i < model.totalRange; ++ i) {
+              sortrecs[i] = {
+                  index: i,
+                  value: fluid.pager.fetchValue(overallThat, dataModel, i, columnDef.valuebinding, roots)
+              };
+          }
+          var columnType = typeof sortrecs[0].value;
+          function sortfunc(arec, brec) {
+              var a = arec.value;
+              var b = brec.value;
+              return a === b? 0 : (a > b? model.sortDir : -model.sortDir); 
+          }
+        sortrecs.sort(sortfunc);
+        return fluid.transform(sortrecs, function (row) {return row.index;});
+    };
+
+    
+    fluid.pager.directModelFilter = function (model, pagerModel, perm) {
         var togo = [];
         var limit = computePageLimit(pagerModel);
         for (var i = pagerModel.pageIndex * pagerModel.pageSize; i < limit; ++ i) {
-            togo[togo.length] = {index: i, row: model[i]};
+        	  var index = perm? perm[i]: i;
+            togo[togo.length] = {index: index, row: model[index]};
         }
         return togo;
     };
@@ -337,7 +387,7 @@ fluid_0_8 = fluid_0_8 || {};
     }
    
     function expandColumnDefs(filteredRow, opts) {
-        var tree = fluid.transform(opts.options.columnDefs, function(columnDef){
+        var tree = fluid.transform(opts.columnDefs, function(columnDef){
             var ID = IDforColumn(columnDef, opts);
             var togo;
             if (!columnDef.components) {
@@ -364,37 +414,76 @@ fluid_0_8 = fluid_0_8 || {};
             overallThat.options.dataOffset);
     }
    
-    function getRoots(target, overallThat, index) {
-        var cellRoot = (overallThat.options.dataOffset? overallThat.options.dataOffset + ".": "");
-        target.shortRoot = index;
-        target.longRoot = cellRoot + target.shortRoot;
+    
+    function bigHeaderForKey(key, opts) {
+        var id = opts.options.renderOptions.idMap["header:" + key];
+        var smallHeader = fluid.jById(id);
+        if (smallHeader.length === 0) return null;
+        var headerSortStylisticOffset = opts.overallOptions.selectors.headerSortStylisticOffset;
+        var bigHeader = fluid.findAncestor(smallHeader, function(element) {
+            return $(element).is(headerSortStylisticOffset)});
+        return bigHeader;
     }
    
+    function setSortHeaderClass(styles, element, sort) {
+          element = $(element);
+        element.removeClass(styles.ascendingHeader);
+        element.removeClass(styles.descendingHeader);
+        if (sort != 0) {
+            element.addClass(sort === 1? styles.ascendingHeader : styles.descendingHeader);
+        }
+    }
+   
+     function fireModelChange(that, newModel) {
+         computePageCount(newModel);
+         if (newModel.pageIndex >= newModel.pageCount) {
+             newModel.pageIndex = newModel.pageCount - 1;
+         }
+         if (newModel.pageIndex !== that.model.pageIndex || newModel.pageSize !== that.model.pageSize || newModel.sortKey !== that.model.sortKey
+           || newModel.sortDir !== that.model.sortDir) {
+         	   var sorted = newModel.sortKey? that.options.sorter(that, newModel) : null;
+             that.permutation = sorted;
+             that.events.onModelChange.fire(newModel, that.model, that);
+             fluid.model.copyModel(that.model, newModel);
+         }            
+    }
+ 
     function generateColumnClick(overallThat, columnDef, opts) {
         return function () {
             var model = overallThat.model;
+            var newModel = fluid.copy(model);
+            var styles = overallThat.options.styles;
+            var oldKey = model.sortKey;
             if (columnDef.key !== model.sortKey) {
-                model.sortKey = columnDef.key;
-                model.sortDir = 1;
+                newModel.sortKey = columnDef.key;
+                newModel.sortDir = 1;
+                var oldBig = bigHeaderForKey(oldKey, opts);
+                if (oldBig) {
+                    setSortHeaderClass(styles, oldBig, 0);
+                }
             }
-            else if (model.sortKey === columnDef.key) {
-                model.sortDir = -1 * model.sortDir;
+            else if (newModel.sortKey === columnDef.key) {
+                newModel.sortDir = -1 * newModel.sortDir;
             }
+            else return false;
+            fireModelChange(overallThat, newModel);
+            setSortHeaderClass(styles, bigHeaderForKey(newModel.sortKey, opts), newModel.sortDir);
             return false;
         }
     }
    
-    function generateHeader(overallThat, columnDefs, opts) {
+    function generateHeader(overallThat, newModel, columnDefs, opts) {
         return {
             children:  
-            fluid.transform(columnDefs, function(columnDef) {
-            return {
-                 ID: IDforColumn(columnDef, opts),
-                 value: columnDef.label,
-                 decorators: {
-                     jQuery: ["click", generateColumnClick(overallThat, columnDef, opts)]}
-                 };
-            }
+                fluid.transform(columnDefs, function(columnDef) {
+                return {
+                     ID: IDforColumn(columnDef, opts),
+                     value: columnDef.label,
+                     decorators: [
+                         {"jQuery": ["click", generateColumnClick(overallThat, columnDef, opts)]},
+                         {identify: "header:" + columnDef.key}]
+                     };
+                }
         )};
     }
    
@@ -403,30 +492,36 @@ fluid_0_8 = fluid_0_8 || {};
     fluid.pager.selfRender = function (overallThat, options) {
         var that = fluid.initView("fluid.pager.selfRender", overallThat.container, options);
         var options = that.options;
+        options.renderOptions.idMap = options.renderOptions.idMap || {};
+        var idMap = options.renderOptions.idMap;
         var root = $(options.root);
         var template = fluid.selfRender(root, {}, options.renderOptions);
         root.addClass("fl-components-pager");
-        var expOpts = {options: options, dataModel: overallThat.options.dataModel};
+        var columnDefs = getColumnDefs(overallThat);
+        var expOpts = {options: options, columnDefs: columnDefs, overallOptions: overallThat.options, dataModel: overallThat.options.dataModel, idMap: idMap};
         var directModel = fetchModel(overallThat);
+
         return {
             returnedOptions: {
                 listeners: {
                     onModelChange: function (newModel, oldModel) {
-                        var filtered = overallThat.options.modelFilter(directModel, newModel);
+                        var filtered = overallThat.options.modelFilter(directModel, newModel, overallThat.permutation);
                         var tree = fluid.transform(filtered, 
                             function(filteredRow) {
                                 var roots = getRoots(expOpts, overallThat, filteredRow.index);
-                                if (options.columnDefs === "explode") {
+                                if (columnDefs === "explode") {
                                     return fluid.explode(filteredRow.row, root);
                                 }
-                                else if (options.columnDefs.length) {
+                                else if (columnDefs.length) {
                                     return expandColumnDefs(filteredRow, expOpts);
                                 }
                             }
                             );
                         var fullTree = {};
                         fullTree[options.row] = tree;
-                        fullTree[options.header] = generateHeader(overallThat, options.columnDefs, expOpts);
+                        if (typeof(columnDefs) === "object") {
+                            fullTree[options.header] = generateHeader(overallThat, newModel, columnDefs, expOpts);
+                        }
                         options.renderOptions = options.renderOptions || {};
                         options.renderOptions.model = expOpts.dataModel;
                         fluid.reRender(template, root, fullTree, options.renderOptions);
@@ -437,14 +532,12 @@ fluid_0_8 = fluid_0_8 || {};
     };
 
     fluid.defaults("fluid.pager.selfRender", {
-         // strategy for generating a tree row, either "explode" or a function accepting data row
-        columnDefs: "explode",
         keyStrategy: "id",
         keyPrefix: "",
         row: "row:",
         header: "header:",
         // Options passed upstream to the renderer
-        renderOptions: undefined
+        renderOptions: {}
       });
 
 
@@ -491,18 +584,16 @@ fluid_0_8 = fluid_0_8 || {};
             var column = that.options.annotateColumnRange;
             var dataModel = that.options.dataModel;
             // TODO: reaching into another component's options like this is a bit unfortunate
-            var columnDefs = that.options.bodyRenderer.options.columnDefs;
+            var columnDefs = getColumnDefs(that);
 
             if (!column || !dataModel || !columnDefs) {
                 return;
             }
-            var columnDef = $.grep(columnDefs, function(def) {
-              return def.key === column;
-            })[0];
+            var columnDef = fluid.pager.findColumnDef(columnDefs, column);
+            
             function fetchValue(index) {
-                getRoots(roots, that, index);
-                var path = expandPath(columnDef.valuebinding, roots.shortRoot, roots.longRoot);
-                return fluid.model.getBeanValue(dataModel, path);
+            	  var index = that.permutation? that.permutation[index] : index;
+                return fluid.pager.fetchValue(that, dataModel, index, columnDef.valuebinding, roots);
             }
             var tModel = {};
             fluid.model.copyModel(tModel, that.model);
@@ -544,17 +635,6 @@ fluid_0_8 = fluid_0_8 || {};
     fluid.pagerImpl = function (container, options) {
         var that = fluid.initView("fluid.pager", container, options);
         
-        function fireModelChange(newModel) {
-               computePageCount(newModel);
-               if (newModel.pageIndex >= newModel.pageCount) {
-                   newModel.pageIndex = newModel.pageCount - 1;
-               }
-               if (newModel.pageIndex !== that.model.pageIndex || newModel.pageSize !== that.model.pageSize) {
-                   that.events.onModelChange.fire(newModel, that.model, that);
-                   fluid.model.copyModel(that.model, newModel);
-               }            
-        }
-        
         that.events.initiatePageChange.addListener(
             function(arg) {
                var newModel = fluid.copy(that.model);
@@ -567,7 +647,7 @@ fluid_0_8 = fluid_0_8 || {};
                if (newModel.pageIndex === undefined || newModel.pageIndex < 0) {
                    newModel.pageIndex = 0;
                }
-               fireModelChange(newModel);
+               fireModelChange(that, newModel);
             }
         );
         
@@ -575,7 +655,7 @@ fluid_0_8 = fluid_0_8 || {};
             function(arg) {
                 var newModel = fluid.copy(that.model);
                 newModel.pageSize = arg;
-                fireModelChange(newModel);     
+                fireModelChange(that, newModel);     
             }
             );
 
@@ -632,6 +712,8 @@ fluid_0_8 = fluid_0_8 || {};
         
         modelFilter: fluid.pager.directModelFilter,
         
+        sorter: fluid.pager.basicSorter,
+        
         bodyRenderer: {
             type: "fluid.emptySubcomponent"
         },
@@ -645,6 +727,9 @@ fluid_0_8 = fluid_0_8 || {};
         dataModel: undefined,
         // Offset of the tree's "main" data from the overall dataModel root
         dataOffset: "",
+        
+        // strategy for generating a tree row, either "explode" or an array of columnDef objects
+        columnDefs: "explode",
         
         annotateColumnRange: undefined,
         
@@ -660,11 +745,14 @@ fluid_0_8 = fluid_0_8 || {};
             pagerBar: ".pager-top",
             pagerBarSecondary: ".pager-bottom",
             summary: ".pager-summary",
-            pageSize: ".pager-page-size"
+            pageSize: ".pager-page-size",
+            headerSortStylisticOffset: "th"
         },
         
         styles: {
             tooltip: "pager-tooltip",
+            ascendingHeader: "fl-asc",
+            descendingHeader: "fl-desc"
         },
         
         strings: {

@@ -21,12 +21,12 @@ var demo = demo || {};
         
         var options = {
             dataModel: userTable,
+            columnDefs: "explode",
             bodyRenderer: {
               type: "fluid.pager.selfRender",
               options: {
                 root: "#body-template",
-                row: "row:",
-                columnDefs: "explode"
+                row: "row:"
               }
             },
             pagerBar: {type: "fluid.pager.pagerBar", options: {

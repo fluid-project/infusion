@@ -198,7 +198,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         fluidJSTests.test("jById id not found", function () {
             var invalidIdElement = fluid.jById("this-id-does-not-exitst");
-            jqUnit.assertEquals("element not found", null, invalidIdElement);
+            jqUnit.assertEquals("element not found", 0, invalidIdElement.length);
         });
 
         fluidJSTests.test("findAncestor", function () {

@@ -2490,7 +2490,7 @@ label.ssg-label1 {
   margin: 0 2px 0 2px;
 }
 
-.current-page a {
+a.current-page {
     color: #000000;
     border: 0;
     text-decoration: none;

@@ -730,29 +730,41 @@ var fluid = fluid || fluid_0_8;
     // DOM Utilities.
     
     /**
-     * Finds the ancestor of the element that passes the test
+     * Finds the nearest ancestor of the element that passes the test
      * @param {Element} element DOM element
      * @param {Function} test A function which takes an element as a parameter and return true or false for some test
      */
     fluid.findAncestor = function (element, test) {
-        return test(element) ? element : $.grep($(element).parents(), test)[0];
+    	  element = fluid.unwrap(element);
+    	  while (element) {
+    	      if (test(element)) return element;
+    	      element = element.parentNode;
+    	  }
     };
     
     /**
-     * Returns a jQuery object given the id of a DOM node
+     * Returns a jQuery object given the id of a DOM node. In the case the element
+     * is not found, will return an empty list.
      */
-    fluid.jById = function (id) {
-        var element = fluid.byId(id);
-        return element? $(element) : null;
+    fluid.jById = function (id, dokkument) {
+    	  dokkument = dokkument? dokkument : document;
+        var element = fluid.byId(id, dokkument);
+        var togo = element? $(element) : [];
+        togo.selector = "#" + id;
+        togo.context = dokkument;
+        return togo;
     };
     
     /**
      * Returns an DOM element quickly, given an id
      * 
      * @param {Object} id the id of the DOM node to find
+     * @param {Document} dokkument the document in which it is to be found (if left empty, use the current document)
+     * @return The DOM element with this id, or null, if none exists in the document.
      */
-    fluid.byId = function (id) {
-        var el = document.getElementById(id);
+    fluid.byId = function (id, dokkument) {
+    	  dokkument = dokkument? dokkument : document;
+        var el = dokkument.getElementById(id);
         if (el) {
             if (el.getAttribute("id") !== id) {
                 fluid.fail("Problem in document structure - picked up element " +
