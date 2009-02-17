@@ -62,30 +62,86 @@ fluid.tests = fluid.tests || {};
     
       });
     
+    var enc_table = [
+        {"species": "Man", "score": 7.44 },
+        {"species": "Dolphin", "score": 5.31 },
+        {"species": "Chimpanzee", "score": 2.49 },
+        {"species": "Rhesus Monkey", "score": 2.09 },
+        {"species": "Elephant", "score": 1.87 },
+        {"species": "Whale", "score": 1.76 },
+        {"species": "Dog", "score": 1.17 },
+        {"species": "CATT", "score": 1.00 },
+        {"species": "Horse", "score": 0.86 },
+        {"species": "Sheep", "score": 0.81 },
+        {"species": "Mouse", "score": 0.50 },
+        {"species": "Rat", "score": 0.40 },
+        {"species": "Rabbit", "score": 0.40 }  
+    ];
+    
     renderTests.test("ID-based render test", function() {
-      var contentTree = {
-        "data-row:" : [
-            {"species": "Man", "score": 7.44 },
-            {"species": "Dolphin", "score": 5.31 },
-            {"species": "Chimpanzee", "score": 2.49 },
-            {"species": "Rhesus Monkey", "score": 2.09 },
-            {"species": "Elephant", "score": 1.87 },
-            {"species": "Whale", "score": 1.76 },
-            {"species": "Dog", "score": 1.17 },
-            {"species": "CATT", "score": 1.00 },
-            {"species": "Horse", "score": 0.86 },
-            {"species": "Sheep", "score": 0.81 },
-            {"species": "Mouse", "score": 0.50 },
-            {"species": "Rat", "score": 0.40 },
-            {"species": "Rabbit", "score": 0.40 }             ]
-        };
-
-      fluid.selfRender($(".paged-content"), contentTree);
-      var rows = $(".paged-content tr").length;
-      jqUnit.assertEquals("Rendered row count", 14, rows);
-      var cells = $(".paged-content td").length;
-      jqUnit.assertEquals("Rendered cell count", 26, cells);
-      
+	      var contentTree = {
+	        "data-row:" : enc_table
+	        };
+	
+	      fluid.selfRender($(".paged-content"), contentTree);
+	      var rows = $(".paged-content tr").length;
+	      jqUnit.assertEquals("Rendered row count", 14, rows);
+	      var cells = $(".paged-content td").length;
+	      jqUnit.assertEquals("Rendered cell count", 26, cells);
+	      
+    });
+    
+    renderTests.test("Decorator and degradation test", function() {
+    	  var indexClick = null;
+    	  var columnClick = null;
+    	  var clickBack = function(index, column) {
+    	      indexClick = index;
+    	      columnClick = column;
+    	  };
+        var contentTree = fluid.transform(enc_table, function(row, i) {
+            return {
+            	ID: "data-row:",
+            	children: [
+            	    {ID: "species",
+            	    	value: row.species,
+            	    	decorators: {
+            	          jQuery: ["click", function() {
+            	              clickBack(i, "species");
+            	          }],
+            	          identify: "species-" + i
+            	    	}
+            	    },
+            	    {ID: "score",
+                    value: row.score,
+                    decorators: [
+                        {
+                        type: "$",
+                        func: "change",
+                        args: function() {
+                            clickBack(i, "score");
+                          }
+                        },
+                        {
+                        	type: "identify",
+                        	key: "score-" + i
+                    }]
+            	    }
+            	]
+            };
+        });
+        var idMap = {};
+        fluid.selfRender($(".paged-content-2"), contentTree, {idMap: idMap});
+        var species6 = idMap["species-7"];
+        var el = fluid.jById(species6);
+        jqUnit.assertEquals("Identified by idMap", 1, el.length);
+        el.click();
+        jqUnit.assertEquals("Decorated by click", 7, indexClick);
+        clickBack(null, null);
+        var input = fluid.jById(idMap["score-7"]);
+        jqUnit.assertEquals("Input text", 1.00, input.val());
+        input.val(100);
+        input.change();
+        jqUnit.assertEquals("change-decorate-identify", 7, indexClick);
     });
     
  //   rendertests.test("Invalid trees", function() {

@@ -38,8 +38,8 @@ fluid_0_8 = fluid_0_8 || {};
       if (move.noID === undefined) {
         var ID = move.ID;
         if (ID === undefined) {
-          fluid.fail("Error in component tree - component found with no ID "
-            + debugPosition(parent) + ": please check structure");
+          fluid.fail("Error in component tree - component found with no ID " +
+              debugPosition(parent) + ": please check structure");
         }
         var colpos = ID.indexOf(":");        
         var prefix = colpos === -1? ID : ID.substring(0, colpos);
@@ -52,7 +52,7 @@ fluid_0_8 = fluid_0_8 || {};
   
   function isBoundPrimitive(value) {
       return fluid.isPrimitive(value) || value instanceof Array 
-             && (value.length === 0 || typeof(value[0]) === "string") 
+             && (value.length === 0 || typeof(value[0]) === "string");
   }
   
   function processChild(value, key) {
@@ -92,7 +92,7 @@ fluid_0_8 = fluid_0_8 || {};
       }
       return togo;
     }
-    else return children;
+    else {return children;}
   }
   
   function fixupValue(uibound, model) {
@@ -112,7 +112,7 @@ fluid_0_8 = fluid_0_8 || {};
           }
       }
       else {
-          holder[property] = {value: null}
+          holder[property] = {value: null};
       }
       fixupValue(holder[property], model);
   }
@@ -136,7 +136,7 @@ fluid_0_8 = fluid_0_8 || {};
       }
       if (!component || component.componentType === undefined) {
           var decorators = component.decorators;
-          if (decorators) delete component.decorators;
+          if (decorators) {delete component.decorators;}
           component = {componentType: "UIContainer", children: component};
           component.decorators = decorators;
       }
@@ -198,7 +198,7 @@ fluid_0_8 = fluid_0_8 || {};
             childlist = [];
             tree.childmap[prefix] = childlist;
           }
-          if (child.localID === undefined && childlist.length != 0) {
+          if (child.localID === undefined && childlist.length !== 0) {
               child.localID = childlist.length;
           }
           childlist[childlist.length] = child;
@@ -273,10 +273,10 @@ fluid_0_8 = fluid_0_8 || {};
     var split = fluid.SplitID(searchID);
     var defprefix = split.prefix + ':';
     var match = resolveInScope(searchID, defprefix, sourcescope.downmap, child);
-    if (match) return match;
+    if (match) {return match;}
     if (child.children) {
       match = resolveInScope(searchID, defprefix, globalmap, child);
-      if (match) return match;
+      if (match) {return match;}
     }
     return null;
   }
@@ -312,7 +312,7 @@ fluid_0_8 = fluid_0_8 || {};
           var lumps = parentlump.downmap[id];
           for (var i = 0; i < lumps.length; ++ i) {
             var lump = lumps[i];
-            var lumpid = lump.attributemap["id"];
+            var lumpid = lump.attributemap.id;
             if (lumpid !== undefined && lump.rsfID !== undefined) {
               var resolved = fetchComponent(basecontainer, lump.rsfID);
               if (resolved !== null) {
@@ -359,25 +359,28 @@ fluid_0_8 = fluid_0_8 || {};
   function dumpScan(lumps, renderindex, basedepth, closeparent, insideleaf) {
     var start = renderindex;
     while (true) {
-      if (renderindex === lumps.length)
+      if (renderindex === lumps.length) {
         break;
+      }
       var lump = lumps[renderindex];
-      if (lump.nestingdepth < basedepth)
+      if (lump.nestingdepth < basedepth) {
         break;
+      }
       if (lump.rsfID !== undefined) {
-        if (!insideleaf) break;
+        if (!insideleaf) {break;}
         if (insideleaf && lump.nestingdepth > basedepth + (closeparent?0:1) ) {
           fluid.log("Error in component tree - leaf component found to contain further components - at " +
               lump.toString());
         }
-        else break;
+        else {break;}
       }
       // target.print(lump.text);
       ++renderindex;
     }
     // ASSUMPTIONS: close tags are ONE LUMP
-    if (!closeparent && (renderindex == lumps.length || !lumps[renderindex].rsfID))
+    if (!closeparent && (renderindex == lumps.length || !lumps[renderindex].rsfID)) {
       --renderindex;
+    }
     
     dumpTillLump(lumps, start, renderindex);
     //target.write(buffer, start, limit - start);
@@ -438,10 +441,12 @@ fluid_0_8 = fluid_0_8 || {};
   }
 
   function rewriteLeaf(value) {
-      if (isValue(value))
+      if (isValue(value)) {
           replaceBody(value);
-      else
+      }
+      else {
           replaceAttributes();
+      }
   }
 
   function rewriteLeafOpen(value) {
@@ -449,10 +454,12 @@ fluid_0_8 = fluid_0_8 || {};
           rewriteLeaf(trc.value);
       }
       else {
-          if (isValue(value)) 
+          if (isValue(value)) { 
               replaceBody(value);
-          else
+          }
+          else {
               replaceAttributesOpen();
+          }
       }
   }
   
@@ -498,7 +505,7 @@ fluid_0_8 = fluid_0_8 || {};
           outDecoratorsImpl(torender, [{
             jQuery: ["change", function() {
               fluid.applyChange(fluid.byId(finalID));}]
-          }], trc.attrcopy, finalID)
+          }], trc.attrcopy, finalID);
       }    
   }
   
@@ -560,7 +567,7 @@ fluid_0_8 = fluid_0_8 || {};
   function explodeDecorators(decorators) {
       var togo = [];
       for (var key in decorators) {
-          if (key === "$") key = "jQuery";
+          if (key === "$") {key = "jQuery";}
           var value = decorators[key];
           var decorator = {
             type: key
@@ -593,6 +600,7 @@ fluid_0_8 = fluid_0_8 || {};
               outDecoratorsImpl(torender, explodedDecorators, attrcopy, finalID);
               continue;
           }
+          if (type === "$") {type = decorator.type = "jQuery";}
           if (type === "jQuery" || type === "event") {
               var id = adjustForID(attrcopy, torender, true, finalID);
               var outdec = $.extend(true, {id: id}, decorator);
@@ -606,7 +614,7 @@ fluid_0_8 = fluid_0_8 || {};
               var fakeNode = {
                 nodeType: 1,
                 className: attrcopy["class"] || ""
-              }
+              };
               $(fakeNode).addClass(decorator.classes);
               attrcopy["class"] = fakeNode.className;
           }
@@ -618,7 +626,7 @@ fluid_0_8 = fluid_0_8 || {};
   }
   
   function outDecorators(torender, attrcopy) {
-      if (!torender.decorators) return;
+      if (!torender.decorators) {return;}
       if (torender.decorators.length === undefined) {
           torender.decorators = explodeDecorators(torender.decorators);
       }
@@ -776,8 +784,9 @@ fluid_0_8 = fluid_0_8 || {};
         for (var i = 0; i < names.length; ++i) {
           out += "<option value=\"";
           var value = values[i];
-          if (value === null)
+          if (value === null) {
             value = fluid.NULL_STRING;
+          }
           out += fluid.XMLEncode(value);
           if (isSelectedValue(torender, value)) {
             out += "\" selected=\"selected";
@@ -816,7 +825,7 @@ fluid_0_8 = fluid_0_8 || {};
     
     else if (torender.markup !== undefined) { // detect UIVerbatim
       var rendered = torender.markup;
-      if (rendered == null) {
+      if (rendered === null) {
         // TODO, doesn't quite work due to attr folding cf Java code
           out += fluid.dumpAttributes(attrcopy);
           out +=">";
@@ -863,15 +872,15 @@ fluid_0_8 = fluid_0_8 || {};
            attrname = "for";
       }
       else {
-          attrval = trc.attrcopy["headers"];
+          attrval = trc.attrcopy.headers;
           if (attrval !== undefined) {
               attrname = "headers";
           }
       }
-      if (!attrname) return;
+      if (!attrname) {return;}
       var tagname = trc.uselump.tagname;
-      if (attrname === "for" && tagname !== "label") return;
-      if (attrname === "headers" && tagname !== "td" && tagname !== "th") return;
+      if (attrname === "for" && tagname !== "label") {return;}
+      if (attrname === "headers" && tagname !== "td" && tagname !== "th") {return;}
       var rewritten = rewritemap[getRewriteKey(trc.uselump.parent, context, attrval)];
       if (rewritten !== undefined) {
           trc.attrcopy[attrname] = rewritten;
@@ -905,7 +914,7 @@ fluid_0_8 = fluid_0_8 || {};
     var payloadlist = lump.downmap? lump.downmap["payload-component"] : null;
     var payload = payloadlist? payloadlist[0] : null;
     
-    var iselide = lump.rsfID.charCodeAt(0) === 126 // "~"
+    var iselide = lump.rsfID.charCodeAt(0) === 126; // "~"
     
     var endopen = outerendopen;
     var close = outerclose;
@@ -922,7 +931,7 @@ fluid_0_8 = fluid_0_8 || {};
     
     rewriteIDRelation(context);
     
-    if (torendero == null) {
+    if (torendero === null) {
       // no support for SCR yet
     }
     else {
@@ -948,7 +957,7 @@ fluid_0_8 = fluid_0_8 || {};
 
       renderComponent(torendero);
       // if there is a payload, dump the postamble.
-      if (payload != null) {
+      if (payload !== null) {
         // the default case is initialised to tag close
         if (trc.nextpos === nextpos) {
           dumpTillLump(lumps, trc.close.lumpindex + 1, outerclose.lumpindex + 1);
@@ -978,8 +987,9 @@ fluid_0_8 = fluid_0_8 || {};
       }
       while (basecontainer) {
           var togo = basecontainer.childmap[id];
-          if (togo)
+          if (togo) {
               return togo;
+          }
           basecontainer = basecontainer.parent;
       }
       return null;
@@ -989,8 +999,9 @@ fluid_0_8 = fluid_0_8 || {};
       var togo;
       while (basecontainer) {
           togo = basecontainer.childmap[id];
-          if (togo)
+          if (togo) {
               break;
+          }
           basecontainer = basecontainer.parent;
       }
       return togo;
@@ -999,10 +1010,10 @@ fluid_0_8 = fluid_0_8 || {};
   function findChild(sourcescope, child) {
       var split = fluid.SplitID(child.ID);
       var headlumps = sourcescope.downmap[child.ID];
-      if (headlumps == null) {
+      if (headlumps === null) {
           headlumps = sourcescope.downmap[split.prefix + ":"];
       }
-      return headlumps == null ? null : headlumps[0];
+      return headlumps === null ? null : headlumps[0];
   }
   
   function renderRecurse(basecontainer, parentlump, baselump) {
@@ -1205,8 +1216,8 @@ fluid_0_8 = fluid_0_8 || {};
   
   fluid.findForm = function (node) {
     return fluid.findAncestor(node, 
-        function(element) {return element.nodeName.toLowerCase() === "form"});
-  }
+        function(element) {return element.nodeName.toLowerCase() === "form";});
+  };
   
   fluid.resolveMessageSource = function (messageSource) {
       if (messageSource.type === "data") {
@@ -1217,7 +1228,7 @@ fluid_0_8 = fluid_0_8 || {};
             // TODO: fetch via AJAX, and convert format if necessary
           }
       }
-  }
+  };
   
   /** A generalisation of jQuery.val to correctly handle the case of acquiring and
    * setting the value of clustered radio button/checkbox sets, potentially, given
@@ -1232,7 +1243,7 @@ fluid_0_8 = fluid_0_8 || {};
       }
       var jNode = $(node);
       if ("input" !== node.nodeName.toLowerCase()
-         || ! /radio|checkbox/.test(node.type)) return $(node).val(newValue);
+         || ! /radio|checkbox/.test(node.type)) {return $(node).val(newValue);}
       var name = node.name;
       if (name === undefined) {
           fluid.fail("Cannot acquire value from node " + fluid.dumpEl(node) + " which does not have name attribute set");
@@ -1246,13 +1257,13 @@ fluid_0_8 = fluid_0_8 || {};
           var scope = fluid.findForm(node);
           elements = $.grep(elements, 
             function(element) {
-              if (element.name !== name) return false;
+              if (element.name !== name) {return false;}
               return !scope || fluid.dom.isContainer(scope, element);
             });
       }
       if (newValue !== undefined) {
           if (typeof(newValue) === "boolean") {
-              newValue === newValue? "true" : "false";
+              newValue === (newValue? "true" : "false");
           }
         // jQuery gets this partially right, but when dealing with radio button array will
         // set all of their values to "newValue" rather than setting the checked property
@@ -1268,7 +1279,7 @@ fluid_0_8 = fluid_0_8 || {};
           });
           return node.type === "radio"? checked[0] : checked;
           }
-     }
+     };
   
   /** "Automatically" apply to whatever part of the data model is
    * relevant, the changed value received at the given DOM node*/
@@ -1277,7 +1288,7 @@ fluid_0_8 = fluid_0_8 || {};
       if (newValue === undefined) {
           newValue = fluid.value(node);
       }
-      if (node.nodeType === undefined && node.length > 0) node = node[0]; // assume here that they share name and parent
+      if (node.nodeType === undefined && node.length > 0) {node = node[0];} // assume here that they share name and parent
       var root = fluid.findData(node, fluid.BINDING_ROOT_KEY);
       if (!root) {
           fluid.fail("Bound data could not be discovered in any node above " + fluid.dumpEl(node));
@@ -1355,14 +1366,14 @@ fluid_0_8 = fluid_0_8 || {};
   fluid.findData = function(elem, name) {
       while (elem) {
           var data = $.data(elem, name);
-          if (data) return data;
+          if (data) {return data;}
           elem = elem.parentNode;
           }
-      }
+      };
 
   fluid.bindFossils = function(node, data, fossils) {
       $.data(node, fluid.BINDING_ROOT_KEY, {data: data, fossils: fossils});
-      }
+      };
 
   /** A driver to render and bind an already parsed set of templates onto
    * a node. See documentation for fluid.selfRender.
@@ -1397,7 +1408,7 @@ fluid_0_8 = fluid_0_8 || {};
       }
       processDecoratorQueue();
       return templates;
-  }
+  };
 
   /** A simple driver for single node self-templating. Treats the markup for a
    * node as a template, parses it into a template structure, renders it using
@@ -1420,6 +1431,6 @@ fluid_0_8 = fluid_0_8 || {};
                           };
       var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
       return fluid.reRender(templates, node, tree, options);
-    }
+    };
   
 })(jQuery, fluid_0_8);
