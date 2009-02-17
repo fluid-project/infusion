@@ -574,6 +574,12 @@ var fluid = fluid || fluid_0_8;
      * a set of keyboard bindings.
      */
 
+    /** A special return value recognised from an activationHandler function, which
+     * will allow the native browser event handler to execute - that is, evt.preventDefault()
+     * will be defeated.
+     */
+    fluid.ALLOW_NATIVE = {};
+
     var checkForModifier = function(binding, evt) {
         // If no modifier was specified, just return true.
         if (!binding.modifier) {
@@ -602,8 +608,10 @@ var fluid = fluid || fluid_0_8;
 //            if (evt.which === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
             var code = evt.which? evt.which : evt.keyCode;
             if (code === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
-                binding.activateHandler(evt.target, evt);
-                evt.preventDefault();
+                var ret = binding.activateHandler(evt.target, evt);
+                if (ret != fluid.ALLOW_NATIVE) {
+                    evt.preventDefault();
+                }
             }
         };
     };

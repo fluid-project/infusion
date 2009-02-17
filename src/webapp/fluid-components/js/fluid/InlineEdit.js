@@ -216,20 +216,24 @@ fluid_0_8 = fluid_0_8 || {};
         }; 
     };
     
+    function makeEditTriggerGuard(that) {
+        var viewEl = fluid.unwrap(that.viewEl);
+        return function(event) {
+                  // FLUID-2017 - avoid triggering edit mode when operating standard HTML controls. Ultimately this
+                  // might need to be extensible, in more complex authouring scenarios.
+            var outer = fluid.findAncestor(event.target, function (elem) {
+                if (/input|select|textarea|button|a/i.test(elem.nodeName) || elem == viewEl) return true;
+             });
+            if (outer === viewEl) {
+              that.edit();
+              return false;
+        }};
+    }
+    
     var bindMouseHandlers = function (that) {
         bindHoverHandlers(that.viewEl, that.options.styles.invitation);
         var viewEl = fluid.unwrap(that.viewEl);
-        that.viewEl.click(
-            function(event) {
-                  // FLUID-2017 - avoid triggering edit mode when operating standard HTML controls. Ultimately this
-                  // might need to be extensible, in more complex authouring scenarios.
-                var outer = fluid.findAncestor(event.target, function (elem) {
-                    if (/input|select|textarea|button|a/i.test(elem.nodeName) || elem == viewEl) return true;
-                });
-                if (outer === viewEl) {
-                    that.edit();
-                    return false;
-                }});
+        that.viewEl.click(makeEditTriggerGuard(that));
     };
     
     var bindHighlightHandler = function (viewEl, focusStyle, invitationStyle) {
@@ -247,7 +251,12 @@ fluid_0_8 = fluid_0_8 || {};
     
     var bindKeyboardHandlers = function (that) {
         fluid.tabbable(that.viewEl);
-        fluid.activatable(that.viewEl, that.edit);
+        var guard = makeEditTriggerGuard(that);
+        fluid.activatable(that.viewEl, 
+            function(target, event) {
+                var ret = guard(event);
+                return ret === undefined? fluid.ALLOW_NATIVE : ret;
+            });
     };
     
     var bindEditFinish = function (that) {
