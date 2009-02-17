@@ -28,7 +28,7 @@ sakai.initFluidSiteSettingTable = function() {
             components: {
                 target: "/dev/sn/profile.html?user=${*.userId}",
                 linktext: fluid.VALUE},
-            sortable:true,
+            sortable:true
             },
            {key: "user-email",
             valuebinding: "*.userEmail",
