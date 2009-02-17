@@ -110,11 +110,11 @@ fluid_0_8 = fluid_0_8 || {};
                 }
             }
             return togo;
-        }
+        };
     };
     
     fluid.pager.renderedPageList = function(container, events, pagerBarOptions, options, strings) {
-        var options = $.extend(true, pagerBarOptions, options);
+        options = $.extend(true, pagerBarOptions, options);
         var that = fluid.initView("fluid.pager.renderedPageList", container, options);
         options = that.options; // pick up any defaults
         var renderOptions = {
@@ -264,10 +264,10 @@ fluid_0_8 = fluid_0_8 || {};
         target.longRoot = cellRoot + target.shortRoot;
     }
     
-    fluid.pager.fetchValue = function(that, dataModel, index, path, roots) {
+    fluid.pager.fetchValue = function(that, dataModel, index, valuebinding, roots) {
         getRoots(roots, that, index);
 
-        var path = expandPath(path, roots.shortRoot, roots.longRoot);
+        var path = expandPath(valuebinding, roots.shortRoot, roots.longRoot);
         return fluid.model.getBeanValue(dataModel, path);
     };
     
@@ -335,7 +335,7 @@ fluid_0_8 = fluid_0_8 || {};
                     EL = expandPath(EL, opts.shortRoot, opts.longRoot);
                 }
 
-                var val = fluid.model.getBeanValue(opts.dataModel, EL)
+                var val = fluid.model.getBeanValue(opts.dataModel, EL);
                 togo += val;
                 index = endi + 1;
             }
@@ -364,7 +364,7 @@ fluid_0_8 = fluid_0_8 || {};
             else if (typeof(val) === 'string') {
                 target[i] = expandVariables(val, opts);
             }
-            else target[i] = tree[i];
+            else {target[i] = tree[i];}
         }
         return target;
     }
@@ -418,10 +418,10 @@ fluid_0_8 = fluid_0_8 || {};
     function bigHeaderForKey(key, opts) {
         var id = opts.options.renderOptions.idMap["header:" + key];
         var smallHeader = fluid.jById(id);
-        if (smallHeader.length === 0) return null;
+        if (smallHeader.length === 0) {return null;}
         var headerSortStylisticOffset = opts.overallOptions.selectors.headerSortStylisticOffset;
         var bigHeader = fluid.findAncestor(smallHeader, function(element) {
-            return $(element).is(headerSortStylisticOffset)});
+            return $(element).is(headerSortStylisticOffset);});
         return bigHeader;
     }
    
@@ -429,7 +429,7 @@ fluid_0_8 = fluid_0_8 || {};
           element = $(element);
         element.removeClass(styles.ascendingHeader);
         element.removeClass(styles.descendingHeader);
-        if (sort != 0) {
+        if (sort !== 0) {
             element.addClass(sort === 1? styles.ascendingHeader : styles.descendingHeader);
         }
     }
@@ -439,8 +439,8 @@ fluid_0_8 = fluid_0_8 || {};
          if (newModel.pageIndex >= newModel.pageCount) {
              newModel.pageIndex = newModel.pageCount - 1;
          }
-         if (newModel.pageIndex !== that.model.pageIndex || newModel.pageSize !== that.model.pageSize || newModel.sortKey !== that.model.sortKey
-           || newModel.sortDir !== that.model.sortDir) {
+         if (newModel.pageIndex !== that.model.pageIndex || newModel.pageSize !== that.model.pageSize || newModel.sortKey !== that.model.sortKey ||
+                newModel.sortDir !== that.model.sortDir) {
          	   var sorted = newModel.sortKey? that.options.sorter(that, newModel) : null;
              that.permutation = sorted;
              that.events.onModelChange.fire(newModel, that.model, that);
@@ -465,11 +465,11 @@ fluid_0_8 = fluid_0_8 || {};
             else if (newModel.sortKey === columnDef.key) {
                 newModel.sortDir = -1 * newModel.sortDir;
             }
-            else return false;
+            else {return false;}
             fireModelChange(overallThat, newModel);
             setSortHeaderClass(styles, bigHeaderForKey(newModel.sortKey, opts), newModel.sortDir);
             return false;
-        }
+        };
     }
    
     function generateHeader(overallThat, newModel, columnDefs, opts) {
@@ -489,8 +489,8 @@ fluid_0_8 = fluid_0_8 || {};
    
     /** A body renderer implementation which uses the Fluid renderer to render a table section **/
    
-    fluid.pager.selfRender = function (overallThat, options) {
-        var that = fluid.initView("fluid.pager.selfRender", overallThat.container, options);
+    fluid.pager.selfRender = function (overallThat, inOptions) {
+        var that = fluid.initView("fluid.pager.selfRender", overallThat.container, inOptions);
         var options = that.options;
         options.renderOptions.idMap = options.renderOptions.idMap || {};
         var idMap = options.renderOptions.idMap;
@@ -623,7 +623,7 @@ fluid_0_8 = fluid_0_8 || {};
                             }
                         };
                     cell.decorators.push(decorator);
-                    };
+                    }
               
             });
     });};
@@ -687,8 +687,8 @@ fluid_0_8 = fluid_0_8 || {};
         }
         if (that.model.totalRange === undefined) {
             if (!that.pagerBar) {
-                fluid.fail("Error in Pager configuration - cannot determine total range, "
-                + " since not configured in model.totalRange and no PagerBar is configured");
+                fluid.fail("Error in Pager configuration - cannot determine total range, " +
+                " since not configured in model.totalRange and no PagerBar is configured");
             }
             that.model = that.pagerBar.pageList.defaultModel;
         }
