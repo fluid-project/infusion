@@ -79,40 +79,40 @@ fluid.tests = fluid.tests || {};
     ];
     
     renderTests.test("ID-based render test", function() {
-	      var contentTree = {
-	        "data-row:" : enc_table
-	        };
-	
-	      fluid.selfRender($(".paged-content"), contentTree);
-	      var rows = $(".paged-content tr").length;
-	      jqUnit.assertEquals("Rendered row count", 14, rows);
-	      var cells = $(".paged-content td").length;
-	      jqUnit.assertEquals("Rendered cell count", 26, cells);
-	      
+          var contentTree = {
+            "data-row:" : enc_table
+            };
+    
+          fluid.selfRender($(".paged-content"), contentTree);
+          var rows = $(".paged-content tr").length;
+          jqUnit.assertEquals("Rendered row count", 14, rows);
+          var cells = $(".paged-content td").length;
+          jqUnit.assertEquals("Rendered cell count", 26, cells);
+          
     });
     
     renderTests.test("Decorator and degradation test", function() {
-    	  var indexClick = null;
-    	  var columnClick = null;
-    	  var clickBack = function(index, column) {
-    	      indexClick = index;
-    	      columnClick = column;
-    	  };
+          var indexClick = null;
+          var columnClick = null;
+          var clickBack = function(index, column) {
+              indexClick = index;
+              columnClick = column;
+          };
         var contentTree = fluid.transform(enc_table, function(row, i) {
             return {
-            	ID: "data-row:",
-            	children: [
-            	    {ID: "species",
-            	    	value: row.species,
-            	    	decorators: {
-            	          jQuery: ["click", function() {
-            	              clickBack(i, "species");
-            	          }],
-            	          identify: "species-" + i,
-            	          addClass: "CATTclick1 CATTclick2"
-            	    	}
-            	    },
-            	    {ID: "score",
+                ID: "data-row:",
+                children: [
+                    {ID: "species",
+                        value: row.species,
+                        decorators: {
+                          jQuery: ["click", function() {
+                              clickBack(i, "species");
+                          }],
+                          identify: "species-" + i,
+                          addClass: "CATTclick1 CATTclick2"
+                        }
+                    },
+                    {ID: "score",
                     value: row.score,
                     decorators: [
                         {
@@ -123,11 +123,11 @@ fluid.tests = fluid.tests || {};
                           }
                         },
                         {
-                        	type: "identify",
-                        	key: "score-" + i
+                            type: "identify",
+                            key: "score-" + i
                     }]
-            	    }
-            	]
+                    }
+                ]
             };
         });
         var idMap = {};

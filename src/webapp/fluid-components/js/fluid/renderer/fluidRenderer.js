@@ -591,7 +591,7 @@ fluid_0_8 = fluid_0_8 || {};
   }
   
   function outDecoratorsImpl(torender, decorators, attrcopy, finalID) {
-  	  renderOptions.idMap = renderOptions.idMap || {};
+    renderOptions.idMap = renderOptions.idMap || {};
       for (var i = 0; i < decorators.length; ++ i) {
           var decorator = decorators[i];
           var type = decorator.type;
