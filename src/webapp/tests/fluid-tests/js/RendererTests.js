@@ -108,7 +108,8 @@ fluid.tests = fluid.tests || {};
             	          jQuery: ["click", function() {
             	              clickBack(i, "species");
             	          }],
-            	          identify: "species-" + i
+            	          identify: "species-" + i,
+            	          addClass: "CATTclick1 CATTclick2"
             	    	}
             	    },
             	    {ID: "score",
@@ -134,6 +135,8 @@ fluid.tests = fluid.tests || {};
         var species6 = idMap["species-7"];
         var el = fluid.jById(species6);
         jqUnit.assertEquals("Identified by idMap", 1, el.length);
+        jqUnit.assertTrue("Decorated by addClass", el.hasClass("CATTclick1"));
+        jqUnit.assertFalse("Not decorated by addClass", el.hasClass("CATTclick3"));
         el.click();
         jqUnit.assertEquals("Decorated by click", 7, indexClick);
         clickBack(null, null);
