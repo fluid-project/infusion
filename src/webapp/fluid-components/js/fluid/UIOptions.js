@@ -150,7 +150,12 @@ fluid_0_8 = fluid_0_8 || {};
     var initPreview = function (that) {
         var updatePreview = function (model) {
             var previewFrame = that.locate("previewFrame").contents();
-            fluid.applySkin(model, that.locate("preview", previewFrame)); 
+            /**
+             * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
+             */
+            setTimeout(function(){
+                fluid.applySkin(model, that.locate("preview", previewFrame)); 
+            },0);
         };
         that.events.modelChanged.addListener(updatePreview);
         
