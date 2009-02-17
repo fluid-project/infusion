@@ -405,6 +405,7 @@ fluid_0_8 = fluid_0_8 || {};
         disableElement(that, that.locate("browseButton"));
         enableElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("pauseButton"));
+        that.locate(that.options.focusWithEvent.afterUploadStart).focus();
     };    
     
     var renderUploadTotalMessage = function (that) {
@@ -465,7 +466,8 @@ fluid_0_8 = fluid_0_8 || {};
         if (that.uploadManager.queue.getReadyFiles().length > 0) {
             setStateLoaded(that);
             renderUploadTotalMessage(that);
-        } 
+            that.locate(that.options.focusWithEvent.afterFileDialog).focus();  
+        }
     };
     
     var updateStateAfterFileRemoval = function (that) {
@@ -501,7 +503,11 @@ fluid_0_8 = fluid_0_8 || {};
         that.events.onUploadStart.addListener(function () {
             setStateUploading(that);
         });
-
+        
+        that.events.onUploadStop.addListener(function () {
+            that.locate(that.options.focusWithEvent.afterUploadStop).focus();
+        });
+        
         that.events.onFileProgress.addListener(function () {
             updateTotalProgress(that); 
         });
@@ -643,6 +649,15 @@ fluid_0_8 = fluid_0_8 || {};
             totalFileProgressBar: ".fl-scroller-table-foot",
             totalFileStatusText: ".total-file-progress",
             instructions: ".fl-uploader-browse-instructions"
+        },
+ 
+        // Event listeners must already be implemented to use these options.
+        // At the moment, the following events are supported: 
+        //   afterFileDialog, afterUploadStart, and afterUploadStop.
+        focusWithEvent: {
+            afterFileDialog: "uploadButton",
+            afterUploadStart: "pauseButton",
+            afterUploadStop: "uploadButton"
         },
         
         styles: {

@@ -86,6 +86,7 @@ fluid_0_8 = fluid_0_8 || {};
                                      fluid.uploader.errorConstants.UPLOAD_STOPPED, 
                                      "The demo upload was paused by the user.");
         finishAndContinueOrCleanup(that, file);
+        that.events.onUploadStop.fire();
     };
     
     var setupDemoUploadManager = function (that) {
