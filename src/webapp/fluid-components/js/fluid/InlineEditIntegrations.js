@@ -59,41 +59,37 @@ fluid_0_8 = fluid_0_8 || {};
    
     fluid.inlineEdit.tinyMCE.blurHandlerBinder = function (that) {
         function focusEditor(editor) {
-                setTimeout(function() {
-                    tinyMCE.execCommand('mceFocus', false, that.editField[0].id);
-                    if ($.browser.mozilla && $.browser.version.substring(0, 3) === "1.8") {
-                        var body = editor.getBody();
-                        // Have not yet found any way to make this work on FF2.x - best to do nothing,
-                        // for FLUID-2206
-                        //fluid.setCaretToEnd(body.firstChild, "");
-                        return;
-                    }
-                    editor.selection.select(editor.getBody(), 1);
-                    editor.selection.collapse(0);
-                }, 10);          
+            setTimeout(function () {
+                tinyMCE.execCommand('mceFocus', false, that.editField[0].id);
+                if ($.browser.mozilla && $.browser.version.substring(0, 3) === "1.8") {
+                    // Have not yet found any way to make this work on FF2.x - best to do nothing,
+                    // for FLUID-2206
+                    //var body = editor.getBody();
+                    //fluid.setCaretToEnd(body.firstChild, "");
+                    return;
+                }
+                editor.selection.select(editor.getBody(), 1);
+                editor.selection.collapse(0);
+            }, 10);
         }
         
-        that.events.afterInitEdit.addListener(
-            function(editor) {
-                focusEditor(editor);
-                var editorBody = editor.getBody();
+        that.events.afterInitEdit.addListener(function (editor) {
+            focusEditor(editor);
+            var editorBody = editor.getBody();
 
-                // NB - this section has no effect - on most browsers no focus events
-                // are delivered to the actual body
-                fluid.deadMansBlur(that.editField,
-                          $(editorBody),
-                           function () {
-                               that.cancel();
-                            });
-            }
-        );
-        that.events.afterBeginEdit.addListener(function() {
+            // NB - this section has no effect - on most browsers no focus events
+            // are delivered to the actual body
+            fluid.deadMansBlur(that.editField, $(editorBody), function () {
+                that.cancel();
+            });
+        });
+            
+        that.events.afterBeginEdit.addListener(function () {
             var editor = tinyMCE.get(that.editField[0].id);
             if (editor) {
                 focusEditor(editor);
             } 
         });
-
     };
    
    
@@ -106,10 +102,13 @@ fluid_0_8 = fluid_0_8 || {};
         options.elements = fluid.allocateSimpleId(that.editField);
         var oldinit = options.init_instance_callback;
         
-        options.init_instance_callback = function(instance) {
+        options.init_instance_callback = function (instance) {
             that.events.afterInitEdit.fire(instance);
-            if (oldinit) oldinit();
-        } 
+            if (oldinit) {
+                oldinit();
+            }
+        };
+        
         tinyMCE.init(options);
     };
     
@@ -150,20 +149,19 @@ fluid_0_8 = fluid_0_8 || {};
     
     fluid.inlineEdit.FCKEditor.complete = fluid.event.getEventFirer();
     
-    fluid.inlineEdit.FCKEditor.complete.addListener( function(editor) {
+    fluid.inlineEdit.FCKEditor.complete.addListener(function (editor) {
         var editField = editor.LinkedField;
         var that = $.data(editField, "fluid.inlineEdit.FCKEditor"); 
         that.events.afterInitEdit.fire(editor);
     });
     
     fluid.inlineEdit.FCKEditor.blurHandlerBinder = function (that) {
-
-        function focusEditor(editor) {
-               editor.Focus(); 
+	    function focusEditor(editor) {
+            editor.Focus(); 
         }
         
         that.events.afterInitEdit.addListener(
-            function(editor) {
+            function (editor) {
                 focusEditor(editor);
                 var editorBody = editor.EditingArea.TargetElement;
 
@@ -176,7 +174,7 @@ fluid_0_8 = fluid_0_8 || {};
                 //            });
             }
         );
-        that.events.afterBeginEdit.addListener(function() {
+        that.events.afterBeginEdit.addListener(function () {
             var editor = fluid.inlineEdit.FCKEditor.byId(that.editField[0].id);
             if (editor) {
                 focusEditor(editor);
@@ -185,10 +183,10 @@ fluid_0_8 = fluid_0_8 || {};
 
     };
 
-    fluid.inlineEdit.FCKEditor.byId = function(id) {
+    fluid.inlineEdit.FCKEditor.byId = function (id) {
         var editor = typeof(FCKeditorAPI) === "undefined"? null: FCKeditorAPI.GetInstance(id);
         return editor;  
-    }   
+    };
     
     fluid.inlineEdit.FCKEditor.editModeRenderer = function (that) {
         var id = fluid.allocateSimpleId(that.editField);
@@ -274,7 +272,7 @@ fluid_0_8 = fluid_0_8 || {};
                            $("div.selectbox-wrapper li", that.editContainer),
                            function () {
                                that.cancel();
-                            });
+                           });
     };
 
 
