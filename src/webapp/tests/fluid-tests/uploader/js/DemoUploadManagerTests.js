@@ -111,8 +111,9 @@
                                 demoManager.options.flashURL);
                                 
             // Test an alternative option. simulateDelay should be false.
-            demoManager = fluid.demoUploadManager(fluid.gearsUploadManager(events, {
-                simulateDelay: false
+            demoManager = fluid.demoUploadManager(fluid.swfUploadManager(events, {
+                simulateDelay: false,
+                flashButtonPeerId: "otherPlaceholder"
             }));
             jqUnit.assertFalse("simulateDelay should be false.", demoManager.options.simulateDelay);
         });
