@@ -747,7 +747,7 @@ var fluid = fluid || fluid_0_8;
      * is not found, will return an empty list.
      */
     fluid.jById = function (id, dokkument) {
-    	  dokkument = dokkument? dokkument : document;
+    	  dokkument = dokkument && dokkument.nodeType === 9? dokkument : document;
         var element = fluid.byId(id, dokkument);
         var togo = element? $(element) : [];
         togo.selector = "#" + id;
@@ -763,7 +763,7 @@ var fluid = fluid || fluid_0_8;
      * @return The DOM element with this id, or null, if none exists in the document.
      */
     fluid.byId = function (id, dokkument) {
-    	  dokkument = dokkument? dokkument : document;
+    	  dokkument = dokkument && dokkument.nodeType === 9? dokkument : document;
         var el = dokkument.getElementById(id);
         if (el) {
             if (el.getAttribute("id") !== id) {
