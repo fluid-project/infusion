@@ -225,8 +225,8 @@ fluid_0_8 = fluid_0_8 || {};
                 if (/input|select|textarea|button|a/i.test(elem.nodeName) || elem == viewEl) return true;
              });
             if (outer === viewEl) {
-              that.edit();
-              return false;
+                that.edit();
+                return false;
         }};
     }
     
@@ -254,8 +254,7 @@ fluid_0_8 = fluid_0_8 || {};
         var guard = makeEditTriggerGuard(that);
         fluid.activatable(that.viewEl, 
             function(target, event) {
-                var ret = guard(event);
-                return ret === undefined? fluid.ALLOW_NATIVE : ret;
+                return guard(event);
             });
     };
     
