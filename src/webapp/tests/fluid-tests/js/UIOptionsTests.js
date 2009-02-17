@@ -62,6 +62,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         });
 
+/*
+ * Commenting out this test for the 0.8 release.
+ 
         tests.test("Refresh View", function () {
             expect(8);
 
@@ -79,6 +82,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertTrue("High contrast checked", $("#hc").attr("checked"));
 
         });
-
+ */
     });
 })(jQuery);
