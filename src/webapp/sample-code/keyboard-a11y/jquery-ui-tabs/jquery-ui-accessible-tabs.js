@@ -1,5 +1,6 @@
 /*
 Copyright 2008-2009 University of Toronto
+Copyright 2008-2009 University of Cambridge
 
 Licensed under the GNU General Public License or the MIT license.
 You may not use this file except in compliance with one these

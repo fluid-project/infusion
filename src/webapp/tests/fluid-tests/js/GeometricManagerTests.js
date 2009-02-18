@@ -1,5 +1,4 @@
 /* 
-Copyright 2008-2009 University of California, Berkeley
 Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of Cambridge
 
