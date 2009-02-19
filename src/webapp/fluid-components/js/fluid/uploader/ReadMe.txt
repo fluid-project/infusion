@@ -13,6 +13,8 @@ Before upgrading from Infusion 0.5 or earlier, please refer to the Uploader API 
 latest example code. The Fluid Uploader was extensively refactored in the 0.6 release, and a fresh new 
 API has been introduced.
 
+Please refer to the Uploader API documentation on the Fluid Wiki and the 
+Infusion 0.8 example code before using the Uploader with an existing integration. 
 http://wiki.fluidproject.org/display/fluid/Uploader+API
 
 --------------------------------------
@@ -39,14 +41,17 @@ KNOWN ISSUES:
         mouse click. 
       
       In Internet Explorer (IE):
-      - The Uploader under IE6 and IE7 *requires* Flash 10.
       - AIRA is not supported by Internet Explorer.
 
     We are exploring work-arounds for most of these issues, and will have a patch out as soon 
     as possible to fix them.
 
-* There continues to be an intermittent bug when using the Uploader with a server that if the user 
-  stops the upload just before a file completes, the upload will "get stuck" and will not resume. 
+* In previous versions of the Uploader the upload process would stop immediately at the moment that 
+  the Stop Upload buttons was clicked.
+   
+  With Infusion 0.8, we  wait for the current file to complete or to error before we stop the upload 
+  process. This avoids a serious bug in the SWFUploader where the Upload process could get stuck in 
+  a state where the Upload process could not be resumed.
 
 
 --------------------------------------
