@@ -47,11 +47,11 @@ KNOWN ISSUES:
     as possible to fix them.
 
 * In previous versions of the Uploader the upload process would stop immediately at the moment that 
-  the Stop Upload buttons was clicked.
+  the Stop Upload button was clicked.
    
-  With Infusion 0.8, we  wait for the current file to complete or to error before we stop the upload 
-  process. This avoids a serious bug in the SWFUploader where the Upload process could get stuck in 
-  a state where the Upload process could not be resumed.
+  With Infusion 0.8, we wait for the current file to complete or to error before we stop the upload 
+  process. This avoids a serious bug in the SWFUploader where the Upload process could get stuck when 
+  the Upload process as resumed.
 
 
 --------------------------------------
