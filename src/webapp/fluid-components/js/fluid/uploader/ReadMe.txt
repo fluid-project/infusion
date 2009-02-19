@@ -91,8 +91,8 @@ object to access your file system. To do so, follow these directions:
 
 3. In the Flash Settings panel, click "Edit locations..."
 4. Select "Add location..."
-5. Click "Browse for files..."
-6. Select the swfupload.swf file that is in your local /src/webapp/fluid-components/flash/ directory
+5. Click "Browse for folder..."
+6. Select the local /src/webapp/fluid-components/flash/ directory that contains the swfupload.swf file
 7. Restart your browser
 
 You should be good to go! 
