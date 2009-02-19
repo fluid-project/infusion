@@ -1,4 +1,3 @@
-
 Fluid Infusion 0.8
 ==================
 Main Project Site:  http://fluidproject.org
@@ -20,67 +19,62 @@ What's in this Release
 ======================
 
 This release is available in two forms:
-    fluid-0.8.zip - deployment bundle
-    fluid-0.8-src.zip - source code bundle
-    
-Both bundles have the following organization:
-        fluid-components/
-        sample-code/
-        tests/
-        LICENSE.txt
-        README.txt
+    Deployment Bundle - fluid-0.8.zip 
+    Source Code Bundle - fluid-0.8-src.zip
 
-The deployment bundle also includes a WAR file suitable for deployment in Java-based containers: 
-	fluid-components-0.8.war
+Both bundles include all the code needed to get started using Fluid, include a single JavaScript file, fluid-components/js/Fluid-all.js, that is a combination of all other source files. This script is compressed and suitable for production use.  Developers can include this single file in their pages to provide all the necessary support for the Fluid component Library.
+
+Both bundles have the following organization:
+	        fluid-components/
+	        sample-code/
+	        tests/
+	        LICENSE.txt
+	        README.txt
+
+The Deployment Bundle also includes a WAR file suitable for deployment in Java-based containers: 
+		fluid-components-0.8.war
+
+Also, in the Deployment Bundle, the JavaScript source has been minified: comments and whitespace have been removed. 
+
+Developers wishing to learn about the Fluid code, or debug their applications, should use the Source Code Bundle.
 
 Source Code
 -----------
-The full source code for the Fluid component library, including JavaScript, HTML templates and CSS:
-        fluid-components/
-           css/
-           flash/
-           html/
-           images/
-           js/
-
-Both bundles also include a single JavaScript file, fluid-components/js/Fluid-all.js, that is a
-combination of all other source files. This script is compressed and suitable for production use.
-Developers can include this single file in their pages to provide all the necessary support for the 
-Fluid component Library.
-
-In the deployment bundle, the JavaScript source has been minified: comments and whitespace
-have been removed. Developers wishing to learn about the Fluid code, or debug their applications,
-should use the source code bundle.
+The organization of the full source code for the Fluid component library, including JavaScript, HTML templates and CSS is:
+        	fluid-components/
+           		css/
+           		flash/
+           		html/
+           		images/
+           		js/
 
 Sample Code
 -----------
 Sample code illustrating how Fluid components can be used*:
-        sample-code/
-           inline-edit/
-           keyboard-a11y/
-           pager/
-           renderer/
-           reorderer/
-           shared/
+        	sample-code/
+           		inline-edit/
+           		keyboard-a11y/
+           		pager/
+           		renderer/
+           		reorderer/
+           		shared/
            
-    * sample code for the Uploader can be found in fluid-components/html/templates/
+* sample code for the Uploader can be found in fluid-components/html/templates/
 
 Tests
 -----
-        tests/
-            fluid-tests/
-            jquery-tests/
-            jqUnit/
-            utils/
+        	tests/
+            	fluid-tests/
+            	jquery-tests/
+            	jqUnit/
+            	utils/
 
 License
 -------
-Fluid code is licensed under a dual ECL 2.0 / BSD license. The specific licenses can be found
-in the license file:
-    LICENSE.txt
+Fluid code is licensed under a dual ECL 2.0 / BSD license. The specific licenses can be found in the license file:
+    	LICENSE.txt
 
-Fluid also depends upon some third party open source modules. These are contained in their own folders 
-with their respective licenses inside the fluid source code.
+Fluid also depends upon some third party open source modules. These are contained in their own folders with their respective licenses inside the fluid source code.
 
 
 Third Party Software in Fluid
@@ -98,12 +92,11 @@ This is a list of publicly available software that is included in the Fluid bund
     * Sample markup and stylesheets from Sakai (http://sakaiproject.org) and uPortal (http://www.uportal.org/)
     * TinyMCE, Javascript HTML WYSIWYG editor control: (LGPL licensed http://tinymce.moxiecode.com/license.php)  
     * FCKeditor, HTML text editor (LGPL licensed http://www.fckeditor.net/license)
-
     
 Readme
 ------
 This file.
-    README.txt
+    	README.txt
 
 
 Documentation
@@ -114,9 +107,7 @@ Documentation
 The Fluid Project uses a wiki for documentation and project collaboration: http://wiki.fluidproject.org.
 
 The User Manual for Fluid releases consists of a number of information pages stored in the Fluid Wiki.
-The pages fall into a number of categories, including tutorials, API descriptions, testing procedures,
-and data-gathering approaches. To make the manual pages easy to locate, identify, and peruse,
-we have set up the following aids to navigation:
+The pages include tutorials, API descriptions, testing procedures, and data-gathering approaches. To make the manual pages easy to navigation we have added the following guides:
 
     * An organized Table of Contents is provided for the reader, with links to
       all manual pages, each with a brief description of the page contents.
@@ -159,7 +150,7 @@ UI Options:
     FLUID-2258 In IE 6, the UI Options Dialog may display with missing elements 
     FLUID-2260 In Opera, Activating the Reset or Close button will remove all elements of the UI Options dialog
     FLUID-2261 In Opera, UI Options example throws an error on load
+    
 
 Pager: 
     FLUID-835 Pager links are not in the tab order, using Opera 9.5
-
