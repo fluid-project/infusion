@@ -1,26 +1,27 @@
 
-Fluid Infusion 0.7
+Fluid Infusion 0.8
 ==================
 Main Project Site:  http://fluidproject.org
 User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
 
-What's New in 0.7
+What's New in 0.8
 =================
 
 This release includes
 
-    * Graceful degradation support in the Uploader
+    * Improved Uploader compatibility with Flash 9 and Internet Explorer
     * Improved documentation
-    * Sneak Peek of User Interface Options
+    * Preview of User Interface Options
     * Preview of the Fluid Skinning System
+    * Upgrade to the latest version of jUnit automated Javascript test harness
     * Many bug fixes
 
 What's in this Release
 ======================
 
 This release is available in two forms:
-    fluid-0.7.zip - deployment bundle
-    fluid-0.7-src.zip - source code bundle
+    fluid-0.8.zip - deployment bundle
+    fluid-0.8-src.zip - source code bundle
     
 Both bundles have the following organization:
         fluid-components/
@@ -30,17 +31,17 @@ Both bundles have the following organization:
         README.txt
 
 The deployment bundle also includes a WAR file suitable for deployment in Java-based containers: 
-	fluid-components-0.7.war
+	fluid-components-0.8.war
 
 Source Code
 -----------
 The full source code for the Fluid component library, including JavaScript, HTML templates and CSS:
         fluid-components/
            css/
+           flash/
            html/
            images/
            js/
-           swfupload/
 
 Both bundles also include a single JavaScript file, fluid-components/js/Fluid-all.js, that is a
 combination of all other source files. This script is compressed and suitable for production use.
@@ -53,15 +54,16 @@ should use the source code bundle.
 
 Sample Code
 -----------
-Sample code illustrating how Fluid components can be used:
+Sample code illustrating how Fluid components can be used*:
         sample-code/
            inline-edit/
            keyboard-a11y/
            pager/
            renderer/
            reorderer/
-           uploader/
            shared/
+           
+    * sample code for the Uploader can be found in fluid-components/html/templates/
 
 Tests
 -----
@@ -94,6 +96,8 @@ This is a list of publicly available software that is included in the Fluid bund
     * SWFUpload: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
     * XML for Script's Fast Pull Parser (LGPL licensed http://xmljs.sourceforge.net/)
     * Sample markup and stylesheets from Sakai (http://sakaiproject.org) and uPortal (http://www.uportal.org/)
+    * TinyMCE, Javascript HTML WYSIWYG editor control: (LGPL licensed http://tinymce.moxiecode.com/license.php)  
+    * FCKeditor, HTML text editor (LGPL licensed http://www.fckeditor.net/license)
 
     
 Readme
@@ -138,15 +142,11 @@ Uploader:
   For information related to known issues related to Flash 10 compatibility, see http://wiki.fluidproject.org/x/0QFS
     FLUID-2052 Cannot tab away from the "Browse Files" button with Flash 10; using FF3
     FLUID-2032 Cannot Tab to the 'Browse More" button with Flash 10, using FF2
-    FLUID-1983 Uploader not working with flash 9: using IE
 
 Inline Edit: 
-    FLUID-2017 Cannot click on links in a rich text inline edit field because it changes into edit mode.
-    FLUID-2024 Undo/Redo links set scroll to top
     FLUID-1600 Pressing the "Tab" key to exit edit mode, places focus on the wrong item
 
 Reorderer: 
-    FLUID-954 Page won't scroll during DnD, using Opera
     FLUID-148 Edge case: visual position of drop target when droppable is at beginning or end of a row
     FLUID-118 Dragging an image offscreen or out of the frame has some unexpected results.
 
@@ -156,11 +156,7 @@ Layout Reorderer:
 
 UI Options: 
     FLUID-2121 Focus is not placed on the first focusable item in the user interfact options dialog
-    FLUID-2118 Cannot tab to "Close" button: using Opera
-    FLUID-2004 Cannot tab to "Edit Appearance": using Opera
 
 Pager: 
-    FLUID-2124 Page links are too close together in the renderer version
-    FLUID-2084 Pointer does not change style over visited page links: using Opera
     FLUID-835 Pager links are not in the tab order, using Opera 9.5
 
