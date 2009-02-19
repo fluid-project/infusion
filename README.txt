@@ -156,6 +156,9 @@ Layout Reorderer:
 
 UI Options: 
     FLUID-2121 Focus is not placed on the first focusable item in the user interfact options dialog
+    FLUID-2258 In IE 6, the UI Options Dialog may display with missing elements 
+    FLUID-2260 In Opera, Activating the Reset or Close button will remove all elements of the UI Options dialog
+    FLUID-2261 In Opera, UI Options example throws an error on load
 
 Pager: 
     FLUID-835 Pager links are not in the tab order, using Opera 9.5
