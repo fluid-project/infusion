@@ -1,5 +1,4 @@
-FLUID UPLOADER READ ME
-
+Infusion Uploader Read Me
 
 1) Upgrading
 2) Known Issues
@@ -8,12 +7,13 @@ FLUID UPLOADER READ ME
 
 --------------------------------------
 
-UPGRADING from Pre-Infusion 0.6 Uploader integrations: 
+UPGRADING from previous versions:
 
-In Infusion 0.6 the Fluid Uploader was extensively re-factored with a fresh new API. 
+Before upgrading from Infusion 0.5 or earlier, please refer to the Uploader API documentation and the 
+latest example code. The Fluid Uploader was extensively refactored in the 0.6 release, and a fresh new 
+API has been introduced.
 
-Please refer to the Uploader API documentation on the Fluid Wiki and the 
-Infusion 0.7 example code before using the Uploader with an existing integration. 
+http://wiki.fluidproject.org/display/fluid/Uploader+API
 
 --------------------------------------
 
