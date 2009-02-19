@@ -11,9 +11,9 @@ This release includes
 
     * Improved Uploader compatibility with Flash 9 and Internet Explorer
     * Improved documentation
+    * Fluid Skinning System
     * Preview of User Interface Options
-    * Preview of the Fluid Skinning System
-    * Upgrade to the latest version of jUnit automated Javascript test harness
+    * Upgrade to the latest version of qUnit automated Javascript test harness
     * Many bug fixes
 
 What's in this Release
