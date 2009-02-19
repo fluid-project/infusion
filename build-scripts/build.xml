@@ -114,8 +114,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         <copy todir="${swfupload-build}">
             <fileset dir="${swfupload-src}">
                 <include name="LICENSE.txt" />
-                <include name="swfupload_f9.swf" />
-                <include name="swfupload_f10.swf" />
+                <include name="swfupload.swf" />
             </fileset>
         </copy>
         <copy todir="${swfupload-js-build}">
