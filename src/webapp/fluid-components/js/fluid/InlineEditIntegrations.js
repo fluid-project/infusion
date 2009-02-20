@@ -11,13 +11,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_0_8*/
+/*global fluid_1_0*/
 /*global tinyMCE*/
 /*global FCKeditor*/
 /*global FCKeditorAPI*/
 /*global fluid*/ //this global function will refer to whichever version of Fluid Infusion was first loaded
 
-fluid_0_8 = fluid_0_8 || {};
+fluid_1_0 = fluid_1_0 || {};
 
 (function ($, fluid) {
 
@@ -284,7 +284,7 @@ fluid_0_8 = fluid_0_8 || {};
     });
     
     
-})(jQuery, fluid_0_8);
+})(jQuery, fluid_1_0);
 
 
 // This must be written outside any scope as a result of the FCKEditor event model.

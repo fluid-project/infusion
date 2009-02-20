@@ -13,12 +13,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery, YAHOO, opera*/
 
-var fluid_0_8 = fluid_0_8 || {};
-var fluid = fluid || fluid_0_8;
+var fluid_1_0 = fluid_1_0 || {};
+var fluid = fluid || fluid_1_0;
 
 (function ($, fluid) {
     
-    fluid.version = "Infusion 0.8";
+    fluid.version = "Infusion 1.0";
     
     /**
      * Causes an error message to be logged to the console and a real runtime error to be thrown.
@@ -948,4 +948,4 @@ var fluid = fluid || fluid_0_8;
         return newString;
     };
     
-})(jQuery, fluid_0_8);
+})(jQuery, fluid_1_0);

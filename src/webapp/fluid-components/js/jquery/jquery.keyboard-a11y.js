@@ -12,8 +12,8 @@ https://source.fluidproject.org/svn/sandbox/tabindex/trunk/LICENSE.txt
 
 /*global jQuery*/
 
-var fluid_0_8 = fluid_0_8 || {};
-var fluid = fluid || fluid_0_8;
+var fluid_1_0 = fluid_1_0 || {};
+var fluid = fluid || fluid_1_0;
 
 (function ($, fluid) {
 
@@ -63,7 +63,7 @@ var fluid = fluid || fluid_0_8;
     };
 
     fluid.thatistBridge("fluid", fluid);
-    fluid.thatistBridge("fluid_0_8", fluid_0_8);
+    fluid.thatistBridge("fluid_1_0", fluid_1_0);
 
     // Private constants.
     var NAMESPACE_KEY = "fluid-keyboard-a11y";
@@ -692,4 +692,4 @@ var fluid = fluid || fluid_0_8;
     };
 
   
-  })(jQuery, fluid_0_8);
+  })(jQuery, fluid_1_0);

@@ -10,9 +10,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_0_8*/
+/*global fluid_1_0*/
 
-fluid_0_8 = fluid_0_8 || {};
+fluid_1_0 = fluid_1_0 || {};
 
 (function ($, fluid) {
 
@@ -153,4 +153,4 @@ fluid_0_8 = fluid_0_8 || {};
         levels: ["H1", "H2", "H3", "H4", "H5", "H6"]
     });
 
-})(jQuery, fluid_0_8);
+})(jQuery, fluid_1_0);

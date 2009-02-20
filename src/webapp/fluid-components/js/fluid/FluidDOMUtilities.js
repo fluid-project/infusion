@@ -13,7 +13,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery */
 
-var fluid_0_8 = fluid_0_8 || {};
+var fluid_1_0 = fluid_1_0 || {};
 
 (function ($, fluid) {
     
@@ -165,4 +165,4 @@ var fluid_0_8 = fluid_0_8 || {};
     };  
     fluid.dom.cleanseScripts.MARKER = "fluid-scripts-cleansed";
     
-})(jQuery, fluid_0_8);
+})(jQuery, fluid_1_0);
