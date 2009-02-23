@@ -11,7 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_0_7*/
+/*global fluid_1_0*/
 
 fluid_1_0 = fluid_1_0 || {};
 
