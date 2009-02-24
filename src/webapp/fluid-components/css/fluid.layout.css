@@ -10,7 +10,7 @@ Generic containers for columns and layouts
 /* Container alignment */
 .fl-force-right {float:right; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
 .fl-force-left {float:left; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
-.fl-centered {margin-left:auto; margin-right:auto;}
+.fl-centered {margin-left:auto; margin-right:auto; display:block;}
 
 /* Generic container, proxy for other container effects */
 .fl-container {}
@@ -249,12 +249,6 @@ input.fl-icon {padding-left:16px;}
 .fl-controls-centered li {list-style-type:none; display:block; text-align:left;}
 .fl-controls-centered .fl-label {float:left; text-align:center; width:50%; margin-right:5px;}
 
-
-/*
- * Progressive Enhancement
- */
-.fl-progressive-enhancer {display:none;}
-
 /**
  * Knockout Background Images
  */
@@ -264,16 +258,8 @@ input.fl-icon {padding-left:16px;}
 
 
 /*
-Component Specific
+Progressive Enhancement Switches
 =============================================
 */
-
-
-/* INLINE EDIT */
-.fl-component-inlineEdit span input {margin:-2px; padding:0;} /* auto generated input fields */
-
-
-
-/* PROGRESSOR */
-.fl-progress-bounds {border-width:1px; border-style:solid; padding:2px;}
-.fl-progress-fill {width:100%;}
+.fl-PE-hide {display:none}
+.fl-progressive-enhancer {display:none;} /* old syntax; this is being fazed out */
