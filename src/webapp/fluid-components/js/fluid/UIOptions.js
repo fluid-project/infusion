@@ -152,9 +152,9 @@ fluid_1_0 = fluid_1_0 || {};
             /**
              * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
              */
-            setTimeout(function(){
+            setTimeout(function () {
                 fluid.applySkin(model, that.locate("preview", previewFrame)); 
-            },0);
+            }, 0);
         };
         that.events.modelChanged.addListener(updatePreview);
         
@@ -179,8 +179,8 @@ fluid_1_0 = fluid_1_0 || {};
         var template;
              
         that.save = function () {
-            that.savedModel = fluid.copy(that.model);
             that.events.onSave.fire(that.model);
+            that.savedModel = fluid.copy(that.model);
             fluid.applySkin(that.model);
         };
 
@@ -216,13 +216,7 @@ fluid_1_0 = fluid_1_0 || {};
 
     fluid.defaults("fluid.uiOptions", {
         selectors: {
-            textSizeCtrl: ".fl-hook-font-size",
-            textSpacingCtrl: ".fl-hook-font-spacing",
-            fontCtrl: ".fl-hook-font-face",
-            colorCtrl: ".fl-hook-color",
-            layoutCtrl: ".fl-hook-layout",
             controls: ".control",
-            tocCtrl: ".toc-control",
             preview: ".fl-hook-preview-content", 
             previewFrame : ".fl-hook-preview-frame",
             save: ".fl-hook-preview-save",
