@@ -36,10 +36,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Text font is set", "Default", model.textFont);
             jqUnit.assertEquals("Text spacing is set", "Default", model.textSpacing);
             jqUnit.assertEquals("Colour scheme is set", "Default", model.contrast);
+            
+            // extend this test to test originalModel and savedModel
         });
 
         tests.test("Save", function () {
-            expect(3);
+            expect(4);
 
             var saveCalled = false;
             var options = {
@@ -56,30 +58,30 @@ https://source.fluidproject.org/svn/LICENSE.txt
             uiOptions.save();
             var container = $("html");
             jqUnit.assertTrue("Save has been called", saveCalled);
+            jqUnit.assertEquals("hc setting was saved", hcSkin.contrast, uiOptions.savedModel.contrast);
             jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-hc"));
 
         });
-
-/*
- * Commenting out this test for the 0.8 release.
  
         tests.test("Refresh View", function () {
-            expect(8);
+           // expect(8);
 
             var uiOptions = fluid.uiOptions(".ui_options_container");
             uiOptions.updateModel(hcSkin);
             
+            jqUnit.assertEquals("hc setting was set in the model", hcSkin.contrast, uiOptions.model.contrast);
+            jqUnit.assertEquals("hc setting was not saved", "Default", uiOptions.savedModel.contrast);
+
             uiOptions.refreshView();
-            jqUnit.assertTrue("Default size not checked", !$("#sdefault").attr("checked"));
-            jqUnit.assertTrue("-1 size checked", $("#s-1").attr("checked"));
-            jqUnit.assertTrue("Default font not checked", !$("#fdefault").attr("checked"));
-            jqUnit.assertTrue("Verdana checked", $("#verdana").attr("checked"));
-            jqUnit.assertTrue("Default spacing not checked", !$("#spdefault").attr("checked"));
-            jqUnit.assertTrue("Wider spacing checked", $("#wider").attr("checked"));
+//            jqUnit.assertTrue("Default size not checked", !$("#sdefault").attr("checked"));
+//            jqUnit.assertTrue("-1 size checked", $("#s-1").attr("checked"));
+//            jqUnit.assertTrue("Default font not checked", !$("#fdefault").attr("checked"));
+//            jqUnit.assertTrue("Verdana checked", $("#verdana").attr("checked"));
+//            jqUnit.assertTrue("Default spacing not checked", !$("#spdefault").attr("checked"));
+//            jqUnit.assertTrue("Wider spacing checked", $("#wider").attr("checked"));
             jqUnit.assertTrue("Mist not checked", !$("#mist").attr("checked"));
             jqUnit.assertTrue("High contrast checked", $("#hc").attr("checked"));
 
         });
- */
     });
 })(jQuery);
