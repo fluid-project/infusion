@@ -119,11 +119,9 @@ fluid_1_0 = fluid_1_0 || {};
     };
 
     var initModels = function (that) {
-        that.renderModel = that.options.renderModel;
-        that.originalModel = fluid.copy(that.renderModel.selections);
+        that.originalModel = that.options.originalSettings;
         that.savedModel = that.options.savedSelections;
-        $.extend(true, that.renderModel.selections, that.savedModel);                
-        that.model = that.renderModel.selections;
+        that.model = fluid.copy(that.savedModel);
     };
     
     var bindHandlers = function (that) {
@@ -141,8 +139,8 @@ fluid_1_0 = fluid_1_0 || {};
 
         // TODO: This should probably be removed and use a renderer event instead.
         that.locate("controls").change(function () {
-            var oldModel = $.extend(true, {}, that.model);
-            that.events.modelChanged.fire(that.model, oldModel, that);
+            // This is strange - old model and new model are the same. 
+            that.events.modelChanged.fire(that.model, that.model, that);
         });        
     };
     
@@ -156,14 +154,26 @@ fluid_1_0 = fluid_1_0 || {};
                 fluid.applySkin(model, that.locate("preview", previewFrame)); 
             }, 0);
         };
+        
         that.events.modelChanged.addListener(updatePreview);
         
         updatePreview(that.model);
     };
     
+    var createRenderOptions = function (that) {
+        return {
+            model: {
+                selections: that.model,
+                labelMap: that.options.labelMap
+            },
+            autoBind: true, 
+            debugMode: true
+        };
+    };
+    
     var setupUIOptions = function (that) {
         initModels(that);
-        var template = fluid.selfRender(that.container, fluid.copy(tree), {model: that.renderModel, autoBind: true, debugMode: true});
+        var template = fluid.selfRender(that.container, fluid.copy(tree), createRenderOptions(that));
         bindHandlers(that);
         initPreview(that);    
 
@@ -185,18 +195,17 @@ fluid_1_0 = fluid_1_0 || {};
         };
 
         that.reset = function () {
-            $.extend(true, that.model, that.originalModel);
+            that.updateModel(fluid.copy(that.originalModel), that);
             that.refreshView();
         };
         
         that.cancel = function () {
-            $.extend(true, that.model, that.savedModel);
+            that.updateModel(fluid.copy(that.savedModel), that);
             that.refreshView();            
-            fluid.applySkin(that.model);
         };
         
         that.refreshView = function () {
-            fluid.reRender(template, that.container, fluid.copy(tree), {model: that.renderModel, autoBind: true, debugMode: true});
+            fluid.reRender(template, that.container, fluid.copy(tree), createRenderOptions(that));
             // TODO: this should not be necessary. 
             // We should fill in the tree with the handlers so that we don't need to rebind when we reRender
             bindHandlers(that);
@@ -204,9 +213,8 @@ fluid_1_0 = fluid_1_0 || {};
         };
         
         that.updateModel = function (newModel, source) {
-            var oldModel = fluid.copy(that.model);
-            $.extend(true, that.model, newModel);
-            that.events.modelChanged.fire(that.model, oldModel, source);
+            that.events.modelChanged.fire(newModel, that.model, source);
+            that.model = newModel;
         };
         
         template = setupUIOptions(that);
@@ -228,6 +236,7 @@ fluid_1_0 = fluid_1_0 || {};
             onSave: null,
             onCancel: null
         },
+        // TODO: use a merge policy instead of specifying savedSelections
         savedSelections: {
             textFont: "Default",
             textSize: "Default",
@@ -236,40 +245,38 @@ fluid_1_0 = fluid_1_0 || {};
             backgroundImages: "Default",
             layout: "Default"
         },
-        renderModel: {
-            selections: {
-                textFont: "Default",
-                textSize: "Default",
-                textSpacing: "Default",
-                contrast: "Default",
-                backgroundImages: "Default",
-                layout: "Default"
+        originalSettings: {
+            textFont: "Default",
+            textSize: "Default",
+            textSpacing: "Default",
+            contrast: "Default",
+            backgroundImages: "Default",
+            layout: "Default"
+        },
+        labelMap: {
+            textFont: {
+                names: ["No Preference", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"],
+                values: ["Default", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"]
             },
-            labelMap: {
-                textFont: {
-                    names: ["No Preference", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"],
-                    values: ["Default", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"]
-                },
-                textSize: {
-                    names: ["No Preference", "-3", "-2", "-1", "+1", "+2", "+3", "+4", "+5"],
-                    values: ["0", "-3", "-2", "-1", "+1", "+2", "+3", "+4", "+5"]
-                },
-                textSpacing: {
-                    names: ["No Preference", "Wide", "Wider", "Widest"],
-                    values: ["Default", "Wide", "Wider", "Widest"]
-                },
-                contrast: {
-                    names: ["Medium Contrast", "High Contrast", "Mist", "Rust"],
-                    values: ["Default", "High Contrast", "Mist", "Rust"]
-                },
-                backgroundImages: {
-                    names: ["Yes", "No"],
-                    values: ["Default", "No Images"]
-                },
-                layout: {
-                    names: ["Yes", "No"],
-                    values: ["Simple", "Default"]
-                }
+            textSize: {
+                names: ["No Preference", "-3", "-2", "-1", "+1", "+2", "+3", "+4", "+5"],
+                values: ["0", "-3", "-2", "-1", "+1", "+2", "+3", "+4", "+5"]
+            },
+            textSpacing: {
+                names: ["No Preference", "Wide", "Wider", "Widest"],
+                values: ["Default", "Wide", "Wider", "Widest"]
+            },
+            contrast: {
+                names: ["Medium Contrast", "High Contrast", "Mist", "Rust"],
+                values: ["Default", "High Contrast", "Mist", "Rust"]
+            },
+            backgroundImages: {
+                names: ["Yes", "No"],
+                values: ["Default", "No Images"]
+            },
+            layout: {
+                names: ["Yes", "No"],
+                values: ["Simple", "Default"]
             }
         }
     });
