@@ -105,8 +105,7 @@ fluid_1_0 = fluid_1_0 || {};
     var repositionIndicator = function (that) {
         that.indicator.css("top", that.progressBar.position().top)
             .css("left", 0)
-            .height(that.progressBar.height())
-            .width(that.options.minWidth);
+            .height(that.progressBar.height());
     };
     
     var updateProgress = function (that, percent, labelText, animationForShow) {
@@ -193,11 +192,7 @@ fluid_1_0 = fluid_1_0 || {};
             updateProgress(that, percentage, labelValue, animationForShow);
         };
         
-        that.refresh = function (newProgressBarElm) {
-            if (newProgressBarElm) {
-                that.progressBar = newProgressBarElm;
-            }
-            
+        that.refresh = function () {
             repositionIndicator(that);
         };
                 
