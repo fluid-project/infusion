@@ -53,7 +53,7 @@ fluid_1_0 = fluid_1_0 || {};
          
         // update the progressor and make sure that it's in position
         var fileProgressor = progressorForFile(that, file);
-        fileProgressor.refresh();
+        fileProgressor.refreshView();
         fileProgressor.show();
     };
         
