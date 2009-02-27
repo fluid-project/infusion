@@ -205,7 +205,7 @@ fluid_1_0 = fluid_1_0 || {};
         };
         
         that.refreshView = function () {
-           repositionIndicator(that);
+            repositionIndicator(that);
         };
                         
         return that;  
