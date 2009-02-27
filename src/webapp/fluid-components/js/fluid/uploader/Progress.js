@@ -59,12 +59,13 @@ fluid_1_0 = fluid_1_0 || {};
         }   
     };
     
-    var updateWidth = function (that, newWidth) {
+    var updateWidth = function (that, newWidth, dontAnimate) {
+        dontAnimate  = dontAnimate || false;
         var currWidth = that.indicator.width();
         var direction = that.options.animate;
-        if ((newWidth > currWidth) && (direction === "both" || direction === "forward")) {
+        if ((newWidth > currWidth) && (direction === "both" || direction === "forward") && !dontAnimate) {
             animateProgress(that.indicator, newWidth, that.options.speed);
-        } else if ((newWidth < currWidth) && (direction === "both" || direction === "backward")) {
+        } else if ((newWidth < currWidth) && (direction === "both" || direction === "backward") && !dontAnimate) {
             animateProgress(that.indicator, newWidth, that.options.speed);
         } else {
             that.indicator.width(newWidth);
@@ -74,6 +75,11 @@ fluid_1_0 = fluid_1_0 || {};
     var percentToPixels = function (that, percent) {
         // progress does not support percents over 100, also all numbers are rounded to integers
         return Math.round((Math.min(percent, 100) * that.progressBar.width()) / 100);
+    };
+    
+    var refreshRelativeWidth = function (that)  {
+        var pixels = Math.max(percentToPixels(that, parseFloat(that.storedPercent)), that.options.minWidth);
+        updateWidth(that, pixels, true);
     };
         
     var initARIA = function (ariaElement) {
@@ -103,11 +109,23 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var repositionIndicator = function (that) {
-        that.indicator.css("top", that.progressBar.position().top)
-            .css("left", 0)
-            .height(that.progressBar.height());
+        setIndicatorTop(that);
+        setIndicatorLeft(that);
+        setIndicatorHeight(that);
     };
     
+    var setIndicatorTop = function (that) {
+        that.indicator.css("top", that.progressBar.position().top);
+    };
+
+    var setIndicatorLeft = function (that) {
+        that.indicator.css("left", 0);
+    };
+
+    var setIndicatorHeight = function (that) {
+        that.indicator.height(that.progressBar.height());
+    };
+        
     var updateProgress = function (that, percent, labelText, animationForShow) {
         
         // show progress before updating, jQuery will handle the case if the object is already displayed
@@ -115,9 +133,12 @@ fluid_1_0 = fluid_1_0 || {};
             
         // do not update if the value of percent is falsey
         if (percent !== null) {
+            that.storedPercent = percent;
+        
             var pixels = Math.max(percentToPixels(that, parseFloat(percent)), that.options.minWidth);   
             updateWidth(that, pixels);
         }
+        
         if (labelText !== null) {
             updateText(that.label, labelText);
         }
@@ -142,11 +163,18 @@ fluid_1_0 = fluid_1_0 || {};
         that.ariaElement = that.locate("ariaElement");
         
         that.indicator.width(that.options.minWidth);
+        that.storedPercent = 0;
                 
         // initialize ARIA
         if (that.ariaElement) {
             initARIA(that.ariaElement);
-        }   
+        }
+        
+        $(window).resize(function() {
+            setIndicatorLeft(that);
+            refreshRelativeWidth(that);
+        });
+
     };
         
     /**
@@ -195,7 +223,7 @@ fluid_1_0 = fluid_1_0 || {};
         that.refresh = function () {
             repositionIndicator(that);
         };
-                
+                        
         return that;  
     };
       
