@@ -297,7 +297,7 @@ fluid_1_0 = fluid_1_0 || {};
           branchmap[branch.fullID] = resolved;
           var id = resolved.attributemap.id;
           if (id !== undefined) {
-            rewritemap[getRewriteKey(parentlump.parent, basecontainer, id)] = branchfullID;
+            rewritemap[getRewriteKey(parentlump.parent, basecontainer, id)] = branch.fullID;
           }
           // on server-side this is done separately
           noteCollected(resolved.parent);
@@ -308,7 +308,7 @@ fluid_1_0 = fluid_1_0 || {};
     // collect any rewritten ids for the purpose of later rewriting
     if (parentlump.downmap) {
       for (var id in parentlump.downmap) {
-        if (id.indexOf(":") === -1) {
+        //if (id.indexOf(":") === -1) {
           var lumps = parentlump.downmap[id];
           for (var i = 0; i < lumps.length; ++ i) {
             var lump = lumps[i];
@@ -321,8 +321,8 @@ fluid_1_0 = fluid_1_0 || {};
               }
             }
           }
-        }
-      }
+      //  }
+      } 
     }
       
   }

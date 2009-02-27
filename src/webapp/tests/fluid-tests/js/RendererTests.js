@@ -138,7 +138,10 @@ fluid.tests = fluid.tests || {};
                             key: "score-" + i
                     }]
                     }
-                ]
+                ],
+                decorators: {
+                  "addClass": (i%2 === 0)? "evenRow": "oddRow"
+                }
             };
         });
         var idMap = {};
@@ -191,6 +194,22 @@ fluid.tests = fluid.tests || {};
           [{nodeText: messageBase.message1, "for": targets[0].id}, 
            {nodeText: messageBase.message1, "for": targets[1].id}], labels)
     });
+    
+    testFluid2298("ID relation rewriting for branch - FLUID-2298 - branch case", true);
+    testFluid2298("ID relation rewriting for branch - FLUID-2298 - leaf case", false);
+    
+    function testFluid2298(message, useChildren) {
+      renderTests.test(message, function() {
+        var node = $(".FLUID-2298-test");
+        fluid.selfRender(node, {children: [{ID: "target:", children: useChildren? [] : undefined}]}
+          , {messageSource: {type: "data", messages: messageBase}});
+        var targets = $("span", node);
+        var labelNode = $("label", node);
+        fluid.testUtils.assertNode("Rendered messages", 
+            {nodeText: messageBase.message1, "for": targets[0].id}
+           , labelNode)
+      });
+    }
     
     renderTests.test("ID relation non-interference", function() {
       // Also tests FLUID-1677
