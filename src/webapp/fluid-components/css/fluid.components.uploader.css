@@ -380,8 +380,9 @@ button span.text-description {
 }
 
 .file-progress {
-    background-image: url('../images/progress/gradient-file.png');
+    background-image: url('../images/progress/gradient-file-green.png');
     background-color: #D1D6DD;
+    border-right: 1px solid #9FCE7F;
     width:76%;
 }
 
@@ -392,7 +393,8 @@ button span.text-description {
 .total-progress {
     top: 0;
     height: 100%;
-    background-image: url('../images/progress/gradient-total.png');
+    background-image: url('../images/progress/gradient-total-green.png');
+    border-right: 1px solid #9FCE7F;
     background-color: #BDBFC1;
     width:76%;
 }
