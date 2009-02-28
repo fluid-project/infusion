@@ -67,7 +67,7 @@ fluid_1_0 = fluid_1_0 || {};
         var fileRowElm = rowForFile(that, file);
         progressorForFile(that, file).hide();
         if (file.filestatus === fluid.uploader.fileStatusConstants.COMPLETE) {
-            that.locate("fileIconBtn", fileRowElm).removeClass("dim");
+            that.locate("fileIconBtn", fileRowElm).removeClass(that.options.styles.dim);
         } 
     };
     
@@ -183,13 +183,13 @@ fluid_1_0 = fluid_1_0 || {};
     var prepareForUpload = function (that) {
         var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
         rowButtons.attr("disabled", "disabled");
-        rowButtons.addClass("dim");    
+        rowButtons.addClass(that.options.styles.dim);    
     };
 
     var repairFromUpload = function (that) {
         var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
         rowButtons.removeAttr("disabled");
-        rowButtons.removeClass("dim");    
+        rowButtons.removeClass(that.options.styles.dim);    
     };
         
     var changeRowState = function (row, newState) {
@@ -332,7 +332,8 @@ fluid_1_0 = fluid_1_0 || {};
             selected: "selected",
             uploaded: "uploaded",
             error: "error",
-            remove: "removeFile"
+            remove: "removeFile",
+            dim: "dim"
         },
         
         strings: {
@@ -390,6 +391,7 @@ fluid_1_0 = fluid_1_0 || {};
         enableElement(that, that.locate("browseButton"));
         hideElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("uploadButton"));
+        $(that.locate("totalFileProgressBar")).addClass(that.options.styles.completed);
     };
 
     var setStateLoaded = function (that) {
@@ -407,6 +409,7 @@ fluid_1_0 = fluid_1_0 || {};
         enableElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("pauseButton"));
         that.locate(that.options.focusWithEvent.afterUploadStart).focus();
+        $(that.locate("totalFileProgressBar")).removeClass(that.options.styles.completed);
     };    
     
     var renderUploadTotalMessage = function (that) {
@@ -664,7 +667,8 @@ fluid_1_0 = fluid_1_0 || {};
         styles: {
             disabled: "disabled",
             hidden: "hidden",
-            dim: "dim"
+            dim: "dim",
+            completed: "fl-footer-completed"
         },
         
         events: {

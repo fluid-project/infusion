@@ -154,6 +154,14 @@ html>body .fl-uploader a.fl-uploader-browse {
     color: #666;
 }
 
+.fl-footer-completed {
+    background-image: url('../images/progress/gradient-total-green.png');
+    background-attachment: scroll;
+    background-position: bottom left;
+    background-repeat: repeat-x;
+    overflow: hidden;
+}
+
 .fl-scroller-table-foot td.footer-button {
     text-align: right;
 }
