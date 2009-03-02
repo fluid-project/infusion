@@ -330,7 +330,7 @@ fluid_1_0 = fluid_1_0 || {};
             },
             toc: {
                 names: ["Yes", "No"],
-                values: ["Yes", "Default"]
+                values: ["On", "Default"]
             }
         }
     });

@@ -65,7 +65,7 @@ var demo = demo || {};
         textSize: "+3",
         textFont: "Courier",
         textSpacing: "Wide",
-        colorScheme: "High Contrast",
+        contrast: "High Contrast",
         layout: "Default"
     };
     
@@ -76,7 +76,7 @@ var demo = demo || {};
         textSize: "Default",
         textFont: "Default",
         textSpacing: "Default",
-        colorScheme: "High Contrast",
+        contrast: "High Contrast",
         layout: "Simple"
     };
 
@@ -87,7 +87,7 @@ var demo = demo || {};
         textSize: "-1",
         textFont: "Default",
         textSpacing: "Default",
-        colorScheme: "Mist",
+        contrast: "Mist",
         layout: "Default"
     };
     

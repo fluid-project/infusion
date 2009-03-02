@@ -133,8 +133,7 @@ fluid_1_0 = fluid_1_0 || {};
 
     fluid.tableOfContents = function (container, options) {
         var that = fluid.initView("fluid.tableOfContents", container, options);
-        var templateHref = that.options.template.path + that.options.template.href;
-        buildTOC(that.container, that.locate("headings"), that.options.levels, templateHref, that.events.afterRender);
+        buildTOC(that.container, that.locate("headings"), that.options.levels, that.options.templateUrl, that.events.afterRender);
         
         return that;
     };
@@ -146,10 +145,7 @@ fluid_1_0 = fluid_1_0 || {};
         events: {
             afterRender: null
         },
-        template: {
-            path: "",
-            href: "fluid-components/html/templates/TableOfContents.html"
-        },
+        templateUrl: "fluid-components/html/templates/TableOfContents.html",
         levels: ["H1", "H2", "H3", "H4", "H5", "H6"]
     });
 

@@ -24,7 +24,7 @@ fluid_1_0 = fluid_1_0 || {};
         }
     };
 
-    fluid.uiEnhancer = function(container, options){
+    fluid.uiEnhancer = function (container, options) {
         var that = fluid.initView("fluid.uiEnhancer", container, options);
         
         /**
@@ -49,14 +49,16 @@ fluid_1_0 = fluid_1_0 || {};
             addClassForSetting(that.container, "textSize", skin.textSize, that.options.fssMap);
             addClassForSetting(that.container, "textFont", skin.textFont, that.options.fssMap);
             addClassForSetting(that.container, "textSpacing", skin.textSpacing, that.options.fssMap);
-            addClassForSetting(that.container, "colorScheme", skin.contrast, that.options.fssMap);
+            addClassForSetting(that.container, "theme", skin.contrast, that.options.fssMap);
             addClassForSetting(that.container, "layout", skin.layout, that.options.fssMap);
             addClassForSetting(that.container, "backgroundImages", skin.backgroundImages, that.options.fssMap);
             
-//            if (skin.toc && typeof (skin.toc) === "Object") {
-//                var tocParent = that.container.tagName === "html" ?  $("body"): that.container;
-//                fluid.tableOfContents(tocParent, skin.toc.options); //, pass the toc subcomponent options );
-//            }
+            if (skin.toc === "On") {
+                that.tableOfContents = fluid.initSubcomponent(that,
+                                                    "tableOfContents",
+                                                    [that.container.tagName === "html" ?  $("body"): that.container, 
+                                                    fluid.COMPONENT_OPTIONS]);
+            }
         };
 
         /**
@@ -96,7 +98,7 @@ fluid_1_0 = fluid_1_0 || {};
                 "Wider": "fl-font-spacing-2",
                 "Widest": "fl-font-spacing-3"
             },
-            "colorScheme": {
+            "theme": {
                 "Mist": "fl-theme-mist",
                 "Rust": "fl-theme-rust",
                 "High Contrast": "fl-theme-hc"
@@ -107,7 +109,13 @@ fluid_1_0 = fluid_1_0 || {};
             "backgroundImages": {
                 "No Images": "fl-no-background-images"
             }
-        }
+        },
+        tableOfContents: {
+            type: "fluid.tableOfContents",
+            options: {
+                templateUrl: "TableOfContents.html"
+            }
+        }        
     });
     
 })(jQuery, fluid_1_0);
