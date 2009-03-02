@@ -59,9 +59,9 @@ var demo = demo || {};
     };
     
     /**
-     * Skin settings for high contrast, large font skin
+     * Settings for high contrast, large font 
      */
-    demo.hcLargeFontSkin = {
+    demo.hcLargeSettings = {
         textSize: "+3",
         textFont: "Courier",
         textSpacing: "Wide",
@@ -70,9 +70,9 @@ var demo = demo || {};
     };
     
     /**
-     * Skin settings for high contrast, simple layout
+     * Settings for high contrast, simple layout
      */
-    demo.hcSimpleLayoutSkin = {
+    demo.hcSimpleLayoutSettings = {
         textSize: "Default",
         textFont: "Default",
         textSpacing: "Default",
@@ -81,14 +81,21 @@ var demo = demo || {};
     };
 
     /**
-     * Skin settings for mist, small font skin
+     * Settings for mist, small font 
      */
-    demo.mistSmallFontSkin = {
+    demo.mistSmallSettings = {
         textSize: "-1",
         textFont: "Default",
         textSpacing: "Default",
         contrast: "Mist",
         layout: "Default"
+    };
+    
+    /**
+     * Settings for table of contents
+     */
+    demo.tocSettings = {
+        toc: "On"
     };
     
     /**
@@ -98,15 +105,19 @@ var demo = demo || {};
         var uiEnhancer = fluid.uiEnhancer("html");
         
         jQuery("#hc-skin").click(function () {
-            uiEnhancer.applySkin(demo.hcLargeFontSkin);
+            uiEnhancer.applySkin(demo.hcLargeSettings);
         });  
         
         jQuery("#hcs-skin").click(function () {
-            uiEnhancer.applySkin(demo.hcSimpleLayoutSkin);
+            uiEnhancer.applySkin(demo.hcSimpleLayoutSettings);
         });  
 
         jQuery("#mist-skin").click(function () {
-            uiEnhancer.applySkin(demo.mistSmallFontSkin);
+            uiEnhancer.applySkin(demo.mistSmallSettings);
+        });  
+
+        jQuery("#toc").click(function () {
+            uiEnhancer.applySkin(demo.tocSettings);
         });  
 
         jQuery("#remove-skin").click(function () {

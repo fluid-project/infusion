@@ -44,6 +44,7 @@ fluid_1_0 = fluid_1_0 || {};
          * Styles the container based on the skin passed in
          * @param {Object} skin
          */
+        // TODO: Rename this - style is no longer appropriate. 
         that.style = function (skin) {
             
             addClassForSetting(that.container, "textSize", skin.textSize, that.options.fssMap);
@@ -54,10 +55,16 @@ fluid_1_0 = fluid_1_0 || {};
             addClassForSetting(that.container, "backgroundImages", skin.backgroundImages, that.options.fssMap);
             
             if (skin.toc === "On") {
-                that.tableOfContents = fluid.initSubcomponent(that,
-                                                    "tableOfContents",
-                                                    [that.container.tagName === "html" ?  $("body"): that.container, 
-                                                    fluid.COMPONENT_OPTIONS]);
+                if (that.tableOfContents) {
+                    that.tableOfContents.show();
+                } else {
+                    that.tableOfContents = fluid.initSubcomponent(that, "tableOfContents", 
+                            [that.container.tagName === "html" ? $("body") : that.container, fluid.COMPONENT_OPTIONS]);
+                }
+            } else {
+                if (that.tableOfContents) {
+                    that.tableOfContents.hide();
+                }
             }
         };
 

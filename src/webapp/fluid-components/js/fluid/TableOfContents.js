@@ -127,14 +127,34 @@ fluid_1_0 = fluid_1_0 || {};
             var node = $("<div></div>");
             fluid.reRender(templates, node, createTree(headings, levels), {});
             container.prepend(node);
-            afterRender.fire();
+            afterRender.fire(node);
         });
     };
 
     fluid.tableOfContents = function (container, options) {
         var that = fluid.initView("fluid.tableOfContents", container, options);
+
+        // TODO: need better name for tocNode. and node, while you're at it. 
+        //       also, should the DOM be exposed in this way? Is there a better way to handle this?
+        that.events.afterRender.addListener(function (node) {
+            that.tocNode = $(node);
+        });
+
         buildTOC(that.container, that.locate("headings"), that.options.levels, that.options.templateUrl, that.events.afterRender);
+
+        // TODO: is it weird to have hide and show on a component? 
+        that.hide = function () {
+            if (that.tocNode) {
+                that.tocNode.hide();
+            }
+        };
         
+        that.show = function () {
+            if (that.tocNode) {
+                that.tocNode.show();
+            }
+        };
+
         return that;
     };
     
