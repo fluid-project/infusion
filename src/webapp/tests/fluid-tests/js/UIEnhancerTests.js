@@ -16,7 +16,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        var tests = new jqUnit.TestCase("Skin Tests");
+        var tests = new jqUnit.TestCase("UI Enhancer Tests");
         
         tests.test("Remove Styling", function () {
             expect(8);
