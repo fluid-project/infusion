@@ -114,7 +114,44 @@ fluid_1_0 = fluid_1_0 || {};
                         parentRelativeID: "..::layout"
                     }
                 ]
+            },
+            {
+                ID: "toc",
+                selection: {valuebinding: "selections.toc"},
+                optionlist: {valuebinding: "labelMap.toc.values"},
+                optionnames: {valuebinding: "labelMap.toc.names"}
+            },
+            {
+                ID: "toc-row:",
+                children: [
+                    {
+                        ID: "toc-choice",
+                        choiceindex: 0,
+                        parentRelativeID: "..::toc"
+                    },
+                    {
+                        ID: "toc-label",
+                        choiceindex: 0,
+                        parentRelativeID: "..::toc"
+                    }
+                ]
+            },
+            {
+                ID: "toc-row:",
+                children: [
+                    {
+                        ID: "toc-choice",
+                        choiceindex: 1,
+                        parentRelativeID: "..::toc"
+                    },
+                    {
+                        ID: "toc-label",
+                        choiceindex: 1,
+                        parentRelativeID: "..::toc"
+                    }
+                ]
             }
+
         ]
     };
 
@@ -145,19 +182,29 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var initPreview = function (that) {
+        var previewFrame = that.locate("previewFrame");
+        var previewEnhancer;
+        
         var updatePreview = function (model) {
-            var previewFrame = that.locate("previewFrame").contents();
             /**
              * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
              */
             setTimeout(function () {
-                fluid.applySkin(model, that.locate("preview", previewFrame)); 
+                previewEnhancer.applySkin(model); 
             }, 0);
         };
+
+        previewFrame.load(function () {
+            setTimeout(function () {
+                var previewFrameContents = previewFrame.contents();
+                var preview = that.locate("preview", previewFrameContents);
+                previewEnhancer = fluid.uiEnhancer(preview);
+                updatePreview(that.model);
+            }, 100);
+        });        
         
         that.events.modelChanged.addListener(updatePreview);
         
-        updatePreview(that.model);
     };
     
     var createRenderOptions = function (that) {
@@ -186,12 +233,13 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.uiOptions = function (container, options) {
         var that = fluid.initView("fluid.uiOptions", container, options);
+        that.uiEnhancer = fluid.uiEnhancer("html");
         var template;
              
         that.save = function () {
             that.events.onSave.fire(that.model);
             that.savedModel = fluid.copy(that.model);
-            fluid.applySkin(that.model);
+            that.uiEnhancer.applySkin(that.model);
         };
 
         that.reset = function () {
@@ -243,7 +291,8 @@ fluid_1_0 = fluid_1_0 || {};
             textSpacing: "Default",
             contrast: "Default",
             backgroundImages: "Default",
-            layout: "Default"
+            layout: "Default",
+            toc: "Default"
         },
         originalSettings: {
             textFont: "Default",
@@ -251,7 +300,8 @@ fluid_1_0 = fluid_1_0 || {};
             textSpacing: "Default",
             contrast: "Default",
             backgroundImages: "Default",
-            layout: "Default"
+            layout: "Default",
+            toc: "Default"
         },
         labelMap: {
             textFont: {
@@ -277,6 +327,10 @@ fluid_1_0 = fluid_1_0 || {};
             layout: {
                 names: ["Yes", "No"],
                 values: ["Simple", "Default"]
+            },
+            toc: {
+                names: ["Yes", "No"],
+                values: ["Yes", "Default"]
             }
         }
     });

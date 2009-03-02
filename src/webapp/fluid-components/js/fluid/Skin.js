@@ -15,89 +15,99 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid_1_0 = fluid_1_0 || {};
 
 (function ($, fluid) {
-    fluid.skin = {};
-    
-    /**
-     * Removes the classes in the Fluid class namespace: "fl-"
-     */
-    // TODO: clearing styling is not correct - we need to clear back to the original state not remove all fss styling
-    fluid.skin.removeStyling = function (element) {
-        element = element || $("html");
-        $('[class*=fl-]', element).andSelf().each(function (i) {    
-            var attr = ($.browser.msie === false) ? 'class' : 'className'; 
-            if (this.getAttribute(attr)) {
-                this.setAttribute(attr, this.getAttribute(attr).replace(/\bfl-(layout|font|theme|no-background){1}\S+/g, ''));
-            }
-        });        
-    };
 
-    var fssSeek = function (label, value) {
-        var possibleValues = fluid.skin.fssMap[label] || {}; 
-        return possibleValues[value] || "";
-    };
-      
-    /**
-     * Styles the given element based on the skin passed in
-     * @param {Object} element
-     * @param {Object} skin
-     */
-    // TODO: this implementation should be improved
-    fluid.skin.style = function (skin, element) {
-        element = element || $("html");
-        element.addClass(fssSeek("textSize", skin.textSize));
-        element.addClass(fssSeek("textFont", skin.textFont));
-        element.addClass(fssSeek("textSpacing", skin.textSpacing));
-        element.addClass(fssSeek("colorScheme", skin.contrast));
-        element.addClass(fssSeek("layout", skin.layout));
-        element.addClass(fssSeek("backgroundImages", skin.backgroundImages));
-    };
-
-    /**
-     * Removes all existing classes which start with 'fl-' before restyling the page.
-     * @param {Object} skin
-     */
-    fluid.applySkin = function (skin, element) {
-        element = element || $("html");
-        fluid.skin.removeStyling(element);
-        fluid.skin.style(skin, element);
-    };
-
-    fluid.skin.fssMap = {
-        "textSize": {
-            "-3": "fl-font-size-70",
-            "-2": "fl-font-size-80",
-            "-1": "fl-font-size-90",
-            "+1": "fl-font-size-110",
-            "+2": "fl-font-size-120",
-            "+3": "fl-font-size-130",
-            "+4": "fl-font-size-140",
-            "+5": "fl-font-size-150"
-        },
-        "textFont": {
-            "Serif": "fl-font-serif",
-            "Sans-Serif": "fl-font-sans",
-            "Ariel": "fl-font-arial",
-            "Verdana": "fl-font-verdana",
-            "Courier": "fl-font-monospace",
-            "Times": "fl-font-serif"
-        },
-        "textSpacing": {
-            "Wide": "fl-font-spacing-1",
-            "Wider": "fl-font-spacing-2",
-            "Widest": "fl-font-spacing-3"
-        },
-        "colorScheme": {
-            "Mist": "fl-theme-mist",
-            "Rust": "fl-theme-rust",
-            "High Contrast": "fl-theme-hc"
-        }, 
-        "layout": {
-            "Simple": "fl-layout-linear"
-        },
-        "backgroundImages": {
-            "No Images": "fl-no-background-images"
+    var addClassForSetting = function (element, label, value, fssMap) {
+        var possibleValues = fssMap[label] || {}; 
+        var className = possibleValues[value];
+        if (className) {
+            element.addClass(className);        
         }
     };
 
+    fluid.uiEnhancer = function(container, options){
+        var that = fluid.initView("fluid.uiEnhancer", container, options);
+        
+        /**
+         * Removes the classes in the Fluid class namespace: "fl-"
+         */
+        // TODO: clearing styling is not correct - we need to clear back to the original state not remove all fss styling
+        that.removeStyling = function () {
+            $('[class*=fl-]', that.container).andSelf().each(function (i) {    
+                var attr = ($.browser.msie === false) ? 'class' : 'className'; 
+                if (this.getAttribute(attr)) {
+                    this.setAttribute(attr, this.getAttribute(attr).replace(/\bfl-(layout|font|theme|no-background){1}\S+/g, ''));
+                }
+            });        
+        };
 
+        /**
+         * Styles the container based on the skin passed in
+         * @param {Object} skin
+         */
+        that.style = function (skin) {
+            
+            addClassForSetting(that.container, "textSize", skin.textSize, that.options.fssMap);
+            addClassForSetting(that.container, "textFont", skin.textFont, that.options.fssMap);
+            addClassForSetting(that.container, "textSpacing", skin.textSpacing, that.options.fssMap);
+            addClassForSetting(that.container, "colorScheme", skin.contrast, that.options.fssMap);
+            addClassForSetting(that.container, "layout", skin.layout, that.options.fssMap);
+            addClassForSetting(that.container, "backgroundImages", skin.backgroundImages, that.options.fssMap);
+            
+//            if (skin.toc && typeof (skin.toc) === "Object") {
+//                var tocParent = that.container.tagName === "html" ?  $("body"): that.container;
+//                fluid.tableOfContents(tocParent, skin.toc.options); //, pass the toc subcomponent options );
+//            }
+        };
+
+        /**
+         * Removes all existing classes which start with 'fl-' before restyling the page.
+         * @param {Object} skin
+         */
+        that.applySkin = function (skin) {
+            that.removeStyling();
+            that.style(skin);
+        };
+        
+        return that;
+    };
+
+    fluid.defaults("fluid.uiEnhancer", {
+        fssMap: {
+            "textSize": {
+                "-3": "fl-font-size-70",
+                "-2": "fl-font-size-80",
+                "-1": "fl-font-size-90",
+                "+1": "fl-font-size-110",
+                "+2": "fl-font-size-120",
+                "+3": "fl-font-size-130",
+                "+4": "fl-font-size-140",
+                "+5": "fl-font-size-150"
+            },
+            "textFont": {
+                "Serif": "fl-font-serif",
+                "Sans-Serif": "fl-font-sans",
+                "Ariel": "fl-font-arial",
+                "Verdana": "fl-font-verdana",
+                "Courier": "fl-font-monospace",
+                "Times": "fl-font-serif"
+            },
+            "textSpacing": {
+                "Wide": "fl-font-spacing-1",
+                "Wider": "fl-font-spacing-2",
+                "Widest": "fl-font-spacing-3"
+            },
+            "colorScheme": {
+                "Mist": "fl-theme-mist",
+                "Rust": "fl-theme-rust",
+                "High Contrast": "fl-theme-hc"
+            },
+            "layout": {
+                "Simple": "fl-layout-linear"
+            },
+            "backgroundImages": {
+                "No Images": "fl-no-background-images"
+            }
+        }
+    });
+    
 })(jQuery, fluid_1_0);

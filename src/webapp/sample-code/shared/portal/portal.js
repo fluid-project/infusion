@@ -95,20 +95,22 @@ var demo = demo || {};
      * Initialization script for dynamically changing skins
      */
     var initSkinChange = function () {
+        var uiEnhancer = fluid.uiEnhancer("html");
+        
         jQuery("#hc-skin").click(function () {
-            fluid.applySkin(demo.hcLargeFontSkin);
+            uiEnhancer.applySkin(demo.hcLargeFontSkin);
         });  
         
         jQuery("#hcs-skin").click(function () {
-            fluid.applySkin(demo.hcSimpleLayoutSkin);
+            uiEnhancer.applySkin(demo.hcSimpleLayoutSkin);
         });  
 
         jQuery("#mist-skin").click(function () {
-            fluid.applySkin(demo.mistSmallFontSkin);
+            uiEnhancer.applySkin(demo.mistSmallFontSkin);
         });  
 
         jQuery("#remove-skin").click(function () {
-            fluid.skin.removeStyling();
+            uiEnhancer.removeStyling();
         });  
 
     };

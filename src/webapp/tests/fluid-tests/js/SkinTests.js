@@ -21,10 +21,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
         tests.test("Remove Styling", function () {
             expect(8);
 
+            var uiEnhancer = fluid.uiEnhancer("#inner-div");
             jqUnit.assertEquals("Initially fluid classes are in the markup", 4, $(".fl-font-size-90").length);
             jqUnit.assertEquals("Initially fluid layout class is in the markup", 1, $(".fl-layout-default").length);
             jqUnit.assertEquals("Initially fluid theme class is in the markup", 1, $(".fl-theme-mist").length);
-            fluid.skin.removeStyling($("#inner-div"));
+            uiEnhancer.removeStyling();
             jqUnit.assertEquals("Fluid classes on and in the inner div have been removed", 1, $(".fl-font-size-90").length);
             jqUnit.assertEquals("Fluid layout class is gone", 0, $(".fl-layout-default").length);
             jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-mist").length);
@@ -40,7 +41,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             main.addClass("fl-blip");
             main.addClass("blop");
             
-            fluid.skin.removeStyling(main);
+            var uiEnhancer = fluid.uiEnhancer(main);
+            uiEnhancer.removeStyling();
             jqUnit.assertTrue("main has the container class", main.hasClass("container"));
             jqUnit.assertTrue("main has the blop class", main.hasClass("blop"));
             jqUnit.assertTrue("main has the fl-blah class", main.hasClass("fl-blah"));
@@ -58,8 +60,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 contrast: "High Contrast"
             };
             var main = $("#main");
-            
-            fluid.skin.style(hcLargeFontSkin, main);
+            var uiEnhancer = fluid.uiEnhancer(main);
+
+            uiEnhancer.style(hcLargeFontSkin);
             jqUnit.assertTrue("main has large text size class", main.hasClass("fl-font-size-130"));
             jqUnit.assertTrue("main has courier font class", main.hasClass("fl-font-monospace"));
             jqUnit.assertTrue("main has wide text spacing class", main.hasClass("fl-font-spacing-1"));
