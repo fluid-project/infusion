@@ -102,6 +102,71 @@ fluid.tests = fluid.tests || {};
           
     });
     
+    renderTests.test("Decorator interference test", function() {
+        var progressSelectorMap = [{selector: ".progress-bars", id: "progress-bars:"},
+                        {selector: ".fl-progress", id: "fl-progress"},
+                        {selector: ".fl-progress-bar", id: "fl-progress-bar"},
+                        {selector: ".fl-progress-indicator", id: "fl-progress-indicator"}];
+      
+        var progressComponentTree = {
+        children: [
+            {
+                ID: "progress-bars:",
+                decorators: {identify: "stable-bar"},
+                children: [
+                    {
+                        ID: "fl-progress"
+                    },
+                    {
+                        ID: "fl-progress-bar"
+                    },
+                    {
+                        ID: "fl-progress-indicator",
+                        decorators: {addClass: "stable"}
+                    }
+                ]
+            },
+            {
+                ID: "progress-bars:",
+                decorators: {identify: "in-dev-bar"},
+                children: [
+                    {
+                        ID: "fl-progress"
+                    },
+                    {
+                        ID: "fl-progress-bar"
+                    },
+                    {
+                        ID: "fl-progress-indicator",
+                        decorators: {addClass: "in-development"}
+                    }
+                ]
+            },
+            {
+                ID: "progress-bars:",
+                decorators: {identify: "in-design-bar"},
+                children: [
+                    {
+                        ID: "fl-progress"
+                    },
+                    {
+                        ID: "fl-progress-bar"
+                    },
+                    {
+                        ID: "fl-progress-indicator",
+                        decorators: {addClass: "in-design"}
+                    }
+                ]
+            }
+        ]
+    };
+    var node = $("#decorator-interference-test");
+    fluid.selfRender(node, progressComponentTree, 
+       {cutpoints: progressSelectorMap});
+    var decorated = $(".fl-progress-indicator", node);
+    jqUnit.assertEquals("2 indicators should be rendered", 3, decorated.length);
+    });
+    
     renderTests.test("Decorator and degradation test", function() {
           var indexClick = null;
           var columnClick = null;
