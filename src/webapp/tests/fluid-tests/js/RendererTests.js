@@ -164,7 +164,10 @@ fluid.tests = fluid.tests || {};
     fluid.selfRender(node, progressComponentTree, 
        {cutpoints: progressSelectorMap});
     var decorated = $(".fl-progress-indicator", node);
-    jqUnit.assertEquals("2 indicators should be rendered", 3, decorated.length);
+    jqUnit.assertEquals("3 indicators should be rendered", 3, decorated.length);
+    jqUnit.assertEquals("1 is stable", true, decorated.eq(0).hasClass("stable"));
+    jqUnit.assertEquals("2 is not stable", false, decorated.eq(1).hasClass("stable"));
+    jqUnit.assertEquals("2 is in-development", true, decorated.eq(1).hasClass("in-development"));
     });
     
     renderTests.test("Decorator and degradation test", function() {
