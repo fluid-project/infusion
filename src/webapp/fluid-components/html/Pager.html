@@ -14,12 +14,11 @@
 
 
         <script type="text/javascript" src="../js/jquery/jquery-1.3.1.js"></script>
-        <script type="text/javascript" src="../js/jquery/jARIA.js"></script>
-        <script type="text/javascript" src="../js/jquery/jquery.keyboard-a11y.js"></script>
-        <script type="text/javascript" src="../js/jquery/ui.core.js"></script>
-        <script type="text/javascript" src="../js/jquery/ui.draggable.js"></script>
         <script type="text/javascript" src="../js/fluid/Fluid.js"></script>
         <script type="text/javascript" src="../js/fluid/Pager.js"></script>
+	    <script type="text/javascript" src="../js/fluid/renderer/fastXmlPull.js"></script>
+	    <script type="text/javascript" src="../js/fluid/renderer/fluidParser.js"></script>
+	    <script type="text/javascript" src="../js/fluid/renderer/fluidRenderer.js"></script>
         
         <script type="text/javascript">
             
@@ -27,6 +26,40 @@
                 
                 // This is the data object used in the examples (a.k.a: the Model)
                 var sampleData = [
+                    {name: "Ahn, Jason"},
+                    {name: "Akerman, Krista"},
+                    {name: "Almeida, Elaine"},
+                    {name: "Azer, Tamer"},
+                    {name: "Bandali, Salim"},
+                    {name: "Baumgartner, Joe"},
+                    {name: "Bellefuille, Eric"},
+                    {name: "Braganza, Sherman"},
+                    {name: "Calderon, Maurice"},
+                    {name: "Campaign, Wesley"},
+                    {name: "Dahn, Jason"},
+                    {name: "Dakerman, Krista"},
+                    {name: "Dalmeida, Elaine"},
+                    {name: "Dazer, Tamer"},
+                    {name: "Endali, Salim"},
+                    {name: "Emgartner, Joe"},
+                    {name: "Ellefuille, Eric"},
+                    {name: "Eraganza, Sherman"},
+                    {name: "Falderon, Maurice"},
+                    {name: "Fampaign, Wesley"},
+                    {name: "Fhn, Jason"},
+                    {name: "Fakerman, Krista"},
+                    {name: "Falmeida, Elaine"},
+                    {name: "Fazer, Tamer"},
+                    {name: "Gandali, Salim"},
+                    {name: "Gaumgartner, Joe"},
+                    {name: "Gellefuille, Eric"},
+                    {name: "Graganza, Sherman"},
+                    {name: "Halderon, Maurice"},
+                    {name: "Hampaign, Wesley"},
+                    {name: "Ihn, Jason"},
+                    {name: "Ikerman, Krista"}
+                ];
+                var sampleData2 = [
                     {name: "Ahn, Jason", userid: "15234314", points: 87, comment: "Lorem ipsum dolor sit amet."},
                     {name: "Akerman, Krista", userid: "19206726", points: 79, comment: "Consectetuer adipiscing elit."},
                     {name: "Almeida, Elaine", userid: "19286942", points: 92, comment: "Suspendisse ut arcu. "},
@@ -62,29 +95,17 @@
                 ];
 
                 // These are the pager example setups
-                var Example1 = {};
-                Example1.initPager = function (sampleData) {
-                    var options = {
-                        dataModel: sampleData,
-                        columnDefs: "explode",
-                        bodyRenderer: {
-                          type: "fluid.pager.selfRender",
-                          options: {
-                            root: "#body-template",
-                            row: "row:"
-                          }
-                        },
-                        pagerBar: {type: "fluid.pager.pagerBar", options: {
-                          pageList: {type: "fluid.pager.renderedPageList",
-                            options: { 
-                              linkBody: "a"
-                            }
-                          }
-                        }}
-                    };                    
-                    fluid.pager("#gradebook", options);
-                };    
-                
+                var options = {
+                    dataModel: sampleData,
+                    columnDefs: "explode",
+                    bodyRenderer: {
+                        type: "fluid.pager.selfRender",
+                        options: {
+                            root: "#pager-demo-1"
+                        }
+                    }
+                };                    
+                fluid.pager("#pager-demo-1", options);
             });
             
         </script>
@@ -99,25 +120,23 @@
         <div id="pager-demo-1" class="demo demo1">
             <!-- Pagination Links (Pager part 1) -->
             <ul id="pager-top" class="pager-top demo1-links">
+<!--
                 <li class="previous"><a href="#">&laquo; previous</a></li>
+-->
                 <li class="page-link"><a href="#">1</a></li>
                 <li class="page-link"><a href="#">2</a></li>
                 <li class="page-link"><a href="#">3</a></li>
+<!--
                 <li class="next"><a href="#">next &raquo;</a></li>
+-->
             </ul>    
             <!-- Pagination Printout (Pager part 2) -->
             <table>
-                <tr>
-                    <th>Album</th>
-                    <th>Tracks</th>
-                    <th>Country</th>
-                    <th>Year</th>
+                <tr rsf:id="header:">
+                    <th>Name</th>
                 </tr>
-                <tr>
-                    <td>Actress: Birth Of The New York Dolls</td>
-                    <td>11</td>
-                    <td>Italy</td>
-                    <td>2000</td>
+                <tr rsf:id="row:">
+                    <td rsf:id="name">Thunders, Johnny</td>
                 </tr>
             </table>
         </div>
