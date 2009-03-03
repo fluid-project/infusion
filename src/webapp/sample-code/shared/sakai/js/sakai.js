@@ -30,23 +30,19 @@ $(function () {
             savedSelections: {
                 contrast: "Mist"
             },
-            renderModel: {
-                selections: {
-                    contrast: "Mist"
+            originalSettings: {
+                contrast: "Mist"
+            }, 
+            listeners: {
+                afterRender: function () {
+                    $('.fl-components-ui-options .fl-col:eq(0)').accordion({ header: 'h2'});
                 }
             }
         };
         
         // instantiate component
         uiOptions = fluid.uiOptions(".uiOptions", options);
-		
-        // only show content once ajax call is complete
         $("#dialog_container").css('display', 'block');
-        
-        //ajax call is not bringing this in with the uioptions dialog
-        $('.fl-components-ui-options .fl-col:eq(0)').accordion({ 
-            header: 'h2'
-        });
     };
 
     $('.skin').click(function () {

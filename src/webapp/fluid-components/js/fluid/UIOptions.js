@@ -220,9 +220,13 @@ fluid_1_0 = fluid_1_0 || {};
     
     var setupUIOptions = function (that) {
         initModels(that);
+        that.events.afterRender.addListener(function () {
+            bindHandlers(that);
+            initPreview(that);        
+        });
+        
         var template = fluid.selfRender(that.container, fluid.copy(tree), createRenderOptions(that));
-        bindHandlers(that);
-        initPreview(that);    
+        that.events.afterRender.fire();
 
         // Setup any registered decorators for the component.
         that.decorators = fluid.initSubcomponents(that, "componentDecorators", 
@@ -254,10 +258,7 @@ fluid_1_0 = fluid_1_0 || {};
         
         that.refreshView = function () {
             fluid.reRender(template, that.container, fluid.copy(tree), createRenderOptions(that));
-            // TODO: this should not be necessary. 
-            // We should fill in the tree with the handlers so that we don't need to rebind when we reRender
-            bindHandlers(that);
-            initPreview(that);    
+            that.events.afterRender.fire();
         };
         
         that.updateModel = function (newModel, source) {
@@ -282,7 +283,8 @@ fluid_1_0 = fluid_1_0 || {};
         events: {
             modelChanged: null,
             onSave: null,
-            onCancel: null
+            onCancel: null,
+            afterRender: null
         },
         // TODO: use a merge policy instead of specifying savedSelections
         savedSelections: {

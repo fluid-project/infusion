@@ -19,7 +19,6 @@ fluid_1_0 = fluid_1_0 || {};
     /*
      *  TODO: 
      *  - get and implement a design for the table of contents 
-     *  - integrate table of contents with UI Options
      *  - make the toc template pluggable
      *  - make sure getting headings using something other then a selector works
      *  - move interesting parts of the template to the defaults ie. link

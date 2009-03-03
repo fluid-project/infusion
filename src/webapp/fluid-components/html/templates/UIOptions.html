@@ -30,11 +30,15 @@
         <script type="text/javascript" src="../../js/fluid/UIOptions.js"></script>
         
         <script type="text/javascript">
-            $().ready(function() {
-                fluid.uiOptions(".uiOptions");
-                    $('.fl-components-ui-options .fl-col:eq(0)').accordion({ 
-                        header: 'h2'
-                    }); 
+            $().ready(function () {
+                var options = {
+                    listeners: {
+                        afterRender: function () {
+                            $('.fl-components-ui-options .fl-col:eq(0)').accordion({header: 'h2'});
+                        }
+                    }
+                };
+                fluid.uiOptions(".uiOptions", options);
             });
         </script>
     </head>
@@ -95,6 +99,7 @@
                 </fieldset>
                 <fieldset class="fl-controls-centered">
                     <h2 class="fl-font-size-130">Easier to find</h2>
+                    <div>
                         <div rsf:id="toc">
                         </div>
                         <label class="fl-label">Table of Contents:</label>
@@ -102,12 +107,13 @@
                             <input class="control" rsf:id="toc-choice" type="radio"/>
                             <label rsf:id="toc-label">choice</label>
                         </span>
-                    <ol>
-                        <li><label>Links:</label><span>No Preference</span></li>
-                        <li><label>Inputs:</label><span>No Preference</span></li>
-                        <li><label>Actions:</label><span>No Preference</span></li>
-                        <li><label>Structure:</label><span>No Preference</span></li>
-                    </ol>
+                        <ol>
+                            <li><label>Links:</label><span>No Preference</span></li>
+                            <li><label>Inputs:</label><span>No Preference</span></li>
+                            <li><label>Actions:</label><span>No Preference</span></li>
+                            <li><label>Structure:</label><span>No Preference</span></li>
+                        </ol>
+                    </div>
                 </fieldset>
             </div>
 
