@@ -63,7 +63,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
                 jqUnit.assertFalse("Save hasn't been called", saveCalled);
                 uiOptions.save();
-                var container = $("html");
+                var container = $("body");
                 jqUnit.assertTrue("Save has been called", saveCalled);
                 jqUnit.assertEquals("hc setting was saved", hcSkin.contrast, uiOptions.savedModel.contrast);
                 jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-hc"));

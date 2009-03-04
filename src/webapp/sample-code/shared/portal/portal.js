@@ -101,7 +101,7 @@ var demo = demo || {};
      * Initialization script for dynamically changing skins
      */
     var initSkinChange = function () {
-        var uiEnhancer = fluid.uiEnhancer("html");
+        var uiEnhancer = fluid.uiEnhancer("body");
         
         jQuery("#hc-skin").click(function () {
             uiEnhancer.applySkin(demo.hcLargeSettings);

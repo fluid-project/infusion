@@ -15,7 +15,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid_1_0 = fluid_1_0 || {};
 
 (function ($, fluid) {
-    
+
+//    TODO
+//    - handle enter in the textbox - currently it causes the page to reload
+//    - create a subcomponent which has a textbox and slider combination
+//    - bind the slider - currently using the slider does not change the underlying model (the preview does not respond to a slider change)
+//    - fix the test that is throwing an error
+//    - fix the orientation of the slider in the sakai sample
+//    - stop using the jQuery styling for the slider and use FSS
+//    - generate the renderer tree
+//    - document the API
+//
+
     // TODO: Generate this tree
     var generateTree = function (that, rendererModel) {
         return {
@@ -272,7 +283,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.uiOptions = function (container, options) {
         var that = fluid.initView("fluid.uiOptions", container, options);
-        that.uiEnhancer = fluid.uiEnhancer("html");
+        that.uiEnhancer = fluid.uiEnhancer(that.locate("enhanceContainer", "html"));
         var template;
              
         that.save = function () {
@@ -315,7 +326,8 @@ fluid_1_0 = fluid_1_0 || {};
             previewFrame : ".fl-hook-preview-frame",
             save: ".fl-hook-preview-save",
             reset: ".fl-hook-preview-reset",
-            cancel: ".fl-hook-preview-cancel"
+            cancel: ".fl-hook-preview-cancel",
+            enhanceContainer: "body"
         },
         events: {
             modelChanged: null,

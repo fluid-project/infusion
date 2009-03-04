@@ -41,7 +41,7 @@ fluid_1_0 = fluid_1_0 || {};
                 that.tableOfContents.show();
             } else {
                 that.tableOfContents = fluid.initSubcomponent(that, "tableOfContents", 
-                        [that.container.tagName === "html" ? $("body") : that.container, fluid.COMPONENT_OPTIONS]);
+                        [that.container, fluid.COMPONENT_OPTIONS]);
             }
         } else {
             if (that.tableOfContents) {
