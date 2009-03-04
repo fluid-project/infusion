@@ -17,144 +17,177 @@ fluid_1_0 = fluid_1_0 || {};
 (function ($, fluid) {
     
     // TODO: Generate this tree
-    var tree = {
-        children: [
-            {
+    var generateTree = function (that, rendererModel) {
+        return {
+        
+            children: [{
                 ID: "font-style",
-                selection: {valuebinding: "selections.textFont"},
-                optionlist: {valuebinding: "labelMap.textFont.values"},
-                optionnames: {valuebinding: "labelMap.textFont.names"}
-            },
-            {
+                selection: {
+                    valuebinding: "selections.textFont"
+                },
+                optionlist: {
+                    valuebinding: "labelMap.textFont.values"
+                },
+                optionnames: {
+                    valuebinding: "labelMap.textFont.names"
+                }
+            }, {// TODO: refactor this: a subcomponent that has a slider and a text box is in order
                 ID: "font-min-size",
-                selection: {valuebinding: "selections.textSize"},
-                optionlist: {valuebinding: "labelMap.textSize.values"},
-                optionnames: {valuebinding: "labelMap.textSize.names"}
-            },
-            {
+                valuebinding: "selections.textSize",
+                decorators: [{
+                    type: "$",
+                    func: "change",
+                    args: function () {
+                        // TODO: is there a better way to do this rather then using the id?
+                        //       will the id always be generated as font-min-size-slider?
+                        $("#font-min-size-slider").slider("value", this.value);
+                    }
+                }]
+            }, {
+                ID: "font-min-size-slider",
+                decorators: [{
+                    type: "$",
+                    func: "slider",
+                    args: {
+                        change: function (e, ui) {
+                            // TODO: what I really want here is automatic data binding. 
+                            var textbox = $("#font-min-size");
+                            textbox.val(ui.value);
+//                            var newModel = fluid.copy(that.model);
+//                            newModel.textSize = ui.value;
+//                            that.updateModel(newModel);
+                        },
+                        // TODO: is there a more natural way to bind this value?
+                        value: rendererModel.selections.textSize,
+                        min: 6,
+                        max: 200
+                    }
+                }]
+            }, {
                 ID: "text-spacing",
-                selection: {valuebinding: "selections.textSpacing"},
-                optionlist: {valuebinding: "labelMap.textSpacing.values"},
-                optionnames: {valuebinding: "labelMap.textSpacing.names"}
-            },
-            {
+                selection: {
+                    valuebinding: "selections.textSpacing"
+                },
+                optionlist: {
+                    valuebinding: "labelMap.textSpacing.values"
+                },
+                optionnames: {
+                    valuebinding: "labelMap.textSpacing.names"
+                }
+            }, {
                 ID: "contrast",
-                selection: {valuebinding: "selections.contrast"},
-                optionlist: {valuebinding: "labelMap.contrast.values"},
-                optionnames: {valuebinding: "labelMap.contrast.names"}
-            },
-            {
+                selection: {
+                    valuebinding: "selections.contrast"
+                },
+                optionlist: {
+                    valuebinding: "labelMap.contrast.values"
+                },
+                optionnames: {
+                    valuebinding: "labelMap.contrast.names"
+                }
+            }, {
                 ID: "background-images",
-                selection: {valuebinding: "selections.backgroundImages"},
-                optionlist: {valuebinding: "labelMap.backgroundImages.values"},
-                optionnames: {valuebinding: "labelMap.backgroundImages.names"}
-            },
-            {
+                selection: {
+                    valuebinding: "selections.backgroundImages"
+                },
+                optionlist: {
+                    valuebinding: "labelMap.backgroundImages.values"
+                },
+                optionnames: {
+                    valuebinding: "labelMap.backgroundImages.names"
+                }
+            }, {
                 ID: "background-images-row:",
-                children: [
-                    {
-                        ID: "images-choice",
-                        choiceindex: 0,
-                        parentRelativeID: "..::background-images"
-                    },
-                    {
-                        ID: "images-label",
-                        choiceindex: 0,
-                        parentRelativeID: "..::background-images"
-                    }
-                ]
-            },
-            {
+                children: [{
+                    ID: "images-choice",
+                    choiceindex: 0,
+                    parentRelativeID: "..::background-images"
+                }, {
+                    ID: "images-label",
+                    choiceindex: 0,
+                    parentRelativeID: "..::background-images"
+                }]
+            }, {
                 ID: "background-images-row:",
-                children: [
-                    {
-                        ID: "images-choice",
-                        choiceindex: 1,
-                        parentRelativeID: "..::background-images"
-                    },
-                    {
-                        ID: "images-label",
-                        choiceindex: 1,
-                        parentRelativeID: "..::background-images"
-                    }
-                ]
-            },
-            {
+                children: [{
+                    ID: "images-choice",
+                    choiceindex: 1,
+                    parentRelativeID: "..::background-images"
+                }, {
+                    ID: "images-label",
+                    choiceindex: 1,
+                    parentRelativeID: "..::background-images"
+                }]
+            }, {
                 ID: "layout",
-                selection: {valuebinding: "selections.layout"},
-                optionlist: {valuebinding: "labelMap.layout.values"},
-                optionnames: {valuebinding: "labelMap.layout.names"}
-            },
-            {
+                selection: {
+                    valuebinding: "selections.layout"
+                },
+                optionlist: {
+                    valuebinding: "labelMap.layout.values"
+                },
+                optionnames: {
+                    valuebinding: "labelMap.layout.names"
+                }
+            }, {
                 ID: "layout-row:",
-                children: [
-                    {
-                        ID: "layout-choice",
-                        choiceindex: 0,
-                        parentRelativeID: "..::layout"
-                    },
-                    {
-                        ID: "layout-label",
-                        choiceindex: 0,
-                        parentRelativeID: "..::layout"
-                    }
-                ]
-            },
-            {
+                children: [{
+                    ID: "layout-choice",
+                    choiceindex: 0,
+                    parentRelativeID: "..::layout"
+                }, {
+                    ID: "layout-label",
+                    choiceindex: 0,
+                    parentRelativeID: "..::layout"
+                }]
+            }, {
                 ID: "layout-row:",
-                children: [
-                    {
-                        ID: "layout-choice",
-                        choiceindex: 1,
-                        parentRelativeID: "..::layout"
-                    },
-                    {
-                        ID: "layout-label",
-                        choiceindex: 1,
-                        parentRelativeID: "..::layout"
-                    }
-                ]
-            },
-            {
+                children: [{
+                    ID: "layout-choice",
+                    choiceindex: 1,
+                    parentRelativeID: "..::layout"
+                }, {
+                    ID: "layout-label",
+                    choiceindex: 1,
+                    parentRelativeID: "..::layout"
+                }]
+            }, {
                 ID: "toc",
-                selection: {valuebinding: "selections.toc"},
-                optionlist: {valuebinding: "labelMap.toc.values"},
-                optionnames: {valuebinding: "labelMap.toc.names"}
-            },
-            {
+                selection: {
+                    valuebinding: "selections.toc"
+                },
+                optionlist: {
+                    valuebinding: "labelMap.toc.values"
+                },
+                optionnames: {
+                    valuebinding: "labelMap.toc.names"
+                }
+            }, {
                 ID: "toc-row:",
-                children: [
-                    {
-                        ID: "toc-choice",
-                        choiceindex: 0,
-                        parentRelativeID: "..::toc"
-                    },
-                    {
-                        ID: "toc-label",
-                        choiceindex: 0,
-                        parentRelativeID: "..::toc"
-                    }
-                ]
-            },
-            {
+                children: [{
+                    ID: "toc-choice",
+                    choiceindex: 0,
+                    parentRelativeID: "..::toc"
+                }, {
+                    ID: "toc-label",
+                    choiceindex: 0,
+                    parentRelativeID: "..::toc"
+                }]
+            }, {
                 ID: "toc-row:",
-                children: [
-                    {
-                        ID: "toc-choice",
-                        choiceindex: 1,
-                        parentRelativeID: "..::toc"
-                    },
-                    {
-                        ID: "toc-label",
-                        choiceindex: 1,
-                        parentRelativeID: "..::toc"
-                    }
-                ]
-            }
-
-        ]
+                children: [{
+                    ID: "toc-choice",
+                    choiceindex: 1,
+                    parentRelativeID: "..::toc"
+                }, {
+                    ID: "toc-label",
+                    choiceindex: 1,
+                    parentRelativeID: "..::toc"
+                }]
+            }]
+        };
     };
-
+    
     var initModels = function (that) {
         that.originalModel = that.options.originalSettings;
         that.savedModel = that.options.savedSelections;
@@ -178,7 +211,8 @@ fluid_1_0 = fluid_1_0 || {};
         that.locate("controls").change(function () {
             // This is strange - old model and new model are the same. 
             that.events.modelChanged.fire(that.model, that.model, that);
-        });        
+        });
+        
     };
     
     var initPreview = function (that) {
@@ -200,7 +234,7 @@ fluid_1_0 = fluid_1_0 || {};
                 var preview = that.locate("preview", previewFrameContents);
                 previewEnhancer = fluid.uiEnhancer(preview);
                 updatePreview(that.model);
-            }, 100);
+            }, 100);  // TODO: this wait shouldn't be here - it was accidentally committed. 
         });        
         
         that.events.modelChanged.addListener(updatePreview);
@@ -225,7 +259,8 @@ fluid_1_0 = fluid_1_0 || {};
             initPreview(that);        
         });
         
-        var template = fluid.selfRender(that.container, fluid.copy(tree), createRenderOptions(that));
+        var rendererOptions = createRenderOptions(that);
+        var template = fluid.selfRender(that.container, generateTree(that, rendererOptions.model), rendererOptions);
         that.events.afterRender.fire();
 
         // Setup any registered decorators for the component.
@@ -257,7 +292,9 @@ fluid_1_0 = fluid_1_0 || {};
         };
         
         that.refreshView = function () {
-            fluid.reRender(template, that.container, fluid.copy(tree), createRenderOptions(that));
+            var rendererOptions = createRenderOptions(that);
+
+            fluid.reRender(template, that.container, generateTree(that, rendererOptions.model), rendererOptions);
             that.events.afterRender.fire();
         };
         
@@ -289,7 +326,6 @@ fluid_1_0 = fluid_1_0 || {};
         // TODO: use a merge policy instead of specifying savedSelections
         savedSelections: {
             textFont: "Default",
-            textSize: "Default",
             textSpacing: "Default",
             contrast: "Default",
             backgroundImages: "Default",
@@ -298,7 +334,6 @@ fluid_1_0 = fluid_1_0 || {};
         },
         originalSettings: {
             textFont: "Default",
-            textSize: "Default",
             textSpacing: "Default",
             contrast: "Default",
             backgroundImages: "Default",
@@ -309,10 +344,6 @@ fluid_1_0 = fluid_1_0 || {};
             textFont: {
                 names: ["No Preference", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"],
                 values: ["Default", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"]
-            },
-            textSize: {
-                names: ["No Preference", "-3", "-2", "-1", "+1", "+2", "+3", "+4", "+5"],
-                values: ["0", "-3", "-2", "-1", "+1", "+2", "+3", "+4", "+5"]
             },
             textSpacing: {
                 names: ["No Preference", "Wide", "Wider", "Widest"],

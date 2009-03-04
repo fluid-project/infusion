@@ -54,7 +54,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             expect(4);
 
             var hcLargeFontSkin = {
-                textSize: "+3",
+                textSize: "24",
                 textFont: "Courier",
                 textSpacing: "Wide",
                 contrast: "High Contrast"
@@ -63,7 +63,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var uiEnhancer = fluid.uiEnhancer(main);
 
             uiEnhancer.style(hcLargeFontSkin);
-            jqUnit.assertTrue("main has large text size class", main.hasClass("fl-font-size-130"));
+            jqUnit.assertEquals("main has large text size", "24pt", main.css("fontSize"));
             jqUnit.assertTrue("main has courier font class", main.hasClass("fl-font-monospace"));
             jqUnit.assertTrue("main has wide text spacing class", main.hasClass("fl-font-spacing-1"));
             jqUnit.assertTrue("main has high contrast class", main.hasClass("fl-theme-hc"));

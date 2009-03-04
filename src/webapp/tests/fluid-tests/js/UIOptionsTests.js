@@ -19,7 +19,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var tests = new jqUnit.TestCase("UIOptions Tests");
         
         var hcSkin = {
-            textSize: "-1",
+            textSize: "8",
             textFont: "Verdana",
             textSpacing: "Wider",
             contrast: "High Contrast"
@@ -45,7 +45,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var model = uiOptions.model;
                 jqUnit.assertNotNull("Model is not null", model);
                 jqUnit.assertNotUndefined("Model is not undefined", model);
-                jqUnit.assertEquals("Text size is set", "Default", model.textSize);
+                jqUnit.assertFalse("Min text size is not set", !!model.textSize);
                 jqUnit.assertEquals("Text font is set", "Default", model.textFont);
                 jqUnit.assertEquals("Text spacing is set", "Default", model.textSpacing);
                 jqUnit.assertEquals("Colour scheme is set", "Default", model.contrast);
@@ -82,8 +82,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertEquals("hc setting was not saved", "Default", uiOptions.savedModel.contrast);
                 
                 uiOptions.refreshView();
-                var fontSizeSelection = $(":selected", $("#font-min-size-selection"));
-                jqUnit.assertEquals("Small font size selected", "-1", fontSizeSelection[0].value);
+                var fontSizeSetting = $("#font-min-size").val();
+                jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
                 var fontStyleSelection = $(":selected", $("#font-style-selection"));
                 jqUnit.assertEquals("Verdana selected", "Verdana", fontStyleSelection[0].value);
                 var textSpacingSelection = $(":selected", $("#text-spacing-selection"));

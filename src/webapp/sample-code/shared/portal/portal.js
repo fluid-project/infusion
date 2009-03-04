@@ -62,7 +62,7 @@ var demo = demo || {};
      * Settings for high contrast, large font 
      */
     demo.hcLargeSettings = {
-        textSize: "+3",
+        textSize: "16",
         textFont: "Courier",
         textSpacing: "Wide",
         contrast: "High Contrast",
@@ -73,7 +73,6 @@ var demo = demo || {};
      * Settings for high contrast, simple layout
      */
     demo.hcSimpleLayoutSettings = {
-        textSize: "Default",
         textFont: "Default",
         textSpacing: "Default",
         contrast: "High Contrast",
@@ -84,7 +83,7 @@ var demo = demo || {};
      * Settings for mist, small font 
      */
     demo.mistSmallSettings = {
-        textSize: "-1",
+        textSize: "8",
         textFont: "Default",
         textSpacing: "Default",
         contrast: "Mist",
