@@ -8,8 +8,9 @@ Generic containers for columns and layouts
 .fl-push {clear:both;}
 
 /* Container alignment */
-.fl-force-right {float:right; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
-.fl-force-left {float:left; display:inline;} /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
+ /* IE 6 needs inline display to prevent double margin bug (other browsers ignore it) */
+.fl-force-right {float:right; display:inline;}
+.fl-force-left {float:left; display:inline;}
 .fl-centered {margin-left:auto; margin-right:auto; display:block;}
 
 /* Generic container, proxy for other container effects */
@@ -120,7 +121,7 @@ Layout Helpers
 
 .fl-col-mixed3 .fl-col-main {margin:0 220px;} /* margin goes on whichever side the fixed column goes */
 
-/* New System, requires fl-force-XX, provides some basic numbers to start with */
+/* New System, requires fl-force-XX on the fixed column, provides some basic numbers to start with */
 .fl-col-fixed, .fl-col-flex {padding:0 10px;}
 
 .fl-col-mixed .fl-col-fixed {width:200px; padding:0 10px;}
@@ -140,7 +141,6 @@ Layout Helpers
 
 .fl-col-mixed-300 .fl-col-fixed {width:300px;}
 .fl-col-mixed-300 .fl-col-flex {margin-left:320px;}
-
 
 
 /*
@@ -234,6 +234,19 @@ input.fl-icon {padding-left:16px;}
 .fl-widget .on 		{background-position:left top;}
 .fl-widget .off 	{background-position:left bottom;}
 
+/**
+ * Sliders: basic slider structure
+ * requires an anchor for a drag handle
+ */
+
+.fl-vert-slider {height:10em; width:0.8em;}
+.fl-horz-slider {width:10em; height:0.8em;}
+.fl-slider {position:relative; background-color:#ebebeb;}
+.fl-slider a {position:absolute; display:block; background-color:#ccc; height:1.2em; width:1.2em;}
+.fl-vert-slider a {margin-left:-0.2em;}
+.fl-horz-slider a {margin-top:-0.2em;}
+
+
 
 /*
  * Forms and Form Controls
@@ -256,10 +269,3 @@ input.fl-icon {padding-left:16px;}
     background-image:none !important;
 }
 
-
-/*
-Progressive Enhancement Switches
-=============================================
-*/
-.fl-PE-hide {display:none}
-.fl-progressive-enhancer {display:none;} /* old syntax; this is being fazed out */
