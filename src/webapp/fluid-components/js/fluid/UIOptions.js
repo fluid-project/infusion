@@ -21,7 +21,6 @@ fluid_1_0 = fluid_1_0 || {};
 //    - create a subcomponent which has a textbox and slider combination
 //    - bind the slider - currently using the slider does not change the underlying model (the preview does not respond to a slider change)
 //    - fix the test that is throwing an error
-//    - fix the orientation of the slider in the sakai sample
 //    - stop using the jQuery styling for the slider and use FSS
 //    - generate the renderer tree
 //    - document the API
@@ -71,7 +70,8 @@ fluid_1_0 = fluid_1_0 || {};
                         // TODO: is there a more natural way to bind this value?
                         value: rendererModel.selections.textSize,
                         min: 6,
-                        max: 200
+                        max: 200,
+                        orientation: "horizontal"
                     }
                 }]
             }, {
@@ -240,12 +240,10 @@ fluid_1_0 = fluid_1_0 || {};
         };
 
         previewFrame.load(function () {
-            setTimeout(function () {
-                var previewFrameContents = previewFrame.contents();
-                var preview = that.locate("preview", previewFrameContents);
-                previewEnhancer = fluid.uiEnhancer(preview);
-                updatePreview(that.model);
-            }, 100);  // TODO: this wait shouldn't be here - it was accidentally committed. 
+            var previewFrameContents = previewFrame.contents();
+            var preview = that.locate("preview", previewFrameContents);
+            previewEnhancer = fluid.uiEnhancer(preview);
+            updatePreview(that.model);
         });        
         
         that.events.modelChanged.addListener(updatePreview);
