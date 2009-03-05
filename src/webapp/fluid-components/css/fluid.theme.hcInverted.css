@@ -23,14 +23,13 @@
 .fl-theme-hci a:hover * {color: #000000 !important; background-color:#ffffff !important;}
 
 /* Headers */
-/*
-.fl-theme-hci h1, .fl-theme-hci h1 * {color:#fff !important; background-color:#ffffff !important;} 
-.fl-theme-hci h2, .fl-theme-hci h2 * {color:#fff !important; background-color:#ffffff !important;} 
-.fl-theme-hci h3, .fl-theme-hci h3 * {color:#000000 !important; background-color:#ffffff !important;} 
-.fl-theme-hci h4, .fl-theme-hci h4 * {color:#000000 !important; background-color:#ffffff !important;} 
-.fl-theme-hci h5, .fl-theme-hci h5 * {color:#000000 !important; background-color:#ffffff !important;} 
-.fl-theme-hci h6, .fl-theme-hci h6 * {color:#000000 !important; background-color:#ffffff !important;} 
-*/
+.fl-theme-hci h1,
+.fl-theme-hci h2,
+.fl-theme-hci h3,
+.fl-theme-hci h4,
+.fl-theme-hci h5,
+.fl-theme-hci h6 {border-bottom:0.1em dashed #FFFFFF;}
+
 
 /* Tables */
 .fl-theme-hci th {border:0.1em solid #ffffff; background-color:#ffffff !important; color:#000000 !important;}
