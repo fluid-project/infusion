@@ -27,10 +27,11 @@
     .fl-theme-mist .fl-widget .settings {background-image:url('../images/fluid-theme-mist/icon-widget-ShowSettings.png'); margin-right:0px; width:70px; }
     
     .fl-theme-mist .fl-widget-options .viewOptions {background-image:url('../images/fluid-theme-mist/icon-options-ListOrGrid.png'); background-color:#fff;  border:1px solid #000;}
-    /* Widget :: Menus */
-    .fl-theme-mist .fl-widget-content .menu {padding:0px; overflow-y:auto; overflow-x:hidden; background-color:#f8f8f8; border:1px solid #ccc; border-bottom:none; zoom:1;}
-    .fl-theme-mist .fl-widget-content .menu li {float:left; list-style-type:none; border-bottom:1px solid #ccc; width:100%; }
-    .fl-theme-mist .fl-widget-content .menu a {position:relative; display:block; text-indent:30px; font-weight:bold; padding:7px 0 7px 0; background-color:transparent;}
-    .fl-theme-mist .fl-widget-content .menu a:hover {background-color:#dfefff; color:#000;}
-    .fl-theme-mist .fl-widget-content .menu .icon {}
-    .fl-theme-mist .fl-widget-content .menu .delete {position:absolute;background-image: url('../images/fluid-theme-mist/icon-menu-Delete.png');  right:0; top:5px; background-repeat:no-repeat; background-position: top left;}
+    
+    /* Widget :: Menus */    
+    .fl-theme-mist .fl-widget-content .fl-listmenu {border:none; border-bottom:1px solid #ccc;}
+    .fl-theme-mist .fl-widget-content .fl-listmenu li {position:relative; border-color:#ccc;}
+    .fl-theme-mist .fl-widget-content .fl-listmenu a { text-indent:2em; background-color:#f5f5f5; color:#000;}
+    .fl-theme-mist .fl-widget-content .fl-listmenu a:hover {background-color:#dfefff; color:#000;}
+    
+    .fl-theme-mist .fl-widget-content .menu .delete {background-image: url('../images/fluid-theme-mist/icon-menu-Delete.png');  right:0; top:5px; background-repeat:no-repeat; background-position: top left;}

@@ -8,7 +8,7 @@ p {margin:0; padding-bottom:1em;}
 /* 
  * Needs to move to fluid.layout.css and abstracted
  */
-.content {padding-top:15px;}
+.content {padding:15px 10px;}
 .column {min-height:100px;}
 .left {width:300px; float:left;}
 .right {width:300px; float:right;}
@@ -50,8 +50,8 @@ p {margin:0; padding-bottom:1em;}
 .lookNfeel {padding:15px 10px 0; overflow:auto;}
 .lookNfeel .skin {background-image: url('../images/_common/edit-look-feel.png')}
 .lookNfeel .addWidget {background-image: url('../images/_common/add-widgets.png')}
-.lookNfeel a {color:#000;  text-decoration:none;}
-.lookNfeel strong { background: url('../images/_common/buttons-right.png') no-repeat right top; font-weight:normal; }
+.lookNfeel a {color:#000;  text-decoration:none; padding-left:24px;}
+.lookNfeel strong { background: url('../images/_common/buttons-right.png') no-repeat right top; font-weight:normal; padding-bottom:6px; padding-left:5px; padding-top:6px;}
 
 /************************************/
 .footer { background:url("../images/_common/sakai.png") no-repeat left center; border-top:1px solid #efefef; color:#ccc; font-size:0.8em; margin:10px 0 0;}

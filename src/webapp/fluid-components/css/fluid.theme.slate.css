@@ -1,0 +1,92 @@
+/*
+          Low Contrast Grey scale ()
+=============================================
+ * Color Schema:
+ *     DEFINITIONS:
+ *         white     : #ffffff
+ *         grey      : #cccccc
+ *         dark grey : #999999
+ *         deep grey : #666666
+ */
+
+.fl-theme-slate :focus,
+.fl-theme-slate .selectable  {
+   /* themed focus indicator */
+   outline: 0.1em solid #000;
+}
+
+.fl-theme-slate {color:#000000 !important; background-color:#cccccc !important; border-color:#999999;}
+.fl-theme-slate a {color: #ebebeb !important; font-weight:bold;}
+.fl-theme-slate a:hover {color: #ffffff !important;}
+.fl-theme-slate h1 {color:#999999; border-bottom-width:0.2em; border-bottom-style:solid;} 
+.fl-theme-slate h2 {color: #ffffff;}
+
+.fl-theme-slate th {border:0.1em solid #ffffff; background-color:#dfefff !important;}
+.fl-theme-slate td {border:0.1em solid #999999 !important;}
+.fl-theme-slate .fl-textfield {}
+.fl-theme-slate .fl-textarea {}
+
+/* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
+.fl-theme-slate span input {background-color:#dfefff !important; border:0.1em solid #ffffff; margin:-0.1em;}
+
+/* Helper: Tabs */
+.fl-theme-slate .fl-tabs {border-bottom-color:#999999;}
+.fl-theme-slate .fl-tabs li,
+.fl-theme-slate .fl-tabs li a  {font-weight:bold; color:#999999; border-color:#999999; border-bottom-color:#999999; background-color:#666; text-decoration:none;}
+.fl-theme-slate .fl-tabs li a:hover {background-color:#999; color:#fff !important;}
+
+/* Deprecated */
+.fl-theme-slate .fl-tabs li.fl-activeTab,
+.fl-theme-slate .fl-tabs li.fl-activeTab:hover,
+.fl-theme-slate .fl-tabs li.fl-activeTab a,
+.fl-theme-slate .fl-tabs li.fl-activeTab a:hover,
+/* New syntax */
+.fl-theme-slate .fl-tabs li.fl-tabs-active,
+.fl-theme-slate .fl-tabs li.fl-tabs-active a,
+.fl-theme-slate .fl-tabs li.fl-tabs-active a:hover {background-color: #ebebeb; border-bottom-color:#ccc; color:#000 !important;}
+
+.fl-theme-slate .fl-tabs-content {background-color:#ebebeb; color:#000; border:1px solid #999999; border-top:none;}
+
+/* Helper: Menu */
+.fl-theme-slate .fl-listmenu {border:1px solid #999999; background-color:#ccc;}
+.fl-theme-slate .fl-listmenu li,
+.fl-theme-slate .fl-listmenu li a  {font-weight:bold; background-color:#999; border-color:#ccc; text-decoration:none;}
+.fl-theme-slate .fl-listmenu a:hover {background-color:#ebebeb; color:#000 !important;}
+.fl-theme-slate .fl-listmenu .fl-activemenu,
+.fl-theme-slate .fl-listmenu .fl-activemenu:hover { background-color: #ccc; border-bottom-color:#ccc; color:#d9d9d9;}
+
+/* Helper: Thumbnail Grid */
+.fl-theme-slate .fl-grid {border:2px solid #999999; background-color:#ccc;}
+.fl-theme-slate .fl-grid li {background-color:#dfefff; border:1px solid #999999}
+.fl-theme-slate .fl-grid .caption {background-color:#dfefff; color:#ffffff; }
+
+/* Helper: Widgets */
+/* Widget core */
+.fl-theme-slate .fl-widget {background:#cccccc url(FSS_images/themes/slate/widget-bg.png) repeat-x top left; border:1px solid #666666;}                        
+    .fl-theme-slate .fl-widget ul {}
+    .fl-theme-slate .fl-widget h2 {color:#ccc;}
+    .fl-theme-slate .grabbable {background-image:url('FSS_images/themes/slate/gripper.png');}
+
+/* Widget titlebar */
+.fl-theme-slate .fl-widget-titlebar {/*margin:-5px -5px 0 -5px;*/}
+    .fl-theme-slate .fl-widget-titlebar .icon {background-position:center center;}
+
+/* Widget options */
+.fl-theme-slate .fl-widget-options {}
+    .fl-theme-slate .fl-widget-options ul {} 
+    .fl-theme-slate .fl-widget-options li {border-left:1px solid #ccc;}
+    .fl-theme-slate .fl-widget-options a {}
+    .fl-theme-slate .fl-widget-options a.icon:hover {background-color:#ffffff; border-color:#000;}
+
+/* Widget content */
+.fl-theme-slate .fl-widget-content {background-color:#bfbfbf;}
+
+
+/* Component: Progressor */
+.fl-theme-slate .fl-progress-bounds {border-color:#999999; background-color:#ccc;}
+.fl-theme-slate .fl-progress-fill {color:#999999; background-color:#000;}
+
+/* Component: Uploader */
+
+/* States */
+.fl-theme-slate .orderable-drop-marker {background-color:#f00 !important;}

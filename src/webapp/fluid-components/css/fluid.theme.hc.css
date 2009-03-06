@@ -50,6 +50,11 @@
 .fl-theme-hc .fl-tabs li:hover,
 .fl-theme-hc .fl-tabs li:hover *,
 .fl-theme-hc .fl-tabs li a:hover {color:#000 !important; background-color:#fff !important;}
+
+.fl-theme-hc .fl-tabs li.fl-tabs-active,
+.fl-theme-hc .fl-tabs li.fl-tabs-active a,
+.fl-theme-hc .fl-tabs li.fl-tabs-active a:hover, 
+
 .fl-theme-hc .fl-tabs li.fl-activeTab,
 .fl-theme-hc .fl-tabs li.fl-activeTab:hover,
 .fl-theme-hc .fl-tabs li.fl-activeTab a,

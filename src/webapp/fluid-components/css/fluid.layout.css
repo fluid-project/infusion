@@ -89,7 +89,7 @@ Generic containers for columns and layouts
 .fl-layout-linear .fl-force-right,
 .fl-layout-linear li {display:block !important; float:none !important;}
 
-.fl-layout-linear .fl-linearEnabled {width:100% !important; position:relative;} /* linearization opt in for special cases */
+.fl-layout-linear .fl-linearEnabled {width:100% !important; position:relative; display:block;} /* linearization opt in for special cases */
 
 /*
 Layout Helpers
@@ -149,24 +149,23 @@ Layout Helpers
  */
 .fl-tabs {margin:0.75em 0 0 0; border-bottom:1px solid #000; text-align:center; padding-bottom:0.2em;}
 .fl-tabs li {list-style-type:none; display:inline;}
-.fl-tabs li a {padding:0.25em 1.25em; background-color:#fff; margin-left:-5px; *margin-bottom:-8px; zoom:1; border:1px solid #000; border-bottom:1px solid #fff;}
+.fl-tabs li a {padding:0.25em 1.25em 0.2em; background-color:#fff; margin-left:-5px; *margin-bottom:-7px; zoom:1; border:1px solid #000;}
 .fl-tabs li a:hover {}
-.fl-tabs .orderable-drop-marker {padding:0 3px; background-color:#c00;margin:0 5px 0 -5px; zoom:1;}
-
-.fl-tabs .fl-activeTab {}
-
 .fl-tabs-center {text-align:center;}
 .fl-tabs-left {text-align:left; padding-left:10px;}
 .fl-tabs-right {text-align:right; padding-right:15px;}
-
+.fl-tabs .orderable-drop-marker {padding:0 3px; background-color:#c00;margin:0 5px 0 -5px; zoom:1;}
+.fl-tabs .fl-tabs-active a {padding:0.25em 1.25em; border-bottom:none;}
+.fl-tabs-content {padding:5px;}
 
 /*
  * Menus: quick horizontal and vertical menu
  * Requires list items with anchors
  */
-.fl-listmenu {padding:0px; border-bottom-width:1px; border-bottom-style:solid;}
+.fl-listmenu {padding:0px; margin:0; border-bottom-width:1px; border-bottom-style:solid;}
 .fl-listmenu li {margin:0; padding:0; list-style-type:none; border-width:1px; border-style:solid; border-bottom:none;}
 .fl-listmenu a {padding:5px 5px; display:block; zoom:1;} /* list item needs layout (http://www.brunildo.org/test/IEWlispace.php) */
+
 .fl-vert-menu {
 }
 .fl-horz-menu {
@@ -241,7 +240,7 @@ input.fl-icon {padding-left:16px;}
 
 .fl-vert-slider {height:10em; width:0.8em;}
 .fl-horz-slider {width:10em; height:0.8em;}
-.fl-slider {position:relative; background-color:#ebebeb;}
+.fl-slider {position:relative; background-color:#ebebeb; padding:0;}
 .fl-slider a {position:absolute; display:block; background-color:#ccc; height:1.2em; width:1.2em; top:0; left:0;}
 .fl-vert-slider a {margin-left:-0.2em; margin-top:-0.5em;}
 .fl-horz-slider a {margin-top:-0.2em; margin-left:-0.5em;}

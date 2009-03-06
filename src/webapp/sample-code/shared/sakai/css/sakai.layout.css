@@ -33,6 +33,7 @@
 .fl-widget .empty * {padding-top:10px; margin-left:auto; margin-right:auto; text-align:center;}
 
 /* Common widget sub-components */
+.fl-widget .fl-listmenu .fl-icon {position:absolute}
 .fl-widget .menu 	{margin:0;}
 .fl-widget .grabbable {cursor:move; background-position:center top; background-repeat:no-repeat;}
 .fl-widget h2.grabbable {background-position:center top;}

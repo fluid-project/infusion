@@ -46,6 +46,10 @@ body {
 .fl-tabs li:hover,
 .fl-tabs li:hover a,
 .fl-tabs li a:hover {background-color:#999; color:#fff}
+
+.fl-tabs li.fl-tabs-active,
+.fl-tabs li.fl-tabs-active a,
+.fl-tabs li.fl-tabs-active a:hover, 
 .fl-tabs li.fl-activeTab,
 .fl-tabs li.fl-activeTab a,
 .fl-tabs li.fl-activeTab a:hover {background-color:rgb(200,200,250); border-bottom-color:rgb(200,200,250); color:#000;}

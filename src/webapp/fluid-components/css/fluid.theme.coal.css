@@ -1,0 +1,98 @@
+/*
+         Medium Contrast Greyscale
+=============================================
+ * Color Schema:
+ *     DEFINITIONS:
+ *         white     : #ffffff
+ *         grey      : #999999
+ *         charcoal  : #333333
+ *         black     : #000000
+ */
+
+.fl-theme-coal :focus,
+.fl-theme-coal .selectable  {
+   /* themed focus indicator */
+   outline: 0.1em solid #F00;
+}
+
+.fl-theme-coal {color:#000000 !important; background-color:#f4f4f4 !important; border-color:#4070a1;}
+.fl-theme-coal a {color: #5a95cf !important; font-weight:bold;}
+.fl-theme-coal a:hover {color: #6DB5FB !important;}
+.fl-theme-coal h1 {color:#4070a1; border-bottom-width:0.2em; border-bottom-style:solid;} 
+.fl-theme-coal h2 {color: #5a95cf;}
+
+.fl-theme-coal th {border:0.1em solid #5a95cf; background-color:#dfefff !important;}
+.fl-theme-coal td {border:0.1em solid #999999 !important;}
+.fl-theme-coal .fl-textfield {}
+.fl-theme-coal .fl-textarea {}
+
+/* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
+.fl-theme-coal span input {background-color:#dfefff !important; border:0.1em solid #5a95cf; margin:-0.1em;}
+
+/* Helper: Tabs */
+.fl-theme-coal .fl-tabs {border-bottom-color:#4070a1;}
+.fl-theme-coal .fl-tabs li  {background-color:#dfefff;}
+.fl-theme-coal .fl-tabs li,
+.fl-theme-coal .fl-tabs li a  {font-weight:bold; color:#4070a1; border-color:#4070a1; border-bottom-color:#4070a1; text-decoration:none;}
+.fl-theme-coal .fl-tabs li:hover,
+.fl-theme-coal .fl-tabs li:hover a,
+.fl-theme-coal .fl-tabs li a:hover {background-color:#5a95cf; color:#fff !important;}
+
+
+/* Deprecated syntax */
+.fl-theme-coal .fl-tabs li.fl-activeTab,
+.fl-theme-coal .fl-tabs li.fl-activeTab:hover,
+.fl-theme-coal .fl-tabs li.fl-activeTab a,
+.fl-theme-coal .fl-tabs li.fl-activeTab a:hover, 
+/* New active tab syntax */
+.fl-theme-coal .fl-tabs li.fl-tabs-active,
+.fl-theme-coal .fl-tabs li.fl-tabs-active a,
+.fl-theme-coal .fl-tabs li.fl-tabs-active a:hover {background-color: #fff; border-bottom-color:#fff; color:#508cc9 !important;}
+
+
+.fl-theme-coal .fl-tab-content {background-color:#ffffff; color:#000; border:1px solid #4070a1; border-top:none;}
+
+/* Helper: Menu */
+.fl-theme-coal .fl-listmenu {border:1px solid #4070a1; background-color:#fff;}
+.fl-theme-coal .fl-listmenu li,
+.fl-theme-coal .fl-listmenu li a  {font-weight:bold; color:#4070a1; background-color:#dfefff; border-color:#4070a1; text-decoration:none;}
+.fl-theme-coal .fl-listmenu a:hover {background-color:#5a95cf; color:#fff;}
+.fl-theme-coal .fl-listmenu .fl-activemenu,
+.fl-theme-coal .fl-listmenu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
+
+/* Helper: Thumbnail Grid */
+.fl-theme-coal .fl-grid {border:2px solid #4070a1; background-color:#fff;}
+.fl-theme-coal .fl-grid li {background-color:#dfefff; border:1px solid #4070a1}
+.fl-theme-coal .fl-grid .caption {background-color:#dfefff; color:#5a95cf; }
+
+/* Helper: Widgets */
+/* Widget core */
+.fl-theme-coal .fl-widget {background:#efefef url(FSS_images/themes/mist/widget-bg.png) repeat-x top left; border:1px solid #CCCCCC;}
+    .fl-theme-coal .fl-widget ul {}
+    .fl-theme-coal .fl-widget h2 {color:#000;}
+    .fl-theme-coal .grabbable {background-image:url('FSS_images/themes/mist/gripper.png');}
+
+/* Widget titlebar */
+.fl-theme-coal .fl-widget-titlebar {/*margin:-5px -5px 0 -5px;*/}
+    .fl-theme-coal .fl-widget-titlebar .icon {background-position:center center;}
+
+/* Widget options */
+.fl-theme-coal .fl-widget-options {}
+    .fl-theme-coal .fl-widget-options ul {} 
+    .fl-theme-coal .fl-widget-options li {border-left:1px solid #ccc;}
+    .fl-theme-coal .fl-widget-options a {}
+    .fl-theme-coal .fl-widget-options a.icon:hover {background-color:#5a95cf; border-color:#000;}
+
+/* Widget content */
+.fl-theme-coal .fl-widget-content {background-color:#fff;}
+
+
+
+/* Component: Progressor */
+.fl-theme-coal .fl-progress-bounds {border-color:#999999; background-color:#fff;}
+.fl-theme-coal .fl-progress-fill {color:#4070a1; background-color:#000;}
+
+/* Component: Uploader */
+
+/* States */
+.fl-theme-coal .orderable-drop-marker {background-color:#f00 !important;}

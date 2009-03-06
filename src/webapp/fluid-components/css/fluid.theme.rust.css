@@ -96,6 +96,11 @@
 .fl-theme-rust .fl-tabs li:hover,
 .fl-theme-rust .fl-tabs li:hover a,
 .fl-theme-rust .fl-tabs li a:hover {background-color:#662e0f; color:#fff !important;}
+
+.fl-theme-rust .fl-tabs li.fl-tabs-active,
+.fl-theme-rust .fl-tabs li.fl-tabs-active a,
+.fl-theme-rust .fl-tabs li.fl-tabs-active a:hover, 
+
 .fl-theme-rust .fl-tabs li.fl-activeTab,
 .fl-theme-rust .fl-tabs li.fl-activeTab:hover,
 .fl-theme-rust .fl-tabs li.fl-activeTab a,
