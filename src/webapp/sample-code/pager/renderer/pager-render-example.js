@@ -26,7 +26,9 @@ var demo = demo || {};
             bodyRenderer: {
               type: "fluid.pager.selfRender",
               options: {
-                root: "#body-template",
+                selectors: {
+					root: "#body-template"
+				},
                 row: "row:"
               }
             },

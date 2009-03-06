@@ -98,12 +98,7 @@
                 var options = {
                     dataModel: sampleData,
                     columnDefs: "explode",
-                    bodyRenderer: {
-                        type: "fluid.pager.selfRender",
-                        options: {
-                            root: "#pager-demo-1"
-                        }
-                    }
+                    bodyRenderer: "fluid.pager.selfRender"
                 };                    
                 fluid.pager("#pager-demo-1", options);
             });
@@ -131,7 +126,7 @@
 -->
             </ul>    
             <!-- Pagination Printout (Pager part 2) -->
-            <table>
+            <table class="body-template">
                 <tr rsf:id="header:">
                     <th>Name</th>
                 </tr>

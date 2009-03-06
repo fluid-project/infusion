@@ -495,7 +495,7 @@ fluid_1_0 = fluid_1_0 || {};
         var options = that.options;
         options.renderOptions.idMap = options.renderOptions.idMap || {};
         var idMap = options.renderOptions.idMap;
-        var root = $(options.root);
+		var root = that.locate("root");
         var template = fluid.selfRender(root, {}, options.renderOptions);
         root.addClass("fl-components-pager");
         var columnDefs = getColumnDefs(overallThat);
@@ -533,6 +533,9 @@ fluid_1_0 = fluid_1_0 || {};
     };
 
     fluid.defaults("fluid.pager.selfRender", {
+		selectors: {
+			root: ".body-template"
+		},
         keyStrategy: "id",
         keyPrefix: "",
         row: "row:",
