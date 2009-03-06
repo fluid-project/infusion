@@ -14,17 +14,78 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 fluid_1_0 = fluid_1_0 || {};
 
+
+/******************
+ * Textbox Slider *
+ ******************/
+
+(function ($, fluid) {
+    
+    var initTextboxSlider = function (that) {
+        var textbox = that.locate("textbox");
+
+        var sliderOptions = that.options.sliderOptions;
+        sliderOptions.value = that.model;
+        var slider = that.locate("slider").slider(sliderOptions);
+
+        textbox.change(function () {
+            slider.slider("value", this.value);
+            that.updateModel(this.value, this);
+        });
+
+        slider.bind("slide", function (e, ui) {
+            textbox.val(ui.value);
+            that.updateModel(ui.value, slider);
+        });
+    };
+    
+    fluid.textboxSlider = function (container, options) {
+        var that = fluid.initView("fluid.textboxSlider", container, options);
+        that.model = that.locate("textbox").val();
+        initTextboxSlider(that);
+        
+        that.updateModel = function (model, source) {
+            that.events.modelChanged.fire(model, that.model, source);
+            that.model = model;
+        };
+        
+        return that;
+    };
+
+    fluid.defaults("fluid.textboxSlider", {
+        selectors: {
+            textbox: ".fl-textbox",
+            slider: ".fl-slider"
+        },
+        events: {
+            modelChanged: null
+        },
+        sliderOptions: {
+            min: 6,
+            max: 200,
+            orientation: "horizontal"
+        }
+    });
+    
+})(jQuery, fluid_1_0);
+
+
+/**************
+ * UI Options *
+ **************/
+
 (function ($, fluid) {
 
 //    TODO
 //    - handle enter in the textbox - currently it causes the page to reload
-//    - create a subcomponent which has a textbox and slider combination
-//    - bind the slider - currently using the slider does not change the underlying model (the preview does not respond to a slider change)
-//    - fix the test that is throwing an error
-//    - stop using the jQuery styling for the slider and use FSS
+//    - fix the test that is throwing an error (the issue is the preview not loading because the path is hardcoded in the template)
+//    - make the preview a subcomponent
 //    - generate the renderer tree
 //    - document the API
-//
+//    - constrain the size that can be entered in the text box
+//    - merge user options to the textslider into other options.
+//    - write tests for textboxSlider
+//    - add the min font size textboxSlider to the renderer tree
 
     // TODO: Generate this tree
     var generateTree = function (that, rendererModel) {
@@ -41,39 +102,6 @@ fluid_1_0 = fluid_1_0 || {};
                 optionnames: {
                     valuebinding: "labelMap.textFont.names"
                 }
-            }, {// TODO: refactor this: a subcomponent that has a slider and a text box is in order
-                ID: "font-min-size",
-                valuebinding: "selections.textSize",
-                decorators: [{
-                    type: "$",
-                    func: "change",
-                    args: function () {
-                        // TODO: is there a better way to do this rather then using the id?
-                        //       will the id always be generated as font-min-size-slider?
-                        $("#font-min-size-slider").slider("value", this.value);
-                    }
-                }]
-            }, {
-                ID: "font-min-size-slider",
-                decorators: [{
-                    type: "$",
-                    func: "slider",
-                    args: {
-                        change: function (e, ui) {
-                            // TODO: what I really want here is automatic data binding. 
-                            var textbox = $("#font-min-size");
-                            textbox.val(ui.value);
-//                            var newModel = fluid.copy(that.model);
-//                            newModel.textSize = ui.value;
-//                            that.updateModel(newModel);
-                        },
-                        // TODO: is there a more natural way to bind this value?
-                        value: rendererModel.selections.textSize,
-                        min: 6,
-                        max: 200,
-                        orientation: "horizontal"
-                    }
-                }]
             }, {
                 ID: "text-spacing",
                 selection: {
@@ -199,6 +227,7 @@ fluid_1_0 = fluid_1_0 || {};
         };
     };
     
+    // TODO: FLUID-2293: Implement multi-levels of undo in the UndoManager
     var initModels = function (that) {
         that.originalModel = that.options.originalSettings;
         that.savedModel = that.options.savedSelections;
@@ -218,7 +247,7 @@ fluid_1_0 = fluid_1_0 || {};
             that.cancel();
         });
 
-        // TODO: This should probably be removed and use a renderer event instead.
+        // TODO: This should probably be removed and use a renderer decorator instead.
         that.locate("controls").change(function () {
             // This is strange - old model and new model are the same. 
             that.events.modelChanged.fire(that.model, that.model, that);
@@ -226,6 +255,7 @@ fluid_1_0 = fluid_1_0 || {};
         
     };
     
+    // TODO: Make the preview a subcomponent
     var initPreview = function (that) {
         var previewFrame = that.locate("previewFrame");
         var previewEnhancer;
@@ -263,7 +293,21 @@ fluid_1_0 = fluid_1_0 || {};
     
     var setupUIOptions = function (that) {
         initModels(that);
+        
+        // TODO: This stuff should already be in the renderer tree
         that.events.afterRender.addListener(function () {
+            fluid.initSubcomponents(that, "fontMinSize", 
+                        [that.options.selectors.fontMinSize, 
+                            {
+                                listeners: {
+                                    modelChanged: function (value) {
+                                        var uiOptionsModel = fluid.copy(that.model);
+                                        uiOptionsModel.textSize = value;
+                                        that.updateModel(uiOptionsModel);
+                                    }
+                                }
+                        }]);
+
             bindHandlers(that);
             initPreview(that);        
         });
@@ -325,7 +369,8 @@ fluid_1_0 = fluid_1_0 || {};
             save: ".fl-hook-preview-save",
             reset: ".fl-hook-preview-reset",
             cancel: ".fl-hook-preview-cancel",
-            enhanceContainer: "body"
+            enhanceContainer: "body",
+            fontMinSize: ".fl-control-min_text_size"
         },
         events: {
             modelChanged: null,
@@ -375,6 +420,9 @@ fluid_1_0 = fluid_1_0 || {};
                 names: ["Yes", "No"],
                 values: ["On", "Default"]
             }
+        },
+        fontMinSize: {
+            type: "fluid.textboxSlider"
         }
     });
 
