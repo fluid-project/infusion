@@ -46,7 +46,10 @@ p {margin:0; padding-bottom:1em;}
 .header p {margin:0; padding:0; display:none;}
 .header ul {margin:0; padding:0; display:none;}
 .header ul li {display:inline;}
-/************************************/
+
+.fl-tabs-content .fl-col input {width:45%; margin:3px 0; padding:0;}
+
+
 .lookNfeel {padding:15px 10px 0; overflow:auto;}
 .lookNfeel .skin {background-image: url('../images/_common/edit-look-feel.png')}
 .lookNfeel .addWidget {background-image: url('../images/_common/add-widgets.png')}

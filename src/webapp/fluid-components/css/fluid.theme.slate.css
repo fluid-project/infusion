@@ -23,8 +23,8 @@
 
 .fl-theme-slate th {border:0.1em solid #ffffff; background-color:#dfefff !important;}
 .fl-theme-slate td {border:0.1em solid #999999 !important;}
-.fl-theme-slate .fl-textfield {}
-.fl-theme-slate .fl-textarea {}
+.fl-theme-slate .fl-textfield,
+.fl-theme-slate .fl-textarea {background-color:#ccc; border:1px solid #666;}
 
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
 .fl-theme-slate span input {background-color:#dfefff !important; border:0.1em solid #ffffff; margin:-0.1em;}

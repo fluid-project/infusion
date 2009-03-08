@@ -26,8 +26,8 @@
 
 .fl-theme-mist th {border:0.1em solid #5a95cf; background-color:#dfefff !important;}
 .fl-theme-mist td {border:0.1em solid #999999 !important;}
-.fl-theme-mist .fl-textfield {}
-.fl-theme-mist .fl-textarea {}
+.fl-theme-mist .fl-textfield,
+.fl-theme-mist .fl-textarea {border:1px solid #5a95cf; border-bottom-color:#5a95cf; border-right-color:#5a95cf; background-color:#dfefff;}
 
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
 .fl-theme-mist span input {background-color:#dfefff !important; border:0.1em solid #5a95cf; margin:-0.1em;}
