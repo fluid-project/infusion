@@ -18,7 +18,11 @@ $().ready(function(){
 			{title: "FSS.Text.Size", note: "A Test for text size. No two sizes should look alike."},
 			{title: "FSS.Text.Spacing", note: "A Test for letter spacing/tracking. No two sizes should look alike."},
 			{title: "FSS.Text.Font.Family", note: "A Test for typefaces. Typefaces should match the text name."},
-			{title: "FSS.Complete", note: "Complete test page. Includes most FSS feature class names."}
+			{title: "FSS.Complete", note: "Complete test page. Includes most FSS feature class names."},
+            {title: "FSS.Components.Uploader", note: "FSS Skinning for Uploader"},
+            {title: "FSS.Components.Inline Edit", note: "FSS Skinning for Inline Edit"},
+            {title: "FSS.Components.Pager", note: "FSS Skinning for Pager"},
+            {title: "FSS.Components.IUOptions", note: "FSS Skinning for User Interface Options"}
 		]
 	}
 
