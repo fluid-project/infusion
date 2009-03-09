@@ -31,7 +31,7 @@
 /* Helper: Tabs */
 .fl-theme-coal .fl-tabs {border-bottom-color:#333333;}
 .fl-theme-coal .fl-tabs li,
-.fl-theme-coal .fl-tabs li a  {font-weight:bold; color:#ffffff !important; border-color:#333333; border-bottom-color:#333333; background-color:#999999; text-decoration:none;}
+.fl-theme-coal .fl-tabs li a  {font-weight:bold; color:#ffffff !important; border-color:#333333; border-bottom-color:#333333; background-color:#666666; text-decoration:none;}
 .fl-theme-coal .fl-tabs li a:hover {background-color:#333333; color:#fff !important;}
 
 /* Deprecated */
