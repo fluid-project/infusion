@@ -32,6 +32,12 @@ $(function () {
             },
             originalSettings: {
                 contrast: "Mist"
+            },
+            labelMap: {
+                contrast: {
+                    names: ["Standard"],
+                    values: ["Mist"]
+                }
             }, 
             listeners: {
                 afterRender: function () {

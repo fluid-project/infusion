@@ -405,8 +405,8 @@ fluid_1_0 = fluid_1_0 || {};
                 values: ["Default", "Wide", "Wider", "Widest"]
             },
             contrast: {
-                names: ["Medium Contrast", "High Contrast", "Mist", "Rust"],
-                values: ["Default", "High Contrast", "Mist", "Rust"]
+                names: ["Standard", "Medium Contrast", "High Contrast", "High Contrast Inverted", "Low Contrast"],
+                values: ["Default", "Medium Contrast", "High Contrast", "High Contrast Inverted", "Low Contrast"]
             },
             backgroundImages: {
                 names: ["Yes", "No"],

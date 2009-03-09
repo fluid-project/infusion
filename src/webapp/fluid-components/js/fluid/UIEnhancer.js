@@ -116,7 +116,10 @@ fluid_1_0 = fluid_1_0 || {};
             "theme": {
                 "Mist": "fl-theme-mist",
                 "Rust": "fl-theme-rust",
-                "High Contrast": "fl-theme-hc"
+                "High Contrast": "fl-theme-hc",
+                "High Contrast Inverted": "fl-theme-hci",
+                "Low Contrast": "fl-theme-slate",
+                "Medium Contrast": "fl-theme-coal"
             },
             "layout": {
                 "Simple": "fl-layout-linear"
