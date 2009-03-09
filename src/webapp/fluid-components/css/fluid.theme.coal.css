@@ -61,10 +61,10 @@
 
 /* Helper: Widgets */
 /* Widget core */
-.fl-theme-coal .fl-widget {background:#cccccc url(FSS_images/themes/slate/widget-bg.png) repeat-x top left; border:1px solid #666666;}                        
+.fl-theme-coal .fl-widget {background:#cccccc url(FSS_images/themes/coal/widget-bg.png) repeat-x top left; border:1px solid #666666;}                        
     .fl-theme-coal .fl-widget ul {}
     .fl-theme-coal .fl-widget h2 {color:#ccc;}
-    .fl-theme-coal .grabbable {background-image:url('FSS_images/themes/slate/gripper.png');}
+    .fl-theme-coal .grabbable {background-image:url('FSS_images/themes/coal/gripper.png');}
 
 /* Widget titlebar */
 .fl-theme-coal .fl-widget-titlebar {/*margin:-5px -5px 0 -5px;*/}

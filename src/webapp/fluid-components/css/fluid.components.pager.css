@@ -1,10 +1,13 @@
 /**
  * Two main parts to Pager: Data, and UI
+ * Data and UI separated into 2 parts: Layout and Color Themes
  */
 
-/* PAGER DATA SOURCE */
-/* Data grid which is paginated */
-.fl-components-pager .fl-pager-data {}
+/***********************************************************/
+/** LAYOUT **/
+/* Pager data */
+.fl-components-pager .fl-pager-data {
+}
 .fl-components-pager .fl-pager-data .fl-desc {
   background: url(../images/pager/arrow-up.png) no-repeat right;
 }
@@ -12,11 +15,17 @@
   background: url(../images/pager/arrow-dn.png) no-repeat right;
 }
 
-/* PAGER USER INTERFACE */
-/* Links which control pagination */
-.fl-components-pager .fl-pager-ui {}
+/* Pager UI */
+/* Class name for the list container */
+.fl-components-pager .fl-pager-ui {
+    margin:0; padding:0;
+}
+.fl-components-pager .fl-pager-ui li {
+    list-style-type:none;
+    display:inline;
+}
 .fl-components-pager .fl-pager-ui a {
-    padding:0 3px; 
+    padding:0 3px;
     margin:0 2px;
 }
 .fl-components-pager .fl-pager-ui .fl-pager-links a {    
@@ -24,7 +33,6 @@
     background-color:#fff;
     zoom:1;
 }
-
 .fl-components-pager .fl-pager-ui .fl-pager-links .fl-pager-current,
 .fl-components-pager .fl-pager-ui .fl-pager-links .current-page {
     color:#000;
@@ -43,3 +51,18 @@
     color:#000;
     text-decoration:none;
 }
+
+
+/***********************************************************/
+/** THEMES - High Contrast **/
+/* Pager data */
+.fl-theme-hc .fl-components-pager .fl-pager-data {
+}
+.fl-theme-hc .fl-components-pager .fl-pager-data .fl-desc {
+  background: url(../images/pager/arrow-up.png) no-repeat right;
+}
+.fl-theme-hc .fl-components-pager .fl-pager-data .fl-asc {
+  background: url(../images/pager/arrow-dn.png) no-repeat right;
+}
+
+/* Pager UI */
