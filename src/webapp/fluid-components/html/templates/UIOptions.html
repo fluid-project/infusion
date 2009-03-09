@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" class="">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -50,7 +50,7 @@
     <body>
 
         <h1>User Interface Options</h1>
-        <form id="options" action="" method="" class="fl-col-flex2 fl-components-ui-options uiOptions">
+        <form id="options" action="" class="fl-col-flex2 fl-components-ui-options uiOptions">
             
             <!-- column 1, options -->
             <div class="fl-col">
@@ -84,20 +84,21 @@
                                 </select>
                             </li>
         
-                            <li rsf:id="background-images"></li>
+                            <li>
                             <label class="fl-label">Background Images:</label>
                             <span rsf:id="background-images-row:">
                                 <input class="control" rsf:id="images-choice" type="radio" />
                                 <label rsf:id="images-label">choice</label>
                             </span>
+                            </li>
         
-                            <li rsf:id="layout"></li>                                
+                            <li>                             
                             <label class="fl-label">Simplified Layout:</label>
                             <span rsf:id="layout-row:">
                                 <input class="control" rsf:id="layout-choice" type="radio" />
                                 <label rsf:id="layout-label">choice</label>
                             </span>
-
+                            </li>
                         </ol>
                     </div>
                 </fieldset>
@@ -105,13 +106,13 @@
                     <h2 class="fl-font-size-130">Easier to find</h2>
                     <div>
                         <ol>
-                            <li rsf:id="toc"></li>
+                            <li rsf:id="toc">
                             <label class="fl-label">Table of Contents:</label>
                             <span rsf:id="toc-row:">
                                 <input class="control" rsf:id="toc-choice" type="radio"/>
                                 <label rsf:id="toc-label">choice</label>
                             </span>
-
+                            </li>
                             <li><label>Links:</label><span>No Preference</span></li>
                             <li><label>Inputs:</label><span>No Preference</span></li>
                             <li><label>Actions:</label><span>No Preference</span></li>
