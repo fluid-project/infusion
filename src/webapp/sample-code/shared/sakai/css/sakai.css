@@ -38,7 +38,7 @@ p {margin:0; padding-bottom:1em;}
 .ui-dialog-titlebar {text-align:right; background-color:#fff;}
 
 /************************************/
-.header {background:#00A5E3 url('../images/_common/header2.png') no-repeat left top; color:#fff; overflow:auto; padding:20px 0 25px 20px;}
+.header {background:#00A5E3 url('../images/header2.png') no-repeat left top; color:#fff; overflow:auto; padding:20px 0 25px 20px;}
 .header h1 {font:normal 2em Arial, Helvetica, sans-serif; margin:0; padding:0; color:#fff; border:none;}
 .header p {margin:0; padding:0; display:none;}
 .header ul {margin:0; padding:0; display:none;}
@@ -54,5 +54,5 @@ p {margin:0; padding-bottom:1em;}
 .lookNfeel strong { background: url('../images/buttons-right.png') no-repeat right top; font-weight:normal; padding-bottom:6px; padding-left:5px; padding-top:6px;}
 
 /************************************/
-.footer { background:url("../images/_common/sakai.png") no-repeat left center; border-top:1px solid #efefef; color:#ccc; font-size:0.8em; margin:10px 0 0;}
+.footer { background:url("../images/sakai.png") no-repeat left center; border-top:1px solid #efefef; color:#ccc; font-size:0.8em; margin:10px 0 0;}
 .footer p {margin:0; padding:0 0 0px; padding:15px 0 15px 75px;}
