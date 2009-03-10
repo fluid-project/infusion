@@ -20,21 +20,19 @@ p {margin:0; padding-bottom:1em;}
     top:-10000px; 
     left:-10000px; 
     width:60em;  
-    background-color:#efefef; 
     z-index:1000;
-	padding:10px;
     border: 2px solid #000;
 }
 #dialog_container #close_dialog {
-	position:absolute; 
+/*	position:absolute; 
 	z-index:5000;
 	top:0; 
 	right:0;
-	background-color:#fff;
 	padding:5px; 
 	border: 2px solid #000; 
 	border-top:none; 
 	border-right:none;
+	*/
 }
 .dialog {background-color:#fff; border:1px solid #000}
 .ui-dialog-titlebar {text-align:right; background-color:#fff;}
@@ -50,10 +48,10 @@ p {margin:0; padding-bottom:1em;}
 
 
 .lookNfeel {padding:15px 10px 0; overflow:auto;}
-.lookNfeel .skin {background-image: url('../images/_common/edit-look-feel.png')}
-.lookNfeel .addWidget {background-image: url('../images/_common/add-widgets.png')}
+.lookNfeel .skin {background-image: url('../images/edit-look-feel.png')}
+.lookNfeel .addWidget {background-image: url('../images/add-widgets.png')}
 .lookNfeel a {color:#000;  text-decoration:none; padding-left:24px;}
-.lookNfeel strong { background: url('../images/_common/buttons-right.png') no-repeat right top; font-weight:normal; padding-bottom:6px; padding-left:5px; padding-top:6px;}
+.lookNfeel strong { background: url('../images/buttons-right.png') no-repeat right top; font-weight:normal; padding-bottom:6px; padding-left:5px; padding-top:6px;}
 
 /************************************/
 .footer { background:url("../images/_common/sakai.png") no-repeat left center; border-top:1px solid #efefef; color:#ccc; font-size:0.8em; margin:10px 0 0;}

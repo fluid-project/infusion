@@ -17,7 +17,8 @@
         <link rel="stylesheet" type="text/css" href="css/sakai.css" />
         <link rel="stylesheet" type="text/css" href="css/sakai.layout.css" />
         <link rel="stylesheet" type="text/css" href="css/sakai.theme.mist.css" />
-        <link rel="stylesheet" type="text/css" href="css/sakai.theme.rust.css" />
+        <link rel="stylesheet" type="text/css" href="css/sakai.theme.coal.css" />
+        <link rel="stylesheet" type="text/css" href="css/sakai.theme.slate.css" />
         <link rel="stylesheet" type="text/css" href="css/sakai.theme.hc.css" />
 		<link rel="stylesheet" type="text/css" href="css/sakai.components.ui-options.css" />
 
@@ -43,9 +44,21 @@
     </head>
 
     <body class="fl-theme-mist">
-        <div id="dialog_container">
-            <a id="close_dialog" class="fl-icon close" href="#">Close</a>
-            <div id="dialog_content"></div>
+        <div id="dialog_container" class="fl-widget">
+            <div class="fl-widget-titlebar">
+                <a id="close_dialog" class="fl-force-right fl-icon close" href="#">Close</a>
+                <h2>User Interface Options</h2>
+            </div>
+            <div class="fl-widget-options">
+                <ul>
+                    <li><a href="#">Apply changes</a></li>
+                    <li><a href="#">Undo changes</a></li>
+                    <li><a href="#">Reset changes</a></li>
+                </ul>
+            </div>
+            <div class="fl-widget-content">
+                <div id="dialog_content"></div>
+            </div>
         </div>
 
         <div class="header fl-knockout">
@@ -160,7 +173,7 @@
                 </div>
 
                 <div class="fl-widget">
-                    <div class="fl-widget-data">                    
+                                        
                         <div class="fl-widget-titlebar grabbable">
                             <a href="#" class="fl-force-left fl-icon more">More</a>
                             <a href="#" class="fl-force-right fl-icon close">Close</a>
@@ -207,7 +220,7 @@
                             </div>
     
                         </div>
-                    </div>
+                    
                 </div>
 
 

@@ -42,3 +42,7 @@
 .fl-widget .toggle  {width:32px;}
 .fl-widget .on 		{background-position:left top;}
 .fl-widget .off 	{background-position:left bottom;}
+
+.fl-widget-content .fl-listmenu li {position:relative;}
+.fl-widget-content .fl-listmenu a { text-indent:2em;}
+.fl-widget-content .fl-listmenu .delete {right:0; top:5px;}

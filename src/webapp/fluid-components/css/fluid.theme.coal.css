@@ -19,11 +19,11 @@
 .fl-theme-coal a:hover {color: #999999 !important;}
 .fl-theme-coal h1 {color:#ffffff; border-bottom-width:0.2em; border-bottom-style:solid;} 
 .fl-theme-coal h2 {color: #ffffff;}
-
 .fl-theme-coal th {border:0.1em solid #ffffff; background-color:#dfefff !important;}
 .fl-theme-coal td {border:0.1em solid #999999 !important;}
 .fl-theme-coal .fl-textfield,
 .fl-theme-coal .fl-textarea {background-color:#ffffff; border:1px solid #000000;}
+.fl-theme-coal .fl-icon {background-color:#666666}
 
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
 .fl-theme-coal span input {background-color:#ebebeb !important; border:0.1em solid #ffffff; margin:-0.1em;}
