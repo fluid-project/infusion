@@ -21,14 +21,25 @@ fluid_1_0 = fluid_1_0 || {};
 
 (function ($, fluid) {
     
+//    TODO
+//    - do something when someone tries to modify the model with a value out of range.
+    
     var initTextboxSlider = function (that) {
         var textbox = that.locate("textbox");
 
         var sliderOptions = that.options.sliderOptions;
         sliderOptions.value = that.model;
+        sliderOptions.min = that.options.min;
+        sliderOptions.max = that.options.max;
         var slider = that.locate("slider").slider(sliderOptions);
 
         textbox.change(function () {
+            if (this.value < that.min) {
+                this.value = that.min;
+            } else if (this.value > that.max) {
+                this.value = that.max;
+            }
+            
             slider.slider("value", this.value);
             that.updateModel(this.value, this);
         });
@@ -42,11 +53,18 @@ fluid_1_0 = fluid_1_0 || {};
     fluid.textboxSlider = function (container, options) {
         var that = fluid.initView("fluid.textboxSlider", container, options);
         that.model = that.locate("textbox").val();
+        that.min = that.options.min;
+        that.max = that.options.max;
+        
         initTextboxSlider(that);
         
         that.updateModel = function (model, source) {
-            that.events.modelChanged.fire(model, that.model, source);
-            that.model = model;
+            if (model > that.min && model < that.max) {
+                that.events.modelChanged.fire(model, that.model, source);
+                that.model = model;
+            } else {
+                // TODO: should do something here
+            }
         };
         
         return that;
@@ -61,10 +79,10 @@ fluid_1_0 = fluid_1_0 || {};
             modelChanged: null
         },
         sliderOptions: {
-            min: 6,
-            max: 200,
             orientation: "horizontal"
-        }
+        }, 
+        min: 0,
+        max: 100        
     });
     
 })(jQuery, fluid_1_0);
@@ -83,8 +101,6 @@ fluid_1_0 = fluid_1_0 || {};
 //    - generate the renderer tree
 //    - document the API
 //    - constrain the size that can be entered in the text box
-//    - merge user options to the textslider into other options.
-//    - write tests for textboxSlider
 //    - add the min font size textboxSlider to the renderer tree
 
     // TODO: Generate this tree
@@ -288,7 +304,24 @@ fluid_1_0 = fluid_1_0 || {};
             },
             autoBind: true, 
             debugMode: true
+       //     renderRaw: true
         };
+    };
+    
+    var initTextMinSize = function (that) {
+        var options = {
+            listeners: {
+                modelChanged: function (value) {
+                    var uiOptionsModel = fluid.copy(that.model);
+                    uiOptionsModel.textSize = value;
+                    that.updateModel(uiOptionsModel);
+                }
+            }
+        };
+        
+        fluid.merge(null, options, that.options.textMinSize.options);
+        fluid.initSubcomponents(that, "textMinSize", [that.options.selectors.textMinSize, options]);
+        
     };
     
     var setupUIOptions = function (that) {
@@ -296,17 +329,7 @@ fluid_1_0 = fluid_1_0 || {};
         
         // TODO: This stuff should already be in the renderer tree
         that.events.afterRender.addListener(function () {
-            fluid.initSubcomponents(that, "fontMinSize", 
-                        [that.options.selectors.fontMinSize, 
-                            {
-                                listeners: {
-                                    modelChanged: function (value) {
-                                        var uiOptionsModel = fluid.copy(that.model);
-                                        uiOptionsModel.textSize = value;
-                                        that.updateModel(uiOptionsModel);
-                                    }
-                                }
-                        }]);
+            initTextMinSize(that);
 
             bindHandlers(that);
             initPreview(that);        
@@ -370,7 +393,7 @@ fluid_1_0 = fluid_1_0 || {};
             reset: ".fl-hook-preview-reset",
             cancel: ".fl-hook-preview-cancel",
             enhanceContainer: "body",
-            fontMinSize: ".fl-control-min_text_size"
+            textMinSize: ".fl-control-min_text_size"
         },
         events: {
             modelChanged: null,
@@ -421,8 +444,12 @@ fluid_1_0 = fluid_1_0 || {};
                 values: ["On", "Default"]
             }
         },
-        fontMinSize: {
-            type: "fluid.textboxSlider"
+        textMinSize: {
+            type: "fluid.textboxSlider",
+            options: {
+                min: 6,
+                max: 200
+            }
         }
     });
 

@@ -25,5 +25,33 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });
 
+        tests.test("Test Min/Max Size", function () {
+    //        expect(2);
+            var textboxSlider = fluid.textboxSlider(".fl-textbox-slider", {min: 5, max: 55});
+            
+            $(".fl-slider").slider("value", 56);
+            jqUnit.assertEquals("Slider value should be the max", 55, $(".fl-slider").slider("value"));
+            $(".fl-textbox").val(56);
+            jqUnit.assertEquals("Textbox value should be the max", 55, $(".fl-textbox").val());            
+
+            $(".fl-slider").slider("value", 4);
+            jqUnit.assertEquals("Slider value should be the min", 5, $(".fl-slider").slider("value"));            
+        });
+
+        tests.test("Test Negative Scale", function () {
+            expect(3);
+            fluid.textboxSlider(".fl-textbox-slider", {min: -15, max: -5});
+            
+            $(".fl-slider").slider("value", 56);
+            jqUnit.assertEquals("Slider value should be the max", -5, $(".fl-slider").slider("value"));
+
+            $(".fl-slider").slider("value", -10);
+            jqUnit.assertEquals("Slider value should be the value", -10, $(".fl-slider").slider("value"));
+
+            $(".fl-slider").slider("value", -16);
+            jqUnit.assertEquals("Slider value should be the min", -15, $(".fl-slider").slider("value"));
+            
+        });
+
     });
 })(jQuery);
