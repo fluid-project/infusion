@@ -19,10 +19,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var tests = new jqUnit.TestCase("TextboxSlider Tests");
         
         tests.test("Test Init", function () {
-            expect(2);
-            fluid.textboxSlider(".fl-textbox-slider");
+            expect(5);
+            var textboxSlider = fluid.textboxSlider(".fl-textbox-slider");
             jqUnit.assertEquals("Slider value is set to input value", 15, $(".fl-slider").slider("value"));
             jqUnit.assertEquals("Textbox value is set", 15, $(".fl-textbox").val());
+            jqUnit.assertEquals("The model should be set", 15, textboxSlider.model);
+            jqUnit.assertEquals("Min should be the default", 0, textboxSlider.min);
+            jqUnit.assertEquals("Max should be the default", 100, textboxSlider.max);
             
         });
 

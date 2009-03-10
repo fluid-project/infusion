@@ -59,7 +59,7 @@ fluid_1_0 = fluid_1_0 || {};
         initTextboxSlider(that);
         
         that.updateModel = function (model, source) {
-            if (model > that.min && model < that.max) {
+            if (model >= that.min && model <= that.max) {
                 that.events.modelChanged.fire(model, that.model, source);
                 that.model = model;
             } else {
