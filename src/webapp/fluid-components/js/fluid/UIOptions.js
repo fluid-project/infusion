@@ -43,6 +43,13 @@ fluid_1_0 = fluid_1_0 || {};
             slider.slider("value", this.value);
             that.updateModel(this.value, this);
         });
+        
+        textbox.keypress(function (evt) {
+            if (evt.keyCode !== $.ui.keyCode.ENTER) {
+                return true;
+            }
+            return false;
+        });
 
         slider.bind("slide", function (e, ui) {
             textbox.val(ui.value);
@@ -95,12 +102,10 @@ fluid_1_0 = fluid_1_0 || {};
 (function ($, fluid) {
 
 //    TODO
-//    - handle enter in the textbox - currently it causes the page to reload
 //    - fix the test that is throwing an error (the issue is the preview not loading because the path is hardcoded in the template)
 //    - make the preview a subcomponent
 //    - generate the renderer tree
 //    - document the API
-//    - constrain the size that can be entered in the text box
 //    - add the min font size textboxSlider to the renderer tree
 
     // TODO: Generate this tree

@@ -37,7 +37,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
             textbox.val(valToTest);
             textbox.change();
-            jqUnit.assertEquals("Textbox value should be the " +expected, expected, textbox.val());            
+            jqUnit.assertEquals("Textbox value should be the " + expected, expected, textbox.val());            
         };
         
         tests.test("Test Min/Max Size", function () {
