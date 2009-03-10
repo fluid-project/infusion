@@ -30,11 +30,13 @@ body {
 	margin:0; 
     padding:5px 0;
 }
-.test_containers div, .test_containers li {
+.test_containers div, .test_containers li, .test_containers tr td {
 	background-color:#999;
 	text-align:center;
 	color:#fff;
 }
+table.test_containers { margin-left: auto; margin-right: auto; }
+table.test_containers tr td { border: 1px solid #ffffff; }
 
 #full_test{
 	position:relative;
