@@ -1141,7 +1141,7 @@ fluid_1_0 = fluid_1_0 || {};
     }
     if (debugMode) {
       var children = basecontainer.children;
-      for (var key in children) {
+      for (var key = 0; key < children.length; ++key) {
         var child = children[key];
         if (!(child.ID.indexOf(':') !== -1) && !rendered[child.ID]) {
             renderDebugMessage("Leaf child component "
