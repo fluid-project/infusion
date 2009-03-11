@@ -1,9 +1,34 @@
 /* FSS Extension: Sakai widgets */
 
 /* Widget :: Icons */
-.fl-theme-slate .fl-widget .more  {background-image:url('../images/slate-icons/icon-widget-More.png'); margin-left:0px;}
-.fl-theme-slate .fl-widget .close {background-image:url('../images/slate-icons/icon-widget-Close.png'); margin-right:0px;}
-.fl-theme-slate .fl-widget .settings {background-image:url('../images/slate-icons/icon-widget-ShowSettings.png'); margin-right:0px; width:70px; }
+
+.fl-theme-slate .fl-widget .more  {background-image:url('../../../../fluid-components/css/FSS_images/themes/slate/icon-widget-More.png'); margin-left:0px;}
+.fl-theme-slate .fl-widget .close {background-image:url('../../../../fluid-components/css/FSS_images/themes/slate/icon-widget-Close.png'); margin-right:0px;}
 .fl-theme-slate .viewOptions {background-image:url('../images/slate-icons/icon-options-ListOrGrid.png'); background-color:#fff;  border:1px solid #000;}
 .fl-theme-slate .menu .delete {background-image: url('../images/slate-icons/icon-menu-Delete.png');}    
 
+.fl-theme-slate .fl-widget .settings {
+    background-image:url(../../../../fluid-components/css/FSS_images/themes/slate/buttons-titlebar-cap.png); margin-right:0px;
+    color:#333 !important;    
+}
+.fl-theme-slate .fl-widget .settings strong {
+    background-image:url(../../../../fluid-components/css/FSS_images/themes/slate/buttons-titlebar-bg.png);
+    font-size:0.8em;
+    padding-bottom:0.4em;
+}
+
+
+.fl-theme-slate .fl-widget-content .fl-tabs-enhanced {
+    background:url(../../../../fluid-components/css/FSS_images/themes/slate/tabs-med-container-bg.png) repeat-x left bottom;
+    border-bottom:none;
+    margin-left:1px; 
+    margin-right:1px;
+}
+
+.fl-theme-slate .fl-widget-content .fl-tabs-enhanced li {}
+.fl-theme-slate .fl-widget-content .fl-tabs-enhanced li a {
+    background-image: url(../../../../fluid-components/css/FSS_images/themes/slate/sprites.png); background-repeat:no-repeat;
+    border:none;
+}
+.fl-theme-slate .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active {}
+.fl-theme-slate .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active a {}

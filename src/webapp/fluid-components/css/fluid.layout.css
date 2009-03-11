@@ -204,9 +204,9 @@ input.fl-icon {padding-left:16px;}
  */
 
 .fl-button-left {float:left; margin-right:10px; padding:0 0 0 16px; background-position:left center; background-repeat:no-repeat;}
-.fl-button-left * {float:left; padding:0 16px 0 0; cursor:pointer; background-position:left center; background-repeat:no-repeat;}
+.fl-button-left * {float:left; padding:0 16px 0 0; cursor:pointer; background-position:right center; background-repeat:no-repeat;}
 .fl-button-right {float:right;  margin-left:10px; padding:0 0 0 16px; background-position:left center; background-repeat:no-repeat;}
-.fl-button-right * {float:left; padding: 0 16px 0 0; cursor:pointer; background-position:left center; background-repeat:no-repeat;}
+.fl-button-right * {float:left; padding: 0 16px 0 0; cursor:pointer; background-position:right center; background-repeat:no-repeat;}
 
 /*
  * Widgets: modelled after the mycamtools widget model
