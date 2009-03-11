@@ -17,8 +17,9 @@ p {margin:0; padding-bottom:1em;}
 /************************************/
 #dialog_container {
     position:absolute; 
-    top:-10000px; 
-    left:-10000px; 
+    top:0; 
+    left:0; 
+    display: none;
     width:60em;  
     z-index:1000;
     border: 2px solid #000;

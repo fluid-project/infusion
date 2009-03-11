@@ -52,7 +52,7 @@ $(function () {
             }, 
             listeners: {
                 afterRender: function () {
-                    $('.fl-components-ui-options .fl-col:eq(0)').accordion({ header: 'h2'});
+                    $('.fl-components-ui-options .fl-col:eq(0)').accordion({header: 'h2', clearStyle: true, autoHeight: false});
                 }
             }
         };
