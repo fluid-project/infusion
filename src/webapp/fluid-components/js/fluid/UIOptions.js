@@ -142,13 +142,13 @@ fluid_1_0 = fluid_1_0 || {};
             }, {
                 ID: "contrast",
                 selection: {
-                    valuebinding: "selections.contrast"
+                    valuebinding: "selections.theme"
                 },
                 optionlist: {
-                    valuebinding: "labelMap.contrast.values"
+                    valuebinding: "labelMap.theme.values"
                 },
                 optionnames: {
-                    valuebinding: "labelMap.contrast.names"
+                    valuebinding: "labelMap.theme.names"
                 }
             }, {
                 ID: "background-images",
@@ -307,6 +307,15 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var createRenderOptions = function (that) {
+        // Turn the boolean toc value into a string so that the value matches a value in the label map.
+        if (that.model.toc === true) {
+            that.model.toc = "true";
+        }
+        
+        if (that.model.toc === false) {
+            that.model.toc = "false";
+        } 
+
         return {
             model: {
                 selections: that.model,
@@ -415,18 +424,18 @@ fluid_1_0 = fluid_1_0 || {};
         savedSelections: {
             textFont: "Default",
             textSpacing: "Default",
-            contrast: "Default",
+            theme: "Default",
             backgroundImages: "Default",
             layout: "Default",
-            toc: "Default"
+            toc: false
         },
         originalSettings: {
             textFont: "Default",
             textSpacing: "Default",
-            contrast: "Default",
+            theme: "Default",
             backgroundImages: "Default",
             layout: "Default",
-            toc: "Default"
+            toc: false
         },
         labelMap: {
             textFont: {
@@ -437,7 +446,7 @@ fluid_1_0 = fluid_1_0 || {};
                 names: ["No Preference", "Wide", "Wider", "Widest"],
                 values: ["Default", "Wide", "Wider", "Widest"]
             },
-            contrast: {
+            theme: {
                 names: ["Standard", "Medium Contrast", "High Contrast", "High Contrast Inverted", "Low Contrast"],
                 values: ["Default", "Medium Contrast", "High Contrast", "High Contrast Inverted", "Low Contrast"]
             },
@@ -451,7 +460,7 @@ fluid_1_0 = fluid_1_0 || {};
             },
             toc: {
                 names: ["Yes", "No"],
-                values: ["On", "Default"]
+                values: ["true", "false"]
             }
         },
         textMinSize: {

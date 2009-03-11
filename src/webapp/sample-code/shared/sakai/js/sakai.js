@@ -30,13 +30,13 @@ $(function () {
     
         var options = {
             savedSelections: {
-                contrast: "Mist"
+                theme: "Mist"
             },
             originalSettings: {
-                contrast: "Mist"
+                theme: "Mist"
             },
             labelMap: {
-                contrast: {
+                theme: {
                     names: ["Standard"],
                     values: ["Mist"]
                 }

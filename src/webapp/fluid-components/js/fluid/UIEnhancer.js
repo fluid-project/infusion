@@ -58,7 +58,7 @@ fluid_1_0 = fluid_1_0 || {};
      * @param {Object} tocSetting
      */
     var setToc = function (that, tocSetting) {
-        if (tocSetting === "On") {
+        if (tocSetting === true || tocSetting === "true") {
             if (that.tableOfContents) {
                 that.tableOfContents.show();
             } else {
@@ -92,7 +92,7 @@ fluid_1_0 = fluid_1_0 || {};
     var addStyles = function (that, settings) {
         addClassForSetting(that.container, "textFont", settings.textFont, that.options.classnameMap);
         addClassForSetting(that.container, "textSpacing", settings.textSpacing, that.options.classnameMap);
-        addClassForSetting(that.container, "theme", settings.contrast, that.options.classnameMap);
+        addClassForSetting(that.container, "theme", settings.theme, that.options.classnameMap);
         addClassForSetting(that.container, "layout", settings.layout, that.options.classnameMap);
         addClassForSetting(that.container, "backgroundImages", settings.backgroundImages, that.options.classnameMap);
     };
@@ -179,13 +179,13 @@ fluid_1_0 = fluid_1_0 || {};
             }
         },
         settings: {
-            textFont: "Default",
-            textSpacing: "Default",
-            contrast: "Default",
-            backgroundImages: "Default",
-            layout: "Default",
-            toc: "Default",
-            textSize: "Default"
+            textFont: "",            // key from classname map
+            textSpacing: "",         // key from classname map
+            theme: "",               // key from classname map
+            backgroundImages: "",    // key from classname map
+            layout: "",              // key from classname map
+            toc: false,              // boolean
+            textSize: ""             // in points
         }
     });
     

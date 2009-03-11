@@ -65,7 +65,7 @@ var demo = demo || {};
         textSize: "16",
         textFont: "Courier",
         textSpacing: "Wide",
-        contrast: "High Contrast",
+        theme: "High Contrast",
         layout: "Default"
     };
     
@@ -75,7 +75,7 @@ var demo = demo || {};
     demo.hcSimpleLayoutSettings = {
         textFont: "Default",
         textSpacing: "Default",
-        contrast: "High Contrast",
+        theme: "High Contrast",
         layout: "Simple"
     };
 
@@ -86,7 +86,7 @@ var demo = demo || {};
         textSize: "8",
         textFont: "Default",
         textSpacing: "Default",
-        contrast: "Mist",
+        theme: "Mist",
         layout: "Default"
     };
     

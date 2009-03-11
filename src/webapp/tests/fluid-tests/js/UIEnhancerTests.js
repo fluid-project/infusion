@@ -57,7 +57,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 textSize: "24",
                 textFont: "Courier",
                 textSpacing: "Wide",
-                contrast: "High Contrast"
+                theme: "High Contrast"
             };
             var main = $("#main");
             var uiEnhancer = fluid.uiEnhancer(main);

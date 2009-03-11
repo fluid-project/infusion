@@ -22,7 +22,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             textSize: "8",
             textFont: "Verdana",
             textSpacing: "Wider",
-            contrast: "High Contrast"
+            theme: "High Contrast"
         };
             
         var saveCalled = false;
@@ -48,7 +48,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertFalse("Min text size is not set", !!model.textSize);
                 jqUnit.assertEquals("Text font is set", "Default", model.textFont);
                 jqUnit.assertEquals("Text spacing is set", "Default", model.textSpacing);
-                jqUnit.assertEquals("Colour scheme is set", "Default", model.contrast);
+                jqUnit.assertEquals("Colour scheme is set", "Default", model.theme);
                 
             // extend this test to test originalModel and savedModel
             });            
@@ -65,7 +65,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 uiOptions.save();
                 var container = $("body");
                 jqUnit.assertTrue("Save has been called", saveCalled);
-                jqUnit.assertEquals("hc setting was saved", hcSkin.contrast, uiOptions.savedModel.contrast);
+                jqUnit.assertEquals("hc setting was saved", hcSkin.theme, uiOptions.savedModel.theme);
                 jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-hc"));
                 
             });
@@ -78,8 +78,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
                 uiOptions.updateModel(hcSkin);
                 
-                jqUnit.assertEquals("hc setting was set in the model", hcSkin.contrast, uiOptions.model.contrast);
-                jqUnit.assertEquals("hc setting was not saved", "Default", uiOptions.savedModel.contrast);
+                jqUnit.assertEquals("hc setting was set in the model", hcSkin.theme, uiOptions.model.theme);
+                jqUnit.assertEquals("hc setting was not saved", "Default", uiOptions.savedModel.theme);
                 
                 uiOptions.refreshView();
                 var fontSizeSetting = $(".fl-textbox").val();
