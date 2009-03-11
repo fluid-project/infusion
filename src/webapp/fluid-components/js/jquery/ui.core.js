@@ -1,20 +1,20 @@
 /*
- * jQuery UI 1.6rc6
+ * jQuery UI 1.7
  *
- * Copyright (c) 2009 AUTHORS.txt (http://ui.jquery.com/about)
+ * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
  * http://docs.jquery.com/UI
  */
-;(function($) {
+;jQuery.ui || (function($) {
 
 var _remove = $.fn.remove,
 	isFF2 = $.browser.mozilla && (parseFloat($.browser.version) < 1.9);
 
 //Helper functions and ui object
 $.ui = {
-	version: "1.6rc6",
+	version: "1.7",
 
 	// $.ui.plugin is deprecated.  Use the proxy pattern instead.
 	plugin: {
@@ -27,7 +27,7 @@ $.ui = {
 		},
 		call: function(instance, name, args) {
 			var set = instance.plugins[name];
-			if(!set) { return; }
+			if(!set || !instance.element[0].parentNode) { return; }
 
 			for (var i = 0; i < set.length; i++) {
 				if (instance.options[set[i][0]]) {
@@ -41,24 +41,6 @@ $.ui = {
 		return document.compareDocumentPosition
 			? a.compareDocumentPosition(b) & 16
 			: a !== b && a.contains(b);
-	},
-
-	cssCache: {},
-	css: function(name) {
-		if ($.ui.cssCache[name]) { return $.ui.cssCache[name]; }
-		var tmp = $('<div class="ui-gen"></div>').addClass(name).css({position:'absolute', top:'-5000px', left:'-5000px', display:'block'}).appendTo('body');
-
-		//if (!$.browser.safari)
-			//tmp.appendTo('body');
-
-		//Opera and Safari set width and height to 0px instead of auto
-		//Safari returns rgba(0,0,0,0) when bgcolor is not set
-		$.ui.cssCache[name] = !!(
-			(!(/auto|default/).test(tmp.css('cursor')) || (/^[1-9]/).test(tmp.css('height')) || (/^[1-9]/).test(tmp.css('width')) ||
-			!(/none/).test(tmp.css('backgroundImage')) || !(/transparent|rgba\(0, 0, 0, 0\)/).test(tmp.css('backgroundColor')))
-		);
-		try { $('body').get(0).removeChild(tmp.get(0));	} catch(e){}
-		return $.ui.cssCache[name];
 	},
 
 	hasScroll: function(el, a) {
@@ -398,6 +380,7 @@ $.ui.mouse = {
 			.bind('click.'+this.widgetName, function(event) {
 				if(self._preventClickEvent) {
 					self._preventClickEvent = false;
+					event.stopImmediatePropagation();
 					return false;
 				}
 			});
@@ -423,6 +406,8 @@ $.ui.mouse = {
 
 	_mouseDown: function(event) {
 		// don't let more than one widget handle mouseStart
+		// TODO: figure out why we have to use originalEvent
+		event.originalEvent = event.originalEvent || {};
 		if (event.originalEvent.mouseHandled) { return; }
 
 		// we may have missed mouseup (out of window)
@@ -499,7 +484,7 @@ $.ui.mouse = {
 
 		if (this._mouseStarted) {
 			this._mouseStarted = false;
-			this._preventClickEvent = true;
+			this._preventClickEvent = (event.target == this._mouseDownEvent.target);
 			this._mouseStop(event);
 		}
 
