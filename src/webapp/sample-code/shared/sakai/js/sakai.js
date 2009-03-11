@@ -15,25 +15,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
 $(function () {
     var uiOptions;
     
-    var showDialog = function () {
+    var initDialog = function () {
         // center dialog
         $('#dialog_container').css({
             left: ($(window).width() / 2) - ($('#dialog_container').width() / 2),
             top: ($(window).height() / 2) - ($('#dialog_container').height() / 2)
-        });    
-    };
-    
-    var hideDialog = function () {
-        $('#dialog_container').css({
-            left: -10000,
-            top: -10000
-        });    
-    };
-    
-    var initDialog = function () {
+        }); 
+        
         // bind close dialog button
         $("#close_dialog").click(function () {
-            hideDialog();
+            $('#dialog_container').css("display", "none"); 
             uiOptions.cancel();
         });
     
@@ -59,7 +50,7 @@ $(function () {
         
         // instantiate component
         uiOptions = fluid.uiOptions(".uiOptions", options);
-        showDialog();
+        $('#dialog_container').css("display", "block"); 
     };
 
     $('.skin').click(function () {
@@ -68,7 +59,7 @@ $(function () {
             $('#dialog_content').load('../../../fluid-components/html/templates/UIOptions.html .uiOptions', initDialog);
         } else {
             // else content is already loaded, just show it
-            showDialog();
+            $('#dialog_container').css("display", "block"); 
         }
     });
 });
