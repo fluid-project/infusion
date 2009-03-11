@@ -105,23 +105,6 @@
     text-align:justify;
 }
 
-.fl-font-aqua {color: aqua;}
-.fl-font-black {color: black;}
-.fl-font-blue {color: blue;}
-.fl-font-fuchsia {color: fuchsia;}
-.fl-font-gray {color: gray;}
-.fl-font-green {color: green;}
-.fl-font-lime {color: lime;}
-.fl-font-maroon {color: maroon;}
-.fl-font-navy {color: navy;}
-.fl-font-olive {color: olive;}
-.fl-font-purple {color: purple;}
-.fl-font-red {color: red;}
-.fl-font-silver {color: silver;}
-.fl-font-teal {color: teal;}
-.fl-font-white {color:white;}
-.fl-font-yellow {color: yellow;}
-
 .fl-font-spacing-0, 
 .fl-font-spacing-0 body, 
 .fl-font-spacing-0 input,
@@ -164,6 +147,32 @@
 .fl-font-spacing-6 select,
 .fl-font-spacing-6 textarea {letter-spacing:0.6em}
 
+/* UI Enhancer "Esier to Find" link options */
+/* First pass strategy: apply classnames directky on the elements of interest, usually via JS */
+.fl-text-aqua {color: aqua !important;}
+.fl-text-black {color: black !important;}
+.fl-text-blue {color: blue !important;}
+.fl-text-fuchsia {color: fuchsia !important;}
+.fl-text-gray {color: gray !important;}
+.fl-text-green {color: green !important;}
+.fl-text-lime {color: lime !important;}
+.fl-text-maroon {color: maroon !important;}
+.fl-text-navy {color: navy !important;}
+.fl-text-olive {color: olive !important;}
+.fl-text-purple {color: purple !important;}
+.fl-text-red {color: red !important;}
+.fl-text-silver {color: silver !important;}
+.fl-text-teal {color: teal !important;}
+.fl-text-white {color:white !important;}
+.fl-text-yellow {color: yellow !important;}
 
+.fl-text-underline {text-decoration:underline !important;}
+.fl-text-bold {font-weight:bold !important;}
+.fl-text-larger {font-size:110% !important;}
+.fl-input-outline {border:2px solid;} /* leave out color? */
+
+.fl-highlight-yellow, .fl-highlight-hover-yellow:hover, .fl-highlight-focus-yellow:focus {background-color:#FF0 !important; background-image:none !important;}
+.fl-highlight-green, .fl-highlight-hover-green:hover, .fl-highlight-focus-green:focus {background-color:#0F0 !important; background-image:none !important;}
+.fl-highlight-blue, .fl-highlight-hover-blue:hover, .fl-highlight-focus-blue:focus {background-color:#00F !important; background-image:none !important;}
 
 
