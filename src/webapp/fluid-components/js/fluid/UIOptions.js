@@ -40,8 +40,13 @@ fluid_1_0 = fluid_1_0 || {};
                 this.value = that.max;
             }
             
-            slider.slider("value", this.value);
-            that.updateModel(this.value, this);
+            if (this.value >= that.min && this.value <= that.max) {
+                slider.slider("value", this.value);
+                that.updateModel(this.value, this);
+            } else { 
+                // handle non numeric entries
+                this.value = that.model;
+            }
         });
         
         textbox.keypress(function (evt) {
@@ -286,7 +291,7 @@ fluid_1_0 = fluid_1_0 || {};
              * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
              */
             setTimeout(function () {
-                previewEnhancer.applySettings(model); 
+                previewEnhancer.updateModel(model); 
             }, 0);
         };
 
@@ -359,7 +364,7 @@ fluid_1_0 = fluid_1_0 || {};
         that.save = function () {
             that.events.onSave.fire(that.model);
             that.savedModel = fluid.copy(that.model);
-            that.uiEnhancer.applySettings(that.model);
+            that.uiEnhancer.updateModel(that.model);
         };
 
         that.reset = function () {

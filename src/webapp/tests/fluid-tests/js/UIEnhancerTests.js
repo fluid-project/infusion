@@ -62,7 +62,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var main = $("#main");
             var uiEnhancer = fluid.uiEnhancer(main);
 
-            uiEnhancer.applySettings(hcLargeFontSkin);
+            uiEnhancer.updateModel(hcLargeFontSkin);
             jqUnit.assertEquals("main has large text size", "24pt", main.css("fontSize"));
             jqUnit.assertTrue("main has courier font class", main.hasClass("fl-font-monospace"));
             jqUnit.assertTrue("main has wide text spacing class", main.hasClass("fl-font-spacing-1"));

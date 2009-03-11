@@ -77,7 +77,7 @@ fluid_1_0 = fluid_1_0 || {};
      * @param {Object} size
      */
     var setMinSize = function (container, size) {
-        if (size) {
+		if (size && size > 0) {
             container.css("font-size", size + "pt");
             replaceClass(container, "[class*=fl-font-size-]", /\bfl-font-size-[0-9]{1,2}\s+/g, 'fl-font-size-100');
         }
@@ -104,6 +104,7 @@ fluid_1_0 = fluid_1_0 || {};
      */
     fluid.uiEnhancer = function (container, options) {
         var that = fluid.initView("fluid.uiEnhancer", container, options);
+        that.model = that.options.settings;
         
         /**
          * Removes the classes in the Fluid class namespace: "fl-"
@@ -122,31 +123,26 @@ fluid_1_0 = fluid_1_0 || {};
             }
         };
 
-        /**
-         * Removes all existing classes which start with 'fl-' before transforming the page to reflect
-         * the settings.
-         * 
-         * @param {Object} settings
-         */
-        that.applySettings = function (settings) {
-            that.removeStyling();
-            addStyles(that, settings);
-            setMinSize(that.container, settings.textSize);
-            setToc(that, settings.toc);
-        };
-        
         that.refreshView = function () {
-            // TODO: Implement me later.    
+            that.removeStyling();
+            addStyles(that, that.model);
+            setMinSize(that.container, that.model.textSize);
+            setToc(that, that.model.toc);
         };
         
-        that.updateModel = function () {
-            // TODO: Implement me
+        that.updateModel = function (newModel, source) {
+            that.events.modelChanged.fire(newModel, that.model, source);
+            that.model = newModel;
+            that.refreshView();
         };
         
         return that;
     };
 
     fluid.defaults("fluid.uiEnhancer", {
+        events: {
+            modelChanged: null
+        },
         classnameMap: {
             "textFont": {
                 "Serif": "fl-font-serif",
@@ -181,7 +177,16 @@ fluid_1_0 = fluid_1_0 || {};
             options: {
                 templateUrl: "TableOfContents.html"
             }
-        }        
+        },
+        settings: {
+            textFont: "Default",
+            textSpacing: "Default",
+            contrast: "Default",
+            backgroundImages: "Default",
+            layout: "Default",
+            toc: "Default",
+            textSize: "Default"
+        }
     });
     
 })(jQuery, fluid_1_0);

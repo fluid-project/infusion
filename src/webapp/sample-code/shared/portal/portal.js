@@ -104,19 +104,19 @@ var demo = demo || {};
         var uiEnhancer = fluid.uiEnhancer("body");
         
         jQuery("#hc-skin").click(function () {
-            uiEnhancer.applySettings(demo.hcLargeSettings);
+            uiEnhancer.updateModel(demo.hcLargeSettings);
         });  
         
         jQuery("#hcs-skin").click(function () {
-            uiEnhancer.applySettings(demo.hcSimpleLayoutSettings);
+            uiEnhancer.updateModel(demo.hcSimpleLayoutSettings);
         });  
 
         jQuery("#mist-skin").click(function () {
-            uiEnhancer.applySettings(demo.mistSmallSettings);
+            uiEnhancer.updateModel(demo.mistSmallSettings);
         });  
 
         jQuery("#toc").click(function () {
-            uiEnhancer.applySettings(demo.tocSettings);
+            uiEnhancer.updateModel(demo.tocSettings);
         });  
 
         jQuery("#remove-skin").click(function () {
