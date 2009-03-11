@@ -286,7 +286,7 @@ fluid_1_0 = fluid_1_0 || {};
              * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
              */
             setTimeout(function () {
-                previewEnhancer.applySkin(model); 
+                previewEnhancer.applySettings(model); 
             }, 0);
         };
 
@@ -359,7 +359,7 @@ fluid_1_0 = fluid_1_0 || {};
         that.save = function () {
             that.events.onSave.fire(that.model);
             that.savedModel = fluid.copy(that.model);
-            that.uiEnhancer.applySkin(that.model);
+            that.uiEnhancer.applySettings(that.model);
         };
 
         that.reset = function () {

@@ -16,27 +16,49 @@ fluid_1_0 = fluid_1_0 || {};
 
 (function ($, fluid) {
 
+    /**
+     * Searches within the container for things that match the selector and then replace the classes 
+     * that are matched by the regular expression with the new value. 
+     * 
+     * @param {Object} container
+     * @param {Object} selector
+     * @param {Object} regExp
+     * @param {Object} newVal
+     */
     var replaceClass = function (container, selector, regExp, newVal) {
         newVal = newVal || "";
         $(selector, container).andSelf().each(function (i) {    
             var attr = ($.browser.msie === false) ? 'class' : 'className'; 
             if (this.getAttribute(attr)) {
+                // The regular expression was required for speed
                 this.setAttribute(attr, this.getAttribute(attr).replace(regExp, newVal));
             }
         });
         
     };
     
-    var addClassForSetting = function (element, label, value, fssMap) {
-        var possibleValues = fssMap[label] || {}; 
-        var className = possibleValues[value];
+    /**
+     * Adds the class related to the setting to the element
+     * @param {Object} element
+     * @param {Object} settingName
+     * @param {Object} value
+     * @param {Object} classnameMap
+     */
+    var addClassForSetting = function (element, settingName, value, classnameMap) {
+        var settingValues = classnameMap[settingName] || {}; 
+        var className = settingValues[value];
         if (className) {
             element.addClass(className);        
         }
     };
 
-    var setToc = function (that, val) {
-        if (val === "On") {
+    /**
+     * Shows the table of contents when tocSetting is "On". Hides the table of contents otherwise.
+     * @param {Object} that
+     * @param {Object} tocSetting
+     */
+    var setToc = function (that, tocSetting) {
+        if (tocSetting === "On") {
             if (that.tableOfContents) {
                 that.tableOfContents.show();
             } else {
@@ -44,20 +66,42 @@ fluid_1_0 = fluid_1_0 || {};
                         [that.container, fluid.COMPONENT_OPTIONS]);
             }
         } else {
-            if (that.tableOfContents) {
-                that.tableOfContents.hide();
-            }
+            that.removeTableOfContents();
         }
         
     };
     
-    var setSize = function (container, size) {
+    /**
+     * Sets the font size on the container. Removes all fss classes that decrease font size. 
+     * @param {Object} container
+     * @param {Object} size
+     */
+    var setMinSize = function (container, size) {
         if (size) {
             container.css("font-size", size + "pt");
             replaceClass(container, "[class*=fl-font-size-]", /\bfl-font-size-[0-9]{1,2}\s+/g, 'fl-font-size-100');
         }
     };
+
+    /**
+     * Styles the container based on the settings passed in
+     * 
+     * @param {Object} that
+     * @param {Object} settings
+     */
+    var addStyles = function (that, settings) {
+        addClassForSetting(that.container, "textFont", settings.textFont, that.options.classnameMap);
+        addClassForSetting(that.container, "textSpacing", settings.textSpacing, that.options.classnameMap);
+        addClassForSetting(that.container, "theme", settings.contrast, that.options.classnameMap);
+        addClassForSetting(that.container, "layout", settings.layout, that.options.classnameMap);
+        addClassForSetting(that.container, "backgroundImages", settings.backgroundImages, that.options.classnameMap);
+    };
     
+    /**
+     * Component that works in conjunction with FSS to transform the interface based on settings. 
+     * @param {Object} container
+     * @param {Object} options
+     */
     fluid.uiEnhancer = function (container, options) {
         var that = fluid.initView("fluid.uiEnhancer", container, options);
         
@@ -68,38 +112,42 @@ fluid_1_0 = fluid_1_0 || {};
         that.removeStyling = function () {
             replaceClass(that.container, "[class*=fl-]", /\bfl-(layout|font|theme|no-background){1}\S+/g);
         };
-
+        
         /**
-         * Styles the container based on the skin passed in
-         * @param {Object} skin
+         * Hides the table of contents
          */
-        // TODO: Rename this - style is no longer appropriate. 
-        that.style = function (skin) {
-            
-            addClassForSetting(that.container, "textFont", skin.textFont, that.options.fssMap);
-            addClassForSetting(that.container, "textSpacing", skin.textSpacing, that.options.fssMap);
-            addClassForSetting(that.container, "theme", skin.contrast, that.options.fssMap);
-            addClassForSetting(that.container, "layout", skin.layout, that.options.fssMap);
-            addClassForSetting(that.container, "backgroundImages", skin.backgroundImages, that.options.fssMap);
-            
-            setSize(that.container, skin.textSize);
-            setToc(that, skin.toc);
+        that.removeTableOfContents = function () {
+            if (that.tableOfContents) {
+                that.tableOfContents.hide();
+            }
         };
 
         /**
-         * Removes all existing classes which start with 'fl-' before restyling the page.
-         * @param {Object} skin
+         * Removes all existing classes which start with 'fl-' before transforming the page to reflect
+         * the settings.
+         * 
+         * @param {Object} settings
          */
-        that.applySkin = function (skin) {
+        that.applySettings = function (settings) {
             that.removeStyling();
-            that.style(skin);
+            addStyles(that, settings);
+            setMinSize(that.container, settings.textSize);
+            setToc(that, settings.toc);
+        };
+        
+        that.refreshView = function () {
+            // TODO: Implement me later.    
+        };
+        
+        that.updateModel = function () {
+            // TODO: Implement me
         };
         
         return that;
     };
 
     fluid.defaults("fluid.uiEnhancer", {
-        fssMap: {
+        classnameMap: {
             "textFont": {
                 "Serif": "fl-font-serif",
                 "Sans-Serif": "fl-font-sans",
