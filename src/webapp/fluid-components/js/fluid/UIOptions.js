@@ -257,7 +257,14 @@ fluid_1_0 = fluid_1_0 || {};
                 }]
             }, {
                 ID: "links-larger",
-                valubinding: "selections.linksLarger"
+                valuebinding: "selections.linksLarger" /*,
+                decorators: [{
+                    type: "jQuery",
+                    func: "change",
+                    args: function () {
+                        alert(that.model.linksLarger);
+                    }
+                }]*/
                 
             }]
         };
@@ -310,7 +317,9 @@ fluid_1_0 = fluid_1_0 || {};
     var createRenderOptions = function (that) {
         // Turn the boolean values into strings so they bind properly
         that.model.toc = String(that.model.toc);
-        that.model.linksLarger = String(that.model.linksLarger);
+        
+        
+        that.model.linksLarger = that.model.linksLarger;
 
         return {
             model: {
@@ -420,7 +429,7 @@ fluid_1_0 = fluid_1_0 || {};
             backgroundImages: "Default",
             layout: "Default",
             toc: false,
-            linksLarger: "false"
+            linksLarger: false
         },
         settings: {
             textFont: "Default",
@@ -429,7 +438,7 @@ fluid_1_0 = fluid_1_0 || {};
             backgroundImages: "Default",
             layout: "Default",
             toc: false,
-            linksLarger: "false"
+            linksLarger: false
         },
         labelMap: {
             textFont: {
