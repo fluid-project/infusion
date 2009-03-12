@@ -28,6 +28,7 @@ $(function () {
             uiOptions.cancel();
         });
     
+        // TODO: This is not an ideal way to override the default theme.
         var options = {
             savedSelections: {
                 theme: "Mist"
@@ -36,9 +37,9 @@ $(function () {
                 theme: "Mist"
             },
             labelMap: {
-                theme: {
-                    names: ["Standard"],
-                    values: ["Mist"]
+                theme: {  
+                    names: ["Low Contrast", "Medium Contrast"],
+                    values: ["Low Contrast", "Mist"]
                 }
             }, 
             listeners: {

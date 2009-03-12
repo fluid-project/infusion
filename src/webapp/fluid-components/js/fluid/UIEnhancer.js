@@ -58,7 +58,7 @@ fluid_1_0 = fluid_1_0 || {};
      * @param {Object} tocSetting
      */
     var setToc = function (that, tocSetting) {
-        if (tocSetting === true || tocSetting === "true") {
+        if (tocSetting && (tocSetting === true || tocSetting === "true")) {
             if (that.tableOfContents) {
                 that.tableOfContents.show();
             } else {
@@ -86,17 +86,25 @@ fluid_1_0 = fluid_1_0 || {};
     /**
      * Styles the container based on the settings passed in
      * 
-     * @param {Object} that
+     * @param {Object} container
      * @param {Object} settings
+     * @param {Object} classnameMap
      */
-    var addStyles = function (that, settings) {
-        addClassForSetting(that.container, "textFont", settings.textFont, that.options.classnameMap);
-        addClassForSetting(that.container, "textSpacing", settings.textSpacing, that.options.classnameMap);
-        addClassForSetting(that.container, "theme", settings.theme, that.options.classnameMap);
-        addClassForSetting(that.container, "layout", settings.layout, that.options.classnameMap);
-        addClassForSetting(that.container, "backgroundImages", settings.backgroundImages, that.options.classnameMap);
+    var addStyles = function (container, settings, classnameMap) {
+        addClassForSetting(container, "textFont", settings.textFont, classnameMap);
+        addClassForSetting(container, "textSpacing", settings.textSpacing, classnameMap);
+        addClassForSetting(container, "theme", settings.theme, classnameMap);
+        addClassForSetting(container, "layout", settings.layout, classnameMap);
+        addClassForSetting(container, "backgroundImages", settings.backgroundImages, classnameMap);
     };
-    
+
+    var styleLinks = function (container, settings, classnameMap) {
+        if (settings && (settings.linksLarger === true || settings.linksLarger === "true")) {
+            var links = $("a", container);
+            links.addClass(classnameMap.linksLarger);
+        }
+    };
+     
     /**
      * Component that works in conjunction with FSS to transform the interface based on settings. 
      * @param {Object} container
@@ -125,9 +133,10 @@ fluid_1_0 = fluid_1_0 || {};
 
         that.refreshView = function () {
             that.removeStyling();
-            addStyles(that, that.model);
+            addStyles(that.container, that.model, that.options.classnameMap);
             setMinSize(that.container, that.model.textSize);
             setToc(that, that.model.toc);
+            styleLinks(that.container, that.model, that.options.classnameMap);
         };
         
         that.updateModel = function (newModel, source) {
@@ -135,7 +144,8 @@ fluid_1_0 = fluid_1_0 || {};
             that.model = newModel;
             that.refreshView();
         };
-        
+
+        that.refreshView();
         return that;
     };
 
@@ -170,7 +180,12 @@ fluid_1_0 = fluid_1_0 || {};
             },
             "backgroundImages": {
                 "No Images": "fl-no-background-images"
-            }
+            },
+            "linkColor": {
+                "aqua": "fl-text-aqua",
+                "yellow": "fl-text-yellow"
+            },
+            "linksLarger": "fl-font-size-110"
         },
         tableOfContents: {
             type: "fluid.tableOfContents",
@@ -185,7 +200,8 @@ fluid_1_0 = fluid_1_0 || {};
             backgroundImages: "",    // key from classname map
             layout: "",              // key from classname map
             toc: false,              // boolean
-            textSize: ""             // in points
+            textSize: "",            // in points
+            linksLarger: false       // boolean
         }
     });
     

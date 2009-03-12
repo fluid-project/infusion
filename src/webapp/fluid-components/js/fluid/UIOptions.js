@@ -112,6 +112,7 @@ fluid_1_0 = fluid_1_0 || {};
 //    - generate the renderer tree
 //    - document the API
 //    - add the min font size textboxSlider to the renderer tree
+//    - pull the strings out of the template and put them into the component?
 
     // TODO: Generate this tree
     var generateTree = function (that, rendererModel) {
@@ -249,6 +250,10 @@ fluid_1_0 = fluid_1_0 || {};
                     choiceindex: 1,
                     parentRelativeID: "..::toc"
                 }]
+            }, {
+                ID: "links-larger",
+                valubinding: "selections.linksLarger"
+                
             }]
         };
     };
@@ -298,8 +303,10 @@ fluid_1_0 = fluid_1_0 || {};
         previewFrame.load(function () {
             var previewFrameContents = previewFrame.contents();
             var preview = that.locate("preview", previewFrameContents);
-            previewEnhancer = fluid.uiEnhancer(preview);
-            updatePreview(that.model);
+            var options = {
+                settings: that.model
+            };
+            previewEnhancer = fluid.uiEnhancer(preview, options);
         });        
         
         that.events.modelChanged.addListener(updatePreview);
@@ -307,14 +314,9 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var createRenderOptions = function (that) {
-        // Turn the boolean toc value into a string so that the value matches a value in the label map.
-        if (that.model.toc === true) {
-            that.model.toc = "true";
-        }
-        
-        if (that.model.toc === false) {
-            that.model.toc = "false";
-        } 
+        // Turn the boolean values into strings so they bind properly
+        that.model.toc = (that.model.toc && that.model.toc.toString()) || "false";
+        that.model.linksLarger = (that.model.linksLarger && that.model.linksLarger.toString()) || "true";
 
         return {
             model: {
@@ -345,7 +347,11 @@ fluid_1_0 = fluid_1_0 || {};
     
     var setupUIOptions = function (that) {
         initModels(that);
-        
+        var options = {
+            settings: that.model
+        };
+        that.uiEnhancer = fluid.uiEnhancer(that.locate("enhanceContainer", "html"), options);
+
         // TODO: This stuff should already be in the renderer tree
         that.events.afterRender.addListener(function () {
             initTextMinSize(that);
@@ -367,7 +373,6 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.uiOptions = function (container, options) {
         var that = fluid.initView("fluid.uiOptions", container, options);
-        that.uiEnhancer = fluid.uiEnhancer(that.locate("enhanceContainer", "html"));
         var template;
              
         that.save = function () {
@@ -427,7 +432,8 @@ fluid_1_0 = fluid_1_0 || {};
             theme: "Default",
             backgroundImages: "Default",
             layout: "Default",
-            toc: false
+            toc: false,
+            linksLarger: "false"
         },
         originalSettings: {
             textFont: "Default",
@@ -435,7 +441,8 @@ fluid_1_0 = fluid_1_0 || {};
             theme: "Default",
             backgroundImages: "Default",
             layout: "Default",
-            toc: false
+            toc: false,
+            linksLarger: "false"
         },
         labelMap: {
             textFont: {
@@ -447,8 +454,8 @@ fluid_1_0 = fluid_1_0 || {};
                 values: ["Default", "Wide", "Wider", "Widest"]
             },
             theme: {
-                names: ["Standard", "Medium Contrast", "High Contrast", "High Contrast Inverted", "Low Contrast"],
-                values: ["Default", "Medium Contrast", "High Contrast", "High Contrast Inverted", "Low Contrast"]
+                names: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"],
+                values: ["Low Contrast", "Default", "Medium Contrast", "High Contrast", "High Contrast Inverted"]
             },
             backgroundImages: {
                 names: ["Yes", "No"],

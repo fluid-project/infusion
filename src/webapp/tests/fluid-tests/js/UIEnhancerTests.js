@@ -21,11 +21,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
         tests.test("Remove Styling", function () {
             expect(8);
 
-            var uiEnhancer = fluid.uiEnhancer("#inner-div");
             jqUnit.assertEquals("Initially fluid classes are in the markup", 4, $(".fl-font-size-90").length);
             jqUnit.assertEquals("Initially fluid layout class is in the markup", 1, $(".fl-layout-default").length);
             jqUnit.assertEquals("Initially fluid theme class is in the markup", 1, $(".fl-theme-mist").length);
-            uiEnhancer.removeStyling();
+            var uiEnhancer = fluid.uiEnhancer("#inner-div");
             jqUnit.assertEquals("Fluid classes on and in the inner div have been removed", 1, $(".fl-font-size-90").length);
             jqUnit.assertEquals("Fluid layout class is gone", 0, $(".fl-layout-default").length);
             jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-mist").length);
@@ -42,7 +41,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             main.addClass("blop");
             
             var uiEnhancer = fluid.uiEnhancer(main);
-            uiEnhancer.removeStyling();
             jqUnit.assertTrue("main has the container class", main.hasClass("container"));
             jqUnit.assertTrue("main has the blop class", main.hasClass("blop"));
             jqUnit.assertTrue("main has the fl-blah class", main.hasClass("fl-blah"));
@@ -53,16 +51,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
         tests.test("Apply Settings", function () {
             expect(4);
 
-            var hcLargeFontSkin = {
-                textSize: "24",
-                textFont: "Courier",
-                textSpacing: "Wide",
-                theme: "High Contrast"
+            var options = {
+                settings: {
+                    textSize: "24",
+                    textFont: "Courier",
+                    textSpacing: "Wide",
+                    theme: "High Contrast"
+                }
             };
             var main = $("#main");
-            var uiEnhancer = fluid.uiEnhancer(main);
+            var uiEnhancer = fluid.uiEnhancer(main, options);
 
-            uiEnhancer.updateModel(hcLargeFontSkin);
             jqUnit.assertEquals("main has large text size", "24pt", main.css("fontSize"));
             jqUnit.assertTrue("main has courier font class", main.hasClass("fl-font-monospace"));
             jqUnit.assertTrue("main has wide text spacing class", main.hasClass("fl-font-spacing-1"));
