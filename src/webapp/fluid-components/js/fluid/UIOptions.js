@@ -40,11 +40,11 @@ fluid_1_0 = fluid_1_0 || {};
                 this.value = that.max;
             }
             
-            if (this.value >= that.min && this.value <= that.max) {
+            if (that.isInRange(this.value)) {
                 slider.slider("value", this.value);
                 that.updateModel(this.value, this);
             } else { 
-                // handle non numeric entries
+                // handle invalid entry
                 this.value = that.model;
             }
         });
@@ -70,12 +70,17 @@ fluid_1_0 = fluid_1_0 || {};
         
         initTextboxSlider(that);
         
+        that.isInRange = function (value) {
+            return (value >= that.min && value <= that.max);
+        };
+        
         that.updateModel = function (model, source) {
-            if (model >= that.min && model <= that.max) {
+            if (that.isInRange(model)) {
                 that.events.modelChanged.fire(model, that.model, source);
                 that.model = model;
             } else {
                 // TODO: should do something here
+                // Throw an error
             }
         };
         
@@ -266,21 +271,14 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var bindHandlers = function (that) {
-        that.locate("save").click(function () {
-            that.save();
-        });
-        
-        that.locate("reset").click(function () {
-            that.reset();
-        });
-
-        that.locate("cancel").click(function () {
-            that.cancel();
-        });
+        that.locate("save").click(that.save);
+        that.locate("reset").click(that.reset);
+        that.locate("cancel").click(that.cancel);
 
         // TODO: This should probably be removed and use a renderer decorator instead.
         that.locate("controls").change(function () {
             // This is strange - old model and new model are the same. 
+            // Need the DAR applier so we can hook in before the model changes otherwise we don't have the old model
             that.events.modelChanged.fire(that.model, that.model, that);
         });
         
@@ -299,6 +297,7 @@ fluid_1_0 = fluid_1_0 || {};
                 previewEnhancer.updateModel(model); 
             }, 0);
         };
+        that.events.modelChanged.addListener(updatePreview);
 
         previewFrame.load(function () {
             var previewFrameContents = previewFrame.contents();
@@ -309,14 +308,12 @@ fluid_1_0 = fluid_1_0 || {};
             previewEnhancer = fluid.uiEnhancer(preview, options);
         });        
         
-        that.events.modelChanged.addListener(updatePreview);
-        
     };
     
     var createRenderOptions = function (that) {
         // Turn the boolean values into strings so they bind properly
-        that.model.toc = (that.model.toc && that.model.toc.toString()) || "false";
-        that.model.linksLarger = (that.model.linksLarger && that.model.linksLarger.toString()) || "true";
+        that.model.toc = String(that.model.toc);
+        that.model.linksLarger = String(that.model.linksLarger);
 
         return {
             model: {
@@ -333,15 +330,14 @@ fluid_1_0 = fluid_1_0 || {};
         var options = {
             listeners: {
                 modelChanged: function (value) {
-                    var uiOptionsModel = fluid.copy(that.model);
-                    uiOptionsModel.textSize = value;
-                    that.updateModel(uiOptionsModel);
+                    that.model.textSize = value;
+                    that.updateModel(that.model);
                 }
             }
         };
         
         fluid.merge(null, options, that.options.textMinSize.options);
-        fluid.initSubcomponents(that, "textMinSize", [that.options.selectors.textMinSize, options]);
+        fluid.initSubcomponents(that, "textMinSize", [that.options.selectors.textMinSizeCtrl, options]);
         
     };
     
@@ -363,10 +359,6 @@ fluid_1_0 = fluid_1_0 || {};
         var rendererOptions = createRenderOptions(that);
         var template = fluid.selfRender(that.container, generateTree(that, rendererOptions.model), rendererOptions);
         that.events.afterRender.fire();
-
-        // Setup any registered decorators for the component.
-        that.decorators = fluid.initSubcomponents(that, "componentDecorators", 
-            [that, fluid.COMPONENT_OPTIONS]);
             
         return template;
     };
@@ -417,7 +409,7 @@ fluid_1_0 = fluid_1_0 || {};
             reset: ".fl-hook-preview-reset",
             cancel: ".fl-hook-preview-cancel",
             enhanceContainer: "body",
-            textMinSize: ".fl-control-min_text_size"
+            textMinSizeCtrl: ".fl-control-min_text_size"
         },
         events: {
             modelChanged: null,
