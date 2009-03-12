@@ -1158,6 +1158,7 @@ fluid_1_0 = fluid_1_0 || {};
       dumpTillLump(collump.parent.lumps, collump.lumpindex, collump.close_tag.lumpindex + 1);
   }
   
+  // Let us pray
   function renderCollects() {
       for (var key in collected) {
           var collist = collected[key];
@@ -1189,8 +1190,6 @@ fluid_1_0 = fluid_1_0 || {};
       this.reference = reference;
   };
   
-  fluid.VALUE = {};
-  
   // Explodes a raw "hash" into a list of UIOutput/UIBound entries
   fluid.explode = function(hash, basepath) {
       var togo = [];
@@ -1214,11 +1213,6 @@ fluid_1_0 = fluid_1_0 || {};
            });
     };
   
-  fluid.findForm = function (node) {
-    return fluid.findAncestor(node, 
-        function(element) {return element.nodeName.toLowerCase() === "form";});
-  };
-  
   fluid.resolveMessageSource = function (messageSource) {
       if (messageSource.type === "data") {
           if (messageSource.url === undefined) {
@@ -1229,82 +1223,7 @@ fluid_1_0 = fluid_1_0 || {};
           }
       }
   };
-  
-  /** A generalisation of jQuery.val to correctly handle the case of acquiring and
-   * setting the value of clustered radio button/checkbox sets, potentially, given
-   * a node corresponding to just one element.
-   */
-  fluid.value = function (nodeIn, newValue) {
-      var node = fluid.unwrap(nodeIn);
-      var multiple = false;
-      if (node.nodeType === undefined && node.length > 1) {
-          node = node[0];
-          multiple = true;
-      }
-      var jNode = $(node);
-      if ("input" !== node.nodeName.toLowerCase()
-         || ! /radio|checkbox/.test(node.type)) {return $(node).val(newValue);}
-      var name = node.name;
-      if (name === undefined) {
-          fluid.fail("Cannot acquire value from node " + fluid.dumpEl(node) + " which does not have name attribute set");
-      }
-      var elements;
-      if (multiple) {
-          elements = nodeIn;
-      }
-      else {
-          var elements = document.getElementsByName(name);
-          var scope = fluid.findForm(node);
-          elements = $.grep(elements, 
-            function(element) {
-              if (element.name !== name) {return false;}
-              return !scope || fluid.dom.isContainer(scope, element);
-            });
-      }
-      if (newValue !== undefined) {
-          if (typeof(newValue) === "boolean") {
-              newValue === (newValue? "true" : "false");
-          }
-        // jQuery gets this partially right, but when dealing with radio button array will
-        // set all of their values to "newValue" rather than setting the checked property
-        // of the corresponding control. 
-          $.each(elements, function() {
-             this.checked = (newValue instanceof Array? 
-               $.inArray(this.value, newValue) !== -1 : newValue === this.value);
-          });
-      }
-      else { // this part jQuery will not do - extracting value from <input> array
-          var checked = $.map(elements, function(element) {
-              return element.checked? element.value : null;
-          });
-          return node.type === "radio"? checked[0] : checked;
-          }
-     };
-  
-  /** "Automatically" apply to whatever part of the data model is
-   * relevant, the changed value received at the given DOM node*/
-  fluid.applyChange = function(node, newValue) {
-      node = fluid.unwrap(node);
-      if (newValue === undefined) {
-          newValue = fluid.value(node);
-      }
-      if (node.nodeType === undefined && node.length > 0) {node = node[0];} // assume here that they share name and parent
-      var root = fluid.findData(node, fluid.BINDING_ROOT_KEY);
-      if (!root) {
-          fluid.fail("Bound data could not be discovered in any node above " + fluid.dumpEl(node));
-      }
-      var name = node.name;
-      var fossil = root.fossils[name];
-      if (!fossil) {
-          fluid.fail("No fossil discovered for name " + name + " in fossil record above " + fluid.dumpEl(node));
-      }
-      if (typeof(fossil.oldvalue) === "boolean") { // deal with the case of an "isolated checkbox"
-          newValue = newValue? true: false;
-      }
-      var EL = root.fossils[name].EL;
-      fluid.model.setBeanValue(root.data, EL, newValue);    
-      };
-    
+   
   fluid.makeBranches = function() {
       var firstBranch;
       var thisBranch;
@@ -1356,23 +1275,6 @@ fluid_1_0 = fluid_1_0 || {};
       renderCollects();
       renderRecurse(tree, template.rootlump, template.lumps[template.firstdocumentindex]);
       return out;
-      };
-  
-  fluid.BINDING_ROOT_KEY = "fluid-binding-root";
-  
-  /** Recursively find any data stored under a given name from a node upwards
-   * in its DOM hierarchy **/
-   
-  fluid.findData = function(elem, name) {
-      while (elem) {
-          var data = $.data(elem, name);
-          if (data) {return data;}
-          elem = elem.parentNode;
-          }
-      };
-
-  fluid.bindFossils = function(node, data, fossils) {
-      $.data(node, fluid.BINDING_ROOT_KEY, {data: data, fossils: fossils});
       };
 
   /** A driver to render and bind an already parsed set of templates onto
@@ -1432,5 +1334,5 @@ fluid_1_0 = fluid_1_0 || {};
       var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
       return fluid.reRender(templates, node, tree, options);
     };
-  
+
 })(jQuery, fluid_1_0);
