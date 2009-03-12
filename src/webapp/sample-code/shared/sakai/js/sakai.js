@@ -33,7 +33,7 @@ $(function () {
             savedSelections: {
                 theme: "Mist"
             },
-            originalSettings: {
+            settings: {
                 theme: "Mist"
             },
             labelMap: {

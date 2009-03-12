@@ -265,7 +265,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     // TODO: FLUID-2293: Implement multi-levels of undo in the UndoManager
     var initModels = function (that) {
-        that.originalModel = that.options.originalSettings;
+        that.defaultModel = that.options.settings;
         that.savedModel = that.options.savedSelections;
         that.model = fluid.copy(that.savedModel);
     };
@@ -284,28 +284,25 @@ fluid_1_0 = fluid_1_0 || {};
         
     };
     
-    // TODO: Make the preview a subcomponent
     var initPreview = function (that) {
         var previewFrame = that.locate("previewFrame");
         var previewEnhancer;
         
-        var updatePreview = function (model) {
+        that.events.modelChanged.addListener(function (model) {
             /**
              * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
              */
             setTimeout(function () {
                 previewEnhancer.updateModel(model); 
             }, 0);
-        };
-        that.events.modelChanged.addListener(updatePreview);
+        });
 
         previewFrame.load(function () {
             var previewFrameContents = previewFrame.contents();
-            var preview = that.locate("preview", previewFrameContents);
             var options = {
                 settings: that.model
             };
-            previewEnhancer = fluid.uiEnhancer(preview, options);
+            previewEnhancer = fluid.uiEnhancer(previewFrameContents, options);
         });        
         
     };
@@ -346,7 +343,7 @@ fluid_1_0 = fluid_1_0 || {};
         var options = {
             settings: that.model
         };
-        that.uiEnhancer = fluid.uiEnhancer(that.locate("enhanceContainer", "html"), options);
+        that.uiEnhancer = fluid.uiEnhancer(document, options);
 
         // TODO: This stuff should already be in the renderer tree
         that.events.afterRender.addListener(function () {
@@ -374,7 +371,7 @@ fluid_1_0 = fluid_1_0 || {};
         };
 
         that.reset = function () {
-            that.updateModel(fluid.copy(that.originalModel), that);
+            that.updateModel(fluid.copy(that.defaultModel), that);
             that.refreshView();
         };
         
@@ -403,13 +400,11 @@ fluid_1_0 = fluid_1_0 || {};
     fluid.defaults("fluid.uiOptions", {
         selectors: {
             controls: ".control",
-            preview: ".fl-hook-preview-content", 
-            previewFrame : ".fl-hook-preview-frame",
-            save: ".fl-hook-preview-save",
-            reset: ".fl-hook-preview-reset",
+            textMinSizeCtrl: ".fl-control-min_text_size",
             cancel: ".fl-hook-preview-cancel",
-            enhanceContainer: "body",
-            textMinSizeCtrl: ".fl-control-min_text_size"
+            reset: ".fl-hook-preview-reset",
+            save: ".fl-hook-preview-save",
+            previewFrame : ".fl-hook-preview-frame"
         },
         events: {
             modelChanged: null,
@@ -427,7 +422,7 @@ fluid_1_0 = fluid_1_0 || {};
             toc: false,
             linksLarger: "false"
         },
-        originalSettings: {
+        settings: {
             textFont: "Default",
             textSpacing: "Default",
             theme: "Default",

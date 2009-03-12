@@ -107,11 +107,13 @@ fluid_1_0 = fluid_1_0 || {};
      
     /**
      * Component that works in conjunction with FSS to transform the interface based on settings. 
-     * @param {Object} container
+     * @param {Object} doc
      * @param {Object} options
      */
-    fluid.uiEnhancer = function (container, options) {
-        var that = fluid.initView("fluid.uiEnhancer", container, options);
+    fluid.uiEnhancer = function (doc, options) {
+        doc = doc || document;
+        var that = fluid.initView("fluid.uiEnhancer", doc, options);
+        that.container = $("body", doc);
         that.model = that.options.settings;
         
         /**

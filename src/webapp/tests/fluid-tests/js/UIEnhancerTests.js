@@ -18,54 +18,38 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(document).ready(function () {
         var tests = new jqUnit.TestCase("UI Enhancer Tests");
         
-        tests.test("Remove Styling", function () {
+        tests.test("Initialization", function () {
             expect(8);
 
             jqUnit.assertEquals("Initially fluid classes are in the markup", 4, $(".fl-font-size-90").length);
             jqUnit.assertEquals("Initially fluid layout class is in the markup", 1, $(".fl-layout-default").length);
             jqUnit.assertEquals("Initially fluid theme class is in the markup", 1, $(".fl-theme-mist").length);
-            var uiEnhancer = fluid.uiEnhancer("#inner-div");
-            jqUnit.assertEquals("Fluid classes on and in the inner div have been removed", 1, $(".fl-font-size-90").length);
+            var uiEnhancer = fluid.uiEnhancer();
+            jqUnit.assertEquals("Fluid classes have been removed", 0, $(".fl-font-size-90").length);
             jqUnit.assertEquals("Fluid layout class is gone", 0, $(".fl-layout-default").length);
             jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-mist").length);
             jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
 
-        tests.test("Remove Styling - dynamically added classes to the container", function () {
-            expect(4);
-
-            var main = $("#main");
-            main.addClass("fl-blah");
-            main.addClass("fl-blip");
-            main.addClass("blop");
-            
-            var uiEnhancer = fluid.uiEnhancer(main);
-            jqUnit.assertTrue("main has the container class", main.hasClass("container"));
-            jqUnit.assertTrue("main has the blop class", main.hasClass("blop"));
-            jqUnit.assertTrue("main has the fl-blah class", main.hasClass("fl-blah"));
-            jqUnit.assertTrue("main has the fl-blip class", main.hasClass("fl-blip"));
-
-        });
-
-        tests.test("Apply Settings", function () {
+        tests.test("Settings", function () {
             expect(4);
 
             var options = {
                 settings: {
-                    textSize: "24",
+                    textSize: "18",
                     textFont: "Courier",
                     textSpacing: "Wide",
                     theme: "High Contrast"
                 }
             };
-            var main = $("#main");
-            var uiEnhancer = fluid.uiEnhancer(main, options);
+            var body = $("body");
+            var uiEnhancer = fluid.uiEnhancer(document, options);
 
-            jqUnit.assertEquals("main has large text size", "24pt", main.css("fontSize"));
-            jqUnit.assertTrue("main has courier font class", main.hasClass("fl-font-monospace"));
-            jqUnit.assertTrue("main has wide text spacing class", main.hasClass("fl-font-spacing-1"));
-            jqUnit.assertTrue("main has high contrast class", main.hasClass("fl-theme-hc"));
+            jqUnit.assertEquals("main has large text size", "18pt", body.css("fontSize"));
+            jqUnit.assertTrue("main has courier font class", body.hasClass("fl-font-monospace"));
+            jqUnit.assertTrue("main has wide text spacing class", body.hasClass("fl-font-spacing-1"));
+            jqUnit.assertTrue("main has high contrast class", body.hasClass("fl-theme-hc"));
 
         });
     });
