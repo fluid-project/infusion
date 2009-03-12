@@ -54,27 +54,29 @@
     background:url(FSS_images/themes/slate/tabs-med-container-bg.png) repeat-x left bottom;
     border-bottom:none;
     margin:0 1px;
-    padding:5px 0 3px;
+    padding:5px 0 4px;
     *padding:0;
 }
 
 .fl-theme-slate .fl-widget-content .fl-tabs-enhanced li {
     background: transparent url(FSS_images/themes/slate/tabs-med-cap.png) no-repeat left top; 
-    padding:5px 0 5px 16px;
+    padding:4px 0 6px 16px;
     *padding-top:0;
 }
 .fl-theme-slate .fl-widget-content .fl-tabs-enhanced li a {
     background: transparent url(FSS_images/themes/slate/tabs-med-bg.png) no-repeat right top; 
     border:none;
     margin:0;
-    padding:5px 16px 5px 0;
-    *padding-bottom:3px;
+    padding:4px 16px 6px 0;
+    color:#666666 !important;
+    *padding-bottom:4px;
 }
 .fl-theme-slate .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active {
     background:transparent url(FSS_images/themes/slate/tabs-med-active-cap.png) no-repeat scroll left top;
 }
 .fl-theme-slate .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active a {
     background:transparent url(FSS_images/themes/slate/tabs-med-active-bg.png) no-repeat scroll right top;
+    color:#000000 !important;
 }
 
 

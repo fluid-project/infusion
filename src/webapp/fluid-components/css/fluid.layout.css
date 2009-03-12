@@ -233,20 +233,6 @@ input.fl-icon {padding-left:16px;}
 .fl-widget .on 		{background-position:left top;}
 .fl-widget .off 	{background-position:left bottom;}
 
-/**
- * Sliders: basic slider structure
- * requires an anchor for a drag handle
- */
-
-.fl-vert-slider {height:10em; width:0.8em;}
-.fl-horz-slider {width:10em; height:0.8em;}
-.fl-slider {position:relative; background-color:#ebebeb; padding:0;}
-.fl-slider .fl-handle, .fl-slider a {position:absolute; display:block; background-color:#ccc; height:1.2em; width:1.2em; top:0; left:0;}
-.fl-vert-slider .fl-handle, .fl-vert-slider a {margin-left:-0.2em; margin-top:-0.5em;}
-.fl-horz-slider .fl-handle, .fl-horz-slider a {margin-top:-0.2em; margin-left:-0.5em;}
-
-
-
 /*
  * Forms and Form Controls
  * Common arrangements for form inputs
