@@ -54,7 +54,7 @@ $(function () {
         $('#dialog_container').css("display", "block"); 
     };
 
-    $('.skin').click(function () {
+    $('.lookNfeel a').click(function () {
         if (!uiOptions) {
             // ajax call to pull the UI Options dialog into a container
             $('#dialog_content').load('../../../fluid-components/html/templates/UIOptions.html .uiOptions', initDialog);

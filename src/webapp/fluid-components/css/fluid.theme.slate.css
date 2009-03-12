@@ -79,6 +79,9 @@
     color:#000000 !important;
 }
 
+.fl-theme-slate .fl-button-left {background-image:url(FSS_images/themes/slate/buttons-med-cap.png);}
+.fl-theme-slate .fl-button-right {background-image:url(FSS_images/themes/slate/buttons-med-cap.png);}
+.fl-theme-slate .fl-button-inner {background-image:url(FSS_images/themes/slate/buttons-med-bg.png);}
 
 /* Helper: Menu */
 .fl-theme-slate .fl-listmenu {border:1px solid #999999; background-color:#ccc;}
@@ -104,8 +107,19 @@
 
 
 /* Widget titlebar */
-.fl-theme-slate .fl-widget-titlebar {/*margin:-5px -5px 0 -5px;*/}
+.fl-theme-slate .fl-widget-titlebar {}
 .fl-theme-slate .fl-widget-titlebar .icon {background-position:center center;}
+.fl-theme-slate .fl-widget-titlebar .fl-button-right,
+.fl-theme-slate .fl-widget-titlebar .fl-button-left {
+    color:#333 !important;
+    background-image:url(FSS_images/themes/slate/buttons-titlebar-cap.png);
+}
+.fl-theme-slate .fl-widget-titlebar .fl-button-inner {
+    background-image:url(FSS_images/themes/slate/buttons-titlebar-bg.png);
+    padding-bottom:0.4em;
+    padding-top:0;
+}
+
 
 /* Widget options */
 .fl-theme-slate .fl-widget-options {}

@@ -74,6 +74,10 @@
 .fl-theme-hci .fl-grid li {}
 .fl-theme-hci .fl-grid .caption {}
 
+/* Helper: buttons */
+.fl-theme-hci .fl-button-right, 
+.fl-theme-hci .fl-button-left, 
+.fl-theme-hci .fl-button-inner {padding:0;}
 
 /* Widget core */
 .fl-theme-hci .fl-widget {background-color:#ffffff; border:1px solid #000000;}

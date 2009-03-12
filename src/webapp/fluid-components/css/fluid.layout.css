@@ -202,11 +202,9 @@ input.fl-icon {padding-left:16px;}
  * Buttons: quick sliding door buttons
  * requires a container with a sub container
  */
-
 .fl-button-left {float:left; margin-right:10px; padding:0 0 0 16px; background-position:left center; background-repeat:no-repeat;}
-.fl-button-left * {float:left; padding:0 16px 0 0; cursor:pointer; background-position:right center; background-repeat:no-repeat;}
 .fl-button-right {float:right;  margin-left:10px; padding:0 0 0 16px; background-position:left center; background-repeat:no-repeat;}
-.fl-button-right * {float:left; padding: 0 16px 0 0; cursor:pointer; background-position:right center; background-repeat:no-repeat;}
+.fl-button-inner {float:left; padding:5px 16px 5px 0; cursor:pointer; background-position:right center; background-repeat:no-repeat;}
 
 /*
  * Widgets: modelled after the mycamtools widget model
@@ -215,6 +213,11 @@ input.fl-icon {padding-left:16px;}
 .fl-widget .button {margin:0 5px;}
 .fl-widget .fl-widget-titlebar {} /* fixes layout problem in IE6 due to .column {position:relative} setup*/
 .fl-widget .fl-widget-titlebar h2 {padding:0; margin:0; font-size:105%;}
+.fl-widget .fl-widget-titlebar .fl-button-inner {
+    font-size:0.8em;
+    padding-bottom:0.2em;
+    padding-top:0.2em;
+}
 .fl-widget .fl-widget-controls {margin:-1.3em 0 1.5em 0;}
 .fl-widget .fl-widget-options {margin-top:5px; padding:0px 10px;}
 .fl-widget .fl-widget-options ul {margin:0; padding:0; overflow:hidden; zoom:1;} 
@@ -223,6 +226,7 @@ input.fl-icon {padding-left:16px;}
 .fl-widget .fl-widget-content {zoom:1; margin:5px 0 0 0; overflow: auto;}
 .fl-widget .fl-widget-content ul {}
 .fl-widget .empty * {padding-top:10px; margin-left:auto; margin-right:auto; text-align:center;}
+
 
 /* Common widget sub-components */
 .fl-widget .menu 	{margin:0;}
