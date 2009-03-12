@@ -113,7 +113,7 @@ input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;
 /* Prevent unecessary scrollbars in IE */
 /* Put font data on the HTML element to allow overrides on the body */
 /* IE6 cant zoom text properly, so text size reset is a rough approximation */
-html {overflow:auto; font:13px/1.231 arial,helvetica,clean,sans-serif; *font-size:60%;}
+html {overflow:auto; font:13px/1.231 arial,helvetica,clean,sans-serif; *font-size:small;}
 
 /*to enable resizing for IE*/
 input,textarea,select{
