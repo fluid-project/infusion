@@ -174,6 +174,8 @@ fluid_1_0 = fluid_1_0 || {};
         children.push(createSelectNode("toc", "selections.toc", "labelMap.toc.values", "labelMap.toc.names"));
         children = children.concat(fluid.explodeSelectionToInputs(that.options.labelMap.layout.values, tocExplodeOpts));
 
+        children.push(createSimpleBindingNode("links-underline", "selections.linksUnderline"));
+        children.push(createSimpleBindingNode("links-bold", "selections.linksBold"));
         children.push(createSimpleBindingNode("links-larger", "selections.linksLarger"));
         children.push(createSimpleBindingNode("inputs-larger", "selections.inputsLarger"));
         
@@ -341,6 +343,8 @@ fluid_1_0 = fluid_1_0 || {};
             backgroundImages: "Default",
             layout: "Default",
             toc: false,
+            linksUnderline: false,
+            linksBold: false,
             linksLarger: false,
             inputsLarger: false
         },
@@ -351,6 +355,8 @@ fluid_1_0 = fluid_1_0 || {};
             backgroundImages: "Default",
             layout: "Default",
             toc: false,
+            linksUnderline: false,
+            linksBold: false,
             linksLarger: false,
             inputsLarger: false
         },

@@ -107,7 +107,11 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var styleLinks = function (container, settings, classnameMap) {
-        styleElements($("a", container), settings.linksLarger, classnameMap.linksLarger);
+        var links = $("a", container);
+        // TODO: collect up the classnames and add or remove them all at once. 
+        styleElements(links, settings.linksUnderline, classnameMap.linksUnderline);
+        styleElements(links, settings.linksBold, classnameMap.linksBold);
+        styleElements(links, settings.linksLarger, classnameMap.linksLarger);
     };
 
     var styleInputs = function (container, settings, classnameMap) {
@@ -197,6 +201,8 @@ fluid_1_0 = fluid_1_0 || {};
                 "aqua": "fl-text-aqua",
                 "yellow": "fl-text-yellow"
             },
+            "linksUnderline": "fl-text-underline", 
+            "linksBold": "fl-text-bold", 
             "linksLarger": "fl-text-larger", 
             "inputsLarger": "fl-text-larger"
         },
@@ -214,6 +220,8 @@ fluid_1_0 = fluid_1_0 || {};
             layout: "",              // key from classname map
             toc: false,              // boolean
             textSize: "",            // in points
+            linksUnderline: false,   // boolean
+            linksBold: false,        // boolean
             linksLarger: false,      // boolean
             inputsLarger: false      // boolean
         }
