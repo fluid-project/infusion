@@ -119,154 +119,65 @@ fluid_1_0 = fluid_1_0 || {};
 //    - add the min font size textboxSlider to the renderer tree
 //    - pull the strings out of the template and put them into the component?
 
-    // TODO: Generate this tree
-    var generateTree = function (that, rendererModel) {
+    var createSelectNode = function (id, selection, list, names) {
         return {
+            ID: id,
+            selection: {
+                valuebinding: selection
+            },
+            optionlist: {
+                valuebinding: list
+            },
+            optionnames: {
+                valuebinding: names
+            }
+        };
+    };
         
-            children: [{
-                ID: "font-style",
-                selection: {
-                    valuebinding: "selections.textFont"
-                },
-                optionlist: {
-                    valuebinding: "labelMap.textFont.values"
-                },
-                optionnames: {
-                    valuebinding: "labelMap.textFont.names"
-                }
-            }, {
-                ID: "text-spacing",
-                selection: {
-                    valuebinding: "selections.textSpacing"
-                },
-                optionlist: {
-                    valuebinding: "labelMap.textSpacing.values"
-                },
-                optionnames: {
-                    valuebinding: "labelMap.textSpacing.names"
-                }
-            }, {
-                ID: "contrast",
-                selection: {
-                    valuebinding: "selections.theme"
-                },
-                optionlist: {
-                    valuebinding: "labelMap.theme.values"
-                },
-                optionnames: {
-                    valuebinding: "labelMap.theme.names"
-                }
-            }, {
-                ID: "background-images",
-                selection: {
-                    valuebinding: "selections.backgroundImages"
-                },
-                optionlist: {
-                    valuebinding: "labelMap.backgroundImages.values"
-                },
-                optionnames: {
-                    valuebinding: "labelMap.backgroundImages.names"
-                }
-            }, {
-                ID: "background-images-row:",
-                children: [{
-                    ID: "images-choice",
-                    choiceindex: 0,
-                    parentRelativeID: "..::background-images"
-                }, {
-                    ID: "images-label",
-                    choiceindex: 0,
-                    parentRelativeID: "..::background-images"
-                }]
-            }, {
-                ID: "background-images-row:",
-                children: [{
-                    ID: "images-choice",
-                    choiceindex: 1,
-                    parentRelativeID: "..::background-images"
-                }, {
-                    ID: "images-label",
-                    choiceindex: 1,
-                    parentRelativeID: "..::background-images"
-                }]
-            }, {
-                ID: "layout",
-                selection: {
-                    valuebinding: "selections.layout"
-                },
-                optionlist: {
-                    valuebinding: "labelMap.layout.values"
-                },
-                optionnames: {
-                    valuebinding: "labelMap.layout.names"
-                }
-            }, {
-                ID: "layout-row:",
-                children: [{
-                    ID: "layout-choice",
-                    choiceindex: 0,
-                    parentRelativeID: "..::layout"
-                }, {
-                    ID: "layout-label",
-                    choiceindex: 0,
-                    parentRelativeID: "..::layout"
-                }]
-            }, {
-                ID: "layout-row:",
-                children: [{
-                    ID: "layout-choice",
-                    choiceindex: 1,
-                    parentRelativeID: "..::layout"
-                }, {
-                    ID: "layout-label",
-                    choiceindex: 1,
-                    parentRelativeID: "..::layout"
-                }]
-            }, {
-                ID: "toc",
-                selection: {
-                    valuebinding: "selections.toc"
-                },
-                optionlist: {
-                    valuebinding: "labelMap.toc.values"
-                },
-                optionnames: {
-                    valuebinding: "labelMap.toc.names"
-                }
-            }, {
-                ID: "toc-row:",
-                children: [{
-                    ID: "toc-choice",
-                    choiceindex: 0,
-                    parentRelativeID: "..::toc"
-                }, {
-                    ID: "toc-label",
-                    choiceindex: 0,
-                    parentRelativeID: "..::toc"
-                }]
-            }, {
-                ID: "toc-row:",
-                children: [{
-                    ID: "toc-choice",
-                    choiceindex: 1,
-                    parentRelativeID: "..::toc"
-                }, {
-                    ID: "toc-label",
-                    choiceindex: 1,
-                    parentRelativeID: "..::toc"
-                }]
-            }, {
-                ID: "links-larger",
-                valuebinding: "selections.linksLarger" /*,
-                decorators: [{
-                    type: "jQuery",
-                    func: "change",
-                    args: function () {
-                        alert(that.model.linksLarger);
-                    }
-                }]*/
-                
-            }]
+    var createSimpleBindingNode = function (id, binding) {
+        return {
+            ID: id,
+            valuebinding: binding
+        };
+    };
+    
+    var generateTree = function (that, rendererModel) {
+        var children = [];
+        children.push(createSelectNode("font-style", "selections.textFont", "labelMap.textFont.values", "labelMap.textFont.names"));
+        children.push(createSelectNode("text-spacing", "selections.textSpacing", "labelMap.textSpacing.values", "labelMap.textSpacing.names"));
+        children.push(createSelectNode("contrast", "selections.theme", "labelMap.theme.values", "labelMap.theme.names"));
+
+        var bgiExplodeOpts = {
+            selectID: "background-images",
+            rowID: "background-images-row:",
+            inputID: "images-choice",
+            labelID: "images-label"
+        };        
+        children.push(createSelectNode("background-images", "selections.backgroundImages", "labelMap.backgroundImages.values", "labelMap.backgroundImages.names"));
+        children = children.concat(fluid.explodeSelectionToInputs(that.options.labelMap.backgroundImages.values, bgiExplodeOpts));
+        
+        var layoutExplodeOpts = {
+            selectID: "layout",
+            rowID: "layout-row:",
+            inputID: "layout-choice",
+            labelID: "layout-label"
+        };        
+        children.push(createSelectNode("layout", "selections.layout", "labelMap.layout.values", "labelMap.layout.names"));
+        children = children.concat(fluid.explodeSelectionToInputs(that.options.labelMap.layout.values, layoutExplodeOpts));
+
+        var tocExplodeOpts = {
+            selectID: "toc",
+            rowID: "toc-row:",
+            inputID: "toc-choice",
+            labelID: "toc-label"
+        };        
+        children.push(createSelectNode("toc", "selections.toc", "labelMap.toc.values", "labelMap.toc.names"));
+        children = children.concat(fluid.explodeSelectionToInputs(that.options.labelMap.layout.values, tocExplodeOpts));
+
+        children.push(createSimpleBindingNode("links-larger", "selections.linksLarger"));
+        
+        return {
+            children: children
         };
     };
     

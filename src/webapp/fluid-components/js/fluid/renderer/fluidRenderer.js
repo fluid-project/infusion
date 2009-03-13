@@ -1200,8 +1200,17 @@ fluid_1_0 = fluid_1_0 || {};
       return togo;
     };
     
-    // commn utility function to make a simple view of rows, where each row has a selection
-    // control and a label
+    
+   /**
+    * A common utility function to make a simple view of rows, where each row has a selection control and a label
+    * @param {Object} optionlist An array of the values of the options in the select
+    * @param {Object} opts An object with this structure: {
+            selectID: "",         
+            rowID: "",            
+            inputID: "",
+            labelID: ""
+        }
+    */ 
    fluid.explodeSelectionToInputs = function(optionlist, opts) {
          return fluid.transform(optionlist, function(option, index) {
               return {
