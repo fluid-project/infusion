@@ -239,7 +239,7 @@ fluid_1_0 = fluid_1_0 || {};
         var guards = fluid.getEventFirer(false, true);
         var modelChanged = fluid.getEventFirer(false, false);
         var that = {
-            model: model,
+            model: model
         };
         that.fireAlterationRequest = function(dar) {
             if (!dar.type) {
