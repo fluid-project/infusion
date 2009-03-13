@@ -168,7 +168,7 @@
 
 .fl-text-underline {text-decoration:underline !important;}
 .fl-text-bold {font-weight:bold !important;}
-.fl-text-larger {font-size:110% !important;}
+.fl-text-larger {font-size:125% !important;}
 .fl-input-outline {border:2px solid;} /* leave out color? */
 
 .fl-highlight-yellow, .fl-highlight-hover-yellow:hover, .fl-highlight-focus-yellow:focus {background-color:#FF0 !important; background-image:none !important;}

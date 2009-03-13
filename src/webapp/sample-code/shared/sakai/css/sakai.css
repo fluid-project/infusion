@@ -22,7 +22,6 @@ p {margin:0; padding-bottom:1em;}
     display: none;
     width:60em;  
     z-index:1000;
-    border: 2px solid #000;
 }
 #dialog_container #close_dialog {
 /*	position:absolute; 
