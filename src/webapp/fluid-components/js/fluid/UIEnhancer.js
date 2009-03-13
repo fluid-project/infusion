@@ -98,11 +98,20 @@ fluid_1_0 = fluid_1_0 || {};
         addClassForSetting(container, "backgroundImages", settings.backgroundImages, classnameMap);
     };
 
+    var styleElements = function (elements, setting, classname) {
+        if (setting) {
+            elements.addClass(classname);
+        } else {
+            elements.removeClass(classname);
+        }        
+    };
+    
     var styleLinks = function (container, settings, classnameMap) {
-        if (settings && (settings.linksLarger === true || settings.linksLarger === "true")) {
-            var links = $("a", container);
-            links.addClass(classnameMap.linksLarger);
-        }
+        styleElements($("a", container), settings.linksLarger, classnameMap.linksLarger);
+    };
+
+    var styleInputs = function (container, settings, classnameMap) {
+        styleElements($("input", container), settings.inputsLarger, classnameMap.inputsLarger);
     };
      
     /**
@@ -139,6 +148,7 @@ fluid_1_0 = fluid_1_0 || {};
             setMinSize(that.container, that.model.textSize);
             setToc(that, that.model.toc);
             styleLinks(that.container, that.model, that.options.classnameMap);
+            styleInputs(that.container, that.model, that.options.classnameMap);
         };
         
         that.updateModel = function (newModel, source) {
@@ -187,7 +197,8 @@ fluid_1_0 = fluid_1_0 || {};
                 "aqua": "fl-text-aqua",
                 "yellow": "fl-text-yellow"
             },
-            "linksLarger": "fl-font-size-110"
+            "linksLarger": "fl-text-larger", 
+            "inputsLarger": "fl-text-larger"
         },
         tableOfContents: {
             type: "fluid.tableOfContents",
@@ -203,7 +214,8 @@ fluid_1_0 = fluid_1_0 || {};
             layout: "",              // key from classname map
             toc: false,              // boolean
             textSize: "",            // in points
-            linksLarger: false       // boolean
+            linksLarger: false,      // boolean
+            inputsLarger: false      // boolean
         }
     });
     

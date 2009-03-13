@@ -114,7 +114,7 @@ fluid_1_0 = fluid_1_0 || {};
 //    TODO
 //    - fix the test that is throwing an error (the issue is the preview not loading because the path is hardcoded in the template)
 //    - make the preview a subcomponent
-//    - generate the renderer tree
+//    - move the general renderer tree generation functions to the renderer
 //    - document the API
 //    - add the min font size textboxSlider to the renderer tree
 //    - pull the strings out of the template and put them into the component?
@@ -175,6 +175,7 @@ fluid_1_0 = fluid_1_0 || {};
         children = children.concat(fluid.explodeSelectionToInputs(that.options.labelMap.layout.values, tocExplodeOpts));
 
         children.push(createSimpleBindingNode("links-larger", "selections.linksLarger"));
+        children.push(createSimpleBindingNode("inputs-larger", "selections.inputsLarger"));
         
         return {
             children: children
@@ -340,7 +341,8 @@ fluid_1_0 = fluid_1_0 || {};
             backgroundImages: "Default",
             layout: "Default",
             toc: false,
-            linksLarger: false
+            linksLarger: false,
+            inputsLarger: false
         },
         settings: {
             textFont: "Default",
@@ -349,7 +351,8 @@ fluid_1_0 = fluid_1_0 || {};
             backgroundImages: "Default",
             layout: "Default",
             toc: false,
-            linksLarger: false
+            linksLarger: false,
+            inputsLarger: false
         },
         labelMap: {
             textFont: {
