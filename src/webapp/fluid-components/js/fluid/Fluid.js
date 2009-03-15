@@ -543,9 +543,6 @@ var fluid = fluid || fluid_1_0;
                 if (!listener) {
                     return;
                 }
-                if (predicate) {
-                    listener.predicate = predicate;
-                }
                 if (unicast) {
                     namespace = "unicast";
                 }
@@ -556,7 +553,7 @@ var fluid = fluid || fluid_1_0;
                     namespace = listener.$$guid;
                 }
 
-                listeners[namespace] = {listener: listener};
+                listeners[namespace] = {listener: listener, predicate: predicate};
             },
 
             removeListener: function (listener) {
@@ -571,9 +568,10 @@ var fluid = fluid || fluid_1_0;
             fire: function () {
                 for (var i in listeners) {
                     var lisrec = listeners[i];
-                    if (lisrec.predicate && !lisrec.predicate(listener)) {continue;}
+                    var listener = lisrec.listener;
+                    if (lisrec.predicate && !lisrec.predicate(listener, arguments)) {continue;}
                     try {
-                        var ret = lisrec.listener.apply(null, arguments);
+                        var ret = listener.apply(null, arguments);
                         if (preventable && ret === true) {
                             return true;
                         }

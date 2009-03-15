@@ -191,6 +191,7 @@ fluid_1_0 = fluid_1_0 || {};
             }
             prefix += c;
         }
+        return prefix;
     };
     
     /**
@@ -212,8 +213,8 @@ fluid_1_0 = fluid_1_0 || {};
           var spechead = fluid.pathUtil.getHeadPath(spec);
           var pathhead = fluid.pathUtil.getHeadPath(path);
           // if we fail to match on a specific component, fail.
-          if (spechead !== "*" || spechead === pathhead) {
-            return null;
+          if (spechead !== "*" && spechead !== pathhead) {
+              return null;
           }
           togo = fluid.pathUtil.composePath(togo, pathhead);
           spec = fluid.pathUtil.getFromHeadPath(spec);
@@ -225,44 +226,63 @@ fluid_1_0 = fluid_1_0 || {};
   
     fluid.model.applyDAR = function(model, dar) {
         if (dar.type === "ADD") {
-            fluid.model.setBeanValue(model, dar.path, dar.data);
+            fluid.model.setBeanValue(model, dar.path, dar.value);
             }
         else if (dar.type === "DELETE") {
             var totail = fluid.pathUtil.getToTailPath(dar.path);
-            var tail = fluid.pathUtil.getTalPath(dar.path);
+            var tail = fluid.pathUtil.getTailPath(dar.path);
             var penult = fluid.model.getBeanValue(model, penult);
             delete penult[tail];
         }
     };
   
     fluid.makeDARApplier = function(model) {
-        var guards = fluid.getEventFirer(false, true);
-        var modelChanged = fluid.getEventFirer(false, false);
+        var baseEvents = {
+            guards: fluid.event.getEventFirer(false, true),
+            modelChanged: fluid.event.getEventFirer(false, false)
+        };
         var that = {
             model: model
         };
+        function makePredicate(listenerMember, darIndex) {
+          return function(listener, args) {
+                var dar = args[darIndex];
+                return fluid.pathUtil.matchPath(listener[listenerMember], dar.path);
+            };
+        }
+        function adaptListener(that, name, listenerMember, darIndex) {
+            var predicate = makePredicate(listenerMember, darIndex);
+            that[name] = {
+                addListener: function(pathSpec, listener, namespace) {
+                    listener[listenerMember] = pathSpec;
+                    baseEvents[name].addListener(listener, namespace, predicate);
+                },
+                removeListener: function(listener) {
+                    baseEvents[name].removeListener(listener);
+                }
+            };
+        }
+        
+        adaptListener(that, "guards", "guardedPathSpec", 0);
+        adaptListener(that, "modelChanged", "triggerPathSpec", 2);
         that.fireAlterationRequest = function(dar) {
             if (!dar.type) {
                 dar.type = "ADD";
             }
-            var prevent = guards.fire(dar);
+            var prevent = baseEvents.guards.fire(dar);
             if (prevent) {
                 return;
             }
-            var oldModel = fluid.model.copyModel(model);
+            var oldModel = {};
+            fluid.model.copyModel(oldModel, model);
             fluid.model.applyDAR(model, dar);
-            modelChanged.fire(model, oldModel, dar);
+            baseEvents.modelChanged.fire(model, oldModel, dar);
         };
-        that.addGuard = function(guardedPathSpec, listener, namespace) {
-            listener.guardedPathSpec = guardedPathSpec;
-            guards.addListener(listener, namespace, function(listener) {
-                return fluid.pathUtil.matchPath(listener.guardedPathSpec, dar.path);
-            });
-        };
-        that.requestAlteration = function(path, data, type) {
+
+        that.requestAlteration = function(path, value, type) {
             var dar = {
                 path: path,
-                data: data,
+                value: value,
                 type: type
             };
             that.fireAlterationRequest(dar);
