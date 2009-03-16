@@ -211,7 +211,7 @@ fluid_1_0 = fluid_1_0 || {};
                 
                 if (isMovement) {
                     var prevent = thatReorderer.events.onBeginMove.fire(item);
-                    if (prevent) {
+                    if (prevent === false) {
                         return false;
                     }
                     if (kbDropWarning.length > 0) {
@@ -343,7 +343,7 @@ fluid_1_0 = fluid_1_0 || {};
                 },
                 start: function (e, ui) {
                     var prevent = thatReorderer.events.onBeginMove.fire(item);
-                    if (prevent) {
+                    if (prevent === false) {
                         return false;
                     }
                     var handle = thatReorderer.dom.fastLocate("grabHandle", item)[0];

@@ -572,8 +572,8 @@ var fluid = fluid || fluid_1_0;
                     if (lisrec.predicate && !lisrec.predicate(listener, arguments)) {continue;}
                     try {
                         var ret = listener.apply(null, arguments);
-                        if (preventable && ret === true) {
-                            return true;
+                        if (preventable && ret === false) {
+                            return false;
                         }
                     }
                     catch (e) {

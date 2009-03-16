@@ -121,7 +121,7 @@ fluid_1_0 = fluid_1_0 || {};
         var viewNode = that.viewEl[0];
         var editNode = that.editField[0];
         var ret = that.events.onFinishEdit.fire(newValue, oldValue, editNode, viewNode);
-        if (ret) {
+        if (ret === false) {
             return;
         }
         
@@ -208,12 +208,12 @@ fluid_1_0 = fluid_1_0 || {};
     var makeEditHandler = function (that) {
         return function () {
             var prevent = that.events.onBeginEdit.fire();
-            if (prevent) {
-                return true;
+            if (prevent === false) {
+                return false;
             }
             edit(that);
             
-            return false;
+            return true;
         }; 
     };
     
