@@ -347,7 +347,7 @@ fluid_1_0 = fluid_1_0 || {};
         },
         // TODO: use a merge policy instead of specifying savedSelections
         savedSelections: {
-            textFont: "Default",
+            textFont: "Arial",
             textSpacing: "Default",
             theme: "Default",
             backgroundImages: "Default",
@@ -359,7 +359,7 @@ fluid_1_0 = fluid_1_0 || {};
             inputsLarger: false
         },
         settings: {
-            textFont: "Default",
+            textFont: "Arial",
             textSpacing: "Default",
             theme: "Default",
             backgroundImages: "Default",
@@ -372,11 +372,11 @@ fluid_1_0 = fluid_1_0 || {};
         },
         labelMap: {
             textFont: {
-                names: ["No Preference", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"],
-                values: ["Default", "Serif", "Sans-Serif", "Ariel", "Verdana", "Courier", "Times"]
+                names: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
+                values: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"]
             },
             textSpacing: {
-                names: ["No Preference", "Wide", "Wider", "Widest"],
+                names: ["Regular", "Wide", "Wider", "Widest"],
                 values: ["Default", "Wide", "Wider", "Widest"]
             },
             theme: {

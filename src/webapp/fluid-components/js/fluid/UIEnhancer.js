@@ -225,7 +225,7 @@ fluid_1_0 = fluid_1_0 || {};
             "textFont": {
                 "Serif": "fl-font-serif",
                 "Sans-Serif": "fl-font-sans",
-                "Ariel": "fl-font-arial",
+                "Arial": "fl-font-arial",
                 "Verdana": "fl-font-verdana",
                 "Courier": "fl-font-monospace",
                 "Times": "fl-font-serif"
