@@ -391,7 +391,8 @@ fluid_1_0 = fluid_1_0 || {};
         enableElement(that, that.locate("browseButton"));
         hideElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("uploadButton"));
-        $(that.locate("totalFileProgressBar")).addClass(that.options.styles.completed);
+        // commented out for JIRA FLUID-2351 to be revisted during 1.0 bug parade
+        // that.locate("totalFileProgressBar").addClass(that.options.styles.completed);
     };
 
     var setStateLoaded = function (that) {
@@ -409,7 +410,8 @@ fluid_1_0 = fluid_1_0 || {};
         enableElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("pauseButton"));
         that.locate(that.options.focusWithEvent.afterUploadStart).focus();
-        $(that.locate("totalFileProgressBar")).removeClass(that.options.styles.completed);
+        // commented out for JIRA FLUID-2351 to be revisted during 1.0 bug parade
+        // that.locate("totalFileProgressBar").removeClass(that.options.styles.completed);
     };    
     
     var renderUploadTotalMessage = function (that) {
