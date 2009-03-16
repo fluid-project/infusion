@@ -31,7 +31,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         DataBindingTests.test("DARApplier", function() {
             var outerDAR = null;
-            function checkingGuard(dar) {
+            function checkingGuard(model, dar) {
                 outerDAR = dar;
             }
             var outerNewModel, outerOldModel, outerdar;
@@ -61,7 +61,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Outer listener old", false, outerOldModel.outerProperty);
             jqUnit.assertEquals("Outer listener new", true, outerNewModel.outerProperty);
             
-            function preventingGuard(dar) {
+            function preventingGuard(model, dar) {
                 return true;
             }
             
@@ -71,7 +71,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertNull("No collateral guard", outerDAR);
             
             var outerDAR2 = null;
-            function checkingGuard2(dar) {
+            function checkingGuard2(model, dar) {
                 outerDAR2 = dar;
             }
             

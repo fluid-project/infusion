@@ -263,13 +263,13 @@ fluid_1_0 = fluid_1_0 || {};
             };
         }
         
-        adaptListener(that, "guards", "guardedPathSpec", 0);
+        adaptListener(that, "guards", "guardedPathSpec", 1);
         adaptListener(that, "modelChanged", "triggerPathSpec", 2);
         that.fireAlterationRequest = function(dar) {
             if (!dar.type) {
                 dar.type = "ADD";
             }
-            var prevent = baseEvents.guards.fire(dar);
+            var prevent = baseEvents.guards.fire(model, dar);
             if (prevent) {
                 return;
             }
