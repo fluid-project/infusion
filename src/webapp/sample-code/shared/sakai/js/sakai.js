@@ -14,7 +14,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 $(function () {
     var uiOptions;
+    var enhancerOpts = {
+        defaultSettings: {
+            theme: "Mist"
+        }
+    };
     
+    var uiEnhancer = fluid.uiEnhancer(document, enhancerOpts);
     var initDialog = function () {
         // center dialog
         $('#dialog_container').css({
@@ -30,12 +36,6 @@ $(function () {
     
         // TODO: This is not an ideal way to override the default theme.
         var options = {
-            savedSelections: {
-                theme: "Mist"
-            },
-            settings: {
-                theme: "Mist"
-            },
             labelMap: {
                 theme: {  
                     names: ["Low Contrast", "Medium Contrast"],

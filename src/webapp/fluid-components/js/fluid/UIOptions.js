@@ -119,6 +119,7 @@ fluid_1_0 = fluid_1_0 || {};
 //    - document the API
 //    - add the min font size textfieldSlider to the renderer tree
 //    - pull the strings out of the template and put them into the component?
+//    - should the accordian be part of the component by default?
 
     var createSelectNode = function (id, selection, list, names) {
         return {
@@ -187,8 +188,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     // TODO: FLUID-2293: Implement multi-levels of undo in the UndoManager
     var initModels = function (that) {
-        that.defaultModel = that.options.settings;
-//that.savedModel = that.options.savedSelections;
+        that.defaultModel = that.uiEnhancer.defaultSettings;
         that.savedModel = that.uiEnhancer.model;
         that.model = fluid.copy(that.savedModel);
     };
@@ -231,12 +231,9 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var createRenderOptions = function (that) {
-        // Turn the boolean values into strings so they bind properly
+        // Turn the boolean value select into a string so it can be properly bound and rendered
         that.model.toc = String(that.model.toc);
         
-        
-        that.model.linksLarger = that.model.linksLarger;
-
         return {
             model: {
                 selections: that.model,
@@ -249,7 +246,6 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var initSliders = function (that) {
-        
         var createOptions = function (settingName) {
             return {
                 listeners: {
@@ -274,10 +270,6 @@ fluid_1_0 = fluid_1_0 || {};
     var setupUIOptions = function (that) {
         that.uiEnhancer = $(document).data("uiEnhancer");
         initModels(that);
-//        var options = {
-//            settings: that.model
-//        };
-//       that.uiEnhancer = fluid.uiEnhancer(document, options);
 
         // TODO: This stuff should already be in the renderer tree
         that.events.afterRender.addListener(function () {
@@ -347,8 +339,7 @@ fluid_1_0 = fluid_1_0 || {};
             onCancel: null,
             afterRender: null
         },
-        // TODO: use a merge policy instead of specifying savedSelections
-//        savedSelections: {
+//        settings: {
 //            textFont: "Arial",
 //            textSpacing: "Default",
 //            theme: "Default",
@@ -360,18 +351,6 @@ fluid_1_0 = fluid_1_0 || {};
 //            linksLarger: false,
 //            inputsLarger: false
 //        },
-        settings: {
-            textFont: "Arial",
-            textSpacing: "Default",
-            theme: "Default",
-            backgroundImages: "Default",
-            layout: "Default",
-            toc: false,
-            linksUnderline: false,
-            linksBold: false,
-            linksLarger: false,
-            inputsLarger: false
-        },
         labelMap: {
             textFont: {
                 names: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
