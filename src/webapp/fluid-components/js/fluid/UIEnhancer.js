@@ -243,7 +243,8 @@ fluid_1_0 = fluid_1_0 || {};
                 "High Contrast": "fl-theme-hc",
                 "High Contrast Inverted": "fl-theme-hci",
                 "Low Contrast": "fl-theme-slate",
-                "Medium Contrast": "fl-theme-coal"
+                "Medium Contrast": "fl-theme-coal",
+                "default": ""
             },
             "layout": {
                 "Simple": "fl-layout-linear",
@@ -271,7 +272,7 @@ fluid_1_0 = fluid_1_0 || {};
         defaultSettings: {
             textFont: "",            // key from classname map
             textSpacing: "",         // key from classname map
-            theme: "",               // key from classname map
+            theme: "default",               // key from classname map
             backgroundImages: "default",    // key from classname map
             layout: "default",              // key from classname map
             textSize: "",            // in points

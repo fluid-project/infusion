@@ -339,18 +339,6 @@ fluid_1_0 = fluid_1_0 || {};
             onCancel: null,
             afterRender: null
         },
-//        settings: {
-//            textFont: "Arial",
-//            textSpacing: "Default",
-//            theme: "Default",
-//            backgroundImages: "Default",
-//            layout: "Default",
-//            toc: false,
-//            linksUnderline: false,
-//            linksBold: false,
-//            linksLarger: false,
-//            inputsLarger: false
-//        },
         labelMap: {
             textFont: {
                 names: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
@@ -362,7 +350,7 @@ fluid_1_0 = fluid_1_0 || {};
             },
             theme: {
                 names: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"],
-                values: ["Low Contrast", "Default", "Medium Contrast", "High Contrast", "High Contrast Inverted"]
+                values: ["Low Contrast", "default", "Medium Contrast", "High Contrast", "High Contrast Inverted"]
             },
             backgroundImages: {
                 names: ["Yes", "No"],
