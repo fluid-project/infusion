@@ -117,7 +117,46 @@ fluid_1_0 = fluid_1_0 || {};
     var styleInputs = function (container, settings, classnameMap) {
         styleElements($("input", container), settings.inputsLarger, classnameMap.inputsLarger);
     };
+
+     var saveCookie = function (cookieName, model) {
+         // TODO: concat my cookie. I think this will wipe out other people's cookies
+         document.cookie = cookieName + "=" +  JSON.stringify(model);
+     };
      
+     var getCookie = function (cookieName) {
+         var cookie;
+         var startIndex, endIndex;
+         if (document.cookie.length > 0) {
+             startIndex = document.cookie.indexOf(cookieName + "=");
+             if (startIndex !== -1) { 
+                 startIndex = startIndex + cookieName.length + 1; 
+                 endIndex = document.cookie.indexOf(";", startIndex);
+                 if (endIndex === -1) {
+                     endIndex = document.cookie.length;
+                 }
+                 cookie = JSON.parse(document.cookie.substring(startIndex, endIndex));
+             } 
+         }
+         
+         return cookie;
+     };
+     
+     var initModel = function (that) {
+         // First check for settings in the options
+         if (that.options.settings) {
+             that.model = that.options.settings;
+             return;
+         }
+         
+         // Use the cookie or the defaultSettings if there are no settings and no cookie
+         that.model = getCookie("fluid-ui-settings") || that.options.defaultSettings;        
+     };
+
+    var setupUIEnhancer = function (that) {
+        initModel(that);
+        that.refreshView();        
+    };
+      
     /**
      * Component that works in conjunction with FSS to transform the interface based on settings. 
      * @param {Object} doc
@@ -127,7 +166,6 @@ fluid_1_0 = fluid_1_0 || {};
         doc = doc || document;
         var that = fluid.initView("fluid.uiEnhancer", doc, options);
         that.container = $("body", doc);
-        that.model = that.options.settings;
         
         /**
          * Removes the classes in the Fluid class namespace: "fl-"
@@ -158,10 +196,13 @@ fluid_1_0 = fluid_1_0 || {};
         that.updateModel = function (newModel, source) {
             that.events.modelChanged.fire(newModel, that.model, source);
             that.model = newModel;
+            // TODO: pull the cookie name from the options
+            // TODO: make is optional - saving the cookie should be configurable
+            saveCookie("fluid-ui-settings", that.model);
             that.refreshView();
         };
 
-        that.refreshView();
+        setupUIEnhancer(that);
         return that;
     };
 
@@ -212,7 +253,7 @@ fluid_1_0 = fluid_1_0 || {};
                 templateUrl: "TableOfContents.html"
             }
         },
-        settings: {
+        defaultSettings: {
             textFont: "",            // key from classname map
             textSpacing: "",         // key from classname map
             theme: "",               // key from classname map
