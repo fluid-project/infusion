@@ -16,17 +16,17 @@ fluid_1_0 = fluid_1_0 || {};
 
 
 /******************
- * Textbox Slider *
+ * Textfield Slider *
  ******************/
 
 (function ($, fluid) {
     
 //    TODO
 //    - do something when someone tries to modify the model with a value out of range.
-//    - textbox slider should be able to generate its own markup
+//    - textfield slider should be able to generate its own markup
     
-    var initTextboxSlider = function (that) {
-        var textbox = that.locate("textbox");
+    var initTextfieldSlider = function (that) {
+        var textfield = that.locate("textfield");
 
         var sliderOptions = that.options.sliderOptions;
         sliderOptions.value = that.model;
@@ -34,7 +34,7 @@ fluid_1_0 = fluid_1_0 || {};
         sliderOptions.max = that.options.max;
         var slider = that.locate("slider").slider(sliderOptions);
 
-        textbox.change(function () {
+        textfield.change(function () {
             if (this.value < that.min) {
                 this.value = that.min;
             } else if (this.value > that.max) {
@@ -50,7 +50,7 @@ fluid_1_0 = fluid_1_0 || {};
             }
         });
         
-        textbox.keypress(function (evt) {
+        textfield.keypress(function (evt) {
             if (evt.keyCode !== $.ui.keyCode.ENTER) {
                 return true;
             }
@@ -58,18 +58,18 @@ fluid_1_0 = fluid_1_0 || {};
         });
 
         slider.bind("slide", function (e, ui) {
-            textbox.val(ui.value);
+            textfield.val(ui.value);
             that.updateModel(ui.value, slider);
         });
     };
     
-    fluid.textboxSlider = function (container, options) {
-        var that = fluid.initView("fluid.textboxSlider", container, options);
-        that.model = that.locate("textbox").val();
+    fluid.textfieldSlider = function (container, options) {
+        var that = fluid.initView("fluid.textfieldSlider", container, options);
+        that.model = that.locate("textfield").val();
         that.min = that.options.min;
         that.max = that.options.max;
         
-        initTextboxSlider(that);
+        initTextfieldSlider(that);
         
         that.isInRange = function (value) {
             return (value >= that.min && value <= that.max);
@@ -88,10 +88,10 @@ fluid_1_0 = fluid_1_0 || {};
         return that;
     };
 
-    fluid.defaults("fluid.textboxSlider", {
+    fluid.defaults("fluid.textfieldSlider", {
         selectors: {
-            textbox: ".fl-textbox",
-            slider: ".fl-slider"
+            textfield: ".flc-textfield",
+            slider: ".flc-slider"
         },
         events: {
             modelChanged: null
@@ -117,7 +117,7 @@ fluid_1_0 = fluid_1_0 || {};
 //    - make the preview a subcomponent
 //    - move the general renderer tree generation functions to the renderer
 //    - document the API
-//    - add the min font size textboxSlider to the renderer tree
+//    - add the min font size textfieldSlider to the renderer tree
 //    - pull the strings out of the template and put them into the component?
 
     var createSelectNode = function (id, selection, list, names) {
@@ -188,7 +188,8 @@ fluid_1_0 = fluid_1_0 || {};
     // TODO: FLUID-2293: Implement multi-levels of undo in the UndoManager
     var initModels = function (that) {
         that.defaultModel = that.options.settings;
-        that.savedModel = that.options.savedSelections;
+//that.savedModel = that.options.savedSelections;
+        that.savedModel = that.uiEnhancer.model;
         that.model = fluid.copy(that.savedModel);
     };
     
@@ -271,11 +272,12 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var setupUIOptions = function (that) {
+        that.uiEnhancer = $(document).data("uiEnhancer");
         initModels(that);
-        var options = {
-            settings: that.model
-        };
-        that.uiEnhancer = fluid.uiEnhancer(document, options);
+//        var options = {
+//            settings: that.model
+//        };
+//       that.uiEnhancer = fluid.uiEnhancer(document, options);
 
         // TODO: This stuff should already be in the renderer tree
         that.events.afterRender.addListener(function () {
@@ -346,18 +348,18 @@ fluid_1_0 = fluid_1_0 || {};
             afterRender: null
         },
         // TODO: use a merge policy instead of specifying savedSelections
-        savedSelections: {
-            textFont: "Arial",
-            textSpacing: "Default",
-            theme: "Default",
-            backgroundImages: "Default",
-            layout: "Default",
-            toc: false,
-            linksUnderline: false,
-            linksBold: false,
-            linksLarger: false,
-            inputsLarger: false
-        },
+//        savedSelections: {
+//            textFont: "Arial",
+//            textSpacing: "Default",
+//            theme: "Default",
+//            backgroundImages: "Default",
+//            layout: "Default",
+//            toc: false,
+//            linksUnderline: false,
+//            linksBold: false,
+//            linksLarger: false,
+//            inputsLarger: false
+//        },
         settings: {
             textFont: "Arial",
             textSpacing: "Default",
@@ -385,11 +387,11 @@ fluid_1_0 = fluid_1_0 || {};
             },
             backgroundImages: {
                 names: ["Yes", "No"],
-                values: ["Default", "No Images"]
+                values: ["default", "No Images"]
             },
             layout: {
                 names: ["Yes", "No"],
-                values: ["Simple", "Default"]
+                values: ["Simple", "default"]
             },
             toc: {
                 names: ["Yes", "No"],
@@ -397,14 +399,14 @@ fluid_1_0 = fluid_1_0 || {};
             }
         },
         textMinSize: {
-            type: "fluid.textboxSlider",
+            type: "fluid.textfieldSlider",
             options: {
                 min: 6,
                 max: 200
             }
         },
         lineSpacing: {
-            type: "fluid.textboxSlider",
+            type: "fluid.textfieldSlider",
             options: {
                 min: 1,
                 max: 10

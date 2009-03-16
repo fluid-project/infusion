@@ -35,20 +35,38 @@ https://source.fluidproject.org/svn/LICENSE.txt
             }
         };
 
+        var enhancerOptions = {
+            settings: {
+                textFont: "",            // key from classname map
+                textSpacing: "",         // key from classname map
+                theme: "",               // key from classname map
+                backgroundImages: "default",    // key from classname map
+                layout: "default",              // key from classname map
+                textSize: "",            // in points
+                lineSpacing: "",            // in ems
+                toc: false,              // boolean
+                linksUnderline: false,   // boolean
+                linksBold: false,        // boolean
+                linksLarger: false,      // boolean
+                inputsLarger: false      // boolean
+            }
+        };
+
         var runTheTests = function () {
             var htmlcopy = $('.uiOptions').clone();
-
+            
             tests.test("Init Model", function () {
                 expect(6);
                 
+                fluid.uiEnhancer(document, enhancerOptions);
                 var uiOptions = fluid.uiOptions(".uiOptions", options);
                 var model = uiOptions.model;
                 jqUnit.assertNotNull("Model is not null", model);
                 jqUnit.assertNotUndefined("Model is not undefined", model);
                 jqUnit.assertFalse("Min text size is not set", !!model.textSize);
-                jqUnit.assertEquals("Text font is set", "Default", model.textFont);
-                jqUnit.assertEquals("Text spacing is set", "Default", model.textSpacing);
-                jqUnit.assertEquals("Colour scheme is set", "Default", model.theme);
+                jqUnit.assertEquals("Text font is set", "", model.textFont);
+                jqUnit.assertEquals("Text spacing is set", "", model.textSpacing);
+                jqUnit.assertEquals("Colour scheme is set", "", model.theme);
                 
             // extend this test to test originalModel and savedModel
             });            
@@ -57,6 +75,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 expect(4);
                 
                 $("#main").append(htmlcopy.clone());
+                fluid.uiEnhancer(document, enhancerOptions);
                 var uiOptions = fluid.uiOptions(".uiOptions", options);
                 
                 uiOptions.updateModel(hcSkin);
@@ -74,15 +93,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 expect(6);
                 
                 $("#main").append(htmlcopy.clone());
+                fluid.uiEnhancer(document, enhancerOptions);
                 var uiOptions = fluid.uiOptions(".uiOptions", options);
                 
                 uiOptions.updateModel(hcSkin);
                 
                 jqUnit.assertEquals("hc setting was set in the model", hcSkin.theme, uiOptions.model.theme);
-                jqUnit.assertEquals("hc setting was not saved", "Default", uiOptions.savedModel.theme);
+                jqUnit.assertEquals("hc setting was not saved", "", uiOptions.savedModel.theme);
                 
                 uiOptions.refreshView();
-                var fontSizeSetting = $(".fl-textbox").val();
+                var fontSizeSetting = $(".flc-textfield").val(); // This is not correct as there are 2 flc-textfields. 
                 jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
                 var fontStyleSelection = $(":selected", $("#font-style-selection"));
                 jqUnit.assertEquals("Verdana selected", "Verdana", fontStyleSelection[0].value);

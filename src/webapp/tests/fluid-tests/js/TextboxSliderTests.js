@@ -16,33 +16,33 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        var tests = new jqUnit.TestCase("TextboxSlider Tests");
+        var tests = new jqUnit.TestCase("TextfieldSlider Tests");
         
         tests.test("Test Init", function () {
             expect(5);
-            var textboxSlider = fluid.textboxSlider(".fl-textbox-slider");
-            jqUnit.assertEquals("Slider value is set to input value", 15, $(".fl-slider").slider("value"));
-            jqUnit.assertEquals("Textbox value is set", 15, $(".fl-textbox").val());
-            jqUnit.assertEquals("The model should be set", 15, textboxSlider.model);
-            jqUnit.assertEquals("Min should be the default", 0, textboxSlider.min);
-            jqUnit.assertEquals("Max should be the default", 100, textboxSlider.max);
+            var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider");
+            jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-slider").slider("value"));
+            jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfield").val());
+            jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model);
+            jqUnit.assertEquals("Min should be the default", 0, textfieldSlider.min);
+            jqUnit.assertEquals("Max should be the default", 100, textfieldSlider.max);
             
         });
 
         var testSetting = function (valToTest, expected) {
-            var slider = $(".fl-slider");
-            var textbox = $(".fl-textbox");
+            var slider = $(".flc-slider");
+            var textfield = $(".flc-textfield");
             
             slider.slider("value", valToTest);
             jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
-            textbox.val(valToTest);
-            textbox.change();
-            jqUnit.assertEquals("Textbox value should be the " + expected, expected, textbox.val());            
+            textfield.val(valToTest);
+            textfield.change();
+            jqUnit.assertEquals("Textfield value should be the " + expected, expected, textfield.val());            
         };
         
         tests.test("Test Min/Max Size", function () {
             expect(12);
-            var textboxSlider = fluid.textboxSlider(".fl-textbox-slider", {min: 5, max: 55});
+            var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider", {min: 5, max: 55});
             
             testSetting(56, 55);
             testSetting(55, 55);
@@ -54,7 +54,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         tests.test("Test Negative Scale", function () {
             expect(10);
-            fluid.textboxSlider(".fl-textbox-slider", {min: -15, max: -5});
+            fluid.textfieldSlider(".fl-textfield-slider", {min: -15, max: -5});
             
             testSetting(56, -5);
             testSetting(-10, -10);

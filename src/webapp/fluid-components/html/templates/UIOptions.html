@@ -39,6 +39,8 @@
         
         <script type="text/javascript">
             $().ready(function () {
+                fluid.uiEnhancer();
+                
                 var options = {
                     listeners: {
                         afterRender: function () {
@@ -70,8 +72,8 @@
                             
                             <li class="fl-control-min_text_size">
                                 <label class="fl-label">Minimum text size:</label>
-                                <p class="fl-slider fl-force-right fl-slider-horz control"> </p>
-                                <input class="fl-textfield control" type="text" />pt                                
+                                <p class="fl-slider fl-force-right fl-slider-horz flc-slider control"> </p>
+                                <input class="fl-textfield flc-textfield control" type="text" />pt                                
                             </li>
         
                             <li>
@@ -82,8 +84,8 @@
                             </li>
                             <li class="fl-control-line-spacing">
                                 <label class="fl-label">Line Spacing:</label>
-                                <p class="fl-slider fl-force-right fl-slider-horz control"> </p>
-                                <input class="fl-textfield control" type="text" />                             
+                                <p class="fl-slider fl-force-right fl-slider-horz flc-slider control"> </p>
+                                <input class="fl-textfield flc-textfield control" type="text" />                             
                             </li>
                             <li>
                                 <label class="fl-label">Contrast:</label>

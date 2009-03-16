@@ -159,7 +159,7 @@ fluid_1_0 = fluid_1_0 || {};
          }
          
          // Use the cookie or the defaultSettings if there are no settings and no cookie
-         that.model = getCookie("fluid-ui-settings") || that.options.defaultSettings;        
+         that.model = getCookie("fluid-ui-settings") || that.defaultSettings;        
      };
 
     var setupUIEnhancer = function (that) {
@@ -175,7 +175,9 @@ fluid_1_0 = fluid_1_0 || {};
     fluid.uiEnhancer = function (doc, options) {
         doc = doc || document;
         var that = fluid.initView("fluid.uiEnhancer", doc, options);
+        $(doc).data("uiEnhancer", that);
         that.container = $("body", doc);
+        that.defaultSettings = that.options.defaultSettings;
         
         /**
          * Removes the classes in the Fluid class namespace: "fl-"
@@ -244,10 +246,12 @@ fluid_1_0 = fluid_1_0 || {};
                 "Medium Contrast": "fl-theme-coal"
             },
             "layout": {
-                "Simple": "fl-layout-linear"
+                "Simple": "fl-layout-linear",
+                "default": ""
             },
             "backgroundImages": {
-                "No Images": "fl-no-background-images"
+                "No Images": "fl-no-background-images",
+                "default": ""
             },
             "linkColor": {
                 "aqua": "fl-text-aqua",
@@ -268,8 +272,8 @@ fluid_1_0 = fluid_1_0 || {};
             textFont: "",            // key from classname map
             textSpacing: "",         // key from classname map
             theme: "",               // key from classname map
-            backgroundImages: "",    // key from classname map
-            layout: "",              // key from classname map
+            backgroundImages: "default",    // key from classname map
+            layout: "default",              // key from classname map
             textSize: "",            // in points
             lineSpacing: "",            // in ems
             toc: false,              // boolean
