@@ -270,7 +270,7 @@ fluid_1_0 = fluid_1_0 || {};
                 dar.type = "ADD";
             }
             var prevent = baseEvents.guards.fire(model, dar);
-            if (prevent) {
+            if (prevent === false) {
                 return;
             }
             var oldModel = {};

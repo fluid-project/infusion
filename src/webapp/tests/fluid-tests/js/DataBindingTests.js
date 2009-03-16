@@ -62,7 +62,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Outer listener new", true, outerNewModel.outerProperty);
             
             function preventingGuard(model, dar) {
-                return true;
+                return false;
             }
             
             applier.guards.addListener("innerProperty.innerPath2", preventingGuard, "preventingGuard");
