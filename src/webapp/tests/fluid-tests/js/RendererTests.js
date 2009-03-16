@@ -595,6 +595,10 @@ fluid.tests = fluid.tests || {};
       checkbox.change();
       jqUnit.assertEquals("Model updated", true, model["boolean"]);
       
+      fluid.value(checkbox, false); 
+      checkbox.change();
+      jqUnit.assertEquals("Model updated", false, model["boolean"]);
+      
     });
 
     renderTests.test("ul with payload-component (IE innerHTML bug)", function() {

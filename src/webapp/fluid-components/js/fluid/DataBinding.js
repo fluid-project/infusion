@@ -74,7 +74,7 @@ fluid_1_0 = fluid_1_0 || {};
         }
         if (newValue !== undefined) {
             if (typeof(newValue) === "boolean") {
-                newValue === (newValue? "true" : "false");
+                newValue = (newValue? "true" : "false");
             }
           // jQuery gets this partially right, but when dealing with radio button array will
           // set all of their values to "newValue" rather than setting the checked property
@@ -110,7 +110,7 @@ fluid_1_0 = fluid_1_0 || {};
             fluid.fail("No fossil discovered for name " + name + " in fossil record above " + fluid.dumpEl(node));
         }
         if (typeof(fossil.oldvalue) === "boolean") { // deal with the case of an "isolated checkbox"
-            newValue = newValue? true: false;
+            newValue = newValue[0]? true: false;
         }
         var EL = root.fossils[name].EL;
         fluid.model.setBeanValue(root.data, EL, newValue);    
