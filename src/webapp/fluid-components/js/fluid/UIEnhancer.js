@@ -72,6 +72,16 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     /**
+     * Sets the line spacing on the container.  
+     * @param {Object} container
+     * @param {Object} spacing
+     */
+    var setLineSpacing = function (container, spacing) {
+        spacing = spacing && spacing > 0 ? spacing : 1; 
+        container.css("line-height", spacing + "em");
+    };
+
+    /**
      * Sets the font size on the container. Removes all fss classes that decrease font size. 
      * @param {Object} container
      * @param {Object} size
@@ -188,6 +198,7 @@ fluid_1_0 = fluid_1_0 || {};
             that.removeStyling();
             addStyles(that.container, that.model, that.options.classnameMap);
             setMinSize(that.container, that.model.textSize);
+            setLineSpacing(that.container, that.model.lineSpacing);
             setToc(that, that.model.toc);
             styleLinks(that.container, that.model, that.options.classnameMap);
             styleInputs(that.container, that.model, that.options.classnameMap);
@@ -259,8 +270,9 @@ fluid_1_0 = fluid_1_0 || {};
             theme: "",               // key from classname map
             backgroundImages: "",    // key from classname map
             layout: "",              // key from classname map
-            toc: false,              // boolean
             textSize: "",            // in points
+            lineSpacing: "",            // in ems
+            toc: false,              // boolean
             linksUnderline: false,   // boolean
             linksBold: false,        // boolean
             linksLarger: false,      // boolean

@@ -23,6 +23,7 @@ fluid_1_0 = fluid_1_0 || {};
     
 //    TODO
 //    - do something when someone tries to modify the model with a value out of range.
+//    - textbox slider should be able to generate its own markup
     
     var initTextboxSlider = function (that) {
         var textbox = that.locate("textbox");
@@ -246,18 +247,26 @@ fluid_1_0 = fluid_1_0 || {};
         };
     };
     
-    var initTextMinSize = function (that) {
-        var options = {
-            listeners: {
-                modelChanged: function (value) {
-                    that.model.textSize = value;
-                    that.updateModel(that.model);
+    var initSliders = function (that) {
+        
+        var createOptions = function (settingName) {
+            return {
+                listeners: {
+                    modelChanged: function(value){
+                        that.model[settingName] = value;
+                        that.updateModel(that.model);
+                    }
                 }
-            }
+            };    
         };
         
+        var options = createOptions("textSize");
         fluid.merge(null, options, that.options.textMinSize.options);
         fluid.initSubcomponents(that, "textMinSize", [that.options.selectors.textMinSizeCtrl, options]);
+
+        options = createOptions("lineSpacing");
+        fluid.merge(null, options, that.options.lineSpacing.options);
+        fluid.initSubcomponents(that, "lineSpacing", [that.options.selectors.lineSpacingCtrl, options]);
         
     };
     
@@ -270,7 +279,7 @@ fluid_1_0 = fluid_1_0 || {};
 
         // TODO: This stuff should already be in the renderer tree
         that.events.afterRender.addListener(function () {
-            initTextMinSize(that);
+            initSliders(that);
 
             bindHandlers(that);
             initPreview(that);        
@@ -324,6 +333,7 @@ fluid_1_0 = fluid_1_0 || {};
         selectors: {
             controls: ".control",
             textMinSizeCtrl: ".fl-control-min_text_size",
+            lineSpacingCtrl: ".fl-control-line-spacing",
             cancel: ".fl-hook-preview-cancel",
             reset: ".fl-hook-preview-reset",
             save: ".fl-hook-preview-save",
@@ -392,7 +402,15 @@ fluid_1_0 = fluid_1_0 || {};
                 min: 6,
                 max: 200
             }
+        },
+        lineSpacing: {
+            type: "fluid.textboxSlider",
+            options: {
+                min: 1,
+                max: 10
+            }
         }
+
     });
 
 })(jQuery, fluid_1_0);
