@@ -419,7 +419,9 @@ fluid_1_0 = fluid_1_0 || {};
       }
       else {
           out += fluid.dumpAttributes(trc.attrcopy);
-          out += trc.endopen.lumpindex === trc.close.lumpindex ? "/>" : ">";
+          // TODO: the parser does not ever produce empty tags
+          out += // trc.endopen.lumpindex === trc.close.lumpindex ? "/>" :
+                ">";
     
           trc.nextpos = trc.endopen.lumpindex;
       }
