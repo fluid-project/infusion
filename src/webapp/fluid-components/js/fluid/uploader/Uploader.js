@@ -78,8 +78,8 @@ fluid_1_0 = fluid_1_0 || {};
         rowProgressor.remove();
     };
  
-     var removeFileErrorRow = function (that, file) {
-        var errorRow = $("#" + file.id + "_error",that.container);
+    var removeFileErrorRow = function (that, file) {
+        var errorRow = $("#" + file.id + "_error", that.container);
         if (!errorRow) return;
         
         errorRow.fadeOut("fast", function () {
@@ -229,8 +229,8 @@ fluid_1_0 = fluid_1_0 || {};
             var fileRowElm = rowForFile(that, file);
             changeRowState(fileRowElm, that.options.styles.error);
             var errorRow = that.locate("errorRowTemplate", that.uploadContainer).clone();
-            errorRow.attr("id",file.id+"_error");
-            var errorType = fluid.findKeyInObject(fluid.uploader.errorConstants,error);
+            errorRow.attr("id", file.id + "_error");
+            var errorType = fluid.findKeyInObject(fluid.uploader.errorConstants, error);
             var errorData = that.options.errors[errorType];
             $(".queue-error", errorRow).text(errorData.string);
             fileRowElm.after(errorRow);

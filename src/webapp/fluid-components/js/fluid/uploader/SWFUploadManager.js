@@ -11,6 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global SWFUpload*/
+/*global swfobject*/
 /*global jQuery*/
 /*global fluid_1_0*/
 
