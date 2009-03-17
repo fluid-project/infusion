@@ -74,7 +74,7 @@ fluid_1_0 = fluid_1_0 || {};
      * 
      * @param {Element} lightboxContainer The DOM element containing the form that is POSTed back to the server upon order change 
      */
-    var defaultafterMoveCallback = function (lightboxContainer) {
+    var defaultAfterMoveCallback = function (lightboxContainer) {
         var reorderform = findForm(lightboxContainer);
         
         return function () {
@@ -96,6 +96,14 @@ fluid_1_0 = fluid_1_0 || {};
         };
     };
 
+    fluid.defaults("fluid.reorderImages", {
+        layoutHandler: "fluid.gridLayoutHandler",
+
+        selectors: {
+            imageTitle: ".image-title"
+        }
+    });
+
     // Public Lightbox API
     /**
      * Creates a new Lightbox instance from the specified parameters, providing full control over how
@@ -105,30 +113,43 @@ fluid_1_0 = fluid_1_0 || {};
      * @param {Object} options 
      */
     fluid.reorderImages = function (container, options) {
-        var containerEl, orderChangedFn, itemFinderFn, reordererOptions;
-        options = options || {};
-        container = fluid.container(container);
+        var that = fluid.initView("fluid.reorderImages", container, options);
+        
+        var containerEl = fluid.unwrap(that.container);
 
-        // Remove the anchors from the taborder.
+        if (!that.options.afterMoveCallback) {
+            that.options.afterMoveCallback = defaultAfterMoveCallback(containerEl);
+        }
+        if (!that.options.selectors.movables) {
+            that.options.selectors.movables = createItemFinder(containerEl, containerEl.id);
+        }
+        
+        var reorderer = fluid.reorderer(container, that.options);
+        var movables = reorderer.locate("movables");
+        fluid.transform(movables, function(cell) { 
+            fluid.reorderImages.addAriaRoles(that.options.selectors.imageTitle, cell)
+        });
+                // Remove the anchors from the taborder.
         fluid.tabindex($("a", container), -1);
         addThumbnailActivateHandler(container);
-        
-        containerEl = fluid.unwrap(container);
-        orderChangedFn = options.afterMoveCallback || defaultafterMoveCallback(containerEl);
-        itemFinderFn = (options.selectors && options.selectors.movables) || createItemFinder(containerEl, containerEl.id);
-
-        reordererOptions = {
-            layoutHandler: "fluid.gridLayoutHandler",
-            afterMoveCallback: orderChangedFn,
-            selectors: {
-                movables: itemFinderFn
-            }
-        };
-        
-        $.extend(true, reordererOptions, options);
-        
-        return fluid.reorderer(container, reordererOptions);
+        return reorderer;
     };
+   
+    
+    fluid.reorderImages.addAriaRoles = function(imageTitle, cell) {
+        cell = $(cell);
+        cell.attr("role", "img");
+        var title = $(imageTitle, cell);
+        if (title[0] === cell[0] || title[0] === document) {
+             fluid.fail("Could not locate cell title using selector " + cellTitle 
+             + " in context " + fluid.dumpEl(cell));
+        }
+        var titleId = fluid.allocateSimpleId(title);
+        cell.attr("aria-labelledby", titleId);
+        var image = $("img", cell);
+        image.attr("role", "presentation");
+        image.attr("alt", "");
+    }
     
     // This function now deprecated. Please use fluid.reorderImages() instead.
     fluid.lightbox = fluid.reorderImages;
