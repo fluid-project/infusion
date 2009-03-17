@@ -1,3 +1,14 @@
 .yui-dt table td div {
     line-height:30px;
 }
+.ssth-right .ssth-border {
+    float:left;
+}
+
+.pager-page-size {
+    float:left;
+}
+
+.fl-pager-ui {
+    float:left;
+}
