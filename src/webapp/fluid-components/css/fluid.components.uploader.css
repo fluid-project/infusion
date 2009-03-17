@@ -293,12 +293,29 @@ html>body .fl-uploader-queue {
     background-image: url(../images/uploader/tick.png);
 }
 
+/* ERRORS
+ * 
+ */
+
 .fl-uploader-queue .error th {
     border-left: 4px solid #F5E392;
+    background-color: #FCFBE6;
+    border-bottom-width: 0;
 }
 
-.fl-uploader-queue .error .iconBtn {
+.fl-uploader-queue .error td {
+    background-color: #FCFBE6;
+    border-bottom-width: 0;
+}
+
+.fl-uploader-queue .queue-error-row td {
+    background-color: #FCFBE6;
+    border-left: 4px solid #F5E392;
     background-image: url(../images/uploader/error.png);
+    background-position: 8px 2px;
+    background-repeat: no-repeat;
+    padding-bottom: 8px;
+    padding-left: 32px;
 }
 
 .fl-uploader-queue-wrapper td.actions, .fl-uploader-queue-wrapper th.actions {
@@ -361,16 +378,6 @@ button span.text-description {
 
 .fluid-templates {
     display: none;
-}
-
-
-/* ERRORS
- * 
- */
-
-.fl-uploader-queue .queue-error-row td {
-    border-top: 1px dotted #E6E6E6;
-    border-left: 4px solid #F5E392;
 }
 
 
