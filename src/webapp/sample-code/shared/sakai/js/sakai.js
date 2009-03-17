@@ -21,6 +21,7 @@ $(function () {
     };
     
     var uiEnhancer = fluid.uiEnhancer(document, enhancerOpts);
+    
     var initDialog = function () {
         // center dialog
         $('#dialog_container').css({
@@ -29,11 +30,13 @@ $(function () {
         }); 
         
         // bind close dialog button
+        /*
         $("#close_dialog").click(function () {
             $('#dialog_container').css("display", "none"); 
             uiOptions.cancel();
         });
-    
+        */
+       
         // TODO: This is not an ideal way to override the default theme.
         var options = {
             labelMap: {
@@ -51,9 +54,12 @@ $(function () {
         
         // instantiate component
         uiOptions = fluid.uiOptions(".uiOptions", options);
-        $('#dialog_container').css("display", "block"); 
+        
+        //$('#dialog_container').css("display", "block");
+        //$('#dialog_container .fl-widget-content select:eq(0)').focus();
     };
-
+    
+    /*
     $('.lookNfeel a').click(function () {
         if (!uiOptions) {
             // ajax call to pull the UI Options dialog into a container
@@ -61,6 +67,31 @@ $(function () {
         } else {
             // else content is already loaded, just show it
             $('#dialog_container').css("display", "block"); 
+            $('#dialog_container .fl-widget-content select:eq(0)').focus();
         }
     });
+    */
+   
+   var dialog_container = $("#dialog_container");
+   dialog_container.dialog({
+    	bgiframe: true,
+    	width: 800,
+        height:500,
+    	modal: true,
+        //dialogClass: 'fl-widget',
+        autoOpen: false,
+        draggable: true,
+        title: "User Interface Options Dialog",
+        close: function(){
+            uiOptions.cancel();
+        }
+	});
+    
+    $('.lookNfeel a').click(function () {
+        $("#dialog_container").dialog("open");
+        if (!uiOptions) {
+            $('#dialog_content').load('../../../fluid-components/html/templates/UIOptions.html .uiOptions', initDialog);            
+        }
+    });  
+   
 });

@@ -16,12 +16,14 @@ p {margin:0; padding-bottom:1em;}
 
 /************************************/
 #dialog_container {
+    width:60em;
+    /*
     position:absolute; 
     top:0; 
     left:0; 
-    display: none;
-    width:60em;  
+    display: none;    
     z-index:1000;
+    */
 }
 #dialog_container #close_dialog {
 /*	position:absolute; 
