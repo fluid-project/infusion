@@ -258,6 +258,26 @@ https://source.fluidproject.org/svn/LICENSE.txt
             }
         });
         
+        fluidJSTests.test("DOM binder", function() {
+            var container = $(".pager-top");
+            var selectors = {
+              "page-link": ".page-link",
+              "inexistent": ".inexistent",
+              "inner-link": "a"
+            };
+            var binder = fluid.createDomBinder(container, selectors);
+            var pageLinks = binder.locate("page-link");
+            jqUnit.assertEquals("Find 3 links", 3, pageLinks.length);
+            var scoped = binder.locate("inner-link", pageLinks[2]);
+            jqUnit.assertNotNull("Find inner link", scoped);
+            jqUnit.assertEquals("Found second link", scoped[0].id, "page-link-3");
+            var inexistent = binder.locate("inexistent");
+            jqUnit.assertNotNull("Inexistent return", inexistent);
+            jqUnit.assertEquals("Inexistent length", 0, inexistent.length);
+            var inexistent2 = binder.locate("inexistent", scoped);
+            jqUnit.assertNotNull("Scoped inexistent return", inexistent);
+            jqUnit.assertEquals("Scoped inexistent length", 0, inexistent.length);
+        });
          
         fluidJSTests.test("Defaults: store and retrieve default values", function () {
             var testDefaults = {
