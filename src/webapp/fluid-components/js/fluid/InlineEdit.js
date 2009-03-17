@@ -89,7 +89,7 @@ fluid_1_0 = fluid_1_0 || {};
       
         var viewEl = that.viewEl;
         var displayText = that.displayView.value();
-        that.updateModel(displayText === that.options.defaultViewText? "" : displayText);
+        that.updateModelValue(displayText === that.options.defaultViewText? "" : displayText);
         if (that.options.applyEditPadding) {
             that.editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit));
         }
@@ -125,7 +125,7 @@ fluid_1_0 = fluid_1_0 || {};
             return;
         }
         
-        that.updateModel(newValue);
+        that.updateModelValue(newValue);
         that.events.afterFinishEdit.fire(newValue, oldValue, editNode, viewNode);
         
         switchToViewMode(that);
@@ -185,7 +185,7 @@ fluid_1_0 = fluid_1_0 || {};
         that.refreshView();
     };
     
-    var updateModel = function (that, newValue, source) {
+    var updateModelValue = function (that, newValue, source) {
         if (that.model.value !== newValue) {
             var oldModel = $.extend(true, {}, that.model);
             that.model.value = newValue;
@@ -513,11 +513,22 @@ fluid_1_0 = fluid_1_0 || {};
          * Pushes external changes to the model into the inline editor, refreshing its
          * rendering in the DOM.
          * 
-         * @param {Object} newValue
-         * @param {Object} source
+         * @param {Object} newValue The bare value of the model, that is, the string being edited
+         * @param {Object} source An optional "source" (perhaps a DOM element) which triggered this event
          */
-        that.updateModel = function (newValue, source) {
-            updateModel(that, newValue, source);
+        that.updateModelValue = function (newValue, source) {
+            updateModelValue(that, newValue, source);
+        };
+        
+        /**
+         * Pushes external changes to the model into the inline editor, refreshing its
+         * rendering in the DOM.
+         * 
+         * @param {Object} newValue The bare value of the model, that is, the string being edited
+         * @param {Object} source An optional "source" (perhaps a DOM element) which triggered this event
+         */
+        that.updateModel = function (newModel, source) {
+            updateModelValue(that, newModel.value, source);
         };
 
         initializeEditView(that, true);

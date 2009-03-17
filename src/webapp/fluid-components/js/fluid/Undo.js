@@ -54,7 +54,7 @@ fluid_1_0 = fluid_1_0 || {};
             function () {
                 if (that.state !== STATE_REVERTED) {
                     fluid.model.copyModel(that.extremalModel, that.component.model);
-                    that.component.updateModel(that.initialModel.value, that);
+                    that.component.updateModelValue(that.initialModel.value, that);
                     that.state = STATE_REVERTED;
                     refreshView(that);
                     that.locate("redoControl").focus();
@@ -65,7 +65,7 @@ fluid_1_0 = fluid_1_0 || {};
         that.locate("redoControl").click( 
             function () {
                 if (that.state !== STATE_CHANGED) {
-                    that.component.updateModel(that.extremalModel.value, that);
+                    that.component.updateModelValue(that.extremalModel.value, that);
                     that.state = STATE_CHANGED;
                     refreshView(that);
                     that.locate("undoControl").focus();
