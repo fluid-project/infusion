@@ -297,11 +297,13 @@ fluid_1_0 = fluid_1_0 || {};
         };
 
         that.reset = function () {
+            that.events.onReset.fire();
             that.updateModel(fluid.copy(that.defaultModel), that);
             that.refreshView();
         };
         
         that.cancel = function () {
+            that.events.onCancel.fire();
             that.updateModel(fluid.copy(that.savedModel), that);
             that.refreshView();            
         };
@@ -325,7 +327,7 @@ fluid_1_0 = fluid_1_0 || {};
 
     fluid.defaults("fluid.uiOptions", {
         selectors: {
-            controls: ".control",
+            controls: ".flc-uioptions-control",
             textMinSizeCtrl: ".fl-control-min_text_size",
             lineSpacingCtrl: ".fl-control-line-spacing",
             cancel: ".fl-hook-preview-cancel",
@@ -337,6 +339,7 @@ fluid_1_0 = fluid_1_0 || {};
             modelChanged: null,
             onSave: null,
             onCancel: null,
+            onReset: null,
             afterRender: null
         },
         labelMap: {

@@ -16,6 +16,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
+        var testSettings = {
+            textSize: "18",
+            textFont: "Courier",
+            textSpacing: "Wide",
+            theme: "High Contrast"
+        };
+        
         var tests = new jqUnit.TestCase("UI Enhancer Tests");
         
         tests.test("Initialization", function () {
@@ -36,12 +43,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             expect(4);
 
             var options = {
-                settings: {
-                    textSize: "18",
-                    textFont: "Courier",
-                    textSpacing: "Wide",
-                    theme: "High Contrast"
-                }
+                settings: testSettings
             };
             var body = $("body");
             var uiEnhancer = fluid.uiEnhancer(document, options);
@@ -51,6 +53,33 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertTrue("main has wide text spacing class", body.hasClass("fl-font-spacing-1"));
             jqUnit.assertTrue("main has high contrast class", body.hasClass("fl-theme-hc"));
 
+        });
+        
+        tests.test("Cookie", function () {
+            var store = fluid.uiEnhancer.cookieStore();
+            store.save(testSettings);
+            
+            // Check that we get back the test settings correctly.
+            var result = store.fetch();
+            jqUnit.assertDeepEq("The settings are saved and retrieved correctly.", testSettings, result);
+            
+            // Change the results, save again. It should work again.
+            var differentSettings = fluid.copy(testSettings);
+            differentSettings.textSize = "32";
+            store.save(differentSettings);
+            jqUnit.assertEquals("Changed settings are saved correctly.", store.fetch().textSize, "32");
+            
+            // Let's go check the cookie directly and make sure it's there.
+            var cookieNameIndex = document.cookie.indexOf(store.options.cookieName);
+            jqUnit.assertTrue("Our cookie should be floating somewhere in the browser.",
+                               cookieNameIndex >= 0);
+            jqUnit.assertTrue("Our cookie should contain the textSize 32.",
+                               document.cookie.indexOf("32") > cookieNameIndex);
+                               
+            // Now we can create a uiEnhancer and see that the textSize is set to 32
+            var enhancer = fluid.uiEnhancer();
+            jqUnit.assertEquals("The uiEnhancer should have a textSize of 32", "32", enhancer.model.textSize);
+            
         });
     });
 })(jQuery);

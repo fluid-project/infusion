@@ -16,6 +16,10 @@ fluid_1_0 = fluid_1_0 || {};
 
 (function ($, fluid) {
 
+    /****************
+     * UI Enhancer  *
+     ****************/
+
     /**
      * Searches within the container for things that match the selector and then replaces the classes 
      * that are matched by the regular expression with the new value. 
@@ -157,37 +161,6 @@ fluid_1_0 = fluid_1_0 || {};
     var styleInputs = function (container, settings, classnameMap) {
         styleElements($("input", container), settings.inputsLarger, classnameMap.inputsLarger);
     };
-
-    /**
-     * Saves the model into a cookie
-     * @param {Object} cookieName
-     * @param {Object} model
-     */
-    var saveCookie = function (cookieName, model) {
-        document.cookie = cookieName + "=" +  JSON.stringify(model);
-    };
-     
-     /**
-      * Retrieve and return the value of the cookie specified
-      * @param {Object} cookieName
-      */
-    var getCookie = function (cookieName) {
-        var cookie;
-        var startIndex, endIndex;
-        if (document.cookie.length > 0) {
-            startIndex = document.cookie.indexOf(cookieName + "=");
-            if (startIndex !== -1) { 
-                startIndex = startIndex + cookieName.length + 1; 
-                endIndex = document.cookie.indexOf(";", startIndex);
-                if (endIndex === -1) {
-                    endIndex = document.cookie.length;
-                }
-                cookie = JSON.parse(document.cookie.substring(startIndex, endIndex));
-            } 
-        }
-        
-        return cookie;
-    };
      
     /**
      * Initialize the model first looking at options.settings, then in the cookie and finally in the options.defaultSettings
@@ -201,10 +174,12 @@ fluid_1_0 = fluid_1_0 || {};
         }
   
         // Use the cookie or the defaultSettings if there are no settings
-        that.model = getCookie(that.options.cookieName) || that.defaultSettings;        
+        that.model = that.settingsStore.fetch() || that.defaultSettings;        
     };
 
     var setupUIEnhancer = function (that) {
+        that.settingsStore = fluid.initSubcomponent(that, "settingsStore", [fluid.COMPONENT_OPTIONS]);
+        
         initModel(that);
         that.refreshView();        
     };
@@ -221,8 +196,6 @@ fluid_1_0 = fluid_1_0 || {};
         that.container = $("body", doc);
         that.defaultSettings = that.options.defaultSettings;
         
-        // TODO: Add the ability to configure the persistence strategy.  
-        
         that.refreshView = function () {
             removeStyling(that.container);
             addStyles(that.container, that.model, that.options.classnameMap);
@@ -236,8 +209,7 @@ fluid_1_0 = fluid_1_0 || {};
         that.updateModel = function (newModel, source) {
             that.events.modelChanged.fire(newModel, that.model, source);
             that.model = newModel;
-            // TODO: saving the cookie should be configurable
-            saveCookie(that.options.cookieName, that.model);
+            that.settingsStore.save(that.model);
             that.refreshView();
         };
 
@@ -246,9 +218,21 @@ fluid_1_0 = fluid_1_0 || {};
     };
 
     fluid.defaults("fluid.uiEnhancer", {
+        tableOfContents: {
+            type: "fluid.tableOfContents",
+            options: {
+                templateUrl: "TableOfContents.html"
+            }
+        },
+        
+        settingsStore: {
+            type: "fluid.uiEnhancer.cookieStore"
+        },
+        
         events: {
             modelChanged: null
         },
+        
         classnameMap: {
             "textFont": {
                 "Serif": "fl-font-serif",
@@ -289,27 +273,64 @@ fluid_1_0 = fluid_1_0 || {};
             "linksLarger": "fl-text-larger", 
             "inputsLarger": "fl-text-larger"
         },
-        tableOfContents: {
-            type: "fluid.tableOfContents",
-            options: {
-                templateUrl: "TableOfContents.html"
-            }
-        },
         defaultSettings: {
-            textFont: "",            // key from classname map
-            textSpacing: "",         // key from classname map
-            theme: "default",               // key from classname map
-            backgroundImages: "default",    // key from classname map
-            layout: "default",              // key from classname map
-            textSize: "",            // in points
-            lineSpacing: "",            // in ems
-            toc: false,              // boolean
-            linksUnderline: false,   // boolean
-            linksBold: false,        // boolean
-            linksLarger: false,      // boolean
-            inputsLarger: false      // boolean
-        },
-        cookieName: "fluid-ui-settings"
+            textFont: "",                 // key from classname map
+            textSpacing: "",              // key from classname map
+            theme: "default",             // key from classname map
+            backgroundImages: "default",  // key from classname map
+            layout: "default",            // key from classname map
+            textSize: "",                 // in points
+            lineSpacing: "",              // in ems
+            toc: false,                   // boolean
+            linksUnderline: false,        // boolean
+            linksBold: false,             // boolean
+            linksLarger: false,           // boolean
+            inputsLarger: false           // boolean
+        }
     });
     
+    /****************
+     * Cookie Store *
+     ****************/
+
+    fluid.uiEnhancer.cookieStore = function (options) {
+        var that = {};
+        fluid.mergeComponentOptions(that, "fluid.uiEnhancer.cookieStore", options);
+        
+        /**
+         * Retrieve and return the value of the cookie specified
+         */
+        that.fetch = function () {
+            var cookie;
+            var startIndex, endIndex;
+            if (document.cookie.length > 0) {
+                startIndex = document.cookie.indexOf(that.options.cookieName + "=");
+                if (startIndex !== -1) { 
+                    startIndex = startIndex + that.options.cookieName.length + 1; 
+                    endIndex = document.cookie.indexOf(";", startIndex);
+                    if (endIndex === -1) {
+                        endIndex = document.cookie.length;
+                    }
+                    cookie = JSON.parse(document.cookie.substring(startIndex, endIndex));
+                } 
+            }
+            
+            return cookie;
+        };
+
+        /**
+         * Saves the settings into a cookie
+         * @param {Object} settings
+         */
+        that.save = function (settings) {
+            document.cookie = that.options.cookieName + "=" +  JSON.stringify(settings);
+        };
+    
+        return that;
+    };
+    
+    fluid.defaults("fluid.uiEnhancer.cookieStore", {
+        cookieName: "fluid-ui-settings"
+    });
+
 })(jQuery, fluid_1_0);
