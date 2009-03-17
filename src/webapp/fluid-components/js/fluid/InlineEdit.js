@@ -511,9 +511,9 @@ fluid_1_0 = fluid_1_0 || {};
         
         /**
          * Pushes external changes to the model into the inline editor, refreshing its
-         * rendering in the DOM.
+         * rendering in the DOM. The modelChanged event will fire.
          * 
-         * @param {Object} newValue The bare value of the model, that is, the string being edited
+         * @param {String} newValue The bare value of the model, that is, the string being edited
          * @param {Object} source An optional "source" (perhaps a DOM element) which triggered this event
          */
         that.updateModelValue = function (newValue, source) {
@@ -522,9 +522,9 @@ fluid_1_0 = fluid_1_0 || {};
         
         /**
          * Pushes external changes to the model into the inline editor, refreshing its
-         * rendering in the DOM.
+         * rendering in the DOM. The modelChanged event will fire.
          * 
-         * @param {Object} newValue The bare value of the model, that is, the string being edited
+         * @param {Object} newValue The full value of the new model, that is, a model object which contains the editable value as the element named "value"
          * @param {Object} source An optional "source" (perhaps a DOM element) which triggered this event
          */
         that.updateModel = function (newModel, source) {
