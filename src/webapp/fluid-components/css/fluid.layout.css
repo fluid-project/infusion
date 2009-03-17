@@ -58,11 +58,11 @@ Generic containers for columns and layouts
     overflow:visible !important; 
     clear: both !important; 
     float:none !important;
-    position:relative !important; 
+    /*position:relative !important;*/ /* WARNING: position:relative triggers the IE Disappearing Content Bug (http://www.whywaitwebs.com/blog/designers/internet-explorer-6-disappearing-content-bug/) */ 
     margin-left:0 !important;  
     margin-right:0 !important;
-    top:0 !important; 
-    left:0 !important;
+    /*top:0 !important; */
+    /*left:0 !important;*/
 }
 .fl-layout-linear .fl-container,
 .fl-layout-linear .fl-container-100,
@@ -89,7 +89,7 @@ Generic containers for columns and layouts
 .fl-layout-linear .fl-force-right,
 .fl-layout-linear li {display:block !important; float:none !important;}
 
-.fl-layout-linear .fl-linearEnabled {width:100% !important; position:relative; display:block;} /* linearization opt in for special cases */
+.fl-layout-linear .fl-linearEnabled {width:100% !important; /*position:relative;*/ display:block;} /* linearization opt in for special cases */
 
 /*
 Layout Helpers
@@ -149,13 +149,13 @@ Layout Helpers
  */
 .fl-tabs {margin:0.75em 0 0 0; border-bottom:1px solid #000; text-align:center; padding-bottom:0.2em;}
 .fl-tabs li {list-style-type:none; display:inline;}
-.fl-tabs li a {padding:0.25em 1.25em 0.2em; background-color:#fff; margin-left:-5px; *margin-bottom:-7px; zoom:1; border:1px solid #000;}
+.fl-tabs li a {padding:0.25em 1.25em 0.2em; background-color:#fff; margin-left:-5px; *margin-bottom:-7px; zoom:1; border:1px solid #000; color:#999;}
 .fl-tabs li a:hover {}
 .fl-tabs-center {text-align:center;}
 .fl-tabs-left {text-align:left; padding-left:10px;}
 .fl-tabs-right {text-align:right; padding-right:15px;}
 .fl-tabs .orderable-drop-marker {padding:0 3px; background-color:#c00;margin:0 5px 0 -5px; zoom:1;}
-.fl-tabs .fl-tabs-active a {padding:0.25em 1.25em; border-bottom:none;}
+.fl-tabs .fl-tabs-active a {padding:0.25em 1.25em; border-bottom:none; color:#000;}
 .fl-tabs-content {padding:5px;}
 
 /*
@@ -236,9 +236,9 @@ input.fl-icon {padding-left:16px;}
 
 /*
  * Forms and Form Controls
- * Common arrangements for form inputs
+ * Common arrangements for form inputs in a list
+ * Alignment requires list of label elements placed before the control 
  */
-/* Alignment requires list of label elements placed before the control */
 .fl-controls-left li {list-style-type:none; text-align:left;}
 .fl-controls-left .fl-label {float:left; text-align:left; width:50%; margin-right:5px;}
 
@@ -259,3 +259,6 @@ input.fl-icon {padding-left:16px;}
     width:auto !important;
 }
 
+/* Progressive Enhancement */
+.fl-ProgEnhance-show {display:none} /* JS will overwrite this if it is enabled */
+.fl-ProgEnhance-hide {} /* This will be filled with display:hidden when JS runs */
