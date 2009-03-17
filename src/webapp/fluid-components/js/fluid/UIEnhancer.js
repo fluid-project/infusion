@@ -17,7 +17,7 @@ fluid_1_0 = fluid_1_0 || {};
 (function ($, fluid) {
 
     /**
-     * Searches within the container for things that match the selector and then replace the classes 
+     * Searches within the container for things that match the selector and then replaces the classes 
      * that are matched by the regular expression with the new value. 
      * 
      * @param {Object} container
@@ -36,12 +36,23 @@ fluid_1_0 = fluid_1_0 || {};
         });
         
     };
+
+    /**
+     * Removes FSS classes that may clash with the new settings.
+     *
+     * @param {Object} container
+     */
+    var removeStyling = function (container) {
+        // TODO: FLUID-2367: clearing all the 'font' fss classes is incorrect. We should leave the font size classes intact.
+        //                   we should get rid of this function and clear styles on a case by case basis
+        replaceClass(container, "[class*=fl-]", /\bfl-(layout|font|theme|no-background){1}\S+/g);
+    };
     
     /**
      * Adds the class related to the setting to the element
-     * @param {Object} element
-     * @param {Object} settingName
-     * @param {Object} value
+     * @param {jQuery} element
+     * @param {String} settingName
+     * @param {String} value
      * @param {Object} classnameMap
      */
     var addClassForSetting = function (element, settingName, value, classnameMap) {
@@ -66,9 +77,10 @@ fluid_1_0 = fluid_1_0 || {};
                         [that.container, fluid.COMPONENT_OPTIONS]);
             }
         } else {
-            that.removeTableOfContents();
-        }
-        
+            if (that.tableOfContents) {
+                that.tableOfContents.hide();
+            }
+        }        
     };
     
     /**
@@ -108,6 +120,12 @@ fluid_1_0 = fluid_1_0 || {};
         addClassForSetting(container, "backgroundImages", settings.backgroundImages, classnameMap);
     };
 
+    /**
+     * Adds or removes the classname to/from the elements based upon the setting.
+     * @param {Object} elements
+     * @param {Object} setting
+     * @param {Object} classname
+     */
     var styleElements = function (elements, setting, classname) {
         if (setting) {
             elements.addClass(classname);
@@ -116,6 +134,12 @@ fluid_1_0 = fluid_1_0 || {};
         }        
     };
     
+    /**
+     * Style links in the container according to the settings
+     * @param {Object} container
+     * @param {Object} settings
+     * @param {Object} classnameMap
+     */
     var styleLinks = function (container, settings, classnameMap) {
         var links = $("a", container);
         // TODO: collect up the classnames and add or remove them all at once. 
@@ -124,43 +148,61 @@ fluid_1_0 = fluid_1_0 || {};
         styleElements(links, settings.linksLarger, classnameMap.linksLarger);
     };
 
+    /**
+     * Style inputs in the container according to the settings
+     * @param {Object} container
+     * @param {Object} settings
+     * @param {Object} classnameMap
+     */
     var styleInputs = function (container, settings, classnameMap) {
         styleElements($("input", container), settings.inputsLarger, classnameMap.inputsLarger);
     };
 
-     var saveCookie = function (cookieName, model) {
-         // TODO: concat my cookie. I think this will wipe out other people's cookies
-         document.cookie = cookieName + "=" +  JSON.stringify(model);
-     };
+    /**
+     * Saves the model into a cookie
+     * @param {Object} cookieName
+     * @param {Object} model
+     */
+    var saveCookie = function (cookieName, model) {
+        document.cookie = cookieName + "=" +  JSON.stringify(model);
+    };
      
-     var getCookie = function (cookieName) {
-         var cookie;
-         var startIndex, endIndex;
-         if (document.cookie.length > 0) {
-             startIndex = document.cookie.indexOf(cookieName + "=");
-             if (startIndex !== -1) { 
-                 startIndex = startIndex + cookieName.length + 1; 
-                 endIndex = document.cookie.indexOf(";", startIndex);
-                 if (endIndex === -1) {
-                     endIndex = document.cookie.length;
-                 }
-                 cookie = JSON.parse(document.cookie.substring(startIndex, endIndex));
-             } 
-         }
-         
-         return cookie;
-     };
+     /**
+      * Retrieve and return the value of the cookie specified
+      * @param {Object} cookieName
+      */
+    var getCookie = function (cookieName) {
+        var cookie;
+        var startIndex, endIndex;
+        if (document.cookie.length > 0) {
+            startIndex = document.cookie.indexOf(cookieName + "=");
+            if (startIndex !== -1) { 
+                startIndex = startIndex + cookieName.length + 1; 
+                endIndex = document.cookie.indexOf(";", startIndex);
+                if (endIndex === -1) {
+                    endIndex = document.cookie.length;
+                }
+                cookie = JSON.parse(document.cookie.substring(startIndex, endIndex));
+            } 
+        }
+        
+        return cookie;
+    };
      
-     var initModel = function (that) {
-         // First check for settings in the options
-         if (that.options.settings) {
-             that.model = that.options.settings;
-             return;
-         }
-         
-         // Use the cookie or the defaultSettings if there are no settings and no cookie
-         that.model = getCookie("fluid-ui-settings") || that.defaultSettings;        
-     };
+    /**
+     * Initialize the model first looking at options.settings, then in the cookie and finally in the options.defaultSettings
+     * @param {Object} that
+     */
+    var initModel = function (that) {
+        // First check for settings in the options
+        if (that.options.settings) {
+            that.model = that.options.settings;
+            return;
+        }
+  
+        // Use the cookie or the defaultSettings if there are no settings
+        that.model = getCookie(that.options.cookieName) || that.defaultSettings;        
+    };
 
     var setupUIEnhancer = function (that) {
         initModel(that);
@@ -179,25 +221,10 @@ fluid_1_0 = fluid_1_0 || {};
         that.container = $("body", doc);
         that.defaultSettings = that.options.defaultSettings;
         
-        /**
-         * Removes the classes in the Fluid class namespace: "fl-"
-         */
-        // TODO: clearing styling is not correct - we need to clear back to the original state not remove all fss styling
-        that.removeStyling = function () {
-            replaceClass(that.container, "[class*=fl-]", /\bfl-(layout|font|theme|no-background){1}\S+/g);
-        };
+        // TODO: Add the ability to configure the persistence strategy.  
         
-        /**
-         * Hides the table of contents
-         */
-        that.removeTableOfContents = function () {
-            if (that.tableOfContents) {
-                that.tableOfContents.hide();
-            }
-        };
-
         that.refreshView = function () {
-            that.removeStyling();
+            removeStyling(that.container);
             addStyles(that.container, that.model, that.options.classnameMap);
             setMinSize(that.container, that.model.textSize);
             setLineSpacing(that.container, that.model.lineSpacing);
@@ -209,9 +236,8 @@ fluid_1_0 = fluid_1_0 || {};
         that.updateModel = function (newModel, source) {
             that.events.modelChanged.fire(newModel, that.model, source);
             that.model = newModel;
-            // TODO: pull the cookie name from the options
-            // TODO: make is optional - saving the cookie should be configurable
-            saveCookie("fluid-ui-settings", that.model);
+            // TODO: saving the cookie should be configurable
+            saveCookie(that.options.cookieName, that.model);
             that.refreshView();
         };
 
@@ -282,7 +308,8 @@ fluid_1_0 = fluid_1_0 || {};
             linksBold: false,        // boolean
             linksLarger: false,      // boolean
             inputsLarger: false      // boolean
-        }
+        },
+        cookieName: "fluid-ui-settings"
     });
     
 })(jQuery, fluid_1_0);
