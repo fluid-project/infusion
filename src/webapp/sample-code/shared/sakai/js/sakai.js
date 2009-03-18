@@ -17,6 +17,12 @@ $(function () {
     var enhancerOpts = {
         defaultSiteSettings: {
             theme: "Mist"
+        },
+        tableOfContents: {
+            options: {
+                templateUrl: "../../../../fluid-components/html/templates/TableOfContents.html"
+            }
+
         }
     };
     
@@ -41,7 +47,6 @@ $(function () {
         var options = {
             labelMap: {
                 theme: {  
-                    names: ["Low Contrast", "Medium Contrast"],
                     values: ["Low Contrast", "Mist"]
                 }
             }, 

@@ -188,6 +188,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     // TODO: FLUID-2293: Implement multi-levels of undo in the UndoManager
     var initModels = function (that) {
+        // TODO: defaultModel and savedModel can be pulled from uiEnhancer - do we need to keep them ourselves?
         that.defaultModel = that.uiEnhancer.defaultSiteSettings;
         that.savedModel = that.uiEnhancer.model;
         that.model = fluid.copy(that.savedModel);
@@ -223,7 +224,8 @@ fluid_1_0 = fluid_1_0 || {};
         previewFrame.load(function () {
             var previewFrameContents = previewFrame.contents();
             var options = {
-                settings: that.model
+                savedSettings: that.model,
+                tableOfContents: that.uiEnhancer.options.tableOfContents
             };
             previewEnhancer = fluid.uiEnhancer(previewFrameContents, options);
         });        
