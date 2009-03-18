@@ -83,24 +83,24 @@ fluid_1_0 = fluid_1_0 || {};
     };
         
     var initARIA = function (ariaElement) {
-        ariaElement.ariaRole("progressbar");
-        ariaElement.ariaState("valuemin", "0");
-        ariaElement.ariaState("valuemax", "100");
-        ariaElement.ariaState("live", "assertive");
-        ariaElement.ariaState("busy", "false");
-        ariaElement.ariaState("valuenow", "0");
-        ariaElement.ariaState("valuetext", "");
+        ariaElement.attr("role","progressbar");
+        ariaElement.attr("aria-valuemin", "0");
+        ariaElement.attr("aria-valuemax", "100");
+        ariaElement.attr("aria-live", "assertive");
+        ariaElement.attr("aria-busy", "false");
+        ariaElement.attr("aria-valuenow", "0");
+        ariaElement.attr("aria-valuetext", "");
     };
     
     var updateARIA = function (that, percent) {
         var busy = percent < 100 && percent > 0;
-        that.ariaElement.ariaState("busy", busy);
-        that.ariaElement.ariaState("valuenow", percent);    
+        that.ariaElement.attr("aria-busy", busy);
+        that.ariaElement.attr("aria-valuenow", percent);    
         if (busy) {
             var busyString = fluid.stringTemplate(that.options.ariaBusyText, {percentComplete : percent});                  
-            that.ariaElement.ariaState("valuetext", busyString);
+            that.ariaElement.attr("aria-valuetext", busyString);
         } else if (percent === 100) {
-            that.ariaElement.ariaState("valuetext", that.options.ariaDoneText);
+            that.ariaElement.attr("aria-valuetext", that.options.ariaDoneText);
         }
     };
         

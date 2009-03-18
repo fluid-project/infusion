@@ -691,7 +691,8 @@ fluid_1_0 = fluid_1_0 || {};
                     progressBar: ".fl-scroller-table-foot",
                     displayElement: ".total-progress", 
                     label: ".total-file-progress",
-                    indicator: ".total-progress"
+                    indicator: ".total-progress",
+                    ariaElement: ".total-progress"
                 }
             }
         },

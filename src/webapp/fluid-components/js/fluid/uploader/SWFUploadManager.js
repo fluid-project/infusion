@@ -46,7 +46,7 @@ fluid_1_0 = fluid_1_0 || {};
             
             // Do our best to make the Flash movie as accessible as possib
             fluid.tabindex(flashMovie, 0);
-            flashMovie.ariaRole("button");
+            flashMovie.attr("role","button");
             flashMovie.attr("alt", "Browse files button");
             
             if (that.isTransparent) {
