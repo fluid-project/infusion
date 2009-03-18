@@ -8,6 +8,10 @@
  *         charcoal  : #333333
  *         black     : #000000
  */
+
+
+
+
 .fl-theme-coal :focus,
 .fl-theme-coal .selectable  {
    /* themed focus indicator */
@@ -28,12 +32,22 @@
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
 .fl-theme-coal span input {background-color:#ebebeb !important; border:0.1em solid #ffffff; margin:-0.1em;}
 
+/* Helper: buttons */
+.fl-theme-coal .fl-button-left, 
+.fl-theme-coal .fl-button-right {color:#FFFFFF !important; background-color:#333 !important;}
+.fl-theme-coal .fl-button-left {background-image:url(FSS_images/themes/coal/buttons-med-cap.png);}
+.fl-theme-coal .fl-button-right {background-image:url(FSS_images/themes/coal/buttons-med-cap.png);}
+.fl-theme-coal .fl-button-inner {background-image:url(FSS_images/themes/coal/buttons-med-bg.png);}
+
+.fl-theme-coal a.fl-button-left:hover,
+.fl-theme-coal a.fl-button-right:hover {color:#ffffff !important}
+
+
 /* Helper: Tabs */
 .fl-theme-coal .fl-tabs {border-bottom-color:#333333;}
 .fl-theme-coal .fl-tabs li,
 .fl-theme-coal .fl-tabs li a  {font-weight:bold; color:#ffffff !important; border-color:#333333; border-bottom-color:#333333; background-color:#666666; text-decoration:none;}
 .fl-theme-coal .fl-tabs li a:hover {background-color:#333333; color:#fff !important;}
-
 /* Deprecated */
 .fl-theme-coal .fl-tabs li.fl-activeTab,
 .fl-theme-coal .fl-tabs li.fl-activeTab:hover,
@@ -43,14 +57,8 @@
 .fl-theme-coal .fl-tabs li.fl-tabs-active,
 .fl-theme-coal .fl-tabs li.fl-tabs-active a,
 .fl-theme-coal .fl-tabs li.fl-tabs-active a:hover {background-color: #ebebeb; border-bottom-color:#ebebeb; color:#000 !important;}
-
-
 .fl-theme-coal .fl-tabs-content {background-color:#ebebeb; color:#000; border:1px solid #999999; border-top:none;}
 
-
-.fl-theme-coal .fl-button-left {background-image:url(FSS_images/themes/coal/buttons-med-cap.png);}
-.fl-theme-coal .fl-button-right {background-image:url(FSS_images/themes/coal/buttons-med-cap.png);}
-.fl-theme-coal .fl-button-inner {background-image:url(FSS_images/themes/coal/buttons-med-bg.png); color:#ccc !important}
 /* Helper: Menu */
 .fl-theme-coal .fl-listmenu {border:1px solid #000000; background-color:#ebebeb;}
 .fl-theme-coal .fl-listmenu li,
@@ -82,7 +90,7 @@
 }
 .fl-theme-coal .fl-widget-titlebar .fl-button-inner {
     background-image:url(FSS_images/themes/coal/buttons-titlebar-bg.png);
-    padding-bottom:0.4em;
+    padding-bottom:0.3em;
     padding-top:0;
 }
 /* Widget options */
@@ -96,18 +104,12 @@
 /* Widget content */
 .fl-theme-coal .fl-widget-content {background-color:#ffffff;}
 
-
 /* Component: Progressor */
 .fl-theme-coal .fl-progress-bounds {border-color:#333333; background-color:#ebebeb;}
 .fl-theme-coal .fl-progress-fill {color:#ffffff; background-color:#999999;}
 
-/* Component: Uploader */
-
 /* States */
 .fl-theme-coal .orderable-drop-marker {background-color:#f00 !important;}
-
-
-
 
 /* Enhaced Graphics Toggles */
 .fl-theme-coal .fl-widget-content .fl-tabs-content-enhanced {
@@ -118,7 +120,7 @@
     background:url(FSS_images/themes/coal/tabs-light-container-bg.png) repeat-x left bottom;
     border-bottom:none;
     margin:10px 0 0;
-    padding:5px 0 4px;
+    padding:5px 0 6px;
     *padding:0;
 }
 
@@ -132,7 +134,7 @@
     border:none;
     margin:0;
     padding:4px 16px 6px 0;
-    color:#ccc !important;
+    color:#ebebeb !important;
     *padding-bottom:4px;
 }
 .fl-theme-coal .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active {

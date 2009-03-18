@@ -58,11 +58,16 @@ Generic containers for columns and layouts
     overflow:visible !important; 
     clear: both !important; 
     float:none !important;
-    /*position:relative !important;*/ /* WARNING: position:relative triggers the IE Disappearing Content Bug (http://www.whywaitwebs.com/blog/designers/internet-explorer-6-disappearing-content-bug/) */ 
-    margin-left:0 !important;  
-    margin-right:0 !important;
+    /*
+     * Temp fix, still verifying the user experience with absolute positioned items & linear layout. 
+     * position:relative triggers the IE Disappearing Content Bug
+     * (http://www.whywaitwebs.com/blog/designers/internet-explorer-6-disappearing-content-bug/) 
+     */ 
+    /*position:relative !important;*/ 
     /*top:0 !important; */
     /*left:0 !important;*/
+    margin-left:0 !important;  
+    margin-right:0 !important;
 }
 .fl-layout-linear .fl-container,
 .fl-layout-linear .fl-container-100,

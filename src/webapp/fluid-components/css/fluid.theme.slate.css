@@ -9,6 +9,9 @@
  *         deep grey : #666666
  */
 
+
+
+
 .fl-theme-slate :focus,
 .fl-theme-slate .selectable  {
    /* themed focus indicator */
@@ -29,12 +32,18 @@
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
 .fl-theme-slate span input {background-color:#dfefff !important; border:0.1em solid #ffffff; margin:-0.1em;}
 
+/* Helper: Buttons */
+.fl-theme-slate .fl-button-left,
+.fl-theme-slate .fl-button-right {color:#FFFFFF !important; background-color:#999 !important;}
+.fl-theme-slate .fl-button-left {background-image:url(FSS_images/themes/slate/buttons-med-cap.png);}
+.fl-theme-slate .fl-button-right {background-image:url(FSS_images/themes/slate/buttons-med-cap.png);}
+.fl-theme-slate .fl-button-inner {background-image:url(FSS_images/themes/slate/buttons-med-bg.png);}
+
 /* Helper: Tabs */
 .fl-theme-slate .fl-tabs {border-bottom-color:#999999;}
 .fl-theme-slate .fl-tabs li,
 .fl-theme-slate .fl-tabs li a  {font-weight:bold; color:#999999; border-color:#999999; border-bottom-color:#999999; background-color:#666; text-decoration:none;}
 .fl-theme-slate .fl-tabs li a:hover {background-color:#999; color:#fff !important;}
-
 /* Deprecated */
 .fl-theme-slate .fl-tabs li.fl-activeTab,
 .fl-theme-slate .fl-tabs li.fl-activeTab:hover,
@@ -44,44 +53,7 @@
 .fl-theme-slate .fl-tabs li.fl-tabs-active,
 .fl-theme-slate .fl-tabs li.fl-tabs-active a,
 .fl-theme-slate .fl-tabs li.fl-tabs-active a:hover {background-color: #ebebeb; border-bottom-color:#ccc; color:#000 !important;}
-
 .fl-theme-slate .fl-tabs-content {background-color:#ebebeb; color:#000; border:1px solid #999999; border-top:none;}
-
-.fl-theme-slate .fl-tabs-enhanced li {}
-.fl-theme-slate .fl-tabs-enhanced li a {}
-
-.fl-theme-slate .fl-widget-content .fl-tabs-enhanced {
-    background:url(FSS_images/themes/slate/tabs-med-container-bg.png) repeat-x left bottom;
-    border-bottom:none;
-    margin:0 1px;
-    padding:5px 0 4px;
-    *padding:0;
-}
-
-.fl-theme-slate .fl-widget-content .fl-tabs-enhanced li {
-    background: transparent url(FSS_images/themes/slate/tabs-med-cap.png) no-repeat left top; 
-    padding:4px 0 6px 16px;
-    *padding-top:0;
-}
-.fl-theme-slate .fl-widget-content .fl-tabs-enhanced li a {
-    background: transparent url(FSS_images/themes/slate/tabs-med-bg.png) no-repeat right top; 
-    border:none;
-    margin:0;
-    padding:4px 16px 6px 0;
-    color:#666666 !important;
-    *padding-bottom:4px;
-}
-.fl-theme-slate .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active {
-    background:transparent url(FSS_images/themes/slate/tabs-med-active-cap.png) no-repeat scroll left top;
-}
-.fl-theme-slate .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active a {
-    background:transparent url(FSS_images/themes/slate/tabs-med-active-bg.png) no-repeat scroll right top;
-    color:#000000 !important;
-}
-
-.fl-theme-slate .fl-button-left {background-image:url(FSS_images/themes/slate/buttons-med-cap.png);}
-.fl-theme-slate .fl-button-right {background-image:url(FSS_images/themes/slate/buttons-med-cap.png);}
-.fl-theme-slate .fl-button-inner {background-image:url(FSS_images/themes/slate/buttons-med-bg.png);}
 
 /* Helper: Menu */
 .fl-theme-slate .fl-listmenu {border:1px solid #999999; background-color:#ccc;}
@@ -105,9 +77,7 @@
 .fl-theme-slate .fl-widget .fl-icon-more  {background-image:url('FSS_images/themes/slate/icon-widget-More.png'); margin-left:0px;}
 .fl-theme-slate .fl-widget .fl-icon-close {background-image:url('FSS_images/themes/slate/icon-widget-Close.png'); margin-right:0px;}
 
-
 /* Widget titlebar */
-.fl-theme-slate .fl-widget-titlebar {}
 .fl-theme-slate .fl-widget-titlebar .icon {background-position:center center;}
 .fl-theme-slate .fl-widget-titlebar .fl-button-right,
 .fl-theme-slate .fl-widget-titlebar .fl-button-left {
@@ -116,10 +86,9 @@
 }
 .fl-theme-slate .fl-widget-titlebar .fl-button-inner {
     background-image:url(FSS_images/themes/slate/buttons-titlebar-bg.png);
-    padding-bottom:0.4em;
+    padding-bottom:0.3em;
     padding-top:0;
 }
-
 
 /* Widget options */
 .fl-theme-slate .fl-widget-options {}
@@ -131,12 +100,39 @@
 /* Widget content */
 .fl-theme-slate .fl-widget-content {background-color:#bfbfbf;}
 
-
 /* Component: Progressor */
 .fl-theme-slate .fl-progress-bounds {border-color:#999999; background-color:#ccc;}
 .fl-theme-slate .fl-progress-fill {color:#999999; background-color:#000;}
 
-/* Component: Uploader */
-
 /* States */
 .fl-theme-slate .orderable-drop-marker {background-color:#f00 !important;}
+
+/* Enhaced Graphics Toggles */
+.fl-theme-slate .fl-widget-content .fl-tabs-enhanced {
+    background:url(FSS_images/themes/slate/tabs-med-container-bg.png) repeat-x left bottom;
+    border-bottom:none;
+    margin:10px 1px 0;
+    padding:5px 0 6px;
+    *padding:0;
+}
+
+.fl-theme-slate .fl-widget-content .fl-tabs-enhanced li {
+    background: transparent url(FSS_images/themes/slate/tabs-med-cap.png) no-repeat left top; 
+    padding:4px 0 6px 16px;
+    *padding-top:0;
+}
+.fl-theme-slate .fl-widget-content .fl-tabs-enhanced li a {
+    background: transparent url(FSS_images/themes/slate/tabs-med-bg.png) no-repeat right top; 
+    border:none;
+    margin:0;
+    padding:4px 16px 6px 0;
+    color:#666666 !important;
+    *padding-bottom:4px;
+}
+.fl-theme-slate .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active {
+    background:transparent url(FSS_images/themes/slate/tabs-med-active-cap.png) no-repeat scroll left top;
+}
+.fl-theme-slate .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active a {
+    background:transparent url(FSS_images/themes/slate/tabs-med-active-bg.png) no-repeat scroll right top;
+    color:#000000 !important;
+}

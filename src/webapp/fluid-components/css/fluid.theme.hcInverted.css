@@ -28,8 +28,7 @@
 .fl-theme-hci h3,
 .fl-theme-hci h4,
 .fl-theme-hci h5,
-.fl-theme-hci h6 {border-bottom:0.1em dashed #FFFFFF;}
-
+.fl-theme-hci h6 {color:#ffffff !important; background-color:#000000 !important; border-color:#ffffff !important; border-bottom:0.1em dashed #ffffff !important;}
 
 /* Tables */
 .fl-theme-hci th {border:0.1em solid #ffffff; background-color:#ffffff !important; color:#000000 !important;}
