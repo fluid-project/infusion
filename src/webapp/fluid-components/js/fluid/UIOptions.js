@@ -267,6 +267,12 @@ fluid_1_0 = fluid_1_0 || {};
         
     };
     
+    var mergeLabelMapStrings = function (options) {
+        for (var item in options.labelMap) {
+            options.labelMap[item].names = options.strings[item];
+        }
+    };
+    
     var setupUIOptions = function (that) {
         that.uiEnhancer = $(document).data("uiEnhancer");
         initModels(that);
@@ -279,6 +285,7 @@ fluid_1_0 = fluid_1_0 || {};
             initPreview(that);        
         });
         
+        mergeLabelMapStrings(that.options);
         var rendererOptions = createRenderOptions(that);
         var template = fluid.selfRender(that.container, generateTree(that, rendererOptions.model), rendererOptions);
         that.events.afterRender.fire();
@@ -383,15 +390,6 @@ fluid_1_0 = fluid_1_0 || {};
             toc: {
                 values: ["true", "false"]
             }
-        },
-        //TODO: Not sure if this merge policy is correct. 
-        mergePolicy: {
-            "labelMap.textFont.names": "strings.textFont",
-            "labelMap.textSpacing.names": "strings.textSpacing",
-            "labelMap.theme.names": "strings.theme",
-            "labelMap.backgroundImages.names": "strings.backgroundImages",
-            "labelMap.layout.names": "strings.layout",
-            "labelMap.toc.names": "strings.toc",
         }
     });
 
