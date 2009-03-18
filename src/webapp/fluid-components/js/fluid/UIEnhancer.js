@@ -163,23 +163,22 @@ fluid_1_0 = fluid_1_0 || {};
     };
      
     /**
-     * Initialize the model first looking at options.settings, then in the cookie and finally in the options.defaultSettings
+     * Initialize the model first looking at options.savedSettings, then in the settingsStore and finally in the options.defaultSiteSettings
      * @param {Object} that
      */
     var initModel = function (that) {
         // First check for settings in the options
-        if (that.options.settings) {
-            that.model = that.options.settings;
+        if (that.options.savedSettings) {
+            that.model = that.options.savedSettings;
             return;
         }
   
-        // Use the cookie or the defaultSettings if there are no settings
-        that.model = that.settingsStore.fetch() || that.defaultSettings;        
+        // Use the settingsStore or the defaultSiteSettings if there are no settings
+        that.model = that.settingsStore.fetch() || that.defaultSiteSettings;        
     };
 
     var setupUIEnhancer = function (that) {
-        that.settingsStore = fluid.initSubcomponent(that, "settingsStore", [fluid.COMPONENT_OPTIONS]);
-        
+        that.settingsStore = fluid.initSubcomponent(that, "settingsStore", [fluid.COMPONENT_OPTIONS]); 
         initModel(that);
         that.refreshView();        
     };
@@ -194,8 +193,11 @@ fluid_1_0 = fluid_1_0 || {};
         var that = fluid.initView("fluid.uiEnhancer", doc, options);
         $(doc).data("uiEnhancer", that);
         that.container = $("body", doc);
-        that.defaultSettings = that.options.defaultSettings;
+        that.defaultSiteSettings = that.options.defaultSiteSettings;
         
+        /**
+         * Transforms the interface based on the settings in that.model
+         */
         that.refreshView = function () {
             removeStyling(that.container);
             addStyles(that.container, that.model, that.options.classnameMap);
@@ -206,6 +208,11 @@ fluid_1_0 = fluid_1_0 || {};
             styleInputs(that.container, that.model, that.options.classnameMap);
         };
         
+        /**
+         * Stores the new settings, refreshes the view to reflect the new settings and fires modelChanged.
+         * @param {Object} newModel
+         * @param {Object} source
+         */
         that.updateModel = function (newModel, source) {
             that.events.modelChanged.fire(newModel, that.model, source);
             that.model = newModel;
@@ -273,7 +280,7 @@ fluid_1_0 = fluid_1_0 || {};
             "linksLarger": "fl-text-larger", 
             "inputsLarger": "fl-text-larger"
         },
-        defaultSettings: {
+        defaultSiteSettings: {
             textFont: "",                 // key from classname map
             textSpacing: "",              // key from classname map
             theme: "default",             // key from classname map
@@ -293,29 +300,35 @@ fluid_1_0 = fluid_1_0 || {};
      * Cookie Store *
      ****************/
 
+    /**
+     * SettingsStore Subcomponent that uses a cookie for persistence.
+     * @param {Object} options
+     */
     fluid.uiEnhancer.cookieStore = function (options) {
         var that = {};
         fluid.mergeComponentOptions(that, "fluid.uiEnhancer.cookieStore", options);
         
         /**
-         * Retrieve and return the value of the cookie specified
+         * Retrieve and return the value of the cookie
          */
         that.fetch = function () {
-            var cookie;
-            var startIndex, endIndex;
-            if (document.cookie.length > 0) {
-                startIndex = document.cookie.indexOf(that.options.cookieName + "=");
-                if (startIndex !== -1) { 
-                    startIndex = startIndex + that.options.cookieName.length + 1; 
-                    endIndex = document.cookie.indexOf(";", startIndex);
-                    if (endIndex === -1) {
-                        endIndex = document.cookie.length;
+            var cookie = document.cookie;
+            var cookiePrefix = that.options.cookieName + "=";
+            var retObj, startIndex, endIndex;
+            
+            if (cookie.length > 0) {
+                startIndex = cookie.indexOf(cookiePrefix);
+                if (startIndex > -1) { 
+                    startIndex = startIndex + cookiePrefix.length; 
+                    endIndex = cookie.indexOf(";", startIndex);
+                    if (endIndex < startIndex) {
+                        endIndex = cookie.length;
                     }
-                    cookie = JSON.parse(document.cookie.substring(startIndex, endIndex));
+                    retObj = JSON.parse(cookie.substring(startIndex, endIndex));
                 } 
             }
             
-            return cookie;
+            return retObj;
         };
 
         /**
