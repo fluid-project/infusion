@@ -30,14 +30,14 @@
         <div id="uploader-contents">
             
             <!-- This form will be progressively enhanced by the Fluid Uploader component. -->
-            <form method="post" enctype="multipart/form-data" class="fl-progressive-enhanceable">
+            <form method="post" enctype="multipart/form-data" class="fl-ProgEnhance-hide">
                 <p>Browse to upload a file.</p>
                 <input name="fileData" type="file" />
                 <div><input type="submit" value="Save"/></div>
             </form>
             
             <!-- This is the markup for the Fluid Uploader component itself. -->
-            <form class="fl-uploader fl-progressive-enhancer" 
+            <form class="fl-uploader fl-ProgEnhance-show" 
                   method="get" 
                   enctype="multipart/form-data">
                       
@@ -122,7 +122,7 @@
         </div>
             
         <script type="text/javascript">
-            var myUploader = fluid.progressiveEnhanceableUploader(".fl-uploader", ".fl-progressive-enhanceable", {
+            var myUploader = fluid.progressiveEnhanceableUploader(".fl-uploader", ".fl-ProgEnhance-hide", {
                 demo: true,
                 uploadManager: "fluid.swfUploadManager"
             });
