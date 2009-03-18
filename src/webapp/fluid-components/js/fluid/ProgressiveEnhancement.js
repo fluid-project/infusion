@@ -10,5 +10,5 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 (function ($) {
-    $("head").append("<style type='text/css'>.fl-progressive-enhanceable { display: none; }</style>");
+    $("head").append("<style type='text/css'>.fl-ProgEnhance-hide{ display: none; }</style>");
 })(jQuery);
