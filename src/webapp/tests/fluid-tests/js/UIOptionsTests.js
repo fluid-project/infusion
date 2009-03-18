@@ -36,7 +36,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         };
 
         var enhancerOptions = {
-            settings: {
+            savedSettings: {
                 textFont: "",            // key from classname map
                 textSpacing: "",         // key from classname map
                 theme: "",               // key from classname map

@@ -188,7 +188,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     // TODO: FLUID-2293: Implement multi-levels of undo in the UndoManager
     var initModels = function (that) {
-        that.defaultModel = that.uiEnhancer.defaultSettings;
+        that.defaultModel = that.uiEnhancer.defaultSiteSettings;
         that.savedModel = that.uiEnhancer.model;
         that.model = fluid.copy(that.savedModel);
     };
@@ -326,48 +326,6 @@ fluid_1_0 = fluid_1_0 || {};
     };
 
     fluid.defaults("fluid.uiOptions", {
-        selectors: {
-            controls: ".flc-uioptions-control",
-            textMinSizeCtrl: ".fl-control-min_text_size",
-            lineSpacingCtrl: ".fl-control-line-spacing",
-            cancel: ".fl-hook-preview-cancel",
-            reset: ".fl-hook-preview-reset",
-            save: ".fl-hook-preview-save",
-            previewFrame : ".fl-hook-preview-frame"
-        },
-        events: {
-            modelChanged: null,
-            onSave: null,
-            onCancel: null,
-            onReset: null,
-            afterRender: null
-        },
-        labelMap: {
-            textFont: {
-                names: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
-                values: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"]
-            },
-            textSpacing: {
-                names: ["Regular", "Wide", "Wider", "Widest"],
-                values: ["Default", "Wide", "Wider", "Widest"]
-            },
-            theme: {
-                names: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"],
-                values: ["Low Contrast", "default", "Medium Contrast", "High Contrast", "High Contrast Inverted"]
-            },
-            backgroundImages: {
-                names: ["Yes", "No"],
-                values: ["default", "No Images"]
-            },
-            layout: {
-                names: ["Yes", "No"],
-                values: ["Simple", "default"]
-            },
-            toc: {
-                names: ["Yes", "No"],
-                values: ["true", "false"]
-            }
-        },
         textMinSize: {
             type: "fluid.textfieldSlider",
             options: {
@@ -381,8 +339,60 @@ fluid_1_0 = fluid_1_0 || {};
                 min: 1,
                 max: 10
             }
+        },
+        selectors: {
+            controls: ".flc-uioptions-control",
+            textMinSizeCtrl: ".fl-control-min_text_size",   //TODO: rename fl to flc
+            lineSpacingCtrl: ".fl-control-line-spacing",
+            cancel: ".fl-hook-preview-cancel",
+            reset: ".fl-hook-preview-reset",
+            save: ".fl-hook-preview-save",
+            previewFrame : ".fl-hook-preview-frame"
+        },
+        events: {
+            modelChanged: null,
+            onSave: null,
+            onCancel: null,
+            onReset: null,
+            afterRender: null
+        },
+        strings: {
+            textFont: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"],
+            textSpacing: ["Regular", "Wide", "Wider", "Widest"],
+            theme: ["Low Contrast", "Medium Contrast", "Medium Contrast Grey Scale", "High Contrast", "High Contrast Inverted"],
+            backgroundImages: ["Yes", "No"],
+            layout: ["Yes", "No"],
+            toc: ["Yes", "No"]
+        },
+        labelMap: {  //TODO: build up the labelMap using the strings.
+            textFont: {
+                values: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"]
+            },
+            textSpacing: {
+                values: ["Default", "Wide", "Wider", "Widest"]
+            },
+            theme: {
+                values: ["Low Contrast", "default", "Medium Contrast", "High Contrast", "High Contrast Inverted"]
+            },
+            backgroundImages: {
+                values: ["default", "No Images"]
+            },
+            layout: {
+                values: ["Simple", "default"]
+            },
+            toc: {
+                values: ["true", "false"]
+            }
+        },
+        //TODO: Not sure if this merge policy is correct. 
+        mergePolicy: {
+            "labelMap.textFont.names": "strings.textFont",
+            "labelMap.textSpacing.names": "strings.textSpacing",
+            "labelMap.theme.names": "strings.theme",
+            "labelMap.backgroundImages.names": "strings.backgroundImages",
+            "labelMap.layout.names": "strings.layout",
+            "labelMap.toc.names": "strings.toc",
         }
-
     });
 
 })(jQuery, fluid_1_0);

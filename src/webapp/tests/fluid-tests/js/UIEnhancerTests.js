@@ -43,15 +43,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
             expect(4);
 
             var options = {
-                settings: testSettings
+                savedSettings: testSettings
             };
             var body = $("body");
-            var uiEnhancer = fluid.uiEnhancer(document, options);
+            var uiEnhancer = fluid.uiEnhancer(null, options);
 
-            jqUnit.assertEquals("main has large text size", "18pt", body.css("fontSize"));
-            jqUnit.assertTrue("main has courier font class", body.hasClass("fl-font-monospace"));
-            jqUnit.assertTrue("main has wide text spacing class", body.hasClass("fl-font-spacing-1"));
-            jqUnit.assertTrue("main has high contrast class", body.hasClass("fl-theme-hc"));
+            jqUnit.assertEquals("Large text size is set", "18pt", body.css("fontSize"));
+            jqUnit.assertTrue("Courier font is set", body.hasClass("fl-font-monospace"));
+            jqUnit.assertTrue("Wide text spacing is set", body.hasClass("fl-font-spacing-1"));
+            jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-hc"));
 
         });
         

@@ -120,7 +120,7 @@ var demo = demo || {};
         });  
 
         jQuery("#remove-skin").click(function () {
-            uiEnhancer.updateModel(uiEnhancer.defaultSettings);
+            uiEnhancer.updateModel(uiEnhancer.defaultSiteSettings);
         });  
 
     };

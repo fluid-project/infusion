@@ -15,7 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 $(function () {
     var uiOptions;
     var enhancerOpts = {
-        defaultSettings: {
+        defaultSiteSettings: {
             theme: "Mist"
         }
     };
