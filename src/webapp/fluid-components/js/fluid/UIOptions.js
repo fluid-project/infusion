@@ -231,8 +231,9 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var createRenderOptions = function (that) {
-        // Turn the boolean value select into a string so it can be properly bound and rendered
+        // Turn the boolean select values into strings so they can be properly bound and rendered
         that.model.toc = String(that.model.toc);
+        that.model.backgroundImages = String(that.model.backgroundImages);
         
         return {
             model: {
@@ -382,7 +383,7 @@ fluid_1_0 = fluid_1_0 || {};
                 values: ["Low Contrast", "default", "Medium Contrast", "High Contrast", "High Contrast Inverted"]
             },
             backgroundImages: {
-                values: ["default", "No Images"]
+                values: ["true", "false"]
             },
             layout: {
                 values: ["Simple", "default"]

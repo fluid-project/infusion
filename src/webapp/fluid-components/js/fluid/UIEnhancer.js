@@ -67,13 +67,17 @@ fluid_1_0 = fluid_1_0 || {};
         }
     };
 
+    var isTrue = function (val) {
+        return val && (val === true || val === "true");
+    };
+    
     /**
      * Shows the table of contents when tocSetting is "On". Hides the table of contents otherwise.
      * @param {Object} that
      * @param {Object} tocSetting
      */
     var setToc = function (that, tocSetting) {
-        if (tocSetting && (tocSetting === true || tocSetting === "true")) {
+        if (isTrue(tocSetting)) {
             if (that.tableOfContents) {
                 that.tableOfContents.show();
             } else {
@@ -121,9 +125,8 @@ fluid_1_0 = fluid_1_0 || {};
         addClassForSetting(container, "textSpacing", settings.textSpacing, classnameMap);
         addClassForSetting(container, "theme", settings.theme, classnameMap);
         addClassForSetting(container, "layout", settings.layout, classnameMap);
-        addClassForSetting(container, "backgroundImages", settings.backgroundImages, classnameMap);
     };
-
+    
     /**
      * Adds or removes the classname to/from the elements based upon the setting.
      * @param {Object} elements
@@ -201,6 +204,7 @@ fluid_1_0 = fluid_1_0 || {};
         that.refreshView = function () {
             removeStyling(that.container);
             addStyles(that.container, that.model, that.options.classnameMap);
+            styleElements(that.container, !isTrue(that.model.backgroundImages), that.options.classnameMap.noBackgroundImages);
             setMinSize(that.container, that.model.textSize);
             setLineSpacing(that.container, that.model.lineSpacing);
             setToc(that, that.model.toc);
@@ -267,14 +271,11 @@ fluid_1_0 = fluid_1_0 || {};
                 "Simple": "fl-layout-linear",
                 "default": ""
             },
-            "backgroundImages": {
-                "No Images": "fl-no-background-images",
-                "default": ""
-            },
             "linkColor": {
                 "aqua": "fl-text-aqua",
                 "yellow": "fl-text-yellow"
             },
+            "noBackgroundImages": "fl-no-background-images",
             "linksUnderline": "fl-text-underline", 
             "linksBold": "fl-text-bold", 
             "linksLarger": "fl-text-larger", 
@@ -284,10 +285,10 @@ fluid_1_0 = fluid_1_0 || {};
             textFont: "",                 // key from classname map
             textSpacing: "",              // key from classname map
             theme: "default",             // key from classname map
-            backgroundImages: "default",  // key from classname map
             layout: "default",            // key from classname map
             textSize: "",                 // in points
             lineSpacing: "",              // in ems
+            backgroundImages: true,       // boolean
             toc: false,                   // boolean
             linksUnderline: false,        // boolean
             linksBold: false,             // boolean

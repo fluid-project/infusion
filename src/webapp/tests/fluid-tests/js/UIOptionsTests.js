@@ -34,16 +34,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 }
             }
         };
-
+        // TODO: This should be pulled out from fluid.defaults.
         var enhancerOptions = {
             savedSettings: {
                 textFont: "",            // key from classname map
                 textSpacing: "",         // key from classname map
                 theme: "",               // key from classname map
-                backgroundImages: "default",    // key from classname map
-                layout: "default",              // key from classname map
+                layout: "default",       // key from classname map
                 textSize: "",            // in points
-                lineSpacing: "",            // in ems
+                lineSpacing: "",         // in ems
+                backgroundImages: true,  // boolean
                 toc: false,              // boolean
                 linksUnderline: false,   // boolean
                 linksBold: false,        // boolean
