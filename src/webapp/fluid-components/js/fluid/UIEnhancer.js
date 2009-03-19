@@ -347,4 +347,27 @@ fluid_1_0 = fluid_1_0 || {};
         cookieName: "fluid-ui-settings"
     });
 
+    /**************
+     * Temp Store *
+     **************/
+
+    /**
+     * SettingsStore Subcomponent that doesn't do persistence.
+     * @param {Object} options
+     */
+    fluid.uiEnhancer.tempStore = function (options) {
+        var that = {};
+        that.model = null;
+         
+        that.fetch = function () {
+            return that.model;
+        };
+
+        that.save = function (settings) {
+            that.model = settings;
+        };
+    
+        return that;
+    };
+
 })(jQuery, fluid_1_0);

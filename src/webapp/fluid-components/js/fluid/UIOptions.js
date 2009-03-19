@@ -225,7 +225,10 @@ fluid_1_0 = fluid_1_0 || {};
             var previewFrameContents = previewFrame.contents();
             var options = {
                 savedSettings: that.model,
-                tableOfContents: that.uiEnhancer.options.tableOfContents
+                tableOfContents: that.uiEnhancer.options.tableOfContents,
+                settingsStore: {
+                    type: "fluid.uiEnhancer.tempStore"
+                }
             };
             previewEnhancer = fluid.uiEnhancer(previewFrameContents, options);
         });        

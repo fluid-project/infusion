@@ -80,6 +80,31 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var enhancer = fluid.uiEnhancer();
             jqUnit.assertEquals("The uiEnhancer should have a textSize of 32", "32", enhancer.model.textSize);
             
+            // Reset the cookie settings
+            store.save(enhancer.options.defaultSiteSettings);
+            
         });
+
+        tests.test("Temp store", function () {
+            var store = fluid.uiEnhancer.tempStore();
+            store.save(testSettings);
+            
+            // Check that we get back the test settings correctly.
+            var result = store.fetch();
+            jqUnit.assertDeepEq("The settings are saved and retrieved correctly.", testSettings, result);
+            
+            // Change the results, save again. It should work again.
+            var differentSettings = fluid.copy(testSettings);
+            differentSettings.textSize = "32";
+            store.save(differentSettings);
+            jqUnit.assertEquals("Changed settings are saved correctly.", "32", store.fetch().textSize);
+            jqUnit.assertEquals("Theme was saved correctly.", "High Contrast", store.fetch().theme);
+                                           
+            // Now we can create a uiEnhancer and see that the theme is default not high contrast
+            var enhancer = fluid.uiEnhancer();
+            jqUnit.assertEquals("The uiEnhancer should have a default theme", "default", enhancer.model.theme);
+            
+        });
+
     });
 })(jQuery);
