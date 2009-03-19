@@ -79,9 +79,9 @@
 .fl-theme-coal .fl-widget h2 {color:#ffffff;}
 .fl-theme-coal .fl-widget .fl-icon-more  {background-image:url('FSS_images/themes/coal/icon-widget-More.png'); margin-left:0px;}
 .fl-theme-coal .fl-widget .fl-icon-close {background-image:url('FSS_images/themes/coal/icon-widget-Close.png'); margin-right:0px;}
-.fl-theme-coal .fl-grabbable .fl-widget-titlebar {background-image:url('FSS_images/themes/coal/icon-widget-gripper.png'); cursor:move;}
 
 /* Widget titlebar */
+.fl-theme-coal .fl-grabbable .fl-widget-titlebar {background-image:url('FSS_images/themes/coal/icon-widget-gripper.png');}
 .fl-theme-coal .fl-widget-titlebar {background-position:center top; background-repeat:no-repeat;}
 .fl-theme-coal .fl-widget-titlebar .icon {background-position:center center;}
 .fl-theme-coal .fl-widget-titlebar .fl-button-right,

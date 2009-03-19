@@ -21,8 +21,10 @@
         <link rel="stylesheet" type="text/css" href="css/sakai.theme.slate.css" />
         <link rel="stylesheet" type="text/css" href="css/sakai.theme.hc.css" />
 		<link rel="stylesheet" type="text/css" href="css/sakai.components.ui-options.css" />
+        <!--
         <link rel="stylesheet" type="text/css" href="http://static.jquery.com/ui/themes/base/ui.dialog.css" />
         <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/cupertino/jquery-ui.css" />
+        -->
         
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.3.2.js"></script>
         <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
@@ -52,8 +54,14 @@
     <body class="fl-theme-mist">
         
         <div id="dialog_container">
-            <div id="dialog_content">Loading....</div>
+            <div class="fl-widget-titlebar">
+                <a href="#" class="fl-force-right fl-icon fl-icon-close">Close</a>
+                <h2>User Interface Options</h2>
+            </div>
+            <div id="dialog_content" class="fl-widget-content">Loading....</div>
         </div>
+
+
 
         <div class="header fl-knockout">
             <h1>My Dashboard</h1>

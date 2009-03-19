@@ -216,7 +216,8 @@ input.fl-icon {padding-left:16px;}
  */
 .fl-widget {padding:5px; margin-bottom:10px;}
 .fl-widget .button {margin:0 5px;}
-.fl-widget .fl-widget-titlebar {} /* fixes layout problem in IE6 due to .column {position:relative} setup*/
+.fl-grabbable .fl-widget-titlebar {background-position:center top; background-repeat:no-repeat; cursor:move;}
+.fl-widget .fl-widget-titlebar {}
 .fl-widget .fl-widget-titlebar h2 {padding:0; margin:0; font-size:105%;}
 .fl-widget .fl-widget-titlebar .fl-button-inner {
     font-size:0.8em;

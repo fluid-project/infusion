@@ -83,14 +83,18 @@ $(function () {
     	width: 800,
         height:500,
     	modal: true,
-        //dialogClass: 'fl-widget',
+        dialogClass: 'fl-widget fl-grabbable',
         autoOpen: false,
         draggable: true,
-        title: "User Interface Options Dialog",
+        //title: "User Interface Options Dialog",
         close: function(){
             uiOptions.cancel();
         }
 	});
+    
+    $("#dialog_container .fl-icon-close").click(function(){
+        $("#dialog_container").dialog("close");        
+    });
     
     $('.lookNfeel a').click(function () {
         $("#dialog_container").dialog("open");
