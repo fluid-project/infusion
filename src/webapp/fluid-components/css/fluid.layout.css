@@ -263,6 +263,7 @@ input.fl-icon {padding-left:16px;}
 .fl-no-background-images .fl-icon {
     text-indent:0 !important;
     width:auto !important;
+    background-color:transparent !important;
 }
 
 /* Progressive Enhancement */

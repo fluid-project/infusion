@@ -1,13 +1,11 @@
 /* CSS Specifically for the UI Options dialog and Preview window */
+.fl-components-ui-options .ui-accordion-content {border: 3px solid}/*fixes an IE issue where the border of the content needs to be specified*/
 .fl-components-ui-options {padding:10px;}
-.fl-components-ui-options fieldset {margin:0 20px 5px 0; background-color:#f5f5f5;}
-.fl-components-ui-options fieldset h2 {cursor:pointer; margin:0; padding:0 0 0 24px; background:#ccc url(../images/uioptions/expand_collapse.png) no-repeat left 5px;}
-.fl-components-ui-options fieldset legend {font-weight:bold;}
+.fl-components-ui-options fieldset {margin:0 20px 5px 0;}
+.fl-components-ui-options fieldset h2 {cursor:pointer; margin:0; padding:5px;}
 .fl-components-ui-options fieldset ol {margin:0; padding:15px 0 0 0;}
-.ui-accordion-content {border: 3px solid #ccc}/*fixes an IE issue where the border of the content needs to be specified*/
 .fl-components-ui-options fieldset li {padding:2px 0; clear:both}
 
-.fl-components-ui-options fieldset.selected h2 {background-position:left -13px;}
 .fl-components-ui-options .flc-uioptions-min-text-size .fl-textfield,
 .fl-components-ui-options .flc-uioptions-line-spacing .fl-textfield {width:1.85em;}
 
@@ -18,9 +16,20 @@
     width:30%;
 }
 
-/* renderer fix */
-/*.fl-components-ui-options .flc-uioptions-min-text-size p {display:none;}*/
-
-.fl-components-ui-options .fl-subcomp-preview {padding:0;border:3px solid #ccc;}
-.fl-components-ui-options .fl-subcomp-preview h2 {font-weight:normal; margin:0; padding:5px; background-color:#ccc; color:#000;}
+.fl-components-ui-options .fl-subcomp-preview {padding:0;border:3px solid;}
+.fl-components-ui-options .fl-subcomp-preview h2 {font-weight:normal; margin:0; padding:5px;}
 .fl-components-ui-options .fl-subcomp-preview iframe {width:100%; height:300px;}
+
+
+/* Component Theme CSS */
+.fl-theme-mist .fl-components-ui-options h2 {background-color:#ebebeb;}
+.fl-theme-mist .fl-components-ui-options .ui-accordion-content {border-color:#ebebeb;}
+.fl-theme-mist .fl-components-ui-options .fl-subcomp-preview {border-color:#ebebeb;}
+
+.fl-theme-slate .fl-components-ui-options h2 {background-color:#666;}
+.fl-theme-slate .fl-components-ui-options .ui-accordion-content {border-color:#666;}
+.fl-theme-slate .fl-components-ui-options .fl-subcomp-preview {border-color:#666;}
+
+.fl-theme-coal .fl-components-ui-options h2 {background-color:#666;}
+.fl-theme-coal .fl-components-ui-options .ui-accordion-content {border-color:#666;}
+.fl-theme-coal .fl-components-ui-options .fl-subcomp-preview {border-color:#666;}
