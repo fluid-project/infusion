@@ -75,7 +75,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 expect(4);
                 
                 $("#main").append(htmlcopy.clone());
-                fluid.uiEnhancer(document, enhancerOptions);
+                var uiEnhancer = fluid.uiEnhancer(document, enhancerOptions);
                 var uiOptions = fluid.uiOptions(".uiOptions", options);
                 
                 uiOptions.updateModel(hcSkin);
@@ -84,7 +84,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 uiOptions.save();
                 var container = $("body");
                 jqUnit.assertTrue("Save has been called", saveCalled);
-                jqUnit.assertEquals("hc setting was saved", hcSkin.theme, uiOptions.savedModel.theme);
+                jqUnit.assertEquals("hc setting was saved", hcSkin.theme, uiEnhancer.model.theme);
                 jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-hc"));
                 
             });
@@ -93,13 +93,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 expect(6);
                 
                 $("#main").append(htmlcopy.clone());
-                fluid.uiEnhancer(document, enhancerOptions);
+                var uiEnhancer = fluid.uiEnhancer(document, enhancerOptions);
                 var uiOptions = fluid.uiOptions(".uiOptions", options);
                 
                 uiOptions.updateModel(hcSkin);
                 
                 jqUnit.assertEquals("hc setting was set in the model", hcSkin.theme, uiOptions.model.theme);
-                jqUnit.assertEquals("hc setting was not saved", "", uiOptions.savedModel.theme);
+                jqUnit.assertEquals("hc setting was not saved", "", uiEnhancer.model.theme);
                 
                 uiOptions.refreshView();
                 var fontSizeSetting = $(".flc-textfield-slider-field").val(); // This is not correct as there are 2 flc-textfields. 

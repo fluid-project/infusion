@@ -20,11 +20,7 @@ fluid_1_0 = fluid_1_0 || {};
  ******************/
 
 (function ($, fluid) {
-    
-//    TODO
-//    - do something when someone tries to modify the model with a value out of range.
-//    - textfield slider should be able to generate its own markup
-    
+
     var initTextfieldSlider = function (that) {
         var textfield = that.locate("textfield");
         textfield.val(that.model);
@@ -64,6 +60,11 @@ fluid_1_0 = fluid_1_0 || {};
         });
     };
     
+    /**
+     * A component that relates a textfield and a jQuery UI slider
+     * @param {Object} container
+     * @param {Object} options
+     */
     fluid.textfieldSlider = function (container, options) {
         var that = fluid.initView("fluid.textfieldSlider", container, options);
         that.model = that.options.value || that.locate("textfield").val();
@@ -72,10 +73,19 @@ fluid_1_0 = fluid_1_0 || {};
         
         initTextfieldSlider(that);
         
+        /**
+         * Tests if a value is within the min and max of the textfield slider
+         * @param {Object} value
+         */
         that.isInRange = function (value) {
             return (value >= that.min && value <= that.max);
         };
         
+        /**
+         * Updates the model if it is in range. Fires model changed
+         * @param {Object} model
+         * @param {Object} source
+         */
         that.updateModel = function (model, source) {
             if (that.isInRange(model)) {
                 that.events.modelChanged.fire(model, that.model, source);
@@ -188,13 +198,6 @@ fluid_1_0 = fluid_1_0 || {};
         };
     };
     
-    // TODO: FLUID-2293: Implement multi-levels of undo in the UndoManager
-    var initModels = function (that) {
-        // TODO: savedModel can be pulled from uiEnhancer - do we need to keep them ourselves?
-        that.savedModel = that.uiEnhancer.model;
-        that.model = fluid.copy(that.savedModel);
-    };
-    
     var bindHandlers = function (that) {
         that.locate("save").click(that.save);
         that.locate("reset").click(that.reset);
@@ -282,9 +285,6 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var setupUIOptions = function (that) {
-        that.uiEnhancer = $(document).data("uiEnhancer");
-        initModels(that);
-
         // TODO: This stuff should already be in the renderer tree
         that.events.afterRender.addListener(function () {
             initSliders(that);
@@ -303,12 +303,17 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.uiOptions = function (container, options) {
         var that = fluid.initView("fluid.uiOptions", container, options);
+        that.uiEnhancer = $(document).data("uiEnhancer");
+        that.model = fluid.copy(that.uiEnhancer.model);
+
+        // TODO: we shouldn't need the savedModel and should use the uiEnhancer.model instead
+        var savedModel = that.uiEnhancer.model;
         var template;
-             
+ 
         that.save = function () {
             that.events.onSave.fire(that.model);
-            that.savedModel = fluid.copy(that.model);
-            that.uiEnhancer.updateModel(that.model);
+            savedModel = fluid.copy(that.model); 
+            that.uiEnhancer.updateModel(savedModel);
         };
 
         that.reset = function () {
@@ -319,7 +324,7 @@ fluid_1_0 = fluid_1_0 || {};
         
         that.cancel = function () {
             that.events.onCancel.fire();
-            that.updateModel(fluid.copy(that.savedModel), that);
+            that.updateModel(fluid.copy(savedModel), that);
             that.refreshView();            
         };
         
