@@ -147,15 +147,15 @@ fluid_1_0 = fluid_1_0 || {};
     
     var generateTree = function (that, rendererModel) {
         var children = [];
-        children.push(createSelectNode("font-style", "selections.textFont", "labelMap.textFont.values", "labelMap.textFont.names"));
+        children.push(createSelectNode("text-font", "selections.textFont", "labelMap.textFont.values", "labelMap.textFont.names"));
         children.push(createSelectNode("text-spacing", "selections.textSpacing", "labelMap.textSpacing.values", "labelMap.textSpacing.names"));
-        children.push(createSelectNode("contrast", "selections.theme", "labelMap.theme.values", "labelMap.theme.names"));
+        children.push(createSelectNode("theme", "selections.theme", "labelMap.theme.values", "labelMap.theme.names"));
 
         var bgiExplodeOpts = {
             selectID: "background-images",
             rowID: "background-images-row:",
-            inputID: "images-choice",
-            labelID: "images-label"
+            inputID: "background-images-choice",
+            labelID: "background-images-label"
         };        
         children.push(createSelectNode("background-images", "selections.backgroundImages", "labelMap.backgroundImages.values", "labelMap.backgroundImages.names"));
         children = children.concat(fluid.explodeSelectionToInputs(that.options.labelMap.backgroundImages.values, bgiExplodeOpts));
