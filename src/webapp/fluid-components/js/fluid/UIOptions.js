@@ -190,8 +190,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     // TODO: FLUID-2293: Implement multi-levels of undo in the UndoManager
     var initModels = function (that) {
-        // TODO: defaultModel and savedModel can be pulled from uiEnhancer - do we need to keep them ourselves?
-        that.defaultModel = that.uiEnhancer.defaultSiteSettings;
+        // TODO: savedModel can be pulled from uiEnhancer - do we need to keep them ourselves?
         that.savedModel = that.uiEnhancer.model;
         that.model = fluid.copy(that.savedModel);
     };
@@ -314,7 +313,7 @@ fluid_1_0 = fluid_1_0 || {};
 
         that.reset = function () {
             that.events.onReset.fire();
-            that.updateModel(fluid.copy(that.defaultModel), that);
+            that.updateModel(fluid.copy(that.uiEnhancer.defaultSiteSettings), that);
             that.refreshView();
         };
         
@@ -380,7 +379,7 @@ fluid_1_0 = fluid_1_0 || {};
             layout: ["Yes", "No"],
             toc: ["Yes", "No"]
         },
-        labelMap: {  //TODO: build up the labelMap using the strings.
+        labelMap: {
             textFont: {
                 values: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"]
             },
