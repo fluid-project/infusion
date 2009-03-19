@@ -31,8 +31,8 @@ fluid_1_0 = fluid_1_0 || {};
      */
     var replaceClass = function (container, selector, regExp, newVal) {
         newVal = newVal || "";
-        $(selector, container).andSelf().each(function (i) {    
-            var attr = ($.browser.msie === false) ? 'class' : 'className'; 
+        $(selector, container).andSelf().each(function (i) {
+            var attr = ($.browser.msie === false) ? 'class' : 'className'; // TO DO: does this need to happen inside the loop?
             if (this.getAttribute(attr)) {
                 // The regular expression was required for speed
                 this.setAttribute(attr, this.getAttribute(attr).replace(regExp, newVal));
@@ -110,6 +110,8 @@ fluid_1_0 = fluid_1_0 || {};
 		if (size && size > 0) {
             container.css("font-size", size + "pt");
             replaceClass(container, "[class*=fl-font-size-]", /\bfl-font-size-[0-9]{1,2}\s+/g, 'fl-font-size-100');
+        } else {
+            container.css("font-size", ""); // empty is same effect as not being set
         }
     };
 
