@@ -221,7 +221,9 @@ fluid_1_0 = fluid_1_0 || {};
              * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
              */
             setTimeout(function () {
-                previewEnhancer.updateModel(model); 
+                if (previewEnhancer) {
+                    previewEnhancer.updateModel(model);
+                }
             }, 0);
         });
 
