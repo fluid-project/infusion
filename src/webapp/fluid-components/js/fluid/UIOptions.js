@@ -91,8 +91,8 @@ fluid_1_0 = fluid_1_0 || {};
 
     fluid.defaults("fluid.textfieldSlider", {
         selectors: {
-            textfield: ".flc-textfield",
-            slider: ".flc-slider"
+            textfield: ".flc-textfield-slider-field",
+            slider: ".flc-textfield-slider-slider"
         },
         events: {
             modelChanged: null
@@ -257,7 +257,7 @@ fluid_1_0 = fluid_1_0 || {};
         var createOptions = function (settingName) {
             return {
                 listeners: {
-                    modelChanged: function(value){
+                    modelChanged: function (value) {
                         that.model[settingName] = value;
                         that.updateModel(that.model);
                     }
@@ -358,12 +358,12 @@ fluid_1_0 = fluid_1_0 || {};
         },
         selectors: {
             controls: ".flc-uioptions-control",
-            textMinSizeCtrl: ".fl-control-min_text_size",   //TODO: rename fl to flc
-            lineSpacingCtrl: ".fl-control-line-spacing",
-            cancel: ".fl-hook-preview-cancel",
-            reset: ".fl-hook-preview-reset",
-            save: ".fl-hook-preview-save",
-            previewFrame : ".fl-hook-preview-frame"
+            textMinSizeCtrl: ".flc-uioptions-min-text-size",
+            lineSpacingCtrl: ".flc-uioptions-line-spacing",
+            cancel: ".flc-uioptions-cancel",
+            reset: ".flc-uioptions-reset",
+            save: ".flc-uioptions-save",
+            previewFrame : ".flc-uioptions-preview-frame"
         },
         events: {
             modelChanged: null,

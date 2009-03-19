@@ -102,7 +102,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertEquals("hc setting was not saved", "", uiOptions.savedModel.theme);
                 
                 uiOptions.refreshView();
-                var fontSizeSetting = $(".flc-textfield").val(); // This is not correct as there are 2 flc-textfields. 
+                var fontSizeSetting = $(".flc-textfield-slider-field").val(); // This is not correct as there are 2 flc-textfields. 
                 jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
                 var fontStyleSelection = $(":selected", $("#font-style-selection"));
                 jqUnit.assertEquals("Verdana selected", "Verdana", fontStyleSelection[0].value);
