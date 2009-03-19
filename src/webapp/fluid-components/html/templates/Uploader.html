@@ -66,7 +66,7 @@
                                     <!-- Rows will be rendered in here. -->
                                     
                                     <!-- Template markup for the file queue rows -->
-                                    <tr id="queue-row-tmplt" class="fluid-templates">
+                                    <tr id="queue-row-tmplt" class="row fluid-templates">
                                         <th class="fileName" scope="row">File Name Placeholder</th>
                                         <td class="fileSize">0 KB</td>
                                         <td class="actions">
@@ -74,6 +74,11 @@
                                                 <span class="text-description">Remove file from queue</span>
                                             </button>
                                         </td>
+                                    </tr>
+                                    
+                                    <!-- Template for the file error info rows -->
+                                    <tr id="queue-error-tmplt" class="queue-error-row fluid-templates">
+                                        <td colspan="3" class="queue-error"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -108,15 +113,6 @@
                 <div class="fl-uploader-btns">
                     <button type="button" class="fl-uploader-pause hidden">Stop Upload</button><button type="button" class="fl-uploader-upload default dim" disabled="disabled">Upload</button>
                 </div>
-                 <!-- Other templates -->
-                <div class="fluid-templates">
-                    <table summary="Invisible placeholder for Uploader templates.">
-                        <tr id="queue-error-tmplt" class="queue-error-row">
-                            <td colspan="3" class="queue-error">I'm just going to put a little text here for testing. And now we're on our way.</td>
-                        </tr>
-                    </table>
-                </div>
-   
             </form>
         
         </div>

@@ -30,6 +30,10 @@ fluid_1_0 = fluid_1_0 || {};
         return that.locate("fileQueue").find("#" + file.id);
     };
     
+    var errorRowForFile = function (that, file) {
+        return $("#" + file.id + "_error", that.container);
+    };
+    
     var fileForRow = function (that, row) {
         var files = that.uploadManager.queue.files;
         for (var i = 0; i < files.length; i++) {
@@ -38,7 +42,6 @@ fluid_1_0 = fluid_1_0 || {};
                 return file;
             }
         }
-        
         return null;
     };
     
@@ -73,35 +76,41 @@ fluid_1_0 = fluid_1_0 || {};
     
     var removeFileProgress = function (that, file) {
         var fileProgressor = progressorForFile(that, file);
-        if (!fileProgressor) return;
+        if (!fileProgressor) {
+            return;
+        }
         var rowProgressor = fileProgressor.displayElement;
         rowProgressor.remove();
     };
  
-    var removeFileErrorRow = function (that, file) {
-        var errorRow = $("#" + file.id + "_error", that.container);
-        if (!errorRow) return;
-        
-        errorRow.fadeOut("fast", function () {
-            errorRow.remove();
-            that.refreshView();   
+    var animateRowRemoval = function (that, row) {
+        row.fadeOut("fast", function () {
+            row.remove();  
+            that.refreshView();
         });
+    };
+    
+    var removeFileErrorRow = function (that, file) {
+        if (file.filestatus === fluid.uploader.fileStatusConstants.ERROR) {
+            animateRowRemoval(that, errorRowForFile(that, file));
+        }
     };
    
     var removeFileAndRow = function (that, file, row) {
+        // Clean up the stuff associated with a file row.
         removeFileProgress(that, file);
         removeFileErrorRow(that, file);
-        that.uploadManager.removeFile(file);
         
-        row.fadeOut("fast", function () {
-            row.remove();
-            that.refreshView();   
-        });
+        // Remove the file itself.
+        that.uploadManager.removeFile(file);
+        animateRowRemoval(that, row);
     };
     
     var removeFileForRow = function (that, row) {
         var file = fileForRow(that, row);
-        if (!file || file.filestatus === fluid.uploader.fileStatusConstants.COMPLETE) return;
+        if (!file || file.filestatus === fluid.uploader.fileStatusConstants.COMPLETE) {
+            return;
+        }
         removeFileAndRow(that, file, row);
     };
     
@@ -109,7 +118,7 @@ fluid_1_0 = fluid_1_0 || {};
         var row = rowForFile(that, file);
         removeFileAndRow(that, file, row);
     };
-     
+    
     var bindHover = function (row, styles) {
         var over = function () {
             if (row.hasClass(styles.ready) && !row.hasClass(styles.uploading)) {
@@ -150,22 +159,23 @@ fluid_1_0 = fluid_1_0 || {};
         bindDeleteKey(that, row);
     };
     
-    var createRowFromTemplate = function (that, file) {
-        var row = that.locate("rowTemplate").clone();
+    var renderRowFromTemplate = function (that, file) {
+        var row = that.rowTemplate.clone();
         that.locate("fileName", row).text(file.name);
         that.locate("fileSize", row).text(fluid.uploader.formatFileSize(file.size));
         that.locate("fileIconBtn", row).addClass(that.options.styles.remove);
         row.attr("id", file.id);
-        row.addClass(that.options.styles.ready).addClass(that.options.styles.row);
+        row.addClass(that.options.styles.ready);
         bindRowHandlers(that, row);
         
         return row;    
     };
     
-    var createProgressorFromTemplate = function (that, file, row) {
+    var createProgressorFromTemplate = function (that, row) {
         // create a new progress bar for the row and position it
-        var rowProgressor = that.locate("rowProgressorTemplate", that.uploadContainer).clone();
-        var progressId = file.id + "_progress";
+        var rowProgressor = that.rowProgressorTemplate.clone();
+        var rowId = row.attr("id");
+        var progressId = rowId + "_progress";
         rowProgressor.attr("id", progressId);
         rowProgressor.css("top", row.position().top);
         rowProgressor.height(row.height()).width(5);
@@ -173,7 +183,7 @@ fluid_1_0 = fluid_1_0 || {};
        
         that.fileProgressors[progressId] = fluid.progress(that.uploadContainer, {
             selectors: {
-                progressBar: "#" + file.id,
+                progressBar: "#" + rowId,
                 displayElement: "#" + progressId,
                 label: "#" + progressId + " .file-progress-text",
                 indicator: "#" + progressId
@@ -182,12 +192,12 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var addFile = function (that, file) {
-        var row = createRowFromTemplate(that, file);
+        var row = renderRowFromTemplate(that, file);
         row.hide();
         that.container.append(row);
         row.fadeIn("slow");
         that.scroller.scrollBottom();
-        createProgressorFromTemplate(that, file, row);
+        createProgressorFromTemplate(that, row);
 
         that.refreshView();
     };
@@ -222,18 +232,24 @@ fluid_1_0 = fluid_1_0 || {};
 		removeRowBtn.attr("title", that.options.strings.status.success); 
     };
     
-    var showErrorForFile = function (that, file, error) {
+    var renderErrorInfoRowFromTemplate = function (that, fileRow, error) {
+        // Render the row by cloning the template and binding its id to the file.
+        var errorRow = that.errorInfoRowTemplate.clone();
+        errorRow.attr("id", fileRow.attr("id") + "_error");
         
+        // Look up the error message and render it.
+        var errorType = fluid.findKeyInObject(fluid.uploader.errorConstants, error);
+        var errorMsg = that.options.strings.errors[errorType];
+        that.locate("errorText", errorRow).text(errorMsg);
+        fileRow.after(errorRow);
+    };
+    
+    var showErrorForFile = function (that, file, error) {
         hideFileProgress(that, file);
         if (file.filestatus === fluid.uploader.fileStatusConstants.ERROR) {
             var fileRowElm = rowForFile(that, file);
             changeRowState(fileRowElm, that.options.styles.error);
-            var errorRow = that.locate("errorRowTemplate", that.uploadContainer).clone();
-            errorRow.attr("id", file.id + "_error");
-            var errorType = fluid.findKeyInObject(fluid.uploader.errorConstants, error);
-            var errorData = that.options.errors[errorType];
-            $(".queue-error", errorRow).text(errorData.string);
-            fileRowElm.after(errorRow);
+            renderErrorInfoRowFromTemplate(that, fileRowElm, error);
         }
     };
     
@@ -265,9 +281,18 @@ fluid_1_0 = fluid_1_0 || {};
         });
     };
     
+    var prepareTemplateElements = function (that) {
+        // Grab our template elements out of the DOM.  
+        that.rowTemplate = that.locate("rowTemplate").remove();
+        that.errorInfoRowTemplate = that.locate("errorInfoRowTemplate").remove();
+        that.errorInfoRowTemplate.removeClass(that.options.styles.hiddenTemplate);
+        that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.uploadContainer).remove();
+    };
+    
     var setupFileQueue = function (that, uploadManager) {
         that.uploadManager = uploadManager;
         that.scroller = fluid.scroller(that.container);
+        prepareTemplateElements(that);         
         addKeyboardNavigation(that); 
         bindModelEvents(that);
     };
@@ -335,15 +360,15 @@ fluid_1_0 = fluid_1_0 || {};
             fileRows: ".row",
             fileName: ".fileName",
             fileSize: ".fileSize",
-            fileIconBtn: ".iconBtn",            
-                  
+            fileIconBtn: ".iconBtn",      
+            errorText: ".queue-error",
+            
             rowTemplate: "#queue-row-tmplt",
-            errorRowTemplate: "#queue-error-tmplt",
+            errorInfoRowTemplate: "#queue-error-tmplt",
             rowProgressorTemplate: "#row-progressor-tmplt"
         },
         
         styles: {
-            row: "row",
             ready: "ready",
             uploading: "uploading",
             hover: "hover",
@@ -351,7 +376,8 @@ fluid_1_0 = fluid_1_0 || {};
             uploaded: "uploaded",
             error: "error",
             remove: "removeFile",
-            dim: "dim"
+            dim: "dim",
+            hiddenTemplate: "fluid-templates"
         },
         
         strings: {
@@ -363,37 +389,16 @@ fluid_1_0 = fluid_1_0 || {};
             status: {
                 success: "File Uploaded",
                 error: "File Upload Error"
-            }
-        },
-        
-        errors: {
-            HTTP_ERROR: {
-                string: "File upload error: a network error occured or the file was rejected (reason unknown). You may be able to retry the upload.",
-                recoverable: true
-            },
-            IO_ERROR: {
-                string: "File upload error: a network error occured. Please retry your upload.",
-                recoverable: true
-            },
-            UPLOAD_LIMIT_EXCEEDED: {
-                string: "File upload error: you have uploaded as many files as you are allowed during this session",
-                recoverable: false
-            },
-            UPLOAD_FAILED: {
-                string: "File upload error: the upload failed for an unknown reason. Try the upload again.",
-                recoverable: true
-            },
-            QUEUE_LIMIT_EXCEEDED: {
-                string: "You have as many files in the queue as can be added at one time. Removing files from the queue may allow you to add different files."
-            },
-            FILE_EXCEEDS_SIZE_LIMIT: {
-                string : "One or more of the files that you attempted to add to the queue exceeded the limit of %fileSizeLimit."
-            },
-            ZERO_BYTE_FILE: {
-                string : "One or more of the files that you attempted to add contained no data."
-            },
-            INVALID_FILETYPE: {
-                string : "One or more files were not added to the queue because they were of the wrong type."
+            }, 
+            errors: {
+                HTTP_ERROR: "File upload error: a network error occured or the file was rejected (reason unknown). You may be able to retry the upload.",
+                IO_ERROR: "File upload error: a network error occured. Please retry your upload.",
+                UPLOAD_LIMIT_EXCEEDED: "File upload error: you have uploaded as many files as you are allowed during this session",
+                UPLOAD_FAILED: "File upload error: the upload failed for an unknown reason. Try the upload again.",
+                QUEUE_LIMIT_EXCEEDED: "You have as many files in the queue as can be added at one time. Removing files from the queue may allow you to add different files.",
+                FILE_EXCEEDS_SIZE_LIMIT: "One or more of the files that you attempted to add to the queue exceeded the limit of %fileSizeLimit.",
+                ZERO_BYTE_FILE: "One or more of the files that you attempted to add contained no data.",
+                INVALID_FILETYPE: "One or more files were not added to the queue because they were of the wrong type."
             }
         }
     });
