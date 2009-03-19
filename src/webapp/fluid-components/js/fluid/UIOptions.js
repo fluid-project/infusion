@@ -27,6 +27,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     var initTextfieldSlider = function (that) {
         var textfield = that.locate("textfield");
+        textfield.val(that.model);
 
         var sliderOptions = that.options.sliderOptions;
         sliderOptions.value = that.model;
@@ -65,7 +66,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.textfieldSlider = function (container, options) {
         var that = fluid.initView("fluid.textfieldSlider", container, options);
-        that.model = that.locate("textfield").val();
+        that.model = that.options.value || that.locate("textfield").val();
         that.min = that.options.min;
         that.max = that.options.max;
         
@@ -100,7 +101,8 @@ fluid_1_0 = fluid_1_0 || {};
             orientation: "horizontal"
         }, 
         min: 0,
-        max: 100        
+        max: 100,
+        value: null       
     });
     
 })(jQuery, fluid_1_0);
@@ -259,7 +261,8 @@ fluid_1_0 = fluid_1_0 || {};
                         that.model[settingName] = value;
                         that.updateModel(that.model);
                     }
-                }
+                },
+                value: that.model[settingName]
             };    
         };
         
