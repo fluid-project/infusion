@@ -20,7 +20,7 @@ $(function () {
         },
         tableOfContents: {
             options: {
-                templateUrl: "../../../../fluid-components/html/templates/TableOfContents.html"
+                templateUrl: "../../../fluid-components/html/templates/TableOfContents.html"
             }
 
         }
