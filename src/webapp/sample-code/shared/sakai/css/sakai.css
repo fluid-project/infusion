@@ -40,6 +40,11 @@ p {margin:0; padding-bottom:1em;}
 .ui-dialog-titlebar {cursor:move;}
 .ui-dialog .fl-icon-close {margin-top:-12px;}
 .ui-dialog-titlebar-close {display:none;}
+.ui-widget-overlay {left:0; position:absolute; top:0; opacity:0.65; filter:alpha(opacity=65);}
+
+.fl-theme-slate .ui-widget-overlay {background-color:#999; }
+.fl-theme-coal .ui-widget-overlay {background-color:#333; }
+.fl-theme-mist .ui-widget-overlay {background-color:#ebebeb; }
 
 .fl-theme-slate .ui-dialog-titlebar {background:transparent url(../../../../fluid-components/css/FSS_images/themes/slate/icon-widget-gripper.png) no-repeat center top;}
 .fl-theme-coal .ui-dialog-titlebar {background:transparent url(../../../../fluid-components/css/FSS_images/themes/coal/icon-widget-gripper.png) no-repeat center top;}

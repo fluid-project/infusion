@@ -27,6 +27,8 @@ $(function () {
     };
     
     var uiEnhancer = fluid.uiEnhancer(document, enhancerOpts);
+    var dialog_container = $("#dialog_container");
+
     
     var initDialog = function () {
         // center dialog
@@ -35,14 +37,6 @@ $(function () {
             top: ($(window).height() / 2) - ($('#dialog_container').height() / 2)
         }); 
         
-        // bind close dialog button
-        /*
-        $("#close_dialog").click(function () {
-            $('#dialog_container').css("display", "none"); 
-            uiOptions.cancel();
-        });
-        */
-       
         // TODO: This is not an ideal way to override the default theme.
         var options = {
             labelMap: {
@@ -53,6 +47,7 @@ $(function () {
             listeners: {
                 afterRender: function () {
                     $('.fl-components-ui-options .fl-col:eq(0)').accordion({header: 'h2', clearStyle: true, autoHeight: false});
+                    $('.fl-components-ui-options .fl-col h2:eq(0)').focus();
                 }
             }
         };
@@ -60,44 +55,29 @@ $(function () {
         // instantiate component
         uiOptions = fluid.uiOptions(".uiOptions", options);
         
-        //$('#dialog_container').css("display", "block");
-        //$('#dialog_container .fl-widget-content select:eq(0)').focus();
+        // 1 time, reposition dialog 
+        dialog_container.dialog('option', 'position', 'center');
+        
     };
-    
-    /*
-    $('.lookNfeel a').click(function () {
-        if (!uiOptions) {
-            // ajax call to pull the UI Options dialog into a container
-            $('#dialog_content').load('../../../fluid-components/html/templates/UIOptions.html .uiOptions', initDialog);
-        } else {
-            // else content is already loaded, just show it
-            $('#dialog_container').css("display", "block"); 
-            $('#dialog_container .fl-widget-content select:eq(0)').focus();
-        }
-    });
-    */
-   
-   var dialog_container = $("#dialog_container");
+
    dialog_container.dialog({
     	bgiframe: true,
-    	width: 800,
-        height:500,
+    	width: '60em',
     	modal: true,
         dialogClass: 'fl-widget fl-grabbable',
         autoOpen: false,
-        draggable: true,
-        //title: "User Interface Options Dialog",
+        draggable: true,        
         close: function(){
             uiOptions.cancel();
         }
 	});
     
     $("#dialog_container .fl-icon-close").click(function(){
-        $("#dialog_container").dialog("close");        
+        dialog_container.dialog("close");        
     });
     
     $('.lookNfeel a').click(function () {
-        $("#dialog_container").dialog("open");
+        dialog_container.dialog("open");
         if (!uiOptions) {
             $('#dialog_content').load('../../../fluid-components/html/templates/UIOptions.html .uiOptions', initDialog);            
         }

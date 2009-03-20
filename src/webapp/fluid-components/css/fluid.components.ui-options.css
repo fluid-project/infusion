@@ -20,6 +20,7 @@
 .fl-components-ui-options .fl-subcomp-preview h2 {font-weight:normal; margin:0; padding:5px;}
 .fl-components-ui-options .fl-subcomp-preview iframe {width:100%; height:300px;}
 
+.ui-state-focus {*border:1px solid #F00; *outline:none;}
 
 /* Component Theme CSS */
 .fl-theme-mist .fl-components-ui-options h2 {background-color:#ebebeb;}
