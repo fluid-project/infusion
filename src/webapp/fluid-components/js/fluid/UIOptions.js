@@ -386,7 +386,7 @@ fluid_1_0 = fluid_1_0 || {};
             layout: ["Yes", "No"],
             toc: ["Yes", "No"]
         },
-        labelMap: {
+        labelMap: { // controlValues   // remove the hierarch of 'values'
             textFont: {
                 values: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"]
             },

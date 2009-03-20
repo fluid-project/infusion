@@ -32,24 +32,13 @@ fluid_1_0 = fluid_1_0 || {};
     var replaceClass = function (container, selector, regExp, newVal) {
         newVal = newVal || "";
         $(selector, container).andSelf().each(function (i) {
-            var attr = ($.browser.msie === false) ? 'class' : 'className'; // TO DO: does this need to happen inside the loop?
+            var attr = ($.browser.msie === false) ? 'class' : 'className'; // TODO: does this need to happen inside the loop?
             if (this.getAttribute(attr)) {
                 // The regular expression was required for speed
                 this.setAttribute(attr, this.getAttribute(attr).replace(regExp, newVal));
             }
         });
         
-    };
-
-    /**
-     * Removes FSS classes that may clash with the new settings.
-     *
-     * @param {Object} container
-     */
-    var removeStyling = function (container) {
-        // TODO: FLUID-2367: clearing all the 'font' fss classes is incorrect. We should leave the font size classes intact.
-        //                   we should get rid of this function and clear styles on a case by case basis
-        replaceClass(container, "[class*=fl-]", /\bfl-(layout|font|theme|no-background){1}\S+/g);
     };
     
     /**
@@ -63,8 +52,19 @@ fluid_1_0 = fluid_1_0 || {};
         var settingValues = classnameMap[settingName] || {}; 
         var className = settingValues[value];
         if (className) {
-            element.addClass(className);        
+            element.addClass(className);
         }
+        
+       // Collect the other classnames so we can clear them
+        var namesToRemove = "";
+        for (var name in settingValues) {
+            var currClass = settingValues[name];
+            if (currClass !== className) {
+                namesToRemove = namesToRemove + currClass + " ";
+            }
+        }
+        element.removeClass(namesToRemove);
+
     };
 
     var isTrue = function (val) {
@@ -107,6 +107,7 @@ fluid_1_0 = fluid_1_0 || {};
      * @param {Object} size
      */
     var setMinSize = function (container, size) {
+        // TODO: fss font size class prefix is hardcoded here
 		if (size && size > 0) {
             container.css("font-size", size + "pt");
             replaceClass(container, "[class*=fl-font-size-]", /\bfl-font-size-[0-9]{1,2}\s+/g, 'fl-font-size-100');
@@ -204,7 +205,6 @@ fluid_1_0 = fluid_1_0 || {};
          * Transforms the interface based on the settings in that.model
          */
         that.refreshView = function () {
-            removeStyling(that.container);
             addStyles(that.container, that.model, that.options.classnameMap);
             styleElements(that.container, !isTrue(that.model.backgroundImages), that.options.classnameMap.noBackgroundImages);
             setMinSize(that.container, that.model.textSize);
