@@ -60,19 +60,19 @@ $(function () {
         
     };
 
-   dialog_container.dialog({
+    dialog_container.dialog({
     	bgiframe: true,
     	width: '60em',
     	modal: true,
         dialogClass: 'fl-widget fl-grabbable',
         autoOpen: false,
         draggable: true,        
-        close: function(){
+        close: function () {
             uiOptions.cancel();
         }
 	});
     
-    $("#dialog_container .fl-icon-close").click(function(){
+    $("#dialog_container .fl-icon-close").click(function () {
         dialog_container.dialog("close");        
     });
     
