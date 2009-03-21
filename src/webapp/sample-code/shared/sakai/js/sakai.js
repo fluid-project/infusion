@@ -16,7 +16,7 @@ $(function () {
     var uiOptions;
     var enhancerOpts = {
         defaultSiteSettings: {
-            theme: "Mist"
+            theme: "mist"
         },
         tableOfContents: {
             options: {
@@ -39,10 +39,8 @@ $(function () {
         
         // TODO: This is not an ideal way to override the default theme.
         var options = {
-            labelMap: {
-                theme: {  
-                    values: ["Low Contrast", "Mist"]
-                }
+            controlValues: {
+                theme: ["lowContrast", "mist"]
             }, 
             listeners: {
                 afterRender: function () {

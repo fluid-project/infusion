@@ -18,9 +18,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(document).ready(function () {
         var testSettings = {
             textSize: "18",
-            textFont: "Courier",
-            textSpacing: "Wide",
-            theme: "High Contrast"
+            textFont: "courier",
+            textSpacing: "wide",
+            theme: "highContrast"
         };
         
         var tests = new jqUnit.TestCase("UI Enhancer Tests");
@@ -98,7 +98,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             differentSettings.textSize = "32";
             store.save(differentSettings);
             jqUnit.assertEquals("Changed settings are saved correctly.", "32", store.fetch().textSize);
-            jqUnit.assertEquals("Theme was saved correctly.", "High Contrast", store.fetch().theme);
+            jqUnit.assertEquals("Theme was saved correctly.", "highContrast", store.fetch().theme);
                                            
             // Now we can create a uiEnhancer and see that the theme is default not high contrast
             var enhancer = fluid.uiEnhancer();

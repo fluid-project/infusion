@@ -168,7 +168,7 @@ fluid_1_0 = fluid_1_0 || {};
             labelID: "background-images-label"
         };        
         children.push(createSelectNode("background-images", "selections.backgroundImages", "labelMap.backgroundImages.values", "labelMap.backgroundImages.names"));
-        children = children.concat(fluid.explodeSelectionToInputs(that.options.labelMap.backgroundImages.values, bgiExplodeOpts));
+        children = children.concat(fluid.explodeSelectionToInputs(that.options.controlValues.backgroundImages, bgiExplodeOpts));
         
         var layoutExplodeOpts = {
             selectID: "layout",
@@ -177,7 +177,7 @@ fluid_1_0 = fluid_1_0 || {};
             labelID: "layout-label"
         };        
         children.push(createSelectNode("layout", "selections.layout", "labelMap.layout.values", "labelMap.layout.names"));
-        children = children.concat(fluid.explodeSelectionToInputs(that.options.labelMap.layout.values, layoutExplodeOpts));
+        children = children.concat(fluid.explodeSelectionToInputs(that.options.controlValues.layout, layoutExplodeOpts));
 
         var tocExplodeOpts = {
             selectID: "toc",
@@ -186,7 +186,7 @@ fluid_1_0 = fluid_1_0 || {};
             labelID: "toc-label"
         };        
         children.push(createSelectNode("toc", "selections.toc", "labelMap.toc.values", "labelMap.toc.names"));
-        children = children.concat(fluid.explodeSelectionToInputs(that.options.labelMap.layout.values, tocExplodeOpts));
+        children = children.concat(fluid.explodeSelectionToInputs(that.options.controlValues.layout, tocExplodeOpts));
 
         children.push(createSimpleBindingNode("links-underline", "selections.linksUnderline"));
         children.push(createSimpleBindingNode("links-bold", "selections.linksBold"));
@@ -240,7 +240,20 @@ fluid_1_0 = fluid_1_0 || {};
         });        
         
     };
-    
+        
+    var createLabelMap = function (options) {
+        var labelMap = {};
+        
+        for (var item in options.controlValues) {
+            labelMap[item] = {
+                names: options.strings[item],
+                values: options.controlValues[item]
+            }
+        }
+        
+        return labelMap;
+    };
+
     var createRenderOptions = function (that) {
         // Turn the boolean select values into strings so they can be properly bound and rendered
         that.model.toc = String(that.model.toc);
@@ -249,7 +262,7 @@ fluid_1_0 = fluid_1_0 || {};
         return {
             model: {
                 selections: that.model,
-                labelMap: that.options.labelMap
+                labelMap: createLabelMap(that.options)
             },
             autoBind: true, 
             debugMode: true
@@ -279,13 +292,7 @@ fluid_1_0 = fluid_1_0 || {};
         fluid.initSubcomponents(that, "lineSpacing", [that.options.selectors.lineSpacingCtrl, options]);
         
     };
-    
-    var mergeLabelMapStrings = function (options) {
-        for (var item in options.labelMap) {
-            options.labelMap[item].names = options.strings[item];
-        }
-    };
-    
+        
     var setupUIOptions = function (that) {
         // TODO: This stuff should already be in the renderer tree
         that.events.afterRender.addListener(function () {
@@ -295,7 +302,6 @@ fluid_1_0 = fluid_1_0 || {};
             initPreview(that);        
         });
         
-        mergeLabelMapStrings(that.options);
         var rendererOptions = createRenderOptions(that);
         var template = fluid.selfRender(that.container, generateTree(that, rendererOptions.model), rendererOptions);
         that.events.afterRender.fire();
@@ -386,25 +392,13 @@ fluid_1_0 = fluid_1_0 || {};
             layout: ["Yes", "No"],
             toc: ["Yes", "No"]
         },
-        labelMap: { // controlValues   // remove the hierarch of 'values'
-            textFont: {
-                values: ["Serif", "Sans-Serif", "Arial", "Verdana", "Courier", "Times"]
-            },
-            textSpacing: {
-                values: ["Default", "Wide", "Wider", "Widest"]
-            },
-            theme: {
-                values: ["Low Contrast", "default", "Medium Contrast", "High Contrast", "High Contrast Inverted"]
-            },
-            backgroundImages: {
-                values: ["true", "false"]
-            },
-            layout: {
-                values: ["Simple", "default"]
-            },
-            toc: {
-                values: ["true", "false"]
-            }
+        controlValues: { 
+            textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
+            textSpacing: ["default", "wide", "wider", "widest"],
+            theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"],
+            backgroundImages: ["true", "false"],
+            layout: ["simple", "default"],
+            toc: ["true", "false"]
         }
     });
 

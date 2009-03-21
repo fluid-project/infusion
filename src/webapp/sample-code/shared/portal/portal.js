@@ -63,20 +63,19 @@ var demo = demo || {};
      */
     demo.hcLargeSettings = {
         textSize: "16",
-        textFont: "Courier",
-        textSpacing: "Wide",
-        theme: "High Contrast",
-        layout: "Default"
+        textFont: "courier",
+        textSpacing: "wide",
+        theme: "highContrast",
+        layout: "default"
     };
     
     /**
      * Settings for high contrast, simple layout
      */
     demo.hcSimpleLayoutSettings = {
-        textFont: "Default",
-        textSpacing: "Default",
-        theme: "High Contrast",
-        layout: "Simple"
+        textSpacing: "default",
+        theme: "highContrast",
+        layout: "simple"
     };
 
     /**
@@ -84,10 +83,9 @@ var demo = demo || {};
      */
     demo.mistSmallSettings = {
         textSize: "8",
-        textFont: "Default",
-        textSpacing: "Default",
-        theme: "Mist",
-        layout: "Default"
+        textSpacing: "default",
+        theme: "mist",
+        layout: "default"
     };
     
     /**

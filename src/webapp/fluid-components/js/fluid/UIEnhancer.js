@@ -248,34 +248,31 @@ fluid_1_0 = fluid_1_0 || {};
         
         classnameMap: {
             "textFont": {
-                "Serif": "fl-font-serif",
-                "Sans-Serif": "fl-font-sans",
-                "Arial": "fl-font-arial",
-                "Verdana": "fl-font-verdana",
-                "Courier": "fl-font-monospace",
-                "Times": "fl-font-serif"
+                "serif": "fl-font-serif",
+                "sansSerif": "fl-font-sans",
+                "arial": "fl-font-arial",
+                "verdana": "fl-font-verdana",
+                "courier": "fl-font-monospace",
+                "times": "fl-font-times"
             },
             "textSpacing": {
-                "Wide": "fl-font-spacing-1",
-                "Wider": "fl-font-spacing-2",
-                "Widest": "fl-font-spacing-3"
+                "default": "",
+                "wide": "fl-font-spacing-1",
+                "wider": "fl-font-spacing-2",
+                "widest": "fl-font-spacing-3"
             },
             "theme": {
-                "Mist": "fl-theme-mist",
-                "Rust": "fl-theme-rust",
-                "High Contrast": "fl-theme-hc",
-                "High Contrast Inverted": "fl-theme-hci",
-                "Low Contrast": "fl-theme-slate",
-                "Medium Contrast": "fl-theme-coal",
+                "mist": "fl-theme-mist",
+                "rust": "fl-theme-rust",
+                "highContrast": "fl-theme-hc",
+                "highContrastInverted": "fl-theme-hci",
+                "lowContrast": "fl-theme-slate",
+                "mediumContrast": "fl-theme-coal",
                 "default": ""
             },
             "layout": {
-                "Simple": "fl-layout-linear",
+                "simple": "fl-layout-linear",
                 "default": ""
-            },
-            "linkColor": {
-                "aqua": "fl-text-aqua",
-                "yellow": "fl-text-yellow"
             },
             "noBackgroundImages": "fl-no-background-images",
             "linksUnderline": "fl-text-underline", 

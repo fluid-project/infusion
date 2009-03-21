@@ -20,9 +20,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var hcSkin = {
             textSize: "8",
-            textFont: "Verdana",
-            textSpacing: "Wider",
-            theme: "High Contrast"
+            textFont: "verdana",
+            textSpacing: "wider",
+            theme: "highContrast"
         };
             
         var saveCalled = false;
@@ -84,7 +84,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 uiOptions.save();
                 var container = $("body");
                 jqUnit.assertTrue("Save has been called", saveCalled);
-                jqUnit.assertEquals("hc setting was saved", hcSkin.theme, uiEnhancer.model.theme);
+                jqUnit.assertDeepEq("hc setting was saved", hcSkin.theme, uiEnhancer.model.theme);
                 jqUnit.assertTrue("Body has the high contrast colour scheme", container.hasClass("fl-theme-hc"));
                 
             });
@@ -105,11 +105,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var fontSizeSetting = $(".flc-textfield-slider-field").val(); // This is not correct as there are 2 flc-textfields. 
                 jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
                 var fontStyleSelection = $(":selected", $("#text-font-selection"));
-                jqUnit.assertEquals("Verdana selected", "Verdana", fontStyleSelection[0].value);
+                jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
                 var textSpacingSelection = $(":selected", $("#text-spacing-selection"));
-                jqUnit.assertEquals("Wider spacing is selected", "Wider", textSpacingSelection[0].value);
+                jqUnit.assertEquals("Wider spacing is selected", "wider", textSpacingSelection[0].value);
                 var contrastSelection = $(":selected", $("#theme-selection"));
-                jqUnit.assertEquals("High Contrast is selected", "High Contrast", contrastSelection[0].value);
+                jqUnit.assertEquals("High Contrast is selected", "highContrast", contrastSelection[0].value);
             });            
         };
         
