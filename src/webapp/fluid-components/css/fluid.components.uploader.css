@@ -154,6 +154,10 @@ html>body .fl-uploader a.fl-uploader-browse {
     color: #666;
 }
 
+.fl-footer-completed, .fl-footer-error { 
+    
+}
+
 .fl-footer-completed {
     background-image: url('../images/progress/gradient-total-green.png');
     background-attachment: scroll;
@@ -383,7 +387,7 @@ button span.text-description {
 
 /* PROGRESS */
 
-.file-progress, .total-progress {
+.file-progress, .fl-uploader-totalProgress-complete, .fl-uploader-totalProgress-errored {
     position: absolute;
     display: none;
     background-attachment: scroll;
@@ -405,14 +409,25 @@ button span.text-description {
     display: none;
 }
 
-.total-progress {
+.fl-uploader-totalProgress-complete, .fl-uploader-totalProgress-errored {
     top: 0;
     height: 100%;
+    width:76%;
+} 
+
+.fl-uploader-totalProgress-complete {
     background-image: url('../images/progress/gradient-total-green.png');
     border-right: 1px solid #9FCE7F;
     background-color: #BDBFC1;
-    width:76%;
 }
+
+.fl-uploader-totalProgress-errored {
+    background-image: url('../images/progress/gradient-total-yellow.png');
+    border-right: 1px solid #E8C81C;
+    background-color: #F6ECA0;
+}
+
+
 
 /* Hidden SWF for Flash 9*/
 

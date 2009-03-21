@@ -46,7 +46,7 @@ fluid_1_0 = fluid_1_0 || {};
             
             // Do our best to make the Flash movie as accessible as possib
             fluid.tabindex(flashMovie, 0);
-            flashMovie.attr("role","button");
+            flashMovie.attr("role", "button");
             flashMovie.attr("alt", "Browse files button");
             
             if (that.isTransparent) {
@@ -225,7 +225,7 @@ fluid_1_0 = fluid_1_0 || {};
             if (that.queueManager.shouldUploadNextFile()) {
                 that.swfUploader.startUpload();
             } else {
-                if (that.queueManager.queue.stopUploadOnFileComplete) {
+                if (that.queueManager.queue.shouldStop) {
                     that.swfUploader.stopUpload();
                 }
                 that.queueManager.complete();
@@ -254,7 +254,7 @@ fluid_1_0 = fluid_1_0 || {};
      */
     
     var stopUpload = function (that) {
-        that.queue.stopUploadOnFileComplete = true;
+        that.queue.shouldStop = true;
         that.events.onUploadStop.fire();
     };
         
@@ -288,6 +288,7 @@ fluid_1_0 = fluid_1_0 || {};
         });
         
         that.events.onFileError.addListener(function (file, error) {
+            that.queue.currentBatch.totalBytesUploaded += file.size;
             if (error === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
                 that.queue.isUploading = false;
             } else if (that.queue.isUploading) {

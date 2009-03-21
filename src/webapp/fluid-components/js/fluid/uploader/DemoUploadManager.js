@@ -93,6 +93,8 @@ fluid_1_0 = fluid_1_0 || {};
     var stopDemo = function (that) {
         var file = that.demoState.currentFile;
         file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
+        that.queue.shouldStop = true;
+        
         // In SWFUpload's world, pausing is a combinination of an UPLOAD_STOPPED error and a complete.
         that.events.onFileError.fire(file, 
                                      fluid.uploader.errorConstants.UPLOAD_STOPPED, 

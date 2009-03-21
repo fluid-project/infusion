@@ -242,6 +242,7 @@ fluid_1_0 = fluid_1_0 || {};
         var errorMsg = that.options.strings.errors[errorType];
         that.locate("errorText", errorRow).text(errorMsg);
         fileRow.after(errorRow);
+        that.scroller.scrollTo(errorRow);
     };
     
     var showErrorForFile = function (that, file, error) {
@@ -412,6 +413,11 @@ fluid_1_0 = fluid_1_0 || {};
 
 (function ($, fluid) {
     
+    var fileOrFiles = function (that, numFiles) {
+        return (numFiles === 1) ? that.options.strings.progress.singleFile : 
+                                  that.options.strings.progress.pluralFiles;
+    };
+    
     var enableElement = function (that, elm) {
         elm.removeAttr("disabled");
         elm.removeClass(that.options.styles.dim);
@@ -430,6 +436,13 @@ fluid_1_0 = fluid_1_0 || {};
         elm.addClass(that.options.styles.hidden);
     };
     
+    var setTotalProgressStyle = function (that, didError) {
+        didError = didError || false;
+        var indicator = that.totalProgress.indicator;
+        indicator.toggleClass(that.options.styles.totalProgress, !didError);
+        indicator.toggleClass(that.options.styles.totalProgressError, didError);
+    };
+    
     var setStateEmpty = function (that) {
         disableElement(that, that.locate("uploadButton"));
         
@@ -445,8 +458,6 @@ fluid_1_0 = fluid_1_0 || {};
         enableElement(that, that.locate("browseButton"));
         hideElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("uploadButton"));
-        // commented out for JIRA FLUID-2351 to be revisted during 1.0 bug parade
-        // that.locate("totalFileProgressBar").addClass(that.options.styles.completed);
     };
 
     var setStateLoaded = function (that) {
@@ -456,24 +467,24 @@ fluid_1_0 = fluid_1_0 || {};
         enableElement(that, that.locate("uploadButton"));
         enableElement(that, that.locate("browseButton"));
         hideElement(that, that.locate("instructions"));
+        that.totalProgress.hide();
     };
     
     var setStateUploading = function (that) {
+        that.totalProgress.hide(false, false);
+        setTotalProgressStyle(that);
         hideElement(that, that.locate("uploadButton"));
         disableElement(that, that.locate("browseButton"));
         enableElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("pauseButton"));
         that.locate(that.options.focusWithEvent.afterUploadStart).focus();
-        // commented out for JIRA FLUID-2351 to be revisted during 1.0 bug parade
-        // that.locate("totalFileProgressBar").removeClass(that.options.styles.completed);
     };    
     
     var renderUploadTotalMessage = function (that) {
         // Render template for the total file status message.
         var numReadyFiles = that.uploadManager.queue.getReadyFiles().length;
         var bytesReadyFiles = that.uploadManager.queue.sizeOfReadyFiles();
-        var fileLabelStr = (numReadyFiles === 1) ? that.options.strings.progress.singleFile : 
-                                                   that.options.strings.progress.pluralFiles;
+        var fileLabelStr = fileOrFiles(that, numReadyFiles);
                                                    
         var totalStateStr = fluid.stringTemplate(that.options.strings.progress.toUploadLabel, {
             fileCount: numReadyFiles, 
@@ -486,25 +497,47 @@ fluid_1_0 = fluid_1_0 || {};
     var updateTotalProgress = function (that) {
         var batch = that.uploadManager.queue.currentBatch;
         var totalPercent = fluid.uploader.derivePercent(batch.totalBytesUploaded, batch.totalBytes);
-             
+        var numFilesInBatch = batch.files.length;
+        var fileLabelStr = fileOrFiles(that, numFilesInBatch);
+        
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.totalProgressLabel, {
             curFileN: batch.fileIdx + 1, 
-            totalFilesN: batch.files.length, 
+            totalFilesN: numFilesInBatch, 
+            fileLabel: fileLabelStr,
             currBytes: fluid.uploader.formatFileSize(batch.totalBytesUploaded), 
             totalBytes: fluid.uploader.formatFileSize(batch.totalBytes)
         });  
         that.totalProgress.update(totalPercent, totalProgressStr);
     };
+    
+    var updateTotalAtCompletion = function (that) {
+        var numErroredFiles = that.uploadManager.queue.getErroredFiles().length;
+        var numTotalFiles = that.uploadManager.queue.files.length;
+        var fileLabelStr = fileOrFiles(that, numTotalFiles);
         
-    var hideTotalProgress = function (that) {
-        var uploadedFiles = that.uploadManager.queue.getUploadedFiles();
+        var errorStr = "";
+        
+        // if there are errors then change the total progress bar
+        // and set up the errorStr so that we can use it in the totalProgressStr
+        if (numErroredFiles > 0) {
+            var errorLabelString = (numErroredFiles === 1) ? that.options.strings.progress.singleError : 
+                                                             that.options.strings.progress.pluralErrors;
+            setTotalProgressStyle(that, true);
+            errorStr = fluid.stringTemplate(that.options.strings.progress.numberOfErrors, {
+                errorsN: numErroredFiles,
+                errorLabel: errorLabelString
+            });
+        }
         
         var totalProgressStr = fluid.stringTemplate(that.options.strings.progress.completedLabel, {
-            curFileN: uploadedFiles.length, 
+            curFileN: that.uploadManager.queue.getUploadedFiles().length, 
+            totalFilesN: numTotalFiles,
+            errorString: errorStr,
+            fileLabel: fileLabelStr,
             totalCurrBytes: fluid.uploader.formatFileSize(that.uploadManager.queue.sizeOfUploadedFiles())
         });
+        
         that.totalProgress.update(100, totalProgressStr);
-        that.totalProgress.hide();
     };
    
     var bindDOMEvents = function (that) {
@@ -537,19 +570,18 @@ fluid_1_0 = fluid_1_0 || {};
         renderUploadTotalMessage(that);
     };
     
-    var updateStateAfterError = function (that) {
-        // add specific total error styling here
-        that.totalProgress.hide();
-        setStateLoaded(that);
+    var updateStateAfterPause = function (that) {
+        // do nothing, moved to afterUploadComplete
     };
     
     var updateStateAfterCompletion = function (that) {
-        hideTotalProgress(that);
+        var userPaused = that.uploadManager.queue.shouldStop;
         if (that.uploadManager.queue.getReadyFiles().length === 0) {
             setStateDone(that);
         } else {
             setStateLoaded(that);
         }
+        updateTotalAtCompletion(that);
     };
     
     var bindModelEvents = function (that) {
@@ -573,9 +605,13 @@ fluid_1_0 = fluid_1_0 || {};
             updateTotalProgress(that); 
         });
         
+        that.events.onFileSuccess.addListener(function () {
+            updateTotalProgress(that); 
+        });
+        
         that.events.onFileError.addListener(function (file, error, message) {
             if (error === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
-                updateStateAfterError(that);
+                updateStateAfterPause(that);
             }
         });
 
@@ -694,10 +730,10 @@ fluid_1_0 = fluid_1_0 || {};
             options: {
                 selectors: {
                     progressBar: ".fl-scroller-table-foot",
-                    displayElement: ".total-progress", 
+                    displayElement: ".flc-uploader-totalProgress", 
                     label: ".total-file-progress",
-                    indicator: ".total-progress",
-                    ariaElement: ".total-progress"
+                    indicator: ".flc-uploader-totalProgress",
+                    ariaElement: ".flc-uploader-totalProgress"
                 }
             }
         },
@@ -726,7 +762,8 @@ fluid_1_0 = fluid_1_0 || {};
             disabled: "disabled",
             hidden: "hidden",
             dim: "dim",
-            completed: "fl-footer-completed"
+            totalProgress: "fl-uploader-totalProgress-complete",
+            totalProgressError: "fl-uploader-totalProgress-errored"
         },
         
         events: {
@@ -748,12 +785,14 @@ fluid_1_0 = fluid_1_0 || {};
 
         strings: {
             progress: {
-                pausedLabel: "Paused at: %curFileN of %totalFilesN files (%currBytes of %totalBytes)",
                 toUploadLabel: "To upload: %fileCount %fileLabel (%totalBytes)", 
-                totalProgressLabel: "Uploading: %curFileN of %totalFilesN files (%currBytes of %totalBytes)", 
-                completedLabel: "Uploaded: %curFileN files (%totalCurrBytes)",
+                totalProgressLabel: "Uploading: %curFileN of %totalFilesN %fileLabel (%currBytes of %totalBytes)", 
+                completedLabel: "Uploaded: %curFileN of %totalFilesN %fileLabel (%totalCurrBytes)%errorString",
+                numberOfErrors: ", %errorsN %errorLabel",
                 singleFile: "file",
-                pluralFiles: "files"
+                pluralFiles: "files",
+                singleError: "error",
+                pluralErrors: "errors"
             },
             buttons: {
                 browse: "Browse Files",

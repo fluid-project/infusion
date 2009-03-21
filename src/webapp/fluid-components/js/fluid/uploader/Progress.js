@@ -152,6 +152,7 @@ fluid_1_0 = fluid_1_0 || {};
         that.ariaElement = that.locate("ariaElement");
         
         that.indicator.width(that.options.minWidth);
+
         that.storedPercent = 0;
                 
         // initialize ARIA

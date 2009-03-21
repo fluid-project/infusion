@@ -41,6 +41,12 @@ fluid_1_0 = fluid_1_0 || {};
             return (file.filestatus === fluid.uploader.fileStatusConstants.QUEUED || file.filestatus === fluid.uploader.fileStatusConstants.CANCELLED);
         });
     };
+    
+    var getErroredFiles = function (that) {
+        return filterFiles(that.files, function (file) {
+            return (file.filestatus === fluid.uploader.fileStatusConstants.ERROR);
+        });
+    };
 
     var removeFile = function (that, file) {
         // Remove the file from the collection and tell the world about it.
@@ -93,6 +99,10 @@ fluid_1_0 = fluid_1_0 || {};
             return getReadyFiles(that);
         };
         
+        that.getErroredFiles = function () {
+            return getErroredFiles(that);
+        };
+        
         that.sizeOfReadyFiles = function () {
             return fluid.fileQueue.sizeOfFiles(that.getReadyFiles());
         };
@@ -137,7 +147,7 @@ fluid_1_0 = fluid_1_0 || {};
         that.start = function () {
             that.queue.setupCurrentBatch();
             that.queue.isUploading = true;
-            that.queue.stopUploadOnFileComplete = false;
+            that.queue.shouldStop = false;
             that.events.onUploadStart.fire(that.queue.currentBatch.files); 
         };
         
@@ -146,7 +156,7 @@ fluid_1_0 = fluid_1_0 || {};
             that.queue.currentBatch.bytesUploadedForFile = 0;
             that.queue.currentBatch.previousBytesUploadedForFile = 0; 
         };
-        
+                
         that.finishFile = function (file) {
             var batch = that.queue.currentBatch;
             batch.numFilesCompleted++;
@@ -154,7 +164,7 @@ fluid_1_0 = fluid_1_0 || {};
         };
         
         that.shouldUploadNextFile = function () {
-            return !that.queue.stopUploadOnFileComplete && that.queue.isUploading && that.queue.currentBatch.numFilesCompleted < that.queue.currentBatch.files.length;
+            return !that.queue.shouldStop && that.queue.isUploading && that.queue.currentBatch.numFilesCompleted < that.queue.currentBatch.files.length;
         };
         
         that.complete = function () {
