@@ -358,7 +358,7 @@ fluid_1_0 = fluid_1_0 || {};
             type: "fluid.textfieldSlider",
             options: {
                 min: 6,
-                max: 200
+                max: 30
             }
         },
         lineSpacing: {
