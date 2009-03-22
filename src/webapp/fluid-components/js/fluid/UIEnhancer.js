@@ -54,19 +54,12 @@ fluid_1_0 = fluid_1_0 || {};
         if (className) {
             element.addClass(className);
         }
-        
-       // Collect the other classnames so we can clear them
-        var namesToRemove = "";
-        for (var name in settingValues) {
-            var currClass = settingValues[name];
-            if (currClass !== className) {
-                namesToRemove = namesToRemove + currClass + " ";
-            }
-        }
-        element.removeClass(namesToRemove);
-
     };
 
+    /**
+     * Returns true if the value is true or the string "true", false otherwise
+     * @param {Object} val
+     */
     var isTrue = function (val) {
         return val && (val === true || val === "true");
     };
@@ -183,6 +176,33 @@ fluid_1_0 = fluid_1_0 || {};
         that.model = that.settingsStore.fetch() || that.defaultSiteSettings;        
     };
 
+    /**
+     * Clears FSS classes from within the container that may clash with the current settings.
+     * These are the classes from the classnameMap for settings where we work on the container rather
+     * then on individual elements.
+     * @param {Object} that
+     * @return {String} the classnames that were removed separated by spaces
+     */
+    var clearClashingClasses = function (container, classnameMap) {
+        var settingsWhichMayClash = ["textFont", "textSpacing", "theme", "layout"];  // + no background images
+        var classesToRemove =  "fl-no-background-images";
+        var selector = ".fl-no-background-images";
+        
+        for (var i = 0; i < settingsWhichMayClash.length; i++) {
+            var settingValues = classnameMap[settingsWhichMayClash[i]];
+            for (var val in settingValues) {
+                var classname = settingValues[val];
+                if (classname) {
+                    classesToRemove = classesToRemove + " " + classname;
+                    selector = selector + ",." + classname;
+                }
+            }
+        }
+        
+        $(selector, container).removeClass(classesToRemove);
+        return classesToRemove;
+    };
+    
     var setupUIEnhancer = function (that) {
         that.settingsStore = fluid.initSubcomponent(that, "settingsStore", [fluid.COMPONENT_OPTIONS]); 
         initModel(that);
@@ -201,10 +221,13 @@ fluid_1_0 = fluid_1_0 || {};
         that.container = $("body", doc);
         that.defaultSiteSettings = that.options.defaultSiteSettings;
         
+        var clashingClassnames;
+        
         /**
          * Transforms the interface based on the settings in that.model
          */
         that.refreshView = function () {
+            that.container.removeClass(clashingClassnames);
             addStyles(that.container, that.model, that.options.classnameMap);
             styleElements(that.container, !isTrue(that.model.backgroundImages), that.options.classnameMap.noBackgroundImages);
             setMinSize(that.container, that.model.textSize);
@@ -226,6 +249,7 @@ fluid_1_0 = fluid_1_0 || {};
             that.refreshView();
         };
 
+        clashingClassnames = clearClashingClasses(that.container, that.options.classnameMap);
         setupUIEnhancer(that);
         return that;
     };

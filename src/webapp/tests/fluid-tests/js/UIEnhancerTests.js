@@ -23,18 +23,31 @@ https://source.fluidproject.org/svn/LICENSE.txt
             theme: "highContrast"
         };
         
+        var options = {
+            settingsStore: {
+                type: "fluid.uiEnhancer.tempStore"
+            }
+        };
         var tests = new jqUnit.TestCase("UI Enhancer Tests");
         
         tests.test("Initialization", function () {
-            expect(8);
+            expect(16);
 
-            jqUnit.assertEquals("Initially fluid classes are in the markup", 4, $(".fl-font-size-90").length);
-            jqUnit.assertEquals("Initially fluid layout class is in the markup", 1, $(".fl-layout-default").length);
-            jqUnit.assertEquals("Initially fluid theme class is in the markup", 1, $(".fl-theme-mist").length);
-            var uiEnhancer = fluid.uiEnhancer();
-            jqUnit.assertEquals("Fluid classes have been removed", 0, $(".fl-font-size-90").length);
-            jqUnit.assertEquals("Fluid layout class is gone", 0, $(".fl-layout-default").length);
+            jqUnit.assertEquals("Initially font size classes exist", 3, $(".fl-font-size-90").length);
+            jqUnit.assertEquals("Initially layout class exists", 3, $(".fl-layout-linear").length);
+            jqUnit.assertEquals("Initially mist class exists", 1, $(".fl-theme-mist").length);
+            jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
+            jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
+            jqUnit.assertEquals("Initially text-spacing class exists", 1, $(".fl-font-spacing-3").length);
+            jqUnit.assertEquals("Initially no-background-images class exists", 1, $(".fl-no-background-images").length);
+            var uiEnhancer = fluid.uiEnhancer(document, options);
+            jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
+            jqUnit.assertEquals("layout class is gone", 0, $(".fl-layout-linear").length);
             jqUnit.assertEquals("Fluid theme class is gone", 0, $(".fl-theme-mist").length);
+            jqUnit.assertEquals("font sans class is gone", 0, $(".fl-font-sans").length);
+            jqUnit.assertEquals("arial class is gone", 0, $(".fl-font-arial").length);
+            jqUnit.assertEquals("text spacing class is gone", 0, $(".fl-text-spacing-3").length);
+            jqUnit.assertEquals("no background images is gone", 0, $(".fl-no-background-images").length);
             jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });
