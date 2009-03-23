@@ -19,7 +19,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var testSettings = {
             textSize: "18",
             textFont: "courier",
-            textSpacing: "wide",
+            textSpacing: "wide1",
             theme: "highContrast"
         };
         
@@ -62,7 +62,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var uiEnhancer = fluid.uiEnhancer(null, options);
 
             jqUnit.assertEquals("Large text size is set", "18pt", body.css("fontSize"));
-            jqUnit.assertTrue("Courier font is set", body.hasClass("fl-font-monospace"));
+            jqUnit.assertTrue("Courier font is set", body.hasClass("fl-font-courier"));
             jqUnit.assertTrue("Wide text spacing is set", body.hasClass("fl-font-spacing-1"));
             jqUnit.assertTrue("High contrast is set", body.hasClass("fl-theme-hc"));
 

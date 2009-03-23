@@ -293,7 +293,28 @@ fluid_1_0 = fluid_1_0 || {};
         
     };
         
+    var mergeSiteDefaults = function (options, siteDefaults) {
+        for (var settingName in options.controlValues) {
+            var setting = String(siteDefaults[settingName]);
+            var settingValues = options.controlValues[settingName];
+            
+            if (setting) {
+                var index = jQuery.inArray(setting, settingValues);
+                if (index === -1) {
+                    var defaultIndex = jQuery.inArray("default", settingValues);
+                    if (defaultIndex === -1) {
+                        settingValues.push(setting);
+                    } else {
+                        settingValues[defaultIndex] = setting;
+                    }
+                }
+            }
+        }
+    };
+    
     var setupUIOptions = function (that) {
+        mergeSiteDefaults(that.options, that.uiEnhancer.defaultSiteSettings);
+        
         // TODO: This stuff should already be in the renderer tree
         that.events.afterRender.addListener(function () {
             initSliders(that);
@@ -394,7 +415,7 @@ fluid_1_0 = fluid_1_0 || {};
         },
         controlValues: { 
             textFont: ["serif", "sansSerif", "arial", "verdana", "courier", "times"],
-            textSpacing: ["default", "wide", "wider", "widest"],
+            textSpacing: ["default", "wide1", "wide2", "wide3"],
             theme: ["lowContrast", "default", "mediumContrast", "highContrast", "highContrastInverted"],
             backgroundImages: ["true", "false"],
             layout: ["simple", "default"],

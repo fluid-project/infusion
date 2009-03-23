@@ -276,14 +276,18 @@ fluid_1_0 = fluid_1_0 || {};
                 "sansSerif": "fl-font-sans",
                 "arial": "fl-font-arial",
                 "verdana": "fl-font-verdana",
-                "courier": "fl-font-monospace",
+                "monospace": "fl-font-monospace",
+                "courier": "fl-font-courier",
                 "times": "fl-font-times"
             },
             "textSpacing": {
                 "default": "",
-                "wide": "fl-font-spacing-1",
-                "wider": "fl-font-spacing-2",
-                "widest": "fl-font-spacing-3"
+                "wide1": "fl-font-spacing-1",
+                "wide2": "fl-font-spacing-2",
+                "wide3": "fl-font-spacing-3",
+                "wide4": "fl-font-spacing-4",
+                "wide5": "fl-font-spacing-5",
+                "wide6": "fl-font-spacing-6"
             },
             "theme": {
                 "mist": "fl-theme-mist",
