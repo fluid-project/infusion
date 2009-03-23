@@ -246,7 +246,7 @@ fluid_1_0 = fluid_1_0 || {};
                 if (isActiveItemMovable()) {
                     jActiveItem.removeClass(styles.selected);
                     jActiveItem.addClass(styles.dragging);
-                    jActiveItem.ariaState("grab", "true");
+                    jActiveItem.ariaState("grabbed", "true");
                     setDropEffects("move");
                 }
                 return false;
@@ -268,7 +268,7 @@ fluid_1_0 = fluid_1_0 || {};
                 }
                 jActiveItem.removeClass(styles.dragging);
                 jActiveItem.addClass(styles.selected);
-                jActiveItem.ariaState("grab", "supported");
+                jActiveItem.ariaState("grabbed", "false");
                 setDropEffects("none");
                 return false;
             }
@@ -314,7 +314,7 @@ fluid_1_0 = fluid_1_0 || {};
          */
         function initMovable(item) {
             var styles = options.styles;
-            item.ariaState("grab", "supported");
+            item.ariaState("grabbed", "false");
 
             item.mouseover(
                 function () {
@@ -353,7 +353,7 @@ fluid_1_0 = fluid_1_0 || {};
                     item.focus();
                     item.removeClass(options.styles.selected);
                     item.addClass(options.styles.mouseDrag);
-                    item.ariaState("grab", "true");
+                    item.ariaState("grabbed", "true");
                     setDropEffects("move");
                     dropManager.startDrag(e, handlePos, handleWidth, handleHeight);
                     avatar.show();
@@ -361,7 +361,7 @@ fluid_1_0 = fluid_1_0 || {};
                 stop: function (e, ui) {
                     item.removeClass(options.styles.mouseDrag);
                     item.addClass(options.styles.selected);
-                    $(thatReorderer.activeItem).ariaState("grab", "supported");
+                    $(thatReorderer.activeItem).ariaState("grabbed", "false");
                     var markerNode = fluid.unwrap(dropMarker);
                     if (markerNode.parentNode) {
                         markerNode.parentNode.removeChild(markerNode);
