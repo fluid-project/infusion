@@ -37,11 +37,7 @@ $(function () {
             top: ($(window).height() / 2) - ($('#dialog_container').height() / 2)
         }); 
         
-        // TODO: This is not an ideal way to override the default theme.
         var options = {
-            controlValues: {
-                theme: ["lowContrast", "mist"]
-            }, 
             listeners: {
                 afterRender: function () {
                     $('.fl-components-ui-options .fl-col:eq(0)').accordion({header: 'h2', clearStyle: true, autoHeight: false});
