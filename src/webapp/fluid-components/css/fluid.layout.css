@@ -58,14 +58,6 @@ Generic containers for columns and layouts
     overflow:visible !important; 
     clear: both !important; 
     float:none !important;
-    /*
-     * Temp fix, still verifying the user experience with absolute positioned items & linear layout. 
-     * position:relative triggers the IE Disappearing Content Bug
-     * (http://www.whywaitwebs.com/blog/designers/internet-explorer-6-disappearing-content-bug/) 
-     */ 
-    /*position:relative !important;*/ 
-    /*top:0 !important; */
-    /*left:0 !important;*/
     margin-left:0 !important;  
     margin-right:0 !important;
 }
