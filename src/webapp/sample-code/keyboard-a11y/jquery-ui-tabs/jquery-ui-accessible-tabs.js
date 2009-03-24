@@ -72,11 +72,6 @@ var fluid = fluid || {};
 		panels.each (function (i, panel) {
 			$(panel).ariaState("labelledby", panel.id.split("Panel")[0] + "Tab");
 		});
-        
-        // Listen for tab selection and set the tab list's active descendent property.
-        tablist.bind("tabsselect", function (event, ui) {
-            tablist.ariaState("activedescendant", $(ui.tab).parent().attr("id"));
-        });
     };
     
     // Public API.
