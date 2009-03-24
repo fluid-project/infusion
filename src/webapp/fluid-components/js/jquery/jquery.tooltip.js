@@ -201,11 +201,12 @@
 			$(document.body).unbind('mousemove', update)
 		}
 		
-		// if no current element is available, remove this listener
-		if( current == null ) {
-			$(document.body).unbind('mousemove', update);
-			return;	
-		}
+    // if no current element is available, remove this listener
+    // AMB temp proximate fix for FLUID-2323
+    if( current == null || !settings(current) ) {
+      //$(document.body).unbind('mousemove', update);
+      return; 
+    }
 		
 		// remove position helper classes
 		helper.parent.removeClass("viewport-right").removeClass("viewport-bottom");
