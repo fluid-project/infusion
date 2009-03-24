@@ -101,10 +101,10 @@ fluid_1_0 = fluid_1_0 || {};
     
     function addRolesToContainer(that) {
         var first = that.dom.fastLocate("selectables")[0];
-        that.container.ariaRole(that.options.containerRole.container);
-        that.container.ariaState("multiselectable", "false");
-        that.container.ariaState("readonly", "false");
-        that.container.ariaState("disabled", "false");
+        that.container.attr("role", that.options.containerRole.container);
+        that.container.attr("aria-multiselectable", "false");
+        that.container.attr("aria-readonly", "false");
+        that.container.attr("aria-disabled", "false");
     }
     
     function createAvatarId(parentId) {
@@ -176,7 +176,7 @@ fluid_1_0 = fluid_1_0 || {};
         };
         
         var setDropEffects = function (value) {
-            thatReorderer.dom.fastLocate("dropTargets").ariaState("dropeffect", value);
+            thatReorderer.dom.fastLocate("dropTargets").attr("aria-dropeffect", value);
         };
         
         var styles = options.styles;
@@ -243,7 +243,7 @@ fluid_1_0 = fluid_1_0 || {};
                 if (isActiveItemMovable()) {
                     jActiveItem.removeClass(styles.selected);
                     jActiveItem.addClass(styles.dragging);
-                    jActiveItem.ariaState("grabbed", "true");
+                    jActiveItem.attr("aria-grabbed", "true");
                     setDropEffects("move");
                 }
                 return false;
@@ -265,7 +265,7 @@ fluid_1_0 = fluid_1_0 || {};
                 }
                 jActiveItem.removeClass(styles.dragging);
                 jActiveItem.addClass(styles.selected);
-                jActiveItem.ariaState("grabbed", "false");
+                jActiveItem.attr("aria-grabbed", "false");
                 setDropEffects("none");
                 return false;
             }
@@ -311,7 +311,7 @@ fluid_1_0 = fluid_1_0 || {};
          */
         function initMovable(item) {
             var styles = options.styles;
-            item.ariaState("grabbed", "false");
+            item.attr("aria-grabbed", "false");
 
             item.mouseover(
                 function () {
@@ -350,7 +350,7 @@ fluid_1_0 = fluid_1_0 || {};
                     item.focus();
                     item.removeClass(options.styles.selected);
                     item.addClass(options.styles.mouseDrag);
-                    item.ariaState("grabbed", "true");
+                    item.attr("aria-grabbed", "true");
                     setDropEffects("move");
                     dropManager.startDrag(e, handlePos, handleWidth, handleHeight);
                     avatar.show();
@@ -358,7 +358,7 @@ fluid_1_0 = fluid_1_0 || {};
                 stop: function (e, ui) {
                     item.removeClass(options.styles.mouseDrag);
                     item.addClass(options.styles.selected);
-                    $(thatReorderer.activeItem).ariaState("grabbed", "false");
+                    $(thatReorderer.activeItem).attr("aria-grabbed", "false");
                     var markerNode = fluid.unwrap(dropMarker);
                     if (markerNode.parentNode) {
                         markerNode.parentNode.removeChild(markerNode);
@@ -380,7 +380,7 @@ fluid_1_0 = fluid_1_0 || {};
             jItem.removeClass(styles.selected);
             jItem.removeClass(styles.dragging);
             jItem.addClass(styles.defaultStyle);
-            jItem.ariaState("selected", "false");
+            jItem.attr("aria-selected", "false");
         }
            
         var selectItem = function (anItem) {
@@ -395,7 +395,7 @@ fluid_1_0 = fluid_1_0 || {};
             var jItem = $(anItem);
             jItem.removeClass(styles.defaultStyle);
             jItem.addClass(styles.selected);
-            jItem.ariaState("selected", "true");
+            jItem.attr("aria-selected", "true");
         };
    
         var initSelectables = function () {
@@ -424,10 +424,10 @@ fluid_1_0 = fluid_1_0 || {};
                         }
                     });
                     
-                    selectables.ariaRole(options.containerRole.item);
-                    selectables.ariaState("selected", "false");
-                    selectables.ariaState("disabled", "false");
-                    $.data($.data(selectable[0], "fluid.reorderer.selectable-initialised", true));
+                    selectables.attr("role", options.containerRole.item);
+                    selectables.attr("aria-selected", "false");
+                    selectables.attr("aria-disabled", "false");
+                    $.data(selectable[0], "fluid.reorderer.selectable-initialised", true);
                 }
             }
             if (!thatReorderer.selectableContext) {
@@ -477,7 +477,7 @@ fluid_1_0 = fluid_1_0 || {};
             
             dropManager.dropChangeFirer.addListener(dropChangeListener, "fluid.Reorderer");
             // Setup dropTargets
-            dropTargets.ariaState("dropeffect", "none");  
+            dropTargets.attr("aria-dropeffect", "none");  
 
         };
 

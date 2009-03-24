@@ -109,9 +109,9 @@
 
     function simulateKeyDown(onElement, withKeycode, modifier) {
         var modifiers = {
-            ctrl: (modifier === fluid.a11y.keys.CTRL) ? true : false,
-            shift: (modifier === fluid.a11y.keys.SHIFT) ? true : false,
-            alt: (modifier === fluid.a11y.keys.ALT) ? true : false
+            ctrl: (modifier === $.ui.keyCode.CTRL) ? true : false,
+            shift: (modifier === $.ui.keyCode.SHIFT) ? true : false,
+            alt: (modifier === $.ui.keyCode.ALT) ? true : false
         };
 
         var keyEvent = document.createEvent("KeyEvents");
@@ -415,7 +415,7 @@
         }
 
         var menu = createActivatableMenu();
-        simulateKeyDown(getFirstMenuItem(), fluid.a11y.keys.ENTER);
+        simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.ENTER);
         jqUnit.assertEquals("The menu.activatedItem should be set to the first item.", getFirstMenuItem()[0], menu.activatedItem);
     });
 
@@ -426,7 +426,7 @@
         }
 
         var menu = createActivatableMenu();
-        simulateKeyDown(getFirstMenuItem(), fluid.a11y.keys.SPACE);
+        simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.SPACE);
         jqUnit.assertEquals("The menu.activatedItem should be set to the first item.", getFirstMenuItem()[0], menu.activatedItem);
     });
 
@@ -448,7 +448,7 @@
 
         var downKeyBinding = {
             modifier: null,
-            key: fluid.a11y.keys.DOWN,
+            key: $.ui.keyCode.DOWN,
             activateHandler: alternateActivate
         };
 
@@ -458,7 +458,7 @@
 
         menu.items.fluid("activatable", [defaultActivate, options]);
 
-        simulateKeyDown(getFirstMenuItem(), fluid.a11y.keys.DOWN);
+        simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.DOWN);
         jqUnit.assertNotUndefined("The menu should have been activated by the down arrow key.", menu.wasActivated);
         jqUnit.assertTrue("The menu should have been activated by the down arrow key.", menu.wasActivated);
     });
@@ -474,15 +474,15 @@
     
             // Define additional key bindings.
             var downBinding = {
-                key: fluid.a11y.keys.DOWN,
+                key: $.ui.keyCode.DOWN,
                 activateHandler:  function (element) {
                     menu.wasActivated = true;
                 }
             };
     
             var upBinding = {
-                modifier: fluid.a11y.keys.CTRL,
-                key: fluid.a11y.keys.UP,
+                modifier: $.ui.keyCode.CTRL,
+                key: $.ui.keyCode.UP,
                 activateHandler: function (element) {
                     menu.wasActivated = "foo";
                 }
@@ -503,13 +503,13 @@
             }
     
             // Test that the down arrow works.
-            simulateKeyDown(getFirstMenuItem(), fluid.a11y.keys.DOWN);
+            simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.DOWN);
             jqUnit.assertEquals("The menu should " + (enabled? "" : " not ") 
               + " have been activated by the down arrow key.", enabled? true: undefined, menu.wasActivated);
     
             // Reset and try the other key map.
             menu.wasActivated = false;
-            simulateKeyDown(getFirstMenuItem(), fluid.a11y.keys.UP, fluid.a11y.keys.CTRL);
+            simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.UP, $.ui.keyCode.CTRL);
             
             jqUnit.assertEquals("The menu should " + (enabled? "" : " not ") 
               + " have been activated by the ctrl key.", enabled? "foo": false, menu.wasActivated);

@@ -75,7 +75,7 @@ fluid.accessiblemenubar = function () {
 
     var setupDownKeyMap = function () {
         return {
-            key: jQuery.a11y.keys.DOWN,
+            key: $.ui.keyCode.DOWN,
             activateHandler: function (menuItem) {
                 activateSubMenu (menuItem);
             }
@@ -85,45 +85,45 @@ fluid.accessiblemenubar = function () {
 	var initializeMenuBar = function (menuBarId) {
 	   var menuBar = jQuery("#" + menuBarId);
        // Make sure the menu bar is in the tab order.
-       menuBar.tabbable ();
+       fluid.tabbable(menuBar);
 
        // Make the top-level menu items selectable. Upon activation, toggle their sub menu visibility.
        var topLevelOptions = {
-           direction: jQuery.a11y.orientation.HORIZONTAL
+           direction: fluid.a11y.orientation.HORIZONTAL
        };
 
        var activationOptions = {
-           additionalBindings: setupDownKeyMap ()
+           additionalBindings: setupDownKeyMap()
        };
 
        var topLevelMenuItems = jQuery("#menubar > li");
-       topLevelMenuItems.selectable (menuBar, selectionHandlers, topLevelOptions);
-       topLevelMenuItems.activatable (toggleSubMenu, activationOptions);
+       fluid.selectable(topLevelMenuItems, menuBar, selectionHandlers, topLevelOptions);
+       fluid.activatable(topLevelMenuItems, toggleSubMenu, activationOptions);
 	};
 
     var initializeMenus = function () {
         // Make the sub menus selectable with up/down arrow keys and activatable with Enter & Space.
         var subMenuOptions = {
-            direction: jQuery.a11y.orientation.VERTICAL,
+            direction: fluid.a11y.orientation.VERTICAL,
             autoSelectFirstItem: false,
             rememberSelectionState: false
         };
 
-        var fileMenu = jQuery ("#fileMenu");
-        var fileSubMenuItems = jQuery ("a", fileMenu);
-        fileSubMenuItems.selectable (fileMenu, selectionHandlers, subMenuOptions);
-        fileSubMenuItems.activatable (activateMenuItemHandler);
+        var fileMenu = jQuery("#fileMenu");
+        var fileSubMenuItems = jQuery("a", fileMenu);
+        fluid.selectable(fileSubMenuItems, fileMenu, selectionHandlers, subMenuOptions);
+        fluid.activatable(fileSubMenuItems, activateMenuItemHandler);
 
         var editMenu = jQuery("#editMenu");
         var editSubMenuItems = jQuery("a", editMenu);
-        editSubMenuItems.selectable(editMenu, selectionHandlers, subMenuOptions);
-        editSubMenuItems.activatable(activateMenuItemHandler);
+        fluid.selectable(editSubMenuItems, editMenu, selectionHandlers, subMenuOptions);
+        fluid.activatable(editSubMenuItems, activateMenuItemHandler);
     };
 
     return {
         initializeMenuBar: function (menuBarId) {
-            initializeMenuBar (menuBarId);
-            initializeMenus ();
+            initializeMenuBar(menuBarId);
+            initializeMenus();
         }
     }; // End public return.
 }(); // End fluid.accessiblemenubar namespace.

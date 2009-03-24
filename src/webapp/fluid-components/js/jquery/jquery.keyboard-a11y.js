@@ -212,21 +212,6 @@ var fluid = fluid || fluid_1_0;
     // Public, static constants needed by the rest of the library.
     fluid.a11y = $.a11y || {};
 
-    fluid.a11y.keys = {
-        UP: 38,
-        DOWN: 40,
-        LEFT: 37,
-        RIGHT: 39,
-        SPACE: 32,
-        ENTER: 13,
-        DELETE: 46,
-        TAB: 9,
-        ESC: 27,
-        CTRL: 17,
-        SHIFT: 16,
-        ALT: 18
-    };
-
     fluid.a11y.orientation = {
         HORIZONTAL: 0,
         VERTICAL: 1,
@@ -234,13 +219,13 @@ var fluid = fluid || fluid_1_0;
     };
 
     var UP_DOWN_KEYMAP = {
-        next: fluid.a11y.keys.DOWN,
-        previous: fluid.a11y.keys.UP
+        next: $.ui.keyCode.DOWN,
+        previous: $.ui.keyCode.UP
     };
 
     var LEFT_RIGHT_KEYMAP = {
-        next: fluid.a11y.keys.RIGHT,
-        previous: fluid.a11y.keys.LEFT
+        next: $.ui.keyCode.RIGHT,
+        previous: $.ui.keyCode.LEFT
     };
 
     // Private functions.
@@ -407,7 +392,7 @@ var fluid = fluid || fluid_1_0;
 
     var tabKeyHandler = function(selectionContext) {
         return function(evt) {
-            if (evt.which !== fluid.a11y.keys.TAB) {
+            if (evt.which !== $.ui.keyCode.TAB) {
                 return;
             }
             cleanUpWhenLeavingContainer(selectionContext);
@@ -688,7 +673,7 @@ var fluid = fluid || fluid_1_0;
 
     // Public Defaults.
     fluid.activatable.defaults = {
-        keys: [fluid.a11y.keys.ENTER, fluid.a11y.keys.SPACE]
+        keys: [$.ui.keyCode.ENTER, $.ui.keyCode.SPACE]
     };
 
   

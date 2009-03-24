@@ -639,6 +639,12 @@ fluid_1_0 = fluid_1_0 || {};
     fluid.pagerImpl = function (container, options) {
         var that = fluid.initView("fluid.pager", container, options);
         
+        var pageIndexConformer = function(model, dar) {
+            if (dar.value < 0) {
+                dar.value = 0;
+            }
+        }
+        
         that.events.initiatePageChange.addListener(
             function(arg) {
                var newModel = fluid.copy(that.model);
@@ -685,6 +691,7 @@ fluid_1_0 = fluid_1_0 || {};
         that.rangeAnnotator = fluid.initSubcomponent(that, "rangeAnnotator", [that, fluid.COMPONENT_OPTIONS]);
  
         that.model = fluid.copy(that.options.model);
+        
         var dataModel = fetchModel(that);
         if (dataModel) {
             that.model.totalRange = dataModel.length;
@@ -696,6 +703,7 @@ fluid_1_0 = fluid_1_0 || {};
             }
             that.model = that.pagerBar.pageList.defaultModel;
         }
+        that.applier = fluid.makeDARApplier(that.model);
 
         that.events.initiatePageChange.fire({pageIndex: 0});
 

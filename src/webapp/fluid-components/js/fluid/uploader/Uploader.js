@@ -141,7 +141,7 @@ fluid_1_0 = fluid_1_0 || {};
        
         fluid.activatable(row, null, {
             additionalBindings: [{
-                key: fluid.a11y.keys.DELETE, 
+                key: $.ui.keyCode.DELETE, 
                 activateHandler: deleteHandler
             }]
         });

@@ -57,21 +57,21 @@ var fluid = fluid || {};
         var panels = $("#" + "panels" + " > div");
 
         // Give the container a role of tablist
-        tablist.ariaRole("tablist");
+        tablist.attr("role", "tablist");
         
         // Each tab should have a role of Tab, 
         // and a "position in set" property describing its order within the tab list.
         tabs.each (function(i, tab) {
-        	$(tab).ariaRole("tab");
+        	$(tab).attr("role", "tab");
         });
 
         // Give each panel a role of tabpanel
-        panels.ariaRole("tabpanel");
+        panels.attr("role", "tabpanel");
         
         // And associate each panel with its tab using the labelledby relation.
-		panels.each (function (i, panel) {
-			$(panel).ariaState("labelledby", panel.id.split("Panel")[0] + "Tab");
-		});
+        panels.each (function (i, panel) {
+            $(panel).attr("aria-labelledby", panel.id.split("Panel")[0] + "Tab");
+        });
     };
     
     // Public API.

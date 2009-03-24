@@ -221,9 +221,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             assertItemDefault("After ctrl-down, ", 1);
             assertItemDefault("After ctrl-down, ", 12);
             jqUnit.assertEquals("After ctrl-down, " + orderableIds[1] + " should have ARIA dropeffect of 'move'", "move",
-                fluid.jById(orderableIds[1]).ariaState("dropeffect"));  
+                fluid.jById(orderableIds[1]).attr("aria-dropeffect"));  
             jqUnit.assertEquals("After ctrl-down, " + orderableIds[12] + " should have ARIA dropeffect of 'move'", "move",
-                fluid.jById(orderableIds[12]).ariaState("dropeffect"));  
+                fluid.jById(orderableIds[12]).attr("aria-dropeffect"));  
                 
             // right arrow down - all the dragging states should remain the same
             //fluid.log("keyDown");
@@ -248,9 +248,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             assertItemDefault("After ctrl-up ", 1);
             assertItemDefault("After ctrl-up ", 12);
             jqUnit.assertEquals("After ctrl-up, " + orderableIds[1] + " should have ARIA dropeffect of 'none'", "none",
-                fluid.jById(orderableIds[1]).ariaState("dropeffect"));  
+                fluid.jById(orderableIds[1]).attr("aria-dropeffect"));  
             jqUnit.assertEquals("After ctrl-up, " + orderableIds[12] + " should have ARIA dropeffect of 'none'", "none",
-                fluid.jById(orderableIds[12]).ariaState("dropeffect"));  
+                fluid.jById(orderableIds[12]).attr("aria-dropeffect"));  
         });
         
         lightboxTests.test("HandleKeyUpAndHandleKeyDownItemMovement", function() {
@@ -398,15 +398,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var lightbox = createLightbox();
             var lbRoot = fetchLightboxRoot();
             var firstImage = fluid.jById(orderableIds[0]);
-            jqUnit.assertEquals("before first lightbox focus, first item should not be selected", "false", firstImage.ariaState("selected"));
+            jqUnit.assertEquals("before first lightbox focus, first item should not be selected", "false", firstImage.attr("aria-selected"));
         
             focusLightbox();
-            jqUnit.assertEquals("after first lightbox focus, first image should be selected", "true", firstImage.ariaState("selected"));
+            jqUnit.assertEquals("after first lightbox focus, first image should be selected", "true", firstImage.attr("aria-selected"));
             
             var thirdImage = fluid.jById(orderableIds[2]);
             thirdImage.focus();
-            jqUnit.assertEquals("after setting active item to third image, first image should not be selected", "false", firstImage.ariaState("selected"));
-            jqUnit.assertEquals("after setting active item to third image, third image should be selected", "true", thirdImage.ariaState("selected"));
+            jqUnit.assertEquals("after setting active item to third image, first image should not be selected", "false", firstImage.attr("aria-selected"));
+            jqUnit.assertEquals("after setting active item to third image, third image should be selected", "true", thirdImage.attr("aria-selected"));
         
             var newInputElement = document.createElement("input");
             newInputElement.id="input1";
@@ -414,7 +414,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jQuery("[id=para1]").after(newInputElement);
             jQuery("[id=input1]").get(0).focus();
             fluid.jById(orderableIds[2]).blur();
-            jqUnit.assertEquals("after removing focus from lightbox, third image should not be selected", "false", thirdImage.ariaState("selected"));
+            jqUnit.assertEquals("after removing focus from lightbox, third image should not be selected", "false", thirdImage.attr("aria-selected"));
         });
         
         lightboxTests.test("UpdateGrabProperty", function() {
@@ -422,17 +422,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var lbRoot = fetchLightboxRoot();
             var testItem = fluid.jById(orderableIds[0]);
             
-            jqUnit.assertEquals("before any action, test item should have @aria-grabbed='false'", "false", testItem.ariaState("grabbed"));
+            jqUnit.assertEquals("before any action, test item should have @aria-grabbed='false'", "false", testItem.attr("aria-grabbed"));
             
             focusLightbox();
             keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("CTRL"), 0);
-            jqUnit.assertEquals("while CTRL held down, test item should have @aria-grabbed='true'", "true", testItem.ariaState("grabbed"));
+            jqUnit.assertEquals("while CTRL held down, test item should have @aria-grabbed='true'", "true", testItem.attr("aria-grabbed"));
         
             keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("RIGHT"), 0);
-            jqUnit.assertEquals("after arrow while CTRL still held down, test item should have @aria-grabbed='true'", "true", testItem.ariaState("grabbed"));
+            jqUnit.assertEquals("after arrow while CTRL still held down, test item should have @aria-grabbed='true'", "true", testItem.attr("aria-grabbed"));
             
             keyUp(lightbox, fluid.testUtils.keyEvent("CTRL"), 0);
-            jqUnit.assertEquals("after CTRL released, test item should have @aria-grabbed='false", "false", testItem.ariaState("grabbed"));
+            jqUnit.assertEquals("after CTRL released, test item should have @aria-grabbed='false", "false", testItem.attr("aria-grabbed"));
         });
     
         lightboxTests.test("AlternativeKeySetDefaultKeysDontWork", function() {

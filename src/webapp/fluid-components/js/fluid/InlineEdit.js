@@ -269,14 +269,14 @@ fluid_1_0 = fluid_1_0 || {};
         }
         var escHandler = function (evt) {
             var code = keyCode(evt);
-            if (code === fluid.a11y.keys.ESC) {
+            if (code === $.ui.keyCode.ESCAPE) {
                 cancel(that);
                 return false;
             }
         }
         var finishHandler = function (evt) {
             var code = keyCode(evt);
-            if (code !== fluid.a11y.keys.ENTER) {
+            if (code !== $.ui.keyCode.ENTER) {
                 return true;
             }
             
@@ -304,7 +304,7 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var aria = function (viewEl, editContainer) {
-        viewEl.ariaRole("button");
+        viewEl.attr("role", "button");
     };
     
     var renderEditContainer = function (that, really) {
@@ -668,7 +668,7 @@ fluid_1_0 = fluid_1_0 || {};
         
         useTooltip: false,
         
-        tooltipDelay: 2000,
+        tooltipDelay: 1000,
         
         selectOnEdit: false
     });
