@@ -282,6 +282,7 @@ fluid_1_0 = fluid_1_0 || {};
             },
             "textSpacing": {
                 "default": "",
+                "wide0": "fl-font-spacing-0",
                 "wide1": "fl-font-spacing-1",
                 "wide2": "fl-font-spacing-2",
                 "wide3": "fl-font-spacing-3",
