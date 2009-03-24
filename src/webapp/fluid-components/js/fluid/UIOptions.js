@@ -366,8 +366,8 @@ fluid_1_0 = fluid_1_0 || {};
         
         that.updateModel = function (newModel, source) {
             that.events.modelChanged.fire(newModel, that.model, source);
-            fluid.clear(model);
-            fluid.model.copyModel(model, newModel);
+            fluid.clear(that.model);
+            fluid.model.copyModel(that.model, newModel);
         };
         
         that.applier.modelChanged.addListener("*",
