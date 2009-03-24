@@ -422,17 +422,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var lbRoot = fetchLightboxRoot();
             var testItem = fluid.jById(orderableIds[0]);
             
-            jqUnit.assertEquals("before any action, test item should have grab of supported", "false", testItem.ariaState("grabbed"));
+            jqUnit.assertEquals("before any action, test item should have @aria-grab='false'", "false", testItem.ariaState("grabbed"));
             
             focusLightbox();
             keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("CTRL"), 0);
-            jqUnit.assertEquals("while CTRL held down, test item should have grab of true", "true", testItem.ariaState("grabbed"));
+            jqUnit.assertEquals("while CTRL held down, test item should have @aria-grab='true'", "true", testItem.ariaState("grabbed"));
         
             keyDown(lightbox, fluid.testUtils.ctrlKeyEvent("RIGHT"), 0);
-            jqUnit.assertEquals("after arrow while CTRL still held down, test item should have grab of true", "true", testItem.ariaState("grabbed"));
+            jqUnit.assertEquals("after arrow while CTRL still held down, test item should have @aria-grab='true'", "true", testItem.ariaState("grabbed"));
             
             keyUp(lightbox, fluid.testUtils.keyEvent("CTRL"), 0);
-            jqUnit.assertEquals("after CTRL released, test item should have grab of supported", "false", testItem.ariaState("grabbed"));
+            jqUnit.assertEquals("after CTRL released, test item should have @aria-grab='false'", "false", testItem.ariaState("grabbed"));
         });
     
         lightboxTests.test("AlternativeKeySetDefaultKeysDontWork", function() {
