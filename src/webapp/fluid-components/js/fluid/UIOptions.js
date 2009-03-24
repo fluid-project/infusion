@@ -240,7 +240,7 @@ fluid_1_0 = fluid_1_0 || {};
             labelMap[item] = {
                 names: options.strings[item],
                 values: options.controlValues[item]
-            }
+            };
         }
         
         return labelMap;
@@ -253,12 +253,11 @@ fluid_1_0 = fluid_1_0 || {};
         
         var superModel = fluid.assembleSuperModel({
             selections: {
-              model: that.model,
-              applier: that.applier
+	            model: that.model,
+                applier: that.applier
             },
             labelMap: {model: createLabelMap(that.options)}
-            }
-            );
+        });
         
         return {
             model: superModel.model,
@@ -274,7 +273,7 @@ fluid_1_0 = fluid_1_0 || {};
             return {
                 listeners: {
                     modelChanged: function (value) {
-                    	  that.applier.requestAlteration(settingName, value);
+                    	that.applier.requestAlteration(settingName, value);
                     }
                 },
                 value: that.model[settingName]
@@ -311,12 +310,17 @@ fluid_1_0 = fluid_1_0 || {};
     };
     
     var setupUIOptions = function (that) {
+        that.applier.modelChanged.addListener("*",
+            function (newModel, oldModel, dar) {
+                that.events.modelChanged.fire(newModel, oldModel, dar.source);
+            }
+        );
+            
         mergeSiteDefaults(that.options, that.uiEnhancer.defaultSiteSettings);
         
         // TODO: This stuff should already be in the renderer tree
         that.events.afterRender.addListener(function () {
             initSliders(that);
-
             bindHandlers(that);
             initPreview(that);        
         });
@@ -368,11 +372,6 @@ fluid_1_0 = fluid_1_0 || {};
             fluid.clear(that.model);
             fluid.model.copyModel(that.model, newModel);
         };
-        
-        that.applier.modelChanged.addListener("*",
-            function(newModel, oldModel, dar) {
-                that.events.modelChanged.fire(newModel, oldModel, dar.source);
-            });
         
         template = setupUIOptions(that);
 
@@ -429,5 +428,3 @@ fluid_1_0 = fluid_1_0 || {};
     });
 
 })(jQuery, fluid_1_0);
-
-  
