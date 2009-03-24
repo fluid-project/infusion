@@ -502,12 +502,18 @@ fluid_1_0 = fluid_1_0 || {};
   
   function applyAutoBind(torender, finalID) {
       var tagname = trc.uselump.tagname;
+      function applyFunc() {
+          fluid.applyChange(fluid.byId(finalID), undefined, renderOptions.applier);
+          }
       if (renderOptions.autoBind && (tagname === "input" || tagname === "select") 
             && !renderedbindings[finalID]) {
-          outDecoratorsImpl(torender, [{
-            jQuery: ["change", function() {
-              fluid.applyChange(fluid.byId(finalID));}]
-          }], trc.attrcopy, finalID);
+          var decorators = [{jQuery: ["change", applyFunc]}];
+          // Work around bug 193: http://webbugtrack.blogspot.com/2007/11/bug-193-onchange-does-not-fire-properly.html
+          if ($.browser.msie && tagname === "input" 
+              && /radio|checkbox/.test(trc.attrcopy["type"])) {
+             decorators.push({jQuery: ["click", applyFunc]});
+          }
+          outDecoratorsImpl(torender, decorators, trc.attrcopy, finalID);
       }    
   }
   

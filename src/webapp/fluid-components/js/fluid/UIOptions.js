@@ -202,14 +202,6 @@ fluid_1_0 = fluid_1_0 || {};
         that.locate("save").click(that.save);
         that.locate("reset").click(that.reset);
         that.locate("cancel").click(that.cancel);
-
-        // TODO: This should probably be removed and use a renderer decorator instead.
-        that.locate("controls").change(function () {
-            // This is strange - old model and new model are the same. 
-            // Need the DAR applier so we can hook in before the model changes otherwise we don't have the old model
-            that.events.modelChanged.fire(that.model, that.model, that);
-        });
-        
     };
     
     var initPreview = function (that) {
@@ -259,11 +251,18 @@ fluid_1_0 = fluid_1_0 || {};
         that.model.toc = String(that.model.toc);
         that.model.backgroundImages = String(that.model.backgroundImages);
         
-        return {
-            model: {
-                selections: that.model,
-                labelMap: createLabelMap(that.options)
+        var superModel = fluid.assembleSuperModel({
+            selections: {
+              model: that.model,
+              applier: that.applier
             },
+            labelMap: {model: createLabelMap(that.options)}
+            }
+            );
+        
+        return {
+            model: superModel.model,
+            applier: superModel.applier,
             autoBind: true, 
             debugMode: true
        //     renderRaw: true
@@ -325,6 +324,7 @@ fluid_1_0 = fluid_1_0 || {};
         
         var rendererOptions = createRenderOptions(that);
         var template = fluid.selfRender(that.container, generateTree(that, rendererOptions.model), rendererOptions);
+     
         that.events.afterRender.fire();
             
         return template;
@@ -334,6 +334,7 @@ fluid_1_0 = fluid_1_0 || {};
         var that = fluid.initView("fluid.uiOptions", container, options);
         that.uiEnhancer = $(document).data("uiEnhancer");
         that.model = fluid.copy(that.uiEnhancer.model);
+        that.applier = fluid.makeDARApplier(that.model);
 
         // TODO: we shouldn't need the savedModel and should use the uiEnhancer.model instead
         var savedModel = that.uiEnhancer.model;
@@ -359,15 +360,20 @@ fluid_1_0 = fluid_1_0 || {};
         
         that.refreshView = function () {
             var rendererOptions = createRenderOptions(that);
-
             fluid.reRender(template, that.container, generateTree(that, rendererOptions.model), rendererOptions);
             that.events.afterRender.fire();
         };
         
         that.updateModel = function (newModel, source) {
             that.events.modelChanged.fire(newModel, that.model, source);
-            that.model = newModel;
+            fluid.clear(model);
+            fluid.model.copyModel(model, newModel);
         };
+        
+        that.applier.modelChanged.addListener("*",
+            function(newModel, oldModel, dar) {
+                that.events.modelChanged.fire(newModel, oldModel, dar.source);
+            });
         
         template = setupUIOptions(that);
 

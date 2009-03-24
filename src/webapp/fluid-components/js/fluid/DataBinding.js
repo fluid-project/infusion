@@ -94,7 +94,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     /** "Automatically" apply to whatever part of the data model is
      * relevant, the changed value received at the given DOM node*/
-    fluid.applyChange = function(node, newValue) {
+    fluid.applyChange = function(node, newValue, applier) {
         node = fluid.unwrap(node);
         if (newValue === undefined) {
             newValue = fluid.value(node);
@@ -113,7 +113,12 @@ fluid_1_0 = fluid_1_0 || {};
             newValue = newValue[0]? true: false;
         }
         var EL = root.fossils[name].EL;
-        fluid.model.setBeanValue(root.data, EL, newValue);    
+        if (applier) {
+            applier.fireAlterationRequest({path: EL, value: newValue, source: node.id});
+        }
+        else {
+            fluid.model.setBeanValue(root.data, EL, newValue);
+        }    
         };
    
     fluid.pathUtil = {};
@@ -289,6 +294,54 @@ fluid_1_0 = fluid_1_0 || {};
         };
         
         return that;
+    };
+    
+    fluid.makeSuperApplier = function() {
+        var subAppliers = [];
+        var that = {};
+        that.addSubApplier = function(path, subApplier) {
+            subAppliers.push({path: path, subApplier: subApplier});
+        };
+        that.fireAlterationRequest = function(dar) {
+            for (var i = 0; i < subAppliers.length; ++ i) {
+                var path = subAppliers[i].path;
+                if (dar.path.indexOf(path) === 0) {
+                    var subpath = dar.path.substring(path.length + 1);
+                    var subDAR = fluid.copy(dar);
+                    subDAR.path = subpath;
+                    // TODO: Deal with the as yet unsupported case of an EL rvalue DAR
+                    subAppliers[i].subApplier.fireAlterationRequest(subDAR);
+                }
+            }
+        };
+        return that;
+    };
+    
+    fluid.attachModel = function(baseModel, path, model) {
+        var segs = fluid.model.parseEL(path);
+        for (var i = 0; i < segs.length - 1; ++ i) {
+            var seg = segs[i];
+            var subModel = baseModel[seg];
+            if (!subModel) {
+                baseModel[seg] = subModel = {};
+            }
+            baseModel = subModel;
+        }
+        baseModel[segs[segs.length - 1]] = model;
+    };
+    
+    fluid.assembleSuperModel = function (modelSpec) {
+       var model = {};
+       var superApplier = fluid.makeSuperApplier();
+       var togo = {model: model, applier: superApplier};
+       for (path in modelSpec) {
+           var rec = modelSpec[path];
+           fluid.attachModel(model, path, rec.model);
+           if (rec.applier) {
+              superApplier.addSubApplier(path, rec.applier);
+           }
+       }
+       return togo;
     };
 
 })(jQuery, fluid_1_0);
