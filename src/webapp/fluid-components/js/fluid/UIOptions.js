@@ -274,8 +274,7 @@ fluid_1_0 = fluid_1_0 || {};
             return {
                 listeners: {
                     modelChanged: function (value) {
-                        that.model[settingName] = value;
-                        that.updateModel(that.model);
+                    	  that.applier.requestAlteration(settingName, value);
                     }
                 },
                 value: that.model[settingName]
