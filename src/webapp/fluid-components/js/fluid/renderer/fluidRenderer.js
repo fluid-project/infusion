@@ -512,8 +512,9 @@ fluid_1_0 = fluid_1_0 || {};
   
   function applyAutoBind(torender, finalID) {
       var tagname = trc.uselump.tagname;
+      var applier = renderOptions.applier;
       function applyFunc() {
-          fluid.applyChange(fluid.byId(finalID), undefined, renderOptions.applier);
+          fluid.applyChange(fluid.byId(finalID), undefined, applier);
           }
       if (renderOptions.autoBind && (tagname === "input" || tagname === "select") 
             && !renderedbindings[finalID]) {
