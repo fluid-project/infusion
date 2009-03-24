@@ -392,10 +392,10 @@ fluid_1_0 = fluid_1_0 || {};
                 error: "File Upload Error"
             }, 
             errors: {
-                HTTP_ERROR: "File upload error: a network error occured or the file was rejected (reason unknown). You may be able to retry the upload.",
-                IO_ERROR: "File upload error: a network error occured. Please retry your upload.",
+                HTTP_ERROR: "File upload error: a network error occured or the file was rejected (reason unknown).",
+                IO_ERROR: "File upload error: a network error occured.",
                 UPLOAD_LIMIT_EXCEEDED: "File upload error: you have uploaded as many files as you are allowed during this session",
-                UPLOAD_FAILED: "File upload error: the upload failed for an unknown reason. Try the upload again.",
+                UPLOAD_FAILED: "File upload error: the upload failed for an unknown reason.",
                 QUEUE_LIMIT_EXCEEDED: "You have as many files in the queue as can be added at one time. Removing files from the queue may allow you to add different files.",
                 FILE_EXCEEDS_SIZE_LIMIT: "One or more of the files that you attempted to add to the queue exceeded the limit of %fileSizeLimit.",
                 ZERO_BYTE_FILE: "One or more of the files that you attempted to add contained no data.",
