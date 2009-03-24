@@ -2,12 +2,14 @@
 .fl-components-ui-options .ui-accordion-content {border: 3px solid}/*fixes an IE issue where the border of the content needs to be specified*/
 .fl-components-ui-options {padding:10px;}
 .fl-components-ui-options fieldset {margin:0 20px 5px 0;}
-.fl-components-ui-options fieldset h2 {cursor:pointer; margin:0; padding:5px;}
+/*.fl-components-ui-options fieldset h2 {cursor:pointer; margin:0; padding:5px;}*/
 .fl-components-ui-options fieldset ol {margin:0; padding:15px 0 0 0;}
 .fl-components-ui-options fieldset li {padding:2px 0; clear:both}
+.fl-components-ui-options .fl-uioptions-buttons-refresher-5 {width:5em;}
+.fl-components-ui-options .fl-uioptions-buttons-refresher-10 {width:10em;}
 
 .fl-components-ui-options .flc-uioptions-min-text-size .fl-textfield,
-.fl-components-ui-options .flc-uioptions-line-spacing .fl-textfield {width:1.85em;}
+.fl-components-ui-options .flc-uioptions-line-spacing .fl-textfield {width:1.85em; height:1.2em; padding:0.1em;}
 
 .fl-components-ui-options .fl-slider {    
     margin-bottom:0;
