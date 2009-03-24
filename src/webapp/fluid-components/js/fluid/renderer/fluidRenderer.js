@@ -56,44 +56,44 @@ fluid_1_0 = fluid_1_0 || {};
   }
   
   function processChild(value, key) {
-    if (isBoundPrimitive(value)) {
-      return {componentType: "UIBound", value: value, ID: key};
-      }
-    else {
-      var unzip = unzipComponent(value);
-      if (unzip.ID) {
-        return {ID: key, componentType: "UIContainer", children: [unzip]};
-      }
+      if (isBoundPrimitive(value)) {
+          return {componentType: "UIBound", value: value, ID: key};
+          }
       else {
-        unzip.ID = key;
-        return unzip;
-        } 
+          var unzip = unzipComponent(value);
+          if (unzip.ID) {
+              return {ID: key, componentType: "UIContainer", children: [unzip]};
+          }
+          else {
+              unzip.ID = key;
+              return unzip;
+          } 
       }    
-    }
+  }
   
   function fixChildren(children) {
-    if (!(children instanceof Array)) {
-      var togo = [];
-      for (var key in children) {
-        var value = children[key];
-        if (value instanceof Array) {
-          for (var i = 0; i < value.length; ++ i) {
-            var processed = processChild(value[i], key);
-//            if (processed.componentType === "UIContainer" &&
-//              processed.localID === undefined) {
-//              processed.localID = i;
-//            }
-            togo[togo.length] = processed;
+      if (!(children instanceof Array)) {
+          var togo = [];
+          for (var key in children) {
+              var value = children[key];
+              if (value instanceof Array) {
+                  for (var i = 0; i < value.length; ++ i) {
+                      var processed = processChild(value[i], key);
+          //            if (processed.componentType === "UIContainer" &&
+          //              processed.localID === undefined) {
+          //              processed.localID = i;
+          //            }
+                      togo[togo.length] = processed;
+                      }
+                }
+                else {
+                    togo[togo.length] = processChild(value, key);
+                } 
             }
-          }
-        else {
-          togo[togo.length] = processChild(value, key);
-        } 
-      }
-      return togo;
+            return togo;
+        }
+        else {return children;}
     }
-    else {return children;}
-  }
   
   function fixupValue(uibound, model) {
       if (uibound.value === undefined && uibound.valuebinding !== undefined) {
@@ -248,44 +248,44 @@ fluid_1_0 = fluid_1_0 || {};
   var renderedbindings = {}; // map of fullID to true for UISelects which have already had bindings written
   
   function getRewriteKey(template, parent, id) {
-    return template.resourceKey + parent.fullID + id;
+      return template.resourceKey + parent.fullID + id;
   }
   // returns: lump
   function resolveInScope(searchID, defprefix, scope, child) {
-    var deflump;
-    var scopelook = scope? scope[searchID] : null;
-    if (scopelook) {
-      for (var i = 0; i < scopelook.length; ++ i) {
-        var scopelump = scopelook[i];
-        if (!deflump && scopelump.rsfID == defprefix) {
-          deflump = scopelump;
-        }
-        if (scopelump.rsfID == searchID) {
-          return scopelump;
-        }
+      var deflump;
+      var scopelook = scope? scope[searchID] : null;
+      if (scopelook) {
+          for (var i = 0; i < scopelook.length; ++ i) {
+              var scopelump = scopelook[i];
+              if (!deflump && scopelump.rsfID == defprefix) {
+                  deflump = scopelump;
+              }
+              if (scopelump.rsfID == searchID) {
+                  return scopelump;
+              }
+          }
       }
-    }
-    return deflump;
+      return deflump;
   }
   // returns: lump
   function resolveCall(sourcescope, child) {
-    var searchID = child.jointID? child.jointID : child.ID;
-    var split = fluid.SplitID(searchID);
-    var defprefix = split.prefix + ':';
-    var match = resolveInScope(searchID, defprefix, sourcescope.downmap, child);
-    if (match) {return match;}
-    if (child.children) {
-      match = resolveInScope(searchID, defprefix, globalmap, child);
+      var searchID = child.jointID? child.jointID : child.ID;
+      var split = fluid.SplitID(searchID);
+      var defprefix = split.prefix + ':';
+      var match = resolveInScope(searchID, defprefix, sourcescope.downmap, child);
       if (match) {return match;}
-    }
-    return null;
+      if (child.children) {
+          match = resolveInScope(searchID, defprefix, globalmap, child);
+          if (match) {return match;}
+      }
+      return null;
   }
   
   function noteCollected(template) {
-    if (!seenset[template.href]) {
-      fluid.aggregateMMap(collected, template.collectmap);
-      seenset[template.href] = true;
-    }
+      if (!seenset[template.href]) {
+          fluid.aggregateMMap(collected, template.collectmap);
+          seenset[template.href] = true;
+      }
   }
   
   function resolveRecurse(basecontainer, parentlump) {
@@ -316,8 +316,12 @@ fluid_1_0 = fluid_1_0 || {};
             if (lumpid !== undefined && lump.rsfID !== undefined) {
               var resolved = fetchComponent(basecontainer, lump.rsfID);
               if (resolved !== null) {
+                var resolveID = resolved.fullID;
+                if (resolved.componentType === "UISelect") {
+                  resolveID = resolveID + "-selection";
+                }
                 rewritemap[getRewriteKey(parentlump.parent, basecontainer,
-                    lumpid)] = resolved.fullID;
+                    lumpid)] = resolveID;
               }
             }
           }
@@ -393,6 +397,12 @@ fluid_1_0 = fluid_1_0 || {};
   var trc = {};
   
   /*** TRC METHODS ***/
+  
+  function openTag() {
+      if (!trc.iselide) {
+          out += "<" + trc.uselump.tagname;
+      }
+  }
   
   function closeTag() {
       if (!trc.iselide) {
@@ -940,7 +950,17 @@ fluid_1_0 = fluid_1_0 || {};
     rewriteIDRelation(context);
     
     if (torendero === null) {
-      // no support for SCR yet
+        if (lump.rsfID.indexOf("scr=") === (iselide? 1 : 0)) {
+            var scrname = lump.rsfID.substring(4 + (iselide? 1 : 0));
+            if (scrname === "ignore") {
+                nextpos = trc.close.lumpindex + 1;
+            }
+            else {
+               openTag();
+               replaceAttributesOpen();
+               nextpos = trc.endopen.lumpindex;
+            }
+        }
     }
     else {
       // else there IS a component and we are going to render it. First make
@@ -959,9 +979,7 @@ fluid_1_0 = fluid_1_0 || {};
 
       
       // ALWAYS dump the tag name, this can never be rewritten. (probably?!)
-      if (!iselide) {
-        out += "<" +trc.uselump.tagname;
-       }
+      openTag();
 
       renderComponent(torendero);
       // if there is a payload, dump the postamble.

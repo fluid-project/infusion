@@ -173,7 +173,7 @@ fluid_1_0 = fluid_1_0 || {};
     }
   
   function tagStartCut(headlump) {
-    var togo = null;
+    var togo = undefined;
     if (cutpoints) {
       for (var i = 0; i < cutpoints.length; ++ i) {
         var cut = cutpoints[i];
@@ -191,7 +191,7 @@ fluid_1_0 = fluid_1_0 || {};
           if (isMatch) {
             cutstat[cutstat.length] = headlump.nestingdepth;
             if (cutstat.length === cut.tree.length) {
-              if (togo !== null) {
+              if (togo !== undefined) {
                 fluid.fail("Cutpoint specification error - node " +
                   debugLump(headlump) +
                   " has already matched with rsf:id of " + togo);
@@ -235,20 +235,20 @@ fluid_1_0 = fluid_1_0 || {};
     var tagname = parser.getName();
     headlump.tagname = tagname;
     // NB - attribute names and values are now NOT DECODED!!
-    headlump.attributemap = parser.m_attributes;
-    var ID = headlump.attributemap? headlump.attributemap[fluid.ID_ATTRIBUTE] : undefined;
+    var attrs = headlump.attributemap = parser.m_attributes;
+    var ID = attrs[fluid.ID_ATTRIBUTE];
     if (ID === undefined) {
       ID = tagStartCut(headlump);
       }
-    for (var attrname in headlump.attributemap) {
-      var attrval = headlump.attributemap[attrname];
-      if (attrval === "href" || attrval === "src" || attrval === "codebase" || attrval === "action") {
+    for (var attrname in attrs) {
+      var attrval = attrs[attrname];
+      if (/href|src|codebase|action/.test(attrname)) {
         attrval = rewriteUrl(attrval);
-        headlump.attributemap[attrname] = attrval;
+        attrs[attrname] = attrval;
         }
         // port of TPI effect of IDRelationRewriter
-      if (ID === undefined && (attrval === "for" || attrval === "headers")) {
-        ID = headlump.attributemap[fluid.ID_ATTRIBUTE] = "scr=null";
+      else if (ID === undefined && /for|headers/.test(attrname)) {
+        ID = attrs[fluid.ID_ATTRIBUTE] = "scr=null";
         }
       }
 
@@ -273,7 +273,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     // TODO: accelerate this by grabbing original template text (requires parser
     // adjustment) as well as dealing with empty tags
-    headlump.text = "<" + tagname + fluid.dumpAttributes(headlump.attributemap) + ">";
+    headlump.text = "<" + tagname + fluid.dumpAttributes(attrs) + ">";
     tagstack[tagstack.length] = headlump;
     if (isempty) {
       processTagEnd();
