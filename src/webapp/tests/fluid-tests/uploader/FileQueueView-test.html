@@ -54,15 +54,20 @@
                         <!-- Rows will be rendered in here. -->
                         
                         <!-- Template for the file queue rows -->
-            			<tr id="queue-row-tmplt">
-            				<th class="fileName" scope="row">File Name Placeholder</th>
+            			<tr id="queue-row-tmplt" class="row fluid-templates">
+                            <th class="fileName" scope="row">File Name Placeholder</th>
                             <td class="fileSize">0 KB</td>
-                            <td class="fileRemove">
-                                <button type="button" class="removeFile" title="Remove File" tabindex="-1">
+                            <td class="actions">
+                                <button type="button" class="iconBtn" title="Remove File" tabindex="-1">
                                     <span class="text-description">Remove file from queue</span>
                                 </button>
                             </td>
-            			</tr>
+                        </tr>
+                        
+                        <!-- Template for the file error info rows -->
+                        <tr id="queue-error-tmplt" class="queue-error-row fluid-templates">
+                            <td colspan="3" class="queue-error"></td>
+                        </tr>
 					</tbody>
 				</table>
                 
