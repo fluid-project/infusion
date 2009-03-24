@@ -30,7 +30,7 @@ fluid_1_0 = fluid_1_0 || {};
      * @param {Object} el
      */    
     var insertAnchor = function (el) {
-        var a = $("<a name='" + el.text() + "' />");
+        var a = $("<a name='" + el.text() + "' />", el[0].ownerDocument);
         el.before(a);
     };
     
@@ -123,7 +123,7 @@ fluid_1_0 = fluid_1_0 || {};
         // Get the template, create the tree and render the table of contents
         fluid.fetchResources(resources, function () {
             var templates = fluid.parseTemplates(resources, ["toc"], {});
-            var node = $("<div></div>");
+            var node = $("<div></div>", container[0].ownerDocument);
             fluid.reRender(templates, node, createTree(headings, levels), {});
             container.prepend(node);
             afterRender.fire(node);
