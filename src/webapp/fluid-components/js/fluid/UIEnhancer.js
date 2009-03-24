@@ -330,6 +330,36 @@ fluid_1_0 = fluid_1_0 || {};
      * Cookie Store *
      ****************/
 
+    // This is not using JSON.parse because it will not work in Opera: FLUID-2393
+    var parseObj = function (str) {
+        var obj = {};
+        var splitStr = str.split(',');
+
+        for (var i = 0; i < splitStr.length; i++) {
+            var pair = splitStr[i].split(':');
+            // turn boolean values into true booleans.
+            if (pair[1] === "true") {
+                pair[1] = true;
+            }
+            if (pair[1] === "false") {
+                pair[1] = false;
+            } 
+            obj[pair[0]] = pair[1];
+        }
+        
+        return obj;
+    };
+ 
+     // This is not using JSON.stringify because it will not work in Opera: FLUID-2393
+     var objString = function (obj) {
+         var str = "";
+        for (var key in obj) {
+            str += key + ":" + obj[key] + ",";
+        }
+
+        return str;
+     };
+     
     /**
      * SettingsStore Subcomponent that uses a cookie for persistence.
      * @param {Object} options
@@ -354,7 +384,7 @@ fluid_1_0 = fluid_1_0 || {};
                     if (endIndex < startIndex) {
                         endIndex = cookie.length;
                     }
-                    retObj = JSON.parse(cookie.substring(startIndex, endIndex));
+                    retObj = parseObj(cookie.substring(startIndex, endIndex));
                 } 
             }
             
@@ -366,7 +396,8 @@ fluid_1_0 = fluid_1_0 || {};
          * @param {Object} settings
          */
         that.save = function (settings) {
-            document.cookie = that.options.cookieName + "=" +  JSON.stringify(settings);
+            var cookieVal =  objString(settings);
+            document.cookie = that.options.cookieName + "=" + cookieVal;
         };
     
         return that;
