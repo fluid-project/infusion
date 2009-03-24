@@ -398,16 +398,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var lightbox = createLightbox();
             var lbRoot = fetchLightboxRoot();
             var firstImage = fluid.jById(orderableIds[0]);
-            jqUnit.assertEquals("before first lightbox focus, first item should be activedescendent", orderableIds[0], lbRoot.ariaState("activedescendent"));
             jqUnit.assertEquals("before first lightbox focus, first item should not be selected", "false", firstImage.ariaState("selected"));
         
             focusLightbox();
-            jqUnit.assertEquals("after first lightbox focus, first image should be activedescendent", orderableIds[0], lbRoot.ariaState("activedescendent"));
             jqUnit.assertEquals("after first lightbox focus, first image should be selected", "true", firstImage.ariaState("selected"));
             
             var thirdImage = fluid.jById(orderableIds[2]);
             thirdImage.focus();
-            jqUnit.assertEquals("after setting active item to third image, third image should be activedescendent", orderableIds[2], lbRoot.ariaState("activedescendent"));
             jqUnit.assertEquals("after setting active item to third image, first image should not be selected", "false", firstImage.ariaState("selected"));
             jqUnit.assertEquals("after setting active item to third image, third image should be selected", "true", thirdImage.ariaState("selected"));
         
@@ -417,7 +414,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jQuery("[id=para1]").after(newInputElement);
             jQuery("[id=input1]").get(0).focus();
             fluid.jById(orderableIds[2]).blur();
-            jqUnit.assertEquals("after removing focus from lightbox, third image should still be activedescendent", orderableIds[2], lbRoot.ariaState("activedescendent"));
             jqUnit.assertEquals("after removing focus from lightbox, third image should not be selected", "false", thirdImage.ariaState("selected"));
         });
         

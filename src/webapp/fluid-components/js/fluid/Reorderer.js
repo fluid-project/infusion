@@ -101,9 +101,6 @@ fluid_1_0 = fluid_1_0 || {};
     
     function addRolesToContainer(that) {
         var first = that.dom.fastLocate("selectables")[0];
-        if (first) {
-            that.container.ariaState("activedescendent", first.id);
-        }
         that.container.ariaRole(that.options.containerRole.container);
         that.container.ariaState("multiselectable", "false");
         that.container.ariaState("readonly", "false");
@@ -399,7 +396,6 @@ fluid_1_0 = fluid_1_0 || {};
             jItem.removeClass(styles.defaultStyle);
             jItem.addClass(styles.selected);
             jItem.ariaState("selected", "true");
-            thatReorderer.container.ariaState("activedescendent", anItem.id);
         };
    
         var initSelectables = function () {
