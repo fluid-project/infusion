@@ -85,7 +85,6 @@ This is a list of publicly available software that is included in the Fluid bund
 	* jQuery UI javascript widget library: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
 	* jQuery QUnit testrunner: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
 	* CSS styling reset from YUI: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
-	* jARIA, the jQuery ARIA plugin: http://jqueryjs.googlecode.com/svn/trunk/plugins/jARIA (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * Douglas Crockford's JSON parsing and stringifying methods: http://www.json.org/ (Public Domain)
     * SWFUpload: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
     * XML for Script's Fast Pull Parser (LGPL licensed http://xmljs.sourceforge.net/)
