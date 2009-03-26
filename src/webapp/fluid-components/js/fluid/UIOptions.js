@@ -296,9 +296,9 @@ fluid_1_0 = fluid_1_0 || {};
             var settingValues = options.controlValues[settingName];
             
             if (setting) {
-                var index = jQuery.inArray(setting, settingValues);
+                var index = $.inArray(setting, settingValues);
                 if (index === -1) {
-                    var defaultIndex = jQuery.inArray("default", settingValues);
+                    var defaultIndex = $.inArray("default", settingValues);
                     if (defaultIndex === -1) {
                         settingValues.push(setting);
                     } else {
