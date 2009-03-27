@@ -153,7 +153,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             });
         };
         
-        $('#ui-options').load('../../fluid-components/html/templates/UIOptions.html .uiOptions', runTheTests);
+        $('#ui-options').load('../../components/uiOptions/html/UIOptions.html .uiOptions', runTheTests);
         
     });
 })(jQuery);
