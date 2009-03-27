@@ -15,10 +15,10 @@ var sakai = sakai || {};
 sakai.initFluidSiteSettingTable = function() {
     var resources = {
       users: {
-        href: "js/demo_site_membership.json"
+        href: "../js/demo_site_membership.json"
       },
       site: {
-        href: "js/demo_site.json"
+        href: "../js/demo_site.json"
       }
     };
     
