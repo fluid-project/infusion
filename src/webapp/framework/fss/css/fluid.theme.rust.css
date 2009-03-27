@@ -118,10 +118,10 @@
 
 
 /* Widget core */
-.fl-theme-rust .fl-widget {background:#662e0f url(FSS_images/themes/rust/widget-earmark.png) no-repeat top left;}
+.fl-theme-rust .fl-widget {background:#662e0f url(../images/themes/rust/widget-earmark.png) no-repeat top left;}
     .fl-theme-rust .fl-widget ul {}
     .fl-theme-rust .fl-widget h2 {color:#FFFBC2;}
-    .fl-theme-rust .grabbable {background-image:url('FSS_images/themes/rust/gripper.png');}
+    .fl-theme-rust .grabbable {background-image:url('../images/themes/rust/gripper.png');}
 
 /* Widget titlebar */
 .fl-theme-rust .fl-widget-titlebar {/*margin:-5px -5px 0 -5px;*/}

@@ -35,9 +35,9 @@
 /* Helper: Buttons */
 .fl-theme-slate .fl-button-left,
 .fl-theme-slate .fl-button-right {color:#FFFFFF !important; background-color:#999 !important;}
-.fl-theme-slate .fl-button-left {background-image:url(FSS_images/themes/slate/buttons-med-cap.png);}
-.fl-theme-slate .fl-button-right {background-image:url(FSS_images/themes/slate/buttons-med-cap.png);}
-.fl-theme-slate .fl-button-inner {background-image:url(FSS_images/themes/slate/buttons-med-bg.png);}
+.fl-theme-slate .fl-button-left {background-image:url(../images/themes/slate/buttons-med-cap.png);}
+.fl-theme-slate .fl-button-right {background-image:url(../images/themes/slate/buttons-med-cap.png);}
+.fl-theme-slate .fl-button-inner {background-image:url(../images/themes/slate/buttons-med-bg.png);}
 
 /* Helper: Tabs */
 .fl-theme-slate .fl-tabs {border-bottom-color:#999999;}
@@ -70,22 +70,22 @@
 
 /* Helper: Widgets */
 /* Widget core */
-.fl-theme-slate .fl-widget {background:#cccccc url(FSS_images/themes/slate/widget-bg.png) repeat-x top left; border:1px solid #666666;}                        
+.fl-theme-slate .fl-widget {background:#cccccc url(../images/themes/slate/widget-bg.png) repeat-x top left; border:1px solid #666666;}                        
 .fl-theme-slate .fl-widget ul {}
 .fl-theme-slate .fl-widget h2 {color:#ccc;}
-.fl-theme-slate .fl-widget .fl-icon-more  {background-image:url('FSS_images/themes/slate/icon-widget-More.png'); margin-left:0px;}
-.fl-theme-slate .fl-widget .fl-icon-close {background-image:url('FSS_images/themes/slate/icon-widget-Close.png'); margin-right:0px;}
+.fl-theme-slate .fl-widget .fl-icon-more  {background-image:url('../images/themes/slate/icon-widget-More.png'); margin-left:0px;}
+.fl-theme-slate .fl-widget .fl-icon-close {background-image:url('../images/themes/slate/icon-widget-Close.png'); margin-right:0px;}
 
 /* Widget titlebar */
-.fl-theme-slate .fl-grabbable .fl-widget-titlebar {background-image:url('FSS_images/themes/slate/icon-widget-gripper.png');}
+.fl-theme-slate .fl-grabbable .fl-widget-titlebar {background-image:url('../images/themes/slate/icon-widget-gripper.png');}
 .fl-theme-slate .fl-widget-titlebar .icon {background-position:center center;}
 .fl-theme-slate .fl-widget-titlebar .fl-button-right,
 .fl-theme-slate .fl-widget-titlebar .fl-button-left {
     color:#333 !important;
-    background-image:url(FSS_images/themes/slate/buttons-titlebar-cap.png);
+    background-image:url(../images/themes/slate/buttons-titlebar-cap.png);
 }
 .fl-theme-slate .fl-widget-titlebar .fl-button-inner {
-    background-image:url(FSS_images/themes/slate/buttons-titlebar-bg.png);
+    background-image:url(../images/themes/slate/buttons-titlebar-bg.png);
     padding-bottom:0.3em;
     padding-top:0;
 }
@@ -109,7 +109,7 @@
 
 /* Enhaced Graphics Toggles */
 .fl-theme-slate .fl-widget-content .fl-tabs-enhanced {
-    background:url(FSS_images/themes/slate/tabs-med-container-bg.png) repeat-x left bottom;
+    background:url(../images/themes/slate/tabs-med-container-bg.png) repeat-x left bottom;
     border-bottom:none;
     margin:10px 1px 0;
     padding:5px 0 6px;
@@ -117,12 +117,12 @@
 }
 
 .fl-theme-slate .fl-widget-content .fl-tabs-enhanced li {
-    background: transparent url(FSS_images/themes/slate/tabs-med-cap.png) no-repeat left top; 
+    background: transparent url(../images/themes/slate/tabs-med-cap.png) no-repeat left top; 
     padding:4px 0 6px 16px;
     *padding-top:0;
 }
 .fl-theme-slate .fl-widget-content .fl-tabs-enhanced li a {
-    background: transparent url(FSS_images/themes/slate/tabs-med-bg.png) no-repeat right top; 
+    background: transparent url(../images/themes/slate/tabs-med-bg.png) no-repeat right top; 
     border:none;
     margin:0;
     padding:4px 16px 6px 0;
@@ -130,9 +130,9 @@
     *padding-bottom:4px;
 }
 .fl-theme-slate .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active {
-    background:transparent url(FSS_images/themes/slate/tabs-med-active-cap.png) no-repeat scroll left top;
+    background:transparent url(../images/themes/slate/tabs-med-active-cap.png) no-repeat scroll left top;
 }
 .fl-theme-slate .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active a {
-    background:transparent url(FSS_images/themes/slate/tabs-med-active-bg.png) no-repeat scroll right top;
+    background:transparent url(../images/themes/slate/tabs-med-active-bg.png) no-repeat scroll right top;
     color:#000000 !important;
 }

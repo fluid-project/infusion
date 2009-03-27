@@ -35,9 +35,9 @@
 /* Helper: buttons */
 .fl-theme-coal .fl-button-left, 
 .fl-theme-coal .fl-button-right {color:#FFFFFF !important; background-color:#333 !important;}
-.fl-theme-coal .fl-button-left {background-image:url(FSS_images/themes/coal/buttons-med-cap.png);}
-.fl-theme-coal .fl-button-right {background-image:url(FSS_images/themes/coal/buttons-med-cap.png);}
-.fl-theme-coal .fl-button-inner {background-image:url(FSS_images/themes/coal/buttons-med-bg.png);}
+.fl-theme-coal .fl-button-left {background-image:url(../images/themes/coal/buttons-med-cap.png);}
+.fl-theme-coal .fl-button-right {background-image:url(../images/themes/coal/buttons-med-cap.png);}
+.fl-theme-coal .fl-button-inner {background-image:url(../images/themes/coal/buttons-med-bg.png);}
 
 .fl-theme-coal a.fl-button-left:hover,
 .fl-theme-coal a.fl-button-right:hover {color:#ffffff !important}
@@ -74,22 +74,22 @@
 
 /* Helper: Widgets */
 /* Widget core */
-.fl-theme-coal .fl-widget {background:#333333 url(FSS_images/themes/coal/widget-bg.png) repeat-x top left; border:1px solid #000000;}                        
+.fl-theme-coal .fl-widget {background:#333333 url(../images/themes/coal/widget-bg.png) repeat-x top left; border:1px solid #000000;}                        
 .fl-theme-coal .fl-widget ul {}
 .fl-theme-coal .fl-widget h2 {color:#ffffff;}
-.fl-theme-coal .fl-widget .fl-icon-more  {background-image:url('FSS_images/themes/coal/icon-widget-More.png'); margin-left:0px;}
-.fl-theme-coal .fl-widget .fl-icon-close {background-image:url('FSS_images/themes/coal/icon-widget-Close.png'); margin-right:0px;}
+.fl-theme-coal .fl-widget .fl-icon-more  {background-image:url('../images/themes/coal/icon-widget-More.png'); margin-left:0px;}
+.fl-theme-coal .fl-widget .fl-icon-close {background-image:url('../images/themes/coal/icon-widget-Close.png'); margin-right:0px;}
 
 /* Widget titlebar */
-.fl-theme-coal .fl-grabbable .fl-widget-titlebar {background-image:url('FSS_images/themes/coal/icon-widget-gripper.png');}
+.fl-theme-coal .fl-grabbable .fl-widget-titlebar {background-image:url('../images/themes/coal/icon-widget-gripper.png');}
 .fl-theme-coal .fl-widget-titlebar {background-position:center top; background-repeat:no-repeat;}
 .fl-theme-coal .fl-widget-titlebar .icon {background-position:center center;}
 .fl-theme-coal .fl-widget-titlebar .fl-button-right,
 .fl-theme-coal .fl-widget-titlebar .fl-button-left {
-    background-image:url(FSS_images/themes/coal/buttons-titlebar-cap.png);
+    background-image:url(../images/themes/coal/buttons-titlebar-cap.png);
 }
 .fl-theme-coal .fl-widget-titlebar .fl-button-inner {
-    background-image:url(FSS_images/themes/coal/buttons-titlebar-bg.png);
+    background-image:url(../images/themes/coal/buttons-titlebar-bg.png);
     padding-bottom:0.3em;
     padding-top:0;
 }
@@ -113,11 +113,11 @@
 
 /* Enhaced Graphics Toggles */
 .fl-theme-coal .fl-widget-content .fl-tabs-content-enhanced {
-    background:#ebebeb url(FSS_images/themes/coal/tabs-light-content-bg.png) repeat-x left top;
+    background:#ebebeb url(../images/themes/coal/tabs-light-content-bg.png) repeat-x left top;
     border:none;
 }
 .fl-theme-coal .fl-widget-content .fl-tabs-enhanced {
-    background:url(FSS_images/themes/coal/tabs-light-container-bg.png) repeat-x left bottom;
+    background:url(../images/themes/coal/tabs-light-container-bg.png) repeat-x left bottom;
     border-bottom:none;
     margin:10px 0 0;
     padding:5px 0 6px;
@@ -125,12 +125,12 @@
 }
 
 .fl-theme-coal .fl-widget-content .fl-tabs-enhanced li {
-    background: transparent url(FSS_images/themes/coal/tabs-light-cap.png) no-repeat left top; 
+    background: transparent url(../images/themes/coal/tabs-light-cap.png) no-repeat left top; 
     padding:4px 0 6px 16px;
     *padding-top:0;
 }
 .fl-theme-coal .fl-widget-content .fl-tabs-enhanced li a {
-    background: transparent url(FSS_images/themes/coal/tabs-light-bg.png) no-repeat right top; 
+    background: transparent url(../images/themes/coal/tabs-light-bg.png) no-repeat right top; 
     border:none;
     margin:0;
     padding:4px 16px 6px 0;
@@ -138,9 +138,9 @@
     *padding-bottom:4px;
 }
 .fl-theme-coal .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active {
-    background:transparent url(FSS_images/themes/coal/tabs-light-active-cap.png) no-repeat scroll left top;
+    background:transparent url(../images/themes/coal/tabs-light-active-cap.png) no-repeat scroll left top;
 }
 .fl-theme-coal .fl-widget-content .fl-tabs-enhanced li.fl-tabs-active a {
-    background:transparent url(FSS_images/themes/coal/tabs-light-active-bg.png) no-repeat scroll right top;
+    background:transparent url(../images/themes/coal/tabs-light-active-bg.png) no-repeat scroll right top;
     color:#ffffff !important;
 }
