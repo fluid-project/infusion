@@ -1,22 +1,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>Renderer Example: Data-Binding</title>
-        <link rel="stylesheet" type="text/css" href="../renderer-examples.css" />
-        
-        <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.3.2.js"></script>
-        <script type="text/javascript" src="../../../fluid-components/js/json/json2.js"></script>
-        <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
-        <script type="text/javascript" src="../../../fluid-components/js/fluid/DataBinding.js"></script>
-        <script type="text/javascript" src="../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
-        <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fastXmlPull.js"></script>
-        <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidParser.js"></script>
-        <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidRenderer.js"></script>
-        <script type="text/javascript" src="../../../fluid-components/js/json/json2.js"></script>
-        <script type="text/javascript" src="menu.js"></script>
+        <title>Renderer Example: Data-Binding with Programmatically-generated Component Tree</title>
+        <link rel="stylesheet" type="text/css" href="../css/renderer-examples.css" />
+
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../js/programmatic-tree-menu.js"></script>
     </head>
     <body>
-        <h1>Renderer Example: Data-binding</h1>
+        <h1>Renderer Example: Data-Binding with Programmatically-generated Component Tree</h1>
         <p class="info">The mark-up below is, initially, the template that will be used to render data.
            When the "Render" button is clicked, the template will be replaced by the rendered mark-up. The model used
            to render the data will also be displayed below each column.</p>
