@@ -151,7 +151,7 @@ fluid_1_0 = fluid_1_0 || {};
         transparentEvenInIE: false,
         
         // Used only when the Flash movie is visible.
-        flashButtonImageURL: "../../images/uploader/browse.png",
+        flashButtonImageURL: "../images/browse.png",
         flashButtonHeight: 22,
         flashButtonWidth: 106,
         
@@ -383,7 +383,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.defaults("fluid.swfUploadManager", {
         uploadURL: "",
-        flashURL: "../../flash/swfupload.swf",
+        flashURL: "../../../lib/swfupload/flash/swfupload.swf",
         flashButtonPeerId: "",
         postParams: {},
         fileSizeLimit: "20480",
