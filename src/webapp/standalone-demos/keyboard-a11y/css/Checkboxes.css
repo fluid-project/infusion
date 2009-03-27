@@ -1,5 +1,5 @@
 .graphicBox {
-    background-image: url("unchecked.png");
+    background-image: url("../images/unchecked.png");
     background-repeat: no-repeat;
     background-position: center left;
     padding: 10px 0px 10px 30px;
@@ -10,7 +10,7 @@
 }
 
 .checked {
-    background-image: url("checked.png");
+    background-image: url("../images/checked.png");
 }
 
 .checkboxRow {
