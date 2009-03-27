@@ -119,7 +119,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             // Ensure our default options are cool.
             jqUnit.assertTrue("simulateDelay should default to true.", demoManager.options.simulateDelay);
             jqUnit.assertEquals("We should have inherited our parent's default options.",
-                                "../../flash/swfupload.swf",
+                                "../../../lib/swfupload/flash/swfupload.swf",
                                 demoManager.options.flashURL);
                                 
             // Test an alternative option. simulateDelay should be false.
