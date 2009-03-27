@@ -4,11 +4,11 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>Simple Layout Reorderer Sample</title>
         
-        <link rel="stylesheet" type="text/css" href="../css/fluid.layout.css" />
-        <link rel="stylesheet" type="text/css" href="../css/fluid.states.css" />
-        <link rel="stylesheet" type="text/css" href="../css/fluid.text.css" />
-        <link rel="stylesheet" type="text/css" href="../css/fluid.theme.mist.css" />
-        <link rel="stylesheet" type="text/css" href="../css/fluid.theme.hc.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss.layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss.states.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss.text.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss.theme.mist.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss.theme.hc.css" />
         <style type="text/css">
             body {font:normal 12px "Arial","Tahoma",sans-serif}
             h1 {font-size:125%; padding:5px;}
@@ -17,18 +17,19 @@
             .myColumn div {padding:10px; background-color:#fff; border:1px solid #ccc; margin:5px 0;}
         </style>
         
-        <script type="text/javascript" src="../js/jquery/jquery-1.3.2.js"></script>
-        <script type="text/javascript" src="../js/jquery/ui.core.js"></script>
-        <script type="text/javascript" src="../js/jquery/ui.draggable.js"></script>
-        <script type="text/javascript" src="../js/jquery/jquery.keyboard-a11y.js"></script>
-        <script type="text/javascript" src="../js/json/json2.js"></script>
+
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../lib/json/js/json2.js"></script>
         
-        <script type="text/javascript" src="../js/fluid/Fluid.js"></script>
-        <script type="text/javascript" src="../js/fluid/FluidDOMUtilities.js"></script>
-        <script type="text/javascript" src="../js/fluid/GeometricManager.js"></script>        
-        <script type="text/javascript" src="../js/fluid/Reorderer.js"></script>
-        <script type="text/javascript" src="../js/fluid/LayoutReorderer.js"></script>
-        <script type="text/javascript" src="../js/fluid/ModuleLayout.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/GeometricManager.js"></script>        
+        <script type="text/javascript" src="../../../../components/reorderer/js/Reorderer.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/LayoutReorderer.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/ModuleLayout.js"></script>
         <script type="text/javascript">
             // all elements (columns and sortable portlets) must have a unique ID as of Fluid 0.4
             // Can this change to either manually or automatically assigning unique identifiers/classnames (avoiding taking over the ID)?
