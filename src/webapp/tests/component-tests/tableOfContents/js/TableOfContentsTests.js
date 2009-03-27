@@ -49,7 +49,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var options = {
             listeners: {afterRender: theTest},
-            templateUrl: "../../fluid-components/html/templates/TableOfContents.html"
+            templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
         };
 
         var toc = fluid.tableOfContents("#main", options);
