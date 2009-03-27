@@ -1,0 +1,4 @@
+{"jQueryUICore": {
+	"files": "ui.core.js",
+	"dependencies": "jqueryCore"
+}}

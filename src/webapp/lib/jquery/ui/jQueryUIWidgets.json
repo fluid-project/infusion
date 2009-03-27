@@ -1,0 +1,4 @@
+{"jqueryUIWidgets": {
+	"files": ["ui.dialog.js", "ui.draggable.js", "ui.accordion.js", "ui.slider.js", "ui.bgiframe.js"],
+	"dependencies": ["jquery_core", "ui_core"]
+}}

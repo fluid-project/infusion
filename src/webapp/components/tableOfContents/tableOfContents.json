@@ -1,0 +1,4 @@
+{"tableOfContents": {
+	"files": "TableOfContents.js",
+	"dependencies": ["jqueryCore", "framework", "renderer"]
+}}

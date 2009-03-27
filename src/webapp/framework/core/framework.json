@@ -1,0 +1,4 @@
+{"framework": {
+	"files": ["Fluid.js", "FluidDOMUtilities.js", "DataBinding.js", "jquery.keyboard-a11y.js"],
+	"dependencies": ["jquery-core", "uiCore"]
+}}
