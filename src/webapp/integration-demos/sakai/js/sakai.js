@@ -20,7 +20,7 @@ $(function () {
         },
         tableOfContents: {
             options: {
-                templateUrl: "../../../fluid-components/html/templates/TableOfContents.html"
+                templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
             }
 
         }
@@ -73,7 +73,7 @@ $(function () {
     $('.lookNfeel a').click(function () {
         dialog_container.dialog("open");
         if (!uiOptions) {
-            $('#dialog_content').load('../../../fluid-components/html/templates/UIOptions.html .uiOptions', initDialog);            
+            $('#dialog_content').load('../../../components/uiOptions/html/UIOptions.html .uiOptions', initDialog);            
         }
     });  
    
