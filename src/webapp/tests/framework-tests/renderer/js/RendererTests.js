@@ -657,8 +657,8 @@ fluid.tests = fluid.tests || {};
           fluid.unescapeProperties("\\\\\\\\\\\\\\\\\\\\\ \\t\\nThing\\x53\\u0000\\"));
       });
 
-    var resourceSpec = {properties: {href: "data/testProperties.properties"},
-                              json: {href: "data/testProperties.json"}};    
+    var resourceSpec = {properties: {href: "../data/testProperties.properties"},
+                              json: {href: "../data/testProperties.json"}};    
     fluid.fetchResources(resourceSpec, function() {
         renderTests.test("Properties file parsing", function() {
             jqUnit.assertNotNull("Fetched properties file", resourceSpec.properties.resourceText);
