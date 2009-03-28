@@ -3,7 +3,7 @@
     var deepEqTests = new jqUnit.TestCase ("Deep Equivalence Tests");
     
     deepEqTests.test("Test", function () {
-      jqUnit.expect(12);
+      expect(12);
       jqUnit.assertDeepEq("eq1", {p1: "thing1"}, {p1: "thing1"});
       jqUnit.assertDeepNeq("eq2", {p1: "thing1"}, {p2: "thing1"});
       jqUnit.assertDeepNeq("eq3", {p1: "thing1"}, null);
@@ -20,7 +20,7 @@
 
 
    deepEqTests.test("THESE TESTS SHOULD FAIL - testing message support", function() {
-     jqUnit.expect(4);
+     expect(4);
      jqUnit.assertDeepEq("eq12", [1, 2, 3, 4, 5], [1, 2, 3, 4, 6]);
      jqUnit.assertDeepEq("eq10", [1, 2], [1, 2, 3]);
      jqUnit.assertDeepEq("eq11", [1, [2, 3, 4]], [1, [2, 3, 4, 5]]);
