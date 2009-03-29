@@ -1,0 +1,6 @@
+Version 0.5
+- Fix the highlight issue by separating css classes (currentClass, hoverClass)
+- Remove current class after selecting an option 
+Version 0.4:
+-Fix width when the select is in a hidden div
+-Add a unique id for the generated li to avoid conflict with other selects and empty select values
