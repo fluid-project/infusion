@@ -41,7 +41,7 @@ input {
     padding: 0 1.3em 0 1em !important;
 }
 
-.current-page a {
+.fl-pager-currentPage a {
     color: #000000;
     border: 0;
     text-decoration: none;

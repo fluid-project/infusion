@@ -243,7 +243,7 @@ fluid_1_0 = fluid_1_0 || {};
        },
        
        styles: {
-           currentPage: "current-page",
+           currentPage: "fl-pager-currentPage",
            disabled: "disabled"
        }
     });
@@ -497,7 +497,7 @@ fluid_1_0 = fluid_1_0 || {};
         var idMap = options.renderOptions.idMap;
 		var root = that.locate("root");
         var template = fluid.selfRender(root, {}, options.renderOptions);
-        root.addClass("fl-components-pager");
+        root.addClass("fl-pager");
         var columnDefs = getColumnDefs(overallThat);
         var expOpts = {options: options, columnDefs: columnDefs, overallOptions: overallThat.options, dataModel: overallThat.options.dataModel, idMap: idMap};
         var directModel = fetchModel(overallThat);
@@ -763,8 +763,8 @@ fluid_1_0 = fluid_1_0 || {};
         
         styles: {
             tooltip: "pager-tooltip",
-            ascendingHeader: "fl-asc",
-            descendingHeader: "fl-desc"
+            ascendingHeader: "fl-pager-asc",
+            descendingHeader: "fl-pager-desc"
         },
         
         strings: {

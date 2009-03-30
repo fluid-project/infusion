@@ -6,47 +6,47 @@
 /***********************************************************/
 /** LAYOUT **/
 /* Pager data */
-.fl-components-pager .fl-pager-data {
+.fl-pager .fl-pager-data {
 }
-.fl-components-pager .fl-pager-data .fl-desc {
+.fl-pager .fl-pager-data .fl-pager-desc {
   background: url(../images/pager/arrow-up.png) no-repeat right;
 }
-.fl-components-pager .fl-pager-data .fl-asc {
+.fl-pager .fl-pager-data .fl-pager-asc {
   background: url(../images/pager/arrow-dn.png) no-repeat right;
 }
 
 /* Pager UI */
 /* Class name for the list container */
-.fl-components-pager .fl-pager-ui {
+.fl-pager .fl-pager-ui {
     margin:0; padding:0;
 }
-.fl-components-pager .fl-pager-ui li {
+.fl-pager .fl-pager-ui li {
     list-style-type:none;
     display:inline;
 }
-.fl-components-pager .fl-pager-ui a {
+.fl-pager .fl-pager-ui a {
     padding:0 3px;
     margin:0 2px;
 }
-.fl-components-pager .fl-pager-ui .fl-pager-links a {    
+.fl-pager .fl-pager-ui .fl-pager-links a {    
     border:1px solid #ccc;
     background-color:#fff;
     zoom:1;
 }
-.fl-components-pager .fl-pager-ui .fl-pager-links .fl-pager-current,
-.fl-components-pager .fl-pager-ui .fl-pager-links .current-page {
+.fl-pager .fl-pager-ui .fl-pager-links .fl-pager-current,
+.fl-pager .fl-pager-ui .fl-pager-links .fl-pager-currentPage {
     color:#000;
     border:none;
     background-color:transparent;
     text-decoration:none;
 }
-.fl-components-pager .fl-pager-ui .fl-pager-links a:hover {
+.fl-pager .fl-pager-ui .fl-pager-links a:hover {
     background-color:#0287C5;
     color:#fff;
     text-decoration:none;
 }
-.fl-components-pager .fl-pager-ui .fl-pager-links .fl-pager-current:hover,
-.fl-components-pager .fl-pager-ui .fl-pager-links .current-page:hover {
+.fl-pager .fl-pager-ui .fl-pager-links .fl-pager-current:hover,
+.fl-pager .fl-pager-ui .fl-pager-links .fl-pager-currentPage:hover {
     background-color:transparent;
     color:#000;
     text-decoration:none;
@@ -56,12 +56,12 @@
 /***********************************************************/
 /** THEMES - High Contrast **/
 /* Pager data */
-.fl-theme-hc .fl-components-pager .fl-pager-data {
+.fl-theme-hc .fl-pager .fl-pager-data {
 }
-.fl-theme-hc .fl-components-pager .fl-pager-data .fl-desc {
+.fl-theme-hc .fl-pager .fl-pager-data .fl-pager-desc {
   background: url(../images/pager/arrow-up.png) no-repeat right;
 }
-.fl-theme-hc .fl-components-pager .fl-pager-data .fl-asc {
+.fl-theme-hc .fl-pager .fl-pager-data .fl-pager-asc {
   background: url(../images/pager/arrow-dn.png) no-repeat right;
 }
 
