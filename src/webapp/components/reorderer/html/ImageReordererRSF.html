@@ -12,18 +12,18 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Fluid Image Reorderer</title>
-    <link href="../../css/ImageReorderer.css" rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" />
+    <link href="../css/ImageReorderer.css" rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" />
     
     <!--  Required javascript modules for the Image Reorderer which can be replaced with the build generated file Fluid-all.js -->
-    <script type="text/javascript" src="../../js/jquery/jquery-1.3.2.js" rsf:id="scr=contribute-script"></script>
-    <script type="text/javascript" src="../../js/jquery/ui.core.js" rsf:id="scr=contribute-script"></script>
-    <script type="text/javascript" src="../../js/jquery/ui.draggable.js" rsf:id="scr=contribute-script"></script>
-    <script type="text/javascript" src="../../js/jquery/jquery.keyboard-a11y.js" rsf:id="scr=contribute-script"></script>
-    <script type="text/javascript" src="../../js/fluid/Fluid.js" rsf:id="scr=contribute-script"></script>
-    <script type="text/javascript" src="../../js/fluid/FluidDOMUtilities.js" rsf:id="scr=contribute-script"></script>
-    <script type="text/javascript" src="../../js/fluid/GeometricManager.js" rsf:id="scr=contribute-script"></script>
-    <script type="text/javascript" src="../../js/fluid/Reorderer.js" rsf:id="scr=contribute-script"></script>
-    <script type="text/javascript" src="../../js/fluid/ImageReorderer.js" rsf:id="scr=contribute-script"></script>
+    <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js" rsf:id="scr=contribute-script"></script>
+    <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js" rsf:id="scr=contribute-script"></script>
+    <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.draggable.js" rsf:id="scr=contribute-script"></script>
+    <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js" rsf:id="scr=contribute-script"></script>
+    <script type="text/javascript" src="../../../framework/core/js/Fluid.js" rsf:id="scr=contribute-script"></script>
+    <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js" rsf:id="scr=contribute-script"></script>
+    <script type="text/javascript" src="../../reorderer/js/GeometricManager.js" rsf:id="scr=contribute-script"></script>
+    <script type="text/javascript" src="../../reorderer/js/Reorderer.js" rsf:id="scr=contribute-script"></script>
+    <script type="text/javascript" src="../../reorderer/js/ImageReorderer.js" rsf:id="scr=contribute-script"></script>
     
     <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. --> 
     <script type="text/javascript" rsf:id="scr=contribute-script">
@@ -55,12 +55,12 @@
               <!--  The RSF gallery contains the markup for this inner div in another template. -->
               <div class="image-inner-container">
               
-                <a id="focus-element1" href="../../images/Dragonfruit.jpg">
-                  <img id="fluid.img.first" src="../../images/Dragonfruit.jpg" alt="Dragonfruit"/>
+                <a id="focus-element1" href="../images/Dragonfruit.jpg">
+                  <img id="fluid.img.first" src="../images/Dragonfruit.jpg" alt="Dragonfruit"/>
                 </a>
               </div>
               <div class="image-title">
-                <a href="../../images/Dragonfruit.jpg" >Dragonfruit</a>
+                <a href="../images/Dragonfruit.jpg" >Dragonfruit</a>
               </div>
             </div>
           
@@ -77,12 +77,12 @@
           <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:1:">
             <div>
               <div class="image-inner-container">
-                <a href="../../images/Kiwano.jpg" >
-                  <img id="fluid.img.second" src="../../images/Kiwano.jpg" alt="Kiwano"/>
+                <a href="../images/Kiwano.jpg" >
+                  <img id="fluid.img.second" src="../images/Kiwano.jpg" alt="Kiwano"/>
                 </a>
               </div>
               <div class="image-title">
-                <a href="../../images/Kiwano.jpg" >Kiwano</a>
+                <a href="../images/Kiwano.jpg" >Kiwano</a>
               </div>
             </div>
             <input id="gallery:::gallery-thumbs:::lightbox-cell:1:reorder-index" value="1" type="hidden"/>      
@@ -91,12 +91,12 @@
           <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:2:">
 		        <div>
 		          <div class="image-inner-container">
-		            <a href="../../images/Blackberry.jpg" >
-		              <img id="fluid.img.3" src="../../images/Blackberry.jpg" alt="Blackberry"/>
+		            <a href="../images/Blackberry.jpg" >
+		              <img id="fluid.img.3" src="../images/Blackberry.jpg" alt="Blackberry"/>
 		            </a>
 		          </div>
 		          <div class="image-title">
-		            <a href="../../images/Blackberry.jpg" >Blackberry</a>
+		            <a href="../images/Blackberry.jpg" >Blackberry</a>
 		          </div>
 		        </div>
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:2:reorder-index" value="2" type="hidden"/>
@@ -105,12 +105,12 @@
 		      <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:3:">
 	          <div>
 		          <div class="image-inner-container">
-		            <a href="../../images/Cherry.jpg">
-		              <img id="fluid.img.4" src="../../images/Cherry.jpg" alt="Cherry"/>
+		            <a href="../images/Cherry.jpg">
+		              <img id="fluid.img.4" src="../images/Cherry.jpg" alt="Cherry"/>
 		            </a>
 		          </div>
 		          <div class="image-title">
-		            <a href="../../images/Cherry.jpg" >Cherry</a>
+		            <a href="../images/Cherry.jpg" >Cherry</a>
 		          </div>
 		        </div>
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:3:reorder-index" value="3" type="hidden"/>
@@ -119,12 +119,12 @@
 		      <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:4:">
 		        <div>
 		          <div class="image-inner-container">
-		            <a href="../../images/Fig.jpg">
-		              <img id="fluid.img.5" src="../../images/Fig.jpg" alt="Fig"/>
+		            <a href="../images/Fig.jpg">
+		              <img id="fluid.img.5" src="../images/Fig.jpg" alt="Fig"/>
 		            </a>
 		          </div>
 		          <div class="image-title">
-		            <a href="../../images/Fig.jpg" >Fig</a>
+		            <a href="../images/Fig.jpg" >Fig</a>
 		          </div>
 		        </div>
 	          <input id="gallery:::gallery-thumbs:::lightbox-cell:4:reorder-index" value="4" type="hidden"/>        
@@ -133,12 +133,12 @@
 		      <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:5:">
 		        <div>
 		          <div class="image-inner-container">
-		            <a href="../../images/Grapes.jpg">
-		              <img id="fluid.img.6" src="../../images/Grapes.jpg" alt="Grapes"/>
+		            <a href="../images/Grapes.jpg">
+		              <img id="fluid.img.6" src="../images/Grapes.jpg" alt="Grapes"/>
 		            </a>
 		          </div>
 		          <div class="image-title">
-		            <a href="../../images/Grapes.jpg" >Grapes</a>
+		            <a href="../images/Grapes.jpg" >Grapes</a>
 		          </div>
 		        </div>
 	          <input id="gallery:::gallery-thumbs:::lightbox-cell:5:reorder-index" value="5" type="hidden"/>
@@ -147,12 +147,12 @@
 		      <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:6:">
 		        <div>
 		          <div class="image-inner-container">
-		            <a href="../../images/Kiwi.jpg" >
-		              <img id="fluid.img.7" src="../../images/Kiwi.jpg" alt="Kiwi"/>
+		            <a href="../images/Kiwi.jpg" >
+		              <img id="fluid.img.7" src="../images/Kiwi.jpg" alt="Kiwi"/>
 		            </a>
 		          </div>
 		          <div class="image-title">
-		            <a href="../../images/Kiwi.jpg" >Kiwi</a>
+		            <a href="../images/Kiwi.jpg" >Kiwi</a>
 		          </div>
 		        </div>
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:6:reorder-index" value="6" type="hidden"/>
@@ -161,12 +161,12 @@
 		      <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:7:">
 		        <div>
 		          <div class="image-inner-container">
-		            <a href="../../images/Kumquat.jpg">
-		              <img id="fluid.img.8" src="../../images/Kumquat.jpg" alt="Kumquat"/>
+		            <a href="../images/Kumquat.jpg">
+		              <img id="fluid.img.8" src="../images/Kumquat.jpg" alt="Kumquat"/>
 		            </a>
 		          </div>
 		          <div class="image-title">
-		            <a href="../../images/Kumquat.jpg" >Kumquat</a>
+		            <a href="../images/Kumquat.jpg" >Kumquat</a>
 		          </div>
 		        </div>
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:7:reorder-index" value="7" type="hidden"/>
@@ -175,12 +175,12 @@
 		      <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:8:">
 		        <div>
 		          <div class="image-inner-container">
-		            <a href="../../images/Lemon.jpg">
-		              <img id="fluid.img.9" src="../../images/Lemon.jpg" alt="Lemon"/>
+		            <a href="../images/Lemon.jpg">
+		              <img id="fluid.img.9" src="../images/Lemon.jpg" alt="Lemon"/>
 		            </a>
 		          </div>
 		          <div class="image-title">
-		            <a href="../../images/Lemon.jpg" >Lemon</a>
+		            <a href="../images/Lemon.jpg" >Lemon</a>
 		          </div>
 		        </div>
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:8:reorder-index" value="8" type="hidden"/>
@@ -189,12 +189,12 @@
 		      <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:9:">
 		        <div>
 		          <div class="image-inner-container">
-		            <a href="../../images/Orange.jpg">
-		              <img id="fluid.img.10" src="../../images/Orange.jpg" alt="Orange"/>
+		            <a href="../images/Orange.jpg">
+		              <img id="fluid.img.10" src="../images/Orange.jpg" alt="Orange"/>
 		            </a>
 		          </div>
 		          <div class="image-title">
-		            <a href="../../images/Orange.jpg" >Orange</a>
+		            <a href="../images/Orange.jpg" >Orange</a>
 		          </div>
 		        </div>
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:9:reorder-index" value="9" type="hidden"/>
@@ -203,12 +203,12 @@
 		      <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:10:">
 		        <div>
 		          <div class="image-inner-container">
-		            <a href="../../images/RedApple.jpg">
-		              <img id="fluid.img.11" src="../../images/RedApple.jpg" alt="RedApple"/>
+		            <a href="../images/RedApple.jpg">
+		              <img id="fluid.img.11" src="../images/RedApple.jpg" alt="RedApple"/>
 		            </a>
 		          </div>
 		          <div class="image-title">
-		            <a href="../../images/RedApple.jpg" >RedApple</a>
+		            <a href="../images/RedApple.jpg" >RedApple</a>
 		          </div>
 		        </div>
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:10:reorder-index" value="10" type="hidden"/>
@@ -217,12 +217,12 @@
 		      <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:11:">
 		        <div>
 		          <div class="image-inner-container">
-		            <a href="../../images/Tamarillo.jpg">
-		              <img id="fluid.img.12" src="../../images/Tamarillo.jpg" alt="Tamarillo"/>
+		            <a href="../images/Tamarillo.jpg">
+		              <img id="fluid.img.12" src="../images/Tamarillo.jpg" alt="Tamarillo"/>
 		            </a>
 		          </div>
 		          <div class="image-title">
-		            <a href="../../images/Tamarillo.jpg" >Tamarillo</a>
+		            <a href="../images/Tamarillo.jpg" >Tamarillo</a>
 		          </div>
 		        </div>
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:11:reorder-index" value="11" type="hidden"/>
@@ -231,12 +231,12 @@
 		      <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:12:">
 		        <div>
 		          <div class="image-inner-container">
-		            <a href="../../images/Mangosteen.jpg">
-		              <img id="fluid.img.secondLast" src="../../images/Mangosteen.jpg" alt="Mangosteen"/>
+		            <a href="../images/Mangosteen.jpg">
+		              <img id="fluid.img.secondLast" src="../images/Mangosteen.jpg" alt="Mangosteen"/>
 		            </a>
 		          </div>
 		          <div class="image-title">
-		            <a href="../../images/Mangosteen.jpg" >Mangosteen</a>
+		            <a href="../images/Mangosteen.jpg" >Mangosteen</a>
 		          </div>
 		        </div>
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:12:reorder-index" value="12" type="hidden"/>
@@ -245,12 +245,12 @@
 		      <div rsf:id="scr=ignore" id="gallery:::gallery-thumbs:::lightbox-cell:13:">
 		        <div>
 		          <div class="image-inner-container">
-		            <a href="../../images/Banana.jpg">
-		              <img id="fluid.img.last" src="../../images/Banana.jpg" alt="Banana"/>
+		            <a href="../images/Banana.jpg">
+		              <img id="fluid.img.last" src="../images/Banana.jpg" alt="Banana"/>
 		            </a>
 		          </div>
 		          <div class="image-title">
-		            <a href="../../images/Banana.jpg" >Banana</a>
+		            <a href="../images/Banana.jpg" >Banana</a>
 		          </div>
 		        </div>
 		        <input id="gallery:::gallery-thumbs:::lightbox-cell:13:reorder-index" value="13" type="hidden"/>
