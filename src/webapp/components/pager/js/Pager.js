@@ -178,7 +178,7 @@ fluid_1_0 = fluid_1_0 || {};
     fluid.defaults("fluid.pager.renderedPageList",
         {
           selectors: {
-            root: ".pager-links"
+            root: ".flc-pager-links"
           },
           linkBody: "a",
           pageStrategy: fluid.pager.everyPageStrategy
@@ -754,15 +754,15 @@ fluid_1_0 = fluid_1_0 || {};
         },
         
         selectors: {
-            pagerBar: ".pager-top",
-            pagerBarSecondary: ".pager-bottom",
-            summary: ".pager-summary",
-            pageSize: ".pager-page-size",
+            pagerBar: ".flc-pager-top",
+            pagerBarSecondary: ".flc-pager-bottom",
+            summary: ".flc-pager-summary",
+            pageSize: ".flc-pager-page-size",
             headerSortStylisticOffset: "th"
         },
         
         styles: {
-            tooltip: "pager-tooltip",
+            tooltip: "fl-pager-tooltip",
             ascendingHeader: "fl-pager-asc",
             descendingHeader: "fl-pager-desc"
         },
