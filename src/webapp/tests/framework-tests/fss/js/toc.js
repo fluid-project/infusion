@@ -28,7 +28,7 @@ $().ready(function(){
 
     // parse the # from the filename
     var uri = (""+window.location).split("fss/");
-    var currentTest = parseInt(uri[1].substr(0,1));
+    var currentTest = parseInt(uri[1].substr(5,6));
 	var next = '#', prev = '#', totalTests = FSSTestTOC.tests.length, thisTestIndex = currentTest-1, prevTestIndex = currentTest-2, nextTestIndex = currentTest;
 
 	next = (currentTest < totalTests) ? (currentTest+1) + "." + FSSTestTOC.tests[nextTestIndex].title.toLowerCase() + '.html' : next;
