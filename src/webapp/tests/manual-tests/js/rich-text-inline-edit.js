@@ -34,11 +34,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
            );
         makeButtons(richEditor2);
 
-        var richEditor3 = fluid.inlineEdit.FCKEditor("#FCK-editable-paragraph");
+        var richEditor3 = fluid.inlineEdit.FCKEditor("#FCK-editable-paragraph", 
+          {FCKEditor: {BasePath: "../../../lib/fckeditor/"}});
         makeButtons(richEditor3);
         
         var richEditor4 = fluid.inlineEdit.FCKEditor("#FCK-editable-paragraph-2", 
-          {FCKEditor: {Width: 600}}
+          {FCKEditor: {Width: 600, BasePath: "../../../lib/fckeditor/"}}
           );
         makeButtons(richEditor4);
         
