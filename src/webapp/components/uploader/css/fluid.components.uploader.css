@@ -6,6 +6,10 @@
     padding: 1em 2em;
 }
 
+.fl-ProgEnhance-enhanced {
+    display: none;
+}
+
 .fl-uploader td, .fl-uploader th {
     border: none;
 }

@@ -32,7 +32,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
            
                // 1.1
             jqUnit.notVisible("Before update, ensure default progress bar is not visible", 
-                    ".fl-progress");
+                    ".flc-progress");
             // 1.2
             jqUnit.notExists("Before update, ensure update text doesn't exist", 
                          ":contains(" + text + ")");         
@@ -46,14 +46,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // 2.1
             jqUnit.notVisible("Before update, ensure default progress bar is not visible", 
-                ".fl-progress");
+                ".flc-progress");
             
             // show the progress widget, override animation
             progressBar.show(false);
             
             // 2.2
             jqUnit.isVisible("After show, ensure default progress bar is visible", 
-                ".fl-progress");
+                ".flc-progress");
             
             // 2.3
             jqUnit.assertEquals("After show, expected minimal default indicator width of " + progressBar.options.minWidth + "px; actual ", 
@@ -64,7 +64,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // 2.4
             jqUnit.notVisible("After hide, ensure default progress bar is not visible", 
-                    ".fl-progress");
+                    ".flc-progress");
         
         });
 
@@ -77,7 +77,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // 3.1
             jqUnit.isVisible("After update, ensure default progress bar is visible", 
-                    ".fl-progress");
+                    ".flc-progress");
                     
             // 3.2
             jqUnit.notExists("After update with out text, ensure update text doesn't exist", 
@@ -95,7 +95,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // 4.1
             jqUnit.isVisible("After update, ensure default progress bar is visible", 
-                ".fl-progress");
+                ".flc-progress");
             
             // 4.2
             jqUnit.exists("After update with out percentage, ensure the new text exists", 
@@ -147,7 +147,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // 5.1
             jqUnit.isVisible("After update, ensure default progress bar is visible", 
-                ".fl-progress");
+                ".flc-progress");
             
             // 5.2
             jqUnit.assertTrue("After updating only pixels the label should still be empty", 
@@ -192,7 +192,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // 6.1
             jqUnit.isVisible("After update, ensure default progress bar is visible", 
-                    ".fl-progress");
+                    ".flc-progress");
             
             // 6.2
             jqUnit.assertTrue("After updating only pixels the label should still be empty", 
@@ -221,7 +221,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // 7.1
             jqUnit.isVisible("After update, ensure default progress bar is visible", 
-                ".fl-progress");
+                ".flc-progress");
             
             // 7.2
             jqUnit.assertTrue("After updating only pixels the label should still be empty", 
@@ -247,7 +247,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // 8.1
             jqUnit.isVisible("After update, ensure default progress bar is visible", 
-                ".fl-progress");
+                ".flc-progress");
             
             // 8.2        
             jqUnit.assertTrue("After updating only text the label should still be empty", 
@@ -287,7 +287,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // 9.1    
             jqUnit.isVisible("After show, ensure default progress bar is visible", 
-                ".fl-progress");
+                ".flc-progress");
             
             // 9.2                             
             jqUnit.assertTrue("After show, expected indicator width: 0; actual: " + progressBar.indicator.width(), 
@@ -316,7 +316,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         progressTests.test("ARIA initialization", function () {
             
-            var ARIAcontainer = $(".fl-progress-bar");
+            var ARIAcontainer = $(".flc-progress-bar");
             
             jqUnit.assertFalse("Before init: role should not exist", ARIAcontainer.attr("role"));
             jqUnit.assertFalse("Before init: valuemin should not exist", ARIAcontainer.attr("aria-valuemin"));
@@ -342,7 +342,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             var updateValue, busyVal;
             
-            var ARIAcontainer = $(".fl-progress-bar");
+            var ARIAcontainer = $(".flc-progress-bar");
             
             progressBar = createProgressBar("#progress-container", {animate: "none"});
             
@@ -379,7 +379,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             var updateValue, busyVal;
             
-            var ARIAcontainer = $(".fl-progress-bar");
+            var ARIAcontainer = $(".flc-progress-bar");
             
             var customDoneText = "Upload is fini.";
             

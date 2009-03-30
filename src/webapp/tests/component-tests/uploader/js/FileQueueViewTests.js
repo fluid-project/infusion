@@ -72,7 +72,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         // File Queue test case
         var setupFunction = function () {
-            qEl = $("#main .fl-uploader-queue");
+            qEl = $("#main .flc-uploader-queue");
             jqUnit.subvertAnimations();
         };
         
@@ -84,10 +84,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertNotNull("The queue should have a scroller attached to it.", q.scroller);
             jqUnit.assertNotUndefined("The queue should have a scroller attached to it.", q.scroller);
             jqUnit.assertEquals("The queue's container should be scrollable", 
-                                $(".fl-uploader-queue")[0], 
+                                $(".flc-uploader-queue")[0], 
                                 q.scroller.container[0]);
             jqUnit.assertEquals("The queue's scroller should have a scroller wrapper.", 
-                                $(".fl-scroller")[0], 
+                                $(".flc-scroller")[0], 
                                 q.scroller.scrollingElm[0]);
         });
         

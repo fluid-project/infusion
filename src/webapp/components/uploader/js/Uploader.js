@@ -358,15 +358,15 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.defaults("fluid.fileQueueView", {
         selectors: {
-            fileRows: ".row",
-            fileName: ".fileName",
-            fileSize: ".fileSize",
-            fileIconBtn: ".iconBtn",      
-            errorText: ".queue-error",
+            fileRows: ".flc-uploader-file",
+            fileName: ".flc-uploader-file-name",
+            fileSize: ".flc-uploader-file-size",
+            fileIconBtn: ".flc-uploader-file-action",      
+            errorText: ".flc-uploader-file-error",
             
-            rowTemplate: "#queue-row-tmplt",
-            errorInfoRowTemplate: "#queue-error-tmplt",
-            rowProgressorTemplate: "#row-progressor-tmplt"
+            rowTemplate: ".flc-uploader-file-tmplt",
+            errorInfoRowTemplate: ".flc-uploader-file-error-tmplt",
+            rowProgressorTemplate: ".flc-uploader-file-progressor-tmplt"
         },
         
         styles: {
@@ -729,9 +729,9 @@ fluid_1_0 = fluid_1_0 || {};
             type: "fluid.progress",
             options: {
                 selectors: {
-                    progressBar: ".fl-scroller-table-foot",
+                    progressBar: ".flc-uploader-scroller-footer",
                     displayElement: ".flc-uploader-totalProgress", 
-                    label: ".total-file-progress",
+                    label: ".flc-uploader-totalProgress-text",
                     indicator: ".flc-uploader-totalProgress",
                     ariaElement: ".flc-uploader-totalProgress"
                 }
@@ -739,14 +739,12 @@ fluid_1_0 = fluid_1_0 || {};
         },
         
         selectors: {
-            fileQueue: ".fl-uploader-queue",
-            browseButton: ".fl-uploader-browse",
-            uploadButton: ".fl-uploader-upload",
-            resumeButton: ".fl-uploader-resume",
-            pauseButton: ".fl-uploader-pause",
-            totalFileProgressBar: ".fl-scroller-table-foot",
-            totalFileStatusText: ".total-file-progress",
-            instructions: ".fl-uploader-browse-instructions"
+            fileQueue: ".flc-uploader-queue",
+            browseButton: ".flc-uploader-button-browse",
+            uploadButton: ".flc-uploader-button-upload",
+            pauseButton: ".flc-uploader-button-pause",
+            totalFileStatusText: ".flc-uploader-totalProgress-text",
+            instructions: ".flc-uploader-browse-instructions"
         },
  
         // Event listeners must already be implemented to use these options.

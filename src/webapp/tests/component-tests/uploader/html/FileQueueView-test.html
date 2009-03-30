@@ -51,28 +51,28 @@
 		</div>
         
         <!-- Scrolling section -->
-		<div class="fl-scroller">
+		<div class="flc-scroller">
 			<div class="scroller-inner">
 			    
                 <!-- The file list itself -->
-				<table cellspacing="0" class="fl-uploader-queue" summary="Queue of files to upload.">
+				<table cellspacing="0" class="flc-uploader-queue" summary="Queue of files to upload.">
 					<tbody>
                         <!-- Rows will be rendered in here. -->
                         
                         <!-- Template for the file queue rows -->
-            			<tr id="queue-row-tmplt" class="row fluid-templates">
-                            <th class="fileName" scope="row">File Name Placeholder</th>
-                            <td class="fileSize">0 KB</td>
+            			<tr class="flc-uploader-file-tmplt flc-uploader-file fluid-templates">
+                            <th class="flc-uploader-file-name fileName" scope="row">File Name Placeholder</th>
+                            <td class="flc-uploader-file-size fileSize">0 KB</td>
                             <td class="actions">
-                                <button type="button" class="iconBtn" title="Remove File" tabindex="-1">
+                                <button type="button" class="flc-uploader-file-action iconBtn" title="Remove File" tabindex="-1">
                                     <span class="text-description">Remove file from queue</span>
                                 </button>
                             </td>
                         </tr>
                         
                         <!-- Template for the file error info rows -->
-                        <tr id="queue-error-tmplt" class="queue-error-row fluid-templates">
-                            <td colspan="3" class="queue-error"></td>
+                        <tr class="flc-uploader-file-error-tmplt queue-error-row fluid-templates">
+                            <td colspan="3" class="flc-uploaader-file-error"></td>
                         </tr>
 					</tbody>
 				</table>
