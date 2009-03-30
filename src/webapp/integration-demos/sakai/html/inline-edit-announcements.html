@@ -2,17 +2,20 @@
 <html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link href="announcements.css" type="text/css" rel="stylesheet" media="all" />
-    <link href="../../../fluid-components/css/jquery.tooltip.css" type="text/css" rel="stylesheet" media="all" />
+    <link href="../css/announcements.css" type="text/css" rel="stylesheet" media="all" />
+      <link rel="stylesheet" type="text/css" href="../../../lib/jquery/plugins/tooltip/css/jquery.tooltip.css" />
+      <link rel="stylesheet" type="text/css" href="../../../components/inlineEdit/css/fluid.components.inline-edit.css" />
 
     <title>Demonstration: Fluid Inline Edit in Sakai Announcements</title>
-    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.3.2.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.core.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/fluid/Undo.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/fluid/InlineEdit.js"></script>
-    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.tooltip.js"></script>
+    
+      <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+      <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+      <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+      <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+      <script type="text/javascript" src="../../../components/inlineEdit/js/InlineEdit.js"></script>
+      <script type="text/javascript" src="../../../components/undo/js/Undo.js"></script>
+      <script type="text/javascript" src="../../../lib/jquery/plugins/tooltip/js/jquery.tooltip.js"></script>    
+    
     <!-- 
     <script type="text/javascript" src="../../../tests/utils/DebugFocus.js"></script>
     -->
@@ -20,8 +23,8 @@
         var inlineEditSetup = function(){
             var myUndoRenderer = function (that, targetContainer) {
                 var markup = "<span class='fluid-undo'>" +
-                "<span class='undoContainer'><a href='#' class='undoControl'><img src='images/undo.png' alt='Undo your edit' title='Undo your edit' style='border:none' /></a></span>" +
-                "<span class='redoContainer'><a href='#' class='redoControl'><img src='images/redo.png' alt='Redo your edit' title='Redo your edit' style='border:none' /></a></span>" +
+                "<span class='undoContainer'><a href='#' class='undoControl'><img src='../images/undo.png' alt='Undo your edit' title='Undo your edit' style='border:none' /></a></span>" +
+                "<span class='redoContainer'><a href='#' class='redoControl'><img src='../images/redo.png' alt='Redo your edit' title='Redo your edit' style='border:none' /></a></span>" +
                 "</span>";
                 var markupNode = $(markup);
                 targetContainer.append(markupNode);
@@ -65,10 +68,10 @@
 <div id="siteNavWrapper" class="undeterminedSiteType">
 	<div id="mastHead">
 		<div id="mastLogo">
-			<img title="Logo" alt="Logo" src="images/logo_inst.gif"/>
+			<img title="Logo" alt="Logo" src="../images/logo_inst.gif"/>
 		</div>
 		<div id="mastBanner">
-			<img title="Banner" alt="Banner" src="images/banner_inst.gif"/>
+			<img title="Banner" alt="Banner" src="../images/banner_inst.gif"/>
 		</div>
 		<div id="mastLogin">
 	<div id="loginLinks">
@@ -268,7 +271,7 @@
                                 <a href="#"title="Sort by audience">For</a>
                             </th>
                             <th id="date">
-                                <a href="#"title="Sort by date ascending">Date <img src="images/sortascending.gif" alt="Sort by date ascending" border="0"/></a>
+                                <a href="#"title="Sort by date ascending">Date <img src="../images/sortascending.gif" alt="Sort by date ascending" border="0"/></a>
                             </th>
                             <th class="screenOnly" id="checkbox">
                                 Remove?
@@ -355,7 +358,7 @@
                     </tbody>
                 </table>
                 <p class="act">
-                    <input class="active" name="eventSubmit_doDeleteannouncement" value="Update" accesskey="s" type="submit"><input name="reset" id="reset" value="Cancel" accesskey="x" type="reset"/>
+                    <input class="active" name="eventSubmit_doDeleteannouncement" value="Update" accesskey="s" type="submit"/><input name="reset" id="reset" value="Cancel" accesskey="x" type="reset"/>
                 </p>
 
             </form>
@@ -378,7 +381,7 @@
 	<div id="footerInfo">
 		<span class="skip">Opens in a new window</span>	
 		<a href="http://sakaiproject.org/" target="_blank">
-				<img src="images/sakai_powered.gif" alt="Powered by Sakai" border="0"/></a>
+				<img src="../images/sakai_powered.gif" alt="Powered by Sakai" border="0"/></a>
 	</div>
 	<div class="sakaiCopyrightInfo">Copyright
 2003-2006 The Sakai Foundation. All rights reserved. Portions of Sakai

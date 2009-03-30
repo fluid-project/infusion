@@ -68,7 +68,7 @@ a:link {
 }
 
 .siteNavWrap {
-    background:#88D0E8 url(images/blue-border.gif) repeat-x scroll center bottom;
+    background:#88D0E8 url(../images/blue-border.gif) repeat-x scroll center bottom;
     clear:both;
     float:left;
     font-size:100%;
@@ -113,7 +113,7 @@ a:link {
 }
 
 #siteLinkList li a, #siteLinkList li a:link, #siteLinkList li a:visited {
-    background:transparent url(images/tab-left.gif) no-repeat scroll left top;
+    background:transparent url(../images/tab-left.gif) no-repeat scroll left top;
     border-bottom:2px solid #013F68;
     color:#FFFFFF;
     display:block;
@@ -123,14 +123,14 @@ a:link {
 }
 
 #siteLinkList li span {
-    background:transparent url(images/tab-right.gif) no-repeat scroll right top;
+    background:transparent url(../images/tab-right.gif) no-repeat scroll right top;
     display:block;
     margin:0pt;
     padding:8px 13px 3px 2px;
 }
 
 #siteLinkList li.selectedTab a, #siteLinkList li.selectedTab a:link, #siteLinkList li.selectedTab a:visited, #siteLinkList li.selectedTab a:hover {
-    background:transparent url(images/tab-left-selected.gif) no-repeat scroll left top;
+    background:transparent url(../images/tab-left-selected.gif) no-repeat scroll left top;
     border-width:0pt;
     color:#000000;
     font-weight:bolder;
@@ -138,7 +138,7 @@ a:link {
 }
 
 #siteLinkList li.selectedTab a span {
-    background:transparent url(images/tab-right-selected.gif) no-repeat scroll right top;
+    background:transparent url(../images/tab-right-selected.gif) no-repeat scroll right top;
     padding:8px 11px 5px 0pt;
 }
 
@@ -221,19 +221,19 @@ a:link {
 }
 
 .icon-sakai-resources {
-    background-image:url(images/folder.png);
+    background-image:url(../images/folder.png);
 }
 
 .icon-sakai-siteinfo {
-    background-image:url(images/application_lightning.png);
+    background-image:url(../images/application_lightning.png);
 }
 
 .icon-sakai-help {
-    background-image:url(images/help.png);
+    background-image:url(../images/help.png);
 }
 
 .icon-sakai-announcements {
-    background-image:url(images/flag_blue.png);
+    background-image:url(../images/flag_blue.png);
 }
 
 #content {
@@ -266,7 +266,7 @@ a:link {
 }
 
 .portletTitle .action a {
-    background:transparent url(images/help.gif) no-repeat scroll right center;
+    background:transparent url(../images/help.gif) no-repeat scroll right center;
 }
 
 .portletBody {
@@ -427,7 +427,7 @@ table.listHier td span {
 /* Fluid Inline Edit Styles */
 
 .inlineEdit-invitation {
-    background-color: #FFECB3 !important;
+  background-color: #FFECB3 !important;
 	border: 1px solid #CCC !important;
 	/* See http://www.quirksmode.org/css/cursor.html#note for cross-platform recommendation */
 	cursor: pointer;
