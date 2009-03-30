@@ -164,7 +164,7 @@ fluid_1_0 = fluid_1_0 || {};
         events: {
             afterRender: null
         },
-        templateUrl: "fluid-components/html/templates/TableOfContents.html",
+        templateUrl: "../html/TableOfContents.html",
         levels: ["H1", "H2", "H3", "H4", "H5", "H6"]
     });
 

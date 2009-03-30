@@ -259,7 +259,7 @@ fluid_1_0 = fluid_1_0 || {};
         tableOfContents: {
             type: "fluid.tableOfContents",
             options: {
-                templateUrl: "TableOfContents.html"
+                templateUrl: "../../tableOfContents/html/TableOfContents.html"
             }
         },
         
