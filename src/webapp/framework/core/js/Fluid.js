@@ -106,7 +106,7 @@ var fluid = fluid || fluid_1_0;
                 containerSpec = container.selector;
             }
             fluid.fail({
-               name: "NotOne",
+                name: "NotOne",
                 message: "A single container element was not found for selector " + containerSpec
             });
         }
@@ -292,10 +292,10 @@ var fluid = fluid || fluid_1_0;
      */
     fluid.expectFilledSelector = function (result, message) {
         if (result && result.length === 0 && result.jquery) {
-        fluid.fail(message + ": selector \"" + result.selector + "\" with name " + result.selectorName
-            + " returned no results in context " + fluid.dumpEl(result.context));
+            fluid.fail(message + ": selector \"" + result.selector + "\" with name " + result.selectorName +
+                       " returned no results in context " + fluid.dumpEl(result.context));
         }
-    }
+    };
     
     /** 
      * The central initialiation method called as the first act of every Fluid
@@ -429,7 +429,7 @@ var fluid = fluid || fluid_1_0;
     fluid.isPrimitive = function (value) {
         var valueType = typeof(value);
         return !value || valueType === "string" || valueType === "boolean" || valueType === "number";
-        };
+    };
         
     function mergeImpl(policy, basePath, target, source) {
         var thisPolicy = policy && typeof(policy) !== "string"? policy[basePath] : policy;
@@ -508,14 +508,15 @@ var fluid = fluid || fluid_1_0;
     
     fluid.copy = function (tocopy) {
         return $.extend(true, {}, tocopy);
-    }
+    };
     
     fluid.invokeGlobalFunction = function (functionPath, args, environment) {
         var func = fluid.model.getBeanValue(window, functionPath, environment);
         if (!func) {
             fluid.fail("Error invoking global function: " + functionPath + " could not be located");
-        } 
-        else return func.apply(null, args);
+        } else {
+            return func.apply(null, args);
+        }
     };
     
     
@@ -569,7 +570,9 @@ var fluid = fluid || fluid_1_0;
                 for (var i in listeners) {
                     var lisrec = listeners[i];
                     var listener = lisrec.listener;
-                    if (lisrec.predicate && !lisrec.predicate(listener, arguments)) {continue;}
+                    if (lisrec.predicate && !lisrec.predicate(listener, arguments)) {
+                        continue;
+                    }
                     try {
                         var ret = listener.apply(null, arguments);
                         if (preventable && ret === false) {
@@ -608,7 +611,7 @@ var fluid = fluid || fluid_1_0;
     
     fluid.model.composePath = function (prefix, suffix) {
         return prefix === ""? suffix : prefix + "." + suffix;
-    }
+    };
   
     /** This function implements the RSF "DARApplier" **/
     fluid.model.setBeanValue = function (root, EL, newValue) {
@@ -656,13 +659,13 @@ var fluid = fluid || fluid_1_0;
     // Logging
     var logging;
     /** method to allow user to enable logging (off by default) */
-    fluid.setLogging = function(enabled) {
-      if (typeof enabled == "boolean") {
-        logging = enabled;
+    fluid.setLogging = function (enabled) {
+        if (typeof enabled === "boolean") {
+            logging = enabled;
         } else {
-        logging = false;
+            logging = false;
         }
-      };
+    };
 
     /** Log a message to a suitable environmental console. If the standard "console" 
      * stream is available, the message will be sent there - otherwise either the
@@ -705,7 +708,7 @@ var fluid = fluid || fluid_1_0;
             return "[data: " + element.data + "]";
         } 
         if (element.nodeType === 9) {
-          return "[document: location " + element.location + "]";
+            return "[document: location " + element.location + "]";
         }
         if (typeof element.length === "number") {
             togo = "[";
@@ -736,11 +739,13 @@ var fluid = fluid || fluid_1_0;
      * @param {Function} test A function which takes an element as a parameter and return true or false for some test
      */
     fluid.findAncestor = function (element, test) {
-    	  element = fluid.unwrap(element);
-    	  while (element) {
-    	      if (test(element)) return element;
-    	      element = element.parentNode;
-    	  }
+    	element = fluid.unwrap(element);
+    	while (element) {
+    	    if (test(element)) {
+                return element;
+            }
+    	    element = element.parentNode;
+        }
     };
     
     /**
@@ -748,7 +753,7 @@ var fluid = fluid || fluid_1_0;
      * is not found, will return an empty list.
      */
     fluid.jById = function (id, dokkument) {
-    	  dokkument = dokkument && dokkument.nodeType === 9? dokkument : document;
+    	dokkument = dokkument && dokkument.nodeType === 9? dokkument : document;
         var element = fluid.byId(id, dokkument);
         var togo = element? $(element) : [];
         togo.selector = "#" + id;
@@ -764,7 +769,7 @@ var fluid = fluid || fluid_1_0;
      * @return The DOM element with this id, or null, if none exists in the document.
      */
     fluid.byId = function (id, dokkument) {
-    	  dokkument = dokkument && dokkument.nodeType === 9? dokkument : document;
+    	dokkument = dokkument && dokkument.nodeType === 9? dokkument : document;
         var el = dokkument.getElementById(id);
         if (el) {
             if (el.getAttribute("id") !== id) {
@@ -801,7 +806,7 @@ var fluid = fluid || fluid_1_0;
             element.id = "fluid-id-" + (fluid_guid++); 
         }
         return element.id;
-    }
+    };
     
         
     // Functional programming utilities.
@@ -897,35 +902,39 @@ var fluid = fluid || fluid_1_0;
      * @param args {String/Array of String} An array of arguments to be substituted into the message.
      * @return The expanded message string. 
      */
-    fluid.formatMessage = function(messageString, args) {
-        if (!args) return messageString;
+    fluid.formatMessage = function (messageString, args) {
+        if (!args) {
+            return messageString;
+        } 
         if (typeof(args) === "string") {
             args = [args];
-            }
+        }
         for (var i = 0; i < args.length; ++ i) {
             messageString = messageString.replace("{" + i + "}", args[i]);
         }
         return messageString;
-    }
+    };
     
     /** Converts a data structure consisting of a mapping of keys to message strings,
      * into a "messageLocator" function which maps an array of message codes, to be 
      * tried in sequence until a key is found, and an array of substitution arguments,
      * into a substituted message string.
      */
-    fluid.messageLocator = function(messageBase) {
-        return function(messagecodes, args) {
+    fluid.messageLocator = function (messageBase) {
+        return function (messagecodes, args) {
             if (typeof(messagecodes) === "string") {
                 messagecodes = [messagecodes];
             }
             for (var i = 0; i < messagecodes.length; ++ i) {
                 var code = messagecodes[i];
                 var message = messageBase[code];
-                if (message === undefined) continue;
+                if (message === undefined) {
+                    continue;
+                }
                 return fluid.formatMessage(message, args);
             }
             return "[Message string for key " + messagecodes[0] + " not found]";
-        }
+        };
     };
     
     // Other useful helpers.
