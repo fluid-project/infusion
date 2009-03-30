@@ -78,7 +78,7 @@
 }
 
 .fl-uploader a.fl-uploader-browse {
-    background-image: url(../images/uploader/add.png);
+    background-image: url(../images/add.png);
     background-attachment: scroll;
     background-repeat: no-repeat;
     background-position: 5px center;
@@ -159,7 +159,7 @@ html>body .fl-uploader a.fl-uploader-browse {
 }
 
 .fl-footer-completed {
-    background-image: url('../images/progress/gradient-total-green.png');
+    background-image: url('../../progress/images/gradient-total-green.png');
     background-attachment: scroll;
     background-position: bottom left;
     background-repeat: repeat-x;
@@ -270,7 +270,7 @@ html>body .fl-uploader-queue {
 }
 
 .fl-uploader-queue .removeFile {
-    background-image: url(../images/uploader/remove.png);
+    background-image: url(../images/remove.png);
     cursor: pointer !important;
 }
 
@@ -294,7 +294,7 @@ html>body .fl-uploader-queue {
 }
 
 .fl-uploader-queue .uploaded .iconBtn {
-    background-image: url(../images/uploader/tick.png);
+    background-image: url(../images/tick.png);
 }
 
 /* ERRORS
@@ -315,7 +315,7 @@ html>body .fl-uploader-queue {
 .fl-uploader-queue .queue-error-row td {
     background-color: #FCFBE6;
     border-left: 4px solid #F5E392;
-    background-image: url(../images/uploader/error.png);
+    background-image: url(../images/error.png);
     background-position: 8px 2px;
     background-repeat: no-repeat;
     padding-bottom: 8px;
@@ -399,7 +399,7 @@ button span.text-description {
 }
 
 .file-progress {
-    background-image: url('../images/progress/gradient-file-green.png');
+    background-image: url('../../progress/images/gradient-file-green.png');
     background-color: #D1D6DD;
     border-right: 1px solid #9FCE7F;
     width:76%;
@@ -416,13 +416,13 @@ button span.text-description {
 } 
 
 .fl-uploader-totalProgress-complete {
-    background-image: url('../images/progress/gradient-total-green.png');
+    background-image: url('../../progress/images/gradient-total-green.png');
     border-right: 1px solid #9FCE7F;
     background-color: #BDBFC1;
 }
 
 .fl-uploader-totalProgress-errored {
-    background-image: url('../images/progress/gradient-total-yellow.png');
+    background-image: url('../../progress/images/gradient-total-yellow.png');
     border-right: 1px solid #E8C81C;
     background-color: #F6ECA0;
 }
