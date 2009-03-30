@@ -30,7 +30,7 @@
 .fl-theme-coal .fl-icon {background-color:#666666}
 
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
-.fl-theme-coal span input {background-color:#ebebeb !important; border:0.1em solid #ffffff; margin:-0.1em;}
+.fl-theme-coal .fl-inlineEdit-edit {background-color:#ebebeb !important; border:0.1em solid #ffffff; margin:-0.1em;}
 
 /* Helper: buttons */
 .fl-theme-coal .fl-button-left, 

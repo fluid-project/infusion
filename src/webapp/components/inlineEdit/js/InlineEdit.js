@@ -344,7 +344,7 @@ fluid_1_0 = fluid_1_0 || {};
             };
         }
         // Template strings.
-        var editModeTemplate = "<span><input type='text' class='edit'/></span>";
+        var editModeTemplate = "<span><input type='text' class='flc-inlineEdit-edit fl-inlineEdit-edit'/></span>";
 
         // Create the edit container and pull out the textfield.
         var editContainer = $(editModeTemplate);
@@ -606,16 +606,17 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.defaults("inlineEdit", {  
         selectors: {
-            text: ".text",
-            editContainer: ".editContainer",
-            edit: ".edit"
+            text: ".flc-inlineEdit-text",
+            editContainer: ".flc-inlineEdit-editContainer",
+            edit: ".flc-inlineEdit-edit"
         },
         
         styles: {
-            invitation: "inlineEdit-invitation",
-            defaultViewStyle: "inlineEdit-invitation-text",
-            tooltip: "inlineEdit-tooltip",
-            focus: "inlineEdit-focus"
+			edit: "fl-inlineEdit-edit",
+            invitation: "fl-inlineEdit-invitation",
+            defaultViewStyle: "fl-inlineEdit-invitation-text",
+            tooltip: "fl-inlineEdit-tooltip",
+            focus: "fl-inlineEdit-focus"
         },
         
         events: {
@@ -676,7 +677,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.defaults("inlineEdits", {
         selectors: {
-            editables: ".inlineEditable"
+            editables: ".flc-inlineEditable"
         }
     });
     

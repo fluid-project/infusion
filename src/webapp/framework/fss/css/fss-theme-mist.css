@@ -30,7 +30,7 @@
 .fl-theme-mist .fl-icon {background-color:#5a95cf}
 
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
-.fl-theme-mist span input {background-color:#dfefff !important; border:0.1em solid #5a95cf; margin:-0.1em;}
+.fl-theme-mist .fl-inlineEdit-edit {background-color:#dfefff !important; border:0.1em solid #5a95cf; margin:-0.1em;}
 
 /* Helper: Buttons */
 .fl-theme-mist .fl-button-left {background-image:url(../images/themes/mist/buttons-med-cap.png);}

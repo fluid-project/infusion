@@ -170,17 +170,17 @@ table.narrowTable tr th {
 }
 
 
-.inlineEditable {
+.flc-inlineEditable {
     position: relative;
     display: block;
 }
 
-.inlineEditable span.text {
+.flc-inlineEditable span.text {
     padding: 3px;
     display: inline-block;
 }
 
-.inlineEdit-invitation {
+.fl-inlineEdit-invitation {
     background-color:#FFD;
     border-width: 1px;
     border-style: solid;
@@ -190,7 +190,7 @@ table.narrowTable tr th {
 }
 
 
-.inlineEditable input {
+.flc-inlineEditable input {
     font-family: Arial,Helvetica,Verdana,Geneva,sans-serif;
     font-size: 1em !important;
     border-width: 1px;

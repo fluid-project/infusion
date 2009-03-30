@@ -37,7 +37,7 @@
 .fl-theme-hci .fl-textarea {}
 
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
-.fl-theme-hci span input {background-color:#ffffff !important; color:#000000 !important; border: 0.1em solid #000000; padding:0.1em; margin:-0.1em;}
+.fl-theme-hci .fl-inlineEdit-edit {background-color:#ffffff !important; color:#000000 !important; border: 0.1em solid #000000; padding:0.1em; margin:-0.1em;}
 
 /* Helper: Tabs */
 .fl-theme-hci .fl-tabs {border-bottom-color:#ffffff;}

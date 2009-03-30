@@ -82,7 +82,7 @@
 .fl-theme-rust .fl-textarea {}
 
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
-.fl-theme-rust span input {background-color:#dfefff; border: 1px solid #5a95cf; margin:-1px;}
+.fl-theme-rust .fl-inlineEdit-edit {background-color:#dfefff; border: 1px solid #5a95cf; margin:-1px;}
 
 /* Wrappers and Callouts  */
 .fl-theme-rust .fl-wrapper-widget { border:3px solid #dfefff; background-color:#333; color:#fff;}

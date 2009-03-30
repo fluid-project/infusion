@@ -2,21 +2,21 @@ form, #inline-edit4 {
     padding: 1em;
 }
 
-.editContainer {
+.flc-inlineEdit-editContainer {
     display: none;
 }
 
-.inlineEdit-invitation {
+.fl-inlineEdit-inlineEdit-invitation {
     background-color: #FFECB3;
         /* See http://www.quirksmode.org/css/cursor.html#note for cross-platform recommendation */
     cursor: pointer;
     cursor: hand;
 }
 
-.inlineEdit-invitation-text {
+.fl-inlineEdit-invitation-text {
     color: #999999;
 }
-.inlineEdit-focus {
+.fl-inlineEdit-focus {
     border: 2px solid #777777;
 }
 

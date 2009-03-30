@@ -30,7 +30,7 @@
 .fl-theme-slate .fl-icon {background-color:#ebebeb}
 
 /* temp selector to access inline edit input fields (should use a classname but now there is none applied) */
-.fl-theme-slate span input {background-color:#dfefff !important; border:0.1em solid #ffffff; margin:-0.1em;}
+.fl-theme-slate .fl-inlineEdit-edit {background-color:#dfefff !important; border:0.1em solid #ffffff; margin:-0.1em;}
 
 /* Helper: Buttons */
 .fl-theme-slate .fl-button-left,

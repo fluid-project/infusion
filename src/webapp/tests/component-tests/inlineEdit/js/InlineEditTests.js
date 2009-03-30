@@ -135,7 +135,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
             jqUnit.assertEquals("After initialization of empty display, display has invitation text: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
             jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
-            jqUnit.assertTrue("Invitation text still contains it's initial class attribute as well", display.hasClass("text")); // added for FLUID-1803
+            jqUnit.assertTrue("Invitation text still contains it's initial class attribute as well", display.hasClass("flc-inlineEdit-text")); // added for FLUID-1803
     
             var testText = "This is test text.";
             var edit = $("#empty-inline-edit-edit");
@@ -151,7 +151,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             inlineEditor.finish();
             jqUnit.assertEquals("After clearing the field, display should have invitation text again: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
             jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
-            jqUnit.assertTrue("Invitation text still contains it's initial class attribute as well", display.hasClass("text")); // added for FLUID-1803
+            jqUnit.assertTrue("Invitation text still contains it's initial class attribute as well", display.hasClass("flc-inlineEdit-text")); // added for FLUID-1803
     
         });
         
@@ -624,7 +624,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             inlineEditTests.test("Self-container", function() {
                 var editor = fluid.inlineEdit("#inline-edit2");
-                var edit = $("#inline-edit2 .edit")[0];
+                var edit = $("#inline-edit2 .flc-inlineEdit-edit")[0];
                 jqUnit.assertEquals("Container is field", edit, editor.editContainer[0]);
                 jqUnit.assertEquals("Container is field", edit, editor.editField[0]);
             });

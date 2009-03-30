@@ -426,7 +426,7 @@ table.listHier td span {
 
 /* Fluid Inline Edit Styles */
 
-.inlineEdit-invitation {
+.fl-inlineEdit-invitation {
   background-color: #FFECB3 !important;
 	border: 1px solid #CCC !important;
 	/* See http://www.quirksmode.org/css/cursor.html#note for cross-platform recommendation */
@@ -434,11 +434,11 @@ table.listHier td span {
     cursor: hand;
 }
 
-.inlineEdit-focus {
+.fl-inlineEdit-focus {
     border: 2px solid #777777;
 }
 
-.inlineEdit-invitation-text {
+.fl-inlineEdit-invitation-text {
     color: #999999;
 }
 
