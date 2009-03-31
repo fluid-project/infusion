@@ -23,8 +23,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
         tests.test("Test Init", function () {
             expect(5);
             var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider");
-            jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfield-slider-slider").slider("value"));
-            jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfield-slider-field").val());
+            jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfieldSlider-slider").slider("value"));
+            jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfieldSlider-field").val());
             jqUnit.assertEquals("The model should be set", 15, textfieldSlider.model);
             jqUnit.assertEquals("Min should be the default", 0, textfieldSlider.min);
             jqUnit.assertEquals("Max should be the default", 100, textfieldSlider.max);
@@ -32,8 +32,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
 
         var testSetting = function (valToTest, expected) {
-            var slider = $(".flc-textfield-slider-slider");
-            var textfield = $(".flc-textfield-slider-field");
+            var slider = $(".flc-textfieldSlider-slider");
+            var textfield = $(".flc-textfieldSlider-field");
             
             slider.slider("value", valToTest);
             jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));

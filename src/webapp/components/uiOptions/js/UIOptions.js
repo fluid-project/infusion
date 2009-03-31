@@ -103,8 +103,8 @@ fluid_1_0 = fluid_1_0 || {};
 
     fluid.defaults("fluid.textfieldSlider", {
         selectors: {
-            textfield: ".flc-textfield-slider-field",
-            slider: ".flc-textfield-slider-slider"
+            textfield: ".flc-textfieldSlider-field",
+            slider: ".flc-textfieldSlider-slider"
         },
         events: {
             modelChanged: null

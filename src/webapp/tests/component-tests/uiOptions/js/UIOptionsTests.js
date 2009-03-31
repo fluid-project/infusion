@@ -113,7 +113,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
                 uiOptions.refreshView();
                 var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
-                var fontSizeSetting = $(".flc-textfield-slider-field", fontSizeCtrl).val(); 
+                var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val(); 
                 jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
                 var fontStyleSelection = $(":selected", $("#text-font-selection"));
                 jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
