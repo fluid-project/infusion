@@ -1,4 +1,4 @@
 {"uiOptions": {
-	"files": ["UIOptions.js", "UIEnhancer.js"]
-	"dependencies": ["jqueryCore", "uiCore", "framework", "renderer", "uiWidgets", "tableOfContents", "json"]
+	"files": ["UIOptions.js", "UIEnhancer.js"],
+	"dependencies": ["jQuery", "jQueryUICore", "framework", "renderer", "jQueryUIWidgets", "tableOfContents", "json"]
 }}
