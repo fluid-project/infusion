@@ -237,7 +237,7 @@ fluid_1_0 = fluid_1_0 || {};
        selectors: {
            pageLinks: ".flc-pager-pageLink",
            pageLinkSkip: ".flc-pager-pageLink-skip",
-           pageLinkDisabled: ".page-link-disabled",
+           pageLinkDisabled: ".flc-pager-pageLink-disabled",
            previous: ".previous",
            next: ".next"
        },
