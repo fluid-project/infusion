@@ -1,10 +1,14 @@
 /*
+Copyright 2008-2009 University of Cambridge
+Copyright 2008-2009 University of Toronto
+Copyright 2007-2009 University of California, Berkeley
 
- Copyright 2008-2009 University of Toronto
+Licensed under the Educational Community License (ECL), Version 2.0 or the New
+BSD license. You may not use this file except in compliance with one these
+Licenses.
 
- Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) 
- and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
-
+You may obtain a copy of the ECL 2.0 License and BSD License at
+https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 var jqUnit = jqUnit || {};
