@@ -1,4 +1,4 @@
 {"renderer": {
-	"files": ["fastXmlPull.js, parser.js, renderer.js"],
+	"files": ["fastXmlPull.js", "parser.js", "renderer.js"],
 	"dependencies": ["jQuery", "framework"]
 }}
