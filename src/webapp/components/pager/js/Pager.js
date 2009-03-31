@@ -345,7 +345,7 @@ fluid_1_0 = fluid_1_0 || {};
     }
    
     function expandPaths(target, tree, opts) {
-        for (i in tree) {
+        for (var i in tree) {
             var val = tree[i];
             if (val === fluid.VALUE) {
                 if (i === "valuebinding") {
@@ -466,7 +466,7 @@ fluid_1_0 = fluid_1_0 || {};
             else if (newModel.sortKey === columnDef.key) {
                 newModel.sortDir = -1 * newModel.sortDir;
             }
-            else {return false;}
+            else {return false; }
             fireModelChange(overallThat, newModel);
             setSortHeaderClass(styles, bigHeaderForKey(newModel.sortKey, opts), newModel.sortDir);
             return false;
