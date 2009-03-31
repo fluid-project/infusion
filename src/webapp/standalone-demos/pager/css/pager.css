@@ -19,13 +19,13 @@ input {
     display: none;
 }
 
-.pager-top,.pager-bottom {
+.fl-pager-top,.fl-pager-bottom {
     padding: .5em;
     background-color: #EEEEEE;
     text-align: center;
 }
 
-.pager-top li,.pager-bottom li {
+.fl-pager-top li,.fl-pager-bottom li {
 	display:inline;
     padding-right:.3em;
 }
