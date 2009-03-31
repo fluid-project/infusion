@@ -391,7 +391,7 @@ button span.fl-uploader-button-text-hidden {
 }
 
 .fl-uploader-file-progress {
-    background-image: url('../../progress/images/gradient-file-green.png');
+    background-image: url('../images/gradient-file-green.png');
     background-color: #D1D6DD;
     border-right: 1px solid #9FCE7F;
     width:76%;
@@ -408,18 +408,16 @@ button span.fl-uploader-button-text-hidden {
 } 
 
 .fl-uploader-total-progress-okay {
-    background-image: url('../../progress/images/gradient-total-green.png');
+    background-image: url('../images/gradient-total-green.png');
     border-right: 1px solid #9FCE7F;
     background-color: #BDBFC1;
 }
 
 .fl-uploader-total-progress-errored {
-    background-image: url('../../progress/images/gradient-total-yellow.png');
+    background-image: url('../images/gradient-total-yellow.png');
     border-right: 1px solid #E8C81C;
     background-color: #F6ECA0;
 }
-
-
 
 /* Hidden SWF for Flash 9*/
 
