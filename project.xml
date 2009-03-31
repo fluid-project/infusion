@@ -2,7 +2,7 @@
 <project>
   <pomVersion>3</pomVersion>
   <artifactId>fluid-components</artifactId>
-  <name>Fluid Components</name>
+  <name>Fluid Infusion</name>
   <groupId>org.fluidproject</groupId>
   <currentVersion>1.0-SNAPSHOT</currentVersion>
   <organization>
