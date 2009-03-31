@@ -27,7 +27,13 @@
                     componentDecorators: {
                          type: "fluid.undoDecorator",
                          options: {
-                             renderer: myUndoRenderer
+                             renderer: myUndoRenderer,
+							 selectors: {
+					            undoContainer: ".undoContainer",
+					            undoControl: ".undoControl",
+					            redoContainer: ".redoContainer",
+					            redoControl: ".redoControl"
+							 }
                          }
                     },
                     listeners: {

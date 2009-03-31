@@ -24,9 +24,9 @@ fluid_1_0 = fluid_1_0 || {};
         STATE_REVERTED = "state_reverted";
   
     function defaultRenderer(that, targetContainer) {
-        var markup = "<span class='fluid-undo'>" + 
-          "<span class='undoContainer'>[<a href='#' class='undoControl'>undo</a>]</span>" + 
-          "<span class='redoContainer'>[<a href='#' class='redoControl'>redo</a>]</span>" + 
+        var markup = "<span class='flc-undo'>" + 
+          "<span class='flc-undo-undoContainer'>[<a href='#' class='flc-undo-undoControl'>undo</a>]</span>" + 
+          "<span class='flc-undo-redoContainer'>[<a href='#' class='flc-undo-redoControl'>redo</a>]</span>" + 
         "</span>";
         var markupNode = $(markup);
         targetContainer.append(markupNode);
@@ -117,10 +117,10 @@ fluid_1_0 = fluid_1_0 || {};
   
     fluid.defaults("undo", {  
         selectors: {
-            undoContainer: ".undoContainer",
-            undoControl: ".undoControl",
-            redoContainer: ".redoContainer",
-            redoControl: ".redoControl"
+            undoContainer: ".flc-undo-undoContainer",
+            undoControl: ".flc-undo-undoControl",
+            redoContainer: ".flc-undo-redoContainer",
+            redoControl: ".flc-undo-redoControl"
         },
                     
         renderer: defaultRenderer
