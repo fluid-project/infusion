@@ -759,7 +759,7 @@ fluid_1_0 = fluid_1_0 || {};
             pagerBarSecondary: ".flc-pager-bottom",
             summary: ".flc-pager-summary",
             pageSize: ".flc-pager-page-size",
-            headerSortStylisticOffset: "th"
+            headerSortStylisticOffset: ".flc-sort-header"
         },
         
         styles: {
