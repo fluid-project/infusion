@@ -30,14 +30,14 @@ input {
     padding-right:.3em;
 }
 
-.fl-pager-pageLink a,.previous a,.next a {
+.fl-pager-pageLink a,.fl-pager-previous a,.fl-pager-next a {
     color: #0099CC;
     font-size: .9em;
     text-decoration: none;
     border-bottom: solid .1em;
 }
 
-.previous,.next {
+.fl-pager-previous,.fl-pager-next {
     padding: 0 1.3em 0 1em !important;
 }
 
