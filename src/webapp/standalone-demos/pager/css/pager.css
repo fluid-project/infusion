@@ -47,7 +47,7 @@ input {
     text-decoration: none;
 }
 
-.disabled a {
+.fl-pager-disabled a {
     color: #777777;
     border: 0;
     text-decoration: none;

@@ -244,7 +244,7 @@ fluid_1_0 = fluid_1_0 || {};
        
        styles: {
            currentPage: "fl-pager-currentPage",
-           disabled: "disabled"
+           disabled: "fl-pager-disabled"
        }
     });
 
