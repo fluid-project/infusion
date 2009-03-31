@@ -27,8 +27,8 @@ fluid_1_0 = fluid_1_0 || {};
         var assembleOptions = {
             layoutHandler: "fluid.moduleLayoutHandler",
             selectors: {
-                columns: ".columns",
-                modules: ".modules"
+                columns: ".flc-reorderer-column",
+                modules: ".flc-reorderer-module"
             }
         };
         var options = $.extend(true, assembleOptions, userOptions);

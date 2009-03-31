@@ -46,9 +46,9 @@ var orderableBaseId = "gallery:::gallery-thumbs:::lightbox-cell:";
 var selectByDivAndId = "div[id^=" + orderableBaseId + "]";
 
 // CSS class names
-var defaultClass = "orderable-default";
-var selectedClass = "orderable-selected";
-var draggingClass = "orderable-dragging";
+var defaultClass = "fl-reorderer-movable-default";
+var selectedClass = "fl-reorderer-movable-selected";
+var draggingClass = "fl-reorderer-movable-dragging";
 
 function fetchLightboxRoot() {
     return fluid.jById(lightboxRootId);

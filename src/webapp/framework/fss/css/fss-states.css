@@ -5,26 +5,26 @@
 /*************************************/
 /* REORDERER */
 /* automatically applied to any re-orderable item */
-.orderable-default {
+.fl-reorderer-movable-default {
     cursor:move;
 } 
 
 /* automatically applied the keyboard selected re-orderable item */
-.orderable-selected {
+.fl-reorderer-movable-selected {
 	background-color: lightyellow !important;
 }
 
 /* automatically applied as the mouse hovers over re-orderable item */
-.orderable-hover {
+.fl-reorderer-movable-hover {
     background-color: lightyellow; /* !important;;*/
 }
 
 /* automatically applied the keyboard selected re-orderable item */
-.orderable-dragging {
+.fl-reorderer-movable-dragging {
     background     :#ccc !important;    
 }
 
-.orderable-avatar {
+.fl-reorderer-avatar {
     cursor          : move;
     list-style-type : none;
     filter          : alpha(opacity=75);
@@ -32,7 +32,7 @@
 }
 
 /* */
-.dropWarning {
+.flc-reorderer-dropWarning {
     display : none;
     padding: 5px 25px; 
     color : #fff;
@@ -43,7 +43,7 @@
 
 /* DROP MARKER: different layouts might require different drop marker appearances */
 /* Horizontal drop marker: designed for vertical layouts (default) */
-.fluid-vertical-order .orderable-drop-marker{
+.fluid-vertical-order .fl-reorderer-dropMarker{
     background-color: #F00 !important;
     height          : 0;
     padding         : 2px 0 0 0;
@@ -55,7 +55,7 @@
     overflow        : hidden;
 }
 /* Vertical drop marker: designed for grid or horizontal layouts */
-.fluid-horizontal-order .orderable-drop-marker {
+.fluid-horizontal-order .fl-reorderer-dropMarker {
     background-color: #F00 !important;
     padding         : 0 3px;
     border-width    : 0;

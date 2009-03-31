@@ -31,14 +31,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // Sniff test the reorderer that was created - keyboard selection and movement
     
-            jqUnit.assertTrue("focus on item2", item2.hasClass("orderable-selected"));
-            jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("orderable-default"));
-            jqUnit.assertTrue("focus on item2 - item5 should be default", item5.hasClass("orderable-default"));
+            jqUnit.assertTrue("focus on item2", item2.hasClass("fl-reorderer-movable-selected"));
+            jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
+            jqUnit.assertTrue("focus on item2 - item5 should be default", item5.hasClass("fl-reorderer-movable-default"));
     
             k.keyDown(gridReorderer, fluid.testUtils.keyEvent("DOWN"), 1);
-            jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("orderable-default"));
-            jqUnit.assertTrue("down arrow - item3 should be default", item3.hasClass("orderable-default"));
-            jqUnit.assertTrue("down arrow - grid is 3 wide - item5 should be selected", item5.hasClass("orderable-selected"));
+            jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
+            jqUnit.assertTrue("down arrow - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
+            jqUnit.assertTrue("down arrow - grid is 3 wide - item5 should be selected", item5.hasClass("fl-reorderer-movable-selected"));
     
             k.compositeKey(gridReorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), 4);
             
@@ -63,8 +63,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             jqUnit.assertEquals("default class is myDefault", "myDefault", gridReorderer.options.styles.defaultStyle);
             jqUnit.assertEquals("selected class is mySelected", "mySelected", gridReorderer.options.styles.selected);
-            jqUnit.assertEquals("dragging class is orderable-dragging", "orderable-dragging", gridReorderer.options.styles.dragging);
-            jqUnit.assertEquals("mouseDrag class is orderable-dragging", "orderable-dragging", gridReorderer.options.styles.mouseDrag);
+            jqUnit.assertEquals("dragging class is fl-reorderer-movable-dragging", "fl-reorderer-movable-dragging", gridReorderer.options.styles.dragging);
+            jqUnit.assertEquals("mouseDrag class is fl-reorderer-movable-dragging", "fl-reorderer-movable-dragging", gridReorderer.options.styles.mouseDrag);
             
         });    
     });

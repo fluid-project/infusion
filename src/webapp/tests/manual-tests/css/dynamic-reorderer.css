@@ -4,7 +4,7 @@
   border: solid;
 }
 
-.orderable-avatar {
+.fl-reorderer-avatar {
     background-color: pink;
     opacity: 0.75;
 }

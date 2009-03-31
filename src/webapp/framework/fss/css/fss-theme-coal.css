@@ -109,7 +109,7 @@
 .fl-theme-coal .fl-progress-fill {color:#ffffff; background-color:#999999;}
 
 /* States */
-.fl-theme-coal .orderable-drop-marker {background-color:#f00 !important;}
+.fl-theme-coal .fl-reorderer-dropMarker {background-color:#f00 !important;}
 
 /* Enhaced Graphics Toggles */
 .fl-theme-coal .fl-widget-content .fl-tabs-content-enhanced {

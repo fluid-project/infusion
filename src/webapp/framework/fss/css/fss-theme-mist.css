@@ -101,7 +101,7 @@
 .fl-theme-mist .fl-progress-fill {color:#4070a1; background-color:#000;}
 
 /* States */
-.fl-theme-mist .orderable-drop-marker {background-color:#f00 !important;}
+.fl-theme-mist .fl-reorderer-dropMarker {background-color:#f00 !important;}
 
 .fl-theme-mist .fl-widget-content .fl-tabs-enhanced {
     background:url(../images/themes/mist/tabs-light-container-bg.png) repeat-x left bottom;

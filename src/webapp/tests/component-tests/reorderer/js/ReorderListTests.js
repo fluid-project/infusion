@@ -36,13 +36,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // Sniff test the reorderer that was created - keyboard selection and movement
     
-            jqUnit.assertTrue("focus on item2", item2.hasClass("orderable-selected"));
-            jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("orderable-default"));
+            jqUnit.assertTrue("focus on item2", item2.hasClass("fl-reorderer-movable-selected"));
+            jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertFalse("order hasn't changed", afterMoveCallbackWasCalled);
     
             k.keyDown(listReorderer, fluid.testUtils.keyEvent("DOWN"), 1);
-            jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("orderable-default"));
-            jqUnit.assertTrue("down arrow - item3 should be selected", item3.hasClass("orderable-selected"));
+            jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
+            jqUnit.assertTrue("down arrow - item3 should be selected", item3.hasClass("fl-reorderer-movable-selected"));
             jqUnit.assertFalse("order shouldn't change", afterMoveCallbackWasCalled);
     
             k.compositeKey(listReorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), 2);
@@ -71,8 +71,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             jqUnit.assertEquals("default class is myDefault", "myDefault", listReorderer.options.styles.defaultStyle);
             jqUnit.assertEquals("selected class is mySelected", "mySelected", listReorderer.options.styles.selected);
-            jqUnit.assertEquals("dragging class is orderable-dragging", "orderable-dragging", listReorderer.options.styles.dragging);
-            jqUnit.assertEquals("mouseDrag class is orderable-dragging", "orderable-dragging", listReorderer.options.styles.mouseDrag);
+            jqUnit.assertEquals("dragging class is fl-reorderer-movable-dragging", "fl-reorderer-movable-dragging", listReorderer.options.styles.dragging);
+            jqUnit.assertEquals("mouseDrag class is fl-reorderer-movable-dragging", "fl-reorderer-movable-dragging", listReorderer.options.styles.mouseDrag);
             
         });    
     
@@ -103,15 +103,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var item3 = jQuery("#list2item3");
             var item4 = jQuery("#list2item4");
     
-            jqUnit.assertTrue("focus on item1", item1.hasClass("orderable-selected"));
+            jqUnit.assertTrue("focus on item1", item1.hasClass("fl-reorderer-movable-selected"));
 
-            jqUnit.assertTrue("focus on item1 - item2 should be default", item2.hasClass("orderable-default"));
-            jqUnit.assertFalse("focus on item1 - item2 should not be selected", item2.hasClass("orderable-selected"));
+            jqUnit.assertTrue("focus on item1 - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
+            jqUnit.assertFalse("focus on item1 - item2 should not be selected", item2.hasClass("fl-reorderer-movable-selected"));
             jqUnit.assertFalse("order hasn't changed", afterMoveCallbackWasCalled);
     
             k2.keyDown(listReorderer, fluid.testUtils.keyEvent("DOWN"), 0);
-            jqUnit.assertTrue("down arrow to item2 - item1 should be default", item1.hasClass("orderable-default"));
-            jqUnit.assertTrue("down arrow to item2 - item2 should be selected", item2.hasClass("orderable-selected"));
+            jqUnit.assertTrue("down arrow to item2 - item1 should be default", item1.hasClass("fl-reorderer-movable-default"));
+            jqUnit.assertTrue("down arrow to item2 - item2 should be selected", item2.hasClass("fl-reorderer-movable-selected"));
             jqUnit.assertFalse("order shouldn't change", afterMoveCallbackWasCalled);
             
             k2.compositeKey(listReorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), 1);
@@ -119,8 +119,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("after ctrl-down on non-movable, order shouldn't change", afterMoveCallbackWasCalled);
     
             k2.keyDown(listReorderer, fluid.testUtils.keyEvent("DOWN"), 1);
-            jqUnit.assertTrue("down arrow to item3 - item2 should be default", item2.hasClass("orderable-default"));
-            jqUnit.assertTrue("down arrow to item3 - item3 should be selected", item3.hasClass("orderable-selected"));
+            jqUnit.assertTrue("down arrow to item3 - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
+            jqUnit.assertTrue("down arrow to item3 - item3 should be selected", item3.hasClass("fl-reorderer-movable-selected"));
             jqUnit.assertFalse("order shouldn't change", afterMoveCallbackWasCalled);
     
             k2.compositeKey(listReorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), 2);

@@ -14,30 +14,30 @@ ul li {
     padding:0px;
 }
 
-.orderable-default{
+.fl-reorderer-movable-default{
     background-color: #eee;
 }
 
-.orderable-hover{
+.fl-reorderer-movable-hover{
     background-color: lightyellow;
     cursor: move;
 }
 
-.orderable-selected{
+.fl-reorderer-movable-selected{
     background-color: #ddd;
 }
 
-.orderable-dragging {
+.fl-reorderer-movable-dragging {
     background-color: lightyellow;
 }
 
-.orderable-avatar {
+.fl-reorderer-avatar {
     opacity: 0.55;
     border: 0;
     list-style-type: none;
 }
 
-.orderable-drop-marker {
+.fl-reorderer-dropMarker {
     background-color : red !important;
     height:2px !important;
     padding:0 0 0 0 !important;

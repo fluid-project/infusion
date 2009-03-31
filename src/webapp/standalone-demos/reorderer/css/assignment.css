@@ -6,40 +6,40 @@
 }
 
 /*marks a drop zone*/
-.orderable-drop-marker {
+.fl-reorderer-dropMarker {
     background: url(../images/drop.gif) center left no-repeat;
    height: 30px;
    margin:0 1em;
 }
 /*hover over a selectable item*/
-.orderable-hover {
+.fl-reorderer-movable-hover {
     cursor: move;
     background:#eee !important
  }
- .orderable-hover {
+.fl-reorderer-movable-hover {
     cursor: move;
  }
 /*first cell*/
-.orderable-hover td:first-child {
+.fl-reorderer-movable-hover td:first-child {
 }
 /*left behind */ 
- .orderable-dragging {
+ .fl-reorderer-movable-dragging {
     background:#eee;
     color:#555 !important
 }
 
 /*item being dragged*/
-.orderable-avatar {
+.fl-reorderer-avatar {
     background:#BBEEAA !important;
     opacity: 0.55;
 }
 
-.orderable-selected {
+.fl-reorderer-movable-selected {
   background:#ffc;
   outline:1px solid red
 }
 
-.orderable-dragging {
+.fl-reorderer-movable-dragging {
   outline:1px solid #000
 }
 

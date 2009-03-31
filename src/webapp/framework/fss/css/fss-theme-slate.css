@@ -105,7 +105,7 @@
 .fl-theme-slate .fl-progress-fill {color:#999999; background-color:#000;}
 
 /* States */
-.fl-theme-slate .orderable-drop-marker {background-color:#f00 !important;}
+.fl-theme-slate .fl-reorderer-dropMarker {background-color:#f00 !important;}
 
 /* Enhaced Graphics Toggles */
 .fl-theme-slate .fl-widget-content .fl-tabs-enhanced {

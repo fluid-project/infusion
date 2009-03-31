@@ -23,7 +23,7 @@ img {
   width: 150px;
 }
 
-.orderable-default{
+.fl-reorderer-movable-default{
   height: 150px !important;
 	width: 150px;
 	border: 2px solid #ddd;
@@ -31,10 +31,10 @@ img {
 	margin: 5px !important;
 	text-align: center;
 	padding-top: 10px;
-    cursor: move;
+  cursor: move;
 }
 
-.orderable-hover{
+.fl-reorderer-movable-hover{
 	height: 150px !important;
 	width: 150px;
 	border: 2px solid #666;
@@ -42,9 +42,10 @@ img {
 	margin: 5px !important;
 	text-align: center;
 	padding-top: 10px;
+	cursor: move;
 }
 
-.orderable-selected{
+.fl-reorderer-movable-selected{
 	height: 150px !important;
 	width: 150px;
 	border: 2px solid #666;
@@ -53,14 +54,14 @@ img {
 	margin: 5px !important;
 	text-align: center;
 	padding-top: 10px;
-    cursor: move;
+  cursor: move;
 }
 
-.orderable-selected img{
+.fl-reorderer-movable-selected img{
   border: 1px solid #eee;
 }
 
-.orderable-dragging{
+.fl-reorderer-movable-dragging{
 	height: 150px !important;
 	width: 150px;
 	border: 2px solid #666;
@@ -73,21 +74,21 @@ img {
 	padding-top: 10px;
 }
 
-.image-title{
+.fl-reorderer-imageTitle{
 	margin-top:5px;
 	height: 40px;
 	overflow: hidden;
 }
 
-.image-title a{
+.fl-reorderer-imageTitle a{
   text-decoration: none;
 }
 
-.image-title a:hover{
+.fl-reorderer-imageTitle a:hover{
   text-decoration: underline;
 }
 
-div .orderable-drop-marker{
+div .fl-reorderer-dropMarker{
   height: 160px !important;
   margin:0 -2px;
   padding:0 2px;  

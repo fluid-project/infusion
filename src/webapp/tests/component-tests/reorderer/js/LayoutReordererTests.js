@@ -28,8 +28,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var item2 = jQuery("#portlet-2").focus();
             
             // Sniff test the reorderer that was created - keyboard selection
-            jqUnit.assertTrue("focus on item2", item2.hasClass("orderable-selected"));
-            jqUnit.assertTrue("focus on item2 - item1 should be default", item1.hasClass("orderable-default"));
+            jqUnit.assertTrue("focus on item2", item2.hasClass("fl-reorderer-movable-selected"));
+            jqUnit.assertTrue("focus on item2 - item1 should be default", item1.hasClass("fl-reorderer-movable-default"));
         });
         
         layoutReordererTests.test("Events within module", function () {
@@ -133,12 +133,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // Sniff test the reorderer that was created - keyboard selection and movement
     
-            jqUnit.assertTrue("focus on item2", item2.hasClass("orderable-selected"));
-            jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("orderable-default"));
+            jqUnit.assertTrue("focus on item2", item2.hasClass("fl-reorderer-movable-selected"));
+            jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
     
             layoutReorderer.handleKeyDown(fluid.testUtils.keyEvent("DOWN", item2));
-            jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("orderable-default"));
-            jqUnit.assertTrue("down arrow - item3 should be selected", item3.hasClass("orderable-selected"));
+            jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
+            jqUnit.assertTrue("down arrow - item3 should be selected", item3.hasClass("fl-reorderer-movable-selected"));
     
             layoutReorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("CTRL", item3));
             layoutReorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("DOWN", item3));
@@ -163,8 +163,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             jqUnit.assertEquals("default class is myDefault", "myDefault", layoutReorderer.options.styles.defaultStyle);
             jqUnit.assertEquals("selected class is mySelected", "mySelected", layoutReorderer.options.styles.selected);
-            jqUnit.assertEquals("dragging class is orderable-dragging", "orderable-dragging", layoutReorderer.options.styles.dragging);
-            jqUnit.assertEquals("mouseDrag class is orderable-dragging", "orderable-dragging", layoutReorderer.options.styles.mouseDrag);
+            jqUnit.assertEquals("dragging class is fl-reorderer-movable-dragging", "fl-reorderer-movable-dragging", layoutReorderer.options.styles.dragging);
+            jqUnit.assertEquals("mouseDrag class is fl-reorderer-movable-dragging", "fl-reorderer-movable-dragging", layoutReorderer.options.styles.mouseDrag);
             
         });
         
@@ -182,13 +182,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var item3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
             var key = fluid.testUtils.reorderer.compositeKey;
 
-            jqUnit.assertTrue("focus on item2", item2.hasClass("orderable-selected"));
+            jqUnit.assertTrue("focus on item2", item2.hasClass("fl-reorderer-movable-selected"));
             key(layoutReorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), item3);
 
             expectOrder("after ctrl-down, expect order 1, 2, 3, 4", [1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
             item3.focus();
-            jqUnit.assertTrue("focus on item3", item3.hasClass("orderable-selected"));
+            jqUnit.assertTrue("focus on item3", item3.hasClass("fl-reorderer-movable-selected"));
             key(layoutReorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), item3);
 
             expectOrder("after ctrl-down, expect order 1, 2, 4, 3", [1, 2, 4, 3, 5, 6, 7, 8, 9]);

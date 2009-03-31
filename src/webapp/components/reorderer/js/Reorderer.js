@@ -602,17 +602,17 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.defaults("fluid.reorderer", {
         styles: {
-            defaultStyle: "orderable-default",
-            selected: "orderable-selected",
-            dragging: "orderable-dragging",
-            mouseDrag: "orderable-dragging",
-            hover: "orderable-hover",
-            dropMarker: "orderable-drop-marker",
-            avatar: "orderable-avatar"
+            defaultStyle: "fl-reorderer-movable-default",
+            selected: "fl-reorderer-movable-selected",
+            dragging: "fl-reorderer-movable-dragging",
+            mouseDrag: "fl-reorderer-movable-dragging",
+            hover: "fl-reorderer-movable-hover",
+            dropMarker: "fl-reorderer-dropMarker",
+            avatar: "fl-reorderer-avatar"
         },
         selectors: {
-            dropWarning: ".drop-warning",
-            movables: ".movables",
+            dropWarning: ".flc-reorderer-dropWarning",
+            movables: ".flc-reorderer-movable",
             grabHandle: "",
             stylisticOffset: ""
         },

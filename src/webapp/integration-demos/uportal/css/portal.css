@@ -475,17 +475,17 @@ div#calendar-channel .datepicker_links {
   width: 150px;
 }
 
-.image-title{
+.fl-reorderer-imageTitle{
 	margin-top:5px;
 	height: 40px;
 	overflow: hidden;
 }
 
-.image-title a{
+.fl-reorderer-imageTitle a{
   text-decoration: none;
 }
 
-.image-title a:hover{
+.fl-reorderer-imageTitle a:hover{
   text-decoration: underline;
 }
 
@@ -567,21 +567,21 @@ div#calendar-channel .datepicker_links {
 
 /* Reorderer styles */
 
-.orderable-hover{
+.fl-reorderer-movable-hover{
   cursor: move;
 }
 
-.orderable-dragging{
+.fl-reorderer-movable-dragging{
     width: auto;
    	opacity: .2;
 	filter: alpha(opacity=20);
 }
 
-.orderable-selected{
+.fl-reorderer-movable-selected{
   border: 2px dashed #000;
 }
 
-.orderable-avatar {
+.fl-reorderer-avatar {
   height: 25px;
   width: 50px;
   border: 1px solid #666;
@@ -589,7 +589,7 @@ div#calendar-channel .datepicker_links {
   z-index: 65535;
 }
 
-div .orderable-drop-marker{
+div .fl-reorderer-dropMarker{
   height: 10px !important;
   background-color: #fa7019;
 }
@@ -601,7 +601,7 @@ div .orderable-drop-marker{
   opacity: .6;	
 }
 
-.drop-warning {
+.flc-reorderer-dropWarning {
     position: absolute;
     top: 50px;
     left: 10px;

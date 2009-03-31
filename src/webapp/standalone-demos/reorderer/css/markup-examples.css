@@ -56,21 +56,21 @@ border: 1px solid black;
 }
 
 
-.orderable-default{
+.fl-reorderer-movable-default{
   border: 2px solid #ddd;
   margin: 0 10px 10px 0 !important;
   text-align: center;
   padding-top: 10px;
 }
 
-.orderable-hover{
+.flc-reorderer-movable-hover{
   border: 2px solid #666;
   margin: 0 10px 10px 0 !important;
   text-align: center;
   padding-top: 10px;
 }
 
-.orderable-selected{
+.fl-reorderer-movable-selected{
   border: 2px solid #666;
   background-color: #ddd;
   margin: 0 10px 10px 0 !important;
@@ -78,12 +78,12 @@ border: 1px solid black;
   padding-top: 10px;
 }
 
-.orderable-avatar {
+.fl-reorderer-avatar {
     background-color: blue;
     opacity: 0.75;
 }
 
-div .orderable-drop-marker{
+div .fl-reorderer-dropMarker{
   height: 4px !important;
   width: 80px;
   background-color: green;
