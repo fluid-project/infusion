@@ -127,8 +127,8 @@ fluid_1_0 = fluid_1_0 || {};
         
         var reorderer = fluid.reorderer(container, that.options);
         var movables = reorderer.locate("movables");
-        fluid.transform(movables, function(cell) { 
-            fluid.reorderImages.addAriaRoles(that.options.selectors.imageTitle, cell)
+        fluid.transform(movables, function (cell) { 
+            fluid.reorderImages.addAriaRoles(that.options.selectors.imageTitle, cell);
         });
                 // Remove the anchors from the taborder.
         fluid.tabindex($("a", container), -1);
@@ -137,20 +137,19 @@ fluid_1_0 = fluid_1_0 || {};
     };
    
     
-    fluid.reorderImages.addAriaRoles = function(imageTitle, cell) {
+    fluid.reorderImages.addAriaRoles = function (imageTitle, cell) {
         cell = $(cell);
         cell.attr("role", "img");
         var title = $(imageTitle, cell);
         if (title[0] === cell[0] || title[0] === document) {
-             fluid.fail("Could not locate cell title using selector " + cellTitle 
-             + " in context " + fluid.dumpEl(cell));
+            fluid.fail("Could not locate cell title using selector " + imageTitle + " in context " + fluid.dumpEl(cell));
         }
         var titleId = fluid.allocateSimpleId(title);
         cell.attr("aria-labelledby", titleId);
         var image = $("img", cell);
         image.attr("role", "presentation");
         image.attr("alt", "");
-    }
+    };
     
     // This function now deprecated. Please use fluid.reorderImages() instead.
     fluid.lightbox = fluid.reorderImages;
