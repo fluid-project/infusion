@@ -462,7 +462,7 @@ fluid_1_0 = fluid_1_0 || {};
                 var item = movables[i];
                 if (!$.data(item, "fluid.reorderer.movable-initialised")) { 
                     initMovable($(item));
-                    $.data(item, "fluid.reorderer.movable-initialised", true)
+                    $.data(item, "fluid.reorderer.movable-initialised", true);
                 }
             }
 
