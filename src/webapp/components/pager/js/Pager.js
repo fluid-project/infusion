@@ -534,7 +534,7 @@ fluid_1_0 = fluid_1_0 || {};
 
     fluid.defaults("fluid.pager.selfRender", {
 		selectors: {
-			root: ".body-template"
+			root: ".flc-pager-body-template"
 		},
         keyStrategy: "id",
         keyPrefix: "",
