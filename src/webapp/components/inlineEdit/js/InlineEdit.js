@@ -18,21 +18,9 @@ fluid_1_0 = fluid_1_0 || {};
 
 (function ($, fluid) {
     
-    var setCaretToStart = function (control) {
-       if (control.setSelectionRange) {
-            control.focus();
-            control.setSelectionRange(0, 0);
-        }
-        else if (control.createTextRange) {
-            var range = control.createTextRange();
-            range.collapse(true);
-            range.select();
-        }
-    };
-    
     function sendKey(control, event, virtualCode, charCode) {
         var kE = document.createEvent("KeyEvents");
-        kE.initKeyEvent(event,1,1,null,0,0,0,0, virtualCode, charCode);
+        kE.initKeyEvent(event, 1, 1, null, 0, 0, 0, 0, virtualCode, charCode);
         control.dispatchEvent(kE);
     }
     
@@ -71,17 +59,137 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.deadMansBlur = function (control, exclusions, handler) {
         var blurPending = false;
-        $(control).blur(function() {
+        $(control).blur(function () {
             blurPending = true;
-            setTimeout(function() {
+            setTimeout(function () {
                 if (blurPending) {
                     handler(control);
                 }
             }, 150);
         });
-        var canceller = function() {blurPending = false;};
+        var canceller = function () {blurPending = false; };
         exclusions.focus(canceller);
         exclusions.click(canceller);
+    };
+    
+    var renderEditContainer = function (that, really) {
+        // If an edit container is found in the markup, use it. Otherwise generate one based on the view text.
+        that.editContainer = that.locate("editContainer");
+        that.editField = that.locate("edit");
+        if (that.editContainer.length !== 1) {
+            if (that.editField.length === 1) {
+                // if all the same we found a unique edit field, use it as both container and field (FLUID-844) 
+                that.editContainer = that.editField;
+            }
+            else if (that.editContainer.length > 1) {
+                fluid.fail("InlineEdit did not find a unique container for selector " + that.options.selectors.editContainer +
+                   ": " + fluid.dumpEl(that.editContainer));
+            }
+        }
+        if (that.editContainer.length === 1 && !that.editField) {
+            that.editField = that.locate("edit", that.editContainer);
+        }
+        if (!really) {return; } // do not invoke the renderer, unless this is the "final" effective time
+        var editElms = that.options.editModeRenderer(that);
+        if (editElms) {
+            that.editContainer = editElms.container;
+            that.editField = editElms.field;
+        }
+        
+        if (that.editField.length === 0) {
+            fluid.fail("InlineEdit improperly initialised - editField could not be located (selector " + that.options.selectors.edit + ")");
+        }
+    };
+    
+    var switchToViewMode = function (that) {    
+        that.editContainer.hide();
+        that.viewEl.show();
+    };
+    
+    var cancel = function (that) {
+        if (that.isEditing()) {
+            // Roll the edit field back to its old value and close it up.
+            that.editView.value(that.model.value);
+            switchToViewMode(that);
+        }
+    };
+    
+    var finish = function (that) {
+        var newValue = that.editView.value();
+        var oldValue = that.model.value;
+
+        var viewNode = that.viewEl[0];
+        var editNode = that.editField[0];
+        var ret = that.events.onFinishEdit.fire(newValue, oldValue, editNode, viewNode);
+        if (ret === false) {
+            return;
+        }
+        
+        that.updateModelValue(newValue);
+        that.events.afterFinishEdit.fire(newValue, oldValue, editNode, viewNode);
+        
+        switchToViewMode(that);
+    };
+    
+    var bindEditFinish = function (that) {
+        if (that.options.submitOnEnter === undefined) {
+            that.options.submitOnEnter = "textarea" !== fluid.unwrap(that.editField).nodeName.toLowerCase();
+        }
+        function keyCode(evt) {
+            // Fix for handling arrow key presses. See FLUID-760.
+            return evt.keyCode ? evt.keyCode : (evt.which ? evt.which : 0);          
+        }
+        var escHandler = function (evt) {
+            var code = keyCode(evt);
+            if (code === $.ui.keyCode.ESCAPE) {
+                cancel(that);
+                return false;
+            }
+        };
+        var finishHandler = function (evt) {
+            var code = keyCode(evt);
+            if (code !== $.ui.keyCode.ENTER) {
+                return true;
+            }
+            
+            finish(that);
+            that.viewEl.focus();  // Moved here from inside "finish" to fix FLUID-857
+            return false;
+        };
+        if (that.options.submitOnEnter) {
+            that.editContainer.keypress(finishHandler);
+        }
+        that.editContainer.keydown(escHandler);
+    };
+    
+    var bindBlurHandler = function (that) {
+        if (that.options.blurHandlerBinder) {
+            that.options.blurHandlerBinder(that);
+        }
+        else {
+            var blurHandler = function (evt) {
+                finish(that);
+                return false;
+            };
+            that.editField.blur(blurHandler);
+        }
+    };
+    
+    var initializeEditView = function (that, initial) {
+        if (!that.editInitialized) { 
+            renderEditContainer(that, !that.options.lazyEditView || !initial);
+            if (!that.options.lazyEditView || !initial) {
+                that.editView = fluid.initSubcomponent(that, "editView", that.editField);
+                
+                $.extend(true, that.editView, fluid.initSubcomponent(that, "editAccessor", that.editField));
+        
+                bindEditFinish(that);
+                bindBlurHandler(that);
+                that.editView.refreshView(that);
+                
+                that.editInitialized = true;
+            }
+        }
     };
     
     var edit = function (that) {
@@ -113,37 +221,6 @@ fluid_1_0 = fluid_1_0 || {};
         }, 0);
         that.events.afterBeginEdit.fire();
     };
-    
-    var finish = function (that) {
-        var newValue = that.editView.value();
-        var oldValue = that.model.value;
-
-        var viewNode = that.viewEl[0];
-        var editNode = that.editField[0];
-        var ret = that.events.onFinishEdit.fire(newValue, oldValue, editNode, viewNode);
-        if (ret === false) {
-            return;
-        }
-        
-        that.updateModelValue(newValue);
-        that.events.afterFinishEdit.fire(newValue, oldValue, editNode, viewNode);
-        
-        switchToViewMode(that);
-    };
-
-
-    var cancel = function (that) {
-        if (that.isEditing()) {
-            // Roll the edit field back to its old value and close it up.
-            that.editView.value(that.model.value);
-            switchToViewMode(that);
-        }
-    };
-      
-    var switchToViewMode = function (that) {    
-        that.editContainer.hide();
-        that.viewEl.show();
-        };
 
     var clearEmptyViewStyles = function (textEl, defaultViewStyle, originalViewPadding) {
         textEl.removeClass(defaultViewStyle);
@@ -219,21 +296,21 @@ fluid_1_0 = fluid_1_0 || {};
     
     function makeEditTriggerGuard(that) {
         var viewEl = fluid.unwrap(that.viewEl);
-        return function(event) {
+        return function (event) {
                   // FLUID-2017 - avoid triggering edit mode when operating standard HTML controls. Ultimately this
                   // might need to be extensible, in more complex authouring scenarios.
             var outer = fluid.findAncestor(event.target, function (elem) {
-                if (/input|select|textarea|button|a/i.test(elem.nodeName) || elem == viewEl) return true;
+                if (/input|select|textarea|button|a/i.test(elem.nodeName) || elem === viewEl) {return true; }
              });
             if (outer === viewEl) {
                 that.edit();
                 return false;
-        }};
+            }
+        };
     }
     
     var bindMouseHandlers = function (that) {
         bindHoverHandlers(that.viewEl, that.options.styles.invitation);
-        var viewEl = fluid.unwrap(that.viewEl);
         that.viewEl.click(makeEditTriggerGuard(that));
     };
     
@@ -254,86 +331,13 @@ fluid_1_0 = fluid_1_0 || {};
         fluid.tabbable(that.viewEl);
         var guard = makeEditTriggerGuard(that);
         fluid.activatable(that.viewEl, 
-            function(target, event) {
+            function (target, event) {
                 return guard(event);
             });
     };
     
-    var bindEditFinish = function (that) {
-        if (that.options.submitOnEnter === undefined) {
-            that.options.submitOnEnter = "textarea" !== fluid.unwrap(that.editField).nodeName.toLowerCase();
-        }
-        function keyCode(evt) {
-            // Fix for handling arrow key presses. See FLUID-760.
-            return evt.keyCode ? evt.keyCode : (evt.which ? evt.which : 0);          
-        }
-        var escHandler = function (evt) {
-            var code = keyCode(evt);
-            if (code === $.ui.keyCode.ESCAPE) {
-                cancel(that);
-                return false;
-            }
-        }
-        var finishHandler = function (evt) {
-            var code = keyCode(evt);
-            if (code !== $.ui.keyCode.ENTER) {
-                return true;
-            }
-            
-            finish(that);
-            that.viewEl.focus();  // Moved here from inside "finish" to fix FLUID-857
-            return false;
-        };
-        if (that.options.submitOnEnter) {
-            that.editContainer.keypress(finishHandler);
-        }
-        that.editContainer.keydown(escHandler);
-    };
-    
-    var bindBlurHandler = function (that) {
-        if (that.options.blurHandlerBinder) {
-            that.options.blurHandlerBinder(that);
-        }
-        else {
-            var blurHandler = function (evt) {
-                finish(that);
-                return false;
-            };
-            that.editField.blur(blurHandler);
-        }
-    };
-    
     var aria = function (viewEl, editContainer) {
         viewEl.attr("role", "button");
-    };
-    
-    var renderEditContainer = function (that, really) {
-        // If an edit container is found in the markup, use it. Otherwise generate one based on the view text.
-        that.editContainer = that.locate("editContainer");
-        that.editField = that.locate("edit");
-        if (that.editContainer.length !== 1) {
-            if (that.editField.length === 1) {
-                // if all the same we found a unique edit field, use it as both container and field (FLUID-844) 
-                that.editContainer = that.editField;
-            }
-            else if (that.editContainer.length > 1) {
-                fluid.fail("InlineEdit did not find a unique container for selector " + that.options.selectors.editContainer 
-                   + ": " + fluid.dumpEl(that.editContainer));
-            }
-        }
-        if (that.editContainer.length === 1 && !that.editField) {
-            that.editField = that.locate("edit", that.editContainer);
-        }
-        if (!really) return; // do not invoke the renderer, unless this is the "final" effective time
-        var editElms = that.options.editModeRenderer(that);
-        if (editElms) {
-            that.editContainer = editElms.container;
-            that.editField = editElms.field;
-        }
-        
-        if (that.editField.length === 0) {
-            fluid.fail("InlineEdit improperly initialised - editField could not be located (selector " + that.options.selectors.edit + ")");
-        }
     };
     
     var defaultEditModeRenderer = function (that) {
@@ -369,28 +373,11 @@ fluid_1_0 = fluid_1_0 || {};
         };
     };
     
-    var initializeEditView = function(that, initial) {
-        if (!that.editInitialized) { 
-            renderEditContainer(that, !that.options.lazyEditView || !initial);
-            if (!that.options.lazyEditView || !initial) {
-                that.editView = fluid.initSubcomponent(that, "editView", that.editField);
-                
-                $.extend(true, that.editView, fluid.initSubcomponent(that, "editAccessor", that.editField));
-        
-                bindEditFinish(that);
-                bindBlurHandler(that);
-                that.editView.refreshView(that);
-                
-                that.editInitialized = true;
-            }
-        }
-    };
-    
     var makeIsEditing = function (that) {
         var isEditing = false;
-        that.events.onBeginEdit.addListener(function() {isEditing = true;});
-        that.events.afterFinishEdit.addListener(function() {isEditing = false;});
-        return function() {return isEditing;}
+        that.events.onBeginEdit.addListener(function () {isEditing = true; });
+        that.events.afterFinishEdit.addListener(function () {isEditing = false; });
+        return function () {return isEditing; };
     };
     
     var setupInlineEdit = function (componentContainer, that) {
@@ -541,7 +528,7 @@ fluid_1_0 = fluid_1_0 || {};
         var nodeName = element.nodeName.toLowerCase();
         var func = "input" === nodeName || "textarea" === nodeName? "val" : "text";
         return {
-            value: function(newValue) {
+            value: function (newValue) {
                 return $(element)[func](newValue);
             }
         };
@@ -549,7 +536,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.inlineEdit.richTextViewAccessor = function (element) {
         return {
-            value: function(newValue) {
+            value: function (newValue) {
                 return $(element).html(newValue);
             }
         };
@@ -557,7 +544,7 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.inlineEdit.standardDisplayView = function (viewEl) {
         var that = {
-            refreshView: function(componentThat, source) {
+            refreshView: function (componentThat, source) {
                 if (componentThat.model.value) {
                     showEditedText(componentThat);
                 } else if (componentThat.options.defaultViewText) {
@@ -577,9 +564,9 @@ fluid_1_0 = fluid_1_0 || {};
     
     fluid.inlineEdit.standardEditView = function (editField) {
         var that = {
-            refreshView: function(componentThat, source) {
+            refreshView: function (componentThat, source) {
                 if (componentThat.editField && componentThat.editField.index(source) === -1) {
-                componentThat.editView.value(componentThat.model.value);
+                    componentThat.editView.value(componentThat.model.value);
                 }
             }
         };
