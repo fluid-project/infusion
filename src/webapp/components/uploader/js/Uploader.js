@@ -185,7 +185,7 @@ fluid_1_0 = fluid_1_0 || {};
             selectors: {
                 progressBar: "#" + rowId,
                 displayElement: "#" + progressId,
-                label: "#" + progressId + " .file-progress-text",
+                label: "#" + progressId + " .fl-uploader-file-progress-text",
                 indicator: "#" + progressId
             }
         });
@@ -214,14 +214,14 @@ fluid_1_0 = fluid_1_0 || {};
         rowButtons.removeClass(that.options.styles.dim);    
     };
         
-    var changeRowState = function (row, newState) {
-        row.removeClass("ready error").addClass(newState);
+    var changeRowState = function (that, row, newState) {
+        row.removeClass(that.options.styles.ready).removeClass(that.options.styles.error).addClass(newState);
     };
     
     var markRowAsComplete = function (that, file) {
         // update styles and keyboard bindings for the file row
         var row = rowForFile(that, file);
-        changeRowState(row, that.options.styles.uploaded);
+        changeRowState(that, row, that.options.styles.uploaded);
         row.attr("title", that.options.strings.status.success);
         fluid.enabled(row, false);
         
@@ -249,7 +249,7 @@ fluid_1_0 = fluid_1_0 || {};
         hideFileProgress(that, file);
         if (file.filestatus === fluid.uploader.fileStatusConstants.ERROR) {
             var fileRowElm = rowForFile(that, file);
-            changeRowState(fileRowElm, that.options.styles.error);
+            changeRowState(that, fileRowElm, that.options.styles.error);
             renderErrorInfoRowFromTemplate(that, fileRowElm, error);
         }
     };
@@ -370,14 +370,14 @@ fluid_1_0 = fluid_1_0 || {};
         },
         
         styles: {
-            ready: "ready",
-            uploading: "uploading",
-            hover: "hover",
-            selected: "selected",
-            uploaded: "uploaded",
-            error: "error",
-            remove: "removeFile",
-            dim: "dim",
+            hover: "fl-uploader-file-hover",
+            selected: "fl-uploader-file-focus",
+            ready: "fl-uploader-file-state-ready",
+            uploading: "fl-uploader-file-state-uploading",
+            uploaded: "fl-uploader-file-state-uploaded",
+            error: "fl-uploader-file-state-error",
+            remove: "fl-uploader-file-action-remove",
+            dim: "fl-uploader-dim",
             hiddenTemplate: "fluid-templates"
         },
         
@@ -730,10 +730,10 @@ fluid_1_0 = fluid_1_0 || {};
             options: {
                 selectors: {
                     progressBar: ".flc-uploader-scroller-footer",
-                    displayElement: ".flc-uploader-totalProgress", 
-                    label: ".flc-uploader-totalProgress-text",
-                    indicator: ".flc-uploader-totalProgress",
-                    ariaElement: ".flc-uploader-totalProgress"
+                    displayElement: ".flc-uploader-total-progress", 
+                    label: ".flc-uploader-total-progress-text",
+                    indicator: ".flc-uploader-total-progress",
+                    ariaElement: ".flc-uploader-total-progress"
                 }
             }
         },
@@ -743,7 +743,7 @@ fluid_1_0 = fluid_1_0 || {};
             browseButton: ".flc-uploader-button-browse",
             uploadButton: ".flc-uploader-button-upload",
             pauseButton: ".flc-uploader-button-pause",
-            totalFileStatusText: ".flc-uploader-totalProgress-text",
+            totalFileStatusText: ".flc-uploader-total-progress-text",
             instructions: ".flc-uploader-browse-instructions"
         },
  
@@ -757,11 +757,11 @@ fluid_1_0 = fluid_1_0 || {};
         },
         
         styles: {
-            disabled: "disabled",
-            hidden: "hidden",
-            dim: "dim",
-            totalProgress: "fl-uploader-totalProgress-complete",
-            totalProgressError: "fl-uploader-totalProgress-errored"
+            disabled: "fl-uploader-disabled",
+            hidden: "fl-uploader-hidden",
+            dim: "fl-uploader-dim",
+            totalProgress: "fl-uploader-total-progress-okay",
+            totalProgressError: "fl-uploader-total-progress-errored"
         },
         
         events: {

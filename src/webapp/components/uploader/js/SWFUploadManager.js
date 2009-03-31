@@ -156,7 +156,7 @@ fluid_1_0 = fluid_1_0 || {};
         flashButtonWidth: 106,
         
         styles: {
-            browseButtonOverlay: "fl-browse-button-overlay"
+            browseButtonOverlay: "fl-uploader-browse-overlay"
         }
     });
     

@@ -47,32 +47,32 @@
     background-color: #115F8F;
 }
 
-.fl-uploader button.default {
+.fl-uploader button.fl-uploader-button-default {
     background-color: #74B74A;
     border-color: #006838;
 }
 
-.fl-uploader button.default:hover {
+.fl-uploader button.fl-uploader-button-default:hover {
     background-color: #519325;
     border-color: #142B8C;
 }
 
-.fl-uploader button.cancel {
+.fl-uploader button.fl-uploader-button-cancel {
     background-color: #D03E4F;
     border-color: #BF1E2D;
 }
 
-.fl-uploader button.cancel:hover {
+.fl-uploader button.fl-uploader-button-cancel:hover {
     background-color: #9E182B;
     border-color: #142B8C;
 }
 
-.fl-uploader button.dim {
+.fl-uploader button.fl-uploader-dim {
     background-color: #999;
     border-color: #666666;
 }
 
-.fl-uploader button.dim:hover {
+.fl-uploader button.fl-uploader-dim:hover {
     background-color: #999;
     border-color: #666666;
 }
@@ -109,7 +109,7 @@ html>body .fl-uploader a.fl-uploader-browse {
     background-color: #FFF;
 }
 
-.fl-uploader .fl-browse-button-overlay {
+.fl-uploader .fl-uploader-browse-overlay {
     position: absolute;
     z-index: 1;
 }
@@ -124,12 +124,12 @@ html>body .fl-uploader a.fl-uploader-browse {
 
 /* header rows */
 
-.fl-scroller-table-head {
+.fl-uploader-queue-header {
     background-color: transparent;
     color: #666;
 }
 
-.fl-scroller-table-head th { 
+.fl-uploader-queue-header th { 
     text-align: left;
     font-size: 0.94em;
     font-weight: normal;
@@ -138,19 +138,19 @@ html>body .fl-uploader a.fl-uploader-browse {
 
 /* footer rows */
 
-.fl-scroller-table-foot {
+.fl-uploader-queue-footer {
     position: relative;
     background-color: #E6E6E6;
     border: 1px solid #999;
 }
 
-.fl-scroller-table-foot table { 
+.fl-uploader-queue-footer table { 
     width: 100%;
     position:relative;
     z-index:6;
 }
 
-.fl-scroller-table-foot td {
+.fl-uploader-queue-footer td {
     padding: 8px 6px;
     vertical-align: middle;
     font-size: 1.07em;
@@ -158,22 +158,9 @@ html>body .fl-uploader a.fl-uploader-browse {
     color: #666;
 }
 
-.fl-footer-completed, .fl-footer-error { 
-    
-}
-
-.fl-footer-completed {
-    background-image: url('../../progress/images/gradient-total-green.png');
-    background-attachment: scroll;
-    background-position: bottom left;
-    background-repeat: repeat-x;
-    overflow: hidden;
-}
-
-.fl-scroller-table-foot td.footer-button {
+.fl-uploader-footer-buttons {
     text-align: right;
 }
-
 
 /* tbody */
 
@@ -189,7 +176,7 @@ html>body .fl-uploader a.fl-uploader-browse {
     border-color: #999;
 }
 
-.fl-scroller .scroller-inner {
+.fl-scroller .fl-scroller-inner {
     position: relative;
     overflow: hidden;
 }
@@ -211,7 +198,7 @@ html>body .fl-uploader-queue {
     border: 1px solid #142B8C;
 }
 
-.fl-uploader-queue tr:focus, .fl-uploader-queue tr.selected {
+.fl-uploader-queue tr:focus, .fl-uploader-queue tr.fl-uploader-file-focus {
     background-color: #FFF9DC;
 }
 
@@ -221,11 +208,11 @@ html>body .fl-uploader-queue {
 
 /* second CSS selector is added only for IE6 */
 
-.fl-uploader-queue tr.ready:hover, .fl-uploader-queue tr.hover  {
+.fl-uploader-queue tr.fl-uploader-file-state-ready:hover, .fl-uploader-queue tr.fl-uploader-file-hover  {
     background-color: #FFF9DC;
 }
 
-.fl-uploader-queue tr.dim {
+.fl-uploader-queue tr.fl-uploader-dim {
     color: #666;
 }
 
@@ -235,18 +222,18 @@ html>body .fl-uploader-queue {
     border-bottom: 1px solid #BBCFDC;
 }
 
-.fl-uploader-queue-wrapper .fileName {
+.fl-uploader-queue-wrapper .fl-uploader-file-name {
     width: 322px;
     overflow: hidden;
 }
 
-.fl-uploader-queue-wrapper .fileSize {
+.fl-uploader-queue-wrapper .fl-uploader-file-size {
     text-align: right;
     width: 4em;
     white-space: nowrap;
 }
 
-.fl-uploader-queue .iconBtn {
+.fl-uploader-queue .fl-uploader-file-action {
     border: 1px solid transparent;
     height: 20px;
     width: 20px;
@@ -261,43 +248,43 @@ html>body .fl-uploader-queue {
     outline: none;
 }
 
-.fl-uploader-queue .iconBtn:hover {
+.fl-uploader-queue .fl-uploader-file-action:hover {
     border: 1px solid transparent;
     background-color: transparent;
     cursor: auto;
 }
 
-.fl-uploader-queue .iconBtn.dim {
+.fl-uploader-queue .fl-uploader-file-actions .fl-uploader-dim {
     border: 1px solid transparent;
     background-color: transparent;
     cursor: auto;
 }
 
-.fl-uploader-queue .removeFile {
+.fl-uploader-queue .fl-uploader-file-action-remove {
     background-image: url(../images/remove.png);
     cursor: pointer !important;
 }
 
-.fl-uploader-queue .removeFile:hover, .fl-uploader-queue tr.ready:focus .removeFile, .fl-uploader-queue tr.focus .removeFile {
+.fl-uploader-queue .fl-uploader-file-action-remove:hover, .fl-uploader-queue tr.fl-uploader-file-state-ready:focus .fl-uploader-file-action-remove, .fl-uploader-queue tr.focus .fl-uploader-file-action-remove {
     border: 1px solid #CCC;
     background-color: #FFF;
 }
 
-.fl-uploader-queue .removeFile:focus, .fl-uploader-queue .removeFile.focus {
+.fl-uploader-queue .fl-uploader-file-action-remove:focus, .fl-uploader-queue .fl-uploader-file-action-remove.focus {
     background-color: #4F99D3;
     outline: none;
 }
 
-.fl-uploader-queue .uploaded th, .fl-uploader-queue tr.uploaded:focus th, .fl-uploader-queue tr.focus th   {
+.fl-uploader-queue .fl-uploader-file-state-uploaded th, .fl-uploader-queue tr.fl-uploader-file-state-uploaded th, .fl-uploader-queue tr.focus th   {
     border-left: 4px solid #74B74A;
     color: #5E7A5E;
 }
 
-.fl-uploader-queue .uploaded td {
+.fl-uploader-queue .fl-uploader-file-state-uploaded td {
     color: #5E7A5E;
 }
 
-.fl-uploader-queue .uploaded .iconBtn {
+.fl-uploader-queue .fl-uploader-file-state-uploaded .fl-uploader-file-action {
     background-image: url(../images/tick.png);
 }
 
@@ -305,18 +292,18 @@ html>body .fl-uploader-queue {
  * 
  */
 
-.fl-uploader-queue .error th {
+.fl-uploader-queue .fl-uploader-file-state-error th {
     border-left: 4px solid #F5E392;
     background-color: #FCFBE6;
     border-bottom-width: 0;
 }
 
-.fl-uploader-queue .error td {
+.fl-uploader-queue .fl-uploader-file-state-error td {
     background-color: #FCFBE6;
     border-bottom-width: 0;
 }
 
-.fl-uploader-queue .queue-error-row td {
+.fl-uploader-queue .fl-uploader-file-error td {
     background-color: #FCFBE6;
     border-left: 4px solid #F5E392;
     background-image: url(../images/error.png);
@@ -326,11 +313,12 @@ html>body .fl-uploader-queue {
     padding-left: 32px;
 }
 
-.fl-uploader-queue-wrapper td.actions, .fl-uploader-queue-wrapper th.actions {
+.fl-uploader-queue-wrapper td.fl-uploader-file-actions, .fl-uploader-queue-wrapper th.fl-uploader-file-actions {
+    white-space: nowrap;
     text-align: center;
 }
 
-.fl-uploader-queue td.actions, .fl-uploader-queue td.fileStatus { 
+.fl-uploader-queue td.fileStatus { 
     white-space: nowrap;
 }
 
@@ -360,27 +348,27 @@ html>body .fl-uploader-queue {
     padding: 0;
 }
 
-button span.text-description {
+button span.fl-uploader-button-text-hidden {
     display: none;
 }
 
 /* element states */
 
-.disabled, .dim {
+.fl-uploader-disabled, .fl-uploader-dim {
     cursor: auto; 
 }
 
-.disabled {
+.fl-uploader-disabled {
     background-color: #CCC !important;
     border-color: #999 !important;
 }
 
-.dim {
+.fl-uploader-dim {
     opacity: 0.4;
     filter:alpha(opacity=40);
 }
 
-.hidden {
+.fl-uploader-hidden {
     display: none;
 }
 
@@ -391,7 +379,7 @@ button span.text-description {
 
 /* PROGRESS */
 
-.file-progress, .fl-uploader-totalProgress-complete, .fl-uploader-totalProgress-errored {
+.fl-uploader-file-progress, .fl-uploader-total-progress-okay, .fl-uploader-total-progress-errored {
     position: absolute;
     display: none;
     background-attachment: scroll;
@@ -402,30 +390,30 @@ button span.text-description {
     z-index:4;
 }
 
-.file-progress {
+.fl-uploader-file-progress {
     background-image: url('../../progress/images/gradient-file-green.png');
     background-color: #D1D6DD;
     border-right: 1px solid #9FCE7F;
     width:76%;
 }
 
-.file-progress .file-progress-text {
+.fl-uploader-file-progress .fl-uploader-file-progress-text {
     display: none;
 }
 
-.fl-uploader-totalProgress-complete, .fl-uploader-totalProgress-errored {
+.fl-uploader-total-progress-okay, .fl-uploader-total-progress-errored {
     top: 0;
     height: 100%;
     width:76%;
 } 
 
-.fl-uploader-totalProgress-complete {
+.fl-uploader-total-progress-okay {
     background-image: url('../../progress/images/gradient-total-green.png');
     border-right: 1px solid #9FCE7F;
     background-color: #BDBFC1;
 }
 
-.fl-uploader-totalProgress-errored {
+.fl-uploader-total-progress-errored {
     background-image: url('../../progress/images/gradient-total-yellow.png');
     border-right: 1px solid #E8C81C;
     background-color: #F6ECA0;
