@@ -44,7 +44,7 @@
                 var options = {
                     listeners: {
                         afterRender: function () {
-                            $('.fl-components-ui-options .fl-col:eq(0)').accordion({header: 'h2', clearStyle: true, autoHeight: false});
+                            $('.fl-uiOptions .fl-col:eq(0)').accordion({header: 'h2', clearStyle: true, autoHeight: false});
                         }
                     }
                 };
@@ -56,7 +56,7 @@
     <body>
 
         <h1>User Interface Options</h1>
-        <form id="options" action="" class="fl-col-flex2 fl-components-ui-options uiOptions">
+        <form id="options" action="" class="fl-col-flex2 fl-uiOptions uiOptions">
             
             <!-- column 1, options -->
             <div class="fl-col">
@@ -66,30 +66,30 @@
                         <ol>
                             <li>
                                 <label for="text-font" class="fl-label">Font style:</label>
-                                <select rsf:id="text-font" id="text-font" class="flc-uioptions-control" >
+                                <select rsf:id="text-font" id="text-font" class="flc-uiOptions-control" >
                                 </select>
                             </li>
                             
-                            <li class="flc-uioptions-min-text-size">
+                            <li class="flc-uiOptions-min-text-size fl-uiOptions-min-text-size">
                                 <label for="min-text-size" class="fl-label">Minimum text size:</label>
-                                <p class="fl-slider fl-force-right fl-slider-horz flc-textfield-slider-slider flc-uioptions-control"> </p>
-                                <input id="min-text-size" class="fl-textfield flc-textfield-slider-field flc-uioptions-control" type="text" />pt                                
+                                <p class="fl-slider fl-force-right fl-slider-horz flc-textfield-slider-slider flc-uiOptions-control"> </p>
+                                <input id="min-text-size" class="fl-textfield flc-textfield-slider-field flc-uiOptions-control" type="text" />pt                                
                             </li>
         
                             <li>
                                 <label for="text-spacing" class="fl-label">Text Spacing:</label>
-                                <select rsf:id="text-spacing" id="text-spacing" class="flc-uioptions-control" >
+                                <select rsf:id="text-spacing" id="text-spacing" class="flc-uiOptions-control" >
                                     <option>text-spacing here</option>
                                 </select>
                             </li>
-                            <li class="flc-uioptions-line-spacing">
+                            <li class="flc-uiOptions-line-spacing fl-uiOptions-line-spacing">
                                 <label for="line-spacing" class="fl-label">Line Spacing:</label>
-                                <p class="fl-slider fl-force-right fl-slider-horz flc-textfield-slider-slider flc-uioptions-control"> </p>
-                                <input id="line-spacing" class="fl-textfield flc-textfield-slider-field flc-uioptions-control" type="text" />                             
+                                <p class="fl-slider fl-force-right fl-slider-horz flc-textfield-slider-slider flc-uiOptions-control"> </p>
+                                <input id="line-spacing" class="fl-textfield flc-textfield-slider-field flc-uiOptions-control" type="text" />                             
                             </li>
                             <li>
                                 <label class="fl-label" for="theme">Contrast:</label>
-                                <select rsf:id="theme" id="theme" class="flc-uioptions-control" >
+                                <select rsf:id="theme" id="theme" class="flc-uiOptions-control" >
                                     <option>contrast here</option>
                                 </select>
                             </li>
@@ -97,7 +97,7 @@
                             <li>
                                 <label class="fl-label">Background Images:</label>
                                 <span rsf:id="background-images-row:">
-                                    <input rsf:id="background-images-choice" id="background-images-choice" class="flc-uioptions-control" type="radio" />
+                                    <input rsf:id="background-images-choice" id="background-images-choice" class="flc-uiOptions-control" type="radio" />
                                     <label rsf:id="background-images-label" for="background-images-choice">choice</label>
                                 </span>
                             </li>
@@ -105,7 +105,7 @@
                             <li>                             
                                 <label class="fl-label">Simplified Layout:</label>
                                 <span rsf:id="layout-row:">
-                                    <input rsf:id="layout-choice" id="layout-choice" class="flc-uioptions-control" type="radio" />
+                                    <input rsf:id="layout-choice" id="layout-choice" class="flc-uiOptions-control" type="radio" />
                                     <label rsf:id="layout-label" for="layout-choice">choice</label>
                                 </span>
                             </li>
@@ -119,22 +119,22 @@
                             <li>
                                 <label class="fl-label">Table of Contents:</label>
                                 <span rsf:id="toc-row:">
-                                    <input rsf:id="toc-choice" id="toc-choice" class="fl-textfield flc-uioptions-control" type="radio"/>
+                                    <input rsf:id="toc-choice" id="toc-choice" class="fl-textfield flc-uiOptions-control" type="radio"/>
                                     <label rsf:id="toc-label" for="toc-choice">choice</label>
                                 </span>
                             </li>
                             <li>
                                 <label class="fl-label">Links:</label>
-                                <input rsf:id="links-underline" id="links-underline" class="flc-uioptions-control" type="checkbox"/>
+                                <input rsf:id="links-underline" id="links-underline" class="flc-uiOptions-control" type="checkbox"/>
                                 <label for="links-underline">Underline</label>
-                                <input rsf:id="links-bold" id="links-bold" class="flc-uioptions-control" type="checkbox"/>
+                                <input rsf:id="links-bold" id="links-bold" class="flc-uiOptions-control" type="checkbox"/>
                                 <label for="links-bold">Bold</label>
-                                <input rsf:id="links-larger" id="links-larger" class="flc-uioptions-control" type="checkbox"/>
+                                <input rsf:id="links-larger" id="links-larger" class="flc-uiOptions-control" type="checkbox"/>
                                 <label for="links-larger">Larger</label>
                             </li>
                             <li>
                                 <label class="fl-label">Inputs:</label>
-                                <input rsf:id="inputs-larger" id="inputs-larger" class="flc-uioptions-control" type="checkbox"/>
+                                <input rsf:id="inputs-larger" id="inputs-larger" class="flc-uiOptions-control" type="checkbox"/>
                                 <label for="inputs-larger">Larger</label>
                             </li>
                         </ol>
@@ -146,12 +146,12 @@
             <div class="fl-col">
                 <div class="fl-subcomp-preview">
                     <h2><strong>Preview window</strong> (updates automatically)</h2>
-                    <iframe class="flc-uioptions-preview-frame" src="UIOptionsPreview.html" frameborder="0"></iframe>
+                    <iframe class="flc-uiOptions-preview-frame" src="UIOptionsPreview.html" frameborder="0"></iframe>
                 </div>
                 <div class="fl-text-align-center fl-subcomp-buttons">
-                    <input class="flc-uioptions-reset" type="button" value="Reset" />
-                    <input class="flc-uioptions-save" type="button" value="Save and apply" />
-                    <input class="flc-uioptions-cancel" type="button" value="Cancel" />
+                    <input class="flc-uiOptions-reset" type="button" value="Reset" />
+                    <input class="flc-uiOptions-save" type="button" value="Save and apply" />
+                    <input class="flc-uiOptions-cancel" type="button" value="Cancel" />
                 </div>                
             </div>
             

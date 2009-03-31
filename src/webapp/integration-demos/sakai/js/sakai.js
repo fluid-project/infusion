@@ -40,8 +40,8 @@ $(function () {
         var options = {
             listeners: {
                 afterRender: function () {
-                    $('.fl-components-ui-options .fl-col:eq(0)').accordion({header: 'h2', clearStyle: true, autoHeight: false});
-                    $('.fl-components-ui-options .fl-col h2:eq(0)').focus();
+                    $('.fl-uiOptions .fl-col:eq(0)').accordion({header: 'h2', clearStyle: true, autoHeight: false});
+                    $('.fl-uiOptions .fl-col h2:eq(0)').focus();
                 }
             }
         };

@@ -110,7 +110,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertEquals("hc setting was not saved", "default", uiOptions.uiEnhancer.model.theme);
                 
                 uiOptions.refreshView();
-                var fontSizeCtrl = $(".flc-uioptions-min-text-size");
+                var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
                 var fontSizeSetting = $(".flc-textfield-slider-field", fontSizeCtrl).val(); 
                 jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
                 var fontStyleSelection = $(":selected", $("#text-font-selection"));

@@ -394,13 +394,13 @@ fluid_1_0 = fluid_1_0 || {};
             }
         },
         selectors: {
-            controls: ".flc-uioptions-control",
-            textMinSizeCtrl: ".flc-uioptions-min-text-size",
-            lineSpacingCtrl: ".flc-uioptions-line-spacing",
-            cancel: ".flc-uioptions-cancel",
-            reset: ".flc-uioptions-reset",
-            save: ".flc-uioptions-save",
-            previewFrame : ".flc-uioptions-preview-frame"
+            controls: ".flc-uiOptions-control",
+            textMinSizeCtrl: ".flc-uiOptions-min-text-size",
+            lineSpacingCtrl: ".flc-uiOptions-line-spacing",
+            cancel: ".flc-uiOptions-cancel",
+            reset: ".flc-uiOptions-reset",
+            save: ".flc-uiOptions-save",
+            previewFrame : ".flc-uiOptions-preview-frame"
         },
         events: {
             modelChanged: null,

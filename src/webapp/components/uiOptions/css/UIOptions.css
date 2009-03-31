@@ -1,38 +1,38 @@
 /* CSS Specifically for the UI Options dialog and Preview window */
-.fl-components-ui-options .ui-accordion-content {border: 3px solid}/*fixes an IE issue where the border of the content needs to be specified*/
-.fl-components-ui-options {padding:10px;}
-.fl-components-ui-options fieldset {margin:0 20px 5px 0;}
-/*.fl-components-ui-options fieldset h2 {cursor:pointer; margin:0; padding:5px;}*/
-.fl-components-ui-options fieldset ol {margin:0; padding:15px 0 0 0;}
-.fl-components-ui-options fieldset li {padding:2px 0; clear:both}
-.fl-components-ui-options .fl-uioptions-buttons-refresher-5 {width:5em;}
-.fl-components-ui-options .fl-uioptions-buttons-refresher-10 {width:10em;}
+.fl-uiOptions .ui-accordion-content {border: 3px solid}/*fixes an IE issue where the border of the content needs to be specified*/
+.fl-uiOptions {padding:10px;}
+.fl-uiOptions fieldset {margin:0 20px 5px 0;}
+/*.fl-uiOptions fieldset h2 {cursor:pointer; margin:0; padding:5px;}*/
+.fl-uiOptions fieldset ol {margin:0; padding:15px 0 0 0;}
+.fl-uiOptions fieldset li {padding:2px 0; clear:both}
+.fl-uiOptions .fl-uiOptions-buttons-refresher-5 {width:5em;}
+.fl-uiOptions .fl-uiOptions-buttons-refresher-10 {width:10em;}
 
-.fl-components-ui-options .flc-uioptions-min-text-size .fl-textfield,
-.fl-components-ui-options .flc-uioptions-line-spacing .fl-textfield {width:1.85em; height:1.2em; padding:0.1em;}
+.fl-uiOptions .fl-uiOptions-min-text-size .fl-textfield,
+.fl-uiOptions .fl-uiOptions-line-spacing .fl-textfield {width:1.85em; height:1.2em; padding:0.1em;}
 
-.fl-components-ui-options .fl-slider {    
+.fl-uiOptions .fl-slider {    
     margin-bottom:0;
     margin-right:5%;
     margin-top:5px;
     width:30%;
 }
 
-.fl-components-ui-options .fl-subcomp-preview {padding:0;border:3px solid;}
-.fl-components-ui-options .fl-subcomp-preview h2 {font-weight:normal; margin:0; padding:5px;}
-.fl-components-ui-options .fl-subcomp-preview iframe {width:100%; height:300px;}
+.fl-uiOptions .fl-subcomp-preview {padding:0;border:3px solid;}
+.fl-uiOptions .fl-subcomp-preview h2 {font-weight:normal; margin:0; padding:5px;}
+.fl-uiOptions .fl-subcomp-preview iframe {width:100%; height:300px;}
 
 .ui-state-focus {*border:1px solid #F00; *outline:none;}
 
 /* Component Theme CSS */
-.fl-theme-mist .fl-components-ui-options h2 {background-color:#ebebeb;}
-.fl-theme-mist .fl-components-ui-options .ui-accordion-content {border-color:#ebebeb;}
-.fl-theme-mist .fl-components-ui-options .fl-subcomp-preview {border-color:#ebebeb;}
+.fl-theme-mist .fl-uiOptions h2 {background-color:#ebebeb;}
+.fl-theme-mist .fl-uiOptions .ui-accordion-content {border-color:#ebebeb;}
+.fl-theme-mist .fl-uiOptions .fl-subcomp-preview {border-color:#ebebeb;}
 
-.fl-theme-slate .fl-components-ui-options h2 {background-color:#666;}
-.fl-theme-slate .fl-components-ui-options .ui-accordion-content {border-color:#666;}
-.fl-theme-slate .fl-components-ui-options .fl-subcomp-preview {border-color:#666;}
+.fl-theme-slate .fl-uiOptions h2 {background-color:#666;}
+.fl-theme-slate .fl-uiOptions .ui-accordion-content {border-color:#666;}
+.fl-theme-slate .fl-uiOptions .fl-subcomp-preview {border-color:#666;}
 
-.fl-theme-coal .fl-components-ui-options h2 {background-color:#666;}
-.fl-theme-coal .fl-components-ui-options .ui-accordion-content {border-color:#666;}
-.fl-theme-coal .fl-components-ui-options .fl-subcomp-preview {border-color:#666;}
+.fl-theme-coal .fl-uiOptions h2 {background-color:#666;}
+.fl-theme-coal .fl-uiOptions .ui-accordion-content {border-color:#666;}
+.fl-theme-coal .fl-uiOptions .fl-subcomp-preview {border-color:#666;}
