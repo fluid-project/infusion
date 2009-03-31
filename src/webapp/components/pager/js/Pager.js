@@ -372,7 +372,7 @@ fluid_1_0 = fluid_1_0 || {};
     }
    
    // sets opts.EL, returns ID
-    function IDforColumn(columnDef, opts) {
+    function iDforColumn(columnDef, opts) {
         var options = opts.options;
         var EL = columnDef.valuebinding;
         var key = columnDef.key;
@@ -390,7 +390,7 @@ fluid_1_0 = fluid_1_0 || {};
    
     function expandColumnDefs(filteredRow, opts) {
         var tree = fluid.transform(opts.columnDefs, function (columnDef) {
-            var ID = IDforColumn(columnDef, opts);
+            var ID = iDforColumn(columnDef, opts);
             var togo;
             if (!columnDef.components) {
                 return {
@@ -443,10 +443,10 @@ fluid_1_0 = fluid_1_0 || {};
         }
         if (newModel.pageIndex !== that.model.pageIndex || newModel.pageSize !== that.model.pageSize || newModel.sortKey !== that.model.sortKey ||
             newModel.sortDir !== that.model.sortDir) {
-                var sorted = newModel.sortKey? that.options.sorter(that, newModel) : null;
-                that.permutation = sorted;
-                that.events.onModelChange.fire(newModel, that.model, that);
-                fluid.model.copyModel(that.model, newModel);
+            var sorted = newModel.sortKey? that.options.sorter(that, newModel) : null;
+            that.permutation = sorted;
+            that.events.onModelChange.fire(newModel, that.model, that);
+            fluid.model.copyModel(that.model, newModel);
         }            
     }
  
@@ -479,7 +479,7 @@ fluid_1_0 = fluid_1_0 || {};
             children:  
                 fluid.transform(columnDefs, function (columnDef) {
                 return {
-                    ID: IDforColumn(columnDef, opts),
+                    ID: iDforColumn(columnDef, opts),
                     value: columnDef.label,
                     decorators: [
                         {"jQuery": ["click", generateColumnClick(overallThat, columnDef, opts)]},
@@ -598,7 +598,7 @@ fluid_1_0 = fluid_1_0 || {};
             var columnDef = fluid.pager.findColumnDef(columnDefs, column);
             
             function fetchValue(index) {
-                var index = that.permutation? that.permutation[index] : index;
+                index = that.permutation? that.permutation[index] : index;
                 return fluid.pager.fetchValue(that, dataModel, index, columnDef.valuebinding, roots);
             }
             var tModel = {};
@@ -760,7 +760,7 @@ fluid_1_0 = fluid_1_0 || {};
             pagerBarSecondary: ".flc-pager-bottom",
             summary: ".flc-pager-summary",
             pageSize: ".flc-pager-page-size",
-            headerSortStylisticOffset: ".flc-sort-header"
+            headerSortStylisticOffset: ".flc-pager-sort-header"
         },
         
         styles: {

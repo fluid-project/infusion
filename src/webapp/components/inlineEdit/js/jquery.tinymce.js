@@ -13,6 +13,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // A super-simple jQuery TinyMCE plugin that actually works.
 // Written by Colin Clark
 
+/*global jQuery, tinyMCE*/
+
 (function ($) {
     // Invoke this immediately to prime TinyMCE.
     tinyMCE.init({

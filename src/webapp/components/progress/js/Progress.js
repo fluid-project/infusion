@@ -84,7 +84,7 @@ fluid_1_0 = fluid_1_0 || {};
     };
         
     var initARIA = function (ariaElement) {
-        ariaElement.attr("role","progressbar");
+        ariaElement.attr("role", "progressbar");
         ariaElement.attr("aria-valuemin", "0");
         ariaElement.attr("aria-valuemax", "100");
         ariaElement.attr("aria-live", "assertive");

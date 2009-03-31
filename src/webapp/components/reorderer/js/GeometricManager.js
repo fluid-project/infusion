@@ -25,15 +25,15 @@ var fluid_1_0 = fluid_1_0 || {};
     };
     
     fluid.rectSides = {
-      // agree with fluid.orientation
-      4: ["left", "right"],
-      1: ["top", "bottom"],
-      // agree with fluid.direction
-      8: "top",
-      12: "bottom",
-      2: "left",
-      3: "right"
-      };
+        // agree with fluid.orientation
+        4: ["left", "right"],
+        1: ["top", "bottom"],
+        // agree with fluid.direction
+        8: "top",
+        12: "bottom",
+        2: "left",
+        3: "right"
+    };
     
     /**
      * This is the position, relative to a given drop target, that a dragged item should be dropped.
@@ -57,17 +57,17 @@ var fluid_1_0 = fluid_1_0 || {};
         RIGHT: 3
     };
     
-    fluid.directionSign = function(direction) {
+    fluid.directionSign = function (direction) {
         return direction === fluid.direction.UP || direction === fluid.direction.LEFT? 
              fluid.direction.PREVIOUS : fluid.direction.NEXT;
     };
     
-    fluid.directionAxis = function(direction) {
+    fluid.directionAxis = function (direction) {
         return direction === fluid.direction.LEFT || direction === fluid.direction.RIGHT?
             0 : 1; 
     };
     
-    fluid.directionOrientation = function(direction) {
+    fluid.directionOrientation = function (direction) {
         return fluid.directionAxis(direction)? fluid.orientation.VERTICAL : fluid.orientation.HORIZONTAL;
     };
     
@@ -79,7 +79,7 @@ var fluid_1_0 = fluid_1_0 || {};
     };
     
     // moves a single node in the DOM to a new position relative to another
-    fluid.moveDom = function(source, target, position) {
+    fluid.moveDom = function (source, target, position) {
         source = fluid.unwrap(source);
         target = fluid.unwrap(target);
         
@@ -89,15 +89,15 @@ var fluid_1_0 = fluid_1_0 || {};
             target.appendChild(source);
         }
         else if (position === fluid.position.BEFORE) {
-           for (scan = target.previousSibling; ; scan = scan.previousSibling) {
-               if (!scan || !fluid.dom.isIgnorableNode(scan)) {
-                   if (scan !== source) {
-                       fluid.dom.cleanseScripts(source);
-                       target.parentNode.insertBefore(source, target);    
-                   }
-               break;
-               }
-           }
+            for (scan = target.previousSibling; ; scan = scan.previousSibling) {
+                if (!scan || !fluid.dom.isIgnorableNode(scan)) {
+                    if (scan !== source) {
+                        fluid.dom.cleanseScripts(source);
+                        target.parentNode.insertBefore(source, target);    
+                    }
+                    break;
+                }
+            }
         }
         else if (position === fluid.position.AFTER) {
             for (scan = target.nextSibling; ; scan = scan.nextSibling) {
