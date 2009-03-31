@@ -378,7 +378,7 @@ fluid_1_0 = fluid_1_0 || {};
             error: "fl-uploader-file-state-error",
             remove: "fl-uploader-file-action-remove",
             dim: "fl-uploader-dim",
-            hiddenTemplate: "fluid-templates"
+            hiddenTemplate: "fl-uploader-hidden-templates"
         },
         
         strings: {
