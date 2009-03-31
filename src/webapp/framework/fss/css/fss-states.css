@@ -66,24 +66,3 @@
 }
 
 
-/*************************************/
-/* Inline Edit */
-/* hover effect over editable element */
-.fl-inlineEdit-invitation {
-    border      : 1px solid #999;
-    background  : lightyellow;
-    cursor      : pointer;
-    /*margin      : -1px;*/
-}
-.fl-inlineEdit-tooltip {
-    position    : absolute;
-    background  : #CCC;
-    border      : 1px solid #999;
-    font        : normal 75% sans-serif;
-    padding     : 3px 5px;
-}
-.fl-inlineEdit-field {
-}
-.viewport-bottom {
-}
-
