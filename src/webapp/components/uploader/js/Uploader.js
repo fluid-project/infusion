@@ -208,7 +208,7 @@ fluid_1_0 = fluid_1_0 || {};
         rowButtons.addClass(that.options.styles.dim);    
     };
 
-    var repairFromUpload = function (that) {
+    var refreshAfterUpload = function (that) {
         var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
         rowButtons.removeAttr("disabled");
         rowButtons.removeClass(that.options.styles.dim);    
@@ -264,7 +264,7 @@ fluid_1_0 = fluid_1_0 || {};
                 onFileSuccess: that.markFileComplete,
                 onFileError: that.showErrorForFile,
                 afterFileComplete: that.hideFileProgress,
-                afterUploadComplete: that.repairFromUpload
+                afterUploadComplete: that.refreshAfterUpload
             }
         };
     };
@@ -322,8 +322,8 @@ fluid_1_0 = fluid_1_0 || {};
             prepareForUpload(that);
         };
         
-        that.repairFromUpload = function () {
-            repairFromUpload(that);
+        that.refreshAfterUpload = function () {
+            refreshAfterUpload(that);
         };
 
         that.showFileProgress = function (file) {
