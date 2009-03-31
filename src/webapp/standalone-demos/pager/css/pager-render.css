@@ -34,7 +34,7 @@ input {
     display:inline;
 }
 
-.page-link a,.previous a,.next a {
+.fl-pager-pageLink a,.previous a,.next a {
     color: #0099CC;
     font-size: .9em;
     text-decoration: none;

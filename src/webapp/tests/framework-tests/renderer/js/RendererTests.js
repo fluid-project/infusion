@@ -606,7 +606,7 @@ fluid.tests = fluid.tests || {};
         var renderOptions = {
             cutpoints: [ {
                 id: "page-link:",
-                selector: ".page-link"
+                selector: ".flc-pager-pageLink"
             },
             {
                 id: "payload-component",
@@ -627,9 +627,9 @@ fluid.tests = fluid.tests || {};
         fluid.selfRender(node, tree, renderOptions);
         fluid.testUtils.assertNode("Rendered nodes",
           [
-          {nodeName: "li", "class": "page-link"},
-          {nodeName: "li", "class": "page-link"},
-          {nodeName: "li", "class": "page-link"}
+          {nodeName: "li", "class": "flc-pager-pageLink"},
+          {nodeName: "li", "class": "flc-pager-pageLink"},
+          {nodeName: "li", "class": "flc-pager-pageLink"}
           ],
           $("li", node)
         );
