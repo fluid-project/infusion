@@ -190,7 +190,7 @@ var fluid_1_0 = fluid_1_0 || {};
     };
     
     var generalHidden = function (a) {
-        return "hidden" == a.type || curCss(a, "display") === "none" || curCss(a, "visibility") === "hidden" || !isAttached(a);
+        return "hidden" === a.type || curCss(a, "display") === "none" || curCss(a, "visibility") === "hidden" || !isAttached(a);
     };
     
 
@@ -559,7 +559,7 @@ var fluid_1_0 = fluid_1_0 || {};
             // the oddity in the rdist comparison is intended to express "half-open"-ness of rectangles
             // (backSign === 1? 0 : 1) - this is now gone - must be possible to move to perpendicularly abutting regions
             if (pdist <= collect.mindist && rdist >= 0) {
-                if (pdist == collect.mindist && rdist * backSign > collect.minrdist) {
+                if (pdist === collect.mindist && rdist * backSign > collect.minrdist) {
                     return;
                 }
                 collect.minrdist = rdist * backSign;
@@ -597,4 +597,4 @@ var fluid_1_0 = fluid_1_0 || {};
         }
         return togo;
     };
-}) (jQuery, fluid_1_0);
+})(jQuery, fluid_1_0);

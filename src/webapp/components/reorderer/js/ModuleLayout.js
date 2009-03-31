@@ -13,7 +13,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 // Declare dependencies.
 /*global jQuery*/
-/*global fluid_1_0*/
+/*global fluid, fluid_1_0*/
 
 fluid_1_0 = fluid_1_0 || {};
 
@@ -26,20 +26,20 @@ fluid.moduleLayout = fluid.moduleLayout || {};
      * @return  An object with column index and item index (within that column) properties.
      *          These indices are -1 if the item does not exist in the grid.
      */
-      var findColumnAndItemIndices = function (item, layout) {
-          return fluid.find(layout.columns,
-              function(column, colIndex) {
-                  var index = $.inArray(item, column.elements);
-                  return index === -1? null : {columnIndex: colIndex, itemIndex: index};
-                  }, {columnIndex: -1, itemIndex: -1});
-        };
+    var findColumnAndItemIndices = function (item, layout) {
+        return fluid.find(layout.columns,
+            function (column, colIndex) {
+                var index = $.inArray(item, column.elements);
+                return index === -1? null : {columnIndex: colIndex, itemIndex: index};
+            }, {columnIndex: -1, itemIndex: -1});
+    };
         
-       var findColIndex = function (item, layout) {
-           return fluid.find(layout.columns,
-             function(column, colIndex) {
-                     return item === column.container? colIndex : null;
+    var findColIndex = function (item, layout) {
+        return fluid.find(layout.columns,
+            function (column, colIndex) {
+            	return item === column.container? colIndex : null;
             }, -1);
-        };
+    };
 
     /**
      * Move an item within the layout object. 
@@ -63,7 +63,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
             var relative = position === fluid.position.BEFORE? 0 : 1;
             targetCol.splice(relativeItemIndices.itemIndex + relative, 0, item);
         }
-      };
+    };
        
     /**
      * Builds a layout object from a set of columns and modules.
@@ -75,17 +75,17 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         var layout = {};
         layout.container = container;
         layout.columns = fluid.transform(columns, 
-            function(column) {
+            function (column) {
                 return {
                     container: column,
-                    elements: $.makeArray(portlets.filter(function() {
+                    elements: $.makeArray(portlets.filter(function () {
                     	  // is this a bug in filter? would have expected "this" to be 1st arg
                         return fluid.dom.isContainer(column, this);
                     }))
                 };
             });
         return layout;
-      };
+    };
       
     /**
      * Builds a layout object from a serialisable "layout" object consisting of id lists
@@ -94,14 +94,14 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         return {
             container: fluid.byId(idLayout.id),
             columns: fluid.transform(idLayout.columns, 
-                function(column) {
+                function (column) {
                     return {
                         container: fluid.byId(column.id),
                         elements: fluid.transform(column.children, fluid.byId)
                     };
                 })
             };
-      };
+    };
       
     /**
      * Serializes the current layout into a structure of ids
@@ -110,14 +110,14 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         return {
             id: fluid.getId(idLayout.container),
             columns: fluid.transform(idLayout.columns, 
-                function(column) {
+                function (column) {
                     return {
                         id: fluid.getId(column.container),
                         children: fluid.transform(column.elements, fluid.getId)
                     };
                 })
             };
-      };
+    };
     
     var defaultOnShowKeyboardDropWarning = function (item, dropWarning) {
         if (dropWarning) {
@@ -155,7 +155,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
             }
             if (!togo) {
                 var idLayout = fluid.model.getBeanValue(options, "moduleLayout.layout");
-                 fluid.moduleLayout.layoutFromIds(idLayout);
+                fluid.moduleLayout.layoutFromIds(idLayout);
             }
             return togo;
         }
@@ -165,7 +165,7 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         function isLocked(item) {
             var lockedModules = options.selectors.lockedModules? dom.fastLocate("lockedModules") : [];
             return $.inArray(item, lockedModules) !== -1;
-            }
+        }
 
         that.getRelativePosition  = 
            fluid.reorderer.relativeInfoGetter(options.orientation, 
@@ -173,12 +173,12 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                  dropManager, dom);
                  
         that.getGeometricInfo = function () {
-        	  var extents = [];
+        	var extents = [];
             var togo = {extents: extents,
                         sentinelize: options.sentinelize};
-            togo.elementMapper = function(element) {
+            togo.elementMapper = function (element) {
                 return isLocked(element)? "locked" : null;
-                };
+            };
             for (var col = 0; col < layout.columns.length; col++) {
                 var column = layout.columns[col];
                 var thisEls = {
@@ -195,10 +195,10 @@ fluid.moduleLayout = fluid.moduleLayout || {};
         };
         
         function computeModules(all) {
-            return function() {
-                var modules = fluid.accumulate(layout.columns, function(column, list) {
+            return function () {
+                var modules = fluid.accumulate(layout.columns, function (column, list) {
                     return list.concat(column.elements); // note that concat will not work on a jQuery
-                    }, []);
+                }, []);
                 if (!all) {
                     fluid.remove_if(modules, isLocked);
                 }
@@ -213,22 +213,21 @@ fluid.moduleLayout = fluid.moduleLayout || {};
                 selectables: computeModules(true)
             },
             listeners: {
-                onMove: function(item, requestedPosition) {
+                onMove: function (item, requestedPosition) {
                     fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
-                    },
-                onRefresh: function() {
+                },
+                onRefresh: function () {
                     layout = computeLayout();
                     that.layout = layout;
                 },
                 "onShowKeyboardDropWarning.setPosition": defaultOnShowKeyboardDropWarning
-             }
+            }
         };
         
-        that.getModel = function() {
-           return fluid.moduleLayout.layoutToIds(layout);
+        that.getModel = function () {
+            return fluid.moduleLayout.layoutToIds(layout);
         };
-        
-        
+              
         return that;
     };
-}) (jQuery, fluid_1_0);
+})(jQuery, fluid_1_0);
