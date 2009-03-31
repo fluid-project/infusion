@@ -20,7 +20,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<!-- set up directory locations -->
     <property name="base-dir" location=".." />
     <property name="products" location="${base-dir}/products" />
-	<property name="src" location="${base-dir}/src/webapp/fluid-components" />
+	<property name="src" location="${base-dir}/src/webapp" />
 	<property name="sample-code" location="${base-dir}/src/webapp/sample-code" />
 	<property name="tests" location="${base-dir}/src/webapp/tests" />
 	<property name="jquery-src" location="${src}/js/jquery" />
@@ -42,6 +42,16 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="renderer-build" location="${components-build}/js/fluid/renderer" />
 	<property name="uploader-build" location="${components-build}/js/fluid/uploader" />
 	<property name="lint" location="${src}"/>
+
+    <!-- Properties to specify the location of the module dependency files -->
+    <property name="framework" location="framework/core" />
+    <property name="renderer" location="framework/renderer" />
+    <property name="tableOfContents" location="components/tableOfContents" />
+    <property name="uiOptions" location="components/uiOptions" />
+    <property name="jQuery" location="lib/jquery/core" />
+    <property name="jQueryUICore" location="lib/jquery/ui" />
+    <property name="jQueryUIWidgets" location="lib/jquery/ui" />
+    <property name="json" location="lib/json/" />
 
 	<!-- the filename for the package to output -->
 	<property name="zipfile" value="fluid-${fluid_version}" />
@@ -384,4 +394,9 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         </copy>
     </target>
     
+    <target name="newBuild">
+        <script language="javascript" src="build.js">
+        </script>
+    </target> 
+
 </project>
