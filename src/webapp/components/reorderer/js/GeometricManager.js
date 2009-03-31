@@ -111,11 +111,11 @@ var fluid_1_0 = fluid_1_0 || {};
             }
         }
         else {
-          fluid.fail("Unrecognised position supplied to fluid.moveDom: " + position);
+            fluid.fail("Unrecognised position supplied to fluid.moveDom: " + position);
         }
     };
     
-    fluid.normalisePosition = function(position, samespan, targeti, sourcei) {
+    fluid.normalisePosition = function (position, samespan, targeti, sourcei) {
         // convert a REPLACE into a primitive BEFORE/AFTER
         if (position === fluid.position.REPLACE) {
             position = samespan && targeti >= sourcei? fluid.position.AFTER: fluid.position.BEFORE;
@@ -160,40 +160,41 @@ var fluid_1_0 = fluid_1_0 || {};
         // perform the rightward-moving, BEFORE shift
         var backlimit = samespan? sourcei - 1: targetelements.length - 1;
         if (position === fluid.position.AFTER) { 
-           // we cannot do skip processing if the element was "fused against the grain" 
-           targeti++;
+            // we cannot do skip processing if the element was "fused against the grain" 
+            targeti++;
         }
         if (!samespan || targeti < sourcei) {
             for (i = targeti; i < backlimit; ++ i) {
                 fluid.moveDom(targetelements[i], targetelements[i + 1], fluid.position.BEFORE);
             }
-            if (backlimit >=0 && backlimit < targetelements.length - 1) {
+            if (backlimit >= 0 && backlimit < targetelements.length - 1) {
                 fluid.moveDom(targetelements[backlimit], oldn[fluid.position.BEFORE], fluid.position.AFTER);
             }                
         }
 
     };
   
-    var curCss = function(a, name) {
+    var curCss = function (a, name) {
         return window.getComputedStyle? window.getComputedStyle(a, null).getPropertyValue(name) : 
           a.currentStyle[name];
     };
     
-    var isAttached = function(node) {
-        while(node) {
-            if (node.tagName.toLowerCase() === "body") return true;
+    var isAttached = function (node) {
+        while (node) {
+            if (node.tagName.toLowerCase() === "body") {
+                return true;
+            }
             node = node.parentNode;
         }
         return false;
     };
     
-    var generalHidden = function(a) {
-        return "hidden" == a.type || curCss(a,"display") === "none" || 
-          curCss(a,"visibility") === "hidden" || !isAttached(a);
-          };
+    var generalHidden = function (a) {
+        return "hidden" == a.type || curCss(a, "display") === "none" || curCss(a, "visibility") === "hidden" || !isAttached(a);
+    };
     
 
-    var computeGeometry = function(element, orientation, disposition) {
+    var computeGeometry = function (element, orientation, disposition) {
         var elem = {};
         elem.element = element;
         elem.orientation = orientation;
@@ -223,9 +224,14 @@ var fluid_1_0 = fluid_1_0 || {};
     }
 
     function dumpelem(cacheelem) {
-      if (!cacheelem || !cacheelem.rect) return "null";
-      else return dumprect(cacheelem.rect) + " position: " +
-                cacheelem.position + " for " + fluid.dumpEl(cacheelem.element);
+        if (!cacheelem || !cacheelem.rect) {
+            return "null";
+        } else {
+            return dumprect(cacheelem.rect) + " position: " +
+            cacheelem.position +
+            " for " +
+            fluid.dumpEl(cacheelem.element);
+        }
     }
     
     fluid.dropManager = function () {
@@ -253,8 +259,12 @@ var fluid_1_0 = fluid_1_0 || {};
             var elem1 = $.extend(true, {}, cacheelem);
             var elem2 = $.extend(true, {}, cacheelem);
             var midpoint = (elem1.rect[sides[0]] + elem1.rect[sides[1]]) / 2;
-            elem1.rect[sides[1]] = midpoint; elem1.position = fluid.position.BEFORE;
-            elem2.rect[sides[0]] = midpoint; elem2.position = fluid.position.AFTER;
+            elem1.rect[sides[1]] = midpoint; 
+            elem1.position = fluid.position.BEFORE;
+            
+            elem2.rect[sides[0]] = midpoint; 
+            elem2.position = fluid.position.AFTER;
+            
             elem1.clazz = clazz1;
             elem2.clazz = clazz2;
             targets[targets.length] = elem1;
@@ -264,18 +274,21 @@ var fluid_1_0 = fluid_1_0 || {};
         // Expand this configuration point if we ever go back to a full "permissions" model
         function getRelativeClass(thisElements, index, relative, thisclazz, mapper) {
             index += relative;
-            if (index < 0 && thisclazz === "locked") return "locked";
-            if (index >= thisElements.length || mapper === null) return null;
-            else {
-                var relative = thisElements[index];
-                return mapper(relative) === "locked" && thisclazz === "locked"? "locked" : null;
+            if (index < 0 && thisclazz === "locked") {
+                return "locked";
+            }
+            if (index >= thisElements.length || mapper === null) {
+                return null;
+            } else {
+                relative = thisElements[index];
+                return mapper(relative) === "locked" && thisclazz === "locked" ? "locked" : null;
             }
         }
         
         var lastGeometry;
         var displacementX, displacementY;
         
-        that.updateGeometry = function(geometricInfo) {
+        that.updateGeometry = function (geometricInfo) {
             lastGeometry = geometricInfo;
             targets = [];
             cache = {};
@@ -285,7 +298,7 @@ var fluid_1_0 = fluid_1_0 || {};
                 var orientation = thisInfo.orientation;
                 var sides = fluid.rectSides[orientation];
                 
-                function processElement(element, sentB, sentF, disposition, j) {
+                var processElement = function (element, sentB, sentF, disposition, j) {
                     var cacheelem = computeGeometry(element, orientation, disposition);
                     cacheelem.owner = thisInfo;
                     if (cacheelem.clazz !== "hidden" && mapper) {
@@ -309,14 +322,15 @@ var fluid_1_0 = fluid_1_0 || {};
                     }
                     //fluid.log(dumpelem(cacheelem));
                     return cacheelem;
-                }
+                };
+                
                 var allHidden = true;
                 for (var j = 0; j < thisInfo.elements.length; ++ j) {
                     var element = thisInfo.elements[j];
                     var cacheelem = processElement(element, j === 0, j === thisInfo.elements.length - 1, 
                             fluid.position.INTERLEAVED, j);
                     if (cacheelem.clazz !== "hidden") {
-                       allHidden = false;
+                        allHidden = false;
                     }
                 }
                 if (allHidden && thisInfo.parentElement) {
@@ -326,7 +340,7 @@ var fluid_1_0 = fluid_1_0 || {};
             }   
         };
         
-        that.startDrag = function(event, handlePos, handleWidth, handleHeight) {
+        that.startDrag = function (event, handlePos, handleWidth, handleHeight) {
             var handleMidX = handlePos[0] + handleWidth / 2;
             var handleMidY = handlePos[1] + handleHeight / 2;
             var dX = handleMidX - event.pageX;
@@ -338,24 +352,24 @@ var fluid_1_0 = fluid_1_0 || {};
             $("").bind("mousemove.fluid-dropManager", that.mouseMove);
         };
         
-        that.lastPosition = function() {
+        that.lastPosition = function () {
             return lastClosest;
         };
         
-        that.endDrag = function() {
+        that.endDrag = function () {
             $("").unbind("mousemove.fluid-dropManager");
         };
         
-        that.mouseMove = function(evt) {
+        that.mouseMove = function (evt) {
             var x = evt.pageX + displacementX;
             var y = evt.pageY + displacementY;
             //fluid.log("Mouse x " + x + " y " + y );
             
             var closestTarget = that.closestTarget(x, y, lastClosest);
             if (closestTarget && closestTarget !== fluid.dropManager.NO_CHANGE) {
-               lastClosest = closestTarget;
+                lastClosest = closestTarget;
               
-               that.dropChangeFirer.fire(closestTarget);
+                that.dropChangeFirer.fire(closestTarget);
             }
         };
         
@@ -374,15 +388,14 @@ var fluid_1_0 = fluid_1_0 || {};
                 var cacheelem = targets[i];
                 if (cacheelem.clazz === "hidden") {
                     continue;
-                    }
+                }
                 var distance = fluid.geom.minPointRectangle(x, y, cacheelem.rect);
                 if (cacheelem.clazz === "locked") {
                     if (distance < minlockeddistance) {
                         minlockeddistance = distance;
                         minlockedelem = cacheelem;
                     }
-                }
-                else {
+                } else {
                     if (distance < mindistance) {
                         mindistance = distance;
                         minelem = cacheelem;
@@ -415,11 +428,13 @@ var fluid_1_0 = fluid_1_0 || {};
             };
         };
         
-        that.projectFrom = function(element, direction, includeLocked) {
+        that.projectFrom = function (element, direction, includeLocked) {
             that.updateGeometry(lastGeometry);
             var cacheelem = cache[cacheKey(element)];
             var projected = fluid.geom.projectFrom(cacheelem.rect, direction, targets, includeLocked);
-            if (!projected.cacheelem) return null;
+            if (!projected.cacheelem) {
+                return null;
+            }
             var retpos = projected.cacheelem.position;
             return {element: projected.cacheelem.element, 
                      position: retpos? retpos : fluid.position.BEFORE 
@@ -427,52 +442,53 @@ var fluid_1_0 = fluid_1_0 || {};
         };
         
         function getRelativeElement(element, direction, elements) {
-           var folded = fluid.directionSign(direction);
+            var folded = fluid.directionSign(direction);
       
-           var index = $(elements).index(element) + folded;
-           if (index < 0) {
-               index += elements.length;
-               }
-           index %= elements.length;
-           return elements[index];            
+            var index = $(elements).index(element) + folded;
+            if (index < 0) {
+                index += elements.length;
+            }
+            index %= elements.length;
+            return elements[index];            
         }
         
-        that.logicalFrom = function(element, direction, includeLocked) {
-           var orderables = that.getOwningSpan(element, fluid.position.INTERLEAVED, includeLocked);
-           return {element: getRelativeElement(element, direction, orderables), 
-              position: fluid.position.REPLACE};
-           }
+        that.logicalFrom = function (element, direction, includeLocked) {
+            var orderables = that.getOwningSpan(element, fluid.position.INTERLEAVED, includeLocked);
+            return {element: getRelativeElement(element, direction, orderables), 
+                position: fluid.position.REPLACE};
+        };
            
-        that.lockedWrapFrom = function(element, direction, includeLocked) {
-           var base = that.logicalFrom(element, direction, includeLocked);
-           var selectables = that.getOwningSpan(element, fluid.position.INTERLEAVED, includeLocked);
-           var allElements = cache[cacheKey(element)].owner.elements;
-           if (includeLocked || selectables[0] === allElements[0]) return base;
-           var directElement = getRelativeElement(element, direction, allElements);
-           if (lastGeometry.elementMapper(directElement) === "locked") {
-               base.element = null;
-               base.clazz = "locked";  
-           }
-           return base;
-           } 
+        that.lockedWrapFrom = function (element, direction, includeLocked) {
+            var base = that.logicalFrom(element, direction, includeLocked);
+            var selectables = that.getOwningSpan(element, fluid.position.INTERLEAVED, includeLocked);
+            var allElements = cache[cacheKey(element)].owner.elements;
+            if (includeLocked || selectables[0] === allElements[0]) {
+                return base;
+            }
+            var directElement = getRelativeElement(element, direction, allElements);
+            if (lastGeometry.elementMapper(directElement) === "locked") {
+                base.element = null;
+                base.clazz = "locked";  
+            }
+            return base;
+        }; 
         
-        that.getOwningSpan = function(element, position, includeLocked) {
+        that.getOwningSpan = function (element, position, includeLocked) {
             var owner = cache[cacheKey(element)].owner; 
-            var elements = position === fluid.position.INSIDE? [owner.parentElement] 
-              : owner.elements;
+            var elements = position === fluid.position.INSIDE? [owner.parentElement] : owner.elements;
             if (!includeLocked && lastGeometry.elementMapper) {
-                   elements = $.makeArray(elements);
-                   fluid.remove_if(elements, function(element) {
-                       return lastGeometry.elementMapper(element) === "locked";
-                   });
-               }
+                elements = $.makeArray(elements);
+                fluid.remove_if(elements, function (element) {
+                    return lastGeometry.elementMapper(element) === "locked";
+                });
+            }
             return elements;
         };
         
-        that.geometricMove = function(element, target, position) {
-           var sourceElements = that.getOwningSpan(element, null, true);
-           var targetElements = that.getOwningSpan(target, position, true);
-           fluid.permuteDom(element, target, position, sourceElements, targetElements);
+        that.geometricMove = function (element, target, position) {
+            var sourceElements = that.getOwningSpan(element, null, true);
+            var targetElements = that.getOwningSpan(target, position, true);
+            fluid.permuteDom(element, target, position, sourceElements, targetElements);
         };
         
         return that;
@@ -526,10 +542,10 @@ var fluid_1_0 = fluid_1_0 || {};
         var backSide = fluid.rectSides[axis * 15 + 5 - direction];
         var dirSign = fluid.directionSign(direction);
         
-        var penrect = {left: (7*baserect.left + 1*baserect.right)/8,
-                       right: (5*baserect.left + 3*baserect.right)/8,
-                       top: (7*baserect.top + 1*baserect.bottom)/8,
-                       bottom: (5*baserect.top + 3*baserect.bottom)/8};
+        var penrect = {left: (7 * baserect.left + 1 * baserect.right) / 8,
+                       right: (5 * baserect.left + 3 * baserect.right) / 8,
+                       top: (7 * baserect.top + 1 * baserect.bottom) / 8,
+                       bottom: (5 * baserect.top + 3 * baserect.bottom) / 8};
          
         penrect[frontSide] = dirSign * SENTINEL_DIMENSION;
         penrect[backSide] = -penrect[frontSide];
@@ -537,8 +553,8 @@ var fluid_1_0 = fluid_1_0 || {};
         function accPen(collect, cacheelem, backSign) {
             var thisrect = cacheelem.rect;
             var pdist = fluid.geom.minRectRect(penrect, thisrect);
-            var rdist = -dirSign * backSign * (baserect[backSign === 1? frontSide:backSide] 
-                                             - thisrect[backSign === 1? backSide:frontSide]);
+            var rdist = -dirSign * backSign * (baserect[backSign === 1 ? frontSide:backSide] 
+                                             - thisrect[backSign === 1 ? backSide:frontSide]);
             // fluid.log("pdist: " + pdist + " rdist: " + rdist);
             // the oddity in the rdist comparison is intended to express "half-open"-ness of rectangles
             // (backSign === 1? 0 : 1) - this is now gone - must be possible to move to perpendicularly abutting regions
@@ -546,7 +562,7 @@ var fluid_1_0 = fluid_1_0 || {};
                 if (pdist == collect.mindist && rdist * backSign > collect.minrdist) {
                     return;
                 }
-                collect.minrdist = rdist*backSign;
+                collect.minrdist = rdist * backSign;
                 collect.mindist = pdist;
                 collect.minelem = cacheelem;
             }
