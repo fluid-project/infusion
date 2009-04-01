@@ -1,4 +1,5 @@
-/*global importPackage, project, java, System, File, BufferedReader, FileReader */
+/*global importClass, project, Packages */
+/*global java, File, BufferedReader, FileReader, LogLevel */
 /*global src include, exclude*/
 
 /* 
@@ -12,13 +13,14 @@ if(!this.JSON){JSON=function(){function f(n){return n<10?"0"+n:n}Date.prototype.
  * This is the Fluid Infusion dependency manager.
  */
 
-importPackage(java.lang);
-importPackage(java.io);
+importClass(java.io.BufferedReader);
+importClass(java.io.FileReader);
+importClass(java.io.File);
+importClass(Packages.org.apache.tools.ant.types.LogLevel);
 
 var fluid = fluid || {};
 
 (function () {
-    // TODO: remove all the System.outs and the import for java.lang, also can importClass instead of the whole io package
     
     var parseArgument = function (arg) {
         var parsedArg = arg.split(",");
@@ -53,11 +55,11 @@ var fluid = fluid || {};
         declaration.dependencies = asArray(declaration.dependencies);
     };
     
-    var assembleDependencyList = function (that, moduleName, str) {
+    var assembleDependencyList = function (that, moduleName, prefixStr) {
         var i;
-        // Debug. Delete me.
-        System.out.println(str + " Processing module: " + moduleName + " ---");
-        System.out.println("Dependency order so far: " + that.requiredModules);
+        
+        project.log(prefixStr + " Processing module: " + moduleName + " ---", LogLevel.INFO.getLevel());
+        project.log("Dependency order so far: " + that.requiredModules, LogLevel.DEBUG.getLevel());
         
         if (isDependencyIncluded(moduleName, that.requiredModules)) {
             return;
@@ -68,16 +70,13 @@ var fluid = fluid || {};
         that.moduleFileTable[moduleName] = moduleInfo[moduleName].files;        
         var moduleDependencies = moduleInfo[moduleName].dependencies;
         
-        // Debugging. Delete me.
-        System.out.println("Dependencies for " + moduleName + ": ");
+        project.log("Dependencies for " + moduleName + ": ", LogLevel.VERBOSE.getLevel());
         for (i = 0; i < moduleDependencies.length; i++) {
-            System.out.println("  * " + moduleDependencies[i]);
+            project.log("  * " + moduleDependencies[i], LogLevel.VERBOSE.getLevel());
         }
-        // End debug.
         
         for (i = 0; i < moduleDependencies.length; i++) {
-            System.out.println("For " + moduleName + " i is " + i);
-            assembleDependencyList(that, moduleDependencies[i], str + "---");
+            assembleDependencyList(that, moduleDependencies[i], prefixStr + "---");
         }
         
         if (!isDependencyIncluded(moduleName, that.excludedModules)) {
@@ -126,7 +125,7 @@ var fluid = fluid || {};
          */
         that.loadDeclarationForModule = function (moduleName) {
             var modulePath = src + File.separator + project.getProperty(moduleName) + File.separator + moduleName + ".json";
-            //System.out.println(modulePath);
+            project.log("Declaration file full path: " + modulePath, LogLevel.VERBOSE.getLevel());
         
             var moduleInfo = "";
             var rdr = new BufferedReader(new FileReader(new File(modulePath)));
@@ -136,7 +135,7 @@ var fluid = fluid || {};
                 line = rdr.readLine();
             }
             
-            //System.out.println("Unparsed JSON: " + moduleInfo);
+            project.log("Unparsed JSON: " + moduleInfo, LogLevel.DEBUG.getLevel());
             return JSON.parse(moduleInfo);
         };
 
@@ -147,10 +146,10 @@ var fluid = fluid || {};
         that.printDependencies = function () {
             for (var i = 0; i < modulesToInclude.length; i++) {
                 var moduleName = modulesToInclude[i];
-                project.log("Assembling module " + moduleName);
+                project.log("Module " + moduleName);
                 
                 var moduleInfo = that.loadDeclarationForModule(moduleName);
-                System.out.println(moduleInfo);
+                project.log(moduleInfo);
             }
         };
 
@@ -161,18 +160,21 @@ var fluid = fluid || {};
         if (typeof(include) === "undefined") {
             return;
         }
-        System.out.println("including: " + include);
-
+        
+        project.log("Including modules: " + include, LogLevel.INFO.getLevel());
+        
         var excludedFiles = (typeof(exclude) === "undefined") ? [] : parseArgument(exclude);
+        project.log("Excluding modules: " + excludedFiles, LogLevel.INFO.getLevel());
+
         var resolver = fluid.dependencyResolver(parseArgument(include), excludedFiles);
         resolver.resolve();
         
         var fileSet = project.createDataType("fileset");
 
-        System.out.println("*** All required files: ");
+        project.log("*** All required files: ", LogLevel.VERBOSE.getLevel());
         var allFiles = resolver.getAllRequiredFiles();
         for (var i = 0; i < allFiles.length; i++) {
-            System.out.println(" * " + allFiles[i]);
+            project.log(" * " + allFiles[i], LogLevel.VERBOSE.getLevel());
             fileSet.setFile(new File(allFiles[i]));
         }
         
