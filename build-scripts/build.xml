@@ -43,7 +43,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="uploader-build" location="${components-build}/js/fluid/uploader" />
 	<property name="lint" location="${src}"/>
 
-    <!-- Properties to specify the location of the module dependency files -->
+    <!-- Properties to specify the location of the module declaration file -->
     <property name="framework" location="framework/core" />
     <property name="renderer" location="framework/renderer" />
     <property name="tableOfContents" location="components/tableOfContents" />
@@ -392,6 +392,14 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
                 <include name="${warfile}" />
             </fileset>
         </copy>
+    </target>
+
+    <target name="newBuildConcat">
+        <concat destfile="myNewFile.js" >
+            <fileset dir="${src}" includes="${myFileNames}"> 
+            
+            </fileset>
+        </concat>    
     </target>
     
     <target name="newBuild">

@@ -1,6 +1,6 @@
 /*global importClass, project, Packages */
 /*global java, File, BufferedReader, FileReader, LogLevel */
-/*global src include, exclude*/
+/*global src, include, exclude, newBuildConcat*/
 
 /* 
  * This is a minified version of Douglas Crockford's JSON2.js parser, release in the public domain.
@@ -84,10 +84,10 @@ var fluid = fluid || {};
         }
     };
     
-    var addFullPathsForModuleFiles = function (targetArray, moduleName, moduleFileTable) {
+    var addPathsForModuleFiles = function (targetArray, moduleName, moduleFileTable) {
         var filesForModule = moduleFileTable[moduleName];
         for (var i = 0; i < filesForModule.length; i++) {
-            var path = src + File.separator + project.getProperty(moduleName) + File.separator + "js" + File.separator;
+            var path = project.getProperty(moduleName) + File.separator + "js" + File.separator;
             targetArray.push(path + filesForModule[i]);
         }
         
@@ -111,7 +111,7 @@ var fluid = fluid || {};
             var fileList = [];
             for (var i = 0; i < that.requiredModules.length; i++) {
                 var currentModule = that.requiredModules[i];
-                addFullPathsForModuleFiles(fileList, currentModule, that.moduleFileTable);
+                addPathsForModuleFiles(fileList, currentModule, that.moduleFileTable);
             }
             
             return fileList;
@@ -173,14 +173,14 @@ var fluid = fluid || {};
 
         project.log("*** All required files: ", LogLevel.VERBOSE.getLevel());
         var allFiles = resolver.getAllRequiredFiles();
+        var fileNames = "";
         for (var i = 0; i < allFiles.length; i++) {
             project.log(" * " + allFiles[i], LogLevel.VERBOSE.getLevel());
-            fileSet.setFile(new File(allFiles[i]));
+            fileNames += allFiles[i] + ",";
         }
-        
-        var concatTask = project.createTask("concat");
-        concatTask.addFileset(fileSet);
-        //concatTask.execute();
+
+        project.setProperty("myFileNames", fileNames);
+        newBuildConcat.execute();
     };
     
     // Run this immediately.
