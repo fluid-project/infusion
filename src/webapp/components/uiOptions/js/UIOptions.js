@@ -127,10 +127,8 @@ fluid_1_0 = fluid_1_0 || {};
 (function ($, fluid) {
 
 //    TODO
-//    - fix the test that is throwing an error (the issue is the preview not loading because the path is hardcoded in the template)
 //    - make the preview a subcomponent
 //    - move the general renderer tree generation functions to the renderer
-//    - document the API
 //    - add the min font size textfieldSlider to the renderer tree
 //    - pull the strings out of the template and put them into the component?
 //    - should the accordian be part of the component by default?
@@ -333,6 +331,15 @@ fluid_1_0 = fluid_1_0 || {};
         return template;
     };
     
+    /**
+     * A component that works in conjunction with the UI Enhancer component and the Fluid Skinning System (FSS) 
+     * to allow users to set personal user interface preferences. The UI Options component provides a user 
+     * interface for setting and saving personal preferences, and the UI Enhancer component carries out the 
+     * work of applying those preferences to the user interface.
+     * 
+     * @param {Object} container
+     * @param {Object} options
+     */
     fluid.uiOptions = function (container, options) {
         var that = fluid.initView("fluid.uiOptions", container, options);
         that.uiEnhancer = $(document).data("uiEnhancer");
@@ -343,30 +350,48 @@ fluid_1_0 = fluid_1_0 || {};
         var savedModel = that.uiEnhancer.model;
         var template;
  
+        /**
+         * Saves the current model and fires onSave
+         */ 
         that.save = function () {
             that.events.onSave.fire(that.model);
             savedModel = fluid.copy(that.model); 
             that.uiEnhancer.updateModel(savedModel);
         };
 
+        /**
+         * Resets the selections to the integrator's defaults and fires onReset
+         */
         that.reset = function () {
             that.events.onReset.fire();
             that.updateModel(fluid.copy(that.uiEnhancer.defaultSiteSettings), that);
             that.refreshView();
         };
         
+        /**
+         * Resets the selections to the last saved selections and fires onCancel
+         */
         that.cancel = function () {
             that.events.onCancel.fire();
             that.updateModel(fluid.copy(savedModel), that);
             that.refreshView();            
         };
         
+        /**
+         * Rerenders the UI and fires afterRender
+         */
         that.refreshView = function () {
             var rendererOptions = createRenderOptions(that);
             fluid.reRender(template, that.container, generateTree(that, rendererOptions.model), rendererOptions);
             that.events.afterRender.fire();
         };
         
+        /**
+         * Updates the model and fires modelChanged
+         * 
+         * @param {Object} newModel
+         * @param {Object} source
+         */
         that.updateModel = function (newModel, source) {
             that.events.modelChanged.fire(newModel, that.model, source);
             fluid.clear(that.model);
