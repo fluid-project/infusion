@@ -253,7 +253,7 @@ fluid_1_0 = fluid_1_0 || {};
         that.model.toc = String(that.model.toc);
         that.model.backgroundImages = String(that.model.backgroundImages);
         
-        var superModel = fluid.assembleSuperModel({
+        var aggregateModel = fluid.assembleModel({
             selections: {
 	            model: that.model,
                 applier: that.applier
@@ -262,8 +262,8 @@ fluid_1_0 = fluid_1_0 || {};
         });
         
         return {
-            model: superModel.model,
-            applier: superModel.applier,
+            model: aggregateModel.model,
+            applier: aggregateModel.applier,
             autoBind: true, 
             debugMode: true
        //     renderRaw: true

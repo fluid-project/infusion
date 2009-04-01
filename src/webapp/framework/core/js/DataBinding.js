@@ -331,7 +331,7 @@ fluid_1_0 = fluid_1_0 || {};
         baseModel[segs[segs.length - 1]] = model;
     };
     
-    fluid.assembleSuperModel = function (modelSpec) {
+    fluid.assembleModel = function (modelSpec) {
        var model = {};
        var superApplier = fluid.makeSuperApplier();
        var togo = {model: model, applier: superApplier};
