@@ -641,9 +641,9 @@ fluid_1_0 = fluid_1_0 || {};
     fluid.pagerImpl = function (container, options) {
         var that = fluid.initView("fluid.pager", container, options);
         
-        var pageIndexConformer = function (model, dar) {
-            if (dar.value < 0) {
-                dar.value = 0;
+        var pageIndexConformer = function (model, changeRequest) {
+            if (changeRequest.value < 0) {
+                changeRequest.value = 0;
             }
         };
         
@@ -705,7 +705,7 @@ fluid_1_0 = fluid_1_0 || {};
             }
             that.model = that.pagerBar.pageList.defaultModel;
         }
-        that.applier = fluid.makeDARApplier(that.model);
+        that.applier = fluid.makeChangeApplier(that.model);
 
         that.events.initiatePageChange.fire({pageIndex: 0});
 

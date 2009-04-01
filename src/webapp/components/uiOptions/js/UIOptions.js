@@ -275,7 +275,7 @@ fluid_1_0 = fluid_1_0 || {};
             return {
                 listeners: {
                     modelChanged: function (value) {
-                    	that.applier.requestAlteration(settingName, value);
+                    	that.applier.requestChange(settingName, value);
                     }
                 },
                 value: that.model[settingName]
@@ -313,8 +313,8 @@ fluid_1_0 = fluid_1_0 || {};
     
     var setupUIOptions = function (that) {
         that.applier.modelChanged.addListener("*",
-            function (newModel, oldModel, dar) {
-                that.events.modelChanged.fire(newModel, oldModel, dar.source);
+            function (newModel, oldModel, changeRequest) {
+                that.events.modelChanged.fire(newModel, oldModel, changeRequest.source);
             }
         );
             
@@ -339,7 +339,7 @@ fluid_1_0 = fluid_1_0 || {};
         var that = fluid.initView("fluid.uiOptions", container, options);
         that.uiEnhancer = $(document).data("uiEnhancer");
         that.model = fluid.copy(that.uiEnhancer.model);
-        that.applier = fluid.makeDARApplier(that.model);
+        that.applier = fluid.makeChangeApplier(that.model);
 
         // TODO: we shouldn't need the savedModel and should use the uiEnhancer.model instead
         var savedModel = that.uiEnhancer.model;

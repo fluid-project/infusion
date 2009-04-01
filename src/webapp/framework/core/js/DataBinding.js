@@ -115,7 +115,7 @@ fluid_1_0 = fluid_1_0 || {};
         }
         var EL = root.fossils[name].EL;
         if (applier) {
-            applier.fireAlterationRequest({path: EL, value: newValue, source: node.id});
+            applier.fireChangeRequest({path: EL, value: newValue, source: node.id});
         }
         else {
             fluid.model.setBeanValue(root.data, EL, newValue);
@@ -230,19 +230,19 @@ fluid_1_0 = fluid_1_0 || {};
       };
   
   
-    fluid.model.applyDAR = function(model, dar) {
-        if (dar.type === "ADD") {
-            fluid.model.setBeanValue(model, dar.path, dar.value);
+    fluid.model.applyChangeRequest = function(model, request) {
+        if (request.type === "ADD") {
+            fluid.model.setBeanValue(model, request.path, request.value);
             }
-        else if (dar.type === "DELETE") {
-            var totail = fluid.pathUtil.getToTailPath(dar.path);
-            var tail = fluid.pathUtil.getTailPath(dar.path);
+        else if (request.type === "DELETE") {
+            var totail = fluid.pathUtil.getToTailPath(request.path);
+            var tail = fluid.pathUtil.getTailPath(request.path);
             var penult = fluid.model.getBeanValue(model, penult);
             delete penult[tail];
         }
     };
   
-    fluid.makeDARApplier = function(model) {
+    fluid.makeChangeApplier = function(model) {
         var baseEvents = {
             guards: fluid.event.getEventFirer(false, true),
             modelChanged: fluid.event.getEventFirer(false, false)
@@ -250,14 +250,14 @@ fluid_1_0 = fluid_1_0 || {};
         var that = {
             model: model
         };
-        function makePredicate(listenerMember, darIndex) {
+        function makePredicate(listenerMember, requestIndex) {
           return function(listener, args) {
-                var dar = args[darIndex];
-                return fluid.pathUtil.matchPath(listener[listenerMember], dar.path);
+                var changeRequest = args[requestIndex];
+                return fluid.pathUtil.matchPath(listener[listenerMember], changeRequest.path);
             };
         }
-        function adaptListener(that, name, listenerMember, darIndex) {
-            var predicate = makePredicate(listenerMember, darIndex);
+        function adaptListener(that, name, listenerMember, requestIndex) {
+            var predicate = makePredicate(listenerMember, requestIndex);
             that[name] = {
                 addListener: function(pathSpec, listener, namespace) {
                     listener[listenerMember] = pathSpec;
@@ -271,27 +271,27 @@ fluid_1_0 = fluid_1_0 || {};
         
         adaptListener(that, "guards", "guardedPathSpec", 1);
         adaptListener(that, "modelChanged", "triggerPathSpec", 2);
-        that.fireAlterationRequest = function(dar) {
-            if (!dar.type) {
-                dar.type = "ADD";
+        that.fireChangeRequest = function(changeRequest) {
+            if (!changeRequest.type) {
+                changeRequest.type = "ADD";
             }
-            var prevent = baseEvents.guards.fire(model, dar);
+            var prevent = baseEvents.guards.fire(model, changeRequest);
             if (prevent === false) {
                 return;
             }
             var oldModel = {};
             fluid.model.copyModel(oldModel, model);
-            fluid.model.applyDAR(model, dar);
-            baseEvents.modelChanged.fire(model, oldModel, dar);
+            fluid.model.applyChangeRequest(model, changeRequest);
+            baseEvents.modelChanged.fire(model, oldModel, changeRequest);
         };
 
-        that.requestAlteration = function(path, value, type) {
-            var dar = {
+        that.requestChange = function(path, value, type) {
+            var changeRequest = {
                 path: path,
                 value: value,
                 type: type
             };
-            that.fireAlterationRequest(dar);
+            that.fireChangeRequest(changeRequest);
         };
         
         return that;
@@ -303,15 +303,15 @@ fluid_1_0 = fluid_1_0 || {};
         that.addSubApplier = function(path, subApplier) {
             subAppliers.push({path: path, subApplier: subApplier});
         };
-        that.fireAlterationRequest = function(dar) {
+        that.fireChangeRequest = function(request) {
             for (var i = 0; i < subAppliers.length; ++ i) {
                 var path = subAppliers[i].path;
-                if (dar.path.indexOf(path) === 0) {
-                    var subpath = dar.path.substring(path.length + 1);
-                    var subDAR = fluid.copy(dar);
-                    subDAR.path = subpath;
+                if (request.path.indexOf(path) === 0) {
+                    var subpath = request.path.substring(path.length + 1);
+                    var subRequest = fluid.copy(request);
+                    subRequest.path = subpath;
                     // TODO: Deal with the as yet unsupported case of an EL rvalue DAR
-                    subAppliers[i].subApplier.fireAlterationRequest(subDAR);
+                    subAppliers[i].subApplier.fireChangeRequest(subRequest);
                 }
             }
         };

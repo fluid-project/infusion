@@ -30,7 +30,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("getFromHeadPath", "path2.path3", fluid.pathUtil.getFromHeadPath(path));
         });
 
-        DataBindingTests.test("DARApplier", function() {
+        DataBindingTests.test("ChangeApplier", function() {
             var outerDAR = null;
             function checkingGuard(model, dar) {
                 outerDAR = dar;
@@ -48,10 +48,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     innerPath2: "Owneriet"
                 }
             };
-            var applier = fluid.makeDARApplier(model);
+            var applier = fluid.makeChangeApplier(model);
             applier.guards.addListener("outerProperty", checkingGuard, "firstListener");
             applier.modelChanged.addListener("*", observingListener);
-            applier.requestAlteration("outerProperty", true);
+            applier.requestChange("outerProperty", true);
             
             jqUnit.assertDeepEq("Guard triggered", {
               path: "outerProperty",
@@ -68,7 +68,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             applier.guards.addListener("innerProperty.innerPath2", preventingGuard, "preventingGuard");
             outerDAR = null;
-            applier.requestAlteration("innerProperty.innerPath1", 5);
+            applier.requestChange("innerProperty.innerPath1", 5);
             jqUnit.assertNull("No collateral guard", outerDAR);
             
             var outerDAR2 = null;
@@ -77,23 +77,23 @@ https://source.fluidproject.org/svn/LICENSE.txt
             }
             
             applier.guards.addListener("innerProperty.*", checkingGuard2);
-            applier.requestAlteration("innerProperty.innerPath1", 6);
+            applier.requestChange("innerProperty.innerPath1", 6);
             jqUnit.assertDeepEq("Guard2 triggered", {
               path: "innerProperty.innerPath1",
               value: 6,
               type: "ADD"}, outerDAR2);
             
             outerNewModel = null;
-            applier.requestAlteration("innerProperty.innerPath2", "Disowneriet");
+            applier.requestChange("innerProperty.innerPath2", "Disowneriet");
             jqUnit.assertEquals("Unchanged through veto", "Owneriet", model.innerProperty.innerPath2);
             jqUnit.assertNull("Model changed not fired through veto", outerNewModel);
             
             applier.guards.removeListener("preventingGuard");
-            applier.requestAlteration("innerProperty.innerPath2", "Disowneriet");
+            applier.requestChange("innerProperty.innerPath2", "Disowneriet");
             jqUnit.assertEquals("Changed since veto removed", "Disowneriet", model.innerProperty.innerPath2);
             jqUnit.assertEquals("Model changed through firing", "Disowneriet", outerNewModel.innerProperty.innerPath2);
             
-            applier.fireAlterationRequest({path: "innerProperty.innerPath2", type: "DELETE"});
+            applier.fireChangeRequest({path: "innerProperty.innerPath2", type: "DELETE"});
             jqUnit.assertEquals("Removed via deletion", undefined, model.innerProperty.innerpath2);
         });
     });
