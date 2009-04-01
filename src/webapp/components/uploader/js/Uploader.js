@@ -238,7 +238,7 @@ fluid_1_0 = fluid_1_0 || {};
         errorRow.attr("id", fileRow.attr("id") + "_error");
         
         // Look up the error message and render it.
-        var errorType = fluid.findKeyInObject(fluid.uploader.errorConstants, error);
+        var errorType = fluid.keyForValue(fluid.uploader.errorConstants, error);
         var errorMsg = that.options.strings.errors[errorType];
         that.locate("errorText", errorRow).text(errorMsg);
         fileRow.after(errorRow);

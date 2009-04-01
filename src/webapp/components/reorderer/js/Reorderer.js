@@ -194,7 +194,7 @@ fluid_1_0 = fluid_1_0 || {};
             for (var i = 0; i < keysets.length; i++) {
                 var keyset = keysets[i];
                 var didProcessKey = false;
-                var keydir = fluid.findKeyInObject(keyset, evt.keyCode);
+                var keydir = fluid.keyForValue(keyset, evt.keyCode);
                 if (!keydir) {
                     continue;
                 }

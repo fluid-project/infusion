@@ -53,14 +53,15 @@ var fluid = fluid || fluid_1_0;
         return obj && obj.jquery && obj.length === 1 ? obj[0] : obj; // Unwrap the element if it's a jQuery.
     };
     
-    /** Searches through the supplied object for the first value which matches the one supplied.
+    /** 
+     * Searches through the supplied object for the first value which matches the one supplied.
      * @param obj {Object} the Object to be searched through
      * @param value {Object} the value to be found. This will be compared against the object's
      * member using === equality.
      * @return {String} The first key whose value matches the one supplied, or <code>null</code> if no
      * such key is found.
      */
-    fluid.findKeyInObject = function (obj, value) {
+    fluid.keyForValue = function (obj, value) {
         for (var key in obj) {
             if (obj[key] === value) {
                 return key;
@@ -68,6 +69,12 @@ var fluid = fluid || fluid_1_0;
         }
         return null;
     };
+    
+    /**
+     * This method is now deprecated and will be removed in a future release of Infusion. 
+     * See fluid.keyForValue instead.
+     */
+    fluid.findKeyInObject = fluid.keyForValue;
     
     /** 
      * Clears an object or array of its contents. For objects, each property is deleted.
