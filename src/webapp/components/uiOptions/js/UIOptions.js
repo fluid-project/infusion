@@ -264,9 +264,7 @@ fluid_1_0 = fluid_1_0 || {};
         return {
             model: aggregateModel.model,
             applier: aggregateModel.applier,
-            autoBind: true, 
-            debugMode: true
-       //     renderRaw: true
+            autoBind: true
         };
     };
     
