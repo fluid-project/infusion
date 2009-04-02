@@ -395,7 +395,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     </target>
 
     <target name="newBuildConcat">
-        <concat destfile="myNewFile.js" >
+        <concat destfile="${components-build}/js/MyFluidInfusion.js" >
             <fileset dir="${src}" includes="${myFileNames}"> 
             
             </fileset>
@@ -405,6 +405,15 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     <target name="newBuild">
         <script language="javascript" src="build.js">
         </script>
+        <antcall target="newBuildConcat">
+        </antcall>
+        <mkdir dir="${components-build}/js/mini/" />
+		<antcall target="minify">
+			<param name="fromDir" value="${components-build}/js/" />
+			<param name="toDir" value="${components-build}/js/mini/" />
+			<param name="file-pattern" value="MyFluidInfusion.js" />
+			<param name="lineBreakArg" value="" />
+		</antcall>
     </target> 
 
 </project>

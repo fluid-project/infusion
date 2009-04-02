@@ -180,7 +180,6 @@ var fluid = fluid || {};
         }
 
         project.setProperty("myFileNames", fileNames);
-        newBuildConcat.execute();
     };
     
     // Run this immediately.
