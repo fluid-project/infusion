@@ -1,0 +1,4 @@
+{"inlineEdit": {
+	"files": ["InlineEdit.js", "InlineEditIntegrations.js", "jquery.tinymce.js"],
+	"dependencies": ["jQuery", "framework"]
+}}

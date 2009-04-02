@@ -21,7 +21,6 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     <property name="base-dir" location=".." />
     <property name="products" location="${base-dir}/products" />
 	<property name="src" location="${base-dir}/src/webapp" />
-	<property name="sample-code" location="${base-dir}/src/webapp/sample-code" />
 	<property name="tests" location="${base-dir}/src/webapp/tests" />
 	<property name="jquery-src" location="${src}/js/jquery" />
 	<property name="swfupload-src" location="${src}/flash" />
@@ -34,7 +33,6 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="build" location="${base-dir}/build" />
 	<property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
 	<property name="components-build" location="${build}/components" />
-	<property name="sample-code-build" location="${build}/sample-code" />
 	<property name="tests-build" location="${build}/tests" />
 	<property name="jquery-build" location="${components-build}/js/jquery" />
 	<property name="swfupload-build" location="${components-build}/flash" />
@@ -43,15 +41,8 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="uploader-build" location="${components-build}/js/fluid/uploader" />
 	<property name="lint" location="${src}"/>
 
-    <!-- Properties to specify the location of the module declaration file -->
-    <property name="framework" location="framework/core" />
-    <property name="renderer" location="framework/renderer" />
-    <property name="tableOfContents" location="components/tableOfContents" />
-    <property name="uiOptions" location="components/uiOptions" />
-    <property name="jQuery" location="lib/jquery/core" />
-    <property name="jQueryUICore" location="lib/jquery/ui" />
-    <property name="jQueryUIWidgets" location="lib/jquery/ui" />
-    <property name="json" location="lib/json/" />
+    <property name="allModules" value="framework, renderer, tableOfContents, inlineEdit, uiOptions, jQuery, jQueryUICore, jQueryUIWidgets, json" />
+
 
 	<!-- the filename for the package to output -->
 	<property name="zipfile" value="fluid-${fluid_version}" />
@@ -68,7 +59,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		classpath="${jslint}" />
 
 	<!-- Target: buildAll -->
-	<target name="buildAll" depends="clean, buildInfusionWAR, package" />
+	<target name="buildAll" depends="cutRelease, package" />
 
 	<!-- Target: cleanup before running -->
 	<target name="clean">
@@ -248,7 +239,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     </target>
     
     <!-- Zip up the whole release bundle -->
-	<target name="package" depends="createDistro, createSrcDistro">
+	<target name="package">
 		<description>
 			Creates the release directory structure and zips it all up.
 		</description>
@@ -348,7 +339,6 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
                 TEST, TEST, TEST
                 There is an issue with excluding things in a certain directory and including others
                     - the my infusion javascript file is fine, the issue is with copying the files over.
-                Refactor newBuild to be more antly instead of constantly using ant call
     -->
     
     <target name="concatJavaScript" >

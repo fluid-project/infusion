@@ -168,7 +168,7 @@ var fluid = fluid || {};
     
     var resolveDependenciesFromArguments = function () {
         if (typeof(include) === "undefined") {
-            return;
+            include = allModules;
         }
         
         project.log("Including modules: " + include, LogLevel.INFO.getLevel());
