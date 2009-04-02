@@ -107,6 +107,16 @@ var fluid = fluid || {};
             }    
         };
         
+        // Not really directories now.
+        that.getRequiredDirsAsStr = function () {
+            var dirs = "";
+            for (var i = 0; i < that.requiredModules.length; i++) {
+                dirs += project.getProperty(that.requiredModules[i]) + File.separator + "**" + File.separator + "*,";
+            }            
+            return dirs;
+        };
+        
+        // Perhaps this should return a comma separated string since that's what we actually need?
         that.getAllRequiredFiles = function () {
             var fileList = [];
             for (var i = 0; i < that.requiredModules.length; i++) {
@@ -180,6 +190,10 @@ var fluid = fluid || {};
         }
 
         project.setProperty("myFileNames", fileNames);
+        
+        var dirs = resolver.getRequiredDirsAsStr();
+        project.log("*** All required directories: " + dirs, LogLevel.VERBOSE.getLevel());
+        project.setProperty("myDirs", dirs);
     };
     
     // Run this immediately.
