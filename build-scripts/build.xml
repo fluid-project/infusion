@@ -81,23 +81,13 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	</target>
 
 	<!-- Set up the build directory structure -->
-    <!-- Not used for the new build yet. Do I need it? -->
 	<target name="init">
 	    <description>
 	        Sets up the build directory structure.
         </description>
         
 	    <mkdir dir="${products}" />
-		<mkdir dir="${build}" />
-		<mkdir dir="${components-build}" />
-		
-		<!-- Copy the directory structure (but not the files) of fluid-components into the build tree -->
-		<copy todir="${components-build}">
-			<dirset dir="${src}">
-				<include name="**/*" />
-			</dirset>
-		</copy>
-		
+		<mkdir dir="${build}" />			
 		<mkdir dir="${dist}" />
         <mkdir dir="${src-dist}" />
 	</target>
@@ -279,8 +269,10 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
             Copies the files required to build a war file containing Infusion.
         </description>
         
-		<copy todir="${build}/war/src/webapp/fluid-components" >
-			<fileset dir="${components-build}"/>
+		<copy todir="${build}/war/src/webapp/infusion" >
+			<fileset dir="${dist}/components"/>
+            <fileset dir="${dist}/framework"/>
+            <fileset dir="${dist}/lib"/>
 		</copy>
 
 		<copy todir="${build}/war/src/webapp/WEB-INF" >
@@ -318,13 +310,13 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         </copy>
 	</target>
     
-    <target name="buildInfusionWAR" depends="createDistro, copyInfusionWARFiles, buildWAR">
+    <target name="buildInfusionWAR" depends="copyInfusionWARFiles, buildWAR">
        <description>
             Builds the core Infusion WAR file.
         </description>
     </target>
         
-    <target name="buildDailyWAR" depends="createSrcDistro, copyInfusionWARFiles">
+    <target name="buildDailyWAR" depends="copyInfusionWARFiles">
         <description>
             Builds a full-fledged WAR file used for the daily build, which includes sample code and tests.
         </description>
@@ -359,48 +351,61 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
                 Refactor newBuild to be more antly instead of constantly using ant call
     -->
     
-    <target name="newBuildConcat" >
+    <target name="concatJavaScript" >
         <concat destfile="${components-build}/js/MyFluidInfusion.js" >
-            <fileset dir="${src}" includes="${myFileNames}"> 
-            </fileset>
+            <fileset dir="${src}" includes="${myFileNames}" /> 
         </concat>    
     </target>
     
-    <target name="newBuild" depends="clean">
-        <script language="javascript" src="build.js">
-        </script>
+    <!-- Runs the javascript dependency resolver which sets $myDirs and $myFileNames -->
+    <target name="resolveDependencies" depends="clean">
+        <script language="javascript" src="build.js" />
+    </target>
 
-        <copy todir="${build}">
-            <fileset dir="${src}" includes="${myDirs}">
-            </fileset>
-        </copy>
-                
-        <antcall target="newBuildConcat">
-        </antcall>
-
-		<copy todir="${dist}">
-			<fileset dir="${build}" excludes="**/*.js,**/*.css">
-            </fileset>
-		</copy>
-
-		<antcall target="minifyBuild">
-		</antcall>
-    </target> 
-
-    <!-- TODO:  set the include based on all the modules. There is a way to pull properties that follow a pattern. -->
-    <target name="newFullBuild" depends="newBuild">
+    <target name="buildSrcBundle" depends="copySourceToBuild">
+        <description>
+            Builds a complete source release bundle.
+        </description>
+        
         <copy todir="${src-dist}">
             <fileset dir="${build}" />
         </copy>
-            
-        <antcall target="copyDistroFiles">
-			<param name="toDir" value="${dist}" />
-		</antcall>
-
+        
         <antcall target="copyDistroFiles">
 			<param name="toDir" value="${src-dist}" />
 		</antcall>
+    </target>
+    
+    <target name="buildDeployBundle" depends="copySourceToBuild">
+        <description>
+            Builds a complete minified deployment release bundle.
+        </description>
+        
+        <!-- Copy everything but the JavaScript and CSS we are about to minify -->
+		<copy todir="${dist}">
+			<fileset dir="${build}" excludes="**/*.js,**/*.css" />
+		</copy>
+        
+        <!-- Minify and copy JavaScript and CSS into the build directory -->
+	    <antcall target="minifyBuild" />
+        
+        <!-- Create the build products -->
+        <antcall target="copyDistroFiles">
+			<param name="toDir" value="${dist}" />
+		</antcall>
+    </target>
+    
+    <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript">
+        <copy todir="${build}">
+            <fileset dir="${src}" includes="${myDirs}" />
+        </copy>
+    </target> 
 
+    <!-- TODO:  set the include based on all the modules. There is a way to pull properties that follow a pattern. -->
+    <target name="cutRelease" depends="buildSrcBundle, buildDeployBundle, buildInfusionWAR">
+    </target>
+    
+    <target name="cutDailyBuild" depends="buildSrcBundle, buildDeployBundle, buildDailyWAR">
     </target>
     
 </project>
