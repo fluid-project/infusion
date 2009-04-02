@@ -10,7 +10,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	</description>
 
 	<!-- get environment variables and properties -->
-	<property environment="env"/>	
+	<property environment="env"/>	            <!-- Do we need this? -->
 	<property file="build.properties"/>
 
 	<!-- Define dependencies -->
@@ -22,23 +22,11 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     <property name="products" location="${base-dir}/products" />
 	<property name="src" location="${base-dir}/src/webapp" />
 	<property name="tests" location="${base-dir}/src/webapp/tests" />
-	<property name="jquery-src" location="${src}/js/jquery" />
-	<property name="swfupload-src" location="${src}/flash" />
-	<property name="swfupload-js-src" location="${src}/js/swfupload" />
-	<property name="renderer-src" location="${src}/js/fluid/renderer" />
-	<property name="uploader-src" location="${src}/js/fluid/uploader" />
 	<property name="dist" location="${products}/dist" />
     <property name="src-dist" location="${products}/src-dist" />
-    <property name="src-dist-components" location="${src-dist}/fluid-components" />
 	<property name="build" location="${base-dir}/build" />
 	<property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
 	<property name="components-build" location="${build}/components" />
-	<property name="tests-build" location="${build}/tests" />
-	<property name="jquery-build" location="${components-build}/js/jquery" />
-	<property name="swfupload-build" location="${components-build}/flash" />
-	<property name="swfupload-js-build" location="${components-build}/js/swfupload" />
-	<property name="renderer-build" location="${components-build}/js/fluid/renderer" />
-	<property name="uploader-build" location="${components-build}/js/fluid/uploader" />
 	<property name="lint" location="${src}"/>
 
     <property name="allModules" value="framework, renderer, tableOfContents, inlineEdit, uiOptions, jQuery, jQueryUICore, jQueryUIWidgets, json" />
@@ -93,49 +81,6 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         </copy>
     </target>
     
-	<!--Copy files that don't need to be minified from the source tree to the build directory -->
-    <!--This target is now obsolete and should be removed. But we should double-check that our -->
-    <!--new targets correctly exclude certain files.--> 
-	<target name="copyUnminifiableFiles" depends="init">
-		<copy todir="${components-build}">
-				<fileset dir="${src}">
-					<include name="html/**" />
-					<include name="images/**" />
-				</fileset>
-	    </copy>
-        <antcall target="copyLicenses">
-            <param name="toDir" value="${build}" />    
-        </antcall>
-            
-        <copy todir="${jquery-build}">
-            <fileset dir="${jquery-src}">
-                <include name="GPL-LICENSE.txt" />
-                <include name="MIT-LICENSE.txt" />
-                <include name="ui-FLUID-readme.txt" />
-            </fileset>
-        </copy>
-        <copy todir="${swfupload-build}">
-            <fileset dir="${swfupload-src}">
-                <include name="LICENSE.txt" />
-                <include name="swfupload.swf" />
-            </fileset>
-        </copy>
-        <copy todir="${swfupload-js-build}">
-            <fileset dir="${swfupload-js-src}">
-                <include name="*.txt" />
-            </fileset>
-        </copy>
-        <copy todir="${renderer-build}">
-            <fileset dir="${renderer-src}">
-                <include name="LICENSE.txt" />
-            </fileset>
-        </copy>
-        <copy todir="${uploader-build}">
-            <fileset dir="${uploader-src}">
-            </fileset>
-        </copy>
-	</target>
-
 	<!-- Target: Minify the JS files -->
 	<target name="minify">
 		<description>
@@ -190,54 +135,10 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		</copy>       
 
 		<copy todir="${toDir}/tests">
-			<fileset dir="${base-dir}/src/webapp/tests/" />
+			<fileset dir="${tests}" />
 		</copy>       
     </target>
-    
-	<!-- Copy all the files necessary for the distribution. -->
-    <!-- Not used by the new build and probably should be removed -->
-	<target name="createDistro" depends="init, copyUnminifiableFiles">
-		<description>
-		Copy all the files necessary for distribution to the Dist directory.
-		</description>
-
-		<copy todir="${dist}">
-			<fileset dir="${build}">
-				<exclude name="war/**"/>
-			</fileset>
-		</copy>
-
-        <antcall target="copyDistroFiles">
-			<param name="toDir" value="${dist}" />
-		</antcall>
         
-	</target>
-
-    <!-- Not used by the new build and probably should be removed -->
-    <target name="createSrcDistro" depends="init">
-        <description>
-		    Creates a source distribution.
-		</description>
-        <!-- Copy the whole source tree over. -->
-        <mkdir dir="${src-dist-components}" />
-        
-        <copy todir="${src-dist-components}">
-			<fileset dir="${src}" />
-		</copy>
-        
-        <antcall target="concatAllJS">
-            <param name="toDir" value="${src-dist-components}/js" />
-        </antcall>
-        
-        <antcall target="copyDistroFiles">
-			<param name="toDir" value="${src-dist}" />
-		</antcall>
-   
-        <antcall target="copyLicenses">
-			<param name="toDir" value="${src-dist}" />
-		</antcall>
-    </target>
-    
     <!-- Zip up the whole release bundle -->
 	<target name="package">
 		<description>
