@@ -191,45 +191,23 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		</antcall>
 	</target>    
     
-    <!-- Replaced by minifyBuild above  and should be removed -->
-	<target name="minifyAll">
-		<!-- Minify all the other JavaScript files straight out of the source tree. -->
-		<echo>Minifying .JS files...</echo>
-		<antcall target="minify">
-			<param name="fromDir" value="${src}/js" />
-			<param name="toDir" value="${components-build}/js" />
-			<param name="file-pattern" value="*.js" />
-			<param name="lineBreakArg" value="" />
-		</antcall>
-		
-		<echo>Minifying .CSS files...</echo>
-		<antcall target="minify">
-			<param name="fromDir" value="${src}/css" />
-			<param name="toDir" value="${components-build}/css" />
-			<param name="file-pattern" value="*.css" />
-			<param name="lineBreakArg" value="--line-break 0" />
-		</antcall>
-	</target>
-
     <target name="copyDistroFiles">
-        <mkdir dir="${toDir}/sample-code" />
-        
-		<copy todir="${toDir}/sample-code">
-			<fileset dir="${base-dir}/src/webapp/sample-code/">
-				<include name="*/**" />
-		    </fileset>
-		</copy>
+		<copy todir="${toDir}/integration-demos">
+			<fileset dir="${base-dir}/src/webapp/integration-demos/" />
+		</copy>       
 
-		<mkdir dir="${toDir}/tests" />
+		<copy todir="${toDir}/standalone-demos">
+			<fileset dir="${base-dir}/src/webapp/standalone-demos/" />
+		</copy>       
+
 		<copy todir="${toDir}/tests">
-			<fileset dir="${base-dir}/src/webapp/tests">
-				<include name="*/**" />
-		    </fileset>
-		</copy>
+			<fileset dir="${base-dir}/src/webapp/tests/" />
+		</copy>       
     </target>
     
 	<!-- Copy all the files necessary for the distribution. -->
-	<target name="createDistro" depends="init, copyUnminifiableFiles, minifyAll">
+    <!-- Not used by the new build and probably should be removed -->
+	<target name="createDistro" depends="init, copyUnminifiableFiles">
 		<description>
 		Copy all the files necessary for distribution to the Dist directory.
 		</description>
@@ -246,6 +224,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         
 	</target>
 
+    <!-- Not used by the new build and probably should be removed -->
     <target name="createSrcDistro" depends="init">
         <description>
 		    Creates a source distribution.
@@ -396,6 +375,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
                 TEST, TEST, TEST
                 There is an issue with excluding things in a certain directory and including others
                     - the my infusion javascript file is fine, the issue is with copying the files over.
+                Refactor newBuild to be more antly instead of constantly using ant call
     -->
     
     <target name="newBuildConcat" >
@@ -426,4 +406,20 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		</antcall>
     </target> 
 
+    <!-- TODO:  set the include based on all the modules. There is a way to pull properties that follow a pattern. -->
+    <target name="newFullBuild" depends="newBuild">
+        <copy todir="${src-dist}">
+            <fileset dir="${build}" />
+        </copy>
+            
+        <antcall target="copyDistroFiles">
+			<param name="toDir" value="${dist}" />
+		</antcall>
+
+        <antcall target="copyDistroFiles">
+			<param name="toDir" value="${src-dist}" />
+		</antcall>
+
+    </target>
+    
 </project>
