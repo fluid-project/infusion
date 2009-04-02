@@ -68,10 +68,14 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		classpath="${jslint}" />
 
 	<!-- Target: buildAll -->
-	<target name="buildAll" depends="clean, war, package" />
+	<target name="buildAll" depends="clean, buildInfusionWAR, package" />
 
 	<!-- Target: cleanup before running -->
 	<target name="clean">
+	    <description>
+	        Cleans up all build-related artifacts and products.
+        </description>
+        
 		<delete dir="${build}" />
 		<delete dir="${products}" />
 	</target>
@@ -79,6 +83,10 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<!-- Set up the build directory structure -->
     <!-- Not used for the new build yet. Do I need it? -->
 	<target name="init">
+	    <description>
+	        Sets up the build directory structure.
+        </description>
+        
 	    <mkdir dir="${products}" />
 		<mkdir dir="${build}" />
 		<mkdir dir="${components-build}" />
@@ -266,7 +274,11 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 			includes="**/*"  excludes="*.zip" />
 	</target>
 
-	<target name="war" depends="createDistro">
+    <target name="copyInfusionWARFiles">
+        <description>
+            Copies the files required to build a war file containing Infusion.
+        </description>
+        
 		<copy todir="${build}/war/src/webapp/fluid-components" >
 			<fileset dir="${components-build}"/>
 		</copy>
@@ -283,6 +295,12 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 				<include name="project.properties" />
 			</fileset>
 		</copy>
+    </target>
+    
+	<target name="buildWAR">
+	    <description>
+	        Builds the WAR file using Maven 2 and copies it to the distribution folder.
+        </description>
 
         <echo>Building war file...</echo>
 		<apply executable="mvn" dir="${build}/war" parallel="true">
@@ -298,8 +316,26 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
                 <include name="${warfile}" />
             </fileset>
         </copy>
-
 	</target>
+    
+    <target name="buildInfusionWAR" depends="createDistro, copyInfusionWARFiles, buildWAR">
+       <description>
+            Builds the core Infusion WAR file.
+        </description>
+    </target>
+        
+    <target name="buildDailyWAR" depends="createSrcDistro, copyInfusionWARFiles">
+        <description>
+            Builds a full-fledged WAR file used for the daily build, which includes sample code and tests.
+        </description>
+        
+        <!-- Copy the additional files into the war build required for the daily build. -->
+        <antcall name="copyDistroFiles">
+            <param name="toDir" value="${build}/war/src/webapp/" />
+        </antcall>
+        
+        <antcall name="buildWAR" />
+    </target>
 
 	<!-- Target: validate -->
 	<target name="validate">
@@ -313,61 +349,6 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
                 options="browser,eqeqeq,nomen,undef">
         </jslint>
 	</target>
-
-    <!-- Target: fullWar -->
-    <!-- Take a close look at this one and then hopefully delete -->
-    <target name="fullWar" depends="clean, createSrcDistro">
-		<copy todir="${sample-code-build}">
-			<fileset dir="${sample-code}">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-		
-		<copy todir="${tests-build}">
-			<fileset dir="${tests}">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-		<copy todir="${build}/war/src/webapp/fluid-components" >
-			<fileset dir="${src-dist-components}"/>
-		</copy>
-
-		<copy todir="${build}/war/src/webapp/sample-code" >
-			<fileset dir="${sample-code-build}"/>
-		</copy>
-
-		<copy todir="${build}/war/src/webapp/tests" >
-			<fileset dir="${tests-build}"/>
-		</copy>
-
-		<copy todir="${build}/war/src/webapp/WEB-INF" >
-			<fileset dir="${web-inf}"/>
-		</copy>
-
-		<copy todir="${build}/war">
-			<fileset dir="..">
-				<include name="pom.xml" />
-				<include name="project.xml" />
-				<include name="maven.xml" />
-				<include name="project.properties" />
-			</fileset>
-		</copy>
-
-        <echo>Building war file...</echo>
-		<apply executable="mvn" dir="${build}/war" parallel="true">
-				<fileset  dir=".">
-				    <include name="pom.xml"/>
-                </fileset>
-				<arg value="install" />
-		</apply>
-
-        <echo>Copying war file ${build}/war/target/${warfile} to ${dist}...</echo>
-		<copy todir="${dist}">
-            <fileset dir="${build}/war/target">
-                <include name="${warfile}" />
-            </fileset>
-        </copy>
-    </target>
 
     <!-- TODO: 
                 Clean up this file so that unused portions are removed
