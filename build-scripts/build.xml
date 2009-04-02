@@ -103,6 +103,8 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     </target>
     
 	<!--Copy files that don't need to be minified from the source tree to the build directory -->
+    <!--This target is now obsolete and should be removed. But we should double-check that our -->
+    <!--new targets correctly exclude certain files.--> 
 	<target name="copyUnminifiableFiles" depends="init">
 		<copy todir="${components-build}">
 				<fileset dir="${src}">
@@ -141,35 +143,6 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
             <fileset dir="${uploader-src}">
             </fileset>
         </copy>
-	</target>
-
-    <target name="concatAllJS">
-		<concat destfile="${toDir}/Fluid-all.js" append="true" >
-		    <filelist dir="${src}/js/jquery" files="${jquery_order_of_dependencies}" />
-            <filelist dir="${src}/js/json" files="json2.js" />
-            <filelist dir="${src}/js/swfupload" files="swfobject.js, swfupload.js" />
-			<filelist dir="${src}/js/fluid" files="${fluid_order_of_dependencies}" />
-			<filelist dir="${src}/js/fluid/renderer" files="${fluid_renderer_order_of_dependencies}" />
-			<filelist dir="${src}/js/fluid/uploader" files="${fluid_uploader_order_of_dependencies}" />
-		</concat>    
-    </target>
-    
-	<!-- Concatenate all the minified JS files together into an all-in-one file. -->
-	<target name="fluidAllInOne" depends="init">
-	    <mkdir dir="${components-build}/js/all" />
-        <antcall target="concatAllJS">
-            <param name="toDir" value="${components-build}/js/all" />
-        </antcall>
-		
-		<antcall target="minify">
-			<param name="fromDir" value="${components-build}/js/all" />
-			<param name="toDir" value="${components-build}/js/" />
-			<param name="file-pattern" value="Fluid-all.js" />
-			<param name="lineBreakArg" value="" />
-		</antcall>
-		
-		<!-- delete the unminified concatenated file generated above -->
-		<delete dir="${components-build}/js/all" />
 	</target>
 
 	<!-- Target: Minify the JS files -->
@@ -234,7 +207,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     </target>
     
 	<!-- Copy all the files necessary for the distribution. -->
-	<target name="createDistro" depends="init, copyUnminifiableFiles, minifyAll, fluidAllInOne">
+	<target name="createDistro" depends="init, copyUnminifiableFiles, minifyAll">
 		<description>
 		Copy all the files necessary for distribution to the Dist directory.
 		</description>
@@ -341,6 +314,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	</target>
 
     <!-- Target: fullWar -->
+    <!-- Take a close look at this one and then hopefully delete -->
     <target name="fullWar" depends="clean, createSrcDistro">
 		<copy todir="${sample-code-build}">
 			<fileset dir="${sample-code}">
@@ -417,14 +391,19 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
             <fileset dir="${src}" includes="${myDirs}">
             </fileset>
         </copy>
-                    
+                
         <antcall target="newBuildConcat">
         </antcall>
 
+		<copy todir="${dist}">
+			<fileset dir="${build}" excludes="**/*.js">
+            </fileset>
+		</copy>
+
 		<antcall target="minify">
-			<param name="fromDir" value="${components-build}/js/" />
-			<param name="toDir" value="${components-build}/" />
-			<param name="file-pattern" value="MyFluidInfusion.js" />
+			<param name="fromDir" value="${build}" />
+			<param name="toDir" value="${dist}" />
+			<param name="file-pattern" value="*.js" />
 			<param name="lineBreakArg" value="" />
 		</antcall>
     </target> 
