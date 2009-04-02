@@ -33,7 +33,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     <property name="src-dist-components" location="${src-dist}/fluid-components" />
 	<property name="build" location="${base-dir}/build" />
 	<property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
-	<property name="components-build" location="${build}/fluid-components" />
+	<property name="components-build" location="${build}/components" />
 	<property name="sample-code-build" location="${build}/sample-code" />
 	<property name="tests-build" location="${build}/tests" />
 	<property name="jquery-build" location="${components-build}/js/jquery" />
@@ -398,6 +398,8 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
                 Clean up this file so that unused portions are removed
                 Rename the newly introduced properties so they are clear
                 TEST, TEST, TEST
+                There is an issue with excluding things in a certain directory and including others
+                    - the my infusion javascript file is fine, the issue is with copying the files over.
     -->
     
     <target name="newBuildConcat" >
@@ -419,11 +421,9 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         <antcall target="newBuildConcat">
         </antcall>
 
-        <mkdir dir="${components-build}/js/mini/" />
-
 		<antcall target="minify">
 			<param name="fromDir" value="${components-build}/js/" />
-			<param name="toDir" value="${components-build}/js/mini/" />
+			<param name="toDir" value="${components-build}/" />
 			<param name="file-pattern" value="MyFluidInfusion.js" />
 			<param name="lineBreakArg" value="" />
 		</antcall>
