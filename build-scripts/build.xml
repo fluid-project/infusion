@@ -13,10 +13,6 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property environment="env"/>	            <!-- Do we need this? -->
 	<property file="build.properties"/>
 
-	<!-- Define dependencies -->
-    <property name="yuicompressor" location="lib/yuicompressor-2.3.3.jar" />
-	<property name="jslint" location="lib/jslint4java-1.1+rhino.jar" />
-
 	<!-- set up directory locations -->
     <property name="base-dir" location=".." />
     <property name="products" location="${base-dir}/products" />
@@ -29,6 +25,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="components-build" location="${build}/components" />
 	<property name="lint" location="${src}"/>
 
+	<!-- A list of all the modules - would be better if we could find this out instead of hardcoding it -->
     <property name="allModules" value="framework, renderer, tableOfContents, inlineEdit, uiOptions, jQuery, jQueryUICore, jQueryUIWidgets, json" />
 
 
@@ -41,20 +38,19 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     <!-- the filename of the war file -->
     <property name="warfile" value="fluid-components-${fluid_version}.war" />
     
+    <!-- the filename of the js file -->
+    <property name="jsfile" value="MyFluidInfusion.js" />
+
 	<!-- task definition for JSLint -->
 	<taskdef name="jslint" 
 		classname="net.happygiraffe.jslint.ant.JSLintTask" 
 		classpath="${jslint}" />
 
 	<!-- Target: buildAll -->
-	<target name="buildAll" depends="cutRelease, package" />
+	<target name="buildAll" depends="releaseBuild, package" />
 
 	<!-- Target: cleanup before running -->
-	<target name="clean">
-	    <description>
-	        Cleans up all build-related artifacts and products.
-        </description>
-        
+	<target name="clean" description="Cleans up all build-related artifacts and products.">
 		<delete dir="${build}" />
 		<delete dir="${products}" />
 	</target>
@@ -243,7 +239,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     -->
     
     <target name="concatJavaScript" >
-        <concat destfile="${components-build}/js/MyFluidInfusion.js" >
+        <concat destfile="${components-build}/js/${jsfile}" >
             <fileset dir="${src}" includes="${myFileNames}" /> 
         </concat>    
     </target>
@@ -253,7 +249,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         <script language="javascript" src="build.js" />
     </target>
 
-    <target name="buildSrcBundle" >
+    <target name="buildSrcBundle" depends="copySourceToBuild">
         <description>
             Builds a complete source release bundle.
         </description>
@@ -267,7 +263,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		</antcall>
     </target>
     
-    <target name="buildDeployBundle" >
+    <target name="buildDeployBundle" depends="copySourceToBuild">
         <description>
             Builds a complete minified deployment release bundle.
         </description>
@@ -286,30 +282,22 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		</antcall>
     </target>
     
-    <!-- TODO: build the Infusion-all file -->
-    <target name="copySourceToBuild" depends="clean, init">
-        <copy todir="${build}">
-            <fileset dir="${src}">
-                <include name="components/**/*" />
-                <include name="framework/**/*" />
-                <include name="lib/**/*" />
-            </fileset>    
-        </copy>
-    </target> 
-
-    <target name="copyCustomSourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript">
+    <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript">
         <copy todir="${build}">
             <fileset dir="${src}" includes="${myDirs}" />
         </copy>
     </target> 
 
-    <target name="cutRelease" depends="copySourceToBuild, buildSrcBundle, buildDeployBundle, buildInfusionWAR">
+    <target name="releaseBuild" depends="buildSrcBundle, buildDeployBundle, buildInfusionWAR" 
+        description="Builds the full release">
     </target>
     
-    <target name="cutDailyBuild" depends="copySourceToBuild, buildSrcBundle, buildDeployBundle, buildDailyWAR">
+    <target name="dailyBuild" depends="buildSrcBundle, buildDeployBundle, buildDailyWAR"
+        description="Builds everything required for the daily build">
     </target>
 
-    <target name="customBuild" depends="copyCustomSourceToBuild, buildSrcBundle, buildDeployBundle, buildDailyWAR">
+    <target name="customBuild" depends="releaseBuild, package" 
+        description="Builds a custom package. Use -Dinclude and -Dexclude to specify which modules you want.">
     </target>
     
 </project>

@@ -19,15 +19,26 @@ importClass(java.io.File);
 importClass(Packages.org.apache.tools.ant.types.LogLevel);
 
 var fluid = fluid || {};
+var globalObj = this;
 
 (function () {
+    var modulePrefix = "module_";
     
+    var modulePath = function (moduleName) {
+        return project.getProperty(modulePrefix + moduleName);
+    };
+
     var parseArgument = function (arg) {
+        var retArray = [];
+        
         var parsedArg = arg.split(",");
         for (var i = 0; i < parsedArg.length; i++) {
-            parsedArg[i] = parsedArg[i].replace(/(^\s+)|(\s+$)/g, "");
+            var str = parsedArg[i].replace(/(^\s+)|(\s+$)/g, "");
+            if (str) {
+                retArray.push(str);
+            }            
         }
-        return parsedArg;
+        return retArray;
     };
     
     var isDependencyIncluded = function (name, array) {
@@ -40,14 +51,14 @@ var fluid = fluid || {};
     	return false;
     };
     
-    var asArray = function (property) {
-        if (property === undefined) {
+    var asArray = function (jsonProp) {
+        if (jsonProp === undefined) {
             return [];
-        } else if (typeof(property) === "string") {
-            return [property];
+        } else if (typeof(jsonProp) === "string") {
+            return [jsonProp];
         }
         
-        return property;
+        return jsonProp;
     };
     
     var normalizeDeclaration = function (declaration) {
@@ -87,13 +98,13 @@ var fluid = fluid || {};
     var addPathsForModuleFiles = function (targetArray, moduleName, moduleFileTable) {
         var filesForModule = moduleFileTable[moduleName];
         for (var i = 0; i < filesForModule.length; i++) {
-            var path = project.getProperty(moduleName) + File.separator + "js" + File.separator;
+            var path = modulePath(moduleName) + File.separator + "js" + File.separator;
             targetArray.push(path + filesForModule[i]);
         }
         
         return targetArray;
     };
-    
+        
     fluid.dependencyResolver = function (modulesToInclude, modulesToExclude) {
         var that = {
             requiredModules: [], // A list of modules to be included in dependency order
@@ -111,7 +122,8 @@ var fluid = fluid || {};
         that.getRequiredDirsAsStr = function () {
             var dirs = "";
             for (var i = 0; i < that.requiredModules.length; i++) {
-                dirs += project.getProperty(that.requiredModules[i]) + File.separator + "**" + File.separator + "*,";
+                dirs += modulePath(that.requiredModules[i]) + 
+                    File.separator + "**" + File.separator + "*,";
             }            
             return dirs;
         };
@@ -134,11 +146,12 @@ var fluid = fluid || {};
          * @param {String} the name of the module
          */
         that.loadDeclarationForModule = function (moduleName) {
-            var modulePath = src + File.separator + project.getProperty(moduleName) + File.separator + moduleName + ".json";
-            project.log("Declaration file full path: " + modulePath, LogLevel.VERBOSE.getLevel());
+            var fullModulePath = src + File.separator + modulePath(moduleName) + 
+                File.separator + moduleName + ".json";
+            project.log("Declaration file full path: " + fullModulePath, LogLevel.VERBOSE.getLevel());
         
             var moduleInfo = "";
-            var rdr = new BufferedReader(new FileReader(new File(modulePath)));
+            var rdr = new BufferedReader(new FileReader(new File(fullModulePath)));
             var line = rdr.readLine(); 
             while (line !== null) {
                 moduleInfo += line;
@@ -165,10 +178,20 @@ var fluid = fluid || {};
 
         return that;
     };
-    
+
+    var buildAllModuleStr = function () {
+        var str = "";
+        for (var name in globalObj) {
+            if (name.search(modulePrefix) === 0) {
+                str += name.slice(modulePrefix.length) + ",";
+            }
+        }
+        return str;
+    };
+     
     var resolveDependenciesFromArguments = function () {
         if (typeof(include) === "undefined") {
-            return;
+            include = buildAllModuleStr();
         }
         
         project.log("Including modules: " + include, LogLevel.INFO.getLevel());
