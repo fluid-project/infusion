@@ -1,7 +1,3 @@
-/*global importClass, project, Packages */
-/*global java, File, BufferedReader, FileReader, LogLevel */
-/*global src, include, exclude, newBuildConcat*/
-
 /* 
  * This is a minified version of Douglas Crockford's JSON2.js parser, release in the public domain.
  * http://www.json.org/json2.js
@@ -15,8 +11,6 @@ if(!this.JSON){JSON=function(){function f(n){return n<10?"0"+n:n}Date.prototype.
 
 // TODO
 /*
-The order in the all file is wrong!
-
 Do we need the environment property? try without
 
 Is the all file in the right place?  move it to dist/MyInfusion.js Is it named ok? Yes, but call the entire file InfusionAll.js
@@ -27,6 +21,9 @@ File this:
 
 Rename dependency declaration files? {moduleName}-dependencies.json 
  */
+
+/*global importClass, Packages */
+/*global java, File, BufferedReader, FileReader, LogLevel */
 
 importClass(java.io.BufferedReader);
 importClass(java.io.FileReader);
@@ -40,9 +37,40 @@ var globalObj = this;
     var modulePrefix = "module_";
     
     var modulePath = function (moduleName) {
-        return project.getProperty(modulePrefix + moduleName);
+        return globalObj.project.getProperty(modulePrefix + moduleName);
     };
 
+    /**
+     * Finds all the modules based on the convention of the module property prefix and 
+     * returns them as a comma delimited string
+     */
+    var allModules = function () {
+        var str = "";
+        for (var name in globalObj) {
+            if (name.search(modulePrefix) === 0) {
+                str += name.slice(modulePrefix.length) + ",";
+            }
+        }
+        return str;
+    };
+
+    var logVerbose = function (str) {
+        globalObj.project.log(str, LogLevel.VERBOSE.getLevel());
+    };
+
+    var logInfo = function (str) {
+        globalObj.project.log(str, LogLevel.INFO.getLevel());
+    };
+
+    var logDebug = function (str) {
+        globalObj.project.log(str, LogLevel.DEBUG.getLevel());
+    };
+    
+    /**
+     * Turns a comma delimitied string into an array
+     * 
+     * @param {String} arg
+     */
     var parseArgument = function (arg) {
         var retArray = [];
         
@@ -56,12 +84,17 @@ var globalObj = this;
         return retArray;
     };
     
+    /**
+     * Turns a comma delimited string into an array of module names. Uses all modules if none are passed in.
+     * 
+     * @param {String} includeArg
+     */
     var parseModulesToInclude = function (includeArg) {
         if (typeof(includeArg) === "undefined") {
             includeArg = allModules();
         }
         
-        project.log("Including modules: " + includeArg, LogLevel.INFO.getLevel());
+        logInfo("Including modules: " + includeArg);
         
         return parseArgument(includeArg);
     };
@@ -76,6 +109,11 @@ var globalObj = this;
     	return false;
     };
     
+    /**
+     * Returns an array containing the value if it is a string or the value otherwise
+     * 
+     * @param {Object} value
+     */
     var asArray = function (value) {
         if (value === undefined) {
             return [];
@@ -91,16 +129,29 @@ var globalObj = this;
         declaration.dependencies = asArray(declaration.dependencies);
     };
     
+    /**
+     * Logs dependencies for the module
+     * 
+     * @param {Object} moduleName
+     * @param {Object} moduleDependencies
+     */
     var logDependencies = function (moduleName, moduleDependencies) {      
-        project.log("Dependencies for " + moduleName + ": ", LogLevel.VERBOSE.getLevel());
+        logVerbose("Dependencies for " + moduleName + ": ");
         for (var i = 0; i < moduleDependencies.length; i++) {
-            project.log("  * " + moduleDependencies[i], LogLevel.VERBOSE.getLevel());
+            logVerbose("  * " + moduleDependencies[i]);
         }
     };
     
+    /**
+     * Builds the moduleFileTable and the requiredModules list for the moduleName passed in
+     * 
+     * @param {Object} that
+     * @param {Object} moduleName
+     * @param {Object} prefixStr
+     */
     var assembleDependencyList = function (that, moduleName, prefixStr) {        
-        project.log(prefixStr + " Processing module: " + moduleName + " ---", LogLevel.INFO.getLevel());
-        project.log("Dependency order so far: " + that.requiredModules, LogLevel.DEBUG.getLevel());
+        logInfo(prefixStr + " Processing module: " + moduleName);
+        logDebug("Dependency order so far: " + that.requiredModules);
         
         if (isDependencyIncluded(moduleName, that.requiredModules)) {
             return;
@@ -113,7 +164,7 @@ var globalObj = this;
         logDependencies(moduleName, moduleDependencies);
 
         for (var i = 0; i < moduleDependencies.length; i++) {
-            assembleDependencyList(that, moduleDependencies[i], prefixStr + "---");
+            assembleDependencyList(that, moduleDependencies[i], prefixStr + "    ");
         }
         
         if (!isDependencyIncluded(moduleName, that.excludedModules)) {
@@ -121,16 +172,12 @@ var globalObj = this;
         }
     };
     
-    var allModules = function () {
-        var str = "";
-        for (var name in globalObj) {
-            if (name.search(modulePrefix) === 0) {
-                str += name.slice(modulePrefix.length) + ",";
-            }
-        }
-        return str;
-    };
-    
+    /**
+     * Returns a comma delimited list of paths for the files related to the moduleName passed in.
+     * 
+     * @param {Object} moduleName
+     * @param {Object} moduleFileTable
+     */
     var pathsForModuleFiles = function (moduleName, moduleFileTable) {
         var pathsStr = "";
         var filesForModule = moduleFileTable[moduleName];
@@ -141,7 +188,14 @@ var globalObj = this;
         
         return pathsStr;
     };
-        
+
+    /**
+     * Resolves dependencies for the modules passed in. 
+     * Uses the module properties from build.properties to find the dependency declarations for a module. 
+     * 
+     * @param {Array} modulesToInclude
+     * @param {Array} modulesToExclude
+     */    
     fluid.dependencyResolver = function (modulesToInclude, modulesToExclude) {
         var that = {
             requiredModules: [], // A list of modules to be included in dependency order
@@ -149,14 +203,14 @@ var globalObj = this;
             excludedModules: modulesToExclude  
         };    
         
-        that.resolve = function () {
+        var resolve = function () {
             for (var i = 0; i < modulesToInclude.length; i++) {
-                assembleDependencyList(that, modulesToInclude[i], " ---");
+                assembleDependencyList(that, modulesToInclude[i], "   ");
             }    
         };
         
         /**
-         * Returns the list of all required module directory as a comma-delimited string of file selectors.
+         * Returns the list of all required module directories as a comma-delimited string of file selectors.
          */
         that.getRequiredDirectories = function () {
             var dirs = "";
@@ -165,10 +219,13 @@ var globalObj = this;
                     File.separator + "**" + File.separator + "*,";
             }
             
-            project.log("*** All required directories: " + dirs, LogLevel.VERBOSE.getLevel());
+            logVerbose("*** All required directories: " + dirs);
             return dirs;
         };
         
+        /**
+         * Returns the list of all the javascript files required as a comma delimited string.
+         */
         that.getAllRequiredFiles = function () {
             var fileStr = "";
             for (var i = 0; i < that.requiredModules.length; i++) {
@@ -176,7 +233,7 @@ var globalObj = this;
                 fileStr += pathsForModuleFiles(currentModule, that.moduleFileTable);
             }
 
-            project.log("*** All required files: " + fileStr, LogLevel.VERBOSE.getLevel());
+            logVerbose("*** All required files: " + fileStr);
             return fileStr;
         };
     
@@ -188,9 +245,9 @@ var globalObj = this;
          * @return {Object} a dependency declaration object
          */
         that.loadDeclarationForModule = function (moduleName) {
-            var fullModulePath = src + File.separator + modulePath(moduleName) + 
+            var fullModulePath = globalObj.src + File.separator + modulePath(moduleName) + 
                 File.separator + moduleName + ".json";
-            project.log("Declaration file full path: " + fullModulePath, LogLevel.VERBOSE.getLevel());
+            logVerbose("Declaration file full path: " + fullModulePath);
         
             var moduleInfo = "";
             var rdr = new BufferedReader(new FileReader(new File(fullModulePath)));
@@ -200,22 +257,26 @@ var globalObj = this;
                 line = rdr.readLine();
             }
             
-            project.log("Unparsed JSON: " + moduleInfo, LogLevel.DEBUG.getLevel());
+            logDebug("Unparsed JSON: " + moduleInfo);
             return JSON.parse(moduleInfo);
         };
 
+        resolve();
         return that;
     };
     
+    /**
+     * Kicks off dependency resolution 
+     * Results in setting two ant properties: allRequiredFiles and requiredDirectoriesSelector
+     */
     var resolveDependenciesFromArguments = function () {
         var excludedFiles = (typeof(globalObj.exclude) === "undefined") ? [] : parseArgument(globalObj.exclude);
-        project.log("Excluding modules: " + excludedFiles, LogLevel.INFO.getLevel());
+        logInfo("Excluding modules: " + excludedFiles);
 
         var resolver = fluid.dependencyResolver(parseModulesToInclude(globalObj.include), excludedFiles);
-        resolver.resolve(); // Do this automatically upon instantation
         
-        project.setProperty("allRequiredFiles", resolver.getAllRequiredFiles());
-        project.setProperty("requiredDirectoriesSelector", resolver.getRequiredDirectories());
+        globalObj.project.setProperty("allRequiredFiles", resolver.getAllRequiredFiles());
+        globalObj.project.setProperty("requiredDirectoriesSelector", resolver.getRequiredDirectories());
     };
     
     // Run this immediately.
