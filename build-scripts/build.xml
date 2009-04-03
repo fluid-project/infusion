@@ -214,11 +214,11 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         </description>
         
         <!-- Copy the additional files into the war build required for the daily build. -->
-        <antcall name="copyDistroFiles">
+        <antcall target="copyDistroFiles">
             <param name="toDir" value="${build}/war/src/webapp/" />
         </antcall>
         
-        <antcall name="buildWAR" />
+        <antcall target="buildWAR" />
     </target>
 
 	<!-- Target: validate -->
@@ -253,7 +253,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
         <script language="javascript" src="build.js" />
     </target>
 
-    <target name="buildSrcBundle" depends="copySourceToBuild">
+    <target name="buildSrcBundle" >
         <description>
             Builds a complete source release bundle.
         </description>
@@ -267,7 +267,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		</antcall>
     </target>
     
-    <target name="buildDeployBundle" depends="copySourceToBuild">
+    <target name="buildDeployBundle" >
         <description>
             Builds a complete minified deployment release bundle.
         </description>
@@ -286,17 +286,30 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		</antcall>
     </target>
     
-    <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript">
+    <!-- TODO: build the Infusion-all file -->
+    <target name="copySourceToBuild" depends="clean, init">
+        <copy todir="${build}">
+            <fileset dir="${src}">
+                <include name="components/**/*" />
+                <include name="framework/**/*" />
+                <include name="lib/**/*" />
+            </fileset>    
+        </copy>
+    </target> 
+
+    <target name="copyCustomSourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript">
         <copy todir="${build}">
             <fileset dir="${src}" includes="${myDirs}" />
         </copy>
     </target> 
 
-    <!-- TODO:  set the include based on all the modules. There is a way to pull properties that follow a pattern. -->
-    <target name="cutRelease" depends="buildSrcBundle, buildDeployBundle, buildInfusionWAR">
+    <target name="cutRelease" depends="copySourceToBuild, buildSrcBundle, buildDeployBundle, buildInfusionWAR">
     </target>
     
-    <target name="cutDailyBuild" depends="buildSrcBundle, buildDeployBundle, buildDailyWAR">
+    <target name="cutDailyBuild" depends="copySourceToBuild, buildSrcBundle, buildDeployBundle, buildDailyWAR">
+    </target>
+
+    <target name="customBuild" depends="copyCustomSourceToBuild, buildSrcBundle, buildDeployBundle, buildDailyWAR">
     </target>
     
 </project>
