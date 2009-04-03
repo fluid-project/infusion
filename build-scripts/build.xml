@@ -212,14 +212,6 @@
                 options="browser,eqeqeq,nomen,undef">
         </jslint>
 	</target>
-
-    <!-- TODO: 
-                Clean up this file so that unused portions are removed
-                Rename the newly introduced properties so they are clear
-                TEST, TEST, TEST
-                There is an issue with excluding things in a certain directory and including others
-                    - the my infusion javascript file is fine, the issue is with copying the files over.
-    -->
     
     <target name="concatJavaScript" >
         <concat destfile="${components-build}/js/${jsfile}" >

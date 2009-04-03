@@ -13,6 +13,24 @@ if(!this.JSON){JSON=function(){function f(n){return n<10?"0"+n:n}Date.prototype.
  * This is the Fluid Infusion dependency manager.
  */
 
+// CODE REVIEW QUESTIONS
+/*
+ * Remove description tags?
+
+Do we need the environment property?
+
+Is the all file in the right place?   Is it named ok?
+
+Are the descriptions good enough?
+
+
+File this:
+                There is an issue with excluding things in a certain directory and including others
+                    - the my infusion javascript file is fine, the issue is with copying the files over.
+
+rename: myFileNames and myDirs
+ */
+
 importClass(java.io.BufferedReader);
 importClass(java.io.FileReader);
 importClass(java.io.File);
