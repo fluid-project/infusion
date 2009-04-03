@@ -5,6 +5,8 @@
         To build a distribution, type: ant
         To jsLint all source code in the source directory, type: ant validate
         To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
+        
+         e.g. ant customBuild -Dinclude='uiOptions, inlineEdit' -Dexclude='jQuery'
 	</description>
 
 	<!-- get environment variables and properties -->
@@ -41,7 +43,7 @@
 		classpath="${jslint}" />
 
 	<!-- Target: buildAll - the default target -->
-	<target name="buildAll" depends="releaseBuild, package" description="Builds and packages the release." />
+	<target name="buildAll" depends="releaseBuild, package" description="Builds and packages a release bundle of Infusion." />
 
 	<!-- Target: cleanup before running -->
 	<target name="clean" description="Cleans up all build-related artifacts and products.">
@@ -204,7 +206,7 @@
     </target>
 
 	<!-- Target: validate -->
-	<target name="validate" description="Validate the javascript files using JSLint. To lint a specific folder use: -Dlint=../some/folder" >
+	<target name="validate" description="Validates all JavaScript files using JSLint. To lint a specific folder use: -Dlint=../some/folder" >
 
 		<echo>Validating .JS files...</echo>
         <jslint dir="${lint}" 
@@ -215,11 +217,11 @@
     
     <target name="concatJavaScript" >
         <concat destfile="${components-build}/js/${jsfile}" >
-            <fileset dir="${src}" includes="${myFileNames}" /> 
+            <fileset dir="${src}" includes="${allRequiredFiles}" /> 
         </concat>    
     </target>
     
-    <!-- Runs the javascript dependency resolver which sets $myDirs and $myFileNames -->
+    <!-- Runs the javascript dependency resolver which sets $requiredDirectoriesSelector and $allRequiredFiles -->
     <target name="resolveDependencies" depends="clean">
         <script language="javascript" src="build.js" />
     </target>
@@ -259,20 +261,20 @@
     
     <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript">
         <copy todir="${build}">
-            <fileset dir="${src}" includes="${myDirs}" />
+            <fileset dir="${src}" includes="${requiredDirectoriesSelector}" />
         </copy>
     </target> 
 
     <target name="releaseBuild" depends="buildSrcBundle, buildDeployBundle, buildInfusionWAR" 
-        description="Builds the full release">
+        description="Builds and packages a release bundle of Infusion.">
     </target>
     
     <target name="dailyBuild" depends="buildSrcBundle, buildDeployBundle, buildDailyWAR"
-        description="Builds everything required for the daily build">
+        description="Builds and packages Infusion along with tests and sample code, suitable for development testing or a daily build.">
     </target>
 
     <target name="customBuild" depends="releaseBuild, package" 
-        description="Builds a custom package. Use -Dinclude and -Dexclude to specify which modules you want.">
+        description="Builds a custom package of Infusion containing the modules specified as command line arguments.">
     </target>
     
 </project>
