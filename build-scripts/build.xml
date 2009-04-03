@@ -195,7 +195,7 @@
     
     <target name="concatJavaScript" >
         <concat destfile="${components-build}/js/${jsfile}" >
-            <fileset dir="${src}" includes="${allRequiredFiles}" /> 
+            <filelist dir="${src}" files="${allRequiredFiles}" /> 
         </concat>    
     </target>
     
