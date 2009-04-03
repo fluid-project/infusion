@@ -1,16 +1,14 @@
-<!--
-To build a distribution, type: ant
-To jsLint all source code in the source directory, type: ant validate
-To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
--->
-
 <project name="Fluid" default="buildAll" basedir=".">
 	<description>
-	Build a distributable package of Fluid components.
+	    Build a distributable package of Fluid components.
+        
+        To build a distribution, type: ant
+        To jsLint all source code in the source directory, type: ant validate
+        To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
 	</description>
 
 	<!-- get environment variables and properties -->
-	<property environment="env"/>	            <!-- Do we need this? -->
+	<property environment="env"/>
 	<property file="build.properties"/>
 
 	<!-- set up directory locations -->
@@ -24,10 +22,6 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	<property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
 	<property name="components-build" location="${build}/components" />
 	<property name="lint" location="${src}"/>
-
-	<!-- A list of all the modules - would be better if we could find this out instead of hardcoding it -->
-    <property name="allModules" value="framework, renderer, tableOfContents, inlineEdit, uiOptions, jQuery, jQueryUICore, jQueryUIWidgets, json" />
-
 
 	<!-- the filename for the package to output -->
 	<property name="zipfile" value="fluid-${fluid_version}" />
@@ -46,8 +40,8 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 		classname="net.happygiraffe.jslint.ant.JSLintTask" 
 		classpath="${jslint}" />
 
-	<!-- Target: buildAll -->
-	<target name="buildAll" depends="releaseBuild, package" />
+	<!-- Target: buildAll - the default target -->
+	<target name="buildAll" depends="releaseBuild, package" description="Builds and packages the release." />
 
 	<!-- Target: cleanup before running -->
 	<target name="clean" description="Cleans up all build-related artifacts and products.">
@@ -57,17 +51,13 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 
 	<!-- Set up the build directory structure -->
 	<target name="init">
-	    <description>
-	        Sets up the build directory structure.
-        </description>
-        
 	    <mkdir dir="${products}" />
 		<mkdir dir="${build}" />			
 		<mkdir dir="${dist}" />
         <mkdir dir="${src-dist}" />
 	</target>
 
-    <!-- should be changed to do FLUID-1921 -->
+    <!-- not currently used but should be changed to do FLUID-1921 -->
     <target name="copyLicenses">
         <copy todir="${toDir}">
             <fileset dir="${base-dir}">
@@ -122,16 +112,12 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
 	</target>    
     
     <target name="copyDistroFiles">
-		<copy todir="${toDir}/integration-demos">
-			<fileset dir="${base-dir}/src/webapp/integration-demos/" />
-		</copy>       
-
-		<copy todir="${toDir}/standalone-demos">
-			<fileset dir="${base-dir}/src/webapp/standalone-demos/" />
-		</copy>       
-
-		<copy todir="${toDir}/tests">
-			<fileset dir="${tests}" />
+		<copy todir="${toDir}">
+			<fileset dir="${base-dir}/src/webapp/">
+			    <include name="integration-demos/**/*" />
+			    <include name="standalone-demos/**/*" />
+			    <include name="tests/**/*" />
+            </fileset>
 		</copy>       
     </target>
         
@@ -218,10 +204,7 @@ To jsLint source code within a specific directory, type: ant validate -Dlint="..
     </target>
 
 	<!-- Target: validate -->
-	<target name="validate">
-		<description>
-		Validate the javascript files using JSLint.
-		</description>
+	<target name="validate" description="Validate the javascript files using JSLint. To lint a specific folder use: -Dlint=../some/folder" >
 
 		<echo>Validating .JS files...</echo>
         <jslint dir="${lint}" 
