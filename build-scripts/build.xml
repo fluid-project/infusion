@@ -1,11 +1,11 @@
-<project name="Fluid" default="buildAll" basedir=".">
+<project name="Fluid" default="releaseBuild" basedir=".">
 	<description>
 	    Build a distributable package of Fluid components.
         
         To build a distribution, type: ant
         To jsLint all source code in the source directory, type: ant validate
         To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
-        
+        To create a custom build use the customBuild target with the 'include' and 'exclude' parameters 
          e.g. ant customBuild -Dinclude='uiOptions, inlineEdit' -Dexclude='jQuery'
 	</description>
 
@@ -42,9 +42,6 @@
 		classname="net.happygiraffe.jslint.ant.JSLintTask" 
 		classpath="${jslint}" />
 
-	<!-- Target: buildAll - the default target -->
-	<target name="buildAll" depends="releaseBuild, package" description="Builds and packages a release bundle of Infusion." />
-
 	<!-- Target: cleanup before running -->
 	<target name="clean" description="Cleans up all build-related artifacts and products.">
 		<delete dir="${build}" />
@@ -69,12 +66,8 @@
         </copy>
     </target>
     
-	<!-- Target: Minify the JS files -->
+	<!-- Target: Minify the specified files and copy them into the specified directory. Don't call this directly. -->
 	<target name="minify">
-		<description>
-		Minify the specified files and copy them into the specified directory. Don't call this directly.
-		</description>
-
 		<apply executable="java" dest="${toDir}"  parallel="false">
 				<!-- The files to act upon. -->	
 				<fileset dir="${fromDir}" casesensitive="no">
@@ -123,12 +116,8 @@
 		</copy>       
     </target>
         
-    <!-- Zip up the whole release bundle -->
+    <!-- Creates the release directory structure and zips it all up -->
 	<target name="package">
-		<description>
-			Creates the release directory structure and zips it all up.
-		</description>
-
 		<echo>Zipping distribution bundle to ${dist}/${zipfile}</echo>
 		<zip destfile="${products}/${zipfile}.zip" 
 			basedir="${dist}"
@@ -140,11 +129,8 @@
 			includes="**/*"  excludes="*.zip" />
 	</target>
 
-    <target name="copyInfusionWARFiles">
-        <description>
-            Copies the files required to build a war file containing Infusion.
-        </description>
-        
+    <!-- Copies the files required to build a war file containing Infusion. -->
+    <target name="copyInfusionWARFiles">        
 		<copy todir="${build}/war/src/webapp/infusion" >
 			<fileset dir="${dist}/components"/>
             <fileset dir="${dist}/framework"/>
@@ -165,11 +151,8 @@
 		</copy>
     </target>
     
+    <!-- Builds the WAR file using Maven 2 and copies it to the distribution folder. -->
 	<target name="buildWAR">
-	    <description>
-	        Builds the WAR file using Maven 2 and copies it to the distribution folder.
-        </description>
-
         <echo>Building war file...</echo>
 		<apply executable="mvn" dir="${build}/war" parallel="true">
 				<fileset  dir=".">
@@ -186,17 +169,12 @@
         </copy>
 	</target>
     
+    <!-- Builds the core Infusion WAR file. -->
     <target name="buildInfusionWAR" depends="copyInfusionWARFiles, buildWAR">
-       <description>
-            Builds the core Infusion WAR file.
-        </description>
     </target>
         
-    <target name="buildDailyWAR" depends="copyInfusionWARFiles">
-        <description>
-            Builds a full-fledged WAR file used for the daily build, which includes sample code and tests.
-        </description>
-        
+    <!-- Builds a full-fledged WAR file used for the daily build, which includes sample code and tests. -->
+    <target name="buildDailyWAR" depends="copyInfusionWARFiles">        
         <!-- Copy the additional files into the war build required for the daily build. -->
         <antcall target="copyDistroFiles">
             <param name="toDir" value="${build}/war/src/webapp/" />
@@ -226,11 +204,8 @@
         <script language="javascript" src="build.js" />
     </target>
 
-    <target name="buildSrcBundle" depends="copySourceToBuild">
-        <description>
-            Builds a complete source release bundle.
-        </description>
-        
+    <!-- Builds a complete source release bundle. -->
+    <target name="buildSrcBundle" depends="copySourceToBuild">        
         <copy todir="${src-dist}">
             <fileset dir="${build}" />
         </copy>
@@ -240,11 +215,8 @@
 		</antcall>
     </target>
     
-    <target name="buildDeployBundle" depends="copySourceToBuild">
-        <description>
-            Builds a complete minified deployment release bundle.
-        </description>
-        
+    <!-- Builds a complete minified deployment release bundle. -->
+    <target name="buildDeployBundle" depends="copySourceToBuild">        
         <!-- Copy everything but the JavaScript and CSS we are about to minify -->
 		<copy todir="${dist}">
 			<fileset dir="${build}" excludes="**/*.js,**/*.css" />
@@ -265,11 +237,11 @@
         </copy>
     </target> 
 
-    <target name="releaseBuild" depends="buildSrcBundle, buildDeployBundle, buildInfusionWAR" 
+    <target name="releaseBuild" depends="buildSrcBundle, buildDeployBundle, buildInfusionWAR, package" 
         description="Builds and packages a release bundle of Infusion.">
     </target>
     
-    <target name="dailyBuild" depends="buildSrcBundle, buildDeployBundle, buildDailyWAR"
+    <target name="dailyBuild" depends="buildSrcBundle, buildDeployBundle, buildDailyWAR, package"
         description="Builds and packages Infusion along with tests and sample code, suitable for development testing or a daily build.">
     </target>
 

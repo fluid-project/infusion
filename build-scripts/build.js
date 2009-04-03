@@ -13,22 +13,17 @@ if(!this.JSON){JSON=function(){function f(n){return n<10?"0"+n:n}Date.prototype.
  * This is the Fluid Infusion dependency manager.
  */
 
-// CODE REVIEW QUESTIONS
+// TODO
 /*
- * Remove description tags? yes
+The order in the all file is wrong!
 
 Do we need the environment property? try without
 
 Is the all file in the right place?  move it to dist/MyInfusion.js Is it named ok? Yes, but call the entire file InfusionAll.js
 
-Are the descriptions good enough? they are now :P
-
-
 File this:
                 There is an issue with excluding things in a certain directory and including others
                     - the my infusion javascript file is fine, the issue is with copying the files over.
-
-rename: myFileNames and myDirs
 
 Rename dependency declaration files? {moduleName}-dependencies.json 
  */
@@ -136,14 +131,15 @@ var globalObj = this;
         return str;
     };
     
-    var addPathsForModuleFiles = function (targetArray, moduleName, moduleFileTable) {
+    var pathsForModuleFiles = function (moduleName, moduleFileTable) {
+        var pathsStr = "";
         var filesForModule = moduleFileTable[moduleName];
         for (var i = 0; i < filesForModule.length; i++) {
             var path = modulePath(moduleName) + File.separator + "js" + File.separator;
-            targetArray.push(path + filesForModule[i]);
+            pathsStr += path + filesForModule[i] + ",";
         }
         
-        return targetArray;
+        return pathsStr;
     };
         
     fluid.dependencyResolver = function (modulesToInclude, modulesToExclude) {
@@ -173,15 +169,15 @@ var globalObj = this;
             return dirs;
         };
         
-        // Perhaps this should return a comma separated string since that's what we actually need?
         that.getAllRequiredFiles = function () {
-            var fileList = [];
+            var fileStr = "";
             for (var i = 0; i < that.requiredModules.length; i++) {
                 var currentModule = that.requiredModules[i];
-                addPathsForModuleFiles(fileList, currentModule, that.moduleFileTable);
+                fileStr += pathsForModuleFiles(currentModule, that.moduleFileTable);
             }
-            
-            return fileList;
+
+            project.log("*** All required files: " + fileStr, LogLevel.VERBOSE.getLevel());
+            return fileStr;
         };
     
         /**
@@ -218,15 +214,7 @@ var globalObj = this;
         var resolver = fluid.dependencyResolver(parseModulesToInclude(globalObj.include), excludedFiles);
         resolver.resolve(); // Do this automatically upon instantation
         
-        project.log("*** All required files: ", LogLevel.VERBOSE.getLevel());
-        var allFiles = resolver.getAllRequiredFiles(); // Pass back a string from getAllRequiredFiles() so we don't need to iterate
-        var fileNames = "";
-        for (var i = 0; i < allFiles.length; i++) {
-            project.log(" * " + allFiles[i], LogLevel.VERBOSE.getLevel());
-            fileNames += allFiles[i] + ",";
-        }
-        project.setProperty("allRequiredFiles", fileNames);
-      
+        project.setProperty("allRequiredFiles", resolver.getAllRequiredFiles());
         project.setProperty("requiredDirectoriesSelector", resolver.getRequiredDirectories());
     };
     
