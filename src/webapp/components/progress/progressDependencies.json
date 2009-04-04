@@ -1,0 +1,4 @@
+{"progress": {
+	"files": "Progress.js",
+	"dependencies": ["jQuery", "framework"]
+}}

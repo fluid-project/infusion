@@ -1,0 +1,4 @@
+{"pager": {
+	"files": "Pager.js",
+	"dependencies": ["jQuery", "framework"]
+}}
