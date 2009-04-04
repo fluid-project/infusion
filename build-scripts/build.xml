@@ -1,16 +1,16 @@
 <project name="Fluid" default="releaseBuild" basedir=".">
 	<description>
-	    Build a distributable package of Fluid components.
+	    Build a distributable package of Fluid Infusion.
         
         To build a distribution, type: ant
         To jsLint all source code in the source directory, type: ant validate
         To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
-        To create a custom build use the customBuild target with the 'include' and 'exclude' parameters 
-         e.g. ant customBuild -Dinclude='uiOptions, inlineEdit' -Dexclude='jQuery'
+        To create a custom build use the customBuild target.
+          Custom build has three optional parameters:  'include', 'exclude', and 'jsfilename'
+          e.g. ant customBuild -Dinclude="uiOptions, inlineEdit" -Dexclude="jQuery" -Djsfilename="MyInfusion.js"
+           
 	</description>
 
-	<!-- get environment variables and properties -->
-	<property environment="env"/>
 	<property file="build.properties"/>
 
 	<!-- set up directory locations -->
@@ -22,7 +22,6 @@
     <property name="src-dist" location="${products}/src-dist" />
 	<property name="build" location="${base-dir}/build" />
 	<property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
-	<property name="components-build" location="${build}/components" />
 	<property name="lint" location="${src}"/>
 
 	<!-- the filename for the package to output -->
@@ -34,9 +33,6 @@
     <!-- the filename of the war file -->
     <property name="warfile" value="fluid-components-${fluid_version}.war" />
     
-    <!-- the filename of the js file -->
-    <property name="jsfile" value="MyFluidInfusion.js" />
-
 	<!-- task definition for JSLint -->
 	<taskdef name="jslint" 
 		classname="net.happygiraffe.jslint.ant.JSLintTask" 
@@ -194,12 +190,12 @@
 	</target>
     
     <target name="concatJavaScript" >
-        <concat destfile="${components-build}/js/${jsfile}" >
+        <concat destfile="${build}/${jsfile}" >
             <filelist dir="${src}" files="${allRequiredFiles}" /> 
         </concat>    
     </target>
     
-    <!-- Runs the javascript dependency resolver which sets $requiredDirectoriesSelector and $allRequiredFiles -->
+    <!-- Runs the javascript dependency resolver which sets $jsfile, $requiredDirectoriesSelector and $allRequiredFiles -->
     <target name="resolveDependencies" depends="clean">
         <script language="javascript" src="build.js" />
     </target>

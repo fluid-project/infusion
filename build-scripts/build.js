@@ -11,7 +11,6 @@ if(!this.JSON){JSON=function(){function f(n){return n<10?"0"+n:n}Date.prototype.
 
 // TODO
 /*
-Do we need the environment property? try without
 
 Is the all file in the right place?  move it to dist/MyInfusion.js Is it named ok? Yes, but call the entire file InfusionAll.js
 
@@ -35,7 +34,24 @@ var globalObj = this;
 
 (function () {
     var modulePrefix = "module_";
-    
+    var customJsFileName = "MyInfusion.js";
+    var allJsFileName = "InfusionAll.js";
+
+    /**
+     * Returns the filename for the concatenated javascript file based on whether a filename was passed in and
+     * whether a full build is or a custom build is done.
+     * @param {Object} nameArg
+     * @param {Object} includeArg
+     * @param {Object} excludeArg
+     */
+    var jsFileName = function (nameArg, includeArg, excludeArg) {
+        if (nameArg) {
+            return nameArg;
+        } 
+        
+        return (includeArg || excludeArg ? customJsFileName : allJsFileName);
+    };
+
     var modulePath = function (moduleName) {
         return globalObj.project.getProperty(modulePrefix + moduleName);
     };
@@ -267,7 +283,7 @@ var globalObj = this;
     
     /**
      * Kicks off dependency resolution 
-     * Results in setting two ant properties: allRequiredFiles and requiredDirectoriesSelector
+     * Results in setting three ant properties: allRequiredFiles and requiredDirectoriesSelector and jsfile
      */
     var resolveDependenciesFromArguments = function () {
         var excludedFiles = (typeof(globalObj.exclude) === "undefined") ? [] : parseArgument(globalObj.exclude);
@@ -277,6 +293,7 @@ var globalObj = this;
         
         globalObj.project.setProperty("allRequiredFiles", resolver.getAllRequiredFiles());
         globalObj.project.setProperty("requiredDirectoriesSelector", resolver.getRequiredDirectories());
+        globalObj.project.setProperty("jsfile", jsFileName(globalObj.jsfilename, globalObj.include, globalObj.exclude));
     };
     
     // Run this immediately.
