@@ -9,18 +9,6 @@ if(!this.JSON){JSON=function(){function f(n){return n<10?"0"+n:n}Date.prototype.
  * This is the Fluid Infusion dependency manager.
  */
 
-// TODO
-/*
-
-Is the all file in the right place?  move it to dist/MyInfusion.js Is it named ok? Yes, but call the entire file InfusionAll.js
-
-File this:
-                There is an issue with excluding things in a certain directory and including others
-                    - the my infusion javascript file is fine, the issue is with copying the files over.
-
-Rename dependency declaration files? {moduleName}-dependencies.json 
- */
-
 /*global importClass, Packages */
 /*global java, File, BufferedReader, FileReader, LogLevel */
 
@@ -262,7 +250,7 @@ var globalObj = this;
          */
         that.loadDeclarationForModule = function (moduleName) {
             var fullModulePath = globalObj.src + File.separator + modulePath(moduleName) + 
-                File.separator + moduleName + ".json";
+                File.separator + moduleName + "Dependencies.json";
             logVerbose("Declaration file full path: " + fullModulePath);
         
             var moduleInfo = "";
