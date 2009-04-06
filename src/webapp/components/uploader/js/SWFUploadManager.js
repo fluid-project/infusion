@@ -289,10 +289,10 @@ fluid_1_0 = fluid_1_0 || {};
         });
         
         that.events.onFileError.addListener(function (file, error) {
-            that.queue.currentBatch.totalBytesUploaded += file.size;
             if (error === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
                 that.queue.isUploading = false;
             } else if (that.queue.isUploading) {
+                that.queue.currentBatch.totalBytesUploaded += file.size;
                 that.queue.currentBatch.numFilesErrored++;
             }
             fileStatusUpdater(file);
