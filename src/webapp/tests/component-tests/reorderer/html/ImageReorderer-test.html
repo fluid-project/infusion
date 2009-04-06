@@ -9,7 +9,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Fluid Image Reorderer Tests</title>
+    <link href="../../../../framework/fss/css/fss-reset.css" rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" />
     <link href="../../../../components/reorderer/css/ImageReorderer.css" rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" />
+    <link href="../../../../components/reorderer/css/Reorderer.css" rsf:id="scr=contribute-style" type="text/css" rel="stylesheet" media="all" />
     
     <!--  These are the required javascript modules for the Lightbox 
           eventually to be replaced with a single build generated file -->
@@ -80,7 +82,7 @@
             <div rsf:id="lightbox-client-cell:">
             
               <!--  The RSF gallery contains the markup for this inner div in another template. -->
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
               
                 <a id="focus-element1" href="../../../../components/reorderer/images/Dragonfruit.jpg">
                   <img id="fluid.img.0" src="../../../../components/reorderer/images/Dragonfruit.jpg" border="0" alt="Dragonfruit"/>
@@ -103,7 +105,7 @@
           <!--  The remainder of the lightbox cells are used for the stand alone lightbox and the tests, not the RSF gallery -->
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:1:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Kiwano.jpg" >
                   <img id="fluid.img.1" src="../../../../components/reorderer/images/Kiwano.jpg" border="0" alt="Kiwano"/>
                 </a>
@@ -117,7 +119,7 @@
               
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:2:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Blackberry.jpg" >
                   <img id="fluid.img.2" src="../../../../components/reorderer/images/Blackberry.jpg" border="0" alt="Blackberry"/>
                 </a>
@@ -131,7 +133,7 @@
       
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:3:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Cherry.jpg">
                   <img id="fluid.img.3" src="../../../../components/reorderer/images/Cherry.jpg" border="0" alt="Cherry"/>
                 </a>
@@ -145,7 +147,7 @@
       
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:4:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Fig.jpg">
                   <img id="fluid.img.4" src="../../../../components/reorderer/images/Fig.jpg" border="0" alt="Fig"/>
                 </a>
@@ -159,7 +161,7 @@
       
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:5:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Grapes.jpg">
                   <img id="fluid.img.5" src="../../../../components/reorderer/images/Grapes.jpg" border="0" alt="Grapes"/>
                 </a>
@@ -173,7 +175,7 @@
       
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:6:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Kiwi.jpg" >
                   <img id="fluid.img.6" src="../../../../components/reorderer/images/Kiwi.jpg" border="0" alt="Kiwi"/>
                 </a>
@@ -187,7 +189,7 @@
       
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:7:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Kumquat.jpg">
                   <img id="fluid.img.7" src="../../../../components/reorderer/images/Kumquat.jpg" border="0" alt="Kumquat"/>
                 </a>
@@ -201,7 +203,7 @@
       
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:8:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Lemon.jpg">
                   <img id="fluid.img.8" src="../../../../components/reorderer/images/Lemon.jpg" border="0" alt="Lemon"/>
                 </a>
@@ -215,7 +217,7 @@
       
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:9:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Orange.jpg">
                   <img id="fluid.img.9" src="../../../../components/reorderer/images/Orange.jpg" border="0" alt="Orange"/>
                 </a>
@@ -229,7 +231,7 @@
       
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:10:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/RedApple.jpg">
                   <img id="fluid.img.10" src="../../../../components/reorderer/images/RedApple.jpg" border="0" alt="RedApple"/>
                 </a>
@@ -243,7 +245,7 @@
       
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:11:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Tamarillo.jpg">
                   <img id="fluid.img.11" src="../../../../components/reorderer/images/Tamarillo.jpg" border="0" alt="Tamarillo"/>
                 </a>
@@ -257,7 +259,7 @@
       
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default" id="gallery:::gallery-thumbs:::lightbox-cell:12:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Mangosteen.jpg">
                   <img id="fluid.img.12" src="../../../../components/reorderer/images/Mangosteen.jpg" border="0" alt="Mangosteen"/>
                 </a>
@@ -271,7 +273,7 @@
       
           <div rsf:id="scr=ignore" class="float fl-reorderer-movable-default orderable" id="gallery:::gallery-thumbs:::lightbox-cell:13:">
             <div>
-              <div class="image-inner-container">
+              <div class="fl-reorderer-image-inner-container">
                 <a href="../../../../components/reorderer/images/Banana.jpg">
                   <img id="fluid.img.13" src="../../../../components/reorderer/images/Banana.jpg" border="0" alt="Banana"/>
                 </a>
@@ -286,13 +288,13 @@
       </div>
       
       <!-- Sample instruction message. In the RSF gallery, this is supplied by the server. -->
-      <div class="lightbox-instructions">
+      <div class="fl-reorderer-instructions">
         <div class="screen-reader-instructions" tabindex="1">Image Reorderer: To use the keyboard:
                   Screen reader users turn off virtual cursor (insert + z).
                   Select an image using i, k, m or j.
                   Move an image using CTRL + i, k, m or j.
                   View an image by pressing Enter.</div>
-        <div class="lightbox-downarrow"></div>
+        <div class="fl-reorderer-downarrow"></div>
         <div tabindex="-1">
           View an image by pressing Enter. Move an image using CTRL+Arrow Key.
         </div>
