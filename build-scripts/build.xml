@@ -200,19 +200,13 @@
         <script language="javascript" src="build.js" />
     </target>
 
-    <!-- Builds a complete source release bundle. -->
-    <target name="buildSrcBundle" depends="copySourceToBuild">        
+    <target name="copyToSrcBundle" depends="copySourceToBuild">        
         <copy todir="${src-dist}">
             <fileset dir="${build}" />
         </copy>
-        
-        <antcall target="copyDistroFiles">
-			<param name="toDir" value="${src-dist}" />
-		</antcall>
     </target>
     
-    <!-- Builds a complete minified deployment release bundle. -->
-    <target name="buildDeployBundle" depends="copySourceToBuild">        
+    <target name="copyToDeployBundle" depends="copySourceToBuild">        
         <!-- Copy everything but the JavaScript and CSS we are about to minify -->
 		<copy todir="${dist}">
 			<fileset dir="${build}" excludes="**/*.js,**/*.css" />
@@ -220,7 +214,17 @@
         
         <!-- Minify and copy JavaScript and CSS into the build directory -->
 	    <antcall target="minifyBuild" />
-        
+    </target>
+
+    <!-- Builds a complete source release bundle. -->
+    <target name="buildSrcBundle" depends="copyToSrcBundle">        
+        <antcall target="copyDistroFiles">
+			<param name="toDir" value="${src-dist}" />
+		</antcall>
+    </target>
+    
+    <!-- Builds a complete minified deployment release bundle. -->
+    <target name="buildDeployBundle" depends="copyToDeployBundle">        
         <!-- Create the build products -->
         <antcall target="copyDistroFiles">
 			<param name="toDir" value="${dist}" />
@@ -241,7 +245,7 @@
         description="Builds and packages Infusion along with tests and sample code, suitable for development testing or a daily build.">
     </target>
 
-    <target name="customBuild" depends="releaseBuild, package" 
+    <target name="customBuild" depends="copyToSrcBundle, copyToDeployBundle, buildInfusionWAR, package" 
         description="Builds a custom package of Infusion containing the modules specified as command line arguments.">
     </target>
     
