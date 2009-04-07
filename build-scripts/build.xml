@@ -1,31 +1,31 @@
 <project name="Fluid" default="releaseBuild" basedir=".">
-	<description>
-	    Build a distributable package of Fluid Infusion.
+    <description>
+      Build a distributable package of Fluid Infusion.
         
-        To build a distribution, type: ant
-        To jsLint all source code in the source directory, type: ant validate
-        To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
-        To create a custom build use the customBuild target.
-          Custom build has three optional parameters:  'include', 'exclude', and 'jsfilename'
-          e.g. ant customBuild -Dinclude="uiOptions, inlineEdit" -Dexclude="jQuery" -Djsfilename="MyInfusion.js"
+      To build a distribution, type: ant
+      To jsLint all source code in the source directory, type: ant validate
+      To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
+      To create a custom build use the customBuild target.
+        Custom build has three optional parameters:  'include', 'exclude', and 'jsfilename'
+        e.g. ant customBuild -Dinclude="uiOptions, inlineEdit" -Dexclude="jQuery" -Djsfilename="MyInfusion.js"
            
-	</description>
+    </description>
 
-	<property file="build.properties"/>
+    <property file="build.properties"/>
 
-	<!-- set up directory locations -->
+  <!-- set up directory locations -->
     <property name="base-dir" location=".." />
     <property name="products" location="${base-dir}/products" />
-	<property name="src" location="${base-dir}/src/webapp" />
-	<property name="tests" location="${base-dir}/src/webapp/tests" />
-	<property name="dist" location="${products}/dist" />
+    <property name="src" location="${base-dir}/src/webapp" />
+    <property name="tests" location="${base-dir}/src/webapp/tests" />
+    <property name="dist" location="${products}/dist" />
     <property name="src-dist" location="${products}/src-dist" />
-	<property name="build" location="${base-dir}/build" />
-	<property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
-	<property name="lint" location="${src}"/>
+    <property name="build" location="${base-dir}/build" />
+    <property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
+    <property name="lint" location="${src}"/>
 
-	<!-- the filename for the package to output -->
-	<property name="zipfile" value="fluid-${fluid_version}" />
+    <!-- the filename for the package to output -->
+    <property name="zipfile" value="fluid-${fluid_version}" />
 
     <!-- the filename of the documentation PDF -->
     <property name="pdf-file" value="Fluid-${fluid_version}.pdf" />
@@ -33,24 +33,24 @@
     <!-- the filename of the war file -->
     <property name="warfile" value="fluid-components-${fluid_version}.war" />
     
-	<!-- task definition for JSLint -->
-	<taskdef name="jslint" 
-		classname="net.happygiraffe.jslint.ant.JSLintTask" 
-		classpath="${jslint}" />
+    <!-- task definition for JSLint -->
+    <taskdef name="jslint" 
+      classname="net.happygiraffe.jslint.ant.JSLintTask" 
+      classpath="${jslint}" />
 
-	<!-- Target: cleanup before running -->
-	<target name="clean" description="Cleans up all build-related artifacts and products.">
-		<delete dir="${build}" />
-		<delete dir="${products}" />
-	</target>
-
-	<!-- Set up the build directory structure -->
-	<target name="init">
-	    <mkdir dir="${products}" />
-		<mkdir dir="${build}" />
-		<mkdir dir="${dist}" />
+    <!-- Target: cleanup before running -->
+    <target name="clean" description="Cleans up all build-related artifacts and products.">
+        <delete dir="${build}" />
+        <delete dir="${products}" />
+    </target>
+  
+    <!-- Set up the build directory structure -->
+    <target name="init">
+        <mkdir dir="${products}" />
+        <mkdir dir="${build}" />
+        <mkdir dir="${dist}" />
         <mkdir dir="${src-dist}" />
-	</target>
+    </target>
 
     <!-- not currently used but should be changed to do FLUID-1921 -->
     <target name="copyLicenses">
@@ -62,126 +62,126 @@
         </copy>
     </target>
     
-	<!-- Target: Minify the specified files and copy them into the specified directory. Don't call this directly. -->
-	<target name="minify">
-		<apply executable="java" dest="${toDir}"  parallel="false">
-				<!-- The files to act upon. -->	
-				<fileset dir="${fromDir}" casesensitive="no">
-					<include name="**/${file-pattern}" />
-					<exclude name="**/test/*" />
-				</fileset>
-
-				<arg line="-jar" />
-				<arg path="${yuicompressor}" />
-				<srcfile/>
-				<arg line="--nomunge" />
-				<!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
-				<arg line="${lineBreakArg}" />
-				<arg line="-o" />
-				<mapper type="glob" from="${file-pattern}" to="${file-pattern}" />
-				<targetfile /> 
-		</apply>
-	</target>    
+    <!-- Target: Minify the specified files and copy them into the specified directory. Don't call this directly. -->
+    <target name="minify">
+        <apply executable="java" dest="${toDir}"  parallel="false">
+            <!-- The files to act upon. -->  
+            <fileset dir="${fromDir}" casesensitive="no">
+              <include name="**/${file-pattern}" />
+              <exclude name="**/test/*" />
+            </fileset>
+    
+            <arg line="-jar" />
+            <arg path="${yuicompressor}" />
+            <srcfile/>
+            <arg line="--nomunge" />
+            <!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
+            <arg line="${lineBreakArg}" />
+            <arg line="-o" />
+            <mapper type="glob" from="${file-pattern}" to="${file-pattern}" />
+            <targetfile /> 
+        </apply>
+    </target>    
     
     <!-- Minifies javascript and css files and puts them into the distribution -->
-	<target name="minifyBuild">
-		<echo>Minifying .JS files...</echo>
-		<antcall target="minify">
-			<param name="fromDir" value="${build}" />
-			<param name="toDir" value="${dist}" />
-			<param name="file-pattern" value="*.js" />
-			<param name="lineBreakArg" value="" />
-		</antcall>
-		
-		<echo>Minifying .CSS files...</echo>
-		<antcall target="minify">
-			<param name="fromDir" value="${build}" />
-			<param name="toDir" value="${dist}" />
-			<param name="file-pattern" value="*.css" />
-			<param name="lineBreakArg" value="--line-break 0" />
-		</antcall>
-	</target>    
+    <target name="minifyBuild">
+      <echo>Minifying .JS files...</echo>
+      <antcall target="minify">
+        <param name="fromDir" value="${build}" />
+        <param name="toDir" value="${dist}" />
+        <param name="file-pattern" value="*.js" />
+        <param name="lineBreakArg" value="" />
+      </antcall>
+      
+      <echo>Minifying .CSS files...</echo>
+      <antcall target="minify">
+        <param name="fromDir" value="${build}" />
+        <param name="toDir" value="${dist}" />
+        <param name="file-pattern" value="*.css" />
+        <param name="lineBreakArg" value="--line-break 0" />
+      </antcall>
+    </target>    
     
     <target name="copyDistroFiles">
-		<copy todir="${toDir}">
-			<fileset dir="${base-dir}/src/webapp/">
-			    <include name="integration-demos/**/*" />
-			    <include name="standalone-demos/**/*" />
-			    <include name="tests/**/*" />
-            </fileset>
-		</copy>       
+      <copy todir="${toDir}">
+        <fileset dir="${base-dir}/src/webapp/">
+            <include name="integration-demos/**/*" />
+            <include name="standalone-demos/**/*" />
+            <include name="tests/**/*" />
+        </fileset>
+      </copy>       
     </target>
         
     <!-- Creates the release directory structure and zips it all up -->
-	<target name="package">
-		<echo>Zipping distribution bundle to ${dist}/${zipfile}</echo>
-		<zip destfile="${products}/${zipfile}.zip" 
-			basedir="${dist}"
-			includes="**/*"  excludes="*.zip" />
-            
-        <echo>Zipping source bundle to ${dist}/${zipfile}</echo>
-		<zip destfile="${products}/${zipfile}-src.zip" 
-			basedir="${src-dist}"
-			includes="**/*"  excludes="*.zip" />
-	</target>
+    <target name="package">
+      <echo>Zipping distribution bundle to ${dist}/${zipfile}</echo>
+      <zip destfile="${products}/${zipfile}.zip" 
+        basedir="${dist}"
+        includes="**/*"  excludes="*.zip" />
+              
+      <echo>Zipping source bundle to ${dist}/${zipfile}</echo>
+      <zip destfile="${products}/${zipfile}-src.zip" 
+        basedir="${src-dist}"
+        includes="**/*"  excludes="*.zip" />
+    </target>
 
     <!-- Copies the files required to build a war file containing Infusion. -->
     <target name="copyInfusionWARFiles">        
-		<copy todir="${build}/war/src/webapp/infusion" >
-			<fileset dir="${dist}">
-			    <include name="components/**/*" />
-			    <include name="framework/**/*" />
-			    <include name="lib/**/*" />			    
-            </fileset>
-		</copy>
-
-		<copy todir="${build}/war/src/webapp/WEB-INF" >
-			<fileset dir="${web-inf}"/>
-		</copy>
-
-		<copy todir="${build}/war">
-			<fileset dir="..">
-				<include name="pom.xml" />
-				<include name="project.xml" />
-				<include name="maven.xml" />
-				<include name="project.properties" />
-			</fileset>
-		</copy>
+      <copy todir="${build}/war/src/webapp/infusion" >
+        <fileset dir="${dist}">
+            <include name="components/**/*" />
+            <include name="framework/**/*" />
+            <include name="lib/**/*" />          
+              </fileset>
+      </copy>
+  
+      <copy todir="${build}/war/src/webapp/WEB-INF" >
+        <fileset dir="${web-inf}"/>
+      </copy>
+  
+      <copy todir="${build}/war">
+        <fileset dir="..">
+          <include name="pom.xml" />
+          <include name="project.xml" />
+          <include name="maven.xml" />
+          <include name="project.properties" />
+        </fileset>
+      </copy>
     </target>
     
     <!-- Builds the WAR file using Maven 2 and copies it to the distribution folder. -->
-	<target name="buildWAR">
-    <condition property="isWindows">
-      <os family="windows" />
-    </condition>
-		<antcall target="invokeMavenForWAR"/>
-    <antcall target="invokeMavenForWARWindows"/>
-    <echo>Copying war file ${build}/war/target/${warfile} to ${dist}...</echo>
-		<copy todir="${dist}">
-            <fileset dir="${build}/war/target">
-                <include name="${warfile}" />
-            </fileset>
-        </copy>
-	</target>
-	
-	<target name="invokeMavenForWAR" unless="isWindows">
-    <echo>Building war file...</echo>
-    <apply executable="mvn" dir="${build}/war" parallel="true">
-        <fileset  dir=".">
-            <include name="pom.xml"/>
-                </fileset>
-        <arg value="install" />
-    </apply>
-	</target>
-	
-  <target name="invokeMavenForWARWindows" if="isWindows">
-    <apply executable="cmd" dir="${build}/war" parallel="true" vmlauncher="false">
-        <fileset  dir=".">
-            <include name="pom.xml"/>
-                </fileset>
-        <arg value="/c mvn.bat install" />
-    </apply>
-  </target>
+    <target name="buildWAR">
+      <condition property="isWindows">
+        <os family="windows" />
+      </condition>
+      <antcall target="invokeMavenForWAR"/>
+      <antcall target="invokeMavenForWARWindows"/>
+      <echo>Copying war file ${build}/war/target/${warfile} to ${dist}...</echo>
+      <copy todir="${dist}">
+          <fileset dir="${build}/war/target">
+              <include name="${warfile}" />
+          </fileset>
+      </copy>
+    </target>
+  
+    <target name="invokeMavenForWAR" unless="isWindows">
+      <echo>Building war file...</echo>
+      <apply executable="mvn" dir="${build}/war" parallel="true">
+          <fileset  dir=".">
+              <include name="pom.xml"/>
+                  </fileset>
+          <arg value="install" />
+      </apply>
+    </target>
+  
+    <target name="invokeMavenForWARWindows" if="isWindows">
+      <apply executable="cmd" dir="${build}/war" parallel="true" vmlauncher="false">
+          <fileset  dir=".">
+              <include name="pom.xml"/>
+                  </fileset>
+          <arg value="/c mvn.bat install" />
+      </apply>
+    </target>
     
     <!-- Builds the core Infusion WAR file. -->
     <target name="buildInfusionWAR" depends="copyInfusionWARFiles, buildWAR">
@@ -197,15 +197,15 @@
         <antcall target="buildWAR" />
     </target>
 
-	<!-- Target: validate -->
-	<target name="validate" description="Validates all JavaScript files using JSLint. To lint a specific folder use: -Dlint=../some/folder" >
+    <!-- Target: validate -->
+    <target name="validate" description="Validates all JavaScript files using JSLint. To lint a specific folder use: -Dlint=../some/folder" >
 
-		<echo>Validating .JS files...</echo>
+        <echo>Validating .JS files...</echo>
         <jslint dir="${lint}" 
-                excludes="${excludeFromJSLint}"
-                options="browser,eqeqeq,nomen,undef">
+                    excludes="${excludeFromJSLint}"
+                    options="browser,eqeqeq,nomen,undef">
         </jslint>
-	</target>
+    </target>
     
     <target name="concatJavaScript" >
         <concat destfile="${build}/${jsfile}" >
@@ -226,27 +226,27 @@
     
     <target name="copyToDeployBundle" depends="copySourceToBuild">        
         <!-- Copy everything but the JavaScript and CSS we are about to minify -->
-		<copy todir="${dist}">
-			<fileset dir="${build}" excludes="**/*.js,**/*.css" />
-		</copy>
+        <copy todir="${dist}">
+          <fileset dir="${build}" excludes="**/*.js,**/*.css" />
+        </copy>
         
         <!-- Minify and copy JavaScript and CSS into the build directory -->
-	    <antcall target="minifyBuild" />
+        <antcall target="minifyBuild" />
     </target>
 
     <!-- Builds a complete source release bundle. -->
     <target name="buildSrcBundle" depends="copyToSrcBundle">        
         <antcall target="copyDistroFiles">
-			<param name="toDir" value="${src-dist}" />
-		</antcall>
+            <param name="toDir" value="${src-dist}" />
+        </antcall>
     </target>
     
     <!-- Builds a complete minified deployment release bundle. -->
     <target name="buildDeployBundle" depends="copyToDeployBundle">        
         <!-- Create the build products -->
         <antcall target="copyDistroFiles">
-			<param name="toDir" value="${dist}" />
-		</antcall>
+            <param name="toDir" value="${dist}" />
+        </antcall>
     </target>
     
     <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript">
