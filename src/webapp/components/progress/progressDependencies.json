@@ -1,4 +1,4 @@
 {"progress": {
 	"files": "Progress.js",
-	"dependencies": ["jQuery", "framework"]
+	"dependencies": ["jQuery", "jQueryUI", "framework"]
 }}
