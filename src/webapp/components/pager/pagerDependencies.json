@@ -1,4 +1,4 @@
 {"pager": {
 	"files": "Pager.js",
-	"dependencies": ["jQuery", "framework"]
+	"dependencies": ["jQuery", "jQueryTooltipPlugin", "framework", "renderer"]
 }}
