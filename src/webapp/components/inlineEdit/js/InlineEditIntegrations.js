@@ -193,9 +193,14 @@ fluid_1_0 = fluid_1_0 || {};
         var id = fluid.allocateSimpleId(that.editField);
         $.data(fluid.unwrap(that.editField), "fluid.inlineEdit.FCKEditor", that);
         var oFCKeditor = new FCKeditor(id);
-        oFCKeditor.BasePath = "fckeditor/";
-        $.extend(true, oFCKeditor.Config, that.options.FCKEditor);
+        // The Config object and the FCKEditor object itself expose different configuration sets,
+        // which possess a member "BasePath" with different meanings. Solve FLUID-2452, FLUID-2438
+        // by auto-inferring the inner path for Config (method from http://drupal.org/node/344230 )
+        var opcopy = fluid.copy(that.options.FCKEditor);
+        opcopy.BasePath = opcopy.BasePath + "editor/";
+        $.extend(true, oFCKeditor.Config, opcopy);
         // somehow, some properties like Width and Height are set on the object itself
+
         $.extend(true, oFCKeditor, that.options.FCKEditor);
         oFCKeditor.Config.fluidInstance = that;
         oFCKeditor.ReplaceTextarea();
@@ -239,7 +244,10 @@ fluid_1_0 = fluid_1_0 || {};
         },
         lazyEditView: true,
         blurHandlerBinder: fluid.inlineEdit.FCKEditor.blurHandlerBinder,
-        editModeRenderer: fluid.inlineEdit.FCKEditor.editModeRenderer
+        editModeRenderer: fluid.inlineEdit.FCKEditor.editModeRenderer,
+        FCKEditor: {
+            BasePath: "fckeditor/"    
+        }
     });
     
     
