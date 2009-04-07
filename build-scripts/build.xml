@@ -151,21 +151,37 @@
     
     <!-- Builds the WAR file using Maven 2 and copies it to the distribution folder. -->
 	<target name="buildWAR">
-        <echo>Building war file...</echo>
-		<apply executable="mvn" dir="${build}/war" parallel="true">
-				<fileset  dir=".">
-				    <include name="pom.xml"/>
-                </fileset>
-				<arg value="install" />
-		</apply>
-
-        <echo>Copying war file ${build}/war/target/${warfile} to ${dist}...</echo>
+    <condition property="isWindows">
+      <os family="windows" />
+    </condition>
+		<antcall target="invokeMavenForWAR"/>
+    <antcall target="invokeMavenForWARWindows"/>
+    <echo>Copying war file ${build}/war/target/${warfile} to ${dist}...</echo>
 		<copy todir="${dist}">
             <fileset dir="${build}/war/target">
                 <include name="${warfile}" />
             </fileset>
         </copy>
 	</target>
+	
+	<target name="invokeMavenForWAR" unless="isWindows">
+    <echo>Building war file...</echo>
+    <apply executable="mvn" dir="${build}/war" parallel="true">
+        <fileset  dir=".">
+            <include name="pom.xml"/>
+                </fileset>
+        <arg value="install" />
+    </apply>
+	</target>
+	
+  <target name="invokeMavenForWARWindows" if="isWindows">
+    <apply executable="cmd" dir="${build}/war" parallel="true" vmlauncher="false">
+        <fileset  dir=".">
+            <include name="pom.xml"/>
+                </fileset>
+        <arg value="/c mvn.bat install" />
+    </apply>
+  </target>
     
     <!-- Builds the core Infusion WAR file. -->
     <target name="buildInfusionWAR" depends="copyInfusionWARFiles, buildWAR">
