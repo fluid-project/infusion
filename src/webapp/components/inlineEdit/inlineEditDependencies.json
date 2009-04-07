@@ -1,4 +1,4 @@
 {"inlineEdit": {
 	"files": ["InlineEdit.js", "InlineEditIntegrations.js"],
-	"dependencies": ["jQuery", "framework"]
+	"dependencies": ["jQuery", "jQueryTooltipPlugin", "framework", "undo"]
 }}
