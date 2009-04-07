@@ -1,4 +1,4 @@
 {"reorderer": {
 	"files": ["GeometricManager.js", "Reorderer.js", "ImageReorderer.js", "ModuleLayout.js", "LayoutReorderer.js"],
-	"dependencies": ["jQuery", "framework"]
+	"dependencies": ["jQuery", "jQueryUICore", "jQueryUIWidgets", "framework"]
 }}
