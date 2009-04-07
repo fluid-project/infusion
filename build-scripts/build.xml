@@ -47,7 +47,7 @@
 	<!-- Set up the build directory structure -->
 	<target name="init">
 	    <mkdir dir="${products}" />
-		<mkdir dir="${build}" />			
+		<mkdir dir="${build}" />
 		<mkdir dir="${dist}" />
         <mkdir dir="${src-dist}" />
 	</target>
@@ -128,9 +128,11 @@
     <!-- Copies the files required to build a war file containing Infusion. -->
     <target name="copyInfusionWARFiles">        
 		<copy todir="${build}/war/src/webapp/infusion" >
-			<fileset dir="${dist}/components"/>
-            <fileset dir="${dist}/framework"/>
-            <fileset dir="${dist}/lib"/>
+			<fileset dir="${dist}">
+			    <include name="components/**/*" />
+			    <include name="framework/**/*" />
+			    <include name="lib/**/*" />			    
+            </fileset>
 		</copy>
 
 		<copy todir="${build}/war/src/webapp/WEB-INF" >
