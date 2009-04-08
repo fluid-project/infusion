@@ -12,7 +12,7 @@ This release includes
     * Complete reorganization of the Source Code 
     * Standardization and normalization of classnames used for selectors and styles
     * 3 new Fluid Skinning System themes (Coal, Slate, Inverted High Contrast) with master graphics files
-    * UI Options improvements and refinments including
+    * UI Options improvements and refinements including
         - improved user interface for UI Options 
         - new features implemented including table of contents, contrast and line spacing
         - default persistence strategy using cookies
@@ -161,6 +161,27 @@ Safari 3.1, Opera 9.6: full support (except keyboard interaction, which is not s
 Internet Explorer 8: preliminary testing
 
 For more information on Fluid Infusion browser support, please see: http://wiki.fluidproject.org/display/fluid/Browser+Support
+
+
+Status of Components and Framework Features
+===========================================
+
+Production: supports A-Grade browsers, stable for production usage across a wide range of applications and use cases
+	* Fluid Skinning System 
+	* Infusion Framework Core			
+	* Inline Edit 		
+	* Reorderer 			
+
+Preview: still growing, but with broad browser support. Expect new features in upcoming releases
+	* Pager
+	* Progress
+	* UI Options
+	* Uploader
+	* Renderer
+	
+Sneak Peek: in development; APIs will change. Share your feedback, ideas, and code
+	* Table of Contents
+
 
 Known Issues
 ============
