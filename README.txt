@@ -12,7 +12,11 @@ This release includes
     * Complete reorganization of the Source Code 
     * Standardization and normalization of classnames used for selectors and styles
     * 3 new Fluid Skinning System themes (Coal, Slate, Inverted High Contrast) with master graphics files
-    * Preview of User Interface Options
+    * UI Options improvements and refinments including
+        - improved user interface for UI Options 
+        - new features implemented including table of contents, contrast and line spacing
+        - default persistence strategy using cookies
+        - API solidification
     * New factoring out and development of Data Binding framework (formerly known as DARApplier)
     * Progress is now a stand-alone component 
     * Many bug fixes
@@ -182,13 +186,15 @@ Layout Reorderer:
     FLUID-858  Portlet Columns load with no padding between them in IE7
 
 UI Options: 
-	FLUID-2412 Reset doesn't work after saving the initial cookie
 	FLUID-2397 Line spacing setting does not work in Opera
-	FLUID-2523 Re-opening the dialog after closing it with the 'esc' key, doesn't display the preview window: using IE
-	FLUID-2510 Using the reset button breaks the preview: using Opera
-	FLUID-2508 Turning on the table of contents causes an error: using Opera
+	FLUID-2398 Minimum font size control changes the text size even when the base size is larger then the minimum.
+	FLUID-2411 Refreshing the browser, hitting cancel or reset, breaks the functionality of the sliders: using Opera
+	FLUID-2412 Reset doesn't work after saving the initial cookie
+	FLUID-2500 Switching from high contrast to any other theme will remove some text from the page: using IE
 	FLUID-2506 Keyboard navigation inside the dialog breaks in simple layout mode: using FF
-	FLUID-2500 switching from high contrast to any other theme will remove some text from the page: using IE
+	FLUID-2508 Turning on the table of contents causes an error: using Opera
+	FLUID-2510 Using the reset button breaks the preview: using Opera
+	FLUID-2523 Re-opening the dialog after closing it with the 'esc' key, doesn't display the preview window: using IE
 	
 FSS:
     FLUID-2504: Flexible columns dont maintain proper alignment under certain conditions
