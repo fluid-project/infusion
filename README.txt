@@ -221,3 +221,6 @@ FSS:
     FLUID-2504: Flexible columns dont maintain proper alignment under certain conditions
     FLUID-2434: In IE, major font size changes break text positioning within form controls
     FLUID-2397: Opera doesnt seem to repaint certain css changes on the fly, requiring a refresh to see them
+    
+Build System:
+    FLUID-2575: The jquery.bgiframe plugin is not included in InfusionAll.js or other custom builds.
