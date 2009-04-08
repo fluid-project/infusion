@@ -43,19 +43,39 @@ Developers wishing to learn about the Fluid code, or debug their applications, s
 
 Source Code
 -----------
-The organization of the full source code for the Fluid component library follows the following pattern, assuming it has CSS, JavaScript, HTML, and IMAGE assets:
+The organization of the full source code for the Fluid library is as follows:
+
         components/
-             NAME/
-                  css/
-                  js/
-                  html/
-                  images/
-Where NAME is the name of the component. Not all components have all of these sub-folders.
+             inlineEdit/
+             pager/
+             progress/
+             reorderer/
+             tableOfContents/
+             uiOptions/
+             undo/
+             uploader/
+        framework/
+             core/
+             fss/
+             renderer/
+        lib/
+             fastXmlPull/
+             fckeditor/
+             jquery/
+             json/
+             swfobject/
+             swfupload/
+             tiny_mce/
 
 
 Examples and Sample Code
 -----------
 Sample code illustrating how Fluid components can be used*:
+
+        integration-demos/
+             bspace/
+             sakai/
+             uportal/
         standalone-demos/
              keyboard-a11y/
              pager/
@@ -67,7 +87,6 @@ Sample code illustrating how Fluid components can be used*:
              renderer/
              reorderer/
              table-of-contents/
-
 
 Tests
 -----
