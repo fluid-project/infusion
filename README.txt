@@ -10,7 +10,7 @@ This release includes
 
     * Improved Uploader compatibility with Flash 9 and Internet Explorer
     * Improved documentation
-    * Fluid Skinning System
+    * 3 new Fluid Skinning System themes (Coal, Slate, Inverted High Contrast) with master graphics files
     * Preview of User Interface Options
     * Upgrade to the latest version of qUnit automated Javascript test harness
     * Many bug fixes
