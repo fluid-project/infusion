@@ -44,12 +44,36 @@ Developers wishing to learn about the Fluid code, or debug their applications, s
 Source Code
 -----------
 The organization of the full source code for the Fluid component library, including JavaScript, HTML templates and CSS is:
-        	fluid-components/
-           		css/
-           		flash/
-           		html/
-           		images/
-           		js/
+        components/
+             inlineEdit/
+                  css/
+                  js/
+             pager/
+                  css/
+                  images/
+                  js/
+             progress/
+                  js/
+             reorderer/
+                  css/
+                  html/
+                  images/
+                  js/
+             tableOfContents/
+                  html/
+                  js/
+             uiOptions/
+                  css/
+                  html/
+                  images/
+                  js/
+             undo/
+                  js/
+             uploader/
+                 css/
+                 html/
+                 images/
+                 js/
 
 Sample Code
 -----------
