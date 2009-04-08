@@ -43,58 +43,41 @@ Developers wishing to learn about the Fluid code, or debug their applications, s
 
 Source Code
 -----------
-The organization of the full source code for the Fluid component library, including JavaScript, HTML templates and CSS is:
+The organization of the full source code for the Fluid component library follows the following pattern, assuming it has CSS, JavaScript, HTML, and IMAGE assets:
         components/
-             inlineEdit/
+             NAME/
                   css/
                   js/
-             pager/
-                  css/
-                  images/
-                  js/
-             progress/
-                  js/
-             reorderer/
-                  css/
                   html/
                   images/
-                  js/
-             tableOfContents/
-                  html/
-                  js/
-             uiOptions/
-                  css/
-                  html/
-                  images/
-                  js/
-             undo/
-                  js/
-             uploader/
-                 css/
-                 html/
-                 images/
-                 js/
+Where NAME is the name of the component. Not all components have all of these sub-folders.
 
-Sample Code
+
+Examples and Sample Code
 -----------
 Sample code illustrating how Fluid components can be used*:
-        	sample-code/
-           		inline-edit/
-           		keyboard-a11y/
-           		pager/
-           		renderer/
-           		reorderer/
-           		shared/
-           
-* sample code for the Uploader can be found in fluid-components/html/templates/
+        standalone-demos/
+             keyboard-a11y/
+             pager/
+             quick-start-examples/
+                  fss/
+                  inlineEdit/
+                  pager/
+                  reorderer/
+             renderer/
+             reorderer/
+             table-of-contents/
+
 
 Tests
 -----
-        	tests/
-            	fluid-tests/
-            	jquery-tests/
-            	jqUnit/
-            	utils/
+		tests/
+			component-tests/
+			escalated-tests/
+			framework-tests/
+			lib/
+			manual-tests/
+			test-core/
 
 License
 -------
