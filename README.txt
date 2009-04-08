@@ -189,22 +189,33 @@ Known Issues
 The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
 Some of the known issues in this release are described here:
 
+Build System:
+    FLUID-2575: The jquery.bgiframe plugin is not included in InfusionAll.js or other custom builds.
+    
+FSS:
+    FLUID-2504: Flexible columns dont maintain proper alignment under certain conditions
+    FLUID-2434: In IE, major font size changes break text positioning within form controls
+    FLUID-2397: Opera doesnt seem to repaint certain css changes on the fly, requiring a refresh to see them
+    
+Framework:
+	FLUID-2577 Renderer performance can be slow on IE 6 and 7 in some contexts.
+	
+Inline Edit: 
+    FLUID-1600 Pressing the "Tab" key to exit edit mode, places focus on the wrong item
+	FLUID-2275 The jquery.tinymce plugin invokes TinyMCE even if it doesn't exist
+	
 Uploader: 
   For information related to known issues related to Flash 10 compatibility, see http://wiki.fluidproject.org/x/0QFS
     FLUID-2052 Cannot tab away from the "Browse Files" button with Flash 10; using FF3
     FLUID-2032 Cannot Tab to the 'Browse More" button with Flash 10, using FF2
 
-Inline Edit: 
-    FLUID-1600 Pressing the "Tab" key to exit edit mode, places focus on the wrong item
-	FLUID-2275 The jquery.tinymce plugin invokes TinyMCE even if it doesn't exist
+Layout Reorderer: 
+    FLUID-1540 Can't use keyboard reordering to move a nested reorderer to the right column, using IE6
+    FLUID-858  Portlet Columns load with no padding between them in IE7
 
 Reorderer: 
     FLUID-148 Edge case: visual position of drop target when droppable is at beginning or end of a row
     FLUID-118 Dragging an image offscreen or out of the frame has some unexpected results.
-
-Layout Reorderer: 
-    FLUID-1540 Can't use keyboard reordering to move a nested reorderer to the right column, using IE6
-    FLUID-858  Portlet Columns load with no padding between them in IE7
 
 UI Options: 
 	FLUID-2397 Line spacing setting does not work in Opera
@@ -217,10 +228,3 @@ UI Options:
 	FLUID-2510 Using the reset button breaks the preview: using Opera
 	FLUID-2523 Re-opening the dialog after closing it with the 'esc' key, doesn't display the preview window: using IE
 	
-FSS:
-    FLUID-2504: Flexible columns dont maintain proper alignment under certain conditions
-    FLUID-2434: In IE, major font size changes break text positioning within form controls
-    FLUID-2397: Opera doesnt seem to repaint certain css changes on the fly, requiring a refresh to see them
-    
-Build System:
-    FLUID-2575: The jquery.bgiframe plugin is not included in InfusionAll.js or other custom builds.
