@@ -1,9 +1,9 @@
-Fluid Infusion 0.8
+Fluid Infusion 1.0
 ==================
 Main Project Site:  http://fluidproject.org
 User Manual:        http://wiki.fluidproject.org/display/fluid/User+Manual+Table+of+Contents
 
-What's New in 0.8
+What's New in 1.0
 =================
 
 This release includes
@@ -25,8 +25,11 @@ This release is available in two forms:
 Both bundles include all the code needed to get started using Fluid, include a single JavaScript file, fluid-components/js/Fluid-all.js, that is a combination of all other source files. This script is compressed and suitable for production use.  Developers can include this single file in their pages to provide all the necessary support for the Fluid component Library.
 
 Both bundles have the following organization:
-	        fluid-components/
-	        sample-code/
+	        components/
+	        framework/
+	        integration-demos/
+	        lib/
+	        standalone-demos/
 	        tests/
 	        LICENSE.txt
 	        README.txt
