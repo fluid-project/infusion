@@ -1,4 +1,4 @@
 {"uploader": {
 	"files": ["DemoUploadManager.js", "FileQueue.js", "Scroller.js", "SWFUploadManager.js", "Uploader.js"],
-	"dependencies": ["jQuery", "jQueryUICore", "framework", "swfobject", "swfupload"]
+	"dependencies": ["jQuery", "jQueryUICore", "framework", "swfobject", "swfupload", "progress"]
 }}
