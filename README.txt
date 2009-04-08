@@ -73,9 +73,9 @@ Examples and Sample Code
 Sample code illustrating how Fluid components can be used*:
 
         integration-demos/
-             bspace/
-             sakai/
-             uportal/
+             bspace/    (showcases: Inline Edit)
+             sakai/     (showcases: Inline Edit, Pager, UI Options, FSS)
+             uportal/   (showcases: Reorderer, UI Options, FSS)
         standalone-demos/
              keyboard-a11y/
              pager/
