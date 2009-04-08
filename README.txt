@@ -8,19 +8,21 @@ What's New in 1.0
 
 This release includes
 
-    * Improved Uploader compatibility with Flash 9 and Internet Explorer
     * Improved documentation
+    * Complete reorganization of the Source Code 
+    * Standardization and normalization of classnames used for selectors and styles
     * 3 new Fluid Skinning System themes (Coal, Slate, Inverted High Contrast) with master graphics files
     * Preview of User Interface Options
-    * Upgrade to the latest version of qUnit automated Javascript test harness
+    * New factoring out and development of Data Binding framework (formerly known as DARApplier)
+    * Progress is now a stand-alone component 
     * Many bug fixes
 
 What's in this Release
 ======================
 
 This release is available in two forms:
-    Deployment Bundle - fluid-0.8.zip 
-    Source Code Bundle - fluid-0.8-src.zip
+    Deployment Bundle - fluid-1.0.zip 
+    Source Code Bundle - fluid-1.0-src.zip
 
 Both bundles include all the code needed to get started using Fluid, include a single JavaScript file, fluid-components/js/Fluid-all.js, that is a combination of all other source files. This script is compressed and suitable for production use.  Developers can include this single file in their pages to provide all the necessary support for the Fluid component Library.
 
@@ -35,7 +37,7 @@ Both bundles have the following organization:
 	        README.txt
 
 The Deployment Bundle also includes a WAR file suitable for deployment in Java-based containers: 
-		fluid-components-0.8.war
+		fluid-components-1.0.war
 
 Also, in the Deployment Bundle, the JavaScript source has been minified: comments and whitespace have been removed. 
 
@@ -116,6 +118,7 @@ This is a list of publicly available software that is included in the Fluid bund
 	* CSS styling reset from YUI: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
     * Douglas Crockford's JSON parsing and stringifying methods: http://www.json.org/ (Public Domain)
     * SWFUpload: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
+    * SWFObject: http://code.google.com/p/swfobject/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
     * XML for Script's Fast Pull Parser (LGPL licensed http://xmljs.sourceforge.net/)
     * Sample markup and stylesheets from Sakai (http://sakaiproject.org) and uPortal (http://www.uportal.org/)
     * TinyMCE, Javascript HTML WYSIWYG editor control: (LGPL licensed http://tinymce.moxiecode.com/license.php)  
@@ -135,7 +138,8 @@ Documentation
 The Fluid Project uses a wiki for documentation and project collaboration: http://wiki.fluidproject.org.
 
 The User Manual for Fluid releases consists of a number of information pages stored in the Fluid Wiki.
-The pages include tutorials, API descriptions, testing procedures, and data-gathering approaches. To make the manual pages easy to navigation we have added the following guides:
+The pages include tutorials, API descriptions, testing procedures, and data-gathering approaches. To make the 
+manual pages easy to navigation we have added the following guides:
 
     * An organized Table of Contents is provided for the reader, with links to
       all manual pages, each with a brief description of the page contents.
@@ -148,8 +152,11 @@ Supported Browsers
 ==================
 Firefox 2.x, 3.x: full support
 Internet Explorer 6.x, 7.x: full support
-Safari 3.1, Opera 9.5: full support (except keyboard interaction, which is not supported by these browsers)
+Safari 3.1, Opera 9.6: full support (except keyboard interaction, which is not supported by these browsers)
 
+Internet Explorer 8: preliminary testing
+
+For more information on Fluid Infusion browser support, please see: http://wiki.fluidproject.org/display/fluid/Browser+Support
 
 Known Issues
 ============
@@ -164,6 +171,7 @@ Uploader:
 
 Inline Edit: 
     FLUID-1600 Pressing the "Tab" key to exit edit mode, places focus on the wrong item
+	FLUID-2275 The jquery.tinymce plugin invokes TinyMCE even if it doesn't exist
 
 Reorderer: 
     FLUID-148 Edge case: visual position of drop target when droppable is at beginning or end of a row
@@ -171,18 +179,17 @@ Reorderer:
 
 Layout Reorderer: 
     FLUID-1540 Can't use keyboard reordering to move a nested reorderer to the right column, using IE6
-    FLUID-858 Portlet Columns load with no padding between them in IE7
+    FLUID-858  Portlet Columns load with no padding between them in IE7
 
 UI Options: 
-    FLUID-2121 Focus is not placed on the first focusable item in the user interfact options dialog
-    FLUID-2258 In IE 6, the UI Options Dialog may display with missing elements 
-    FLUID-2260 In Opera, Activating the Reset or Close button will remove all elements of the UI Options dialog
-    FLUID-2261 In Opera, UI Options example throws an error on load
-    
-
-Pager: 
-    FLUID-835 Pager links are not in the tab order, using Opera 9.5
-
+	FLUID-2412 Reset doesn't work after saving the initial cookie
+	FLUID-2397 Line spacing setting does not work in Opera
+	FLUID-2523 Re-opening the dialog after closing it with the 'esc' key, doesn't display the preview window: using IE
+	FLUID-2510 Using the reset button breaks the preview: using Opera
+	FLUID-2508 Turning on the table of contents causes an error: using Opera
+	FLUID-2506 Keyboard navigation inside the dialog breaks in simple layout mode: using FF
+	FLUID-2500 switching from high contrast to any other theme will remove some text from the page: using IE
+	
 FSS:
     FLUID-2504: Flexible columns dont maintain proper alignment under certain conditions
     FLUID-2434: In IE, major font size changes break text positioning within form controls
