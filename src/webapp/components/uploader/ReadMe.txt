@@ -14,7 +14,7 @@ latest example code. The Fluid Uploader was extensively refactored in the 0.6 re
 API has been introduced.
 
 Please refer to the Uploader API documentation on the Fluid Wiki and the 
-Infusion 0.8 example code before using the Uploader with an existing integration. 
+Infusion 1.0 example code before using the Uploader with an existing integration. 
 http://wiki.fluidproject.org/display/fluid/Uploader+API
 
 --------------------------------------
@@ -88,11 +88,10 @@ object to access your file system. To do so, follow these directions:
 1. Open your browser
 2. Browse to:
    http://www.macromedia.com/support/documentation/en/flashplayer/help/settings_manager04.html
-
 3. In the Flash Settings panel, click "Edit locations..."
 4. Select "Add location..."
 5. Click "Browse for folder..."
-6. Select the local /src/webapp/fluid-components/flash/ directory that contains the swfupload.swf file
+6. Select the local /src/webapp/lib/swfupload/flash/ directory that contains the swfupload.swf file
 7. Restart your browser
 
 You should be good to go! 
