@@ -156,3 +156,8 @@ UI Options:
 
 Pager: 
     FLUID-835 Pager links are not in the tab order, using Opera 9.5
+
+FSS:
+    FLUID-2504: Flexible columns dont maintain proper alignment under certain conditions
+    FLUID-2434: In IE, major font size changes break text positioning within form controls
+    FLUID-2397: Opera doesnt seem to repaint certain css changes on the fly, requiring a refresh to see them
