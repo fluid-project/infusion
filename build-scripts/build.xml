@@ -132,8 +132,8 @@
             <include name="components/**/*" />
             <include name="framework/**/*" />
             <include name="lib/**/*" />          
-              </fileset>
-      
+        </fileset>
+      </copy>
   
       <copy todir="${build}/war/src/webapp/WEB-INF" >
         <fileset dir="${web-inf}"/>
