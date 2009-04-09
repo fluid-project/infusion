@@ -216,6 +216,7 @@ Uploader:
 
 Layout Reorderer: 
     FLUID-1540 Can't use keyboard reordering to move a nested reorderer to the right column, using IE6
+    FLUID-2171 In IE, can't reorderer porlets containing Google components
     FLUID-858  Portlet Columns load with no padding between them in IE7
 
 Reorderer: 
