@@ -10,7 +10,7 @@ This release includes
 
     * New data binding framework: the ChangeApplier
     * Substantial UI Options improvements and refinements, including:
-        - a better user interface
+        - a better user interface: improved layout, easier to use, increased contrast
         - new features: table of contents, contrast and line spacing
         - configurable strategy for persisting user preferences, using cookies by default
         - stable API
