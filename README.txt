@@ -8,17 +8,18 @@ What's New in 1.0
 
 This release includes
 
+	* New data binding framework: the ChangeApplier
+	* Substantial UI Options improvements and refinements, including:
+        - a better user interface
+        - new features: table of contents, contrast and line spacing
+        - configurable strategy for persisting user preferences, using cookies by default
+        - stable API
+    * 3 new Fluid Skinning System themes with graphics: Coal, Slate, and Inverted High Contrast
+    * New preview component: Progress
     * Improved documentation
-    * Complete reorganization of the Source Code 
-    * Standardization and normalization of classnames used for selectors and styles
-    * 3 new Fluid Skinning System themes (Coal, Slate, Inverted High Contrast) with master graphics files
-    * UI Options improvements and refinements including
-        - improved user interface for UI Options 
-        - new features implemented including table of contents, contrast and line spacing
-        - default persistence strategy using cookies
-        - API solidification
-    * New factoring out and development of Data Binding framework (formerly known as DARApplier)
-    * Progress is now a stand-alone component 
+    * Better error handling for the Uploader
+    * Up to date ARIA support for the Reorderer
+    * Consistency across the board: standardized APIs, class names, and source code layout
     * Many bug fixes
 
 What's in this Release
@@ -219,6 +220,10 @@ Layout Reorderer:
     FLUID-2171 In IE, can't reorderer porlets containing Google components
     FLUID-858  Portlet Columns load with no padding between them in IE7
 
+Pager:
+	FLUID-2329 The self-rendering mode of the Pager is not the default mode
+	FLUID-2467 The style name for the root node is not configurable
+	
 Reorderer: 
     FLUID-148 Edge case: visual position of drop target when droppable is at beginning or end of a row
     FLUID-118 Dragging an image offscreen or out of the frame has some unexpected results.
@@ -233,7 +238,4 @@ UI Options:
 	FLUID-2508 Turning on the table of contents causes an error: using Opera
 	FLUID-2510 Using the reset button breaks the preview: using Opera
 	FLUID-2523 Re-opening the dialog after closing it with the 'esc' key, doesn't display the preview window: using IE
-
-Pager:
-	FLUID-2329 The self-rendering mode of the Pager is not the default mode
-	FLUID-2467 The style name for the root node is not configurable
+	
