@@ -15,7 +15,7 @@ This release includes
         - configurable strategy for persisting user preferences, using cookies by default
         - stable API
     * 3 new Fluid Skinning System themes with graphics: Coal, Slate, and Inverted High Contrast
-    * New preview component: Progress
+    * New preview component: Progress (previously part of the Uploader component)
     * Improved documentation
     * Better error handling for the Uploader
     * Up to date ARIA support for the Reorderer
@@ -218,7 +218,7 @@ Uploader:
 
 Layout Reorderer: 
     FLUID-1540 Can't use keyboard reordering to move a nested reorderer to the right column, using IE6
-    FLUID-2171 In IE, can't reorderer porlets containing Google components
+    FLUID-2171 In IE, can't reorderer portlets containing Google components
     FLUID-858  Portlet Columns load with no padding between them in IE7
 
 Pager:
