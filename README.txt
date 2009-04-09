@@ -28,7 +28,10 @@ This release is available in two forms:
     Deployment Bundle - fluid-1.0.zip 
     Source Code Bundle - fluid-1.0-src.zip
 
-Both bundles include all the code needed to get started using Fluid, include a single JavaScript file, fluid-components/js/Fluid-all.js, that is a combination of all other source files. This script is compressed and suitable for production use.  Developers can include this single file in their pages to provide all the necessary support for the Fluid component Library.
+Both bundles include all the code needed to get started using Fluid, include a single JavaScript file,
+fluid-components/js/Fluid-all.js, that is a combination of all other source files. This script is
+compressed and suitable for production use.  Developers can include this single file in their pages to
+provide all the necessary support for the Fluid component Library.
 
 Both bundles have the following organization:
 	        components/
@@ -75,7 +78,7 @@ The organization of the full source code for the Fluid library is as follows:
 
 
 Examples and Sample Code
------------
+------------------------
 Sample code illustrating how Fluid components can be used*:
 
         integration-demos/
@@ -88,7 +91,6 @@ Sample code illustrating how Fluid components can be used*:
              quick-start-examples/
                   fss/
                   inlineEdit/
-                  pager/
                   reorderer/
              renderer/
              reorderer/
@@ -106,10 +108,12 @@ Tests
 
 License
 -------
-Fluid code is licensed under a dual ECL 2.0 / BSD license. The specific licenses can be found in the license file:
+Fluid code is licensed under a dual ECL 2.0 / BSD license. The specific licenses can be found in the
+license file:
     	LICENSE.txt
 
-Fluid also depends upon some third party open source modules. These are contained in their own folders with their respective licenses inside the fluid source code.
+Fluid also depends upon some third party open source modules. These are contained in their own folders
+with their respective licenses inside the fluid source code.
 
 
 Third Party Software in Fluid
@@ -143,7 +147,7 @@ The Fluid Project uses a wiki for documentation and project collaboration: http:
 
 The User Manual for Fluid releases consists of a number of information pages stored in the Fluid Wiki.
 The pages include tutorials, API descriptions, testing procedures, and data-gathering approaches. To make the 
-manual pages easy to navigation we have added the following guides:
+manual pages easy to navigate we have added the following guides:
 
     * An organized Table of Contents is provided for the reader, with links to
       all manual pages, each with a brief description of the page contents.
@@ -160,7 +164,8 @@ Safari 3.1, Opera 9.6: full support (except keyboard interaction, which is not s
 
 Internet Explorer 8: preliminary testing
 
-For more information on Fluid Infusion browser support, please see: http://wiki.fluidproject.org/display/fluid/Browser+Support
+For more information on Fluid Infusion browser support, please see:
+    http://wiki.fluidproject.org/display/fluid/Browser+Support
 
 
 Status of Components and Framework Features
@@ -227,4 +232,7 @@ UI Options:
 	FLUID-2508 Turning on the table of contents causes an error: using Opera
 	FLUID-2510 Using the reset button breaks the preview: using Opera
 	FLUID-2523 Re-opening the dialog after closing it with the 'esc' key, doesn't display the preview window: using IE
-	
+
+Pager:
+	FLUID-2329 The self-rendering mode of the Pager is not the default mode
+	FLUID-2467 The style name for the root node is not configurable
