@@ -8,7 +8,7 @@ What's New in 1.0
 
 This release includes
 
-	* New data binding framework: the ChangeApplier
+    * New data binding framework: the ChangeApplier
 	* Substantial UI Options improvements and refinements, including:
         - a better user interface
         - new features: table of contents, contrast and line spacing
@@ -35,17 +35,17 @@ compressed and suitable for production use.  Developers can include this single 
 provide all the necessary support for the Fluid component Library.
 
 Both bundles have the following organization:
-	        components/
-	        framework/
-	        integration-demos/
-	        lib/
-	        standalone-demos/
-	        tests/
-	        LICENSE.txt
-	        README.txt
+            components/
+            framework/
+            integration-demos/
+            lib/
+            standalone-demos/
+            tests/
+            LICENSE.txt
+            README.txt
 
 The Deployment Bundle also includes a WAR file suitable for deployment in Java-based containers: 
-		fluid-components-1.0.war
+            fluid-components-1.0.war
 
 Also, in the Deployment Bundle, the JavaScript source has been minified: comments and whitespace have been removed. 
 
@@ -99,13 +99,13 @@ Sample code illustrating how Fluid components can be used*:
 
 Tests
 -----
-		tests/
-			component-tests/
-			escalated-tests/
-			framework-tests/
-			lib/
-			manual-tests/
-			test-core/
+        tests/
+            component-tests/
+            escalated-tests/
+            framework-tests/
+            lib/
+            manual-tests/
+            test-core/
 
 License
 -------
@@ -121,10 +121,10 @@ Third Party Software in Fluid
 ------------------------------
 This is a list of publicly available software that is included in the Fluid bundle, along with their licensing terms.
 
-	* jQuery javascript library: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
-	* jQuery UI javascript widget library: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
-	* jQuery QUnit testrunner: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
-	* CSS styling reset from YUI: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
+    * jQuery javascript library: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * jQuery UI javascript widget library: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * jQuery QUnit testrunner: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * CSS styling reset from YUI: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
     * Douglas Crockford's JSON parsing and stringifying methods: http://www.json.org/ (Public Domain)
     * SWFUpload: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
     * SWFObject: http://code.google.com/p/swfobject/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
@@ -173,20 +173,20 @@ Status of Components and Framework Features
 ===========================================
 
 Production: supports A-Grade browsers, stable for production usage across a wide range of applications and use cases
-	* Fluid Skinning System 
-	* Infusion Framework Core			
-	* Inline Edit 		
-	* Reorderer 			
+    * Fluid Skinning System 
+    * Infusion Framework Core			
+    * Inline Edit 		
+    * Reorderer 			
 
 Preview: still growing, but with broad browser support. Expect new features in upcoming releases
-	* Pager
-	* Progress
-	* UI Options
-	* Uploader
-	* Renderer
+    * Pager
+    * Progress
+    * UI Options
+    * Uploader
+    * Renderer
 	
 Sneak Peek: in development; APIs will change. Share your feedback, ideas, and code
-	* Table of Contents
+    * Table of Contents
 
 
 Known Issues
@@ -204,11 +204,11 @@ FSS:
     FLUID-2397: Opera doesnt seem to repaint certain css changes on the fly, requiring a refresh to see them
     
 Framework:
-	FLUID-2577 Renderer performance can be slow on IE 6 and 7 in some contexts.
+    FLUID-2577 Renderer performance can be slow on IE 6 and 7 in some contexts.
 	
 Inline Edit: 
     FLUID-1600 Pressing the "Tab" key to exit edit mode, places focus on the wrong item
-	FLUID-2275 The jquery.tinymce plugin invokes TinyMCE even if it doesn't exist
+    FLUID-2275 The jquery.tinymce plugin invokes TinyMCE even if it doesn't exist
 	
 Uploader: 
   For information related to known issues related to Flash 10 compatibility, see http://wiki.fluidproject.org/x/0QFS
@@ -221,21 +221,21 @@ Layout Reorderer:
     FLUID-858  Portlet Columns load with no padding between them in IE7
 
 Pager:
-	FLUID-2329 The self-rendering mode of the Pager is not the default mode
-	FLUID-2467 The style name for the root node is not configurable
+    FLUID-2329 The self-rendering mode of the Pager is not the default mode
+    FLUID-2467 The style name for the root node is not configurable
 	
 Reorderer: 
     FLUID-148 Edge case: visual position of drop target when droppable is at beginning or end of a row
     FLUID-118 Dragging an image offscreen or out of the frame has some unexpected results.
 
 UI Options: 
-	FLUID-2397 Line spacing setting does not work in Opera
-	FLUID-2398 Minimum font size control changes the text size even when the base size is larger then the minimum.
-	FLUID-2411 Refreshing the browser, hitting cancel or reset, breaks the functionality of the sliders: using Opera
-	FLUID-2412 Reset doesn't work after saving the initial cookie
-	FLUID-2500 Switching from high contrast to any other theme will remove some text from the page: using IE
-	FLUID-2506 Keyboard navigation inside the dialog breaks in simple layout mode: using FF
-	FLUID-2508 Turning on the table of contents causes an error: using Opera
-	FLUID-2510 Using the reset button breaks the preview: using Opera
-	FLUID-2523 Re-opening the dialog after closing it with the 'esc' key, doesn't display the preview window: using IE
+    FLUID-2397 Line spacing setting does not work in Opera
+    FLUID-2398 Minimum font size control changes the text size even when the base size is larger then the minimum.
+    FLUID-2411 Refreshing the browser, hitting cancel or reset, breaks the functionality of the sliders: using Opera
+    FLUID-2412 Reset doesn't work after saving the initial cookie
+    FLUID-2500 Switching from high contrast to any other theme will remove some text from the page: using IE
+    FLUID-2506 Keyboard navigation inside the dialog breaks in simple layout mode: using FF
+    FLUID-2508 Turning on the table of contents causes an error: using Opera
+    FLUID-2510 Using the reset button breaks the preview: using Opera
+    FLUID-2523 Re-opening the dialog after closing it with the 'esc' key, doesn't display the preview window: using IE
 	
