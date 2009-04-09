@@ -25,7 +25,7 @@
     <property name="lint" location="${src}"/>
 
     <!-- the filename for the package to output -->
-    <property name="zipfile" value="fluid-${fluid_version}" />
+    <property name="zipfile" value="infusion-${fluid_version}" />
 
     <!-- the filename of the documentation PDF -->
     <property name="pdf-file" value="Fluid-${fluid_version}.pdf" />

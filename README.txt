@@ -26,8 +26,8 @@ What's in this Release
 ======================
 
 This release is available in two forms:
-    Deployment Bundle - fluid-1.0.zip 
-    Source Code Bundle - fluid-1.0-src.zip
+    Deployment Bundle - infusion-1.0.zip 
+    Source Code Bundle - infusion-1.0-src.zip
 
 Both bundles include all the code needed to get started using Fluid, include a single JavaScript file,
 fluid-components/js/Fluid-all.js, that is a combination of all other source files. This script is
