@@ -127,13 +127,13 @@
 
     <!-- Copies the files required to build a war file containing Infusion. -->
     <target name="copyInfusionWARFiles">        
-      <copy todir="${build}/war/src/webapp/infusion" >
+      <copy todir="${build}/war/src/webapp/" >
         <fileset dir="${dist}">
             <include name="components/**/*" />
             <include name="framework/**/*" />
             <include name="lib/**/*" />          
               </fileset>
-      </copy>
+      
   
       <copy todir="${build}/war/src/webapp/WEB-INF" >
         <fileset dir="${web-inf}"/>
