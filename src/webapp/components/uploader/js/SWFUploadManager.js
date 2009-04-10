@@ -14,9 +14,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global SWFUpload*/
 /*global swfobject*/
 /*global jQuery*/
-/*global fluid_1_0*/
+/*global fluid_1_1*/
 
-fluid_1_0 = fluid_1_0 || {};
+fluid_1_1 = fluid_1_1 || {};
 
 (function ($, fluid) {
 
@@ -395,4 +395,4 @@ fluid_1_0 = fluid_1_0 || {};
         debug: false
     });
     
-})(jQuery, fluid_1_0);
+})(jQuery, fluid_1_1);
