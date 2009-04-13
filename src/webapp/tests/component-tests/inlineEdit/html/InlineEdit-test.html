@@ -12,14 +12,20 @@
         <script src="../../../../components/inlineEdit/js/InlineEdit.js" type="text/javascript"></script>
         <script src="../../../../components/undo/js/Undo.js" type="text/javascript"></script>
         
+        <!--  These dependencies are needed for one test (which requires the renderer)  -->
+        <script src="../../../../framework/core/js/DataBinding.js" type="text/javascript"></script>
+        <script src="../../../../framework/core/js/FluidDOMUtilities.js" type="text/javascript"></script>   
+        <script src="../../../../lib/fastXmlPull/js/fastXmlPull.js" type="text/javascript"></script>
+        <script src="../../../../framework/renderer/js/fluidParser.js" type="text/javascript"></script>
+        <script src="../../../../framework/renderer/js/fluidRenderer.js" type="text/javascript"></script>
 
         <!--  These are the jqUnit test framework files -->
         <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/testsuite.css" />
         <script type="text/javascript" src="../../../lib/qunit/js/testrunner.js"></script>
         <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery-ui/js/jquery.simulate.js"></script>        
 
         <!--  These are tests that have been written using this page as data and test supports -->
-        <script type="text/javascript" src="../../../lib/jquery-ui/js/jquery.simulate.js"></script>        
         <script type="text/javascript" src="../js/InlineEditTests.js"></script>
 
     </head>
@@ -43,13 +49,16 @@
           <div id="display2" class="flc-inlineEdit-text">Click me to edit...</div>
           <input id="edit2" type="text" class="flc-inlineEdit-edit" value="this is the hidden text for the second editor" />
       </form>
-        
-      <form id="inline-edit-custom" action="#">
+      
+      <div id="custom-renderRoot">
+      
+        <form id="inline-edit-custom" action="#">
           <div id="display-custom" class="customText"></div>
           <div id="edit-container-custom" class="customEditContainer">
             <input id="edit-custom" type="text" class="customEdit" value="this is the hidden text for the custom editor" />
           </div>
-      </form>
+        </form>
+      </div>
       
       <form id="inline-edit-textarea" action="#">
           <div id="display-custom" class="customText">Click here to edit</div>

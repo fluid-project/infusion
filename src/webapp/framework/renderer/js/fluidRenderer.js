@@ -586,26 +586,31 @@ fluid_1_1 = fluid_1_1 || {};
   
   function explodeDecorators(decorators) {
       var togo = [];
-      for (var key in decorators) {
-          if (key === "$") {key = "jQuery";}
-          var value = decorators[key];
-          var decorator = {
-            type: key
-          };
-          if (key === "jQuery") {
-              decorator.func = value[0];
-              decorator.args = value.slice(1);
+      if (decorators.type) {
+          togo[0] = decorators;
+      }
+      else {
+          for (var key in decorators) {
+              if (key === "$") {key = "jQuery";}
+              var value = decorators[key];
+              var decorator = {
+                type: key
+              };
+              if (key === "jQuery") {
+                  decorator.func = value[0];
+                  decorator.args = value.slice(1);
+              }
+              else if (key === "addClass") {
+                  decorator.classes = value;
+              }
+              else if (key === "attrs") {
+                  decorator.attributes = value;
+              }
+              else if (key === "identify") {
+                  decorator.key = value;
+              }
+              togo[togo.length] = decorator;
           }
-          else if (key === "addClass") {
-              decorator.classes = value;
-          }
-          else if (key === "attrs") {
-              decorator.attributes = value;
-          }
-          else if (key === "identify") {
-              decorator.key = value;
-          }
-      togo[togo.length] = decorator;
       }
       return togo;
   }
@@ -621,10 +626,10 @@ fluid_1_1 = fluid_1_1 || {};
               continue;
           }
           if (type === "$") {type = decorator.type = "jQuery";}
-          if (type === "jQuery" || type === "event") {
+          if (type === "jQuery" || type === "event" || type === "fluid") {
               var id = adjustForID(attrcopy, torender, true, finalID);
-              var outdec = $.extend(true, {id: id}, decorator);
-              decoratorQueue[decoratorQueue.length] = outdec;
+              decorator.id = id;
+              decoratorQueue[decoratorQueue.length] = decorator;
           }
           // honour these remaining types immediately
           else if (type === "attrs") {
@@ -1207,6 +1212,17 @@ fluid_1_1 = fluid_1_1 || {};
           if (decorator.type === "jQuery") {
               var jnode = $(node);
               jnode[decorator.func].apply(jnode, $.makeArray(decorator.args));
+          }
+          else if (decorator.type === "fluid") {
+              var args = decorator.args;
+              if (!args) {
+                  if (!decorator.container) {
+                      decorator.container = node;
+                  }
+                  args = [decorator.container, decorator.options];
+              }
+              var that = fluid.invokeGlobalFunction(decorator.func, args, fluid);
+              decorator.that = that;
           }
           else if (decorator.type === "event") {
             node[decorator.event] = decorator.handler; 

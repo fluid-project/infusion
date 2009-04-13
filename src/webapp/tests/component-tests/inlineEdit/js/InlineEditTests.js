@@ -79,14 +79,31 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.notVisible("Edit field is hidden", "#edit-container");
         });
     
-        inlineEditTests.test("Customized Construction", function () {
+        function testCustomized(useRenderer) {
+    
+          inlineEditTests.test("Customized Construction" + (useRenderer? " (via Renderer)" : ""), function () {
             expect(10);
     
             var container = $("#inline-edit-custom");
             var display = $("#display-custom");
             var editContainer = $("#edit-container-custom");
             var editField = $("#edit-custom");
-            var inlineEditor = fluid.inlineEdit("#inline-edit-custom", customOptions);
+            if (useRenderer) {
+                var decorator = {
+                    type: "fluid",
+                    func: "fluid.inlineEdit",
+                    options: customOptions
+                };
+                fluid.selfRender($("#custom-renderRoot"), 
+                    {ID: "inline-edit", 
+                     decorators: decorator}, 
+                     {cutpoints: [{id: "inline-edit", selector: "#inline-edit-custom"}]});
+                var inlineEditor = decorator.that;
+                container = $(decorator.container);
+            }
+            else {
+                var inlineEditor = fluid.inlineEdit("#inline-edit-custom", customOptions);
+            }
     
             jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
             jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.viewEl[0].id);
@@ -98,7 +115,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Paddings minimum is set to", customOptions.paddings.minimumEdit, inlineEditor.options.paddings.minimumEdit);
             jqUnit.isVisible("Display field is visible", "#display-custom");
             jqUnit.notVisible("Edit field is hidden", "#edit-container-custom");
-        });
+          });
+        }
+        
+        testCustomized(false);
+        testCustomized(true);
     
         function makeSubmittingTest(name, id, options, shouldsubmit) {
     
