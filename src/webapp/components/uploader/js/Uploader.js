@@ -729,7 +729,7 @@ fluid_1_1 = fluid_1_1 || {};
             type: "fluid.progress",
             options: {
                 selectors: {
-                    progressBar: ".flc-uploader-scroller-footer",
+                    progressBar: ".flc-uploader-queue-footer",
                     displayElement: ".flc-uploader-total-progress", 
                     label: ".flc-uploader-total-progress-text",
                     indicator: ".flc-uploader-total-progress",
