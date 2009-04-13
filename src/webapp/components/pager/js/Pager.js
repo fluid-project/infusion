@@ -473,6 +473,7 @@ fluid_1_1 = fluid_1_1 || {};
                 newModel.sortDir = -1 * newModel.sortDir;
             }
             else {return false; }
+            newModel.pageIndex = 0;
             fireModelChange(overallThat, newModel);
             setModelSortHeaderClass(newModel, opts);
             return false;
