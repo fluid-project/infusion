@@ -435,6 +435,11 @@ fluid_1_1 = fluid_1_1 || {};
             element.addClass(sort === 1? styles.ascendingHeader : styles.descendingHeader);
         }
     }
+    
+    function setModelSortHeaderClass(newModel, opts) {
+        var styles = opts.overallOptions.styles;
+        setSortHeaderClass(styles, bigHeaderForKey(newModel.sortKey, opts), newModel.sortDir);
+    }
    
     function fireModelChange(that, newModel) {
         computePageCount(newModel);
@@ -469,7 +474,7 @@ fluid_1_1 = fluid_1_1 || {};
             }
             else {return false; }
             fireModelChange(overallThat, newModel);
-            setSortHeaderClass(styles, bigHeaderForKey(newModel.sortKey, opts), newModel.sortDir);
+            setModelSortHeaderClass(newModel, opts);
             return false;
         };
     }
@@ -496,7 +501,7 @@ fluid_1_1 = fluid_1_1 || {};
         var options = that.options;
         options.renderOptions.idMap = options.renderOptions.idMap || {};
         var idMap = options.renderOptions.idMap;
-		var root = that.locate("root");
+        var root = that.locate("root");
         var template = fluid.selfRender(root, {}, options.renderOptions);
         root.addClass("fl-pager");
         var columnDefs = getColumnDefs(overallThat);
@@ -527,6 +532,7 @@ fluid_1_1 = fluid_1_1 || {};
                         options.renderOptions = options.renderOptions || {};
                         options.renderOptions.model = expOpts.dataModel;
                         fluid.reRender(template, root, fullTree, options.renderOptions);
+                        setModelSortHeaderClass(newModel, expOpts); // TODO, should this not be actually renderable?
                     }
                 }
             }
@@ -534,9 +540,9 @@ fluid_1_1 = fluid_1_1 || {};
     };
 
     fluid.defaults("fluid.pager.selfRender", {
-		selectors: {
-			root: ".flc-pager-body-template"
-		},
+        selectors: {
+            root: ".flc-pager-body-template"
+        },
         keyStrategy: "id",
         keyPrefix: "",
         row: "row:",
