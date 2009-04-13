@@ -9,10 +9,10 @@
 .fl-pager .fl-pager-data {
 }
 .fl-pager .fl-pager-data .fl-pager-desc {
-  background: url(../images/pager/arrow-up.png) no-repeat right;
+  background: url(../images/arrow-up.png) no-repeat right;
 }
 .fl-pager .fl-pager-data .fl-pager-asc {
-  background: url(../images/pager/arrow-dn.png) no-repeat right;
+  background: url(../images/arrow-dn.png) no-repeat right;
 }
 
 /* Pager UI */
@@ -59,10 +59,10 @@
 .fl-theme-hc .fl-pager .fl-pager-data {
 }
 .fl-theme-hc .fl-pager .fl-pager-data .fl-pager-desc {
-  background: url(../images/pager/arrow-up.png) no-repeat right;
+  background: url(../images/arrow-up.png) no-repeat right;
 }
 .fl-theme-hc .fl-pager .fl-pager-data .fl-pager-asc {
-  background: url(../images/pager/arrow-dn.png) no-repeat right;
+  background: url(../images/arrow-dn.png) no-repeat right;
 }
 
 /* Pager UI */
