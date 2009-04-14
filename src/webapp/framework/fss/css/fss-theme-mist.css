@@ -50,14 +50,14 @@
 /* New syntax */
 .fl-theme-mist .fl-tabs li.fl-tabs-active,
 .fl-theme-mist .fl-tabs li.fl-tabs-active a,
-.fl-theme-mist .fl-tabs li.fl-tabs-active a:hover {background-color: #f4f4f4; border-bottom-color:#fff; color:#508cc9 !important;}
+.fl-theme-mist .fl-tabs li.fl-tabs-active a:hover {background-color: #f4f4f4; border-bottom-color:#f4f4f4; color:#508cc9 !important;}
 .fl-theme-mist .fl-tabs-content {background-color:#f4f4f4; color:#000; border:1px solid #61c5ff; border-top:none; margin-top:-4px;}
 
 /* Helper: Menu */
-.fl-theme-mist .fl-listmenu {border:1px solid #4070a1; background-color:#fff;}
+.fl-theme-mist .fl-listmenu {border:1px solid #4070a1; border-bottom-width:2px; background-color:#fff;}
 .fl-theme-mist .fl-listmenu li,
 .fl-theme-mist .fl-listmenu li a  {font-weight:bold; color:#4070a1; background-color:#dfefff; border-color:#4070a1; text-decoration:none;}
-.fl-theme-mist .fl-listmenu a:hover {background-color:#5a95cf; color:#fff;}
+.fl-theme-mist .fl-listmenu li a:hover {background-color:#5a95cf; color:#fff !important;}
 .fl-theme-mist .fl-listmenu .fl-activemenu,
 .fl-theme-mist .fl-listmenu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
 
@@ -81,6 +81,7 @@
 .fl-theme-mist .fl-widget-titlebar .fl-button-left {
     color:#4070a1 !important;
     background-image:url(../images/themes/mist/buttons-titlebar-cap.png);
+    text-decoration:none;
 }
 .fl-theme-mist .fl-widget-titlebar .fl-button-inner {
     background-image:url(../images/themes/mist/buttons-titlebar-bg.png);
@@ -103,6 +104,38 @@
 /* States */
 .fl-theme-mist .fl-reorderer-dropMarker {background-color:#f00 !important;}
 
+
+/* Regular Background */
+.fl-theme-mist .fl-tabs-enhanced {
+    background:url(../images/themes/mist/tabs-med-container-bg.png) repeat-x left bottom;
+    border-bottom:none;
+    margin:10px 1px 0;
+    padding:5px 0 6px;
+    *padding:2px 0;
+}
+
+.fl-theme-mist .fl-tabs-enhanced li {
+    background: transparent url(../images/themes/mist/tabs-med-cap.png) no-repeat left top; 
+    padding:4px 0 6px 16px;
+    *padding-top:0;
+}
+.fl-theme-mist .fl-tabs-enhanced li a {
+    background: transparent url(../images/themes/mist/tabs-med-bg.png) no-repeat right top; 
+    border:none;
+    margin:0;
+    padding:4px 16px 6px 0;
+    color:#666666 !important;
+    *padding-bottom:4px;
+}
+.fl-theme-mist .fl-tabs-enhanced li.fl-tabs-active {
+    background:transparent url(../images/themes/mist/tabs-med-active-cap.png) no-repeat scroll left top;
+}
+.fl-theme-mist .fl-tabs-enhanced li.fl-tabs-active a {
+    background:transparent url(../images/themes/mist/tabs-med-active-bg.png) no-repeat scroll right top;
+    color:#000000 !important;
+}
+
+/* Widget Content Background */
 .fl-theme-mist .fl-widget-content .fl-tabs-enhanced {
     background:url(../images/themes/mist/tabs-light-container-bg.png) repeat-x left bottom;
     border-bottom:none;
@@ -131,3 +164,4 @@
     background:transparent url(../images/themes/mist/tabs-light-active-bg.png) no-repeat scroll right top;
     color:#000000 !important;
 }
+

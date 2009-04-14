@@ -56,7 +56,7 @@
 .fl-theme-slate .fl-tabs-content {background-color:#ebebeb; color:#000; border:1px solid #999999; border-top:none;}
 
 /* Helper: Menu */
-.fl-theme-slate .fl-listmenu {border:1px solid #999999; background-color:#ccc;}
+.fl-theme-slate .fl-listmenu {border:1px solid #999999; border-bottom-width:2px; background-color:#ccc;}
 .fl-theme-slate .fl-listmenu li,
 .fl-theme-slate .fl-listmenu li a  {font-weight:bold; background-color:#999; border-color:#ccc; text-decoration:none;}
 .fl-theme-slate .fl-listmenu a:hover {background-color:#ebebeb; color:#000 !important;}
@@ -83,6 +83,7 @@
 .fl-theme-slate .fl-widget-titlebar .fl-button-left {
     color:#333 !important;
     background-image:url(../images/themes/slate/buttons-titlebar-cap.png);
+    text-decoration:none;
 }
 .fl-theme-slate .fl-widget-titlebar .fl-button-inner {
     background-image:url(../images/themes/slate/buttons-titlebar-bg.png);
@@ -108,6 +109,38 @@
 .fl-theme-slate .fl-reorderer-dropMarker {background-color:#f00 !important;}
 
 /* Enhaced Graphics Toggles */
+
+/* Regular Background */
+.fl-theme-slate .fl-tabs-enhanced {
+    background:url(../images/themes/slate/tabs-light-container-bg.png) repeat-x left bottom;
+    border-bottom:none;
+    margin:10px 1px 0;
+    padding:5px 0 6px;
+    *padding:0;
+}
+
+.fl-theme-slate .fl-tabs-enhanced li {
+    background: transparent url(../images/themes/slate/tabs-light-cap.png) no-repeat left top; 
+    padding:4px 0 6px 16px;
+    *padding-top:0;
+}
+.fl-theme-slate .fl-tabs-enhanced li a {
+    background: transparent url(../images/themes/slate/tabs-light-bg.png) no-repeat right top; 
+    border:none;
+    margin:0;
+    padding:4px 16px 6px 0;
+    color:#666666 !important;
+    *padding-bottom:4px;
+}
+.fl-theme-slate .fl-tabs-enhanced li.fl-tabs-active {
+    background:transparent url(../images/themes/slate/tabs-light-active-cap.png) no-repeat scroll left top;
+}
+.fl-theme-slate .fl-tabs-enhanced li.fl-tabs-active a {
+    background:transparent url(../images/themes/slate/tabs-light-active-bg.png) no-repeat scroll right top;
+    color:#000000 !important;
+}
+
+/* Widget Content Background */
 .fl-theme-slate .fl-widget-content .fl-tabs-enhanced {
     background:url(../images/themes/slate/tabs-med-container-bg.png) repeat-x left bottom;
     border-bottom:none;
