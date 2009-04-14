@@ -66,7 +66,7 @@ fluid.tests = fluid.tests || {};
       var found = false;
       
       for (var i = 0; i < lumps.length; ++ i) {
-        if (lumps[i].rsfID === "header:") found = true;
+        if (lumps[i].rsfID === "header:") {found = true;}
         }
      
       jqUnit.assertTrue("Template+selector parse", found);
@@ -262,11 +262,8 @@ fluid.tests = fluid.tests || {};
       var labels = $("label", node);
       fluid.testUtils.assertNode("Rendered messages", 
           [{nodeText: messageBase.message1, "for": targets[0].id}, 
-           {nodeText: messageBase.message1, "for": targets[1].id}], labels)
+           {nodeText: messageBase.message1, "for": targets[1].id}], labels);
     });
-    
-    testFluid2298("ID relation rewriting for branch - FLUID-2298 - branch case", true);
-    testFluid2298("ID relation rewriting for branch - FLUID-2298 - leaf case", false);
     
     function testFluid2298(message, useChildren) {
       renderTests.test(message, function() {
@@ -277,9 +274,12 @@ fluid.tests = fluid.tests || {};
         var labelNode = $("label", node);
         fluid.testUtils.assertNode("Rendered messages", 
             {nodeText: messageBase.message1, "for": targets[0].id}
-           , labelNode)
+           , labelNode);
       });
     }
+    
+    testFluid2298("ID relation rewriting for branch - FLUID-2298 - branch case", true);
+    testFluid2298("ID relation rewriting for branch - FLUID-2298 - leaf case", false);
     
     renderTests.test("ID relation non-interference", function() {
       // Also tests FLUID-1677
@@ -537,7 +537,7 @@ fluid.tests = fluid.tests || {};
       };
       var tree = {children: [
          {ID: "link-1", target: link_target},
-         {ID: "link-2", target: {valuebinding: "target_2"}},
+         {ID: "link-2", target: {valuebinding: "target_2"}}
        ]};
       var node = $(".link-test-1");
       var templates = fluid.selfRender(node, fluid.copy(tree), {model: model});
@@ -620,7 +620,7 @@ fluid.tests = fluid.tests || {};
             return {
               ID: "page-link:",
               value: page + 1
-            }
+            };
         }
         
         var three = fluid.iota(3);
@@ -645,7 +645,42 @@ fluid.tests = fluid.tests || {};
              "toc_item:": ["foofer", "barbar"]
            }]
          };
-         fluid.selfRender(node, tree) 
+         fluid.selfRender(node, tree);
+    });
+    
+    renderTests.test("Tag elision for branches (FLUID-2596)", function() {
+         var nodeSel = ".FLUID-2596-test";
+         var tree = {
+              children: [ {
+                 ID: "row:",
+                 children: {cell1: "Thing1", cell2: "Thing2", cell3: "Thing3", cell4: "Thing4"
+                 }},
+                 {
+                 ID: "row:",
+                 children: {cell1: "Thing5", cell2: "Thing6", cell3: "Thing7", cell4: "Thing8"
+                 }}
+                 ]
+         };
+         fluid.selfRender($(nodeSel), tree, {armouring: "cdata"});
+         jqUnit.assertTrue("Rendering passed", true);
+         fluid.testUtils.assertNode("Rendered nodes",
+         {nodeName: "div", children: [{
+          nodeName: "table", children: [{
+          nodeName: "tbody", children: [{
+             nodeName: "tr"
+         },
+         {
+             nodeName: "tr"
+         },
+         {
+             nodeName: "tr"
+         },
+         {
+             nodeName: "tr"
+         }
+         ]}
+         ]}
+         ]}, $(nodeSel));
     });
 
     renderTests.test("Properties unescaping", function() {
@@ -653,7 +688,7 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertEquals("Simple unescaping", "This is a thing", 
           fluid.unescapeProperties("This\\ is\\ a\\ thing")[0]);
       jqUnit.assertEquals("Unicode unescaping", "\u30b5\u30a4\u30c8\u304b\u3089\u3053\u306e\u30da\u30fc\u30b8\u3092\u524a\u9664",
-          fluid.unescapeProperties("\\u30b5\\u30a4\\u30c8\\u304b\\u3089\\u3053\\u306e\\u30da\\u30fc\\u30b8\\u3092\\u524a\\u9664")[0])
+          fluid.unescapeProperties("\\u30b5\\u30a4\\u30c8\\u304b\\u3089\\u3053\\u306e\\u30da\\u30fc\\u30b8\\u3092\\u524a\\u9664")[0]);
           // 10 slashes ACTUALLY means 5 REAL \ characters 
       jqUnit.assertDeepEq("Random junk", ["\\\\\\\\\\ \t\nThing\x53\u0000", true],
           fluid.unescapeProperties("\\\\\\\\\\\\\\\\\\\\\ \\t\\nThing\\x53\\u0000\\"));

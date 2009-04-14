@@ -343,6 +343,9 @@ fluid_1_1 = fluid_1_1 || {};
   }
   
   function dumpBranchHead(branch, targetlump) {
+      if (targetlump.elide) {
+          return;
+      }
       var attrcopy = {};
       $.extend(true, attrcopy, targetlump.attributemap);
       adjustForID(attrcopy, branch);
@@ -522,7 +525,7 @@ fluid_1_1 = fluid_1_1 || {};
           var decorators = [{jQuery: ["change", applyFunc]}];
           // Work around bug 193: http://webbugtrack.blogspot.com/2007/11/bug-193-onchange-does-not-fire-properly.html
           if ($.browser.msie && tagname === "input" 
-              && /radio|checkbox/.test(trc.attrcopy["type"])) {
+              && /radio|checkbox/.test(trc.attrcopy.type)) {
              decorators.push({jQuery: ["click", applyFunc]});
           }
           outDecoratorsImpl(torender, decorators, trc.attrcopy, finalID);
@@ -1057,15 +1060,17 @@ fluid_1_1 = fluid_1_1 || {};
         var rendered = {};
     }
     while (true) {
-      renderindex = dumpScan(t1.lumps, renderindex, basedepth, true, false);
+      renderindex = dumpScan(t1.lumps, renderindex, basedepth, !parentlump.elide, false);
       if (renderindex === t1.lumps.length) { 
         break;
       }
-      var lump = t1.lumps[renderindex];  
-      if (lump.nestingdepth < basedepth) {
+      var lump = t1.lumps[renderindex];      
+      var id = lump.rsfID;
+      // new stopping rule - we may have been inside an elided tag
+      if (lump.nestingdepth < basedepth || id === undefined) {
         break;
       } 
-      var id = lump.rsfID;
+
       if (id.charCodeAt(0) === 126) { // "~"
         id = id.substring(1);
       }
@@ -1365,6 +1370,28 @@ fluid_1_1 = fluid_1_1 || {};
       return templates;
   };
 
+  function findNodeValue(rootNode) {
+      var node = fluid.dom.iterateDom(rootNode, function(node) {
+        // NB, in Firefox at least, comment and cdata nodes cannot be distinguished!
+          return node.nodeType === 8 || node.nodeType === 4? "stop" : null;
+          }, true);
+      var value = node.nodeValue;
+      if (value.indexOf("[CDATA[") === 0) {
+          return value.substring(6, value.length - 2);
+      }
+      else {
+          return value;
+      }
+  }
+
+  fluid.extractTemplate = function(node, armouring) {
+      if (!armouring) {
+          return node.innerHTML;
+      }
+      else {
+        return findNodeValue(node);
+      }
+  };
   /** A simple driver for single node self-templating. Treats the markup for a
    * node as a template, parses it into a template structure, renders it using
    * the supplied component tree and options, then replaces the markup in the 
@@ -1381,7 +1408,7 @@ fluid_1_1 = fluid_1_1 || {};
   fluid.selfRender = function(node, tree, options) {
       options = options || {};
       node = fluid.unwrap(node);
-      var resourceSpec = {base: {resourceText: node.innerHTML, 
+      var resourceSpec = {base: {resourceText: fluid.extractTemplate(node, options.armouring), 
                           href: ".", resourceKey: ".", cutpoints: options.cutpoints}
                           };
       var templates = fluid.parseTemplates(resourceSpec, ["base"], options);

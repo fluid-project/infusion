@@ -54,10 +54,10 @@ fluid.testUtils.modKeyEvent = function(modifier, keyCode, target) {
 fluid.testUtils.assertNode = function(message, expected, node) {
     var togo = {};
     if (!node.nodeType) { // Some types of DOM nodes (e.g. select) have a valid "length" property
-        if (node.length === 1) {
+        if (node.length === 1 && expected.length === undefined) {
             node = node[0];
         }
-        else if (node.length > 1) {
+        else if (node.length !== undefined) {
             jqUnit.assertEquals("Expected number of nodes " + message, expected.length, node.length);
             for (var i = 0; i < node.length; ++ i) {
                 fluid.testUtils.assertNode(message + ": node " + i + ": ", expected[i], node[i]);
@@ -81,8 +81,13 @@ fluid.testUtils.assertNode = function(message, expected, node) {
         if (attr === false || attr === true) { // support for IE refusing to honour XHTML values
             pass = !!evalue === attr;
             }
-        
-        jqUnit.assertTrue(message + messageExt + " expected: " + evalue + " actual: " + attr, pass);
+        if (key !== "children") {
+            jqUnit.assertTrue(message + messageExt + " expected: " + evalue + " actual: " + attr, pass);
+        }
+        else {
+            var children = $("> *", node);
+            fluid.testUtils.assertNode("> " + message, evalue, children);
+        }
     }
   
 }

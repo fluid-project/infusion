@@ -24,7 +24,7 @@ fluid_1_1 = fluid_1_1 || {};
         
         fluid.dom.iterateDom(avatar.get(0), function (node) {
             if (node.tagName.toLowerCase() === "script") {
-                return true;
+                return "delete";
             }
             node.removeAttribute("id");
             if (node.tagName.toLowerCase() === "input") {

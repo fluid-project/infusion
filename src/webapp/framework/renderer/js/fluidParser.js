@@ -144,9 +144,9 @@ fluid_1_1 = fluid_1_1 || {};
      var togo = lump.text;
      togo += " at ";
      togo += "lump line " + lump.line + " column " + lump.column +" index " + lump.lumpindex;
-     togo += parent.href == null? "" : " in file " + parent.href;
+     togo += parent.href === null? "" : " in file " + parent.href;
      return togo;
-  }
+  };
   
   function debugLump(lump) {
   // TODO expand this to agree with the Firebug "self-selector" idiom
@@ -165,9 +165,9 @@ fluid_1_1 = fluid_1_1 || {};
     if (term.predList) {
       for (var i = 0; i < term.predList.length; ++ i) {
         var pred = term.predList[i];
-        if (pred.id && headlump.attributemap.id !== pred.id) return false;
-        if (pred.clazz && !hasCssClass(pred.clazz, headlump.attributemap["class"])) return false;
-        if (pred.tag && headlump.tagname !== pred.tag) return false;
+        if (pred.id && headlump.attributemap.id !== pred.id) {return false;}
+        if (pred.clazz && !hasCssClass(pred.clazz, headlump.attributemap["class"])) {return false;}
+        if (pred.tag && headlump.tagname !== pred.tag) {return false;}
         }
       return true;
       }
@@ -254,6 +254,11 @@ fluid_1_1 = fluid_1_1 || {};
       }
 
     if (ID) {
+      // TODO: ensure this logic is correct on RSF Server
+      if (ID.charCodeAt(0) === 126) { // "~"
+        ID = ID.substring(1);
+        headlump.elide = true;
+      }
       checkContribute(ID, headlump);
       headlump.rsfID = ID;
       var downreg = findTopContainer();

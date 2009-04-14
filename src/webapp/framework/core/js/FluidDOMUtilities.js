@@ -41,22 +41,31 @@ var fluid_1_1 = fluid_1_1 || {};
     /**
      * Walks the DOM, applying the specified acceptor function to each element.
      * There is a special case for the acceptor, allowing for quick deletion of elements and their children.
-     * Return true from your acceptor function if you want to delete the element in question.
+     * Return "delete" from your acceptor function if you want to delete the element in question.
+     * Return "stop" to terminate iteration.
      * 
      * @param {Element} node the node to start walking from
      * @param {Function} acceptor the function to invoke with each DOM element
+     * @param {Boolean} allnodes Use <code>true</code> to call acceptor on all nodes, 
+     * rather than just element nodes (type 1)
      */
-    fluid.dom.iterateDom = function (node, acceptor) {
+    fluid.dom.iterateDom = function (node, acceptor, allNodes) {
         var currentNode = {node: node, depth: 0};
         var prevNode = node;
+        var condition;
         while (currentNode.node !== null && currentNode.depth >= 0 && currentNode.depth < fluid.dom.iterateDom.DOM_BAIL_DEPTH) {
-            var deleted = false;
-            if (currentNode.node.nodeType === 1) {
-                deleted = acceptor(currentNode.node, currentNode.depth);
+            condition = null;
+            if (currentNode.node.nodeType === 1 || allNodes) {
+                condition = acceptor(currentNode.node, currentNode.depth);
             }
-            if (deleted) {
-                currentNode.node.parentNode.removeChild(currentNode.node);
-                currentNode.node = prevNode;
+            if (condition) {
+                if (condition === "delete") {
+                    currentNode.node.parentNode.removeChild(currentNode.node);
+                    currentNode.node = prevNode;
+                }
+                else if (condition === "stop") {
+                    return currentNode.node;
+                }
             }
             prevNode = currentNode.node;
             currentNode = getNextNode(currentNode);
@@ -159,7 +168,7 @@ var fluid_1_1 = fluid_1_1 || {};
         var cleansed = $.data(element, fluid.dom.cleanseScripts.MARKER);
         if (!cleansed) {
             fluid.dom.iterateDom(element, function (node) {
-                return (node.tagName.toLowerCase() === "script");
+                return node.tagName.toLowerCase() === "script"? "delete" : null;
             });
             $.data(element, fluid.dom.cleanseScripts.MARKER, true);
         }
