@@ -409,7 +409,10 @@ fluid_1_1 = fluid_1_1 || {};
   fluid.dumpAttributes = function(attrcopy) {
     var togo = "";
     for (var attrname in attrcopy) {
-      togo += " " + attrname + "=\"" + attrcopy[attrname] + "\"";
+      var attrvalue = attrcopy[attrname];
+      if (attrvalue !== null && attrvalue !== undefined) {
+          togo += " " + attrname + "=\"" + attrvalue + "\"";
+          }
       }
     return togo;
     };

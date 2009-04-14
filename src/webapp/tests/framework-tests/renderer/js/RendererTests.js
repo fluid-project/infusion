@@ -664,23 +664,61 @@ fluid.tests = fluid.tests || {};
          fluid.selfRender($(nodeSel), tree, {armouring: "cdata"});
          jqUnit.assertTrue("Rendering passed", true);
          fluid.testUtils.assertNode("Rendered nodes",
-         {nodeName: "div", children: [{
-          nodeName: "table", children: [{
-          nodeName: "tbody", children: [{
-             nodeName: "tr"
-         },
-         {
-             nodeName: "tr"
-         },
-         {
-             nodeName: "tr"
-         },
-         {
-             nodeName: "tr"
-         }
-         ]}
-         ]}
+             {nodeName: "div", children: [{
+              nodeName: "table", children: [{
+              nodeName: "tbody", children: [{
+                 nodeName: "tr"
+             },
+             {
+                 nodeName: "tr"
+             },
+             {
+                 nodeName: "tr"
+             },
+             {
+                 nodeName: "tr"
+             }
+             ]}
+             ]}
          ]}, $(nodeSel));
+    });
+    
+    renderTests.test("Attribute removal test (FLUID-2598)", function() {
+        function makeCheck(ID, disabled) {
+            return {ID: ID, 
+               decorators: {
+                   attrs: {
+                       disabled: disabled? "disabled" : null
+                   }
+               }
+            };
+        }
+        var node = $(".FLUID-2598-test");
+        var tree = {
+            children: [{
+              ID: "data-row:",
+              children: [
+                  makeCheck("checkbox-1", true),
+                  makeCheck("checkbox-2", false)
+              ]
+              },
+              {
+              ID: "data-row:",
+              children: [
+                  makeCheck("checkbox-1", false),
+                  makeCheck("checkbox-2", true)
+              ]
+              }]
+            };
+
+         fluid.selfRender(node, tree);
+         var inputs = $("input", node);
+         fluid.testUtils.assertNode("Checkbox state", [
+           {disabled: "disabled"},
+           {disabled: undefined},
+           {disabled: undefined},
+           {disabled: "disabled"}
+         ], inputs);
     });
 
     renderTests.test("Properties unescaping", function() {
