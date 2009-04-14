@@ -603,7 +603,7 @@ fluid_1_1 = fluid_1_1 || {};
                   decorator.func = value[0];
                   decorator.args = value.slice(1);
               }
-              else if (key === "addClass") {
+              else if (key === "addClass" || key === "removeClass") {
                   decorator.classes = value;
               }
               else if (key === "attrs") {
@@ -638,12 +638,12 @@ fluid_1_1 = fluid_1_1 || {};
           else if (type === "attrs") {
               $.extend(true, attrcopy, decorator.attributes);
           }
-          else if (type === "addClass") {
+          else if (type === "addClass" || type === "removeClass") {
               var fakeNode = {
                 nodeType: 1,
                 className: attrcopy["class"] || ""
               };
-              $(fakeNode).addClass(decorator.classes);
+              $(fakeNode)[type](decorator.classes);
               attrcopy["class"] = fakeNode.className;
           }
           else if (type === "identify") {

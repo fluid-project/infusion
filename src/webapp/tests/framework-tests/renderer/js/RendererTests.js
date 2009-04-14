@@ -173,12 +173,12 @@ fluid.tests = fluid.tests || {};
     });
     
     renderTests.test("Decorator and degradation test", function() {
-          var indexClick = null;
-          var columnClick = null;
-          var clickBack = function(index, column) {
-              indexClick = index;
-              columnClick = column;
-          };
+        var indexClick = null;
+        var columnClick = null;
+        var clickBack = function(index, column) {
+            indexClick = index;
+            columnClick = column;
+        };
         var contentTree = fluid.transform(enc_table, function(row, i) {
             return {
                 ID: "data-row:",
@@ -190,7 +190,8 @@ fluid.tests = fluid.tests || {};
                               clickBack(i, "species");
                           }],
                           identify: "species-" + i,
-                          addClass: "CATTclick1 CATTclick2"
+                          addClass: "CATTclick1 CATTclick2",
+                          removeClass: "CATTclick3"
                         }
                     },
                     {ID: "score",
@@ -220,7 +221,7 @@ fluid.tests = fluid.tests || {};
         var el = fluid.jById(species6);
         jqUnit.assertEquals("Identified by idMap", 1, el.length);
         jqUnit.assertTrue("Decorated by addClass", el.hasClass("CATTclick1"));
-        jqUnit.assertFalse("Not decorated by addClass", el.hasClass("CATTclick3"));
+        jqUnit.assertFalse("Undecorated by removeClass", el.hasClass("CATTclick3"));
         el.click();
         jqUnit.assertEquals("Decorated by click", 7, indexClick);
         clickBack(null, null);
