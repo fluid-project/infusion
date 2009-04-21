@@ -540,7 +540,7 @@ var fluid = fluid || fluid_1_1;
      * @param {Boolean} unicast If <code>true</code>, this is a "unicast" event which may only accept
      * a single listener.
      * @param {Boolean} preventable If <code>true</code> the return value of each handler will 
-     * be checked for <code>true</code> in which case further listeners will be shortcircuited, and this
+     * be checked for <code>false</code> in which case further listeners will be shortcircuited, and this
      * will be the return value of fire()
      */
     
