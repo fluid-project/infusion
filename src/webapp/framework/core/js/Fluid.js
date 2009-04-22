@@ -620,8 +620,7 @@ var fluid = fluid || fluid_1_1;
     fluid.model.composePath = function (prefix, suffix) {
         return prefix === ""? suffix : prefix + "." + suffix;
     };
-  
-    /** This function implements the RSF "DARApplier" **/
+
     fluid.model.setBeanValue = function (root, EL, newValue) {
         var segs = fluid.model.parseEL(EL);
         for (var i = 0; i < segs.length - 1; i += 1) {
