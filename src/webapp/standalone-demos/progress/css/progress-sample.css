@@ -1,8 +1,5 @@
 html {
 	background-color: #444;
-	font-size: 13px;
-	line-height: 1;
-	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 }
 
 #main {
@@ -17,6 +14,7 @@ html {
 	min-width: 30em;
 	width: 80%;
 }
+
 
 .progress-pop-up {
     display: none;
@@ -37,14 +35,16 @@ html {
 
 .progress-pop-up h3 {
     margin-top: 0;
-}
-
-.progress-label {
-    margin-top: 0.8em;
     margin-bottom: 0.4em;
 }
 
+.progress-label {
+    margin-top: 0.6em;
+    margin-bottom: 0;
+}
+
 .progress-bar {
+    text-align: left;
     height: 18px;
     background-image: url('../images/progress-bar-animation.gif');
     background-position: left top;
@@ -72,5 +72,4 @@ html {
     -webkit-border-radius: 0.1em;
     -webkit-border-bottom-right-radius: 0;
     -webkit-border-top-right-radius: 0;
-
 }

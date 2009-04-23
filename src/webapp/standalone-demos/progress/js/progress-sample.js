@@ -63,7 +63,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
     $(function () {
 		myProgress = fluid.progress("#progressExample", {
-            speed: 1000
+            speed: 1000,
+            initiallyHidden: false
         });
 		
         bindButtonHandlers(); 
