@@ -518,6 +518,12 @@ var fluid = fluid || fluid_1_1;
         return $.extend(true, {}, tocopy);
     };
     
+    /**
+     * Allows for the calling of a function from an EL expression "functionPath", with the arguments "args", scoped to an framework version "environment".
+     * @param {Object} functionPath - An EL expression
+     * @param {Object} args - An array of arguments to be applied to the function, specified in functionPath
+     * @param {Object} environment - (optional) The object to scope the functionPath to  (typically the framework root for version control)
+     */
     fluid.invokeGlobalFunction = function (functionPath, args, environment) {
         var func = fluid.model.getBeanValue(window, functionPath, environment);
         if (!func) {

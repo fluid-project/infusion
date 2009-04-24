@@ -107,7 +107,11 @@ var fluid_1_1 = fluid_1_1 || {};
         return false;
     };
     
-    /** Mockup of a missing DOM function **/  
+    /**
+     * Inserts newChild as the next sibling of refChild.
+     * @param {Object} newChild
+     * @param {Object} refChild
+     */
     fluid.dom.insertAfter = function (newChild, refChild) {
         var nextSib = refChild.nextSibling;
         if (!nextSib) {
