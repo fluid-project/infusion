@@ -388,7 +388,7 @@ fluid_1_1 = fluid_1_1 || {};
         flashButtonPeerId: "",
         postParams: {},
         fileSizeLimit: "20480",
-        fileTypes: "*.*",
+        fileTypes: "*",
         fileTypesDescription: null,
         fileUploadLimit: 0,
         fileQueueLimit: 0,
