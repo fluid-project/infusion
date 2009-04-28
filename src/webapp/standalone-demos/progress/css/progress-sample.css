@@ -45,7 +45,6 @@ html {
 
 .progress-bar {
     text-align: left;
-    height: 18px;
     background-image: url('../images/progress-bar-animation.gif');
     background-position: left top;
     background-repeat: repeat;
@@ -61,7 +60,7 @@ html {
 
 .progress-indicator {
     height: 16px;
-    width: 40%;
+    width: 5px;
     border: 1px solid #2D3E76;
     border-right-width: 2px;
     border-left-width: 0px;
