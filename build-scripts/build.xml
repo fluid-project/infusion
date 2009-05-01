@@ -109,6 +109,10 @@
             <include name="standalone-demos/**/*" />
             <include name="tests/**/*" />
         </fileset>
+        <fileset dir="${base-dir}">
+            <include name="README.txt" />
+            <include name="LICENSE.txt" />
+        </fileset>
       </copy>       
     </target>
         

@@ -41,6 +41,7 @@ Both bundles have the following organization:
         lib/
         standalone-demos/
         tests/
+        InfusionAll.js
         LICENSE.txt
         README.txt
 
