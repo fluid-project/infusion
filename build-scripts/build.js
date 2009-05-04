@@ -240,6 +240,29 @@ var globalObj = this;
             logVerbose("*** All required files: " + fileStr);
             return fileStr;
         };
+        
+    /**
+     * Builds up the regular expression needed to find the files that are included in single js file
+     */
+    that.buildRegExpression = function () {
+        var regStart = globalObj.project.getProperty("regex_start");
+        var regEnd = globalObj.project.getProperty("regex_end");
+        var regExpStr = "";
+        var convertedStr = "";
+        for(var i = 0; i < that.requiredModules.length; i++) {
+            var currentModule = that.requiredModules[i];
+            var currentFiles = that.moduleFileTable[currentModule];
+            
+            for(var j = 0; j < currentFiles.length; j++) {
+                if(i !== 0){
+                    regExpStr += "|";
+                }
+                convertedStr = currentFiles[j].replace(/\./g, "\\."); //this is to escape the "." character which is a wildcard in ant regex.
+                regExpStr += (regStart + convertedStr + regEnd);
+            }
+        }
+        return regExpStr;
+    };
     
         /**
          * Fetches the dependency declaration for the given module name from the file system,
@@ -290,6 +313,10 @@ var globalObj = this;
         var fileName = jsFileName(globalObj.jsfilename, globalObj.include, globalObj.exclude);
         globalObj.project.setProperty("jsfile", fileName);
         logInfo("Setting property jsfile to " + fileName);
+        
+        var expression = resolver.buildRegExpression();
+        globalObj.project.setProperty("fullRegExp", expression);
+        logInfo("Setting property fullRegExp to " + expression);
     };
     
     // Run this immediately.

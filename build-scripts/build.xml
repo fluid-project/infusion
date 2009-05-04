@@ -33,6 +33,11 @@
     <!-- the filename of the war file -->
     <property name="warfile" value="fluid-components-${fluid_version}.war" />
     
+    <!-- properties for URL rewriting -->
+    <property name="regex_start" value="&lt;script{1,1}?.*" />
+    <property name="regex_end" value="{1,1}?.*script>" />
+    <property name="fluidRegExp" value="framework/core/js/Fluid.js" />
+    
     <!-- task definition for JSLint -->
     <taskdef name="jslint" 
       classname="net.happygiraffe.jslint.ant.JSLintTask" 
@@ -253,6 +258,21 @@
         </antcall>
     </target>
     
+    <!-- Replaces Fluid.js with the reference to the single js file. Depends on the build already being deployed 
+    (i.e. through buildDeployBundle or copyToDeployBundle -->
+    <target name="replaceFluid">
+        <replaceregexp match="${fluidRegExp}" replace="${jsfile}" flags="i">
+            <fileset dir="${products}" includes="**/*.html" />
+        </replaceregexp>
+    </target>
+    
+    <!-- Removes that <script> blocks pertaining to files included in the single js file -->
+    <target name="removeScript" depends="replaceFluid">
+        <replaceregexp match="${fullRegExp}" replace="" flags="g">
+            <fileset dir="${products}" includes="**/*.html" />
+        </replaceregexp>
+    </target>
+    
     <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript">
         <copy todir="${build}">
             <fileset dir="${src}" includes="${requiredDirectoriesSelector}" />
@@ -269,6 +289,14 @@
 
     <target name="customBuild" depends="copyToSrcBundle, copyToDeployBundle, buildInfusionWAR, package" 
         description="Builds a custom package of Infusion containing the modules specified as command line arguments.">
+    </target>
+    
+    <target name="modifiedReleaseBuild" depends="buildSrcBundle, buildDeployBundle, removeScript, buildInfusionWAR, package"
+        description="Builds and packages Infusion along with tests and sample code, suitable for development testing or daily build. Re-writes the head of the html files to replace all individual js files included in the single js file, with a reference to that single js file.">
+    </target>
+    
+    <target name="modifiedCustomBuild" depends="copyToSrcBundle, copyToDeployBundle, removeScript, buildInfusionWAR, package"
+        description="Builds a custom package of Infusion containing the modules specified as command line arguments. Re-writes the head of the html files to replace all individual js files included in the single js file, with a reference to that single js file.">
     </target>
     
 </project>
