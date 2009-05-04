@@ -44,12 +44,18 @@ $(function () {
                 afterRender: function () {
                     $('.fl-uiOptions .fl-col:eq(0)').accordion({header: 'h2', clearStyle: true, autoHeight: false});
                     $('.fl-uiOptions .fl-col h2:eq(0)').focus();
+                },
+                onCancel: function () {
+                    dialog_container.dialog("close");
+                }, 
+                onSave: function () {
+                    dialog_container.dialog("close");
                 }
             }
         };
         
         // instantiate component
-        uiOptions = fluid.uiOptions(".uiOptions", options);
+        uiOptions = fluid.uiOptions("#dialog_container", options);
         
         // 1 time, reposition dialog 
         dialog_container.dialog('option', 'position', 'center');
@@ -62,10 +68,7 @@ $(function () {
     	modal: true,
         dialogClass: 'fl-widget fl-grabbable',
         autoOpen: false,
-        draggable: true,        
-        close: function () {
-            uiOptions.cancel();
-        }
+        draggable: true
 	});
     
     $("#dialog_container .fl-icon-close").click(function () {
