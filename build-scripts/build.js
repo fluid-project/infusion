@@ -279,9 +279,17 @@ var globalObj = this;
 
         var resolver = fluid.dependencyResolver(parseModulesToInclude(globalObj.include), excludedFiles);
         
-        globalObj.project.setProperty("allRequiredFiles", resolver.getAllRequiredFiles());
-        globalObj.project.setProperty("requiredDirectoriesSelector", resolver.getRequiredDirectories());
-        globalObj.project.setProperty("jsfile", jsFileName(globalObj.jsfilename, globalObj.include, globalObj.exclude));
+        var requiredFiles = resolver.getAllRequiredFiles();
+        globalObj.project.setProperty("allRequiredFiles", requiredFiles);
+        logInfo("Setting property allRequiredFiles to " + requiredFiles);
+
+        var requiredDirs = resolver.getRequiredDirectories();
+        globalObj.project.setProperty("requiredDirectoriesSelector", requiredDirs);
+        logInfo("Setting property requiredDirectoriesSelector to " + requiredFiles);
+        
+        var fileName = jsFileName(globalObj.jsfilename, globalObj.include, globalObj.exclude);
+        globalObj.project.setProperty("jsfile", fileName);
+        logInfo("Setting property jsfile to " + fileName);
     };
     
     // Run this immediately.
