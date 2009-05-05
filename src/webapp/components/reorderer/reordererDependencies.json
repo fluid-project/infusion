@@ -1,4 +1,6 @@
 {"reorderer": {
+   	"name": "Reorderer",
+   	"description": "enables users to directly re-arrange content on the page.",
 	"files": ["GeometricManager.js", "Reorderer.js", "ImageReorderer.js", "ModuleLayout.js", "LayoutReorderer.js"],
 	"dependencies": ["jQuery", "jQueryUICore", "jQueryUIWidgets", "framework"]
 }}
