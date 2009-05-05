@@ -175,7 +175,7 @@ fluid_1_1 = fluid_1_1 || {};
         }
   
         // Use the settingsStore or the defaultSiteSettings if there are no settings
-        that.model = that.settingsStore.fetch() || that.defaultSiteSettings;        
+        that.model = that.settingsStore.fetch() || fluid.copy(that.defaultSiteSettings);        
     };
 
     /**
