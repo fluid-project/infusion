@@ -40,6 +40,11 @@ var globalObj = this;
         return (includeArg || excludeArg ? customJsFileName : allJsFileName);
     };
 
+    var setProperty = function (name, value) {
+        globalObj.project.setProperty(name, value);
+        logInfo("Setting property " + name + " to " + value);
+    };
+
     var modulePath = function (moduleName) {
         return globalObj.project.getProperty(modulePrefix + moduleName);
     };
@@ -302,21 +307,11 @@ var globalObj = this;
 
         var resolver = fluid.dependencyResolver(parseModulesToInclude(globalObj.include), excludedFiles);
         
-        var requiredFiles = resolver.getAllRequiredFiles();
-        globalObj.project.setProperty("allRequiredFiles", requiredFiles);
-        logInfo("Setting property allRequiredFiles to " + requiredFiles);
+        setProperty("allRequiredFiles", resolver.getAllRequiredFiles());
+        setProperty("requiredDirectoriesSelector", resolver.getRequiredDirectories());
+        setProperty("fullRegExp", resolver.buildRegExpression());
 
-        var requiredDirs = resolver.getRequiredDirectories();
-        globalObj.project.setProperty("requiredDirectoriesSelector", requiredDirs);
-        logInfo("Setting property requiredDirectoriesSelector to " + requiredFiles);
-        
-        var fileName = jsFileName(globalObj.jsfilename, globalObj.include, globalObj.exclude);
-        globalObj.project.setProperty("jsfile", fileName);
-        logInfo("Setting property jsfile to " + fileName);
-        
-        var expression = resolver.buildRegExpression();
-        globalObj.project.setProperty("fullRegExp", expression);
-        logInfo("Setting property fullRegExp to " + expression);
+        setProperty("jsfile", jsFileName(globalObj.jsfilename, globalObj.include, globalObj.exclude));        
     };
     
     // Run this immediately.

@@ -56,16 +56,6 @@
         <mkdir dir="${dist}" />
         <mkdir dir="${src-dist}" />
     </target>
-
-    <!-- not currently used but should be changed to do FLUID-1921 -->
-    <target name="copyLicenses">
-        <copy todir="${toDir}">
-            <fileset dir="${base-dir}">
-                <include name="LICENSE.txt" />
-                <include name="README.txt" />
-            </fileset>
-        </copy>
-    </target>
     
     <!-- Target: Minify the specified files and copy them into the specified directory. Don't call this directly. -->
     <target name="minify">
@@ -235,8 +225,9 @@
     
     <target name="copyToDeployBundle" depends="copySourceToBuild">        
         <!-- Copy everything but the JavaScript and CSS we are about to minify -->
+        <!-- Also exclude the dependency json files from the distribution -->
         <copy todir="${dist}">
-          <fileset dir="${build}" excludes="**/*.js,**/*.css" />
+          <fileset dir="${build}" excludes="**/*.js,**/*.css, **/*Dependencies.json" />
         </copy>
         
         <!-- Minify and copy JavaScript and CSS into the build directory -->
