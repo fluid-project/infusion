@@ -504,7 +504,7 @@ fluid_1_1 = fluid_1_1 || {};
         var idMap = options.renderOptions.idMap;
         var root = that.locate("root");
         var template = fluid.selfRender(root, {}, options.renderOptions);
-        root.addClass("fl-pager");
+        root.addClass(options.styles.root);
         var columnDefs = getColumnDefs(overallThat);
         var expOpts = {options: options, columnDefs: columnDefs, overallOptions: overallThat.options, dataModel: overallThat.options.dataModel, idMap: idMap};
         var directModel = fetchModel(overallThat);
@@ -544,6 +544,11 @@ fluid_1_1 = fluid_1_1 || {};
         selectors: {
             root: ".flc-pager-body-template"
         },
+		
+		styles: {
+			root: "fl-pager"
+        },
+		
         keyStrategy: "id",
         keyPrefix: "",
         row: "row:",
