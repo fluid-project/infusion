@@ -188,33 +188,17 @@ var globalObj = this;
     };
     
     /**
-     * Returns a comma delimited list of paths for the files related to the moduleName passed in.
+     * Returns a comma delimited list of paths, including the specified directory, for the files related to the moduleName passed in.
      * 
      * @param {Object} moduleName
      * @param {Object} moduleFileTable
+     * @param {Object} dir
      */
-    var pathsForModuleJSFiles = function (moduleName, moduleFileTable) {
+    var pathsForModuleFiles = function (moduleName, moduleFileTable, dir) {
         var pathsStr = "";
         var filesForModule = moduleFileTable[moduleName];
         for (var i = 0; i < filesForModule.length; i++) {
-            var path = modulePath(moduleName) + File.separator + "js" + File.separator;
-            pathsStr += path + filesForModule[i] + ",";
-        }
-        
-        return pathsStr;
-    };
-    
-    /**
-     * Returns a comma delimited list of paths for the css files related to the moduleName passed in.
-     * 
-     * @param {Object} moduleName
-     * @param {Object} moduleFileTable
-     */
-    var pathsForModuleCSSFiles = function (moduleName, moduleFileTable) {
-        var pathsStr = "";
-        var filesForModule = moduleFileTable[moduleName];
-        for (var i = 0; i < filesForModule.length; i++) {
-            var path = modulePath(moduleName) + File.separator + "css" + File.separator;
+            var path = modulePath(moduleName) + File.separator + dir + File.separator;
             pathsStr += path + filesForModule[i] + ",";
         }
         
@@ -243,6 +227,24 @@ var globalObj = this;
         };
         
         /**
+         * Returns the list of all the files required, as a comma delimited string.
+         * These files are scoped to the moduleFileTable passed, and the paths contain the directory specified.
+         * 
+         * @param {Object} moduleFileTable
+         * @param {Object} dir
+         */
+        var getAllRequiredFiles = function (moduleFileTable, dir) {
+            var fileStr = "";
+            for (var i = 0; i < that.requiredModules.length; i++) {
+                var currentModule = that.requiredModules[i];
+                fileStr += pathsForModuleFiles(currentModule, moduleFileTable, dir);
+            }
+
+            logVerbose("*** All required files: " + fileStr);
+            return fileStr;
+        };
+        
+        /**
          * Returns the list of all required module directories as a comma-delimited string of file selectors.
          */
         that.getRequiredDirectories = function () {
@@ -260,28 +262,14 @@ var globalObj = this;
          * Returns the list of all the javascript files required as a comma delimited string.
          */
         that.getAllRequiredJSFiles = function () {
-            var fileStr = "";
-            for (var i = 0; i < that.requiredModules.length; i++) {
-                var currentModule = that.requiredModules[i];
-                fileStr += pathsForModuleJSFiles(currentModule, that.moduleJSFileTable);
-            }
-
-            logVerbose("*** All required files: " + fileStr);
-            return fileStr;
+            return getAllRequiredFiles(that.moduleJSFileTable, "js");
         };
         
         /**
          * Returns the list of all the css files required as a comma delimited string.
          */
         that.getAllRequiredCSSFiles = function () {
-            var fileStr = "";
-            for (var i = 0; i < that.requiredModules.length; i++) {
-                var currentModule = that.requiredModules[i];
-                fileStr += pathsForModuleCSSFiles(currentModule, that.moduleCSSFileTable); 
-            }
-
-            logVerbose("*** All required files: " + fileStr);
-            return fileStr;
+            return getAllRequiredFiles(that.moduleCSSFileTable, "css");
         };
         
     /**
