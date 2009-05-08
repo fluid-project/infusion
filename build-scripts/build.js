@@ -286,7 +286,7 @@ var globalObj = this;
                 var currentFiles = that.moduleJSFileTable[currentModule];
                 
                 for (var j = 0; j < currentFiles.length; j++) {
-                    if (i !== 0) {
+                    if (regExpStr) {
                         regExpStr += "|";
                     }
                     convertedStr = currentFiles[j].replace(/\./g, "\\."); //this is to escape the "." character which is a wildcard in ant regex.
