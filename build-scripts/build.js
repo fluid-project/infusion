@@ -57,8 +57,9 @@ var globalObj = this;
      * Finds all the modules based on the convention of the module property prefix and 
      * returns them as a comma delimited string
      */
+    // Note that it manually puts fss in the first place. This is to ensure the correct order when concatenating the css files.
     var allModules = function () {
-        var str = "";
+        var str = "fss,"; // TODO: need to find a better solution than hardcoding the fss module into the string
         for (var name in globalObj) {
             if (name.search(modulePrefix) === 0) {
                 str += name.slice(modulePrefix.length) + ",";
@@ -272,28 +273,28 @@ var globalObj = this;
             return getAllRequiredFiles(that.moduleCSSFileTable, "css");
         };
         
-    /**
-     * Builds up the regular expression needed to find the files that are included in single js file
-     */
-    that.buildRegExpression = function () {
-        var regStart = globalObj.project.getProperty("regex_start");
-        var regEnd = globalObj.project.getProperty("regex_end");
-        var regExpStr = "";
-        var convertedStr = "";
-        for(var i = 0; i < that.requiredModules.length; i++) {
-            var currentModule = that.requiredModules[i];
-            var currentFiles = that.moduleJSFileTable[currentModule];
-            
-            for(var j = 0; j < currentFiles.length; j++) {
-                if(i !== 0){
-                    regExpStr += "|";
+        /**
+         * Builds up the regular expression needed to find the files that are included in single js file
+         */
+        that.buildRegExpression = function () {
+            var regStart = globalObj.project.getProperty("regex_start");
+            var regEnd = globalObj.project.getProperty("regex_end");
+            var regExpStr = "";
+            var convertedStr = "";
+            for (var i = 0; i < that.requiredModules.length; i++) {
+                var currentModule = that.requiredModules[i];
+                var currentFiles = that.moduleJSFileTable[currentModule];
+                
+                for (var j = 0; j < currentFiles.length; j++) {
+                    if (i !== 0) {
+                        regExpStr += "|";
+                    }
+                    convertedStr = currentFiles[j].replace(/\./g, "\\."); //this is to escape the "." character which is a wildcard in ant regex.
+                    regExpStr += (regStart + convertedStr + regEnd);
                 }
-                convertedStr = currentFiles[j].replace(/\./g, "\\."); //this is to escape the "." character which is a wildcard in ant regex.
-                regExpStr += (regStart + convertedStr + regEnd);
             }
-        }
-        return regExpStr;
-    };
+            return regExpStr;
+        };
     
         /**
          * Fetches the dependency declaration for the given module name from the file system,
