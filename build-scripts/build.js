@@ -317,7 +317,8 @@ var globalObj = this;
         };
         
         /**
-         * Builds up the regular expression needed to find the files that are included in single css file
+         * Builds up the regular expression needed to find the first file that is included in single css file.
+         * This will allow you to replace the correct portion of the href to get the proper relative path back to the single css file
          */
         that.buildSingleCSSRegExpression = function () {
             var obj = globalObj.project;
@@ -354,7 +355,7 @@ var globalObj = this;
     
     /**
      * Kicks off dependency resolution 
-     * Results in setting six ant properties: allRequiredFiles, allRequiredCSSFiles, requiredDirectoriesSelector, jsRegExp, cssRegExp, cssfile and jsfile
+     * Results in setting eight ant properties: allRequiredFiles, allRequiredCSSFiles, requiredDirectoriesSelector, jsRegExp, cssRegExp, cssSingleRegExp, cssfile and jsfile
      */
     var resolveDependenciesFromArguments = function () {
         var excludedFiles = (typeof(globalObj.exclude) === "undefined") ? [] : parseArgument(globalObj.exclude);
