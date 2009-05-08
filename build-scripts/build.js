@@ -246,6 +246,33 @@ var globalObj = this;
         };
         
         /**
+         * Builds up the regular expression to find the files from the moduleFileTable
+         * 
+         * @param {Object} regExpStart
+         * @param {Object} regExpEnd
+         * @param {Object} moduleFileTable
+         */
+        var buildRegExpression = function (regExpStart, regExpEnd, moduleFileTable) {
+            var regStart = regExpStart;
+            var regEnd = regExpEnd;
+            var regExpStr = "";
+            var convertedStr = "";
+            for (var i = 0; i < that.requiredModules.length; i++) {
+                var currentModule = that.requiredModules[i];
+                var currentFiles = moduleFileTable[currentModule];
+                
+                for (var j = 0; j < currentFiles.length; j++) {
+                    if (regExpStr) {
+                        regExpStr += "|";
+                    }
+                    convertedStr = currentFiles[j].replace(/\./g, "\\."); //this is to escape the "." character which is a wildcard in ant regex.
+                    regExpStr += (regStart + convertedStr + regEnd);
+                }
+            }
+            return regExpStr;
+        };
+        
+        /**
          * Returns the list of all required module directories as a comma-delimited string of file selectors.
          */
         that.getRequiredDirectories = function () {
@@ -276,24 +303,25 @@ var globalObj = this;
         /**
          * Builds up the regular expression needed to find the files that are included in single js file
          */
-        that.buildRegExpression = function () {
-            var regStart = globalObj.project.getProperty("regex_start");
-            var regEnd = globalObj.project.getProperty("regex_end");
-            var regExpStr = "";
-            var convertedStr = "";
-            for (var i = 0; i < that.requiredModules.length; i++) {
-                var currentModule = that.requiredModules[i];
-                var currentFiles = that.moduleJSFileTable[currentModule];
-                
-                for (var j = 0; j < currentFiles.length; j++) {
-                    if (regExpStr) {
-                        regExpStr += "|";
-                    }
-                    convertedStr = currentFiles[j].replace(/\./g, "\\."); //this is to escape the "." character which is a wildcard in ant regex.
-                    regExpStr += (regStart + convertedStr + regEnd);
-                }
-            }
-            return regExpStr;
+        that.buildJSRegExpression = function () {
+            var obj = globalObj.project;
+            return buildRegExpression(obj.getProperty("regexStartJS"), obj.getProperty("regexEndJS"), that.moduleJSFileTable);
+        };
+        
+        /**
+         * Builds up the regular expression needed to find the files that are included in single css file
+         */
+        that.buildCSSRegExpression = function () {
+            var obj = globalObj.project;
+            return buildRegExpression(obj.getProperty("regexStartCSS"), obj.getProperty("regexEndCSS"), that.moduleCSSFileTable);
+        };
+        
+        /**
+         * Builds up the regular expression needed to find the files that are included in single css file
+         */
+        that.buildSingleCSSRegExpression = function () {
+            var obj = globalObj.project;
+            return buildRegExpression(obj.getProperty("regexSingleStartCSS"), obj.getProperty("regexSingleEndCSS"), that.moduleCSSFileTable);
         };
     
         /**
@@ -326,7 +354,7 @@ var globalObj = this;
     
     /**
      * Kicks off dependency resolution 
-     * Results in setting six ant properties: allRequiredFiles, allRequiredCSSFiles, requiredDirectoriesSelector, fullRegExp, cssfile and jsfile
+     * Results in setting six ant properties: allRequiredFiles, allRequiredCSSFiles, requiredDirectoriesSelector, jsRegExp, cssRegExp, cssfile and jsfile
      */
     var resolveDependenciesFromArguments = function () {
         var excludedFiles = (typeof(globalObj.exclude) === "undefined") ? [] : parseArgument(globalObj.exclude);
@@ -339,7 +367,9 @@ var globalObj = this;
         setProperty("allRequiredJSFiles", resolver.getAllRequiredJSFiles(resolver.moduleJSFileTable));
         setProperty("allRequiredCSSFiles", resolver.getAllRequiredCSSFiles(resolver.moduleCSSFileTable)); 
         setProperty("requiredDirectoriesSelector", resolver.getRequiredDirectories());
-        setProperty("fullRegExp", resolver.buildRegExpression());
+        setProperty("jsRegExp", resolver.buildJSRegExpression());
+        setProperty("cssRegExp", resolver.buildCSSRegExpression());
+        setProperty("cssSingleRegExp", resolver.buildSingleCSSRegExpression());
         setProperty("cssfile", cssFileName(jsFile));
         setProperty("jsfile", jsFile);        
     };

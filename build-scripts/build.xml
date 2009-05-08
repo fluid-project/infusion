@@ -34,8 +34,12 @@
     <property name="warfile" value="fluid-components-${fluid_version}.war" />
     
     <!-- properties for URL rewriting -->
-    <property name="regex_start" value="&lt;script{1,1}?.*" />
-    <property name="regex_end" value="{1,1}?.*script>" />
+    <property name="regexStartJS" value="&lt;script{1,1}?.*" />
+    <property name="regexEndJS" value="{1,1}?.*script>" />
+    <property name="regexStartCSS" value="&lt;link{1,1}?.*" />
+    <property name="regexEndCSS" value="{1,1}?.*>" />
+    <property name="regexSingleStartCSS" value="/" />
+    <property name="regexSingleEndCSS" value=" " />
     <property name="fluidRegExp" value="framework/core/js/Fluid.js" />
     
     <!-- task definition for JSLint -->
@@ -218,7 +222,7 @@
         </concat>    
     </target>
     
-    <!-- Runs the javascript dependency resolver which sets $jsfile, $cssfile, $requiredDirectoriesSelector, $fullRegExp, $allRequiredCSSFiles and $allRequiredJSFiles -->
+    <!-- Runs the javascript dependency resolver which sets $jsfile, $cssfile, $requiredDirectoriesSelector, $jsRegExp, $cssRegExp, $allRequiredCSSFiles and $allRequiredJSFiles -->
     <target name="resolveDependencies" depends="clean">
         <script language="javascript" src="build.js" />
     </target>
@@ -264,8 +268,23 @@
     </target>
     
     <!-- Removes that <script> blocks pertaining to files included in the single js file -->
-    <target name="removeScript" depends="replaceFluid">
-        <replaceregexp match="${fullRegExp}" replace="" flags="g">
+    <target name="removeJS" depends="replaceFluid">
+        <replaceregexp match="${jsRegExp}" replace="" flags="g">
+            <fileset dir="${products}" includes="**/*.html" />
+        </replaceregexp>
+    </target>
+    
+    <!-- Replaces the first <link> block pertaining to files included in the single css file,
+     with a reference to the single css file -->
+    <target name="replaceCSS" depends="removeJS">
+        <replaceregexp match="${cssRegExp}" replace="${fluidRegExp}">
+            <fileset dir="${products}" includes="**/*.html" />
+        </replaceregexp>
+    </target>
+    
+    <!-- Removes that <link> blocks pertaining to the css files included in the single css file -->
+    <target name="removeCSS" depends="replaceCSS">
+        <replaceregexp match="${cssRegExp}" replace="" flags="g">
             <fileset dir="${products}" includes="**/*.html" />
         </replaceregexp>
     </target>
@@ -288,11 +307,11 @@
         description="Builds a custom package of Infusion containing the modules specified as command line arguments.">
     </target>
     
-    <target name="modifiedReleaseBuild" depends="buildSrcBundle, buildDeployBundle, removeScript, buildInfusionWAR, package"
+    <target name="modifiedReleaseBuild" depends="buildSrcBundle, buildDeployBundle, removeCSS, buildInfusionWAR, package"
         description="Builds and packages Infusion along with tests and sample code, suitable for development testing or daily build. Re-writes the head of the html files to replace all individual js files included in the single js file, with a reference to that single js file.">
     </target>
     
-    <target name="modifiedCustomBuild" depends="copyToSrcBundle, copyToDeployBundle, removeScript, buildInfusionWAR, package"
+    <target name="modifiedCustomBuild" depends="copyToSrcBundle, copyToDeployBundle, removeCSS, buildInfusionWAR, package"
         description="Builds a custom package of Infusion containing the modules specified as command line arguments. Re-writes the head of the html files to replace all individual js files included in the single js file, with a reference to that single js file.">
     </target>
     
