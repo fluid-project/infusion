@@ -208,11 +208,17 @@
     
     <target name="concatJavaScript" >
         <concat destfile="${build}/${jsfile}" >
-            <filelist dir="${src}" files="${allRequiredFiles}" /> 
+            <filelist dir="${src}" files="${allRequiredJSFiles}" /> 
         </concat>    
     </target>
     
-    <!-- Runs the javascript dependency resolver which sets $jsfile, $requiredDirectoriesSelector and $allRequiredFiles -->
+    <target name="concatCSS" >
+        <concat destfile="${build}/${cssfile}" >
+            <filelist dir="${src}" files="${allRequiredCSSFiles}" /> 
+        </concat>    
+    </target>
+    
+    <!-- Runs the javascript dependency resolver which sets $jsfile, $cssfile, $requiredDirectoriesSelector, $fullRegExp, $allRequiredCSSFiles and $allRequiredJSFiles -->
     <target name="resolveDependencies" depends="clean">
         <script language="javascript" src="build.js" />
     </target>
@@ -264,7 +270,7 @@
         </replaceregexp>
     </target>
     
-    <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript">
+    <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript, concatCSS">
         <copy todir="${build}">
             <fileset dir="${src}" includes="${requiredDirectoriesSelector}" />
         </copy>

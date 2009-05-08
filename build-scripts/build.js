@@ -39,6 +39,10 @@ var globalObj = this;
         
         return (includeArg || excludeArg ? customJsFileName : allJsFileName);
     };
+    
+    var cssFileName = function (jsName) {
+        return jsName.replace(/\.js$/, ".css");
+    };
 
     var setProperty = function (name, value) {
         globalObj.project.setProperty(name, value);
@@ -136,6 +140,7 @@ var globalObj = this;
     var normalizeDeclaration = function (declaration) {
         declaration.files = asArray(declaration.files);
         declaration.dependencies = asArray(declaration.dependencies);
+        declaration.cssFiles = asArray(declaration.cssFiles);
     };
     
     /**
@@ -152,7 +157,7 @@ var globalObj = this;
     };
     
     /**
-     * Builds the moduleFileTable and the requiredModules list for the moduleName passed in
+     * Builds the moduleJSFileTable, moduleCSSFileTable and the requiredModules list for the moduleName passed in
      * 
      * @param {Object} that
      * @param {Object} moduleName
@@ -168,7 +173,8 @@ var globalObj = this;
         
         var moduleInfo = that.loadDeclarationForModule(moduleName);
         normalizeDeclaration(moduleInfo[moduleName]);
-        that.moduleFileTable[moduleName] = moduleInfo[moduleName].files;        
+        that.moduleJSFileTable[moduleName] = moduleInfo[moduleName].files;  
+        that.moduleCSSFileTable[moduleName] = moduleInfo[moduleName].cssFiles; 
         var moduleDependencies = moduleInfo[moduleName].dependencies;
         logDependencies(moduleName, moduleDependencies);
 
@@ -187,11 +193,28 @@ var globalObj = this;
      * @param {Object} moduleName
      * @param {Object} moduleFileTable
      */
-    var pathsForModuleFiles = function (moduleName, moduleFileTable) {
+    var pathsForModuleJSFiles = function (moduleName, moduleFileTable) {
         var pathsStr = "";
         var filesForModule = moduleFileTable[moduleName];
         for (var i = 0; i < filesForModule.length; i++) {
             var path = modulePath(moduleName) + File.separator + "js" + File.separator;
+            pathsStr += path + filesForModule[i] + ",";
+        }
+        
+        return pathsStr;
+    };
+    
+    /**
+     * Returns a comma delimited list of paths for the css files related to the moduleName passed in.
+     * 
+     * @param {Object} moduleName
+     * @param {Object} moduleFileTable
+     */
+    var pathsForModuleCSSFiles = function (moduleName, moduleFileTable) {
+        var pathsStr = "";
+        var filesForModule = moduleFileTable[moduleName];
+        for (var i = 0; i < filesForModule.length; i++) {
+            var path = modulePath(moduleName) + File.separator + "css" + File.separator;
             pathsStr += path + filesForModule[i] + ",";
         }
         
@@ -208,7 +231,8 @@ var globalObj = this;
     fluid.dependencyResolver = function (modulesToInclude, modulesToExclude) {
         var that = {
             requiredModules: [], // A list of modules to be included in dependency order
-            moduleFileTable: {}, // A map of the files related to modules
+            moduleJSFileTable: {}, // A map of the files related to modules
+            moduleCSSFileTable: {}, // A map of the files related to modules
             excludedModules: modulesToExclude  
         };    
         
@@ -235,11 +259,25 @@ var globalObj = this;
         /**
          * Returns the list of all the javascript files required as a comma delimited string.
          */
-        that.getAllRequiredFiles = function () {
+        that.getAllRequiredJSFiles = function () {
             var fileStr = "";
             for (var i = 0; i < that.requiredModules.length; i++) {
                 var currentModule = that.requiredModules[i];
-                fileStr += pathsForModuleFiles(currentModule, that.moduleFileTable);
+                fileStr += pathsForModuleJSFiles(currentModule, that.moduleJSFileTable);
+            }
+
+            logVerbose("*** All required files: " + fileStr);
+            return fileStr;
+        };
+        
+        /**
+         * Returns the list of all the css files required as a comma delimited string.
+         */
+        that.getAllRequiredCSSFiles = function () {
+            var fileStr = "";
+            for (var i = 0; i < that.requiredModules.length; i++) {
+                var currentModule = that.requiredModules[i];
+                fileStr += pathsForModuleCSSFiles(currentModule, that.moduleCSSFileTable); 
             }
 
             logVerbose("*** All required files: " + fileStr);
@@ -256,7 +294,7 @@ var globalObj = this;
         var convertedStr = "";
         for(var i = 0; i < that.requiredModules.length; i++) {
             var currentModule = that.requiredModules[i];
-            var currentFiles = that.moduleFileTable[currentModule];
+            var currentFiles = that.moduleJSFileTable[currentModule];
             
             for(var j = 0; j < currentFiles.length; j++) {
                 if(i !== 0){
@@ -299,7 +337,7 @@ var globalObj = this;
     
     /**
      * Kicks off dependency resolution 
-     * Results in setting three ant properties: allRequiredFiles and requiredDirectoriesSelector and jsfile
+     * Results in setting six ant properties: allRequiredFiles, allRequiredCSSFiles, requiredDirectoriesSelector, fullRegExp, cssfile and jsfile
      */
     var resolveDependenciesFromArguments = function () {
         var excludedFiles = (typeof(globalObj.exclude) === "undefined") ? [] : parseArgument(globalObj.exclude);
@@ -307,11 +345,14 @@ var globalObj = this;
 
         var resolver = fluid.dependencyResolver(parseModulesToInclude(globalObj.include), excludedFiles);
         
-        setProperty("allRequiredFiles", resolver.getAllRequiredFiles());
+        var jsFile = jsFileName(globalObj.jsfilename, globalObj.include, globalObj.exclude);
+        
+        setProperty("allRequiredJSFiles", resolver.getAllRequiredJSFiles(resolver.moduleJSFileTable));
+        setProperty("allRequiredCSSFiles", resolver.getAllRequiredCSSFiles(resolver.moduleCSSFileTable)); 
         setProperty("requiredDirectoriesSelector", resolver.getRequiredDirectories());
         setProperty("fullRegExp", resolver.buildRegExpression());
-
-        setProperty("jsfile", jsFileName(globalObj.jsfilename, globalObj.include, globalObj.exclude));        
+        setProperty("cssfile", cssFileName(jsFile));
+        setProperty("jsfile", jsFile);        
     };
     
     // Run this immediately.
