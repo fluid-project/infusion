@@ -91,9 +91,9 @@ sakai.initFluidSiteSettingTable = function() {
         bodyRenderer: {
           type: "fluid.pager.selfRender",
           options: {
-		  	selectors: {
-            	root: ".site-setting-body"
-			},
+              selectors: {
+                root: ".site-setting-body"
+            },
             renderOptions: {debugMode: false}
           }
         }
