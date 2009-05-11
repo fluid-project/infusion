@@ -205,7 +205,53 @@ var globalObj = this;
         
         return pathsStr;
     };
+    
+    /**
+         * Returns the list of all the files required (from requiredModules), as a comma delimited string.
+         * These files are scoped to the moduleFileTable passed, and the paths contain the directory specified.
+         * 
+         * @param {Object} moduleFileTable
+         * @param {Object} dir
+         */
+        var getAllRequiredFiles = function (requiredModules, moduleFileTable, dir) {
+            var fileStr = "";
+            for (var i = 0; i < requiredModules.length; i++) {
+                var currentModule = requiredModules[i];
+                fileStr += pathsForModuleFiles(currentModule, moduleFileTable, dir);
+            }
 
+            logVerbose("*** All required files: " + fileStr);
+            return fileStr;
+        };
+        
+        /**
+         * Builds up the regular expression to find the requiredModules from the moduleFileTable
+         * 
+         * @param {Object} regExpStart
+         * @param {Object} regExpEnd
+         * @param {Object} requiredModules
+         * @param {Object} moduleFileTable
+         */
+        var buildRegExpression = function (regExpStart, regExpEnd, requiredModules, moduleFileTable) {
+            var regStart = regExpStart;
+            var regEnd = regExpEnd;
+            var regExpStr = "";
+            var convertedStr = "";
+            for (var i = 0; i < requiredModules.length; i++) {
+                var currentModule = requiredModules[i];
+                var currentFiles = moduleFileTable[currentModule];
+                
+                for (var j = 0; j < currentFiles.length; j++) {
+                    if (regExpStr) {
+                        regExpStr += "|";
+                    }
+                    convertedStr = currentFiles[j].replace(/\./g, "\\."); //this is to escape the "." character which is a wildcard in ant regex.
+                    regExpStr += (regStart + convertedStr + regEnd);
+                }
+            }
+            return regExpStr;
+        };
+        
     /**
      * Resolves dependencies for the modules passed in. 
      * Uses the module properties from build.properties to find the dependency declarations for a module. 
@@ -228,51 +274,6 @@ var globalObj = this;
         };
         
         /**
-         * Returns the list of all the files required, as a comma delimited string.
-         * These files are scoped to the moduleFileTable passed, and the paths contain the directory specified.
-         * 
-         * @param {Object} moduleFileTable
-         * @param {Object} dir
-         */
-        var getAllRequiredFiles = function (moduleFileTable, dir) {
-            var fileStr = "";
-            for (var i = 0; i < that.requiredModules.length; i++) {
-                var currentModule = that.requiredModules[i];
-                fileStr += pathsForModuleFiles(currentModule, moduleFileTable, dir);
-            }
-
-            logVerbose("*** All required files: " + fileStr);
-            return fileStr;
-        };
-        
-        /**
-         * Builds up the regular expression to find the files from the moduleFileTable
-         * 
-         * @param {Object} regExpStart
-         * @param {Object} regExpEnd
-         * @param {Object} moduleFileTable
-         */
-        var buildRegExpression = function (regExpStart, regExpEnd, moduleFileTable) {
-            var regStart = regExpStart;
-            var regEnd = regExpEnd;
-            var regExpStr = "";
-            var convertedStr = "";
-            for (var i = 0; i < that.requiredModules.length; i++) {
-                var currentModule = that.requiredModules[i];
-                var currentFiles = moduleFileTable[currentModule];
-                
-                for (var j = 0; j < currentFiles.length; j++) {
-                    if (regExpStr) {
-                        regExpStr += "|";
-                    }
-                    convertedStr = currentFiles[j].replace(/\./g, "\\."); //this is to escape the "." character which is a wildcard in ant regex.
-                    regExpStr += (regStart + convertedStr + regEnd);
-                }
-            }
-            return regExpStr;
-        };
-        
-        /**
          * Returns the list of all required module directories as a comma-delimited string of file selectors.
          */
         that.getRequiredDirectories = function () {
@@ -290,14 +291,14 @@ var globalObj = this;
          * Returns the list of all the javascript files required as a comma delimited string.
          */
         that.getAllRequiredJSFiles = function () {
-            return getAllRequiredFiles(that.moduleJSFileTable, "js");
+            return getAllRequiredFiles(that.requiredModules, that.moduleJSFileTable, "js");
         };
         
         /**
          * Returns the list of all the css files required as a comma delimited string.
          */
         that.getAllRequiredCSSFiles = function () {
-            return getAllRequiredFiles(that.moduleCSSFileTable, "css");
+            return getAllRequiredFiles(that.requiredModules, that.moduleCSSFileTable, "css");
         };
         
         /**
@@ -305,7 +306,7 @@ var globalObj = this;
          */
         that.buildJSRegExpression = function () {
             var obj = globalObj.project;
-            return buildRegExpression(obj.getProperty("regexStartJS"), obj.getProperty("regexEndJS"), that.moduleJSFileTable);
+            return buildRegExpression(obj.getProperty("regexStartJS"), obj.getProperty("regexEndJS"), that.requiredModules, that.moduleJSFileTable);
         };
         
         /**
@@ -313,7 +314,7 @@ var globalObj = this;
          */
         that.buildCSSRegExpression = function () {
             var obj = globalObj.project;
-            return buildRegExpression(obj.getProperty("regexStartCSS"), obj.getProperty("regexEndCSS"), that.moduleCSSFileTable);
+            return buildRegExpression(obj.getProperty("regexStartCSS"), obj.getProperty("regexEndCSS"), that.requiredModules, that.moduleCSSFileTable);
         };
         
         /**
@@ -322,7 +323,7 @@ var globalObj = this;
          */
         that.buildSingleCSSRegExpression = function () {
             var obj = globalObj.project;
-            return buildRegExpression(obj.getProperty("regexSingleStartCSS"), obj.getProperty("regexSingleEndCSS"), that.moduleCSSFileTable);
+            return buildRegExpression(obj.getProperty("regexSingleStartCSS"), obj.getProperty("regexSingleEndCSS"), that.requiredModules, that.moduleCSSFileTable);
         };
     
         /**
