@@ -263,11 +263,11 @@ var fluid = fluid || fluid_1_1;
     var NO_SELECTION = -32768;
 
     var cleanUpWhenLeavingContainer = function(selectionContext) {
-        if (selectionContext.onLeaveContainer) {
-            selectionContext.onLeaveContainer(
+        if (selectionContext.options.onLeaveContainer) {
+            selectionContext.options.onLeaveContainer(
               selectionContext.selectables[selectionContext.activeItemIndex]);
-        } else if (selectionContext.onUnselect) {
-            selectionContext.onUnselect(
+        } else if (selectionContext.options.onUnselect) {
+            selectionContext.options.onUnselect(
             selectionContext.selectables[selectionContext.activeItemIndex]);
         }
 

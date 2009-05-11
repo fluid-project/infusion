@@ -54,7 +54,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var blurHandler = function (element) {
             jQuery(element).removeClass("selected");
         };
-
+        
         return {
             onSelect: focusHandler,
             onUnselect: blurHandler
@@ -550,4 +550,46 @@ https://source.fluidproject.org/svn/LICENSE.txt
         keyboardA11y.assertSelected(thirdMenuItem); 
     });
     
+    var quickMakeSelectable = function (containerSelector, options) {
+        $(containerSelector).fluid("selectable", options);
+    };
+    
+    test("Leaving container: onLeaveContainer", function () {
+        // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
+        if (!$.browser.mozilla) {
+            return;
+        }
+        
+        var wasCalled = false;
+        quickMakeSelectable(MENU_SEL, {
+            onLeaveContainer: function () {
+                wasCalled = true;
+            }
+        });
+        getFirstMenuItem().focus();
+        
+        // When onLeaveContainer is called, it should be invoked when tabbing out of the container.
+        simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.TAB);
+        jqUnit.assertTrue("On leave is called when tabbing out of the selectables container.", 
+                          wasCalled);
+    });
+    
+    test("Leaving container: onUnselect", function () {
+        // This test can only be run on FF, due to reliance on DOM 2 for synthesizing events.
+        if (!$.browser.mozilla) {
+            return;
+        }
+        
+        var wasCalled = false;
+        quickMakeSelectable(MENU_SEL, {
+            onUnselect: function () {
+                wasCalled = true;
+            }
+        });
+        getFirstMenuItem().focus();
+        
+        simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.TAB);
+        jqUnit.assertTrue("When onLeaveContainer is not specified, onUnselect should be called instead when tabbing out of the selectables container.", 
+                          wasCalled);
+    });
 })(jQuery);
