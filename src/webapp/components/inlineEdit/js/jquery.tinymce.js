@@ -16,11 +16,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global jQuery, tinyMCE*/
 
 (function ($) {
-    // Invoke this immediately to prime TinyMCE.
-    tinyMCE.init({
-        mode: "none",
-        theme: "simple"
-    });
+    if (typeof(tinyMCE) !== "undefined") {
+        // Invoke this immediately to prime TinyMCE.
+        tinyMCE.init({
+            mode: "none",
+            theme: "simple"
+        });
+    }
     
     $.fn.tinymce = function () {
         this.each(function () {
