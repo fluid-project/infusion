@@ -172,7 +172,7 @@
       <apply executable="mvn" dir="${build}/war" parallel="true">
           <fileset  dir=".">
               <include name="pom.xml"/>
-                  </fileset>
+          </fileset>
           <arg value="install" />
       </apply>
     </target>
@@ -181,7 +181,7 @@
       <apply executable="cmd" dir="${build}/war" parallel="true" vmlauncher="false">
           <fileset  dir=".">
               <include name="pom.xml"/>
-                  </fileset>
+          </fileset>
           <arg value="/c mvn.bat install" />
       </apply>
     </target>
@@ -278,14 +278,20 @@
      with a reference to the single css file -->
     <target name="replaceCSS" depends="removeJS">
         <replaceregexp match="${cssSingleRegExp}" replace="\./${cssfile}&quot;">
-            <fileset dir="${products}" includes="**/*.html" />
+            <fileset dir="${products}">
+                <include name="**/*.html" />
+                <exclude name="**/integration-demos/" />
+            </fileset>
         </replaceregexp>
     </target>
     
     <!-- Removes that <link> blocks pertaining to the css files included in the single css file -->
     <target name="removeCSS" depends="replaceCSS">
         <replaceregexp match="${cssRegExp}" replace="" flags="g">
-            <fileset dir="${products}" includes="**/*.html" />
+            <fileset dir="${products}">
+                <include name="**/*.html" />
+                <exclude name="**/integration-demos/" />
+            </fileset>
         </replaceregexp>
     </target>
     
