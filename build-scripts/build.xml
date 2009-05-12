@@ -21,6 +21,7 @@
     <property name="dist" location="${products}/dist" />
     <property name="src-dist" location="${products}/src-dist" />
     <property name="build" location="${base-dir}/build" />
+    <property name="licenses" location="${build}/licenses" />
     <property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
     <property name="lint" location="${src}"/>
 
@@ -59,6 +60,7 @@
         <mkdir dir="${build}" />
         <mkdir dir="${dist}" />
         <mkdir dir="${src-dist}" />
+        <mkdir dir="${licenses}" />
     </target>
     
     <!-- Target: Minify the specified files and copy them into the specified directory. Don't call this directly. -->
@@ -107,10 +109,6 @@
             <include name="integration-demos/**/*" />
             <include name="standalone-demos/**/*" />
             <include name="tests/**/*" />
-        </fileset>
-        <fileset dir="${base-dir}">
-            <include name="README.txt" />
-            <include name="LICENSE.txt" />
         </fileset>
       </copy>       
     </target>
@@ -297,7 +295,20 @@
     
     <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript, concatCSS">
         <copy todir="${build}">
-            <fileset dir="${src}" includes="${requiredDirectoriesSelector}" />
+            <fileset dir="${src}" includes="${requiredDirectoriesSelector}">
+                <exclude name="**/*LICENSE.txt" />
+            </fileset>
+            <fileset dir="${base-dir}">
+                <exclude name="${src}" />
+                <include name="README.txt" />
+            </fileset>
+        </copy>
+        <copy todir="${licenses}" flatten="true">
+            <fileset dir="${base-dir}">
+                <include name="**/*LICENSE.txt" />
+                <exclude name="${build}" />
+                <exclude name="${products}" />
+            </fileset>
         </copy>
     </target> 
 
