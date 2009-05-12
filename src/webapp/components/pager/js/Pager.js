@@ -441,12 +441,12 @@ fluid_1_1 = fluid_1_1 || {};
         setSortHeaderClass(styles, bigHeaderForKey(newModel.sortKey, opts), newModel.sortDir);
     }
    
-    function fireModelChange(that, newModel) {
+    function fireModelChange(that, newModel, forceUpdate) {
         computePageCount(newModel);
         if (newModel.pageIndex >= newModel.pageCount) {
             newModel.pageIndex = newModel.pageCount - 1;
         }
-        if (newModel.pageIndex !== that.model.pageIndex || newModel.pageSize !== that.model.pageSize || newModel.sortKey !== that.model.sortKey ||
+        if (forceUpdate || newModel.pageIndex !== that.model.pageIndex || newModel.pageSize !== that.model.pageSize || newModel.sortKey !== that.model.sortKey ||
             newModel.sortDir !== that.model.sortDir) {
             var sorted = newModel.sortKey? that.options.sorter(that, newModel) : null;
             that.permutation = sorted;
@@ -474,7 +474,7 @@ fluid_1_1 = fluid_1_1 || {};
             }
             else {return false; }
             newModel.pageIndex = 0;
-            fireModelChange(overallThat, newModel);
+            fireModelChange(overallThat, newModel, true);
             setModelSortHeaderClass(newModel, opts);
             return false;
         };
@@ -671,7 +671,7 @@ fluid_1_1 = fluid_1_1 || {};
                 if (newModel.pageIndex === undefined || newModel.pageIndex < 0) {
                     newModel.pageIndex = 0;
                 }
-                fireModelChange(that, newModel);
+                fireModelChange(that, newModel, arg.forceUpdate);
             }
         );
         
@@ -719,7 +719,8 @@ fluid_1_1 = fluid_1_1 || {};
         }
         that.applier = fluid.makeChangeApplier(that.model);
 
-        that.events.initiatePageChange.fire({pageIndex: 0});
+        that.events.initiatePageChange.fire({pageIndex: that.model.pageIndex? that.model.pageIndex: 0, 
+           forceUpdate: true});
 
         return that;
     };

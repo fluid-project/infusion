@@ -397,7 +397,15 @@ fluid_1_1 = fluid_1_1 || {};
       }
     }
     if (complete) {
-      callback(resourceSpecs);
+      if ($.browser.mozilla) {
+      // Defer this callback to avoid debugging problems on Firefox
+      setTimeout(function() {
+              callback(resourceSpecs);
+          }, 1);
+      }
+      else {
+          callback(resourceSpecs)
+      }
     }
   };
   

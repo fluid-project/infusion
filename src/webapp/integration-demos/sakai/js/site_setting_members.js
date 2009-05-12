@@ -83,6 +83,10 @@ sakai.initFluidSiteSettingTable = function() {
   
     var pager = fluid.pager(".ss-members", {
         dataModel: model,
+        // Test FLUID-2663
+        model: {
+            pageIndex: 3
+        },
         dataOffset: "users.membership_collection",
         columnDefs: columnDefs,
         annotateColumnRange: "user-link",

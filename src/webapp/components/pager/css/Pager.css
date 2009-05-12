@@ -33,7 +33,7 @@
     background-color:#fff;
     zoom:1;
 }
-.fl-pager .fl-pager-ui .fl-pager-links .fl-pager-current,
+.fl-pager .fl-pager-ui .fl-pager-disabled,
 .fl-pager .fl-pager-ui .fl-pager-links .fl-pager-currentPage {
     color:#000;
     border:none;
@@ -45,11 +45,12 @@
     color:#fff;
     text-decoration:none;
 }
-.fl-pager .fl-pager-ui .fl-pager-links .fl-pager-current:hover,
+.fl-pager .fl-pager-ui .fl-pager-disabled:hover,
 .fl-pager .fl-pager-ui .fl-pager-links .fl-pager-currentPage:hover {
     background-color:transparent;
     color:#000;
     text-decoration:none;
+    cursor:default;
 }
 
 
