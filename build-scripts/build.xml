@@ -293,6 +293,18 @@
         </replaceregexp>
     </target>
     
+    <!-- Determines if the rewriteHead property has been set to "true". If so, it sets the rewrite property to "true" -->
+    <target name="checkCondition">
+        <condition property="rewrite">
+            <equals arg1="true" arg2="${rewriteHead}" />
+        </condition>
+    </target>
+    
+    <!-- Will call the removeCSS target if head rewriting is turned on. -->
+    <target name="rewriteHTMLHead" depends="checkCondition" if="rewrite" >
+        <antcall target="removeCSS" /> 
+    </target>
+    
     <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript, concatCSS">
         <copy todir="${build}">
             <fileset dir="${src}" includes="${requiredDirectoriesSelector}">
@@ -309,24 +321,16 @@
         </copy>
     </target> 
 
-    <target name="releaseBuild" depends="buildSrcBundle, buildDeployBundle, buildInfusionWAR, package" 
+    <target name="releaseBuild" depends="buildSrcBundle, buildDeployBundle, rewriteHTMLHead, buildInfusionWAR, package" 
         description="Builds and packages a release bundle of Infusion.">
     </target>
     
-    <target name="dailyBuild" depends="buildSrcBundle, buildDeployBundle, buildDailyWAR, package"
+    <target name="dailyBuild" depends="buildSrcBundle, buildDeployBundle, rewriteHTMLHead, buildDailyWAR, package"
         description="Builds and packages Infusion along with tests and sample code, suitable for development testing or a daily build.">
     </target>
 
-    <target name="customBuild" depends="copyToSrcBundle, copyToDeployBundle, buildInfusionWAR, package" 
+    <target name="customBuild" depends="copyToSrcBundle, copyToDeployBundle, rewriteHTMLHead, buildInfusionWAR, package" 
         description="Builds a custom package of Infusion containing the modules specified as command line arguments.">
-    </target>
-    
-    <target name="modifiedReleaseBuild" depends="buildSrcBundle, buildDeployBundle, removeCSS, buildInfusionWAR, package"
-        description="Builds and packages Infusion along with tests and sample code, suitable for development testing or daily build. Re-writes the head of the html files to replace all individual js files included in the single js file, with a reference to that single js file.">
-    </target>
-    
-    <target name="modifiedCustomBuild" depends="copyToSrcBundle, copyToDeployBundle, removeCSS, buildInfusionWAR, package"
-        description="Builds a custom package of Infusion containing the modules specified as command line arguments. Re-writes the head of the html files to replace all individual js files included in the single js file, with a reference to that single js file.">
     </target>
     
 </project>
