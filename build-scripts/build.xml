@@ -298,11 +298,8 @@
             <fileset dir="${src}" includes="${requiredDirectoriesSelector}">
                 <exclude name="**/*LICENSE.txt" />
             </fileset>
-            <fileset dir="${base-dir}">
-                <exclude name="${src}" />
-                <include name="README.txt" />
-            </fileset>
         </copy>
+        <copy file="${base-dir}/README.txt" todir="${build}" />
         <copy todir="${licenses}" flatten="true">
             <fileset dir="${base-dir}">
                 <include name="**/*LICENSE.txt" />
