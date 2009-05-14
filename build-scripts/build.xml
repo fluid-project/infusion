@@ -274,7 +274,7 @@
     
     <!-- Replaces the first <link> block pertaining to files included in the single css file,
      with a reference to the single css file -->
-    <target name="replaceCSS" depends="removeJS">
+    <target name="replaceCSS">
         <replaceregexp match="${cssSingleRegExp}" replace="\./${cssfile}&quot;">
             <fileset dir="${products}">
                 <include name="**/*.html" />
@@ -294,14 +294,15 @@
     </target>
     
     <!-- Determines if the rewriteHead property has been set to "true". If so, it sets the rewrite property to "true" -->
-    <target name="checkCondition">
+    <target name="checkRewriteStatus">
         <condition property="rewrite">
             <equals arg1="true" arg2="${rewriteHead}" />
         </condition>
     </target>
     
     <!-- Will call the removeCSS target if head rewriting is turned on. -->
-    <target name="rewriteHTMLHead" depends="checkCondition" if="rewrite" >
+    <target name="rewriteHTMLHead" depends="checkRewriteStatus" if="rewrite" >
+        <antcall target="removeJS" />
         <antcall target="removeCSS" /> 
     </target>
     
