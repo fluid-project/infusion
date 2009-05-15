@@ -155,8 +155,8 @@ fluid_1_1 = fluid_1_1 || {};
                              args: function () {events.initiatePageChange.fire({pageIndex: page}); }
                          },
                         {type: page === current? "addClass" : "",
-                     classes: that.options.styles.currentPage} 
-                    ]
+                             classes: that.options.styles.currentPage}
+                         ]
                 };
             };
         }

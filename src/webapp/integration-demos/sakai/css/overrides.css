@@ -12,3 +12,8 @@
 .fl-pager-ui {
     float:left;
 }
+
+a:focus {
+    outline: 2px solid #000; 
+	  color: #333333;
+}

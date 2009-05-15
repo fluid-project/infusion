@@ -1345,6 +1345,11 @@ fluid_1_1 = fluid_1_1 || {};
       options = options || {};
             // Empty the node first, to head off any potential id collisions when rendering
       node = fluid.unwrap(node);
+      var lastFocusedElement = fluid.getLastFocusedElement? fluid.getLastFocusedElement() : null;
+      var lastId;
+      if (lastFocusedElement && fluid.dom.isContainer(node, lastFocusedElement)) {
+          lastId = lastFocusedElement.id;
+      }
       if ($.browser.msie) {
           $(node).empty(); //- this operation is very slow.
       }
@@ -1367,6 +1372,9 @@ fluid_1_1 = fluid_1_1 || {};
         node.innerHTML = rendered;
       }
       processDecoratorQueue();
+      if (lastId) {
+          fluid.jById(lastId).focus();
+      }
       return templates;
   };
 
