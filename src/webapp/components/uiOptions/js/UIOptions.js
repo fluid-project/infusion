@@ -34,16 +34,14 @@ fluid_1_1 = fluid_1_1 || {};
         var slider = that.locate("slider").slider(sliderOptions);
 
         textfield.change(function () {
-            if (this.value < that.min) {
-                this.value = that.min;
-            } else if (this.value > that.max) {
-                this.value = that.max;
-            }
-            
-            if (that.isInRange(this.value)) {
+            if (that.isValid(this.value)) {
+                if (!that.isInRange(this.value)) {
+                    this.value = (this.value < that.min) ? that.min : that.max;
+                }
                 slider.slider("value", this.value);
                 that.updateModel(this.value, this);
-            } else { 
+            }
+            else {
                 // handle invalid entry
                 this.value = that.model;
             }
@@ -81,6 +79,14 @@ fluid_1_1 = fluid_1_1 || {};
          */
         that.isInRange = function (value) {
             return (value >= that.min && value <= that.max);
+        };
+		
+        /**
+         * Tests if a value is a valid number.
+         * @param {Object} value
+         */
+        that.isValid = function (value) {
+            return !(isNaN(parseInt(value, 10)) || isNaN(value));
         };
         
         /**
