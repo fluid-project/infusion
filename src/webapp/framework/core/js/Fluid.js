@@ -515,7 +515,10 @@ var fluid = fluid || fluid_1_1;
     /** Performs a deep copy (clone) of its argument **/
     
     fluid.copy = function (tocopy) {
-        return $.extend(true, {}, tocopy);
+        if (fluid.isPrimitive(tocopy)) {
+            return tocopy;
+        }
+        return $.extend(true, typeof(tocopy.length) === "number"? [] : {}, tocopy);
     };
     
     /**

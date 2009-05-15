@@ -55,11 +55,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
               bit1, fluid.merge({"": "replace"}, {}, bits, bit1));
               
             jqUnit.assertDeepEq("Complex merge", [bits, bits, bits], 
-              fluid.merge({}, {}, [bit1, bit2], null, [bit2, bit1, bits]));
+              fluid.merge([], [], [bit1, bit2], null, [bit2, bit1, bits]));
             
             jqUnit.assertDeepEq("Value fetch", [bits, bits], 
               fluid.merge({"0.prop1": "1.prop1",
-                                 "1.prop2": "0.prop2"}, {}, [bit2, bit1], {}));  
+                           "1.prop2": "0.prop2"}, [], [bit2, bit1], []));  
             
         });
         
@@ -83,6 +83,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.merge(target2, source);
             jqUnit.assertEquals("Property 1 should have been preserved", "thing1", target2.root.prop1);
       
+        });
+        
+        fluidJSTests.test("copy", function () {
+            var array = [1, "thing", true, null];
+            var copy = fluid.copy(array);
+            jqUnit.assertDeepEq("Array copy", array, copy);
         });
         
         fluidJSTests.test("stringTemplate: array of string values", function () {

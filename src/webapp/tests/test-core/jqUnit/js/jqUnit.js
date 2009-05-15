@@ -32,6 +32,10 @@ var jqUnit = jqUnit || {};
     function deepEqImpl(thing1, thing2, basename) {
         basename = basename || "";
         
+        if (thing1 === thing2) {
+            return null;
+        }
+        
         if (typeof(thing1) !== typeof(thing2)) {
             return "Type mismatch at " + path(basename) + ": " + reportType(thing1) + " to " + reportType(thing2);
         }
@@ -40,11 +44,20 @@ var jqUnit = jqUnit || {};
             return "Unexpected null value at " + path(basename);
         }
         
+        if (thing1 === undefined ^ thing2 === undefined) {
+            return "Unexpected undefined value at " + path(basename);
+        }
+        
         if (typeof(thing1) !== 'object') {
             if (thing1 !== thing2) {
                 return "Primitive mismatch at " + path(basename) + ": " + thing1 + " to " + thing2;
             }
         } else {
+            var length1 = thing1.length;
+            var length2 = thing2.length;
+            if (length1 !== length2) {
+                return "Array length mismatch at " + path(basename) + ": " + length1 + " to " + length2; 
+            }
             for (var name in thing1) {
                 var n1 = thing1[name];
                 var n2 = thing2[name];
