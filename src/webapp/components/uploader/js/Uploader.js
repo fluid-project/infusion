@@ -681,7 +681,14 @@ fluid_1_1 = fluid_1_1 || {};
         } else {
             // Instantiate the component.
             container.show();
-            return fluid.uploader(container, options);
+            var uploader = fluid.uploader(container, options);
+            
+            // Secretly add a clickToDegrade decorator. TODO: add this to options as a real decorator.
+            fluid.uploader.clickToDegrade(uploader, {
+                enhanceable: enhanceable
+            });
+            
+            return uploader;
         }
     };
     
@@ -713,9 +720,9 @@ fluid_1_1 = fluid_1_1 || {};
     fluid.defaults("fluid.uploader", {
         demo: false,
         
-        decorators: {
+        decorators: [{
             type: "fluid.swfUploadSetupDecorator"
-        },
+        }],
         
         uploadManager: {
             type: "fluid.swfUploadManager"
@@ -824,4 +831,66 @@ fluid_1_1 = fluid_1_1 || {};
         CANCELLED: -5
     };
     
+    // A little widget for allowing users to degrade to a non-Flash Uploader if desired.
+    var setupClickToDegrade = function (that) {
+        var degradeLink = that.renderDegradeLink();
+        degradeLink.click(that.toggle);
+        that.fluidUploader.after(degradeLink);    
+    };
+  
+	fluid.uploader.clickToDegrade = function (uploader, options) {
+	    var that = {};
+        fluid.mergeComponentOptions(that, "fluid.uploader.clickToDegrade", options);
+	    that.fluidUploader = uploader.container;
+	    that.plainHtmlUploader = options.enhanceable;
+         
+        that.toggle = function () {
+	        var toggleFn = (that.isDegraded()) ? that.enhance : that.degrade;
+	        toggleFn();
+	    };
+         
+	    that.renderDegradeLink = function () {
+            that.link = $("<a href='#'></a>");
+            that.link.text(that.options.strings.degradeLinkText);
+            that.link.addClass(that.options.selectors.degradeLinkClass);
+             
+            return that.link;
+        };
+        
+        that.degrade = function () {
+            that.link.text(that.options.strings.enhanceLinkText);
+            that.link.removeClass(that.options.selectors.degradeLinkClass).addClass(that.options.selectors.enhanceLinkClass);
+	        that.fluidUploader.hide();
+	        that.plainHtmlUploader.show();
+	        isDegraded = true;
+        };
+         
+	    that.enhance = function () {
+	        that.link.text(that.options.strings.degradeLinkText);
+	        that.link.removeClass(that.options.selectors.enhanceLinkClass).addClass(that.options.selectors.degradeLinkClass);
+	        that.plainHtmlUploader.hide();
+	        that.fluidUploader.show();
+	        isDegraded = false;
+	    };
+         
+        var isDegraded = false;
+        that.isDegraded = function () {
+	        return isDegraded;
+	    };
+         
+        setupClickToDegrade(that);
+        return that;
+    };
+     
+    fluid.defaults("fluid.uploader.clickToDegrade", {
+        strings: {
+            degradeLinkText: "Switch to the standard single-file Uploader",
+	        enhanceLinkText: "Switch to the Flash-based multifile Uploader"
+	    },
+        selectors: {
+            degradeLinkClass: "fl-uploader-manually-degrade",
+            enhanceLinkClass: "fl-uploader-manually-enhance"
+        }
+	});
+
 })(jQuery, fluid_1_1);

@@ -6,6 +6,19 @@
     padding: 1em 2em;
 }
 
+.fl-uploader-manually-degrade, .fl-uploader-manually-enhance {
+    display: block;
+    width: 434px;
+    clear: both;
+    float: none;
+    text-align: center;
+    padding: 1em;
+}
+
+.fl-ProgEnhance-basic div input {
+    margin-top: 0.6em;
+}
+ 
 .fl-ProgEnhance-enhanced {
     display: none;
 }
