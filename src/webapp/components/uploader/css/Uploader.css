@@ -194,7 +194,7 @@ html>body .fl-uploader a.fl-uploader-browse {
     overflow: hidden;
 }
         
-.fl-uploader-queue {
+.fl-uploader-queue, .fl-uploader-queueError-queue {
     position: relative;
     font-size: 0.9em;
     color: #333;
@@ -229,7 +229,7 @@ html>body .fl-uploader-queue {
     color: #666;
 }
 
-.fl-uploader-queue td, .fl-uploader-queue th { 
+.fl-uploader-queue td, .fl-uploader-queue th, .fl-uploader-queueError-file { 
     text-align: left;
     padding: 3px 6px;
     border-bottom: 1px solid #BBCFDC;
@@ -432,6 +432,63 @@ button span.fl-uploader-button-text-hidden {
     background-color: #F6ECA0;
 }
 
+/* QUEUE ERROR */
+
+.fl-uploader-queueError {
+    position: absolute;
+    z-index: 10;
+    margin-left: 30px;
+    width : 330px;
+    border: 2px solid #FCC26A;
+    background-color: #FCFBE6;
+    padding: 0.8em 1.2em;
+    /* curved borders do not appear in browsers that do not support CSS 3 (IE6, 7 and 8) */
+    -moz-border-radius: 1.2em;
+    -webkit-border-radius: 1.2em;
+}
+
+.fl-uploader-queueError-message {
+    padding-left: 26px;
+    background-image: url(../images/error.png);
+    background-position: left top;
+    background-repeat: no-repeat;
+    padding-bottom: 8px;
+}
+
+.fl-uploader-queueError-name {
+    display: block;
+    float: left;
+    font-weight: bold;
+    width: 240px;
+    overflow: hidden;
+}
+
+.fl-uploader-queueError-header {
+    padding-left: 7px;
+    padding-bottom: 4px;    
+}
+
+.fl-uploader-queueError-header  .fl-uploader-queueError-size {
+    font-weight: bolder;
+} 
+
+.fl-uploader-queueError-error {
+    text-align: center;
+    color: #4C0206;
+    clear: both;
+    font-style: italic;
+}
+
+.fl-uploader-queueError .fl-uploader-btns {
+    display: block;
+    text-align: center;
+}
+
+.fl-uploader-queueError .fl-uploader-btns button {
+    float: none;
+    margin: 0;
+}
+    
 /* Hidden SWF for Flash 9*/
 
 .fl-uploader-flash9-container {

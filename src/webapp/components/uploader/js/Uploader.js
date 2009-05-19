@@ -20,6 +20,172 @@ fluid_1_1 = fluid_1_1 || {};
 
 
 /*******************
+ * File Queue Error View *
+ *******************/
+
+(function ($, fluid) {
+    var showLimitError = function (that) {
+        var errorText = fluid.stringTemplate(that.options.strings.errors.QUEUE_LIMIT_EXCEEDED, {
+            fileSizeLimit: that.uploadManager.options.fileUploadLimit || that.uploadManager.options.fileQueueLimit
+        });
+        that.locate("errorMessage").text(errorText);
+        that.locate("errorList").hide();
+    };
+    
+    var showFileErrors = function (that) {
+        that.locate("errorMessage").text(that.options.strings.errors.defaultError);
+        that.locate("errorList").show();
+    };
+    
+    var addErrorRow = function (that, file, errorCode, message) {
+        var row = that.rowTemplate.clone();
+        that.locate("fileName", row).text(file.name);
+        that.locate("fileSize", row).text(fluid.uploader.formatFileSize(file.size));
+        
+        var errorType = fluid.keyForValue(fluid.uploader.queueErrorConstants, errorCode);
+        var errorMsg = that.options.strings.errors[errorType];
+
+        var errorString = fluid.stringTemplate(errorMsg, {
+            fileName: file.name, 
+            fileSizeLimit: that.uploadManager.options.fileSizeLimit
+        });
+        
+        that.locate("errorText", row).text(errorString);
+        that.locate("errorQueue").append(row);
+    };
+    
+    var queueError = function (that, file, errorCode, message) {
+        that.errorCount++;
+        if (fluid.keyForValue(fluid.uploader.queueErrorConstants, errorCode) !== "QUEUE_LIMIT_EXCEEDED") {
+            addErrorRow(that, file, errorCode, message);
+        }         
+    };
+    
+    var bindDOMEvents = function (that) {
+        that.locate("Okaybtn").click(function (event) {
+            that.hideErrors();
+            event.preventDefault();
+        });
+    };
+    
+    var bindModelEvents = function (that) {
+        that.returnedOptions = {
+            listeners: {
+                onFileDialog: that.refreshView,
+                onQueueError: that.queueError,
+                afterFileDialog: that.showErrors
+            }
+        };
+    };
+    
+    var addKeyboardNavigation = function (that) {
+        fluid.tabbable(that.container);
+        that.selectableContext = fluid.selectable(that.container, {
+            selectableSelector: that.options.selectors.fileRows,
+            onSelect: function (itemToSelect) {
+                $(itemToSelect).addClass(that.options.styles.selected);
+            },
+            onUnselect: function (selectedItem) {
+                $(selectedItem).removeClass(that.options.styles.selected);
+            }
+        });
+    };
+    
+    var prepareTemplateElements = function (that) {
+        // Grab our row template out of the DOM.  
+        that.rowTemplate = that.locate("rowTemplate").remove();
+    };
+    
+    var createScroller = function (that) {
+        var theErrorQueue = that.locate("errorQueue");
+        that.scroller = fluid.scroller(theErrorQueue,{
+            selectors: {
+                wrapper: that.options.selectors.errorScroller
+            },
+            maxHeight: 148,
+            padScroll: true
+        });
+    };
+    
+    var setupFileQueueError = function (that, uploadManager) {
+        that.uploadManager = uploadManager;
+        createScroller(that);
+        prepareTemplateElements(that);         
+        addKeyboardNavigation(that); 
+        bindModelEvents(that);
+        bindDOMEvents(that);
+    };
+
+
+    /**
+     * Creates a new File Queue Error view.
+     * 
+     * @param {jQuery|selector} container the file queue's container DOM element
+     * @param {UploadManager} uploadManager an upload manager model instance
+     * @param {Object} options configuration options for the view
+     */
+    fluid.fileQueueErrorView = function (container, uploadManager, options) {
+        var that = fluid.initView("fluid.fileQueueErrorView", container, options);
+        
+        that.queueError = function (file, errorCode, message) {
+            queueError(that, file, errorCode, message);     
+        };
+        
+        that.showErrors = function () {
+            if (that.errorCount) {
+                if (that.locate("row").length > 0) {
+                    showFileErrors(that);
+                } else {
+                    showLimitError(that);
+                }
+                that.container.show();
+            }
+        };
+        
+        that.hideErrors = function () {
+            that.container.hide();
+        };
+        
+        that.refreshView = function () {
+            that.errorCount = 0;
+            that.locate("row").remove();     
+        };
+        
+        setupFileQueueError(that, uploadManager);     
+        return that;
+    };
+
+	fluid.defaults("fluid.fileQueueErrorView", {
+        selectors: {
+            errorQueue: ".flc-uploader-queueError-queue",
+            errorScroller: ".flc-uploader-queueError-scroller",
+            errorList: ".flc-uploader-queueError-list",
+            errorMessage: ".flc-uploader-queueError-message",
+            
+            fileName: ".flc-uploader-queueError-name",
+            fileSize: ".flc-uploader-queueError-size",
+            errorText: ".flc-uploader-queueError-error",
+            
+            rowTemplate: ".flc-uploader-queueError-file",
+            row: ".flc-uploader-queueError-file",
+            
+            Okaybtn: ".flc-uploader-queueError-Okay"
+        },
+        strings: {
+            errors: {
+                defaultError: "One or more of the selected files could not be added to the file queue.",
+                QUEUE_LIMIT_EXCEEDED: "Adding the selected files would exceed the allowable number of files in the file queue. Please remove some files from the queue or select fewer files.",
+                
+                FILE_EXCEEDS_SIZE_LIMIT: "exceeds the the maximum file size of %fileSizeLimit.",
+                ZERO_BYTE_FILE: "file does not contain any data.",
+                INVALID_FILETYPE: "%fileName is the wrong file type."
+            }
+        }
+    });
+})(jQuery, fluid_1_1);
+
+
+/*******************
  * File Queue View *
  *******************/
 
@@ -289,7 +455,7 @@ fluid_1_1 = fluid_1_1 || {};
         that.errorInfoRowTemplate.removeClass(that.options.styles.hiddenTemplate);
         that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.uploadContainer).remove();
     };
-    
+        
     var setupFileQueue = function (that, uploadManager) {
         that.uploadManager = uploadManager;
         that.scroller = fluid.scroller(that.container);
@@ -395,11 +561,7 @@ fluid_1_1 = fluid_1_1 || {};
                 HTTP_ERROR: "File upload error: a network error occured or the file was rejected (reason unknown).",
                 IO_ERROR: "File upload error: a network error occured.",
                 UPLOAD_LIMIT_EXCEEDED: "File upload error: you have uploaded as many files as you are allowed during this session",
-                UPLOAD_FAILED: "File upload error: the upload failed for an unknown reason.",
-                QUEUE_LIMIT_EXCEEDED: "You have as many files in the queue as can be added at one time. Removing files from the queue may allow you to add different files.",
-                FILE_EXCEEDS_SIZE_LIMIT: "One or more of the files that you attempted to add to the queue exceeded the limit of %fileSizeLimit.",
-                ZERO_BYTE_FILE: "One or more of the files that you attempted to add contained no data.",
-                INVALID_FILETYPE: "One or more files were not added to the queue because they were of the wrong type."
+                UPLOAD_FAILED: "File upload error: the upload failed for an unknown reason."
             }
         }
     });
@@ -641,7 +803,12 @@ fluid_1_1 = fluid_1_1 || {};
         that.totalProgress = fluid.initSubcomponent(that,
                                                     "totalProgressBar",
                                                     [that.container, fluid.COMPONENT_OPTIONS]);
-        
+        that.queueErrors = fluid.initSubcomponent(that,
+                                                    "fileQueueErrorView",
+                                                    [that.locate("queueError"), 
+                                                    that.uploadManager, 
+                                                    fluid.COMPONENT_OPTIONS]);
+
         // Upload button should not be enabled until there are files to upload
         disableElement(that, that.locate("uploadButton"));
         bindDOMEvents(that);
@@ -732,6 +899,10 @@ fluid_1_1 = fluid_1_1 || {};
             type: "fluid.fileQueueView"
         },
         
+        fileQueueErrorView: {
+            type: "fluid.fileQueueErrorView"
+        },
+        
         totalProgressBar: {
             type: "fluid.progress",
             options: {
@@ -747,6 +918,7 @@ fluid_1_1 = fluid_1_1 || {};
         
         selectors: {
             fileQueue: ".flc-uploader-queue",
+            queueError: ".flc-uploader-queueError",
             browseButton: ".flc-uploader-button-browse",
             uploadButton: ".flc-uploader-button-upload",
             pauseButton: ".flc-uploader-button-pause",
@@ -821,6 +993,13 @@ fluid_1_1 = fluid_1_1 || {};
         FILE_VALIDATION_FAILED: -270,
         FILE_CANCELLED: -280,
         UPLOAD_STOPPED: -290
+    };
+    
+    fluid.uploader.queueErrorConstants = {
+        QUEUE_LIMIT_EXCEEDED: -100,
+	    FILE_EXCEEDS_SIZE_LIMIT: -110,
+	    ZERO_BYTE_FILE: -120,
+	    INVALID_FILETYPE: -130
     };
     
     fluid.uploader.fileStatusConstants = {
