@@ -83,30 +83,39 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
           inlineEditTests.test("Customized Construction" + (useRenderer? " (via Renderer)" : ""), function () {
             expect(10);
+            var root = $("#custom-renderRoot");
     
-            var container = $("#inline-edit-custom");
-            var display = $("#display-custom");
-            var editContainer = $("#edit-container-custom");
-            var editField = $("#edit-custom");
             if (useRenderer) {
+                var model = {
+                    value: "Initial model value"
+                };
                 var decorator = {
                     type: "fluid",
                     func: "fluid.inlineEdit",
                     options: customOptions
                 };
-                fluid.selfRender($("#custom-renderRoot"), 
-                    {ID: "inline-edit", 
-                     decorators: decorator}, 
-                     {cutpoints: [{id: "inline-edit", selector: "#inline-edit-custom"}]});
+                fluid.selfRender(root, 
+                    [{ID: "inline-edit", 
+                     decorators: decorator},
+                     {ID: "inline-edit-control",
+                     valuebinding: "value"}], 
+                     {cutpoints: [{id: "inline-edit", selector: "#inline-edit-custom"},
+                                  {id: "inline-edit-control", selector: "#edit-custom"}],
+                      model: model,
+                      autoBind: true});
                 var inlineEditor = decorator.that;
                 container = $(decorator.container);
             }
             else {
                 var inlineEditor = fluid.inlineEdit("#inline-edit-custom", customOptions);
             }
+            var container = $(".customContainer", root);
+            var display = $("#display-custom");
+            var editContainer = $(".customEditContainer", root);
+            var editField = $(".customEdit", root);
     
             jqUnit.assertEquals("Container is set to", container[0].id, inlineEditor.container[0].id);
-            jqUnit.assertEquals("Text is set to", display[0].id, inlineEditor.viewEl[0].id);
+            jqUnit.assertEquals("Text control is set to", display[0].id, inlineEditor.viewEl[0].id);
             jqUnit.assertEquals("Edit container is set to", editContainer[0].id, inlineEditor.editContainer[0].id);
             jqUnit.assertEquals("Edit field is set to", editField[0].id, inlineEditor.editField[0].id);
             jqUnit.assertEquals("Focus style is custom", customOptions.styles.focus, inlineEditor.options.styles.focus);
