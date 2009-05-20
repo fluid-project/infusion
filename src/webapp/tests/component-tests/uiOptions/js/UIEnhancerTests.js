@@ -41,7 +41,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Initially font-sans class exists", 1, $(".fl-font-sans").length);
             jqUnit.assertEquals("Initially font-arial class exists", 1, $(".fl-font-arial").length);
             jqUnit.assertEquals("Initially text-spacing class exists", 1, $(".fl-font-spacing-3").length);
-            jqUnit.assertEquals("Initially no-background-images class exists", 1, $(".fl-no-background-images").length);
+            jqUnit.assertEquals("Initially no-background-images class exists", 1, $(".fl-noBackgroundImages").length);
             var uiEnhancer = fluid.uiEnhancer(document, options);
             jqUnit.assertEquals("font size classes should not be removed", 3, $(".fl-font-size-90").length);
             jqUnit.assertEquals("layout class is gone", 0, $(".fl-layout-linear").length);
@@ -49,7 +49,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("font sans class is gone", 0, $(".fl-font-sans").length);
             jqUnit.assertEquals("arial class is gone", 0, $(".fl-font-arial").length);
             jqUnit.assertEquals("text spacing class is gone", 0, $(".fl-text-spacing-3").length);
-            jqUnit.assertEquals("no background images is gone", 0, $(".fl-no-background-images").length);
+            jqUnit.assertEquals("no background images is gone", 0, $(".fl-noBackgroundImages").length);
             jqUnit.assertEquals("Things are still styled with 'first-class' ", 3, $(".first-class").length);
             jqUnit.assertEquals("Things are still styled with 'last-class' ", 2, $(".last-class").length);
         });

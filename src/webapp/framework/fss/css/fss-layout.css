@@ -249,10 +249,10 @@ input.fl-icon {padding-left:16px;}
 /**
  * Knockout Background Images
  */
-.fl-no-background-images, .fl-no-background-images * {
+.fl-noBackgroundImages, .fl-noBackgroundImages * {
     background-image:none !important;
 }
-.fl-no-background-images .fl-icon {
+.fl-noBackgroundImages .fl-icon {
     text-indent:0 !important;
     width:auto !important;
     background-color:transparent !important;

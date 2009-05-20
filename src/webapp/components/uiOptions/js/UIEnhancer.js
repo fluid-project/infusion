@@ -187,8 +187,8 @@ fluid_1_1 = fluid_1_1 || {};
      */
     var clearClashingClasses = function (container, classnameMap) {
         var settingsWhichMayClash = ["textFont", "textSpacing", "theme", "layout"];  // + no background images
-        var classesToRemove =  "fl-no-background-images";
-        var selector = ".fl-no-background-images";
+        var classesToRemove =  "fl-noBackgroundImages";
+        var selector = ".fl-noBackgroundImages";
         
         for (var i = 0; i < settingsWhichMayClash.length; i++) {
             var settingValues = classnameMap[settingsWhichMayClash[i]];
@@ -306,7 +306,7 @@ fluid_1_1 = fluid_1_1 || {};
                 "simple": "fl-layout-linear",
                 "default": ""
             },
-            "noBackgroundImages": "fl-no-background-images",
+            "noBackgroundImages": "fl-noBackgroundImages",
             "linksUnderline": "fl-text-underline", 
             "linksBold": "fl-text-bold", 
             "linksLarger": "fl-text-larger", 
