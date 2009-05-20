@@ -101,7 +101,7 @@ fluid_1_1 = fluid_1_1 || {};
         layoutHandler: "fluid.gridLayoutHandler",
 
         selectors: {
-            imageTitle: ".fl-reorderer-imageTitle"
+            imageTitle: ".flc-reorderer-imageTitle"
         }
     });
 
