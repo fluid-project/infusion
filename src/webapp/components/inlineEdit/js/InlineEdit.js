@@ -599,6 +599,7 @@ fluid_1_1 = fluid_1_1 || {};
         },
         
         styles: {
+            text: "fl-inlineEdit-text",
             edit: "fl-inlineEdit-edit",
             invitation: "fl-inlineEdit-invitation",
             defaultViewStyle: "fl-inlineEdit-invitation-text",
