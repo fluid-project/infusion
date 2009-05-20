@@ -5,5 +5,8 @@
 .fl-theme-coal .fl-widget .close {background-image:url('../images/coal-icons/icon-widget-Close.png'); margin-right:0px;}
 /*.fl-theme-coal .fl-widget .settings {background-image:url('../images/coal-icons/icon-widget-ShowSettings.png'); margin-right:0px; width:70px; }*/
 .fl-theme-coal .viewOptions {background-image:url('../images/coal-icons/icon-options-ListOrGrid.png'); background-color:#fff;  border:1px solid #000;}
-.fl-theme-coal .menu .delete {background-image: url('../images/coal-icons/icon-menu-Delete.png');}    
+.fl-theme-coal .menu .delete {
+    background-image: url('../images/coal-icons/icon-menu-Delete.png');
+    background-color:transparent;
+}
 

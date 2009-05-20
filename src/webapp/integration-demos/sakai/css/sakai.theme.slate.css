@@ -3,16 +3,7 @@
 /* Widget :: Icons */
 
 .fl-theme-slate .viewOptions {background-image:url('../images/slate-icons/icon-options-ListOrGrid.png'); background-color:#fff;  border:1px solid #000;}
-.fl-theme-slate .menu .delete {background-image: url('../images/slate-icons/icon-menu-Delete.png');}    
-
-/*
-.fl-theme-slate .fl-widget .settings {
-    background-image:url(../../../../fluid-components/css/FSS_images/themes/slate/buttons-titlebar-cap.png); margin-right:0px;
-    color:#333 !important;
-}
-.fl-theme-slate .fl-widget .settings strong {
-    background-image:url(../../../../fluid-components/css/FSS_images/themes/slate/buttons-titlebar-bg.png);
-    font-size:0.8em;
-    padding-bottom:0.4em;
-}
-*/
+.fl-theme-slate .menu .delete {
+    background-image: url('../images/slate-icons/icon-menu-Delete.png');
+    background-color:transparent;
+}    
