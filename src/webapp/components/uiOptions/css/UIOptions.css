@@ -1,4 +1,5 @@
 /* CSS Specifically for the UI Options dialog and Preview window */
+.fl-uiOptions {background-color:#fff;}
 .fl-uiOptions .ui-accordion-content {border: 3px solid}/*fixes an IE issue where the border of the content needs to be specified*/
 .fl-uiOptions {padding:10px;}
 .fl-uiOptions fieldset {margin:0 20px 5px 0;}
