@@ -520,7 +520,7 @@ fluid_1_1 = fluid_1_1 || {};
       function applyFunc() {
           fluid.applyChange(fluid.byId(finalID), undefined, applier);
           }
-      if (renderOptions.autoBind && (tagname === "input" || tagname === "select") 
+      if (renderOptions.autoBind && /input|select|textarea/.test(tagname) 
             && !renderedbindings[finalID]) {
           var decorators = [{jQuery: ["change", applyFunc]}];
           // Work around bug 193: http://webbugtrack.blogspot.com/2007/11/bug-193-onchange-does-not-fire-properly.html
@@ -528,6 +528,9 @@ fluid_1_1 = fluid_1_1 || {};
               && /radio|checkbox/.test(trc.attrcopy.type)) {
              decorators.push({jQuery: ["click", applyFunc]});
           }
+      //    if (tagname === "textarea") {
+      //       decorators.push({jQuery: ["keyPress", applyFunc]});
+      //    }
           outDecoratorsImpl(torender, decorators, trc.attrcopy, finalID);
       }    
   }
