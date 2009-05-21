@@ -21,8 +21,8 @@
 .fl-theme-coal {color:#000000 !important; background-color:#ebebeb !important; border-color:#000000;}
 .fl-theme-coal a {color: #333333 !important; font-weight:bold;}
 .fl-theme-coal a:hover {color: #999999 !important;}
-.fl-theme-coal h1 {color:#ffffff; border-bottom-width:0.2em; border-bottom-style:solid;} 
-.fl-theme-coal h2 {color: #ffffff;}
+.fl-theme-coal h1 {color:#000000; border-bottom-width:0.2em; border-bottom-style:solid;} 
+.fl-theme-coal h2 {color: #666666;}
 .fl-theme-coal th {border:0.1em solid #ffffff; background-color:#dfefff !important;}
 .fl-theme-coal td {border:0.1em solid #999999 !important;}
 .fl-theme-coal .fl-textfield,
