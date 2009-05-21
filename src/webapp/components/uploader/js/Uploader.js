@@ -19,9 +19,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 fluid_1_1 = fluid_1_1 || {};
 
 
-/*******************
+/*************************
  * File Queue Error View *
- *******************/
+ *************************/
 
 (function ($, fluid) {
     var showLimitError = function (that) {
@@ -98,7 +98,7 @@ fluid_1_1 = fluid_1_1 || {};
     
     var createScroller = function (that) {
         var theErrorQueue = that.locate("errorQueue");
-        that.scroller = fluid.scroller(theErrorQueue,{
+        that.scroller = fluid.scroller(theErrorQueue, {
             selectors: {
                 wrapper: that.options.selectors.errorScroller
             },
@@ -359,7 +359,10 @@ fluid_1_1 = fluid_1_1 || {};
     
     var addFile = function (that, file) {
         var row = renderRowFromTemplate(that, file);
-        row.hide();
+        /* FLUID-2720 - do not hide the row under IE8 */
+        if (!($.browser.msie && ($.browser.version >= 8))) {
+            row.hide();
+        }    
         that.container.append(row);
         row.fadeIn("slow");
         that.scroller.scrollBottom();
@@ -451,6 +454,10 @@ fluid_1_1 = fluid_1_1 || {};
     var prepareTemplateElements = function (that) {
         // Grab our template elements out of the DOM.  
         that.rowTemplate = that.locate("rowTemplate").remove();
+        /* FLUID-2720 - do not hide the row under IE8 */
+        if ($.browser.msie && ($.browser.version >= 8)) {
+            that.rowTemplate.removeClass(that.options.styles.hiddenTemplate).removeClass(that.options.styles.rowTemplate);
+        }
         that.errorInfoRowTemplate = that.locate("errorInfoRowTemplate").remove();
         that.errorInfoRowTemplate.removeClass(that.options.styles.hiddenTemplate);
         that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.uploadContainer).remove();
@@ -544,7 +551,8 @@ fluid_1_1 = fluid_1_1 || {};
             error: "fl-uploader-file-state-error",
             remove: "fl-uploader-file-action-remove",
             dim: "fl-uploader-dim",
-            hiddenTemplate: "fl-uploader-hidden-templates"
+            hiddenTemplate: "fl-uploader-hidden-templates",
+            rowTemplate: ".flc-uploader-file-tmplt"
         },
         
         strings: {
@@ -1019,6 +1027,8 @@ fluid_1_1 = fluid_1_1 || {};
   
 	fluid.uploader.clickToDegrade = function (uploader, options) {
 	    var that = {};
+        var isDegraded = false;
+        
         fluid.mergeComponentOptions(that, "fluid.uploader.clickToDegrade", options);
 	    that.fluidUploader = uploader.container;
 	    that.plainHtmlUploader = options.enhanceable;
@@ -1052,7 +1062,6 @@ fluid_1_1 = fluid_1_1 || {};
 	        isDegraded = false;
 	    };
          
-        var isDegraded = false;
         that.isDegraded = function () {
 	        return isDegraded;
 	    };
