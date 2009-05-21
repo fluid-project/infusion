@@ -14,7 +14,7 @@
 }
 
 .fl-theme-hc {color:#000000 !important; background-color:#ffffff !important;}
-.fl-theme-hc * {color:#000000 !important; background-color:#ffffff; background-image:none !important; border-color:#000;}
+.fl-theme-hc * {color:#000000 !important; background-color:#ffffff; border-color:#000;}
 .fl-theme-hc .fl-knockout {background:transparent !important; color:#000;} /* a granular method for basic reset of appearance */
 
 /* Links */
