@@ -528,9 +528,6 @@ fluid_1_1 = fluid_1_1 || {};
               && /radio|checkbox/.test(trc.attrcopy.type)) {
              decorators.push({jQuery: ["click", applyFunc]});
           }
-      //    if (tagname === "textarea") {
-      //       decorators.push({jQuery: ["keyPress", applyFunc]});
-      //    }
           outDecoratorsImpl(torender, decorators, trc.attrcopy, finalID);
       }    
   }
