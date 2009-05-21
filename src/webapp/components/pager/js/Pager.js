@@ -169,7 +169,7 @@ fluid_1_1 = fluid_1_1 || {};
                 var pages = that.options.pageStrategy(newModel.pageCount, 0, newModel.pageIndex);
                 var pageTree = fluid.transform(pages, pageToComponent(newModel.pageIndex));
                 pageTree[pageTree.length - 1].value = pageTree[pageTree.length - 1].value + strings.last;
-                events.onRenderPageLinks.fire(pageTree);
+                events.onRenderPageLinks.fire(pageTree, newModel);
                 fluid.reRender(template, root, pageTree, renderOptions);
                 updateStyles(that, newModel, oldModel);
             }
@@ -598,7 +598,7 @@ fluid_1_1 = fluid_1_1 || {};
 
     fluid.pager.rangeAnnotator = function (that, options) {
         var roots = {};
-        that.events.onRenderPageLinks.addListener(function (tree) {
+        that.events.onRenderPageLinks.addListener(function (tree, newModel) {
             var column = that.options.annotateColumnRange;
             var dataModel = that.options.dataModel;
             // TODO: reaching into another component's options like this is a bit unfortunate
@@ -614,12 +614,12 @@ fluid_1_1 = fluid_1_1 || {};
                 return fluid.pager.fetchValue(that, dataModel, index, columnDef.valuebinding, roots);
             }
             var tModel = {};
-            fluid.model.copyModel(tModel, that.model);
+            fluid.model.copyModel(tModel, newModel);
             
             fluid.transform(tree, function (cell) {
                 if (cell.ID === "page-link:link") {
                     var page = cell.pageIndex;
-                    var start = page * that.model.pageSize;
+                    var start = page * tModel.pageSize;
                     tModel.pageIndex = page;
                     var limit = computePageLimit(tModel);
                     var iValue = fetchValue(start);
