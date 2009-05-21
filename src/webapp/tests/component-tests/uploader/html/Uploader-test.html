@@ -120,6 +120,34 @@
         			<button type="button" class="fl-uploader-cancel cancel" >Cancel</button>
         			<button type="button" class="fl-uploader-done" >Done</button>
         		</div>
+                <!-- queue error message -->
+                <div class="flc-uploader-queueError fl-uploader-queueError  fl-uploader-hidden">
+                    <div class="flc-uploader-queueError-message fl-uploader-queueError-message">
+                       One or more of the selected files could not be added to the file queue.
+                    </div>
+                    <div class="flc-uploader-queueError-list fl-uploader-hidden">
+                        <!-- Top of the error queue -->
+                        <div class="fl-uploader-queueError-header">
+                            <span class="fl-uploader-queueError-name">File Name</span>
+                            <span class="fl-uploader-queueError-size">Size</span>
+                        </div>
+                        <!-- The error queue -->
+                        <div class="flc-uploader-queueError-scroller fl-scroller">
+                            <div class="fl-scroller-inner">
+                                <div class="flc-uploader-queueError-queue fl-uploader-queueError-queue">
+                                	<div class="flc-uploader-queueError-file fl-uploader-queueError-file">
+                                        <span class="flc-uploader-queueError-name fl-uploader-queueError-name">fileName</span>
+                                        <span class="flc-uploader-queueError-size fl-uploader-queueError-size">fileSize</span>
+                                        <div class="flc-uploader-queueError-error fl-uploader-queueError-error">fileError</div>
+                                    </div>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fl-uploader-btns">
+                        <button class="flc-uploader-queueError-Okay fl-uploader-button-default">&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;</button>
+                    </div>
+                </div>      
         	</div>
         </form>
      </div>
