@@ -436,6 +436,7 @@ button span.fl-uploader-button-text-hidden {
 
 .fl-uploader-queueError {
     position: absolute;
+    top: 1.5em;
     z-index: 10;
     margin-left: 30px;
     width : 330px;
@@ -456,6 +457,7 @@ button span.fl-uploader-button-text-hidden {
 }
 
 .fl-uploader-queueError-name {
+    position: relative;
     display: block;
     float: left;
     font-weight: bold;
@@ -489,6 +491,10 @@ button span.fl-uploader-button-text-hidden {
     margin: 0;
 }
     
+.fl-uploader-queueError .fl-scroller {
+    border-bottom-width: 1px;
+}
+
 /* Hidden SWF for Flash 9*/
 
 .fl-uploader-flash9-container {

@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>FileQueue ERROR View Tests</title>
+    
+    <!--  This is the jqUnit test css file -->
+    <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/testsuite.css" />
+    <link rel="Stylesheet" media="screen" href="../../../../components/uploader/css/Uploader.css" />
+    
+    <script src="../../../../lib/jquery/core/js/jquery.js" type="text/javascript"></script>
+    <script src="../../../../lib/jquery/ui/js/ui.core.js" type="text/javascript"></script>
+    <script src="../../../../framework/core/js/jquery.keyboard-a11y.js" type="text/javascript"></script>
+    <script src="../../../../framework/core/js/Fluid.js" type="text/javascript"></script>
+    <script src="../../../../components/uploader/js/Scroller.js" type="text/javascript"></script>
+    <script src="../../../../components/uploader/js/Uploader.js" type="text/javascript"></script>
+     
+
+    <!--  These are the jqUnit test js files -->
+    <script type="text/javascript" src="../../../lib/qunit/js/testrunner.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+
+    <script type="text/javascript" src="../js/FileQueueErrorViewTests.js"></script>
+</head>
+
+<body id="body">
+    <h1 id="header">FileQueueErrorView Tests</h1>
+    <h2 id="banner"></h2>
+    <h2 id="userAgent"></h2>
+
+    <ol id="tests"></ol>
+    
+    <!-- Test HTML -->
+    <div id="main">
+        
+        <!-- queue error message -->
+        <div class="flc-uploader-queueError fl-uploader-queueError  fl-uploader-hidden">
+            <div class="flc-uploader-queueError-message fl-uploader-queueError-message">
+               One or more of the selected files could not be added to the file queue.
+            </div>
+            <div class="flc-uploader-queueError-list fl-uploader-hidden">
+                <!-- Top of the error queue -->
+                <div class="fl-uploader-queueError-header">
+                    <span class="fl-uploader-queueError-name">File Name</span>
+                    <span class="fl-uploader-queueError-size">Size</span>
+                </div>
+                <!-- The error queue -->
+                <div class="flc-uploader-queueError-scroller fl-scroller">
+                    <div class="fl-scroller-inner">
+                        <div class="flc-uploader-queueError-queue fl-uploader-queueError-queue">
+                        	<div class="flc-uploader-queueError-file fl-uploader-queueError-file">
+                                <span class="flc-uploader-queueError-name fl-uploader-queueError-name">fileName</span>
+                                <span class="flc-uploader-queueError-size fl-uploader-queueError-size">fileSize</span>
+                                <div class="flc-uploader-queueError-error fl-uploader-queueError-error">fileError</div>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fl-uploader-btns">
+                <button class="flc-uploader-queueError-Okay fl-uploader-button-default">&nbsp;&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;&nbsp;</button>
+            </div>
+            
+        </div>      
+        <div id="mockSWFobj">&nbsp;</div>
+    </div>
+</body>
+</html>

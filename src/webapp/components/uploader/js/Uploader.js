@@ -24,6 +24,8 @@ fluid_1_1 = fluid_1_1 || {};
  *************************/
 
 (function ($, fluid) {
+    var swfObj = {};
+    
     var showLimitError = function (that) {
         var errorText = fluid.stringTemplate(that.options.strings.errors.QUEUE_LIMIT_EXCEEDED, {
             fileSizeLimit: that.uploadManager.options.fileUploadLimit || that.uploadManager.options.fileQueueLimit
@@ -79,9 +81,9 @@ fluid_1_1 = fluid_1_1 || {};
     };
     
     var addKeyboardNavigation = function (that) {
-        fluid.tabbable(that.container);
-        that.selectableContext = fluid.selectable(that.container, {
-            selectableSelector: that.options.selectors.fileRows,
+        fluid.tabbable(that.locate("errorQueue"));
+        that.selectableContext = fluid.selectable(that.locate("errorQueue"), {
+            selectableSelector: that.options.selectors.row,
             onSelect: function (itemToSelect) {
                 $(itemToSelect).addClass(that.options.styles.selected);
             },
@@ -108,12 +110,14 @@ fluid_1_1 = fluid_1_1 || {};
     };
     
     var setupFileQueueError = function (that, uploadManager) {
+        that.errorCount = 0;
         that.uploadManager = uploadManager;
         createScroller(that);
         prepareTemplateElements(that);         
         addKeyboardNavigation(that); 
         bindModelEvents(that);
         bindDOMEvents(that);
+        swfObj = $("#" + uploadManager.swfUploader.movieName);
     };
 
 
@@ -138,12 +142,17 @@ fluid_1_1 = fluid_1_1 || {};
                 } else {
                     showLimitError(that);
                 }
+                // hide the swf as IE has layering problems with Flash
+                swfObj.hide();
                 that.container.show();
+                // refresh the scroller as IE6 doesn't return heights on hidden elements
+                that.scroller.refreshView();
             }
         };
         
         that.hideErrors = function () {
             that.container.hide();
+            swfObj.show();  
         };
         
         that.refreshView = function () {
@@ -180,7 +189,11 @@ fluid_1_1 = fluid_1_1 || {};
                 ZERO_BYTE_FILE: "file does not contain any data.",
                 INVALID_FILETYPE: "%fileName is the wrong file type."
             }
+        },
+        styles: {
+            selected: "fl-uploader-file-focus"
         }
+        
     });
 })(jQuery, fluid_1_1);
 
