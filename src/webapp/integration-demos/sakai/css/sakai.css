@@ -17,40 +17,7 @@ p {margin:0; padding-bottom:1em;}
 /************************************/
 #dialog_container {
     width:60em;
-    /*
-    position:absolute; 
-    top:0; 
-    left:0; 
-    display: none;    
-    z-index:1000;
-    */
 }
-#dialog_container #close_dialog {
-/*	position:absolute; 
-	z-index:5000;
-	top:0; 
-	right:0;
-	padding:5px; 
-	border: 2px solid #000; 
-	border-top:none; 
-	border-right:none;
-	*/
-}
-.dialog {background-color:#fff; border:1px solid #000}
-.ui-dialog-titlebar {cursor:move;}
-.ui-dialog .fl-icon-close {margin-top:-12px;}
-.ui-dialog-titlebar-close {display:none;}
-.ui-widget-overlay {left:0; position:absolute; top:0; opacity:0.65; filter:alpha(opacity=65);}
-
-.fl-theme-slate .ui-widget-overlay {background-color:#999; }
-.fl-theme-coal .ui-widget-overlay {background-color:#333; }
-.fl-theme-mist .ui-widget-overlay {background-color:#ebebeb; }
-
-.fl-theme-slate .ui-dialog-titlebar {background:transparent url(../../../framework/fss/images/themes/slate/icon-widget-gripper.png) no-repeat center top;}
-.fl-theme-coal .ui-dialog-titlebar {background:transparent url(../../../framework/fss/images/themes/coal/icon-widget-gripper.png) no-repeat center top;}
-.fl-theme-mist .ui-dialog-titlebar {background:transparent url(../../../framework/fss/images/themes/mist/icon-widget-gripper.png) no-repeat center top;}
-#dialog_container .fl-widget-titlebar {background-image:none;}
-
 
 /************************************/
 .header {background:#00A5E3 url('../images/header2.png') no-repeat left top; color:#fff; overflow:auto; padding:20px 0 25px 20px;}

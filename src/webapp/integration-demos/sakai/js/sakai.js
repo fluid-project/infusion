@@ -64,9 +64,9 @@ $(function () {
 
     dialog_container.dialog({
     	bgiframe: true,
+        title: 'User Interface Options',
     	width: '60em',
     	modal: true,
-        dialogClass: 'fl-widget fl-grabbable',
         autoOpen: false,
         draggable: true
 	});
