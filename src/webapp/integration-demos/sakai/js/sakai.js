@@ -65,7 +65,7 @@ $(function () {
     dialog_container.dialog({
     	bgiframe: true,
         title: 'User Interface Options',
-    	width: '72em',
+    	width: '66em',
     	modal: true,
         autoOpen: false,
         draggable: true
