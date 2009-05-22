@@ -46,7 +46,7 @@
 
 /* Component containers
 ----------------------------------*/
-.fl-theme-slate .ui-widget { font-family: Verdana,Arial,sans-serif; font-size: 1.2em; }
+.fl-theme-slate .ui-widget { font-family: Verdana,Arial,sans-serif; font-size: 1em; }
 .fl-theme-slate .ui-widget input, .fl-theme-slate .ui-widget select, .fl-theme-slate .ui-widget textarea, .fl-theme-slate .ui-widget button { font-family: Verdana,Arial,sans-serif; font-size: 1em; }
 .fl-theme-slate .ui-widget-content { border: 1px solid #999999; background: #ebebeb url(images/ui-bg_flat_0_ebebeb_40x100.png) 50% 50% repeat-x; color: #000000; }
 .fl-theme-slate .ui-widget-content a { color: #000000; }

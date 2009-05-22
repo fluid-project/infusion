@@ -46,7 +46,7 @@
 
 /* Component containers
 ----------------------------------*/
-.fl-theme-hci .ui-widget { font-family: Verdana,Arial,sans-serif; font-size: 1.2em; }
+.fl-theme-hci .ui-widget { font-family: Verdana,Arial,sans-serif; font-size: 1em; }
 .fl-theme-hci .ui-widget input, .fl-theme-hci .ui-widget select, .fl-theme-hci .ui-widget textarea, .fl-theme-hci .ui-widget button { font-family: Verdana,Arial,sans-serif; font-size: 1em; }
 .fl-theme-hci .ui-widget-content { border: 1px solid #ffffff; background: #000000 url(images/ui-bg_flat_0_000000_40x100.png) 50% 50% repeat-x; color: #ffffff; }
 .fl-theme-hci .ui-widget-content a { color: #ffffff; }

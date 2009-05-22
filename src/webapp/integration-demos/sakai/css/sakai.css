@@ -15,11 +15,6 @@ p {margin:0; padding-bottom:1em;}
 .center {margin-left:310px; margin-right:310px; padding:0 0px;}
 
 /************************************/
-#dialog_container {
-    width:60em;
-}
-
-/************************************/
 .header {background:#00A5E3 url('../images/header2.png') no-repeat left top; color:#fff; overflow:auto; padding:20px 0 25px 20px;}
 .header h1 {font:normal 2em Arial, Helvetica, sans-serif; margin:0; padding:0; color:#fff; border:none;}
 .header p {margin:0; padding:0; display:none;}

@@ -1,8 +1,7 @@
 /* CSS Specifically for the UI Options dialog and Preview window */
 .fl-uiOptions {background-color:#fff;}
-.fl-uiOptions .ui-accordion-content {border: 1px solid}/*fixes an IE issue where the border of the content needs to be specified*/
-.fl-uiOptions {padding:10px;}
-.fl-uiOptions fieldset {margin:0 20px 5px 0;}
+.fl-uiOptions .ui-accordion-content {border: 1px solid}/*fixes an IE issue where the border of the content needs to be specified, only when jquery ui css isnt available*/
+
 /*default styling without jquery ui css*/
 .fl-uiOptions h2 {cursor:pointer; margin:0; padding:5px 5px 5px 24px; background-color:#f5f5f5}
 .fl-uiOptions h2:hover {background-color:#ccc;}
@@ -11,10 +10,11 @@
 
 
 .fl-uiOptions fieldset ol {margin:0; padding:15px 0 0 0;}
-.fl-uiOptions fieldset li {padding:2px 0; clear:both}
+.fl-uiOptions fieldset li {padding:2px 0; clear:both; list-style-type:none;}
 .fl-uiOptions legend {text-indent:-100%; margin-bottom:-1em;}
 .fl-uiOptions .fl-uiOptions-buttons-refresher-5 {width:5em;}
 .fl-uiOptions .fl-uiOptions-buttons-refresher-10 {width:10em;}
+
 
 
 .fl-uiOptions .fl-uiOptions-min-text-size .fl-textfield,
@@ -24,7 +24,7 @@
     margin-bottom:0;
     margin-right:5%;
     margin-top:5px;
-    width:30%;
+    /*width:30%;*/
 }
 
 .fl-uiOptions .fl-subcomp-preview {padding:0;border:3px solid;}

@@ -46,7 +46,7 @@
 
 /* Component containers
 ----------------------------------*/
-.fl-theme-coal .ui-widget { font-family: Verdana,Arial,sans-serif; font-size: 1.1em; }
+.fl-theme-coal .ui-widget { font-family: Verdana,Arial,sans-serif; font-size: 1em; }
 .fl-theme-coal .ui-widget input, .fl-theme-coal .ui-widget select, .fl-theme-coal .ui-widget textarea, .fl-theme-coal .ui-widget button { font-family: Verdana,Arial,sans-serif; font-size: 1em; }
 .fl-theme-coal .ui-widget-content { border: 1px solid #cccccc; background: #cccccc url(images/ui-bg_flat_75_cccccc_40x100.png) 50% 50% repeat-x; color: #222222; }
 .fl-theme-coal .ui-widget-content a { color: #222222; }

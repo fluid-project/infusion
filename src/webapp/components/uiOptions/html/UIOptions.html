@@ -65,99 +65,87 @@
             
             <!-- column 1, options -->
             <div class="fl-col">
-                <fieldset class="fl-controls-right">
+                <fieldset>
                     <h2>Easier to see</h2>
-                    <div>
-                        <ol>
-                            <li>
-                                <label for="text-font" class="fl-label">Font style:</label>
-                                <select rsf:id="text-font" id="text-font" class="flc-uiOptions-control" >
-                                </select>
-                            </li>
-                            
+                    <div>                        
+                        <ol class="fl-force-left">
+                            <li>Font Style:</li>
+                            <li>Minimum text size:</li>
+                            <li>Font Style:</li>
+                            <li>Text Spacing:</li>
+                            <li>Line Spacing:</li>
+                            <li>Contrast:</li>
+                            <li>Background Images:</li>
+                            <li>Simplified Layout:</li>
+                        </ol>
+                        
+                        <ol class="fl-force-left">
+                            <li><select rsf:id="text-font" id="text-font" class="flc-uiOptions-control" ></select></li>
                             <li class="flc-uiOptions-min-text-size fl-uiOptions-min-text-size">
-                                <label for="min-text-size" class="fl-label">Minimum text size:</label>
                                 <p class="fl-slider fl-force-right fl-slider-horz flc-textfieldSlider-slider flc-uiOptions-control"> </p>
-                                <input id="min-text-size" class="fl-textfield flc-textfieldSlider-field flc-uiOptions-control" type="text" />pt                                
+                                <input id="min-text-size" class="fl-textfield flc-textfieldSlider-field flc-uiOptions-control" type="text" />pt
                             </li>
-        
                             <li>
-                                <label for="text-spacing" class="fl-label">Text Spacing:</label>
                                 <select rsf:id="text-spacing" id="text-spacing" class="flc-uiOptions-control" >
                                     <option>text-spacing here</option>
                                 </select>
                             </li>
                             <li class="flc-uiOptions-line-spacing fl-uiOptions-line-spacing">
-                                <label for="line-spacing" class="fl-label">Line Spacing:</label>
                                 <p class="fl-slider fl-force-right fl-slider-horz flc-textfieldSlider-slider flc-uiOptions-control"> </p>
-                                <input id="line-spacing" class="fl-textfield flc-textfieldSlider-field flc-uiOptions-control" type="text" />                             
+                                <input id="line-spacing" class="fl-textfield flc-textfieldSlider-field flc-uiOptions-control" type="text" />
                             </li>
                             <li>
-                                <label class="fl-label" for="theme">Contrast:</label>
                                 <select rsf:id="theme" id="theme" class="flc-uiOptions-control" >
                                     <option>contrast here</option>
                                 </select>
                             </li>
-        
                             <li>
-                                <fieldset>
-                                    <legend>Background Images</legend>
-                                    <label class="fl-label">Background Images:</label>
-                                    <span rsf:id="background-images-row:">
-                                        <input rsf:id="background-images-choice" id="background-images-choice" class="flc-uiOptions-control" type="radio" />
-                                        <label rsf:id="background-images-label" for="background-images-choice">choice</label>
-                                    </span>
-                                </fieldset>
+                                <span rsf:id="background-images-row:">
+                                    <input rsf:id="background-images-choice" id="background-images-choice" class="flc-uiOptions-control" type="radio" />
+                                    <label rsf:id="background-images-label" for="background-images-choice">choice</label>
+                                </span>
                             </li>
-        
-                            <li>                             
-                                <fieldset>
-                                    <legend>Simplified Layout</legend>
-                                    <label class="fl-label">Simplified Layout:</label>
-                                    <span rsf:id="layout-row:">
-                                        <input rsf:id="layout-choice" id="layout-choice" class="flc-uiOptions-control" type="radio" />
-                                        <label rsf:id="layout-label" for="layout-choice">choice</label>
-                                    </span>
-                                </fieldset>
+                            <li>
+                                <span rsf:id="layout-row:">
+                                    <input rsf:id="layout-choice" id="layout-choice" class="flc-uiOptions-control" type="radio" />
+                                    <label rsf:id="layout-label" for="layout-choice">choice</label>
+                                </span>
                             </li>
                         </ol>
+                        
                     </div>
+
                 </fieldset>
                 <fieldset class="fl-controls-right">
                     <h2>Easier to find</h2>
                     <div>
-                        <ol>
+                        <ol class="fl-force-left">
+                            <li>Table of Contents:</li>
+                            <li>Links:</li>
+                            <li>Inputs:</li>
+                        </ol>
+                        
+                        <ol class="fl-force-left">
                             <li>
-                                <fieldset>
-                                    <legend>Table of Contents</legend>
-                                    <label class="fl-label">Table of Contents:</label>
-                                    <span rsf:id="toc-row:">
-                                        <input rsf:id="toc-choice" id="toc-choice" class="fl-textfield flc-uiOptions-control" type="radio"/>
-                                        <label rsf:id="toc-label" for="toc-choice">choice</label>
-                                    </span>
-                                </fieldset>
-                            </li>                            
-                            <li>
-                            	<fieldset>
-                            	    <legend>Links</legend>
-                                    <label class="fl-label">Links:</label>
-                                    <input rsf:id="links-underline" id="links-underline" class="flc-uiOptions-control" type="checkbox"/>
-                                    <label for="links-underline">Underline</label>
-                                    <input rsf:id="links-bold" id="links-bold" class="flc-uiOptions-control" type="checkbox"/>
-                                    <label for="links-bold">Bold</label>
-                                    <input rsf:id="links-larger" id="links-larger" class="flc-uiOptions-control" type="checkbox"/>
-                                    <label for="links-larger">Larger</label>
-                                </fieldset>
+                                <span rsf:id="toc-row:">
+                                    <input rsf:id="toc-choice" id="toc-choice" class="fl-textfield flc-uiOptions-control" type="radio"/>
+                                    <label rsf:id="toc-label" for="toc-choice">choice</label>
+                                </span>
                             </li>
                             <li>
-                            	<fieldset>
-                            	    <legend>Inputs</legend>
-                                    <label class="fl-label">Inputs:</label>
-                                    <input rsf:id="inputs-larger" id="inputs-larger" class="flc-uiOptions-control" type="checkbox"/>
-                                    <label for="inputs-larger">Larger</label>
-                                </fieldset>                                   
+                                <input rsf:id="links-underline" id="links-underline" class="flc-uiOptions-control" type="checkbox"/>
+                                <label for="links-underline">Underline</label>
+                                <input rsf:id="links-bold" id="links-bold" class="flc-uiOptions-control" type="checkbox"/>
+                                <label for="links-bold">Bold</label>
+                                <input rsf:id="links-larger" id="links-larger" class="flc-uiOptions-control" type="checkbox"/>
+                                <label for="links-larger">Larger</label>
+                            </li>
+                            <li>
+                                <input rsf:id="inputs-larger" id="inputs-larger" class="flc-uiOptions-control" type="checkbox"/>
+                                <label for="inputs-larger">Larger</label>
                             </li>
                         </ol>
+                        
                     </div>
                 </fieldset>
             </div>
