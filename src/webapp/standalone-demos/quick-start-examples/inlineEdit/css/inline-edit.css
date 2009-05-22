@@ -1,10 +1,9 @@
-body {font:normal 12px "Arial","Tahoma",sans-serif}
-table {border-collapse:collapse;}
-table th {padding:3px 5px;}
-table td {padding:3px 5px;}
-h1 {font-size:125%; padding:5px;}
-
-#customEditorContainer {}
+.combination-table td{
+    vertical-align: top;
+}
+.review1, .review2{
+    width: 400px;
+}
 
 #customEdit .fl-inlineEdit-invitation {
     border      : 1px solid red;
