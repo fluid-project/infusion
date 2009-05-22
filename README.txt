@@ -76,7 +76,6 @@ The organization of the full source code for the Fluid library is as follows:
              json/
              swfobject/
              swfupload/
-             tiny_mce/
 
 
 Examples and Sample Code
