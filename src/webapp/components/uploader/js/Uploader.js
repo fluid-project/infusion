@@ -24,7 +24,6 @@ fluid_1_1 = fluid_1_1 || {};
  *************************/
 
 (function ($, fluid) {
-    var swfObj = {};
     
     var showLimitError = function (that) {
         var errorText = fluid.stringTemplate(that.options.strings.errors.QUEUE_LIMIT_EXCEEDED, {
@@ -110,6 +109,8 @@ fluid_1_1 = fluid_1_1 || {};
     };
     
     var setupFileQueueError = function (that, uploadManager) {
+        that.events = uploadManager.events;
+        
         that.errorCount = 0;
         that.uploadManager = uploadManager;
         createScroller(that);
@@ -137,13 +138,13 @@ fluid_1_1 = fluid_1_1 || {};
         
         that.showErrors = function () {
             if (that.errorCount) {
+                that.events.onShowErrorMessage.fire();
                 if (that.locate("row").length > 0) {
                     showFileErrors(that);
                 } else {
                     showLimitError(that);
                 }
                 // hide the swf as IE has layering problems with Flash
-                swfObj.hide();
                 that.container.show();
                 // refresh the scroller as IE6 doesn't return heights on hidden elements
                 that.scroller.refreshView();
@@ -152,7 +153,7 @@ fluid_1_1 = fluid_1_1 || {};
         
         that.hideErrors = function () {
             that.container.hide();
-            swfObj.show();  
+            that.events.afterHideErrorMessage.fire();
         };
         
         that.refreshView = function () {
@@ -978,7 +979,9 @@ fluid_1_1 = fluid_1_1 || {};
             onFileError: null,
             onFileSuccess: null,
             afterFileComplete: null,
-            afterUploadComplete: null
+            afterUploadComplete: null,
+            onShowErrorMessage: null,
+            afterHideErrorMessage: null
         },
 
         strings: {

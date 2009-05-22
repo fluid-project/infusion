@@ -17,8 +17,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(function () {
         
         var removedFile = null;
-        
-        var uploadManager3uploadLimit = {
+
+        var mockUploadManager = {
             options: {
                 fileSizeLimit: "20480 KB",
                 fileTypes: "*.png",
@@ -27,17 +27,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
             },
             swfUploader: {
                 movieName: "mockSWFobj"
-            }
+            },
+            events: {}
         };
-        
-        var uploadManager3queueLimit = {
-            options: {
-                fileSizeLimit: "20480 KB",
-                fileTypes: "*.png",
-                fileUploadLimit: 0,
-                fileQueueLimit: 3
-            }
-        };
+
+        fluid.mergeListeners(mockUploadManager.events , {
+            onShowErrorMessage: null,
+            afterHideErrorMessage: null
+        });
+
         
         var docLittleTestFile = {
              id : 0, // SWFUpload file id, used for starting or cancelling and upload 
@@ -86,17 +84,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                 sizeForRow(q, row));    
         };
       
-        var createFileErrorQueueUploadLimit = function (qEl) {
-            var q = fluid.fileQueueErrorView(qEl, uploadManager3uploadLimit);
-            
-            return q;
+        var createErrorQueue = function (qEl) {
+            return fluid.fileQueueErrorView(qEl, mockUploadManager);
         };
         
-        var createFileErrorQueueQueueLimit = function (qEl) {
-            var q = fluid.fileQueueErrorView(qEl, uploadManager3queueLimit);
-            
-            return q;
-        };
+       
         
         // File Error Queue test case
         var setupFunction = function () {
@@ -110,7 +102,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         fileQueueErrorViewTests.test("Init and initial visibility", function () {
             expect(7);
             
-            var q = createFileErrorQueueUploadLimit(qEl);
+            var q = createErrorQueue(qEl);
             var qSelector = q.options.selectors.errorQueue;
             
             /* 1.1 */
@@ -140,34 +132,22 @@ https://source.fluidproject.org/svn/LICENSE.txt
         /* Test 2 */
         
         fileQueueErrorViewTests.test("show and hide", function () {
-            expect(6);
+            expect(3);
             
-            var q = createFileErrorQueueUploadLimit(qEl);
-            var swfElmSelector = "#"+q.uploadManager.swfUploader.movieName;
+            var q = createErrorQueue(qEl);
             var qSelector = q.options.selectors.errorQueue;
-            
-            console.log(swfElmSelector);
             
             /* 2.1 */
             q.queueError(docLittleTestFile, -110, "");                        
             jqUnit.assertEquals("Added error, errorCount should be 1", q.errorCount, 1);
             
             /* 2.2 */
-            jqUnit.isVisible("the Flash DOM element is visible", swfElmSelector);
-
-            /* 2.3 */
             q.showErrors();            
             jqUnit.isVisible("showErrors() DID show -  we now have an error", qSelector);
             
-            /* 2.4 */
-            jqUnit.notVisible("the Flash DOM element is hidden", swfElmSelector);
-
-            /* 2.5 */
+            /* 2.3 */
             q.hideErrors();
             jqUnit.notVisible("hideErrors() DID hide", qSelector);
-
-            /* 2.6 */
-            jqUnit.isVisible("the Flash DOM element is visible again", swfElmSelector);
                         
         });
 
