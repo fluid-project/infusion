@@ -283,8 +283,12 @@ fluid_1_1 = fluid_1_1 || {};
         return fluid.model.getBeanValue(dataModel, path);
     };
     
+    function isSortable(columnDefs, model) {
+        var columnDef = model.sortKey? fluid.pager.findColumnDef(columnDefs, model.sortKey) : null;
+        return columnDef ? columnDef.sortable : false;
+    };
 
-    fluid.pager.basicSorter = function (overallThat, model) {
+    fluid.pager.basicSorter = function (overallThat, model) {        
         var dataModel = overallThat.options.dataModel;
         var roots = {};
         var columnDefs = getColumnDefs(overallThat);
@@ -438,7 +442,8 @@ fluid_1_1 = fluid_1_1 || {};
     
     function setModelSortHeaderClass(newModel, opts) {
         var styles = opts.overallOptions.styles;
-        setSortHeaderClass(styles, bigHeaderForKey(newModel.sortKey, opts), newModel.sortDir);
+        var sort = isSortable(opts.columnDefs, newModel) ? newModel.sortDir : 0;
+        setSortHeaderClass(styles, bigHeaderForKey(newModel.sortKey, opts), sort);
     }
    
     function fireModelChange(that, newModel, forceUpdate) {
@@ -448,7 +453,8 @@ fluid_1_1 = fluid_1_1 || {};
         }
         if (forceUpdate || newModel.pageIndex !== that.model.pageIndex || newModel.pageSize !== that.model.pageSize || newModel.sortKey !== that.model.sortKey ||
             newModel.sortDir !== that.model.sortDir) {
-            var sorted = newModel.sortKey? that.options.sorter(that, newModel) : null;
+            var sorted = isSortable(getColumnDefs(that), newModel) ? 
+                that.options.sorter(that, newModel) : null;
             that.permutation = sorted;
             that.events.onModelChange.fire(newModel, that.model, that);
             fluid.model.copyModel(that.model, newModel);
