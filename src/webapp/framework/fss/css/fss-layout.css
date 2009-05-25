@@ -88,6 +88,9 @@ Generic containers for columns and layouts
 
 .fl-layout-linear .fl-linearEnabled {width:100% !important; /*position:relative;*/ display:block;} /* linearization opt in for special cases */
 
+.fl-layout-linear .fl-button-left,
+.fl-layout-linear .fl-button-right {padding:1em;}
+
 /*
 Layout Helpers
 =============================================
