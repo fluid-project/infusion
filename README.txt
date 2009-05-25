@@ -121,14 +121,14 @@ Third Party Software in Fluid
 ------------------------------
 This is a list of publicly available software that is included in the Fluid bundle, along with their licensing terms.
 
-    * jQuery javascript library: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * jQuery UI javascript widget library: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * jQuery javascript library v1.3.2: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * jQuery UI javascript widget library v1.7: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * jQuery QUnit testrunner: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * CSS styling reset from YUI: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
-    * Douglas Crockford's JSON parsing and stringifying methods: http://www.json.org/ (Public Domain)
+    * Douglas Crockford's JSON parsing and stringifying methods (from 2007-11-06): http://www.json.org/ (Public Domain)
     * SWFUpload: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
-    * SWFObject: http://code.google.com/p/swfobject/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
-    * XML for Script's Fast Pull Parser (LGPL licensed http://xmljs.sourceforge.net/)
+    * SWFObject v2.1: http://code.google.com/p/swfobject/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
+    * XML for Script's Fast Pull Parser v3.1 (LGPL licensed http://xmljs.sourceforge.net/)
     * Sample markup and stylesheets from Sakai (http://sakaiproject.org) and uPortal (http://www.uportal.org/)
     * TinyMCE, Javascript HTML WYSIWYG editor control: (LGPL licensed http://tinymce.moxiecode.com/license.php)  
     * FCKeditor, HTML text editor (LGPL licensed http://www.fckeditor.net/license)
