@@ -39,10 +39,6 @@ var globalObj = this;
         
         return (includeArg || excludeArg ? customJsFileName : allJsFileName);
     };
-    
-    var cssFileName = function (jsName) {
-        return jsName.replace(/\.js$/, ".css");
-    };
 
     var setProperty = function (name, value) {
         globalObj.project.setProperty(name, value);
@@ -57,9 +53,8 @@ var globalObj = this;
      * Finds all the modules based on the convention of the module property prefix and 
      * returns them as a comma delimited string
      */
-    // Note that it manually puts fss in the first place. This is to ensure the correct order when concatenating the css files.
     var allModules = function () {
-        var str = "fss,"; // TODO: need to find a better solution than hardcoding the fss module into the string
+        var str = "";
         for (var name in globalObj) {
             if (name.search(modulePrefix) === 0) {
                 str += name.slice(modulePrefix.length) + ",";
@@ -141,7 +136,6 @@ var globalObj = this;
     var normalizeDeclaration = function (declaration) {
         declaration.files = asArray(declaration.files);
         declaration.dependencies = asArray(declaration.dependencies);
-        declaration.cssFiles = asArray(declaration.cssFiles);
     };
     
     /**
@@ -158,7 +152,7 @@ var globalObj = this;
     };
     
     /**
-     * Builds the moduleJSFileTable, moduleCSSFileTable and the requiredModules list for the moduleName passed in
+     * Builds the moduleJSFileTable, and the requiredModules list for the moduleName passed in
      * 
      * @param {Object} that
      * @param {Object} moduleName
@@ -175,7 +169,6 @@ var globalObj = this;
         var moduleInfo = that.loadDeclarationForModule(moduleName);
         normalizeDeclaration(moduleInfo[moduleName]);
         that.moduleJSFileTable[moduleName] = moduleInfo[moduleName].files;  
-        that.moduleCSSFileTable[moduleName] = moduleInfo[moduleName].cssFiles; 
         var moduleDependencies = moduleInfo[moduleName].dependencies;
         logDependencies(moduleName, moduleDependencies);
 
@@ -263,7 +256,6 @@ var globalObj = this;
         var that = {
             requiredModules: [], // A list of modules to be included in dependency order
             moduleJSFileTable: {}, // A map of the files related to modules
-            moduleCSSFileTable: {}, // A map of the files related to modules
             excludedModules: modulesToExclude  
         };    
         
@@ -295,35 +287,11 @@ var globalObj = this;
         };
         
         /**
-         * Returns the list of all the css files required as a comma delimited string.
-         */
-        that.getAllRequiredCSSFiles = function () {
-            return getAllRequiredFiles(that.requiredModules, that.moduleCSSFileTable, "css");
-        };
-        
-        /**
          * Builds up the regular expression needed to find the files that are included in single js file
          */
         that.buildJSRegExpression = function () {
             var obj = globalObj.project;
             return buildRegExpression(obj.getProperty("regexStartJS"), obj.getProperty("regexEndJS"), that.requiredModules, that.moduleJSFileTable);
-        };
-        
-        /**
-         * Builds up the regular expression needed to find the files that are included in single css file
-         */
-        that.buildCSSRegExpression = function () {
-            var obj = globalObj.project;
-            return buildRegExpression(obj.getProperty("regexStartCSS"), obj.getProperty("regexEndCSS"), that.requiredModules, that.moduleCSSFileTable);
-        };
-        
-        /**
-         * Builds up the regular expression needed to find the first file that is included in single css file.
-         * This will allow you to replace the correct portion of the href to get the proper relative path back to the single css file
-         */
-        that.buildSingleCSSRegExpression = function () {
-            var obj = globalObj.project;
-            return buildRegExpression(obj.getProperty("regexSingleStartCSS"), obj.getProperty("regexSingleEndCSS"), that.requiredModules, that.moduleCSSFileTable);
         };
     
         /**
@@ -356,7 +324,7 @@ var globalObj = this;
     
     /**
      * Kicks off dependency resolution 
-     * Results in setting eight ant properties: allRequiredFiles, allRequiredCSSFiles, requiredDirectoriesSelector, jsRegExp, cssRegExp, cssSingleRegExp, cssfile and jsfile
+     * Results in setting four ant properties: allRequiredFiles, requiredDirectoriesSelector, jsRegExp, and jsfile
      */
     var resolveDependenciesFromArguments = function () {
         var excludedFiles = (typeof(globalObj.exclude) === "undefined") ? [] : parseArgument(globalObj.exclude);
@@ -367,12 +335,8 @@ var globalObj = this;
         var jsFile = jsFileName(globalObj.jsfilename, globalObj.include, globalObj.exclude);
         
         setProperty("allRequiredJSFiles", resolver.getAllRequiredJSFiles(resolver.moduleJSFileTable));
-        setProperty("allRequiredCSSFiles", resolver.getAllRequiredCSSFiles(resolver.moduleCSSFileTable)); 
         setProperty("requiredDirectoriesSelector", resolver.getRequiredDirectories());
         setProperty("jsRegExp", resolver.buildJSRegExpression());
-        setProperty("cssRegExp", resolver.buildCSSRegExpression());
-        setProperty("cssSingleRegExp", resolver.buildSingleCSSRegExpression());
-        setProperty("cssfile", cssFileName(jsFile));
         setProperty("jsfile", jsFile);        
     };
     

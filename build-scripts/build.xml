@@ -37,10 +37,6 @@
     <!-- properties for URL rewriting -->
     <property name="regexStartJS" value="&lt;script{1,1}?.*" />
     <property name="regexEndJS" value="{1,1}?.*script>" />
-    <property name="regexStartCSS" value="&lt;link{1,1}?.*" />
-    <property name="regexEndCSS" value="{1,1}?.*>" />
-    <property name="regexSingleStartCSS" value="\./{1,1}?\w+?.*" />
-    <property name="regexSingleEndCSS" value="&quot;" />
     <property name="fluidRegExp" value="framework/core/js/Fluid.js" />
     
     <!-- task definition for JSLint -->
@@ -214,13 +210,7 @@
         </concat>    
     </target>
     
-    <target name="concatCSS" >
-        <concat destfile="${build}/${cssfile}" >
-            <filelist dir="${src}" files="${allRequiredCSSFiles}" /> 
-        </concat>    
-    </target>
-    
-    <!-- Runs the javascript dependency resolver which sets $jsfile, $cssfile, $requiredDirectoriesSelector, $jsRegExp, $cssRegExp, $cssSingleRegExp, $allRequiredCSSFiles and $allRequiredJSFiles -->
+    <!-- Runs the javascript dependency resolver which sets $jsfile, $requiredDirectoriesSelector, $jsRegExp, and $allRequiredJSFiles -->
     <target name="resolveDependencies" depends="clean">
         <script language="javascript" src="build.js" />
     </target>
@@ -272,27 +262,6 @@
         </replaceregexp>
     </target>
     
-    <!-- Replaces the first <link> block pertaining to files included in the single css file,
-     with a reference to the single css file -->
-    <target name="replaceCSS">
-        <replaceregexp match="${cssSingleRegExp}" replace="\./${cssfile}&quot;">
-            <fileset dir="${products}">
-                <include name="**/*.html" />
-                <exclude name="**/integration-demos/" />
-            </fileset>
-        </replaceregexp>
-    </target>
-    
-    <!-- Removes that <link> blocks pertaining to the css files included in the single css file -->
-    <target name="removeCSS" depends="replaceCSS">
-        <replaceregexp match="${cssRegExp}" replace="" flags="g">
-            <fileset dir="${products}">
-                <include name="**/*.html" />
-                <exclude name="**/integration-demos/" />
-            </fileset>
-        </replaceregexp>
-    </target>
-    
     <!-- Determines if the rewriteHead property has been set to "true". If so, it sets the rewrite property to "true" -->
     <target name="checkRewriteStatus">
         <condition property="rewrite">
@@ -300,13 +269,12 @@
         </condition>
     </target>
     
-    <!-- Will call the removeCSS target if head rewriting is turned on. -->
+    <!-- Will call the removeJS target if head rewriting is turned on. -->
     <target name="rewriteHTMLHead" depends="checkRewriteStatus" if="rewrite" >
         <antcall target="removeJS" />
-        <antcall target="removeCSS" /> 
     </target>
     
-    <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript, concatCSS">
+    <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript">
         <copy todir="${build}">
             <fileset dir="${src}" includes="${requiredDirectoriesSelector}">
                 <exclude name="**/*LICENSE.txt" />
