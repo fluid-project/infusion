@@ -15,7 +15,7 @@
 .fl-uiOptions .fl-uiOptions-buttons-refresher-5 {width:5em;}
 .fl-uiOptions .fl-uiOptions-buttons-refresher-10 {width:10em;}
 
-
+.fl-uiOptions .fl-formLabels {text-align:right; padding-right:5px;}
 
 .fl-uiOptions .fl-uiOptions-min-text-size .fl-textfield,
 .fl-uiOptions .fl-uiOptions-line-spacing .fl-textfield {width:1.85em; height:1.2em; padding:0.1em;}
@@ -24,7 +24,6 @@
     margin-bottom:0;
     margin-right:5%;
     margin-top:5px;
-    /*width:30%;*/
 }
 
 .fl-uiOptions .fl-subcomp-preview {padding:0;border:3px solid;}
