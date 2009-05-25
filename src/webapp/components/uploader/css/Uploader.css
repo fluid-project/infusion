@@ -15,6 +15,14 @@
     padding: 1em;
 }
 
+/* Deprecated: fl-ProgEnhanced-*  */
+.fl-ProgEnhance-basic div input {
+    margin-top: 0.6em;
+}
+.fl-ProgEnhance-enhanced {
+    display: none;
+}
+/* New Syntax: fl-progEnhanced-*  */
 .fl-progEnhance-basic div input {
     margin-top: 0.6em;
 }
