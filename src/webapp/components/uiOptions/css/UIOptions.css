@@ -8,10 +8,10 @@
 .fl-uiOptions h2.ui-state-focus {background-color:#ccc;}
 .fl-uiOptions h2.ui-helper-reset {padding:5px 5px 5px 24px !important;}
 
-
-.fl-uiOptions fieldset ol {margin:0; padding:15px 0 0 0;}
-.fl-uiOptions fieldset li {padding:2px 0; clear:both; list-style-type:none; line-height:1.6em;}
-.fl-uiOptions legend {text-indent:-100%; margin-bottom:-1em;}
+.fl-uiOptions fieldset {margin:0; padding:0;}
+.fl-uiOptions ol {margin:0; padding:15px 0 0 0;}
+.fl-uiOptions li {padding:6px 0; clear:both; list-style-type:none; line-height:1.6em;}
+.fl-uiOptions legend {text-indent:-500%; margin-bottom:-1.6em;}
 .fl-uiOptions .fl-uiOptions-buttons-refresher-5 {width:5em;}
 .fl-uiOptions .fl-uiOptions-buttons-refresher-10 {width:10em;}
 
@@ -22,7 +22,6 @@
 
 .fl-uiOptions .fl-slider {
     margin-bottom:0;
-    margin-right:5%;
     margin-top:5px;
 }
 
