@@ -193,7 +193,10 @@ fluid_1_1 = fluid_1_1 || {};
     
     var addFile = function (that, file) {
         var row = renderRowFromTemplate(that, file);
-        row.hide();
+        /* FLUID-2720 - do not hide the row under IE8 */
+        if (!($.browser.msie && ($.browser.version >= 8))) {
+            row.hide();
+        }
         that.container.append(row);
         row.fadeIn("slow");
         that.scroller.scrollBottom();
@@ -285,6 +288,10 @@ fluid_1_1 = fluid_1_1 || {};
     var prepareTemplateElements = function (that) {
         // Grab our template elements out of the DOM.  
         that.rowTemplate = that.locate("rowTemplate").remove();
+        /* FLUID-2720 - do not hide the row under IE8 */
+        if ($.browser.msie && ($.browser.version >= 8)) {
+            that.rowTemplate.removeClass(that.options.styles.hiddenTemplate);
+        }
         that.errorInfoRowTemplate = that.locate("errorInfoRowTemplate").remove();
         that.errorInfoRowTemplate.removeClass(that.options.styles.hiddenTemplate);
         that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.uploadContainer).remove();
