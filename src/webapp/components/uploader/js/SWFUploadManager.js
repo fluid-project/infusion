@@ -110,7 +110,7 @@ fluid_1_1 = fluid_1_1 || {};
             flashButtonPeerId: peerId,
             flashButtonHeight: that.isTransparent ? browseButton.outerHeight(): that.options.flashButtonHeight,
             flashButtonWidth: that.isTransparent ? browseButton.outerWidth(): that.options.flashButtonWidth,
-            flashButtonWindowMode: that.isTransparent ? SWFUpload.WINDOW_MODE.TRANSPARENT : SWFUpload.WINDOW_MODE.WINDOW,
+            flashButtonWindowMode: that.isTransparent ? SWFUpload.WINDOW_MODE.TRANSPARENT : SWFUpload.WINDOW_MODE.OPAQUE,
             flashButtonCursorEffect: SWFUpload.CURSOR.HAND,
             listeners: {
                 afterReady: createAfterReadyHandler(that, uploader),
