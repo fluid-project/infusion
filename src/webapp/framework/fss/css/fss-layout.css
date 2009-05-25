@@ -262,5 +262,5 @@ input.fl-icon {padding-left:16px;}
 }
 
 /* Progressive Enhancement */
-.fl-ProgEnhance-enhanced {display:none} /* JS will overwrite this if it is enabled */
-.fl-ProgEnhance-basic {} /* This will be filled with display:hidden when JS runs */
+.fl-progEnhance-enhanced {display:none} /* JS will overwrite this if it is enabled */
+.fl-progEnhance-basic {} /* This will be filled with display:hidden when JS runs */
