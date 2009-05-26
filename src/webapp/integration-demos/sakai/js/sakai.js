@@ -63,13 +63,13 @@ $(function () {
     };
 
     dialog_container.dialog({
-    	bgiframe: true,
+        bgiframe: true,
         title: 'User Interface Options',
-    	width: '69em',
-    	modal: true,
+        width: '69em',
+        modal: true,
         autoOpen: false,
         draggable: true
-	});
+    });
     
     $("#dialog_container .fl-icon-close").click(function () {
         dialog_container.dialog("close");        
