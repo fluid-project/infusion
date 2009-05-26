@@ -133,6 +133,10 @@ This is a list of publicly available software that is included in the Fluid bund
     * TinyMCE, Javascript HTML WYSIWYG editor control: (LGPL licensed http://tinymce.moxiecode.com/license.php)  
     * FCKeditor, HTML text editor (LGPL licensed http://www.fckeditor.net/license)
     
+Other third part software
+
+	* fastXmlPull is based tinyxmlsax.js v3.1 (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js )
+    
 Readme
 ------
 This file.
