@@ -50,8 +50,12 @@ fluid_1_1 = fluid_1_1 || {};
         textfield.keypress(function (evt) {
             if (evt.keyCode !== $.ui.keyCode.ENTER) {
                 return true;
+            } 
+            else {
+            	  $(evt.target).change();
+            	  $(fluid.findForm(evt.target)).submit();
+                return false;
             }
-            return false;
         });
 
         slider.bind("slide", function (e, ui) {
@@ -205,9 +209,14 @@ fluid_1_1 = fluid_1_1 || {};
     };
     
     var bindHandlers = function (that) {
-        that.locate("save").click(that.save);
+        var saveButton = that.locate("save");
+        saveButton.click(that.save);
         that.locate("reset").click(that.reset);
         that.locate("cancel").click(that.cancel);
+        var form = fluid.findForm(saveButton);
+        $(form).submit(function() {
+            that.save();
+        });
     };
     
     var initPreview = function (that) {
@@ -326,7 +335,7 @@ fluid_1_1 = fluid_1_1 || {};
         that.events.afterRender.addListener(function () {
             initSliders(that);
             bindHandlers(that);
-            initPreview(that);        
+            initPreview(that);
         });
         
         var rendererOptions = createRenderOptions(that);

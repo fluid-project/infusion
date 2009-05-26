@@ -726,7 +726,7 @@ var fluid = fluid || fluid_1_1;
         if (element.nodeType === 9) {
             return "[document: location " + element.location + "]";
         }
-        if (typeof element.length === "number") {
+        if (!element.nodeType && typeof element.length === "number") {
             togo = "[";
             for (var i = 0; i < element.length; ++ i) {
                 togo += fluid.dumpEl(element[i]);
