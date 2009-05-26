@@ -463,25 +463,27 @@ fluid_1_1 = fluid_1_1 || {};
  
     function generateColumnClick(overallThat, columnDef, opts) {
         return function () {
-            var model = overallThat.model;
-            var newModel = fluid.copy(model);
-            var styles = overallThat.options.styles;
-            var oldKey = model.sortKey;
-            if (columnDef.key !== model.sortKey) {
-                newModel.sortKey = columnDef.key;
-                newModel.sortDir = 1;
-                var oldBig = bigHeaderForKey(oldKey, opts);
-                if (oldBig) {
-                    setSortHeaderClass(styles, oldBig, 0);
+            if (columnDef.sortable === true) {
+                var model = overallThat.model;
+                var newModel = fluid.copy(model);
+                var styles = overallThat.options.styles;
+                var oldKey = model.sortKey;
+                if (columnDef.key !== model.sortKey) {
+                    newModel.sortKey = columnDef.key;
+                    newModel.sortDir = 1;
+                    var oldBig = bigHeaderForKey(oldKey, opts);
+                    if (oldBig) {
+                        setSortHeaderClass(styles, oldBig, 0);
+                    }
                 }
+                else if (newModel.sortKey === columnDef.key) {
+                    newModel.sortDir = -1 * newModel.sortDir;
+                }
+                else {return false; }
+                newModel.pageIndex = 0;
+                fireModelChange(overallThat, newModel, true);
+                setModelSortHeaderClass(newModel, opts);                
             }
-            else if (newModel.sortKey === columnDef.key) {
-                newModel.sortDir = -1 * newModel.sortDir;
-            }
-            else {return false; }
-            newModel.pageIndex = 0;
-            fireModelChange(overallThat, newModel, true);
-            setModelSortHeaderClass(newModel, opts);
             return false;
         };
     }

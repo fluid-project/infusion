@@ -45,7 +45,6 @@ sakai.initFluidSiteSettingTable = function() {
             },
            {key: "user-email",
             valuebinding: "*.userEmail",
-            sortable: true,
             components: {
                 linktext: fluid.VALUE,
                 target: "mailto:${VALUE}"
