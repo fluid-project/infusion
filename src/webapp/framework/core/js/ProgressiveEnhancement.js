@@ -14,5 +14,5 @@ https://source.fluidproject.org/svn/LICENSE.txt
 (function ($) {
 	// Note: the use of fl-ProgEnhance-basic is deprecated, and replaced by fl-progEnhance-basic.
 	// It is included here for backward compatibility only.
-    $("head").append("<style type='text/css'>.fl-progEnhance-basic { display: none; } .fl-ProgEnhance-basic { display: none; }</style>");
+    $("head").append("<style type='text/css'>.fl-progEnhance-basic, .fl-ProgEnhance-basic { display: none; }</style>");
 })(jQuery);

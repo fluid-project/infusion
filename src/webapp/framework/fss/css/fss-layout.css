@@ -238,7 +238,7 @@ input.fl-icon {padding-left:16px;}
 /*
  * Forms and Form Controls
  * Common arrangements for form inputs in a list
- * Alignment requires list of label elements placed before the control 
+ * Alignment requires list of fl-label elements placed before the control 
  */
 .fl-controls-left li {list-style-type:none; text-align:left;}
 .fl-controls-left .fl-label {float:left; text-align:left; width:50%; margin-right:5px;}
@@ -261,10 +261,9 @@ input.fl-icon {padding-left:16px;}
     background-color:transparent !important;
 }
 
-/* Progressive Enhancement */
-/* Deprecated: fl-ProgEnhance-*  */
-.fl-ProgEnhance-enhanced {display:none} /* JS will overwrite this if it is enabled */
-.fl-ProgEnhance-basic {} /* This will be filled with display:hidden when JS runs */
-/* New Syntax: fl-progEnhance-*  */
-.fl-progEnhance-enhanced {display:none} /* JS will overwrite this if it is enabled */
-.fl-progEnhance-basic {} /* This will be filled with display:hidden when JS runs */
+/* Progressive Enhancement: JS will reverse the display setup if it is enabled */
+.fl-ProgEnhance-enhanced, /* << syntax breaks conventions and is Deprecated*/
+.fl-progEnhance-enhanced {display:none} 
+
+.fl-ProgEnhance-basic, /* << syntax breaks conventions and is Deprecated*/
+.fl-progEnhance-basic {}
