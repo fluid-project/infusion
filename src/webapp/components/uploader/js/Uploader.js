@@ -688,15 +688,7 @@ fluid_1_1 = fluid_1_1 || {};
         } else {
             // Instantiate the component.
             container.show();
-            var uploader = fluid.uploader(container, options);
-            
-            // Secretly add a clickToDegrade decorator. TODO: add this to options as a real decorator.
-            fluid.uploader.clickToDegrade(uploader, {
-                enhanceable: enhanceable
-            });
-            
-            return uploader;
-        }
+            return fluid.uploader(container, options);        }
     };
     
     /**
@@ -729,6 +721,14 @@ fluid_1_1 = fluid_1_1 || {};
         
         decorators: [{
             type: "fluid.swfUploadSetupDecorator"
+        }, {
+            type: "fluid.manuallyDegrade",
+            options: {
+                container: "#uploader-contents",
+                selectors: {
+                    enhanceable: ".fl-uploader.fl-progEnhance-basic"
+                }
+            }
         }],
         
         uploadManager: {
@@ -838,63 +838,119 @@ fluid_1_1 = fluid_1_1 || {};
         CANCELLED: -5
     };
     
-    // A little widget for allowing users to degrade to a non-Flash Uploader if desired.
-    var setupClickToDegrade = function (that) {
-        var degradeLink = that.renderDegradeLink();
-        degradeLink.click(that.toggle);
-        that.fluidUploader.after(degradeLink);    
+    /*******************
+     * ManuallyDegrade *
+     *******************/
+    
+    var renderLink = function (renderLocation, text, classes, appendBeside) {
+        var link = $("<a href='#'>" + text + "</a>");
+        link.addClass(classes);
+        
+        if (renderLocation === "before") {
+            appendBeside.before(link);
+        } else {
+            appendBeside.after(link);
+        }
+        
+        return link;
     };
+
+    var toggleVisibility = function (toShow, toHide) {
+        toShow.show();
+        toHide.hide();    
+    };
+    
+    var defaultControlRenderer = function (that) {
+        var degradeLink = renderLink(that.options.defaultRenderLocation,
+                   that.options.strings.degradeLinkText,
+                   that.options.styles.degradeLinkClass,
+                   that.enhancedContainer);
+        degradeLink.addClass("flc-manuallyDegrade-degrade");
+        
+        var enhanceLink = renderLink(that.options.defaultRenderLocation,
+                   that.options.strings.enhanceLinkText,
+                   that.options.styles.enhanceLinkClass,
+                   that.degradedContainer);
+        enhanceLink.addClass("flc-manuallyDegrade-enhance");
+    };
+    
+    var fetchControls = function (that) {
+        that.degradeControl = that.locate("degradeControl");
+        that.enhanceControl = that.locate("enhanceControl");
+    };
+    
+    var setupManuallyDegrade = function (that) {
+        // If we don't have anything to degrade to, stop right here.
+        if (!that.degradedContainer.length) {
+            return;
+        }
+        
+        // Render the controls if they're not already there.
+        fetchControls(that);
+        if (!that.degradeControl.length && !that.enhanceControl.length) {
+            that.options.controlRenderer(that);
+            fetchControls(that);
+        }
+        
+        // Bind click handlers to them.
+        that.degradeControl.click(that.degrade);
+        that.enhanceControl.click(that.enhance);
+        
+        // Hide the enhance link to start.
+        that.enhanceControl.hide();
+    };
+    
+    var determineContainer = function (options) {
+        var defaults = fluid.defaults("fluid.manuallyDegrade");
+        return (options && options.container) ? options.container : defaults.container;
+    };
+    
+    fluid.manuallyDegrade = function (component, options) {
+        var container = determineContainer(options);
+
+        var that = fluid.initView("fluid.manuallyDegrade", container, options);
+        var isDegraded = false;
+        that.enhancedContainer = component.container;
+        that.degradedContainer = that.locate("enhanceable");
   
-	fluid.uploader.clickToDegrade = function (uploader, options) {
-	    var that = {};
-        fluid.mergeComponentOptions(that, "fluid.uploader.clickToDegrade", options);
-	    that.fluidUploader = uploader.container;
-	    that.plainHtmlUploader = options.enhanceable;
-         
-        that.toggle = function () {
-	        var toggleFn = (that.isDegraded()) ? that.enhance : that.degrade;
-	        toggleFn();
-	    };
-         
-	    that.renderDegradeLink = function () {
-            that.link = $("<a href='#'></a>");
-            that.link.text(that.options.strings.degradeLinkText);
-            that.link.addClass(that.options.selectors.degradeLinkClass);
-             
-            return that.link;
-        };
         
         that.degrade = function () {
-            that.link.text(that.options.strings.enhanceLinkText);
-            that.link.removeClass(that.options.selectors.degradeLinkClass).addClass(that.options.selectors.enhanceLinkClass);
-	        that.fluidUploader.hide();
-	        that.plainHtmlUploader.show();
+            toggleVisibility(that.enhanceControl, that.degradeControl);
+            toggleVisibility(that.degradedContainer, that.enhancedContainer);
 	        isDegraded = true;
         };
          
 	    that.enhance = function () {
-	        that.link.text(that.options.strings.degradeLinkText);
-	        that.link.removeClass(that.options.selectors.enhanceLinkClass).addClass(that.options.selectors.degradeLinkClass);
-	        that.plainHtmlUploader.hide();
-	        that.fluidUploader.show();
+            toggleVisibility(that.degradeControl, that.enhanceControl);
+            toggleVisibility(that.enhancedContainer, that.degradedContainer);
 	        isDegraded = false;
 	    };
          
-        var isDegraded = false;
         that.isDegraded = function () {
 	        return isDegraded;
 	    };
          
-        setupClickToDegrade(that);
+        setupManuallyDegrade(that);
         return that;
     };
      
-    fluid.defaults("fluid.uploader.clickToDegrade", {
+    fluid.defaults("fluid.manuallyDegrade", {
+        container: "body",
+        
+        controlRenderer: defaultControlRenderer,
+        
+        defaultRenderLocation: "before",
         strings: {
             degradeLinkText: "Switch to the standard single-file Uploader",
-	        enhanceLinkText: "Switch to the Flash-based multifile Uploader"
+            enhanceLinkText: "Switch to the Flash-based multi-file Uploader"
 	    },
         selectors: {
+            enhanceable: ".fl-ProgEnhance-basic",
+            degradeControl: ".flc-manuallyDegrade-degrade",
+            enhanceControl: ".flc-manuallyDegrade-enhance"
+        },
+        
+        styles: {
             degradeLinkClass: "fl-uploader-manually-degrade",
             enhanceLinkClass: "fl-uploader-manually-enhance"
         }
