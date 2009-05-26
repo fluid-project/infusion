@@ -49,6 +49,7 @@ sakai.initFluidSiteSettingTable = function() {
                 linktext: fluid.VALUE,
                 target: "mailto:${VALUE}"
                 }
+            // test FLUID-2247 - remove sortable from this column 
             },
            {key: "user-role",
             valuebinding: "*.memberRole",
@@ -99,6 +100,18 @@ sakai.initFluidSiteSettingTable = function() {
             },
             renderOptions: {debugMode: false}
           }
+        },
+        decorators: {
+            unsortableHeader: [
+            {type: "attrs",
+             attributes: {
+                 title: null
+                 }
+            },
+            {type: "addClass",
+            classes: "fl-pager-disabled"
+            }
+            ]
         }
     });
     }

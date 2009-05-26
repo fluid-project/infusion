@@ -283,11 +283,6 @@ fluid_1_1 = fluid_1_1 || {};
         return fluid.model.getBeanValue(dataModel, path);
     };
     
-    function isSortable(columnDefs, model) {
-        var columnDef = model.sortKey? fluid.pager.findColumnDef(columnDefs, model.sortKey) : null;
-        return columnDef ? columnDef.sortable : false;
-    };
-
     fluid.pager.basicSorter = function (overallThat, model) {        
         var dataModel = overallThat.options.dataModel;
         var roots = {};
@@ -440,9 +435,14 @@ fluid_1_1 = fluid_1_1 || {};
         }
     }
     
+    function isCurrentColumnSortable(columnDefs, model) {
+        var columnDef = model.sortKey? fluid.pager.findColumnDef(columnDefs, model.sortKey) : null;
+        return columnDef ? columnDef.sortable : false;
+    };
+    
     function setModelSortHeaderClass(newModel, opts) {
         var styles = opts.overallOptions.styles;
-        var sort = isSortable(opts.columnDefs, newModel) ? newModel.sortDir : 0;
+        var sort = isCurrentColumnSortable(opts.columnDefs, newModel) ? newModel.sortDir : 0;
         setSortHeaderClass(styles, bigHeaderForKey(newModel.sortKey, opts), sort);
     }
    
@@ -452,8 +452,8 @@ fluid_1_1 = fluid_1_1 || {};
             newModel.pageIndex = newModel.pageCount - 1;
         }
         if (forceUpdate || newModel.pageIndex !== that.model.pageIndex || newModel.pageSize !== that.model.pageSize || newModel.sortKey !== that.model.sortKey ||
-            newModel.sortDir !== that.model.sortDir) {
-            var sorted = isSortable(getColumnDefs(that), newModel) ? 
+                newModel.sortDir !== that.model.sortDir) {
+            var sorted = isCurrentColumnSortable(getColumnDefs(that), newModel) ? 
                 that.options.sorter(that, newModel) : null;
             that.permutation = sorted;
             that.events.onModelChange.fire(newModel, that.model, that);
@@ -488,6 +488,10 @@ fluid_1_1 = fluid_1_1 || {};
         };
     }
    
+    function fetchHeaderDecorators(decorators, columnDef) {
+        return decorators[columnDef.sortable? "sortableHeader" : "unsortableHeader"];
+    }
+   
     function generateHeader(overallThat, newModel, columnDefs, opts) {
         return {
             children:  
@@ -497,7 +501,7 @@ fluid_1_1 = fluid_1_1 || {};
                     value: columnDef.label,
                     decorators: [
                         {"jQuery": ["click", generateColumnClick(overallThat, columnDef, opts)]},
-                        {identify: "header:" + columnDef.key}]
+                        {identify: "header:" + columnDef.key}].concat(fetchHeaderDecorators(opts.overallOptions.decorators, columnDef))
                 };
             }
        )};
@@ -788,6 +792,11 @@ fluid_1_1 = fluid_1_1 || {};
             tooltip: "fl-pager-tooltip",
             ascendingHeader: "fl-pager-asc",
             descendingHeader: "fl-pager-desc"
+        },
+        
+        decorators: {
+            sortableHeader: [],
+            unsortableHeader: []
         },
         
         strings: {
