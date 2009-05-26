@@ -180,8 +180,8 @@ var fluid_1_1 = fluid_1_1 || {};
     };
     
     var isAttached = function (node) {
-        while (node) {
-            if (node.tagName.toLowerCase() === "body") {
+        while (node && node.nodeName) {
+            if (node.nodeName === "BODY") {
                 return true;
             }
             node = node.parentNode;
