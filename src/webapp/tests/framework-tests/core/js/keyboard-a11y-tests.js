@@ -14,6 +14,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery*/
 /*global jqUnit*/
+/*global fluid*/
+
+var fluid = fluid || {};
+// Import definition of fluid.unwrap, it is just too irritating fiddling around without it
+if (!fluid.unwrap) {
+	    fluid.unwrap = function (obj) {
+        return obj && obj.jquery && obj.length === 1 ? obj[0] : obj; // Unwrap the element if it's a jQuery.
+    };
+    
+}
 
 (function ($) {
     var keyboardA11y = new jqUnit.TestCase("keyboard-a11y");
@@ -101,8 +111,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
     var createActivatableMenu = function () {
         var menu = createAndFocusMenu();
-        menu.items.fluid("activatable", function (element) {
-            menu.activatedItem = element;
+        menu.items.fluid("activatable", function (evt) {
+            menu.activatedItem = evt.target;
         });
 
         // Sanity check.
@@ -121,9 +131,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var keyEvent = document.createEvent("KeyEvents");
         keyEvent.initKeyEvent("keydown", true, true, window, modifiers.ctrl, modifiers.alt, modifiers.shift, false, withKeycode, 0);
 
-        if (onElement.jquery) {
-            onElement = onElement[0];
-        }
+        onElement = fluid.unwrap(onElement);
 
         onElement.dispatchEvent(keyEvent);
     }
@@ -441,13 +449,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
         }
 
         var menu = createAndFocusMenu();
+        var eventTarget = null;
 
-        var defaultActivate = function (element) {
+        var defaultActivate = function (evt) {
             menu.wasActivated = false;
         };
 
-        var alternateActivate = function (element) {
+        var alternateActivate = function (evt) {
             menu.wasActivated = true;
+            eventTarget = evt.target;
         };
 
         var downKeyBinding = {
@@ -462,9 +472,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         menu.items.fluid("activatable", [defaultActivate, options]);
 
-        simulateKeyDown(getFirstMenuItem(), $.ui.keyCode.DOWN);
+        var item = getFirstMenuItem();
+        simulateKeyDown(item, $.ui.keyCode.DOWN);
         jqUnit.assertNotUndefined("The menu should have been activated by the down arrow key.", menu.wasActivated);
         jqUnit.assertTrue("The menu should have been activated by the down arrow key.", menu.wasActivated);
+        jqUnit.assertEquals("The event target for activation should have been the item ", fluid.unwrap(item), eventTarget);
     });
 
     function makeCustomActivateTest(enabled) {

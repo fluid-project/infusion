@@ -592,6 +592,10 @@ var fluid = fluid || fluid_1_1;
         return isCtrlKeyPresent || isAltKeyPresent || isShiftKeyPresent;
     };
 
+    /** Constructs a raw "keydown"-facing handler, given a binding entry. This
+     *  checks whether the key event genuinely triggers the event and forwards it
+     *  to any "activateHandler" registered in the binding. 
+     */
     var makeActivationHandler = function(binding) {
         return function(evt) {
             var target = evt.target;
@@ -606,26 +610,11 @@ var fluid = fluid || fluid_1_1;
 //            if (evt.which === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
             var code = evt.which? evt.which : evt.keyCode;
             if (code === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
-                var ret = binding.activateHandler(evt.target, evt);
+                var ret = $(evt.target).trigger("fluid-activate", [binding.activateHandler]);
                 if (ret === false) {
                     evt.preventDefault();
                 }
             }
-        };
-    };
-
-    var createDefaultActivationHandler = function(activatables, userActivateHandler) {
-        return function(elementToActivate) {
-            if (!userActivateHandler) {
-                return;
-            }
-
-            elementToActivate = unwrap(elementToActivate);
-            if (activatables.index(elementToActivate) === -1) {
-                return;
-            }
-
-            userActivateHandler(elementToActivate);
         };
     };
 
@@ -666,9 +655,11 @@ var fluid = fluid || fluid_1_1;
             var binding = bindings[i];
             elements.keydown(makeActivationHandler(binding));
         }
+        elements.bind("fluid-activate", function(evt, handler) {
+            handler = handler || onActivateHandler;
+            return handler? handler(evt): null;
+        });
     };
-
-    var ACTIVATE_KEY = "defaultActivate";
 
     /**
      * Makes all matched elements activatable with the Space and Enter keys.
@@ -678,16 +669,13 @@ var fluid = fluid || fluid_1_1;
     fluid.activatable = function(target, fn, options) {
         target = $(target);
         makeElementsActivatable(target, fn, fluid.activatable.defaults.keys, options);
-        setData(target, ACTIVATE_KEY, createDefaultActivationHandler(target, fn));
     };
 
     /**
      * Activates the specified element.
      */
     fluid.activate = function(target) {
-        target = $(target);
-        var handler = getData(target, ACTIVATE_KEY);
-        handler(target);
+        $(target).trigger("fluid-activate");
     };
 
     // Public Defaults.
