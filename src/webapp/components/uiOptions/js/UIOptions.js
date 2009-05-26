@@ -22,7 +22,17 @@ fluid_1_1 = fluid_1_1 || {};
  ******************/
 
 (function ($, fluid) {
-
+    
+    // This will be removed once the jQuery UI slider has built in ARIA 
+    var initSliderAria = function (thumb, opts) {
+        var ariaDefaults = {role: 'slider',
+         "aria-valuenow": opts.value,
+         "aria-valuemin": opts.min, 
+         "aria-valuemax": opts.max    
+        };
+        thumb.attr(ariaDefaults);        
+    };
+    
     var initTextfieldSlider = function (that) {
         var textfield = that.locate("textfield");
         textfield.val(that.model);
@@ -32,6 +42,8 @@ fluid_1_1 = fluid_1_1 || {};
         sliderOptions.min = that.options.min;
         sliderOptions.max = that.options.max;
         var slider = that.locate("slider").slider(sliderOptions);
+
+        initSliderAria(that.locate("thumb"), sliderOptions);    
 
         textfield.change(function () {
             if (that.isValid(this.value)) {
@@ -52,8 +64,8 @@ fluid_1_1 = fluid_1_1 || {};
                 return true;
             } 
             else {
-            	  $(evt.target).change();
-            	  $(fluid.findForm(evt.target)).submit();
+                $(evt.target).change();
+                $(fluid.findForm(evt.target)).submit();
                 return false;
             }
         });
@@ -84,7 +96,7 @@ fluid_1_1 = fluid_1_1 || {};
         that.isInRange = function (value) {
             return (value >= that.min && value <= that.max);
         };
-		
+
         /**
          * Tests if a value is a valid number.
          * @param {Object} value
@@ -102,9 +114,7 @@ fluid_1_1 = fluid_1_1 || {};
             if (that.isInRange(model)) {
                 that.events.modelChanged.fire(model, that.model, source);
                 that.model = model;
-            } else {
-                // TODO: should do something here
-                // Throw an error
+                that.locate("thumb").attr("aria-valuenow", that.model);                
             }
         };
         
@@ -114,7 +124,8 @@ fluid_1_1 = fluid_1_1 || {};
     fluid.defaults("fluid.textfieldSlider", {
         selectors: {
             textfield: ".flc-textfieldSlider-field",
-            slider: ".flc-textfieldSlider-slider"
+            slider: ".flc-textfieldSlider-slider", 
+            thumb: ".ui-slider-handle"
         },
         events: {
             modelChanged: null
@@ -214,7 +225,7 @@ fluid_1_1 = fluid_1_1 || {};
         that.locate("reset").click(that.reset);
         that.locate("cancel").click(that.cancel);
         var form = fluid.findForm(saveButton);
-        $(form).submit(function() {
+        $(form).submit(function () {
             that.save();
         });
     };
@@ -268,7 +279,7 @@ fluid_1_1 = fluid_1_1 || {};
         
         var aggregateModel = fluid.assembleModel({
             selections: {
-	            model: that.model,
+                model: that.model,
                 applier: that.applier
             },
             labelMap: {model: createLabelMap(that.options)}
@@ -286,7 +297,7 @@ fluid_1_1 = fluid_1_1 || {};
             return {
                 listeners: {
                     modelChanged: function (value) {
-                    	that.applier.requestChange(settingName, value);
+                        that.applier.requestChange(settingName, value);
                     }
                 },
                 value: that.model[settingName]

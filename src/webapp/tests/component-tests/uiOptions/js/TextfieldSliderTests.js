@@ -21,7 +21,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var tests = new jqUnit.TestCase("TextfieldSlider Tests");
         
         tests.test("Test Init", function () {
-            expect(5);
+            expect(8);
             var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider");
             jqUnit.assertEquals("Slider value is set to input value", 15, $(".flc-textfieldSlider-slider").slider("value"));
             jqUnit.assertEquals("Textfield value is set", 15, $(".flc-textfieldSlider-field").val());
@@ -29,21 +29,29 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Min should be the default", 0, textfieldSlider.min);
             jqUnit.assertEquals("Max should be the default", 100, textfieldSlider.max);
             
+            // Check ARIA defaults
+            var thumb = $(".ui-slider-handle");
+            jqUnit.assertEquals("The ARIA value now should be 15", 15, thumb.attr("aria-valuenow"));          
+            jqUnit.assertEquals("The ARIA max should be 100", 100, thumb.attr("aria-valuemax"));          
+            jqUnit.assertEquals("The ARIA min should be 0", 0, thumb.attr("aria-valuemin"));          
+            
         });
 
         var testSetting = function (valToTest, expected) {
             var slider = $(".flc-textfieldSlider-slider");
             var textfield = $(".flc-textfieldSlider-field");
+            var thumb = $(".ui-slider-handle");
             
             slider.slider("value", valToTest);
             jqUnit.assertEquals("Slider value should be " + expected, expected, slider.slider("value"));
             textfield.val(valToTest);
             textfield.change();
-            jqUnit.assertEquals("Textfield value should be the " + expected, expected, textfield.val());            
+            jqUnit.assertEquals("Textfield value should be the " + expected, expected, textfield.val());
+            jqUnit.assertEquals("The ARIA value now should be " + expected, expected, thumb.attr("aria-valuenow"));          
         };
         
         tests.test("Test Min/Max Size", function () {
-            expect(12);
+            expect(18);
             var textfieldSlider = fluid.textfieldSlider(".fl-textfield-slider", {min: 5, max: 55});
             
             testSetting(56, 55);
@@ -55,7 +63,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
 
         tests.test("Test Negative Scale", function () {
-            expect(10);
+            expect(15);
             fluid.textfieldSlider(".fl-textfield-slider", {min: -15, max: -5});
             
             testSetting(56, -5);
