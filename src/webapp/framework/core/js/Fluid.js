@@ -136,8 +136,8 @@ var fluid = fluid || fluid_1_1;
         var offset = 0;
         var store = defaultsStore;
         if (typeof arguments[0] === "boolean") {
-	        store = globalDefaultsStore;
-	        offset = 1;
+            store = globalDefaultsStore;
+            offset = 1;
         }
         var componentName = arguments[offset];
         var defaultsObject = arguments[offset + 1];
@@ -755,12 +755,12 @@ var fluid = fluid || fluid_1_1;
      * @param {Function} test A function which takes an element as a parameter and return true or false for some test
      */
     fluid.findAncestor = function (element, test) {
-    	element = fluid.unwrap(element);
-    	while (element) {
-    	    if (test(element)) {
+        element = fluid.unwrap(element);
+        while (element) {
+            if (test(element)) {
                 return element;
             }
-    	    element = element.parentNode;
+            element = element.parentNode;
         }
     };
     
@@ -769,7 +769,7 @@ var fluid = fluid || fluid_1_1;
      * is not found, will return an empty list.
      */
     fluid.jById = function (id, dokkument) {
-    	dokkument = dokkument && dokkument.nodeType === 9? dokkument : document;
+        dokkument = dokkument && dokkument.nodeType === 9? dokkument : document;
         var element = fluid.byId(id, dokkument);
         var togo = element? $(element) : [];
         togo.selector = "#" + id;
@@ -785,7 +785,7 @@ var fluid = fluid || fluid_1_1;
      * @return The DOM element with this id, or null, if none exists in the document.
      */
     fluid.byId = function (id, dokkument) {
-    	dokkument = dokkument && dokkument.nodeType === 9? dokkument : document;
+        dokkument = dokkument && dokkument.nodeType === 9? dokkument : document;
         var el = dokkument.getElementById(id);
         if (el) {
             if (el.getAttribute("id") !== id) {
@@ -881,10 +881,10 @@ var fluid = fluid || fluid_1_1;
      * @return {Object} the final running total object as returned from the final invocation of the function on the last list member.
      */
     fluid.accumulate = function (list, fn, arg) {
-	    for (var i = 0; i < list.length; ++ i) {
-	        arg = fn(list[i], arg, i);
-	    }
-	    return arg;
+        for (var i = 0; i < list.length; ++ i) {
+            arg = fn(list[i], arg, i);
+        }
+        return arg;
     };
     
     /** Can through a list of objects, removing those which match a predicate. Similar to
