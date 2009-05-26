@@ -54,32 +54,46 @@
 
 /* fix for Safari 3 ignoring input font size */
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-    *[class~='fl-font-size-70'] input[type=submit],
-    *[class~='fl-font-size-70'] input[type=button] {padding:0 1em}
+    
+    [class~='fl-font-size-70'] input[type=submit],
+    [class~='fl-font-size-70'] input[type=button] {padding:0 1em}
 
-    *[class~='fl-font-size-80'] input[type=submit],
-    *[class~='fl-font-size-80'] input[type=button] {font-size:0.8em !important; padding:0 1em}
+    [class~='fl-font-size-80'] input[type=submit],
+    [class~='fl-font-size-80'] input[type=button] {font-size:0.8em !important; padding:0 1em}
 
-    *[class~='fl-font-size-90'] input[type=submit],
-    *[class~='fl-font-size-90'] input[type=button] {font-size:0.9em !important; padding:0 1em}
+    [class~='fl-font-size-90'] input[type=submit],
+    [class~='fl-font-size-90'] input[type=button] {font-size:0.9em !important; padding:0 1em}
 
-    *[class~='fl-font-size-100'] input[type=submit],
-    *[class~='fl-font-size-100'] input[type=button] {font-size:1em !important; padding:0 1em}
+    [class~='fl-font-size-100'] input[type=submit],
+    [class~='fl-font-size-100'] input[type=button] {font-size:1em !important; padding:0 1em}
 
-    *[class~='fl-font-size-110'] input[type=submit],
-    *[class~='fl-font-size-110'] input[type=button] {background-color:#fff; font-size:1.1em !important; padding:0 1em}
+    [class~='fl-font-size-110'] input[type=submit],
+    input[type=submit][class~='fl-font-size-110'],
+    [class~='fl-font-size-110'] input[type=button] {background-color:#fff; font-size:1.1em !important; padding:0 1em}
 
-    *[class~='fl-font-size-120'] input[type=submit],
-    *[class~='fl-font-size-120'] input[type=button] {background-color:#fff; font-size:1.2em !important; padding:0 1em}
+    [class~='fl-font-size-120'] input[type=submit],
+    input[type=submit][class~='fl-font-size-120'],
+    [class~='fl-font-size-120'] input[type=button] {background-color:#fff; font-size:1.2em !important; padding:0 1em}
 
-    *[class~='fl-font-size-130'] input[type=submit],
-    *[class~='fl-font-size-130'] input[type=button] {background-color:#fff; font-size:1.3em !important; padding:0 1em}
+    [class~='fl-font-size-130'] input[type=submit],
+    input[type=submit][class~='fl-font-size-130'],
+    [class~='fl-font-size-130'] input[type=button] {background-color:#fff; font-size:1.3em !important; padding:0 1em}
 
-    *[class~='fl-font-size-140'] input[type=submit],
-    *[class~='fl-font-size-140'] input[type=button] {background-color:#fff; font-size:1.4em !important; padding:0 1em}
+    [class~='fl-font-size-140'] input[type=submit],
+    input[type=submit][class~='fl-font-size-140'],
+    [class~='fl-font-size-140'] input[type=button] {background-color:#fff; font-size:1.4em !important; padding:0 1em}
 
-    *[class~='fl-font-size-150'] input[type=submit],
-    *[class~='fl-font-size-150'] input[type=button] {background-color:#fff; font-size:1.5em !important; padding:0 1em}
+    [class~='fl-font-size-150'] input[type=submit],
+    input[type=submit][class~='fl-font-size-150'],
+    [class~='fl-font-size-150'] input[type=button] {background-color:#fff; font-size:1.5em !important; padding:0 1em}
+    
+    [class~='fl-font-serif'] input[type=submit],
+    [class~='fl-font-sans'] input[type=submit],
+    [class~='fl-font-monospace'] input[type=submit],
+    [class~='fl-font-arial'] input[type=submit],
+    [class~='fl-font-verdana'] input[type=submit],
+    [class~='fl-font-times'] input[type=submit],
+    [class~='fl-font-courier'] input[type=submit] {background-color:#fff; padding:0 1em}
 }
 
 
