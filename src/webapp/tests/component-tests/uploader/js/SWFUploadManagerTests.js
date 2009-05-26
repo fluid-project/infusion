@@ -117,7 +117,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                 fluid.defaults("fluid.swfUploadSetupDecorator").flashButtonImageURL,
                                 decorator.returnedOptions.uploadManager.options.flashButtonImageURL);
             jqUnit.assertEquals("The Flash movie's window mode should not be transparent.",
-                                SWFUpload.WINDOW_MODE.WINDOW,
+                                SWFUpload.WINDOW_MODE.OPAQUE,
                                 decorator.returnedOptions.uploadManager.options.flashButtonWindowMode);
             jqUnit.assertEquals("The flashButtonPeerId should be set to the button's id.",
                                 mockUploader.locate("browseButton").attr("id"),
