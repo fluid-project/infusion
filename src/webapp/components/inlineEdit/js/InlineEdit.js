@@ -331,7 +331,7 @@ fluid_1_1 = fluid_1_1 || {};
         fluid.tabbable(that.viewEl);
         var guard = makeEditTriggerGuard(that);
         fluid.activatable(that.viewEl, 
-            function (target, event) {
+            function (event) {
                 return guard(event);
             });
     };
