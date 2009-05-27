@@ -724,7 +724,6 @@ fluid_1_1 = fluid_1_1 || {};
         }, {
             type: "fluid.manuallyDegrade",
             options: {
-                container: "#uploader-contents",
                 selectors: {
                     enhanceable: ".fl-uploader.fl-progEnhance-basic"
                 }
