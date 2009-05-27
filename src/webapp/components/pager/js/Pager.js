@@ -147,6 +147,7 @@ fluid_1_1 = fluid_1_1 || {};
                 } : 
                 {
                     ID: page === current? "page-link:link": "page-link:link",
+                    localID: page + 1,
                     value: page + 1,
                     pageIndex: page,
                     decorators: [

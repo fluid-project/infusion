@@ -1373,8 +1373,12 @@ fluid_1_1 = fluid_1_1 || {};
       }
       processDecoratorQueue();
       if (lastId) {
-          fluid.jById(lastId).focus();
+          var element = fluid.byId(lastId);
+          if (element) {
+              $(element).focus();
+          }      
       }
+        
       return templates;
   };
 
