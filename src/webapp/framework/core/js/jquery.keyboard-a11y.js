@@ -610,26 +610,13 @@ var fluid = fluid || fluid_1_1;
 //            if (evt.which === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
             var code = evt.which? evt.which : evt.keyCode;
             if (code === binding.key && binding.activateHandler && checkForModifier(binding, evt)) {
-                var ret = $(evt.target).trigger("fluid-activate", [binding.activateHandler]);
-                if (ret === false) {
+                var event = $.Event("fluid-activate");
+                $(evt.target).trigger(event, [binding.activateHandler]);
+                if (event.isDefaultPrevented()) {
                     evt.preventDefault();
                 }
             }
         };
-    };
-
-    var checkForModifier = function(binding, evt) {
-        // If no modifier was specified, just return true.
-        if (!binding.modifier) {
-            return true;
-        }
-
-        var modifierKey = binding.modifier;
-        var isCtrlKeyPresent = modifierKey && evt.ctrlKey;
-        var isAltKeyPresent = modifierKey && evt.altKey;
-        var isShiftKeyPresent = modifierKey && evt.shiftKey;
-
-        return isCtrlKeyPresent || isAltKeyPresent || isShiftKeyPresent;
     };
 
     var makeElementsActivatable = function(elements, onActivateHandler, defaultKeys, options) {
