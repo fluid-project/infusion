@@ -31,8 +31,8 @@ fluid.accessiblecheckbox =  function () {
         box.toggleClass("checked");
     };
 
-    var selectCheckboxHandler = function (boxToCheck) {
-        var boxLabel = jQuery("label", boxToCheck);
+    var selectCheckboxHandler = function (event) {
+        var boxLabel = jQuery("label", event.target);
         toggleBox(boxLabel);
     };
 
