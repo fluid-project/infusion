@@ -447,3 +447,13 @@ button span.fl-uploader-button-text-hidden {
     width: 1px; 
     height: 1px;
 }
+
+/* an alternative way to hide the Uploader because of a bug in Opera,
+ * described in FLUID-2789 */
+.hideUploaderForOpera {
+    visibility: hidden;
+    overflow: hidden;
+    height: 0;
+    width: 0;
+    padding: 0;
+}

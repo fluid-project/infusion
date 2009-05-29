@@ -688,7 +688,8 @@ fluid_1_1 = fluid_1_1 || {};
         } else {
             // Instantiate the component.
             container.show();
-            return fluid.uploader(container, options);        }
+            return fluid.uploader(container, options);
+        }
     };
     
     /**
@@ -855,8 +856,15 @@ fluid_1_1 = fluid_1_1 || {};
     };
 
     var toggleVisibility = function (toShow, toHide) {
-        toShow.show();
-        toHide.hide();    
+        // For FLUID-2789: hide() doesn't work in Opera, so this check
+        // uses a style to hide if the browser is Opera
+        if (window.opera) { 
+            toShow.show().removeClass("hideUploaderForOpera");
+            toHide.show().addClass("hideUploaderForOpera");
+        } else {
+            toShow.show();
+            toHide.hide();
+        }
     };
     
     var defaultControlRenderer = function (that) {
