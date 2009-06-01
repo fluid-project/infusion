@@ -10,7 +10,9 @@ This release includes
 
     * A-Grade browser support has been updated to Yahoo's latest A-Grade browser support
     * jQuery UI Themes for working with FSS themes
-    * Updates to Pager
+    * New and powerful decorators for the Renderer:
+      * "fluid" decorator instantiates any Fluid component bound to markup (FLUID-2375)
+      * New support for removing arbitrary attributes and CSS classes (FLUID-2603, FLUID-2598)
     * Updates to Uploader
     * Updates to User Interface Options
     * Many bug fixes
