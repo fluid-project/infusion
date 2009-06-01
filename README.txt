@@ -9,6 +9,7 @@ What's New in 1.1
 This release includes
 
     * A-Grade browser support has been updated to Yahoo's latest A-Grade browser support
+    * jQuery UI Themes for working with FSS themes
     * Updates to Pager
     * Updates to Uploader
     * Updates to User Interface Options
