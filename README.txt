@@ -17,6 +17,8 @@ This release includes
       * Improved handing of column sorting
       * Fixed persistence of focus
     * Updates to Uploader
+      * user can manually switch to the standard non-Flash http file uploader
+      * uploader Browse button now respects DOM z-index in Flash 10
     * Updates to User Interface Options including
       * better cross browser support
       * better keyboard and screen reader accessibility
@@ -221,9 +223,11 @@ Inline Edit:
     FLUID-2536 Inline Edit test fails using IE 8
   
 Uploader: 
-  For information related to known issues with Flash 10 compatibility, see http://wiki.fluidproject.org/x/kwZo
-    FLUID-2052 Cannot tab away from the "Browse Files" button with Flash 10; using FF3
-    FLUID-2032 Cannot Tab to the 'Browse More" button with Flash 10, using FF2
+    FLUID-2582 Uploader is dependent on ProgressiveEnhancement.js, which is not included in InfusionAll.js
+    FLUID-2052 Cannot tab away from the "Browse Files" button with Flash 10; using FF3*
+    FLUID-2032 Cannot Tab to the 'Browse More" button with Flash 10, using FF2*
+    * For information related to known issues with Flash 10 compatibility, 
+      see http://wiki.fluidproject.org/x/kwZo
 
 Layout Reorderer: 
     FLUID-1540 Can't use keyboard reordering to move a nested reorderer to the right column, using IE6
