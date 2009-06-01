@@ -110,7 +110,7 @@ License
 -------
 Fluid Infusion code is licensed under a dual ECL 2.0 / BSD license. The specific licenses can be
 found in the license file:
-        licenses/infusion-LICENSE.txt
+        licenses/Infusion-LICENSE.txt
 
 Infusion also depends upon some third party open source modules. These are contained in their own
 folders, and their licenses are also present in
@@ -130,14 +130,13 @@ with their licensing terms.
     * Douglas Crockford's JSON parsing and stringifying methods (from 2007-11-06): http://www.json.org/ (Public Domain)
     * SWFUpload: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
     * SWFObject v2.1: http://code.google.com/p/swfobject/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
-    * XML for Script's Fast Pull Parser v3.1 (LGPL licensed http://xmljs.sourceforge.net/)
     * Sample markup and stylesheets from Sakai (http://sakaiproject.org) and uPortal (http://www.uportal.org/)
-    * TinyMCE, Javascript HTML WYSIWYG editor control: (LGPL licensed http://tinymce.moxiecode.com/license.php)  
     * FCKeditor, HTML text editor (LGPL licensed http://www.fckeditor.net/license)
     
 Other third part software
 
-	* fastXmlPull is based tinyxmlsax.js v3.1 (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js )
+	* fastXmlPull is based on XML for Script's Fast Pull Parser v3.1
+	  (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js )
     
 Readme
 ------
@@ -203,8 +202,6 @@ Known Issues
 The Fluid Project uses a JIRA website to track bugs: http://issues.fluidproject.org.
 Some of the known issues in this release are described here:
 
-Build System:
-
 FSS:
     FLUID-2504: Flexible columns don't maintain proper alignment under certain conditions
     FLUID-2434: In IE, major font size changes break text positioning within form controls
@@ -214,7 +211,8 @@ Framework:
     FLUID-2577 Renderer performance can be slow on IE 6 and 7 in some contexts.
 
 Inline Edit: 
-    FLUID-1600 Pressing the "Tab" key to exit edit mode, places focus on the wrong item
+    FLUID-1600 Pressing the "Tab" key to exit edit mode places focus on the wrong item
+    FLUID-2536 Inline Edit test fails using IE 8
   
 Uploader: 
   For information related to known issues with Flash 10 compatibility, see http://wiki.fluidproject.org/x/kwZo
