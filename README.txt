@@ -229,6 +229,7 @@ Layout Reorderer:
     FLUID-858  Portlet Columns load with no padding between them in IE7
 
 Pager:
+    FLUID-2880 Note that as a result of this JIRA, there will be significant changes to the Pager API
     FLUID-2329 The self-rendering mode of the Pager is not the default mode
 
 Reorderer: 
@@ -237,7 +238,7 @@ Reorderer:
 
 UI Options: 
     FLUID-2398 Minimum font size control changes the text size even when the base size is larger then the minimum.
-	FLUID-2481 "Links" selection does not work correctly in UIOptions
+    FLUID-2481 "Links" selection does not work correctly in UIOptions
     FLUID-2506 Keyboard navigation inside the dialog breaks in simple layout mode: using FF
     FLUID-2524 scrolling the screen while the UI Options dialog is open, will cause it's contents to appear distorted: using IE
     
