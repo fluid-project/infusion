@@ -14,7 +14,8 @@ This release includes
       * "fluid" decorator instantiates any Fluid component bound to markup (FLUID-2375)
       * New support for removing arbitrary attributes and CSS classes (FLUID-2603, FLUID-2598)
     * Updates to Uploader
-    * Updates to User Interface Options
+    * Updates to User Interface Options including better cross browser support, keyboard and screen 
+      reader accessibility and other bug fixes
     * Many bug fixes
 
 What's in this Release
@@ -233,4 +234,7 @@ Reorderer:
 
 UI Options: 
     FLUID-2398 Minimum font size control changes the text size even when the base size is larger then the minimum.
+	FLUID-2481 "Links" selection does not work correctly in UIOptions
     FLUID-2506 Keyboard navigation inside the dialog breaks in simple layout mode: using FF
+    FLUID-2524 scrolling the screen while the UI Options dialog is open, will cause it's contents to appear distorted: using IE
+    
