@@ -11,7 +11,7 @@ This release includes
     * A-Grade browser support has been updated to Yahoo's latest A-Grade browser support
     * jQuery UI Themes for working with FSS themes
     * New and powerful decorators for the Renderer:
-      * "fluid" decorator instantiates any Fluid component bound to markup
+      * The "fluid" decorator instantiates any Fluid Infusion component bound to the markup
       * New support for removing arbitrary attributes and CSS classes
     * Fixes for Pager:
       * Improved handing of column sorting
@@ -141,8 +141,8 @@ with their licensing terms.
     
 Other third part software
 
-	* fastXmlPull is based on XML for Script's Fast Pull Parser v3.1
-	  (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js )
+    * fastXmlPull is based on XML for Script's Fast Pull Parser v3.1
+      (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js )
     
 Readme
 ------
@@ -235,6 +235,7 @@ Pager:
     FLUID-2329 The self-rendering mode of the Pager is not the default mode
 
 Reorderer: 
+    FLUID-539 Can't use the "Tab" key to navigate out of reorderable tabs
     FLUID-148 Edge case: visual position of drop target when droppable is at beginning or end of a row
     FLUID-118 Dragging an image offscreen or out of the frame has some unexpected results.
 
