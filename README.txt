@@ -11,14 +11,16 @@ This release includes
     * A-Grade browser support has been updated to Yahoo's latest A-Grade browser support
     * jQuery UI Themes for working with FSS themes
     * New and powerful decorators for the Renderer:
-      * "fluid" decorator instantiates any Fluid component bound to markup (FLUID-2375)
-      * New support for removing arbitrary attributes and CSS classes (FLUID-2603, FLUID-2598)
+      * "fluid" decorator instantiates any Fluid component bound to markup
+      * New support for removing arbitrary attributes and CSS classes
     * Fixes for Pager:
-      * Improved handing of column sorting (FLUID-2466, FLUID-2498, FLUID-2591, FLUID-2367)
-      * Fixed persistence of focus (FLUID-2244 - actually a new renderer feature)
+      * Improved handing of column sorting
+      * Fixed persistence of focus
     * Updates to Uploader
-    * Updates to User Interface Options including better cross browser support, keyboard and screen 
-      reader accessibility and other bug fixes
+    * Updates to User Interface Options including
+      * better cross browser support
+      * better keyboard and screen reader accessibility
+      * other bug fixes
     * Many bug fixes
 
 What's in this Release
@@ -129,13 +131,13 @@ with their licensing terms.
 
     * jQuery javascript library v1.3.2: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * jQuery UI javascript widget library v1.7: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * jQuery QUnit testrunner: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * CSS styling reset from YUI: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
+    * jQuery QUnit testrunner r6173: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * CSS styling reset from YUI v2.5.2: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
     * Douglas Crockford's JSON parsing and stringifying methods (from 2007-11-06): http://www.json.org/ (Public Domain)
-    * SWFUpload: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
+    * SWFUpload v2.2.0.1: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
     * SWFObject v2.1: http://code.google.com/p/swfobject/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
-    * Sample markup and stylesheets from Sakai (http://sakaiproject.org) and uPortal (http://www.uportal.org/)
-    * FCKeditor, HTML text editor (LGPL licensed http://www.fckeditor.net/license)
+    * Sample markup and stylesheets from Sakai v2.5 (http://sakaiproject.org) and uPortal v2.6 (http://www.uportal.org/)
+    * FCKeditor v2.6, HTML text editor (LGPL licensed http://www.fckeditor.net/license)
     
 Other third part software
 
@@ -229,7 +231,7 @@ Layout Reorderer:
     FLUID-858  Portlet Columns load with no padding between them in IE7
 
 Pager:
-    FLUID-2880 Note that as a result of this JIRA, there will be significant changes to the Pager API
+    FLUID-2880 The Pager will be refactored. Note that as a result of this, there will be significant changes to the Pager API
     FLUID-2329 The self-rendering mode of the Pager is not the default mode
 
 Reorderer: 
