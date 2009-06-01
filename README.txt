@@ -13,6 +13,9 @@ This release includes
     * New and powerful decorators for the Renderer:
       * "fluid" decorator instantiates any Fluid component bound to markup (FLUID-2375)
       * New support for removing arbitrary attributes and CSS classes (FLUID-2603, FLUID-2598)
+    * Fixes for Pager:
+      * Improved handing of column sorting (FLUID-2466, FLUID-2498, FLUID-2591, FLUID-2367)
+      * Fixed persistence of focus (FLUID-2244 - actually a new renderer feature)
     * Updates to Uploader
     * Updates to User Interface Options including better cross browser support, keyboard and screen 
       reader accessibility and other bug fixes
