@@ -22,10 +22,11 @@ This release is available in two forms:
     Deployment Bundle - infusion-1.1.zip 
     Source Code Bundle - infusion-1.1-src.zip
 
-Both bundles include all the code needed to get started using Fluid, include a single JavaScript file,
-fluid-components/js/Fluid-all.js, that is a combination of all other source files. This script is
-compressed and suitable for production use.  Developers can include this single file in their pages to
-provide all the necessary support for the Fluid component Library.
+Both bundles include all the code needed to get started using Infusion, include a single JavaScript file,
+    InfusionAll.js
+that is a combination of all other source files. Developers can include this single file in their
+pages to provide all the necessary support for the Infusion component Library. In the Deployment Bundle,
+this script is compressed and suitable for production use.
 
 Both bundles have the following organization:
         components/
@@ -41,13 +42,15 @@ Both bundles have the following organization:
 The Deployment Bundle also includes a WAR file suitable for deployment in Java-based containers: 
         fluid-components-1.1.war
 
-Also, in the Deployment Bundle, the JavaScript source has been minified: comments and whitespace have been removed. 
+Also, in the Deployment Bundle, the JavaScript source has been minified: comments and whitespace
+have been removed. 
 
-Developers wishing to learn about the Fluid code, or debug their applications, should use the Source Code Bundle.
+Developers wishing to learn about the Fluid Infusion code, or debug their applications, should use
+the Source Code Bundle.
 
 Source Code
 -----------
-The organization of the full source code for the Fluid library is as follows:
+The organization of the full source code for the Infusion library is as follows:
 
         components/
              inlineEdit/
@@ -72,7 +75,7 @@ The organization of the full source code for the Fluid library is as follows:
 
 Examples and Sample Code
 ------------------------
-Sample code illustrating how Fluid components can be used:
+Sample code illustrating how Infusion components can be used:
 
         integration-demos/
              bspace/    (showcases: Inline Edit)
@@ -103,19 +106,20 @@ Tests
 
 License
 -------
-Fluid code is licensed under a dual ECL 2.0 / BSD license. The specific licenses can be found in the
-license file:
+Fluid Infusion code is licensed under a dual ECL 2.0 / BSD license. The specific licenses can be
+found in the license file:
         licenses/infusion-LICENSE.txt
 
-Fluid also depends upon some third party open source modules. These are contained in their own folders,
-and their licenses are also present in
+Infusion also depends upon some third party open source modules. These are contained in their own
+folders, and their licenses are also present in
         licenses/
         
 
 
-Third Party Software in Fluid
-------------------------------
-This is a list of publicly available software that is included in the Fluid bundle, along with their licensing terms.
+Third Party Software in Infusion
+--------------------------------
+This is a list of publicly available software that is included in the Fluid Infusion bundle, along
+with their licensing terms.
 
     * jQuery javascript library v1.3.2: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * jQuery UI javascript widget library v1.7: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
@@ -146,12 +150,12 @@ Documentation
 
 The Fluid Project uses a wiki for documentation and project collaboration: http://wiki.fluidproject.org.
 
-The Documentation for Infusion releases consists of a number of information pages stored in the Fluid Wiki.
+The documentation for Infusion consists of a number of information pages stored in the Fluid Wiki.
 The pages include tutorials, API descriptions, testing procedures, and data-gathering approaches. To make the 
 manual pages easy to navigate we have added the following guides:
 
     * A landing page is provided for the reader, with links to all of our documenation.
-    * A link to the Documentation appears at the top of the left-side wiki navigation
+    * A link to the documentation appears at the top of the left-side wiki navigation
       bar with the name "Infusion Documentation".
 
 
@@ -170,7 +174,8 @@ For more information on Fluid Infusion browser support, please see:
 Status of Components and Framework Features
 ===========================================
 
-Production: supports A-Grade browsers, stable for production usage across a wide range of applications and use cases
+Production: supports A-Grade browsers, stable for production usage across a wide range of
+applications and use cases
     * Fluid Skinning System 
     * Infusion Framework Core
     * Inline Edit: Simple Text
