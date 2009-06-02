@@ -219,6 +219,7 @@ Inline Edit:
   
 Uploader: 
     FLUID-2582 Uploader is dependent on ProgressiveEnhancement.js, which is not included in InfusionAll.js
+    FLUID-2895 The browse files button displays as a white box in IE 7 when running off the local system in Flash 10
     FLUID-2052 Cannot tab away from the "Browse Files" button with Flash 10; using FF3*
     FLUID-2032 Cannot Tab to the 'Browse More" button with Flash 10, using FF2*
     * For information related to known issues with Flash 10 compatibility, 
