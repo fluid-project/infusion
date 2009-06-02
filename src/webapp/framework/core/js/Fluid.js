@@ -14,12 +14,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Declare dependencies.
 /*global jQuery, YAHOO, opera*/
 
-var fluid_1_1 = fluid_1_1 || {};
-var fluid = fluid || fluid_1_1;
+var fluid_1_2 = fluid_1_2 || {};
+var fluid = fluid || fluid_1_2;
 
 (function ($, fluid) {
     
-    fluid.version = "Infusion 1.0";
+    fluid.version = "Infusion 1.2";
     
     /**
      * Causes an error message to be logged to the console and a real runtime error to be thrown.
@@ -29,7 +29,7 @@ var fluid = fluid || fluid_1_1;
     fluid.fail = function (message) {
         fluid.setLogging(true);
         fluid.log(message.message? message.message : message);
-        throw new Error(message);
+        // throw new Error(message);
         message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
     };
     
@@ -975,4 +975,4 @@ var fluid = fluid || fluid_1_1;
         return newString;
     };
     
-})(jQuery, fluid_1_1);
+})(jQuery, fluid_1_2);
