@@ -23,22 +23,17 @@ This release includes
       * better cross browser support
       * better keyboard and screen reader accessibility
       * other bug fixes
-    * Class Name Changes
-      * FSS
-        * fl-no-background-images -> fl-noBackgroundImages
-      * InlineEdit
-        * added a default class for styling text, fl-inlineEdit-text
-      * Image Reorderer
-        * fl-reorderer-imageTitle was also used for styling and as a selector, added flc-reorderer-imageTitle to be used as the selector
-	  * Progressive Enhancement
-	    * fl-ProgEnhance-basic -> fl-progEnhance-basic
-	    * fl-ProgEnhance-enhanced -> fl-progEnhance-enhance
-	    * Backwards compatibility provided for the old class names
-	  * Uploader
-	    * flc-uploader-scroller-footer -> flc-uploader-queue-footer
+    * Class Name Changes in the FSS and components (see below)
 	* Api Changes
 	  * 
     * Many bug fixes
+
+Class Name Changes
+------------------
+A number of style names have been changed, and some styles have been deprecated. For specific
+information, see
+
+    http://wiki.fluidproject.org/display/fluid/Upgrading+to+Infusion+1.1
 
 What's in this Release
 ======================
