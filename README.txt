@@ -23,6 +23,21 @@ This release includes
       * better cross browser support
       * better keyboard and screen reader accessibility
       * other bug fixes
+    * Class Name Changes
+      * FSS
+        * fl-no-background-images -> fl-noBackgroundImages
+      * InlineEdit
+        * added a default class for styling text, fl-inlineEdit-text
+      * Image Reorderer
+        * fl-reorderer-imageTitle was also used for styling and as a selector, added flc-reorderer-imageTitle to be used as the selector
+	  * Progressive Enhancement
+	    * fl-ProgEnhance-basic -> fl-progEnhance-basic
+	    * fl-ProgEnhance-enhanced -> fl-progEnhance-enhance
+	    * Backwards compatibility provided for the old class names
+	  * Uploader
+	    * flc-uploader-scroller-footer -> flc-uploader-queue-footer
+	* Api Changes
+	  * 
     * Many bug fixes
 
 What's in this Release
@@ -174,7 +189,7 @@ Firefox 2.x, 3.x: full support
 Internet Explorer 6.x, 7.x: full support
 Safari 3.1, Opera 9.6: full support (except keyboard interaction, which is not supported by these browsers)
 
-Internet Explorer 8: preliminary testing
+Internet Explorer 8: preliminary support
 
 For more information on Fluid Infusion browser support, please see:
     http://wiki.fluidproject.org/display/fluid/Browser+Support
