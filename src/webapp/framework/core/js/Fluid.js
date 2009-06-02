@@ -30,7 +30,7 @@ var fluid = fluid || fluid_1_1;
         fluid.setLogging(true);
         fluid.log(message.message? message.message : message);
         throw new Error(message);
-        //message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+        message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
     };
     
     /**
