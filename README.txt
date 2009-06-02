@@ -13,27 +13,20 @@ This release includes
     * New and powerful decorators for the Renderer:
       * The "fluid" decorator instantiates any Fluid Infusion component bound to the markup
       * New support for removing arbitrary attributes and CSS classes
-    * Fixes for Pager:
+    * Updates to Pager:
       * Improved handing of column sorting
       * Fixed persistence of focus
-    * Updates to Uploader
-      * user can manually switch to the standard non-Flash http file uploader
-      * uploader Browse button now respects DOM z-index in Flash 10
-    * Updates to User Interface Options including
-      * better cross browser support
-      * better keyboard and screen reader accessibility
-      * other bug fixes
-    * Class Name Changes in the FSS and components (see below)
-	* Api Changes
-	  * 
+    * Updates to Uploader:
+      * User can manually switch to the standard non-Flash http file uploader
+      * Uploader Browse button now respects DOM z-index in Flash 10
+    * Updates to User Interface Options:
+      * Better cross browser support
+      * Better keyboard and screen reader accessibility
+    * Class Name Changes in the FSS and components:
+	  * see http://wiki.fluidproject.org/display/fluid/Upgrading+to+Infusion+1.1
+	* Framework API changes:
+	  * see http://wiki.fluidproject.org/display/fluid/Upgrading+to+Infusion+1.1
     * Many bug fixes
-
-Class Name Changes
-------------------
-A number of style names have been changed, and some styles have been deprecated. For specific
-information, see
-
-    http://wiki.fluidproject.org/display/fluid/Upgrading+to+Infusion+1.1
 
 What's in this Release
 ======================
