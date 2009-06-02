@@ -6,27 +6,30 @@ Documentation:      http://wiki.fluidproject.org/display/fluid/Infusion+Document
 What's New in 1.1
 =================
 
-This release includes
+This release:
 
-    * A-Grade browser support has been updated to Yahoo's latest A-Grade browser support
-    * jQuery UI Themes for working with FSS themes
-    * New and powerful decorators for the Renderer:
+    * Updates our supported browsers to include the latest from Yahoo's A-grade browser list
+      * see http://wiki.fluidproject.org/display/fluid/Browser+Support
+    * Provides the ability to create custom builds:
+      * see http://wiki.fluidproject.org/display/fluid/Custom+Build
+    * Adds jQuery UI Themes for working with FSS themes
+    * Adds new and powerful decorators for the Renderer:
       * The "fluid" decorator instantiates any Fluid Infusion component bound to the markup
       * New support for removing arbitrary attributes and CSS classes
-    * Updates to Pager:
+    * Updates the Pager:
       * Improved handing of column sorting
       * Fixed persistence of focus
-    * Updates to Uploader:
+    * Updates the Uploader:
       * User can manually switch to the standard non-Flash http file uploader
       * Uploader Browse button now respects DOM z-index in Flash 10
-    * Updates to User Interface Options:
+    * Updates the User Interface Options:
       * Better cross browser support
       * Better keyboard and screen reader accessibility
-    * Class Name Changes in the FSS and components:
+    * Changes some class names in the FSS and components:
 	  * see http://wiki.fluidproject.org/display/fluid/Upgrading+to+Infusion+1.1
-	* Framework API changes:
+	* Changes some Framework API:
 	  * see http://wiki.fluidproject.org/display/fluid/Upgrading+to+Infusion+1.1
-    * Many bug fixes
+    * Fixes many bugs
 
 What's in this Release
 ======================
@@ -35,31 +38,16 @@ This release is available in two forms:
     Deployment Bundle - infusion-1.1.zip 
     Source Code Bundle - infusion-1.1-src.zip
 
-Both bundles include all the code needed to get started using Infusion, include a single JavaScript file,
+In addition to source code, samples and tests, both bundles include at the top level a single JavaScript file
+
     InfusionAll.js
+
 that is a combination of all other source files. Developers can include this single file in their
 pages to provide all the necessary support for the Infusion component Library. In the Deployment Bundle,
 this script is compressed and suitable for production use.
 
-Both bundles have the following organization:
-        components/
-        framework/
-        integration-demos/
-        lib/
-        licenses/
-        standalone-demos/
-        tests/
-        InfusionAll.js
-        README.txt
-
 The Deployment Bundle also includes a WAR file suitable for deployment in Java-based containers: 
         fluid-components-1.1.war
-
-Also, in the Deployment Bundle, the JavaScript source has been minified: comments and whitespace
-have been removed. 
-
-Developers wishing to learn about the Fluid Infusion code, or debug their applications, should use
-the Source Code Bundle.
 
 Source Code
 -----------
@@ -85,6 +73,11 @@ The organization of the full source code for the Infusion library is as follows:
              swfobject/
              swfupload/
 
+In the Deployment Bundle, the JavaScript source has been minified: comments and whitespace have
+been removed. 
+
+Developers wishing to learn about the Fluid Infusion code, or debug their applications, should use
+the Source Code Bundle.
 
 Examples and Sample Code
 ------------------------
@@ -126,8 +119,6 @@ found in the license file:
 Infusion also depends upon some third party open source modules. These are contained in their own
 folders, and their licenses are also present in
         licenses/
-        
-
 
 Third Party Software in Infusion
 --------------------------------
@@ -137,17 +128,18 @@ with their licensing terms.
     * jQuery javascript library v1.3.2: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * jQuery UI javascript widget library v1.7: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * jQuery QUnit testrunner r6173: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * CSS styling reset from YUI v2.5.2: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
     * Douglas Crockford's JSON parsing and stringifying methods (from 2007-11-06): http://www.json.org/ (Public Domain)
     * SWFUpload v2.2.0.1: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
     * SWFObject v2.1: http://code.google.com/p/swfobject/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
     * Sample markup and stylesheets from Sakai v2.5 (http://sakaiproject.org) and uPortal v2.6 (http://www.uportal.org/)
     * FCKeditor v2.6, HTML text editor (LGPL licensed http://www.fckeditor.net/license)
     
-Other third part software
+Other third party software
 
     * fastXmlPull is based on XML for Script's Fast Pull Parser v3.1
       (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js )
+    * fluid.reset.css is based on YUI's CSS reset styling v2.5.2
+      see: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
     
 Readme
 ------
