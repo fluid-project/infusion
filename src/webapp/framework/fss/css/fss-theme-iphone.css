@@ -27,7 +27,7 @@ body {
     font-size:1.75em;
 }
 
-.fl-navbar .fl-button-left {background-image:url(../images/themes/iphone/);}
-.fl-navbar .fl-button-left .fl-button-inner {background-image:url(../images/themes/iphone/);}
-.fl-navbar .fl-button-right {background-image:url(../images/themes/iphone/);}
-.fl-navbar .fl-button-right .fl-button-inner {background-image:url(../images/themes/iphone/);}
+.fl-navbar .fl-button-left {background-image:url(../images/themes/iphone/nav_back_cap.png);}
+.fl-navbar .fl-button-left .fl-button-inner {background-image:url(../images/themes/iphone/nav_button_stretcher.png);}
+.fl-navbar .fl-button-right {background-image:url(../images/themes/iphone/nav_button_cap.png);}
+.fl-navbar .fl-button-right .fl-button-inner {background-image:url(../images/themes/iphone/nav_button_stretcher.png);}
