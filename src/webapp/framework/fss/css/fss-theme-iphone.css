@@ -1,0 +1,12 @@
+
+body {
+
+    font-family: "Helvetica", sans-serif;
+    background: url( '../fss/images/themes/iphone/backgroundStripes.png' );
+    background-repeat: repeat;
+
+}
+
+.fl-tabs li {
+	border-bottom: 0px;
+}
