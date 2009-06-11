@@ -8,6 +8,11 @@
       To create a custom build use the customBuild target.
         Custom build has three optional parameters:  'include', 'exclude', and 'jsfilename'
         e.g. ant customBuild -Dinclude="uiOptions, inlineEdit" -Dexclude="jQuery" -Djsfilename="MyInfusion.js"
+      To have URLs referencing the individual js files, replaced with a single reference to the single concatenated js file,
+        set the rewriteHead paramater to "true"
+        e.g. ant -DrewriteHead="true"
+        e.g. customBuild -Dinclude="uiOptions" -Dexclude="jQuery" -DrewriteHead="true" 
+      
            
     </description>
 
@@ -37,6 +42,8 @@
     <!-- properties for URL rewriting -->
     <property name="regexStartJS" value="&lt;script{1,1}?.*" />
     <property name="regexEndJS" value="{1,1}?.*script>" />
+    <property name="replaceRegexStartJS" value="[\/-z]*" />
+    <property name="replaceRegexEndJS" value="&quot;" />
     <property name="fluidRegExp" value="framework/core/js/Fluid.js" />
     
     <!-- task definition for JSLint -->
@@ -210,7 +217,7 @@
         </concat>    
     </target>
     
-    <!-- Runs the javascript dependency resolver which sets $jsfile, $requiredDirectoriesSelector, $jsRegExp, and $allRequiredJSFiles -->
+    <!-- Runs the javascript dependency resolver which sets $jsfile, $requiredDirectoriesSelector, $jsRegExp, $jsReplaceRegExp and $allRequiredJSFiles -->
     <target name="resolveDependencies" depends="clean">
         <script language="javascript" src="build.js" />
     </target>
@@ -247,16 +254,16 @@
         </antcall>
     </target>
     
-    <!-- Replaces Fluid.js with the reference to the single js file. Depends on the build already being deployed 
-    (i.e. through buildDeployBundle or copyToDeployBundle -->
-    <target name="replaceFluid">
-        <replaceregexp match="${fluidRegExp}" replace="${jsfile}" flags="i">
+    <!-- Replaces the first occurence of a file that is in the single js file, with the reference to the single js file. 
+    Depends on the build already being deployed (i.e. through buildDeployBundle or copyToDeployBundle) -->
+    <target name="replaceJS">
+        <replaceregexp match="${jsReplaceRegExp}" replace="/${jsfile}&quot;" flags="i">
             <fileset dir="${products}" includes="**/*.html" />
         </replaceregexp>
     </target>
     
     <!-- Removes that <script> blocks pertaining to files included in the single js file -->
-    <target name="removeJS" depends="replaceFluid">
+    <target name="removeJS" depends="replaceJS">
         <replaceregexp match="${jsRegExp}" replace="" flags="g">
             <fileset dir="${products}" includes="**/*.html" />
         </replaceregexp>
