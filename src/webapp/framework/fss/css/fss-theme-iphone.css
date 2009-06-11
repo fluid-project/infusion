@@ -5,6 +5,7 @@ body {
     background: rgb(197,204,211) url(../images/themes/iphone/stripes.png) repeat scroll left top;
     margin:0;
     padding:0;
+    overflow:hidden; /* for transitions without scrollbars */
 }
 
 .fl-text-bevel {
@@ -45,7 +46,7 @@ body {
     margin-top:5px;
 }
 .fl-navbar .fl-button-inner{
-    padding:8px 16px 8px 0px;    
+    padding:8px 16px 10px 0px;    
     background-image:url(../images/themes/iphone/nav_button_stretcher.png);
 }
 .fl-navbar .fl-button-left {
@@ -73,16 +74,51 @@ body {
 	border: 0px;
 }
 
-.fl-listmenu li a:link {
+.fl-listmenu li a:link, .fl-listmenu li a:visited {
 	color: black;
 	text-decoration: none;
+}
+.fl-listmenu li a:active {
+	color: #fff;
+    background: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+}
+.fl-listmenu li a{
+    -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+}
+.fl-listmenu li:first-child a{
+    -webkit-border-top-left-radius: 8px;
+    -webkit-border-top-right-radius: 8px;
+}
+.fl-listmenu li:last-child a{
+    -webkit-border-bottom-left-radius: 8px;
+    -webkit-border-bottom-right-radius: 8px;
 }
 
 /* list with icons */
 .fl-listmenu-icons li {
 	background-repeat: no-repeat; 
-	background-position: 5px center; 
-	padding: 5px;
+	background-position: 5px center;
 	text-indent: 2em;
 }
+
+/***************************************/
+/* Transition Library */
+
+.slideLeft {
+    position:absolute;
+    width:100%;
+    top:0;
+    left:0%;
+    -webkit-transition: left 0.75s ease-in-out;
+}
+
+.fl-view-from {position:absolute;left:0%; width:100%;}
+.fl-view-to {position:absolute;left:100%; width:100%;}
+
+.doslideLeft {
+    left:-100%;   
+}
+
+
+
 
