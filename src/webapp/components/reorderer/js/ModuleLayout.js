@@ -17,9 +17,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 fluid_1_2 = fluid_1_2 || {};
 
-fluid.moduleLayout = fluid.moduleLayout || {};
-
 (function ($, fluid) {
+    
+    fluid.moduleLayout = fluid.moduleLayout || {};
 
     /**
      * Calculate the location of the item and the column in which it resides.
