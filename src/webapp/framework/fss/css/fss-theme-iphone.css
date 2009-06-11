@@ -1,12 +1,12 @@
+/***************************************/
+/* general styles */
 body {
     font:normal 17px Helvetica, sans-serif;
-    background:#C5CCD3 url(../images/themes/iphone/stripes.png) repeat scroll left top;
+    background: rgb(197,204,211) url(../images/themes/iphone/stripes.png) repeat scroll left top;
     margin:0;
     padding:0;
 }
 
-
-/* general styles */
 .fl-text-bevel {
     color:#fff;
     text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
@@ -18,10 +18,7 @@ body {
 .fl-text-bevel-blackText {
     text-shadow: rgba(255,255,255,0.75) 0px 1px 1px;
 }
-.fl-tabs li {
-	border-bottom: 0px;
-}
-
+/***************************************/
 /* Navigation Bar */
 .fl-navbar {
     height:42px;
@@ -29,10 +26,10 @@ body {
     border-bottom:1px solid #273750;
     border-bottom-color:#000;
     background: -webkit-gradient(linear, left top, left bottom, from(#6D84A2), to(#6D84A2), color-stop(0.0, #B0BCCD), color-stop(0.5, #889BB3), color-stop(0.50, #6D84A2));
+    margin-bottom:12px;
     -webkit-background-origin: padding-box; 
     -webkit-background-clip: content-box; 
 }
-
 .fl-navbar h1 {
     text-align:center;
     color:#fff;
@@ -41,44 +38,35 @@ body {
     font-size:20px;
     font-weight: normal;
 }
-
 .fl-navbar a {
 	color: #fff;
 	text-decoration:none;
 	font-size: 12px;
-    margin-top:3px;
+    margin-top:5px;
 }
-
 .fl-navbar .fl-button-inner{
-    padding:8px 16px 8px 0px;
+    padding:8px 16px 8px 0px;    
+    background-image:url(../images/themes/iphone/nav_button_stretcher.png);
 }
-
 .fl-navbar .fl-button-left {
 	background-image:url(../images/themes/iphone/nav_back_cap.png);
 }
-.fl-navbar .fl-button-left .fl-button-inner {
-	background-image:url(../images/themes/iphone/nav_button_stretcher.png);
-}
-
 .fl-navbar .fl-button-right {
 	background-image:url(../images/themes/iphone/nav_button_cap.png);
 }
-.fl-navbar .fl-button-right .fl-button-inner {
-	background-image:url(../images/themes/iphone/nav_button_stretcher.png);
-}
 
-
+/***************************************/
 /* list */
 .fl-listmenu {
-	background-color: white;
-	-webkit-border-radius: 0.5em;
-	border: 1px solid #999;
-	margin: 1em;
+	background-color: #fff;
+	border: 1px solid rgb(169,173,176);
+	margin: 0 10px;
+	-webkit-border-radius: 8px;
 }
 
 .fl-listmenu li {
 	border: 0px;
-	border-top: 1px solid #999;
+	border-top: 1px solid rgb(169,173,176);
 }
 
 .fl-listmenu li:first-child {
