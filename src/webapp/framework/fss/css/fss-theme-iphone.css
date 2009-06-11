@@ -1,18 +1,28 @@
+
 body {
-    font-family: "Helvetica", sans-serif;
+    font:normal 20px/1.25em Helvetica, sans-serif;
+    /*font-family: Helvetica, sans-serif;*/
     background:#C5CCD3 url(../images/themes/iphone/stripes.png) repeat scroll left top;
     margin:0;
     padding:0;
 }
 .fl-text-bevel {
-    text-shadow: 0px -1px 0px #000000;
+    color:#fff;
+    text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
+}
+.fl-text-bevel-whiteText {
+    color:#fff;
+    text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
+}
+.fl-text-bevel-blackText {
+    text-shadow: rgba(255,255,255,0.75) 0px 1px 1px;
 }
 .fl-tabs li {
 	border-bottom: 0px;
 }
 /* Navigation Bar */
 .fl-navbar {
-    /* glossy blue gradient */   
+    height:2em;
     border:1px solid #cdd5df;
     border-bottom-color:#000;
     background: -webkit-gradient(linear, left top, left bottom, from(#6D84A2), to(#6D84A2), color-stop(0.0, #B0BCCD), color-stop(0.5, #889BB3), color-stop(0.50, #6D84A2));
@@ -20,11 +30,11 @@ body {
     -webkit-background-clip: content-box; 
 }
 .fl-navbar h1 {
-    text-align:center;
-    color:#fff;
+    text-align:center;    
     margin:0;
-    padding:0;    
+    padding:0.20em 0 0 0;    
     font-size:1.75em;
+    font-weight:400;
 }
 
 .fl-navbar .fl-button-left {background-image:url(../images/themes/iphone/nav_back_cap.png);}
