@@ -371,8 +371,10 @@ fluid_1_2 = fluid_1_2 || {};
             status: response.status,
             textStatus: textStatus,
             errorThrown: errorThrown
+            };
+          thisSpec.queued = false;
+          fluid.fetchResources(resourceSpecs, callback);
           }
-        }
           
         };
       };
@@ -380,7 +382,7 @@ fluid_1_2 = fluid_1_2 || {};
     var complete = true;
     for (var key in resourceSpecs) {
       var resourceSpec = resourceSpecs[key];
-      if (resourceSpec.href && !resourceSpec.resourceText) {
+      if (resourceSpec.href && !(resourceSpec.resourceKey || resourceSpec.fetchError)) {
          if (!resourceSpec.queued) {
            var thisCallback = resourceCallback(resourceSpec);
            var options = {url: resourceSpec.href, success: thisCallback.success, error: thisCallback.error}; 
