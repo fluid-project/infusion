@@ -107,10 +107,10 @@ body {
     position:absolute;
     width:100%;
 }
-.fl-view-offScreen-left {
+.fl-view-offScreen-right {
     left:100%; 
 }
-.fl-view-offScreen-right {
+.fl-view-offScreen-left {
     left:-100%; 
 }
 
