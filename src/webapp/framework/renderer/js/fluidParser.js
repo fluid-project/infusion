@@ -383,7 +383,9 @@ fluid_1_2 = fluid_1_2 || {};
       if (resourceSpec.href && !resourceSpec.resourceText) {
          if (!resourceSpec.queued) {
            var thisCallback = resourceCallback(resourceSpec);
-           $.ajax({url: resourceSpec.href, success: thisCallback.success, error: thisCallback.error});
+           var options = {url: resourceSpec.href, success: thisCallback.success, error: thisCallback.error}; 
+           $.extend(true, options, resourceSpec.options);
+           $.ajax(options);
            resourceSpec.queued = true;
          }
          complete = false;             
