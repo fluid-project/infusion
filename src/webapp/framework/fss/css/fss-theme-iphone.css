@@ -104,19 +104,24 @@ body {
 /***************************************/
 /* Transition Library */
 
-.slideLeft {
+.fl-view-from-start {
     position:absolute;
+    left:0%; 
     width:100%;
-    top:0;
-    left:0%;
+    -webkit-transition: left 0.75s ease-in-out;
+}
+.fl-view-to-start {
+    position:absolute;
+    left:100%; 
+    width:100%;
     -webkit-transition: left 0.75s ease-in-out;
 }
 
-.fl-view-from {position:absolute;left:0%; width:100%;}
-.fl-view-to {position:absolute;left:100%; width:100%;}
-
-.doslideLeft {
+.fl-view-from-end {
     left:-100%;   
+}
+.fl-view-to-end {
+    left:0%;   
 }
 
 
