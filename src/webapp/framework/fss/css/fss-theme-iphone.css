@@ -102,28 +102,44 @@ body {
 }
 
 /***************************************/
+/* iPhone Content Views */
+.fl-view {
+    position:absolute;
+    width:100%;
+}
+.fl-view-offScreen-left {
+    left:100%; 
+}
+.fl-view-offScreen-right {
+    left:-100%; 
+}
+
+/***************************************/
 /* Transition Library */
 
-.fl-view-from-start {
-    position:absolute;
-    left:0%; 
-    width:100%;
+.fl-transition-slide {
     -webkit-transition: left 0.75s ease-in-out;
 }
-.fl-view-to-start {
-    position:absolute;
-    left:100%; 
-    width:100%;
-    -webkit-transition: left 0.75s ease-in-out;
+.fl-transition-slide-right-out{
+    left: 100%;
 }
-
-.fl-view-from-end {
-    left:-100%;   
+.fl-transition-slide-right-in{
+    left: 0%;
 }
-.fl-view-to-end {
-    left:0%;   
+.fl-transition-slide-left-out{
+    left: -100%;
 }
-
-
+.fl-transition-slide-left-in{
+    left: 0%;
+}
+.fl-transition-fade {
+    -webkit-transition: opacity 0.75s linear;
+}
+.fl-transition-fade-in {
+    opacity:1;
+}
+.fl-transition-fade-out {
+    opacity:0;
+}
 
 
