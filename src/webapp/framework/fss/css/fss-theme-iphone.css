@@ -107,10 +107,10 @@ body {
     position:absolute;
     width:100%;
 }
-.fl-view-offScreen-right {
+.fl-offScreen-right {
     left:100%; 
 }
-.fl-view-offScreen-left {
+.fl-offScreen-left {
     left:-100%; 
 }
 
@@ -120,16 +120,16 @@ body {
 .fl-transition-slide {
     -webkit-transition: left 0.75s ease-in-out;
 }
-.fl-transition-slide-right-out{
+.fl-transition-slide-right-out {
     left: 100%;
 }
-.fl-transition-slide-right-in{
+.fl-transition-slide-right-in {
     left: 0%;
 }
-.fl-transition-slide-left-out{
+.fl-transition-slide-left-out {
     left: -100%;
 }
-.fl-transition-slide-left-in{
+.fl-transition-slide-left-in {
     left: 0%;
 }
 .fl-transition-fade {
