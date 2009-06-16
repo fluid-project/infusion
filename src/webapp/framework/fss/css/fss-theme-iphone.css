@@ -2,14 +2,21 @@
 /* general styles */
 body {
     font:normal 17px Helvetica, sans-serif;
-    background: rgb(197,204,211) url(../images/themes/iphone/stripes.png) repeat scroll left top;
+    background: -webkit-gradient(linear, left top, right top, 
+        from(#c5ccd3), 
+        to(#cfd5dd), 
+        color-stop(0.80, #c5ccd3),
+        color-stop(0.80, #cfd5dd)
+    );
+    -webkit-background-origin: padding-box; 
+    -webkit-background-clip: content-box;
+    -webkit-background-size: 12px 100px;
     margin:0;
     padding:0;
     overflow:hidden; /* for transitions without scrollbars */
 }
 
 .fl-text-bevel {
-    color:#fff;
     text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
 }
 .fl-text-bevel-whiteText {
@@ -17,8 +24,16 @@ body {
     text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
 }
 .fl-text-bevel-blackText {
+    color:#333;
     text-shadow: rgba(255,255,255,0.75) 0px 1px 1px;
 }
+.fl-icon {
+    width:30px;
+    height:30px;
+    margin-top:-5px;
+    -webkit-border-radius: 5px;
+}
+
 /***************************************/
 /* Navigation Bar */
 .fl-navbar {
@@ -29,7 +44,7 @@ body {
     background: -webkit-gradient(linear, left top, left bottom, from(#6D84A2), to(#6D84A2), color-stop(0.0, #B0BCCD), color-stop(0.5, #889BB3), color-stop(0.50, #6D84A2));
     margin-bottom:12px;
     -webkit-background-origin: padding-box; 
-    -webkit-background-clip: content-box; 
+    -webkit-background-clip: content-box;
 }
 .fl-navbar h1 {
     text-align:center;
@@ -45,7 +60,7 @@ body {
 	font-size: 12px;
     margin-top:5px;
 }
-.fl-navbar .fl-button-inner{
+.fl-navbar .fl-button-inner {
     padding:8px 16px 10px 0px;    
     background-image:url(../images/themes/iphone/nav_button_stretcher.png);
 }
@@ -77,32 +92,30 @@ body {
 .fl-listmenu li a:link, .fl-listmenu li a:visited {
 	color: black;
 	text-decoration: none;
+    background:url(../images/themes/iphone/listmenu_arrow.png) no-repeat right top;
 }
 .fl-listmenu li a:active {
 	color: #fff;
     background: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
-.fl-listmenu li a{
+.fl-listmenu li a {
     -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+    padding:10px 0;
 }
-.fl-listmenu li:first-child a{
+.fl-listmenu li:first-child a {
     -webkit-border-top-left-radius: 8px;
     -webkit-border-top-right-radius: 8px;
 }
-.fl-listmenu li:last-child a{
+.fl-listmenu li:last-child a {
     -webkit-border-bottom-left-radius: 8px;
     -webkit-border-bottom-right-radius: 8px;
 }
-
-/* list with icons */
-.fl-listmenu-icons li {
-	background-repeat: no-repeat; 
-	background-position: 5px center;
-	text-indent: 2em;
+.fl-listmenu .fl-icon {
+    float:left;
 }
 
 /***************************************/
-/* iPhone Content Views */
+/* Content Views */
 .fl-view {
     position:absolute;
     width:100%;
