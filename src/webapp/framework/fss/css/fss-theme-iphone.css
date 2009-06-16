@@ -76,27 +76,26 @@ body {
 .fl-listmenu {
 	background-color: #fff;
 	border: 1px solid rgb(169,173,176);
-	margin: 0 10px;
+	margin: 0 10px 10px;
 	-webkit-border-radius: 8px;
 }
-
 .fl-listmenu li {
 	border: 0px;
 	border-top: 1px solid rgb(169,173,176);
 }
-
 .fl-listmenu li:first-child {
 	border: 0px;
 }
-
 .fl-listmenu li a:link, .fl-listmenu li a:visited {
 	color: black;
 	text-decoration: none;
-    background:url(../images/themes/iphone/listmenu_arrow.png) no-repeat right top;
+    background:url(../images/themes/iphone/listmenu_arrow.png) no-repeat right 5px;
 }
 .fl-listmenu li a:active {
 	color: #fff;
-    background: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+    background: 
+        url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
+        -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
 .fl-listmenu li a {
     -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
@@ -113,6 +112,7 @@ body {
 .fl-listmenu .fl-icon {
     float:left;
 }
+.fl-list-iconsEnabled {}
 
 /***************************************/
 /* Content Views */
