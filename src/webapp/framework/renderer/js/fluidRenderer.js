@@ -580,7 +580,7 @@ fluid_1_2 = fluid_1_2 || {};
   
   function getRelativeComponent(component, relativeID) {
       component = component.parent;
-      if (relativeID.indexOf("..::") === 0) {
+      while (relativeID.indexOf("..::") === 0) {
           relativeID = relativeID.substring(4);
           component = component.parent;
       }
