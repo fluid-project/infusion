@@ -387,10 +387,12 @@ fluid_1_2 = fluid_1_2 || {};
            var thisCallback = resourceCallback(resourceSpec);
            var options = {url: resourceSpec.href, success: thisCallback.success, error: thisCallback.error}; 
            $.extend(true, options, resourceSpec.options);
-           $.ajax(options);
            resourceSpec.queued = true;
+           $.ajax(options);
          }
-         complete = false;             
+         if (resourceSpec.queued) {
+           complete = false;
+         }             
         }
       else if (resourceSpec.nodeId && !resourceSpec.resourceText) {
         var node = document.getElementById(resourceSpec.nodeId);
