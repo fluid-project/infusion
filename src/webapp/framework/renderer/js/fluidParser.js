@@ -99,7 +99,7 @@ fluid_1_2 = fluid_1_2 || {};
    By Steven Levithan <http://stevenlevithan.com> 
    http://blog.stevenlevithan.com/archives/parseuri
    */
-   var parseUri = function (source) {
+   fluid.parseUri = function (source) {
       var o = parseUri.options,
          value = o.parser[o.strictMode ? "strict" : "loose"].exec(source);
       
@@ -117,7 +117,7 @@ fluid_1_2 = fluid_1_2 || {};
       return uri;
    };
    
-   parseUri.options = {
+   fluid.parseUri.options = {
        strictMode: false,
        key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
        q: {
@@ -131,7 +131,7 @@ fluid_1_2 = fluid_1_2 || {};
    };
   
   function rewriteUrl(url) {
-      var po = parseUri(url);
+      var po = fluid.parseUri(url);
       if (po.protocol || url.charAt(0) === '/') {
           return url;
       }
