@@ -100,7 +100,7 @@ fluid_1_2 = fluid_1_2 || {};
    http://blog.stevenlevithan.com/archives/parseuri
    */
    fluid.parseUri = function (source) {
-      var o = parseUri.options,
+      var o = fluid.parseUri.options,
          value = o.parser[o.strictMode ? "strict" : "loose"].exec(source);
       
       for (var i = 0, uri = {}; i < 14; i++) {
