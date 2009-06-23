@@ -369,7 +369,7 @@ fluid_1_2 = fluid_1_2 || {};
         error: function(response, textStatus, errorThrown) {
           thisSpec.fetchError = {
             status: response.status,
-            textStatus: textStatus,
+            textStatus: response.textStatus,
             errorThrown: errorThrown
             };
           thisSpec.queued = false;
