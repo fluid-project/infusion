@@ -732,6 +732,63 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertDeepEq("Random junk", ["\\\\\\\\\\ \t\nThing\x53\u0000", true],
           fluid.unescapeProperties("\\\\\\\\\\\\\\\\\\\\\ \\t\\nThing\\x53\\u0000\\"));
       });
+      
+    renderTests.test("Nested data binding", function () {
+       var selectionModel = {
+           values: ["v1", "v2"],
+           names: ["value one", "value two"],
+           selection: ["v2"]
+       };
+       
+       var selectorMap = [
+           {selector: ".nestLevelOne", id: "levelOne:"},
+           {selector: ".nestLevelTwo", id: "levelTwo:"},
+           {selector: ".nestLevelThree", id: "levelThree:"},
+           {selector: "#nestedDataBindingInput", id: "input"},
+           {selector: ".nestedDataBindingLabel", id: "label"}
+       ];
+       
+       var generateNestedTree = function () {
+           var tree = {children: []};
+           
+           tree.children[0] = {
+               ID: "selections",
+               optionlist: {valuebinding: "values"},
+               optionnames: {valuebinding: "names"},
+               selection: {valuebinding: "selection"}
+           };
+           
+           tree.children[1] = {
+               ID: "levelOne:",
+               children: [
+                   {
+                       ID: "levelTwo:",
+                       children: []
+                   }
+               ]    
+           };
+           
+           for (var i = 0; i < selectionModel.values.length; i++) {
+               var item = tree.children[1].children[0].children;
+               
+               item[item.length] = {
+                   ID: "levelThree:",
+                   children: [
+                       {ID: "input", choiceindex: i, parentRelativeID: "..::..::..::selections"},
+                       {ID: "label", choiceindex: i, parentRelativeID: "..::..::..::selections"}
+                   ]
+               };
+           }
+           
+           return tree;
+       };
+       
+       fluid.selfRender($(".nestedDataBinding"), generateNestedTree(), {cutpoints: selectorMap, model: selectionModel});
+       
+       jqUnit.assertEquals("Number of Inputs", selectionModel.values.length, $("input", ".nestedDataBinding").length);
+       jqUnit.assertEquals("Number of Labels", selectionModel.values.length, $("label", ".nestedDataBinding").length);
+       jqUnit.assertEquals("Selected Value", selectionModel.selection,$("input:checked", ".nestedDataBinding").attr("value"));
+    });
 
     var resourceSpec = {properties: {href: "../data/testProperties.properties"},
                               json: {href: "../data/testProperties.json"}};    
