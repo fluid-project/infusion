@@ -72,51 +72,65 @@ body {
 }
 
 /***************************************/
-/* list */
+/* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists */
+/* General rules */
+/* FSS Layout does not define styles for DT and DD for list menu, so add them here */
+
 .fl-listmenu {
 	background-color: #fff;
 	border: 1px solid rgb(169,173,176);
 	margin: 0 10px 10px;
 	-webkit-border-radius: 8px;
 }
-.fl-listmenu li {
+
+.fl-listmenu > li,
+.fl-listmenu > dt { 
+    padding:0;
+    margin: 0;
 	border: 0px;
 	border-top: 1px solid rgb(169,173,176);
-    overflow:hidden;
 }
-.fl-listmenu li:first-child {
+.fl-listmenu *:first-child {
 	border: 0px;
 }
-.fl-listmenu li a:link, .fl-listmenu li a:visited {
+.fl-listmenu > * > a:link, .fl-listmenu > * > a:visited {
 	color: black;
 	text-decoration: none;
     background:url(../images/themes/iphone/listmenu_arrow.png) no-repeat right 5px;
 }
-.fl-listmenu li a:active {
+.fl-listmenu > * > a:active {
 	color: #fff;
     background: 
         url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
         -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
-.fl-listmenu li a {
+.fl-listmenu > * > a {
     -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
     padding:10px 0;
 }
-.fl-listmenu li:first-child a {
+.fl-listmenu > *:first-child a {
     -webkit-border-top-left-radius: 8px;
     -webkit-border-top-right-radius: 8px;
 }
-.fl-listmenu li:last-child a {
+.fl-listmenu > *:last-child a {
     -webkit-border-bottom-left-radius: 8px;
     -webkit-border-bottom-right-radius: 8px;
 }
-.fl-listmenu .fl-icon {
-    float:left;
+
+/* Definition list rules */
+.fl-listmenu > dd {
+    font-size:0.8em;
+    color:#999;
 }
 
-.fl-listmenu.fl-menu-thumbnails li img:first-child {
-    height : 100px;
-    width : 50px;
+.fl-listmenu > dt > img {
+        
+}
+
+
+/* other list rules */
+.fl-listmenu .fl-icon {
+    float:left;
 }
 
 /***************************************/
