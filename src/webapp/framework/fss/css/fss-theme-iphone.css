@@ -16,17 +16,20 @@ body {
     overflow:hidden; /* for transitions without scrollbars */
 }
 
-.fl-text-bevel {
+h1 {}
+h2 {}
+h3 {}
+h4 {}
+h5 {}
+h6 {}
+
+.fl-bevel-black {
     text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
 }
-.fl-text-bevel-whiteText {
-    color:#fff;
-    text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
+.fl-bevel-white {
+    text-shadow: rgba(255,255,255,1) 0px 1px 0px;
 }
-.fl-text-bevel-blackText {
-    color:#333;
-    text-shadow: rgba(255,255,255,0.75) 0px 1px 1px;
-}
+
 .fl-icon {
     width:30px;
     height:30px;
@@ -41,15 +44,21 @@ body {
     border-top:1px solid #ccd6e2;
     border-bottom:1px solid #273750;
     border-bottom-color:#000;
-    background: -webkit-gradient(linear, left top, left bottom, from(#6D84A2), to(#6D84A2), color-stop(0.0, #B0BCCD), color-stop(0.5, #889BB3), color-stop(0.50, #6D84A2));
+    background: -webkit-gradient(linear, left top, left bottom, 
+        from(#6D84A2), 
+        to(#6D84A2), 
+        color-stop(0.0, #B0BCCD), 
+        color-stop(0.5, #889BB3), 
+        color-stop(0.50, #6D84A2));
     margin-bottom:12px;
     -webkit-background-origin: padding-box; 
     -webkit-background-clip: content-box;
+    text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
 }
 .fl-navbar h1 {
     text-align:center;
     color:#fff;
-    margin: 5px 0px;
+    margin: 10px 0px;
     padding-top:5;    
     font-size:20px;
     font-weight: normal;
@@ -74,47 +83,90 @@ body {
 /***************************************/
 /* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists */
 /* General rules */
-/* FSS Layout does not define styles for DT and DD for list menu, so add them here */
 
 .fl-listmenu {
-	background-color: #fff;
-	border: 1px solid rgb(169,173,176);
+	border: none;
 	margin: 0 10px 10px;
-	-webkit-border-radius: 8px;
 }
 
-.fl-listmenu > li,
-.fl-listmenu > dt { 
+.fl-listmenu > li { 
+	background-color: #fff;
     padding:0;
     margin: 0;
 	border: 0px;
-	border-top: 1px solid rgb(169,173,176);
+	border: 1px solid rgb(169,173,176);
+    border-bottom:none;
+    -webkit-background-size: 50px 50px;
 }
-.fl-listmenu *:first-child {
-	border: 0px;
+.fl-listmenu > :first-child {
+    -webkit-background-clip:padding;
+    -webkit-background-origin:border;
+    -webkit-border-top-left-radius: 8px;
+    -webkit-border-top-right-radius: 8px;
 }
-.fl-listmenu > * > a:link, .fl-listmenu > * > a:visited {
+.fl-listmenu > :last-child {
+    -webkit-background-clip:padding;
+    -webkit-background-origin:border;
+    -webkit-border-bottom-left-radius: 8px;
+    -webkit-border-bottom-right-radius: 8px;
+}
+
+/* List link specific rules */
+.fl-listmenu a {
+    -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+    padding:12px 0;
+    font-weight:bold;
+}
+
+.fl-listmenu a:link, .fl-listmenu a:visited {
 	color: black;
 	text-decoration: none;
     background:url(../images/themes/iphone/listmenu_arrow.png) no-repeat right 5px;
 }
-.fl-listmenu > * > a:active {
+.fl-listmenu a:active {
 	color: #fff;
-    background: 
-        url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
-        -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+    background: url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
+                -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
-.fl-listmenu > * > a {
-    -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
-    padding:10px 0;
+.fl-listmenu a:active * {
+    color: #fff !important;
 }
-.fl-listmenu > *:first-child a {
+
+.fl-listmenu .fl-link-loading {
+	color: #fff;
+    background: url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
+                -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+}
+.fl-listmenu .fl-link-loading a {
+	color: #fff;
+    background: url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
+                -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+}
+
+
+.fl-listmenu > :first-child a {
     -webkit-border-top-left-radius: 8px;
     -webkit-border-top-right-radius: 8px;
 }
-.fl-listmenu > *:last-child a {
+.fl-listmenu > :last-child a {
     -webkit-border-bottom-left-radius: 8px;
     -webkit-border-bottom-right-radius: 8px;
+}
+.fl-listmenu a .fl-link-secondary {
+    color: rgb(50, 79, 133);
+    float:right;
+}
+.fl-listmenu a .fl-link-summary {
+    display:block;
+    color:#999;
+    font-weight:normal;
+    font-size:0.85em;
+    overflow:hidden;
+    height:1.1em;
+    margin-right:25px;
+}
+.fl-listmenu a .fl-link-summary::after {
+    content: "...";
 }
 
 /* Definition list rules */
@@ -123,15 +175,38 @@ body {
     color:#999;
 }
 
-.fl-listmenu > dt > img {
-        
-}
-
-
-/* other list rules */
+/* List icon and Thunbail list rules */
 .fl-listmenu .fl-icon {
     float:left;
 }
+
+.fl-listmenu.fl-thumbnail > li {
+    margin-top:5px;
+    margin-bottom:5px;
+    -webkit-border-radius:8px;
+}
+
+.fl-listmenu.fl-thumbnail .fl-icon {
+    width:44px;
+    height:44px;
+    margin-left:0;
+    -webkit-border-radius:0;
+    -webkit-border-bottom-left-radius: 8px;
+    -webkit-border-top-left-radius: 8px;
+}
+.fl-listmenu.fl-thumbnail a {
+    padding:5px 0 3px;
+    -webkit-border-radius:8px;
+}
+
+/***************************************/
+/* Embossed instruction text */
+.fl-note {
+    color:#4C566C;
+    text-align:center;
+}
+
+
 
 /***************************************/
 /* Content Views */
