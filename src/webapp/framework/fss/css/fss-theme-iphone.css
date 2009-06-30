@@ -160,12 +160,11 @@ h6 {}
     color:#999;
     font-weight:normal;
     font-size:0.85em;
-    overflow:hidden;
     height:1.1em;
     margin-right:25px;
-}
-.fl-listmenu a .fl-link-summary::after {
-    content: "...";
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
 /* Definition list rules */
