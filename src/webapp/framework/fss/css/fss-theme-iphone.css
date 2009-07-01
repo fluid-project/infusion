@@ -6,8 +6,13 @@ body {
         from(#c5ccd3), 
         to(#cfd5dd), 
         color-stop(0.80, #c5ccd3),
-        color-stop(0.80, #cfd5dd)
-    );
+        color-stop(0.80, #cfd5dd));
+/*
+background:-webkit-gradient(radial, 45 45, 10, 52 50, 30, from(#A7D30C), to(rgba(1,159,98,0)), color-stop(90%, #019F62)),
+           -webkit-gradient(radial, 105 105, 20, 112 120, 50, from(#ff5f98), to(rgba(255,1,136,0)), color-stop(75%, #ff0188)),
+           -webkit-gradient(radial, 95 15, 15, 102 20, 40, from(#00c9ff), to(rgba(0,201,255,0)), color-stop(80%, #00b5e2)),
+           -webkit-gradient(radial, 0 150, 50, 0 140, 90, from(#f4f201), to(rgba(228, 199,0,0)), color-stop(80%, #e4c700)); 
+*/
     -webkit-background-origin: padding-box; 
     -webkit-background-clip: content-box;
     -webkit-background-size: 10px 100px;
@@ -96,6 +101,7 @@ h6 {}
 	border: 0px;
 	border: 1px solid rgb(169,173,176);
     -webkit-background-size: 50px 50px;
+    position:relative;
 }
 .fl-listmenu > :first-child {
     -webkit-background-clip:padding;
@@ -131,16 +137,52 @@ h6 {}
     color: #fff !important;
 }
 
-.fl-listmenu .fl-link-loading {
+.fl-listmenu a.fl-link-loading {
 	color: #fff;
-    background: url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
-                -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+    background: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));    
 }
-.fl-listmenu .fl-link-loading a {
-	color: #fff;
-    background: url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
-                -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+
+/*
+.fl-listmenu a.fl-link-loading .fl-link-loading-icon {
+    text-indent:-500px;
+    overflow:hidden;
+    width:16px; 
+    height:16px;
+    float:right;
+    margin-right:5px;
+    background: url(../images/themes/iphone/listmenu_loader.png) no-repeat center center;
 }
+*/
+@-webkit-keyframes loading_spinner {
+    from {
+        -webkit-transform: rotate(0deg);
+        -webkit-animation-timing-function: linear
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        -webkit-animation-timing-function: linear
+    }
+}
+/*
+.fl-listmenu a.fl-link-loading .fl-link-loading-icon {
+    -webkit-animation-name: loading_spinner;
+    -webkit-animation-duration: .75s;
+    -webkit-animation-iteration-count: infinite;
+}*/
+
+.fl-listmenu a.fl-link-loading::after {
+    width:16px;
+    height:16px;
+    position:absolute;
+    right:5px;
+    top:12px;
+    background: url(../images/themes/iphone/listmenu_loader.png) no-repeat center center;
+    content:" ";
+    -webkit-animation-name: loading_spinner;
+    -webkit-animation-duration: .75s;
+    -webkit-animation-iteration-count: infinite;
+}
+
 
 
 .fl-listmenu > :first-child a {
@@ -154,6 +196,9 @@ h6 {}
 .fl-listmenu a .fl-link-secondary {
     color: rgb(50, 79, 133);
     float:right;
+    font-weight:normal;
+    font-size:.9em;
+    margin-right:25px;
 }
 .fl-listmenu a .fl-link-summary {
     display:block;
