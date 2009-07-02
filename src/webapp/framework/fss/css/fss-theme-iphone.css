@@ -7,12 +7,6 @@ body {
         to(#cfd5dd), 
         color-stop(0.80, #c5ccd3),
         color-stop(0.80, #cfd5dd));
-/*
-background:-webkit-gradient(radial, 45 45, 10, 52 50, 30, from(#A7D30C), to(rgba(1,159,98,0)), color-stop(90%, #019F62)),
-           -webkit-gradient(radial, 105 105, 20, 112 120, 50, from(#ff5f98), to(rgba(255,1,136,0)), color-stop(75%, #ff0188)),
-           -webkit-gradient(radial, 95 15, 15, 102 20, 40, from(#00c9ff), to(rgba(0,201,255,0)), color-stop(80%, #00b5e2)),
-           -webkit-gradient(radial, 0 150, 50, 0 140, 90, from(#f4f201), to(rgba(228, 199,0,0)), color-stop(80%, #e4c700)); 
-*/
     -webkit-background-origin: padding-box; 
     -webkit-background-clip: content-box;
     -webkit-background-size: 10px 100px;
@@ -20,6 +14,7 @@ background:-webkit-gradient(radial, 45 45, 10, 52 50, 30, from(#A7D30C), to(rgba
     padding:0;
     overflow:hidden; /* for transitions without scrollbars */
 }
+
 
 h1 {}
 h2 {}
@@ -44,7 +39,7 @@ h6 {}
 
 /***************************************/
 /* Navigation Bar */
-.fl-navbar {
+body::before, .fl-navbar {
     height:42px;
     border-top:1px solid #ccd6e2;
     border-bottom:1px solid #273750;
@@ -58,8 +53,18 @@ h6 {}
     margin-bottom:12px;
     -webkit-background-origin: padding-box; 
     -webkit-background-clip: content-box;
+    color:#fff;
     text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
 }
+body::before {
+    content:" ";
+    position:absolute;
+    z-index:1;
+    width:100%;
+    text-align:center;
+}
+
+
 .fl-navbar h1 {
     text-align:center;
     color:#fff;
@@ -101,7 +106,6 @@ h6 {}
 	border: 0px;
 	border: 1px solid rgb(169,173,176);
     -webkit-background-size: 50px 50px;
-    position:relative;
 }
 .fl-listmenu > :first-child {
     -webkit-background-clip:padding;
@@ -142,17 +146,6 @@ h6 {}
     background: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));    
 }
 
-/*
-.fl-listmenu a.fl-link-loading .fl-link-loading-icon {
-    text-indent:-500px;
-    overflow:hidden;
-    width:16px; 
-    height:16px;
-    float:right;
-    margin-right:5px;
-    background: url(../images/themes/iphone/listmenu_loader.png) no-repeat center center;
-}
-*/
 @-webkit-keyframes loading_spinner {
     from {
         -webkit-transform: rotate(0deg);
@@ -163,24 +156,22 @@ h6 {}
         -webkit-animation-timing-function: linear
     }
 }
-/*
-.fl-listmenu a.fl-link-loading .fl-link-loading-icon {
-    -webkit-animation-name: loading_spinner;
-    -webkit-animation-duration: .75s;
-    -webkit-animation-iteration-count: infinite;
-}*/
 
 .fl-listmenu a.fl-link-loading::after {
     width:16px;
     height:16px;
-    position:absolute;
-    right:5px;
-    top:12px;
-    background: url(../images/themes/iphone/listmenu_loader.png) no-repeat center center;
+    float:right;
+    margin-right:5px;
     content:" ";
+    
     -webkit-animation-name: loading_spinner;
     -webkit-animation-duration: .75s;
     -webkit-animation-iteration-count: infinite;
+    
+    /* Webkit bug 23209: CSS Generated content disregards CSS animations/transitions.
+    Therefore, since webkit doesnt yet support APNG's we need to use an animated GIF (!) instead of a static png until this is fixed. 
+    Forcing more markup into the mix just for this effect is not an option */
+    background: url(../images/themes/iphone/listmenu_loader.gif) no-repeat center center;
 }
 
 
@@ -243,7 +234,7 @@ h6 {}
 }
 
 /***************************************/
-/* Embossed instruction text */
+/* instructional text (usually embossed too)*/
 .fl-note {
     color:#4C566C;
     text-align:center;
@@ -256,6 +247,7 @@ h6 {}
 .fl-view {
     position:absolute;
     width:100%;
+    z-index:100;
 }
 .fl-offScreen-right {
     left:100%; 
@@ -291,5 +283,36 @@ h6 {}
 .fl-transition-fade-out {
     opacity:0;
 }
+/***************************************/
+/* Animation Library */
+@-webkit-keyframes fadeOut {
+    from {
+        opacity: 1;
+        -webkit-animation-timing-function: linear
+    }
+    to {
+        opacity: 0;
+        -webkit-animation-timing-function: linear
+    }
+}
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+        -webkit-animation-timing-function: linear
+    }
+    to {
+        opacity: 1;
+        -webkit-animation-timing-function: linear
+    }
+}
 
-
+.fl-animation-fade-out {
+    -webkit-animation-name: fadeOut;
+    -webkit-animation-duration: .75s;
+    -webkit-animation-iteration-count: 1;
+} 
+.fl-animation-fade-in {
+    -webkit-animation-name: fadeIn;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: 1;
+} 
