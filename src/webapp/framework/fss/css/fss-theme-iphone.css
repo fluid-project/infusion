@@ -126,8 +126,8 @@ body::before {
     -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
     padding:12px 0;
     font-weight:bold;
+    outline:none;
 }
-
 .fl-listmenu a:link, .fl-listmenu a:visited {
 	color: black;
 	text-decoration: none;
@@ -141,10 +141,12 @@ body::before {
 .fl-listmenu a:active * {
     color: #fff !important;
 }
-
 .fl-listmenu a.fl-link-loading {
 	color: #fff;
-    background: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));    
+    background: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+}
+.fl-listmenu a.fl-link-loading .fl-link-summary{
+    color: #fff;
 }
 .fl-listmenu a.fl-link-loading .fl-link-secondary{
     display:none;
