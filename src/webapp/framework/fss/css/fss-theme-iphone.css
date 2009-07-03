@@ -1,7 +1,6 @@
 /***************************************/
 /* general styles */
-body {
-    font:normal 17px Helvetica, sans-serif;
+html {
     background: -webkit-gradient(linear, left top, right top, 
         from(#c5ccd3), 
         to(#cfd5dd), 
@@ -10,9 +9,12 @@ body {
     -webkit-background-origin: padding-box; 
     -webkit-background-clip: content-box;
     -webkit-background-size: 10px 100px;
+}
+body {
+    font:normal 17px Helvetica, sans-serif;
     margin:0;
     padding:0;
-    overflow:hidden; /* for transitions without scrollbars */
+    overflow:hidden;/* for transitions without scrollbars */
 }
 
 
@@ -64,33 +66,49 @@ body::before {
     width:100%;
     text-align:center;
 }
-
-
+.fl-navbar { 
+    display:table;
+    width:100%;
+    border-collapse:collapse;
+    border:none;
+}
 .fl-navbar h1 {
     text-align:center;
     color:#fff;
-    margin: 10px 0px;
-    padding-top:5;    
+    margin:0;
+    padding:0;   
     font-size:20px;
-    font-weight: normal;
+    font-weight: bold;
+    /* for dynamic vertical alignment */
+    display:table-cell;
+    vertical-align:middle;
 }
+
 .fl-navbar a {
 	color: #fff;
 	text-decoration:none;
 	font-size: 12px;
     margin-top:5px;
 }
+.fl-navbar .fl-button-left, 
+.fl-navbar .fl-button-right {
+    position:absolute; /* navbar buttons taken out of flow to avoid influencing header text centering */
+}
+.fl-navbar .fl-button-left {
+    left:0;
+	background-image:url(../images/themes/iphone/nav_back_cap.png);
+}
+.fl-navbar .fl-button-right {
+    right:0;
+	background-image:url(../images/themes/iphone/nav_button_cap.png);
+}
 .fl-navbar .fl-button-inner {
     padding:8px 16px 10px 0px;    
     background-image:url(../images/themes/iphone/nav_button_stretcher.png);
 }
-.fl-navbar .fl-button-left {
-	background-image:url(../images/themes/iphone/nav_back_cap.png);
+.fl-navbar .fl-navbar-subHeading {
+    display:block;
 }
-.fl-navbar .fl-button-right {
-	background-image:url(../images/themes/iphone/nav_button_cap.png);
-}
-
 /***************************************/
 /* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists */
 /* General rules */
