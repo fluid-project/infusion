@@ -111,20 +111,44 @@ body.fl-theme-iPhone::before {
 }
 
 .fl-button {
-    border-top:1px solid #ccd6e2;
-    border-bottom:1px solid #273750;
-    border-bottom-color:#000;
-    background: -webkit-gradient(linear, left top, left bottom, 
-        from(#6D84A2), 
-        to(#6D84A2), 
-        color-stop(0.0, #B0BCCD), 
-        color-stop(0.5, #889BB3), 
-        color-stop(0.50, #6D84A2));
-    margin-bottom:12px;
-    -webkit-background-origin: padding-box; 
-    -webkit-background-clip: content-box;
-    color:#fff;
-    text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
+    border:transparent;
+    border-width: 15px;
+    -webkit-border-image: url(../images/themes/iphone/button_bg_insetShadow.png) 15 stretch;
+    -webkit-border-radius:10px;
+    -webkit-background-origin: border; 
+    -webkit-background-clip: border; 
+    text-decoration:none;
+    font-weight:bold;    
+}
+.fl-button.fl-bevel-white {
+    color:#333333;
+}
+.fl-button.fl-bevel-black{
+    color:#FFFFFF;
+}
+.fl-button-white {    
+    background-image: -webkit-gradient(linear, left top, left bottom, 
+        from(rgba(240,240,240,0.25)), 
+        to(rgba(220,220,220,0.75)),
+        color-stop(0.5, rgba(240,240,240,1)),
+        color-stop(0.50, rgba(200,200,200,0.8))
+    );
+}
+.fl-button-black { 
+    background-image: -webkit-gradient(linear, left top, left bottom, 
+        from(rgba(106,106,106,0.25)), 
+        to(rgba(00,00,00,0.75)),
+        color-stop(0.5, rgba(130,130,130,1)),
+        color-stop(0.50, rgba(75,75,75,0.8))
+    );
+}
+.fl-button-green {    
+    background-image: -webkit-gradient(linear, left top, left bottom, 
+        from(rgba(120,190,130,0.2)), 
+        to(rgba(50,170,60,0.75)),
+        color-stop(0.5, rgba(120,190,130,1)),
+        color-stop(0.50, rgba(0,150,10,0.8))
+    );
 }
 
 
