@@ -109,11 +109,11 @@ body.fl-theme-iPhone::before {
     background-image:url(../images/themes/iphone/nav_button_stretcher.png);
     font-weight:bold;
 }
-
+/* iPhone gel buttons */
 .fl-button {
     border:transparent;
-    border-width: 15px;
-    -webkit-border-image: url(../images/themes/iphone/button_bg_insetShadow.png) 15 stretch;
+    border-width: 10px;
+    -webkit-border-image: url(../images/themes/iphone/button_bg_insetShadow.png) 10 stretch;
     -webkit-border-radius:10px;
     -webkit-background-origin: border; 
     -webkit-background-clip: border; 
@@ -144,13 +144,20 @@ body.fl-theme-iPhone::before {
 }
 .fl-button-green {    
     background-image: -webkit-gradient(linear, left top, left bottom, 
-        from(rgba(120,190,130,0.2)), 
+        from(rgba(120,190,130,0.2)),
         to(rgba(50,170,60,0.75)),
         color-stop(0.5, rgba(120,190,130,1)),
         color-stop(0.50, rgba(0,150,10,0.8))
     );
 }
-
+.fl-button-blue {    
+    background-image: -webkit-gradient(linear, left top, left bottom, 
+        from(rgba(149, 184, 239,0.2)), 
+        to(rgba(35,109,229,0.75)),
+        color-stop(0.5, rgba(149, 184, 239,1)),
+        color-stop(0.50, rgba(75,148,244,0.8))
+    );
+}
 
 /***************************************/
 /* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists */
@@ -185,7 +192,7 @@ body.fl-theme-iPhone::before {
 /* List link specific rules */
 .fl-theme-iPhone .fl-listmenu a {
     -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
-    padding:12px 0;
+    padding:12px 0 12px 12px;
     font-weight:bold;
     outline:none;
 }
@@ -262,6 +269,7 @@ body.fl-theme-iPhone::before {
 /* List icon and Thunbail list rules */
 .fl-theme-iPhone .fl-listmenu .fl-icon {
     float:left;
+    margin-left:-6px;
 }
 
 .fl-theme-iPhone .fl-listmenu.fl-thumbnail > li {
