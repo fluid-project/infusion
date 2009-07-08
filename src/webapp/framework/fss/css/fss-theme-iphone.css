@@ -93,21 +93,34 @@ body.fl-theme-iPhone::before {
 /* navbar buttons taken out of flow to avoid influencing header text centering */
 .fl-theme-iPhone .fl-navbar .fl-button-left, 
 .fl-theme-iPhone .fl-navbar .fl-button-right {
-    position:absolute; 
+    position:absolute;
+    padding:0;
 }
 .fl-theme-iPhone .fl-navbar .fl-button-left {
-    left:0;
-	background-image:url(../images/themes/iphone/nav_back_cap.png);
+    left:5px;
+}
+.fl-theme-iPhone .fl-navbar .fl-button-left .fl-button-inner {
+    border-left-width:0;
 }
 .fl-theme-iPhone .fl-navbar .fl-button-right {
-    right:0;
-	background-image:url(../images/themes/iphone/nav_button_cap.png);
+    right:5px;
 }
-.fl-theme-iPhone .fl-navbar .fl-button-inner {
-    padding:9px 16px 9px 0px;
-    background-image:url(../images/themes/iphone/nav_button_stretcher.png);
+.fl-theme-iPhone .fl-navbar .fl-button-inner {    
     font-weight:bold;
+    background-image: -webkit-gradient(linear, left top, left bottom, 
+        from(#9aafca), 
+        to(#597eaa),
+        color-stop(0.5, #6d8cb3),
+        color-stop(0.50, #597eaa)
+    );
+    -webkit-background-origin: border; 
+    -webkit-background-clip: border; 
+    -webkit-border-radius:5px;    
+    border-width:5px;
+    padding:5px;
+    -webkit-border-image: url(../images/themes/iphone/navbar_normal_button_insetShadow.png) 5 5 5 5 stretch;   
 }
+
 /* iPhone gel buttons */
 .fl-button {
     border:transparent;
@@ -125,7 +138,7 @@ body.fl-theme-iPhone::before {
 .fl-button.fl-bevel-black{
     color:#FFFFFF;
 }
-.fl-button-white {    
+.fl-button-white {
     background-image: -webkit-gradient(linear, left top, left bottom, 
         from(rgba(240,240,240,0.25)), 
         to(rgba(220,220,220,0.75)),
