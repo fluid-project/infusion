@@ -56,7 +56,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
     var bindButtonHandlers = function () {
         $("#showButton").click(function () {
-            anIllusionOfProgress(myProgress, 0, 20);
+            anIllusionOfProgress(myProgress, 0, 200);
             $("#showButton").blur();
         });   
     };

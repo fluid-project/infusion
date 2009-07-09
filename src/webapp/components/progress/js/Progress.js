@@ -87,8 +87,6 @@ fluid_1_2 = fluid_1_2 || {};
         ariaElement.attr("role", "progressbar");
         ariaElement.attr("aria-valuemin", "0");
         ariaElement.attr("aria-valuemax", "100");
-        ariaElement.attr("aria-live", "assertive");
-        ariaElement.attr("aria-busy", "false");
         ariaElement.attr("aria-valuenow", "0");
         ariaElement.attr("aria-valuetext", "");
     };
@@ -98,9 +96,10 @@ fluid_1_2 = fluid_1_2 || {};
         that.ariaElement.attr("aria-busy", busy);
         that.ariaElement.attr("aria-valuenow", percent);    
         if (busy) {
-            var busyString = fluid.stringTemplate(that.options.ariaBusyText, {percentComplete : percent});                  
+            var busyString = fluid.stringTemplate(that.options.ariaBusyText, {percentComplete : percent});           
             that.ariaElement.attr("aria-valuetext", busyString);
         } else if (percent === 100) {
+            // FLUID-2936: JAWS doesn't currently read the "Progress is complete" message to the user, even though we set it here.
             that.ariaElement.attr("aria-valuetext", that.options.ariaDoneText);
         }
     };
