@@ -87,42 +87,63 @@ body.fl-theme-iPhone::before {
 	color: #fff;
 	text-decoration:none;
 	font-size: 12px;
+    font-weight:bold;
     margin-top:5px;
 }
-/* iPhone Buttons */
-/* navbar buttons taken out of flow to avoid influencing header text centering */
-.fl-theme-iPhone .fl-navbar .fl-button-left, 
-.fl-theme-iPhone .fl-navbar .fl-button-right {
-    position:absolute;
-    padding:0;
-}
+
 .fl-theme-iPhone .fl-navbar .fl-button-left {
     left:5px;
-}
-.fl-theme-iPhone .fl-navbar .fl-button-left .fl-button-inner {
-    border-left-width:0;
 }
 .fl-theme-iPhone .fl-navbar .fl-button-right {
     right:5px;
 }
-.fl-theme-iPhone .fl-navbar .fl-button-inner {    
-    font-weight:bold;
-    background-image: -webkit-gradient(linear, left top, left bottom, 
-        from(#9aafca), 
-        to(#597eaa),
-        color-stop(0.5, #6d8cb3),
-        color-stop(0.50, #597eaa)
-    );
+.fl-theme-iPhone .fl-navbar .fl-backButton {
+    /* 
+     * To create the oddly shaped back button with fully customizable CSS colors, there are 2 main things:
+     * 1) The stencil for the shadow and hilights along the angled edge
+     * 2) The mask to crop the background along the angled edge
+     */
+    
+    /* Angled effect is just a single border with a transaprent stencil image */
+    border-width:0 0 0 15px;
+    -webkit-border-image: url(../images/themes/iphone/navbar_back_button_insetShadow.png) 0 15 stretch; 
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    /* Angled effect is cropped using a CSS Mask */
     -webkit-background-origin: border; 
     -webkit-background-clip: border; 
-    -webkit-border-radius:5px;    
-    border-width:5px;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-box-image: url(../images/themes/iphone/backbutton_mask.png) 0 15 stretch;
+    -webkit-mask-origin: border; 
+    -webkit-mask-clip: border; 
+}
+.fl-theme-iPhone .fl-navbar .fl-backButton .fl-button-inner {
+    border-left-width:0;
+    margin-left:-3px; /* Mobile Safari (but not Desktop Safari) showed a tiny gap - this closes it*/
+}
+.fl-theme-iPhone .fl-navbar .fl-button-inner {
     padding:5px;
+    border-width:5px;
+    -webkit-background-origin: border; 
+    -webkit-background-clip: border; 
     -webkit-border-image: url(../images/themes/iphone/navbar_normal_button_insetShadow.png) 5 5 5 5 stretch;   
 }
+.fl-theme-iPhone .fl-navbar .fl-button {
+    position:absolute; /* navbar buttons taken out of flow to avoid influencing header text centering */
+    padding:0;
+    -webkit-border-radius:5px;
+    background: -webkit-gradient(linear, left top, left bottom, 
+        from(#9aafca), 
+        to(#4b6b90),
+        color-stop(0.5, #6d8cb3),
+        color-stop(0.50, #4b6b90)
+    );
+}
 
-/* iPhone gel buttons */
-.fl-button {
+
+/***************************************/
+/* iPhone general purpose gel buttons */
+.fl-theme-iPhone .fl-container-auto .fl-button {
     border:transparent;
     border-width: 10px;
     -webkit-border-image: url(../images/themes/iphone/button_bg_insetShadow.png) 10 stretch;
@@ -132,13 +153,13 @@ body.fl-theme-iPhone::before {
     text-decoration:none;
     font-weight:bold;    
 }
-.fl-button.fl-bevel-white {
+.fl-theme-iPhone .fl-button.fl-bevel-white {
     color:#333333;
 }
-.fl-button.fl-bevel-black{
+.fl-theme-iPhone .fl-button.fl-bevel-black{
     color:#FFFFFF;
 }
-.fl-button-white {
+.fl-theme-iPhone .fl-button-white {
     background-image: -webkit-gradient(linear, left top, left bottom, 
         from(rgba(240,240,240,0.25)), 
         to(rgba(220,220,220,0.75)),
@@ -146,7 +167,7 @@ body.fl-theme-iPhone::before {
         color-stop(0.50, rgba(200,200,200,0.8))
     );
 }
-.fl-button-black { 
+.fl-theme-iPhone .fl-button-black { 
     background-image: -webkit-gradient(linear, left top, left bottom, 
         from(rgba(106,106,106,0.25)), 
         to(rgba(00,00,00,0.75)),
@@ -154,7 +175,7 @@ body.fl-theme-iPhone::before {
         color-stop(0.50, rgba(75,75,75,0.8))
     );
 }
-.fl-button-green {    
+.fl-theme-iPhone .fl-button-green {    
     background-image: -webkit-gradient(linear, left top, left bottom, 
         from(rgba(120,190,130,0.2)),
         to(rgba(50,170,60,0.75)),
@@ -162,7 +183,7 @@ body.fl-theme-iPhone::before {
         color-stop(0.50, rgba(0,150,10,0.8))
     );
 }
-.fl-button-blue {
+.fl-theme-iPhone .fl-button-blue {
     background-image: -webkit-gradient(linear, left top, left bottom, 
         from(rgba(149, 184, 239,0.2)), 
         to(rgba(35,109,229,0.75)),
