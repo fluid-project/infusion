@@ -64,7 +64,7 @@ img {border:none;}
 }
 
 body.fl-theme-iPhone::before, .fl-theme-iPhone .fl-navbar {
-    height:42px;
+    height:50px;
     border-top:1px solid #ccd6e2;
     border-bottom:1px solid #273750;
     border-bottom-color:#000;
@@ -84,6 +84,7 @@ body.fl-theme-iPhone::before, .fl-theme-iPhone .fl-navbar {
 body.fl-theme-iPhone::before {
     content:" ";
     position:absolute;
+    top:-2px;
     z-index:1;
     width:100%;
     text-align:center;
@@ -212,9 +213,7 @@ body.fl-theme-iPhone::before {
 .fl-theme-iPhone .fl-navbar .fl-tabs {
     margin:0;
     padding:0;
-    border:none;    
-    display:table-cell;
-    vertical-align:middle;
+    border:none;
     text-align:center;
 }
 .fl-theme-iPhone .fl-tabs a:not(li:first-child) {
@@ -231,17 +230,20 @@ body.fl-theme-iPhone::before {
         color-stop(0.50, #4b6b90),
         to(#4b6b90)
     );
-
     border-width:5px;
     -webkit-border-image: url(../images/themes/iphone/navbar_normal_button_insetShadow.png) 5 5 5 5 stretch;
 }
+.fl-theme-iPhone .fl-tabs li a {
+    border-left-width:1px;
+    border-right-width:0px;
+}
 .fl-theme-iPhone .fl-tabs li:first-child a {
-    border-right-width:0;
+    border-left-width:5px;
     -webkit-border-top-left-radius:5px;
     -webkit-border-bottom-left-radius:5px;
 }
 .fl-theme-iPhone .fl-tabs li:last-child a {
-    border-left-width:1px;
+    border-right-width:5px;
     -webkit-border-top-right-radius:5px;
     -webkit-border-bottom-right-radius:5px;
 }
@@ -380,6 +382,7 @@ body.fl-theme-iPhone::before {
     -webkit-border-radius:0;
     -webkit-border-bottom-left-radius: 8px;
     -webkit-border-top-left-radius: 8px;
+    overflow:hidden;
 }
 .fl-theme-iPhone .fl-listmenu.fl-thumbnail a {
     padding:5px 0 4px;
