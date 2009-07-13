@@ -1,3 +1,5 @@
+
+
 /***************************************/
 /* Font Rules */
 /*@font-face {
@@ -16,20 +18,20 @@ html {
     -webkit-background-clip: content-box;
     -webkit-background-size: 10px 100px;
 }
-body.fl-theme-iPhone {
+.fl-theme-iPhone {
     font:normal 17px Helvetica, sans-serif;
     margin:0;
     padding:0;
-    overflow:hidden;/* for transitions without scrollbars */
+    /*overflow:hidden;*//* for transitions without scrollbars */
 }
 
-h1 {}
-h2 {color:#4C566C; margin:0; padding:3px 0;}
-h3 {}
-h4 {}
-h5 {}
-h6 {}
-img {border:none;}
+.fl-theme-iPhone h1 {}
+.fl-theme-iPhone h2 {color:#4C566C; margin:0; padding:3px 0;}
+.fl-theme-iPhone h3 {}
+.fl-theme-iPhone h4 {}
+.fl-theme-iPhone h5 {}
+.fl-theme-iPhone h6 {}
+.fl-theme-iPhone img {border:none;}
 
 .fl-theme-iPhone .fl-bevel-black {
     text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
@@ -37,17 +39,12 @@ img {border:none;}
 .fl-theme-iPhone .fl-bevel-white {
     text-shadow: rgba(255,255,255,1) 0px 1px 0px;
 }
-
 .fl-theme-iPhone .fl-icon {
     width:30px;
     height:30px;
     margin-top:-5px;
     -webkit-border-radius: 5px;
 }
-
-
-/***************************************/
-/* Navigation Bar */
 .fl-table {
     display:table;
     border-collapse:collapse;
@@ -62,7 +59,8 @@ img {border:none;}
     vertical-align:middle;
     border:none;
 }
-
+/***************************************/
+/* Navigation Bar */
 body.fl-theme-iPhone::before, .fl-theme-iPhone .fl-navbar {
     height:50px;
     border-top:1px solid #ccd6e2;
@@ -90,21 +88,28 @@ body.fl-theme-iPhone::before {
     text-align:center;
 }
 .fl-theme-iPhone .fl-navbar {     
-    width:100%;
+    width:100%;    
 }
+.fl-theme-iPhone .fl-navbar .fl-table-cell:first-child {
+    margin-left:5px;
+}
+.fl-theme-iPhone .fl-navbar .fl-table-cell:last-child {
+    margin-right:5px;
+}
+
 .fl-theme-iPhone .fl-navbar h1 {
     text-align:center;
     color:#fff;
     margin:0 auto;
     padding:0;   
-    font-size:20px;
+    font-size:1.17em;
     font-weight: bold;
 }
 
 .fl-theme-iPhone .fl-navbar a {
 	color: #fff;
 	text-decoration:none;
-	font-size: 12px;
+	font-size: 0.7em;
     font-weight:bold;
     margin-top:5px;
 }
@@ -207,7 +212,7 @@ body.fl-theme-iPhone::before {
     );
 }
 /***************************************/
-/* iPhone tabs part 1: small content dividers - not the fixed bottom bar for different functionalities */
+/* iPhone tabs 1: small general purpose content dividers */
 .fl-theme-iPhone .fl-tabs {
 }
 .fl-theme-iPhone .fl-navbar .fl-tabs {
@@ -216,7 +221,7 @@ body.fl-theme-iPhone::before {
     border:none;
     text-align:center;
 }
-.fl-theme-iPhone .fl-tabs a:not(li:first-child) {
+.fl-theme-iPhone .fl-tabs li:not(:last-child) a{
    margin-right:-3px;
 }
 .fl-theme-iPhone .fl-tabs a {
@@ -250,11 +255,32 @@ body.fl-theme-iPhone::before {
 .fl-theme-iPhone .fl-tabs li.fl-tabs-active a {
     padding:0.25em 1.25em 0.2em;
 }
-
-
 .fl-theme-iPhone .fl-tabs.fl-arrows-nextPrevious a {
     font-family: "Webdings";
 }
+
+/* iPhone tabs 2: common concept of tabs with fixed region identifying different functions */
+/* 
+ * Position:fixed has no meaning in the iPhone, rendering this approach useless
+ * http://doctyper.com/archives/200808/fixed-positioning-on-mobile-safari/
+ */
+/*
+.fl-tabs-fixed {
+    position:fixed;
+    bottom:0;
+    width:100%;
+    color:#fff;    
+    font-size:.85em;
+    padding:3px;
+    background-image: -webkit-gradient(linear, left top, left bottom, 
+        from(rgba(80,80,80,1)), 
+        to(rgba(0,0,0,1)),
+        color-stop(0.5, rgba(30,30,30,1)),
+        color-stop(0.50, rgba(0,0,0,1))
+    );
+    z-index:10000;
+}
+*/
 
 /***************************************/
 /* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists */
@@ -306,10 +332,6 @@ body.fl-theme-iPhone::before {
 .fl-theme-iPhone .fl-listmenu a:active * {
     color: #fff !important;
 }
-.fl-theme-iPhone .fl-listmenu a.fl-link-loading {
-	color: #fff;
-    background: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
-}
 .fl-theme-iPhone .fl-listmenu a.fl-link-loading .fl-link-summary{
     color: #fff;
 }
@@ -317,19 +339,23 @@ body.fl-theme-iPhone::before {
     display:none;
 }
 
-.fl-theme-iPhone .fl-listmenu a.fl-link-loading::before {
+/* Webkit bug 23209: CSS Generated content disregards CSS animations/transitions.
+...and since webkit doesnt yet support APNG's we need to use an animated GIF (!) instead of a transformed static png until this is fixed. 
+Forcing more markup into the mix just for this effect is not an option */
+/*.fl-theme-iPhone .fl-listmenu a.fl-link-loading::before {
     width:16px;
     height:16px;
     float:right;
     margin-right:5px;
     content:" ";
-    
-    /* Webkit bug 23209: CSS Generated content disregards CSS animations/transitions.
-    Therefore, since webkit doesnt yet support APNG's we need to use an animated GIF (!) instead of a static png until this is fixed. 
-    Forcing more markup into the mix just for this effect is not an option */
-    background: url(../images/themes/iphone/listmenu_loader.gif) no-repeat center center;
+    background: url(../images/themes/iphone/listmenu_loader.png) no-repeat center center;
+}*/
+.fl-theme-iPhone .fl-listmenu a.fl-link-loading {
+	color: #fff;
+    background: 
+        url(../images/themes/iphone/listmenu_loader.gif) no-repeat 97% center,
+        -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
-
 .fl-theme-iPhone .fl-listmenu > :first-child a {
     -webkit-border-top-left-radius: 8px;
     -webkit-border-top-right-radius: 8px;
