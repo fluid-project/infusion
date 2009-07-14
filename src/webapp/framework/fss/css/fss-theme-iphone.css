@@ -221,8 +221,8 @@ body.fl-theme-iPhone::before {
     border:none;
     text-align:center;
 }
-.fl-theme-iPhone .fl-tabs li:not(:last-child) a{
-   margin-right:-3px;
+.fl-theme-iPhone .fl-tabs li:not(:last-child) a {
+   margin-right:-5px;
 }
 .fl-theme-iPhone .fl-tabs a {
     margin:0;
@@ -256,7 +256,7 @@ body.fl-theme-iPhone::before {
     padding:0.25em 1.25em 0.2em;
 }
 .fl-theme-iPhone .fl-tabs.fl-arrows-nextPrevious a {
-    font-family: "Webdings";
+    
 }
 
 /* iPhone tabs 2: common concept of tabs with fixed region identifying different functions */
