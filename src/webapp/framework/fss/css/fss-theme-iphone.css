@@ -1,5 +1,3 @@
-
-
 /***************************************/
 /* Font Rules */
 /*@font-face {
@@ -62,7 +60,14 @@ html {
 /***************************************/
 /* Navigation Bar */
 body.fl-theme-iPhone::before, .fl-theme-iPhone .fl-navbar {
-    height:50px;
+    width:100%;
+    height:45px;
+}
+/* persistent, fixed navbar bg */
+body.fl-theme-iPhone::before {
+    content:" ";
+    position:absolute;
+    z-index:1;
     border-top:1px solid #ccd6e2;
     border-bottom:1px solid #273750;
     border-bottom-color:#000;
@@ -72,23 +77,13 @@ body.fl-theme-iPhone::before, .fl-theme-iPhone .fl-navbar {
         color-stop(0.50, #6D84A2),
         to(#6D84A2)
     );
-    margin-bottom:12px;
     -webkit-background-origin: padding-box; 
-    -webkit-background-clip: content-box;
-    color:#fff;
-    text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
-}
-/* persistent navbar bg for navbar fade in/out fx */
-body.fl-theme-iPhone::before {
-    content:" ";
-    position:absolute;
-    top:-2px;
-    z-index:1;
-    width:100%;
-    text-align:center;
+    -webkit-background-clip: content-box;    
 }
 .fl-theme-iPhone .fl-navbar {     
-    width:100%;    
+    color:#fff;
+    text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
+    margin-bottom:12px;
 }
 .fl-theme-iPhone .fl-navbar .fl-table-cell:first-child {
     margin-left:5px;
@@ -96,7 +91,6 @@ body.fl-theme-iPhone::before {
 .fl-theme-iPhone .fl-navbar .fl-table-cell:last-child {
     margin-right:5px;
 }
-
 .fl-theme-iPhone .fl-navbar h1 {
     text-align:center;
     color:#fff;
@@ -105,7 +99,6 @@ body.fl-theme-iPhone::before {
     font-size:1.17em;
     font-weight: bold;
 }
-
 .fl-theme-iPhone .fl-navbar a {
 	color: #fff;
 	text-decoration:none;
@@ -291,7 +284,7 @@ body.fl-theme-iPhone::before {
 	margin: 0 10px 10px;
 }
 
-.fl-theme-iPhone .fl-listmenu > li { 
+.fl-theme-iPhone .fl-listmenu-basic > li { 
 	background-color: #fff;
     padding:0;
     margin: 0 0 -1px 0;
@@ -299,13 +292,13 @@ body.fl-theme-iPhone::before {
 	border: 1px solid rgb(169,173,176);
     -webkit-background-size: 50px 50px;
 }
-.fl-theme-iPhone .fl-listmenu > :first-child {
+.fl-theme-iPhone .fl-listmenu-basic > :first-child {
     -webkit-background-clip:padding;
     -webkit-background-origin:border;
     -webkit-border-top-left-radius: 8px;
     -webkit-border-top-right-radius: 8px;
 }
-.fl-theme-iPhone .fl-listmenu > :last-child {
+.fl-theme-iPhone .fl-listmenu-basic > :last-child {
     -webkit-background-clip:padding;
     -webkit-background-origin:border;
     -webkit-border-bottom-left-radius: 8px;
@@ -313,29 +306,30 @@ body.fl-theme-iPhone::before {
 }
 
 /* List link specific rules */
-.fl-theme-iPhone .fl-listmenu a {
+.fl-theme-iPhone .fl-listmenu-basic a {
     -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
     padding:12px 0 12px 12px;
     font-weight:bold;
     outline:none;
 }
-.fl-theme-iPhone .fl-listmenu a:link, .fl-theme-iPhone .fl-listmenu a:visited {
+.fl-theme-iPhone .fl-listmenu-basic a:link, 
+.fl-theme-iPhone .fl-listmenu-basic a:visited {
 	color: black;
 	text-decoration: none;
     background:url(../images/themes/iphone/listmenu_arrow.png) no-repeat right 5px;
 }
-.fl-theme-iPhone .fl-listmenu a:active {
+.fl-theme-iPhone .fl-listmenu-basic a:active {
 	color: #fff;
     background: url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
                 -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
-.fl-theme-iPhone .fl-listmenu a:active * {
+.fl-theme-iPhone .fl-listmenu-basic a:active * {
     color: #fff !important;
 }
-.fl-theme-iPhone .fl-listmenu a.fl-link-loading .fl-link-summary{
+.fl-theme-iPhone .fl-listmenu-basic a.fl-link-loading .fl-link-summary{
     color: #fff;
 }
-.fl-theme-iPhone .fl-listmenu a.fl-link-loading .fl-link-secondary{
+.fl-theme-iPhone .fl-listmenu-basic a.fl-link-loading .fl-link-secondary{
     display:none;
 }
 
@@ -350,28 +344,28 @@ Forcing more markup into the mix just for this effect is not an option */
     content:" ";
     background: url(../images/themes/iphone/listmenu_loader.png) no-repeat center center;
 }*/
-.fl-theme-iPhone .fl-listmenu a.fl-link-loading {
+.fl-theme-iPhone .fl-listmenu-basic a.fl-link-loading {
 	color: #fff;
     background: 
         url(../images/themes/iphone/listmenu_loader.gif) no-repeat 97% center,
         -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
-.fl-theme-iPhone .fl-listmenu > :first-child a {
+.fl-theme-iPhone .fl-listmenu-basic > :first-child a {
     -webkit-border-top-left-radius: 8px;
     -webkit-border-top-right-radius: 8px;
 }
-.fl-theme-iPhone .fl-listmenu > :last-child a {
+.fl-theme-iPhone .fl-listmenu-basic > :last-child a {
     -webkit-border-bottom-left-radius: 8px;
     -webkit-border-bottom-right-radius: 8px;
 }
-.fl-theme-iPhone .fl-listmenu a .fl-link-secondary {
+.fl-theme-iPhone .fl-listmenu-basic a .fl-link-secondary {
     color: rgb(50, 79, 133);
     float:right;
     font-weight:normal;
     font-size:.9em;
     margin-right:25px;
 }
-.fl-theme-iPhone .fl-listmenu a .fl-link-summary {
+.fl-theme-iPhone .fl-listmenu-basic a .fl-link-summary {
     display:block;
     color:#999;
     font-weight:normal;
@@ -381,12 +375,6 @@ Forcing more markup into the mix just for this effect is not an option */
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
-}
-
-/* Definition list rules */
-.fl-theme-iPhone .fl-listmenu > dd {
-    font-size:0.8em;
-    color:#999;
 }
 
 /* List icon and Thunbail list rules */
