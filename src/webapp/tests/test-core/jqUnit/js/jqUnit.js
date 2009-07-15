@@ -242,23 +242,48 @@ var jqUnit = jqUnit || {};
     $.extend(jqUnit, testFns);
     
     
-    /*******************
-     * TestCase object *
-     *******************/
+    /***************************************************
+     * TestCase constructor for backward compatibility *
+     ***************************************************/
     
-    function TestCase(moduleName, setUpFn, tearDownFn) {
+    jqUnit.TestCase = function (moduleName, setUpFn, tearDownFn) {
+        return jqUnit.testCase(moduleName, setUpFn, tearDownFn);  
+    };
+      
+    /******************************
+     * TestCase creator function
+     * @param {Object} moduleName
+     * @param {Object} setUpFn
+     * @param {Object} tearDownFn
+     */  
+    jqUnit.testCase = function (moduleName, setUpFn, tearDownFn) {
+        var that = {};
+        
+        that.fetchTemplate = function (templateURL, selector, container) {
+            container = container || $("#main");
+            
+            if (!that.fetchedTemplate) {
+                stop();
+                container.load(templateURL + " " + selector, function () {
+                        that.fetchedTemplate = $(this).clone();
+                        start();
+                    });
+            } else {
+                container.append(that.fetchedTemplate.clone());                
+                start();
+            }
+        };
 
+        that.test = function (string, testFn) {
+            test(string, testFn);
+        };
+        
         module(moduleName, {
             setup: setUpFn || function () {},
             teardown: tearDownFn || function () {}
         });
-    }
-
-    TestCase.prototype.test = function (string, testFn) {
-
-        test(string, testFn);
+        
+        return that;
     };
-
-    //  Mix the TestCase type into the jqUnit namespace.
-    $.extend(jqUnit, {TestCase: TestCase});
+    
 })(jQuery);
