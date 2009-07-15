@@ -89,6 +89,7 @@ fluid_1_2 = fluid_1_2 || {};
         ariaElement.attr("aria-valuemax", "100");
         ariaElement.attr("aria-valuenow", "0");
         ariaElement.attr("aria-valuetext", "");
+        ariaElement.attr("aria-busy", "false");
     };
     
     var updateARIA = function (that, percent) {

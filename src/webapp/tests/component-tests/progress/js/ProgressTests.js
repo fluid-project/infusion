@@ -324,15 +324,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("Before init: valuemax should not exist", ARIAcontainer.attr("aria-valuemax"));
             jqUnit.assertFalse("Before init: valuenow should not exist", ARIAcontainer.attr("aria-valuenow"));
             jqUnit.assertFalse("Before init: busy should not exist", ARIAcontainer.attr("aria-busy"));
-            jqUnit.assertFalse("Before init: live should not exist", ARIAcontainer.attr("aria-live"));
-        
+            
             progressBar = createProgressBar("#progress-container", {animate: "none"});
             
             jqUnit.assertEquals("After Init: role should be ", "progressbar", ARIAcontainer.attr("role"));
             jqUnit.assertEquals("After Init: valuemin should be ", "0", ARIAcontainer.attr("aria-valuemin"));
             jqUnit.assertEquals("After Init: valuemax should be ", "100", ARIAcontainer.attr("aria-valuemax"));
             jqUnit.assertEquals("After Init: valuenow should be ", "0", ARIAcontainer.attr("aria-valuenow"));
-            jqUnit.assertEquals("After Init: live should be ", "assertive", ARIAcontainer.attr("aria-live"));
             jqUnit.assertEquals("After Init: busy should be ", "false", ARIAcontainer.attr("aria-busy"));
                   
         });
