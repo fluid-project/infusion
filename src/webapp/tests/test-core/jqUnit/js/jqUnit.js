@@ -258,24 +258,26 @@ var jqUnit = jqUnit || {};
      */  
     jqUnit.testCase = function (moduleName, setUpFn, tearDownFn) {
         var that = {};
+        that.fetchedTemplates = [];
         
         /**
-         * Fetches a template using AJAX if it was never fetched before and stores it in that.fetchedTemplate
+         * Fetches a template using AJAX if it was never fetched before and stores it in that.fetchedTemplates
          * @param {Object} templateURL URL to the document to be fetched
          * @param {Object} selector A selector which finds the piece of the document to be fetched 
          * @param {Object} container The container where the fetched content will be appended - default to the element with the id 'main'
          */
         that.fetchTemplate = function (templateURL, selector, container) {
             container = container || $("#main");
+            var selectorToFetch = templateURL + " " + selector;
             
-            if (!that.fetchedTemplate) {
+            if (!that.fetchedTemplates[selectorToFetch]) {
                 stop();
-                container.load(templateURL + " " + selector, function () {
-                        that.fetchedTemplate = $(this).clone();
+                container.load(selectorToFetch, function () {
+                        that.fetchedTemplates[selectorToFetch] = $(this).clone();
                         start();
                     });
             } else {
-                container.append(that.fetchedTemplate.clone());
+                container.append(that.fetchedTemplates[selectorToFetch].clone());
             }
         };
 
