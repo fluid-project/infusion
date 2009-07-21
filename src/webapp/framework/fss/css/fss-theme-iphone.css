@@ -1,12 +1,6 @@
 /***************************************/
-/* Font Rules */
-/*@font-face {
-  font-family: "Webdings";
-  src: url(../fonts/webdings.ttf) format("truetype");
-}*/
-/***************************************/
 /* general styles */
-html {
+:root {
     background: -webkit-gradient(linear, left top, right top, 
         from(#c5ccd3), 
         to(#cfd5dd), 
@@ -23,9 +17,9 @@ html {
     /*overflow:hidden;*//* for transitions without scrollbars */
 }
 
-.fl-theme-iPhone h1 {}
-.fl-theme-iPhone h2 {color:#4C566C; margin:0; padding:3px 0;}
-.fl-theme-iPhone h3 {}
+.fl-theme-iPhone h1 {font-size:1.2em; margin:0;}
+.fl-theme-iPhone h2 {font-size:1.15em; margin:0;/*color:#4C566C; margin:0; padding:3px 0;*/}
+.fl-theme-iPhone h3 {font-size:1.1em; margin:0;}
 .fl-theme-iPhone h4 {}
 .fl-theme-iPhone h5 {}
 .fl-theme-iPhone h6 {}
@@ -207,8 +201,6 @@ body.fl-theme-iPhone::before {
 /***************************************/
 /* iPhone tabs 1: small general purpose content dividers */
 .fl-theme-iPhone .fl-tabs {
-}
-.fl-theme-iPhone .fl-navbar .fl-tabs {
     margin:0;
     padding:0;
     border:none;
@@ -407,23 +399,6 @@ Forcing more markup into the mix just for this effect is not an option */
 /* instructional text (usually embossed too)*/
 .fl-theme-iPhone .fl-note {
     color:#4C566C;
-    text-align:center;
-}
-
-
-
-/***************************************/
-/* Content Views */
-.fl-theme-iPhone .fl-view {
-    position:absolute;
-    width:100%;
-    z-index:100;
-}
-.fl-theme-iPhone .fl-offScreen-right {
-    left:100%; 
-}
-.fl-theme-iPhone .fl-offScreen-left {
-    left:-100%; 
 }
 
 /***************************************/
@@ -463,6 +438,42 @@ Forcing more markup into the mix just for this effect is not an option */
 
 /***************************************/
 /* Animation Library */
+@-webkit-keyframes slideLeftOut {
+    from {
+        -webkit-transform: translateX(0%);
+        -webkit-animation-timing-function: ease-out;
+    }
+    to {
+        -webkit-transform: translateX(-100%);
+    }
+}
+@-webkit-keyframes slideLeftIn {
+    from {
+        -webkit-transform: translateX(-100%);
+        -webkit-animation-timing-function: ease-out;
+    }
+    to {
+        -webkit-transform: translateX(0%);
+    }
+}
+@-webkit-keyframes slideRightOut {
+    from {
+        -webkit-transform: translateX(0%);
+        -webkit-animation-timing-function: ease-out;
+    }
+    to {
+        -webkit-transform: translateX(100%);
+    }
+}
+@-webkit-keyframes slideRightIn {
+    from {
+        -webkit-transform: translateX(100%);
+        -webkit-animation-timing-function: ease-out;
+    }
+    to {
+        -webkit-transform: translateX(0%);
+    }
+}
 @-webkit-keyframes fadeOut {
     from {
         opacity: 1;
@@ -491,6 +502,24 @@ Forcing more markup into the mix just for this effect is not an option */
         -webkit-animation-timing-function: linear
     }
 }
+/**************************************/
+.fl-theme-iPhone .fl-animation-slide {
+    -webkit-animation-duration: 0.75s;
+    -webkit-animation-iteration-count: 1;
+}
+.fl-theme-iPhone .fl-animation-slide-right-out{
+    -webkit-animation-name: slideRightOut;
+}
+.fl-theme-iPhone .fl-animation-slide-right-in{
+    -webkit-animation-name: slideRightIn;
+}
+.fl-theme-iPhone .fl-animation-slide-left-out{
+    -webkit-animation-name: slideLeftOut;
+}
+.fl-theme-iPhone .fl-animation-slide-left-in{
+    -webkit-animation-name: slideLeftIn;
+}
+/**************************************/
 
 .fl-theme-iPhone .fl-animation-fade-out {
     -webkit-animation-name: fadeOut;
