@@ -1,0 +1,62 @@
+body {
+    padding: 0 3em 3em;
+}
+.header {
+    background-color:rgb(250,200,200);
+}
+.content {
+    background-color:rgb(200,250,200);
+}
+.content div {
+    background-color:rgb(175,225,175);
+}
+.footer {
+    background-color:rgb(200,200,250);
+}
+.container {
+    background-color:rgb(240,240,240);
+}
+/*
+ * THESE COLORS ARE PROXIES for either your own coloring, or the premade FSS Themes
+ */
+.fl-widget {background:rgb(240,240,240);}
+    .fl-widget ul {}
+    .fl-widget h2 {}
+/* Widget titlebar */
+.fl-widget-titlebar {background-color:rgb(250,200,200);}
+    .fl-widget-titlebar .icon {background-position:center center;}
+/* Widget options */
+.fl-widget-options {background-color:rgb(200,200,250);}
+    .fl-widget-options ul {} 
+    .fl-widget-options li {border-left:1px solid #000;}
+    .fl-widget-options a {}
+    .fl-widget-options .icon {}
+    .fl-widget-options a.icon:hover {}
+/* Widget content */
+.fl-widget-content {background-color:rgb(200,250,200);}
+    /* Widget :: Icons */
+    .fl-widget .more  {margin-left:0px;}
+    .fl-widget .close {margin-right:0px;}
+    .fl-widget .settings {margin-right:0px; width:16px;}
+    
+.fl-tabs {border-bottom-color:rgb(0,0,0);}
+.fl-tabs li  {background-color:rgb(200,240,200);}
+.fl-tabs li,
+.fl-tabs li a  {font-weight:bold; color:#333; border-color:rgb(0,0,0); text-decoration:none;}
+.fl-tabs li:hover,
+.fl-tabs li:hover a,
+.fl-tabs li a:hover {background-color:#999; color:#fff}
+.fl-tabs li.fl-activeTab,
+.fl-tabs li.fl-activeTab a,
+.fl-tabs li.fl-activeTab a:hover {background-color:rgb(200,200,250); border-bottom-color:rgb(200,200,250); color:#000;}
+.fl-tab-content {background-color:rgb(200,200,250); color:#000; border:1px solid #000; border-top:none; min-height:20px;}
+
+
+.fl-listmenu {border:1px solid #000; border-bottom:none; background-color:#fff;}
+.fl-listmenu li,
+.fl-listmenu li a  {font-weight:bold; color:#000; background-color:rgb(200,240,200); text-decoration:none;}
+.fl-listmenu li a  {border-bottom:2px groove #fff;}
+.fl-listmenu a:hover {background-color:#999; color:#fff;}
+.fl-listmenu .fl-activemenu a,
+.fl-listmenu .fl-activemenu a:hover { background-color:rgb(200,200,250); color:#000;}
+

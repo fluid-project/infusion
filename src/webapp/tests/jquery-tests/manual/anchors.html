@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../utils/DebugFocus.js"></script>
+
+    <title>Anchors</title>
+  </head>
+
+  <body>
+    This example was pulled from some sakai markup where the keyboard a11y library didn't work.
+    See FLUID-882.
+    Note that tabbing through this page will *not* put tab focus on the anchors.
+    <div class="widget1-subhead">
+      <div class="widget1-subhead-left">
+        <ul>
+          <li class="widget1-last">
+            <a id="link1" href="#">Add Tools</a>
+          </li>
+        </ul>
+      </div>
+      <div class="widget1-subhead-right">
+        <ul>
+          <li class="widget1-grid">
+            Change tool view
+            <a id="link2" class="tool-listview" href="#"/>
+          </li>
+        </ul>
+      </div>
+    </div>
+      <div class="widget1-subhead-left">
+        <ul>
+          <li class="widget1-last">
+            <a id="link3" href="#">Add more Tools</a>
+          </li>
+        </ul>
+      </div>
+      <div class="widget1-subhead-right">
+        <ul>
+          <li class="widget1-grid">
+            Change another tool view
+            <a id="link4" class="tool-listview" href="#"/>
+          </li>
+        </ul>
+      </div>
+    </div>
+      <div class="widget1-subhead-left">
+        <ul>
+          <li class="widget1-last">
+            <a id="link5" href="#">Add yet more Tools</a>
+          </li>
+        </ul>
+      </div>
+      <div class="widget1-subhead-right">
+        <ul>
+          <li class="widget1-grid">
+            Change all tool views
+            <a id="link6" class="tool-listview" href="#"/>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script type="text/javascript">
+        jQuery(".widget1-subhead a").tabbable();
+    </script>
+  </body>
+</html>

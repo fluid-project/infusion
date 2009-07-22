@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" class="">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.text.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.theme.hc.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.theme.mist.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.theme.rust.css" />
+        <link rel="stylesheet" type="text/css" href="../../css/fluid.components.ui-options.css" />
+
+        <title>UI Options</title>
+        <script type="text/javascript" src="../../js/jquery/jquery-1.3.1.js"></script>
+        <script type="text/javascript" src="../../js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../js/jquery/ui.core.js"></script>
+        
+        <script type="text/javascript" src="../../js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../js/fluid/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../js/fluid/renderer/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../js/fluid/renderer/fluidParser.js"></script>
+        <script type="text/javascript" src="../../js/fluid/renderer/fluidRenderer.js"></script>
+
+        <script type="text/javascript" src="../../js/fluid/Skin.js"></script>
+        <script type="text/javascript" src="../../js/fluid/Undo.js"></script>
+        <script type="text/javascript" src="../../js/fluid/UIOptions.js"></script>
+        
+        <script type="text/javascript">
+            $().ready(function(){
+                fluid.uiOptions(".uiOptions");
+            });
+        </script>
+    </head>
+
+    <body>
+
+        <h1>User Interface Options</h1>
+        <form id="options" action="" method="" class="fl-col-flex2 fl-components-ui-options uiOptions">
+            
+            <!-- column 1, options -->
+            <div class="fl-col">
+                <fieldset class="fl-controls-centered">
+                    <h2 class="fl-font-size-130">Easier to see</h2>
+                    <div>
+                        <div>
+                            <label class="fl-label">Font style:</label>
+                            <select class="control" rsf:id="font-style">
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="fl-label">Minimum text size:</label>
+                            <select class="control" rsf:id="font-min-size">
+                                <option>font size here</option>
+                            </select>
+                        </div>
+    
+                        <div>
+                            <label class="fl-label">Text Spacing:</label>
+                            <select class="control" rsf:id="text-spacing">
+                                <option>text-spacing here</option>
+                            </select>
+                        </div>
+    
+                        <div>
+                            <label class="fl-label">Contrast:</label>
+                            <select class="control" rsf:id="contrast">
+                                <option>contrast here</option>
+                            </select>
+                        </div>
+    
+                        <div rsf:id="background-images">
+                        </div>
+                        <label class="fl-label">Background Images:</label>
+                        <span rsf:id="background-images-row:">
+                            <input class="control" rsf:id="images-choice" type="radio"/>
+                            <label rsf:id="images-label">choice</label>
+                        </span>
+    
+                        <div rsf:id="layout">
+                        </div>
+                        <label class="fl-label">Simplified Layout:</label>
+                        <span rsf:id="layout-row:">
+                            <input class="control" rsf:id="layout-choice" type="radio"/>
+                            <label rsf:id="layout-label">choice</label>
+                        </span>
+                    </div>
+                </fieldset>
+            </div>
+
+            <!-- column 2, preview -->
+            <div class="fl-col">
+                <div class="fl-subcomp-preview">
+                    <h2><strong>Preview window</strong> (updates automatically)</h2>
+                    <iframe class="fl-hook-preview-frame" src="UIOptionsPreview.html" frameborder="0"></iframe>
+                </div>
+                <div class="fl-text-align-center fl-subcomp-buttons">
+                    <input class="fl-hook-preview-reset" type="button" value="Reset" />
+                    <input class="fl-hook-preview-save" type="button" value="Save and apply" />
+                    <input class="fl-hook-preview-cancel" type="button" value="Cancel" />
+                </div>                
+            </div>
+            
+        </form>                
+                
+    </body>
+</html>
+

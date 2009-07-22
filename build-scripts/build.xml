@@ -1,0 +1,387 @@
+<!--
+To build a distribution, type: ant
+To jsLint all source code in the source directory, type: ant validate
+To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
+-->
+
+<project name="Fluid" default="buildAll" basedir=".">
+	<description>
+	Build a distributable package of Fluid components.
+	</description>
+
+	<!-- get environment variables and properties -->
+	<property environment="env"/>	
+	<property file="build.properties"/>
+
+	<!-- Define dependencies -->
+    <property name="yuicompressor" location="lib/yuicompressor-2.3.3.jar" />
+	<property name="jslint" location="lib/jslint4java-1.1+rhino.jar" />
+
+	<!-- set up directory locations -->
+    <property name="base-dir" location=".." />
+    <property name="products" location="${base-dir}/products" />
+	<property name="src" location="${base-dir}/src/webapp/fluid-components" />
+	<property name="sample-code" location="${base-dir}/src/webapp/sample-code" />
+	<property name="tests" location="${base-dir}/src/webapp/tests" />
+	<property name="jquery-src" location="${src}/js/jquery" />
+	<property name="swfupload-src" location="${src}/flash" />
+	<property name="swfupload-js-src" location="${src}/js/swfupload" />
+	<property name="renderer-src" location="${src}/js/fluid/renderer" />
+	<property name="uploader-src" location="${src}/js/fluid/uploader" />
+	<property name="dist" location="${products}/dist" />
+    <property name="src-dist" location="${products}/src-dist" />
+    <property name="src-dist-components" location="${src-dist}/fluid-components" />
+	<property name="build" location="${base-dir}/build" />
+	<property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
+	<property name="components-build" location="${build}/fluid-components" />
+	<property name="sample-code-build" location="${build}/sample-code" />
+	<property name="tests-build" location="${build}/tests" />
+	<property name="jquery-build" location="${components-build}/js/jquery" />
+	<property name="swfupload-build" location="${components-build}/flash" />
+	<property name="swfupload-js-build" location="${components-build}/js/swfupload" />
+	<property name="renderer-build" location="${components-build}/js/fluid/renderer" />
+	<property name="uploader-build" location="${components-build}/js/fluid/uploader" />
+	<property name="lint" location="${src}"/>
+
+	<!-- the filename for the package to output -->
+	<property name="zipfile" value="fluid-${fluid_version}" />
+
+    <!-- the filename of the documentation PDF -->
+    <property name="pdf-file" value="Fluid-${fluid_version}.pdf" />
+    
+    <!-- the filename of the war file -->
+    <property name="warfile" value="fluid-components-${fluid_version}.war" />
+    
+	<!-- task definition for JSLint -->
+	<taskdef name="jslint" 
+		classname="net.happygiraffe.jslint.ant.JSLintTask" 
+		classpath="${jslint}" />
+
+	<!-- Target: buildAll -->
+	<target name="buildAll" depends="clean, war, package" />
+
+	<!-- Target: cleanup before running -->
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${products}" />
+	</target>
+
+	<!-- Set up the build directory structure -->
+	<target name="init">
+	    <mkdir dir="${products}" />
+		<mkdir dir="${build}" />
+		<mkdir dir="${components-build}" />
+		
+		<!-- Copy the directory structure (but not the files) of fluid-components into the build tree -->
+		<copy todir="${components-build}">
+			<dirset dir="${src}">
+				<include name="**/*" />
+			</dirset>
+		</copy>
+		
+		<mkdir dir="${dist}" />
+        <mkdir dir="${src-dist}" />
+	</target>
+
+    <target name="copyLicenses">
+        <copy todir="${toDir}">
+            <fileset dir="${base-dir}">
+                <include name="LICENSE.txt" />
+                <include name="README.txt" />
+            </fileset>
+        </copy>
+    </target>
+    
+	<!--Copy files that don't need to be minified from the source tree to the build directory -->
+	<target name="copyUnminifiableFiles" depends="init">
+		<copy todir="${components-build}">
+				<fileset dir="${src}">
+					<include name="html/**" />
+					<include name="images/**" />
+				</fileset>
+	    </copy>
+        <antcall target="copyLicenses">
+            <param name="toDir" value="${build}" />    
+        </antcall>
+            
+        <copy todir="${jquery-build}">
+            <fileset dir="${jquery-src}">
+                <include name="GPL-LICENSE.txt" />
+                <include name="MIT-LICENSE.txt" />
+                <include name="ui-FLUID-readme.txt" />
+            </fileset>
+        </copy>
+        <copy todir="${swfupload-build}">
+            <fileset dir="${swfupload-src}">
+                <include name="LICENSE.txt" />
+                <include name="swfupload.swf" />
+            </fileset>
+        </copy>
+        <copy todir="${swfupload-js-build}">
+            <fileset dir="${swfupload-js-src}">
+                <include name="*.txt" />
+            </fileset>
+        </copy>
+        <copy todir="${renderer-build}">
+            <fileset dir="${renderer-src}">
+                <include name="LICENSE.txt" />
+            </fileset>
+        </copy>
+        <copy todir="${uploader-build}">
+            <fileset dir="${uploader-src}">
+            </fileset>
+        </copy>
+	</target>
+
+    <target name="concatAllJS">
+		<concat destfile="${toDir}/Fluid-all.js" append="true" >
+		    <filelist dir="${src}/js/jquery" files="${jquery_order_of_dependencies}" />
+            <filelist dir="${src}/js/json" files="json2.js" />
+            <filelist dir="${src}/js/swfupload" files="swfobject.js, swfupload.js" />
+			<filelist dir="${src}/js/fluid" files="${fluid_order_of_dependencies}" />
+			<filelist dir="${src}/js/fluid/renderer" files="${fluid_renderer_order_of_dependencies}" />
+			<filelist dir="${src}/js/fluid/uploader" files="${fluid_uploader_order_of_dependencies}" />
+		</concat>    
+    </target>
+    
+	<!-- Concatenate all the minified JS files together into an all-in-one file. -->
+	<target name="fluidAllInOne" depends="init">
+	    <mkdir dir="${components-build}/js/all" />
+        <antcall target="concatAllJS">
+            <param name="toDir" value="${components-build}/js/all" />
+        </antcall>
+		
+		<antcall target="minify">
+			<param name="fromDir" value="${components-build}/js/all" />
+			<param name="toDir" value="${components-build}/js/" />
+			<param name="file-pattern" value="Fluid-all.js" />
+			<param name="lineBreakArg" value="" />
+		</antcall>
+		
+		<!-- delete the unminified concatenated file generated above -->
+		<delete dir="${components-build}/js/all" />
+	</target>
+
+	<!-- Target: Minify the JS files -->
+	<target name="minify">
+		<description>
+		Minify the specified files and copy them into the specified directory. Don't call this directly.
+		</description>
+
+		<apply executable="java" dest="${toDir}"  parallel="false">
+				<!-- The files to act upon. -->	
+				<fileset dir="${fromDir}" casesensitive="no">
+					<include name="**/${file-pattern}" />
+					<exclude name="**/test/*" />
+				</fileset>
+
+				<arg line="-jar" />
+				<arg path="${yuicompressor}" />
+				<srcfile/>
+				<arg line="--nomunge" />
+				<!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
+				<arg line="${lineBreakArg}" />
+				<arg line="-o" />
+				<mapper type="glob" from="${file-pattern}" to="${file-pattern}" />
+				<targetfile /> 
+		</apply>
+	</target>
+	
+	<target name="minifyAll">
+		<!-- Minify all the other JavaScript files straight out of the source tree. -->
+		<echo>Minifying .JS files...</echo>
+		<antcall target="minify">
+			<param name="fromDir" value="${src}/js" />
+			<param name="toDir" value="${components-build}/js" />
+			<param name="file-pattern" value="*.js" />
+			<param name="lineBreakArg" value="" />
+		</antcall>
+		
+		<echo>Minifying .CSS files...</echo>
+		<antcall target="minify">
+			<param name="fromDir" value="${src}/css" />
+			<param name="toDir" value="${components-build}/css" />
+			<param name="file-pattern" value="*.css" />
+			<param name="lineBreakArg" value="--line-break 0" />
+		</antcall>
+	</target>
+
+    <target name="copyDistroFiles">
+        <mkdir dir="${toDir}/sample-code" />
+        
+		<copy todir="${toDir}/sample-code">
+			<fileset dir="${base-dir}/src/webapp/sample-code/">
+				<include name="*/**" />
+		    </fileset>
+		</copy>
+
+		<mkdir dir="${toDir}/tests" />
+		<copy todir="${toDir}/tests">
+			<fileset dir="${base-dir}/src/webapp/tests">
+				<include name="*/**" />
+		    </fileset>
+		</copy>
+    </target>
+    
+	<!-- Copy all the files necessary for the distribution. -->
+	<target name="createDistro" depends="init, copyUnminifiableFiles, minifyAll, fluidAllInOne">
+		<description>
+		Copy all the files necessary for distribution to the Dist directory.
+		</description>
+
+		<copy todir="${dist}">
+			<fileset dir="${build}">
+				<exclude name="war/**"/>
+			</fileset>
+		</copy>
+
+        <antcall target="copyDistroFiles">
+			<param name="toDir" value="${dist}" />
+		</antcall>
+        
+	</target>
+
+    <target name="createSrcDistro" depends="init">
+        <description>
+		    Creates a source distribution.
+		</description>
+        <!-- Copy the whole source tree over. -->
+        <mkdir dir="${src-dist-components}" />
+        
+        <copy todir="${src-dist-components}">
+			<fileset dir="${src}" />
+		</copy>
+        
+        <antcall target="concatAllJS">
+            <param name="toDir" value="${src-dist-components}/js" />
+        </antcall>
+        
+        <antcall target="copyDistroFiles">
+			<param name="toDir" value="${src-dist}" />
+		</antcall>
+   
+        <antcall target="copyLicenses">
+			<param name="toDir" value="${src-dist}" />
+		</antcall>
+    </target>
+    
+    <!-- Zip up the whole release bundle -->
+	<target name="package" depends="createDistro, createSrcDistro">
+		<description>
+			Creates the release directory structure and zips it all up.
+		</description>
+
+		<echo>Zipping distribution bundle to ${dist}/${zipfile}</echo>
+		<zip destfile="${products}/${zipfile}.zip" 
+			basedir="${dist}"
+			includes="**/*"  excludes="*.zip" />
+            
+        <echo>Zipping source bundle to ${dist}/${zipfile}</echo>
+		<zip destfile="${products}/${zipfile}-src.zip" 
+			basedir="${src-dist}"
+			includes="**/*"  excludes="*.zip" />
+	</target>
+
+	<target name="war" depends="createDistro">
+		<copy todir="${build}/war/src/webapp/fluid-components" >
+			<fileset dir="${components-build}"/>
+		</copy>
+
+		<copy todir="${build}/war/src/webapp/WEB-INF" >
+			<fileset dir="${web-inf}"/>
+		</copy>
+
+		<copy todir="${build}/war">
+			<fileset dir="..">
+				<include name="pom.xml" />
+				<include name="project.xml" />
+				<include name="maven.xml" />
+				<include name="project.properties" />
+			</fileset>
+		</copy>
+
+        <echo>Building war file...</echo>
+		<apply executable="mvn" dir="${build}/war" parallel="true">
+				<fileset  dir=".">
+				    <include name="pom.xml"/>
+                </fileset>
+				<arg value="install" />
+		</apply>
+
+        <echo>Copying war file ${build}/war/target/${warfile} to ${dist}...</echo>
+		<copy todir="${dist}">
+            <fileset dir="${build}/war/target">
+                <include name="${warfile}" />
+            </fileset>
+        </copy>
+
+	</target>
+
+	<!-- Target: validate -->
+	<target name="validate">
+		<description>
+		Validate the javascript files using JSLint.
+		</description>
+
+		<echo>Validating .JS files...</echo>
+        <jslint dir="${lint}" 
+                excludes="${excludeFromJSLint}"
+                options="browser,eqeqeq,nomen,undef">
+        </jslint>
+	</target>
+
+    <!-- Target: fullWar -->
+    <target name="fullWar" depends="clean, createSrcDistro">
+		<copy todir="${sample-code-build}">
+			<fileset dir="${sample-code}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${tests-build}">
+			<fileset dir="${tests}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		<copy todir="${build}/war/src/webapp/fluid-components" >
+			<fileset dir="${src-dist-components}"/>
+		</copy>
+
+		<copy todir="${build}/war/src/webapp/sample-code" >
+			<fileset dir="${sample-code-build}"/>
+		</copy>
+
+		<copy todir="${build}/war/src/webapp/tests" >
+			<fileset dir="${tests-build}"/>
+		</copy>
+
+		<copy todir="${build}/war/src/webapp/WEB-INF" >
+			<fileset dir="${web-inf}"/>
+		</copy>
+
+		<copy todir="${build}/war">
+			<fileset dir="..">
+				<include name="pom.xml" />
+				<include name="project.xml" />
+				<include name="maven.xml" />
+				<include name="project.properties" />
+			</fileset>
+		</copy>
+
+        <echo>Building war file...</echo>
+		<apply executable="mvn" dir="${build}/war" parallel="true">
+				<fileset  dir=".">
+				    <include name="pom.xml"/>
+                </fileset>
+				<arg value="install" />
+		</apply>
+
+        <echo>Copying war file ${build}/war/target/${warfile} to ${dist}...</echo>
+		<copy todir="${dist}">
+            <fileset dir="${build}/war/target">
+                <include name="${warfile}" />
+            </fileset>
+        </copy>
+    </target>
+    
+</project>

@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="AccessibleMenuBar.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../shared/Focus.css" />
+    <link rel="stylesheet" type="text/css" href="MenuBarExample.css" title="default" />
+
+    <title>Menu Bar: DHTML Keyboard Accessibility Example</title>
+  </head>
+
+  <body>
+    <ol id="menubar" tabindex="0">
+      <!-- File Menu -->
+      <li id="fileMenu" class="menu" tabindex="-1">File
+        <ol class="closed submenu" tabindex="-1">
+          <li><a href="/new" tabindex="-1" id="fileMenu.new">New</a></li>
+          <li><a href="/open" tabindex="-1" id="fileMenu.open">Open</a></li>
+          <li><a href="/saveAs" tabindex="-1" id="fileMenu.saveAs">Save As...</a></li>
+        </ol>
+      </li>
+
+      <!-- Edit Menu -->
+      <li id="editMenu" class="menu" tabindex="-1">Edit
+        <ol class="closed submenu" tabindex="-1">
+          <li><a href="/cut" tabindex="-1" id="editMenu.cut">Cut</a></li>
+          <li><a href="/copy" tabindex="-1" id="editMenu.copy">Copy</a></li>
+          <li><a href="/paste" tabindex="-1" id="editMenu.paste">Paste</a></li>
+        </ol>
+      </li>
+    </ol>
+    <script type="text/javascript">
+      fluid.accessiblemenubar.initializeMenuBar("menubar");
+    </script>
+  </body>
+</html>

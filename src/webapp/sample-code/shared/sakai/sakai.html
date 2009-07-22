@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" >
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en" class="fl-theme-mist">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.theme.mist.css" />
+        <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.theme.hc.css" />
+        <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.theme.rust.css" />
+        <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.text.css" />
+        <link rel="stylesheet" type="text/css" href="../../../fluid-components/css/fluid.components.ui-options.css" />
+
+        <!-- Local Sakai and Sakai FSS Extensions -->
+        <!-- these widget color and layout definitions will eventually migrate into FSS core -->
+        <link rel="stylesheet" type="text/css" href="css/sakai.css" />
+        <link rel="stylesheet" type="text/css" href="css/sakai.theme.mist.css" />
+        <link rel="stylesheet" type="text/css" href="css/sakai.theme.rust.css" />
+        <link rel="stylesheet" type="text/css" href="css/sakai.theme.hc.css" />
+        <link rel="stylesheet" type="text/css" href="css/sakai.layout.css" />
+		<link rel="stylesheet" type="text/css" href="css/sakai.components.ui-options.css" />
+
+        <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.core.js"></script>        
+        <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.accordion.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/renderer/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/Skin.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/Undo.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/fluid/UIOptions.js"></script>
+        <script type="text/javascript" src="js/sakai.js"></script>
+
+        <title>Sakai</title>
+
+       
+    </head>
+
+    <body>
+        <div id="dialog_container">
+            <a id="close_dialog" class="icon close" href="#">Close</a>
+            <div id="dialog_content"></div>
+        </div>
+
+        <div class="header fl-knockout">
+            <h1>My Dashboard</h1>
+            <p>Joe Instructor </p>
+            <ul>
+                <li><a href="#">(Sign Out)</a></li>
+                <li><a href="#">Preferences</a></li>
+                <li><a href="#">Help</a></li>
+            </ul> 
+        </div>
+
+        <!-- WIDGETS COLUMNS CONTAINER -->
+        <div class="content fl-container-flex fl-fix">
+            
+            <!-- COLUMN LEFT -->
+            <div class="fl-container-300 fl-force-left">
+                
+                <!-- WIDGET -->
+                <div class="fl-widget">
+                    <div class="fl-widget-titlebar">
+                        <a href="#" class="fl-force-left icon more">More</a>
+                        <a href="#" class="fl-force-right icon close">Close</a>
+                        <a href="#" class="fl-force-right icon settings">Settings</a>
+                        <h2>Tools</h2>
+                    </div>                    
+                    <div class="fl-widget-options">
+                        <ul>
+                            <li><a href="#">Add Tools</a></li>
+                            <li><a href="#" class="icon viewOptions toggle">Toggle View</a></li>
+                        </ul>
+                    </div>                    
+                    <div class="fl-widget-content">
+                        <ul class="menu">
+                            <li><a href="#">Home          <span class="icon delete">[remove]</span></a></li>
+                            <li><a href="#">Profile       <span class="icon delete">[remove]</span></a></li>
+                            <li><a href="#">Membership    <span class="icon delete">[remove]</span></a></li>
+                            <li><a href="#">Schedule      <span class="icon delete">[remove]</span></a></li>
+                            <li><a href="#">Resources     <span class="icon delete">[remove]</span></a></li>
+                            <li><a href="#">Worksite Setup<span class="icon delete">[remove]</span></a></li>
+                            <li><a href="#">Preferences   <span class="icon delete">[remove]</span></a></li>
+                            <li><a href="#">Account       <span class="icon delete">[remove]</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COLUMN RIGHT -->
+            <div class="fl-container-300 fl-force-right">
+
+                <!-- WIDGET -->
+                <div class="fl-widget">
+                    <div class="fl-widget-titlebar">
+                        <a href="#" class="fl-force-left icon more">More</a>
+                        <a href="#" class="fl-force-right icon close">Close</a>
+                        <a href="#" class="fl-force-right icon settings">Settings</a>
+                        <h2 class="grabbable">Poll Tracker</h2>
+                    </div>    
+                    <div class="fl-widget-content empty">
+                        <p>No valid poll has been selected</p>
+                    </div>
+                </div>
+
+                <!-- WIDGET -->
+                <div class="fl-widget">
+                    <div class="fl-widget-titlebar">
+                        <a href="#" class="fl-force-left icon more">More</a>
+                        <a href="#" class="fl-force-right icon close">Close</a>
+                        <a href="#" class="fl-force-right icon settings">Settings</a>
+                        <h2>My Profile</h2>
+                    </div>
+                    <div class="fl-widget-options">
+                        <ul>
+                            <li><a href="#">Edit Profile</a></li>
+                            <li><a href="#">View Profile</a></li>
+                        </ul>
+                    </div>
+                    <div class="fl-widget-content"></div>
+                </div>
+            </div>
+
+            <!-- COLUMN CENTER -->
+            <div class="center column fl-container">
+                <div class="fl-widget">
+                    <div class="fl-widget-titlebar grabbable">
+                        <a href="#" class="fl-force-left icon more">More</a>
+                        <a href="#" class="fl-force-right icon close">Close</a>
+                        <a href="#" class="fl-force-right icon settings">Settings</a>
+                        <h2>Sites</h2>
+                    </div>
+                    <div class="fl-widget-options">
+                        <ul>
+                            <li><a href="#">Join a Site</a></li>
+                            <li><a href="#">Edit Site List</a></li>
+                            <li><a href="#">Create a Site</a></li>
+                        </ul>
+                    </div>
+                    <div class="fl-widget-content">
+                        <ul>
+                            <li><a href="#">Uncategorized</a></li>
+                            <li>
+                            <ul>
+                                <li><a href="#">My Workspace</a></li>
+                                <li><a href="#">Famous Monuments</a></li>
+                                <li><a href="#">Old legacy site</a></li>
+                                <li><a href="#">Painters and Paintings</a></li>
+                            </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- LAYOUT AND APPEARANCE -->
+        <div class="lookNfeel fl-container">
+            <a href="#" class="addWidget fl-button-left fl-linearEnabled"><strong>Add Widgets </strong></a>
+            <a href="#" class="skin fl-button-left fl-linearEnabled"><strong>Edit Appearance</strong></a>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer fl-container-flex fl-knockout">
+            <p>© 2004-2008 The Sakai Foundation <br />
+            Portions of Sakai are copyrighted by other parties as described in the <a href="#">Acknowledgments screen</a></p>
+        </div>
+    </body>
+</html>

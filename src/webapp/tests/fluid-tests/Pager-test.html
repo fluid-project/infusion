@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+  <head>
+    <title>Pager Tests</title>
+
+    <script type="text/javascript" src="../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../fluid-components/js/fluid/Pager.js"></script>
+
+    <!--  These are the jqUnit test files -->
+    <link rel="Stylesheet" media="screen" href="../jqUnit/testsuite.css" />
+    <script type="text/javascript" src="../jqUnit/testrunner.js"></script>
+    <script type="text/javascript" src="../jqUnit/jqUnit.js"></script>
+    <script type="text/javascript" src="../jqUnit/jquery.simulate.js"></script>
+  
+    <!--  These are used for tests that have been written using this page as data -->
+    <script type="text/javascript" src="js/PagerTests.js"></script>
+  </head>
+
+  <body>
+     <h1 id="header">Pager Test Suite</h1>
+    <h2 id="banner"></h2>
+    <h2 id="userAgent"></h2>
+    
+    <ol id="tests"></ol>
+    <div id="main" style="display:none;">
+	    <div id="gradebook">
+    	    <ul id="pager-top" class="pager-top">
+       	      <li id="top1" class="page-link"><a href="#">1</a></li>
+    	        <li id="top2" class="page-link"><a href="#">2</a></li>
+    	        <li id="top3" class="page-link"><a href="#">3</a></li>
+    	        <li id="previous-top" class="previous">&lt; previous</li>
+    	        <li id="next-top" class="next">next &gt;</li>
+    	    </ul>
+            <table summary="student grades" id="students">
+              <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>User Id</td>
+                    <td>Points</td>
+                    <td>Comments</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>Ahn, Jason</td>
+                    <td>15234314</td>
+                    <td>87</td>
+                    <td>Great job, Jason! Very excited to see a big jump.</td>
+                </tr>
+                <tr>
+                    <td>Azer, Tamer</td>
+                    <td>19206726</td>
+                    <td>68</td>
+                    <td>Lorem ipsum</td>
+                </tr>
+                <tr>
+                    <td>Bellefuille, Elaine</td>
+                    <td>19286942</td>
+                    <td>90</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Braganza, Sherman</td>
+                    <td>19446940</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Campaign, Leslie</td>
+                    <td>19283721</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+              </tbody>
+            </table>
+            <ul id="pager-bottom" class="pager-bottom">
+       	        <li id="bottom1" class="page-link"><a href="#">1</a></li>
+    	        <li id="bottom2" class="page-link"><a href="#">2</a></li>
+    	        <li id="bottom3" class="page-link"><a href="#">3</a></li>
+    	        <li id="previous-bottom" class="previous">&lt; previous</li>
+    	        <li id="next-bottom" class="next">next &gt;</li>
+    	    </ul>
+        </div>
+        
+        <div id="plants">
+    	    <ul id="plants-pager-top" class="pager-top">
+       	        <li id="plants-top1" class="page-link"><a href="#">1</a></li>
+    	        <li id="plants-top2" class="page-link"><a href="#">2</a></li>
+    	        <li id="plants-top3" class="page-link"><a href="#">3</a></li>
+    	        <li id="plants-previous-top" class="previous">&lt; previous</li>
+    	        <li id="plants-next-top" class="next">next &gt;</li>
+    	    </ul>
+            <ul>
+                <li id="chives">Chives</li>
+                <li>Lovage</li>
+                <li>Oregano</li>
+                <li>Parsley</li>
+                <li>Rhubarb</li>
+                <li>Sylvetta</li>
+            </ul>
+    	    <ul id="plants-pager-bottom" class="pager-bottom">
+       	        <li id="plants-bottom1" class="page-link"><a href="#">1</a></li>
+    	        <li id="plants-bottom2" class="page-link"><a href="#">2</a></li>
+    	        <li id="plants-bottom" class="page-link"><a href="#">3</a></li>
+    	        <li id="plants-previous-bottom" class="previous">&lt; previous</li>
+    	        <li id="plants-next-bottom" class="next">next &gt;</li>
+    	    </ul>
+        </div>
+
+    </div>
+  </body>
+</html>

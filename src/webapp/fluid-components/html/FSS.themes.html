@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Fluid Skinning System (FSS) examples</title>
+
+        <link rel="stylesheet" type="text/css" href="../css/fluid.reset.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.layout.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.theme.hc.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.theme.mist.css" />
+        <link rel="stylesheet" type="text/css" href="../css/fluid.theme.rust.css" />
+        <style type="text/css">
+            body {
+                padding: 0 3em 3em;
+            }        
+        </style>
+        
+	</head>
+	<body>	    
+	    <h1>Fluid Skinning System demos</h1>
+        <p>Here are some demos showcasing how the Fluid CSS convenience classnames work. The FSS is a completely class based CSS convenience system, and does not focus on typography and grids as heavily as other major CSS frameworks;
+        rather it is designed to help enhance the effectiveness of Fluid components and encourage cleaner markup.</p>
+        <p>As you read this, page margins, fonts, colors and other basic properties of this page have been modified by the <code>fluid.reset.css</code> file</p>
+        
+        <h2>Ready-made Themes</h2>
+        
+        <h3>Mist</h3>
+        <p>MIST is a simple blue out-of-the-box theme. This theme comes packaged with the FSS.</p>
+        
+        <div class="fl-container-flex fl-col-flex3 fl-fix fl-theme-mist">
+            <div class="fl-col">
+                
+                <p><strong>Simple and elaborate Widgets using the built in icon set</strong></p>
+                
+                <div class="fl-widget">
+                    <div class="fl-widget-titlebar">
+                        <h2>Regular Widget</h2>
+                    </div>
+                    <div class="fl-widget-options">
+                        <ul>
+                            <li><a href="#_bottom">Option 1</a></li>
+                            <li><a href="#_bottom">Option 2</a></li>
+                        </ul>
+                    </div>
+                    <div class="fl-widget-content">
+                        <p>this is where the content goes</p>
+                    </div>
+                </div>
+                
+                <div class="fl-widget">
+                    <div class="fl-widget-titlebar grabbable">
+                        <h2>Draggable Widget</h2>
+                    </div>
+                    <div class="fl-widget-options">
+                        <ul>
+                            <li><a href="#_bottom">Option 1</a></li>
+                            <li><a href="#_bottom">Option 2</a></li>
+                        </ul>
+                    </div>
+                    <div class="fl-widget-content">
+                        <p>this is where the content goes</p>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            <div class="fl-col">
+                <p><strong>Simple Tabs and Sliding Tabs</strong></p>
+                                
+                <ul class="fl-tabs fl-tabs-center">
+                    <li class="fl-activeTab"><a href="#_bottom">Active Tab</a></li>
+                    <li><a href="#_bottom">Tab #2</a></li>
+                    <li><a href="#_bottom">Tab #3</a></li>
+                </ul>
+                <div class="fl-tab-content"> 
+                    Content
+                </div>
+               
+                
+                <ul class="fl-tabs fl-tabs-left">
+                    <li class="fl-activeTab"><a href="#_bottom">Active Tab</a></li>
+                    <li><a href="#_bottom">Tab #2</a></li>
+                    <li><a href="#_bottom">Tab #3</a></li>
+                </ul>
+                <div class="fl-tab-content"> 
+                    Content
+                </div>                
+            </div>
+            
+            
+            <div class="fl-col">
+                <p><strong>Menus</strong></p>
+                <ul class="fl-listmenu">
+                    <li><a href="#_bottom">Menu item #1</a></li>
+                    <li class="fl-activemenu"><a href="#_bottom">Active Menu item</a></li>
+                    <li><a href="#_bottom">Menu item #3</a></li>
+                    <li><a href="#_bottom">Menu item #4</a></li>
+                    <li><a href="#_bottom">Menu item #5</a></li>
+                </ul>
+            </div>
+            
+        </div>
+        
+        
+        
+        
+        <h3>Rust</h3>
+        <p>RUST is a simple brown out-of-the-box theme. This theme comes packaged with the FSS.</p>
+        
+        <div class="fl-container-flex fl-col-flex3 fl-fix fl-theme-rust">
+            <div class="fl-col">
+                
+                <p><strong>Simple and elaborate Widgets using the built in icon set</strong></p>
+                
+                <div class="fl-widget">
+                    <div class="fl-widget-titlebar">
+                        <h2>Regular Widget</h2>
+                    </div>
+                    <div class="fl-widget-options">
+                        <ul>
+                            <li><a href="#_bottom">Option 1</a></li>
+                            <li><a href="#_bottom">Option 2</a></li>
+                        </ul>
+                    </div>
+                    <div class="fl-widget-content">
+                        <p>this is where the content goes</p>
+                    </div>
+                </div>
+                
+                <div class="fl-widget">
+                    <div class="fl-widget-titlebar grabbable">
+                        <h2>Draggable Widget</h2>
+                    </div>
+                    <div class="fl-widget-options">
+                        <ul>
+                            <li><a href="#_bottom">Option 1</a></li>
+                            <li><a href="#_bottom">Option 2</a></li>
+                        </ul>
+                    </div>
+                    <div class="fl-widget-content">
+                        <p>this is where the content goes</p>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            <div class="fl-col">
+                <p><strong>Simple Tabs and Sliding Tabs</strong></p>
+                                
+                <ul class="fl-tabs fl-tabs-center">
+                    <li class="fl-activeTab"><a href="#_bottom">Active Tab</a></li>
+                    <li><a href="#_bottom">Tab #2</a></li>
+                    <li><a href="#_bottom">Tab #3</a></li>
+                </ul>
+                <div class="fl-tab-content"> 
+                    Content
+                </div>
+               
+                
+                <ul class="fl-tabs fl-tabs-left">
+                    <li class="fl-activeTab"><a href="#_bottom">Active Tab</a></li>
+                    <li><a href="#_bottom">Tab #2</a></li>
+                    <li><a href="#_bottom">Tab #3</a></li>
+                </ul>
+                <div class="fl-tab-content"> 
+                    Content
+                </div>                
+            </div>
+            
+            
+            <div class="fl-col">
+                <p><strong>Menus</strong></p>
+                <ul class="fl-listmenu">
+                    <li><a href="#_bottom">Menu item #1</a></li>
+                    <li class="fl-activemenu"><a href="#_bottom">Active Menu item</a></li>
+                    <li><a href="#_bottom">Menu item #3</a></li>
+                    <li><a href="#_bottom">Menu item #4</a></li>
+                    <li><a href="#_bottom">Menu item #5</a></li>
+                </ul>
+            </div>
+            
+        </div>
+
+
+
+        <h3>High Contrast (B/w)</h3>
+        <p>High Contrast is a black and white out-of-the-box theme. This theme comes packaged with the FSS.</p>
+        
+        <div class="fl-container-flex fl-col-flex3 fl-fix fl-theme-hc">
+            <div class="fl-col">
+                
+                <p><strong>Simple and elaborate Widgets using the built in icon set</strong></p>
+                
+                <div class="fl-widget">
+                    <div class="fl-widget-titlebar">
+                        <h2>Regular Widget</h2>
+                    </div>
+                    <div class="fl-widget-options">
+                        <ul>
+                            <li><a href="#_bottom">Option 1</a></li>
+                            <li><a href="#_bottom">Option 2</a></li>
+                        </ul>
+                    </div>
+                    <div class="fl-widget-content">
+                        <p>this is where the content goes</p>
+                    </div>
+                </div>
+                
+                <div class="fl-widget">
+                    <div class="fl-widget-titlebar grabbable">
+                        <h2>Draggable Widget</h2>
+                    </div>
+                    <div class="fl-widget-options">
+                        <ul>
+                            <li><a href="#_bottom">Option 1</a></li>
+                            <li><a href="#_bottom">Option 2</a></li>
+                        </ul>
+                    </div>
+                    <div class="fl-widget-content">
+                        <p>this is where the content goes</p>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            <div class="fl-col">
+                <p><strong>Simple Tabs and Sliding Tabs</strong></p>
+                                
+                <ul class="fl-tabs fl-tabs-center">
+                    <li class="fl-activeTab"><a href="#_bottom">Active Tab</a></li>
+                    <li><a href="#_bottom">Tab #2</a></li>
+                    <li><a href="#_bottom">Tab #3</a></li>
+                </ul>
+                <div class="fl-tab-content"> 
+                    Content
+                </div>
+               
+                
+                <ul class="fl-tabs fl-tabs-left">
+                    <li class="fl-activeTab"><a href="#_bottom">Active Tab</a></li>
+                    <li><a href="#_bottom">Tab #2</a></li>
+                    <li><a href="#_bottom">Tab #3</a></li>
+                </ul>
+                <div class="fl-tab-content"> 
+                    Content
+                </div>                
+            </div>
+            
+            
+            <div class="fl-col">
+                <p><strong>Menus</strong></p>
+                <ul class="fl-listmenu">
+                    <li><a href="#_bottom">Menu item #1</a></li>
+                    <li class="fl-activemenu"><a href="#_bottom">Active Menu item</a></li>
+                    <li><a href="#_bottom">Menu item #3</a></li>
+                    <li><a href="#_bottom">Menu item #4</a></li>
+                    <li><a href="#_bottom">Menu item #5</a></li>
+                </ul>
+            </div>
+            
+        </div>        
+
+	</body>
+</html>

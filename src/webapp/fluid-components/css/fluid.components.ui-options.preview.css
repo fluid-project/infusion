@@ -1,0 +1,18 @@
+.previewContent {font-size:13px; background:#e8ffea url(../images/uioptions/main_bg.png) no-repeat fixed 0px 0px; padding: 0 10px;}
+.previewContent h1 {margin:0; padding:5px 0 5px 0;}
+.previewContent h2 {}
+.previewContent h3 {}
+.previewContent p {padding:5px;}
+.previewContent img {float:right; margin:10px 0;}
+.previewContent strong {}
+.previewContent em {}
+.previewContent ul {}
+.previewContent ol {}
+.previewContent li {}
+.previewContent table {}
+.previewContent table thead {}
+.previewContent table thead th {background-color:#fff;}
+.previewContent table tbody {}
+.previewContent table tbody td {}
+.previewContent table tfoot {}
+.previewContent table tfoot th {} 

@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../shared/Focus.css" />
+        <link rel="stylesheet" type="text/css" href="Checkboxes.css" />
+        
+        <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+        <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="AccessibleCheckbox.js"></script>
+
+        <title>Checkboxes: DHTML Keyboard Accessibility Example</title>
+    </head>
+    <body>
+        <h1>Favourite Dodecaphonic Composers</h1>
+        <form id="checkboxes" name="composerForm" action"#">
+	      <p id="checkboxes_0" class="checkboxRow">
+             <input type="checkbox" id="checkboxes_0_box" />
+             <label for="checkboxes_0_box">Schoenberg</label>
+	      </p>
+          <p id="checkboxes_1" class="checkboxRow">
+             <input type="checkbox" id="checkboxes_1_box" />
+             <label for="checkboxes_1_box">Webern</label>
+          </p>
+          <p id="checkboxes_2" class="checkboxRow">
+             <input type="checkbox" id="checkboxes_2_box" />
+             <label for="checkboxes_1_box">Berg</label>
+          </p>
+          <p id="checkboxes_3" class="checkboxRow">
+             <input type="checkbox" id="checkboxes_3_box" />
+             <label for="checkboxes_3_box">Stravinsky</label>
+          </p>
+	    </form>
+
+	    <h1>Other Items to Focus</h1>
+	    <a href="http://en.wikipedia.org/wiki/Twelve-tone_technique">What is Dodecaphony?</a> <br />
+	    <p>The link above is naturally focussable by the browser, and provides us with something
+	    to prove that our keyboard accessibility library will happily surrender focus.</p>
+
+        <p>Here's a form element to help test mouse-based changes in focus.</p>
+
+        <form action="#">
+            <label for="textbox">Who killed Anton von Webern?</label>
+            <input type="text" id="textbox" />
+        </form>
+
+	    <script type="text/javascript">
+	        fluid.accessiblecheckbox.initializeCheckboxes("checkboxes");
+	    </script>
+    </body>
+</html>

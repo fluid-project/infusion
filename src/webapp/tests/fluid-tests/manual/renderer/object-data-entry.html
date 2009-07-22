@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>Object Data Entry</title>
+
+        <!--  These are the required javascript modules for the Renderer and can be replaced with Fluid-all.js -->
+        <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../fluid-components/js/fluid/renderer/fluidRenderer.js"></script>
+
+        <script type="text/javascript" src="object-data-entry.js"></script>
+	</head>
+
+	<body>
+
+        <p class="load-button">
+            <input id="load1" type="button" value="Load data set 1"/>
+            <input id="load2" type="button" value="Load data set 2"/>
+        </p>
+
+        <table id="object-info" border="1px">
+            <tr>
+                <td>Object Title</td><td rsf:id="object_title">Title of Object</td>
+                <td>Object (Accession) Number</td><td rsf:id="object_number">123.45.678</td>
+            </tr>
+            <tr>
+                <td>Brief Description</td><td><input rsf:id="object_description"/></td>
+                <td>Object Name</td><td><input rsf:id="object_name"/></td>
+            </tr>
+            <tr>
+                <td>Distinguishing Features</td><td><input rsf:id="object_features"/></td>
+                <td>Number of Objects</td><td><input rsf:id="number_objects"/></td>
+            </tr>
+            <tr>
+                <td>Responsible Department</td><td><input rsf:id="department"/></td>
+                <td>Comments</td><td><input rsf:id="comments"/></td>
+            </tr>
+            <tr>
+                <td>Field Collection Date</td><td><input rsf:id="month" value="Month"/><input rsf:id="day" value="Day"/><input rsf:id="year" value="Year"/></td>
+    
+            </tr>
+        </table>
+
+        <script type="text/javascript">
+            demo.setup();
+        </script>
+	</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+  <head>
+    <title>Multiple Reorderers</title>
+    <link href="portlets.css" type="text/css" rel="stylesheet" media="all" />
+
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery/ui.core.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/jquery/jARIA.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/GeometricManager.js"></script>
+    <script type="text/javascript" src="../../../../fluid-components/js/fluid/Reorderer.js"></script>
+
+  </head>
+  <body>
+
+    <p>
+        There are no styles on this example so it will be very difficult to see what is going on without FireBug.
+    </p>
+    <div id="div-reorderer">
+        <div class="div-item" id="div-item-1">Salmon</div>
+        <div class="div-item" id="div-item-2">Trout</div>
+        <div class="div-item" id="div-item-3">Splake</div>
+        <div class="div-item" id="div-item-4">Perch</div>
+        <div class="div-item" id="div-item-5">Bass</div>
+    </div>
+    <ol id="list-reorderer">
+        <li>red</li>
+        <li>blue</li>
+        <li>green</li>
+        <li>black</li>
+    </ol>
+    <script type="text/javascript">    
+    
+    // If this was production code, this would be in a separate file but since this is a very simple manual test I'm leaving it here.    
+    function init () {
+        fluid.reorderList("#div-reorderer", {
+            selectors: {
+                movables: "[id^=div-item-]"
+            }
+        });
+        fluid.reorderList("#list-reorderer", {
+            selectors: {
+                movables: "li"
+            }
+        });
+    }
+    
+    init();
+    </script>
+  </body>
+</html>

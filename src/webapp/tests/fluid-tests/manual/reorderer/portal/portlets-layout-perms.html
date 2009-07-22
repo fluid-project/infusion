@@ -1,0 +1,96 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+  <head>
+    <title>Portlets Example</title>
+    <link href="portlets.css" type="text/css" rel="stylesheet" media="all" />
+
+    <script type="text/javascript" src="../../../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/jquery/ui.core.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/jquery/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/jquery/jARIA.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/json/json2.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script> 
+    <script type="text/javascript" src="../../../../../fluid-components/js/fluid/GeometricManager.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/fluid/Reorderer.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/fluid/LayoutReorderer.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/fluid/ModuleLayout.js"></script>
+  </head>
+  <body>
+
+    <p>Note: This example is not complete, in that once a portlet is moved, the permissions
+       matrix is not properly updated (normally, this would be accomplished with a callback to the server).
+       Once a portlet in this example is moved, subsequent behaviour is unpredictable.</p>
+
+  <!-- TABLE -->
+
+    <div class="reorderer_container">
+      <div id="drop-warning" style="display:none;">The portlet being moved cannot be dropped in this position</div>
+      <table id="portlet-reorderer-root">
+        <tbody>
+          <tr>
+            <td id="c1">
+                <div class="portlet locked orderable-default" id="portlet1">
+					<div class="title">portlet 1</div>
+					<div class="content">prec 90</div>
+				</div>
+				<div class="portlet locked orderable-default" id="portlet2">
+					<div class="title">portlet 2</div>
+					<div class="content">prec 80</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet3">
+					<div class="title">portlet 3</div>
+					<div class="content">prec 50</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet4">
+					<div class="title">portlet 4</div>
+					<div class="content">&nbsp;</div>
+				</div>
+			</td>
+			<td id="c2">
+				<div class="portlet locked orderable-default" id="portlet5">
+					<div class="title">portlet 5</div>
+					<div class="content">prec 70</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet6">
+					<div class="title">portlet 6</div>
+					<div class="content">&nbsp;</div>
+				</div>
+			</td>
+			<td id="c3">
+				<div class="portlet orderable orderable-default" id="portlet7">
+					<div class="title">portlet 7</div>
+					<div class="content">prec 60</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet8">
+					<div class="title">portlet 8</div>
+					<div class="content">&nbsp;</div>
+				</div>
+				<div class="portlet orderable orderable-default" id="portlet9">
+					<div class="title">portlet 9</div>
+					<div class="content">&nbsp;</div>
+				</div>
+			</td>
+			<td id="c4">
+			</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script type="text/javascript">    
+        jQuery(document).ready(function () {
+            fluid.reorderLayout ("#portlet-reorderer-root", {
+                selectors: {
+                    columns: "td",
+                    modules: "td > div",
+                    lockedModules: ".locked"
+                }
+            });
+        });
+    </script>
+  </body>
+</html>

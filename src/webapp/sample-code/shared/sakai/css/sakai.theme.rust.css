@@ -1,0 +1,36 @@
+/* FSS Extension: Sakai widgets */
+
+/* Widget core */
+.fl-theme-rust .fl-widget {background:#662e0f url(../images/fluid-theme-rust/widget-earmark.png) no-repeat top left;}
+    .fl-theme-rust .fl-widget ul {}
+    .fl-theme-rust .fl-widget h2 {color:#FFFBC2;}
+    .fl-theme-rust .grabbable {background-image:url('../images/fluid-theme-rust/gripper.png');}
+
+/* Widget titlebar */
+.fl-theme-rust .fl-widget-titlebar {/*margin:-5px -5px 0 -5px;*/}
+    .fl-theme-rust .fl-widget-titlebar .icon {background-position:center center;}
+
+/* Widget options */
+.fl-theme-rust .fl-widget-options {}
+    .fl-theme-rust .fl-widget-options ul {} 
+    .fl-theme-rust .fl-widget-options li {border-left:1px solid #cf923e;}
+    .fl-theme-rust .fl-widget-options a {color:#cf923e !important;}
+    .fl-theme-rust .fl-widget-options .icon {}
+    .fl-theme-rust .fl-widget-options a.icon:hover {background-color:#cf923e; border-color:#fffbc2;}
+
+/* Widget content */
+.fl-theme-rust .fl-widget-content {background-color:#FFFBC2 !important;}
+
+    /* Widget :: Icons */
+    .fl-theme-rust .fl-widget .more  {background-image:url('../images/fluid-theme-rust/icon-widget-More.png'); margin-left:0px;}
+    .fl-theme-rust .fl-widget .close {background-image:url('../images/fluid-theme-rust/icon-widget-Close.png'); margin-right:0px;}
+    .fl-theme-rust .fl-widget .settings {background-image:url('../images/fluid-theme-rust/icon-widget-Settings.png'); margin-right:0px; width:16px; }
+    
+    .fl-theme-rust .fl-widget-options .viewOptions {background-image:url('../images/fluid-theme-rust/icon-options-ListOrGrid.png'); background-color:#FFFBC2;  border:1px solid #cf923e;}
+    /* Widget :: Menus */
+    .fl-theme-rust .fl-widget-content .menu {padding:0px; overflow-y:auto; overflow-x:hidden; border:1px solid #cf923e; border-bottom:none; zoom:1; background-color:transparent;}
+    .fl-theme-rust .fl-widget-content .menu li {float:left; list-style-type:none; border-bottom:1px solid #cf923e; width:100%; }
+    .fl-theme-rust .fl-widget-content .menu a {position:relative; display:block; text-indent:30px; font-weight:bold; padding:7px 0 7px 0; background-color:transparent;}
+    .fl-theme-rust .fl-widget-content .menu a:hover {background-color:#FFDC84; color:#000;}
+    .fl-theme-rust .fl-widget-content .menu .icon {}
+    .fl-theme-rust .fl-widget-content .menu .delete {position:absolute;background-image: url('../images/fluid-theme-rust/icon-menu-Delete.png');  right:0; top:5px; background-repeat:no-repeat; background-position: top left;}

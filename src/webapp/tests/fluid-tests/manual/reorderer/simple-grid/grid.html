@@ -1,0 +1,80 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+    <head>
+        <title>Grid</title>
+        <link href="../../../../../sample-code/reorderer/markup-examples.css" type="text/css" rel="stylesheet"/>
+        
+        <script type="text/javascript" src="../../../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/jquery/ui.core.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/jquery/ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/jquery/jARIA.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/fluid/GeometricManager.js"></script>    
+        <script type="text/javascript" src="../../../../../fluid-components/js/fluid/Reorderer.js"></script>
+        
+        <!-- Override the drop marker style for this example. This shouldn't be here but rather in the css file. -->
+        <!-- There are many styling issues with this manual example which need to be looked into and fixed. -->
+        <style type="text/css">
+            div .orderable-drop-marker{
+              height: 100px !important;
+              width: 5px;
+              background-color: green;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <h3>Simple Reorderable Grid</h3>
+        <p>This page is an example of divs that have been visually laid out as a reorderable grid. It also includes
+        a mix of moveable and non-moveable items. Divs that have been tagged as moveable are highlighted.
+        </p>
+        <div class="reorderer_container">    
+            <div class="box orderable" id="box0">
+            	<div class="caption">Item 0</div>
+            </div>
+            <div class="box" id="box1">
+            	<div class="caption">Item 1</div>
+            </div>
+            <div class="box" id="box2">
+            	<div class="caption">Item 2</div>
+            </div>
+            <div class="box" id="box3">
+            	<div class="caption">Item 3</div>
+            </div>
+            <div class="box orderable" id="box4">
+            	<div class="caption">Item 4</div>
+            </div>
+            <div class="box orderable" id="box5">
+            	<div class="caption">Item 5</div>
+            </div>
+            <div class="box orderable" id="box6">
+            	<div class="caption">Item 6</div>
+            </div>
+            <div class="box orderable" id="box7">
+            	<div class="caption">Item 7</div>
+            </div>
+            <div class="box orderable" id="box8">
+            	<div class="caption">Item 8</div>
+            </div>
+            <div class="box orderable" id="box9">
+            	<div class="caption">Item 9</div>
+            </div>
+            <div class="box orderable"  id="box10">
+            	<div class="caption">Item 10</div>
+            </div>
+        </div>
+        
+        <script type="text/javascript">
+            jQuery(document).ready(function () {
+                fluid.reorderGrid(".reorderer_container", {
+                    selectors: {
+                        movables: ".box.orderable"
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

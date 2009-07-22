@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>Inline Edit Test Suite</title>
+        <link rel="stylesheet" href="css/InlineEdit.css" type="text/css" media="screen" charset="utf-8" />
+        
+        <!--  These are the required javascript modules for the Inline Edit -->
+        <script type="text/javascript" src="../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+        <script type="text/javascript" src="../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../fluid-components/js/jquery/jARIA.js"></script>
+        <script type="text/javascript" src="../../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../fluid-components/js/fluid/InlineEdit.js"></script>
+        <script type="text/javascript" src="../../fluid-components/js/fluid/Undo.js"></script>
+        
+
+        <!--  These are the jqUnit test framework files -->
+        <link rel="Stylesheet" media="screen" href="../jqUnit/testsuite.css" />
+        <script type="text/javascript" src="../jqUnit/testrunner.js"></script>
+        <script type="text/javascript" src="../jqUnit/jqUnit.js"></script>
+
+        <!--  These are tests that have been written using this page as data and test supports -->
+        <script type="text/javascript" src="../jqUnit/jquery.simulate.js"></script>        
+        <script type="text/javascript" src="js/InlineEditTests.js"></script>
+
+    </head>
+    <body id="body">
+      <!-- This is the markup that jqUnit will look for when running tests and displaying the results -->
+      <h1 id="header">InlineEdit Test Suite</h1>
+      <h2 id="banner"></h2>
+      <h2 id="userAgent"></h2>
+      <ol id="tests"></ol>
+      <div id="main">
+
+      <!-- This is the test data -->
+      <form id="inline-edit" action="#" class="inlineEditable">
+          <div id="display" class="text">Click me to edit...</div>
+          <div id="edit-container" class="editContainer">
+              <input id="edit" type="text" class="edit" value="this is the hidden text for the first editor" />
+          </div>
+      </form>
+        
+      <form id="inline-edit2" action="#" class="inlineEditable">
+          <div id="display2" class="text">Click me to edit...</div>
+          <input id="edit2" type="text" class="edit" value="this is the hidden text for the second editor" />
+      </form>
+        
+      <form id="inline-edit-custom" action="#">
+          <div id="display-custom" class="customText"></div>
+          <div id="edit-container-custom" class="customEditContainer">
+            <input id="edit-custom" type="text" class="customEdit" value="this is the hidden text for the custom editor" />
+          </div>
+      </form>
+      
+      <form id="inline-edit-textarea" action="#">
+          <div id="display-custom" class="customText">Click here to edit</div>
+          <div id="edit-container-custom" class="customEditContainer">
+              <textarea id="edit-custom" class="customEdit">This is the hidden text for the custom editor</textarea>
+          </div>
+      </form>
+      
+        
+      <!-- Self-rendering inline edit -->
+      <form id="inline-edit-self-render" action="#">
+          <div id="display-self-render" class="text">Click me to edit...</div>
+      </form>
+
+      <!-- empty inline edit, requiring "invitation text" or padding -->
+      <form id="empty-inline-edit" action="#">
+          <div id="empty-display" class="text"></div>
+      </form>
+
+
+      <!-- Self-rendering with undo control -->
+      <form id="inline-edit-undo" action="#">
+          <div id="display-undoable" class="text">Click me to edit...</div>
+      </form>
+
+      <!-- Second undo control -->
+      <form id="inline-edit-undo2" action="#">
+          <div id="display-undoable2" class="text">Click me to edit...</div>
+      </form>
+      
+      </div>
+    </body>
+</html>

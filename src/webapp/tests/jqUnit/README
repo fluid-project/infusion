@@ -1,0 +1,11 @@
+Attribution:
+ * This is the unit testing suite from jQuery dual-licensed under the GPL and MIT licenses.
+ * The original is available at http://jqueryjs.googlecode.com/svn/trunk/jquery/test/data/
+ * This version is r5759, checked out July 2, 2008, with the testrunner.js patch applied
+ * from http://code.google.com/p/jqunit/
+
+Instructions:
+ * To run the unit test suite, simply open any of the *-test.html pages in your web browser.
+
+Note on jquery.simulate.js:
+ * This version of simulate is shipped in jQuery 1.5.1, downloaded July 2, 2008

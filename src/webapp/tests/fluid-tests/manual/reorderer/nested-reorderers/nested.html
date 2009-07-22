@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Nested Reorderer Manual Test Page</title>
+
+        <link href="../../../../sample-code/reorderer/todo-list/todo-list.css" type="text/css" rel="stylesheet"/>
+        
+        <script type="text/javascript" src="../../../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/jquery/ui.core.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/jquery/ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/jquery/jARIA.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/fluid/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/fluid/GeometricManager.js"></script>
+        <script type="text/javascript" src="../../../../../fluid-components/js/fluid/Reorderer.js"></script>
+	</head>
+	<body>
+	    <ul id="outer">
+	        <li id="outer-item1">One</li>
+	        <li id="outer-item2">Two
+                <ul id="inner1">
+                    <li id="inner1-item1">Two point one</li>
+                    <li id="inner1-item2">Two point two</li>
+                    <li id="inner1-item3">Two point three</li>
+                    <li id="inner1-item4">Two point four</li>
+                    <script type="text/javascript">
+                        fluid.setLogging(true);
+                        fluid.log("initializing Reorderer for 'inner1'");
+                        fluid.reorderList("#inner1", {
+                            selectors: {
+                                movables: "[id^=inner1-item]"
+                            }
+                        });
+                    </script>
+                </ul>
+            </li>
+	        <li id="outer-item3">Three</li>
+	        <li id="outer-item4">Four
+                <ul id="inner2">
+                    <li id="inner2-item1">Four point one</li>
+                    <li id="inner2-item2">Four point two</li>
+                    <li id="inner2-item3">Four point three</li>
+                    <li id="inner2-item4">Four point four</li>
+                    <script type="text/javascript">
+                        function init2 () {
+                            fluid.setLogging(true);
+                            fluid.log("initializing Reorderer for 'inner2'");
+                            fluid.reorderList("#inner2", {
+                                selectors: {
+                                    movables: "[id^=inner2-item]"
+                                }
+                            });
+                        }
+                        init2();
+                    </script>
+                </ul>
+            </li>
+	        <li id="outer-item5">Five</li>
+	    </ul>
+
+    <script type="text/javascript">    
+    
+    // If this was production code, this would be in a separate file but since this is a very simple manual test I'm leaving it here.    
+    function init(){
+        fluid.setLogging(true);
+        // initialize the outer one
+        fluid.log("initializing Reorderer for 'outer'");
+        fluid.reorderList("#outer", {
+            selectors: {
+                movables: "[id^=outer-item]"
+            }
+        });
+    }
+    init();
+    </script>
+
+	</body>
+</html>

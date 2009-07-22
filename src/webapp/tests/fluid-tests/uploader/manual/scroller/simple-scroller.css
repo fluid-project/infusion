@@ -1,0 +1,21 @@
+.fluid-scroller-outer {
+    display: block;
+    position: relative;
+    background-color: white;
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border: 2px solid red;
+    width: 184px;
+}
+
+.fluid-scroller-inner {
+    border: 2px dotted blue;
+}
+
+ul {
+    border: 1px solid #CCC;
+    width: 180px;
+    margin: 0;
+    padding-left: 20px;
+}

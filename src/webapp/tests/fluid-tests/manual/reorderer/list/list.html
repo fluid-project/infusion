@@ -1,0 +1,73 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+  <head>
+    <title>Reorder Lists</title>
+    <link href="../../../../sample-code/reorderer/markup-examples.css" type="text/css" rel="stylesheet" media="all" />
+
+    <!--  These are the required javascript modules for the Reorderer and can be replaced with Fluid-all.js -->
+    <script type="text/javascript" src="../../../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/jquery/ui.core.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/jquery/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/jquery/jARIA.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/fluid/GeometricManager.js"></script>
+    <script type="text/javascript" src="../../../../../fluid-components/js/fluid/Reorderer.js"></script>
+
+    <!--  Ensure jQuery plays nice with other toolkits -
+          must be called after all the javascript is loaded. -->
+    <script type="text/javascript">
+      jQuery.noConflict();
+    </script>
+  </head>
+  <body>
+    <h1>Unordered List (vertical)</h1>
+
+    <div id="list1" class="reorderer_container">
+      <p> This is a simple example of using the Reorderer with a list. </p>
+      <ul>
+        <li id="list1item1" class="orderable">Item 1</li>
+        <li id="list1item2" class="orderable">Item 2</li>
+        <li id="list1item3" class="orderable">Item 3</li>
+        <li id="list1item4" class="orderable">Item 4</li>
+        <li id="list1item5" class="orderable">Item 5</li>
+      </ul>
+    </div>
+
+    <h1>Unordered List</h1>
+    <div id="list2" class="reorderer_container">
+      <p>This is an example of an unordered list that is visually laid out
+         vertically.
+      </p>
+      <ul>
+        <li id="list2item1" class="orderable">An Item 1</li>
+        <li id="list2item2">An Item 2</li>
+        <li id="list2item3" class="orderable">An Item 3</li>
+        <li id="list2item4">An Item 4</li>
+        <li id="list2item5" class="orderable">An Item 5</li>
+        <li id="list2item6" class="orderable">An Item 6</li>
+        <li id="list2item7" class="orderable">An Item 7</li>
+        <li id="list2item8" class="orderable">An Item 8</li>
+        <li id="list2item9">An Item 9</li>
+        <li id="list2item10" class="orderable">An Item 10</li>
+      </ul>
+    </div>
+    <script type="text/javascript">
+        fluid.reorderList("#list1", {
+            selectors: {
+                movables: "li"
+            }
+        });
+        fluid.reorderList("#list2", {
+            selectors: {
+                movables: ".orderable",
+                selectables: "li",
+                dropTargets: "li"
+            }
+        });
+    </script>
+  </body>
+</html>

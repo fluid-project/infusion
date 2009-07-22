@@ -1,0 +1,58 @@
+/*********************************************************************/
+body {margin:0; padding:0; height:100%; font:normal 1em Arial, Helvetica, sans-serif;}
+a {text-decoration:none; /*color:#0287C5;*/}
+a:hover {text-decoration:underline;}
+p {margin:0; padding-bottom:1em;}
+
+
+/* 
+ * Needs to move to fluid.layout.css and abstracted
+ */
+.content {padding-top:15px;}
+.column {min-height:100px;}
+.left {width:300px; float:left;}
+.right {width:300px; float:right;}
+.center {margin-left:310px; margin-right:310px; padding:0 0px;}
+
+/************************************/
+#dialog_container {
+    position:absolute; 
+    top:0; 
+    left:0; 
+    width:850px; 
+    display:none; 
+    background-color:#efefef; 
+    z-index:1000;
+	padding:10px;
+    border: 2px solid #000;
+}
+#dialog_container #close_dialog {
+	position:absolute; 
+	z-index:5000;
+	top:0; 
+	right:0;
+	background-color:#fff;
+	padding:5px; 
+	border: 2px solid #000; 
+	border-top:none; 
+	border-right:none;
+}
+.dialog {background-color:#fff; border:1px solid #000}
+.ui-dialog-titlebar {text-align:right; background-color:#fff;}
+
+/************************************/
+.header {background:#00A5E3 url('../images/_common/header2.png') no-repeat left top; color:#fff; overflow:auto; padding:20px 0 25px 20px;}
+.header h1 {font:normal 2em Arial, Helvetica, sans-serif; margin:0; padding:0; color:#fff; border:none;}
+.header p {margin:0; padding:0; display:none;}
+.header ul {margin:0; padding:0; display:none;}
+.header ul li {display:inline;}
+/************************************/
+.lookNfeel {padding:15px 10px 0; overflow:auto;}
+.lookNfeel .skin {background-image: url('../images/_common/edit-look-feel.png')}
+.lookNfeel .addWidget {background-image: url('../images/_common/add-widgets.png')}
+.lookNfeel a {color:#000;  text-decoration:none;}
+.lookNfeel strong { background: url('../images/_common/buttons-right.png') no-repeat right top; font-weight:normal; }
+
+/************************************/
+.footer { background:url("../images/_common/sakai.png") no-repeat left center; border-top:1px solid #efefef; color:#ccc; font-size:0.8em; margin:10px 0 0;}
+.footer p {margin:0; padding:0 0 0px; padding:15px 0 15px 75px;}

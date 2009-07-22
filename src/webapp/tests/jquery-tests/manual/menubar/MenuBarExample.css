@@ -1,0 +1,14 @@
+.menu {
+    float: left;
+    list-style: none;
+    margin: 0;
+}
+
+.submenu {
+    list-style: none;
+    margin: 0;
+}
+
+.closed {
+    visibility: hidden;
+}

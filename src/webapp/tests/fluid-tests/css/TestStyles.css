@@ -1,0 +1,22 @@
+
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  width: 50%;
+}
+
+/* These widths are slightly brittle in that if the width of an individual 
+   thumbnail is changed in Lightbox.css these will need to be updated. */
+.width-3-thumb {
+  width: 500px;
+}
+
+.width-4-thumb {
+  width: 675px;
+}
+
+.width-all-thumb {
+  width: 2400px;
+}

@@ -1,0 +1,242 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns:xhtml10="http://www.w3.org/1999/xhtml">
+
+  <head>
+    <title>Image Reorderer</title>
+    <link href="../../../fluid-components/css/ImageReorderer.css" type="text/css" rel="stylesheet" media="all" />
+
+    <!--  Required javascript modules for the Image Reorderer which can be replaced with the build generated file Fluid-all.js -->
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery-1.3.1.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.core.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/jquery/jARIA.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/Fluid.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/GeometricManager.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/Reorderer.js"></script>
+    <script type="text/javascript" src="../../../fluid-components/js/fluid/ImageReorderer.js"></script>
+
+    <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. -->
+    <script type="text/javascript">
+      jQuery.noConflict();
+    </script>
+
+  </head>
+
+  <body>
+
+  <!--
+    The Image Reorderer uses hidden inputs as the strategy for posting the item order back
+    to the server, therefore the orderables need to be enclosed in a form.
+  -->
+  <form id="reorder-form">
+    <p id="para1">This is the Image Reorderer demo page.</p>
+      <!-- Sample instruction message. At runtime, this would be supplied by the server. -->
+      <div class="image-reorderer-instructions">
+        <div class="screen-reader-instructions" tabindex="1">Image Reorderer: To use the keyboard:
+                  Screen reader users turn off virtual cursor (insert + z).
+                  Select an image using i, k, m or j.
+                  Move an image using CTRL + i, k, m or j.
+                  View an image by pressing Enter.</div>
+        <div class="image-reorderer-downarrow"></div>
+        <div tabindex="-1">
+          To use the keyboard:<br/>
+            Select an image using i, k, m or j, or the arrow keys.<br/>
+            Move an image using CTRL + a direction key.<br/>
+            View an image by pressing Enter.
+        </div>
+      </div>
+
+      <div id="gallery" tabindex="2" class="image-container" title="Image Reorderer">
+
+      <!--
+        Orderable items are divs denoted by ids in the following form.
+        [lightbox-container-id] + lightbox-cell: + [index] + :
+        The createLightboxFromId() function expects this format when attaching the javascript behaviour of the Lightbox.
+      -->
+      <div id="gallerylightbox-cell:0:" title="Dragonfruit thumbnail">
+          <div class="image-inner-container">
+            <a id="focus-element1" href="../../../fluid-components/images/Dragonfruit.jpg" >
+              <img id="img-0" src="../../../fluid-components/images/Dragonfruit.jpg" alt="Dragonfruit thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Dragonfruit.jpg" >Dragonfruit</a>
+          </div>
+
+          <!--
+            This input is used for posting the new order back to the server.
+            The value is the index of the thumbnail in a virtual array of thumbnails.
+            That is, 'value="0"' denotes the 0'th thumbnail; 'value="1"' the 1st,
+            and so on.
+          -->
+          <input id="gallerylightbox-cell:0:reorder-index" value="0" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:1:" title="Kiwano thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/Kiwano.jpg" >
+              <img id="img-1" src="../../../fluid-components/images/Kiwano.jpg" alt="Kiwano"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Kiwano.jpg" >Kiwano</a>
+          </div>
+          <input id="gallerylightbox-cell:1:reorder-index" value="1" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:2:" title="Blackberry thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/Blackberry.jpg" >
+              <img id="img-2" src="../../../fluid-components/images/Blackberry.jpg" alt="Blackberry thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Blackberry.jpg" >Blackberry</a>
+          </div>
+          <input id="gallerylightbox-cell:2:reorder-index" value="2" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:3:" title="Cherry thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/Cherry.jpg" >
+              <img id="img-3" src="../../../fluid-components/images/Cherry.jpg" alt="Cherry thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Cherry.jpg" >Cherry</a>
+          </div>
+          <input id="gallerylightbox-cell:3:reorder-index" value="3" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:4:" title="Fig thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/Fig.jpg" >
+              <img id="img-4" src="../../../fluid-components/images/Fig.jpg" alt="Fig thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Fig.jpg" >Fig</a>
+         </div>
+          <input id="gallerylightbox-cell:4:reorder-index" value="4" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:5:" title="Grapes thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/Grapes.jpg" >
+              <img id="img-5" src="../../../fluid-components/images/Grapes.jpg" alt="Grapes thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Grapes.jpg" >Grapes</a>
+          </div>
+          <input id="gallerylightbox-cell:5:reorder-index" value="5" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:6:" title="Kiwi thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/Kiwi.jpg">
+              <img id="img-6" src="../../../fluid-components/images/Kiwi.jpg" alt="Kiwi thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Kiwi.jpg" >Kiwi</a>
+          </div>
+          <input id="gallerylightbox-cell:6:reorder-index" value="6" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:7:" title="Kumquat thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/Kumquat.jpg" >
+              <img id="img-7" src="../../../fluid-components/images/Kumquat.jpg" alt="Kumquat thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Kumquat.jpg" >Kumquat</a>
+          </div>
+          <input id="gallerylightbox-cell:7:reorder-index" value="7" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:8:" title="Lemon thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/Lemon.jpg" >
+              <img id="img-8" src="../../../fluid-components/images/Lemon.jpg" alt="Lemon thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Lemon.jpg" >Lemon</a>
+          </div>
+          <input id="gallerylightbox-cell:8:reorder-index" value="8" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:9:" title="Orange thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/Orange.jpg" >
+              <img id="img-9" src="../../../fluid-components/images/Orange.jpg" alt="Orange thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Orange.jpg" >Orange</a>
+          </div>
+          <input id="gallerylightbox-cell:9:reorder-index" value="9" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:10:" title="Red apple thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/RedApple.jpg" >
+              <img id="img-10" src="../../../fluid-components/images/RedApple.jpg" alt="Red apple thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/RedApple.jpg" >RedApple</a>
+          </div>
+          <input id="gallerylightbox-cell:10:reorder-index" value="10" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:11:" title="Tamarillo thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/Tamarillo.jpg" >
+              <img id="img-11" src="../../../fluid-components/images/Tamarillo.jpg" alt="Tamarillo thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Tamarillo.jpg" >Tamarillo</a>
+          </div>
+          <input id="gallerylightbox-cell:11:reorder-index" value="11" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:12:" title="Mangosteen thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/Mangosteen.jpg" >
+              <img id="img-12" src="../../../fluid-components/images/Mangosteen.jpg" alt="Mangosteen thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Mangosteen.jpg" >Mangosteen</a>
+          </div>
+          <input id="gallerylightbox-cell:12:reorder-index" value="12" type="hidden"/>
+        </div>
+
+        <div id="gallerylightbox-cell:13:" title="Banana thumbnail">
+          <div class="image-inner-container">
+            <a href="../../../fluid-components/images/Banana.jpg" >
+              <img id="img-13" src="../../../fluid-components/images/Banana.jpg" alt="Banana thumbnail"/>
+            </a>
+          </div>
+          <div class="image-title">
+            <a href="../../../fluid-components/images/Banana.jpg" >Banana</a>
+          </div>
+          <input id="gallerylightbox-cell:13:reorder-index" value="13" type="hidden"/>
+        </div>
+      </div>
+
+      <!--  Attach the javascript functionality to the markup by using createLightboxFromId() -->
+      <script type="text/javascript">
+        var reorderer = fluid.reorderImages("#gallery");
+      </script>
+    </form>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+/* FSS Extension: Sakai widgets */
+
+/* Widget core */
+.fl-theme-mist .fl-widget {background:#efefef url(../images/fluid-theme-mist/widget-bg.png) repeat-x top left; border:1px solid #CCCCCC;}
+    .fl-theme-mist .fl-widget ul {}
+    .fl-theme-mist .fl-widget h2 {color:#000;}
+    .fl-theme-mist .grabbable {background-image:url('../images/fluid-theme-mist/gripper.png');}
+
+/* Widget titlebar */
+.fl-theme-mist .fl-widget-titlebar {/*margin:-5px -5px 0 -5px;*/}
+    .fl-theme-mist .fl-widget-titlebar .icon {background-position:center center;}
+
+/* Widget options */
+.fl-theme-mist .fl-widget-options {}
+    .fl-theme-mist .fl-widget-options ul {} 
+    .fl-theme-mist .fl-widget-options li {border-left:1px solid #ccc;}
+    .fl-theme-mist .fl-widget-options a {}
+    .fl-theme-mist .fl-widget-options .icon {}
+    .fl-theme-mist .fl-widget-options a.icon:hover {background-color:#5a95cf; border-color:#000;}
+
+/* Widget content */
+.fl-theme-mist .fl-widget-content {background-color:#fff;}
+
+    /* Widget :: Icons */
+    .fl-theme-mist .fl-widget .more  {background-image:url('../images/fluid-theme-mist/icon-widget-More.png'); margin-left:0px;}
+    .fl-theme-mist .fl-widget .close {background-image:url('../images/fluid-theme-mist/icon-widget-Close.png'); margin-right:0px;}
+    .fl-theme-mist .fl-widget .settings {background-image:url('../images/fluid-theme-mist/icon-widget-ShowSettings.png'); margin-right:0px; width:70px; }
+    
+    .fl-theme-mist .fl-widget-options .viewOptions {background-image:url('../images/fluid-theme-mist/icon-options-ListOrGrid.png'); background-color:#fff;  border:1px solid #000;}
+    /* Widget :: Menus */
+    .fl-theme-mist .fl-widget-content .menu {padding:0px; overflow-y:auto; overflow-x:hidden; background-color:#f8f8f8; border:1px solid #ccc; border-bottom:none; zoom:1;}
+    .fl-theme-mist .fl-widget-content .menu li {float:left; list-style-type:none; border-bottom:1px solid #ccc; width:100%; }
+    .fl-theme-mist .fl-widget-content .menu a {position:relative; display:block; text-indent:30px; font-weight:bold; padding:7px 0 7px 0; background-color:transparent;}
+    .fl-theme-mist .fl-widget-content .menu a:hover {background-color:#dfefff; color:#000;}
+    .fl-theme-mist .fl-widget-content .menu .icon {}
+    .fl-theme-mist .fl-widget-content .menu .delete {position:absolute;background-image: url('../images/fluid-theme-mist/icon-menu-Delete.png');  right:0; top:5px; background-repeat:no-repeat; background-position: top left;}
