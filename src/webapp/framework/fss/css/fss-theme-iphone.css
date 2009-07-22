@@ -438,6 +438,26 @@ Forcing more markup into the mix just for this effect is not an option */
 
 /***************************************/
 /* Animation Library */
+@-webkit-keyframes slideLeft {
+    from {
+        -webkit-transform: translateX(0%);
+        -webkit-animation-timing-function: ease-out;
+    }
+    to {
+        -webkit-transform: translateX(-100%);
+    }
+}
+@-webkit-keyframes slideRight {
+    from {
+        -webkit-transform: translateX(0%);
+        -webkit-animation-timing-function: ease-out;
+    }
+    to {
+        -webkit-transform: translateX(100%);
+    }
+}
+
+
 @-webkit-keyframes slideLeftOut {
     from {
         -webkit-transform: translateX(0%);
@@ -449,7 +469,7 @@ Forcing more markup into the mix just for this effect is not an option */
 }
 @-webkit-keyframes slideLeftIn {
     from {
-        -webkit-transform: translateX(-100%);
+        -webkit-transform: translateX(100%);
         -webkit-animation-timing-function: ease-out;
     }
     to {
@@ -467,7 +487,7 @@ Forcing more markup into the mix just for this effect is not an option */
 }
 @-webkit-keyframes slideRightIn {
     from {
-        -webkit-transform: translateX(100%);
+        -webkit-transform: translateX(-100%);
         -webkit-animation-timing-function: ease-out;
     }
     to {
@@ -506,6 +526,12 @@ Forcing more markup into the mix just for this effect is not an option */
 .fl-theme-iPhone .fl-animation-slide {
     -webkit-animation-duration: 0.75s;
     -webkit-animation-iteration-count: 1;
+}
+.fl-theme-iPhone .fl-animation-slide-right {
+    -webkit-animation-name: slideRight;
+}
+.fl-theme-iPhone .fl-animation-slide-left {
+    -webkit-animation-name: slideLeft;
 }
 .fl-theme-iPhone .fl-animation-slide-right-out{
     -webkit-animation-name: slideRightOut;
