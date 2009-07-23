@@ -403,21 +403,27 @@ Forcing more markup into the mix just for this effect is not an option */
 
 /***************************************/
 /* Transition Library */
-
 .fl-theme-iPhone .fl-transition-slide {
-    -webkit-transition: left 0.75s ease-in-out;
+    -webkit-transition: -webkit-transform 0.5s ease-in-out;
 }
+.fl-theme-iPhone .fl-transition-slide-left {
+   -webkit-transform: translateX(-100%);
+}
+.fl-theme-iPhone .fl-transition-slide-right {
+   -webkit-transform: translateX(100%);
+}
+
 .fl-theme-iPhone .fl-transition-slide-right-out {
-    left: 100%;
+   -webkit-transform: translateX(100%);
 }
 .fl-theme-iPhone .fl-transition-slide-right-in {
-    left: 0%;
+   -webkit-transform: translateX(0%);
 }
 .fl-theme-iPhone .fl-transition-slide-left-out {
-    left: -100%;
+   -webkit-transform: translateX(-100%);
 }
 .fl-theme-iPhone .fl-transition-slide-left-in {
-    left: 0%;
+   -webkit-transform: translateX(0%);
 }
 .fl-theme-iPhone .fl-transition-fade {
     -webkit-transition: opacity 0.75s linear;
@@ -425,7 +431,7 @@ Forcing more markup into the mix just for this effect is not an option */
 .fl-theme-iPhone .fl-transition-fade-in {
     opacity:1;
 }
-.fl-transition-fade-out {
+.fl-theme-iPhone .fl-transition-fade-out {
     opacity:0;
 }
 .fl-theme-iPhone .fl-transition-grow {
@@ -438,80 +444,6 @@ Forcing more markup into the mix just for this effect is not an option */
 
 /***************************************/
 /* Animation Library */
-@-webkit-keyframes slideLeft {
-    from {
-        -webkit-transform: translateX(0%);
-        -webkit-animation-timing-function: ease-out;
-    }
-    to {
-        -webkit-transform: translateX(-100%);
-    }
-}
-@-webkit-keyframes slideRight {
-    from {
-        -webkit-transform: translateX(0%);
-        -webkit-animation-timing-function: ease-out;
-    }
-    to {
-        -webkit-transform: translateX(100%);
-    }
-}
-
-
-@-webkit-keyframes slideLeftOut {
-    from {
-        -webkit-transform: translateX(0%);
-        -webkit-animation-timing-function: ease-out;
-    }
-    to {
-        -webkit-transform: translateX(-100%);
-    }
-}
-@-webkit-keyframes slideLeftIn {
-    from {
-        -webkit-transform: translateX(100%);
-        -webkit-animation-timing-function: ease-out;
-    }
-    to {
-        -webkit-transform: translateX(0%);
-    }
-}
-@-webkit-keyframes slideRightOut {
-    from {
-        -webkit-transform: translateX(0%);
-        -webkit-animation-timing-function: ease-out;
-    }
-    to {
-        -webkit-transform: translateX(100%);
-    }
-}
-@-webkit-keyframes slideRightIn {
-    from {
-        -webkit-transform: translateX(-100%);
-        -webkit-animation-timing-function: ease-out;
-    }
-    to {
-        -webkit-transform: translateX(0%);
-    }
-}
-@-webkit-keyframes fadeOut {
-    from {
-        opacity: 1;
-        -webkit-animation-timing-function: ease-out;
-    }
-    to {
-        opacity: 0;        
-    }
-}
-@-webkit-keyframes fadeIn {
-    from {
-        opacity: 0;
-        -webkit-animation-timing-function: ease-in;
-    }
-    to {
-        opacity: 1;        
-    }
-}
 @-webkit-keyframes loading_spinner {
     from {
         -webkit-transform: rotate(0deg);
@@ -523,40 +455,6 @@ Forcing more markup into the mix just for this effect is not an option */
     }
 }
 /**************************************/
-.fl-theme-iPhone .fl-animation-slide {
-    -webkit-animation-duration: 0.75s;
-    -webkit-animation-iteration-count: 1;
-}
-.fl-theme-iPhone .fl-animation-slide-right {
-    -webkit-animation-name: slideRight;
-}
-.fl-theme-iPhone .fl-animation-slide-left {
-    -webkit-animation-name: slideLeft;
-}
-.fl-theme-iPhone .fl-animation-slide-right-out{
-    -webkit-animation-name: slideRightOut;
-}
-.fl-theme-iPhone .fl-animation-slide-right-in{
-    -webkit-animation-name: slideRightIn;
-}
-.fl-theme-iPhone .fl-animation-slide-left-out{
-    -webkit-animation-name: slideLeftOut;
-}
-.fl-theme-iPhone .fl-animation-slide-left-in{
-    -webkit-animation-name: slideLeftIn;
-}
-/**************************************/
-
-.fl-theme-iPhone .fl-animation-fade-out {
-    -webkit-animation-name: fadeOut;
-    -webkit-animation-duration: .75s;
-    -webkit-animation-iteration-count: 1;
-} 
-.fl-theme-iPhone .fl-animation-fade-in {
-    -webkit-animation-name: fadeIn;
-    -webkit-animation-duration: 1s;
-    -webkit-animation-iteration-count: 1;
-} 
 .fl-theme-iPhone .fl-listmenu a.fl-link-loading::before {
     -webkit-animation-name: loading_spinner;
     -webkit-animation-duration: .75s;
