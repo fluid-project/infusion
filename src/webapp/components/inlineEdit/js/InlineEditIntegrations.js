@@ -23,7 +23,8 @@ fluid_1_2 = fluid_1_2 || {};
 (function ($, fluid) {
 
     var configureInlineEdit = function (configurationName, container, options) {
-        var assembleOptions = $.extend({}, fluid.defaults(configurationName), options);
+    	var defaults = fluid.defaults(configurationName); 
+        var assembleOptions = fluid.merge(defaults? defaults.mergePolicy: null, {}, defaults, options);
         return fluid.inlineEdit(container, assembleOptions);
     };
 
@@ -36,7 +37,9 @@ fluid_1_2 = fluid_1_2 || {};
      * @param {Object} options configuration options for the components
      */
     fluid.inlineEdit.tinyMCE = function (container, options) {
-        return configureInlineEdit("fluid.inlineEdit.tinyMCE", container, options);
+        var inlineEditor = configureInlineEdit("fluid.inlineEdit.tinyMCE", container, options);
+        tinyMCE.init(inlineEditor.options.tinyMCE);
+        return inlineEditor;
     };
         
     fluid.inlineEdit.tinyMCE.viewAccessor = function (editField) {
@@ -115,6 +118,10 @@ fluid_1_2 = fluid_1_2 || {};
     
       
     fluid.defaults("fluid.inlineEdit.tinyMCE", {
+        tinyMCE : {
+            mode: "exact", 
+            theme: "simple"
+        },
         useTooltip: true,
         selectors: {
             edit: "textarea" 

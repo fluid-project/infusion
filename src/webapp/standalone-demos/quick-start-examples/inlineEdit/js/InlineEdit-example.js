@@ -122,14 +122,18 @@ var demo = demo || {};
             while (editors.length > 0) {
                 makeButtons(editors.pop());
             }
-        }            
+        };          
         
         /**
          * Tiny MCE rich inline text editor example. 
          */
         editors.push(
             fluid.inlineEdit.tinyMCE("#richEdit1", {
-                tinyMCE: {width: 1024}, 
+                tinyMCE: {
+                        width: 1024,
+                        theme: "advanced",
+                        theme_advanced_toolbar_location : "top"
+                    }, 
                 componentDecorators: {
                     type: "fluid.undoDecorator"
                 }
