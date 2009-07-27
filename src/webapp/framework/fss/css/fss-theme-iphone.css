@@ -26,7 +26,7 @@
 .fl-theme-iPhone img {border:none;}
 
 .fl-theme-iPhone .fl-bevel-black {
-    text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
+    text-shadow: rgba(0,0,0,0.75) 0px -1px 0px;
 }
 .fl-theme-iPhone .fl-bevel-white {
     text-shadow: rgba(255,255,255,1) 0px 1px 0px;
@@ -76,7 +76,7 @@ body.fl-theme-iPhone::before {
 }
 .fl-theme-iPhone .fl-navbar {     
     color:#fff;
-    text-shadow: rgba(0,0,0,0.75) 0px -1px 1px;
+    text-shadow: rgba(0,0,0,0.75) 0px -1px 0px;
     margin-bottom:12px;
 }
 .fl-theme-iPhone .fl-navbar .fl-table-cell:first-child {
@@ -335,6 +335,9 @@ Forcing more markup into the mix just for this effect is not an option */
     margin-right:5px;
     content:" ";
     background: url(../images/themes/iphone/listmenu_loader.png) no-repeat center center;
+    -webkit-animation-name: loading_spinner;
+    -webkit-animation-duration: .75s;
+    -webkit-animation-iteration-count: infinite;
 }*/
 .fl-theme-iPhone .fl-listmenu-basic a.fl-link-loading {
 	color: #fff;
@@ -404,7 +407,7 @@ Forcing more markup into the mix just for this effect is not an option */
 /***************************************/
 /* Transition Library */
 .fl-theme-iPhone .fl-transition-slide {
-    -webkit-transition: -webkit-transform 0.5s ease-in-out;
+    -webkit-transition: -webkit-transform 0.75s ease-in-out 0s;
 }
 .fl-theme-iPhone .fl-transition-slide-left {
    -webkit-transform: translateX(-100%);
@@ -444,6 +447,15 @@ Forcing more markup into the mix just for this effect is not an option */
 
 /***************************************/
 /* Animation Library */
+@-webkit-keyframes fadeOut {
+	from {
+		opacity : 1;
+	}
+	to {
+		opacity : 0;
+	}
+}
+
 @-webkit-keyframes loading_spinner {
     from {
         -webkit-transform: rotate(0deg);
@@ -455,8 +467,8 @@ Forcing more markup into the mix just for this effect is not an option */
     }
 }
 /**************************************/
-.fl-theme-iPhone .fl-listmenu a.fl-link-loading::before {
-    -webkit-animation-name: loading_spinner;
-    -webkit-animation-duration: .75s;
-    -webkit-animation-iteration-count: infinite;
+.fl-theme-iPhone .fl-animation-fadeout {
+	-webkit-animation-name: fadeOut;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: 1;
 }
