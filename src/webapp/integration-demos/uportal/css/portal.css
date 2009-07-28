@@ -601,7 +601,7 @@ div .fl-reorderer-dropMarker{
   opacity: .6;	
 }
 
-.flc-reorderer-dropWarning {
+.fl-reorderer-dropWarning {
     position: absolute;
     top: 50px;
     left: 10px;
