@@ -98,11 +98,7 @@ fluid_1_2 = fluid_1_2 || {};
    
    
     fluid.inlineEdit.tinyMCE.editModeRenderer = function (that) {
-        var defaultOptions = {
-            mode: "exact", 
-            theme: "simple"
-        };
-        var options = $.extend(true, defaultOptions, that.options.tinyMCE);
+        var options = that.options.tinyMCE;
         options.elements = fluid.allocateSimpleId(that.editField);
         var oldinit = options.init_instance_callback;
         
