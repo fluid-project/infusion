@@ -8,13 +8,12 @@
         color-stop(0.80, #cfd5dd));
     -webkit-background-origin: padding-box; 
     -webkit-background-clip: content-box;
-    -webkit-background-size: 10px 100px;
+    -webkit-background-size: 10px 1px;
 }
 .fl-theme-iPhone {
     font:normal 17px Helvetica, sans-serif;
     margin:0;
     padding:0;
-    /*overflow:hidden;*//* for transitions without scrollbars */
 }
 
 .fl-theme-iPhone h1 {font-size:1.2em; margin:0;}
@@ -61,7 +60,7 @@ body.fl-theme-iPhone::before, .fl-theme-iPhone .fl-navbar {
 body.fl-theme-iPhone::before {
     content:" ";
     position:absolute;
-    z-index:1;
+    z-index:1;    
     border-top:1px solid #ccd6e2;
     border-bottom:1px solid #273750;
     border-bottom-color:#000;
@@ -436,13 +435,6 @@ Forcing more markup into the mix just for this effect is not an option */
 }
 .fl-theme-iPhone .fl-transition-fade-out {
     opacity:0;
-}
-.fl-theme-iPhone .fl-transition-grow {
-    -webkit-transition: height 0.75s ease-out;
-    overflow:hidden;
-}
-.fl-theme-iPhone .fl-transition-grow-collapsed {
-    height:0px;
 }
 
 /***************************************/
