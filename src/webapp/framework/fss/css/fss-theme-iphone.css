@@ -17,7 +17,7 @@
 }
 
 .fl-theme-iPhone h1 {font-size:1.2em; margin:0;}
-.fl-theme-iPhone h2 {font-size:1.15em; margin:0;/*color:#4C566C; margin:0; padding:3px 0;*/}
+.fl-theme-iPhone h2 {font-size:1.15em; margin:0;}
 .fl-theme-iPhone h3 {font-size:1.1em; margin:0;}
 .fl-theme-iPhone h4 {}
 .fl-theme-iPhone h5 {}
@@ -403,64 +403,3 @@ Forcing more markup into the mix just for this effect is not an option */
     color:#4C566C;
 }
 
-/***************************************/
-/* Transition Library */
-.fl-theme-iPhone .fl-transition-slide {
-    -webkit-transition: -webkit-transform 0.75s ease-in-out 0s;
-}
-.fl-theme-iPhone .fl-transition-slide-left {
-   -webkit-transform: translateX(-100%);
-}
-.fl-theme-iPhone .fl-transition-slide-right {
-   -webkit-transform: translateX(100%);
-}
-
-.fl-theme-iPhone .fl-transition-slide-right-out {
-   -webkit-transform: translateX(100%);
-}
-.fl-theme-iPhone .fl-transition-slide-right-in {
-   -webkit-transform: translateX(0%);
-}
-.fl-theme-iPhone .fl-transition-slide-left-out {
-   -webkit-transform: translateX(-100%);
-}
-.fl-theme-iPhone .fl-transition-slide-left-in {
-   -webkit-transform: translateX(0%);
-}
-.fl-theme-iPhone .fl-transition-fade {
-    -webkit-transition: opacity 0.75s linear;
-}
-.fl-theme-iPhone .fl-transition-fade-in {
-    opacity:1;
-}
-.fl-theme-iPhone .fl-transition-fade-out {
-    opacity:0;
-}
-
-/***************************************/
-/* Animation Library */
-@-webkit-keyframes fadeOut {
-	from {
-		opacity : 1;
-	}
-	to {
-		opacity : 0;
-	}
-}
-
-@-webkit-keyframes loading_spinner {
-    from {
-        -webkit-transform: rotate(0deg);
-        -webkit-animation-timing-function: linear
-    }
-    to {
-        -webkit-transform: rotate(360deg);
-        -webkit-animation-timing-function: linear
-    }
-}
-/**************************************/
-.fl-theme-iPhone .fl-animation-fadeout {
-	-webkit-animation-name: fadeOut;
-    -webkit-animation-duration: 1s;
-    -webkit-animation-iteration-count: 1;
-}
