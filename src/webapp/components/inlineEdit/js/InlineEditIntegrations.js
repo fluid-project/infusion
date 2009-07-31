@@ -124,7 +124,7 @@ fluid_1_2 = fluid_1_2 || {};
         },
         
         styles: {
-            invitation: null // Override because it causes problems with flickering. Help?
+            invitation: "fl-inlineEdit-richText-invitation"
         },
         displayAccessor: {
             type: "fluid.inlineEdit.richTextViewAccessor"
@@ -236,7 +236,7 @@ fluid_1_2 = fluid_1_2 || {};
         },
         
         styles: {
-            invitation: null // Override because it causes problems with flickering. Help?
+            invitation: "fl-inlineEdit-richText-invitation"
         },
       
         displayAccessor: {

@@ -18,6 +18,11 @@
     /*margin      : -1px;*/
 }
 
+.fl-inlineEdit-richText-invitation {
+    background  : lightyellow;
+    cursor      : pointer;
+}
+
 /* :focus */ 
 .fl-inlineEdit-focus{
     
