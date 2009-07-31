@@ -266,136 +266,173 @@ body.fl-theme-iPhone::before {
 }
 */
 
-/***************************************/
+/*************************************************/
 /* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists */
-/* General rules */
-
-.fl-theme-iPhone .fl-listmenu {
+/*************************************************/
+/* Default listmenu system setup */
+.fl-theme-iPhone [class*=fl-listmenu] {
 	border: none;
-	margin: 0 10px 10px;
+	margin: 0 10px 10px;	
 }
-
-.fl-theme-iPhone .fl-listmenu-basic > li { 
-	background-color: #fff;
+.fl-theme-iPhone [class*=fl-listmenu] > li {	
     padding:0;
-    margin: 0 0 -1px 0;
-	border: 0px;
-	border: 1px solid rgb(169,173,176);
+	margin:0;
+	border:none;
     -webkit-background-size: 50px 50px;
 }
-.fl-theme-iPhone .fl-listmenu-basic > :first-child {
+.fl-theme-iPhone [class*=fl-listmenu] > li:first-child,
+.fl-theme-iPhone [class*=fl-listmenu] > li:last-child {
     -webkit-background-clip:padding;
     -webkit-background-origin:border;
+}
+.fl-theme-iPhone [class*=fl-listmenu] > li a {
+    -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+    background:#fff url(../images/themes/iphone/listmenu_arrow.png) no-repeat right 5px;
+	display:block;	
+	color: #000;
+	text-decoration: none;
+	font-weight: bold;
+	outline: none;
+	padding: 12px 0px 12px 12px;
+	border: 1px solid rgb(169,173,176);
+	border-width:1px 1px 0 1px;
+}
+.fl-theme-iPhone [class*=fl-listmenu] > li:first-child a {
     -webkit-border-top-left-radius: 8px;
     -webkit-border-top-right-radius: 8px;
 }
-.fl-theme-iPhone .fl-listmenu-basic > :last-child {
-    -webkit-background-clip:padding;
-    -webkit-background-origin:border;
+.fl-theme-iPhone [class*=fl-listmenu] > li:last-child a {
     -webkit-border-bottom-left-radius: 8px;
     -webkit-border-bottom-right-radius: 8px;
+	border-bottom-width:1px;
 }
-
-/* List link specific rules */
-.fl-theme-iPhone .fl-listmenu-basic a {
-    -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
-    padding:12px 0 12px 12px;
-    font-weight:bold;
-    outline:none;
-}
-.fl-theme-iPhone .fl-listmenu-basic a:link, 
-.fl-theme-iPhone .fl-listmenu-basic a:visited {
-	color: black;
-	text-decoration: none;
-    background:url(../images/themes/iphone/listmenu_arrow.png) no-repeat right 5px;
-}
-.fl-theme-iPhone .fl-listmenu-basic a:active {
+.fl-theme-iPhone [class*=fl-listmenu] a:active {
 	color: #fff;
     background: url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
                 -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
-.fl-theme-iPhone .fl-listmenu-basic a:active * {
+.fl-theme-iPhone [class*=fl-listmenu] .fl-link-loading {
+    color: #fff !important;
+    background: url(../images/themes/iphone/listmenu_loader.gif) no-repeat 97% center,
+		        -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+}
+.fl-theme-iPhone [class*=fl-listmenu] a:active,
+.fl-theme-iPhone [class*=fl-listmenu] a:active .fl-link-secondary,
+.fl-theme-iPhone [class*=fl-listmenu] a:active .fl-link-summary,
+.fl-theme-iPhone [class*=fl-listmenu] .fl-link-loading * {
     color: #fff !important;
 }
-.fl-theme-iPhone .fl-listmenu-basic a.fl-link-loading .fl-link-summary{
-    color: #fff;
-}
-.fl-theme-iPhone .fl-listmenu-basic a.fl-link-loading .fl-link-secondary{
+.fl-theme-iPhone [class*=fl-listmenu] .fl-link-loading .fl-link-secondary{
     display:none;
 }
 
-/* Webkit bug 23209: CSS Generated content disregards CSS animations/transitions.
-...and since webkit doesnt yet support APNG's we need to use an animated GIF (!) instead of a transformed static png until this is fixed. 
-Forcing more markup into the mix just for this effect is not an option */
-/*.fl-theme-iPhone .fl-listmenu a.fl-link-loading::before {
-    width:16px;
-    height:16px;
-    float:right;
-    margin-right:5px;
-    content:" ";
-    background: url(../images/themes/iphone/listmenu_loader.png) no-repeat center center;
-    -webkit-animation-name: loading_spinner;
-    -webkit-animation-duration: .75s;
-    -webkit-animation-iteration-count: infinite;
-}*/
-.fl-theme-iPhone .fl-listmenu-basic a.fl-link-loading {
-	color: #fff;
-    background: 
-        url(../images/themes/iphone/listmenu_loader.gif) no-repeat 97% center,
-        -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
-}
-.fl-theme-iPhone .fl-listmenu-basic > :first-child a {
-    -webkit-border-top-left-radius: 8px;
-    -webkit-border-top-right-radius: 8px;
-}
-.fl-theme-iPhone .fl-listmenu-basic > :last-child a {
-    -webkit-border-bottom-left-radius: 8px;
-    -webkit-border-bottom-right-radius: 8px;
-}
-.fl-theme-iPhone .fl-listmenu-basic a .fl-link-secondary {
+/* secondary link info behaviour */
+.fl-theme-iPhone [class*=fl-listmenu] > li .fl-link-secondary {
     color: rgb(50, 79, 133);
     float:right;
     font-weight:normal;
     font-size:.9em;
     margin-right:25px;
 }
-.fl-theme-iPhone .fl-listmenu-basic a .fl-link-summary {
+
+ /* summary link info ehaviour */ 
+.fl-theme-iPhone [class*=fl-listmenu] > li a .fl-link-summary {
     display:block;
     color:#999;
     font-weight:normal;
-    font-size:0.85em;
+    font-size:0.80em;
+	line-height:0.9em;
+    margin:0 25px 0 30px; /* default size of fl-icon */
+}
+/* icon behaviour */
+.fl-theme-iPhone [class*=fl-listmenu] > li a > .fl-icon {
+    float:left;
+    margin-left:-6px;
+}
+
+
+/*************************************************/
+/* Brief lists that auto trim content + ellipsis (w/ optional thumbnail) */
+.fl-theme-iPhone .fl-listmenu-brief > li {
+	margin-bottom:10px;
+    -webkit-border-radius:8px;
+}
+.fl-theme-iPhone .fl-listmenu-brief > li a {
+	-webkit-border-radius:8px;
+	padding:5px 0;
+	border-bottom-width:1px;
+}
+.fl-theme-iPhone .fl-listmenu-brief > li a > .fl-link-summary {
     height:1.1em;
-    margin-right:25px;
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
 }
 
-/* List icon and Thunbail list rules */
-.fl-theme-iPhone .fl-listmenu .fl-icon {
-    float:left;
-    margin-left:-6px;
-}
-
-.fl-theme-iPhone .fl-listmenu.fl-thumbnail > li {
-    margin-top:5px;
-    margin-bottom:5px;
-    -webkit-border-radius:8px;
-}
-
-.fl-theme-iPhone .fl-listmenu.fl-thumbnail .fl-icon {
+.fl-theme-iPhone .fl-listmenu-brief > li a > .fl-icon {
     width:44px;
     height:44px;
     margin-left:0;
     -webkit-border-radius:0;
     -webkit-border-bottom-left-radius: 8px;
     -webkit-border-top-left-radius: 8px;
-    overflow:hidden;
 }
-.fl-theme-iPhone .fl-listmenu.fl-thumbnail a {
-    padding:5px 0 4px;
+
+
+/*************************************************/
+/* Thumbnail lists */
+.fl-theme-iPhone .fl-listmenu-thumbnails {
+	
+}
+.fl-theme-iPhone .fl-listmenu-thumbnails > li {
+    margin-bottom:10px;
     -webkit-border-radius:8px;
 }
+.fl-theme-iPhone .fl-listmenu-thumbnails > li a {
+
+}
+/* summary behaviour */
+.fl-theme-iPhone .fl-listmenu-thumbnails > li a .fl-link-summary {
+	white-space:normal;
+	height:auto;
+	margin:0 25px 0 50px;
+}
+/* icon behaviour */
+.fl-theme-iPhone .fl-listmenu-thumbnails > li a > .fl-icon {
+    width:44px;
+    height:44px;
+    margin:0 5px 0 0;
+    -webkit-border-radius:0;
+}
+
+
+/****************************/
+/* Collapsable / Showable lists (with optional thumbnails) */
+.fl-theme-iPhone .fl-listmenu-toggler {
+	color:#fff;
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-top-right-radius: 8px;
+	padding:10px;
+	margin:0 10px;
+	background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
+} 
+.fl-theme-iPhone .fl-listmenu-thumbnails.fl-collapsable > li ,
+.fl-theme-iPhone .fl-listmenu-thumbnails.fl-collapsable > li a {
+	-webkit-border-radius:0;
+}
+.fl-theme-iPhone .fl-listmenu-thumbnails.fl-collapsable > li {
+	margin:0;
+}
+.fl-theme-iPhone .fl-listmenu-thumbnails.fl-collapsable > li a {
+	padding:5px;
+	overflow:auto;
+}
+.fl-theme-iPhone .fl-listmenu-thumbnails.fl-collapsable > li:last-child,
+.fl-theme-iPhone .fl-listmenu-thumbnails.fl-collapsable > li:last-child a {
+	-webkit-border-bottom-left-radius:8px;
+	-webkit-border-bottom-right-radius:8px;
+}
+
 
 /***************************************/
 /* instructional text (usually embossed too)*/
