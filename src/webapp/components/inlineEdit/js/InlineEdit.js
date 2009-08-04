@@ -535,7 +535,7 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
     var cleanerHTML = function (value) {
-        return value.replace(/\n|\t| {2,}/g, "");
+        return value.replace(/\s+/g, " ");
     }
     
     fluid.inlineEdit.richTextViewAccessor = function (element) {
