@@ -534,13 +534,17 @@ fluid_1_2 = fluid_1_2 || {};
         };
     };
     
+    var cleanerHTML = function (value) {
+        return value.replace(/\n|\t| {2,}/g, "");
+    }
+    
     fluid.inlineEdit.richTextViewAccessor = function (element) {
-        return {
-            value: function (newValue) {
-                return $(element).html(newValue);
-            }
-        };
-    };
+         return {
+             value: function (newValue) {
+                 return newValue ? $(element).html(newValue) : cleanerHTML($(element).html(newValue));
+             }
+         };
+     };
     
     fluid.inlineEdit.standardDisplayView = function (viewEl) {
         var that = {
