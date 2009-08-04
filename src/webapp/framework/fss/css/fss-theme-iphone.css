@@ -11,7 +11,7 @@
     -webkit-background-size: 10px 1px;
 }
 .fl-theme-iPhone {
-    font:normal 17px Helvetica, sans-serif;
+    font:normal 17px Helvetica, sans-serif; /* Base font rules */
     margin:0;
     padding:0;
 }
@@ -36,20 +36,7 @@
     margin-top:-5px;
     -webkit-border-radius: 5px;
 }
-.fl-table {
-    display:table;
-    border-collapse:collapse;
-    border:none;
-}
-.fl-table-row {
-    display:table-row;
-    border:none;
-}
-.fl-table-cell {
-    display:table-cell;
-    vertical-align:middle;
-    border:none;
-}
+
 /***************************************/
 /* Navigation Bar */
 body.fl-theme-iPhone::before, .fl-theme-iPhone .fl-navbar {
@@ -407,32 +394,26 @@ body.fl-theme-iPhone::before {
 
 
 /****************************/
-/* Collapsable / Showable lists (with optional thumbnails) */
-.fl-theme-iPhone .fl-listmenu-toggler {
+/* Lists with headings (and optional thumbnails) */
+.fl-theme-iPhone .fl-listmenu-heading {
 	color:#fff;
 	-webkit-border-top-left-radius: 8px;
 	-webkit-border-top-right-radius: 8px;
 	padding:10px;
 	margin:0 10px;
 	background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
-} 
-.fl-theme-iPhone .fl-listmenu-thumbnails.fl-collapsable > li ,
-.fl-theme-iPhone .fl-listmenu-thumbnails.fl-collapsable > li a {
+}
+
+.fl-theme-iPhone .fl-listmenu-heading ~ .fl-listmenu-thumbnails > li:first-child a {
 	-webkit-border-radius:0;
 }
-.fl-theme-iPhone .fl-listmenu-thumbnails.fl-collapsable > li {
+.fl-theme-iPhone .fl-listmenu-heading ~ .fl-listmenu-thumbnails > li {
 	margin:0;
 }
-.fl-theme-iPhone .fl-listmenu-thumbnails.fl-collapsable > li a {
+.fl-theme-iPhone .fl-listmenu-heading ~ .fl-listmenu-thumbnails > li a {
 	padding:5px;
 	overflow:auto;
 }
-.fl-theme-iPhone .fl-listmenu-thumbnails.fl-collapsable > li:last-child,
-.fl-theme-iPhone .fl-listmenu-thumbnails.fl-collapsable > li:last-child a {
-	-webkit-border-bottom-left-radius:8px;
-	-webkit-border-bottom-right-radius:8px;
-}
-
 
 /***************************************/
 /* instructional text (usually embossed too)*/

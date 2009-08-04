@@ -270,10 +270,22 @@ input.fl-icon {padding-left:16px;}
 
 /**************************************************/
 /* EXPERIMENTAL */
-.fl-navbar {
-    
-}
+/* Works only with cutting edge browsers (as of July 2009) */
 
+.fl-table {
+    display:table;
+    border-collapse:collapse;
+    border:none;
+}
+.fl-table-row {
+    display:table-row;
+    border:none;
+}
+.fl-table-cell {
+    display:table-cell;
+    vertical-align:middle;
+    border:none;
+}
 
 
 
