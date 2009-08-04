@@ -66,7 +66,7 @@ fluid_1_2 = fluid_1_2 || {};
     function bindHandlersToContainer(container, keyDownHandler, keyUpHandler, mouseMoveHandler) {
         var actualKeyDown = keyDownHandler;
         var advancedPrevention = false;
-        
+
         // FLUID-1598 and others: Opera will refuse to honour a "preventDefault" on a keydown.
         // http://forums.devshed.com/javascript-development-115/onkeydown-preventdefault-opera-485371.html
         if ($.browser.opera) {
@@ -576,9 +576,10 @@ fluid_1_2 = fluid_1_2 || {};
         return simpleInit(container, "fluid.gridLayoutHandler", options); 
     };
     
-    fluid.reorderer.GEOMETRIC_STRATEGY   = "projectFrom";
-    fluid.reorderer.LOGICAL_STRATEGY     = "logicalFrom";
-    fluid.reorderer.WRAP_LOCKED_STRATEGY = "lockedWrapFrom";
+    fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY = "shuffleProjectFrom";
+    fluid.reorderer.GEOMETRIC_STRATEGY         = "projectFrom";
+    fluid.reorderer.LOGICAL_STRATEGY           = "logicalFrom";
+    fluid.reorderer.WRAP_LOCKED_STRATEGY       = "lockedWrapFrom";
     fluid.reorderer.NO_STRATEGY = null;
     
     fluid.reorderer.relativeInfoGetter = function (orientation, coStrategy, contraStrategy, dropManager, dom) {
@@ -687,7 +688,7 @@ fluid_1_2 = fluid_1_2 || {};
 
         that.getRelativePosition = 
            fluid.reorderer.relativeInfoGetter(options.orientation, 
-                 fluid.reorderer.LOGICAL_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY, 
+                 fluid.reorderer.LOGICAL_STRATEGY, fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY, 
                  dropManager, dom);
         
         that.getGeometricInfo = geometricInfoGetter(options.orientation, options.sentinelize, dom);
