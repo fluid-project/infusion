@@ -1,22 +1,15 @@
-/* Changing the transform property over time */
+/***************************************/
+/* Transition Library */
 .fl-theme-iPhone .fl-transition-slide {
     -webkit-transition: -webkit-transform 0.75s ease-in-out;
 }
-
-
-
-
-/* Fading */
-/* change opacity over time */
+.fl-theme-iPhone .fl-transition-grow {
+    -webkit-transition: height 0.75s ease-in-out;
+}
 .fl-theme-iPhone .fl-transition-fade {
     -webkit-transition: opacity 0.75s linear;
 }
-.fl-theme-iPhone .fl-transition-fade-in {
-    opacity:1;
-}
-.fl-theme-iPhone .fl-transition-fade-out {
-    opacity:0;
-}
+
 
 /***************************************/
 /* Animation Library */
