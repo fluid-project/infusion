@@ -10,6 +10,9 @@
     -webkit-background-clip: content-box;
     -webkit-background-size: 10px 1px;
 }
+body {
+	overflow:hidden;
+}
 .fl-theme-iPhone {
     font:normal 17px Helvetica, sans-serif; /* Base font rules */
     margin:0;
