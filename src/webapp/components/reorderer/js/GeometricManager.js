@@ -149,6 +149,10 @@ var fluid_1_2 = fluid_1_2 || {};
         // perform the leftward-moving, AFTER shift
         var frontlimit = samespan? targeti - 1: sourceelements.length - 2;
         var i;
+        if (position === fluid.position.BEFORE && samespan) { 
+            // we cannot do skip processing if the element was "fused against the grain" 
+            frontlimit--;
+        }
         if (!samespan || targeti > sourcei) {
             for (i = frontlimit; i > sourcei; -- i) {
                 fluid.moveDom(sourceelements[i + 1], sourceelements[i], fluid.position.AFTER);

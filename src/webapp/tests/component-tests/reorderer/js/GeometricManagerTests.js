@@ -71,7 +71,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
         selfPermuteTest("REPLACE left",        7, 2, fluid.position.REPLACE, "0172A3456B8");
         selfPermuteTest("BEFORE left",         7, 2, fluid.position.BEFORE,  "0172A3456B8");
         selfPermuteTest("REPLACE right rend",  2, 8, fluid.position.REPLACE, "0134A5678B2");
-        selfPermuteTest("AFTER right rend",    2, 8, fluid.position.AFTER,   "0134A5678B2");    
+        selfPermuteTest("AFTER right rend",    2, 8, fluid.position.AFTER,   "0134A5678B2");
+        selfPermuteTest("BEFORE right",        2, 6, fluid.position.BEFORE,  "0134A5267B8");
+        selfPermuteTest("AFTER left",          7, 2, fluid.position.AFTER,   "0127A3456B8");
+        selfPermuteTest("AFTER left shift",    7, 3, fluid.position.AFTER,   "01237A456B8"); // skip failure
+        selfPermuteTest("BEFORE right shift",  2, 8, fluid.position.BEFORE,  "0134A567B28"); // skip failure
         selfPermuteTest("REPLACE right lend",  0, 6, fluid.position.REPLACE, "1234A5607B8");
         selfPermuteTest("REPLACE left lend",   6, 0, fluid.position.REPLACE, "6012A3457B8");
         selfPermuteTest("REPLACE right hop",   8, 7, fluid.position.REPLACE, "0123A4568B7");
