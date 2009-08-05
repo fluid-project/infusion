@@ -1,12 +1,12 @@
 /***************************************/
 /* Transition Library */
-.fl-theme-iPhone .fl-transition-slide {
+.fl-transition-slide {
     -webkit-transition: -webkit-transform 0.75s ease-in-out;
 }
-.fl-theme-iPhone .fl-transition-grow {
+.fl-transition-grow {
     -webkit-transition: height 0.75s ease-in-out;
 }
-.fl-theme-iPhone .fl-transition-fade {
+.fl-transition-fade {
     -webkit-transition: opacity 0.75s linear;
 }
 

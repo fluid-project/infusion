@@ -1,3 +1,166 @@
+body {
+	overflow:hidden;
+    font:normal 17px Helvetica, sans-serif; /* Base font rules */
+    margin:0;
+    padding:0;
+}
+
+h1 {font-size:1.2em; margin:0;}
+h2 {font-size:1.15em; margin:0;}
+h3 {font-size:1.1em; margin:0;}
+h4 {}
+h5 {}
+h6 {}
+img {border:none;}
+
+.fl-icon {
+    width:30px;
+    height:30px;
+    margin-top:-5px;
+}
+
+/***************************************/
+/* Navigation Bar */
+body::before, .fl-navbar {
+    width:100%;
+    height:45px;
+}
+.fl-navbar {     
+    color:#fff;
+    text-shadow: rgba(0,0,0,0.75) 0px -1px 0px;
+    margin-bottom:12px;
+}
+.fl-navbar .fl-table-cell:first-child {
+    margin-left:5px;
+}
+.fl-navbar .fl-table-cell:last-child {
+    margin-right:5px;
+}
+.fl-navbar h1 {
+    margin:0 auto;
+    padding:0;   
+}
+.fl-navbar a {
+    margin-top:5px;
+}
+.fl-navbar .fl-button {
+    padding:0;
+}
+.fl-navbar .fl-button-left {
+    left:5px;
+}
+.fl-navbar .fl-button-right {
+    right:5px;
+}
+.fl-navbar .fl-backButton .fl-button-inner {
+    margin-left:-3px; /* Mobile Safari (but not Desktop Safari) showed a tiny gap - this closes it*/
+}
+.fl-navbar .fl-button-inner {
+    padding:5px;
+}
+
+/***************************************/
+/* iPhone tabs 1: small general purpose content dividers */
+.fl-tabs {
+    margin:0;
+    padding:0;
+}
+.fl-tabs li:not(:last-child) a {
+   margin-right:-5px;
+}
+.fl-tabs li a {
+    margin:0;
+    display:inline-block;
+}
+
+.fl-tabs li.fl-tabs-active a {
+    padding:0.25em 1.25em 0.2em;
+}
+
+/*************************************************/
+/* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists */
+/*************************************************/
+/* Default listmenu system setup */
+[class*=fl-listmenu] {
+	margin: 0 10px 10px;	
+}
+
+[class*=fl-listmenu] > li {	
+    padding:0;
+	margin:0;
+}
+
+[class*=fl-listmenu] > li a {
+	display:block;	
+	padding: 12px 0px 12px 12px;
+}
+
+[class*=fl-listmenu] .fl-link-loading .fl-link-secondary{
+    display:none;
+}
+
+/* secondary link info behaviour */
+[class*=fl-listmenu] > li .fl-link-secondary {
+    float:right;
+    margin-right:25px;
+}
+
+ /* summary link info ehaviour */ 
+[class*=fl-listmenu] > li a .fl-link-summary {
+    display:block;
+    margin:0 25px 0 30px; /* default size of fl-icon */
+}
+/* icon behaviour */
+[class*=fl-listmenu] > li a > .fl-icon {
+    float:left;
+    margin-left:-6px;
+}
+
+
+/*************************************************/
+/* Brief lists that auto trim content + ellipsis (w/ optional thumbnail) */
+.fl-listmenu-brief > li {
+	margin-bottom:10px;
+}
+.fl-listmenu-brief > li a {
+	padding:5px 0;
+	border-bottom-width:1px;
+}
+.fl-listmenu-brief > li a > .fl-link-summary {
+    height:1.1em;
+}
+
+.fl-listmenu-brief > li a > .fl-icon {
+    width:44px;
+    height:44px;
+    margin-left:0;
+}
+
+
+/*************************************************/
+/* Thumbnail lists */
+.fl-listmenu-thumbnails {	
+}
+.fl-listmenu-thumbnails > li {
+    margin-bottom:10px;
+    -webkit-border-radius:8px;
+}
+.fl-listmenu-thumbnails > li a {
+}
+/* summary behaviour */
+.fl-listmenu-thumbnails > li a .fl-link-summary {
+	white-space:normal;
+	height:auto;
+	margin:0 25px 0 50px;
+}
+/* icon behaviour */
+.fl-listmenu-thumbnails > li a > .fl-icon {
+    width:44px;
+    height:44px;
+    margin:0 5px 0 0;
+    -webkit-border-radius:0;
+}
+/***************************/
 .fl-table {
     display:table;
     border-collapse:collapse;
@@ -13,3 +176,24 @@
     border:none;
 }
 
+/****************************/
+/* Collapsing and expanding panels */
+.fl-collapsingPanel {
+	max-height:640px;
+	overflow:hidden;
+	margin:12px 0;
+}
+.fl-collapsingPanel > *:first-child {
+	padding:10px;
+	margin:0;
+}
+.fl-collapsingPanel > *:last-child {
+	margin:0;
+}
+.fl-collapsingPanel > [class*=fl-listmenu] > li {
+	margin:0;
+}
+.fl-collapsingPanel > .fl-listmenu-thumbnails > li a {
+	padding:5px;
+	overflow:auto;
+}

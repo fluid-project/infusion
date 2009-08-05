@@ -389,31 +389,28 @@ body::before {
     -webkit-border-radius:0;
 }
 
-
-/****************************/
-/* Lists with headings (and optional thumbnails) */
-.fl-listmenu-heading {
-	color:#fff;
-	-webkit-border-top-left-radius: 8px;
-	-webkit-border-top-right-radius: 8px;
-	padding:10px;
-	margin:0 10px;
-	background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
-}
-.fl-listmenu-heading ~ .fl-listmenu-thumbnails > li:first-child a {
-	-webkit-border-radius:0;
-}
-.fl-listmenu-heading ~ .fl-listmenu-thumbnails > li {
-	margin:0;
-}
-.fl-listmenu-heading ~ .fl-listmenu-thumbnails > li a {
-	padding:5px;
-	overflow:auto;
-}
-
 /***************************************/
 /* instructional text (usually embossed too)*/
 .fl-note {
     color:#4C566C;
 }
 
+/****************************/
+/* Collapsing and expanding panels */
+.fl-collapsingPanel {
+	-webkit-border-radius:8px;	
+}
+.fl-collapsingPanel > *:first-child {
+	color:#fff;
+	background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-top-right-radius: 8px;
+}
+.fl-collapsingPanel > *:last-child {
+	-webkit-border-radius:0;
+	-webkit-border-bottom-left-radius:8px;
+	-webkit-border-bottom-right-radius:8px;
+}
+.fl-collapsingPanel > [class*=fl-listmenu] > li:first-child a {
+	-webkit-border-radius:0;
+}
