@@ -1,8 +1,13 @@
+:root {
+    -webkit-background-origin: padding-box; 
+    -webkit-background-clip: content-box;
+    -webkit-background-size: 10px 1px;
+}
 body {
-	overflow:hidden;
-    font:normal 17px Helvetica, sans-serif; /* Base font rules */
     margin:0;
     padding:0;
+	overflow:hidden;
+    font:normal 17px Helvetica, sans-serif; /* Base font rules */
 }
 
 h1 {font-size:1.2em; margin:0;}
@@ -17,6 +22,7 @@ img {border:none;}
     width:30px;
     height:30px;
     margin-top:-5px;
+    -webkit-border-radius: 5px;
 }
 
 /***************************************/
@@ -25,9 +31,16 @@ body::before, .fl-navbar {
     width:100%;
     height:45px;
 }
-.fl-navbar {     
-    color:#fff;
-    text-shadow: rgba(0,0,0,0.75) 0px -1px 0px;
+body::before {
+    content:" ";
+    position:absolute;
+    z-index:1;
+	border-style:solid;
+	border-width:1px 0;
+    -webkit-background-origin: padding-box; 
+    -webkit-background-clip: content-box;    
+}
+.fl-navbar {
     margin-bottom:12px;
 }
 .fl-navbar .fl-table-cell:first-child {
@@ -38,14 +51,39 @@ body::before, .fl-navbar {
 }
 .fl-navbar h1 {
     margin:0 auto;
-    padding:0;   
+    padding:0;
+    text-align:center;
+    font-size:1.17em;
+    font-weight: bold;
 }
 .fl-navbar a {
     margin-top:5px;
+	text-decoration:none;
+	font-size: 0.7em;
+    font-weight:bold;
 }
 .fl-navbar .fl-button {
+    -webkit-border-radius:5px;
     padding:0;
 }
+.fl-navbar .fl-backButton {
+    /* 
+     * To create the oddly shaped back button with fully customizable CSS colors, there are 2 main things:
+     * 1) The stencil for the shadow and hilights along the angled edge
+     * 2) The mask to crop the background along the angled edge
+     */
+    
+    /* Angled effect is just a single border with a transaprent stencil image */
+    border-width:0 0 0 15px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -webkit-background-origin: border; 
+    -webkit-background-clip: border; 
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-origin: border; 
+    -webkit-mask-clip: border; 
+}
+
 .fl-navbar .fl-button-left {
     left:5px;
 }
@@ -54,23 +92,57 @@ body::before, .fl-navbar {
 }
 .fl-navbar .fl-backButton .fl-button-inner {
     margin-left:-3px; /* Mobile Safari (but not Desktop Safari) showed a tiny gap - this closes it*/
+    border-left-width:0;
 }
 .fl-navbar .fl-button-inner {
     padding:5px;
+    border-width:5px;
+    -webkit-background-origin: border; 
+    -webkit-background-clip: border; 
 }
 
+/***************************************/
+/* iPhone general purpose gel buttons */
+/* effect is applied anywhere but the navbar, which has its own button look */
+.fl-navbar ~ * .fl-button {
+    text-decoration:none;
+    font-weight:bold;    
+    border-width: 10px;	
+    -webkit-border-radius:10px;
+    -webkit-background-origin: border; 
+    -webkit-background-clip: border;
+}
 /***************************************/
 /* iPhone tabs 1: small general purpose content dividers */
 .fl-tabs {
     margin:0;
     padding:0;
+    border:none;
+    text-align:center;
 }
+
 .fl-tabs li:not(:last-child) a {
    margin-right:-5px;
 }
+
 .fl-tabs li a {
     margin:0;
     display:inline-block;
+    border-width:5px 0 5px 1px;
+    -webkit-background-origin: border; 
+    -webkit-background-clip: border;
+}
+
+.fl-tabs li:first-child a {
+    border-left-width:5px;
+    -webkit-border-top-left-radius:5px;
+    -webkit-border-bottom-left-radius:5px;
+}
+
+.fl-tabs li:last-child a {
+    border-right-width:5px;
+    -webkit-border-top-right-radius:5px;
+    -webkit-border-bottom-right-radius:5px;
 }
 
 .fl-tabs li.fl-tabs-active a {
@@ -83,16 +155,34 @@ body::before, .fl-navbar {
 /* Default listmenu system setup */
 [class*=fl-listmenu] {
 	margin: 0 10px 10px;	
+	border: none;
 }
 
 [class*=fl-listmenu] > li {	
     padding:0;
 	margin:0;
+	border:none;
 }
 
 [class*=fl-listmenu] > li a {
 	display:block;	
 	padding: 12px 0px 12px 12px;
+	text-decoration: none;
+	font-weight: bold;
+	outline: none;
+	border-style:solid;
+	border-width:1px 1px 0 1px;
+}
+
+[class*=fl-listmenu] > li:first-child a {
+    -webkit-border-top-left-radius: 8px;
+    -webkit-border-top-right-radius: 8px;
+}
+
+[class*=fl-listmenu] > li:last-child a {
+    -webkit-border-bottom-left-radius: 8px;
+    -webkit-border-bottom-right-radius: 8px;
+	border-bottom-width:1px;
 }
 
 [class*=fl-listmenu] .fl-link-loading .fl-link-secondary{
@@ -103,12 +193,17 @@ body::before, .fl-navbar {
 [class*=fl-listmenu] > li .fl-link-secondary {
     float:right;
     margin-right:25px;
+    font-weight:normal;
+    font-size:.9em;
 }
 
  /* summary link info ehaviour */ 
 [class*=fl-listmenu] > li a .fl-link-summary {
     display:block;
     margin:0 25px 0 30px; /* default size of fl-icon */
+    font-weight:normal;
+    font-size:0.80em;
+	line-height:0.9em;
 }
 /* icon behaviour */
 [class*=fl-listmenu] > li a > .fl-icon {
@@ -116,37 +211,41 @@ body::before, .fl-navbar {
     margin-left:-6px;
 }
 
-
 /*************************************************/
 /* Brief lists that auto trim content + ellipsis (w/ optional thumbnail) */
 .fl-listmenu-brief > li {
 	margin-bottom:10px;
+    -webkit-border-radius:8px;
 }
 .fl-listmenu-brief > li a {
 	padding:5px 0;
 	border-bottom-width:1px;
+	-webkit-border-radius:8px;
 }
 .fl-listmenu-brief > li a > .fl-link-summary {
     height:1.1em;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
 .fl-listmenu-brief > li a > .fl-icon {
     width:44px;
     height:44px;
     margin-left:0;
+    -webkit-border-radius:0;
+    -webkit-border-bottom-left-radius: 8px;
+    -webkit-border-top-left-radius: 8px;
 }
-
 
 /*************************************************/
 /* Thumbnail lists */
-.fl-listmenu-thumbnails {	
-}
+
 .fl-listmenu-thumbnails > li {
     margin-bottom:10px;
     -webkit-border-radius:8px;
 }
-.fl-listmenu-thumbnails > li a {
-}
+
 /* summary behaviour */
 .fl-listmenu-thumbnails > li a .fl-link-summary {
 	white-space:normal;
@@ -182,16 +281,25 @@ body::before, .fl-navbar {
 	max-height:640px;
 	overflow:hidden;
 	margin:12px 0;
+	-webkit-border-radius:8px;	
 }
 .fl-collapsingPanel > *:first-child {
 	padding:10px;
 	margin:0;
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-top-right-radius: 8px;
 }
 .fl-collapsingPanel > *:last-child {
 	margin:0;
+	-webkit-border-radius:0;
+	-webkit-border-bottom-left-radius:8px;
+	-webkit-border-bottom-right-radius:8px;
 }
 .fl-collapsingPanel > [class*=fl-listmenu] > li {
 	margin:0;
+}
+.fl-collapsingPanel > [class*=fl-listmenu] > li:first-child a {
+	-webkit-border-radius:0;
 }
 .fl-collapsingPanel > .fl-listmenu-thumbnails > li a {
 	padding:5px;
