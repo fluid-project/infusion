@@ -33,8 +33,3 @@
     }
 }
 /**************************************/
-.fl-theme-iPhone .fl-animation-fadeout {
-	-webkit-animation-name: fadeOut;
-    -webkit-animation-duration: 0.75s;
-    -webkit-animation-iteration-count: 1;
-}

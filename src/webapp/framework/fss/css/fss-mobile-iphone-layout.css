@@ -1,0 +1,15 @@
+.fl-table {
+    display:table;
+    border-collapse:collapse;
+    border:none;
+}
+.fl-table-row {
+    display:table-row;
+    border:none;
+}
+.fl-table-cell {
+    display:table-cell;
+    vertical-align:middle;
+    border:none;
+}
+

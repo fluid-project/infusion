@@ -371,15 +371,13 @@ body.fl-theme-iPhone::before {
 
 /*************************************************/
 /* Thumbnail lists */
-.fl-theme-iPhone .fl-listmenu-thumbnails {
-	
+.fl-theme-iPhone .fl-listmenu-thumbnails {	
 }
 .fl-theme-iPhone .fl-listmenu-thumbnails > li {
     margin-bottom:10px;
     -webkit-border-radius:8px;
 }
 .fl-theme-iPhone .fl-listmenu-thumbnails > li a {
-
 }
 /* summary behaviour */
 .fl-theme-iPhone .fl-listmenu-thumbnails > li a .fl-link-summary {
@@ -406,7 +404,6 @@ body.fl-theme-iPhone::before {
 	margin:0 10px;
 	background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
 }
-
 .fl-theme-iPhone .fl-listmenu-heading ~ .fl-listmenu-thumbnails > li:first-child a {
 	-webkit-border-radius:0;
 }
