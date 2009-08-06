@@ -197,7 +197,7 @@ fluid_1_2 = fluid_1_2 || {};
       
         var viewEl = that.viewEl;
         var displayText = that.displayView.value();
-        that.updateModelValue(displayText === that.options.defaultViewText? "" : displayText);
+        that.updateModelValue(that.model.value === "" ? "" : displayText);
         if (that.options.applyEditPadding) {
             that.editField.width(Math.max(viewEl.width() + that.options.paddings.edit, that.options.paddings.minimumEdit));
         }
