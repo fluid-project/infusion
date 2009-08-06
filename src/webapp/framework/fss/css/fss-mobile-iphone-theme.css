@@ -15,6 +15,10 @@
     text-shadow: rgba(255,255,255,1) 0px 1px 0px;
 }
 
+a {
+   -webkit-touch-callout:none; /* prevents iphone popup menu to copy / follow / bookmark a particular link */
+    -webkit-tap-highlight-color: rgba(255,0,0,1);
+}
 /***************************************/
 /* Navigation Bar */
 

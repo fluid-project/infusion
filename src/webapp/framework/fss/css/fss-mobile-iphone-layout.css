@@ -8,6 +8,7 @@ body {
     padding:0;
 	overflow:hidden;
     font:normal 17px Helvetica, sans-serif; /* Base font rules */
+	-webkit-user-select: none; /* prevents child elements content from being selected - desired? */
 }
 
 h1 {font-size:1.2em; margin:0;}
@@ -107,7 +108,8 @@ body::before {
 .fl-navbar ~ * .fl-button {
     text-decoration:none;
     font-weight:bold;    
-    border-width: 10px;	
+    border-width: 10px;
+	text-align:center;
     -webkit-border-radius:10px;
     -webkit-background-origin: border; 
     -webkit-background-clip: border;
@@ -281,7 +283,7 @@ body::before {
 	max-height:640px;
 	overflow:hidden;
 	margin:12px 0;
-	-webkit-border-radius:8px;	
+	-webkit-border-radius:8px;
 }
 .fl-collapsingPanel > *:first-child {
 	padding:10px;
