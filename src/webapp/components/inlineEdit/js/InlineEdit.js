@@ -109,8 +109,13 @@ fluid_1_2 = fluid_1_2 || {};
     var cancel = function (that) {
         if (that.isEditing()) {
             // Roll the edit field back to its old value and close it up.
-            that.editView.value(that.model.value);
+            // This setTimeout is necessary on Firefox, since any attempt to modify the 
+            // input control value during the stack processing the ESCAPE key will be ignored.
+            setTimeout(function() {
+               that.editView.value(that.model.value)}, 1);
             switchToViewMode(that);
+            that.events.afterFinishEdit.fire(that.model.value, that.model.value, 
+                that.editField[0], that.viewEl[0]);
         }
     };
     
@@ -168,7 +173,9 @@ fluid_1_2 = fluid_1_2 || {};
         }
         else {
             var blurHandler = function (evt) {
-                finish(that);
+                if (that.isEditing()) {
+                    finish(that);
+                }
                 return false;
             };
             that.editField.blur(blurHandler);
