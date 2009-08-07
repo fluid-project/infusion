@@ -188,7 +188,7 @@ body::before {
 	border-bottom-width:1px;
 }
 
-[class*=fl-listmenu] .fl-link-loading .fl-link-secondary{
+[class*=fl-listmenu] .fl-link-loading .fl-link-secondary {
     display:none;
 }
 
