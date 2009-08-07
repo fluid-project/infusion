@@ -263,7 +263,10 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
     var updateModelValue = function (that, newValue, source) {
-        if (that.model.value !== newValue) {
+        var comparator = that.options.modelComparator;
+        var unchanged = comparator? comparator(that.model.value, newValue) : 
+            that.model.value === newValue;
+        if (!unchanged) {
             var oldModel = $.extend(true, {}, that.model);
             that.model.value = newValue;
             that.events.modelChanged.fire(that.model, oldModel, source);
@@ -534,19 +537,13 @@ fluid_1_2 = fluid_1_2 || {};
         };
     };
     
-    var cleanerHTML = function (value) {
-        var togo = $.trim(value.replace(/\s+/g, " "));
-        togo = togo.replace(/\s+<\//g, "</");
-        return togo;
-    }
-    
     fluid.inlineEdit.richTextViewAccessor = function (element) {
-         return {
-             value: function (newValue) {
-                 return newValue ? $(element).html(newValue) : cleanerHTML($(element).html(newValue));
-             }
-         };
-     };
+        return {
+            value: function (newValue) {
+                return $(element).html(newValue);
+            }
+        };
+    };
     
     fluid.inlineEdit.standardDisplayView = function (viewEl) {
         var that = {
@@ -634,6 +631,8 @@ fluid_1_2 = fluid_1_2 || {};
         // set this to true or false to cause unconditional submission, otherwise it will
         // be inferred from the edit element tag type.
         submitOnEnter: undefined,
+        
+        modelComparator: null,
         
         displayAccessor: {
             type: "fluid.inlineEdit.standardAccessor"

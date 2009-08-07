@@ -28,6 +28,20 @@ fluid_1_2 = fluid_1_2 || {};
         return fluid.inlineEdit(container, assembleOptions);
     };
 
+    fluid.inlineEdit.normalizeHTML = function(value) {
+        var togo = $.trim(value.replace(/\s+/g, " "));
+        togo = togo.replace(/\s+<\//g, "</");
+        togo = togo.replace(/\<(\S+)[^\>\s]*\>/g, function(match) {
+            return match.toLowerCase();
+            });
+        return togo;
+    };
+    
+    fluid.inlineEdit.htmlComparator = function(el1, el2) {
+        return fluid.inlineEdit.normalizeHTML(el1) ===
+           fluid.inlineEdit.normalizeHTML(el2);
+    };
+
     // Configuration for integrating tinyMCE
     
     /**
@@ -133,6 +147,7 @@ fluid_1_2 = fluid_1_2 || {};
             type: "fluid.inlineEdit.tinyMCE.viewAccessor"
         },
         lazyEditView: true,
+        modelComparator: fluid.inlineEdit.htmlComparator,
         blurHandlerBinder: fluid.inlineEdit.tinyMCE.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.tinyMCE.editModeRenderer
     });
@@ -246,6 +261,7 @@ fluid_1_2 = fluid_1_2 || {};
             type: "fluid.inlineEdit.FCKEditor.viewAccessor"
         },
         lazyEditView: true,
+        modelComparator: fluid.inlineEdit.htmlComparator,
         blurHandlerBinder: fluid.inlineEdit.FCKEditor.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.FCKEditor.editModeRenderer,
         FCKEditor: {
