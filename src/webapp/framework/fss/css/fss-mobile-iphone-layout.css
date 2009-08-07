@@ -105,7 +105,8 @@ body::before {
 /***************************************/
 /* iPhone general purpose gel buttons */
 /* effect is applied anywhere but the navbar, which has its own button look */
-.fl-navbar ~ * .fl-button {
+.fl-navbar ~ * .fl-button,
+.fl-navbar ~ .fl-button {
     text-decoration:none;
     font-weight:bold;    
     border-width: 10px;

@@ -65,7 +65,8 @@ body::before {
 /***************************************/
 /* iPhone general purpose gel buttons */
 /* effect is applied anywhere but the navbar, which has its own button look */
-.fl-navbar ~ * .fl-button {
+.fl-navbar ~ * .fl-button,
+.fl-navbar ~ .fl-button {
     -webkit-border-image: url(../images/themes/iphone/button_bg_insetShadow.png) 10 stretch;
 }
 .fl-button.fl-bevel-white {
