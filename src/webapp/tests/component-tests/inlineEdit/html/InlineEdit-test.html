@@ -64,12 +64,28 @@
       </div>
       
       <form id="inline-edit-textarea" action="#">
-          <div id="display-custom" class="customText">Click here to edit</div>
+          <div id="display-custom" class="customText"></div>
           <div id="edit-container-custom" class="customEditContainer">
               <textarea id="edit-custom" class="customEdit">This is the hidden text for the custom editor</textarea>
           </div>
       </form>
+	  
+	  <div id="custom-renderRoot-text-as-default">
       
+        <form id="inline-edit-custom-text-as-default" class="customContainer" action="#">
+          <div id="display-custom-text-as-default" class="customText">Click here to edit</div>
+          <div id="edit-container-custom-text-as-default" class="customEditContainer">
+            <input id="edit-custom-text-as-default" type="text" class="customEdit" value="this is the hidden text for the custom editor" />
+          </div>
+        </form>
+      </div>
+	  
+	  <form id="inline-edit-textarea-text-as-default" action="#">
+          <div id="display-custom" class="customText">Click here to edit</div>
+          <div id="edit-container-custom" class="customEditContainer">
+              <textarea id="edit-custom" class="customEdit">This is the hidden text for the custom editor</textarea>
+          </div>
+      </form>      
         
       <!-- Self-rendering inline edit -->
       <form id="inline-edit-self-render" action="#">

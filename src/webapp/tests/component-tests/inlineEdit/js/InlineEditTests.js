@@ -156,6 +156,32 @@ https://source.fluidproject.org/svn/LICENSE.txt
         makeSubmittingTest("Textarea autosubmit ensure", "#inline-edit-textarea", {submitOnEnter: true}, true);
         makeSubmittingTest("Input autosubmit auto", "#inline-edit-custom", null, true);
         makeSubmittingTest("Input autosubmit defeat", "#inline-edit-custom", {submitOnEnter: false}, false);
+        
+        function makeSubmittingTest2(name, id, options, shouldsubmit) {
+            
+            inlineEditTests.test(name, function () {
+                var inlineEditor = fluid.inlineEdit(id, $.extend(true, {}, customOptions, options));
+                inlineEditor.edit();
+                var field = inlineEditor.editField;
+                jqUnit.assertEquals("Click here to edit on begin edit", "Click here to edit", field.val());
+                var value = "Thing\nLine 2";
+                // Remove this conditional to verify impossibility of FLUID-890, and observe quite inconsistent behaviour on all browsers
+                if (field[0].nodeName.toLowerCase() === "input") {
+                    value = "Thing"; 
+                }
+                field.val(value);
+                inlineEditor.editContainer.simulate("keypress", {keyCode: $.ui.keyCode.ENTER});
+                jqUnit.assertEquals("Unsubmitted", shouldsubmit? value : "Click here to edit", inlineEditor.model.value);
+                
+                inlineEditor.finish();
+                jqUnit.assertEquals("Unsubmitted", value, inlineEditor.model.value);
+            });
+        }
+        
+        makeSubmittingTest2("Default Textarea autosubmit auto", "#inline-edit-textarea-text-as-default", null, false);
+        makeSubmittingTest2("Default Textarea autosubmit ensure", "#inline-edit-textarea-text-as-default", {submitOnEnter: true}, true);
+        makeSubmittingTest2("Default Input autosubmit auto", "#inline-edit-custom-text-as-default", null, true);
+        makeSubmittingTest2("Default Input autosubmit defeat", "#inline-edit-custom-text-as-default", {submitOnEnter: false}, false);
 
         inlineEditTests.test("Invitation text (Default)", function () {
             expect(10);
