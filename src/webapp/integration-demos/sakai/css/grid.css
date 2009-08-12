@@ -1,0 +1,105 @@
+/*
+	CSS: Grid
+	Project: Sakai Foundation
+	Developer: Deyan Todorov
+	E-mail: office@websitebg.info
+*/
+
+.block {
+  margin: 0 auto;
+}
+.clear:after, 
+.block:after,
+#body:after,
+#wrapper:after,
+#container:after,
+#left:after,
+#sidebar:after,
+#header2:after,
+#wrapper2:after,
+#container2:after,
+#left2:after,
+#sidebar2:after,
+#header3:after,
+#wrapper3:after,
+.header3-up:after,
+.header3-down:after,
+#container3:after,
+.header-up:after, 
+.header-down:after,
+#wrapper5:after,
+#container5:after,
+#sidebar5:after, 
+.widget1:after,
+.widget1-head:after, 
+.widget1-head-left:after, 
+.widget1-head-right:after, 
+.widget1-subhead:after, 
+.widget1-subhead-left:after, 
+.widget1-subhead-right:after, 
+.widget1-content-in:after,
+.lightbox-header:after,
+.mp-nav:after   { 
+  content:  ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.tool-menu2:after,
+.tm2-item:after { 
+  content:  ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+/* 
+	=UNITS (columns)
+*/
+.unit { 
+  float: left;
+}
+.first { margin-left: 0 }
+.last { margin-right: 0 }
+/* .span classes provide elements pre-sized to occupy the width of two or more columns */
+.span-1  { width: 10%; }
+.span-2  { width: 20%; }
+.span-3  { width: 30%; }
+.span-4  { width: 105px; }
+.span-5  { width: 50%; }
+.span-51 { width: 49%; }
+.span-6  { width: 60%; }
+.span-61  { width: 59%; }
+.span-7  { width: 70%; }
+.span-8  { width: 80%; }
+.span-9  { width: 90%; }
+.span-10 { 
+  width: 100%;
+  margin-left: 0;   
+  margin-right: 0;
+}
+
+/* .append and .prepend classes allow for "empty columns" by providing padding on a span or unit. */
+.append-1 { padding-right: 10%; }
+.append-2 { padding-right: 20%; }
+.append-3 { padding-right: 30%; }
+.append-4 { padding-right: 40%; }
+.append-5 { padding-right: 50%; }
+.append-6 { padding-right: 60%; }
+.append-7 { padding-right: 70%; }
+.append-8 { padding-right: 80%; }
+.append-9 { padding-right: 90%; }
+.append-10 { padding-right: 100%; }
+
+.prepend-1 { padding-left: 10%; }
+.prepend-2 { padding-left: 20%; }
+.prepend-3 { padding-left: 30%; }
+.prepend-4 { padding-left: 40%; }
+.prepend-5 { padding-left: 50%; }
+.prepend-6 { padding-left: 60%; }
+.prepend-7 { padding-left: 70%; }
+.prepend-8 { padding-left: 80%; }
+.prepend-9 { padding-left: 90%; }
+.prepend-10 { padding-left: 100%; }

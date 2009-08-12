@@ -1,0 +1,57 @@
+html {
+	height:100%;
+}
+body {
+	height:100%;
+	
+}
+.grid_1 {
+    background:#fff url('../images/960grid_no_ratios.png') repeat left top;
+}
+.grid_2 {
+    background:#fff url('../images/grid.gif') repeat left top;
+}
+.options {
+	background:#FFFFFF;
+	padding:17px 20px;	
+	text-align:right;
+}
+.options h1 {float:left;margin:0; padding:0;}
+.options #note, .options #page {display:inline; margin:0 10px;}
+.options #note a {margin:0 5px;}
+.options #page {font-weight:bold;}
+
+.test_containers {    
+}
+.test_containers a {
+    color: #fff;
+}
+.test_containers p {
+	margin:0; 
+    padding:5px 0;
+}
+.test_containers div, .test_containers li, .test_containers tr td {
+	background-color:#999;
+	text-align:center;
+	color:#fff;
+}
+table.test_containers { margin-left: auto; margin-right: auto; }
+table.test_containers tr td { border: 1px solid #ffffff; }
+
+#full_test{
+	position:relative;
+}
+#full_test div {
+    padding-top:10px; 
+    padding-bottom:10px;
+}
+#full_test #overlay {
+	display:none;
+	position:absolute; 
+	top:0;
+	left:0;
+	padding:0;
+	outline:none;
+	background:none;
+	z-index:10000;
+}

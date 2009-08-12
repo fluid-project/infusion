@@ -1,0 +1,17 @@
+/* FSS Extension: Sakai widgets */
+
+/* Widget :: Menus */    
+.fl-theme-mist .fl-widget-content .fl-listmenu {border:none; border-bottom:1px solid #ccc;}
+.fl-theme-mist .fl-widget-content .fl-listmenu li {border-color:#ccc;}
+.fl-theme-mist .fl-widget-content .fl-listmenu a {background-color:#f5f5f5; color:#000;}
+.fl-theme-mist .fl-widget-content .fl-listmenu a:hover {background-color:#dfefff; color:#000;}
+
+/* Widget :: Icons */
+.fl-theme-mist .fl-widget .more  {background-image:url('../images/mist-icons/icon-widget-More.png'); margin-left:0px;}
+.fl-theme-mist .fl-widget .close {background-image:url('../images/mist-icons/icon-widget-Close.png'); margin-right:0px;}
+.fl-theme-mist .viewOptions {background-image:url('../images/mist-icons/icon-options-ListOrGrid.png'); background-color:#fff;  border:1px solid #000;}
+.fl-theme-mist .menu .delete {
+    background-image: url('../images/mist-icons/icon-menu-Delete.png');
+    background-color:transparent;
+}    
+

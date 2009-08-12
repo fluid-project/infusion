@@ -1,0 +1,7 @@
+{"pager": {
+   	"name": "Pager",
+   	"description": "Allows users to break up long lists of items into separate pages.",
+   	"cssFiles": "Pager.css",
+	"files": "Pager.js",
+	"dependencies": ["jQuery", "jQueryTooltipPlugin", "jQuerybgiframePlugin", "framework", "renderer"]
+}}

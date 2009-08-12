@@ -1,0 +1,6 @@
+{"tableOfContents": {
+   "name": "Table of Contents",
+   "description": "Constructs and displays a formatted list of links to all headers in a document.",
+   "files": "TableOfContents.js",
+   "dependencies": ["jQuery", "framework", "renderer"]
+}}

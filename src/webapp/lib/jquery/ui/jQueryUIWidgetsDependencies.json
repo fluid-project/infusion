@@ -1,0 +1,6 @@
+{"jQueryUIWidgets": {
+   	"name": "jQuery UI Widgets",
+   	"description": "Full-featured jQuery UI Controls - each has a range of options and is fully themeable.",
+	"files": ["ui.dialog.js", "ui.draggable.js", "ui.accordion.js", "ui.slider.js"],
+	"dependencies": ["jQuery", "jQueryUICore"]
+}}

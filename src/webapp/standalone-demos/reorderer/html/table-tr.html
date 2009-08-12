@@ -1,0 +1,243 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+<head>
+<title>Reorder Table</title>
+<link href="../css/sample-code/reorderer/markup-examples.css"
+  type="text/css" rel="stylesheet" media="all" />
+
+<!--  These are the required javascript modules for the Reorderer and can be replaced with Fluid-all.js -->
+<script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+<script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+<script type="text/javascript" src="../../../lib/jquery/ui/js/ui.draggable.js"></script>
+<script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+<script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+<script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+<script type="text/javascript" src="../../../components/reorderer/js/GeometricManager.js"></script>
+<script type="text/javascript" src="../../../components/reorderer/js/Reorderer.js"></script>
+
+<link href="../css/tool_base.css" type="text/css" rel="stylesheet" media="all" />
+<link href="../css/tool.css" type="text/css" rel="stylesheet" media="all" />
+
+<style type="text/css">
+@import url("../css/assignment.css");
+</style>
+
+</head>
+<body>
+<h1>Bare Table reordering</h1>
+<div class="portletBody">
+
+
+<ul role="menu" class="navIntraTool actionToolBar">
+
+
+  <li role="menuitem" class="firstToolBarItem"><span class=""><a
+    onclick="location = 'http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?panel=Main&amp;sakai_action=doCancel';return false;"
+    title="Back to Announcements" href="#">Back to Announcements</a></span></li>
+
+</ul>
+
+<h3>Reorder Announcements</h3>
+<div class="navPanel">
+<div class="viewNav">
+<form
+  action="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?panel=Main"
+  method="post" class="inlineForm" name="viewForm"><input
+  type="hidden" value="view" name="eventSubmit_doView" /> <label
+  for="view"> View </label> <span class="skip">Press alt + up and
+down arrows to scroll through menu</span> <select disabled="disabled"
+  onchange="blur();document.viewForm.submit();" size="1" name="view"
+  id="view">
+  <option value="view.all">All</option>
+  <option value="view.public">Public</option>
+</select></form>
+<br />
+<span class="instruction"> To reorder, drag and drop list items
+or edit list order numbers.</span></div>
+<div class="listNav">
+<div class="instruction">Viewing 1 - 4 of 4 items</div>
+<form
+  action="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?panel=Main"
+  method="post" class="inlineForm" name="pagesizeForm"><input
+  type="hidden" value="changepagesize"
+  name="eventSubmit_doChange_pagesize" /> <select disabled="disabled"
+  onchange="blur();document.pagesizeForm.submit();"
+  name="selectPageSize">
+  <option value="5">show 5 items...</option>
+  <option selected="selected" value="10">show 10 items...</option>
+  <option value="20">show 20 items...</option>
+  <option value="50">show 50 items...</option>
+  <option value="100">show 100 items...</option>
+  <option value="200">show 200 items....</option>
+</select></form>
+<form
+  action="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?panel=Main"
+  method="post" class="inlineForm" name="nextpageForm"><input
+  type="submit" disabled="disabled" value=">"
+  name="eventSubmit_doList_next" /></form>
+<form
+  action="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?panel=Main"
+  method="post" class="inlineForm" name="lastpageForm"><input
+  type="submit" disabled="disabled" value=">|"
+  name="eventSubmit_doList_last" /></form>
+</div>
+</div>
+<ul class="itemAction noPrint">
+  <li style="display: inline;"><span
+    style="border: medium none; padding: 0pt 0.3em 0pt 0pt;"
+    id="undo-last-inact">Undo last</span> <a onclick="undoLast()"
+    id="undo-last" href="#" style="display: none;">Undo last</a></li>
+  <li
+    style="border-left: 1px solid rgb(204, 204, 204); display: inline; padding-left: 1em;">
+  <span style="border: medium none; padding: 0pt 0.3em 0pt 0pt;"
+    id="undo-all-inact">Undo all</span> <a
+    onclick="window.location.href =unescape(window.location.pathname);"
+    href="#" id="undo-all" style="display: none;">Undo all</a></li>
+  <li style="display: inline; color: rgb(0, 0, 0);"><span
+    style="opacity: 1; display: none;" class="messageSuccess"
+    id="messageHolder">well done! </span></li>
+</ul>
+
+<form method="post"
+  action="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?panel=Main"
+  name="announcementListForm">
+<table cellspacing="0" border="0"
+  summary="Table contains a list of announcements. It is five or six columns wide and each row contains a single announcement. Column one indicates if the announcement has an attachment, column two contains the title of the announcement, column three has the name of the author, column four shows the recipient, column five contains the date and time of publication, column six, if present, contains a checkbox - selecting it will mean you want to remove this announcement. The following row will contain announcement text if site owner has set it to be so."
+  class="listHier lines nolines" id="todo-list"
+  role="list"
+  aria-multiselectable="false" aria-readonly="false"
+  aria-disabled="false" tabindex="0">
+  <tbody>
+    <tr>
+      <th class="attach" id="numberField" />
+      <th class="attach" id="attach" />
+      <th id="subject">Subject</th>
+      <th id="author">From</th>
+      <th id="channel">For</th>
+      <th id="date">Date</th>
+      <th id="releaseDate">Beginning Date</th>
+      <th id="retractDate">Ending Date</th>
+      <th />
+    </tr>
+
+    <tr id="myUniquePrefix.orderable4" tabindex="-1" role="listitem"
+      aria-selected="false" aria-disabled="false"
+      class="ui-draggable ui-droppable fl-reorderer-movable-default"
+      aria-grabbed="false" aria-dropeffect="none">
+      <td style="white-space: nowrap;" class="attach"
+        headers="numberField"><input type="text" id="index4"
+        value="4" size="3" /> <input type="hidden" value="1"
+        id="holder4" size="3" /></td>
+      <td class="attach" headers="attach"> </td>
+      <td headers="subject">
+      <h4><a title="View announcement zzz"
+        href="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?itemReference=/announcement/msg/545e32b6-62ca-4595-b4b4-7719e740a048/main/a4e088be-059c-4920-8fdd-e7fe8b0aaeb5&amp;panel=Main&amp;sakai_action=doShowmetadata">
+      zzz</a></h4>
+      </td>
+      <td headers="author">Sakai Administrator</td>
+      <td>site</td>
+      <td headers="date">Dec 12, 2008 5:07 pm</td>
+      <td headers="releaseDate"> </td>
+      <td headers="retractDate"> </td>
+      <td><input type="checkbox" class="skip"
+        value="/announcement/msg/545e32b6-62ca-4595-b4b4-7719e740a048/main/a4e088be-059c-4920-8fdd-e7fe8b0aaeb5"
+        name="selectedMembers2" id="check-4" title="Select to remove" />
+      </td>
+    </tr>
+    <tr id="myUniquePrefix.orderable1" tabindex="-1" role="listitem"
+      aria-selected="false" aria-disabled="false"
+      class="fl-reorderer-movable-default ui-draggable ui-droppable"
+      aria-grabbed="false" aria-dropeffect="none">
+      <td style="white-space: nowrap;" class="attach"
+        headers="numberField"><input type="text" id="index1"
+        value="1" size="3" /> <input type="hidden" value="2"
+        id="holder1" size="3" /></td>
+      <td class="attach" headers="attach"> </td>
+      <td headers="subject">
+      <h4><a title="View announcement aaa"
+        href="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?itemReference=/announcement/msg/545e32b6-62ca-4595-b4b4-7719e740a048/main/152e0abf-dd26-4b0e-b73a-9fa9943f2b3d&amp;panel=Main&amp;sakai_action=doShowmetadata">
+      aaa</a></h4>
+      </td>
+      <td headers="author">Sakai Administrator</td>
+      <td>site</td>
+      <td headers="date">Dec 12, 2008 5:07 pm</td>
+      <td headers="releaseDate"> </td>
+      <td headers="retractDate"> </td>
+      <td><input type="checkbox" class="skip"
+        value="/announcement/msg/545e32b6-62ca-4595-b4b4-7719e740a048/main/152e0abf-dd26-4b0e-b73a-9fa9943f2b3d"
+        name="selectedMembers2" id="check-1" title="Select to remove" />
+      </td>
+    </tr>
+
+    <tr id="myUniquePrefix.orderable2" tabindex="-1" role="listitem"
+      aria-selected="false" aria-disabled="false"
+      class="fl-reorderer-movable-default ui-draggable ui-droppable"
+      aria-grabbed="false" aria-dropeffect="none">
+      <td style="white-space: nowrap;" class="attach"
+        headers="numberField"><input type="text" id="index2"
+        value="2" size="3" /> <input type="hidden" value="3"
+        id="holder2" size="3" /></td>
+      <td class="attach" headers="attach"> </td>
+      <td headers="subject">
+      <h4><a title="View announcement bbb"
+        href="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?itemReference=/announcement/msg/545e32b6-62ca-4595-b4b4-7719e740a048/main/1b347682-decd-4cc4-91ae-ead96e0f9003&amp;panel=Main&amp;sakai_action=doShowmetadata">
+      bbb</a></h4>
+      </td>
+      <td headers="author">Sakai Administrator</td>
+      <td>site</td>
+      <td headers="date">Jan 29, 2009 1:52 pm</td>
+      <td headers="releaseDate"> </td>
+      <td headers="retractDate"> </td>
+      <td><input type="checkbox" class="skip"
+        value="/announcement/msg/545e32b6-62ca-4595-b4b4-7719e740a048/main/1b347682-decd-4cc4-91ae-ead96e0f9003"
+        name="selectedMembers2" id="check-2" title="Select to remove" />
+      </td>
+    </tr>
+
+    <tr id="myUniquePrefix.orderable3" tabindex="-1" role="listitem"
+      aria-selected="false" aria-disabled="false"
+      class="fl-reorderer-movable-default ui-draggable ui-droppable"
+      aria-grabbed="false" aria-dropeffect="none">
+      <td style="white-space: nowrap;" class="attach"
+        headers="numberField"><input type="text" id="index3"
+        value="3" size="3" /> <input type="hidden" value="4"
+        id="holder3" size="3" /></td>
+      <td class="attach" headers="attach"> </td>
+      <td headers="subject">
+      <h4><a title="View announcement ccc"
+        href="http://garden.dmc.dc.umich.edu:8080/portal/tool/0ca44450-40ec-4925-b9d8-418626e146d8?itemReference=/announcement/msg/545e32b6-62ca-4595-b4b4-7719e740a048/main/a450edfa-bc13-45ca-86ff-7512ba40b5d8&amp;panel=Main&amp;sakai_action=doShowmetadata">
+      ccc</a></h4>
+      </td>
+      <td headers="author">Sakai Administrator</td>
+      <td>site</td>
+      <td headers="date">Jan 29, 2009 1:52 pm</td>
+      <td headers="releaseDate"> </td>
+      <td headers="retractDate"> </td>
+      <td><input type="checkbox" class="skip"
+        value="/announcement/msg/545e32b6-62ca-4595-b4b4-7719e740a048/main/a450edfa-bc13-45ca-86ff-7512ba40b5d8"
+        name="selectedMembers2" id="check-3" title="Select to remove" />
+      </td>
+    </tr>
+
+
+  </tbody>
+</table>
+<p class="act"><input type="submit" accesskey="s" value="Update"
+  name="eventSubmit_doReorderUpdate" class="active" /> <input
+  type="submit" value="Cancel" name="eventSubmit_doCancel" accesskey="x" />
+</p>
+</form>
+
+
+</div>
+<script type="text/javascript">
+        fluid.reorderList("#todo-list", {
+            selectors: {
+                movables: "[id^=myUniquePrefix]"
+            }
+        });
+    </script>
+</body>
+</html>

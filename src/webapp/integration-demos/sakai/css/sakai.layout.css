@@ -1,0 +1,48 @@
+/*
+ * FSS Extension: Widget Layout
+ * 
+ * Widgets: a quick and basic widget structure
+ * Widgets modelled off of Sakai markup v7.4 widgets
+ * Contains a Title zone, Controls zone, Extended Options, Content zone
+ * Widget Template:
+ * <div class="fl-widget">
+ *     <h2>Widget Title
+ *     <ul class="fl-widget-controls-icons">
+ *         <li>
+ *             <a>
+ *             ...
+ *     <div class="fl-widget-controls">
+ *     <div class="fl-widgets-options">
+ *     <div class="fl-widgets-content">
+ */
+
+.fl-widget {padding:5px; margin-bottom:10px;}
+.fl-widget .button {margin:0 5px;}
+
+.fl-widget .fl-widget-titlebar {position:relative;} /* fixes layout problem in IE6 due to .column {position:relative} setup*/
+.fl-widget .fl-widget-titlebar h2 {padding:0; margin:0; font-size:105%;}
+.fl-widget .fl-widget-controls {margin:-1.3em 0 1.5em 0;}
+
+.fl-widget .fl-widget-options {padding:5px 10px 0px 10px;}
+.fl-widget .fl-widget-options ul {margin:0; padding:0; overflow:hidden; zoom:1;} 
+.fl-widget .fl-widget-options li {list-style-type:none; float:left; display:inline; padding:0 5px 0 5px; margin-left:-5px;}
+.fl-widget .fl-widget-options a {margin-right:5px;}
+
+.fl-widget .fl-widget-content {zoom:1; margin:5px 0 0 0; overflow: auto;}
+.fl-widget .fl-widget-content ul {}
+.fl-widget .empty * {padding-top:10px; margin-left:auto; margin-right:auto; text-align:center;}
+
+/* Common widget sub-components */
+.fl-widget .fl-listmenu .fl-icon {position:absolute}
+.fl-widget .menu 	{margin:0;}
+.fl-widget .grabbable {cursor:move; background-position:center top; background-repeat:no-repeat;}
+.fl-widget h2.grabbable {background-position:center top;}
+.fl-widget .icon,
+.fl-widget .fl-icon {text-indent:-5000px; cursor:pointer; display:block; height:16px; width:16px; margin-left:5px; margin-right:5px; background-repeat:no-repeat;}
+.fl-widget .toggle  {width:32px;}
+.fl-widget .on 		{background-position:left top;}
+.fl-widget .off 	{background-position:left bottom;}
+
+.fl-widget-content .fl-listmenu li {position:relative;}
+.fl-widget-content .fl-listmenu a { text-indent:2em;}
+.fl-widget-content .fl-listmenu .delete {right:0; top:5px;}

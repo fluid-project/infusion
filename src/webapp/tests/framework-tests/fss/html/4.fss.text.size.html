@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<link href="../css/tests.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-reset.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-layout.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-text.css" rel="stylesheet" />
+		
+		<script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+		<script type="text/javascript" src="../js/toc.js"></script>
+		
+		<script type="text/javascript">
+            // programmatic coloring - access to advanced selectors + requires less maintenance than hardcoded classes
+            $().ready(function(){
+                // Creation
+                var column, columnA, columnB, columnC;
+                var base = parseFloat($('body').css('fontSize'));
+                
+                //console.log(base, 1/base * base);
+                
+                columnA = $('<div class="fl-col"></div>');
+                columnB = $('<div class="fl-col"></div>');
+                columnC = $('<div class="fl-col"></div>');
+                columnD = $('<div class="fl-col"></div>');
+
+                for(var i=70; i<=150; i += 10){
+                    columnA.append('<p class="fl-text-align-left fl-font-size-' + i + '">Plain inline text</p>');                    
+                    columnB.append('<p class="fl-text-align-left"> <input class="fl-font-size-' + i + '" type="submit" value="Button" /></p>');
+                    columnC.append('<p class="fl-text-align-left"> <input class="fl-font-size-' + i + '" type="text" value="Text field" /></p>');
+                    columnD.append('<p class="fl-text-align-left"> <textarea class="fl-font-size-' + i + '">Text area</textarea></p>');                    
+                }
+                                
+                $('.test_containers').append(columnA);
+                $('.test_containers').append(columnB);
+                $('.test_containers').append(columnC);
+                $('.test_containers').append(columnD);                                
+                
+                // Testing
+                // Since the different browsers report such different numbers for the same visual end result, the only useful test is to see if a size is larger than the previous
+                /*
+                var temp = 0.60;
+                $.each($('*[class*=fl-font]'), function(i,el){
+                    temp += 0.10;                    
+                    expected = temp.toFixed(2);
+                    actual = (parseFloat($(el).css('fontSize')) / base).toFixed(2);
+                    
+                    //$(el).closest("p").append("<strong style='display:block'>Expected: "+ expected +"; Actual: "+ actual +"</strong>");
+                    
+                    if (expected === actual){
+                        $(el).closest("p").css('background-color','#0C0');
+                    } else {
+                        $(el).closest("p").css('background-color','#C00');
+                    }
+
+                    if (temp >= 1.5){
+                        temp = 0.6;
+                    }
+                });
+                */                
+            });
+		</script>
+
+		<title>Test Containers</title>
+	</head>
+	<body>
+		<div class="options">
+			<h1>Loading test...</h1>
+            <p id="note"></p>
+            <p id="page">Test 0 of 0</p>
+			<a href="#prev">Previous Test</a>
+			<a href="#next">Next Test</a>
+		</div>
+
+		<div class="test_containers fl-col-flex4">
+		</div>		
+
+	</body>
+</html>
+

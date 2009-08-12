@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>Progress Manual Tests</title>
+        
+        <link rel="Stylesheet" media="screen" href="../css/simple-progress.css" />
+                
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+
+        <script type="text/javascript" src="../../../components/progress/js/Progress.js"></script>
+        <script src="../js/simple-progress.js" type="text/javascript"></script>
+    </head>
+    
+    <body>
+        <!-- Generic Progress Bar -->
+		<div id="main">
+			<h2>Progress Manual Testing Page</h2>
+
+	 		<h3>Progress Controls for Testing</h3>
+	       <p id="buttonPanel">
+	            <label for="percentField">Progress:</label> 
+	            <input id="percentField" type="text" value="14"/>%
+	            <button id="hideButton">Progress Hide</button>
+	            <button id="showButton">Progress Show</button>
+	        </p>
+			<div class="container" id="absoluteProgress">
+				<h3>Floating Progress, animates forward only, delays on hide</h3>
+			
+				<p class="um">This is some text for the progressor to float over. It serves no other purpose. 
+				So you may ignore it. But you're reading this aren't you. Go on, admit it. There 
+				is nothing to be ashamed of. Well, ok, I am laughing at you. Perhaps you maybe be 
+				a little embarrised. I told you at the beginning that this text served no purpose 
+				at all, and yet, here you are reading to the very end.</p>
+				
+                <div class="flc-progress fluid-progress rounded-rect-thing">
+		        	<div class="flc-progress-label fluid-progress-label">Here's some text.</div>
+		            <div class="flc-progress-bar fluid-progress-bar">
+		            	<div class="flc-progress-indicator fluid-progress-indicator">&nbsp;</div>
+		            </div>		
+		        </div>
+	
+			</div>
+			
+		    <div id="floatyProgress">
+				<h3>Progress in a float, animates forward only</h3>
+				
+				<div>
+					<p style="float: left;">Here is some floating text, perhaps a label</p>
+			    	<div class="flc-progress-bar fluid-progress-bar">
+		            	<div class="flc-progress-indicator fluid-progress-indicator">&nbsp;</div>
+						<div class="flc-progress-label fluid-progress-label">Here's some text.</div>
+		        	</div>
+				</div>
+				
+				<div id="custom">custom callback was a success!</div>
+			</div>
+				
+	        		
+			<div id="staticProgress">
+				<h3>Progress Always Showing, #1, animates both direction, #2 doesn't animate at all</h3>
+				<div id="staticProgressOne">
+		        	<div class="flc-progress-label fluid-progress-label">Here's some text.</div>
+		            <div class="flc-progress-bar fluid-progress-bar">
+		            	<div class="flc-progress-indicator fluid-progress-indicator">&nbsp;</div>
+		            </div>		
+		        </div>
+				<div id="staticProgressTwo">
+		        	<div class="flc-progress-label fluid-progress-label">Here's some text.</div>
+		            <div class="flc-progress-bar fluid-progress-bar">
+		            	<div class="flc-progress-indicator fluid-progress-indicator">&nbsp;</div>
+		            </div>		
+		        </div>
+			</div>
+        </div>
+    </body>
+</html>

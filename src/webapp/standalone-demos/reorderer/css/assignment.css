@@ -1,0 +1,49 @@
+#todo-list tr {
+    width: 100%;
+/*
+    display: table; 
+*/
+}
+
+/*marks a drop zone*/
+.fl-reorderer-dropMarker {
+    background: url(../images/drop.gif) center left no-repeat;
+   height: 30px;
+   margin:0 1em;
+}
+/*hover over a selectable item*/
+.fl-reorderer-movable-hover {
+    cursor: move;
+    background:#eee !important
+ }
+.fl-reorderer-movable-hover {
+    cursor: move;
+ }
+/*first cell*/
+.fl-reorderer-movable-hover td:first-child {
+}
+/*left behind */ 
+ .fl-reorderer-movable-dragging {
+    background:#eee;
+    color:#555 !important
+}
+
+/*item being dragged*/
+.fl-reorderer-avatar {
+    background:#BBEEAA !important;
+    opacity: 0.55;
+}
+
+.fl-reorderer-movable-selected {
+  background:#ffc;
+  outline:1px solid red
+}
+
+.fl-reorderer-movable-dragging {
+  outline:1px solid #000
+}
+
+
+.recentMove{
+  background:orange
+  }

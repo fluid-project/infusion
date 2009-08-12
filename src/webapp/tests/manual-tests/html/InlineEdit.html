@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Inline Edit Manual Test Page</title>
+
+      <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
+      <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss.presentation.css" />
+      <link rel="stylesheet" type="text/css" href="../../../lib/jquery/plugins/tooltip/css/jquery.tooltip.css" />
+      <link rel="stylesheet" type="text/css" href="../../../components/inlineEdit/css/InlineEdit.css" />
+      
+      <link rel="stylesheet" type="text/css" href="../css/InlineEdit.css"  media="screen" charset="utf-8" />
+ 
+      <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+      <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+      <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+      <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+      <script type="text/javascript" src="../../../components/inlineEdit/js/InlineEdit.js"></script>
+      <script type="text/javascript" src="../../../components/undo/js/Undo.js"></script>
+        
+      <script type="text/javascript" src="../../../lib/jquery/plugins/tooltip/js/jquery.tooltip.js"></script>        
+
+	</head>
+	<body>
+	    <form id="inline-edit1" action="#">
+	        <div class="flc-inlineEdit-text" id="text1">Click me to edit (you'll be able to undo)...</div>
+            <div class="flc-inlineEdit-editContainer" id="editContainer1">
+                <input type="text" class="flc-inlineEdit-edit" id="edit1" value="I am the hidden text of the first edit"/>
+            </div>
+	    </form>
+	    <form id="inline-edit2" action="#">
+	        <span class="flc-inlineEdit-text" id="text2">No, click me instead!</span>
+          <input type="text" class="flc-inlineEdit-edit" id="edit2" value="I am the hidden text of the second edit"/>
+	    </form>
+	    <form id="inline-edit3" action="#">
+	        <div class="flc-inlineEdit-text" id="text3">Oh, pick me! Pick me!</div>
+            <div class="flc-inlineEdit-editContainer" id="editContainer3">
+                <input type="text" class="flc-inlineEdit-edit" id="edit3" value="I am the hidden text of the third edit"/>
+            </div>
+	    </form>
+
+	    <div id="inline-edit4">
+            <span class="flc-inlineEdit-text" id="text4">I don't have a built-in input field.</span>
+        </div>
+        
+        <p id="inline-edit5">The following line is an empty inline edit with default invitation text:
+            <span class="flc-inlineEdit-text" id="text5"></span>
+        </p>
+        
+        <p id="inline-edit6">The following line is an empty inline edit with custom invitation text:
+            <span class="flc-inlineEdit-text" id="text6"></span>
+        </p>
+
+        <p id="multiple-edits">
+            <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">These edit fields</span></span>
+            <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">are all set up</span></span>
+            <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">with a single</span></span>
+            <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">function call</span></span>
+            <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">and with</span></span>
+            <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">selectOnEdit true.</span></span>,
+            as well as each being individually undoable.
+        </p>
+        
+        <p id="multiple-edits-2">
+            <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">These edit fields</span></span>
+            <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">are all set up</span></span>
+            <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">with a single</span></span>
+            <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">function call</span></span>
+            <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">and with</span></span>
+            <span class="flc-inlineEditable"><span class="flc-inlineEdit-text">selectOnEdit true.</span>(2nd copy)</span>,
+            as well as each being individually undoable.
+        </p>
+        
+        <p id="inline-edit7">The following text is an empty inline edit 'span' with NO invitation text:
+            <span class="flc-inlineEdit-text" id="text7"></span>
+            This text is after the inline edit.
+        </p>
+
+	    <p id="inline-edit8">
+            <span class="flc-inlineEdit-text" id="text8">This text has a tooltip with the default text.</span>
+        </p>
+
+	    <p id="inline-edit9">
+         <span class="flc-inlineEdit-text" id="text9">This text has a tooltip with custom text.</span>
+       </p>
+
+      <p id="inline-edit10">
+        <span class="flc-inlineEdit-text" id="text10">This control features an undoable edit mode</span>
+      </p>
+
+        <table id="inline-edit11">
+            <tr>
+                <td class="flc-inlineEditable">
+                    <span class="flc-inlineEdit-text">This is an editable table cell.</span>
+                    <div class="flc-inlineEdit-editContainer">
+                        <input type="text" class="flc-inlineEdit-edit" />
+                    </div>
+                </td>
+                <td class="flc-inlineEditable">
+                    <span class="flc-inlineEdit-text">This is another editable table cell.</span>
+                    <div class="flc-inlineEdit-editContainer">
+                        <input type="text" class="flc-inlineEdit-edit" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+        
+        <script type="text/javascript">
+            var editor1 = fluid.inlineEdit("#inline-edit1", {componentDecorators: "fluid.undoDecorator"});
+            fluid.inlineEdit(jQuery("#inline-edit2"));
+            fluid.inlineEdit(document.getElementById("inline-edit3"));
+            fluid.inlineEdit("#inline-edit4");
+            fluid.inlineEdit("#inline-edit5");
+            fluid.inlineEdit("#inline-edit6", {defaultViewText: "Go ahead, try it - click on me..."});
+            fluid.inlineEdits("#multiple-edits", {selectOnEdit: true, componentDecorators: "fluid.undoDecorator"});
+            fluid.inlineEdits("#multiple-edits-2", {selectOnEdit: true, componentDecorators: "fluid.undoDecorator"});            
+            fluid.inlineEdit("#inline-edit7", {defaultViewText: false});
+            fluid.inlineEdit("#inline-edit8", {useTooltip: true});
+            fluid.inlineEdit("#inline-edit9", {useTooltip: true, tooltipText:"Go on, I dares ya - click on it..."});
+            fluid.inlineEdit("#inline-edit10", {componentDecorators: "fluid.undoDecorator"});
+            fluid.inlineEdits("#inline-edit11", {useTooltip: true});
+        </script>
+	</body>
+</html>

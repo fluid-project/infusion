@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../components/reorderer/js/GeometricManager.js"></script>
+        <script type="text/javascript" src="../../../components/reorderer/js/Reorderer.js"></script>
+        
+        <link href="../css/dynamic-reorderer.css" type="text/css" rel="stylesheet" media="all" />
+
+        <title>Test Reordering page - demonstrates FLUID-1702</title>
+  </head>
+  <body>
+    <input id="newDiv" type="button" value="New Div" />
+    <p />
+    <div id="orderableContainer">
+        <div id="1" class="myorderable">This is one</div>
+        <div id="2" class="myorderable">This is two</div>
+        <div id="3" class="myorderable">This is three</div>
+    </div>
+
+        <script type="text/javascript">
+            var mySelectors = {
+                movables: ".myorderable"
+                };
+                                                          
+            var myListeners = {
+                onSelect: null,
+                onShowKeyboardDropWarning: null,
+                onBeginMove: null,
+                onMove: null,
+                onHover: null,
+                afterMove: null
+                };
+
+                                        
+            var opts = {
+                selectors: mySelectors,
+                listeners: myListeners
+                };
+
+                    
+            var ordered = fluid.reorderGrid("#orderableContainer", opts);
+
+            jQuery("#newDiv").click( function()
+                {
+                jQuery(".myorderable:last").after("<div class=\"myorderable\">New Div</div>");
+                ordered.refresh();
+                });
+        </script>
+    </body>
+</html>

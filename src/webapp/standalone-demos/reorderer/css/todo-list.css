@@ -1,0 +1,49 @@
+
+body{
+    font-family: verdana, sans-serif;
+    font-size: 1em;
+}
+
+ol li {
+    padding: 5px;
+    margin: 5px;
+}
+
+ul li {
+    margin:0px;
+    padding:0px;
+}
+
+.fl-reorderer-movable-default{
+    background-color: #eee;
+}
+
+.fl-reorderer-movable-hover{
+    background-color: lightyellow;
+    cursor: move;
+}
+
+.fl-reorderer-movable-selected{
+    background-color: #ddd;
+}
+
+.fl-reorderer-movable-dragging {
+    background-color: lightyellow;
+}
+
+.fl-reorderer-avatar {
+    opacity: 0.55;
+    border: 0;
+    list-style-type: none;
+}
+
+.fl-reorderer-dropMarker {
+    background-color : red !important;
+    height:2px !important;
+    padding:0 0 0 0 !important;
+    border-width: 0px !important;
+    list-style-type:none;
+    font-size:0px;
+    line-height:0px;
+    overflow:hidden;
+}

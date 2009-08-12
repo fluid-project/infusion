@@ -1,0 +1,80 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+  <head>
+    <title>List Layout Handler Tests</title>
+    <link href="../../../test-core/css/markup-examples.css" type="text/css" rel="stylesheet" media="all" />
+
+    <!--  This is the jqUnit test css file -->
+    <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/testsuite.css" />
+
+    <!--  These are the required javascript modules for the Reorderer
+          eventually to be replaced with a single build generated file -->
+    <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.core.js"></script>
+    <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../../components/reorderer/js/GeometricManager.js"></script>
+    <script type="text/javascript" src="../../../../components/reorderer/js/Reorderer.js"></script>
+
+    <!--  These are the jqUnit test js files -->
+    <script type="text/javascript" src="../../../lib/qunit/js/testrunner.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+
+    <!--  These are used for tests that have been written using this page as data -->
+    <script type="text/javascript" src="../../../test-core/utils/js/TestUtils.js"></script>
+    <script type="text/javascript" src="../js/ReordererTestUtils.js"></script>
+    <script type="text/javascript" src="../js/UnorderedListTestConstants.js"></script>
+    <script type="text/javascript" src="../js/ReorderListTests.js"></script>
+
+    <!--  Ensure jQuery plays nice with other toolkits -
+          must be called after all the javascript is loaded. -->
+    <script type="text/javascript">
+      jQuery.noConflict();
+    </script>
+  </head>
+  <body>
+     <h1 id="header">ListLayoutHandler Test Suite</h1>
+    <h2 id="banner"></h2>
+    <h2 id="userAgent"></h2>
+    
+    <ol id="tests"></ol>
+    <div id="main">
+
+    <h1>Unordered List (vertical)</h1>
+
+    <div id="list1" class="reorderer_container">
+      <p id="para1"> This is a simple example of using the Reorderer with a list. </p>
+      <ul>
+        <li id="list1item1" class="orderable">Item 1</li>
+        <li id="list1item2" class="orderable">Item 2</li>
+        <li id="list1item3" class="orderable">Item 3</li>
+        <li id="list1item4" class="orderable">Item 4</li>
+        <li id="list1item5" class="orderable">Item 5</li>
+      </ul>
+    </div>
+
+    <h1>Unordered List</h1>
+    <div id="list2" class="reorderer_container">
+      <p>This is an example of an unordered list that is visually laid out
+         vertically.
+      </p>
+      <ul>
+        <li id="list2item1" class="orderable">An Item 1</li>
+        <li id="list2item2">An Item 2</li>
+        <li id="list2item3" class="orderable">An Item 3</li>
+        <li id="list2item4">An Item 4</li>
+        <li id="list2item5" class="orderable">An Item 5</li>
+        <li id="list2item6" class="orderable">An Item 6</li>
+        <li id="list2item7" class="orderable">An Item 7</li>
+        <li id="list2item8" class="orderable">An Item 8</li>
+        <li id="list2item9">An Item 9</li>
+        <li id="list2item10" class="orderable">An Item 10</li>
+      </ul>
+    </div>
+    </div>
+  </body>
+</html>

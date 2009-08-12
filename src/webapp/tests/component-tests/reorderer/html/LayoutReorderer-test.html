@@ -1,0 +1,129 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-ca">
+  <head>
+    <title>Layout Reorderer Tests</title>
+    <link href="../../../test-core/css/markup-examples.css" type="text/css" rel="stylesheet" media="all" />
+
+    <!--  This is the jqUnit test css file -->
+    <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/testsuite.css" />
+
+    <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.core.js"></script>
+    <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../../lib/json/js/json2.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../../components/reorderer/js/GeometricManager.js"></script>
+    <script type="text/javascript" src="../../../../components/reorderer/js/Reorderer.js"></script>
+    <script type="text/javascript" src="../../../../components/reorderer/js/ModuleLayout.js"></script>
+    <script type="text/javascript" src="../../../../components/reorderer/js/LayoutReorderer.js"></script>
+
+    <!--  These are the jqUnit test js files -->
+    <script type="text/javascript" src="../../../lib/qunit/js/testrunner.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+    <script type="text/javascript" src="../../../lib/jquery-ui/js/jquery.simulate.js"></script>
+  
+    <!--  These are used for tests that have been written using this page as data -->
+    <script type="text/javascript" src="../../../test-core/utils/js/TestUtils.js"></script>
+    <script type="text/javascript" src="../js/ReordererTestUtils.js"></script>
+    <script type="text/javascript" src="../js/ModuleLayoutTestConstants.js"></script>
+    <script type="text/javascript" src="../js/LayoutReordererTests.js"></script>
+    <script type="text/javascript" src="../js/ModuleLayoutTests.js"></script>
+  </head>
+  <body>
+     <h1 id="header">LayoutReorderer Test Suite</h1>
+    <h2 id="banner"></h2>
+    <h2 id="userAgent"></h2>
+    
+    <ol id="tests"></ol>
+    <div id="main" >
+
+        <div id="default-selector-test">
+            <div class="flc-reorderer-column">
+                <div class="flc-reorderer-module" id="portlet-1">
+                    News portlet 1
+                </div>
+                <div class="flc-reorderer-module" id="portlet-2">
+                    News portlet 2
+                </div>
+            </div>
+            <div class="flc-reorderer-column">
+                <div class="flc-reorderer-module"->
+                    News portlet 3
+                </div>
+                <div class="flc-reorderer-module">
+                    News portlet 4
+                </div>
+            </div>
+            <div class="flc-reorderer-column">
+                <div class="flc-reorderer-module">
+                    News portlet 5
+                </div>
+            </div>
+        </div>
+
+
+  <!-- TABLE -->
+
+    <div class="reorderer_container" id="reorderer-container">
+    <!-- TODO the id is required since moduleLayout.containerId attempts to determine it and use as a selector -->
+      <div id="drop-warning" style="display:none;">The portlet being moved cannot be dropped in this position</div>
+      <table id="portlet-reorderer-root">
+        <tbody>
+          <tr>
+            <td id="c1">
+        <div class="portlet locked" id="portlet1">
+          <div class="title">portlet 1</div>
+          <div class="content">prec 90</div>
+        </div>
+        <div class="portlet locked" id="portlet2">
+          <div class="title">portlet 2</div>
+          <div class="content">prec 80</div>
+             <input type="text" id="text-2"/>
+        </div>
+        <div class="portlet orderable" id="portlet3">
+          <div class="title">portlet 3</div>
+          <div class="content">prec 50</div>
+        </div>
+        <div class="portlet orderable" id="portlet4">
+          <div class="title">portlet 4</div>
+          <div class="content">&nbsp;</div>
+        </div>
+      </td>
+      <td id="c2">
+        <div class="portlet locked" id="portlet5">
+          <div class="title">portlet 5</div>
+          <div class="content">prec 70</div>
+        </div>
+        <div class="portlet orderable" id="portlet6">
+          <div class="title">portlet 6</div>
+          <div class="content">&nbsp;</div>
+        </div>
+      </td>
+      <td id="c3">
+        <div class="portlet orderable" id="portlet7">
+          <div class="title">portlet 7</div>
+          <div class="content">prec 60</div>
+        </div>
+        <div class="portlet orderable" id="portlet8">
+          <div class="title">portlet 8</div>
+          <div class="content">&nbsp;</div>
+        </div>
+        <div class="portlet orderable" id="portlet9">
+          <div class="title">portlet 9</div>
+          <div class="content">&nbsp;</div>
+        </div>
+      </td>
+      <td id="c4">
+      </td>
+      </tr>
+        </tbody>
+      </table>
+    </div>
+
+</div>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Renderer Test: Textarea Audobinding</title>
+        <link rel="stylesheet" type="text/css" href="../css/renderer-examples.css" />
+        
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+    </head>
+    <body>
+        <h1>Renderer Example: Autobinding for textarea</h1>
+        <div id="render-root">
+            <input type="text" rsf:id="input2"/>
+            <textarea rsf:id="input">
+            </textarea>
+        </div>
+        <input type="text" value="Blur target"/>
+        <div id="bound-value">
+        </div>
+    <script type="text/javascript">
+         var model = {
+             value: "Initial model value"
+             };
+         var applier = fluid.makeChangeApplier(model);
+         applier.modelChanged.addListener("*", function() {
+             $("#bound-value").text(model.value);
+             });
+         fluid.selfRender($("#render-root"), 
+           {ID: "input",
+            valuebinding: "value"},
+           {model: model,
+            autoBind: true,
+            applier: applier});
+            
+    </script>
+    </body>
+</html>

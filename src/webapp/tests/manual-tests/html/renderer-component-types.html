@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:rsf="http://ponder.org.uk">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <link href="../../../components/reorderer/css/ImageReorderer.css" type="text/css" rel="stylesheet" />
+        <title>Renderer Test: Component Types</title>
+        <!--  These are the required javascript modules for the Renderer and can be replaced with Fluid-all.js -->
+        <script src="../../../lib/jquery/core/js/jquery.js" type="text/javascript"></script>
+        <script src="../../../framework/core/js/Fluid.js" type="text/javascript"></script>
+        <script src="../../../framework/core/js/DataBinding.js" type="text/javascript"></script>
+        <script src="../../../framework/core/js/FluidDOMUtilities.js" type="text/javascript"></script>   
+        <script src="../../../lib/fastXmlPull/js/fastXmlPull.js" type="text/javascript"></script>
+        <script src="../../../framework/renderer/js/fluidParser.js" type="text/javascript"></script>
+        <script src="../../../framework/renderer/js/fluidRenderer.js" type="text/javascript"></script>
+        <script type="text/javascript" src="../js/renderer-component-types.js"></script>        
+    </head>
+
+    <body id="mystuff">
+
+        <h2>Nested List Items</h2>
+        <div id="toc">
+            <ul rsf:id="H1s:">
+                <li rsf:id="H1item:toc">
+                    <a rsf:id="toc_anchor" href="">1</a>
+                </li>
+                <li rsf:id="H1item:H2s">
+                    <ul>
+                        <li rsf:id="H2item:toc">
+                            <a rsf:id="toc_anchor" href="">2</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <h2>Image thumbnails</h2>
+        <div id="image-container" class="image-container">
+            <div rsf:id="thumb:" class="fl-reorderer-movable-default">
+                <div class="image-inner-container">
+                    <a rsf:id="image-url" href="image-url-here"><img rsf:id="image-thumb-url" src="thumb url here"/></a>
+                </div>
+                <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+                    <a rsf:id="caption-url" href="image-url-here">Image name here</a>
+                </div>
+                <input type="hidden" value="0"/>
+            </div>
+        </div>
+
+        <h2>Selection</h2>
+        <h3>Drop-down</h3>
+        <div id="selection-test1">
+            <div>
+                <select rsf:id="select-test">
+                </select>
+            </div>
+        </div>
+        <h3>Radio buttons</h3>
+        <div id="selection-test2">
+            <div rsf:id="select-test-row:">
+                <input rsf:id="select-test-option" name="group1" id="select-test-radio" type="radio"/>
+                <label rsf:id="select-test-label" for="select-test-radio">
+                    foofer
+                </label>
+            </div>
+        </div>
+        <h3>Check boxes</h3>
+        <div id="selection-test3">
+            <div class="my-row">
+                <input class="my-choice" name="group1" id="select-test-check" type="checkbox"/>
+                <label class="my-label" for="select-test-check">
+                    foofer
+                </label>
+            </div>
+        </div>
+
+        <h2>Joint Container</h2>
+        <div id="joint-test">
+            <div rsf:id="joint1">
+                <p id="foo">
+                    This is inside the joint1 container.
+                </p>
+            </div>
+            <div rsf:id="joint2">
+                <p id="bar">
+                    This is inside the joint2 container.
+                </p>
+            </div>
+        </div>
+
+        <div id="script">
+            <script rsf:id="script-test" type="text/javascript">
+            </script>
+        </div>
+
+        <script type="text/javascript">
+            demo.renderComponents();
+        </script>
+    </body>
+</html>

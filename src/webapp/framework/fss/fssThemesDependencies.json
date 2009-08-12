@@ -1,0 +1,5 @@
+{"fssThemes": {
+   	"name": "Themes",
+   	"description": "Colour schemes for basic markup and widgets.",
+   	"cssFiles": ["fss-theme-coal.css", "fss-theme-debug.css", "fss-theme-hc.css", "fss-theme-hci.css", "fss-theme-mist.css", "fss-theme-rust.css", "fss-theme-slate.css"]
+}}

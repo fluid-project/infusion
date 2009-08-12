@@ -1,0 +1,324 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <link href="../css/pager.css" type="text/css" rel="stylesheet" />
+
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../components/pager/js/Pager.js"></script>
+
+        <script type="text/javascript" src="../js/pager-example.js"></script>
+
+		<title>Gradebook Example</title>
+	</head>
+	<body>
+	    <div id="gradebook">
+	      <form action="#">
+    	    <ul id="pager-top" class="fl-pager-top flc-pager-top">
+    	        <li value="1" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
+    	        <li value="2" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">2</a></li>
+    	        <li value="3" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
+    	        <li value="4" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">4</a></li>
+    	        <li value="5" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">5</a></li>
+    	        <li value="6" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">6</a></li>
+    	        <li value="7" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">7 (last)</a></li>
+    	        <li class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></li>
+    	        <li class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></li>
+    	    </ul>
+            <table summary="student grades" id="students-page1">
+              <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>User Id</td>
+                    <td>Points</td>
+                    <td>Comments</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>Ahn, Jason</td>
+                    <td>15234314</td>
+                    <td><input type="text" value="87" /></td>
+                    <td>Lorem ipsum dolor sit amet.</td>
+                </tr>
+                <tr>
+                    <td>Akerman, Krista</td>
+                    <td>19206726</td>
+                    <td><input type="text" value="79" /></td>
+                    <td>Consectetuer adipiscing elit.</td>
+                </tr>
+                <tr>
+                    <td>Almeida, Elaine</td>
+                    <td>19286942</td>
+                    <td><input type="text" value="92" /></td>
+                    <td>Suspendisse ut arcu. </td>
+                </tr>
+                <tr>
+                    <td>Azer, Tamer</td>
+                    <td>19446940</td>
+                    <td><input type="text" value="68" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Bandali, Salim</td>
+                    <td>19283721</td>
+                    <td><input type="text" value="69" /></td>
+                    <td>Ut egestas, urna at rhoncus gravida, nisl nisi condimentum pede.</td>
+                </tr>
+              </tbody>
+            </table>
+            <table summary="student grades" id="students-page2" class="hidden">
+              <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>User Id</td>
+                    <td>Points</td>
+                    <td>Comments</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>Baumgartner, Joe</td>
+                    <td>15238314</td>
+                    <td><input type="text" value="81" /></td>
+                    <td>Nunc id elit at purus rhoncus aliquam.</td>
+                </tr>
+                <tr>
+                    <td>Bellefuille, Eric</td>
+                    <td>19206226</td>
+                    <td><input type="text" value="87" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Braganza, Sherman</td>
+                    <td>19286942</td>
+                    <td><input type="text" value="84" /></td>
+                    <td>Nulla erat felis, laoreet vitae, dignissim id. </td>
+                </tr>
+                <tr>
+                    <td>Calderon, Maurice</td>
+                    <td>17446940</td>
+                    <td><input type="text" value="75" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Campaign, Wesley</td>
+                    <td>18283721</td>
+                    <td><input type="text" value="79" /></td>
+                    <td>Venenatis convallis, quam.</td>
+                </tr>
+              </tbody>
+            </table>
+            <table summary="student grades" id="students-page3" class="hidden">
+              <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>User Id</td>
+                    <td>Points</td>
+                    <td>Comments</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>Dahn, Jason</td>
+                    <td>19234314</td>
+                    <td><input type="text" value="87" /></td>
+                    <td>Sed porttitor eros ac sapien.   </td>
+                </tr>
+                <tr>
+                    <td>Dakerman, Krista</td>
+                    <td>15206726</td>
+                    <td><input type="text" value="79" /></td>
+                    <td>Vestibulum volutpat quam et mi. </td>
+                </tr>
+                <tr>
+                    <td>Dalmeida, Elaine</td>
+                    <td>13286942</td>
+                    <td><input type="text" value="92" /></td>
+                    <td>Ut orci diam, tincidunt eget, condimentum at, auctor vel, enim.</td>
+                </tr>
+                <tr>
+                    <td>Dazer, Tamer</td>
+                    <td>16446940</td>
+                    <td><input type="text" value="68" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Endali, Salim</td>
+                    <td>19287621</td>
+                    <td><input type="text" value="69" /></td>
+                    <td>Aenean interdum euismod ante.</td>
+                </tr>
+              </tbody>
+            </table>
+            <table summary="student grades" id="students-page4" class="hidden">
+              <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>User Id</td>
+                    <td>Points</td>
+                    <td>Comments</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>Emgartner, Joe</td>
+                    <td>19238314</td>
+                    <td><input type="text" value="81" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Ellefuille, Eric</td>
+                    <td>19006226</td>
+                    <td><input type="text" value="87" /></td>
+                    <td>Praesent nibh enim, iaculis at, tincidunt ac, ultricies eget, metus.  </td>
+                </tr>
+                <tr>
+                    <td>Eraganza, Sherman</td>
+                    <td>19986942</td>
+                    <td><input type="text" value="84" /></td>
+                    <td>Nullam dapibus eros quis risus.</td>
+                </tr>
+                <tr>
+                    <td>Falderon, Maurice</td>
+                    <td>17449840</td>
+                    <td><input type="text" value="75" /></td>
+                    <td>Curabitur vitae dolor. </td>
+                </tr>
+                <tr>
+                    <td>Fampaign, Wesley</td>
+                    <td>18993721</td>
+                    <td><input type="text" value="79" /></td>
+                    <td></td>
+                </tr>
+              </tbody>
+            </table>            
+            <table summary="student grades" id="students-page5" class="hidden">
+              <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>User Id</td>
+                    <td>Points</td>
+                    <td>Comments</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>Fhn, Jason</td>
+                    <td>19234314</td>
+                    <td><input type="text" value="87" /></td>
+                    <td>Ut dapibus, tellus non auctor hendrerit, neque nulla ullamcorper turpis.</td>
+                </tr>
+                <tr>
+                    <td>Fakerman, Krista</td>
+                    <td>19200726</td>
+                    <td><input type="text" value="79" /></td>
+                    <td>Aliquam tristique quam nunc eu sapien. </td>
+                </tr>
+                <tr>
+                    <td>Falmeida, Elaine</td>
+                    <td>19289942</td>
+                    <td><input type="text" value="92" /></td>
+                    <td>Duis dolor.</td>
+                </tr>
+                <tr>
+                    <td>Fazer, Tamer</td>
+                    <td>19449940</td>
+                    <td><input type="text" value="68" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Gandali, Salim</td>
+                    <td>19286721</td>
+                    <td><input type="text" value="69" /></td>
+                    <td></td>
+                </tr>
+              </tbody>
+            </table>
+            <table summary="student grades" id="students-page6" class="hidden">
+              <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>User Id</td>
+                    <td>Points</td>
+                    <td>Comments</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>Gaumgartner, Joe</td>
+                    <td>15888314</td>
+                    <td><input type="text" value="81" /></td>
+                    <td>Sed porttitor, lacus consectetuer commodo lobortis.</td>
+                </tr>
+                <tr>
+                    <td>Gellefuille, Eric</td>
+                    <td>19290226</td>
+                    <td><input type="text" value="87" /></td>
+                    <td>Dui est condimentum odio, vel consectetuer sapien enim at magna. </td>
+                </tr>
+                <tr>
+                    <td>Graganza, Sherman</td>
+                    <td>10886942</td>
+                    <td><input type="text" value="84" /></td>
+                    <td>Phasellus neque lacus, ultricies eu, aliquet eget, venenatis et, erat.</td>
+                </tr>
+                <tr>
+                    <td>Halderon, Maurice</td>
+                    <td>17406940</td>
+                    <td><input type="text" value="75" /></td>
+                    <td>Duis ac enim et turpis euismod aliquam.  </td>
+                </tr>
+                <tr>
+                    <td>Hampaign, Wesley</td>
+                    <td>19283721</td>
+                    <td><input type="text" value="79" /></td>
+                    <td>Vestibulum consequat.</td>
+                </tr>
+              </tbody>
+            </table>            
+            <table summary="student grades" id="students-page7" class="hidden">
+              <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>User Id</td>
+                    <td>Points</td>
+                    <td>Comments</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>Ihn, Jason</td>
+                    <td>19872344</td>
+                    <td><input type="text" value="87" /></td>
+                    <td>Donec viverra est ut turpis. </td>
+                </tr>
+                <tr>
+                    <td>Ikerman, Krista</td>
+                    <td>19267826</td>
+                    <td><input type="text" value="79" /></td>
+                    <td>Suspendisse purus enim, fringilla nec, facilisis ut, consequat sit amet, lacus.</td>
+                </tr>
+              </tbody>
+            </table>
+            <ul id="pager-bottom" class="fl-pager-bottom flc-pager-bottom">
+    	        <li value="1" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
+    	        <li value="2" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">2</a></li>
+    	        <li value="3" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
+    	        <li value="4" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">4</a></li>
+    	        <li value="5" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">5</a></li>
+    	        <li value="6" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">6</a></li>
+    	        <li value="7" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">7 (last)</a></li>
+    	        <li class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></li>
+    	        <li class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></li>
+    	    </ul>
+
+          </form>
+        </div>
+        <script type="text/javascript">
+            demo.initPager();
+        </script>
+	</body>
+</html>

@@ -1,0 +1,5 @@
+{"fss": {
+   "name": "Fluid Skinning System",
+   "description": "A modular CSS framework, which allows you to add, remove, and mix classes to get the desired effect.",
+   "dependencies": ["fssReset", "fssLayout", "fssText", "fssThemes"]
+}}

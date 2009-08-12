@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<link href="../css/tests.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-reset.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-layout.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-text.css" rel="stylesheet" />
+		
+		<script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+		<script type="text/javascript" src="../js/toc.js"></script>
+		
+		<script type="text/javascript">
+            // programmatic coloring - access to advanced selectors + requires less maintenance than hardcoded classes
+            $().ready(function(){
+                // Creation
+                var column, columnA, columnB, columnC;
+                var base = parseFloat($('body').css('fontSize'));
+                
+                //console.log(base, 1/base * base);
+                
+                columnA = $('<div class="fl-col"></div>');
+                columnB = $('<div class="fl-col"></div>');
+                columnC = $('<div class="fl-col"></div>');
+                columnD = $('<div class="fl-col"></div>');
+
+                for(var i=0; i<=6; i++){
+                    columnA.append('<p class="fl-text-align-left fl-font-spacing-' + i + '">Plain inline text</p>');                    
+                    columnB.append('<p class="fl-text-align-left"> <input class="fl-font-spacing-' + i + '" type="submit" value="Button" /></p>');
+                    columnC.append('<p class="fl-text-align-left"> <input class="fl-font-spacing-' + i + '" type="text" value="Text field" /></p>');
+                    columnD.append('<p class="fl-text-align-left"> <textarea class="fl-font-spacing-' + i + '">Text area</textarea></p>');                    
+                }
+                                
+                $('.test_containers').append(columnA);
+                $('.test_containers').append(columnB);
+                $('.test_containers').append(columnC);
+                $('.test_containers').append(columnD); 
+            });            
+		</script>
+
+		<title>Test Containers</title>
+	</head>
+	<body>
+		<div class="options">
+			<h1>Loading test...</h1>
+            <p id="note"></p>
+            <p id="page">Test 0 of 0</p>
+			<a href="#prev">Previous Test</a>
+			<a href="#next">Next Test</a>			
+		</div>
+
+		<div class="test_containers fl-col-flex4">
+		    <!-- 
+			<p class="fl-font-spacing-0">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea> </p>
+			<p class="fl-font-spacing-1">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+			<p class="fl-font-spacing-2">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+			<p class="fl-font-spacing-3">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+			<p class="fl-font-spacing-4">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+			<p class="fl-font-spacing-5">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+			<p class="fl-font-spacing-6">The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+            -->
+		</div>		
+
+	</body>
+</html>
+

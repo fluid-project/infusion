@@ -1,0 +1,11 @@
+
+.myorderable {
+  background-color: green;
+  border: solid;
+}
+
+.fl-reorderer-avatar {
+    background-color: pink;
+    opacity: 0.75;
+}
+

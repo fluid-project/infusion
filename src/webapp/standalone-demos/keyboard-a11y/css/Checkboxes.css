@@ -1,0 +1,19 @@
+.graphicBox {
+    background-image: url("../images/unchecked.png");
+    background-repeat: no-repeat;
+    background-position: center left;
+    padding: 10px 0px 10px 30px;
+}
+
+.hiddenBox {
+    display: none;
+}
+
+.checked {
+    background-image: url("../images/checked.png");
+}
+
+.checkboxRow {
+    outline: 0;
+    margin-left: 10px;
+}

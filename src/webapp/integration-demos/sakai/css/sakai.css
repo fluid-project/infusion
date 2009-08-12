@@ -1,0 +1,31 @@
+/*********************************************************************/
+body {margin:0; padding:0; height:100%; font:normal 1em Arial, Helvetica, sans-serif;}
+a {text-decoration:none; /*color:#0287C5;*/}
+a:hover {text-decoration:underline;}
+p {margin:0; padding-bottom:1em;}
+
+
+/* 
+ * Needs to move to fluid.layout.css and abstracted
+ */
+.content {padding:15px 10px;}
+.column {min-height:100px;}
+.left {width:300px; float:left;}
+.right {width:300px; float:right;}
+.center {margin-left:310px; margin-right:310px; padding:0 0px;}
+
+/************************************/
+.header {background:#00A5E3 url('../images/header2.png') no-repeat left top; color:#fff; overflow:auto; padding:20px 0 25px 20px;}
+.header h1 {font:normal 2em Arial, Helvetica, sans-serif; margin:0; padding:0; color:#fff; border:none;}
+.header p {margin:0; padding:0; display:none;}
+.header ul {margin:0; padding:0; display:none;}
+.header ul li {display:inline;}
+
+.fl-tabs-content .fl-col input {width:45%; margin:3px 0; padding:0;}
+
+
+.lookNfeel {padding:15px 10px 0; overflow:auto;}
+
+/************************************/
+.footer { background:url("../images/sakai.png") no-repeat left center; border-top:1px solid #efefef; color:#ccc; font-size:0.8em; margin:10px 0 0;}
+.footer p {margin:0; padding:0 0 0px; padding:15px 0 15px 75px;}

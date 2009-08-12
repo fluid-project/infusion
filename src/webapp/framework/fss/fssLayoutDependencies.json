@@ -1,0 +1,5 @@
+{"fssLayout": {
+	"name": "Layout",
+   	"description": "Provides css classes for layout and convenience classes for widgets.",
+	"cssFiles": "fss-layout.css"
+}}

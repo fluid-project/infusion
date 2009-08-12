@@ -1,0 +1,6 @@
+{"framework": {
+   	"name": "Fluid Infusion Framework",
+   	"description": "The core of the Fluid Infusion framework. Required for all Fluid components",
+	"files": ["Fluid.js", "FluidDOMUtilities.js", "DataBinding.js", "jquery.keyboard-a11y.js"],
+	"dependencies": ["jQuery", "jQueryUICore", "jQueryDelegatePlugin"]
+}}

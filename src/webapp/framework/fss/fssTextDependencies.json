@@ -1,0 +1,5 @@
+{"fssText": {
+   	"name": "Text",
+   	"description": "Classes for text, headers, spacing and sizes.",
+	"cssFiles": "fss-text.css"
+}}

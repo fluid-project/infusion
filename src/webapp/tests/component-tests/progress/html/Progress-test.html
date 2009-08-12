@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>Progress Tests</title>
+        
+        <!--  This is the jqUnit test css file --> 
+	    <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/testsuite.css" />
+        
+        <!-- Fluid dependencies for the Scroller -->
+	    <script src="../../../../lib/jquery/core/js/jquery.js" type="text/javascript"></script>
+	    <script src="../../../../framework/core/js/Fluid.js" type="text/javascript"></script>
+	    <script src="../../../../components/progress/js/Progress.js" type="text/javascript"></script>
+        
+        <!--  These are the jqUnit test js files -->
+	    <script type="text/javascript" src="../../../lib/qunit/js/testrunner.js"></script>
+	    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/ProgressTests.js"></script>
+        <style type="text/css">
+            
+            #main {
+                width: 300px;
+                margin: 20px;
+            }
+            
+            .flc-progress {
+                border: 1px solid #EFEFEF;
+                margin: 10px;
+                padding: 10px;
+                display: block;
+                text-align: center
+            }
+            
+            .flc-progress-bar {
+                position: relative;
+                width: 100px;
+                border: 2px solid black;
+                margin: 10px auto;
+                height: 20px;
+            }
+            
+            .flc-progress-indicator {
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+                        
+            .flc-progress-indicator {
+                background-color: #06B;
+            }
+                        
+        </style>
+
+    </head>
+    <body>
+    <h1 id="header">Progress Test Suite</h1>
+    <h2 id="banner"></h2>
+    <h2 id="userAgent"></h2>
+    <ol id="tests"></ol>
+    
+    <!-- short explination for the curious -->
+    
+
+    <!-- Test HTML -->
+    <div id="main">
+     <h4>These tests use a convenience of a progress bar with a width of 100 pixels so that the percent of progress will always be equal to the number of pixels. eg. 50% = 50 pixels.</h4>
+       <div id="progress-container">
+            <div class="flc-progress">
+                <p>Generic Progressor (follows defaults)</p>
+                <p class="flc-progress-label"></p>
+                <div class="flc-progress-bar">
+                    <div class="flc-progress-indicator"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- <div id="progress-container-two">
+            <p>File Progressor</p>
+            <div class="file-progress-container">
+                <div class="file-progress-indicator" id="file-ind">
+                    <span class="file-text">&nbsp;</span>
+                </div>
+            </div>
+            
+            <p>Total Progressor</p>
+            <div class="total-progress-container">
+                <div class="total-progress-indicator" id="total-ind">
+                    <span class="total-text">&nbsp;</span>
+                </div>
+            </div>
+            
+        </div -->    
+    </div>
+
+    </body>
+</html>
