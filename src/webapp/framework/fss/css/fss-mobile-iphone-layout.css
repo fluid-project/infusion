@@ -153,21 +153,32 @@ body::before {
 }
 
 /*************************************************/
-/* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists */
+/* Content Panels */
 /*************************************************/
-/* Default listmenu system setup */
-[class*=fl-listmenu] {
-	margin: 0 10px 10px;	
-	border: none;
+
+[class*=fl-panel] {
+	margin:10px;
 }
 
-[class*=fl-listmenu] > li {	
+/*************************************************/
+/* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists */
+/*************************************************/
+/* Default list system setup */
+
+[class*=fl-list] {
+	border: none;
+	list-style:none;
+	margin:10px;
+	padding:0;
+}
+
+[class*=fl-list] > li {	
     padding:0;
 	margin:0;
 	border:none;
 }
 
-[class*=fl-listmenu] > li a {
+[class*=fl-list] > li a {
 	display:block;	
 	padding: 12px 0px 12px 12px;
 	text-decoration: none;
@@ -177,23 +188,23 @@ body::before {
 	border-width:1px 1px 0 1px;
 }
 
-[class*=fl-listmenu] > li:first-child a {
+[class*=fl-list] > li:first-child a {
     -webkit-border-top-left-radius: 8px;
     -webkit-border-top-right-radius: 8px;
 }
 
-[class*=fl-listmenu] > li:last-child a {
+[class*=fl-list] > li:last-child a {
     -webkit-border-bottom-left-radius: 8px;
     -webkit-border-bottom-right-radius: 8px;
 	border-bottom-width:1px;
 }
 
-[class*=fl-listmenu] .fl-link-loading .fl-link-secondary {
+[class*=fl-list] .fl-link-loading .fl-link-secondary {
     display:none;
 }
 
 /* secondary link info behaviour */
-[class*=fl-listmenu] > li .fl-link-secondary {
+[class*=fl-list] > li .fl-link-secondary {
     float:right;
     margin-right:25px;
     font-weight:normal;
@@ -201,7 +212,7 @@ body::before {
 }
 
  /* summary link info ehaviour */ 
-[class*=fl-listmenu] > li a .fl-link-summary {
+[class*=fl-list] > li a .fl-link-summary {
     display:block;
     margin:0 25px 0 30px; /* default size of fl-icon */
     font-weight:normal;
@@ -209,30 +220,30 @@ body::before {
 	line-height:0.9em;
 }
 /* icon behaviour */
-[class*=fl-listmenu] > li a > .fl-icon {
+[class*=fl-list] > li a > .fl-icon {
     float:left;
     margin-left:-6px;
 }
 
 /*************************************************/
 /* Brief lists that auto trim content + ellipsis (w/ optional thumbnail) */
-.fl-listmenu-brief > li {
+.fl-list-brief > li {
 	margin-bottom:10px;
     -webkit-border-radius:8px;
 }
-.fl-listmenu-brief > li a {
+.fl-list-brief > li a {
 	padding:5px 0;
 	border-bottom-width:1px;
 	-webkit-border-radius:8px;
 }
-.fl-listmenu-brief > li a > .fl-link-summary {
+.fl-list-brief > li a > .fl-link-summary {
     height:1.1em;
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
 }
 
-.fl-listmenu-brief > li a > .fl-icon {
+.fl-list-brief > li a > .fl-icon {
     width:44px;
     height:44px;
     margin-left:0;
@@ -244,19 +255,18 @@ body::before {
 /*************************************************/
 /* Thumbnail lists */
 
-.fl-listmenu-thumbnails > li {
+.fl-list-thumbnails > li {
     margin-bottom:10px;
-    -webkit-border-radius:8px;
 }
 
 /* summary behaviour */
-.fl-listmenu-thumbnails > li a .fl-link-summary {
+.fl-list-thumbnails > li a .fl-link-summary {
 	white-space:normal;
 	height:auto;
 	margin:0 25px 0 50px;
 }
 /* icon behaviour */
-.fl-listmenu-thumbnails > li a > .fl-icon {
+.fl-list-thumbnails > li a > .fl-icon {
     width:44px;
     height:44px;
     margin:0 5px 0 0;
@@ -280,31 +290,37 @@ body::before {
 
 /****************************/
 /* Collapsing and expanding panels */
-.fl-collapsingPanel {
-	max-height:640px;
+.fl-collapsable {
+	max-height:900px;
 	overflow:hidden;
-	margin:12px 0;
 	-webkit-border-radius:8px;
 }
-.fl-collapsingPanel > *:first-child {
+/* The first element found becomes the "heading" */
+.fl-collapsable > *:first-child {
 	padding:10px;
 	margin:0;
 	-webkit-border-top-left-radius: 8px;
 	-webkit-border-top-right-radius: 8px;
 }
-.fl-collapsingPanel > *:last-child {
+/* The last element found becomes the "content" */
+.fl-collapsable > *:last-child {
 	margin:0;
 	-webkit-border-radius:0;
 	-webkit-border-bottom-left-radius:8px;
 	-webkit-border-bottom-right-radius:8px;
 }
-.fl-collapsingPanel > [class*=fl-listmenu] > li {
+/* collapseable lists */
+.fl-collapsable > [class*=fl-list] > li {
 	margin:0;
 }
-.fl-collapsingPanel > [class*=fl-listmenu] > li:first-child a {
+.fl-collapsable > [class*=fl-list] > li:first-child a {
 	-webkit-border-radius:0;
 }
-.fl-collapsingPanel > .fl-listmenu-thumbnails > li a {
+.fl-collapsable > [class*=fl-list] > li:first-child:last-child a {
+	-webkit-border-bottom-left-radius:8px;
+	-webkit-border-bottom-right-radius:8px;
+}
+.fl-collapsable > .fl-list-thumbnails > li a {
 	padding:5px;
 	overflow:auto;
 }

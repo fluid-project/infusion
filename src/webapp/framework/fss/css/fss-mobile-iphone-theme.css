@@ -147,41 +147,41 @@ body::before {
 /*************************************************/
 /* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists */
 /*************************************************/
-/* Default listmenu system setup */
+/* Default list system setup */
 
-[class*=fl-listmenu] > li a {
+[class*=fl-list] > li a {
     -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
     background:#fff url(../images/themes/iphone/listmenu_arrow.png) no-repeat right 5px;
 	color: #000;
 	border-color: rgb(169,173,176);
 }
 
-[class*=fl-listmenu] a:active {
+[class*=fl-list] a:active {
 	color: #fff;
     background: url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
                 -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
 
-[class*=fl-listmenu] .fl-link-loading {
+[class*=fl-list] .fl-link-loading {
     color: #fff !important;
     background: url(../images/themes/iphone/listmenu_loader.gif) no-repeat 97% center,
 		        -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
 
-[class*=fl-listmenu] a:active,
-[class*=fl-listmenu] a:active .fl-link-secondary,
-[class*=fl-listmenu] a:active .fl-link-summary,
-[class*=fl-listmenu] .fl-link-loading * {
+[class*=fl-list] a:active,
+[class*=fl-list] a:active .fl-link-secondary,
+[class*=fl-list] a:active .fl-link-summary,
+[class*=fl-list] .fl-link-loading * {
     color: #fff !important;
 }
 
 /* secondary link info behaviour */
-[class*=fl-listmenu] > li .fl-link-secondary {
+[class*=fl-list] > li .fl-link-secondary {
     color: rgb(50, 79, 133);
 }
 
  /* summary link info ehaviour */ 
-[class*=fl-listmenu] > li a .fl-link-summary {
+[class*=fl-list] > li a .fl-link-summary {
     color:#999;
 }
 
@@ -193,7 +193,7 @@ body::before {
 
 /****************************/
 /* Collapsing and expanding panels */
-.fl-collapsingPanel > *:first-child {
+.fl-collapsable > *:first-child {
 	color:#fff;
 	background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
 }
