@@ -10,10 +10,10 @@ body {
     font:normal 17px Helvetica, sans-serif; /* Base font rules */
 	-webkit-user-select: none; /* prevents child elements content from being selected - desired? */
 }
-
-h1 {font-size:1.2em; margin:0;}
-h2 {font-size:1.15em; margin:0;}
-h3 {font-size:1.1em; margin:0;}
+h1, h2, h3, h4, h5, h6 {margin:0.25em;}
+h1 {font-size:1.5em;}
+h2 {font-size:1.1em;}
+h3 {font-size:1em;}
 h4 {}
 h5 {}
 h6 {}
@@ -159,17 +159,58 @@ body::before {
 [class*=fl-panel] {
 	margin:10px;
 }
+/* Panel Auto Headings */
+/* The first element found becomes the "heading" */
+.fl-panel-autoHeading > *:first-child {
+	padding:10px;
+	margin:0;
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-top-right-radius: 8px;
+}
+/* The last element found becomes the "content" - list or otherwise */
+.fl-panel-autoHeading > *:last-child {
+	margin:0;
+	-webkit-border-radius:0;
+	-webkit-border-bottom-left-radius:8px;
+	-webkit-border-bottom-right-radius:8px;
+}
+
+/* list modifications */
+.fl-panel-autoHeading > [class*=fl-list] > li {
+	margin:0;
+}
+.fl-panel-autoHeading > [class*=fl-list] > li:first-child a {
+	-webkit-border-radius:0;
+}
+.fl-panel-autoHeading > [class*=fl-list] > li:first-child:last-child a {
+	-webkit-border-bottom-left-radius:8px;
+	-webkit-border-bottom-right-radius:8px;
+}
+.fl-panel-autoHeading > .fl-list-thumbnails > li a {
+	padding:5px;
+	overflow:auto;
+}
+
+/* Collapsing and expanding panels */
+.fl-panel-collapsable {
+	max-height:900px;
+	overflow:hidden;
+	-webkit-border-radius:8px;
+}
+
 
 /*************************************************/
-/* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists */
+/* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists
+ * By default, all list formats fit to width
+ * When nested within a fl-panel element, they are indented and therefore contain rounded corners
+ */
 /*************************************************/
 /* Default list system setup */
-
 [class*=fl-list] {
-	border: none;
-	list-style:none;
-	margin:10px;
-	padding:0;
+    border: none;
+    list-style:none;
+    margin:10px 0;
+    padding:0;
 }
 
 [class*=fl-list] > li {	
@@ -186,14 +227,15 @@ body::before {
 	outline: none;
 	border-style:solid;
 	border-width:1px 1px 0 1px;
+    overflow:auto; /* to encapsulate floating elements within */
 }
 
-[class*=fl-list] > li:first-child a {
+.fl-panel [class*=fl-list] > li:first-child a {
     -webkit-border-top-left-radius: 8px;
     -webkit-border-top-right-radius: 8px;
 }
 
-[class*=fl-list] > li:last-child a {
+.fl-panel [class*=fl-list] > li:last-child a {
     -webkit-border-bottom-left-radius: 8px;
     -webkit-border-bottom-right-radius: 8px;
 	border-bottom-width:1px;
@@ -211,13 +253,16 @@ body::before {
     font-size:.9em;
 }
 
- /* summary link info ehaviour */ 
+ /* summary link info ehaviour */
 [class*=fl-list] > li a .fl-link-summary {
     display:block;
-    margin:0 25px 0 30px; /* default size of fl-icon */
+    margin:0 25px 0 0px;
     font-weight:normal;
-    font-size:0.80em;
-	line-height:0.9em;
+    font-size:0.8em;
+	
+}
+[class*=fl-list] > li a > .fl-icon ~ .fl-link-summary {
+    margin-left:30px; /* default size of fl-icon */
 }
 /* icon behaviour */
 [class*=fl-list] > li a > .fl-icon {
@@ -226,52 +271,75 @@ body::before {
 }
 
 /*************************************************/
-/* Brief lists that auto trim content + ellipsis (w/ optional thumbnail) */
-.fl-list-brief > li {
-	margin-bottom:10px;
-    -webkit-border-radius:8px;
-}
-.fl-list-brief > li a {
-	padding:5px 0;
-	border-bottom-width:1px;
-	-webkit-border-radius:8px;
-}
-.fl-list-brief > li a > .fl-link-summary {
-    height:1.1em;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-}
-
-.fl-list-brief > li a > .fl-icon {
-    width:44px;
-    height:44px;
-    margin-left:0;
-    -webkit-border-radius:0;
-    -webkit-border-bottom-left-radius: 8px;
-    -webkit-border-top-left-radius: 8px;
-}
-
-/*************************************************/
-/* Thumbnail lists */
+/* Thumbnail and Expanded Thumbnails list features */
 
 .fl-list-thumbnails > li {
-    margin-bottom:10px;
+    margin-bottom:5px;
 }
 
-/* summary behaviour */
-.fl-list-thumbnails > li a .fl-link-summary {
-	white-space:normal;
-	height:auto;
-	margin:0 25px 0 50px;
+.fl-list-thumbnails > li a {
+	border-bottom-width:1px;
 }
+/* summary behaviour */
+.fl-list-thumbnails > li a > .fl-icon ~ .fl-link-summary {
+	margin:0 25px -12px 42px;
+}
+
 /* icon behaviour */
 .fl-list-thumbnails > li a > .fl-icon {
     width:44px;
     height:44px;
-    margin:0 5px 0 0;
+    margin:-12px 10px -12px -12px;
     -webkit-border-radius:0;
 }
+.fl-panel .fl-list-thumbnails > li a {
+	-webkit-border-radius:8px;
+}
+.fl-panel .fl-list-thumbnails > li a > .fl-icon {
+    -webkit-border-bottom-left-radius: 8px;
+    -webkit-border-top-left-radius: 8px;
+}
+.fl-list-thumbnails.fl-thumbnails-expanded li {
+    margin:0;
+}
+.fl-list-thumbnails.fl-thumbnails-expanded > li a {
+    border-bottom-width:0;
+    padding:10px;
+}
+.fl-list-thumbnails.fl-thumbnails-expanded > li a > .fl-icon {
+    width:60px;
+    height:60px;
+    margin:-5px 5px -5px -5px;
+    -webkit-border-radius:0;
+}
+.fl-list-thumbnails.fl-thumbnails-expanded > li:last-child a {
+    border-bottom-width:1px;
+}
+
+.fl-list-thumbnails.fl-thumbnails-expanded > li a > .fl-icon ~ .fl-link-summary {
+    margin: 0px 25px -5px 60px;
+}
+
+/*************************************************/
+/* Brief lists auto trim summary content + add ellipsis if necessary */
+
+.fl-list-brief > li a  {
+    padding-top:6px;
+    padding-bottom:6px;
+}
+.fl-list-brief > li a > .fl-link-summary {
+    height:1.3em;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.fl-list-brief > li a > .fl-link-secondary {
+    padding-top:6px;
+}
+.fl-list-brief > li a > .fl-icon {
+    margin:-6px 10px -6px -12px;
+}
+
 /***************************/
 .fl-table {
     display:table;
@@ -288,39 +356,3 @@ body::before {
     border:none;
 }
 
-/****************************/
-/* Collapsing and expanding panels */
-.fl-collapsable {
-	max-height:900px;
-	overflow:hidden;
-	-webkit-border-radius:8px;
-}
-/* The first element found becomes the "heading" */
-.fl-collapsable > *:first-child {
-	padding:10px;
-	margin:0;
-	-webkit-border-top-left-radius: 8px;
-	-webkit-border-top-right-radius: 8px;
-}
-/* The last element found becomes the "content" */
-.fl-collapsable > *:last-child {
-	margin:0;
-	-webkit-border-radius:0;
-	-webkit-border-bottom-left-radius:8px;
-	-webkit-border-bottom-right-radius:8px;
-}
-/* collapseable lists */
-.fl-collapsable > [class*=fl-list] > li {
-	margin:0;
-}
-.fl-collapsable > [class*=fl-list] > li:first-child a {
-	-webkit-border-radius:0;
-}
-.fl-collapsable > [class*=fl-list] > li:first-child:last-child a {
-	-webkit-border-bottom-left-radius:8px;
-	-webkit-border-bottom-right-radius:8px;
-}
-.fl-collapsable > .fl-list-thumbnails > li a {
-	padding:5px;
-	overflow:auto;
-}
