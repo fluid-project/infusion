@@ -195,7 +195,7 @@ body::before {
 
 /****************************/
 /* Collapsing and expanding panels */
-.fl-collapsable > *:first-child {
+.fl-panel-autoHeading > *:first-child {
 	color:#fff;
 	background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
 }

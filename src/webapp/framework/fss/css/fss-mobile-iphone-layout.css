@@ -153,53 +153,6 @@ body::before {
 }
 
 /*************************************************/
-/* Content Panels */
-/*************************************************/
-
-[class*=fl-panel] {
-	margin:10px;
-}
-/* Panel Auto Headings */
-/* The first element found becomes the "heading" */
-.fl-panel-autoHeading > *:first-child {
-	padding:10px;
-	margin:0;
-	-webkit-border-top-left-radius: 8px;
-	-webkit-border-top-right-radius: 8px;
-}
-/* The last element found becomes the "content" - list or otherwise */
-.fl-panel-autoHeading > *:last-child {
-	margin:0;
-	-webkit-border-radius:0;
-	-webkit-border-bottom-left-radius:8px;
-	-webkit-border-bottom-right-radius:8px;
-}
-
-/* list modifications */
-.fl-panel-autoHeading > [class*=fl-list] > li {
-	margin:0;
-}
-.fl-panel-autoHeading > [class*=fl-list] > li:first-child a {
-	-webkit-border-radius:0;
-}
-.fl-panel-autoHeading > [class*=fl-list] > li:first-child:last-child a {
-	-webkit-border-bottom-left-radius:8px;
-	-webkit-border-bottom-right-radius:8px;
-}
-.fl-panel-autoHeading > .fl-list-thumbnails > li a {
-	padding:5px;
-	overflow:auto;
-}
-
-/* Collapsing and expanding panels */
-.fl-panel-collapsable {
-	max-height:900px;
-	overflow:hidden;
-	-webkit-border-radius:8px;
-}
-
-
-/*************************************************/
 /* iPhone list menu styles: Ordered lists, Unordererd lists, Thumbnail lists, Icon lists, Definition lists
  * By default, all list formats fit to width
  * When nested within a fl-panel element, they are indented and therefore contain rounded corners
@@ -340,6 +293,51 @@ body::before {
     margin:-6px 10px -6px -12px;
 }
 
+/*************************************************/
+/* Content Panels */
+/*************************************************/
+
+[class*=fl-panel] {
+	margin:10px;
+}
+/* Panel Auto Headings */
+/* The first element found becomes the "heading" */
+.fl-panel-autoHeading > *:first-child {
+	padding:10px;
+	margin:0;
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-top-right-radius: 8px;
+}
+/* The last element found becomes the "content" - list or otherwise */
+.fl-panel-autoHeading > *:last-child {
+	margin:0;
+	-webkit-border-radius:0;
+	-webkit-border-bottom-left-radius:8px;
+	-webkit-border-bottom-right-radius:8px;
+}
+
+/* list modifications */
+.fl-panel-autoHeading > [class*=fl-list] > li {
+	margin:0;
+}
+.fl-panel-autoHeading > [class*=fl-list] > li:first-child a {
+	-webkit-border-radius:0;
+}
+.fl-panel-autoHeading > [class*=fl-list] > li:first-child:last-child a {
+	-webkit-border-bottom-left-radius:8px;
+	-webkit-border-bottom-right-radius:8px;
+}
+.fl-panel-autoHeading > .fl-list-thumbnails > li a {
+	padding:5px;
+	overflow:auto;
+}
+
+/* Collapsing and expanding panels */
+.fl-panel-collapsable {
+	max-height:900px;
+	overflow:hidden;
+	-webkit-border-radius:8px;
+}
 /***************************/
 .fl-table {
     display:table;
