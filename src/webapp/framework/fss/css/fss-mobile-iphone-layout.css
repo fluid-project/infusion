@@ -209,6 +209,7 @@ body::before {
  /* summary link info ehaviour */
 [class*=fl-list] > li a .fl-link-summary {
     display:block;
+    clear:right;
     margin:0 25px 0 0px;
     font-weight:normal;
     font-size:0.8em;
@@ -236,6 +237,7 @@ body::before {
 /* summary behaviour */
 .fl-list-thumbnails > li a > .fl-icon ~ .fl-link-summary {
 	margin:0 25px -12px 42px;
+    padding-bottom:10px;
 }
 
 /* icon behaviour */
@@ -257,6 +259,7 @@ body::before {
 }
 .fl-list-thumbnails.fl-thumbnails-expanded > li a {
     border-bottom-width:0;
+    -webkit-border-radius:0;
     padding:10px;
 }
 .fl-list-thumbnails.fl-thumbnails-expanded > li a > .fl-icon {
@@ -270,9 +273,11 @@ body::before {
 }
 
 .fl-list-thumbnails.fl-thumbnails-expanded > li a > .fl-icon ~ .fl-link-summary {
-    margin: 0px 25px -5px 60px;
+    margin: 0px -35px -5px 60px;
 }
-
+.fl-list-thumbnails.fl-thumbnails-expanded > li a > .fl-link-secondary {
+    padding-top:0;
+}
 /*************************************************/
 /* Brief lists auto trim summary content + add ellipsis if necessary */
 
@@ -328,8 +333,8 @@ body::before {
 	-webkit-border-bottom-right-radius:8px;
 }
 .fl-panel-autoHeading > .fl-list-thumbnails > li a {
-	padding:5px;
-	overflow:auto;
+	/*padding:5px;*/
+	/*overflow:auto;*/
 }
 
 /* Collapsing and expanding panels */
