@@ -6,7 +6,7 @@
 body {
     margin:0;
     padding:0;
-	overflow:hidden;
+	/*overflow:hidden;*/
     font:normal 17px Helvetica, sans-serif; /* Base font rules */
 	-webkit-user-select: none; /* prevents child elements content from being selected - desired? */
 }
@@ -34,16 +34,14 @@ body::before, .fl-navbar {
 }
 body::before {
     content:" ";
-    position:absolute;
-    z-index:1;
+	margin-bottom:-46px;
+	display:block;
 	border-style:solid;
 	border-width:1px 0;
     -webkit-background-origin: padding-box; 
     -webkit-background-clip: content-box;    
 }
-.fl-navbar {
-    margin-bottom:12px;
-}
+
 .fl-navbar .fl-table-cell:first-child {
     margin-left:5px;
 }
@@ -115,8 +113,11 @@ body::before {
     -webkit-background-origin: border; 
     -webkit-background-clip: border;
 }
-/***************************************/
-/* iPhone tabs 1: small general purpose content dividers */
+/*************************************************/
+/* iPhone tabs: general purpose dividers, or fixed to the bottom of the screen
+ * 
+ */
+/*************************************************/
 .fl-tabs {
     margin:0;
     padding:0;
@@ -150,6 +151,10 @@ body::before {
 
 .fl-tabs li.fl-tabs-active a {
     padding:0.25em 1.25em 0.2em;
+}
+
+.fl-tabs.fl-tabs-functionBar {
+	
 }
 
 /*************************************************/
@@ -314,7 +319,8 @@ body::before {
 	-webkit-border-top-right-radius: 8px;
 }
 /* The last element found becomes the "content" - list or otherwise */
-.fl-panel-autoHeading > *:last-child {
+.fl-panel-autoHeading > *:last-child,
+.fl-panel-autoHeading > *:last-child [class*=fl-list] {
 	margin:0;
 	-webkit-border-radius:0;
 	-webkit-border-bottom-left-radius:8px;
@@ -322,17 +328,17 @@ body::before {
 }
 
 /* list modifications */
-.fl-panel-autoHeading > [class*=fl-list] > li {
+.fl-panel-autoHeading [class*=fl-list] > li {
 	margin:0;
 }
-.fl-panel-autoHeading > [class*=fl-list] > li:first-child a {
+.fl-panel-autoHeading [class*=fl-list] > li:first-child a {
 	-webkit-border-radius:0;
 }
-.fl-panel-autoHeading > [class*=fl-list] > li:first-child:last-child a {
+.fl-panel-autoHeading [class*=fl-list] > li:first-child:last-child a {
 	-webkit-border-bottom-left-radius:8px;
 	-webkit-border-bottom-right-radius:8px;
 }
-.fl-panel-autoHeading > .fl-list-thumbnails > li a {
+.fl-panel-autoHeading .fl-list-thumbnails > li a {
 	/*padding:5px;*/
 	/*overflow:auto;*/
 }
