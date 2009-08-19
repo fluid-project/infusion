@@ -118,7 +118,18 @@ body::before {
         to(#4b6b90)
     );
     -webkit-border-image: url(../images/themes/iphone/navbar_normal_button_insetShadow.png) 5 5 5 5 stretch;
+    -webkit-border-left-image: none;
 }
+.fl-tabs .fl-tabs-active a {
+    color:#fff;
+    background-image: -webkit-gradient(linear, left top, left bottom, 
+        from(rgba(149, 184, 239,1)), 
+        to(rgba(35,109,229,1)),
+        color-stop(0.5, rgba(149, 184, 239,1)),
+        color-stop(0.50, rgba(75,148,244,1))
+    );
+}
+
 
 
 /* iPhone tabs 2: common concept of tabs with fixed region identifying different functions */
@@ -156,18 +167,18 @@ body::before {
 	border-color: rgb(169,173,176);
 }
 
-[class*=fl-list] a:active {
+/* A simulation for a:active on the device, requires JS */
+[class*=fl-list] a:active,
+[class*=fl-list] .fl-link-hilight {
 	color: #fff;
     background: url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
                 -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
-    
 }
 
 [class*=fl-list] .fl-link-loading {
     color: #fff !important;
     background: url(../images/themes/iphone/listmenu_loader.gif) no-repeat 97% center,
 		        -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
-    
 }
 
 [class*=fl-list] a:active,

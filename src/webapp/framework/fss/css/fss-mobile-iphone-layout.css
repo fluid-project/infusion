@@ -9,6 +9,7 @@ body {
 	/*overflow:hidden;*/
     font:normal 17px Helvetica, sans-serif; /* Base font rules */
 	-webkit-user-select: none; /* prevents child elements content from being selected - desired? */
+    -webkit-text-size-adjust:none; /* http://website-engineering.blogspot.com/2009/07/stop-adjusting-text-size-in-iphone-when.html */
 }
 h1, h2, h3, h4, h5, h6 {margin:0.25em;}
 h1 {font-size:1.5em;}
@@ -30,11 +31,11 @@ img {border:none;}
 /* Navigation Bar */
 body::before, .fl-navbar {
     width:100%;
-    height:45px;
+    height:43px;
 }
 body::before {
     content:" ";
-	margin-bottom:-46px;
+	margin-bottom:-43px;
 	display:block;
 	border-style:solid;
 	border-width:1px 0;
@@ -126,13 +127,16 @@ body::before {
 }
 
 .fl-tabs li:not(:last-child) a {
-   margin-right:-5px;
+   /*margin-right:-5px;*/
 }
-
-.fl-tabs li a {
-    margin:0;
+.fl-tabs li.fl-tabs-active a,
+.fl-tabs li a {    
+    text-decoration:none;
     display:inline-block;
-    border-width:5px 0 5px 1px;
+    padding:0.1em 0.5em;
+    font-weight:bold;
+    border-width:5px 0;
+    border-left-width:1px;
     -webkit-background-origin: border; 
     -webkit-background-clip: border;
 }
@@ -147,10 +151,6 @@ body::before {
     border-right-width:5px;
     -webkit-border-top-right-radius:5px;
     -webkit-border-bottom-right-radius:5px;
-}
-
-.fl-tabs li.fl-tabs-active a {
-    padding:0.25em 1.25em 0.2em;
 }
 
 .fl-tabs.fl-tabs-functionBar {
