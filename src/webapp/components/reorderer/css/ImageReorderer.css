@@ -12,6 +12,7 @@
   background-color: #eee;
   overflow: hidden;
   margin: 0 auto 3px auto;
+  display:block;
 }
 
 .fl-reorderer-image-inner-container img{
