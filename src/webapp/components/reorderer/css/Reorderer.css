@@ -5,7 +5,7 @@
 
 /* automatically applied the keyboard selected re-orderable item */
 .fl-reorderer-movable-selected {
-	background-color: lightyellow !important;
+	background-color: lightyellow;
 }
 
 /* automatically applied as the mouse hovers over re-orderable item */
@@ -15,7 +15,7 @@
 
 /* automatically applied the keyboard selected re-orderable item */
 .fl-reorderer-movable-dragging {
-    background     :#ccc !important;    
+    background     :#ccc;    
 }
 
 .fl-reorderer-avatar {
@@ -37,8 +37,9 @@
 
 /* DROP MARKER: different layouts might require different drop marker appearances */
 /* Horizontal drop marker: designed for vertical layouts (default) */
+.fl-reorderer-verticalLayout .fl-reorderer-dropMarker, 
 .fluid-vertical-order .fl-reorderer-dropMarker{
-    background-color: #F00 !important;
+    background-color: #F00;
     height          : 0;
     padding         : 2px 0 0 0;
     border-width    : 0;
@@ -49,8 +50,9 @@
     overflow        : hidden;
 }
 /* Vertical drop marker: designed for grid or horizontal layouts */
+.fl-reorderer-horizontalLayout .fl-reorderer-dropMarker,
 .fluid-horizontal-order .fl-reorderer-dropMarker {
-    background-color: #F00 !important;
+    background-color: #F00;
     padding         : 0 3px;
     border-width    : 0;
     margin          : 0 -3px !important;

@@ -4,7 +4,7 @@ var demo = demo || {};
     
     var postOrder = function (images) {
         // Serialize the form and post it back to the server.
-        var imageOrder = $("form.gallery").serialize();
+        var imageOrder = $("form.flc-imageReorderer").serialize();
         $.ajax({
             type: "POST",
             url: url, 
@@ -26,9 +26,9 @@ var demo = demo || {};
     };
     
     demo.formBasedImageReorderer = function () {
-        var reorderer = fluid.reorderImages(".gallery", {
+        var reorderer = fluid.reorderImages(".flc-imageReorderer", {
             selectors: {
-                movables: ".reorderable-image"
+                movables: ".flc-imageReorderer-item"
             },
             
             listeners: {
