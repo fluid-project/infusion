@@ -61,13 +61,11 @@
 .fl-reorderer-horizontalLayout .fl-reorderer-movable-selected .fl-imageReorderer-caption {
     background-color:#ccc;
     color:#000;
-} 
-
+}
 .fl-reorderer-horizontalLayout .fl-reorderer-dropMarker {
     height:150px; 
     float:left;
 }
-
 .fl-reorderer-horizontalLayout .fl-reorderer-movable-dragging {
     border-color:#FF4200;
     background-color:#FF4200;
