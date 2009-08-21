@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <title>Image Reorderer</title>
+    <link href="../../../framework/fss/css/fss-reset.css" type="text/css" rel="stylesheet" media="all" />
+    <link href="../../../components/reorderer/css/Reorderer.css" type="text/css" rel="stylesheet" media="all" />
+    <link href="../../../components/reorderer/css/ImageReorderer.css" type="text/css" rel="stylesheet" media="all" />
+
+    <!--  Required javascript modules for the Image Reorderer. These can be replaced by Infusion-all.js -->
+    <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+    <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../components/reorderer/js/GeometricManager.js"></script>
+    <script type="text/javascript" src="../../../components/reorderer/js/Reorderer.js"></script>
+    <script type="text/javascript" src="../../../components/reorderer/js/ImageReorderer.js"></script>
+    <script type="text/javascript" src="../js/improved-form-image-reorderer.js"></script>
+  </head>
+
+  <body>
+    <h1>Image Reorderer Example</h1>
+    
+    <!-- Sample instruction message, explaining to users how the Reorderer works. You might want to customize this.-->
+    <div class="fl-reorderer-instructions">
+    <!-- This text is hidden by CSS, but provides more specific instructions for screen reader users. -->
+    <div class="fl-reorderer-screen-reader-instructions" tabindex="1">Image Reorderer: To use the keyboard:
+              Screen reader users turn off virtual cursor (insert + z on JAWS).
+              Select an image using i, k, m or j.
+              Move an image using CTRL + i, k, m or j.
+              View an image by pressing Enter.</div>
+    <div class="fl-reorderer-downarrow"></div>
+    <!-- This text is visible to all users. -->
+    <div tabindex="-1">
+      Move an image by clicking on it and dragging it to a new location. To use the keyboard:
+      <ul>
+        <li>Select an image using i, k, m or j, or the arrow keys.</li>
+        <li>Move an image using CTRL + a direction key.</li>
+        <li>View an image by pressing Enter.</li>
+      </ul>
+    </div>
+    </div>
+      
+    <!--
+    A nice progressive enhancement strategy is to hide form controls in the markup and post those back to the
+    server using AJAX. That way, if JavaScript is turned off, the user can still reorder the images using old-style
+    form controls. It also serves as the container for the reorderer.
+    -->
+    <form id="reorder-images-form" class="gallery" title="Image Reorderer">
+    
+      <!-- Wrap the image, its label, and a hidden form field inside a container so they all move together. -->
+      <div title="Dragonfruit thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Dragonfruit.jpg">
+              <img src="../../../components/reorderer/images/Dragonfruit.jpg" alt="Dragonfruit thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Dragonfruit.jpg">Dragonfruit</a>
+          </div>
+    
+          <!--
+            This input is used for posting the new order back to the server.
+            The value attribute contains the order of the image within the set.
+          -->
+          <input name="dragonfruit" value="0" type="hidden" />
+        </div>
+    
+        <div title="Kiwano thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Kiwano.jpg">
+              <img src="../../../components/reorderer/images/Kiwano.jpg" alt="Kiwano" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Kiwano.jpg">Kiwano</a>
+          </div>
+          <input name="kiwano" value="1" type="hidden" />
+        </div>
+    
+        <div title="Blackberry thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Blackberry.jpg">
+              <img src="../../../components/reorderer/images/Blackberry.jpg" alt="Blackberry thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Blackberry.jpg">Blackberry</a>
+          </div>
+          <input name="blackberry" value="2" type="hidden" />
+        </div>
+    
+        <div title="Cherry thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Cherry.jpg">
+              <img src="../../../components/reorderer/images/Cherry.jpg" alt="Cherry thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Cherry.jpg">Cherry</a>
+          </div>
+          <input name="cherry" value="3" type="hidden" />
+        </div>
+    
+        <div title="Fig thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Fig.jpg">
+              <img src="../../../components/reorderer/images/Fig.jpg" alt="Fig thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Fig.jpg">Fig</a>
+         </div>
+          <input name="fig" value="4" type="hidden" />
+        </div>
+    
+        <div title="Grapes thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Grapes.jpg">
+              <img src="../../../components/reorderer/images/Grapes.jpg" alt="Grapes thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Grapes.jpg">Grapes</a>
+          </div>
+          <input name="grapes" value="5" type="hidden" />
+        </div>
+    
+        <div title="Kiwi thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Kiwi.jpg">
+              <img src="../../../components/reorderer/images/Kiwi.jpg" alt="Kiwi thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Kiwi.jpg">Kiwi</a>
+          </div>
+          <input name="kiwi" value="6" type="hidden" />
+        </div>
+    
+        <div title="Kumquat thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Kumquat.jpg">
+              <img src="../../../components/reorderer/images/Kumquat.jpg" alt="Kumquat thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Kumquat.jpg">Kumquat</a>
+          </div>
+          <input name="kumquat" value="7" type="hidden" />
+        </div>
+    
+        <div title="Lemon thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Lemon.jpg">
+              <img src="../../../components/reorderer/images/Lemon.jpg" alt="Lemon thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Lemon.jpg">Lemon</a>
+          </div>
+          <input name="lemon" value="8" type="hidden" />
+        </div>
+    
+        <div title="Orange thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Orange.jpg">
+              <img src="../../../components/reorderer/images/Orange.jpg" alt="Orange thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Orange.jpg">Orange</a>
+          </div>
+          <input name="orange" value="9" type="hidden" />
+        </div>
+    
+        <div title="Red apple thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/RedApple.jpg">
+              <img src="../../../components/reorderer/images/RedApple.jpg" alt="Red apple thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/RedApple.jpg">RedApple</a>
+          </div>
+          <input name="apple" value="10" type="hidden" />
+        </div>
+    
+        <div title="Tamarillo thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Tamarillo.jpg">
+              <img src="../../../components/reorderer/images/Tamarillo.jpg" alt="Tamarillo thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Tamarillo.jpg">Tamarillo</a>
+          </div>
+          <input name="tamarillo" value="11" type="hidden" />
+        </div>
+    
+        <div title="Mangosteen thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Mangosteen.jpg">
+              <img src="../../../components/reorderer/images/Mangosteen.jpg" alt="Mangosteen thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Mangosteen.jpg">Mangosteen</a>
+          </div>
+          <input name="mangosteen" value="12" type="hidden" />
+        </div>
+    
+        <div title="Banana thumbnail" class="reorderable-image">
+          <div class="fl-reorderer-image-inner-container">
+            <a href="../../../components/reorderer/images/Banana.jpg">
+              <img src="../../../components/reorderer/images/Banana.jpg" alt="Banana thumbnail" />
+            </a>
+          </div>
+          <div class="flc-reorderer-imageTitle fl-reorderer-imageTitle">
+            <a href="../../../components/reorderer/images/Banana.jpg">Banana</a>
+          </div>
+          <input name="banana" value="13" type="hidden" />
+        </div>
+    </form>
+    
+    <!-- Here we'll put in a little message telling the user when their changes were saved via AJAX. -->
+    <p class="status-message" />
+
+    <script type="text/javascript">
+        demo.formBasedImageReorderer();
+    </script>
+  </body>
+</html>
