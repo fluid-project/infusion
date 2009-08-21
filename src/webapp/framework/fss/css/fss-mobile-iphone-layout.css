@@ -188,14 +188,7 @@ body::before {
     overflow:auto; /* to encapsulate floating elements within */
 }
 
-.fl-panel [class*=fl-list] > li:first-child a {
-    -webkit-border-top-left-radius: 8px;
-    -webkit-border-top-right-radius: 8px;
-}
-
-.fl-panel [class*=fl-list] > li:last-child a {
-    -webkit-border-bottom-left-radius: 8px;
-    -webkit-border-bottom-right-radius: 8px;
+[class*=fl-list] > li:last-child a {
 	border-bottom-width:1px;
 }
 
@@ -227,6 +220,16 @@ body::before {
 [class*=fl-list] > li a > .fl-icon {
     float:left;
     margin-left:-6px;
+}
+
+.fl-panel [class*=fl-list] > li:first-child a {
+    -webkit-border-top-left-radius: 8px;
+    -webkit-border-top-right-radius: 8px;
+}
+
+.fl-panel [class*=fl-list] > li:last-child a {
+    -webkit-border-bottom-left-radius: 8px;
+    -webkit-border-bottom-right-radius: 8px;
 }
 
 /*************************************************/
@@ -278,7 +281,7 @@ body::before {
 }
 
 .fl-list-thumbnails.fl-thumbnails-expanded > li a > .fl-icon ~ .fl-link-summary {
-    margin: 0px -35px -5px 60px;
+    margin: 0px 0px -5px 60px;
 }
 .fl-list-thumbnails.fl-thumbnails-expanded > li a > .fl-link-secondary {
     padding-top:0;
