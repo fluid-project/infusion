@@ -57,7 +57,6 @@ body::before {
     font-weight: bold;
 }
 .fl-navbar a {
-    margin-top:5px;
 	text-decoration:none;
 	font-size: 0.7em;
     font-weight:bold;
@@ -65,6 +64,7 @@ body::before {
 .fl-navbar .fl-button {
     -webkit-border-radius:5px;
     padding:0;
+    margin-top:3px;
 }
 .fl-navbar .fl-backButton {
     /* 
@@ -126,9 +126,6 @@ body::before {
     text-align:center;
 }
 
-.fl-tabs li:not(:last-child) a {
-   /*margin-right:-5px;*/
-}
 .fl-tabs li.fl-tabs-active a,
 .fl-tabs li a {    
     text-decoration:none;
@@ -136,7 +133,6 @@ body::before {
     padding:0.1em 0.5em;
     font-weight:bold;
     border-width:5px 0;
-    border-left-width:1px;
     -webkit-background-origin: border; 
     -webkit-background-clip: border;
 }
@@ -307,6 +303,23 @@ body::before {
 }
 
 /*************************************************/
+/* Glossy icons (and thumbnails?) */
+
+/* Glossiness for 30x30 icons */
+.fl-list-glossy > li a::before {
+    content:" ";
+    float:left;
+    width:30px;
+    height:30px;
+    margin:-5px -30px 0 -6px;
+    position:absolute;
+    background-color:rgba(255,0,0,0.5);    
+}
+/* Glossiness for 60x60 thumbnails */
+
+
+
+/*************************************************/
 /* Content Panels */
 /*************************************************/
 
@@ -367,4 +380,12 @@ body::before {
     vertical-align:middle;
     border:none;
 }
+
+/***************************/
+
+
+
+
+
+
 
