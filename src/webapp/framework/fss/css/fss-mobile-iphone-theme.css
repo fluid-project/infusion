@@ -210,3 +210,10 @@ body::before {
 	color:#fff;
 	background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
 }
+
+/****************************/
+/* Gloss tint for glossy icons/thumbnails */
+
+.fl-list-glossy > li a::before {
+    background-image: -webkit-gradient(radial, 50% -15%, 10, 50% -50%, 45, from(rgba(255,255,255,1)), to(rgba(255,255,255,0)), color-stop(90%, rgba(255,255,255,.65)));
+}

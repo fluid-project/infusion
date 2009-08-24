@@ -307,16 +307,32 @@ body::before {
 
 /* Glossiness for 30x30 icons */
 .fl-list-glossy > li a::before {
+    position:absolute;
     content:" ";
     float:left;
-    width:30px;
-    height:30px;
-    margin:-5px -30px 0 -6px;
-    position:absolute;
-    background-color:rgba(255,0,0,0.5);    
+    width:28px;
+    height:28px;
+    margin:-4px 0 0 -5px;
+    -webkit-border-radius:3px;   
+    -webkit-background-size: 30px 60px;
+    background-repeat:no-repeat;
+}
+/* Glossiness for 44x44 thumbnails */
+.fl-list-thumbnails.fl-list-glossy > li a::before {
+    width:42px;
+    height:42px;
+    margin:-11px;
+    -webkit-border-radius:0px;
+    -webkit-background-size: 44px 50px;
 }
 /* Glossiness for 60x60 thumbnails */
-
+.fl-list-thumbnails.fl-thumbnails-expanded.fl-list-glossy > li a::before {
+    width:58px;
+    height:58px;
+    margin:-4px;
+    -webkit-border-radius:0px;
+    -webkit-background-size: 60px 40px;    
+}
 
 
 /*************************************************/
