@@ -241,9 +241,11 @@ body::before {
 /* summary behaviour */
 .fl-list-thumbnails > li a > .fl-icon ~ .fl-link-summary {
 	margin:0 25px -12px 42px;
+    
+}
+.fl-list-thumbnails:not(.fl-thumbnails-expanded) > li a > .fl-icon ~ .fl-link-summary {
     padding-bottom:10px;
 }
-
 /* icon behaviour */
 .fl-list-thumbnails > li a > .fl-icon {
     width:44px;
