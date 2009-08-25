@@ -22,15 +22,15 @@ fluid_1_2 = fluid_1_2 || {};
         return namebase + "lightbox-cell:" + index + ":";
     };
             
-    var addThumbnailActivateHandler = function (lightboxContainer) {
+    var addThumbnailActivateHandler = function (container) {
         var enterKeyHandler = function (evt) {
             if (evt.which === fluid.reorderer.keys.ENTER) {
                 var thumbnailAnchors = $("a", evt.target);
-                document.location = thumbnailAnchors.attr('href');
+                document.location = thumbnailAnchors.attr("href");
             }
         };
         
-        $(lightboxContainer).keypress(enterKeyHandler);
+        container.keypress(enterKeyHandler);
     };
     
     // Custom query method seeks all tags descended from a given root with a 
@@ -48,11 +48,13 @@ fluid_1_2 = fluid_1_2 || {};
         return togo;
     };
     
-    var createItemFinder = function (parentNode, containerId) {
-        // This orderable finder knows that the lightbox thumbnails are 'div' elements
+    var createImageCellFinder = function (parentNode, containerId) {
+        parentNode = fluid.unwrap(parentNode);
+        
         var lightboxCellNamePattern = "^" + deriveLightboxCellBase(containerId, "[0-9]+") + "$";
         
         return function () {
+            // This orderable finder assumes that the lightbox thumbnails are 'div' elements
             return seekNodesById(parentNode, "div", lightboxCellNamePattern);
         };
     };
@@ -66,45 +68,63 @@ fluid_1_2 = fluid_1_2 || {};
         }
     };
     
+    var seekForm = function (container) {
+        return fluid.findAncestor(container, function (element) {
+            return element.nodeName.toLowerCase() === "form";
+        });
+    };
+    
+    var seekInputs = function (container, reorderform) {
+        return seekNodesById(reorderform, 
+                             "input", 
+                             "^" + deriveLightboxCellBase(container.attr("id"), "[^:]*") + "reorder-index$");
+    };
+    
+    var mapIdsToNames = function (container, reorderform) {
+        var inputs = seekInputs(container, reorderform);
+        for (var i = 0; i < inputs.length; i++) {
+            var input = inputs[i];
+            var name = input.name;
+            input.name = name || input.id;
+        }
+    };
+    
     /**
-     * Returns the default Lightbox order change callback. This callback is used by the Lightbox
-     * to send any changes in image order back to the server. It is implemented by nesting
-     * a form and set of hidden fields within the Lightbox container which contain the order value
-     * for each image displayed in the Lightbox. The default callback submits the form's default 
+     * Returns a default afterMove listener using the id-based, form-driven scheme for communicating with the server.
+     * It is implemented by nesting hidden form fields inside each thumbnail container. The value of these form elements
+     * represent the order for each image. This default listener submits the form's default 
      * action via AJAX.
      * 
-     * @param {Element} lightboxContainer The DOM element containing the form that is POSTed back to the server upon order change 
+     * @param {jQueryable} container the Image Reorderer's container element 
      */
-    var defaultAfterMoveCallback = function (lightboxContainer) {
-        var reorderform = findForm(lightboxContainer);
+    var createIDAfterMoveListener = function (container) {
+        var reorderform = seekForm(container);
+        mapIdsToNames(container, reorderform);
         
         return function () {
             var inputs, i;
-            inputs = seekNodesById(
-                reorderform, 
-                "input", 
-                "^" + deriveLightboxCellBase(lightboxContainer.id, "[^:]*") + "reorder-index$");
+            inputs = seekInputs(container, reorderform);
             
             for (i = 0; i < inputs.length; i += 1) {
                 inputs[i].value = i;
             }
         
             if (reorderform && reorderform.action) {
+                var order = $(reorderform).serialize();
                 $.post(reorderform.action, 
-                $(reorderform).serialize(),
-                function (type, data, evt) { /* No-op response */ });
+                       order,
+                       function (type, data, evt) { /* No-op response */ });
             }
         };
     };
 
-    fluid.defaults("fluid.reorderImages", {
-        layoutHandler: "fluid.gridLayoutHandler",
-
-        selectors: {
-            imageTitle: ".flc-reorderer-imageTitle"
-        }
-    });
-
+    
+    var setDefaultValue = function (target, path, value) {
+        var previousValue = fluid.model.getBeanValue(target, path);
+        var valueToSet = previousValue || value;
+        fluid.model.setBeanValue(target, path, valueToSet);
+    };
+    
     // Public Lightbox API
     /**
      * Creates a new Lightbox instance from the specified parameters, providing full control over how
@@ -114,25 +134,28 @@ fluid_1_2 = fluid_1_2 || {};
      * @param {Object} options 
      */
     fluid.reorderImages = function (container, options) {
-        var that = fluid.initView("fluid.reorderImages", container, options);
+        // Instantiate a mini-Image Reorderer component, then feed its options to the real Reorderer.
+        var that = {};
+        fluid.mergeComponentOptions(that, "fluid.reorderImages", options);
+        that.container = fluid.container(container);
         
-        var containerEl = fluid.unwrap(that.container);
-
-        if (!that.options.afterMoveCallback) {
-            that.options.afterMoveCallback = defaultAfterMoveCallback(containerEl);
-        }
-        if (!that.options.selectors.movables) {
-            that.options.selectors.movables = createItemFinder(containerEl, containerEl.id);
-        }
+        // If the user didn't specify their own afterMove or movables options,
+        // set up defaults for them using the old id-based scheme.
+        // Backwards API compatiblity. Remove references to afterMoveCallback by Infusion 1.5.
+        setDefaultValue(that, "options.listeners.afterMove", 
+                        that.options.afterMoveCallback || createIDAfterMoveListener(that.container));
+        setDefaultValue(that, "options.selectors.movables", 
+                        createImageCellFinder(that.container, that.container.attr("id")));
         
-        var reorderer = fluid.reorderer(container, that.options);
-        var movables = reorderer.locate("movables");
-        fluid.transform(movables, function (cell) { 
+        var reorderer = fluid.reorderer(that.container, that.options);
+        
+        // Add accessibility support, including ARIA and keyboard navigation.
+        fluid.transform(reorderer.locate("movables"), function (cell) { 
             fluid.reorderImages.addAriaRoles(that.options.selectors.imageTitle, cell);
         });
-                // Remove the anchors from the taborder.
-        fluid.tabindex($("a", container), -1);
-        addThumbnailActivateHandler(container);
+        fluid.tabindex($("a", that.container), -1);
+        addThumbnailActivateHandler(that.container);
+        
         return reorderer;
     };
    
@@ -154,5 +177,12 @@ fluid_1_2 = fluid_1_2 || {};
     // This function now deprecated. Please use fluid.reorderImages() instead.
     fluid.lightbox = fluid.reorderImages;
     
-        
+    fluid.defaults("fluid.reorderImages", {
+        layoutHandler: "fluid.gridLayoutHandler",
+
+        selectors: {
+            imageTitle: ".flc-reorderer-imageTitle"
+        }
+    });
+
 })(jQuery, fluid_1_2);

@@ -7,7 +7,7 @@
     <title>Image Reorderer</title>
     <link href="../../../framework/fss/css/fss-reset.css" type="text/css" rel="stylesheet" media="all" />
     <link href="../../../components/reorderer/css/Reorderer.css" type="text/css" rel="stylesheet" media="all" />
-    <link href="../../../components/reorderer/css/ImageReorderer.css" type="text/css" rel="stylesheet" media="all" />
+    <link href="../../../components/reorderer/css/OldImageReorderer.css" type="text/css" rel="stylesheet" media="all" />
 
     <!--  Required javascript modules for the Image Reorderer which can be replaced with the build generated file Fluid-all.js -->
     <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
@@ -33,7 +33,7 @@
     The Image Reorderer uses hidden inputs as the strategy for posting the item order back
     to the server, therefore the orderables need to be enclosed in a form.
   -->
-  <form id="reorder-form">
+  <form id="reorder-form" action="#">
     <p id="para1">This is the Image Reorderer demo page.</p>
       <!-- Sample instruction message. At runtime, this would be supplied by the server. -->
       <div class="fl-reorderer-instructions">

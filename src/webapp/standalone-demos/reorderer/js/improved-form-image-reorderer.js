@@ -1,13 +1,12 @@
 var demo = demo || {};
 (function ($) {
-    var url = "http://localhost/gallery";
-    
     var postOrder = function (images) {
         // Serialize the form and post it back to the server.
-        var imageOrder = $("form.flc-imageReorderer").serialize();
+        var form = $("form.flc-imageReorderer");
+        var imageOrder = $(form).serialize();
         $.ajax({
             type: "POST",
-            url: url, 
+            url: form.action, 
             data: imageOrder, 
             complete: function (data, ajaxStatus) {
                 // Handle success or failure by being nice to the user.
