@@ -9,14 +9,14 @@
 }
 
 .fl-bevel-black {
-    text-shadow: rgba(0,0,0,0.75) 0px -1px 0px;
+    text-shadow: rgba(0,0,0,0.35) 0px -1px 0px;
 }
 .fl-bevel-white {
     text-shadow: rgba(255,255,255,1) 0px 1px 0px;
 }
 
 a {
-   -webkit-touch-callout:none; /* prevents iphone popup menu to copy / follow / bookmark a particular link */
+    -webkit-touch-callout:none; /* prevents iphone popup menu to copy / follow / bookmark a particular link */
     -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 /***************************************/
@@ -34,7 +34,7 @@ body::before {
 }
 .fl-navbar {     
     color:#fff;
-    text-shadow: rgba(0,0,0,0.75) 0px -1px 0px;
+    text-shadow: rgba(0,0,0,0.5) 0px -1px 0px;
 }
 
 .fl-navbar h1 {
@@ -43,12 +43,22 @@ body::before {
 .fl-navbar a {
 	color: #fff;
 }
-.fl-navbar .fl-button {
+.fl-navbar [class*=fl-button] {
     background-image: -webkit-gradient(linear, left top, left bottom, 
         from(#9aafca), 
         color-stop(0.5, #6d8cb3),
         color-stop(0.50, #4b6b90),
         to(#4b6b90)
+    );
+    -webkit-border-image:none;
+}
+
+.fl-navbar [class*=fl-button]:active {
+    background-image: -webkit-gradient(linear, left top, left bottom, 
+        from(rgba(149, 184, 239,1)), 
+        to(rgba(35,109,229,1)),
+        color-stop(0.5, rgba(149, 184, 239,1)),
+        color-stop(0.50, rgba(75,148,244,1))
     );
 }
 
@@ -65,14 +75,13 @@ body::before {
 /***************************************/
 /* iPhone general purpose gel buttons */
 /* effect is applied anywhere but the navbar, which has its own button look */
-.fl-navbar ~ * .fl-button,
-.fl-navbar ~ .fl-button {
+.fl-button {
     -webkit-border-image: url(../images/themes/iphone/button_bg_insetShadow.png) 10 stretch;
 }
 .fl-button.fl-bevel-white {
     color:#333333;
 }
-.fl-button.fl-bevel-black{
+.fl-button.fl-bevel-black {
     color:#FFFFFF;
 }
 .fl-button-white {

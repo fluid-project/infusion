@@ -26,12 +26,27 @@ img {border:none;}
     margin-top:-5px;
     -webkit-border-radius: 5px;
 }
-
 /***************************************/
-/* Navigation Bar */
+/* iPhone general purpose gel buttons */
+/* effect is applied anywhere but the navbar, which has its own button look */
+
+.fl-button {
+    text-decoration:none;
+    font-weight:bold;    
+    border-width: 10px;
+    text-align:center;
+    -webkit-border-radius:10px;
+    -webkit-background-origin: border; 
+    -webkit-background-clip: border;
+}
+
+/*************************************************/
+/* Navigation Bar 
+ */
 body::before, .fl-navbar {
     width:100%;
     height:43px;
+    text-align:center;
 }
 body::before {
     content:" ";
@@ -43,14 +58,18 @@ body::before {
     -webkit-background-clip: content-box;    
 }
 
+.fl-navbar .fl-table-cell:not(h1) {
+    width:1px;
+    white-space:nowrap;
+}
+
 .fl-navbar .fl-table-cell:first-child {
-    margin-left:5px;
+    padding-left:5px;    
 }
 .fl-navbar .fl-table-cell:last-child {
-    margin-right:5px;
+    padding-right:5px;
 }
 .fl-navbar h1 {
-    margin:0 auto;
     padding:0;
     text-align:center;
     font-size:1.17em;
@@ -61,18 +80,19 @@ body::before {
 	font-size: 0.7em;
     font-weight:bold;
 }
-.fl-navbar .fl-button {
+
+.fl-navbar [class*=fl-button] {
     -webkit-border-radius:5px;
     padding:0;
-    margin-top:3px;
 }
+
 .fl-navbar .fl-backButton {
+    padding:10px 0;
     /* 
      * To create the oddly shaped back button with fully customizable CSS colors, there are 2 main things:
      * 1) The stencil for the shadow and hilights along the angled edge
      * 2) The mask to crop the background along the angled edge
      */
-    
     /* Angled effect is just a single border with a transaprent stencil image */
     border-width:0 0 0 15px;
     -webkit-border-top-right-radius: 5px;
@@ -84,39 +104,22 @@ body::before {
     -webkit-mask-clip: border; 
 }
 
-.fl-navbar .fl-button-left {
-    left:5px;
-}
-.fl-navbar .fl-button-right {
-    right:5px;
-}
 .fl-navbar .fl-backButton .fl-button-inner {
-    margin-left:-3px; /* Mobile Safari (but not Desktop Safari) showed a tiny gap - this closes it*/
+    margin-left:-3px; /* close tiny gap between angled border + button-inner on Mobile Safari */
     border-left-width:0;
 }
 .fl-navbar .fl-button-inner {
+    float:none;
     padding:5px;
     border-width:5px;
     -webkit-background-origin: border; 
     -webkit-background-clip: border; 
 }
 
-/***************************************/
-/* iPhone general purpose gel buttons */
-/* effect is applied anywhere but the navbar, which has its own button look */
-.fl-navbar ~ * .fl-button,
-.fl-navbar ~ .fl-button {
-    text-decoration:none;
-    font-weight:bold;    
-    border-width: 10px;
-	text-align:center;
-    -webkit-border-radius:10px;
-    -webkit-background-origin: border; 
-    -webkit-background-clip: border;
-}
+
+
 /*************************************************/
 /* iPhone tabs: general purpose dividers, or fixed to the bottom of the screen
- * 
  */
 /*************************************************/
 .fl-tabs {
