@@ -118,8 +118,9 @@ body::before {
 }
 /***************************************/
 /* iPhone tabs 1: small general purpose content dividers */
-.fl-tabs li a {
-	color:#fff;
+
+
+.fl-tabs li {
     background-image: -webkit-gradient(linear, left top, left bottom, 
         from(#9aafca),
         color-stop(0.5, #6d8cb3),
@@ -128,9 +129,10 @@ body::before {
     );
     -webkit-border-image: url(../images/themes/iphone/navbar_normal_button_insetShadow.png) 5 5 5 5 stretch;
     -webkit-border-left-image: none;
+    -webkit-background-origin: border; 
+    -webkit-background-clip: border;
 }
-.fl-tabs .fl-tabs-active a {
-    color:#fff;
+.fl-tabs .fl-tabs-active {
     background-image: -webkit-gradient(linear, left top, left bottom, 
         from(rgba(149, 184, 239,1)), 
         to(rgba(35,109,229,1)),
@@ -138,6 +140,14 @@ body::before {
         color-stop(0.50, rgba(75,148,244,1))
     );
 }
+
+.fl-tabs li a,
+.fl-tabs .fl-tabs-active a {
+	color:#fff;
+    border-right-color:rgba(255,255,255,0.35);
+    border-left-color:rgba(0,0,0,0.35);
+}
+
 
 
 
