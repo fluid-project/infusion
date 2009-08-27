@@ -215,6 +215,7 @@ body::before {
 [class*=fl-list] > li a > .fl-icon ~ .fl-link-summary {
     margin-left:30px; /* default size of fl-icon */
 }
+
 /* icon behaviour */
 [class*=fl-list] > li a > .fl-icon {
     float:left;
@@ -246,7 +247,7 @@ body::before {
 	margin:0 25px -12px 42px;
     
 }
-.fl-list-thumbnails:not(.fl-thumbnails-expanded) > li a > .fl-icon ~ .fl-link-summary {
+.fl-list-thumbnails:not(.fl-thumbnails-expanded):not(.fl-list-brief) > li a > .fl-icon ~ .fl-link-summary {
     padding-bottom:10px;
 }
 /* icon behaviour */
@@ -294,17 +295,27 @@ body::before {
     padding-top:6px;
     padding-bottom:6px;
 }
+
 .fl-list-brief > li a > .fl-link-summary {
     height:1.3em;
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
 }
+
 .fl-list-brief > li a > .fl-link-secondary {
     padding-top:6px;
 }
-.fl-list-brief > li a > .fl-icon {
+
+.fl-list-brief > li a > .fl-icon ~ .fl-link-summary {
+    margin-left:0;
+}
+
+.fl-list-brief.fl-list-thumbnails:not(.fl-thumbnails-expanded) > li a > .fl-icon {
     margin:-6px 10px -6px -12px;
+}
+.fl-list-brief.fl-list-thumbnails:not(.fl-thumbnails-expanded) > li a > .fl-link-secondary {
+    padding-top:0px;
 }
 
 /*************************************************/
