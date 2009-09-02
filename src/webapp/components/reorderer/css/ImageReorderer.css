@@ -6,6 +6,9 @@
 	font-size: .9em;
 	width: 340px;
     margin:auto;
+    position:absolute;
+    right:0;
+    top:0;
 }
 
 
