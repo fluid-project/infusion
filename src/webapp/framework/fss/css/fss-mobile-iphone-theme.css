@@ -226,8 +226,12 @@ body::before {
 /****************************/
 /* Collapsing and expanding panels */
 .fl-panel-autoHeading > *:first-child {
-	color:#fff;
-	background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
+    color:#fff;
+    background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
+}
+.fl-panel-autoHeading > *:first-child:focus {    
+    color:#000;
+    background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#CCC));
 }
 
 /****************************/
