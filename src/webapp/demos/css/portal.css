@@ -48,17 +48,28 @@ a {
     border:2px solid #ccc;
     padding:5px 5px 5px 78px;    
     margin:2px;
-    background-color:#fff;
     color:#666;
-    float:left;   
+    float:left;
+    background:#fff url(../images/portal-icons.png) no-repeat 5px 5px;
 }
 .demo h4 {font:normal 1.35em Arial, Helvetica, sans-serif;}
 .demo a {font-size:1.1em;}
-.demo p {
+.demo .description {
     font-size:.85em; 
     margin:0 0 0 -73px;
     padding-top:30px;
     zoom:1;
+}
+.demo .showcase ~ .description {
+    padding-top:5px;
+}
+
+.demo .showcase {
+    font-size:0.85em;
+}
+.demo .showcase strong {
+    color:#ccc;
+    display:block;
 }
 
 .production, .preview, .sneak {
@@ -81,5 +92,8 @@ a {
     border-color:#ed1c24;
 }
 
+.demoContent {
+    background-color:#ccc;
+}
 
 
