@@ -26,6 +26,15 @@ img {border:none;}
     margin-top:-5px;
     -webkit-border-radius: 5px;
 }
+
+/***************************************/
+/* to override any widths for a mobile device.
+ * This eliminates the width, allowing for device specific screen settings 
+ */
+.fl-panel {
+	width:auto;
+}
+
 /***************************************/
 /* iPhone general purpose gel buttons */
 /* effect is applied anywhere but the navbar, which has its own button look */
@@ -182,17 +191,18 @@ body::before {
 [class*=fl-list] {
     border: none;
     list-style:none;
-    margin:10px 0;
+    margin:0 0 10px;
     padding:0;
 }
 
-[class*=fl-list] > li {	
+/*[class*=fl-list] > li {	
     padding:0;
 	margin:0;
 	border:none;
 }
+*/
 
-[class*=fl-list] > li a {
+[class*=fl-list] > li {
 	display:block;	
 	padding: 12px 0px 12px 12px;
 	text-decoration: none;
@@ -203,7 +213,7 @@ body::before {
     overflow:auto; /* to encapsulate floating elements within */
 }
 
-[class*=fl-list] > li:last-child a {
+[class*=fl-list] > li:last-child {
 	border-bottom-width:1px;
 }
 
@@ -220,7 +230,7 @@ body::before {
 }
 
  /* summary link info ehaviour */
-[class*=fl-list] > li a .fl-link-summary {
+[class*=fl-list] > li .fl-link-summary {
     display:block;
     clear:right;
     margin:0 25px 0 0px;
@@ -228,25 +238,45 @@ body::before {
     font-size:0.8em;
 	
 }
-[class*=fl-list] > li a > .fl-icon ~ .fl-link-summary {
+[class*=fl-list] > li > .fl-icon ~ .fl-link-summary {
     margin-left:30px; /* default size of fl-icon */
 }
 
 /* icon behaviour */
-[class*=fl-list] > li a > .fl-icon {
+[class*=fl-list] > li > .fl-icon {
     float:left;
     margin-left:-6px;
 }
 
+.fl-panel [class*=fl-list] > li:first-child,
 .fl-panel [class*=fl-list] > li:first-child a {
     -webkit-border-top-left-radius: 8px;
     -webkit-border-top-right-radius: 8px;
 }
 
+.fl-panel [class*=fl-list] > li:last-child,
 .fl-panel [class*=fl-list] > li:last-child a {
     -webkit-border-bottom-left-radius: 8px;
     -webkit-border-bottom-right-radius: 8px;
 }
+
+/*************************************************/
+/* Taking .fl-listmenu and converting it into a mobile-friendly layout */
+.fl-listmenu {	
+}
+
+.fl-listmenu li {
+	padding:0;  
+}
+
+.fl-listmenu li a {
+    display:block;  
+    padding: 12px 0px 12px 12px;
+    text-decoration: none;
+    font-weight: bold;
+    outline: none;
+}
+
 
 /*************************************************/
 /* Thumbnail and Expanded Thumbnails list features */

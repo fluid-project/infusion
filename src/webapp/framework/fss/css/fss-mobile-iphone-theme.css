@@ -12,7 +12,7 @@
     text-shadow: rgba(0,0,0,0.35) 0px -1px 0px;
 }
 .fl-bevel-white {
-    text-shadow: rgba(255,255,255,1) 0px 1px 0px;
+    text-shadow: rgba(255,255,255,1) 0px 1px 0px;	
 }
 
 a {
@@ -75,7 +75,7 @@ body::before {
 /***************************************/
 /* iPhone general purpose gel buttons */
 /* effect is applied anywhere but the navbar, which has its own button look */
-.fl-button {
+.fl-button {	
     -webkit-border-image: url(../images/themes/iphone/button_bg_insetShadow.png) 10 stretch;
 }
 .fl-button.fl-bevel-white {
@@ -179,11 +179,15 @@ body::before {
 /*************************************************/
 /* Default list system setup */
 
-[class*=fl-list] > li a {
+.fl-listmenu li a {
     -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
     background:#fff url(../images/themes/iphone/listmenu_arrow.png) no-repeat right 5px;
+	
+}
+[class*=fl-list] > li {
 	color: #000;
-	border-color: rgb(169,173,176);
+    border-color: rgb(169,173,176);
+	background-color:#fff; 
 }
 
 /* A simulation for a:active on the device, requires JS */
@@ -213,7 +217,7 @@ body::before {
 }
 
  /* summary link info ehaviour */ 
-[class*=fl-list] > li a .fl-link-summary {
+[class*=fl-list] > li .fl-link-summary {
     color:#999;
 }
 
