@@ -59,18 +59,9 @@ fluid_1_2 = fluid_1_2 || {};
         };
     };
     
-    var findForm = function (element) {
-        while (element) {
-            if (element.nodeName.toLowerCase() === "form") {
-                return element;
-            }
-            element = element.parentNode;
-        }
-    };
-    
     var seekForm = function (container) {
         return fluid.findAncestor(container, function (element) {
-            return element.nodeName.toLowerCase() === "form";
+            return $(element).is("form");
         });
     };
     
