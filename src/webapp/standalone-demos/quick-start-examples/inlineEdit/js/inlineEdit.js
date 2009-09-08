@@ -48,34 +48,6 @@ var demo = demo || {};
             }
         });
         
-        fluid.inlineEdit("#artistName", {
-            componentDecorators: {
-                type: "fluid.undoDecorator"
-            }
-        });
-        
-        fluid.inlineEdit("#artistNameHC", {
-            componentDecorators: {
-                type: "fluid.undoDecorator"
-            }
-        });
-        
-        /**
-         * Customized simple inline edit.
-         */
-        fluid.inlineEdit("#customEdit", {
-            selectors: {
-                editContainer: "#customEditorContainer",
-                edit: "#customizedEditField"
-            }, 
-            componentDecorators: {
-                type: "fluid.undoDecorator",
-                options: {
-                    renderer: myUndoRenderer
-                }
-            }
-        });
-        
         /**
          * Multiple inline text editors.
          */
@@ -89,116 +61,8 @@ var demo = demo || {};
             }
         });
     };
-    
-    /**
-     * Initialize all rich text inline edit components present on the inline-edit 
-     * demo.
-     */
-    var inlineRichTextEditSetup = function () {
-        
-        var editors = [];
-        
-        /**
-         * Create cancel and save buttons for a rich inline editor.
-         * @param {Object} editor 
-         */
-        var makeButtons = function (editor) {
-            $(".save", editor.container).click(function(){
-                editor.finish();
-                return false;
-    	    });
-
-            $(".cancel", editor.container).click(function(){
-                editor.cancel();
-                return false;
-            });
-        };
-        
-        /**
-         * Create cancel and save buttons for all rich text editors.
-         * @param {Object} editors array of rich inline editors.
-         */
-        var makeAllButtons = function (editors) {
-            while (editors.length > 0) {
-                makeButtons(editors.pop());
-            }
-        };          
-        
-        /**
-         * Tiny MCE rich inline text editor example. 
-         */
-        editors.push(
-            fluid.inlineEdit.tinyMCE("#richEdit1", {
-                tinyMCE: {
-                        width: 1024,
-                        theme: "advanced",
-                        theme_advanced_toolbar_location : "top"
-                    }, 
-                componentDecorators: {
-                    type: "fluid.undoDecorator"
-                }
-            })
-        );
-        
-        /**
-         * FCK Editor rich inline text editor example. 
-         */
-        editors.push(
-            fluid.inlineEdit.FCKEditor("#richEdit2", {
-                FCKEditor: {BasePath: "../../../../tests/manual-tests/lib/fckeditor/"},
-                componentDecorators: {
-                    type: "fluid.undoDecorator"
-                }
-            })
-        );
-        
-        /**
-         * Mist theme block.
-         */            
-        editors.push(
-            fluid.inlineEdit.tinyMCE("#cd-review1", {
-                tinyMCE: {width: 300},
-                componentDecorators: {
-                    type: "fluid.undoDecorator"
-                }
-            })
-        );
-        
-        editors.push(
-            fluid.inlineEdit.FCKEditor("#cd-review2", {
-                FCKEditor: {BasePath: "../../../../tests/manual-tests/lib/fckeditor/"},
-                componentDecorators: {
-                    type: "fluid.undoDecorator"
-                }
-            })
-        );
-        
-        /**
-         * High Contrast theme block.
-         */            
-        editors.push(
-            fluid.inlineEdit.tinyMCE("#cd-review1HC", {
-                tinyMCE: {width: 300}, 
-                componentDecorators: {
-                    type: "fluid.undoDecorator"
-                }
-            })
-        );
-        
-        editors.push(
-            fluid.inlineEdit.FCKEditor("#cd-review2HC", {
-                FCKEditor: {BasePath: "../../../../tests/manual-tests/lib/fckeditor/"},
-                componentDecorators: {
-                    type: "fluid.undoDecorator"
-                }
-            })
-        );
-        
-        makeAllButtons(editors);
-    };
         
     demo.initInlineEdit = function () {        
         inlineSimpleEditSetup();
-        inlineRichTextEditSetup();
     };    
 })(jQuery, fluid);
