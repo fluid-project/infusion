@@ -1,0 +1,59 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Conference Planning Tasks</title>
+        <link href="../css/listReorderer.css" type="text/css" rel="stylesheet"/>
+        
+        <!--  Required javascript modules for the Reorderer which can be replaced with the build generated file Fluid-all.js -->
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/GeometricManager.js"></script>    
+        <script type="text/javascript" src="../../../../components/reorderer/js/Reorderer.js"></script>
+        
+        <script type="text/javascript" src="../js/listReorderer.js"></script>
+    
+    </head>
+  
+    <body>
+        <h3>Sortable Conference Planning To-do List</h3>
+        
+        <ol class="todo-list">
+            <li class="movable">
+                Select the date
+            </li>
+            <li class="movable">
+                Create promotional plan
+                <ul>
+                    <li>email campaign</li>
+                    <li>web site</li>
+                    <li>print materials</li>
+                </ul>
+            </li>
+            <li class="movable">
+                Book facilities
+                <ul>
+                    <li>Select building</li>
+                    <li>Book rooms</li>
+                </ul>
+            </li>
+            <li class="movable">
+                Book caterer
+            </li>
+            <li class="movable">
+                Book block of hotel rooms
+            </li>
+            <li class="movable">
+                Develop a conference daily schedule of events
+            </li>
+        </ol>
+        
+        <script type="text/javascript">
+            demo.initListReorderer();
+        </script>
+    </body>
+</html>
