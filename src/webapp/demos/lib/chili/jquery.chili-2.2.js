@@ -502,6 +502,7 @@ $.fn.chili = function( options ) {
 	} // makeDish
 
 	function enableSelectionHelper( el ) {
+        return false; // DISABLE DEFAULT SELECTION HELPER
 		var element = null;
 		$( el )
 		.parents()

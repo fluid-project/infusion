@@ -56,6 +56,7 @@ var demo = demo || {};
                 e.preventDefault();
                 $(".fl-tabs-active").removeClass("fl-tabs-active")
                 $("code").hide();
+                $(".plaintext").hide();
                 
                 selectTab(tab);
                 
@@ -68,13 +69,15 @@ var demo = demo || {};
     }
     
     var makeTab = function (lang, stringData) {
-        var tab = $('<li/>').html('<a href="#'+lang+'" >' + lang + '</a>');
+        var tab = $('<li/>').html('<a href="#'+lang+'" title='+lang+'>' + lang + '</a>');
         var code = $('<code/>');
+        var plain = $('<div/>');
         
         code.attr('id',lang).addClass(lang).html(stringData).hide();
+        plain.addClass(lang + " plaintext").html(stringData).hide();
         
         $('.fl-tabs').append(tab);
-        $('.fl-tabs-content').append(code);
+        $('.fl-tabs-content').append(code).append(plain);
         
         var tabs = $('#tabs li');
         
@@ -82,6 +85,28 @@ var demo = demo || {};
             enableTabbing(tabs);
         }
     }
+
+    var enableFormattingTabs = function () {
+        // plain view
+        $(".codeOptions [href=#plaintext]").click(function (e) {
+            
+            var langID = $("#tabs .fl-tabs-active a").attr("title");
+            // hide colorised
+            $("[class="+langID+"]").hide();            
+            // show plaintext
+            $('.plaintext.' + langID).show();            
+        });
+        
+        // normal black
+        $(".codeOptions [href=#normal]").click(function (e) {
+            var langID = $("#tabs .fl-tabs-active a").attr("title");
+            // hide colorised
+            $("[class="+langID+"]").show();            
+            // show plaintext
+            $('.plaintext.' + langID).hide();            
+        });
+    }
+
 
     $.each(content, function (name, path) {
         $.ajax({            
@@ -98,7 +123,8 @@ var demo = demo || {};
     });
 
     $(document).ready(function () {
-        $("iframe").attr("src", demo.path + demo.name + "/html/" + demo.name + ".html");        
+        $("iframe").attr("src", demo.path + demo.name + "/html/" + demo.name + ".html"); 
+        enableFormattingTabs();       
     })
     
     
