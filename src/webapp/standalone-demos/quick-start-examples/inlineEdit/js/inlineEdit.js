@@ -19,30 +19,30 @@ var demo = demo || {};
 (function ($, fluid) {
     
     /**
+     * Customize the undo subcomponent appearance.
+     * @param {Object} that
+     * @param {Object} targetContainer
+     */
+    var myUndoRenderer = function (that, targetContainer) {
+        var markup = "<span class='flc-undo'>" +
+        "<span class='flc-undo-undoContainer'><a href='#' class='flc-undo-undoControl'><img src='../../../../integration-demos/sakai/images/undo.png' alt='Undo your edit' title='Undo your edit' style='border:none' /></a></span>" +
+        "<span class='flc-undo-redoContainer'><a href='#' class='flc-undo-redoControl'><img src='../../../../integration-demos/sakai/images/redo.png' alt='Redo your edit' title='Redo your edit' style='border:none' /></a></span>" +
+        "</span>";
+        var markupNode = $(markup);
+        targetContainer.append(markupNode);
+        return markupNode;
+    }; 
+    
+    /**
      * Initialize all simple inline edit components present on the inline-edit 
      * demo.
      */
     var inlineSimpleEditSetup = function () {
-    
-        /**
-         * Customize the undo subcomponent appearance.
-         * @param {Object} that
-         * @param {Object} targetContainer
-         */
-        var myUndoRenderer = function (that, targetContainer) {
-            var markup = "<span class='flc-undo'>" +
-            "<span class='flc-undo-undoContainer'><a href='#' class='flc-undo-undoControl'><img src='../../../../integration-demos/sakai/images/undo.png' alt='Undo your edit' title='Undo your edit' style='border:none' /></a></span>" +
-            "<span class='flc-undo-redoContainer'><a href='#' class='flc-undo-redoControl'><img src='../../../../integration-demos/sakai/images/redo.png' alt='Redo your edit' title='Redo your edit' style='border:none' /></a></span>" +
-            "</span>";
-            var markupNode = $(markup);
-            targetContainer.append(markupNode);
-            return markupNode;
-        }; 
-        
+          
         /**
          * Simple inline edits example.
          */            
-        fluid.inlineEdit("#simpleEdit", {
+        fluid.inlineEdit(".simpleEdit", {
             componentDecorators: {
                 type: "fluid.undoDecorator"
             }
@@ -51,7 +51,7 @@ var demo = demo || {};
         /**
          * Multiple inline text editors.
          */
-        fluid.inlineEdits("#multipleEdit", {
+        fluid.inlineEdits(".multipleEdit", {
             selectors: {
                 text: ".editableText",
                 editables : "p"
