@@ -14,15 +14,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 // Ensure the demo namespace exists
 var demo = demo || {};
 
-(function ($, fluid) {
-    
-    demo.initListReorderer = function () {
-        var options = {
-            selectors: {
-                movables: ".movable"
-            }
-        };
-        return fluid.reorderList(".todo-list", options);
-    };
-    
-})(jQuery, fluid);
+demo.initListReorderer = function () {
+    return fluid.reorderList(".todo-list", {
+        selectors: {
+            movables: ".movable"
+        }
+    });
+};
