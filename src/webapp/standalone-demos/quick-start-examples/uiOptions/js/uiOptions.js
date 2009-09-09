@@ -17,17 +17,83 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var demo = demo || {};
 (function ($, fluid) {
-    demo.initUIOptions = function () {
-        fluid.uiEnhancer();
+	
+    //initialize the UI Enhancer
+    var setupUIEnhancer = function () {
+    	
+        var enhancerOpts = {
+            defaultSiteSettings: {
+                theme: "mist",
+                linksBold: true,
+                linksUnderline: true
+            },
+            tableOfContents: {
+                options: {
+                    templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+                }
+            
+            }
+        };
         
+        return fluid.uiEnhancer(document, enhancerOpts);
+    };
+    
+    var setupDialog = function() {
+    
+        // Create the dialog
+        uiOptionsNode.dialog({
+            bgiframe: true,
+            width: '60em',
+            modal: true,
+            dialogClass: 'fl-widget fl-grabbable',
+            closeOnEscape: false,
+            autoOpen: false,
+            draggable: true,
+            title: "User Interface Options"
+        });
+        
+        // Bind event handlers for it.
+        $(".myButton").click(function() {
+            uiOptionsNode.dialog("open");
+        });
+    };
+
+    
+    //initialize UI Options component
+    var setupUIOptions = function () {
         var options = {
             listeners: {
-                afterRender: function () {
-                    $('.fl-uiOptions .fl-col:eq(0)').accordion({header: 'h2', clearStyle: true, autoHeight: false});
+                afterRender: function() {
+                    $(".uiOptions .fl-col:eq(0)").accordion({
+                        header: 'h2',
+                        clearStyle: true,
+                        autoHeight: false
+                    });
+                    $(".uiOptions .fl-col h2:eq(0)").focus();
+                },
+                onCancel: function() {
+                    uiOptionsNode.dialog("close");
+                },
+                onSave: function() {
+                    uiOptionsNode.dialog("close");
                 }
             }
         };
         
-        fluid.uiOptions(".uiOptions", options);
+        return fluid.uiOptions(".uiOptions", options);
+    };
+    
+    //load the UI Options component
+    var loadUIOptions = function () {
+        var urlSelector = "../../../../components/uiOptions/html/UIOptions.html .uiOptions";
+        uiOptionsNode.load(urlSelector, setupUIOptions);
+    };
+
+    
+    demo.initUIOptions = function () {
+        uiOptionsNode = $("#myUIOptions");
+        setupUIEnhancer();  
+        loadUIOptions();
+        setupDialog();
     };
 })(jQuery, fluid);
