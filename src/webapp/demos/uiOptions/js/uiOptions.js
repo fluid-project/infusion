@@ -29,7 +29,7 @@ var demo = demo || {};
             },
             tableOfContents: {
                 options: {
-                    templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+                    templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
                 }
             
             }
@@ -85,7 +85,7 @@ var demo = demo || {};
     
     //load the UI Options component
     var loadUIOptions = function () {
-        var urlSelector = "../../../../components/uiOptions/html/UIOptions.html .uiOptions";
+        var urlSelector = "../../../components/uiOptions/html/UIOptions.html .uiOptions";
         uiOptionsNode.load(urlSelector, setupUIOptions);
     };
 
