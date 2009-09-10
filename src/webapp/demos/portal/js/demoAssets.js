@@ -17,9 +17,9 @@ var demo = demo || {};
     }
         
     var content = {
-        "html" : demo.path + demo.name + "/html/" + demo.name + ".html",
-        "css" : demo.path + demo.name + "/css/" + demo.name + ".css",
-        "js" : demo.path + demo.name + "/js/" + demo.name + ".js"
+        "html" : "html/" + demo.name + ".html",
+        "css" : "css/" + demo.name + ".css",
+        "js" : "js/" + demo.name + ".js"
     }
 
     var extractHTML = function (data) {
@@ -123,7 +123,7 @@ var demo = demo || {};
     });
 
     $(document).ready(function () {
-        $("iframe").attr("src", demo.path + demo.name + "/html/" + demo.name + ".html"); 
+        $("iframe").attr("src", "html/" + demo.name + ".html"); 
         enableFormattingTabs();       
     })
     
