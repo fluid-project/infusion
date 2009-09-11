@@ -52,7 +52,13 @@
 code {
     font-size:.8em;
     color:#666;
+    overflow: auto;
 }
 .plaintext {
     font-size:.8em;
+    overflow:auto;
+}
+textarea.plaintext {
+    width:100%;
+    height:500px;
 }

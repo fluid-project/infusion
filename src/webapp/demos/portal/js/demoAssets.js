@@ -71,7 +71,7 @@ var demo = demo || {};
     var makeTab = function (lang, stringData) {
         var tab = $('<li/>').html('<a href="#'+lang+'" title='+lang+'>' + lang + '</a>');
         var code = $('<code/>');
-        var plain = $('<div/>');
+        var plain = $('<textarea/>');
         
         code.attr('id',lang).addClass(lang).html(stringData).hide();
         plain.addClass(lang + " plaintext").html(stringData).hide();
