@@ -21,6 +21,12 @@ var demo = demo || {};
         "css" : "css/" + demo.name + ".css",
         "js" : "js/" + demo.name + ".js"
     }
+    
+    var status = {
+        "html" : null,
+        "css" : null,
+        "js" : null
+    }
 
     var extractHTML = function (data) {
         var start = data.indexOf("<body>");
@@ -41,31 +47,24 @@ var demo = demo || {};
         ;
     }    
     
-    var selectTab = function (tab) {
+    var selectTab = function (tab, code) {
         tab.addClass("fl-tabs-active");
-        $(tab.children("a").attr("href")).show();
+        code.show();
     }
     
-    var enableTabbing = function (tabs) {
-        
-        $.each(tabs, function (i, tab) {
-            tab = $(tab);
-            tab.children().bind("click", function (e) {                                        
-                var activeTab = $(e.target);
-                var panel = $(activeTab.attr("href"));
-                e.preventDefault();
-                $(".fl-tabs-active").removeClass("fl-tabs-active")
-                $("code").hide();
-                $(".plaintext").hide();
-                
-                selectTab(tab);
-                
-            });
-            // Chili syntax colorizer
-            $(tab.children("a").attr("href")).chili();
+    var enableTab = function (thisTab, thisCode, thisPlaintext) {
+        thisTab.bind("click", function (event) {
+            event.preventDefault();
+            $(".fl-tabs-active").removeClass("fl-tabs-active")
+            $("code").hide();
+            $(".plaintext").hide();
+            thisCode.show();
+            thisTab.addClass("fl-tabs-active");            
         });
-        selectTab($(tabs[0]));
 
+        if (status['css'] != null && status['js'] != null && status['html'] != null) {
+            selectTab(thisTab, thisCode);
+        }
     }
     
     var makeTab = function (lang, stringData) {
@@ -78,12 +77,9 @@ var demo = demo || {};
         
         $('.fl-tabs').append(tab);
         $('.fl-tabs-content').append(code).append(plain);
-        
-        var tabs = $('#tabs li');
-        
-        if (loadedLength === extractKeysFromObject(content).length) {
-            enableTabbing(tabs);
-        }
+
+        code.chili();
+        enableTab(tab, code, plain);
     }
 
     var enableFormattingTabs = function () {
@@ -111,13 +107,17 @@ var demo = demo || {};
     $.each(content, function (name, path) {
         $.ajax({            
             url: path,
-            error: function (XMLHttpRequest, status, error) {
-                loadedLength = loadedLength + 1;
+            dataType: "text",
+            error: function (XMLHttpRequest, state, error) {
+                status[name] = false;                
             },
-            success: function (data, status) {
-                loadedLength = loadedLength + 1;
-                data = (name === "html") ?  extractHTML(data) : entityEscape(data);
-                makeTab(name, data);                
+            success: function (data, state) {
+                                
+                status[name] = (data != "") ? true : false; // for some reason, Safari thinks error is success so check response
+                if (status[name]) {
+                    data = (name === "html") ?  extractHTML(data) : entityEscape(data);
+                    makeTab(name, data);                
+                }
             }
         });        
     });
