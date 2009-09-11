@@ -49,7 +49,7 @@
     border:1px solid #4070A1;
     border-width:0 1px 1px;
 }
-code {
+code ol {
     font-size:.8em;
     color:#666;
     overflow: auto;
