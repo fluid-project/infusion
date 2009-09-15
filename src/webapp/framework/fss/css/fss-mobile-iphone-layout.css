@@ -286,6 +286,8 @@ body::before {
 
 .fl-list-thumbnails > li a {
 	border-bottom-width:1px;
+    padding-top:6px;
+    overflow:auto;
 }
 /* summary behaviour */
 .fl-list-thumbnails > li a > .fl-icon ~ .fl-link-summary {
@@ -299,7 +301,7 @@ body::before {
 .fl-list-thumbnails > li a > .fl-icon {
     width:44px;
     height:44px;
-    margin:-12px 10px -12px -12px;
+    margin:-6px 10px -12px -12px;
     -webkit-border-radius:0;
 }
 .fl-panel .fl-list-thumbnails > li a {
