@@ -195,7 +195,7 @@ body::before {
 }
 
 /* A simulation for a:active on the device, requires JS */
-[class*=fl-list] a:active,
+[class*=fl-list]:not(.fl-list) a:active,
 [class*=fl-list] .fl-link-hilight {
 	color: #fff;
     background: url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
@@ -208,7 +208,7 @@ body::before {
 		        -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
 
-[class*=fl-list] a:active,
+[class*=fl-list]:not(.fl-list) a:active,
 [class*=fl-list] a:active .fl-link-secondary,
 [class*=fl-list] a:active .fl-link-summary,
 [class*=fl-list] .fl-link-loading * {
@@ -223,6 +223,10 @@ body::before {
  /* summary link info ehaviour */ 
 [class*=fl-list] > li .fl-link-summary {
     color:#999;
+}
+
+.fl-list a {
+    color:#4a94f4;
 }
 
 /***************************************/

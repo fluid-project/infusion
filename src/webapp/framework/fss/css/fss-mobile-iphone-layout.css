@@ -6,7 +6,6 @@
 body {
     margin:0;
     padding:0;
-	/*overflow:hidden;*/
     font:normal 17px Helvetica, sans-serif; /* Base font rules */
 	-webkit-user-select: none; /* prevents child elements content from being selected - desired? */
     -webkit-text-size-adjust:none; /* http://website-engineering.blogspot.com/2009/07/stop-adjusting-text-size-in-iphone-when.html */
@@ -20,12 +19,22 @@ h5 {}
 h6 {}
 img {border:none;}
 
+
+/***************************************/
+/**
+ * Basic overrides for fss layout  
+ */
+
 .fl-icon {
     width:30px;
     height:30px;
     margin-top:-5px;
     -webkit-border-radius: 5px;
 }
+.fl-label {
+    width:25%;
+}
+
 
 /***************************************/
 /* to override any widths for a mobile device.
@@ -192,13 +201,6 @@ body::before {
     margin:0 0 10px;
     padding:0;
 }
-
-/*[class*=fl-list] > li {	
-    padding:0;
-	margin:0;
-	border:none;
-}
-*/
 
 [class*=fl-list] > li {
 	display:block;	
