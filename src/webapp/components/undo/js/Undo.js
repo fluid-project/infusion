@@ -24,7 +24,7 @@ fluid_1_2 = fluid_1_2 || {};
         STATE_REVERTED = "state_reverted";
   
     function defaultRenderer(that, targetContainer) {
-        var markup = "<span class='flc-undo'>" + 
+        var markup = "<span class='flc-undo' aria-live='polite' aria-relevant='all'>" + 
           "<span class='flc-undo-undoContainer'>[<a href='#' class='flc-undo-undoControl'>undo</a>]</span>" + 
           "<span class='flc-undo-redoContainer'>[<a href='#' class='flc-undo-redoControl'>redo</a>]</span>" + 
         "</span>";

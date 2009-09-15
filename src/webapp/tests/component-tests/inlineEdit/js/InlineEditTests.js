@@ -427,12 +427,27 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("ARIA", function () {
-            expect(2);
+            expect(10);
 
             var display = $("#display");
             jqUnit.assertFalse("Before initialization, display should have no role.", display.attr("role"));
             var inlineEditor = fluid.inlineEdit("#inline-edit");
             jqUnit.assertEquals("After initialization, display role should be ", "button", display.attr("role"));
+			
+			var initialValue = "Initial Value";
+            
+            $("#display-undoable").text(initialValue);
+    
+            var editorWithUndo = fluid.inlineEdit("#inline-edit-undo", {componentDecorators: "fluid.undoDecorator"});
+            var undoer1 = editorWithUndo.decorators[0];
+  			var undo1 = insistSelect("There should be an undo container", undoer1, "undoContainer"); 
+  			var markup = $(".flc-undo");
+			jqUnit.assertEquals("aria-live should be", "polite", markup.attr("aria-live"));
+			jqUnit.assertEquals("aria-relevant should be", "all", markup.attr("aria-relevant"));
+			var redo1 = insistSelect("There should be a redo container", undoer1, "redoContainer"); 
+			jqUnit.assertEquals("aria-live should be", "polite", markup.attr("aria-live"));
+			jqUnit.assertEquals("aria-relevant should be", "all", markup.attr("aria-relevant"));
+            assertVisState(undo1, redo1, false, false); // 4
             
         });
         

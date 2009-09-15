@@ -310,3 +310,12 @@ a.redoControl:hover {
 html>body .savedControl {
     left: 96%;
 }
+.hiddenForScreenReaderUsers {
+	position:absolute;
+	left:-10000px;
+	top:auto;
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
+

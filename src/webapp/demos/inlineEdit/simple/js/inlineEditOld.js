@@ -30,10 +30,11 @@ var demo = demo || {};
          * @param {Object} targetContainer
          */
         var myUndoRenderer = function (that, targetContainer) {
-            var markup = "<span class='flc-undo'>" +
-            "<span class='flc-undo-undoContainer'><a href='#' class='flc-undo-undoControl'><img src='../../../../integration-demos/sakai/images/undo.png' alt='Undo your edit' title='Undo your edit' style='border:none' /></a></span>" +
-            "<span class='flc-undo-redoContainer'><a href='#' class='flc-undo-redoControl'><img src='../../../../integration-demos/sakai/images/redo.png' alt='Redo your edit' title='Redo your edit' style='border:none' /></a></span>" +
-            "</span>";
+            var markup = "<span class='flc-undo' aria-live='polite' aria-relevant='all'>" +
+            "<span class='flc-undo-undoContainer'>[<a href='#' class='flc-undo-undoControl'><img src='../../../../integration-demos/sakai/images/undo.png' alt='Undo your edit' title='Undo your edit' style='border:none' /><span class='hiddenForScreenReaderUsers'>Undo your edit.</span></a>]</span>" +
+            "<span class='flc-undo-redoContainer'>[<a href='#' class='flc-undo-redoControl'><img src='../../../../integration-demos/sakai/images/redo.png' alt='Redo your edit' title='Redo your edit' style='border:none' /><span class='hiddenForScreenReaderUsers'>Redo your edit.</span></a>]</span>" +
+			"</span>";
+
             var markupNode = $(markup);
             targetContainer.append(markupNode);
             return markupNode;
