@@ -109,6 +109,7 @@
     <target name="copyDistroFiles">
       <copy todir="${toDir}">
         <fileset dir="${base-dir}/src/webapp/">
+            <include name="demos/**/*" />
             <include name="integration-demos/**/*" />
             <include name="standalone-demos/**/*" />
             <include name="tests/**/*" />
