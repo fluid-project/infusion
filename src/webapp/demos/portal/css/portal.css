@@ -50,8 +50,47 @@ a {
     margin:2px;
     color:#666;
     float:left;
-    background:#fff url(../images/portal-icons.png) no-repeat 5px 5px;
 }
+/********************************************/
+.comingSoon {
+    background:#fff url(../images/comingSoon.png) no-repeat 5px 5px;
+}
+.layoutReorderer {
+    background:#fff url(../images/reorderer-layout.png) no-repeat 5px 5px;
+}
+.gridReorderer {
+    background:#fff url(../images/reorderer-grid.png) no-repeat 5px 5px;
+}
+.listReorderer {
+    background:#fff url(../images/reorderer-list.png) no-repeat 5px 5px;
+}
+.imageReorderer {
+    background:#fff url(../images/reorderer-image.png) no-repeat 5px 5px;
+}
+.progress {
+    background:#fff url(../images/progress.png) no-repeat 5px 5px;
+}
+.uiOptions {
+    background:#fff url(../images/uiOptions.png) no-repeat 5px 5px;
+}
+.fss {
+    background:#fff url(../images/comingSoon.png) no-repeat 5px 5px;
+}
+.renderer {
+    background:#fff url(../images/comingSoon.png) no-repeat 5px 5px;
+}
+.simpleEdit {
+    background:#fff url(../images/inlineEdit-simple.png) no-repeat 5px 5px;
+}
+.richEdit {
+    background:#fff url(../images/inlineEdit-rich.png) no-repeat 5px 5px;
+}
+.uploader {
+    background:#fff url(../images/uploader.png) no-repeat 5px 5px;
+}
+/********************************************/
+
+
 .demo h4 {font:normal 1.35em Arial, Helvetica, sans-serif;}
 .demo a {font-size:1.1em;}
 .demo .description {
