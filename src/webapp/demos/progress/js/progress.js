@@ -39,7 +39,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         if (percent < 100) {
             // bump up the current percentage
-            percent = Math.min(percent + increment + aSmallRandomNumber(), 100);
+            percent = Math.round(Math.min(percent + increment + aSmallRandomNumber(), 100));
             // create a label for the progress
             var currentProgressLabel = percent + "% Complete";
             // tell progress to update
