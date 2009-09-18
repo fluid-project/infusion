@@ -276,5 +276,7 @@ input.fl-icon {padding-left:16px;}
 .fl-ProgEnhance-basic, /* << syntax breaks conventions and is Deprecated*/
 .fl-progEnhance-basic {}
 
+/* hide text for screen readers. */
+.fl-offScreen-hidden {position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;}
 
 
