@@ -12,6 +12,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery,fluid*/
 
+var demo = demo || {};
 
 (function ($, fluid) {
     var myProgress;
@@ -54,18 +55,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
     };
     
-    var bindButtonHandlers = function () {
+    demo.initClickProgress = function () {
+        myProgress = fluid.progress("#main", {
+            speed: 1000
+        });
         $("#showButton").click(function () {
             anIllusionOfProgress(myProgress, 0, 200);
             $("#showButton").blur();
         });   
     };
 
-    $(function () {
-		myProgress = fluid.progress("#main", {
-            speed: 1000
-        });
-		
-        bindButtonHandlers(); 
-    });   
 })(jQuery, fluid);

@@ -11,13 +11,18 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-// Ensure the demo namespace exists
-var demo = demo || {};
+/*global jQuery*/
+/*global fluid*/
+/*global demo*/
 
-demo.initListReorderer = function () {
-    return fluid.reorderList(".todo-list", {
-        selectors: {
-            movables: ".movable"
-        }
-    });
-};
+var demo = demo || {};
+(function ($, fluid) {
+    
+    demo.initListReorderer = function () {
+        return fluid.reorderList(".todo-list", {
+            selectors: {
+                movables: ".movable"
+            }
+        });
+    };
+})(jQuery, fluid);
