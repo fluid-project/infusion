@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>Keyboard Accessbility</title>
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../css/keyboard.css" />
+
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/plugins/delegate/js/jquery.delegate.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+
+        <script type="text/javascript" src="../js/keyboard.js"></script>
+    </head>
+    <body>
+        
+        <div class="fl-container-500 navbar">            
+            <ul class="level_1" tabindex=0>
+                <li>
+                    <a href="#">Company</a>
+                    <ul class="level_2">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Citizenship</a></li>
+                        <li><a href="#">Locations</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Careers</a>
+                    <ul class="level_2">
+                        <li><a href="#">I dont see any...</a></li>
+                        <li><a href="#">Let me double check...</a></li>
+                        <li><a href="#">Yup, here they are!</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Places</a>
+                    <ul class="level_2">
+                        <li><a href="#">London</a></li>
+                        <li><a href="#">France</a></li>
+                        <li><a href="#">Canada</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Faces</a></li>
+            </ul>
+        </div>        
+        <script type="text/javascript">
+            demo.initKeyboardNav();
+        </script>
+    </body>
+</html>

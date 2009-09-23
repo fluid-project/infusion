@@ -1,0 +1,50 @@
+a {
+    color:#fff;
+    text-decoration:none;
+    display:block;    
+}
+ul {
+    margin:0;
+    padding:0;
+}
+li {
+    list-style:none;
+    display:block;
+}
+:focus {
+    outline:none;
+}
+.level_1 li {
+    float:left;
+    position:relative;
+}
+.level_1 li a {
+    padding:5px 35px 5px 5px;
+    background-color:#333;
+    float:left;    
+}
+.level_2 {
+    display:none;
+    position:absolute;
+    top:26px;
+    left:0;
+    background-color:#999;
+    width:180px;       
+}
+.level_2 li, 
+.level_2 li a {
+    float:none;
+}
+.level_2 li a {
+    padding:5px;
+}
+.revealSubMenu .level_2 {
+    display:block;
+}
+.level_1 .active a {
+    background-color:#C00;
+}
+.level_1 .active .subActive a {
+    background-color:#666;
+    color:#fff;
+}
