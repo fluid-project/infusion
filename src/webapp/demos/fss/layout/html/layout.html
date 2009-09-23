@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Fluid Skinning System (FSS) examples</title>
+
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-layout.css" />
+        <link rel="stylesheet" type="text/css" href="../css/layout.css" />
+        
+	</head>
+	<body>	    
+	    <h1>Fluid Skinning System demos</h1>
+        
+        <h2>Basic Layout</h2>
+        <h3>Bare bones layout</h3>
+        <p>Header, footer, and content in a centered 750px wide container.</p>
+        <div class="fl-container-750 fl-centered">
+            <div class="fl-container-flex fl-fix header">
+                <p>This is a header</p>
+            </div>
+            <div class="fl-container-flex fl-fix content">
+                <p>This is some content</p>
+            </div>
+            <div class="fl-container-flex fl-fix footer">
+                <p>This is a footer</p>
+            </div>
+        </div>
+        
+        <h3>Simple column layout</h3>
+        <p>Header, footer, and flexible columns in a centered 950px wide container. </p>
+        <div class="fl-container-950 fl-centered">
+            <div class="fl-container-flex fl-fix header">
+                <p>This is a header</p>
+            </div>
+            <div class="fl-container-flex fl-col-flex5 fl-fix content">
+                <div class="fl-col">
+                    <p>Video log scalar silicon debugged normalizing technician femtosecond femtosecond logarithmic.</p>
+                    <p>Audio bridgeware development, computer phaselock services integer dithering converter with overflow interface. Phaselock, broadband servicing sampling record bus gigabyte high processor adaptive developer includes femtosecond.</p>
+                </div>
+                <div class="fl-col">
+                    <p>
+                        Prototype solution high high patch cache transponder cascading connectivity distributed. Supporting, integer sampling supporting internet sequential high video partitioned, floating-point kilohertz, encapsulated procedural femtosecond scalar. 
+                    </p>
+                </div>
+                <div class="fl-col">
+                    <p>
+                        Boolean element, frequency integer anomoly supporting, metafile fragmentation boolean video log with data. For read-only potentiometer, element potentiometer frequency device, metafile digital fragmentation n-tier, dithering. Prototype solution high high patch cache transponder cascading connectivity distributed. Supporting, integer sampling supporting internet sequential high video partitioned, floating-point kilohertz, encapsulated procedural femtosecond scalar. 
+                    </p>
+                </div>
+                <div class="fl-col">
+                    <p>Frequency, dithering mainframe dithering remote, scalar video record disk bypass. </p>
+                    <p>Analog deviation integral converter with pulse with phase cable, video reflective. </p>
+                </div>
+                <div class="fl-col">
+                    <p>
+                        Resistor integral integral computer debugged scan. Cache, hyperlinked record transmission video software digital floating-point debugged, silicon system integer femtosecond. Ethernet cache, frequency recognition deviation element video includes coordinated recursive controller dithering 
+                    </p>
+                </div>
+            </div>
+            <div class="fl-container-flex fl-fix footer">
+                <p>This is a footer</p>
+            </div>
+        </div>        
+
+       
+        <h3>3 Mixed column layout</h3>
+        <p>Header, footer, 1 flexible nested column container and 2 fixed columns. </p>        
+
+        <div class="fl-container-flex">
+            <div class="fl-fix fl-container-flex header">
+                <p>This is a header</p>
+            </div>
+            <div class="fl-fix fl-container-flex fl-col-mixed fl-col-mixed3 content">
+                <div class="fl-col-side fl-force-right">
+                    <p>Audio bridgeware development, computer phaselock services integer dithering converter with overflow interface. Phaselock, broadband servicing sampling record bus gigabyte high processor adaptive developer includes femtosecond.</p>
+                </div>
+                <div class="fl-col-side fl-force-left">
+                    <p>Or element backbone device coordinated deviation controller generator technician silicon mainframe cable, hyperlinked
+                    partitioned, floating-point kilohertz, encapsulated procedural femtosecond scalar. </p>
+                </div>
+                <div class="fl-col-main">
+                    <p>Resistor integral integral computer debugged scan. Cache, hyperlinked record transmission video software digital floating-point debugged, silicon system integer femtosecond.</p>
+                    <p>Ethernet cache, frequency recognition deviation element video includes coordinated recursive controller dithering resistor includes converter.</p>
+                    <p>Video log scalar silicon debugged normalizing technician femtosecond femtosecond logarithmic.</p>
+                    <p>Frequency, dithering mainframe dithering remote, scalar video record disk bypass. </p>
+                    <p>Analog deviation integral converter with pulse with phase cable, video reflective. </p>
+                    <p>Prototype boolean partitioned application, ethernet broadband network read-only services element in. Debugged messaging mainframe plasma capacitance, system transmission. N-tier system backbone cascading device analog. 
+                    </p>
+                </div>
+            </div>
+            <div class="fl-fix fl-container-flex footer">
+                <p>This is a footer</p>
+            </div>
+        </div>        
+
+
+        <h3>Linearized 3 Mixed column layout</h3>
+        <p>The same example as above, but now its been linearized to be more readable on mobile screens or at very large font sizes.</p>
+
+        <div class="fl-container-flex fl-layout-linear">
+            <div class="fl-fix fl-container-flex header">
+                <p>This is a header</p>
+            </div>
+            <div class="fl-fix fl-container-flex fl-col-mixed fl-col-mixed3 content">
+                <div class="fl-col-side fl-force-right">
+                    <p>Audio bridgeware development, computer phaselock services integer dithering converter with overflow interface. Phaselock, broadband servicing sampling record bus gigabyte high processor adaptive developer includes femtosecond.</p>
+                </div>
+                <div class="fl-col-side fl-force-left">
+                    <p>Or element backbone device coordinated deviation controller generator technician silicon mainframe cable, hyperlinked
+                    partitioned, floating-point kilohertz, encapsulated procedural femtosecond scalar. </p>
+                </div>
+                <div class="fl-col-main">
+                    <p>Resistor integral integral computer debugged scan. Cache, hyperlinked record transmission video software digital floating-point debugged, silicon system integer femtosecond.</p>
+                    <p>Ethernet cache, frequency recognition deviation element video includes coordinated recursive controller dithering resistor includes converter.</p>
+                    <p>Video log scalar silicon debugged normalizing technician femtosecond femtosecond logarithmic.</p>
+                    <p>Frequency, dithering mainframe dithering remote, scalar video record disk bypass. </p>
+                    <p>Analog deviation integral converter with pulse with phase cable, video reflective. </p>
+                    <p>Prototype boolean partitioned application, ethernet broadband network read-only services element in. Debugged messaging mainframe plasma capacitance, system transmission. N-tier system backbone cascading device analog. 
+                    </p>
+                </div>
+            </div>
+            <div class="fl-fix fl-container-flex footer">
+                <p>This is a footer</p>
+            </div>
+        </div>        
+
+
+        <h2>Advanced Layout</h2>
+        <h3>Widgets layout</h3>
+        <p>The FSS Widget model is composed of 1 core container and 3 sub containers: titlebar, options, and content</p>
+        
+        <div class="fl-container-400">
+            <div class="fl-widget">
+                <div class="fl-widget-titlebar">
+                    <h2>My Widget</h2>
+                </div>
+                <div class="fl-widget-options">
+                    <ul>
+                        <li><a href="#_bottom">Option 1</a></li>
+                        <li><a href="#_bottom">Option 2</a></li>
+                    </ul>
+                </div>
+                <div class="fl-widget-content">
+                    <p>this is where the content goes</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>Tabs layouts</h3>
+        <p>The FSS Tab model is composed of 1 core wrapper (a list), at least 1 list item, and 1 link inside each list item. This example is in a centered container 750px wide.</p>
+        
+        <div class="fl-container-750 fl-centered">
+            <ul class="fl-tabs fl-tabs-center">
+                <li class="fl-tabs-active"><a href="#_bottom">Active Tab</a></li>
+                <li><a href="#_bottom">Tab #2</a></li>
+                <li><a href="#_bottom">Tab #3</a></li>
+            </ul>
+            <div class="fl-tabs-content"> 
+                Content
+            </div>
+            
+            <ul class="fl-tabs fl-tabs-left">
+                <li class="fl-tabs-active"><a href="#_bottom">Active Tab</a></li>
+                <li><a href="#_bottom">Tab #2</a></li>
+                <li><a href="#_bottom">Tab #3</a></li>
+            </ul>
+            <div class="fl-tabs-content"> 
+                Content
+            </div>
+            
+            <ul class="fl-tabs fl-tabs-right">
+                <li class="fl-tabs-active"><a href="#_bottom">Active Tab</a></li>
+                <li><a href="#_bottom">Tab #2</a></li>
+                <li><a href="#_bottom">Tab #3</a></li>
+            </ul>
+            <div class="fl-tabs-content"> 
+                Content
+            </div>
+        </div>
+
+        <h3>Menu layouts</h3>
+        <p>The FSS Menu model is composed of 1 core wrapper (a list), at least 1 list item, and 1 link inside each list item</p>
+        <div class="fl-container-200 fl-centered">
+            <ul class="fl-listmenu">
+                <li><a href="#_bottom">Menu item #1</a></li>
+                <li class="fl-activemenu"><a href="#_bottom">Active Menu item</a></li>
+                <li><a href="#_bottom">Menu item #3</a></li>
+                <li><a href="#_bottom">Menu item #4</a></li>
+                <li><a href="#_bottom">Menu item #5</a></li>
+            </ul>
+        </div>
+
+	</body>
+</html>

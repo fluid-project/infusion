@@ -47,7 +47,7 @@ var demo = demo || {};
     }
 
     var extractHTML = function (data) {
-        var start = data.indexOf("<body>");
+        var start = data.indexOf("<body");
         var end = data.indexOf("</html>");
         
         data = data.substring(start, end);
