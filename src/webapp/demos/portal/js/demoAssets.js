@@ -8,6 +8,7 @@ var demo = demo || {};
      * Using the demo's base url, collect any CSS, JS, HTML code assets 
      */
     var loadedLength = 0;
+    var firstContentLoaded = null;
     var extractKeysFromObject = function (obj) {
         var keys = [];
         for (var key in obj) {
@@ -16,10 +17,27 @@ var demo = demo || {};
         return keys;
     }
         
-    var content = {
-        "html" : "html/" + demo.name + ".html",
-        "css" : "css/" + demo.name + ".css",
-        "js" : "js/" + demo.name + ".js"
+    var dataModel = {
+        "html" : {
+            path : "html/" + demo.name + ".html",
+            tab : null,
+            content : null
+        },
+        "css" : {
+            path: "css/" + demo.name + ".css",
+            tab : null,
+            content : null
+        },
+        "js" : {
+            path: "js/" + demo.name + ".js",
+            tab : null,
+            content : null
+        },
+        "data" : {
+            path: "data/" + demo.name + ".js",
+            tab : null,
+            content : null
+        }
     }
     
     var status = {
@@ -47,84 +65,103 @@ var demo = demo || {};
         ;
     }    
     
-    var selectTab = function (tab, code) {
-        tab.addClass("fl-tabs-active");
-        code.show();
+    var selectTab = function (name) {
+        dataModel[name].tab.addClass("fl-tabs-active");
+        dataModel[name].content.show();
     }
     
-    var enableTab = function (thisTab, thisCode, thisPlaintext) {
+    var bindTabsContent = function (thisTab, thisCode) {
         thisTab.bind("click", function (event) {
             event.preventDefault();
-            $(".fl-tabs-active").removeClass("fl-tabs-active")
+            $(".fl-tabs-active").removeClass("fl-tabs-active");
             $("code").hide();
-            $(".plaintext").hide();
+            $("textarea").hide();
+            
             thisCode.show();
             thisTab.addClass("fl-tabs-active");            
         });
-
-        if (status['css'] != null && status['js'] != null && status['html'] != null) {
-            selectTab(thisTab, thisCode);
-        }
     }
     
-    var makeTab = function (lang, stringData) {
-        var tab = $('<li/>').html('<a href="#'+lang+'" title='+lang+'>' + lang + '</a>');
+    var makeTab = function (name) {
+        var tab = $('<li/>').html('<a href="#'+name+'" title='+name+'>' + name + '</a>');
+        $('.fl-tabs').append(tab);
+        return tab;
+    };
+    
+    var makeContent = function (name, data) {
         var code = $('<code/>');
         var plain = $('<textarea/>');
+
+        data = (name === "html") ?  extractHTML(data) : entityEscape(data);
         
-        code.attr('id',lang).addClass(lang).html(stringData).hide();
-        plain.addClass(lang + " plaintext").html(stringData).hide();
+        code.addClass(name).html(data).hide();
+        plain.addClass(name + " plaintext").html(data).hide();
         
-        $('.fl-tabs').append(tab);
         $('.fl-tabs-content').append(code).append(plain);
 
         code.chili();
-        enableTab(tab, code, plain);
-    }
-
-    var enableFormattingTabs = function () {
-        // plain view
-        $(".codeOptions [href=#plaintext]").click(function (e) {
+        return code;
+    };
+    
+    var loadComplete = function (name, data) {        
+        
+        if (data && data !== "") {
+            // keep track of the first tab.            
+            firstContentLoaded = (firstContentLoaded) ? firstContentLoaded : name;
             
-            var langID = $("#tabs .fl-tabs-active a").attr("title");
-            // hide colorised
-            $("[class="+langID+"]").hide();            
-            // show plaintext
-            $('.plaintext.' + langID).show();            
+            dataModel[name].tab = makeTab(name);
+            dataModel[name].content = makeContent(name, data); 
+            
+            bindTabsContent(dataModel[name].tab, dataModel[name].content);
+            
+        } else {
+            dataModel[name].content = false;
+        }        
+
+        var selectTabNow = true;
+        $.each(dataModel, function (name, data) {
+            if (data.content === null) {
+                selectTabNow = false;
+            }
+        });
+        if (selectTabNow){            
+            selectTab(firstContentLoaded);
+        }
+    };
+    
+    var togglePlainColorized = function () {
+        // plain view
+        $(".codeOptions [href=#plaintext]").click(function (e) {            
+            var langID = $("#tabs .fl-tabs-active a").attr("title");            
+            $("code." + langID).hide(); // hide colorised            
+            $("textarea." + langID).show(); // show plaintext            
         });
         
         // normal black
         $(".codeOptions [href=#normal]").click(function (e) {
-            var langID = $("#tabs .fl-tabs-active a").attr("title");
-            // hide colorised
-            $("[class="+langID+"]").show();            
-            // show plaintext
-            $('.plaintext.' + langID).hide();            
+            var langID = $("#tabs .fl-tabs-active a").attr("title");            
+            $("code." + langID).show(); // show colorised            
+            $("textarea." + langID).hide(); // hide plaintext            
         });
     }
 
-
-    $.each(content, function (name, path) {
+    // Loop through all content types, and deliver their content if found
+    $.each(dataModel, function (name, data) {
         $.ajax({            
-            url: path,
+            url: data.path,
             dataType: "text",
-            error: function (XMLHttpRequest, state, error) {
-                status[name] = false;                
+            error: function (XMLHttpRequest, state, error) {                
+                loadComplete(name, false);
             },
             success: function (data, state) {
-                                
-                status[name] = (data != "") ? true : false; // for some reason, Safari thinks error is success so check response
-                if (status[name]) {
-                    data = (name === "html") ?  extractHTML(data) : entityEscape(data);
-                    makeTab(name, data);                
-                }
+                loadComplete(name, data);
             }
         });        
     });
 
     $(document).ready(function () {
         $("iframe").attr("src", "html/" + demo.name + ".html"); 
-        enableFormattingTabs();       
+        togglePlainColorized();       
     })
     
     
