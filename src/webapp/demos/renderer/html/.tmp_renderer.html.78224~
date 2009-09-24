@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <title>Renderer Example</title>
+        <link href="../../../framework/fss/css/fss-reset.css" type="text/css" rel="stylesheet" media="all" />
+        <link href="../../../framework/fss/css/fss-layout.css" type="text/css" rel="stylesheet" media="all" />
+        <link href="../../../framework/fss/css/fss-text.css" type="text/css" rel="stylesheet" media="all" />
+
+    	<script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+    	<script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+    	<script type="text/javascript" src="../../../lib/jquery/plugins/bgiframe/js/jquery.bgiframe.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../data/data.js"></script>
+        <script type="text/javascript" src="../js/renderer.js"></script>
+    </head>
+
+    <body class="fl-font-sans">
+        <p id="intro-paragraph">UIBound for plain text</p>
+
+        <div id="locations">
+            <select class="location-list">
+            </select>
+        </div>
+
+        <div id="wines">
+            <div class="wine">
+                <input class="wine-choice" type="radio" value="wine" name="wine"/>
+                <label class="wine-label" for="wine">Wine name</label>            
+            </div>
+        </div>
+
+        <table id="canape-list">
+            <tr>
+                <th>Canape</th>
+                <th>Price</th>
+                <th>Include?</th>
+            </tr>
+            <tr class="repeated-row">
+                <td class="canape-name">cell 1</td>
+                <td class="canape-price">cell 2</td>
+                <td class="canape-selected"><input type="checkbox"/></td>
+            </tr>
+        </table>
+
+        <script type="text/javascript">
+            demo.render();
+        </script>
+    </body>
+</html>
