@@ -1,3 +1,15 @@
+.finalreportlinks {
+    padding:10px;
+    text-align:center;
+    background-color:#555;
+    font-size:2em;
+    border:2px solid #999;
+}
+
+.finalreportlinks a {
+        
+}
+
 html {
     background-color:#333;
     color:#fff;
