@@ -356,6 +356,20 @@ var fluid = fluid || fluid_1_2;
         return that;
     };
     
+    /**
+     * Creates a new "little component": a that-ist object with options merged into it by the framework.
+     * This method is a convenience for creating small objects that have options but don't require full
+     * View-like features such as the DOM Binder or events
+     * 
+     * @param {Object} name the name of the little component to create
+     * @param {Object} options user-supplied options to merge with the defaults
+     */
+    fluid.initLittleComponent = function(name, options) {
+        var that = {};
+        fluid.mergeComponentOptions(that, name, options);
+        return that;
+    };
+    
     fluid.initSubcomponent = function (that, className, args) {
         return fluid.initSubcomponents(that, className, args)[0];
     };
