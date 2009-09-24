@@ -220,7 +220,7 @@
     
     <!-- Runs the javascript dependency resolver which sets $jsfile, $requiredDirectoriesSelector, $jsRegExp, $jsReplaceRegExp and $allRequiredJSFiles -->
     <target name="resolveDependencies" depends="clean">
-        <script language="javascript" src="build.js" />
+        <script language="javascript" src="${base-dir}/build-scripts/build.js" />
     </target>
 
     <target name="copyToSrcBundle" depends="copySourceToBuild">        
