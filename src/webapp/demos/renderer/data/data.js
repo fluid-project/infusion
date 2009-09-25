@@ -16,18 +16,35 @@ demo.data = {
     
     locations: ["Parlour", "Library", "Dining Room"],
 
-    wineListModel: {
+    wineList: {
         codes: ["riesling", "weissbergunder", "pinot-grigio", "gewurztraminer"],
         names: ["Berg Rottland Riesling", "Weissbergunder", "Pinot Grigio", "Gewurztraminer Turkheim"],
         choice: ["riesling"]
     },
 
-    canapePriceList: [{
-        canape: "Foo",
-        price: "$12.34"
+    canapeList: [{
+        name: "Filo Wrapped Asparagus",
+        price: "$10.34",
+        code: ""
     },{
-        canape: "Bar",
-        price: "$9/99"
+        name: "Chicken Ballotine with Carrot Raita and Pomegranate Chutney",
+        price: "$9.98",
+        code: ""
+    },{
+        name: "Spicy Shrimp Crostini",
+        price: "$12.54",
+        code: ""
+    },{
+        name: "Broiled Beef Fillet Croutes with Salsa Verde",
+        price: "$8.34",
+        code: ""
+    },{
+        name: "Roasted Marinated Peppers with Goat Cheese",
+        price: "$6.54",
+        code: ""
+    },{
+        name: "Gorgonzola Stuffed Figs",
+        price: "$7.43",
+        code: ""
     }]
 };
-

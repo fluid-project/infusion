@@ -30,41 +30,50 @@ var demo = demo || {};
         return points;
     };
 
-    var dataToTree = function (object, index) {
-            
-    };
-
     var buildWineListSubtree = function () {
         var treeChildren =  [
-                {ID: "wines", optionlist: {valuebinding: "codes"},
-                              optionnames: {valuebinding: "names"},
-                              selection: {valuebinding: "choice"}
+                {ID: "wines", optionlist: {valuebinding: "wineList.codes"},
+                              optionnames: {valuebinding: "wineList.names"},
+                              selection: {valuebinding: "wineList.choice"}
                 }
             ];
-        var wineRows = fluid.explodeSelectionToInputs(demo.data.wineListModel.codes, {
+        var wineRows = fluid.explodeSelectionToInputs(demo.data.wineList.codes, {
             rowID: "wine-row:",
             inputID: "wine",
             labelID: "wine-label",
             selectID: "wines"
         });
         var tree = fluid.copy(treeChildren).concat(wineRows);
-
-//        tree = fluid.transform(data, dataToTree);
         return tree;
+    };
+
+    var buildCanapaListSubtree = function () {
+        var canapeRows = fluid.transform(demo.data.canapeList, function (obj) {
+            return {
+                ID: "canape-row:",
+                 children: [
+                    {ID: "canape-name", value: obj.name},
+                    {ID: "canape-price", value: obj.price}
+                 ]
+             };
+        });
+        return canapeRows;
     };
 
     var buildComponentTree = function () {
         var introTree = [
             {ID: "intro-paragraph", value: demo.data.intro}
         ];
-        var tree = {children: introTree.concat(buildWineListSubtree())};
+        var tree = {children: introTree
+                                .concat(buildWineListSubtree()
+                                    .concat(buildCanapaListSubtree()))};
         return tree;
     };
 
     demo.render = function () {
         var options = {
             cutpoints: buildCutpoints(),
-            model: demo.data.wineListModel,
+            model: demo.data,
             debugMode: true
         };
         var componentTree = buildComponentTree();
