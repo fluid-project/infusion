@@ -1,0 +1,7 @@
+.render-button {
+    text-align: center;
+}
+.model-dump {
+    border: solid 1px;
+    font-family: monospace;
+}

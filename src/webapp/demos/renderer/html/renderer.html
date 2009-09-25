@@ -6,6 +6,7 @@
         <link href="../../../framework/fss/css/fss-reset.css" type="text/css" rel="stylesheet" media="all" />
         <link href="../../../framework/fss/css/fss-layout.css" type="text/css" rel="stylesheet" media="all" />
         <link href="../../../framework/fss/css/fss-text.css" type="text/css" rel="stylesheet" media="all" />
+        <link href="../css/renderer.css" type="text/css" rel="stylesheet" media="all" />
 
     	<script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
     	<script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
@@ -21,10 +22,15 @@
     </head>
 
     <body class="fl-font-sans">
+        <p class="info"></p>
+
         <p class="render-button">
             <input id="render" type="button" value="Render"/>
         </p>
 
+    <hr/>
+    <div class="fl-col-flex2">
+        <div class="fl-col">    
         <p id="intro-paragraph">Template for the intro text</p>
 
         <select class="location-list">
@@ -58,9 +64,14 @@
             </tr>
         </table>
 
-        <p>Model:<br/><span id="autobound-model" class="model-dump">
-            This is where the auto-bound model will be displayed.</span>
-        </p>
+        </div>
+        <div class="fl-col">
+            <p>Model:</p>
+            <div id="autobound-model" class="model-dump fl-font-monospace">
+                This is where the auto-bound model will be displayed.
+            </div>
+        </div>
+    </div>
 
         <script type="text/javascript">
             demo.render();

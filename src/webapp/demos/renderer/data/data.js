@@ -19,7 +19,7 @@ demo.data = {
     locations: {
         codes: ["parlour", "library", "dining"],
         names: ["Parlour", "Library", "Dining Room"],
-        choice: ["parlour"]
+        choice: "parlour"
     },
 
     wineList: {

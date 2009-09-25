@@ -107,6 +107,7 @@ var demo = demo || {};
     // to give the renderer a chance to actually update the model)
     var dumpDataModel = function(){
 		var timeOut = setTimeout(function () {
+console.log(JSON.stringify(demo.data));
             jQuery("#autobound-model").text(JSON.stringify(demo.data));
 		}, 50);
     };
@@ -126,10 +127,10 @@ var demo = demo || {};
         });
 
         
-        var fullEl = fluid.byId("render");
-        fullEl.onclick = function () {
+        dumpDataModel();
+        var fullEl = fluid.jById("render");
+        fullEl.click (function () {
             fluid.selfRender($("body"), componentTree, options);
-            dumpDataModel();
-        };
+        });
     };
 })(jQuery);
