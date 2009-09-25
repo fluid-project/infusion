@@ -103,18 +103,33 @@ var demo = demo || {};
         return tree;
     };
 
+    // curry the food model into an event listener that updates the display (after waiting a moment
+    // to give the renderer a chance to actually update the model)
+    var dumpDataModel = function(){
+		var timeOut = setTimeout(function () {
+            jQuery("#autobound-model").text(JSON.stringify(demo.data));
+		}, 50);
+    };
+
     demo.render = function () {
+        var applier = fluid.makeChangeApplier(demo.data);
         var options = {
             cutpoints: buildCutpoints(),
             model: demo.data,
+            applier: applier,
             autoBind: true,
             debugMode: true
         };
         var componentTree = buildComponentTree();
+        applier.modelChanged.addListener("*", function (model, oldModel, changeRequest) {
+            dumpDataModel();
+        });
 
+        
         var fullEl = fluid.byId("render");
         fullEl.onclick = function () {
             fluid.selfRender($("body"), componentTree, options);
+            dumpDataModel();
         };
     };
 })(jQuery);

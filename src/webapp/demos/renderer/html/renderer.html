@@ -10,6 +10,7 @@
     	<script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
     	<script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
     	<script type="text/javascript" src="../../../lib/jquery/plugins/bgiframe/js/jquery.bgiframe.js"></script>
+        <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
@@ -56,6 +57,10 @@
                 <td><input class="canape-button" type="checkbox" id="canape-butt" value="Canape"/></td>
             </tr>
         </table>
+
+        <p>Model:<br/><span id="autobound-model" class="model-dump">
+            This is where the auto-bound model will be displayed.</span>
+        </p>
 
         <script type="text/javascript">
             demo.render();
