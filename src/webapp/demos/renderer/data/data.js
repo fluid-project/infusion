@@ -12,9 +12,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 
 demo.data = {
-    intro: "Please choose your options for the shin-dig.",
+    strings: {
+        intro: "Please choose your options for the shin-dig."
+    },
     
-    locations: ["Parlour", "Library", "Dining Room"],
+    locations: {
+        codes: ["parlour", "library", "dining"],
+        names: ["Parlour", "Library", "Dining Room"],
+        choice: ["parlour"]
+    },
 
     wineList: {
         codes: ["riesling", "weissbergunder", "pinot-grigio", "gewurztraminer"],
@@ -25,7 +31,7 @@ demo.data = {
     canapeList: {
         codes: ["asparagus", "chicken", "shrimp", "beef", "peppers", "figs"],
         names: ["Filo Wrapped Asparagus", "Chicken Ballotine with Carrot Raita and Pomegranate Chutney", "Spicy Shrimp Crostini", "Broiled Beef Fillet Croutes with Salsa Verde", "Roasted Marinated Peppers with Goat Cheese", "Gorgonzola Stuffed Figs"],
-        prices: ["$4", "$5", "$6", "$7", "$3", "$5"],
-        choice: []
+        prices: ["$6", "$5", "$7", "$5", "$5", "$6"],
+        choices: []
     }
 };

@@ -22,6 +22,7 @@ var demo = demo || {};
     var buildCutpoints = function () {
         var points = [
             {id: "intro-paragraph", selector: "#intro-paragraph"},
+            {id: "locations", selector: ".location-list"},
             {id: "wines", selector: "#wines"},
             {id: "wine-row:", selector: ".wine"},
             {id: "wine", selector: ".wine-button"},
@@ -33,6 +34,23 @@ var demo = demo || {};
             {id: "canape-price", selector: ".canape-price"}
         ];
         return points;
+    };
+
+    var buildLocationsSubtree = function () {
+        var treeChildren =  [
+                {ID: "locations", optionlist: {valuebinding: "locations.codes"},
+                              optionnames: {valuebinding: "locations.names"},
+                              selection: {valuebinding: "locations.choice"}
+                }
+            ];
+        var locationRows = fluid.explodeSelectionToInputs(demo.data.locations.codes, {
+            rowID: "location-row:",
+            inputID: "location",
+            labelID: "location-label",
+            selectID: "locations"
+        });
+        var tree = fluid.copy(treeChildren).concat(locationRows);
+        return tree;
     };
 
     var buildWineListSubtree = function () {
@@ -56,7 +74,7 @@ var demo = demo || {};
         var treeChildren =  [
                 {ID: "canapes", optionlist: {valuebinding: "canapeList.codes"},
                               optionnames: {valuebinding: "canapeList.names"},
-                              selection: {valuebinding: "canapeList.choice"}
+                              selection: {valuebinding: "canapeList.choices"}
                 }
             ];
         var canapeRows = fluid.transform(demo.data.canapeList.codes, function (opt, index) {
@@ -75,12 +93,13 @@ var demo = demo || {};
 
     var buildComponentTree = function () {
         var introTree = [
-            {ID: "intro-paragraph", value: demo.data.intro}
+            {ID: "intro-paragraph", value: demo.data.strings.intro}
         ];
         var tree = {children: introTree
-                                .concat(buildWineListSubtree()
+                                .concat(buildWineListSubtree())
                                     .concat(buildCanapaListSubtree())
-                                    )};
+                                        .concat(buildLocationsSubtree())
+                    };
         return tree;
     };
 
@@ -88,6 +107,7 @@ var demo = demo || {};
         var options = {
             cutpoints: buildCutpoints(),
             model: demo.data,
+            autoBind: true,
             debugMode: true
         };
         var componentTree = buildComponentTree();
