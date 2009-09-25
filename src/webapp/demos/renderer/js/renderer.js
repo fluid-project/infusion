@@ -25,7 +25,10 @@ var demo = demo || {};
             {id: "wines", selector: "#wines"},
             {id: "wine-row:", selector: ".wine"},
             {id: "wine", selector: ".wine-button"},
-            {id: "wine-label", selector: ".wine-name"}
+            {id: "wine-label", selector: ".wine-name"},
+            {id: "canape-row:", selector: ".repeated-row"},
+            {id: "canape-name", selector: ".canape-name"},
+            {id: "canape-price", selector: ".canape-price"}
         ];
         return points;
     };
