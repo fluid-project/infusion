@@ -22,29 +22,10 @@ demo.data = {
         choice: ["riesling"]
     },
 
-    canapeList: [{
-        name: "Filo Wrapped Asparagus",
-        price: "$10.34",
-        code: ""
-    },{
-        name: "Chicken Ballotine with Carrot Raita and Pomegranate Chutney",
-        price: "$9.98",
-        code: ""
-    },{
-        name: "Spicy Shrimp Crostini",
-        price: "$12.54",
-        code: ""
-    },{
-        name: "Broiled Beef Fillet Croutes with Salsa Verde",
-        price: "$8.34",
-        code: ""
-    },{
-        name: "Roasted Marinated Peppers with Goat Cheese",
-        price: "$6.54",
-        code: ""
-    },{
-        name: "Gorgonzola Stuffed Figs",
-        price: "$7.43",
-        code: ""
-    }]
+    canapeList: {
+        codes: ["asparagus", "chicken", "shrimp", "beef", "peppers", "figs"],
+        names: ["Filo Wrapped Asparagus", "Chicken Ballotine with Carrot Raita and Pomegranate Chutney", "Spicy Shrimp Crostini", "Broiled Beef Fillet Croutes with Salsa Verde", "Roasted Marinated Peppers with Goat Cheese", "Gorgonzola Stuffed Figs"],
+        prices: ["$4", "$5", "$6", "$7", "$3", "$5"],
+        choice: []
+    }
 };

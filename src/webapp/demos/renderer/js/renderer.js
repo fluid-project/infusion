@@ -26,7 +26,9 @@ var demo = demo || {};
             {id: "wine-row:", selector: ".wine"},
             {id: "wine", selector: ".wine-button"},
             {id: "wine-label", selector: ".wine-name"},
-            {id: "canape-row:", selector: ".repeated-row"},
+            {id: "canapes", selector: "#canapes"},
+            {id: "canape-row:", selector: ".canape"},
+            {id: "canape", selector: ".canape-button"},
             {id: "canape-name", selector: ".canape-name"},
             {id: "canape-price", selector: ".canape-price"}
         ];
@@ -51,16 +53,24 @@ var demo = demo || {};
     };
 
     var buildCanapaListSubtree = function () {
-        var canapeRows = fluid.transform(demo.data.canapeList, function (obj) {
+        var treeChildren =  [
+                {ID: "canapes", optionlist: {valuebinding: "canapeList.codes"},
+                              optionnames: {valuebinding: "canapeList.names"},
+                              selection: {valuebinding: "canapeList.choice"}
+                }
+            ];
+        var canapeRows = fluid.transform(demo.data.canapeList.codes, function (opt, index) {
             return {
                 ID: "canape-row:",
-                 children: [
-                    {ID: "canape-name", value: obj.name},
-                    {ID: "canape-price", value: obj.price}
-                 ]
-             };
+                children: [
+                     {ID: "canape", parentRelativeID: "..::canapes", choiceindex: index},
+                     {ID: "canape-name", parentRelativeID: "..::canapes", choiceindex: index},
+                     {ID: "canape-price", value: demo.data.canapeList.prices[index]}
+                ]
+            };
         });
-        return canapeRows;
+        var tree = fluid.copy(treeChildren).concat(canapeRows);
+        return tree;
     };
 
     var buildComponentTree = function () {
@@ -69,7 +79,8 @@ var demo = demo || {};
         ];
         var tree = {children: introTree
                                 .concat(buildWineListSubtree()
-                                    .concat(buildCanapaListSubtree()))};
+                                    .concat(buildCanapaListSubtree())
+                                    )};
         return tree;
     };
 

@@ -41,6 +41,25 @@
             <label class="wine-name" for="wine-butt">Template for wine list</label>
         </div>
 
+        <div id="canapes">
+            <!-- not having this div causes garish pink, without affecting rendering
+                 but this can't *wrap* the wine-row: below... don't know why -->
+        </div>
+
+        <table>
+            <tr>
+                <th>Canape Plate</th>
+                <th>Price</th>
+                <th>Include?</th>
+            </tr>
+            <tr class="canape">
+                <td><label class="canape-name" for="canape-butt">name</label></td>
+                <td class="canape-price" for="canape-butt">price</td>
+                <td><input class="canape-button" type="checkbox" id="canape-butt" value="Canape"/></td>
+            </tr>
+        </table>
+
+<!--
         <table id="canape-list">
             <tr>
                 <th>Canape Plate</th>
@@ -53,7 +72,7 @@
                 <td class="canape-selected"><input type="checkbox"/></td>
             </tr>
         </table>
-
+-->
         <script type="text/javascript">
             demo.render();
         </script>
