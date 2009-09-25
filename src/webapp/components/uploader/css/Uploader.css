@@ -3,7 +3,6 @@
     position: relative;
     display: block;
     clear: both;
-    padding: 1em 2em;
 }
 
 .fl-uploader-manually-degrade, .fl-uploader-manually-enhance {
@@ -130,9 +129,16 @@ html>body .fl-uploader a.fl-uploader-browse {
     background-color: #FFF;
 }
 
-.fl-uploader .fl-uploader-browse-overlay {
+.fl-uploader-browse-overlay {
     position: absolute;
-    z-index: 1;
+    bottom: 50px;
+    left: 325px;
+    z-index: 7;
+}
+
+.fl-uploader-flash10-wrapper {
+    position: relative;
+    float: left;
 }
 
 /* FILE QUEUE TABLE STYLES */
@@ -354,6 +360,7 @@ html>body .fl-uploader-queue {
 
 .fl-uploader-btns {
     margin-top: 1em;
+    text-align:right;
 }
 
 .fl-uploader-btns .fl-uploader-upload, .fl-uploader-btns .fl-uploader-resume,  .fl-uploader-btns .fl-uploader-pause {
@@ -365,7 +372,6 @@ html>body .fl-uploader-queue {
 }
 
 .fl-uploader-btns button {
-    float: right;
     padding: 0;
 }
 
