@@ -161,6 +161,7 @@ fluid_1_2 = fluid_1_2 || {};
     
     var renderRowFromTemplate = function (that, file) {
         var row = that.rowTemplate.clone();
+        row.removeClass(that.options.styles.hiddenTemplate);
         that.locate("fileName", row).text(file.name);
         that.locate("fileSize", row).text(fluid.uploader.formatFileSize(file.size));
         that.locate("fileIconBtn", row).addClass(that.options.styles.remove);
@@ -288,10 +289,6 @@ fluid_1_2 = fluid_1_2 || {};
     var prepareTemplateElements = function (that) {
         // Grab our template elements out of the DOM.  
         that.rowTemplate = that.locate("rowTemplate").remove();
-        /* FLUID-2720 - do not hide the row under IE8 */
-        if ($.browser.msie && ($.browser.version >= 8)) {
-            that.rowTemplate.removeClass(that.options.styles.hiddenTemplate);
-        }
         that.errorInfoRowTemplate = that.locate("errorInfoRowTemplate").remove();
         that.errorInfoRowTemplate.removeClass(that.options.styles.hiddenTemplate);
         that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.uploadContainer).remove();
