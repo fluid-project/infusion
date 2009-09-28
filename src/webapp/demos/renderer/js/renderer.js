@@ -8,14 +8,6 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
-
-/*
-Notes to self:
-build different component subtrees separately
-concatenate them together using
-        tree = {children: fluid.copy(tree.children).concat(subtree)};
-
-*/
 var demo = demo || {};
 (function ($) {
     
