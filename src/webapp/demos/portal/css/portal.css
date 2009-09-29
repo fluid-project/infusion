@@ -83,14 +83,17 @@ a {
 .progress {
     background:#fff url(../images/progress.png) no-repeat 5px 5px;
 }
+.pager {
+    background:#fff url(../images/pager.png) no-repeat 5px 5px;
+}
 .uiOptions {
     background:#fff url(../images/uiOptions.png) no-repeat 5px 5px;
 }
 .fss {
-    background:#fff url(../images/comingSoon.png) no-repeat 5px 5px;
+    background:#fff url(../images/fss.png) no-repeat 5px 5px;
 }
 .renderer {
-    background:#fff url(../images/comingSoon.png) no-repeat 5px 5px;
+    background:#fff url(../images/renderer.png) no-repeat 5px 5px;
 }
 .simpleEdit {
     background:#fff url(../images/inlineEdit-simple.png) no-repeat 5px 5px;
@@ -101,6 +104,7 @@ a {
 .uploader {
     background:#fff url(../images/uploader.png) no-repeat 5px 5px;
 }
+
 /********************************************/
 
 
