@@ -5,7 +5,7 @@ var demo = demo || {};
 
 (function ($,fluid) {
     /**
-     * Using the demo's base url, collect any CSS, JS, HTML code assets 
+     * Using the demo's base url, collect any CSS, JS, HTML code assets
      */
     var loadedLength = 0;
     var firstContentLoaded = null;
@@ -16,7 +16,7 @@ var demo = demo || {};
         }
         return keys;
     }
-        
+
     var dataModel = {
         "html" : {
             path : "html/" + demo.name + ".html",
@@ -39,7 +39,7 @@ var demo = demo || {};
             content : null
         }
     }
-    
+
     var status = {
         "html" : null,
         "css" : null,
@@ -49,7 +49,7 @@ var demo = demo || {};
     var extractHTML = function (data) {
         var start = data.indexOf("<body");
         var end = data.indexOf("</html>");
-        
+
         data = data.substring(start, end);
         data = entityEscape(data);
         return data;
@@ -63,60 +63,110 @@ var demo = demo || {};
             .replace(/\"/g, '&quot;')
             .replace(/\'/g, '&#39;')
         ;
-    }    
-    
+    }
+
     var selectTab = function (name) {
         dataModel[name].tab.addClass("fl-tabs-active");
         dataModel[name].content.show();
     }
-    
+
     var bindTabsContent = function (thisTab, thisCode) {
         thisTab.bind("click", function (event) {
             event.preventDefault();
             $(".fl-tabs-active").removeClass("fl-tabs-active");
             $("code").hide();
             $("textarea").hide();
-            
+
             thisCode.show();
-            thisTab.addClass("fl-tabs-active");            
+            thisTab.addClass("fl-tabs-active");
         });
     }
-    
+
+    var addAriaTabList = function(tl) {
+        tl.attr({
+            role: "tablist",
+            "aria-multiselectable": "false"
+        });
+    };
+
+    var addAriaTab = function(tb) {
+        tb.attr({
+            role: "tab",
+            "aria-expanded": "false"
+        });
+    };
+
+    var initKeyboardNav = function(tl) {
+        var level1tabs = tl;
+
+        level1tabs.fluid("selectable", {
+            selectableSelector: "> li",
+            autoSelectFirstItem: true,
+            direction : fluid.a11y.orientation.HORIZONTAL,
+            onUnselect : function(el) {
+                $(el).removeClass("fl-tabs-active");
+				$(el).attr("aria-selected", "false");
+            },
+            onSelect : function(el) {
+                $(el).addClass("fl-tabs-active");
+				fluid.activate(el);
+            }
+        });
+
+        var level1Activation = function(e) {
+				$(e.target).click();
+				$(e.target).attr("aria-selected", "true");
+        };
+
+        fluid.activatable(level1tabs, level1Activation, {
+            additionalBindings : [{
+                modifier : null,
+                key : $.ui.keyCode.DOWN,
+                activateHandler : level1Activation
+            }]
+        });
+
+    };
+
     var makeTab = function (name) {
-        var tab = $('<li/>').html('<a href="#'+name+'" title='+name+'>' + name + '</a>');
-        $('.fl-tabs').append(tab);
+		aux = $('.fl-tabs');
+        var tab = $('<li/>').html('<a href="#' + name + '" title=' + name + '>' + name + '</a>');
+        aux.append(tab);
+
+		addAriaTabList(aux);
+		addAriaTab(tab);
         return tab;
     };
-    
+
     var makeContent = function (name, data) {
         var code = $('<code/>');
         var plain = $('<textarea/>');
 
         data = (name === "html") ?  extractHTML(data) : entityEscape(data);
-        
+
         code.addClass(name).html(data).hide();
         plain.addClass(name + " plaintext").html(data).hide();
-        
+
         $('.fl-tabs-content').append(code).append(plain);
 
         code.chili();
         return code;
     };
-    
-    var loadComplete = function (name, data) {        
-        
+
+    var loadComplete = function (name, data) {
+
         if (data && data !== "") {
-            // keep track of the first tab.            
+            // keep track of the first tab.
             firstContentLoaded = (firstContentLoaded) ? firstContentLoaded : name;
-            
+
             dataModel[name].tab = makeTab(name);
-            dataModel[name].content = makeContent(name, data); 
-            
+            dataModel[name].content = makeContent(name, data);
+
             bindTabsContent(dataModel[name].tab, dataModel[name].content);
-            
+
         } else {
             dataModel[name].content = false;
-        }        
+        }
 
         var selectTabNow = true;
         $.each(dataModel, function (name, data) {
@@ -124,45 +174,46 @@ var demo = demo || {};
                 selectTabNow = false;
             }
         });
-        if (selectTabNow){            
+        if (selectTabNow) {
+			initKeyboardNav($('.fl-tabs'));
             selectTab(firstContentLoaded);
         }
     };
-    
+
     var togglePlainColorized = function () {
         // plain view
-        $(".codeOptions [href=#plaintext]").click(function (e) {            
-            var langID = $("#tabs .fl-tabs-active a").attr("title");            
-            $("code." + langID).hide(); // hide colorised            
-            $("textarea." + langID).show(); // show plaintext            
+        $(".codeOptions [href=#plaintext]").click(function (e) {
+            var langID = $("#tabs .fl-tabs-active a").attr("title");
+            $("code." + langID).hide(); // hide colorised
+            $("textarea." + langID).show(); // show plaintext
         });
-        
+
         // normal black
         $(".codeOptions [href=#normal]").click(function (e) {
-            var langID = $("#tabs .fl-tabs-active a").attr("title");            
-            $("code." + langID).show(); // show colorised            
-            $("textarea." + langID).hide(); // hide plaintext            
+            var langID = $("#tabs .fl-tabs-active a").attr("title");
+            $("code." + langID).show(); // show colorised
+            $("textarea." + langID).hide(); // hide plaintext
         });
     }
 
     // Loop through all content types, and deliver their content if found
     $.each(dataModel, function (name, data) {
-        $.ajax({            
+        $.ajax({
             url: data.path,
             dataType: "text",
-            error: function (XMLHttpRequest, state, error) {                
+            error: function (XMLHttpRequest, state, error) {
                 loadComplete(name, false);
             },
             success: function (data, state) {
                 loadComplete(name, data);
             }
-        });        
+        });
     });
 
     $(document).ready(function () {
-        $("iframe").attr("src", "html/" + demo.name + ".html"); 
-        togglePlainColorized();       
+        $("iframe").attr("src", "html/" + demo.name + ".html");
+        togglePlainColorized();
     })
-    
-    
+
+
 })(jQuery, fluid_1_2)
