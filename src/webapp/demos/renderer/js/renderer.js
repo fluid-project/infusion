@@ -17,6 +17,9 @@ var demo = demo || {};
             {id: "location-label", selector: "#location-block > label"},
             {id: "wine-label", selector: "#wine-block > label"},
             {id: "canape-label", selector: "#food-block > label"},
+            {id: "canape-header", selector: "th.plate"},
+            {id: "price-header", selector: "th.price"},
+            {id: "choose-header", selector: "th.include"},
             {id: "locations", selector: ".location-list"},
             {id: "wines", selector: "#wines"},
             {id: "wine-row:", selector: ".wine"},
@@ -87,13 +90,16 @@ var demo = demo || {};
     };
 
     var buildComponentTree = function () {
-        var introTree = [
+        var stringsTree = [
             {ID: "intro-paragraph", value: demo.data.strings.intro},
             {ID: "location-label", value: demo.data.strings.locationLabel},
             {ID: "wine-label", value: demo.data.strings.winesLabel},
-            {ID: "canape-label", value: demo.data.strings.foodsLabel}
+            {ID: "canape-label", value: demo.data.strings.foodsLabel},
+            {ID: "canape-header", value: demo.data.strings.plate},
+            {ID: "price-header", value: demo.data.strings.price},
+            {ID: "choose-header", value: demo.data.strings.include}
         ];
-        var tree = {children: introTree
+        var tree = {children: stringsTree
                                 .concat(buildWineListSubtree())
                                     .concat(buildCanapeListSubtree())
                                         .concat(buildLocationsSubtree())

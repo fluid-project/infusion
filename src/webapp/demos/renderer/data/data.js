@@ -16,7 +16,10 @@ demo.data = {
         intro: "Please choose your options for the shin-dig.",
         locationLabel: "Locations:",
         winesLabel: "Wines:",
-        foodsLabel: "Food Selection:"
+        foodsLabel: "Food Selection:",
+        plate: "Canape Plate",
+        price: "Price",
+        include: "Include?"
     },
     
     locations: {
