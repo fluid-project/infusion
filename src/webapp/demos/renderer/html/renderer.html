@@ -41,11 +41,6 @@
 
         <div id="wine-block" class="info-block">
             <label for="wine-list">label</label>
-            <div id="wines">
-                <!-- not having this div causes garish pink, without affecting rendering
-                     but this can't *wrap* the wine-row: below... don't know why -->
-            </div>
-
             <div class="wine" id="wine-list">
                 <input class="wine-button" type="radio" id="wine-butt" value="Wine"/>
                 <label class="wine-name" for="wine-butt">Template for wine list</label>
@@ -53,13 +48,8 @@
         </div>
 
         <div id="food-block" class="info-block">
-            <label for="canapes">label</label>            
-            <div id="canapes">
-                <!-- not having this div causes garish pink, without affecting rendering
-                     but this can't *wrap* the wine-row: below... don't know why -->
-            </div>
-    
-            <table>
+            <label for="canape-list">label</label>
+            <table id="canape-list">
                 <tr>
                     <th class="plate">header</th>
                     <th class="price">header</th>

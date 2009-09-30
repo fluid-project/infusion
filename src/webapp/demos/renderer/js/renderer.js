@@ -21,11 +21,9 @@ var demo = demo || {};
             {id: "price-header", selector: "th.price"},
             {id: "choose-header", selector: "th.include"},
             {id: "locations", selector: ".location-list"},
-            {id: "wines", selector: "#wines"},
             {id: "wine-row:", selector: ".wine"},
             {id: "wine", selector: ".wine-button"},
             {id: "wine-label", selector: ".wine-name"},
-            {id: "canapes", selector: "#canapes"},
             {id: "canape-row:", selector: ".canape"},
             {id: "canape", selector: ".canape-button"},
             {id: "canape-name", selector: ".canape-name"},
@@ -117,8 +115,7 @@ var demo = demo || {};
             cutpoints: buildCutpoints(),
             model: demo.data,
             applier: applier,
-            autoBind: true,
-            debugMode: true
+            autoBind: true
         };
         var componentTree = buildComponentTree();
         applier.modelChanged.addListener("*", function (model, oldModel, changeRequest) {
