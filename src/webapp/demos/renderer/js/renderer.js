@@ -8,6 +8,8 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
+/*global jQuery, fluid*/
+
 var demo = demo || {};
 (function ($) {
     
@@ -76,9 +78,9 @@ var demo = demo || {};
             return {
                 ID: "canape-row:",
                 children: [
-                     {ID: "canape", parentRelativeID: "..::canapes", choiceindex: index},
-                     {ID: "canape-name", parentRelativeID: "..::canapes", choiceindex: index},
-                     {ID: "canape-price", value: demo.data.canapeList.prices[index]}
+	                {ID: "canape", parentRelativeID: "..::canapes", choiceindex: index},
+                    {ID: "canape-name", parentRelativeID: "..::canapes", choiceindex: index},
+                    {ID: "canape-price", value: demo.data.canapeList.prices[index]}
                 ]
             };
         });
@@ -104,7 +106,7 @@ var demo = demo || {};
         return tree;
     };
 
-    var dumpDataModel = function(){
+    var dumpDataModel = function () {
         jQuery("#autobound-model").text(JSON.stringify(demo.data));
     };
 
@@ -124,7 +126,7 @@ var demo = demo || {};
         
         dumpDataModel();
         var fullEl = fluid.jById("render");
-        fullEl.click (function () {
+        fullEl.click(function () {
             fluid.selfRender($("body"), componentTree, options);
         });
     };
