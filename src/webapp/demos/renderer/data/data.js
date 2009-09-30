@@ -13,7 +13,10 @@ var demo = demo || {};
 
 demo.data = {
     strings: {
-        intro: "Please choose your options for the shin-dig."
+        intro: "Please choose your options for the shin-dig.",
+        locationLabel: "Locations:",
+        winesLabel: "Wines:",
+        foodsLabel: "Food Selection:"
     },
     
     locations: {

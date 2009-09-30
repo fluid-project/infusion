@@ -33,37 +33,45 @@
         <div class="fl-col">    
         <p id="intro-paragraph">Template for the intro text</p>
 
-        <select class="location-list">
-        </select>
-
-        <div id="wines">
-            <!-- not having this div causes garish pink, without affecting rendering
-                 but this can't *wrap* the wine-row: below... don't know why -->
+        <div id="location-block" class="info-block">
+            <label for="location-list">label</label>
+            <select id="location-list" class="location-list">
+            </select>
         </div>
 
-        <div class="wine">
-            <input class="wine-button" type="radio" id="wine-butt" value="Wine"/>
-            <label class="wine-name" for="wine-butt">Template for wine list</label>
+        <div id="wine-block" class="info-block">
+            <label for="wine-list">label</label>
+            <div id="wines">
+                <!-- not having this div causes garish pink, without affecting rendering
+                     but this can't *wrap* the wine-row: below... don't know why -->
+            </div>
+
+            <div class="wine" id="wine-list">
+                <input class="wine-button" type="radio" id="wine-butt" value="Wine"/>
+                <label class="wine-name" for="wine-butt">Template for wine list</label>
+            </div>
         </div>
 
-        <div id="canapes">
-            <!-- not having this div causes garish pink, without affecting rendering
-                 but this can't *wrap* the wine-row: below... don't know why -->
+        <div id="food-block" class="info-block">
+            <label for="canapes">label</label>            
+            <div id="canapes">
+                <!-- not having this div causes garish pink, without affecting rendering
+                     but this can't *wrap* the wine-row: below... don't know why -->
+            </div>
+    
+            <table>
+                <tr>
+                    <th>Canape Plate</th>
+                    <th>Price</th>
+                    <th>Include?</th>
+                </tr>
+                <tr class="canape">
+                    <td><label class="canape-name" for="canape-butt">name</label></td>
+                    <td class="canape-price" for="canape-butt">price</td>
+                    <td><input class="canape-button" type="checkbox" id="canape-butt" value="Canape"/></td>
+                </tr>
+            </table>
         </div>
-
-        <table>
-            <tr>
-                <th>Canape Plate</th>
-                <th>Price</th>
-                <th>Include?</th>
-            </tr>
-            <tr class="canape">
-                <td><label class="canape-name" for="canape-butt">name</label></td>
-                <td class="canape-price" for="canape-butt">price</td>
-                <td><input class="canape-button" type="checkbox" id="canape-butt" value="Canape"/></td>
-            </tr>
-        </table>
-
         </div>
         <div class="fl-col">
             <p>Model:</p>

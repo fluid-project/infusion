@@ -14,6 +14,9 @@ var demo = demo || {};
     var buildCutpoints = function () {
         var points = [
             {id: "intro-paragraph", selector: "#intro-paragraph"},
+            {id: "location-label", selector: "#location-block > label"},
+            {id: "wine-label", selector: "#wine-block > label"},
+            {id: "canape-label", selector: "#food-block > label"},
             {id: "locations", selector: ".location-list"},
             {id: "wines", selector: "#wines"},
             {id: "wine-row:", selector: ".wine"},
@@ -62,7 +65,7 @@ var demo = demo || {};
         return tree;
     };
 
-    var buildCanapaListSubtree = function () {
+    var buildCanapeListSubtree = function () {
         var treeChildren =  [
                 {ID: "canapes", optionlist: {valuebinding: "canapeList.codes"},
                               optionnames: {valuebinding: "canapeList.names"},
@@ -85,11 +88,14 @@ var demo = demo || {};
 
     var buildComponentTree = function () {
         var introTree = [
-            {ID: "intro-paragraph", value: demo.data.strings.intro}
+            {ID: "intro-paragraph", value: demo.data.strings.intro},
+            {ID: "location-label", value: demo.data.strings.locationLabel},
+            {ID: "wine-label", value: demo.data.strings.winesLabel},
+            {ID: "canape-label", value: demo.data.strings.foodsLabel}
         ];
         var tree = {children: introTree
                                 .concat(buildWineListSubtree())
-                                    .concat(buildCanapaListSubtree())
+                                    .concat(buildCanapeListSubtree())
                                         .concat(buildLocationsSubtree())
                     };
         return tree;

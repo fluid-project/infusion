@@ -1,3 +1,9 @@
+.info-block {
+    padding: 10px;
+}
+.info-block > label {
+    font-weight: bold;
+}
 .render-button {
     text-align: center;
 }
