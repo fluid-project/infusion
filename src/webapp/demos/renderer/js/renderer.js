@@ -12,7 +12,7 @@ var demo = demo || {};
 (function ($) {
     
     var buildCutpoints = function () {
-        var points = [
+        return [
             {id: "intro-paragraph", selector: "#intro-paragraph"},
             {id: "location-label", selector: "#location-block > label"},
             {id: "wine-label", selector: "#wine-block > label"},
@@ -29,7 +29,6 @@ var demo = demo || {};
             {id: "canape-name", selector: ".canape-name"},
             {id: "canape-price", selector: ".canape-price"}
         ];
-        return points;
     };
 
     var buildLocationsSubtree = function () {
