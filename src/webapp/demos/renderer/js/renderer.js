@@ -107,13 +107,8 @@ var demo = demo || {};
         return tree;
     };
 
-    // curry the food model into an event listener that updates the display (after waiting a moment
-    // to give the renderer a chance to actually update the model)
     var dumpDataModel = function(){
-		var timeOut = setTimeout(function () {
-console.log(JSON.stringify(demo.data));
-            jQuery("#autobound-model").text(JSON.stringify(demo.data));
-		}, 50);
+        jQuery("#autobound-model").text(JSON.stringify(demo.data));
     };
 
     demo.render = function () {
