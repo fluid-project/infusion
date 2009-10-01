@@ -724,6 +724,8 @@ fluid.tests = fluid.tests || {};
 
     fluid.tests.decoratorRegistrar = function(container, registrar) {
         registrar[registrar.length] = container;
+        var node = $(".FLUID-2980-test2");
+        fluid.selfRender(node, {});
     };
 
     renderTests.test("Multiple decorator test (FLUID-2980)", function() {

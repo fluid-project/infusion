@@ -303,9 +303,6 @@ fluid_1_2 = fluid_1_2 || {};
 
     parseloop: while(true) {
       var iEvent = parser.next();
-//        if (iEvent === XMLP._NONE) break parseloop;
-//        continue;
-     
       switch(iEvent) {
         case XMLP._ELM_B:
           processDefaultTag();
@@ -347,9 +344,8 @@ fluid_1_2 = fluid_1_2 || {};
           break parseloop;
         }
       }
+    processDefaultTag();
     return t;
-//       alert("document complete: " + chars.length + " chars");
-  
     };
   
     fluid.debugLump = function(lump) {
