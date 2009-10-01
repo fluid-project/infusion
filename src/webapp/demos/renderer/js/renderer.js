@@ -153,11 +153,47 @@ var demo = demo || {};
     };
 
     /**
+     * Utility function to convert the model into a pretty-printed string
+     */
+    var modelToString = function (model) {
+        var listStringArray = function (array) {
+            var string = "";
+            for (var i = 0; i < array.length; i++) {
+                string += "\"" + array[i] + "\"";
+                if (i < array.length - 1) {
+                    string += ", ";
+                }
+            }
+            return string;
+        };
+    
+        var listMembers = function (obj, tab) {
+            var string = "";
+            
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key) && key !== "modelToHtmlString") {
+                    string += tab + key + ": ";
+                    if (obj[key] instanceof Array) {
+                        string += "[" + listStringArray(obj[key]) + "]\n";
+                    } else if (obj[key] instanceof Object) {
+                        string +=  "{\n" + listMembers(obj[key], tab + "  ") + "\n" + tab + "}\n";
+                    } else {
+                        string += "\"" + obj[key] + "\"\n";
+                    }
+                }
+            }
+            return string;
+        };
+        
+        return listMembers(model, "");
+    };
+
+    /**
      * Utility function for displaying the data model, so users of the demo can see
      * how it changes with the autobinding.
      */
     var displayDataModel = function () {
-        jQuery("#autobound-model").text(demo.data.modelToString(demo.data));
+        jQuery("#autobound-model").text(modelToString(demo.data));
     };
 
     /**
