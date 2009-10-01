@@ -46,8 +46,7 @@ var demo = demo || {};
             labelID: "location-label",
             selectID: "locations"
         });
-        var tree = fluid.copy(treeChildren).concat(locationRows);
-        return tree;
+        return treeChildren.concat(locationRows);
     };
 
     var buildWineListSubtree = function () {
@@ -63,8 +62,7 @@ var demo = demo || {};
             labelID: "wine-label",
             selectID: "wines"
         });
-        var tree = fluid.copy(treeChildren).concat(wineRows);
-        return tree;
+        return treeChildren.concat(wineRows);
     };
 
     var buildCanapeListSubtree = function () {
@@ -84,12 +82,11 @@ var demo = demo || {};
                 ]
             };
         });
-        var tree = fluid.copy(treeChildren).concat(canapeRows);
-        return tree;
+        return treeChildren.concat(canapeRows);
     };
 
-    var buildComponentTree = function () {
-        var stringsTree = [
+    var buildStringsTree = function () {
+        return [
             {ID: "intro-paragraph", value: demo.data.strings.intro},
             {ID: "location-label", value: demo.data.strings.locationLabel},
             {ID: "wine-label", value: demo.data.strings.winesLabel},
@@ -98,12 +95,14 @@ var demo = demo || {};
             {ID: "price-header", value: demo.data.strings.price},
             {ID: "choose-header", value: demo.data.strings.include}
         ];
-        var tree = {children: stringsTree
+    };
+
+    var buildComponentTree = function () {
+        return {children: buildStringsTree()
                                 .concat(buildWineListSubtree())
                                     .concat(buildCanapeListSubtree())
                                         .concat(buildLocationsSubtree())
                     };
-        return tree;
     };
 
     var dumpDataModel = function () {
