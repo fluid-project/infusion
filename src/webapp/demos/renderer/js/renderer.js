@@ -157,7 +157,7 @@ var demo = demo || {};
      * how it changes with the autobinding.
      */
     var displayDataModel = function () {
-        jQuery("#autobound-model").text(JSON.stringify(demo.data));
+        jQuery("#autobound-model").text(demo.data.modelToString(demo.data));
     };
 
     /**
