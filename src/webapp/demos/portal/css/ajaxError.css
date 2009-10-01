@@ -1,0 +1,20 @@
+body {
+    padding:50px;
+}
+
+.error {
+    -moz-border-radius:15px;
+    border:5px solid #C00;
+    padding:10px;
+    background-color:#EFD1D1;
+}
+.error h1 {
+    color:#000;
+    font:normal 2em Arial;
+    margin:10px 0;
+    padding:0;
+}
+.error a {
+    color:#000;
+    font-weight:bold;
+}
