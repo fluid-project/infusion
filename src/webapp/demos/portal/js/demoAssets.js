@@ -4,6 +4,21 @@ var fluid_1_2 = fluid_1_2 || {};
 var demo = demo || {};
 
 (function ($,fluid) {
+    // ensure browser is permitted to crawl the filesystem before running demo
+    // If the browser is not, AND the demo is known to require ajax, then halt the demo and show warning
+    var abortDemo = false;
+    $.ajax({
+        url: "../../../build-scripts/build.xml",
+        async : false,
+        error: function (XMLHttpRequest, state, error) {
+            if (error && error.code === 1012 && (demo.name === "uiOptions" || demo.name === "Uploader") ) {
+                // Access denide: we're prob. in FF with the same origin policy blocking our fetch
+                abortDemo = true;
+            }
+        }
+    });
+
+
     /**
      * Using the demo's base url, collect any CSS, JS, HTML code assets
      */
@@ -19,22 +34,22 @@ var demo = demo || {};
 
     var dataModel = {
         "html" : {
-            path : "html/" + demo.name + ".html",
+            path : demo.path + "html/" + demo.name + ".html",
             tab : null,
             content : null
         },
         "css" : {
-            path: "css/" + demo.name + ".css",
+            path: demo.path + "css/" + demo.name + ".css",
             tab : null,
             content : null
         },
         "js" : {
-            path: "js/" + demo.name + ".js",
+            path: demo.path + "js/" + demo.name + ".js",
             tab : null,
             content : null
         },
         "data" : {
-            path: "data/" + demo.name + ".js",
+            path: demo.path + "data/" + demo.name + ".js",
             tab : null,
             content : null
         }
@@ -44,6 +59,17 @@ var demo = demo || {};
         "html" : null,
         "css" : null,
         "js" : null
+    }
+
+    var setDemoIframe = function (error) {
+        $(document).ready(function () {
+            if (error) {
+                $(".content").hide();
+                $("iframe").attr("src", "../portal/html/sameOriginPolicyWarning.html");
+            } else {
+                $("iframe").attr("src", demo.path + "html/" + demo.name + ".html");
+            }
+        });
     }
 
     var extractHTML = function (data) {
@@ -155,6 +181,7 @@ var demo = demo || {};
 
     var loadComplete = function (name, data) {
 
+        // Safari wont throw ajax error for 404 served locally, rather it sends success with no data
         if (data && data !== "") {
             // keep track of the first tab.
             firstContentLoaded = (firstContentLoaded) ? firstContentLoaded : name;
@@ -169,14 +196,19 @@ var demo = demo || {};
         }
 
         var selectTabNow = true;
+        // test to see if all content has been gathered if so, select the first available tab
         $.each(dataModel, function (name, data) {
             if (data.content === null) {
                 selectTabNow = false;
             }
         });
+
+        // If we're ready to select the tab, load up the live demo iframe OR the same origin policy warning iframe
         if (selectTabNow) {
-			initKeyboardNav($('.fl-tabs'));
+            initKeyboardNav($('.fl-tabs'));
             selectTab(firstContentLoaded);
+            togglePlainColorized();
+            setDemoIframe();
         }
     };
 
@@ -196,24 +228,22 @@ var demo = demo || {};
         });
     }
 
-    // Loop through all content types, and deliver their content if found
-    $.each(dataModel, function (name, data) {
-        $.ajax({
-            url: data.path,
-            dataType: "text",
-            error: function (XMLHttpRequest, state, error) {
-                loadComplete(name, false);
-            },
-            success: function (data, state) {
-                loadComplete(name, data);
-            }
+
+    if (abortDemo === false){
+        // Loop through all content types, and deliver their content if found
+        $.each(dataModel, function (name, data) {
+            $.ajax({
+                url: data.path,
+                dataType: "text",
+                error: function (XMLHttpRequest, state, error) {
+                    loadComplete(name, false);
+                },
+                success: function (data, state) {
+                    loadComplete(name, data);
+                }
+            });
         });
-    });
-
-    $(document).ready(function () {
-        $("iframe").attr("src", "html/" + demo.name + ".html");
-        togglePlainColorized();
-    })
-
-
+    } else {
+        setDemoIframe(true); // use error iFrame
+    }
 })(jQuery, fluid_1_2)
