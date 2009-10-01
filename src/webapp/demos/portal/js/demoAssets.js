@@ -7,17 +7,20 @@ var demo = demo || {};
     // ensure browser is permitted to crawl the filesystem before running demo
     // If the browser is not, AND the demo is known to require ajax, then halt the demo and show warning
     var abortDemo = false;
-    $.ajax({
-        url: "../../../build-scripts/build.xml",
-        async : false,
-        error: function (XMLHttpRequest, state, error) {
-            if (error && error.code === 1012 && (demo.name === "uiOptions" || demo.name === "Uploader") ) {
-                // Access denide: we're prob. in FF with the same origin policy blocking our fetch
-                abortDemo = true;
+    try {
+        $.ajax({
+            url: "../../../build-scripts/build.xml",
+            async : false,
+            error: function (XMLHttpRequest, state, error) {
+                if (error && error.code === 1012 && (demo.name === "uiOptions" || demo.name === "Uploader") ) {
+                    // Access denide: we're prob. in FF with the same origin policy blocking our fetch
+                    abortDemo = true;
+                }
             }
-        }
-    });
-
+        });
+    } catch (e) {
+        abortDemo = true;
+    }
 
     /**
      * Using the demo's base url, collect any CSS, JS, HTML code assets
