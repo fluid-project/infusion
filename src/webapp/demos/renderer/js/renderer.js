@@ -13,6 +13,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 (function ($) {
     
+    /**
+     * Build the cutpoints array, which defines renderer IDs for each HTML element that will be
+     * rendered.
+     */
     var buildCutpoints = function () {
         return [
             {id: "intro-paragraph", selector: "#intro-paragraph"},
@@ -33,6 +37,37 @@ var demo = demo || {};
         ];
     };
 
+    /**
+     * Build a component subtree that describes how to render the various strings in the demo.
+     * These are literal values, and so the rendered markup is not bound directly to the model.
+     * 
+     * The practice of using the renderer to display the strings in the interface is useful for
+     * internationalization.
+     */
+    var buildStringsTree = function () {
+        return [
+            {ID: "intro-paragraph", value: demo.data.strings.intro},
+            {ID: "location-label", value: demo.data.strings.locationLabel},
+            {ID: "wine-label", value: demo.data.strings.winesLabel},
+            {ID: "canape-label", value: demo.data.strings.foodsLabel},
+            {ID: "canape-header", value: demo.data.strings.plate},
+            {ID: "price-header", value: demo.data.strings.price},
+            {ID: "choose-header", value: demo.data.strings.include}
+        ];
+    };
+
+    /**
+     * Build a component subtree that describes how to render the drop-down used to select
+     * the location. This uses the framework's explodeSelectionToInputs() function to build
+     * most of the subtree given the data and a few strings.
+     * 
+     * By using 'valuebinding' in conjunction with the 'autobind: true' option, when the user
+     * changes the location, the new value will be automatically updated in the model.
+     * 
+     * Note that this subtree has the same structure as the wine list subtree, despite the fact
+     * that the location is rendered in a <select> element, and the wine list is rendered as
+     * radio buttons.
+     */
     var buildLocationsSubtree = function () {
         var treeChildren =  [
                 {ID: "locations", optionlist: {valuebinding: "locations.codes"},
@@ -49,6 +84,18 @@ var demo = demo || {};
         return treeChildren.concat(locationRows);
     };
 
+    /**
+     * Build a component subtree that describes how to render the radio buttons used to select
+     * the wine. This uses the framework's explodeSelectionToInputs() function to build
+     * most of the subtree given the data and a few strings.
+     * 
+     * By using 'valuebinding' in conjunction with the 'autobind: true' option, when the user
+     * changes the wine, the new value will be automatically updated in the model.
+     * 
+     * Note that this subtree has the same structure as the location subtree, despite the fact
+     * that the wine list is rendered as radio buttons, and the location is rendered in a
+     * <select> element.
+     */
     var buildWineListSubtree = function () {
         var treeChildren =  [
                 {ID: "wines", optionlist: {valuebinding: "wineList.codes"},
@@ -65,6 +112,15 @@ var demo = demo || {};
         return treeChildren.concat(wineRows);
     };
 
+    /**
+     * Build a component subtree that describes how to render the list of canape plates. This uses
+     * the framework's transform() function to build a subtree element for each data item. This
+     * method is similar to the explodeSelectionToInputs() function, but because these inputs are
+     * embedded in <table> cells with other data, each 'row' has more children than a typical input.
+     * 
+     * By using 'valuebinding' in conjunction with the 'autobind: true' option, when the user
+     * selects canapes, the new values will be automatically updated in the model.
+     */
     var buildCanapeListSubtree = function () {
         var treeChildren =  [
                 {ID: "canapes", optionlist: {valuebinding: "canapeList.codes"},
@@ -85,18 +141,9 @@ var demo = demo || {};
         return treeChildren.concat(canapeRows);
     };
 
-    var buildStringsTree = function () {
-        return [
-            {ID: "intro-paragraph", value: demo.data.strings.intro},
-            {ID: "location-label", value: demo.data.strings.locationLabel},
-            {ID: "wine-label", value: demo.data.strings.winesLabel},
-            {ID: "canape-label", value: demo.data.strings.foodsLabel},
-            {ID: "canape-header", value: demo.data.strings.plate},
-            {ID: "price-header", value: demo.data.strings.price},
-            {ID: "choose-header", value: demo.data.strings.include}
-        ];
-    };
-
+    /**
+     * Combine the various renderer subtrees into a single component tree.
+     */
     var buildComponentTree = function () {
         return {children: buildStringsTree()
                                 .concat(buildWineListSubtree())
@@ -105,28 +152,48 @@ var demo = demo || {};
                     };
     };
 
-    var dumpDataModel = function () {
+    /**
+     * Utility function for displaying the data model, so users of the demo can see
+     * how it changes with the autobinding.
+     */
+    var displayDataModel = function () {
         jQuery("#autobound-model").text(JSON.stringify(demo.data));
     };
 
-    demo.render = function () {
+    /**
+     * Wrap the data model in a ChangeApplier, so that we can listen for changes in the model
+     * and update the demo's model display.
+     */
+    var setupDataModel = function () {
         var applier = fluid.makeChangeApplier(demo.data);
-        var options = {
-            cutpoints: buildCutpoints(),
-            model: demo.data,
-            applier: applier,
-            autoBind: true
-        };
-        var componentTree = buildComponentTree();
         applier.modelChanged.addListener("*", function (model, oldModel, changeRequest) {
-            dumpDataModel();
+            displayDataModel();
         });
+        return applier;
+    };
 
-        
-        dumpDataModel();
-        var fullEl = fluid.jById("render");
-        fullEl.click(function () {
-            fluid.selfRender($("body"), componentTree, options);
+    /**
+     * Attach to the 'Render' button a function that renders the data.
+     */
+    var bindEventHandlers = function (button, applier) {
+        button.click(function () {
+            var options = {
+                cutpoints: buildCutpoints(),
+                model: demo.data,
+                applier: applier,
+                autoBind: true
+            };
+            fluid.selfRender($("body"), buildComponentTree(), options);
         });
+    };
+
+
+    demo.render = function () {
+        var applier = setupDataModel();
+
+        var renderButton = fluid.jById("render");
+        bindEventHandlers(renderButton, applier);
+
+        displayDataModel();
     };
 })(jQuery);
