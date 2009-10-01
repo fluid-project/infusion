@@ -722,6 +722,36 @@ fluid.tests = fluid.tests || {};
          ], inputs);
     });
 
+    fluid.tests.decoratorRegistrar = function(container, registrar) {
+        registrar[registrar.length] = container;
+    };
+
+    renderTests.test("Multiple decorator test (FLUID-2980)", function() {
+        var node = $(".FLUID-2980-test");
+        var registrar = [];
+        var tree = {
+            children: [
+            {
+            ID: "item:",
+            decorators: {
+                type: "fluid",
+                func: "fluid.tests.decoratorRegistrar",
+                options: registrar
+            }},
+            {
+            ID: "item:",
+            decorators: {
+                type: "fluid",
+                func: "fluid.tests.decoratorRegistrar",
+                options: registrar
+              }
+            }
+            ]
+        };
+        fluid.selfRender(node, tree);
+        jqUnit.assertEquals("2 invocations of decorator expected", 2, registrar.length);
+    });
+
     renderTests.test("Properties unescaping", function() {
       
       jqUnit.assertEquals("Simple unescaping", "This is a thing", 
