@@ -1352,6 +1352,7 @@ fluid_1_2 = fluid_1_2 || {};
   
   fluid.renderTemplates = function(templates, tree, options, fossilsIn) {
       var renderer = fluid.renderer(templates, tree, options, fossilsIn);
+      var rendered = renderer.renderTemplates();
       return rendered;
   };
   /** A driver to render and bind an already parsed set of templates onto
