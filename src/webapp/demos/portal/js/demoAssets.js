@@ -160,6 +160,7 @@ var demo = demo || {};
     var makeTab = function (name) {
 		aux = $('.fl-tabs');
         var tab = $('<li/>').html('<a href="#' + name + '" title=' + name + '>' + name + '</a>');
+        $("a", tab).attr("tabindex", -1);
         aux.append(tab);
 
 		addAriaTabList(aux);
