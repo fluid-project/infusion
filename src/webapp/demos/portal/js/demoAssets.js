@@ -127,7 +127,7 @@ var demo = demo || {};
 
     var initKeyboardNav = function(tl) {
         var level1tabs = tl;
-
+        level1tabs.attr("tabindex", "0");
         level1tabs.fluid("selectable", {
             selectableSelector: "> li",
             autoSelectFirstItem: true,
