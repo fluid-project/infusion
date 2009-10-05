@@ -132,27 +132,14 @@ var demo = demo || {};
             selectableSelector: "> li",
             autoSelectFirstItem: true,
             direction : fluid.a11y.orientation.HORIZONTAL,
-            onUnselect : function(el) {
-                $(el).removeClass("fl-tabs-active");
-				$(el).attr("aria-selected", "false");
-            },
             onSelect : function(el) {
-                $(el).addClass("fl-tabs-active");
-				fluid.activate(el);
+                var tab = $(el);
+                $(".fl-tabs-active").removeClass("fl-tabs-active").attr("aria-selected", "false");
+
+                tab.addClass("fl-tabs-active");
+                tab.click();
+				tab.attr("aria-selected", "true");
             }
-        });
-
-        var level1Activation = function(e) {
-				$(e.target).click();
-				$(e.target).attr("aria-selected", "true");
-        };
-
-        fluid.activatable(level1tabs, level1Activation, {
-            additionalBindings : [{
-                modifier : null,
-                key : $.ui.keyCode.DOWN,
-                activateHandler : level1Activation
-            }]
         });
 
     };
