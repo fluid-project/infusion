@@ -11,8 +11,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_1_2*/
-fluid_1_2 = fluid_1_2 || {};
+/*global fluid_1_1*/
+fluid_1_1 = fluid_1_1 || {};
 
 (function ($, fluid) {
  
@@ -34,4 +34,4 @@ fluid_1_2 = fluid_1_2 || {};
         var options = $.extend(true, assembleOptions, userOptions);
         return fluid.reorderer(container, options);
     };    
-})(jQuery, fluid_1_2);
+})(jQuery, fluid_1_1);

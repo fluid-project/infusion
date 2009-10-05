@@ -1,10 +1,10 @@
-Fluid Infusion 1.1
-==================
+Fluid Infusion 1.1.2
+====================
 Main Project Site:  http://fluidproject.org
 Documentation:      http://wiki.fluidproject.org/display/fluid/Infusion+Documentation
 
-What's New in 1.1
-=================
+What's New in 1.1.2
+===================
 
 This release:
 
@@ -35,8 +35,8 @@ What's in this Release
 ======================
 
 This release is available in two forms:
-    Deployment Bundle - infusion-1.1.zip 
-    Source Code Bundle - infusion-1.1-src.zip
+    Deployment Bundle - infusion-1.1.2.zip 
+    Source Code Bundle - infusion-1.1.2-src.zip
 
 In addition to source code, samples and tests, both bundles include at the top level a single JavaScript file
 
@@ -47,7 +47,7 @@ pages to provide all the necessary support for the Infusion component Library. I
 this script is compressed and suitable for production use.
 
 The Deployment Bundle also includes a WAR file suitable for deployment in Java-based containers: 
-        fluid-components-1.1.war
+        fluid-components-1.1.2.war
 
 Source Code
 -----------
