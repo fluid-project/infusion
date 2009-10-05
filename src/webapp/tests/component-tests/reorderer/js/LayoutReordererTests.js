@@ -119,6 +119,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var tests = new jqUnit.TestCase("Reorder Layout Tests");
     
         tests.test("reorderLayout API", function () {
+          
             var options = {
                 selectors: {
                     columns: "[id^='c']",
@@ -126,7 +127,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 }
             };
             
+            var lastLayoutModel = null;
+            
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
+            
+            // Test for FLUID-3121
+            var afterMoveListener = function() {
+                lastLayoutModel = layoutReorderer.layoutHandler.getModel();
+                }
+            layoutReorderer.events.afterMove.addListener(afterMoveListener);
+            
             var item2 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
             var item3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
             
@@ -134,6 +144,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             jqUnit.assertTrue("focus on item2", item2.hasClass("fl-reorderer-movable-selected"));
             jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
+            jqUnit.assertEquals("No move callback", null, lastLayoutModel);
     
             layoutReorderer.handleKeyDown(fluid.testUtils.keyEvent("DOWN", item2));
             jqUnit.assertTrue("down arrow - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
@@ -141,6 +152,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             layoutReorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("CTRL", item3));
             layoutReorderer.handleKeyDown(fluid.testUtils.ctrlKeyEvent("DOWN", item3));
+            // Test FLUID-3121 - the afterMoveCallback should successfully execute and obtain the model
+            jqUnit.assertNotEquals("Move callback with model", null, lastLayoutModel);
     
             expectOrder("after ctrl-down, expect order 1, 2, 4, 3, 5, 6, 7, 8, 9", 
                 [1, 2, 4, 3, 5, 6, 7, 8, 9]);

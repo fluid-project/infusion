@@ -18,7 +18,7 @@ fluid_1_2 = fluid_1_2 || {};
  
     /**
      * Simple way to create a layout reorderer.
-     * @param {selector} a selector for the layout container
+     * @param {selector} a jQueryable (selector, element, jQuery) for the layout container
      * @param {Object} a map of selectors for columns and modules within the layout
      * @param {Function} a function to be called when the order changes 
      * @param {Object} additional configuration options
