@@ -1,0 +1,80 @@
+.fl-reorderer-instructions{
+	color: #666;
+	background-color: lightyellow;
+	padding: 3px;
+	border: 2px solid #ddd;
+	font-size: .9em;
+	width: 340px;
+    margin:auto;
+    position:absolute;
+    right:0;
+    top:0;
+	z-index:10000;
+}
+
+
+.fl-reorderer-screen-reader-instructions {
+    position:absolute;
+    left:0px;
+    top:-500px;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+}
+
+.fl-imageReorderer {
+    clear:both;
+}
+.fl-reorderer-horizontalLayout .fl-imageReorderer-item {
+    float:left; 
+    width:150px; 
+    height:150px; 
+    margin: 5px; 
+    text-align:center; 
+    overflow:hidden; 
+    position:relative;
+    border:1px solid #000;
+    background-color:#000;
+    cursor: move;
+    text-decoration:none;
+}
+.fl-reorderer-horizontalLayout .fl-imageReorderer-item img {display:block; width:100%;}
+.fl-reorderer-horizontalLayout .fl-imageReorderer-caption {
+    position:absolute; 
+    bottom:0; 
+    left:0; 
+    width:100%; 
+    text-align:center; 
+    background-color:#000; 
+    color:#fff; 
+    padding:5px;
+}
+
+.fl-reorderer-horizontalLayout .fl-imageReorderer-item:hover {
+    border-color:#FF4200;
+    background-color:#FF4200;
+}
+.fl-reorderer-horizontalLayout .fl-imageReorderer-item:hover .fl-imageReorderer-caption {
+    background-color:#FF4200;
+    color:#000;
+}
+.fl-reorderer-horizontalLayout .fl-reorderer-movable-selected {
+    border-color:#ccc;
+    background-color:#ccc;
+}
+.fl-reorderer-horizontalLayout .fl-reorderer-movable-selected .fl-imageReorderer-caption {
+    background-color:#ccc;
+    color:#000;
+}
+.fl-reorderer-horizontalLayout .fl-reorderer-dropMarker {
+    height:150px; 
+    float:left;
+}
+.fl-reorderer-horizontalLayout .fl-reorderer-movable-dragging {
+    border-color:#FF4200;
+    background-color:#FF4200;
+}
+.fl-reorderer-horizontalLayout .fl-reorderer-movable-dragging .fl-imageReorderer-caption {
+    background-color:#FF4200;
+    color:#000;
+}
