@@ -519,18 +519,8 @@ fluid_1_2 = fluid_1_2 || {};
       }
       
       function rewriteURL(template, URL) {
-          var pre = renderOptions.rewriteUrlPrefixes; 
-          if (pre) {
-              for (var i = 0; i < pre.length; ++ i) {
-                  if (URL.indexOf(pre[i].source) === 0) {
-                      return pre[i].target + URL.substring(pre[i].source.length);
-                  }
-              }
-          }
-          else {
-          // TODO: rebasing of "relative URLs" discovered/issued from subcomponent templates
-              return URL;
-          }
+          var togo = URL; // TODO: rebasing of "relative URLs" discovered/issued from subcomponent templates
+          return fluid.rewriteUrlPrefix(URL);
       }
       
       function dumpHiddenField(/** UIParameter **/ todump) {

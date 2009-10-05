@@ -109,9 +109,10 @@ fluid_1_2 = fluid_1_2 || {};
               addLump(t.collectmap, scr, lump);
               }
           }
- 
       
       function rewriteUrl(url) {
+        // TODO: caution here with subcomponent templates - each may have their own prefix mapping
+          url = fluid.rewriteUrlPrefix(parseOptions, url);
           if (!parseOptions.rebaseURLs) {
               return url;
           }
@@ -358,12 +359,23 @@ fluid_1_2 = fluid_1_2 || {};
   
   // Public definitions begin here
   
+    fluid.rewriteUrlPrefix = function (options, URL) {
+        var pre = options.rewriteUrlPrefixes; 
+        if (pre) {
+            for (var i = 0; i < pre.length; ++ i) {
+                if (URL.indexOf(pre[i].source) === 0) {
+                    return pre[i].target + URL.substring(pre[i].source.length);
+                }
+            }
+        }
+        return URL;
+    };
        
   /* parseUri 1.2; MIT License
    By Steven Levithan <http://stevenlevithan.com> 
    http://blog.stevenlevithan.com/archives/parseuri
    */
-   fluid.parseUri = function (source) {
+  fluid.parseUri = function (source) {
       var o = fluid.parseUri.options,
          value = o.parser[o.strictMode ? "strict" : "loose"].exec(source);
       
@@ -381,18 +393,18 @@ fluid_1_2 = fluid_1_2 || {};
       return uri;
    };
    
-   fluid.parseUri.options = {
-       strictMode: false,
-       key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
-       q: {
-           name: "queryKey",
-           parser: /(?:^|&)([^&=]*)=?([^&]*)/g
-       },
-       parser: {
-           strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-           loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
-       }
-   };
+  fluid.parseUri.options = {
+      strictMode: false,
+      key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+      q: {
+          name: "queryKey",
+          parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+      },
+      parser: {
+          strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+          loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+      }
+  };
   
   fluid.ID_ATTRIBUTE = "rsf:id";
   
