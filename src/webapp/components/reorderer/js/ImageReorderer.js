@@ -125,9 +125,7 @@ fluid_1_1 = fluid_1_1 || {};
      */
     fluid.reorderImages = function (container, options) {
         // Instantiate a mini-Image Reorderer component, then feed its options to the real Reorderer.
-        var that = {};
-        fluid.mergeComponentOptions(that, "fluid.reorderImages", options);
-        that.container = fluid.container(container);
+        var that = fluid.initView("fluid.reorderImages", container, options);
         
         // If the user didn't specify their own afterMove or movables options,
         // set up defaults for them using the old id-based scheme.
