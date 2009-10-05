@@ -520,7 +520,7 @@ fluid_1_1 = fluid_1_1 || {};
       
       function rewriteURL(template, URL) {
           var togo = URL; // TODO: rebasing of "relative URLs" discovered/issued from subcomponent templates
-          return fluid.rewriteUrlPrefix(URL);
+          return fluid.rewriteUrlPrefix(renderOptions, togo);
       }
       
       function dumpHiddenField(/** UIParameter **/ todump) {
