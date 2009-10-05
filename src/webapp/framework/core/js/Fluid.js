@@ -637,7 +637,7 @@ var fluid = fluid || fluid_1_1;
      * path segments containing periods and backslashes etc. can be processed.
      */
     fluid.model.parseEL = function (EL) {
-        return EL.toString().split('.');
+        return String(EL).split('.');
     };
     
     fluid.model.composePath = function (prefix, suffix) {
