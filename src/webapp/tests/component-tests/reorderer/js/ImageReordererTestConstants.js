@@ -68,24 +68,14 @@ function findNoOrderables() {
 }
 
 function createLightbox() {
-    var lightboxRoot = fetchLightboxRoot();
-    return fluid.reorderer(lightboxRoot, {
-        layoutHandler: "fluid.gridLayoutHandler",
-        selectors: {
-            movables: findOrderableByDivAndId
-        },
-        containerRole: fluid.reorderer.roles.GRID
-    });
+    return fluid.reorderImages(fetchLightboxRoot());
 }
 
 function createLightboxWithNoOrderables() {
-    var lightboxRoot = fetchLightboxRoot();
-    return fluid.reorderer(lightboxRoot, {
-        layoutHandler: "fluid.gridLayoutHandler",
+    return fluid.reorderer(fetchLightboxRoot(), {
         selectors: {
             movables: findNoOrderables
-        },
-        containerRole: fluid.reorderer.roles.GRID
+        }
     });
 }
 
