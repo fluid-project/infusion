@@ -7,29 +7,15 @@ What's New in 1.1.2
 ===================
 
 This release:
+    * New Demo Portal and improved component demos
+    * New "a la carte" custom Infusion build site
+    * Mobile Fluid Skinning System theme for iPhone
+    * Improved and simplified Image Reorderer examples and documentation
+    * Uploader support for Firefox 3.5
+    * Other bug fixes:
+        * More class name normalization
+        * InlineEdit fixes
 
-    * Updates our supported browsers to include the latest from Yahoo's A-grade browser list
-      * see http://wiki.fluidproject.org/display/fluid/Browser+Support
-    * Provides the ability to create custom builds:
-      * see http://wiki.fluidproject.org/display/fluid/Custom+Build
-    * Adds jQuery UI Themes for working with FSS themes
-    * Adds new and powerful decorators for the Renderer:
-      * The "fluid" decorator instantiates any Fluid Infusion component bound to the markup
-      * New support for removing arbitrary attributes and CSS classes
-    * Updates the Pager:
-      * Improved handing of column sorting
-      * Fixed persistence of focus
-    * Updates the Uploader:
-      * User can manually switch to the standard non-Flash http file uploader
-      * Uploader Browse button now respects DOM z-index in Flash 10
-    * Updates the User Interface Options:
-      * Better cross browser support
-      * Better keyboard and screen reader accessibility
-    * Changes some class names in the FSS and components:
-	  * see http://wiki.fluidproject.org/display/fluid/Upgrading+to+Infusion+1.1
-	* Changes some Framework API:
-	  * see http://wiki.fluidproject.org/display/fluid/Upgrading+to+Infusion+1.1
-    * Fixes many bugs
 
 What's in this Release
 ======================
@@ -79,7 +65,35 @@ been removed.
 Developers wishing to learn about the Fluid Infusion code, or debug their applications, should use
 the Source Code Bundle.
 
-Examples and Sample Code
+
+Demo Portal
+------------------------
+The bundle now comes with a convenient one-stop-shop for seeing all components in action. It is organized as follows:
+        demos/
+            fss/
+                layout/
+                reset/
+                mobile/
+                text/
+                themes/
+            inlineEdit/
+                simple/
+                rich/
+            keyboard-a11y/            
+            pager/
+            portal/                
+            progress/
+            renderer/
+            reorderer/
+                gridReorderer/
+                imageReorderer/
+                listReorderer/
+                layoutReorderer/                
+            uiOptions/
+            uploader/
+
+            
+Other Examples and Sample Code
 ------------------------
 Sample code illustrating how Infusion components can be used:
 
@@ -91,17 +105,12 @@ Sample code illustrating how Infusion components can be used:
              keyboard-a11y/
              lib/
              pager/
-             progress/
-             quick-start-examples/
-                  fss/
-                  inlineEdit/
-                  reorderer/
              renderer/
              reorderer/
              table-of-contents/
 
 Tests
------
+-------------------------
         tests/
             component-tests/
             escalated-tests/
@@ -128,6 +137,7 @@ with their licensing terms.
     * jQuery javascript library v1.3.2: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * jQuery UI javascript widget library v1.7: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * jQuery QUnit testrunner r6173: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * jQuery Chili code highlighter http://code.google.com/p/jquery-chili-js/ (MIT licensed)
     * Douglas Crockford's JSON parsing and stringifying methods (from 2007-11-06): http://www.json.org/ (Public Domain)
     * SWFUpload v2.2.0.1: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
     * SWFObject v2.1: http://code.google.com/p/swfobject/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
