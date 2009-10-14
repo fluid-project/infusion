@@ -66,18 +66,19 @@ the Source Code Bundle.
 
 
 Demo Portal
-------------------------
+-----------
 The bundle now comes with a convenient one-stop-shop for seeing all components in action. It is organized as follows:
+
         demos/
             fss/
                 layout/
-                reset/
                 mobile/
+                reset/
                 text/
                 themes/
             inlineEdit/
-                simple/
                 rich/
+                simple/
             keyboard-a11y/            
             pager/
             portal/                
@@ -86,14 +87,14 @@ The bundle now comes with a convenient one-stop-shop for seeing all components i
             reorderer/
                 gridReorderer/
                 imageReorderer/
-                listReorderer/
                 layoutReorderer/                
+                listReorderer/
             uiOptions/
             uploader/
 
             
 Other Examples and Sample Code
-------------------------
+------------------------------
 Sample code illustrating how Infusion components can be used:
 
         integration-demos/
@@ -109,7 +110,7 @@ Sample code illustrating how Infusion components can be used:
              table-of-contents/
 
 Tests
--------------------------
+-----
         tests/
             component-tests/
             escalated-tests/
@@ -159,24 +160,28 @@ This file.
 Documentation
 =============
 
-    http://wiki.fluidproject.org/display/fluid/Infusion+Documentation
-
 The Fluid Project uses a wiki for documentation and project collaboration: http://wiki.fluidproject.org.
+The main Infusion documentation can be found at:
+
+    http://wiki.fluidproject.org/display/fluid/Infusion+Documentation
 
 The documentation for Infusion consists of a number of information pages stored in the Fluid Wiki.
 The pages include tutorials, API descriptions, testing procedures, and data-gathering approaches. To make the 
 manual pages easy to navigate we have added the following guides:
 
-    * A landing page is provided for the reader, with links to all of our documenation.
+    * The above-mentioned landing page, which links to all of our documenation.
     * A link to the documentation appears at the top of the left-side wiki navigation
       bar with the name "Infusion Documentation".
 
 
 Supported Browsers
 ==================
-Firefox 2.x, 3.x: full support
-Internet Explorer 6.x, 7.x: full support
-Safari 3.1, Opera 9.6: full support (except keyboard interaction, which is not supported by these browsers)
+Firefox 3.5: full support in Mac OS 10.5, Win XP and Win Vista
+Firefox 3.0: full support in Mac OS 10.5 and Win XP
+Internet Explorer 6.x: full support in Win XP
+Internet Explorer 7.x: full support in Win XP and Win Vista
+Safari 4: full support in Mac OS 10.4 and 10.5
+Safari 3.2 (Mac OS 10.5), Opera 9.6 (Win XP): full support (except keyboard interaction, which is not supported by these browsers)
 
 Internet Explorer 8: preliminary support
 
@@ -192,6 +197,7 @@ applications and use cases
     * Fluid Skinning System 
     * Infusion Framework Core
     * Inline Edit: Simple Text
+    * Renderer
     * Reorderer: List, Grid, Layout, Image
     * Undo
 
@@ -200,7 +206,6 @@ Preview: still growing, but with broad browser support. Expect new features in u
     * Progress
     * UI Options
     * Uploader
-    * Renderer
 
 Sneak Peek: in development; APIs will change. Share your feedback, ideas, and code
     * Inline Edit: Dropdown
@@ -230,7 +235,6 @@ Uploader:
     FLUID-2582 Uploader is dependent on ProgressiveEnhancement.js, which is not included in InfusionAll.js
     FLUID-2895 The browse files button displays as a white box in IE 7 when running off the local system in Flash 10
     FLUID-2052 Cannot tab away from the "Browse Files" button with Flash 10; using FF3*
-    FLUID-2032 Cannot Tab to the 'Browse More" button with Flash 10, using FF2*
     * For information related to known issues with Flash 10 compatibility, 
       see http://wiki.fluidproject.org/x/kwZo
 
@@ -244,13 +248,17 @@ Pager:
     FLUID-2329 The self-rendering mode of the Pager is not the default mode
 
 Reorderer: 
-    FLUID-539 Can't use the "Tab" key to navigate out of reorderable tabs
-    FLUID-148 Edge case: visual position of drop target when droppable is at beginning or end of a row
-    FLUID-118 Dragging an image offscreen or out of the frame has some unexpected results.
+    FLUID-539  Can't use the "Tab" key to navigate out of reorderable tabs
+    FLUID-118  Dragging an image offscreen or out of the frame has some unexpected results.
+    FLUID-3288 Moving an item with the keyboard "loses" the "ctrl-key is down" status
 
 UI Options: 
     FLUID-2398 Minimum font size control changes the text size even when the base size is larger then the minimum.
     FLUID-2481 "Links" selection does not work correctly in UIOptions
     FLUID-2506 Keyboard navigation inside the dialog breaks in simple layout mode: using FF
-    FLUID-2524 scrolling the screen while the UI Options dialog is open, will cause it's contents to appear distorted: using IE
-    
+
+Renderer:
+    FLUID-3224 If <textarea> autobound to non-existant model field, Renderer renders unclosed element    
+    FLUID-3277 Attempt to add children to leaf component in tree results in "targetlump is undefined" error
+    FLUID-3276 Enclosing branch nodes within markup which has "headers" attribute causes them to become invisible to the renderer
+
