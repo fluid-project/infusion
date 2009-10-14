@@ -7,7 +7,7 @@ What's New in 1.1.2
 ===================
 
 This release:
-    * New Demo Portal and improved component demos    
+    * New Demo Portal with improved component demos    
     * Sneak Peak for Mobile FSS iPhone theme
     * Improved and simplified Image Reorderer examples and documentation
     * Uploader support for Firefox 3.5 and improved experience for Internet Explorer
@@ -169,7 +169,7 @@ The documentation for Infusion consists of a number of information pages stored 
 The pages include tutorials, API descriptions, testing procedures, and data-gathering approaches. To make the 
 manual pages easy to navigate we have added the following guides:
 
-    * The above-mentioned landing page, which links to all of our documenation.
+    * The above-mentioned landing page, which links to all of our documentation.
     * A link to the documentation appears at the top of the left-side wiki navigation
       bar with the name "Infusion Documentation".
 
