@@ -10,7 +10,7 @@ This release:
     * New Demo Portal and improved component demos    
     * Sneak Peak for Mobile FSS iPhone theme
     * Improved and simplified Image Reorderer examples and documentation
-    * Uploader support for Firefox 3.5
+    * Uploader support for Firefox 3.5 and improved experience for Internet Explorer
     * Other bug fixes:
         * More class name normalization
         * InlineEdit fixes
@@ -233,7 +233,7 @@ Inline Edit:
   
 Uploader: 
     FLUID-2582 Uploader is dependent on ProgressiveEnhancement.js, which is not included in InfusionAll.js
-    FLUID-2895 The browse files button displays as a white box in IE 7 when running off the local system in Flash 10
+    FLUID-3241 Can only tab to the "Browse Files" button once: using IE
     FLUID-2052 Cannot tab away from the "Browse Files" button with Flash 10; using FF3*
     * For information related to known issues with Flash 10 compatibility, 
       see http://wiki.fluidproject.org/x/kwZo
