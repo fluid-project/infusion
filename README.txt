@@ -8,7 +8,7 @@ What's New in 1.1.2
 
 This release:
     * New Demo Portal and improved component demos    
-    * Mobile FSS theme for iPhone
+    * Sneak Peak for Mobile FSS iPhone theme
     * Improved and simplified Image Reorderer examples and documentation
     * Uploader support for Firefox 3.5
     * Other bug fixes:
