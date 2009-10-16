@@ -9,9 +9,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global fluid_1_1, jQuery, window, demo*/
+/*global fluid_1_2, jQuery, window, demo*/
 
-var fluid_1_1 = fluid_1_1 || {};
+var fluid_1_2 = fluid_1_2 || {};
 var demo = demo || {};
 
 (function ($,fluid) {
@@ -248,4 +248,4 @@ var demo = demo || {};
     } else {
         setDemoIframe(true); // use error iFrame
     }
-})(jQuery, fluid_1_1)
+})(jQuery, fluid_1_2)

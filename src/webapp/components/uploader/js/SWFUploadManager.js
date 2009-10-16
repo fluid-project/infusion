@@ -10,9 +10,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global fluid_1_1,SWFUpload,swfobject,jQuery*/
+/*global fluid_1_2,SWFUpload,swfobject,jQuery*/
 
-fluid_1_1 = fluid_1_1 || {};
+fluid_1_2 = fluid_1_2 || {};
 
 (function ($, fluid) {
 
@@ -360,4 +360,4 @@ fluid_1_1 = fluid_1_1 || {};
         debug: false
     });
     
-})(jQuery, fluid_1_1);
+})(jQuery, fluid_1_2);
