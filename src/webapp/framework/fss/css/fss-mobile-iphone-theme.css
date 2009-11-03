@@ -1,11 +1,14 @@
 ﻿/***************************************/
 /* general styles */
-html {
+.fl-theme-iphone {
     background: -webkit-gradient(linear, left top, right top, 
         from(#c5ccd3), 
         to(#cfd5dd), 
         color-stop(0.80, #c5ccd3),
         color-stop(0.80, #cfd5dd));
+    -webkit-background-origin: padding-box; 
+    -webkit-background-clip: content-box;
+    -webkit-background-size: 10px 1px;
 }
 
 .fl-theme-iphone .fl-bevel-black {
@@ -24,7 +27,8 @@ html {
 /***************************************/
 /* Navigation Bar */
 
-body::before {
+/*body::before {*/
+.fl-theme-iphone .fl-navbar {
     border-top-color:#ccd6e2;
     border-bottom-color:#000;
     background-image: -webkit-gradient(linear, left top, left bottom, 
@@ -32,7 +36,7 @@ body::before {
         color-stop(0.5, #889BB3), 
         color-stop(0.50, #6D84A2),
         to(#6D84A2)
-    );
+    );    
 }
 .fl-theme-iphone .fl-navbar {     
     color:#fff;
@@ -156,11 +160,6 @@ body::before {
 /*************************************************/
 /* Default list system setup */
 
-.fl-theme-iphone .fl-listmenu li a {
-    -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
-    background:#fff url(../images/themes/iphone/listmenu_arrow.png) no-repeat right 5px;
-	
-}
 .fl-theme-iphone [class*=fl-list] > li {
 	color: #000;
     border-color: rgb(169,173,176);
@@ -198,6 +197,12 @@ body::before {
     color:#999;
 }
 
+.fl-theme-iphone .fl-list-menu li a {
+    -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
+    background:#fff url(../images/themes/iphone/listmenu_arrow.png) no-repeat right 5px;
+	
+}
+
 .fl-theme-iphone .fl-list a {
     color:#4a94f4;
 }
@@ -210,11 +215,11 @@ body::before {
 
 /****************************/
 /* Collapsing and expanding panels */
-.fl-theme-iphone .fl-panel-autoHeading > *:first-child {
+.fl-theme-iphone .fl-container-autoHeading > *:first-child {
     color:#fff;
     background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
 }
-.fl-theme-iphone .fl-panel-autoHeading > *:first-child:focus {    
+.fl-theme-iphone .fl-container-autoHeading > *:first-child:focus {    
     color:#000;
     background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#CCC));
 }
