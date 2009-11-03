@@ -47,21 +47,13 @@ img {border:none;}
 /*************************************************/
 /* Navigation Bar 
  */
-body::before, .fl-navbar {
+.fl-navbar {
     width:100%;
     height:43px;
     text-align:center;
-}
-body::before {
-    content:" ";
-	margin-bottom:-43px;
-	display:block;
 	border-style:solid;
 	border-width:1px 0;
-    -webkit-background-origin: padding-box; 
-    -webkit-background-clip: content-box;    
 }
-
 .fl-navbar .fl-table-cell:not(h1) {
     width:1px;
     white-space:nowrap;
@@ -415,14 +407,11 @@ body::before {
 .fl-table {
     display:table;
     border-collapse:collapse;
-    border:none;
 }
 .fl-table-row {
     display:table-row;
-    border:none;
 }
 .fl-table-cell {
     display:table-cell;
     vertical-align:middle;
-    border:none;
 }
