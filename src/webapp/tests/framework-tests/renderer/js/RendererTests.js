@@ -752,6 +752,26 @@ fluid.tests = fluid.tests || {};
         fluid.selfRender(node, tree);
         jqUnit.assertEquals("2 invocations of decorator expected", 2, registrar.length);
     });
+    
+    renderTests.test("UISelect decorator fail (FLUID-3357)", function() {
+        var node = $(".FLUID-3357-test");
+        var registrar = [];
+        var tree = {
+            children: [{
+                ID: "select",
+                selection: "Choice1",
+                optionlist: ["Choice1", "Choice2"],
+                decorators: {
+                    type: "fluid",
+                    func: "fluid.tests.decoratorRegistrar",
+                    options: registrar
+                    }
+                }
+            ]
+        };
+        fluid.selfRender(node, tree, {cutpoints: [{selector: ".select-3357", id: "select"}]});
+        jqUnit.assertEquals("1 invocations of decorator expected", 1, registrar.length);
+    });    
 
     renderTests.test("Properties unescaping", function() {
       
