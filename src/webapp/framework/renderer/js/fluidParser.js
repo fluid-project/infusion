@@ -485,11 +485,12 @@ fluid_1_2 = fluid_1_2 || {};
         resourceSpec.resourceKey = resourceSpec.nodeId;
       }
     }
-    if (complete) {
+    if (complete && !resourceSpecs.callbackCalled) {
+      resourceSpecs.callbackCalled = true;
       if ($.browser.mozilla) {
       // Defer this callback to avoid debugging problems on Firefox
       setTimeout(function() {
-              callback(resourceSpecs);
+          callback(resourceSpecs);
           }, 1);
       }
       else {

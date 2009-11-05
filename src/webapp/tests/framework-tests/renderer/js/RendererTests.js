@@ -841,19 +841,22 @@ fluid.tests = fluid.tests || {};
        jqUnit.assertEquals("Selected Value", selectionModel.selection,$("input:checked", ".nestedDataBinding").attr("value"));
     });
 
-    renderTests.test("Properties file parsing", function() {
+ 
         var resourceSpec = {properties: {href: "../data/testProperties.properties"},
                                   json: {href: "../data/testProperties.json"}};    
-
-        stop();
+        var calls = 0;
+        //stop();
         
         fluid.fetchResources(resourceSpec, function() {
-            jqUnit.assertNotNull("Fetched properties file", resourceSpec.properties.resourceText);
-            jqUnit.assertNotNull("Fetched JSON file", resourceSpec.json.resourceText);
-            var json = JSON.parse(resourceSpec.json.resourceText);
-            var properties = fluid.parseJavaProperties(resourceSpec.properties.resourceText);
-            jqUnit.assertDeepEq("Parsed properties equivalent", json, properties);
-            start();
+            renderTests.test("Properties file parsing", function() {
+                ++calls; // Test FLUID-3361
+                jqUnit.assertEquals("Just one call to fetchResources callback", 1, calls);
+                jqUnit.assertValue("Fetched properties file", resourceSpec.properties.resourceText);
+                jqUnit.assertValue("Fetched JSON file", resourceSpec.json.resourceText);
+                var json = JSON.parse(resourceSpec.json.resourceText);
+                var properties = fluid.parseJavaProperties(resourceSpec.properties.resourceText);
+                jqUnit.assertDeepEq("Parsed properties equivalent", json, properties);
+                //start();
         });
         
       });
