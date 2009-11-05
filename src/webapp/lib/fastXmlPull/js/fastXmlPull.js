@@ -193,7 +193,7 @@ XMLP.prototype._parse = function() {
     };
     
 var nameRegex = /([^\s\/>]+)/g;
-var attrStartRegex = /\s*([\w:]+)/gm;
+var attrStartRegex = /\s*([\w:_][\w:_\-\.]*)/gm;
 var attrValRegex = /\"([^\"]*)\"\s*/gm; // "normal" XHTML attribute values
 var attrValIERegex = /([^\>\s]+)\s*/gm; // "stupid" unquoted IE attribute values (sometimes)
 var closeRegex = /\s*<\//g;

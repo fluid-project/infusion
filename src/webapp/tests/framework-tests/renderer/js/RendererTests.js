@@ -771,7 +771,17 @@ fluid.tests = fluid.tests || {};
         };
         fluid.selfRender(node, tree, {cutpoints: [{selector: ".select-3357", id: "select"}]});
         jqUnit.assertEquals("1 invocations of decorator expected", 1, registrar.length);
-    });    
+    });
+    
+    renderTests.test("Attribute character support (FLUID-3364)", function() {
+        var node = $(".FLUID-3364-test");
+        var tree = {};
+        fluid.selfRender(node, tree);
+        var input = $("input", node);
+        fluid.testUtils.assertNode("Rendered messages", 
+          {"aria-readonly": "true",
+           "aria-disabled": "true"}, input);
+    });
 
     renderTests.test("Properties unescaping", function() {
       
