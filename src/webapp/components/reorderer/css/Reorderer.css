@@ -1,3 +1,12 @@
+.fl-reorderer-instructions {
+    background-color:#F5FFB0;
+    border:1px solid #FFE390;
+    margin:5px;
+    padding:10px;
+}
+.fl-reorderer-instructions strong {
+    display:block;
+}
 /* Base Appearance + States */
 .fl-reorderer-movable-default {
     cursor:move;

@@ -5,6 +5,8 @@
 		<title>Sortable Grid</title>
         
         <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-text.css" />
         <link rel="stylesheet" type="text/css" href="../../../../components/reorderer/css/Reorderer.css" />
         <link rel="stylesheet" type="text/css" href="../css/gridReorderer.css" />
 
@@ -20,8 +22,19 @@
         
 	</head>
 	<body>
-	    <h1>Sortable Grid</h1>
-        <p>Items are laid out in a grid pattern</p>
+            <div class="fl-offScreen-hidden" tabindex="1">Image Reorderer: To use the keyboard:
+                      Screen reader users turn off virtual cursor (insert + z).
+                      Select an image using i, k, m or j.
+                      Move an image using CTRL + i, k, m or j.
+                      View an image by pressing Enter.
+            </div>
+
+            <div class="fl-reorderer-instructions" tabindex="-1">
+                <strong>To use the keyboard:</strong>
+                Select an image using i, k, m or j, or the arrow keys. Move an image using CTRL + a direction key. View an image by pressing Enter.
+            </div>
+    
+
         <div class="myGrid fl-reorderer-horizontalLayout">
             <p>You</p>
             <p>I</p>           
