@@ -19,12 +19,10 @@ fluid_1_2 = fluid_1_2 || {};
 (function ($, fluid) {
     
     var defaultAvatarCreator = function (item, cssClass, dropWarning) {
+        fluid.dom.cleanseScripts(fluid.unwrap(item));
         var avatar = $(item).clone();
         
         fluid.dom.iterateDom(avatar.get(0), function (node) {
-            if (node.tagName.toLowerCase() === "script") {
-                return "delete";
-            }
             node.removeAttribute("id");
             if (node.tagName.toLowerCase() === "input") {
                 node.setAttribute("disabled", "disabled");
