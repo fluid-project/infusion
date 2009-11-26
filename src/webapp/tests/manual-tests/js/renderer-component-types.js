@@ -30,14 +30,11 @@ var demo = demo || {};
             ID: "template2:subtemplate2",
             children: [
                 {
-                    ID: "ul2:",
+                    ID: "template2:subtemplate1",
                     children: [{
-                        ID: "template2:subtemplate1",
-                        children: [{
-                            ID: "anch",
-                            linktext: "bar",
-                            target: "#bar"
-                        }]
+                        ID: "anch",
+                        linktext: "bar",
+                        target: "#bar"
                     }]
                 }
             ]
