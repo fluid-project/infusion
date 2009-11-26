@@ -20,21 +20,21 @@ var demo = demo || {};
 
     var listTree = {
         children: [{
-            ID: "ul:",
+            ID: "template1:",
             children: [{
-                ID: "template1:subtemplate1",
+                ID: "template2:subtemplate1",
                 children: [{
                     ID: "anch",
                     linktext: "foo",
                     target: "#foo"
                 }]
             }, {
-                ID: "template1:subtemplate2",
+                ID: "template2:subtemplate2",
                 children: [
                     {
                         ID: "ul2:",
                         children: [{
-                            ID: "template1:subtemplate1",
+                            ID: "template2:subtemplate1",
                             children: [{
                                 ID: "anch",
                                 linktext: "bar",
@@ -44,7 +44,7 @@ var demo = demo || {};
                     }
                 ]
             }, {
-                ID: "template1:subtemplate1",
+                ID: "template2:subtemplate1",
                 children: [{
                     ID: "anch",
                     linktext: "foobar",
