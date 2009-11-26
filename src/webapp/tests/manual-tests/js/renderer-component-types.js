@@ -20,28 +20,28 @@ var demo = demo || {};
 
     var listTree = {
         children: [{
-            ID: "H1s:",
+            ID: "ul:",
             children: [{
-                ID: "H1item:toc",
+                ID: "li:type1",
                 children: [{
-                    ID: "toc_anchor",
+                    ID: "anch",
                     linktext: "foo",
                     target: "#foo"
                 }]
             }, {
-                ID: "H1item:H2s",
+                ID: "li:type2",
                 children: [{
-                    ID: "H2item:toc",
+                    ID: "li:type1",
                     children: [{
-                        ID: "toc_anchor",
+                        ID: "anch",
                         linktext: "bar",
                         target: "#bar"
                     }]
                 }]
             }, {
-                ID: "H1item:toc",
+                ID: "li:type1",
                 children: [{
-                    ID: "toc_anchor",
+                    ID: "anch",
                     linktext: "foobar",
                     target: "#foobar"
                 }]
