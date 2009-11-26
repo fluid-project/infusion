@@ -20,36 +20,33 @@ var demo = demo || {};
 
     var listTree = {
         children: [{
-            ID: "template1:",
+            ID: "template2:subtemplate1",
             children: [{
-                ID: "template2:subtemplate1",
-                children: [{
-                    ID: "anch",
-                    linktext: "foo",
-                    target: "#foo"
-                }]
-            }, {
-                ID: "template2:subtemplate2",
-                children: [
-                    {
-                        ID: "ul2:",
+                ID: "anch",
+                linktext: "foo",
+                target: "#foo"
+            }]
+        }, {
+            ID: "template2:subtemplate2",
+            children: [
+                {
+                    ID: "ul2:",
+                    children: [{
+                        ID: "template2:subtemplate1",
                         children: [{
-                            ID: "template2:subtemplate1",
-                            children: [{
-                                ID: "anch",
-                                linktext: "bar",
-                                target: "#bar"
-                            }]
+                            ID: "anch",
+                            linktext: "bar",
+                            target: "#bar"
                         }]
-                    }
-                ]
-            }, {
-                ID: "template2:subtemplate1",
-                children: [{
-                    ID: "anch",
-                    linktext: "foobar",
-                    target: "#foobar"
-                }]
+                    }]
+                }
+            ]
+        }, {
+            ID: "template2:subtemplate1",
+            children: [{
+                ID: "anch",
+                linktext: "foobar",
+                target: "#foobar"
             }]
         }]
     };
