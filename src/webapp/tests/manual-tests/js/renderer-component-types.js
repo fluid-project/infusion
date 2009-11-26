@@ -22,24 +22,29 @@ var demo = demo || {};
         children: [{
             ID: "ul:",
             children: [{
-                ID: "li:type1",
+                ID: "template1:subtemplate1",
                 children: [{
                     ID: "anch",
                     linktext: "foo",
                     target: "#foo"
                 }]
             }, {
-                ID: "li:type2",
-                children: [{
-                    ID: "li:type1",
-                    children: [{
-                        ID: "anch",
-                        linktext: "bar",
-                        target: "#bar"
-                    }]
-                }]
+                ID: "template1:subtemplate2",
+                children: [
+                    {
+                        ID: "ul2:",
+                        children: [{
+                            ID: "template1:subtemplate1",
+                            children: [{
+                                ID: "anch",
+                                linktext: "bar",
+                                target: "#bar"
+                            }]
+                        }]
+                    }
+                ]
             }, {
-                ID: "li:type1",
+                ID: "template1:subtemplate1",
                 children: [{
                     ID: "anch",
                     linktext: "foobar",
