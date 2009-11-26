@@ -327,18 +327,29 @@ https://source.fluidproject.org/svn/LICENSE.txt
             assertItemDefault("Lightbox refocused with second selected ", 0);
         });
         
-        lightboxTests.test("ItemFocusBlur ", function() {
-            var lightbox = createLightbox();
-            var testItem = fluid.jById(orderableIds[0]);
+        function testFocusBlur(initiator) {
+            lightboxTests.test("ItemFocusBlur: with " + initiator, function() {
+                var lightbox = createLightbox();
+                var count = 0; // To test multiple selection issue FLUID-3388
+                var countListener = function() {
+                    ++count;
+                }
+                lightbox.events.onSelect.addListener(countListener);
+                var testItem = fluid.jById(orderableIds[0]);
+                
+                assertItemDefault("Before test item gets focus, it should be in default state", 0);
+                
+                testItem[initiator]();
+                assertItemFocused("After test item gets focus, it should be in selected state", 0);
+                jqUnit.assertEquals("onSelect listener should be called exactly 1 time", 1, count);
             
-            assertItemDefault("Before test item gets focus, it should be in default state", 0);
-            
-            testItem.focus();    
-            assertItemFocused("After test item gets focus, it should be in selected state", 0);
+                testItem.blur();    
+                assertItemDefault("After test item gets blur, it should be in default state", 0);
+            });
+        }
         
-            testItem.blur();    
-            assertItemDefault("After test item gets blur, it should be in default state", 0);
-        });
+        testFocusBlur("click");
+        testFocusBlur("focus");
         
         lightboxTests.test("LightboxFocussed", function() {
             var lightbox = createLightbox();

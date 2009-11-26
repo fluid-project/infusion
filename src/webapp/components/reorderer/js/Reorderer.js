@@ -401,18 +401,18 @@ fluid_1_2 = fluid_1_2 || {};
                 if (!$.data(selectable[0], "fluid.reorderer.selectable-initialised")) { 
                     selectable.addClass(styles.defaultStyle);
             
-                    selectables.blur(handleBlur);
-                    selectables.focus(handleFocus);
-                    selectables.click(function (evt) {
+                    selectable.blur(handleBlur);
+                    selectable.focus(handleFocus);
+                    selectable.click(function (evt) {
                         var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));
                         if (fluid.dom.isContainer(handle, evt.target)) {
                             $(this).focus();
                         }
                     });
                     
-                    selectables.attr("role", options.containerRole.item);
-                    selectables.attr("aria-selected", "false");
-                    selectables.attr("aria-disabled", "false");
+                    selectable.attr("role", options.containerRole.item);
+                    selectable.attr("aria-selected", "false");
+                    selectable.attr("aria-disabled", "false");
                     $.data(selectable[0], "fluid.reorderer.selectable-initialised", true);
                 }
             }
