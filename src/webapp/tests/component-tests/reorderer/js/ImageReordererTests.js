@@ -333,7 +333,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var count = 0; // To test multiple selection issue FLUID-3388
                 var countListener = function() {
                     ++count;
-                }
+                };
                 lightbox.events.onSelect.addListener(countListener);
                 var testItem = fluid.jById(orderableIds[0]);
                 
