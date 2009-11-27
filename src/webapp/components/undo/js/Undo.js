@@ -23,15 +23,19 @@ fluid_1_2 = fluid_1_2 || {};
         STATE_REVERTED = "state_reverted";
   
     function defaultRenderer(that, targetContainer) {
-        var markup = "<span class='flc-undo' aria-live='polite' aria-relevant='all'>" + 
+        var markup = "<span class='flc-undo'>" + 
           "<span class='flc-undo-undoContainer'>[<a href='#' class='flc-undo-undoControl'>undo</a>]</span>" + 
           "<span class='flc-undo-redoContainer'>[<a href='#' class='flc-undo-redoControl'>redo</a>]</span>" + 
         "</span>";
-        var markupNode = $(markup);
+		var markupNode = $(markup).attr({
+			"role": "region",  
+			"aria-live": "polite", 
+			"aria-relevant": "all"
+		});
         targetContainer.append(markupNode);
         return markupNode;
     }
-  
+    
     function refreshView(that) {
         if (that.state === STATE_INITIAL) {
             that.locate("undoContainer").hide();
