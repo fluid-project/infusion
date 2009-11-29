@@ -259,7 +259,6 @@ fluid_1_2 = fluid_1_2 || {};
       var seenset = {};
       var collected = {};
       var out = "";
-      var debugMode = false;
       var renderOptions = options;
       var decoratorQueue = [];
       
