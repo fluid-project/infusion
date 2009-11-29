@@ -50,14 +50,6 @@ freely, subject to the following restrictions:
     distribution.
  */
 
-var whitespace = "\n\r\t ";
-// List of closed HTML tags, taken from JQuery 1.2.3
-var closedTags = {
-    abbr: true, br: true, col: true, img: true, input: true,
-    link: true, meta: true, param: true, hr: true, area: true, embed:true
-    };
-
-
 XMLP = function(strXML) { 
 
     this.m_xml = strXML; 
@@ -66,6 +58,12 @@ XMLP = function(strXML) {
     this.m_stack = [];
     this.m_attributes = {};
     this.m_emitSynthetic = false; // state used for emitting synthetic tags used to correct broken markup (IE)
+    };
+    
+// List of closed HTML tags, taken from JQuery 1.2.3
+XMLP.closedTags = {
+    abbr: true, br: true, col: true, img: true, input: true,
+    link: true, meta: true, param: true, hr: true, area: true, embed:true
     };
         
 XMLP._NONE = 0;
@@ -191,14 +189,16 @@ XMLP.prototype._parse = function() {
         return this._parseText (iP);
         }
     };
-    
-var nameRegex = /([^\s\/>]+)/g;
-var attrStartRegex = /\s*([\w:_][\w:_\-\.]*)/gm;
-var attrValRegex = /\"([^\"]*)\"\s*/gm; // "normal" XHTML attribute values
-var attrValIERegex = /([^\>\s]+)\s*/gm; // "stupid" unquoted IE attribute values (sometimes)
-var closeRegex = /\s*<\//g;
 
-XMLP.prototype._parseElement = function(iB) { 
+(function() { // guarding closure to preserve global namespace
+
+nameRegex = /([^\s\/>]+)/g;
+attrStartRegex = /\s*([\w:_][\w:_\-\.]*)/gm;
+attrValRegex = /\"([^\"]*)\"\s*/gm; // "normal" XHTML attribute values
+attrValIERegex = /([^\>\s]+)\s*/gm; // "stupid" unquoted IE attribute values (sometimes)
+closeRegex = /\s*<\//g;
+
+XMLP.prototype._parseElement = function(iB) {
     var iE, iDE, iRet; 
     var iType, strN, iLast; 
     iDE = iE = this.m_xml.indexOf(">", iB); 
@@ -279,7 +279,7 @@ XMLP.prototype._parseElement = function(iB) {
     this.m_name = strN; 
     this.m_iP = iE + 1;
     // Check for corrupted "closed tags" from innerHTML
-    if (closedTags[strN]) {
+    if (XMLP.closedTags[strN]) {
         closeRegex.lastIndex = iE + 1;
         var closeMatch = closeRegex.exec;
         if (closeMatch) {
@@ -295,6 +295,7 @@ XMLP.prototype._parseElement = function(iB) {
     this.m_emitSynthetic = false;
     return iType;
     };
+})();
     
 XMLP.prototype._parseCDATA = function(iB) { 
     var iE = this.m_xml.indexOf("]]>", iB); 
@@ -451,21 +452,3 @@ SAXStrings.replace = function(strD, iB, iE, strF, strR) {
     iE = iE || strD.length; 
     return strD.substring(iB, iE).split(strF).join(strR);
     };
-
-function __unescapeString(str) {
-    return str.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")
-        .replace(/&quot;/g, "\"").replace(/&apos;/g, "'");
-    }
-    
-function __escapeString(str) { var escAmpRegEx = /&/g; var escLtRegEx = /</g; var escGtRegEx = />/g; var quotRegEx = /"/g;
-    var aposRegEx = /'/g;
-
-    str = str.replace(escAmpRegEx, "&amp;");
-    str = str.replace(escLtRegEx, "&lt;");
-    str = str.replace(escGtRegEx, "&gt;");
-    str = str.replace(quotRegEx, "&quot;");
-    str = str.replace(aposRegEx, "&apos;");
-
-    return str;
-    }
-

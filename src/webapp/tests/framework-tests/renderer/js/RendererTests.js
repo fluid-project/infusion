@@ -782,6 +782,21 @@ fluid.tests = fluid.tests || {};
           {"aria-readonly": "true",
            "aria-disabled": "true"}, input);
     });
+    
+    renderTests.test("Blank switching and blind textarea support (FLUID-3224)", function() {
+        var node = $(".FLUID-3224-test");
+        var model = {};
+        var tree = {children: [{ID: "input", valuebinding: "nonexistent.empty"}, {ID: "switch"}]};
+        var resourceSpec = {base: {resourceText: fluid.extractTemplate(node[0]), 
+                    href: ".", resourceKey: "."}
+                    };
+        var templates = fluid.parseTemplates(resourceSpec, ["base"]);
+        var renderer = fluid.renderer(templates, tree, {model: model});
+        var rendered = renderer.renderTemplates();
+   //     fluid.selfRender(node, tree, {model: model, autoBind: true});
+   //     var rendered = node[0].innerHTML;
+        jqUnit.assertTrue("Closed textarea is expected", rendered.indexOf("</textarea>") >= 0);
+    });
 
     renderTests.test("Properties unescaping", function() {
       

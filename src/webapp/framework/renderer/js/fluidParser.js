@@ -606,6 +606,7 @@ fluid_1_2 = fluid_1_2 || {};
    */
   fluid.parseTemplates = function(resourceSpec, templateList, opts) {
     var togo = [];
+    opts = opts || {};
     togo.globalmap = {};
     for (var i = 0; i < templateList.length; ++ i) {
       var resource = resourceSpec[templateList[i]];
