@@ -187,7 +187,8 @@ ul.fl-grid, .fl-grid ul {padding:0; margin:0;}
 .fl-grid li {list-style-type:none; display:inline;}
 .fl-grid li {float:left; width:19%; margin:0.5%; height:150px; overflow:hidden; position:relative; display:inline;}
 .fl-grid li img {display:block; margin:5px auto;}
-.fl-grid li .caption {position:absolute; left:0px; bottom:0px; width:100%; text-align:center; height:1em; padding:3px 0;}
+.fl-grid li .caption,  /*<=== DEPRECATED SYNTAX */
+.fl-grid li .fl-grid-caption {position:absolute; left:0px; bottom:0px; width:100%; text-align:center; height:1em; padding:3px 0;}
 
 /*
  * Icons: quick accessible icon helper
