@@ -48,11 +48,13 @@ img {border:none;}
 /* Navigation Bar 
  */
 .fl-navbar {
-    width:100%;
-    height:43px;
+    width:100%;    
     text-align:center;
 	border-style:solid;
 	border-width:1px 0;
+}
+.fl-navbar .fl-table-row:first-child {
+	height:45px;
 }
 .fl-navbar .fl-table-cell:not(h1) {
     width:1px;
@@ -301,6 +303,46 @@ img {border:none;}
 }
 .fl-list-brief.fl-list-thumbnails:not(.fl-thumbnails-expanded) > li a > .fl-link-secondary {
     padding-top:0px;
+}
+
+/*************************************************/
+/* Thumbnails in Grid layout, changes the entire layout of the list item and contents */
+.fl-list-thumbnails.fl-grid {
+	overflow:auto;
+}
+.fl-list-thumbnails.fl-grid li {
+	display:inline-block;
+	width:auto;
+	height:auto;
+	margin:5px;
+}
+.fl-list-thumbnails.fl-grid li a {	
+	padding:0;
+	margin:0;
+	text-indent:-5000px;
+	overflow:hidden;
+	width:44px;
+	height:44px;
+}
+.fl-list-thumbnails.fl-grid li a .fl-caption {
+}
+.fl-list-thumbnails.fl-grid > li a .fl-icon {
+	display:block;
+	float:none;
+	margin:0 auto;
+	padding:0;
+	width:auto;
+	height:auto;
+	max-height:44px;
+	max-width:44px;
+}
+.fl-list-thumbnails.fl-thumbnails-expanded.fl-grid li a {
+	height:64px;
+	width:64px;
+}
+.fl-list-thumbnails.fl-thumbnails-expanded.fl-grid > li a .fl-icon {
+	max-height:64px;
+	max-width:64px;
 }
 
 /*************************************************/

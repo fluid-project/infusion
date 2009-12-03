@@ -197,7 +197,7 @@
     color:#999;
 }
 
-.fl-theme-iphone .fl-list-menu li a {
+.fl-theme-iphone .fl-list-menu:not(.fl-grid) li a {
     -webkit-tap-highlight-color: -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
     background:#fff url(../images/themes/iphone/listmenu_arrow.png) no-repeat right 5px;
 	
