@@ -8,8 +8,7 @@
         <delete dir="${products}" />
     </target>
 
-    <!-- Changed slightly from the infusion target - expects 'tofile', 'fromdir' and 'warfile' to be set -->
-    <target name="buildWAR">
+    <target name="buildWAR" description="Builds a WAR file using maven given 3 parameters. tofile: the full path to the warfile to be created; fromdir: the directory containing the content to be placed in the war; warfile: the name of the warfile that is created from the maven task">
       <condition property="isWindows">
         <os family="windows" />
       </condition>
@@ -23,7 +22,7 @@
       <copy tofile="${tofile}" file="${fromdir}/target/${warfile}" />
     </target>
 
-    <!-- Expects 'fromdir' to be set -->
+    <!-- Uses maven to create a WAR file on a non-Windows operating system. Expects 'fromdir' to be set. -->
     <target name="invokeMavenForWAR" unless="isWindows">
       <echo>Building war file... ${fromdir} </echo>
       <apply executable="mvn" dir="${fromdir}" parallel="true">
@@ -34,7 +33,7 @@
       </apply>
     </target>
   
-    <!-- Expects 'fromdir' to be set -->
+    <!-- Uses maven to create a WAR file on a Windows operating system. Expects 'fromdir' to be set. -->
     <target name="invokeMavenForWARWindows" if="isWindows">
       <apply executable="cmd" dir="${fromdir}" parallel="true" vmlauncher="false">
           <fileset  dir=".">
