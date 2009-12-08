@@ -17,6 +17,7 @@
     </description>
 
     <property file="build.properties"/>
+    <import file="buildutils.xml"/>
 
   <!-- set up directory locations -->
     <property name="base-dir" location=".." />
@@ -50,12 +51,6 @@
     <taskdef name="jslint" 
       classname="net.happygiraffe.jslint.ant.JSLintTask" 
       classpath="${jslint}" />
-
-    <!-- Target: cleanup before running -->
-    <target name="clean" description="Cleans up all build-related artifacts and products.">
-        <delete dir="${build}" />
-        <delete dir="${products}" />
-    </target>
   
     <!-- Set up the build directory structure -->
     <target name="init">
@@ -65,27 +60,6 @@
         <mkdir dir="${src-dist}" />
         <mkdir dir="${licenses}" />
     </target>
-    
-    <!-- Target: Minify the specified files and copy them into the specified directory. Don't call this directly. -->
-    <target name="minify">
-        <apply executable="java" dest="${toDir}"  parallel="false">
-            <!-- The files to act upon. -->  
-            <fileset dir="${fromDir}" casesensitive="no">
-              <include name="**/${file-pattern}" />
-              <exclude name="**/test/*" />
-            </fileset>
-    
-            <arg line="-jar" />
-            <arg path="${yuicompressor}" />
-            <srcfile/>
-            <arg line="--nomunge" />
-            <!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
-            <arg line="${lineBreakArg}" />
-            <arg line="-o" />
-            <mapper type="glob" from="${file-pattern}" to="${file-pattern}" />
-            <targetfile /> 
-        </apply>
-    </target>    
     
     <!-- Minifies javascript and css files and puts them into the distribution -->
     <target name="minifyBuild">
@@ -154,40 +128,6 @@
       </copy>
     </target>
     
-    <!-- Builds the WAR file using Maven 2 and copies it to the distribution folder. -->
-    <target name="buildWAR">
-      <condition property="isWindows">
-        <os family="windows" />
-      </condition>
-      <antcall target="invokeMavenForWAR"/>
-      <antcall target="invokeMavenForWARWindows"/>
-      <echo>Copying war file ${build}/war/target/${warfile} to ${dist}...</echo>
-      <copy todir="${toDir}">
-          <fileset dir="${build}/war/target">
-              <include name="${warfile}" />
-          </fileset>
-      </copy>
-    </target>
-  
-    <target name="invokeMavenForWAR" unless="isWindows">
-      <echo>Building war file...</echo>
-      <apply executable="mvn" dir="${build}/war" parallel="true">
-          <fileset  dir=".">
-              <include name="pom.xml"/>
-          </fileset>
-          <arg value="install" />
-      </apply>
-    </target>
-  
-    <target name="invokeMavenForWARWindows" if="isWindows">
-      <apply executable="cmd" dir="${build}/war" parallel="true" vmlauncher="false">
-          <fileset  dir=".">
-              <include name="pom.xml"/>
-          </fileset>
-          <arg value="/c mvn.bat install" />
-      </apply>
-    </target>
-    
     <!-- Builds the core Infusion WAR file. -->
     <target name="buildInfusionWAR">
         <antcall target="copyInfusionWARFiles">
@@ -195,7 +135,10 @@
         </antcall>
         
         <antcall target="buildWAR">
-            <param name="toDir" value="${dist}" />
+            <param name="fromdir" value="${build}/war" />
+            <param name="tofile" value="${dist}/${warfile}" />
+            <param name="warfile" value="${warfile}" />
+
         </antcall>
     </target>
         
@@ -211,7 +154,9 @@
         </antcall>
         
         <antcall target="buildWAR">
-            <param name="toDir" value="${src-dist}" />
+            <param name="fromdir" value="${build}/war" />
+            <param name="tofile" value="${src-dist}/${warfile}" />
+            <param name="warfile" value="${warfile}" />
         </antcall>
     </target>
 
