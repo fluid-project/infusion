@@ -133,7 +133,7 @@
     <!-- Copies the files required to build a war file containing Infusion. -->
     <target name="copyInfusionWARFiles">        
       <copy todir="${build}/war/src/webapp/" >
-        <fileset dir="${dist}">
+        <fileset dir="${fromDir}">
             <include name="components/**/*" />
             <include name="framework/**/*" />
             <include name="lib/**/*" />          
@@ -162,7 +162,7 @@
       <antcall target="invokeMavenForWAR"/>
       <antcall target="invokeMavenForWARWindows"/>
       <echo>Copying war file ${build}/war/target/${warfile} to ${dist}...</echo>
-      <copy todir="${dist}">
+      <copy todir="${toDir}">
           <fileset dir="${build}/war/target">
               <include name="${warfile}" />
           </fileset>
@@ -189,17 +189,30 @@
     </target>
     
     <!-- Builds the core Infusion WAR file. -->
-    <target name="buildInfusionWAR" depends="copyInfusionWARFiles, buildWAR">
+    <target name="buildInfusionWAR">
+        <antcall target="copyInfusionWARFiles">
+            <param name="fromDir" value="${dist}" />
+        </antcall>
+        
+        <antcall target="buildWAR">
+            <param name="toDir" value="${dist}" />
+        </antcall>
     </target>
         
     <!-- Builds a full-fledged WAR file used for the daily build, which includes sample code and tests. -->
-    <target name="buildDailyWAR" depends="copyInfusionWARFiles">        
+    <target name="buildDailyWAR">
+        <antcall target="copyInfusionWARFiles">
+            <param name="fromDir" value="${src-dist}" />
+        </antcall>
+
         <!-- Copy the additional files into the war build required for the daily build. -->
         <antcall target="copyDistroFiles">
             <param name="toDir" value="${build}/war/src/webapp/" />
         </antcall>
         
-        <antcall target="buildWAR" />
+        <antcall target="buildWAR">
+            <param name="toDir" value="${src-dist}" />
+        </antcall>
     </target>
 
     <!-- Target: validate -->
