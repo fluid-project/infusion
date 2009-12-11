@@ -1,5 +1,3 @@
-:root {
-}
 body {
     margin:0;
     padding:0;
@@ -476,4 +474,48 @@ img {border:none;}
 .fl-table-cell {
     display:table-cell;
     vertical-align:middle;
+}
+
+
+/************************************************************************************************/
+/*
+    Theme/Device specific layout adjustments
+    The base CSS is modelled off the iPhone WebKit environment, which is a good UI to emulate
+    The following CSS modifies the base slightly to be a little more device-friendly and native-ish for other Webkit environments
+*/
+
+.fl-theme-android {
+    font:normal 17px "Droid Sans", sans-serif;
+}
+.fl-theme-android [class*=fl-list] > li {
+    border-width:0px;
+}
+.fl-theme-android h1,
+.fl-theme-android h2,
+.fl-theme-android h3 {
+    padding:5px;
+    margin:0;
+}
+.fl-theme-android [class*=fl-container] h1,
+.fl-theme-android [class*=fl-container] h2,
+.fl-theme-android [class*=fl-container] h3 {
+    margin:0 -10px;
+}
+.fl-theme-android .fl-list-menu a {
+    font-weight:normal;
+}
+.fl-theme-android .fl-tabs li:not(:last-child) {
+    margin-right:-4px; /* for some reason, the use of Droid Sans font make the right border dissappear (on Chrome+XP). This 1px change fixes it */
+}
+/* Panel influence for list corners */
+.fl-theme-android [class*=fl-container] [class*=fl-list] > li:first-child,
+.fl-theme-android [class*=fl-container] [class*=fl-list] > li:first-child a {
+    -webkit-border-top-left-radius: 0px;
+    -webkit-border-top-right-radius: 0px;
+}
+
+.fl-theme-android [class*=fl-container] [class*=fl-list] > li:last-child,
+.fl-theme-android [class*=fl-container] [class*=fl-list] > li:last-child a {
+    -webkit-border-bottom-left-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
 }
