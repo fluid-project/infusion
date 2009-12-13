@@ -24,6 +24,7 @@ img {border:none;}
     width:30px;
     height:30px;
     margin-top:-5px;
+    margin-right:5px;
     -webkit-border-radius: 5px;
 }
 .fl-label {
