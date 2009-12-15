@@ -514,9 +514,18 @@ img {border:none;}
     -webkit-border-top-left-radius: 0px;
     -webkit-border-top-right-radius: 0px;
 }
-
-.fl-theme-android [class*=fl-container] [class*=fl-list] > li:last-child,
-.fl-theme-android [class*=fl-container] [class*=fl-list] > li:last-child a {
+.fl-theme-android [class*=fl-container]:not(.fl-container-autoHeading) [class*=fl-list] > li:last-child,
+.fl-theme-android [class*=fl-container]:not(.fl-container-autoHeading) [class*=fl-list] > li:last-child a {
     -webkit-border-bottom-left-radius: 0px;
     -webkit-border-bottom-right-radius: 0px;
+}
+.fl-theme-android .fl-list-thumbnails.fl-thumbnails-expanded > li:last-child {
+	border:0;	
+}
+.fl-theme-android .fl-container-autoHeading > :first-child {
+	margin-left:0;
+	margin-right:0;
+}
+.fl-theme-android .fl-container-autoHeading > :last-child {
+	border-width:0 1px 1px;
 }

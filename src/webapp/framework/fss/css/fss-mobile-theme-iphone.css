@@ -171,6 +171,10 @@
 /*************************************************/
 /* Default list system setup */
 
+.fl-theme-iphone .fl-list a {
+    color:#4a94f4;
+}
+
 .fl-theme-iphone [class*=fl-list] > li {
 	color: #000;
     border-color: rgb(169,173,176);
@@ -212,9 +216,6 @@
 		        -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
 
-.fl-theme-iphone .fl-list a {
-    color:#4a94f4;
-}
 /***************************************/
 /* Grid overrides, removes nav coloring */
 .fl-theme-iphone .fl-grid li {

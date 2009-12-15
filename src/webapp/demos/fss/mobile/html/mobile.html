@@ -13,6 +13,14 @@
         <link type="text/css" rel="stylesheet" href="../../../../framework/fss/css/fss-mobile-layout.css" />
         <link type="text/css" rel="stylesheet" href="../../../../framework/fss/css/fss-mobile-theme-iphone.css" />
         <link type="text/css" rel="stylesheet" href="../../../../framework/fss/css/fss-mobile-theme-android.css" />
+		
+		<script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+		<script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
+
+		<script type="text/javascript" src="../js/themer.js"></script>
+		
     </head>
 
     <body class="fl-theme-iphone">
@@ -21,10 +29,10 @@
 			<div class="fl-table-row">
 				<h1 class="fl-table-cell">Start</h1>
 
-                <ul class="fl-tabs fl-table-cell">                    
-                    <li class="fl-tabs-active"><a class="flc-screenNavigator-backButton" href="#">iPhone</a></li>
-                    <li><a class="flc-screenNavigator-backButton" href="#">Android</a></li>
-                    <li><a class="flc-screenNavigator-backButton" href="#">No Theme</a></li>
+                <ul class="fl-tabs fl-table-cell flc-themer">
+                    <li><a href="#iphone">iPhone</a></li>
+                    <li><a href="#android">Android</a></li>
+                    <li><a href="#none">No Theme</a></li>
                 </ul>
 
 			</div>
@@ -93,8 +101,15 @@
         	</div>
 
         </div>
+		
+		<script type="text/javascript">
+			//		INITIALIZE		//
+			$(document).ready(function () {
+				var Themer = fluid.themer(".flc-themer");
+			});
+		</script>
 
-</body>
+	</body>
 </html>
 
 
