@@ -1,5 +1,5 @@
-{"fastXmlPull": {
+{"XML for Script's Fast XML Pull Parser": {
    	"name": "fastXmlPull",
-   	"description": "A fast xml pull parser.",
+   	"description": "A fast XML pull parser based on source code from the XML for Script project. Used by the Renderer to parse templates.",
 	"files": "fastXmlPull.js"
 }}

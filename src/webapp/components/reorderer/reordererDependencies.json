@@ -1,6 +1,6 @@
 {"reorderer": {
    	"name": "Reorderer",
-   	"description": "enables users to directly re-arrange content on the page.",
+   	"description": "Reposition content using drag and drop with the mouse or the keyboard.",
   	"cssFiles": ["Reorderer.css", "ImageReorderer.css"],
 	"files": ["GeometricManager.js", "Reorderer.js", "ImageReorderer.js", "ModuleLayout.js", "LayoutReorderer.js"],
 	"dependencies": ["jQuery", "jQueryUICore", "jQueryUIWidgets", "framework", "json"]

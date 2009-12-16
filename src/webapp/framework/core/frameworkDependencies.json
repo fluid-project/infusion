@@ -1,6 +1,6 @@
 {"framework": {
-   	"name": "Fluid Infusion Framework",
-   	"description": "The core of the Fluid Infusion framework. Required for all Fluid components",
+   	"name": "Infusion Framework Core",
+   	"description": "A suite of core Infusion framework features, including support for events, views, data binding, and keyboard accessibility. Required by all Fluid components.",
 	"files": ["Fluid.js", "FluidDOMUtilities.js", "DataBinding.js", "jquery.keyboard-a11y.js"],
 	"dependencies": ["jQuery", "jQueryUICore", "jQueryDelegatePlugin"]
 }}

@@ -1,5 +1,5 @@
 {"fss": {
    "name": "Fluid Skinning System",
-   "description": "A modular CSS framework, which allows you to add, remove, and mix classes to get the desired effect.",
+   "description": "A modular, pure CSS framework for rapid styling. This package includes all FSS modules, including Reset, Layout, Text, and Themes.",
    "dependencies": ["fssReset", "fssLayout", "fssText", "fssThemes"]
 }}

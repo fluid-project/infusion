@@ -1,5 +1,5 @@
 {"swfobject": {
    	"name": "swfobject",
-   	"description": "Embed Flash content into html.",
+   	"description": "A JavaScript utility used to embed Flash content into HTML pages.",
 	"files": "swfobject.js"
 }}

@@ -1,6 +1,6 @@
 {"jQueryUIWidgets": {
    	"name": "jQuery UI Widgets",
-   	"description": "Full-featured jQuery UI Controls - each has a range of options and is fully themeable.",
+   	"description": "A collection of the jQuery UI widgets used by Infusion, including Dialog, Draggable, Accordion, and Slider.",
 	"files": ["ui.dialog.js", "ui.draggable.js", "ui.accordion.js", "ui.slider.js"],
 	"dependencies": ["jQuery", "jQueryUICore"]
 }}

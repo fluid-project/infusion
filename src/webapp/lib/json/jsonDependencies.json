@@ -1,5 +1,5 @@
 {"json": {
-   	"name": "JSON",
-   	"description": "Javascript lightweight data-interchange format.",
+   	"name": "JSON Parser",
+   	"description": "Douglas Crockford's public domain JSON parser.",
 	"files": "json2.js"
 }}

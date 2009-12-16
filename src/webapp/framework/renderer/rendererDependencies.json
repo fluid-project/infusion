@@ -1,6 +1,6 @@
 {"renderer": {
   	"name": "Renderer",
-   	"description": "Allows users to create user interface templates in pure HTML, and render the pages entirely on the client side.",
+   	"description": "Dynamically renders HTML templates on the client-side, without requiring you to mix your code and markup together.",
 	"files": ["fluidParser.js", "fluidRenderer.js"],
 	"dependencies": ["jQuery", "framework", "fastXmlPull"]
 }}

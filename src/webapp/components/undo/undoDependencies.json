@@ -1,6 +1,6 @@
 {"undo": {
   	"name": "Undo",
-	"description": "Provides undo support for any component that bears a model.",
+	"description": "Step-back for model-based interactions.",
 	"files": "Undo.js",
 	"dependencies": ["jQuery", "framework"]
 }}
