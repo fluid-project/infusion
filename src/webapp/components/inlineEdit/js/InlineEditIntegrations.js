@@ -169,8 +169,10 @@ fluid_1_2 = fluid_1_2 || {};
     
     fluid.inlineEdit.FCKEditor.complete.addListener(function (editor) {
         var editField = editor.LinkedField;
-        var that = $.data(editField, "fluid.inlineEdit.FCKEditor"); 
-        that.events.afterInitEdit.fire(editor);
+        var that = $.data(editField, "fluid.inlineEdit.FCKEditor");
+        if (that && that.events) {
+            that.events.afterInitEdit.fire(editor);
+        }
     });
     
     fluid.inlineEdit.FCKEditor.blurHandlerBinder = function (that) {
