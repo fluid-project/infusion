@@ -3,29 +3,26 @@
         Utilities used by the Infusion and Engage builds
     </description>
 
+
     <target name="clean" description="Cleans up all build-related artifacts and products.">
         <delete dir="${build}" />
         <delete dir="${products}" />
     </target>
 
-    <target name="buildWAR" description="Builds a WAR file using maven given 3 parameters. tofile: the full path to the warfile to be created; fromdir: the directory containing the content to be placed in the war; warfile: the name of the warfile that is created from the maven task">
+    <target name="buildWAR" description="Builds a WAR file using maven given 3 parameters. toFile: the full path to the warfile to be created; fromDir: the directory containing the content to be placed in the war; warFile: the name of the warfile that is created from the maven task">
       <condition property="isWindows">
         <os family="windows" />
       </condition>
-      <antcall target="invokeMavenForWAR">
-          <param name="fromdir" value="${fromdir}" />
-      </antcall>
-      <antcall target="invokeMavenForWARWindows">
-          <param name="fromdir" value="${fromdir}" />
-      </antcall>
+      <antcall target="invokeMavenForWAR" />
+      <antcall target="invokeMavenForWARWindows" />
       <echo>Copying war file ...</echo>
-      <copy tofile="${tofile}" file="${fromdir}/target/${warfile}" />
+      <copy tofile="${toFile}" file="${fromDir}/target/${warFile}" />
     </target>
 
-    <!-- Uses maven to create a WAR file on a non-Windows operating system. Expects 'fromdir' to be set. -->
+    <!-- Uses maven to create a WAR file on a non-Windows operating system. Expects 'fromDir' to be set. -->
     <target name="invokeMavenForWAR" unless="isWindows">
-      <echo>Building war file... ${fromdir} </echo>
-      <apply executable="mvn" dir="${fromdir}" parallel="true">
+      <echo>Building war file... ${fromDir} </echo>
+      <apply executable="mvn" dir="${fromDir}" parallel="true">
           <fileset  dir=".">
               <include name="pom.xml"/>
           </fileset>
@@ -33,9 +30,9 @@
       </apply>
     </target>
   
-    <!-- Uses maven to create a WAR file on a Windows operating system. Expects 'fromdir' to be set. -->
+    <!-- Uses maven to create a WAR file on a Windows operating system. Expects 'fromDir' to be set. -->
     <target name="invokeMavenForWARWindows" if="isWindows">
-      <apply executable="cmd" dir="${fromdir}" parallel="true" vmlauncher="false">
+      <apply executable="cmd" dir="${fromDir}" parallel="true" vmlauncher="false">
           <fileset  dir=".">
               <include name="pom.xml"/>
           </fileset>
@@ -43,11 +40,13 @@
       </apply>
     </target>
 
+	<!-- Expects toDir, fromDir, filePattern, lineBreakArg to be set -->
     <target name="minify">
+    	<echo> Going to minify from ${fromDir} to ${toDir} including ${filePattern}  </echo>
         <apply executable="java" dest="${toDir}"  parallel="false">
             <!-- The files to act upon. -->  
             <fileset dir="${fromDir}" casesensitive="no">
-              <include name="**/${file-pattern}" />
+              <include name="**/${filePattern}" />
               <exclude name="**/test/*" />
             </fileset>
     
@@ -58,9 +57,22 @@
             <!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
             <arg line="${lineBreakArg}" />
             <arg line="-o" />
-            <mapper type="glob" from="${file-pattern}" to="${file-pattern}" />
+            <mapper type="glob" from="${filePattern}" to="${filePattern}" />
             <targetfile /> 
         </apply>
     </target>    
     
+    <!-- Minifies javascript and css files. Expects fromDir and toDir to be set -->
+    <target name="minifyJsAndCss">
+      <echo>Minifying .JS files...</echo>
+      <antcall target="minify">
+        <param name="filePattern" value="*.js" />
+        <param name="lineBreakArg" value="" />
+      </antcall>
+      
+      <antcall target="minify">
+        <param name="filePattern" value="*.css" />
+        <param name="lineBreakArg" value="--line-break 0" />
+      </antcall>
+    </target>    
 </project>
