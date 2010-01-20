@@ -12,6 +12,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 fluid.tests = fluid.tests || {};
 
+
+//TODO: fluid.identity required for testing purposes, will not be present until 
+// FLUID-2281 branch is merged
+fluid.identity = function() {
+    return arguments;
+};
+
 (function($) {
 
   fluid.tests.testParser = function() {
@@ -781,6 +788,17 @@ fluid.tests = fluid.tests || {};
         fluid.testUtils.assertNode("Rendered messages", 
           {"aria-readonly": "true",
            "aria-disabled": "true"}, input);
+    });
+    
+    renderTests.test("InitBlock rendering (FLUID-3482)", function() {
+        var node = $(".FLUID-3482-test");
+        var args = [true, 3, "string", {key1: 3, "key2": "thing"}];
+        var tree = {ID: "initBlock", functionname: "fluid.identity", 
+          "arguments": args};
+        fluid.selfRender(node, tree);
+        var block = $("div", node);
+        var result = eval(block.html());
+        jqUnit.assertDeepEq("Idempotent transit", args, result);
     });
     
     renderTests.test("Blank switching and blind textarea support (FLUID-3224)", function() {

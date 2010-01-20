@@ -216,7 +216,7 @@ fluid_1_2 = fluid_1_2 || {};
               // TODO: support more forms of id reference
               child.arguments[j] = child.parent.fullID + child.arguments[j].reference;
             }
-            call += '"' + child.arguments[j] + '"'; 
+            call += JSON.stringify(child.arguments[j]); 
             if (j < child.arguments.length - 1) {
               call += ", ";
             }
