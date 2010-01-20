@@ -545,7 +545,10 @@ fluid_1_2 = fluid_1_2 || {};
               // Work around bug 193: http://webbugtrack.blogspot.com/2007/11/bug-193-onchange-does-not-fire-properly.html
               if ($.browser.msie && tagname === "input" 
                   && /radio|checkbox/.test(trc.attrcopy.type)) {
-                 decorators.push({jQuery: ["click", applyFunc]});
+                  decorators.push({jQuery: ["click", applyFunc]});
+              }
+              if ($.browser.safari && tagname === "input" && trc.attrcopy.type === "radio") {
+                  decorators.push({jQuery: ["keyup", applyFunc]});
               }
               outDecoratorsImpl(torender, decorators, trc.attrcopy, finalID);
           }    
