@@ -18,45 +18,47 @@ fluid_1_2 = fluid_1_2 || {};
 (function ($, fluid) {
   
   function debugPosition(component) {
-     return "as child of " + (component.parent.fullID? "component with full ID " + component.parent.fullID : "root");
+      return "as child of " + (component.parent.fullID? "component with full ID " + component.parent.fullID : "root");
   }
   
   function computeFullID(component) {
-    var togo = "";
-    var move = component;
-    if (component.children === undefined) { // not a container
-      // unusual case on the client-side, since a repetitive leaf may have localID blasted onto it.
-      togo = component.ID + (component.localID !== undefined? component.localID : "");
-      move = component.parent;
+      var togo = "";
+      var move = component;
+      if (component.children === undefined) { // not a container
+          // unusual case on the client-side, since a repetitive leaf may have localID blasted onto it.
+          togo = component.ID + (component.localID !== undefined? component.localID : "");
+          move = component.parent;
+          }
+      while (move.parent) {
+          var parent = move.parent;
+          if (move.fullID !== undefined) {
+              togo = move.fullID + togo;
+              return togo;
+          }
+          if (move.noID === undefined) {
+              var ID = move.ID;
+              if (ID === undefined) {
+                  fluid.fail("Error in component tree - component found with no ID " +
+                    debugPosition(parent) + ": please check structure");
+              }
+              var colpos = ID.indexOf(":");        
+              var prefix = colpos === -1? ID : ID.substring(0, colpos);
+              togo = prefix + ":" + (move.localID === undefined ? "" : move.localID) + ":" + togo;
+          }
+          move = parent;
       }
-    while (move.parent) {
-      var parent = move.parent;
-      if (move.fullID !== undefined) {
-        togo = move.fullID + togo;
-        return togo;
-        }
-      if (move.noID === undefined) {
-        var ID = move.ID;
-        if (ID === undefined) {
-          fluid.fail("Error in component tree - component found with no ID " +
-              debugPosition(parent) + ": please check structure");
-        }
-        var colpos = ID.indexOf(":");        
-        var prefix = colpos === -1? ID : ID.substring(0, colpos);
-        togo = prefix + ":" + (move.localID === undefined ? "" : move.localID) + ":" + togo;
-      }
-      move = parent;
-    }
-    return togo;
+      return togo;
   }
+
+  var renderer = {};
   
-  function isBoundPrimitive(value) {
+  renderer.isBoundPrimitive = function(value) {
       return fluid.isPrimitive(value) || value instanceof Array 
              && (value.length === 0 || typeof(value[0]) === "string");
   }
   
   function processChild(value, key) {
-      if (isBoundPrimitive(value)) {
+      if (renderer.isBoundPrimitive(value)) {
           return {componentType: "UIBound", value: value, ID: key};
           }
       else {
@@ -107,8 +109,11 @@ fluid_1_2 = fluid_1_2 || {};
   
   function upgradeBound(holder, property, model) {
       if (holder[property] !== undefined) {
-          if (isBoundPrimitive(holder[property])) {
+          if (renderer.isBoundPrimitive(holder[property])) {
               holder[property] = {value: holder[property]};
+          }
+          else if (holder[property].messagekey) {
+              holder[property].componentType = "UIMessage";
           }
       }
       else {
@@ -122,17 +127,21 @@ fluid_1_2 = fluid_1_2 || {};
         markup: "UIVerbatim", selection: "UISelect", target: "UILink",
         choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
   
+  renderer.inferComponentType = function(component) {
+      for (var key in duckMap) {
+            if (component[key] !== undefined) {
+                component.componentType = duckMap[key];
+                break;
+            }
+        }
+        if (component.componentType === undefined && component.ID !== undefined) {
+            component.componentType = "UIBound";
+        }
+  }    
+  
   function unzipComponent(component, model) {
       if (component) {
-          for (var key in duckMap) {
-              if (component[key] !== undefined) {
-                  component.componentType = duckMap[key];
-                  break;
-              }
-          }
-          if (component.componentType === undefined && component.ID !== undefined) {
-              component.componentType = "UIBound";
-          }
+          renderer.inferComponentType(component);
       }
       if (!component || component.componentType === undefined) {
           var decorators = component.decorators;
@@ -677,27 +686,30 @@ fluid_1_2 = fluid_1_2 || {};
           outDecoratorsImpl(torender, torender.decorators, attrcopy);
       }
         
+      function degradeMessage(torender) {
+          if (torender.componentType === "UIMessage") {
+              // degrade UIMessage to UIBound by resolving the message
+              torender.componentType = "UIBound";
+              if (!renderOptions.messageLocator) {
+                 torender.value = "[No messageLocator is configured in options - please consult documentation on options.messageSource]";
+              }
+              else {
+                 torender.value = renderOptions.messageLocator(torender.messagekey, torender.args);
+              }
+          }
+      }  
+      
         
       function renderComponent(torender) {
         var attrcopy = trc.attrcopy;
         var lumps = trc.uselump.parent.lumps;
         var lumpindex = trc.uselump.lumpindex;
         
+        degradeMessage(torender);
         var componentType = torender.componentType;
         var tagname = trc.uselump.tagname;
         
         outDecorators(torender, attrcopy);
-        
-        if (componentType === "UIMessage") {
-            // degrade UIMessage to UIBound by resolving the message
-            componentType = "UIBound";
-            if (!renderOptions.messageLocator) {
-               torender.value = "[No messageLocator is configured in options - please consult documentation on options.messageSource]";
-            }
-            else {
-               torender.value = renderOptions.messageLocator(torender.messagekey, torender.args);
-            }
-        }
         
         function makeFail(torender, end) {
             fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID + end);
@@ -849,15 +861,21 @@ fluid_1_2 = fluid_1_2 || {};
         else if (componentType === "UILink") {
           var attrname = LINK_ATTRIBUTES[tagname];
           if (attrname) {
-            var target= torender.target.value;
+            if (torender.target.componentType === "UIMessage") {
+              degradeMessage(torender.target);
+            }
+            var target = torender.target.value;
             if (!isValue(target)) {
-              target = attrcopy[attname];
+              target = attrcopy[attrname];
               }
             else {
               target = rewriteURL(trc.uselump.parent, target);
               }
             attrcopy[attrname] = target;
           }
+          if (torender.linktext.componentType === "UIMessage") {
+              degradeMessage(torender.linktext);
+            }
           var value = torender.linktext.value;
           if (!isValue(value)) {
             replaceAttributesOpen();
@@ -1267,6 +1285,8 @@ fluid_1_2 = fluid_1_2 || {};
       return that;
       
   };
+  
+  jQuery.extend(true, fluid.renderer, renderer);
 
   fluid.ComponentReference = function(reference) {
       this.reference = reference;

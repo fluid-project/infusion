@@ -312,8 +312,20 @@ fluid.identity = function() {
         
         fluid.reRender(templates, node, { ID: "message", messagekey: "message3", args: ["CATT", "four", "leg"]}, options);
         expectMessage("Every CATT has four leg(s)");
+        
+        var node2 = $(".UILinkMessage-test");
+        
     });
     
+    renderTests.test("UILinkMessage tests", function() {
+        var node = $(".UILinkMessage-test");
+        
+        var tree = { children: [{ID: "link", linktext: {messagekey: "message1"}, target: {messagekey: "message2"}}]};
+        var options = {messageSource: {type: "data", messages: messageBase}};
+        var templates = fluid.selfRender(node, tree, options);
+        fluid.testUtils.assertNode("Rendered messages", 
+            {nodeText: messageBase.message1, href: messageBase.message2}, $("a", node));
+    });
     
     renderTests.test("Simple UIBound tests", function() {
       var node = $(".FLUID-1696-test");
