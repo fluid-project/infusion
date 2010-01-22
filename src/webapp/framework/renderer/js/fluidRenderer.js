@@ -663,6 +663,9 @@ fluid_1_2 = fluid_1_2 || {};
                   var id = adjustForID(attrcopy, torender, true, finalID);
                   renderOptions.idMap[decorator.key] = id;
               }
+              else {
+                  fluid.log("Unrecognised decorator of type " + type + " found at component of ID " + finalID);
+              }
           }
       }
       
