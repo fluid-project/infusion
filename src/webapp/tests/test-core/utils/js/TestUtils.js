@@ -72,8 +72,11 @@ fluid.testUtils.assertNode = function(message, expected, node) {
            attr = node.tagName.toLowerCase();
            messageExt = " - node name"
         }
-        if (key === "nodeText") {
+        else if (key === "nodeText") {
            attr = jQuery.trim(fluid.dom.getElementText(node));
+        }
+        else if (key === "nodeHTML") {
+           attr = $(node).html();
         }
         var evalue = expected[key];
         var pass = evalue === attr;

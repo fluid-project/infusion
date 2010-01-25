@@ -21,9 +21,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
         fluid.logEnabled = true;
         
         var fluidJSTests = new jqUnit.TestCase("Fluid JS Tests");
+
+        function isOdd(i) {return i % 2 === 1;}
         
         fluidJSTests.test("remove_if", function() {
-            function isOdd(i) {return i % 2 === 1;}
             jqUnit.assertDeepEq("Remove nothing", [2, 4, 6, 8], fluid.remove_if([2, 4, 6, 8], isOdd));
             jqUnit.assertDeepEq("Remove first ", [2, 4, 6, 8], fluid.remove_if([1, 2, 4, 6, 8], isOdd));
             jqUnit.assertDeepEq("Remove last ", [2, 4, 6, 8], fluid.remove_if([2, 4, 6, 8, 9], isOdd));
@@ -31,6 +32,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertDeepEq("Remove last two ", [2, 4, 6, 8], fluid.remove_if([2, 4, 6, 8, 9, 11], isOdd));
             jqUnit.assertDeepEq("Remove all ", [], fluid.remove_if([1, 3, 5, 7], isOdd));
             jqUnit.assertDeepEq("Remove from nothing ", [], fluid.remove_if([], isOdd));    
+        });
+
+        fluidJSTests.test("transform", function() {
+            function addOne(i) {return i + 1;}
+            jqUnit.assertDeepEq("Transform array", [false, true, false, true, false], fluid.transform([0, 1, 2, 3, 4], isOdd));
+            jqUnit.assertDeepEq("Transform hash", {a: false, b: true}, fluid.transform({a: 0, b: 1}, isOdd));
+            jqUnit.assertDeepEq("Transform hash chain", {a: true, b: false}, fluid.transform({a: 0, b: 1}, addOne, isOdd));
         });
 
         fluidJSTests.test("merge", function() {

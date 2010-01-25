@@ -327,6 +327,19 @@ fluid.identity = function() {
             {nodeText: messageBase.message1, href: messageBase.message2}, $("a", node));
     });
     
+    renderTests.test("UIVerbatimMessage tests", function() {
+        var node = $(".UIVerbatimMessage-test");
+        var vmessageBase = {
+            vmessage: "Some <em>HTML</em> text"
+        };
+        
+        var tree = { children: [{ID: "verbatim", markup: {messagekey: "vmessage"}}]};
+        var options = {messageSource: {type: "data", messages: vmessageBase}};
+        var templates = fluid.selfRender(node, tree, options);
+        fluid.testUtils.assertNode("Rendered messages", 
+            {nodeHTML: vmessageBase.vmessage}, $("div", node));
+    });
+    
     renderTests.test("Simple UIBound tests", function() {
       var node = $(".FLUID-1696-test");
       var templates = fluid.selfRender(node, 

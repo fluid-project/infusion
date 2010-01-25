@@ -162,6 +162,9 @@ fluid_1_2 = fluid_1_2 || {};
           upgradeBound(component, "target", model);
           upgradeBound(component, "linktext", model);
       }
+      else if (cType === "UIVerbatim") {
+          upgradeBound(component, "markup", model);
+      }
       
       return component;
   }
@@ -230,7 +233,7 @@ fluid_1_2 = fluid_1_2 || {};
               call += ", ";
             }
           }
-          child.markup = call + ")\n";
+          child.markup = {value: call + ")\n"};
           child.componentType = "UIVerbatim";
           }
         else if (componentType == "UIBound") {
@@ -685,7 +688,15 @@ fluid_1_2 = fluid_1_2 || {};
           }
           outDecoratorsImpl(torender, torender.decorators, attrcopy);
       }
-        
+      
+      function resolveArgs(args) {
+          if (!args) {return args};
+          return fluid.transform(args, function(arg, index) {
+              upgradeBound(args, index, renderOptions.model);
+              return args[index].value;
+          });
+      }
+      
       function degradeMessage(torender) {
           if (torender.componentType === "UIMessage") {
               // degrade UIMessage to UIBound by resolving the message
@@ -694,7 +705,9 @@ fluid_1_2 = fluid_1_2 || {};
                  torender.value = "[No messageLocator is configured in options - please consult documentation on options.messageSource]";
               }
               else {
-                 torender.value = renderOptions.messageLocator(torender.messagekey, torender.args);
+                 upgradeBound(torender, "messagekey", renderOptions.model);
+                 var resArgs = resolveArgs(torender.args);
+                 torender.value = renderOptions.messageLocator(torender.messagekey.value, resArgs);
               }
           }
       }  
@@ -861,9 +874,7 @@ fluid_1_2 = fluid_1_2 || {};
         else if (componentType === "UILink") {
           var attrname = LINK_ATTRIBUTES[tagname];
           if (attrname) {
-            if (torender.target.componentType === "UIMessage") {
-              degradeMessage(torender.target);
-            }
+            degradeMessage(torender.target);
             var target = torender.target.value;
             if (!isValue(target)) {
               target = attrcopy[attrname];
@@ -873,9 +884,7 @@ fluid_1_2 = fluid_1_2 || {};
               }
             attrcopy[attrname] = target;
           }
-          if (torender.linktext.componentType === "UIMessage") {
-              degradeMessage(torender.linktext);
-            }
+          degradeMessage(torender.linktext);
           var value = torender.linktext.value;
           if (!isValue(value)) {
             replaceAttributesOpen();
@@ -886,7 +895,8 @@ fluid_1_2 = fluid_1_2 || {};
         }
         
         else if (torender.markup !== undefined) { // detect UIVerbatim
-          var rendered = torender.markup;
+          degradeMessage(torender.markup);
+          var rendered = torender.markup.value;
           if (rendered === null) {
             // TODO, doesn't quite work due to attr folding cf Java code
               out += fluid.dumpAttributes(attrcopy);

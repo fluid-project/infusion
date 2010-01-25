@@ -224,6 +224,15 @@ var fluid = fluid || fluid_1_2;
         return that;
     };
     
+    /** Determines whether the supplied object can be treated as an array, by 
+     * iterating an index towards its length. The test functions by detecting
+     * a property named "length" which is of type "number", but excluding objects
+     * which are themselves of type "string".
+     */
+    fluid.isArrayable = function(totest) {
+        return typeof(totest) !== "string" && typeof(totest.length) === "number";
+    }
+    
     /**
      * Attaches the user's listeners to a set of events.
      * 
@@ -247,7 +256,7 @@ var fluid = fluid || fluid_1_2;
                 if (typeof(value) === "function") {
                     firer.addListener(value, namespace);
                 }
-                else if (value && typeof value.length === "number") {
+                else if (value && fluid.isArrayable(value)) {
                     for (var i = 0; i < value.length; ++ i) {
                         firer.addListener(value[i], namespace);
                     }
@@ -532,7 +541,7 @@ var fluid = fluid || fluid_1_2;
         if (fluid.isPrimitive(tocopy)) {
             return tocopy;
         }
-        return $.extend(true, typeof(tocopy.length) === "number"? [] : {}, tocopy);
+        return $.extend(true, fluid.isArrayable(tocopy)? [] : {}, tocopy);
     };
     
     /**
@@ -740,7 +749,7 @@ var fluid = fluid || fluid_1_2;
         if (element.nodeType === 9) {
             return "[document: location " + element.location + "]";
         }
-        if (!element.nodeType && typeof element.length === "number") {
+        if (!element.nodeType && fluid.isArrayable(element)) {
             togo = "[";
             for (var i = 0; i < element.length; ++ i) {
                 togo += fluid.dumpEl(element[i]);
@@ -841,9 +850,18 @@ var fluid = fluid || fluid_1_2;
         
     // Functional programming utilities.
     
-    /** Return a list of objects, transformed by one or more functions. Similar to
-     * jQuery.map, only will accept an arbitrary list of transformation functions.
-     * @param list {Array} The initial array of objects to be transformed.
+    function transformInternal(source, togo, key, args) {
+        var transit = source[key];
+            for (var j = 0; j < args.length - 1; ++ j) {
+                transit = args[j + 1](transit, key);
+            }
+        togo[key] = transit; 
+    }
+    
+    /** Return a list or hash of objects, transformed by one or more functions. Similar to
+     * jQuery.map, only will accept an arbitrary list of transformation functions and also
+     * works on non-arrays.
+     * @param list {Array or Object} The initial container of objects to be transformed.
      * @param fn1, fn2, etc. {Function} An arbitrary number of optional further arguments,
      * all of type Function, accepting the signature (object, index), where object is the
      * list member to be transformed, and index is its list index. Each function will be
@@ -852,15 +870,19 @@ var fluid = fluid || fluid_1_2;
      * @return The finally transformed list, where each member has been replaced by the
      * original member acted on by the function or functions.
      */
-    fluid.transform = function (list) {
-        var togo = [];
-        for (var i = 0; i < list.length; ++ i) {
-            var transit = list[i];
-            for (var j = 0; j < arguments.length - 1; ++ j) {
-                transit = arguments[j + 1](transit, i);
+    fluid.transform = function (source) {
+        if (fluid.isArrayable(source)) {
+            var togo = [];
+            for (var i = 0; i < source.length; ++ i) {
+                transformInternal(source, togo, i, arguments);
             }
-            togo[togo.length] = transit;
         }
+        else {
+            var togo = {};
+            for (var key in source) {
+                transformInternal(source, togo, key, arguments);
+            }
+        }  
         return togo;
     };
     
@@ -950,7 +972,8 @@ var fluid = fluid || fluid_1_2;
      * tried in sequence until a key is found, and an array of substitution arguments,
      * into a substituted message string.
      */
-    fluid.messageLocator = function (messageBase) {
+    fluid.messageLocator = function (messageBase, resolveFunc) {
+        resolveFunc = resolveFunc || fluid.formatMessage;
         return function (messagecodes, args) {
             if (typeof(messagecodes) === "string") {
                 messagecodes = [messagecodes];
@@ -961,7 +984,7 @@ var fluid = fluid || fluid_1_2;
                 if (message === undefined) {
                     continue;
                 }
-                return fluid.formatMessage(message, args);
+                return resolveFunc(message, args);
             }
             return "[Message string for key " + messagecodes[0] + " not found]";
         };
