@@ -110,21 +110,6 @@ fluid_1_2 = fluid_1_2 || {};
               }
           }
       
-      function rewriteUrl(url) {
-        // TODO: caution here with subcomponent templates - each may have their own prefix mapping
-          url = fluid.rewriteUrlPrefix(parseOptions, url);
-          if (!parseOptions.rebaseURLs) {
-              return url;
-          }
-          var po = fluid.parseUri(url);
-          if (po.protocol || url.charAt(0) === '/') {
-              return url;
-          }
-          else {
-              return baseURL + url;
-          }
-      }
-      
       function debugLump(lump) {
         // TODO expand this to agree with the Firebug "self-selector" idiom
           return "<" + lump.tagname + ">";
@@ -220,13 +205,14 @@ fluid_1_2 = fluid_1_2 || {};
           }
         for (var attrname in attrs) {
           var attrval = attrs[attrname];
-          if (/href|src|codebase|action/.test(attrname)) {
-            attrval = rewriteUrl(attrval);
-            attrs[attrname] = attrval;
-            }
-            // port of TPI effect of IDRelationRewriter
-          else if (ID === undefined && /for|headers/.test(attrname)) {
-            ID = attrs[fluid.ID_ATTRIBUTE] = "scr=null";
+          if (ID === undefined) {
+            if (/href|src|codebase|action/.test(attrname)) {
+              ID = attrs[fluid.ID_ATTRIBUTE] = "scr=rewrite-url";
+              }
+              // port of TPI effect of IDRelationRewriter
+            else if (ID === undefined && /for|headers/.test(attrname)) {
+              ID = attrs[fluid.ID_ATTRIBUTE] = "scr=null";
+              }
             }
           }
     

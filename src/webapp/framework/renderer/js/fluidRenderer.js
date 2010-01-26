@@ -530,9 +530,19 @@ fluid_1_2 = fluid_1_2 || {};
           return false;
       }
       
-      function rewriteURL(template, URL) {
-          var togo = URL; // TODO: rebasing of "relative URLs" discovered/issued from subcomponent templates
-          return fluid.rewriteUrlPrefix(renderOptions, togo);
+      function rewriteUrl(template, url) {
+        // TODO: caution here with subcomponent templates - each may have their own prefix mapping
+          url = fluid.rewriteUrlPrefix(renderOptions, url);
+          if (!renderOptions.rebaseURLs) {
+              return url;
+          }
+          var po = fluid.parseUri(url);
+          if (po.protocol || url.charAt(0) === '/') {
+              return url;
+          }
+          else {
+              return renderOptions.baseURL + url;
+          }
       }
       
       function dumpHiddenField(/** UIParameter **/ todump) {
@@ -792,29 +802,29 @@ fluid_1_2 = fluid_1_2 || {};
                 renderUnchanged();
             }
             else { // String value
-              var value = parent? 
-                  parent[tagname === "textarea" || tagname === "input" ? "optionlist" : "optionnames"].value[torender.choiceindex] : 
-                    torender.value;
-              if (tagname === "textarea") {
-                if (isPlaceholder(value) && torender.willinput) {
-                  // FORCE a blank value for input components if nothing from
-                  // model, if input was intended.
-                  value = "";
+                var value = parent? 
+                    parent[tagname === "textarea" || tagname === "input" ? "optionlist" : "optionnames"].value[torender.choiceindex] : 
+                      torender.value;
+                if (tagname === "textarea") {
+                    if (isPlaceholder(value) && torender.willinput) {
+                      // FORCE a blank value for input components if nothing from
+                      // model, if input was intended.
+                      value = "";
+                    }
+                  rewriteLeaf(value);
                 }
-                rewriteLeaf(value);
-              }
-              else if (tagname === "input") {
-                if (torender.willinput || isValue(value)) {
-                  attrcopy.value = value;
-                  }
-                rewriteLeaf(null);
+                else if (tagname === "input") {
+                    if (torender.willinput || isValue(value)) {
+                        attrcopy.value = value;
+                    }
+                    rewriteLeaf(null);
                 }
-              else {
-                delete attrcopy.name;
-                rewriteLeafOpen(value);
+                else {
+                    delete attrcopy.name;
+                    rewriteLeafOpen(value);
                 }
-              }
             }
+        }
         else if (componentType === "UISelect") {
           // need to do this first to see whether we need to write out an ID or not
           applyAutoBind(torender, torender.selection.fullID);
@@ -872,50 +882,51 @@ fluid_1_2 = fluid_1_2 || {};
           dumpSelectionBindings(torender);
         }
         else if (componentType === "UILink") {
-          var attrname = LINK_ATTRIBUTES[tagname];
-          if (attrname) {
-            degradeMessage(torender.target);
-            var target = torender.target.value;
-            if (!isValue(target)) {
-              target = attrcopy[attrname];
-              }
+            var attrname = LINK_ATTRIBUTES[tagname];
+            if (attrname) {
+                degradeMessage(torender.target);
+                var target = torender.target.value;
+                if (!isValue(target)) {
+                    target = attrcopy[attrname];
+                }
+                target = rewriteUrl(trc.uselump.parent, target);
+                attrcopy[attrname] = target;
+            }
+            var value;
+            if (torender.linktext) { 
+                degradeMessage(torender.linktext);
+                var value = torender.linktext.value;
+            }
+            if (!isValue(value)) {
+                replaceAttributesOpen();
+            }
             else {
-              target = rewriteURL(trc.uselump.parent, target);
-              }
-            attrcopy[attrname] = target;
-          }
-          degradeMessage(torender.linktext);
-          var value = torender.linktext.value;
-          if (!isValue(value)) {
-            replaceAttributesOpen();
-          }
-          else {
-            rewriteLeaf(value);
-          }
+                rewriteLeaf(value);
+            }
         }
         
         else if (torender.markup !== undefined) { // detect UIVerbatim
-          degradeMessage(torender.markup);
-          var rendered = torender.markup.value;
-          if (rendered === null) {
-            // TODO, doesn't quite work due to attr folding cf Java code
-              out += fluid.dumpAttributes(attrcopy);
-              out +=">";
-              renderUnchanged(); 
-          }
-          else {
-            if (!trc.iselide) {
-              out += fluid.dumpAttributes(attrcopy);
-              out += ">";
+            degradeMessage(torender.markup);
+            var rendered = torender.markup.value;
+            if (rendered === null) {
+              // TODO, doesn't quite work due to attr folding cf Java code
+                out += fluid.dumpAttributes(attrcopy);
+                out +=">";
+                renderUnchanged(); 
             }
-            out += rendered;
-            closeTag();
-            }    
-          }
-          else {
-            
-          }
+            else {
+                if (!trc.iselide) {
+                    out += fluid.dumpAttributes(attrcopy);
+                    out += ">";
+                }
+                out += rendered;
+                closeTag();
+                }
+            }
+        else {
+              
         }
+      }
       
       function adjustForID(attrcopy, component, late, forceID) {
           if (!late) {
@@ -1009,14 +1020,17 @@ fluid_1_2 = fluid_1_2 || {};
                 if (scrname === "ignore") {
                     nextpos = trc.close.lumpindex + 1;
                 }
+                if (scrname === "rewrite-url") {
+                    torendero = {componentType: "UILink", target: {}};
+                }
                 else {
-                   openTag();
-                   replaceAttributesOpen();
-                   nextpos = trc.endopen.lumpindex;
+                    openTag();
+                    replaceAttributesOpen();
+                    nextpos = trc.endopen.lumpindex;
                 }
             }
         }
-        else {
+        if (torendero !== null) {
           // else there IS a component and we are going to render it. First make
           // sure we render any preamble.
     
