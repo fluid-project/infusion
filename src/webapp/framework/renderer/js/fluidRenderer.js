@@ -531,8 +531,12 @@ fluid_1_2 = fluid_1_2 || {};
       }
       
       function rewriteUrl(template, url) {
-        // TODO: caution here with subcomponent templates - each may have their own prefix mapping
-          url = fluid.rewriteUrlPrefix(renderOptions, url);
+          if (renderOptions.urlRewriter) {
+              var rewritten = renderOptions.urlRewriter(url);
+              if (rewritten) {
+                  return rewritten;
+              }
+          }
           if (!renderOptions.rebaseURLs) {
               return url;
           }
