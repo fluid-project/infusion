@@ -563,6 +563,16 @@ var fluid = fluid || fluid_1_2;
         }
     };
     
+    /** Registers a new global function at a given path (currently assumes that
+     * it lies within the fluid namespace)
+     */
+    
+    fluid.registerGlobalFunction = function (functionPath, func, env) {
+        if (!env) {
+            env = fluid.environment;
+        }
+        fluid.model.setBeanValue({}, functionPath, func, env);
+    };
     
     // The Model Events system.
     
@@ -657,7 +667,7 @@ var fluid = fluid || fluid_1_2;
         return prefix === ""? suffix : prefix + "." + suffix;
     };
 
-    fluid.model.getPenultimate = function (root, EL, environment) {
+    fluid.model.getPenultimate = function (root, EL, environment, create) {
         var segs = fluid.model.parseEL(EL);
         for (var i = 0; i < segs.length - 1; ++i) {
             if (!root) {
@@ -669,6 +679,9 @@ var fluid = fluid || fluid_1_2;
                 environment = null;
             }
             else {
+                if (root[segment] === undefined && create) {
+                    root[segment] = {};
+                    }
                 root = root[segment];
             }
         }
@@ -676,7 +689,7 @@ var fluid = fluid || fluid_1_2;
     };
     
     fluid.model.setBeanValue = function (root, EL, newValue, environment) {
-        var pen = fluid.model.getPenultimate(root, EL, environment);
+        var pen = fluid.model.getPenultimate(root, EL, environment, true);
         pen.root[pen.last] = newValue;
     };
     

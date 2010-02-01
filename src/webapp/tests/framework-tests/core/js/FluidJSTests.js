@@ -375,5 +375,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                
         });
         
+        fluidJSTests.test("set/getBeanValue", function() {
+            var model = {};
+            jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path1.nonexistent"));
+            fluid.model.setBeanValue(model, "path2.past", "attach");
+            jqUnit.assertDeepEq("Set blank value", {path2: {past: "attach"}}, model);
+            fluid.registerGlobalFunction("fluid.newFunc", function() { return 2 ;});
+            jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
+        });
+        
     });
 })(jQuery);
