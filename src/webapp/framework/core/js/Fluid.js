@@ -21,6 +21,10 @@ var fluid = fluid || fluid_1_2;
     
     fluid.version = "Infusion 1.2";
     
+    fluid.environment = {
+        fluid: fluid
+    };
+    
     /**
      * Causes an error message to be logged to the console and a real runtime error to be thrown.
      * 
@@ -653,15 +657,27 @@ var fluid = fluid || fluid_1_2;
         return prefix === ""? suffix : prefix + "." + suffix;
     };
 
-    fluid.model.setBeanValue = function (root, EL, newValue) {
+    fluid.model.getPenultimate = function (root, EL, environment) {
         var segs = fluid.model.parseEL(EL);
-        for (var i = 0; i < segs.length - 1; i += 1) {
-            if (!root[segs[i]]) {
-                root[segs[i]] = {};
+        for (var i = 0; i < segs.length - 1; ++i) {
+            if (!root) {
+                return root;
             }
-            root = root[segs[i]];
+            var segment = segs[i];
+            if (environment && environment[segment]) {
+                root = environment[segment];
+                environment = null;
+            }
+            else {
+                root = root[segment];
+            }
         }
-        root[segs[segs.length - 1]] = newValue;
+        return {root: root, last: segs[segs.length - 1]};
+    };
+    
+    fluid.model.setBeanValue = function (root, EL, newValue, environment) {
+        var pen = fluid.model.getPenultimate(root, EL, environment);
+        pen.root[pen.last] = newValue;
     };
     
     /** Evaluates an EL expression by fetching a dot-separated list of members
@@ -677,21 +693,8 @@ var fluid = fluid || fluid_1_2;
         if (EL === "" || EL === null || EL === undefined) {
             return root;
         }
-        var segs = fluid.model.parseEL(EL);
-        for (var i = 0; i < segs.length; ++i) {
-            if (!root) {
-                return root;
-            }
-            var segment = segs[i];
-            if (environment && environment[segment]) {
-                root = environment[segment];
-                environment = null;
-            }
-            else {
-                root = root[segment];
-            }
-        }
-        return root;
+        var pen = fluid.model.getPenultimate(root, EL, environment);
+        return pen.root? pen.root[pen.last] : pen.root;
     };
     
     
