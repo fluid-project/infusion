@@ -463,7 +463,7 @@ var fluid = fluid || fluid_1_2;
     /** Returns true if the argument is a primitive type **/
     fluid.isPrimitive = function (value) {
         var valueType = typeof(value);
-        return !value || valueType === "string" || valueType === "boolean" || valueType === "number";
+        return !value || valueType === "string" || valueType === "boolean" || valueType === "number" || valueType === "function";
     };
         
     function mergeImpl(policy, basePath, target, source) {
@@ -539,13 +539,24 @@ var fluid = fluid || fluid_1_2;
         return target;     
     };
     
+    /** Return an empty container as the same type as the argument (either an
+     * array or hash */
+    fluid.freshContainer = function(tocopy) {
+        return fluid.isArrayable(tocopy)? [] : {};   
+    };
+    
     /** Performs a deep copy (clone) of its argument **/
     
     fluid.copy = function (tocopy) {
         if (fluid.isPrimitive(tocopy)) {
             return tocopy;
         }
-        return $.extend(true, fluid.isArrayable(tocopy)? [] : {}, tocopy);
+        return $.extend(true, fluid.freshContainer(tocopy), tocopy);
+    };
+    
+    fluid.getGlobalValue = function(path, env) {
+        env = env || fluid.environment;
+        return fluid.model.getBeanValue(window, path, env);
     };
     
     /**
@@ -555,7 +566,7 @@ var fluid = fluid || fluid_1_2;
      * @param {Object} environment - (optional) The object to scope the functionPath to  (typically the framework root for version control)
      */
     fluid.invokeGlobalFunction = function (functionPath, args, environment) {
-        var func = fluid.model.getBeanValue(window, functionPath, environment);
+        var func = fluid.getGlobalValue(functionPath, environment);
         if (!func) {
             fluid.fail("Error invoking global function: " + functionPath + " could not be located");
         } else {
@@ -568,9 +579,7 @@ var fluid = fluid || fluid_1_2;
      */
     
     fluid.registerGlobalFunction = function (functionPath, func, env) {
-        if (!env) {
-            env = fluid.environment;
-        }
+        env = env || fluid.environment;
         fluid.model.setBeanValue({}, functionPath, func, env);
     };
     
@@ -887,14 +896,13 @@ var fluid = fluid || fluid_1_2;
      * original member acted on by the function or functions.
      */
     fluid.transform = function (source) {
+        var togo = fluid.freshContainer(source);
         if (fluid.isArrayable(source)) {
-            var togo = [];
             for (var i = 0; i < source.length; ++ i) {
                 transformInternal(source, togo, i, arguments);
             }
         }
         else {
-            var togo = {};
             for (var key in source) {
                 transformInternal(source, togo, key, arguments);
             }
