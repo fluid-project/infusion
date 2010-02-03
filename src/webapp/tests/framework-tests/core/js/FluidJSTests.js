@@ -376,10 +376,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         fluidJSTests.test("set/getBeanValue", function() {
-            var model = {};
+            var model = {"path3": "thing"};
+            jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path3.nonexistent"));
+            jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path3.nonexistent.non3"));
             jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path1.nonexistent"));
+            jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path1"));
             fluid.model.setBeanValue(model, "path2.past", "attach");
-            jqUnit.assertDeepEq("Set blank value", {path2: {past: "attach"}}, model);
+            jqUnit.assertDeepEq("Set blank value", {path2: {past: "attach"}, path3: "thing"}, model);
             fluid.registerGlobalFunction("fluid.newFunc", function() { return 2 ;});
             jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
         });
