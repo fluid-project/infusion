@@ -719,6 +719,14 @@ var fluid = fluid || fluid_1_2;
         return pen.root? pen.root[pen.last] : pen.root;
     };
     
+    fluid.renderTimestamp = function (date) {
+        var zeropad = function (num, width) {
+             if (!width) width = 2;
+             var numstr = (num == undefined? "" : num.toString());
+             return "00000".substring(5 - width + numstr.length) + numstr;
+             }
+        return zeropad(date.getHours()) + ":" + zeropad(date.getMinutes()) + ":" + zeropad(date.getSeconds()) + "." + zeropad(date.getMilliseconds(), 3);
+    };
     
     // Logging
     var logging;
@@ -738,7 +746,7 @@ var fluid = fluid || fluid_1_2;
      */
     fluid.log = function (str) {
         if (logging) {
-            str = new Date().toTimeString() + ":  " + str;
+            str = fluid.renderTimestamp(new Date()) + ":  " + str;
             if (typeof(console) !== "undefined") {
                 if (console.debug) {
                     console.debug(str);
