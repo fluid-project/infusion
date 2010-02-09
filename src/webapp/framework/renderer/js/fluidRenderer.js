@@ -1150,6 +1150,9 @@ fluid_1_2 = fluid_1_2 || {};
               for (var i = 0; i < children.length; ++ i) {
                 var child = children[i];
                 if (child.children) { // it is a branch 
+                  if (debugMode) {
+                      rendered[child.fullID] = true;
+                  }
                   var targetlump = branchmap[child.fullID];
                   if (targetlump) {
                       if (debugMode) {
@@ -1222,10 +1225,10 @@ fluid_1_2 = fluid_1_2 || {};
           else {
             var component;
             if (id) {
-                if (debugMode) {
-                    rendered[id] = true;
+                component = fetchComponent(basecontainer, id, lump);
+                if (debugMode && component) {
+                    rendered[component.fullID] = true;
                 }
-              component = fetchComponent(basecontainer, id, lump);
             }
             if (component && component.children !== undefined) {
               renderContainer(component);
@@ -1243,8 +1246,8 @@ fluid_1_2 = fluid_1_2 || {};
           var children = basecontainer.children;
           for (var key = 0; key < children.length; ++key) {
             var child = children[key];
-            if (!(child.ID.indexOf(':') !== -1) && !rendered[child.ID]) {
-                renderDebugMessage("Leaf child component "
+            if (!rendered[child.fullID]) {
+                renderDebugMessage("Component "
                   + child.componentType + " with full ID "
                   + child.fullID + " could not be found within template "
                   + fluid.debugLump(baselump));
