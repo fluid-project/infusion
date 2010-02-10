@@ -1472,6 +1472,27 @@ fluid_1_2 = fluid_1_2 || {};
         return findNodeValue(node);
       }
   };
+  /** A slightly generalised version of fluid.selfRender that does not assume that the
+   * markup used to source the template is within the target node.
+   * @param source Either a structure {node: node, armouring: armourstyle} or a string
+   * holding a literal template
+   * @param target The node to receive the rendered markup
+   * @param tree, options, return as for fluid.selfRender
+   */
+  fluid.render = function(source, target, tree, options) {
+      options = options || {};
+      var template = source;
+      if (typeof(source) === "object") {
+          template = fluid.extractTemplate(fluid.unwrap(source.node), source.armouring);
+      }
+      target = fluid.unwrap(target);
+      var resourceSpec = {base: {resourceText: template, 
+                          href: ".", resourceKey: ".", cutpoints: options.cutpoints}
+                          };
+      var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
+      return fluid.reRender(templates, target, tree, options);    
+  };
+  
   /** A simple driver for single node self-templating. Treats the markup for a
    * node as a template, parses it into a template structure, renders it using
    * the supplied component tree and options, then replaces the markup in the 
@@ -1485,14 +1506,9 @@ fluid_1_2 = fluid_1_2 || {};
    * @return A templates structure, suitable for a further call to fluid.reRender or
    * fluid.renderTemplates.
    */  
-  fluid.selfRender = function(node, tree, options) {
-      options = options || {};
-      node = fluid.unwrap(node);
-      var resourceSpec = {base: {resourceText: fluid.extractTemplate(node, options.armouring), 
-                          href: ".", resourceKey: ".", cutpoints: options.cutpoints}
-                          };
-      var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
-      return fluid.reRender(templates, node, tree, options);
-    };
+   fluid.selfRender = function(node, tree, options) {
+       options = options || {};
+       return fluid.render({node: node, armouring: options.armouring}, node, tree, options);
+   };
 
 })(jQuery, fluid_1_2);
