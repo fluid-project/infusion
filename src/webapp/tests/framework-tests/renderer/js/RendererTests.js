@@ -830,16 +830,43 @@ fluid.identity = function() {
         jqUnit.assertDeepEq("Idempotent transit", args, result);
     });
     
-    renderTests.test("Blank switching and blind textarea support (FLUID-3224)", function() {
-        var node = $(".FLUID-3224-test");
-        var model = {};
-        var tree = {children: [{ID: "input", valuebinding: "nonexistent.empty"}, {ID: "switch"}]};
+    function renderManually(node, tree, options) {
         var resourceSpec = {base: {resourceText: fluid.extractTemplate(node[0]), 
                     href: ".", resourceKey: "."}
                     };
         var templates = fluid.parseTemplates(resourceSpec, ["base"]);
-        var renderer = fluid.renderer(templates, tree, {model: model});
+        var renderer = fluid.renderer(templates, tree, options);
         var rendered = renderer.renderTemplates();
+        return rendered;
+    }
+    
+    renderTests.test("Empty tag corruption test (FLUID-3493)", function() {
+        var node = $(".FLUID-3493-test");
+        var tree = {children: [{ID: "cell:", 
+            children: [{ID: "payload-1", value: "Thing 1"},{ID: "payload-2", value: "Thing 2"}]},
+            {ID: "cell:", 
+            children: [{ID: "payload-1", value: "Thing 2"},{ID: "payload-2", value: "Thing 3"}]}
+            ]};
+          fluid.selfRender(node, tree)
+        function assertCount(sel, count) {
+            var rows = $(sel, node);
+            jqUnit.assertEquals("Render count " + count + " for " + sel, count, rows.length);
+        }
+ 
+//        var rendered = renderManually(node, tree, {});
+        assertCount("div.cell", 2);
+        assertCount("div.preamble", 2);
+        assertCount("br.middle", 2);
+        assertCount("div.end", 2);
+    });
+    
+    renderTests.test("Blank switching and blind textarea support (FLUID-3224)", function() {
+        var node = $(".FLUID-3224-test");
+        var model = {};
+        var tree = {children: [{ID: "input", valuebinding: "nonexistent.empty"}, {ID: "switch"}]};
+        var rendered = renderManually(node, tree, {model: model});
+   // These lines commented out since the test for an unclosed textarea is not completely safe
+   // due to possible corruption or "correction" through passage through the DOM
    //     fluid.selfRender(node, tree, {model: model, autoBind: true});
    //     var rendered = node[0].innerHTML;
         jqUnit.assertTrue("Closed textarea is expected", rendered.indexOf("</textarea>") >= 0);

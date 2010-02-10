@@ -332,9 +332,10 @@ fluid_1_2 = fluid_1_2 || {};
         }
       }
     processDefaultTag();
-    if (tagstack.length !== 1) {
-        fluid.fail("Error parsing template - unclosed tag(s) of depth " + (tagstack.length - 1) + 
-           ": " + fluid.transform(tagstack.splice(0, 1), function(el) {return "<" + el.tagname + ">";}).join(", "));
+    var excess = tagstack.length - 1; 
+    if (excess) {
+        fluid.fail("Error parsing template - unclosed tag(s) of depth " + (excess) + 
+           ": " + fluid.transform(tagstack.splice(1, excess), function(lump) {return debugLump(lump);}).join(", "));
     }
     return t;
     };

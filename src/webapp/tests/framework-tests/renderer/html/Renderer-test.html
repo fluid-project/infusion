@@ -165,7 +165,7 @@
       <input rsf:id="checkbox" class="checkbox" type="checkbox" />
     </div>
   </form>
-  
+
   <div class="FLUID-2596-test">
   <!-- 
       <table>
@@ -224,6 +224,7 @@
       </div>
   </div>
   
+  
   <div class="nestedDataBinding">
       <div class="nestLevelOne">
           <div class="nestLevelTwo">
@@ -233,6 +234,23 @@
               </div>
           </div>
       </div>
+  </div>
+</div>
+
+<div id="dangerousTests">
+  <!-- This markup MUST NOT be placed inline in the main document else it will trigger an
+  endless memory-consuming loop as jqUnit fails replace it correctly in the document on teardown -->
+  
+  <div class="FLUID-3493-test">
+   
+      <div rsf:id="cell:" class="cell">
+          <div class="preamble"/>
+          <div rsf:id="payload-1">Some things</div>
+          <br class="middle" />
+          <div rsf:id="payload-2">Some other things</div>
+          <div class="end"/>
+      </div>
+   
   </div>
 </div>
 
