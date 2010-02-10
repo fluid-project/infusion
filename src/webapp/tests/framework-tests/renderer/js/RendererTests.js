@@ -336,8 +336,12 @@ fluid.identity = function() {
         var tree = { children: [{ID: "verbatim", markup: {messagekey: "vmessage"}}]};
         var options = {messageSource: {type: "data", messages: vmessageBase}};
         var templates = fluid.selfRender(node, tree, options);
+        
+        var node2 = $(".UIVerbatimMessage-dumpery");
+        node2.html(vmessageBase.vmessage);
+        
         fluid.testUtils.assertNode("Rendered messages", 
-            {nodeHTML: vmessageBase.vmessage}, $("div", node));
+            {nodeHTML: node2.html()}, $("div", node));
     });
     
     renderTests.test("Simple UIBound tests", function() {

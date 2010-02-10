@@ -332,6 +332,10 @@ fluid_1_2 = fluid_1_2 || {};
         }
       }
     processDefaultTag();
+    if (tagstack.length !== 1) {
+        fluid.fail("Error parsing template - unclosed tag(s) of depth " + (tagstack.length - 1) + 
+           ": " + fluid.transform(tagstack.splice(0, 1), function(el) {return "<" + el.tagname + ">";}).join(", "));
+    }
     return t;
     };
   
@@ -345,18 +349,6 @@ fluid_1_2 = fluid_1_2 || {};
   
   // Public definitions begin here
   
-    fluid.rewriteUrlPrefix = function (options, URL) {
-        var pre = options.rewriteUrlPrefixes; 
-        if (pre) {
-            for (var i = 0; i < pre.length; ++ i) {
-                if (URL.indexOf(pre[i].source) === 0) {
-                    return pre[i].target + URL.substring(pre[i].source.length);
-                }
-            }
-        }
-        return URL;
-    };
-       
   /* parseUri 1.2; MIT License
    By Steven Levithan <http://stevenlevithan.com> 
    http://blog.stevenlevithan.com/archives/parseuri
