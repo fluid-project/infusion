@@ -241,6 +241,17 @@ fluid_1_2 = fluid_1_2 || {};
         }
     };
   
+    fluid.model.bindRequestChange = function(that) {
+        that.requestChange = function(path, value, type) {
+            var changeRequest = {
+                path: path,
+                value: value,
+                type: type
+            };
+        that.fireChangeRequest(changeRequest);
+        }
+    };
+  
     fluid.makeChangeApplier = function(model) {
         var baseEvents = {
             guards: fluid.event.getEventFirer(false, true),
@@ -283,15 +294,7 @@ fluid_1_2 = fluid_1_2 || {};
             fluid.model.applyChangeRequest(model, changeRequest);
             baseEvents.modelChanged.fire(model, oldModel, changeRequest);
         };
-
-        that.requestChange = function(path, value, type) {
-            var changeRequest = {
-                path: path,
-                value: value,
-                type: type
-            };
-            that.fireChangeRequest(changeRequest);
-        };
+        fluid.model.bindRequestChange(that);
         
         return that;
     };
