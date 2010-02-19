@@ -303,7 +303,7 @@ fluid.identity = function() {
             fluid.testUtils.assertNode("Rendered message", {nodeText: message}, messageNode);
         }
         var tree = { ID: "message", messagekey: "message1"};
-        var options = {messageSource: {type: "data", messages: messageBase}};
+        var options = {messageSource: {type: "data", messages: messageBase, resolveFunc: fluid.formatMessage}};
         var templates = fluid.selfRender(node, tree, options);
         expectMessage(messageBase.message1);
         

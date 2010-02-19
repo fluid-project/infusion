@@ -96,6 +96,11 @@ var fluid = fluid || fluid_1_2;
         }
     };
     
+    /** A basic utility that returns its argument unchanged */
+    
+    fluid.identity = function(arg) {
+        return arg;
+    }
     
     // Framework and instantiation functions.
     
@@ -125,6 +130,10 @@ var fluid = fluid || fluid_1_2;
         
         return container;
     };
+    
+    // stubs for two functions in FluidDebugging.js
+    fluid.dumpEl = fluid.identity;
+    fluid.renderTimestamp = fluid.identity;
     
     /**
      * Retreives and stores a component's default settings centrally.
@@ -719,15 +728,6 @@ var fluid = fluid || fluid_1_2;
         return pen.root? pen.root[pen.last] : pen.root;
     };
     
-    fluid.renderTimestamp = function (date) {
-        var zeropad = function (num, width) {
-             if (!width) width = 2;
-             var numstr = (num == undefined? "" : num.toString());
-             return "00000".substring(5 - width + numstr.length) + numstr;
-             }
-        return zeropad(date.getHours()) + ":" + zeropad(date.getMinutes()) + ":" + zeropad(date.getSeconds()) + "." + zeropad(date.getMilliseconds(), 3);
-    };
-    
     // Logging
     var logging;
     /** method to allow user to enable logging (off by default) */
@@ -761,46 +761,6 @@ var fluid = fluid || fluid_1_2;
                 opera.postError(str);
             }
         }
-    };
-    
-    /** 
-     * Dumps a DOM element into a readily recognisable form for debugging - produces a
-     * "semi-selector" summarising its tag name, class and id, whichever are set.
-     * 
-     * @param {jQueryable} element The element to be dumped
-     * @return A string representing the element.
-     */
-    fluid.dumpEl = function (element) {
-        var togo;
-        
-        if (!element) {
-            return "null";
-        }
-        if (element.nodeType === 3 || element.nodeType === 8) {
-            return "[data: " + element.data + "]";
-        } 
-        if (element.nodeType === 9) {
-            return "[document: location " + element.location + "]";
-        }
-        if (!element.nodeType && fluid.isArrayable(element)) {
-            togo = "[";
-            for (var i = 0; i < element.length; ++ i) {
-                togo += fluid.dumpEl(element[i]);
-                if (i < element.length - 1) {
-                    togo += ", ";
-                }
-            }
-            return togo + "]";
-        }
-        element = $(element);
-        togo = element.get(0).tagName;
-        if (element.attr("id")) {
-            togo += "#" + element.attr("id");
-        }
-        if (element.attr("class")) {
-            togo += "." + element.attr("class");
-        }
-        return togo;
     };
 
     // DOM Utilities.
@@ -974,53 +934,7 @@ var fluid = fluid || fluid_1_2;
         }
         return list;
     };
-    
-    /** 
-     * Expand a message string with respect to a set of arguments, following a basic
-     * subset of the Java MessageFormat rules. 
-     * http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html
-     * 
-     * The message string is expected to contain replacement specifications such
-     * as {0}, {1}, {2}, etc.
-     * @param messageString {String} The message key to be expanded
-     * @param args {String/Array of String} An array of arguments to be substituted into the message.
-     * @return The expanded message string. 
-     */
-    fluid.formatMessage = function (messageString, args) {
-        if (!args) {
-            return messageString;
-        } 
-        if (typeof(args) === "string") {
-            args = [args];
-        }
-        for (var i = 0; i < args.length; ++ i) {
-            messageString = messageString.replace("{" + i + "}", args[i]);
-        }
-        return messageString;
-    };
-    
-    /** Converts a data structure consisting of a mapping of keys to message strings,
-     * into a "messageLocator" function which maps an array of message codes, to be 
-     * tried in sequence until a key is found, and an array of substitution arguments,
-     * into a substituted message string.
-     */
-    fluid.messageLocator = function (messageBase, resolveFunc) {
-        resolveFunc = resolveFunc || fluid.formatMessage;
-        return function (messagecodes, args) {
-            if (typeof(messagecodes) === "string") {
-                messagecodes = [messagecodes];
-            }
-            for (var i = 0; i < messagecodes.length; ++ i) {
-                var code = messagecodes[i];
-                var message = messageBase[code];
-                if (message === undefined) {
-                    continue;
-                }
-                return resolveFunc(message, args);
-            }
-            return "[Message string for key " + messagecodes[0] + " not found]";
-        };
-    };
+
     
     // Other useful helpers.
     
@@ -1036,10 +950,8 @@ var fluid = fluid || fluid_1_2;
     fluid.stringTemplate = function (template, values) {
         var newString = template;
         for (var key in values) {
-            if (values.hasOwnProperty(key)) {
-                var searchStr = "%" + key;
-                newString = newString.replace(searchStr, values[key]);
-            }
+            var searchStr = "%" + key;
+            newString = newString.replace(searchStr, values[key]);
         }
         return newString;
     };

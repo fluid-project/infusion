@@ -540,8 +540,8 @@ fluid_1_2 = fluid_1_2 || {};
           if (!renderOptions.rebaseURLs) {
               return url;
           }
-          var po = fluid.parseUri(url);
-          if (po.protocol || url.charAt(0) === '/') {
+          var protpos = url.indexOf(":/");
+          if (url.charAt(0) === '/' || protpos !== -1 && protpos < 7) {
               return url;
           }
           else {
@@ -1024,7 +1024,7 @@ fluid_1_2 = fluid_1_2 || {};
                 if (scrname === "ignore") {
                     nextpos = trc.close.lumpindex + 1;
                 }
-                if (scrname === "rewrite-url") {
+                else if (scrname === "rewrite-url") {
                     torendero = {componentType: "UILink", target: {}};
                 }
                 else {
@@ -1355,160 +1355,184 @@ fluid_1_2 = fluid_1_2 || {};
            });
     };
   
-  fluid.resolveMessageSource = function (messageSource) {
-      if (messageSource.type === "data") {
-          if (messageSource.url === undefined) {
-              return fluid.messageLocator(messageSource.messages);
-          }
-          else {
-            // TODO: fetch via AJAX, and convert format if necessary
-          }
-      }
-  };
-   
-  fluid.makeBranches = function() {
-      var firstBranch;
-      var thisBranch;
-      for (var i = 0; i < arguments.length; ++ i) {
-          var thisarg = arguments[i];
-          var nextBranch;
-          if (typeof(thisarg) === "string") {
-              nextBranch = {ID: thisarg}; 
-              }
-          else if (thisarg instanceof Array) {
-              nextBranch = {ID: thisarg[0], jointID: thisarg[1]};
-              }
-          else {
-              $.extend(true, thisBranch, thisarg);
-              nextBranch = thisBranch;
-              } 
-          if (thisBranch && nextBranch !== thisBranch) {
-              if (!thisBranch.children) {
-                  thisBranch.children = [];
-              }
-              thisBranch.children[thisBranch.children.length] = nextBranch;
-          }
-          thisBranch = nextBranch;
-          if (!firstBranch) {
-             firstBranch = nextBranch;
-          }
-      }
+      
+    /** Converts a data structure consisting of a mapping of keys to message strings,
+     * into a "messageLocator" function which maps an array of message codes, to be 
+     * tried in sequence until a key is found, and an array of substitution arguments,
+     * into a substituted message string.
+     */
+    fluid.messageLocator = function (messageBase, resolveFunc) {
+        resolveFunc = resolveFunc || fluid.stringTemplate;
+        return function (messagecodes, args) {
+            if (typeof(messagecodes) === "string") {
+                messagecodes = [messagecodes];
+            }
+            for (var i = 0; i < messagecodes.length; ++ i) {
+                var code = messagecodes[i];
+                var message = messageBase[code];
+                if (message === undefined) {
+                    continue;
+                }
+                return resolveFunc(message, args);
+            }
+            return "[Message string for key " + messagecodes[0] + " not found]";
+        };
+    };
+  
+    fluid.resolveMessageSource = function (messageSource) {
+        if (messageSource.type === "data") {
+            if (messageSource.url === undefined) {
+                return fluid.messageLocator(messageSource.messages, messageSource.resolveFunc);
+            }
+            else {
+              // TODO: fetch via AJAX, and convert format if necessary
+            }
+        }
+    };
+     
+    fluid.makeBranches = function() {
+        var firstBranch;
+        var thisBranch;
+        for (var i = 0; i < arguments.length; ++ i) {
+            var thisarg = arguments[i];
+            var nextBranch;
+            if (typeof(thisarg) === "string") {
+                nextBranch = {ID: thisarg}; 
+                }
+            else if (thisarg instanceof Array) {
+                nextBranch = {ID: thisarg[0], jointID: thisarg[1]};
+                }
+            else {
+                $.extend(true, thisBranch, thisarg);
+                nextBranch = thisBranch;
+                } 
+            if (thisBranch && nextBranch !== thisBranch) {
+                if (!thisBranch.children) {
+                    thisBranch.children = [];
+                }
+                thisBranch.children[thisBranch.children.length] = nextBranch;
+            }
+            thisBranch = nextBranch;
+            if (!firstBranch) {
+               firstBranch = nextBranch;
+            }
+        }
+      
+      return firstBranch;
+    };
     
-    return firstBranch;
-  };
+    fluid.renderTemplates = function(templates, tree, options, fossilsIn) {
+        var renderer = fluid.renderer(templates, tree, options, fossilsIn);
+        var rendered = renderer.renderTemplates();
+        return rendered;
+    };
+    /** A driver to render and bind an already parsed set of templates onto
+     * a node. See documentation for fluid.selfRender.
+     * @param templates A parsed template set, as returned from fluid.selfRender or 
+     * fluid.parseTemplates.
+     */
   
-  fluid.renderTemplates = function(templates, tree, options, fossilsIn) {
-      var renderer = fluid.renderer(templates, tree, options, fossilsIn);
-      var rendered = renderer.renderTemplates();
-      return rendered;
-  };
-  /** A driver to render and bind an already parsed set of templates onto
-   * a node. See documentation for fluid.selfRender.
-   * @param templates A parsed template set, as returned from fluid.selfRender or 
-   * fluid.parseTemplates.
-   */
-
-  fluid.reRender = function(templates, node, tree, options) {
-      options = options || {};
-            // Empty the node first, to head off any potential id collisions when rendering
-      node = fluid.unwrap(node);
-      var lastFocusedElement = fluid.getLastFocusedElement? fluid.getLastFocusedElement() : null;
-      var lastId;
-      if (lastFocusedElement && fluid.dom.isContainer(node, lastFocusedElement)) {
-          lastId = lastFocusedElement.id;
-      }
-      if ($.browser.msie) {
-          $(node).empty(); //- this operation is very slow.
-      }
-      else {
-          node.innerHTML = "";
-      }
-      var fossils = {};
-      var renderer = fluid.renderer(templates, tree, options, fossils);
-      var rendered = renderer.renderTemplates();
-      if (options.renderRaw) {
-          rendered = fluid.XMLEncode(rendered);
-          rendered = rendered.replace(/\n/g, "<br/>");
-          }
-      if (options.model) {
-          fluid.bindFossils(node, options.model, fossils);
-          }
-      if ($.browser.msie) {
-        $(node).html(rendered);
-      }
-      else {
-        node.innerHTML = rendered;
-      }
-      renderer.processDecoratorQueue();
-      if (lastId) {
-          var element = fluid.byId(lastId);
-          if (element) {
-              $(element).focus();
-          }      
-      }
-        
-      return templates;
-  };
-
-  function findNodeValue(rootNode) {
-      var node = fluid.dom.iterateDom(rootNode, function(node) {
-        // NB, in Firefox at least, comment and cdata nodes cannot be distinguished!
-          return node.nodeType === 8 || node.nodeType === 4? "stop" : null;
-          }, true);
-      var value = node.nodeValue;
-      if (value.indexOf("[CDATA[") === 0) {
-          return value.substring(6, value.length - 2);
-      }
-      else {
-          return value;
-      }
-  }
-
-  fluid.extractTemplate = function(node, armouring) {
-      if (!armouring) {
-          return node.innerHTML;
-      }
-      else {
-        return findNodeValue(node);
-      }
-  };
-  /** A slightly generalised version of fluid.selfRender that does not assume that the
-   * markup used to source the template is within the target node.
-   * @param source Either a structure {node: node, armouring: armourstyle} or a string
-   * holding a literal template
-   * @param target The node to receive the rendered markup
-   * @param tree, options, return as for fluid.selfRender
-   */
-  fluid.render = function(source, target, tree, options) {
-      options = options || {};
-      var template = source;
-      if (typeof(source) === "object") {
-          template = fluid.extractTemplate(fluid.unwrap(source.node), source.armouring);
-      }
-      target = fluid.unwrap(target);
-      var resourceSpec = {base: {resourceText: template, 
-                          href: ".", resourceKey: ".", cutpoints: options.cutpoints}
-                          };
-      var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
-      return fluid.reRender(templates, target, tree, options);    
-  };
+    fluid.reRender = function(templates, node, tree, options) {
+        options = options || {};
+              // Empty the node first, to head off any potential id collisions when rendering
+        node = fluid.unwrap(node);
+        var lastFocusedElement = fluid.getLastFocusedElement? fluid.getLastFocusedElement() : null;
+        var lastId;
+        if (lastFocusedElement && fluid.dom.isContainer(node, lastFocusedElement)) {
+            lastId = lastFocusedElement.id;
+        }
+        if ($.browser.msie) {
+            $(node).empty(); //- this operation is very slow.
+        }
+        else {
+            node.innerHTML = "";
+        }
+        var fossils = {};
+        var renderer = fluid.renderer(templates, tree, options, fossils);
+        var rendered = renderer.renderTemplates();
+        if (options.renderRaw) {
+            rendered = fluid.XMLEncode(rendered);
+            rendered = rendered.replace(/\n/g, "<br/>");
+            }
+        if (options.model) {
+            fluid.bindFossils(node, options.model, fossils);
+            }
+        if ($.browser.msie) {
+          $(node).html(rendered);
+        }
+        else {
+          node.innerHTML = rendered;
+        }
+        renderer.processDecoratorQueue();
+        if (lastId) {
+            var element = fluid.byId(lastId);
+            if (element) {
+                $(element).focus();
+            }      
+        }
+          
+        return templates;
+    };
   
-  /** A simple driver for single node self-templating. Treats the markup for a
-   * node as a template, parses it into a template structure, renders it using
-   * the supplied component tree and options, then replaces the markup in the 
-   * node with the rendered markup, and finally performs any required data
-   * binding. The parsed template is returned for use with a further call to
-   * reRender.
-   * @param node The node both holding the template, and whose markup is to be
-   * replaced with the rendered result.
-   * @param tree The component tree to be rendered.
-   * @param options An options structure to configure the rendering and binding process.
-   * @return A templates structure, suitable for a further call to fluid.reRender or
-   * fluid.renderTemplates.
-   */  
-   fluid.selfRender = function(node, tree, options) {
-       options = options || {};
-       return fluid.render({node: node, armouring: options.armouring}, node, tree, options);
-   };
+    function findNodeValue(rootNode) {
+        var node = fluid.dom.iterateDom(rootNode, function(node) {
+          // NB, in Firefox at least, comment and cdata nodes cannot be distinguished!
+            return node.nodeType === 8 || node.nodeType === 4? "stop" : null;
+            }, true);
+        var value = node.nodeValue;
+        if (value.indexOf("[CDATA[") === 0) {
+            return value.substring(6, value.length - 2);
+        }
+        else {
+            return value;
+        }
+    }
+  
+    fluid.extractTemplate = function(node, armouring) {
+        if (!armouring) {
+            return node.innerHTML;
+        }
+        else {
+          return findNodeValue(node);
+        }
+    };
+    /** A slightly generalised version of fluid.selfRender that does not assume that the
+     * markup used to source the template is within the target node.
+     * @param source Either a structure {node: node, armouring: armourstyle} or a string
+     * holding a literal template
+     * @param target The node to receive the rendered markup
+     * @param tree, options, return as for fluid.selfRender
+     */
+    fluid.render = function(source, target, tree, options) {
+        options = options || {};
+        var template = source;
+        if (typeof(source) === "object") {
+            template = fluid.extractTemplate(fluid.unwrap(source.node), source.armouring);
+        }
+        target = fluid.unwrap(target);
+        var resourceSpec = {base: {resourceText: template, 
+                            href: ".", resourceKey: ".", cutpoints: options.cutpoints}
+                            };
+        var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
+        return fluid.reRender(templates, target, tree, options);    
+    };
+    
+    /** A simple driver for single node self-templating. Treats the markup for a
+     * node as a template, parses it into a template structure, renders it using
+     * the supplied component tree and options, then replaces the markup in the 
+     * node with the rendered markup, and finally performs any required data
+     * binding. The parsed template is returned for use with a further call to
+     * reRender.
+     * @param node The node both holding the template, and whose markup is to be
+     * replaced with the rendered result.
+     * @param tree The component tree to be rendered.
+     * @param options An options structure to configure the rendering and binding process.
+     * @return A templates structure, suitable for a further call to fluid.reRender or
+     * fluid.renderTemplates.
+     */  
+     fluid.selfRender = function(node, tree, options) {
+         options = options || {};
+         return fluid.render({node: node, armouring: options.armouring}, node, tree, options);
+     };
 
 })(jQuery, fluid_1_2);
