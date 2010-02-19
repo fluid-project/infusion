@@ -830,6 +830,13 @@ fluid.identity = function() {
         jqUnit.assertDeepEq("Idempotent transit", args, result);
     });
     
+    renderTests.test("Removal of rsf:id attributes (FLUID-3498)", function() {
+        var node = $(".FLUID-3498-test");
+        fluid.selfRender(node, {});
+        var markup = node.html();
+        jqUnit.assertEquals("ids removed", -1, markup.indexOf("rsf:id"));
+    });
+    
     function renderManually(node, tree, options) {
         var resourceSpec = {base: {resourceText: fluid.extractTemplate(node[0]), 
                     href: ".", resourceKey: "."}

@@ -207,11 +207,11 @@ fluid_1_2 = fluid_1_2 || {};
           var attrval = attrs[attrname];
           if (ID === undefined) {
             if (/href|src|codebase|action/.test(attrname)) {
-              ID = attrs[fluid.ID_ATTRIBUTE] = "scr=rewrite-url";
+              ID = "scr=rewrite-url";
               }
               // port of TPI effect of IDRelationRewriter
             else if (ID === undefined && /for|headers/.test(attrname)) {
-              ID = attrs[fluid.ID_ATTRIBUTE] = "scr=null";
+              ID = "scr=null";
               }
             }
           }
