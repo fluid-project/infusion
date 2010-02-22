@@ -129,14 +129,14 @@ fluid_1_2 = fluid_1_2 || {};
   
   renderer.inferComponentType = function(component) {
       for (var key in duckMap) {
-            if (component[key] !== undefined) {
-                component.componentType = duckMap[key];
-                break;
-            }
-        }
-        if (component.componentType === undefined && component.ID !== undefined) {
-            component.componentType = "UIBound";
-        }
+          if (component[key] !== undefined) {
+              component.componentType = duckMap[key];
+              break;
+          }
+      }
+      if (component.componentType === undefined && component.ID !== undefined) {
+          component.componentType = "UIBound";
+      }
   }    
   
   function unzipComponent(component, model) {
@@ -320,45 +320,45 @@ fluid_1_2 = fluid_1_2 || {};
       }
       
       function resolveRecurse(basecontainer, parentlump) {
-        for (var i = 0; i < basecontainer.children.length; ++ i) {
-          var branch = basecontainer.children[i];
-          if (branch.children) { // it is a branch
-            var resolved = resolveCall(parentlump, branch);
-            if (resolved) {
-              branchmap[branch.fullID] = resolved;
-              var id = resolved.attributemap.id;
-              if (id !== undefined) {
-                rewritemap[getRewriteKey(parentlump.parent, basecontainer, id)] = branch.fullID;
-              }
-              // on server-side this is done separately
-              noteCollected(resolved.parent);
-              resolveRecurse(branch, resolved);
-            }
-          }
-        }
-        // collect any rewritten ids for the purpose of later rewriting
-        if (parentlump.downmap) {
-          for (var id in parentlump.downmap) {
-            //if (id.indexOf(":") === -1) {
-              var lumps = parentlump.downmap[id];
-              for (var i = 0; i < lumps.length; ++ i) {
-                var lump = lumps[i];
-                var lumpid = lump.attributemap.id;
-                if (lumpid !== undefined && lump.rsfID !== undefined) {
-                  var resolved = fetchComponent(basecontainer, lump.rsfID);
-                  if (resolved !== null) {
-                    var resolveID = resolved.fullID;
-                    if (resolved.componentType === "UISelect") {
-                      resolveID = resolveID + "-selection";
-                    }
-                    rewritemap[getRewriteKey(parentlump.parent, basecontainer,
-                        lumpid)] = resolveID;
+          for (var i = 0; i < basecontainer.children.length; ++ i) {
+              var branch = basecontainer.children[i];
+              if (branch.children) { // it is a branch
+                  var resolved = resolveCall(parentlump, branch);
+                  if (resolved) {
+                      branchmap[branch.fullID] = resolved;
+                      var id = resolved.attributemap.id;
+                      if (id !== undefined) {
+                        rewritemap[getRewriteKey(parentlump.parent, basecontainer, id)] = branch.fullID;
+                      }
+                      // on server-side this is done separately
+                      noteCollected(resolved.parent);
+                      resolveRecurse(branch, resolved);
                   }
-                }
               }
-          //  }
-          } 
-        }
+          }
+          // collect any rewritten ids for the purpose of later rewriting
+          if (parentlump.downmap) {
+              for (var id in parentlump.downmap) {
+                //if (id.indexOf(":") === -1) {
+                  var lumps = parentlump.downmap[id];
+                  for (var i = 0; i < lumps.length; ++ i) {
+                      var lump = lumps[i];
+                      var lumpid = lump.attributemap.id;
+                      if (lumpid !== undefined && lump.rsfID !== undefined) {
+                          var resolved = fetchComponent(basecontainer, lump.rsfID);
+                          if (resolved !== null) {
+                              var resolveID = resolved.fullID;
+                              if (resolved.componentType === "UISelect") {
+                                resolveID = resolveID + "-selection";
+                              }
+                              rewritemap[getRewriteKey(parentlump.parent, basecontainer,
+                                  lumpid)] = resolveID;
+                          }
+                      }
+                  }
+              //  }
+              } 
+          }
           
       }
       
@@ -395,34 +395,34 @@ fluid_1_2 = fluid_1_2 || {};
       }
     
       function dumpScan(lumps, renderindex, basedepth, closeparent, insideleaf) {
-        var start = renderindex;
-        while (true) {
-          if (renderindex === lumps.length) {
-            break;
+          var start = renderindex;
+          while (true) {
+              if (renderindex === lumps.length) {
+                  break;
+              }
+              var lump = lumps[renderindex];
+              if (lump.nestingdepth < basedepth) {
+                  break;
+              }
+              if (lump.rsfID !== undefined) {
+                if (!insideleaf) {break;}
+                if (insideleaf && lump.nestingdepth > basedepth + (closeparent?0:1) ) {
+                  fluid.log("Error in component tree - leaf component found to contain further components - at " +
+                      lump.toString());
+                }
+                else {break;}
+              }
+              // target.print(lump.text);
+              ++renderindex;
           }
-          var lump = lumps[renderindex];
-          if (lump.nestingdepth < basedepth) {
-            break;
+          // ASSUMPTIONS: close tags are ONE LUMP
+          if (!closeparent && (renderindex == lumps.length || !lumps[renderindex].rsfID)) {
+              --renderindex;
           }
-          if (lump.rsfID !== undefined) {
-            if (!insideleaf) {break;}
-            if (insideleaf && lump.nestingdepth > basedepth + (closeparent?0:1) ) {
-              fluid.log("Error in component tree - leaf component found to contain further components - at " +
-                  lump.toString());
-            }
-            else {break;}
-          }
-          // target.print(lump.text);
-          ++renderindex;
-        }
-        // ASSUMPTIONS: close tags are ONE LUMP
-        if (!closeparent && (renderindex == lumps.length || !lumps[renderindex].rsfID)) {
-          --renderindex;
-        }
-        
-        dumpTillLump(lumps, start, renderindex);
-        //target.write(buffer, start, limit - start);
-        return renderindex;
+          
+          dumpTillLump(lumps, start, renderindex);
+          //target.write(buffer, start, limit - start);
+          return renderindex;
       }
       // In RSF Client, this is a "flyweight" "global" object that is reused for every tag, 
       // to avoid generating garbage. In RSF Server, it is an argument to the following rendering
@@ -728,208 +728,208 @@ fluid_1_2 = fluid_1_2 || {};
       
         
       function renderComponent(torender) {
-        var attrcopy = trc.attrcopy;
-        var lumps = trc.uselump.parent.lumps;
-        var lumpindex = trc.uselump.lumpindex;
-        
-        degradeMessage(torender);
-        var componentType = torender.componentType;
-        var tagname = trc.uselump.tagname;
-        
-        outDecorators(torender, attrcopy);
-        
-        function makeFail(torender, end) {
-            fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID + end);
-        } 
-        
-        if (componentType === "UIBound" || componentType === "UISelectChoice") {
-            var parent;
-            if (torender.choiceindex !== undefined) {
-                if (torender.parentFullID) {
-                    parent = getAbsoluteComponent(view, torender.parentFullID);
-                    if (!parent) {
-                        makeFail(torender, " has parentFullID of " + torender.parentFullID + " which cannot be resolved");
-                    }
-                }
-                else if (torender.parentRelativeID !== undefined){
-                    parent = getRelativeComponent(torender, torender.parentRelativeID);
-                    if (!parent) {
-                        makeFail(torender, " has parentRelativeID of " + torender.parentRelativeID + " which cannot be resolved");
-                    }
-                }
-                else {
-                    makeFail(torender, " does not have either parentFullID or parentRelativeID set");
-                }
-                assignSubmittingName(parent.selection);
-                dumpSelectionBindings(parent);
-            }
-    
-            var submittingname = parent? parent.selection.submittingname : torender.submittingname;
-            if (tagname === "input" || tagname === "textarea") {
-                if (!parent) {
-                    submittingname = assignSubmittingName(torender);
-                }
-                if (submittingname !== undefined) {
-                    attrcopy.name = submittingname;
-                    }
-                }
-            // this needs to happen early on the client, since it may cause the allocation of the
-            // id in the case of a "deferred decorator". However, for server-side bindings, this 
-            // will be an inappropriate time, unless we shift the timing of emitting the opening tag.
-            dumpBoundFields(torender, parent? parent.selection : null);
+          var attrcopy = trc.attrcopy;
+          var lumps = trc.uselump.parent.lumps;
+          var lumpindex = trc.uselump.lumpindex;
+          
+          degradeMessage(torender);
+          var componentType = torender.componentType;
+          var tagname = trc.uselump.tagname;
+          
+          outDecorators(torender, attrcopy);
+          
+          function makeFail(torender, end) {
+              fluid.fail("Error in component tree - UISelectChoice with id " + torender.fullID + end);
+          } 
+          
+          if (componentType === "UIBound" || componentType === "UISelectChoice") {
+              var parent;
+              if (torender.choiceindex !== undefined) {
+                  if (torender.parentFullID) {
+                      parent = getAbsoluteComponent(view, torender.parentFullID);
+                      if (!parent) {
+                          makeFail(torender, " has parentFullID of " + torender.parentFullID + " which cannot be resolved");
+                      }
+                  }
+                  else if (torender.parentRelativeID !== undefined){
+                      parent = getRelativeComponent(torender, torender.parentRelativeID);
+                      if (!parent) {
+                          makeFail(torender, " has parentRelativeID of " + torender.parentRelativeID + " which cannot be resolved");
+                      }
+                  }
+                  else {
+                      makeFail(torender, " does not have either parentFullID or parentRelativeID set");
+                  }
+                  assignSubmittingName(parent.selection);
+                  dumpSelectionBindings(parent);
+              }
       
-            if (typeof(torender.value) === 'boolean' || attrcopy.type === "radio" 
-                   || attrcopy.type === "checkbox") {
-                var underlyingValue;
-                var directValue = torender.value;
-                
-                if (torender.choiceindex !== undefined) {
-                    if (!parent.optionlist.value) {
-                        fluid.fail("Error in component tree - selection control with full ID " + parent.fullID + " has no values");
-                    }
-                    underlyingValue = parent.optionlist.value[torender.choiceindex];
-                    directValue = isSelectedValue(parent, underlyingValue);
-                }
-                if (isValue(directValue)) {
-                    if (directValue) {
-                        attrcopy.checked = "checked";
-                        }
-                    else {
-                        delete attrcopy.checked;
-                        }
-                    }
-                attrcopy.value = underlyingValue? underlyingValue: "true";
-                rewriteLeaf(null);
-            }
-            else if (torender.value instanceof Array) {
-                // Cannot be rendered directly, must be fake
-                renderUnchanged();
-            }
-            else { // String value
-                var value = parent? 
-                    parent[tagname === "textarea" || tagname === "input" ? "optionlist" : "optionnames"].value[torender.choiceindex] : 
-                      torender.value;
-                if (tagname === "textarea") {
-                    if (isPlaceholder(value) && torender.willinput) {
-                      // FORCE a blank value for input components if nothing from
-                      // model, if input was intended.
-                      value = "";
-                    }
-                  rewriteLeaf(value);
-                }
-                else if (tagname === "input") {
-                    if (torender.willinput || isValue(value)) {
-                        attrcopy.value = value;
-                    }
-                    rewriteLeaf(null);
-                }
-                else {
-                    delete attrcopy.name;
-                    rewriteLeafOpen(value);
-                }
-            }
-        }
-        else if (componentType === "UISelect") {
-          // need to do this first to see whether we need to write out an ID or not
-          applyAutoBind(torender, torender.selection.fullID);
-          //if (attrcopy.id) {
-            // TODO: This is an irregularity, should probably remove for 0.8
-            //attrcopy.id = torender.selection.fullID;
-            //}
-          var ishtmlselect = tagname === "select";
-          var ismultiple = false;
-    
-          if (torender.selection.value instanceof Array) {
-            ismultiple = true;
-            if (ishtmlselect) {
-              attrcopy.multiple = "multiple";
-              }
-            }
-          // since in HTML this name may end up in a global namespace, we make sure to take account
-          // of any uniquifying done by adjustForID upstream of applyAutoBind
-          assignSubmittingName(torender.selection, attrcopy.id);
-          if (ishtmlselect) {
-            // The HTML submitted value from a <select> actually corresponds
-            // with the selection member, not the top-level component.
-            if (torender.selection.willinput !== false) {
-              attrcopy.name = torender.selection.submittingname;
-            }
-          }
-          out += fluid.dumpAttributes(attrcopy);
-          if (ishtmlselect) {
-            out += ">";
-            var values = torender.optionlist.value;
-            var names = torender.optionnames === null || torender.optionnames === undefined || !torender.optionnames.value ? values: torender.optionnames.value;
-            if (!names || !names.length) {
-                fluid.fail("Error in component tree - UISelect component with fullID " 
-                    + torender.fullID + " does not have optionnames set");
-            }
-            for (var i = 0; i < names.length; ++i) {
-              out += "<option value=\"";
-              var value = values[i];
-              if (value === null) {
-                value = fluid.NULL_STRING;
-              }
-              out += fluid.XMLEncode(value);
-              if (isSelectedValue(torender, value)) {
-                out += "\" selected=\"selected";
-                }
-              out += "\">";
-              out += fluid.XMLEncode(names[i]);
-              out += "</option>\n";
-            }
-            closeTag();
-          }
-          else {
-            dumpTemplateBody();
-          }
-          dumpSelectionBindings(torender);
-        }
-        else if (componentType === "UILink") {
-            var attrname = LINK_ATTRIBUTES[tagname];
-            if (attrname) {
-                degradeMessage(torender.target);
-                var target = torender.target.value;
-                if (!isValue(target)) {
-                    target = attrcopy[attrname];
-                }
-                target = rewriteUrl(trc.uselump.parent, target);
-                attrcopy[attrname] = target;
-            }
-            var value;
-            if (torender.linktext) { 
-                degradeMessage(torender.linktext);
-                var value = torender.linktext.value;
-            }
-            if (!isValue(value)) {
-                replaceAttributesOpen();
-            }
-            else {
-                rewriteLeaf(value);
-            }
-        }
+              var submittingname = parent? parent.selection.submittingname : torender.submittingname;
+              if (tagname === "input" || tagname === "textarea") {
+                  if (!parent) {
+                      submittingname = assignSubmittingName(torender);
+                  }
+                  if (submittingname !== undefined) {
+                      attrcopy.name = submittingname;
+                      }
+                  }
+              // this needs to happen early on the client, since it may cause the allocation of the
+              // id in the case of a "deferred decorator". However, for server-side bindings, this 
+              // will be an inappropriate time, unless we shift the timing of emitting the opening tag.
+              dumpBoundFields(torender, parent? parent.selection : null);
         
-        else if (torender.markup !== undefined) { // detect UIVerbatim
-            degradeMessage(torender.markup);
-            var rendered = torender.markup.value;
-            if (rendered === null) {
-              // TODO, doesn't quite work due to attr folding cf Java code
-                out += fluid.dumpAttributes(attrcopy);
-                out +=">";
-                renderUnchanged(); 
-            }
-            else {
-                if (!trc.iselide) {
-                    out += fluid.dumpAttributes(attrcopy);
-                    out += ">";
-                }
-                out += rendered;
-                closeTag();
-                }
-            }
-        else {
-              
-        }
+              if (typeof(torender.value) === 'boolean' || attrcopy.type === "radio" 
+                     || attrcopy.type === "checkbox") {
+                  var underlyingValue;
+                  var directValue = torender.value;
+                  
+                  if (torender.choiceindex !== undefined) {
+                      if (!parent.optionlist.value) {
+                          fluid.fail("Error in component tree - selection control with full ID " + parent.fullID + " has no values");
+                      }
+                      underlyingValue = parent.optionlist.value[torender.choiceindex];
+                      directValue = isSelectedValue(parent, underlyingValue);
+                  }
+                  if (isValue(directValue)) {
+                      if (directValue) {
+                          attrcopy.checked = "checked";
+                          }
+                      else {
+                          delete attrcopy.checked;
+                          }
+                      }
+                  attrcopy.value = underlyingValue? underlyingValue: "true";
+                  rewriteLeaf(null);
+              }
+              else if (torender.value instanceof Array) {
+                  // Cannot be rendered directly, must be fake
+                  renderUnchanged();
+              }
+              else { // String value
+                  var value = parent? 
+                      parent[tagname === "textarea" || tagname === "input" ? "optionlist" : "optionnames"].value[torender.choiceindex] : 
+                        torender.value;
+                  if (tagname === "textarea") {
+                      if (isPlaceholder(value) && torender.willinput) {
+                        // FORCE a blank value for input components if nothing from
+                        // model, if input was intended.
+                        value = "";
+                      }
+                    rewriteLeaf(value);
+                  }
+                  else if (tagname === "input") {
+                      if (torender.willinput || isValue(value)) {
+                          attrcopy.value = value;
+                      }
+                      rewriteLeaf(null);
+                  }
+                  else {
+                      delete attrcopy.name;
+                      rewriteLeafOpen(value);
+                  }
+              }
+          }
+          else if (componentType === "UISelect") {
+              // need to do this first to see whether we need to write out an ID or not
+              applyAutoBind(torender, torender.selection.fullID);
+              //if (attrcopy.id) {
+                // TODO: This is an irregularity, should probably remove for 0.8
+                //attrcopy.id = torender.selection.fullID;
+                //}
+              var ishtmlselect = tagname === "select";
+              var ismultiple = false;
+        
+              if (torender.selection.value instanceof Array) {
+                  ismultiple = true;
+                  if (ishtmlselect) {
+                      attrcopy.multiple = "multiple";
+                      }
+                  }
+              // since in HTML this name may end up in a global namespace, we make sure to take account
+              // of any uniquifying done by adjustForID upstream of applyAutoBind
+              assignSubmittingName(torender.selection, attrcopy.id);
+              if (ishtmlselect) {
+                  // The HTML submitted value from a <select> actually corresponds
+                  // with the selection member, not the top-level component.
+                  if (torender.selection.willinput !== false) {
+                    attrcopy.name = torender.selection.submittingname;
+                  }
+              }
+              out += fluid.dumpAttributes(attrcopy);
+              if (ishtmlselect) {
+                  out += ">";
+                  var values = torender.optionlist.value;
+                  var names = torender.optionnames === null || torender.optionnames === undefined || !torender.optionnames.value ? values: torender.optionnames.value;
+                  if (!names || !names.length) {
+                      fluid.fail("Error in component tree - UISelect component with fullID " 
+                          + torender.fullID + " does not have optionnames set");
+                  }
+                  for (var i = 0; i < names.length; ++i) {
+                      out += "<option value=\"";
+                      var value = values[i];
+                      if (value === null) {
+                          value = fluid.NULL_STRING;
+                      }
+                      out += fluid.XMLEncode(value);
+                      if (isSelectedValue(torender, value)) {
+                          out += "\" selected=\"selected";
+                          }
+                      out += "\">";
+                      out += fluid.XMLEncode(names[i]);
+                      out += "</option>\n";
+                  }
+                  closeTag();
+              }
+              else {
+                dumpTemplateBody();
+              }
+              dumpSelectionBindings(torender);
+          }
+          else if (componentType === "UILink") {
+              var attrname = LINK_ATTRIBUTES[tagname];
+              if (attrname) {
+                  degradeMessage(torender.target);
+                  var target = torender.target.value;
+                  if (!isValue(target)) {
+                      target = attrcopy[attrname];
+                  }
+                  target = rewriteUrl(trc.uselump.parent, target);
+                  attrcopy[attrname] = target;
+              }
+              var value;
+              if (torender.linktext) { 
+                  degradeMessage(torender.linktext);
+                  var value = torender.linktext.value;
+              }
+              if (!isValue(value)) {
+                  replaceAttributesOpen();
+              }
+              else {
+                  rewriteLeaf(value);
+              }
+          }
+          
+          else if (torender.markup !== undefined) { // detect UIVerbatim
+              degradeMessage(torender.markup);
+              var rendered = torender.markup.value;
+              if (rendered === null) {
+                // TODO, doesn't quite work due to attr folding cf Java code
+                  out += fluid.dumpAttributes(attrcopy);
+                  out +=">";
+                  renderUnchanged(); 
+              }
+              else {
+                  if (!trc.iselide) {
+                      out += fluid.dumpAttributes(attrcopy);
+                      out += ">";
+                  }
+                  out += rendered;
+                  closeTag();
+                  }
+              }
+          else {
+                
+          }
       }
       
       function adjustForID(attrcopy, component, late, forceID) {
@@ -1345,14 +1345,14 @@ fluid_1_2 = fluid_1_2 || {};
         }
     */ 
    fluid.explodeSelectionToInputs = function(optionlist, opts) {
-         return fluid.transform(optionlist, function(option, index) {
-              return {
-                ID: opts.rowID, 
-                children: [
-                     {ID: opts.inputID, parentRelativeID: "..::" + opts.selectID, choiceindex: index},
-                     {ID: opts.labelID, parentRelativeID: "..::" + opts.selectID, choiceindex: index}]
-               };
-           });
+       return fluid.transform(optionlist, function(option, index) {
+            return {
+              ID: opts.rowID, 
+              children: [
+                   {ID: opts.inputID, parentRelativeID: "..::" + opts.selectID, choiceindex: index},
+                   {ID: opts.labelID, parentRelativeID: "..::" + opts.selectID, choiceindex: index}]
+             };
+         });
     };
   
       
@@ -1388,37 +1388,6 @@ fluid_1_2 = fluid_1_2 || {};
               // TODO: fetch via AJAX, and convert format if necessary
             }
         }
-    };
-     
-    fluid.makeBranches = function() {
-        var firstBranch;
-        var thisBranch;
-        for (var i = 0; i < arguments.length; ++ i) {
-            var thisarg = arguments[i];
-            var nextBranch;
-            if (typeof(thisarg) === "string") {
-                nextBranch = {ID: thisarg}; 
-                }
-            else if (thisarg instanceof Array) {
-                nextBranch = {ID: thisarg[0], jointID: thisarg[1]};
-                }
-            else {
-                $.extend(true, thisBranch, thisarg);
-                nextBranch = thisBranch;
-                } 
-            if (thisBranch && nextBranch !== thisBranch) {
-                if (!thisBranch.children) {
-                    thisBranch.children = [];
-                }
-                thisBranch.children[thisBranch.children.length] = nextBranch;
-            }
-            thisBranch = nextBranch;
-            if (!firstBranch) {
-               firstBranch = nextBranch;
-            }
-        }
-      
-      return firstBranch;
     };
     
     fluid.renderTemplates = function(templates, tree, options, fossilsIn) {
