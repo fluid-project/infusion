@@ -109,13 +109,6 @@
         <script language="javascript" src="${base-dir}/build-scripts/build.js" />
     </target>
 
-    <target name="concatJavaScript">
-        <echo> concat the javascript from ${sourceDir} </echo>
-        <concat destfile="${assembled}/${jsfile}" >
-            <filelist dir="${sourceDir}" files="${allRequiredJSFiles}" /> 
-        </concat>    
-    </target>
-
     <!-- Assembles the core package -->
     <target name="assemble" depends="concatJavaScript">
         <echo> Coping from ${sourceDir} to ${assembled} </echo>
