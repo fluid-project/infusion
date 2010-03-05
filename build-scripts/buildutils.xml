@@ -56,7 +56,7 @@
             <arg line="--nomunge" />
             <!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
             <arg line="${lineBreakArg}" />
-            <arg line="--charset UTF-8 -v" />
+            <arg line="--charset UTF-8" />
             <arg line="-o" />
             <mapper type="glob" from="${filePattern}" to="${filePattern}" />
             <targetfile /> 
