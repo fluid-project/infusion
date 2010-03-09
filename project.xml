@@ -4,7 +4,7 @@
   <artifactId>fluid-components</artifactId>
   <name>Fluid Infusion</name>
   <groupId>org.fluidproject</groupId>
-  <currentVersion>1.2-engage-0.3b3</currentVersion>
+  <currentVersion>1.2-SNAPSHOT</currentVersion>
   <organization>
     <name>Fluid Project</name>
     <url>http://fluidproject.org</url>
