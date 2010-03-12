@@ -887,6 +887,13 @@ fluid.identity = function() {
         jqUnit.assertTrue("meta rendered", rendered.indexOf("meta") !== -1);
         jqUnit.assertTrue("link rendered", rendered.indexOf("link") !== -1);
     });
+    
+    renderTests.test("Self-closed tags for HTML support (FLUID-3524-b)", function() {
+        var node = $(".FLUID-3524-b-test");
+        var rendered = renderManually(node, {},  {armouring: "comment"});
+        jqUnit.assertTrue("script open rendered", rendered.indexOf("<script") !== -1);
+        jqUnit.assertTrue("script close rendered", rendered.indexOf("</script>") !== -1);
+    });
 
     renderTests.test("Properties unescaping", function() {
       
