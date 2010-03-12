@@ -24,6 +24,7 @@ var fluid = fluid || fluid_1_2;
     fluid.environment = {
         fluid: fluid
     };
+    var globalObject = window || {};
     
     /**
      * Causes an error message to be logged to the console and a real runtime error to be thrown.
@@ -565,7 +566,7 @@ var fluid = fluid || fluid_1_2;
     
     fluid.getGlobalValue = function(path, env) {
         env = env || fluid.environment;
-        return fluid.model.getBeanValue(window, path, env);
+        return fluid.model.getBeanValue(globalObject, path, env);
     };
     
     /**
@@ -589,7 +590,20 @@ var fluid = fluid || fluid_1_2;
     
     fluid.registerGlobalFunction = function (functionPath, func, env) {
         env = env || fluid.environment;
-        fluid.model.setBeanValue({}, functionPath, func, env);
+        fluid.model.setBeanValue(globalObject, functionPath, func, env);
+    };
+    
+    fluid.registerGlobal = fluid.registerGlobalFunction;
+    
+    /** Ensures that an entry in the global namespace exists **/
+    fluid.registerNamespace = function (naimspace, env) {
+        env = env || fluid.environment;
+        var existing = fluid.getGlobalValue(naimspace, env);
+        if (!existing) {
+            existing = {};
+            fluid.registerGlobal(naimspace, existing, env);
+        }
+        return existing;
     };
     
     // The Model Events system.

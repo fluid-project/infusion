@@ -387,5 +387,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
         });
         
+        fluidJSTests.test("Globals", function() {
+            var space = fluid.registerNamespace("fluid.engage.mccord");
+            space.func = function() { return 2 ;};
+            jqUnit.assertEquals("Call function in namespace", 2, fluid.engage.mccord.func());
+        });
+        
     });
 })(jQuery);
