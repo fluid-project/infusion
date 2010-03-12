@@ -457,23 +457,27 @@ fluid_1_2 = fluid_1_2 || {};
           dumpTemplateBody();
       }
     
+      function isSelfClose() {
+          return trc.endopen.lumpindex === trc.close.lumpindex && XMLP.closedTags[trc.uselump.tagname]; 
+      }
+    
       function replaceAttributesOpen() {
           if (trc.iselide) {
               replaceAttributes();
           }
           else {
               out += fluid.dumpAttributes(trc.attrcopy);
+              var selfClose = isSelfClose();
               // TODO: the parser does not ever produce empty tags
-              out += // trc.endopen.lumpindex === trc.close.lumpindex ? "/>" :
-                    ">";
+              out += selfClose ? "/>" : ">";
         
-              trc.nextpos = trc.endopen.lumpindex;
+              trc.nextpos = selfClose? trc.close.lumpindex + 1 : trc.endopen.lumpindex;
           }
       }
     
       function dumpTemplateBody() {
           // TODO: Think about bringing fastXmlPull into version management
-          if (trc.endopen.lumpindex === trc.close.lumpindex && XMLP.closedTags[trc.uselump.tagname]) {
+          if (isSelfClose()) {
               if (!trc.iselide) {
                   out += "/>";
               }

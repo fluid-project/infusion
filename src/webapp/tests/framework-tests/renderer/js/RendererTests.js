@@ -838,7 +838,8 @@ fluid.identity = function() {
     });
     
     function renderManually(node, tree, options) {
-        var resourceSpec = {base: {resourceText: fluid.extractTemplate(node[0]), 
+        options = options || {};
+        var resourceSpec = {base: {resourceText: fluid.extractTemplate(node[0], options.armouring), 
                     href: ".", resourceKey: "."}
                     };
         var templates = fluid.parseTemplates(resourceSpec, ["base"]);
@@ -877,6 +878,14 @@ fluid.identity = function() {
    //     fluid.selfRender(node, tree, {model: model, autoBind: true});
    //     var rendered = node[0].innerHTML;
         jqUnit.assertTrue("Closed textarea is expected", rendered.indexOf("</textarea>") >= 0);
+    });
+    
+    renderTests.test("Self-closed tags for HTML support (FLUID-3524)", function() {
+        var node = $(".FLUID-3524-test");
+        var rendered = renderManually(node, {},  {armouring: "comment"});
+        jqUnit.assertTrue("No empty tags are present", rendered.indexOf("</") === -1);
+        jqUnit.assertTrue("meta rendered", rendered.indexOf("meta") !== -1);
+        jqUnit.assertTrue("link rendered", rendered.indexOf("link") !== -1);
     });
 
     renderTests.test("Properties unescaping", function() {

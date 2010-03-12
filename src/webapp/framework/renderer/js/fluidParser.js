@@ -242,10 +242,16 @@ fluid_1_2 = fluid_1_2 || {};
         
         // TODO: accelerate this by grabbing original template text (requires parser
         // adjustment) as well as dealing with empty tags
-        headlump.text = "<" + tagname + fluid.dumpAttributes(attrs) + ">";
+        headlump.text = "<" + tagname + fluid.dumpAttributes(attrs) + (isempty && !ID? "/>": ">");
         tagstack[tagstack.length] = headlump;
         if (isempty) {
-          processTagEnd();
+          if (ID) {
+            processTagEnd();
+          }
+          else {
+            --nestingdepth;
+            tagstack.length --;
+          }
         }
       }
       
