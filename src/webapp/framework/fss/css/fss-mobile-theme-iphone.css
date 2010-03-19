@@ -196,22 +196,23 @@
 }
 
 /* A simulation for a:active on the device, requires JS */
+/* since .fl-list is for mixed material lists, dont include them in these effects */
 .fl-theme-iphone [class*=fl-list]:not(.fl-list):not(.fl-grid) a:active,
-.fl-theme-iphone [class*=fl-list] .fl-link-hilight {
+.fl-theme-iphone [class*=fl-list]:not(.fl-list):not(.fl-grid) a.fl-link-hilight {
 	color: #fff;
     background: url(../images/themes/iphone/listmenu_arrow.png) no-repeat right -25px,
                 -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
 
 .fl-theme-iphone [class*=fl-list]:not(.fl-list) a:active,
-.fl-theme-iphone [class*=fl-list] a:active .fl-link-secondary,
-.fl-theme-iphone [class*=fl-list] a:active .fl-link-summary,
-.fl-theme-iphone [class*=fl-list] .fl-link-loading * {
-    color: #fff !important;
+.fl-theme-iphone [class*=fl-list]:not(.fl-list) a:active .fl-link-secondary,
+.fl-theme-iphone [class*=fl-list]:not(.fl-list) a:active .fl-link-summary,
+.fl-theme-iphone [class*=fl-list]:not(.fl-list) a.fl-link-loading * {
+    color: #fff;
 }
 
-.fl-theme-iphone [class*=fl-list] .fl-link-loading {
-    color: #fff !important;
+.fl-theme-iphone [class*=fl-list]:not(.fl-list) a.fl-link-loading {
+    color: #fff;
     background: url(../images/themes/iphone/listmenu_loader.gif) no-repeat 97% center,
 		        -webkit-gradient(linear, left top, left bottom, from(#4a94f4), to(#236de5));
 }
@@ -244,11 +245,15 @@
 /****************************/
 /* Collapsing and expanding panels */
 .fl-theme-iphone .fl-container-autoHeading > *:first-child {
-    color:#fff;
+	font-weight:normal;
+    color:rgba(255,255,255,1);
+	text-shadow: rgba(0,0,0, 1) 0px -1px 1px;
     background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
 }
 .fl-theme-iphone .fl-container-autoHeading > *:first-child:focus {
-    color:#000;
+	font-weight:normal;
+    color:rgba(0,0,0,1);
+	text-shadow: rgba(0,0,0, .5) 0px 1px 2px;
     background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#CCC));
 }
 
