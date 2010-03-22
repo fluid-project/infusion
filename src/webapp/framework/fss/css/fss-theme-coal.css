@@ -18,9 +18,9 @@
    outline: 0.1em solid #000;
 }
 
-.fl-theme-coal {color:#000000 !important; background-color:#ebebeb !important; border-color:#000000;}
-.fl-theme-coal a {color: #333333 !important; font-weight:bold;}
-.fl-theme-coal a:hover {color: #999999 !important;}
+.fl-theme-coal {color:#000000; background-color:#ebebeb; border-color:#000000;}
+.fl-theme-coal a {color: #333333; font-weight:bold;}
+.fl-theme-coal a:hover {color: #999999;}
 .fl-theme-coal h1 {color:#000000; border-bottom-width:0.2em; border-bottom-style:solid;} 
 .fl-theme-coal h2 {color: #666666;}
 .fl-theme-coal th {border:0.1em solid #ffffff; background-color:#dfefff !important;}
@@ -60,17 +60,23 @@
 .fl-theme-coal .fl-tabs-content {background-color:#ebebeb; color:#000; border:1px solid #999999; border-top:none;}
 
 /* Helper: Menu */
-.fl-theme-coal .fl-listmenu {border:1px solid #333; border-bottom-width:2px; background-color:#ebebeb;}
-.fl-theme-coal .fl-listmenu li,
-.fl-theme-coal .fl-listmenu li a  {font-weight:bold; background-color:#ebebeb; border-color:#333; text-decoration:none;}
-.fl-theme-coal .fl-listmenu a:hover {background-color:#ffffff; color:#333333 !important;}
-.fl-theme-coal .fl-listmenu .fl-activemenu,
-.fl-theme-coal .fl-listmenu .fl-activemenu:hover { background-color: #ffffff; border-bottom-color:#999999; color:#d9d9d9;}
+.fl-theme-coal .fl-listmenu, 
+.fl-theme-coal .fl-list-menu {border:1px solid #333; border-bottom-width:2px; background-color:#ebebeb;}
+.fl-theme-coal .fl-listmenu li, 
+.fl-theme-coal .fl-list-menu li,
+.fl-theme-coal .fl-listmenu li a, 
+.fl-theme-coal .fl-list-menu li a  {font-weight:bold; background-color:#ebebeb; border-color:#333; text-decoration:none;}
+.fl-theme-coal .fl-listmenu a:hover, 
+.fl-theme-coal .fl-list-menu a:hover {background-color:#ffffff; color:#333333 !important;}
+.fl-theme-coal .fl-listmenu .fl-activemenu, 
+.fl-theme-coal .fl-list-menu .fl-activemenu,
+.fl-theme-coal .fl-listmenu .fl-activemenu:hover, 
+.fl-theme-coal .fl-list-menu .fl-activemenu:hover { background-color: #ffffff; border-bottom-color:#999999; color:#d9d9d9;}
 
 /* Helper: Thumbnail Grid */
 .fl-theme-coal .fl-grid {border:2px solid #000000; background-color:#ccc;}
-.fl-theme-coal .fl-grid li {background-color:#dfefff; border:1px solid #000000;}
-.fl-theme-coal .fl-grid .caption {background-color:#dfefff; color:#ffffff; }
+.fl-theme-coal .fl-grid li {background-color:#EDEDED; border:1px solid #000000;}
+.fl-theme-coal .fl-grid .fl-grid-caption {background-color:#666; color:#ffffff; }
 
 /* Helper: Widgets */
 /* Widget core */

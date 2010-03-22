@@ -62,17 +62,24 @@
 .fl-theme-hc .fl-tab-content {background-color:#ffffff; color:#000;}
 
 /* Helper: Menu */
-.fl-theme-hc .fl-listmenu {border:1px solid #000; border-bottom-width:2px; background-color:#fff;}
-.fl-theme-hc .fl-listmenu li,
-.fl-theme-hc .fl-listmenu li a  {font-weight:bold; color:#000000; background-color:#ffffff; border-color:#000000; text-decoration:none;}
-.fl-theme-hc .fl-listmenu a:hover {background-color:#ffffff; color:#fff;}
-.fl-theme-hc .fl-listmenu .fl-activemenu,
-.fl-theme-hc .fl-listmenu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
+.fl-theme-hc .fl-listmenu, 
+.fl-theme-hc .fl-list-menu {border:1px solid #000; border-bottom-width:2px; background-color:#fff;}
+.fl-theme-hc .fl-listmenu li, 
+.fl-theme-hc .fl-list-menu li,
+.fl-theme-hc .fl-listmenu li a, 
+.fl-theme-hc .fl-list-menu li a {font-weight:bold; color:#000000; background-color:#ffffff; border-color:#000000; text-decoration:none;}
+.fl-theme-hc .fl-listmenu a:hover, 
+.fl-theme-hc .fl-list-menu a:hover {background-color:#ffffff; color:#fff;}
+.fl-theme-hc .fl-listmenu .fl-activemenu, 
+.fl-theme-hc .fl-list-menu .fl-activemenu,
+.fl-theme-hc .fl-listmenu .fl-activemenu:hover, 
+.fl-theme-hc .fl-list-menu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
+
 
 /* Helper: Thumbnail Grid */
 .fl-theme-hc .fl-grid {}
 .fl-theme-hc .fl-grid li {}
-.fl-theme-hc .fl-grid .caption {}
+.fl-theme-hc .fl-grid .fl-grid-caption {}
 
 /* Helper: buttons */
 .fl-theme-hc .fl-button-right, 

@@ -18,9 +18,9 @@
    outline: 0.1em solid #F00;
 }
 
-.fl-theme-mist {color:#000000 !important; background-color:#f4f4f4 !important; border-color:#4070a1;}
-.fl-theme-mist a {color: #5a95cf !important; font-weight:bold;}
-.fl-theme-mist a:hover {color: #6DB5FB !important;}
+.fl-theme-mist {color:#000000; background-color:#f4f4f4; border-color:#4070a1;}
+.fl-theme-mist a {color: #5a95cf; font-weight:bold;}
+.fl-theme-mist a:hover {color: #6DB5FB;}
 .fl-theme-mist h1 {color:#4070a1; border-bottom-width:0.2em; border-bottom-style:solid;} 
 .fl-theme-mist h2 {color: #5a95cf;}
 .fl-theme-mist th {border:0.1em solid #5a95cf; background-color:#dfefff !important;}
@@ -54,17 +54,23 @@
 .fl-theme-mist .fl-tabs-content {background-color:#f4f4f4; color:#000; border:1px solid #61c5ff; border-top:none; margin-top:-4px;}
 
 /* Helper: Menu */
-.fl-theme-mist .fl-listmenu {border:1px solid #4070a1; border-bottom-width:2px; background-color:#fff;}
-.fl-theme-mist .fl-listmenu li,
-.fl-theme-mist .fl-listmenu li a  {font-weight:bold; color:#4070a1; background-color:#dfefff; border-color:#4070a1; text-decoration:none;}
-.fl-theme-mist .fl-listmenu li a:hover {background-color:#5a95cf; color:#fff !important;}
-.fl-theme-mist .fl-listmenu .fl-activemenu,
-.fl-theme-mist .fl-listmenu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
+.fl-theme-mist .fl-listmenu, 
+.fl-theme-mist .fl-list-menu {border:1px solid #4070a1; border-bottom-width:2px; background-color:#fff;}
+.fl-theme-mist .fl-listmenu li, 
+.fl-theme-mist .fl-list-menu li,
+.fl-theme-mist .fl-listmenu li a, 
+.fl-theme-mist .fl-list-menu li a  {font-weight:bold; color:#4070a1; background-color:#dfefff; border-color:#4070a1; text-decoration:none;}
+.fl-theme-mist .fl-listmenu a:hover, 
+.fl-theme-mist .fl-list-menu a:hover {background-color:#5a95cf; color:#fff !important;}
+.fl-theme-mist .fl-listmenu .fl-activemenu, 
+.fl-theme-mist .fl-list-menu .fl-activemenu,
+.fl-theme-mist .fl-listmenu .fl-activemenu:hover, 
+.fl-theme-mist .fl-list-menu .fl-activemenu:hover { background-color: #fff; border-bottom-color:#fff; color:#508cc9;}
 
 /* Helper: Thumbnail Grid */
 .fl-theme-mist .fl-grid {border:2px solid #4070a1; background-color:#fff;}
 .fl-theme-mist .fl-grid li {background-color:#dfefff; border:1px solid #4070a1}
-.fl-theme-mist .fl-grid .caption {background-color:#dfefff; color:#5a95cf; }
+.fl-theme-mist .fl-grid .fl-grid-caption {background-color:#dfefff; color:#5a95cf; }
 
 /* Helper: Widgets */
 /* Widget core */

@@ -177,13 +177,13 @@ Layout Helpers
 .fl-list-menu li {margin:0; padding:0; list-style-type:none; border-width:1px; border-style:solid; border-bottom:none; overflow:auto;}
 
 .fl-listmenu a, /* <=== fl-listmenu is DEPRECATED! */
-.fl-list-menu a {padding:5px 5px; display:block; zoom:1;} /* list item needs layout (http://www.brunildo.org/test/IEWlispace.php) */
+.fl-list-menu a {padding:5px 5px; display:block; zoom:1; overflow:auto; outline:none;} /* list item needs layout (http://www.brunildo.org/test/IEWlispace.php) */
 
 /*
  * Picture Grid: a quick picture grid layout
  * Dependency: list-based markup
  */
-ul.fl-grid, .fl-grid ul {padding:0; margin:0;}
+ul.fl-grid, .fl-grid ul {padding:0; margin:0; overflow:auto;}
 .fl-grid li {list-style-type:none; display:inline;}
 .fl-grid li {float:left; width:19%; margin:0.5%; height:150px; overflow:hidden; position:relative; display:inline;}
 .fl-grid li img {display:block; margin:5px auto;}

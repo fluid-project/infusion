@@ -61,17 +61,23 @@
 .fl-theme-hci .fl-tab-content {background-color:#000000; border:1px solid #fff; border-top:none; color:#ffffff;}
 
 /* Helper: Menu */
-.fl-theme-hci .fl-listmenu {border:1px solid #ffffff; border-bottom-width:2px; background-color:#000000;}
-.fl-theme-hci .fl-listmenu li,
-.fl-theme-hci .fl-listmenu li a  {font-weight:bold; color:#ffffff; background-color:#dfefff; border-color:#ffffff; text-decoration:none;}
-.fl-theme-hci .fl-listmenu a:hover {background-color:#5a95cf; color:#000000;}
-.fl-theme-hci .fl-listmenu .fl-activemenu,
-.fl-theme-hci .fl-listmenu .fl-activemenu:hover { background-color: #000000; border-bottom-color:#000000; color:#508cc9;}
+.fl-theme-hci .fl-listmenu, 
+.fl-theme-hci .fl-list-menu {border:1px solid #ffffff; border-bottom-width:2px; background-color:#000000;}
+.fl-theme-hci .fl-listmenu li, 
+.fl-theme-hci .fl-list-menu li,
+.fl-theme-hci .fl-listmenu li a, 
+.fl-theme-hci .fl-list-menu li a  {font-weight:bold; color:#ffffff; background-color:#dfefff; border-color:#ffffff; text-decoration:none;}
+.fl-theme-hci .fl-listmenu a:hover, 
+.fl-theme-hci .fl-list-menu a:hover {background-color:#5a95cf; color:#000000;}
+.fl-theme-hci .fl-listmenu .fl-activemenu, 
+.fl-theme-hci .fl-list-menu .fl-activemenu,
+.fl-theme-hci .fl-listmenu .fl-activemenu:hover, 
+.fl-theme-hci .fl-list-menu .fl-activemenu:hover { background-color: #000000; border-bottom-color:#000000; color:#508cc9;}
 
 /* Helper: Thumbnail Grid */
 .fl-theme-hci .fl-grid {}
 .fl-theme-hci .fl-grid li {}
-.fl-theme-hci .fl-grid .caption {}
+.fl-theme-hci .fl-grid .fl-grid-caption {}
 
 /* Helper: buttons */
 .fl-theme-hci .fl-button-right, 

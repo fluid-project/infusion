@@ -18,9 +18,9 @@
    outline: 0.1em solid #000;
 }
 
-.fl-theme-slate {color:#000000 !important; background-color:#cccccc !important; border-color:#999999;}
-.fl-theme-slate a {color: #ebebeb !important; font-weight:bold;}
-.fl-theme-slate a:hover {color: #ffffff !important;}
+.fl-theme-slate {color:#000000; background-color:#cccccc; border-color:#999999;}
+.fl-theme-slate a {color: #ebebeb; font-weight:bold;}
+.fl-theme-slate a:hover {color: #ffffff;}
 .fl-theme-slate h1 {color:#999999; border-bottom-width:0.2em; border-bottom-style:solid;} 
 .fl-theme-slate h2 {color: #ffffff;}
 .fl-theme-slate th {border:0.1em solid #ffffff; background-color:#dfefff !important;}
@@ -56,17 +56,23 @@
 .fl-theme-slate .fl-tabs-content {background-color:#ebebeb; color:#000; border:1px solid #999999; border-top:none;}
 
 /* Helper: Menu */
-.fl-theme-slate .fl-listmenu {border:1px solid #999999; border-bottom-width:2px; background-color:#ccc;}
-.fl-theme-slate .fl-listmenu li,
-.fl-theme-slate .fl-listmenu li a  {font-weight:bold; background-color:#999; border-color:#ccc; text-decoration:none;}
-.fl-theme-slate .fl-listmenu a:hover {background-color:#ebebeb; color:#000 !important;}
-.fl-theme-slate .fl-listmenu .fl-activemenu,
-.fl-theme-slate .fl-listmenu .fl-activemenu:hover { background-color: #ccc; border-bottom-color:#ccc; color:#d9d9d9;}
+.fl-theme-slate .fl-listmenu, 
+.fl-theme-slate .fl-list-menu {border:1px solid #999999; border-bottom-width:2px; background-color:#ccc;}
+.fl-theme-slate .fl-listmenu li, 
+.fl-theme-slate .fl-list-menu li,
+.fl-theme-slate .fl-listmenu li a, 
+.fl-theme-slate .fl-list-menu li a  {font-weight:bold; background-color:#999; border-color:#ccc; text-decoration:none;}
+.fl-theme-slate .fl-listmenu a:hover, 
+.fl-theme-slate .fl-list-menu a:hover {background-color:#ebebeb; color:#000 !important;}
+.fl-theme-slate .fl-listmenu .fl-activemenu, 
+.fl-theme-slate .fl-list-menu .fl-activemenu,
+.fl-theme-slate .fl-listmenu .fl-activemenu:hover, 
+.fl-theme-slate .fl-list-menu .fl-activemenu:hover { background-color: #ccc; border-bottom-color:#ccc; color:#d9d9d9;}
 
 /* Helper: Thumbnail Grid */
 .fl-theme-slate .fl-grid {border:2px solid #999999; background-color:#ccc;}
-.fl-theme-slate .fl-grid li {background-color:#dfefff; border:1px solid #999999}
-.fl-theme-slate .fl-grid .caption {background-color:#dfefff; color:#ffffff; }
+.fl-theme-slate .fl-grid li {background-color:#999; border:1px solid #999999}
+.fl-theme-slate .fl-grid .fl-grid-caption {background-color:#666; color:#ffffff; }
 
 /* Helper: Widgets */
 /* Widget core */
