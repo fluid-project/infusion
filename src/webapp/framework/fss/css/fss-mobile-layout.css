@@ -181,7 +181,7 @@ img {border:none;}
 	font-weight: bold;
 	outline: none;
 	border-style:solid;
-	border-width:1px 1px 0 1px;
+	border-width:1px 0px 0 0px;
     overflow:auto; /* to encapsulate floating elements within */
 }
 [class*=fl-list] > li:last-child {
@@ -407,6 +407,10 @@ img {border:none;}
 }
 
 /* Panel influence for list corners */
+[class*=fl-container] [class*=fl-list] > li {
+    border-right-width: 1px;
+    border-left-width: 1px;
+}
 [class*=fl-container] [class*=fl-list] > li:first-child,
 [class*=fl-container] [class*=fl-list] > li:first-child a {
     -webkit-border-top-left-radius: 8px;
