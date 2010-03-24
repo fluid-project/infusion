@@ -56,11 +56,9 @@ body {
 .fl-tabs-content {background-color:rgb(200,200,250); color:#000; border:1px solid #000; border-top:none; min-height:20px;}
 
 
-.fl-listmenu {border:1px solid #000; border-bottom:none; background-color:#fff;}
-.fl-listmenu li,
-.fl-listmenu li a  {font-weight:bold; color:#000; background-color:rgb(200,240,200); text-decoration:none;}
-.fl-listmenu li a  {border-bottom:2px groove #fff;}
-.fl-listmenu a:hover {background-color:#999; color:#fff;}
-.fl-listmenu .fl-activemenu a,
-.fl-listmenu .fl-activemenu a:hover { background-color:rgb(200,200,250); color:#000;}
+.fl-list-menu li,
+.fl-list-menu li a  {font-weight:bold; color:#000; background-color:rgb(200,240,200); text-decoration:none;}
+.fl-list-menu a:hover {background-color:#999; color:#fff;}
+.fl-list-menu .fl-activemenu a,
+.fl-list-menu .fl-activemenu a:hover { background-color:rgb(200,200,250); color:#000;}
 
