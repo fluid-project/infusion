@@ -55,16 +55,15 @@
 	color: #fff;
     text-shadow: rgba(0,0,0,0.5) 0px -1px 0px;
 }
-.fl-theme-android .fl-navbar [class*=fl-button] {
+.fl-theme-android .fl-navbar .fl-button {
+    -webkit-border-image:none;
     background-image: -webkit-gradient(linear, left top, left bottom,
         from(#444),
         color-stop(0.5, #666),
         color-stop(0.50, #333),
         to(#000)
     );
-    -webkit-border-image:none;
 }
-
 .fl-theme-android .fl-navbar [class*=fl-button]:active {
     background-image: -webkit-gradient(linear, left top, left bottom,
         from(#ffb347),

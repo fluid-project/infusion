@@ -81,16 +81,16 @@ img {border:none;}
 .fl-navbar [class*=fl-button] {
     -webkit-border-radius:5px;
     padding:0;
+    display:block;
 }
 
 .fl-navbar .fl-backButton {
-    padding:10px 0;
     /*
      * To create the oddly shaped back button with fully customizable CSS colors, there are 2 main things:
      * 1) The stencil for the shadow and hilights along the angled edge
      * 2) The mask to crop the background along the angled edge
      */
-    /* Angled effect is just a single border with a transaprent stencil image */
+    /* Angled effect is just a single border with a transaprent stencil image for the bevel */
     border-width:0 0 0 15px;
     -webkit-border-top-right-radius: 5px;
     -webkit-border-bottom-right-radius: 5px;
@@ -113,7 +113,11 @@ img {border:none;}
     -webkit-background-clip: border;
 }
 
-
+.fl-navbar img.fl-button-inner {
+    height:24px;
+    vertical-align:middle;
+    padding:0;    
+}
 
 /*************************************************/
 /* iPhone tabs: general purpose dividers, or fixed to the bottom of the screen
