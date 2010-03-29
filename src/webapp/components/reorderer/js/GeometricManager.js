@@ -433,7 +433,9 @@ var fluid_1_2 = fluid_1_2 || {};
         
         that.shuffleProjectFrom = function (element, direction, includeLocked) {
             var togo = that.projectFrom(element, direction, includeLocked);
-            togo.position = fluid.position.REPLACE;
+            if (togo) {
+                togo.position = fluid.position.REPLACE;
+            }
             return togo;
         };
         
