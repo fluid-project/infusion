@@ -295,7 +295,7 @@ if (!fluid.unwrap) {
 
         // Try selecting something that isn't selectable. Assume things stay the same.
         var nonSelectable = jQuery(NON_ITEM_SEL);
-        menu.items.select(nonSelectable);
+        menu.items.fluid("selectable.select", nonSelectable);
         keyboardA11y.assertNotSelected(nonSelectable);
         keyboardA11y.assertSelected(getFirstMenuItem());
     });

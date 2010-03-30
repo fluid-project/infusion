@@ -75,14 +75,14 @@ var fluid = fluid || {};
     };
     
     // Public API.
-    fluid.accessibletabs = function (tabsId, panelsId) {
+    fluid.accessibletabs = function (container, tabsId, panelsId) {
         var tablist = $("#" + tabsId);
         
         // Remove the anchors in the list from the tab order.
         fluid.tabindex(tablist.find("a"), -1);
 
         // Turn the list into a jQuery UI tabs widget.
-        tablist.tabs();
+        $(container).tabs();
         
         // Make them accessible.
         makeTabsSelectable(tablist);
@@ -94,7 +94,7 @@ var fluid = fluid || {};
         selectOnFocus = false;
         
         // Instantiate the tabs widget.
-        fluid.accessibletabs("tabs", "panels");
+        fluid.accessibletabs("#tabs-container", "tabs", "panels");
         
         // Bind the select on focus link.
         $("#selectOnFocusLink").click(function (evt) {

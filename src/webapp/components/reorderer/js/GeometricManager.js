@@ -245,7 +245,7 @@ var fluid_1_2 = fluid_1_2 || {};
         var lastClosest;
         
         function cacheKey(element) {
-            return $(element).data("");
+            return fluid.allocateSimpleId(element);
         }
         
         function sentinelizeElement(targets, sides, cacheelem, fc, disposition, clazz) {
@@ -307,7 +307,7 @@ var fluid_1_2 = fluid_1_2 || {};
                     if (cacheelem.clazz !== "hidden" && mapper) {
                         cacheelem.clazz = mapper(element);
                     }
-                    cache[$.data(element)] = cacheelem;
+                    cache[cacheKey(element)] = cacheelem;
                     var backClass = getRelativeClass(thisInfo.elements, j, fluid.position.BEFORE, cacheelem.clazz, mapper); 
                     var frontClass = getRelativeClass(thisInfo.elements, j, fluid.position.AFTER, cacheelem.clazz, mapper); 
                     if (disposition === fluid.position.INSIDE) {
@@ -352,7 +352,7 @@ var fluid_1_2 = fluid_1_2 || {};
             lastClosest = null;
             displacementX = dX;
             displacementY = dY;
-            $("").bind("mousemove.fluid-dropManager", that.mouseMove);
+            $(window).bind("mousemove.fluid-dropManager", that.mouseMove);
         };
         
         that.lastPosition = function () {
@@ -360,7 +360,7 @@ var fluid_1_2 = fluid_1_2 || {};
         };
         
         that.endDrag = function () {
-            $("").unbind("mousemove.fluid-dropManager");
+            $(window).unbind("mousemove.fluid-dropManager");
         };
         
         that.mouseMove = function (evt) {

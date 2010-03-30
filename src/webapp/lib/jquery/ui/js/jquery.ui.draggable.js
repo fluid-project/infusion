@@ -1,20 +1,48 @@
 /*
- * jQuery UI Draggable 1.7
+ * jQuery UI Draggable 1.8
  *
- * Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
  * http://docs.jquery.com/UI/Draggables
  *
  * Depends:
- *	ui.core.js
+ *	jquery.ui.core.js
+ *	jquery.ui.mouse.js
+ *	jquery.ui.widget.js
  */
 (function($) {
 
-$.widget("ui.draggable", $.extend({}, $.ui.mouse, {
-
-	_init: function() {
+$.widget("ui.draggable", $.ui.mouse, {
+	widgetEventPrefix: "drag",
+	options: {
+		addClasses: true,
+		appendTo: "parent",
+		axis: false,
+		connectToSortable: false,
+		containment: false,
+		cursor: "auto",
+		cursorAt: false,
+		grid: false,
+		handle: false,
+		helper: "original",
+		iframeFix: false,
+		opacity: false,
+		refreshPositions: false,
+		revert: false,
+		revertDuration: 500,
+		scope: "default",
+		scroll: true,
+		scrollSensitivity: 20,
+		scrollSpeed: 20,
+		snap: false,
+		snapMode: "both",
+		snapTolerance: 20,
+		stack: false,
+		zIndex: false
+	},
+	_create: function() {
 
 		if (this.options.helper == 'original' && !(/^(?:r|a|f)/).test(this.element.css("position")))
 			this.element[0].style.position = 'relative';
@@ -35,12 +63,15 @@ $.widget("ui.draggable", $.extend({}, $.ui.mouse, {
 				+ " ui-draggable-dragging"
 				+ " ui-draggable-disabled");
 		this._mouseDestroy();
+
+		return this;
 	},
 
 	_mouseCapture: function(event) {
 
 		var o = this.options;
 
+		// among others, prevent a drag on a resizable-handle
 		if (this.helper || o.disabled || $(event.target).is('.ui-resizable-handle'))
 			return false;
 
@@ -80,7 +111,7 @@ $.widget("ui.draggable", $.extend({}, $.ui.mouse, {
 		this.scrollParent = this.helper.scrollParent();
 
 		//The element's absolute position on the page minus margins
-		this.offset = this.element.offset();
+		this.offset = this.positionAbs = this.element.offset();
 		this.offset = {
 			top: this.offset.top - this.margins.top,
 			left: this.offset.left - this.margins.left
@@ -96,20 +127,22 @@ $.widget("ui.draggable", $.extend({}, $.ui.mouse, {
 		});
 
 		//Generate the original position
-		this.originalPosition = this._generatePosition(event);
+		this.originalPosition = this.position = this._generatePosition(event);
 		this.originalPageX = event.pageX;
 		this.originalPageY = event.pageY;
 
 		//Adjust the mouse offset relative to the helper if 'cursorAt' is supplied
-		if(o.cursorAt)
-			this._adjustOffsetFromHelper(o.cursorAt);
+		(o.cursorAt && this._adjustOffsetFromHelper(o.cursorAt));
 
 		//Set a containment if given in the options
 		if(o.containment)
 			this._setContainment();
 
-		//Call plugins and callbacks
-		this._trigger("start", event);
+		//Trigger event + callbacks
+		if(this._trigger("start", event) === false) {
+			this._clear();
+			return false;
+		}
 
 		//Recache the helper size
 		this._cacheHelperProportions();
@@ -132,7 +165,10 @@ $.widget("ui.draggable", $.extend({}, $.ui.mouse, {
 		//Call plugins and callbacks and use the resulting position if something is returned
 		if (!noPropagation) {
 			var ui = this._uiHash();
-			this._trigger('drag', event, ui);
+			if(this._trigger('drag', event, ui) === false) {
+				this._mouseUp({});
+				return false;
+			}
 			this.position = ui.position;
 		}
 
@@ -155,19 +191,37 @@ $.widget("ui.draggable", $.extend({}, $.ui.mouse, {
 			dropped = this.dropped;
 			this.dropped = false;
 		}
+		
+		//if the original element is removed, don't bother to continue
+		if(!this.element[0] || !this.element[0].parentNode)
+			return false;
 
 		if((this.options.revert == "invalid" && !dropped) || (this.options.revert == "valid" && dropped) || this.options.revert === true || ($.isFunction(this.options.revert) && this.options.revert.call(this.element, dropped))) {
 			var self = this;
 			$(this.helper).animate(this.originalPosition, parseInt(this.options.revertDuration, 10), function() {
-				self._trigger("stop", event);
-				self._clear();
+				if(self._trigger("stop", event) !== false) {
+					self._clear();
+				}
 			});
 		} else {
-			this._trigger("stop", event);
-			this._clear();
+			if(this._trigger("stop", event) !== false) {
+				this._clear();
+			}
 		}
 
 		return false;
+	},
+	
+	cancel: function() {
+		
+		if(this.helper.is(".ui-draggable-dragging")) {
+			this._mouseUp({});
+		} else {
+			this._clear();
+		}
+		
+		return this;
+		
 	},
 
 	_getHandle: function(event) {
@@ -200,10 +254,24 @@ $.widget("ui.draggable", $.extend({}, $.ui.mouse, {
 	},
 
 	_adjustOffsetFromHelper: function(obj) {
-		if(obj.left != undefined) this.offset.click.left = obj.left + this.margins.left;
-		if(obj.right != undefined) this.offset.click.left = this.helperProportions.width - obj.right + this.margins.left;
-		if(obj.top != undefined) this.offset.click.top = obj.top + this.margins.top;
-		if(obj.bottom != undefined) this.offset.click.top = this.helperProportions.height - obj.bottom + this.margins.top;
+		if (typeof obj == 'string') {
+			obj = obj.split(' ');
+		}
+		if ($.isArray(obj)) {
+			obj = {left: +obj[0], top: +obj[1] || 0};
+		}
+		if ('left' in obj) {
+			this.offset.click.left = obj.left + this.margins.left;
+		}
+		if ('right' in obj) {
+			this.offset.click.left = this.helperProportions.width - obj.right + this.margins.left;
+		}
+		if ('top' in obj) {
+			this.offset.click.top = obj.top + this.margins.top;
+		}
+		if ('bottom' in obj) {
+			this.offset.click.top = this.helperProportions.height - obj.bottom + this.margins.top;
+		}
 	},
 
 	_getParentOffset: function() {
@@ -299,13 +367,13 @@ $.widget("ui.draggable", $.extend({}, $.ui.mouse, {
 				pos.top																	// The absolute mouse position
 				+ this.offset.relative.top * mod										// Only for relative positioned nodes: Relative offset from element to offset parent
 				+ this.offset.parent.top * mod											// The offsetParent's offset without borders (offset + border)
-				- ($.browser.safari && this.cssPosition == 'fixed' ? 0 : ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollTop() : ( scrollIsRootNode ? 0 : scroll.scrollTop() ) ) * mod)
+				- ($.browser.safari && $.browser.version < 526 && this.cssPosition == 'fixed' ? 0 : ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollTop() : ( scrollIsRootNode ? 0 : scroll.scrollTop() ) ) * mod)
 			),
 			left: (
 				pos.left																// The absolute mouse position
 				+ this.offset.relative.left * mod										// Only for relative positioned nodes: Relative offset from element to offset parent
 				+ this.offset.parent.left * mod											// The offsetParent's offset without borders (offset + border)
-				- ($.browser.safari && this.cssPosition == 'fixed' ? 0 : ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollLeft() : scrollIsRootNode ? 0 : scroll.scrollLeft() ) * mod)
+				- ($.browser.safari && $.browser.version < 526 && this.cssPosition == 'fixed' ? 0 : ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollLeft() : scrollIsRootNode ? 0 : scroll.scrollLeft() ) * mod)
 			)
 		};
 
@@ -314,15 +382,6 @@ $.widget("ui.draggable", $.extend({}, $.ui.mouse, {
 	_generatePosition: function(event) {
 
 		var o = this.options, scroll = this.cssPosition == 'absolute' && !(this.scrollParent[0] != document && $.ui.contains(this.scrollParent[0], this.offsetParent[0])) ? this.offsetParent : this.scrollParent, scrollIsRootNode = (/(html|body)/i).test(scroll[0].tagName);
-
-		// This is another very weird special case that only happens for relative elements:
-		// 1. If the css position is relative
-		// 2. and the scroll parent is the document or similar to the offset parent
-		// we have to refresh the relative offset during the scroll so there are no jumps
-		if(this.cssPosition == 'relative' && !(this.scrollParent[0] != document && this.scrollParent[0] != this.offsetParent[0])) {
-			this.offset.relative = this._getRelativeOffset();
-		}
-
 		var pageX = event.pageX;
 		var pageY = event.pageY;
 
@@ -356,14 +415,14 @@ $.widget("ui.draggable", $.extend({}, $.ui.mouse, {
 				- this.offset.click.top													// Click offset (relative to the element)
 				- this.offset.relative.top												// Only for relative positioned nodes: Relative offset from element to offset parent
 				- this.offset.parent.top												// The offsetParent's offset without borders (offset + border)
-				+ ($.browser.safari && this.cssPosition == 'fixed' ? 0 : ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollTop() : ( scrollIsRootNode ? 0 : scroll.scrollTop() ) ))
+				+ ($.browser.safari && $.browser.version < 526 && this.cssPosition == 'fixed' ? 0 : ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollTop() : ( scrollIsRootNode ? 0 : scroll.scrollTop() ) ))
 			),
 			left: (
 				pageX																// The absolute mouse position
 				- this.offset.click.left												// Click offset (relative to the element)
 				- this.offset.relative.left												// Only for relative positioned nodes: Relative offset from element to offset parent
 				- this.offset.parent.left												// The offsetParent's offset without borders (offset + border)
-				+ ($.browser.safari && this.cssPosition == 'fixed' ? 0 : ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollLeft() : scrollIsRootNode ? 0 : scroll.scrollLeft() ))
+				+ ($.browser.safari && $.browser.version < 526 && this.cssPosition == 'fixed' ? 0 : ( this.cssPosition == 'fixed' ? -this.scrollParent.scrollLeft() : scrollIsRootNode ? 0 : scroll.scrollLeft() ))
 			)
 		};
 
@@ -383,7 +442,7 @@ $.widget("ui.draggable", $.extend({}, $.ui.mouse, {
 		ui = ui || this._uiHash();
 		$.ui.plugin.call(this, type, [event, ui]);
 		if(type == "drag") this.positionAbs = this._convertPositionTo("absolute"); //The absolute position has to be recalculated after plugins
-		return $.widget.prototype._trigger.call(this, type, event, ui);
+		return $.Widget.prototype._trigger.call(this, type, event, ui);
 	},
 
 	plugins: {},
@@ -392,45 +451,15 @@ $.widget("ui.draggable", $.extend({}, $.ui.mouse, {
 		return {
 			helper: this.helper,
 			position: this.position,
-			absolutePosition: this.positionAbs, //deprecated
+			originalPosition: this.originalPosition,
 			offset: this.positionAbs
 		};
 	}
 
-}));
+});
 
 $.extend($.ui.draggable, {
-	version: "1.7",
-	eventPrefix: "drag",
-	defaults: {
-		addClasses: true,
-		appendTo: "parent",
-		axis: false,
-		cancel: ":input,option",
-		connectToSortable: false,
-		containment: false,
-		cursor: "auto",
-		cursorAt: false,
-		delay: 0,
-		distance: 1,
-		grid: false,
-		handle: false,
-		helper: "original",
-		iframeFix: false,
-		opacity: false,
-		refreshPositions: false,
-		revert: false,
-		revertDuration: 500,
-		scope: "default",
-		scroll: true,
-		scrollSensitivity: 20,
-		scrollSpeed: 20,
-		snap: false,
-		snapMode: "both",
-		snapTolerance: 20,
-		stack: false,
-		zIndex: false
-	}
+	version: "1.8"
 });
 
 $.ui.plugin.add("draggable", "connectToSortable", {
@@ -738,15 +767,17 @@ $.ui.plugin.add("draggable", "stack", {
 
 		var o = $(this).data("draggable").options;
 
-		var group = $.makeArray($(o.stack.group)).sort(function(a,b) {
-			return (parseInt($(a).css("zIndex"),10) || o.stack.min) - (parseInt($(b).css("zIndex"),10) || o.stack.min);
+		var group = $.makeArray($(o.stack)).sort(function(a,b) {
+			return (parseInt($(a).css("zIndex"),10) || 0) - (parseInt($(b).css("zIndex"),10) || 0);
 		});
-
+		if (!group.length) { return; }
+		
+		var min = parseInt(group[0].style.zIndex) || 0;
 		$(group).each(function(i) {
-			this.style.zIndex = o.stack.min + i;
+			this.style.zIndex = min + i;
 		});
 
-		this[0].style.zIndex = o.stack.min + group.length;
+		this[0].style.zIndex = min + group.length;
 
 	}
 });

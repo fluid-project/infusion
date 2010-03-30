@@ -575,7 +575,7 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.inlineEdit.standardEditView = function (editField) {
         var that = {
             refreshView: function (componentThat, source) {
-                if (componentThat.editField && componentThat.editField.index(source) === -1) {
+                if (!source || componentThat.editField && componentThat.editField.index(source) === -1) {
                     componentThat.editView.value(componentThat.model.value);
                 }
             }
