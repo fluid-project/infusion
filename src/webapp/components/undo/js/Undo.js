@@ -23,10 +23,11 @@ fluid_1_2 = fluid_1_2 || {};
         STATE_REVERTED = "state_reverted";
   
     function defaultRenderer(that, targetContainer) {
+        var str = that.options.strings;
         var markup = "<span class='flc-undo'>" + 
-          "<span class='flc-undo-undoContainer'>[<a href='#' class='flc-undo-undoControl'>undo</a>]</span>" + 
-          "<span class='flc-undo-redoContainer'>[<a href='#' class='flc-undo-redoControl'>redo</a>]</span>" + 
-        "</span>";
+            "<a href='#' class='flc-undo-undoControl'>" + str.undo + "</a>" + 
+            "<a href='#' class='flc-undo-redoControl'>" + str.redo + "</a>" + 
+            "</span>";
 		var markupNode = $(markup).attr({
 			"role": "region",  
 			"aria-live": "polite", 
@@ -120,10 +121,15 @@ fluid_1_2 = fluid_1_2 || {};
   
     fluid.defaults("undo", {  
         selectors: {
-            undoContainer: ".flc-undo-undoContainer",
+            undoContainer: ".flc-undo-undoControl",
             undoControl: ".flc-undo-undoControl",
-            redoContainer: ".flc-undo-redoContainer",
+            redoContainer: ".flc-undo-redoControl",
             redoControl: ".flc-undo-redoControl"
+        },
+        
+        strings: {
+            undo: "undo edit",
+            redo: "redo edit"
         },
                     
         renderer: defaultRenderer
