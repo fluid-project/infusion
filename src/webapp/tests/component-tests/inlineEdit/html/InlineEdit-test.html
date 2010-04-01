@@ -5,7 +5,7 @@
         <title>Inline Edit Test Suite</title>
 
         <!--  This is the jqUnit test css file -->
-        <link rel="stylesheet" type="text/css" media="screen" href="../../../lib/qunit/css/testsuite.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="../../../lib/qunit/css/qunit.css" />
 
         <!--  These are the required javascript modules for the Inline Edit -->
         <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
@@ -24,7 +24,7 @@
         <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
 
         <!--  These are the jqUnit test framework js files -->
-        <script type="text/javascript" src="../../../lib/qunit/js/testrunner.js"></script>
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
         <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
         <script type="text/javascript" src="../../../lib/jquery-ui/js/jquery.simulate.js"></script>        
 
@@ -34,10 +34,11 @@
     </head>
     <body id="body">
       <!-- This is the markup that jqUnit will look for when running tests and displaying the results -->
-      <h1 id="header">InlineEdit Test Suite</h1>
-      <h2 id="banner"></h2>
-      <h2 id="userAgent"></h2>
-      <ol id="tests"></ol>
+      <h1 id="qunit-header">InlineEdit Test Suite</h1>
+      <h2 id="qunit-banner"></h2>
+      <div id="qunit-testrunner-toolbar"></div>
+      <h2 id="qunit-userAgent"></h2>
+      <ol id="qunit-tests"></ol>
       <div id="main">
 
       <!-- This is the test data -->

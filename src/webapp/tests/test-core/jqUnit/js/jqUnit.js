@@ -316,6 +316,10 @@ var jqUnit = jqUnit || {};
             test(string, testFn);
         };
         
+        that.asyncTest = function (string, testFn) {
+            asyncTest(string, testFn);
+        };
+        
         module(moduleName, {
             setup: setUpFn || function () {},
             teardown: tearDownFn || function () {}

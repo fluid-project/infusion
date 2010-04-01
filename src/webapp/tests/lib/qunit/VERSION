@@ -1,0 +1,2 @@
+jQuery doesn't formally release versions of QUnit. This version of qunit.js and qunit.css were taken from revision 2dbf603 of http://github.com/jquery/qunit/tree/master/qunit/
+
