@@ -352,7 +352,7 @@ var fluid_1_2 = fluid_1_2 || {};
             lastClosest = null;
             displacementX = dX;
             displacementY = dY;
-            $(window).bind("mousemove.fluid-dropManager", that.mouseMove);
+            $("body").bind("mousemove.fluid-dropManager", that.mouseMove);
         };
         
         that.lastPosition = function () {
@@ -360,7 +360,7 @@ var fluid_1_2 = fluid_1_2 || {};
         };
         
         that.endDrag = function () {
-            $(window).unbind("mousemove.fluid-dropManager");
+            $("body").unbind("mousemove.fluid-dropManager");
         };
         
         that.mouseMove = function (evt) {
