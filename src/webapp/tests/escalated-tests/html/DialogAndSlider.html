@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>jQuery UI Dialog and Slider test</title>
+        
+        <link rel="stylesheet" type="text/css" href="../jquery-ui-1.8-full/css/ui-lightness/jquery-ui-1.8.custom.css" />
+        
+        <script type="text/javascript" src="../jquery-ui-1.8-full/js/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../jquery-ui-1.8-full/js/jquery-ui-1.8.custom.min.js"></script>
+              
+    </head>
+
+    <body class="fl-theme-rust">
+        <h1>Some Sample Title</h1>
+        
+        <!-- div that will contain the UI Options component -->
+        <div>
+            <div id="dialog">
+                <p>Some content with <a id="myLink" href="#">a link</a> and<button id="myButton">a button</button>. </p>
+                <div id="slider"></div>
+            </div>
+        </div>
+        
+        <button id="button">Open Dialog</button>
+        
+        <script type="text/javascript">
+            var dialog = $("#dialog");
+            dialog.dialog({
+                modal: true,
+                title: "jQuery UI Slider inside a Dialog widget"
+            });
+            
+            $("#slider").slider({
+                orientation: "horizontal"
+            });
+            
+            $("#button").click(function () {
+                dialog.dialog("open");
+                return false;
+            });
+        </script>
+    </body>
+
+</html>
+
