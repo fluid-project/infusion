@@ -255,6 +255,7 @@ fluid.identity = function() {
     var messageBase = {
         message1: "A simple message",
         message2: "A second message",
+        refMessage: "http://a.b.com/c",
         message3: "Every {0} has {1} {2}(s)"
     };
     
@@ -312,19 +313,17 @@ fluid.identity = function() {
         
         fluid.reRender(templates, node, { ID: "message", messagekey: "message3", args: ["CATT", "four", "leg"]}, options);
         expectMessage("Every CATT has four leg(s)");
-        
-        var node2 = $(".UILinkMessage-test");
-        
     });
     
     renderTests.test("UILinkMessage tests", function() {
         var node = $(".UILinkMessage-test");
         
-        var tree = { children: [{ID: "link", linktext: {messagekey: "message1"}, target: {messagekey: "message2"}}]};
+        var tree = { children: [{ID: "link", linktext: {messagekey: "message1"}, target: {messagekey: "refMessage"}}]};
         var options = {messageSource: {type: "data", messages: messageBase}};
         var templates = fluid.selfRender(node, tree, options);
+        var link = $("a", node);
         fluid.testUtils.assertNode("Rendered messages", 
-            {nodeText: messageBase.message1, href: messageBase.message2}, $("a", node));
+            {nodeText: messageBase.message1, href: messageBase.refMessage}, link);
     });
     
     renderTests.test("UIVerbatimMessage tests", function() {

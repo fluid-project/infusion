@@ -84,7 +84,7 @@ fluid.testUtils.assertNode = function(message, expected, node) {
             pass = !!evalue === attr;
             }
         if (key !== "children") {
-            jqUnit.assertTrue(message + messageExt + " expected: " + evalue + " actual: " + attr, pass);
+            jqUnit.assertTrue(message + messageExt + " expected value: " + evalue + " actual: " + attr, pass);
         }
         else {
             var children = $("> *", node);
