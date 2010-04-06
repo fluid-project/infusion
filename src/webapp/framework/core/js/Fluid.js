@@ -173,7 +173,7 @@ var fluid = fluid || fluid_1_2;
         var cache = {}, that = {};
         
         function cacheKey(name, thisContainer) {
-            return $.data(fluid.unwrap(thisContainer)) + "-" + name;
+            return fluid.allocateSimpleId(thisContainer) + "-" + name;
         }
 
         function record(name, thisContainer, result) {
