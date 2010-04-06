@@ -11,21 +11,12 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery*/
-/*global fluid*/
-/*global demo*/
-
+/*global jQuery, fluid, demo*/
 var demo = demo || {};
-(function ($, fluid) {
 
-    /**
-     * Initialize all rich text inline edit components present on the inline-edit 
-     * demo.
-     */
-    var inlineRichTextEditSetup = function () {
+(function ($, fluid) {
         
-        var editors = [];
-        
+    demo.initRichInlineEdit = function () {
         /**
          * Create cancel and save buttons for a rich inline editor.
          * @param {Object} editor 
@@ -40,51 +31,28 @@ var demo = demo || {};
                 editor.cancel();
                 return false;
             });
-        };
-        
-        /**
-         * Create cancel and save buttons for all rich text editors.
-         * @param {Object} editors array of rich inline editors.
-         */
-        var makeAllButtons = function (editors) {
-            while (editors.length > 0) {
-                makeButtons(editors.pop());
-            }
-        };          
-        
-        /**
-         * Tiny MCE rich inline text editor example. 
-         */
-        editors.push(
-            fluid.inlineEdit.tinyMCE("#richEdit1", {
-                tinyMCE: {
-                        width: 1024,
-                        theme: "advanced",
-                        theme_advanced_toolbar_location : "top"
-                    }, 
-                componentDecorators: {
-                    type: "fluid.undoDecorator"
-                }
-            })
-        );
-        
-        /**
-         * FCK Editor rich inline text editor example. 
-         */
-        editors.push(
-            fluid.inlineEdit.FCKEditor("#richEdit2", {
-                FCKEditor: {BasePath: "../../../../tests/manual-tests/lib/fckeditor/"},
-                componentDecorators: {
-                    type: "fluid.undoDecorator"
-                }
-            })
-        );
-        
-        makeAllButtons(editors);
-    };
+        }; 
 
-        
-    demo.initInlineEdit = function () {        
-        inlineRichTextEditSetup();
+        // Create a TinyMCE-based Rich Inline Edit component.
+        var tinyEditor = fluid.inlineEdit.tinyMCE("#richEdit1", {
+            tinyMCE: {
+                    width: 1024,
+                    theme: "advanced",
+                    theme_advanced_toolbar_location : "top"
+                }, 
+            componentDecorators: {
+                type: "fluid.undoDecorator"
+            }
+        });
+        makeButtons(tinyEditor);
+
+        // Create an CKEditor 3.x-based Rich Inline Edit component.
+        var ckEditor = fluid.inlineEdit.CKEditor("#richEdit2", {
+            componentDecorators: {
+                type: "fluid.undoDecorator"
+            }
+        });
+        makeButtons(ckEditor);    
     };    
+
 })(jQuery, fluid);

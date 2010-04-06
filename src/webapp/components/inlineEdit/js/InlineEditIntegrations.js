@@ -10,19 +10,42 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery*/
-/*global fluid_1_2*/
-/*global tinyMCE*/
-/*global FCKeditor*/
-/*global FCKeditorAPI*/
-/*global fluid*/ //this global function will refer to whichever version of Fluid Infusion was first loaded
+/*global setTimeout*/
+/*global jQuery, fluid_1_2, fluid*/
+/*global tinyMCE, FCKeditor, FCKeditorAPI, CKEDITOR*/
 
 fluid_1_2 = fluid_1_2 || {};
 
 (function ($, fluid) {
 
+    /*************************************
+     * Shared Rich Text Editor functions *
+     *************************************/
+     
+    fluid.inlineEdit.makeViewAccessor = function (editorGetFn, setValueFn, getValueFn) {
+        return function (editField) {
+            return {
+                value: function (newValue) {
+                    var editor = editorGetFn(editField);
+                    if (!editor) {
+                        if (newValue) {
+                            $(editField).val(newValue);
+                        }
+                        return "";
+                    }
+                    if (newValue) {
+                        setValueFn(editField, editor, newValue);
+                    }
+                    else {
+                        return getValueFn(editor);
+                    }
+                }
+            };
+        };
+    };
+    
     var configureInlineEdit = function (configurationName, container, options) {
-    	var defaults = fluid.defaults(configurationName); 
+        var defaults = fluid.defaults(configurationName); 
         var assembleOptions = fluid.merge(defaults? defaults.mergePolicy: null, {}, defaults, options);
         return fluid.inlineEdit(container, assembleOptions);
     };
@@ -41,7 +64,10 @@ fluid_1_2 = fluid_1_2 || {};
            fluid.inlineEdit.normalizeHTML(el2);
     };
 
-    // Configuration for integrating tinyMCE
+
+    /************************
+     * Tiny MCE Integration *
+     ************************/
     
     /**
      * Instantiate a rich-text InlineEdit component that uses an instance of TinyMCE.
@@ -55,24 +81,24 @@ fluid_1_2 = fluid_1_2 || {};
         return inlineEditor;
     };
         
-    fluid.inlineEdit.tinyMCE.viewAccessor = function (editField) {
-        return {
-            value: function (newValue) {
-                var editor = tinyMCE.get(editField.id);
-                if (!editor) {
-                    return "";
-                }
-                if (newValue) {
-                    // without this, there is an intermittent race condition if the editor has been created on this event.
-                    $(editField).val(newValue); 
-                    editor.setContent(newValue, {format : 'raw'});
-                }
-                else {
-                    return editor.getContent();
-                }
-            }
-        };
+    fluid.inlineEdit.tinyMCE.getEditor = function (editField) {
+        return tinyMCE.get(editField.id);
     };
+    
+    fluid.inlineEdit.tinyMCE.setValue = function (editField, editor, value) {
+        // without this, there is an intermittent race condition if the editor has been created on this event.
+        $(editField).val(value); 
+        editor.setContent(value, {format : 'raw'});
+    };
+    
+    fluid.inlineEdit.tinyMCE.getValue = function (editor) {
+        return editor.getContent();
+    };
+    
+    var flTinyMCE = fluid.inlineEdit.tinyMCE; // Shorter alias for awfully long fully-qualified names.
+    flTinyMCE.viewAccessor = fluid.inlineEdit.makeViewAccessor(flTinyMCE.getEditor, 
+                                                               flTinyMCE.setValue,
+                                                               flTinyMCE.getValue);
    
     fluid.inlineEdit.tinyMCE.blurHandlerBinder = function (that) {
         function focusEditor(editor) {
@@ -108,7 +134,6 @@ fluid_1_2 = fluid_1_2 || {};
             } 
         });
     };
-   
    
     fluid.inlineEdit.tinyMCE.editModeRenderer = function (that) {
         var options = that.options.tinyMCE;
@@ -152,17 +177,25 @@ fluid_1_2 = fluid_1_2 || {};
     });
     
     
-    
-    // Configuration for integrating FCKEditor
-    
+    /*****************************
+     * FCKEditor 2.x Integration *
+     *****************************/
+         
     /**
      * Instantiate a rich-text InlineEdit component that uses an instance of FCKeditor.
+     * Support for FCKEditor 2.x is now deprecated. We recommend the use of the simpler and more
+     * accessible CKEditor 3 instead.
      * 
      * @param {Object} componentContainer the element containing the inline editors
      * @param {Object} options configuration options for the components
      */
     fluid.inlineEdit.FCKEditor = function (container, options) {
         return configureInlineEdit("fluid.inlineEdit.FCKEditor", container, options);
+    };
+    
+    fluid.inlineEdit.FCKEditor.getEditor = function (editField) {
+        var editor = typeof(FCKeditorAPI) === "undefined"? null: FCKeditorAPI.GetInstance(editField.id);
+        return editor;
     };
     
     fluid.inlineEdit.FCKEditor.complete = fluid.event.getEventFirer();
@@ -183,29 +216,15 @@ fluid_1_2 = fluid_1_2 || {};
         that.events.afterInitEdit.addListener(
             function (editor) {
                 focusEditor(editor);
-                var editorBody = editor.EditingArea.TargetElement;
-
-                // NB - this section has no effect - on most browsers no focus events
-                // are delivered to the actual body
-                //fluid.deadMansBlur(that.editField,
-                //         $(editorBody),
-                //           function () {
-                //               that.cancel();
-                //            });
             }
         );
         that.events.afterBeginEdit.addListener(function () {
-            var editor = fluid.inlineEdit.FCKEditor.byId(that.editField[0].id);
+            var editor = fluid.inlineEdit.FCKEditor.getEditor(that.editField[0]);
             if (editor) {
                 focusEditor(editor);
             } 
         });
 
-    };
-
-    fluid.inlineEdit.FCKEditor.byId = function (id) {
-        var editor = typeof(FCKeditorAPI) === "undefined"? null: FCKeditorAPI.GetInstance(id);
-        return editor;  
     };
     
     fluid.inlineEdit.FCKEditor.editModeRenderer = function (that) {
@@ -224,27 +243,21 @@ fluid_1_2 = fluid_1_2 || {};
         oFCKeditor.Config.fluidInstance = that;
         oFCKeditor.ReplaceTextarea();
     };
+
     
-    fluid.inlineEdit.FCKEditor.viewAccessor = function (editField) {
-        return {
-            value: function (newValue) {
-                var editor = fluid.inlineEdit.FCKEditor.byId(editField.id); 
-                if (!editor) {
-                	if (newValue) {
-                        $(editField).val(newValue);
-                	}
-                	return "";
-                }
-                if (newValue) {
-                    editor.SetHTML(newValue);
-                }
-                else {
-                    return editor.GetHTML();
-                }
-            }
-        };
+    fluid.inlineEdit.FCKEditor.setValue = function (editField, editor, value) {
+        editor.SetHTML(value);
     };
     
+    fluid.inlineEdit.FCKEditor.getValue = function (editor) {
+        return editor.GetHTML();
+    };
+    
+    var flFCKEditor = fluid.inlineEdit.FCKEditor;
+    
+    flFCKEditor.viewAccessor = fluid.inlineEdit.makeViewAccessor(flFCKEditor.getEditor,
+                                                                 flFCKEditor.setValue,
+                                                                 flFCKEditor.getValue);
     
     fluid.defaults("fluid.inlineEdit.FCKEditor", {
         selectors: {
@@ -271,8 +284,104 @@ fluid_1_2 = fluid_1_2 || {};
     });
     
     
-    // Configuration for integrating a drop-down editor
+    /****************************
+     * CKEditor 3.x Integration *
+     ****************************/
     
+    fluid.inlineEdit.CKEditor = function (container, options) {
+        return configureInlineEdit("fluid.inlineEdit.CKEditor", container, options);
+    };
+    
+    fluid.inlineEdit.CKEditor.getEditor = function (editField) {
+        return CKEDITOR.instances[editField.id];
+    };
+    
+    fluid.inlineEdit.CKEditor.setValue = function (editField, editor, value) {
+        editor.setData(value);
+    };
+    
+    fluid.inlineEdit.CKEditor.getValue = function (editor) {
+        return editor.getData();
+    };
+    
+    var flCKEditor = fluid.inlineEdit.CKEditor;
+    flCKEditor.viewAccessor = fluid.inlineEdit.makeViewAccessor(flCKEditor.getEditor,
+                                                                flCKEditor.setValue,
+                                                                flCKEditor.getValue);
+                             
+    fluid.inlineEdit.CKEditor.focus = function (editor) {
+        setTimeout(function () {
+            // CKEditor won't focus itself except in a timeout.
+            editor.focus();
+        }, 0);
+    };
+    
+    // Special hacked HTML normalisation for CKEditor which spuriously inserts whitespace
+    // just after the first opening tag
+    fluid.inlineEdit.CKEditor.normalizeHTML = function(value) {
+        var togo = fluid.inlineEdit.normalizeHTML(value);
+        var angpos = togo.indexOf(">");
+        if (angpos !== -1 && angpos < togo.length - 1) {
+            if (togo.charAt(angpos + 1) !== " ") {
+                togo = togo.substring(0, angpos + 1) + " " + togo.substring(angpos + 1);
+            }
+        }
+        return togo;
+    };
+    
+    fluid.inlineEdit.CKEditor.htmlComparator = function(el1, el2) {
+        return fluid.inlineEdit.CKEditor.normalizeHTML(el1) ===
+           fluid.inlineEdit.CKEditor.normalizeHTML(el2);
+    };
+                                    
+    fluid.inlineEdit.CKEditor.blurHandlerBinder = function (that) {
+        that.events.afterInitEdit.addListener(fluid.inlineEdit.CKEditor.focus);
+        that.events.afterBeginEdit.addListener(function () {
+            var editor = fluid.inlineEdit.CKEditor.getEditor(that.editField[0]);
+            if (editor) {
+                fluid.inlineEdit.CKEditor.focus(editor);
+            }
+        });
+    };
+    
+    fluid.inlineEdit.CKEditor.editModeRenderer = function (that) {
+        var id = fluid.allocateSimpleId(that.editField);
+        $.data(fluid.unwrap(that.editField), "fluid.inlineEdit.CKEditor", that);
+        var editor = CKEDITOR.replace(id, that.options.CKEditor);
+        editor.on("instanceReady", function (e) {
+            fluid.inlineEdit.CKEditor.focus(e.editor);
+            that.events.afterInitEdit.fire(e.editor);
+        });
+    };                                                     
+    
+    fluid.defaults("fluid.inlineEdit.CKEditor", {
+        selectors: {
+            edit: "textarea" 
+        },
+        
+        styles: {
+            invitation: "fl-inlineEdit-richText-invitation"
+        },
+      
+        displayAccessor: {
+            type: "fluid.inlineEdit.richTextViewAccessor"
+        },
+        editAccessor: {
+            type: "fluid.inlineEdit.CKEditor.viewAccessor"
+        },
+        lazyEditView: true,
+        modelComparator: fluid.inlineEdit.CKEditor.htmlComparator,
+        blurHandlerBinder: fluid.inlineEdit.CKEditor.blurHandlerBinder,
+        editModeRenderer: fluid.inlineEdit.CKEditor.editModeRenderer,
+        CKEditor: {
+            // CKEditor-specific configuration goes here.
+        }
+    });
+    
+    
+    /************************
+     * Dropdown Integration *
+     ************************/    
     /**
      * Instantiate a drop-down InlineEdit component
      * 

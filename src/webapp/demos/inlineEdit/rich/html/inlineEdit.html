@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Untitled</title>
+        <title>Rich Text Inline Edit Demo</title>
 
         <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-reset.css" />
         <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-layout.css" />
@@ -21,14 +21,14 @@
         <script type="text/javascript" src="../../../../components/inlineEdit/js/InlineEditIntegrations.js"></script>
         <script type="text/javascript" src="../../../../components/undo/js/Undo.js"></script>
         
-        <script type="text/javascript" src="../../../../tests/manual-tests/lib/fckeditor/fckeditor.js"></script>
+        <script type="text/javascript" src="http://ckeditor-fluid.appspot.com/ckeditor.js"></script>
         
         <script type="text/javascript" src="../js/inlineEdit.js"></script>
  
    </head>
     <body>
  
-       <h1>Example 4: Rich Text Inline Edit (using Tiny_MCE editor)</h1>
+       <h1>Rich Text Inline Edit with Tiny MCE</h1>
         <div id="richEdit1">
             <div class="flc-inlineEdit-text">
                 <p>After a hiatus, <strong>Portishead</strong> is back with their first studio 
@@ -45,7 +45,7 @@
         </div>
 
         
-        <h1>Example 5: Rich Text Inline Edit (using FCKEditor)</h1>
+        <h1>Rich Text Inline Edit with CKEditor 3</h1>
         <div id="richEdit2">
             <div class="flc-inlineEdit-text">
                 <p>After a hiatus, <strong>Portishead</strong> is back with their first studio 
@@ -63,7 +63,7 @@
         
         
         <script type="text/javascript">
-            demo.initInlineEdit();
+            demo.initRichInlineEdit();
         </script>        
     </body>
 </html>
