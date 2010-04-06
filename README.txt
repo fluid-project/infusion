@@ -142,7 +142,6 @@ with their licensing terms.
     * SWFUpload v2.2.0.1: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
     * SWFObject v2.1: http://code.google.com/p/swfobject/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
     * Sample markup and stylesheets from Sakai v2.5 (http://sakaiproject.org) and uPortal v2.6 (http://www.uportal.org/)
-    * FCKeditor v2.6, HTML text editor (LGPL licensed http://www.fckeditor.net/license)
     
 Other third party software
 
