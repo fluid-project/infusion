@@ -1,0 +1,7 @@
+{"uploader": {
+ 	"name": "Uploader",
+   	"description": "Upload single files, batches of files, and large files while visually indicating duration.",
+   	"cssFiles": "Uploader.css",
+	"files": ["DemoUploadManager.js", "FileQueue.js", "Scroller.js", "SWFUploadManager.js", "Uploader.js"],
+	"dependencies": ["fssReset", "fssLayout", "jQuery", "jQueryUICore", "framework", "swfobject", "swfupload", "progress"]
+}}

@@ -1,0 +1,6 @@
+{"jQuerybgiframePlugin": {
+   	"name": "jQuery bgiframe Plugin",
+   	"description": "Used to handle zindex issues in IE6.",
+	"files": ["jquery.bgiframe.js"],
+	"dependencies": ["jQuery", "jQueryUICore"]
+}}

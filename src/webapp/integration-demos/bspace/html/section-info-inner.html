@@ -1,0 +1,452 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>bSpace : Astronomy 7A : Section Info</title>
+        
+        <link type="text/css" rel="stylesheet" media="all" href="../../../lib/jquery/plugins/tooltip/css/jquery.tooltip.css" />
+        
+        <link type="text/css" rel="stylesheet" media="all" href="../css/tool_base.css" />
+        <link type="text/css" rel="stylesheet" media="all" href="../css/tool.css" />
+        <link type="text/css" rel="stylesheet" media="all" href="../css/sections.css" />
+        
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/plugins/tooltip/js/jquery.tooltip.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../components/inlineEdit/js/InlineEdit.js"></script>
+        <script type="text/javascript" src="../../../components/undo/js/Undo.js"></script>
+        
+        <script type="text/javascript" src="../js/headscripts.js"></script>
+        <script type="text/javascript" src="../js/sections.js"></script>
+        
+        <script type="text/javascript">
+            jQuery(document).ready(function(){
+
+                 sectionNameEdits = fluid.inlineEdits(".sectionTable", {
+                    useTooltip: true,
+                    selectOnEdit: true,
+                    tooltipText: "Click to edit section name",
+                    tooltipDelay: 800,
+                    componentDecorators: {
+                         type: "fluid.undoDecorator",
+                         options: {
+                             renderer: myUndoRenderer,
+							 selectors: {
+					            undoContainer: ".undoContainer",
+					            undoControl: ".undoControl",
+					            redoContainer: ".redoContainer",
+					            redoControl: ".redoControl"
+							 }
+                         }
+                    },
+                    listeners: {
+                        afterFinishEdit: function (newValue, oldValue, editNode, viewNode) {
+                            if (oldValue !== newValue) {
+                                var savedMsg = $(viewNode).siblings(".savedControl");
+                                savedMsg.css("background-position","0px 0px");
+                                displayEditUpdateMsg(savedMsg);
+                            }
+                        },
+                        modelChanged: function (newValue, oldValue, that) {
+                            if (that !== undefined) { // we're probably coming from an Undo/Redo situation
+                                if (oldValue !== newValue) {
+                                    var savedMsg = that.container.siblings(".savedControl");
+                                    if (savedMsg.css("background-position") !== "0px -120px") {
+                                        savedMsg.css("background-position","0px -120px");
+                                    } else {
+                                        savedMsg.css("background-position","0px -240px");
+                                    }
+                                    displayEditUpdateMsg(savedMsg);
+                                }  
+                            }
+                        }
+                    }
+                });
+            
+                $(".remove-btn").click(function () {
+                    $(this).parents("tr").css("background-color", "#FFE59F").fadeOut("slow", function(){
+                        $(this).remove();
+                    });
+                    return false;
+                });
+                
+                $(".dummy").click(function () {
+                    showMessage();
+                    $("#continue").focus();
+                    return false;
+                });
+                
+                $("#continue").click(function () {
+                    hideMessage();
+                    return false;
+                });
+                
+                $(".editInstructions a").click(function () {
+                    $(".editInstructions").slideUp();
+                    return false;
+                });
+                
+            });
+            
+            var showMessage = function () {
+                $("#demo-overlay").show();
+                
+                return false;
+            };
+            
+            var hideMessage = function () {
+                $("#demo-overlay").hide();
+                return false;
+            };
+            
+            var myUndoRenderer = function (that, targetContainer) {
+                var markup = "<span class='fluid-undo' aria-live='polite' aria-relevant='all'>" + 
+                  "<span class='undoContainer'><a href='#' class='undoControl'><span class='label'>Undo</span><span class='hiddenForScreenReaderUsers'>Undo your edit.</span></a></span>" + 
+                  "<span class='redoContainer'><a href='#' class='redoControl'><span class='label'>Redo</span><span class='hiddenForScreenReaderUsers'>Redo your edit.</span></a></span>" + 
+                "</span>";
+                var markupNode = $(markup);
+                targetContainer.append(markupNode);
+                return markupNode;
+            };
+            
+            var displayEditUpdateMsg = function (msgElm) {
+                msgElm.stop().css("opacity",0);
+                msgElm.animate({opacity: 1},"slow","",function (){
+                    msgElm.animate({opacity: 0},4000);
+                });
+            };
+           
+        </script>
+    </head>
+    <body>
+        <div class="portletBody">
+            <form target="" id="overviewForm" name="overviewForm" method="post" action="https://sakai-dev.berkeley.edu/portal/tool/1e1a969c-0c6c-426b-aaa2-9e6526385bf9/overview" enctype="application/x-www-form-urlencoded">
+                <div class="navIntraTool">
+                    <span class="currentView">Overview</span>| <a href="#" class="dummy" id="overviewForm:_idJsp8" name="overviewForm:_idJsp8">Add Sections</a>| <a href="#" class="dummy" id="overviewForm:_idJsp12" name="overviewForm:_idJsp12">Student Memberships</a>| <a href="#" class="dummy" id="overviewForm:_idJsp17" name="overviewForm:_idJsp17">Options</a>
+                </div>
+                <table class="rosterPageHeader" summary="Roster Header">
+                    <tbody>
+                        <tr>
+                            <td class="rosterPageHeaderLeft">
+                            </td>
+                            <td class="rosterPageHeaderRight">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="instructions">
+                    <h3 class="instructions">Instructor's Overview</h3>
+                    <div class="editInstructions">
+                        <p>Editable items will highlight as you mouse over them. To edit an item click on the item.</p>
+                        <div><a href="">Don't show me this message again</a></div>
+                    </div>
+                </div>
+                <table id="overviewForm:sectionsTable" class="listHier sectionTable" cellpadding="0" cellspacing="0" width="100%" summary="Sections">
+                    <thead>
+                        <tr>
+                            <th>
+                                <a href="#" class="dummy currentSort" id="overviewForm:sectionsTable:_idJsp49" name="overviewForm:sectionsTable:_idJsp49">Name&#160;<img src="../images/sortascending.gif" alt="Sort Ascending"/></a>
+                            </th>
+                            <th>
+                                <a href="#" class="dummy notCurrentSort" id="overviewForm:sectionsTable:_idJsp65" name="overviewForm:sectionsTable:_idJsp65">Graduate Student
+                                    <br/>
+                                    Instructor (GSIs)
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" class="dummy notCurrentSort" id="overviewForm:sectionsTable:_idJsp70" name="overviewForm:sectionsTable:_idJsp70">Day</a>
+                            </th>
+                            <th>
+                                <a href="#" class="dummy notCurrentSort" id="overviewForm:sectionsTable:_idJsp75" name="overviewForm:sectionsTable:_idJsp75">Time</a>
+                            </th>
+                            <th>
+                                <a href="#" class="dummy notCurrentSort" id="overviewForm:sectionsTable:_idJsp80" name="overviewForm:sectionsTable:_idJsp80">Location</a>
+                            </th>
+                            <th>
+                                <a href="#" class="dummy notCurrentSort" id="overviewForm:sectionsTable:_idJsp85" name="overviewForm:sectionsTable:_idJsp85">Max. # of
+                                    <br/>
+                                    Students
+                                </a>
+                            </th>
+                            <th>
+                                <a href="#" class="dummy notCurrentSort" id="overviewForm:sectionsTable:_idJsp89" name="overviewForm:sectionsTable:_idJsp89">Available</a>
+                            </th>
+                            <th>
+                                Remove
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="overviewForm:sectionsTable:tbody_element">
+                        <tr class="firstCategoryHeader">
+                            <td colspan="8">
+                                Sections
+                            </td>
+                        </tr>
+                        <tr class="groupRow">
+                            <td class="leftIndent">
+                                <div class="flc-inlineEditable inlineEditable">
+                                    <span class="flc-inlineEdit-text sectionName">Astronomy 7A P 001 LEC</span>
+                                    <span class="savedControl"><span class="label">Edit Saved</span></span>
+                                </div>
+                                <div class="itemAction">
+                                    <!--<a href="#" class="dummy">Edit Details</a>
+                                    | -->
+                                    <a href="#" class="dummy">Assign GSIs</a>
+                                    | 
+                                    <a href="#" class="dummy">Assign Students</a>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:0:instructorName"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:0:instructorName">Melissa Basman</span>
+                                </div>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:0:instructorName">Julie Chambers</span>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:0:meetingDayList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:0:meetingDayList">T, Th</span>
+                                </div>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:0:meetingDayList">M</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span id="overviewForm:sectionsTable:0:meetingTimeList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:0:meetingTimeList">3:00pm - 4:00pm</span>
+                                </div>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:0:meetingTimeList">4:00pm - 5:00pm</span>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:0:meetingLocationList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:0:meetingLocationList">Lecture Hall A</span>
+                                </div>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:0:meetingLocationList">Lecture Hall B</span>
+                                </div>
+                            </td>
+                            <td class="center">
+                                50
+                            </td>
+                            <td class="center">
+                                3
+                            </td>
+                            <td class="center">
+                                <input class="remove-btn" value="true" type="image" src="../images/remove.png" />
+                            </td>
+                        </tr>
+                        <tr class="groupRow">
+                            <td class="leftIndent">
+                                <div class="flc-inlineEditable inlineEditable">
+                                    <span class="flc-inlineEdit-text sectionName">Astronomy 7A S 102 LEC</span>
+                                    <span class="savedControl"><span class="label">Edit Saved</span></span>
+                                </div>
+                                <div class="itemAction">
+                                    <!--<a href="#" class="dummy">Edit Details</a>                                     | -->
+                                    <a href="#" class="dummy">Assign GSIs</a>
+                                    | 
+                                    <a href="#" class="dummy">Assign Students</a>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:1:instructorName"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:1:instructorName">Rachel Hollowgrass</span>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:1:meetingDayList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:1:meetingDayList">T, Th</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span id="overviewForm:sectionsTable:1:meetingTimeList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:1:meetingTimeList">2:00pm - 3:00pm</span>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:1:meetingLocationList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:1:meetingLocationList">Lecture Hall A</span>
+                                </div>
+                            </td>
+                            <td class="center">
+                                50
+                            </td>
+                            <td class="center">
+                                0
+                            </td>
+                            <td class="center">
+                                <input class="remove-btn" value="true" type="image" src="../images/remove.png" />
+                            </td>
+                        </tr>
+                        <tr class="groupRow">
+                            <td class="leftIndent">
+                                <div class="flc-inlineEditable inlineEditable">
+                                    <span class="flc-inlineEdit-text sectionName">Astronomy 7A S 103 LEC</span>
+                                    <span class="savedControl"><span class="label">Edit Saved</span></span>
+                                </div>
+                                <div class="itemAction">
+                                    <!--<a href="#" class="dummy">Edit Details</a>                                     | -->
+                                    <a href="#" class="dummy">Assign GSIs</a>
+                                    | 
+                                    <a href="#" class="dummy">Assign Students</a>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:2:instructorName"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:2:instructorName">Judy Stern</span>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:2:meetingDayList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:2:meetingDayList">T, Th</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span id="overviewForm:sectionsTable:2:meetingTimeList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:2:meetingTimeList">2:00pm - 3:00pm</span>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:2:meetingLocationList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:2:meetingLocationList">Lecture Hall A</span>
+                                </div>
+                            </td>
+                            <td class="center">
+                                No limit
+                            </td>
+                            <td class="center">
+                                n/a
+                            </td>
+                            <td class="center">
+                                <input class="remove-btn" value="true" type="image" src="../images/remove.png" />
+                            </td>
+                        </tr>
+                        <tr class="groupRow">
+                            <td class="leftIndent">
+                                <div class="flc-inlineEditable inlineEditable">
+                                    <span class="flc-inlineEdit-text sectionName">Astronomy 7A S 104 LEC</span>
+                                    <span class="savedControl"><span class="label">Edit Saved</span></span>
+                                </div>
+                                <div class="itemAction">
+                                    <!--<a href="#" class="dummy">Edit Details</a>                                     | -->
+                                    <a href="#" class="dummy">Assign GSIs</a>
+                                    | 
+                                    <a href="#" class="dummy">Assign Students</a>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:3:instructorName"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:3:instructorName">DAVIS, Ray</span>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:3:meetingDayList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:3:meetingDayList">T,F</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span id="overviewForm:sectionsTable:3:meetingTimeList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:3:meetingTimeList">2:00pm - 3:00pm</span>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:3:meetingLocationList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:3:meetingLocationList">Lecture Hall B</span>
+                                </div>
+                            </td>
+                            <td class="center">
+                                25
+                            </td>
+                            <td class="center">
+                                10
+                            </td>
+                            <td class="center">
+                                <input class="remove-btn" value="true" type="image" src="../images/remove.png" />
+                            </td>
+                        </tr>
+                        <tr class="groupRow">
+                            <td class="leftIndent">
+                                <div class="flc-inlineEditable inlineEditable">
+                                    <span class="flc-inlineEdit-text sectionName">Astronomy 7A S 105 LEC</span>
+                                    <span class="savedControl"><span class="label">Edit Saved</span></span>
+                                </div>
+                                <div class="itemAction">
+                                    <!--<a href="#" class="dummy">Edit Details</a>                                     | -->
+                                    <a href="#" class="dummy">Assign GSIs</a>
+                                    | 
+                                    <a href="#" class="dummy">Assign Students</a>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:4:instructorName"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:4:instructorName">Ray Davis</span>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:4:meetingDayList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:4:meetingDayList">T, Th</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span id="overviewForm:sectionsTable:4:meetingTimeList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:4:meetingTimeList">4:00pm - 5:00pm</span>
+                                </div>
+                            </td>
+                            <td class="left">
+                                <span id="overviewForm:sectionsTable:4:meetingLocationList"></span>
+                                <div>
+                                    <span id="overviewForm:sectionsTable:4:meetingLocationList">Dwinelle 47</span>
+                                </div>
+                            </td>
+                            <td class="center">
+                                45
+                            </td>
+                            <td class="center">
+                                2
+                            </td>
+                            <td class="center">
+                                <input class="remove-btn" value="true" type="image" src="../images/remove.png" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <div id="demo-overlay">
+            <div id="demo-message-container">
+                <div id="demo-message">
+                    <h2>Attention:</h2>
+                    <p>
+                        For the purposes of this demo that page element does not do anything. Please click "Continue..." to try other elements on the page.
+                    </p>
+                    <p style="text-align: right"><input type="button" id="continue" value="Continue..." title="Continue..." /></p>
+                    
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

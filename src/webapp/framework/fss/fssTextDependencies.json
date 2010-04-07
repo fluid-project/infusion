@@ -1,0 +1,5 @@
+{"fssText": {
+   	"name": "Fluid Skinning System: Text",
+   	"description": "CSS classes for controlling text size, spacing, size, and fonts.",
+	"cssFiles": "fss-text.css"
+}}

@@ -1,0 +1,5 @@
+{"fssLayout": {
+	"name": "Fluid Skinning System: Layout",
+   	"description": "Provides convenient CSS classes for designing multi-column layouts, widgets, and more.",
+	"cssFiles": "fss-layout.css"
+}}

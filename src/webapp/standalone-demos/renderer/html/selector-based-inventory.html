@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:rsf="http://ponder.org.uk/rsf" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Renderer Example: Selector-based</title>
+        <link rel="stylesheet" type="text/css" href="../css/renderer-examples.css" />
+
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../js/selector-based-inventory.js"></script>
+    </head>
+
+    <body>
+        <h2>Renderer Example: Selector-based Rendering</h2>
+        <div class="info">
+            <p>The table below is, initially, the template that will be used by the Fluid Renderer.
+               The elements in the mark-up do <em>not</em> have an "rsf:id" attribute to identify them to the renderer. Instead,
+               selectors (in this example, class-based) are used to identify the elements.</p>
+            <p>Each of the "Render..." buttons will render the table using a different version of the component
+               tree.</p>
+           <p>NOTE: Each rendering internally starts with a clean version of the template.</p>
+       </div>
+        <hr/>
+        <p>
+            <input id="render-full" type="submit" value="Render Using Full Component Tree"/>
+            <input id="render-abridged" type="submit" value="Render Using Abridged Component Tree"/>
+        </p>
+
+        <!-- This table is the root node of the template. -->
+        <!-- The mark-up in this file is pure HTML, and can be previewed in a browser before rendering. -->
+        <table id="inventory-table" class="table-base" border="0" cellspacing="0" summary="A grid of sports products.">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Quantity</th>
+                    <th>Item</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- This row element is the template for each row that will be rendered. -->
+                <!-- There are no rsf:ids in this file. Selectors will map the HTML element to a
+                     component in the component tree. -->
+                <tr class="item-row" style="text-align: left">
+                    <td class="sku-container">sku</td>
+                    <td class="quantity-container">quantity</td>
+                    <td class="item-container">product name</td>
+                    <td class="description-container">description of the product</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <script type="text/javascript">
+            fluid.inventoryExample.setup();
+        </script>
+
+    </body>
+</html>

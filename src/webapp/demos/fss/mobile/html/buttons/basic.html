@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Buttons</title>
+
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+        <link type="text/css" rel="stylesheet" href="../../../../../framework/fss/css/fss-mobile-layout.css" />
+        <link type="text/css" rel="stylesheet" href="../../../../../framework/fss/css/fss-mobile-theme-iphone.css" />
+        <link type="text/css" rel="stylesheet" href="../../../../../framework/fss/css/fss-mobile-theme-android.css" />
+
+        <script type="text/javascript" src="../../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../../framework/core/js/DataBinding.js"></script>
+
+        <script type="text/javascript" src="../../js/themer.js"></script>
+        
+    </head>
+
+    <body class="fl-theme-iphone">
+
+        <div class="flc-screenNavigator-navbar fl-navbar fl-table">
+            <div class="fl-table-row">
+                <div class="fl-table-cell">
+                    <a href="../mobile.html" class="fl-button fl-backButton"><span class="fl-button-inner">Back Button</span></a>
+                </div>
+                
+                <h1 class="fl-table-cell">Start</h1>
+
+                <ul class="fl-tabs fl-table-cell flc-themer">
+                    <li><a href="#iphone">iPhone</a></li>
+                    <li><a href="#android">Android</a></li>
+                    <li><a href="#none">No Theme</a></li>
+                </ul>
+
+            </div>
+        </div>
+
+        <h2>Button Shell</h2>
+        <p>
+            <a class="flc-screenNavigator-backButton fl-button" href="../index.html">Go Back</a>
+        </p>
+
+        <h2>Colorized Buttons</h2>
+        <p>
+            <a class="flc-screenNavigator-backButton fl-button fl-button-white" href="../index.html">Go Back</a>
+            <a class="flc-screenNavigator-backButton fl-button fl-button-green" href="../index.html">Go Back</a>
+            <a class="flc-screenNavigator-backButton fl-button fl-button-blue" href="../index.html">Go Back</a>
+            <a class="flc-screenNavigator-backButton fl-button fl-button-black" href="../index.html">Go Back</a>
+        </p>
+
+        <h2>Colorized Buttons with bevelling</h2>
+        <p>
+            <a class="flc-screenNavigator-backButton fl-button fl-button-white fl-bevel-white" href="../index.html">Go Back</a>
+            <a class="flc-screenNavigator-backButton fl-button fl-button-green fl-bevel-black" href="../index.html">Go Back</a>
+            <a class="flc-screenNavigator-backButton fl-button fl-button-blue fl-bevel-black" href="../index.html">Go Back</a>
+            <a class="flc-screenNavigator-backButton fl-button fl-button-black fl-bevel-black" href="../index.html">Go Back</a>
+        </p>
+
+        <h2>Full buttons</h2>
+
+        <div class="flc-screenNavigator-backButton fl-button fl-button-white fl-bevel-white">Go Back</div>
+        <div class="flc-screenNavigator-backButton fl-button fl-button-green fl-bevel-black">Go Back</div>
+        <div class="flc-screenNavigator-backButton fl-button fl-button-blue fl-bevel-black">Go Back</div>
+        <div class="flc-screenNavigator-backButton fl-button fl-button-black fl-bevel-black">Go Back</div>
+        
+        <script type="text/javascript">
+            //        INITIALIZE        //
+            $(document).ready(function () {
+                var Themer = fluid.themer(".flc-themer");
+            });
+        </script>
+    </body>
+</html>

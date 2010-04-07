@@ -1,0 +1,924 @@
+/*general body - used by main portal document */ 
+body{
+	width: 100%;
+	padding: 0;
+	font-family: arial, Verdana, sans-serif;
+	font-size:62.5%;
+	margin: auto;
+	background: #fff;
+}
+
+/*PART 1 - MAIN LAYOUT BLOCKS*/
+/*outer wrapper for portal content (decorative - child is #portalContainer )*/
+#portalOuterContainer{
+	background: #fff;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+   	height:100%; 
+}
+
+/*inner wrapper for portal content (decorative - children are #header #container and #footer )*/
+#portalContainer{
+	background: #264C83 url(../images/banner_inst.gif) no-repeat 253px top;
+}
+
+/*wrapper masthead  and site navigation 
+ two possible states - logged in headerMax, not logged in - headerMin*/
+#headerMax,#headerMin{
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+/*accessibility links wrapper */
+#skipNav{
+}
+
+/*site hierarchy breadcrumb*/
+#siteHierarchy{
+        clear:both;
+        float:none;
+        margin:0;
+        list-style: none;
+        padding:.5em 0;
+}
+/*style the standard breadcrumbseparator
+can set display:none if needed because the list-style is taking care of it*/
+.breadSeparator{
+}
+#siteHierarchy li{
+        display:inline;
+}
+#siteHierarchy li a, #siteHierarchy li a:visited{
+        color:#09c;
+}
+
+/*wrapper for site content (includes as children #toolMenuWrap,#content and #footer)*/
+#container{
+	position: relative;
+	clear:both;
+	padding: 0;
+	margin: 0; 
+	background-color: #fff;
+	border-top:1px solid white;
+}
+
+/*wrapper for #toolMenu - children are #worsiteLogo,#toolMenu*/
+#toolMenuWrap{
+	position:relative;
+	top: 0;
+	left:0;
+	float:left;
+	width: 189px;
+	color: #000;
+	text-align: left;
+	padding: 0;
+	margin: 0;
+	padding-top: 2em;
+}
+
+#toolMenuWrap:hover{
+	/*border-right:2px solid #09c;*/
+	}
+/*depending on site type - different hover effects for the tool menu parent block
+site types are a local setting - adjust */
+.workspace #toolMenuWrap:hover{
+	/*border-right:2px solid #aaa;*/
+}
+.course #toolMenuWrap:hover{
+	/*border-right:2px solid #FC6;*/
+}
+.project #toolMenuWrap:hover{
+	/*border-right:2px solid #9CF;*/
+}
+
+/*wrapper for site content (portlets) -  children can be #col1 or #col1of2 and #col2of2 depending in the number of columns*/
+#content{
+	margin-left: 190px;
+	padding-top: 2em;
+	height:100%;
+}
+
+/*margin tweak for IE to avoid float drop*/
+* html #content{margin-left:11.3em}
+/*wrapper for footer blocks*/
+#footer{
+	color: #000;
+	background-color: #FFF;
+	font-size: x-small;
+	margin: 0px;
+	padding: 0.4em 0 1.7em;
+	width: auto;
+	clear: both;
+	top: 0;
+	text-align: center;
+}
+
+/*PART 2 - HEADER IFRAME SETTINGS*/	
+/*iframe sizes for different states*/
+/*gone for 2.3
+.sitenav-log{
+	user not logged in
+	height: 90px;
+	width: 0%;
+	border-bottom:1px solid #09c
+}
+
+.sitenav-max{
+	user logged in 
+	height: 90px;
+	max-height:90px;
+	min-height:90px;
+	width: 100%;
+
+* html .sitenav-max{
+	user logged in - iframe height tweak for IE
+	height: 8em;
+	}
+.sitenav-min{
+	no logos or banners
+	height: 2em;
+	width: 100%;
+}*/
+
+/*PART 3 - HEADER BLOCKS (BRANDING,LOGIN)*/
+/*depending on site type - different border-bottoms for the site menu parent block
+site types are a local setting - adjust */
+.workspace .siteNavWrap{
+	height:100%;
+
+}
+.course .siteNavWrap{
+	
+}
+.project .siteNavWrap{
+	
+}
+#siteNavWrapper{
+	margin: 0;
+}
+
+/*wrapper for mast head elements - children are 3 blocks - #mastLogo,#mastBanner,#mastLogin*/
+#mastHead{
+	clear: both;
+}
+
+/*container wrapping branding images - portal outputs one /library/skin/<skin name>/images/logo_inst.gif
+that can be used or hidden,can also use a background:url(../images/<image name>.<ext>) in this block,or both superimposing them*/
+#mastLogo{
+	float: left;
+	width: auto;
+	height:90px;
+}
+
+/*the portal outputs an image that can be treated here or hidden with display:none*/
+#mastLogo img{
+	margin: 0em 0em;
+	height:89px;	
+}
+
+#mastLogo img a link{
+	margin: 0em 0em;
+	height:89px;		
+}
+
+
+/*another container wrapping branding images - portal outputs one /library/skin/<skin name>/images/banner_inst.gif
+that can be used or hidden,can also use a background:url(../images/<image name>.<ext>) in this block,or both superimposing them*/
+#mastBanner{
+	display: none;
+	width: auto;
+	vertical-align: top;
+	float: left;
+	height:90px;
+}
+
+/*the portal outputs an image that can be treated here or hidden with display:none*/
+#mastBanner img{
+	margin: 0em 0em;
+    display: block;
+	height:90px;
+}
+
+/*container wrapping,depending on Sakai settings:1) a login form,2) a login link for CAS,3) a logout link*/
+#mastLogin{
+	float: left;
+	text-align: right;
+	vertical-align: top;
+	width: 100%;
+	height:100%;
+	overflow: hidden;
+
+}
+
+/*the anchor for the login link for CAS above can be an image - treated here*/
+#mastLogin img{
+	margin-top: 0;
+	
+}
+
+/*login form elements - in order,form,userid field,password field,login button - first 2 have labels associated with them,gettable as #loginForm label{
+}
+
+#loginForm is the form for login - contains children #eid #pw #submit*/
+#loginForm{
+	margin: 0em 10em 0 0em;
+	background: #f5db73;
+	width:100%;
+	text-align: left;
+	padding: .4em .75em .4em 20px;
+}
+
+#eid, #pw{
+	border: 1px solid #aaa;
+	padding: 1px;
+	margin-left: .5em;
+	width: 7em;
+}
+
+#loginForm label{
+	color: #000;
+	padding: 0 .5em;
+	text-transform: capitalize;
+	font-size: 1.1em;
+}
+
+#submit{
+}
+
+#submit:hover{
+	color: #fc7317;
+}
+
+/*block for login/logout links */
+#loginLinks{
+	position:absolute;
+	display:block;
+	width: 73px;
+	height: 18px;
+	left:680px;
+	top:0px;
+}
+
+
+#loginLinks a, #loginLinks a:visited, #loginLinks a:active{
+	margin: 0;
+	padding: 1px 0 0;
+	display: block;
+	font-size: 1.1em;
+	font-family: arial, san-serif;
+	font-weight: bold;
+	background: url(../images/logout.gif) top right no-repeat;
+	color: #264c83;
+	width: 73px;
+	height: 18px;
+	text-decoration:none;
+	text-align: center;
+	
+}
+
+#loginLinks a:hover{
+	font-weight: bold;
+	height: 18px;
+	background: url(../images/logout_h.gif) top right no-repeat;
+	color: #fb741a;
+}
+	
+
+/*main CAS link*/
+#loginLink1{
+}
+
+/*secondary CAS link*/
+#loginLink2{
+}
+
+/*PART 4 - SITE NAVIGATION - children of #siteNavBlock*/
+/*outer wrapper for the site navigation blocks - it is a class,not an id because it can be overloaded with other values having to do with site type
+so for example <div class="tabHolder workspace"> so that different site types can be treated differently via inheritance - children are #siteNavWrap and #navBottom*/
+.siteNavWrap{
+	position:relative;
+ 	width: 100%;
+	background: url(../images/navback.gif) bottom repeat-x;  
+	float:left;
+	clear:both;
+	font-size: 1.2em;
+	font-weight: bold;
+	line-height: normal;
+	z-index: 2000;
+}
+
+/*wrapper for the site links and site <select> blocks - children are #siteNav and #tabNav */
+#siteNav{
+	
+}
+
+/*wrapper for the site link list   - the #siteLinkList child)*/
+#linkNav{
+	position: relative;
+	display: block;
+	float:left;
+}
+
+/*wrapper for the site <select> that is displayed when more than x sites are in the link list*/
+#selectNav{
+	padding: 0;
+	text-align: left;
+	vertical-align: middle;
+	float: left;
+}
+
+/*the <select> contextually defined*/
+#selectNav select{
+	display:inline;
+	font-size: .8em;
+	margin: 0px;
+	padding: 0px;
+	border:double 2px #f4d472;
+
+}
+
+#selectNav select option{
+	background: #fff;
+}
+
+/*a ul - the li below are outer wrappers for the links to sites */
+#siteLinkList{
+/*	white-space: nowrap;*/
+	line-height: normal;
+	margin: 0;	
+	list-style:none;
+	padding: 3px 5px 0;
+}
+
+/*list elements - children are <span> and <a>*/
+#siteLinkList li {
+	display: block;
+	float: left;
+    background: url("../images/norm_right.gif") no-repeat right top;
+    margin: 2px 0 0 3px;
+	padding: 0;
+}
+
+#siteLinkList a {
+      float:left;
+      background:url("../images/norm_left.gif") no-repeat left top;
+      margin:0;
+      padding: 5px 15px 4px;
+      text-decoration:none;
+      display: block;
+}
+
+/*span shim for fine grained manipulation of link display (decorative)*/
+#siteLinkList li span {
+}
+
+#siteLinkList .selectedTab, #siteLinkList .more-active {
+background-image:url(../images/norm_right_on.gif);
+	cursor: text;
+	text-decoration: none;
+	margin-top: 0px;
+}
+
+/*the current sites' link*/
+#siteLinkList .selectedTab a,
+	#siteLinkList .selectedTab a:link,
+	#siteLinkList .selectedTab a:visited,
+	#siteLinkList .selectedTab a:hover,
+	#siteLinkList li.more-active a {
+		background-image:url(../images/norm_left_on.gif);
+		padding-top: 7px;
+		padding-bottom: 6px;
+		color: #072e5b;
+}
+
+/*links to other sites*/
+#siteLinkList a,#siteLinkList a:link,#siteLinkList a:visited{
+	text-decoration: none;
+	color: #264c83;
+}
+
+/*hover state for links to other sites*/
+#siteLinkList a:hover{
+	color: #Fb741a;
+	text-decoration: none; 
+}
+
+#siteLinkList .tab-dim {
+	background:transparent url(../images/norm_right_on_dim.gif) no-repeat scroll right top;
+}
+
+#siteLinkList .tab-dim a,
+	#siteLinkList .tab-dim a:link,
+	#siteLinkList .tab-dim a:visited,
+	#siteLinkList .tab-dim a:hover {
+	background: transparent url(../images/norm_left_on_dim.gif) no-repeat scroll left top;
+	padding-bottom: 4px;
+	color: #264C83;
+}
+
+/* more tab */
+#siteLinkList .more-tab a .inner {
+	background-image:  url(../images/tab-arrow-down.gif);
+	background-repeat: no-repeat;
+	background-position: 100% 36%;
+	padding: 0 20px 0 0;
+	margin: 0;
+	outline: 0;
+}
+
+#siteLinkList .more-tab a:hover .inner {
+	background-image:  url(../images/tab-arrow-down-over.gif);
+	color: #FB741A
+}
+
+#siteLinkList li.more-active a span {
+	background:transparent url(../images/tab-right-selected.gif) no-repeat scroll right top;
+}
+
+#siteLinkList li.more-active a span.inner {
+	background-image: url(../images/tab-arrow-down.gif);
+}
+
+.fixTabsIE{
+	visibility: hidden;
+	display: none;
+	border-width: 0;
+}
+
+/*wrapper for the site <select> that is displayed when more than x sites are in the link list*/
+.dhtml_more_tabs {
+	position: absolute;
+	top: 2.5em;
+	right: 4px;
+	line-height: 1.5em;
+	background-color: #FFFFFF; 
+	border: 2px solid #FC7317;
+	border-top-width: 0;
+	width: 75%;
+	z-index: 9999;
+}
+
+html>body .dhtml_more_tabs {
+	right: 5px;
+}
+
+.dhtml_more_tabs div.termContainer {
+	float: left;
+	padding: 0.8em;
+	text-align: left;
+	width: 28%;
+}
+	
+.dhtml_more_tabs h4 {
+	font-size: 1.09em;
+	margin: 0 0 0.3em;
+	padding: 0;
+	font-weight: bold;
+}
+
+.dhtml_more_tabs  ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;	
+}
+
+.dhtml_more_tabs  li {
+	margin-bottom: 0.4em; 
+	line-height: 1.1em;
+}
+
+.dhtml_more_tabs div:first-child {
+	border-left: none;
+}
+
+.dhtml_more_tabs a:link, .dhtml_more_tabs a:visited, .dhtml_more_tabs active{
+	color: #274B82;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+.dhtml_more_tabs a:hover {
+	color: #FB741A;
+	text-decoration: underline !important;
+}
+
+#more_tabs_instr  {
+	color: #444;
+	font-size: 1em;
+	margin: 0.4em 0.8em 0.7em;
+	padding-top: 0.6em;
+	clear: both;
+	border-top: 1px solid #CCC;
+	text-align: left;
+	line-height: 1.26em;
+	font-weight: normal;
+}
+
+#portalMask {
+	background-color: #6781A8; 
+	position: absolute;
+	z-index: 9000;
+	top:-1px;
+	left:0;
+	filter:alpha(opacity=30);
+	opacity: 0.30;
+	-moz-opacity: 0.30;
+}
+
+/*block in case need to display any decorative element above or below the .tabHolder block*/
+#navBottom{
+	display: none;
+}
+
+/*PART 5 - SITE TOOL LINKS  - children of #toolMenuWrap	*/
+/*wrapper for ul that lists the links to tools*/
+#toolMenu{
+	background: url(../images/mytoolsfooter.gif) no-repeat bottom left;
+	padding: 0px 0px 13px 0px;
+	width: 150px;
+	margin-left: 24px;
+}
+
+#container #toolMenu ul {
+	background: url(../images/tools-header.gif) no-repeat top left;
+}
+
+#container.workspace #toolMenu ul {
+	background: url(../images/tools-workspace-header.gif) no-repeat top left;
+}
+
+#container.project #toolMenu ul {
+	background: url(../images/tools-project-header.gif) no-repeat top left;
+}
+
+#container.course #toolMenu ul {
+	background: url(../images/tools-course-header.gif) no-repeat top left;
+}
+
+#toolMenu ul {
+	margin: 0 -10px auto 0px;
+	padding: 24px 10px 0 0px;
+	width: 150px;
+	list-style: none;
+	font-size: 1.2em;
+	line-height: 1.2em;
+}
+
+#toolMenu li{
+	margin: 0;
+	width: auto;
+	border-bottom: #ACBACF solid 1px;
+	text-align: left;
+	background: #f9E7AF;
+	color: #264C83;
+}
+
+/*span shim for fine grained manipulation of link display (decorative)
+also hide if are going to be using icon links (as background of <a> nad <li>
+*/
+
+#toolMenu li span{
+	display:block;
+	padding: 0.4em 1.4em 0.4em 13px;
+/*comment this line for a return to sanity
+display:none*/
+}
+
+#toolMenu li a:link,#toolMenu li a{
+	display: block;
+	text-decoration: none;
+	color: #264c83;
+}
+#toolMenu li a:hover{
+	text-decoration: none;
+	color: #fb741a;
+background:url(../images/pointer_tools.gif) no-repeat right;
+	background-color: #fff;
+
+}
+
+/* The class selector's entitled *selected* seems no longer to appear in the html. My theory is that it has been renamed to "selectedTool" which is more semantically accurate but does not exist as of yet in the css. This is why I am commenting out the next 4 clases and repeating them with selectedTool instead of selected.*/
+
+#toolMenu li a.selected{
+	text-decoration: none;
+	color: #6781a8;
+	cursor: text;
+	background:url(../images/pointer_tools.gif) no-repeat right;
+	background-color:#fff;
+	font-style: normal;
+}
+
+#toolMenu li a.selected:hover{
+	text-decoration: none;
+	color: #6781a8;
+	cursor: text;
+	font-weight: bold;
+}
+
+/*
+
+#toolMenu li a.selected span{
+	font-weight: bolder;
+}
+
+#toolMenu li .selectedTool {
+	font-weight: bolder;
+	background:url(../images/pointer_tools.gif) no-repeat right;
+	background-color:#fff;
+	cursor: text;
+}
+
+*/
+
+
+#toolMenu li a.selected span{
+	font-weight: bolder;
+}
+
+#toolMenu li.selectedTool {
+	font-weight: bolder;
+	background:url(../images/pointer_tools.gif) no-repeat right;
+	background-color:#fff;
+	cursor: text;
+}
+
+
+/*PART 6 - SITE AFFILIATION,SITE TYPE/STATUS AND PRESENCE - children of #toolMenuWrap	*/
+/*site logo wrapper*/
+#worksiteLogo{
+	display: block;
+	width: 0;
+	height: 0;
+	overflow: visible;
+}
+
+/*site logo image - Sakai may output,depending on installation,an image here based in site affiliation. Site owner may also point to a url - overriding the Sakai provided image*/
+#worksiteLogo img{
+	display: block;
+	margin: .5em auto;
+}
+
+/*wrapper for the string that Sakai will output based on site type (ie. project,course) this is open ended and institution specific*/
+#siteType{
+	display: none;
+}
+
+/*wrapper for the string that Sakai will output based on site status when status is "Unpublished"*/
+#siteStatus{
+	position: absolute;
+	top: -1px;
+	left: 0;
+	min-width: 150px;
+	z-index: 1;
+	height: 1.35em;
+	text-transform: capitalize;
+	text-align: center;
+	color: white;	
+	background: #6F070D url(../images/err_btm_curve.gif) no-repeat 100% 100%;
+	font-size: 1.1em;
+	font-weight: bold;
+	margin: 0;
+	padding: 3px 12px 1px;
+	white-space: nowrap;
+}
+
+/*wrapper for all elements of presence display */
+#presenceWrapper{
+	width: 9.65em;
+	margin-top: .5em;
+}
+
+/*wrapper for title of iframe ("Users present")*/
+#presenceTitle{
+	font-size: .7em;
+	text-align: right;
+	margin-right: .5em;
+}
+
+/*of presence iframe*/
+#presenceIframe{
+	height: 100px;
+	/*margin: .3em;*/
+	width: 8.8em;
+}
+
+/*PART 7 - PORTLETS - children of #content*/
+/*a page may display portlets in one column or two columns - the next three id selectors address the three possiblities - sole child of column is the .portlet */
+#col1{
+	padding-right: 1em;
+}
+
+#col1of2{
+	width: 50%;
+	float: left;
+	margin: 0;
+}
+
+#col2of2{
+	width: 49%;
+	float: right;
+}
+
+/*wrapper class for portlets - decorative -  contains two wrapper block children:.portletTitleWrap and  .portletMainWrap*/
+.portlet{
+}
+
+/*.portletTitleWrap are wrappers for the tool title documents,
+below they are contextually defined depending on the column as an example,as you may want to adjust the widths accordingly*/ 
+#col1 .portletTitleWrap{
+	width: 99%;
+	/*border-bottom: 2px solid #09c;*/
+}
+
+#col1 .portletMainWrap{
+	width: 99%;
+}
+
+#col1of2 .portletTitleWrap,#col2of2 .portletTitleWrap{
+	width: 98.5%;
+	/*border-bottom: 2px solid #09c;*/
+}
+
+#col1of2 .portletMainWrap,#col2of2 .portletMainWrap{
+	width: 98.5%;
+	margin-bottom: 5em;
+	/*margin-bottom: .5em;*/
+}
+
+.portletTitle{
+	width: 100%;
+	background: url(../images/top_left.gif) top left no-repeat;
+	background-color: #264c83;
+	height:24px;
+	overflow:hidden;
+	
+}
+
+.portletTitle .title img{
+	
+	width: 16px;
+	height: 16px;
+	border:none;
+	line-height: 24px;
+	vertical-align: middle;
+}
+
+
+.portletTitle .title{
+	background: url(../images/top_right.gif) right top no-repeat;
+	color: #000;
+	height:24px;
+	padding-left: .3em;
+}
+
+.portletTitle .title h2{
+	
+	padding: 1px;
+	display: inline;
+	color: #fff;
+	font-weight: bold;
+	font-size: 1.3em;
+	vertical-align: middle;
+	margin-left: .8em;
+	line-height:24px;
+}
+
+.portletTitle .title a{
+
+	padding: 2px;
+	margin-left:1em;
+	background: url(../images/reload.gif) center center no-repeat;	
+	vertical-align: middle;
+	line-height: 24px;
+}
+
+.portletTitle .title a:hover{
+	
+	padding: 2px;
+	margin-left:1em;
+	background: url(../images/reload_h.gif) center center no-repeat;
+	vertical-align: middle;
+	line-height: 24px;
+
+
+}
+
+.portletTitle .action{
+	
+	text-align: right;
+	width: 98.7%;
+	margin-top:-24px;
+	height:24px;
+	padding-left: .4em;
+}
+
+.portletTitle .action img{
+	
+	
+	margin-bottom: 6px;
+	
+	padding: 2px;
+	width: 16px;
+	height: 16px !important;
+	border:none;
+	vertical-align: middle;
+
+}
+
+.portletTitle .action a{
+	margin-top: 6px;	
+	background: url(../images/help.gif) center center no-repeat;
+	vertical-align: middle;
+	line-height: 24px;
+	padding: 2px;
+	margin-left:1em;
+}
+
+.portletTitle .action a:hover{
+	background: url(../images/help_h.gif) center center no-repeat;
+	line-height: 24px;
+	
+	
+}
+
+.portletTitle .action a#jsr-edit{
+        padding:2px;
+        background: url(../images/page_edit.gif) center right no-repeat;
+}
+        
+.portletTitle .action a#jsr-edit:hover{
+        background: url(../images/page_edit.gif) center right no-repeat;
+}       
+
+/*iframes for portlet title and portlet content*/
+/*gone for 2.3
+.portletTitleIframe{
+	margin: 0;
+	height: 1.8em;
+	width: 100%;
+}
+*/
+.portletMainIframe{
+	text-align: left;
+	margin-bottom: .5em;
+	/*margin-top: 10em;*/
+	height: auto;
+	border: none;
+}
+
+/*PART 8 - FOOTER BLOCKS - descendants of #footer TODO - unpack the 3 descendants and make them all children*/
+/*wrapper for links going to external sites - links are output as a series  separated via pipes (TODO:make a list already)*/
+.footerExtNav{
+	color: #eee;
+	padding-top: .5em;
+	padding-bottom: .5em;
+	background: #274B82
+}
+
+/*the links displayed inside the wrapper above*/
+.footerExtNav a,.footerExtNav A:link,.footerExtNav A:visited{
+	color: #eee;
+	text-decoration: none;
+	margin: 1em;
+}
+
+.footerExtNav a:hover{
+	color: #F2CE5E;
+	text-decoration: underline;
+	margin: 1em;
+}
+
+/*a second wrapper - server info,build,etc*/
+#footerInfo{
+	font-size: xx-small;
+	text-align: center;
+	clear: both;
+	padding-bottom: 0;
+}
+
+#footerInfo img{
+	margin-top: .4em;
+	margin-bottom: .4em;
+}
+
+/*a third wrapper - reserved for copyright blurbs*/
+.sakaiCopyrightInfo{
+	color: #274B82;
+}
+
+/*PART 8 - CONVENIENCE*/
+/*used to hide various blocks from sighted users that are in the source to help with accessibility*/
+.skip{
+	display: inline;
+	position: absolute;
+	top: -999px;
+	left: -999px;
+	height: 0;
+
+}
+
+
+

@@ -1,0 +1,444 @@
+body {
+    font-family:'Trebuchet MS',Verdana,Geneva,Arial,Helvetica,sans-serif;
+    font-size:80%;
+    margin:0pt;
+    padding:0pt;
+    background:#FFFFFF none repeat scroll 0%;
+    width:100%;
+}
+
+h3, h4, h5 {
+    background-color:transparent !important;
+    color:#555555;
+    font-family:Arial,Helvetica,sans-serif;
+    font-weight:bold;
+    margin:1em 0pt 0pt;
+    padding:0pt;
+}
+
+h3 {
+    font-size:110%;
+}
+
+a:link {
+    color:#3355BB;
+    text-decoration:underline !important;
+}
+
+#headerMax {
+    overflow:visible;
+}
+
+#headerMax, #headerMin {
+    height:100%;
+    margin:1em auto 0pt;
+    overflow:hidden;
+    width:100%;
+}
+
+#siteNavWrapper {
+    margin:0pt;
+}
+
+#mastHead {
+    clear:both;
+}
+
+#mastLogo {
+    float:left;
+    margin-left:0.2em;
+    width:auto;
+}
+
+#mastLogo img {
+    margin:1em 0.5em;
+}
+
+#mastBanner {
+    float:left;
+    vertical-align:top;
+    width:auto;
+}
+
+#mastLogin {
+    float:right;
+    padding-right:15px;
+    text-align:right;
+    vertical-align:top;
+}
+
+.siteNavWrap {
+    background:#88D0E8 url(../images/blue-border.gif) repeat-x scroll center bottom;
+    clear:both;
+    float:left;
+    font-size:100%;
+    line-height:normal;
+    position:relative;
+    width:100%;
+    z-index:2000;
+}
+
+#siteNav {
+    width:100%;
+}
+
+#linkNav {
+    display:block;
+    float:left;
+    position:relative;
+}
+
+.skip {
+    display:inline;
+    height:0pt;
+    left:-999px;
+    position:absolute;
+    top:-999px;
+}
+
+#siteLinkList {
+    float:left;
+    list-style-image:none;
+    list-style-position:outside;
+    list-style-type:none;
+    margin:0pt;
+    padding:6px 0pt 0pt 6px;
+    white-space:nowrap;
+}
+
+#siteLinkList li {
+    display:block;
+    float:left;
+    position:relative;
+}
+
+#siteLinkList li a, #siteLinkList li a:link, #siteLinkList li a:visited {
+    background:transparent url(../images/tab-left.gif) no-repeat scroll left top;
+    border-bottom:2px solid #013F68;
+    color:#FFFFFF;
+    display:block;
+    float:left;
+    margin:0pt 2px 0pt 0pt;
+    padding:0pt 0pt 0pt 11px;
+}
+
+#siteLinkList li span {
+    background:transparent url(../images/tab-right.gif) no-repeat scroll right top;
+    display:block;
+    margin:0pt;
+    padding:8px 13px 3px 2px;
+}
+
+#siteLinkList li.selectedTab a, #siteLinkList li.selectedTab a:link, #siteLinkList li.selectedTab a:visited, #siteLinkList li.selectedTab a:hover {
+    background:transparent url(../images/tab-left-selected.gif) no-repeat scroll left top;
+    border-width:0pt;
+    color:#000000;
+    font-weight:bolder;
+    text-decoration:none;
+}
+
+#siteLinkList li.selectedTab a span {
+    background:transparent url(../images/tab-right-selected.gif) no-repeat scroll right top;
+    padding:8px 11px 5px 0pt;
+}
+
+#selectNav {
+    float:left;
+    margin:0.2em 0pt 0pt 0.6em;
+    padding:0pt;
+    text-align:right;
+    vertical-align:middle;
+}
+
+#container {
+    clear:both;
+    margin:0pt auto;
+    padding-top:10px;
+    width:98%;
+}
+
+#toolMenuWrap {
+    border-right:2px solid #FFFFFF;
+    color:#000000;
+    float:left;
+    padding:0pt 0.5em 0pt 0pt;
+    text-align:right;
+    width:11em;
+}
+
+#worksiteLogo {
+    display:block;
+    height:auto;
+    overflow:hidden;
+    width:9.7em;
+}
+
+#toolMenu {
+    color:#000000;
+    margin:1em 0pt 0pt;
+    padding:0pt;
+    width:11em;
+}
+
+#toolMenu ul {
+    list-style-image:none;
+    list-style-position:outside;
+    list-style-type:none;
+    margin:0pt;
+    padding-left:0pt;
+    padding-right:0pt;
+    width:auto;
+}
+
+#toolMenu li {
+    border:1px solid #FFFFFF;
+    margin:0pt;
+    padding:0pt;
+    text-align:right;
+    width:auto;
+}
+
+#toolMenu li a:link, #toolMenu li a {
+    background-position:right center !important;
+    background-repeat:no-repeat !important;
+    color:#0099CC;
+    display:block;
+    margin:0px;
+    padding-bottom:2px;
+    padding-right:23px !important;
+    padding-top:2px;
+}
+
+#toolMenu li.selectedTool span {
+    background-position:right center !important;
+    background-repeat:no-repeat !important;
+    display:block;
+    margin:0px;
+    opacity:0.5;
+    padding-bottom:2px;
+    padding-right:23px !important;
+    padding-top:2px;
+}
+
+.icon-sakai-resources {
+    background-image:url(../images/folder.png);
+}
+
+.icon-sakai-siteinfo {
+    background-image:url(../images/application_lightning.png);
+}
+
+.icon-sakai-help {
+    background-image:url(../images/help.png);
+}
+
+.icon-sakai-announcements {
+    background-image:url(../images/flag_blue.png);
+}
+
+#content {
+    margin-left:12.3em;
+    margin-top:0.5em;
+    padding:0pt;
+}
+
+#col1 {
+    padding-right:0.5em;
+}
+
+#col1 .portletTitleWrap {
+    border-bottom:2px solid #0099CC;
+    width:99%;
+}
+
+.portletTitle {
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+.portletTitle .title h2 {
+    color:#555555;
+    display:inline;
+    font-size:1.2em;
+    font-weight:bold;
+    margin:0pt 0pt 0pt 2em;
+}
+
+.portletTitle .action a {
+    background:transparent url(../images/help.gif) no-repeat scroll right center;
+}
+
+.portletBody {
+    border:0px solid #FFFFFF;
+    padding:1px 1px 1em;
+}
+
+.navIntraTool {
+    background-color:#EEEEEE;
+    border-bottom:1px solid #EEEEEE;
+    border-top:1px solid #EEEEEE;
+    font-family:Verdana,Geneva,Arial,Helvetica,sans-serif;
+    font-size:0.9em;
+    line-height:1.5em;
+    margin:0pt;
+    padding:0.3em;
+    text-align:left;
+}
+
+.navIntraTool a, .navIntraTool a:link {
+    margin-right:1em;
+    white-space:nowrap;
+}
+
+.navPanel {
+    background-color:#FFFFFF;
+    clear:both;
+    height:100%;
+    margin:5px 0pt 0pt;
+    overflow:hidden;
+}
+
+.viewNav {
+    float:left;
+    font-size:1em;
+    line-height:2em;
+    margin:0pt 0.1em;
+    padding:0.2em;
+    width:auto;
+}
+
+.inlineForm {
+    display:inline;
+    margin:0pt;
+    padding:0pt;
+}
+
+.viewNav label {
+    padding-right:1em;
+}
+
+label {
+    color:#000000;
+    font-family:Arial,Helvetica,sans-serif;
+    font-weight:normal;
+    margin-top:0.3em;
+}
+
+.listNav, .searchNav {
+    clear:right;
+    float:right;
+    font-size:1em;
+    line-height:2em;
+    margin:0.2em;
+    padding:0pt;
+    text-align:right;
+    vertical-align:bottom;
+}
+
+.listNav div.instruction, .searchNav div.instruction {
+    font-size:0.9em;
+    text-align:center;
+}
+
+.instruction {
+    color:#555555;
+    line-height:1.3em;
+    margin:0.5em 0pt;
+}
+
+table.listHier {
+    border:medium none;
+    clear:both;
+    font-size:1em;
+    margin-top:0.5em;
+    width:100%;
+}
+
+table.listHier .attach {
+    width:0.5em;
+}
+
+table.listHier th {
+    font-weight:normal;
+    padding:0.3em;
+    text-align:left;
+    white-space:nowrap;
+    background-color:#DDDDDD;
+    border:1px solid #999999;
+}
+
+table.listHier td {
+    padding:0.3em;
+}
+
+table.listHier td span {
+    padding:0.1em 0.2em;
+	border: 1px solid white;
+}
+
+.listHier th h3, .listHier th h4, .listHier th h5, .listHier th h6, .listHier td h3, .listHier td h4, .listHier td h5, .listHier td h6 {
+    background:transparent none repeat scroll 0%;
+    color:#000000;
+    font-family:'Trebuchet MS',Verdana,Geneva,Arial,Helvetica,sans-serif !important;
+    font-size:1em;
+    font-weight:normal;
+    margin:0pt;
+    padding:0pt;
+}
+
+.act {
+    padding:1em 0pt;
+}
+
+#footer {
+    border-top:1px solid #0099CC;
+    clear:both;
+    color:#000000;
+    font-size:x-small;
+    margin:0px;
+    padding:0pt;
+    text-align:center;
+    top:0pt;
+    width:auto;
+}
+
+.footerExtNav {
+    padding-bottom:0.5em;
+    padding-top:0.5em;
+}
+
+#footerInfo {
+    clear:both;
+    font-size:xx-small;
+    padding-bottom:1em;
+    text-align:center;
+}
+
+#footerInfo img {
+    margin-bottom:0.5em;
+    margin-top:0.5em;
+}
+
+.sakaiCopyrightInfo {
+    color:#0099CC;
+}
+
+/* Fluid Inline Edit Styles */
+
+.fl-inlineEdit-invitation {
+  background-color: #FFECB3 !important;
+	border: 1px solid #CCC !important;
+	/* See http://www.quirksmode.org/css/cursor.html#note for cross-platform recommendation */
+	cursor: pointer;
+    cursor: hand;
+}
+
+.fl-inlineEdit-focus {
+    border: 2px solid #777777;
+}
+
+.fl-inlineEdit-invitation-text {
+    color: #999999;
+}
+

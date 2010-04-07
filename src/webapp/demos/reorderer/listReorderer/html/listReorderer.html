@@ -1,0 +1,77 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Conference Planning Tasks</title>
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-text.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../components/reorderer/css/Reorderer.css" />
+        <link href="../css/listReorderer.css" type="text/css" rel="stylesheet"/>
+        
+        <!--  Required javascript modules for the Reorderer which can be replaced with the build generated file Fluid-all.js -->
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/ReordererDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/GeometricManager.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/Reorderer.js"></script>
+        
+        <script type="text/javascript" src="../js/listReorderer.js"></script>
+    
+    </head>
+  
+    <body>
+            <div class="fl-offScreen-hidden" tabindex="1">Image Reorderer: To use the keyboard:
+                      Screen reader users turn off virtual cursor (insert + z).
+                      Select an image using i, k, m or j.
+                      Move an image using CTRL + i, k, m or j.
+                      View an image by pressing Enter.
+            </div>
+
+            <div class="fl-reorderer-instructions" tabindex="-1">
+                <strong>To use the keyboard:</strong>
+                Select an image using i, k, m or j, or the arrow keys. Move an image using CTRL + [arrow key]. View an image by pressing Enter.
+            </div>
+
+    
+        <ol class="todo-list">
+            <li class="movable">
+                Select the date
+            </li>
+            <li class="movable">
+                Create promotional plan
+                <ul>
+                    <li>email campaign</li>
+                    <li>web site</li>
+                    <li>print materials</li>
+                </ul>
+            </li>
+            <li class="movable">
+                Book facilities
+                <ul>
+                    <li>Select building</li>
+                    <li>Book rooms</li>
+                </ul>
+            </li>
+            <li class="movable">
+                Book caterer
+            </li>
+            <li class="movable">
+                Book block of hotel rooms
+            </li>
+            <li class="movable">
+                Develop a conference daily schedule of events
+            </li>
+        </ol>
+        
+        <script type="text/javascript">
+            demo.initListReorderer();
+        </script>
+    </body>
+</html>
