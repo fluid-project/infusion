@@ -13,30 +13,27 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global $, fluid*/
 
 $(function () {
+    
     var uiOptions;
-    var enhancerOpts = {
-        defaultSiteSettings: {
-            theme: "mist"
-        },
-        tableOfContents: {
-            options: {
-                templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
+    var uiOptionsNode;
+    
+     //initialize the UI Enhancer
+    var setupUIEnhancer = function () {
+        var enhancerOpts = {
+            defaultSiteSettings: {
+                theme: "mist"
+            },
+            tableOfContents: {
+                options: {
+                    templateUrl: "../../../components/tableOfContents/html/TableOfContents.html"
+                }
+    
             }
-
-        }
+        };
+        return fluid.uiEnhancer(document, enhancerOpts);
     };
     
-    var uiEnhancer = fluid.uiEnhancer(document, enhancerOpts);
-    var dialog_container = $("#dialog_container");
-
-    
-    var initDialog = function () {
-        // center dialog
-        $('#dialog_container').css({
-            left: ($(window).width() / 2) - ($('#dialog_container').width() / 2),
-            top: ($(window).height() / 2) - ($('#dialog_container').height() / 2)
-        }); 
-        
+    var setupUIOptions = function () {        
         var options = {
             listeners: {
                 afterRender: function () {
@@ -44,40 +41,31 @@ $(function () {
                     $('.fl-uiOptions .fl-col h2:eq(0)').focus();
                 },
                 onCancel: function () {
-                    dialog_container.dialog("close");
+                    uiOptionsNode.slideUp();
                 }, 
                 onSave: function () {
-                    dialog_container.dialog("close");
+                    uiOptionsNode.slideUp();
                 }
             }
         };
         
         // instantiate component
-        uiOptions = fluid.uiOptions("#dialog_container", options);
-        
-        // 1 time, reposition dialog 
-        dialog_container.dialog('option', 'position', 'center');
-        
+        uiOptions = fluid.uiOptions(".ui_options", options);        
     };
-
-    dialog_container.dialog({
-        bgiframe: true,
-        title: 'User Interface Options',
-        width: '69em',
-        modal: true,
-        autoOpen: false,
-        draggable: true
-    });
     
-    $("#dialog_container .fl-icon-close").click(function () {
-        dialog_container.dialog("close");        
-    });
+    var setup = function () {
+        $(".lookNfeel a").toggle(function () {
+                uiOptionsNode.slideDown();
+            }, function () {
+                uiOptionsNode.slideUp();
+                uiOptions.cancel();
+            });
+        uiOptionsNode.hide();
+    };
     
-    $('.lookNfeel a').click(function () {
-        dialog_container.dialog("open");
-        if (!uiOptions) {
-            $('#dialog_content').load('../../../components/uiOptions/html/UIOptions.html .uiOptions', initDialog);            
-        }
-    });  
+    uiOptionsNode = $(".ui_options");
+    setupUIEnhancer();  
+    uiOptionsNode.load('../../../components/uiOptions/html/UIOptions.html .uiOptions', setupUIOptions);
+    setup();
    
 });

@@ -29,10 +29,8 @@
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.position.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.accordion.js"></script>
-        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.dialog.js"></script>       
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.accordion.js"></script>       
         <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
         <script type="text/javascript" src="../../../lib/jquery/plugins/delegate/js/jquery.delegate.js"></script>
 
@@ -54,19 +52,15 @@
     </head>
 
     <body>
+        <button class="myButton">Edit Appearance</button>
+        <!-- div that will contain the UI Options component -->
+        <div id="myUIOptions"></div>
         <h1>Some Sample Title</h1>
         <p>Some content with <a id="myLink">a link</a> and<button id="myButton">a button</button>. </p>
-        
-        <!-- div that will contain the UI Options component -->
-        <div id="myUIOptions">
-            <div id="dialogContent">
-            </div>
-        </div>
-        <button class="myButton">Edit Appearance</button>
+
         <script type="text/javascript">
             demo.initUIOptions();
         </script>
-
     </body>
 
 </html>

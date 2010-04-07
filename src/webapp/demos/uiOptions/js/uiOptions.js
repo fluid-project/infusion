@@ -18,9 +18,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 (function ($, fluid) {
 	
+    var uiOptionsNode;
+    var uiOptionsComponent;
+	
     //initialize the UI Enhancer
     var setupUIEnhancer = function () {
-    	
         var enhancerOpts = {
             defaultSiteSettings: {
                 theme: "mist",
@@ -38,27 +40,6 @@ var demo = demo || {};
         return fluid.uiEnhancer(document, enhancerOpts);
     };
     
-    var setupDialog = function() {
-    
-        // Create the dialog
-        uiOptionsNode.dialog({
-            bgiframe: true,
-            width: '60em',
-            modal: true,
-            dialogClass: 'fl-widget fl-grabbable',
-            closeOnEscape: false,
-            autoOpen: false,
-            draggable: true,
-            title: "User Interface Options"
-        });
-        
-        // Bind event handlers for it.
-        $(".myButton").click(function() {
-            uiOptionsNode.dialog("open");
-        });
-    };
-
-    
     //initialize UI Options component
     var setupUIOptions = function () {
         var options = {
@@ -72,15 +53,15 @@ var demo = demo || {};
                     $(".uiOptions .fl-col h2:eq(0)").focus();
                 },
                 onCancel: function() {
-                    uiOptionsNode.dialog("close");
+                    uiOptionsNode.slideUp();
                 },
                 onSave: function() {
-                    uiOptionsNode.dialog("close");
+                    uiOptionsNode.slideUp();
                 }
             }
         };
         
-        return fluid.uiOptions(".uiOptions", options);
+        uiOptionsComponent = fluid.uiOptions(".uiOptions", options);
     };
     
     //load the UI Options component
@@ -88,12 +69,21 @@ var demo = demo || {};
         var urlSelector = "../../../components/uiOptions/html/UIOptions.html .uiOptions";
         uiOptionsNode.load(urlSelector, setupUIOptions);
     };
-
+    
+    var setupPage = function () {
+        $(".myButton").toggle(function () {
+                uiOptionsNode.slideDown();
+            }, function () {
+                uiOptionsNode.slideUp();
+                uiOptionsComponent.cancel();
+            });
+        uiOptionsNode.hide();
+    };
     
     demo.initUIOptions = function () {
         uiOptionsNode = $("#myUIOptions");
         setupUIEnhancer();  
         loadUIOptions();
-        setupDialog();
+        setupPage();
     };
 })(jQuery, fluid);

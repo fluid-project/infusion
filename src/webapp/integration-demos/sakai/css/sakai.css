@@ -24,7 +24,7 @@ p {margin:0; padding-bottom:1em;}
 .fl-tabs-content .fl-col input {width:45%; margin:3px 0; padding:0;}
 
 
-.lookNfeel {padding:15px 10px 0; overflow:auto;}
+.lookNfeel {padding:5px 5px 5px; overflow:auto;}
 
 /************************************/
 .footer { background:url("../images/sakai.png") no-repeat left center; border-top:1px solid #efefef; color:#ccc; font-size:0.8em; margin:10px 0 0;}
