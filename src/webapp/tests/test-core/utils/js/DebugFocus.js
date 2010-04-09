@@ -50,4 +50,4 @@ fluid.debug = function () {
 } (); // End of fluid.debug namespace.
 
 // Call listenForFocusEvents when the document is ready.
-//jQuery(document).ready(fluid.debug.listenForFocusEvents);
+jQuery(document).ready(function () {fluid.debug.listenForFocusEvents()});
