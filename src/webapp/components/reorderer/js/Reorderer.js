@@ -11,8 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 // Declare dependencies.
-/*global $, jQuery*/
-/*global fluid_1_2*/
+/*global jQuery, fluid_1_2, document*/
 
 fluid_1_2 = fluid_1_2 || {};
 
@@ -50,15 +49,7 @@ fluid_1_2 = fluid_1_2 || {};
             avatar.hide();
         }
         return avatar;
-    };   
-    
-    function firstSelectable(that) {
-        var selectables = that.dom.fastLocate("selectables");
-        if (selectables.length <= 0) {
-            return null;
-        }
-        return selectables[0];
-    }
+    };
     
     function bindHandlersToContainer(container, keyDownHandler, keyUpHandler, mouseMoveHandler) {
         var actualKeyDown = keyDownHandler;
@@ -86,7 +77,6 @@ fluid_1_2 = fluid_1_2 || {};
     }
     
     function addRolesToContainer(that) {
-        var first = that.dom.fastLocate("selectables")[0];
         that.container.attr("role", that.options.containerRole.container);
         that.container.attr("aria-multiselectable", "false");
         that.container.attr("aria-readonly", "false");
@@ -179,7 +169,6 @@ fluid_1_2 = fluid_1_2 || {};
             var keysets = options.keysets;
             for (var i = 0; i < keysets.length; i++) {
                 var keyset = keysets[i];
-                var didProcessKey = false;
                 var keydir = fluid.keyForValue(keyset, evt.keyCode);
                 if (!keydir) {
                     continue;
@@ -211,6 +200,7 @@ fluid_1_2 = fluid_1_2 || {};
                     }
             
                 } else if (noModifier(evt)) {
+                    item.blur();
                     $(relativeItem.element).focus();
                 }
                 return false;

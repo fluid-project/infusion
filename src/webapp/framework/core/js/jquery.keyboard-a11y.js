@@ -334,6 +334,9 @@ var fluid = fluid || fluid_1_2;
 
     var selectableFocusHandler = function(selectionContext) {
         return function(evt) {
+            // FLUID-3590: newer browsers (FF 3.6, Webkit 4) have a form of "bug" in that they will go bananas
+            // on attempting to move focus off an element which has tabindex dynamically set to -1.
+            $(evt.target).fluid("tabindex", 0);
             selectElement(evt.target, selectionContext);
 
             // Force focus not to bubble on some browsers.
@@ -343,6 +346,7 @@ var fluid = fluid || fluid_1_2;
 
     var selectableBlurHandler = function(selectionContext) {
         return function(evt) {
+            $(evt.target).fluid("tabindex", selectionContext.options.selectablesTabindex);
             unselectElement(evt.target, selectionContext);
 
             // Force blur not to bubble on some browsers.
@@ -364,6 +368,8 @@ var fluid = fluid || fluid_1_2;
     };
 
     var prepareShift = function(selectionContext) {
+        // FLUID-3590: FF 3.6 and Safari 4.x won't fire blur() when programmatically moving focus.
+        selectionContext.selectedElement().blur();
         unselectElement(selectionContext.selectedElement(), selectionContext);
         if (selectionContext.activeItemIndex === NO_SELECTION) {
           selectionContext.activeItemIndex = -1;
