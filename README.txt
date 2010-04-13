@@ -3,17 +3,25 @@ Fluid Infusion 1.2
 Main Project Site:  http://fluidproject.org
 Documentation:      http://wiki.fluidproject.org/display/fluid/Infusion+Documentation
 
+
 What's New in 1.2
 ===================
 
 This release:
-    * New Demo Portal with improved component demos    
-    * Sneak Peak for Mobile FSS iPhone theme
-    * Improved and simplified Image Reorderer examples and documentation
-    * Uploader support for Firefox 3.5 and improved experience for Internet Explorer
-    * Other bug fixes:
-        * More class name normalization
-        * InlineEdit fixes
+    * Mobile FSS themes: stable, full-featured support for iPhone and Android
+    * Support for jQuery 1.4.2 and jQuery UI 1.8
+    * Rich Text InlineEdit now supports the new CKEditor 3 rich text editor
+    * Smaller, faster, and more mobile-friendly package
+        * The uncompressed distributions are now over 5 MB smaller
+    * Bug fixes for Renderer, data binding, Inline Edit, and Reorderer
+    * Improved internationalization for Undo
+    * Better ARIA support for Inline Edit and Undo
+    * Improved build scripts
+    * Easier asynchronous unit testing
+    * Ubiquitous UTF-8 support
+
+More information on migrating from Infusion 1.1.x to Infusion 1.2 can be found on the "Upgrading to Infusion 1.2" page on the wiki.
+http://wiki.fluidproject.org/display/fluid/Upgrading+to+Infusion+1.2
 
 
 What's in this Release
@@ -63,7 +71,6 @@ been removed.
 
 Developers wishing to learn about the Fluid Infusion code, or debug their applications, should use
 the Source Code Bundle.
-
 
 Demo Portal
 -----------
@@ -134,9 +141,9 @@ Third Party Software in Infusion
 This is a list of publicly available software that is included in the Fluid Infusion bundle, along
 with their licensing terms.
 
-    * jQuery javascript library v1.3.2: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * jQuery UI javascript widget library v1.7: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * jQuery QUnit testrunner r6173: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * jQuery javascript library v1.4.2: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * jQuery UI javascript widget library v1.8: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * jQuery QUnit revision 2dbf603: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * jQuery Chili code highlighter http://code.google.com/p/jquery-chili-js/ (MIT licensed)
     * Douglas Crockford's JSON parsing and stringifying methods (from 2007-11-06): http://www.json.org/ (Public Domain)
     * SWFUpload v2.2.0.1: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
@@ -175,14 +182,13 @@ manual pages easy to navigate we have added the following guides:
 
 Supported Browsers
 ==================
-Firefox 3.5: full support in Mac OS 10.5, Win XP and Win Vista
-Firefox 3.0: full support in Mac OS 10.5 and Win XP
+Chrome 4: full support in Win XP
+Firefox 3.0: full support in Win XP
+Firefox 3.6: full support in Mac OS 10.6, Win XP and Win 7
 Internet Explorer 6.x: full support in Win XP
-Internet Explorer 7.x: full support in Win XP and Win Vista
-Safari 4: full support in Mac OS 10.4 and 10.5
-Safari 3.2 (Mac OS 10.5), Opera 9.6 (Win XP): full support (except keyboard interaction, which is not supported by these browsers)
-
-Internet Explorer 8: preliminary support
+Internet Explorer 7.x: full support in Win XP
+Internet Explorer 8.x: full support in Win XP and Win 7
+Safari 4: full support in Mac OS 10.5 and 10.6
 
 For more information on Fluid Infusion browser support, please see:
     http://wiki.fluidproject.org/display/fluid/Browser+Support
@@ -209,6 +215,7 @@ Preview: still growing, but with broad browser support. Expect new features in u
 Sneak Peek: in development; APIs will change. Share your feedback, ideas, and code
     * Inline Edit: Dropdown
     * Inline Edit: Rich Text
+    * Mobile Fluid Skinning System
     * Table of Contents
 
 
@@ -221,43 +228,42 @@ Some of the known issues in this release are described here:
 FSS:
     FLUID-2504: Flexible columns don't maintain proper alignment under certain conditions
     FLUID-2434: In IE, major font size changes break text positioning within form controls
-    FLUID-2397: Opera doesn't seem to repaint certain css changes on the fly, requiring a refresh to see them
 
 Framework:
-    FLUID-2577 Renderer performance can be slow on IE 6 and 7 in some contexts.
+    FLUID-2577: Renderer performance can be slow on IE 6 and 7 in some contexts.
 
 Inline Edit: 
-    FLUID-1600 Pressing the "Tab" key to exit edit mode places focus on the wrong item
-    FLUID-2536 Inline Edit test fails using IE 8
-  
-Uploader: 
-    FLUID-2582 Uploader is dependent on ProgressiveEnhancement.js, which is not included in InfusionAll.js
-    FLUID-3241 Can only tab to the "Browse Files" button once: using IE
-    FLUID-2052 Cannot tab away from the "Browse Files" button with Flash 10; using FF3*
-    * For information related to known issues with Flash 10 compatibility, 
-      see http://wiki.fluidproject.org/x/kwZo
+    FLUID-3632: Chrome 4 in WIN XP does not allow tabbing out of tinyMCE editor's edit field
+    FLUID-3611: Text persists in edit mode when view mode displays default text: using IE 6
+    FLUID-2536: Inline Edit test fails using IE 8
+    FLUID-1600: Pressing the "Tab" key to exit edit mode places focus on the wrong item
 
 Layout Reorderer: 
-    FLUID-1540 Can't use keyboard reordering to move a nested reorderer to the right column, using IE6
-    FLUID-2171 In IE, can't reorderer portlets containing Google components
-    FLUID-858  Portlet Columns load with no padding between them in IE7
+    FLUID-3089: If columns become stacked, can't drag item into lower column
+    FLUID-1540: Can't use keyboard reordering to move a nested reorderer to the right column, using IE6
+    FLUID-858:  Portlet Columns load with no padding between them in IE7
 
 Pager:
-    FLUID-2880 The Pager will be refactored. Note that as a result of this, there will be significant changes to the Pager API
-    FLUID-2329 The self-rendering mode of the Pager is not the default mode
+    FLUID-3584: Clicking page numbers throws an error: using IE 6
+    FLUID-2880: The Pager will be refactored. Note that as a result of this, there will be significant changes to the Pager API
+    FLUID-2329: The self-rendering mode of the Pager is not the default mode
+
+Renderer: 
+    FLUID-3493: Renderer appears to corrupt templates containing empty tags on Opera (maybe others)
+    FLUID-3277: Attempt to add children to leaf component in tree results in "targetlump is undefined" error
+    FLUID-3276: Enclosing branch nodes within markup which has "headers" attribute causes them to become invisible to the renderer
 
 Reorderer: 
-    FLUID-539  Can't use the "Tab" key to navigate out of reorderable tabs
-    FLUID-118  Dragging an image offscreen or out of the frame has some unexpected results.
-    FLUID-3288 Moving an item with the keyboard "loses" the "ctrl-key is down" status
+    FLUID-3288: Moving an item with the keyboard "loses" the "ctrl-key is down" status
+    FLUID-118:  Dragging an image offscreen or out of the frame has some unexpected results.
 
 UI Options: 
-    FLUID-2398 Minimum font size control changes the text size even when the base size is larger then the minimum.
-    FLUID-2481 "Links" selection does not work correctly in UIOptions
-    FLUID-2506 Keyboard navigation inside the dialog breaks in simple layout mode: using FF
-
-Renderer:
-    FLUID-3224 If <textarea> autobound to non-existant model field, Renderer renders unclosed element    
-    FLUID-3277 Attempt to add children to leaf component in tree results in "targetlump is undefined" error
-    FLUID-3276 Enclosing branch nodes within markup which has "headers" attribute causes them to become invisible to the renderer
-
+    FLUID-3621: The text in buttons does not change size.
+    FLUID-2481: "Links" selection does not work correctly in UIOptions
+    FLUID-2398: Minimum font size control changes the text size even when the base size is larger then the minimum.
+    
+Uploader: 
+    FLUID-3241: Can only tab to the "Browse Files" button once: using IE
+    FLUID-2052: Cannot tab away from the "Browse Files" button with Flash 10*
+    * For information related to known issues with Flash 10 compatibility, 
+      see http://wiki.fluidproject.org/x/kwZo
