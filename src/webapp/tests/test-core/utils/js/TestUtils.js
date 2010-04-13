@@ -1,5 +1,5 @@
 /*
-Copyright 2007-2009 University of Cambridge
+Copyright 2007-2010 University of Cambridge
 Copyright 2007-2009 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
