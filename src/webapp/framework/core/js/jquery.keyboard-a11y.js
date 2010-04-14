@@ -369,7 +369,11 @@ var fluid = fluid || fluid_1_2;
 
     var prepareShift = function(selectionContext) {
         // FLUID-3590: FF 3.6 and Safari 4.x won't fire blur() when programmatically moving focus.
-        selectionContext.selectedElement().blur();
+        var selElm = selectionContext.selectedElement();
+        if (selElm) {
+            selElm.blur();
+        }
+
         unselectElement(selectionContext.selectedElement(), selectionContext);
         if (selectionContext.activeItemIndex === NO_SELECTION) {
           selectionContext.activeItemIndex = -1;
