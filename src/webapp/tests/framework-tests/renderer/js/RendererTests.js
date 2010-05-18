@@ -887,6 +887,49 @@ fluid.identity = function() {
         jqUnit.assertTrue("link rendered", rendered.indexOf("link") !== -1);
     });
     
+    renderTests.test("Id uniquification and autobind test (FLUID-3656)", function() {
+        var node = $(".FLUID-3656-test");
+        var model1 = {
+            value1: "Cat",
+            value2: "Dog"
+        };
+        var model2 = {
+            value1: "Chat",
+            value2: "Chien"
+        };
+        var tree = {
+            children: [
+                {ID: "input-1", valuebinding: "value1"},
+                {ID: "input-2", valuebinding: "value2"}
+            ]
+        };
+        var cutpoints = [
+            {id: "input-1", selector: ".my-input-1"},
+            {id: "input-2", selector: ".my-input-2"}
+        ];
+        var applier1 = fluid.makeChangeApplier(model1);
+        var applier2 = fluid.makeChangeApplier(model2);
+        fluid.selfRender($(".first-block"), fluid.copy(tree),
+            {autoBind: true,
+             model: model1,
+             applier: applier1,
+             cutpoints: cutpoints});
+        fluid.selfRender($(".second-block"), fluid.copy(tree),
+            {autoBind: true,
+             model: model2,
+             applier: applier2,
+             cutpoints: cutpoints});
+        var orig1 = fluid.copy(model1);
+        var CATT2 = $(".my-input-1", $(".second-block"));
+        CATT2.val("CHATT");
+        CATT2.change();
+        jqUnit.assertDeepEq("Unchanged model 1", model1, orig1);
+        jqUnit.assertDeepEq("Changed model 2", model2, {
+          value1: "CHATT",
+          value2: "Chien"
+        });
+    });
+    
     renderTests.test("Self-closed tags for HTML support (FLUID-3524-b)", function() {
         var node = $(".FLUID-3524-b-test");
         var rendered = renderManually(node, {},  {armouring: "comment"});
