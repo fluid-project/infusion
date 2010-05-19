@@ -169,14 +169,6 @@ fluid_1_2 = fluid_1_2 || {};
       return component;
   }
   
-  // When a component
-  function assignSubmittingName(component, defaultname) {
-      if (component.submittingname === undefined && component.willinput !== false) {
-          component.submittingname = defaultname? defaultname: component.fullID;
-      }
-      return component.submittingname;
-  }
-  
   function fixupTree(tree, model) {
     if (tree.componentType === undefined) {
       tree = unzipComponent(tree, model);
@@ -564,6 +556,11 @@ fluid_1_2 = fluid_1_2 || {};
       }
       
       function applyAutoBind(torender, finalID) {
+          if (!finalID) {
+            // if no id is assigned so far, this is a signal that this is a "virtual" component such as
+            // a non-HTML UISelect which will not have physical markup.
+              return; 
+          }
           var tagname = trc.uselump.tagname;
           var applier = renderOptions.applier;
           function applyFunc() {
@@ -594,7 +591,7 @@ fluid_1_2 = fluid_1_2 || {};
                     EL: holder.valuebinding,
                     oldvalue: holder.value};
                 // But this has to happen multiple times
-                  applyAutoBind(torender, torender.fullID);
+                  applyAutoBind(torender, torender.finalID);
               }
               if (torender.fossilizedbinding) {
                   dumpHiddenField(torender.fossilizedbinding);
@@ -630,6 +627,42 @@ fluid_1_2 = fluid_1_2 || {};
           return component.childmap[relativeID];
       }
       
+      function adjustForID(attrcopy, component, late, forceID) {
+          if (!late) {
+              delete attrcopy["rsf:id"];
+          }
+          if (component.finalID !== undefined) {
+              attrcopy.id = component.finalID;
+          }
+          else if (forceID !== undefined) {
+              attrcopy.id = forceID;
+          }
+          else {
+              if (attrcopy.id || late) {
+                  attrcopy.id = component.fullID;
+              }
+          }
+          
+          var count = 1;
+          var baseid = attrcopy.id;
+          while (renderOptions.document.getElementById(attrcopy.id)) {
+              attrcopy.id = baseid + "-" + (count++); 
+          }
+          component.finalID = attrcopy.id;
+          return attrcopy.id;
+      }
+      
+      function assignSubmittingName(attrcopy, component, parent) {
+          var submitting = parent || component;
+        // if a submittingName is required, we must already go out to the document to 
+        // uniquify the id that it will be derived from
+          adjustForID(attrcopy, component, true, component.fullID);
+          if (submitting.submittingname === undefined && submitting.willinput !== false) {
+              submitting.submittingname = submitting.fullID;
+          }
+          return submitting.submittingname;
+      }
+           
       function explodeDecorators(decorators) {
           var togo = [];
           if (decorators.type) {
@@ -714,7 +747,7 @@ fluid_1_2 = fluid_1_2 || {};
               return args[index].value;
           });
       }
-      
+          
       function degradeMessage(torender) {
           if (torender.componentType === "UIMessage") {
               // degrade UIMessage to UIBound by resolving the message
@@ -749,29 +782,23 @@ fluid_1_2 = fluid_1_2 || {};
           if (componentType === "UIBound" || componentType === "UISelectChoice") {
               var parent;
               if (torender.choiceindex !== undefined) {
-                  if (torender.parentFullID) {
-                      parent = getAbsoluteComponent(view, torender.parentFullID);
-                      if (!parent) {
-                          makeFail(torender, " has parentFullID of " + torender.parentFullID + " which cannot be resolved");
-                      }
-                  }
-                  else if (torender.parentRelativeID !== undefined){
+                  if (torender.parentRelativeID !== undefined){
                       parent = getRelativeComponent(torender, torender.parentRelativeID);
                       if (!parent) {
                           makeFail(torender, " has parentRelativeID of " + torender.parentRelativeID + " which cannot be resolved");
                       }
                   }
                   else {
-                      makeFail(torender, " does not have either parentFullID or parentRelativeID set");
+                      makeFail(torender, " does not have parentRelativeID set");
                   }
-                  assignSubmittingName(parent.selection);
+                  assignSubmittingName(attrcopy, torender, parent.selection);
                   dumpSelectionBindings(parent);
               }
       
               var submittingname = parent? parent.selection.submittingname : torender.submittingname;
               if (tagname === "input" || tagname === "textarea") {
                   if (!parent) {
-                      submittingname = assignSubmittingName(torender);
+                      submittingname = assignSubmittingName(attrcopy, torender);
                   }
                   if (submittingname !== undefined) {
                       attrcopy.name = submittingname;
@@ -834,12 +861,7 @@ fluid_1_2 = fluid_1_2 || {};
               }
           }
           else if (componentType === "UISelect") {
-              // need to do this first to see whether we need to write out an ID or not
-              applyAutoBind(torender, torender.selection.fullID);
-              //if (attrcopy.id) {
-                // TODO: This is an irregularity, should probably remove for 0.8
-                //attrcopy.id = torender.selection.fullID;
-                //}
+
               var ishtmlselect = tagname === "select";
               var ismultiple = false;
         
@@ -849,16 +871,24 @@ fluid_1_2 = fluid_1_2 || {};
                       attrcopy.multiple = "multiple";
                       }
                   }
-              // since in HTML this name may end up in a global namespace, we make sure to take account
-              // of any uniquifying done by adjustForID upstream of applyAutoBind
-              assignSubmittingName(torender.selection, attrcopy.id);
+              // assignSubmittingName is now the definitive trigger point for uniquifying output IDs
+              // However, if id is already assigned it is probably through attempt to decorate root select.
+              // in this case restore it.
+              var oldid = attrcopy.id;
+              assignSubmittingName(attrcopy, torender.selection);
+              if (oldid !== undefined) {
+                  attrcopy.id = oldid;
+              }
+              
               if (ishtmlselect) {
                   // The HTML submitted value from a <select> actually corresponds
                   // with the selection member, not the top-level component.
                   if (torender.selection.willinput !== false) {
                     attrcopy.name = torender.selection.submittingname;
                   }
+                  applyAutoBind(torender, attrcopy.id);
               }
+              
               out += fluid.dumpAttributes(attrcopy);
               if (ishtmlselect) {
                   out += ">";
@@ -935,27 +965,7 @@ fluid_1_2 = fluid_1_2 || {};
                 
           }
       }
-      
-      function adjustForID(attrcopy, component, late, forceID) {
-          if (!late) {
-              delete attrcopy["rsf:id"];
-          }
-          if (forceID !== undefined) {
-              attrcopy.id = forceID;
-          }
-          else {
-              if (attrcopy.id || late) {
-                  attrcopy.id = component.fullID;
-              }
-          }
-          var count = 1;
-          var baseid = attrcopy.id;
-          while (renderOptions.document.getElementById(attrcopy.id)) {
-              attrcopy.id = baseid + "-" + (count++); 
-          }
-          return attrcopy.id;
-      }
-      
+           
       function rewriteIDRelation(context) {
           var attrname;
           var attrval = trc.attrcopy["for"];
