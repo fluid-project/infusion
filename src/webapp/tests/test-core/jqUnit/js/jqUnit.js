@@ -13,6 +13,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global window, equals, ok, test, module, jQuery*/
 var jqUnit = jqUnit || {};
 
+// A function to load the testswarm agent if running in the testswarm environment
+// This code was derived from testsuite.js ( http://code.google.com/p/jquery-ui/source/browse/trunk/tests/unit/testsuite.js )
+(function() {
+    var injectPath = "../../../lib/testswarm/js/inject.js";
+    var param = "swarmURL=";
+    var url = window.location.search;
+    url = decodeURIComponent( url.slice( url.indexOf(param) + param.length) );
+    
+    if ( url && url.indexOf("http") === 0 ) {
+        document.write("<scr" + "ipt src='" + injectPath + "?" + (new Date()).getTime() + "'></scr" + "ipt>");
+    }
+})();
+
 (function ($) {
     
     /************************
