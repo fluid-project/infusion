@@ -107,11 +107,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var fontSizeCtrl = $(".flc-uiOptions-min-text-size");
             var fontSizeSetting = $(".flc-textfieldSlider-field", fontSizeCtrl).val(); 
             jqUnit.assertEquals("Small font size selected", "8", fontSizeSetting);
-            var fontStyleSelection = $(":selected", $("#text-font-selection"));
+            var fontStyleSelection = $(":selected", $("#text-font"));
             jqUnit.assertEquals("Verdana selected", "verdana", fontStyleSelection[0].value);
-            var textSpacingSelection = $(":selected", $("#text-spacing-selection"));
+            var textSpacingSelection = $(":selected", $("#text-spacing"));
             jqUnit.assertEquals("Wider spacing is selected", "wide2", textSpacingSelection[0].value);
-            var contrastSelection = $(":selected", $("#theme-selection"));
+            var contrastSelection = $(":selected", $("#theme"));
             jqUnit.assertEquals("High Contrast is selected", "highContrast", contrastSelection[0].value);
         });
         
