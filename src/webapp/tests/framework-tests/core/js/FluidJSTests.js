@@ -401,5 +401,20 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Call function in namespace", 2, fluid.engage.mccord.func());
         });
         
+        
+        fluidJSTests.test("Attach and remove listeners", function () {
+            var testListener = function(shouldExecute) {
+           		jqUnit.assertTrue("This listener should be reached only once", shouldExecute);
+            };
+
+        	expect(1);
+        	var firer = fluid.event.getEventFirer();
+        	firer.addListener(testListener);
+        	firer.fire(true);
+
+        	firer.removeListener(testListener);
+        	firer.fire(false); //listener should not run and assertion should not 
+        });
+        
     });
 })(jQuery);
