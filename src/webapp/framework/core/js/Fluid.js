@@ -476,8 +476,7 @@ var fluid = fluid || fluid_1_2;
         return !value || valueType === "string" || valueType === "boolean" || valueType === "number" || valueType === "function";
     };
         
-    function mergeImpl(policy, basePath, target, source) {
-        var thisPolicy = policy && typeof(policy) !== "string"? policy[basePath] : policy;
+    function mergeImpl(policy, basePath, target, source, thisPolicy) {
         if (typeof(thisPolicy) === "function") {
             thisPolicy.apply(null, target, source);
             return target;
@@ -488,17 +487,20 @@ var fluid = fluid || fluid_1_2;
       
         for (var name in source) {
             var path = (basePath? basePath + ".": "") + name;
+            var newPolicy = policy && typeof(policy) !== "string"? policy[path] : policy;
             var thisTarget = target[name];
             var thisSource = source[name];
             var primitiveTarget = fluid.isPrimitive(thisTarget);
     
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
-                      !thisSource.nodeType && !thisSource.jquery && thisSource !== fluid.VALUE) {
+                      !thisSource.nodeType && !thisSource.jquery && thisSource !== fluid.VALUE 
+                      && (thisTarget !== undefined || newPolicy !== "preserve")
+                      ) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array? [] : {};
                     }
-                    mergeImpl(policy, path, thisTarget, thisSource);
+                    mergeImpl(policy, path, thisTarget, thisSource, newPolicy);
                 }
                 else {
                     if (thisTarget === null || thisTarget === undefined || thisPolicy !== "reverse") {
@@ -531,7 +533,7 @@ var fluid = fluid || fluid_1_2;
         for (var i = 2; i < arguments.length; ++i) {
             var source = arguments[i];
             if (source !== null && source !== undefined) {
-                mergeImpl(policy, path, target, source);
+                mergeImpl(policy, path, target, source, policy ? policy[""] : null);
             }
         }
         if (policy && typeof(policy) !== "string") {

@@ -71,6 +71,32 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });
         
+        fluid.tests = fluid.tests || {};
+        fluid.tests.testMergeComponent = function(options) {
+            return fluid.initLittleComponent("fluid.tests.testMergeComponent", options);
+        };
+
+        function testPreservingMerge(preserve) {
+            var defaults =  { lala: "blalalha"};
+            if (preserve) {
+              defaults.mergePolicy = {model: "preserve"};
+            }
+            fluid.defaults("fluid.tests.testMergeComponent", defaults);
+            var model = { foo: "foo" };
+
+            var comp = fluid.tests.testMergeComponent({model: model});
+            
+            jqUnit.assertEquals("Identical model reference" + (preserve? " - preserve" : ""), 
+                preserve, comp.options.model === model);                    
+        }
+        
+     
+        
+        fluidJSTests.test("Preserving merge model semantics", function() {
+            testPreservingMerge(true);
+            testPreservingMerge(false);
+        });
+        
         fluidJSTests.test("reverse merge", function() {
             var target = {
                 root: {
@@ -399,21 +425,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var space = fluid.registerNamespace("fluid.engage.mccord");
             space.func = function() { return 2 ;};
             jqUnit.assertEquals("Call function in namespace", 2, fluid.engage.mccord.func());
-        });
-        
-        
-        fluidJSTests.test("Attach and remove listeners", function () {
-            var testListener = function(shouldExecute) {
-           		jqUnit.assertTrue("This listener should be reached only once", shouldExecute);
-            };
-
-        	expect(1);
-        	var firer = fluid.event.getEventFirer();
-        	firer.addListener(testListener);
-        	firer.fire(true);
-
-        	firer.removeListener(testListener);
-        	firer.fire(false); //listener should not run and assertion should not 
         });
         
     });
