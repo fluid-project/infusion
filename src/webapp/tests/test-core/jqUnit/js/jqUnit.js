@@ -16,7 +16,7 @@ var jqUnit = jqUnit || {};
 // A function to load the testswarm agent if running in the testswarm environment
 // This code was derived from testsuite.js ( http://code.google.com/p/jquery-ui/source/browse/trunk/tests/unit/testsuite.js )
 (function() {
-    var injectPath = "../testswarm/js/inject.js";
+    var injectPath = "../../../lib/testswarm/js/inject.js";
     var param = "swarmURL=";
     var url = window.location.search;
     url = decodeURIComponent( url.slice( url.indexOf(param) + param.length) );
