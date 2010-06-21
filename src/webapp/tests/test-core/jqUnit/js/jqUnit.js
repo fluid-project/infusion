@@ -15,13 +15,13 @@ var jqUnit = jqUnit || {};
 
 // A function to load the testswarm agent if running in the testswarm environment
 // This code was derived from testsuite.js ( http://code.google.com/p/jquery-ui/source/browse/trunk/tests/unit/testsuite.js )
-(function() {
-    var injectPath = "../../../lib/testswarm/js/inject.js";
+(function () {
     var param = "swarmURL=";
     var url = window.location.search;
-    url = decodeURIComponent( url.slice( url.indexOf(param) + param.length) );
-    
-    if ( url && url.indexOf("http") === 0 ) {
+    url = decodeURIComponent(url.slice(url.indexOf(param) + param.length));
+	
+    if (url && url.indexOf("http") === 0) {
+		var injectPath = window.location.protocol + "//" + window.location.host + "/js/inject.js";
         document.write("<scr" + "ipt src='" + injectPath + "?" + (new Date()).getTime() + "'></scr" + "ipt>");
     }
 })();
