@@ -649,7 +649,7 @@ var fluid = fluid || fluid_1_2;
                 if (typeof(listener) === 'string') {
                     delete listeners[listener];
                 }
-                else if (listener.$$guid) {
+                else if (typeof(listener) === 'object' && listener.$$guid) {
                     delete listeners[listener.$$guid];
                 }
             },
@@ -697,15 +697,20 @@ var fluid = fluid || fluid_1_2;
         return String(EL).split('.');
     };
     
+    /** Compose an EL expression from two separate EL expressions. The returned 
+     * expression will be the one that will navigate the first expression, and then
+     * the second, from the value reached by the first. Either prefix or suffix may be
+     * the empty string **/
+    
     fluid.model.composePath = function (prefix, suffix) {
-        return prefix === ""? suffix : prefix + "." + suffix;
+        return prefix === ""? suffix : (suffix === ""? prefix : prefix + "." + suffix);
     };
 
     fluid.model.getPenultimate = function (root, EL, environment, create) {
         var segs = fluid.model.parseEL(EL);
         for (var i = 0; i < segs.length - 1; ++i) {
             if (!root) {
-                return root;
+                return {root: root };
             }
             var segment = segs[i];
             if (environment && environment[segment]) {
@@ -856,14 +861,13 @@ var fluid = fluid || fluid_1_2;
         return element.id;
     };
     
-        
     // Functional programming utilities.
     
     function transformInternal(source, togo, key, args) {
         var transit = source[key];
-            for (var j = 0; j < args.length - 1; ++ j) {
-                transit = args[j + 1](transit, key);
-            }
+        for (var j = 0; j < args.length - 1; ++ j) {
+            transit = args[j + 1](transit, key);
+        }
         togo[key] = transit; 
     }
     

@@ -17,9 +17,32 @@ fluid_1_2 = fluid_1_2 || {};
 
 (function ($, fluid) {
   
-  function debugPosition(component) {
-      return "as child of " + (component.parent.fullID? "component with full ID " + component.parent.fullID : "root");
-  }
+    function debugPosition(component) {
+        return "as child of " + (component.parent.fullID? "component with full ID " + component.parent.fullID : "root");
+    }
+  
+    /** Better jQuery.each which works on hashes as well as having the arguments
+     * the right way round */
+    fluid.each = function (source, func) {
+        if (fluid.isArrayable(source)) {
+            for (var i = 0; i < source.length; ++ i) {
+                func(source[i], i);
+            }
+        }
+        else {
+            for (var key in source) {
+                func(source[key], key);
+            }
+        }
+    };
+    
+    fluid.arrayToHash = function(array) {
+        var togo = {};
+        fluid.each(array, function(el) {
+            togo[el] = true;
+        });
+        return togo;
+    };
   
   function computeFullID(component) {
       var togo = "";
@@ -122,26 +145,37 @@ fluid_1_2 = fluid_1_2 || {};
       fixupValue(holder[property], model);
   }
   
-  var duckMap = {children: "UIContainer", 
+  renderer.duckMap = {children: "UIContainer", 
         value: "UIBound", valuebinding: "UIBound", messagekey: "UIMessage", 
         markup: "UIVerbatim", selection: "UISelect", target: "UILink",
         choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
   
+  var boundMap = {
+      UISelect:   ["selection", "optionlist", "optionnames"],
+      UILink:     ["target", "linktext"],
+      UIVerbatim: ["markup"]
+  };
+  
+  renderer.boundMap = fluid.transform(boundMap, fluid.arrayToHash);
+  
   renderer.inferComponentType = function(component) {
-      for (var key in duckMap) {
+      for (var key in renderer.duckMap) {
           if (component[key] !== undefined) {
-              component.componentType = duckMap[key];
-              break;
+              return renderer.duckMap[key];
           }
       }
+  };
+  
+  renderer.applyComponentType = function(component) {
+      component.componentType = renderer.inferComponentType(component);
       if (component.componentType === undefined && component.ID !== undefined) {
           component.componentType = "UIBound";
       }
-  }    
+  };
   
   function unzipComponent(component, model) {
       if (component) {
-          renderer.inferComponentType(component);
+          renderer.applyComponentType(component);
       }
       if (!component || component.componentType === undefined) {
           var decorators = component.decorators;
@@ -153,17 +187,13 @@ fluid_1_2 = fluid_1_2 || {};
       if (cType === "UIContainer") {
           component.children = fixChildren(component.children);
       }
-      else if (cType === "UISelect") {
-          upgradeBound(component, "selection", model);
-          upgradeBound(component, "optionlist", model);
-          upgradeBound(component, "optionnames", model);
-      }
-      else if (cType === "UILink") {
-          upgradeBound(component, "target", model);
-          upgradeBound(component, "linktext", model);
-      }
-      else if (cType === "UIVerbatim") {
-          upgradeBound(component, "markup", model);
+      else {
+          map = renderer.boundMap[cType];
+          if (map) {
+              fluid.each(map, function(value, key) {
+                  upgradeBound(component, key, model);
+              });
+          }
       }
       
       return component;
@@ -178,7 +208,7 @@ fluid_1_2 = fluid_1_2 || {};
     }
     
     if (tree.children) {
-       tree.childmap = {};
+      tree.childmap = {};
       for (var i = 0; i < tree.children.length; ++ i) {
         var child = tree.children[i];
         if (child.componentType === undefined) {

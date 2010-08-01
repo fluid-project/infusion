@@ -77,7 +77,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         };
 
         function testPreservingMerge(preserve) {
-            var defaults =  { lala: "blalalha"};
+            var defaults = { lala: "blalalha"};
             if (preserve) {
               defaults.mergePolicy = {model: "preserve"};
             }
@@ -92,7 +92,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
      
         
-        fluidJSTests.test("Preserving merge model semantics", function() {
+        fluidJSTests.test("Merge model semantics", function() {
             testPreservingMerge(true);
             testPreservingMerge(false);
         });

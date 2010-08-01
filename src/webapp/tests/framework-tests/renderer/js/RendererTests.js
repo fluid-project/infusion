@@ -10,18 +10,11 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-fluid.tests = fluid.tests || {};
-
-
-//TODO: fluid.identity required for testing purposes, will not be present until 
-// FLUID-2281 branch is merged
-fluid.identity = function() {
-    return arguments;
-};
+fluid.registerNamespace("fluid.tests");
 
 (function($) {
 
-  fluid.tests.testParser = function() {
+  fluid.tests.testRenderer = function() {
     var deepEqTests = new jqUnit.TestCase("Deep Equivalence Tests");
     
     deepEqTests.test("Test", function () {
@@ -818,10 +811,14 @@ fluid.identity = function() {
            "aria-disabled": "true"}, input);
     });
     
+    fluid.tests.multiIdentity = function() {
+        return arguments;
+    }
+    
     renderTests.test("InitBlock rendering (FLUID-3482)", function() {
         var node = $(".FLUID-3482-test");
         var args = [true, 3, "string", {key1: 3, "key2": "thing"}];
-        var tree = {ID: "initBlock", functionname: "fluid.identity", 
+        var tree = {ID: "initBlock", functionname: "fluid.tests.multiIdentity", 
           "arguments": args};
         fluid.selfRender(node, tree);
         var block = $("div", node);

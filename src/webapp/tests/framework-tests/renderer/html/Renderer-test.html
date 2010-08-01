@@ -30,12 +30,14 @@
 
   </head>
   <body>
-<h1 id="qunit-header">Parser Test Suite</h1>
-<h2 id="qunit-banner"></h2>
-<div id="qunit-testrunner-toolbar"></div>
-<h2 id="qunit-userAgent"></h2>
-<ol id="qunit-tests"></ol>
-<div id="main">
+    <h1 id="qunit-header">Parser Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    
+  <div id="main">
+  
   <div style="display:none" id="testDataRoot">
     <div id="parseTest1">
       <table>
@@ -273,7 +275,7 @@
 
 <div id="dangerousTests">
   <!-- This markup MUST NOT be placed inline in the main document else it will trigger an
-  endless memory-consuming loop as jqUnit fails replace it correctly in the document on teardown -->
+  endless memory-consuming loop as jqUnit fails to replace it correctly in the document on teardown -->
   
   <div class="FLUID-3493-test">
    
@@ -289,7 +291,7 @@
 </div>
 
 <script>
-  fluid.tests.testParser();
+  fluid.tests.testRenderer();
 </script>
 
 </body>

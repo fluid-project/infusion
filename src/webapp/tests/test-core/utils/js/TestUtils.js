@@ -10,8 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-var fluid = fluid || {};
-fluid.testUtils = fluid.testUtils || {};
+fluid.registerNamespace("fluid.testUtils");
 
 /*
  * A number of utility functions for creating "duck-type" events for testing various key
@@ -46,6 +45,37 @@ fluid.testUtils.modKeyEvent = function(modifier, keyCode, target) {
     }
     return togo;
 };
+
+/** Sort a component tree into canonical order, to facilitate comparison with
+ * deepEq */
+
+fluid.testUtils.sortTree = function(tree) {
+    function comparator(ela, elb) {
+        var ida = ela.ID || "";
+        var idb = elb.ID || "";
+        var cola = ida.indexOf(":") === -1;
+        var colb = idb.indexOf(":") === -1;
+        if (cola && colb) { // if neither has a colon, compare by IDs if they have IDs
+            return ida.localeCompare(idb);
+        }
+        else return cola - colb; 
+    }
+    if (fluid.isArrayable(tree)) {
+        tree.sort(comparator);
+    }
+    fluid.transform(tree, function(value) {
+        if (!fluid.isPrimitive(value)) {
+            fluid.testUtils.sortTree(value);
+        }
+    });
+      
+}
+
+fluid.testUtils.assertTree = function(message, expected, actual) {
+    fluid.testUtils.sortTree(expected);
+    fluid.testUtils.sortTree(actual);
+    jqUnit.assertDeepEq(message, expected, actual);
+}
 
 /** Condense a DOM node into a plain Javascript object, to facilitate testing against
  * a trial, with the use of assertDeepEq or similar

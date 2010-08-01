@@ -117,4 +117,3 @@ fluid_1_2 = fluid_1_2 || {};
     };
       
 })(jQuery, fluid_1_2);
-  
