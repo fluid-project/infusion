@@ -213,7 +213,7 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.pathUtil.matchPath = function(spec, path) {
         var togo = "";
         while (true) {
-          if (!spec) {break;}
+          if (!spec || path === "") {break;}
           if (!path) {return null;}
           var spechead = fluid.pathUtil.getHeadPath(spec);
           var pathhead = fluid.pathUtil.getHeadPath(path);
@@ -227,21 +227,43 @@ fluid_1_2 = fluid_1_2 || {};
         }
         return togo;
       };
-  
-  
-    fluid.model.applyChangeRequest = function(model, request) {
+      
+    fluid.model.isNullChange = function(model, request) {
         if (request.type === "ADD") {
-            fluid.model.setBeanValue(model, request.path, request.value);
+            var existing = fluid.model.getBeanValue(model, request.path);
+            if (existing === request.value) {
+                return true;
             }
-        else if (request.type === "DELETE") {
-            var totail = fluid.pathUtil.getToTailPath(request.path);
-            var tail = fluid.pathUtil.getTailPath(request.path);
-            var penult = fluid.model.getBeanValue(model, penult);
-            delete penult[tail];
         }
     };
-  
-    fluid.model.bindRequestChange = function(that) {
+    /** Applies the supplied ChangeRequest object directly to the supplied model.
+     */
+    fluid.model.applyChangeRequest = function(model, request) {
+        var pen = fluid.model.getPenultimate(model, request.path);
+        if (request.type === "ADD" || request.type === "MERGE") {
+            if (pen.last === "" || request.type === "MERGE") {
+               if (request.type === "ADD") {
+                   fluid.clear(pen.root);
+               }
+               $.extend(true, pen.last === ""? pen.root: pen.root[pen.last], request.value);
+            }
+            else {
+                pen.root[pen.last] = request.value;
+            }
+        }
+        else if (request.type === "DELETE") {
+            if (pen.last === "") {
+                fluid.clear(pen.root);
+            }
+            else {
+                delete pen.root[pen.last];
+            }
+        }
+    };
+    
+    // Utility shared between changeApplier and superApplier
+    
+    function bindRequestChange(that) {
         that.requestChange = function(path, value, type) {
             var changeRequest = {
                 path: path,
@@ -250,51 +272,250 @@ fluid_1_2 = fluid_1_2 || {};
             };
         that.fireChangeRequest(changeRequest);
         }
-    };
+    }
+    
   
-    fluid.makeChangeApplier = function(model) {
+    fluid.makeChangeApplier = function(model, options) {
+        options = options || {};
         var baseEvents = {
             guards: fluid.event.getEventFirer(false, true),
+            postGuards: fluid.event.getEventFirer(false, true),
             modelChanged: fluid.event.getEventFirer(false, false)
         };
         var that = {
             model: model
         };
-        function makePredicate(listenerMember, requestIndex) {
-          return function(listener, args) {
-                var changeRequest = args[requestIndex];
-                return fluid.pathUtil.matchPath(listener[listenerMember], changeRequest.path);
-            };
+        
+        function makeGuardWrapper(cullUnchanged) {
+            if (!cullUnchanged) {
+                return null;
+            }
+            var togo = function(guard) {
+                return function(model, changeRequest, internalApplier) {
+                    var oldRet = guard(model, changeRequest, internalApplier);
+                    if (oldRet === false) { return false;}
+                    else {
+                        if (fluid.model.isNullChange(model, changeRequest)) {
+                            togo.culled = true;
+                            return false;
+                        }
+                    }
+                }
+            }
+            return togo;
         }
-        function adaptListener(that, name, listenerMember, requestIndex) {
-            var predicate = makePredicate(listenerMember, requestIndex);
+
+        function wrapListener(listener, spec) {
+             var pathSpec = spec;
+             var transactional = false;
+             var priority = Number.MAX_VALUE;
+             if (typeof (spec) !== "string") {
+                 pathSpec = spec.path;
+                 transactional = spec.transactional;
+                 if (spec.priority !== undefined) {
+                     priority = spec.priority;
+                     }
+                 }
+             else {
+                 if (pathSpec.charAt(0) === "!") {
+                     transactional = true;
+                     pathSpec = pathSpec.substring(1);
+                 }
+             }
+             return function(changePath, fireSpec, accum) {
+                 var guid = fluid.event.identifyListener(listener);
+                 var exist = fireSpec.guids[guid];
+                 if (!exist) {
+                     var match = fluid.pathUtil.matchPath(pathSpec, changePath);
+                     if (match !== null) {
+                         var record = {
+                             changePath: changePath,
+                             pathSpec: pathSpec,
+                             listener: listener,
+                             priority: priority,
+                             transactional: transactional
+                             };
+                         if (accum) {
+                             record.accumulate = [accum];
+                         }
+                         fireSpec.guids[guid] = record;
+                         var collection = transactional? "transListeners": "listeners";
+                         fireSpec[collection].push(record);
+                         fireSpec.all.push(record);
+                     }
+                 }
+                 else if (accum) {
+                     if (!exist.accumulate) {
+                        exist.accumulate = [];
+                     }
+                     exist.accumulate.push(accum);
+                 }
+           };
+        }
+        
+        function fireFromSpec(name, fireSpec, args, category, wrapper) {
+            return baseEvents[name].fireToListeners(fireSpec[category], args, wrapper);
+        }
+        
+        function fireComparator(recA, recB) {
+            return recA.priority - recB.priority;
+        }
+
+        function prepareFireEvent(name, changePath, fireSpec, accum) {
+            baseEvents[name].fire(changePath, fireSpec, accum);
+            fireSpec.all.sort(fireComparator);
+            fireSpec.listeners.sort(fireComparator);
+            fireSpec.transListeners.sort(fireComparator);
+        }
+        
+        function makeFireSpec() {
+            return {guids: {}, all: [], listeners: [], transListeners: []};
+        }
+        
+        function getFireSpec(name, changePath) {
+            var fireSpec = makeFireSpec();
+            prepareFireEvent(name, changePath, fireSpec);
+            return fireSpec;
+        }
+        
+        function fireEvent(name, changePath, args, wrapper) {
+            var fireSpec = getFireSpec(name, changePath);
+            return fireFromSpec(name, fireSpec, args, "all", wrapper);
+        }
+        
+        function adaptListener(that, name) {
             that[name] = {
-                addListener: function(pathSpec, listener, namespace) {
-                    listener[listenerMember] = pathSpec;
-                    baseEvents[name].addListener(listener, namespace, predicate);
+                addListener: function(spec, listener, namespace) {
+                    baseEvents[name].addListener(wrapListener(listener, spec), namespace);
                 },
                 removeListener: function(listener) {
                     baseEvents[name].removeListener(listener);
                 }
             };
         }
+        adaptListener(that, "guards");
+        adaptListener(that, "postGuards");
+        adaptListener(that, "modelChanged");
         
-        adaptListener(that, "guards", "guardedPathSpec", 1);
-        adaptListener(that, "modelChanged", "triggerPathSpec", 2);
-        that.fireChangeRequest = function(changeRequest) {
+        function preFireChangeRequest(changeRequest) {
             if (!changeRequest.type) {
                 changeRequest.type = "ADD";
             }
-            var prevent = baseEvents.guards.fire(model, changeRequest);
-            if (prevent === false) {
-                return;
+        }
+
+        var bareApplier = {
+            fireChangeRequest: function(changeRequest) {
+                that.fireChangeRequest(changeRequest, true);
             }
-            var oldModel = {};
-            fluid.model.copyModel(oldModel, model);
-            fluid.model.applyChangeRequest(model, changeRequest);
-            baseEvents.modelChanged.fire(model, oldModel, changeRequest);
         };
-        fluid.model.bindRequestChange(that);
+        bindRequestChange(bareApplier);
+
+        that.fireChangeRequest = function(changeRequest, defeatGuards) {
+            preFireChangeRequest(changeRequest);
+            var guardFireSpec = defeatGuards? null : getFireSpec("guards", changeRequest.path);
+            if (guardFireSpec && guardFireSpec.transListeners.length > 0) {
+                var ation = that.initiate();
+                ation.fireChangeRequest(changeRequest, guardFireSpec);
+                ation.commit();
+            }
+            else {
+                if (!defeatGuards) {
+                    // TODO: this use of "listeners" seems pointless since we have just verified that there are no transactional listeners
+                    var prevent = fireFromSpec("guards", guardFireSpec, [model, changeRequest, bareApplier], "listeners");
+                    if (prevent === false) {
+                        return false;
+                    }
+                }
+                var oldModel = model;
+                if (!options.thin) {
+                    oldModel = {};
+                    fluid.model.copyModel(oldModel, model);                    
+                }
+                fluid.model.applyChangeRequest(model, changeRequest);
+                fireEvent("modelChanged", changeRequest.path, [model, oldModel, [changeRequest]]);
+            }
+        };
+        
+        bindRequestChange(that);
+
+        function fireAgglomerated(eventName, formName, changes, args, accpos) {
+            var fireSpec = makeFireSpec();
+            for (var i = 0; i < changes.length; ++ i) {
+                prepareFireEvent(eventName, changes[i].path, fireSpec, changes[i]);
+                }
+            for (var i = 0; i < fireSpec[formName].length; ++ i) {
+                var spec = fireSpec[formName][i];
+                if (accpos) {
+                    args[accpos] = spec.accumulate;
+                }
+                var ret = spec.listener.apply(null, args);
+                if (ret === false) {
+                    return false;
+                }
+            }
+        }
+
+        that.initiate = function(newModel) {
+            var cancelled = false;
+            var changes = [];
+            if (options.thin) {
+                newModel = model;
+            }
+            else {
+                newModel = newModel || {};
+                fluid.model.copyModel(newModel, model);
+            }
+            // the guard in the inner world is given a private applier to "fast track"
+            // and glob collateral changes it requires
+            var internalApplier = 
+              {fireChangeRequest: function(changeRequest) {
+                    preFireChangeRequest(changeRequest);
+                    fluid.model.applyChangeRequest(newModel, changeRequest);
+                    changes.push(changeRequest);
+                }};
+            bindRequestChange(internalApplier);
+            var ation = {
+                commit: function() {
+                    if (cancelled) {
+                        return false;
+                    }
+                    var ret = fireAgglomerated("postGuards", "transListeners", changes, [newModel, null, internalApplier], 1);
+                    if (ret === false) {
+                        return false;
+                    }
+                    if (options.thin) {
+                        oldModel = model;
+                    }
+                    else {
+                        var oldModel = {};
+                        fluid.model.copyModel(oldModel, model);
+                        fluid.clear(model);
+                        fluid.model.copyModel(model, newModel);
+                    }
+                    fireAgglomerated("modelChanged", "all", changes, [model, oldModel, null], 2);
+                },
+                fireChangeRequest: function(changeRequest) {
+                     preFireChangeRequest(changeRequest);
+                     if (options.cullUnchanged && fluid.model.isNullChange(model, changeRequest)) {
+                         return;
+                     } 
+                     var wrapper = makeGuardWrapper(options.cullUnchanged);
+                     var prevent = fireEvent("guards", changeRequest.path, [newModel, changeRequest, internalApplier], wrapper);
+                     if (prevent === false && !(wrapper && wrapper.culled)) {
+                         cancelled = true;
+                     }
+                     if (!cancelled) {
+                         if (!(wrapper && wrapper.culled)) {
+                             fluid.model.applyChangeRequest(newModel, changeRequest);
+                             changes.push(changeRequest);
+                         }
+                     }
+                }
+            };
+            bindRequestChange(ation);
+
+            return ation;
+        };
         
         return that;
     };
@@ -317,6 +538,7 @@ fluid_1_2 = fluid_1_2 || {};
                 }
             }
         };
+        bindRequestChange(that);
         return that;
     };
     

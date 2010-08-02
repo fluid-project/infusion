@@ -613,6 +613,13 @@ var fluid = fluid || fluid_1_2;
     fluid.event = {};
         
     var fluid_guid = 1;
+    
+    fluid.event.identifyListener = function(listener) {
+        if (!listener.$$guid) {
+            listener.$$guid = fluid_guid++;
+        }
+        return listener.$$guid;
+    };
     /** Construct an "event firer" object which can be used to register and deregister 
      * listeners, to which "events" can be fired. These events consist of an arbitrary
      * function signature. General documentation on the Fluid events system is at
@@ -625,10 +632,30 @@ var fluid = fluid || fluid_1_2;
      */
     
     fluid.event.getEventFirer = function (unicast, preventable) {
-        var log = fluid.log;
         var listeners = {};
+        
+        function fireToListeners(listeners, args, wrapper) {
+            for (var i in listeners) {
+                var lisrec = listeners[i];
+                var listener = lisrec.listener;
+                if (lisrec.predicate && !lisrec.predicate(listener, args)) {
+                    continue;
+                }
+                try {
+                    var ret = (wrapper? wrapper(listener) : listener).apply(null, args);
+                    if (preventable && ret === false) {
+                        return false;
+                    }
+                }
+                catch (e) {
+                    fluid.log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
+                    throw (e);       
+                }
+            }
+        }
+        
         return {
-            addListener: function (listener, namespace, predicate) {
+           addListener: function (listener, namespace, predicate) {
                 if (!listener) {
                     return;
                 }
@@ -636,10 +663,7 @@ var fluid = fluid || fluid_1_2;
                     namespace = "unicast";
                 }
                 if (!namespace) {
-                    if (!listener.$$guid) {
-                        listener.$$guid = fluid_guid++;
-                    }
-                    namespace = listener.$$guid;
+                    namespace = fluid.event.identifyListener(listener);
                 }
 
                 listeners[namespace] = {listener: listener, predicate: predicate};
@@ -653,25 +677,15 @@ var fluid = fluid || fluid_1_2;
                     delete listeners[listener.$$guid];
                 }
             },
-        
+            // NB - this method exists currently solely for the convenience of the new,
+            // transactional changeApplier. As it exists it is hard to imagine the function
+            // being helpful to any other client. We need to get more experience on the kinds
+            // of listeners that are useful, and ultimately factor this method away.
+            fireToListeners: function (listeners, args, wrapper) {
+                return fireToListeners(listeners, args, wrapper);
+            },
             fire: function () {
-                for (var i in listeners) {
-                    var lisrec = listeners[i];
-                    var listener = lisrec.listener;
-                    if (lisrec.predicate && !lisrec.predicate(listener, arguments)) {
-                        continue;
-                    }
-                    try {
-                        var ret = listener.apply(null, arguments);
-                        if (preventable && ret === false) {
-                            return false;
-                        }
-                    }
-                    catch (e) {
-                        log("FireEvent received exception " + e.message + " e " + e + " firing to listener " + i);
-                        throw (e);       
-                    }
-                }
+                return fireToListeners(listeners, arguments);
             }
         };
     };

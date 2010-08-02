@@ -27,8 +27,157 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("getTailPath", "path3", fluid.pathUtil.getTailPath(path));
             jqUnit.assertEquals("getToTailPath", "path1.path2", fluid.pathUtil.getToTailPath(path));
             jqUnit.assertEquals("getFromHeadPath", "path2.path3", fluid.pathUtil.getFromHeadPath(path));
+            
+            jqUnit.assertEquals("Match empty", "", fluid.pathUtil.matchPath("", "thing"));
+            jqUnit.assertEquals("Match *", "thing", fluid.pathUtil.matchPath("*", "thing"));
+            jqUnit.assertEquals("Match thing", "thing", fluid.pathUtil.matchPath("thing", "thing"));
+            jqUnit.assertEquals("Match thing", "thing", fluid.pathUtil.matchPath("thing", "thing.otherThing"));
+            jqUnit.assertEquals("Match thing *", "thing.otherThing", fluid.pathUtil.matchPath("thing.*", "thing.otherThing"));
+        });
+        
+        DataBindingTests.test("ApplyChangeRequest", function() {
+            var model = {a: 1, b: 2};
+            var model2 = {c: 3};
+            
+            var testModel1 = fluid.copy(model);
+            fluid.model.applyChangeRequest(testModel1, {type: "ADD", path: "", value: fluid.copy(model2)});
+            jqUnit.assertDeepEq("Add at root === clear + add", {c:3}, testModel1);
+            
+            var testModel2 = fluid.copy(model);
+            fluid.model.applyChangeRequest(testModel2, {type: "DELETE", path: ""});
+            jqUnit.assertDeepEq("Delete root", {}, testModel2);
+            
+            var testModel3 = fluid.copy(model);
+            testModel3.c = fluid.copy(model);
+            var testModel4 = fluid.copy(testModel3);
+            fluid.model.applyChangeRequest(testModel3, {type: "MERGE", path: "c", value: fluid.copy(model2)});
+            jqUnit.assertDeepEq("Merge at trunk", {a:1, b:2, c:{a:1, b:2, c:3}}, testModel3);
+            
+            fluid.model.applyChangeRequest(testModel4, {type: "ADD", path: "c", value: fluid.copy(model2)});
+            jqUnit.assertDeepEq("Add at trunk", {a:1, b:2, c:{c:3}}, testModel4);
         });
 
+        function makeTransTest(trans, thin) {
+            DataBindingTests.test("Transactional ChangeApplier - Transactional: " 
+                    + trans + " Thin: " + thin, function() {
+                var model = {
+                    outerProperty: false,
+                    transWorld: {
+                        innerPath1: 3,
+                        innerPath2: 4
+                    }
+                };
+                
+                var modelChangedCheck = [];
+                var guard1check = 0;
+                
+                function modelChanged(newModel, oldModel, changes) {
+                    if (trans) {
+                        jqUnit.assertEquals("Changes after guard", 1, guard1check);
+                    }
+                    else {
+                        jqUnit.assertEquals("Changes wrt guard", modelChangedCheck.length, guard1check);
+                    }
+                    modelChangedCheck = modelChangedCheck.concat(changes);
+                }
+                            
+                function transGuard1(innerModel, changeRequest, applier) {
+                    applier.requestChange("transWorld.innerPath2", 5);
+                    jqUnit.assertEquals("Change wrt transaction", trans && !thin ? 4 : 5, model.transWorld.innerPath2);
+                    jqUnit.assertEquals("ModelChanged count", trans? 0 : 1, modelChangedCheck.length);
+                    guard1check++;
+                }
+                var applier = fluid.makeChangeApplier(model, {thin: thin});
+                applier.guards.addListener((trans? "!" : "") + "transWorld", transGuard1);
+                applier.modelChanged.addListener("*", modelChanged);
+                applier.requestChange("transWorld.innerPath1", 4);
+                jqUnit.assertEquals("Guard 1 executed", 1, guard1check);
+                jqUnit.assertDeepEq("Final model state", {innerPath1: 4, innerPath2: 5}, model.transWorld);
+                jqUnit.assertEquals("2 changes received", 2, modelChangedCheck.length);
+            }
+            );
+        }
+        makeTransTest(true, false);
+        makeTransTest(false, false);
+        makeTransTest(true, true);
+        makeTransTest(false, true);
+        
+        DataBindingTests.test("Culling Applier", function() {
+            var model = {
+                    outerProperty: false,
+                    transWorld: {
+                        innerPath1: 3,
+                        innerPath2: 4
+                    }
+                };
+            function nullingGuard(newModel, changeRequest, applier) {
+                if (changeRequest.path === "transWorld.innerPath2") {
+                    changeRequest.value = 4;
+                }
+            }
+            var lowExecuted = false;
+            function lowPriorityGuard(newModel, changeRequest, applier) {
+                lowExecuted = true; 
+            }
+            var modelChangedCheck = false;
+            function modelChanged() {
+                modelChangedCheck = true;
+            }
+            var postGuardCheck = false;
+            function postGuard() {
+                postGuardCheck = true;
+            }
+            var applier = fluid.makeChangeApplier(model, {cullUnchanged: true});
+            applier.guards.addListener({path: "transWorld", transactional: true, priority: 20}, lowPriorityGuard);
+            applier.guards.addListener({path: "transWorld", transactional: true, priority: 10}, nullingGuard);
+            applier.postGuards.addListener({path: "transWorld", transactional: true}, postGuard);
+            applier.modelChanged.addListener("*", modelChanged);
+            
+            applier.requestChange("transWorld.innerPath2", 5);
+            jqUnit.assertEquals("Final model state", 4, model.transWorld.innerPath2, 4);
+            jqUnit.assertFalse("PostGuard culled", postGuardCheck);
+            jqUnit.assertFalse("Model changed listener culled", modelChangedCheck);
+            jqUnit.assertFalse("Low priority guard culled", lowExecuted);
+        });
+        
+        DataBindingTests.test("PostGuards", function() {
+            var model = {
+                outerProperty: false,
+                transWorld: {
+                    innerPath1: 3,
+                    innerPath2: 4
+                }
+            };
+            function midGuard(newModel, changeRequest, applier) {
+                if (changeRequest.path === "transWorld.innerPath2") {
+                    changeRequest.value = 6;
+                }
+                applier.requestChange("transWorld.innerPath1", 4);
+            }
+            var postGuardCheck = 0;
+            function postGuard(newModel, changes, applier) {
+                jqUnit.assertEquals("PostGuard count", 0, postGuardCheck);
+                jqUnit.assertDeepEq("PostGuard model state", newModel, {outerProperty: false, transWorld: {innerPath1: 4, innerPath2: 6}});
+                jqUnit.assertEquals("PostGuard change count", 2, changes.length);
+                ++postGuardCheck;
+                return false;
+            }
+            var modelChangedCheck = false;
+            function modelChanged() {
+                modelChangedCheck = true;
+            }
+            var initModel = fluid.copy(model);
+            var applier = fluid.makeChangeApplier(model);
+            applier.guards.addListener({path: "transWorld", transactional: true}, midGuard);
+            applier.postGuards.addListener({path: "transWorld", transactional: true}, postGuard);
+            applier.modelChanged.addListener("*", modelChanged);
+            
+            applier.requestChange("transWorld.innerPath2", 5);
+            
+            jqUnit.assertDeepEq("Final model state", initModel, model);
+            jqUnit.assertFalse("Model unchanged ", modelChangedCheck);
+        });
+        
         DataBindingTests.test("ChangeApplier", function() {
             var outerDAR = null;
             function checkingGuard(model, dar) {
