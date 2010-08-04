@@ -105,6 +105,34 @@ fluid.registerNamespace("fluid.tests");
             };
             jqUnit.assertDeepEq("UISelect expansion", expected, expanded);
         });
+        
+        protoTests.test("FLUID-3682 test: decorators attached to blank UIOutput", function() {
+            var expander = fluid.renderer.makeProtoExpander({ELstyle: "${}"});
+            var protoTree = {
+              ".csc-date-information-date-earliest-single-date-container": { 
+                  "decorators": [ 
+                      { 
+                          "func": "cspace.datePicker", 
+                          "type": "fluid" 
+                      } 
+                  ] 
+              }
+            };
+            var expanded = expander(protoTree);
+            var expected = {
+                children: [
+                    {ID: ".csc-date-information-date-earliest-single-date-container",
+                     componentType: "UIBound",
+                    "decorators": [ 
+                          { 
+                              "func": "cspace.datePicker", 
+                              "type": "fluid" 
+                          } 
+                      ] 
+                }]};
+            jqUnit.assertDeepEq("Decorator expansion", expected, expanded);
+        });
+        
       
         protoTests.test("FLUID-3659 test: decorators attached to elements with valuebinding", function() {
             var model = {

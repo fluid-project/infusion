@@ -187,7 +187,7 @@ fluid_1_2 = fluid_1_2 || {};
                 };
             }
             var proto;
-            if (value.value !== undefined || value.valuebinding !== undefined) {
+            if (!fluid.isPrimitive(value) && !fluid.isArrayable(value)) {
                 proto = value;
                 if (proto.decorators) {
                    proto.decorators = expandLight(proto.decorators);
@@ -289,10 +289,19 @@ fluid_1_2 = fluid_1_2 || {};
             }
         };
         
+        function detectBareBound(entry) {
+            return fluid.each(entry, function (value, key) {
+                return key !== "decorators";
+            }) === false;
+        }
+        
         // We have reached something which is either a leaf or Cond - either inside
         // a Cond or as an entry in children.
         var expandLeafOrCond = function (entry, target, pusher) {
             var componentType = fluid.renderer.inferComponentType(entry);
+            if (!componentType && detectBareBound(entry)) {
+                componentType = "UIBound";
+            }
             if (componentType) {
                 pusher(componentType === "UIBound"? expandBound(entry, true): expandLeaf(entry, componentType));
             }

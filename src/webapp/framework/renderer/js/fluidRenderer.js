@@ -26,12 +26,12 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.each = function (source, func) {
         if (fluid.isArrayable(source)) {
             for (var i = 0; i < source.length; ++ i) {
-                func(source[i], i);
+                if (func(source[i], i) === false) { return false;}
             }
         }
         else {
             for (var key in source) {
-                func(source[key], key);
+                if (func(source[key], key) === false) { return false;}
             }
         }
     };
