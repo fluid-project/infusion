@@ -20,22 +20,7 @@ fluid_1_2 = fluid_1_2 || {};
     function debugPosition(component) {
         return "as child of " + (component.parent.fullID? "component with full ID " + component.parent.fullID : "root");
     }
-  
-    /** Better jQuery.each which works on hashes as well as having the arguments
-     * the right way round */
-    fluid.each = function (source, func) {
-        if (fluid.isArrayable(source)) {
-            for (var i = 0; i < source.length; ++ i) {
-                if (func(source[i], i) === false) { return false;}
-            }
-        }
-        else {
-            for (var key in source) {
-                if (func(source[key], key) === false) { return false;}
-            }
-        }
-    };
-    
+     
     fluid.arrayToHash = function(array) {
         var togo = {};
         fluid.each(array, function(el) {
@@ -109,16 +94,16 @@ fluid_1_2 = fluid_1_2 || {};
           //              processed.localID = i;
           //            }
                       togo[togo.length] = processed;
-                      }
-                }
-                else {
-                    togo[togo.length] = processChild(value, key);
-                } 
-            }
-            return togo;
-        }
-        else {return children;}
-    }
+                  }
+              }
+              else {
+                  togo[togo.length] = processChild(value, key);
+              } 
+          }
+          return togo;
+      }
+      else {return children;}
+  }
   
   function fixupValue(uibound, model) {
       if (uibound.value === undefined && uibound.valuebinding !== undefined) {

@@ -503,7 +503,10 @@ var fluid = fluid || fluid_1_2;
                     mergeImpl(policy, path, thisTarget, thisSource, newPolicy);
                 }
                 else {
-                    if (thisTarget === null || thisTarget === undefined || thisPolicy !== "reverse") {
+                    if (typeof(newPolicy) === "function") {
+                        newPolicy.call(null, target, source, name);
+                    }
+                    else if (thisTarget === null || thisTarget === undefined || thisPolicy !== "reverse") {
                         target[name] = thisSource;
                     }
                 }
@@ -910,6 +913,27 @@ var fluid = fluid || fluid_1_2;
             }
         }  
         return togo;
+    };
+    
+    /** Better jQuery.each which works on hashes as well as having the arguments
+     * the right way round. Also allows iteration to be terminated early by means of
+     * return of <code>false</code> (specific value, "falsy" is not good enough. This
+     * will cause the overall function to return <code>false</code> 
+     * @param source {Arrayable or Object} The container to be iterated over
+     * @param func {Function} A function accepting (value, key) for each iterated
+     * object. This function may return <code>false</code> to terminate the iteration
+     */
+    fluid.each = function (source, func) {
+        if (fluid.isArrayable(source)) {
+            for (var i = 0; i < source.length; ++ i) {
+                if (func(source[i], i) === false) { return false;}
+            }
+        }
+        else {
+            for (var key in source) {
+                if (func(source[key], key) === false) { return false;}
+            }
+        }
     };
     
     /** Scan through a list of objects, terminating on and returning the first member which

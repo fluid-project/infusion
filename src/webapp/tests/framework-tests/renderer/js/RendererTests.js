@@ -1003,24 +1003,46 @@ fluid.registerNamespace("fluid.tests");
     });
 
  
-        var resourceSpec = {properties: {href: "../data/testProperties.properties"},
-                                  json: {href: "../data/testProperties.json"}};    
-        var calls = 0;
-        //stop();
-        
-        fluid.fetchResources(resourceSpec, function() {
-            renderTests.test("Properties file parsing", function() {
-                ++calls; // Test FLUID-3361
-                jqUnit.assertEquals("Just one call to fetchResources callback", 1, calls);
-                jqUnit.assertValue("Fetched properties file", resourceSpec.properties.resourceText);
-                jqUnit.assertValue("Fetched JSON file", resourceSpec.json.resourceText);
-                var json = JSON.parse(resourceSpec.json.resourceText);
-                var properties = fluid.parseJavaProperties(resourceSpec.properties.resourceText);
-                jqUnit.assertDeepEq("Parsed properties equivalent", json, properties);
-                //start();
-        });
-        
-      });
+    var resourceSpec = {properties: {href: "../data/testProperties.properties"},
+                              json: {href: "../data/testProperties.json"}};    
+    var calls = 0;
     
+    fluid.fetchResources(resourceSpec, function() {
+        renderTests.test("Properties file parsing", function() {
+            ++calls; // Test FLUID-3361
+            jqUnit.assertEquals("Just one call to fetchResources callback", 1, calls);
+            jqUnit.assertValue("Fetched properties file", resourceSpec.properties.resourceText);
+            jqUnit.assertValue("Fetched JSON file", resourceSpec.json.resourceText);
+            var json = JSON.parse(resourceSpec.json.resourceText);
+            var properties = fluid.parseJavaProperties(resourceSpec.properties.resourceText);
+            jqUnit.assertDeepEq("Parsed properties equivalent", json, properties);
+            jqUnit.assertTrue("Nonpollution by callbackCalled (FLUID-3486)", resourceSpec.callbackCalled === undefined);
+        });
+    
+    });
+        
+    var destructiveCalls = 0;
+    
+    var destructiveCountingFunction = function(response) {
+        ++ destructiveCalls;
+        fluid.fail("A terrible callback which tries to destroy the world");
     };
+    
+    var resourceSpec2 = {properties: {href: "../data/testProperties.properties", 
+                                      options: {success: destructiveCountingFunction, async: false}},
+                               json: {href: "../data/testProperties.json",
+                                      options: {success: destructiveCountingFunction, async: false}}    
+    };
+
+    renderTests.test("fetchResources callback tests", function() {
+        var callbackCalled = 0;
+        function callback() {
+            ++ callbackCalled;
+        }    
+        fluid.fetchResources(resourceSpec2, callback);
+        jqUnit.assertEquals("Two calls to destructive callback", 2, destructiveCalls);
+        jqUnit.assertEquals("Call to overall callback", 1, callbackCalled);          
+    });
+     
+  };
   })(jQuery); 

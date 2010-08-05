@@ -384,70 +384,110 @@ fluid_1_2 = fluid_1_2 || {};
       firstdocumentindex: -1
     };
   };
+
+ /** Utilities for fluid.fetchResources **/
+
+  var composeCallbacks = function(internal, external) {
+      return external? function() {
+          try {
+              external.apply(null, arguments);
+          }
+          catch (e) {
+              fluid.log("Exception applying external fetchResources callback: " + e);
+          }
+          internal.apply(null, arguments); // call the internal callback without fail
+      } : internal;
+  };
+  
+  var composePolicy = function(target, source, key) {
+      target[key] = composeCallbacks(target[key], source[key]);
+  };
+  
+  fluid.defaults("fluid.fetchResources", {
+      mergePolicy: {
+          success: composePolicy,
+          error: composePolicy,
+          url: "reverse"
+      }
+  });
   
   /** Accepts a hash of structures with free keys, where each entry has either
    * href or nodeId set - on completion, callback will be called with the populated
    * structure with fetched resource text in the field "resourceText" for each
    * entry.
    */
-  fluid.fetchResources = function(resourceSpecs, callback) {
-    var resourceCallback = function (thisSpec) {
-      return {
-        success: function(response) {
-          thisSpec.resourceText = response;
-          thisSpec.resourceKey = thisSpec.href;
-          thisSpec.queued = false; 
-          fluid.fetchResources(resourceSpecs, callback);
-          },
-        error: function(response, textStatus, errorThrown) {
-          thisSpec.fetchError = {
-            status: response.status,
-            textStatus: response.textStatus,
-            errorThrown: errorThrown
-            };
-          thisSpec.queued = false;
-          fluid.fetchResources(resourceSpecs, callback);
-          }
-          
-        };
+  var fetchResourcesImpl = function(specStructure, callback) {
+      var resourceCallback = function (thisSpec) {
+          return {
+              success: function(response) {
+                  thisSpec.resourceText = response;
+                  thisSpec.resourceKey = thisSpec.href;
+                  thisSpec.queued = false; 
+                  fetchResourcesImpl(specStructure, callback);
+                  },
+              error: function(response, textStatus, errorThrown) {
+                  thisSpec.fetchError = {
+                      status: response.status,
+                      textStatus: response.textStatus,
+                      errorThrown: errorThrown
+                  };
+                  thisSpec.queued = false;
+                  fetchResourcesImpl(specStructure, callback);
+              }
+              
+          };
       };
-    
-    var complete = true;
-    for (var key in resourceSpecs) {
-      var resourceSpec = resourceSpecs[key];
-      if (resourceSpec.href && !(resourceSpec.resourceKey || resourceSpec.fetchError)) {
-         if (!resourceSpec.queued) {
-           var thisCallback = resourceCallback(resourceSpec);
-           var options = {url: resourceSpec.href, success: thisCallback.success, error: thisCallback.error}; 
-           $.extend(true, options, resourceSpec.options);
-           resourceSpec.queued = true;
-           $.ajax(options);
-         }
-         if (resourceSpec.queued) {
-           complete = false;
-         }             
-        }
-      else if (resourceSpec.nodeId && !resourceSpec.resourceText) {
-        var node = document.getElementById(resourceSpec.nodeId);
-        // upgrade this to somehow detect whether node is "armoured" somehow
-        // with comment or CDATA wrapping
-        resourceSpec.resourceText = fluid.dom.getElementText(node);
-        resourceSpec.resourceKey = resourceSpec.nodeId;
+      
+      var complete = true;
+      var allSync = true;
+      var resourceSpecs = specStructure.specs;
+      for (var key in resourceSpecs) {
+          var resourceSpec = resourceSpecs[key];
+          if (!resourceSpec.options || resourceSpec.options.async) {
+              allSync = false;
+          }
+          if (resourceSpec.href && !(resourceSpec.resourceKey || resourceSpec.fetchError)) {
+               if (!resourceSpec.queued) {
+                   var thisCallback = resourceCallback(resourceSpec);
+                   var options = {  
+                       url:     resourceSpec.href, 
+                       success: thisCallback.success, 
+                       error:   thisCallback.error};
+                   fluid.merge(fluid.defaults("fluid.fetchResources").mergePolicy,
+                                options, resourceSpec.options);
+                   resourceSpec.queued = true;
+                   $.ajax(options);
+               }
+               if (resourceSpec.queued) {
+                   complete = false;
+               }             
+          }
+          else if (resourceSpec.nodeId && !resourceSpec.resourceText) {
+              var node = document.getElementById(resourceSpec.nodeId);
+              // upgrade this to somehow detect whether node is "armoured" somehow
+              // with comment or CDATA wrapping
+              resourceSpec.resourceText = fluid.dom.getElementText(node);
+              resourceSpec.resourceKey = resourceSpec.nodeId;
+          }
       }
-    }
-    if (complete && !resourceSpecs.callbackCalled) {
-      resourceSpecs.callbackCalled = true;
-      if ($.browser.mozilla) {
-      // Defer this callback to avoid debugging problems on Firefox
-      setTimeout(function() {
-          callback(resourceSpecs);
-          }, 1);
+      if (complete && !specStructure.callbackCalled) {
+          specStructure.callbackCalled = true;
+          if ($.browser.mozilla && !allSync) {
+              // Defer this callback to avoid debugging problems on Firefox
+              setTimeout(function() {
+                  callback(resourceSpecs);
+                  }, 1);
+          }
+          else {
+              callback(resourceSpecs)
+          }
       }
-      else {
-          callback(resourceSpecs)
-      }
-    }
   };
+  
+    
+  fluid.fetchResources = function(resourceSpecs, callback) {
+      return fetchResourcesImpl({specs: resourceSpecs}, callback);
+  }
   
     // TODO: find faster encoder
   fluid.XMLEncode = function (text) {
