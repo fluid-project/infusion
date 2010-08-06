@@ -420,12 +420,25 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.registerGlobalFunction("fluid.newFunc", function() { return 2 ;});
             jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
         });
-        
+
         fluidJSTests.test("Globals", function() {
             var space = fluid.registerNamespace("fluid.engage.mccord");
             space.func = function() { return 2 ;};
             jqUnit.assertEquals("Call function in namespace", 2, fluid.engage.mccord.func());
         });
         
+         fluidJSTests.test("Attach and remove listeners", function () {
+             var testListener = function(shouldExecute) {
+                    jqUnit.assertTrue("This listener should be reached only once", shouldExecute);
+             };
+
+            expect(1);
+            var firer = fluid.event.getEventFirer();
+            firer.addListener(testListener);
+            firer.fire(true);
+
+            firer.removeListener(testListener);
+            firer.fire(false); //listener should not run and assertion should not 
+         });
     });
 })(jQuery);

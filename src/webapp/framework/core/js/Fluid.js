@@ -676,7 +676,7 @@ var fluid = fluid || fluid_1_2;
                 if (typeof(listener) === 'string') {
                     delete listeners[listener];
                 }
-                else if (typeof(listener) === 'object' && listener.$$guid) {
+                else if (listener.$$guid) {
                     delete listeners[listener.$$guid];
                 }
             },
