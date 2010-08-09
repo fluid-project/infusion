@@ -309,7 +309,7 @@ fluid.registerNamespace("fluid.tests");
                             vocabUrl: "${vocabUrl}",
                             componentTree: {
                                 expander: {
-                                    type: "fluid.renderer.noexpand",
+                                    type: "fluid.expander.noexpand",
                                     tree: {
                                         component1: "${path1}"
                                     }

@@ -617,9 +617,15 @@ var fluid = fluid || fluid_1_2;
         
     var fluid_guid = 1;
     
+    /** Allocate an integer value that will be unique for this session **/
+    
+    fluid.allocateGuid = function() {
+        return fluid_guid++;
+    }
+    
     fluid.event.identifyListener = function(listener) {
         if (!listener.$$guid) {
-            listener.$$guid = fluid_guid++;
+            listener.$$guid = fluid.allocateGuid();
         }
         return listener.$$guid;
     };
@@ -873,7 +879,7 @@ var fluid = fluid || fluid_1_2;
     fluid.allocateSimpleId = function (element) {
         element = fluid.unwrap(element);
         if (!element.id) {
-            element.id = "fluid-id-" + (fluid_guid++); 
+            element.id = "fluid-id-" + fluid.allocateGuid(); 
         }
         return element.id;
     };

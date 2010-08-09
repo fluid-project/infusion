@@ -51,4 +51,107 @@ https://source.fluidproject.org/svn/LICENSE.txt
                jqUnit.assertDeepEq("Resolved Environment", required, resolved);  
            });
     });
+    
+    var buildUrl = function (recordType) { 
+        return "../data/" + recordType + ".json";
+    };
+    
+    
+    var makeArrayExpander = function (recordType) {
+     return fluid.expander.makeFetchExpander({
+         url: buildUrl(recordType), 
+         disposer: function (model) {
+             return {
+                 items: model,
+                 selectionIndex: -1
+             }
+         },
+         options: {
+             async: false
+         },
+         fetchKey: recordType});
+    };
+    
+    FluidIoCTests.test("Deferred expander Tests", function() {
+        var pageBuilder = {
+            uispec: {
+                objects: "These Objects",
+                proceduresIntake: "Are Intake"
+            }
+        };
+      
+        
+        var dependencies = {
+            objects: {
+                funcName: "cspace.recordList",
+                args: [".object-records-group",
+                        makeArrayExpander("objects"),
+                        "{pageBuilder}.uispec.objects",
+                        "stringOptions"]
+            },
+            proceduresIntake: {
+                funcName: "cspace.recordList",
+                args: [".intake-records-group",
+                        makeArrayExpander("intake"),
+                        "{pageBuilder}.uispec.proceduresIntake",
+                        "stringOptions"]
+                }
+            };
+            
+        var resourceSpecs = {};
+        
+        var expanded;
+        
+        fluid.withEnvironment({
+            resourceSpecCollector: resourceSpecs,
+            pageBuilder: pageBuilder},
+                function() {expanded = fluid.expander.expandLight(dependencies)}
+        );
+        
+        var func = function() {}; // dummy function to compare equality
+        
+        var requiredSpecs = {
+            objects: {
+                href: "../data/objects.json",
+                options: {
+                    success: func,
+                    error: func,
+                    async: false
+                }
+            },
+            intake: {
+                href: "../data/intake.json",
+                options: {
+                    success: func,
+                    error: func,
+                    async: false
+                }
+            }
+        };
+        
+        jqUnit.assertDeepEq("Accumulated resourceSpecs", requiredSpecs, resourceSpecs);
+        
+        var expectedRes = {
+            objects: {
+                funcName: "cspace.recordList",
+                args: [".object-records-group",
+                        {items: [1, 2, 3],
+                         selectionIndex: -1},
+                        "These Objects",
+                        "stringOptions"]
+            },
+            proceduresIntake: {
+                funcName: "cspace.recordList",
+                args: [".intake-records-group",
+                        {items: [4, 5, 6],
+                         selectionIndex: -1},
+                        "Are Intake",
+                        "stringOptions"]
+                }
+            };
+        
+        fluid.fetchResources(resourceSpecs, function () {
+            jqUnit.assertDeepEq("Resolved model", expectedRes, expanded);
+        });
+    });
 })(jQuery);

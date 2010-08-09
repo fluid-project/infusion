@@ -42,44 +42,44 @@ fluid_1_2 = fluid_1_2 || {};
       
       XMLLump = function (lumpindex, nestingdepth) {
           return {
-            //rsfID: "",
-            //text: "",
-            //downmap: {},
-            //attributemap: {},
-            //finallump: {},
-            nestingdepth: nestingdepth,
-            lumpindex: lumpindex,
-            parent: t
+              //rsfID: "",
+              //text: "",
+              //downmap: {},
+              //attributemap: {},
+              //finallump: {},
+              nestingdepth: nestingdepth,
+              lumpindex: lumpindex,
+              parent: t
           };
-        };
+      };
       
       function init(baseURLin, debugModeIn, cutpointsIn) {
-        t.rootlump = XMLLump(0, -1);
-        tagstack = [t.rootlump];
-        lumpindex = 0;
-        nestingdepth = 0;
-        justended = false;
-        defstart = -1;
-        defend = -1;
-        baseURL = baseURLin;
-        debugMode = debugModeIn;
-        cutpoints = cutpointsIn;
-        if (cutpoints) {
-          for (var i = 0; i < cutpoints.length; ++ i) {
-            cutstatus[i] = [];
-            cutpoints[i].tree = fluid.parseSelector(cutpoints[i].selector);
-            }
+          t.rootlump = XMLLump(0, -1);
+          tagstack = [t.rootlump];
+          lumpindex = 0;
+          nestingdepth = 0;
+          justended = false;
+          defstart = -1;
+          defend = -1;
+          baseURL = baseURLin;
+          debugMode = debugModeIn;
+          cutpoints = cutpointsIn;
+          if (cutpoints) {
+              for (var i = 0; i < cutpoints.length; ++ i) {
+                  cutstatus[i] = [];
+                  cutpoints[i].tree = fluid.parseSelector(cutpoints[i].selector);
+              }
           }
-        }
+      }
       
       function findTopContainer() {
-        for (var i = tagstack.length - 1; i >= 0; --i ) {
-          var lump = tagstack[i];
-          if (lump.rsfID !== undefined) {
-            return lump;
+          for (var i = tagstack.length - 1; i >= 0; --i ) {
+              var lump = tagstack[i];
+              if (lump.rsfID !== undefined) {
+                  return lump;
+              }
           }
-        }
-        return t.rootlump;
+          return t.rootlump;
       }
       
       function newLump() {
@@ -96,32 +96,32 @@ fluid_1_2 = fluid_1_2 || {};
       
       function addLump(mmap, ID, lump) {
           var list = mmap[ID];
-              if (!list) {
-                  list = [];
-                  mmap[ID] = list;
-              }
-              list[list.length] = lump;
+          if (!list) {
+              list = [];
+              mmap[ID] = list;
           }
+          list[list.length] = lump;
+      }
         
       function checkContribute(ID, lump) {
           if (ID.indexOf("scr=contribute-") !== -1) {
               var scr = ID.substring("scr=contribute-".length);
               addLump(t.collectmap, scr, lump);
-              }
           }
+      }
       
       function debugLump(lump) {
         // TODO expand this to agree with the Firebug "self-selector" idiom
           return "<" + lump.tagname + ">";
-          }
+      }
       
       function hasCssClass(clazz, totest) {
-        if (!totest) {
-            return false;
-        }
-        // algorithm from JQuery
-        return (" " + totest + " ").indexOf(" " + clazz + " ") !== -1;
-        }
+          if (!totest) {
+              return false;
+          }
+          // algorithm from JQuery
+          return (" " + totest + " ").indexOf(" " + clazz + " ") !== -1;
+      }
       
       function matchNode(term, headlump) {
         if (term.predList) {
@@ -411,6 +411,19 @@ fluid_1_2 = fluid_1_2 || {};
       }
   });
   
+  function timeSuccessCallback(resourceSpec) {
+      if (resourceSpec.timeSuccess && resourceSpec.options && resourceSpec.options.success) {
+          var success = resourceSpec.options.success;
+          resourceSpec.options.success = function() {
+          var startTime = new Date();
+          var ret = success.apply(null, arguments);
+          fluid.log("External callback for URL " + resourceSpec.href + " completed - callback time: " + 
+                  (new Date().getTime() - startTime.getTime()) + "ms");
+          return ret;
+          };
+      }
+  }
+  
   /** Accepts a hash of structures with free keys, where each entry has either
    * href or nodeId set - on completion, callback will be called with the populated
    * structure with fetched resource text in the field "resourceText" for each
@@ -418,21 +431,26 @@ fluid_1_2 = fluid_1_2 || {};
    */
   var fetchResourcesImpl = function(specStructure, callback) {
       var resourceCallback = function (thisSpec) {
+          function completeRequest() {
+              thisSpec.queued = false;
+              thisSpec.completeTime = new Date();
+              fluid.log("Request to URL " + thisSpec.href + " completed - total elapsed time: " + 
+                  (thisSpec.completeTime.getTime() - thisSpec.initTime.getTime()) + "ms");
+              fetchResourcesImpl(specStructure, callback);         
+          }
           return {
               success: function(response) {
                   thisSpec.resourceText = response;
                   thisSpec.resourceKey = thisSpec.href;
-                  thisSpec.queued = false; 
-                  fetchResourcesImpl(specStructure, callback);
-                  },
+                  completeRequest();
+              },
               error: function(response, textStatus, errorThrown) {
                   thisSpec.fetchError = {
                       status: response.status,
                       textStatus: response.textStatus,
                       errorThrown: errorThrown
                   };
-                  thisSpec.queued = false;
-                  fetchResourcesImpl(specStructure, callback);
+                  completeRequest();
               }
               
           };
@@ -446,16 +464,19 @@ fluid_1_2 = fluid_1_2 || {};
           if (!resourceSpec.options || resourceSpec.options.async) {
               allSync = false;
           }
-          if (resourceSpec.href && !(resourceSpec.resourceKey || resourceSpec.fetchError)) {
+          if (resourceSpec.href && !resourceSpec.completeTime) {
                if (!resourceSpec.queued) {
                    var thisCallback = resourceCallback(resourceSpec);
                    var options = {  
                        url:     resourceSpec.href, 
                        success: thisCallback.success, 
                        error:   thisCallback.error};
+                   timeSuccessCallback(resourceSpec);
                    fluid.merge(fluid.defaults("fluid.fetchResources").mergePolicy,
                                 options, resourceSpec.options);
                    resourceSpec.queued = true;
+                   resourceSpec.initTime = new Date();
+                   fluid.log("Request with key " + key + " queued for " + resourceSpec.href);
                    $.ajax(options);
                }
                if (resourceSpec.queued) {

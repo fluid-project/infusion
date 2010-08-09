@@ -154,7 +154,7 @@ var fluid_1_2 = fluid_1_2 || {};
         function recurse(arg) {
             return resolveEnvironmentImpl(arg, directModel, env, options);
         }
-        if (typeof(obj) === "string") {
+        if (typeof(obj) === "string" && !options.noValue) {
             return resolveValue(obj, directModel, env, options);
         }
         else if (fluid.isPrimitive(obj)) {
@@ -172,11 +172,93 @@ var fluid_1_2 = fluid_1_2 || {};
         {ELstyle:     "${}",
          bareContextRefs: true});
     
-    fluid.resolveEnvironment = function(obj, directModel, options) {
+    fluid.resolveEnvironment = function(obj, directModel, userOptions) {
         directModel = directModel || {};
-        options = options || fluid.defaults("fluid.resolveEnvironment");
+        var options = fluid.merge(null, {}, fluid.defaults("fluid.resolveEnvironment"), userOptions);
         var env = fluid.threadLocal();
         return resolveEnvironmentImpl(obj, directModel, env, options);
+    };
+    
+    fluid.registerNamespace("fluid.expander");
+    /** "light" expanders, starting with support functions for the "deferredFetcher" expander **/
+  
+    fluid.expander.makeDefaultFetchOptions = function (successdisposer, failid, options) {
+        return $.extend(true, {dataType: "text"}, options, {
+            success: function(response, environmentdisposer) {
+                var json = JSON.parse(response);
+                environmentdisposer(successdisposer(json));
+            },
+            error: function(response, textStatus) {
+                fluid.log("Error fetching " + failid + ": " + textStatus);
+            }
+        });
+    };
+  
+    fluid.expander.makeFetchExpander = function (options) {
+        return { expander: {
+            type: "fluid.expander.deferredFetcher",
+            href: options.url,
+            options: fluid.expander.makeDefaultFetchOptions(options.disposer, options.url, options.options),
+            resourceSpecCollector: "{resourceSpecCollector}",
+            fetchKey: options.fetchKey
+        }};
+    };
+    
+    fluid.expander.deferredFetcher = function(target, source) {
+        var expander = source.expander;
+        var spec = fluid.copy(expander);
+        // fetch the "global" collector specified in the external environment to receive
+        // this resourceSpec
+        var collector = fluid.resolveEnvironment(expander.resourceSpecCollector);
+        delete spec.type;
+        delete spec.resourceSpecCollector;
+        delete spec.fetchKey;
+        var environmentdisposer = function(disposed) {
+            $.extend(target, disposed);
+        }
+        // replace the callback which is there (taking 2 arguments) with one which
+        // directly responds to the request, passing in the result and OUR "disposer" - 
+        // which once the user has processed the response (say, parsing JSON and repackaging)
+        // finally deposits it in the place of the expander in the tree to which this reference
+        // has been stored at the point this expander was evaluated.
+        spec.options.success = function(response) {
+             expander.options.success(response, environmentdisposer);
+        };
+        var key = expander.fetchKey || fluid.allocateGuid();
+        collector[key] = spec;
+    };
+    
+    // The "noexpand" expander which simply unwraps one level of expansion and ceases.
+    fluid.expander.noexpand = function(target, source) {
+        $.extend(target, source.expander.tree);
+    };
+  
+  
+    fluid.expander.lightFilter = function (obj, recurse) {
+          if (fluid.isArrayable(obj)) {
+              return fluid.transform(obj, function(value) {return recurse(value);});
+          }
+          var togo = {};
+          for (var key in obj) {
+              var value = obj[key];
+              var expander;
+              if (key === "expander") {
+                  expander = fluid.getGlobalValue(value.type);  
+                  if (expander) {
+                      expander.call(null, togo, obj);
+                  }
+              }
+              if (key !== "expander" || !expander) {
+                  togo[key] = recurse(value);
+              }
+          };
+          return togo;
+      };
+      
+    fluid.expander.expandLight = function (source, expandOptions) {
+        var options = $.extend({}, expandOptions);
+        options.filter = fluid.expander.lightFilter;
+        return fluid.resolveEnvironment(source, options.model, options);       
     };
           
 })(jQuery, fluid_1_2);

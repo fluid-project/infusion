@@ -45,6 +45,8 @@ fluid_1_2 = fluid_1_2 || {};
         return togo;
     };
     
+    /** Definition of expanders - firstly, "heavy" expanders **/
+    
     fluid.renderer.selection.inputs = function(options, container, key, config) {
         fluid.expect("Selection to inputs expander", ["selectID", "inputID", "labelID", "rowID"], options);
         var selection = config.expander(options.tree);
@@ -94,7 +96,8 @@ fluid_1_2 = fluid_1_2 || {};
         fluid.each(expanded, function(entry) {entry.ID = repeatID});
         return expanded;
     };
-  
+    
+
     var removeSelectors = function (selectors, selectorsToIgnore) {
         if (selectorsToIgnore) {
             $.each(selectorsToIgnore, function (index, selectorToIgnore) {
@@ -163,13 +166,10 @@ fluid_1_2 = fluid_1_2 || {};
      * character of the string, will mark it out as an EL reference - otherwise it
      * will be considered a literal value, or c) the value "${}" which will be
      * recognised bracketing any other EL expression.
-     * 
-     * This expander will be upgraded in the future to support even more powerful
-     * forms of expansion, including model-directed expansion such as selection and
-     * repetition.
      */
 
     fluid.renderer.makeProtoExpander = function (expandOptions) {
+      // shallow copy of options - cheaply avoid destroying model, and all others are primitive
         var options = $.extend({}, expandOptions); // shallow copy of options
         var IDescape = options.IDescape || "\\";
         
@@ -212,22 +212,7 @@ fluid_1_2 = fluid_1_2 || {};
             return proto;
         }
         
-        options.filter = function (obj, recurse) {
-            if (fluid.isArrayable(obj)) {
-                return fluid.transform(obj, function(value) {return recurse(value);});
-            }
-            var togo = {};
-            for (var key in obj) {
-                var value = obj[key];
-                if (key === "expander" && value.type === "fluid.renderer.noexpand") {
-                    $.extend(togo, value.tree);
-                }
-                else {
-                    togo[key] = recurse(value);
-                }
-            };
-            return togo;
-        };
+        options.filter = fluid.expander.lightFilter;
         
         var expandLight = function(source) {
             return fluid.resolveEnvironment(source, options.model, options); 

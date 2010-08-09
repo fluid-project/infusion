@@ -61,6 +61,10 @@ var jqUnit = jqUnit || {};
             return "Unexpected undefined value at " + path(basename);
         }
         
+        if (typeof(thing1) === "function") {
+            return null; // compare all functions as equal
+        }
+        
         if (typeof(thing1) !== 'object') {
             if (thing1 !== thing2) {
                 return "Primitive mismatch at " + path(basename) + ": " + thing1 + " to " + thing2;
