@@ -667,7 +667,7 @@ fluid_1_2 = fluid_1_2 || {};
         
         tooltipId: "tooltip",
         
-        useTooltip: false,
+        useTooltip: true,
         
         tooltipDelay: 1000,
         

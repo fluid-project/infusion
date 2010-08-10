@@ -59,7 +59,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
      
        inlineEditTests.test("Minimal Construction", function () {
-            expect(10);
+            expect(11);
     
             var container = $("#inline-edit");
             var display = $("#display");
@@ -75,6 +75,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Invitation style is default", fluid.defaults("inlineEdit").styles.invitation, inlineEditor.options.styles.invitation);
             jqUnit.assertEquals("Paddings add is default", fluid.defaults("inlineEdit").paddings.edit, inlineEditor.options.paddings.edit);
             jqUnit.assertEquals("Paddings minimum is default", fluid.defaults("inlineEdit").paddings.minimumEdit, inlineEditor.options.paddings.minimumEdit);
+            jqUnit.assertTrue("FLUID-2100: The tool tip is on by default", inlineEditor.options.useTooltip);
             jqUnit.isVisible("Display field is visible", "#display");
             jqUnit.notVisible("Edit field is hidden", "#edit-container");
         });
