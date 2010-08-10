@@ -37,6 +37,7 @@ fluid_1_2 = fluid_1_2 || {};
       var debugMode = false;
       
       var cutpoints = []; // list of selector, tree, id
+      var simpleClassCutpoints = {};
       
       var cutstatus = [];
       
@@ -53,6 +54,10 @@ fluid_1_2 = fluid_1_2 || {};
           };
       };
       
+      function isSimpleClassCutpoint(tree) {
+          return tree.length === 1 && tree[0].predList.length === 1 && tree[0].predList[0].clazz;
+      }
+      
       function init(baseURLin, debugModeIn, cutpointsIn) {
           t.rootlump = XMLLump(0, -1);
           tagstack = [t.rootlump];
@@ -63,11 +68,17 @@ fluid_1_2 = fluid_1_2 || {};
           defend = -1;
           baseURL = baseURLin;
           debugMode = debugModeIn;
-          cutpoints = cutpointsIn;
-          if (cutpoints) {
-              for (var i = 0; i < cutpoints.length; ++ i) {
-                  cutstatus[i] = [];
-                  cutpoints[i].tree = fluid.parseSelector(cutpoints[i].selector);
+          if (cutpointsIn) {
+              for (var i = 0; i < cutpointsIn.length; ++ i) {
+                  var tree = fluid.parseSelector(cutpointsIn[i].selector);
+                  var clazz = isSimpleClassCutpoint(tree);
+                  if (clazz) {
+                      simpleClassCutpoints[clazz] = cutpointsIn[i].id;
+                  }
+                  else {
+                      cutstatus.push([]);
+                      cutpoints.push($.extend({}, cutpointsIn[i], {tree: tree}));
+                  }
               }
           }
       }
@@ -123,12 +134,12 @@ fluid_1_2 = fluid_1_2 || {};
           return (" " + totest + " ").indexOf(" " + clazz + " ") !== -1;
       }
       
-      function matchNode(term, headlump) {
+      function matchNode(term, headlump, headclazz) {
         if (term.predList) {
           for (var i = 0; i < term.predList.length; ++ i) {
             var pred = term.predList[i];
             if (pred.id && headlump.attributemap.id !== pred.id) {return false;}
-            if (pred.clazz && !hasCssClass(pred.clazz, headlump.attributemap["class"])) {return false;}
+            if (pred.clazz && !hasCssClass(pred.clazz, headclazz)) {return false;}
             if (pred.tag && headlump.tagname !== pred.tag) {return false;}
             }
           return true;
@@ -137,8 +148,17 @@ fluid_1_2 = fluid_1_2 || {};
       
       function tagStartCut(headlump) {
         var togo = undefined;
-        if (cutpoints) {
-          for (var i = 0; i < cutpoints.length; ++ i) {
+        var headclazz = headlump.attributemap["class"];
+        if (headclazz) {
+            var split = headclazz.split(" ");
+            for (var i = 0; i < split.length; ++ i) {
+                var simpleCut = simpleClassCutpoints[split[i].trim()];
+                if (simpleCut) {
+                    return simpleCut;
+                }
+            }
+        }
+        for (var i = 0; i < cutpoints.length; ++ i) {
             var cut = cutpoints[i];
             var cutstat = cutstatus[i];
             var nextterm = cutstat.length; // the next term for this node
@@ -150,7 +170,7 @@ fluid_1_2 = fluid_1_2 || {};
                   continue; // it is a failure to match if not at correct nesting depth 
                   }
                 }
-              var isMatch = matchNode(term, headlump);
+              var isMatch = matchNode(term, headlump, headclazz);
               if (isMatch) {
                 cutstat[cutstat.length] = headlump.nestingdepth;
                 if (cutstat.length === cut.tree.length) {
@@ -167,7 +187,6 @@ fluid_1_2 = fluid_1_2 || {};
                 }
               }
             }
-          }
         return togo;
         }
         

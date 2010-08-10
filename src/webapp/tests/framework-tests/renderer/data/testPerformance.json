@@ -1,0 +1,2084 @@
+{
+    "tree": {
+        "children": [
+            {
+                "optionnames": [
+                    "bequest",
+                    "exchange",
+                    "gift",
+                    "purchase",
+                    "transfer",
+                    "treasure"
+                ],
+                "optionlist": [
+                    "bequest",
+                    "exchange",
+                    "gift",
+                    "purchase",
+                    "transfer",
+                    "treasure"
+                ],
+                "selection": {
+                    "valuebinding": "fields.ownershipExchangeMethod"
+                },
+                "ID": ".csc-object-history-association-exchange-method"
+            },
+            {
+                "valuebinding": "fields.inscriptionContentInscriber",
+                "ID": ".csc-object-description-inscription-content-inscriber"
+            },
+            {
+                "valuebinding": "fields.ownersReference",
+                "ID": ".csc-object-owner-reference"
+            },
+            {
+                "valuebinding": "fields.contentEventNameType",
+                "ID": ".csc-object-description-content-event-name-type"
+            },
+            {
+                "valuebinding": "fields.contentOtherType",
+                "ID": ".csc-object-description-content-other-type"
+            },
+            {
+                "ID": ".csc-date-information-date-earliest-single-date-container"
+            },
+            {
+                "valuebinding": "fields.materialSource",
+                "ID": ".csc-object-description-material-source"
+            },
+            {
+                "valuebinding": "fields.contentNote",
+                "ID": ".csc-object-description-content-note"
+            },
+            {
+                "ID": ".csc-collection-object-assocPeoples"
+            },
+            {
+                "valuebinding": "fields.viewersReference",
+                "ID": ".csc-object-viewer-reference"
+            },
+            {
+                "valuebinding": "fields.dateAssociation",
+                "ID": ".csc-date-information-date-association"
+            },
+            {
+                "valuebinding": "fields.title",
+                "ID": ".csc-object-identification-object-title"
+            },
+            {
+                "optionnames": [
+                    "back",
+                    "base",
+                    "bottom",
+                    "front",
+                    "inside",
+                    "left",
+                    "outside",
+                    "recto",
+                    "right",
+                    "rim",
+                    "top",
+                    "verso"
+                ],
+                "optionlist": [
+                    "back",
+                    "base",
+                    "bottom",
+                    "front",
+                    "inside",
+                    "left",
+                    "outside",
+                    "recto",
+                    "right",
+                    "rim",
+                    "top",
+                    "verso"
+                ],
+                "selection": {
+                    "valuebinding": "fields.inscriptionContentPosition"
+                },
+                "ID": ".csc-object-description-inscription-content-position"
+            },
+            {
+                "valuebinding": "fields.fieldCollectionPlace",
+                "ID": ".csc-collection-object-fieldCollectionPlace"
+            },
+            {
+                "ID": ".csc-collection-object-assocConcepts"
+            },
+            {
+                "valuebinding": "fields.assocActivityNote",
+                "ID": ".csc-object-history-association-activity-note"
+            },
+            {
+                "valuebinding": "fields.assocObject",
+                "ID": ".csc-object-history-association-object"
+            },
+            {
+                "valuebinding": "fields.inscriptionContentMethod",
+                "ID": ".csc-object-description-inscription-content-method"
+            },
+            {
+                "ID": ".csc-collection-object-assocEventPlaces"
+            },
+            {
+                "ID": ".csc-collection-object-assocCulturalContexts"
+            },
+            {
+                "valuebinding": "fields.usageNote",
+                "ID": ".csc-object-history-association-usage-notes"
+            },
+            {
+                "ID": ".csc-collection-object-styles"
+            },
+            {
+                "valuebinding": "fields.viewersPersonalExperience",
+                "ID": ".csc-object-viewer-experience"
+            },
+            {
+                "ID": ".csc-object-description-inscription-content-inscriber-autocomplete"
+            },
+            {
+                "valuebinding": "fields.nhString",
+                "ID": ".csc-collection-object-nhString"
+            },
+            {
+                "valuebinding": "fields.inscriptionDescriptionInterpretation",
+                "ID": ".csc-object-description-inscription-description-interpretation"
+            },
+            {
+                "valuebinding": "fields.dimensionValueQualifier",
+                "ID": ".csc-object-description-dimension-value-qualifier"
+            },
+            {
+                "ID": ".csc-object-identification-responsible-department"
+            },
+            {
+                "valuebinding": "fields.materialName",
+                "ID": ".csc-object-description-material-name"
+            },
+            {
+                "optionnames": [
+                    "male",
+                    "female"
+                ],
+                "optionlist": [
+                    "male",
+                    "female"
+                ],
+                "selection": {
+                    "valuebinding": "fields.sex"
+                },
+                "ID": ".csc-object-description-sex"
+            },
+            {
+                "valuebinding": "fields.ownersPersonalExperience",
+                "ID": ".csc-object-owner-experience"
+            },
+            {
+                "valuebinding": "fields.inscriptionDescription",
+                "ID": ".csc-object-description-inscription-description"
+            },
+            {
+                "ID": ".csc-collection-object-owners"
+            },
+            {
+                "valuebinding": "fields.objectProductionDate",
+                "ID": ".csc-object-production-date"
+            },
+            {
+                "valuebinding": "fields.ownershipPlace",
+                "ID": ".csc-object-history-association-ownership-place"
+            },
+            {
+                "valuebinding": "fields.catalogNumber",
+                "ID": ".csc-reference-catalog-number"
+            },
+            {
+                "children": [
+                    {
+                        "optionnames": [
+                            "Classified",
+                            "Denomination",
+                            "Simple",
+                            "Taxonomic",
+                            "Typological"
+                        ],
+                        "optionlist": [
+                            "classified",
+                            "denomination",
+                            "simple",
+                            "taxonomic",
+                            "typological"
+                        ],
+                        "selection": {
+                            "valuebinding": "fields.objectNameGroup.0.objectNameType"
+                        },
+                        "ID": ".csc-object-identification-object-type"
+                    },
+                    {
+                        "default": {
+                            "value": "10"
+                        },
+                        "optionnames": [
+                            "Please select an item",
+                            "Chinese",
+                            "Latin",
+                            "Ancient Greek",
+                            "Korean",
+                            "Arabic",
+                            "Middle English",
+                            "Spanish",
+                            "Hebrew",
+                            "French",
+                            "English",
+                            "Russian",
+                            "Japanese",
+                            "Swahili",
+                            "Old English",
+                            "Italian",
+                            "Portuguese",
+                            "German"
+                        ],
+                        "optionlist": [
+                            "",
+                            "chinese",
+                            "latin",
+                            "ancientgreek",
+                            "korean",
+                            "arabic",
+                            "middleenglish",
+                            "spn",
+                            "hebrew",
+                            "french",
+                            "eng",
+                            "russian",
+                            "japanese",
+                            "swahili",
+                            "oldenglish",
+                            "italian",
+                            "portuguese",
+                            "german"
+                        ],
+                        "selection": {
+                            "valuebinding": "fields.objectNameGroup.0.objectNameLanguage"
+                        },
+                        "ID": ".csc-object-identification-object-language"
+                    },
+                    {
+                        "optionnames": [
+                            "Group",
+                            "Subgroup"
+                        ],
+                        "optionlist": [
+                            "group",
+                            "subgroup"
+                        ],
+                        "selection": {
+                            "valuebinding": "fields.objectNameGroup.0.objectNameLevel"
+                        },
+                        "ID": ".csc-object-identification-object-level"
+                    },
+                    {
+                        "optionnames": [
+                            "Art & Architecture Thesaurus",
+                            "Nomenclature"
+                        ],
+                        "optionlist": [
+                            "art-and-architecture-thesaurus",
+                            "nomenclature"
+                        ],
+                        "selection": {
+                            "valuebinding": "fields.objectNameGroup.0.objectNameSystem"
+                        },
+                        "ID": ".csc-object-identification-object-system"
+                    },
+                    {
+                        "valuebinding": "fields.objectNameGroup.0.objectNameNote",
+                        "ID": ".csc-object-identification-object-note"
+                    },
+                    {
+                        "optionnames": [
+                            "Current",
+                            "Archaic"
+                        ],
+                        "optionlist": [
+                            "current",
+                            "archaic"
+                        ],
+                        "selection": {
+                            "valuebinding": "fields.objectNameGroup.0.objectNameCurrency"
+                        },
+                        "ID": ".csc-object-identification-object-currency"
+                    },
+                    {
+                        "valuebinding": "fields.objectNameGroup.0.objectName",
+                        "ID": ".csc-object-identification-object-name"
+                    }
+                ],
+                "ID": ".csc-collection-object-objectNameGroup:"
+            },
+            {
+                "valuebinding": "fields.associationType",
+                "ID": "csc-object-history-association-type"
+            },
+            {
+                "valuebinding": "fields.age",
+                "ID": ".csc-object-description-age"
+            },
+            {
+                "optionnames": [
+                    "metal",
+                    "78"
+                ],
+                "optionlist": [
+                    "metal",
+                    "78"
+                ],
+                "selection": {
+                    "valuebinding": "fields.technicalAttributeMeasurement"
+                },
+                "ID": ".csc-object-description-technical-attribute-measurement"
+            },
+            {
+                "valuebinding": "fields.assocObjectType",
+                "ID": ".csc-object-history-association-object-type"
+            },
+            {
+                "ID": ".csc-object-production-people-autocomplete"
+            },
+            {
+                "valuebinding": "fields.ownersPersonalResponse",
+                "ID": ".csc-object-owner-response"
+            },
+            {
+                "valuebinding": "fields.inscriptionDescriptionInscriber",
+                "ID": ".csc-object-description-inscription-description-inscriber"
+            },
+            {
+                "ID": ".csc-collection-object-contentActivities"
+            },
+            {
+                "optionnames": [
+                    "Assigned by Artist",
+                    "Collection",
+                    "Generic",
+                    "Popular",
+                    "Series",
+                    "Trade"
+                ],
+                "optionlist": [
+                    "assigned-by-artist",
+                    "collection",
+                    "generic",
+                    "popular",
+                    "series",
+                    "trade"
+                ],
+                "selection": {
+                    "valuebinding": "fields.titleType"
+                },
+                "ID": ".csc-object-identification-object-title-type"
+            },
+            {
+                "optionnames": [
+                    "base",
+                    "frame",
+                    "framed",
+                    "image size",
+                    "mount",
+                    "paper size",
+                    "plate size",
+                    "unframed"
+                ],
+                "optionlist": [
+                    "base",
+                    "frame",
+                    "framed",
+                    "image-size",
+                    "mount",
+                    "paper-size",
+                    "plate-size",
+                    "unframed"
+                ],
+                "selection": {
+                    "valuebinding": "fields.dimensionMeasuredPart"
+                },
+                "ID": ".csc-object-description-dimension-part"
+            },
+            {
+                "valuebinding": "fields.objectProductionPersonRole",
+                "ID": ".csc-collection-object-objectProductionPersonRole"
+            },
+            {
+                "valuebinding": "fields.objectProductionPerson",
+                "ID": ".csc-object-production-person"
+            },
+            {
+                "ID": ".csc-object-description-dimension-value-date-container"
+            },
+            {
+                "valuebinding": "fields.objectProductionReason",
+                "ID": ".csc-object-production-reason"
+            },
+            {
+                "ID": ".csc-collection-object-fieldCollectors"
+            },
+            {
+                "valuebinding": "fields.dimensionValue",
+                "ID": ".csc-object-description-dimension-value"
+            },
+            {
+                "valuebinding": "fields.distinguishingFeatures",
+                "ID": ".csc-object-identification-distinguishing-features"
+            },
+            {
+                "valuebinding": "fields.dateEarliestSingleQualifier",
+                "ID": ".csc-date-information-date-earliest-single-qualifier"
+            },
+            {
+                "valuebinding": "fields.objectProductionOrganization",
+                "ID": ".csc-object-production-organization"
+            },
+            {
+                "ID": ".csc-object-description-inscription-content-date-container"
+            },
+            {
+                "valuebinding": "fields.objectProductionPeopleRole",
+                "ID": ".csc-collection-object-objectProductionPeopleRole"
+            },
+            {
+                "optionnames": [
+                    "Approved",
+                    "In process",
+                    "New",
+                    "Temporary"
+                ],
+                "optionlist": [
+                    "approved",
+                    "in-process",
+                    "new",
+                    "temporary"
+                ],
+                "selection": {
+                    "valuebinding": "fields.recordStatus"
+                },
+                "ID": ".csc-object-identification-record-status"
+            },
+            {
+                "valuebinding": "fields.fieldCollectionNote",
+                "ID": ".csc-collection-object-fieldCollectionNote"
+            },
+            {
+                "valuebinding": "fields.inscriptionContentDate",
+                "ID": ".csc-object-description-inscription-content-date"
+            },
+            {
+                "ID": ".csc-collection-object-forms"
+            },
+            {
+                "optionnames": [
+                    "?"
+                ],
+                "optionlist": [
+                    "?"
+                ],
+                "selection": {
+                    "valuebinding": "fields.objectComponentInformation"
+                },
+                "ID": ".csc-object-description-object-component-information"
+            },
+            {
+                "ID": ".csc-collection-object-assocPlaces"
+            },
+            {
+                "ID": ".csc-object-identification-object-number-container"
+            },
+            {
+                "optionnames": [
+                    "Days",
+                    "Months",
+                    "Weeks",
+                    "Years"
+                ],
+                "optionlist": [
+                    "days",
+                    "months",
+                    "weeks",
+                    "years"
+                ],
+                "selection": {
+                    "valuebinding": "fields.ageUnit"
+                },
+                "ID": ".csc-object-description-age-unit"
+            },
+            {
+                "valuebinding": "fields.reference",
+                "ID": ".csc-reference-reference"
+            },
+            {
+                "optionnames": [
+                    "area",
+                    "base",
+                    "circumference",
+                    "count",
+                    "depth",
+                    "diameter",
+                    "height",
+                    "length",
+                    "running time",
+                    "target",
+                    "volume",
+                    "weight",
+                    "width"
+                ],
+                "optionlist": [
+                    "area",
+                    "base",
+                    "circumference",
+                    "count",
+                    "depth",
+                    "diameter",
+                    "height",
+                    "length",
+                    "running-time",
+                    "target",
+                    "volume",
+                    "weight",
+                    "width"
+                ],
+                "selection": {
+                    "valuebinding": "fields.dimension"
+                },
+                "ID": ".csc-object-description-dimension"
+            },
+            {
+                "optionnames": [
+                    "blade",
+                    "buttonhole",
+                    "handle",
+                    "sleeve"
+                ],
+                "optionlist": [
+                    "blade",
+                    "buttonhole",
+                    "handle",
+                    "sleeve"
+                ],
+                "selection": {
+                    "valuebinding": "fields.objectComponentName"
+                },
+                "ID": ".csc-object-description-object-component-name"
+            },
+            {
+                "ID": ".csc-object-history-association-ownership-place-autocomplete"
+            },
+            {
+                "valuebinding": "fields.materialComponent",
+                "ID": ".csc-object-description-material-component"
+            },
+            {
+                "valuebinding": "fields.fieldCollectionNumber",
+                "ID": ".csc-collection-object-fieldCollectionNumber"
+            },
+            {
+                "optionnames": [
+                    "brand",
+                    "decoration",
+                    "estate stamp",
+                    "graffiti",
+                    "label",
+                    "maker's mark"
+                ],
+                "optionlist": [
+                    "brand",
+                    "decoration",
+                    "estate-stamp",
+                    "graffiti",
+                    "label",
+                    "maker's-mark"
+                ],
+                "selection": {
+                    "valuebinding": "fields.inscriptionContentType"
+                },
+                "ID": ".csc-object-description-inscription-content-type"
+            },
+            {
+                "valuebinding": "fields.inscriptionDescriptionDate",
+                "ID": ".csc-object-description-inscription-description-date"
+            },
+            {
+                "valuebinding": "fields.titleTranslation",
+                "ID": ".csc-object-identification-object-title-translation"
+            },
+            {
+                "ID": ".csc-collection-object-fieldCollectionSources"
+            },
+            {
+                "valuebinding": "fields.objectProductionPlace",
+                "ID": ".csc-object-production-place"
+            },
+            {
+                "valuebinding": "fields.datePeriod",
+                "ID": ".csc-date-information-date-period"
+            },
+            {
+                "valuebinding": "fields.inscriptionContentTranslation",
+                "ID": ".csc-object-description-inscription-content-translation"
+            },
+            {
+                "ID": ".csc-object-identification-otherNumbers"
+            },
+            {
+                "ID": ".csc-collection-object-comments"
+            },
+            {
+                "valuebinding": "fields.editionNumber",
+                "ID": ".csc-object-description-edition-number"
+            },
+            {
+                "valuebinding": "fields.material",
+                "ID": ".csc-object-description-material"
+            },
+            {
+                "valuebinding": "fields.materialComponentNote",
+                "ID": ".csc-object-description-material-component-note"
+            },
+            {
+                "default": {
+                    "value": "10"
+                },
+                "optionnames": [
+                    "Please select a value",
+                    "Chinese",
+                    "Latin",
+                    "Ancient Greek",
+                    "Korean",
+                    "Arabic",
+                    "Middle English",
+                    "Spanish",
+                    "Hebrew",
+                    "French",
+                    "English",
+                    "Russian",
+                    "Japanese",
+                    "Swahili",
+                    "Old English",
+                    "Italian",
+                    "Portuguese",
+                    "German"
+                ],
+                "optionlist": [
+                    "",
+                    "chinese",
+                    "latin",
+                    "ancientgreek",
+                    "korean",
+                    "arabic",
+                    "middleenglish",
+                    "spn",
+                    "hebrew",
+                    "french",
+                    "eng",
+                    "russian",
+                    "japanese",
+                    "swahili",
+                    "oldenglish",
+                    "italian",
+                    "portuguese",
+                    "german"
+                ],
+                "selection": {
+                    "valuebinding": "fields.inscriptionContentLanguage"
+                },
+                "ID": ".csc-object-description-inscription-content-language"
+            },
+            {
+                "ID": ".csc-collection-object-colors"
+            },
+            {
+                "valuebinding": "fields.objectProductionNote",
+                "ID": ".csc-object-production-note"
+            },
+            {
+                "default": {
+                    "value": "10"
+                },
+                "optionnames": [
+                    "Please select a value",
+                    "Chinese",
+                    "Latin",
+                    "Ancient Greek",
+                    "Korean",
+                    "Arabic",
+                    "Middle English",
+                    "Spanish",
+                    "Hebrew",
+                    "French",
+                    "English",
+                    "Russian",
+                    "Japanese",
+                    "Swahili",
+                    "Old English",
+                    "Italian",
+                    "Portuguese",
+                    "German"
+                ],
+                "optionlist": [
+                    "",
+                    "chinese",
+                    "latin",
+                    "ancientgreek",
+                    "korean",
+                    "arabic",
+                    "middleenglish",
+                    "spn",
+                    "hebrew",
+                    "french",
+                    "eng",
+                    "russian",
+                    "japanese",
+                    "swahili",
+                    "oldenglish",
+                    "italian",
+                    "portuguese",
+                    "german"
+                ],
+                "selection": {
+                    "valuebinding": "fields.titleLanguage"
+                },
+                "ID": ".csc-object-identification-object-title-language"
+            },
+            {
+                "ID": ".csc-collection-object-contentOrganizations"
+            },
+            {
+                "valuebinding": "fields.ownersContributionNote",
+                "ID": ".csc-object-owner-contribution-note"
+            },
+            {
+                "valuebinding": "fields.dateEarliestSingle",
+                "ID": ".csc-date-information-date-earliest-single-date"
+            },
+            {
+                "valuebinding": "fields.nametitle",
+                "ID": ".csc-object-identification-object-nametitle"
+            },
+            {
+                "ID": ".csc-collection-object-assocPersons"
+            },
+            {
+                "valuebinding": "fields.contentDate",
+                "ID": ".csc-object-description-content-date"
+            },
+            {
+                "valuebinding": "fields.numberOfObjects",
+                "ID": ".csc-object-identification-number-objects"
+            },
+            {
+                "valuebinding": "fields.dateText",
+                "ID": ".csc-date-information-date-text"
+            },
+            {
+                "valuebinding": "fields.objectProductionPlaceRole",
+                "ID": ".csc-collection-object-objectProductionPlaceRole"
+            },
+            {
+                "ID": ".csc-object-description-material-source-autocomplete"
+            },
+            {
+                "optionnames": [
+                    "Library collection",
+                    "Permanent collection",
+                    "Study collection",
+                    "Teaching collection"
+                ],
+                "optionlist": [
+                    "library-collection",
+                    "permanent-collection",
+                    "study-collection",
+                    "teaching-collection"
+                ],
+                "selection": {
+                    "valuebinding": "fields.collection"
+                },
+                "ID": ".csc-object-identification-collection"
+            },
+            {
+                "valuebinding": "fields.techniqueType",
+                "ID": ".csc-object-production-technique-type"
+            },
+            {
+                "valuebinding": "fields.fieldCollectionDate",
+                "ID": ".csc-collection-object-fieldCollectionDate"
+            },
+            {
+                "valuebinding": "fields.objectProductionOrganizationRole",
+                "ID": ".csc-collection-object-objectProductionOrganizationRole"
+            },
+            {
+                "ID": ".csc-collection-object-contentConcepts"
+            },
+            {
+                "ID": ".csc-object-production-person-autocomplete"
+            },
+            {
+                "optionnames": [
+                    "magnetic tape type",
+                    "record speed"
+                ],
+                "optionlist": [
+                    "magnetic-tape-type",
+                    "record-speed"
+                ],
+                "selection": {
+                    "valuebinding": "fields.technicalAttribute"
+                },
+                "ID": ".csc-object-description-technical-attribute"
+            },
+            {
+                "default": {
+                    "value": "4"
+                },
+                "optionnames": [
+                    "Danish Krone",
+                    "Canadian Dollar",
+                    "Swiss Franc",
+                    "Pound Sterling",
+                    "US Dollar",
+                    "Swedish Krona",
+                    "Euro"
+                ],
+                "optionlist": [
+                    "danishkrone",
+                    "canadiandollar",
+                    "swissfranc",
+                    "poundsterling",
+                    "usdollar",
+                    "swedishkrona",
+                    "euro"
+                ],
+                "selection": {
+                    "valuebinding": "fields.ownershipExchangePriceCurrency"
+                },
+                "ID": ".csc-object-history-association-denomination"
+            },
+            {
+                "valuebinding": "fields.dimensionValueDate",
+                "ID": ".csc-object-description-dimension-value-date"
+            },
+            {
+                "ID": ".csc-collection-object-assocOrganizations"
+            },
+            {
+                "valuebinding": "fields.assocEventNameType",
+                "ID": ".csc-object-history-association-event-name"
+            },
+            {
+                "ID": ".csc-object-production-date-container"
+            },
+            {
+                "optionnames": [
+                    "limited",
+                    "open",
+                    "restricted"
+                ],
+                "optionlist": [
+                    "limited",
+                    "open",
+                    "restricted"
+                ],
+                "selection": {
+                    "valuebinding": "fields.ownershipAccess"
+                },
+                "ID": ".csc-object-history-association-access"
+            },
+            {
+                "valuebinding": "fields.contentEventName",
+                "ID": ".csc-object-description-content-event-name"
+            },
+            {
+                "valuebinding": "fields.ageQualifier",
+                "ID": ".csc-object-description-age-qualifier"
+            },
+            {
+                "ID": ".csc-collection-object-contentPeoples"
+            },
+            {
+                "ID": ".csc-object-description-content-date-container"
+            },
+            {
+                "valuebinding": "fields.contentObject",
+                "ID": ".csc-object-description-content-object"
+            },
+            {
+                "optionnames": [
+                    "Carolingian miniscule",
+                    "Gothic script",
+                    "Palmer method",
+                    "Roman cursive",
+                    "rustic capitals",
+                    "Spencerian method",
+                    "square capitals"
+                ],
+                "optionlist": [
+                    "carolingian-miniscule",
+                    "gothic-script",
+                    "palmer-method",
+                    "roman-cursive",
+                    "rustic-capitals",
+                    "spencerian-method",
+                    "square-capitals"
+                ],
+                "selection": {
+                    "valuebinding": "fields.inscriptionContentScript"
+                },
+                "ID": ".csc-object-description-inscription-content-script"
+            },
+            {
+                "optionnames": [
+                    "rpm"
+                ],
+                "optionlist": [
+                    "rpm"
+                ],
+                "selection": {
+                    "valuebinding": "fields.technicalAttributeMeasurementUnit"
+                },
+                "ID": ".csc-object-description-technical-attribute-unit"
+            },
+            {
+                "valuebinding": "fields.dateLatestCertainty",
+                "ID": ".csc-date-information-date-latest-certainty"
+            },
+            {
+                "ID": ".csc-collection-object-assocEventPeoples"
+            },
+            {
+                "optionnames": [
+                    "back",
+                    "base",
+                    "bottom",
+                    "front",
+                    "inside",
+                    "left",
+                    "outside",
+                    "recto",
+                    "right",
+                    "rim",
+                    "top",
+                    "verso"
+                ],
+                "optionlist": [
+                    "back",
+                    "base",
+                    "bottom",
+                    "front",
+                    "inside",
+                    "left",
+                    "outside",
+                    "recto",
+                    "right",
+                    "rim",
+                    "top",
+                    "verso"
+                ],
+                "selection": {
+                    "valuebinding": "fields.inscriptionDescriptionPosition"
+                },
+                "ID": ".csc-object-description-inscription-description-position"
+            },
+            {
+                "valuebinding": "fields.inscriptionContentTransliteration",
+                "ID": ".csc-object-description-inscription-content-transliteration"
+            },
+            {
+                "valuebinding": "fields.ownershipExchangePriceValue",
+                "ID": ".csc-object-history-association-exchange-price-value"
+            },
+            {
+                "ID": ".csc-object-description-inscription-description-inscriber-autocomplete"
+            },
+            {
+                "valuebinding": "fields.viewersContributionNote",
+                "ID": ".csc-object-viewer-contribution-note"
+            },
+            {
+                "valuebinding": "fields.copyNumber",
+                "ID": ".csc-object-description-copy-number"
+            },
+            {
+                "ID": ".csc-collection-object-assocEventOrganizations"
+            },
+            {
+                "valuebinding": "fields.assocEventName",
+                "ID": ".csc-object-history-association-event"
+            },
+            {
+                "ID": ".csc-date-information-date-latest-date-container"
+            },
+            {
+                "valuebinding": "fields.ownershipDates",
+                "ID": ".csc-object-history-association-dates"
+            },
+            {
+                "valuebinding": "fields.ownershipExchangeNote",
+                "ID": ".csc-object-history-association-exchange-note"
+            },
+            {
+                "valuebinding": "fields.inscriptionContent",
+                "ID": ".csc-object-description-inscription-content"
+            },
+            {
+                "valuebinding": "fields.objectNumber",
+                "ID": ".csc-object-identification-object-number"
+            },
+            {
+                "valuebinding": "fields.viewersRole",
+                "ID": ".csc-object-viewer-role"
+            },
+            {
+                "ID": ".csc-collection-object-fieldCollectionMethods"
+            },
+            {
+                "valuebinding": "fields.objectHistoryNote",
+                "ID": ".csc-object-history-association-object-history-note"
+            },
+            {
+                "ID": ".csc-collection-object-contentPersons"
+            },
+            {
+                "valuebinding": "fields.contentOther",
+                "ID": ".csc-object-description-content-other"
+            },
+            {
+                "optionnames": [
+                    "back",
+                    "base",
+                    "bottom",
+                    "front",
+                    "inside",
+                    "left",
+                    "outside",
+                    "recto",
+                    "right",
+                    "rim",
+                    "top",
+                    "verso"
+                ],
+                "optionlist": [
+                    "back",
+                    "base",
+                    "bottom",
+                    "front",
+                    "inside",
+                    "left",
+                    "outside",
+                    "recto",
+                    "right",
+                    "rim",
+                    "top",
+                    "verso"
+                ],
+                "selection": {
+                    "valuebinding": "fields.contentPosition"
+                },
+                "ID": ".csc-object-description-content-position"
+            },
+            {
+                "valuebinding": "fields.technique",
+                "ID": ".csc-object-production-technique"
+            },
+            {
+                "valuebinding": "fields.assocActivity",
+                "ID": ".csc-object-history-association-activity"
+            },
+            {
+                "optionnames": [
+                    "copy",
+                    "forgery",
+                    "holotype",
+                    "paralectotype",
+                    "paratype",
+                    "type"
+                ],
+                "optionlist": [
+                    "copy",
+                    "forgery",
+                    "holotype",
+                    "paralectotype",
+                    "paratype",
+                    "type"
+                ],
+                "selection": {
+                    "valuebinding": "fields.objectStatus"
+                },
+                "ID": ".csc-object-description-status"
+            },
+            {
+                "optionnames": [
+                    "carats",
+                    "centimeters",
+                    "cubic centimeters",
+                    "feet",
+                    "inches",
+                    "kilograms",
+                    "liters",
+                    "millimeters",
+                    "meters",
+                    "minutes",
+                    "pixels",
+                    "square feet",
+                    "stories"
+                ],
+                "optionlist": [
+                    "carats",
+                    "centimeters",
+                    "cubic-centimeters",
+                    "feet",
+                    "inches",
+                    "kilograms",
+                    "liters",
+                    "millimeters",
+                    "meters",
+                    "minutes",
+                    "pixels",
+                    "square-feet",
+                    "stories"
+                ],
+                "selection": {
+                    "valuebinding": "fields.dimensionMeasurementUnit"
+                },
+                "ID": ".csc-object-description-dimension-unit"
+            },
+            {
+                "valuebinding": "fields.objectProductionPeople",
+                "ID": ".csc-object-production-people"
+            },
+            {
+                "valuebinding": "fields.associationNote",
+                "ID": ".csc-object-history-association-note"
+            },
+            {
+                "valuebinding": "fields.contentDescription",
+                "ID": ".csc-object-description-content-description"
+            },
+            {
+                "ID": ".csc-object-identification-brief-description"
+            },
+            {
+                "valuebinding": "fields.usage",
+                "ID": ".csc-object-history-association-usage"
+            },
+            {
+                "ID": ".csc-object-history-association-dates-container"
+            },
+            {
+                "ID": ".csc-collection-object-contentLanguages"
+            },
+            {
+                "ID": ".csc-collection-object-assocEventPersons"
+            },
+            {
+                "valuebinding": "fields.inscriptionDescriptionMethod",
+                "ID": ".csc-object-description-inscription-description-method"
+            },
+            {
+                "optionnames": [
+                    "company",
+                    "public",
+                    "private"
+                ],
+                "optionlist": [
+                    "company",
+                    "public",
+                    "private"
+                ],
+                "selection": {
+                    "valuebinding": "fields.ownershipCategory"
+                },
+                "ID": ".csc-object-history-association-category"
+            },
+            {
+                "ID": ".csc-object-production-place-autocomplete"
+            },
+            {
+                "ID": ".csc-object-production-organization-autocomplete"
+            },
+            {
+                "valuebinding": "fields.dateLatestQualifier",
+                "ID": ".csc-date-information-date-latest-qualifier"
+            },
+            {
+                "valuebinding": "fields.dateEarliestSingleCertainty",
+                "ID": ".csc-date-information-date-earliest-single-certainty"
+            },
+            {
+                "valuebinding": "fields.physicalDescription",
+                "ID": ".csc-object-description-physical-description"
+            },
+            {
+                "valuebinding": "fields.viewersPersonalResponse",
+                "ID": ".csc-object-viewer-response"
+            },
+            {
+                "valuebinding": "fields.inscriptionContentInterpretation",
+                "ID": ".csc-object-description-inscription-content-interpretation"
+            },
+            {
+                "optionnames": [
+                    "brand",
+                    "decoration",
+                    "estate stamp",
+                    "graffiti",
+                    "label",
+                    "maker's mark"
+                ],
+                "optionlist": [
+                    "brand",
+                    "decoration",
+                    "estate-stamp",
+                    "graffiti",
+                    "label",
+                    "maker's-mark"
+                ],
+                "selection": {
+                    "valuebinding": "fields.inscriptionDescriptionType"
+                },
+                "ID": ".csc-object-description-inscription-description-type"
+            },
+            {
+                "ID": ".csc-object-history-association-date-container"
+            },
+            {
+                "optionnames": [
+                    "adult",
+                    "imago",
+                    "larva",
+                    "nymph",
+                    "pupa"
+                ],
+                "optionlist": [
+                    "adult",
+                    "imago",
+                    "larva",
+                    "nymph",
+                    "pupa"
+                ],
+                "selection": {
+                    "valuebinding": "fields.phase"
+                },
+                "ID": ".csc-object-description-phase"
+            },
+            {
+                "ID": ".csc-collection-object-contentPlaces"
+            },
+            {
+                "ID": ".csc-collection-object-contentScripts"
+            },
+            {
+                "valuebinding": "fields.dateLatest",
+                "ID": ".csc-date-information-date-latest-date"
+            },
+            {
+                "valuebinding": "fields.fieldCollectionEventName",
+                "ID": ".csc-object-collection-field-collection-event-name"
+            },
+            {
+                "valuebinding": "fields.assocDate",
+                "ID": ".csc-object-history-association-date"
+            },
+            {
+                "optionnames": [
+                    "Furniture",
+                    "Food"
+                ],
+                "optionlist": [
+                    "furniture",
+                    "food"
+                ],
+                "selection": {
+                    "valuebinding": "fields.contentObjectType"
+                },
+                "ID": ".csc-object-description-content-object-type"
+            }
+        ]
+    },
+    "renderOpts": {
+        "cutpoints": [
+            {
+                "id": ".csc-object-history-association-exchange-method",
+                "selector": ".csc-object-history-association-exchange-method"
+            },
+            {
+                "id": ".csc-object-description-inscription-content-inscriber",
+                "selector": ".csc-object-description-inscription-content-inscriber"
+            },
+            {
+                "id": ".csc-object-owner-reference",
+                "selector": ".csc-object-owner-reference"
+            },
+            {
+                "id": ".csc-object-description-content-event-name-type",
+                "selector": ".csc-object-description-content-event-name-type"
+            },
+            {
+                "id": ".csc-object-description-content-other-type",
+                "selector": ".csc-object-description-content-other-type"
+            },
+            {
+                "id": ".csc-date-information-date-earliest-single-date-container",
+                "selector": ".csc-date-information-date-earliest-single-date-container"
+            },
+            {
+                "id": ".csc-object-description-material-source",
+                "selector": ".csc-object-description-material-source"
+            },
+            {
+                "id": ".csc-object-description-content-note",
+                "selector": ".csc-object-description-content-note"
+            },
+            {
+                "id": ".csc-collection-object-assocPeoples",
+                "selector": ".csc-collection-object-assocPeoples"
+            },
+            {
+                "id": ".csc-object-viewer-reference",
+                "selector": ".csc-object-viewer-reference"
+            },
+            {
+                "id": ".csc-date-information-date-association",
+                "selector": ".csc-date-information-date-association"
+            },
+            {
+                "id": ".csc-object-identification-object-title",
+                "selector": ".csc-object-identification-object-title"
+            },
+            {
+                "id": ".csc-object-description-inscription-content-position",
+                "selector": ".csc-object-description-inscription-content-position"
+            },
+            {
+                "id": ".csc-collection-object-fieldCollectionPlace",
+                "selector": ".csc-collection-object-fieldCollectionPlace"
+            },
+            {
+                "id": ".csc-collection-object-assocConcepts",
+                "selector": ".csc-collection-object-assocConcepts"
+            },
+            {
+                "id": ".csc-object-history-association-activity-note",
+                "selector": ".csc-object-history-association-activity-note"
+            },
+            {
+                "id": ".csc-object-history-association-object",
+                "selector": ".csc-object-history-association-object"
+            },
+            {
+                "id": ".csc-object-description-inscription-content-method",
+                "selector": ".csc-object-description-inscription-content-method"
+            },
+            {
+                "id": ".csc-collection-object-assocEventPlaces",
+                "selector": ".csc-collection-object-assocEventPlaces"
+            },
+            {
+                "id": ".csc-collection-object-assocCulturalContexts",
+                "selector": ".csc-collection-object-assocCulturalContexts"
+            },
+            {
+                "id": ".csc-object-history-association-usage-notes",
+                "selector": ".csc-object-history-association-usage-notes"
+            },
+            {
+                "id": ".csc-collection-object-styles",
+                "selector": ".csc-collection-object-styles"
+            },
+            {
+                "id": ".csc-object-viewer-experience",
+                "selector": ".csc-object-viewer-experience"
+            },
+            {
+                "id": ".csc-object-description-inscription-content-inscriber-autocomplete",
+                "selector": ".csc-object-description-inscription-content-inscriber-autocomplete"
+            },
+            {
+                "id": ".csc-collection-object-nhString",
+                "selector": ".csc-collection-object-nhString"
+            },
+            {
+                "id": ".csc-object-description-inscription-description-interpretation",
+                "selector": ".csc-object-description-inscription-description-interpretation"
+            },
+            {
+                "id": ".csc-object-description-dimension-value-qualifier",
+                "selector": ".csc-object-description-dimension-value-qualifier"
+            },
+            {
+                "id": ".csc-object-identification-responsible-department",
+                "selector": ".csc-object-identification-responsible-department"
+            },
+            {
+                "id": ".csc-object-description-material-name",
+                "selector": ".csc-object-description-material-name"
+            },
+            {
+                "id": ".csc-object-description-sex",
+                "selector": ".csc-object-description-sex"
+            },
+            {
+                "id": ".csc-object-owner-experience",
+                "selector": ".csc-object-owner-experience"
+            },
+            {
+                "id": ".csc-object-description-inscription-description",
+                "selector": ".csc-object-description-inscription-description"
+            },
+            {
+                "id": ".csc-collection-object-owners",
+                "selector": ".csc-collection-object-owners"
+            },
+            {
+                "id": ".csc-object-production-date",
+                "selector": ".csc-object-production-date"
+            },
+            {
+                "id": ".csc-object-history-association-ownership-place",
+                "selector": ".csc-object-history-association-ownership-place"
+            },
+            {
+                "id": ".csc-reference-catalog-number",
+                "selector": ".csc-reference-catalog-number"
+            },
+            {
+                "id": ".csc-collection-object-objectNameGroup",
+                "selector": ".csc-collection-object-objectNameGroup"
+            },
+            {
+                "id": ".csc-object-identification-object-type",
+                "selector": ".csc-object-identification-object-type"
+            },
+            {
+                "id": ".csc-object-identification-object-language",
+                "selector": ".csc-object-identification-object-language"
+            },
+            {
+                "id": ".csc-object-identification-object-level",
+                "selector": ".csc-object-identification-object-level"
+            },
+            {
+                "id": ".csc-object-identification-object-system",
+                "selector": ".csc-object-identification-object-system"
+            },
+            {
+                "id": ".csc-object-identification-object-note",
+                "selector": ".csc-object-identification-object-note"
+            },
+            {
+                "id": ".csc-object-identification-object-currency",
+                "selector": ".csc-object-identification-object-currency"
+            },
+            {
+                "id": ".csc-object-identification-object-name",
+                "selector": ".csc-object-identification-object-name"
+            },
+            {
+                "id": "csc-object-history-association-type",
+                "selector": "csc-object-history-association-type"
+            },
+            {
+                "id": ".csc-object-description-age",
+                "selector": ".csc-object-description-age"
+            },
+            {
+                "id": ".csc-object-description-technical-attribute-measurement",
+                "selector": ".csc-object-description-technical-attribute-measurement"
+            },
+            {
+                "id": ".csc-object-history-association-object-type",
+                "selector": ".csc-object-history-association-object-type"
+            },
+            {
+                "id": ".csc-object-production-people-autocomplete",
+                "selector": ".csc-object-production-people-autocomplete"
+            },
+            {
+                "id": ".csc-object-owner-response",
+                "selector": ".csc-object-owner-response"
+            },
+            {
+                "id": ".csc-object-description-inscription-description-inscriber",
+                "selector": ".csc-object-description-inscription-description-inscriber"
+            },
+            {
+                "id": ".csc-collection-object-contentActivities",
+                "selector": ".csc-collection-object-contentActivities"
+            },
+            {
+                "id": ".csc-object-identification-object-title-type",
+                "selector": ".csc-object-identification-object-title-type"
+            },
+            {
+                "id": ".csc-object-description-dimension-part",
+                "selector": ".csc-object-description-dimension-part"
+            },
+            {
+                "id": ".csc-collection-object-objectProductionPersonRole",
+                "selector": ".csc-collection-object-objectProductionPersonRole"
+            },
+            {
+                "id": ".csc-object-production-person",
+                "selector": ".csc-object-production-person"
+            },
+            {
+                "id": ".csc-object-description-dimension-value-date-container",
+                "selector": ".csc-object-description-dimension-value-date-container"
+            },
+            {
+                "id": ".csc-object-production-reason",
+                "selector": ".csc-object-production-reason"
+            },
+            {
+                "id": ".csc-collection-object-fieldCollectors",
+                "selector": ".csc-collection-object-fieldCollectors"
+            },
+            {
+                "id": ".csc-object-description-dimension-value",
+                "selector": ".csc-object-description-dimension-value"
+            },
+            {
+                "id": ".csc-object-identification-distinguishing-features",
+                "selector": ".csc-object-identification-distinguishing-features"
+            },
+            {
+                "id": ".csc-date-information-date-earliest-single-qualifier",
+                "selector": ".csc-date-information-date-earliest-single-qualifier"
+            },
+            {
+                "id": ".csc-object-production-organization",
+                "selector": ".csc-object-production-organization"
+            },
+            {
+                "id": ".csc-object-description-inscription-content-date-container",
+                "selector": ".csc-object-description-inscription-content-date-container"
+            },
+            {
+                "id": ".csc-collection-object-objectProductionPeopleRole",
+                "selector": ".csc-collection-object-objectProductionPeopleRole"
+            },
+            {
+                "id": ".csc-object-identification-record-status",
+                "selector": ".csc-object-identification-record-status"
+            },
+            {
+                "id": ".csc-collection-object-fieldCollectionNote",
+                "selector": ".csc-collection-object-fieldCollectionNote"
+            },
+            {
+                "id": ".csc-object-description-inscription-content-date",
+                "selector": ".csc-object-description-inscription-content-date"
+            },
+            {
+                "id": ".csc-collection-object-forms",
+                "selector": ".csc-collection-object-forms"
+            },
+            {
+                "id": ".csc-object-description-object-component-information",
+                "selector": ".csc-object-description-object-component-information"
+            },
+            {
+                "id": ".csc-collection-object-assocPlaces",
+                "selector": ".csc-collection-object-assocPlaces"
+            },
+            {
+                "id": ".csc-object-identification-object-number-container",
+                "selector": ".csc-object-identification-object-number-container"
+            },
+            {
+                "id": ".csc-object-description-age-unit",
+                "selector": ".csc-object-description-age-unit"
+            },
+            {
+                "id": ".csc-reference-reference",
+                "selector": ".csc-reference-reference"
+            },
+            {
+                "id": ".csc-object-description-dimension",
+                "selector": ".csc-object-description-dimension"
+            },
+            {
+                "id": ".csc-object-description-object-component-name",
+                "selector": ".csc-object-description-object-component-name"
+            },
+            {
+                "id": ".csc-object-history-association-ownership-place-autocomplete",
+                "selector": ".csc-object-history-association-ownership-place-autocomplete"
+            },
+            {
+                "id": ".csc-object-description-material-component",
+                "selector": ".csc-object-description-material-component"
+            },
+            {
+                "id": ".csc-collection-object-fieldCollectionNumber",
+                "selector": ".csc-collection-object-fieldCollectionNumber"
+            },
+            {
+                "id": ".csc-object-description-inscription-content-type",
+                "selector": ".csc-object-description-inscription-content-type"
+            },
+            {
+                "id": ".csc-object-description-inscription-description-date",
+                "selector": ".csc-object-description-inscription-description-date"
+            },
+            {
+                "id": ".csc-object-identification-object-title-translation",
+                "selector": ".csc-object-identification-object-title-translation"
+            },
+            {
+                "id": ".csc-collection-object-fieldCollectionSources",
+                "selector": ".csc-collection-object-fieldCollectionSources"
+            },
+            {
+                "id": ".csc-object-production-place",
+                "selector": ".csc-object-production-place"
+            },
+            {
+                "id": ".csc-date-information-date-period",
+                "selector": ".csc-date-information-date-period"
+            },
+            {
+                "id": ".csc-object-description-inscription-content-translation",
+                "selector": ".csc-object-description-inscription-content-translation"
+            },
+            {
+                "id": ".csc-object-identification-otherNumbers",
+                "selector": ".csc-object-identification-otherNumbers"
+            },
+            {
+                "id": ".csc-collection-object-comments",
+                "selector": ".csc-collection-object-comments"
+            },
+            {
+                "id": ".csc-object-description-edition-number",
+                "selector": ".csc-object-description-edition-number"
+            },
+            {
+                "id": ".csc-object-description-material",
+                "selector": ".csc-object-description-material"
+            },
+            {
+                "id": ".csc-object-description-material-component-note",
+                "selector": ".csc-object-description-material-component-note"
+            },
+            {
+                "id": ".csc-object-description-inscription-content-language",
+                "selector": ".csc-object-description-inscription-content-language"
+            },
+            {
+                "id": ".csc-collection-object-colors",
+                "selector": ".csc-collection-object-colors"
+            },
+            {
+                "id": ".csc-object-production-note",
+                "selector": ".csc-object-production-note"
+            },
+            {
+                "id": ".csc-object-identification-object-title-language",
+                "selector": ".csc-object-identification-object-title-language"
+            },
+            {
+                "id": ".csc-collection-object-contentOrganizations",
+                "selector": ".csc-collection-object-contentOrganizations"
+            },
+            {
+                "id": ".csc-object-owner-contribution-note",
+                "selector": ".csc-object-owner-contribution-note"
+            },
+            {
+                "id": ".csc-date-information-date-earliest-single-date",
+                "selector": ".csc-date-information-date-earliest-single-date"
+            },
+            {
+                "id": ".csc-object-identification-object-nametitle",
+                "selector": ".csc-object-identification-object-nametitle"
+            },
+            {
+                "id": ".csc-collection-object-assocPersons",
+                "selector": ".csc-collection-object-assocPersons"
+            },
+            {
+                "id": ".csc-object-description-content-date",
+                "selector": ".csc-object-description-content-date"
+            },
+            {
+                "id": ".csc-object-identification-number-objects",
+                "selector": ".csc-object-identification-number-objects"
+            },
+            {
+                "id": ".csc-date-information-date-text",
+                "selector": ".csc-date-information-date-text"
+            },
+            {
+                "id": ".csc-collection-object-objectProductionPlaceRole",
+                "selector": ".csc-collection-object-objectProductionPlaceRole"
+            },
+            {
+                "id": ".csc-object-description-material-source-autocomplete",
+                "selector": ".csc-object-description-material-source-autocomplete"
+            },
+            {
+                "id": ".csc-object-identification-collection",
+                "selector": ".csc-object-identification-collection"
+            },
+            {
+                "id": ".csc-object-production-technique-type",
+                "selector": ".csc-object-production-technique-type"
+            },
+            {
+                "id": ".csc-collection-object-fieldCollectionDate",
+                "selector": ".csc-collection-object-fieldCollectionDate"
+            },
+            {
+                "id": ".csc-collection-object-objectProductionOrganizationRole",
+                "selector": ".csc-collection-object-objectProductionOrganizationRole"
+            },
+            {
+                "id": ".csc-collection-object-contentConcepts",
+                "selector": ".csc-collection-object-contentConcepts"
+            },
+            {
+                "id": ".csc-object-production-person-autocomplete",
+                "selector": ".csc-object-production-person-autocomplete"
+            },
+            {
+                "id": ".csc-object-description-technical-attribute",
+                "selector": ".csc-object-description-technical-attribute"
+            },
+            {
+                "id": ".csc-object-history-association-denomination",
+                "selector": ".csc-object-history-association-denomination"
+            },
+            {
+                "id": ".csc-object-description-dimension-value-date",
+                "selector": ".csc-object-description-dimension-value-date"
+            },
+            {
+                "id": ".csc-collection-object-assocOrganizations",
+                "selector": ".csc-collection-object-assocOrganizations"
+            },
+            {
+                "id": ".csc-object-history-association-event-name",
+                "selector": ".csc-object-history-association-event-name"
+            },
+            {
+                "id": ".csc-object-production-date-container",
+                "selector": ".csc-object-production-date-container"
+            },
+            {
+                "id": ".csc-object-history-association-access",
+                "selector": ".csc-object-history-association-access"
+            },
+            {
+                "id": ".csc-object-description-content-event-name",
+                "selector": ".csc-object-description-content-event-name"
+            },
+            {
+                "id": ".csc-object-description-age-qualifier",
+                "selector": ".csc-object-description-age-qualifier"
+            },
+            {
+                "id": ".csc-collection-object-contentPeoples",
+                "selector": ".csc-collection-object-contentPeoples"
+            },
+            {
+                "id": ".csc-object-description-content-date-container",
+                "selector": ".csc-object-description-content-date-container"
+            },
+            {
+                "id": ".csc-object-description-content-object",
+                "selector": ".csc-object-description-content-object"
+            },
+            {
+                "id": ".csc-object-description-inscription-content-script",
+                "selector": ".csc-object-description-inscription-content-script"
+            },
+            {
+                "id": ".csc-object-description-technical-attribute-unit",
+                "selector": ".csc-object-description-technical-attribute-unit"
+            },
+            {
+                "id": ".csc-date-information-date-latest-certainty",
+                "selector": ".csc-date-information-date-latest-certainty"
+            },
+            {
+                "id": ".csc-collection-object-assocEventPeoples",
+                "selector": ".csc-collection-object-assocEventPeoples"
+            },
+            {
+                "id": ".csc-object-description-inscription-description-position",
+                "selector": ".csc-object-description-inscription-description-position"
+            },
+            {
+                "id": ".csc-object-description-inscription-content-transliteration",
+                "selector": ".csc-object-description-inscription-content-transliteration"
+            },
+            {
+                "id": ".csc-object-history-association-exchange-price-value",
+                "selector": ".csc-object-history-association-exchange-price-value"
+            },
+            {
+                "id": ".csc-object-description-inscription-description-inscriber-autocomplete",
+                "selector": ".csc-object-description-inscription-description-inscriber-autocomplete"
+            },
+            {
+                "id": ".csc-object-viewer-contribution-note",
+                "selector": ".csc-object-viewer-contribution-note"
+            },
+            {
+                "id": ".csc-object-description-copy-number",
+                "selector": ".csc-object-description-copy-number"
+            },
+            {
+                "id": ".csc-collection-object-assocEventOrganizations",
+                "selector": ".csc-collection-object-assocEventOrganizations"
+            },
+            {
+                "id": ".csc-object-history-association-event",
+                "selector": ".csc-object-history-association-event"
+            },
+            {
+                "id": ".csc-date-information-date-latest-date-container",
+                "selector": ".csc-date-information-date-latest-date-container"
+            },
+            {
+                "id": ".csc-object-history-association-dates",
+                "selector": ".csc-object-history-association-dates"
+            },
+            {
+                "id": ".csc-object-history-association-exchange-note",
+                "selector": ".csc-object-history-association-exchange-note"
+            },
+            {
+                "id": ".csc-object-description-inscription-content",
+                "selector": ".csc-object-description-inscription-content"
+            },
+            {
+                "id": ".csc-object-identification-object-number",
+                "selector": ".csc-object-identification-object-number"
+            },
+            {
+                "id": ".csc-object-viewer-role",
+                "selector": ".csc-object-viewer-role"
+            },
+            {
+                "id": ".csc-collection-object-fieldCollectionMethods",
+                "selector": ".csc-collection-object-fieldCollectionMethods"
+            },
+            {
+                "id": ".csc-object-history-association-object-history-note",
+                "selector": ".csc-object-history-association-object-history-note"
+            },
+            {
+                "id": ".csc-collection-object-contentPersons",
+                "selector": ".csc-collection-object-contentPersons"
+            },
+            {
+                "id": ".csc-object-description-content-other",
+                "selector": ".csc-object-description-content-other"
+            },
+            {
+                "id": ".csc-object-description-content-position",
+                "selector": ".csc-object-description-content-position"
+            },
+            {
+                "id": ".csc-object-production-technique",
+                "selector": ".csc-object-production-technique"
+            },
+            {
+                "id": ".csc-object-history-association-activity",
+                "selector": ".csc-object-history-association-activity"
+            },
+            {
+                "id": ".csc-object-description-status",
+                "selector": ".csc-object-description-status"
+            },
+            {
+                "id": ".csc-object-description-dimension-unit",
+                "selector": ".csc-object-description-dimension-unit"
+            },
+            {
+                "id": ".csc-object-production-people",
+                "selector": ".csc-object-production-people"
+            },
+            {
+                "id": ".csc-object-history-association-note",
+                "selector": ".csc-object-history-association-note"
+            },
+            {
+                "id": ".csc-object-description-content-description",
+                "selector": ".csc-object-description-content-description"
+            },
+            {
+                "id": ".csc-object-identification-brief-description",
+                "selector": ".csc-object-identification-brief-description"
+            },
+            {
+                "id": ".csc-object-history-association-usage",
+                "selector": ".csc-object-history-association-usage"
+            },
+            {
+                "id": ".csc-object-history-association-dates-container",
+                "selector": ".csc-object-history-association-dates-container"
+            },
+            {
+                "id": ".csc-collection-object-contentLanguages",
+                "selector": ".csc-collection-object-contentLanguages"
+            },
+            {
+                "id": ".csc-collection-object-assocEventPersons",
+                "selector": ".csc-collection-object-assocEventPersons"
+            },
+            {
+                "id": ".csc-object-description-inscription-description-method",
+                "selector": ".csc-object-description-inscription-description-method"
+            },
+            {
+                "id": ".csc-object-history-association-category",
+                "selector": ".csc-object-history-association-category"
+            },
+            {
+                "id": ".csc-object-production-place-autocomplete",
+                "selector": ".csc-object-production-place-autocomplete"
+            },
+            {
+                "id": ".csc-object-production-organization-autocomplete",
+                "selector": ".csc-object-production-organization-autocomplete"
+            },
+            {
+                "id": ".csc-date-information-date-latest-qualifier",
+                "selector": ".csc-date-information-date-latest-qualifier"
+            },
+            {
+                "id": ".csc-date-information-date-earliest-single-certainty",
+                "selector": ".csc-date-information-date-earliest-single-certainty"
+            },
+            {
+                "id": ".csc-object-description-physical-description",
+                "selector": ".csc-object-description-physical-description"
+            },
+            {
+                "id": ".csc-object-viewer-response",
+                "selector": ".csc-object-viewer-response"
+            },
+            {
+                "id": ".csc-object-description-inscription-content-interpretation",
+                "selector": ".csc-object-description-inscription-content-interpretation"
+            },
+            {
+                "id": ".csc-object-description-inscription-description-type",
+                "selector": ".csc-object-description-inscription-description-type"
+            },
+            {
+                "id": ".csc-object-history-association-date-container",
+                "selector": ".csc-object-history-association-date-container"
+            },
+            {
+                "id": ".csc-object-description-phase",
+                "selector": ".csc-object-description-phase"
+            },
+            {
+                "id": ".csc-collection-object-contentPlaces",
+                "selector": ".csc-collection-object-contentPlaces"
+            },
+            {
+                "id": ".csc-collection-object-contentScripts",
+                "selector": ".csc-collection-object-contentScripts"
+            },
+            {
+                "id": ".csc-date-information-date-latest-date",
+                "selector": ".csc-date-information-date-latest-date"
+            },
+            {
+                "id": ".csc-object-collection-field-collection-event-name",
+                "selector": ".csc-object-collection-field-collection-event-name"
+            },
+            {
+                "id": ".csc-object-history-association-date",
+                "selector": ".csc-object-history-association-date"
+            },
+            {
+                "id": ".csc-object-description-content-object-type",
+                "selector": ".csc-object-description-content-object-type"
+            }
+        ],
+        "model": {
+            "csid": null,
+            "fields": {
+                "assocPeoples": [],
+                "assocConcepts": [],
+                "assocEventPlaces": [],
+                "assocCulturalContexts": [],
+                "styles": [],
+                "responsibleDepartments": [],
+                "owners": [],
+                "objectNameGroup": [],
+                "contentActivities": [],
+                "fieldCollectors": [],
+                "forms": [],
+                "assocPlaces": [],
+                "fieldCollectionSources": [],
+                "otherNumberList": [],
+                "comments": [],
+                "colors": [],
+                "contentOrganizations": [],
+                "assocPersons": [],
+                "contentConcepts": [],
+                "assocOrganizations": [],
+                "contentPeoples": [],
+                "assocEventPeoples": [],
+                "assocEventOrganizations": [],
+                "fieldCollectionMethods": [],
+                "contentPersons": [],
+                "briefDescriptions": [],
+                "contentLanguages": [],
+                "assocEventPersons": [],
+                "contentPlaces": [],
+                "contentScripts": [],
+                "ownershipExchangeMethod": "",
+                "inscriptionContentPosition": "",
+                "sex": "",
+                "technicalAttributeMeasurement": "",
+                "titleType": "",
+                "dimensionMeasuredPart": "",
+                "recordStatus": "",
+                "objectComponentInformation": "",
+                "ageUnit": "",
+                "dimension": "",
+                "objectComponentName": "",
+                "inscriptionContentType": "",
+                "inscriptionContentLanguage": "",
+                "titleLanguage": "",
+                "collection": "",
+                "technicalAttribute": "",
+                "ownershipExchangePriceCurrency": "",
+                "ownershipAccess": "",
+                "inscriptionContentScript": "",
+                "technicalAttributeMeasurementUnit": "",
+                "inscriptionDescriptionPosition": "",
+                "contentPosition": "",
+                "objectStatus": "",
+                "dimensionMeasurementUnit": "",
+                "ownershipCategory": "",
+                "inscriptionDescriptionType": "",
+                "phase": "",
+                "contentObjectType": ""
+            },
+            "termsUsed": [],
+            "relations": {
+                
+            },
+            "items": []
+        },
+        "autoBind": true
+    }
+}

@@ -114,6 +114,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             objects: {
                 href: "../data/objects.json",
                 options: {
+                    dataType: "text",
                     success: func,
                     error: func,
                     async: false
@@ -122,6 +123,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             intake: {
                 href: "../data/intake.json",
                 options: {
+                    dataType: "text",
                     success: func,
                     error: func,
                     async: false

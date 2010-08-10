@@ -28,6 +28,48 @@ var fluid = fluid || fluid_1_2;
         return zeropad(date.getHours()) + ":" + zeropad(date.getMinutes()) + ":" + zeropad(date.getSeconds()) + "." + zeropad(date.getMilliseconds(), 3);
     };
     
+    function generate(c, count) {
+        var togo = "";
+        for (var i = 0; i < count; ++ i) {
+            togo += c;
+        }
+        return togo;
+    }
+    
+    function printImpl(obj, small, options) {
+        var big = small + options.indentChars;
+        if (obj === null) {
+            return "null";
+        }
+        else if (fluid.isPrimitive(obj)) {
+            return JSON.stringify(obj);
+        }
+        else {
+            var j = [];
+            if (fluid.isArrayable(obj)) {
+                if (obj.length === 0) {
+                    return "[]";
+                }
+                for (var i = 0; i < obj.length; ++ i) {
+                    j[i] = printImpl(obj[i], big, options);
+                }
+                return "[\n" + big + j.join(",\n" + big) + "\n" + small + "]";
+                }
+            else {
+                var i = 0;
+                fluid.each(obj, function(value, key) {
+                    j[i++] = JSON.stringify(key) + ": " + printImpl(value, big, options);
+                });
+                return "{\n" + big + j.join(",\n" + big) + "\n" + small + "}"; 
+            }
+        }
+    }
+    
+    fluid.prettyPrintJSON = function(obj, options) {
+        options = $.extend({indent: 4}, options);
+        options.indentChars = generate(" ", options.indent);
+        return printImpl(obj, "", options);
+    }
         
     /** 
      * Dumps a DOM element into a readily recognisable form for debugging - produces a

@@ -1043,6 +1043,22 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("Two calls to destructive callback", 2, destructiveCalls);
         jqUnit.assertEquals("Call to overall callback", 1, callbackCalled);          
     });
-     
+    
+    var resourceSpec3 = {data: {href: "../data/testPerformance.json"},
+                        html: {href: "../data/testPerformance.html"}};    
+    
+    renderTests.test("Renderer performance test - FLUID-3684", function() {
+        fluid.setLogging(true);
+        var renderit = function(specs) {
+            var data = JSON.parse(specs.data.resourceText);
+            fluid.log("Resources fetched - begin parse");
+            specs.html.cutpoints = data.renderOpts.cutpoints;
+            var templates = fluid.parseTemplates(specs, ["html"]);
+            fluid.log("Templates parsed - begin render");
+            var rendered = fluid.renderer(templates, data.tree, data.renderOpts).renderTemplates();
+            fluid.log("Render complete");
+        };
+        fluid.fetchResources(resourceSpec3, renderit);  
+    }); 
   };
   })(jQuery); 

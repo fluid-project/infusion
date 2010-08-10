@@ -1,0 +1,2120 @@
+
+                            <div class="csc-object-entry csc-listEditor-details">
+                                <!-- Object Data Entry specific sub-menu -->
+                                <div id="secondary-nav">
+                                    <div id="secondary-nav-menu-sub">
+                                        <div class="button-row">
+                                            <input class="csc-save saveButton primary" value="Save" type="button">
+                                            <a href="findedit.html"><input class="cancelButton" value="Cancel" type="button"></a>
+                                            <a style="display: none;" class="csc-goto"><input class="gotoButton" value="Go To Record" type="button"></a>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="time-stamp"> </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="object-entry-outer-border">
+
+                                    <div class="hidden csc-message-container cs-message">
+                                        <span class="csc-timestamp cs-timestamp">time</span>
+                                        <span class="csc-message">Save successful!</span>
+                                    </div>
+                                    
+                                    <div class="fl-container-flex fl-fix information-group">
+                                        <div class="info-column">
+                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-object-identification-information', this); return false;">
+                                                <span class="header-toggle"><img src="../images/toggle-less.png" alt="toggle icon" height="12" width="12"></span>
+                                                Object Identification Information
+                                            </div>
+                                            
+                                            <div class="fl-container-flex fl-fix content main" id="toggle-object-identification-information">
+                                                <div class="info-column">
+                                                    <div class="info-column2-50 fl-force-left">
+                                                        <div class="info-pair">
+                                                            <div class="label">Identification Number <span class="required">*</span></div>
+                                                            <div class="content csc-object-identification-object-number-container">
+                                                                <input class="csc-object-identification-object-number pattern-chooser-input" type="text">
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="info-pair">
+                                                            <div class="header">
+                                                                <div class="label">Number of Objects</div>
+                                                            </div>
+                                                            <div class="content">
+                                                                <table style="width: auto;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <!--<td class="table-unselected"></td>-->
+                                                                            <td><input class="input-numeric-medium csc-object-identification-number-objects" type="text"></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                        <div class="info-pair">
+                                                            <div class="header">
+                                                                <div class="label">Other Number</div>
+                                                            </div>
+                                                            <div class="content">
+                                                                <table>
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <!--<td class="table-select"></td>-->
+                                                                            <td>Number</td>
+                                                                            <td>Number Type</td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr class="csc-object-identification-otherNumbers">
+                                                                            <!--<td class="table-unselected"></td>-->
+                                                                            <td><input class="csc-object-identification-other-number" type="text"></td>
+                                                                            <td><select class="csc-object-identification-other-number-type input-select"></select></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="info-pair-select">
+                                                            <div class="header">
+                                                                <div class="label">Responsible Department</div>
+                                                            </div>
+                                                            <div class="content repeatable">
+                                                                <select class="csc-object-identification-responsible-department input-select"></select>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="info-pair-select">
+                                                            <div class="header">
+                                                                <div class="label">Collection</div>
+                                                            </div>
+                                                            <div class="content">
+                                                                <table>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <!--<td class="table-unselected"></td>-->
+                                                                            <td><select class="csc-object-identification-collection input-select"></select></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="info-pair-select">
+                                                            <div class="header">
+                                                                <div class="label">Record Status</div>
+                                                            </div>
+                                                            <div class="content">
+                                                                <table>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <!--<td class="table-unselected"></td>-->
+                                                                            <td><select class="csc-object-identification-record-status input-select"></select></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                    
+                                                    <div class="info-column2-50 fl-force-right">
+                                                        <div class="info-pair">
+                                                            <div class="header">
+                                                                <div class="label">Brief Description</div>
+                                                            </div>
+                                                            <div class="content repeatable">
+                                                                <textarea class="input-textarea csc-object-identification-brief-description"></textarea>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="info-pair">
+                                                            <div class="header">
+                                                                <div class="label">Distinguishing Features</div>
+                                                            </div>
+                                                            <div class="content">
+                                                                <table>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><textarea class="input-textarea csc-object-identification-distinguishing-features"></textarea></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="info-pair">
+                                                            <div class="header">
+                                                                <div class="label">Comments</div>
+                                                            </div>
+                                                            <div class="content">
+                                                                <table>                                         
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <!--<td class="table-unselected"></td>-->
+                                                                            <td><textarea class="input-textarea csc-object-identification-comments"></textarea></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                
+                                                <div class="info-column" id="multipleEdit">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Title</div>
+                                                            <!--<div class="addrow"><img src="../images/btnAddRow.png" alt="add a row" title="click to add an additional row" height=13 width=31 /></div>-->
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <!--<td class="table-select"></td>-->
+                                                                        <td>Title</td>
+                                                                        <td>Title Language</td>
+                                                                        <td>Title Translation</td>
+                                                                        <td>Title Type</td>
+                                                                    </tr>
+                                                                </thead>
+                                                            
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-selected"></td>-->
+                                                                        <td class="flc-inlineEdit-text" style="width: 45%;"><input class="csc-object-identification-object-title editableText" type="text"></td>
+                                                                        <td class="flc-inlineEdit-text"><select class="csc-object-identification-object-title-language input-select"></select></td>
+                                                                        <td class="flc-inlineEdit-text"><input class="csc-object-identification-object-title-translation editableText" type="text"></td>
+                                                                        <td class="flc-inlineEdit-text"><select class="csc-object-identification-object-title-type input-select"></select></td>
+                                                                    </tr>
+<!--                                                                    <tr>
+                                                                        <td class="table-unselected"></td>
+                                                                        <td class="flc-inlineEdit-text" style="width:45%;"><input type="text" class="csc-object-identification-object-title editableText"></td>
+                                                                        <td class="flc-inlineEdit-text"><input type="text" class="csc-object-identification-object-title-language editableText"></td>
+                                                                        <td class="flc-inlineEdit-text"><input type="text" class="csc-object-identification-object-title-translation editableText"></td>
+                                                                        <td class="flc-inlineEdit-text"><input type="text" class="csc-object-identification-object-title-type editableText"></td>
+                                                                    </tr>
+-->
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Object Name</div>
+                                                            <!--<div class="addrow"><img src="../images/btnAddRow.png" alt="add a row" title="click to add an additional row" height=13 width=31 /></div>-->
+                                                            <div class="clear"></div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <!--<td class="table-select"></td>-->
+                                                                        <td>Object Name</td>
+                                                                        <td>Currency</td>
+                                                                        <td>Level</td>
+                                                                        <td>System</td>
+                                                                        <td>Type</td>
+                                                                        <td>Language</td>
+                                                                        <td>Note</td>
+                                                                    </tr>
+                                                                </thead>                                                                
+                                                                <tbody>
+                                                                    <tr class="csc-object-identification-object-names">
+                                                                        <!--<td class="table-selected"></td>-->
+                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-identification-object-name" type="text"></td>
+                                                                        <td><select class="csc-object-identification-object-currency input-select"></select></td>
+                                                                        <td><select class="csc-object-identification-object-level input-select"></select></td>
+                                                                        <td><select class="csc-object-identification-object-system input-select"></select></td>
+                                                                        <td><select class="csc-object-identification-object-type input-select"></select></td>
+                                                                        <td><select class="csc-object-identification-object-language input-select"></select></td>   
+                                                                        <td style="width: 25%;"><input class="csc-object-identification-object-note" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>  
+
+                                    <div class="fl-container-flex fl-fix information-group">
+                                        <div class="info-column">
+                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-object-description-info', this); return false;">
+                                                <span class="header-toggle"><img src="../images/toggle-less.png" alt="toggle icon" height="12" width="12"></span>
+                                                Object Description Information
+                                            </div>
+                                            <div class="fl-container-flex fl-fix content main" id="toggle-object-description-info">
+                                                <div class="info-column2-50 fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Copy Number</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><input class="csc-object-description-copy-number" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Object Status</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><select class="csc-object-description-status input-select"></select></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Sex</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><select class="csc-object-description-sex input-select"></select></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Phase</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><select class="csc-object-description-phase input-select"></select></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="info-column">
+                                                        <div class="info-pair">
+                                                            <div class="header">
+                                                                <div class="label">Form</div>
+                                                            </div>
+                                                            <div class="content">
+                                                                <table>                                         
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <!--<td class="table-unselected"></td>-->
+                                                                            <td><select class="csc-object-description-form input-select"></select></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column2-50 fl-force-right">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Edition Number</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><input class="csc-object-description-edition-number" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Age</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <td>Age</td>
+                                                                        <td>Age Qualifier</td>
+                                                                        <td>Unit</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td><input class="csc-object-description-age" type="text"></td>
+                                                                        <td><input class="csc-object-description-age-qualifier" type="text"></td>
+                                                                        <td><select class="csc-object-description-age-unit input-select"></select></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>      
+                                                    
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Style</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-description-style" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Color</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>                                         
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><input class="csc-object-description-color" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <div class="clear"></div>
+                                                <div class="info-column">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Material</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <!--<td class="table-select"></td>-->
+                                                                        <td>Material</td>
+                                                                        <td>Material Component</td>
+                                                                        <td>Material Component Note</td>
+                                                                        <td>Material Name</td>
+                                                                        <td>Material Source</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-description-material" type="text"></td>
+                                                                        <td><input class="csc-object-description-material-component" disabled="disabled" type="text"></td>
+                                                                        <td><input class="csc-object-description-material-component-note" type="text"></td>
+                                                                        <td><input class="csc-object-description-material-name" type="text"></td>
+                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-description-material-source" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Physical Description</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>                                         
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><textarea class="input-textarea csc-object-description-physical-description"></textarea></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column2-50 fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Object Component</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <!--<td class="table-select"></td>-->
+                                                                        <td>Name</td>
+                                                                        <td>Information</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><select class="csc-object-description-object-component-name input-select"></select></td>
+                                                                        <td class="disabled"><input class="csc-object-description-object-component-information" disabled="disabled" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column2-50 fl-force-right">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Technical Attribute</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <!--<td class="table-select"></td>-->
+                                                                        <td>Technical Attribute</td>
+                                                                        <td>Measurement</td>
+                                                                        <td>Unit</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><select class="csc-object-description-technical-attribute input-select"></select></td>
+                                                                        <td><select class="csc-object-description-technical-attribute-measurement input-select"></select></td>
+                                                                        <td><select class="csc-object-description-technical-attribute-unit input-select"></select></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                                
+                                                <div class="info-column">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Dimension</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <!--<td class="table-select"></td>-->
+                                                                        <td>Date</td>
+                                                                        <td>Part</td>
+                                                                        <td>Dimension</td>
+                                                                        <td>Value</td>
+                                                                        <td>Dimension Unit</td>
+                                                                        <td>Value Qualifier</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td class="field-cal disabled"><input disabled="disabled" class="input-date csc-object-description-dimension-date csc-calendar-date" type="text"><img src="../images/cal.png" alt="calendar" height="16" width="18"></td>
+                                                                        <td><select class="csc-object-description-dimension-part input-select"></select></td>
+                                                                        <td><select class="csc-object-description-dimension input-select"></select></td>
+                                                                        <td><input class="csc-object-description-dimension-value" type="text"></td>
+                                                                        <td><select class="input-select csc-object-description-dimension-unit"></select></td>
+                                                                        <td class="field-cal disabled"><input disabled="disabled" class="csc-object-description-dimension-value-qualifier" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                
+                                                <div class="info-column">
+                                                    <div class="fl-container-flex fl-fix information-subgroup">
+                                                        <div class="info-column fl-force-left">
+                                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-description-information-content', this); return false;">
+                                                                <span class="header-toggle-sub"><img src="../images/toggle-less.png" alt="toggle icon" height="12" width="12"></span>
+                                                                Content
+                                                            </div>
+                                                            <div class="fl-container-flex fl-fix content main" id="toggle-description-information-content">
+                                                                <div class="info-column">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Description</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><textarea class="input-textarea csc-object-description-content-description"></textarea></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="info-column2-50 fl-force-left">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Language</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><select class="csc-object-description-content-language input-select"></select></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Activity</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-description-content-activity" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Concept</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-description-content-concept" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair info-pair-date">
+                                                                        <div class="header">
+                                                                            <div class="label">Date</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="field-cal disabled"><input disabled="disabled" class="input-date csc-object-description-content-date" type="text"><img src="../images/cal.png" alt="calendar" height="16" width="18"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Position</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><select class="csc-object-description-content-position input-select"></select></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Object</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-select"></td>-->
+                                                                                        <td>Object</td>
+                                                                                        <td>Object Type</td>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-description-content-object" type="text"></td>
+                                                                                        <td class="disabled"><input class="csc-object-description-content-object-type" disabled="disabled" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                
+                                                                <div class="info-column2-50 fl-force-right">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">People</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input disabled="disabled" class="csc-object-description-content-people" type="text">
+                                                                                            <!--<div class="csc-object-description-content-people-autocomplete"></div>--></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Person</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td><input class="csc-object-description-content-person" type="text">
+                                                                                            <div class="csc-object-description-content-person-autocomplete"></div></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Place</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-description-content-place" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Script</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><select class="csc-object-description-content-script input-select"></select></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Organization</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-description-content-organization" type="text">
+                                                                                            <div class="csc-object-description-content-organization-autocomplete"></div></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Event Name</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-select"></td>-->
+                                                                                        <td>Event Name</td>
+                                                                                        <td>Event Name Type</td>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-description-content-event-name" type="text"></td>
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-description-content-event-name-type" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Other</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-select"></td>-->
+                                                                                        <td>Other</td>
+                                                                                        <td>Other Type</td>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="disabled"><input class="csc-object-description-content-other" disabled="disabled" type="text"></td>
+                                                                                        <td class="disabled"><input class="csc-object-description-content-other-type" disabled="disabled" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                                
+                                                                <div class="info-column">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Note</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><textarea class="input-textarea csc-object-description-content-note"></textarea></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                    <div class="clear"></div>
+                                                </div>
+                                                
+                                                <div class="info-column">
+                                                    <div class="fl-container-flex fl-fix information-subgroup">
+                                                        <div class="info-column">
+                                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-description-information-inscription-content', this); return false;">
+                                                                <span class="header-toggle-sub"><img src="../images/toggle-less.png" alt="toggle icon" height="12" width="12"></span>
+                                                                Textual Inscription
+                                                            </div>
+                                                            <div class="fl-container-flex fl-fix content main" id="toggle-description-information-inscription-content">
+                                                                <div class="info-column">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Inscription Content</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><textarea class="input-textarea csc-object-description-inscription-content"></textarea></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="info-column2-50 fl-force-left">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Inscriber</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-description-inscription-content-inscriber" type="text">
+                                                                                            <div class="csc-object-description-inscription-content-inscriber-autocomplete"></div></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Language</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><select class="csc-object-description-inscription-content-language input-select"></select></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                        
+                                                                    <div class="info-pair info-pair-date">
+                                                                        <div class="header">
+                                                                            <div class="label">Date</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="field-cal disabled"><input disabled="disabled" class="input-date csc-object-description-inscription-content-date" type="text"><img src="../images/cal.png" alt="calendar" height="16" width="18"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="info-column2-50 fl-force-right">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Position</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><select class="csc-object-description-inscription-content-position input-select"></select></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Script</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><select class="csc-object-description-inscription-content-script input-select"></select></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Type</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><select class="csc-object-description-inscription-content-type input-select"></select></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Method</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-description-inscription-content-method" disabled="disabled" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                                
+                                                                <div class="info-column">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Interpretation</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="field-cal disabled"><textarea class="input-textarea csc-object-description-inscription-content-interpretation"></textarea></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Translation</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-description-inscription-content-translation" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Transliteration</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-description-inscription-content-transliteration" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column">
+                                                    <div class="fl-container-flex fl-fix information-subgroup">
+                                                        <div class="info-column">
+                                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-description-information-inscription-description', this); return false;">
+                                                                <span class="header-toggle-sub"><img src="../images/toggle-less.png" alt="toggle icon" height="12" width="12"></span>
+                                                                Non-Textual Inscription
+                                                            </div>
+                                                            
+                                                            <div class="fl-container-flex fl-fix content main" id="toggle-description-information-inscription-description">
+                                                                <div class="info-column">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Inscription Description</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><textarea class="input-textarea csc-object-description-inscription-description"></textarea></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="info-column2-50 fl-force-left">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Inscriber</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-description-inscription-description-inscriber" type="text">
+                                                                                            <div class="csc-object-description-inscription-description-inscriber-autocomplete"></div></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                        
+                                                                    <div class="info-pair info-pair-date">
+                                                                        <div class="header">
+                                                                            <div class="label">Date</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="field-cal disabled"><input disabled="disabled" class="input-date csc-object-description-inscription-description-date" type="text"><img src="../images/cal.png" alt="calendar" height="16" width="18"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                
+                                                                <div class="info-column2-50 fl-force-right">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Position</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><select class="csc-object-description-inscription-description-position input-select"></select></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Type</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><select class="csc-object-description-inscription-description-type input-select"></select></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Method</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-description-inscription-description-method" disabled="disabled" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="info-column">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Interpretation</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><textarea class="input-textarea csc-object-description-inscription-description-interpretation"></textarea></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="fl-container-flex fl-fix information-group">
+                                        <div class="info-column">
+                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-object-production', this); return false;">
+                                                <span class="header-toggle"><img src="../images/toggle-less.png" alt="toggle icon" height="12" width="12"></span>
+                                                Object Production Information
+                                            </div>
+                                            <div class="fl-container-flex fl-fix content main" id="toggle-object-production">
+                                                <div class="info-pair">
+                                                    <div class="header">
+                                                        <div class="label">Production Reason</div>
+                                                    </div>
+                                                    <div class="content">
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <!--<td class="table-unselected"></td>-->
+                                                                    <td><textarea class="input-textarea csc-object-production-reason"></textarea></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                        
+                                                <div class="info-column2-50 fl-force-left">
+                                                    <div class="info-pair-date">
+                                                        <div class="header">
+                                                            <div class="label">Production Date</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td class="field-cal disabled"><input disabled="disabled" class="input-date csc-object-production-date csc-calendar-date" type="text"><img src="../images/cal.png" alt="calendar" height="16" width="18"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Production Technique</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <td>Technique</td>
+                                                                        <td>Technique Type</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-production-technique" type="text"></td>
+                                                                        <td class="disabled"><select disabled="disabled" class="csc-object-production-technique-type input-select"></select></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column2-50 fl-force-right">                                                            
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Production People</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><input disabled="disabled" class="csc-object-production-people" type="text">
+                                                                            <!--<div class="csc-object-production-people-autocomplete"></div>--></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Production Person</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><input class="csc-object-production-person" type="text">
+                                                                            <div class="csc-object-production-person-autocomplete"></div></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Production Place</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-production-place" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Production Organization</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><input class="csc-object-production-organization" type="text">
+                                                                            <div class="csc-object-production-organization-autocomplete"></div></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Production Note</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><textarea class="input-textarea csc-object-production-note"></textarea></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="fl-container-flex fl-fix information-group">
+                                        <div class="info-column">
+                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-object-history', this); return false;">
+                                                <span class="header-toggle"><img src="../images/toggle-less.png" alt="toggle icon" height="12" width="12"></span>
+                                                Object History and Association Information
+                                            </div>
+                                            <div class="fl-container-flex fl-fix content main" id="toggle-object-history">
+                                            
+                                                <!-- BEGIN Associations sub-group -->
+                                                <div class="info-column">
+                                                    <div class="fl-container-flex fl-fix information-subgroup">
+                                                        <div class="info-column">
+                                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-object-history-associations', this); return false;">
+                                                                <span class="header-toggle-sub"><img src="../images/toggle-less.png" alt="toggle icon" height="12" width="12"></span>
+                                                                Associations
+                                                            </div>
+                                                            
+                                                            <div class="fl-container-flex fl-fix content main" id="toggle-object-history-associations">
+                                                            
+                                                                <div class="info-column2-50 fl-force-left">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Activity</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <td>Associated Activity</td>
+                                                                                        <td>Associated Activity Note</td>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-history-association-activity" type="text"></td>
+                                                                                        <td><input class="csc-object-history-association-activity-note" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Object</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <td>Associated Object</td>
+                                                                                        <td>Associated Object Type</td>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-history-association-object" type="text"></td>
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-history-association-object-type" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Concept</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-history-association-concept" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Cultural Affinity</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-history-association-cultural-affinity" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Organization</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-history-association-organization" type="text">
+                                                                                            <div class="csc-object-history-association-organization-autocomplete"></div></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated People</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input disabled="disabled" class="csc-object-history-association-people" type="text">
+                                                                                            <!--<div class="csc-object-history-association-people-autocomplete"></div>--></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Person</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-history-association-person" type="text">
+                                                                                            <div class="csc-object-history-association-person-autocomplete"></div></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Place</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-history-association-place" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Type</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-history-association-type"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="clear"></div>
+                                                                </div>
+                                                                
+                                                                <div class="info-column2-50 fl-force-right">
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Event Name</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <td>Associated Event Name</td>
+                                                                                        <td>Associated Event Name type</td>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-history-association-event" type="text"></td>
+                                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-history-association-event-name" type="text"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Event Organization</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-history-association-event-organization" type="text">
+                                                                                            <div class="csc-object-history-association-event-organization-autocomplete"></div></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Event People</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input disabled="disabled" class="csc-object-history-association-event-people" type="text">
+                                                                                            <!--<div class="csc-object-history-association-event-people-autocomplete"></div>--></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Event Person</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input class="csc-object-history-association-event-person" type="text">
+                                                                                            <div class="csc-object-history-association-event-person-autocomplete"></div></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Event Place</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><input disabled="disabled" class="csc-object-history-association-event-place" type="text">
+                                                                                            <!--<div class="csc-object-history-association-event-place-autocomplete"></div>--></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair info-pair-date">
+                                                                        <div class="header">
+                                                                            <div class="label">Associated Date</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>                                                         
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td class="field-cal disabled"><input disabled="disabled" class="input-date csc-object-history-association-date" type="text"><img src="../images/cal.png" alt="calendar" height="16" width="18"></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="info-pair">
+                                                                        <div class="header">
+                                                                            <div class="label">Association Note</div>
+                                                                        </div>
+                                                                        <div class="content">
+                                                                            <table>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <!--<td class="table-unselected"></td>-->
+                                                                                        <td><textarea class="input-textarea csc-object-history-association-note"></textarea></td>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="clear"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                                <!-- END Associations sub-group -->
+                                                
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Object History Note</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><textarea class="input-textarea csc-object-history-association-object-history-note"></textarea></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Usage</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <td>Usage</td>
+                                                                        <td>Usage Notes</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-history-association-usage"></td>
+                                                                        <td><input class="csc-object-history-association-usage-notes" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Owner</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <td>Owner</td>
+                                                                        <td>Access</td>
+                                                                        <td>Category</td>
+                                                                        <td>Dates</td>
+                                                                        <td>Exchange Method</td>
+                                                                        <td>Exchange Note</td>
+                                                                        <td>Exchange Price - Denotionation</td>
+                                                                        <td>Exchange Price - Value</td>
+                                                                        <td>Ownership Place</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td><input class="csc-object-history-association-owner" type="text">
+                                                                            <div class="csc-object-history-association-owener-autocomplete"></div></td>
+                                                                        <td><select class="csc-object-history-association-access input-select"></select></td>
+                                                                        <td><select class="csc-object-history-association-category input-select"></select></td>
+                                                                        <td class="field-cal disabled"><input disabled="disabled" class="input-date csc-object-history-association-dates disabled" type="text"><img src="../images/cal.png" alt="calendar" height="16" width="18"></td>
+                                                                        <td><select class="csc-object-history-association-exchange-method input-select"></select></td>
+                                                                        <td><input class="csc-object-history-association-exchange-note" type="text"></td>
+                                                                        <td><select class="csc-object-history-association-denomination input-select"></select></td>
+                                                                        <td><input class="csc-object-history-association-exchange-price-value" type="text"></td>
+                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-history-association-owenership-place" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="fl-container-flex fl-fix information-group">
+                                        <div class="info-column">
+                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-object-owner', this); return false;">
+                                                <span class="header-toggle"><img src="../images/toggle-less.png" alt="toggle icon" height="12" width="12"></span>
+                                                Object Owner's Contribution Information
+                                            </div>
+                                            <div class="fl-container-flex fl-fix content main" id="toggle-object-owner">
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Owner's Personal Experience</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><textarea class="input-textarea csc-object-owner-experience"></textarea></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Owner's Personal Response</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><textarea class="input-textarea csc-object-owner-response"></textarea></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Owner's Reference</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><input class="csc-object-owner-reference" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Owner's Contribution Note</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><textarea class="input-textarea csc-object-owner-contribution-note"></textarea></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="fl-container-flex fl-fix information-group">
+                                        <div class="info-column">
+                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-object-viewer', this); return false;">
+                                                <span class="header-toggle"><img src="../images/toggle-less.png" alt="toggle icon" height="12" width="12"></span>
+                                                Object Viewer's Contribution Information
+                                            </div>
+                                            <div class="fl-container-flex fl-fix content main" id="toggle-object-viewer">
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Viewer's Role</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><input class="csc-object-viewer-role" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Viewer's Personal Experience</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><textarea class="input-textarea csc-object-viewer-experience"></textarea></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Viewer's Personal Response</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><textarea class="input-textarea csc-object-viewer-response"></textarea></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Viewer's Reference</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><input class="csc-object-viewer-reference" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Viewer's Contribution Note</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><textarea class="input-textarea csc-object-viewer-contribution-note"></textarea></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    
+                                    <div class="fl-container-flex fl-fix information-group">
+                                        <div class="info-column">
+                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-ref-info', this); return false;">
+                                                <span class="header-toggle"><img src="../images/toggle-less.png" alt="toggle icon" height="12" width="12"></span>
+                                                Reference Information
+                                            </div>
+                                            <div class="fl-container-flex fl-fix content main" id="toggle-ref-info">
+                                                <div class="info-column2-50 fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Reference</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td class="disabled"><input disabled="disabled" class="csc-reference-reference" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>  
+                                                </div>
+                                                
+                                                <div class="info-column2-50 fl-force-right">                                                            
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Catalog Number</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td><input class="csc-reference-catalog-number" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>  
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="fl-container-flex fl-fix information-group">
+                                        <div class="info-column">
+                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-object-collection', this); return false;">
+                                                <span class="header-toggle"><img src="../images/toggle-less.png" alt="toggle icon" height="12" width="12"></span>
+                                                Object Collection Information
+                                            </div>
+                                            <div class="fl-container-flex fl-fix content main" id="toggle-object-collection">
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Field Collection Event Name</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <!--<td class="table-unselected"></td>-->
+                                                                        <td class="disabled"><input disabled="disabled" class="csc-object-collection-field-collection-event-name" type="text"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>  
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+
+                                    <!--<div class="fl-container-flex fl-fix information-group">
+                                        <div class="info-column">
+                                            <div class="fl-container-flex header toggle" onclick="ShowHide('#toggle-date-info', this); return false;">
+                                                <span class="header-toggle"><img src="../images/toggle-less.png" height="12" width="12" alt="toggle icon" /></span>
+                                                Date Information
+                                            </div>
+                                            <div class="fl-container-flex fl-fix content main" id="toggle-date-info">
+                                                <div class="info-column2-50 fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Date Association</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        
+                                                                        <td><input type="text" class="csc-date-information-date-association"/></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>  
+                                                </div>
+                                                
+                                                <div class="info-column2-50 fl-force-right">                                                            
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Date Period</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        
+                                                                        <td><input type="text" class="csc-date-information-date-period"/></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>  
+                                                </div>
+                                                
+                                                <div class="info-column fl-force-left">
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Date</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <thead>
+                                                                    <tr>
+                                                                        <td>Date Type</td>
+                                                                        <td>Date</td>
+                                                                        <td>Certainty</td>
+                                                                        <td>Qualifier</td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="label">Date - Earliest/single</td>
+                                                                        <td class="disabled"><input type="text" disabled="disabled" class="csc-date-information-date-earliest-single"/></td>
+                                                                        <td><input type="text" class="csc-date-information-date-earliest-single-certainty"/></td>
+                                                                        <td><input type="text" class="csc-date-information-date-earliest-single-qualifier"/></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="label">Date - Latest</td>
+                                                                        <td class="disabled"><input type="text" disabled="disabled" class="csc-date-information-date-latest"/></td>
+                                                                        <td><input type="text" class="csc-date-information-date-latest-certainty"/></td>
+                                                                        <td><input type="text" class="csc-date-information-date-latest-qualifier"/></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                
+                                                    <div class="info-pair">
+                                                        <div class="header">
+                                                            <div class="label">Date Text</div>
+                                                        </div>
+                                                        <div class="content">
+                                                            <table>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        
+                                                                        <td><textarea class="input-textarea csc-date-information-date-text"></textarea></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                        </div>
+                                    </div>-->
+                                    
+                                    <div class="hidden csc-message-container cs-message">
+                                        <span class="csc-timestamp cs-timestamp">time</span>
+                                        <span class="csc-message">Save successful!</span>
+                                    </div>
+
+                                    <div class="csc-error-dialog">
+                                        <p class="csc-error-message">I'm sorry, an error has occurred. Please try refreshing your browser.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="fl-container-flex button-row">
+                                    <a href="#"><input class="primary saveButton csc-save" value="Save" type="button"></a>
+                                    <a href="findedit.html"><input class="cancelButton" value="Cancel" type="button"></a>
+                                    <div class="clear"></div>
+                                </div>
+                                
+                            </div>
+        

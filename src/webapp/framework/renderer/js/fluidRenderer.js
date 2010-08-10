@@ -1330,12 +1330,15 @@ fluid_1_2 = fluid_1_2 || {};
       }
 
       that.renderTemplates = function() {
+          fluid.log("Before fixup");
           tree = fixupTree(tree, options.model);
           var template = templates[0];
           resolveBranches(templates.globalmap, tree, template.rootlump);
           renderedbindings = {};
           renderCollects();
+          fluid.log("Before renderRecurse");
           renderRecurse(tree, template.rootlump, template.lumps[template.firstdocumentindex]);
+          fluid.log("Rendering complete");
           return out;
       };  
       
@@ -1445,6 +1448,7 @@ fluid_1_2 = fluid_1_2 || {};
         else {
             node.innerHTML = "";
         }
+        fluid.log("Node emptied");
         var fossils = {};
         var renderer = fluid.renderer(templates, tree, options, fossils);
         var rendered = renderer.renderTemplates();
@@ -1461,6 +1465,7 @@ fluid_1_2 = fluid_1_2 || {};
         else {
           node.innerHTML = rendered;
         }
+        fluid.log("Markup applied");
         renderer.processDecoratorQueue();
         if (lastId) {
             var element = fluid.byId(lastId);
@@ -1511,7 +1516,9 @@ fluid_1_2 = fluid_1_2 || {};
         var resourceSpec = {base: {resourceText: template, 
                             href: ".", resourceKey: ".", cutpoints: options.cutpoints}
                             };
+        fluid.log("Begin parseTemplates");
         var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
+        fluid.log("End parseTemplates");
         return fluid.reRender(templates, target, tree, options);    
     };
     
