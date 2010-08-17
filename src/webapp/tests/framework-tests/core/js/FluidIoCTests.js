@@ -15,9 +15,139 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global jqUnit*/
 
 
+fluid.testUtils = fluid.testUtils || {};
+
+fluid.demands("fluid.testUtils.testComponent2", "fluid.testUtils.testComponent", 
+    ["{testComponent}.container", 
+     {"default1": "{testComponent}.options.default1"}
+    ]);
+   
+fluid.demands("fluid.reorderer.gridReorderer", "fluid.reorderer",
+    ["{that}.container",
+    {"orientation": "{gridReorderer.orientation}"}]);
+
+fluid.defaults("fluid.testUtils.testComponent", {
+    default1: "testComponent value",
+    components: {
+        test2: {
+            type: "fluid.testUtils.testComponent2",
+            options: {
+                value: "Original default value"
+            }
+        }
+    }
+});
+
+
+// Somehow we sort of have to write this. Perhaps "component grading" will make it
+// possible to guess instantiation signatures
+fluid.demands("fluid.testUtils.modelComponent", "fluid.testUtils.dependentModel",
+  [fluid.COMPONENT_OPTIONS]);
+
+fluid.defaults("fluid.testUtils.modelComponent", {
+    mergePolicy: {
+        model: "preserve"
+    }
+});
+
+
+fluid.defaults("fluid.testUtils.dependentModel", {
+    mergePolicy: {
+        model: "preserve"
+    },
+    components: {
+        modelComponent: {
+            type: "fluid.testUtils.modelComponent",
+            options: {
+                model: "{dependentModel}.options.model"
+            }
+        }
+    }
+});
+
+fluid.makeComponents({
+    "fluid.testUtils.testComponent":   "fluid.standardComponent",
+    "fluid.testUtils.testComponent2":  "fluid.standardComponent",
+    "fluid.testUtils.testOrder":       "fluid.standardComponent", 
+    "fluid.testUtils.subComponent":    "fluid.standardComponent",
+    "fluid.testUtils.invokerComponent":"fluid.littleComponent",
+    "fluid.testUtils.modelComponent":  "fluid.littleComponent",
+    "fluid.testUtils.dependentModel":  "fluid.littleComponent"
+    });
+
+fluid.defaults("fluid.testUtils.testComponent2", {
+    components: {
+        sub1: {
+          type: "fluid.testUtils.subComponent",
+        },
+        sub2: {
+          type: "fluid.testUtils.subComponent",
+          options: {
+              value: "Subcomponent 2 default"
+          }
+        }
+    }});
+    
+fluid.defaults("fluid.testUtils.invokerComponent", {
+    template: "Every {0} has {1} {2}(s)",
+    invokers: {
+        render: {
+            funcName: "fluid.formatMessage",
+            args:["{invokerComponent}.options.template", "@0"] 
+        }
+    },
+    events: {
+        testEvent: null
+    }
+});
+    
+fluid.demands("sub1", "fluid.testUtils.testComponent2",
+["{testComponent2}.container", {"crossDefault": "{testComponent2}.sub2.options.value"}]
+);
+
+fluid.demands("sub2", "fluid.testUtils.testComponent2",
+["{testComponent2}.container", fluid.COMPONENT_OPTIONS]);
+
+
+
 (function ($) {
     
-    var FluidIoCTests = new jqUnit.TestCase("Fluid JS Tests");
+    var fluidIoCTests = new jqUnit.TestCase("Fluid IoC Tests");
+    
+    fluid.logEnabled = true;
+
+    fluidIoCTests.test("construct", function() {
+        expect(2);
+        var that = fluid.testUtils.testComponent("#pager-top", {});
+        jqUnit.assertValue("Constructed", that);
+        jqUnit.assertEquals("Value transmitted", "testComponent value", that.test2.options.default1);
+    });
+
+    fluidIoCTests.test("crossConstruct", function() {
+        expect(2);
+        var that = fluid.testUtils.testComponent2("#pager-top", {});
+        jqUnit.assertValue("Constructed", that);
+        jqUnit.assertEquals("Value transmitted", "Subcomponent 2 default", that.sub1.options.crossDefault);
+    });
+    
+    fluidIoCTests.test("invokers", function() {
+        expect(2);
+        var that = fluid.testUtils.invokerComponent();
+        jqUnit.assertValue("Constructed", that);
+        jqUnit.assertEquals("Rendered", "Every CATT has 4 Leg(s)", 
+            that.render(["CATT", "4", "Leg"]));
+    });
+    
+    fluidIoCTests.test("Aliasing expander test", function() {
+        expect(3);
+        var model = {};
+        var that = fluid.testUtils.dependentModel({model: model});
+        jqUnit.assertValue("Constructed", that);
+        model.pollute = 3;
+        jqUnit.assertEquals("Transit 1", 3, that.options.model.pollute);
+        jqUnit.assertEquals("Transit 1", 3, that.modelComponent.options.model.pollute);
+    });
+    
     
     // Test data for some tests
     var config = {
@@ -27,7 +157,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         }
     };
     
-    FluidIoCTests.test("Environmental Tests", function() {
+    fluidIoCTests.test("Environmental Tests", function() {
         var urlBuilder = {
             type: "fluid.stringTemplate",
             template: "{config}.viewURLTemplate", 
@@ -72,7 +202,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
          fetchKey: recordType});
     };
     
-    FluidIoCTests.test("Deferred expander Tests", function() {
+    fluidIoCTests.test("Deferred expander Tests", function() {
         var pageBuilder = {
             uispec: {
                 objects: "These Objects",

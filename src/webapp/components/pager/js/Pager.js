@@ -154,7 +154,7 @@ fluid_1_2 = fluid_1_2 || {};
                              func: "click", 
                              args: function () {events.initiatePageChange.fire({pageIndex: page}); }
                          },
-                        {type: page === current? "addClass" : "",
+                        {type: page === current? "addClass" : "null",
                              classes: that.options.styles.currentPage}
                          ]
                 };
@@ -738,6 +738,10 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
     fluid.defaults("fluid.pager", {
+        mergePolicy: {
+            dataModel: "preserve",
+            model: "preserve"
+        },
         pagerBar: {type: "fluid.pager.pagerBar", 
             options: null},
         

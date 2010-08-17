@@ -17,13 +17,342 @@ var fluid_1_2 = fluid_1_2 || {};
 
 (function ($, fluid) {
 
+    /** The Fluid "IoC System proper" - resolution of references and 
+     * completely automated instantiation of declaratively defined
+     * component trees */ 
+    
+    var inCreationMarker = "__CURRENTLY_IN_CREATION__";
+    
+    findMatchingComponent = function(that, visitor, except) {
+        for (var name in that) {
+            var component = that[name];
+            if (component === except || !component.typeName) {continue;}
+            if (visitor(component, name)) {
+                return true;
+            }
+            findMatchingComponent(component, visitor);
+         }
+    };
+    
+    // thatStack contains an increasing list of MORE SPECIFIC thats.
+    visitComponents = function(thatStack, visitor) {
+        var lastDead;
+        for (var i = thatStack.length - 1; i >= 0; -- i) {
+            var that = thatStack[i];
+            if (that.options && that.options.fireBreak) { // TODO: formalise this
+               return;
+            }
+            if (that.typeName) {
+                if (visitor(that, "")) {
+                    return;
+                }
+            }
+            if (findMatchingComponent(that, visitor, lastDead)) {
+                return;
+            }
+            lastDead = that;
+        }
+    };
+    
+    // This is an equivalent of fluid.getPenultimate that will attempt to trigger creation of
+    // components that it discovers along the EL path, if they have been defined but not yet
+    // constructed. Spring, eat your heart out! Wot no SPR-2048?
+    function getValueGingerly(thatStack, component, segs, ind) {
+        var thisSeg = segs[ind];
+        var atval = thisSeg === ""? component: fluid.model.resolvePathSegment(component, thisSeg);
+        if (atval !== undefined) {
+            if (atval[inCreationMarker] && atval !== thatStack[0]) {
+                fluid.fail("Component of type " + 
+                atval.typeName + " cannot be used for lookup of path " + segs.join(".") +
+                " since it is still in creation. Please reorganise your dependencies so that they no longer contain circular references");
+            }
+        }
+        else {
+            if (component.options && component.options.components && component.options.components[thisSeg]) {
+                fluid.initDependent(component, thisSeg, thatStack);
+                atval = fluid.model.resolvePathSegment(component, thisSeg);
+            }
+      //      else {
+      //          fluid.fail("Could not resolve reference segment \"" + thisSeg + 
+      //          "\" within component " + JSON.stringify(component));
+      //      }
+        }
+        if (ind === segs.length - 1) {
+            return atval;
+        }
+        else {
+            return getValueGingerly(thatStack, atval, segs, ind + 1);
+        }
+    };
+
+    function makeStackFetcher(thatStack) {
+        var fetcher = function(parsed) {
+            var context = parsed.context;
+            var foundComponent;
+            visitComponents(thatStack, function(component, name) {
+                if (context === name || context === component.typeName || context === component.nickName) {
+                    foundComponent = component;
+                    return true; // YOUR VISIT IS AT AN END!!
+                }
+            });
+            if (!foundComponent) {
+                fluid.fail("No context matched for name " + context + " from root of type " + thatStack[0].typeName);
+            }
+            return getValueGingerly(thatStack, foundComponent, fluid.model.parseEL(parsed.path), 0);
+        };
+        return fetcher;
+    }
+     
+    function makeStackResolverOptions(thatStack) {
+        return $.extend({}, fluid.defaults("fluid.resolveEnvironment"), {fetcher: makeStackFetcher(thatStack)}); 
+    } 
+     
+    function resolveRvalue(thatStack, arg, initArgs, componentOptions) {
+        var options = makeStackResolverOptions(thatStack);
+        
+        if (arg === fluid.COMPONENT_OPTIONS) {
+            arg = fluid.resolveEnvironment(componentOptions, thatStack[0].model, options);
+        }
+        else {
+            if (arg.charAt(0) === "@") {
+                var argpos = arg.substring(1);
+                arg = initArgs[argpos];
+            }
+            else {
+                arg = fluid.resolveContextValue(arg, options);
+            }
+        }
+        return arg;
+    }
+    
+    
+    /** Given a concrete argument list and/or options, determine the final concrete
+     * "invocation specification" which is coded by the supplied demandspec in the 
+     * environment "thatStack" - the return is a package of concrete global function name
+     * and argument list which is suitable to be executed directly by fluid.invokeGlobalFunction.
+     */
+    fluid.embodyDemands = function(thatStack, demandspec, initArgs, options) {
+        var demands = demandspec.args;
+        if (demands) {
+            var args = [];
+            for (var i = 0; i < demands.length; ++ i) {
+                var arg = demands[i];
+                if (typeof(arg) === "object" && !fluid.isMarker(arg)) {
+                    var options = {};
+                    for (key in arg) {
+                        var ref = arg[key];
+                        var rvalue = resolveRvalue(thatStack, ref, initArgs, options);
+                        fluid.model.setBeanValue(options, key, rvalue);
+                    }
+                    args[i] = options;
+                }
+                else{
+                    var arg = resolveRvalue(thatStack, arg, initArgs, options);
+                    args[i] = arg;
+                }
+            }
+        }
+        else {
+            args = initArgs? initArgs: [];
+        }
+
+        var togo = {
+            args: args,
+            funcName: demandspec.funcName
+        };
+        return togo;
+    } 
+    /** Determine the appropriate demand specification held in the fluid.demands environment 
+     * relative to "thatStack" for the function name(s) funcNames.
+     */
+    fluid.determineDemands = function (thatStack, funcNames) {
+        var that = thatStack[thatStack.length - 1];
+        var funcNames = $.makeArray(funcNames);
+        var demandspec = fluid.locateDemands(funcNames, thatStack);
+        if (!demandspec) {
+            demandspec = {};
+        }
+        if (demandspec.funcName) {
+            funcNames[0] = demandspec.funcName;
+            var demandspec2 = fluid.fetchDirectDemands(funcNames[0], that.typeName);
+            if (demandspec2) {
+                demandspec = demandspec2; // follow just one redirect
+            }
+        }
+        return {funcName: funcNames[0], args: demandspec.args};
+    };
+    
+    fluid.resolveDemands = function (thatStack, funcNames, initArgs, options) {
+        var demandspec = fluid.determineDemands(thatStack, funcNames);
+        return fluid.embodyDemands(thatStack, demandspec, initArgs, options);
+    };
+
+
+   
+    // fluid.invoke is not really supportable as a result of thatStack requirement - 
+    // fluid.bindInvoker is recommended instead
+    fluid.invoke = function(that, functionName, args, environment) {
+        var invokeSpec = fluid.resolveDemands($.makeArray(that), functionName, args);
+        return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
+    };
+    
+    /** Make a function which performs only "static redispatch" of the supplied function name - 
+     * that is, taking only account of the contents of the "static environment". Since the static
+     * environment is assumed to be constant, the dispatch of the call will be evaluated at the
+     * time this call is made, as an optimisation.
+     */
+    
+    fluid.makeFreeInvoker = function(functionName, environment) {
+        var demandSpec = fluid.determineDemands([fluid.staticEnvironment], functionName);
+        return function() {
+            var invokeSpec = fluid.embodyDemands(fluid.staticEnvironment, demandSpec, arguments);
+            return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
+        }
+    };
+    
+    fluid.makeInvoker = function(thatStack, demandspec, functionName, environment) {
+        var demandspec = demandspec || fluid.determineDemands(thatStack, functionName);
+        thatStack = $.makeArray(thatStack); // take a copy of this since it will most likely go away
+        return function() {
+            var invokeSpec = fluid.embodyDemands(thatStack, demandspec, arguments);
+            return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
+        };
+    }
+    
+    fluid.addBoiledListener = function(thatStack, eventName, listener, namespace, predicate) {
+        var thatStack = $.makeArray(thatStack);
+        var topThat = thatStack[thatStack.length - 1];
+        topThat.events[eventName].addListener(function(args) {
+            var resolved = fluid.resolveDemands(thatStack, eventName, args);
+            listener.apply(null, resolved.args);
+        }, namespace, predicate);
+    };
+    
+    var dependentStore = {};
+    
+    function composeDemandKey(demandingName, contextName) {
+        return demandingName + "|" + contextName;
+    }
+    
+    fluid.demands = function(demandingName, contextName, spec) {
+        if (spec.length) {
+            spec = {args: spec};
+        }
+        dependentStore[composeDemandKey(demandingName, contextName)] = spec;
+    };
+    
+    fluid.fetchDirectDemands = function(demandingName, contextName) {
+        return dependentStore[composeDemandKey(demandingName, contextName)];
+    };
+    
+    fluid.locateDemands = function(demandingNames, thatStack) {
+        var demands;
+        visitComponents(thatStack, function(component) {
+            for (var i = 0; i < demandingNames.length; ++ i) {
+                demands = fluid.fetchDirectDemands(demandingNames[i], component.typeName);
+                if (demands) {
+                    return true;
+                }
+            }
+        });
+        return demands;
+    };
+    
+    fluid.initDependent = function(that, name, thatStack) {
+        if (!that) { return; }
+        var component = that.options.components[name];
+        var invokeSpec = fluid.resolveDemands(thatStack, [component.type, name], [], component.options);
+        var expandOptions = makeStackResolverOptions(thatStack);
+        expandOptions.noValue = true;
+        expandOptions.noCopy = true;
+        invokeSpec.args = fluid.expander.expandLight(invokeSpec.args, expandOptions);
+        var instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
+        if (instance) { // TODO: more fallibility
+            that[name] = instance;
+        }
+    };
+        
+    fluid.initDependents = function(that) {
+        var options = that.options;
+        that[inCreationMarker] = true;
+        // push a dynamic stack of "currently resolving components" onto the current thread
+        var root = fluid.threadLocal();
+        var thatStack = root["fluid.initDependents"];
+        if (!thatStack) {
+            thatStack = [that];
+            root["fluid.initDependents"] = thatStack;
+        }
+        else {
+            thatStack.push(that);
+        }
+        try {
+            var components = options.components || {};
+            for (var name in components) {
+                fluid.initDependent(that, name, thatStack);
+            }
+            var invokers = options.invokers || {};
+            for (var name in invokers) {
+                var invokerec = invokers[name];
+                var funcName = typeof(invokerec) === "string"? invokerec : null;
+                that[name] = fluid.makeInvoker(thatStack, funcName? null : invokerec, funcName);
+            }
+        }
+        finally {
+            thatStack.pop();
+            delete that[inCreationMarker];
+        }
+    };
+    
+    // Standard Fluid component types
+    
+    fluid.typeTag = function(name) {
+        return {
+            typeName: name
+        };
+    };
+    
+    fluid.standardComponent = function(name) {
+        return function(container, options) {
+            var that = fluid.initView(name, container, options);
+            fluid.initDependents(that);
+            return that;
+        };
+    };
+    
+    fluid.littleComponent = function(name) {
+        return function(options) {
+            var that = fluid.initLittleComponent(name, options);
+            fluid.initDependents(that);
+            return that;
+        };
+    };
+    
+    fluid.makeComponents = function(components, env) {
+        if (!env) {
+            env = fluid.environment;
+        }
+        for (var name in components) {
+            fluid.model.setBeanValue({}, name, 
+               fluid.invokeGlobalFunction(components[name], [name], env), env);
+        }
+    };
+    
+        
+    fluid.staticEnvironment = {};
+    
+    fluid.staticEnvironment.environmentClass = fluid.typeTag("fluid.browser");
+    
+    // fluid.environmentalRoot.environmentClass = fluid.typeTag("fluid.rhino");
+    
+    fluid.demands("fluid.threadLocal", "fluid.browser", {funcName: "fluid.singleThreadLocal"});
+
     var singleThreadLocal = {};
     
     fluid.singleThreadLocal = function() {
         return singleThreadLocal;
     };
 
-    fluid.threadLocal = fluid.singleThreadLocal; // TODO: Apply IoC system to IoC system!
+    fluid.threadLocal = fluid.makeFreeInvoker("fluid.threadLocal");
 
     fluid.withEnvironment = function(envAdd, func) {
         var root = fluid.threadLocal();
@@ -89,7 +418,6 @@ var fluid_1_2 = fluid_1_2 || {};
         }
     };
 
-    // to integrate with FluidIoC
     fluid.parseContextReference = function(reference, index, delimiter) {
         var endcpos = reference.indexOf("}", index + 1);
         if (endcpos === -1) {
@@ -112,15 +440,15 @@ var fluid_1_2 = fluid_1_2 || {};
         return fluid.model.getBeanValue(base, parsed.path);
     };
     
-    function resolveValue(string, directModel, env, options) {
+    fluid.resolveContextValue = function(string, options) {
         if (options.bareContextRefs && string.charAt(0) === "{") {
             var parsed = fluid.parseContextReference(string, 0);
-            return fluid.fetchContextReference(parsed, directModel, env);        
+            return options.fetcher(parsed);        
         }
         else if (options.ELstyle && options.ELstyle !== "${}") {
             var parsed = fluid.extractELWithContext(string, options);
             if (parsed) {
-                return fluid.fetchContextReference(parsed, directModel, env);
+                return options.fetcher(parsed);
             }
         }
         while (typeof(string) === "string") {
@@ -136,7 +464,7 @@ var fluid_1_2 = fluid_1_2 || {};
                 else {
                     parsed = {path: string.substring(i1 + 2, i2)};
                 }
-                var subs = fluid.fetchContextReference(parsed, directModel, env);
+                var subs = options.fetcher(parsed);
                 // TODO: test case for all undefined substitution
                 if (subs === undefined || subs === null) {
                     return subs;
@@ -148,23 +476,23 @@ var fluid_1_2 = fluid_1_2 || {};
             }
         }
         return string;
-    }
+    };
     
-    function resolveEnvironmentImpl(obj, directModel, env, options) {
+    function resolveEnvironmentImpl(obj, options) {
         function recurse(arg) {
-            return resolveEnvironmentImpl(arg, directModel, env, options);
+            return resolveEnvironmentImpl(arg, options);
         }
         if (typeof(obj) === "string" && !options.noValue) {
-            return resolveValue(obj, directModel, env, options);
+            return fluid.resolveContextValue(obj, options);
         }
-        else if (fluid.isPrimitive(obj)) {
+        else if (fluid.isPrimitive(obj) || obj.nodeType !== undefined || obj.jquery) {
             return obj;
         }
         else if (options.filter) {
-            return options.filter(obj, recurse);
+            return options.filter(obj, recurse, options);
         }
-        else return fluid.transform(obj, function(value, key) {
-            return resolveEnvironmentImpl(value, directModel, env, options);
+        else return (options.noCopy? fluid.each : fluid.transform)(obj, function(value, key) {
+            return resolveEnvironmentImpl(value, options);
         });
     }
     
@@ -175,8 +503,13 @@ var fluid_1_2 = fluid_1_2 || {};
     fluid.resolveEnvironment = function(obj, directModel, userOptions) {
         directModel = directModel || {};
         var options = fluid.merge(null, {}, fluid.defaults("fluid.resolveEnvironment"), userOptions);
-        var env = fluid.threadLocal();
-        return resolveEnvironmentImpl(obj, directModel, env, options);
+        if (!options.fetcher) {
+            var env = fluid.threadLocal();
+            options.fetcher = function(parsed) {
+                return fluid.fetchContextReference(parsed, directModel, env);
+            };
+        }
+        return resolveEnvironmentImpl(obj, options);
     };
     
     fluid.registerNamespace("fluid.expander");
@@ -226,33 +559,45 @@ var fluid_1_2 = fluid_1_2 || {};
         };
         var key = expander.fetchKey || fluid.allocateGuid();
         collector[key] = spec;
+        return target;
     };
+    
+    fluid.expander.deferredCall = function(target, source) {
+        var expander = source.expander;
+        return fluid.invokeGlobalFunction(expander.func, expander.args);
+    };
+    
+    fluid.deferredCall = fluid.expander.deferredCall; // put in top namespace for convenience
     
     // The "noexpand" expander which simply unwraps one level of expansion and ceases.
     fluid.expander.noexpand = function(target, source) {
         $.extend(target, source.expander.tree);
     };
   
+    fluid.noexpand = fluid.expander.noexpand; // TODO: check naming and namespacing
   
-    fluid.expander.lightFilter = function (obj, recurse) {
+    fluid.expander.lightFilter = function (obj, recurse, options) {
+          var togo;
           if (fluid.isArrayable(obj)) {
-              return fluid.transform(obj, function(value) {return recurse(value);});
+              togo = (options.noCopy? fluid.each: fluid.transform)(obj, function(value) {return recurse(value);});
           }
-          var togo = {};
-          for (var key in obj) {
-              var value = obj[key];
-              var expander;
-              if (key === "expander") {
-                  expander = fluid.getGlobalValue(value.type);  
-                  if (expander) {
-                      expander.call(null, togo, obj);
+          else {
+              var togo = options.noCopy? obj : {};
+              for (var key in obj) {
+                  var value = obj[key];
+                  var expander;
+                  if (key === "expander" && !(options.expandOnly && options.expandOnly[value.type])){
+                      expander = fluid.getGlobalValue(value.type);  
+                      if (expander) {
+                          return expander.call(null, togo, obj);
+                      }
+                  }
+                  if (key !== "expander" || !expander) {
+                      togo[key] = recurse(value);
                   }
               }
-              if (key !== "expander" || !expander) {
-                  togo[key] = recurse(value);
-              }
-          };
-          return togo;
+          }
+          return options.noCopy? obj : togo;
       };
       
     fluid.expander.expandLight = function (source, expandOptions) {

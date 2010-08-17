@@ -11,6 +11,7 @@
         <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
         <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/JavaProperties.js"></script> <!-- one test case calls formatMessage -->
         <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
 
         <!--  These are the jqUnit test js files -->
@@ -30,7 +31,15 @@
 
     <!-- Test HTML -->
     <div id="main" style="display:none;" class="container">
-     </div>
+
+      <ul id="pager-top" class="pager-top">
+          <li id="top1" class="page-link"><a href="#" id="page-link-1">1</a></li>
+          <li id="top2" class="page-link"><a href="#" id="page-link-2">2</a></li>
+          <li id="top3" class="page-link"><a href="#" id="page-link-3">3</a></li>
+          <li id="previous-top" class="previous">&lt; previous</li>
+          <li id="next-top" class="next">next &gt;</li>
+      </ul>
+    </div>
 
     <div id="notmain" class="container">
         

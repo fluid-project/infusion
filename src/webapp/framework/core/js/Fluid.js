@@ -108,14 +108,14 @@ var fluid = fluid || fluid_1_2;
     /**
      * Fetches a single container element and returns it as a jQuery.
      * 
-     * @param {String||jQuery||element} an id string, a single-element jQuery, or a DOM element specifying a unique container
+     * @param {String||jQuery||element} containerSpec an id string, a single-element jQuery, or a DOM element specifying a unique container
+     * @param {Boolean} fallible <code>true</code> if an empty container is to be reported as a valid condition
      * @return a single-element jQuery of container
      */
-    fluid.container = function (containerSpec) {
-        var container = containerSpec;
-        if (typeof containerSpec === "string" || 
-          containerSpec.nodeType && (containerSpec.nodeType === 1  || containerSpec.nodeType === 9)) {
-            container = $(containerSpec);
+    fluid.container = function (containerSpec, fallible) {
+        var container = fluid.wrap(containerSpec);
+        if (fallible && !container || container.length === 0) {
+            return null;
         }
         
         // Throw an exception if we've got more or less than one element.
@@ -123,9 +123,11 @@ var fluid = fluid || fluid_1_2;
             if (typeof(containerSpec) !== "string") {
                 containerSpec = container.selector;
             }
+            var count = container.length !== undefined? container.length : 0;
             fluid.fail({
                 name: "NotOne",
-                message: "A single container element was not found for selector " + containerSpec
+                message: count > 1? "More than one (" + count + ") container elements were "
+                : "No container element was found for selector " + containerSpec
             });
         }
         
@@ -234,6 +236,7 @@ var fluid = fluid || fluid_1_2;
                 }
             }
         };
+        that.resolvePathSegment = that.locate;
         
         return that;
     };
@@ -301,6 +304,15 @@ var fluid = fluid || fluid_1_2;
         fluid.mergeListeners(that.events, options.listeners);
     };
     
+    /** Compute a "nickname" given a fully qualified typename, by returning the last path
+     * segment.
+     */
+    
+    fluid.computeNickName = function(typeName) {
+        var segs = fluid.model.parseEL(typeName);
+        return segs[segs.length - 1];
+    }
+    
     /**
      * Merges the component's declared defaults, as obtained from fluid.defaults(),
      * with the user's specified overrides.
@@ -341,14 +353,15 @@ var fluid = fluid || fluid_1_2;
      * @param {Object} userOptions The configuration options for this component.
      */
     fluid.initView = function (componentName, container, userOptions) {
-        var that = {};
-        fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName); 
-        fluid.mergeComponentOptions(that, componentName, userOptions);
-        
-        if (container) {
-            that.container = fluid.container(container);
-            fluid.initDomBinder(that);
+        fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName);
+        var container = fluid.container(container, true);
+        if (!container) {
+            return null;
         }
+        var that = fluid.initLittleComponent(componentName, userOptions); 
+        that.container = container;
+        fluid.initDomBinder(that);
+        
         fluid.instantiateFirers(that, that.options);
 
         return that;
@@ -360,12 +373,21 @@ var fluid = fluid || fluid_1_2;
      * to the specific subcomponent instance, with the particular options block
      * for that instance attached to the overall "that" object.
      */
-    fluid.COMPONENT_OPTIONS = {};
+    fluid.COMPONENT_OPTIONS = {type: "fluid.marker", value: "COMPONENT_OPTIONS"};
     
     /** Another special "marker object" representing that a distinguished 
      * (probably context-dependent) value should be substituted.
      */
-    fluid.VALUE = {};
+    fluid.VALUE = {type: "fluid.marker", value: "VALUE"};
+    
+    /** Determine whether an object is any marker, or a particular marker - omit the
+     * 2nd argument to detect any marker
+     */
+    fluid.isMarker = function(totest, type) {
+        if (typeof (totest) !== 'object' || totest.type !== "fluid.marker") return false;
+        if (!type) return true;
+        return totest.value === type;
+    };
     
     /** Construct a dummy or "placeholder" subcomponent, that optionally provides empty
      * implementations for a set of methods.
@@ -388,13 +410,38 @@ var fluid = fluid || fluid_1_2;
      * @param {Object} options user-supplied options to merge with the defaults
      */
     fluid.initLittleComponent = function(name, options) {
-        var that = {};
+        var that = {typeName: name, id: fluid_guid++};
         fluid.mergeComponentOptions(that, name, options);
+        that.nickName = that.options.nickName? that.options.nickName: fluid.computeNickName(that.typeName);    
         return that;
     };
     
     fluid.initSubcomponent = function (that, className, args) {
         return fluid.initSubcomponents(that, className, args)[0];
+    };
+    
+    fluid.initSubcomponentImpl = function(that, entry, args) {
+        var togo;
+        if (typeof(entry) !== "function") {
+            var entryType = typeof(entry) === "string"? entry : entry.type;
+            var globDef = fluid.defaults(true, entryType);
+            fluid.merge("reverse", that.options, globDef);
+            togo = entryType === "fluid.emptySubcomponent"?
+               fluid.emptySubcomponent(entry.options) : 
+               fluid.invokeGlobalFunction(entryType, args);
+        }
+        else {
+            togo = entry.apply(null, args);
+        }
+
+        var returnedOptions = togo? togo.returnedOptions : null;
+        if (returnedOptions) {
+            fluid.merge(that.options.mergePolicy, that.options, returnedOptions);
+            if (returnedOptions.listeners) {
+                fluid.mergeListeners(that.events, returnedOptions.listeners);
+            }
+        }
+        return togo;
     };
     
     /** Initialise all the "subcomponents" which are configured to be attached to 
@@ -436,25 +483,7 @@ var fluid = fluid || fluid_1_2;
             if (optindex !== -1 && entry.options) {
                 args[optindex] = entry.options;
             }
-            if (typeof(entry) !== "function") {
-                var entryType = typeof(entry) === "string"? entry : entry.type;
-                var globDef = fluid.defaults(true, entryType);
-                fluid.merge("reverse", that.options, globDef);
-                togo[i] = entryType === "fluid.emptySubcomponent"?
-                   fluid.emptySubcomponent(entry.options) : 
-                   fluid.invokeGlobalFunction(entryType, args, {fluid: fluid});
-            }
-            else {
-                togo[i] = entry.apply(null, args);
-            }
-
-            var returnedOptions = togo[i]? togo[i].returnedOptions : null;
-            if (returnedOptions) {
-                fluid.merge(that.options.mergePolicy, that.options, returnedOptions);
-                if (returnedOptions.listeners) {
-                    fluid.mergeListeners(that.events, returnedOptions.listeners);
-                }
-            }
+            togo[i] = fluid.initSubcomponentImpl(that, entry, args);
         }
         return togo;
     };
@@ -729,6 +758,16 @@ var fluid = fluid || fluid_1_2;
         return prefix === ""? suffix : (suffix === ""? prefix : prefix + "." + suffix);
     };
 
+    fluid.model.resolvePathSegment = function(root, segment, create) {
+        if (root.resolvePathSegment) {
+            return root.resolvePathSegment(segment);
+        }
+        if (root[segment] === undefined && create) {
+            root[segment] = {};
+            }
+        return root[segment];
+    };
+
     fluid.model.getPenultimate = function (root, EL, environment, create) {
         var segs = fluid.model.parseEL(EL);
         for (var i = 0; i < segs.length - 1; ++i) {
@@ -741,10 +780,7 @@ var fluid = fluid || fluid_1_2;
                 environment = null;
             }
             else {
-                if (root[segment] === undefined && create) {
-                    root[segment] = {};
-                    }
-                root = root[segment];
+                root = fluid.model.resolvePathSegment(root, segment, create);
             }
         }
         return {root: root, last: segs[segs.length - 1]};
@@ -850,10 +886,8 @@ var fluid = fluid || fluid_1_2;
         if (el) {
             if (el.getAttribute("id") !== id) {
                 fluid.fail("Problem in document structure - picked up element " +
-                fluid.dumpEl(el) +
-                " for id " +
-                id +
-                " without this id - most likely the element has a name which conflicts with this id");
+                    fluid.dumpEl(el) + " for id " + id +
+                    " without this id - most likely the element has a name which conflicts with this id");
             }
             return el;
         }
