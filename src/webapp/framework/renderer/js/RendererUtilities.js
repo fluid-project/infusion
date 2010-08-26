@@ -44,6 +44,118 @@ fluid_1_2 = fluid_1_2 || {};
         }
         return togo;
     };
+
+    /** "Renderer component" infrastructure **/
+  // TODO: fix this up with IoC and improved handling of templateSource as well as better 
+  // options layout (model appears in both rOpts and eOpts)
+    fluid.renderer.createRendererFunction = function (container, selectors, options, model) {
+        function modelise(opts, defs) {
+            return $.extend({}, defs, opts, model? {model: model} : null);
+        }
+        options = options || {};
+        container = $(container);
+        var source = options.templateSource ? options.templateSource: {node: container};
+        var rendererOptions = modelise(options.rendererOptions);
+        var expanderOptions = modelise(options.expanderOptions, {ELstyle: "$()"});
+        var expander = options.noExpand? null : fluid.renderer.makeProtoExpander(expanderOptions);
+        
+        var templates = null;
+        return function (tree) {
+            if (expander) {
+                tree = expander(tree);
+            }
+            var cutpointFn = options.cutpointGenerator || "fluid.renderer.selectorsToCutpoints";
+            rendererOptions.cutpoints = rendererOptions.cutpoints || fluid.invokeGlobalFunction(cutpointFn, [selectors, options]);
+        
+            if (templates) {
+                fluid.reRender(templates, container, tree, rendererOptions);
+            } else {
+                if (typeof(source) === "function") { // TODO: make a better attempt than this at asynchrony
+                    source = source();  
+                }
+                templates = fluid.render(source, container, tree, rendererOptions);
+            }
+        };
+    };
+    
+     // TODO: Integrate with FLUID-3681 branch
+    fluid.initRendererComponent = function(componentName, container, options) {
+        var that = fluid.initView(componentName, container, options);
+        that.model = that.options.model || {};
+        
+        fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
+        
+        var rendererOptions = that.options.rendererOptions || {};
+        if (!rendererOptions.messageSource && that.options.strings) {
+            rendererOptions.messageSource = {type: "data", messages: that.options.strings}; 
+        }
+
+        var rendererFnOptions = $.extend({}, that.options.rendererFnOptions, 
+           {rendererOptions: rendererOptions,
+           repeatingSelectors: that.options.repeatingSelectors,
+           selectorsToIgnore: that.options.selectorsToIgnore});
+        if (that.options.resources.template) {
+            rendererFnOptions.templateSource = function() { // TODO: don't obliterate, multitemplates, etc.
+                return that.options.resources.template.resourceText;
+            };
+        }
+        
+        var rendererFn = fluid.renderer.createRendererFunction(container, that.options.selectors, rendererFnOptions, that.model);
+        
+        that.render = rendererFn;
+        
+        return that;
+    };
+    
+    var removeSelectors = function (selectors, selectorsToIgnore) {
+        if (selectorsToIgnore) {
+            $.each(selectorsToIgnore, function (index, selectorToIgnore) {
+                delete selectors[selectorToIgnore];
+            });
+        }
+        return selectors;
+    };
+
+    var markRepeated = function (selector, repeatingSelectors) {
+        if (repeatingSelectors) {
+            $.each(repeatingSelectors, function (index, repeatingSelector) {
+                if (selector === repeatingSelector) {
+                    selector = selector + ":";
+                }
+            });
+        }
+        return selector;
+    };
+
+    fluid.renderer.selectorsToCutpoints = function (selectors, options) {
+        var togo = [];
+        options = options || {};
+        selectors = fluid.copy(selectors); // Make a copy before potentially destructively changing someone's selectors.
+    
+        if (options.selectorsToIgnore) {
+            selectors = removeSelectors(selectors, options.selectorsToIgnore);
+        }
+    
+        for (var selector in selectors) {
+            togo.push({
+                id: markRepeated(selector, options.repeatingSelectors),
+                selector: selectors[selector]
+            });
+        }
+    
+        return togo;
+    };
+  
+      /** A special "shallow copy" operation suitable for nondestructively
+     * merging trees of components. jQuery.extend in shallow mode will 
+     * neglect null valued properties.
+     */
+    fluid.renderer.mergeComponents = function (target, source) {
+        for (var key in source) {
+            target[key] = source[key];
+        }
+        return target;
+    };
     
     /** Definition of expanders - firstly, "heavy" expanders **/
     
@@ -98,56 +210,6 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
 
-    var removeSelectors = function (selectors, selectorsToIgnore) {
-        if (selectorsToIgnore) {
-            $.each(selectorsToIgnore, function (index, selectorToIgnore) {
-                delete selectors[selectorToIgnore];
-            });
-        }
-        return selectors;
-    };
-
-    var markRepeated = function (selector, repeatingSelectors) {
-        if (repeatingSelectors) {
-            $.each(repeatingSelectors, function (index, repeatingSelector) {
-                if (selector === repeatingSelector) {
-                    selector = selector + ":";
-                }
-            });
-        }
-        return selector;
-    };
-
-    fluid.renderer.selectorsToCutpoints = function (selectors, options) {
-        var togo = [];
-        options = options || {};
-        selectors = fluid.copy(selectors); // Make a copy before potentially destructively changing someone's selectors.
-    
-        if (options.selectorsToIgnore) {
-            selectors = removeSelectors(selectors, options.selectorsToIgnore);
-        }
-    
-        for (var selector in selectors) {
-            togo.push({
-                id: markRepeated(selector, options.repeatingSelectors),
-                selector: selectors[selector]
-            });
-        }
-    
-        return togo;
-    };
-  
-      /** A special "shallow copy" operation suitable for nondestructively
-     * merging trees of components. jQuery.extend in shallow mode will 
-     * neglect null valued properties.
-     */
-    fluid.renderer.mergeComponents = function (target, source) {
-        for (var key in source) {
-            target[key] = source[key];
-        }
-        return target;
-    };
-
     /** Create a "protoComponent expander" with the supplied set of options.
      * The returned value will be a function which accepts a "protoComponent tree"
      * as argument, and returns a "fully expanded" tree suitable for supplying
@@ -170,7 +232,7 @@ fluid_1_2 = fluid_1_2 || {};
 
     fluid.renderer.makeProtoExpander = function (expandOptions) {
       // shallow copy of options - cheaply avoid destroying model, and all others are primitive
-        var options = $.extend({}, expandOptions); // shallow copy of options
+        var options = $.extend({ELstyle: "${}"}, expandOptions); // shallow copy of options
         var IDescape = options.IDescape || "\\";
         
         function fetchEL(string) {
@@ -192,16 +254,18 @@ fluid_1_2 = fluid_1_2 || {};
                 if (proto.decorators) {
                    proto.decorators = expandLight(proto.decorators);
                 }
+                value = proto.value;
+                delete proto.value;
             }
             else {
                 proto = {};
-                var EL = typeof(value) === "string"? fetchEL(value) : null;
-                if (EL) {
-                    proto.valuebinding = EL;
-                }
-                else {
-                    proto.value = value;
-                }
+            }
+            var EL = typeof(value) === "string"? fetchEL(value) : null;
+            if (EL) {
+                proto.valuebinding = EL;
+            }
+            else {
+                proto.value = value;
             }
             if (options.model && proto.valuebinding && proto.value === undefined) {
                 proto.value = fluid.model.getBeanValue(options.model, proto.valuebinding);
@@ -270,21 +334,25 @@ fluid_1_2 = fluid_1_2 || {};
                     target[target.length] = comp;
                 }
                 expandLeafOrCond(child, target, childPusher);
+                // Rescue the case of an expanded leaf into single component - TODO: check what sense this makes of the grammar
+                if (comp.children.length === 1 && !comp.children[0].ID) {
+                    comp = comp.children[0];
+                }
                 pusher(comp); 
             }
         };
         
         function detectBareBound(entry) {
-            return fluid.each(entry, function (value, key) {
-                return key !== "decorators";
-            }) === false;
+            return fluid.find(entry, function (value, key) {
+                return key === "decorators";
+            }) !== false;
         }
         
         // We have reached something which is either a leaf or Cond - either inside
         // a Cond or as an entry in children.
         var expandLeafOrCond = function (entry, target, pusher) {
             var componentType = fluid.renderer.inferComponentType(entry);
-            if (!componentType && detectBareBound(entry)) {
+            if (!componentType && (fluid.isPrimitive(entry) || detectBareBound(entry))) {
                 componentType = "UIBound";
             }
             if (componentType) {

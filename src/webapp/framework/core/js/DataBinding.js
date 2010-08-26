@@ -155,7 +155,7 @@ fluid_1_2 = fluid_1_2 || {};
         return i;
         };
     
-    var globalAccept = []; // reentrancy risk
+    var globalAccept = []; // TODO: serious reentrancy risk here, why is this impl like this?
     
     fluid.pathUtil.getPathSegment = function(path, i) {
         getPathSegmentImpl(globalAccept, path, i);

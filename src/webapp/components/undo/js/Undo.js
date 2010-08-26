@@ -97,7 +97,7 @@ fluid_1_2 = fluid_1_2 || {};
      * @param {Object} options a collection of options settings
      */
     fluid.undoDecorator = function (component, userOptions) {
-        var that = fluid.initView("undo", null, userOptions);
+        var that = fluid.initLittleComponent("undo", userOptions);
         that.container = that.options.renderer(that, component.container);
         fluid.initDomBinder(that);
         fluid.tabindex(that.locate("undoControl"), 0);

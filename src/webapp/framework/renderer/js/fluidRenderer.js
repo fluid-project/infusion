@@ -1137,10 +1137,10 @@ fluid_1_2 = fluid_1_2 || {};
       function findChild(sourcescope, child) {
           var split = fluid.SplitID(child.ID);
           var headlumps = sourcescope.downmap[child.ID];
-          if (headlumps === null) {
+          if (!headlumps) {
               headlumps = sourcescope.downmap[split.prefix + ":"];
           }
-          return headlumps === null ? null : headlumps[0];
+          return headlumps? headlumps[0]: null;
       }
       
       function renderRecurse(basecontainer, parentlump, baselump) {

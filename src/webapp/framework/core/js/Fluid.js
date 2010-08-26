@@ -67,12 +67,11 @@ var fluid = fluid || fluid_1_2;
      * such key is found.
      */
     fluid.keyForValue = function (obj, value) {
-        for (var key in obj) {
-            if (obj[key] === value) {
+        return fluid.find(obj, function(thisValue, key) {
+            if (value === thisValue) {
                 return key;
             }
-        }
-        return null;
+        });
     };
     
     /**
@@ -480,7 +479,7 @@ var fluid = fluid || fluid_1_2;
         }
         for (i = 0; i < entries.length; ++ i) {
             entry = entries[i];
-            if (optindex !== -1 && entry.options) {
+            if (optindex !== -1) {
                 args[optindex] = entry.options;
             }
             togo[i] = fluid.initSubcomponentImpl(that, entry, args);
@@ -931,7 +930,7 @@ var fluid = fluid || fluid_1_2;
     /** Return a list or hash of objects, transformed by one or more functions. Similar to
      * jQuery.map, only will accept an arbitrary list of transformation functions and also
      * works on non-arrays.
-     * @param list {Array or Object} The initial container of objects to be transformed.
+     * @param source {Array or Object} The initial container of objects to be transformed.
      * @param fn1, fn2, etc. {Function} An arbitrary number of optional further arguments,
      * all of type Function, accepting the signature (object, index), where object is the
      * list member to be transformed, and index is its list index. Each function will be
@@ -956,30 +955,28 @@ var fluid = fluid || fluid_1_2;
     };
     
     /** Better jQuery.each which works on hashes as well as having the arguments
-     * the right way round. Also allows iteration to be terminated early by means of
-     * return of <code>false</code> (specific value, "falsy" is not good enough. This
-     * will cause the overall function to return <code>false</code> 
+     * the right way round. 
      * @param source {Arrayable or Object} The container to be iterated over
      * @param func {Function} A function accepting (value, key) for each iterated
-     * object. This function may return <code>false</code> to terminate the iteration
+     * object. This function may return a value to terminate the iteration
      */
     fluid.each = function (source, func) {
         if (fluid.isArrayable(source)) {
             for (var i = 0; i < source.length; ++ i) {
-                if (func(source[i], i) === false) { return false;}
+                func(source[i], i);
             }
         }
         else {
             for (var key in source) {
-                if (func(source[key], key) === false) { return false;}
+                func(source[key], key);
             }
         }
     };
     
-    /** Scan through a list of objects, terminating on and returning the first member which
+    /** Scan through a list or hash of objects, terminating on the first member which
      * matches a predicate function.
-     * @param list {Array} The list of objects to be searched.
-     * @param fn {Function} A predicate function, acting on a list member. A predicate which
+     * @param source {Arrayable or Object} The list or hash of objects to be searched.
+     * @param func {Function} A predicate function, acting on a member. A predicate which
      * returns any value which is not <code>null</code> or <code>undefined</code> will terminate
      * the search. The function accepts (object, index).
      * @param deflt {Object} A value to be returned in the case no predicate function matches
@@ -987,11 +984,17 @@ var fluid = fluid || fluid_1_2;
      * @return The first return value from the predicate function which is not <code>null</code>
      * or <code>undefined</code>
      */
-    fluid.find = function (list, fn, deflt) {
-        for (var i = 0; i < list.length; ++ i) {
-            var transit = fn(list[i], i);
-            if (transit !== null && transit !== undefined) {
-                return transit;
+    fluid.find = function (source, func, deflt) {
+        if (fluid.isArrayable(source)) {
+            for (var i = 0; i < source.length; ++ i) {
+                var disp = func(source[i], i);
+                if (disp !== undefined) { return disp;}
+            }
+        }
+        else {
+            for (var key in source) {
+                var disp = func(source[key], key);
+                if (disp !== undefined) { return disp;}
             }
         }
         return deflt;

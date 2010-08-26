@@ -109,17 +109,18 @@ var fluid_1_2 = fluid_1_2 || {};
      
     function resolveRvalue(thatStack, arg, initArgs, componentOptions) {
         var options = makeStackResolverOptions(thatStack);
+        var directModel = thatStack[0].model; // TODO: this convention may not always be helpful
         
         if (arg === fluid.COMPONENT_OPTIONS) {
-            arg = fluid.resolveEnvironment(componentOptions, thatStack[0].model, options);
+            arg = fluid.resolveEnvironment(componentOptions, directModel, options);
         }
         else {
-            if (arg.charAt(0) === "@") {
+            if (typeof(arg) === "string" && arg.charAt(0) === "@") { // Test cases for i) single-args, ii) composite args
                 var argpos = arg.substring(1);
                 arg = initArgs[argpos];
             }
             else {
-                arg = fluid.resolveContextValue(arg, options);
+                arg = fluid.resolveEnvironment(arg, directModel, options);
             }
         }
         return arg;
@@ -132,7 +133,10 @@ var fluid_1_2 = fluid_1_2 || {};
      * and argument list which is suitable to be executed directly by fluid.invokeGlobalFunction.
      */
     fluid.embodyDemands = function(thatStack, demandspec, initArgs, options) {
-        var demands = demandspec.args;
+        var demands = $.makeArray(demandspec.args);
+        if (!demands && thatStack.length > 0) { // Guess that it is meant to be a subcomponent TODO: component grades
+            demands = [fluid.COMPONENT_OPTIONS];
+        }
         if (demands) {
             var args = [];
             for (var i = 0; i < demands.length; ++ i) {
@@ -147,7 +151,8 @@ var fluid_1_2 = fluid_1_2 || {};
                     args[i] = options;
                 }
                 else{
-                    var arg = resolveRvalue(thatStack, arg, initArgs, options);
+                    var arg = resolveRvalue(thatStack, arg, initArgs, options) || {};
+                    arg.typeName = demandspec.funcName; // TODO: investigate the general sanity of this
                     args[i] = arg;
                 }
             }
@@ -179,6 +184,7 @@ var fluid_1_2 = fluid_1_2 || {};
                 demandspec = demandspec2; // follow just one redirect
             }
         }
+
         return {funcName: funcNames[0], args: demandspec.args};
     };
     
@@ -246,8 +252,9 @@ var fluid_1_2 = fluid_1_2 || {};
     };
     
     fluid.locateDemands = function(demandingNames, thatStack) {
+        var searchStack = [fluid.staticEnvironment].concat(thatStack); // TODO: put in ThreadLocal "instance" too, and also accelerate lookup
         var demands;
-        visitComponents(thatStack, function(component) {
+        visitComponents(searchStack, function(component) {
             for (var i = 0; i < demandingNames.length; ++ i) {
                 demands = fluid.fetchDirectDemands(demandingNames[i], component.typeName);
                 if (demands) {
@@ -571,7 +578,7 @@ var fluid_1_2 = fluid_1_2 || {};
     
     // The "noexpand" expander which simply unwraps one level of expansion and ceases.
     fluid.expander.noexpand = function(target, source) {
-        $.extend(target, source.expander.tree);
+        return $.extend(target, source.expander.tree);
     };
   
     fluid.noexpand = fluid.expander.noexpand; // TODO: check naming and namespacing

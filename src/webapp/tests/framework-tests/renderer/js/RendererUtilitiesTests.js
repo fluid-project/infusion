@@ -78,6 +78,32 @@ fluid.registerNamespace("fluid.tests");
             };
             jqUnit.assertDeepEq("Simple expansion", expected, expanded);
         });
+        
+        protoTests.test("Bare array expansion", function() {
+            var protoTree = {matches: {
+                children: ["Fred Allen", "Phyllis Allen", "Karen Allen", "Rex Allen"]
+                }
+            };
+            var expander = fluid.renderer.makeProtoExpander();
+            var expanded = expander(protoTree);       
+            var expected = {
+                children: [
+                {ID: "matches:",
+                 componentType: "UIBound",
+                 value: "Fred Allen"},
+                 {ID: "matches:",
+                 componentType: "UIBound",
+                 value: "Phyllis Allen"},
+                 {ID: "matches:",
+                 componentType: "UIBound",
+                 value: "Karen Allen"},
+                 {ID: "matches:",
+                 componentType: "UIBound",
+                 value: "Rex Allen"}
+                ] 
+            };
+             jqUnit.assertDeepEq("Simple expansion", expected, expanded);
+        });
        
         protoTests.test("FLUID-3663 test: anomalous UISelect expansion", function() {
             var expander = fluid.renderer.makeProtoExpander({ELstyle: "${}"});
@@ -142,7 +168,7 @@ fluid.registerNamespace("fluid.tests");
             var expander = fluid.renderer.makeProtoExpander({ELstyle: "${}", model: model});
             var protoTree = {
                 "loanIn-lender": {
-                    valuebinding: "fields.lenders.0.lender",
+                    value: "${fields.lenders.0.lender}",
                     decorators: [{
                             type: "fluid",
                             func: "cspace.autocomplete",

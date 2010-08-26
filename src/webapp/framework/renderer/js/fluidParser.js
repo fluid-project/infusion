@@ -20,6 +20,10 @@ fluid_1_2 = fluid_1_2 || {};
   fluid.parseTemplate = function(template, baseURL, scanStart, cutpoints_in, opts) {
       opts = opts || {};
     
+      if (!template) {
+          fluid.fail("empty template supplied to fluid.parseTemplate");
+      }
+    
       var t;
       var parser;
       var tagstack;
@@ -247,7 +251,12 @@ fluid_1_2 = fluid_1_2 || {};
           if (!downreg.downmap) {
             downreg.downmap = {};
             }
-          addLump(downreg.downmap, ID, headlump);
+          while(downreg) { // TODO: unusual fix for locating branches in parent contexts (applies to repetitive leaves)
+              if (downreg.downmap) {
+                  addLump(downreg.downmap, ID, headlump);
+              }
+              downreg = downreg.uplump;
+          }
           addLump(t.globalmap, ID, headlump);
           var colpos = ID.indexOf(":");
           if (colpos !== -1) {
@@ -443,6 +452,13 @@ fluid_1_2 = fluid_1_2 || {};
       }
   }
   
+  var resourceCache = {};
+  
+  // TODO: Integrate punch-through from old Engage implementation
+  function canonUrl(url) {
+      return url;
+  }
+  
   /** Accepts a hash of structures with free keys, where each entry has either
    * href or nodeId set - on completion, callback will be called with the populated
    * structure with fetched resource text in the field "resourceText" for each
@@ -461,6 +477,14 @@ fluid_1_2 = fluid_1_2 || {};
               success: function(response) {
                   thisSpec.resourceText = response;
                   thisSpec.resourceKey = thisSpec.href;
+                  if (thisSpec.forceCache) {
+                       var canon = canonUrl(thisSpec.href);
+                       var cached = resourceCache[canon];
+                       if (cached.$$firer$$) {
+                           resourceCache[canon] = response;      
+                           cached.fire(response);
+                       }
+                  }
                   completeRequest();
               },
               error: function(response, textStatus, errorThrown) {
@@ -483,11 +507,14 @@ fluid_1_2 = fluid_1_2 || {};
           if (!resourceSpec.options || resourceSpec.options.async) {
               allSync = false;
           }
+          if (resourceSpec.url && !resourceSpec.href) {
+              resourceSpec.href = resourceSpec.url;
+          }
           if (resourceSpec.href && !resourceSpec.completeTime) {
                if (!resourceSpec.queued) {
                    var thisCallback = resourceCallback(resourceSpec);
                    var options = {  
-                       url:     resourceSpec.href, 
+                       url:     resourceSpec.href,
                        success: thisCallback.success, 
                        error:   thisCallback.error};
                    timeSuccessCallback(resourceSpec);
@@ -496,11 +523,36 @@ fluid_1_2 = fluid_1_2 || {};
                    resourceSpec.queued = true;
                    resourceSpec.initTime = new Date();
                    fluid.log("Request with key " + key + " queued for " + resourceSpec.href);
-                   $.ajax(options);
+                   var canon = canonUrl(resourceSpec.href);
+                   if (resourceSpec.forceCache) {
+                       var cached = resourceCache[canon];
+                       if (!cached) {
+                           fluid.log("First request for cached resource with url " + canon);
+                           cached = fluid.event.getEventFirer();
+                           cached.$$firer$$ = true;
+                           resourceCache[canon] = cached;
+                           options.cache = false; // TODO: Getting weird "not modified" issues on Firefox
+                           $.ajax(options);
+                       }
+                       else {
+                           if (!cached.$$firer$$) {
+                               options.success(cached);
+                           }
+                           else {
+                               fluid.log("Request for cached resource which is in flight: url " + canon);
+                               cached.addListener(function(response) {
+                                   options.success(cached);
+                               });
+                           }
+                       }
+                   }
+                   else {
+                       $.ajax(options);
+                   }
                }
                if (resourceSpec.queued) {
                    complete = false;
-               }             
+               }
           }
           else if (resourceSpec.nodeId && !resourceSpec.resourceText) {
               var node = document.getElementById(resourceSpec.nodeId);
@@ -510,7 +562,7 @@ fluid_1_2 = fluid_1_2 || {};
               resourceSpec.resourceKey = resourceSpec.nodeId;
           }
       }
-      if (complete && !specStructure.callbackCalled) {
+      if (complete && callback && !specStructure.callbackCalled) {
           specStructure.callbackCalled = true;
           if ($.browser.mozilla && !allSync) {
               // Defer this callback to avoid debugging problems on Firefox
