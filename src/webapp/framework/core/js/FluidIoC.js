@@ -134,7 +134,7 @@ var fluid_1_2 = fluid_1_2 || {};
      */
     fluid.embodyDemands = function(thatStack, demandspec, initArgs, options) {
         var demands = $.makeArray(demandspec.args);
-        if (!demands && thatStack.length > 0) { // Guess that it is meant to be a subcomponent TODO: component grades
+        if (demands.length === 0 && thatStack.length > 0) { // Guess that it is meant to be a subcomponent TODO: component grades
             demands = [fluid.COMPONENT_OPTIONS];
         }
         if (demands) {
@@ -174,15 +174,17 @@ var fluid_1_2 = fluid_1_2 || {};
         var that = thatStack[thatStack.length - 1];
         var funcNames = $.makeArray(funcNames);
         var demandspec = fluid.locateDemands(funcNames, thatStack);
+   
         if (!demandspec) {
             demandspec = {};
         }
         if (demandspec.funcName) {
             funcNames[0] = demandspec.funcName;
+           /**    TODO: "redirects" disabled pending further thought
             var demandspec2 = fluid.fetchDirectDemands(funcNames[0], that.typeName);
             if (demandspec2) {
                 demandspec = demandspec2; // follow just one redirect
-            }
+            } **/
         }
 
         return {funcName: funcNames[0], args: demandspec.args};
@@ -236,33 +238,39 @@ var fluid_1_2 = fluid_1_2 || {};
     
     var dependentStore = {};
     
-    function composeDemandKey(demandingName, contextName) {
-        return demandingName + "|" + contextName;
-    }
-    
     fluid.demands = function(demandingName, contextName, spec) {
         if (spec.length) {
             spec = {args: spec};
         }
-        dependentStore[composeDemandKey(demandingName, contextName)] = spec;
+        var exist = dependentStore[demandingName];
+        if (!exist) {
+            exist = [];
+            dependentStore[demandingName] = exist;
+        }
+        exist.push({contexts: $.makeArray(contextName), spec: spec});
     };
-    
-    fluid.fetchDirectDemands = function(demandingName, contextName) {
-        return dependentStore[composeDemandKey(demandingName, contextName)];
-    };
-    
+
     fluid.locateDemands = function(demandingNames, thatStack) {
         var searchStack = [fluid.staticEnvironment].concat(thatStack); // TODO: put in ThreadLocal "instance" too, and also accelerate lookup
-        var demands;
+        var contextNames = {};
         visitComponents(searchStack, function(component) {
-            for (var i = 0; i < demandingNames.length; ++ i) {
-                demands = fluid.fetchDirectDemands(demandingNames[i], component.typeName);
-                if (demands) {
-                    return true;
-                }
-            }
+            contextNames[component.typeName] = true;
         });
-        return demands;
+        var matches = [];
+        for (var i = 0; i < demandingNames.length; ++ i) {
+            var rec = dependentStore[demandingNames[i]] || [];
+            for (var j = 0; j < rec.length; ++ j) {
+                var spec = rec[j];
+                var count = 0;
+                for (k = 0; k < spec.contexts.length; ++ k) {
+                    if (contextNames[spec.contexts[k]]) { ++ count;}
+                }
+                // TODO: Potentially more subtle algorithm here - also ambiguity reports  
+                matches.push({count: count, spec: spec.spec}); 
+            }
+        }
+        matches.sort(function(speca, specb) {return specb.count - speca.count;});
+        return matches.length === 0? null : matches[0].spec;
     };
     
     fluid.initDependent = function(that, name, thatStack) {
