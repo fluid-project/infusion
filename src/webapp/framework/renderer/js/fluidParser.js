@@ -156,7 +156,7 @@ fluid_1_2 = fluid_1_2 || {};
         if (headclazz) {
             var split = headclazz.split(" ");
             for (var i = 0; i < split.length; ++ i) {
-                var simpleCut = simpleClassCutpoints[split[i].trim()];
+                var simpleCut = simpleClassCutpoints[$.trim(split[i])];
                 if (simpleCut) {
                     return simpleCut;
                 }
