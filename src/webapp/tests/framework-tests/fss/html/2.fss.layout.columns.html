@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<link href="../css/tests.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-reset.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-layout.css" rel="stylesheet" />
+		
+		<script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+		<script type="text/javascript" src="../js/toc.js"></script>
+		
+		<script type="text/javascript">
+            // programmatic coloring - access to advanced selectors + requires less maintenance than hardcoded classes
+            $().ready(function(){                
+                $('.test_containers > div').css({                    
+                    'border-bottom': '1px solid #999'
+                });                
+
+                var col_groups = $('.test_containers > div');
+                var hue = 0;
+                $.each(col_groups, function(i, group){
+                    group = $(group);
+                    hue += 10;
+                    group.css('background-color','rgb('+hue+','+hue+','+hue+')');                    
+                    children = group.children();
+                    $.each(children,function(x, child){
+                        var y = (hue + (x+1)*25);
+                        $(child).css('background-color','rgb('+y+','+y+','+y+')');
+                    });                    
+                });
+            });            
+		</script>
+
+		<title>Test Containers</title>
+	</head>
+	<body>
+		<div class="options">
+			<h1>Loading test...</h1>
+            <p id="note"></p>
+            <p id="page">Test 0 of 0</p>
+			<a href="#prev">Previous Test</a>
+			<a href="#next">Next Test</a>			
+		</div>
+
+		<div class="test_containers grid_2">
+
+			<div class="fl-col-flex2">
+				<div class="fl-col">50%</div>
+				<div class="fl-col">50%</div>
+			</div>
+			<div class="fl-col-flex3">
+				<div class="fl-col">33%</div>
+				<div class="fl-col">33%</div>
+				<div class="fl-col">33%</div>
+			</div>
+			<div class="fl-col-flex4">
+				<div class="fl-col">25%</div>
+				<div class="fl-col">25%</div>
+				<div class="fl-col">25%</div>
+				<div class="fl-col">25%</div>
+			</div>
+			<div class="fl-col-flex5">
+				<div class="fl-col">20%</div>
+				<div class="fl-col">20%</div>
+				<div class="fl-col">20%</div>
+				<div class="fl-col">20%</div>
+				<div class="fl-col">20%</div>
+			</div>
+
+			<div class="fl-col-mixed">
+				<div class="fl-col-fixed fl-force-left">200px left</div>
+				<div class="fl-col-flex">flexible</div>
+			</div>
+
+			<div class="fl-col-mixed-100">
+				<div class="fl-col-fixed fl-force-left">100px left</div>
+				<div class="fl-col-fixed fl-force-right">100px right</div>
+				<div class="fl-col-flex">flexible</div>
+			</div>
+			<div class="fl-col-mixed-150">
+				<div class="fl-col-fixed fl-force-left">150px left</div>
+				<div class="fl-col-fixed fl-force-right">150px right</div>
+				<div class="fl-col-flex">flexible</div>
+			</div>
+			<div class="fl-col-mixed-200">
+				<div class="fl-col-fixed fl-force-left">200px left</div>
+				<div class="fl-col-fixed fl-force-right">200px right</div>
+				<div class="fl-col-flex">flexible</div>
+			</div>
+			<div class="fl-col-mixed-250">
+				<div class="fl-col-fixed fl-force-left">250px left</div>
+				<div class="fl-col-fixed fl-force-right">250px left</div>
+				<div class="fl-col-flex">flexible</div>
+			</div>
+			<div class="fl-col-mixed-300">
+				<div class="fl-col-fixed fl-force-left">300px left</div>
+				<div class="fl-col-fixed fl-force-right">300px right</div>
+				<div class="fl-col-flex">flexible</div>
+			</div>
+
+
+		</div>		
+
+	</body>
+</html>
+

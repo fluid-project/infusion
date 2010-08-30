@@ -1,0 +1,7 @@
+{"uploader": {
+ 	"name": "Uploader",
+   	"description": "Allows users to upload files.",
+   	"cssFiles": "Uploader.css",
+	"files": ["DemoUploadManager.js", "FileQueue.js", "Scroller.js", "SWFUploadManager.js", "Uploader.js"],
+	"dependencies": ["jQuery", "jQueryUICore", "framework", "swfobject", "swfupload", "progress"]
+}}

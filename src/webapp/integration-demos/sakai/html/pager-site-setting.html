@@ -1,0 +1,397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta name="generator" content="HTML Tidy, see www.w3.org" />
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+        <title>The Sakai Foundation</title>
+        <meta name="Description" content="The Sakai Foundation" />
+        <meta name="Keywords" content="The Sakai Foundation" />
+        
+        <link rel="stylesheet" type="text/css" href="../../../components/pager/css/Pager.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="../css/base.css" media="screen" /><!--[if IE]><link rel="stylesheet" type="text/css" href="css/ie/iepc.css" media="screen" /><![endif]-->
+        <link rel="stylesheet" type="text/css" href="../css/print.css" media="print" />
+        <link rel="stylesheet" type="text/css" href="../css/yui-datatable.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/plugins/tooltip/css/jquery.tooltip.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="../css/overrides.css" />
+
+        
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/plugins/bgiframe/js/jquery.bgiframe.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/plugins/tooltip/js/jquery.tooltip.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/plugins/delegate/js/jquery.delegate.js"></script>
+        <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
+
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+
+
+        <script type="text/javascript" src="../../../components/pager/js/Pager.js"></script>
+        
+    </head>
+
+    <body id="body-hide2">
+        <div id="body2">
+            <div id="header3">
+                <div class="header3-up">
+                    <h1>Site Settings</h1>
+
+                    <ul>
+                        <li class="m2-header3-up"><a id="back_site" href="#">Close &amp; Return to</a></li>
+
+                        <li class="m1-header3-up"><a href="#">Help</a></li>
+                    </ul>
+                </div>
+
+                <div class="block">
+                    <ul class="header3-down">
+                        <li><a class="site-setting-link" href="#">General</a></li>
+
+                        <li class="on"><a href="#">Members</a></li>
+
+                        <li><a href="#">Roles &amp; Permissions</a></li>
+
+                        <li><a href="#">Site Backup &amp; More</a></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /header3 -->
+
+            <div id="wrapper3">
+                <div id="container3">
+                    <div id="content3">
+                        <div id="main3">
+                            <div class="msg-error" id="msg-error-default" style="display:none;">
+                                <div class="msg-remove">
+                                    Remove
+                                </div>
+                            </div>
+
+                            <div class="msg-error" id="msg-error-not-found" style="display:none;">
+                                <div class="msg-text">
+                                    The following were not found:
+                                </div>
+
+                                <div class="msg-remove">
+                                    Remove
+                                </div>
+                            </div>
+
+                            <div class="msg-error" id="msg-error-already-members" style="display:none;">
+                                <div class="msg-text">
+                                    The following were already members:
+                                </div>
+
+                                <div class="msg-remove">
+                                    Remove
+                                </div>
+                            </div>
+
+                            <div class="msg-success" id="msg-success-default" style="display:none;">
+                                <div class="msg-text">
+                                    Your changes have been saved.
+                                </div>
+
+                                <div class="msg-remove">
+                                    Remove
+                                </div>
+                            </div>
+
+                            <div class="msg-success" id="msg-success-count" style="display:none;">
+                                <div class="msg-text">
+                                    members added.
+                                </div>
+
+                                <div class="msg-remove">
+                                    Remove
+                                </div>
+                            </div>
+
+                            <div class="ss-members fl-pager">
+                                <h2>Members <span class="ss-button"><a href="#" class="buttons add-widgets"><span>Add Members</span></a></span></h2>
+
+                                <table cellpadding="0" cellspacing="0" border="0" class="ss-table">
+                                    <tr>
+                                        <td>
+                                            <div class="ss-table-head flc-pager-top">
+                                                <div class="block">
+                                                    <div class="ssth-left">
+                                                        <ul>
+                                                            <li><a href="#" class="selectAllMembers">Select All</a></li>
+
+                                                            <li><a href="#" class="selectAllVisibleMembers">Select All Visible</a></li>
+
+                                                            <li><a href="#" class="unselectMembers">Unselect All</a></li>
+
+                                                            <li class="ssth-last"><span class="selected-count">0</span> Selected</li>
+                                                        </ul>
+                                                    </div>
+
+                                                    <div id="membership-paging" class="ssth-right">
+                                                        <div class="ssth-border flc-pager-summary">
+                                                            Records Total
+                                                        </div>
+                                                        <select class="pager-page-size flc-pager-page-size">
+                                                            <option value="10">View 10 Per Page</option>
+                                                            <option value="20">View 20 Per Page</option>
+                                                            <option value="30">View 30 Per Page</option>
+                                                            <option value="40">View 40 Per Page</option>
+                                                        </select>
+                                                        <ul class="fl-pager-ui">
+                                                            <li><a href="#" class="flc-pager-previous">Prev</a></li>
+                                                            <li>
+                                                                <ul class="fl-pager-links pager-links flc-pager-links">
+                                                                    <li class="flc-pager-pageLink"><a href="#">1</a></li>
+                                                                    <li class="flc-pager-pageLink-disabled">2</li>
+                                                                    <li class="flc-pager-pageLink-skip">...</li>
+                                                                    <li class="flc-pager-pageLink"><a href="#">3</a></li>
+                                                                </ul>
+                                                            </li>
+                                                            <li><a href="#" class="flc-pager-next">Next</a></li>
+                                                        </ul> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <div id="membership-table" class="yui-dt site-setting-body">
+                                    <table class="fl-pager-data" summary="" xmlns:rsf="http://ponder.org.uk">
+                                        <thead>
+                                            <tr class="fl-pager-ui" rsf:id="header:">
+                                                <th id="yui-dt0-th-member-checked" class="w28 bgEBECED flc-pager-sort-header"><div class="yui-dt-liner"><a rsf:id="selection" title="Click to sort" href="#"></a> </div> </th>
+                                                <th id="yui-dt0-th-userDisplayName" class="per47 fs13 flc-pager-sort-header"><div class="yui-dt-liner"><a rsf:id="user-link" title="Click to sort" href="#">Members</a> </div> </th>
+                                                <th id="yui-dt0-th-userEmail" class="per23 fs13 flc-pager-sort-header"><div class="yui-dt-liner"><a rsf:id="user-email" title="Click to sort" href="#">Email</a> </div>  </th>
+                                                <th id="yui-dt0-th-memberRole" class="per18 memberRole flc-pager-sort-header"><div class="yui-dt-liner"><a rsf:id="user-role" title="Click to sort" href="#">Role</a> </div>  </th>
+                                                <th id="yui-dt0-th-active" class="per18 memberStatus flc-pager-sort-header"><div class="yui-dt-liner"><a rsf:id="user-status" title="Click to sort" href="#">Status</a> </div>  </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr rsf:id="row:" class="yui-dt-first yui-dt-even">
+                                                <td headers="yui-dt0-th-member-checked" class="w28 bgEBECED"><input rsf:id="selection" type="checkbox" /> </td>
+
+                                                <td headers="yui-dt0-th-userDisplayName" class="per47 fs13 ">
+                                                    <div class="yui-dt-liner">
+                                                        <a rsf:id="user-link" href="/dev/sn/profile.html?user=6b3fe506-57aa-40a6-ac2f-359c59d219b5">Erica Ackerman</a>
+                                                    </div>
+                                                </td>
+
+                                                <td headers="yui-dt0-th-userEmail" class="per23 fs13"><a rsf:id="user-email" href="mailto:ericaack@umich.edu">ericaack@umich.edu</a> </td>
+
+                                                <td headers="yui-dt0-th-memberRole" class="per18 memberRole"><select rsf:id="user-role">
+                                                    <option value="access">
+                                                        access
+                                                    </option>
+
+                                                    <option value="maintain">
+                                                        maintain
+                                                    </option>
+                                                </select> </td>
+
+                                                <td headers="yui-dt0-th-active" class="per18 memberStatus"><select rsf:id="user-status">
+                                                    <option value="true">
+                                                        Active
+                                                    </option>
+
+                                                    <option value="false">
+                                                        Inactive
+                                                    </option>
+                                                </select> </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="ss-foot">
+                                    <div class="flc-pager-bottom ssth-right">
+                                        <ul class="fl-pager-ui">
+                                            <li>
+                                                <ul class="fl-pager-links pager-links flc-pager-links">
+                                                    <li class="flc-pager-pageLink"><a href="#">1</a></li>
+
+                                                    <li class="flc-pager-pageLink-disabled">2</li>
+
+                                                    <li class="flc-pager-pageLink-skip">...</li>
+
+                                                    <li class="flc-pager-pageLink"><a href="#">3</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="block">
+                                        <div class="ss-foot-left">
+                                            <a id="delete-selected-members" href="#" class="inactive buttons">Delete Selected</a>
+                                        </div>
+
+                                        <div class="ss-foot-right">
+                                            <select id="command-selected-members" class="inactive" disabled="disabled">
+                                                <option value="">
+                                                    Select a command
+                                                </option>
+
+                                                <optgroup label="- - - - - - - - -">
+                                                    <option value="selected-members-active-true">
+                                                        Change status to Active
+                                                    </option>
+
+                                                    <option value="selected-members-active-false">
+                                                        Change status to Inactive
+                                                    </option>
+                                                </optgroup>
+
+                                                <optgroup id="selected-members-roles" label="- - - - - - - - -">
+                                                </optgroup>
+                                            </select> <a id="change-selected-members" href="#" class="inactive buttons">Submit</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="selected-members-roles-template" style="display:none">
+                                    <!--
+                                                                            {for role in userRoles}
+                                                                                <option value="selected-members-memberRole-${role}">Change role to ${role}</option>
+                                                                            {/for}
+                                                                        -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /main3 -->
+                    </div>
+                    <!-- /content3 -->
+                </div>
+                <!-- /container3 -->
+            </div>
+            <!-- /wrapper3 -->
+
+            <div class="overlay-lightbox" style="display:none;">
+                <div id="default-members-roles-template" style="display:none">
+                    <!--
+                                                {for role in userRoles}
+                                                    <option value="${role}">${role}</option>
+                                                {/for}
+                                                -->
+                </div>
+                <!-- /// Lightbox Tools /// -->
+
+                <div class="lightbox size3">
+                    <div class="lightbox-header">
+                        <div class="lighbox-header-left">
+                            <h3>Add Members</h3>
+                        </div>
+
+                        <ul class="lightbox-header-right">
+                            <li class="lhr-help"><a href="#">Help</a></li>
+
+                            <li class="lhr-close"><a href="#">Close Window &amp; Cancel</a></li>
+                        </ul>
+                    </div>
+                    <!-- /lightbox-header -->
+
+                    <div class="lightbox-container2">
+                        <p class="fs15 c999999 create-site-build-course-p">Provide the following information and click the "Send Invitation" button</p>
+
+                        <div id="add-members-title" class="ssm-add-member">
+                            <strong><strong class="fs13 cCC0000">*</strong> Enter Member's Username or Email Address:</strong> <span class="fs11 c999999"><strong class="fs13 cCC0000">*</strong> = Required Information</span>
+                        </div>
+
+                        <div class="ssm-add-member-1">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td>
+                                        <div class="ssm-bottom">
+                                            <textarea id="invitees" rows="3" cols="30">
+                                                                                          
+                                            </textarea>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="fs11 c999999 ssm-bottom2">
+                                            <strong>Tip:</strong> To add more than one member, enter a line-break after each one by hitting the return key on your keyboard.
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="ssm-bottom">
+                                            <strong>Default Role for These Members:</strong>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="ssm-bottom2">
+                                            <select id="default-members-roles">
+                                            </select>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="ssm-bottom">
+                                            <strong>Optional Message:</strong> <a href="#" class="fs11 underline">What is this for?</a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="ssm-bottom">
+                                            <textarea id="message" rows="3" cols="30">
+                                                                                          
+                                            </textarea>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="fs11 c999999 ssm-bottom2">
+                                            (Max 500 characters)
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="ssm-add-member-2">
+                            <div class="block">
+                                <a href="#" class="save buttons">Send Invitation</a> <a href="#" class="csbc4-link">Close Window &amp; Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /lightbox-container -->
+                </div>
+                <!-- /lightbox -->
+            </div>
+
+            <div id="footer-hide">
+                <p>&copy; 2004-2008 The Sakai Foundation<br />
+                 Portions of Sakai are copyrighted by other parties as described in the <a href="#">Acknowledgments screen</a></p>
+            </div>
+            <!-- /footer -->
+        </div>
+        <!-- /body2 -->
+<script type="text/javascript" src="../js/site_setting_members.js">
+</script>
+<script type="text/javascript">
+    sakai.initFluidSiteSettingTable();
+</script>
+    </body>
+</html>
+

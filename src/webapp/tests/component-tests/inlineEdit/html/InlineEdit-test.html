@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>Inline Edit Test Suite</title>
+
+        <!--  This is the jqUnit test css file -->
+        <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/testsuite.css" />
+
+        <!--  These are the required javascript modules for the Inline Edit -->
+        <script src="../../../../lib/jquery/core/js/jquery.js" type="text/javascript"></script>
+        <script src="../../../../lib/jquery/ui/js/ui.core.js" type="text/javascript"></script>
+        <script src="../../../../lib/jquery/plugins/delegate/js/jquery.delegate.js" type="text/javascript"></script>
+        <script src="../../../../framework/core/js/jquery.keyboard-a11y.js" type="text/javascript"></script>
+        <script src="../../../../framework/core/js/Fluid.js" type="text/javascript"></script>
+        <script src="../../../../components/inlineEdit/js/InlineEdit.js" type="text/javascript"></script>
+        <script src="../../../../components/undo/js/Undo.js" type="text/javascript"></script>
+        
+        <!--  These dependencies are needed for one test (which requires the renderer)  -->
+        <script src="../../../../framework/core/js/DataBinding.js" type="text/javascript"></script>
+        <script src="../../../../framework/core/js/FluidDOMUtilities.js" type="text/javascript"></script>   
+        <script src="../../../../lib/fastXmlPull/js/fastXmlPull.js" type="text/javascript"></script>
+        <script src="../../../../framework/renderer/js/fluidParser.js" type="text/javascript"></script>
+        <script src="../../../../framework/renderer/js/fluidRenderer.js" type="text/javascript"></script>
+
+        <!--  These are the jqUnit test framework js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/testrunner.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery-ui/js/jquery.simulate.js"></script>        
+
+        <!--  These are tests that have been written using this page as data and test supports -->
+        <script type="text/javascript" src="../js/InlineEditTests.js"></script>
+
+    </head>
+    <body id="body">
+      <!-- This is the markup that jqUnit will look for when running tests and displaying the results -->
+      <h1 id="header">InlineEdit Test Suite</h1>
+      <h2 id="banner"></h2>
+      <h2 id="userAgent"></h2>
+      <ol id="tests"></ol>
+      <div id="main">
+
+      <!-- This is the test data -->
+      <form id="inline-edit" action="#" class="inlineEditable">
+          <div id="display" class="flc-inlineEdit-text">Click me to edit...</div>
+          <div id="edit-container" class="flc-inlineEdit-editContainer">
+              <input id="edit" type="text" class="flc-inlineEdit-edit" value="this is the hidden text for the first editor" />
+          </div>
+      </form>
+        
+      <form id="inline-edit2" action="#" class="inlineEditable">
+          <div id="display2" class="flc-inlineEdit-text">Click me to edit...</div>
+          <input id="edit2" type="text" class="flc-inlineEdit-edit" value="this is the hidden text for the second editor" />
+      </form>
+      
+      <div id="custom-renderRoot">
+      
+        <form id="inline-edit-custom" class="customContainer" action="#">
+          <div id="display-custom" class="customText"></div>
+          <div id="edit-container-custom" class="customEditContainer">
+            <input id="edit-custom" type="text" class="customEdit" value="this is the hidden text for the custom editor" />
+          </div>
+        </form>
+      </div>
+      
+      <form id="inline-edit-textarea" action="#">
+          <div id="display-custom" class="customText"></div>
+          <div id="edit-container-custom" class="customEditContainer">
+              <textarea id="edit-custom" class="customEdit">This is the hidden text for the custom editor</textarea>
+          </div>
+      </form>
+	  
+	  <div id="custom-renderRoot-text-as-default">
+      
+        <form id="inline-edit-custom-text-as-default" class="customContainer" action="#">
+          <div id="display-custom-text-as-default" class="customText">Click here to edit</div>
+          <div id="edit-container-custom-text-as-default" class="customEditContainer">
+            <input id="edit-custom-text-as-default" type="text" class="customEdit" value="this is the hidden text for the custom editor" />
+          </div>
+        </form>
+      </div>
+	  
+	  <form id="inline-edit-textarea-text-as-default" action="#">
+          <div id="display-custom" class="customText">Click here to edit</div>
+          <div id="edit-container-custom" class="customEditContainer">
+              <textarea id="edit-custom" class="customEdit">This is the hidden text for the custom editor</textarea>
+          </div>
+      </form>      
+        
+      <!-- Self-rendering inline edit -->
+      <form id="inline-edit-self-render" action="#">
+          <div id="display-self-render" class="flc-inlineEdit-text">Click me to edit...</div>
+      </form>
+
+      <!-- empty inline edit, requiring "invitation text" or padding -->
+      <form id="empty-inline-edit" action="#">
+          <div id="empty-display" class="flc-inlineEdit-text"></div>
+      </form>
+
+
+      <!-- Self-rendering with undo control -->
+      <form id="inline-edit-undo" action="#">
+          <div id="display-undoable" class="flc-inlineEdit-text">Click me to edit...</div>
+      </form>
+
+      <!-- Second undo control -->
+      <form id="inline-edit-undo2" action="#">
+          <div id="display-undoable2" class="flc-inlineEdit-text">Click me to edit...</div>
+      </form>
+      
+      </div>
+    </body>
+</html>

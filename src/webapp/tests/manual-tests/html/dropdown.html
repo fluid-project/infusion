@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Dropdown Inline Editor</title>
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss.presentation.css" />
+        <link rel="stylesheet" type="text/css" href="../lib/jquery/plugins/selectbox/selectbox.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/plugins/tooltip/css/jquery.tooltip.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/inlineEdit/css/InlineEdit.css" />
+        <link rel="stylesheet" type="text/css" href="../css/InlineEditSelectbox.css" />
+ 
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../components/inlineEdit/js/InlineEdit.js"></script>
+        <script type="text/javascript" src="../../../components/inlineEdit/js/InlineEditIntegrations.js"></script>
+        
+        <script type="text/javascript" src="../../../lib/jquery/plugins/tooltip/js/jquery.tooltip.js"></script>        
+        <script type="text/javascript" src="../lib/jquery/plugins/selectbox/jquery.selectbox-0.5.js"></script>
+	</head>
+	<body class="fl-theme-mist">
+        
+        <form>
+            <h1>Dropdown Inline Editor</h1>
+            Elect an anoetic vocable from this colligation:&nbsp;
+            <span id="combo-editable"> 
+                <span class="flc-inlineEdit-text">Apocatastasis</span>
+                <span class="flc-inlineEdit-editContainer dropdown">
+                    <select class="flc-inlineEdit-edit" name="myselectbox" tabindex="1">
+                        <option value="Enchiridion" selected="selected">Enchiridion</option>
+                        <option value="Apocatastasis" selected="selected">ApoCATTastasis</option>
+                        <option value="Exomologesis">Exomologesis</option>
+                    </select>
+                </span>
+            </span>
+            <br/>
+            Having elected, you have a plerophory to adumbrate:
+            <br/>
+            <p>
+            "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+            </p>
+            <script>
+                var comboeditor = fluid.inlineEdit.dropdown("#combo-editable");
+            </script>
+        </form>
+	</body>
+</html>

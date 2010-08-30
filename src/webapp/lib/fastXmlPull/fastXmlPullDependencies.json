@@ -1,0 +1,5 @@
+{"fastXmlPull": {
+   	"name": "fastXmlPull",
+   	"description": "A fast xml pull parser.",
+	"files": "fastXmlPull.js"
+}}

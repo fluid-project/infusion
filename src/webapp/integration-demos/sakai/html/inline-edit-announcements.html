@@ -1,0 +1,401 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="../css/announcements.css" type="text/css" rel="stylesheet" media="all" />
+      <link rel="stylesheet" type="text/css" href="../../../lib/jquery/plugins/tooltip/css/jquery.tooltip.css" />
+      <link rel="stylesheet" type="text/css" href="../../../components/inlineEdit/css/InlineEdit.css" />
+
+    <title>Demonstration: Fluid Inline Edit in Sakai Announcements</title>
+    
+      <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+      <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+      <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+      <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+      <script type="text/javascript" src="../../../components/inlineEdit/js/InlineEdit.js"></script>
+      <script type="text/javascript" src="../../../components/undo/js/Undo.js"></script>
+      <script type="text/javascript" src="../../../lib/jquery/plugins/tooltip/js/jquery.tooltip.js"></script>    
+    
+    <!-- 
+    <script type="text/javascript" src="../../../tests/utils/DebugFocus.js"></script>
+    -->
+    <script type="text/javascript">
+        var inlineEditSetup = function(){
+            var myUndoRenderer = function (that, targetContainer) {
+                var markup = "<span class='flc-undo'>" +
+                "<span class='flc-undo-undoContainer'><a href='#' class='flc-undo-undoControl'><img src='../images/undo.png' alt='Undo your edit' title='Undo your edit' style='border:none' /></a></span>" +
+                "<span class='flc-undo-redoContainer'><a href='#' class='flc-undo-redoControl'><img src='../images/redo.png' alt='Redo your edit' title='Redo your edit' style='border:none' /></a></span>" +
+                "</span>";
+                var markupNode = $(markup);
+                targetContainer.append(markupNode);
+                return markupNode;
+            };
+            
+            fluid.inlineEdits("#announcements", {
+                useTooltip: true,
+                componentDecorators: {
+                    type: "fluid.undoDecorator",
+                    options: {
+                        renderer: myUndoRenderer
+                    }
+                }
+            });
+        };
+
+        $(document).ready(function(){
+            inlineEditSetup();
+        });
+
+    </script>
+  </head>
+  <body class="portalBody">
+<!-- start includeSiteNav -->
+<div id="portalOuterContainer">
+	<div id="portalContainer">
+		<div id="skipNav">
+
+			<a href="#tocontent" class="skip" title="jump to content" accesskey="c">
+			jump to content
+			</a>
+			<a href="#totoolmenu" class="skip" title="jump to tools list" accesskey="l">
+				jump to tools list
+			</a>
+			<a href="#sitetabs" class="skip" title="jump to worksite list" accesskey="w">
+				jump to worksite list
+			</a>
+		</div>
+		<div id="headerMax">
+<div id="siteNavWrapper" class="undeterminedSiteType">
+	<div id="mastHead">
+		<div id="mastLogo">
+			<img title="Logo" alt="Logo" src="../images/logo_inst.gif"/>
+		</div>
+		<div id="mastBanner">
+			<img title="Banner" alt="Banner" src="../images/banner_inst.gif"/>
+		</div>
+		<div id="mastLogin">
+	<div id="loginLinks">
+		<a href="#" title="Logout" id="loginLink1">Logout</a>
+	</div>
+		</div>
+	</div>
+</div>
+<!-- start includeTabs -->
+<div class="siteNavWrap">
+	<div id="siteNav">
+		<div id="linkNav">
+			<a id="sitetabs" class="skip" name="sitetabs"></a>
+			<h1 class="skip">Worksites begin here</h1>
+			<ul id="siteLinkList">
+				<li><a href="#" title="My Workspace"><span>My Workspace</span></a></li>
+				<li><a href="#" title="citationsAdmin"><span>citationsAdmin</span></a></li>
+				<li><a href="#" title="Administration Workspace"><span>Administration Workspace</span></a></li>
+				<li><a href="#" title="Art on Film"><span>Art on Film</span></a></li>
+				<li class="selectedTab"><a href="#"><span>Fluid Demo</span></a></li>
+				<li><a href="#" title="- more -"><span>My Active Sites</span></a></li>
+			</ul>
+		</div> <!-- /linkNav -->
+
+
+	</div>
+	<div class="divColor" id="tabBottom">
+	</div>
+
+
+	<div id="selectNav" style="display: none;">
+		<div>
+			<span class="skip">Press alt + up and down arrows to scroll through menu </span>
+
+						<div class="termContainer">
+   				<h4>OTHER</h4>
+						<ul>
+				<li><a href="#" title="My Workspace">
+					<span>My Workspace</span>
+				</a></li>
+				<li><a href="#" title="Administration Workspace">
+					<span>Administration Workspace</span>
+				</a></li>
+				<li><a href="#" title="Fluid Demo">
+					<span>Fluid Demo</span>
+				</a></li>
+				<li><a href="#" title="mercury site">
+					<span>mercury site</span>
+				</a></li>
+				<li><a href="#" title="Portfolio Admin">
+					<span>Portfolio Admin</span>
+				</a></li>
+			</ul>
+			</div> <!-- /termContainer -->
+			<div class="termContainer">
+   				<h4>PROJECTS</h4>
+						<ul>
+				<li><a href="#" title="Art on Film">
+					<span>Art on Film</span>
+				</a></li>
+				<li><a href="#" title="citationsAdmin">
+					<span>citationsAdmin</span>
+				</a></li>
+				<li><a href="#" title="Contemporary Art">
+					<span>Contemporary Art</span>
+				</a></li>
+				<li><a href="#" title="Exhibition Project">
+					<span>Exhibition Project</span>
+				</a></li>
+				<li><a href="#" title="Museum Studies">
+					<span>Museum Studies</span>
+				</a></li>
+				<li><a href="#" title="Research Methods">
+					<span>Research Methods</span>
+				</a></li>
+				<li><a href="#e" title="Test Site 1">
+					<span>Test Site 1</span>
+				</a></li>
+			</ul>
+			</div> <!-- /termContainer -->
+			<div id="more_tabs_instr"><em>Hidden Sites</em> are not included in this menu. Access them in My Workspace -&gt; Worksite Setup.</div>
+		</div> <!-- /  -->
+	
+	</div> <!-- /selectNav -->
+
+	
+</div> <!-- /tabsCssClass -->
+                <!-- end includeTabs -->
+		</div>
+<!-- start includePage -->		
+<div id="container">
+<!-- start includePageNav -->
+	<div class="divColor" id="toolMenuWrap">
+		<div id="worksiteLogo">
+		</div>
+		<a id="totoolmenu" class="skip" name="totoolmenu"></a>
+		<h1 class="skip">Tools begin here</h1>
+		<div id="toolMenu">
+			<ul>
+          			<li>
+			<a class="icon-sakai-resources" href="#"><span>Resources</span></a>
+			</li>
+          			<li>
+			<a class="icon-sakai-siteinfo" href="#"><span>Site Info</span></a>
+			</li>
+       				<li class="selectedTool">
+				<span class="icon-sakai-announcements">Announcements</span>
+				</li>
+      				<li>
+				<a class="icon-sakai-help" accesskey="6" href="#" target="_blank">
+					<span>Help</span>
+				</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<h1 class="skip">Content begins here</h1>
+	<a id="tocontent" class="skip" name="tocontent"></a>
+<!-- end includePageNav -->
+<!-- start includePageBody -->		
+	<div id="content">
+		<div id="col1">
+<div class="portlet">
+	<div class="portletTitleWrap">
+		<div class="portletTitle">
+			<div class="title">
+				<h2>Announcements</h2>
+			</div>
+		</div>
+	</div>
+	<div class="portletMainWrap">
+
+        <div class="portletBody">
+            <div class="navIntraTool">
+                <a href="#tocontent" title="Add">Add</a>
+                <a href="#" title="Merge"> Merge</a>
+                <a href="#" title="Options"> Options</a>
+                <a href="#" title="Permissions"> Permissions</a>
+            </div>
+            <h3>Announcements</h3>
+            <div class="navPanel">
+                <div class="viewNav">
+                    <form name="viewForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
+                        <input name="eventSubmit_doView" value="view" type="hidden"/>
+                        <label for="view">
+                            View
+                        </label>
+                        <span class="skip">Press alt + up and down arrows to scroll through menu</span>
+                        <select id="view" name="view" size="1" onchange="blur();document.viewForm.submit();">
+                            <option value="view.all">All</option>
+                            <option value="view.public">Public</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="listNav">
+                    <div class="instruction">
+                        Viewing 1 - 2 of  2 items
+                    </div>
+                    <form name="firstpageForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
+                        <input name="eventSubmit_doList_first" value="|&lt;" disabled="disabled" type="submit"/>
+                    </form>
+                    <form name="prevpageForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
+                        <input name="eventSubmit_doList_prev" value="&lt;" disabled="disabled" type="submit"/>
+                    </form>
+                    <form name="pagesizeForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
+                        <input name="eventSubmit_doChange_pagesize" value="changepagesize" type="hidden"/><span class="skip">Press alt + up and down arrows to scroll through menu</span>
+                        <select name="selectPageSize" onchange="blur();document.pagesizeForm.submit();">
+                            <option value="5">show 5 items...</option>
+                            <option value="10" selected="selected">show 10 items...</option>
+                            <option value="20">show 20 items...</option>
+                            <option value="50">show 50 items...</option>
+                            <option value="100">show 100 items...</option>
+                            <option value="200">show 200 items....</option>
+                        </select>
+                    </form>
+                    <form name="nextpageForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
+                        <input name="eventSubmit_doList_next" value="&gt;" disabled="disabled" type="submit"/>
+                    </form>
+                    <form name="lastpageForm" class="inlineForm" method="post" action="http://build.fluidproject.org/portal/tool/ann?panel=Main">
+                        <input name="eventSubmit_doList_last" value="&gt;|" disabled="disabled" type="submit"/>
+                    </form>
+                </div>
+            </div>
+            <form name="announcementListForm" action="http://build.fluidproject.org/portal/tool/ann?panel=Main" method="post">
+                <table id="announcements" class="listHier" summary="Table contains a list of announcements. It is five or six columns wide and each row contains a single announcement. Column one indicates if the announcement has an attachment, column two contains the title of the announcement, column three has the name of the author, column four shows the recipient, column five contains the date and time of publication, column six, if present, contains a checkbox - selecting it will mean you want to remove this announcement. The following row will contain announcement text if site owner has set it to be so." border="0" cellspacing="0">
+                    <tbody>
+                        <tr>
+                            <th id="attach" class="attach">
+                            </th>
+                            <th id="subject">
+                                <a href="#" title="Sort by subject">Subject</a>
+                            </th>
+                            <th id="author">
+                                <a href="#"title="Sort by author">From</a>
+                            </th>
+                            <th id="channel">
+                                <a href="#"title="Sort by audience">For</a>
+                            </th>
+                            <th id="date">
+                                <a href="#"title="Sort by date ascending">Date <img src="../images/sortascending.gif" alt="Sort by date ascending" border="0"/></a>
+                            </th>
+                            <th class="screenOnly" id="checkbox">
+                                Remove?
+                            </th>
+                        </tr>
+                        <tr>
+                            <td headers="attach" class="attach">
+                                &nbsp;
+                            </td>
+                            <td headers="subject" class="flc-inlineEditable">
+                                <span class="flc-inlineEdit-text">Lecture Room Change</span>
+                                <span class="flc-inlineEdit-editContainer">
+                                    <input type="text" class="flc-inlineEdit-edit" />
+                                </span>
+                            </td>
+                            <td headers="author">
+                                George O'Malley
+                            </td>
+                            <td>
+                                site
+                            </td>
+                            <td headers="date">
+                                Jun 10, 2008 1:12 pm
+                            </td>
+                            <td headers="checkbox" class="screenOnly">
+                                <label for="check-1" class="skip">
+                                    Select to remove
+                                </label>
+                                <input title="Select to remove" id="check-1" name="selectedMembers" value="/announcement/msg/Test/main/855a683b-1bcc-4662-89c1-c8cd3e4cee11" type="checkbox"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td headers="attach" class="attach">
+                                &nbsp;
+                            </td>
+                            <td headers="subject" class="flc-inlineEditable">
+                                <span class="flc-inlineEdit-text">Reading for Tuesday's Lab</span>
+                                <span class="flc-inlineEdit-editContainer">
+                                    <input type="text" class="flc-inlineEdit-edit" />
+                                </span>
+                            </td>
+                            <td headers="author">
+                                Meredith Grey
+                            </td>
+                            <td>
+                                site
+                            </td>
+                            <td headers="date">
+                                Jun 6, 2008 1:12 pm
+                            </td>
+                            <td headers="checkbox" class="screenOnly">
+                                <label for="check-2" class="skip">
+                                    Select to remove
+                                </label>
+                                <input title="Select to remove" id="check-2" name="selectedMembers" value="/announcement/msg/Test/main/b8f4d602-56bd-4303-8900-e6b17a74eb3e" type="checkbox"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td headers="attach" class="attach">
+                                &nbsp;
+                            </td>
+                            <td headers="subject" class="flc-inlineEditable">
+                                <span class="flc-inlineEdit-text">DNA Polymorphism Exam on Thursday</span>
+                                <span class="flc-inlineEdit-editContainer">
+                                    <input type="text" class="flc-inlineEdit-edit" />
+                                </span>
+                            </td>
+                            <td headers="author">
+                                Meredith Grey
+                            </td>
+                            <td>
+                                site
+                            </td>
+                            <td headers="date">
+                                Jun 4, 2008 10:00 am
+                            </td>
+                            <td headers="checkbox" class="screenOnly">
+                                <label for="check-2" class="skip">
+                                    Select to remove
+                                </label>
+                                <input title="Select to remove" id="check-2" name="selectedMembers" value="/announcement/msg/Test/main/b8f4d602-56bd-4303-8900-e6b17a74eb3e" type="checkbox"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="act">
+                    <input class="active" name="eventSubmit_doDeleteannouncement" value="Update" accesskey="s" type="submit"/><input name="reset" id="reset" value="Cancel" accesskey="x" type="reset"/>
+                </p>
+
+            </form>
+        </div>
+
+
+
+
+	</div>
+</div>
+		</div>
+	</div>
+	<div>
+<div id="footer">
+	<div class="footerExtNav" align="center">
+		|
+		<a href="#">Gateway</a>  | 
+		<a href="http://www.sakaiproject.org/" target="_blank">The Sakai Project</a>  | 
+	</div>
+	<div id="footerInfo">
+		<span class="skip">Opens in a new window</span>	
+		<a href="http://sakaiproject.org/" target="_blank">
+				<img src="../images/sakai_powered.gif" alt="Powered by Sakai" border="0"/></a>
+	</div>
+	<div class="sakaiCopyrightInfo">Copyright
+2003-2006 The Sakai Foundation. All rights reserved. Portions of Sakai
+are copyrighted by other parties as described in the Acknowledgments
+screen.<br/>
+	Sakai Fluid Demonstration Site - dev - Sakai dev - Server localhost
+	</div>
+</div>
+	</div>
+<!-- end includePageBody -->
+</div>
+<!-- end includePage -->		
+	</div>
+</div>
+<!-- end includeSiteNav -->
+<!-- end site.vm -->
+	</body></html>

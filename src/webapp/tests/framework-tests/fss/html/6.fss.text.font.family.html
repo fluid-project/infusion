@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<link href="../css/tests.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-reset.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-layout.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-text.css" rel="stylesheet" />
+		
+		<script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+		<script type="text/javascript" src="../js/toc.js"></script>
+		
+		<script type="text/javascript">
+            // programmatic coloring - access to advanced selectors + requires less maintenance than hardcoded classes
+            $().ready(function(){
+                // Creation
+				var fonts = new Array(7);
+				fonts[0] = ["serif", "Serif font"];
+				fonts[1] = ["sans", "Sans-Serif font"];
+				fonts[2] = ["monospace", "Monospace font"];
+				fonts[3] = ["arial", "Arial font"];
+				fonts[4] = ["verdana", "Verdana font"];
+				fonts[5] = ["times", "Georgia/Times/Times New Roman font"];
+				fonts[6] = ["courier", "Courier/Courier New font"];
+                
+                //console.log(base, 1/base * base);
+                
+				var rows = new Array(7);
+
+                for(var i=0; i<7; i++){
+					rows[i] = "<tr class=\"fl-font-" + fonts[i][0] + "\"><td><strong>" + fonts[i][1] + "</strong></td>" +
+					"<td>The quick brown fox jumped over the lazy dog.</td>" + 
+					"<td><input type=\"submit\" value=\"Button\" /></td>" +
+					"<td><input type=\"text\" value=\"Text field\" /></td>" +
+					"<td><textarea rows=\"1\">Text area</textarea></td></tr>";
+					$('.test_containers').append(rows[i]);
+                }
+            });            
+		</script>
+		
+		<title>Test Containers</title>
+	</head>
+	<body>
+		<div class="options">
+			<h1>Loading test...</h1>
+            <p id="note"></p>
+            <p id="page">Test 0 of 0</p>
+			<a href="#prev">Previous Test</a>
+			<a href="#next">Next Test</a>			
+		</div>
+
+		<table class="test_containers">
+		<!--
+			<p class="fl-font-serif"><strong>Serif font</strong> The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea> </p>
+			<p class="fl-font-sans"><strong>Sans-Serif font</strong> The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+			<p class="fl-font-monospace"><strong>Monospace font</strong> The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+			<p class="fl-font-arial"><strong>Arial font</strong> The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+			<p class="fl-font-verdana"><strong>Verdana font</strong> The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+			<p class="fl-font-times"><strong>Georgia/Times/Times New Roman font</strong> The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+			<p class="fl-font-courier"><strong>Courier/Courier New font</strong> The quick brown fox jumped over the lazy dog. <input type="submit" value="Button" /> <input type="text" value="Text field" /> <textarea rows='1'> Text area</textarea></p>
+		-->
+		</table>		
+	</body>
+</html>

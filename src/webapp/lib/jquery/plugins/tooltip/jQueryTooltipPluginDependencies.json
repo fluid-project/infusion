@@ -1,0 +1,7 @@
+{"jQueryTooltipPlugin": {
+   	"name": "jQuery Tooltip Plugin",
+   	"description": "Allows tooltip customization.",
+   	"cssFiles": "jquery.tooltip.css",
+	"files": ["jquery.tooltip.js"],
+	"dependencies": ["jQuery", "jQueryUICore"]
+}}

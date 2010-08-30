@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Language" content="en" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Reorderable jQuery Tabs Demo</title>
+        <link rel="stylesheet" href="../../../standalone-demos/lib/jquery/css/flora.tabs.css" type="text/css" media="screen" title="Flora (Default)" />
+        <link rel="stylesheet" href="../../../standalone-demos/lib/jquery/css/style.css" type="text/css" />
+        <link rel="stylesheet" href="../css/reorderer.css" type="text/css" />
+
+
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../js/jquery-tabs.js"></script>
+
+    </head>
+    <body class="flora">
+
+        <h1>Carving Woods (Reorderable tabs)</h1>
+
+        <div id="container-1">
+            <ul id="tabList">
+                <li id="tab_0"><a href="#fragment-0"><span>Welcome</span></a></li>
+                <li id="tab_1"><a href="#fragment-1"><span>Basswood</span></a></li>
+                <li id="tab_2"><a href="#fragment-2"><span>Butternut</span></a></li>
+                <li id="tab_3"><a href="#fragment-3"><span>Walnut</span></a></li>
+                <li id="tab_4"><a href="#fragment-4"><span>Sassafras</span></a></li>
+            </ul>
+            <div id="fragment-0">
+        <p>In Opera, the &lt;li&gt; tags above form a closed loop in tab order, preventing focus
+        from escaping elsewhere in the browser.</p>
+        
+        <a href="http://ponder.org.uk">Focus trap</a>
+        
+
+    <script type="text/javascript">
+        demo.initJqueryTabs();
+    </script>
+    </body>
+</html>

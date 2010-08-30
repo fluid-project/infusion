@@ -1,0 +1,7 @@
+{"inlineEdit": {
+  	"name": "Inline Edit",
+   	"description": "Allows a user to do quick edits to simple text directly on a web page. ",
+    "cssFiles": "InlineEdit.css",
+	"files": ["InlineEdit.js", "InlineEditIntegrations.js"],
+	"dependencies": ["jQuery", "jQueryTooltipPlugin", "framework", "undo"]
+}}

@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Scheduler Tests</title>
+
+    <!--  This is the jqUnit test css file -->
+    <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/testsuite.css" />
+
+    <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.core.js"></script>
+    <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../../components/reorderer/js/GeometricManager.js"></script>
+    <script type="text/javascript" src="../../../../components/reorderer/js/Reorderer.js"></script>
+    <script type="text/javascript" src="../../../../lib/json/js/json2.js"></script>
+    <script type="text/javascript" src="../js/Scheduler.js"></script>
+
+    <!--  These are the jqUnit test js files -->
+    <script type="text/javascript" src="../../../lib/qunit/js/testrunner.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+  
+    <!--  These are used for tests that have been written using this page as sample data. -->
+    <script type="text/javascript" src="../../../test-core/utils/js/TestUtils.js"></script>
+    <script type="text/javascript" src="../js/SchedulerTests.js"></script>
+</head>
+
+<body>
+     <h1 id="header">Scheduler Test Suite</h1>
+    <h2 id="banner"></h2>
+    <h2 id="userAgent"></h2>
+    
+    <ol id="tests"></ol>
+    <div id="main" style="display: none;">
+
+    <h1>Conference Scheduling Grid</h1>
+<div id="sortableSchedule">
+  <ul class="times column">
+      <li class="columnTitle">Time</li>
+      <li>9:00 am</li>
+      <li>10:00 am</li>
+      <li>11:00 am</li>
+      <li>1:00 pm</li>
+      <li>2:00 pm</li>
+      <li>3:00 pm</li>
+      <li>4:00 pm</li>
+      <li>5:00 pm</li>
+  </ul>
+  <ul id="agendaItems" class="column">
+          <li class="columnTitle">Agenda Item</li>
+          <li class="fixed">Coffee and Introductions</li>
+          <li id="sortableSchedule.orderable0" class="movableTopic">Keynote Speech, Douglas Crockford</li>
+          <li id="sortableSchedule.orderable1" class="movableTopic">OSGi: A Component Model for the Future, Antranig Basman</li>
+          <li id="sortableSchedule.orderable2" class="movableTopic">Why JavaScript Doesn't Need Classes, Colin Clark</li>
+          <li id="sortableSchedule.orderable3" class="movableTopic">Automated User Testing with Selenium, Michelle D'Souza</li>
+          <li id="sortableSchedule.orderable4" class="movableTopic">Design Patterns in Context, Allison Bloodworth</li>
+          <li id="sortableSchedule.orderable5" class="movableTopic">Goal-Directed Design and the Cooperian Philosophy, Daphne Ogle</li>
+      <li class="fixed">Closing Remarks</li>
+  </ul>
+        </div>
+    </div>
+</body>
+</html>

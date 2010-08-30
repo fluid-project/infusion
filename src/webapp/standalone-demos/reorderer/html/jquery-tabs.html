@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Language" content="en" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Reorderable jQuery Tabs Demo</title>
+        <link rel="stylesheet" href="../../lib/jquery/css/flora.tabs.css" type="text/css" media="screen" title="Flora (Default)" />
+        <link rel="stylesheet" href="../../lib/jquery/css/style.css" type="text/css" />
+        <link rel="stylesheet" href="../css/reorderer.css" type="text/css" />
+
+        <script type="text/javascript">
+            /* Fix for IE6 background-image flicker
+             * See http://www.mister-pixel.com/#Content__state=is_that_simple
+             */
+            try {
+                document.execCommand('BackgroundImageCache', false, true);
+            } catch(err) {}
+        </script>
+
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../lib/jquery/js/ui.tabs.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../components/reorderer/js/GeometricManager.js"></script>
+        <script type="text/javascript" src="../../../components/reorderer/js/Reorderer.js"></script>
+        <script type="text/javascript" src="../js/jquery-tabs.js"></script>
+
+    </head>
+    <body class="flora">
+
+        <h1>Carving Woods (Reorderable tabs)</h1>
+
+        <div id="container-1">
+            <ul id="tabList">
+                <li id="tab_0"><a href="#fragment-0"><span>Welcome</span></a></li>
+                <li id="tab_1"><a href="#fragment-1"><span>Basswood</span></a></li>
+                <li id="tab_2"><a href="#fragment-2"><span>Butternut</span></a></li>
+                <li id="tab_3"><a href="#fragment-3"><span>Walnut</span></a></li>
+                <li id="tab_4"><a href="#fragment-4"><span>Sassafras</span></a></li>
+            </ul>
+            <div id="fragment-0">
+        <p>The tabs at the top of this page can be re-ordered using the keyboard.</p>
+        <p>Use the Tab key to move focus to the collection of tabs.
+           You can tell when focus arrives there because the current tab will change to a white background.</p>
+      <p>Once focus is on the tab group, you can select a tab to move and move it using the following keys:</p>
+        
+        <table>
+            <tr><th>Selection Keys</th><th>Modifiers for movement</th></tr>
+            <tr><td><img src="../../lib/jquery/i/arrow-keys.jpg"/></td><td><img src="../../lib/jquery/i/control-key.jpg"/></td></tr>
+            <tr><td><img src="../../lib/jquery/i/letter-keys.jpg"/></td><td><img src="../../lib/jquery/i/control-key.jpg"/></td></tr>
+        </table>
+            </div>
+            <div id="fragment-1">
+                <ul>
+                    <li>Soft creamy white wood that is easy to work and glues into larger block very well.</li>
+                    <li>It has no figuring, with a fine straight even grain, the sapwood is almost white.</li>
+                    <li>Carves well and is excellent for detail work.</li>
+                    <li>Very light weight.</li>
+                    <li>Basswood is used in carving, turning, and toy making.</li>
+                </ul>
+            </div>
+            <div id="fragment-2">
+                <ul>
+                    <li>Much lighter in weight than black walnut, this wood has a medium fine straight grain than is a golden brown tone to a reddish brown at the sapwood.</li>
+                    <li>If you use an oil finish to the carving the surface takes on a light oak tone.</li>
+                    <li>Excellent for high relief with some fine detailing.</li>
+                    <li>Used in furniture carving, and veneering.</li>
+                </ul>
+            </div>
+            <div id="fragment-3">
+                <ul>
+                    <li>Extremely durable wood that will accept relief carving.</li>
+                    <li>Most carving work is done with a chisel and mallet.</li>
+                    <li>The grain is medium coarse yet straight.</li>
+                    <li>Walnut burls can have very interesting figuring within them.  </li>
+                    <li>The color of walnut can change quickly from deep reddish brown to creamy white.</li>
+                    <li>Used in furniture making, furniture carving, turning, and carving.</li>
+                </ul>
+            </div>
+            <div id="fragment-4">
+                <ul>
+                    <li>A hardwood similar to walnut in it's ability to be carved.</li>
+                    <li>Has a very interesting, distinct grain pattern that is straight.</li>
+                    <li>Mediun to heavy weight wood that is creamy tan with darker brown grain lines.</li>
+                    <li>Smells wonderful while you are carving.</li>
+                    <li>Used in furniture making, furniture carving, and carving.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <a href="http://ponder.org.uk">Focus trap</a>
+        
+        <script type="text/javascript">
+            // <![CDATA[
+            $(window).bind('load', function() {
+                $('#container-1 > ul').tabs();
+                $("#container-1 a").fluid("tabindex", -1);
+            });
+            // ]]>
+        </script>
+    <script type="text/javascript">
+        demo.initJqueryTabs();
+    </script>
+    </body>
+</html>

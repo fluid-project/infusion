@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>FileQueue VIEW Tests</title>
+    
+    <!--  This is the jqUnit test css file -->
+    <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/testsuite.css" />
+    
+    <script src="../../../../lib/jquery/core/js/jquery.js" type="text/javascript"></script>
+    <script src="../../../../lib/jquery/ui/js/ui.core.js" type="text/javascript"></script>
+    <script src="../../../../framework/core/js/jquery.keyboard-a11y.js" type="text/javascript"></script>
+    <script src="../../../../framework/core/js/Fluid.js" type="text/javascript"></script>
+    <script src="../../../../components/progress/js/Progress.js" type="text/javascript"></script>
+    <script src="../../../../components/uploader/js/Scroller.js" type="text/javascript"></script>
+    <script src="../../../../components/uploader/js/Uploader.js" type="text/javascript"></script>
+    <script src="../../../../components/uploader/js/FileQueue.js" type="text/javascript"></script>
+    
+
+    <!--  These are the jqUnit test js files -->
+    <script type="text/javascript" src="../../../lib/qunit/js/testrunner.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+
+    <script type="text/javascript" src="../js/FileQueueViewTests.js"></script>
+</head>
+
+<body id="body">
+    <h1 id="header">FileQueueView Tests</h1>
+    <h2 id="banner"></h2>
+    <h2 id="userAgent"></h2>
+
+    <ol id="tests"></ol>
+    
+    <!-- Test HTML -->
+    <div id="main">
+        
+	    <!-- Top of the queue -->
+		<div class="fl-uploader-queue-header">
+			<table cellspacing="0" cellpadding="0" summary="Headers for the file queue.">
+				<caption>File Queue:</caption>
+				<thead>
+					<tr>
+						<th scope="col" class="fileName">File Name</th>
+						<th scope="col" class="fileSize">Size&nbsp;&nbsp;</th>
+						<th scope="col" class="fileRemove">&nbsp;</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+        
+        <!-- Scrolling section -->
+		<div class="flc-scroller">
+			<div class="scroller-inner">
+			    
+                <!-- The file list itself -->
+				<table cellspacing="0" class="flc-uploader-queue" summary="Queue of files to upload.">
+					<tbody>
+                        <!-- Rows will be rendered in here. -->
+                        
+                        <!-- Template for the file queue rows -->
+            			<tr class="flc-uploader-file-tmplt flc-uploader-file fl-uploader-hidden-templates">
+                            <th class="flc-uploader-file-name fileName" scope="row">File Name Placeholder</th>
+                            <td class="flc-uploader-file-size fileSize">0 KB</td>
+                            <td class="actions">
+                                <button type="button" class="flc-uploader-file-action iconBtn" title="Remove File" tabindex="-1">
+                                    <span class="text-description">Remove file from queue</span>
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <!-- Template for the file error info rows -->
+                        <tr class="flc-uploader-file-error-tmplt fl-uploader-file-error fl-uploader-hidden-templates">
+                            <td colspan="3" class="flc-uploader-file-error"></td>
+                        </tr>
+					</tbody>
+				</table>
+                
+			</div>
+		</div>
+        
+    </div>
+</body>
+</html>

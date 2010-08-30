@@ -1,0 +1,6 @@
+{"progress": {
+   	"name": "Progress",
+   	"description": "A linear progress display.",
+	"files": "Progress.js",
+	"dependencies": ["jQuery", "jQueryUICore", "framework"]
+}}

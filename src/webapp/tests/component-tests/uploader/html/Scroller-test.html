@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Vertical Scroller Tests</title>
+        
+        <!--  This is the jqUnit test css file -->
+	    <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/testsuite.css" />
+        
+        <!-- Fluid dependencies for the Scroller -->
+	    <script src="../../../../lib/jquery/core/js/jquery.js" type="text/javascript"></script>
+	    <script src="../../../../framework/core/js/Fluid.js" type="text/javascript"></script>
+	    <script src="../../../../components/uploader/js/Scroller.js" type="text/javascript"></script>
+
+        <!--  These are the jqUnit test js files -->
+	    <script type="text/javascript" src="../../../lib/qunit/js/testrunner.js"></script>
+	    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/ScrollerTests.js"></script>
+        
+		<style type="text/css">
+            .flc-scroller-outer {
+                display: block;
+                position: relative;
+                background-color: white;
+                overflow: auto;
+                overflow-x: hidden;
+                overflow-y: auto;
+                border-right: 1px solid #999;
+                border-left: 1px solid #999;
+            }
+            
+            ul {
+                border: 1px solid #CCC;
+                width: 180px;
+            }
+		</style>
+
+	</head>
+	<body>
+    	<h1 id="header">Vertical Scroller Test Suite</h1>
+        <h2 id="banner"></h2>
+        <h2 id="userAgent"></h2>
+        <ol id="tests"></ol>
+    
+        <!-- Test HTML -->
+        <div id="main">
+           <!-- Generic Scroller -->
+            <div id="outer" class="flc-scroller">
+            	<div id="inner" class="flc-scroller-inner">
+        	    	<ul id="scrollableWithWrapper">
+        	    	    <li>Item One</li>
+                        <li>Item Two</li>
+                        <li>Item Three</li>
+                        <li>Item Four</li>
+        	    	</ul>
+        			
+        		</div>		
+            </div>
+        
+            <!-- No Wrapper -->
+        	<ul id="scrollableNoWrapper">
+        	    <li>Item One</li>
+                <li>Item Two</li>
+                <li>Item Three</li>
+                <li>Item Four</li>
+            </ul>
+         </div>
+	</body>
+</html>

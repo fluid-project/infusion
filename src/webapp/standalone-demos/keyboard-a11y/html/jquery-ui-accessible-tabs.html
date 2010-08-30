@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <title>Accessible jQuery UI Tabs</title>
+
+    <link rel="stylesheet" href="../../lib/jquery/css/flora.tabs.css" type="text/css" media="screen" title="Flora (Default)" />
+    <link rel="stylesheet" href="../../lib/jquery/css/style.css" type="text/css" media="screen" title="Flora (Default)" />
+
+    <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+    <script type="text/javascript" src="../../lib/jquery/js/ui.tabs.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../js/jquery-ui-accessible-tabs.js"></script>
+
+  </head>
+
+  <body class="flora">
+    <h1>Accessible jQuery UI Tabs</h1>
+
+    <!-- Lets us switch between the Mac OS and Window style of tab interaction. -->
+    <p>
+        Select on Focus: <a id="selectOnFocusLink" href="#">Disabled</a>
+    </p>
+    
+    <!-- A list of anchors that will be turned into a jQuery UI tabs widget. -->
+    <!-- The href of each anchor points to the id its associated panel.      --> 
+    <ul id="tabs">
+        <li id="catsTab"><a href="#catsPanel"><span>Cats</span></a></li>
+        <li id="dogsTab"><a href="#dogsPanel"><span>Dogs</span></a></li>
+        <li id="hamstersTab"><a href="#hamstersPanel"><span>Hamsters</span></a></li>
+        <li id="alligatorsTab"><a href="#alligatorsPanel"><span>Alligators</span></a></li>
+    </ul>
+
+    <!-- A collection of divs that represent the panel beneath each tab. -->
+    <div id="panels">
+      <div id="catsPanel">
+        Cats meow.
+      </div>
+      <div id="dogsPanel">
+        Dogs bark.
+      </div>
+      <div id="hamstersPanel">
+        Hamsters wheel.
+      </div>
+      <div id="alligatorsPanel">
+        Alligators bite.
+      </div>
+    </div>
+    
+  </body>
+</html>

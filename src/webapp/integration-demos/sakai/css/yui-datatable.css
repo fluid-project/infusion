@@ -1,0 +1,64 @@
+.yui-dt table {
+	width: 100%;
+	border-bottom: 1px solid #d0d3d7;
+}
+.yui-dt table tr:hover {
+	background: #F2FCEB;
+}
+.yui-dt table tr:hover td.bgEBECED {
+	background: #E3F9D5;
+}
+
+.yui-dt table thead tr {
+	background: #EBECED;
+}
+.yui-dt table th {
+	border: 1px solid #d0d3d7;
+	border-bottom: 0;
+}
+th div.yui-dt-liner {
+	padding: 0 12px;
+	line-height: 28px;
+}
+.yui-dt th a {
+	font-weight:bold;
+	text-decoration:none;
+	color:#000;
+	vertical-align:bottom;
+}
+.yui-dt th a:hover {
+	text-decoration: underline;
+}
+th.yui-dt-asc .yui-dt-liner {
+	background:url(../lib/yui_2.6.0-build/assets/skins/sam/dt-arrow-dn.png) no-repeat right;
+}
+th.yui-dt-desc .yui-dt-liner {
+	background:url(../lib/yui_2.6.0-build/assets/skins/sam/dt-arrow-up.png) no-repeat right;
+}
+
+.yui-dt table td {
+	border: 1px solid #d0d3d7;
+	border-bottom: 0;
+}
+.yui-dt table td div {
+	padding: 0 12px;
+	line-height: 40px;
+}
+.yui-dt table td div select {
+	width: 120px;
+}
+.yui-dt table td.memberName {
+	font-weight:bold;
+}
+
+tr.inactive a {
+	color: #999999;
+}
+a.nonbuttonInactive {
+	color: #999999;
+	text-decoration: none;
+	cursor: default;
+}
+
+tr.yui-dt-even{background-color:#F7F7F7;}
+tr.yui-dt-odd{background-color:#FFF;}

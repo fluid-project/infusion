@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>Scroller Manual Tests</title>
+
+        <link rel="Stylesheet" media="screen" href="../css/simple-scroller.css" />
+                
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../components/uploader/js/Scroller.js"></script>
+        <script src="../js/simple-scroller.js" type="text/javascript"></script>
+        
+    </head>
+    
+    <body>
+        <p>By default and depending on direction that the scroller is scrolling, the scroller scrolls to the item above or below the item requested to give the item context.</p>
+        <!-- Generic Scroller -->
+        <div class="fluid-scroller-outer">
+            <div class="fluid-scroller-inner">
+                <ul id="scrollableList">
+                    <li>Item Zero</li>
+                    <li>Item One</li>
+                    <li>Item Two</li>
+                    <li>Item Three</li>
+                    <li>Item Four</li>
+                    <li>Item Five</li>
+                    <li>Item Six</li>
+                    <li>Item Seven</li>
+                    <li>Item Eight</li>
+                    <li>Item Nine</li>
+                    <li>Item Ten</li>
+                    <li>Item Eleven</li>
+                    <li>Item Twelve<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-</li>
+                    <li>Item Thirteen</li>
+                    <li>Item Fourteen</li>
+                    <li>Item Fifteen</li>
+                    <li>Item Sixteen</li>
+                    <li>Item Seventeen</li>
+                    <li>Item Eighteen</li>
+                    <li>Item Nineteen</li>
+                    <li>Item Twenty</li>
+                    <li>Item Twenty One</li>
+                    <li>Item Twenty Two</li>
+                    <li>Item Twenty Three</li>
+                    <li>Item Twenty Four</li>
+                    <li>Item Twenty Five</li>
+                    <li>Item Twenty Six</li>
+                    <li>Item Twenty Seven</li>
+                    <li>Item Twenty Eight</li>
+                    <li>Item Twenty Nine</li>
+                    <li>Item Thirty</li>
+                </ul>
+            </div>		
+        </div>
+        
+        
+        <p id="buttonPanel">
+            <label for="toElementField">Scroll to Element:</label> 
+            <input id="toElementField" type="text" value="14"/>
+            <button id="toElementButton">Scroll</button>
+            <button id="bottomButton">Scroll to Bottom</button>
+        </p>
+    </body>
+</html>

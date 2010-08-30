@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" id="html">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>jQuery.keyboard-a11y Test Suite</title>
+    
+    <!--  This is the jqUnit test css file -->
+    <link rel="Stylesheet" media="screen" href="../../../lib/qunit/css/testsuite.css" />
+    
+    <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.core.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+
+    <!--  These are the jqUnit test js files -->
+    <script type="text/javascript" src="../../../lib/qunit/js/testrunner.js"></script>
+    <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+    
+    <!--  These are tests that have been written using this page as data -->    
+    <script type="text/javascript" src="../js/keyboard-a11y-tests.js"></script>
+</head>
+
+<body id="body">
+    <h1 id="header">jQuery.keyboard-a11y Suite</h1>
+    <h2 id="banner"></h2>
+    <h2 id="userAgent"></h2>
+
+    <!-- Test HTML -->
+    <div id="main" style="display: none;">
+      <a id="linkBefore" href="#">Link Before</a>
+
+      <p id="menuNoTabIndex" tabindex="0">
+          <span id="menuItem0" tabindex="0">Pigs</span>
+          <span id="menuItem1">Cows</span>
+          <span id="menuItem2" tabindex="1">Chickens</span>
+          <span id="notAMenuItem">Tofu</span>
+      </p>
+
+      <a id="linkAfter" href="#">Link After</a>
+
+      <div id="containerWithExisting0TabIndex" tabindex="0">
+
+      </div>
+
+      <div id="containerWithExistingPositiveTabIndex" tabindex="1">
+
+      </div>
+      <div id="containerWithExistingNegativeTabIndex" tabindex="-1">
+
+      </div>
+    </div>
+    <ol id="tests"></ol>
+</body>
+</html>

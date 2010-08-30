@@ -1,0 +1,9 @@
+Attribution:
+ * This is the unit testing suite from jQuery dual-licensed under the GPL and MIT licenses.
+ * The original is available at http://docs.jquery.com/Qunit
+
+Instructions:
+ * To run the unit test suite, simply open any of the *-test.html pages in your web browser.
+
+Note on jquery.simulate.js:
+ * This version of simulate is shipped in jQuery 1.5.1, downloaded July 2, 2008

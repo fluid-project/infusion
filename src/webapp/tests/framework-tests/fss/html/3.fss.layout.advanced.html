@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<link href="../css/tests.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-reset.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-layout.css" rel="stylesheet" />
+		<link href="../../../../framework/fss/css/fss-text.css" rel="stylesheet" />
+		
+		<script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+		<script type="text/javascript" src="../js/toc.js"></script>
+		
+		<script type="text/javascript">
+            // programmatic coloring - access to advanced selectors + requires less maintenance than hardcoded classes
+            $().ready(function(){
+                $('.fl-fix').css('background-color','transparent');
+                $('.test_containers > div:not(.fl-tabs-content):not(.fl-fix)').css({
+                    'background-color': '#000',
+                    'border-bottom': '1px solid #fff'
+                });
+                $('li').css({'color':'#000'});                
+                $('.fl-icon:odd').css({'background': '#fff url(images/16x16icon_2.png) no-repeat top left'});
+                $('.fl-icon:even').css({'background': 'transparent url(images/16x16icon.png) no-repeat top left'});                
+                $('*[class^=fl-button]').css({
+                    'background': '#fff url(images/buttons_sliding_cap.png) no-repeat top left'
+                });
+                $('*[class^=fl-button] *').css({
+                    'background': '#fff url(images/buttons_sliding_bg.png) no-repeat top right'
+                });
+                $('.caption').css('background-color','#000');
+                                
+                
+            });            
+		</script>
+
+		<title>Test Containers</title>
+	</head>
+	<body>
+		<div class="options">
+			<h1>Loading test...</h1>
+            <p id="note"></p>
+            <p id="page">Test 0 of 0</p>
+			<a href="#prev">Previous Test</a>
+			<a href="#next">Next Test</a>			
+		</div>
+
+		<div class="test_containers">
+
+            <ul class="fl-tabs fl-tabs-left">
+                <li class="fl-tabs-active"><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+
+            <ul class="fl-tabs fl-tabs-center">
+                <li class="fl-tabs-active"><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+
+            <ul class="fl-tabs fl-tabs-right">
+                <li class="fl-tabs-active"><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+
+            <ul class="fl-tabs fl-tabs-center">
+                <li class="fl-tabs-active"><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+            <div class="fl-tabs-content">tab content container</div>
+
+            <ul class="fl-listmenu fl-container-200">
+                <li><a href="#">Tab link</a></li>
+                <li class="fl-activeItem"><a href="#">Tab link</a></li>
+                <li><a href="#">Tab link</a></li>
+            </ul>
+
+
+            <div class="fl-widget fl-container-250">
+                <div class="fl-widget-titlebar"><h2>Title</h2></div>
+                <div class="fl-widget-options">
+                    <a href="#" class="fl-icon fl-force-right">Icon container</a>
+                    <a href="#" class="fl-icon fl-force-right">Icon container</a>
+                    <a href="#" class="fl-icon fl-force-left">Icon container</a>
+                    <a href="#" class="fl-icon fl-force-left">Icon container</a>
+                    Options w/ icons
+                    </div>
+                <div class="fl-widget-content">Content Content Content Content Content Content Content Content Content Content Content Content Content </div>
+            </div>
+
+            <div class="fl-fix">
+                <a href="#" class="fl-button-left"><strong>|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sliding Door Button &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</strong></a>
+                <a href="#" class="fl-button-left"><strong>-</strong></a>
+                <a href="#" class="fl-button-right"><strong>|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sliding Door Button &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</strong></a>
+                <a href="#" class="fl-button-right"><strong>-</strong></a>
+            </div>
+
+            <ul class="fl-container-flex fl-grid fl-fix">
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+                <li><img src="../images/picture_150.png"> <a href="#" class="caption">A picture</a></li>
+            </ul>
+
+            <form action="" method="post" class="fl-container-450 fl-centered fl-controls-left">                
+                <li><label class="fl-label">Left aligned labels</label><input type="text" name="" value="" /></li>
+                <li><strong class="fl-label">Left aligned labels</strong><label for="checkbox"><input id="checkbox" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+            </form>
+
+            <form action="" method="post" class="fl-container-450 fl-centered fl-controls-centered">
+                <li><label class="fl-label">Center aligned labels</label><input type="text" name="" value="" /></li>
+                <li><strong class="fl-label">Center aligned labels</strong><label for="checkbox2"><input id="checkbox2" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+            </form>
+            <form action="" method="post" class="fl-container-450 fl-centered fl-controls-right">
+                <li><label class="fl-label">Right aligned labels</label><input type="text" name="" value="" /></li>
+                <li><strong class="fl-label">Right aligned labels</strong><label for="checkbox3"><input id="checkbox3" type="checkbox" name="" value="" />A label for the checkbox</label></li>
+            </form>
+
+
+		</div>		
+
+	</body>
+</html>
+

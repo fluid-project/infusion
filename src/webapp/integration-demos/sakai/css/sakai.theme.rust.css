@@ -1,0 +1,16 @@
+/* FSS Extension: Sakai widgets */
+
+    /* Widget :: Icons */
+    .fl-theme-rust .fl-widget .more  {background-image:url('../images/rust-icons/icon-widget-More.png'); margin-left:0px;}
+    .fl-theme-rust .fl-widget .close {background-image:url('../images/rust-icons/icon-widget-Close.png'); margin-right:0px;}
+    .fl-theme-rust .fl-widget .settings {background-image:url('../images/rust-icons/icon-widget-Settings.png'); margin-right:0px; width:16px; }
+    .fl-theme-rust .fl-widget-options .viewOptions {background-image:url('../images/rust-icons/icon-options-ListOrGrid.png'); background-color:#FFFBC2;  border:1px solid #cf923e;}
+    .fl-theme-rust .fl-widget-content .menu .delete {background-image: url('../images/rust-icons/icon-menu-Delete.png');}
+    /* Widget :: Menus */
+   /*
+    .fl-theme-rust .fl-widget-content .menu {padding:0px; overflow-y:auto; overflow-x:hidden; border:1px solid #cf923e; border-bottom:none; zoom:1; background-color:transparent;}
+    .fl-theme-rust .fl-widget-content .menu li {float:left; list-style-type:none; border-bottom:1px solid #cf923e; width:100%; }
+    .fl-theme-rust .fl-widget-content .menu a {position:relative; display:block; text-indent:30px; font-weight:bold; padding:7px 0 7px 0; background-color:transparent;}
+    .fl-theme-rust .fl-widget-content .menu a:hover {background-color:#FFDC84; color:#000;}
+    .fl-theme-rust .fl-widget-content .menu .icon {}
+    */

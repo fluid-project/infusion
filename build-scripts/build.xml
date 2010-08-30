@@ -1,0 +1,305 @@
+<project name="Fluid" default="releaseBuild" basedir=".">
+    <description>
+      Build a distributable package of Fluid Infusion.
+        
+      To build a distribution, type: ant
+      To jsLint all source code in the source directory, type: ant validate
+      To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
+      To create a custom build use the customBuild target.
+        Custom build has three optional parameters:  'include', 'exclude', and 'jsfilename'
+        e.g. ant customBuild -Dinclude="uiOptions, inlineEdit" -Dexclude="jQuery" -Djsfilename="MyInfusion.js"
+           
+    </description>
+
+    <property file="build.properties"/>
+
+  <!-- set up directory locations -->
+    <property name="base-dir" location=".." />
+    <property name="products" location="${base-dir}/products" />
+    <property name="src" location="${base-dir}/src/webapp" />
+    <property name="tests" location="${base-dir}/src/webapp/tests" />
+    <property name="dist" location="${products}/dist" />
+    <property name="src-dist" location="${products}/src-dist" />
+    <property name="build" location="${base-dir}/build" />
+    <property name="licenses" location="${build}/licenses" />
+    <property name="web-inf" location="${base-dir}/src/webapp/WEB-INF"/>
+    <property name="lint" location="${src}"/>
+
+    <!-- the filename for the package to output -->
+    <property name="zipfile" value="infusion-${fluid_version}" />
+
+    <!-- the filename of the documentation PDF -->
+    <property name="pdf-file" value="Fluid-${fluid_version}.pdf" />
+    
+    <!-- the filename of the war file -->
+    <property name="warfile" value="fluid-components-${fluid_version}.war" />
+    
+    <!-- properties for URL rewriting -->
+    <property name="regexStartJS" value="&lt;script{1,1}?.*" />
+    <property name="regexEndJS" value="{1,1}?.*script>" />
+    <property name="fluidRegExp" value="framework/core/js/Fluid.js" />
+    
+    <!-- task definition for JSLint -->
+    <taskdef name="jslint" 
+      classname="net.happygiraffe.jslint.ant.JSLintTask" 
+      classpath="${jslint}" />
+
+    <!-- Target: cleanup before running -->
+    <target name="clean" description="Cleans up all build-related artifacts and products.">
+        <delete dir="${build}" />
+        <delete dir="${products}" />
+    </target>
+  
+    <!-- Set up the build directory structure -->
+    <target name="init">
+        <mkdir dir="${products}" />
+        <mkdir dir="${build}" />
+        <mkdir dir="${dist}" />
+        <mkdir dir="${src-dist}" />
+        <mkdir dir="${licenses}" />
+    </target>
+    
+    <!-- Target: Minify the specified files and copy them into the specified directory. Don't call this directly. -->
+    <target name="minify">
+        <apply executable="java" dest="${toDir}"  parallel="false">
+            <!-- The files to act upon. -->  
+            <fileset dir="${fromDir}" casesensitive="no">
+              <include name="**/${file-pattern}" />
+              <exclude name="**/test/*" />
+            </fileset>
+    
+            <arg line="-jar" />
+            <arg path="${yuicompressor}" />
+            <srcfile/>
+            <arg line="--nomunge" />
+            <!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
+            <arg line="${lineBreakArg}" />
+            <arg line="-o" />
+            <mapper type="glob" from="${file-pattern}" to="${file-pattern}" />
+            <targetfile /> 
+        </apply>
+    </target>    
+    
+    <!-- Minifies javascript and css files and puts them into the distribution -->
+    <target name="minifyBuild">
+      <echo>Minifying .JS files...</echo>
+      <antcall target="minify">
+        <param name="fromDir" value="${build}" />
+        <param name="toDir" value="${dist}" />
+        <param name="file-pattern" value="*.js" />
+        <param name="lineBreakArg" value="" />
+      </antcall>
+      
+      <echo>Minifying .CSS files...</echo>
+      <antcall target="minify">
+        <param name="fromDir" value="${build}" />
+        <param name="toDir" value="${dist}" />
+        <param name="file-pattern" value="*.css" />
+        <param name="lineBreakArg" value="--line-break 0" />
+      </antcall>
+    </target>    
+    
+    <target name="copyDistroFiles">
+      <copy todir="${toDir}">
+        <fileset dir="${base-dir}/src/webapp/">
+            <include name="integration-demos/**/*" />
+            <include name="standalone-demos/**/*" />
+            <include name="tests/**/*" />
+        </fileset>
+      </copy>       
+    </target>
+        
+    <!-- Creates the release directory structure and zips it all up -->
+    <target name="package">
+      <echo>Zipping distribution bundle to ${dist}/${zipfile}</echo>
+      <zip destfile="${products}/${zipfile}.zip" 
+        basedir="${dist}"
+        includes="**/*"  excludes="*.zip" />
+              
+      <echo>Zipping source bundle to ${dist}/${zipfile}</echo>
+      <zip destfile="${products}/${zipfile}-src.zip" 
+        basedir="${src-dist}"
+        includes="**/*"  excludes="*.zip" />
+    </target>
+
+    <!-- Copies the files required to build a war file containing Infusion. -->
+    <target name="copyInfusionWARFiles">        
+      <copy todir="${build}/war/src/webapp/" >
+        <fileset dir="${dist}">
+            <include name="components/**/*" />
+            <include name="framework/**/*" />
+            <include name="lib/**/*" />          
+        </fileset>
+      </copy>
+  
+      <copy todir="${build}/war/src/webapp/WEB-INF" >
+        <fileset dir="${web-inf}"/>
+      </copy>
+  
+      <copy todir="${build}/war">
+        <fileset dir="..">
+          <include name="pom.xml" />
+          <include name="project.xml" />
+          <include name="maven.xml" />
+          <include name="project.properties" />
+        </fileset>
+      </copy>
+    </target>
+    
+    <!-- Builds the WAR file using Maven 2 and copies it to the distribution folder. -->
+    <target name="buildWAR">
+      <condition property="isWindows">
+        <os family="windows" />
+      </condition>
+      <antcall target="invokeMavenForWAR"/>
+      <antcall target="invokeMavenForWARWindows"/>
+      <echo>Copying war file ${build}/war/target/${warfile} to ${dist}...</echo>
+      <copy todir="${dist}">
+          <fileset dir="${build}/war/target">
+              <include name="${warfile}" />
+          </fileset>
+      </copy>
+    </target>
+  
+    <target name="invokeMavenForWAR" unless="isWindows">
+      <echo>Building war file...</echo>
+      <apply executable="mvn" dir="${build}/war" parallel="true">
+          <fileset  dir=".">
+              <include name="pom.xml"/>
+          </fileset>
+          <arg value="install" />
+      </apply>
+    </target>
+  
+    <target name="invokeMavenForWARWindows" if="isWindows">
+      <apply executable="cmd" dir="${build}/war" parallel="true" vmlauncher="false">
+          <fileset  dir=".">
+              <include name="pom.xml"/>
+          </fileset>
+          <arg value="/c mvn.bat install" />
+      </apply>
+    </target>
+    
+    <!-- Builds the core Infusion WAR file. -->
+    <target name="buildInfusionWAR" depends="copyInfusionWARFiles, buildWAR">
+    </target>
+        
+    <!-- Builds a full-fledged WAR file used for the daily build, which includes sample code and tests. -->
+    <target name="buildDailyWAR" depends="copyInfusionWARFiles">        
+        <!-- Copy the additional files into the war build required for the daily build. -->
+        <antcall target="copyDistroFiles">
+            <param name="toDir" value="${build}/war/src/webapp/" />
+        </antcall>
+        
+        <antcall target="buildWAR" />
+    </target>
+
+    <!-- Target: validate -->
+    <target name="validate" description="Validates all JavaScript files using JSLint. To lint a specific folder use: -Dlint=../some/folder" >
+
+        <echo>Validating .JS files...</echo>
+        <jslint dir="${lint}" 
+                    excludes="${excludeFromJSLint}"
+                    options="browser,eqeqeq,nomen,undef">
+        </jslint>
+    </target>
+    
+    <target name="concatJavaScript" >
+        <concat destfile="${build}/${jsfile}" >
+            <filelist dir="${src}" files="${allRequiredJSFiles}" /> 
+        </concat>    
+    </target>
+    
+    <!-- Runs the javascript dependency resolver which sets $jsfile, $requiredDirectoriesSelector, $jsRegExp, and $allRequiredJSFiles -->
+    <target name="resolveDependencies" depends="clean">
+        <script language="javascript" src="build.js" />
+    </target>
+
+    <target name="copyToSrcBundle" depends="copySourceToBuild">        
+        <copy todir="${src-dist}">
+            <fileset dir="${build}" />
+        </copy>
+    </target>
+    
+    <target name="copyToDeployBundle" depends="copySourceToBuild">        
+        <!-- Copy everything but the JavaScript and CSS we are about to minify -->
+        <!-- Also exclude the dependency json files from the distribution -->
+        <copy todir="${dist}">
+          <fileset dir="${build}" excludes="**/*.js,**/*.css, **/*Dependencies.json" />
+        </copy>
+        
+        <!-- Minify and copy JavaScript and CSS into the build directory -->
+        <antcall target="minifyBuild" />
+    </target>
+
+    <!-- Builds a complete source release bundle. -->
+    <target name="buildSrcBundle" depends="copyToSrcBundle">        
+        <antcall target="copyDistroFiles">
+            <param name="toDir" value="${src-dist}" />
+        </antcall>
+    </target>
+    
+    <!-- Builds a complete minified deployment release bundle. -->
+    <target name="buildDeployBundle" depends="copyToDeployBundle">        
+        <!-- Create the build products -->
+        <antcall target="copyDistroFiles">
+            <param name="toDir" value="${dist}" />
+        </antcall>
+    </target>
+    
+    <!-- Replaces Fluid.js with the reference to the single js file. Depends on the build already being deployed 
+    (i.e. through buildDeployBundle or copyToDeployBundle -->
+    <target name="replaceFluid">
+        <replaceregexp match="${fluidRegExp}" replace="${jsfile}" flags="i">
+            <fileset dir="${products}" includes="**/*.html" />
+        </replaceregexp>
+    </target>
+    
+    <!-- Removes that <script> blocks pertaining to files included in the single js file -->
+    <target name="removeJS" depends="replaceFluid">
+        <replaceregexp match="${jsRegExp}" replace="" flags="g">
+            <fileset dir="${products}" includes="**/*.html" />
+        </replaceregexp>
+    </target>
+    
+    <!-- Determines if the rewriteHead property has been set to "true". If so, it sets the rewrite property to "true" -->
+    <target name="checkRewriteStatus">
+        <condition property="rewrite">
+            <equals arg1="true" arg2="${rewriteHead}" />
+        </condition>
+    </target>
+    
+    <!-- Will call the removeJS target if head rewriting is turned on. -->
+    <target name="rewriteHTMLHead" depends="checkRewriteStatus" if="rewrite" >
+        <antcall target="removeJS" />
+    </target>
+    
+    <target name="copySourceToBuild" depends="clean, init, resolveDependencies, concatJavaScript">
+        <copy todir="${build}">
+            <fileset dir="${src}" includes="${requiredDirectoriesSelector}">
+                <exclude name="**/*LICENSE.txt" />
+            </fileset>
+        </copy>
+        <copy file="${base-dir}/README.txt" todir="${build}" />
+        <copy todir="${licenses}" flatten="true">
+            <fileset dir="${base-dir}">
+                <include name="**/*LICENSE.txt" />
+                <exclude name="${build}" />
+                <exclude name="${products}" />
+            </fileset>
+        </copy>
+    </target> 
+
+    <target name="releaseBuild" depends="buildSrcBundle, buildDeployBundle, rewriteHTMLHead, buildInfusionWAR, package" 
+        description="Builds and packages a release bundle of Infusion.">
+    </target>
+    
+    <target name="dailyBuild" depends="buildSrcBundle, buildDeployBundle, rewriteHTMLHead, buildDailyWAR, package"
+        description="Builds and packages Infusion along with tests and sample code, suitable for development testing or a daily build.">
+    </target>
+
+    <target name="customBuild" depends="copyToSrcBundle, copyToDeployBundle, rewriteHTMLHead, buildInfusionWAR, package" 
+        description="Builds a custom package of Infusion containing the modules specified as command line arguments.">
+    </target>
+    
+</project>

@@ -1,0 +1,61 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Versioning Test: Orderable Lists</title>
+    <link href="todo-list.css" type="text/css" rel="stylesheet"/>
+
+    <!--  Required javascript modules for the Reorderer which can be replaced with the build generated file Fluid-all.js -->
+    <script type="text/javascript" src="../js/Fluid-0.3.js"></script>
+
+    <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+    <script type="text/javascript" src="../../../lib/jquery/ui/js/ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../components/reorderer/js/GeometricManager.js"></script>
+    <script type="text/javascript" src="../../../components/reorderer/js/Reorderer.js"></script>
+
+    
+    <!--  Ensure jQuery plays nice with other toolkits - must be called after all the javascript is loaded. --> 
+    <script language="JavaScript" type="text/javascript">
+      jQuery.noConflict();
+    </script> 
+  </head>
+  
+  <body>
+    <h3>Sortable List using Fluid-0.3</h3>
+    <ul id="list-03">
+        <li class="orderable">Item 1</li>
+        <li class="orderable">Item 2</li>
+        <li class="orderable">Item 3</li>
+        <li class="orderable">Item 4</li>
+        <li class="orderable">Item 5</li>
+    </ul>
+  
+    <h3>Sortable List using Fluid trunk (1.0 at time of writing)</h3>
+    <ul id="list-05">
+        <li class="flc-reorderer-movable">Item 1</li>
+        <li class="flc-reorderer-movable">Item 2</li>
+        <li class="flc-reorderer-movable">Item 3</li>
+        <li class="flc-reorderer-movable">Item 4</li>
+        <li class="flc-reorderer-movable">Item 5</li>
+    </ul>
+  
+    <script type="text/javascript">
+        fluid_1_1.setLogging(true);
+        fluid_1_1.log("Check sanity...");
+        fluid_1_1.defaults("foofer", {bar: "bat"});
+        fluid_1_1.log("1.0.defaults: " + fluid_1_1.defaults("foofer"));
+        fluid_1_1.log("0.3.defaults: " + fluid.defaults);
+        fluid_1_1.log("1.0.model.getBeanValue: " + fluid_1_1.model.getBeanValue);
+        
+        // initialize the 0.3 list
+        fluid.reorderList("#list-03", "li", function(){});
+
+        // initialize the 1.0 list
+        fluid_1_1.reorderList("#list-05");
+    </script>
+  </body>
+</html>
