@@ -111,7 +111,7 @@ var fluid_1_2 = fluid_1_2 || {};
         var options = makeStackResolverOptions(thatStack);
         var directModel = thatStack[0].model; // TODO: this convention may not always be helpful
         
-        if (arg === fluid.COMPONENT_OPTIONS) {
+        if (fluid.isMarker(arg, fluid.COMPONENT_OPTIONS)) {
             arg = fluid.resolveEnvironment(componentOptions, directModel, options);
         }
         else {
@@ -167,6 +167,64 @@ var fluid_1_2 = fluid_1_2 || {};
         };
         return togo;
     } 
+   
+    var dependentStore = {};
+    
+    function searchDemands(demandingName, contextNames) {
+        var exist = dependentStore[demandingName] || [];
+        outer: for (var i = 0; i < exist.length; ++ i) {
+            var rec = exist[i];
+            for (var j = 0; j < contextNames.length; ++ j) {
+                 if (rec.contexts[j] !== contextNames[j]) {
+                     continue outer;
+                 }
+            }
+            return rec.spec;   
+        }
+    };
+    
+    fluid.demands = function(demandingName, contextName, spec) {
+        var contextNames = $.makeArray(contextName).sort(); 
+        if (!spec) {
+            return searchDemands(demandingName, contextNames);
+        }
+        else if (spec.length) {
+            spec = {args: spec};
+        }
+        var exist = dependentStore[demandingName];
+        if (!exist) {
+            exist = [];
+            dependentStore[demandingName] = exist;
+        }
+        exist.push({contexts: contextNames, spec: spec});
+    };
+
+    fluid.locateDemands = function(demandingNames, thatStack) {
+        var searchStack = [fluid.staticEnvironment].concat(thatStack); // TODO: put in ThreadLocal "instance" too, and also accelerate lookup
+        var contextNames = {};
+        visitComponents(searchStack, function(component) {
+            contextNames[component.typeName] = true;
+        });
+        var matches = [];
+        for (var i = 0; i < demandingNames.length; ++ i) {
+            var rec = dependentStore[demandingNames[i]] || [];
+            for (var j = 0; j < rec.length; ++ j) {
+                var spec = rec[j];
+                var record = {spec: spec.spec, intersect: 0, uncess: 0};
+                for (k = 0; k < spec.contexts.length; ++ k) {
+                    ++record[contextNames[spec.contexts[k]]? "intersect" : "uncess"];
+                }
+                // TODO: Potentially more subtle algorithm here - also ambiguity reports  
+                matches.push(record); 
+            }
+        }
+        matches.sort(function(speca, specb) {
+            var p1 = specb.intersect - speca.intersect; 
+            return p1 === 0? speca.uncess - specb.uncess : p1;
+            });
+        return matches.length === 0 || matches[0].intersect === 0? null : matches[0].spec;
+    };
+    
     /** Determine the appropriate demand specification held in the fluid.demands environment 
      * relative to "thatStack" for the function name(s) funcNames.
      */
@@ -178,25 +236,32 @@ var fluid_1_2 = fluid_1_2 || {};
         if (!demandspec) {
             demandspec = {};
         }
+        var newFuncName = funcNames[0];
         if (demandspec.funcName) {
-            funcNames[0] = demandspec.funcName;
+            newFuncName = demandspec.funcName;
            /**    TODO: "redirects" disabled pending further thought
             var demandspec2 = fluid.fetchDirectDemands(funcNames[0], that.typeName);
             if (demandspec2) {
                 demandspec = demandspec2; // follow just one redirect
             } **/
         }
-
-        return {funcName: funcNames[0], args: demandspec.args};
+        var mergeArgs = [];
+        if (demandspec.parent) {
+            var parent = searchDemands(funcNames[0], $.makeArray(demandspec.parent).sort());
+            if (parent) {
+                mergeArgs = parent.args; // TODO: is this really a necessary feature?
+            }
+        }
+        var args = [];
+        fluid.merge(null, args, $.makeArray(mergeArgs), $.makeArray(demandspec.args)); // TODO: avoid so much copying
+        return {funcName: newFuncName, args: args};
     };
     
     fluid.resolveDemands = function (thatStack, funcNames, initArgs, options) {
         var demandspec = fluid.determineDemands(thatStack, funcNames);
         return fluid.embodyDemands(thatStack, demandspec, initArgs, options);
     };
-
-
-   
+    
     // fluid.invoke is not really supportable as a result of thatStack requirement - 
     // fluid.bindInvoker is recommended instead
     fluid.invoke = function(that, functionName, args, environment) {
@@ -234,43 +299,6 @@ var fluid_1_2 = fluid_1_2 || {};
             var resolved = fluid.resolveDemands(thatStack, eventName, args);
             listener.apply(null, resolved.args);
         }, namespace, predicate);
-    };
-    
-    var dependentStore = {};
-    
-    fluid.demands = function(demandingName, contextName, spec) {
-        if (spec.length) {
-            spec = {args: spec};
-        }
-        var exist = dependentStore[demandingName];
-        if (!exist) {
-            exist = [];
-            dependentStore[demandingName] = exist;
-        }
-        exist.push({contexts: $.makeArray(contextName), spec: spec});
-    };
-
-    fluid.locateDemands = function(demandingNames, thatStack) {
-        var searchStack = [fluid.staticEnvironment].concat(thatStack); // TODO: put in ThreadLocal "instance" too, and also accelerate lookup
-        var contextNames = {};
-        visitComponents(searchStack, function(component) {
-            contextNames[component.typeName] = true;
-        });
-        var matches = [];
-        for (var i = 0; i < demandingNames.length; ++ i) {
-            var rec = dependentStore[demandingNames[i]] || [];
-            for (var j = 0; j < rec.length; ++ j) {
-                var spec = rec[j];
-                var count = 0;
-                for (k = 0; k < spec.contexts.length; ++ k) {
-                    if (contextNames[spec.contexts[k]]) { ++ count;}
-                }
-                // TODO: Potentially more subtle algorithm here - also ambiguity reports  
-                matches.push({count: count, spec: spec.spec}); 
-            }
-        }
-        matches.sort(function(speca, specb) {return specb.count - speca.count;});
-        return matches.length === 0? null : matches[0].spec;
     };
     
     fluid.initDependent = function(that, name, thatStack) {

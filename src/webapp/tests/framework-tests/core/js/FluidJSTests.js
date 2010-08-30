@@ -40,6 +40,24 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertDeepEq("Transform hash", {a: false, b: true}, fluid.transform({a: 0, b: 1}, isOdd));
             jqUnit.assertDeepEq("Transform hash chain", {a: true, b: false}, fluid.transform({a: 0, b: 1}, addOne, isOdd));
         });
+        
+        fluidJSTests.test("keyForValue, fluid.find and fluid.each", function() {
+            expect(16);
+            var seekIt = function(seek) {
+                fluid.each(seek, function(value, key) {
+                    jqUnit.assertEquals("Find value with keyForValue - " + value + ": ", key, fluid.keyForValue(seek, value));
+                    jqUnit.assertEquals("Find value with fluid.find - " + value + ": ", key, fluid.find(seek, function(thisValue, key) {
+                        if (value === thisValue) {
+                            return key;
+                            }
+                        }));
+                });           
+            };
+            var seek1 = {"One": 1, "Two": null, "Three": false, "Four": "Sneeze"};
+            seekIt(seek1);
+            var seek2 = [1, null, false, "Sneeze"];
+            seekIt(seek2);
+        });
 
         fluidJSTests.test("merge", function() {
           
@@ -414,6 +432,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path3.nonexistent"));
             jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path3.nonexistent.non3"));
             jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path1.nonexistent"));
+            jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path1.nonexistent.non3"));
             jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path1"));
             fluid.model.setBeanValue(model, "path2.past", "attach");
             jqUnit.assertDeepEq("Set blank value", {path2: {past: "attach"}, path3: "thing"}, model);

@@ -16,11 +16,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 
 fluid.testUtils = fluid.testUtils || {};
-
-fluid.demands("fluid.testUtils.testComponent2", "fluid.testUtils.testComponent", 
-    ["{testComponent}.container", 
-     {"default1": "{testComponent}.options.default1"}
-    ]);
    
 fluid.demands("fluid.reorderer.gridReorderer", "fluid.reorderer",
     ["{that}.container",
@@ -37,6 +32,24 @@ fluid.defaults("fluid.testUtils.testComponent", {
         }
     }
 });
+
+fluid.defaults("fluid.testUtils.testComponent2", {
+    components: {
+        sub1: {
+          type: "fluid.testUtils.subComponent",
+        },
+        sub2: {
+          type: "fluid.testUtils.subComponent",
+          options: {
+              value: "Subcomponent 2 default"
+          }
+        }
+    }});
+
+fluid.demands("fluid.testUtils.testComponent2", "fluid.testUtils.testComponent", 
+    ["{testComponent}.container", 
+     {"default1": "{testComponent}.options.default1"}
+    ]);
 
 
 // Somehow we sort of have to write this. Perhaps "component grading" will make it
@@ -66,28 +79,21 @@ fluid.defaults("fluid.testUtils.dependentModel", {
 });
 
 fluid.makeComponents({
-    "fluid.testUtils.testComponent":   "fluid.standardComponent",
-    "fluid.testUtils.testComponent2":  "fluid.standardComponent",
-    "fluid.testUtils.testOrder":       "fluid.standardComponent", 
-    "fluid.testUtils.subComponent":    "fluid.standardComponent",
-    "fluid.testUtils.invokerComponent":"fluid.littleComponent",
-    "fluid.testUtils.modelComponent":  "fluid.littleComponent",
-    "fluid.testUtils.dependentModel":  "fluid.littleComponent"
+    "fluid.testUtils.testComponent":      "fluid.standardComponent",
+    "fluid.testUtils.testComponent2":     "fluid.standardComponent",
+    "fluid.testUtils.testOrder":          "fluid.standardComponent", 
+    "fluid.testUtils.subComponent":       "fluid.standardComponent",
+    "fluid.testUtils.invokerComponent":   "fluid.littleComponent",
+    "fluid.testUtils.modelComponent":     "fluid.littleComponent",
+    "fluid.testUtils.dependentModel":     "fluid.littleComponent",
+    "fluid.testUtils.multiResolution":    "fluid.littleComponent",
+    "fluid.testUtils.multiResSub":        "fluid.littleComponent",
+    "fluid.testUtils.multiResSub2":       "fluid.littleComponent",
+    "fluid.testUtils.multiResSub3":       "fluid.littleComponent",
+    "fluid.testUtils.defaultInteraction": "fluid.littleComponent",
+    "fluid.testUtils.popup":              "fluid.littleComponent"
     });
 
-fluid.defaults("fluid.testUtils.testComponent2", {
-    components: {
-        sub1: {
-          type: "fluid.testUtils.subComponent",
-        },
-        sub2: {
-          type: "fluid.testUtils.subComponent",
-          options: {
-              value: "Subcomponent 2 default"
-          }
-        }
-    }});
-    
 fluid.defaults("fluid.testUtils.invokerComponent", {
     template: "Every {0} has {1} {2}(s)",
     invokers: {
@@ -109,6 +115,65 @@ fluid.demands("sub2", "fluid.testUtils.testComponent2",
 ["{testComponent2}.container", fluid.COMPONENT_OPTIONS]);
 
 
+fluid.defaults("fluid.testUtils.multiResolution", {
+    components: {
+        resSub: {
+            type: "fluid.testUtils.multiResSub"
+        }
+    }  
+});
+
+
+fluid.demands("fluid.testUtils.multiResSub", "fluid.testUtils.multiResolution",
+   {funcName: "fluid.testUtils.multiResSub"
+   }); // TODO: should this really be necessary?  
+   // Perhaps there should be a standard demands "valence" of 1 assigned to the "defaults" configuration. 
+
+fluid.demands("fluid.testUtils.multiResSub", ["fluid.testUtils.multiResolution", "fluid.testUtils.localFiles"],
+    {
+        funcName: "fluid.testUtils.multiResSub2",
+        args: {
+            localKey1: "localValue1",
+            localKey2: "localValue2"
+        }  
+    });
+    
+fluid.demands("fluid.testUtils.multiResSub", ["fluid.testUtils.multiResolution", "fluid.testUtils.localFiles", "fluid.testUtils.localTest"],
+    {
+        funcName: "fluid.testUtils.multiResSub3",
+        parent: ["fluid.testUtils.multiResolution", "fluid.testUtils.localFiles"],
+        args: {
+            localKey1: "testValue1"
+        }  
+    });
+    
+fluid.defaults("fluid.testUtils.defaultInteraction", {
+    components: {
+        popup: {
+            type: "fluid.testUtils.popup"
+        }
+    }  
+});
+
+fluid.defaults("fluid.testUtils.popup", {
+    resources: {
+        template: {
+            forceCache: true,
+            url: "../html/AutocompleteAddPopup.html"
+        }
+    }
+});
+
+fluid.demands("fluid.testUtils.popup", "fluid.testUtils.localTest", 
+    {
+    args: {
+        resources: {
+            template: {
+                url: "../../html/AutocompleteAddPopup.html"
+            }
+        }
+    }
+    });
 
 (function ($) {
     
@@ -148,6 +213,54 @@ fluid.demands("sub2", "fluid.testUtils.testComponent2",
         jqUnit.assertEquals("Transit 1", 3, that.modelComponent.options.model.pollute);
     });
     
+        
+    fluidIoCTests.test("Multi-resolution test", function() {
+        var that = fluid.testUtils.multiResolution();
+        jqUnit.assertValue("Constructed", that);
+        jqUnit.assertEquals("Standard subcomponent", "fluid.testUtils.multiResSub", that.resSub.typeName);
+        try {
+            fluid.staticEnvironment.localEnvironment = fluid.typeTag("fluid.testUtils.localFiles");
+            var that2 = fluid.testUtils.multiResolution();
+            jqUnit.assertValue("Constructed", that2);
+            jqUnit.assertEquals("\"Local\" subcomponent", "fluid.testUtils.multiResSub2", that2.resSub.typeName);
+            var localDemandOptions = fluid.demands("fluid.testUtils.multiResSub", 
+                ["fluid.testUtils.multiResolution", "fluid.testUtils.localFiles"]).args;
+            jqUnit.assertDeepEq("\"Local\" subcomponent options", localDemandOptions, that2.resSub.options);
+            
+            fluid.staticEnvironment.testEnvironment = fluid.typeTag("fluid.testUtils.localTest");
+            var that3 = fluid.testUtils.multiResolution();
+            jqUnit.assertValue("Constructed", that3);
+            jqUnit.assertEquals("\"Test\" subcomponent", "fluid.testUtils.multiResSub3", that3.resSub.typeName);
+            var expectedOptions = {
+                localKey1: "testValue1",
+                localKey2: "localValue2"
+            };
+            jqUnit.assertDeepEq("\"Test\" subcomponent merged options", expectedOptions, that3.resSub.options);
+        }
+        finally {
+            delete fluid.staticEnvironment.testEnvironment;
+            delete fluid.staticEnvironment.localEnvironment;
+        }
+    });
+    
+    fluidIoCTests.test("Default interaction test", function() {
+        var that = fluid.testUtils.defaultInteraction();
+        jqUnit.assertValue("Constructed", that);
+        var standardDefaults = fluid.defaults("fluid.testUtils.popup");
+        standardDefaults.typeName = "fluid.testUtils.popup";
+        jqUnit.assertDeepEq("Default options", standardDefaults, that.popup.options);
+        
+        try {
+            fluid.staticEnvironment.localEnvironment = fluid.typeTag("fluid.testUtils.localTest");
+            var demands = fluid.demands("fluid.testUtils.popup", "fluid.testUtils.localTest");
+            var that2 = fluid.testUtils.defaultInteraction();
+            var mergedDefaults = $.extend(true, standardDefaults, demands.args);
+            jqUnit.assertDeepEq("Merged options", mergedDefaults, that2.popup.options);
+        }
+        finally {
+            delete fluid.staticEnvironment.localEnvironment;
+        }
+    });
     
     // Test data for some tests
     var config = {
@@ -209,7 +322,6 @@ fluid.demands("sub2", "fluid.testUtils.testComponent2",
                 proceduresIntake: "Are Intake"
             }
         };
-      
         
         var dependencies = {
             objects: {

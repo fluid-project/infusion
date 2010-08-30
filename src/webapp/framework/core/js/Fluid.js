@@ -385,7 +385,7 @@ var fluid = fluid || fluid_1_2;
     fluid.isMarker = function(totest, type) {
         if (typeof (totest) !== 'object' || totest.type !== "fluid.marker") return false;
         if (!type) return true;
-        return totest.value === type;
+        return totest.value === type || totest.value === type.value;
     };
     
     /** Construct a dummy or "placeholder" subcomponent, that optionally provides empty
