@@ -1,7 +1,6 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2007-2009 University of California, Berkeley
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -242,23 +241,55 @@ var jqUnit = jqUnit || {};
     $.extend(jqUnit, testFns);
     
     
-    /*******************
-     * TestCase object *
-     *******************/
+    /***************************************************
+     * TestCase constructor for backward compatibility *
+     ***************************************************/
     
-    function TestCase(moduleName, setUpFn, tearDownFn) {
+    jqUnit.TestCase = function (moduleName, setUpFn, tearDownFn) {
+        return jqUnit.testCase(moduleName, setUpFn, tearDownFn);  
+    };
+      
+    /******************************
+     * TestCase creator function
+     * @param {Object} moduleName
+     * @param {Object} setUpFn
+     * @param {Object} tearDownFn
+     */  
+    jqUnit.testCase = function (moduleName, setUpFn, tearDownFn) {
+        var that = {};
+        that.fetchedTemplates = [];
+        
+        /**
+         * Fetches a template using AJAX if it was never fetched before and stores it in that.fetchedTemplates
+         * @param {Object} templateURL URL to the document to be fetched
+         * @param {Object} selector A selector which finds the piece of the document to be fetched 
+         * @param {Object} container The container where the fetched content will be appended - default to the element with the id 'main'
+         */
+        that.fetchTemplate = function (templateURL, selector, container) {
+            container = container || $("#main");
+            var selectorToFetch = templateURL + " " + selector;
+            
+            if (!that.fetchedTemplates[selectorToFetch]) {
+                stop();
+                container.load(selectorToFetch, function () {
+                        that.fetchedTemplates[selectorToFetch] = $(this).clone();
+                        start();
+                    });
+            } else {
+                container.append(that.fetchedTemplates[selectorToFetch].clone());
+            }
+        };
 
+        that.test = function (string, testFn) {
+            test(string, testFn);
+        };
+        
         module(moduleName, {
             setup: setUpFn || function () {},
             teardown: tearDownFn || function () {}
         });
-    }
-
-    TestCase.prototype.test = function (string, testFn) {
-
-        test(string, testFn);
+        
+        return that;
     };
-
-    //  Mix the TestCase type into the jqUnit namespace.
-    $.extend(jqUnit, {TestCase: TestCase});
+    
 })(jQuery);

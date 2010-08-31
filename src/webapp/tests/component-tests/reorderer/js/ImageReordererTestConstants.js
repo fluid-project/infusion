@@ -1,7 +1,6 @@
 /*
-Copyright 2008-2009 University of Cambridge
-Copyright 2008-2009 University of Toronto
-Copyright 2007-2009 University of California, Berkeley
+Copyright 2007-2009 University of Cambridge
+Copyright 2007-2009 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -69,24 +68,14 @@ function findNoOrderables() {
 }
 
 function createLightbox() {
-    var lightboxRoot = fetchLightboxRoot();
-    return fluid.reorderer(lightboxRoot, {
-        layoutHandler: "fluid.gridLayoutHandler",
-        selectors: {
-            movables: findOrderableByDivAndId
-        },
-        containerRole: fluid.reorderer.roles.GRID
-    });
+    return fluid.reorderImages(fetchLightboxRoot());
 }
 
 function createLightboxWithNoOrderables() {
-    var lightboxRoot = fetchLightboxRoot();
-    return fluid.reorderer(lightboxRoot, {
-        layoutHandler: "fluid.gridLayoutHandler",
+    return fluid.reorderer(fetchLightboxRoot(), {
         selectors: {
             movables: findNoOrderables
-        },
-        containerRole: fluid.reorderer.roles.GRID
+        }
     });
 }
 

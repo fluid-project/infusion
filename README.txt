@@ -1,28 +1,15 @@
 Fluid Infusion 1.1.3
-==================
+====================
 Main Project Site:  http://fluidproject.org
 Documentation:      http://wiki.fluidproject.org/display/fluid/Infusion+Documentation
 
 What's New in 1.1.3
-=================
+===================
 
 This release:
+    * Updated the license for fastXmlPull to include only the zlib/libpng license and remove any references to the LGPL
+    * Upgraded swfobject 2.2 to fix the issue on IE, where including multiple instances of infusion produces a javascript error
 
-    * This is a maintenance release, so no new features were addded. Instead, the following bugs were fixed:
-    * FLUID-3077 : Text inside inline editor is being lost after canceling the text edit.
-    * FLUID-2967 : Item will drop to the right of an element when it should have dropped at the left.
-    * FLUID-2590 : flc-reorderer-dropWarning used for both DOM selection and styling.
-    * FLUID-2277 : Can't select text: using IE.
-    * FLUID-1625 : [Image Reorderer] drop target can be left but image drops right.
-    * FLUID-3054 : tiny_mce Inline Edit text editor fails when used with advanced theme.
-    * FLUID-2940 : fluid.moduleLayout = fluid.moduleLayout || {}; is in the wrong location in moduleLayout.js
-    * FLUID-2935 : fluid.fetchResources method does not call specified function after receiving a 404 error.
-    * FLUID-2934 : Requesting a blank page via fluid.fetchResources triggers an infinite http request loop.
-    * FLUID-2792 : Saving rich text content, without making changes, will still render the undo control.
-    * FLUID-2638 : Invitation style causes Rich Text Inline Edit to misbehave
-    * FLUID-1320 : Typing "Click here to edit" is equivalent to erasing all the text
-    * FLUID-3692 : The README and license information for fastXmlPull.js incorrectly includes reference to LGPL
-    * FLUID-3679 : JavaScript error "'script.parentNode' is null or not an object" on IE when running multiple instances of fluid (swfobject.js)
 
 What's in this Release
 ======================
@@ -72,8 +59,37 @@ been removed.
 Developers wishing to learn about the Fluid Infusion code, or debug their applications, should use
 the Source Code Bundle.
 
-Examples and Sample Code
-------------------------
+
+Demo Portal
+-----------
+The bundle now comes with a convenient one-stop-shop for seeing all components in action. It is organized as follows:
+
+        demos/
+            fss/
+                layout/
+                mobile/
+                reset/
+                text/
+                themes/
+            inlineEdit/
+                rich/
+                simple/
+            keyboard-a11y/            
+            pager/
+            portal/                
+            progress/
+            renderer/
+            reorderer/
+                gridReorderer/
+                imageReorderer/
+                layoutReorderer/                
+                listReorderer/
+            uiOptions/
+            uploader/
+
+            
+Other Examples and Sample Code
+------------------------------
 Sample code illustrating how Infusion components can be used:
 
         integration-demos/
@@ -84,11 +100,6 @@ Sample code illustrating how Infusion components can be used:
              keyboard-a11y/
              lib/
              pager/
-             progress/
-             quick-start-examples/
-                  fss/
-                  inlineEdit/
-                  reorderer/
              renderer/
              reorderer/
              table-of-contents/
@@ -121,6 +132,7 @@ with their licensing terms.
     * jQuery javascript library v1.3.2: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * jQuery UI javascript widget library v1.7: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * jQuery QUnit testrunner r6173: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * jQuery Chili code highlighter http://code.google.com/p/jquery-chili-js/ (MIT licensed)
     * Douglas Crockford's JSON parsing and stringifying methods (from 2007-11-06): http://www.json.org/ (Public Domain)
     * SWFUpload v2.2.0.1: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
     * SWFObject v2.2: http://code.google.com/p/swfobject/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
@@ -143,24 +155,28 @@ This file.
 Documentation
 =============
 
-    http://wiki.fluidproject.org/display/fluid/Infusion+Documentation
-
 The Fluid Project uses a wiki for documentation and project collaboration: http://wiki.fluidproject.org.
+The main Infusion documentation can be found at:
+
+    http://wiki.fluidproject.org/display/fluid/Infusion+Documentation
 
 The documentation for Infusion consists of a number of information pages stored in the Fluid Wiki.
 The pages include tutorials, API descriptions, testing procedures, and data-gathering approaches. To make the 
 manual pages easy to navigate we have added the following guides:
 
-    * A landing page is provided for the reader, with links to all of our documenation.
+    * The above-mentioned landing page, which links to all of our documentation.
     * A link to the documentation appears at the top of the left-side wiki navigation
       bar with the name "Infusion Documentation".
 
 
 Supported Browsers
 ==================
-Firefox 2.x, 3.x: full support
-Internet Explorer 6.x, 7.x: full support
-Safari 3.1, Opera 9.6: full support (except keyboard interaction, which is not supported by these browsers)
+Firefox 3.5: full support in Mac OS 10.5, Win XP and Win Vista
+Firefox 3.0: full support in Mac OS 10.5 and Win XP
+Internet Explorer 6.x: full support in Win XP
+Internet Explorer 7.x: full support in Win XP and Win Vista
+Safari 4: full support in Mac OS 10.4 and 10.5
+Safari 3.2 (Mac OS 10.5), Opera 9.6 (Win XP): full support (except keyboard interaction, which is not supported by these browsers)
 
 Internet Explorer 8: preliminary support
 
@@ -176,6 +192,7 @@ applications and use cases
     * Fluid Skinning System 
     * Infusion Framework Core
     * Inline Edit: Simple Text
+    * Renderer
     * Reorderer: List, Grid, Layout, Image
     * Undo
 
@@ -184,7 +201,6 @@ Preview: still growing, but with broad browser support. Expect new features in u
     * Progress
     * UI Options
     * Uploader
-    * Renderer
 
 Sneak Peek: in development; APIs will change. Share your feedback, ideas, and code
     * Inline Edit: Dropdown
@@ -212,9 +228,8 @@ Inline Edit:
   
 Uploader: 
     FLUID-2582 Uploader is dependent on ProgressiveEnhancement.js, which is not included in InfusionAll.js
-    FLUID-2895 The browse files button displays as a white box in IE 7 when running off the local system in Flash 10
+    FLUID-3241 Can only tab to the "Browse Files" button once: using IE
     FLUID-2052 Cannot tab away from the "Browse Files" button with Flash 10; using FF3*
-    FLUID-2032 Cannot Tab to the 'Browse More" button with Flash 10, using FF2*
     * For information related to known issues with Flash 10 compatibility, 
       see http://wiki.fluidproject.org/x/kwZo
 
@@ -226,16 +241,19 @@ Layout Reorderer:
 Pager:
     FLUID-2880 The Pager will be refactored. Note that as a result of this, there will be significant changes to the Pager API
     FLUID-2329 The self-rendering mode of the Pager is not the default mode
-    FLUID-2486 Double clicking or clicking fast on "next/previous" links in pager does not cause advance of 2 pages in IE
 
 Reorderer: 
-    FLUID-539 Can't use the "Tab" key to navigate out of reorderable tabs
-    FLUID-148 Edge case: visual position of drop target when droppable is at beginning or end of a row
-    FLUID-118 Dragging an image offscreen or out of the frame has some unexpected results.
+    FLUID-539  Can't use the "Tab" key to navigate out of reorderable tabs
+    FLUID-118  Dragging an image offscreen or out of the frame has some unexpected results.
+    FLUID-3288 Moving an item with the keyboard "loses" the "ctrl-key is down" status
 
 UI Options: 
     FLUID-2398 Minimum font size control changes the text size even when the base size is larger then the minimum.
     FLUID-2481 "Links" selection does not work correctly in UIOptions
     FLUID-2506 Keyboard navigation inside the dialog breaks in simple layout mode: using FF
-    FLUID-2524 scrolling the screen while the UI Options dialog is open, will cause it's contents to appear distorted: using IE
-    
+
+Renderer:
+    FLUID-3224 If <textarea> autobound to non-existant model field, Renderer renders unclosed element    
+    FLUID-3277 Attempt to add children to leaf component in tree results in "targetlump is undefined" error
+    FLUID-3276 Enclosing branch nodes within markup which has "headers" attribute causes them to become invisible to the renderer
+

@@ -3,5 +3,5 @@
    	"description": "Transforms the presentation of the user interface and content resources so that they are personalized to an individual user's needs.",
    	"cssFiles": ["UIOptions.css", "Slider.css", "UIOptionsPreview.css"],
 	"files": ["UIEnhancer.js", "UIOptions.js"],
-	"dependencies": ["fss", "jQuery", "jQueryUICore", "framework", "renderer", "jQueryUIWidgets", "tableOfContents", "json"]
+	"dependencies": ["fss", "jQuery", "jQueryUICore", "framework", "renderer", "jQueryUIWidgets", "jQueryDelegatePlugin", "tableOfContents", "json"]
 }}

@@ -97,9 +97,9 @@
             };
             
             var myUndoRenderer = function (that, targetContainer) {
-                var markup = "<span class='fluid-undo'>" + 
-                  "<span class='undoContainer'><a href='#' class='undoControl'><span class='label'>Undo</span></a></span>" + 
-                  "<span class='redoContainer'><a href='#' class='redoControl'><span class='label'>Redo</span></a></span>" + 
+                var markup = "<span class='fluid-undo' aria-live='polite' aria-relevant='all'>" + 
+                  "<span class='undoContainer'><a href='#' class='undoControl'><span class='label'>Undo</span><span class='hiddenForScreenReaderUsers'>Undo your edit.</span></a></span>" + 
+                  "<span class='redoContainer'><a href='#' class='redoControl'><span class='label'>Redo</span><span class='hiddenForScreenReaderUsers'>Redo your edit.</span></a></span>" + 
                 "</span>";
                 var markupNode = $(markup);
                 targetContainer.append(markupNode);

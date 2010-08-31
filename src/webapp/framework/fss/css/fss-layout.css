@@ -147,16 +147,24 @@ Layout Helpers
  * Tabs: a quick tab system
  * Dependency: list-based markup ?
  */
-.fl-tabs {margin:0.75em 0 0 0; border-bottom:1px solid #000; text-align:center; padding-bottom:0.2em;}
+.fl-tabs {margin:10px 0 0 0; border-bottom:1px solid #000; text-align:center; padding-bottom:2px;}
 .fl-tabs li {list-style-type:none; display:inline;}
-.fl-tabs li a {padding:0.25em 1.25em 0.2em; background-color:#fff; margin-left:-5px; *margin-bottom:-7px; zoom:1; border:1px solid #000; color:#999;}
+/* star hack to get IE 6+7 to behave perfectly */
+.fl-tabs li a {padding:3px 16px 2px; background-color:#fff; margin-left:-5px; *margin-bottom:-6px; zoom:1; border:1px solid #000; color:#999;}
 .fl-tabs li a:hover {}
 .fl-tabs-center {text-align:center;}
 .fl-tabs-left {text-align:left; padding-left:10px;}
 .fl-tabs-right {text-align:right; padding-right:15px;}
 .fl-tabs .fl-reorderer-dropMarker {padding:0 3px; background-color:#c00;margin:0 5px 0 -5px; zoom:1;}
-.fl-tabs .fl-tabs-active a {padding:0.25em 1.25em; border-bottom:none; color:#000;}
+.fl-tabs .fl-tabs-active a {padding:3px 16px; border-bottom:none; color:#000;}
 .fl-tabs-content {padding:5px;}
+/* get webkit to behave perfectly - 
+ * unfortunately, Chrome gets caught in this too even though it applied the original padding values fine 
+ */
+@media screen and (-webkit-min-device-pixel-ratio:0){
+    .fl-tabs li a {padding:3px 16px 3px;} 
+    .fl-tabs .fl-tabs-active a {padding:3px 16px 4px;}
+}
 
 /*
  * Menus: quick horizontal and vertical menu
@@ -267,3 +275,8 @@ input.fl-icon {padding-left:16px;}
 
 .fl-ProgEnhance-basic, /* << syntax breaks conventions and is Deprecated*/
 .fl-progEnhance-basic {}
+
+/* hide text for screen readers. */
+.fl-offScreen-hidden {position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden;}
+
+

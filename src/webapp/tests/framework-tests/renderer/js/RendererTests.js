@@ -1,7 +1,6 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2007-2009 University of California, Berkeley
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -722,6 +721,38 @@ fluid.tests = fluid.tests || {};
          ], inputs);
     });
 
+    fluid.tests.decoratorRegistrar = function(container, registrar) {
+        registrar[registrar.length] = container;
+        var node = $(".FLUID-2980-test2");
+        fluid.selfRender(node, {});
+    };
+
+    renderTests.test("Multiple decorator test (FLUID-2980)", function() {
+        var node = $(".FLUID-2980-test");
+        var registrar = [];
+        var tree = {
+            children: [
+            {
+            ID: "item:",
+            decorators: {
+                type: "fluid",
+                func: "fluid.tests.decoratorRegistrar",
+                options: registrar
+            }},
+            {
+            ID: "item:",
+            decorators: {
+                type: "fluid",
+                func: "fluid.tests.decoratorRegistrar",
+                options: registrar
+              }
+            }
+            ]
+        };
+        fluid.selfRender(node, tree);
+        jqUnit.assertEquals("2 invocations of decorator expected", 2, registrar.length);
+    });
+
     renderTests.test("Properties unescaping", function() {
       
       jqUnit.assertEquals("Simple unescaping", "This is a thing", 
@@ -732,20 +763,80 @@ fluid.tests = fluid.tests || {};
       jqUnit.assertDeepEq("Random junk", ["\\\\\\\\\\ \t\nThing\x53\u0000", true],
           fluid.unescapeProperties("\\\\\\\\\\\\\\\\\\\\\ \\t\\nThing\\x53\\u0000\\"));
       });
+      
+    renderTests.test("Nested data binding", function () {
+       var selectionModel = {
+           values: ["v1", "v2"],
+           names: ["value one", "value two"],
+           selection: ["v2"]
+       };
+       
+       var selectorMap = [
+           {selector: ".nestLevelOne", id: "levelOne:"},
+           {selector: ".nestLevelTwo", id: "levelTwo:"},
+           {selector: ".nestLevelThree", id: "levelThree:"},
+           {selector: "#nestedDataBindingInput", id: "input"},
+           {selector: ".nestedDataBindingLabel", id: "label"}
+       ];
+       
+       var generateNestedTree = function () {
+           var tree = {children: []};
+           
+           tree.children[0] = {
+               ID: "selections",
+               optionlist: {valuebinding: "values"},
+               optionnames: {valuebinding: "names"},
+               selection: {valuebinding: "selection"}
+           };
+           
+           tree.children[1] = {
+               ID: "levelOne:",
+               children: [
+                   {
+                       ID: "levelTwo:",
+                       children: []
+                   }
+               ]    
+           };
+           
+           for (var i = 0; i < selectionModel.values.length; i++) {
+               var item = tree.children[1].children[0].children;
+               
+               item[item.length] = {
+                   ID: "levelThree:",
+                   children: [
+                       {ID: "input", choiceindex: i, parentRelativeID: "..::..::..::selections"},
+                       {ID: "label", choiceindex: i, parentRelativeID: "..::..::..::selections"}
+                   ]
+               };
+           }
+           
+           return tree;
+       };
+       
+       fluid.selfRender($(".nestedDataBinding"), generateNestedTree(), {cutpoints: selectorMap, model: selectionModel});
+       
+       jqUnit.assertEquals("Number of Inputs", selectionModel.values.length, $("input", ".nestedDataBinding").length);
+       jqUnit.assertEquals("Number of Labels", selectionModel.values.length, $("label", ".nestedDataBinding").length);
+       jqUnit.assertEquals("Selected Value", selectionModel.selection,$("input:checked", ".nestedDataBinding").attr("value"));
+    });
 
-    var resourceSpec = {properties: {href: "../data/testProperties.properties"},
-                              json: {href: "../data/testProperties.json"}};    
-    fluid.fetchResources(resourceSpec, function() {
-        renderTests.test("Properties file parsing", function() {
+    renderTests.test("Properties file parsing", function() {
+        var resourceSpec = {properties: {href: "../data/testProperties.properties"},
+                                  json: {href: "../data/testProperties.json"}};    
+
+        stop();
+        
+        fluid.fetchResources(resourceSpec, function() {
             jqUnit.assertNotNull("Fetched properties file", resourceSpec.properties.resourceText);
             jqUnit.assertNotNull("Fetched JSON file", resourceSpec.json.resourceText);
             var json = JSON.parse(resourceSpec.json.resourceText);
             var properties = fluid.parseJavaProperties(resourceSpec.properties.resourceText);
-            jqUnit.assertDeepEq("Parsed properties equivalent", json, properties);        
+            jqUnit.assertDeepEq("Parsed properties equivalent", json, properties);
+            start();
         });
-      
+        
       });
-
     
     };
   })(jQuery); 

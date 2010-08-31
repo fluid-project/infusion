@@ -1,7 +1,6 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2007-2009 University of California, Berkeley
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -23,7 +22,7 @@ fluid_1_1 = fluid_1_1 || {};
 (function ($, fluid) {
 
     var configureInlineEdit = function (configurationName, container, options) {
-        var defaults = fluid.defaults(configurationName); 
+    	var defaults = fluid.defaults(configurationName); 
         var assembleOptions = fluid.merge(defaults? defaults.mergePolicy: null, {}, defaults, options);
         return fluid.inlineEdit(container, assembleOptions);
     };
@@ -175,7 +174,7 @@ fluid_1_1 = fluid_1_1 || {};
     });
     
     fluid.inlineEdit.FCKEditor.blurHandlerBinder = function (that) {
-        function focusEditor(editor) {
+	    function focusEditor(editor) {
             editor.Focus(); 
         }
         
@@ -229,10 +228,10 @@ fluid_1_1 = fluid_1_1 || {};
             value: function (newValue) {
                 var editor = fluid.inlineEdit.FCKEditor.byId(editField.id); 
                 if (!editor) {
-                    if (newValue) {
+                	if (newValue) {
                         $(editField).val(newValue);
-                    }
-                    return "";
+                	}
+                	return "";
                 }
                 if (newValue) {
                     editor.SetHTML(newValue);

@@ -1,7 +1,5 @@
 /*
-Copyright 2008-2009 University of Cambridge
-Copyright 2008-2009 University of Toronto
-Copyright 2007-2009 University of California, Berkeley
+Copyright 2009 University of Toronto
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -18,44 +16,48 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        var tests = new jqUnit.TestCase("Table of Contents Tests");
+        var toc;
+        var options = {
+                listeners: {afterRender: function () {
+                    start();
+                }},
+                templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
+            };
         
+        var mySetup = function () {
+            stop();
+            toc = fluid.tableOfContents("#main", options);    
+        };
+        
+        var tests = jqUnit.testCase("Table of Contents Tests", mySetup);
+         
         var testTocItem = function (item, name) {
             var a = $("a", item);
             jqUnit.assertEquals(name + " has text", name, a.text());
             jqUnit.assertTrue(name + " has href", a.attr("href").indexOf("#" + name) > -1);            
         };
                     
-        var theTest = function () {
-            tests.test("TOC Creation", function () {
-                expect(22);
+        tests.test("TOC Creation", function () {
+            expect(22);
 
-                var tocEl = $("#main").children().eq(0);
-                jqUnit.isVisible("Table of contents should be visible", tocEl);
-                
-                var items = $("li", tocEl);
-                jqUnit.assertEquals("10 headings", 10, items.length);
-                
-                testTocItem(items[0], "Amphibians");
-                testTocItem(items[1], "Toads");
-                testTocItem(items[2], "Natterjack Toads");
-                testTocItem(items[3], "Salamander");
-                testTocItem(items[4], "Newt");
-                testTocItem(items[5], "Birds");
-                testTocItem(items[6], "Anseriformes");
-                testTocItem(items[7], "Ducks");
-                testTocItem(items[8], "Mammals");
-                testTocItem(items[9], "CATT");
-            });
-        };
-        
-        var options = {
-            listeners: {afterRender: theTest},
-            templateUrl: "../../../../components/tableOfContents/html/TableOfContents.html"
-        };
-
-        var toc = fluid.tableOfContents("#main", options);
-       
+            var tocEl = $("#main").children().eq(0);
+            jqUnit.isVisible("Table of contents should be visible", tocEl);
+            
+            var items = $("li", tocEl);
+            jqUnit.assertEquals("10 headings", 10, items.length);
+            
+            testTocItem(items[0], "Amphibians");
+            testTocItem(items[1], "Toads");
+            testTocItem(items[2], "Natterjack Toads");
+            testTocItem(items[3], "Salamander");
+            testTocItem(items[4], "Newt");
+            testTocItem(items[5], "Birds");
+            testTocItem(items[6], "Anseriformes");
+            testTocItem(items[7], "Ducks");
+            testTocItem(items[8], "Mammals");
+            testTocItem(items[9], "CATT");
+        });
+               
         tests.test("Anchor insertion", function () {
             expect(5);
 

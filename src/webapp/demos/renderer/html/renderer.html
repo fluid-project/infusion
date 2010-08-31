@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <title>Renderer Example</title>
+        <link href="../../../framework/fss/css/fss-reset.css" type="text/css" rel="stylesheet" media="all" />
+        <link href="../../../framework/fss/css/fss-layout.css" type="text/css" rel="stylesheet" media="all" />
+        <link href="../../../framework/fss/css/fss-text.css" type="text/css" rel="stylesheet" media="all" />
+        <link href="../css/renderer.css" type="text/css" rel="stylesheet" media="all" />
+
+    	<script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+    	<script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+    	<script type="text/javascript" src="../../../lib/jquery/plugins/bgiframe/js/jquery.bgiframe.js"></script>
+        <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../data/renderer.js"></script>
+        <script type="text/javascript" src="../js/renderer.js"></script>
+    </head>
+
+    <body class="fl-font-sans">
+        <p class="info"></p>
+
+        <p class="render-button">
+            <input id="render" type="button" value="Render"/>
+        </p>
+
+    <hr/>
+    <div class="fl-col-flex2">
+        <div class="fl-col">    
+        <p id="intro-paragraph">Template for the intro text</p>
+
+        <div id="location-block" class="info-block">
+            <label for="location-list">label</label>
+            <select id="location-list" class="location-list">
+            </select>
+        </div>
+
+        <div id="wine-block" class="info-block">
+            <label for="wine-list">label</label>
+            <div class="wine" id="wine-list">
+                <input class="wine-button" type="radio" id="wine-butt" value="Wine"/>
+                <label class="wine-name" for="wine-butt">Template for wine list</label>
+            </div>
+        </div>
+
+        <div id="food-block" class="info-block">
+            <label for="canape-list">label</label>
+            <table id="canape-list">
+                <tr>
+                    <th class="plate">header</th>
+                    <th class="price">header</th>
+                    <th class="include">header</th>
+                </tr>
+                <tr class="canape">
+                    <td><label class="canape-name" for="canape-butt">name</label></td>
+                    <td class="canape-price" for="canape-butt">price</td>
+                    <td><input class="canape-button" type="checkbox" id="canape-butt" value="Canape"/></td>
+                </tr>
+            </table>
+        </div>
+        </div>
+        <div class="fl-col">
+            <p>Model:</p>
+            <div>
+                <pre id="autobound-model" class="model-dump fl-font-monospace">
+                This is where the auto-bound model will be displayed.
+                </pre>
+            </div>
+        </div>
+    </div>
+
+        <script type="text/javascript">
+            demo.render();
+        </script>
+    </body>
+</html>

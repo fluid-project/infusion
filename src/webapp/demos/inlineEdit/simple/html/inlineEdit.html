@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+    
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-mist.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-hc.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../components/inlineEdit/css/InlineEdit.css" />
+        
+        <script type="text/javascript" src="http://tinymce-fluid.appspot.com/tiny_mce.js"></script>
+        
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/plugins/tooltip/js/jquery.tooltip.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../components/inlineEdit/js/InlineEdit.js"></script>
+        <script type="text/javascript" src="../../../../components/inlineEdit/js/InlineEditIntegrations.js"></script>
+        <script type="text/javascript" src="../../../../components/undo/js/Undo.js"></script>
+        
+        <script type="text/javascript" src="../../../../tests/manual-tests/lib/fckeditor/fckeditor.js"></script>
+        
+        <script type="text/javascript" src="../js/inlineEdit.js"></script>
+        
+        <title>CD Database Example</title>
+    </head>
+    
+    <body>
+        
+        <h1> Example 1. Default Inline Edit</h1>
+        <p> The words in <strong>bold</strong> are editable. </p>    
+        <blockquote class="simpleEdit">    
+            The quick brown fox jumped <strong class="flc-inlineEdit-text">over the lazy dogs</strong> and then...
+        </blockquote>
+    
+        <h1> Example 2. Multiple Inline Edits</h1>
+        <p> The words in <strong>bold</strong> are editable.</p>    
+        <blockquote class="multipleEdit">
+    
+            <p>The quick brown fox jumped <strong class="editableText">over the lazy dogs</strong> and then...</p>
+            <p>The quick brown fox <strong class="editableText">over jumped  the lazy</strong> dogs and then...</p>
+            <p>The quick <strong class="editableText">brown fox jumped over</strong> the lazy dogs and then...</p>
+    
+            <p>The quick brown fox jumped over the <strong class="editableText">lazy dogs</strong> and then...</p>
+            <p>The over <strong class="editableText">quick</strong> brown fox jumped  the lazy dogs and then...</p>
+        </blockquote>
+        
+        <script type="text/javascript">
+            demo.initInlineEdit();
+        </script>        
+    </body>
+</html>

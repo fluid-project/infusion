@@ -1,7 +1,6 @@
 /*
-Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2007-2009 University of California, Berkeley
+Copyright 2008-2009 University of California, Berkeley
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -87,10 +86,9 @@ fluid_1_1 = fluid_1_1 || {};
         ariaElement.attr("role", "progressbar");
         ariaElement.attr("aria-valuemin", "0");
         ariaElement.attr("aria-valuemax", "100");
-        ariaElement.attr("aria-live", "assertive");
-        ariaElement.attr("aria-busy", "false");
         ariaElement.attr("aria-valuenow", "0");
         ariaElement.attr("aria-valuetext", "");
+        ariaElement.attr("aria-busy", "false");
     };
     
     var updateARIA = function (that, percent) {
@@ -98,9 +96,10 @@ fluid_1_1 = fluid_1_1 || {};
         that.ariaElement.attr("aria-busy", busy);
         that.ariaElement.attr("aria-valuenow", percent);    
         if (busy) {
-            var busyString = fluid.stringTemplate(that.options.ariaBusyText, {percentComplete : percent});                  
+            var busyString = fluid.stringTemplate(that.options.ariaBusyText, {percentComplete : percent});           
             that.ariaElement.attr("aria-valuetext", busyString);
         } else if (percent === 100) {
+            // FLUID-2936: JAWS doesn't currently read the "Progress is complete" message to the user, even though we set it here.
             that.ariaElement.attr("aria-valuetext", that.options.ariaDoneText);
         }
     };

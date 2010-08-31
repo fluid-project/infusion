@@ -1,7 +1,6 @@
 /*
 Copyright 2007-2009 University of Toronto
 Copyright 2007-2009 University of Cambridge
-Copyright 2007-2009 University of California, Berkeley
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -109,7 +108,7 @@ fluid_1_1 = fluid_1_1 || {};
     };
     
     /**
-     * @param container - the root node of the Reorderer.
+     * @param container - A jQueryable designator for the root node of the reorderer (a selector, a DOM node, or a jQuery instance)
      * @param options - an object containing any of the available options:
      *                  containerRole - indicates the role, or general use, for this instance of the Reorderer
      *                  keysets - an object containing sets of keycodes to use for directional navigation. Must contain:
@@ -138,7 +137,7 @@ fluid_1_1 = fluid_1_1 || {};
         var dropManager = fluid.dropManager();
         
         thatReorderer.layoutHandler = fluid.initSubcomponent(thatReorderer,
-            "layoutHandler", [container, options, dropManager, thatReorderer.dom]);
+            "layoutHandler", [thatReorderer.container, options, dropManager, thatReorderer.dom]);
         
         thatReorderer.activeItem = undefined;
 

@@ -1,6 +1,6 @@
 /*
-Copyright 2008-2009 University of Cambridge
-Copyright 2008-2009 University of Toronto
+Copyright 2007-2009 University of Cambridge
+Copyright 2007-2009 University of Toronto
 Copyright 2007-2009 University of California, Berkeley
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
@@ -356,6 +356,20 @@ var fluid = fluid || fluid_1_1;
         return that;
     };
     
+    /**
+     * Creates a new "little component": a that-ist object with options merged into it by the framework.
+     * This method is a convenience for creating small objects that have options but don't require full
+     * View-like features such as the DOM Binder or events
+     * 
+     * @param {Object} name the name of the little component to create
+     * @param {Object} options user-supplied options to merge with the defaults
+     */
+    fluid.initLittleComponent = function(name, options) {
+        var that = {};
+        fluid.mergeComponentOptions(that, name, options);
+        return that;
+    };
+    
     fluid.initSubcomponent = function (that, className, args) {
         return fluid.initSubcomponents(that, className, args)[0];
     };
@@ -623,7 +637,7 @@ var fluid = fluid || fluid_1_1;
      * path segments containing periods and backslashes etc. can be processed.
      */
     fluid.model.parseEL = function (EL) {
-        return EL.toString().split('.');
+        return String(EL).split('.');
     };
     
     fluid.model.composePath = function (prefix, suffix) {

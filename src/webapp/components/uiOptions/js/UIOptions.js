@@ -1,7 +1,6 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2007-2009 University of California, Berkeley
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -33,18 +32,32 @@ fluid_1_1 = fluid_1_1 || {};
         thumb.attr(ariaDefaults);        
     };
     
-    var initTextfieldSlider = function (that) {
-        var textfield = that.locate("textfield");
-        textfield.val(that.model);
-
+    var initSlider = function (that) {
         var sliderOptions = that.options.sliderOptions;
         sliderOptions.value = that.model;
-        sliderOptions.min = that.options.min;
-        sliderOptions.max = that.options.max;
+        sliderOptions.min = that.min;
+        sliderOptions.max = that.max;
+        
         var slider = that.locate("slider").slider(sliderOptions);
+        initSliderAria(that.locate("thumb"), sliderOptions); 
 
-        initSliderAria(that.locate("thumb"), sliderOptions);    
-
+        return slider;           
+    };
+    
+    var bindSliderHandlers = function (that, textfield, slider) {
+        slider.bind("slide", function (e, ui) {
+            textfield.val(ui.value);
+            that.updateModel(ui.value, slider);
+        });       
+    };
+    
+    var initTextfield = function (that, slider) {
+        var textfield = that.locate("textfield");
+        textfield.val(that.model);
+        return textfield;
+    }
+    
+    var bindTextfieldHandlers = function (that, textfield, slider) {
         textfield.change(function () {
             if (that.isValid(this.value)) {
                 if (!that.isInRange(this.value)) {
@@ -69,11 +82,15 @@ fluid_1_1 = fluid_1_1 || {};
                 return false;
             }
         });
+        
+    };
+    
+    var initTextfieldSlider = function (that) {
+        var slider = initSlider(that);
+        var textfield = initTextfield(that, slider);        
 
-        slider.bind("slide", function (e, ui) {
-            textfield.val(ui.value);
-            that.updateModel(ui.value, slider);
-        });
+        bindSliderHandlers(that, textfield, slider);
+        bindTextfieldHandlers(that, textfield, slider);
     };
     
     /**
@@ -86,9 +103,7 @@ fluid_1_1 = fluid_1_1 || {};
         that.model = that.options.value || that.locate("textfield").val();
         that.min = that.options.min;
         that.max = that.options.max;
-        
-        initTextfieldSlider(that);
-        
+                
         /**
          * Tests if a value is within the min and max of the textfield slider
          * @param {Object} value
@@ -117,6 +132,8 @@ fluid_1_1 = fluid_1_1 || {};
                 that.locate("thumb").attr("aria-valuenow", that.model);                
             }
         };
+
+        initTextfieldSlider(that);
         
         return that;
     };

@@ -293,6 +293,14 @@ var globalObj = this;
             var obj = globalObj.project;
             return buildRegExpression(obj.getProperty("regexStartJS"), obj.getProperty("regexEndJS"), that.requiredModules, that.moduleJSFileTable);
         };
+        
+        /**
+         * Builds up the regular expression needed to find the files that are included in single js file, to replace the first occurence with the single js file
+         */
+        that.buildJSReplaceRegExpression = function () {
+            var obj = globalObj.project;
+            return buildRegExpression(obj.getProperty("replaceRegexStartJS"), obj.getProperty("replaceRegexEndJS"), that.requiredModules, that.moduleJSFileTable);
+        };
     
         /**
          * Fetches the dependency declaration for the given module name from the file system,
@@ -324,7 +332,7 @@ var globalObj = this;
     
     /**
      * Kicks off dependency resolution 
-     * Results in setting four ant properties: allRequiredFiles, requiredDirectoriesSelector, jsRegExp, and jsfile
+     * Results in setting five ant properties: allRequiredFiles, requiredDirectoriesSelector, jsRegExp, jsReplaceRegExp, and jsfile
      */
     var resolveDependenciesFromArguments = function () {
         var excludedFiles = (typeof(globalObj.exclude) === "undefined") ? [] : parseArgument(globalObj.exclude);
@@ -337,6 +345,7 @@ var globalObj = this;
         setProperty("allRequiredJSFiles", resolver.getAllRequiredJSFiles(resolver.moduleJSFileTable));
         setProperty("requiredDirectoriesSelector", resolver.getRequiredDirectories());
         setProperty("jsRegExp", resolver.buildJSRegExpression());
+        setProperty("jsReplaceRegExp", resolver.buildJSReplaceRegExpression());
         setProperty("jsfile", jsFile);        
     };
     

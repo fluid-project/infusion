@@ -1,3 +1,11 @@
+/*
+ * This version of ImageReorderer.css has been deprecated as of Infusion 1.1.2, 
+ * and will be replaced in a future version of Infusion with the newer, fresher, simpler stylesheet 
+ * showcased in the Image Reorderer demo. 
+ * 
+ * If you're just starting to use the Image Reorderer, we recommend you use the demo styles instead. 
+ * See the CSS file located at: src/webapp/demos/reorderer/imageReorderer/css/imageReorderer.css
+ */
 
 .fl-reorderer-image-container{
   overflow: hidden; width: 100%;

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>Image Reorderer</title>
+        <link href="../../../../framework/fss/css/fss-reset.css" type="text/css" rel="stylesheet" media="all" />
+        <link href="../../../../framework/fss/css/fss-layout.css" type="text/css" rel="stylesheet" media="all" />
+        <link href="../../../../framework/fss/css/fss-text.css" type="text/css" rel="stylesheet" media="all" />
+        
+        <link href="../../../../components/reorderer/css/Reorderer.css" type="text/css" rel="stylesheet" media="all" />
+        <link href="../css/imageReorderer.css" type="text/css" rel="stylesheet" media="all" />
+        
+        <!--  Required javascript modules for the Image Reorderer. These can be replaced by Infusion-all.js -->
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/GeometricManager.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/Reorderer.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/ImageReorderer.js"></script>
+        <script type="text/javascript" src="../js/imageReorderer.js"></script>
+    </head>
+
+  <body>
+    <h1>Image Reorderer Example</h1>
+   
+    <form action="#" id="reorder-images-form" class="flc-imageReorderer fl-imageReorderer fl-reorderer-horizontalLayout">
+    
+        <div>
+            
+            <a href="../../../../components/reorderer/images/Dragonfruit.jpg" class="flc-imageReorderer-item fl-imageReorderer-item">
+                <img src="../../../../components/reorderer/images/Dragonfruit.jpg" alt="Dragonfruit thumbnail" />
+                <span class="flc-reorderer-imageTitle  fl-imageReorderer-caption">Dragonfruit</span>
+                <input name="dragonfruit" value="0" type="hidden" /> 
+            </a>
+    
+    
+            <a href="../../../../components/reorderer/images/Banana.jpg" class="flc-imageReorderer-item fl-imageReorderer-item">
+                <img src="../../../../components/reorderer/images/Banana.jpg" alt="Banana thumbnail" />
+                <span class="flc-reorderer-imageTitle  fl-imageReorderer-caption">Banana</span>
+                <input name="Banana" value="0" type="hidden" /> 
+            </a>
+    
+            <a href="../../../../components/reorderer/images/Blackberry.jpg" class="flc-imageReorderer-item fl-imageReorderer-item">
+                <img src="../../../../components/reorderer/images/Blackberry.jpg" alt="Blackberry thumbnail" />
+                <span class="flc-reorderer-imageTitle  fl-imageReorderer-caption">Blackberry</span>
+                <input name="Blackberry" value="0" type="hidden" /> 
+            </a>
+    
+            <a href="../../../../components/reorderer/images/Cherry.jpg" class="flc-imageReorderer-item fl-imageReorderer-item">
+                <img src="../../../../components/reorderer/images/Cherry.jpg" alt="Cherry thumbnail" />
+                <span class="flc-reorderer-imageTitle  fl-imageReorderer-caption">Cherry</span>
+                <input name="Cherry" value="0" type="hidden" /> 
+            </a>
+    
+            <a href="../../../../components/reorderer/images/Fig.jpg" class="flc-imageReorderer-item fl-imageReorderer-item">
+                <img src="../../../../components/reorderer/images/Fig.jpg" alt="Fig thumbnail" />
+                <span class="flc-reorderer-imageTitle  fl-imageReorderer-caption">Fig</span>
+                <input name="Fig" value="0" type="hidden" /> 
+            </a>
+    
+            <a href="../../../../components/reorderer/images/Grapes.jpg" class="flc-imageReorderer-item fl-imageReorderer-item">
+                <img src="../../../../components/reorderer/images/Grapes.jpg" alt="Grapes thumbnail" />
+                <span class="flc-reorderer-imageTitle  fl-imageReorderer-caption">Grapes</span>
+                <input name="Grapes" value="0" type="hidden" /> 
+            </a>
+    
+
+
+       </div>
+    </form>
+    
+    <script type="text/javascript">
+        demo.formBasedImageReorderer();
+    </script>
+  </body>
+</html>
+

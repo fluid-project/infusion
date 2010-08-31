@@ -1,7 +1,6 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2007-2009 University of California, Berkeley
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -24,7 +23,7 @@ fluid_1_1 = fluid_1_1 || {};
         STATE_REVERTED = "state_reverted";
   
     function defaultRenderer(that, targetContainer) {
-        var markup = "<span class='flc-undo'>" + 
+        var markup = "<span class='flc-undo' aria-live='polite' aria-relevant='all'>" + 
           "<span class='flc-undo-undoContainer'>[<a href='#' class='flc-undo-undoControl'>undo</a>]</span>" + 
           "<span class='flc-undo-redoContainer'>[<a href='#' class='flc-undo-redoControl'>redo</a>]</span>" + 
         "</span>";

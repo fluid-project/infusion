@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>Untitled</title>
+
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-mist.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-hc.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../components/inlineEdit/css/InlineEdit.css" />
+        
+        <script type="text/javascript" src="http://tinymce-fluid.appspot.com/tiny_mce.js"></script>
+        
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/plugins/tooltip/js/jquery.tooltip.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../components/inlineEdit/js/InlineEdit.js"></script>
+        <script type="text/javascript" src="../../../../components/inlineEdit/js/InlineEditIntegrations.js"></script>
+        <script type="text/javascript" src="../../../../components/undo/js/Undo.js"></script>
+        
+        <script type="text/javascript" src="../../../../tests/manual-tests/lib/fckeditor/fckeditor.js"></script>
+        
+        <script type="text/javascript" src="../js/inlineEdit.js"></script>
+ 
+   </head>
+    <body>
+ 
+       <h1>Example 4: Rich Text Inline Edit (using Tiny_MCE editor)</h1>
+        <div id="richEdit1">
+            <div class="flc-inlineEdit-text">
+                <p>After a hiatus, <strong>Portishead</strong> is back with their first studio 
+                album in 6 years. <em>Third</em> brings back the familiar and
+                the new, and none of this is best exemplified than in the track
+                <em>Machine Gun</em>. It seems that regardless of how <strong>Portishead</strong> 
+                sounds now, the one thing that has stayed constant is their refusal to be ordinary.
+                </p>
+            </div>
+            <div class="flc-inlineEdit-editContainer">
+                <textarea></textarea>
+                <button class="save">Save</button> <button class="cancel">Cancel</button>
+            </div>
+        </div>
+
+        
+        <h1>Example 5: Rich Text Inline Edit (using FCKEditor)</h1>
+        <div id="richEdit2">
+            <div class="flc-inlineEdit-text">
+                <p>After a hiatus, <strong>Portishead</strong> is back with their first studio 
+                album in 6 years. <em>Third</em> brings back the familiar and
+                the new, and none of this is best exemplified than in the track
+                <em>Machine Gun</em>. It seems that regardless of how <strong>Portishead</strong> 
+                sounds now, the one thing that has stayed constant is their refusal to be ordinary.
+                </p>
+            </div>
+            <div class="flc-inlineEdit-editContainer">
+                <textarea></textarea>
+                <button class="save">Save</button> <button class="cancel">Cancel</button>
+            </div>
+        </div>
+        
+        
+        <script type="text/javascript">
+            demo.initInlineEdit();
+        </script>        
+    </body>
+</html>

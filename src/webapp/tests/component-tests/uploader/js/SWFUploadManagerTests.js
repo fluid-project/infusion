@@ -1,7 +1,5 @@
 /*
-Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2007-2009 University of California, Berkeley
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -33,6 +31,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         // Mock Uploader instance.
         var buttonSelector = "#browseButton";
         var mockUploader = {
+            container: $("#uploaderContainer"), 
             locate: function (name) {
                 return $(buttonSelector);
             },
@@ -64,22 +63,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("To work around a framework bug, we should pass along the configured upload manager type.",
                                 mockUploader.options.uploadManager, decorator.returnedOptions.uploadManager.type);                            
         });
-
-        swfUploadManagerTests.test("swfUploadSetupDecorator visible button id generation", function () {
-            $.browser.msie = true;
-            
-            // Test with a button that doesn't have an id. One should be auto-generated.
-            buttonSelector = ".noId";
-            decorator = fluid.swfUploadSetupDecorator(mockUploader);
-            
-            var generatedId = mockUploader.locate("browseButton").attr("id");
-            jqUnit.assertNotUndefined("An id should be generated for peers that don't already have one.", 
-                                      generatedId);
-            jqUnit.assertEquals("With Flash 10, the flashButtonPeerId should be generated and added to the button.", 
-                                generatedId, 
-                                decorator.returnedOptions.uploadManager.options.flashButtonPeerId);         
-        });       
-                
+        
+        swfUploadManagerTests.test("swfUploadSetupDecorator Flash 10 accessibility", function () {
+            var decorator = fluid.swfUploadSetupDecorator(mockUploader);
+            jqUnit.assertEquals("The HTML browse button should have been given a tabindex of -1",
+                                "-1", mockUploader.locate("browseButton").attr("tabindex"));
+        });
+        
         swfUploadManagerTests.test("swfUploadSetupDecorator Flash 9 configuration", function () {
             flashPlayerVersion.major = 9;
             var decorator = fluid.swfUploadSetupDecorator(mockUploader);
@@ -92,8 +82,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         swfUploadManagerTests.test("swfUploadSetupDecorator Flash 10 configuration", function () {
             var decorator = fluid.swfUploadSetupDecorator(mockUploader);
-            jqUnit.assertNotEquals("With Flash 10, the flashButtonPeerId should be specified.", 
-                                   "", decorator.returnedOptions.uploadManager.options.flashButtonPeerId);
             jqUnit.assertEquals("We should have specified the Flash 10 movie URL.", 
                                 fluid.defaults("fluid.swfUploadSetupDecorator").flash10URL,
                                 decorator.returnedOptions.uploadManager.options.flashURL);
@@ -119,13 +107,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("The Flash movie's window mode should not be transparent.",
                                 SWFUpload.WINDOW_MODE.OPAQUE,
                                 decorator.returnedOptions.uploadManager.options.flashButtonWindowMode);
-            jqUnit.assertEquals("The flashButtonPeerId should be set to the button's id.",
-                                mockUploader.locate("browseButton").attr("id"),
-                                decorator.returnedOptions.uploadManager.options.flashButtonPeerId);
         };
         
         swfUploadManagerTests.test("swfUploadSetupDecorator Flash 10 visibility", function () {
-            var decorator = fluid.swfUploadSetupDecorator(mockUploader);
+            var decorator = fluid.swfUploadSetupDecorator(mockUploader, {
+                flashButtonAlwaysVisible: true,
+                transparentEvenInIE: false
+            });
             checkVisibleSettings(decorator);
         });
         
@@ -134,17 +122,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             $.browser.msie = true;
                         
             // Now try with the transparentEvenInIE option turned on.
-            decorator = fluid.swfUploadSetupDecorator(mockUploader, {
-                flashButtonAlwaysVisible: false,
-                transparentEvenInIE: true
-            });
+            decorator = fluid.swfUploadSetupDecorator(mockUploader);
             checkTransparentSettings(decorator);
             
             // Mock non-IE browsers.
             $.browser.msie = false;
-            decorator = fluid.swfUploadSetupDecorator(mockUploader, {
-                flashButtonAlwaysVisible: false
-            });
+            decorator = fluid.swfUploadSetupDecorator(mockUploader);
             checkTransparentSettings(decorator);
         });
     });

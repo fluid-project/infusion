@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Simple Layout Reorderer Sample</title>
+        
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-text.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../components/reorderer/css/Reorderer.css" />
+        <link rel="stylesheet" type="text/css" href="../css/layoutReorderer.css" />        
+        
+
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../lib/json/js/json2.js"></script>
+        
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/GeometricManager.js"></script>        
+        <script type="text/javascript" src="../../../../components/reorderer/js/Reorderer.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/LayoutReorderer.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/ModuleLayout.js"></script>
+        
+        <script type="text/javascript" src="../js/layoutReorderer.js"></script>
+        
+	</head>
+	<body>
+
+        <div class="example">
+            <h1>Example 2: Complex sorting</h1>
+            <p>The most robust sorting mechanism. Includes locked portlets.</p>
+    
+            <div id="fluid-LayoutReorderer-sample2" class="columnSetup3 fluid-vertical-order">
+            	 <!-- invalid drag n drop message template -->
+                <div class="flc-reorderer-dropWarning fl-reorderer-dropWarning">Can't place above locked portlet</div>
+
+                <div class="myColumn fl-container-flex30 fl-force-left">
+                    <h2>Column A</h2>
+                    <div class="locked">Content Portal A1 (Locked)</div>
+                    <div>Content Portal A2</div>
+                    <div>Content Portal A3</div>
+                    <div>Content Portal A4</div>
+                </div>
+                <div class="myColumn fl-container-flex30 fl-force-left">
+                    <h2>Column B</h2>
+                    <div class="locked">Content Portal B1 (Locked)</div>
+                    <div>Content Portal B2</div>
+                    <div>Content Portal B3</div>
+                    <div>Content Portal B4</div>
+                </div>
+                <div class="myColumn fl-container-flex30 fl-force-left">
+                    <h2>Column C</h2>
+                    <div>Content Portal C1</div>
+                    <div>Content Portal C2</div>
+                    <div>Content Portal C3</div>
+                    <div>Content Portal C4</div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            demo.initLayoutReorderer();
+        </script>                
+	</body>
+</html>
+

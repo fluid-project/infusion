@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    
+    <title>Progress Example</title>
+    <link href="../../../framework/fss/css/fss-reset.css" rel="stylesheet" type="text/css" />
+    <link href="../css/progress.css" rel="stylesheet" type="text/css" />
+    
+	<script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+	<script type="text/javascript" src="../../../lib/jquery/ui/js/ui.core.js"></script>
+	<script type="text/javascript" src="../../../lib/jquery/plugins/bgiframe/js/jquery.bgiframe.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../components/progress/js/Progress.js"></script>
+    <script type="text/javascript" src="../js/progress.js"></script>
+
+</head>
+<body>
+<div id="main">
+    <p>
+        Example of a simple Progress indicator, using some sample code.
+    </p>
+    <p>
+        <button id="showButton">Do something...</button>
+    </p>
+    <div class="flc-progress progress-pop-up">
+        <h3>Current Progress</h3>
+        <div class="flc-progress-bar progress-bar">
+            <div class="flc-progress-indicator progress-indicator">
+            </div>
+        </div>
+        <p class="flc-progress-label progress-label">
+            0% Complete
+        </p>
+    </div>
+</div>
+    <script type="text/javascript">
+        demo.initClickProgress();        
+    </script>
+</body>
+</html>

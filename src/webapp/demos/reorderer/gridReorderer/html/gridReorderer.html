@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Sortable Grid</title>
+        
+        <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../../components/reorderer/css/Reorderer.css" />
+        <link rel="stylesheet" type="text/css" href="../css/gridReorderer.css" />
+
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.core.js"></script>
+        <script type="text/javascript" src="../../../../lib/jquery/ui/js/ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../components/reorderer/js/GeometricManager.js"></script>        
+        <script type="text/javascript" src="../../../../components/reorderer/js/Reorderer.js"></script>
+        <script type="text/javascript" src="../js/gridReorderer.js"></script>
+        
+	</head>
+	<body>
+	    <h1>Sortable Grid</h1>
+        <p>Items are laid out in a grid pattern</p>
+        <div class="myGrid fl-reorderer-horizontalLayout">
+            <p>You</p>
+            <p>I</p>           
+            <p>Are</p>
+            <p>Am</p>
+            <p>We</p>
+            <p>Wonderful</p>
+            <p>Dogs</p>
+            <p>Cat</p>
+            <p>Happy</p>
+        </div>
+        <script type="text/javascript">
+            demo.initGridReorderer();
+        </script>
+	</body>
+</html>

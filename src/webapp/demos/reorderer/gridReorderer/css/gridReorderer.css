@@ -1,0 +1,15 @@
+.myGrid {
+    width   : 350px;
+    height  : 300px;
+    border  : 1px solid #CCC;
+}
+
+.myGrid p {
+    background  : #ebebeb;
+    width       : 30%;
+    height      : 30%;
+    margin      : 5px;        
+    text-align  : center;
+    display     : inline;
+    float       : left; 
+}   

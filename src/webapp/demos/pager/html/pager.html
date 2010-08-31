@@ -1,0 +1,90 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf" lang="en" >
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link href="../css/pager.css" type="text/css" rel="stylesheet" />
+
+    <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+    <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+    <script type="text/javascript" src="../../../framework/renderer/js//fluidParser.js"></script>
+    <script type="text/javascript" src="../../../framework/renderer/js//fluidRenderer.js"></script>
+    <script type="text/javascript" src="../../../components/pager/js/Pager.js"></script>
+
+    <script type="text/javascript" src="../data/pager.js"></script>
+    <script type="text/javascript" src="../js/pager.js"></script>
+
+		<title>Gradebook Example</title>
+	</head>
+	<body>
+	    <div id="gradebook">
+	      <form action="#">
+    	    <ul id="pager-top" class="fl-pager-top flc-pager-top">
+              <li>
+                <ul class="pager-links flc-pager-links">
+    	            <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
+                  <li class="flc-pager-pageLink-disabled">2</li>
+    	            <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
+                </ul>
+              </li>
+
+    	        <li class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></li>
+    	        <li class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></li>
+                <li>
+              Show <span> <select class="flc-pager-page-size">
+               <option value="5">5</option>
+               <option value="10">10</option>
+               <option value="20">20</option>
+               <option value="50">50</option>
+               </select></span> per page
+               </li>
+    	    </ul>
+            <table summary="student grades" id="students-page1">
+              <thead>
+                <tr>
+                    <td class="name-header">Name</td>
+                    <td class="userid-header">User Id</td>
+                    <td class="points-header">Points</td>
+                    <td class="comments-header">Comments</td>
+                </tr>
+              </thead>
+              <tbody id="body-template">
+                <tr rsf:id="row:">
+                    <td rsf:id="name">Ahn, Jason</td>
+                    <td rsf:id="userid">15234314</td>
+                    <td><input rsf:id="points" type="text" value="87" /></td>
+                    <td rsf:id="comment">Lorem ipsum dolor sit amet.</td>
+                </tr>
+                <tr rsf:id="scr=ignore">
+                    <td>Akerman, Krista</td>
+                    <td>19206726</td>
+                    <td><input type="text" value="79" /></td>
+                    <td>Consectetuer adipiscing elit.</td>
+                </tr>
+              </tbody>
+            </table>
+            <ul id="pager-bottom" class="fl-pager-bottom flc-pager-bottom">
+              <li>
+              <ul class="pager-links flc-pager-links">
+    	          <li value="1" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
+                <li class="flc-pager-pageLink-disabled">2</li>
+    	          <li value="2" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
+    	          <li value="3" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
+    	          <li value="4" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">4</a></li>
+    	          <li value="5" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">5</a></li>
+    	          <li value="6" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">6</a></li>
+    	          <li value="7" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">7 (last)</a></li>
+              </ul>
+              </li>
+    	        <li class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></li>
+    	        <li class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></li>
+              <span class="flc-pager-summary">1-10 of 500 items</span>
+              </ul>
+          </form>
+        </div>
+        <script type="text/javascript">
+            demo.initPager(userTable);
+        </script>
+	</body>
+</html>

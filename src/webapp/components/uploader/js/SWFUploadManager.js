@@ -1,7 +1,6 @@
 /*
-Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
-Copyright 2007-2009 University of California, Berkeley
+Copyright 2008-2009 University of California, Berkeley
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -11,10 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global SWFUpload*/
-/*global swfobject*/
-/*global jQuery*/
-/*global fluid_1_1*/
+/*global fluid_1_1,SWFUpload,swfobject,jQuery*/
 
 fluid_1_1 = fluid_1_1 || {};
 
@@ -40,80 +36,49 @@ fluid_1_1 = fluid_1_1 || {};
         };
     };
     
-    var createAfterReadyHandler = function (that, uploader) {
-        return function () {
-            var flashMovie = $("#" + uploader.uploadManager.swfUploader.movieName, uploader.container);
-            var browseButton = uploader.locate("browseButton");
-            
-            // Do our best to make the Flash movie as accessible as possib
-            fluid.tabindex(flashMovie, 0);
-            flashMovie.attr("role", "button");
-            flashMovie.attr("alt", "Browse files button");
-            
-            if (that.isTransparent) {
-                // Style the Flash movie so that it floats trasparently over the button.
-                flashMovie.addClass(that.options.styles.browseButtonOverlay);
-                flashMovie.css("top", browseButton.position().top);
-                flashMovie.css("left", browseButton.position().left);
-            }
-        };
-    };
-    
-    var createFlash9MovieContainer = function () {
-        // Create a hidden container and a placeholder element for SWFUpload to replace.
-        var container = $("<div class='fl-uploader-flash9-container'></div>");
-        var placeholder = $("<span></span>");
-        var placeholderId = fluid.allocateSimpleId(placeholder);
-        container.append(placeholder);
+    var createFlash9MovieContainer = function (that) {
+        var container = $("<div><span></span></div>");
+        container.addClass(that.options.styles.flash9Container);
         $("body").append(container);
-        return placeholderId;
+        return container;
     };
     
-    var setupForFlash9 = function (that, uploader) {
+    var setupForFlash9 = function (that) {
+        var flashContainer = createFlash9MovieContainer(that);
         that.returnedOptions.uploadManager.options = {
             flashURL: that.options.flash9URL || undefined,
-            flashButtonPeerId: createFlash9MovieContainer()
+            flashButtonPeerId: fluid.allocateSimpleId(flashContainer.children().eq(0))
         };
     };
     
-    var createEmptyPlaceholder = function () {
-        var placeholder = $("<span></span>");
-        fluid.allocateSimpleId(placeholder);
+    var createFlash10MovieContainer = function (that, uploaderContainer) {        
+        // Wrap the whole uploader first.
+        uploaderContainer.wrap("<div class='" + that.options.styles.uploaderWrapperFlash10 + "'></div>");
         
-        return placeholder;
-    };
-    
-    var createButtonPlaceholder = function (browseButton) {
-        var placeholder = $("<span></span>");
-        var placeholderId = fluid.allocateSimpleId(placeholder);
-        browseButton.before(placeholder);
-        unbindSelectFiles();
-        
-        return placeholderId;
+        // Then create a container and placeholder for the Flash movie as a sibling to the uploader.
+        var flashContainer = $("<div><span></span></div>");
+        flashContainer.addClass(that.options.styles.browseButtonOverlay);
+        uploaderContainer.after(flashContainer);
+        unbindSelectFiles();        
+        return flashContainer;
     };
     
     var setupForFlash10 = function (that, uploader) {
-        // If we're working in Flash 10 or later, we need to attach the Flash movie to the browse button.
-        var browseButton = uploader.locate("browseButton");
+        var o = that.options,
+            flashContainer = createFlash10MovieContainer(that, uploader.container),
+            browseButton = uploader.locate("browseButton");
+        
         fluid.tabindex(browseButton, -1);
-
-        that.isTransparent = that.options.flashButtonAlwaysVisible ? false : 
-                                                                     (!$.browser.msie || that.options.transparentEvenInIE);
-        
-        // If the button is transparent, we'll need an extra placeholder element which will be replaced by the movie.
-        // If the Flash movie is visible, we can just replace the button itself.
-        var peerId = that.isTransparent ? createButtonPlaceholder(browseButton) : fluid.allocateSimpleId(browseButton);
-        
+        that.isTransparent = o.flashButtonAlwaysVisible ? false : (!$.browser.msie || o.transparentEvenInIE);
         that.returnedOptions.uploadManager.options = {
-            flashURL: that.options.flash10URL || undefined,
-            flashButtonImageURL: that.isTransparent ? undefined : that.options.flashButtonImageURL, 
-            flashButtonPeerId: peerId,
-            flashButtonHeight: that.isTransparent ? browseButton.outerHeight(): that.options.flashButtonHeight,
-            flashButtonWidth: that.isTransparent ? browseButton.outerWidth(): that.options.flashButtonWidth,
+            flashURL: o.flash10URL || undefined,
+            flashButtonImageURL: that.isTransparent ? undefined : o.flashButtonImageURL, 
+            flashButtonPeerId: fluid.allocateSimpleId(flashContainer.children().eq(0)),
+            flashButtonHeight: o.flashButtonHeight || browseButton.outerHeight(),
+            flashButtonWidth: o.flashButtonWidth || browseButton.outerWidth(),
             flashButtonWindowMode: that.isTransparent ? SWFUpload.WINDOW_MODE.TRANSPARENT : SWFUpload.WINDOW_MODE.OPAQUE,
             flashButtonCursorEffect: SWFUpload.CURSOR.HAND,
             listeners: {
-                afterReady: createAfterReadyHandler(that, uploader),
                 onUploadStart: function () {
                     uploader.uploadManager.swfUploader.setButtonDisabled(true);
                 },
@@ -148,16 +113,16 @@ fluid_1_1 = fluid_1_1 || {};
     
     fluid.defaults("fluid.swfUploadSetupDecorator", {
         // The flash9URL and flash10URLs are now deprecated in favour of the flashURL option in upload manager.
-        flashButtonAlwaysVisible: true,
-        transparentEvenInIE: false,
+        flashButtonAlwaysVisible: false,
+        transparentEvenInIE: true,
         
         // Used only when the Flash movie is visible.
         flashButtonImageURL: "../images/browse.png",
-        flashButtonHeight: 22,
-        flashButtonWidth: 106,
         
         styles: {
-            browseButtonOverlay: "fl-uploader-browse-overlay"
+            browseButtonOverlay: "fl-uploader-browse-overlay",
+            flash9Container: "fl-uploader-flash9-container",
+            uploaderWrapperFlash10: "fl-uploader-flash10-wrapper"
         }
     });
     
