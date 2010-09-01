@@ -100,7 +100,7 @@ var fluid = fluid || fluid_1_2;
     
     fluid.identity = function(arg) {
         return arg;
-    }
+    };
     
     // Framework and instantiation functions.
     
@@ -247,7 +247,7 @@ var fluid = fluid || fluid_1_2;
      */
     fluid.isArrayable = function(totest) {
         return typeof(totest) !== "string" && typeof(totest.length) === "number";
-    }
+    };
     
     /**
      * Attaches the user's listeners to a set of events.
@@ -285,7 +285,7 @@ var fluid = fluid || fluid_1_2;
      * Sets up a component's declared events.
      * Events are specified in the options object by name. There are three different types of events that can be
      * specified: 
-     * 1. an ordinary multicast event, specified by "null. 
+     * 1. an ordinary multicast event, specified by "null". 
      * 2. a unicast event, which allows only one listener to be registered
      * 3. a preventable event
      * 
@@ -310,7 +310,7 @@ var fluid = fluid || fluid_1_2;
     fluid.computeNickName = function(typeName) {
         var segs = fluid.model.parseEL(typeName);
         return segs[segs.length - 1];
-    }
+    };
     
     /**
      * Merges the component's declared defaults, as obtained from fluid.defaults(),
@@ -324,6 +324,9 @@ var fluid = fluid || fluid_1_2;
      */
     fluid.mergeComponentOptions = function (that, componentName, userOptions) {
         var defaults = fluid.defaults(componentName); 
+        if (fluid.expandOptions) {
+            defaults = fluid.expandOptions(fluid.copy(defaults));
+        }
         that.options = fluid.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);    
     };
     
@@ -353,7 +356,7 @@ var fluid = fluid || fluid_1_2;
      */
     fluid.initView = function (componentName, container, userOptions) {
         fluid.expectFilledSelector(container, "Error instantiating component with name \"" + componentName);
-        var container = fluid.container(container, true);
+        container = fluid.container(container, true);
         if (!container) {
             return null;
         }
@@ -394,8 +397,9 @@ var fluid = fluid || fluid_1_2;
     fluid.emptySubcomponent = function (options) {
         var that = {};
         options = $.makeArray(options);
+        var empty = function () {};
         for (var i = 0; i < options.length; ++ i) {
-            that[options[i]] = function () {};
+            that[options[i]] = empty;
         }
         return that;
     };
@@ -409,7 +413,7 @@ var fluid = fluid || fluid_1_2;
      * @param {Object} options user-supplied options to merge with the defaults
      */
     fluid.initLittleComponent = function(name, options) {
-        var that = {typeName: name, id: fluid_guid++};
+        var that = {typeName: name, id: fluid.allocateGuid()};
         fluid.mergeComponentOptions(that, name, options);
         that.nickName = that.options.nickName? that.options.nickName: fluid.computeNickName(that.typeName);    
         return that;
@@ -598,8 +602,10 @@ var fluid = fluid || fluid_1_2;
     };
     
     fluid.getGlobalValue = function(path, env) {
-        env = env || fluid.environment;
-        return fluid.model.getBeanValue(globalObject, path, env);
+        if (path) {
+            env = env || fluid.environment;
+            return fluid.model.getBeanValue(globalObject, path, env);
+        }
     };
     
     /**
@@ -649,7 +655,7 @@ var fluid = fluid || fluid_1_2;
     
     fluid.allocateGuid = function() {
         return fluid_guid++;
-    }
+    };
     
     fluid.event.identifyListener = function(listener) {
         if (!listener.$$guid) {

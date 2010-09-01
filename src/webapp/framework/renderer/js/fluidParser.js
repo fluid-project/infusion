@@ -579,7 +579,13 @@ fluid_1_2 = fluid_1_2 || {};
     
   fluid.fetchResources = function(resourceSpecs, callback) {
       return fetchResourcesImpl({specs: resourceSpecs}, callback);
-  }
+  };
+  
+  fluid.primeCacheFromResources = function(componentName) {
+      var resources = fluid.defaults(componentName).resources;
+      var expanded = fluid.expandOptions(fluid.copy(resources));
+      fluid.fetchResources(expanded);
+  };
   
     // TODO: find faster encoder
   fluid.XMLEncode = function (text) {

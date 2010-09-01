@@ -28,11 +28,11 @@ fluid_1_2 = fluid_1_2 || {};
             "<a href='#' class='flc-undo-undoControl'>" + str.undo + "</a>" + 
             "<a href='#' class='flc-undo-redoControl'>" + str.redo + "</a>" + 
             "</span>";
-		var markupNode = $(markup).attr({
-			"role": "region",  
-			"aria-live": "polite", 
-			"aria-relevant": "all"
-		});
+        var markupNode = $(markup).attr({
+            "role": "region",  
+            "aria-live": "polite", 
+            "aria-relevant": "all"
+        });
         targetContainer.append(markupNode);
         return markupNode;
     }
@@ -63,7 +63,7 @@ fluid_1_2 = fluid_1_2 || {};
                     refreshView(that);
                     that.locate("redoControl").focus();
                 }
-				return false;
+                return false;
             }
         );
         that.locate("redoControl").click( 
@@ -74,7 +74,7 @@ fluid_1_2 = fluid_1_2 || {};
                     refreshView(that);
                     that.locate("undoControl").focus();
                 }
-				return false;
+                return false;
             }
         );
         return {

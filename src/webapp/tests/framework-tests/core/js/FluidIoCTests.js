@@ -15,7 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global jqUnit*/
 
 
-fluid.testUtils = fluid.testUtils || {};
+fluid.registerNamespace("fluid.testUtils");
    
 fluid.demands("fluid.reorderer.gridReorderer", "fluid.reorderer",
     ["{that}.container",
@@ -299,6 +299,9 @@ fluid.demands("fluid.testUtils.popup", "fluid.testUtils.localTest",
         return "../data/" + recordType + ".json";
     };
     
+    
+    // TODO: tests for fluid.deferredCall
+    // TODO: tests for fluid.invoke
     
     var makeArrayExpander = function (recordType) {
      return fluid.expander.makeFetchExpander({

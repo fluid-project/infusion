@@ -29,14 +29,14 @@ fluid_1_2 = fluid_1_2 || {};
         return fluid.find(layout.columns,
             function (column, colIndex) {
                 var index = $.inArray(item, column.elements);
-                return index === -1? null : {columnIndex: colIndex, itemIndex: index};
+                return index === -1? undefined : {columnIndex: colIndex, itemIndex: index};
             }, {columnIndex: -1, itemIndex: -1});
     };
         
     var findColIndex = function (item, layout) {
         return fluid.find(layout.columns,
             function (column, colIndex) {
-            	return item === column.container? colIndex : null;
+            	return item === column.container? colIndex : undefined;
             }, -1);
     };
 

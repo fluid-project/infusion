@@ -23,7 +23,7 @@ var fluid_1_2 = fluid_1_2 || {};
     
     var inCreationMarker = "__CURRENTLY_IN_CREATION__";
     
-    findMatchingComponent = function(that, visitor, except) {
+    var findMatchingComponent = function(that, visitor, except) {
         for (var name in that) {
             var component = that[name];
             if (component === except || !component.typeName) {continue;}
@@ -35,7 +35,7 @@ var fluid_1_2 = fluid_1_2 || {};
     };
     
     // thatStack contains an increasing list of MORE SPECIFIC thats.
-    visitComponents = function(thatStack, visitor) {
+    var visitComponents = function(thatStack, visitor) {
         var lastDead;
         for (var i = thatStack.length - 1; i >= 0; -- i) {
             var that = thatStack[i];
@@ -83,7 +83,7 @@ var fluid_1_2 = fluid_1_2 || {};
         else {
             return getValueGingerly(thatStack, atval, segs, ind + 1);
         }
-    };
+    }
 
     function makeStackFetcher(thatStack) {
         var fetcher = function(parsed) {
@@ -137,23 +137,23 @@ var fluid_1_2 = fluid_1_2 || {};
         if (demands.length === 0 && thatStack.length > 0) { // Guess that it is meant to be a subcomponent TODO: component grades
             demands = [fluid.COMPONENT_OPTIONS];
         }
+        var args = [];
         if (demands) {
-            var args = [];
             for (var i = 0; i < demands.length; ++ i) {
                 var arg = demands[i];
                 if (typeof(arg) === "object" && !fluid.isMarker(arg)) {
-                    var options = {};
-                    for (key in arg) {
+                    var resolvedOptions = {};
+                    for (var key in arg) {
                         var ref = arg[key];
                         var rvalue = resolveRvalue(thatStack, ref, initArgs, options);
-                        fluid.model.setBeanValue(options, key, rvalue);
+                        fluid.model.setBeanValue(resolvedOptions, key, rvalue);
                     }
-                    args[i] = options;
+                    args[i] = resolvedOptions;
                 }
                 else{
-                    var arg = resolveRvalue(thatStack, arg, initArgs, options) || {};
-                    arg.typeName = demandspec.funcName; // TODO: investigate the general sanity of this
-                    args[i] = arg;
+                    var resolvedArg = resolveRvalue(thatStack, arg, initArgs, options) || {};
+                    resolvedArg.typeName = demandspec.funcName; // TODO: investigate the general sanity of this
+                    args[i] = resolvedArg;
                 }
             }
         }
@@ -166,7 +166,7 @@ var fluid_1_2 = fluid_1_2 || {};
             funcName: demandspec.funcName
         };
         return togo;
-    } 
+    };
    
     var dependentStore = {};
     
@@ -181,7 +181,7 @@ var fluid_1_2 = fluid_1_2 || {};
             }
             return rec.spec;   
         }
-    };
+    }
     
     fluid.demands = function(demandingName, contextName, spec) {
         var contextNames = $.makeArray(contextName).sort(); 
@@ -198,9 +198,13 @@ var fluid_1_2 = fluid_1_2 || {};
         }
         exist.push({contexts: contextNames, spec: spec});
     };
+    
+    fluid.getEnvironmentalThatStack = function() {
+         return [fluid.staticEnvironment];
+    };
 
     fluid.locateDemands = function(demandingNames, thatStack) {
-        var searchStack = [fluid.staticEnvironment].concat(thatStack); // TODO: put in ThreadLocal "instance" too, and also accelerate lookup
+        var searchStack = fluid.getEnvironmentalThatStack().concat(thatStack); // TODO: put in ThreadLocal "instance" too, and also accelerate lookup
         var contextNames = {};
         visitComponents(searchStack, function(component) {
             contextNames[component.typeName] = true;
@@ -211,7 +215,7 @@ var fluid_1_2 = fluid_1_2 || {};
             for (var j = 0; j < rec.length; ++ j) {
                 var spec = rec[j];
                 var record = {spec: spec.spec, intersect: 0, uncess: 0};
-                for (k = 0; k < spec.contexts.length; ++ k) {
+                for (var k = 0; k < spec.contexts.length; ++ k) {
                     ++record[contextNames[spec.contexts[k]]? "intersect" : "uncess"];
                 }
                 // TODO: Potentially more subtle algorithm here - also ambiguity reports  
@@ -230,7 +234,7 @@ var fluid_1_2 = fluid_1_2 || {};
      */
     fluid.determineDemands = function (thatStack, funcNames) {
         var that = thatStack[thatStack.length - 1];
-        var funcNames = $.makeArray(funcNames);
+        funcNames = $.makeArray(funcNames);
         var demandspec = fluid.locateDemands(funcNames, thatStack);
    
         if (!demandspec) {
@@ -262,10 +266,21 @@ var fluid_1_2 = fluid_1_2 || {};
         return fluid.embodyDemands(thatStack, demandspec, initArgs, options);
     };
     
-    // fluid.invoke is not really supportable as a result of thatStack requirement - 
-    // fluid.bindInvoker is recommended instead
-    fluid.invoke = function(that, functionName, args, environment) {
-        var invokeSpec = fluid.resolveDemands($.makeArray(that), functionName, args);
+    /** Corrected version of jQuery makearray that returns an empty array on undefined rather than crashing **/
+    fluid.makeArray = function(arg) {
+        if (arg === null || arg === undefined) {
+            return [];
+        }
+        else {
+            return $.makeArray(arg);
+        }
+    };
+    
+    // TODO: make a *slightly* more performant version of fluid.invoke that perhaps caches the demands
+    // after the first successful invocation
+    fluid.invoke = function(functionName, args, that, environment) {
+        args = fluid.makeArray(args);
+        var invokeSpec = fluid.resolveDemands(fluid.getEnvironmentalThatStack().concat(fluid.makeArray(that)), functionName, args, args[0]);
         return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
     };
     
@@ -280,35 +295,61 @@ var fluid_1_2 = fluid_1_2 || {};
         return function() {
             var invokeSpec = fluid.embodyDemands(fluid.staticEnvironment, demandSpec, arguments);
             return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
-        }
+        };
     };
     
     fluid.makeInvoker = function(thatStack, demandspec, functionName, environment) {
-        var demandspec = demandspec || fluid.determineDemands(thatStack, functionName);
+        demandspec = demandspec || fluid.determineDemands(thatStack, functionName);
         thatStack = $.makeArray(thatStack); // take a copy of this since it will most likely go away
         return function() {
             var invokeSpec = fluid.embodyDemands(thatStack, demandspec, arguments);
             return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
         };
-    }
+    };
     
     fluid.addBoiledListener = function(thatStack, eventName, listener, namespace, predicate) {
-        var thatStack = $.makeArray(thatStack);
+        thatStack = $.makeArray(thatStack);
         var topThat = thatStack[thatStack.length - 1];
         topThat.events[eventName].addListener(function(args) {
             var resolved = fluid.resolveDemands(thatStack, eventName, args);
             listener.apply(null, resolved.args);
         }, namespace, predicate);
     };
+    /** Expand a set of component options with respect to a set of "expanders" (essentially only
+     *  deferredCall) -  This substitution is destructive since it is assumed that the options are already "live" as the
+     *  result of environmental substitutions. Note that options contained inside "components" will not be expanded
+     *  by this call directly to avoid linearly increasing expansion depth if this call is occuring as a result of
+     *  "initDependents" */
+     // TODO: This needs to be integrated with "embodyDemands" above which makes a call to "resolveEnvironment" directly
+     // but with very similarly derived options (makeStackResolverOptions)
+     // The whole merge/expansion pipeline needs an overhaul once we have "grades" to allow merging and
+     // defaulting to occur smoothly across a "demands" stack - right now, "demanded" options have exactly
+     // the same status as user options whereas they should slot into the right place between 
+     // "earlyDefaults"/"defaults"/"demands"/"user options". Demands should be allowed to say whether they
+     // integrate with or override defaults.
+    fluid.expandOptions = function(args, thatStack) {
+        if (fluid.isPrimitive(args)) {
+            return args;
+        }
+        thatStack = thatStack || fluid.getEnvironmentalThatStack();
+        var expandOptions = makeStackResolverOptions(thatStack);
+        expandOptions.noValue = true;
+        expandOptions.noCopy = true;
+        var components = args.components;
+        delete args.components;
+        var expanded = fluid.expander.expandLight(args, expandOptions);
+        if (components !== undefined) {
+            expanded.components = components;
+        }
+        return expanded;
+    };
     
     fluid.initDependent = function(that, name, thatStack) {
         if (!that) { return; }
         var component = that.options.components[name];
         var invokeSpec = fluid.resolveDemands(thatStack, [component.type, name], [], component.options);
-        var expandOptions = makeStackResolverOptions(thatStack);
-        expandOptions.noValue = true;
-        expandOptions.noCopy = true;
-        invokeSpec.args = fluid.expander.expandLight(invokeSpec.args, expandOptions);
+        // TODO: only want to expand "options" or all args? See "component rescuing" in expandOptions above
+        invokeSpec.args = fluid.expandOptions(invokeSpec.args, thatStack); 
         var instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
         if (instance) { // TODO: more fallibility
             that[name] = instance;
@@ -534,9 +575,11 @@ var fluid_1_2 = fluid_1_2 || {};
         else if (options.filter) {
             return options.filter(obj, recurse, options);
         }
-        else return (options.noCopy? fluid.each : fluid.transform)(obj, function(value, key) {
-            return resolveEnvironmentImpl(value, options);
-        });
+        else {
+            return (options.noCopy? fluid.each : fluid.transform)(obj, function(value, key) {
+                return resolveEnvironmentImpl(value, options);
+            });
+        }
     }
     
     fluid.defaults("fluid.resolveEnvironment", 
@@ -591,7 +634,7 @@ var fluid_1_2 = fluid_1_2 || {};
         delete spec.fetchKey;
         var environmentdisposer = function(disposed) {
             $.extend(target, disposed);
-        }
+        };
         // replace the callback which is there (taking 2 arguments) with one which
         // directly responds to the request, passing in the result and OUR "disposer" - 
         // which once the user has processed the response (say, parsing JSON and repackaging)
@@ -607,7 +650,9 @@ var fluid_1_2 = fluid_1_2 || {};
     
     fluid.expander.deferredCall = function(target, source) {
         var expander = source.expander;
-        return fluid.invokeGlobalFunction(expander.func, expander.args);
+        var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : $.makeArray(expander.args); 
+        //return fluid.invokeGlobalFunction(expander.func, args);
+        return fluid.invoke(expander.func, args);
     };
     
     fluid.deferredCall = fluid.expander.deferredCall; // put in top namespace for convenience
@@ -625,7 +670,7 @@ var fluid_1_2 = fluid_1_2 || {};
               togo = (options.noCopy? fluid.each: fluid.transform)(obj, function(value) {return recurse(value);});
           }
           else {
-              var togo = options.noCopy? obj : {};
+              togo = options.noCopy? obj : {};
               for (var key in obj) {
                   var value = obj[key];
                   var expander;

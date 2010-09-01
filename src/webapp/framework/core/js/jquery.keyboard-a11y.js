@@ -492,6 +492,10 @@ var fluid = fluid || fluid_1_2;
             that.selectables.unbind("blur." + NAMESPACE_KEY);
             that.selectables.bind("focus."+ NAMESPACE_KEY, selectableFocusHandler(that));
             that.selectables.bind("blur." + NAMESPACE_KEY, selectableBlurHandler(that));
+            if (keyMap && that.options.noBubbleListeners) {
+                that.selectables.unbind("keydown."+NAMESPACE_KEY);
+                that.selectables.bind("keydown."+NAMESPACE_KEY, arrowKeyHandler(that, keyMap));
+            }
             if (focusedItem) {
                 selectElement(focusedItem, that);
             }
@@ -513,7 +517,7 @@ var fluid = fluid || fluid_1_2;
         };
         
         // Add various handlers to the container.
-        if (keyMap) {
+        if (keyMap && !that.options.noBubbleListeners) {
             container.keydown(arrowKeyHandler(that, keyMap));
         }
         container.keydown(tabKeyHandler(that));
