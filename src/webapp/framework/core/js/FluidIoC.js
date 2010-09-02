@@ -651,11 +651,18 @@ var fluid_1_2 = fluid_1_2 || {};
     fluid.expander.deferredCall = function(target, source) {
         var expander = source.expander;
         var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : $.makeArray(expander.args); 
-        //return fluid.invokeGlobalFunction(expander.func, args);
-        return fluid.invoke(expander.func, args);
+        return fluid.invokeGlobalFunction(expander.func, args);
     };
     
     fluid.deferredCall = fluid.expander.deferredCall; // put in top namespace for convenience
+    
+    // TODO: The case of an "invoke" call as part of the course of resolving some component options
+    // proved problematic here and interrupted the ability to resolve contextualised values inside the invoker.
+    fluid.deferredInvokeCall = function(target, source) {
+        var expander = source.expander;
+        var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : $.makeArray(expander.args); 
+        return fluid.invoke(expander.func, args);
+    };
     
     // The "noexpand" expander which simply unwraps one level of expansion and ceases.
     fluid.expander.noexpand = function(target, source) {
