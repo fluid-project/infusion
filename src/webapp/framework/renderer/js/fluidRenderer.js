@@ -63,7 +63,7 @@ fluid_1_2 = fluid_1_2 || {};
   renderer.isBoundPrimitive = function(value) {
       return fluid.isPrimitive(value) || value instanceof Array 
              && (value.length === 0 || typeof(value[0]) === "string");
-  }
+  };
   
   function processChild(value, key) {
       if (renderer.isBoundPrimitive(value)) {
@@ -599,10 +599,11 @@ fluid_1_2 = fluid_1_2 || {};
       function dumpBoundFields(/** UIBound**/ torender, parent) {
           if (torender) {
               var holder = parent? parent : torender;
-              if (directFossils && holder.submittingname && holder.valuebinding) {
+              if (directFossils && holder.valuebinding) {
+                  var fossilKey = holder.submittingname || torender.finalID;
                 // TODO: this will store multiple times for each member of a UISelect
-                  directFossils[holder.submittingname] = {
-                    name: holder.submittingname,
+                  directFossils[fossilKey] = {
+                    name: fossilKey,
                     EL: holder.valuebinding,
                     oldvalue: holder.value};
                 // But this has to happen multiple times
@@ -756,7 +757,7 @@ fluid_1_2 = fluid_1_2 || {};
       }
       
       function resolveArgs(args) {
-          if (!args) {return args};
+          if (!args) {return args;}
           return fluid.transform(args, function(arg, index) {
               upgradeBound(args, index, renderOptions.model);
               return args[index].value;
@@ -811,10 +812,11 @@ fluid_1_2 = fluid_1_2 || {};
               }
       
               var submittingname = parent? parent.selection.submittingname : torender.submittingname;
-              if (tagname === "input" || tagname === "textarea") {
-                  if (!parent) {
-                      submittingname = assignSubmittingName(attrcopy, torender);
+              if (!parent && torender.valuebinding) {
+                  // Do this for all bound fields even if non submitting so that finalID is set in order to track fossils (FLUID-3387)
+                  submittingname = assignSubmittingName(attrcopy, torender);
                   }
+              if (tagname === "input" || tagname === "textarea") {
                   if (submittingname !== undefined) {
                       attrcopy.name = submittingname;
                       }
@@ -1341,7 +1343,7 @@ fluid_1_2 = fluid_1_2 || {};
       
       that.processDecoratorQueue = function() {
           processDecoratorQueue();
-      }
+      };
       return that;
       
   };
@@ -1445,7 +1447,8 @@ fluid_1_2 = fluid_1_2 || {};
         else {
             node.innerHTML = "";
         }
-        var fossils = {};
+        var fossils = options.fossils || {};
+        fluid.clear(fossils);
         var renderer = fluid.renderer(templates, tree, options, fossils);
         var rendered = renderer.renderTemplates();
         if (options.renderRaw) {
@@ -1511,9 +1514,7 @@ fluid_1_2 = fluid_1_2 || {};
         var resourceSpec = {base: {resourceText: template, 
                             href: ".", resourceKey: ".", cutpoints: options.cutpoints}
                             };
-        fluid.log("Begin parseTemplates");
         var templates = fluid.parseTemplates(resourceSpec, ["base"], options);
-        fluid.log("End parseTemplates");
         return fluid.reRender(templates, target, tree, options);    
     };
     

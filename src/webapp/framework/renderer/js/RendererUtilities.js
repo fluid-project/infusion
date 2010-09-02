@@ -48,7 +48,7 @@ fluid_1_2 = fluid_1_2 || {};
     /** "Renderer component" infrastructure **/
   // TODO: fix this up with IoC and improved handling of templateSource as well as better 
   // options layout (model appears in both rOpts and eOpts)
-    fluid.renderer.createRendererFunction = function (container, selectors, options, model) {
+    fluid.renderer.createRendererFunction = function (container, selectors, options, model, fossils) {
         function modelise(opts, defs) {
             return $.extend({}, defs, opts, model? {model: model} : null);
         }
@@ -56,6 +56,9 @@ fluid_1_2 = fluid_1_2 || {};
         container = $(container);
         var source = options.templateSource ? options.templateSource: {node: container};
         var rendererOptions = modelise(options.rendererOptions);
+        if (fossils) {
+            rendererOptions.fossils = fossils;
+        }
         var expanderOptions = modelise(options.expanderOptions, {ELstyle: "$()"});
         var expander = options.noExpand? null : fluid.renderer.makeProtoExpander(expanderOptions);
         
@@ -90,6 +93,13 @@ fluid_1_2 = fluid_1_2 || {};
             rendererOptions.messageSource = {type: "data", messages: that.options.strings}; 
         }
 
+        var renderer = {
+            fossils: {},
+            boundPathForNode: function(node) {
+               return fluid.boundPathForNode(node, renderer.fossils);
+            }
+        };
+
         var rendererFnOptions = $.extend({}, that.options.rendererFnOptions, 
            {rendererOptions: rendererOptions,
            repeatingSelectors: that.options.repeatingSelectors,
@@ -100,9 +110,10 @@ fluid_1_2 = fluid_1_2 || {};
             };
         }
         
-        var rendererFn = fluid.renderer.createRendererFunction(container, that.options.selectors, rendererFnOptions, that.model);
+        var rendererFn = fluid.renderer.createRendererFunction(container, that.options.selectors, rendererFnOptions, that.model, renderer.fossils);
         
-        that.render = rendererFn;
+        that.render = renderer.render = rendererFn;
+        that.renderer = renderer;
         
         return that;
     };
@@ -197,7 +208,7 @@ fluid_1_2 = fluid_1_2 || {};
             if (options.valueAs) {
                 envAdd[options.valueAs] = fluid.model.getBeanValue(config.model, EL);
             }
-            var expandrow = fluid.withEnvironment(envAdd, function() {return config.expander(options.tree)});
+            var expandrow = fluid.withEnvironment(envAdd, function() {return config.expander(options.tree);});
             return fluid.isArrayable(expandrow)? {children: expandrow} : expandrow;
         });
         fluid.log("Expanded to " + JSON.stringify(expanded));
@@ -205,7 +216,7 @@ fluid_1_2 = fluid_1_2 || {};
         if (repeatID.indexOf(":") === -1) {
             repeatID = repeatID + ":";
             }
-        fluid.each(expanded, function(entry) {entry.ID = repeatID});
+        fluid.each(expanded, function(entry) {entry.ID = repeatID;});
         return expanded;
     };
     
@@ -286,17 +297,17 @@ fluid_1_2 = fluid_1_2 || {};
             var comp = [];
             expandCond(entry, comp);
             return {children: comp};
-        }
+        };
         
         var expandExternal = function(entry) {
             var singleTarget;
             var target = [];
             var pusher = function(comp) {
                 singleTarget = comp;
-            }
+            };
             expandLeafOrCond(entry, target, pusher);
             return singleTarget || target;
-        }
+        };
         
         var expandConfig = {
             model: options.model,
@@ -314,7 +325,9 @@ fluid_1_2 = fluid_1_2 || {};
                 else if (map[key]) {
                     togo[key] = expandBound(leaf[key]);
                 }
-                else togo[key] = leaf[key];
+                else {
+                    togo[key] = leaf[key];
+                }
             }
             return togo;
         };
@@ -330,9 +343,9 @@ fluid_1_2 = fluid_1_2 || {};
                 var target = [];
                 var comp = { children: target};
                 var child = children[i];
-                var childPusher = function(comp) {
+                var childPusher = function(comp) { // linting problem - however, I believe this is ok
                     target[target.length] = comp;
-                }
+                };
                 expandLeafOrCond(child, target, childPusher);
                 // Rescue the case of an expanded leaf into single component - TODO: check what sense this makes of the grammar
                 if (comp.children.length === 1 && !comp.children[0].ID) {
@@ -366,7 +379,7 @@ fluid_1_2 = fluid_1_2 || {};
                 }
                 expandCond(entry, target);
             }
-        }
+        };
         
         // cond entry may be a leaf, "thing with children" or a "direct bound".
         // a Cond can ONLY occur as a direct member of "children". Each "cond" entry may
@@ -381,13 +394,13 @@ fluid_1_2 = fluid_1_2 || {};
                 if (key === "expander") {
                     var expander = entry;
                     var expanded = fluid.invokeGlobalFunction(expander.type, [expander, proto, key, expandConfig]);
-                    fluid.each(expanded, function(el) {target[target.length] = el});
+                    fluid.each(expanded, function(el) {target[target.length] = el;});
                 }
                 else if (entry) {
-                    var condPusher = function (comp) {
+                    var condPusher = function(comp) {
                         comp.ID = key;
                         target[target.length] = comp; 
-                        }
+                        };
                     var comp;
                     if (entry.children) {
                         if (key.indexOf(":") === -1) {

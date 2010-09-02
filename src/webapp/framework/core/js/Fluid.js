@@ -762,6 +762,11 @@ var fluid = fluid || fluid_1_2;
     fluid.model.composePath = function (prefix, suffix) {
         return prefix === ""? suffix : (suffix === ""? prefix : prefix + "." + suffix);
     };
+    
+    /** Compose any number of path segments, none of which may be empty **/
+    fluid.model.composeSegments = function () {
+        return $.makeArray(arguments).join(".");
+    };
 
     fluid.model.resolvePathSegment = function(root, segment, create) {
         if (root.resolvePathSegment) {

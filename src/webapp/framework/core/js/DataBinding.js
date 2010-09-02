@@ -35,6 +35,13 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.bindFossils = function(node, data, fossils) {
         $.data(node, fluid.BINDING_ROOT_KEY, {data: data, fossils: fossils});
         };
+        
+    fluid.boundPathForNode = function(node, fossils) {
+        node = fluid.unwrap(node);
+        var key = node.name || node.id;
+        var record = fossils[key];
+        return record? record.EL: null;
+    };
   
     fluid.findForm = function (node) {
       return fluid.findAncestor(node, 
@@ -52,7 +59,6 @@ fluid_1_2 = fluid_1_2 || {};
             node = node[0];
             multiple = true;
         }
-        var jNode = $(node);
         if ("input" !== node.nodeName.toLowerCase()
            || ! /radio|checkbox/.test(node.type)) {return $(node).val(newValue);}
         var name = node.name;
@@ -64,7 +70,7 @@ fluid_1_2 = fluid_1_2 || {};
             elements = nodeIn;
         }
         else {
-            var elements = document.getElementsByName(name);
+            elements = document.getElementsByName(name);
             var scope = fluid.findForm(node);
             elements = $.grep(elements, 
               function(element) {
@@ -145,10 +151,11 @@ fluid_1_2 = fluid_1_2 || {};
             }
             else {
                 escaped = false;
-                if (segment !== null)
+                if (segment !== null) {
                     accept += c;
                 }
             }
+        }
         if (segment !== null) {
             accept[0] = segment;
         }
@@ -271,7 +278,7 @@ fluid_1_2 = fluid_1_2 || {};
                 type: type
             };
         that.fireChangeRequest(changeRequest);
-        }
+        };
     }
     
   
@@ -300,8 +307,8 @@ fluid_1_2 = fluid_1_2 || {};
                             return false;
                         }
                     }
-                }
-            }
+                };
+            };
             return togo;
         }
 
@@ -476,6 +483,7 @@ fluid_1_2 = fluid_1_2 || {};
             bindRequestChange(internalApplier);
             var ation = {
                 commit: function() {
+                    var oldModel;
                     if (cancelled) {
                         return false;
                     }
@@ -487,7 +495,7 @@ fluid_1_2 = fluid_1_2 || {};
                         oldModel = model;
                     }
                     else {
-                        var oldModel = {};
+                        oldModel = {};
                         fluid.model.copyModel(oldModel, model);
                         fluid.clear(model);
                         fluid.model.copyModel(model, newModel);
@@ -559,7 +567,7 @@ fluid_1_2 = fluid_1_2 || {};
        var model = {};
        var superApplier = fluid.makeSuperApplier();
        var togo = {model: model, applier: superApplier};
-       for (path in modelSpec) {
+       for (var path in modelSpec) {
            var rec = modelSpec[path];
            fluid.attachModel(model, path, rec.model);
            if (rec.applier) {
