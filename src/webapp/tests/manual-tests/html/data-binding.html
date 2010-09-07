@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Data Binding to Multiple UI locations</title>
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../js/data-binding.js"></script>        
+	</head>
+	<body>
+
+        <div class="container-node">
+            
+            <div>Edit Field: <input type="text" rsf:id="edit-input" class="edit-input"/></div>
+    
+    	    <div>Display of contents of edit field: <span rsf:id="display-only-div">Foo</span></div>
+    
+            <div>Something you can tab to, so the model updates: <a href="#">Link to nowhere</a></div>
+        </div>
+
+        <div><input type="button" value="programmatically change the input field" class="foo"/></div>
+        
+        <div><input type="Button" value="Show current model:" class="dump-button"/> <span class="model-dump"></span></div>
+        
+        <script type="text/javascript">
+            $(document).ready(function () {
+                bindingTest.bindData();
+            });
+        </script>
+	</body>
+</html>

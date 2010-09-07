@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- default goal for the project builds and installs the war in the local repository -->
+<project default="full" xmlns:j="jelly:core"
+  xmlns:maven="jelly:maven">
+
+  <!-- the common "full" goal invokes the default goal.  Used in maven -Dgoal=full multiproject:goal from .. -->
+  <goal name="full">
+    <!--attainGoal name="dependencies" /-->
+    <attainGoal name="war:install" />
+  </goal>
+
+  <!-- Override jar:install goal to compose "partial WAR" strategy -->
+  <goal name="jar:install">
+    <attainGoal name="war:install"/> 
+  </goal>
+
+<!-- This standard stanza is required for any webapps participating in the
+   "partial WAR" build strategy -->
+  <preGoal name="war:resources">
+    <echo>Expanding webapp dependencies</echo>
+
+    <mkdir dir="${maven.war.webapp.dir}" />
+    <j:forEach var="lib" items="${pom.artifacts}">
+      <j:set var="dep" value="${lib.dependency}" />
+      <j:if test="${dep.getProperty('explode') == 'true'}">
+        <j:if test="${dep.type =='war'}">
+          <unjar src="${lib.path}" dest="${maven.war.webapp.dir}" />
+        </j:if>
+      </j:if>
+    </j:forEach>
+  </preGoal>
+  
+<!-- Do not deploy for now, will be folded into each deployed user
+  <goal name="deploy" prereqs="war:install">
+    <maven:property defaultValue="${pom.artifactId}" var="webappName"
+      name="deploy.webappname" />
+    <j:set var="destination"
+      value="${maven.tomcat.home}/webapps/${webappName}" />
+    <delete dir="${destination}"/>
+    <echo>Copying ${maven.war.build.dir}/${maven.war.final.name} to ${destination}.war</echo>
+    <copy file="${maven.war.build.dir}/${maven.war.final.name}" 
+      tofile="${destination}.war"/>
+  </goal>
+-->
+</project>

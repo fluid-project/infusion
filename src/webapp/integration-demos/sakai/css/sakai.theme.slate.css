@@ -1,0 +1,9 @@
+/* FSS Extension: Sakai widgets */
+
+/* Widget :: Icons */
+
+.fl-theme-slate .viewOptions {background-image:url('../images/slate-icons/icon-options-ListOrGrid.png'); background-color:#fff;  border:1px solid #000;}
+.fl-theme-slate .menu .delete {
+    background-image: url('../images/slate-icons/icon-menu-Delete.png');
+    background-color:transparent;
+}    

@@ -1,0 +1,264 @@
+<project name="Fluid" default="releaseBuilds" basedir=".">
+    <description>
+      Build a distributable package of Fluid Infusion.
+        
+      To build a distribution, type: ant
+      To jsLint all source code in the source directory, type: ant validate
+      To jsLint source code within a specific directory, type: ant validate -Dlint="../some/folder"
+      To create a custom build use the customBuild target.
+        Custom build has three optional parameters:  'include', 'exclude', and 'jsfilename'
+        e.g. ant customBuild -Dinclude="uiOptions, inlineEdit" -Dexclude="jQuery" -Djsfilename="MyInfusion.js"
+      To create an unminified package when using the customBuild, builderBuild and releaseBuild targets, use -DnoMinify="true"
+          
+    </description>
+	
+	<property name="base-dir" location=".." />
+    <property file="build.properties"/>
+    <!-- properties for URL rewriting - these should be moved to the build.properties file -->
+    <property name="regexStartJS" value="&lt;script{1,1}?.*" />
+    <property name="regexEndJS" value="{1,1}?.*script>" />
+    <property name="replaceRegexStartJS" value="[\/-z]*" />
+    <property name="replaceRegexEndJS" value="&quot;" />
+    <property name="fluidRegExp" value="framework/core/js/Fluid.js" />
+
+    <import file="buildutils.xml"/>
+
+    <!-- task definition for JSLint -->
+    <taskdef name="jslint" 
+      classname="net.happygiraffe.jslint.ant.JSLintTask" 
+      classpath="${jslint}" />
+
+    <target name="cleanExceptPretreat">
+        <delete dir="${assembled}" />
+        <delete dir="${products}" />
+        <delete dir="${buildwar}" />
+        <delete dir="${working}" />
+        </target>
+
+    <target name="cleanExceptProducts">
+        <delete dir="${build}"/>
+    </target>
+
+    <!-- Set up the build directory structure -->
+    <target name="init">
+        <mkdir dir="${products}" />
+        <mkdir dir="${pretreated}" />
+        <mkdir dir="${assembled}" />
+        <mkdir dir="${buildwar}" />
+        <mkdir dir="${licenses}" />
+    </target>
+
+    <!-- Set the pretreat property based on the value of noMinify -->
+    <target name="setPretreat">
+        <condition property="pretreat">
+            <not>
+                <equals arg1="true" arg2="${noMinify}" />
+            </not>
+        </condition>
+    </target>
+
+    <!-- Choose between the src and pretreated directories based on the value of pretreat -->
+    <target name="setSourceDir">
+        <condition property="sourceDir" value="${pretreated}">
+             <equals arg1="true" arg2="${pretreat}" />
+        </condition>
+        <condition property="sourceDir" value="${src}">
+        <not>
+            <equals arg1="true" arg2="${pretreat}" />
+        </not>
+        </condition>
+    </target>
+
+    <!-- This is the setup necessary for minifying the core files -->
+    <target name="copyCoreToWorkingAndSeedPretreated">
+        <copy todir="${working}">
+            <fileset dir="${src}">
+                <include name="components/**/*" />
+                <include name="framework/**/*" />
+                <include name="lib/**/*" />
+            </fileset>
+        </copy>
+
+        <copy todir="${pretreated}">
+            <fileset dir="${src}">
+                <exclude name="components/**/*.js" />          
+                <exclude name="components/**/*.css" />              
+                <exclude name="framework/**/*.js" />              
+                <exclude name="framework/**/*.css" />              
+                <exclude name="lib/**/*.js" />              
+                <exclude name="lib/**/*.css" />              
+            </fileset>
+        </copy> 
+    </target>
+
+    <!-- Performs minification of javascript and CSS -->
+    <target name="alwaysMinify" depends="copyCoreToWorkingAndSeedPretreated">
+        <antcall target="minifyJsAndCss">
+            <param name="fromDir" value="${working}" />
+            <param name="toDir" value="${pretreated}" />
+        </antcall>
+    </target>
+
+    <!-- Kicks off minification based on the value of pretreat -->
+    <target name="maybeMinify" if="pretreat">
+        <antcall target="alwaysMinify" />
+    </target>
+
+    <!-- Runs the javascript dependency resolver which sets $jsfile, $requiredDirectoriesSelector, $jsRegExp, $jsReplaceRegExp and $allRequiredJSFiles -->
+    <target name="resolveDependencies">
+        <script language="javascript" src="${base-dir}/build-scripts/build.js" />
+    </target>
+
+    <!-- Assembles the core package -->
+    <target name="assemble" depends="concatJavaScript">
+        <echo> Coping from ${sourceDir} to ${assembled} </echo>
+        <copy todir="${assembled}">
+            <fileset dir="${sourceDir}" includes="${requiredDirectoriesSelector}">
+                <exclude name="**/*LICENSE.txt" />
+                <exclude name="**/*Dependencies.json" />
+            </fileset>
+        </copy>
+        <copy file="${base-dir}/README.txt" todir="${assembled}" />
+        <copy todir="${licenses}" flatten="true">
+            <fileset dir="${base-dir}">
+                <include name="**/*LICENSE.txt" />
+                <exclude name="${build}" />
+                <exclude name="${products}" />
+            </fileset>
+        </copy>
+    </target> 
+
+    <!-- Assembles a package that includes demos and tests -->
+    <target name="assembleFull" depends="assemble">
+        <copy todir="${assembled}">
+            <fileset dir="${sourceDir}">
+                <include name="*demos/**" />
+                <include name="tests/**" />
+            </fileset>
+        </copy>   
+    </target>
+
+    <target name="copyMavenWARFiles">
+        <copy todir="${buildwar}/src/webapp/WEB-INF" >
+            <fileset dir="${web-inf}"/>
+        </copy>
+  
+        <copy todir="${buildwar}">
+            <fileset dir="${base-dir}">
+                <include name="pom.xml" />
+            	<include name="project.xml" />
+            	<include name="maven.xml" />
+            	<include name="project.properties" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Copies the files required to build a war file containing Infusion. -->
+    <target name="copyCoreWARFiles" depends="copyMavenWARFiles">        
+        <copy todir="${buildwar}/src/webapp/" >
+            <fileset dir="${assembled}">
+                <include name="components/**/*" />
+                <include name="framework/**/*" />
+                <include name="lib/**/*" />          
+            </fileset>
+    	</copy>    
+    </target>
+
+    <!-- Builds the core Infusion WAR file. -->
+    <target name="buildCoreWAR" depends="copyCoreWARFiles">        
+        <antcall target="buildWAR">
+            <param name="fromDir" value="${buildwar}" />
+            <param name="toFile" value="${assembled}/${warfile}" />
+            <param name="warFile" value="${warfile}" />
+        </antcall>
+    </target>
+
+    <!-- Builds a WAR file that includes everything that has been assembled -->
+    <target name="buildFullWAR" depends="copyMavenWARFiles">
+        <copy todir="${buildwar}/src/webapp/" >
+            <fileset dir="${assembled}" />
+        </copy>
+
+        <antcall target="buildWAR">
+            <param name="fromDir" value="${buildwar}" />
+            <param name="toFile" value="${assembled}/${warfile}" />
+            <param name="warFile" value="${warfile}" />
+        </antcall>
+    </target>
+
+    <!-- zips up the assembled package and puts it into the products directory -->
+    <target name="zip">
+        <echo>Zipping bundle to ${products}/${zipfile}</echo>
+        <zip destfile="${products}/${zipfile}.zip" basedir="${assembled}" includes="**/*"  excludes="*.zip" />
+    </target>
+
+    <!-- Replaces the first occurence of a file that is in the single js file, with the reference to the single js file. 
+         Works on files in the assembled directory -->
+    <target name="replaceJS">
+        <replaceregexp match="${jsReplaceRegExp}" replace="/${jsfile}&quot;" flags="i">
+            <fileset dir="${assembled}" includes="**/*.html" />
+        </replaceregexp>
+    </target>
+    
+    <!-- Removes that <script> blocks pertaining to files included in the single js file -->
+    <target name="removeJS" depends="replaceJS">
+        <replaceregexp match="${jsRegExp}" replace="" flags="g">
+            <fileset dir="${assembled}" includes="**/*.html" />
+        </replaceregexp>
+    </target>
+    
+
+
+    <!-- Top level targets -->
+
+    <target name="customBuild" depends="clean, init, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assemble, buildCoreWAR, zip" 
+        description="Builds a custom package of Infusion containing the modules specified as command line arguments.">
+    </target>
+
+    <target name="pretreatMinify" depends="clean, init, alwaysMinify"
+        description="Minifies everything to prepare for builds done from pretreated source">
+    </target>
+    
+    <target name="builderBuild" depends="cleanExceptPretreat, init, setPretreat, setSourceDir, resolveDependencies, assemble, buildCoreWAR, zip" 
+        description="Builds a custom package of Infusion containing the modules specified by the builder - expects pretreatMinify to have been run before.">
+    </target>
+
+    <!-- Although we don't have dependencies we use resolveDependencies because it creates a list of all the files to concatenate. -->
+    <target name="dailyBuild" depends="clean, init, setSourceDir, resolveDependencies, assembleFull, buildFullWAR"
+        description="Builds a WAR of Infusion along with tests and sample code, suitable for development testing or a daily build.">
+        <copy file="${assembled}/${warfile}" todir="${products}" />
+    </target>
+
+    <target name="releaseBuild" depends="cleanExceptProducts, init, setPretreat, setSourceDir, maybeMinify, resolveDependencies, assembleFull, buildCoreWAR, zip"
+        description="Builds and packages a release bundle of Infusion"/>
+
+    <target name="releaseBuilds" depends="clean" 
+        description="Builds and packages minified and source release bundles of Infusion.">
+        <antcall target="releaseBuild">
+            <param name="noMinify" value="true" />
+        </antcall>
+        <copy file="${products}/${zipfile}.zip" tofile="${products}/${zipfile}-src.zip" />
+        <antcall target="releaseBuild" />
+    </target>
+    
+    <target name="infusionAllBuild" depends="releaseBuild, removeJS"
+        description="Builds and packages a release bundle of Infusion which uses InfusionAll.js">
+        <antcall target="zip" />
+    </target>
+
+    <target name="infusionAllBuilds" depends="clean"
+        description="Builds and packages minified and source release bundles of Infusion which use InfusionAll.js">
+        <antcall target="infusionAllBuild">
+            <param name="noMinify" value="true" />
+        </antcall>
+        <copy file="${products}/${zipfile}.zip" tofile="${products}/${zipfile}-src.zip" />
+        <antcall target="infusionAllBuild" />
+    </target>
+
+    <target name="validate" description="Validates all JavaScript files using JSLint. To lint a specific folder use: -Dlint=../some/folder" >
+        <echo>Validating .JS files...</echo>
+        <jslint dir="${lint}" excludes="${excludeFromJSLint}" options="browser,eqeqeq,nomen,undef">
+        </jslint>
+    </target>    
+    
+</project>

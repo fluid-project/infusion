@@ -1,0 +1,7 @@
+{"jQueryTooltipPlugin": {
+   	"name": "jQuery Tooltip Plugin",
+   	"description": "A DHTML tooltip plugin for jQuery, providing a range of customizable hover effects.",
+   	"cssFiles": "jquery.tooltip.css",
+	"files": ["jquery.tooltip.js"],
+	"dependencies": ["jQuery", "jQueryUICore"]
+}}

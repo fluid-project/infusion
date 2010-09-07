@@ -1,0 +1,803 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" lang="en">
+  <head>
+    <title>uPortal by JA-SIG</title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="uPortal by JA-SIG: The academic open source portal built for higher education by higher education" name="description" />
+    <meta content="portal, uPortal, academic, higher education, open source, enterprise, JA-SIG, JASIG" name="keywords" />
+    
+    <link rel="stylesheet" href="../css/portal.css" type="text/css" />
+    
+    <!-- Required stylesheets for using a Fluid skin -->
+    <link rel="stylesheet" href="../../../framework/fss/css/fss-layout.css" type="text/css" />
+    <link rel="stylesheet" href="../../../framework/fss/css/fss-text.css" type="text/css" />
+    <link rel="stylesheet" href="../../../framework/fss/css/fss-theme-hc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../framework/fss/css/fss-theme-mist.css" type="text/css" />
+    <link rel="stylesheet" href="../../../components/inlineEdit/css/InlineEdit.css" type="text/css" />
+
+    <!--  Required javascript modules for the Reorderer which can be replaced with the build generated file Fluid-all.js -->
+    <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+    <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
+    <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.draggable.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../components/inlineEdit/js/InlineEdit.js"></script>
+    <script type="text/javascript" src="../../../components/reorderer/js/ReordererDOMUtilities.js"></script>
+    <script type="text/javascript" src="../../../components/reorderer/js/GeometricManager.js"></script>
+    <script type="text/javascript" src="../../../components/reorderer/js/Reorderer.js"></script>
+    <script type="text/javascript" src="../../../components/reorderer/js/LayoutReorderer.js"></script>
+    <script type="text/javascript" src="../../../components/reorderer/js/ModuleLayout.js"></script>
+    <script type="text/javascript" src="../../../components/reorderer/js/ImageReorderer.js"></script>
+    
+    <!-- Required javascript file for dynamically changing skins -->
+    <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
+    <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
+    
+    <!-- Javascript file containing initialization scripts for the Fluid components in this example -->
+    <script type="text/javascript" src="../js/portal.js"></script>
+
+  </head>
+<body class="logged-in dashboard left-column" id="portal">
+  <div class="2-column" id="portalPage">
+    <div id="portalPageInner">
+      <div id="portalPageHeader">
+        <div id="portalPageHeaderInner">
+          <div xmlns:upauth="xalan://org.jasig.portal.security.xslt.XalanAuthorizationHelper" id="portalPageBar">
+            <div id="portalPageBarLinks">
+              <a id="portalPageBarHome" href="#" title="Go to Home Tab">
+                <span>Home</span>
+              </a>
+              <span class="portal-pipe">|</span>
+              <a title="Go to Customize Layout" id="portalPageBarCustom" href="#">
+                <span>Customize</span>
+              </a>
+              <span class="portal-pipe">|</span>
+              <a title="Go to Site Map" id="portalPageBarSitemap" href="#">
+                <span>Site Map</span>
+              </a>
+              <span class="portal-pipe">|</span>
+              <a target="_blank" title="To view help for the portal" id="portalPageBarHelp" href="http://www.uportal.org/">
+                <span>Help</span>
+              </a>
+              <span class="portal-pipe">|</span>
+            </div>
+          </div>
+          <div id="portalSkipNav">
+            <a id="skipToNav" title="Skip to page navigation" href="#mainNavigation">Skip to page navigation</a>
+            <a id="skipToContent" title="Skip to page content" href="#startContent">Skip to page content</a>
+          </div>
+          <div xmlns:upauth="xalan://org.jasig.portal.security.xslt.XalanAuthorizationHelper" id="portalLogo">
+            <a title="Go to Home" href="#">
+              <img alt="uPortal by JA-SIG" src="../images/portal_logo.png"/>
+            </a>
+          </div>
+          <div id="portalWelcome">
+            <div id="portalWelcomeInner">
+              <p>Welcome Student User. 
+                <span class="logout-label">
+                  <a title="Sign out" href="#">Sign out</a>
+                </span>
+              </p>
+            </div>
+          </div>
+          <div xmlns:dlm="http://www.uportal.org/layout/dlm" id="portalNavigation">
+            <div class="header" id="portalNavigationInner">
+              <a name="startContent"><!--Comment to keep from collapsing--></a>
+              <ul id="portalNavigationList" class="horizontal-list-floated">
+                <li class="portal-navigation first active" id="portalNavigation_u15l1s8">
+                  <a class="portal-navigation-link" title="Welcome" href="#" id="tabLink_u15l1s8">
+                    <span class="portal-navigation-label">Welcome</span>
+                  </a>
+                </li>
+                <li class="portal-navigation movable-tab" id="portalNavigation_u5l1s8">
+                  <a class="portal-navigation-link" title="News" href="#" id="tabLink_u5l1s8">
+                    <span class="portal-navigation-label">News</span>
+                  </a>
+                </li>
+                <li class="portal-navigation movable-tab" id="portalNavigation_u4l1s8">
+                  <a class="portal-navigation-link" title="Entertainment" href="#" id="tabLink_u4l1s8">
+                    <span class="portal-navigation-label">Entertainment</span>
+                  </a>
+                </li>
+                <li class="portal-navigation last movable-tab" id="portalNavigation_s5">
+                  <a class="portal-navigation-link" title="Main Student Tab" href="#" id="tabLink_s5">
+                    <span class="portal-navigation-label">Main Student Tab</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="portalPageBody">
+        <div id="drop-warning" class="flc-reorderer-dropWarning fl-reorderer-dropWarning"><p>This box cannot be placed above a locked box.</p></div>
+        <div id="portalPageBodyInner">
+          <a name="startContent"></a>
+            <table id="portalPageBodyLayout" width="100%">
+              <tbody>
+                <tr>
+                  <td id="portalPageLeftColumn" rowspan="2" valign="top" width="195">
+                    <div id="portalPageLeftColumnInner">
+                      <div xmlns:upauth="xalan://org.jasig.portal.security.xslt.XalanAuthorizationHelper" class="block" id="webSearchContainer">
+                        <div class="block-inner">
+                          <h2 class="block-title">Web Search</h2>
+                          <div class="block-content">
+                            <form id="webSearchForm" action="http://www.google.com/search" method="get" target="_parent">
+                              <input type="text" name="q" value="" id="webSearchInput" />
+                              <input value="Google Search" name="submit" type="submit" id="webSearchSubmit" />
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                      <div xmlns:upauth="xalan://org.jasig.portal.security.xslt.XalanAuthorizationHelper" class="block" id="portalQuicklinks">
+                        <div class="block-inner">
+                          <h2 class="block-title">Quicklinks</h2>
+                          <div class="block-content">
+                            <ul>
+                              <li id="">
+                                <a title="Bookmarks" href="#">
+                                  <span>Bookmarks Portlet</span>
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td id="portalPageBodyTitleRow" colspan="2" valign="top"><div id="portalPageBodyTitleRowContents"><h1 xmlns:upauth="xalan://org.jasig.portal.security.xslt.XalanAuthorizationHelper" id="portalPageBodyTitle">Welcome</h1>
+                    <div xmlns:upauth="xalan://org.jasig.portal.security.xslt.XalanAuthorizationHelper" id="portalCustomizationLinks">
+                      <h3>Customize My Portal</h3>
+                      <ul>
+                        <li id="portalCustomizationLinksChangeLayout">
+                          <a title="Change to mist skin" href="#" id="mist-skin">
+                            <span>Mist Skin</span>
+                          </a>
+                          <span class="portal-pipe">|</span>
+                        </li>
+                        <li id="portalCustomizationLinksChooseSkin">
+                          <a title="Change to high contrast skin" href="#" id="hc-skin">
+                            <span>High Contrast Skin</span>
+                          </a>
+                          <span class="portal-pipe">|</span>
+                        </li>
+                        <li id="portalCustomizationLinksAddContent">
+                          <a title="Change to high contrast simple layout skin" href="#" id="hcs-skin">
+                            <span>High Contrast Simple Layout Skin</span>
+                          </a>
+                          <span class="portal-pipe">|</span>
+                        </li>
+                        <li id="portalCustomizationLinksAddTab">
+                          <a title="Remove Skin" href="#" id="remove-skin">
+                            <span>Remove Skin</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr id="portalPageBodyColumns">
+                <td class="portal-page-column left" id="column_u15l1s9" height="100%" valign="top" width="60%">
+                  <div class="portal-page-column-inner" id="inner-column_u15l1s9">
+                    <div xmlns:dlm="http://www.uportal.org/layout/dlm" class="portlet-container-locked snappy" id="portlet_u15l1n10" aria-labelledby="toolbar_u15l1n10">
+                      <div class="portlet-toolbar-locked" id="toolbar_u15l1n10">
+                        <a id="u15l1n10" name="u15l1n10"></a>
+                        <h2>
+                          <a href="#">Welcome</a>
+                        </h2>
+                        <div class="portlet-controls">
+                          <a class="portlet-control focus" title="To enter the maximized mode for this portlet" href="#"></a>
+                        </div>
+                      </div>
+                      <div class="portlet-content" id="portletContent_u15l1n10">
+                        <div class="portlet-content-inner">
+                           <!--TAB 1-->
+                           <div id="tab1" style="display: block;">
+                             <img alt="tab1 photo" class="tab-image" src="../images/tab1.jpg" align="left" />
+                             <h1>Lorem Ipsum</h1>
+                             <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed eget neque
+consequat sapien commodo ultricies. Mauris commodo lobortis elit.
+Mauris euismod. Fusce ac dui. Nullam in arcu. Morbi pulvinar. Vivamus
+lacinia ligula et dolor. Phasellus hendrerit nulla. Aliquam feugiat
+eleifend tellus. Nullam tristique nisi et est. Sed luctus magna ut dui.
+Nam aliquet metus laoreet tortor.
+                            </p>
+    	                    <p>Vivamus
+scelerisque fringilla urna. Nulla facilisi. Duis vestibulum. Nunc
+venenatis mauris quis quam. Pellentesque enim lorem, blandit in,
+interdum eu, interdum quis, diam. Cras malesuada tempus pede. In hac
+habitasse platea dictumst. Donec elementum, nisl id lobortis luctus,
+orci sapien mattis pede, vel posuere urna felis lacinia libero. Sed
+lobortis sem vitae felis. Morbi blandit. Aliquam ac dui id pede
+dignissim suscipit.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div xmlns:dlm="http://www.uportal.org/layout/dlm" class="portlet-container lightbox-portlet movable" id="portlet_u15l1n11" aria-labelledby="toolbar_u15l1n11">
+                      <div class="portlet-top">
+                        <div class="portlet-top-inner"></div>
+                      </div>
+                      <div style="cursor: move; -moz-user-select: none;" class="portlet-toolbar" id="toolbar_u15l1n11">
+                        <a id="u15l1n11" name="u15l1n11"></a>
+                        <h2><a href="#">Image Lightbox</a></h2>
+                        <div class="portlet-controls">
+                          <a class="portlet-control edit" title="To enter the edit mode for this portlet" href="#">
+                          </a>
+                          <a class="portlet-control focus" title="To enter the maximized mode for this portlet" href="#">
+                          </a>
+                          <a class="portlet-control remove" href="#" title="To remove the portlet from the layout" id="removePortlet_u15l1n11">
+                          </a>
+                        </div>
+                      </div>
+                    <div class="portlet-content" id="portletContent_u15l1n11">
+                      <div class="portlet-content-inner">
+                          <div class="image-reorderer-instructions">
+                            <div class="screen-reader-instructions" tabindex="1">Image Reorderer: To use the keyboard:
+                                      Screen reader users turn off virtual cursor (insert + z).
+                                      Select an image using i, k, m or j.
+                                      Move an image using CTRL + i, k, m or j.
+                                      View an image by pressing Enter.</div>
+                            <div class="image-reorderer-downarrow"></div>
+                            <div tabindex="-1">
+                              To use the keyboard:<br/>
+                                Select an image using i, k, m or j, or the arrow keys.<br/>
+                                Move an image using CTRL + a direction key.<br/>
+                                View an image by pressing Enter.
+                            </div>
+                          </div>
+                        <form action="#">
+                            <div id="gallery" class="image-container" title="Image Reorderer">
+                              <div class="float" id="thumb-0" title="Dragonfruit thumbnail">
+                                  <div class="image-inner-container">
+                                    <a href="../../../components/reorderer/images//Dragonfruit.jpg" >
+                                      <img id="fluid.img.first" src="../../../components/reorderer/images/Dragonfruit.jpg" border="0" alt="Dragonfruit thumbnail"/>
+                                    </a>
+                                  </div>
+                                  <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+                                    <a href="../../../components/reorderer/images/Dragonfruit.jpg" >Dragonfruit</a>
+                                  </div>
+                                </div>
+                        
+                                <div class="float" id="thumb-1" title="Kiwano thumbnail">
+                                  <div class="image-inner-container">
+                                    <a href="../../../components/reorderer/images/Kiwano.jpg" >
+                                      <img id="fluid.img.second" src="../../../components/reorderer/images/Kiwano.jpg" border="0" alt="Kiwano"/>
+                                    </a>
+                                  </div>
+                                  <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+                                    <a href="../../../components/reorderer/images/Kiwano.jpg" >Kiwano</a>
+                                  </div>
+                                </div>
+                        
+                                <div class="float" id="thumb-2" title="Blackberry thumbnail">
+                                  <div class="image-inner-container">
+                                    <a href="../../../components/reorderer/images/Blackberry.jpg" >
+                                      <img id="fluid.img.3" src="../../../components/reorderer/images/Blackberry.jpg" border="0" alt="Blackberry thumbnail"/>
+                                    </a>
+                                  </div>
+                                  <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+                                    <a href="../../../components/reorderer/images/Blackberry.jpg" >Blackberry</a>
+                                  </div>
+                                </div>
+                        
+                                <div class="float" id="thumb-3" title="Cherry thumbnail">
+                                  <div class="image-inner-container">
+                                    <a href="../../../components/reorderer/images/Cherry.jpg" >
+                                      <img id="fluid.img.4" src="../../../components/reorderer/images/Cherry.jpg" border="0" alt="Cherry thumbnail"/>
+                                    </a>
+                                  </div>
+                                  <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+                                    <a href="../../../components/reorderer/images/Cherry.jpg" >Cherry</a>
+                                  </div>
+                                </div>
+                        
+                                <div class="float" id="thumb-4" title="Fig thumbnail">
+                                  <div class="image-inner-container">
+                                    <a href="../../../components/reorderer/images/Fig.jpg" >
+                                      <img id="fluid.img.5" src="../../../components/reorderer/images/Fig.jpg" border="0" alt="Fig thumbnail"/>
+                                    </a>
+                                  </div>
+                                  <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+                                    <a href="../../../components/reorderer/images/Fig.jpg" >Fig</a>
+                                 </div>
+                                </div>
+                        
+                                <div class="float" id="thumb-6" title="Kiwi thumbnail">
+                                  <div class="image-inner-container">
+                                    <a href="../../../components/reorderer/images/Kiwi.jpg">
+                                      <img id="fluid.img.7" src="../../../components/reorderer/images/Kiwi.jpg" border="0" alt="Kiwi thumbnail"/>
+                                    </a>
+                                  </div>
+                                  <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+                                    <a href="../../../components/reorderer/images/Kiwi.jpg" >Kiwi</a>
+                                  </div>
+                                </div>
+                        
+                                <div class="float" id="thumb-7" title="Kumquat thumbnail">
+                                  <div class="image-inner-container">
+                                    <a href="../../../components/reorderer/images/Kumquat.jpg" >
+                                      <img id="fluid.img.8" src="../../../components/reorderer/images/Kumquat.jpg" border="0" alt="Kumquat thumbnail"/>
+                                    </a>
+                                  </div>
+                                  <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+                                    <a href="../../../components/reorderer/images/Kumquat.jpg" >Kumquat</a>
+                                  </div>
+                                </div>
+                        
+                                <div class="float" id="thumb-11" title="Tamarillo thumbnail">
+                                  <div class="image-inner-container">
+                                    <a href="../../../components/reorderer/images/Tamarillo.jpg" >
+                                      <img id="fluid.img.12" src="../../../components/reorderer/images/Tamarillo.jpg" border="0" alt="Tamarillo thumbnail"/>
+                                    </a>
+                                  </div>
+                                  <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+                                    <a href="../../../components/reorderer/images/Tamarillo.jpg" >Tamarillo</a>
+                                  </div>
+                                </div>
+                        
+                                <div class="float" id="thumb-12" title="Mangosteen thumbnail">
+                                  <div class="image-inner-container">
+                                    <a href="../../../components/reorderer/images/Mangosteen.jpg" >
+                                      <img id="fluid.img.secondLast" src="../../../components/reorderer/images/Mangosteen.jpg" border="0" alt="Mangosteen thumbnail"/>
+                                    </a>
+                                  </div>
+                                  <div class="caption flc-reorderer-imageTitle fl-reorderer-imageTitle">
+                                    <a href="../../../components/reorderer/images/Mangosteen.jpg" >Mangosteen</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </form>
+                      </div>
+                    <div class="portlet-bottom">
+                      <div class="portlet-bottom-inner"></div>
+                    </div>
+                    </div>
+                    
+                  </div>
+              </td>
+              <td class="portal-page-column right" id="column_u15l1s12" height="100%" valign="top" width="40%">
+                <div class="portal-page-column-inner" id="inner-column_u15l1s12">
+                  <div xmlns:dlm="http://www.uportal.org/layout/dlm" class="portlet-container pbookmarks movable" id="portlet_u15l1n13" aria-labelledby="toolbar_u15l1n13">
+                    <div class="portlet-top">
+                      <div class="portlet-top-inner"></div>
+                    </div>
+                    <div style="cursor: move; -moz-user-select: none;" class="portlet-toolbar" id="toolbar_u15l1n13">
+                      <a id="u15l1n13" name="u15l1n13"></a>
+                      <h2><a href="#">Bookmarks Portlet</a></h2>
+                      <div class="portlet-controls">
+                        <a class="portlet-control focus" title="To enter the maximized mode for this portlet" href="#">
+                        </a>
+                        <a class="portlet-control remove" href="#" title="To remove the portlet from the layout" id="removePortlet_u15l1n13">
+                        </a>
+                      </div>
+                    </div>
+                    <div class="portlet-content" id="portletContent_u15l1n13">
+                      <div class="portlet-content-inner">
+                        <div id="bookmarksPortlet">
+                          <div style="float: right;">
+                            <a id="Pluto_5_u15l1n13_optionsLink" href="#" class="" >Options</a>
+                          </div>
+                          <form id="Pluto_5_u15l1n13_optionsForm" name="Pluto_5_u15l1n13_optionsForm" class="hidden" method="post">
+                            <input name="action" value="saveOptions" type="hidden">
+                              <table padding="0">
+	                            <tbody>
+	                              <tr>
+                                    <td width="1%">&nbsp;</td>
+                                    <td width="1%">&nbsp;</td>
+                                    <td width="1%">&nbsp;</td>
+                                    <td width="97%">&nbsp;</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="portlet-form-field-label" colspan="4">
+                                      <strong><span id="inline-editable">Default folder behavior</span>:</strong>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td></td>
+                                    <td valign="top"><input id="defaultFolderOperation_OPENED" name="defaultFolderOperation" value="OPENED" type="radio"></td>
+                                    <td colspan="2">
+                                      <label class="portlet-form-field-label" for="defaultFolderOperation_OPENED">
+                                        <strong>Folders start open</strong>
+                                      </label>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="3"></td>
+                                    <td class="portlet-form-field-label">
+                                        Each time you view your bookmarks all the folders will be open.
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td></td>
+                                    <td valign="top">
+                                      <input id="defaultFolderOperation_CLOSED" name="defaultFolderOperation" value="CLOSED" checked="checked" type="radio" />
+                                    </td>
+                                    <td colspan="2">
+                                      <label class="portlet-form-field-label" for="defaultFolderOperation_CLOSED">
+                                        <strong>Folders start closed</strong>
+                                      </label>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="3"></td>
+                                    <td class="portlet-form-field-label">
+                                        Each time you view your bookmarks all the folders will be closed.
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td></td>
+                                    <td valign="top"><input id="defaultFolderOperation_SAVED" name="defaultFolderOperation" value="SAVED" type="radio" /></td>
+                                    <td colspan="2">
+                                      <label class="portlet-form-field-label" for="defaultFolderOperation_SAVED">
+                                        <strong>Folder state preserved</strong>
+                                      </label>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="3"></td>
+                                    <td class="portlet-form-field-label">
+                                        Bookmark folders you open or close will stay open or closed.
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="4" align="right">
+                                      <input class="portlet-form-button" value="Save" type="submit" />
+                                      <input class="portlet-form-button" value="Cancel" onclick="cancelOptionsForm('Pluto_5_u15l1n13_', 'optionsForm');" type="reset" />
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </form>
+                            <div id="Pluto_5_u15l1n13_bookmarksTreeAndForm" class="">
+                              <div class="portlet-font">
+                                You have no bookmarks. Add folders and bookmarks to this portlet to keep useful links handy.
+                              </div>
+                              <a href="#" >Add Bookmark</a>&nbsp;&nbsp;&nbsp;
+                              <a href="#" >Add Folder</a>
+                              <form id="Pluto_5_u15l1n13_emptyBookmarkForm" name="Pluto_5_u15l1n13_emptyBookmarkForm" class="hidden" method="post">
+                                <input name="action" value="" type="hidden" />
+                                <input name="idPath" value="" type="hidden" />
+                                <table padding="0"><tbody>
+                                  <tr>
+                                    <td class="portlet-form-field-label" align="right">Name:</td>
+                                    <td><input id="name" name="name" class="portlet-form-input-field" style="width: 250px;" value="" type="text"></td>
+                                    <td></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="portlet-form-field-label" align="right">Url:</td>
+                                    <td><input id="url" name="url" class="portlet-form-input-field" style="width: 250px;" value="" type="text"></td>
+                                    <td></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="portlet-form-field-label" align="right" valign="top">Note:</td>
+                                    <td><textarea id="note" name="note" class="portlet-form-input-field" style="width: 250px;"></textarea></td>
+                                    <td></td>
+                                  </tr>
+                                  <tr class="hidden">
+                                    <td class="portlet-form-field-label" id="Pluto_5_u15l1n13_emptyBookmarkFormfolderActionLabel" align="right" valign="top">Folder:</td>
+                                    <td>
+                                      <select name="folderPath" style="width: 250px;"></select>
+                                      <select name="referenceFolderPath" class="hidden" disabled="true">
+                                        <option cssclass="portlet-form-input-field" value="">None</option>
+                                      </select>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td></td>
+                                    <td>
+                                      <input id="newWindow" name="newWindow" class="portlet-form-field" value="true" checked="checked" type="checkbox" />
+                                      <input name="_newWindow" value="on" type="hidden" />
+                                      <label class="portlet-form-field-label" for="newWindow">Open in new window</label>
+                                    </td>
+                                    <td></td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="2" align="right">
+                                      <input class="portlet-form-button" value="Save" type="submit" />
+                                      <input class="portlet-form-button" value="Cancel" onclick="cancelBookmark('Pluto_5_u15l1n13_', 'emptyBookmarkForm');" type="reset" />
+                                    </td>
+                                  </tr>
+                              </tbody></table>
+                            </form>
+                            <form id="Pluto_5_u15l1n13_emptyFolderForm" name="Pluto_5_u15l1n13_emptyFolderForm" class="hidden" method="post">
+                              <input name="action" value="" type="hidden" />
+                              <input name="idPath" value="" type="hidden" />
+                              <table padding="0"><tbody>
+                                <tr>
+                                  <td class="portlet-form-field-label" align="right">Name:</td>
+                                  <td><input id="name" name="name" class="portlet-form-input-field" style="width: 250px;" value="" type="text"></td>
+                                  <td></td>
+                                </tr>
+                                <tr>
+                                  <td class="portlet-form-field-label" align="right" valign="top">Note:</td>
+                                  <td><textarea id="note" name="note" class="portlet-form-input-field" style="width: 250px;"></textarea></td>
+                                  <td></td>
+                                </tr>
+                                <tr class="hidden">
+                                  <td class="portlet-form-field-label" id="Pluto_5_u15l1n13_emptyFolderFormfolderActionLabel" align="right" valign="top">Folder:</td>
+                                  <td>
+                                    <select name="folderPath" style="width: 250px;"></select>
+                                    <select name="referenceFolderPath" class="hidden" disabled="true">
+                                      <option cssclass="portlet-form-input-field" value="">None</option>
+                                    </select>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td colspan="2" align="right">
+                                      <input class="portlet-form-button" value="Save" type="submit">
+                                      <input class="portlet-form-button" value="Cancel" onclick="cancelFolder('Pluto_5_u15l1n13_', 'emptyFolderForm');" type="reset">
+                                  </td>
+                                </tr>
+                              </tbody></table>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="portlet-bottom">
+                      <div class="portlet-bottom-inner"></div>
+                    </div>
+                  </div>
+                  <div xmlns:dlm="http://www.uportal.org/layout/dlm" class="portlet-container calendar movable" id="portlet_u15l1n14" aria-labelledby="toolbar_u15l1n14">
+                    <div class="portlet-top">
+                      <div class="portlet-top-inner"></div>
+                    </div>
+                  <div style="cursor: move; -moz-user-select: none;" class="portlet-toolbar" id="toolbar_u15l1n14">
+                  <a id="u15l1n14" name="u15l1n14"></a>
+                  <h2><a href="#">Calendar</a></h2>
+                  <div class="portlet-controls">
+                    <a class="portlet-control focus" title="To enter the maximized mode for this portlet" href="#"></a>
+                    <a class="portlet-control remove" href="#" title="To remove the portlet from the layout" id="removePortlet_u15l1n14">
+                    </a>
+                  </div>
+                </div>
+                <div class="portlet-content" id="portletContent_u15l1n14">
+                  <div class="portlet-content-inner">
+	                <div xmlns="http://www.w3.org/1999/xhtml" class="calendar-channel hasDatepicker" id="calendar-channel">
+	                  <div id="datepicker_div_0" class="datepicker_inline">
+	                    <div class="datepicker_links">
+	                      <a>&lt;Prev</a>
+                          <a>Today</a>
+                          <a>Next&gt;</a>
+                      </div>
+                      <div class="datepicker_oneMonth datepicker_newRow">
+                        <div class="datepicker_header">April&nbsp;2008</div>
+                        <table class="datepicker" cellpadding="0" cellspacing="0"><thead>
+                          <tr class="datepicker_titleRow">
+                            <td class="datepicker_weekEndCell"><a title="Sunday">Su</a></td>
+                            <td><a title="Monday">Mo</a></td>
+                            <td><a title="Tuesday">Tu</a></td>
+                            <td><a title="Wednesday">We</a></td>
+                            <td><a title="Thursday">Th</a></td>
+                            <td><a title="Friday">Fr</a></td>
+                            <td class="datepicker_weekEndCell"><a title="Saturday">Sa</a></td>
+                          </tr></thead><tbody>
+                          <tr class="datepicker_daysRow">
+                            <td class="datepicker_daysCell datepicker_weekEndCell datepicker_otherMonth datepicker_unselectable">&nbsp;</td>
+                            <td class="datepicker_daysCell datepicker_otherMonth datepicker_unselectable">&nbsp;</td>
+                            <td class="datepicker_daysCell" ><a>1</a></td>
+                            <td class="datepicker_daysCell" ><a>2</a></td>
+                            <td class="datepicker_daysCell" ><a>3</a></td>
+                            <td class="datepicker_daysCell" ><a>4</a></td>
+                            <td class="datepicker_daysCell datepicker_weekEndCell" ><a>5</a></td>
+                          </tr>
+                          <tr class="datepicker_daysRow">
+                            <td class="datepicker_daysCell datepicker_weekEndCell" ><a>6</a></td>
+                            <td class="datepicker_daysCell" ><a>7</a></td>
+                            <td class="datepicker_daysCell" ><a>8</a></td>
+                            <td class="datepicker_daysCell" ><a>9</a></td>
+                            <td class="datepicker_daysCell" ><a>10</a></td>
+                            <td class="datepicker_daysCell datepicker_daysCellOver datepicker_currentDay datepicker_today" ><a>11</a></td>
+                            <td class="datepicker_daysCell datepicker_weekEndCell" ><a>12</a></td>
+                          </tr>
+                          <tr class="datepicker_daysRow">
+                            <td class="datepicker_daysCell datepicker_weekEndCell" ><a>13</a></td>
+                            <td class="datepicker_daysCell" ><a>14</a></td>
+                            <td class="datepicker_daysCell" ><a>15</a></td>
+                            <td class="datepicker_daysCell" ><a>16</a></td>
+                            <td class="datepicker_daysCell" ><a>17</a></td>
+                            <td class="datepicker_daysCell" ><a>18</a></td>
+                            <td class="datepicker_daysCell datepicker_weekEndCell" ><a>19</a></td>
+                          </tr>
+                          <tr class="datepicker_daysRow">
+                            <td class="datepicker_daysCell datepicker_weekEndCell" ><a>20</a></td>
+                            <td class="datepicker_daysCell" ><a>21</a></td>
+                            <td class="datepicker_daysCell" ><a>22</a></td>
+                            <td class="datepicker_daysCell" ><a>23</a></td>
+                            <td class="datepicker_daysCell" ><a>24</a></td>
+                            <td class="datepicker_daysCell" ><a>25</a></td>
+                            <td class="datepicker_daysCell datepicker_weekEndCell" ><a>26</a></td>
+                          </tr>
+                          <tr class="datepicker_daysRow">
+                            <td class="datepicker_daysCell datepicker_weekEndCell" ><a>27</a></td>
+                            <td class="datepicker_daysCell" ><a>28</a></td>
+                            <td class="datepicker_daysCell" ><a>29</a></td>
+                            <td class="datepicker_daysCell" ><a>30</a></td>
+                            <td class="datepicker_daysCell datepicker_otherMonth datepicker_unselectable">&nbsp;</td>
+                            <td class="datepicker_daysCell datepicker_otherMonth datepicker_unselectable">&nbsp;</td>
+                            <td class="datepicker_daysCell datepicker_weekEndCell datepicker_otherMonth datepicker_unselectable">&nbsp;</td>
+                          </tr></tbody>
+                        </table>
+                      </div>
+                      <div style="clear: both;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="portlet-bottom">
+                <div class="portlet-bottom-inner"></div>
+              </div>
+            </div>
+            <div xmlns:dlm="http://www.uportal.org/layout/dlm" class="portlet-container weather movable" id="portlet_u15l1n15" aria-labelledby="toolbar_u15l1n15">
+              <div class="portlet-top">
+                <div class="portlet-top-inner"></div>
+              </div>
+              <div style="cursor: move; -moz-user-select: none;" class="portlet-toolbar" id="toolbar_u15l1n15">
+                <a id="u15l1n15" name="u15l1n15"></a>
+                  <h2><a href="#">My Weather</a></h2>
+                  <div class="portlet-controls">
+                    <a class="portlet-control focus" title="To enter the maximized mode for this portlet" href="#"></a>
+                    <a class="portlet-control remove" href="#" title="To remove the portlet from the layout" id="removePortlet_u15l1n15">
+                    </a>
+                  </div>
+                </div>
+                  <div class="portlet-content" id="portletContent_u15l1n15">
+                    <div class="portlet-content-inner">
+                      <img xmlns="http://www.w3.org/1999/xhtml" alt="uP3 Mock Weather" src="../images/weather.png" border="0" />
+                      <p xmlns="http://www.w3.org/1999/xhtml">Mock of the 
+                        <a href="http://www.ja-sig.org/wiki/display/PLT/Weather+Portlet" shape="rect">JA-SIG Weather Portlet</a>.  
+                        This is a sample screen for demonstration purposes only.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="portlet-bottom">
+                    <div class="portlet-bottom-inner"></div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div id="portalPageFooter">
+    <div id="portalPageFooterLinks">
+      <a title="To go to the Java Architectures Special Interest Group Home" target="_blank" href="http://www.ja-sig.org/">JA-SIG Home</a>
+      <span xmlns:upauth="xalan://org.jasig.portal.security.xslt.XalanAuthorizationHelper" class="portal-pipe">|</span>
+      <a title="To go to the uPortal Home" target="_blank" href="http://www.uportal.org/">uPortal Home</a>
+      <span xmlns:upauth="xalan://org.jasig.portal.security.xslt.XalanAuthorizationHelper" class="portal-pipe">|</span>
+      <a title="To go to the uPortal download page" target="_blank" href="http://www.uportal.org/download.html">Download</a>
+      <span xmlns:upauth="xalan://org.jasig.portal.security.xslt.XalanAuthorizationHelper" class="portal-pipe">|</span>
+      <a title="To go to the uPortal community page" target="_blank" href="http://www.uportal.org/community/index.html">Community</a>
+    </div>
+    <div id="portalProductAndVersion">
+      <p>
+        <a target="_blank" title="Powered by uPortal X.X.X" href="http://www.uportal.org/">Powered by uPortal X.X.X</a>
+      </p>
+    </div>
+    <div id="portalCopyright">
+      <p>
+        <a target="_blank" title="uPortal" href="http://www.uportal.org/">uPortal</a> is licensed under the 
+        <a target="_blank" title="New BSD License" href="http://www.opensource.org/licenses/bsd-license.php">New BSD License</a> as approved by the Open Source Initiative (OSI), an 
+        <a target="_blank" title="OSI-certified" href="http://www.opensource.org/docs/osd">OSI-certified</a> ("open") and 
+        <a target="_blank" title="Gnu/FSF-recognized" href="http://www.gnu.org/licenses/license-list.html">Gnu/FSF-recognized</a> ("free") license.
+      </p>
+    </div>
+    <div id="silkIconsAttribution">
+      <p><a target="_blank" title="Silk icon set 1.3" href="http://www.famfamfam.com/lab/icons/silk/">Silk icon set 1.3</a> courtesy of Mark James.</p>
+    </div>
+  </div>
+  <div xmlns:dlm="http://www.uportal.org/layout/dlm" class="portal-navigation" id="portalFlyoutNavigation">
+    <div style="display: none; left: 192px; top: 99px;" class="portal-flyout-container" id="portalFlyoutNavigation_u15l1s8">
+      <div id="portalFlyoutNavigationInner_u15l1s8">
+        <ul class="portal-subnav-list">
+          <li class="portal-subnav" id="editPageLink">
+            <a title="To change your page layout" class="portal-subnav-link" href="#">
+              <span class="portal-subnav-label">Page Layout</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <iframe class="portal-flyout-iframe" style="display: none; left: 192px; top: 99px; width: 116px; height: 30px;" id="navFrame_u15l1s8" frameborder="0"></iframe>
+    <div id="portalFlyoutNavigation_u5l1s8" class="portal-flyout-container" style="display: none;">
+    <div id="portalFlyoutNavigationInner_u5l1s8">
+      <ul class="portal-subnav-list">
+        <li class="portal-subnav first" id="uPfname_ny-times-education">
+          <a class="portal-subnav-link" title="NY Times Education" href="#">
+            <span class="portal-subnav-label">NY Times Education</span>
+          </a>
+        </li>
+        <li class="portal-subnav" id="uPfname_chronicle-wired">
+          <a class="portal-subnav-link" title="The Chronicle: Wired Campus" href="#">
+            <span class="portal-subnav-label">The Chronicle: Wired Campus</span>
+          </a>
+        </li>
+        <li class="portal-subnav" id="uPfname_salon.com">
+          <a class="portal-subnav-link" title="Salon.com" href="#">
+            <span class="portal-subnav-label">Salon.com</span>
+          </a>
+        </li>
+        <li class="portal-subnav last" id="uPfname_sports-illustrated">
+          <a class="portal-subnav-link" title="Sports Illustrated" href="#">
+            <span class="portal-subnav-label">Sports Illustrated</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <iframe class="portal-flyout-iframe" style="display: none;" id="navFrame_u5l1s8" frameborder="0"></iframe>
+  <div id="portalFlyoutNavigation_u4l1s8" class="portal-flyout-container" style="display: none;">
+    <div id="portalFlyoutNavigationInner_u4l1s8">
+      <ul class="portal-subnav-list">
+        <li class="portal-subnav first" id="uPfname_word-of-the-day">
+          <a class="portal-subnav-link" title="Word of the Day" href="#">
+            <span class="portal-subnav-label">Word of the Day</span>
+          </a>
+        </li>
+        <li class="portal-subnav" id="uPfname_about-college-life">
+          <a class="portal-subnav-link" title="About.com College Life" href="#">
+            <span class="portal-subnav-label">About.com College Life</span>
+          </a>
+        </li>
+        <li class="portal-subnav" id="uPfname_e-online">
+          <a class="portal-subnav-link" title="E! Online" href="#">
+            <span class="portal-subnav-label">E! Online</span>
+          </a>
+        </li>
+        <li class="portal-subnav" id="uPfname_phd-comics">
+          <a class="portal-subnav-link" title="PHD Comics" href="#">
+            <span class="portal-subnav-label">PHD Comics</span>
+          </a>
+        </li>
+        <li class="portal-subnav last" id="uPfname_new-movies">
+          <a class="portal-subnav-link" title="Movies.com New This Week in Theaters" href="#">
+            <span class="portal-subnav-label">Movies.com New This Week in Theaters</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <iframe class="portal-flyout-iframe" style="display: none;" id="navFrame_u4l1s8" frameborder="0"></iframe>
+  <div id="portalFlyoutNavigation_s5" class="portal-flyout-container" style="display: none; left: 571px; top: 99px;">
+    <div id="portalFlyoutNavigationInner_s5">
+      <ul class="portal-subnav-list">
+        <li class="portal-subnav first" id="uPfname_student-feature">
+          <a class="portal-subnav-link" title="Student Welcome" href="#">
+            <span class="portal-subnav-label">Student Welcome</span>
+          </a>
+        </li>
+        <li class="portal-subnav" id="uPfname_notifications">
+          <a class="portal-subnav-link" title="My Notifications" href="#">
+            <span class="portal-subnav-label">My Notifications</span>
+          </a>
+        </li>
+        <li class="portal-subnav" id="uPfname_whos-online">
+          <a class="portal-subnav-link" title="Who's Online" href="#">
+            <span class="portal-subnav-label">Who's Online</span>
+          </a>
+        </li>
+        <li class="portal-subnav last" id="uPfname_courses">
+          <a class="portal-subnav-link" title="My Courses" href="#">
+            <span class="portal-subnav-label">My Courses</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <iframe class="portal-flyout-iframe" style="display: none; left: 571px; top: 99px; width: 132px; height: 120px;" id="navFrame_s5" frameborder="0"></iframe>
+</div>
+  
+  <script type="text/javascript">
+      // Initialize the Fluid components on this page.
+      demo.initFluidComponents();
+  </script>
+</body></html>

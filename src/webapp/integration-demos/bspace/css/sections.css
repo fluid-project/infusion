@@ -1,0 +1,321 @@
+/* Section Manager specific CSS definitions. */
+
+/* Global style classes */
+.available {width:210px; text-align:left; vertical-align:top;}
+.transferButtons {width:100px; text-align:center; vertical-align:middle;}
+.selected {width:210px; text-align:right; vertical-align:top;}
+
+.transferButtonTable {text-align:center; font-weight:bold;}
+.studentSectionInfo {font-weight:bold;}
+.deleteButtons {margin-top:40px;}
+.verticalPadding {margin-top:20px;}
+
+/* Headings display close to their instructions */
+.instructions {margin-bottom:0.8em;}
+h3.instructions {margin-bottom:0em !important;}
+
+/* Student View section table */
+tr.member td {font-weight:bold;}
+tr.memberPadRow td {font-weight:bold; padding-bottom:2em !important;}
+tr.nonmember td {font-weight:normal;}
+tr.nonmemberPadRow td {font-weight:normal; padding-bottom:2em !important;}
+
+/* Keep space between section categories in section tables */
+tr.firstCategoryHeader td {font-weight:bold; padding-bottom:0em !important;}
+tr.categoryHeader td {padding-top:2em !important; font-weight:bold; padding-bottom:0em !important;}
+tr.sectionRow td {padding-bottom:0em !important; vertical-align:top !important;}
+
+/* Pad the rows when adding or editing sections */
+tr.paddedSectionRow td {padding-top:0em !important; padding-bottom:1em !important; vertical-align:top !important;}
+tr.paddedSectionRow td  table {padding-top:0 !important; padding-bottom:1em !important; vertical-align:top !important;}
+
+.paddedMeetingRow {padding-top:0 !important; padding-bottom:1em !important; }
+
+
+/* Form labels should be bold */
+label.formLabel {font-weight:bold;}
+
+/* Item property editing. THIS SHOULD BE MOVED INTO SAKAI CSS. */
+table.itemSummary td.itemName {
+    font-weight:bold;
+    white-space:nowrap;
+    vertical-align:top;
+    text-align:left;
+    padding:.3em 1em .3em .3em
+}
+
+/* Create a container for filter/paging controls to enable bottom-alignment. */
+/* THIS SHOULD BE MOVED INTO SAKAI CSS. */
+table.sectionContainerNav {
+    width:100%;
+}
+/*
+    OVERRIDE NAV CONTROL SAKAI CSS DEFINITIONS FOR NOW.
+    They don't handle our situation, with search filters bottom-aligned
+    on the left and paging controls on the right.
+*/
+.sectionLeftNav  {
+    vertical-align:bottom;
+    text-align:left;
+    white-space:nowrap;
+}
+.sectionRightNav  {
+    text-align:right;
+    white-space:nowrap;
+}
+
+/* Table columns change alignmnet depending on their data type (numbers vs. letters) */
+td.left {text-align:left; vertical-align:top;}
+td.leftIndent {padding-left:1em !important; text-align:left; vertical-align:top;}
+td.center {text-align:center; vertical-align:top;}
+td.right {text-align:right; vertical-align:top; padding-right:2em !important;}
+td.rightLabel {font-weight:bold; text-align:right; vertical-align:top; padding-right:2em !important;}
+td.rightpadded {text-align:right; vertical-align:top; padding-right:5em !important;}
+
+/* Most but not all tables are shown 100% width in the spec. */
+table.wideTable {
+    width:100%;
+}
+table.narrowTable {
+    width:auto;
+}
+
+/* Tables displaying sections have thin internal borders */
+table.sectionTable{
+    border:none; 
+    border-collapse:collapse;
+    width: 100%;
+}
+table.sectionTable tr td {
+    border-color: gray !important; 
+    border-top: solid; 
+    border-width: 1px; 
+    border-collapse: collapse;
+}
+
+/* Show lines between sections in "add sections", but don't allow inheritance */
+table tr.nextSectionRow td {border-color:gray !important; border-top:solid; border-width:1px; border-collapse:collapse; padding-top:4em; padding-bottom:2em}
+table tr.nextSectionRow table tr td {border-top:none; padding-top:0em; padding-bottom:2em;}
+
+/* Student roster table styling */
+table.rosterTable {border:none; border-collapse:collapse;width:auto;}
+table.rosterTable th {padding-right:1.5em !important;}
+table.rosterTable tr td {padding-right:1.5em !important;border-color:gray !important; border-top:solid; border-width:1px; border-collapse:collapse;}
+/*styling for download and print button */
+table.rosterPageHeader {
+	width:100%;
+}
+
+.rosterPageHeaderLeft  {
+	vertical-align:top;
+    text-align:left;
+}
+
+.rosterPageHeaderRight  {
+	vertical-align:top;
+    text-align:right;
+}
+
+/*
+    It would be better to use margin-right in a div or to apply this to specific
+    columns, but JSF can't manage either of those.
+*/
+table.narrowTable tr th {
+    padding-right:2em;
+}
+
+/* Show text in a thin-bordered box */
+.borderBox {border:1px solid;}
+
+/* Indent options checkboxes */
+.indent {text-indent: 1em;}
+
+
+#demo-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* using rgba in order that the mask be opaque but not the dialog, 
+       rgba is not recognized by IE, this is graceful enhancement */
+    background-color: rgba(150, 150, 150, 0.4);
+}
+
+#demo-message-container {
+    position: absolute;
+    top: 11em;
+    left: 50%;
+    margin-left: -15em;
+    background-color: #FFF4D8;
+    border: 2px solid #333;
+    padding: 0.4em 1.3em 0.3em;
+    -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;
+    width: 30em;
+    z-index: 3000;
+}
+
+#demo-message p {
+    font-size: 1.3em;
+}
+
+#demo-message h2 {
+    font-size: 1.5em;
+}
+
+#demo-message input {
+    font-size: 100%;
+}
+
+
+.inlineEditable {
+    position: relative;
+    display: block;
+}
+
+.inlineEditable span.text {
+    padding: 3px;
+    display: inline-block;
+}
+
+.fl-inlineEdit-invitation {
+    background-color:#FFD;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #666666 #DDDDDD #DDDDDD #666666 !important;
+    cursor: text;
+    padding: 2px !important;
+}
+
+
+.inlineEditable input {
+    font-family: Arial,Helvetica,Verdana,Geneva,sans-serif;
+    font-size: 1em !important;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #666666 #DDDDDD #DDDDDD #666666 !important;
+    padding: 2px;
+}
+
+.fluid-undo {
+    position: absolute;
+    top: 0;
+    left: 86%;
+}
+
+html>body .fluid-undo {
+    left: 96%;    
+}
+
+.fluid-undo span.label {
+    display: none;   
+}
+
+.undoControl, .redoControl {
+    background-image: url(../images/all-edit-buttons.png);
+    background-position: 0 0;
+    background-attachment: scroll;
+    background-repeat: no-repeat;
+    display: block;
+    position: relative;
+    width: 22px;
+    height: 18px;
+    outline: none;
+    opacity: 0.6;
+    filter:alpha(opacity=60);
+}
+
+a.undoControl:hover, a.redoControl:hover {
+    width: 48px;
+    opacity: 0.92;
+    filter: alpha(opacity=92);
+    z-index: 500;
+}
+
+a.undoControl:focus, a.redoControl:focus, a.undoControl.focus, a.redoControl.focus {
+    outline: 2px solid blue;
+}
+
+a.undoControl {
+    background-position: 0 -40px;
+}
+
+a.undoControl:hover {
+    background-position: 0 -80px;
+}
+
+a.redoControl {
+    background-position: 0 -160px;
+}
+
+a.redoControl:hover {
+    background-position: 0 -200px;
+}
+
+.sectionName { 
+    padding: 0.1em 0.4em 0.1em 0.2em;
+}
+
+#tooltip {
+    border: 1px solid #888;
+    padding: 0.2em 0.4em;
+    font-size: 1.2em;
+}
+
+.editInstructions {
+    border: 2px solid #FC7317;
+    background-color: #FFD;
+    padding: 0.8em 0.6em;
+    margin: 0 auto;
+    width: 33%;
+    text-align: center;
+}
+
+.editInstructions p {
+    background-image: url(../images/information.png);
+    background-attachment: scroll;
+    background-position: left top;
+    background-repeat: no-repeat; 
+    padding-left: 20px;
+    text-align: left;
+    margin: 0 0 0.4em;
+}
+
+/* */
+
+.savedControl span.label {
+    display: none;   
+}
+
+.savedControl {
+    position:absolute;
+    left: 86%;
+    top: 0;
+    z-index: 400;
+    margin-left: 20px;
+    background-image: url(../images/all-edit-buttons.png);
+    background-attachment: scroll;
+    background-repeat: no-repeat;
+    background-position: top left;
+    width: 83px;
+    height: 18px;
+    outline: none;
+    opacity: 0;
+    filter:alpha(opacity=0);
+    background-position: 0 0;
+}
+
+html>body .savedControl {
+    left: 96%;
+}
+.hiddenForScreenReaderUsers {
+	position:absolute;
+	left:-10000px;
+	top:auto;
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
+

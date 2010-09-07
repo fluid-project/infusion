@@ -1,0 +1,244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" >
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-text.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-mist.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-hc.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-hci.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-slate.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-theme-coal.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/UIOptions.css" />
+        <link rel="stylesheet" type="text/css" href="../../../components/uiOptions/css/Slider.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-coal/coal.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-mist/mist.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-slate/slate.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-hc/hc.css" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/ui/css/fl-theme-hci/hci.css" />
+
+        <!-- Local Sakai and Sakai FSS Extensions -->
+        <link rel="stylesheet" type="text/css" href="../css/sakai.css" />
+        <link rel="stylesheet" type="text/css" href="../css/sakai.layout.css" />
+        <link rel="stylesheet" type="text/css" href="../css/sakai.theme.mist.css" />
+        <link rel="stylesheet" type="text/css" href="../css/sakai.theme.coal.css" />
+        <link rel="stylesheet" type="text/css" href="../css/sakai.theme.slate.css" />
+		<link rel="stylesheet" type="text/css" href="../css/sakai.components.ui-options.css" />
+        
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.widget.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.mouse.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.position.js"></script> 
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.draggable.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.slider.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.accordion.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/plugins/delegate/js/jquery.delegate.js"></script>
+
+        <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../components/tableOfContents/js/TableOfContents.js"></script>
+        <script type="text/javascript" src="../../../components/undo/js/Undo.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/UIEnhancer.js"></script>
+        <script type="text/javascript" src="../../../components/uiOptions/js/UIOptions.js"></script>
+        <script type="text/javascript" src="../js/sakai.js"></script>
+
+        <title>Sakai</title>
+
+       
+    </head>
+
+    <body class="fl-theme-mist">
+
+        <!-- LAYOUT AND APPEARANCE -->
+        <div class="lookNfeel fl-container">
+            <a href="#_bottom" class="skin_ fl-button-left fl-linearEnabled"> <strong class="fl-button-inner"> Edit Appearance </strong> </a>
+        </div>
+        
+        <div class="ui_options"></div>
+
+        <div class="header fl-knockout">
+            <h1>My Dashboard</h1>
+            <p>Joe Instructor </p>
+            <ul>
+                <li><a href="#">(Sign Out)</a></li>
+                <li><a href="#">Preferences</a></li>
+                <li><a href="#">Help</a></li>
+            </ul> 
+        </div>
+
+        <!-- WIDGETS COLUMNS CONTAINER -->
+        <div class="content fl-container fl-fix">
+            
+            <!-- COLUMN LEFT -->
+            <div class="fl-container-300 fl-force-left">
+                
+                <!-- WIDGET -->
+                <div class="fl-widget">
+                    <div class="fl-widget-titlebar">
+                        <a href="#" class="fl-force-left fl-icon fl-icon-more">More</a>
+                        <a href="#" class="fl-force-right fl-icon fl-icon-close">Close</a>
+                        <a href="#" class="fl-button-right settings"><strong class="fl-button-inner">Settings</strong></a>
+                        <h2>Tools</h2>
+                    </div>                    
+                    <div class="fl-widget-options">
+                        <ul>
+                            <li><a href="#">Add Tools</a></li>
+                            <li><a href="#" class="fl-icon viewOptions toggle">Toggle View</a></li>
+                        </ul>
+                    </div>                    
+                    <div class="fl-widget-content">
+                        <ul class="fl-listmenu menu">
+                            <li><a href="#">Home          <span class="fl-icon delete">[remove]</span></a></li>
+                            <li><a href="#">Profile       <span class="fl-icon delete">[remove]</span></a></li>
+                            <li><a href="#">Membership    <span class="fl-icon delete">[remove]</span></a></li>
+                            <li><a href="#">Schedule      <span class="fl-icon delete">[remove]</span></a></li>
+                            <li><a href="#">Resources     <span class="fl-icon delete">[remove]</span></a></li>
+                            <li><a href="#">Worksite Setup<span class="fl-icon delete">[remove]</span></a></li>
+                            <li><a href="#">Preferences   <span class="fl-icon delete">[remove]</span></a></li>
+                            <li><a href="#">Account       <span class="fl-icon delete">[remove]</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COLUMN RIGHT -->
+            <div class="fl-container-300 fl-force-right">
+
+                <!-- WIDGET -->
+                <div class="fl-widget fl-grabbable">
+                    <div class="fl-widget-titlebar">
+                        <a href="#" class="fl-force-left fl-icon fl-icon-more">More</a>
+                        <a href="#" class="fl-force-right fl-icon fl-icon-close">Close</a>
+                        <a href="#" class="fl-button-right settings"><strong class="fl-button-inner">Settings</strong></a>
+                        <h2>Poll Tracker</h2>
+                    </div>    
+                    <div class="fl-widget-content empty">
+                        <p>No valid poll has been selected</p>
+                    </div>
+                </div>
+
+                <!-- WIDGET -->
+                <div class="fl-widget">
+                    <div class="fl-widget-titlebar">
+                        <a href="#" class="fl-force-left fl-icon fl-icon-more">More</a>
+                        <a href="#" class="fl-force-right fl-icon fl-icon-close">Close</a>
+                        <a href="#" class="fl-button-right settings"><strong class="fl-button-inner">Settings</strong></a>
+                        <h2>My Profile</h2>
+                    </div>
+                    <div class="fl-widget-options">
+                        <ul>
+                            <li><a href="#">Edit Profile</a></li>
+                            <li><a href="#">View Profile</a></li>
+                        </ul>
+                    </div>
+                    <div class="fl-widget-content"></div>
+                </div>
+            </div>
+
+            <!-- COLUMN CENTER -->
+            <div class="center column fl-container">
+                <div class="fl-widget fl-grabbable">
+                    <div class="fl-widget-titlebar">
+                        <a href="#" class="fl-force-left fl-icon fl-icon-more">More</a>
+                        <a href="#" class="fl-force-right fl-icon fl-icon-close">Close</a>
+                        <a href="#" class="fl-button-right settings"><strong class="fl-button-inner">Settings</strong></a>
+                        <h2>Sites</h2>
+                    </div>
+                    <div class="fl-widget-options">
+                        <ul>
+                            <li><a href="#">Join a Site</a></li>
+                            <li><a href="#">Edit Site List</a></li>
+                            <li><a href="#">Create a Site</a></li>
+                        </ul>
+                    </div>
+                    <div class="fl-widget-content">
+                        <ul>
+                            <li><a href="#">Uncategorized</a></li>
+                            <li>
+                            <ul>
+                                <li><a href="#">My Workspace</a></li>
+                                <li><a href="#">Famous Monuments</a></li>
+                                <li><a href="#">Old legacy site</a></li>
+                                <li><a href="#">Painters and Paintings</a></li>
+                            </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="fl-widget fl-grabbable">
+                                        
+                        <div class="fl-widget-titlebar">
+                            <a href="#" class="fl-force-left fl-icon fl-icon-more">More</a>
+                            <a href="#" class="fl-force-right fl-icon fl-icon-close">Close</a>
+                            <a href="#" class="fl-button-right settings"><strong class="fl-button-inner">Settings</strong></a>
+                            <h2>Content Management</h2>
+                        </div>
+                        <div class="fl-widget-options">
+                            <ul>
+                                <li><a href="#">Add More </a></li>
+                                <li><a href="#">Edit Site List</a></li>
+                                <li><a href="#">Create a Site</a></li>
+                            </ul>
+                        </div>
+                        <div class="fl-widget-content">
+                            <ul class="fl-tabs fl-tabs-enhanced">
+                                <li class="fl-tabs-active"><a href="#">Edit Text</a></li>
+                                <li><a href="#">Edit HTML</a></li>
+                                <li><a href="#">Page Preview</a></li>                            
+                            </ul>
+                            <div class="fl-tabs-content fl-tabs-content-enhanced">
+                                <p>There is a lot of stuff in here.</p>
+                                <form class="fl-col-flex3">
+                                    <ul class="fl-col fl-controls-left">
+                                        <li><label class="fl-label">Thing 1</label><input type="text" value="" class="fl-textfield" /></li>
+                                        <li><label class="fl-label">Thing 2</label><input type="text" value="" class="fl-textfield" /></li>
+                                        <li><label class="fl-label">Thing 3</label><input type="text" value="" class="fl-textfield" /></li>
+                                    </ul>                                
+                                    <ul class="fl-col fl-controls-centered">
+                                        <li><label class="fl-label">Thing 1</label><input type="text" value="" class="fl-textfield" /></li>
+                                        <li><label class="fl-label">Thing 2</label><input type="text" value="" class="fl-textfield" /></li>
+                                        <li><label class="fl-label">Thing 3</label><input type="text" value="" class="fl-textfield" /></li>
+                                    </ul>
+                                    
+                                    <ul class="fl-col fl-controls-right">
+                                        <li><label class="fl-label">Thing 1</label><input type="text" value="" class="fl-textfield" /></li>
+                                        <li><label class="fl-label">Thing 2</label><input type="text" value="" class="fl-textfield" /></li>
+                                        <li><label class="fl-label">Thing 3</label><input type="text" value="" class="fl-textfield" /></li>
+                                    </ul>
+                                    
+                                    <textarea> </textarea>
+                                </form>                            
+                            </div>
+    
+                        </div>
+                    
+                </div>
+
+
+            </div>
+            
+        </div>
+
+        <!-- LAYOUT AND APPEARANCE -->
+        <div class="lookNfeel fl-container">
+            <a href="#_bottom" class="addWidget_ fl-button-left fl-linearEnabled"> <strong class="fl-button-inner"> Add Widgets </strong> </a>
+            <a href="#_bottom" class="skin_ fl-button-left fl-linearEnabled"> <strong class="fl-button-inner"> Edit Appearance </strong> </a>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer fl-container-flex fl-knockout">
+            <p>© 2004-2008 The Sakai Foundation <br />
+            Portions of Sakai are copyrighted by other parties as described in the <a href="#">Acknowledgments screen</a></p>
+        </div>
+    </body>
+</html>

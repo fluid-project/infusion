@@ -1,0 +1,155 @@
+.finalreportlinks {
+    padding:10px;
+    text-align:center;
+    background-color:#555;
+    font-size:2em;
+    border:2px solid #999;
+}
+
+.finalreportlinks a {
+        
+}
+
+html {
+    background-color:#333;
+    color:#fff;
+}
+body {
+	padding:10px;
+}
+
+h1, h2 {margin:0;}
+h1 {font:normal 2em Arial, Helvetica, sans-serif}
+h2 {font:normal 1.5em Arial, Helvetica, sans-serif;}
+h3 {}
+
+
+a {
+    color:#00aeef; 
+    text-decoration:none;
+}
+
+.fl-col-mixed-300 .p_framework {
+    padding-left:0; 
+    padding-right:20px;
+    border-right:2px solid #ccc;
+}
+.fl-col-mixed-300 .p_integration {
+    padding-left:20px;
+    padding-right:0px;
+    border-left:2px solid #ccc;
+}
+.fl-col-mixed-300 .p_components {
+    margin:0 320px;
+    padding: 0 20px; 
+    border:2px solid #ccc; 
+    border-width:0 2px;
+}
+
+.letusknow {
+    font-size:1.5em;    
+    margin:-1.5em 0 0 0;
+    padding-bottom:2.5em;
+    text-align:center;
+}
+
+.demo {
+    width:203px;
+    height:150px;
+    overflow:hidden;
+    border:2px solid #ccc;
+    padding:5px 5px 5px 78px;    
+    margin:2px;
+    color:#666;
+    float:left;
+    background-color:#fff;
+}
+/********************************************/
+.comingSoon {
+    background:#fff url(../images/comingSoon.png) no-repeat 5px 5px;
+}
+.layoutReorderer {
+    background:#fff url(../images/reorderer-layout.png) no-repeat 5px 5px;
+}
+.gridReorderer {
+    background:#fff url(../images/reorderer-grid.png) no-repeat 5px 5px;
+}
+.listReorderer {
+    background:#fff url(../images/reorderer-list.png) no-repeat 5px 5px;
+}
+.imageReorderer {
+    background:#fff url(../images/reorderer-image.png) no-repeat 5px 5px;
+}
+.progress {
+    background:#fff url(../images/progress.png) no-repeat 5px 5px;
+}
+.pager {
+    background:#fff url(../images/pager.png) no-repeat 5px 5px;
+}
+.uiOptions {
+    background:#fff url(../images/uiOptions.png) no-repeat 5px 5px;
+}
+.fss {
+    background:#fff url(../images/fss.png) no-repeat 5px 5px;
+}
+.renderer {
+    background:#fff url(../images/renderer.png) no-repeat 5px 5px;
+}
+.simpleEdit {
+    background:#fff url(../images/inlineEdit-simple.png) no-repeat 5px 5px;
+}
+.richEdit {
+    background:#fff url(../images/inlineEdit-rich.png) no-repeat 5px 5px;
+}
+.uploader {
+    background:#fff url(../images/uploader.png) no-repeat 5px 5px;
+}
+
+/********************************************/
+
+
+.demo h4 {font:normal 1.35em Arial, Helvetica, sans-serif;}
+.demo a {font-size:1.1em;}
+.demo .description {
+    font-size:.85em; 
+    margin:0 0 0 -73px;
+    padding-top:30px;
+    zoom:1;
+}
+.demo .showcase ~ .description {
+    padding-top:5px;
+}
+
+.demo .showcase {
+    font-size:0.85em;
+}
+.demo .showcase strong {
+    color:#ccc;
+    display:block;
+}
+
+.production, .preview, .sneak {
+    float:left;
+    width:100%;    
+}
+
+.production h3 {color:#39b54a;}
+.production .demo{
+    border-color:#39b54a;
+}
+
+.preview h3 {color:#f7941d;}
+.preview .demo {
+    border-color:#f7941d;
+}
+
+.sneak h3 {color:#ed1c24;}
+.sneak .demo {
+    border-color:#ed1c24;
+}
+
+.demoContent {
+    background-color:#ccc;
+}
+
+

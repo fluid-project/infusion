@@ -1,0 +1,6 @@
+{"fssReset": {
+   	"name": "Fluid Skinning System: Reset",
+   	"description": "Provides an easy way to normalize visual CSS discrepancies between browsers.",
+	"cssFiles": "fss-reset.css"
+}}
+

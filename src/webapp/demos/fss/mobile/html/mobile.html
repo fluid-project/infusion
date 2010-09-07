@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>Mobile FSS Demo</title>
+
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+        <link type="text/css" rel="stylesheet" href="../../../../framework/fss/css/fss-mobile-layout.css" />
+        <link type="text/css" rel="stylesheet" href="../../../../framework/fss/css/fss-mobile-theme-iphone.css" />
+        <link type="text/css" rel="stylesheet" href="../../../../framework/fss/css/fss-mobile-theme-android.css" />
+        
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
+
+        <script type="text/javascript" src="../js/themer.js"></script>
+        
+    </head>
+
+    <body class="fl-theme-iphone">
+
+        <div class="flc-screenNavigator-navbar fl-navbar fl-table">
+            <div class="fl-table-row">
+                <h1 class="fl-table-cell">Start</h1>
+
+                <ul class="fl-tabs fl-table-cell flc-themer">
+                    <li><a href="#iphone">iPhone</a></li>
+                    <li><a href="#android">Android</a></li>
+                    <li><a href="#none">No Theme</a></li>
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="fl-screenNavigator-scroll-container">
+            <div class="fl-container">
+                <h1>WebKit examples</h1>
+
+                <p class="fl-note">
+                    The current version of Mobile FSS requires a WebKit based browser (Safari, Chrome, iPhone, Android, etc)
+                </p>
+                <p class="fl-note">
+                    Most navigation is laid out as list items, and some content styles too.
+                    Lists are built up by combining class names on your list.
+                    Follow the links below for more information on how to build up list interfaces.
+                </p>
+
+                <h2>NAVIGATION Lists</h2>
+                <ol class="fl-list-menu">
+                    <li>
+                        <a href="nav/basic.html">Basic
+                            <span class="fl-link-summary">Examples of simple navigation list menus</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="nav/icon.html">Icon
+                            <span class="fl-link-summary">Basic nav list + icon options</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="nav/thumb.html">Thumbnail
+                            <span class="fl-link-summary">Basic nav list + thumbnail options</span>
+                        </a>
+                    </li>
+                </ol>
+
+                <h2>CONTENT Lists</h2>
+                <ol class="fl-list-menu">
+                    <li>
+                        <a href="content/basic.html">Simple
+                            <span class="fl-link-summary">Options for displaying content in a vertical list</span>
+                        </a>
+                    </li>
+                </ol>
+
+
+                <h2>Tabs</h2>
+                <ol class="fl-list-menu">
+                    <li>
+                        <a href="tabs/basic.html">Tabs
+                            <span class="fl-link-summary">iPhone style tabs in the heading and body content</span>
+                        </a>
+                    </li>
+                </ol>
+
+                <h2>Buttons</h2>
+                <ol class="fl-list-menu">
+                    <li>
+                        <a href="buttons/basic.html">Buttons
+                            <span class="fl-link-summary">iPhone style buttons with optional styles</span>
+                        </a>
+                    </li>
+                </ol>
+
+            </div>
+
+        </div>
+        
+        <script type="text/javascript">
+            //        INITIALIZE        //
+            $(document).ready(function () {
+                var Themer = fluid.themer(".flc-themer");
+            });
+        </script>
+
+    </body>
+</html>
+
+
+

@@ -1,0 +1,99 @@
+
+body{
+font-family: verdana, arial, sans-serif;
+width: 75%;
+margin: 10 auto;
+}
+
+dt{
+	padding-top: 10px;
+}
+
+.reorderer_container{
+padding: 20px;
+border: 1px dashed red;
+overflow: hidden;
+background-color: #eee;
+}
+	
+.orderable{
+background-color: lightyellow;
+}
+
+h1 {
+clear: both;
+border-top: 1px solid #ddd;
+margin-top: 20px;
+padding-top: 20px;
+}
+	
+.box{
+width: 100px;
+border: 1px solid black;
+height: 100px;
+float: left;
+margin: 0 0 10px 10px;
+text-align: center;
+}
+
+.image{
+background-color: #eee;
+width: 75px;
+height: 75px;
+}
+
+.li-horizontal{
+float: left;
+margin-right: 50px;
+}
+
+table{
+border: 1px solid black;
+}
+
+table td{
+border: 1px solid black;
+}
+
+
+.fl-reorderer-movable-default{
+  border: 2px solid #ddd;
+  margin: 0 10px 10px 0 !important;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.flc-reorderer-movable-hover{
+  border: 2px solid #666;
+  margin: 0 10px 10px 0 !important;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.fl-reorderer-movable-selected{
+  border: 2px solid #666;
+  background-color: #ddd;
+  margin: 0 10px 10px 0 !important;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.fl-reorderer-avatar {
+    background-color: blue;
+    opacity: 0.75;
+}
+
+div .fl-reorderer-dropMarker{
+  height: 4px !important;
+  width: 80px;
+  background-color: green;
+}
+
+.portlet {
+  padding: 10px;
+}
+
+#portlet-reorderer-root td {
+  padding: 8px;
+  vertical-align: top;
+}

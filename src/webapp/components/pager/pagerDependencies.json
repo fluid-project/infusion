@@ -1,0 +1,7 @@
+{"pager": {
+   	"name": "Pager",
+   	"description": "Sort and organize large amounts of data.",
+   	"cssFiles": "Pager.css",
+	"files": "Pager.js",
+	"dependencies": ["jQuery", "jQueryTooltipPlugin", "jQuerybgiframePlugin", "framework", "renderer"]
+}}

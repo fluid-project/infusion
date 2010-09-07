@@ -1,0 +1,284 @@
+<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Renderer Tests</title>
+    
+        <!--  This is the jqUnit test css file -->
+        <link rel="stylesheet" media="screen" href="../../../lib/qunit/css/qunit.css" />
+        
+        <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../../lib/json/js/json2.js"></script>  
+        <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../../framework/core/js/JavaProperties.js"></script>   
+        <script type="text/javascript" src="../../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../../framework/renderer/js/fluidRenderer.js"></script>
+        
+        <!-- for fluid.iota -->
+        <script type="text/javascript" src="../../../../components/pager/js/Pager.js"></script>
+
+        <!--  These are the jqUnit test js files -->
+        <script type="text/javascript" src="../../../lib/qunit/js/qunit.js"></script>
+        <script type="text/javascript" src="../../../test-core/jqUnit/js/jqUnit.js"></script>
+
+        <!--  These are tests that have been written using this page as data -->
+        <script type="text/javascript" src="../js/RendererTests.js"></script>
+        <script type="text/javascript" src="../../../test-core/utils/js/TestUtils.js"></script>
+
+  </head>
+  <body>
+<h1 id="qunit-header">Parser Test Suite</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="main">
+  <div style="display:none" id="testDataRoot">
+    <div id="parseTest1">
+      <table>
+        <tr id="table-header"><th>Count</th><th>Name</th><th class="column-header">1</th><th>Median ave</th></tr>
+      </table>
+    </div>
+  </div>
+  
+  <!-- this is the template for the paged content -->
+  <div class="paged-content">
+    <table>
+      <thead>
+        <tr>
+          <th>Species</th><th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr rsf:id="data-row:">
+          <td rsf:id="species">name here</td>
+          <td rsf:id="score">value here</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="decorator-interference-test" class="fl-centered progress-container-all">
+    <div class="progress-bars">
+      <div class="fl-progress">
+        <div class="fl-progress-bar height-20-px">
+          <div class="fl-progress-indicator"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="paged-content-2">
+      <table>
+          <tbody>
+              <tr rsf:id="data-row:">
+                  <td><a rsf:id="species" class="CATTclick3">name here</a></td>
+                  <td><input rsf:id="score"></input></td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+  
+  <div class="RSF-111-test">
+   <!-- Test that unmarked labels are not interfered with -->
+    <label for="target2">Label</label> <div id="target2">Target</div>
+  </div>
+  
+  <div class="RSF-77-test">
+  <!-- Test that label targets are correctly rewritten  -->
+    <div rsf:id="row:">
+      <label rsf:id="msg=message1" for="target">My Label</label> 
+      <span rsf:id="target" id="target">Labelled span</span>
+    </div>
+  </div>
+  
+  <div class="FLUID-2298-test">
+    <label rsf:id="msg=message1" for="branch">My Label</label>
+    <span rsf:id="target:" id="branch">My target</span>
+  </div>
+  
+  <div class="UIMessage-test">
+    <span rsf:id="message">A template message</span>
+  </div>
+  <div class="UILinkMessage-test">
+    <a rsf:id="link" href="thingery URL">A further template message</a>
+  </div>
+  <div class="UIVerbatimMessage-test">
+    <div rsf:id="verbatim">A verbatim message</div>
+  </div>
+  <div class="UIVerbatimMessage-dumpery">
+  </div>
+  
+  <div class="FLUID-1696-test">
+     <input rsf:id="checkbox1" class="checkbox1" type="checkbox" />
+     <input rsf:id="checkbox2" class="checkbox2" type="checkbox" checked="checked" />
+     <input rsf:id="field" class="field" type="text" value="Thing"/>
+  </div>
+
+  <div class="UISelect-test-select">
+    <select rsf:id="select">
+      <option selected="selected" value="Enchiridion">Enchiridion</option>
+      <option value="Apocatastasis">ApoCATTastasis</option>
+      <option value="Exomologesis">Exomologesis</option>
+    </select>
+  </div>
+  <div class="UISelect-test-radio-1">
+    <div rsf:id="radio-row:">
+      <input rsf:id="radio" type="radio" name="vocable" id="radio1" value="Aerumnous"/>
+      <label rsf:id="label" for="radio1">Aerumnous</label>
+    </div>
+  </div>
+  
+  <div class="UISelect-test-check-1">
+    <div rsf:id="checkbox-row:">
+      <input rsf:id="checkbox" type="checkbox" name="vocable" id="radio1" value="Aerumnous"/>
+      <label rsf:id="label" for="radio1">Aerumnous</label>
+    </div>
+  </div>
+  
+  <ul class="FLUID-2046-test">
+      <li class="flc-pager-pageLink"><a href="#">1</a></li>
+      <li class="flc-pager-pageLink"><a href="#">2</a></li>
+  </ul>
+  
+  <div class="FLUID-2178-test">            
+      <ul rsf:id="toc-list:">
+          <li rsf:id="toc_item:">foo</li>
+      </ul>
+  </div>
+  
+  <div class="link-test-1">
+    <a rsf:id="link-1" href="thing.html">
+       <img rsf:id="link-2" src="other-thing.html"/>
+    </a>
+  </div>
+  
+  <div class="link-test-2">
+    <a rsf:id="link-1" href="thing.html"></a>
+    <form rsf:id="link-2" action="other-thing.html"> </form>
+  </div>
+  
+  <form> <!-- Form isolation here tests FLUID-1728 -->
+    <div class="basic-input-1">
+      <input rsf:id="input" class="text" type="text" value="Template-value" />
+      <input rsf:id="checkbox" class="checkbox" type="checkbox" />
+    </div>
+  </form>
+
+  <div class="FLUID-2596-test">
+  <!-- 
+      <table>
+      <tbody>
+      <div rsf:id="~row:">
+          <tr class="row1"><td rsf:id="cell1"/><td rsf:id="cell2"/></tr>
+          <tr class="row2"><td rsf:id="cell3"/><td rsf:id="cell4"/></tr>
+      </div>
+      </tbody>
+      </table>
+   -->
+  </div>
+  
+  <div class="FLUID-2598-test">
+      <table>
+          <tbody>
+              <tr rsf:id="data-row:">
+                  <td><input rsf:id="checkbox-1" type="checkbox" disabled="disabled"/></td>
+                  <td><input rsf:id="checkbox-2" type="checkbox" /></td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+  
+  <div class="FLUID-2980-test">
+      <ul>
+          <li rsf:id="item:">foo</li>
+      </ul>
+  </div>
+  
+  <div class="FLUID-2980-test2">
+      Text
+  </div>
+  
+  <div class="FLUID-3357-test">
+      <select class="select-3357">
+          <option value="thing">Thing</option>  
+      </select>
+  </div>
+  
+  <div class="FLUID-3364-test">
+      <form>
+         <input type="text" aria-readonly="true" aria-disabled="true"/>
+      </form>
+  </div>
+  
+  <div class="FLUID-3224-test">
+      <form rsf:id="switch">
+          <textarea rsf:id="input"></textarea>
+      </form>
+  </div>
+  
+  <div class="FLUID-3482-test">
+      <div rsf:id="initBlock">
+          fluid.transform([3, 4], function(arg) {return arg + 1});
+      </div>
+  </div>
+  
+  <div class="FLUID-3498-test">
+      <label for="thing">My label</label>
+      <a id="thing" href="to/the/lighthouse">My linked internality</a>
+  </div>
+  
+  
+  <div class="nestedDataBinding">
+      <div class="nestLevelOne">
+          <div class="nestLevelTwo">
+              <div class="nestLevelThree">
+                  <input id="nestedDataBindingInput" type="checkbox"/>
+                  <label for="nestedDataBindingInput" class="nestedDataBindingLabel">Label</label>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  <div class="FLUID-3524-test">
+    <!-- 
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <link type="text/css" rel="stylesheet" href="../fluid-infusion/framework/fss/css/fss-layout.css"/>
+      <img src="http://thing.com" />
+      -->
+  </div>
+  
+  <div class="FLUID-3524-b-test">
+    <!-- 
+        <script type="text/javascript" src="../../../../fluid-engage-core/components/home/js/Home.js"></script>
+      -->
+  </div>
+  
+</div>
+
+<div id="dangerousTests">
+  <!-- This markup MUST NOT be placed inline in the main document else it will trigger an
+  endless memory-consuming loop as jqUnit fails replace it correctly in the document on teardown -->
+  
+  <div class="FLUID-3493-test">
+   
+      <div rsf:id="cell:" class="cell">
+          <div class="preamble"/>
+          <div rsf:id="payload-1">Some things</div>
+          <br class="middle" />
+          <div rsf:id="payload-2">Some other things</div>
+          <div class="end"/>
+      </div>
+   
+  </div>
+</div>
+
+<script>
+  fluid.tests.testParser();
+</script>
+
+</body>
+</html>

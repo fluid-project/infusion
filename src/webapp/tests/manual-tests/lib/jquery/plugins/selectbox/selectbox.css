@@ -1,0 +1,55 @@
+div.selectbox-wrapper {
+  position:absolute;
+  width:400px;
+  background-color:white;
+  border:1px solid #ccc;
+  margin:0px;
+  margin-top:-10px;
+  padding:0px;
+  font-size:0.8em;
+  text-align:left;
+  max-height:200px;
+  overflow:auto;
+}
+div.selectbox-wrapper ul {
+  list-style-type:none;
+  margin:0px;
+  padding:0px;
+}
+div.selectbox-wrapper ul li.selected { 
+  background-color: #EAF2FB;
+}
+div.selectbox-wrapper ul li.current { 
+  background-color: #CDD8E4;
+}
+div.selectbox-wrapper ul li {
+  list-style-type:none;
+  display:block;
+  margin:0;
+  padding:2px;
+  cursor:pointer;
+}
+
+label {
+    display: block;
+}
+.selectbox /* look&fell of  select box*/
+{
+  margin: 0px 5px 10px 0px;
+  padding-left:2px;
+  font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
+  font-size:0.8em;
+  width : 10em; 
+  display : block;
+  text-align:left; 
+  background: url('bg_select.png') right;
+  /*height:18px;*/
+  cursor: pointer;
+  border:1px solid #D1E4F6;
+  color:#333;
+}
+
+select {
+	background: url('bg_select.png') right;
+}
+

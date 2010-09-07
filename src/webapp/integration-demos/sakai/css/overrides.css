@@ -1,0 +1,19 @@
+.yui-dt table td div {
+    line-height:30px;
+}
+.ssth-right .ssth-border {
+    float:left;
+}
+
+.pager-page-size {
+    float:left;
+}
+
+ul.fl-pager-ui {
+    float:left;
+}
+
+a:focus {
+    outline: 2px solid #000; 
+	  color: #333333;
+}

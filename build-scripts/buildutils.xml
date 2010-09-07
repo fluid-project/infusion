@@ -1,0 +1,88 @@
+<project name="FluidBuildUtils">
+    <description>
+        Utilities used by the Infusion and Engage builds
+    </description>
+
+
+    <target name="clean" description="Cleans up all build-related artifacts and products.">
+        <delete dir="${build}" />
+        <delete dir="${products}" />
+    </target>
+
+    <target name="buildWAR" description="Builds a WAR file using maven given 3 parameters. toFile: the full path to the warfile to be created; fromDir: the directory containing the content to be placed in the war; warFile: the name of the warfile that is created from the maven task">
+      <condition property="isWindows">
+        <os family="windows" />
+      </condition>
+      <antcall target="invokeMavenForWAR" />
+      <antcall target="invokeMavenForWARWindows" />
+      <echo>Copying war file ...</echo>
+      <copy tofile="${toFile}" file="${fromDir}/target/${warFile}" />
+    </target>
+
+    <!-- Uses maven to create a WAR file on a non-Windows operating system. Expects 'fromDir' to be set. -->
+    <target name="invokeMavenForWAR" unless="isWindows">
+      <echo>Building war file... ${fromDir} </echo>
+      <apply executable="mvn" dir="${fromDir}" parallel="true">
+          <fileset  dir=".">
+              <include name="pom.xml"/>
+          </fileset>
+          <arg value="install" />
+      </apply>
+    </target>
+  
+    <!-- Uses maven to create a WAR file on a Windows operating system. Expects 'fromDir' to be set. -->
+    <target name="invokeMavenForWARWindows" if="isWindows">
+      <apply executable="cmd" dir="${fromDir}" parallel="true" vmlauncher="false">
+          <fileset  dir=".">
+              <include name="pom.xml"/>
+          </fileset>
+          <arg value="/c mvn.bat install" />
+      </apply>
+    </target>
+
+	<!-- Expects toDir, fromDir, filePattern, lineBreakArg to be set -->
+    <target name="minify">
+    	<echo> Going to minify from ${fromDir} to ${toDir} including ${filePattern}  </echo>
+        <apply executable="java" dest="${toDir}"  parallel="false">
+            <!-- The files to act upon. -->  
+            <fileset dir="${fromDir}" casesensitive="no">
+              <include name="**/${filePattern}" />
+              <exclude name="**/test/*" />
+            </fileset>
+    
+            <arg line="-jar" />
+            <arg path="${yuicompressor}" />
+            <srcfile/>
+            <arg line="--nomunge" />
+            <!-- -o option for YUI Compressor to output minified JS to a file instead of stdout. -->
+            <arg line="${lineBreakArg}" />
+            <arg line="--charset UTF-8" />
+            <arg line="-o" />
+            <mapper type="glob" from="${filePattern}" to="${filePattern}" />
+            <targetfile /> 
+        </apply>
+    </target>    
+    
+    <!-- Minifies javascript and css files. Expects fromDir and toDir to be set -->
+    <target name="minifyJsAndCss">
+      <echo>Minifying .JS files...</echo>
+      <antcall target="minify">
+        <param name="filePattern" value="*.js" />
+        <param name="lineBreakArg" value="" />
+      </antcall>
+      
+      <antcall target="minify">
+        <param name="filePattern" value="*.css" />
+        <param name="lineBreakArg" value="--line-break 0" />
+      </antcall>
+    </target>    
+	
+	<!-- This target should be changed to use better named properties -->
+    <target name="concatJavaScript">
+        <echo> concat the javascript from ${sourceDir} </echo>
+        <concat destfile="${assembled}/${jsfile}" encoding="UTF-8" >
+            <filelist dir="${sourceDir}" files="${allRequiredJSFiles}" /> 
+        </concat>    
+    </target>
+
+</project>
