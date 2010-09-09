@@ -26,7 +26,7 @@ var fluid_1_2 = fluid_1_2 || {};
     var findMatchingComponent = function(that, visitor, except) {
         for (var name in that) {
             var component = that[name];
-            if (component === except || !component.typeName) {continue;}
+            if (!component || component === except || !component.typeName) {continue;}
             if (visitor(component, name)) {
                 return true;
             }
@@ -422,7 +422,7 @@ var fluid_1_2 = fluid_1_2 || {};
     };
     
         
-    fluid.staticEnvironment = {};
+    fluid.staticEnvironment = fluid.typeTag("fluid.staticEnvironment");
     
     fluid.staticEnvironment.environmentClass = fluid.typeTag("fluid.browser");
     
