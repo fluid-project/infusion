@@ -10,16 +10,17 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global fluid_1_2,SWFUpload,swfobject,jQuery*/
+/*global fluid_1_2, jQuery, SWFUpload, swfobject */
 
 fluid_1_2 = fluid_1_2 || {};
 
+    
+/*****************************
+ * SWFUpload Setup Decorator *
+ *****************************/
+ 
 (function ($, fluid) {
 
-    /*****************************
-     * SWFUpload Setup Decorator *
-     *****************************/
-    
     var unbindSelectFiles = function () {
         // There's a bug in SWFUpload 2.2.0b3 that causes the entire browser to crash 
         // if selectFile() or selectFiles() is invoked. Remove them so no one will accidently crash their browser.
@@ -27,7 +28,7 @@ fluid_1_2 = fluid_1_2 || {};
         SWFUpload.prototype.selectFile = emptyFunction;
         SWFUpload.prototype.selectFiles = emptyFunction;
     };
-    
+
     var prepareUpstreamOptions = function (that, uploader) {
         that.returnedOptions = {
             uploadManager: {
@@ -35,14 +36,14 @@ fluid_1_2 = fluid_1_2 || {};
             }
         };
     };
-    
+
     var createFlash9MovieContainer = function (that) {
         var container = $("<div><span></span></div>");
         container.addClass(that.options.styles.flash9Container);
         $("body").append(container);
         return container;
     };
-    
+
     var setupForFlash9 = function (that) {
         var flashContainer = createFlash9MovieContainer(that);
         that.returnedOptions.uploadManager.options = {
@@ -50,11 +51,11 @@ fluid_1_2 = fluid_1_2 || {};
             flashButtonPeerId: fluid.allocateSimpleId(flashContainer.children().eq(0))
         };
     };
-    
+
     var createFlash10MovieContainer = function (that, uploaderContainer) {        
         // Wrap the whole uploader first.
         uploaderContainer.wrap("<div class='" + that.options.styles.uploaderWrapperFlash10 + "'></div>");
-        
+    
         // Then create a container and placeholder for the Flash movie as a sibling to the uploader.
         var flashContainer = $("<div><span></span></div>");
         flashContainer.addClass(that.options.styles.browseButtonOverlay);
@@ -62,12 +63,12 @@ fluid_1_2 = fluid_1_2 || {};
         unbindSelectFiles();        
         return flashContainer;
     };
-    
+
     var setupForFlash10 = function (that, uploader) {
         var o = that.options,
             flashContainer = createFlash10MovieContainer(that, uploader.container),
             browseButton = uploader.locate("browseButton");
-        
+    
         fluid.tabindex(browseButton, -1);
         that.isTransparent = o.flashButtonAlwaysVisible ? false : (!$.browser.msie || o.transparentEvenInIE);
         that.returnedOptions.uploadManager.options = {
@@ -88,7 +89,7 @@ fluid_1_2 = fluid_1_2 || {};
             }   
         };
     };
-    
+
     /**
      * SWFUploadSetupDecorator is a decorator designed to setup the DOM correctly for SWFUpload and configure
      * the Uploader component according to the version of Flash and browser currently running.
@@ -99,7 +100,7 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.swfUploadSetupDecorator = function (uploader, options) {
         var that = {};
         fluid.mergeComponentOptions(that, "fluid.swfUploadSetupDecorator", options);
-               
+           
         that.flashVersion = swfobject.getFlashPlayerVersion().major;
         prepareUpstreamOptions(that, uploader);  
         if (that.flashVersion === 9) {
@@ -107,18 +108,18 @@ fluid_1_2 = fluid_1_2 || {};
         } else {
             setupForFlash10(that, uploader);
         }
-        
+    
         return that;
     };
-    
+
     fluid.defaults("fluid.swfUploadSetupDecorator", {
         // The flash9URL and flash10URLs are now deprecated in favour of the flashURL option in upload manager.
         flashButtonAlwaysVisible: false,
         transparentEvenInIE: true,
-        
+    
         // Used only when the Flash movie is visible.
         flashButtonImageURL: "../images/browse.png",
-        
+    
         styles: {
             browseButtonOverlay: "fl-uploader-browse-overlay",
             flash9Container: "fl-uploader-flash9-container",
@@ -126,10 +127,15 @@ fluid_1_2 = fluid_1_2 || {};
         }
     });
     
-    
-    /***********************
-     * SWF Upload Manager *
-     ***********************/
+})(jQuery, fluid_1_2);
+
+
+
+/***********************
+ * SWF Upload Manager *
+ ***********************/
+     
+(function ($, fluid) {
     
     // Maps SWFUpload's setting names to our component's setting names.
     var swfUploadOptionsMap = {

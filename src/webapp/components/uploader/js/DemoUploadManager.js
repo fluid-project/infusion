@@ -21,6 +21,8 @@ fluid_1_2 = fluid_1_2 || {};
 
 (function ($, fluid) {
     
+    var startUploading; // Define early due to subtle circular dependency.
+    
     var updateProgress = function (file, events, demoState, isUploading) {
         if (!isUploading) {
             return;
@@ -29,16 +31,6 @@ fluid_1_2 = fluid_1_2 || {};
         var chunk = Math.min(demoState.chunkSize, file.size);
         demoState.bytesUploaded = Math.min(demoState.bytesUploaded + chunk, file.size);
         events.onFileProgress.fire(file, demoState.bytesUploaded, file.size);
-    };
-    
-        
-    var fireAfterFileComplete = function (that, file) {
-        // this is a horrible hack that needs to be addressed.
-        if (that.swfUploadSettings) {
-            that.swfUploadSettings.upload_complete_handler(file); 
-        } else {
-            that.events.afterFileComplete.fire(file);
-        }
     };
     
     var finishAndContinueOrCleanup = function (that, file) {
@@ -78,7 +70,7 @@ fluid_1_2 = fluid_1_2 || {};
         } 
     };
     
-    var startUploading = function (that) {
+    startUploading = function (that) {
         // Reset our upload stats for each new file.
         that.demoState.currentFile = that.queue.files[that.demoState.fileIdx];
         that.demoState.chunksForCurrentFile = Math.ceil(that.demoState.currentFile / that.demoState.chunkSize);
