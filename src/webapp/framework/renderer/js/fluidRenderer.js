@@ -674,7 +674,7 @@ fluid_1_2 = fluid_1_2 || {};
         // uniquify the id that it will be derived from
           adjustForID(attrcopy, component, true, component.fullID);
           if (submitting.submittingname === undefined && submitting.willinput !== false) {
-              submitting.submittingname = submitting.fullID;
+              submitting.submittingname = submitting.finalID || submitting.fullID;
           }
           return submitting.submittingname;
       }
@@ -1448,7 +1448,7 @@ fluid_1_2 = fluid_1_2 || {};
             node.innerHTML = "";
         }
         var fossils = options.fossils || {};
-        fluid.clear(fossils);
+        
         var renderer = fluid.renderer(templates, tree, options, fossils);
         var rendered = renderer.renderTemplates();
         if (options.renderRaw) {

@@ -906,18 +906,18 @@ fluid.registerNamespace("fluid.tests");
         ];
         var applier1 = fluid.makeChangeApplier(model1);
         var applier2 = fluid.makeChangeApplier(model2);
-        fluid.selfRender($(".first-block"), fluid.copy(tree),
+        fluid.selfRender($(".first-block", node), fluid.copy(tree),
             {autoBind: true,
              model: model1,
              applier: applier1,
              cutpoints: cutpoints});
-        fluid.selfRender($(".second-block"), fluid.copy(tree),
+        fluid.selfRender($(".second-block", node), fluid.copy(tree),
             {autoBind: true,
              model: model2,
              applier: applier2,
              cutpoints: cutpoints});
         var orig1 = fluid.copy(model1);
-        var CATT2 = $(".my-input-1", $(".second-block"));
+        var CATT2 = $(".my-input-1", $(".second-block", node));
         CATT2.val("CHATT");
         CATT2.change();
         jqUnit.assertDeepEq("Unchanged model 1", model1, orig1);
@@ -925,6 +925,31 @@ fluid.registerNamespace("fluid.tests");
           value1: "CHATT",
           value2: "Chien"
         });
+    });
+    
+    renderTests.test("Id uniquification and autobind test II (fossils for multipass rendering) (FLUID-3755)", function() {
+        var model = {value1: "value1", value2: "value2"};
+        var applier = fluid.makeChangeApplier(model);
+        var fossils = {};
+        var renderOptions = {
+            autoBind: true,
+            model: model,
+            applier: applier,
+            fossils: fossils
+        };
+        function makeTree(binding) { return {
+            children: [
+                {ID: "input", valuebinding: binding}
+            ]
+        };};
+        var node = $(".FLUID-3755-test");
+        var templates = fluid.render({node: $(".template", node)}, $(".target1", node), makeTree("value1"), renderOptions);
+        fluid.reRender(templates, $(".target2", node), makeTree("value2"), renderOptions);
+        var fossilArray = [];
+        fluid.each(fossils, function(fossil) {
+            fossilArray.push(fossil);
+        });
+        jqUnit.assertEquals("Two fossils", 2, fossilArray.length);
     });
     
     renderTests.test("Self-closed tags for HTML support (FLUID-3524-b)", function() {

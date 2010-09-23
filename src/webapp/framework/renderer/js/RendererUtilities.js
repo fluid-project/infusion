@@ -56,9 +56,8 @@ fluid_1_2 = fluid_1_2 || {};
         container = $(container);
         var source = options.templateSource ? options.templateSource: {node: container};
         var rendererOptions = modelise(options.rendererOptions);
-        if (fossils) {
-            rendererOptions.fossils = fossils;
-        }
+        rendererOptions.fossils = fossils || {};
+        
         var expanderOptions = modelise(options.expanderOptions, {ELstyle: "$()"});
         var expander = options.noExpand? null : fluid.renderer.makeProtoExpander(expanderOptions);
         
@@ -71,6 +70,7 @@ fluid_1_2 = fluid_1_2 || {};
             rendererOptions.cutpoints = rendererOptions.cutpoints || fluid.invokeGlobalFunction(cutpointFn, [selectors, options]);
         
             if (templates) {
+                fluid.clear(rendererOptions.fossils);
                 fluid.reRender(templates, container, tree, rendererOptions);
             } else {
                 if (typeof(source) === "function") { // TODO: make a better attempt than this at asynchrony
