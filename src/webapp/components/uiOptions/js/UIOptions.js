@@ -251,6 +251,8 @@ fluid_1_2 = fluid_1_2 || {};
         var previewFrame = that.locate("previewFrame");
         var previewEnhancer;
         
+		previewFrame.attr("src", that.options.previewTemplateUrl);        
+        
         that.events.modelChanged.addListener(function (model) {
             /**
              * Setimeout is temp fix for http://issues.fluidproject.org/browse/FLUID-2248
@@ -492,7 +494,8 @@ fluid_1_2 = fluid_1_2 || {};
             backgroundImages: ["true", "false"],
             layout: ["simple", "default"],
             toc: ["true", "false"]
-        }
+        },
+		previewTemplateUrl: "UIOptionsPreview.html"        
     });
 
 })(jQuery, fluid_1_2);
