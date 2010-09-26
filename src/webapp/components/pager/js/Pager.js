@@ -295,7 +295,6 @@ fluid_1_2 = fluid_1_2 || {};
                 value: fluid.pager.fetchValue(overallThat, dataModel, i, columnDef.valuebinding, roots)
             };
         }
-        var columnType = typeof sortrecs[0].value;
         function sortfunc(arec, brec) {
             var a = arec.value;
             var b = brec.value;
@@ -438,7 +437,7 @@ fluid_1_2 = fluid_1_2 || {};
     function isCurrentColumnSortable(columnDefs, model) {
         var columnDef = model.sortKey? fluid.pager.findColumnDef(columnDefs, model.sortKey) : null;
         return columnDef ? columnDef.sortable : false;
-    };
+    }
     
     function setModelSortHeaderClass(newModel, opts) {
         var styles = opts.overallOptions.styles;
@@ -530,7 +529,7 @@ fluid_1_2 = fluid_1_2 || {};
                             function (filteredRow) {
                                 var roots = getRoots(expOpts, overallThat, filteredRow.index);
                                 if (columnDefs === "explode") {
-                                    return fluid.explode(filteredRow.row, root);
+                                    return fluid.explode(filteredRow.row, roots.longRoot);
                                 }
                                 else if (columnDefs.length) {
                                     return expandColumnDefs(filteredRow, expOpts);
@@ -556,11 +555,11 @@ fluid_1_2 = fluid_1_2 || {};
         selectors: {
             root: ".flc-pager-body-template"
         },
-		
-		styles: {
-			root: "fl-pager"
+        
+        styles: {
+            root: "fl-pager"
         },
-		
+        
         keyStrategy: "id",
         keyPrefix: "",
         row: "row:",
