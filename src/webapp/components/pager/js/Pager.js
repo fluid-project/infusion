@@ -45,15 +45,15 @@ fluid_1_2 = fluid_1_2 || {};
     function computePageCount(model) {
         model.pageCount = Math.max(1, Math.floor((model.totalRange - 1) / model.pageSize) + 1);
     }
-    
-    function computePageLimit(model) {
-        return Math.min(model.totalRange, (model.pageIndex + 1) * model.pageSize);
-    }
 
     fluid.pager = function () {
         return fluid.pagerImpl.apply(null, arguments);
     };
     
+    fluid.pager.computePageLimit = function(model) {
+        return Math.min(model.totalRange, (model.pageIndex + 1) * model.pageSize);
+    };
+
     fluid.pager.directPageList = function (container, events, options) {
         var that = fluid.initView("fluid.pager.directPageList", container, options);
         that.pageLinks = that.locate("pageLinks");
@@ -168,7 +168,9 @@ fluid_1_2 = fluid_1_2 || {};
             function (newModel, oldModel) {
                 var pages = that.options.pageStrategy(newModel.pageCount, 0, newModel.pageIndex);
                 var pageTree = fluid.transform(pages, pageToComponent(newModel.pageIndex));
-                pageTree[pageTree.length - 1].value = pageTree[pageTree.length - 1].value + strings.last;
+                if (pageTree.length > 1) {
+                    pageTree[pageTree.length - 1].value = pageTree[pageTree.length - 1].value + strings.last;
+                }
                 events.onRenderPageLinks.fire(pageTree, newModel);
                 fluid.reRender(template, root, pageTree, renderOptions);
                 updateStyles(that, newModel, oldModel);
@@ -307,7 +309,7 @@ fluid_1_2 = fluid_1_2 || {};
     
     fluid.pager.directModelFilter = function (model, pagerModel, perm) {
         var togo = [];
-        var limit = computePageLimit(pagerModel);
+        var limit = fluid.pager.computePageLimit(pagerModel);
         for (var i = pagerModel.pageIndex * pagerModel.pageSize; i < limit; ++ i) {
             var index = perm? perm[i]: i;
             togo[togo.length] = {index: index, row: model[index]};
@@ -577,7 +579,7 @@ fluid_1_2 = fluid_1_2 || {};
                     onModelChange: function (newModel, oldModel) {
                         var text = fluid.stringTemplate(options.message, {
                             first: newModel.pageIndex * newModel.pageSize + 1,
-                            last: computePageLimit(newModel),
+                            last: fluid.pager.computePageLimit(newModel),
                             total: newModel.totalRange
                         });
                         if (node.length > 0) {
@@ -632,7 +634,7 @@ fluid_1_2 = fluid_1_2 || {};
                     var page = cell.pageIndex;
                     var start = page * tModel.pageSize;
                     tModel.pageIndex = page;
-                    var limit = computePageLimit(tModel);
+                    var limit = fluid.pager.computePageLimit(tModel);
                     var iValue = fetchValue(start);
                     var lValue = fetchValue(limit - 1);
                     
