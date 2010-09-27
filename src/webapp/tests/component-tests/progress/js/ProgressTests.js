@@ -408,6 +408,30 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Working: valuetext should read ", customDoneText, ARIAcontainer.attr("aria-valuetext"));
 
         });
+        
+        
+        // 13 
+        progressTests.test("Changing the aria-valuetext to empty string ", function () {
+        
+            var updateValue;
+            
+            var ARIAcontainer = $(".flc-progress-bar");
+            
+            var option = { ariaBusyText: "" };
+            
+            var progressBar = createProgressBar("#progress-container", option);   
+            
+            //during page load aria-valuetext is set to empty string
+            jqUnit.assertEquals("Initialize ariaBusyText to empty string and aria-valuetext should be missing ",undefined, ARIAcontainer.attr("aria-valuetext"));
+            
+            //update the progress
+            progressBar.update(10);
+            
+            //aria-valuetext attribute should be missing due to setting ariaBusyText property to empty string
+            jqUnit.assertEquals("After updating progress the aria-valuetext should still be missing and the result should be undefined ", undefined, ARIAcontainer.attr("aria-valuetext"));
+         
+        });
+        
 
     });
 })(jQuery);

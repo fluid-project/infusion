@@ -82,25 +82,31 @@ fluid_1_2 = fluid_1_2 || {};
         updateWidth(that, pixels, true);
     };
         
-    var initARIA = function (ariaElement) {
+    var initARIA = function (ariaElement, ariaBusyText) {
         ariaElement.attr("role", "progressbar");
         ariaElement.attr("aria-valuemin", "0");
         ariaElement.attr("aria-valuemax", "100");
         ariaElement.attr("aria-valuenow", "0");
-        ariaElement.attr("aria-valuetext", "");
+        //Empty value for ariaBusyText will default to aria-valuenow.
+        if (ariaBusyText) {
+            ariaElement.attr("aria-valuetext", "");
+        }
         ariaElement.attr("aria-busy", "false");
     };
     
     var updateARIA = function (that, percent) {
         var busy = percent < 100 && percent > 0;
         that.ariaElement.attr("aria-busy", busy);
-        that.ariaElement.attr("aria-valuenow", percent);    
-        if (busy) {
-            var busyString = fluid.stringTemplate(that.options.ariaBusyText, {percentComplete : percent});           
-            that.ariaElement.attr("aria-valuetext", busyString);
-        } else if (percent === 100) {
-            // FLUID-2936: JAWS doesn't currently read the "Progress is complete" message to the user, even though we set it here.
-            that.ariaElement.attr("aria-valuetext", that.options.ariaDoneText);
+        that.ariaElement.attr("aria-valuenow", percent);   
+        //Empty value for ariaBusyText will default to aria-valuenow.
+        if (that.options.ariaBusyText) {
+	        if (busy) {
+	            var busyString = fluid.stringTemplate(that.options.ariaBusyText, {percentComplete : percent});           
+	            that.ariaElement.attr("aria-valuetext", busyString);
+	        } else if (percent === 100) {
+	            // FLUID-2936: JAWS doesn't currently read the "Progress is complete" message to the user, even though we set it here.
+	            that.ariaElement.attr("aria-valuetext", that.options.ariaDoneText);
+	        }
         }
     };
         
@@ -157,7 +163,7 @@ fluid_1_2 = fluid_1_2 || {};
                 
         // initialize ARIA
         if (that.ariaElement) {
-            initARIA(that.ariaElement);
+            initARIA(that.ariaElement, that.options.ariaBusyText);
         }
 
     };
@@ -247,6 +253,7 @@ fluid_1_2 = fluid_1_2 || {};
         initiallyHidden: true, // supports progress indicators which may always be present
         updatePosition: false,
         
+        //Empty value for ariaBusyText will default to aria-valuenow.
         ariaBusyText: "Progress is %percentComplete percent complete",
         ariaDoneText: "Progress is complete."
     });
