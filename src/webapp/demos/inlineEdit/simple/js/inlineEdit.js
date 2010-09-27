@@ -33,6 +33,16 @@ var demo = demo || {};
             }
         });
         
+       /**
+         * Simple inline edit example.
+         */            
+        fluid.inlineEdit(".visibleTextEditButton", {
+            displayTextEditButton: true,
+            componentDecorators: {
+                type: "fluid.undoDecorator"
+            }
+        });
+        
         /**
          * Multiple inline text editors.
          */

@@ -11,8 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery*/
-/*global fluid_1_2*/
+/*global jQuery, fluid_1_2, document, setTimeout*/
 
 fluid_1_2 = fluid_1_2 || {};
 
@@ -112,7 +111,7 @@ fluid_1_2 = fluid_1_2 || {};
             // This setTimeout is necessary on Firefox, since any attempt to modify the 
             // input control value during the stack processing the ESCAPE key will be ignored.
             setTimeout(function() {
-               that.editView.value(that.model.value)}, 1);
+               that.editView.value(that.model.value);}, 1);
             switchToViewMode(that);
             that.events.afterFinishEdit.fire(that.model.value, that.model.value, 
                 that.editField[0], that.viewEl[0]);
@@ -166,19 +165,13 @@ fluid_1_2 = fluid_1_2 || {};
         }
         that.editContainer.keydown(escHandler);
     };
-    
+
     var bindBlurHandler = function (that) {
         if (that.options.blurHandlerBinder) {
             that.options.blurHandlerBinder(that);
         }
         else {
-            var blurHandler = function (evt) {
-                if (that.isEditing()) {
-                    finish(that);
-                }
-                return false;
-            };
-            that.editField.blur(blurHandler);
+            fluid.initDependents(that);
         }
     };
     
@@ -193,7 +186,6 @@ fluid_1_2 = fluid_1_2 || {};
                 bindEditFinish(that);
                 bindBlurHandler(that);
                 that.editView.refreshView(that);
-                
                 that.editInitialized = true;
             }
         }
@@ -271,7 +263,7 @@ fluid_1_2 = fluid_1_2 || {};
     
     var updateModelValue = function (that, newValue, source) {
         var comparator = that.options.modelComparator;
-        var unchanged = comparator? comparator(that.model.value, newValue) : 
+        var unchanged = comparator ? comparator(that.model.value, newValue) : 
             that.model.value === newValue;
         if (!unchanged) {
             var oldModel = $.extend(true, {}, that.model);
@@ -306,25 +298,48 @@ fluid_1_2 = fluid_1_2 || {};
     
     function makeEditTriggerGuard(that) {
         var viewEl = fluid.unwrap(that.viewEl);
-        return function (event) {
+		var button = fluid.unwrap(that.textEditButton);
+
+		return function (event) {
                   // FLUID-2017 - avoid triggering edit mode when operating standard HTML controls. Ultimately this
                   // might need to be extensible, in more complex authouring scenarios.
             var outer = fluid.findAncestor(event.target, function (elem) {
                 if (/input|select|textarea|button|a/i.test(elem.nodeName) || elem === viewEl) {return true; }
-             });
-            if (outer === viewEl) {
+            });
+            if (outer === viewEl || outer === button) {
                 that.edit();
                 return false;
             }
         };
     }
     
+    var editTriggerGuard = function (that, event) {
+        if (!that.isEditing()) {
+            return makeEditTriggerGuard(that);
+        }
+        else {
+            return that.finish;
+        }
+    };
+    
     var bindMouseHandlers = function (that) {
         bindHoverHandlers(that.viewEl, that.options.styles.invitation);
         that.viewEl.click(makeEditTriggerGuard(that));
+        that.textEditButton.click(function (event) {
+            var triggerGuard = editTriggerGuard(that, event);
+            triggerGuard(event);
+        });    
+    };    
+    
+    var bindKeyboardHandlers = function (that) {
+        var guard = makeEditTriggerGuard(that);
+        fluid.activatable(that.textEditButton, 
+            function (event) {
+                return editTriggerGuard(that, event);
+            });
     };
     
-    var bindHighlightHandler = function (viewEl, focusStyle, invitationStyle) {
+    var bindHighlightHandler = function (viewEl, textEditButton, focusStyle, invitationStyle) {
         var focusOn = function () {
             viewEl.addClass(focusStyle);
             viewEl.addClass(invitationStyle); 
@@ -335,20 +350,13 @@ fluid_1_2 = fluid_1_2 || {};
         };
         viewEl.focus(focusOn);
         viewEl.blur(focusOff);
-    };
+        textEditButton.focus(focusOn);
+        textEditButton.blur(focusOff);
+    };    
     
-    var bindKeyboardHandlers = function (that) {
-        fluid.tabbable(that.viewEl);
-        var guard = makeEditTriggerGuard(that);
-        fluid.activatable(that.viewEl, 
-            function (event) {
-                return guard(event);
-            });
-    };
-    
-    var aria = function (viewEl, editContainer) {
-        viewEl.attr("role", "button");
-    };
+	var aria = function (textEditButton) {
+		textEditButton.attr("role", "button");
+	};
     
     var defaultEditModeRenderer = function (that) {
         if (that.editContainer.length > 0 && that.editField.length > 0) {
@@ -385,9 +393,38 @@ fluid_1_2 = fluid_1_2 || {};
     
     var makeIsEditing = function (that) {
         var isEditing = false;
-        that.events.onBeginEdit.addListener(function () {isEditing = true; });
-        that.events.afterFinishEdit.addListener(function () {isEditing = false; });
-        return function () {return isEditing; };
+        var opts = that.options;
+        that.textEditButton = that.locate("textEditButton");
+        that.events.onBeginEdit.addListener(function () {
+            isEditing = true;
+            that.textEditButton.text(opts.strings.saveTextEditButton);
+        });
+        that.events.afterFinishEdit.addListener(function () {
+            isEditing = false; 
+            that.textEditButton.text(opts.strings.textEditButton);
+            that.textEditButton.focus();
+        });
+        return function () {return isEditing;};
+    };
+
+    var setUpTextEditButton = function (that) {
+        var opts = that.options;
+        that.textEditButton = that.locate("textEditButton");
+        
+        if (that.textEditButton.length === 0) {
+            that.container.append(opts.textEditButton);
+            
+            // Refresh the textEditButton with the newly appended options
+            that.textEditButton = that.locate("textEditButton");
+        } 
+
+        that.textEditButton.addClass(opts.styles.textEditButton);
+        
+        if (!that.options.displayTextEditButton) {
+            that.textEditButton.addClass(opts.styles.hideTextEditButton);
+        }
+
+        that.textEditButton.text(opts.strings.textEditButton);
     };
     
     var setupInlineEdit = function (componentContainer, that) {
@@ -399,10 +436,10 @@ fluid_1_2 = fluid_1_2 || {};
         bindMouseHandlers(that);
         bindKeyboardHandlers(that);
         
-        bindHighlightHandler(that.viewEl, that.options.styles.focus, that.options.styles.invitation);
-        
+        bindHighlightHandler(that.viewEl, that.textEditButton, that.options.styles.focus, that.options.styles.invitation);
+                        
         // Add ARIA support.
-        aria(that.viewEl);
+        aria(that.textEditButton);
                 
         // Hide the edit container to start
         if (that.editContainer) {
@@ -455,7 +492,7 @@ fluid_1_2 = fluid_1_2 || {};
         that.viewEl = that.locate("text");
         that.displayView = fluid.initSubcomponent(that, "displayView", that.viewEl);
         $.extend(true, that.displayView, fluid.initSubcomponent(that, "displayAccessor", that.viewEl));
-        
+
         /**
          * The current value of the inline editable text. The "model" in MVC terms.
          */
@@ -528,8 +565,10 @@ fluid_1_2 = fluid_1_2 || {};
             updateModelValue(that, newModel.value, source);
         };
 
+        setUpTextEditButton(that);
         initializeEditView(that, true);
         setupInlineEdit(componentContainer, that);
+        
         return that;
     };
     
@@ -601,11 +640,15 @@ fluid_1_2 = fluid_1_2 || {};
         return setupInlineEdits(editables, options);
     };
     
+    fluid.demands("fluid.deadMansBlur", "inlineEdit", 
+        ["{inlineEdit}.editField", "{inlineEdit}.textEditButton", "{inlineEdit}.finish"]);
+    
     fluid.defaults("inlineEdit", {  
         selectors: {
             text: ".flc-inlineEdit-text",
             editContainer: ".flc-inlineEdit-editContainer",
-            edit: ".flc-inlineEdit-edit"
+            edit: ".flc-inlineEdit-edit",
+            textEditButton: ".flc-inlineEdit-textEditButton"
         },
         
         styles: {
@@ -614,7 +657,9 @@ fluid_1_2 = fluid_1_2 || {};
             invitation: "fl-inlineEdit-invitation",
             defaultViewStyle: "fl-inlineEdit-invitation-text",
             tooltip: "fl-inlineEdit-tooltip",
-            focus: "fl-inlineEdit-focus"
+            focus: "fl-inlineEdit-focus",
+            textEditButton: "fl-inlineEdit-textEditButton",
+            hideTextEditButton: "fl-offScreen-hidden"
         },
         
         events: {
@@ -625,6 +670,11 @@ fluid_1_2 = fluid_1_2 || {};
             afterFinishEdit: null,
             afterInitEdit: null
         },
+
+        strings: {
+            textEditButton: "Edit Text",
+            saveTextEditButton: "Save Text"
+        },
         
         paddings: {
             edit: 10,
@@ -632,9 +682,20 @@ fluid_1_2 = fluid_1_2 || {};
             minimumView: 60
         },
         
+        // If an element is not present for this textEditButton selector, 
+        // the following template will be used.  
+        textEditButton: "<a href='#_' class='flc-inlineEdit-textEditButton fl-inlineEdit-textEditButton' id='textEditButton'></a>",
+        
         applyEditPadding: true,
         
         blurHandlerBinder: null,
+        
+        components: {
+            blurHandlerBinder: {
+                type: "fluid.deadMansBlur"
+            }
+        }, 
+        
         // set this to true or false to cause unconditional submission, otherwise it will
         // be inferred from the edit element tag type.
         submitOnEnter: undefined,
@@ -671,7 +732,9 @@ fluid_1_2 = fluid_1_2 || {};
         
         tooltipDelay: 1000,
         
-        selectOnEdit: false
+        selectOnEdit: false,
+
+        displayTextEditButton: false
     });
     
     

@@ -1,5 +1,12 @@
+/* Themed Appearance + Themed States */
+
 .fl-inlineEdit-edit {margin:-2px; padding:0;}
 
+.fl-inlineEdit-textEditButton {
+    border  : 1px solid #999;
+    padding : 2px 3px;
+    margin  : 5px;
+}
 
 /* Base Appearance & States Appearance */
 .fl-inlineEdit-tooltip {
@@ -29,5 +36,5 @@
 }
 
 
-/* Themed Appearance + Themed States */
+
 

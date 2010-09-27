@@ -253,8 +253,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("isEditing", function () {
-            expect(3);
+            expect(4);
             var inlineEditor = fluid.inlineEdit("#inline-edit");
+            var button = inlineEditor.textEditButton;
+            
             jqUnit.assertFalse("We should be in view mode by default.", inlineEditor.isEditing());
             
             inlineEditor.edit();
@@ -262,14 +264,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             inlineEditor.finish();
             jqUnit.assertFalse("After editing is finished, isEditing() should return false.", inlineEditor.isEditing());
+            
+            inlineEditor.edit();
+            jqUnit.assertEquals("When in edit mode, textEditButton text is'", inlineEditor.options.strings.saveTextEditButton, button.text());            
         });
         
         inlineEditTests.test("Edit Finish", function () {
-            expect(8);
+            expect(9);
     
             var display = $("#display");
             var edit = $("#edit");
             var inlineEditor = fluid.inlineEdit("#inline-edit");
+            var button = inlineEditor.textEditButton;
             
             jqUnit.isVisible("Initially display field is visible", "#display");
             jqUnit.notVisible("Initially edit field is hidden", "#edit-container");
@@ -285,6 +291,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.isVisible("After finish, display field is visible", "#display");
             jqUnit.notVisible("After finish, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("After finish, display field contains new text", testString, display.text());
+            
+            inlineEditor.finish();
+            jqUnit.assertEquals("When not in edit mode, textEditButton text is'", inlineEditor.options.strings.textEditButton, button.text());                        
         });
         
         inlineEditTests.test("Edit Cancel", function () {
@@ -314,16 +323,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var display = $("#display");
             var edit = $("#edit");
             var inlineEditor = fluid.inlineEdit("#inline-edit");
-            jqUnit.assertTrue("Display is tabbable", fluid.tabindex(display) >= 0);
+			var button = inlineEditor.textEditButton;
+            jqUnit.assertTrue("TextEditButton is tabbable", fluid.tabindex(button) >= 0);
             jqUnit.assertFalse("Initially display field is not focussed", display.hasClass(inlineEditor.options.styles.focus));
     
-            display.focus();
+            button.focus();
             jqUnit.assertTrue("After focus, display is focussed", display.hasClass(inlineEditor.options.styles.focus));
     
-            display.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
+            button.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
                 
-            jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
-            jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
+            jqUnit.isVisible("After enter pressed, display field is visible", "#display");
+            jqUnit.notVisible("After enter pressed, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));
     
             var testString = "This is new text.";
@@ -354,21 +364,46 @@ https://source.fluidproject.org/svn/LICENSE.txt
             display.trigger("mouseleave");
             jqUnit.assertFalse("After hover, display field does not have the invitation style", display.hasClass(inlineEditor.options.styles.invitation));
         });
+		
+		var assertDisplayModeVisibility = function (display, editContainer, inlineEditor) {
+			var button = inlineEditor.textEditButton;
+			
+            jqUnit.isVisible("Initially, display field is visible", display);
+            jqUnit.notVisible("Initially, edit field is hidden", editContainer);
+            jqUnit.assertEquals("Initially, textEditButton text should be", inlineEditor.options.strings.textEditButton, button.text());
+        };
+            
+        var assertEditModeVisibility = function (display, editContainer, edit, inlineEditor) {
+        	var button = inlineEditor.textEditButton;
+        	
+            jqUnit.notVisible("After click, display field is hidden", display);
+            jqUnit.isVisible("After click, edit field is visible", editContainer);
+            jqUnit.assertEquals("After click, edit field contains same text as display field", display.text(), edit.attr("value"));
+            jqUnit.assertEquals("After click, textEditButton text should be", inlineEditor.options.strings.saveTextEditButton, button.text());             
+        };
         
-        inlineEditTests.test("Click", function () {
-            expect(5);
-    
+        inlineEditTests.test("Click on display", function () {
             var display = $("#display");
+			var editContainer = $("#edit-container");
             var edit = $("#edit");
             var inlineEditor = fluid.inlineEdit("#inline-edit");
-    
-            jqUnit.isVisible("Initially, display field is visible", "#display");
-            jqUnit.notVisible("Initially, edit field is hidden", "#edit-container");
-    
+			
+            assertDisplayModeVisibility(display, editContainer, inlineEditor);
             display.click();
-            jqUnit.notVisible("After click, display field is hidden", "#display");
-            jqUnit.isVisible("After click, edit field is visible", "#edit-container");
-            jqUnit.assertEquals("After click, edit field contains same text as display field", display.text(), edit.attr("value"));
+			assertEditModeVisibility(display, editContainer, edit, inlineEditor);
+        });
+		
+		inlineEditTests.test("Click on textEditButton", function () {
+    
+            var display = $("#display");
+            var editContainer = $("#edit-container");
+            var edit = $("#edit");
+            var inlineEditor = fluid.inlineEdit("#inline-edit");
+            var button = inlineEditor.textEditButton;
+            
+            assertDisplayModeVisibility(display, editContainer, inlineEditor);
+            button.click();
+            assertEditModeVisibility(display, editContainer, edit, inlineEditor);
         });
         
         inlineEditTests.test("Arrow Keys while Editing", function () {
@@ -377,17 +412,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var display = $("#display");
             var edit = $("#edit");
             var inlineEditor = fluid.inlineEdit("#inline-edit");
+			var button = inlineEditor.textEditButton;
     
-            display.focus();
-            display.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
-            jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
-            jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
+            button.focus();
+            button.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
+            jqUnit.isVisible("After enter pressed, display field is visible", "#display");
+            jqUnit.notVisible("After enter pressed, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));
     
             // note: this simulate works in FFX, but not IE7
             edit.simulate("keypress", {keyCode: $.ui.keyCode.LEFT});
-            jqUnit.notVisible("After left-arrow pressed, display field is still hidden", "#display");
-            jqUnit.isVisible("After left-arrow pressed, edit field is still visible", "#edit-container");
+            jqUnit.isVisible("After left-arrow pressed, display field is still visible", "#display");
+            jqUnit.notVisible("After left-arrow pressed, edit field is still not visible", "#edit-container");
         });
         
         inlineEditTests.test("Finished Editing Callback", function () {
@@ -419,10 +455,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             display.click();
             jqUnit.isVisible("Edit field is visible", "#edit-container");
             
-            var testString = "This is new text.";
+            var testString = "Click me to edit...";
             edit.attr("value", testString);
             edit.blur();
-            jqUnit.notVisible("After blur, edit field is hidden", "#edit-container");
+            jqUnit.isVisible("After blur, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("Blur saves the edit", testString, display.text());
             jqUnit.assertFalse("Blur saves the edit", edit.text() === display.text());
         });
@@ -433,7 +469,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var display = $("#display");
             jqUnit.assertFalse("Before initialization, display should have no role.", display.attr("role"));
             var inlineEditor = fluid.inlineEdit("#inline-edit");
-            jqUnit.assertEquals("After initialization, display role should be ", "button", display.attr("role"));
+            jqUnit.assertEquals("After initialization, display role should be ", "button", inlineEditor.textEditButton.attr("role"));
 			
 			var initialValue = "Initial Value";
             
@@ -700,9 +736,44 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertEquals("Container is field", edit, editor.editContainer[0]);
                 jqUnit.assertEquals("Container is field", edit, editor.editField[0]);
             });
-            
-            
+			
+			var testTextEditButton = function (container, expectedButtonText) {
+				var editor = fluid.inlineEdit(container);
+				var button = editor.textEditButton;
+				var text = expectedButtonText || editor.options.strings.textEditButton || editor.options.strings.saveTextEditButton;
+				
+				jqUnit.assertEquals("Should only be one textEditButton", 1, button.length);
+                jqUnit.assertEquals("The button text should be set", text, button.text());
+				jqUnit.assertTrue("The button should have the fl-inlineEdit-textEditButton class", button.hasClass("fl-inlineEdit-textEditButton"));
+			};
+			
+			inlineEditTests.test("Render textEditButton", function () {
+                testTextEditButton("#inline-edit");
+			});
+			
+			inlineEditTests.test("Use existing button", function () {
+				var container = ".existingTextEditButton";
+				var existingButtonText = $(".flc-inlineEdit-textEditButton", container).attr("value");
+				testTextEditButton(container, existingButtonText);
+			});
+			
+	         inlineEditTests.test("Use existing button with no button text", function () {
+			 	var container = ".existingTextEditButton";
+			 	$(".flc-inlineEdit-textEditButton", container).text("");
+				testTextEditButton(container);
+            });
+			
+			inlineEditTests.test("Display textEditButton", function () {
+				var editor = fluid.inlineEdit("#inline-edit", {displayTextEditButton: true});
+				
+				jqUnit.assertFalse("The fl-offscreen-hidden class should not be applied", editor.textEditButton.hasClass("fl-offScreen-hidden"));
+			});
+			
+			inlineEditTests.test("Do not display textEditButton on screen", function () {
+                var editor = fluid.inlineEdit("#inline-edit");
+                
+                jqUnit.assertTrue("The fl-offscreen-hidden class should be applied", editor.textEditButton.hasClass("fl-offScreen-hidden"));
+            });
         })();
-     
     });
 })(jQuery);
