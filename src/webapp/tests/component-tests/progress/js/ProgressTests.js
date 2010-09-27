@@ -412,9 +412,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         // 13 
         progressTests.test("Changing the aria-valuetext to empty string ", function () {
-        
-            var updateValue;
-            
             var ARIAcontainer = $(".flc-progress-bar");
             
             var option = { ariaBusyText: "" };
@@ -422,7 +419,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var progressBar = createProgressBar("#progress-container", option);   
             
             //during page load aria-valuetext is set to empty string
-            jqUnit.assertEquals("Initialize ariaBusyText to empty string and aria-valuetext should be missing ",undefined, ARIAcontainer.attr("aria-valuetext"));
+            jqUnit.assertEquals("Initialize ariaBusyText to empty string and aria-valuetext should be missing ", undefined, ARIAcontainer.attr("aria-valuetext"));
             
             //update the progress
             progressBar.update(10);
