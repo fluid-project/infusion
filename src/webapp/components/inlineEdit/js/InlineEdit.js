@@ -166,6 +166,13 @@ fluid_1_2 = fluid_1_2 || {};
         that.editContainer.keydown(escHandler);
     };
 
+    /*
+     * IoC introduction for the blur handler.  
+     * Temporary implementation for backwards compatibility.
+     * 
+     * TODO: Proper implementation of options handling using IoC
+     *       and backwards compatibility. 
+     */
     var bindBlurHandler = function (that) {
         if (that.options.blurHandlerBinder) {
             that.options.blurHandlerBinder(that);
@@ -640,6 +647,12 @@ fluid_1_2 = fluid_1_2 || {};
         return setupInlineEdits(editables, options);
     };
     
+    /*
+     * blur handler options for the textEditButton using IoC
+     * 
+     * TODO: Proper implementation of options handling using IoC
+     *       and backwards compatibility. 
+     */
     fluid.demands("fluid.deadMansBlur", "inlineEdit", 
         ["{inlineEdit}.editField", "{inlineEdit}.textEditButton", "{inlineEdit}.finish"]);
     
@@ -690,6 +703,12 @@ fluid_1_2 = fluid_1_2 || {};
         
         blurHandlerBinder: null,
         
+        /*
+         * blur handler options for the textEditButton using IoC
+         * 
+         * TODO: Proper implementation of options handling using IoC
+         *       and backwards compatibility. 
+         */
         components: {
             blurHandlerBinder: {
                 type: "fluid.deadMansBlur"
