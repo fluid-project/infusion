@@ -55,7 +55,7 @@ fluid_1_2 = fluid_1_2 || {};
         var textfield = that.locate("textfield");
         textfield.val(that.model);
         return textfield;
-    }
+    };
     
     var bindTextfieldHandlers = function (that, textfield, slider) {
         textfield.change(function () {
