@@ -94,10 +94,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             return fluid.initLittleComponent("fluid.tests.testMergeComponent", options);
         };
 
-        function testPreservingMerge(preserve) {
+        function testPreservingMerge(preserve, nullModel) {
             var defaults = { lala: "blalalha"};
             if (preserve) {
-              defaults.mergePolicy = {model: "preserve"};
+                defaults.mergePolicy = {model: "preserve"};
+            }
+            if (nullModel) {
+                defaults.model = null;
             }
             fluid.defaults("fluid.tests.testMergeComponent", defaults);
             var model = { foo: "foo" };
@@ -110,9 +113,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
      
         
-        fluidJSTests.test("Merge model semantics", function() {
-            testPreservingMerge(true);
-            testPreservingMerge(false);
+        fluidJSTests.test("Merge model semantics - preserve", function() {
+          // nullModel of "true" tests FLUID-3768
+            testPreservingMerge(true, true);
+            testPreservingMerge(false, true);
+            testPreservingMerge(true, false);
+            testPreservingMerge(false, false);
         });
         
         fluidJSTests.test("reverse merge", function() {

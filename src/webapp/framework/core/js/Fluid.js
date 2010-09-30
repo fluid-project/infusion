@@ -527,8 +527,7 @@ var fluid = fluid || fluid_1_2;
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
                       !thisSource.nodeType && !thisSource.jquery && thisSource !== fluid.VALUE 
-                      && (thisTarget !== undefined || newPolicy !== "preserve")
-                      ) {
+                       && newPolicy !== "preserve") {
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array? [] : {};
                     }
