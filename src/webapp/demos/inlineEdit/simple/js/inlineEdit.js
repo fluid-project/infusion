@@ -30,6 +30,9 @@ var demo = demo || {};
         fluid.inlineEdit(".simpleEdit", {
             componentDecorators: {
                 type: "fluid.undoDecorator"
+            },
+            urls: {
+                textEditButtonImage: "../../../../components/inlineEdit/images/edit_icon-01.png"
             }
         });
         
@@ -43,6 +46,9 @@ var demo = demo || {};
             },
             componentDecorators: {
                 type: "fluid.undoDecorator"
+            },
+            urls: {
+                textEditButtonImage: "../../../../components/inlineEdit/images/edit_icon-01.png"
             }
         });
     };

@@ -156,6 +156,8 @@ Other third party software
       (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js )
     * fluid.reset.css is based on YUI's CSS reset styling v2.5.2
       see: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
+    * jquery.tooltip.js is a jQuery tooltip plugin v1.3.  The tooltip was modified to make the tooltip ARIA compliant.
+      (see: http://bassistance.de/jquery-plugins/jquery-plugin-tooltip/) (MIT/GPL licensed)
     
 Readme
 ------

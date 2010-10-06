@@ -1,5 +1,14 @@
+/* Themed Appearance + Themed States */
+
 .fl-inlineEdit-edit {margin:-2px; padding:0;}
 
+.fl-inlineEdit-textEditButton {
+    padding-left : 5px;
+}
+
+.fl-inlineEdit-textEditButton, .fl-inlineEdit-text {
+    border-bottom : 1px dotted #0086D8;
+}
 
 /* Base Appearance & States Appearance */
 .fl-inlineEdit-tooltip {
@@ -29,5 +38,5 @@
 }
 
 
-/* Themed Appearance + Themed States */
+
 

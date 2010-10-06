@@ -42,6 +42,9 @@ var demo = demo || {};
                 }, 
             componentDecorators: {
                 type: "fluid.undoDecorator"
+            },
+            urls: {
+                textEditButtonImage: "../../../../components/inlineEdit/images/edit_icon-01.png"
             }
         });
         makeButtons(tinyEditor);
@@ -50,6 +53,9 @@ var demo = demo || {};
         var ckEditor = fluid.inlineEdit.CKEditor("#richEdit2", {
             componentDecorators: {
                 type: "fluid.undoDecorator"
+            },
+            urls: {
+                textEditButtonImage: "../../../../components/inlineEdit/images/edit_icon-01.png"
             }
         });
         makeButtons(ckEditor);    

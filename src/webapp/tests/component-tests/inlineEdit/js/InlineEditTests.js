@@ -209,7 +209,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("After clearing the field, display should have invitation text again: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
             jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
             jqUnit.assertTrue("Invitation text still contains it's initial class attribute as well", display.hasClass("flc-inlineEdit-text")); // added for FLUID-1803
-    
         });
         
         inlineEditTests.test("Invitation text (custom)", function () {
@@ -255,21 +254,24 @@ https://source.fluidproject.org/svn/LICENSE.txt
         inlineEditTests.test("isEditing", function () {
             expect(3);
             var inlineEditor = fluid.inlineEdit("#inline-edit");
+            var button = inlineEditor.textEditButton;
+            
             jqUnit.assertFalse("We should be in view mode by default.", inlineEditor.isEditing());
             
             inlineEditor.edit();
             jqUnit.assertTrue("When in edit mode, isEditing() should return true.", inlineEditor.isEditing());
             
             inlineEditor.finish();
-            jqUnit.assertFalse("After editing is finished, isEditing() should return false.", inlineEditor.isEditing());
+            jqUnit.assertFalse("After editing is finished, isEditing() should return false.", inlineEditor.isEditing());        
         });
         
         inlineEditTests.test("Edit Finish", function () {
-            expect(8);
+            expect(9);
     
             var display = $("#display");
             var edit = $("#edit");
             var inlineEditor = fluid.inlineEdit("#inline-edit");
+            var button = inlineEditor.textEditButton;
             
             jqUnit.isVisible("Initially display field is visible", "#display");
             jqUnit.notVisible("Initially edit field is hidden", "#edit-container");
@@ -285,6 +287,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.isVisible("After finish, display field is visible", "#display");
             jqUnit.notVisible("After finish, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("After finish, display field contains new text", testString, display.text());
+            
+            inlineEditor.finish();
+            jqUnit.isVisible("When not in edit mode, textEditButton is visible", inlineEditor.textEditButton);
         });
         
         inlineEditTests.test("Edit Cancel", function () {
@@ -309,22 +314,24 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
     
         inlineEditTests.test("Keyboard Navigation Edit", function () {
-            expect(11);
+            expect(14);
     
             var display = $("#display");
             var edit = $("#edit");
             var inlineEditor = fluid.inlineEdit("#inline-edit");
-            jqUnit.assertTrue("Display is tabbable", fluid.tabindex(display) >= 0);
+            var button = inlineEditor.textEditButton;
+            jqUnit.assertTrue("TextEditButton is tabbable", fluid.tabindex(button) >= 0);
             jqUnit.assertFalse("Initially display field is not focussed", display.hasClass(inlineEditor.options.styles.focus));
     
-            display.focus();
+            button.focus();
             jqUnit.assertTrue("After focus, display is focussed", display.hasClass(inlineEditor.options.styles.focus));
-    
-            display.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
+            jqUnit.isVisible("After enter pressed, display field is visible", "#display");
+            jqUnit.notVisible("After enter pressed, edit field is hidden", "#edit-container");
+            jqUnit.isVisible("After enter pressed, button is visible", button);
+            button.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
                 
-            jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
-            jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
             jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));
+            jqUnit.notVisible("After enter pressed, button is hidden", button);
     
             var testString = "This is new text.";
             edit.attr("value", testString);
@@ -334,12 +341,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertTrue("After changing text and pressing enter, display has focus style", display.hasClass(inlineEditor.options.styles.focus));
             jqUnit.notVisible("After changing text and pressing enter, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("After changing text and pressing enter, display field contains new text", testString, display.text());
+            jqUnit.isVisible("After enter pressed, button is visible", button);
     
             display.blur();
             jqUnit.assertFalse("After blur, display field is not focussed", display.hasClass(inlineEditor.options.styles.focus));
             
         });
-        
         inlineEditTests.test("Hover", function () {
             expect(3);
     
@@ -354,21 +361,46 @@ https://source.fluidproject.org/svn/LICENSE.txt
             display.trigger("mouseleave");
             jqUnit.assertFalse("After hover, display field does not have the invitation style", display.hasClass(inlineEditor.options.styles.invitation));
         });
+		
+        var assertDisplayModeVisibility = function (display, editContainer, inlineEditor) {
+            var button = inlineEditor.textEditButton;
+			
+            jqUnit.isVisible("Initially, display field is visible", display);
+            jqUnit.isVisible("Initially, textEditButton is visible", button);
+            jqUnit.notVisible("Initially, edit field is hidden", editContainer);
+        };
+            
+        var assertEditModeVisibility = function (display, editContainer, edit, inlineEditor) {
+            var button = inlineEditor.textEditButton;
+        	
+            jqUnit.notVisible("After click, display field is hidden", display);
+            jqUnit.notVisible("After click, textEditButton is hidden", button);
+            jqUnit.isVisible("After click, edit field is visible", editContainer);
+            jqUnit.assertEquals("After click, edit field contains same text as display field", display.text(), edit.attr("value"));
+        };
         
-        inlineEditTests.test("Click", function () {
-            expect(5);
-    
+        inlineEditTests.test("Click on display", function () {
             var display = $("#display");
+			var editContainer = $("#edit-container");
             var edit = $("#edit");
             var inlineEditor = fluid.inlineEdit("#inline-edit");
-    
-            jqUnit.isVisible("Initially, display field is visible", "#display");
-            jqUnit.notVisible("Initially, edit field is hidden", "#edit-container");
-    
+			
+            assertDisplayModeVisibility(display, editContainer, inlineEditor);
             display.click();
-            jqUnit.notVisible("After click, display field is hidden", "#display");
-            jqUnit.isVisible("After click, edit field is visible", "#edit-container");
-            jqUnit.assertEquals("After click, edit field contains same text as display field", display.text(), edit.attr("value"));
+			assertEditModeVisibility(display, editContainer, edit, inlineEditor);
+        });
+		
+        inlineEditTests.test("Click on textEditButton", function () {
+    
+            var display = $("#display");
+            var editContainer = $("#edit-container");
+            var edit = $("#edit");
+            var inlineEditor = fluid.inlineEdit("#inline-edit");
+            var button = inlineEditor.textEditButton;
+            
+            assertDisplayModeVisibility(display, editContainer, inlineEditor);
+            button.click();
+            assertEditModeVisibility(display, editContainer, edit, inlineEditor);
         });
         
         inlineEditTests.test("Arrow Keys while Editing", function () {
@@ -377,16 +409,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var display = $("#display");
             var edit = $("#edit");
             var inlineEditor = fluid.inlineEdit("#inline-edit");
+            var button = inlineEditor.textEditButton;
     
-            display.focus();
-            display.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
+            button.focus();
+            button.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
             jqUnit.notVisible("After enter pressed, display field is hidden", "#display");
             jqUnit.isVisible("After enter pressed, edit field is visible", "#edit-container");
             jqUnit.assertEquals("After enter pressed, edit field contains same text as display field", display.text(), edit.attr("value"));
     
             // note: this simulate works in FFX, but not IE7
             edit.simulate("keypress", {keyCode: $.ui.keyCode.LEFT});
-            jqUnit.notVisible("After left-arrow pressed, display field is still hidden", "#display");
+            jqUnit.notVisible("After left-arrow pressed, display field is not still visible", "#display");
             jqUnit.isVisible("After left-arrow pressed, edit field is still visible", "#edit-container");
         });
         
@@ -419,7 +452,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             display.click();
             jqUnit.isVisible("Edit field is visible", "#edit-container");
             
-            var testString = "This is new text.";
+            var testString = "Click me to edit...";
             edit.attr("value", testString);
             edit.blur();
             jqUnit.notVisible("After blur, edit field is hidden", "#edit-container");
@@ -428,28 +461,32 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("ARIA", function () {
-            expect(10);
-
+            expect(12);
+            
             var display = $("#display");
+            var editContainer = $("#edit-container");
+            var input = $("#input");
+            
             jqUnit.assertFalse("Before initialization, display should have no role.", display.attr("role"));
             var inlineEditor = fluid.inlineEdit("#inline-edit");
-            jqUnit.assertEquals("After initialization, display role should be ", "button", display.attr("role"));
-			
-			var initialValue = "Initial Value";
+            jqUnit.assertEquals("After initialization, display role should be ", "button", inlineEditor.textEditButton.attr("role"));
+            jqUnit.assertEquals("After initialization, display role should be ", editContainer.attr("aria-describedby"), inlineEditor.options.stringseditModeToolTip);
+            jqUnit.assertEquals("After initialization, title text should be ", input.attr("title"), inlineEditor.options.stringseditModeToolTip);            
+
+            var initialValue = "Initial Value";
             
             $("#display-undoable").text(initialValue);
     
             var editorWithUndo = fluid.inlineEdit("#inline-edit-undo", {componentDecorators: "fluid.undoDecorator"});
             var undoer1 = editorWithUndo.decorators[0];
-  			var undo1 = insistSelect("There should be an undo container", undoer1, "undoContainer"); 
-  			var markup = $(".flc-undo");
-			jqUnit.assertEquals("aria-live should be", "polite", markup.attr("aria-live"));
-			jqUnit.assertEquals("aria-relevant should be", "all", markup.attr("aria-relevant"));
-			var redo1 = insistSelect("There should be a redo container", undoer1, "redoContainer"); 
-			jqUnit.assertEquals("aria-live should be", "polite", markup.attr("aria-live"));
-			jqUnit.assertEquals("aria-relevant should be", "all", markup.attr("aria-relevant"));
+            var undo1 = insistSelect("There should be an undo container", undoer1, "undoContainer"); 
+            var markup = $(".flc-undo");
+            jqUnit.assertEquals("aria-live should be", "polite", markup.attr("aria-live"));
+            jqUnit.assertEquals("aria-relevant should be", "all", markup.attr("aria-relevant"));
+            var redo1 = insistSelect("There should be a redo container", undoer1, "redoContainer"); 
+            jqUnit.assertEquals("aria-live should be", "polite", markup.attr("aria-live"));
+            jqUnit.assertEquals("aria-relevant should be", "all", markup.attr("aria-relevant"));
             assertVisState(undo1, redo1, false, false); // 4
-            
         });
         
         // Multiple Inline Editors tests
@@ -700,9 +737,29 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertEquals("Container is field", edit, editor.editContainer[0]);
                 jqUnit.assertEquals("Container is field", edit, editor.editField[0]);
             });
+			
+            inlineEditTests.test("Render textEditButton", function () {
+                var editor = fluid.inlineEdit("#inline-edit");
+                var button = editor.textEditButton;
+                var image = $("img", button);
+                var text = editor.locate("text").text();
+                
+                jqUnit.assertEquals("Should only be one textEditButton", 1, button.length);
+                jqUnit.assertTrue("The button should have the fl-inlineEdit-textEditButton class", button.hasClass("fl-inlineEdit-textEditButton"));
+                jqUnit.assertEquals("The image alt text should be set", "Edit text " + text , image.attr("alt"));
+            });
             
-            
+            inlineEditTests.test("Update image alt text", function () {
+                var editor = fluid.inlineEdit("#inline-edit");
+                editor.edit();
+                var text = "the brown dog";    
+                editor.locate("edit").attr("value", text);
+                editor.finish();
+                
+                var button = editor.textEditButton;
+                var image = $("img", button);
+                jqUnit.assertEquals("After editing, the alt test should be", "Edit text " + text, image.attr("alt"));
+            });
         })();
-     
     });
 })(jQuery);

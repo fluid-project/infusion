@@ -22,7 +22,12 @@ var demo = demo || {};
 
     
     var initPortletReorderer = function () {
-        fluid.inlineEdit("#Pluto_5_u15l1n13_optionsForm", {selectors: {text: "#inline-editable"}});
+        fluid.inlineEdit("#Pluto_5_u15l1n13_optionsForm", {
+            selectors: {text: "#inline-editable"},
+            urls: {
+                textEditButtonImage: "../../../components/inlineEdit/images/edit_icon-01.png"
+            }
+        });
         var options = { 
             styles:  {
                 mouseDrag: "orderable-mouse-drag",

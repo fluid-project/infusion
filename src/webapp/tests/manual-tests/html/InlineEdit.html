@@ -106,19 +106,26 @@
         </table>
         
         <script type="text/javascript">
-            var editor1 = fluid.inlineEdit("#inline-edit1", {componentDecorators: "fluid.undoDecorator"});
-            fluid.inlineEdit(jQuery("#inline-edit2"));
-            fluid.inlineEdit(document.getElementById("inline-edit3"));
-            fluid.inlineEdit("#inline-edit4");
-            fluid.inlineEdit("#inline-edit5");
-            fluid.inlineEdit("#inline-edit6", {defaultViewText: "Go ahead, try it - click on me..."});
-            fluid.inlineEdits("#multiple-edits", {selectOnEdit: true, componentDecorators: "fluid.undoDecorator"});
-            fluid.inlineEdits("#multiple-edits-2", {selectOnEdit: true, componentDecorators: "fluid.undoDecorator"});            
-            fluid.inlineEdit("#inline-edit7", {defaultViewText: false});
-            fluid.inlineEdit("#inline-edit8", {useTooltip: true});
-            fluid.inlineEdit("#inline-edit9", {useTooltip: true, tooltipText:"Go on, I dares ya - click on it..."});
-            fluid.inlineEdit("#inline-edit10", {componentDecorators: "fluid.undoDecorator"});
-            fluid.inlineEdits("#inline-edit11", {useTooltip: true});
+            var urls = {
+                textEditButtonImage: "../../../components/inlineEdit/images/edit_icon-01.png"
+            };
+            var options = {
+                urls: urls
+            };
+            
+            var editor1 = fluid.inlineEdit("#inline-edit1", {componentDecorators: "fluid.undoDecorator", urls: urls});
+            fluid.inlineEdit(jQuery("#inline-edit2"), options);
+            fluid.inlineEdit(document.getElementById("inline-edit3"), options);
+            fluid.inlineEdit("#inline-edit4", options);
+            fluid.inlineEdit("#inline-edit5", options);
+            fluid.inlineEdit("#inline-edit6", {defaultViewText: "Go ahead, try it - click on me...", urls: urls});
+            fluid.inlineEdits("#multiple-edits", {selectOnEdit: true, componentDecorators: "fluid.undoDecorator", urls: urls});
+            fluid.inlineEdits("#multiple-edits-2", {selectOnEdit: true, componentDecorators: "fluid.undoDecorator", urls: urls});            
+            fluid.inlineEdit("#inline-edit7", {defaultViewText: false, urls: urls});
+            fluid.inlineEdit("#inline-edit8", {useTooltip: true, urls: urls});
+            fluid.inlineEdit("#inline-edit9", {useTooltip: true, tooltipText:"Go on, I dares ya - click on it...", urls: urls});
+            fluid.inlineEdit("#inline-edit10", {componentDecorators: "fluid.undoDecorator", urls: urls});
+            fluid.inlineEdits("#inline-edit11", {useTooltip: true, urls: urls});
         </script>
 	</body>
 </html>
