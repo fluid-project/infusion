@@ -1,3 +1,10 @@
+/* progress demo styles */
+
+/* strawberries image from Simon Koleznik
+http://www.flickr.com/photos/simonkoleznik/396358600/
+Modified under CC v2.0 generic license. */
+
+/* general */
 html {
 	background-color: #444;
 }
@@ -8,29 +15,32 @@ html {
 	margin: 0 auto;
 	padding: 1em;
 	background-color: white;
-	border-right: 3px solid #666;
-	border-left: 3px solid #666;
-	max-width: 80em;
+	border: 3px solid black;
+	max-width: 30em;
 	min-width: 30em;
-	width: 80%;
+}
+
+#inner {
+	margin: 0 auto 3em auto;
+}
+
+h1 {
+	margin-top: 0.5em;
+}
+
+abbr {
+	border:0px;
 }
 
 
+/* progress bar */
 .progress-pop-up {
     display: none;
-    position: relative;
     text-align: center;
-    color: white;
-    top: 20%;
-    left: 50%;
-    width: 20em;
-    margin-left: -10em;
+    color: black;
+	margin: 0px auto;
+    width: 20em;	
     z-index: 3000;
-	background-color: #5678C5;
-    border: 2px solid #363636;
-    padding: 0.6em 1.3em 0.6em;
-    -moz-border-radius: 0.4em;
-    -webkit-border-radius: 0.4em;
 }
 
 .progress-pop-up h3 {
@@ -71,4 +81,78 @@ html {
     -webkit-border-radius: 0.1em;
     -webkit-border-bottom-right-radius: 0;
     -webkit-border-top-right-radius: 0;
+}
+
+.status-area{
+	height:5em;
+    background-color: #afddc5;
+    padding:1em;
+}
+
+.status-text, .restart-demo{
+    text-align: center;
+    display: block;
+    margin-top:1em;
+}
+
+/* table styles */
+
+div#data-tables {
+	margin: 10px 0px 10px 0px;
+	border:3px solid #d2d3d5;
+	padding: 0px 30px 0px 30px;
+}
+
+table#grocery-order {
+	width: 100%;
+	border: 0px;
+	margin-top: 10px;
+}
+
+table#grocery-order th {
+	font-weight:bold;
+	text-align:left;
+	border: 0px;
+	padding: 2px;	
+}
+
+table#grocery-order td, table#totals td {
+	border: 0px;
+	padding: 2px;
+}
+
+table#totals {
+	width: 100%;
+	border: 0px;
+	margin-top: 10px;
+}
+
+tr#total-row {
+	border-top: 2px solid black;
+}
+tr#total-row td {
+	padding-top:5px;
+}
+
+#sub, #service, #total {
+	width:18em;
+}
+
+p#submit-section {
+	text-align:right;
+	clear:both;
+}
+
+button.enabled {
+	background-color: #8bc5eb;
+	border: 1px solid black;
+	padding:3px 15px 3px 15px;
+	color: black;
+}
+
+button.disabled {
+	background-color: #cbe5f6;
+	border: 1px solid #cdcccc;
+	padding:3px 15px 3px 15px;
+	color: #cdcccc;
 }

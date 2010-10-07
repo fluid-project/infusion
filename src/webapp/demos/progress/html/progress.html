@@ -18,25 +18,105 @@
 </head>
 <body>
 <div id="main">
-    <p>
-        Example of a simple Progress indicator, using some sample code.
-    </p>
-    <p>
-        <button id="showButton">Do something...</button>
-    </p>
-    <div class="flc-progress progress-pop-up">
-        <h3>Current Progress</h3>
-        <div class="flc-progress-bar progress-bar">
-            <div class="flc-progress-indicator progress-indicator">
+     
+    <h1>Price Chopper Grocery Delivery</h1>
+    
+    <div id="status-message" class="status-area">
+        
+            <div class='region'>
+                <!-- status text for progress -->
+                <p class='status-text'>
+                </p>            
+               
+               <!-- links to the demo page -->
+                <a class='restart-demo' href="">   
+                    Restart the Demo
+                </a>  
             </div>
-        </div>
-        <p class="flc-progress-label progress-label">
-            0% Complete
-        </p>
+            
+            <!-- progress simulation -->
+            <div id="progress-container">
+                <div class="flc-progress progress-pop-up">
+                    <h3>Checking inventory, please wait.</h3>
+                    <div class="flc-progress-bar progress-bar">
+                        <div class="flc-progress-indicator progress-indicator">
+                        </div>
+                    </div>
+                    <p class="flc-progress-label progress-label">
+                        0% Complete
+                    </p>
+                </div>
+            </div>
+      </div>  
+    
+    	<div id="data-tables">
+		<table summary="This table summarizes the items you have ordered for delivery." id="grocery-order">
+            <tr>
+                 <th>Item</th>
+                 <th><abbr title="Quantity">Qty.</abrr></th>
+                 <th>Price</th>                  
+            </tr>  
+
+           <tr>         
+                 <td>Apples</td>
+                 <td>1<abbr title="pound">lb.</abrr></td>
+                 <td>$ 1.12</td>                  
+            </tr>  
+            
+            <tr>
+                 <td>Bananas</td>
+                 <td>2<abbr title="pounds">lb.</abrr></td>
+                 <td>$ 2.10</td>                  
+            </tr> 
+            
+            <tr>
+                 <td>Corn Flakes</td>
+                 <td>1</td>
+                 <td>$ 2.99</td>                  
+            </tr> 
+            
+            <tr>
+                 <td>8<abbr title="pounds">lb.</abrr> Rice</td>
+                 <td>1</td>
+                 <td>$ 5.99</td>                  
+            </tr>   
+            
+             <tr>
+                 <td>Ground Coffee</td>
+                 <td>1<abbr title="pound">lb.</abrr></td>
+                 <td>$10.99</td>                  
+            </tr>   
+      </table>
+      
+      <table id="totals">
+            <tr>
+                 <td id="subtotal">SUBTOTAL</td>
+                 <td headers="subtotal">$23.19</td>                  
+            </tr>            
+
+             <tr>
+                 <td id="service">Service Charge</td>
+                 <td headers="service">$ 7.32</td>                  
+            </tr> 
+            
+            <tr id="total-row">
+                 <td id="total">TOTAL</td>
+                 <td headers="total">$30.51</td>                  
+            </tr>  
+              
+    </table>
     </div>
+    
+    <p id="submit-section">
+        <button class="enabled" title="Submit your order">Submit</button>
+    </p>
+    
+    
 </div>
-    <script type="text/javascript">
-        demo.initClickProgress();        
-    </script>
+
+<script type="text/javascript">
+    demo.initShoppingDemo(0,200);        
+</script>
+
 </body>
 </html>
