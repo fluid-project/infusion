@@ -84,7 +84,7 @@ abbr {
 }
 
 .status-area{
-	height:5em;
+	height:6em;
     background-color: #afddc5;
     padding:1em;
 }
@@ -92,6 +92,7 @@ abbr {
 .status-text, .restart-demo{
     text-align: center;
     display: block;
+    border:0;
     margin-top:1em;
 }
 

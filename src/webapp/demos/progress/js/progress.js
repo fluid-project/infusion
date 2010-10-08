@@ -15,8 +15,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 
 (function ($, fluid) {
-    var myProgress;
-    
     /**
      * Used to simulate an application that would call Progress.    
      * @param {Integer} percent         the starting percentage when first called and then the current percentage when called recursively
@@ -67,57 +65,55 @@ var demo = demo || {};
         return that;
     };
 
+    var setAriaAttr = function (liveRegion, submitButton) {
+        // set the aria live region attributes
+        liveRegion.attr("aria-channel", "notify");
+        liveRegion.attr("aria-relevant", "all");
+        liveRegion.attr("aria-atomic", "false");
+        liveRegion.attr("aria-live", "assertive");
+        liveRegion.attr("role", "description");
+        
+        // set default aria-controls to one of the container
+        submitButton.attr("aria-controls", "status-message");
+    }; 
+    
     demo.initShoppingDemo = function (percent, steps) {
         var submitButton = $("#submit-section button");
         var statusText = $(".status-text");
         var restartDemo = $(".restart-demo");
-        var liveRegion = $(".region");
-        var statusArea = $(".status-area");
-       
+        var liveRegion = $(".region");    
+        
         var timer = timeSimulator(percent, steps);         
          
-        // set initial aria roles and aria-controls to some of the containers
-        statusArea.attr("role", "status");
-        submitButton.attr("aria-controls", "status-message");
-         
         // hide link to the demo page
-        restartDemo.hide();        
+        restartDemo.hide();           
          
         // initialize text on element with the class status-text
-        // TODO: Language strings should be external to code.
-        statusText.text("Confirm and submit your order.");
-                
+        statusText.text(demo.initShoppingDemo.strings.confirmStatus);
+        
+        // set the live region attributes
+        setAriaAttr(liveRegion, submitButton);        
+        
         // here's where we create the progress component
         var myProgress = fluid.progress("#progress-container", {
             speed: 1000
-        });
-        
-        var setAriaLiveRegionAttr = function (liveRegion) {
-            // set the aria live region attributes
-            liveRegion.attr("aria-channel", "notify");
-            liveRegion.attr("aria-relevant", "all");
-            liveRegion.attr("aria-atomic", "false");
-            liveRegion.attr("aria-live", "assertive");
-            liveRegion.attr("role", "description");
-        };      
-        
+        });        
+                 
         var myFinishFunction = function () {
             myProgress.container.fadeOut("slow", function () {
-                // change text on element with class status-text after  progress simulation is complete   
-                // TODO: More English strings in code
-                statusText.text("Order Submitted. Demo finished.").show();            
-                // set the live region attributes to the div element
-                setAriaLiveRegionAttr(liveRegion);            
+                // change text on element with class status-text after  progress simulation is complete
+                statusText.text(demo.initShoppingDemo.strings.orderSubmitted).show();                 
                 // re-enable the link to restart the demo
-                restartDemo.show();        
+                restartDemo.show();                
             });
         };        
         
         // progress component specific
         var stepFunction = function (percent) {
-             // create a label for the progress
-             // TODO: English string in code
-            var currentProgressLabel = percent + "% Complete";            
+            // create a label for the progress
+            var currentProgressLabel = fluid.stringTemplate(demo.initShoppingDemo.strings.percentCompleted, {
+                percent: percent    
+            });            
             // tell progress to update
             myProgress.update(percent, currentProgressLabel);
         };
@@ -130,9 +126,19 @@ var demo = demo || {};
             submitButton.removeClass("enabled");
             submitButton.addClass("disabled");
             submitButton.attr("disabled", "disabled");  
-                    
-            statusText.hide();             
+            
+            // add area role to the progress title
+            statusText.text(demo.initShoppingDemo.strings.progressTitle).show();            
+                  
         });   
+    };
+    
+    // Strings which are used in the html to give user feedback
+    demo.initShoppingDemo.strings = {
+        confirmStatus: "Confirm and submit your order.",
+        orderSubmitted: "Order Submitted. Demo finished.",
+        percentCompleted: "%percent% Complete",
+        progressTitle: "Checking inventory, please wait."       
     };
 
 })(jQuery, fluid);
