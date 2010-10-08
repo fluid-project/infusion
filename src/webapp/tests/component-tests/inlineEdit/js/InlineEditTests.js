@@ -745,7 +745,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var text = editor.locate("text").text();
                 
                 jqUnit.assertEquals("Should only be one textEditButton", 1, button.length);
-                jqUnit.assertTrue("The button should have the fl-inlineEdit-textEditButton class", button.hasClass("fl-inlineEdit-textEditButton"));
+                jqUnit.assertTrue("The button should have the fl-inlineEdit-text class", button.hasClass("fl-inlineEdit-text"));
                 jqUnit.assertEquals("The image alt text should be set", "Edit text " + text , image.attr("alt"));
             });
             
@@ -759,6 +759,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var button = editor.textEditButton;
                 var image = $("img", button);
                 jqUnit.assertEquals("After editing, the alt test should be", "Edit text " + text, image.attr("alt"));
+            });
+            
+            inlineEditTests.test("Container styling", function () {
+                var editor = fluid.inlineEdit("#inline-edit");
+                var text = editor.locate("text");
+                jqUnit.assertTrue("The container should have the fl-inlineEdit-text class", text.hasClass("fl-inlineEdit-text"));
             });
         })();
     });

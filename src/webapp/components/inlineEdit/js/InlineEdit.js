@@ -362,11 +362,12 @@ fluid_1_2 = fluid_1_2 || {};
             };
         }
         // Template strings.
-        var editModeTemplate = "<span><input type='text' class='flc-inlineEdit-edit fl-inlineEdit-edit'/></span>";
+        var editModeTemplate = "<span><input type='text' class='flc-inlineEdit-edit'/></span>";
 
         // Create the edit container and pull out the textfield.
         var editContainer = $(editModeTemplate);
         var editField = $("input", editContainer);
+        editField.addClass(that.options.styles.edit);
         
         var componentContainerId = that.container.attr("id");
         // Give the container and textfield a reasonable set of ids if necessary.
@@ -399,7 +400,7 @@ fluid_1_2 = fluid_1_2 || {};
         var textEditButton = that.locate("textEditButton");
         
         if  (textEditButton.length === 0) {
-            var markup = $("<a href='#_' class='flc-inlineEdit-textEditButton fl-inlineEdit-textEditButton'><img src'' /></a>");
+            var markup = $("<a href='#_' class='flc-inlineEdit-textEditButton'><img src'' /></a>");
             var img = $("img", markup);
 
             img.attr("src", opts.urls.textEditButtonImage);
@@ -415,9 +416,8 @@ fluid_1_2 = fluid_1_2 || {};
             
             // Refresh the textEditButton with the newly appended options
             textEditButton = that.locate("textEditButton");
-        } else {
-            textEditButton.addClass(opts.styles.textEditButton);
-        }
+        } 
+        textEditButton.addClass(opts.styles.textEditButton);
         
         return textEditButton;
     };
@@ -441,6 +441,8 @@ fluid_1_2 = fluid_1_2 || {};
     var setupInlineEdit = function (componentContainer, that) {
         var padding = that.viewEl.css("padding-right");
         that.existingPadding = padding? parseFloat(padding) : 0;
+        that.viewEl.addClass(that.options.styles.text);
+
         initModel(that, that.displayView.value());
 
         that.textEditButton = that.options.textEditButtonRenderer(that);        
@@ -667,7 +669,7 @@ fluid_1_2 = fluid_1_2 || {};
             defaultViewStyle: "fl-inlineEdit-invitation-text",
             tooltip: "fl-inlineEdit-tooltip",
             focus: "fl-inlineEdit-focus",
-            textEditButton: ".fl-inlineEdit-text"
+            textEditButton: "fl-inlineEdit-text"
         },
         
         events: {
