@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-mist.css" />
         <link rel="stylesheet" type="text/css" href="../../../../framework/fss/css/fss-theme-hc.css" />
         <link rel="stylesheet" type="text/css" href="../../../../components/inlineEdit/css/InlineEdit.css" />
+        <link rel="stylesheet" type="text/css" href="../css/InlineEdit.css" />
                 
         <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
         <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
@@ -19,31 +20,28 @@
                 
         <script type="text/javascript" src="../js/inlineEdit.js"></script>
         
-        <title>CD Database Example</title>
+        <title>Inline Edit Demo</title>
     </head>
     
-    <body>
+    <body class="fl-inlineEdit-indent">
+        <p class="fl-inlineEdit-header">
+            Title and captions are editable by clicking on them, or by selecting the text with the keyboard and pressing Enter.
+        </p>
         
-        <h2> Example 1. Default Inline Edit</h2>
-        <p> The words in <strong>bold</strong> are editable. </p>    
-        <blockquote class="simpleEdit">    
-            The quick brown fox jumped <strong class="flc-inlineEdit-text">over the lazy dogs</strong> and then...
-        </blockquote>
-    
-        <h2> Example 2. Multiple Inline Edits</h2>
-        <p> The words in <strong>bold</strong> are editable.</p>    
-        <blockquote class="multipleEdit">
-    
-            <p>The quick brown fox jumped <strong class="editableText">over the lazy dogs</strong> and then...</p>
-            <p>The quick brown fox <strong class="editableText">over jumped  the lazy</strong> dogs and then...</p>
-            <p>The quick <strong class="editableText">brown fox jumped over</strong> the lazy dogs and then...</p>
-    
-            <p>The quick brown fox jumped over the <strong class="editableText">lazy dogs</strong> and then...</p>
-            <p>The over <strong class="editableText">quick</strong> brown fox jumped  the lazy dogs and then...</p>
-        </blockquote>
+        <div class="simpleEditTitle">    
+            <p class="flc-inlineEdit-text fl-inlineEdit-title fl-inlineEdit-displayInline">Untitled</p> 
+        </div>
+        
+        <img class="fl-inlineEdit-padding" src="../images/red-car.jpg" alt="shiny red car" />
+               
+        <div class="simpleEditCaption fl-inlineEdit-padding">
+            <strong>Caption:</strong>
+            <p class="flc-inlineEdit-text fl-inlineEdit-displayInline">A red vintage car</p> 
+        </div>
         
         <script type="text/javascript">
             demo.initInlineEdit();
         </script>        
+
     </body>
 </html>

@@ -1,0 +1,32 @@
+/* Themed Appearance + Themed States */
+
+.fl-inlineEdit-padding {
+    padding-top : 0.5cm;
+}
+
+.fl-inlineEdit-title, .fl-inlineEdit-title-edit {
+    font : normal 25px sans-serif;
+}
+
+.fl-inlineEdit-indent {
+	margin: 1em;
+}
+
+.fl-inlineEdit-displayInline {
+    display: inline;
+}
+
+.fl-inlineEdit-button {
+    border-bottom : 1px dotted #00a651;
+    padding-bottom: 3px;
+}
+
+.fl-inlineEdit-header {
+	width         : 342px;
+    border        : 1px solid #999;
+    background    : #fffcd6;
+    text-align    : center;
+    padding-left  : 79px;
+    padding-right : 79px; 
+}
+
