@@ -433,7 +433,9 @@ fluid_1_2 = fluid_1_2 || {};
         that.events.afterFinishEdit.addListener(function () {
             isEditing = false; 
             that.textEditButton.show();
-            that.textEditButton.focus();
+            
+            // Allow textEditButton to regain focus upon completion. 
+            that.textEditButton.focus(0);
         });
         return function () {return isEditing;};
     };
@@ -443,9 +445,16 @@ fluid_1_2 = fluid_1_2 || {};
         that.existingPadding = padding? parseFloat(padding) : 0;
         that.viewEl.addClass(that.options.styles.text);
 
+        /*
+         *  Remove the display from the tab order to prevent users to think they
+         *  are able to access the inline edit field, but they cannot since the 
+         *  keyboard event binding is only on the button.
+         */
+        that.viewEl.attr("tabindex", "-1");
+        
         initModel(that, that.displayView.value());
 
-        that.textEditButton = that.options.textEditButtonRenderer(that);        
+        that.textEditButton = that.options.textEditButtonRenderer(that); 
         
         // Add event handlers.
         bindMouseHandlers(that);
@@ -461,6 +470,7 @@ fluid_1_2 = fluid_1_2 || {};
         // Initialize the tooltip once the document is ready.
         // For more details, see http://issues.fluidproject.org/browse/FLUID-1030
         var initTooltips = function () {
+            that.locate("edit").attr("title", that.options.strings.editModeToolTip);
             // Add tooltip handler if required and available
             if (that.tooltipEnabled()) {
                 that.viewEl.tooltip({
@@ -469,10 +479,9 @@ fluid_1_2 = fluid_1_2 || {};
                     bodyHandler: function () { 
                         return that.options.tooltipText; 
                     },
-                    id: that.options.tooltipId
+                    id: that.options.tooltipId                    
                 });
             }
-            that.locate("edit").attr("title", that.options.strings.editModeToolTip);
         };
         initTooltips();
         

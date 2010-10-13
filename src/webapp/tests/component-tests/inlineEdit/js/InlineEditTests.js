@@ -766,6 +766,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var text = editor.locate("text");
                 jqUnit.assertTrue("The container should have the fl-inlineEdit-text class", text.hasClass("fl-inlineEdit-text"));
             });
+            
+            inlineEditTests.test("Remove container from tab order", function () {
+                var editor = fluid.inlineEdit("#inline-edit");
+                var text = editor.locate("text");
+                jqUnit.assertEquals("The tab index of the container should be", "-1", text.attr("tabindex"));
+            });
         })();
     });
 })(jQuery);
