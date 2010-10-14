@@ -384,9 +384,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var customBusyTemplate = "Progress equals %percentComplete"; 
             
             progressBar = createProgressBar("#progress-container", {
-                animate: "none", 
-                ariaBusyText: customBusyTemplate, 
-                ariaDoneText: customDoneText
+                animate: "none",
+                strings: {
+                    ariaBusyText: customBusyTemplate, 
+                    ariaDoneText: customDoneText
+                } 
             });
             
             jqUnit.assertEquals("Start: busy should be ", "false", ARIAcontainer.attr("aria-busy"));
@@ -414,7 +416,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
         progressTests.test("Changing the aria-valuetext to empty string ", function () {
             var ARIAcontainer = $(".flc-progress-bar");
             
-            var option = { ariaBusyText: "" };
+            var option = { 
+                strings: {
+                    ariaBusyText: ""
+                }
+            };
             
             var progressBar = createProgressBar("#progress-container", option);   
             

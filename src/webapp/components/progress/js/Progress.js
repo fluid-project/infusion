@@ -95,17 +95,18 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
     var updateARIA = function (that, percent) {
+        var str = that.options.strings;
         var busy = percent < 100 && percent > 0;
         that.ariaElement.attr("aria-busy", busy);
         that.ariaElement.attr("aria-valuenow", percent);   
         //Empty value for ariaBusyText will default to aria-valuenow.
-        if (that.options.ariaBusyText) {
+        if (str.ariaBusyText) {
 	        if (busy) {
-	            var busyString = fluid.stringTemplate(that.options.ariaBusyText, {percentComplete : percent});           
+	            var busyString = fluid.stringTemplate(str.ariaBusyText, {percentComplete : percent});           
 	            that.ariaElement.attr("aria-valuetext", busyString);
 	        } else if (percent === 100) {
 	            // FLUID-2936: JAWS doesn't currently read the "Progress is complete" message to the user, even though we set it here.
-	            that.ariaElement.attr("aria-valuetext", that.options.ariaDoneText);
+	            that.ariaElement.attr("aria-valuetext", str.ariaDoneText);
 	        }
         }
     };
@@ -163,7 +164,7 @@ fluid_1_2 = fluid_1_2 || {};
                 
         // initialize ARIA
         if (that.ariaElement) {
-            initARIA(that.ariaElement, that.options.ariaBusyText);
+            initARIA(that.ariaElement, that.options.strings.ariaBusyText);
         }
 
     };
@@ -227,6 +228,12 @@ fluid_1_2 = fluid_1_2 || {};
             ariaElement: ".flc-progress-bar" // usually required, except in cases where there are more than one progressor for the same data such as a total and a sub-total
         },
         
+        strings: {
+            //Empty value for ariaBusyText will default to aria-valuenow.
+            ariaBusyText: "Progress is %percentComplete percent complete",
+            ariaDoneText: "Progress is complete."
+        },
+        
         // progress display and hide animations, use the jQuery animation primatives, set to false to use no animation
         // animations must be symetrical (if you hide with width, you'd better show with width) or you get odd effects
         // see jQuery docs about animations to customize
@@ -252,10 +259,6 @@ fluid_1_2 = fluid_1_2 || {};
         animate: "forward", // suppport "forward", "backward", and "both", any other value is no animation either way
         initiallyHidden: true, // supports progress indicators which may always be present
         updatePosition: false,
-        
-        //Empty value for ariaBusyText will default to aria-valuenow.
-        ariaBusyText: "Progress is %percentComplete percent complete",
-        ariaDoneText: "Progress is complete."
     });
     
 })(jQuery, fluid_1_2);
