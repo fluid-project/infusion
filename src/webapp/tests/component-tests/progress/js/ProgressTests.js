@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2009 University of Toronto
 Copyright 2007-2009 University of California, Berkeley
+Copyright 2010-2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -10,25 +11,92 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery, jqUnit, fluid*/
+/*global jQuery, jqUnit, fluid, start, expect*/
 (function ($) {
-    
-    var createProgressBar = function (containerSelector, options) {
-        return fluid.progress(containerSelector, options);
-    };
-    
+        
     $(document).ready(function () {
         
         var progressTests = new jqUnit.TestCase("Progress Tests (Defaults)");
         var text = "test text";
                
-        var options, progressBar;
+        var options, progressBar;  
+        
+        var progressELPaths = {
+            listenersShowText:   "listeners.onProgressBegin",
+            listenersHiddenText: "listeners.afterProgressHidden",
+            showAnimationText:   "showAnimation.callback",
+            hiddenAnimationText: "hideAnimation.callback"
+        };    
+       
+        // common steps for the progress
+        var progressCommonSteps = function (option) {
+            
+            // create a new progress bar with defaults
+            progressBar = fluid.progress("#progress-container", option);
+            
+            jqUnit.notVisible("Before update, ensure default progress bar is not visible", 
+                ".flc-progress");
+        
+            // show the progress widget, override animation
+            progressBar.show();
+        
+            jqUnit.isVisible("After show, ensure default progress bar is visible", 
+                ".flc-progress");
+        
+            jqUnit.assertEquals("After show, expected minimal default indicator width of " + progressBar.options.minWidth + "px; actual ", 
+            progressBar.options.minWidth, progressBar.indicator.width());
+          
+            // hide the progress widget, pass 0 delay and false animation, 
+            progressBar.hide(0);       
+        };
+        
+        var myProgressHide = function (str) {
+            jqUnit.notVisible(str + ": After progress hides the afterProgressHidden event gets fired, ensure default progress bar is not visible", ".flc-progress");         
+        };
+        
+        var myProgressShow = function (str) {
+            jqUnit.isVisible(str + ": After progress is shown onProgressBegin event gets fired, ensure default progress bar is visible", ".flc-progress");               
+        };       
+        
+        var assembleOptions = function (ELPath, callback, option, stopStart) {
+            var obj = option || {
+                speed: 0
+            };
+            
+            fluid.model.setBeanValue(obj, ELPath, function () {                
+                callback(ELPath);
+                if (!stopStart) {
+                    start();
+                }
+            });
+            
+            return obj;
+        };        
+        
+        // progress test with multiple events
+        var progressEventTestMultiple = function (ELPath, ELPathSecond, callback) {         
+            
+            var option = assembleOptions(ELPath, callback);
+           
+            var optionConcat = assembleOptions(ELPathSecond, callback, option, true);
+            
+            progressCommonSteps(optionConcat); 
+            
+        };
+        
+        // progress test with single event
+        var progressEventTest = function (ELPath, callback) {  
+        
+            var option = assembleOptions(ELPath, callback);
+       
+            progressCommonSteps(option);
+        };       
         
         // 1
         progressTests.test("Initialization", function () {
             
             // create a new progress bar with defaults
-            progressBar = createProgressBar("#progress-container");
+            progressBar = fluid.progress("#progress-container");
            
                // 1.1
             jqUnit.notVisible("Before update, ensure default progress bar is not visible", 
@@ -42,7 +110,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         progressTests.test("Show and Hide", function () {
             
             // create a new progress bar with defaults
-            progressBar = createProgressBar("#progress-container");
+            progressBar = fluid.progress("#progress-container");
             
             // 2.1
             jqUnit.notVisible("Before update, ensure default progress bar is not visible", 
@@ -70,7 +138,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         // 3
         progressTests.test("Update percent", function () {            
-            progressBar = createProgressBar("#progress-container");
+            progressBar = fluid.progress("#progress-container");
             
             // update with just number
             progressBar.update(50);
@@ -88,7 +156,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
         // 4
         progressTests.test("Update text", function () {            
-            progressBar = createProgressBar("#progress-container");
+            progressBar = fluid.progress("#progress-container");
             
             // update with just text
             progressBar.update(null, text);
@@ -138,7 +206,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         // 5
         progressTests.test("Update percent by number, null and zero", function () {            
-            progressBar = createProgressBar("#progress-container", {animate: "none"});
+            progressBar = fluid.progress("#progress-container", {animate: "none"});
             
             var updateNum = 50;
             
@@ -185,7 +253,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var updateString = "50";
             var numericEquivalent = 50;
     
-            progressBar = createProgressBar("#progress-container", {animate: "none"});
+            progressBar = fluid.progress("#progress-container", {animate: "none"});
             
             // update with just a string
             progressBar.update(updateString);
@@ -214,7 +282,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var updateString = "50%";
             var numericEquivalent = 50;
     
-            progressBar = createProgressBar("#progress-container", {animate: "none"});
+            progressBar = fluid.progress("#progress-container", {animate: "none"});
             
             // update with just a number
             progressBar.update(updateString);
@@ -240,7 +308,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         // 8
         
         progressTests.test("Update text after percent", function () {            
-            progressBar = createProgressBar("#progress-container", {animate: "none"});
+            progressBar = fluid.progress("#progress-container", {animate: "none"});
             
             // update with just percentage
             progressBar.update(50);
@@ -280,7 +348,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         // 9
         
         progressTests.test("Min width = 0", function () {            
-            progressBar = createProgressBar("#progress-container", {animate: "none", minWidth: 0});
+            progressBar = fluid.progress("#progress-container", {animate: "none", minWidth: 0});
             
             // show but don't update
             progressBar.show();
@@ -324,7 +392,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("Before init: valuenow should not exist", ARIAcontainer.attr("aria-valuenow"));
             jqUnit.assertFalse("Before init: busy should not exist", ARIAcontainer.attr("aria-busy"));
             
-            progressBar = createProgressBar("#progress-container", {animate: "none"});
+            progressBar = fluid.progress("#progress-container", {animate: "none"});
             
             jqUnit.assertEquals("After Init: role should be ", "progressbar", ARIAcontainer.attr("role"));
             jqUnit.assertEquals("After Init: valuemin should be ", "0", ARIAcontainer.attr("aria-valuemin"));
@@ -342,7 +410,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             var ARIAcontainer = $(".flc-progress-bar");
             
-            progressBar = createProgressBar("#progress-container", {animate: "none"});
+            progressBar = fluid.progress("#progress-container", {animate: "none"});
             
             jqUnit.assertEquals("Start: busy should be ", "false", ARIAcontainer.attr("aria-busy"));
             jqUnit.assertEquals("Start: valuenow should be ", "0", ARIAcontainer.attr("aria-valuenow"));
@@ -383,7 +451,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             var customBusyTemplate = "Progress equals %percentComplete"; 
             
-            progressBar = createProgressBar("#progress-container", {
+            progressBar = fluid.progress("#progress-container", {
                 animate: "none",
                 strings: {
                     ariaBusyText: customBusyTemplate, 
@@ -413,7 +481,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         
         // 13 
+        
         progressTests.test("Changing the aria-valuetext to empty string ", function () {
+            
             var ARIAcontainer = $(".flc-progress-bar");
             
             var option = { 
@@ -422,7 +492,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 }
             };
             
-            var progressBar = createProgressBar("#progress-container", option);   
+            var progressBar = fluid.progress("#progress-container", option);   
             
             //during page load aria-valuetext is set to empty string
             jqUnit.assertEquals("Initialize ariaBusyText to empty string and aria-valuetext should be missing ", undefined, ARIAcontainer.attr("aria-valuetext"));
@@ -433,8 +503,65 @@ https://source.fluidproject.org/svn/LICENSE.txt
             //aria-valuetext attribute should be missing due to setting ariaBusyText property to empty string
             jqUnit.assertEquals("After updating progress the aria-valuetext should still be missing and the result should be undefined ", undefined, ARIAcontainer.attr("aria-valuetext"));
          
-        });
+        });        
         
+        // 14
+         
+        progressTests.asyncTest("Using listeners object progress component fires event after the progress hides ", function () {
+         
+            expect(4);
+            
+            progressEventTest(progressELPaths.listenersHiddenText, myProgressHide);   
+            
+        });
+    
+        // 15       
+         
+        progressTests.asyncTest("Using listeners object progress component fires event after the progress is shown ", function () {
+        
+            expect(4);
+            
+            progressEventTest(progressELPaths.listenersShowText, myProgressShow);   
+                       
+        });
+       
+        // 16
+         
+        progressTests.asyncTest("Using hideAnimation object in progress component fires event after the progress hides ", function () {
+         
+            expect(4);
+            
+            progressEventTest(progressELPaths.hiddenAnimationText, myProgressHide);         
+        });
+    
+        // 17
+         
+        progressTests.asyncTest("Using showAnimation object in progress component fires event after the progress is shown ", function () {
+        
+            expect(4);
+            
+            progressEventTest(progressELPaths.showAnimationText, myProgressShow); 
+           
+        }); 
+
+        // 18
+       
+        progressTests.asyncTest("Using hideAnimation and listener objects in progress component fires event after the progress hides ", function () {
+            
+            expect(5);            
+            
+            progressEventTestMultiple(progressELPaths.listenersHiddenText, progressELPaths.hiddenAnimationText, myProgressHide);
+        
+        });
+                   
+        //19
+        
+        progressTests.asyncTest("Using showAnimation and listener objects in progress component fires event after the progress is shown ", function () {
+        
+            expect(5);
+            
+            progressEventTestMultiple(progressELPaths.listenersShowText, progressELPaths.showAnimationText, myProgressShow);
+        });         
 
     });
 })(jQuery);

@@ -92,21 +92,27 @@ var demo = demo || {};
         statusText.text(demo.initShoppingDemo.strings.confirmStatus);
         
         // set the live region attributes
-        setAriaAttr(liveRegion, submitButton);        
+        setAriaAttr(liveRegion, submitButton);         
+        
+        var myProgressHide = function () {
+             // change text on element with class status-text after  progress simulation is complete
+            statusText.text(demo.initShoppingDemo.strings.orderSubmitted);   
+            statusText.show();                    
+            // re-enable the link to restart the demo
+            restartDemo.show(); 
+        };       
         
         // here's where we create the progress component
         var myProgress = fluid.progress("#progress-container", {
-            speed: 1000
-        });        
-                 
+            speed: 1000,         
+            listeners: {
+                afterProgressHidden: myProgressHide
+            }              
+        });
+        
         var myFinishFunction = function () {
-            myProgress.container.fadeOut("slow", function () {
-                // change text on element with class status-text after  progress simulation is complete
-                statusText.text(demo.initShoppingDemo.strings.orderSubmitted).show();                 
-                // re-enable the link to restart the demo
-                restartDemo.show();                
-            });
-        };        
+            myProgress.hide(1000);
+        };              
         
         // progress component specific
         var stepFunction = function (percent) {
@@ -125,7 +131,7 @@ var demo = demo || {};
             // disable the button
             submitButton.removeClass("enabled");
             submitButton.addClass("disabled");
-            submitButton.attr("disabled", "disabled");  
+            submitButton.attr("disabled", "disabled");             
             
             // add area role to the progress title
             statusText.text(demo.initShoppingDemo.strings.progressTitle).show();            

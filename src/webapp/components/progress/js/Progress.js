@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
+Copyright 2010-2011 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -15,7 +16,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 fluid_1_2 = fluid_1_2 || {};
 
-(function ($, fluid) {
+(function ($, fluid) {    
     
     var animateDisplay = function (elm, animation, defaultAnimation) {
         animation = (animation) ? animation : defaultAnimation;
@@ -166,7 +167,31 @@ fluid_1_2 = fluid_1_2 || {};
         if (that.ariaElement) {
             initARIA(that.ariaElement, that.options.strings.ariaBusyText);
         }
+        
+        // afterProgressHidden:  
+        // Registering listener with the callback provided by the user and reinitializing
+        // the event trigger function. 
+        // Note: callback depricated as of 1.5, use afterProgressHidden event
+        if (that.options.hideAnimation.callback) {
+            that.events.afterProgressHidden.addListener(that.options.hideAnimation.callback);           
+        }
+        
+        // triggers the afterProgressHidden event    
+        // Note: callback depricated as of 1.5, use afterProgressHidden event
+        that.options.hideAnimation.callback = that.events.afterProgressHidden.fire;
 
+        
+        // onProgressBegin:
+        // Registering listener with the callback provided by the user and reinitializing
+        // the event trigger function.  
+        // Note: callback depricated as of 1.5, use onProgressBegin event
+        if (that.options.showAnimation.callback) {
+            that.events.onProgressBegin.addListener(that.options.showAnimation.callback);                      
+        } 
+            
+        // triggers the onProgressBegin event
+        // Note: callback depricated as of 1.5, use onProgressBegin event
+        that.options.showAnimation.callback = that.events.onProgressBegin.fire;
     };
            
     /**
@@ -241,8 +266,9 @@ fluid_1_2 = fluid_1_2 || {};
             params: {
                 opacity: "show"
             }, 
-            duration: "slow", 
-            callback: null
+            duration: "slow",
+            //callback has been deprecated and will be removed as of 1.5, instead use onProgressBegin event 
+            callback: null 
         }, // equivalent of $().fadeIn("slow")
         
         hideAnimation: {
@@ -250,15 +276,21 @@ fluid_1_2 = fluid_1_2 || {};
                 opacity: "hide"
             }, 
             duration: "slow", 
+            //callback has been deprecated and will be removed as of 1.5, instead use afterProgressHidden event 
             callback: null
         }, // equivalent of $().fadeOut("slow")
+        
+        events: {            
+            onProgressBegin: null,
+            afterProgressHidden: null            
+        },
 
         minWidth: 5, // 0 length indicators can look broken if there is a long pause between updates
         delay: 0, // the amount to delay the fade out of the progress
         speed: 200, // default speed for animations, pretty fast
         animate: "forward", // suppport "forward", "backward", and "both", any other value is no animation either way
         initiallyHidden: true, // supports progress indicators which may always be present
-        updatePosition: false,
+        updatePosition: false
     });
     
 })(jQuery, fluid_1_2);
