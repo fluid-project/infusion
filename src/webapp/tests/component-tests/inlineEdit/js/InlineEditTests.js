@@ -772,6 +772,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var text = editor.locate("text");
                 jqUnit.assertEquals("The tab index of the container should be", "-1", text.attr("tabindex"));
             });
+            
+            inlineEditTests.test("Render keyboard tool tip", function () {
+                var editor = fluid.inlineEdit("#inline-edit");
+                var keyboardTooltip = $("p");
+                jqUnit.assertTrue("The keyboard tooltip should have the fl-keyboard-tooltip class", keyboardTooltip.hasClass("fl-inlineEdit-keyboardTooltip"));
+                jqUnit.assertEquals("The keyboard tooltip descriptive text should be set", editor.options.strings.editModeTooltip, keyboardTooltip.text());
+                
+                editor.edit();
+                jqUnit.isVisible("While editing, keyboard tool tip is visible", keyboardTooltip);
+                
+                editor.finish();
+                jqUnit.notVisible("When finished editing, keyboard tool tip is hidden", keyboardTooltip);
+            });
         })();
     });
 })(jQuery);

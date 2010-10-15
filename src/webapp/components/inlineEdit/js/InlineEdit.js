@@ -112,7 +112,7 @@ fluid_1_2 = fluid_1_2 || {};
             // Roll the edit field back to its old value and close it up.
             // This setTimeout is necessary on Firefox, since any attempt to modify the 
             // input control value during the stack processing the ESCAPE key will be ignored.
-            setTimeout(function() {
+            setTimeout(function () {
                that.editView.value(that.model.value);}, 1);
             switchToViewMode(that);
             that.events.afterFinishEdit.fire(that.model.value, that.model.value, 
@@ -182,10 +182,41 @@ fluid_1_2 = fluid_1_2 || {};
             that.editField.blur(blurHandler);
         }
     };
+
+    // setup tooltip with aria for edit mode
+    var setupKeyboardTooltip = function (that) {
+        var editModeDescribedBy = $("<p></p>");
+        var id = fluid.allocateSimpleId(editModeDescribedBy);
+        
+        editModeDescribedBy.addClass(that.options.styles.keyboardTooltip);
+        editModeDescribedBy.text(that.options.strings.editModeTooltip);
+        that.editContainer.append(editModeDescribedBy);
+        that.editField.attr("aria-describedby", id);            
+
+        that.editField.focusin(function () {
+            editModeDescribedBy.show();    
+        });
+        that.editField.focusout(function () {
+            editModeDescribedBy.hide();
+        });
+
+        editModeDescribedBy.position({
+            my: "left",
+            at: "left bottom",
+            collision: "fit",
+            offset: "0 15",
+            of: that.editField
+        });
+    };
     
     var initializeEditView = function (that, initial) {
         if (!that.editInitialized) { 
             renderEditContainer(that, !that.options.lazyEditView || !initial);
+            
+            if (that.options.renderKeyboardTooltip) {
+                setupKeyboardTooltip(that);
+            }
+            
             if (!that.options.lazyEditView || !initial) {
                 that.editView = fluid.initSubcomponent(that, "editView", that.editField);
                 
@@ -212,7 +243,8 @@ fluid_1_2 = fluid_1_2 || {};
         viewEl.removeClass(that.options.styles.invitation);
         viewEl.removeClass(that.options.styles.focus);
         viewEl.hide();
-        that.editContainer.show();
+        
+        that.editContainer.show();                  
 
         // Work around for FLUID-726
         // Without 'setTimeout' the finish handler gets called with the event and the edit field is inactivated.       
@@ -363,7 +395,7 @@ fluid_1_2 = fluid_1_2 || {};
         }
         // Template strings.
         var editModeTemplate = "<span><input type='text' class='flc-inlineEdit-edit'/></span>";
-
+        
         // Create the edit container and pull out the textfield.
         var editContainer = $(editModeTemplate);
         var editField = $("input", editContainer);
@@ -440,6 +472,27 @@ fluid_1_2 = fluid_1_2 || {};
         return function () {return isEditing;};
     };
     
+    var setTooltipTitle = function (element, title) {
+        fluid.wrap(element).attr("title", title);
+    };
+    
+    // Initialize the tooltip once the document is ready.
+    // For more details, see http://issues.fluidproject.org/browse/FLUID-1030
+    var initTooltips = function (that) {
+        var tooltipOptions = {
+            delay: that.options.tooltipDelay,
+            extraClass: that.options.styles.tooltip,
+            bodyHandler: function () { 
+                return that.options.tooltipText; 
+            },
+            id: that.options.tooltipId,
+            showURL: false                        
+        };
+        
+        that.viewEl.tooltip(tooltipOptions);
+        that.textEditButton.tooltip(tooltipOptions);
+    };
+    
     var setupInlineEdit = function (componentContainer, that) {
         var padding = that.viewEl.css("padding-right");
         that.existingPadding = padding? parseFloat(padding) : 0;
@@ -451,10 +504,12 @@ fluid_1_2 = fluid_1_2 || {};
          *  keyboard event binding is only on the button.
          */
         that.viewEl.attr("tabindex", "-1");
-        
+        setTooltipTitle(that.viewEl, that.options.tooltipText);
+
         initModel(that, that.displayView.value());
 
         that.textEditButton = that.options.textEditButtonRenderer(that); 
+        setTooltipTitle(that.textEditButton, that.options.tooltipText);
         
         // Add event handlers.
         bindMouseHandlers(that);
@@ -467,23 +522,10 @@ fluid_1_2 = fluid_1_2 || {};
             that.editContainer.hide();
         }
         
-        // Initialize the tooltip once the document is ready.
-        // For more details, see http://issues.fluidproject.org/browse/FLUID-1030
-        var initTooltips = function () {
-            that.locate("edit").attr("title", that.options.strings.editModeToolTip);
-            // Add tooltip handler if required and available
-            if (that.tooltipEnabled()) {
-                that.viewEl.tooltip({
-                    delay: that.options.tooltipDelay,
-                    extraClass: that.options.styles.tooltip,
-                    bodyHandler: function () { 
-                        return that.options.tooltipText; 
-                    },
-                    id: that.options.tooltipId                    
-                });
-            }
-        };
-        initTooltips();
+        // Add tooltip handler if required and available
+        if (that.tooltipEnabled()) {
+            initTooltips(that);
+        }
         
         // Setup any registered decorators for the component.
         that.decorators = fluid.initSubcomponents(that, "componentDecorators", 
@@ -677,6 +719,7 @@ fluid_1_2 = fluid_1_2 || {};
             invitation: "fl-inlineEdit-invitation",
             defaultViewStyle: "fl-inlineEdit-invitation-text",
             tooltip: "fl-inlineEdit-tooltip",
+            keyboardTooltip: "fl-inlineEdit-keyboardTooltip",
             focus: "fl-inlineEdit-focus",
             textEditButton: "fl-inlineEdit-text"
         },
@@ -692,7 +735,7 @@ fluid_1_2 = fluid_1_2 || {};
 
         strings: {
             textEditButton: "Edit text %text",
-            editModeToolTip: "Press Escape to cancel, Enter or Tab when finished."
+            editModeTooltip: "Press Escape to cancel, Enter or Tab when finished."
         },
         
         paddings: {
@@ -744,6 +787,8 @@ fluid_1_2 = fluid_1_2 || {};
         tooltipDelay: 1000,
         
         selectOnEdit: false,
+        
+        renderKeyboardTooltip: true,
         
         urls: {
             textEditButtonImage: "../images/edit_icon-01.png"
