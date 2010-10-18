@@ -3,5 +3,5 @@
    	"description": "Users customize their preferences and needs for viewing content.",
    	"cssFiles": ["UIOptions.css", "Slider.css", "UIOptionsPreview.css"],
 	"files": ["UIEnhancer.js", "UIOptions.js"],
-	"dependencies": ["fss", "jQuery", "jQueryUICore", "framework", "renderer", "jQueryUIWidgets", "jQueryDelegatePlugin", "tableOfContents", "json"]
+	"dependencies": ["fss", "jQuery", "jQueryUICore", "framework", "renderer", "jQueryUIWidgets", "tableOfContents", "json"]
 }}

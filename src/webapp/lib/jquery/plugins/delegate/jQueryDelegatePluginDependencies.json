@@ -1,6 +1,0 @@
-{"jQueryDelegatePlugin": {
-    "name": "jQuery Delegate Plugin",
-    "description": "Used to simulate portable, bubbling focus events across all browsers.",
-  "files": ["jquery.delegate.js"],
-  "dependencies": ["jQuery"]
-}}
