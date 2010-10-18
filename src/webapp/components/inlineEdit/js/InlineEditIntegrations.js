@@ -173,7 +173,8 @@ fluid_1_2 = fluid_1_2 || {};
         lazyEditView: true,
         modelComparator: fluid.inlineEdit.htmlComparator,
         blurHandlerBinder: fluid.inlineEdit.tinyMCE.blurHandlerBinder,
-        editModeRenderer: fluid.inlineEdit.tinyMCE.editModeRenderer
+        editModeRenderer: fluid.inlineEdit.tinyMCE.editModeRenderer,
+        renderKeyboardTooltip: false
     });
     
     
@@ -278,6 +279,7 @@ fluid_1_2 = fluid_1_2 || {};
         modelComparator: fluid.inlineEdit.htmlComparator,
         blurHandlerBinder: fluid.inlineEdit.FCKEditor.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.FCKEditor.editModeRenderer,
+        renderKeyboardTooltip: false,
         FCKEditor: {
             BasePath: "fckeditor/"    
         }
@@ -373,6 +375,7 @@ fluid_1_2 = fluid_1_2 || {};
         modelComparator: fluid.inlineEdit.CKEditor.htmlComparator,
         blurHandlerBinder: fluid.inlineEdit.CKEditor.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.CKEditor.editModeRenderer,
+        renderKeyboardTooltip: false,
         CKEditor: {
             // CKEditor-specific configuration goes here.
         }
@@ -418,7 +421,8 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.defaults("fluid.inlineEdit.dropdown", {
         applyEditPadding: false,
         blurHandlerBinder: fluid.inlineEdit.dropdown.blurHandlerBinder,
-        editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer
+        editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer,
+        renderKeyboardTooltip: false
     });
     
     
