@@ -88,23 +88,16 @@ var fluid = fluid || fluid_1_2;
             $.data(this, NAMESPACE_KEY, data);
         });
     };
-/** Global focus manager - makes use of jQuery delegate plugin if present,
- * detecting presence of "focusin" event.
+/** Global focus manager - makes use of "focusin" event supported in jquery 1.4.2 or later.
  */
 
-    var lastFocusedElement = "disabled";
+    var lastFocusedElement = null;
     
-    if ($.event.special["focusin"]) {
-        lastFocusedElement = null;
-        $(document).bind("focusin", function(event){
-            lastFocusedElement = event.target;
-        });
-    }
+    $(document).bind("focusin", function(event){
+        lastFocusedElement = event.target;
+    });
     
     fluid.getLastFocusedElement = function () {
-        if (lastFocusedElement === "disabled") {
-           fluid.fail("Focus manager not enabled - please include jquery.delegate.js or equivalent for support of 'focusin' event");
-        }
         return lastFocusedElement;
     }
 
