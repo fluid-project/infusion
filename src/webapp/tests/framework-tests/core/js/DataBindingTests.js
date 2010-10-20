@@ -35,7 +35,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Match thing *", "thing.otherThing", fluid.pathUtil.matchPath("thing.*", "thing.otherThing"));
         });
         
-        DataBindingTests.test("ApplyChangeRequest", function() {
+        DataBindingTests.test("FLUID-3729 test: application into nothing", function() {
+            var model = {};
+            
+            fluid.model.applyChangeRequest(model, {type: "ADD", path: "path1.nonexistent", value: "value"});
+            jqUnit.assertEquals("Application 2 levels into nothing", "value", model.path1.nonexistent);
+            
+            fluid.model.applyChangeRequest(model, {type: "ADD", path: "path1.nonexistent2", value: "value2"});
+            jqUnit.assertEquals("Application 1 level into nothing", "value2", model.path1.nonexistent2);
+        });
+            
+        
+        DataBindingTests.test("ApplyChangeRequest - ADD, DELETE and MERGE", function() {
             var model = {a: 1, b: 2};
             var model2 = {c: 3};
             
@@ -55,6 +66,20 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             fluid.model.applyChangeRequest(testModel4, {type: "ADD", path: "c", value: fluid.copy(model2)});
             jqUnit.assertDeepEq("Add at trunk", {a:1, b:2, c:{c:3}}, testModel4);
+        });
+
+        DataBindingTests.test("Transactional ChangeApplier - external transactions", function() {
+            var model = {a: 1, b: 2};
+            var applier = fluid.makeChangeApplier(model);
+            var initModel = fluid.copy(model);
+            
+            var transApp = applier.initiate();
+            transApp.requestChange("c", 3);
+            jqUnit.assertDeepEq("Observable model unchanged", initModel, model);
+            transApp.requestChange("d", 4);
+            jqUnit.assertDeepEq("Observable model unchanged", initModel, model);
+            transApp.commit();
+            jqUnit.assertDeepEq("All changes applied", {a: 1, b: 2, c: 3, d: 4}, model);
         });
 
         function makeTransTest(trans, thin) {

@@ -246,7 +246,7 @@ fluid_1_2 = fluid_1_2 || {};
     /** Applies the supplied ChangeRequest object directly to the supplied model.
      */
     fluid.model.applyChangeRequest = function(model, request) {
-        var pen = fluid.model.getPenultimate(model, request.path);
+        var pen = fluid.model.getPenultimate(model, request.path, null, true);
         if (request.type === "ADD" || request.type === "MERGE") {
             if (pen.last === "" || request.type === "MERGE") {
                if (request.type === "ADD") {
