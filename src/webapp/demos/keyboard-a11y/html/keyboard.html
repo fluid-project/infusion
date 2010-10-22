@@ -4,6 +4,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Keyboard Accessbility</title>
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
         <link rel="stylesheet" type="text/css" href="../css/keyboard.css" />
 
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
@@ -14,34 +15,40 @@
     </head>
     <body>
         
-        <div class="fl-container-500 navbar">            
-            <ul class="level_1" tabindex=0>
-                <li>
-                    <a href="#">Company</a>
-                    <ul class="level_2">
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Citizenship</a></li>
-                        <li><a href="#">Locations</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Careers</a>
-                    <ul class="level_2">
-                        <li><a href="#">I dont see any...</a></li>
-                        <li><a href="#">Let me double check...</a></li>
-                        <li><a href="#">Yup, here they are!</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Places</a>
-                    <ul class="level_2">
-                        <li><a href="#">London</a></li>
-                        <li><a href="#">France</a></li>
-                        <li><a href="#">Canada</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Faces</a></li>
-            </ul>
+        <div class="fl-container-400 demo-container">
+        
+            <h1>Gallery Viewer</h1>
+            <div class="fl-col-mixed content">
+                Select an image to view in more detail.
+                <span class="keyboard-instructions fl-force-right"><a href="#keyboard-instructions">Keyboard Instructions</a></span>
+            </div>
+            
+            <div class="image-viewer fl-centered"><img class="image-main" src="../images/Banana.jpg" /></div>
+            <div class="five-star fl-centered">
+                <ul>
+                    <lh>Rank:</lh>
+                    <li class="star-one"><a href="#">1</a></li>
+                    <li class="star-two"><a href="#">2</a></li>
+                    <li class="star-three"><a href="#">3</a></li>
+                    <li class="star-four"><a href="#">4</a></li>
+                    <li class="star-five"><a href="#">5</a></li>
+                </ul>
+            </div>
+            
+            <div class="fl-centered image-thumbnails">
+                <ul>
+                    <li><a href="#Banana"><img src="../images/Banana.jpg"></a></li>
+                    <li><a href="#RedApple"><img src="../images/RedApple.jpg"></a></li>
+                    <li><a href="#Grapes"><img src="../images/Grapes.jpg"></a></li>
+                    <li><a href="#Fig"><img src="../images/Fig.jpg"></a></li>
+                    <li><a href="#Lemon"><img src="../images/Lemon.jpg"></a></li>
+                    <li><a href="#Cherry"><img src="../images/Cherry.jpg"></a></li>
+                    <li><a href="#Orange"><img src="../images/Orange.jpg"></a></li>
+                    <li><a href="#Mangosteen"><img src="../images/Mangosteen.jpg"></a></li>
+                    <li><a href="#Dragonfruit"><img src="../images/Dragonfruit.jpg"></a></li>            
+                </ul>
+            </div>
+        
         </div>        
         <script type="text/javascript">
             demo.initKeyboardNav();

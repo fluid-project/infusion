@@ -1,8 +1,15 @@
-a {
-    color:#fff;
-    text-decoration:none;
-    display:block;    
+:focus {
+    outline: 4px black #000 !important;
 }
+
+.demo-container{
+    background-color: #E6E8F4;
+}
+
+h1 {
+    margin-bottom: 3px;
+}
+
 ul {
     margin:0;
     padding:0;
@@ -12,39 +19,56 @@ li {
     display:block;
 }
 :focus {
-    outline:none;
+    /* no styles currently. */
 }
-.level_1 li {
-    float:left;
-    position:relative;
+
+.image-viewer {
+    width: 390px;
+    height: 300px;
+    background-color:#FFFFFF;
+    margin-top: 20px;
+    border: 1px solid #000;
+    text-align:center;
 }
-.level_1 li a {
-    padding:5px 35px 5px 5px;
-    background-color:#333;
-    float:left;    
+
+.image-main {
+    height:100%;
+    width:auto;
+    max-height:300px;
+    max-width:390px;
 }
-.level_2 {
-    display:none;
-    position:absolute;
-    top:26px;
-    left:0;
-    background-color:#999;
-    width:180px;       
+
+.five-star {
+    width: 390px;
+    height: 30px;
+    background-color:#CCCBE4;
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    border-left: 1px solid #000;
+    text-align:center;
 }
-.level_2 li, 
-.level_2 li a {
-    float:none;
+
+.five-star  ul li{
+    display:inline;
+    margin:5px;
 }
-.level_2 li a {
-    padding:5px;
+
+.image-thumbnails {
+    width: 390px;
+    background-color:#CCCBE4;
+    border: 1px solid #000;
+    margin-top: 10px;
+    text-align:center;
 }
-.revealSubMenu .level_2 {
-    display:block;
+
+.image-thumbnails ul {
+    padding: 5px;
 }
-.level_1 .active a {
-    background-color:#C00;
+
+.image-thumbnails ul li {
+    margin: 10px;
 }
-.level_1 .active .subActive a {
-    background-color:#666;
-    color:#fff;
+
+.image-thumbnails img {
+    border: 1px solid #000;
 }
