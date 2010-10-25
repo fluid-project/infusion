@@ -465,7 +465,7 @@ fluid_1_2 = fluid_1_2 || {};
       }
     
       function isSelfClose() {
-          return trc.endopen.lumpindex === trc.close.lumpindex && XMLP.closedTags[trc.uselump.tagname]; 
+          return trc.endopen.lumpindex === trc.close.lumpindex && fluid.XMLP.closedTags[trc.uselump.tagname]; 
       }
     
       function replaceAttributesOpen() {

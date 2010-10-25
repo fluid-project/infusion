@@ -316,54 +316,53 @@ fluid_1_2 = fluid_1_2 || {};
     var idpos = template.indexOf(fluid.ID_ATTRIBUTE);
     if (scanStart) {
       var brackpos = template.indexOf('>', idpos);
-      parser = new XMLP(template.substring(brackpos + 1));
+      parser = fluid.XMLP(template.substring(brackpos + 1));
     }
     else {
-      parser = new XMLP(template); 
+      parser = fluid.XMLP(template); 
       }
 
     parseloop: while(true) {
-      var iEvent = parser.next();
-      switch(iEvent) {
-        case XMLP._ELM_B:
-          processDefaultTag();
-          //var text = parser.getContent().substr(parser.getContentBegin(), parser.getContentEnd() - parser.getContentBegin());
-          processTagStart(false, "");
-          break;
-        case XMLP._ELM_E:
-          processDefaultTag();
-          processTagEnd();
-          break;
-        case XMLP._ELM_EMP:
-          processDefaultTag();
-          //var text = parser.getContent().substr(parser.getContentBegin(), parser.getContentEnd() - parser.getContentBegin());    
-          processTagStart(true, "");
-          break;
-        case XMLP._PI:
-        case XMLP._DTD:
-          defstart = -1;
-          continue; // not interested in reproducing these
-        case XMLP._TEXT:
-        case XMLP._ENTITY:
-        case XMLP._CDATA:
-        case XMLP._COMMENT:
-          if (defstart === -1) {
-            defstart = parser.m_cB;
+        var iEvent = parser.next();
+        switch(iEvent) {
+            case fluid.XMLP._ELM_B:
+                processDefaultTag();
+                //var text = parser.getContent().substr(parser.getContentBegin(), parser.getContentEnd() - parser.getContentBegin());
+                processTagStart(false, "");
+                break;
+            case fluid.XMLP._ELM_E:
+                processDefaultTag();
+                processTagEnd();
+                break;
+            case fluid.XMLP._ELM_EMP:
+                processDefaultTag();
+                //var text = parser.getContent().substr(parser.getContentBegin(), parser.getContentEnd() - parser.getContentBegin());    
+                processTagStart(true, "");
+                break;
+            case fluid.XMLP._PI:
+            case fluid.XMLP._DTD:
+                defstart = -1;
+                continue; // not interested in reproducing these
+            case fluid.XMLP._TEXT:
+            case fluid.XMLP._ENTITY:
+            case fluid.XMLP._CDATA:
+            case fluid.XMLP._COMMENT:
+                if (defstart === -1) {
+                  defstart = parser.m_cB;
+                  }
+                defend = parser.m_cE;
+                break;
+            case fluid.XMLP._ERROR:
+                fluid.setLogging(true);
+                var message = "Error parsing template: " + parser.m_cAlt + " at line " + parser.getLineNumber(); 
+                fluid.log(message);
+                fluid.log("Just read: " + parser.m_xml.substring(parser.m_iP - 30, parser.m_iP));
+                fluid.log("Still to read: " + parser.m_xml.substring(parser.m_iP, parser.m_iP + 30));
+                fluid.fail(message);
+                break parseloop;
+            case fluid.XMLP._NONE:
+                break parseloop;
             }
-          defend = parser.m_cE;
-          break;
-        case XMLP._ERROR:
-          fluid.setLogging(true);
-          var message = "Error parsing template: " + parser.m_cAlt + 
-          " at line " + parser.getLineNumber(); 
-          fluid.log(message);
-          fluid.log("Just read: " + parser.m_xml.substring(parser.m_iP - 30, parser.m_iP));
-          fluid.log("Still to read: " + parser.m_xml.substring(parser.m_iP, parser.m_iP + 30));
-          fluid.fail(message);
-          break parseloop;
-        case XMLP._NONE:
-          break parseloop;
-        }
       }
     processDefaultTag();
     var excess = tagstack.length - 1; 
