@@ -47,14 +47,10 @@ var demo = demo || {};
             urls: {
                 textEditButtonImage: "../images/pencil.jpg"
             },
-            strings: {
-                editModeToolTip: demo.initInlineEdit.strings.editModeToolTip
-            },
             styles: {
                 textEditButton: "fl-inlineEdit-button",
                 edit: "fl-inlineEdit-title-edit"
-            },
-            tooltipText: demo.initInlineEdit.strings.tooltipTextTitle
+            }
         });
         
         fluid.inlineEdit(".simpleEditCaption", {
@@ -67,22 +63,12 @@ var demo = demo || {};
             },
             urls: {
                 textEditButtonImage: "../images/pencil.jpg"
-            },
-            strings: {
-                editModeToolTip: demo.initInlineEdit.strings.editModeToolTip
-            },            
-            tooltipText: demo.initInlineEdit.strings.tooltipTextCaption
+            }
         });
     };
         
     demo.initInlineEdit = function () {        
         inlineSimpleEditSetup();
-    };  
-    
-    demo.initInlineEdit.strings = {
-        editModeToolTip : "Press Enter, Tab, or click elsewhere when done.",
-        tooltipTextCaption : "Edit caption.  Select or press Enter.", 
-        tooltipTextTitle : "Edit title.  Select or press Enter."
     };
     
     demo.initInlineEdit.selectors = {

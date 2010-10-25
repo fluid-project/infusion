@@ -735,7 +735,7 @@ fluid_1_2 = fluid_1_2 || {};
 
         strings: {
             textEditButton: "Edit text %text",
-            editModeTooltip: "Press Escape to cancel, Enter or Tab when finished."
+            editModeTooltip: "Escape to cancel, Enter or Tab when finished"
         },
         
         paddings: {
@@ -778,7 +778,7 @@ fluid_1_2 = fluid_1_2 || {};
         
         defaultViewText: "Click here to edit",
         
-        tooltipText: "Click item to edit",
+        tooltipText: "Select or press Enter to edit",
         
         tooltipId: "tooltip",
         
