@@ -3,11 +3,14 @@
 }
 
 .demo-container{
+    width:36em;
     background-color: #E6E8F4;
+    margin: 2em;
+    padding: 0.5em;
 }
 
 h1 {
-    margin-bottom: 3px;
+    margin-bottom: 0.2em;
 }
 
 ul {
@@ -22,25 +25,72 @@ li {
     /* no styles currently. */
 }
 
+/* Main image viewer */
+
 .image-viewer {
-    width: 390px;
-    height: 300px;
+    width: 100%;
+    height: 24em;
     background-color:#FFFFFF;
-    margin-top: 20px;
-    border: 1px solid #000;
+    border: 0.1em solid #000;
     text-align:center;
+    margin-top:1em;
 }
 
 .image-main {
     height:100%;
     width:auto;
-    max-height:300px;
-    max-width:390px;
+    max-height:24em;
+    max-width:100%;
 }
 
+
+/* Thumbnails */
+/*
+.outer {
+    position:relative;
+    width:100%;
+    z-index:1;
+}
+*/
+
+.image-thumbnails  {
+    height: 11em;
+    background-color:#CCCBE4;
+    border: 1px solid #000;
+    margin-top: 0.5em;
+    text-align:center;
+    overflow:auto;
+    position:relative;
+    white-space:nowrap;
+    z-index:1;
+}
+
+.image-thumbnails ul {
+    list-style:none outside none;
+    margin:0;
+    padding:0;
+}
+
+.image-thumbnails ul li {
+    display:inline-block;
+    margin:0.5em;
+    padding:0.3em;
+    text-align:center;
+}
+
+.image-thumbnails img {
+    border: 0.1em solid #000;
+    height:100%;
+    width:auto;
+    max-height:7em;
+    max-width:auto;
+}
+
+/* Five Star Widget */
+
 .five-star {
-    width: 390px;
-    height: 30px;
+    width: 100%;
+    height: 3em;
     background-color:#CCCBE4;
     border-bottom: 1px solid #000;
     border-right: 1px solid #000;
@@ -52,23 +102,91 @@ li {
     display:inline;
     margin:5px;
 }
-
-.image-thumbnails {
-    width: 390px;
-    background-color:#CCCBE4;
-    border: 1px solid #000;
-    margin-top: 10px;
-    text-align:center;
+/*
+.rating {
+    background:url("images/star-matrix.gif") no-repeat scroll 0 0 transparent;
+    clear:both;
+    height:16px;
+    list-style:none outside none;
+    margin:0 0 20px;
+    padding:0;
+    position:relative;
+    width:80px;
 }
 
-.image-thumbnails ul {
-    padding: 5px;
+.nostar {
+background-position:0 0;
+}
+.onestar {
+background-position:0 -16px;
+}
+.twostar {
+background-position:0 -32px;
+}
+.threestar {
+background-position:0 -48px;
+}
+.fourstar {
+background-position:0 -64px;
+}
+.fivestar {
+background-position:0 -80px;
 }
 
-.image-thumbnails ul li {
-    margin: 10px;
+ul.rating li {
+cursor:pointer;
+float:left;
+text-indent:-999em;
 }
-
-.image-thumbnails img {
-    border: 1px solid #000;
+ul.rating li a {
+height:16px;
+left:0;
+position:absolute;
+text-decoration:none;
+top:0;
+width:16px;
+z-index:200;
 }
+.five-star  ul li.star-one a {
+left:0;
+}
+.five-star  ul li.star-two a {
+left:16px;
+}
+.five-star  ul li.star-three a {
+left:32px;
+}
+.five-star  ul li.star-four a {
+left:48px;
+}
+.five-star  ul li.star-five a {
+left:64px;
+}
+ul.rating li a:hover {
+background:url("../images/star-matrix.gif") no-repeat scroll 0 0 transparent;
+height:16px;
+left:0;
+overflow:hidden;
+width:80px;
+z-index:2;
+}
+ul.rating li.one a:hover {
+background-position:0 -96px;
+}
+ul.rating li.two a:hover {
+background-position:0 -112px;
+}
+ul.rating li.three a:hover {
+background-position:0 -128px;
+}
+ul.rating li.four a:hover {
+background-position:0 -144px;
+}
+ul.rating li.five a:hover {
+background-position:0 -160px;
+}
+h3 {
+font-size:110%;
+margin:0 0 2px;
+}
+*/
