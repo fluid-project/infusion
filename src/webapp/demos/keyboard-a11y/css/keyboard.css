@@ -3,10 +3,12 @@
 }
 
 .demo-container{
-    width:36em;
+    width:100%;
     background-color: #E6E8F4;
     margin: 2em;
     padding: 0.5em;
+    max-width: 46em;
+    min-width: 20em;
 }
 
 h1 {
@@ -95,12 +97,24 @@ li {
     border-bottom: 1px solid #000;
     border-right: 1px solid #000;
     border-left: 1px solid #000;
-    text-align:center;
+    
 }
 
 .five-star  ul li{
     display:inline;
     margin:5px;
+}
+
+.five-star ul {
+    background:url("../images/star-matrix.gif") no-repeat scroll 0 0 transparent;
+    clear:both;
+    /*height:16px;*/
+    list-style:none outside none;
+    /*margin:0 0 20px;*/
+    padding:0;
+    position:relative;
+    /*width:80px;*/
+    /*background-position:0 0;*/
 }
 /*
 .rating {
@@ -117,34 +131,19 @@ li {
 .nostar {
 background-position:0 0;
 }
-.onestar {
-background-position:0 -16px;
-}
-.twostar {
-background-position:0 -32px;
-}
-.threestar {
-background-position:0 -48px;
-}
-.fourstar {
-background-position:0 -64px;
-}
-.fivestar {
-background-position:0 -80px;
-}
-
-ul.rating li {
+*/
+.five-star ul li {
 cursor:pointer;
 float:left;
 text-indent:-999em;
 }
-ul.rating li a {
-height:16px;
+.five-star ul li a {
+height:1.2em;
 left:0;
 position:absolute;
 text-decoration:none;
 top:0;
-width:16px;
+width:1.1em;
 z-index:200;
 }
 .five-star  ul li.star-one a {
@@ -162,7 +161,7 @@ left:48px;
 .five-star  ul li.star-five a {
 left:64px;
 }
-ul.rating li a:hover {
+.five-star ul li a:hover {
 background:url("../images/star-matrix.gif") no-repeat scroll 0 0 transparent;
 height:16px;
 left:0;
@@ -170,23 +169,18 @@ overflow:hidden;
 width:80px;
 z-index:2;
 }
-ul.rating li.one a:hover {
+.five-star ul li.star-one a:hover {
 background-position:0 -96px;
 }
-ul.rating li.two a:hover {
+.five-star ul li.star-two a:hover {
 background-position:0 -112px;
 }
-ul.rating li.three a:hover {
+.five-star ul li.star-three a:hover {
 background-position:0 -128px;
 }
-ul.rating li.four a:hover {
+.five-star ul li.star-four a:hover {
 background-position:0 -144px;
 }
-ul.rating li.five a:hover {
+.five-star ul li.star-five a:hover {
 background-position:0 -160px;
 }
-h3 {
-font-size:110%;
-margin:0 0 2px;
-}
-*/
