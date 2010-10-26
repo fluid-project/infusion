@@ -85,7 +85,8 @@ var fluid_1_2 = fluid_1_2 || {};
         }
     }
 
-    function makeStackFetcher(thatStack) {
+    function makeStackFetcher(thatStack, directModel) {
+        var envFetcher = fluid.environmentFetcher(directModel);
         var fetcher = function(parsed) {
             var context = parsed.context;
             var foundComponent;
@@ -96,20 +97,23 @@ var fluid_1_2 = fluid_1_2 || {};
                 }
             });
             if (!foundComponent) {
-                fluid.fail("No context matched for name " + context + " from root of type " + thatStack[0].typeName);
+                return envFetcher(parsed);
+                // TODO: we used to get a helpful diagnostic when we failed to match a context name before we fell back
+                // to the environment for FLUID-3818
+                //fluid.fail("No context matched for name " + context + " from root of type " + thatStack[0].typeName);
             }
             return getValueGingerly(thatStack, foundComponent, fluid.model.parseEL(parsed.path), 0);
         };
         return fetcher;
     }
      
-    function makeStackResolverOptions(thatStack) {
-        return $.extend({}, fluid.defaults("fluid.resolveEnvironment"), {fetcher: makeStackFetcher(thatStack)}); 
+    function makeStackResolverOptions(thatStack, directModel) {
+        return $.extend({}, fluid.defaults("fluid.resolveEnvironment"), {fetcher: makeStackFetcher(thatStack, directModel)}); 
     } 
      
     function resolveRvalue(thatStack, arg, initArgs, componentOptions) {
-        var options = makeStackResolverOptions(thatStack);
         var directModel = thatStack[0].model; // TODO: this convention may not always be helpful
+        var options = makeStackResolverOptions(thatStack, directModel);
         
         if (fluid.isMarker(arg, fluid.COMPONENT_OPTIONS)) {
             arg = fluid.resolveEnvironment(componentOptions, directModel, options);
@@ -586,14 +590,18 @@ var fluid_1_2 = fluid_1_2 || {};
         {ELstyle:     "${}",
          bareContextRefs: true});
     
+    fluid.environmentFetcher = function(directModel) {
+        var env = fluid.threadLocal();
+        return function(parsed) {
+            return fluid.fetchContextReference(parsed, directModel, env);
+        };
+    };
+    
     fluid.resolveEnvironment = function(obj, directModel, userOptions) {
         directModel = directModel || {};
         var options = fluid.merge(null, {}, fluid.defaults("fluid.resolveEnvironment"), userOptions);
         if (!options.fetcher) {
-            var env = fluid.threadLocal();
-            options.fetcher = function(parsed) {
-                return fluid.fetchContextReference(parsed, directModel, env);
-            };
+            options.fetcher = fluid.environmentFetcher(directModel);
         }
         return resolveEnvironmentImpl(obj, options);
     };

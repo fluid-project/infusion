@@ -78,6 +78,17 @@ fluid.defaults("fluid.testUtils.dependentModel", {
     }
 });
 
+fluid.defaults("fluid.testUtils.fluid3818head", {
+    components: {
+        child: {
+            type: "fluid.testUtils.fluid3818child",
+            options: {
+                value: "{environmentalValue}.derived"
+            }
+        }  
+    }
+});
+
 fluid.makeComponents({
     "fluid.testUtils.testComponent":      "fluid.standardComponent",
     "fluid.testUtils.testComponent2":     "fluid.standardComponent",
@@ -91,7 +102,9 @@ fluid.makeComponents({
     "fluid.testUtils.multiResSub2":       "fluid.littleComponent",
     "fluid.testUtils.multiResSub3":       "fluid.littleComponent",
     "fluid.testUtils.defaultInteraction": "fluid.littleComponent",
-    "fluid.testUtils.popup":              "fluid.littleComponent"
+    "fluid.testUtils.popup":              "fluid.littleComponent",
+    "fluid.testUtils.fluid3818head":      "fluid.littleComponent",
+    "fluid.testUtils.fluid3818child":     "fluid.littleComponent"
     // TODO: GRADES
     //"fluid.testUtils.resultsPager":       "fluid.littleComponent"
     });
@@ -310,6 +323,15 @@ fluid.testUtils.envTests.config = {
         exhibitions: "_design/exhibitions/_view/browse"
     }
 };
+
+fluidIoCTests.test("Environmental Tests II - FLUID-3818", function() {
+    var component = fluid.withEnvironment({environmentalValue: {derived: "derivedValue"}},
+        function() {
+            return fluid.testUtils.fluid3818head();
+        });
+    jqUnit.assertValue("child component constructed", component.child);
+    jqUnit.assertEquals("Resolved environmental value", "derivedValue", component.child.options.value);
+});
 
 fluidIoCTests.test("Environmental Tests", function() {
     var urlBuilder = {
