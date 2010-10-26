@@ -2,34 +2,23 @@
     outline: 4px black #000 !important;
 }
 
-.demo-container{
-    width:100%;
-    background-color: #E6E8F4;
-    margin: 2em;
-    padding: 0.5em;
-    max-width: 46em;
-    min-width: 20em;
-}
-
 h1 {
     margin-bottom: 0.2em;
 }
 
-ul {
-    margin:0;
-    padding:0;
-}
-li {
-    list-style:none;
-    display:block;
-}
-:focus {
-    /* no styles currently. */
+.demo-container {
+    width:95%;
+    background-color: #E6E8F4;
+    margin: 1em;
+    padding: 0.5em;
+    min-width: 30em;
 }
 
+
+/**/
 /* Main image viewer */
-
-.image-viewer {
+/**/
+.demo-container-imageViewer {
     width: 100%;
     height: 24em;
     background-color:#FFFFFF;
@@ -38,24 +27,18 @@ li {
     margin-top:1em;
 }
 
-.image-main {
+/* Stretch the image to fit the height view container, while maintaining the aspect ratio. */
+.demo-image-mainImage {
     height:100%;
-    width:auto;
-    max-height:24em;
-    max-width:100%;
+    width:auto; /* maintain the aspect ratio even if height resized. */
+    min-width: 28em; /* if resized, this is the smallest width the image will have. */
 }
 
 
+/**/
 /* Thumbnails */
-/*
-.outer {
-    position:relative;
-    width:100%;
-    z-index:1;
-}
-*/
-
-.image-thumbnails  {
+/**/
+.demo-container-imageThumbnails  {
     height: 11em;
     background-color:#CCCBE4;
     border: 1px solid #000;
@@ -67,20 +50,20 @@ li {
     z-index:1;
 }
 
-.image-thumbnails ul {
+.demo-container-imageThumbnails ul {
     list-style:none outside none;
     margin:0;
     padding:0;
 }
 
-.image-thumbnails ul li {
+.demo-container-imageThumbnails ul li {
     display:inline-block;
     margin:0.5em;
     padding:0.3em;
     text-align:center;
 }
 
-.image-thumbnails img {
+.demo-container-imageThumbnails img {
     border: 0.1em solid #000;
     height:100%;
     width:auto;
@@ -88,99 +71,87 @@ li {
     max-width:auto;
 }
 
+/**/
 /* Five Star Widget */
-
-.five-star {
+/**/
+.demo-container-fiveStar {
     width: 100%;
     height: 3em;
     background-color:#CCCBE4;
     border-bottom: 1px solid #000;
     border-right: 1px solid #000;
     border-left: 1px solid #000;
-    
 }
 
-.five-star  ul li{
-    display:inline;
-    margin:5px;
-}
-
-.five-star ul {
+.demo-container-fiveStar ul {
+    /* Place an image of the various 5-star states as the background image */
     background:url("../images/star-matrix.gif") no-repeat scroll 0 0 transparent;
-    clear:both;
-    /*height:16px;*/
+    /*clear:both;*/
     list-style:none outside none;
-    /*margin:0 0 20px;*/
     padding:0;
     position:relative;
-    /*width:80px;*/
-    /*background-position:0 0;*/
+    margin:0;
+    height:16px; /* the height of a row in the 5-star image matrix. */
+    width:80px;  /* the width of the 5-star image. */
+    left:40%;
+    }
+
+.demo-container-fiveStar ul li {
+    cursor:pointer;
+    float:left;
+    display:inline; /* make the 5-star list as a horizontal list. */
+    /* margin:5px;*/
+    /*text-indent:-999em; keep text offscreen so it's still readable by an AT. */
 }
-/*
-.rating {
-    background:url("images/star-matrix.gif") no-repeat scroll 0 0 transparent;
-    clear:both;
-    height:16px;
-    list-style:none outside none;
-    margin:0 0 20px;
-    padding:0;
-    position:relative;
-    width:80px;
+.demo-container-fiveStar ul li a {
+    position:absolute;
+    height:1.2em;
+    left:0;
+    top:0;
+    width:1.1em;
+    text-decoration:none;
+    z-index:200;
 }
 
-.nostar {
-background-position:0 0;
+/* Position the links over the stars in the background. */
+.demo-container-fiveStar  ul li.star-one a {
+    left:0;
 }
-*/
-.five-star ul li {
-cursor:pointer;
-float:left;
-text-indent:-999em;
+.demo-container-fiveStar  ul li.star-two a {
+    left:16px;
 }
-.five-star ul li a {
-height:1.2em;
-left:0;
-position:absolute;
-text-decoration:none;
-top:0;
-width:1.1em;
-z-index:200;
+.demo-container-fiveStar  ul li.star-three a {
+    left:32px;
 }
-.five-star  ul li.star-one a {
-left:0;
+.demo-container-fiveStar  ul li.star-four a {
+    left:48px;
 }
-.five-star  ul li.star-two a {
-left:16px;
+.demo-container-fiveStar  ul li.star-five a {
+    left:64px;
 }
-.five-star  ul li.star-three a {
-left:32px;
+
+.demo-container-fiveStar ul li a:hover {
+    background:url("../images/star-matrix.gif") no-repeat scroll 0 0 transparent;
+    height:1.2em; /* the height of the 5-star widget */
+    left:0;
+    overflow:hidden;
+    width:80px; /* the width of the star image */
+    z-index:2;
 }
-.five-star  ul li.star-four a {
-left:48px;
+
+/* Depending on the hover, change the position of the image. */
+.demo-container-fiveStar ul li.star-one a:hover {
+    background-position:0 -96px;
 }
-.five-star  ul li.star-five a {
-left:64px;
+.demo-container-fiveStar ul li.star-two a:hover {
+    background-position:0 -112px;
 }
-.five-star ul li a:hover {
-background:url("../images/star-matrix.gif") no-repeat scroll 0 0 transparent;
-height:16px;
-left:0;
-overflow:hidden;
-width:80px;
-z-index:2;
+.demo-container-fiveStar ul li.star-three a:hover {
+    background-position:0 -128px;
 }
-.five-star ul li.star-one a:hover {
-background-position:0 -96px;
+.demo-container-fiveStar ul li.star-four a:hover {
+    background-position:0 -144px;
 }
-.five-star ul li.star-two a:hover {
-background-position:0 -112px;
-}
-.five-star ul li.star-three a:hover {
-background-position:0 -128px;
-}
-.five-star ul li.star-four a:hover {
-background-position:0 -144px;
-}
-.five-star ul li.star-five a:hover {
-background-position:0 -160px;
+.demo-container-fiveStar ul li.star-five a:hover {
+    background-position:0 -160px;
 }
