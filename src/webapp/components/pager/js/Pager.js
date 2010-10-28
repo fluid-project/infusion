@@ -529,9 +529,9 @@ fluid_1_2 = fluid_1_2 || {};
                         var filtered = overallThat.options.modelFilter(directModel, newModel, overallThat.permutation);
                         var tree = fluid.transform(filtered, 
                             function (filteredRow) {
-                                var roots = getRoots(expOpts, overallThat, filteredRow.index);
+                                getRoots(expOpts, overallThat, filteredRow.index);
                                 if (columnDefs === "explode") {
-                                    return fluid.explode(filteredRow.row, roots.longRoot);
+                                    return fluid.explode(filteredRow.row, expOpts.longRoot);
                                 }
                                 else if (columnDefs.length) {
                                     return expandColumnDefs(filteredRow, expOpts);

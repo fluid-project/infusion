@@ -197,5 +197,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
             disabled("After clicking next on last page, next", nextLink);
         });
         
+        tests.test("Pager bodyRenderer: fluid.pager.selfRender with default columnDefs (FLUID-3793)", function () {
+            // without a fix to FLUID-3793, pager creation will fail with the default selfRender configuration
+            expect(1);
+            var pager = fluid.pager("#plants", {
+                bodyRenderer: "fluid.pager.selfRender",
+                dataModel: {}
+            });
+            jqUnit.assertTrue("Pager has been successfully created", pager);
+        });
+        
     });
 })(jQuery);
