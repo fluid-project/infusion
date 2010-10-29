@@ -562,7 +562,7 @@ if (!fluid.unwrap) {
     });
     
     var quickMakeSelectable = function (containerSelector, options) {
-        $(containerSelector).fluid("selectable", options);
+        return $(containerSelector).fluid("selectable", options).that();
     };
     
     test("Leaving container: onLeaveContainer", function () {
@@ -572,7 +572,8 @@ if (!fluid.unwrap) {
         }
         
         var wasCalled = false;
-        quickMakeSelectable(MENU_SEL, {
+        var selectable = quickMakeSelectable(MENU_SEL, {
+            selectableSelector: MENU_ITEM_SEL,
             onLeaveContainer: function () {
                 wasCalled = true;
             }
@@ -592,7 +593,8 @@ if (!fluid.unwrap) {
         }
         
         var wasCalled = false;
-        quickMakeSelectable(MENU_SEL, {
+        var selectable = quickMakeSelectable(MENU_SEL, {
+            selectableSelector: MENU_ITEM_SEL,
             onUnselect: function () {
                 wasCalled = true;
             }
