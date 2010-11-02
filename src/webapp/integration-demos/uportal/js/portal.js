@@ -25,7 +25,7 @@ var demo = demo || {};
         fluid.inlineEdit("#Pluto_5_u15l1n13_optionsForm", {
             selectors: {text: "#inline-editable"},
             urls: {
-                textEditButtonImage: "../../../components/inlineEdit/images/edit_icon-01.png"
+                textEditButtonImage: "../../../components/inlineEdit/images/inline_edit_edit_button_16x16.png"
             }
         });
         var options = { 

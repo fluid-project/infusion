@@ -1,33 +1,47 @@
 /* Themed Appearance + Themed States */
 
-.fl-inlineEdit-edit {margin:-2px; padding:0;}
-
-.fl-inlineEdit-textEditButton {
-    padding-left : 5px;
+.fl-inlineEdit-edit {
+    margin  : -2px; 
+    padding : 0;
 }
 
-.fl-inlineEdit-textEditButton, .fl-inlineEdit-text {
+.fl-inlineEdit-text {
+    padding       : 3px;
     border-bottom : 1px dotted #0086D8;
 }
 
+.fl-inlineEdit-wrapper {
+    border  : 1px solid #0085FF;
+    padding : 3px 3px;
+}
+
+.fl-inlineEdit-inlineBlock {
+    display: inline-block;
+}	
+
 /* Base Appearance & States Appearance */
-.fl-inlineEdit-tooltip, .fl-inlineEdit-keyboardTooltip {
+.fl-inlineEdit-tooltip {
     position    : absolute;
-    background  : #CCC;
-    border      : 1px solid #999;
-    font        : normal 75% sans-serif;
+    background  : #FFFABB;
+    border      : 1px solid #C9B857;
+    font        : normal sans-serif;
     padding     : 3px 5px;
 }
 
-/* Put keyboard focusin tooltip on a foreground layer */
-.fl-inlineEdit-keyboardTooltip {
-	z-index     : 1;
+/* Put keyboard focus tooltip on a foreground layer */
+.fl-inlineEdit-instructionText {
+    position    : absolute;
+    background  : #0081C1;
+    font        : normal sans-serif;
+    color       : #FFFFFF;
+    padding     : 3px 5px;
+    max-width   : 310px;
+    z-index     : 1;    
 }
 
 /* :hover */
 .fl-inlineEdit-invitation {
-    border      : 1px solid #999;
-    background  : lightyellow;
+    background  : #E1EDF5;
     cursor      : pointer;
     /*margin      : -1px;*/
 }
@@ -37,7 +51,11 @@
     cursor      : pointer;
 }
 
-/* :focus */ 
-.fl-inlineEdit-focus{
-    
+/* :focus */
+:focus {
+    outline: none;
+}
+
+.flc-undo :focus {
+    outline: 1px solid black;
 }

@@ -19,8 +19,8 @@ var demo = demo || {};
     var undoRenderer = function (that, targetContainer) {
         var markup = 
             "<span class='flc-undo'>" +
-            "<span class='undoContainer' role='button'><a href='#' class='undoControl'><img src='../images/undo.jpg' alt='Undo edit'></a></span>" +
-            "<span class='redoContainer' role='button'><a href='#' class='redoControl'><img src='../images/redo.jpg' alt='Redo edit'></a></span>" +
+            "<span class='undoContainer' role='button'><a href='#' class='undoControl'><img src='../images/inline_edit_undo_button_16x16.png' alt='Undo edit'></a></span>" +
+            "<span class='redoContainer' role='button'><a href='#' class='redoControl'><img src='../images/inline_edit_redo_button_16x16.png' alt='Redo edit'></a></span>" +
             "</span>";
         var markupNode = $(markup);
         targetContainer.append(markupNode);
@@ -44,13 +44,12 @@ var demo = demo || {};
                     renderer: undoRenderer
                 }
             },
-            urls: {
-                textEditButtonImage: "../images/pencil.jpg"
-            },
             styles: {
-                textEditButton: "fl-inlineEdit-button",
-                edit: "fl-inlineEdit-title-edit"
-            }
+                edit: "fl-inlineEdit-title-edit fl-inlineEdit-edit"
+            },
+            urls: {
+                textEditButtonImage: "../../../../components/inlineEdit/images/inline_edit_edit_button_16x16.png"
+            }            
         });
         
         fluid.inlineEdit(".simpleEditCaption", {
@@ -62,7 +61,7 @@ var demo = demo || {};
                 }
             },
             urls: {
-                textEditButtonImage: "../images/pencil.jpg"
+                textEditButtonImage: "../../../../components/inlineEdit/images/inline_edit_edit_button_16x16.png"
             }
         });
     };

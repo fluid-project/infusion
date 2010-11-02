@@ -44,7 +44,7 @@ var demo = demo || {};
                 type: "fluid.undoDecorator"
             },
             urls: {
-                textEditButtonImage: "../../../../components/inlineEdit/images/edit_icon-01.png"
+                textEditButtonImage: "../../../../components/inlineEdit/images/inline_edit_edit_button_16x16.png"
             }
         });
         makeButtons(tinyEditor);
@@ -55,7 +55,7 @@ var demo = demo || {};
                 type: "fluid.undoDecorator"
             },
             urls: {
-                textEditButtonImage: "../../../../components/inlineEdit/images/edit_icon-01.png"
+                textEditButtonImage: "../../../../components/inlineEdit/images/inline_edit_edit_button_16x16.png"
             }
         });
         makeButtons(ckEditor);    

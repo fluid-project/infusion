@@ -2,6 +2,7 @@
 Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of California, Berkeley
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -36,27 +37,25 @@ https://source.fluidproject.org/svn/LICENSE.txt
             }
         };
         
-       function insistSelect(message, that, name) {
-          var togo = that.locate(name);
-          jqUnit.assertEquals(message, 1, togo.length);
-          return togo;
+        function insistSelect(message, that, name) {
+            var togo = that.locate(name);
+            jqUnit.assertEquals(message, 1, togo.length);
+            return togo;
         }
-        
         
        function assertVisibility(state, name, selector) {
-          if (state) {
-            jqUnit.isVisible(name + " should be visible", selector);
-          }
-          else {
-            jqUnit.notVisible(name + " should not be visible", selector);
-          }
-        }
+           if (state) {
+               jqUnit.isVisible(name + " should be visible", selector);
+           }
+           else {
+               jqUnit.notVisible(name + " should not be visible", selector);
+           }
+       }
         
        function assertVisState(undo, redo, uv, rv) {
            assertVisibility(uv, "undo container", undo);
            assertVisibility(rv, "redo container", redo);
        }
-    
      
        inlineEditTests.test("Minimal Construction", function () {
             expect(11);
@@ -139,7 +138,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
               var field = inlineEditor.editField;
               jqUnit.assertEquals("Empty on begin edit", "", field.val());
               var value = "Thing\nLine 2";
-              // Remove this conditional to verify impossibility of FLUID-890, and observe quite inconsistent behaviour on all browsers
+              // Remove this conditional to verify impossibility of FLUID-890,
+              // and observe quite inconsistent behaviour on all browsers
               if (field[0].nodeName.toLowerCase() === "input") {
                   value = "Thing"; 
               }
@@ -166,7 +166,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var field = inlineEditor.editField;
                 jqUnit.assertEquals("Click here to edit on begin edit", "Click here to edit", field.val());
                 var value = "Thing\nLine 2";
-                // Remove this conditional to verify impossibility of FLUID-890, and observe quite inconsistent behaviour on all browsers
+                // Remove this conditional to verify impossibility of FLUID-890,
+                // and observe quite inconsistent behaviour on all browsers
                 if (field[0].nodeName.toLowerCase() === "input") {
                     value = "Thing"; 
                 }
@@ -192,10 +193,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var inlineEditor = fluid.inlineEdit("#empty-inline-edit");
             jqUnit.assertEquals("After initialization of empty display, display has invitation text: ", fluid.defaults("inlineEdit").defaultViewText, display.text());
             jqUnit.assertTrue("Invitation text has invitation text style", display.hasClass(inlineEditor.options.styles.defaultViewStyle));
-            jqUnit.assertTrue("Invitation text still contains it's initial class attribute as well", display.hasClass("flc-inlineEdit-text")); // added for FLUID-1803
-    
+            jqUnit.assertTrue("Invitation text still contains it's initial class attribute as well", display.hasClass("flc-inlineEdit-text")); // added for FLUID-1803 
+            
             var testText = "This is test text.";
-            var edit = $("#empty-inline-edit-edit");
+            var edit = inlineEditor.editField;
             inlineEditor.edit();
             jqUnit.assertEquals("After switching into edit mode, edit field should be empty: ", "", edit.val());
             edit.attr("value", testText);
@@ -235,7 +236,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("The display field padding is ", fluid.defaults("inlineEdit").paddings.minimumView, parseFloat(display.css("padding-right")));
     
             var testText = "This is test text that is a bit long.";
-            var edit = $("#empty-inline-edit-edit");
+            var edit = inlineEditor.editField;
             inlineEditor.edit();
             jqUnit.assertFalse("Upon entering edit mode, edit field should be fully empty", edit.attr("value"));
             edit.attr("value", testText);
@@ -321,10 +322,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var inlineEditor = fluid.inlineEdit("#inline-edit");
             var button = inlineEditor.textEditButton;
             jqUnit.assertTrue("TextEditButton is tabbable", fluid.tabindex(button) >= 0);
-            jqUnit.assertFalse("Initially display field is not focussed", display.hasClass(inlineEditor.options.styles.focus));
+            jqUnit.assertFalse("Initially display field is not focused", display.hasClass(inlineEditor.options.styles.focus));
     
             button.focus();
-            jqUnit.assertTrue("After focus, display is focussed", display.hasClass(inlineEditor.options.styles.focus));
+            jqUnit.assertTrue("After focus, display and textEditButton are focussed", display.parent().hasClass(inlineEditor.options.styles.displayModeRenderer));
             jqUnit.isVisible("After enter pressed, display field is visible", "#display");
             jqUnit.notVisible("After enter pressed, edit field is hidden", "#edit-container");
             jqUnit.isVisible("After enter pressed, button is visible", button);
@@ -338,15 +339,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
             edit.simulate("keypress", {keyCode: $.ui.keyCode.ENTER});
     
             jqUnit.isVisible("After changing text and pressing enter, display field is visible", "#display");
-            jqUnit.assertTrue("After changing text and pressing enter, display has focus style", display.hasClass(inlineEditor.options.styles.focus));
+            jqUnit.assertTrue("After changing text and pressing enter, display has displayModeRenderer style", display.parent().hasClass(inlineEditor.options.styles.displayModeRenderer));
             jqUnit.notVisible("After changing text and pressing enter, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("After changing text and pressing enter, display field contains new text", testString, display.text());
             jqUnit.isVisible("After enter pressed, button is visible", button);
     
             display.blur();
-            jqUnit.assertFalse("After blur, display field is not focussed", display.hasClass(inlineEditor.options.styles.focus));
-            
+            jqUnit.assertFalse("After blur, display field is not focused", display.hasClass(inlineEditor.options.styles.focus));
         });
+
         inlineEditTests.test("Hover", function () {
             expect(3);
     
@@ -356,7 +357,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("Initially, display field does not have the invitation style", display.hasClass(inlineEditor.options.styles.invitation));
     
             display.trigger("mouseenter");
-            jqUnit.assertTrue("During hover, display field has the invitation style", display.hasClass(inlineEditor.options.styles.invitation));
+            jqUnit.assertTrue("During hover, display field and textEditButton have the invitation style", display.parent().hasClass(inlineEditor.options.styles.invitation));
     
             display.trigger("mouseleave");
             jqUnit.assertFalse("After hover, display field does not have the invitation style", display.hasClass(inlineEditor.options.styles.invitation));
@@ -461,7 +462,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         inlineEditTests.test("ARIA", function () {
-            expect(12);
+            expect(10);
             
             var display = $("#display");
             var editContainer = $("#edit-container");
@@ -470,8 +471,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("Before initialization, display should have no role.", display.attr("role"));
             var inlineEditor = fluid.inlineEdit("#inline-edit");
             jqUnit.assertEquals("After initialization, display role should be ", "button", inlineEditor.textEditButton.attr("role"));
-            jqUnit.assertEquals("After initialization, display role should be ", editContainer.attr("aria-describedby"), inlineEditor.options.stringseditModeToolTip);
-            jqUnit.assertEquals("After initialization, title text should be ", input.attr("title"), inlineEditor.options.stringseditModeToolTip);            
 
             var initialValue = "Initial Value";
             
@@ -521,7 +520,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
                 var editors = instantiateInlineEdits();
                 
-                // First check that the displays are shown and the edits are hidden.
+                // First check that the displays are shown and the edits are
+                // hidden.
                 jqUnit.isVisible("Initially, display field #1 is visible", editor1Sels.display);
                 jqUnit.isVisible("Initially, display field #2 is visible", editors[1].viewEl);
                 jqUnit.notVisible("Initially, edit field #1 is hidden", editor1Sels.edit);
@@ -553,14 +553,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 // Sanity check
                 jqUnit.assertUndefined("Initially, the callback should not have been called.", textFieldIds[0]);
     
-                // Edit the first field.            
+                // Edit the first field.
                 toggleEditOnAndOff(editors[0]);
                 jqUnit.assertTrue("After finishing, the callback should have been called only once.", 
                                   1, textFieldIds.length);
                 jqUnit.assertEquals("After finishing, the callback should have been called with the first form field.", 
                                     "edit", textFieldIds[0]);
                 
-                // Edit the last field.  
+                // Edit the last field.
                 textFieldIds = [];          
                 toggleEditOnAndOff(editors[1]);
                 jqUnit.assertTrue("After finishing, the callback should have been called only once.", 
@@ -575,42 +575,37 @@ https://source.fluidproject.org/svn/LICENSE.txt
          */
         (function () {
             var containerId = "inline-edit-self-render";
-            var editContainerSel = "#inline-edit-self-render-edit-container";
-            var editSel = "#inline-edit-self-render-edit";
             var textSel = "#display-self-render";
             
             var selfRenderingInlineEdit = function () {        
-                // Fire off an inline edit against a container which does not contain an edit form.
+                // Fire off an inline edit against a container which does not
+                // contain an edit form.
                 return fluid.inlineEdit(fluid.jById(containerId));
             };
             
             inlineEditTests.test("Self-rendering edit mode: instantiation", function () {
-                expect(4);
+                expect(3);
                 
                 var editor = selfRenderingInlineEdit();
-                var editContainer = $(editContainerSel);
-                // There should now be a hidden edit mode. Using the default edit injector,
-                // we expect an edit container div and an inner textfield.
-                jqUnit.assertNotUndefined("The self-rendered edit container should not be undefined.", editContainer);
+                var editorContainer = editor.editContainer;
+                // There should now be a hidden edit mode. Using the default
+                // edit injector, we expect an edit container div and an inner textfield.
+                jqUnit.assertNotUndefined("The self-rendered edit container should not be undefined.", editorContainer);
                 jqUnit.assertEquals("There should be one new element matching 'inline-edit-self-render-edit-container'",
-                                   1, editContainer.length);
+                                   1, editorContainer.length);
                                    
-                var editField = $("input", editContainer);
+                var editField = $("input", editorContainer);
                 jqUnit.assertEquals("There should be one new text field within the edit container.", 
-                                    1, editField.length);
-                
-                var expectedEditId = containerId + "-edit";
-                jqUnit.assertEquals("The text field's id should match 'inline-edit-self-render-edit'",
-                                    expectedEditId, editField.attr("id"));
+                                    1, editor.editField.length);
             });
             
-            var assertInViewMode = function () {
+            var assertInViewMode = function (component) {
                 jqUnit.isVisible("Initially, the view mode should be visible.", textSel);
-                jqUnit.notVisible("Initially, the edit mode should be hidden.", editContainerSel);    
+                jqUnit.notVisible("Initially, the edit mode should be hidden.", component.editContainer);    
             };
             
-            var assertInEditMode = function () {
-                jqUnit.isVisible("During editing, the edit mode should be visible.", editContainerSel);
+            var assertInEditMode = function (component) {
+                jqUnit.isVisible("During editing, the edit mode should be visible.", component.editContainer);
                 jqUnit.notVisible("During editing, the view mode should be hidden.", textSel);    
             };
             
@@ -618,15 +613,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 expect(7);
                 
                 var editor = selfRenderingInlineEdit();
-                assertInViewMode();
+                assertInViewMode(editor);
                 
                 editor.edit();
-                assertInEditMode();
+                assertInEditMode(editor);
                 
                 jqUnit.assertEquals("The contents of the edit field should be the same as the view text.",
-                                    $(textSel).text(), $(editSel).attr("value"));
+                                    $(textSel).text(), editor.editField.attr("value"));
                 editor.finish();
-                assertInViewMode();
+                assertInViewMode(editor);
             });
             
             
@@ -734,7 +729,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             inlineEditTests.test("Self-container", function() {
                 var editor = fluid.inlineEdit("#inline-edit2");
                 var edit = $("#inline-edit2 .flc-inlineEdit-edit")[0];
-                jqUnit.assertEquals("Container is field", edit, editor.editContainer[0]);
                 jqUnit.assertEquals("Container is field", edit, editor.editField[0]);
             });
 			
@@ -745,8 +739,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var text = editor.locate("text").text();
                 
                 jqUnit.assertEquals("Should only be one textEditButton", 1, button.length);
-                jqUnit.assertTrue("The button should have the fl-inlineEdit-text class", button.hasClass("fl-inlineEdit-text"));
-                jqUnit.assertEquals("The image alt text should be set", "Edit text " + text , image.attr("alt"));
+                jqUnit.assertEquals("The image alt text should be set", "Edit text ", image.attr("alt"));
             });
             
             inlineEditTests.test("Update image alt text", function () {
@@ -763,8 +756,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             inlineEditTests.test("Container styling", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
+                var button = editor.textEditButton;
                 var text = editor.locate("text");
-                jqUnit.assertTrue("The container should have the fl-inlineEdit-text class", text.hasClass("fl-inlineEdit-text"));
+                
+                jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-inlineBlock class on focus", text.parent().hasClass(editor.options.styles.inlineBlock));
+                button.focus();
+                jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-wrapper class on focus", text.parent().hasClass(editor.options.styles.displayModeRenderer));
             });
             
             inlineEditTests.test("Remove container from tab order", function () {
@@ -773,17 +770,74 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertEquals("The tab index of the container should be", "-1", text.attr("tabindex"));
             });
             
-            inlineEditTests.test("Render keyboard tool tip", function () {
+            inlineEditTests.test("Render keyboard tooltip", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
-                var keyboardTooltip = $("p");
-                jqUnit.assertTrue("The keyboard tooltip should have the fl-keyboard-tooltip class", keyboardTooltip.hasClass("fl-inlineEdit-keyboardTooltip"));
-                jqUnit.assertEquals("The keyboard tooltip descriptive text should be set", editor.options.strings.editModeTooltip, keyboardTooltip.text());
+                var editContainer = $("#edit-container");
+                var editField = editor.editField;
+                var instructionText = $("p", editContainer);
+                
+                jqUnit.assertTrue("The keyboard tooltip should have the fl-keyboard-tooltip class", instructionText.hasClass(editor.options.styles.instructionText));
+                jqUnit.assertEquals("The keyboard tooltip descriptive text should be set", editor.options.strings.editModeTooltip, instructionText.text());
                 
                 editor.edit();
-                jqUnit.isVisible("While editing, keyboard tool tip is visible", keyboardTooltip);
+                jqUnit.isVisible("While editing, keyboard tool tip is visible", instructionText);
+                jqUnit.assertEquals("The keyboard tooltip should be properly positioned directly underneath the edit field", editField.offset().left, instructionText.offset().left);
+            });
+            
+            var displayModeRendererNoTextEditButton = function (that) {
+                var styles = that.options.styles;
                 
-                editor.finish();
-                jqUnit.notVisible("When finished editing, keyboard tool tip is hidden", keyboardTooltip);
+                var displayModeWrapper = fluid.inlineEdit.setupDisplayModeContainer(styles);
+                var displayModeRenderer = that.viewEl.wrap(displayModeWrapper).parent();
+                
+                // Add event handlers.
+                fluid.inlineEdit.bindHoverHandlers(displayModeRenderer, styles.invitation);
+                fluid.inlineEdit.bindMouseHandlers(that.viewEl, that.edit);
+                fluid.inlineEdit.bindHighlightHandler(that.viewEl, displayModeRenderer, styles);
+                
+                return displayModeRenderer;                        
+            };
+
+            inlineEditTests.test("Missing textEditButton", function () {
+                var editor = fluid.inlineEdit("#inline-edit", {
+                    displayModeRenderer: displayModeRendererNoTextEditButton
+                });
+                var display = $("#display");
+                var editContainer = $("#edit-container");
+                var button = editor.textEditButton;
+                
+                jqUnit.assertUndefined("textEditButton is invisible ", button);
+                
+                display.focus();
+                display.simulate("keydown", {keyCode: $.ui.keyCode.ENTER});
+                jqUnit.isVisible("Keyboard navigation no longer effective without the textEditButton:  display text still visible", display);
+                
+                display.click();
+                jqUnit.isVisible("After mouse click, the edit container is visible", editContainer);
+                jqUnit.notVisible("After mouse click, the display text is hidden", display);
+            });
+            
+            inlineEditTests.test("Test individual public functions", function () {
+                var editor = fluid.inlineEdit("#inline-edit");
+                var styles = editor.options.styles;
+                
+                var displayModeContainer = fluid.inlineEdit.setupDisplayModeContainer(styles);
+                jqUnit.assertTrue("Display mode renderer has fl-inlineEdit-text style", displayModeContainer.hasClass(styles.text));
+
+                var editField = fluid.inlineEdit.setupEditField(styles.edit);
+                jqUnit.assertTrue("Edit field has fl-inlineEdit-edit style", editField.hasClass(styles.edit));
+                
+                var editContainer = fluid.inlineEdit.setupEditContainer(displayModeContainer, editField);
+                jqUnit.assertEquals("Edit container is created", 1, editContainer.length);
+                
+                var instructionText = fluid.inlineEdit.setupInstructionText(styles.instructionText, editor.options.strings.editModeTooltip);
+                jqUnit.assertTrue("Keyboard tooltip has fl-inlineEdit-instructionText style", instructionText.hasClass(styles.instructionText));
+                
+                var display = fluid.inlineEdit.setupDisplayView(editor); 
+                jqUnit.assertEquals("Display text is removed from the tab order", -1, display.attr("tabindex"));
+                
+                var button = fluid.inlineEdit.setupTextEditButton(editor);     
+                jqUnit.assertTrue("textEditButton has button role", "button", button.attr("role"));
             });
         })();
     });
