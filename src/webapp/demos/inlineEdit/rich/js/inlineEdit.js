@@ -15,19 +15,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 
 (function ($, fluid) {
-        
     demo.initRichInlineEdit = function () {
         /**
          * Create cancel and save buttons for a rich inline editor.
          * @param {Object} editor 
          */
         var makeButtons = function (editor) {
-            $(".save", editor.container).click(function(){
+            $(".save", editor.container).click(function () {
                 editor.finish();
                 return false;
             });
 
-            $(".cancel", editor.container).click(function(){
+            $(".cancel", editor.container).click(function () {
                 editor.cancel();
                 return false;
             });
@@ -41,8 +40,15 @@ var demo = demo || {};
                     theme_advanced_toolbar_location : "top"
                 }, 
             componentDecorators: {
-                type: "fluid.undoDecorator"
+                type: "fluid.undoDecorator",
+                options: {
+                    selectors: demo.initRichInlineEdit.selectors,
+                    renderer: demo.initRichInlineEdit.undoRenderer
+                }                
             },
+            strings: {
+                textEditButton: "Edit"
+            },            
             urls: {
                 textEditButtonImage: "../../../../components/inlineEdit/images/inline_edit_edit_button_16x16.png"
             }
@@ -52,13 +58,39 @@ var demo = demo || {};
         // Create an CKEditor 3.x-based Rich Inline Edit component.
         var ckEditor = fluid.inlineEdit.CKEditor("#richEdit2", {
             componentDecorators: {
-                type: "fluid.undoDecorator"
+                type: "fluid.undoDecorator",
+                options: {
+                    selectors: demo.initRichInlineEdit.selectors,
+                    renderer: demo.initRichInlineEdit.undoRenderer
+                }
+            },
+            strings: {
+                textEditButton: "Edit"
             },
             urls: {
                 textEditButtonImage: "../../../../components/inlineEdit/images/inline_edit_edit_button_16x16.png"
             }
         });
         makeButtons(ckEditor);    
+    };    
+
+    demo.initRichInlineEdit.selectors = {
+        undoContainer: ".undoContainer",
+        undoControl: ".undoControl",
+        redoContainer: ".redoContainer",
+        redoControl: ".redoControl"
+    };
+    
+    demo.initRichInlineEdit.undoRenderer = function (that, targetContainer) {
+        var markup = 
+            "<span class='flc-undo demo-inlineEdit-inlinePadding'>" +
+            "<span class='undoContainer' role='button'><a href='#' class='undoControl'>Undo edit</a></span>" +
+            "<span class='redoContainer' role='button'><a href='#' class='redoControl'>Redo edit</a></span>" +
+            "</span>";
+        var markupNode = $(markup);
+        var button = $("a", targetContainer);
+        button.after(markupNode);
+        return markupNode;
     };    
 
 })(jQuery, fluid);

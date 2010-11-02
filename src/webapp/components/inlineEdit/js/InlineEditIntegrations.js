@@ -46,25 +46,92 @@ fluid_1_2 = fluid_1_2 || {};
     
     var configureInlineEdit = function (configurationName, container, options) {
         var defaults = fluid.defaults(configurationName); 
-        var assembleOptions = fluid.merge(defaults? defaults.mergePolicy: null, {}, defaults, options);
+        var assembleOptions = fluid.merge(defaults ? defaults.mergePolicy: null, {}, defaults, options);
         return fluid.inlineEdit(container, assembleOptions);
     };
 
-    fluid.inlineEdit.normalizeHTML = function(value) {
+    fluid.inlineEdit.normalizeHTML = function (value) {
         var togo = $.trim(value.replace(/\s+/g, " "));
         togo = togo.replace(/\s+<\//g, "</");
-        togo = togo.replace(/\<(\S+)[^\>\s]*\>/g, function(match) {
+        togo = togo.replace(/\<(\S+)[^\>\s]*\>/g, function (match) {
             return match.toLowerCase();
-            });
+        });
         return togo;
     };
     
-    fluid.inlineEdit.htmlComparator = function(el1, el2) {
+    fluid.inlineEdit.htmlComparator = function (el1, el2) {
         return fluid.inlineEdit.normalizeHTML(el1) ===
            fluid.inlineEdit.normalizeHTML(el2);
     };
+    
+    fluid.inlineEdit.bindRichTextHighlightHandler = function (element, displayModeRenderer, invitationStyle) {
+        element = $(element);
+        
+        var focusOn = function () {
+            displayModeRenderer.addClass(invitationStyle);
+        };
+        var focusOff = function () {
+            displayModeRenderer.removeClass(invitationStyle);
+        };
+        
+        element.focus(focusOn);
+        element.blur(focusOff);
+    };        
+    
+    fluid.inlineEdit.setupRichTextEditButton = function (that) {
+        var opts = that.options;
+        var textEditButton = that.locate("textEditButton");
+        
+        if  (textEditButton.length === 0) {
+            var markup = $("<a href='#_' class='flc-inlineEdit-textEditButton'></a>");
+            markup.text(that.options.strings.textEditButton);
+            markup.attr("title", that.options.tooltipText);
+            
+            var img = $("img", markup);
+            img.attr("src", opts.urls.textEditButtonImage);
 
+            /**
+             * Set the alt text for the button and
+             * listen for modelChanged to keep it updated
+             */ 
+            fluid.inlineEdit.updateEditButtonAltText(img, that.model, opts.strings);
+            that.events.modelChanged.addListener(function () {
+                fluid.inlineEdit.updateEditButtonAltText(img, that.model, opts.strings);
+            });        
+            
+            that.locate("text").after(markup);
+            
+            // Refresh the textEditButton with the newly appended options
+            textEditButton = that.locate("textEditButton");
+        } 
+        return textEditButton;
+    };    
+    
+    /**
+     * Wrap the display text and the textEditButton with the display mode container  
+     * for better style control.
+     */
+    fluid.inlineEdit.richTextDisplayModeRenderer = function (that) {
+        var styles = that.options.styles;
+        
+        var displayModeWrapper = fluid.inlineEdit.setupDisplayModeContainer(styles);
+        var displayModeRenderer = that.viewEl.wrap(displayModeWrapper).parent();
+        
+        that.textEditButton = fluid.inlineEdit.setupRichTextEditButton(that);
+        displayModeRenderer.append(that.textEditButton);
+        displayModeRenderer.addClass(styles.displayModeRenderer);
+        
+        // Add event handlers.
+        fluid.inlineEdit.bindHoverHandlers(displayModeRenderer, styles.invitation);
+        fluid.inlineEdit.bindMouseHandlers(that.textEditButton, that.edit);
+        fluid.inlineEdit.bindKeyboardHandlers(that.textEditButton, that.edit);
+        fluid.inlineEdit.bindRichTextHighlightHandler(that.viewEl, displayModeRenderer, styles.invitation);
+        fluid.inlineEdit.bindRichTextHighlightHandler(that.textEditButton, displayModeRenderer, styles.invitation);
+        
+        return displayModeRenderer;
+    };        
 
+   
     /************************
      * Tiny MCE Integration *
      ************************/
@@ -150,7 +217,6 @@ fluid_1_2 = fluid_1_2 || {};
         tinyMCE.init(options);
     };
     
-      
     fluid.defaults("fluid.inlineEdit.tinyMCE", {
         tinyMCE : {
             mode: "exact", 
@@ -160,9 +226,9 @@ fluid_1_2 = fluid_1_2 || {};
         selectors: {
             edit: "textarea" 
         },
-        
         styles: {
-            invitation: "fl-inlineEdit-richText-invitation"
+            invitation: "fl-inlineEdit-richText-invitation",
+            text: ""
         },
         displayAccessor: {
             type: "fluid.inlineEdit.richTextViewAccessor"
@@ -173,6 +239,7 @@ fluid_1_2 = fluid_1_2 || {};
         lazyEditView: true,
         modelComparator: fluid.inlineEdit.htmlComparator,
         blurHandlerBinder: fluid.inlineEdit.tinyMCE.blurHandlerBinder,
+        displayModeRenderer: fluid.inlineEdit.richTextDisplayModeRenderer,
         editModeRenderer: fluid.inlineEdit.tinyMCE.editModeRenderer,
         renderKeyboardTooltip: false
     });
@@ -195,7 +262,7 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
     fluid.inlineEdit.FCKEditor.getEditor = function (editField) {
-        var editor = typeof(FCKeditorAPI) === "undefined"? null: FCKeditorAPI.GetInstance(editField.id);
+        var editor = typeof(FCKeditorAPI) === "undefined" ? null: FCKeditorAPI.GetInstance(editField.id);
         return editor;
     };
     
@@ -245,7 +312,6 @@ fluid_1_2 = fluid_1_2 || {};
         oFCKeditor.ReplaceTextarea();
     };
 
-    
     fluid.inlineEdit.FCKEditor.setValue = function (editField, editor, value) {
         editor.SetHTML(value);
     };
@@ -264,11 +330,10 @@ fluid_1_2 = fluid_1_2 || {};
         selectors: {
             edit: "textarea" 
         },
-        
         styles: {
-            invitation: "fl-inlineEdit-richText-invitation"
+            invitation: "fl-inlineEdit-richText-invitation",
+            text: ""
         },
-      
         displayAccessor: {
             type: "fluid.inlineEdit.richTextViewAccessor"
         },
@@ -278,6 +343,7 @@ fluid_1_2 = fluid_1_2 || {};
         lazyEditView: true,
         modelComparator: fluid.inlineEdit.htmlComparator,
         blurHandlerBinder: fluid.inlineEdit.FCKEditor.blurHandlerBinder,
+        displayModeRenderer: fluid.inlineEdit.richTextDisplayModeRenderer,
         editModeRenderer: fluid.inlineEdit.FCKEditor.editModeRenderer,
         renderKeyboardTooltip: false,
         FCKEditor: {
@@ -320,7 +386,7 @@ fluid_1_2 = fluid_1_2 || {};
     
     // Special hacked HTML normalisation for CKEditor which spuriously inserts whitespace
     // just after the first opening tag
-    fluid.inlineEdit.CKEditor.normalizeHTML = function(value) {
+    fluid.inlineEdit.CKEditor.normalizeHTML = function (value) {
         var togo = fluid.inlineEdit.normalizeHTML(value);
         var angpos = togo.indexOf(">");
         if (angpos !== -1 && angpos < togo.length - 1) {
@@ -331,7 +397,7 @@ fluid_1_2 = fluid_1_2 || {};
         return togo;
     };
     
-    fluid.inlineEdit.CKEditor.htmlComparator = function(el1, el2) {
+    fluid.inlineEdit.CKEditor.htmlComparator = function (el1, el2) {
         return fluid.inlineEdit.CKEditor.normalizeHTML(el1) ===
            fluid.inlineEdit.CKEditor.normalizeHTML(el2);
     };
@@ -360,11 +426,10 @@ fluid_1_2 = fluid_1_2 || {};
         selectors: {
             edit: "textarea" 
         },
-        
         styles: {
-            invitation: "fl-inlineEdit-richText-invitation"
+            invitation: "fl-inlineEdit-richText-invitation",
+            text: ""
         },
-      
         displayAccessor: {
             type: "fluid.inlineEdit.richTextViewAccessor"
         },
@@ -374,13 +439,14 @@ fluid_1_2 = fluid_1_2 || {};
         lazyEditView: true,
         modelComparator: fluid.inlineEdit.CKEditor.htmlComparator,
         blurHandlerBinder: fluid.inlineEdit.CKEditor.blurHandlerBinder,
+        displayModeRenderer: fluid.inlineEdit.richTextDisplayModeRenderer,
         editModeRenderer: fluid.inlineEdit.CKEditor.editModeRenderer,
         renderKeyboardTooltip: false,
         CKEditor: {
             // CKEditor-specific configuration goes here.
         }
     });
-    
+ 
     
     /************************
      * Dropdown Integration *
@@ -410,13 +476,12 @@ fluid_1_2 = fluid_1_2 || {};
    
     fluid.inlineEdit.dropdown.blurHandlerBinder = function (that) {
         fluid.deadMansBlur(that.editField,
-                           $("div.selectbox-wrapper li", that.editContainer),
-                           function () {
-                               that.cancel();
-                           });
+            $("div.selectbox-wrapper li", that.editContainer),
+            function () {
+                that.cancel();
+            }
+        );
     };
-
-
     
     fluid.defaults("fluid.inlineEdit.dropdown", {
         applyEditPadding: false,
@@ -424,8 +489,6 @@ fluid_1_2 = fluid_1_2 || {};
         editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer,
         renderKeyboardTooltip: false
     });
-    
-    
 })(jQuery, fluid_1_2);
 
 
