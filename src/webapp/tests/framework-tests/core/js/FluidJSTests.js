@@ -58,6 +58,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var seek2 = [1, null, false, "Sneeze"];
             seekIt(seek2);
         });
+        
+        fluidJSTests.test("null iteration", function() {
+            fluid.each(null, function() {});
+            fluid.transform(null, function() {});
+        });
 
         fluidJSTests.test("merge", function() {
           

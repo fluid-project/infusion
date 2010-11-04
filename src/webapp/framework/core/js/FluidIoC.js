@@ -54,36 +54,29 @@ var fluid_1_2 = fluid_1_2 || {};
         }
     };
     
-    // This is an equivalent of fluid.getPenultimate that will attempt to trigger creation of
+    // An EL segment resolver strategy that will attempt to trigger creation of
     // components that it discovers along the EL path, if they have been defined but not yet
     // constructed. Spring, eat your heart out! Wot no SPR-2048?
-    function getValueGingerly(thatStack, component, segs, ind) {
-        var thisSeg = segs[ind];
-        var atval = thisSeg === ""? component: fluid.model.resolvePathSegment(component, thisSeg);
-        if (atval !== undefined) {
-            if (atval[inCreationMarker] && atval !== thatStack[0]) {
-                fluid.fail("Component of type " + 
-                atval.typeName + " cannot be used for lookup of path " + segs.join(".") +
-                " since it is still in creation. Please reorganise your dependencies so that they no longer contain circular references");
+    
+    function makeGingerStrategy(thatStack) {
+        return function(component, thisSeg) {
+            var atval = component[thisSeg];
+            if (atval !== undefined) {
+                if (atval[inCreationMarker] && atval !== thatStack[0]) {
+                    fluid.fail("Component of type " + 
+                    atval.typeName + " cannot be used for lookup of path " + segs.join(".") +
+                    " since it is still in creation. Please reorganise your dependencies so that they no longer contain circular references");
+                }
             }
-        }
-        else {
-            if (component.options && component.options.components && component.options.components[thisSeg]) {
-                fluid.initDependent(component, thisSeg, thatStack);
-                atval = fluid.model.resolvePathSegment(component, thisSeg);
-            }
-      //      else {
-      //          fluid.fail("Could not resolve reference segment \"" + thisSeg + 
-      //          "\" within component " + JSON.stringify(component));
-      //      }
-        }
-        if (ind === segs.length - 1) {
+            else {
+                if (component.options && component.options.components && component.options.components[thisSeg]) {
+                    fluid.initDependent(component, thisSeg, thatStack);
+                    atval = component[thisSeg];
+                }
+            };
             return atval;
         }
-        else {
-            return getValueGingerly(thatStack, atval, segs, ind + 1);
-        }
-    }
+    };
 
     function makeStackFetcher(thatStack, directModel) {
         var envFetcher = fluid.environmentFetcher(directModel);
@@ -102,7 +95,8 @@ var fluid_1_2 = fluid_1_2 || {};
                 // to the environment for FLUID-3818
                 //fluid.fail("No context matched for name " + context + " from root of type " + thatStack[0].typeName);
             }
-            return getValueGingerly(thatStack, foundComponent, fluid.model.parseEL(parsed.path), 0);
+            return fluid.model.getBeanValue(foundComponent, parsed.path, 
+                [fluid.model.funcResolverStrategy, makeGingerStrategy(thatStack)]);
         };
         return fetcher;
     }
@@ -319,6 +313,38 @@ var fluid_1_2 = fluid_1_2 || {};
             listener.apply(null, resolved.args);
         }, namespace, predicate);
     };
+    
+        
+    fluid.registerNamespace("fluid.expander");
+    
+    /** rescue that part of a component's options which should not be subject to
+     * options expansion via IoC - this initially consists of "components" and "mergePolicy" 
+     * but will be expanded by the set of paths specified as "noexpand" within "mergePolicy" 
+     */
+    
+    fluid.expander.preserveFromExpansion = function(options) {
+        var preserve = {};
+        var preserveList = ["mergePolicy", "components"];
+        fluid.each(options.mergePolicy, function(value, key) {
+            if (fluid.mergePolicyIs(value, "noexpand")) {
+                preserveList.push(key);
+            }
+        });
+        fluid.each(preserveList, function(path) {
+            var pen = fluid.model.getPenultimate(options, path);
+            var value = pen.root[pen.last];
+            delete pen.root[pen.last];
+            fluid.model.setBeanValue(preserve, path, value);  
+        });
+        return {
+            restore: function(target) {
+                fluid.each(preserveList, function(path) {
+                    fluid.model.setBeanValue(target, path, fluid.model.getBeanValue(preserve, path))
+                });
+            }
+        };
+    };
+    
     /** Expand a set of component options with respect to a set of "expanders" (essentially only
      *  deferredCall) -  This substitution is destructive since it is assumed that the options are already "live" as the
      *  result of environmental substitutions. Note that options contained inside "components" will not be expanded
@@ -338,12 +364,13 @@ var fluid_1_2 = fluid_1_2 || {};
         thatStack = thatStack || fluid.getEnvironmentalThatStack();
         var expandOptions = makeStackResolverOptions(thatStack);
         expandOptions.noValue = true;
-        expandOptions.noCopy = true;
-        var components = args.components;
-        delete args.components;
+        expandOptions.noCopy = true; // It is still possible a model may be fetched even though it is preserved
+        if (!fluid.isArrayable(args)) {
+            var pres = fluid.expander.preserveFromExpansion(args);
+        }
         var expanded = fluid.expander.expandLight(args, expandOptions);
-        if (components !== undefined) {
-            expanded.components = components;
+        if (pres) {
+            pres.restore(expanded);
         }
         return expanded;
     };
@@ -420,8 +447,8 @@ var fluid_1_2 = fluid_1_2 || {};
             env = fluid.environment;
         }
         for (var name in components) {
-            fluid.model.setBeanValue({}, name, 
-               fluid.invokeGlobalFunction(components[name], [name], env), env);
+            fluid.setGlobalValue(name, 
+                fluid.invokeGlobalFunction(components[name], [name], env), env);
         }
     };
     
@@ -481,7 +508,7 @@ var fluid_1_2 = fluid_1_2 || {};
         return EL? {path: EL} : EL;
     };
 
-    /* An EL extraction utlity suitable for context expressions which occur in 
+    /* An EL extraction utility suitable for context expressions which occur in 
      * expanding component trees. It assumes that any context expressions refer
      * to EL paths that are to be referred to the "true (direct) model" - since
      * the context during expansion may not agree with the context during rendering.
@@ -605,8 +632,7 @@ var fluid_1_2 = fluid_1_2 || {};
         }
         return resolveEnvironmentImpl(obj, options);
     };
-    
-    fluid.registerNamespace("fluid.expander");
+
     /** "light" expanders, starting with support functions for the "deferredFetcher" expander **/
   
     fluid.expander.makeDefaultFetchOptions = function (successdisposer, failid, options) {

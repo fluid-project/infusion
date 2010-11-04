@@ -45,21 +45,33 @@ fluid_1_2 = fluid_1_2 || {};
         return togo;
     };
 
+    // Utilities for coordinating options in renderer components - in theory this could
+    // be done with a suitably complex "mergePolicy" object
+    fluid.renderer.modeliseOptions = function(options, defaults, model) {
+        return $.extend({}, defaults, options, model? {model: model} : null);
+    };
+    fluid.renderer.reverseMerge = function(target, source, names) {
+        names = fluid.makeArray(names);
+        fluid.each(names, function(name) {
+            if (!target[name]) {
+                target[name] = source[name];
+            }
+        });
+    }
+
     /** "Renderer component" infrastructure **/
   // TODO: fix this up with IoC and improved handling of templateSource as well as better 
   // options layout (model appears in both rOpts and eOpts)
     fluid.renderer.createRendererFunction = function (container, selectors, options, model, fossils) {
-        function modelise(opts, defs) {
-            return $.extend({}, defs, opts, model? {model: model} : null);
-        }
         options = options || {};
         container = $(container);
         var source = options.templateSource ? options.templateSource: {node: container};
-        var rendererOptions = modelise(options.rendererOptions);
+        var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, model);
         rendererOptions.fossils = fossils || {};
         
-        var expanderOptions = modelise(options.expanderOptions, {ELstyle: "$()"});
-        var expander = options.noExpand? null : fluid.renderer.makeProtoExpander(expanderOptions);
+        var expanderOptions = fluid.renderer.modeliseOptions(options.expanderOptions, {ELstyle: "${}"}, model);
+        fluid.renderer.reverseMerge(expanderOptions, options, ["resolverGetConfig", "resolverSetConfig"]);
+        var expander = options.noexpand? null : fluid.renderer.makeProtoExpander(expanderOptions);
         
         var templates = null;
         return function (tree) {
@@ -85,6 +97,7 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.initRendererComponent = function(componentName, container, options) {
         var that = fluid.initView(componentName, container, options);
         that.model = that.options.model || {};
+        // TODO: construct applier as required by "model-bearing grade", pass through options
         
         fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
         
@@ -92,11 +105,12 @@ fluid_1_2 = fluid_1_2 || {};
         if (!rendererOptions.messageSource && that.options.strings) {
             rendererOptions.messageSource = {type: "data", messages: that.options.strings}; 
         }
+        fluid.renderer.reverseMerge(rendererOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
 
         var renderer = {
             fossils: {},
             boundPathForNode: function(node) {
-               return fluid.boundPathForNode(node, renderer.fossils);
+                return fluid.boundPathForNode(node, renderer.fossils);
             }
         };
 
@@ -104,38 +118,51 @@ fluid_1_2 = fluid_1_2 || {};
            {rendererOptions: rendererOptions,
            repeatingSelectors: that.options.repeatingSelectors,
            selectorsToIgnore: that.options.selectorsToIgnore});
-        if (that.options.resources.template) {
+           
+        if (that.options.resources && that.options.resources.template) {
             rendererFnOptions.templateSource = function() { // TODO: don't obliterate, multitemplates, etc.
                 return that.options.resources.template.resourceText;
             };
         }
-        
+        if (that.options.protoTree && !that.produceTree) {
+            that.produceTree = function() {
+                return that.options.protoTree;
+            }
+        }
+        fluid.renderer.reverseMerge(rendererFnOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
+       
         var rendererFn = fluid.renderer.createRendererFunction(container, that.options.selectors, rendererFnOptions, that.model, renderer.fossils);
         
         that.render = renderer.render = rendererFn;
         that.renderer = renderer;
+
+        if (that.produceTree) {
+            that.refreshView = renderer.refreshView = function() {
+                renderer.render(that.produceTree());
+            }
+        }
         
         return that;
     };
     
     var removeSelectors = function (selectors, selectorsToIgnore) {
         if (selectorsToIgnore) {
-            $.each(selectorsToIgnore, function (index, selectorToIgnore) {
+            fluid.each(selectorsToIgnore, function (selectorToIgnore) {
                 delete selectors[selectorToIgnore];
             });
         }
         return selectors;
     };
 
-    var markRepeated = function (selector, repeatingSelectors) {
+    var markRepeated = function (selectorKey, repeatingSelectors) {
         if (repeatingSelectors) {
-            $.each(repeatingSelectors, function (index, repeatingSelector) {
-                if (selector === repeatingSelector) {
-                    selector = selector + ":";
+            fluid.each(repeatingSelectors, function (repeatingSelector) {
+                if (selectorKey === repeatingSelector) {
+                    selectorKey = selectorKey + ":";
                 }
             });
         }
-        return selector;
+        return selectorKey;
     };
 
     fluid.renderer.selectorsToCutpoints = function (selectors, options) {
@@ -147,10 +174,10 @@ fluid_1_2 = fluid_1_2 || {};
             selectors = removeSelectors(selectors, options.selectorsToIgnore);
         }
     
-        for (var selector in selectors) {
+        for (var selectorKey in selectors) {
             togo.push({
-                id: markRepeated(selector, options.repeatingSelectors),
-                selector: selectors[selector]
+                id: markRepeated(selectorKey, options.repeatingSelectors),
+                selector: selectors[selectorKey]
             });
         }
     
@@ -190,7 +217,7 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.renderer.repeat = function(options, container, key, config) {
         fluid.expect("Repetition expander", ["controlledBy", "tree"], options);
         var path = fluid.extractContextualPath(options.controlledBy, {ELstyle: "ALL"}, fluid.threadLocal());
-        var list = fluid.model.getBeanValue(config.model, path);
+        var list = fluid.model.getBeanValue(config.model, path, config.resolverGetConfig);
         
         var togo = {};
         if (!list || list.length === 0) {
@@ -206,7 +233,7 @@ fluid_1_2 = fluid_1_2 || {};
                 envAdd[options.pathAs] = EL;
             }
             if (options.valueAs) {
-                envAdd[options.valueAs] = fluid.model.getBeanValue(config.model, EL);
+                envAdd[options.valueAs] = fluid.model.getBeanValue(config.model, EL, config.resolverGetConfig);
             }
             var expandrow = fluid.withEnvironment(envAdd, function() {return config.expander(options.tree);});
             return fluid.isArrayable(expandrow)? {children: expandrow} : expandrow;
@@ -261,7 +288,7 @@ fluid_1_2 = fluid_1_2 || {};
             }
             var proto;
             if (!fluid.isPrimitive(value) && !fluid.isArrayable(value)) {
-                proto = value;
+                proto = $.extend({}, value);
                 if (proto.decorators) {
                    proto.decorators = expandLight(proto.decorators);
                 }
@@ -279,7 +306,7 @@ fluid_1_2 = fluid_1_2 || {};
                 proto.value = value;
             }
             if (options.model && proto.valuebinding && proto.value === undefined) {
-                proto.value = fluid.model.getBeanValue(options.model, proto.valuebinding);
+                proto.value = fluid.model.getBeanValue(options.model, proto.valuebinding, options.resolverGetConfig);
                 }
             if (concrete) {
                 proto.componentType = "UIBound";
@@ -311,6 +338,8 @@ fluid_1_2 = fluid_1_2 || {};
         
         var expandConfig = {
             model: options.model,
+            resolverGetConfig: options.resolverGetConfig,
+            resolverSetConfig: options.resolverSetConfig,
             expander: expandExternal
         };
         

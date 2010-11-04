@@ -235,9 +235,9 @@ fluid_1_2 = fluid_1_2 || {};
         return togo;
       };
       
-    fluid.model.isNullChange = function(model, request) {
+    fluid.model.isNullChange = function(model, request, resolverGetConfig) {
         if (request.type === "ADD") {
-            var existing = fluid.model.getBeanValue(model, request.path);
+            var existing = fluid.model.getBeanValue(model, request.path, resolverGetConfig);
             if (existing === request.value) {
                 return true;
             }
@@ -245,8 +245,9 @@ fluid_1_2 = fluid_1_2 || {};
     };
     /** Applies the supplied ChangeRequest object directly to the supplied model.
      */
-    fluid.model.applyChangeRequest = function(model, request) {
-        var pen = fluid.model.getPenultimate(model, request.path, null, true);
+    fluid.model.applyChangeRequest = function(model, request, resolverSetConfig) {
+        var pen = fluid.model.getPenultimate(model, request.path, resolverSetConfig || fluid.model.defaultSetConfig);
+        
         if (request.type === "ADD" || request.type === "MERGE") {
             if (pen.last === "" || request.type === "MERGE") {
                if (request.type === "ADD") {
@@ -438,7 +439,7 @@ fluid_1_2 = fluid_1_2 || {};
                     oldModel = {};
                     fluid.model.copyModel(oldModel, model);                    
                 }
-                fluid.model.applyChangeRequest(model, changeRequest);
+                fluid.model.applyChangeRequest(model, changeRequest, options.resolverSetConfig);
                 fireEvent("modelChanged", changeRequest.path, [model, oldModel, [changeRequest]]);
             }
         };
@@ -477,7 +478,7 @@ fluid_1_2 = fluid_1_2 || {};
             var internalApplier = 
               {fireChangeRequest: function(changeRequest) {
                     preFireChangeRequest(changeRequest);
-                    fluid.model.applyChangeRequest(newModel, changeRequest);
+                    fluid.model.applyChangeRequest(newModel, changeRequest, options.resolverSetConfig);
                     changes.push(changeRequest);
                 }};
             bindRequestChange(internalApplier);
@@ -504,7 +505,7 @@ fluid_1_2 = fluid_1_2 || {};
                 },
                 fireChangeRequest: function(changeRequest) {
                      preFireChangeRequest(changeRequest);
-                     if (options.cullUnchanged && fluid.model.isNullChange(model, changeRequest)) {
+                     if (options.cullUnchanged && fluid.model.isNullChange(model, changeRequest, options.resolverGetConfig)) {
                          return;
                      } 
                      var wrapper = makeGuardWrapper(options.cullUnchanged);
@@ -514,7 +515,7 @@ fluid_1_2 = fluid_1_2 || {};
                      }
                      if (!cancelled) {
                          if (!(wrapper && wrapper.culled)) {
-                             fluid.model.applyChangeRequest(newModel, changeRequest);
+                             fluid.model.applyChangeRequest(newModel, changeRequest, options.resolverSetConfig);
                              changes.push(changeRequest);
                          }
                      }

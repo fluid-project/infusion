@@ -48,6 +48,125 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertNotUndefined("selectorsToCutpoints should not eat other people's selectors", selectors.selector2);
     });
     
+    fluid.tests.rendererComponentTest = function(container, options) {
+        var that = fluid.initRendererComponent("fluid.tests.rendererComponentTest", container, options);
+        return that;
+    };
+    
+    fluid.tests.censoringStrategy = function(listCensor) {
+        return {
+            init: function() {
+                var totalPath = "";
+                return function(root, segment, index) {
+                    var orig = root[segment];
+                    totalPath = fluid.model.composePath(totalPath, segment);
+                    return totalPath === "recordlist.deffolt"?
+                        listCensor(orig) : orig;
+                    }
+                }
+            }
+        };
+    
+    fluid.defaults("fluid.tests.rendererComponentTest", {
+        mergePolicy: {
+            model: "preserve",
+            protoTree: "noexpand, replace"
+        },
+        model: {
+            recordlist: {
+                deffolt: ["person", "intake", "loanin", "loanout", "acquisition", "organization", "objects", "movement"],
+            }
+        },
+        protoTree: {
+            expander: {
+                type: "fluid.renderer.repeat",
+                controlledBy: "recordlist.deffolt",
+                pathAs: "elementPath",
+                repeatID: "recordType",
+                tree: { value: "${{elementPath}}" }
+            },
+            message: {
+                messagekey: "message"
+            }
+        },
+        selectors: {
+            recordType: ".csc-searchBox-recordType",
+            message: ".csc-searchBox-message",
+            toIgnore: ".csc-searchBox-ignore"
+        },
+        repeatingSelectors: ["recordType"],
+        selectorsToIgnore: ["toIgnore"],
+        strings: {
+            message: "A mess of messuage"          
+        }
+    });
+    
+    function assertRenderedText(els, array) {
+        fluid.each(els, function(el, index) {
+            jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
+        });
+    }
+    
+    var compTests = jqUnit.testCase("Renderer component tests");
+    
+    compTests.test("Renderer component without resolver", function() {
+        var that = fluid.tests.rendererComponentTest(".renderer-component-test");
+        that.refreshView();
+        var renderMess = that.locate("message").text();
+        jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
+        var renderRecs = that.locate("recordType");
+        var array = that.model.recordlist.deffolt;
+        jqUnit.assertEquals("Rendered elements", array.length, renderRecs.length);
+        fluid.each(renderRecs, function(rec, index) {
+            var key = that.renderer.boundPathForNode(rec);
+            jqUnit.assertEquals("Bound path at " + index, "recordlist.deffolt."+index, key);
+        });
+        assertRenderedText(renderRecs, array);
+    });
+
+    var censorFunc = function(types) {
+        var togo = [];
+        fluid.each(types, function(type) {
+            if (type.charAt(0) === "o") {
+                togo.push(type);
+            }
+        });
+        return togo;
+        };
+    
+    var testFilteredRecords = function(that) {
+        that.refreshView();
+        var renderRecs = that.locate("recordType");
+        var censored = censorFunc(that.model.recordlist.deffolt);
+        jqUnit.assertEquals("Rendered elements", censored.length, renderRecs.length);
+        assertRenderedText(renderRecs, censored);      
+    }
+    
+    compTests.test("Renderer component with custom resolver", function() {
+        var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
+            resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)]
+        });
+        testFilteredRecords(that);
+    });
+    
+    compTests.test("Renderer component with custom resolver and renderer fixup", function() {
+        var tree = {
+            children: [
+            {ID: "recordType:",
+             valuebinding: "recordlist.deffolt.0"},
+            {ID: "recordType:",
+             valuebinding: "recordlist.deffolt.1"}
+            ]  
+        };
+        var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
+            resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
+            protoTree: tree,
+            rendererFnOptions: {
+                noexpand: true
+            }
+        });
+        testFilteredRecords(that);
+    });
     
     var protoTests = new jqUnit.TestCase("Protocomponent Expander Tests");
   

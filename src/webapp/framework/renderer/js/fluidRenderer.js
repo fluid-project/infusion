@@ -105,17 +105,17 @@ fluid_1_2 = fluid_1_2 || {};
       else {return children;}
   }
   
-  function fixupValue(uibound, model) {
+  function fixupValue(uibound, model, resolverGetConfig) {
       if (uibound.value === undefined && uibound.valuebinding !== undefined) {
           if (!model) {
               fluid.fail("Cannot perform value fixup for valuebinding " 
                 + uibound.valuebinding + " since no model was supplied to rendering");
           }
-          uibound.value = fluid.model.getBeanValue(model, uibound.valuebinding);
+          uibound.value = fluid.model.getBeanValue(model, uibound.valuebinding, resolverGetConfig);
       }
   }
   
-  function upgradeBound(holder, property, model) {
+  function upgradeBound(holder, property, model, resolverGetConfig) {
       if (holder[property] !== undefined) {
           if (renderer.isBoundPrimitive(holder[property])) {
               holder[property] = {value: holder[property]};
@@ -127,7 +127,7 @@ fluid_1_2 = fluid_1_2 || {};
       else {
           holder[property] = {value: null};
       }
-      fixupValue(holder[property], model);
+      fixupValue(holder[property], model, resolverGetConfig);
   }
   
   renderer.duckMap = {children: "UIContainer", 
@@ -158,7 +158,7 @@ fluid_1_2 = fluid_1_2 || {};
       }
   };
   
-  function unzipComponent(component, model) {
+  function unzipComponent(component, model, resolverGetConfig) {
       if (component) {
           renderer.applyComponentType(component);
       }
@@ -176,7 +176,7 @@ fluid_1_2 = fluid_1_2 || {};
           map = renderer.boundMap[cType];
           if (map) {
               fluid.each(map, function(value, key) {
-                  upgradeBound(component, key, model);
+                  upgradeBound(component, key, model, resolverGetConfig);
               });
           }
       }
@@ -184,9 +184,9 @@ fluid_1_2 = fluid_1_2 || {};
       return component;
   }
   
-  function fixupTree(tree, model) {
+  function fixupTree(tree, model, resolverGetConfig) {
     if (tree.componentType === undefined) {
-      tree = unzipComponent(tree, model);
+      tree = unzipComponent(tree, model, resolverGetConfig);
       }
     if (tree.componentType !== "UIContainer" && !tree.parent) {
       tree = {children: [tree]};
@@ -197,7 +197,7 @@ fluid_1_2 = fluid_1_2 || {};
       for (var i = 0; i < tree.children.length; ++ i) {
         var child = tree.children[i];
         if (child.componentType === undefined) {
-          child = unzipComponent(child, model);
+          child = unzipComponent(child, model, resolverGetConfig);
           tree.children[i] = child;
           }
         child.parent = tree;
@@ -244,9 +244,9 @@ fluid_1_2 = fluid_1_2 || {};
           child.componentType = "UIVerbatim";
           }
         else if (componentType == "UIBound") {
-            fixupValue(child, model);
+            fixupValue(child, model, resolverGetConfig);
             }
-        fixupTree(child, model);
+        fixupTree(child, model, resolverGetConfig);
         }
       }
     return tree;
@@ -1332,7 +1332,7 @@ fluid_1_2 = fluid_1_2 || {};
       }
 
       that.renderTemplates = function() {
-          tree = fixupTree(tree, options.model);
+          tree = fixupTree(tree, options.model, options.resolverGetConfig);
           var template = templates[0];
           resolveBranches(templates.globalmap, tree, template.rootlump);
           renderedbindings = {};

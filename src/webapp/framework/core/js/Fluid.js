@@ -246,7 +246,7 @@ var fluid = fluid || fluid_1_2;
      * which are themselves of type "string".
      */
     fluid.isArrayable = function(totest) {
-        return typeof(totest) !== "string" && typeof(totest.length) === "number";
+        return totest && typeof(totest) !== "string" && typeof(totest.length) === "number";
     };
     
     /**
@@ -508,12 +508,16 @@ var fluid = fluid || fluid_1_2;
         return !value || valueType === "string" || valueType === "boolean" || valueType === "number" || valueType === "function";
     };
         
+    fluid.mergePolicyIs = function(policy, test) {
+        return typeof(policy) === "string" && policy.indexOf(test) !== -1;
+    };
+        
     function mergeImpl(policy, basePath, target, source, thisPolicy) {
         if (typeof(thisPolicy) === "function") {
             thisPolicy.apply(null, target, source);
             return target;
         }
-        if (thisPolicy === "replace") {
+        if (fluid.mergePolicyIs(thisPolicy, "replace")) {
             fluid.clear(target);
         }
       
@@ -527,7 +531,7 @@ var fluid = fluid || fluid_1_2;
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
                       !thisSource.nodeType && !thisSource.jquery && thisSource !== fluid.VALUE 
-                       && newPolicy !== "preserve") {
+                       && !fluid.mergePolicyIs(newPolicy, "preserve")) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array? [] : {};
                     }
@@ -537,7 +541,7 @@ var fluid = fluid || fluid_1_2;
                     if (typeof(newPolicy) === "function") {
                         newPolicy.call(null, target, source, name);
                     }
-                    else if (thisTarget === null || thisTarget === undefined || thisPolicy !== "reverse") {
+                    else if (thisTarget === null || thisTarget === undefined || !fluid.mergePolicyIs(thisPolicy, "reverse")) {
                         target[name] = thisSource;
                     }
                 }
@@ -603,7 +607,8 @@ var fluid = fluid || fluid_1_2;
     fluid.getGlobalValue = function(path, env) {
         if (path) {
             env = env || fluid.environment;
-            return fluid.model.getBeanValue(globalObject, path, env);
+            var envFetcher = fluid.model.environmentStrategy(env);
+            return fluid.model.getBeanValue(globalObject, path, [envFetcher].concat(fluid.model.defaultGetConfig));
         }
     };
     
@@ -628,10 +633,11 @@ var fluid = fluid || fluid_1_2;
     
     fluid.registerGlobalFunction = function (functionPath, func, env) {
         env = env || fluid.environment;
-        fluid.model.setBeanValue(globalObject, functionPath, func, env);
+        var envFetcher = fluid.model.environmentStrategy(env);
+        fluid.model.setBeanValue(globalObject, functionPath, func, [envFetcher].concat(fluid.model.defaultSetConfig));
     };
     
-    fluid.registerGlobal = fluid.registerGlobalFunction;
+    fluid.setGlobalValue = fluid.registerGlobalFunction;
     
     /** Ensures that an entry in the global namespace exists **/
     fluid.registerNamespace = function (naimspace, env) {
@@ -639,7 +645,7 @@ var fluid = fluid || fluid_1_2;
         var existing = fluid.getGlobalValue(naimspace, env);
         if (!existing) {
             existing = {};
-            fluid.registerGlobal(naimspace, existing, env);
+            fluid.setGlobalValue(naimspace, existing, env);
         }
         return existing;
     };
@@ -767,38 +773,84 @@ var fluid = fluid || fluid_1_2;
         return $.makeArray(arguments).join(".");
     };
 
-    fluid.model.resolvePathSegment = function(root, segment, create) {
+    /** Standard strategies for resolving path segments **/
+    fluid.model.environmentStrategy = function(initEnvironment) {
+        return {
+            init: function() {
+                var environment = initEnvironment;
+                return function(root, segment, index) {
+                    if (environment && environment[segment]) {
+                        var togo = environment[segment];
+                        environment = null;
+                        return togo; 
+                    }
+                };
+            }
+        };
+    };
+
+    fluid.model.defaultCreatorStrategy = function(root, segment) {
+        if (root[segment] === undefined) {
+            return root[segment] = {};
+            }
+        };
+    
+    fluid.model.defaultFetchStrategy = function(root, segment) {
+        return root[segment];
+        };
+        
+    fluid.model.funcResolverStrategy = function(root, segment) {
         if (root.resolvePathSegment) {
             return root.resolvePathSegment(segment);
         }
-        if (root[segment] === undefined && create) {
-            root[segment] = {};
-            }
-        return root[segment];
-    };
-
-    fluid.model.getPenultimate = function (root, EL, environment, create) {
-        var segs = fluid.model.parseEL(EL);
-        for (var i = 0; i < segs.length - 1; ++i) {
-            if (!root) {
-                return {root: root };
-            }
-            var segment = segs[i];
-            if (environment && environment[segment]) {
-                root = environment[segment];
-                environment = null;
-            }
-            else {
-                root = fluid.model.resolvePathSegment(root, segment, create);
-            }
-        }
-        return {root: root, last: segs[segs.length - 1]};
     };
     
-    fluid.model.setBeanValue = function (root, EL, newValue, environment) {
-        var pen = fluid.model.getPenultimate(root, EL, environment, true);
-        pen.root[pen.last] = newValue;
+    fluid.model.makeResolver = function(root, EL, config) {
+        var that = {
+            segs: fluid.model.parseEL(EL),
+            root: root,
+            index: 0,
+            strategies: fluid.transform(config, function(figel) {
+                return figel.init? figel.init() : figel;
+            })
+        };
+        that.next = function() {
+            if (!that.root) {return;}
+            var accepted;
+            for (var i = 0; i < that.strategies.length; ++ i) {
+                var value = that.strategies[i](that.root, that.segs[that.index], that.index);
+                if (accepted === undefined) {
+                    accepted = value;
+                }
+            }
+            that.root = accepted;
+            ++that.index;
+        };
+        that.step = function(limit) {
+            for (var i = 0; i < limit; ++ i) {
+                that.next();
+            }
+            that.last = that.segs[that.index];
+        };
+        return that;
+    }    
+
+    fluid.model.defaultSetConfig = [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy];
+    
+    fluid.model.getPenultimate = function(root, EL, config) {
+        config = config || fluid.model.defaultGetConfig;
+        var resolver = fluid.model.makeResolver(root, EL, config);
+        resolver.step(resolver.segs.length - 1);
+        return resolver;
+    }
+    
+    fluid.model.setBeanValue = function(root, EL, newValue, config) {
+        config = config || fluid.model.defaultSetConfig;
+        var resolver = fluid.model.getPenultimate(root, EL, config);
+        resolver.root[resolver.last] = newValue;
     };
+
+    fluid.model.defaultGetConfig = [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy];
     
     /** Evaluates an EL expression by fetching a dot-separated list of members
      * recursively from a provided root.
@@ -809,12 +861,14 @@ var fluid = fluid || fluid_1_2;
      * @return The fetched data value.
      */
     
-    fluid.model.getBeanValue = function (root, EL, environment) {
+    fluid.model.getBeanValue = function (root, EL, config) {
         if (EL === "" || EL === null || EL === undefined) {
             return root;
         }
-        var pen = fluid.model.getPenultimate(root, EL, environment);
-        return pen.root? pen.root[pen.last] : pen.root;
+        config = config || fluid.model.defaultGetConfig;
+        var resolver = fluid.model.makeResolver(root, EL, config);
+        resolver.step(resolver.segs.length);
+        return resolver.root;
     };
     
     // Logging
