@@ -339,7 +339,10 @@ var fluid_1_2 = fluid_1_2 || {};
         return {
             restore: function(target) {
                 fluid.each(preserveList, function(path) {
-                    fluid.model.setBeanValue(target, path, fluid.model.getBeanValue(preserve, path))
+                    var preserved = fluid.model.getBeanValue(preserve, path);
+                    if (preserved !== undefined) {
+                        fluid.model.setBeanValue(target, path, preserved)
+                    }
                 });
             }
         };
