@@ -1,5 +1,5 @@
 :focus {
-    outline: 4px black #000 !important;
+    outline: none;
 }
 
 h1 {
@@ -96,62 +96,26 @@ h1 {
     left:40%;
     }
 
-.demo-container-fiveStar ul li {
+.demo-container-fiveStar #ranking {
+    padding:0;
+    position:relative;
+    margin:0;
+    height:16px; /* the height of a row in the 5-star image matrix. */
+    width:80px;  /* the width of the 5-star image. */
+    left:40%;
+    }
+.demo-container-fiveStar #ranking img {
     cursor:pointer;
     float:left;
     display:inline; /* make the 5-star list as a horizontal list. */
-    /* margin:5px;*/
-    /*text-indent:-999em; keep text offscreen so it's still readable by an AT. */
-}
-.demo-container-fiveStar ul li a {
-    position:absolute;
-    height:1.2em;
-    left:0;
-    top:0;
-    width:1.1em;
-    text-decoration:none;
-    z-index:200;
 }
 
-/* Position the links over the stars in the background. */
-.demo-container-fiveStar  ul li.star-one a {
-    left:0;
-}
-.demo-container-fiveStar  ul li.star-two a {
-    left:16px;
-}
-.demo-container-fiveStar  ul li.star-three a {
-    left:32px;
-}
-.demo-container-fiveStar  ul li.star-four a {
-    left:48px;
-}
-.demo-container-fiveStar  ul li.star-five a {
-    left:64px;
+.demo-container-imageThumbnails img.demo-selected,
+.demo-container-imageThumbnails img:hover {
+    border: 3px solid black;
 }
 
-.demo-container-fiveStar ul li a:hover {
-    background:url("../images/star-matrix.gif") no-repeat scroll 0 0 transparent;
-    height:1.2em; /* the height of the 5-star widget */
-    left:0;
-    overflow:hidden;
-    width:80px; /* the width of the star image */
-    z-index:2;
-}
-
-/* Depending on the hover, change the position of the image. */
-.demo-container-fiveStar ul li.star-one a:hover {
-    background-position:0 -96px;
-}
-.demo-container-fiveStar ul li.star-two a:hover {
-    background-position:0 -112px;
-}
-.demo-container-fiveStar ul li.star-three a:hover {
-    background-position:0 -128px;
-}
-.demo-container-fiveStar ul li.star-four a:hover {
-    background-position:0 -144px;
-}
-.demo-container-fiveStar ul li.star-five a:hover {
-    background-position:0 -160px;
+.demo-activated {
+    padding: 10px;
+    background-color: white;
 }
