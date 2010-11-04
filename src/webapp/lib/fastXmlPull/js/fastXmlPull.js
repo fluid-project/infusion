@@ -293,7 +293,7 @@ var fluid_1_2 = fluid_1_2 || {};
                     }
                 else { // accommodate insanity on unvalued IE attributes
                     attrval = attrname;
-                    valRegex = attrStartRegex;
+                    valRegex = that.attrStartRegex;
                     }
                 if (!that.m_attributes[attrname]) {
                     that.m_attributes[attrname] = attrval;
