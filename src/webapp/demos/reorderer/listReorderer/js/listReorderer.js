@@ -22,6 +22,15 @@ var demo = demo || {};
         return fluid.reorderList(".todo-list", {
             selectors: {
                 movables: ".movable"
+            },
+            styles: {
+				defaultStyle: "demo-reorderer-movable-default",
+				selected: "demo-reorderer-movable-selected",
+				dragging: "demo-reorderer-movable-dragging",
+				mouseDrag: "demo-reorderer-movable-mousedrag",
+				hover: "demo-reorderer-movable-hover",
+				dropMarker: "demo-reorderer-dropMarker",
+				avatar: "demo-reorderer-avatar"
             }
         });
     };
