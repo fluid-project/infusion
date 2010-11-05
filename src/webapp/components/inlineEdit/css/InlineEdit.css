@@ -29,7 +29,7 @@
 }
 
 /* Put keyboard focus tooltip on a foreground layer */
-.fl-inlineEdit-instructionText {
+.fl-inlineEdit-editModeInstruction {
     position    : absolute;
     background  : #0081C1;
     font        : normal sans-serif;
