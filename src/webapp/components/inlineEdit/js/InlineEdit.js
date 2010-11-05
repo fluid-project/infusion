@@ -432,6 +432,15 @@ fluid_1_2 = fluid_1_2 || {};
         return that;
     };
     
+    /**
+     * Set up and style the edit field.  If an edit field is not provided,
+     * default markup is created for the edit field 
+     * 
+     * @param {string} editStyle The default styling for the edit field
+     * @param {Object} editField The edit field markup provided by the integrator
+     * 
+     * @return eField The styled edit field   
+     */
     fluid.inlineEdit.setupEditField = function (editStyle, editField) {
         var eField = $(editField);
         eField = eField.length ? eField : $("<input type='text' class='flc-inlineEdit-edit'/>");
@@ -439,6 +448,16 @@ fluid_1_2 = fluid_1_2 || {};
         return eField;
     };
 
+    /**
+     * Set up the edit container and append the edit field to the container.  If an edit container
+     * is not provided, default markup is created.
+     * 
+     * @param {Object} displayContainer The display mode container 
+     * @param {Object} editField The edit field that is to be appended to the edit container 
+     * @param {Object} editContainer The edit container markup provided by the integrator   
+     * 
+     * @return eContainer The edit container containing the edit field   
+     */
     fluid.inlineEdit.setupEditContainer = function (displayContainer, editField, editContainer) {
         var eContainer = $(editContainer);
         eContainer = eContainer.length ? eContainer : $("<span></span>");
@@ -448,15 +467,21 @@ fluid_1_2 = fluid_1_2 || {};
         return eContainer;
     };
     
+    /**
+     * Default renderer for the edit mode view.
+     * 
+     * @return {Object} container The edit container containing the edit field
+     *                  field The styled edit field  
+     */
     fluid.inlineEdit.defaultEditModeRenderer = function (that) {
         var editField = fluid.inlineEdit.setupEditField(that.options.styles.edit, that.editField);
         var editContainer = fluid.inlineEdit.setupEditContainer(that.displayModeRenderer, editField, that.editContainer);
-        var instructionText = fluid.inlineEdit.setupInstructionText(that.options.styles.instructionText, that.options.strings.editModeTooltip);
+        var editModeInstruction = fluid.inlineEdit.setupEditModeInstruction(that.options.styles.editModeInstruction, that.options.strings.editModeInstruction);
         
-        var id = fluid.allocateSimpleId(instructionText);
+        var id = fluid.allocateSimpleId(editModeInstruction);
         editField.attr("aria-describedby", id);
 
-        fluid.inlineEdit.positionInstructionText(instructionText, editContainer, editField);
+        fluid.inlineEdit.positionEditModeInstruction(editModeInstruction, editContainer, editField);
               
         // Package up the container and field for the component.
         return {
@@ -465,8 +490,14 @@ fluid_1_2 = fluid_1_2 || {};
         };
     };
     
-    fluid.inlineEdit.renderEditContainer = function (that, really) {
-        // If an edit container is found in the markup, use it. Otherwise generate one based on the view text.
+    /**
+     * Configures the edit container and view, and uses the component's editModeRenderer to render
+     * the edit container.
+     *  
+     * @param {boolean} lazyEditView If true, will delay rendering of the edit container;
+     *                                            Default is false 
+     */
+    fluid.inlineEdit.renderEditContainer = function (that, lazyEditView) {
         that.editContainer = that.locate("editContainer");
         that.editField = that.locate("edit");
         if (that.editContainer.length !== 1) {
@@ -476,7 +507,7 @@ fluid_1_2 = fluid_1_2 || {};
             }
         }
         
-        if (!really) {
+        if (!lazyEditView) {
             return; 
         } // do not invoke the renderer, unless this is the "final" effective time
         
@@ -487,30 +518,49 @@ fluid_1_2 = fluid_1_2 || {};
         }
     };
 
-    // setup tooltip with aria for edit mode
-    fluid.inlineEdit.setupInstructionText = function (instructionTextStyle, instructionText) {
-        var editModeDescribedBy = $("<p></p>");
-        editModeDescribedBy.addClass(instructionTextStyle);
-        editModeDescribedBy.text(instructionText);
+    /**
+     * Set up the edit mode instruction with aria in edit mode
+     * 
+     * @param {String} editModeInstructionStyle The default styling for the instruction
+     * @param {String} editModeInstructionText The default instruction text
+     * 
+     * @return {jQuery} The displayed instruction in edit mode
+     */
+    fluid.inlineEdit.setupEditModeInstruction = function (editModeInstructionStyle, editModeInstructionText) {
+        var editModeInstruction = $("<p></p>");
+        editModeInstruction.addClass(editModeInstructionStyle);
+        editModeInstruction.text(editModeInstructionText);
 
-        return editModeDescribedBy;
+        return editModeInstruction;
     };
 
-    fluid.inlineEdit.positionInstructionText = function (instructionText, editContainer, editField) {
-        editContainer.append(instructionText);
+    /**
+     * Positions the edit mode instruction directly beneath the edit container
+     * 
+     * @param {Object} editModeInstruction The displayed instruction in edit mode
+     * @param {Object} editContainer The edit container in edit mode
+     * @param {Object} editField The edit field in edit mode
+     */    
+    fluid.inlineEdit.positionEditModeInstruction = function (editModeInstruction, editContainer, editField) {
+        editContainer.append(editModeInstruction);
         
         editField.focus(function () {
-            instructionText.show();
+            editModeInstruction.show();
 
             var editFieldPosition = editField.offset();
-            instructionText.css({left: editFieldPosition.left});
-            instructionText.css({top: editFieldPosition.top + editField.height() + 5});
+            editModeInstruction.css({left: editFieldPosition.left});
+            editModeInstruction.css({top: editFieldPosition.top + editField.height() + 5});
         });
     };  
     
     /**
-     * Style the container for the viewEl and the textEditButton 
-     */   
+     * Set up and style the display mode container for the viewEl and the textEditButton 
+     * 
+     * @param {Object} styles The default styling for the display mode container
+     * @param {Object} displayModeWrapper The markup used to generate the display mode container
+     * 
+     * @return {jQuery} The styled display mode container
+     */
     fluid.inlineEdit.setupDisplayModeContainer = function (styles, displayModeWrapper) {
         var displayModeContainer = $(displayModeWrapper);  
         displayModeContainer = displayModeContainer.length ? displayModeContainer : $("<span></span>");  
@@ -520,6 +570,11 @@ fluid_1_2 = fluid_1_2 || {};
         return displayModeContainer;
     };
     
+    /**
+     * Retrieve the display text from the DOM.  
+     * 
+     * @return {jQuery} The display text
+     */
     fluid.inlineEdit.setupDisplayView = function (that) {
         var viewEl = that.locate("text");
 
@@ -534,6 +589,12 @@ fluid_1_2 = fluid_1_2 || {};
         return viewEl;
     };
     
+    /**
+     * Set up the textEditButton.  Append a background image with appropriate alt text
+     * to the button.
+     * 
+     * @return {jQuery} The accessible button located after the display text
+     */
     fluid.inlineEdit.setupTextEditButton = function (that) {
         var opts = that.options;
         var textEditButton = that.locate("textEditButton");
@@ -562,6 +623,13 @@ fluid_1_2 = fluid_1_2 || {};
         return textEditButton;
     };    
 
+    /**
+     * Update the textEditButton alt text with the current value of the field.
+     * 
+     * @param {Object} textEditButtonImage the textEditButton image
+     * @param {String} model The current value of the inline editable text
+     * @param {Object} strings Text option for the textEditButton alt text
+     */
     fluid.inlineEdit.updateEditButtonAltText = function (textEditButtonImage, model, strings) {
         var buttonAlt = fluid.stringTemplate(strings.textEditButton, {
             text: model.value
@@ -569,6 +637,12 @@ fluid_1_2 = fluid_1_2 || {};
         textEditButtonImage.attr("alt", buttonAlt);
     };
     
+    /**
+     * Bind mouse hover event handler to the display mode container.  
+     * 
+     * @param {Object} displayModeRenderer The display mode container
+     * @param {String} invitationStyle The default styling for the display mode container on mouse hover
+     */
     fluid.inlineEdit.bindHoverHandlers = function (displayModeRenderer, invitationStyle) {
         var over = function (evt) {
             displayModeRenderer.addClass(invitationStyle);
@@ -579,15 +653,22 @@ fluid_1_2 = fluid_1_2 || {};
         displayModeRenderer.hover(over, out);
     };    
     
+    /**
+     * Bind keyboard focus and blur event handlers to an element
+     * 
+     * @param {Object} element The element to which the event handlers are bound
+     * @param {Object} displayModeRenderer The display mode container
+     * @param {Ojbect} styles The default styling for the display mode container on mouse hover
+     */    
     fluid.inlineEdit.bindHighlightHandler = function (element, displayModeRenderer, styles) {
         element = $(element);
         
         var focusOn = function () {
-            displayModeRenderer.addClass(styles.displayModeRenderer);
+            displayModeRenderer.addClass(styles.displayModeContainer);
             displayModeRenderer.addClass(styles.invitation);
         };
         var focusOff = function () {
-            displayModeRenderer.removeClass(styles.displayModeRenderer);
+            displayModeRenderer.removeClass(styles.displayModeContainer);
             displayModeRenderer.removeClass(styles.invitation);
         };
         
@@ -595,6 +676,14 @@ fluid_1_2 = fluid_1_2 || {};
         element.blur(focusOff);
     };        
     
+    /**
+     * Bind mouse click handler to an element
+     * 
+     * @param {Object} element The element to which the event handler is bound
+     * @param {Object} edit Function to invoke the edit mode
+     * 
+     * @return {boolean} Returns false if entering edit mode
+     */
     fluid.inlineEdit.bindMouseHandlers = function (element, edit) {
         element = $(element);
         
@@ -605,6 +694,14 @@ fluid_1_2 = fluid_1_2 || {};
         });
     };
 
+    /**
+     * Bind keyboard press handler to an element
+     * 
+     * @param {Object} element The element to which the event handler is bound
+     * @param {Object} edit Function to invoke the edit mode
+     * 
+     * @return {boolean} Returns false if entering edit mode
+     */    
     fluid.inlineEdit.bindKeyboardHandlers = function (element, edit) {
         element = $(element);
         element.attr("role", "button");
@@ -615,6 +712,15 @@ fluid_1_2 = fluid_1_2 || {};
         });
     };
     
+    /**
+     * Creates an event handler that will trigger the edit mode if caused by something other
+     * than standard HTML controls. The event handler will return false if entering edit mode.
+     * 
+     * @param {Object} element The element to trigger the edit mode
+     * @param {Object} edit Function to invoke the edit mode
+     * 
+     * @return {function} The event handler function
+     */    
     fluid.inlineEdit.makeEditTriggerGuard = function (element, edit) {
         var selector = fluid.unwrap(element);
         return function (event) {
@@ -633,8 +739,10 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
     /**
-     * Wrap the display text and the textEditButton with the display mode container  
-     * for better style control.
+     * Render the display mode view.  
+     * 
+     * @return {jQuery} The display container containing the display text and 
+     *                             textEditbutton for display mode view
      */
     fluid.inlineEdit.defaultDisplayModeRenderer = function (that) {
         var styles = that.options.styles;
@@ -737,10 +845,10 @@ fluid_1_2 = fluid_1_2 || {};
             invitation: "fl-inlineEdit-invitation",
             defaultViewStyle: "fl-inlineEdit-invitation-text",
             tooltip: "fl-inlineEdit-tooltip",
-            instructionText: "fl-inlineEdit-instructionText",
+            editModeInstruction: "fl-inlineEdit-editModeInstruction",
             focus: "fl-inlineEdit-focus",
             textEditButton: "fl-inlineEdit-text",
-            displayModeRenderer: "fl-inlineEdit-wrapper",
+            displayModeContainer: "fl-inlineEdit-container",
             inlineBlock: "fl-inlineEdit-inlineBlock"
         },
         
@@ -755,7 +863,7 @@ fluid_1_2 = fluid_1_2 || {};
 
         strings: {
             textEditButton: "Edit text %text",
-            editModeTooltip: "Escape to cancel, Enter or Tab when finished"
+            editModeInstruction: "Escape to cancel, Enter or Tab when finished"
         },
         
         paddings: {

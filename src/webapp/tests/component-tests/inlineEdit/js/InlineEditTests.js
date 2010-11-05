@@ -325,7 +325,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("Initially display field is not focused", display.hasClass(inlineEditor.options.styles.focus));
     
             button.focus();
-            jqUnit.assertTrue("After focus, display and textEditButton are focussed", display.parent().hasClass(inlineEditor.options.styles.displayModeRenderer));
+            jqUnit.assertTrue("After focus, display and textEditButton are focussed", display.parent().hasClass(inlineEditor.options.styles.displayModeContainer));
             jqUnit.isVisible("After enter pressed, display field is visible", "#display");
             jqUnit.notVisible("After enter pressed, edit field is hidden", "#edit-container");
             jqUnit.isVisible("After enter pressed, button is visible", button);
@@ -339,7 +339,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             edit.simulate("keypress", {keyCode: $.ui.keyCode.ENTER});
     
             jqUnit.isVisible("After changing text and pressing enter, display field is visible", "#display");
-            jqUnit.assertTrue("After changing text and pressing enter, display has displayModeRenderer style", display.parent().hasClass(inlineEditor.options.styles.displayModeRenderer));
+            jqUnit.assertTrue("After changing text and pressing enter, display has displayModeContainer style", display.parent().hasClass(inlineEditor.options.styles.displayModeContainer));
             jqUnit.notVisible("After changing text and pressing enter, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("After changing text and pressing enter, display field contains new text", testString, display.text());
             jqUnit.isVisible("After enter pressed, button is visible", button);
@@ -761,7 +761,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
                 jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-inlineBlock class on focus", text.parent().hasClass(editor.options.styles.inlineBlock));
                 button.focus();
-                jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-wrapper class on focus", text.parent().hasClass(editor.options.styles.displayModeRenderer));
+                jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-container class on focus", text.parent().hasClass(editor.options.styles.displayModeContainer));
             });
             
             inlineEditTests.test("Remove container from tab order", function () {
@@ -770,18 +770,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertEquals("The tab index of the container should be", "-1", text.attr("tabindex"));
             });
             
-            inlineEditTests.test("Render keyboard tooltip", function () {
+            inlineEditTests.test("Render keyboard instruction text", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 var editContainer = $("#edit-container");
                 var editField = editor.editField;
-                var instructionText = $("p", editContainer);
+                var editModeInstruction = $("p", editContainer);
                 
-                jqUnit.assertTrue("The keyboard tooltip should have the fl-keyboard-tooltip class", instructionText.hasClass(editor.options.styles.instructionText));
-                jqUnit.assertEquals("The keyboard tooltip descriptive text should be set", editor.options.strings.editModeTooltip, instructionText.text());
+                jqUnit.assertTrue("The keyboard instruction text should have the fl-keyboard-tooltip class", editModeInstruction.hasClass(editor.options.styles.editModeInstruction));
+                jqUnit.assertEquals("The keyboard instruction text descriptive text should be set", editor.options.strings.editModeInstruction, editModeInstruction.text());
                 
                 editor.edit();
-                jqUnit.isVisible("While editing, keyboard tool tip is visible", instructionText);
-                jqUnit.assertEquals("The keyboard tooltip should be properly positioned directly underneath the edit field", editField.offset().left, instructionText.offset().left);
+                jqUnit.isVisible("While editing, keyboard instruction text is visible", editModeInstruction);
+                jqUnit.assertEquals("The keyboard instruction text should be properly positioned directly underneath the edit field", editField.offset().left, editModeInstruction.offset().left);
             });
             
             var displayModeRendererNoTextEditButton = function (that) {
@@ -830,8 +830,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var editContainer = fluid.inlineEdit.setupEditContainer(displayModeContainer, editField);
                 jqUnit.assertEquals("Edit container is created", 1, editContainer.length);
                 
-                var instructionText = fluid.inlineEdit.setupInstructionText(styles.instructionText, editor.options.strings.editModeTooltip);
-                jqUnit.assertTrue("Keyboard tooltip has fl-inlineEdit-instructionText style", instructionText.hasClass(styles.instructionText));
+                var editModeInstruction = fluid.inlineEdit.setupEditModeInstruction(styles.editModeInstruction, editor.options.strings.editModeTooltip);
+                jqUnit.assertTrue("Keyboard instruction has fl-inlineEdit-editModeInstruction style", editModeInstruction.hasClass(styles.editModeInstruction));
                 
                 var display = fluid.inlineEdit.setupDisplayView(editor); 
                 jqUnit.assertEquals("Display text is removed from the tab order", -1, display.attr("tabindex"));
