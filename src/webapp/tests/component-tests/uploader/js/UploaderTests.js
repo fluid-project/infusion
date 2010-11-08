@@ -48,7 +48,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                    testUploader.uploadManager.invokeAfterRandomDelay);
         });
        
-		uploaderTests.test("Initialize DemoUploadManager", function () {
+        uploaderTests.test("Initialize DemoUploadManager", function () {
             expect(2);
             
             var testUploader = fluid.uploader("#single-inline-fluid-uploader", {
@@ -143,8 +143,8 @@ uploaderTests.test("testing the setting of various uploader states set by events
             testUploader.events.afterFileDialog.fire();
             uploaderStateIsTest("loaded");
             
-            // uploading	 	 
-            // done	 	 
+            // uploading          
+            // done          
             // error
         });   
 */

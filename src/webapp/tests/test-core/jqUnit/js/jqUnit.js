@@ -19,9 +19,9 @@ var jqUnit = jqUnit || {};
     var param = "swarmURL=";
     var url = window.location.search;
     url = decodeURIComponent(url.slice(url.indexOf(param) + param.length));
-	
+    
     if (url && url.indexOf("http") === 0) {
-		var injectPath = window.location.protocol + "//" + window.location.host + "/js/inject.js";
+        var injectPath = window.location.protocol + "//" + window.location.host + "/js/inject.js";
         document.write("<scr" + "ipt src='" + injectPath + "?" + (new Date()).getTime() + "'></scr" + "ipt>");
     }
 })();

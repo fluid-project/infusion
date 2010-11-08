@@ -362,10 +362,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             display.trigger("mouseleave");
             jqUnit.assertFalse("After hover, display field does not have the invitation style", display.hasClass(inlineEditor.options.styles.invitation));
         });
-		
+        
         var assertDisplayModeVisibility = function (display, editContainer, inlineEditor) {
             var button = inlineEditor.textEditButton;
-			
+            
             jqUnit.isVisible("Initially, display field is visible", display);
             jqUnit.isVisible("Initially, textEditButton is visible", button);
             jqUnit.notVisible("Initially, edit field is hidden", editContainer);
@@ -373,7 +373,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         var assertEditModeVisibility = function (display, editContainer, edit, inlineEditor) {
             var button = inlineEditor.textEditButton;
-        	
+            
             jqUnit.notVisible("After click, display field is hidden", display);
             jqUnit.notVisible("After click, textEditButton is hidden", button);
             jqUnit.isVisible("After click, edit field is visible", editContainer);
@@ -382,15 +382,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         inlineEditTests.test("Click on display", function () {
             var display = $("#display");
-			var editContainer = $("#edit-container");
+            var editContainer = $("#edit-container");
             var edit = $("#edit");
             var inlineEditor = fluid.inlineEdit("#inline-edit");
-			
+            
             assertDisplayModeVisibility(display, editContainer, inlineEditor);
             display.click();
-			assertEditModeVisibility(display, editContainer, edit, inlineEditor);
+            assertEditModeVisibility(display, editContainer, edit, inlineEditor);
         });
-		
+        
         inlineEditTests.test("Click on textEditButton", function () {
     
             var display = $("#display");
@@ -731,7 +731,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var edit = $("#inline-edit2 .flc-inlineEdit-edit")[0];
                 jqUnit.assertEquals("Container is field", edit, editor.editField[0]);
             });
-			
+            
             inlineEditTests.test("Render textEditButton", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 var button = editor.textEditButton;

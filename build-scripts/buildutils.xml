@@ -40,9 +40,9 @@
       </apply>
     </target>
 
-	<!-- Expects toDir, fromDir, filePattern, lineBreakArg to be set -->
+    <!-- Expects toDir, fromDir, filePattern, lineBreakArg to be set -->
     <target name="minify">
-    	<echo> Going to minify from ${fromDir} to ${toDir} including ${filePattern}  </echo>
+        <echo> Going to minify from ${fromDir} to ${toDir} including ${filePattern}  </echo>
         <apply executable="java" dest="${toDir}"  parallel="false">
             <!-- The files to act upon. -->  
             <fileset dir="${fromDir}" casesensitive="no">
@@ -76,8 +76,8 @@
         <param name="lineBreakArg" value="--line-break 0" />
       </antcall>
     </target>    
-	
-	<!-- This target should be changed to use better named properties -->
+    
+    <!-- This target should be changed to use better named properties -->
     <target name="concatJavaScript">
         <echo> concat the javascript from ${sourceDir} </echo>
         <concat destfile="${assembled}/${jsfile}" encoding="UTF-8" >

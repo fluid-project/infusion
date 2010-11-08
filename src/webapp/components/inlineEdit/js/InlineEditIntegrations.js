@@ -277,7 +277,7 @@ fluid_1_2 = fluid_1_2 || {};
     });
     
     fluid.inlineEdit.FCKEditor.blurHandlerBinder = function (that) {
-	    function focusEditor(editor) {
+        function focusEditor(editor) {
             editor.Focus(); 
         }
         

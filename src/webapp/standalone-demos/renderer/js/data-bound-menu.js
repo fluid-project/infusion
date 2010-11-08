@@ -44,17 +44,17 @@ fluid.dataBindingExample = function () {
     // curry the food model into an event listener that updates the display (after waiting a moment
     // to give the renderer a chance to actually update the model)
     var dumpFoodModel = function(){
-		var timeOut = setTimeout(function () {
+        var timeOut = setTimeout(function () {
             dumpModel(foodModel, jQuery("#autobound-model"));
-		}, 50);
+        }, 50);
     };
 
     // curry the wine model into an event listener that updates the display (after waiting a moment
     // to give the renderer a chance to actually update the model)
     var dumpWineModel = function(){
-		var timeOut = setTimeout(function () {
+        var timeOut = setTimeout(function () {
             dumpModel(wineModel, jQuery("bound-model"));
-		}, 50);
+        }, 50);
     };
 
     var renderMenu = function () {

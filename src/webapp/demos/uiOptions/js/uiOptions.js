@@ -17,10 +17,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var demo = demo || {};
 (function ($, fluid) {
-	
+    
     var uiOptionsNode;
     var uiOptionsComponent;
-	
+    
     //initialize the UI Enhancer
     var setupUIEnhancer = function () {
         var enhancerOpts = {

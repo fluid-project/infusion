@@ -230,7 +230,7 @@ fluid_1_2 = fluid_1_2 || {};
         var removeRowBtn = that.locate("fileIconBtn", row);
         removeRowBtn.unbind("click");
         removeRowBtn.removeClass(that.options.styles.remove);
-		removeRowBtn.attr("title", that.options.strings.status.success); 
+        removeRowBtn.attr("title", that.options.strings.status.success); 
     };
     
     var renderErrorInfoRowFromTemplate = function (that, fileRow, error) {

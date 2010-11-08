@@ -26,8 +26,8 @@ var demo = demo || {};
               type: "fluid.pager.selfRender",
               options: {
                 selectors: {
-					root: "#body-template"
-				},
+                    root: "#body-template"
+                },
                 row: "row:"
               }
             },

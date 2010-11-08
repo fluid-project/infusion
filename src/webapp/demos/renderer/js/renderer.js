@@ -132,7 +132,7 @@ var demo = demo || {};
             return {
                 ID: "canape-row:",
                 children: [
-	                {ID: "canape", parentRelativeID: "..::canapes", choiceindex: index},
+                    {ID: "canape", parentRelativeID: "..::canapes", choiceindex: index},
                     {ID: "canape-name", parentRelativeID: "..::canapes", choiceindex: index},
                     {ID: "canape-price", value: demo.data.canapeList.prices[index]}
                 ]

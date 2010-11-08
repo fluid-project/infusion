@@ -251,7 +251,7 @@ fluid_1_2 = fluid_1_2 || {};
         var previewFrame = that.locate("previewFrame");
         var previewEnhancer;
         
-		previewFrame.attr("src", that.options.previewTemplateUrl);        
+        previewFrame.attr("src", that.options.previewTemplateUrl);        
         
         that.events.modelChanged.addListener(function (model) {
             /**
@@ -495,7 +495,7 @@ fluid_1_2 = fluid_1_2 || {};
             layout: ["simple", "default"],
             toc: ["true", "false"]
         },
-		previewTemplateUrl: "UIOptionsPreview.html"        
+        previewTemplateUrl: "UIOptionsPreview.html"        
     });
 
 })(jQuery, fluid_1_2);

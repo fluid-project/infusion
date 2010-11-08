@@ -102,13 +102,13 @@ fluid_1_2 = fluid_1_2 || {};
         that.ariaElement.attr("aria-valuenow", percent);   
         //Empty value for ariaBusyText will default to aria-valuenow.
         if (str.ariaBusyText) {
-	        if (busy) {
-	            var busyString = fluid.stringTemplate(str.ariaBusyText, {percentComplete : percent});           
-	            that.ariaElement.attr("aria-valuetext", busyString);
-	        } else if (percent === 100) {
-	            // FLUID-2936: JAWS doesn't currently read the "Progress is complete" message to the user, even though we set it here.
-	            that.ariaElement.attr("aria-valuetext", str.ariaDoneText);
-	        }
+            if (busy) {
+                var busyString = fluid.stringTemplate(str.ariaBusyText, {percentComplete : percent});           
+                that.ariaElement.attr("aria-valuetext", busyString);
+            } else if (percent === 100) {
+                // FLUID-2936: JAWS doesn't currently read the "Progress is complete" message to the user, even though we set it here.
+                that.ariaElement.attr("aria-valuetext", str.ariaDoneText);
+            }
         }
     };
         

@@ -11,8 +11,8 @@
       To create an unminified package when using the customBuild, builderBuild and releaseBuild targets, use -DnoMinify="true"
           
     </description>
-	
-	<property name="base-dir" location=".." />
+    
+    <property name="base-dir" location=".." />
     <property file="build.properties"/>
     <!-- properties for URL rewriting - these should be moved to the build.properties file -->
     <property name="regexStartJS" value="&lt;script{1,1}?.*" />
@@ -146,9 +146,9 @@
         <copy todir="${buildwar}">
             <fileset dir="${base-dir}">
                 <include name="pom.xml" />
-            	<include name="project.xml" />
-            	<include name="maven.xml" />
-            	<include name="project.properties" />
+                <include name="project.xml" />
+                <include name="maven.xml" />
+                <include name="project.properties" />
             </fileset>
         </copy>
     </target>
@@ -161,7 +161,7 @@
                 <include name="framework/**/*" />
                 <include name="lib/**/*" />          
             </fileset>
-    	</copy>    
+        </copy>    
     </target>
 
     <!-- Builds the core Infusion WAR file. -->

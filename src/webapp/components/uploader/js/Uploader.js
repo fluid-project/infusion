@@ -524,18 +524,18 @@ fluid_1_2 = fluid_1_2 || {};
         that.degrade = function () {
             toggleVisibility(that.enhanceControl, that.degradeControl);
             toggleVisibility(that.degradedContainer, that.enhancedContainer);
-	        isDegraded = true;
+            isDegraded = true;
         };
          
-	    that.enhance = function () {
+        that.enhance = function () {
             toggleVisibility(that.degradeControl, that.enhanceControl);
             toggleVisibility(that.enhancedContainer, that.degradedContainer);
-	        isDegraded = false;
-	    };
+            isDegraded = false;
+        };
          
         that.isDegraded = function () {
-	        return isDegraded;
-	    };
+            return isDegraded;
+        };
          
         setupManuallyDegrade(that);
         return that;
@@ -550,7 +550,7 @@ fluid_1_2 = fluid_1_2 || {};
         strings: {
             degradeLinkText: "Switch to the standard single-file Uploader",
             enhanceLinkText: "Switch to the Flash-based multi-file Uploader"
-	    },
+        },
         selectors: {
             enhanceable: ".fl-ProgEnhance-basic",
             degradeControl: ".flc-manuallyDegrade-degrade",
@@ -561,6 +561,6 @@ fluid_1_2 = fluid_1_2 || {};
             degradeLinkClass: "fl-uploader-manually-degrade",
             enhanceLinkClass: "fl-uploader-manually-enhance"
         }
-	});
+    });
 
 })(jQuery, fluid_1_2);

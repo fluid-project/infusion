@@ -75,19 +75,19 @@ fluid.dataBindingExample = function () {
     // curry the models into event listeners that update the display (after waiting a moment
     // to give the renderer a chance to actually update the model)
     var dumpWineModel = function(){
-		var timeOut = setTimeout(function () {
+        var timeOut = setTimeout(function () {
             dumpModel(wineModel, jQuery("bound-model"));
-		}, 50);
+        }, 50);
     };
     var dumpCheeseModel = function(){
-		var timeOut = setTimeout(function () {
+        var timeOut = setTimeout(function () {
             dumpModel(cheeseModel, jQuery("#autobound-cheese-model"));
-		}, 50);
+        }, 50);
     };
     var dumpCanapeModel = function(){
-		var timeOut = setTimeout(function () {
+        var timeOut = setTimeout(function () {
             dumpModel(canapeModel, jQuery("#autobound-canape-model"));
-		}, 50);
+        }, 50);
     };
 
     var renderMenu = function () {

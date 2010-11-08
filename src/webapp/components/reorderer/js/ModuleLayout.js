@@ -37,7 +37,7 @@ fluid_1_2 = fluid_1_2 || {};
     var findColIndex = function (item, layout) {
         return fluid.find(layout.columns,
             function (column, colIndex) {
-            	return item === column.container? colIndex : undefined;
+                return item === column.container? colIndex : undefined;
             }, -1);
     };
 
@@ -79,7 +79,7 @@ fluid_1_2 = fluid_1_2 || {};
                 return {
                     container: column,
                     elements: $.makeArray(portlets.filter(function () {
-                    	  // is this a bug in filter? would have expected "this" to be 1st arg
+                          // is this a bug in filter? would have expected "this" to be 1st arg
                         return fluid.dom.isContainer(column, this);
                     }))
                 };
@@ -173,7 +173,7 @@ fluid_1_2 = fluid_1_2 || {};
                  dropManager, dom, options.disableWrap);
                  
         that.getGeometricInfo = function () {
-        	var extents = [];
+            var extents = [];
             var togo = {extents: extents,
                         sentinelize: options.sentinelize};
             togo.elementMapper = function (element) {

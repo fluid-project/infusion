@@ -18,7 +18,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var fluid = fluid || {};
 // Import definition of fluid.unwrap, it is just too irritating fiddling around without it
 if (!fluid.unwrap) {
-	    fluid.unwrap = function (obj) {
+        fluid.unwrap = function (obj) {
         return obj && obj.jquery && obj.length === 1 ? obj[0] : obj; // Unwrap the element if it's a jQuery.
     };
     

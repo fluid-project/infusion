@@ -154,10 +154,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var previewTemplate = uiOptions.options.previewTemplateUrl;
             jqUnit.assertEquals("Default URL is UIOptionsPreview.html", "UIOptionsPreview.html", previewTemplate);
 
-			var myOpts = {		
-				previewTemplateUrl: "mypath/test/preview.html"
-			};
-			uiOptions = fluid.uiOptions(".uiOptions", myOpts);            
+            var myOpts = {        
+                previewTemplateUrl: "mypath/test/preview.html"
+            };
+            uiOptions = fluid.uiOptions(".uiOptions", myOpts);            
             previewTemplate = uiOptions.options.previewTemplateUrl;
             jqUnit.assertEquals("Set URL is mypath/test/preview.html", "mypath/test/preview.html", previewTemplate);
 

@@ -39,8 +39,8 @@ var fluid = fluid || {};
         //  * Specify the orientation of the tabs (the default is vertical)
         fluid.selectable(tablist, { 
             selectableElements: tabs,
-        	onSelect: selectTab,
-        	direction: fluid.a11y.orientation.HORIZONTAL
+            onSelect: selectTab,
+            direction: fluid.a11y.orientation.HORIZONTAL
         });
         
         // Use an activation handler if we are using the "Mac OS" style tab interaction.
@@ -53,7 +53,7 @@ var fluid = fluid || {};
     };
 
     var addARIA = function (tablist, panelsId) {
-		var tabs = tablist.children("li");
+        var tabs = tablist.children("li");
         var panels = $("#" + "panels" + " > div");
 
         // Give the container a role of tablist
@@ -62,7 +62,7 @@ var fluid = fluid || {};
         // Each tab should have a role of Tab, 
         // and a "position in set" property describing its order within the tab list.
         tabs.each (function(i, tab) {
-        	$(tab).attr("role", "tab");
+            $(tab).attr("role", "tab");
         });
 
         // Give each panel a role of tabpanel

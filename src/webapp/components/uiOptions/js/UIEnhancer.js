@@ -102,7 +102,7 @@ fluid_1_2 = fluid_1_2 || {};
      */
     var setMinSize = function (container, size) {
         // TODO: fss font size class prefix is hardcoded here
-		if (size && size > 0) {
+        if (size && size > 0) {
             container.css("font-size", size + "pt");
             replaceClass(container, "[class*=fl-font-size-]", /\bfl-font-size-[0-9]{1,2}\s+/g, 'fl-font-size-100');
         } else {

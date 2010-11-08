@@ -174,13 +174,13 @@ var demo = demo || {};
             optionlist: model.optionlist
         }];
         var optionChildren = fluid.transform(model.optionlist, function(option, index) {
-    	    return {
+            return {
                 ID: "select-choice-row:", 
                 children: [
                     {ID: "select-choice", parentRelativeID: "..::select-choice-root", choiceindex: index},
                     {ID: "select-choice-label", parentRelativeID: "..::select-choice-root", choiceindex: index}]
-    	        };
-    	    });
+                };
+            });
         tree = tree.children.concat(optionChildren);
         return tree;
     };
