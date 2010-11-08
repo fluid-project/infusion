@@ -22,7 +22,8 @@ var demo = demo || {};
         var reorderer = fluid.reorderImages(".flc-imageReorderer", {
             selectors: {
                 movables: ".flc-imageReorderer-item"
-            }
+            },
+            disableWrap: true
         });  
     };
 })(jQuery, fluid);

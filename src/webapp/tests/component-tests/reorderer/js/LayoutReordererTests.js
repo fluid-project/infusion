@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -10,10 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery*/
-/*global fluid*/
-/*global demo*/
-/*global jqUnit*/
+/*global document, jQuery, fluid, demo, jqUnit*/
 
 (function ($) {
     $(document).ready(function () {
@@ -23,8 +21,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         layoutReordererTests.test("Default selectors", function () {
             var testReorderer = fluid.reorderLayout("#default-selector-test");
-            var item1 = jQuery("#portlet-1");
-            var item2 = jQuery("#portlet-2").focus();
+            var item1 = $("#portlet-1");
+            var item2 = $("#portlet-2").focus();
             
             // Sniff test the reorderer that was created - keyboard selection
             jqUnit.assertTrue("focus on item2", item2.hasClass("fl-reorderer-movable-selected"));
@@ -106,27 +104,34 @@ https://source.fluidproject.org/svn/LICENSE.txt
             reorderer.handleKeyUp(fluid.testUtils.keyEvent("CTRL", portlet8));
             jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning"); 
     
-        });
+        });   
     
-    
-    
-        function expectOrder(message, order) {
-           var items = fluid.transform(jQuery(".portlet"), fluid.getId);
-           var expected = fluid.transform(order, function(item) {return fluid.testUtils.moduleLayout.portletIds[item];});
-           jqUnit.assertDeepEq(message, expected, items);
-        }
-      
+       function expectOrder(message, order) {
+                var items = fluid.transform($(".portlet"), fluid.getId);
+                var expected = fluid.transform(order, function(item) {return fluid.testUtils.moduleLayout.portletIds[item];});
+                jqUnit.assertDeepEq(message, expected, items);
+       }
+             
         var tests = new jqUnit.TestCase("Reorder Layout Tests");
-    
-        tests.test("reorderLayout API", function () {
-          
-            var options = {
+        
+        var assembleOptions = function (isDisableWrap,isLocked) {
+            var obj = {
                 selectors: {
                     columns: "[id^='c']",
-                    modules: ".portlet"
-                }
+                    modules: ".portlet",
+                    lockedModules: isLocked
+                },
+                disableWrap: isDisableWrap,
+                reordererFn: "fluid.reorderLayout",
+                expectOrderFn: expectOrder,
+                key: fluid.testUtils.reorderer.compositeKey                       
             };
             
+            return obj;
+        };       
+        
+        tests.test("reorderLayout API", function () {
+            var options = assembleOptions();
             var lastLayoutModel = null;
             
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
@@ -134,14 +139,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             // Test for FLUID-3121
             var afterMoveListener = function() {
                 lastLayoutModel = layoutReorderer.layoutHandler.getModel();
-                }
+                };
             layoutReorderer.events.afterMove.addListener(afterMoveListener);
             
             var item2 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
             var item3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
             
-            // Sniff test the reorderer that was created - keyboard selection and movement
-    
+            // Sniff test the reorderer that was created - keyboard selection and movement    
             jqUnit.assertTrue("focus on item2", item2.hasClass("fl-reorderer-movable-selected"));
             jqUnit.assertTrue("focus on item2 - item3 should be default", item3.hasClass("fl-reorderer-movable-default"));
             jqUnit.assertEquals("No move callback", null, lastLayoutModel);
@@ -159,18 +163,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 [1, 2, 4, 3, 5, 6, 7, 8, 9]);
         });
     
-        tests.test("reorderLayout with optional styles", function () {
+        tests.test("reorderLayout with optional styles", function () {       
             var options = {
-                selectors: {
-                    columns: "[id^='c']",
-                    modules: ".portlet"            
-                },
-                styles: {
-                    defaultStyle: "myDefault",
-                    selected: "mySelected"
-                }
-            };
-    
+                    selectors: {
+                        columns: "[id^='c']",
+                        modules: ".portlet" 
+                    },
+                    styles: {
+                        defaultStyle: "myDefault",
+                        selected: "mySelected"
+                    }
+                };
+                
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
             
             jqUnit.assertEquals("default class is myDefault", "myDefault", layoutReorderer.options.styles.defaultStyle);
@@ -181,14 +185,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         tests.test("reorderLayout with locked portlets", function () {
-            var options = {
-                selectors: {
-                    columns: "[id^='c']",
-                    modules: ".portlet",
-                    lockedModules: ".locked"
-                }
-            };
-
+            var options = assembleOptions(false,".locked");
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
             var item2 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
             var item3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
@@ -217,8 +214,67 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertTrue("Moved to new column", 
                 fluid.dom.isContainer($("#c5")[0], item3[0]));
                    
+        });        
+       
+        tests.test("reorderLayout, option set disabled wrap, user action ctrl+up", function () {              
+            var options = {
+                reordererOptions: assembleOptions(true),
+                direction: "UP",
+                expectedOrderArrays: [[1, 2, 3, 4, 5, 6, 7, 8, 9]],
+                itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[1])
+            };
+       
+            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);  
+                                    
+        });        
+     
+        tests.test("reorderLayout, option set disabled wrap, user action ctrl+down", function () {  
+             var options = {
+                reordererOptions: assembleOptions(true),
+                direction: "DOWN",
+                expectedOrderArrays: [[1, 2, 3, 4, 5, 6, 7, 8, 9]],
+                itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[9])
+            };
+       
+            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);                      
         });
-    
+        
+        tests.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+up", function () {
+            var options = {
+                reordererOptions: assembleOptions(true, ".locked"),
+                direction: "UP",
+                expectedOrderArrays: [[1, 2, 4, 3, 5, 6, 7, 8, 9],[1, 2, 4, 3, 5, 6, 7, 8, 9]],
+                itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[4])
+            };
+       
+            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options); 
+            
+            jqUnit.assertValue("gives warning message when trying to move item4 up ", $(".flc-reorderer-dropWarning"));                   
+        });       
+       
+        tests.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+right", function () {
+            var options = {
+                reordererOptions: assembleOptions(true, ".locked"),
+                direction: "RIGHT",
+                expectedOrderArrays: [[1, 2, 4, 5, 6, 3, 7, 8, 9], [1, 2, 4, 5, 6, 7, 8, 3, 9], 
+                                      [1, 2, 4, 5, 6, 7, 8, 9, 3], [1, 2, 4, 5, 6, 7, 8, 9, 3]],
+                itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[3])
+            };
+       
+            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options); 
+        });        
+        
+        tests.test("reorderLayout with locked portlets, option set disabled wrap, user action ctrl+left", function () { 
+            var options = {
+                reordererOptions: assembleOptions(true, ".locked"),
+                direction: "LEFT",
+                expectedOrderArrays: [[1, 2, 3, 4, 5, 6, 9, 7, 8], [1, 2, 3, 9, 4, 5, 6, 7, 8], 
+                                      [1, 2, 3, 9, 4, 5, 6, 7, 8]],
+                itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[9])                             
+            };
+       
+            fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);                       
+        });    
     
     });
 })(jQuery);

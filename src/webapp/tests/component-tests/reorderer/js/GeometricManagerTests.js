@@ -1,5 +1,6 @@
 /*
 Copyright 2008-2009 University of Cambridge
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -8,17 +9,14 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
-
-/*global jQuery*/
-/*global fluid*/
-/*global jqUnit*/
+/*global document, expect, jQuery, fluid, jqUnit*/
 
 
 (function ($) {
     $(document).ready(function () {
-    	     
+         
         var GeometricManagerTests = new jqUnit.TestCase("GeometricManagerTests");
-    	
+        
         function assertOrder(message, parentId, required) {
             var all = $("#" + parentId + " div");
             var str = "";
@@ -31,8 +29,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
         }
 
         GeometricManagerTests.test("Original order", function() {
-            var orders = $("#permuteTest .orderable");
-          
             expect(2);
             assertOrder("Original order", "permuteTest",  "0123A4567B8");
             assertOrder("Original order", "permuteTest2", "abCc");
@@ -59,9 +55,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 assertOrder(name, "permuteTest", expected1);
                 assertOrder(name, "permuteTest2", expected2);
             });            
-        }
-        
-
+        }        
+       
         // Original order:                                                   "0123A4567B8"
         selfPermuteTest("REPLACE right rend",  2, 8, fluid.position.REPLACE, "0134A5678B2");
         selfPermuteTest("REPLACE right",       2, 6, fluid.position.REPLACE, "0134A5627B8");
@@ -135,40 +130,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
           
         });
         
-      GeometricManagerTests.test("projectFrom", function() {
-          // column 1, 3x3 squares spaced by 1, middle skew 1 to the right
-          var rects = [
-              {left: 1, top: 1, right: 4, bottom: 4},
-              {left: 2, top: 5, right: 5, bottom: 8},
-              {left: 1, top: 9, right: 4, bottom: 12},
-          // column 2, same dimensions but offset down by 1
-              {left: 6, top: 2, right: 9, bottom: 5},
-              {left: 6, top: 6, right: 9, bottom: 9}];
-          
-          var elems = fluid.transform(rects, function(rect, i) {
-             return {rect: rect, index: i}
-          });
-          
-          function assertProject(name, fromIndex, direction, toIndex, wrapped) {
-              var proj = fluid.geom.projectFrom(rects[fromIndex], fluid.direction[direction], elems);
-              jqUnit.assertEquals(name + " index", toIndex, proj.cacheelem.index);
-              jqUnit.assertEquals(name + " wrapped", wrapped, proj.wrapped);
-          }
+      GeometricManagerTests.test("projectFrom", function() {          
           expect(24);  
-          assertProject("Right0", 0, "RIGHT", 3, false);
-          assertProject("Left3",  3, "LEFT",  0, false);
-          assertProject("Right3", 3, "RIGHT", 0, true);
-          assertProject("Left0",  0, "LEFT",  3, true);
-          assertProject("Down0",  0, "DOWN",  1, false);
-          assertProject("Up1",    1, "UP",    0, false);
-          
-          assertProject("Up0",    0, "UP",    2, true);
-          assertProject("Down2",  2, "DOWN",  0, true);
-          assertProject("Right2", 2, "RIGHT", 4, false);
-          assertProject("Left4",  4, "LEFT",  1, false);
-          assertProject("Left1",  1, "LEFT",  4, true);
-          assertProject("Right4", 4, "RIGHT", 1, true);
-          
+          fluid.testUtils.reorderer.stepProjectFrom(false);
+      });
+            
+      GeometricManagerTests.test("projectFrom with disabled wrap", function() {          
+          expect(24);  
+          fluid.testUtils.reorderer.stepProjectFrom(true);
       });
     });
 })(jQuery);

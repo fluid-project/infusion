@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -9,6 +10,7 @@ Licenses.
 You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
+/*global document, jqUnit, setUp, fluid, itemIds, callbackConfirmer, afterMoveCallbackWasCalled, itemIds2, jQuery*/
 
 (function($) {
     $(document).ready(function() {
@@ -16,23 +18,34 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
         function assertItemsInOrder(message, expectOrder) {
             return fluid.testUtils.reorderer.assertItemsInOrder(message, expectOrder, 
-               jQuery("li", jQuery("#list1")), "list1item");
-        }
+               $("li", $("#list1")), "list1item");
+        }        
         
         var k = fluid.testUtils.reorderer.bindReorderer(itemIds);
         
-        tests.test("reorderList API", function() {
-            var options = {
+        var assembleOptions = function (isDisableWrap) {
+            var obj = {
                 selectors: {
                     movables: "li"
                 },
                 listeners: {
                     afterMove: callbackConfirmer
-                }
-            };
+                },
+                disableWrap: isDisableWrap,
+                reordererFn: "fluid.reorderList",
+                expectOrderFn: fluid.testUtils.reorderer.assertItemsInOrder,
+                key: fluid.testUtils.reorderer.bindReorderer(itemIds).compositeKey,
+                thumbArray: "li",
+                prefix: "list1item"
+            };            
+            return obj;
+        };
+        
+        tests.test("reorderList API", function() {
+            var options = assembleOptions(false); 
             var listReorderer = fluid.reorderList("#list1", options);
-            var item2 = jQuery("#list1item2").focus();
-            var item3 = jQuery("#list1item3");
+            var item2 = $("#list1item2").focus();
+            var item3 = $("#list1item3");
             
             // Sniff test the reorderer that was created - keyboard selection and movement
     
@@ -76,11 +89,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });    
     
-       function assertItemsInOrder2(message, expectOrder) {
+        function assertItemsInOrder2(message, expectOrder) {
             return fluid.testUtils.reorderer.assertItemsInOrder(message, expectOrder, 
-               jQuery("li", jQuery("#list2")), "list2item");
-        }
-    
+               $("li", $("#list2")), "list2item");
+        }    
     
         var k2 = fluid.testUtils.reorderer.bindReorderer(itemIds2);
     
@@ -98,11 +110,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             var listReorderer = fluid.reorderList("#list2", options);
             
-            var item1 = jQuery("#list2item1").focus();
-            var item2 = jQuery("#list2item2");
-            var item3 = jQuery("#list2item3");
-            var item4 = jQuery("#list2item4");
-    
+            var item1 = $("#list2item1").focus();
+            var item2 = $("#list2item2");
+            var item3 = $("#list2item3");
+                
             jqUnit.assertTrue("focus on item1", item1.hasClass("fl-reorderer-movable-selected"));
 
             jqUnit.assertTrue("focus on item1 - item2 should be default", item2.hasClass("fl-reorderer-movable-default"));
@@ -129,5 +140,30 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertTrue("after ctrl-down on movable, order should change", afterMoveCallbackWasCalled);
     
         });
+        
+        tests.test("reorderList, option set disabled wrap, user action ctrl+down", function() {
+            var options = {
+                reordererOptions: assembleOptions(true),
+                direction: "DOWN",
+                expectedOrderArrays: [[1, 2, 3, 5, 4], [1, 2, 3, 5, 4]],
+                itemSelector: $("#list1item4"),
+                itemIndex: 3
+            };
+        
+            fluid.testUtils.reorderer.stepReorderer("#list1", options);
+        });
+
+        tests.test("reorderList, option set disabled wrap, user action ctrl+up", function() {
+            var options = {
+                reordererOptions: assembleOptions(true),
+                direction: "UP",
+                expectedOrderArrays: [[2, 1, 3, 4, 5],[2, 1, 3, 4, 5]],
+                itemSelector: $("#list1item2"),
+                itemIndex: 1
+            };
+       
+            fluid.testUtils.reorderer.stepReorderer("#list1", options);
+        });        
+        
     });
 })(jQuery);

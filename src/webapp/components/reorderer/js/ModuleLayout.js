@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -169,7 +170,7 @@ fluid_1_2 = fluid_1_2 || {};
         that.getRelativePosition  = 
            fluid.reorderer.relativeInfoGetter(options.orientation, 
                  fluid.reorderer.WRAP_LOCKED_STRATEGY, fluid.reorderer.GEOMETRIC_STRATEGY, 
-                 dropManager, dom);
+                 dropManager, dom, options.disableWrap);
                  
         that.getGeometricInfo = function () {
         	var extents = [];

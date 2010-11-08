@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2010 University of Cambridge
 Copyright 2008-2010 University of Toronto
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -237,57 +238,14 @@ var fluid_1_2 = fluid_1_2 || {};
         }
     }
     
-    fluid.dropManager = function () {
+   
+    
+    fluid.dropManager = function () { 
         var targets = [];
         var cache = {};
-        var that = {};
+        var that = {};        
         
-        var lastClosest;
-        
-        function cacheKey(element) {
-            return fluid.allocateSimpleId(element);
-        }
-        
-        function sentinelizeElement(targets, sides, cacheelem, fc, disposition, clazz) {
-            var elemCopy = $.extend(true, {}, cacheelem);
-            elemCopy.rect[sides[fc]] = elemCopy.rect[sides[1 - fc]] + (fc? 1: -1);
-            elemCopy.rect[sides[1 - fc]] = (fc? -1 : 1) * SENTINEL_DIMENSION;
-            elemCopy.position = disposition === fluid.position.INSIDE?
-               disposition : (fc? fluid.position.BEFORE : fluid.position.AFTER);
-            elemCopy.clazz = clazz;
-            targets[targets.length] = elemCopy;
-        }
-        
-        function splitElement(targets, sides, cacheelem, disposition, clazz1, clazz2) {
-            var elem1 = $.extend(true, {}, cacheelem);
-            var elem2 = $.extend(true, {}, cacheelem);
-            var midpoint = (elem1.rect[sides[0]] + elem1.rect[sides[1]]) / 2;
-            elem1.rect[sides[1]] = midpoint; 
-            elem1.position = fluid.position.BEFORE;
-            
-            elem2.rect[sides[0]] = midpoint; 
-            elem2.position = fluid.position.AFTER;
-            
-            elem1.clazz = clazz1;
-            elem2.clazz = clazz2;
-            targets[targets.length] = elem1;
-            targets[targets.length] = elem2;
-        }
-       
-        // Expand this configuration point if we ever go back to a full "permissions" model
-        function getRelativeClass(thisElements, index, relative, thisclazz, mapper) {
-            index += relative;
-            if (index < 0 && thisclazz === "locked") {
-                return "locked";
-            }
-            if (index >= thisElements.length || mapper === null) {
-                return null;
-            } else {
-                relative = thisElements[index];
-                return mapper(relative) === "locked" && thisclazz === "locked" ? "locked" : null;
-            }
-        }
-        
+        var lastClosest;              
         var lastGeometry;
         var displacementX, displacementY;
         
@@ -307,21 +265,21 @@ var fluid_1_2 = fluid_1_2 || {};
                     if (cacheelem.clazz !== "hidden" && mapper) {
                         cacheelem.clazz = mapper(element);
                     }
-                    cache[cacheKey(element)] = cacheelem;
-                    var backClass = getRelativeClass(thisInfo.elements, j, fluid.position.BEFORE, cacheelem.clazz, mapper); 
-                    var frontClass = getRelativeClass(thisInfo.elements, j, fluid.position.AFTER, cacheelem.clazz, mapper); 
+                    cache[fluid.dropManager.cacheKey(element)] = cacheelem;
+                    var backClass = fluid.dropManager.getRelativeClass(thisInfo.elements, j, fluid.position.BEFORE, cacheelem.clazz, mapper); 
+                    var frontClass = fluid.dropManager.getRelativeClass(thisInfo.elements, j, fluid.position.AFTER, cacheelem.clazz, mapper); 
                     if (disposition === fluid.position.INSIDE) {
                         targets[targets.length] = cacheelem;
                     }
                     else {
-                        splitElement(targets, sides, cacheelem, disposition, backClass, frontClass);
+                        fluid.dropManager.splitElement(targets, sides, cacheelem, disposition, backClass, frontClass);
                     }
                     // deal with sentinel blocks by creating near-copies of the end elements
                     if (sentB && geometricInfo.sentinelize) {
-                        sentinelizeElement(targets, sides, cacheelem, 1, disposition, backClass);
+                        fluid.dropManager.sentinelizeElement(targets, sides, cacheelem, 1, disposition, backClass);
                     }
                     if (sentF && geometricInfo.sentinelize) {
-                        sentinelizeElement(targets, sides, cacheelem, 0, disposition, frontClass);
+                        fluid.dropManager.sentinelizeElement(targets, sides, cacheelem, 0, disposition, frontClass);
                     }
                     //fluid.log(dumpelem(cacheelem));
                     return cacheelem;
@@ -431,18 +389,18 @@ var fluid_1_2 = fluid_1_2 || {};
             };
         };
         
-        that.shuffleProjectFrom = function (element, direction, includeLocked) {
-            var togo = that.projectFrom(element, direction, includeLocked);
+        that.shuffleProjectFrom = function (element, direction, includeLocked, disableWrap) {
+            var togo = that.projectFrom(element, direction, includeLocked, disableWrap);
             if (togo) {
                 togo.position = fluid.position.REPLACE;
             }
             return togo;
         };
         
-        that.projectFrom = function (element, direction, includeLocked) {
+        that.projectFrom = function (element, direction, includeLocked, disableWrap) {
             that.updateGeometry(lastGeometry);
-            var cacheelem = cache[cacheKey(element)];
-            var projected = fluid.geom.projectFrom(cacheelem.rect, direction, targets, includeLocked);
+            var cacheelem = cache[fluid.dropManager.cacheKey(element)];
+            var projected = fluid.geom.projectFrom(cacheelem.rect, direction, targets, includeLocked, disableWrap);
             if (!projected.cacheelem) {
                 return null;
             }
@@ -452,31 +410,20 @@ var fluid_1_2 = fluid_1_2 || {};
                      };
         };
         
-        function getRelativeElement(element, direction, elements) {
-            var folded = fluid.directionSign(direction);
-      
-            var index = $(elements).index(element) + folded;
-            if (index < 0) {
-                index += elements.length;
-            }
-            index %= elements.length;
-            return elements[index];            
-        }
-        
-        that.logicalFrom = function (element, direction, includeLocked) {
+        that.logicalFrom = function (element, direction, includeLocked, disableWrap) {
             var orderables = that.getOwningSpan(element, fluid.position.INTERLEAVED, includeLocked);
-            return {element: getRelativeElement(element, direction, orderables), 
+            return {element: fluid.dropManager.getRelativeElement(element, direction, orderables, disableWrap), 
                 position: fluid.position.REPLACE};
         };
            
-        that.lockedWrapFrom = function (element, direction, includeLocked) {
-            var base = that.logicalFrom(element, direction, includeLocked);
+        that.lockedWrapFrom = function (element, direction, includeLocked, disableWrap) {
+            var base = that.logicalFrom(element, direction, includeLocked, disableWrap);
             var selectables = that.getOwningSpan(element, fluid.position.INTERLEAVED, includeLocked);
-            var allElements = cache[cacheKey(element)].owner.elements;
+            var allElements = cache[fluid.dropManager.cacheKey(element)].owner.elements;
             if (includeLocked || selectables[0] === allElements[0]) {
                 return base;
             }
-            var directElement = getRelativeElement(element, direction, allElements);
+            var directElement = fluid.dropManager.getRelativeElement(element, direction, allElements, disableWrap);
             if (lastGeometry.elementMapper(directElement) === "locked") {
                 base.element = null;
                 base.clazz = "locked";  
@@ -485,7 +432,7 @@ var fluid_1_2 = fluid_1_2 || {};
         }; 
         
         that.getOwningSpan = function (element, position, includeLocked) {
-            var owner = cache[cacheKey(element)].owner; 
+            var owner = cache[fluid.dropManager.cacheKey(element)].owner; 
             var elements = position === fluid.position.INSIDE? [owner.parentElement] : owner.elements;
             if (!includeLocked && lastGeometry.elementMapper) {
                 elements = $.makeArray(elements);
@@ -500,14 +447,77 @@ var fluid_1_2 = fluid_1_2 || {};
             var sourceElements = that.getOwningSpan(element, null, true);
             var targetElements = that.getOwningSpan(target, position, true);
             fluid.permuteDom(element, target, position, sourceElements, targetElements);
-        };
+        };              
         
         return that;
-    };
+    };    
+   
  
     fluid.dropManager.NO_CHANGE = "no change";
-
-
+    
+    fluid.dropManager.cacheKey = function (element) {
+        return fluid.allocateSimpleId(element);
+    };
+    
+    fluid.dropManager.sentinelizeElement = function (targets, sides, cacheelem, fc, disposition, clazz) {
+        var elemCopy = $.extend(true, {}, cacheelem);
+        elemCopy.rect[sides[fc]] = elemCopy.rect[sides[1 - fc]] + (fc? 1: -1);
+        elemCopy.rect[sides[1 - fc]] = (fc? -1 : 1) * SENTINEL_DIMENSION;
+        elemCopy.position = disposition === fluid.position.INSIDE?
+           disposition : (fc? fluid.position.BEFORE : fluid.position.AFTER);
+        elemCopy.clazz = clazz;
+        targets[targets.length] = elemCopy;
+    };
+    
+    fluid.dropManager.splitElement = function (targets, sides, cacheelem, disposition, clazz1, clazz2) {
+        var elem1 = $.extend(true, {}, cacheelem);
+        var elem2 = $.extend(true, {}, cacheelem);
+        var midpoint = (elem1.rect[sides[0]] + elem1.rect[sides[1]]) / 2;
+        elem1.rect[sides[1]] = midpoint; 
+        elem1.position = fluid.position.BEFORE;
+        
+        elem2.rect[sides[0]] = midpoint; 
+        elem2.position = fluid.position.AFTER;
+        
+        elem1.clazz = clazz1;
+        elem2.clazz = clazz2;
+        targets[targets.length] = elem1;
+        targets[targets.length] = elem2;
+    };
+    
+    // Expand this configuration point if we ever go back to a full "permissions" model
+    fluid.dropManager.getRelativeClass = function (thisElements, index, relative, thisclazz, mapper) {
+        index += relative;
+        if (index < 0 && thisclazz === "locked") {
+            return "locked";
+        }
+        if (index >= thisElements.length || mapper === null) {
+            return null;
+        } else {
+            relative = thisElements[index];
+            return mapper(relative) === "locked" && thisclazz === "locked" ? "locked" : null;
+        }
+    };
+    
+     fluid.dropManager.getRelativeElement = function (element, direction, elements, disableWrap) {
+        var folded = fluid.directionSign(direction);
+  
+        var index = $(elements).index(element) + folded;
+        if (index < 0) {
+            index += elements.length;
+        }
+        
+        // disable wrap
+        if (disableWrap) {                   
+            if (index === elements.length || index === (elements.length + folded)) {
+                return element;
+            }
+        }
+                      
+        index %= elements.length;
+        return elements[index];              
+    };
+    
     fluid.geom = fluid.geom || {};
     
     // These distance algorithms have been taken from
@@ -545,9 +555,10 @@ var fluid_1_2 = fluid_1_2 || {};
      * @param {fluid.direction} direction  The direction of motion
      * @param {Array of Rectangle holders} targets An array of objects "cache elements" 
      * for which the member <code>rect</code> is the holder of the rectangle to be tested.
+     * @param disableWrap which is used to enable or disable wrapping of elements
      * @return The cache element which is the most appropriate for the requested motion.
      */
-    fluid.geom.projectFrom = function (baserect, direction, targets, forSelection) {
+    fluid.geom.projectFrom = function (baserect, direction, targets, forSelection, disableWrap) {
         var axis = fluid.directionAxis(direction);
         var frontSide = fluid.rectSides[direction];
         var backSide = fluid.rectSides[axis * 15 + 5 - direction];
@@ -597,8 +608,13 @@ var fluid_1_2 = fluid_1_2 || {};
             }
             //fluid.log("Element " + i + " " + dumpelem(elem) + " mindist " + collect.mindist);
         }
-        var wrap = !collect.minelem || backcollect.mindist < collect.mindist;
-        var mincollect = wrap? backcollect: collect;
+        var wrap = !collect.minelem || backcollect.mindist < collect.mindist ;
+        
+        // disable wrap
+        wrap = wrap && !disableWrap;       
+                
+        var mincollect = wrap? backcollect: collect;        
+        
         var togo = {
             wrapped: wrap,
             cacheelem: mincollect.minelem

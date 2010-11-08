@@ -1,6 +1,7 @@
 /*
 Copyright 2007-2009 University of Toronto
 Copyright 2007-2010 University of Cambridge
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -121,9 +122,9 @@ fluid_1_2 = fluid_1_2 || {};
         }
         var thatReorderer = fluid.initView("fluid.reorderer", container, options);
         options = thatReorderer.options;
-        
-        var dropManager = fluid.dropManager();
-        
+                
+        var dropManager = fluid.dropManager();   
+                
         thatReorderer.layoutHandler = fluid.initSubcomponent(thatReorderer,
             "layoutHandler", [thatReorderer.container, options, dropManager, thatReorderer.dom]);
         
@@ -176,7 +177,7 @@ fluid_1_2 = fluid_1_2 || {};
                 var isMovement = keyset.modifier(evt);
                 
                 var dirnum = fluid.keycodeDirection[keydir];
-                var relativeItem = thatReorderer.layoutHandler.getRelativePosition(item, dirnum, !isMovement);
+                var relativeItem = thatReorderer.layoutHandler.getRelativePosition(item, dirnum, !isMovement);  
                 if (!relativeItem) {
                     continue;
                 }
@@ -569,11 +570,11 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.reorderer.WRAP_LOCKED_STRATEGY       = "lockedWrapFrom";
     fluid.reorderer.NO_STRATEGY = null;
     
-    fluid.reorderer.relativeInfoGetter = function (orientation, coStrategy, contraStrategy, dropManager, dom) {
+    fluid.reorderer.relativeInfoGetter = function (orientation, coStrategy, contraStrategy, dropManager, dom, disableWrap) {
         return function (item, direction, forSelection) {
             var dirorient = fluid.directionOrientation(direction);
             var strategy = dirorient === orientation? coStrategy: contraStrategy;
-            return strategy !== null? dropManager[strategy](item, direction, forSelection) : null;
+            return strategy !== null? dropManager[strategy](item, direction, forSelection, disableWrap) : null;
         };
     };
     
@@ -613,7 +614,11 @@ fluid_1_2 = fluid_1_2 || {};
             keysets: "replace",
             "selectors.selectables": "selectors.movables",
             "selectors.dropTargets": "selectors.movables"
-        }
+        },
+        
+        // The user option to enable or disable wrapping of elements within the container
+        disableWrap: false        
+        
     });
 
 
@@ -649,7 +654,7 @@ fluid_1_2 = fluid_1_2 || {};
 
         that.getRelativePosition = 
           fluid.reorderer.relativeInfoGetter(options.orientation, 
-                fluid.reorderer.LOGICAL_STRATEGY, null, dropManager, dom);
+                fluid.reorderer.LOGICAL_STRATEGY, null, dropManager, dom, options.disableWrap);
         
         that.getGeometricInfo = geometricInfoGetter(options.orientation, options.sentinelize, dom);
         
@@ -675,8 +680,8 @@ fluid_1_2 = fluid_1_2 || {};
 
         that.getRelativePosition = 
            fluid.reorderer.relativeInfoGetter(options.orientation, 
-                 fluid.reorderer.LOGICAL_STRATEGY, fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY, 
-                 dropManager, dom);
+                 options.disableWrap ? fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY : fluid.reorderer.LOGICAL_STRATEGY, fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY, 
+                 dropManager, dom, options.disableWrap);
         
         that.getGeometricInfo = geometricInfoGetter(options.orientation, options.sentinelize, dom);
         

@@ -22,7 +22,8 @@ var demo = demo || {};
                 modules: "> div > div",
                 lockedModules: ".locked",
                 dropWarning: ".flc-reorderer-dropWarning"
-            }
+            },
+            disableWrap: true
         });
     };
 })(jQuery, fluid);

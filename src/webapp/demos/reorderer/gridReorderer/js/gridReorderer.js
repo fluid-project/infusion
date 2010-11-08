@@ -19,6 +19,7 @@ demo.initGridReorderer = function () {
     return fluid.reorderGrid('.myGrid', {
         selectors: {
             movables: 'p'
-        }
+        },
+        disableWrap: true
     });
 };
