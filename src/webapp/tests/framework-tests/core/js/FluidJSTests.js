@@ -18,7 +18,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        fluid.logEnabled = true;
+        fluid.setLogging(true);
         
         var fluidJSTests = new jqUnit.TestCase("Fluid JS Tests");
 
