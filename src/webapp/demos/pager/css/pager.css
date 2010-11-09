@@ -3,8 +3,7 @@ table {
 }
 
 thead {
-    color: #343499;
-    background-color: #CDCDEE;
+    background-color: #FCD6CA;
 }
 
 td {
@@ -19,23 +18,46 @@ input {
     display: none;
 }
 
-.demo-pager-top,.demo-pager-bottom {
-    padding: 0.5em;
-    width:50%;
+.demo-pager-links {
+    width: 65%;
 }
 
-.demo-pager-top li, .demo-pager-bottom li {
-	display:inline;
+.demo-pager-controls {
+    width:35%;
+    margin-top: 1em;
 }
 
-.demo-pager-links li{
-    display:inline;
+.demo-pager-links ul li{
+    display:block;
+    width:2em;
+    float:left;
+    margin:2px;
+    text-align:center;
+}
+
+.demo-pager-links ul .fl-pager-currentPage {
+    display:block;
+    width:2em;
+    float:left;
+    background:#000;
+}
+
+.demo-pager-previous, .demo-pager-next {
+    margin-right: 1em;
+}
+
+.fl-pager-currentPage {
+    background-color: #000000;
 }
 
 a.fl-pager-currentPage {
-    color: #000000;
+    color: #FFFFFF;
     border: 0;
     text-decoration: none;
+}
+
+.fl-pager-disabled {
+    width: 3em;
 }
 
 .fl-pager-disabled a {
@@ -43,3 +65,4 @@ a.fl-pager-currentPage {
     border: 0;
     text-decoration: none;
 }
+

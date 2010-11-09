@@ -23,72 +23,73 @@
     </head>
     <body>
         <div id="demo-gradebook">
-          <h1>Purdham Collegiate Student Records</h1>
-          Showing <span class="flc-pager-summary">1-10 of 500 items</span>
-          <form action="#">
-            <div class="demo-fl-pager-top flc-pager-top">
-                <div class="fl-force-left">
-                    <ul class="demo-pager-links flc-pager-links">
-                        <li class="flc-pager-pageLink"><a href="#">1</a></li>
-                        <li class="flc-pager-pageLink-disabled">2</li>
-                        <li class="flc-pager-pageLink"><a href="#">3</a></li>
-                    </ul>
-                </div>
-                    
-                <div class="demo-pager-controls fl-force-right">
-                    <span class="demo-pager-previous flc-pager-previous"><a href="#">&lt; Previous</a></span>
-                    <span class="demo-pager-next flc-pager-next"><a href="#">Next &gt;</a></span>
-                    <span>Records per page: 
-                        <select class="flc-pager-page-size">
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="50">50</option>
-                        </select>
-                    </span>
-                </div>
-             </div>
+            <h1>Purdham Collegiate Student Records</h1>
+            Showing <span class="flc-pager-summary">1-10 of 500 items</span>
+            <form action="#">
+                <div class="demo-pager-top flc-pager-top">
+                    <div class="fl-force-left demo-pager-links">
+                        <ul class="flc-pager-links">
+                            <li class="flc-pager-pageLink"><a href="#">1</a></li>
+                            <li class="demo-pager-pageLink-disabled flc-pager-pageLink-disabled">2</li>
+                            <li class="flc-pager-pageLink"><a href="#">3</a></li>
+                        </ul>
+                    </div>
+                        
+                    <div class="demo-pager-controls fl-force-right">
+                        <span class="demo-pager-previous flc-pager-previous"><a href="#">&lt; Previous</a></span>
+                        <span class="demo-pager-next flc-pager-next"><a href="#">Next &gt;</a></span>
+                        <span>Records per page: 
+                            <select class="flc-pager-page-size">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                            </select>
+                        </span>
+                    </div>
+                 </div>
              
-            <table class="fl-container-flex" summary="student grades" id="students-page1">
-              <thead>
-                <tr>
-                    <td class="name-header">Name</td>
-                    <td class="userid-header">User Id</td>
-                    <td class="points-header">Points</td>
-                    <td class="comments-header">Comments</td>
-                </tr>
-              </thead>
-              <tbody id="body-template">
-                <tr rsf:id="row:">
-                    <td rsf:id="name">Ahn, Jason</td>
-                    <td rsf:id="userid">15234314</td>
-                    <td><input rsf:id="points" type="text" value="87" /></td>
-                    <td rsf:id="comment">Lorem ipsum dolor sit amet.</td>
-                </tr>
-                <tr rsf:id="scr=ignore">
-                    <td>Akerman, Krista</td>
-                    <td>19206726</td>
-                    <td><input type="text" value="79" /></td>
-                    <td>Consectetuer adipiscing elit.</td>
-                </tr>
-              </tbody>
-            </table>
+                <table class="fl-container-flex" summary="student grades" id="students-page1">
+                  <thead>
+                    <tr>
+                        <td class="name-header">Name</td>
+                        <td class="userid-header">User Id</td>
+                        <td class="points-header">Points</td>
+                        <td class="comments-header">Comments</td>
+                    </tr>
+                  </thead>
+                  <tbody id="body-template">
+                    <tr rsf:id="row:">
+                        <td rsf:id="name">Ahn, Jason</td>
+                        <td rsf:id="userid">15234314</td>
+                        <td rsf:id="points">25</td>
+                        <td rsf:id="comment">Lorem ipsum dolor sit amet.</td>
+                    </tr>
+                    <tr rsf:id="scr=ignore">
+                        <td>Akerman, Krista</td>
+                        <td>19206726</td>
+                        <td><input type="text" value="79" /></td>
+                        <td>Consectetuer adipiscing elit.</td>
+                    </tr>
+                  </tbody>
+                </table>
             
-            <div class="fl-pager-bottom flc-pager-bottom">
-                <div class="fl-force-left">
-                    <ul class="demo-pager-links flc-pager-links">
-                        <li value="1" class="flc-pager-pageLink"><a href="#">1</a></li>
-                        <li class="flc-pager-pageLink-disabled">2</li>
-                        <li value="2" class="flc-pager-pageLink"><a href="#">3</a></li>
-                    </ul>
+                <div class="demo-pager-bottom flc-pager-bottom">
+                    <div class="fl-force-left demo-pager-links">
+                        <ul class="flc-pager-links">
+                            <li class="flc-pager-pageLink"><a href="#">1</a></li>
+                            <li class="flc-pager-pageLink-disabled">2</li>
+                            <li class="flc-pager-pageLink"><a href="#">3</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="demo-pager-controls fl-force-right">
+                        <span class="demo-pager-previous flc-pager-previous"><a href="#">&lt; Previous</a></span>
+                        <span class="demo-pager-next flc-pager-next"><a href="#">Next &gt;</a></span>
+                    </div>
                 </div>
-                
-                <div class="demo-pager-controls fl-force-right">
-                    <span class="demo-pager-previous flc-pager-previous"><a href="#">&lt; Previous</a></span>
-                    <span class="demo-pager-next flc-pager-next"><a href="#">Next &gt;</a></span>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
         <script type="text/javascript">
             demo.initPager(userTable);
         </script>
