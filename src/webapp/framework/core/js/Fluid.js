@@ -785,9 +785,9 @@ var fluid = fluid || fluid_1_2;
                 return function(root, segment, index) {
                     if (environment && environment[segment]) {
                         var togo = environment[segment];
-                        environment = null;
-                        return togo; 
                     }
+                    environment = null;
+                    return togo; 
                 };
             }
         };

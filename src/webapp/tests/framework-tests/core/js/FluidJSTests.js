@@ -467,6 +467,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var space = fluid.registerNamespace("fluid.engage.mccord");
             space.func = function() { return 2 ;};
             jqUnit.assertEquals("Call function in namespace", 2, fluid.engage.mccord.func());
+            
+            var fluidd = fluid.getGlobalValue("nothing.fluid");
+            jqUnit.assertUndefined("No environment slippage", fluidd);
+            
+            var fluidd2 = fluid.getGlobalValue("fluid.fluid");
+            jqUnit.assertUndefined("No environment slippage", fluidd2);
+            
+            var autocomplete = fluid.registerNamespace("cspace.autocomplete");
+            var fluidd3 = fluid.getGlobalValue("cspace.fluid");
+            jqUnit.assertUndefined("No environment slippage", fluidd3);
+            
         });
         
          fluidJSTests.test("Attach and remove listeners", function () {

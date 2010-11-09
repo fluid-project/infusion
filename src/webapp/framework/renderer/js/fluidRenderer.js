@@ -1322,7 +1322,7 @@ fluid_1_2 = fluid_1_2 || {};
                       }
                       args = [decorator.container, decorator.options];
                   }
-                  var that = fluid.invokeGlobalFunction(decorator.func, args, fluid);
+                  var that = fluid.invokeGlobalFunction(decorator.func, args);
                   decorator.that = that;
               }
               else if (decorator.type === "event") {
