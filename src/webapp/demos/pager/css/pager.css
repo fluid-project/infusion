@@ -1,18 +1,4 @@
-table {
-    width: 100%;
-}
 
-thead {
-    background-color: #FCD6CA;
-}
-
-td {
-    padding: .5em .2em;
-}
-
-input {
-    width: 3em;
-}
 
 .hidden {
     display: none;
@@ -64,5 +50,19 @@ a.fl-pager-currentPage {
     color: #777777;
     border: 0;
     text-decoration: none;
+}
+
+.demo-pager-data-table {
+    margin-left:1em;
+    margin-top:1em;
+    width: 95%;
+}
+
+.demo-pager-data-table  thead{
+    background-color: #FCD6CA;
+}
+
+.demo-pager-data-table td{
+    padding: .5em .2em;
 }
 

@@ -49,29 +49,35 @@
                     </div>
                  </div>
              
-                <table class="fl-container-flex" summary="student grades" id="students-page1">
-                  <thead>
-                    <tr>
-                        <td class="name-header">Name</td>
-                        <td class="userid-header">User Id</td>
-                        <td class="points-header">Points</td>
-                        <td class="comments-header">Comments</td>
-                    </tr>
-                  </thead>
-                  <tbody id="body-template">
-                    <tr rsf:id="row:">
-                        <td rsf:id="name">Ahn, Jason</td>
-                        <td rsf:id="userid">15234314</td>
-                        <td rsf:id="points">25</td>
-                        <td rsf:id="comment">Lorem ipsum dolor sit amet.</td>
-                    </tr>
-                    <tr rsf:id="scr=ignore">
-                        <td>Akerman, Krista</td>
-                        <td>19206726</td>
-                        <td><input type="text" value="79" /></td>
-                        <td>Consectetuer adipiscing elit.</td>
-                    </tr>
-                  </tbody>
+                <table class="demo-pager-data-table fl-container-flex" summary="student grades" id="students-page1">
+                    <colgroup>
+                       <col width="200">
+                       <col width="80">
+                       <col width="35">
+                    <colgroup>
+
+                    <thead>
+                        <tr>
+                            <td class="name-header">Name</td>
+                            <td class="userid-header">Student <abbr title="Identification">ID</abbr></td>
+                            <td class="points-header">Grade</td>
+                            <td class="comments-header">Comments</td>
+                        </tr>
+                    </thead>
+                    <tbody id="body-template">
+                        <tr rsf:id="row:">
+                            <td rsf:id="name">Ahn, Jason</td>
+                            <td rsf:id="userid">15234314</td>
+                            <td rsf:id="points">25</td>
+                            <td rsf:id="comment">Lorem ipsum dolor sit amet.</td>
+                        </tr>
+                        <tr rsf:id="scr=ignore">
+                            <td>Akerman, Krista</td>
+                            <td>19206726</td>
+                            <td><input type="text" value="79" /></td>
+                            <td>Consectetuer adipiscing elit.</td>
+                        </tr>
+                    </tbody>
                 </table>
             
                 <div class="demo-pager-bottom flc-pager-bottom">
