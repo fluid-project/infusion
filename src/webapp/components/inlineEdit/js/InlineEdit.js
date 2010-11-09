@@ -564,8 +564,7 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.inlineEdit.setupDisplayModeContainer = function (styles, displayModeWrapper) {
         var displayModeContainer = $(displayModeWrapper);  
         displayModeContainer = displayModeContainer.length ? displayModeContainer : $("<span></span>");  
-        displayModeContainer.addClass(styles.inlineBlock);
-        displayModeContainer.addClass(styles.text);
+        displayModeContainer.addClass(styles.displayView);
         
         return displayModeContainer;
     };
@@ -584,14 +583,15 @@ fluid_1_2 = fluid_1_2 || {};
          *  keyboard event binding is only on the button.
          */
         viewEl.attr("tabindex", "-1");
+        viewEl.addClass(that.options.styles.text);
         setTooltipTitle(viewEl, that.options.tooltipText);
         
         return viewEl;
     };
     
     /**
-     * Set up the textEditButton.  Append a background image with appropriate alt text
-     * to the button.
+     * Set up the textEditButton.  Append a background image with appropriate
+     * descriptive text to the button.
      * 
      * @return {jQuery} The accessible button located after the display text
      */
@@ -600,19 +600,18 @@ fluid_1_2 = fluid_1_2 || {};
         var textEditButton = that.locate("textEditButton");
         
         if  (textEditButton.length === 0) {
-            var markup = $("<a href='#_' class='flc-inlineEdit-textEditButton'><img /></a>");
-            setTooltipTitle(markup, that.options.tooltipText);
+            var markup = $("<a href='#_' class='flc-inlineEdit-textEditButton'></a>");
+            markup.addClass(opts.styles.textEditButton);
+            markup.text(opts.tooltipText);            
+            setTooltipTitle(markup, that.options.tooltipText);            
             
-            var img = $("img", markup);
-            img.attr("src", opts.urls.textEditButtonImage);
-
             /**
-             * Set the alt text for the button and
-             * listen for modelChanged to keep it updated
+             * Set text for the button and listen
+             * for modelChanged to keep it updated
              */ 
-            fluid.inlineEdit.updateEditButtonAltText(img, that.model, opts.strings);
+            fluid.inlineEdit.updateTextEditButton(markup, that.model, opts.strings);
             that.events.modelChanged.addListener(function () {
-                fluid.inlineEdit.updateEditButtonAltText(img, that.model, opts.strings);
+                fluid.inlineEdit.updateTextEditButton(markup, that.model, opts.strings);
             });        
             
             that.locate("text").after(markup);
@@ -624,17 +623,17 @@ fluid_1_2 = fluid_1_2 || {};
     };    
 
     /**
-     * Update the textEditButton alt text with the current value of the field.
+     * Update the textEditButton text with the current value of the field.
      * 
-     * @param {Object} textEditButtonImage the textEditButton image
+     * @param {Object} textEditButton the textEditButton
      * @param {String} model The current value of the inline editable text
-     * @param {Object} strings Text option for the textEditButton alt text
+     * @param {Object} strings Text option for the textEditButton
      */
-    fluid.inlineEdit.updateEditButtonAltText = function (textEditButtonImage, model, strings) {
-        var buttonAlt = fluid.stringTemplate(strings.textEditButton, {
+    fluid.inlineEdit.updateTextEditButton = function (textEditButton, model, strings) {
+        var buttonText = fluid.stringTemplate(strings.textEditButton, {
             text: model.value
         });
-        textEditButtonImage.attr("alt", buttonAlt);
+        textEditButton.text(buttonText);
     };
     
     /**
@@ -664,11 +663,11 @@ fluid_1_2 = fluid_1_2 || {};
         element = $(element);
         
         var focusOn = function () {
-            displayModeRenderer.addClass(styles.displayModeContainer);
+            displayModeRenderer.addClass(styles.focus);
             displayModeRenderer.addClass(styles.invitation);
         };
         var focusOff = function () {
-            displayModeRenderer.removeClass(styles.displayModeContainer);
+            displayModeRenderer.removeClass(styles.focus);
             displayModeRenderer.removeClass(styles.invitation);
         };
         
@@ -844,12 +843,11 @@ fluid_1_2 = fluid_1_2 || {};
             edit: "fl-inlineEdit-edit",
             invitation: "fl-inlineEdit-invitation",
             defaultViewStyle: "fl-inlineEdit-invitation-text",
+            focus: "fl-inlineEdit-focus",
             tooltip: "fl-inlineEdit-tooltip",
             editModeInstruction: "fl-inlineEdit-editModeInstruction",
-            focus: "fl-inlineEdit-focus",
-            textEditButton: "fl-inlineEdit-text",
-            displayModeContainer: "fl-inlineEdit-container",
-            inlineBlock: "fl-inlineEdit-inlineBlock"
+            displayView: "fl-inlineEdit-underline fl-inlineEdit-inlineBlock",
+            textEditButton: "fl-offScreen-hidden"
         },
         
         events: {
@@ -917,11 +915,7 @@ fluid_1_2 = fluid_1_2 || {};
         
         tooltipDelay: 1000,
 
-        selectOnEdit: false,
-        
-        urls: {
-            textEditButtonImage: "../images/inline_edit_edit_button_16x16.png"
-        }
+        selectOnEdit: false        
     });
     
     fluid.defaults("inlineEdits", {

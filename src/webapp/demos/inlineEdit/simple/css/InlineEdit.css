@@ -12,7 +12,7 @@
 	margin: 1em;
 }
 
-.fl-inlineEdit-displayInline {
-    display: inline;
+.undoContainer :focus,
+.redoContainer  :focus {
+    outline: 1px solid black;
 }
-

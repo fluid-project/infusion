@@ -23,10 +23,7 @@ var demo = demo || {};
     
     var initPortletReorderer = function () {
         fluid.inlineEdit("#Pluto_5_u15l1n13_optionsForm", {
-            selectors: {text: "#inline-editable"},
-            urls: {
-                textEditButtonImage: "../../../components/inlineEdit/images/inline_edit_edit_button_16x16.png"
-            }
+            selectors: {text: "#inline-editable"}
         });
         var options = { 
             styles:  {

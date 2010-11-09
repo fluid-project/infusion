@@ -325,7 +325,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("Initially display field is not focused", display.hasClass(inlineEditor.options.styles.focus));
     
             button.focus();
-            jqUnit.assertTrue("After focus, display and textEditButton are focussed", display.parent().hasClass(inlineEditor.options.styles.displayModeContainer));
+            jqUnit.assertTrue("After focus, display and textEditButton are focussed", display.parent().hasClass(inlineEditor.options.styles.focus));
             jqUnit.isVisible("After enter pressed, display field is visible", "#display");
             jqUnit.notVisible("After enter pressed, edit field is hidden", "#edit-container");
             jqUnit.isVisible("After enter pressed, button is visible", button);
@@ -339,7 +339,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             edit.simulate("keypress", {keyCode: $.ui.keyCode.ENTER});
     
             jqUnit.isVisible("After changing text and pressing enter, display field is visible", "#display");
-            jqUnit.assertTrue("After changing text and pressing enter, display has displayModeContainer style", display.parent().hasClass(inlineEditor.options.styles.displayModeContainer));
+            jqUnit.assertTrue("After changing text and pressing enter, display has displayModeContainer style", display.parent().hasClass(inlineEditor.options.styles.focus));
             jqUnit.notVisible("After changing text and pressing enter, edit field is hidden", "#edit-container");
             jqUnit.assertEquals("After changing text and pressing enter, display field contains new text", testString, display.text());
             jqUnit.isVisible("After enter pressed, button is visible", button);
@@ -735,14 +735,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
             inlineEditTests.test("Render textEditButton", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 var button = editor.textEditButton;
-                var image = $("img", button);
                 var text = editor.locate("text").text();
                 
                 jqUnit.assertEquals("Should only be one textEditButton", 1, button.length);
-                jqUnit.assertEquals("The image alt text should be set", "Edit text ", image.attr("alt"));
+                jqUnit.assertEquals("The textEditButton text should be set", "Edit text ", button.text());
+                jqUnit.assertTrue("The textEditButton should have the fl-offScreen-hidden style", button.hasClass(editor.options.styles.textEditButton));
             });
             
-            inlineEditTests.test("Update image alt text", function () {
+            inlineEditTests.test("Update textEditButton text", function () {
                 var editor = fluid.inlineEdit("#inline-edit");
                 editor.edit();
                 var text = "the brown dog";    
@@ -750,8 +750,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 editor.finish();
                 
                 var button = editor.textEditButton;
-                var image = $("img", button);
-                jqUnit.assertEquals("After editing, the alt test should be", "Edit text " + text, image.attr("alt"));
+                jqUnit.assertEquals("After editing, the textEditButton text should be", "Edit text " + text, button.text());
             });
             
             inlineEditTests.test("Container styling", function () {
@@ -759,9 +758,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var button = editor.textEditButton;
                 var text = editor.locate("text");
                 
-                jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-inlineBlock class on focus", text.parent().hasClass(editor.options.styles.inlineBlock));
+                jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-inlineBlock class on focus", text.parent().hasClass(editor.options.styles.displayView));
                 button.focus();
-                jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-container class on focus", text.parent().hasClass(editor.options.styles.displayModeContainer));
+                jqUnit.assertTrue("The display and textEditButton containerWrapper should have the fl-inlineEdit-container class on focus", text.parent().hasClass(editor.options.styles.focus));
             });
             
             inlineEditTests.test("Remove container from tab order", function () {
@@ -822,7 +821,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var styles = editor.options.styles;
                 
                 var displayModeContainer = fluid.inlineEdit.setupDisplayModeContainer(styles);
-                jqUnit.assertTrue("Display mode renderer has fl-inlineEdit-text style", displayModeContainer.hasClass(styles.text));
+                jqUnit.assertTrue("Display mode renderer has fl-inlineEdit-displayView style", displayModeContainer.hasClass(styles.displayView));
 
                 var editField = fluid.inlineEdit.setupEditField(styles.edit);
                 jqUnit.assertTrue("Edit field has fl-inlineEdit-edit style", editField.hasClass(styles.edit));

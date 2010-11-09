@@ -48,10 +48,7 @@ var demo = demo || {};
             },
             strings: {
                 textEditButton: "Edit"
-            },            
-            urls: {
-                textEditButtonImage: "../../../../components/inlineEdit/images/inline_edit_edit_button_16x16.png"
-            }
+            }            
         });
         makeButtons(tinyEditor);
 
@@ -66,9 +63,6 @@ var demo = demo || {};
             },
             strings: {
                 textEditButton: "Edit"
-            },
-            urls: {
-                textEditButtonImage: "../../../../components/inlineEdit/images/inline_edit_edit_button_16x16.png"
             }
         });
         makeButtons(ckEditor);    

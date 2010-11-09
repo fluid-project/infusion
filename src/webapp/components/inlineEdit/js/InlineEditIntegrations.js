@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2010 University of Toronto
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -84,20 +85,8 @@ fluid_1_2 = fluid_1_2 || {};
         
         if  (textEditButton.length === 0) {
             var markup = $("<a href='#_' class='flc-inlineEdit-textEditButton'></a>");
-            markup.text(that.options.strings.textEditButton);
-            markup.attr("title", that.options.tooltipText);
-            
-            var img = $("img", markup);
-            img.attr("src", opts.urls.textEditButtonImage);
-
-            /**
-             * Set the alt text for the button and
-             * listen for modelChanged to keep it updated
-             */ 
-            fluid.inlineEdit.updateEditButtonAltText(img, that.model, opts.strings);
-            that.events.modelChanged.addListener(function () {
-                fluid.inlineEdit.updateEditButtonAltText(img, that.model, opts.strings);
-            });        
+            markup.text(opts.strings.textEditButton);
+            markup.attr("title", opts.tooltipText);
             
             that.locate("text").after(markup);
             
@@ -119,7 +108,7 @@ fluid_1_2 = fluid_1_2 || {};
         
         that.textEditButton = fluid.inlineEdit.setupRichTextEditButton(that);
         displayModeRenderer.append(that.textEditButton);
-        displayModeRenderer.addClass(styles.displayModeRenderer);
+        displayModeRenderer.addClass(styles.focus);
         
         // Add event handlers.
         fluid.inlineEdit.bindHoverHandlers(displayModeRenderer, styles.invitation);
@@ -228,7 +217,12 @@ fluid_1_2 = fluid_1_2 || {};
         },
         styles: {
             invitation: "fl-inlineEdit-richText-invitation",
+            displayView: "fl-inlineEdit-inlineBlock",
             text: ""
+                
+        },
+        strings: {
+            textEditButton: "Edit"
         },
         displayAccessor: {
             type: "fluid.inlineEdit.richTextViewAccessor"
@@ -332,8 +326,12 @@ fluid_1_2 = fluid_1_2 || {};
         },
         styles: {
             invitation: "fl-inlineEdit-richText-invitation",
+            displayView: "fl-inlineEdit-inlineBlock",
             text: ""
         },
+        strings: {
+            textEditButton: "Edit"
+        },        
         displayAccessor: {
             type: "fluid.inlineEdit.richTextViewAccessor"
         },
@@ -428,8 +426,12 @@ fluid_1_2 = fluid_1_2 || {};
         },
         styles: {
             invitation: "fl-inlineEdit-richText-invitation",
+            displayView: "fl-inlineEdit-inlineBlock",
             text: ""
         },
+        strings: {
+            textEditButton: "Edit"
+        },        
         displayAccessor: {
             type: "fluid.inlineEdit.richTextViewAccessor"
         },

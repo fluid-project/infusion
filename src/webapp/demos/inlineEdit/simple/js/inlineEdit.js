@@ -46,10 +46,7 @@ var demo = demo || {};
             },
             styles: {
                 edit: "fl-inlineEdit-title-edit fl-inlineEdit-edit"
-            },
-            urls: {
-                textEditButtonImage: "../../../../components/inlineEdit/images/inline_edit_edit_button_16x16.png"
-            }            
+            }
         });
         
         fluid.inlineEdit(".simpleEditCaption", {
@@ -59,9 +56,6 @@ var demo = demo || {};
                     selectors: demo.initInlineEdit.selectors,
                     renderer: undoRenderer
                 }
-            },
-            urls: {
-                textEditButtonImage: "../../../../components/inlineEdit/images/inline_edit_edit_button_16x16.png"
             }
         });
     };
