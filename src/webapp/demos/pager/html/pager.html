@@ -2,45 +2,54 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf" lang="en" >
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link href="../css/pager.css" type="text/css" rel="stylesheet" />
 
-    <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
-    <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
-    <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
-    <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
-    <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
-    <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
-    <script type="text/javascript" src="../../../components/pager/js/Pager.js"></script>
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-text.css" />
+        <link href="../css/pager.css" type="text/css" rel="stylesheet" />
 
-    <script type="text/javascript" src="../data/pager.js"></script>
-    <script type="text/javascript" src="../js/pager.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
+        <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
+        <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+        <script type="text/javascript" src="../../../components/pager/js/Pager.js"></script>
 
-        <title>Gradebook Example</title>
+        <script type="text/javascript" src="../data/pager.js"></script>
+        <script type="text/javascript" src="../js/pager.js"></script>
+
+        <title>Purdham Collegiate Student Records</title>
     </head>
     <body>
-        <div id="gradebook">
+        <div id="demo-gradebook">
+          <h1>Purdham Collegiate Student Records</h1>
+          Showing <span class="flc-pager-summary">1-10 of 500 items</span>
           <form action="#">
-            <ul id="pager-top" class="fl-pager-top flc-pager-top">
-              <li>
-                <ul class="pager-links flc-pager-links">
-                    <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
-                  <li class="flc-pager-pageLink-disabled">2</li>
-                    <li class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
-                </ul>
-              </li>
-
-                <li class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></li>
-                <li class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></li>
-                <li>
-              Show <span> <select class="flc-pager-page-size">
-               <option value="5">5</option>
-               <option value="10">10</option>
-               <option value="20">20</option>
-               <option value="50">50</option>
-               </select></span> per page
-               </li>
-            </ul>
-            <table summary="student grades" id="students-page1">
+            <div class="demo-fl-pager-top flc-pager-top">
+                <div class="fl-force-left">
+                    <ul class="demo-pager-links flc-pager-links">
+                        <li class="flc-pager-pageLink"><a href="#">1</a></li>
+                        <li class="flc-pager-pageLink-disabled">2</li>
+                        <li class="flc-pager-pageLink"><a href="#">3</a></li>
+                    </ul>
+                </div>
+                    
+                <div class="demo-pager-controls fl-force-right">
+                    <span class="demo-pager-previous flc-pager-previous"><a href="#">&lt; Previous</a></span>
+                    <span class="demo-pager-next flc-pager-next"><a href="#">Next &gt;</a></span>
+                    <span>Records per page: 
+                        <select class="flc-pager-page-size">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </span>
+                </div>
+             </div>
+             
+            <table class="fl-container-flex" summary="student grades" id="students-page1">
               <thead>
                 <tr>
                     <td class="name-header">Name</td>
@@ -64,25 +73,22 @@
                 </tr>
               </tbody>
             </table>
-            <ul id="pager-bottom" class="fl-pager-bottom flc-pager-bottom">
-              <li>
-              <ul class="pager-links flc-pager-links">
-                  <li value="1" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">1</a></li>
-                <li class="flc-pager-pageLink-disabled">2</li>
-                  <li value="2" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
-                  <li value="3" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">3</a></li>
-                  <li value="4" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">4</a></li>
-                  <li value="5" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">5</a></li>
-                  <li value="6" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">6</a></li>
-                  <li value="7" class="fl-pager-pageLink flc-pager-pageLink"><a href="#">7 (last)</a></li>
-              </ul>
-              </li>
-                <li class="fl-pager-previous flc-pager-previous"><a href="#">&lt; previous</a></li>
-                <li class="fl-pager-next flc-pager-next"><a href="#">next &gt;</a></li>
-              <span class="flc-pager-summary">1-10 of 500 items</span>
-              </ul>
-          </form>
-        </div>
+            
+            <div class="fl-pager-bottom flc-pager-bottom">
+                <div class="fl-force-left">
+                    <ul class="demo-pager-links flc-pager-links">
+                        <li value="1" class="flc-pager-pageLink"><a href="#">1</a></li>
+                        <li class="flc-pager-pageLink-disabled">2</li>
+                        <li value="2" class="flc-pager-pageLink"><a href="#">3</a></li>
+                    </ul>
+                </div>
+                
+                <div class="demo-pager-controls fl-force-right">
+                    <span class="demo-pager-previous flc-pager-previous"><a href="#">&lt; Previous</a></span>
+                    <span class="demo-pager-next flc-pager-next"><a href="#">Next &gt;</a></span>
+                </div>
+            </div>
+        </form>
         <script type="text/javascript">
             demo.initPager(userTable);
         </script>

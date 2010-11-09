@@ -40,6 +40,6 @@ var demo = demo || {};
             }}
         };
         
-        fluid.pager("#gradebook", options);
+        fluid.pager("#demo-gradebook", options);
     };    
 })(jQuery, fluid);
