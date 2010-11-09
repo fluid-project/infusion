@@ -382,6 +382,10 @@ var fluid = fluid || fluid_1_2;
      */
     fluid.VALUE = {type: "fluid.marker", value: "VALUE"};
     
+    /** Another special "marker object" representing that no value is present (where
+     * signalling using the value "undefined" is not possible) */
+    fluid.NO_VALUE = {type: "fluid.marker", value: "NO_VALUE"};
+    
     /** Determine whether an object is any marker, or a particular marker - omit the
      * 2nd argument to detect any marker
      */
@@ -822,6 +826,9 @@ var fluid = fluid || fluid_1_2;
                 if (accepted === undefined) {
                     accepted = value;
                 }
+            }
+            if (accepted === fluid.NO_VALUE) {
+                accepted = undefined;
             }
             that.root = accepted;
             ++that.index;

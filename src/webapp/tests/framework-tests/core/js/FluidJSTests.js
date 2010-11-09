@@ -450,6 +450,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.registerGlobalFunction("fluid.newFunc", function() { return 2 ;});
             jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
         });
+        
+        var customStrategy = function(root, segment, index) {
+            return index === 0 && segment === "path3"? fluid.NO_VALUE : undefined;
+        }
+        
+        fluidJSTests.test("getBeanValue with custom strategy", function() {
+            var model = {path3: "thing", path4: "otherThing"};
+            var value = fluid.model.getBeanValue(model, "path3", [customStrategy, fluid.model.defaultFetchStrategy]);
+            jqUnit.assertUndefined("path3 value censored", value);
+            var value2 = fluid.model.getBeanValue(model, "path4", [customStrategy, fluid.model.defaultFetchStrategy]);
+            jqUnit.assertEquals("path4 value uncensored", model.path4, value2);
+        });
 
         fluidJSTests.test("Globals", function() {
             var space = fluid.registerNamespace("fluid.engage.mccord");
