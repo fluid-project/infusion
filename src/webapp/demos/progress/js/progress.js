@@ -67,11 +67,9 @@ var demo = demo || {};
 
     var setAriaAttr = function (liveRegion, submitButton) {
         // set the aria live region attributes
-        liveRegion.attr("aria-channel", "notify");
-        liveRegion.attr("aria-relevant", "all");
+        liveRegion.attr("aria-relevant", "text");
         liveRegion.attr("aria-atomic", "false");
-        liveRegion.attr("aria-live", "assertive");
-        liveRegion.attr("role", "description");
+        liveRegion.attr("role", "status");         
         
         // set default aria-controls to one of the container
         submitButton.attr("aria-controls", "status-message");
