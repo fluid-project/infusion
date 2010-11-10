@@ -110,6 +110,10 @@ fluid_1_2 = fluid_1_2 || {};
         switchToViewMode(that);
     };
     
+    /** 
+     * Do not allow the textEditButton to regain focus upon completion unless
+     * the keypress is enter or esc.
+     */  
     var bindEditFinish = function (that) {
         if (that.options.submitOnEnter === undefined) {
             that.options.submitOnEnter = "textarea" !== fluid.unwrap(that.editField).nodeName.toLowerCase();
@@ -121,18 +125,23 @@ fluid_1_2 = fluid_1_2 || {};
         var escHandler = function (evt) {
             var code = keyCode(evt);
             if (code === $.ui.keyCode.ESCAPE) {
+                that.textEditButton.focus(0);
                 cancel(that);
                 return false;
             }
         };
         var finishHandler = function (evt) {
             var code = keyCode(evt);
+            
             if (code !== $.ui.keyCode.ENTER) {
+                that.textEditButton.blur();
                 return true;
             }
+            else {
+                finish(that);
+                that.textEditButton.focus(0);
+            }
             
-            finish(that);
-            that.viewEl.focus();  // Moved here from inside "finish" to fix FLUID-857
             return false;
         };
         if (that.options.submitOnEnter) {
@@ -252,17 +261,12 @@ fluid_1_2 = fluid_1_2 || {};
         
     var makeIsEditing = function (that) {
         var isEditing = false;
-        
+
         that.events.onBeginEdit.addListener(function () {
             isEditing = true;
         });
         that.events.afterFinishEdit.addListener(function () {
             isEditing = false; 
-            
-            // Allow textEditButton to regain focus upon completion.
-            if (that.textEditButton) {
-                that.textEditButton.focus(0);
-            }
         });
         return function () {
             return isEditing;
