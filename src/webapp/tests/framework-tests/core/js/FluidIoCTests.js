@@ -36,7 +36,7 @@ fluid.defaults("fluid.testUtils.testComponent", {
 fluid.defaults("fluid.testUtils.testComponent2", {
     components: {
         sub1: {
-          type: "fluid.testUtils.subComponent",
+          type: "fluid.testUtils.subComponent"
         },
         sub2: {
           type: "fluid.testUtils.subComponent",
@@ -95,6 +95,7 @@ fluid.makeComponents({
     "fluid.testUtils.testOrder":          "fluid.standardComponent", 
     "fluid.testUtils.subComponent":       "fluid.standardComponent",
     "fluid.testUtils.invokerComponent":   "fluid.littleComponent",
+    "fluid.testUtils.invokerComponent2":  "fluid.littleComponent",
     "fluid.testUtils.modelComponent":     "fluid.littleComponent",
     "fluid.testUtils.dependentModel":     "fluid.littleComponent",
     "fluid.testUtils.multiResolution":    "fluid.littleComponent",
@@ -122,6 +123,21 @@ fluid.defaults("fluid.testUtils.invokerComponent", {
     }
 });
     
+fluid.defaults("fluid.testUtils.invokerComponent2", {
+    template: "Every {0} has {1} {2}(s)",
+    invokers: {
+        render: "stringRenderer"
+    },
+    events: {
+        testEvent: null
+    }
+});
+    
+fluid.demands("stringRenderer", "fluid.testUtils.invokerComponent2", {
+    funcName: "fluid.formatMessage",
+    args:["{invokerComponent2}.options.template", "@0"]       
+});
+
 fluid.demands("sub1", "fluid.testUtils.testComponent2",
 ["{testComponent2}.container", {"crossDefault": "{testComponent2}.sub2.options.value"}]
 );
@@ -251,6 +267,14 @@ fluidIoCTests.test("crossConstruct", function() {
 fluidIoCTests.test("invokers", function() {
     expect(2);
     var that = fluid.testUtils.invokerComponent();
+    jqUnit.assertValue("Constructed", that);
+    jqUnit.assertEquals("Rendered", "Every CATT has 4 Leg(s)", 
+        that.render(["CATT", "4", "Leg"]));
+});
+
+fluidIoCTests.test("invokers with demands", function() {
+    expect(2);
+    var that = fluid.testUtils.invokerComponent2();
     jqUnit.assertValue("Constructed", that);
     jqUnit.assertEquals("Rendered", "Every CATT has 4 Leg(s)", 
         that.render(["CATT", "4", "Leg"]));
