@@ -74,6 +74,10 @@ h1 {
 /**/
 /* Five Star Widget */
 /**/
+.demo-container-fiveStar .star-0 {
+    visibility: hidden;
+}
+
 .demo-container-fiveStar {
     width: 100%;
     height: 3em;
@@ -83,25 +87,12 @@ h1 {
     border-left: 1px solid #000;
 }
 
-.demo-container-fiveStar ul {
-    /* Place an image of the various 5-star states as the background image */
-    background:url("../images/star-matrix.gif") no-repeat scroll 0 0 transparent;
-    /*clear:both;*/
-    list-style:none outside none;
-    padding:0;
-    position:relative;
-    margin:0;
-    height:16px; /* the height of a row in the 5-star image matrix. */
-    width:80px;  /* the width of the 5-star image. */
-    left:40%;
-    }
-
 .demo-container-fiveStar #ranking {
     padding:0;
     position:relative;
     margin:0;
     height:16px; /* the height of a row in the 5-star image matrix. */
-    width:80px;  /* the width of the 5-star image. */
+    width:100px;  /* the width of the 5-star image. */
     left:40%;
     }
 .demo-container-fiveStar #ranking img {

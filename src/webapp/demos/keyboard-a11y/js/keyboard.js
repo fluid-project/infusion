@@ -16,18 +16,6 @@ var demo = demo || {};
 
 (function ($, fluid) {
     
-    var makeRankerNavigable = function () {
-        var ranker = $(demo.initImageRanker.selectors.rater);
-        ranker.fluid("tabbable");
-        ranker.fluid("selectable", {
-            selectableSelector: "img",
-            direction: fluid.a11y.orientation.HORIZONTAL,
-            onSelect: function (star) {
-                console.log("star selected: " + $(star).attr("class"));
-            }
-        });
-    };
-
     var makeThumbnailsNavigable = function () {
         var thumbContainer = $(demo.initImageRanker.selectors.thumbnails);
         thumbContainer.fluid("tabbable");
@@ -54,6 +42,7 @@ var demo = demo || {};
         // add the "activated" class to the current thumbnail
         thumb.addClass(demo.initImageRanker.styles.activated);
     };
+
     var makeThumbnailsActivatable = function () {
         var thumbs = $("img", demo.initImageRanker.selectors.thumbnails);
         thumbs.fluid("activatable", imageActivationHandler);
@@ -62,17 +51,26 @@ var demo = demo || {};
         thumbs.click(imageActivationHandler);
     };
 
+    /**
+     * Main demo initialization
+     */
     demo.initImageRanker = function () {
+        // the five-star ranking code can be found in the file five-star.js
+        var fiveStarRanker = demo.fiveStar(demo.initImageRanker.selectors.ranker);
+        var stars = fiveStarRanker.locate("stars");
+        
         makeThumbnailsNavigable();
         makeThumbnailsActivatable();
     };
     
+    /**
+     * Defaults for the demo
+     */
     demo.initImageRanker.selectors = {
         thumbnails: ".demo-container-imageThumbnails",
-        rater: "#ranking",
+        ranker: "#ranking",
         image: ".demo-image-mainImage"
     };
-
     demo.initImageRanker.styles = {
         selected: "demo-selected",
         activated: "demo-activated"
