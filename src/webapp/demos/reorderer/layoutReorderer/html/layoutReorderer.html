@@ -31,51 +31,100 @@
         
     </head>
     <body>
-
+        <div>
+            <h1 class="demo-title">The GadgetLife.com</h1>
+            <span class="demo-sub-title"><a href="">Skip to Main Content</a></span>
+        </div>
         <div class="example">
-            <div class="fl-offScreen-hidden" tabindex="1">Image Reorderer: To use the keyboard:
-                      Screen reader users turn off virtual cursor (insert + z).
-                      Select an image using i, k, m or j.
-                      Move an image using CTRL + i, k, m or j.
-                      View an image by pressing Enter.
-            </div>
-
-            <div class="fl-reorderer-instructions" tabindex="-1">
-                <strong>To use the keyboard:</strong>
-                Select an image using i, k, m or j, or the arrow keys. Move an image using CTRL + [arrow key]. View an image by pressing Enter.
-            </div>
+            <p class="demo-reorderer-instructions" tabindex="1"><strong>Note:</strong> For demonstration purposes, the links in this demo are inactive.</p>
     
             <div id="fluid-LayoutReorderer-sample2" class="columnSetup3 fluid-vertical-order">
                  <!-- invalid drag n drop message template -->
-                <div class="flc-reorderer-dropWarning fl-reorderer-dropWarning">Can't place above locked portlet</div>
+                <p class="flc-reorderer-dropWarning demo-LayoutReorderer-dropWarning">This element can not be placed here.  The element underneath is locked.</p>
 
-                <div class="myColumn fl-container-flex30 fl-force-left">
-                    <h2>Column A</h2>
-                    <div class="locked">Content Portal A1 (Locked)</div>
-                    <div>Content Portal A2</div>
-                    <div>Content Portal A3</div>
-                    <div>Content Portal A4</div>
-                </div>
-                <div class="myColumn fl-container-flex30 fl-force-left">
-                    <h2>Column B</h2>
-                    <div class="locked">Content Portal B1 (Locked)</div>
-                    <div>Content Portal B2</div>
-                    <div>Content Portal B3</div>
-                    <div>Content Portal B4</div>
-                </div>
-                <div class="myColumn fl-container-flex30 fl-force-left">
-                    <h2>Column C</h2>
-                    <div>Content Portal C1</div>
-                    <div>Content Portal C2</div>
-                    <div>Content Portal C3</div>
-                    <div>Content Portal C4</div>
+                    <div class="demo-myColumn fl-container-flex25 fl-force-left">
+                        <div class="demo-module locked">
+                            <div class="demo-module-dragbar"></div>
+                            <div class="demo-module-content">
+                                <h3>Fake Advertisement</h3>
+                                <div><p>"Buy ecoSkinns Today!<br/><br/>The only 100% organic screen protector."</p></div>
+                            </div>
+                        </div>
+                        <div class="demo-module demo-last-login">
+                            <div class="demo-module-dragbar"></div>
+                            <div class="demo-module-content">
+                                <p><strong>Last Login:</strong>
+                                <span>3 hours ago.</span></p>
+                                <p>Users Online: 213<br/>Friends Online: 3</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="demo-myColumn fl-container-flex50 fl-force-left">                    
+                        <div class="demo-module locked">
+                            <div class="demo-module-dragbar"></div>
+                            <div class="demo-module-content demo-making-of-a-need">
+                                <div class="lastest-issue">Latest issue: <br/>
+                                <img src="../../../../components/reorderer/images/RedApple.jpg" alt="Red apple thumbnail" />
+                                </div>
+                                <div>
+                                     <h2>The Making of a Need</h2>
+                                     <p>How something that didn't exist suddenly becomes something we can't live without.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="demo-module">
+                            <div class="demo-module-dragbar"></div>
+                            <div class="demo-module-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque bibendum ultricies scelerisque.  Aliquam ut felis quis elit malesuada rhoncus nec at sem.</div>
+                        </div>
+                        <div class="demo-module">
+                            <div class="demo-module-dragbar"></div>
+                            <div class="demo-module-content demo-banana-div">
+                                <img src="../../../../components/reorderer/images/Banana.jpg" alt="Banana thumbnail" />
+                                <p>Ut non turpis libero, euismod tempus ante.  Maecenas placerat accumsan lacus eget bibendum. </p>								
+                            </div>
+                        </div>
+                    </div>
+                    <div class="demo-myColumn fl-container-flex25 fl-force-left">
+                        <div class="demo-module">
+                            <div class="demo-module-dragbar"></div>
+                            <div class="demo-module-content">
+                                <h3>News Ticker</h3>
+                                <ul>
+                                    <li>
+                                        <span>October 10, 2010</span>
+                                        <p>"Orange Inc. now shipping juicePads with v2.1 software."</p>
+                                    </li>
+                                    <li>
+                                        <span>October 2, 2010</span>
+                                        <p>"VIM introduces the gleeBook targeting the enterprise for $199 with 3 year contract."</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="demo-module">
+                            <div class="demo-module-dragbar"></div>
+                            <div class="demo-module-content">
+                                <h3>Survey Results</h3>
+                                <span>Do you plan on buying a new juicePad?</span>
+                                <ul>
+                                    <li>43% - Yes! Take my money!</li>
+                                    <li>23% - Yes, if the price drops.</li>
+                                    <li>15% - Not interested.</li>
+                                    <li>15% - No. Going with the competition.</li>
+                                    <li>4% - No opinion.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <p class="demo-LayoutReorderer-keyboard-cmd">
+                <strong>Keyboard commands:</strong> Arrow keys moves selection. CTRL + Arrow moves selected element.
+            </p>
         </div>
-
         <script type="text/javascript">
             demo.initLayoutReorderer();
-        </script>                
+        </script>
     </body>
 </html>
 
