@@ -42,6 +42,7 @@ var demo = demo || {};
     demo.fiveStar = function (container, options) {
         var that = fluid.initView("demo.fiveStar", container, options);
         that.model = that.options.model;
+        that.stars = that.locate("stars");
 
         /**
          * Highlights all of the stars up to the specified star; ensures that the rest are 'clear.'
@@ -52,7 +53,7 @@ var demo = demo || {};
         that.highlightStar = function (starEl, highlight) {
             var img = that.options.starImages[highlight];
             var star = $(starEl);
-            var starNum = getStarNumFromClass(star.attr("class").match("star-[1-5]")[0]);
+            var starNum = getStarNumFromClass(star.attr("class").match("star-[0-5]")[0]);
             if (highlight === "select") {
                 that.model.rank = starNum;
             }

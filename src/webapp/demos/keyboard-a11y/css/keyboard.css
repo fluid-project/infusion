@@ -101,6 +101,10 @@ h1 {
     display:inline; /* make the 5-star list as a horizontal list. */
 }
 
+.demo-selected {
+    border: 3px solid black;
+}
+
 .demo-container-imageThumbnails img.demo-selected,
 .demo-container-imageThumbnails img:hover {
     border: 3px solid black;

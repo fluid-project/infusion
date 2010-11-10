@@ -51,6 +51,35 @@ var demo = demo || {};
         thumbs.click(imageActivationHandler);
     };
 
+    var makeFiveStarsNavigable = function (fiveStarRanker) {
+        var starContainer = fiveStarRanker.container;
+        starContainer.fluid("tabbable");
+        starContainer.fluid("selectable", {
+            direction: fluid.a11y.orientation.HORIZONTAL,
+            // because the stars don't have the default "selectable" class, we must
+            // specify what is to be selectable:
+            selectableSelector: fiveStarRanker.options.selectors.stars,
+            onSelect: function (starEl) {
+                starContainer.addClass(demo.initImageRanker.styles.selected);
+                fiveStarRanker.highlightStar(starEl, "hover");
+            },
+            onUnselect: function (thumbEl) {
+                starContainer.removeClass(demo.initImageRanker.styles.selected);
+                fiveStarRanker.restoreStars();
+            }
+        });
+    };
+
+    var makeRankHandler = function (fiveStarRanker) {
+        return function (evt) {
+            fiveStarRanker.highlightStar(evt.target, "select");
+        };
+    };
+
+    var makeFiveStarsActivatable = function (fiveStarRanker) {
+        fiveStarRanker.stars.fluid("activatable", makeRankHandler(fiveStarRanker));
+    };
+
     /**
      * Main demo initialization
      */
@@ -61,6 +90,11 @@ var demo = demo || {};
         
         makeThumbnailsNavigable();
         makeThumbnailsActivatable();
+        
+        // the five-star widget provides mouse-support, but not keyboard
+        // add keyboard support using the plugin
+        makeFiveStarsNavigable(fiveStarRanker);
+        makeFiveStarsActivatable(fiveStarRanker);
     };
     
     /**
@@ -68,7 +102,7 @@ var demo = demo || {};
      */
     demo.initImageRanker.selectors = {
         thumbnails: ".demo-container-imageThumbnails",
-        ranker: "#ranking",
+        ranker: ".demo-container-fiveStar",
         image: ".demo-image-mainImage"
     };
     demo.initImageRanker.styles = {
