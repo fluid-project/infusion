@@ -53,16 +53,16 @@ var demo = demo || {};
         that.highlightStar = function (starEl, highlight) {
             var img = that.options.starImages[highlight];
             var star = $(starEl);
-            var starNum = getStarNumFromClass(star.attr("class").match("star-[0-5]")[0]);
+            var starNum = getStarNumFromClass(star.attr("class").match("star-[1-5]")[0]);
             if (highlight === "select") {
                 that.model.rank = starNum;
             }
             var stars = $("[class^='star-']", container);
-            for (var i = 0; i <= starNum; i++) {
+            for (var i = 0; i < starNum; i++) {
                 $(stars[i]).attr("src", img);
             }
-            for (; i <= 5; i++) {
-                $(stars[i]).attr("src", (i <= that.model.rank) ? that.options.starImages.select : that.options.starImages.blank);
+            for (; i < 5; i++) {
+                $(stars[i]).attr("src", (i + 1 <= that.model.rank) ? that.options.starImages.select : that.options.starImages.blank);
             }
         };
         
@@ -72,7 +72,7 @@ var demo = demo || {};
         that.restoreStars = function () {
             var stars = $("[class^='star-']", container);
             for (var starNum = 1; starNum <= 5; starNum++) {
-                $(stars[starNum]).attr("src", (starNum <= that.model.rank) ? that.options.starImages.select : that.options.starImages.blank);
+                $(stars[starNum-1]).attr("src", (starNum <= that.model.rank) ? that.options.starImages.select : that.options.starImages.blank);
             }
         };
 
@@ -91,7 +91,7 @@ var demo = demo || {};
             select: "../images/star-green.gif"
         },
         model: {
-            rank: 0
+            rank: 1
         }
     });
 })(jQuery, fluid_1_2);

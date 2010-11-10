@@ -53,19 +53,28 @@ var demo = demo || {};
 
     var makeFiveStarsNavigable = function (fiveStarRanker) {
         var starContainer = fiveStarRanker.container;
+
+        // put the five-star ranker into the tab order, and
+        // show visual confirmation when focus is there
         starContainer.fluid("tabbable");
+        starContainer.focus(function () {
+            starContainer.addClass(demo.initImageRanker.styles.selected);
+        });
+
+        // make the stars themselves selectable
         starContainer.fluid("selectable", {
             direction: fluid.a11y.orientation.HORIZONTAL,
             // because the stars don't have the default "selectable" class, we must
             // specify what is to be selectable:
             selectableSelector: fiveStarRanker.options.selectors.stars,
             onSelect: function (starEl) {
-                starContainer.addClass(demo.initImageRanker.styles.selected);
                 fiveStarRanker.highlightStar(starEl, "hover");
             },
             onUnselect: function (thumbEl) {
-                starContainer.removeClass(demo.initImageRanker.styles.selected);
                 fiveStarRanker.restoreStars();
+            },
+            onLeaveContainer: function () {
+                starContainer.removeClass(demo.initImageRanker.styles.selected);
             }
         });
     };
