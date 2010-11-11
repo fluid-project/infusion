@@ -16,13 +16,27 @@
         <script type="text/javascript" src="../js/keyboard.js"></script>
     </head>
     <body>
-        
+
         <div class="demo-container">
-        
+
             <h1>Gallery Viewer</h1>
-            Select an image to view in more detail.
-            <span class="keyboard-instructions fl-force-right">Keyboard Instructions: Arrow keys move selection</span>
-        
+            <div class="demo-instructions">
+                Select an image to view in more detail.
+                <span class="fl-force-right">Keyboard Instructions: Arrow keys move selection. Space or Enter activates.</span>
+            </div>
+
+            <ul class="demo-container-imageThumbnails fl-centered">
+                <li><img class="selectable" src="../images/Banana.jpg" alt="banana"></li>
+                <li><img class="selectable" src="../images/Mangosteen.jpg" alt="mangosteen"></li>
+                <li><img class="selectable"src="../images/RedApple.jpg" alt="red apple"></li>
+                <li><img class="selectable" src="../images/Dragonfruit.jpg" alt="dragonfruit"></li>            
+                <li><img class="selectable" src="../images/Grapes.jpg" alt="bunch of grapes"></li>
+                <li><img class="selectable" src="../images/Fig.jpg" alt="fig"></li>
+                <li><img class="selectable" src="../images/Lemon.jpg" alt="lemon"></li>
+                <li><img class="selectable" src="../images/Cherry.jpg" alt="cherry"></li>
+                <li><img class="selectable" src="../images/Orange.jpg" alt="orange"></li>
+            </ul>
+
             <div id="image-preview" class="demo-container-imageViewer fl-centered">
                 <img class="demo-image-mainImage" src="../images/Banana.jpg" />
             </div>
@@ -37,20 +51,9 @@
                 </div>
             </div>
             
-            <ul class="demo-container-imageThumbnails fl-centered">
-                <li><img class="selectable" src="../images/Banana.jpg"></li>
-                <li><img class="selectable"src="../images/RedApple.jpg"></li>
-                <li><img class="selectable" src="../images/Grapes.jpg"></li>
-                <li><img class="selectable" src="../images/Fig.jpg"></li>
-                <li><img class="selectable" src="../images/Lemon.jpg"></li>
-                <li><img class="selectable" src="../images/Cherry.jpg"></li>
-                <li><img class="selectable" src="../images/Orange.jpg"></li>
-                <li><img class="selectable" src="../images/Mangosteen.jpg"></li>
-                <li><img class="selectable" src="../images/Dragonfruit.jpg"></li>            
-            </ul>
         </div>        
         <script type="text/javascript">
-            demo.initImageRanker();
+            demo.initImageRanker(".demo-container");
         </script>
     </body>
 </html>

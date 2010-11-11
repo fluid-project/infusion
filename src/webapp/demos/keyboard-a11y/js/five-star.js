@@ -34,6 +34,12 @@ var demo = demo || {};
         that.locate("stars").click(makeStarHandler(that.highlightStar, "select"));
     };
 
+    var setARIA = function (that) {
+        that.container.attr("role", "slider");
+        that.container.attr("aria-valuemin", "1");
+        that.container.attr("aria-valuemax", "5");
+    };
+
     /**
      * A very simple five-star ranking widget that allows users to click on a star to set a rank.
      * @param {Object} container
@@ -55,9 +61,7 @@ var demo = demo || {};
             var star = $(starEl);
             var starNum = getStarNumFromClass(star.attr("class").match("star-[1-5]")[0]);
             if (highlight === "select") {
-                var oldRank = that.model.rank;
-                that.model.rank = starNum;
-                that.events.modelChanged.fire(that.model.rank, oldRank);
+                that.setRank(starNum);
             }
             var stars = $("[class^='star-']", container);
             for (var i = 0; i < starNum; i++) {
@@ -74,16 +78,20 @@ var demo = demo || {};
         that.restoreStars = function () {
             var stars = $("[class^='star-']", container);
             for (var starNum = 1; starNum <= 5; starNum++) {
-                $(stars[starNum-1]).attr("src", (starNum <= that.model.rank) ? that.options.starImages.select : that.options.starImages.blank);
+                $(stars[starNum - 1]).attr("src", (starNum <= that.model.rank) ? that.options.starImages.select : that.options.starImages.blank);
             }
         };
         
         that.setRank = function (rank) {
+            var oldRank = that.model.rank;
             that.model.rank = rank;
+            that.container.attr("aria-valuenow", rank);
+            that.events.modelChanged.fire(that.model.rank, oldRank);
             that.restoreStars();
         };
 
         bindHandlers(that);
+        setARIA(that);
         that.restoreStars();
         return that;
     };

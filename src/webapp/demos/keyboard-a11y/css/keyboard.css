@@ -7,14 +7,17 @@ h1 {
 }
 
 .demo-container {
-    width:95%;
+    max-width: 50%;
+    min-width: 50%;
     background-color: #E6E8F4;
     margin: 1em;
     padding: 0.5em;
     min-width: 30em;
 }
 
-
+.demo-instructions {
+    position:relative;    
+}
 /**/
 /* Main image viewer */
 /**/
@@ -31,7 +34,6 @@ h1 {
 .demo-image-mainImage {
     height:100%;
     width:auto; /* maintain the aspect ratio even if height resized. */
-    min-width: 28em; /* if resized, this is the smallest width the image will have. */
 }
 
 
