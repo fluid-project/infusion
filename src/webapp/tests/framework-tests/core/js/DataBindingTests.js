@@ -17,7 +17,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        fluid.logEnabled = true;
+        fluid.setLogging(true)
+        
+        fluid.registerNamespace("fluid.tests");
         
         var DataBindingTests = new jqUnit.TestCase("Data Binding Tests");
         
@@ -33,6 +35,45 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Match thing", "thing", fluid.pathUtil.matchPath("thing", "thing"));
             jqUnit.assertEquals("Match thing", "thing", fluid.pathUtil.matchPath("thing", "thing.otherThing"));
             jqUnit.assertEquals("Match thing *", "thing.otherThing", fluid.pathUtil.matchPath("thing.*", "thing.otherThing"));
+        });
+                
+        fluid.tests.testMergeComponent = function(options) {
+            return fluid.initLittleComponent("fluid.tests.testMergeComponent", options);
+        };
+        
+        function testPreservingMerge(preserve, defaultModel) {
+            var defaults = { lala: "blalalha"};
+            if (preserve) {
+                defaults.mergePolicy = {model: "preserve"};
+            }
+            if (defaultModel !== undefined) {
+                defaults.model = defaultModel;
+            }
+            fluid.defaults("fluid.tests.testMergeComponent", defaults);
+            var model = { foo: "foo" };
+
+            var comp = fluid.tests.testMergeComponent({model: model});
+            
+            var presString = preserve? " - preserve" : ""; 
+            
+            jqUnit.assertEquals("Identical model reference" + presString, 
+                preserve, comp.options.model === model);
+            var mergedModel = $.extend(true, {}, model, defaultModel);
+            
+            jqUnit.assertDeepEq("Merged model contents" + presString, mergedModel, comp.options.model);                     
+        }
+     
+        
+        DataBindingTests.test("Merge model semantics - preserve", function() {
+            testPreservingMerge(true);
+            testPreservingMerge(false);
+             // defaultModel of "null" tests FLUID-3768
+            testPreservingMerge(true, null);
+            testPreservingMerge(false, null);
+            // populated defaultModel tests FLUID-3824
+            var defaultModel = { roo: "roo"};
+            testPreservingMerge(true, defaultModel);
+            testPreservingMerge(false, defaultModel);
         });
         
         DataBindingTests.test("FLUID-3729 test: application into nothing", function() {

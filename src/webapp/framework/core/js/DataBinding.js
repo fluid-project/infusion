@@ -234,6 +234,15 @@ fluid_1_2 = fluid_1_2 || {};
         }
         return togo;
       };
+    
+    fluid.model.mergeModel = function(target, source, applier) {
+        var copySource = fluid.copy(source);
+        applier = applier || fluid.makeChangeApplier(source);
+        applier.fireChangeRequest({type: "ADD", path: "", value: target});
+        applier.fireChangeRequest({type: "MERGE", path: "", value: copySource});
+        return source; 
+    };
+        
       
     fluid.model.isNullChange = function(model, request, resolverGetConfig) {
         if (request.type === "ADD") {

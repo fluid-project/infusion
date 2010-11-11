@@ -20,6 +20,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(document).ready(function () {
         fluid.setLogging(true);
         
+        fluid.registerNamespace("fluid.tests");
+        
         var fluidJSTests = new jqUnit.TestCase("Fluid JS Tests");
 
         function isOdd(i) {return i % 2 === 1;}
@@ -93,39 +95,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                            "1.prop2": "0.prop2"}, [], [bit2, bit1], []));  
             
         });
-        
-        fluid.tests = fluid.tests || {};
-        fluid.tests.testMergeComponent = function(options) {
-            return fluid.initLittleComponent("fluid.tests.testMergeComponent", options);
-        };
-
-        function testPreservingMerge(preserve, nullModel) {
-            var defaults = { lala: "blalalha"};
-            if (preserve) {
-                defaults.mergePolicy = {model: "preserve"};
-            }
-            if (nullModel) {
-                defaults.model = null;
-            }
-            fluid.defaults("fluid.tests.testMergeComponent", defaults);
-            var model = { foo: "foo" };
-
-            var comp = fluid.tests.testMergeComponent({model: model});
-            
-            jqUnit.assertEquals("Identical model reference" + (preserve? " - preserve" : ""), 
-                preserve, comp.options.model === model);                    
-        }
-        
-     
-        
-        fluidJSTests.test("Merge model semantics - preserve", function() {
-          // nullModel of "true" tests FLUID-3768
-            testPreservingMerge(true, true);
-            testPreservingMerge(false, true);
-            testPreservingMerge(true, false);
-            testPreservingMerge(false, false);
-        });
-        
+      
         fluidJSTests.test("reverse merge", function() {
             var target = {
                 root: {
