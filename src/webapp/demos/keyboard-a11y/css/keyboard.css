@@ -48,15 +48,10 @@ h1 {
     position:relative;
     white-space:nowrap;
     z-index:1;
-}
-
-.demo-container-imageThumbnails ul {
     list-style:none outside none;
-    margin:0;
-    padding:0;
 }
 
-.demo-container-imageThumbnails ul li {
+.demo-container-imageThumbnails li {
     display:inline-block;
     margin:0.5em;
     padding:0.3em;

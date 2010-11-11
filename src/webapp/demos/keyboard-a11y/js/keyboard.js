@@ -16,14 +16,17 @@ var demo = demo || {};
 
 (function ($, fluid) {
     
-    var makeThumbnailsNavigable = function () {
-        var thumbContainer = $(demo.initImageRanker.selectors.thumbnails);
 
+    var setAria = function(thumbs){
+        thumbs.attr("aria-controls", "image-preview");
+    };
+
+    var makeThumbnailsNavigable = function (thumbs) {
         //*** Use the Keyboard Accessibility Plugin to ensure that the container is in the tab order
-        thumbContainer.fluid("tabbable");
+        thumbs.fluid("tabbable");
 
         //*** Use the Keyboard Accessibility Plugin to make the image thumbnails selectable
-        thumbContainer.fluid("selectable", {
+        thumbs.fluid("selectable", {
             direction: fluid.a11y.orientation.HORIZONTAL,
             onSelect: function (thumbEl) {
                 $(thumbEl).addClass(demo.initImageRanker.styles.selected);
@@ -34,12 +37,12 @@ var demo = demo || {};
         });
     };
 
-    var makeImageActivationHandler = function(fiveStarRanker, model){
+    var makeImageActivationHandler = function(thumbs, fiveStarRanker, model){
         
         // create a function that will be uses as the event handler when a thumbnail is activated
         return function(evt){
             // remove the selected styling from the current image
-            $("img", demo.initImageRanker.selectors.thumbnails).removeClass(demo.initImageRanker.styles.activated);
+            $("img", thumbs).removeClass(demo.initImageRanker.styles.activated);
 
             // display the selected image in the main viewer
             var thumb = $(evt.target);
@@ -54,11 +57,9 @@ var demo = demo || {};
         };
     };
 
-    var makeThumbnailsActivatable = function (fiveStarRanker, model) {
-        var thumbs = $("img", demo.initImageRanker.selectors.thumbnails);
-
+    var makeThumbnailsActivatable = function (thumbs, fiveStarRanker, model) {
         // create the event handler
-        var handler = makeImageActivationHandler(fiveStarRanker, model);
+        var handler = makeImageActivationHandler(thumbs, fiveStarRanker, model);
 
         //*** Use the Keyboard Accessibility Plugin to make the thumbnails activatable by keyboard
         thumbs.fluid("activatable", handler);
@@ -119,16 +120,17 @@ var demo = demo || {};
     demo.initImageRanker = function () {
         // the five-star ranking code can be found in the file five-star.js
         var fiveStarRanker = demo.fiveStar(demo.initImageRanker.selectors.ranker);
+        var thumbs = $(demo.initImageRanker.selectors.thumbnails);
         
-        // set up an internal record of the ranks selected
-        var images = $("img", $(demo.initImageRanker.selectors.thumbnails));
+        // set up an internal model of the ranks selected
+        var images = $("img", thumbs);
         var model = {};
         fluid.each(images, function (value, key) {
             model[$(value).attr("src")] = 1;
         });
         
-        makeThumbnailsNavigable();
-        makeThumbnailsActivatable(fiveStarRanker, model);
+        makeThumbnailsNavigable(thumbs);
+        makeThumbnailsActivatable(thumbs, fiveStarRanker, model);
         
         // the five-star widget provides mouse-support, but not keyboard
         // add keyboard support using the plugin
@@ -136,6 +138,7 @@ var demo = demo || {};
         makeFiveStarsActivatable(fiveStarRanker);
         
         bindEventHandlers(fiveStarRanker, model);
+        setAria(thumbs);
     };
     
     /**
@@ -143,6 +146,7 @@ var demo = demo || {};
      */
     demo.initImageRanker.selectors = {
         thumbnails: ".demo-container-imageThumbnails",
+        
         ranker: ".demo-container-fiveStar",
         image: ".demo-image-mainImage"
     };
