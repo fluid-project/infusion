@@ -7,8 +7,7 @@ h1 {
 }
 
 .demo-container {
-    max-width: 50%;
-    min-width: 50%;
+    width: 100%;
     background-color: #E6E8F4;
     margin: 1em;
     padding: 0.5em;
@@ -18,6 +17,10 @@ h1 {
 .demo-instructions {
     position:relative;    
 }
+.demo-keyboard-instructions {
+    text-align:right;
+}
+
 /**/
 /* Main image viewer */
 /**/
