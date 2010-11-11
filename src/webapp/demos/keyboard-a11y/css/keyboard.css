@@ -41,7 +41,7 @@ h1 {
 /* Thumbnails */
 /**/
 .demo-container-imageThumbnails  {
-    height: 11em;
+    height: 30em;
     background-color:#CCCBE4;
     border: 1px solid #000;
     margin-top: 0.5em;
@@ -54,7 +54,6 @@ h1 {
 }
 
 .demo-container-imageThumbnails li {
-    display:inline-block;
     margin:0.5em;
     padding:0.3em;
     text-align:center;

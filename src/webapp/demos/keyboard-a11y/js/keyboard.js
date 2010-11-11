@@ -16,6 +16,9 @@ var demo = demo || {};
 
 (function ($, fluid) {
     
+    //=====================================================================
+    // Utility functions
+    //
 
     /**
      * Assign any relevant ARIA roles, states, properties.
@@ -24,25 +27,6 @@ var demo = demo || {};
         container.attr("role", "application");
         thumbs.attr("aria-controls", "image-preview");
         $("img", thumbs).attr("aria-selected", false);
-    };
-
-    /**
-     * Ensure that the image thumbnails can be navigated using the keyboard
-     */
-    var makeThumbnailsNavigable = function (thumbs) {
-        //*** Use the Keyboard Accessibility Plugin to ensure that the container is in the tab order
-        thumbs.fluid("tabbable");
-
-        //*** Use the Keyboard Accessibility Plugin to make the image thumbnails selectable
-        thumbs.fluid("selectable", {
-            direction: fluid.a11y.orientation.HORIZONTAL,
-            onSelect: function (thumbEl) {
-                $(thumbEl).addClass(demo.initImageRanker.styles.selected);
-            },
-            onUnselect: function (thumbEl) {
-                $(thumbEl).removeClass(demo.initImageRanker.styles.selected);
-            }
-        });
     };
 
     var displayImage = function (thumb, thumbs, fiveStarRanker, model) {
@@ -74,6 +58,37 @@ var demo = demo || {};
         };
     };
 
+    var bindEventHandlers = function (fiveStarRanker, model) {
+        fiveStarRanker.events.modelChanged.addListener(function (newModel, oldModel) {
+            // change the rank of the current image to the new rank
+            var currImg = $(demo.initImageRanker.selectors.image).attr("src");
+            model[currImg] = newModel;
+        });
+    };
+
+    //=====================================================================
+    // Main keyboard accessibility plugin functions
+    //
+    
+    /**
+     * Ensure that the image thumbnails can be navigated using the keyboard
+     */
+    var makeThumbnailsNavigable = function (thumbs) {
+        //*** Use the Keyboard Accessibility Plugin to ensure that the container is in the tab order
+        thumbs.fluid("tabbable");
+
+        //*** Use the Keyboard Accessibility Plugin to make the image thumbnails selectable
+        // This uses the defaults for everything but these event handlers
+        thumbs.fluid("selectable", {
+            onSelect: function (thumbEl) {
+                $(thumbEl).addClass(demo.initImageRanker.styles.selected);
+            },
+            onUnselect: function (thumbEl) {
+                $(thumbEl).removeClass(demo.initImageRanker.styles.selected);
+            }
+        });
+    };
+
     /**
      * Ensure that the image thumbnails can be activated using the keyboard
      */
@@ -94,20 +109,29 @@ var demo = demo || {};
     var makeFiveStarsNavigable = function (fiveStarRanker) {
         var starContainer = fiveStarRanker.container;
 
-        // put the five-star ranker into the tab order, and
-        // show visual confirmation when focus is there
+        //*** Use the Keyboard Accessibility Plugin to ensure that the container is in the tab order
         starContainer.fluid("tabbable");
+
+        // show visual confirmation when focus is there
         starContainer.focus(function () {
             starContainer.addClass(demo.initImageRanker.styles.selected);
         });
 
-        // make the stars themselves selectable
+        //*** Use the Keyboard Accessibility Plugin to make the start themselves selectable
+        // This overrides some of the defaults
         starContainer.fluid("selectable", {
+            // the default orientation is vertical, so we need to specify that this is horizontal
+            // this affects what arrow keys will move selection
             direction: fluid.a11y.orientation.HORIZONTAL,
+
             // because the stars don't have the default "selectable" class, we must
             // specify what is to be selectable:
             selectableSelector: fiveStarRanker.options.selectors.stars,
+
+            // because the same widget is used for images with different ranks, we don't want
+            // the previously selected rank to be re-used
             rememberSelectionState: false,
+
             onSelect: function (starEl) {
                 fiveStarRanker.hoverStars(starEl);
             },
@@ -129,16 +153,10 @@ var demo = demo || {};
         });
     };
 
-    var bindEventHandlers = function (fiveStarRanker, model) {
-        fiveStarRanker.events.modelChanged.addListener(function (newModel, oldModel) {
-            // change the rank of the current image to the new rank
-            var currImg = $(demo.initImageRanker.selectors.image).attr("src");
-            model[currImg] = newModel;
-        });
-    };
-    /**
-     * Main demo initialization
-     */
+    //=====================================================================
+    // Demo initialization
+    //
+    
     demo.initImageRanker = function (container) {
         container = $(container);
         // the five-star ranking code can be found in the file five-star.js
