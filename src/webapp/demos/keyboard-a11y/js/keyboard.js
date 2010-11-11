@@ -109,10 +109,10 @@ var demo = demo || {};
             selectableSelector: fiveStarRanker.options.selectors.stars,
             rememberSelectionState: false,
             onSelect: function (starEl) {
-                fiveStarRanker.highlightStar(starEl, "hover");
+                fiveStarRanker.hoverStars(starEl);
             },
             onUnselect: function (thumbEl) {
-                fiveStarRanker.restoreStars();
+                fiveStarRanker.refreshView();
             },
             onLeaveContainer: function () {
                 starContainer.removeClass(demo.initImageRanker.styles.selected);
@@ -125,7 +125,7 @@ var demo = demo || {};
      */
     var makeFiveStarsActivatable = function (fiveStarRanker) {
         fiveStarRanker.stars.fluid("activatable", function (evt) {
-            fiveStarRanker.highlightStar(evt.target, "select");
+            fiveStarRanker.pickStar(evt.target);
         });
     };
 

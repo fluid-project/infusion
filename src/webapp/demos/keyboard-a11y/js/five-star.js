@@ -18,20 +18,19 @@ var demo = demo || {};
 (function ($, fluid) {
 
     // This assumes the className is of the form "star-x" where x is the starNum
-    var getStarNumFromClass = function (className) {
+    var getStarNum = function (el) {
+        var className = $(el).attr("class").match("star-[1-5]")[0];
         return parseInt(className.charAt(className.length - 1));
     };
 
-    var makeStarHandler = function (func, action) {
-        return function (evt) {
-            func(evt.target, action);
-        };
-    };
-
     var bindHandlers = function (that) {
-        that.locate("stars").mouseover(makeStarHandler(that.highlightStar, "hover"));
-        that.locate(that.container).mouseout(that.restoreStars);
-        that.locate("stars").click(makeStarHandler(that.highlightStar, "select"));
+        that.locate("stars").mouseover(function (evt) {
+            that.hoverStars(evt.target);
+        });
+        that.locate(that.container).mouseout(that.refreshView);
+        that.locate("stars").click(function (evt) {
+            that.pickStar(evt.target);
+        });
     };
 
     var setARIA = function (that) {
@@ -51,31 +50,27 @@ var demo = demo || {};
         that.stars = that.locate("stars");
 
         /**
-         * Highlights all of the stars up to the specified star; ensures that the rest are 'clear.'
-         * If the highlight is "select", the model will be updated to reflect the selection
-         * @param {Object} starEl    The highest star element to highlight
-         * @param {Object} highlight A string indicating the desired highlight: "hover" or "select". "hover" is the default
+         * Highlight the stars up to the given star with the hover colour
+         * @param {Object} starEl
          */
-        that.highlightStar = function (starEl, highlight) {
-            var img = that.options.starImages[highlight];
+        that.hoverStars = function (starEl) {
             var star = $(starEl);
-            var starNum = getStarNumFromClass(star.attr("class").match("star-[1-5]")[0]);
-            if (highlight === "select") {
-                that.setRank(starNum);
-            }
-            var stars = $("[class^='star-']", container);
+            var starNum = getStarNum(star);
+            
+            // set the images up to the hover star with the hover image
             for (var i = 0; i < starNum; i++) {
-                $(stars[i]).attr("src", img);
+                $(that.stars[i]).attr("src", that.options.starImages.hover);
             }
+            // set the images for the rest of the stars with whatever the rank says
             for (; i < 5; i++) {
-                $(stars[i]).attr("src", (i + 1 <= that.model.rank) ? that.options.starImages.select : that.options.starImages.blank);
+                $(that.stars[i]).attr("src", (i + 1 <= that.model.rank) ? that.options.starImages.select : that.options.starImages.blank);
             }
         };
-        
+
         /**
          * Restore the display of stars to reflect the ranking
          */
-        that.restoreStars = function () {
+        that.refreshView = function () {
             var stars = $("[class^='star-']", container);
             for (var starNum = 1; starNum <= 5; starNum++) {
                 $(stars[starNum - 1]).attr("src", (starNum <= that.model.rank) ? that.options.starImages.select : that.options.starImages.blank);
@@ -87,12 +82,17 @@ var demo = demo || {};
             that.model.rank = rank;
             that.container.attr("aria-valuenow", rank);
             that.events.modelChanged.fire(that.model.rank, oldRank);
-            that.restoreStars();
+            that.refreshView();
+        };
+        
+        that.pickStar = function (el) {
+            var starNum = getStarNum(el);
+            that.setRank(starNum);
         };
 
         bindHandlers(that);
         setARIA(that);
-        that.restoreStars();
+        that.refreshView();
         return that;
     };
     
