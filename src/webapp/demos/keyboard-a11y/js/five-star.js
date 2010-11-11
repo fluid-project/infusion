@@ -55,7 +55,9 @@ var demo = demo || {};
             var star = $(starEl);
             var starNum = getStarNumFromClass(star.attr("class").match("star-[1-5]")[0]);
             if (highlight === "select") {
+                var oldRank = that.model.rank;
                 that.model.rank = starNum;
+                that.events.modelChanged.fire(that.model.rank, oldRank);
             }
             var stars = $("[class^='star-']", container);
             for (var i = 0; i < starNum; i++) {
@@ -75,6 +77,11 @@ var demo = demo || {};
                 $(stars[starNum-1]).attr("src", (starNum <= that.model.rank) ? that.options.starImages.select : that.options.starImages.blank);
             }
         };
+        
+        that.setRank = function (rank) {
+            that.model.rank = rank;
+            that.restoreStars();
+        };
 
         bindHandlers(that);
         that.restoreStars();
@@ -92,6 +99,9 @@ var demo = demo || {};
         },
         model: {
             rank: 1
+        },
+        events: {
+            modelChanged: null
         }
     });
 })(jQuery, fluid_1_2);
