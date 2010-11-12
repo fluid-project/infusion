@@ -15,13 +15,16 @@ var sakai = sakai || {};
 
 sakai.initFluidSiteSettingTable = function() {
     var resources = {
-      users: {
-        href: "../js/demo_site_membership.json"
-      },
-      site: {
-        href: "../js/demo_site.json"
-      }
+        users: {
+            href: "../js/demo_site_membership.json"
+        },
+        site: {
+            href: "../js/demo_site.json"
+        }
     };
+    fluid.each(resources, function(resource) {
+        resource.options = { dataType: "text"};
+    });
     
     function initPager() {
       
@@ -40,7 +43,7 @@ sakai.initFluidSiteSettingTable = function() {
             components: {
                 target: "/dev/sn/profile.html?user=${*.userId}",
                 linktext: fluid.VALUE},
-            sortable:true
+            sortable: true
             },
            {key: "user-email",
             valuebinding: "*.userEmail",
