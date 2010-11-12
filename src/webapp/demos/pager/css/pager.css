@@ -44,7 +44,7 @@ a:visited {
 }
 
 .demo-pager-bar  a:focus {
-    outline:none; /* remove the focus outline that appears around links since there is already a border being applied on hover. */
+   /* outline:none; /* remove the focus outline that appears around links since there is already a border being applied on hover. */
 }
 
 /***********************************************
@@ -103,6 +103,10 @@ a:visited {
     color: #fff;
     padding:0px;
 }
+
+/*.demo-pager-links .fl-pager-currentPage:hover{
+    border:none;
+}*/
 
 .demo-pager-head a {
 	display:block;

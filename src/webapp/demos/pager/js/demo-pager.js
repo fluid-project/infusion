@@ -69,9 +69,7 @@ var demo = demo || {};
           
             demo.pager = fluid.pager(".demo-pager-container", {
                 dataModel: model,
-                // Test FLUID-2663
                 model: {
-                    pageIndex: 3,
                     pageSize: 10
                 },
                 dataOffset: "users.membership_collection",
