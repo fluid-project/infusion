@@ -114,7 +114,7 @@ var jqUnit = jqUnit || {};
      * Keeps track of the order of function invocations. The transcript contains information about
      * each invocation, including its name and the arguments that were supplied to it.
      */
-    jqUnit.invocationTracker = function () {
+    jqUnit.invocationTracker = function (runTestsOnFunctionNamed, testBody) {
         var that = {};
         
         /**
@@ -138,6 +138,10 @@ var jqUnit = jqUnit || {};
                     args: arguments
                 });
                 wrappedFn.apply(onObject, arguments);
+                
+                if (fnName === runTestsOnFunctionNamed) {
+                    testBody(that.transcript);
+                }
             };
         };
         

@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2009 University of Toronto
 Copyright 2007-2009 University of California, Berkeley
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -14,7 +15,33 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(function () {
-        // Test files.
+        
+        // Redefine SWFUploadStrategy's invokers in this testing context.
+        fluid.staticEnvironment.uploaderTests = fluid.typeTag("fluid.uploader.tests");
+        fluid.demands("fluid.uploader.swfUploadStrategy.setupDOM", ["fluid.uploader.tests"], {
+            funcName: "fluid.identity",
+            args: []
+        });
+        
+        fluid.uploader.swfUploadStrategy.demo.tests = {
+            makeMockConfig: function () {
+                return {
+                    button_placeholder_id: "swfUploadLovesDestroyingInnocentDomElements"
+                };
+            }    
+        };
+        
+        fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", ["fluid.uploader.tests"], {
+            funcName: "fluid.uploader.swfUploadStrategy.demo.tests.makeMockConfig",
+            args: []
+        });
+        
+        fluid.demands("fluid.uploader.swfUploadStrategy.eventBinder", ["fluid.uploader.tests"], {
+            funcName: "fluid.identity",
+            args: []
+        });
+        
+        // Setup test files.
         var file1 = {
             id: 0,
             size: 400000
@@ -42,23 +69,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var allFiles = [file1, file2, file3, file_smallerThanChunkSize, file_largerAndNotMultipleOfChunkSize];
         
-        var resetStatusForAllFiles = function () {
-            for (var i = 0; i < allFiles.length; i++) {
-                allFiles[i].filestatus = fluid.uploader.fileStatusConstants.QUEUED;
-            }
-        };
-        
-        var events;
-        var setupFunction = function () {
-            events = {};
-            fluid.mergeListeners(events, fluid.defaults("fluid.uploader").events);
-            resetStatusForAllFiles();
-        };
-        
-        var demoUploadTests = new jqUnit.TestCase("DemoUploadManager Tests", setupFunction);
         
         // Silly little data structure for capturing the sequence and parameters of the upload flow.
-        var eventTracker = function () {
+        var eventTracker = function (testBody) {
             var emptyFunction = function () {};
             
             var listeners = {
@@ -70,70 +83,54 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 afterUploadComplete: emptyFunction
             };
             
-            var tracker = jqUnit.invocationTracker();
+            var tracker = jqUnit.invocationTracker("afterUploadComplete", testBody);
             tracker.interceptAll(listeners);
             tracker.listeners = listeners;
             
             return tracker;
         };
         
-        var uploadFiles = function (files) {      
-            var tracker = eventTracker();
+        var uploadFilesAndTest = function (files, testBody) {
+            var tracker = eventTracker(testBody);
+            fluid.mergeListeners(events, tracker.listeners);
             
-            var swfManager = fluid.swfUploadManager(events, {
-                simulateDelay: false,
-                listeners: tracker.listeners,
-                flashButtonPeerId: "swfUploadLovesDestroyingInnocentDomElements"
-            });
+            var queue = fluid.uploader.fileQueue();
+            queue.files = files;     
             
-            var demoManager = fluid.demoUploadManager(swfManager);
-            demoManager.queue.files = files;
-            demoManager.start();
+            var demoEngine = fluid.uploader.swfUploadStrategy.demo(queue, events);
+            
+            // TODO: Major problem. This code is from the implementation of Uploader.start(), but is required
+            // before calling an engine's start() method.
+            queue.start();
+            events.onUploadStart.fire(queue.currentBatch.files); 
+            //
+            
+            demoEngine.start();
             
             tracker.transcript.files = files;
             return tracker.transcript;    
         };
         
-        var uploadFirstFile = function () {
-            return uploadFiles([file1]);
+        var uploadFirstFileAndTest = function (testBody) {
+            return uploadFilesAndTest([file1], testBody);
         };
         
-        var uploadAllFiles = function () {
-            return uploadFiles([file1, file2, file3]);
+        var uploadAllFilesAndTest = function (testBody) {
+            return uploadFilesAndTest([file1, file2, file3], testBody);
         };
         
-        var uploadSmallFile = function () {
-            return uploadFiles([file_smallerThanChunkSize]);
+        var uploadSmallFileAndTest = function (testBody) {
+            return uploadFilesAndTest([file_smallerThanChunkSize], testBody);
         };
         
-        var uploadNotMultipleFile = function () {
-            return uploadFiles([file_largerAndNotMultipleOfChunkSize]);
+        var uploadNotMultipleFileAndTest = function (testBody) {
+            return uploadFilesAndTest([file_largerAndNotMultipleOfChunkSize], testBody);
         };
-        
-        demoUploadTests.test("Options merging", function () {
-            // Test with no events and no additional options. simulateDelay should be true.
-            var demoManager = fluid.demoUploadManager(fluid.swfUploadManager(events, {
-                flashButtonPeerId: "swfUploadLovesDestroyingInnocentDomElements"
-            }));
-            
-            // Ensure our default options are cool.
-            jqUnit.assertTrue("simulateDelay should default to true.", demoManager.options.simulateDelay);
-            jqUnit.assertEquals("We should have inherited our parent's default options.",
-                                "../../../lib/swfupload/flash/swfupload.swf",
-                                demoManager.options.flashURL);
-                                
-            // Test an alternative option. simulateDelay should be false.
-            demoManager = fluid.demoUploadManager(fluid.swfUploadManager(events, {
-                simulateDelay: false,
-                flashButtonPeerId: "otherPlaceholder"
-            }));
-            jqUnit.assertFalse("simulateDelay should be false.", demoManager.options.simulateDelay);
-        });
         
         var checkEventSequenceForFile = function (transcript, file) {
             // Check that each event corresponds to the specified file.
             for (var i = 0; i < transcript.length; i++) {
-                jqUnit.assertEquals("In each event callback, the file id should be 0.",
+                jqUnit.assertEquals("In each event callback, the file id should be correctly set.",
                                     file.id, transcript[i].args[0].id);
             }
             
@@ -151,89 +148,106 @@ https://source.fluidproject.org/svn/LICENSE.txt
             }   
         };
         
-        demoUploadTests.test("Simulated upload flow: sequence of events.", function () {
+        
+        var events;        
+        var demoUploadTests = new jqUnit.TestCase("DemoEngine Tests", function () {
+            events = {};
+            fluid.mergeListeners(events, fluid.defaults("fluid.uploader").events);
+
+            for (var i = 0; i < allFiles.length; i++) {
+                allFiles[i].filestatus = fluid.uploader.fileStatusConstants.QUEUED;
+            }
+        });
+        
+        demoUploadTests.asyncTest("Simulated upload flow: sequence of events.", function () {
             // Test with just one file.
-            var transcript = uploadFirstFile();
-            jqUnit.assertEquals("We should have received seven upload events.", 7, transcript.length);
-            
-            jqUnit.assertEquals("The first event of a batch should be onUploadStart.",
-                                "onUploadStart", transcript[0].name);
-            jqUnit.assertDeepEq("The argument to onUploadStart should be an array containing the current batch.",
-                                transcript.files, transcript[0].args[0]);
-                                
-            checkEventSequenceForFile(transcript.slice(1, transcript.length - 1), file1);
-            jqUnit.assertEquals("The last event of a batch should be afterUploadComplete.",
-                         "afterUploadComplete", transcript[transcript.length - 1].name);
-            jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
-                                transcript.files, transcript[transcript.length - 1].args[0]);
+            var transcript = uploadFirstFileAndTest(function (transcript) {
+                jqUnit.assertEquals("We should have received seven upload events.", 7, transcript.length);
+
+                jqUnit.assertEquals("The first event of a batch should be onUploadStart.",
+                                    "onUploadStart", transcript[0].name);
+                jqUnit.assertDeepEq("The argument to onUploadStart should be an array containing the current batch.",
+                                    transcript.files, transcript[0].args[0]);
+
+                checkEventSequenceForFile(transcript.slice(1, transcript.length - 1), file1);
+                jqUnit.assertEquals("The last event of a batch should be afterUploadComplete.",
+                             "afterUploadComplete", transcript[transcript.length - 1].name);
+                jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
+                                    transcript.files, transcript[transcript.length - 1].args[0]);
+                                    
+                start();
+            });
         });
-        
     
-        demoUploadTests.test("Simulated upload flow: sequence of events for multiple files.", function () {
+        demoUploadTests.asyncTest("Simulated upload flow: sequence of events for multiple files.", function () {
             // Upload three files.
-            var transcript = uploadAllFiles();
-            jqUnit.assertEquals("We should have received twenty upload events.", 20, transcript.length);
-            jqUnit.assertEquals("The first event of a batch should be onUploadStart.",
-                                "onUploadStart", transcript[0].name);
-            jqUnit.assertDeepEq("The argument to onUploadStart should be an array containing the current batch.",
-                                transcript.files, transcript[0].args[0]);
-            
-            // The first file is 400000 bytes, so it should have 2 progress events, for a total of 5 events.
-            checkEventSequenceForFile(transcript.slice(1, 6), file1);
-            
-            // The second file is 600000 bytes, so it should have 3 progress events, for a total of 6 events.
-            checkEventSequenceForFile(transcript.slice(6, 12), file2);
-            
-            // The second file is 800000 bytes, so it should have 4 progress events, for a total of 7 events.
-            checkEventSequenceForFile(transcript.slice(12, 19), file3);
-            
-            jqUnit.assertEquals("The last event of a batch should be afterUploadComplete.",
-                                "afterUploadComplete", transcript[transcript.length - 1].name);
-            jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
-                                transcript.files, transcript[transcript.length - 1].args[0]);
+            var transcript = uploadAllFilesAndTest(function (transcript) {
+                jqUnit.assertEquals("We should have received twenty upload events.", 20, transcript.length);
+                jqUnit.assertEquals("The first event of a batch should be onUploadStart.",
+                                    "onUploadStart", transcript[0].name);
+                jqUnit.assertDeepEq("The argument to onUploadStart should be an array containing the current batch.",
+                                    transcript.files, transcript[0].args[0]);
+
+                // The first file is 400000 bytes, so it should have 2 progress events, for a total of 5 events.
+                checkEventSequenceForFile(transcript.slice(1, 6), file1);
+
+                // The second file is 600000 bytes, so it should have 3 progress events, for a total of 6 events.
+                checkEventSequenceForFile(transcript.slice(6, 12), file2);
+
+                // The second file is 800000 bytes, so it should have 4 progress events, for a total of 7 events.
+                checkEventSequenceForFile(transcript.slice(12, 19), file3);
+
+                jqUnit.assertEquals("The last event of a batch should be afterUploadComplete.",
+                                    "afterUploadComplete", transcript[transcript.length - 1].name);
+                jqUnit.assertDeepEq("The argument to afterUploadComplete should be an array containing the current batch.",
+                                    transcript.files, transcript[transcript.length - 1].args[0]);
+                start();
+            });
         });
         
-        demoUploadTests.test("Simulated upload flow: onFileProgress data.", function () {
-            var transcript = uploadFirstFile();
-            
-            // Check that we're getting valid progress data for the onFileProgress events.
-            jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
-                                200000, transcript[2].args[1]);
-            jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes in total.",
-                                400000, transcript[2].args[2]);                    
-            jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes complete.",
-                                400000, transcript[3].args[1]);
-            jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes in total.",
-                                400000, transcript[3].args[2]);
+        demoUploadTests.asyncTest("Simulated upload flow: onFileProgress data.", function () {
+            var transcript = uploadFirstFileAndTest(function (transcript) {
+                // Check that we're getting valid progress data for the onFileProgress events.
+                jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
+                                    200000, transcript[2].args[1]);
+                jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes in total.",
+                                    400000, transcript[2].args[2]);                    
+                jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes complete.",
+                                    400000, transcript[3].args[1]);
+                jqUnit.assertEquals("The first onFileProgress event should have 400000 bytes in total.",
+                                    400000, transcript[3].args[2]);
+                start();
+            });
         });
     
-        demoUploadTests.test("Chunking test: smaller files don't get reported larger because of demo file chunking.", function () {
-            var transcript = uploadSmallFile();
-            
-            // Check that we're getting valid progress data for the onFileProgress events.
-            jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes complete.",
-                                165432, transcript[2].args[1]);
-            jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes in total.",
-                                165432, transcript[2].args[2]);
-            jqUnit.assertNotEquals("There is only one onFileProgress event in the transcript.",
-                                   "onFileProgress", transcript[3].name);              
+        demoUploadTests.asyncTest("Chunking test: smaller files don't get reported larger because of demo file chunking.", function () {
+            var transcript = uploadSmallFileAndTest(function (transcript) {
+                // Check that we're getting valid progress data for the onFileProgress events.
+                jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes complete.",
+                                    165432, transcript[2].args[1]);
+                jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes in total.",
+                                    165432, transcript[2].args[2]);
+                jqUnit.assertNotEquals("There is only one onFileProgress event in the transcript.",
+                                       "onFileProgress", transcript[3].name);
+                start();
+            });            
          });
 
-        demoUploadTests.test("Chunking test: files that are not a multiple of the chunk size don't get reported larger because of the chunking.", function () {
-            var transcript = uploadNotMultipleFile();
-            
-            // Check that we're getting valid progress data for the onFileProgress events.
-            jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
-                                200000, transcript[2].args[1]);
-            jqUnit.assertEquals("The second onFileProgress event should have 200000 more bytes complete.",
-                                400000, transcript[3].args[1]);                    
-            jqUnit.assertEquals("The third onFileProgress event should have 200000 more bytes complete.",
-                                600000, transcript[4].args[1]);                    
-            jqUnit.assertEquals("The fourth onFileProgress event should have 200000 more bytes complete.",
-                                800000, transcript[5].args[1]);                    
-            jqUnit.assertEquals("The last onFileProgress event should have 12345 more bytes complete.",
-                                812345, transcript[6].args[1]);                    
+        demoUploadTests.asyncTest("Chunking test: files that are not a multiple of the chunk size don't get reported larger because of the chunking.", function () {
+            var transcript = uploadNotMultipleFileAndTest(function (transcript) {
+                // Check that we're getting valid progress data for the onFileProgress events.
+                jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
+                                    200000, transcript[2].args[1]);
+                jqUnit.assertEquals("The second onFileProgress event should have 200000 more bytes complete.",
+                                    400000, transcript[3].args[1]);                    
+                jqUnit.assertEquals("The third onFileProgress event should have 200000 more bytes complete.",
+                                    600000, transcript[4].args[1]);                    
+                jqUnit.assertEquals("The fourth onFileProgress event should have 200000 more bytes complete.",
+                                    800000, transcript[5].args[1]);                    
+                jqUnit.assertEquals("The last onFileProgress event should have 12345 more bytes complete.",
+                                    812345, transcript[6].args[1]);
+                start();
+            });
         });
-
     });
 })(jQuery);

@@ -2,6 +2,7 @@
 Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
 Copyright 2008-2009 University of Cambridge
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -32,7 +33,7 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
     var fileForRow = function (that, row) {
-        var files = that.uploadManager.queue.files;
+        var files = that.queue.files;
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
             if (file.id.toString() === row.attr("id")) {
@@ -99,7 +100,7 @@ fluid_1_2 = fluid_1_2 || {};
         removeFileErrorRow(that, file);
         
         // Remove the file itself.
-        that.uploadManager.removeFile(file);
+        that.events.onFileRemoved.fire(file);
         animateRowRemoval(that, row);
     };
     
@@ -291,9 +292,7 @@ fluid_1_2 = fluid_1_2 || {};
         that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.uploadContainer).remove();
     };
     
-    var setupFileQueue = function (that, uploadManager) {
-        that.uploadManager = uploadManager;
-        that.scroller = fluid.scroller(that.container);
+    var setupFileQueue = function (that, queue) {
         prepareTemplateElements(that);         
         addKeyboardNavigation(that); 
         bindModelEvents(that);
@@ -303,13 +302,16 @@ fluid_1_2 = fluid_1_2 || {};
      * Creates a new File Queue view.
      * 
      * @param {jQuery|selector} container the file queue's container DOM element
-     * @param {UploadManager} uploadManager an upload manager model instance
+     * @param {fileQueue} queue a file queue model instance
      * @param {Object} options configuration options for the view
      */
-    fluid.fileQueueView = function (container, parentContainer, uploadManager, options) {
-        var that = fluid.initView("fluid.fileQueueView", container, options);
+    fluid.uploader.fileQueueView = function (container, parentContainer, queue, events, options) {
+        var that = fluid.initView("fluid.uploader.fileQueueView", container, options);
         that.uploadContainer = parentContainer;
         that.fileProgressors = {};
+        that.queue = queue;
+        that.events = events;
+        that.scroller = fluid.scroller(that.container);
         
         that.addFile = function (file) {
             addFile(that, file);
@@ -353,11 +355,22 @@ fluid_1_2 = fluid_1_2 || {};
             that.selectableContext.refresh();
         };
         
-        setupFileQueue(that, uploadManager);     
+        setupFileQueue(that, queue);     
         return that;
     };
     
-    fluid.defaults("fluid.fileQueueView", {
+    fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader", {
+        funcName: "fluid.uploader.fileQueueView",
+        args: [
+            "{uploader}.dom.fileQueue",
+            "{uploader}.container", // TODO: Get rid of this dependency
+            "{uploader}.queue",
+            "{uploader}.events", // TODO: boil down to only needed events
+            fluid.COMPONENT_OPTIONS
+        ]
+    });
+    
+    fluid.defaults("fluid.uploader.fileQueueView", {
         selectors: {
             fileRows: ".flc-uploader-file",
             fileName: ".flc-uploader-file-name",

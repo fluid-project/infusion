@@ -15,16 +15,18 @@
         <script type="text/javascript" src="../../../lib/swfobject/js/swfobject.js"></script>
         <script type="text/javascript" src="../../../lib/swfupload/js/swfupload.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidIoC.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/ProgressiveEnhancement.js"></script>
         
         <!-- Uploader dependencies -->
-        <script type="text/javascript" src="../js/FlashUploaderSupport.js"></script>
+        <script type="text/javascript" src="../js/Uploader.js"></script>
         <script type="text/javascript" src="../js/FileQueue.js"></script>
-        <script type="text/javascript" src="../js/DemoUploadManager.js"></script>
         <script type="text/javascript" src="../js/Scroller.js"></script>
         <script type="text/javascript" src="../../progress/js/Progress.js"></script>
         <script type="text/javascript" src="../js/FileQueueView.js"></script>
-        <script type="text/javascript" src="../js/Uploader.js"></script>
+        <script type="text/javascript" src="../js/FlashUploaderSupport.js"></script>
+        <script type="text/javascript" src="../js/DemoUploadManager.js"></script>
+        
     </head>
     
     <body>
@@ -121,7 +123,17 @@
         <script type="text/javascript">
             var myUploader = fluid.progressiveEnhanceableUploader(".flc-uploader", ".fl-progEnhance-basic", {
                 demo: true,
-                uploadManager: "fluid.swfUploadManager"
+                
+                components: {
+                    uploadStrategy: {
+                        type: "fluid.uploader.swfUploadStrategy",
+                        options: {
+                            flashMovieSettings: {
+                                debug: true
+                            }
+                        }
+                    }
+                }
             });
         </script> 
     </body>

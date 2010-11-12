@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2009 University of Toronto
 Copyright 2008-2009 University of California, Berkeley
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -14,112 +15,77 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 fluid_1_2 = fluid_1_2 || {};
 
-    
-/*****************************
- * SWFUpload Setup Decorator *
- *****************************/
- 
 (function ($, fluid) {
 
-    var unbindSelectFiles = function () {
-        // There's a bug in SWFUpload 2.2.0b3 that causes the entire browser to crash 
-        // if selectFile() or selectFiles() is invoked. Remove them so no one will accidently crash their browser.
-        var emptyFunction = function () {};
-        SWFUpload.prototype.selectFile = emptyFunction;
-        SWFUpload.prototype.selectFiles = emptyFunction;
-    };
-
-    var prepareUpstreamOptions = function (that, uploader) {
-        that.returnedOptions = {
-            uploadManager: {
-                type: uploader.options.uploadManager.type || uploader.options.uploadManager
-            }
-        };
-    };
-
-    var createFlash9MovieContainer = function (that) {
-        var container = $("<div><span></span></div>");
-        container.addClass(that.options.styles.flash9Container);
-        $("body").append(container);
-        return container;
-    };
-
-    var setupForFlash9 = function (that) {
-        var flashContainer = createFlash9MovieContainer(that);
-        that.returnedOptions.uploadManager.options = {
-            flashURL: that.options.flash9URL || undefined,
-            flashButtonPeerId: fluid.allocateSimpleId(flashContainer.children().eq(0))
-        };
-    };
-
-    var createFlash10MovieContainer = function (that, uploaderContainer) {        
-        // Wrap the whole uploader first.
-        uploaderContainer.wrap("<div class='" + that.options.styles.uploaderWrapperFlash10 + "'></div>");
+    fluid.uploader = fluid.uploader || {};
     
-        // Then create a container and placeholder for the Flash movie as a sibling to the uploader.
-        var flashContainer = $("<div><span></span></div>");
-        flashContainer.addClass(that.options.styles.browseButtonOverlay);
-        uploaderContainer.after(flashContainer);
-        unbindSelectFiles();        
-        return flashContainer;
-    };
-
-    var setupForFlash10 = function (that, uploader) {
-        var o = that.options,
-            flashContainer = createFlash10MovieContainer(that, uploader.container),
-            browseButton = uploader.locate("browseButton");
     
-        fluid.tabindex(browseButton, -1);
-        that.isTransparent = o.flashButtonAlwaysVisible ? false : (!$.browser.msie || o.transparentEvenInIE);
-        that.returnedOptions.uploadManager.options = {
-            flashURL: o.flash10URL || undefined,
-            flashButtonImageURL: that.isTransparent ? undefined : o.flashButtonImageURL, 
-            flashButtonPeerId: fluid.allocateSimpleId(flashContainer.children().eq(0)),
-            flashButtonHeight: o.flashButtonHeight || browseButton.outerHeight(),
-            flashButtonWidth: o.flashButtonWidth || browseButton.outerWidth(),
-            flashButtonWindowMode: that.isTransparent ? SWFUpload.WINDOW_MODE.TRANSPARENT : SWFUpload.WINDOW_MODE.OPAQUE,
-            flashButtonCursorEffect: SWFUpload.CURSOR.HAND,
-            listeners: {
-                onUploadStart: function () {
-                    uploader.uploadManager.swfUploader.setButtonDisabled(true);
-                },
-                afterUploadComplete: function () {
-                    uploader.uploadManager.swfUploader.setButtonDisabled(false);
-                }
-            }   
+    /******************************
+     * uploader.swfUploadStrategy *
+     ******************************/
+     
+    var setupSWFUploadStrategy = function (that) {
+        that.version = swfobject.getFlashPlayerVersion().major;
+        fluid.initDependents(that);
+        that.flashContainer = that.setupDOM();
+        that.config = that.setupConfig();
+        that.swfUploader = new SWFUpload(that.config);
+        that.bindEvents();
+    };
+    
+    fluid.uploader.swfUploadStrategy = function (options) {
+        var that = fluid.initLittleComponent("fluid.uploader.swfUploadStrategy", options);
+        
+        that.browse = function () {
+            if (that.options.file_queue_limit === 1) {
+                that.swfUploader.selectFile();
+            } else {
+                that.swfUploader.selectFiles();
+            }    
         };
-    };
-
-    /**
-     * SWFUploadSetupDecorator is a decorator designed to setup the DOM correctly for SWFUpload and configure
-     * the Uploader component according to the version of Flash and browser currently running.
-     * 
-     * @param {Uploader} uploader the Uploader component to decorate
-     * @param {options} options configuration options for the decorator
-     */
-    fluid.swfUploadSetupDecorator = function (uploader, options) {
-        var that = {};
-        fluid.mergeComponentOptions(that, "fluid.swfUploadSetupDecorator", options);
-           
-        that.flashVersion = swfobject.getFlashPlayerVersion().major;
-        prepareUpstreamOptions(that, uploader);  
-        if (that.flashVersion === 9) {
-            setupForFlash9(that, uploader);
-        } else {
-            setupForFlash10(that, uploader);
-        }
-    
+        
+        that.start = function () {
+            that.swfUploader.startUpload();
+        };
+        
+        that.removeFile = function (file) {
+            that.swfUploader.cancelUpload(file.id);
+        };
+        
+        that.stop = function () {
+            that.swfUploader.stopUpload();
+        };
+        
+        that.enableBrowseButton = function () {
+            that.swfUploader.setButtonDisabled(false);
+        };
+        
+        that.disableBrowseButton = function () {
+            that.swfUploader.setButtonDisabled(true);
+        };
+        
+        setupSWFUploadStrategy(that);
         return that;
     };
+    
+    fluid.defaults("fluid.uploader.swfUploadStrategy", {
+        invokers: {
+            setupDOM: "fluid.uploader.swfUploadStrategy.setupDOM",
+            setupConfig: "fluid.uploader.swfUploadStrategy.setupConfig",
+            bindEvents: "fluid.uploader.swfUploadStrategy.eventBinder"
+        },
+     
+        // Rename this to "flashSettings" and remove the "flash" prefix from each option
+        flashMovieSettings: {
+            flashURL: "../../../lib/swfupload/flash/swfupload.swf",
+            flashButtonPeerId: "",
+            flashButtonAlwaysVisible: false,
+            flashButtonTransparentEvenInIE: true,
+            flashButtonImageURL: "../images/browse.png", // Used only when the Flash movie is visible.
+            flashButtonCursorEffect: SWFUpload.CURSOR.HAND,
+            debug: false
+        },
 
-    fluid.defaults("fluid.swfUploadSetupDecorator", {
-        // The flash9URL and flash10URLs are now deprecated in favour of the flashURL option in upload manager.
-        flashButtonAlwaysVisible: false,
-        transparentEvenInIE: true,
-    
-        // Used only when the Flash movie is visible.
-        flashButtonImageURL: "../images/browse.png",
-    
         styles: {
             browseButtonOverlay: "fl-uploader-browse-overlay",
             flash9Container: "fl-uploader-flash9-container",
@@ -127,16 +93,84 @@ fluid_1_2 = fluid_1_2 || {};
         }
     });
     
-})(jQuery, fluid_1_2);
-
-
-
-/***********************
- * SWF Upload Manager *
- ***********************/
-     
-(function ($, fluid) {
+    fluid.demands("fluid.uploader.swfUploadStrategy", "fluid.uploader", {
+        funcName: "fluid.uploader.swfUploadStrategy"
+    });
     
+    fluid.demands("fluid.uploader.swfUploadStrategy.setupDOM", ["fluid.uploader", "fluid.uploader.swfUploaderStrategy"], {
+        funcName: "fluid.uploader.swfUploadStrategy.setupDOM",
+        args: [
+            "{uploader}.container",
+            "{uploader}.dom.browseButton",
+            "{swfUploadStrategy}.version",
+            "{swfUploadStrategy}.options.styles"
+        ]
+    });
+    
+    fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", ["fluid.uploader", "fluid.uploader.swfUploaderStrategy"], {
+        funcName: "fluid.uploader.swfUploadStrategy.setupConfig",
+        args: [
+            "{uploader}.events",
+            "{uploader}.dom.browseButton",
+            "{swfUploadStrategy}.flashContainer",
+            "{swfUploadStrategy}.version",
+            "{uploader}.options.queueSettings",
+            "{swfUploadStrategy}.options.flashMovieSettings"
+        ]
+    });
+    
+    fluid.demands("fluid.uploader.swfUploadStrategy.eventBinder", ["fluid.uploader", "fluid.uploader.swfUploaderStrategy"], {
+        funcName: "fluid.uploader.swfUploadStrategy.eventBinder",
+        args: [
+            "{uploader}.queue.files",
+            "{uploader}.events",
+            "{swfUploadStrategy}.version",
+            "{swfUploadStrategy}" // TODO: Could narrow this to just the start function.
+        ]
+    });
+
+    
+    /******************************
+     * swfUploadStrategy.setupDOM *
+     ******************************/
+
+    var createFlash9MovieContainer = function (styles) {
+        var container = $("<div><span></span></div>");
+        container.addClass(styles.flash9Container);
+        $("body").append(container);
+        return container;
+    };
+
+    var createFlash10MovieContainer = function (uploaderContainer, styles) {        
+        // Wrap the whole uploader first.
+        uploaderContainer.wrap("<div class='" + styles.uploaderWrapperFlash10 + "'></div>");
+
+        // Then create a container and placeholder for the Flash movie as a sibling to the uploader.
+        var flashContainer = $("<div><span></span></div>");
+        flashContainer.addClass(styles.browseButtonOverlay);
+        uploaderContainer.after(flashContainer);
+        return flashContainer;
+    };
+
+    var setupDOMForFlash10 = function (container, browseButton, styles) {
+        var flashContainer = createFlash10MovieContainer(container, styles);
+        browseButton.attr("tabindex", -1);        
+        return flashContainer;
+    };
+
+    fluid.uploader.swfUploadStrategy.setupDOM = function (container, browseButton, flashVersion, styles) {
+        if (flashVersion === 9) {
+            return createFlash9MovieContainer(styles);
+        } else {
+            return setupDOMForFlash10(container, browseButton, styles);
+        }         
+    };
+    
+     
+    /*********************************
+     * swfUploadStrategy.setupConfig *
+     *********************************/
+      
     // Maps SWFUpload's setting names to our component's setting names.
     var swfUploadOptionsMap = {
         uploadURL: "upload_url",
@@ -155,7 +189,7 @@ fluid_1_2 = fluid_1_2 || {};
         flashButtonCursorEffect: "button_cursor",
         debug: "debug"
     };
-    
+
     // Maps SWFUpload's callback names to our component's callback names.
     var swfUploadEventMap = {
         afterReady: "swfupload_loaded_handler",
@@ -165,6 +199,7 @@ fluid_1_2 = fluid_1_2 || {};
         afterFileDialog: "file_dialog_complete_handler",
         onFileStart: "upload_start_handler",
         onFileProgress: "upload_progress_handler",
+        onFileComplete: "upload_complete_handler",
         onFileError: "upload_error_handler",
         onFileSuccess: "upload_success_handler"
     };
@@ -182,188 +217,96 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
     // For each event type, hand the fire function to SWFUpload so it can fire the event at the right time for us.
-    var mapEvents = function (that, nameMap, target) {
+    // TODO: Refactor out duplication with mapNames()--should be able to use Engage's mapping tool
+    var mapSWFUploadEvents = function (nameMap, events, target) {
         var result = target || {};
-        for (var eventType in that.events) {
-            var fireFn = that.events[eventType].fire;
+        for (var eventType in events) {
+            var fireFn = events[eventType].fire;
             var mappedName = nameMap[eventType];
             if (mappedName) {
                 result[mappedName] = fireFn;
             }   
         }
-        
-        result.upload_complete_handler = function (file) {
-            that.queueManager.finishFile(file);
-            if (that.queueManager.shouldUploadNextFile()) {
-                that.swfUploader.startUpload();
-            } else {
-                if (that.queueManager.queue.shouldStop) {
-                    that.swfUploader.stopUpload();
-                }
-                that.queueManager.complete();
-            }
-        };
-
         return result;
     };
     
-    // Invokes the OS browse files dialog, allowing either single or multiple select based on the options.
-    var browse = function (that) {
-        if (that.queue.isUploading) {
-            return;
+    var setupButtonOptions = function (config, browseButton, flashContainer, flashVersion) {
+        config.flashButtonPeerId = fluid.allocateSimpleId(flashContainer.children().eq(0));
+         
+        // Setup for Flash 10+
+        if (flashVersion > 9) {
+            var isTransparent = config.flashButtonAlwaysVisible ? false : (!$.browser.msie || config.flashButtonTransparentEvenInIE);
+            config.flashButtonImageURL = isTransparent ? undefined : config.flashButtonImageURL;
+            config.flashButtonHeight = config.flashButtonHeight || browseButton.outerHeight();
+            config.flashButtonWidth = config.flashButtonWidth || browseButton.outerWidth();
+            config.flashButtonWindowMode = isTransparent ? SWFUpload.WINDOW_MODE.TRANSPARENT : SWFUpload.WINDOW_MODE.OPAQUE;        
         }
-                   
-        if (that.options.fileQueueLimit === 1) {
-            that.swfUploader.selectFile();
-        } else {
-            that.swfUploader.selectFiles();
-        }  
     };
     
-    /* FLUID-822: while stopping the upload cycle while a file is in mid-upload should be possible
-     * in practice, it sets up a state where when the upload cycle is restarted SWFUpload will get stuck
-     * therefor we only stop the upload after a file has completed but before the next file begins. 
-     */
-    
-    var stopUpload = function (that) {
-        that.queue.shouldStop = true;
-        that.events.onUploadStop.fire();
+    // TODO: Absurd argument list!
+    fluid.uploader.swfUploadStrategy.setupConfig = function (events, browseButton, flashContainer, flashVersion, queueSettings, flashMovieSettings) {
+        // Map the event and settings names to SWFUpload's expectations.
+        var mergedConfig = $.extend({}, queueSettings, flashMovieSettings);
+        setupButtonOptions(mergedConfig, browseButton, flashContainer, flashVersion);
+        var convertedConfig = mapNames(swfUploadOptionsMap, mergedConfig);
+        return mapSWFUploadEvents(swfUploadEventMap, events, convertedConfig);
     };
+
+     
+    /*********************************
+     * swfUploadStrategy.eventBinder *
+     *********************************/
+     
+    var unbindSWFUploadSelectFiles = function () {
+        // There's a bug in SWFUpload 2.2.0b3 that causes the entire browser to crash 
+        // if selectFile() or selectFiles() is invoked. Remove them so no one will accidently crash their browser.
+        var emptyFunction = function () {};
+        SWFUpload.prototype.selectFile = emptyFunction;
+        SWFUpload.prototype.selectFiles = emptyFunction;
+    };
+    
+    var bindFlash10ButtonListeners = function (events, engine) {
+        events.onUploadStart.addListener(function () {
+            engine.disableBrowseButton();
+        });
         
-    var bindEvents = function (that) {
-        var fileStatusUpdater = function (file) {
-            fluid.find(that.queue.files, function (potentialMatch) {
+        events.afterUploadComplete.addListener(function () {
+            engine.enableBrowseButton();            
+        });    
+    };
+    
+    var bindFileEventListeners = function (model, events) {
+        // Manually update our public model to keep it in sync with SWFUpload's insane,
+        // always-changing references to its internal model.        
+        var manualModelUpdater = function (file) {
+            fluid.find(model, function (potentialMatch) {
                 if (potentialMatch.id === file.id) {
                     potentialMatch.filestatus = file.filestatus;
                     return true;
                 }
             });
         };
-
-        // Add a listener that will keep our file queue model in sync with SWFUpload.
-        that.events.afterFileQueued.addListener(function (file) {
-            that.queue.addFile(file); 
-        });
-
-        that.events.onFileStart.addListener(function (file) {
-            that.queueManager.startFile();
-            fileStatusUpdater(file);
-        });
         
-        that.events.onFileProgress.addListener(function (file, currentBytes, totalBytes) {
-            var currentBatch = that.queue.currentBatch;
-            var byteIncrement = currentBytes - currentBatch.previousBytesUploadedForFile;
-            currentBatch.totalBytesUploaded += byteIncrement;
-            currentBatch.bytesUploadedForFile += byteIncrement;
-            currentBatch.previousBytesUploadedForFile = currentBytes;
-            fileStatusUpdater(file);
-        });
-        
-        that.events.onFileError.addListener(function (file, error) {
-            if (error === fluid.uploader.errorConstants.UPLOAD_STOPPED) {
-                that.queue.isUploading = false;
-            } else if (that.queue.isUploading) {
-                that.queue.currentBatch.totalBytesUploaded += file.size;
-                that.queue.currentBatch.numFilesErrored++;
-            }
-            fileStatusUpdater(file);
-        });
-        
-        that.events.onFileSuccess.addListener(function (file) {
-            if (that.queue.currentBatch.bytesUploadedForFile === 0) {
-                that.queue.currentBatch.totalBytesUploaded += file.size;
-            }
-            fileStatusUpdater(file);
-        });
-        
-        that.events.afterUploadComplete.addListener(function () {
-            that.queue.isUploading = false; 
+        events.onFileStart.addListener(manualModelUpdater);
+        events.onFileProgress.addListener(manualModelUpdater);
+        events.onFileError.addListener(manualModelUpdater);
+        events.onFileSuccess.addListener(manualModelUpdater);
+    };
+    
+    var bindUploadQueueEventListeners = function (events, engine) {
+        events.onUploadStart.addListener(function () {
+            engine.start();
         });
     };
     
-    var removeFile = function (that, file) {
-        that.queue.removeFile(file);
-        that.swfUploader.cancelUpload(file.id);
-        that.events.afterFileRemoved.fire(file);
+    fluid.uploader.swfUploadStrategy.eventBinder = function (model, events, flashVersion, engine) {
+        if (flashVersion > 9) {
+            unbindSWFUploadSelectFiles();            
+            bindFlash10ButtonListeners(events, engine);
+        }
+        
+        bindFileEventListeners(model, events);
+        bindUploadQueueEventListeners(events, engine);
     };
-    
-    // Instantiates a new SWFUploader instance and attaches it the upload manager.
-    var setupSwfUploadManager = function (that, events) {
-        that.events = events;
-        that.queue = fluid.fileQueue();
-        that.queueManager = fluid.fileQueue.manager(that.queue, that.events);
-        
-        // Map the event and settings names to SWFUpload's expectations.
-        that.swfUploadSettings = mapNames(swfUploadOptionsMap, that.options);
-        mapEvents(that, swfUploadEventMap, that.swfUploadSettings);
-        
-        // Setup the instance.
-        that.swfUploader = new SWFUpload(that.swfUploadSettings);
-        
-        bindEvents(that);
-    };
-    
-    /**
-     * Server Upload Manager is responsible for coordinating with the Flash-based SWFUploader library,
-     * providing a simple way to start, pause, and cancel the uploading process. It requires a working
-     * server to respond to the upload POST requests.
-     * 
-     * @param {Object} eventBindings an object containing upload lifecycle callbacks
-     * @param {Object} options configuration options for the upload manager
-     */
-    fluid.swfUploadManager = function (events, options) {
-        var that = {};
-        
-        // This needs to be refactored!
-        fluid.mergeComponentOptions(that, "fluid.swfUploadManager", options);
-        fluid.mergeListeners(events, that.options.listeners);
-   
-        /**
-         * Opens the native OS browse file dialog.
-         */
-        that.browseForFiles = function () {
-            browse(that);
-        };
-        
-        /**
-         * Removes the specified file from the upload queue.
-         * 
-         * @param {File} file the file to remove
-         */
-        that.removeFile = function (file) {
-            removeFile(that, file);
-        };
-        
-        /**
-         * Starts uploading all queued files to the server.
-         */
-        that.start = function () {
-            that.queueManager.start();
-            that.swfUploader.startUpload();
-        };
-        
-        /**
-         * Cancels an in-progress upload.
-         */
-        that.stop = function () {
-            stopUpload(that);
-        };
-        
-        setupSwfUploadManager(that, events);
-        return that;
-    };
-    
-    fluid.defaults("fluid.swfUploadManager", {
-        uploadURL: "",
-        flashURL: "../../../lib/swfupload/flash/swfupload.swf",
-        flashButtonPeerId: "",
-        postParams: {},
-        fileSizeLimit: "20480",
-        fileTypes: "*",
-        fileTypesDescription: null,
-        fileUploadLimit: 0,
-        fileQueueLimit: 0,
-        debug: false
-    });
     
 })(jQuery, fluid_1_2);

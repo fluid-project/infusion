@@ -1,5 +1,6 @@
 /*
 Copyright 2008-2009 University of Toronto
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -14,121 +15,108 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {      
-
-        var actualBrowser = $.browser;
-        
-        // Mock swfobject implementation.
-        var flashPlayerVersion = {
-            major: 10
+          
+        var makeUploaderEventFirers = function () {
+            var mockUploader = {};
+            fluid.instantiateFirers(mockUploader, fluid.defaults("fluid.uploader"));
+            return mockUploader.events;
         };
         
-        window.swfobject = {
-            getFlashPlayerVersion: function () {
-                return flashPlayerVersion;
-            }
-        };
-        
-        // Mock Uploader instance.
-        var buttonSelector = "#browseButton";
-        var mockUploader = {
-            container: $("#uploaderContainer"), 
-            locate: function (name) {
-                return $(buttonSelector);
-            },
-            
-            options: {
-                uploadManager: "fluid.demoUploadManager"
-            }
-        };
-        
-        var setup = function () {
-            buttonSelector = "#browseButton";
-            $.browser = actualBrowser;
-            flashPlayerVersion.major = 10;
-        };
+        var container = $("#uploaderContainer");
+        var button = $("#browseButton");
+        var flashContainer = $("#flashContainer");
+        var styles = fluid.defaults("fluid.uploader.swfUploadStrategy").styles;
+        var defaultQueueSettings = fluid.defaults("fluid.uploader").queueSettings;
+        var defaultFlashSettings = fluid.defaults("fluid.uploader.swfUploadStrategy").flashMovieSettings;
+        var events = makeUploaderEventFirers();
         
         
-        var swfUploadManagerTests = new jqUnit.TestCase("SWFUploadManager and SWFUploadSetupDecorator Tests", setup);
+        var swfUploadSetupTests = new jqUnit.TestCase("SWFUpload for Flash 9 & 10 Setup Tests");
         
-        swfUploadManagerTests.test("swfUploadSetupDecorator Flash 10: compatibility should be turned off.", function () {
-            var decorator = fluid.swfUploadSetupDecorator(mockUploader);
+        swfUploadSetupTests.test("SWFUpload Flash 10 callFlash() should be unavailable.", function () {
+            fluid.uploader.swfUploadStrategy.setupDOM(container, button, 10, styles);
             jqUnit.assertNotEquals("The Flash 9-compatible version of callFlash() should not be in place.",
                                    SWFUpload.callFlash_Flash9Compatibility, SWFUpload.prototype.callFlash);
         });
         
-        swfUploadManagerTests.test("swfUploadSetupDecorator initialization", function () {
-            var decorator = fluid.swfUploadSetupDecorator(mockUploader);
-            jqUnit.assertNotUndefined("The setup decorator should have been successfully instantiated.", decorator);
-            jqUnit.assertNotUndefined("The decorator should define a set of returnedOptions.", decorator.returnedOptions);
-            jqUnit.assertEquals("To work around a framework bug, we should pass along the configured upload manager type.",
-                                mockUploader.options.uploadManager, decorator.returnedOptions.uploadManager.type);                            
-        });
-        
-        swfUploadManagerTests.test("swfUploadSetupDecorator Flash 10 accessibility", function () {
-            var decorator = fluid.swfUploadSetupDecorator(mockUploader);
+        swfUploadSetupTests.test("SWFUpload Flash 10 accessibility", function () {
+            fluid.uploader.swfUploadStrategy.setupDOM(container, button, 10, styles);
             jqUnit.assertEquals("The HTML browse button should have been given a tabindex of -1",
-                                "-1", mockUploader.locate("browseButton").attr("tabindex"));
+                                "-1", button.attr("tabindex"));
         });
         
-        swfUploadManagerTests.test("swfUploadSetupDecorator Flash 9 configuration", function () {
-            flashPlayerVersion.major = 9;
-            var decorator = fluid.swfUploadSetupDecorator(mockUploader);
+        swfUploadSetupTests.test("SWFUpload Flash 9 configuration", function () {
+            var config = fluid.uploader.swfUploadStrategy.setupConfig(events, 
+                                                              button, 
+                                                              flashContainer,
+                                                              9,
+                                                              defaultQueueSettings,
+                                                              defaultFlashSettings);
+                                                                 
             jqUnit.assertNotEquals("With Flash 9, the flashButtonPeerId should not be empty.", 
-                                   "", decorator.returnedOptions.uploadManager.options.flashButtonPeerId);
-            jqUnit.assertEquals("We should have specified the Flash 9 movie URL.", 
-                                fluid.defaults("fluid.swfUploadSetupDecorator").flash9URL,
-                                decorator.returnedOptions.uploadManager.options.flashURL);   
+                                   "", config.button_placeholder_id);
+            jqUnit.assertEquals("We should have specified the correct Flash URL.", 
+                                defaultFlashSettings.flashURL,
+                                config.flash_url);   
         });
         
-        swfUploadManagerTests.test("swfUploadSetupDecorator Flash 10 configuration", function () {
-            var decorator = fluid.swfUploadSetupDecorator(mockUploader);
-            jqUnit.assertEquals("We should have specified the Flash 10 movie URL.", 
-                                fluid.defaults("fluid.swfUploadSetupDecorator").flash10URL,
-                                decorator.returnedOptions.uploadManager.options.flashURL);
-        });
-        
-        var checkTransparentSettings = function (decorator) {     
-            jqUnit.assertTrue("The decorator should be configured for transparency in IE.", decorator.isTransparent);
+        var checkTransparentSettings = function (config) {     
             jqUnit.assertUndefined("The button's image URL should not be set.", 
-                                   decorator.returnedOptions.uploadManager.options.flashButtonImageURL);
+                                   config.button_image_url);
             jqUnit.assertEquals("The Flash movie's window mode should  be transparent.",
                                 SWFUpload.WINDOW_MODE.TRANSPARENT,
-                                decorator.returnedOptions.uploadManager.options.flashButtonWindowMode);
+                                config.button_window_mode);
             jqUnit.assertNotEquals("The flashButtonPeerId should not be set to the button's id.",
-                                   mockUploader.locate("browseButton").attr("id"),
-                                   decorator.returnedOptions.uploadManager.options.flashButtonPeerId);
+                                   button.attr("id"),
+                                   config.button_placeholder_id);
         };
         
-        var checkVisibleSettings = function (decorator) {
-            jqUnit.assertFalse("The decorator should be configured for transparency in IE.", decorator.isTransparent);
+        var checkVisibleSettings = function (config) {
             jqUnit.assertEquals("The button's image URL should be set.", 
-                                fluid.defaults("fluid.swfUploadSetupDecorator").flashButtonImageURL,
-                                decorator.returnedOptions.uploadManager.options.flashButtonImageURL);
+                                defaultFlashSettings.flashButtonImageURL,
+                                config.button_image_url);
             jqUnit.assertEquals("The Flash movie's window mode should not be transparent.",
                                 SWFUpload.WINDOW_MODE.OPAQUE,
-                                decorator.returnedOptions.uploadManager.options.flashButtonWindowMode);
+                                config.button_window_mode);
         };
         
-        swfUploadManagerTests.test("swfUploadSetupDecorator Flash 10 visibility", function () {
-            var decorator = fluid.swfUploadSetupDecorator(mockUploader, {
+        swfUploadSetupTests.test("Flash 10 visibility", function () {
+            var flashOptions = fluid.merge(null, {}, defaultFlashSettings, {
                 flashButtonAlwaysVisible: true,
                 transparentEvenInIE: false
             });
-            checkVisibleSettings(decorator);
+                        
+            var config = fluid.uploader.swfUploadStrategy.setupConfig(events, 
+                                                              button, 
+                                                              flashContainer,
+                                                              10,
+                                                              defaultQueueSettings,
+                                                              flashOptions);                                                              
+            checkVisibleSettings(config);
         });
         
-        swfUploadManagerTests.test("swfUploadSetupDecorator Flash 10 transparency", function () {
+        swfUploadSetupTests.test("swfUploadSetupDecorator Flash 10 transparency", function () {
             // Mock jQuery's browser property to fake IE.
             $.browser.msie = true;
                         
             // Now try with the transparentEvenInIE option turned on.
-            decorator = fluid.swfUploadSetupDecorator(mockUploader);
-            checkTransparentSettings(decorator);
+            var config = fluid.uploader.swfUploadStrategy.setupConfig(events, 
+                                                              button, 
+                                                              flashContainer,
+                                                              10,
+                                                              defaultQueueSettings,
+                                                              defaultFlashSettings);
+            checkTransparentSettings(config);
             
             // Mock non-IE browsers.
             $.browser.msie = false;
-            decorator = fluid.swfUploadSetupDecorator(mockUploader);
-            checkTransparentSettings(decorator);
+            var config = fluid.uploader.swfUploadStrategy.setupConfig(events, 
+                                                              button, 
+                                                              flashContainer,
+                                                              10,
+                                                              defaultQueueSettings,
+                                                              defaultFlashSettings);            
+            checkTransparentSettings(config);
         });
     });
 })(jQuery);

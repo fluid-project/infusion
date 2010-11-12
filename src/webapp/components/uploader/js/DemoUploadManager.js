@@ -1,6 +1,7 @@
 /*
 Copyright 2009 University of Toronto
 Copyright 2009 University of California, Berkeley
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -10,16 +11,14 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery*/
-/*global fluid_1_2*/
+/*global jQuery, fluid_1_2*/
 
 fluid_1_2 = fluid_1_2 || {};
 
-/***********************
- * Demo Upload Manager *
- ***********************/
-
 (function ($, fluid) {
+    
+    fluid.uploader = fluid.uploader || {};
+    fluid.uploader.swfUploadStrategy = fluid.uploader.swfUploadStrategy || {};
     
     var startUploading; // Define early due to subtle circular dependency.
     
@@ -34,11 +33,14 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
     var finishAndContinueOrCleanup = function (that, file) {
-        that.queueManager.finishFile(file);
-        if (that.queueManager.shouldUploadNextFile()) {
+        that.queue.finishFile(file);
+        that.events.afterFileComplete.fire(file);
+        
+        if (that.queue.shouldUploadNextFile()) {
             startUploading(that);
         } else {
-            that.queueManager.complete();
+            that.events.afterUploadComplete.fire(that.queue.currentBatch.files);
+            that.queue.clearCurrentBatch();
         }
     };
     
@@ -61,7 +63,7 @@ fluid_1_2 = fluid_1_2 || {};
         
         var file = that.demoState.currentFile;
         if (that.demoState.bytesUploaded < file.size) {
-            that.invokeAfterRandomDelay(function () {
+            fluid.invokeAfterRandomDelay(function () {
                 updateProgress(file, that.events, that.demoState, that.queue.isUploading);
                 simulateUpload(that);
             });
@@ -95,9 +97,9 @@ fluid_1_2 = fluid_1_2 || {};
         that.events.onUploadStop.fire();
     };
     
-    var setupDemoUploadManager = function (that) {
-        if (that.options.simulateDelay === undefined || that.options.simulateDelay === null) {
-            that.options.simulateDelay = true;
+    var setupDemo = function (that) {
+        if (that.simulateDelay === undefined || that.simulateDelay === null) {
+            that.simulateDelay = true;
         }
           
         // Initialize state for our upload simulation.
@@ -110,15 +112,20 @@ fluid_1_2 = fluid_1_2 || {};
     };
        
     /**
-     * The Demo Upload Manager wraps a standard upload manager and simulates the upload process.
+     * The Demo Engine wraps a SWFUpload engine and simulates the upload process.
      * 
-     * @param {UploadManager} uploadManager the upload manager to wrap
+     * @param {FileQueue} queue the Uploader's file queue instance
+     * @param {Object} the Uploader's bundle of event firers
+     * @param {Object} configuration options for SWFUpload (in its native dialect)
      */
-    fluid.demoUploadManager = function (uploadManager) {
-        var that = uploadManager;
+     // TODO: boil down events to only those we actually need.
+     // TODO: remove swfupload references and move into general namespace. Are there any real SWFUpload references here?
+    fluid.uploader.swfUploadStrategy.demo = function (queue, events, options) {
+        var that = fluid.uploader.swfUploadStrategy(options);
+        that.queue = queue;
+        that.events = events;
         
         that.start = function () {
-            that.queueManager.start();
             startUploading(that);   
         };
         
@@ -130,24 +137,29 @@ fluid_1_2 = fluid_1_2 || {};
             stopDemo(that);
         };
         
-        /**
-         * Invokes a function after a random delay by using setTimeout.
-         * If the simulateDelay option is false, the function is invoked immediately.
-         * 
-         * @param {Object} fn the function to invoke
-         */
-        that.invokeAfterRandomDelay = function (fn) {
-            var delay;
-            
-            if (that.options.simulateDelay) {
-                delay = Math.floor(Math.random() * 1000 + 100);
-                setTimeout(fn, delay);
-            } else {
-                fn();
-            }
-        };
-        
-        setupDemoUploadManager(that);
+        setupDemo(that);
         return that;
     };
+    
+    /**
+     * Invokes a function after a random delay by using setTimeout.
+     * If the simulateDelay option is false, the function is invoked immediately.
+     * This is an odd function, but a potential candidate for central inclusion.
+     * 
+     * @param {Function} fn the function to invoke
+     */
+    fluid.invokeAfterRandomDelay = function (fn) {
+        var delay = Math.floor(Math.random() * 1000 + 100);
+        setTimeout(fn, delay);
+    };
+    
+    fluid.demands("fluid.uploader.swfUploadStrategy", ["fluid.uploader", "fluid.uploader.demo"], {
+        funcName: "fluid.uploader.swfUploadStrategy.demo",
+        args: [
+            "{uploader}.queue",
+            "{uploader}.events",
+            fluid.COMPONENT_OPTIONS
+        ]
+    });
+    
 })(jQuery, fluid_1_2);

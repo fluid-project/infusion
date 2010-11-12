@@ -18,9 +18,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var removedFile = null;
         
-        var mockUploadManager = {
-            removeFile: function(file){
-                removedFile = file;
+        var mockEvents = {
+            onFileRemoved: {
+                fire: function (file) {
+                    removedFile = file;
+                }
             }
         };
         
@@ -65,8 +67,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         };
       
         var createFileQueue = function (qEl) {
-            var q = fluid.fileQueueView(qEl, $("#main"), mockUploadManager);
-            
+            var q = fluid.uploader.fileQueueView(qEl, $("#main"), fluid.uploader.fileQueue(), mockEvents);
             return q;
         };
         
