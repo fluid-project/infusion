@@ -1,68 +1,129 @@
+/* pager demo styles */
 
+.demo-pager-container {
+    width:95%;
+    margin: 0 auto;
+}
+
+table {
+    width: 100%;
+}
+
+thead {
+    color: #343499;
+    background-color: #FCD6CA;
+}
+
+td {
+    padding: .5em .2em;
+}
+
+input {
+    width: 3em;
+}
 
 .hidden {
     display: none;
 }
 
-.demo-pager-links {
-    width: 65%;
+a:visited {
+    color: blue;
 }
 
-.demo-pager-controls {
-    width:35%;
-    margin-top: 1em;
+/***********************************************
+ * The horizontal pager bar containing Previous, Next, and Page links. 
+ */
+.demo-pager-bar  {
+    width: 50%;
+    margin-left: 0em;
 }
 
-.demo-pager-links ul li{
-    display:block;
-    width:2em;
+.demo-pager-bar  li  {
+	display:inline;
     float:left;
-    margin:2px;
-    text-align:center;
 }
 
-.demo-pager-links ul .fl-pager-currentPage {
-    display:block;
-    width:2em;
-    float:left;
-    background:#000;
+/*.demo-pager-pageLink-default*/
+
+.demo-pager-bar  a:focus {
+    outline:none; /* remove the focus outline that appears around links since there is already a border being applied on hover. */
 }
+
+/***********************************************
+ * Previous and Next default and hover styles 
+ */
 
 .demo-pager-previous, .demo-pager-next {
-    margin-right: 1em;
+    margin: 1px;
+    padding: 2px 6px 2px 6px; /* padding values to align Next and Previous links to Page numbered links */
 }
 
-.fl-pager-currentPage {
-    background-color: #000000;
+.demo-pager-previous:hover, .demo-pager-next:hover {
+    margin: 1px;
+    border: 2px #000 solid;
+    padding: 0px 4px 0px 4px; /* adjust padding to compensate for 2px hover border. */
+    
 }
 
-a.fl-pager-currentPage {
-    color: #FFFFFF;
-    border: 0;
+
+/***********************************************
+ * Styles for the list of numerated page links. 
+ */
+.demo-pager-links  {
+    margin:0em; /* TODO: this is to override FSS-reset's ol and ul styling. We should handle this better. */
+}
+
+.demo-pager-pageLink-default a {
+     /* Using display:block and float:left, it creates helps create a horizontal list with fixed width elements.*/
+    display:block;
+    float:left;
+
+    width:3em;
+    text-align:center;
+    margin:2px;
+    border: 1px solid #afafaf;
+}
+
+.demo-pager-pageLink-default a:hover  {
+    /* applied to <li></li> elements. */
+    border: 2px #000 solid;
+    
+    width:3em;
+    padding:0px; 
+    margin:1px; /* adjust margin and padding to compensate for 2px hover border. */
+}
+
+.demo-pager-pageLink-default a {
     text-decoration: none;
 }
 
-.fl-pager-disabled {
-    width: 3em;
+.demo-pager-links .fl-pager-currentPage {
+    display:block;
+    width:3em;
+    float:left;
+    background: #000;
+    color: #fff;
+    padding:0px;
 }
 
-.fl-pager-disabled a {
-    color: #777777;
-    border: 0;
-    text-decoration: none;
+.demo-pager-head a {
+	display:block;
+	width:100%;
 }
 
-.demo-pager-data-table {
-    margin-left:1em;
-    margin-top:1em;
-    width: 95%;
-}
+.demo-pager-head-select { width:5%; }
+.demo-pager-head-members { width:25%; }
+.demo-pager-head-email { width:25%; }
+.demo-pager-head-role { width:15%; }
+.demo-pager-head-comments { }
 
-.demo-pager-data-table  thead{
-    background-color: #FCD6CA;
+/***********************************************
+ * Styles for pager size selector.
+ */
+.demo-pager-page-size {
+    margin-top: 10px;/* horizontal align page size selector to the pager bar. */
 }
-
-.demo-pager-data-table td{
-    padding: .5em .2em;
-}
-
+ 
+ .demo-pager-page-size  label {
+    margin-right: 2px;
+ }

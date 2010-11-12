@@ -1,103 +1,114 @@
-<!DOCTYPE html      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:rsf="http://ponder.org.uk/rsf" lang="en" >
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="generator" content="HTML Tidy, see www.w3.org" />
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset.css" />
-        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
-        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-text.css" />
-        <link href="../css/pager.css" type="text/css" rel="stylesheet" />
-
+        <title>Pager Demo</title>      
+        
+		<link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />        
+        <link rel="stylesheet" type="text/css" href="../../../components/pager/css/Pager.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="../../../lib/jquery/plugins/tooltip/css/jquery.tooltip.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="../css/pager.css" />
+        
+        
         <script type="text/javascript" src="../../../lib/jquery/core/js/jquery.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/plugins/bgiframe/js/jquery.bgiframe.js"></script>
+        <script type="text/javascript" src="../../../lib/jquery/plugins/tooltip/js/jquery.tooltip.js"></script>
+        <script type="text/javascript" src="../../../lib/json/js/json2.js"></script>
+
         <script type="text/javascript" src="../../../framework/core/js/Fluid.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/FluidDOMUtilities.js"></script>
+        <script type="text/javascript" src="../../../framework/core/js/jquery.keyboard-a11y.js"></script>
         <script type="text/javascript" src="../../../framework/core/js/DataBinding.js"></script>
         <script type="text/javascript" src="../../../lib/fastXmlPull/js/fastXmlPull.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/fluidParser.js"></script>
         <script type="text/javascript" src="../../../framework/renderer/js/fluidRenderer.js"></script>
+
+
         <script type="text/javascript" src="../../../components/pager/js/Pager.js"></script>
-
-        <script type="text/javascript" src="../data/pager.js"></script>
-        <script type="text/javascript" src="../js/pager.js"></script>
-
-        <title>Purdham Collegiate Student Records</title>
+        
     </head>
-    <body>
-        <div id="demo-gradebook">
-            <h1>Purdham Collegiate Student Records</h1>
-            Showing <span class="flc-pager-summary">1-10 of 500 items</span>
-            <form action="#">
-                <div class="demo-pager-top flc-pager-top">
-                    <div class="fl-force-left demo-pager-links">
-                        <ul class="flc-pager-links">
-                            <li class="flc-pager-pageLink"><a href="#">1</a></li>
-                            <li class="demo-pager-pageLink-disabled flc-pager-pageLink-disabled">2</li>
-                            <li class="flc-pager-pageLink"><a href="#">3</a></li>
-                        </ul>
-                    </div>
-                        
-                    <div class="demo-pager-controls fl-force-right">
-                        <span class="demo-pager-previous flc-pager-previous"><a href="#">&lt; Previous</a></span>
-                        <span class="demo-pager-next flc-pager-next"><a href="#">Next &gt;</a></span>
-                        <span><label for="demo-pager-page-size">Records per page:</label> 
-                            <select id="demo-pager-page-size" class="flc-pager-page-size">
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="50">50</option>
-                            </select>
-                        </span>
-                    </div>
-                 </div>
-             
-                <table class="demo-pager-data-table fl-container-flex" summary="student grades" id="students-page1">
-                    <colgroup>
-                       <col width="200">
-                       <col width="80">
-                       <col width="35">
-                    <colgroup>
 
-                    <thead>
-                        <tr>
-                            <td class="name-header">Name</td>
-                            <td class="userid-header">Student <abbr title="Identification">ID</abbr></td>
-                            <td class="points-header">Grade</td>
-                            <td class="comments-header">Comments</td>
-                        </tr>
-                    </thead>
-                    <tbody id="body-template">
-                        <tr rsf:id="row:">
-                            <td rsf:id="name">Ahn, Jason</td>
-                            <td rsf:id="userid">15234314</td>
-                            <td rsf:id="points">25</td>
-                            <td rsf:id="comment">Lorem ipsum dolor sit amet.</td>
-                        </tr>
-                        <tr rsf:id="scr=ignore">
-                            <td>Akerman, Krista</td>
-                            <td>19206726</td>
-                            <td><input type="text" value="79" /></td>
-                            <td>Consectetuer adipiscing elit.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            
-                <div class="demo-pager-bottom flc-pager-bottom">
-                    <div class="fl-force-left demo-pager-links">
-                        <ul class="flc-pager-links">
-                            <li class="flc-pager-pageLink"><a href="#">1</a></li>
-                            <li class="flc-pager-pageLink-disabled">2</li>
-                            <li class="flc-pager-pageLink"><a href="#">3</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div class="demo-pager-controls fl-force-right">
-                        <span class="demo-pager-previous flc-pager-previous"><a href="#">&lt; Previous</a></span>
-                        <span class="demo-pager-next flc-pager-next"><a href="#">Next &gt;</a></span>
-                    </div>
-                </div>
-            </form>
+<body>
+
+	<div class="demo-pager-container fl-pager">
+		<h1>School Roster</h1>
+		<div class="flc-pager-summary">Summary goes here</div>
+
+		<div class="flc-pager-top">	
+			<ul class="demo-pager-bar fl-force-left">
+				<li class="demo-pager-previous flc-pager-previous"><a href="#">&lt; Previous</a></li>
+				<li>
+					<ul class="demo-pager-links flc-pager-links">
+						<li class="demo-pager-pageLink-default flc-pager-pageLink"><a href="#">1</a></li>
+						<li class="flc-pager-pageLink-disabled">2</li>
+						<li class="demo-pager-pageLink-skip flc-pager-pageLink-skip">...</li>
+						<li class="flc-pager-pageLink"><a href="#">3</a></li>
+                    </ul>
+				</li>
+				<li class="demo-pager-next flc-pager-next"><a href="#">Next &gt;</a></li>
+			</ul> 
+		</div>
+
+        <div class="demo-pager-page-size fl-force-right">
+            <label for="demo-pager-selector-page-size-top">Items per page:</label>
+			<select id="demo-pager-selector-page-size-top" class="flc-pager-page-size fl-force-right">
+				<option value="10">10</option>
+				<option value="20">20</option>
+				<option value="30">50</option>
+				<option value="40">All</option>
+			</select>
         </div>
-        <script type="text/javascript">
-            demo.initPager(userTable);
-        </script>
+		
+        <div id="membership-table" class="fl-container-flex demo-pager-table-data fl-pager-data">
+           <table summary="Table of all students and teachers." xmlns:rsf="http://ponder.org.uk">
+                <thead>
+                    <tr rsf:id="header:">
+                        <th class="flc-pager-sort-header demo-pager-head demo-pager-head-members"><a rsf:id="user-link" title="Select to sort" href="#">Members</a></th>
+                        <th class="flc-pager-sort-header demo-pager-head demo-pager-head-email"><a rsf:id="user-email" title="Select to sort" href="#">Email</a></th>
+                        <th class="flc-pager-sort-header demo-pager-head demo-pager-head-role"><a rsf:id="user-role" title="Select to sort" href="#">Role</a></th>
+                        <th><span rsf:id="user-comment">Comments</span></th>
+                    </tr>
+                </thead>
+    
+                <tbody>
+                    <tr rsf:id="row:">
+                        <td><span rsf:id="user-link">Edee</span></td>
+                        <td><span rsf:id="user-email">edee@none.none</span></td>
+                        <td><span rsf:id="user-role">Instructor</span></td>      
+                        <td><span rsf:id="user-comment">The best teacher.</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>		
+    
+		<div class="flc-pager-bottom">	
+			<ul class="demo-pager-bar fl-force-left">
+				<li class="demo-pager-previous flc-pager-previous"><a href="#">&lt; Previous</a></li>
+				<li>
+					<ul class="demo-pager-links flc-pager-links">
+						<li class="demo-pager-pageLink-default flc-pager-pageLink"><a href="#">1</a></li>
+						<li class="flc-pager-pageLink-disabled">2</li>
+						<li class="demo-pager-pageLink-skip flc-pager-pageLink-skip">...</li>
+						<li class="flc-pager-pageLink"><a href="#">3</a></li>
+                    </ul>
+				</li>
+				<li class="demo-pager-next flc-pager-next"><a href="#">Next &gt;</a></li>
+			</ul> 
+		</div>
+    
+	</div>
+    
+    <script type="text/javascript" src="../js/demo-pager.js">
+    </script>
+    <script type="text/javascript">
+        demo.initPager();
+    </script>
+
     </body>
 </html>
+
