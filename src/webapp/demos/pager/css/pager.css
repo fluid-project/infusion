@@ -34,7 +34,7 @@ a:visited {
  * The horizontal pager bar containing Previous, Next, and Page links. 
  */
 .demo-pager-bar  {
-    width: 50%;
+    min-width: 555px;
     margin-left: 0em;
 }
 
@@ -42,8 +42,6 @@ a:visited {
 	display:inline;
     float:left;
 }
-
-/*.demo-pager-pageLink-default*/
 
 .demo-pager-bar  a:focus {
     outline:none; /* remove the focus outline that appears around links since there is already a border being applied on hover. */
@@ -70,11 +68,11 @@ a:visited {
  * Styles for the list of numerated page links. 
  */
 .demo-pager-links  {
-    margin:0em; /* TODO: this is to override FSS-reset's ol and ul styling. We should handle this better. */
+    margin:0em; /* This is to override FSS-reset's ol and ul styling. We should handle this better. */
 }
 
 .demo-pager-pageLink-default a {
-     /* Using display:block and float:left, it creates helps create a horizontal list with fixed width elements.*/
+    /* Using display:block and float:left, it creates helps create a horizontal list with fixed width elements.*/
     display:block;
     float:left;
 
