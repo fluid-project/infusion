@@ -198,15 +198,16 @@ var demo = demo || {};
     };
         
     demo.renderComponents = function () {
-        var listTemplate = fluid.selfRender($("#toc"), listTree, {debugMode: true});
-        var imagesTemplate = fluid.selfRender($("#image-container"), imagesTree, {debugMode: true});
-        var selectTemplate1 = fluid.selfRender($("#selection-test1"), selectionTree1, {debugMode: true});
-        var selectTemplate2 = fluid.selfRender($("#selection-test2"), selectionTree2, {debugMode: true});
+        var debugMode = false;
+        var listTemplate = fluid.selfRender($("#toc"), listTree, {debugMode: debugMode});
+        var imagesTemplate = fluid.selfRender($("#image-container"), imagesTree, {debugMode: debugMode});
+        var selectTemplate1 = fluid.selfRender($("#selection-test1"), selectionTree1, {debugMode: debugMode});
+        var selectTemplate2 = fluid.selfRender($("#selection-test2"), selectionTree2, {debugMode: debugMode});
         var selectTemplate3 = fluid.selfRender($("#selection-test3"),
                                                 buildSelectChoiceTree(selection3model, selectors3),
-                                                {model: selection3model, cutpoints: selectorMap, debugMode: true});
-        var jointTemplate = fluid.selfRender($("#joint-test"), jointTree, {debugMode: true});
-        var scriptTemplate = fluid.selfRender($("#script"), scriptTree, {debugMode: true});
+                                                {model: selection3model, cutpoints: selectorMap, debugMode: debugMode});
+        var jointTemplate = fluid.selfRender($("#joint-test"), jointTree, {debugMode: debugMode});
+        var scriptTemplate = fluid.selfRender($("#script"), scriptTree, {debugMode: debugMode});
     };    
     
     demo.testFunc = function () {

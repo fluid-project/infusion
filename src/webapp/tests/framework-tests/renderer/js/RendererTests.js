@@ -1070,7 +1070,7 @@ fluid.registerNamespace("fluid.tests");
     });
     
     var resourceSpec3 = {data: {href: "../data/testPerformance.json"},
-                        html: {href: "../data/testPerformance.html"}};    
+                          html: {href: "../data/testPerformance.html"}};    
     
     renderTests.test("Renderer performance test - FLUID-3684", function() {
         fluid.setLogging(true);

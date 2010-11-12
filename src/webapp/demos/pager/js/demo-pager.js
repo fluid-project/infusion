@@ -26,6 +26,9 @@ var demo = demo || {};
                 href: "../data/demo-pager-data.json"
             }
         };
+        fluid.each(resources, function(resource) {
+            resource.options = { dataType: "text"};
+        });
         
         function initPager() {
           

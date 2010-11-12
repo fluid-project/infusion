@@ -637,54 +637,7 @@ var fluid_1_2 = fluid_1_2 || {};
     };
 
     /** "light" expanders, starting with support functions for the "deferredFetcher" expander **/
-  
-    fluid.expander.makeDefaultFetchOptions = function (successdisposer, failid, options) {
-        return $.extend(true, {dataType: "text"}, options, {
-            success: function(response, environmentdisposer) {
-                var json = JSON.parse(response);
-                environmentdisposer(successdisposer(json));
-            },
-            error: function(response, textStatus) {
-                fluid.log("Error fetching " + failid + ": " + textStatus);
-            }
-        });
-    };
-  
-    fluid.expander.makeFetchExpander = function (options) {
-        return { expander: {
-            type: "fluid.expander.deferredFetcher",
-            href: options.url,
-            options: fluid.expander.makeDefaultFetchOptions(options.disposer, options.url, options.options),
-            resourceSpecCollector: "{resourceSpecCollector}",
-            fetchKey: options.fetchKey
-        }};
-    };
-    
-    fluid.expander.deferredFetcher = function(target, source) {
-        var expander = source.expander;
-        var spec = fluid.copy(expander);
-        // fetch the "global" collector specified in the external environment to receive
-        // this resourceSpec
-        var collector = fluid.resolveEnvironment(expander.resourceSpecCollector);
-        delete spec.type;
-        delete spec.resourceSpecCollector;
-        delete spec.fetchKey;
-        var environmentdisposer = function(disposed) {
-            $.extend(target, disposed);
-        };
-        // replace the callback which is there (taking 2 arguments) with one which
-        // directly responds to the request, passing in the result and OUR "disposer" - 
-        // which once the user has processed the response (say, parsing JSON and repackaging)
-        // finally deposits it in the place of the expander in the tree to which this reference
-        // has been stored at the point this expander was evaluated.
-        spec.options.success = function(response) {
-             expander.options.success(response, environmentdisposer);
-        };
-        var key = expander.fetchKey || fluid.allocateGuid();
-        collector[key] = spec;
-        return target;
-    };
-    
+
     fluid.expander.deferredCall = function(target, source) {
         var expander = source.expander;
         var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : $.makeArray(expander.args); 
