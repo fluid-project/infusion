@@ -56,24 +56,7 @@ fluid_1_2 = fluid_1_2 || {};
         }
         catch (e) {} 
     };
-    
-    fluid.deadMansBlur = function (control, exclusions, handler) {
-        var blurPending = false;
-        $(control).blur(function () {
-            blurPending = true;
-            setTimeout(function () {
-                if (blurPending) {
-                    handler(control);
-                }
-            }, 150);
-        });
-        var canceller = function () {
-            blurPending = false; 
-        };
-        exclusions.focus(canceller);
-        exclusions.click(canceller);
-    };
-    
+
     var switchToViewMode = function (that) {
         that.editContainer.hide();
         that.displayModeRenderer.show();

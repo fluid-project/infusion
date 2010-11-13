@@ -17,8 +17,6 @@ fluid_1_2 = fluid_1_2 || {};
 
 (function ($, fluid) {
     
-    fluid.VALUE = {};
-    
     fluid.BINDING_ROOT_KEY = "fluid-binding-root";
     
     /** Recursively find any data stored under a given name from a node upwards

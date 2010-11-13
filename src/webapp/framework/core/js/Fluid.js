@@ -990,6 +990,17 @@ var fluid = fluid || fluid_1_2;
         return element.id;
     };
     
+        
+    /** Corrected version of jQuery makearray that returns an empty array on undefined rather than crashing **/
+    fluid.makeArray = function(arg) {
+        if (arg === null || arg === undefined) {
+            return [];
+        }
+        else {
+            return $.makeArray(arg);
+        }
+    };
+    
     // Functional programming utilities.
     
     function transformInternal(source, togo, key, args) {

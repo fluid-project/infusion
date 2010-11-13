@@ -65,42 +65,6 @@ var fluid = fluid || fluid_1_2;
     fluid.thatistBridge("fluid", fluid);
     fluid.thatistBridge("fluid_1_2", fluid_1_2);
 
-    // Private constants.
-    var NAMESPACE_KEY = "fluid-keyboard-a11y";
-
-    /**
-     * Gets stored state from the jQuery instance's data map.
-     */
-    var getData = function(target, key) {
-        var data = $(target).data(NAMESPACE_KEY);
-        return data ? data[key] : undefined;
-    };
-
-    /**
-     * Stores state in the jQuery instance's data map. Unlike jQuery's version,
-     * accepts multiple-element jQueries.
-     */
-    var setData = function(target, key, value) {
-        $(target).each(function() {
-            var data = $.data(this, NAMESPACE_KEY) || {};
-            data[key] = value;
-
-            $.data(this, NAMESPACE_KEY, data);
-        });
-    };
-/** Global focus manager - makes use of "focusin" event supported in jquery 1.4.2 or later.
- */
-
-    var lastFocusedElement = null;
-    
-    $(document).bind("focusin", function(event){
-        lastFocusedElement = event.target;
-    });
-    
-    fluid.getLastFocusedElement = function () {
-        return lastFocusedElement;
-    }
-
 /*************************************************************************
  * Tabindex normalization - compensate for browser differences in naming
  * and function of "tabindex" attribute and tabbing order.
@@ -193,33 +157,7 @@ var fluid = fluid || fluid_1_2;
         return fluid.tabindex.hasAttr(target) || canHaveDefaultTabindex(target);
     };
 
-    var ENABLEMENT_KEY = "enablement";
-
-    /** Queries or sets the enabled status of a control. An activatable node
-     * may be "disabled" in which case its keyboard bindings will be inoperable
-     * (but still stored) until it is reenabled again.
-     */
-     
-    fluid.enabled = function(target, state) {
-        target = $(target);
-        if (state === undefined) {
-            return getData(target, ENABLEMENT_KEY) !== false;
-        }
-        else {
-            $("*", target).each(function() {
-                if (getData(this, ENABLEMENT_KEY) !== undefined) {
-                    setData(this, ENABLEMENT_KEY, state);
-                }
-                else if (/select|textarea|input/i.test(this.nodeName)) {
-                    $(this).attr("disabled", !state);
-                }
-            });
-            setData(target, ENABLEMENT_KEY, state);
-        }
-    };
-    
-
-// Keyboard navigation
+    // Keyboard navigation
     // Public, static constants needed by the rest of the library.
     fluid.a11y = $.a11y || {};
 
@@ -483,13 +421,13 @@ var fluid = fluid || fluid_1_2;
             if (typeof(that.options.selectablesTabindex) === "number") {
                 that.selectables.fluid("tabindex", that.options.selectablesTabindex);
             }
-            that.selectables.unbind("focus." + NAMESPACE_KEY);
-            that.selectables.unbind("blur." + NAMESPACE_KEY);
-            that.selectables.bind("focus."+ NAMESPACE_KEY, selectableFocusHandler(that));
-            that.selectables.bind("blur." + NAMESPACE_KEY, selectableBlurHandler(that));
+            that.selectables.unbind("focus." + CONTEXT_KEY);
+            that.selectables.unbind("blur." + CONTEXT_KEY);
+            that.selectables.bind("focus."+ CONTEXT_KEY, selectableFocusHandler(that));
+            that.selectables.bind("blur." + CONTEXT_KEY, selectableBlurHandler(that));
             if (keyMap && that.options.noBubbleListeners) {
-                that.selectables.unbind("keydown."+NAMESPACE_KEY);
-                that.selectables.bind("keydown."+NAMESPACE_KEY, arrowKeyHandler(that, keyMap));
+                that.selectables.unbind("keydown."+CONTEXT_KEY);
+                that.selectables.bind("keydown."+CONTEXT_KEY, arrowKeyHandler(that, keyMap));
             }
             if (focusedItem) {
                 selectElement(focusedItem, that);
@@ -533,7 +471,7 @@ var fluid = fluid || fluid_1_2;
     fluid.selectable = function(target, options) {
         target = $(target);
         var that = makeElementsSelectable(target, fluid.selectable.defaults, options);
-        setData(target, CONTEXT_KEY, that);
+        fluid.setScopedData(target, CONTEXT_KEY, that);
         return that;
     };
 
@@ -549,7 +487,7 @@ var fluid = fluid || fluid_1_2;
      */
     fluid.selectable.selectNext = function(target) {
         target = $(target);
-        focusNextElement(getData(target, CONTEXT_KEY));
+        focusNextElement(fluid.getScopedData(target, CONTEXT_KEY));
     };
 
     /**
@@ -557,7 +495,7 @@ var fluid = fluid || fluid_1_2;
      */
     fluid.selectable.selectPrevious = function(target) {
         target = $(target);
-        focusPreviousElement(getData(target, CONTEXT_KEY));
+        focusPreviousElement(fluid.getScopedData(target, CONTEXT_KEY));
     };
 
     /**
@@ -565,7 +503,7 @@ var fluid = fluid || fluid_1_2;
      */
     fluid.selectable.currentSelection = function(target) {
         target = $(target);
-        var that = getData(target, CONTEXT_KEY);
+        var that = fluid.getScopedData(target, CONTEXT_KEY);
         return $(that.selectedElement());
     };
 
@@ -643,7 +581,7 @@ var fluid = fluid || fluid_1_2;
             bindings = bindings.concat(options.additionalBindings);
         }
 
-        setData(elements, ENABLEMENT_KEY, true);
+        fluid.initEnablement(elements);
 
         // Add listeners for each key binding.
         for (var i = 0; i < bindings.length; ++ i) {

@@ -178,9 +178,12 @@ fluid_1_2 = fluid_1_2 || {};
 
             // NB - this section has no effect - on most browsers no focus events
             // are delivered to the actual body
-            fluid.deadMansBlur(that.editField, $(editorBody), function () {
-                that.cancel();
-            });
+            fluid.deadMansBlur(that.editField, 
+                {exclusions: {body: $(editorBody)}, 
+                 handler: function () {
+                     that.cancel();
+                 }
+                 });
         });
             
         that.events.afterBeginEdit.addListener(function () {
@@ -477,12 +480,12 @@ fluid_1_2 = fluid_1_2 || {};
     };
    
     fluid.inlineEdit.dropdown.blurHandlerBinder = function (that) {
-        fluid.deadMansBlur(that.editField,
-            $("div.selectbox-wrapper li", that.editContainer),
-            function () {
+        fluid.deadMansBlur(that.editField, {
+             exclusions: {selectBox: $("div.selectbox-wrapper li", that.editContainer)},
+             handler: function () {
                 that.cancel();
-            }
-        );
+                }
+            });
     };
     
     fluid.defaults("fluid.inlineEdit.dropdown", {

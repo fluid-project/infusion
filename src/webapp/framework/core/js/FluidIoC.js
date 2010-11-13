@@ -264,16 +264,6 @@ var fluid_1_2 = fluid_1_2 || {};
         return fluid.embodyDemands(thatStack, demandspec, initArgs, options);
     };
     
-    /** Corrected version of jQuery makearray that returns an empty array on undefined rather than crashing **/
-    fluid.makeArray = function(arg) {
-        if (arg === null || arg === undefined) {
-            return [];
-        }
-        else {
-            return $.makeArray(arg);
-        }
-    };
-    
     // TODO: make a *slightly* more performant version of fluid.invoke that perhaps caches the demands
     // after the first successful invocation
     fluid.invoke = function(functionName, args, that, environment) {
