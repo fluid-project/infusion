@@ -292,12 +292,12 @@ fluid_1_2 = fluid_1_2 || {};
         }
     };
     
+    var calculateInitialPadding = function (viewEl) {
+        var padding = viewEl.css("padding-right");
+        return padding ? parseFloat(padding) : 0;
+    };
+    
     var setupInlineEdit = function (componentContainer, that) {
-        var padding = that.viewEl.css("padding-right");
-        that.existingPadding = padding ? parseFloat(padding) : 0;
-        
-        initModel(that, that.displayView.value());
-
         // Hide the edit container to start
         if (that.editContainer) {
             that.editContainer.hide();
@@ -411,8 +411,11 @@ fluid_1_2 = fluid_1_2 || {};
             updateModelValue(that, newModel.value, source);
         };
         
-        that.displayModeRenderer = that.options.displayModeRenderer(that);        
+        that.existingPadding = calculateInitialPadding(that.viewEl);
         
+        initModel(that, that.displayView.value());
+        
+        that.displayModeRenderer = that.options.displayModeRenderer(that);  
         initializeEditView(that, true);
         setupInlineEdit(componentContainer, that);
         
@@ -596,9 +599,9 @@ fluid_1_2 = fluid_1_2 || {};
              * Set text for the button and listen
              * for modelChanged to keep it updated
              */ 
-            fluid.inlineEdit.updateTextEditButton(markup, that.model, opts.strings);
+            fluid.inlineEdit.updateTextEditButton(markup, that.model.value || opts.defaultViewText, opts.strings.textEditButton);
             that.events.modelChanged.addListener(function () {
-                fluid.inlineEdit.updateTextEditButton(markup, that.model, opts.strings);
+                fluid.inlineEdit.updateTextEditButton(markup, that.model.value || opts.defaultViewText, opts.strings.textEditButton);
             });        
             
             that.locate("text").after(markup);
@@ -616,9 +619,9 @@ fluid_1_2 = fluid_1_2 || {};
      * @param {String} model The current value of the inline editable text
      * @param {Object} strings Text option for the textEditButton
      */
-    fluid.inlineEdit.updateTextEditButton = function (textEditButton, model, strings) {
-        var buttonText = fluid.stringTemplate(strings.textEditButton, {
-            text: model.value
+    fluid.inlineEdit.updateTextEditButton = function (textEditButton, value, stringTemplate) {
+        var buttonText = fluid.stringTemplate(stringTemplate, {
+            text: value
         });
         textEditButton.text(buttonText);
     };

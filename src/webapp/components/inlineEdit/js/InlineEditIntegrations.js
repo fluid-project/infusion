@@ -234,6 +234,7 @@ fluid_1_2 = fluid_1_2 || {};
             type: "fluid.inlineEdit.tinyMCE.viewAccessor"
         },
         lazyEditView: true,
+        defaultViewText: "Click Edit",
         modelComparator: fluid.inlineEdit.htmlComparator,
         blurHandlerBinder: fluid.inlineEdit.tinyMCE.blurHandlerBinder,
         displayModeRenderer: fluid.inlineEdit.richTextDisplayModeRenderer,
@@ -342,6 +343,7 @@ fluid_1_2 = fluid_1_2 || {};
             type: "fluid.inlineEdit.FCKEditor.viewAccessor"
         },
         lazyEditView: true,
+        defaultViewText: "Click Edit",
         modelComparator: fluid.inlineEdit.htmlComparator,
         blurHandlerBinder: fluid.inlineEdit.FCKEditor.blurHandlerBinder,
         displayModeRenderer: fluid.inlineEdit.richTextDisplayModeRenderer,
@@ -442,6 +444,7 @@ fluid_1_2 = fluid_1_2 || {};
             type: "fluid.inlineEdit.CKEditor.viewAccessor"
         },
         lazyEditView: true,
+        defaultViewText: "Click Edit",
         modelComparator: fluid.inlineEdit.CKEditor.htmlComparator,
         blurHandlerBinder: fluid.inlineEdit.CKEditor.blurHandlerBinder,
         displayModeRenderer: fluid.inlineEdit.richTextDisplayModeRenderer,

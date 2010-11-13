@@ -46,7 +46,8 @@ var demo = demo || {};
             },
             styles: {
                 edit: "fl-inlineEdit-title-edit fl-inlineEdit-edit"
-            }
+            },
+            defaultViewText: "Untitled"
         });
         
         fluid.inlineEdit(".simpleEditCaption", {
