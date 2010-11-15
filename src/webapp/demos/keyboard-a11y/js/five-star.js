@@ -33,10 +33,29 @@ var demo = demo || {};
         });
     };
 
+    /**
+     * The five-star widget is semantically a 'slider,' so apply appropriate
+     * ARIA role and attributes
+     */
     var setARIA = function (that) {
         that.container.attr("role", "slider");
         that.container.attr("aria-valuemin", "1");
         that.container.attr("aria-valuemax", "5");
+    };
+
+    /**
+     * Set the colour of the stars depending on the current rank and hover
+     */
+    var setStarStates = function (stars, hovered, rank, imgs) {
+        // if nothing is hovered, don't show any hover state
+        if (hovered > 0) {
+            stars.slice(0, hovered).attr("src", imgs.hover);
+        } else {
+            hovered = -1;
+        }
+        
+        stars.slice(hovered + 1, rank).attr("src", imgs.select);
+        stars.slice(Math.max(hovered, rank), 5).attr("src", imgs.blank);
     };
 
     /**
@@ -55,26 +74,15 @@ var demo = demo || {};
          */
         that.hoverStars = function (starEl) {
             var star = $(starEl);
-            var starNum = getStarNum(star);
-            
-            // set the images up to the hover star with the hover image
-            for (var i = 0; i < starNum; i++) {
-                $(that.stars[i]).attr("src", that.options.starImages.hover);
-            }
-            // set the images for the rest of the stars with whatever the rank says
-            for (; i < 5; i++) {
-                $(that.stars[i]).attr("src", (i + 1 <= that.model.rank) ? that.options.starImages.select : that.options.starImages.blank);
-            }
+            var starNum = getStarNum(star);            
+            setStarStates(that.stars, starNum, that.model.rank, that.options.starImages);
         };
 
         /**
          * Restore the display of stars to reflect the ranking
          */
         that.refreshView = function () {
-            var stars = $("[class^='star-']", container);
-            for (var starNum = 1; starNum <= 5; starNum++) {
-                $(stars[starNum - 1]).attr("src", (starNum <= that.model.rank) ? that.options.starImages.select : that.options.starImages.blank);
-            }
+            setStarStates(that.stars, 0, that.model.rank, that.options.starImages);
         };
         
         that.setRank = function (rank) {
@@ -112,4 +120,4 @@ var demo = demo || {};
             modelChanged: null
         }
     });
-})(jQuery, fluid_1_2);
+})(jQuery, fluid);

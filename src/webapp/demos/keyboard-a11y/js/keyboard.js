@@ -21,47 +21,47 @@ var demo = demo || {};
     //
 
     /**
-     * Assign any relevant ARIA roles, states, properties.
+     * Assign any relevant ARIA roles, states, properties to the image viewer.
      */
-    var setAria = function (container, thumbs) {
+    var setARIA = function (container, thumbContainer) {
         container.attr("role", "application");
-        thumbs.attr("aria-controls", "image-preview");
-        $("img", thumbs).attr("aria-selected", false);
+        thumbContainer.attr("aria-controls", "image-preview");
+        $("img", thumbContainer).attr("aria-selected", false);
     };
 
-    var displayImage = function (thumb, thumbs, fiveStarRanker, model) {
-        // remove the selected styling from the current image
-        $("img", thumbs).removeClass(demo.initImageRanker.styles.activated);
-        thumbs.attr("aria-selected", false);
+    var displayImage = function (thumb, thumbContainer, image) {
+        // Remove the 'selected' styling from the thumbnails.
+        var images = $("img", thumbContainer);
+        images.removeClass(demo.imageViewer.styles.activated);
+        images.attr("aria-selected", false);
 
-        // display the selected image in the main viewer
+        // Display the selected image in the main viewer.
         var src = thumb.attr("src");
-        $(demo.initImageRanker.selectors.image).attr("src", src);
-        $(demo.initImageRanker.selectors.image).attr("alt", thumb.attr("alt"));
+        image.attr("src", src);
+        image.attr("alt", thumb.attr("alt"));
         
         // update the current selection
-        thumb.addClass(demo.initImageRanker.styles.activated);
+        thumb.addClass(demo.imageViewer.styles.activated);
         thumb.attr("aria-selected", true);
 
-        // update the five-star with the image's rank
-        fiveStarRanker.setRank(model[src]);
     };
 
     /**
      * Create a function that will be uses as the event handler when a thumbnail is activated
      */
-    var makeImageActivationHandler = function (thumbs, fiveStarRanker, model) {
-        
+    var makeImageActivationHandler = function (thumbContainer, image, fiveStarRanker, model) {
         return function (evt) {
             var thumb = $(evt.target);
-            displayImage(thumb, thumbs, fiveStarRanker, model);
+            displayImage(thumb, thumbContainer, image);
+            // update the five-star with the image's rank
+            fiveStarRanker.setRank(model[thumb.attr("src")]);
         };
     };
 
     var bindEventHandlers = function (fiveStarRanker, model) {
         fiveStarRanker.events.modelChanged.addListener(function (newModel, oldModel) {
             // change the rank of the current image to the new rank
-            var currImg = $(demo.initImageRanker.selectors.image).attr("src");
+            var currImg = $(demo.imageViewer.selectors.image).attr("src");
             model[currImg] = newModel;
         });
     };
@@ -73,18 +73,18 @@ var demo = demo || {};
     /**
      * Ensure that the image thumbnails can be navigated using the keyboard
      */
-    var makeThumbnailsNavigable = function (thumbs) {
+    var makeThumbnailsNavigable = function (thumbContainer) {
         //*** Use the Keyboard Accessibility Plugin to ensure that the container is in the tab order
-        thumbs.fluid("tabbable");
+        thumbContainer.fluid("tabbable");
 
         //*** Use the Keyboard Accessibility Plugin to make the image thumbnails selectable
         // This uses the defaults for everything but these event handlers
-        thumbs.fluid("selectable", {
+        thumbContainer.fluid("selectable", {
             onSelect: function (thumbEl) {
-                $(thumbEl).addClass(demo.initImageRanker.styles.selected);
+                $(thumbEl).addClass(demo.imageViewer.styles.selected);
             },
             onUnselect: function (thumbEl) {
-                $(thumbEl).removeClass(demo.initImageRanker.styles.selected);
+                $(thumbEl).removeClass(demo.imageViewer.styles.selected);
             }
         });
     };
@@ -92,15 +92,15 @@ var demo = demo || {};
     /**
      * Ensure that the image thumbnails can be activated using the keyboard
      */
-    var makeThumbnailsActivatable = function (thumbs, fiveStarRanker, model) {
+    var makeThumbnailsActivatable = function (thumbContainer, image, fiveStarRanker, model) {
         // create the event handler
-        var handler = makeImageActivationHandler(thumbs, fiveStarRanker, model);
+        var handler = makeImageActivationHandler(thumbContainer, image, fiveStarRanker, model);
 
         //*** Use the Keyboard Accessibility Plugin to make the thumbnails activatable by keyboard
-        thumbs.fluid("activatable", handler);
+        thumbContainer.fluid("activatable", handler);
 
         // add the same handler to the click event
-        thumbs.click(handler);
+        thumbContainer.click(handler);
     };
 
     /**
@@ -114,7 +114,7 @@ var demo = demo || {};
 
         // show visual confirmation when focus is there
         starContainer.focus(function () {
-            starContainer.addClass(demo.initImageRanker.styles.selected);
+            starContainer.addClass(demo.imageViewer.styles.selected);
         });
 
         //*** Use the Keyboard Accessibility Plugin to make the start themselves selectable
@@ -139,7 +139,7 @@ var demo = demo || {};
                 fiveStarRanker.refreshView();
             },
             onLeaveContainer: function () {
-                starContainer.removeClass(demo.initImageRanker.styles.selected);
+                starContainer.removeClass(demo.imageViewer.styles.selected);
             }
         });
     };
@@ -154,47 +154,75 @@ var demo = demo || {};
     };
 
     //=====================================================================
-    // Demo initialization
+    // Setup functions
     //
     
-    demo.initImageRanker = function (container) {
-        container = $(container);
-        // the five-star ranking code can be found in the file five-star.js
-        var fiveStarRanker = demo.fiveStar(demo.initImageRanker.selectors.ranker);
-        var thumbs = $(demo.initImageRanker.selectors.thumbnails);
-        
-        // set up an internal model of the ranks selected
-        var images = $("img", thumbs);
+    var setUpModel = function (thumbContainer) {
+        var thumbnails = $("img", thumbContainer);
         var model = {};
-        fluid.each(images, function (value, key) {
+        fluid.each(thumbnails, function (value, key) {
             model[$(value).attr("src")] = 1;
         });
-        
-        makeThumbnailsNavigable(thumbs);
-        makeThumbnailsActivatable(thumbs, fiveStarRanker, model);
-        
+        return model;
+    };
+
+    var setUpFiveStarRanker = function (container) {
+        // the five-star ranking code can be found in the file five-star.js
+        var ranker = demo.fiveStar(container);
+
         // the five-star widget provides mouse-support, but not keyboard
         // add keyboard support using the plugin
-        makeFiveStarsNavigable(fiveStarRanker);
-        makeFiveStarsActivatable(fiveStarRanker);
-        
-        bindEventHandlers(fiveStarRanker, model);
-        setAria(container, thumbs);
+        makeFiveStarsNavigable(ranker);
+        makeFiveStarsActivatable(ranker);
+
+        return ranker;        
+    };
+
+    var setUpImageViewer = function (that, ranker) {
+        makeThumbnailsNavigable(that.thumbContainer);
+        makeThumbnailsActivatable(that.thumbContainer, that.image, ranker, that.model);
+
+        bindEventHandlers(ranker, that.model);
+        setARIA(that.container, that.thumbContainer);
 
         // set up with the first image
-        displayImage($(images[0]), thumbs, fiveStarRanker, model);        
+        var firstThumb = $("img:first", that.thumbContainer);
+        displayImage(firstThumb, that.thumbContainer, that.image);
+        // update the five-star with the image's rank
+        ranker.setRank(that.model[firstThumb.attr("src")]);
     };
+
+    //=====================================================================
+    // Demo initialization
+    //
+
+    demo.initImageViewer = function (container) {
+        var that = {
+            container: $(container),
+            thumbContainer: $(demo.imageViewer.selectors.thumbContainer),
+            image: $(demo.imageViewer.selectors.image)
+        };
+
+        that.model = setUpModel(that.thumbContainer);
+
+        var fiveStarRanker = setUpFiveStarRanker(demo.imageViewer.selectors.ranker);
+        
+        setUpImageViewer(that, fiveStarRanker);
+    };
+    
     
     /**
      * Defaults for the demo
      */
-    demo.initImageRanker.selectors = {
-        thumbnails: ".demo-container-imageThumbnails",
-        ranker: ".demo-container-fiveStar",
-        image: ".demo-image-mainImage"
-    };
-    demo.initImageRanker.styles = {
-        selected: "demo-selected",
-        activated: "demo-activated"
+    demo.imageViewer = {
+        selectors: {
+            thumbContainer: ".demo-container-imageThumbnails",
+            ranker: ".demo-container-fiveStar",
+            image: ".demo-image-mainImage"
+        },
+        styles: {
+            selected: "demo-selected",
+            activated: "demo-activated"
+        }
     };
 })(jQuery, fluid);

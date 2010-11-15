@@ -5,9 +5,11 @@
 h1 {
     margin-bottom: 0.2em;
 }
+.fl-col-mixed .fl-col-fixed { width:150px; }
+.fl-col-mixed .fl-col-flex { margin-left:170px; }
 
 .demo-container {
-    width: 100%;
+    width: 97%;
     background-color: #E6E8F4;
     margin: 1em;
     padding: 0.5em;
@@ -15,7 +17,7 @@ h1 {
 }
 
 .demo-instructions {
-    position:relative;    
+    position:relative;
 }
 .demo-keyboard-instructions {
     text-align:right;
@@ -48,26 +50,22 @@ h1 {
     background-color:#CCCBE4;
     border: 1px solid #000;
     margin-top: 0.5em;
-    text-align:center;
     overflow:auto;
-    position:relative;
-    white-space:nowrap;
     z-index:1;
-    list-style:none outside none;
 }
 
 .demo-container-imageThumbnails li {
     margin:0.5em;
     padding:0.3em;
     text-align:center;
+    list-style:none outside none;
 }
 
 .demo-container-imageThumbnails img {
     border: 0.1em solid #000;
-    height:100%;
-    width:auto;
-    max-height:7em;
-    max-width:auto;
+    height:auto;
+    max-width:8em;
+    max-height:8em;
 }
 
 /**/
@@ -111,5 +109,5 @@ h1 {
 
 .demo-activated {
     padding: 10px;
-    background-color: white;
+    background-color: yellow;
 }
