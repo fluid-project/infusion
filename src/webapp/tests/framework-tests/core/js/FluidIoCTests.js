@@ -16,10 +16,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 
 fluid.registerNamespace("fluid.testUtils");
-   
-fluid.demands("fluid.reorderer.gridReorderer", "fluid.reorderer",
-    ["{that}.container",
-    {"orientation": "{gridReorderer.orientation}"}]);
 
 fluid.defaults("fluid.testUtils.testComponent", {
     default1: "testComponent value",
@@ -173,9 +169,10 @@ fluid.demands("fluid.testUtils.multiResSub", ["fluid.testUtils.multiResolution",
     {
         funcName: "fluid.testUtils.multiResSub3",
         parent: ["fluid.testUtils.multiResolution", "fluid.testUtils.localFiles"],
-        args: {
+        args: [{
             localKey1: "testValue1"
-        }  
+        }, null 
+        ]
     });
     
 fluid.defaults("fluid.testUtils.defaultInteraction", {

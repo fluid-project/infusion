@@ -390,7 +390,7 @@ var fluid = fluid || fluid_1_2;
      * 2nd argument to detect any marker
      */
     fluid.isMarker = function(totest, type) {
-        if (typeof (totest) !== 'object' || totest.type !== "fluid.marker") return false;
+        if (!totest || typeof (totest) !== 'object' || totest.type !== "fluid.marker") return false;
         if (!type) return true;
         return totest.value === type || totest.value === type.value;
     };
