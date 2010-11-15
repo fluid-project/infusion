@@ -23,7 +23,7 @@ var demo = demo || {};
     demo.initPager = function () {
         var resources = {
             users: {
-                href: "../js/pager.json"
+                href: "../data/pager.js"
             }
         };
         fluid.each(resources, function(resource) {
