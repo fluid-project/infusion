@@ -163,16 +163,6 @@ ul li p {
     z-index: 10;
 }
 
-.demo-reorderer-instructions {
-    background-color: #fffcd6;
-    border: 1px solid #cdcdcd;
-    text-align: center;
-    padding: 5px;
-}
-.demo-reorderer-instructions strong {
-    display: inline;	
-}
-
 /** overrider */
 .locked .demo-module-dragbar {
     cursor: default;
