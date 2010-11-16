@@ -33,6 +33,7 @@ ul li {
 	border-left: 1px solid #00a651;
 	border-bottom: 1px solid #00a651;
 	cursor: move;
+    padding: 4px; /* set the padding 4px from 5 px to compensate for 1px border. */
 }
 
 .demo-reorderer-movable-dragging {
