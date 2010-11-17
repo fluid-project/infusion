@@ -282,7 +282,7 @@ fluid_1_2 = fluid_1_2 || {};
             if (value.messagekey !== undefined) {
                 return {
                     componentType: "UIMessage",
-                    messagekey: value.messagekey,
+                    messagekey: expandBound(value.messagekey),
                     args: expandLight(value.args)
                 };
             }

@@ -537,5 +537,36 @@ fluid.registerNamespace("fluid.tests");
             };
             fluid.testUtils.assertTree("Selection explosion", expected, expanded);
         });
+        
+        protoTests.test("FLUID-3844 test: messagekey resolved by expander", function() {
+            var model = {
+                tabs: {
+                    here: {
+                        href: "#here",
+                        name: "messagekey"
+                    }
+                }
+            };
+            var expopts = {ELstyle: "${}", model: model};
+            var expander = fluid.renderer.makeProtoExpander(expopts);
+            var protoTree = {
+                expander: {
+                    repeatID: "tab",
+                    tree: {
+                        tabLink: {
+                            target: "${{tabInfo}.href}",
+                            linktext: {
+                                messagekey: "${{tabInfo}.name}"
+                            }
+                        }
+                    },
+                    type: "fluid.renderer.repeat",
+                    pathAs: "tabInfo",
+                    controlledBy: "tabs"
+                }
+            };
+            var expanded = expander(protoTree);
+            fluid.testUtils.assertTree("Message key resolved", model.tabs.here.name, expanded.children[0].children[0].linktext.messagekey.value);
+        });
     };  
 })(jQuery); 
