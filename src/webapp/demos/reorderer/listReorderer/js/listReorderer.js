@@ -19,18 +19,15 @@ var demo = demo || {};
 (function ($, fluid) {
     
     demo.initListReorderer = function () {
-        return fluid.reorderList(".todo-list", {
-            selectors: {
-                movables: ".movable"
-            },
+        return fluid.reorderList("#demo-selector-listReorderer", {
             styles: {
-				defaultStyle: "demo-reorderer-movable-default",
-				selected: "demo-reorderer-movable-selected",
-				dragging: "demo-reorderer-movable-dragging",
-				mouseDrag: "demo-reorderer-movable-mousedrag",
-				hover: "demo-reorderer-movable-hover",
-				dropMarker: "demo-reorderer-dropMarker",
-				avatar: "demo-reorderer-avatar"
+				defaultStyle: "demo-listReorderer-movable-default",
+				selected: "demo-listReorderer-movable-selected",
+				dragging: "demo-listReorderer-movable-dragging",
+				mouseDrag: "demo-listReorderer-movable-mousedrag",
+				hover: "demo-listReorderer-movable-hover",
+				dropMarker: "demo-listReorderer-dropMarker",
+				avatar: "demo-listReorderer-avatar"
             }
         });
     };

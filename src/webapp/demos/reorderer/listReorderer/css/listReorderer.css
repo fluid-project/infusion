@@ -1,14 +1,9 @@
 
-body{
-    font-family: verdana, sans-serif;
-    font-size: 1em;
-}
-
 ol li {
     padding: 5px;
     margin-bottom: 5px;
 	list-style-position: inside;
-	border-right: 3px solid #6d6e71;
+	border-right: 3px solid #6d6e71; /* thicker right border acts as a grab indicator. */
 }
 
 ul {
@@ -23,31 +18,47 @@ ul li {
 	border-right: none;
 }
 
-.demo-reorderer-movable-default{
+:focus{
+    /** override fss-reset.css */
+	outline: none;
+}
+
+.demo-listReorderer-container {
+    width: 95%;
+    margin: 0 auto;
+}
+
+.demo-listReorderer-movable-default{
     background-color: #e7e8e9;
 }
 
-.demo-reorderer-movable-hover, .demo-reorderer-movable-selected{
+.demo-listReorderer-movable-hover, .demo-listReorderer-movable-selected{
     background-color: #fff;
-	border-top: 1px solid #00a651;
+    cursor: move;
+    
+    /* Change the left, top, and bottom borders on hover and select.
+       Leave the right border alone as it serves as the grab indicator. */
+	border-top: 1px solid #00a651; 
 	border-left: 1px solid #00a651;
 	border-bottom: 1px solid #00a651;
-	cursor: move;
-    padding: 4px; /* set the padding 4px from 5 px to compensate for 1px border. */
+    
+    /* set the 5px padding inherited (ol li) to 4px to compensate for 
+       1px hover border. */
+	padding: 4px; 
 }
 
-.demo-reorderer-movable-dragging {
+.demo-listReorderer-movable-dragging {
 	position: relative;
 	left: 10px;
 	border: 1px solid #00a651;
 	background-color: #d2f7d8;
 }
 
-.demo-reorderer-movable-mousedrag {
+.demo-listReorderer-movable-mousedrag {
 	visibility: hidden;
 }
 
-.demo-reorderer-avatar {
+.demo-listReorderer-avatar {
     opacity: 0.55;
 	filter: alpha(opacity=55); /* ie opacity fix */
     border: 0;
@@ -55,7 +66,7 @@ ul li {
 	background-color: #2bb673;
 }
 
-.demo-reorderer-dropMarker {
+.demo-listReorderer-dropMarker {
     background-color : #00a651;
     height:3px;
     padding:0 0 0 0;
@@ -66,21 +77,3 @@ ul li {
     overflow:hidden;
 }
 
-.demo-list-reorderer-title{
-	font-size: 1.2em;
-	margin-top: 5px;
-	margin-left: 26px;
-}
-
-.demo-list-reorderer-keyboard-cmd{
-	max-width: 346px; 
-	margin-right: 13px;
-	float: right;
-	text-align: right;
-	font-size: 0.9em;
-}
-
-/** override fss-reset.css */
-:focus{
-	outline: none;
-}
