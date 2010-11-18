@@ -67,7 +67,7 @@ var demo = demo || {};
 
     var setAriaAttr = function (liveRegion, submitButton) {
         // set the aria live region attributes
-        liveRegion.attr("aria-relevant", "text");
+        liveRegion.attr("aria-relevant", "additions text");
         liveRegion.attr("aria-atomic", "false");
         liveRegion.attr("role", "status");         
         
