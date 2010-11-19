@@ -1084,6 +1084,26 @@ fluid.registerNamespace("fluid.tests");
             fluid.log("Render complete");
         };
         fluid.fetchResources(resourceSpec3, renderit);  
-    }); 
+    });
+    
+    renderTests.test("FLUID-3819 test: messagekey with no value no expand", function() {
+        var node = $(".FLUID-3819-test");
+        var selector = ".flc-noMessagekey";
+        var tree = {
+            ID: "noMessage", 
+            messagekey: {
+                valuebinding: "nomessage"
+            }
+        };
+        fluid.selfRender(node, tree, {
+            cutpoints: [{
+                id: "noMessage",
+                selector: selector
+            }],
+            model: {},
+            messageLocator: fluid.messageLocator({}, fluid.stringTemplate)
+        });
+        jqUnit.assertEquals("Messagekey resolves to undefined", "[No messagecodes provided]", $(selector).text());
+    });
   };
   })(jQuery); 

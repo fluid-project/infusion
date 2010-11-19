@@ -138,7 +138,8 @@ fluid_1_2 = fluid_1_2 || {};
   var boundMap = {
       UISelect:   ["selection", "optionlist", "optionnames"],
       UILink:     ["target", "linktext"],
-      UIVerbatim: ["markup"]
+      UIVerbatim: ["markup"],
+      UIMessage:  ["messagekey"]
   };
   
   renderer.boundMap = fluid.transform(boundMap, fluid.arrayToHash);
@@ -759,7 +760,7 @@ fluid_1_2 = fluid_1_2 || {};
       function resolveArgs(args) {
           if (!args) {return args;}
           return fluid.transform(args, function(arg, index) {
-              upgradeBound(args, index, renderOptions.model);
+              upgradeBound(args, index, renderOptions.model, renderOptions.resolverGetConfig);
               return args[index].value;
           });
       }
@@ -772,7 +773,7 @@ fluid_1_2 = fluid_1_2 || {};
                  torender.value = "[No messageLocator is configured in options - please consult documentation on options.messageSource]";
               }
               else {
-                 upgradeBound(torender, "messagekey", renderOptions.model);
+                 upgradeBound(torender, "messagekey", renderOptions.model, renderOptions.resolverGetConfig);
                  var resArgs = resolveArgs(torender.args);
                  torender.value = renderOptions.messageLocator(torender.messagekey.value, resArgs);
               }
@@ -1395,6 +1396,9 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.messageLocator = function (messageBase, resolveFunc) {
         resolveFunc = resolveFunc || fluid.stringTemplate;
         return function (messagecodes, args) {
+            if (!messagecodes) {
+                return "[No messagecodes provided]";
+            }
             if (typeof(messagecodes) === "string") {
                 messagecodes = [messagecodes];
             }

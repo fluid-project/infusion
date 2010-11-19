@@ -142,6 +142,62 @@ fluid.registerNamespace("fluid.tests");
         assertRenderedText(renderRecs, censored);      
     }
     
+    var testMessageRepeat = function (that) {
+        that.refreshView();
+        var tablinks = that.locate("tabLink");
+        jqUnit.assertEquals("Existin string relative should be found", "Acquisition", tablinks.eq(0).text());
+        jqUnit.assertEquals("Nonexisting string relative should be notified of", "[No messagecodes provided]", tablinks.eq(1).text());
+        jqUnit.assertEquals("Nonexisting string relative should be notified of", "[No messagecodes provided]", that.locate("unmatchedMessage").text());
+    };
+    
+    compTests.test("FLUID-3819 test: messagekey with no value", function() {
+        var that = fluid.tests.rendererComponentTest(".renderer-component-test-repeat", {
+            resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
+            model: {
+                recordlist: {
+                    test: {
+                        acquisition: {
+                            "name": "acq",
+                            href: "#HREF1"
+                        }, 
+                        objects: {
+                            href: "#HREF1"
+                        }
+                    }
+                }
+            },
+            selectors: {
+                "tab:": ".csc-tabs-tab",
+                tabLink: ".csc-tabs-tab-link",
+                unmatchedMessage: ".csc-unmatchedMessage"
+            },
+            strings: {
+                "acq": "Acquisition",
+                "cat": "Cataloging"
+            },
+            protoTree: {
+                expander: {
+                    repeatID: "tab:",
+                    tree: {
+                        tabLink: {
+                            target: "${{tabInfo}.href}",
+                            linktext: {
+                                messagekey: "${{tabInfo}.name}"
+                            }
+                        }
+                    },
+                    type: "fluid.renderer.repeat",
+                    pathAs: "tabInfo",
+                    controlledBy: "recordlist.test"
+                },
+                unmatchedMessage: {
+                    messagekey: "${notThere}"
+                }
+            }
+        });
+        testMessageRepeat(that);
+    });
+    
     compTests.test("Renderer component with custom resolver", function() {
         var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
             resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)]
@@ -185,7 +241,7 @@ fluid.registerNamespace("fluid.tests");
                 children: [
                     {ID: "thingery",
                      componentType: "UIMessage",
-                     messagekey: "myKey",
+                     messagekey: {value: "myKey"},
                      args: ["thing", 3, false, "value1"]
                     },
                     {ID: "boundValue", 
