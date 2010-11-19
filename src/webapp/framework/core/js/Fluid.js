@@ -1103,23 +1103,31 @@ var fluid = fluid || fluid_1_2;
     /** Can through a list of objects, removing those which match a predicate. Similar to
      * jQuery.grep, only acts on the list in-place by removal, rather than by creating
      * a new list by inclusion.
-     * @param list {Array} The list of objects to be scanned over.
+     * @param source {Array|Object} The list of objects to be scanned over.
      * @param fn {Function} A predicate function determining whether an element should be
      * removed. This accepts the standard signature (object, index) and returns a "truthy"
      * result in order to determine that the supplied object should be removed from the list.
      * @return The list, transformed by the operation of removing the matched elements. The
      * supplied list is modified by this operation.
      */
-    fluid.remove_if = function (list, fn) {
-        for (var i = 0; i < list.length; ++ i) {
-            if (fn(list[i], i)) {
-                list.splice(i, 1);
-                --i;
+    fluid.remove_if = function (source, fn) {
+        if (fluid.isArrayable(source)) {
+            for (var i = 0; i < source.length; ++i) {
+                if (fn(source[i], i)) {
+                    source.splice(i, 1);
+                    --i;
+                }
             }
         }
-        return list;
+        else {
+            for (var key in source) {
+                if (fn(source[key], key)) {
+                    delete source[key];
+                }
+            }
+        }
+        return source;
     };
-
     
     // Other useful helpers.
     

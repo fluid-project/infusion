@@ -33,7 +33,20 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertDeepEq("Remove first two ", [2, 4, 6, 8], fluid.remove_if([7, 1, 2, 4, 6, 8], isOdd));
             jqUnit.assertDeepEq("Remove last two ", [2, 4, 6, 8], fluid.remove_if([2, 4, 6, 8, 9, 11], isOdd));
             jqUnit.assertDeepEq("Remove all ", [], fluid.remove_if([1, 3, 5, 7], isOdd));
-            jqUnit.assertDeepEq("Remove from nothing ", [], fluid.remove_if([], isOdd));    
+            jqUnit.assertDeepEq("Remove from nothing ", [], fluid.remove_if([], isOdd));
+            jqUnit.assertDeepEq("Remove nothing", {"two": 2, "four": 4, "six": 6, "eight": 8}, 
+                fluid.remove_if({"two": 2, "four": 4, "six": 6, "eight": 8}, isOdd));
+            jqUnit.assertDeepEq("Remove first", {"two": 2, "four": 4, "six": 6, "eight": 8}, 
+                fluid.remove_if({"one": 1, "two": 2, "four": 4, "six": 6, "eight": 8}, isOdd));
+            jqUnit.assertDeepEq("Remove last", {"two": 2, "four": 4, "six": 6, "eight": 8}, 
+                fluid.remove_if({"two": 2, "four": 4, "six": 6, "eight": 8, "nine": 9}, isOdd));
+            jqUnit.assertDeepEq("Remove first two", {"two": 2, "four": 4, "six": 6, "eight": 8}, 
+                fluid.remove_if({"seven": 7, "one": 1, "two": 2, "four": 4, "six": 6, "eight": 8}, isOdd));
+            jqUnit.assertDeepEq("Remove last two", {"two": 2, "four": 4, "six": 6, "eight": 8}, 
+                fluid.remove_if({"two": 2, "four": 4, "six": 6, "eight": 8, "nine": 9, "eleven": 11}, isOdd));
+            jqUnit.assertDeepEq("Remove all", {}, 
+                fluid.remove_if({"one": 1, "three": 3, "five": 5, "seven": 7}, isOdd));
+            jqUnit.assertDeepEq("Remove from nothing", {}, fluid.remove_if({}, isOdd));    
         });
 
         fluidJSTests.test("transform", function() {
