@@ -672,6 +672,8 @@ fluid_1_2 = fluid_1_2 || {};
             }
         };
         
+        that.container.attr("role", "application");
+        
         that.events.initiatePageChange.addListener(
             function (arg) {
                 var newModel = fluid.copy(that.model);
