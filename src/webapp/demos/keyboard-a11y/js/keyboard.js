@@ -32,7 +32,6 @@ var demo = demo || {};
     var displayImage = function (thumb, thumbContainer, image) {
         // Remove the 'selected' styling from the thumbnails.
         var images = $("img", thumbContainer);
-        images.removeClass(demo.imageViewer.styles.activated);
         images.attr("aria-selected", false);
 
         // Display the selected image in the main viewer.
@@ -41,7 +40,6 @@ var demo = demo || {};
         image.attr("alt", thumb.attr("alt"));
         
         // update the current selection
-        thumb.addClass(demo.imageViewer.styles.activated);
         thumb.attr("aria-selected", true);
 
     };
@@ -78,8 +76,12 @@ var demo = demo || {};
         thumbContainer.fluid("tabbable");
 
         //*** Use the Keyboard Accessibility Plugin to make the image thumbnails selectable
-        // This uses the defaults for everything but these event handlers
+        // This uses the defaults for almost everything but the event handlers
         thumbContainer.fluid("selectable", {
+            // the default orientation is vertical, so we need to specify that this is horizontal.
+            // this affects what arrow keys will move selection
+            direction: fluid.a11y.orientation.HORIZONTAL,
+        
             onSelect: function (thumbEl) {
                 $(thumbEl).addClass(demo.imageViewer.styles.selected);
             },
@@ -115,7 +117,7 @@ var demo = demo || {};
         //*** Use the Keyboard Accessibility Plugin to make the start themselves selectable
         // This overrides some of the defaults
         starContainer.fluid("selectable", {
-            // the default orientation is vertical, so we need to specify that this is horizontal
+            // the default orientation is vertical, so we need to specify that this is horizontal.
             // this affects what arrow keys will move selection
             direction: fluid.a11y.orientation.HORIZONTAL,
 
@@ -218,8 +220,7 @@ var demo = demo || {};
             image: ".demo-image-mainImage"
         },
         styles: {
-            selected: "demo-selected",
-            activated: "demo-activated"
+            selected: "demo-selected"
         }
     };
 })(jQuery, fluid);
