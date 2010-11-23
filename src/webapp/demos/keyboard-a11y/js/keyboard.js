@@ -135,10 +135,8 @@ var demo = demo || {};
                 fiveStarRanker.hoverStars(starEl);
             },
             onUnselect: function (thumbEl) {
-                fiveStarRanker.refreshView();
-            },
-            onLeaveContainer: function () {
                 starContainer.removeClass(demo.imageViewer.styles.selected);
+                fiveStarRanker.refreshView();
             }
         });
     };
