@@ -112,11 +112,6 @@ var demo = demo || {};
         //*** Use the Keyboard Accessibility Plugin to ensure that the container is in the tab order
         starContainer.fluid("tabbable");
 
-        // show visual confirmation when focus is there
-        starContainer.focus(function () {
-            starContainer.addClass(demo.imageViewer.styles.selected);
-        });
-
         //*** Use the Keyboard Accessibility Plugin to make the start themselves selectable
         // This overrides some of the defaults
         starContainer.fluid("selectable", {
@@ -133,6 +128,8 @@ var demo = demo || {};
             rememberSelectionState: false,
 
             onSelect: function (starEl) {
+                // show visual confirmation when focus is there
+                starContainer.addClass(demo.imageViewer.styles.selected);
                 fiveStarRanker.hoverStars(starEl);
             },
             onUnselect: function (thumbEl) {

@@ -53,7 +53,6 @@ var demo = demo || {};
         } else {
             hovered = -1;
         }
-        
         stars.slice(hovered + 1, rank).attr("src", imgs.select);
         stars.slice(Math.max(hovered, rank), 5).attr("src", imgs.blank);
     };
