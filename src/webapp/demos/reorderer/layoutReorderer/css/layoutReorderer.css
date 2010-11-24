@@ -80,8 +80,9 @@
     opacity: 0.5;
     filter: alpha(opacity=50); /* ie opacity fix */
 }
-.demo-layoutReorderer-avatar .demo-layoutReorderer-module-dragbar, .demo-layoutReorderer-avatar .demo-layoutReorderer-module-content {
-    /* hide contents of modules while dragging. */
+.demo-layoutReorderer-avatar .demo-layoutReorderer-module-dragbar, 
+.demo-layoutReorderer-avatar .demo-layoutReorderer-module-content {
+    /* hide contents of the module's avatar, while dragging. */
     visibility: hidden;
 }
 
