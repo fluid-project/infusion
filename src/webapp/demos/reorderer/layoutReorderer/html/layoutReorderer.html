@@ -32,97 +32,106 @@
         
     </head>
     <body>
-        <div>
-            <h1 class="demo-title">The GadgetLife.com</h1>
-            <span class="demo-sub-title"><a href="">Skip to Main Content</a></span>
-        </div>
-        <div class="example">
-            <div id="fluid-LayoutReorderer-sample2" class="columnSetup3 fluid-vertical-order">
-                 <!-- invalid drag n drop message template -->
-                <p class="flc-reorderer-dropWarning demo-LayoutReorderer-dropWarning">This element can not be placed here.  The element underneath is locked.</p>
+        <div class="demo-layoutReorderer-container fl-container-flex" id="demo-layoutReorderer" >
+            <h1>The GadgetLife.com</h1>
 
-                    <div class="demo-myColumn fl-container-flex25 fl-force-left">
-                        <div class="demo-module locked">
-                            <div class="demo-module-dragbar"></div>
-                            <div class="demo-module-content">
-                                <h3>Fake Advertisement</h3>
-                                <div><p>"Buy ecoSkinns Today!<br/><br/>The only 100% organic screen protector."</p></div>
-                            </div>
-                        </div>
-                        <div class="demo-module demo-last-login">
-                            <div class="demo-module-dragbar"></div>
-                            <div class="demo-module-content">
-                                <p><strong>Last Login:</strong>
-                                <span>3 hours ago.</span></p>
-                                <p>Users Online: 213<br/>Friends Online: 3</p>
-                            </div>
+            <div class="columnSetup3 fluid-vertical-order">
+             <!-- invalid drag n drop message template -->
+                <p class="flc-reorderer-dropWarning demo-layoutReorderer-dropWarning">This element can not be placed here.  The element underneath is locked.</p>
+
+                <!-- Column #1 -->
+                <div class="flc-reorderer-column fl-container-flex25 fl-force-left">
+                    <div class="flc-reorderer-module demoSelector-layoutReorderer-locked demo-layoutReorderer-locked">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar"></div>
+                        <div class="demo-layoutReorderer-module-content">
+                            <h2>Fake Advertisement</h2>
+                            "Buy ecoSkinns Today!<br/>
+                            The only 100% organic screen protector."
                         </div>
                     </div>
-                    <div class="demo-myColumn fl-container-flex50 fl-force-left">                    
-                        <div class="demo-module locked">
-                            <div class="demo-module-dragbar"></div>
-                            <div class="demo-module-content demo-making-of-a-need">
-                                <div class="lastest-issue">Latest issue: <br/>
-                                <img src="../../../../components/reorderer/images/RedApple.jpg" alt="Red apple thumbnail" />
-                                </div>
-                                <div>
-                                     <h2>The Making of a Need</h2>
-                                     <p>How something that didn't exist suddenly becomes something we can't live without.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="demo-module">
-                            <div class="demo-module-dragbar"></div>
-                            <div class="demo-module-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque bibendum ultricies scelerisque.  Aliquam ut felis quis elit malesuada rhoncus nec at sem.</div>
-                        </div>
-                        <div class="demo-module">
-                            <div class="demo-module-dragbar"></div>
-                            <div class="demo-module-content demo-banana-div">
-                                <img src="../../../../components/reorderer/images/Banana.jpg" alt="Banana thumbnail" />
-                                <p>Ut non turpis libero, euismod tempus ante.  Maecenas placerat accumsan lacus eget bibendum. </p>								
-                            </div>
+                    <div class="flc-reorderer-module demo-layoutReorderer-module demo-last-login">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar"></div>
+                        <div class="demo-layoutReorderer-module-content">
+                            <h2>User Information</h2>
+                            <ul>
+                            <li><strong>Last Login:</strong> 3 hours ago.</li>
+                            <li><strong>Users Online:</strong> 213.</li>
+                            <li><strong>Friends Online:</strong> 3</li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="demo-myColumn fl-container-flex25 fl-force-left">
-                        <div class="demo-module">
-                            <div class="demo-module-dragbar"></div>
-                            <div class="demo-module-content">
-                                <h3>News Ticker</h3>
-                                <ul>
-                                    <li>
-                                        <span>October 10, 2010</span>
-                                        <p>"Orange Inc. now shipping juicePads with v2.1 software."</p>
-                                    </li>
-                                    <li>
-                                        <span>October 2, 2010</span>
-                                        <p>"VIM introduces the gleeBook targeting the enterprise for $199 with 3 year contract."</p>
-                                    </li>
-                                </ul>
-                            </div>
+                </div>
+                
+                <!-- Column #2 -->
+                <div class="flc-reorderer-column fl-container-flex50 fl-force-left">
+                    <div class="flc-reorderer-module demoSelector-layoutReorderer-locked demo-layoutReorderer-locked">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar"></div>
+                        <div class="demo-layoutReorderer-module-content">
+                            <h2>Latest issue: The Making of a Need</h2>
+                            <img src="../images/RedApple.jpg" alt="Image of a Red Delicious apple." />
+                            
+                            How something that didn't exist suddenly becomes something we can't live without.
+                            <br />
                         </div>
-                        <div class="demo-module">
-                            <div class="demo-module-dragbar"></div>
-                            <div class="demo-module-content">
-                                <h3>Survey Results</h3>
-                                <span>Do you plan on buying a new juicePad?</span>
-                                <ul>
-                                    <li>43% - Yes! Take my money!</li>
-                                    <li>23% - Yes, if the price drops.</li>
-                                    <li>15% - Not interested.</li>
-                                    <li>15% - No. Going with the competition.</li>
-                                    <li>4% - No opinion.</li>
-                                </ul>
-                            </div>
+                    </div>
+                    
+                    <div class="flc-reorderer-module demo-layoutReorderer-module">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar"></div>
+                        <div class="demo-layoutReorderer-module-content">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque bibendum ultricies scelerisque.  Aliquam ut felis quis elit malesuada rhoncus nec at sem.
+                        </div>
+                    </div>
+                    
+                    <div class="flc-reorderer-module demo-layoutReorderer-module">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar"></div>
+                        <div class="demo-layoutReorderer-module-content">
+                            <img src="../images/Banana.jpg" alt="Banana thumbnail" />
+                            Ut non turpis libero, euismod tempus ante.  Maecenas placerat accumsan lacus eget bibendum. 
+                             <br />
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Column #3 -->
+                <div class="flc-reorderer-column fl-container-flex25 fl-force-left">
+                    <div class="flc-reorderer-module demo-layoutReorderer-module">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar"></div>
+                        <div class="demo-layoutReorderer-module-content">
+                            <h2>News</h2>
+                            <ul>
+                                <li>
+                                    <strong>October 10, 2010</strong>
+                                    <em>"Orange Inc. now shipping juicePads with v2.1 software."</em>
+                                </li>
+                                <li>
+                                    <strong>October 2, 2010</strong>
+                                    <em>"VIM introduces the gleeBook targeting the enterprise for $199 with 3 year contract."</em>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="flc-reorderer-module demo-layoutReorderer-module">
+                        <div class="demoSelector-layoutReorderer demo-layoutReorderer-module-dragbar"></div>
+                        <div class="demo-layoutReorderer-module-content">
+                            <h2>Survey Results</h2>
+                            <span>Do you plan on buying a new juicePad?</span>
+                            <ul>
+                                <li>43% - Yes! Take my money!</li>
+                                <li>23% - Yes, if the price drops.</li>
+                                <li>15% - Not interested.</li>
+                                <li>15% - No. Going with the competition.</li>
+                                <li>4% - No opinion.</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            <p class="demo-LayoutReorderer-keyboard-cmd">
+            <p class="fl-force-right">
                 <strong>Keyboard commands:</strong> Arrow keys moves selection. CTRL + Arrow moves selected element.
             </p>
         </div>
         <script type="text/javascript">
-            demo.initLayoutReorderer();
+            demo.initlayoutReorderer();
         </script>
     </body>
 </html>

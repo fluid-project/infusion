@@ -16,30 +16,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var demo = demo || {};
 (function ($, fluid) {
-	demo.initLayoutReorderer = function () {
-        /**
-         * Default focus on "The Making of a Need" portlet
-         */
-        $(".demo-sub-title").click(function (event) {
-            $(".demo-making-of-a-need-portlet").focus();
-            return false;
-        });
-
-        fluid.reorderLayout("#fluid-LayoutReorderer-sample2", {
+	demo.initlayoutReorderer = function () {
+        fluid.reorderLayout("#demo-layoutReorderer", {
             selectors: {
-                columns: ".demo-myColumn",
-                modules: ".demo-module",
-                lockedModules: ".locked",
-                grabHandle: ".demo-module-dragbar",
-                dropWarning: ".demo-LayoutReorderer-dropWarning"
+                lockedModules: ".demoSelector-layoutReorderer-locked",
+                grabHandle: ".demoSelector-layoutReorderer",
             },
             styles: {
-                defaultStyle: "demo-LayoutReorderer-movable-default",
-                selected: "demo-LayoutReorderer-movable-selected",
-                dragging: "demo-LayoutReorderer-movable-dragging",
-                mouseDrag: "demo-LayoutReorderer-movable-mousedrag",
-                dropMarker: "demo-LayoutReorderer-dropMarker",
-                avatar: "demo-LayoutReorderer-avatar"
+                defaultStyle: "demo-layoutReorderer-movable-default",
+                selected: "demo-layoutReorderer-movable-selected",
+                dragging: "demo-layoutReorderer-movable-dragging",
+                mouseDrag: "demo-layoutReorderer-movable-mousedrag",
+                dropMarker: "demo-layoutReorderer-dropMarker",
+                avatar: "demo-layoutReorderer-avatar"
             },
             disableWrap: true
         });

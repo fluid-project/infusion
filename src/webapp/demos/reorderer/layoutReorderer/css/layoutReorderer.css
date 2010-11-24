@@ -1,176 +1,116 @@
-body {
-    font-family: verdana, sans-serif;
-    font-size: 1em;	
-    border: 1px solid #808285;
+
+.demo-layoutReorderer-container {
+    width:95%;
+    height: 100%;
+    margin: 0 auto;
     background-color: #ccd3ff;
-    float: left;
-    padding-left: 6px;
+    overflow:auto;
+}
+ 
+.demo-layoutReorderer-container h2 {
+    margin-top: 0px;
 }
 
-img {
-    border: 1px solid #000;
-    max-width: 100%;
+.demo-layoutReorderer-container:focus{
+    outline: none; /* overrides fss-reset.css */
 }
 
-h3 {
-    padding: 0px;
-    margin: 0px;
+.demo-layoutReorderer-container ul li {
+    padding-bottom:0.5em;
 }
 
-ul {
-    margin: 0px;
-}
-ul li {
-    list-style-type: none;
-    margin:0px;
-    padding:0px;
-    padding-bottom: 15px;
-}
-ul li p {
-    margin: 0px;
-}
-
-.italic {
-    font-style: italic;
-}
-
-.demo-title {
-    display: inline;
-    font-style: italic;
-}
-
-.demo-sub-title {
-    padding-left: 5px;
-    font-size: 0.8em;
-}
-
-/* last-login box */
-.demo-last-login span {
-    padding-left: 12px;
-}
-.demo-last-login strong {
-    display: block;
-}
-
-/* the making of a need */
-.demo-making-of-a-need {
-    min-height: 170px;
-}
-.demo-making-of-a-need div.lastest-issue {
-    float: left;
-    font-style: italic;
-    padding-right: 6px;
-}
-
-/* the div box with the banana image */
-.demo-banana-div {
-    min-height: 130px;
-}
-.demo-banana-div img{
-    float: right;
-}
-
-.demo-LayoutReorderer-keyboard-cmd {
-    clear: both;
-    text-align: right;
-    font-size: 0.9em;
-}
-
-.demo-module {
+.demo-layoutReorderer-module,
+.demo-layoutReorderer-module,
+.demo-layoutReorderer-locked  {
     border: 1px solid #808285;
-    background-color: #fff;
     margin: 6px;
+    background-color: #fff;
 }
-/* dragbar is the bar on top of each module */
-.demo-module-dragbar {
+
+.demo-layoutReorderer-module-dragbar {
+    /* dragbar is the bar on top of each module */
     cursor: move;
     height: 20px;
-    background-color: #27aae1;
-    border: 3px solid #27aae1;
-    border-right: 5px solid #27aae1;
+    background-color: #A5CFEF;
     background-position: right center;
     background-repeat: no-repeat;
-    background-image: url("../images/move.png");	
+    background-image: url("../images/move.png");
 }
+
+.demo-layoutReorderer-locked .demo-layoutReorderer-module-dragbar {
+    /* Locked module */
+    cursor: default;
+    background-color: #fff;
+    background-image: url("../images/locked.png");	
+    background-position: right center;
+}
+
 /* 
  * demo-module-content is the box below the dragbar, which contains the
  * actual content of the module
  */
-.demo-module-content {
+.demo-layoutReorderer-module-content {
     padding: 6px;
+	width: 95%;
+    overflow: auto;
 }
 
-/** fluid-LayoutReorderer styles */
-.demo-LayoutReorderer-avatar {
-    background-color:#fff;
-    color:#fff;
-    border:3px solid #21409a;
-    height:100%;
-    width: 100%;
+.demo-layoutReorderer-module-content img {
+    border: 1px solid #afafaf;
+    float:left;
+    margin-right: 10px;
+    width: 30%;
+}
+	
+.demo-layoutReorderer-movable-hover, .demo-layoutReorderer-movable-selected{
+    outline: 2px solid #000;
+}
+
+.demo-layoutReorderer-list-emphasis {
+    font-weight: bold;
+}
+
+/**
+ * Interaction styling.
+ */
+
+.demo-layoutReorderer-avatar {
+    background-color:#9fff9f;
+    outline: 2px solid #000;
     opacity: 0.5;
     filter: alpha(opacity=50); /* ie opacity fix */
 }
-.demo-LayoutReorderer-avatar .demo-module-dragbar, .demo-LayoutReorderer-avatar .demo-module-content {
+.demo-layoutReorderer-avatar .demo-layoutReorderer-module-dragbar, .demo-layoutReorderer-avatar .demo-layoutReorderer-module-content {
+    /* hide contents of modules while dragging. */
     visibility: hidden;
 }
-.demo-LayoutReorderer-movable-default {
-    background-color: #fff;
-    border: 1px solid #6d6e71;
-    color: #000;
-}
-.demo-LayoutReorderer-movable-dragging {
+
+.demo-layoutReorderer-movable-dragging {
     position: relative;
     left: 10px;
-    border: 3px solid #21409a;	
 }
-.demo-LayoutReorderer-movable-mousedrag {
-    background-color: #fff;
-    color: #fff;
-    border: 3px solid #000;
-    opacity: 0.5;
-    filter: alpha(opacity=50); /* ie opacity fix */
+
+.demo-layoutReorderer-movable-mousedrag {
+    /* hide the original module while being dragged. */
+    display:none;
 }
-.demo-LayoutReorderer-movable-mousedrag .demo-module-dragbar {
-    background-color: #bdbec0;
-    border: 3px solid #bdbec0;
-    border-right: 5px solid #bdbec0;
-}
-.demo-LayoutReorderer-movable-mousedrag .demo-module-content, .demo-LayoutReorderer-movable-mousedrag a {
-    color: #000;
-}	
-.demo-LayoutReorderer-movable-hover, .demo-LayoutReorderer-movable-selected{
-    border: 3px solid #21409a;	
-}
-.demo-LayoutReorderer-movable-selected {
-    margin: 4px;
-}
-.demo-LayoutReorderer-dropMarker {
-    background-color : #00a651;
-    height:3px;
-    padding:0 0 0 0;
+
+.demo-layoutReorderer-dropMarker {
+    background-color: #00a651;
+    height: 3px;
+    padding: 0 0 0 0;
     margin-left: 1em;
     margin-right: 1em;
 }
-.demo-LayoutReorderer-dropWarning {
+
+.demo-layoutReorderer-dropWarning {
     border: 3px solid black;
-    background-color: #fffcd6;
+    background-color: #ffffff;
     background-image: url('../images/info.png');
     background-repeat: no-repeat;
     background-position: left center;
     display: none;
-    opacity: 1;
     padding: 5px 30px;
     z-index: 10;
-}
-
-/** overrider */
-.locked .demo-module-dragbar {
-    cursor: default;
-    background-color: #fff;
-    background-image: url("../images/locked.png");	
-    border: 3px solid #fff;
-    border-right: 5px solid #fff;
-}
-:focus{
-    outline: none; /* overrides fss-reset.css */
+    width:250px;
 }
