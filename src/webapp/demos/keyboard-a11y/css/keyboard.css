@@ -52,7 +52,7 @@ p.demo-right {
 /* Thumbnails */
 /**/
 .demo-container-imageThumbnails  {
-    height: 11.5em;
+    padding: 1em;
     background-color:#CCCBE4;
     border: 1px solid #000;
     text-align:center;
@@ -60,15 +60,11 @@ p.demo-right {
     white-space:nowrap;
     z-index:1;
     clear:both;
-}
-
-.demo-container-imageThumbnails ul {
     list-style:none outside none;
     margin:0;
-    margin-top:15px;
 }
 
-.demo-container-imageThumbnails ul li {
+.demo-container-imageThumbnails li {
     display:inline;
     margin:0.8em;
     text-align:center;
@@ -80,7 +76,7 @@ p.demo-right {
 	border:5px solid #fff;
 }
 
-.demo-container-imageThumbnails img.demo-selected,
+.demo-container-imageThumbnails li.demo-selected img,
 .demo-container-imageThumbnails img:hover {
     border: 5px solid black;
 }

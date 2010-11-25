@@ -23,15 +23,26 @@ var demo = demo || {};
     /**
      * Assign any relevant ARIA roles, states, properties to the image viewer.
      */
-    var setARIA = function (container, thumbContainer) {
+    var setARIA = function (container, thumbContainer, image) {
         container.attr("role", "application");
-        thumbContainer.attr("aria-controls", "image-preview");
-        $("img", thumbContainer).attr("aria-selected", false);
+        thumbContainer.attr("role", "listbox");
+        $("li", thumbContainer).attr({
+            "role": "listitem",
+            "aria-controls": "image-preview",
+            "aria-selected": false
+        });
+        /* TODO: Figure out how to announce changes in the image viewer
+        image.attr({
+            "role": "region",  
+            "aria-live": "polite", 
+            "aria-relevant": "all"
+        });
+        */
     };
 
     var displayImage = function (thumb, thumbContainer, image) {
         // Remove the 'selected' styling from the thumbnails.
-        var images = $("img", thumbContainer);
+        var images = $("li", thumbContainer);
         images.attr("aria-selected", false);
 
         // Display the selected image in the main viewer.
@@ -40,7 +51,7 @@ var demo = demo || {};
         image.attr("alt", thumb.attr("alt"));
         
         // update the current selection
-        thumb.attr("aria-selected", true);
+        thumb.parent().attr("aria-selected", true);
 
     };
 
@@ -49,7 +60,7 @@ var demo = demo || {};
      */
     var makeImageActivationHandler = function (thumbContainer, image, fiveStarRanker, model) {
         return function (evt) {
-            var thumb = $(evt.target);
+            var thumb = (evt.target.nodeName === "LI" ? $("img", evt.target) : $(evt.target));
             displayImage(thumb, thumbContainer, image);
             // update the five-star with the image's rank
             fiveStarRanker.setRank(model[thumb.attr("src")]);
@@ -180,7 +191,7 @@ var demo = demo || {};
         makeThumbnailsActivatable(that.thumbContainer, that.image, ranker, that.model);
 
         bindEventHandlers(ranker, that.model);
-        setARIA(that.container, that.thumbContainer);
+        setARIA(that.container, that.thumbContainer, that.image);
 
         // set up with the first image
         var firstThumb = $("img:first", that.thumbContainer);
