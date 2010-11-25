@@ -10,9 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global $*/
-/*global fluid*/
-/*global jqUnit*/
+/*global fluid, jQuery, jqUnit, expect*/
 
 (function ($) {
     $(document).ready(function () {
@@ -26,7 +24,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var options = {
             listeners: {
-                onModelChange: function(newModel, oldModel){
+                onModelChange: function (newModel, oldModel) {
                     pageChangeStats.pageNum = newModel.pageIndex;
                     pageChangeStats.oldPageNum = oldModel.pageIndex;
                 }
@@ -39,6 +37,53 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
             
             return fluid.pager.pagerBar(container, mockEvents, options);    
+        };
+        
+        
+        
+        /** Convenience rendered pager creator **/
+        var renderedPager = function (container, options) {
+            var defaultSetupOptions = {
+                columnDefs: [ 
+                    {
+                        key: "animal",
+                        valuebinding: "*.animal",  
+                        sortable: true
+                    }
+                ],
+                annotateColumnRange: "animal",
+                dataOffset: "pets",
+                bodyRenderer: "fluid.pager.selfRender",
+                model: {
+                    pageSize: 2
+                },
+                dataModel: {
+                    pets: [
+                        {
+                            animal: "dog"
+                        },
+                        {
+                            animal: "cat"
+                        },
+                        {
+                            animal: "bird"
+                        },
+                        {
+                            animal: "fish"
+                        }
+                    ]
+                },
+                pagerBar: {
+                    type: "fluid.pager.pagerBar",
+                    options: {
+                        pageList: {
+                            type: "fluid.pager.renderedPageList"
+                        }            
+                    }
+                }
+            };
+           
+            return fluid.pager(container, fluid.merge("replace", defaultSetupOptions, options));
         };
         
         /** Convenience test functions **/
@@ -205,6 +250,47 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 dataModel: {}
             });
             jqUnit.assertTrue("Pager has been successfully created", pager);
+        });
+        
+        tests.test("Pager tooltip", function () {
+            var pager = renderedPager("#rendered");
+            var pageLinksTop = $("a", pager.pagerBar.locate("pageLinks"));
+            var pageLinksBottom = $("a", pager.pagerBarSecondary.locate("pageLinks"));
+            var tooltips = $(".ui-tooltip-content");
+            var midPoint = tooltips.length / 2;
+            
+            var splitTooltips = {
+                top: tooltips.slice(0, midPoint),
+                bottom: tooltips.slice(midPoint)
+            };
+            
+            var tooltipContents = [
+                [
+                    {nodeName: "b", nodeText: "dog"},
+                    {nodeName: "b", nodeText: "cat"}
+                ],
+                [
+                    {nodeName: "b", nodeText: "bird"},
+                    {nodeName: "b", nodeText: "fish"}
+                ]
+            ];
+
+            var tooltipTest = function (location) {
+                return function (idx, link) {
+                    link = $(link);
+                    var tooltip = splitTooltips[location].eq(idx);
+    
+                    link.focus();
+                    jqUnit.assertTrue("The tooltip for page link " + (idx + 1) + ", in the " + location + " page bar is visible", tooltip.is(":visible"));
+                    jqUnit.assertEquals("Only 1 tooltip is visible", 1, tooltips.filter(":visible").length);
+                    fluid.testUtils.assertNode("The contents of the tooltip should be set", tooltipContents[idx], $("b", tooltip));
+                    link.blur();
+                    jqUnit.assertEquals("There shouldn't be any tooltips visible", 0, tooltips.filter(":visible").length);
+                };
+            };
+            
+            pageLinksTop.each(tooltipTest("top"));
+            pageLinksBottom.each(tooltipTest("bottom"));
         });
         
     });

@@ -275,20 +275,31 @@ fluid_1_2 = fluid_1_2 || {};
     // Initialize the tooltip once the document is ready.
     // For more details, see http://issues.fluidproject.org/browse/FLUID-1030
     var initTooltips = function (that) {
+        var tooltipStyle = that.options.styles.tooltip;
         var tooltipOptions = {
-            delay: that.options.tooltipDelay,
-            extraClass: that.options.styles.tooltip,
-            bodyHandler: function () { 
+            content: function () { 
                 return that.options.tooltipText;
             },
-            id: that.options.tooltipId,
-            showURL: false                        
+            position: {
+                my: "left top",
+                at: "left bottom",
+                offset: "0 5"
+            },
+            items: "*",
+            open: function(event) {
+                $(event.target).tooltip("widget").stop(false, true).hide().delay(that.options.tooltipDelay).fadeIn();
+            },
+            close: function(event) {
+                $(event.target).tooltip("widget").stop(false, true).hide().clearQueue();
+            }          
         };
         
         that.viewEl.tooltip(tooltipOptions);
+        that.viewEl.tooltip("widget").addClass(tooltipStyle);
         
         if (that.textEditButton) {
             that.textEditButton.tooltip(tooltipOptions);
+            that.textEditButton.tooltip("widget").addClass(tooltipStyle);
         }
     };
     
@@ -593,7 +604,7 @@ fluid_1_2 = fluid_1_2 || {};
             var markup = $("<a href='#_' class='flc-inlineEdit-textEditButton'></a>");
             markup.addClass(opts.styles.textEditButton);
             markup.text(opts.tooltipText);            
-            setTooltipTitle(markup, that.options.tooltipText);            
+            setTooltipTitle(markup, that.options.tooltipText);      
             
             /**
              * Set text for the button and listen

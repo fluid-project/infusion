@@ -118,6 +118,7 @@ fluid_1_2 = fluid_1_2 || {};
         options = $.extend(true, pagerBarOptions, options);
         var that = fluid.initView("fluid.pager.renderedPageList", container, options);
         options = that.options; // pick up any defaults
+        var idMap = {};
         var renderOptions = {
             cutpoints: [ {
                 id: "page-link:link",
@@ -130,7 +131,8 @@ fluid_1_2 = fluid_1_2 || {};
             {
                 id: "page-link:disabled",
                 selector: pagerBarOptions.selectors.pageLinkDisabled
-            }]
+            }],
+            idMap: idMap
         };
         
         if (options.linkBody) {
@@ -172,6 +174,17 @@ fluid_1_2 = fluid_1_2 || {};
                     pageTree[pageTree.length - 1].value = pageTree[pageTree.length - 1].value + strings.last;
                 }
                 events.onRenderPageLinks.fire(pageTree, newModel);
+                
+                //Destroys all the tooltips before rerendering the pagelinks.
+                //This will clean up the tooltips, which are all added to the end at the end of the DOM,
+                //and prevent the tooltips from sticking around when using the keyboard to activate
+                //the page links.
+                $.each(idMap, function (key, id) {
+                    var pageLink = fluid.jById(id);
+                    if (pageLink.tooltip) {
+                        pageLink.tooltip("destroy");
+                    }
+                });
                 fluid.reRender(template, root, pageTree, renderOptions);
                 updateStyles(that, newModel, oldModel);
             }
@@ -638,22 +651,28 @@ fluid_1_2 = fluid_1_2 || {};
                     var iValue = fetchValue(start);
                     var lValue = fetchValue(limit - 1);
                     
-                    var text = "<b>" + iValue + "</b><br/>&mdash;<br/><b>" + lValue + "</b>";
+                    var tooltipOpts = fluid.copy(that.options.tooltipOptions);
                     
-                    var decorator = {
-                        type: "jQuery",
-                        func: "tooltip",
-                        args: {
-                            delay: that.options.tooltipDelay,
-                            extraClass: that.options.styles.tooltip,
-                            bodyHandler: function () { 
-                                return text; 
-                            },
-                            showURL: false,
-                            id: that.options.tooltipId
+                    if (!tooltipOpts.content) {
+                        tooltipOpts.content = function () { 
+                            return fluid.stringTemplate(that.options.markup.rangeAnnotation, {
+                                first: iValue,
+                                last: lValue
+                            });
+                        };
+                    }
+                    
+                    var decorators = [
+                        {
+                            type: "jQuery",
+                            func: "tooltip",
+                            args: tooltipOpts
+                        },
+                        {
+                            identify: page
                         }
-                    };
-                    cell.decorators.push(decorator);
+                    ];
+                    cell.decorators = cell.decorators.concat(decorators);
                 }
             });
         });
@@ -779,9 +798,20 @@ fluid_1_2 = fluid_1_2 || {};
         
         annotateColumnRange: undefined,
         
-        tooltipDelay: 300,
-        
-        tooltipId: "tooltip",
+        tooltipOptions: {
+            position: {
+                my: "left top",
+                at: "left bottom",
+                offset: "0 5"
+            },
+            items: "*",
+            open: function(event) {
+                $(event.target).tooltip("widget").stop(false, true).show();
+            },
+            close: function(event) {
+                $(event.target).tooltip("widget").stop(false, true).hide();
+            }
+        },
         
         rangeAnnotator: {
             type: "fluid.pager.rangeAnnotator"
@@ -796,7 +826,6 @@ fluid_1_2 = fluid_1_2 || {};
         },
         
         styles: {
-            tooltip: "fl-pager-tooltip",
             ascendingHeader: "fl-pager-asc",
             descendingHeader: "fl-pager-desc"
         },
@@ -815,6 +844,10 @@ fluid_1_2 = fluid_1_2 || {};
             initiatePageSizeChange: null,
             onModelChange: null,
             onRenderPageLinks: null
+        },
+        
+        markup: {
+            rangeAnnotation: "<b> %first </b><br/>&mdash;<br/><b> %last </b>"
         }
     });
 })(jQuery, fluid_1_2);

@@ -143,6 +143,11 @@ with their licensing terms.
 
     * jQuery javascript library v1.4.2: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * jQuery UI javascript widget library v1.8: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
+    * jQuery UI tooltip plugin from the tooltip branch on github for jQuery UI v1.9: (MIT and GPL licensed http://docs.jquery.com/Licensing)
+            https://github.com/jquery/jquery-ui/tree/tooltip
+            commit  48a5977d3325869abd7b
+            tree    43fd0cda4af2cdcd33f5
+            parent  bdd815e8dcdeace8be6d 
     * jQuery QUnit revision 2dbf603: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
     * jQuery Chili code highlighter http://code.google.com/p/jquery-chili-js/ (MIT licensed)
     * Douglas Crockford's JSON parsing and stringifying methods (from 2007-11-06): http://www.json.org/ (Public Domain)
@@ -156,8 +161,6 @@ Other third party software
       (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js )
     * fluid.reset.css is based on YUI's CSS reset styling v2.5.2
       see: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
-    * jquery.tooltip.js is a jQuery tooltip plugin v1.3.  The tooltip was modified to make the tooltip ARIA compliant.
-      (see: http://bassistance.de/jquery-plugins/jquery-plugin-tooltip/) (MIT/GPL licensed)
     
 Readme
 ------
