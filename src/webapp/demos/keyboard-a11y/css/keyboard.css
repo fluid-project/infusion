@@ -38,7 +38,6 @@ p.demo-right {
     background-color:#FFFFFF;
     border: 0.1em solid #000;
     text-align:center;
-    margin-top:1em;
 }
 
 /* Stretch the image to fit the height view container, while maintaining the aspect ratio. */
@@ -84,18 +83,15 @@ p.demo-right {
 /**/
 /* Five Star Widget */
 /**/
-.demo-container-fiveStar .star-0 {
-    visibility: hidden;
-}
-
 .demo-container-fiveStar {
     background-color:#CCCBE4;
-    border-bottom: 1px solid #000;
+    border-top: 1px solid #000;
     border-right: 1px solid #000;
     border-left: 1px solid #000;
     text-align:center;
     padding: 1em 0;
     width:100%;
+    margin-top:1em;
 }
 
 .demo-container-fiveStar label {

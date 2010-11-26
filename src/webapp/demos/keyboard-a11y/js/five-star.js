@@ -34,13 +34,23 @@ var demo = demo || {};
     };
 
     /**
-     * The five-star widget is semantically a 'slider,' so apply appropriate
-     * ARIA role and attributes
+     * Apply appropriate ARIA role and attributes
      */
     var setARIA = function (that) {
-        that.container.attr("role", "slider");
-        that.container.attr("aria-valuemin", "1");
-        that.container.attr("aria-valuemax", "5");
+        that.container.attr("role", "radiogroup");
+        that.locate("stars").attr({
+            "role": "radio",
+            "aria-checked": false
+        });
+    };
+    
+    /**
+     * When the selected rank changes, update the ARIA to reflect the new value
+     */
+    var updateARIA = function (that, rank) {
+        var stars = that.locate("stars");
+        stars.attr("aria-checked", false);
+        $(stars[rank - 1]).attr("aria-checked", true);
     };
 
     /**
@@ -87,7 +97,7 @@ var demo = demo || {};
         that.setRank = function (rank) {
             var oldRank = that.model.rank;
             that.model.rank = rank;
-            that.container.attr("aria-valuenow", rank);
+            updateARIA(that, rank);
             that.events.modelChanged.fire(that.model.rank, oldRank);
             that.refreshView();
         };

@@ -31,13 +31,6 @@ var demo = demo || {};
             "aria-controls": "image-preview",
             "aria-selected": false
         });
-        /* TODO: Figure out how to announce changes in the image viewer
-        image.attr({
-            "role": "region",  
-            "aria-live": "polite", 
-            "aria-relevant": "all"
-        });
-        */
     };
 
     var displayImage = function (thumb, thumbContainer, image) {
@@ -225,7 +218,7 @@ var demo = demo || {};
     demo.imageViewer = {
         selectors: {
             thumbContainer: ".demo-container-imageThumbnails",
-            ranker: ".demo-container-fiveStar",
+            ranker: ".demo-fiveStar",
             image: ".demo-image-mainImage"
         },
         styles: {

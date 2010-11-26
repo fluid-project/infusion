@@ -23,10 +23,9 @@
             <h1>Gallery Viewer</h1>
             <div class="demo-instructions">
                 <p>Select an image to view in more detail.</p>
-                
                 <p class="demo-right"><strong>Keyboard Instructions:</strong> Arrow keys move selection. Space or Enter activates.</p>
             </div>
-				
+
              <ul class="demo-container-imageThumbnails fl-centered">
 				<li class="selectable"><img src="../images/Mangosteen.jpg" alt="mangosteen" /></li>
 				<li class="selectable"><img src="../images/Banana.jpg" alt="banana" /></li>
@@ -38,21 +37,22 @@
 				<li class="selectable"><img src="../images/Cherry.jpg" alt="cherry" /></li>
 				<li class="selectable"><img src="../images/Orange.jpg" alt="orange" /></li>
 			</ul>
-			
+
+            <div class="demo-container-fiveStar fl-centered">
+                <label for="ranking">Rank:</label>
+                <div id="ranking" class="demo-fiveStar">
+                    <img class="star-1" alt="one star" src="../images/star-blank.gif" />
+                    <img class="star-2" alt="two stars" src="../images/star-blank.gif" />
+                    <img class="star-3" alt="three stars" src="../images/star-blank.gif" />
+                    <img class="star-4" alt="four stars" src="../images/star-blank.gif" />
+                    <img class="star-5" alt="five stars" src="../images/star-blank.gif" />
+                </div>
+            </div>
+
 			<div id="image-preview" class="demo-container-imageViewer fl-centered">
 				<img class="demo-image-mainImage" src="../images/Banana.jpg" alt="" />
 			</div>
-			<div class="demo-container-fiveStar fl-centered">
-				<label for="ranking">Rank:</label>
-				<div id="ranking">
-					<img class="star-1" alt="one star" src="../images/star-blank.gif" />
-					<img class="star-2" alt="two stars" src="../images/star-blank.gif" />
-					<img class="star-3" alt="three stars" src="../images/star-blank.gif" />
-					<img class="star-4" alt="four stars" src="../images/star-blank.gif" />
-					<img class="star-5" alt="five stars" src="../images/star-blank.gif" />
-				</div>
-			</div>
-            
+
         </div>        
         <script type="text/javascript">
             demo.initImageViewer(".demo-container");
