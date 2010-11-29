@@ -843,7 +843,7 @@ fluid_1_2 = fluid_1_2 || {};
             text: "fl-inlineEdit-text",
             edit: "fl-inlineEdit-edit",
             invitation: "fl-inlineEdit-invitation",
-            defaultViewStyle: "fl-inlineEdit-invitation-text",
+            defaultViewStyle: "fl-inlineEdit-emptyText-invitation",
             focus: "fl-inlineEdit-focus",
             tooltip: "fl-inlineEdit-tooltip",
             editModeInstruction: "fl-inlineEdit-editModeInstruction",

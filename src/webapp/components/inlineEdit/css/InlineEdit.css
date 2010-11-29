@@ -1,8 +1,8 @@
 /* Themed Appearance + Themed States */
 
 .fl-inlineEdit-edit {
-	margin-left: -1px;
-	border  : 2px solid #0085FF;
+	margin-left : -1px;
+	border      : 2px solid #0085FF;
 }
 
 .fl-inlineEdit-underline {
@@ -19,9 +19,9 @@
 }
 
 .fl-inlineEdit-focus {
-    border  : 1px solid #0085FF;
-	padding: 1px 0px 0px 1px;
-	margin-bottom: 1px;
+	border        : 1px solid #0085FF;
+	padding       : 1px 0px 0px 1px;
+	margin-bottom : 1px;
 }
 
 .fl-inlineEdit-inlineBlock {
@@ -57,6 +57,11 @@
 .fl-inlineEdit-richText-invitation {
     background  : lightyellow;
     cursor      : pointer;
+}
+
+.fl-inlineEdit-emptyText-invitation  {
+    font-style : italic;
+    color      : #9f9f9f;
 }
 
 /* :focus */

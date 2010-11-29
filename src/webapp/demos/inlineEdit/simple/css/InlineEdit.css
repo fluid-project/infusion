@@ -1,15 +1,15 @@
 /* Themed Appearance + Themed States */
 
-.fl-inlineEdit-padding {
+.demo-inlineEdit-padding {
     padding-top : 0.5cm;
 }
 
-.fl-inlineEdit-title, .fl-inlineEdit-title-edit {
-    font : normal 2em sans-serif;
+.demo-inlineEdit-title, .demo-inlineEdit-title-edit {
+    font-size : 2em;
 }
 
-.fl-inlineEdit-indent {
-	margin: 1em;
+.demo-inlineEdit-indent {
+    margin: 1em;
 }
 
 .undoContainer :focus,
