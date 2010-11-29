@@ -101,7 +101,7 @@ a:hover{
 .demo-pager-head-members { width:25%; }
 .demo-pager-head-email { width:25%; }
 .demo-pager-head-role { width:15%; }
-.demo-pager-head-comments { }
+.demo-pager-head-comments { color: #000; }
 
 /***********************************************
  * Styles for pager size selector.

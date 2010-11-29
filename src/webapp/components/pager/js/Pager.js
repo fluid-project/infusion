@@ -32,8 +32,6 @@ fluid_1_2 = fluid_1_2 || {};
         }
         var pageLink = pageListThat.pageLinks.eq(newModel.pageIndex);
         pageLink.addClass(pageListThat.options.styles.currentPage); 
-
-
     }
     
     function bindLinkClick(link, events, eventArg) {
@@ -113,11 +111,24 @@ fluid_1_2 = fluid_1_2 || {};
             return togo;
         };
     };
+	
+    fluid.pager.setCurrentPageDesc = function (that) {
+		var descMarkup = $(that.options.markup.currentPageDescription, {
+			text: that.options.strings.currentPageIndexMsg,
+			"class": that.options.styles.currentPageDesc
+		});
+		
+		fluid.allocateSimpleId(descMarkup);
+		that.container.append(descMarkup);     
+        
+        return descMarkup;
+    }; 
     
     fluid.pager.renderedPageList = function (container, events, pagerBarOptions, options, strings) {
         options = $.extend(true, pagerBarOptions, options);
         var that = fluid.initView("fluid.pager.renderedPageList", container, options);
         options = that.options; // pick up any defaults
+        var currentPageDescId = fluid.pager.setCurrentPageDesc(that).attr("id");
         var idMap = {};
         var renderOptions = {
             cutpoints: [ {
@@ -140,28 +151,48 @@ fluid_1_2 = fluid_1_2 || {};
                 id: "payload-component",
                 selector: options.linkBody
             };
-        }        
+        }   
+		
+		var assembleComponet = function (page, isCurrent) {
+            var obj = {
+                ID: "page-link:link",
+                localID: page + 1,
+                value: page + 1,
+                pageIndex: page,
+                decorators: [
+                    {type: "jQuery",
+                         func: "click", 
+                         args: function (event) {
+						 	events.initiatePageChange.fire({pageIndex: page});
+							event.preventDefault();
+						}
+                     }
+                 ]
+            };
+            
+            if (isCurrent) {
+                obj.ID = "page-link:disabled";
+                obj.decorators = obj.decorators.concat([
+                    {type: "addClass",
+                         classes: that.options.styles.currentPage},                           
+                    {type: "jQuery",
+                        func: "attr", 
+                        args: ["aria-describedby", currentPageDescId] 
+                    }
+                ]);
+            }
+            
+            return obj;
+        };
+		     
         function pageToComponent(current) {
             return function (page) {
                 return page === -1? {
                     ID: "page-link:skip"
-                } : 
-                {
-                    ID: page === current? "page-link:link": "page-link:link",
-                    localID: page + 1,
-                    value: page + 1,
-                    pageIndex: page,
-                    decorators: [
-                        {type: "jQuery",
-                             func: "click", 
-                             args: function () {events.initiatePageChange.fire({pageIndex: page}); }
-                         },
-                        {type: page === current? "addClass" : "null",
-                             classes: that.options.styles.currentPage}
-                         ]
-                };
+                } : assembleComponet(page, page === current);
             };
         }
+		
         var root = that.locate("root");
         fluid.expectFilledSelector(root, "Error finding root template for fluid.pager.renderedPageList");
         
@@ -198,7 +229,10 @@ fluid_1_2 = fluid_1_2 || {};
                 root: ".flc-pager-links"
             },
             linkBody: "a",
-            pageStrategy: fluid.pager.everyPageStrategy
+            pageStrategy: fluid.pager.everyPageStrategy,
+			markup: {
+                currentPageDescription: "<div></div>"
+			}
         }
     );
     
@@ -261,8 +295,13 @@ fluid_1_2 = fluid_1_2 || {};
         
         styles: {
             currentPage: "fl-pager-currentPage",
+			currentPageDesc: "fl-offScreen-hidden",
             disabled: "fl-pager-disabled"
-        }
+        },
+        
+		strings: {
+            currentPageIndexMsg: "Current page"
+		}
     });
 
     function getColumnDefs(that) {
@@ -583,9 +622,18 @@ fluid_1_2 = fluid_1_2 || {};
         renderOptions: {}
     });
 
+    fluid.pager.summaryAria = function (element) {
+		element.attr({
+			"aria-relevant": "all",
+			"aria-atomic": "false",
+			"aria-live": "assertive",
+			"role": "status"
+		})     
+    };
 
     fluid.pager.summary = function (dom, options) {
         var node = dom.locate("summary");
+		fluid.pager.summaryAria(node);
         return {
             returnedOptions: {
                 listeners: {
@@ -593,7 +641,8 @@ fluid_1_2 = fluid_1_2 || {};
                         var text = fluid.stringTemplate(options.message, {
                             first: newModel.pageIndex * newModel.pageSize + 1,
                             last: fluid.pager.computePageLimit(newModel),
-                            total: newModel.totalRange
+                            total: newModel.totalRange,
+							currentPage: newModel.pageIndex + 1
                         });
                         if (node.length > 0) {
                             node.text(text);
@@ -768,7 +817,7 @@ fluid_1_2 = fluid_1_2 || {};
             options: null},
         
         summary: {type: "fluid.pager.summary", options: {
-            message: "%first-%last of %total items"
+            message: "Viewing page %currentPage. Showing records %first - %last of %total items"
         }},
         
         pageSize: {

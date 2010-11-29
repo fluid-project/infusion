@@ -266,10 +266,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             var tooltipContents = [
                 [
-                    {nodeName: "b", nodeText: "dog"},
-                    {nodeName: "b", nodeText: "cat"}
-                ],
-                [
                     {nodeName: "b", nodeText: "bird"},
                     {nodeName: "b", nodeText: "fish"}
                 ]
@@ -292,6 +288,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
             pageLinksTop.each(tooltipTest("top"));
             pageLinksBottom.each(tooltipTest("bottom"));
         });
+		
+		tests.test("Pager Current Page describedby", function () {
+			var pager = renderedPager("#rendered");
+			var currentPages = pager.pagerBar.locate("pageLinkDisabled");
+			
+			currentPages.each(function (idx, currentPage) {
+				var descElmID = $(currentPage).attr("aria-describedby");
+				var descElm = $("#" + descElmID);
+				jqUnit.assertTrue("aria-describedby was added to the current page list element", descElmID);
+				jqUnit.assertTrue("The description element exists", descElm);
+				jqUnit.assertEquals("The description is set", pager.pagerBar.options.strings.currentPageIndexMsg, descElm.text());
+			});
+		});
         
     });
 })(jQuery);
