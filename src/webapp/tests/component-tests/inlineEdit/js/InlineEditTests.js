@@ -817,7 +817,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var editModeInstruction = fluid.inlineEdit.setupEditModeInstruction(styles.editModeInstruction, editor.options.strings.editModeTooltip);
                 jqUnit.assertTrue("Keyboard instruction has fl-inlineEdit-editModeInstruction style", editModeInstruction.hasClass(styles.editModeInstruction));
                 
-                var display = fluid.inlineEdit.setupDisplayView(editor); 
+                var display = fluid.inlineEdit.setupDisplayText(editor); 
                 jqUnit.assertEquals("Display text is removed from the tab order", -1, display.attr("tabindex"));
                 
                 var button = fluid.inlineEdit.setupTextEditButton(editor);     

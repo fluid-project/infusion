@@ -268,10 +268,6 @@ fluid_1_2 = fluid_1_2 || {};
         }; 
     };    
     
-    var setTooltipTitle = function (element, title) {
-        fluid.wrap(element).attr("title", title);
-    };
-    
     // Initialize the tooltip once the document is ready.
     // For more details, see http://issues.fluidproject.org/browse/FLUID-1030
     var initTooltips = function (that) {
@@ -345,7 +341,7 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.inlineEdit = function (componentContainer, userOptions) {   
         var that = fluid.initView("inlineEdit", componentContainer, userOptions);
         
-        that.viewEl = fluid.inlineEdit.setupDisplayView(that);
+        that.viewEl = fluid.inlineEdit.setupDisplayText(that);
         
         that.displayView = fluid.initSubcomponent(that, "displayView", that.viewEl);
         $.extend(true, that.displayView, fluid.initSubcomponent(that, "displayAccessor", that.viewEl));
@@ -575,7 +571,7 @@ fluid_1_2 = fluid_1_2 || {};
      * 
      * @return {jQuery} The display text
      */
-    fluid.inlineEdit.setupDisplayView = function (that) {
+    fluid.inlineEdit.setupDisplayText = function (that) {
         var viewEl = that.locate("text");
 
         /*
@@ -585,7 +581,6 @@ fluid_1_2 = fluid_1_2 || {};
          */
         viewEl.attr("tabindex", "-1");
         viewEl.addClass(that.options.styles.text);
-        setTooltipTitle(viewEl, that.options.tooltipText);
         
         return viewEl;
     };
@@ -604,7 +599,6 @@ fluid_1_2 = fluid_1_2 || {};
             var markup = $("<a href='#_' class='flc-inlineEdit-textEditButton'></a>");
             markup.addClass(opts.styles.textEditButton);
             markup.text(opts.tooltipText);            
-            setTooltipTitle(markup, that.options.tooltipText);      
             
             /**
              * Set text for the button and listen
@@ -770,14 +764,6 @@ fluid_1_2 = fluid_1_2 || {};
         return {
             value: function (newValue) {
                 return $(element)[func](newValue);
-            }
-        };
-    };
-    
-    fluid.inlineEdit.richTextViewAccessor = function (element) {
-        return {
-            value: function (newValue) {
-                return $(element).html(newValue);
             }
         };
     };

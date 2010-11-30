@@ -45,6 +45,14 @@ fluid_1_2 = fluid_1_2 || {};
         };
     };
     
+    fluid.inlineEdit.richTextViewAccessor = function (element) {
+        return {
+            value: function (newValue) {
+                return $(element).html(newValue);
+            }
+        };
+    };        
+    
     var configureInlineEdit = function (configurationName, container, options) {
         var defaults = fluid.defaults(configurationName); 
         var assembleOptions = fluid.merge(defaults ? defaults.mergePolicy: null, {}, defaults, options);
@@ -86,7 +94,6 @@ fluid_1_2 = fluid_1_2 || {};
         if  (textEditButton.length === 0) {
             var markup = $("<a href='#_' class='flc-inlineEdit-textEditButton'></a>");
             markup.text(opts.strings.textEditButton);
-            markup.attr("title", opts.tooltipText);
             
             that.locate("text").after(markup);
             
@@ -238,8 +245,7 @@ fluid_1_2 = fluid_1_2 || {};
         modelComparator: fluid.inlineEdit.htmlComparator,
         blurHandlerBinder: fluid.inlineEdit.tinyMCE.blurHandlerBinder,
         displayModeRenderer: fluid.inlineEdit.richTextDisplayModeRenderer,
-        editModeRenderer: fluid.inlineEdit.tinyMCE.editModeRenderer,
-        renderKeyboardTooltip: false
+        editModeRenderer: fluid.inlineEdit.tinyMCE.editModeRenderer
     });
     
     
@@ -348,7 +354,6 @@ fluid_1_2 = fluid_1_2 || {};
         blurHandlerBinder: fluid.inlineEdit.FCKEditor.blurHandlerBinder,
         displayModeRenderer: fluid.inlineEdit.richTextDisplayModeRenderer,
         editModeRenderer: fluid.inlineEdit.FCKEditor.editModeRenderer,
-        renderKeyboardTooltip: false,
         FCKEditor: {
             BasePath: "fckeditor/"    
         }
@@ -449,7 +454,6 @@ fluid_1_2 = fluid_1_2 || {};
         blurHandlerBinder: fluid.inlineEdit.CKEditor.blurHandlerBinder,
         displayModeRenderer: fluid.inlineEdit.richTextDisplayModeRenderer,
         editModeRenderer: fluid.inlineEdit.CKEditor.editModeRenderer,
-        renderKeyboardTooltip: false,
         CKEditor: {
             // CKEditor-specific configuration goes here.
         }
@@ -494,8 +498,7 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.defaults("fluid.inlineEdit.dropdown", {
         applyEditPadding: false,
         blurHandlerBinder: fluid.inlineEdit.dropdown.blurHandlerBinder,
-        editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer,
-        renderKeyboardTooltip: false
+        editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer
     });
 })(jQuery, fluid_1_2);
 
