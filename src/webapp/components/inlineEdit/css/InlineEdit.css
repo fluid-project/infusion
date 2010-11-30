@@ -5,9 +5,10 @@
 	border      : 2px solid #0085FF;
 }
 
-.fl-inlineEdit-underline {
+.fl-inlineEdit-editableText {
     padding       : 2px 2px 1px 2px;
     border-bottom : 1px dotted #0086D8;
+    display: inline-block;    
 }
 
 .fl-inlineEdit-text {
@@ -23,10 +24,6 @@
 	padding       : 1px 0px 0px 1px;
 	margin-bottom : 1px;
 }
-
-.fl-inlineEdit-inlineBlock {
-    display: inline-block;
-}   
 
 /* Base Appearance & States Appearance */
 .fl-inlineEdit-tooltip {
