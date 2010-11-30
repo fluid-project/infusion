@@ -5,10 +5,13 @@
 	border      : 2px solid #0085FF;
 }
 
-.fl-inlineEdit-editableText {
+.fl-inlineEdit-simple-editableText {
     padding       : 2px 2px 1px 2px;
     border-bottom : 1px dotted #0086D8;
-    display: inline-block;    
+}
+
+.fl-inlineEdit-textContainer {
+    display: inline-block;    	
 }
 
 .fl-inlineEdit-text {

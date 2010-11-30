@@ -227,7 +227,7 @@ fluid_1_2 = fluid_1_2 || {};
         },
         styles: {
             invitation: "fl-inlineEdit-richText-invitation",
-            displayView: "fl-inlineEdit-inlineBlock",
+            displayView: "fl-inlineEdit-textContainer",
             text: ""
                 
         },
@@ -336,7 +336,7 @@ fluid_1_2 = fluid_1_2 || {};
         },
         styles: {
             invitation: "fl-inlineEdit-richText-invitation",
-            displayView: "fl-inlineEdit-inlineBlock",
+            displayView: "fl-inlineEdit-textContainer",
             text: ""
         },
         strings: {
@@ -436,7 +436,7 @@ fluid_1_2 = fluid_1_2 || {};
         },
         styles: {
             invitation: "fl-inlineEdit-richText-invitation",
-            displayView: "fl-inlineEdit-inlineBlock",
+            displayView: "fl-inlineEdit-textContainer",
             text: ""
         },
         strings: {

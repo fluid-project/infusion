@@ -833,7 +833,7 @@ fluid_1_2 = fluid_1_2 || {};
             focus: "fl-inlineEdit-focus",
             tooltip: "fl-inlineEdit-tooltip",
             editModeInstruction: "fl-inlineEdit-editModeInstruction",
-            displayView: "fl-inlineEdit-editableText",
+            displayView: "fl-inlineEdit-simple-editableText fl-inlineEdit-textContainer",
             textEditButton: "fl-offScreen-hidden"
         },
         
