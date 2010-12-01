@@ -69,17 +69,17 @@ var demo = demo || {};
     };    
 
     demo.initRichInlineEdit.selectors = {
-        undoContainer: ".undoContainer",
-        undoControl: ".undoControl",
-        redoContainer: ".redoContainer",
-        redoControl: ".redoControl"
+        undoContainer: ".demo-undoContainer",
+        undoControl: ".demo-undoControl",
+        redoContainer: ".demo-redoContainer",
+        redoControl: ".demo-redoControl"
     };
     
     demo.initRichInlineEdit.undoRenderer = function (that, targetContainer) {
         var markup = 
             "<span class='flc-undo demo-inlineEdit-inlinePadding'>" +
-            "<span class='undoContainer' role='button'><a href='#' class='undoControl'>Undo edit</a></span>" +
-            "<span class='redoContainer' role='button'><a href='#' class='redoControl'>Redo edit</a></span>" +
+            "<span class='demo-undoContainer' role='button'><a href='#' class='demo-undoControl'>Undo edit</a></span>" +
+            "<span class='demo-redoContainer' role='button'><a href='#' class='demo-redoControl'>Redo edit</a></span>" +
             "</span>";
         var markupNode = $(markup);
         var button = $("a", targetContainer);

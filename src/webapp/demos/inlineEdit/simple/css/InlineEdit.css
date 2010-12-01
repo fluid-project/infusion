@@ -12,7 +12,7 @@
     margin: 1em;
 }
 
-.undoContainer :focus,
-.redoContainer  :focus {
+.demo-undoContainer :focus,
+.demo-redoContainer  :focus {
     outline: 1px solid black;
 }

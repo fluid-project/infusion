@@ -16,11 +16,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 (function ($, fluid) {
     
-    var undoRenderer = function (that, targetContainer) {
+    demo.undoRenderer = function (that, targetContainer) {
         var markup = 
             "<span class='flc-undo'>" +
-            "<span class='undoContainer' role='button'><a href='#' class='undoControl'><img src='../images/inline_edit_undo_button_16x16.png' alt='Undo edit'></a></span>" +
-            "<span class='redoContainer' role='button'><a href='#' class='redoControl'><img src='../images/inline_edit_redo_button_16x16.png' alt='Redo edit'></a></span>" +
+            "<span class='demo-undoContainer' role='button'><a href='#' class='demo-undoControl'><img src='../images/inline_edit_undo_button_16x16.png' alt='Undo edit'></a></span>" +
+            "<span class='demo-redoContainer' role='button'><a href='#' class='demo-redoControl'><img src='../images/inline_edit_redo_button_16x16.png' alt='Redo edit'></a></span>" +
             "</span>";
         var markupNode = $(markup);
         targetContainer.append(markupNode);
@@ -31,7 +31,7 @@ var demo = demo || {};
      * Initialize all simple inline edit components present on the inline-edit 
      * demo.
      */
-    var inlineSimpleEditSetup = function () {
+    demo.initInlineEdit = function () {
           
         /**
          * Simple inline edits example.
@@ -41,7 +41,7 @@ var demo = demo || {};
                 type: "fluid.undoDecorator",
                 options: {
                     selectors: demo.initInlineEdit.selectors,
-                    renderer: undoRenderer
+                    renderer: demo.undoRenderer
                 }
             },
             styles: {
@@ -55,21 +55,17 @@ var demo = demo || {};
                 type: "fluid.undoDecorator",
                 options: {
                     selectors: demo.initInlineEdit.selectors,
-                    renderer: undoRenderer
+                    renderer: demo.undoRenderer
                 }
             },
             defaultViewText: "Edit this"
         });
     };
         
-    demo.initInlineEdit = function () {        
-        inlineSimpleEditSetup();
-    };
-    
     demo.initInlineEdit.selectors = {
-        undoContainer: ".undoContainer",
-        undoControl: ".undoControl",
-        redoContainer: ".redoContainer",
-        redoControl: ".redoControl"
+        undoContainer: ".demo-undoContainer",
+        undoControl: ".demo-undoControl",
+        redoContainer: ".demo-redoContainer",
+        redoControl: ".demo-redoControl"
     };    
 })(jQuery, fluid);
