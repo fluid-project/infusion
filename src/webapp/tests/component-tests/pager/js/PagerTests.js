@@ -78,7 +78,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     options: {
                         pageList: {
                             type: "fluid.pager.renderedPageList"
-                        }            
+                        }
                     }
                 }
             };
@@ -251,7 +251,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             });
             jqUnit.assertTrue("Pager has been successfully created", pager);
         });
-        
+
         tests.test("Pager tooltip", function () {
             var pager = renderedPager("#rendered");
             var pageLinksTop = $("a", pager.pagerBar.locate("pageLinks"));
@@ -272,35 +272,41 @@ https://source.fluidproject.org/svn/LICENSE.txt
             ];
 
             var tooltipTest = function (location) {
+                var toolTipIdx = 0;
                 return function (idx, link) {
                     link = $(link);
-                    var tooltip = splitTooltips[location].eq(idx);
+                    var tooltip = splitTooltips[location].eq(toolTipIdx);
     
                     link.focus();
-                    jqUnit.assertTrue("The tooltip for page link " + (idx + 1) + ", in the " + location + " page bar is visible", tooltip.is(":visible"));
-                    jqUnit.assertEquals("Only 1 tooltip is visible", 1, tooltips.filter(":visible").length);
-                    fluid.testUtils.assertNode("The contents of the tooltip should be set", tooltipContents[idx], $("b", tooltip));
+                    if (link.hasClass(pager.pagerBar.options.styles.currentPage)) {
+                        jqUnit.assertEquals("There shouldn't be any tooltips visible when the currentPage is focused", 0, tooltips.filter(":visible").length);
+                    } else {
+                        jqUnit.assertTrue("The tooltip for page link " + (idx + 1) + ", in the " + location + " page bar is visible", tooltip.is(":visible"));
+                        jqUnit.assertEquals("Only 1 tooltip is visible", 1, tooltips.filter(":visible").length);
+                        fluid.testUtils.assertNode("The contents of the tooltip should be set", tooltipContents[toolTipIdx], $("b", tooltip));
+                        toolTipIdx++;
+                    }
                     link.blur();
-                    jqUnit.assertEquals("There shouldn't be any tooltips visible", 0, tooltips.filter(":visible").length);
+                    jqUnit.assertEquals("There shouldn't be any tooltips visible when none of the pageLinks are focused", 0, tooltips.filter(":visible").length);
                 };
             };
             
             pageLinksTop.each(tooltipTest("top"));
             pageLinksBottom.each(tooltipTest("bottom"));
         });
-		
-		tests.test("Pager Current Page describedby", function () {
-			var pager = renderedPager("#rendered");
-			var currentPages = pager.pagerBar.locate("pageLinkDisabled");
-			
-			currentPages.each(function (idx, currentPage) {
-				var descElmID = $(currentPage).attr("aria-describedby");
-				var descElm = $("#" + descElmID);
-				jqUnit.assertTrue("aria-describedby was added to the current page list element", descElmID);
-				jqUnit.assertTrue("The description element exists", descElm);
-				jqUnit.assertEquals("The description is set", pager.pagerBar.options.strings.currentPageIndexMsg, descElm.text());
-			});
-		});
+        
+        tests.test("Pager Current Page describedby", function () {
+            var pager = renderedPager("#rendered");
+            var currentPages = $(".fl-pager-currentPage", pager.container);
+            
+            currentPages.each(function (idx, currentPage) {
+                var descElmID = $(currentPage).attr("aria-describedby");
+                var descElm = $("#" + descElmID);
+                jqUnit.assertTrue("aria-describedby was added to the current page list element", descElmID);
+                jqUnit.assertTrue("The description element exists", descElm);
+                jqUnit.assertEquals("The description is set", pager.pagerBar.options.strings.currentPageIndexMsg, descElm.text());
+            });
+        });
         
     });
 })(jQuery);

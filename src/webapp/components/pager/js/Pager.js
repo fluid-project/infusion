@@ -138,10 +138,6 @@ fluid_1_2 = fluid_1_2 || {};
             {
                 id: "page-link:skip",
                 selector: pagerBarOptions.selectors.pageLinkSkip
-            },
-            {
-                id: "page-link:disabled",
-                selector: pagerBarOptions.selectors.pageLinkDisabled
             }],
             idMap: idMap
         };
@@ -171,7 +167,7 @@ fluid_1_2 = fluid_1_2 || {};
             };
             
             if (isCurrent) {
-                obj.ID = "page-link:disabled";
+                obj.current = true;
                 obj.decorators = obj.decorators.concat([
                     {type: "addClass",
                          classes: that.options.styles.currentPage},                           
@@ -288,7 +284,6 @@ fluid_1_2 = fluid_1_2 || {};
         selectors: {
             pageLinks: ".flc-pager-pageLink",
             pageLinkSkip: ".flc-pager-pageLink-skip",
-            pageLinkDisabled: ".flc-pager-pageLink-disabled",
             previous: ".flc-pager-previous",
             next: ".flc-pager-next"
         },
@@ -711,17 +706,19 @@ fluid_1_2 = fluid_1_2 || {};
                         };
                     }
                     
-                    var decorators = [
-                        {
-                            type: "jQuery",
-                            func: "tooltip",
-                            args: tooltipOpts
-                        },
-                        {
-                            identify: page
-                        }
-                    ];
-                    cell.decorators = cell.decorators.concat(decorators);
+                    if (!cell.current) {
+                        var decorators = [
+                            {
+                                type: "jQuery",
+                                func: "tooltip",
+                                args: tooltipOpts
+                            },
+                            {
+                                identify: page
+                            }
+                        ];
+                        cell.decorators = cell.decorators.concat(decorators);
+                    }
                 }
             });
         });
