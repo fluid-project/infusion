@@ -480,6 +480,10 @@ fluid_1_2 = fluid_1_2 || {};
         element.removeClass(styles.descendingHeader);
         if (sort !== 0) {
             element.addClass(sort === 1? styles.ascendingHeader : styles.descendingHeader);
+            //aria-sort property are specified in the w3 WAI spec, ascending, descending, none, other.
+            //since pager currently uses ascending and descending, we do not support the others.
+            //http://www.w3.org/WAI/PF/aria/states_and_properties#aria-sort
+            element.attr('aria-sort', sort === 1? 'ascending' : 'descending'); 
         }
     }
     
