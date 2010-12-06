@@ -463,10 +463,36 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });
         
-         fluidJSTests.test("Attach and remove listeners", function () {
-             var testListener = function(shouldExecute) {
-                    jqUnit.assertTrue("This listener should be reached only once", shouldExecute);
-             };
+        fluidJSTests.test("messageResolver", function() {
+            var bundlea = {
+                key1: "value1a",
+                key2: "value2a"
+            };
+            var bundleb = {
+                key1: "value1b",
+                key3: "value3b"
+            };
+            var resolverParent = fluid.messageResolver({messageBase: bundlea});
+            var resolver = fluid.messageResolver({messageBase: bundleb, parents: [resolverParent]});
+            
+            var requiredLook = {
+                key1: "value1b",
+                key2: "value2a",
+                key3: "value3b",
+                key4: undefined
+            };
+            fluid.each(requiredLook, function(value, key) {
+                var looked = resolver.lookup([key]);
+                jqUnit.assertEquals("Resolve key " + key, value, looked? looked.template: looked);
+            });
+            jqUnit.assertEquals("Local fallback",  bundleb.key1, resolver.resolve(["key2", "key1"]));
+            jqUnit.assertEquals("Global fallback", bundlea.key2, resolver.resolve(["key4", "key2"]));
+        });
+        
+        fluidJSTests.test("Attach and remove listeners", function () {
+            var testListener = function(shouldExecute) {
+                   jqUnit.assertTrue("This listener should be reached only once", shouldExecute);
+            };
 
             expect(1);
             var firer = fluid.event.getEventFirer();

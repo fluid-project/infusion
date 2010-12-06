@@ -1387,34 +1387,7 @@ fluid_1_2 = fluid_1_2 || {};
          });
     };
   
-      
-    /** Converts a data structure consisting of a mapping of keys to message strings,
-     * into a "messageLocator" function which maps an array of message codes, to be 
-     * tried in sequence until a key is found, and an array of substitution arguments,
-     * into a substituted message string.
-     */
-    fluid.messageLocator = function (messageBase, resolveFunc) {
-        resolveFunc = resolveFunc || fluid.stringTemplate;
-        return function (messagecodes, args) {
-            if (!messagecodes) {
-                return "[No messagecodes provided]";
-            }
-            if (typeof(messagecodes) === "string") {
-                messagecodes = [messagecodes];
-            }
-            for (var i = 0; i < messagecodes.length; ++ i) {
-                var code = messagecodes[i];
-                var message = messageBase[code];
-                if (message === undefined) {
-                    continue;
-                }
-                return resolveFunc(message, args);
-            }
-            return "[Message string for key " + messagecodes[0] + " not found]";
-        };
-    };
-  
-    fluid.resolveMessageSource = function (messageSource) {
+    fluid.resolveMessageSource = function(messageSource) {
         if (messageSource.type === "data") {
             if (messageSource.url === undefined) {
                 return fluid.messageLocator(messageSource.messages, messageSource.resolveFunc);
@@ -1422,6 +1395,9 @@ fluid_1_2 = fluid_1_2 || {};
             else {
               // TODO: fetch via AJAX, and convert format if necessary
             }
+        }
+        else if (messageSource.type === "resolver") {
+            return messageSource.resolver.resolve;
         }
     };
     

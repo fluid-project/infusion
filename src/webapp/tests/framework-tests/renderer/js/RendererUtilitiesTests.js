@@ -87,15 +87,20 @@ fluid.registerNamespace("fluid.tests");
             },
             message: {
                 messagekey: "message"
+            },
+            deffoltmessage: {
+                messagekey: "deffolt"
             }
         },
         selectors: {
             recordType: ".csc-searchBox-recordType",
             message: ".csc-searchBox-message",
+            deffoltmessage: ".csc-searchBox-deffoltmessage",
             toIgnore: ".csc-searchBox-ignore"
         },
         repeatingSelectors: ["recordType"],
         selectorsToIgnore: ["toIgnore"],
+        parentBundle: "{globalBundle}",
         strings: {
             message: "A mess of messuage"          
         }
@@ -110,10 +115,17 @@ fluid.registerNamespace("fluid.tests");
     var compTests = jqUnit.testCase("Renderer component tests");
     
     compTests.test("Renderer component without resolver", function() {
-        var that = fluid.tests.rendererComponentTest(".renderer-component-test");
+        var globalMessages = {deffolt: "A globbal messuage"};
+        var globalBundle = fluid.messageResolver({messageBase: globalMessages});
+        var that = fluid.withEnvironment({globalBundle: globalBundle}, function() { 
+            return fluid.tests.rendererComponentTest(".renderer-component-test");
+        });
         that.refreshView();
         var renderMess = that.locate("message").text();
         jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
+        var renderDeffoltMess = that.locate("deffoltmessage").text();
+        jqUnit.assertEquals("Rendered message from global bundle", globalMessages.deffolt, renderDeffoltMess);
+        jqUnit.assertEquals("Resolver global message using local resolver", globalMessages.deffolt, that.messageResolver.resolve("deffolt"));
         var renderRecs = that.locate("recordType");
         var array = that.model.recordlist.deffolt;
         jqUnit.assertEquals("Rendered elements", array.length, renderRecs.length);

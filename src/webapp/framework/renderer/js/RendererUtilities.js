@@ -64,8 +64,7 @@ fluid_1_2 = fluid_1_2 || {};
   // options layout (model appears in both rOpts and eOpts)
     fluid.renderer.createRendererFunction = function (container, selectors, options, model, fossils) {
         options = options || {};
-        container = $(container);
-        var source = options.templateSource ? options.templateSource: {node: container};
+        var source = options.templateSource ? options.templateSource: {node: $(container)};
         var rendererOptions = fluid.renderer.modeliseOptions(options.rendererOptions, null, model);
         rendererOptions.fossils = fossils || {};
         
@@ -80,7 +79,8 @@ fluid_1_2 = fluid_1_2 || {};
             }
             var cutpointFn = options.cutpointGenerator || "fluid.renderer.selectorsToCutpoints";
             rendererOptions.cutpoints = rendererOptions.cutpoints || fluid.invokeGlobalFunction(cutpointFn, [selectors, options]);
-        
+            container = typeof(container) === "function"? container() : $(container);
+              
             if (templates) {
                 fluid.clear(rendererOptions.fossils);
                 fluid.reRender(templates, container, tree, rendererOptions);
@@ -102,8 +102,13 @@ fluid_1_2 = fluid_1_2 || {};
         fluid.fetchResources(that.options.resources); // TODO: deal with asynchrony
         
         var rendererOptions = that.options.rendererOptions || {};
+        var messageResolver;
         if (!rendererOptions.messageSource && that.options.strings) {
-            rendererOptions.messageSource = {type: "data", messages: that.options.strings}; 
+            messageResolver = fluid.messageResolver(
+                {messageBase: that.options.strings,
+                 resolveFunc: that.options.messageResolverFunction,
+                 parents: fluid.makeArray(that.options.parentBundle)});
+            rendererOptions.messageSource = {type: "resolver", resolver: messageResolver}; 
         }
         fluid.renderer.reverseMerge(rendererOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
 
@@ -124,21 +129,30 @@ fluid_1_2 = fluid_1_2 || {};
                 return that.options.resources.template.resourceText;
             };
         }
+        if (that.options.produceTree) {
+            that.produceTree = that.options.produceTree;  
+        }
         if (that.options.protoTree && !that.produceTree) {
             that.produceTree = function() {
                 return that.options.protoTree;
             }
         }
         fluid.renderer.reverseMerge(rendererFnOptions, that.options, ["resolverGetConfig", "resolverSetConfig"]);
+        if (rendererFnOptions.rendererTargetSelector) {
+            container = function() {return that.dom.locate(rendererFnOptions.rendererTargetSelector)};
+        }
        
         var rendererFn = fluid.renderer.createRendererFunction(container, that.options.selectors, rendererFnOptions, that.model, renderer.fossils);
         
         that.render = renderer.render = rendererFn;
         that.renderer = renderer;
+        if (messageResolver) {
+            that.messageResolver = messageResolver;
+        }
 
         if (that.produceTree) {
             that.refreshView = renderer.refreshView = function() {
-                renderer.render(that.produceTree());
+                renderer.render(that.produceTree(that));
             }
         }
         
@@ -146,11 +160,9 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
     var removeSelectors = function (selectors, selectorsToIgnore) {
-        if (selectorsToIgnore) {
-            fluid.each(selectorsToIgnore, function (selectorToIgnore) {
-                delete selectors[selectorToIgnore];
-            });
-        }
+        fluid.each(fluid.makeArray(selectorsToIgnore), function (selectorToIgnore) {
+            delete selectors[selectorToIgnore];
+        });
         return selectors;
     };
 
@@ -290,7 +302,7 @@ fluid_1_2 = fluid_1_2 || {};
             if (!fluid.isPrimitive(value) && !fluid.isArrayable(value)) {
                 proto = $.extend({}, value);
                 if (proto.decorators) {
-                   proto.decorators = expandLight(proto.decorators);
+                    proto.decorators = expandLight(proto.decorators);
                 }
                 value = proto.value;
                 delete proto.value;

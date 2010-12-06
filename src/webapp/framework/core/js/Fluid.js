@@ -325,7 +325,7 @@ var fluid = fluid || fluid_1_2;
     fluid.mergeComponentOptions = function (that, componentName, userOptions) {
         var defaults = fluid.defaults(componentName); 
         if (fluid.expandOptions) {
-            defaults = fluid.expandOptions(fluid.copy(defaults));
+            defaults = fluid.expandOptions(fluid.copy(defaults), that);
         }
         that.options = fluid.merge(defaults? defaults.mergePolicy: null, {}, defaults, userOptions);    
     };
@@ -418,8 +418,9 @@ var fluid = fluid || fluid_1_2;
      */
     fluid.initLittleComponent = function(name, options) {
         var that = {typeName: name, id: fluid.allocateGuid()};
+        // TODO: nickName must be available earlier than other merged options so that component may resolve to itself
+        that.nickName = options && options.nickName? options.nickName: fluid.computeNickName(that.typeName);
         fluid.mergeComponentOptions(that, name, options);
-        that.nickName = that.options.nickName? that.options.nickName: fluid.computeNickName(that.typeName);    
         return that;
     };
     
@@ -1129,7 +1130,7 @@ var fluid = fluid || fluid_1_2;
         return source;
     };
     
-    // Other useful helpers.
+    // Message resolution and templating
     
     /**
      * Simple string template system. 
@@ -1149,4 +1150,62 @@ var fluid = fluid || fluid_1_2;
         return newString;
     };
     
+
+    fluid.messageResolver = function (options) {
+        var that = fluid.initLittleComponent("fluid.messageResolver", options);
+        that.messageBase = that.options.parseFunc(that.options.messageBase);
+        
+        that.lookup = function(messagecodes) {
+            var resolved = fluid.messageResolver.resolveOne(that.messageBase, messagecodes);
+            if (resolved === undefined) {
+                return fluid.find(that.options.parents, function(parent) {
+                    return parent.lookup(messagecodes);
+                });
+            }
+            else {
+                return {template: resolved, resolveFunc: that.options.resolveFunc};
+            }
+        };
+        that.resolve = function(messagecodes, args) {
+            if (!messagecodes) {
+                return "[No messagecodes provided]";
+            }
+            messagecodes = fluid.makeArray(messagecodes);
+            var looked = that.lookup(messagecodes);
+            return looked? looked.resolveFunc(looked.template, args)
+                :"[Message string for key " + messagecodes[0] + " not found]" 
+        };
+        
+        return that;  
+    };
+    
+    fluid.defaults("fluid.messageResolver", {
+        resolveFunc: fluid.stringTemplate,
+        parseFunc: fluid.identity,
+        messageBase: {},
+        parents: []
+    });
+    
+    fluid.messageResolver.resolveOne = function(messageBase, messagecodes) {
+        for (var i = 0; i < messagecodes.length; ++ i) {
+            var code = messagecodes[i];
+            var message = messageBase[code];
+            if (message !== undefined) {
+                return message;
+            }
+        }
+    };
+          
+    /** Converts a data structure consisting of a mapping of keys to message strings,
+     * into a "messageLocator" function which maps an array of message codes, to be 
+     * tried in sequence until a key is found, and an array of substitution arguments,
+     * into a substituted message string.
+     */
+    fluid.messageLocator = function (messageBase, resolveFunc) {
+        var resolver = fluid.messageResolver({messageBase: messageBase, resolveFunc: resolveFunc});
+        return function(messagecodes, args) {
+            return resolver.resolve(messagecodes, args);
+        };
+    };
+
 })(jQuery, fluid_1_2);

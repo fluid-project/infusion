@@ -73,7 +73,7 @@ var fluid_1_2 = fluid_1_2 || {};
             return fluid.getScopedData(target, ENABLEMENT_KEY) !== false;
         }
         else {
-            $("*", target).each(function() {
+            $("*", target).add(target).each(function() {
                 if (fluid.getScopedData(this, ENABLEMENT_KEY) !== undefined) {
                     fluid.setScopedData(this, ENABLEMENT_KEY, state);
                 }

@@ -85,6 +85,35 @@ fluid.defaults("fluid.testUtils.fluid3818head", {
     }
 });
 
+fluid.defaults("fluid.testUtils.thatStackHead", {
+    headValue: "headValue",
+    components: {
+        child1: {
+            type: "fluid.testUtils.thatStackTail",
+            options: {
+                invokers: {
+                    getHeadValue: {
+                        funcName: "fluid.identity",
+                        args: "{child2}.options.headValue"
+                    }
+                }
+            }
+        },
+        child2: {
+            type: "fluid.testUtils.thatStackTail",
+            options: {
+                headValue: {
+                    expander: {
+                        type: "fluid.deferredInvokeCall",
+                        func: "fluid.identity",
+                        args: "{thatStackHead}.headValue"
+                    }
+                }
+            }
+        }
+    }
+});
+
 fluid.makeComponents({
     "fluid.testUtils.testComponent":      "fluid.standardComponent",
     "fluid.testUtils.testComponent2":     "fluid.standardComponent",
@@ -101,7 +130,9 @@ fluid.makeComponents({
     "fluid.testUtils.defaultInteraction": "fluid.littleComponent",
     "fluid.testUtils.popup":              "fluid.littleComponent",
     "fluid.testUtils.fluid3818head":      "fluid.littleComponent",
-    "fluid.testUtils.fluid3818child":     "fluid.littleComponent"
+    "fluid.testUtils.fluid3818child":     "fluid.littleComponent",
+    "fluid.testUtils.thatStackHead":      "fluid.littleComponent",
+    "fluid.testUtils.thatStackTail":      "fluid.littleComponent"
     // TODO: GRADES
     //"fluid.testUtils.resultsPager":       "fluid.littleComponent"
     });
@@ -203,7 +234,6 @@ fluid.demands("fluid.testUtils.popup", "fluid.testUtils.localTest",
     }
 });
 
-
 fluid.defaults("fluid.testUtils.stackThroughInvoke", {
     components: {
         resultsPager: {
@@ -236,7 +266,7 @@ fluid.testUtils.resultsPager = function(options) {
 };
 
 fluid.testUtils.stackThroughInvoke = function(container, options) {
-    var that = fluid.initView("fluid.testUtils.stackThroughInvoke", container, options);
+    var that = fluid.initView(options.targetTypeName || "fluid.testUtils.stackThroughInvoke", container, options);
     that.model = {value: 3};
     that.testFluid3721 = null;
     fluid.initDependents(that);
@@ -296,18 +326,21 @@ fluidIoCTests.test("Multi-resolution test", function() {
         fluid.staticEnvironment.localEnvironment = fluid.typeTag("fluid.testUtils.localFiles");
         var that2 = fluid.testUtils.multiResolution();
         jqUnit.assertValue("Constructed", that2);
-        jqUnit.assertEquals("\"Local\" subcomponent", "fluid.testUtils.multiResSub2", that2.resSub.typeName);
-        var localDemandOptions = fluid.demands("fluid.testUtils.multiResSub", 
-            ["fluid.testUtils.multiResolution", "fluid.testUtils.localFiles"]).args;
+        var type2 = "fluid.testUtils.multiResSub2";
+        jqUnit.assertEquals("\"Local\" subcomponent", type2, that2.resSub.typeName);
+        var localDemandOptions = $.extend({}, fluid.demands("fluid.testUtils.multiResSub", 
+            ["fluid.testUtils.multiResolution", "fluid.testUtils.localFiles"]).args, {targetTypeName: type2});;
         jqUnit.assertDeepEq("\"Local\" subcomponent options", localDemandOptions, that2.resSub.options);
         
         fluid.staticEnvironment.testEnvironment = fluid.typeTag("fluid.testUtils.localTest");
         var that3 = fluid.testUtils.multiResolution();
         jqUnit.assertValue("Constructed", that3);
-        jqUnit.assertEquals("\"Test\" subcomponent", "fluid.testUtils.multiResSub3", that3.resSub.typeName);
+        var type3 = "fluid.testUtils.multiResSub3";
+        jqUnit.assertEquals("\"Test\" subcomponent", type3, that3.resSub.typeName);
         var expectedOptions = {
             localKey1: "testValue1",
-            localKey2: "localValue2"
+            localKey2: "localValue2",
+//             targetTypeName: type3 // This floats about a bit as we change policy on "typeName"
         };
         jqUnit.assertDeepEq("\"Test\" subcomponent merged options", expectedOptions, that3.resSub.options);
     }
@@ -320,8 +353,8 @@ fluidIoCTests.test("Multi-resolution test", function() {
 fluidIoCTests.test("Default interaction test", function() {
     var that = fluid.testUtils.defaultInteraction();
     jqUnit.assertValue("Constructed", that);
-    var standardDefaults = fluid.defaults("fluid.testUtils.popup");
-    standardDefaults.typeName = "fluid.testUtils.popup";
+    var standardDefaults = fluid.copy(fluid.defaults("fluid.testUtils.popup"));
+    standardDefaults.targetTypeName = "fluid.testUtils.popup";
     jqUnit.assertDeepEq("Default options", standardDefaults, that.popup.options);
     
     try {
@@ -383,13 +416,67 @@ var buildUrl = function (recordType) {
     return "../data/" + recordType + ".json";
 };
 
-// TODO: tests for fluid.invoke
+fluid.demands("fluid.testUtils.stackThroughInvokeDeferred", [], 
+   {funcName: "fluid.testUtils.stackThroughInvoke",
+    args: ["@0", "@1"]});
+    
+fluid.demands("fluid.testUtils.stackThroughInvoke", [], 
+  ["@0", "@1"]);
 
-fluidIoCTests.test("thatStack through deferredCall Tests", function() {
-    var defTest = fluid.testUtils.stackThroughInvoke("#pager-top");
-    jqUnit.assertValue("Constructed", defTest);
-    var filtered = defTest.resultsPager.options.modelFilter();
-    jqUnit.assertDeepEq("Filtered", filtered, {value: 4});
+
+fluid.defaults("fluid.testUtils.stackThroughInvoke", {
+    components: {
+        resultsPager: {
+            type: "fluid.testUtils.resultsPager",
+            options: {
+                dataModel: "{stackThroughInvoke}.model",
+                dataOffset: "results",
+                modelFilter: {
+                    expander: {
+                        type: "fluid.deferredCall",
+                        func: "fluid.testUtils.makeModelFilter",
+                        args: ["{stackThroughInvoke}"]
+                    }
+                }
+            }
+        }
+    }
+});
+
+fluidIoCTests.test("thatStack through deferredCall Tests, proleptic ginger nicknames", function() {
+    function test(compName) {
+        var defTest = fluid.invoke(compName, ["#pager-top", {targetTypeName: compName}]);
+        jqUnit.assertValue("Constructed " + compName, defTest);
+        var filtered = defTest.resultsPager.options.modelFilter();
+        jqUnit.assertDeepEq("Filtered " + compName, filtered, {value: 4});
+    }
+    test("fluid.testUtils.stackThroughInvoke");
+    
+    var adjust = fluid.copy(fluid.defaults("fluid.testUtils.stackThroughInvoke"));
+    var expander = adjust.components.resultsPager.options.modelFilter.expander;
+    expander.type = "fluid.deferredInvokeCall";
+    expander.args[0] = "{stackThroughInvokeDeferred}";
+    
+    fluid.defaults("fluid.testUtils.stackThroughInvokeDeferred", adjust);
+
+    test("fluid.testUtils.stackThroughInvokeDeferred");
+});
+
+fluidIoCTests.test("thatStack tests", function() {
+    var component = fluid.testUtils.thatStackHead();
+    var value = component.child1.getHeadValue();
+    jqUnit.assertValue("Correctly resolved head value through invoker", fluid.defaults("fluid.testUtils.thatStackHead").headValue, value);
+});
+
+
+fluid.demands("fluid.testUtils.freeTarget1", [], 
+  { funcName: "fluid.identity",
+    args: ["@0", "@1"]});
+    
+fluidIoCTests.test("Test Invoke Preservation", function() {
+    var model = {};
+    var returned = fluid.invoke("fluid.testUtils.freeTarget1", model);
+    jqUnit.assertEquals("Identical model reference", model, returned);
 });
 
 var makeArrayExpander = function (recordType) {
