@@ -111,15 +111,15 @@ fluid_1_2 = fluid_1_2 || {};
             return togo;
         };
     };
-	
+    
     fluid.pager.setCurrentPageDesc = function (that) {
-		var descMarkup = $(that.options.markup.currentPageDescription, {
-			text: that.options.strings.currentPageIndexMsg,
-			"class": that.options.styles.currentPageDesc
-		});
-		
-		fluid.allocateSimpleId(descMarkup);
-		that.container.append(descMarkup);     
+        var descMarkup = $(that.options.markup.currentPageDescription, {
+            text: that.options.strings.currentPageIndexMsg,
+            "class": that.options.styles.currentPageDesc
+        });
+        
+        fluid.allocateSimpleId(descMarkup);
+        that.container.append(descMarkup);     
         
         return descMarkup;
     }; 
@@ -148,8 +148,8 @@ fluid_1_2 = fluid_1_2 || {};
                 selector: options.linkBody
             };
         }   
-		
-		var assembleComponet = function (page, isCurrent) {
+        
+        var assembleComponent = function (page, isCurrent) {
             var obj = {
                 ID: "page-link:link",
                 localID: page + 1,
@@ -159,9 +159,9 @@ fluid_1_2 = fluid_1_2 || {};
                     {type: "jQuery",
                          func: "click", 
                          args: function (event) {
-						 	events.initiatePageChange.fire({pageIndex: page});
-							event.preventDefault();
-						}
+                             events.initiatePageChange.fire({pageIndex: page});
+                             event.preventDefault();
+                        }
                      }
                  ]
             };
@@ -180,15 +180,15 @@ fluid_1_2 = fluid_1_2 || {};
             
             return obj;
         };
-		     
+             
         function pageToComponent(current) {
             return function (page) {
                 return page === -1? {
                     ID: "page-link:skip"
-                } : assembleComponet(page, page === current);
+                } : assembleComponent(page, page === current);
             };
         }
-		
+        
         var root = that.locate("root");
         fluid.expectFilledSelector(root, "Error finding root template for fluid.pager.renderedPageList");
         
@@ -226,9 +226,9 @@ fluid_1_2 = fluid_1_2 || {};
             },
             linkBody: "a",
             pageStrategy: fluid.pager.everyPageStrategy,
-			markup: {
+            markup: {
                 currentPageDescription: "<div></div>"
-			}
+            }
         }
     );
     
@@ -290,13 +290,13 @@ fluid_1_2 = fluid_1_2 || {};
         
         styles: {
             currentPage: "fl-pager-currentPage",
-			currentPageDesc: "fl-offScreen-hidden",
+            currentPageDesc: "fl-offScreen-hidden",
             disabled: "fl-pager-disabled"
         },
         
-		strings: {
+        strings: {
             currentPageIndexMsg: "Current page"
-		}
+        }
     });
 
     function getColumnDefs(that) {
@@ -622,17 +622,17 @@ fluid_1_2 = fluid_1_2 || {};
     });
 
     fluid.pager.summaryAria = function (element) {
-		element.attr({
-			"aria-relevant": "all",
-			"aria-atomic": "false",
-			"aria-live": "assertive",
-			"role": "status"
-		})     
+        element.attr({
+            "aria-relevant": "all",
+            "aria-atomic": "false",
+            "aria-live": "assertive",
+            "role": "status"
+        })     
     };
 
     fluid.pager.summary = function (dom, options) {
         var node = dom.locate("summary");
-		fluid.pager.summaryAria(node);
+        fluid.pager.summaryAria(node);
         return {
             returnedOptions: {
                 listeners: {
@@ -641,7 +641,7 @@ fluid_1_2 = fluid_1_2 || {};
                             first: newModel.pageIndex * newModel.pageSize + 1,
                             last: fluid.pager.computePageLimit(newModel),
                             total: newModel.totalRange,
-							currentPage: newModel.pageIndex + 1
+                            currentPage: newModel.pageIndex + 1
                         });
                         if (node.length > 0) {
                             node.text(text);
@@ -666,7 +666,6 @@ fluid_1_2 = fluid_1_2 || {};
                 that.events.initiatePageSizeChange.fire(node.val());
             });
         }
-        return that;
     };
 
 
