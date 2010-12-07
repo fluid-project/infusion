@@ -1180,6 +1180,9 @@ var fluid = fluid || fluid_1_2;
     };
     
     fluid.defaults("fluid.messageResolver", {
+        mergePolicy: {
+            messageBase: "preserve"  
+        },
         resolveFunc: fluid.stringTemplate,
         parseFunc: fluid.identity,
         messageBase: {},
