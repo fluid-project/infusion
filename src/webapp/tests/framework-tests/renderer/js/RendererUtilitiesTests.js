@@ -162,6 +162,73 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.assertEquals("Nonexisting string relative should be notified of", "[No messagecodes provided]", that.locate("unmatchedMessage").text());
     };
     
+    var testMultipleExpanders = function (that) {
+        that.refreshView();
+        var tabContent = that.locate("tabContent");
+        var tabTwoContent = that.locate("tab2Content");
+        jqUnit.assertEquals("Existin string relative should be found", "Acquisition", tabContent.eq(0).text());
+        jqUnit.assertEquals("Existin string relative should be found", "Cataloging", tabContent.eq(1).text());
+        jqUnit.assertEquals("Existin string relative should be found", "Acquisition", tabTwoContent.eq(0).text());
+        jqUnit.assertEquals("Existin string relative should be found", "Cataloging", tabTwoContent.eq(1).text());
+    };
+    
+    compTests.test("Multiple same level expanders", function() {
+        var that = fluid.tests.rendererComponentTest(".renderer-component-test-multiple-repeat", {
+            model: {
+                firstCategory: {
+                    acquisition: {
+                        "name": "acq"
+                    }, 
+                    objects: {
+                        "name": "acq2"
+                    }
+                },
+                secondCategory: {
+                    acquisition: {
+                        "name": "acq"
+                    }, 
+                    objects: {
+                        "name": "acq2"
+                    }
+                }
+            },
+            selectors: {
+                "tab:": ".csc-tabs-tab",
+                "tab2:": ".csc-tabs-tab-two",
+                "tabContent": ".csc-tabs-tab-content",
+                "tab2Content": ".csc-tabs-tab-two-content"
+            },
+            strings: {
+                "acq": "Acquisition",
+                "acq2": "Cataloging"
+            },
+            protoTree: {
+                expander: [{
+                    repeatID: "tab2:",
+                    tree: {
+                        "tab2Content": {
+                            messagekey: "${{tabInfo}.name}"
+                        }
+                    },
+                    type: "fluid.renderer.repeat",
+                    pathAs: "tabInfo",
+                    controlledBy: "secondCategory"
+                }, {
+                    repeatID: "tab:",
+                    tree: {
+                        tabContent: {
+                            messagekey: "${{tabInfo}.name}"
+                        }
+                    },
+                    type: "fluid.renderer.repeat",
+                    pathAs: "tabInfo",
+                    controlledBy: "firstCategory"
+                }]
+            }
+        });
+        testMultipleExpanders(that);
+    });
+    
     compTests.test("FLUID-3819 test: messagekey with no value", function() {
         var that = fluid.tests.rendererComponentTest(".renderer-component-test-repeat", {
             resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],

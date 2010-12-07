@@ -433,9 +433,11 @@ fluid_1_2 = fluid_1_2 || {};
                     key = key.substring(1);
                 }
                 if (key === "expander") {
-                    var expander = entry;
-                    var expanded = fluid.invokeGlobalFunction(expander.type, [expander, proto, key, expandConfig]);
-                    fluid.each(expanded, function(el) {target[target.length] = el;});
+                    var expanders = fluid.makeArray(entry);
+                    fluid.each(expanders, function (expander) {
+                        var expanded = fluid.invokeGlobalFunction(expander.type, [expander, proto, key, expandConfig]);
+                        fluid.each(expanded, function(el) {target[target.length] = el;});
+                    });
                 }
                 else if (entry) {
                     var condPusher = function(comp) {
