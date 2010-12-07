@@ -266,12 +266,19 @@ fluid_1_2 = fluid_1_2 || {};
             if (!requestedPosition || fluid.unwrap(requestedPosition.element) === fluid.unwrap(item)) {
                 return;
             }
+            var activeItem = $(thatReorderer.activeItem);
+            
+            // Fixes FLUID-3288.
+            // Need to unbind the blur event as safari will call blur on movements.
+            // This caused the user to have to double tap the arrow keys to move.
+            activeItem.unbind("blur.fluid.reorderer");
+            
             thatReorderer.events.onMove.fire(item, requestedPosition);
             dropManager.geometricMove(item, requestedPosition.element, requestedPosition.position);
             //$(thatReorderer.activeItem).removeClass(options.styles.selected);
            
             // refocus on the active item because moving places focus on the body
-            $(thatReorderer.activeItem).focus();
+            activeItem.focus();
             
             thatReorderer.refresh();
             
@@ -392,7 +399,7 @@ fluid_1_2 = fluid_1_2 || {};
                 if (!$.data(selectable[0], "fluid.reorderer.selectable-initialised")) { 
                     selectable.addClass(styles.defaultStyle);
             
-                    selectable.blur(handleBlur);
+                    selectable.bind("blur.fluid.reorderer", handleBlur);
                     selectable.focus(handleFocus);
                     selectable.click(function (evt) {
                         var handle = fluid.unwrap(thatReorderer.dom.fastLocate("grabHandle", this));

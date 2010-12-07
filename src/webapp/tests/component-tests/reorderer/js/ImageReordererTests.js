@@ -40,9 +40,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             return fluid.testUtils.reorderer.assertItemDragged(message, index, orderableIds);
         }
         
-        function compositeKey(reorderer, event, targetIndex) {
+        function compositeKey(reorderer, event, targetIndex, keepModifierPressed) {
            return fluid.testUtils.reorderer.compositeKey(reorderer, event, 
-               fluid.byId(orderableIds[targetIndex]));
+               fluid.byId(orderableIds[targetIndex]), keepModifierPressed);
         }
         
         function keyDown(reorderer, event, targetIndex) {
@@ -173,6 +173,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
             compositeKey(lightbox, modifiedRightEvt, 0);
             assertItemsInOriginalPosition("after modified-right");
         }
+        
+        // returns the number of elements from a jquery object that have the specified className         
+        var numItemsWithClass = function (elms, className) {
+            var count = 0;
+            elms.each(function (idx, elm) {
+                if (elms.eq(idx).hasClass(className)) {
+                    count++;
+                }
+            });
+            return count;
+        };
         
         /*
          * This test tests the movement of images, and does not concern itself
@@ -594,6 +605,26 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.jById(orderableIds[0]).focus();
             verticalMovementTest(lightbox, fluid.testUtils.ctrlKeyEvent("UP"),
                                            fluid.testUtils.ctrlKeyEvent("DOWN"));
+        });
+        
+        /*
+         * Tests that the dragging style remains on the moved element when the modifier
+         * key remains depressed after the move. This is used to test FLUID-3288
+         */
+        lightboxTests.test("Dragging style after a move: FLUID-3288", function() {  
+            var lightbox = createLightbox();
+            var movables = lightbox.locate("movables");
+            var draggingClass = lightbox.options.styles.dragging;
+            var index = 0;
+            var movable = fluid.jById(movables.eq(index).attr("id"));
+            
+            jqUnit.assertEquals("There should be no movable elements with the dragging style", 0, numItemsWithClass(movables, draggingClass));
+            
+            movable.focus(); //Setting focus on the item is necessary to recreate the circumstances that caused FLUID-3288
+            compositeKey(lightbox,  fluid.testUtils.ctrlKeyEvent("RIGHT"), index, true);
+            
+            jqUnit.assertTrue("The moved item retains the dragging class", movable.hasClass(draggingClass));
+            jqUnit.assertEquals("There should only be one movable element with the dragging style", 1, numItemsWithClass(movables, draggingClass));
         });
     
     });
