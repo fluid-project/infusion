@@ -5,36 +5,55 @@
     margin: 0 auto;
 }
 
-table {
-    width: 100%;
-}
-
-thead {
-    color: #343499;
-    background-color: #FCD6CA;
-}
-
-td {
-    padding: .5em .2em;
-}
-
-input {
+.demo-pager-container input {
     width: 3em;
 }
 
-.hidden {
+.demo-pager-container .hidden {
     display: none;
 }
 
-a:visited {
+.demo-pager-container a:visited {
     color: blue;
 }
 
-a:hover{
+.demo-pager-container a:hover{
     outline: 2px #000 solid;
-    width:3em;
     padding:0px;
 }
+
+:focus {
+    /* FLUID-3880: Fixes an issue with FSS focus in IE. */
+    outline: 0px;
+}
+
+.demo-pager-container a:focus {
+    /* FLUID-3880: Specify focus for elements. */
+    outline: 2px #000 solid;
+}
+
+/***********************************************
+ * Styles for table formatting.
+ */
+ 
+.demo-pager-container table {
+    width: 100%;
+}
+
+.demo-pager-container thead {
+    color: #343499;
+    background-color: #E6E7E8;
+}
+
+.demo-pager-container td {
+    padding: .5em .2em;
+}
+
+.demo-pager-head-select { width:5%; }
+.demo-pager-head-members { width:25%; }
+.demo-pager-head-email { width:25%; }
+.demo-pager-head-role { width:15%; }
+.demo-pager-head-comments { color: #000; }
 
 /***********************************************
  * The horizontal pager bar containing Previous, Next, and Page links. 
@@ -81,27 +100,25 @@ a:hover{
 }
 
 .demo-pager-links .fl-pager-currentPage {
+    color: #fff;
     display:block;
     width:3em;
     float:left;
     background: #000;
-    color: #fff;
     padding:0px;
     margin:2px;
 	border: 1px solid #000;
 	text-align:center;
 }
 
+.demo-pager-links .fl-pager-currentPage:visited {
+    color: #fff;
+}
+
 .demo-pager-head a {
 	display:block;
 	width:100%;
 }
-
-.demo-pager-head-select { width:5%; }
-.demo-pager-head-members { width:25%; }
-.demo-pager-head-email { width:25%; }
-.demo-pager-head-role { width:15%; }
-.demo-pager-head-comments { color: #000; }
 
 /***********************************************
  * Styles for pager size selector.
