@@ -20,19 +20,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
          ****************************/
          
         var mountainTestFile = {
-             id : 0, // SWFUpload file id, used for starting or cancelling and upload 
-             index : 0, // The index of this file for use in getFile(i) 
-             name : "Mountain.jpg", // The file name. The path is not included. 
-             size : 400000, // The file size in bytes   
-             filestatus: fluid.uploader.fileStatusConstants.QUEUED // initial file queued status
+            id : 0, // SWFUpload file id, used for starting or cancelling and upload 
+            index : 0, // The index of this file for use in getFile(i) 
+            name : "Mountain.jpg", // The file name. The path is not included. 
+            size : 400000, // The file size in bytes   
+            filestatus: fluid.uploader.fileStatusConstants.QUEUED // initial file queued status
         };
         
         var oceanTestFile = {
-             id : 230948230984, // SWFUpload file id, used for starting or cancelling and upload 
-             index : 1, // The index of this file for use in getFile(i) 
-             name : "Ocean.jpg", // The file name. The path is not included. 
-             size : 950000000, // The file size in bytes   
-             filestatus: fluid.uploader.fileStatusConstants.QUEUED // initial file queued status
+            id : 230948230984, // SWFUpload file id, used for starting or cancelling and upload 
+            index : 1, // The index of this file for use in getFile(i) 
+            name : "Ocean.jpg", // The file name. The path is not included. 
+            size : 950000000, // The file size in bytes   
+            filestatus: fluid.uploader.fileStatusConstants.QUEUED // initial file queued status
         };
                 
         // Total size of this list files: 200000 + 400000 + 600000 + 800000 + 1000000 = 3000000
@@ -66,7 +66,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var setupQueue = function () {
             return fluid.uploader.fileQueue();
-        }
+        };
+
         var loadQueue = function (fileArray, queue) {
             for (var i = 0; i < fileArray.length; i++) {
                 queue.addFile(fileArray[i]);
@@ -81,6 +82,25 @@ https://source.fluidproject.org/svn/LICENSE.txt
          
         var fileQueueTests = new jqUnit.TestCase("FileQueue Tests");
         
+        fileQueueTests.test("sizeOfFiles", function () {
+            expect(3);
+
+            var arrayOfFilesWithoutFilesize = [{id: 1}, {id: 2}, {id: 3}];
+
+            jqUnit.assertEquals("size of fileSet should be 3000000",
+                                3000000,
+                                fluid.uploader.fileQueue.sizeOfFiles(fileSet));
+
+            jqUnit.assertEquals("size of empty array should be 0",
+                                0,
+                                fluid.uploader.fileQueue.sizeOfFiles([]));
+
+            //The following should returns a NaN instead of 0.
+            var expected_NaN = fluid.uploader.fileQueue.sizeOfFiles(arrayOfFilesWithoutFilesize);
+            jqUnit.assertFalse("size of fileset array without fileSize should be NaN",
+                                expected_NaN === 0 || expected_NaN);
+        });
+
         fileQueueTests.test("Initialize fileQueue: everything is empty", function () {
             expect(2);
             
@@ -92,8 +112,147 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("fileQueue queue.files is an empty array", 0, q.files.length);
             
         });
+
+        fileQueueTests.test("filterFiles ", function () {
+            expect(8);
+
+            var testQueue = fluid.uploader.fileQueue();
+            loadQueue(fileSet, testQueue);
+
+            //manually adjust the status of the files
+            testQueue.files[0].filestatus = fluid.uploader.fileStatusConstants.ERROR;
+            testQueue.files[1].filestatus = fluid.uploader.fileStatusConstants.QUEUED;
+            testQueue.files[2].filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
+            testQueue.files[3].filestatus = fluid.uploader.fileStatusConstants.QUEUED;
+            testQueue.files[4].filestatus = fluid.uploader.fileStatusConstants.COMPLETE;
+
+            var completedFiles = testQueue.getUploadedFiles();
+            var queuedFiles = testQueue.getReadyFiles();
+            var errorFiles = testQueue.getErroredFiles();
+
+            //completed
+            jqUnit.assertEquals("filterFiles: COMPLETE have filesize 1",
+                                1,
+                                completedFiles.length);
+            jqUnit.assertEquals("filterFiles: COMPLETE should give file id 4",
+                                4,
+                                completedFiles[0].id);
+
+            //queued + cancelled
+            jqUnit.assertEquals("filterFiles: QUEUED or CANCELLED have filesize 3",
+                                3,
+                                queuedFiles.length);
+            jqUnit.assertEquals("filterFiles: QUEUED should give file id 1",
+                                1,
+                                queuedFiles[0].id);
+            jqUnit.assertEquals("filterFiles: CANCELLED should give file id 2",
+                                2,
+                                queuedFiles[1].id);
+            jqUnit.assertEquals("filterFiles: QUEUED should give file id 3",
+                                3,
+                                queuedFiles[2].id);
+
+            //errored
+            jqUnit.assertEquals("filterFiles: COMPLETE have filesize 1",
+                                1,
+                                errorFiles.length);
+            jqUnit.assertEquals("filterFiles: COMPLETE should give file id 0",
+                                0,
+                                errorFiles[0].id);
+        });
+
+        fileQueueTests.test("Test file info methods", function () {
+            expect(6);
+            var testQueue = fluid.uploader.fileQueue();
+            /**
+             * Generate an array with the given parameters defined below. 
+             *
+             * @param   int     0: default, generate an array with the given file_size 
+             *                  1: decrement, generate an array with initial file_size = array_size,
+             *                     and subtract 1 each element afterwards.
+             *                     ie. 50, 49, 48,...,3, 2, 1
+             *                  2: increment, generate an array with the initial file_size = 0, up to
+             *                     the array_size.  
+             * @param   int     the length of the array. Array index starts at 0.
+             * @param   int     the file size in each array element. 
+             */
+            var array_generator = function (mode, array_size, file_size) {
+                                    var generated_array = [];
+                                    if (mode === 1) {
+                                        file_size = array_size;
+                                    } else if (mode === 2) {
+                                        file_size = 1;
+                                    }
+                                    //create each file object 
+                                    for (var i = 0; i < array_size; i++) {
+                                        generated_array.push({size: file_size});
+                                        if (mode === 1) {
+                                            file_size--;
+                                        } else if (mode === 2) {
+                                            file_size++;
+                                        }
+                                    }
+                                    return generated_array;
+                                };
+
+
+            var filesize_1 = array_generator(0, 1, 10000);
+            var filesize_2 = [{size: 10000}, {size: 1000}, {size: 100}, {size: 10}, {size: 1}];
+            var filesize_3 = array_generator(0, 30000, 1);
+            var filesize_4 = array_generator(1, 10);
+            var filesize_5 = array_generator(1, 10000);  //(10000 + 1) * 10000 /2 = 50005000
+            var filesize_6 = array_generator(2, 10000);  //(10000 + 1) * 10000 /2 = 50005000
+
+            var test_filesize = function (files, expected) {
+                testQueue.files = files;
+                jqUnit.assertEquals("testQueue uploaded files byte",
+                expected, 
+                testQueue.totalBytes());
+            };
+
+            test_filesize(filesize_1, 10000);
+            test_filesize(filesize_2, 11111);
+            test_filesize(filesize_3, 30000);
+            test_filesize(filesize_4, 55);
+            test_filesize(filesize_5, 50005000);
+            test_filesize(filesize_6, 50005000);
+        });
+
+        fileQueueTests.test("Test fileQueue operations", function () {
+            expect(8);
+            var testQueue = fluid.uploader.fileQueue();
+            loadQueue(fileSet, testQueue);
+
+            testQueue.start();
+            jqUnit.assertTrue("testQueue should set isUploading to TRUE", 
+                                testQueue.isUploading);
+            jqUnit.assertFalse("testQueue should set shouldStop to FALSE", 
+                                testQueue.shouldStop);
+
+            testQueue.startFile();
+            jqUnit.assertEquals("testQueue uploaded files byte should be 0",
+                                0, 
+                                testQueue.currentBatch.bytesUploadedForFile);
+            jqUnit.assertEquals("testQueue previous uploaded files byte should be 0",
+                                0, 
+                                testQueue.currentBatch.previousBytesUploadedForFile);
+            jqUnit.assertEquals("testQueue file index should be 0",
+                                0, 
+                                testQueue.currentBatch.fileIdx);
+            jqUnit.assertEquals("testQueue number of files finished should be 0",
+                                0, 
+                                testQueue.currentBatch.numFilesCompleted);
+
+            called = false; //reset event called flag
+            testQueue.finishFile(); 
+            jqUnit.assertEquals("testQueue number of files finished should now be 1",
+                                1, 
+                                testQueue.currentBatch.numFilesCompleted);
+            jqUnit.assertTrue("testQueue shouldUploadNextFile() should return True since it just finished a file", 
+                                testQueue.shouldUploadNextFile());
+        });
  
-        fileQueueTests.test("addFiles and removing files", function () {
+        fileQueueTests.test("Test file manipulation methods", function () {
             expect(5);
             var q = setupQueue();
         
@@ -235,6 +394,33 @@ https://source.fluidproject.org/svn/LICENSE.txt
             q.setupCurrentBatch();
             checkCurrentBatch(q, 3, 2400000);
         });        
-   });
+
+        fileQueueTests.test("fileQueue: updateBatchStatus()", function () {
+            expect(93);
+            var checkCurrentBatch = function (q, expected) {
+                jqUnit.assertEquals("totalBytesUploaded is ",
+                                    expected,
+                                    q.currentBatch.totalBytesUploaded);
+                
+                jqUnit.assertEquals("bytesUploadedForFile is ",
+                                    expected,
+                                    q.currentBatch.bytesUploadedForFile);
+                jqUnit.assertEquals("previousBytesUploadedForFile is ",
+                                    expected,
+                                    q.currentBatch.previousBytesUploadedForFile);
+            };
+
+            var q = setupQueue();
+            loadQueue(fileSet, q);
+            q.setupCurrentBatch();
+            checkCurrentBatch(q, 0);    //before initialization
+            var progress = 0;  //mimic 0 byte
+            for (var i = 1; i <= 30; i++) {
+                progress = progress + Math.floor(Math.random() * 110);
+                q.updateBatchStatus(progress);
+                checkCurrentBatch(q, progress);
+            }
+        });
+    });
     
 })(jQuery);

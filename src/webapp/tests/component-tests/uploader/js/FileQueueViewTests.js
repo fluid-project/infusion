@@ -27,17 +27,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
         };
         
         var mountainTestFile = {
-             id : 0, // SWFUpload file id, used for starting or cancelling and upload 
-             index : 0, // The index of this file for use in getFile(i) 
-             name : "Mountain.jpg", // The file name. The path is not included. 
-             size : 400000 // The file size in bytes     
+            id : 0, // SWFUpload file id, used for starting or cancelling and upload 
+            index : 0, // The index of this file for use in getFile(i) 
+            name : "Mountain.jpg", // The file name. The path is not included. 
+            size : 400000 // The file size in bytes     
         };
         
         var oceanTestFile = {
-             id : 230948230984, // SWFUpload file id, used for starting or cancelling and upload 
-             index : 1, // The index of this file for use in getFile(i) 
-             name : "Ocean.jpg", // The file name. The path is not included. 
-             size : 950000000 // The file size in bytes        
+            id : 230948230984, // SWFUpload file id, used for starting or cancelling and upload 
+            index : 1, // The index of this file for use in getFile(i) 
+            name : "Ocean.jpg", // The file name. The path is not included. 
+            size : 950000000 // The file size in bytes        
         };
         
         var qEl;
@@ -152,6 +152,102 @@ https://source.fluidproject.org/svn/LICENSE.txt
                          oceanTestFile, removedFile);
         });
         
+        fileQueueViewTests.test("Prepare for upload/ Refresh for upload", function () {
+            expect(2);
+
+            var q = createFileQueue(qEl);
+            q.addFile(mountainTestFile);
+            q.addFile(oceanTestFile);
+
+            var rowButtons = q.locate("fileIconBtn", q.locate("fileRows"));
+            q.prepareForUpload();
+            jqUnit.assertTrue("Button should be disabled. ",
+                                rowButtons.attr("disabled"));
+
+            //assume upload is done. call refreshAfterUpload
+            q.refreshAfterUpload();
+            jqUnit.assertFalse("Button should be disabled. ",
+                                rowButtons.attr("disabled"));
+        });
+
+        fileQueueViewTests.test("File Progress Percentage test", function () {
+            expect(7);
+
+            var q = createFileQueue(qEl);
+            q.addFile(mountainTestFile);
+
+            q.updateFileProgress(mountainTestFile, "33999.99", mountainTestFile.size); //33999.99/400000 = 8.4999975% ~ 8%            
+            jqUnit.assertEquals("Test float rounding down. ",
+                                8,
+                                q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
+            q.updateFileProgress(mountainTestFile, "34000.01", mountainTestFile.size); //34000.01/400000 = 8.5000025% ~ 9%            
+            jqUnit.assertEquals("Test float rounding up. ",
+                                9,
+                                q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
+            q.updateFileProgress(mountainTestFile, "0", mountainTestFile.size); 
+            jqUnit.assertEquals("Test zero. ",
+                                0,
+                                q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
+            q.updateFileProgress(mountainTestFile, 400000, mountainTestFile.size); 
+            jqUnit.assertEquals("Test 100%. ",
+                                100,
+                                q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
+            q.updateFileProgress(mountainTestFile, 37600, mountainTestFile.size); //37600/400000 = 9.4% ~9%
+            jqUnit.assertEquals("Test integer rounding down, with 1 significant digit ",
+                                9,
+                                q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
+            q.updateFileProgress(mountainTestFile, 37960, mountainTestFile.size); //37960/400000 = 9.49% ~9%
+            jqUnit.assertEquals("Test integer rounding down, with 2 significant digits. ",
+                                9,
+                                q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
+            q.updateFileProgress(mountainTestFile, 38000, mountainTestFile.size); //38000/400000 = 9.5% ~10%
+            jqUnit.assertEquals("Test integer rounding up. ",
+                                10,
+                                q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
+        });
+
+        fileQueueViewTests.test("Mark file complete test", function () {
+            expect(2);
+
+            var q = createFileQueue(qEl);
+            q.addFile(mountainTestFile);
+            q.markFileComplete(mountainTestFile);
+
+            jqUnit.assertEquals("Progress should be 100. ",
+                                100,
+                                q.fileProgressors[mountainTestFile.id + "_progress"].storedPercent);
+
+            jqUnit.assertTrue("Row state should be changed when row is marked as completed. ",
+                                q.locate("fileQueue").find("#" + mountainTestFile.id).hasClass(q.options.styles.uploaded));
+        });
+
+        fileQueueViewTests.test("Show error for files", function () {
+            expect(2);
+
+            var q = createFileQueue(qEl);
+            mountainTestFile.filestatus = fluid.uploader.fileStatusConstants.ERROR; //manually add an error to the file
+            q.addFile(mountainTestFile);
+            q.showErrorForFile(mountainTestFile, -250); //fire a UPLOAD_FAILED error
+
+            jqUnit.assertEquals("Error message should print upload failed ",
+                                q.options.strings.errors.UPLOAD_FAILED,
+                                q.locate("errorText").text());
+
+            jqUnit.assertTrue("Row state should be changed when we have an error. ",
+                                q.locate("fileQueue").find("#" + mountainTestFile.id).hasClass(q.options.styles.error));
+        });
+
+        fileQueueViewTests.test("Hide file progress", function () {
+            expect(1);
+
+            var q = createFileQueue(qEl);
+            mountainTestFile.filestatus = fluid.uploader.fileStatusConstants.COMPLETE; //manually set filestatus to complete
+            q.addFile(mountainTestFile);
+            q.hideFileProgress(mountainTestFile); 
+            jqUnit.assertFalse("the dim class should be removed on hidden. ",
+                                q.locate("fileIconBtn", q.locate("fileQueue").find("#" + mountainTestFile.id)).hasClass(q.options.styles.dim));
+        });
+
         fileQueueViewTests.test("Keyboard navigation", function () {
             // Setup the queue.
             var q = createFileQueue(qEl);

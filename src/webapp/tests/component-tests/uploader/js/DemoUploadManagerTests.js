@@ -18,12 +18,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         // Redefine SWFUploadStrategy's invokers in this testing context.
         fluid.staticEnvironment.uploaderTests = fluid.typeTag("fluid.uploader.tests");
-        fluid.demands("fluid.uploader.swfUploadStrategy.setupDOM", ["fluid.uploader.tests"], {
+        fluid.demands("fluid.uploader.swfUpload.setupDOM", ["fluid.uploader.tests"], {
             funcName: "fluid.identity",
             args: []
         });
         
-        fluid.uploader.swfUploadStrategy.demo.tests = {
+        fluid.uploader.demoRemote.tests = {
             makeMockConfig: function () {
                 return {
                     button_placeholder_id: "swfUploadLovesDestroyingInnocentDomElements"
@@ -31,12 +31,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             }    
         };
         
-        fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", ["fluid.uploader.tests"], {
-            funcName: "fluid.uploader.swfUploadStrategy.demo.tests.makeMockConfig",
+        fluid.demands("fluid.uploader.swfUpload.setupConfig", ["fluid.uploader.tests"], {
+            funcName: "fluid.uploader.swfUpload.demo.tests.makeMockConfig",
             args: []
         });
         
-        fluid.demands("fluid.uploader.swfUploadStrategy.eventBinder", ["fluid.uploader.tests"], {
+        fluid.demands("fluid.uploader.swfUpload.eventBinder", ["fluid.uploader.tests"], {
             funcName: "fluid.identity",
             args: []
         });
@@ -97,7 +97,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var queue = fluid.uploader.fileQueue();
             queue.files = files;     
             
-            var demoEngine = fluid.uploader.swfUploadStrategy.demo(queue, events);
+            var demoEngine = fluid.uploader.demoRemote(queue, events);
             
             // TODO: Major problem. This code is from the implementation of Uploader.start(), but is required
             // before calling an engine's start() method.
@@ -230,8 +230,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertNotEquals("There is only one onFileProgress event in the transcript.",
                                        "onFileProgress", transcript[3].name);
                 start();
-            });            
-         });
+            });
+        });
 
         demoUploadTests.asyncTest("Chunking test: files that are not a multiple of the chunk size don't get reported larger because of the chunking.", function () {
             var transcript = uploadNotMultipleFileAndTest(function (transcript) {

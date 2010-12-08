@@ -13,7 +13,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery, fluid_1_2*/
 
-fluid_1_2 = fluid_1_2 || {};
+var fluid_1_2 = fluid_1_2 || {};
 
 (function ($, fluid) {
     
@@ -50,7 +50,6 @@ fluid_1_2 = fluid_1_2 || {};
         }
         
         var file = that.demoState.currentFile;
-        file.filestatus = fluid.uploader.fileStatusConstants.COMPLETE;
         that.events.onFileSuccess.fire(file);
         that.demoState.fileIdx++;
         finishAndContinueOrCleanup(that, file);
@@ -80,7 +79,6 @@ fluid_1_2 = fluid_1_2 || {};
         that.queue.isUploading = true;
         
         that.events.onFileStart.fire(that.demoState.currentFile);
-        that.demoState.currentFile.filestatus = fluid.uploader.fileStatusConstants.IN_PROGRESS;
         simulateUpload(that);
     };
 
@@ -120,8 +118,8 @@ fluid_1_2 = fluid_1_2 || {};
      */
      // TODO: boil down events to only those we actually need.
      // TODO: remove swfupload references and move into general namespace. Are there any real SWFUpload references here?
-    fluid.uploader.swfUploadStrategy.demo = function (queue, events, options) {
-        var that = fluid.uploader.swfUploadStrategy(options);
+    fluid.uploader.demoRemote = function (queue, events, options) {
+        var that = fluid.initLittleComponent("fluid.uploader.demoRemote", options)
         that.queue = queue;
         that.events = events;
         
@@ -153,11 +151,11 @@ fluid_1_2 = fluid_1_2 || {};
         setTimeout(fn, delay);
     };
     
-    fluid.demands("fluid.uploader.swfUploadStrategy", ["fluid.uploader", "fluid.uploader.demo"], {
-        funcName: "fluid.uploader.swfUploadStrategy.demo",
+    fluid.demands("fluid.uploader.remote", ["fluid.uploader.multiFileUploader", "fluid.uploader.demo"], {
+        funcName: "fluid.uploader.demoRemote",
         args: [
-            "{uploader}.queue",
-            "{uploader}.events",
+            "{multiFileUploader}.queue",
+            "{multiFileUploader}.events",
             fluid.COMPONENT_OPTIONS
         ]
     });

@@ -101,30 +101,73 @@
     display: none;
 }
 
-.fl-uploader a.fl-uploader-browse {
+.fl-uploader span.fl-uploader-browse {
     background-image: url(../images/add.png);
     background-attachment: scroll;
     background-repeat: no-repeat;
-    background-position: 5px center;
-    padding: 4px 7px 4px 26px;
+    background-position: 1px center;
+    padding: 5px 5px 0px 22px;
     border: none;
     white-space: nowrap;
     color: #427ABE;
     font-weight: normal;
-    cursor: pointer;
 }
 
-html>body .fl-uploader a.fl-uploader-browse {
-    padding: 3px 6px 3px 25px;
+.fl-uploader-footer-buttons {
+    vertical-align: center;
+}
+
+/* Special note about .fl-uploader-browse, .fl-uploader-browse.fl-uploader-browseMore, .fl-uploader-browse input
+ *
+ * Because of the inconsistencies in affecting <input type="file"> styling across browsers, we've used the following hack:
+ * 1. Create a fake "Browse files"/"Add more" button
+ * 2. Make the real button invisible
+ * 3. Put the real, invisible button on top of the fake button
+ */
+
+/* Fake add files button wrapper ("Browse files") */
+.fl-uploader-browse {
+    display: block;
+    overflow: hidden;
+    width: 82px;
+    height: 24px;
+    cursor: default;
+}
+
+/* Fake add files button wrapper ("Add more")
+ * Same as above, but width-adjusted for shorter text */
+.fl-uploader-browse.fl-uploader-browseMore {
+    width: 65px;
+}
+
+/* Actual, real add files button (invisible) */
+.fl-uploader-browse input {
+    position: relative;
+    overflow: hidden;
+    float: right;
+
+    /* Make the real button big enough to cover the fake button */
+    height: 40px;
+    letter-spacing: 5px;
+    bottom: 28px;
+    left: 10px;
+
+    /* Make the button invisible */
+    opacity: 0;
+    -moz-opacity: 0;
+    filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+}
+
+html>body .fl-uploader span.fl-uploader-browse {
     border: 1px solid transparent;
 }
 
-.fl-uploader a.fl-uploader-browse:hover {
+.fl-uploader span.fl-uploader-browse:hover {
     border: 1px solid #CCC;
     background-color: #FFF;
 }
 
-.fl-uploader a.fl-uploader-browse:focus, .fl-uploader a.fl-uploader-browse.focus {
+.fl-uploader span.fl-uploader-browse:focus, .fl-uploader span.fl-uploader-browse.focus {
     outline: 2px solid #142B8C;
     background-color: #FFF;
 }

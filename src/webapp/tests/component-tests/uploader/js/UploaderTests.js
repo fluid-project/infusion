@@ -15,6 +15,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
+        fluid.staticEnvironment = fluid.typeTag("fluid.uploader.tests");
+        
         var uploaderTests = new jqUnit.TestCase("Uploader Basic Tests");
         
         // Test formatFileSize()
@@ -49,6 +51,104 @@ https://source.fluidproject.org/svn/LICENSE.txt
             testFileSize(10000000000, "9536.8 MB");
             testFileSize(-1024, "");
             testFileSize("string", "");
+            testFileSize(Math.pow(2, 52), "4294967296.0 MB");
+            testFileSize(Math.pow(2, 1024), "Infinity MB"); //test "infinity"
+        });
+
+        uploaderTests.test("derivePercent()", function () {          
+            var total = 5;
+            var testPercentage = function (testVal, expected) {
+                jqUnit.assertEquals(testVal + "/" + total + " is " + expected + "%", expected, 
+                                    fluid.uploader.derivePercent(testVal, total));
+            };
+            testPercentage(0, 0);
+            testPercentage(2.5, 50);
+            testPercentage(total, 100);
+            testPercentage(10, 200);
+            testPercentage(0.1, 2);
+            testPercentage(-5, -100);
+            testPercentage("1", 20);
+            testPercentage("0.2", 4);
+            
+            //change total to odd number to test rounding
+            total = 7;
+            testPercentage(0, 0);
+            testPercentage(3.5, 50);
+            testPercentage(total, 100);
+            testPercentage(10, 143); //142.857
+            testPercentage(0.1, 1);  //1.42857
+            testPercentage(-5, -71); //-71.42857
+            testPercentage("3.5", 50); 
+            testPercentage("0.1", 1);  //1.42857
+            
+            //infinity test
+            testPercentage(Math.pow(2, 1024), "Infinity");
+            total = Math.pow(2, 1024);
+            testPercentage(0, 0);
+            jqUnit.assertTrue(total + "/" + total + " is not a number", 
+                            isNaN(fluid.uploader.derivePercent(total / total)));
+        });
+
+        uploaderTests.test("manuallyDegrade()", function () {
+            expect(9);
+            var degrader = fluid.manuallyDegrade($('#single-inline-fluid-uploader'), {
+                    container: "#uploader-content"
+                });
+            jqUnit.assertFalse("Before calling degrade, isDegraded() should be false", 
+                                degrader.isDegraded());            
+            jqUnit.assertFalse("Before calling degrade, the non-flash controller should be visible.", 
+                                degrader.locate('degradeControl').is(':hidden'));
+            jqUnit.assertTrue("Before calling degrade, the flash controller should be invisible.", 
+                                degrader.locate('enhanceControl').is(':hidden'));
+            jqUnit.assertTrue("Before calling degrade, the non-flash container should be invisible.", 
+                                degrader.locate('enhanceable').is(':hidden'));
+
+            degrader.degrade();
+            jqUnit.assertTrue("After calling degrade, isDegrade() should be true", 
+                                degrader.isDegraded());
+            jqUnit.assertTrue("After calling degrade, the non-flash controller should be invisible.", 
+                                degrader.locate('degradeControl').is(':hidden'));
+            jqUnit.assertFalse("After calling degrade, the flash controller should be visible.", 
+                                degrader.locate('enhanceControl').is(':hidden'));
+            jqUnit.assertFalse("After calling degrade, the non-flash container should be visible.", 
+                                degrader.locate('enhanceable').is(':hidden'));
+
+            degrader.enhance();
+            jqUnit.assertFalse("After calling enhance, isDegraded should be false", 
+                                degrader.isDegraded());
+        });
+        
+
+        var events = {
+            afterFileDialog: fluid.event.getEventFirer(),
+            afterFileRemoved: fluid.event.getEventFirer(),
+            onUploadStart: fluid.event.getEventFirer(),
+            onFileProgress: fluid.event.getEventFirer(),
+            afterUploadComplete: fluid.event.getEventFirer()
+        };
+        var status = $("#statusRegion");
+        var totalStatusText = $("#totalFileStatusText");
+        
+        var checkStatusAfterFiringEvent = function (text, eventName) {
+            totalStatusText.text(text);
+            events[eventName].fire();
+            jqUnit.assertEquals("The status region should match the total text after firing " + eventName, 
+                                totalStatusText.text(), status.text());    
+        };
+        
+        uploaderTests.test("ARIA Updater", function () {
+            fluid.uploader.ariaLiveRegionUpdater(status, totalStatusText, events);
+            
+            jqUnit.assertEquals("The status region should be empty to start.", "", status.text());
+            
+            totalStatusText.text("hello world");
+            jqUnit.assertEquals("The status region should be empty after invoking the updater.", "", status.text());
+            
+            checkStatusAfterFiringEvent("cat", "afterFileDialog");
+            checkStatusAfterFiringEvent("dog", "afterFileRemoved");       
+            checkStatusAfterFiringEvent("fish", "onUploadStart");           
+            checkStatusAfterFiringEvent("hamster", "onFileProgress");           
+            checkStatusAfterFiringEvent("shark", "afterUploadComplete");           
         });
     });
 })(jQuery);

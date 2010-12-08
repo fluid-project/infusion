@@ -19,27 +19,16 @@ var demo = demo || {};
 
 (function ($, fluid) {
     demo.initUploader = function () {
-        fluid.progressiveEnhanceableUploader(".flc-uploader", ".fl-progEnhance-basic", {
-            demo: true,                
-            uploadManager: {
-                type: "fluid.swfUploadManager",        
-                options: {
-                   // Set the uploadURL to the URL for posting files to your server.
-                   uploadURL: "http://myserver.com/uploadFiles",
-    
-                   // This option points to the location of the SWFUpload Flash object that ships with Fluid Infusion.
-                   flashURL: "../../../lib/swfupload/flash/swfupload.swf"
-                }
-            },
-            decorators: [{
-                type: "fluid.swfUploadSetupDecorator",
-                options: {
-                    // This option points to the location of the Browse Files button used with Flash 10 clients.
-                    flashButtonImageURL: "../../../components/uploader/images/browse.png"
-                }
-            }]
-        });    
-    }
+        // Load the Uploader's template via AJAX and inject it into this page.
+        var templateURLSelector = "../../../components/uploader/html/Uploader.html .fl-uploader";
+        $("#uploader-contents").load(templateURLSelector, null, function () {
+            
+            // Initialize the Uploader in demo mode.
+            fluid.uploader(".flc-uploader", {
+                demo: true
+            });
+        });
+    };
 })(jQuery, fluid);
 
 

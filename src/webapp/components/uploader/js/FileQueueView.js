@@ -197,6 +197,7 @@ fluid_1_2 = fluid_1_2 || {};
             row.hide();
         }
         that.container.append(row);
+        row.attr("title", that.options.strings.status.remove);
         row.fadeIn("slow");
         that.scroller.scrollBottom();
         createProgressorFromTemplate(that, row);
@@ -359,13 +360,13 @@ fluid_1_2 = fluid_1_2 || {};
         return that;
     };
     
-    fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader", {
+    fluid.demands("fluid.uploader.fileQueueView", "fluid.uploader.multiFileUploader", {
         funcName: "fluid.uploader.fileQueueView",
         args: [
-            "{uploader}.dom.fileQueue",
-            "{uploader}.container", // TODO: Get rid of this dependency
-            "{uploader}.queue",
-            "{uploader}.events", // TODO: boil down to only needed events
+            "{multiFileUploader}.dom.fileQueue",
+            "{multiFileUploader}.container", // TODO: Get rid of this dependency
+            "{multiFileUploader}.queue",
+            "{multiFileUploader}.events", // TODO: boil down to only needed events
             fluid.COMPONENT_OPTIONS
         ]
     });
@@ -403,7 +404,8 @@ fluid_1_2 = fluid_1_2 || {};
             },
             status: {
                 success: "File Uploaded",
-                error: "File Upload Error"
+                error: "File Upload Error",
+                remove: "Press Delete key to remove file"
             }, 
             errors: {
                 HTTP_ERROR: "File upload error: a network error occured or the file was rejected (reason unknown).",

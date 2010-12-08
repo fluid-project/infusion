@@ -29,9 +29,12 @@
                 overflow-y: auto;
                 border-right: 1px solid #999;
                 border-left: 1px solid #999;
+                max-height: 180px;
+                max-width: 180px;
             }
             
             ul {
+                margin: 0px;
                 border: 1px solid #CCC;
                 width: 180px;
             }
@@ -48,18 +51,17 @@
         <!-- Test HTML -->
         <div id="main">
            <!-- Generic Scroller -->
-            <div id="outer" class="flc-scroller">
-                <div id="inner" class="flc-scroller-inner">
+           <div id="outer" class="flc-scroller">
                     <ul id="scrollableWithWrapper">
+                        <li>Item Zero</li>
                         <li>Item One</li>
                         <li>Item Two</li>
                         <li>Item Three</li>
-                        <li>Item Four</li>
                     </ul>
                     
                 </div>        
             </div>
-        
+
             <!-- No Wrapper -->
             <ul id="scrollableNoWrapper">
                 <li>Item One</li>
@@ -67,6 +69,50 @@
                 <li>Item Three</li>
                 <li>Item Four</li>
             </ul>
+
+            <div id="scrollable_outer" class="flc-scroller-outer">
+                <div id="inner" class="flc-scroller-inner">
+                    <ul id="scrollable">
+                        <li>Item Zero</li>
+                        <li>Item One</li>
+                        <li>Item Two</li>
+                        <li>Item Three</li>
+                        <li>Item Four</li>
+                        <li>Item Five</li>
+                        <li>Item Six</li>
+                        <li>Item Seven</li>
+                        <li>Item Eight</li>
+                        <li>Item Nine</li>
+                        <li>Item Ten</li>
+
+                        <li>Item Eleven</li>
+                        <li>Item Twelve<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-<br>-</li>
+
+                        <li>Item Thirteen</li>
+                        <li>Item Fourteen</li>
+                        <li>Item Fifteen</li>
+                        <li>Item Sixteen</li>
+                        <li>Item Seventeen</li>
+                        <li>Item Eighteen</li>
+
+                        <li>Item Nineteen</li>
+                        <li>Item Twenty</li>
+                        <li>Item Twenty One</li>
+                        <li>Item Twenty Two</li>
+                        <li>Item Twenty Three</li>
+                        <li>Item Twenty Four</li>
+
+                        <li>Item Twenty Five</li>
+                        <li>Item Twenty Six</li>
+                        <li>Item Twenty Seven</li>
+                        <li>Item Twenty Eight</li>
+                        <li>Item Twenty Nine</li>
+                        <li>Item Thirty</li>
+                    </ul>
+                    
+                </div>        
+            </div>
+        
          </div>
     </body>
 </html>

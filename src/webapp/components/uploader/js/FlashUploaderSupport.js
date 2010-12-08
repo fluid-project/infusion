@@ -19,63 +19,32 @@ fluid_1_2 = fluid_1_2 || {};
 
     fluid.uploader = fluid.uploader || {};
     
-    
-    /******************************
-     * uploader.swfUploadStrategy *
-     ******************************/
-     
-    var setupSWFUploadStrategy = function (that) {
-        that.version = swfobject.getFlashPlayerVersion().major;
-        fluid.initDependents(that);
-        that.flashContainer = that.setupDOM();
-        that.config = that.setupConfig();
-        that.swfUploader = new SWFUpload(that.config);
-        that.bindEvents();
-    };
+    /**********************
+     * uploader.swfUpload *
+     **********************/
     
     fluid.uploader.swfUploadStrategy = function (options) {
         var that = fluid.initLittleComponent("fluid.uploader.swfUploadStrategy", options);
-        
-        that.browse = function () {
-            if (that.options.file_queue_limit === 1) {
-                that.swfUploader.selectFile();
-            } else {
-                that.swfUploader.selectFiles();
-            }    
-        };
-        
-        that.start = function () {
-            that.swfUploader.startUpload();
-        };
-        
-        that.removeFile = function (file) {
-            that.swfUploader.cancelUpload(file.id);
-        };
-        
-        that.stop = function () {
-            that.swfUploader.stopUpload();
-        };
-        
-        that.enableBrowseButton = function () {
-            that.swfUploader.setButtonDisabled(false);
-        };
-        
-        that.disableBrowseButton = function () {
-            that.swfUploader.setButtonDisabled(true);
-        };
-        
-        setupSWFUploadStrategy(that);
+        fluid.initDependents(that);
         return that;
     };
     
     fluid.defaults("fluid.uploader.swfUploadStrategy", {
-        invokers: {
-            setupDOM: "fluid.uploader.swfUploadStrategy.setupDOM",
-            setupConfig: "fluid.uploader.swfUploadStrategy.setupConfig",
-            bindEvents: "fluid.uploader.swfUploadStrategy.eventBinder"
+        components: {
+            engine: {
+                type: "fluid.uploader.swfUploadStrategy.engine"
+            },
+            
+            local: {
+                type: "fluid.uploader.swfUploadStrategy.local"
+            },
+            
+            remote: {
+                type: "fluid.uploader.remote"
+            }
         },
-     
-        // Rename this to "flashSettings" and remove the "flash" prefix from each option
+        
+        // TODO: Rename this to "flashSettings" and remove the "flash" prefix from each option
         flashMovieSettings: {
             flashURL: "../../../lib/swfupload/flash/swfupload.swf",
             flashButtonPeerId: "",
@@ -93,55 +62,123 @@ fluid_1_2 = fluid_1_2 || {};
         }
     });
     
-    fluid.demands("fluid.uploader.swfUploadStrategy", "fluid.uploader", {
-        funcName: "fluid.uploader.swfUploadStrategy"
-    });
-    
-    fluid.demands("fluid.uploader.swfUploadStrategy.setupDOM", ["fluid.uploader", "fluid.uploader.swfUploaderStrategy"], {
-        funcName: "fluid.uploader.swfUploadStrategy.setupDOM",
+    fluid.demands("fluid.uploader.swfUploadStrategy", "fluid.uploader.multiFileUploader", {
+        funcName: "fluid.uploader.swfUploadStrategy",
         args: [
-            "{uploader}.container",
-            "{uploader}.dom.browseButton",
-            "{swfUploadStrategy}.version",
-            "{swfUploadStrategy}.options.styles"
+            fluid.COMPONENT_OPTIONS
         ]
     });
     
-    fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", ["fluid.uploader", "fluid.uploader.swfUploaderStrategy"], {
-        funcName: "fluid.uploader.swfUploadStrategy.setupConfig",
+    fluid.demands("fluid.uploader.progressiveStrategy", "fluid.uploader.swfUpload", {
+        funcName: "fluid.uploader.swfUploadStrategy",
         args: [
-            "{uploader}.events",
-            "{uploader}.dom.browseButton",
-            "{swfUploadStrategy}.flashContainer",
-            "{swfUploadStrategy}.version",
-            "{uploader}.options.queueSettings",
-            "{swfUploadStrategy}.options.flashMovieSettings"
+            fluid.COMPONENT_OPTIONS
         ]
     });
     
-    fluid.demands("fluid.uploader.swfUploadStrategy.eventBinder", ["fluid.uploader", "fluid.uploader.swfUploaderStrategy"], {
-        funcName: "fluid.uploader.swfUploadStrategy.eventBinder",
-        args: [
-            "{uploader}.queue.files",
-            "{uploader}.events",
-            "{swfUploadStrategy}.version",
-            "{swfUploadStrategy}" // TODO: Could narrow this to just the start function.
-        ]
-    });
-
     
-    /******************************
-     * swfUploadStrategy.setupDOM *
-     ******************************/
-
-    var createFlash9MovieContainer = function (styles) {
-        var container = $("<div><span></span></div>");
-        container.addClass(styles.flash9Container);
-        $("body").append(container);
-        return container;
+    fluid.uploader.swfUploadStrategy.remote = function (swfUpload, options) {
+        var that = fluid.initLittleComponent("fluid.uploader.swfUploadStrategy.remote", options);
+        that.swfUpload = swfUpload;
+        
+        that.start = function () {
+            that.swfUpload.startUpload();
+        };
+        
+        that.stop = function () {
+            that.swfUpload.stopUpload();
+        };
+        return that;
     };
+    
+    fluid.demands("fluid.uploader.remote", "fluid.uploader.swfUploadStrategy", {
+        funcName: "fluid.uploader.swfUploadStrategy.remote",
+        args: [
+            "{engine}.swfUpload",
+            fluid.COMPONENT_OPTIONS
+        ]
+    });
 
-    var createFlash10MovieContainer = function (uploaderContainer, styles) {        
+    
+    fluid.uploader.swfUploadStrategy.local = function (swfUpload, options) {
+        var that = fluid.initLittleComponent("fluid.uploader.swfUploadStrategy.local", options);
+        that.swfUpload = swfUpload;
+        
+        that.browse = function () {
+            if (that.options.file_queue_limit === 1) {
+                that.swfUpload.selectFile();
+            } else {
+                that.swfUpload.selectFiles();
+            }    
+        };
+        
+        that.removeFile = function (file) {
+            that.swfUpload.cancelUpload(file.id);
+        };
+        
+        that.enableBrowseButton = function () {
+            that.swfUpload.setButtonDisabled(false);
+        };
+        
+        that.disableBrowseButton = function () {
+            that.swfUpload.setButtonDisabled(true);
+        };
+        
+        return that;
+    };
+    
+    fluid.demands("fluid.uploader.swfUploadStrategy.local", "fluid.uploader.multiFileUploader", {
+        funcName: "fluid.uploader.swfUploadStrategy.local",
+        args: [
+            "{engine}.swfUpload",
+            fluid.COMPONENT_OPTIONS
+        ]
+    });
+    
+    fluid.uploader.swfUploadStrategy.engine = function (queueSettings, flashMovieSettings, options) {
+        var that = fluid.initLittleComponent("fluid.uploader.swfUploadStrategy.engine", options);
+        
+        // Get the Flash version from swfobject and setup a new context so that the appropriate
+        // Flash 9/10 strategies are selected.
+        var flashVersion = swfobject.getFlashPlayerVersion().major;
+        that.flashVersionContext = fluid.typeTag("fluid.uploader.flash." + flashVersion);
+        
+        // Merge Uploader's generic queue options with our Flash-specific options.
+        that.config = $.extend({}, queueSettings, flashMovieSettings);
+        
+        // Configure the SWFUpload subsystem.
+        fluid.initDependents(that);
+        that.flashContainer = that.setupDOM();
+        that.swfUploadConfig = that.setupConfig();
+        that.swfUpload = new SWFUpload(that.swfUploadConfig);
+        that.bindEvents();
+        
+        return that;
+    };
+    
+    fluid.defaults("fluid.uploader.swfUploadStrategy.engine", {
+        invokers: {
+            setupDOM: "fluid.uploader.swfUploadStrategy.setupDOM",
+            setupConfig: "fluid.uploader.swfUploadStrategy.setupConfig",
+            bindEvents: "fluid.uploader.swfUploadStrategy.eventBinder"
+        }
+    });
+    
+    fluid.demands("fluid.uploader.swfUploadStrategy.engine", "fluid.uploader.swfUploadStrategy", {
+        funcName: "fluid.uploader.swfUploadStrategy.engine",
+        args: [
+            "{multiFileUploader}.options.queueSettings",
+            "{swfUploadStrategy}.options.flashMovieSettings",
+            fluid.COMPONENT_OPTIONS
+        ]
+    });
+    
+    
+    /**********************
+     * swfUpload.setupDOM *
+     **********************/
+    
+    fluid.uploader.swfUploadStrategy.flash10SetupDOM = function (uploaderContainer, browseButton, styles) {
         // Wrap the whole uploader first.
         uploaderContainer.wrap("<div class='" + styles.uploaderWrapperFlash10 + "'></div>");
 
@@ -149,26 +186,26 @@ fluid_1_2 = fluid_1_2 || {};
         var flashContainer = $("<div><span></span></div>");
         flashContainer.addClass(styles.browseButtonOverlay);
         uploaderContainer.after(flashContainer);
-        return flashContainer;
-    };
-
-    var setupDOMForFlash10 = function (container, browseButton, styles) {
-        var flashContainer = createFlash10MovieContainer(container, styles);
+        
         browseButton.attr("tabindex", -1);        
-        return flashContainer;
-    };
-
-    fluid.uploader.swfUploadStrategy.setupDOM = function (container, browseButton, flashVersion, styles) {
-        if (flashVersion === 9) {
-            return createFlash9MovieContainer(styles);
-        } else {
-            return setupDOMForFlash10(container, browseButton, styles);
-        }         
+        return flashContainer;   
     };
     
+    fluid.demands("fluid.uploader.swfUploadStrategy.setupDOM", [
+        "fluid.uploader.swfUploadStrategy.engine",
+        "fluid.uploader.flash.10"
+    ], {
+        funcName: "fluid.uploader.swfUploadStrategy.flash10SetupDOM",
+        args: [
+            "{multiFileUploader}.container",
+            "{multiFileUploader}.dom.browseButton",
+            "{swfUploadStrategy}.options.styles"
+        ]
+    });
+     
      
     /*********************************
-     * swfUploadStrategy.setupConfig *
+     * swfUpload.setupConfig *
      *********************************/
       
     // Maps SWFUpload's setting names to our component's setting names.
@@ -178,7 +215,6 @@ fluid_1_2 = fluid_1_2 || {};
         postParams: "post_params",
         fileSizeLimit: "file_size_limit",
         fileTypes: "file_types",
-        fileTypesDescription: "file_types_description",
         fileUploadLimit: "file_upload_limit",
         fileQueueLimit: "file_queue_limit",
         flashButtonPeerId: "button_placeholder_id",
@@ -230,31 +266,38 @@ fluid_1_2 = fluid_1_2 || {};
         return result;
     };
     
-    var setupButtonOptions = function (config, browseButton, flashContainer, flashVersion) {
-        config.flashButtonPeerId = fluid.allocateSimpleId(flashContainer.children().eq(0));
-         
-        // Setup for Flash 10+
-        if (flashVersion > 9) {
-            var isTransparent = config.flashButtonAlwaysVisible ? false : (!$.browser.msie || config.flashButtonTransparentEvenInIE);
-            config.flashButtonImageURL = isTransparent ? undefined : config.flashButtonImageURL;
-            config.flashButtonHeight = config.flashButtonHeight || browseButton.outerHeight();
-            config.flashButtonWidth = config.flashButtonWidth || browseButton.outerWidth();
-            config.flashButtonWindowMode = isTransparent ? SWFUpload.WINDOW_MODE.TRANSPARENT : SWFUpload.WINDOW_MODE.OPAQUE;        
-        }
-    };
-    
-    // TODO: Absurd argument list!
-    fluid.uploader.swfUploadStrategy.setupConfig = function (events, browseButton, flashContainer, flashVersion, queueSettings, flashMovieSettings) {
+    fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload = function (config, events) {
         // Map the event and settings names to SWFUpload's expectations.
-        var mergedConfig = $.extend({}, queueSettings, flashMovieSettings);
-        setupButtonOptions(mergedConfig, browseButton, flashContainer, flashVersion);
-        var convertedConfig = mapNames(swfUploadOptionsMap, mergedConfig);
+        var convertedConfig = mapNames(swfUploadOptionsMap, config);
         return mapSWFUploadEvents(swfUploadEventMap, events, convertedConfig);
     };
+    
+    fluid.uploader.swfUploadStrategy.flash10SetupConfig = function (config, events, flashContainer, browseButton) {
+        config.flashButtonPeerId = fluid.allocateSimpleId(flashContainer.children().eq(0));
+        var isTransparent = config.flashButtonAlwaysVisible ? false : (!$.browser.msie || config.flashButtonTransparentEvenInIE);
+        config.flashButtonImageURL = isTransparent ? undefined : config.flashButtonImageURL;
+        config.flashButtonHeight = config.flashButtonHeight || browseButton.outerHeight();
+        config.flashButtonWidth = config.flashButtonWidth || browseButton.outerWidth();
+        config.flashButtonWindowMode = isTransparent ? SWFUpload.WINDOW_MODE.TRANSPARENT : SWFUpload.WINDOW_MODE.OPAQUE;
+        return fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(config, events);
+    };
+    
+    fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", [
+        "fluid.uploader.swfUploadStrategy.engine",
+        "fluid.uploader.flash.10"
+    ], {
+        funcName: "fluid.uploader.swfUploadStrategy.flash10SetupConfig",
+        args: [
+            "{engine}.config",
+            "{multiFileUploader}.events",
+            "{engine}.flashContainer",
+            "{multiFileUploader}.dom.browseButton"
+        ]
+    });
 
      
     /*********************************
-     * swfUploadStrategy.eventBinder *
+     * swfUpload.eventBinder *
      *********************************/
      
     var unbindSWFUploadSelectFiles = function () {
@@ -265,17 +308,7 @@ fluid_1_2 = fluid_1_2 || {};
         SWFUpload.prototype.selectFiles = emptyFunction;
     };
     
-    var bindFlash10ButtonListeners = function (events, engine) {
-        events.onUploadStart.addListener(function () {
-            engine.disableBrowseButton();
-        });
-        
-        events.afterUploadComplete.addListener(function () {
-            engine.enableBrowseButton();            
-        });    
-    };
-    
-    var bindFileEventListeners = function (model, events) {
+    fluid.uploader.swfUploadStrategy.bindFileEventListeners = function (model, events) {
         // Manually update our public model to keep it in sync with SWFUpload's insane,
         // always-changing references to its internal model.        
         var manualModelUpdater = function (file) {
@@ -293,20 +326,29 @@ fluid_1_2 = fluid_1_2 || {};
         events.onFileSuccess.addListener(manualModelUpdater);
     };
     
-    var bindUploadQueueEventListeners = function (events, engine) {
+    fluid.uploader.swfUploadStrategy.flash10EventBinder = function (model, events, local) {
+        unbindSWFUploadSelectFiles();      
+              
         events.onUploadStart.addListener(function () {
-            engine.start();
+            local.disableBrowseButton();
         });
-    };
-    
-    fluid.uploader.swfUploadStrategy.eventBinder = function (model, events, flashVersion, engine) {
-        if (flashVersion > 9) {
-            unbindSWFUploadSelectFiles();            
-            bindFlash10ButtonListeners(events, engine);
-        }
         
-        bindFileEventListeners(model, events);
-        bindUploadQueueEventListeners(events, engine);
+        events.afterUploadComplete.addListener(function () {
+            local.enableBrowseButton();            
+        });
+        
+        fluid.uploader.swfUploadStrategy.bindFileEventListeners(model, events);
     };
     
+    fluid.demands("fluid.uploader.swfUploadStrategy.eventBinder", [
+        "fluid.uploader.swfUploadStrategy.engine",
+        "fluid.uploader.flash.10"
+    ], {
+        funcName: "fluid.uploader.swfUploadStrategy.flash10EventBinder",
+        args: [
+            "{multiFileUploader}.queue.files",
+            "{multiFileUploader}.events",
+            "{swfUploadStrategy}.local"
+        ]
+    });
 })(jQuery, fluid_1_2);
