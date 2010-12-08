@@ -79,9 +79,6 @@ var fluid_1_2 = fluid_1_2 || {};
     };
 
     function makeStackFetcher(thatStack, directModel) {
-      // TODO: This is a bit crazy, shouldn't the "dynamic environment" go right into the thatStack? Right now it is
-      // incorrectly beaten by the static environment
-        var envFetcher = fluid.environmentFetcher(directModel);
         var fetchStrategies = [fluid.model.funcResolverStrategy, makeGingerStrategy(thatStack)]; 
         var fetcher = function(parsed) {
             var context = parsed.context;
@@ -96,12 +93,9 @@ var fluid_1_2 = fluid_1_2 || {};
                     return true;
                 }
             });
-            if (!foundComponent) {
-                return envFetcher(parsed);
                 // TODO: we used to get a helpful diagnostic when we failed to match a context name before we fell back
                 // to the environment for FLUID-3818
                 //fluid.fail("No context matched for name " + context + " from root of type " + thatStack[0].typeName);
-            }
             return fluid.model.getBeanValue(foundComponent, parsed.path, fetchStrategies);
         };
         return fetcher;
@@ -120,7 +114,7 @@ var fluid_1_2 = fluid_1_2 || {};
         options.model = directModel;
         
         if (fluid.isMarker(arg, fluid.COMPONENT_OPTIONS)) {
-            arg = fluid.expander.expandLight(componentOptions, options); //fluid.resolveEnvironment(componentOptions, directModel, options);
+            arg = fluid.expander.expandLight(componentOptions, options);
         }
         else {
             if (typeof(arg) === "string" && arg.charAt(0) === "@") { // Test cases for i) single-args, ii) composite args
@@ -142,8 +136,16 @@ var fluid_1_2 = fluid_1_2 || {};
      */
     fluid.embodyDemands = function(thatStack, demandspec, initArgs, options) {
         var demands = $.makeArray(demandspec.args);
-        if (demands.length === 0 && thatStack.length > 0) { // Guess that it is meant to be a subcomponent TODO: component grades
-            demands = [fluid.COMPONENT_OPTIONS];
+        options = options || {};
+        if (demands.length === 0) {
+            if (options.componentOptions) { // Guess that it is meant to be a subcomponent TODO: component grades
+               demands = [fluid.COMPONENT_OPTIONS];
+            }
+            else if (options.passArgs) {
+                demands = fluid.transform(initArgs, function(arg, index) {
+                    return "@"+index;
+                });
+            }
         }
         var args = [];
         if (demands) {
@@ -153,13 +155,13 @@ var fluid_1_2 = fluid_1_2 || {};
                     var resolvedOptions = {};
                     for (var key in arg) {
                         var ref = arg[key];
-                        var rvalue = resolveRvalue(thatStack, ref, initArgs, options);
+                        var rvalue = resolveRvalue(thatStack, ref, initArgs, options.componentOptions);
                         fluid.model.setBeanValue(resolvedOptions, key, rvalue);
                     }
                     args[i] = resolvedOptions;
                 }
                 else {
-                    var resolvedArg = resolveRvalue(thatStack, arg, initArgs, options) || {};
+                    var resolvedArg = resolveRvalue(thatStack, arg, initArgs, options.componentOptions) || {};
                     args[i] = resolvedArg;
                 }
                 if (i === demands.length - 1 && args[i] && typeof(args[i]) === "object" && !args[i].typeName && !args[i].targetTypeName) {
@@ -290,7 +292,7 @@ var fluid_1_2 = fluid_1_2 || {};
     fluid.invoke = function(functionName, args, that, environment) {
         args = fluid.makeArray(args);
         return fluid.withNewComponent(that || {typeName: functionName}, function(thatStack) {
-            var invokeSpec = fluid.resolveDemands(thatStack, functionName, args, args[0]);
+            var invokeSpec = fluid.resolveDemands(thatStack, functionName, args, {passArgs: true});
             return fluid.invokeGlobalFunction(invokeSpec.funcName, invokeSpec.args, environment);
         });
     };
@@ -394,7 +396,7 @@ var fluid_1_2 = fluid_1_2 || {};
     fluid.initDependent = function(that, name, thatStack) {
         if (!that || that[name]) { return; }
         var component = that.options.components[name];
-        var invokeSpec = fluid.resolveDemands(thatStack, [component.type, name], [], component.options);
+        var invokeSpec = fluid.resolveDemands(thatStack, [component.type, name], [], {componentOptions: component.options});
         // TODO: only want to expand "options" or all args? See "component rescuing" in expandOptions above
         //invokeSpec.args = fluid.expandOptions(invokeSpec.args, thatStack, true); 
         var instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
@@ -405,22 +407,24 @@ var fluid_1_2 = fluid_1_2 || {};
     
     // NON-API function    
     fluid.withNewComponent = function(that, func) {
-        if (!that) {
-            return func(fluid.getEnvironmentalThatStack());
+        if (that) {
+            that[inCreationMarker] = true;
         }
-        that[inCreationMarker] = true;
         // push a dynamic stack of "currently resolving components" onto the current thread
         var root = fluid.threadLocal();
         var thatStack = root["fluid.initDependents"];
-        if (!thatStack) {
-            thatStack = [that];
-            root["fluid.initDependents"] = thatStack;
+        if (that) {
+            if (!thatStack) {
+                thatStack = [that];
+                root["fluid.initDependents"] = thatStack;
+            }
+            else {
+                thatStack.push(that);
+            }
         }
-        else {
-            thatStack.push(that);
-        }
+        var fullStack = [fluid.staticEnvironment, fluid.threadLocal()].concat(fluid.makeArray(thatStack));
         try {
-            return func(thatStack);
+            return func(fullStack);
         }
         finally {
             thatStack.pop();
@@ -487,7 +491,7 @@ var fluid_1_2 = fluid_1_2 || {};
     
     fluid.demands("fluid.threadLocal", "fluid.browser", {funcName: "fluid.singleThreadLocal"});
 
-    var singleThreadLocal = {};
+    var singleThreadLocal = fluid.typeTag("fluid.dynamicEnvironment");
     
     fluid.singleThreadLocal = function() {
         return singleThreadLocal;
@@ -670,11 +674,10 @@ var fluid_1_2 = fluid_1_2 || {};
     
     fluid.deferredCall = fluid.expander.deferredCall; // put in top namespace for convenience
     
-    // TODO: The case of an "invoke" call as part of the course of resolving some component options
-    // proved problematic here and interrupted the ability to resolve contextualised values inside the invoker.
     fluid.deferredInvokeCall = function(target, source, recurse) {
         var expander = source.expander;
-        var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : $.makeArray(expander.args); 
+        var args = (!expander.args || fluid.isArrayable(expander.args))? expander.args : $.makeArray(expander.args);
+        args = recurse(args);  
         return fluid.invoke(expander.func, args);
     };
     

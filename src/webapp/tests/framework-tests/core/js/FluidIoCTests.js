@@ -181,6 +181,10 @@ fluid.defaults("fluid.testUtils.multiResolution", {
     }  
 });
 
+fluid.demands("fluid.testUtils.staticResolution", [], 
+    {funcName: "fluid.identity",
+     args: "{fluid.testUtils.localFiles}"
+    });
 
 fluid.demands("fluid.testUtils.multiResSub", "fluid.testUtils.multiResolution",
    {funcName: "fluid.testUtils.multiResSub"
@@ -343,9 +347,22 @@ fluidIoCTests.test("Multi-resolution test", function() {
 //             targetTypeName: type3 // This floats about a bit as we change policy on "typeName"
         };
         jqUnit.assertDeepEq("\"Test\" subcomponent merged options", expectedOptions, that3.resSub.options);
+
     }
     finally {
         delete fluid.staticEnvironment.testEnvironment;
+        delete fluid.staticEnvironment.localEnvironment;
+    }
+});
+
+fluidIoCTests.test("Static resolution test", function() {
+    try {
+        fluid.staticEnvironment.localEnvironment = fluid.typeTag("fluid.testUtils.localFiles");
+                
+        var staticRes = fluid.invoke("fluid.testUtils.staticResolution");
+        jqUnit.assertNotUndefined("Resolved value from static environment", staticRes);
+    }
+    finally {
         delete fluid.staticEnvironment.localEnvironment;
     }
 });
@@ -354,13 +371,13 @@ fluidIoCTests.test("Default interaction test", function() {
     var that = fluid.testUtils.defaultInteraction();
     jqUnit.assertValue("Constructed", that);
     var standardDefaults = fluid.copy(fluid.defaults("fluid.testUtils.popup"));
-    standardDefaults.targetTypeName = "fluid.testUtils.popup";
     jqUnit.assertDeepEq("Default options", standardDefaults, that.popup.options);
     
     try {
         fluid.staticEnvironment.localEnvironment = fluid.typeTag("fluid.testUtils.localTest");
         var demands = fluid.demands("fluid.testUtils.popup", "fluid.testUtils.localTest");
         var that2 = fluid.testUtils.defaultInteraction();
+        standardDefaults.targetTypeName = "fluid.testUtils.popup"; // TODO: this floats about a bit 
         var mergedDefaults = $.extend(true, standardDefaults, demands.args);
         jqUnit.assertDeepEq("Merged options", mergedDefaults, that2.popup.options);
     }
@@ -379,7 +396,11 @@ fluid.testUtils.envTests.config = {
 };
 
 fluidIoCTests.test("Environmental Tests II - FLUID-3818", function() {
-    var component = fluid.withEnvironment({environmentalValue: {derived: "derivedValue"}},
+    var component = fluid.withEnvironment(
+        {environmentalValue: {
+            typeName: "environmentalValue", 
+            derived: "derivedValue"}
+         },
         function() {
             return fluid.testUtils.fluid3818head();
         });
