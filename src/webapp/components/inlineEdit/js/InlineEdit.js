@@ -189,9 +189,10 @@ fluid_1_2 = fluid_1_2 || {};
         that.events.afterBeginEdit.fire();
     };
 
-    var clearEmptyViewStyles = function (textEl, defaultViewStyle, originalViewPadding) {
-        textEl.removeClass(defaultViewStyle);
+    var clearEmptyViewStyles = function (textEl, styles, originalViewPadding) {
+        textEl.removeClass(styles.defaultViewStyle);
         textEl.css('padding-right', originalViewPadding);
+        textEl.removeClass(styles.emptyDefaultViewText);
     };
     
     var showDefaultViewText = function (that) {
@@ -214,7 +215,7 @@ fluid_1_2 = fluid_1_2 || {};
 
     var showEditedText = function (that) {
         that.displayView.value(that.model.value);
-        clearEmptyViewStyles(that.viewEl, that.options.styles.defaultViewStyle, that.existingPadding);
+        clearEmptyViewStyles(that.viewEl, that.options.styles, that.existingPadding);
     };
     
     var refreshView = function (that, source) {
@@ -778,9 +779,12 @@ fluid_1_2 = fluid_1_2 || {};
                     showNothing(componentThat);
                 }
                 // If necessary, pad the view element enough that it will be evident to the user.
-                if (($.trim(componentThat.viewEl.text()).length === 0) &&
-                    (componentThat.existingPadding < componentThat.options.paddings.minimumView)) {
-                    componentThat.viewEl.css('padding-right', componentThat.options.paddings.minimumView);
+                if ($.trim(componentThat.viewEl.text()).length === 0) {
+                    componentThat.viewEl.addClass(componentThat.options.styles.emptyDefaultViewText);
+                    
+                    if(componentThat.existingPadding < componentThat.options.paddings.minimumView) {
+                        componentThat.viewEl.css('padding-right', componentThat.options.paddings.minimumView);
+                    }
                 }
             }
         };
@@ -829,6 +833,7 @@ fluid_1_2 = fluid_1_2 || {};
             edit: "fl-inlineEdit-edit",
             invitation: "fl-inlineEdit-invitation",
             defaultViewStyle: "fl-inlineEdit-emptyText-invitation",
+            emptyDefaultViewText: "fl-inlineEdit-emptyDefaultViewText",
             focus: "fl-inlineEdit-focus",
             tooltip: "fl-inlineEdit-tooltip",
             editModeInstruction: "fl-inlineEdit-editModeInstruction",
