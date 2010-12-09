@@ -36,7 +36,7 @@ var demo = demo || {};
         /**
          * Simple inline edits example.
          */            
-        fluid.inlineEdit(".simpleEditTitle", {
+        fluid.inlineEdit(".demoSelector-inlineEdit-container-title", {
             componentDecorators: {
                 type: "fluid.undoDecorator",
                 options: {
@@ -50,7 +50,7 @@ var demo = demo || {};
             defaultViewText: "Edit this"
         });
         
-        fluid.inlineEdit(".simpleEditCaption", {
+        fluid.inlineEdit(".demoSelector-inlineEdit-container-caption", {
             componentDecorators: {
                 type: "fluid.undoDecorator",
                 options: {
