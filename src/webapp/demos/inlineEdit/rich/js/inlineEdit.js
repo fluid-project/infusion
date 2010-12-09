@@ -21,19 +21,19 @@ var demo = demo || {};
          * @param {Object} editor 
          */
         var makeButtons = function (editor) {
-            $(".save", editor.container).click(function () {
+            $(".demo-save", editor.container).click(function () {
                 editor.finish();
                 return false;
             });
 
-            $(".cancel", editor.container).click(function () {
+            $(".demo-cancel", editor.container).click(function () {
                 editor.cancel();
                 return false;
             });
         }; 
 
         // Create a TinyMCE-based Rich Inline Edit component.
-        var tinyEditor = fluid.inlineEdit.tinyMCE("#richEdit1", {
+        var tinyEditor = fluid.inlineEdit.tinyMCE("#demo-richInlineEdit-container-tinyMCE", {
             tinyMCE: {
                     width: 1024,
                     theme: "advanced",
@@ -48,12 +48,12 @@ var demo = demo || {};
             },
             strings: {
                 textEditButton: "Edit"
-            }            
+            }
         });
         makeButtons(tinyEditor);
 
         // Create an CKEditor 3.x-based Rich Inline Edit component.
-        var ckEditor = fluid.inlineEdit.CKEditor("#richEdit2", {
+        var ckEditor = fluid.inlineEdit.CKEditor("#demo-richInlineEdit-container-ckEditor", {
             componentDecorators: {
                 type: "fluid.undoDecorator",
                 options: {
