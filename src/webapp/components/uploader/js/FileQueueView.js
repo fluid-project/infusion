@@ -158,15 +158,18 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
     var renderRowFromTemplate = function (that, file) {
-        var row = that.rowTemplate.clone();
+        var row = that.rowTemplate.clone(),
+            fileName = file.name,
+            fileSize = fluid.uploader.formatFileSize(file.size);
+        
         row.removeClass(that.options.styles.hiddenTemplate);
-        that.locate("fileName", row).text(file.name);
-        that.locate("fileSize", row).text(fluid.uploader.formatFileSize(file.size));
+        that.locate("fileName", row).text(fileName);
+        that.locate("fileSize", row).text(fileSize);
         that.locate("fileIconBtn", row).addClass(that.options.styles.remove);
         row.attr("id", file.id);
         row.addClass(that.options.styles.ready);
         bindRowHandlers(that, row);
-        
+        fluid.updateAriaLabel(row, fileName + " " + fileSize);
         return row;    
     };
     

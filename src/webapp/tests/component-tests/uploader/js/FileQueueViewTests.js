@@ -54,6 +54,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
             return rowEl.find(q.options.selectors.fileSize).text();
         };
         
+        var checkARIA = function (file, row) {
+            jqUnit.assertEquals("The added row should have an aria-labelledby attribute on it.",
+                                row.attr("aria-labelledby"), "fluid.ariaLabeller-" + file.id);
+            var ariaLabel = fluid.jById(row.attr("aria-labelledby"));
+            jqUnit.assertEquals("The label should be present in the DOM.",
+                                1, ariaLabel.length);
+            jqUnit.assertEquals("The label should contain descriptive text about the file.",
+                                file.name + " " + fluid.uploader.formatFileSize(file.size), ariaLabel.text());
+        };
+        
         // Reusable test functions
         var checkFileRow = function (q, file, row) {
             jqUnit.assertEquals("The added row should have the correct id attribute.",
@@ -62,7 +72,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                 file.name, nameForRow(q, row));
             jqUnit.assertEquals("The added row should have the correct size.",
                                 fluid.uploader.formatFileSize(file.size), 
-                                sizeForRow(q, row));    
+                                sizeForRow(q, row));
+            checkARIA(file, row);
         };
       
         var createFileQueue = function (qEl) {            
