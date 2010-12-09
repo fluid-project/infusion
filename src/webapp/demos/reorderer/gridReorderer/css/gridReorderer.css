@@ -1,15 +1,52 @@
-.myGrid {
-    width   : 350px;
-    height  : 300px;
-    border  : 1px solid #CCC;
+:focus{
+    /** override fss-reset.css */
+    /* Fixes an IE8 problem where focus lines appear around blocks */
+	outline: none;
 }
 
-.myGrid p {
-    background  : #ebebeb;
-    width       : 30%;
-    height      : 30%;
+.demo-gridReorderer-container {
+	padding-left:10px;   
+}
+
+.demo-gridReorderer-alphabetGrid {
+    width    : 15em;
+    overflow : auto;
+}
+
+.demo-gridReorderer-alphabetGrid div,
+div.demo-gridReorderer-avatar {
+    width       : 2em;
+    height      : 2em;
     margin      : 5px;        
     text-align  : center;
     display     : inline;
     float       : left; 
-}   
+    font-size   : 2em;
+    font-style: : bold;
+    padding-top : 10px;
+    outline     : 1px solid #CCC;
+}
+
+div.demo-gridReorderer-dragging,
+.demo-gridReorderer-avatar {
+    outline          : 2px solid #000;
+    background-color : #9fff9f;
+    filter           : alpha(opacity=75);
+    opacity          : 0.75;
+}
+
+.demo-gridReorderer-alphabetGrid div :focus,
+.demo-gridReorderer-container  div.demo-gridReorderer-selected {
+    outline: 2px solid #000;
+    cursor : move;
+}
+
+.demo-gridReorderer-container div.demo-gridReorderer-dropMarker {
+    background-color : #008800;
+    padding          : 0 3px;
+    border-width     : 0;
+    margin           : 10px -3px;
+    list-style-type  : none;
+    overflow         : hidden;
+    width            : 0;
+}

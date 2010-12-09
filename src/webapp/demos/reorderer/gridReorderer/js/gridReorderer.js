@@ -16,9 +16,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
 var demo = demo || {};
 
 demo.initGridReorderer = function () {
-    return fluid.reorderGrid('.myGrid', {
-        selectors: {
-            movables: 'p'
+    return fluid.reorderGrid('.demoSelector-gridReorderer-alphabetGrid', {
+        styles: {
+            dragging: "demo-gridReorderer-dragging",
+            avatar: "demo-gridReorderer-avatar",
+            selected: "demo-gridReorderer-selected",
+            dropMarker: "demo-gridReorderer-dropMarker"
         },
         disableWrap: true
     });
