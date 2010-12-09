@@ -19,7 +19,7 @@ fluid_1_2 = fluid_1_2 || {};
 
     fluid.uploader = fluid.uploader || {};
     
-    fluid.demands("fluid.uploader.impl", "fluid.uploader.swfUpload", {
+    fluid.demands("fluid.uploader.impl", ["fluid.uploader", "fluid.uploader.swfUpload"], {
         funcName: "fluid.uploader.multiFileUploader"
     });
     

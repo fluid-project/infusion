@@ -415,10 +415,9 @@ var fluid_1_2 = fluid_1_2 || {};
             fileQueueView: {
                 type: "fluid.uploader.fileQueueView",
                 options: {
+                    model: "{multiFileUploader}.queue.files",
                     uploaderContainer: "{multiFileUploader}.container",
-                    events: {
-                        onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
-                    }
+                    events: "{multiFileUploader}.events"
                 }
             },
             
@@ -524,11 +523,13 @@ var fluid_1_2 = fluid_1_2 || {};
         },
         
         mergePolicy: {
-            model: "preserve",
-            events: "preserve"
+            model: "preserve"
         }
     });
     
+    fluid.demands("fluid.uploader.impl", "fluid.uploader", {
+        funcName: "fluid.uploader.multiFileUploader"
+    });
     
     fluid.demands("fluid.uploader.totalProgressBar", "fluid.uploader.multiFileUploader", {
         funcName: "fluid.progress",

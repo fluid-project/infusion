@@ -17,6 +17,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
     $(function () {
         
         var removedFile = null;
+        var mockEvents = {
+            onFileRemoved: {
+                fire: function (file) {
+                    removedFile = file;
+                }
+            }
+        };
         
         var mountainTestFile = {
             id : 0, // SWFUpload file id, used for starting or cancelling and upload 
@@ -58,16 +65,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                 sizeForRow(q, row));    
         };
       
-        var createFileQueue = function (qEl) {
-            var model = fluid.uploader.fileQueue();
-            
-            var q = fluid.uploader.fileQueueView(qEl, model, {
-                uploaderContainer: $("#main"), 
-                listeners: {
-                    onFileRemoved: function (file) {
-                        removedFile = file;
-                    }
-                }
+        var createFileQueue = function (qEl) {            
+            var q = fluid.uploader.fileQueueView(qEl, mockEvents, {
+                model: fluid.uploader.fileQueue().files,
+                uploaderContainer: $("#main"),
             });
             return q;
         };

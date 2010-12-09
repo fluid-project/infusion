@@ -15,7 +15,7 @@ var fluid_1_2 = fluid_1_2 || {};
 
     fluid.uploader = fluid.uploader || {};
     
-    fluid.demands("fluid.uploader.impl", "fluid.uploader.html5", {
+    fluid.demands("fluid.uploader.impl", ["fluid.uploader", "fluid.uploader.html5"], {
         funcName: "fluid.uploader.multiFileUploader"
     });
     
@@ -136,7 +136,7 @@ var fluid_1_2 = fluid_1_2 || {};
         
         that.uploadFile = function (file) {
             that.events.onFileStart.fire(file);
-            that.currentXHR = createFileUploadXHR(file, events);
+            that.currentXHR = createFileUploadXHR(file, that.events);
             that.doUpload(file, that.queueSettings, that.currentXHR);            
         };
 
@@ -216,7 +216,8 @@ var fluid_1_2 = fluid_1_2 || {};
     
     // Default configuration for older browsers that don't support FormData
     fluid.demands("fluid.uploader.html5Strategy.doUpload", "fluid.uploader.html5Strategy.remote", {
-        funcName: "fluid.uploader.html5Strategy.doManualMultipartUpload"
+        funcName: "fluid.uploader.html5Strategy.doManualMultipartUpload",
+        args: ["@0", "@1", "@2"]
     });
     
     // Configuration for FF4, Chrome, and Safari 4+, all of which support FormData correctly.
@@ -224,7 +225,8 @@ var fluid_1_2 = fluid_1_2 || {};
         "fluid.uploader.html5Strategy.remote", 
         "fluid.browser.supportsFormData"
     ], {
-        funcName: "fluid.uploader.html5Strategy.doFormDataUpload"
+        funcName: "fluid.uploader.html5Strategy.doFormDataUpload",
+        args: ["@0", "@1", "@2"]
     });
     
     

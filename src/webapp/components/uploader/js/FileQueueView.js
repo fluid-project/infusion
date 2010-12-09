@@ -307,10 +307,11 @@ fluid_1_2 = fluid_1_2 || {};
      * @param {fileQueue} queue a file queue model instance
      * @param {Object} options configuration options for the view
      */
-    fluid.uploader.fileQueueView = function (container, queue, options) {
+    fluid.uploader.fileQueueView = function (container, events, options) {
         var that = fluid.initView("fluid.uploader.fileQueueView", container, options);
         that.fileProgressors = {};
-        that.model = queue.files;
+        that.model = that.options.model;
+        that.events = events;
         
         that.addFile = function (file) {
             addFile(that, file);
@@ -362,7 +363,9 @@ fluid_1_2 = fluid_1_2 || {};
         funcName: "fluid.uploader.fileQueueView",
         args: [
             "{multiFileUploader}.dom.fileQueue",
-            "{multiFileUploader}.queue",
+            {
+                onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
+            },
             fluid.COMPONENT_OPTIONS
         ]
     });
@@ -426,6 +429,11 @@ fluid_1_2 = fluid_1_2 || {};
                 ZERO_BYTE_FILE: "One or more of the files that you attempted to add contained no data.",
                 INVALID_FILETYPE: "One or more files were not added to the queue because they were of the wrong type."
             }
+        },
+        
+        mergePolicy: {
+            model: "preserve",
+            events: "preserve"
         }
     });
    
