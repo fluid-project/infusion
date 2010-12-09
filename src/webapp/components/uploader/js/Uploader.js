@@ -518,10 +518,6 @@ var fluid_1_2 = fluid_1_2 || {};
         }
     });
     
-    fluid.demands("fluid.uploader.impl", "fluid.uploader", {
-        funcName: "fluid.uploader.multiFileUploader",
-        args: ["@0", "@1"]
-    });
     
     fluid.demands("fluid.uploader.totalProgressBar", "fluid.uploader.multiFileUploader", {
         funcName: "fluid.progress",
@@ -652,8 +648,7 @@ var fluid_1_2 = fluid_1_2 || {};
     });
 
     fluid.demands("fluid.uploader.impl", ["fluid.uploader", "fluid.uploader.singleFile"], {
-        funcName: "fluid.uploader.singleFileUploader",
-        args: ["@0", "@1"]
+        funcName: "fluid.uploader.singleFileUploader"
     });
     
 })(jQuery, fluid_1_2);

@@ -15,6 +15,10 @@ var fluid_1_2 = fluid_1_2 || {};
 
     fluid.uploader = fluid.uploader || {};
     
+    fluid.demands("fluid.uploader.impl", "fluid.uploader.html5", {
+        funcName: "fluid.uploader.multiFileUploader"
+    });
+    
     fluid.uploader.html5Strategy = function (options) {
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy", options);
         fluid.initDependents(that);
