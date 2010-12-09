@@ -1,21 +1,19 @@
-body {
-    background-color: #E6E8F4;
-}
-
 :focus {
+    /*FLUID-3880: Work-around for an black focus border issue in IE. */
     outline: none;
 }
 
-h1 {
+.demo-container h1 {
 	margin-top:0px;
     margin-bottom: 0.2em;
 }
 
-p {
+.demo-container p {
 	margin-bottom:0.5em;
 }
 p.demo-right {
 	text-align:right;
+    margin-top:1.5em;
 }
 
 .demo-container {
@@ -23,10 +21,6 @@ p.demo-right {
     margin: 1em;
     padding: 0.5em;
     min-width: 30em;
-}
-
-.demo-keyboard-instructions {
-    text-align:right;
 }
 
 /**/
