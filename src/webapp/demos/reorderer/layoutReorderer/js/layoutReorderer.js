@@ -16,7 +16,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var demo = demo || {};
 (function ($, fluid) {
-	demo.initlayoutReorderer = function () {
+    fluid.setLogging(true);
+    demo.initlayoutReorderer = function () {
         fluid.reorderLayout("#demo-layoutReorderer", {
             selectors: {
                 lockedModules: ".demoSelector-layoutReorderer-locked",

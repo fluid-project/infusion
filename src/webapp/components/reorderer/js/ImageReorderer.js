@@ -137,31 +137,12 @@ fluid_1_2 = fluid_1_2 || {};
         
         var reorderer = fluid.reorderer(that.container, that.options);
         
-        // Add accessibility support, including ARIA and keyboard navigation.
-        fluid.transform(reorderer.locate("movables"), function (cell) { 
-            fluid.reorderImages.addAriaRoles(that.options.selectors.imageTitle, cell);
-        });
         fluid.tabindex($("a", that.container), -1);
         addThumbnailActivateHandler(that.container);
         
         return reorderer;
     };
    
-    
-    fluid.reorderImages.addAriaRoles = function (imageTitle, cell) {
-        cell = $(cell);
-        cell.attr("role", "img");
-        var title = $(imageTitle, cell);
-        if (title[0] === cell[0] || title[0] === document) {
-            fluid.fail("Could not locate cell title using selector " + imageTitle + " in context " + fluid.dumpEl(cell));
-        }
-        var titleId = fluid.allocateSimpleId(title);
-        cell.attr("aria-labelledby", titleId);
-        var image = $("img", cell);
-        image.attr("role", "presentation");
-        image.attr("alt", "");
-    };
-    
     // This function now deprecated. Please use fluid.reorderImages() instead.
     fluid.lightbox = fluid.reorderImages;
     
@@ -169,7 +150,7 @@ fluid_1_2 = fluid_1_2 || {};
         layoutHandler: "fluid.gridLayoutHandler",
 
         selectors: {
-            imageTitle: ".flc-reorderer-imageTitle"
+            labelSource: ".flc-reorderer-imageTitle"
         }
     });
 

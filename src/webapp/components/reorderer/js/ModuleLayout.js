@@ -19,22 +19,23 @@ fluid_1_2 = fluid_1_2 || {};
 
 (function ($, fluid) {
     
-    fluid.moduleLayout = fluid.moduleLayout || {};
+    fluid.registerNamespace("fluid.moduleLayout");
 
     /**
      * Calculate the location of the item and the column in which it resides.
      * @return  An object with column index and item index (within that column) properties.
      *          These indices are -1 if the item does not exist in the grid.
      */
-    var findColumnAndItemIndices = function (item, layout) {
+    // unsupported - NON-API function
+    fluid.moduleLayout.findColumnAndItemIndices = function (item, layout) {
         return fluid.find(layout.columns,
             function (column, colIndex) {
                 var index = $.inArray(item, column.elements);
                 return index === -1? undefined : {columnIndex: colIndex, itemIndex: index};
             }, {columnIndex: -1, itemIndex: -1});
     };
-        
-    var findColIndex = function (item, layout) {
+    // unsupported - NON-API function
+    fluid.moduleLayout.findColIndex = function (item, layout) {
         return fluid.find(layout.columns,
             function (column, colIndex) {
                 return item === column.container? colIndex : undefined;
@@ -47,15 +48,15 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.moduleLayout.updateLayout = function (item, target, position, layout) {
         item = fluid.unwrap(item);
         target = fluid.unwrap(target);
-        var itemIndices = findColumnAndItemIndices(item, layout);
+        var itemIndices = fluid.moduleLayout.findColumnAndItemIndices(item, layout);
         layout.columns[itemIndices.columnIndex].elements.splice(itemIndices.itemIndex, 1);
         var targetCol;
         if (position === fluid.position.INSIDE) {
-            targetCol = layout.columns[findColIndex(target, layout)].elements;
+            targetCol = layout.columns[fluid.moduleLayout.findColIndex(target, layout)].elements;
             targetCol.splice(targetCol.length, 0, item);
 
         } else {
-            var relativeItemIndices = findColumnAndItemIndices(target, layout);
+            var relativeItemIndices = fluid.moduleLayout.findColumnAndItemIndices(target, layout);
             targetCol = layout.columns[relativeItemIndices.columnIndex].elements;
             position = fluid.normalisePosition(position, 
                   itemIndices.columnIndex === relativeItemIndices.columnIndex, 
@@ -135,7 +136,7 @@ fluid_1_2 = fluid_1_2 || {};
          selectablesTabindex: 0,
          sentinelize:         true
          });
-    
+       
     /**
      * Module Layout Handler for reordering content modules.
      * 
@@ -161,7 +162,7 @@ fluid_1_2 = fluid_1_2 || {};
         }
         var layout = computeLayout();
         that.layout = layout;
-
+        
         function isLocked(item) {
             var lockedModules = options.selectors.lockedModules? dom.fastLocate("lockedModules") : [];
             return $.inArray(item, lockedModules) !== -1;
@@ -178,6 +179,15 @@ fluid_1_2 = fluid_1_2 || {};
                         sentinelize: options.sentinelize};
             togo.elementMapper = function (element) {
                 return isLocked(element)? "locked" : null;
+            };
+            togo.elementIndexer = function (element) {
+                var indices = fluid.moduleLayout.findColumnAndItemIndices(element, that.layout);
+                return {
+                    index:        indices.itemIndex,
+                    length:       layout.columns[indices.columnIndex].elements.length,
+                    moduleIndex:  indices.columnIndex,
+                    moduleLength: layout.columns.length
+                };
             };
             for (var col = 0; col < layout.columns.length; col++) {
                 var column = layout.columns[col];
@@ -213,8 +223,11 @@ fluid_1_2 = fluid_1_2 || {};
                 selectables: computeModules(true)
             },
             listeners: {
-                onMove: function (item, requestedPosition) {
-                    fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
+                onMove: {
+                    priority: "last",
+                    listener: function (item, requestedPosition) {
+                        fluid.moduleLayout.updateLayout(item, requestedPosition.element, requestedPosition.position, layout);
+                    }
                 },
                 onRefresh: function () {
                     layout = computeLayout();

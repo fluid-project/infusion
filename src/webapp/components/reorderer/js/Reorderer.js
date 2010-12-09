@@ -82,6 +82,9 @@ fluid_1_2 = fluid_1_2 || {};
         that.container.attr("aria-multiselectable", "false");
         that.container.attr("aria-readonly", "false");
         that.container.attr("aria-disabled", "false");
+        //Some failed attempts here to get dynamic messages
+        //that.container.attr("aria-relevant", "all");
+        //that.container.attr("aria-live", "assertive");
     }
     
     function createAvatarId(parentId) {
@@ -259,8 +262,6 @@ fluid_1_2 = fluid_1_2 || {};
             return dropMarker;
         };
 
-        fluid.logEnabled = true;
-
         thatReorderer.requestMovement = function (requestedPosition, item) {
           // Temporary censoring to get around ModuleLayout inability to update relative to self.
             if (!requestedPosition || fluid.unwrap(requestedPosition.element) === fluid.unwrap(item)) {
@@ -285,6 +286,9 @@ fluid_1_2 = fluid_1_2 || {};
             dropManager.updateGeometry(thatReorderer.layoutHandler.getGeometricInfo());
 
             thatReorderer.events.afterMove.fire(item, requestedPosition, thatReorderer.dom.fastLocate("movables"));
+            window.setTimeout(function() {
+                thatReorderer.container.attr("aria-busy", false);
+            }, 2000);
         };
 
         var hoverStyleHandler = function (item, state) {
@@ -497,6 +501,8 @@ fluid_1_2 = fluid_1_2 || {};
             thatReorderer.selectableContext.selectables = thatReorderer.dom.fastLocate("selectables");
             thatReorderer.selectableContext.selectablesUpdated(thatReorderer.activeItem);
         };
+        
+        fluid.initDependents(thatReorderer);
 
         thatReorderer.refresh();
 
@@ -619,8 +625,20 @@ fluid_1_2 = fluid_1_2 || {};
         
         mergePolicy: {
             keysets: "replace",
+            "selectors.labelSource": "selectors.grabHandle",
             "selectors.selectables": "selectors.movables",
             "selectors.dropTargets": "selectors.movables"
+        },
+        components: {
+            labeller: {
+                type: "fluid.reorderer.labeller",
+                options: {
+                    dom: "{reorderer}.dom",
+                    getGeometricInfo: "{reorderer}.layoutHandler.getGeometricInfo",
+                    orientation: "{reorderer}.options.orientation",
+                    layoutType: "{reorderer}.options.layoutHandler", // TODO, get rid of "global defaults"
+                }          
+            }
         },
         
         // The user option to enable or disable wrapping of elements within the container
@@ -633,9 +651,9 @@ fluid_1_2 = fluid_1_2 || {};
      * Layout Handlers *
      *******************/
 
-    function geometricInfoGetter(orientation, sentinelize, dom) {
+     fluid.reorderer.makeGeometricInfoGetter = function(orientation, sentinelize, dom) {
         return function () {
-            return {
+            var that = {
                 sentinelize: sentinelize,
                 extents: [{
                     orientation: orientation,
@@ -643,10 +661,19 @@ fluid_1_2 = fluid_1_2 || {};
                 }],
                 elementMapper: function (element) {
                     return $.inArray(element, dom.fastLocate("movables")) === -1? "locked": null;
+                },
+                elementIndexer: function (element) {
+                    var selectables = dom.fastLocate("selectables");
+                    return {
+                        elementClass: that.elementMapper(element),
+                        index: $.inArray(element, selectables),
+                        length: selectables.length
+                    };
                 }
             };
+            return that;
         };
-    }
+    };
     
     fluid.defaults(true, "fluid.listLayoutHandler", 
         {orientation:         fluid.orientation.VERTICAL,
@@ -663,7 +690,7 @@ fluid_1_2 = fluid_1_2 || {};
           fluid.reorderer.relativeInfoGetter(options.orientation, 
                 fluid.reorderer.LOGICAL_STRATEGY, null, dropManager, dom, options.disableWrap);
         
-        that.getGeometricInfo = geometricInfoGetter(options.orientation, options.sentinelize, dom);
+        that.getGeometricInfo = fluid.reorderer.makeGeometricInfoGetter(options.orientation, options.sentinelize, dom);
         
         return that;
     }; // End ListLayoutHandler
@@ -690,9 +717,120 @@ fluid_1_2 = fluid_1_2 || {};
                  options.disableWrap ? fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY : fluid.reorderer.LOGICAL_STRATEGY, fluid.reorderer.SHUFFLE_GEOMETRIC_STRATEGY, 
                  dropManager, dom, options.disableWrap);
         
-        that.getGeometricInfo = geometricInfoGetter(options.orientation, options.sentinelize, dom);
+        that.getGeometricInfo = fluid.reorderer.makeGeometricInfoGetter(options.orientation, options.sentinelize, dom);
         
         return that;
     }; // End of GridLayoutHandler
+
+    fluid.defaults("fluid.reorderer.labeller", {
+        strings: {
+            overallTemplate: "%recentStatus %item %position %movable",
+            position:        "%index of %length",
+            position_moduleLayoutHandler: "%index of %length in %moduleCell %moduleIndex of %moduleLength",
+            moduleCell_0:    "row", // NB, these keys must agree with fluid.a11y.orientation constants
+            moduleCell_1:    "column",
+            movable:         "movable",
+            fixed:           "fixed",
+            recentStatus:    "moved from position %position"
+        },
+        components: {
+            resolver: {
+                type: "fluid.messageResolver",
+                options: {
+                    messageBase: "{labeller}.options.strings"
+                }
+            }
+        },
+        invokers: {
+            renderLabel: {
+                funcName: "fluid.reorderer.labeller.renderLabel",
+                args: ["{labeller}", "@0", "@1"]
+            }  
+        }
+    });
+
+    // Convert from 0-based to 1-based indices for announcement
+    fluid.reorderer.indexRebaser = function(indices) {
+        indices.index++;
+        if (indices.moduleIndex !== undefined) {
+            indices.moduleIndex++;
+        }
+        return indices;
+    };
+
+    /*************
+     * Labelling *
+     *************/
+     
+    fluid.reorderer.labeller = function(options) {
+        var that = fluid.initLittleComponent("fluid.reorderer.labeller", options);
+        fluid.initDependents(that);
+        that.dom = that.options.dom;
+        
+        that.moduleCell = that.resolver.resolve("moduleCell_" + that.options.orientation);
+        var layoutType = fluid.computeNickName(that.options.layoutType);
+        that.positionTemplate = that.resolver.lookup(["position_" + layoutType, "position"]);
+        
+        var movedMap = {};
+        
+        that.returnedOptions = {
+            listeners: {
+                onRefresh: function() {
+                    var selectables = that.dom.locate("selectables");
+                    fluid.each(selectables, function(selectable) {
+                        var id = fluid.allocateSimpleId(selectable);
+                        var moved = movedMap[id];
+                        var label = plainLabel = that.renderLabel(selectable);
+                        if (moved) {
+                            moved.newRender = plainLabel;
+                            label = that.renderLabel(selectable, moved.oldRender.position);
+                            $(selectable).one("focusout", function() {
+                                if (movedMap[id]) {
+                                    var oldLabel = movedMap[id].newRender.label;
+                                    delete movedMap[id];
+                                    fluid.updateAriaLabel(selectable, oldLabel);
+                                }
+                            });
+                        }
+                        fluid.updateAriaLabel(selectable, label.label);
+                    });
+                },
+                onMove: function(item, newPosition) {
+                    fluid.clear(movedMap); // if we somehow were fooled into missing a defocus, at least clear the map on a 2nd move
+                    var movingId = fluid.allocateSimpleId(item);
+                    movedMap[movingId] = {
+                        oldRender: that.renderLabel(item)
+                    };
+                }
+            }
+        };
+        return that;
+    };
+    
+    fluid.reorderer.labeller.renderLabel = function(that, selectable, recentPosition) {
+        var geom = that.options.getGeometricInfo();
+        var indices = fluid.reorderer.indexRebaser(geom.elementIndexer(selectable));
+        indices.moduleCell = that.moduleCell;
+            
+        var elementClass = geom.elementMapper(selectable);
+        var labelSource = that.dom.locate("labelSource", selectable);
+        var recentStatus;
+        if (recentPosition) {
+            recentStatus = that.resolver.resolve("recentStatus", {position: recentPosition});
+        }
+        var topModel = {
+            item: typeof(labelSource) === "string"? labelSource: fluid.dom.getElementText(fluid.unwrap(labelSource)),
+            position: that.positionTemplate.resolveFunc(that.positionTemplate.template, indices),
+            movable: that.resolver.resolve(elementClass === "locked"? "fixed" : "movable"),
+            recentStatus: recentStatus || ""
+        }
+        
+        var template = that.resolver.lookup(["overallTemplate"]);
+        var label = template.resolveFunc(template.template, topModel);
+        return {
+            position: topModel.position,
+            label: label
+        } 
+    };
 
 })(jQuery, fluid_1_2);

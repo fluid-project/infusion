@@ -161,7 +161,7 @@ var fluid_1_2 = fluid_1_2 || {};
                     args[i] = resolvedOptions;
                 }
                 else {
-                    var resolvedArg = resolveRvalue(thatStack, arg, initArgs, options.componentOptions) || {};
+                    var resolvedArg = resolveRvalue(thatStack, arg, initArgs, options.componentOptions);
                     args[i] = resolvedArg;
                 }
                 if (i === demands.length - 1 && args[i] && typeof(args[i]) === "object" && !args[i].typeName && !args[i].targetTypeName) {

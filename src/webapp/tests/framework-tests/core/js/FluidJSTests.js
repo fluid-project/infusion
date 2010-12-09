@@ -489,6 +489,22 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Global fallback", bundlea.key2, resolver.resolve(["key4", "key2"]));
         });
         
+        fluidJSTests.test("Sorting listeners", function() {
+            var accumulate = [];
+            var makeListener = function(i) {
+                return function() {
+                    accumulate.push(i);
+                }
+            };
+            var firer = fluid.event.getEventFirer();
+            firer.addListener(makeListener(4), null, null, "last");
+            firer.addListener(makeListener(3));
+            firer.addListener(makeListener(2), null, null, 10);
+            firer.addListener(makeListener(1), null, null, "first");
+            firer.fire();
+            jqUnit.assertDeepEq("Listeners fire in priority order", [1, 2, 3, 4], accumulate);
+        });
+        
         fluidJSTests.test("Attach and remove listeners", function () {
             var testListener = function(shouldExecute) {
                    jqUnit.assertTrue("This listener should be reached only once", shouldExecute);
