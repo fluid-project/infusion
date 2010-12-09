@@ -11,9 +11,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global fluid_1_2, jQuery, SWFUpload, swfobject */
+/*global fluid_1_3, jQuery, SWFUpload, swfobject */
 
-fluid_1_2 = fluid_1_2 || {};
+fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
 
@@ -357,4 +357,4 @@ fluid_1_2 = fluid_1_2 || {};
             "{swfUploadStrategy}.local"
         ]
     });
-})(jQuery, fluid_1_2);
+})(jQuery, fluid_1_3);

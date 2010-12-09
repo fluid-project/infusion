@@ -12,7 +12,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global window, swfobject, jQuery*/
 
-var fluid_1_2 = fluid_1_2 || {};
+var fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
     
@@ -69,4 +69,4 @@ var fluid_1_2 = fluid_1_2 || {};
     };
     fluid.merge(null, fluid.staticEnvironment, features);
     
-})(jQuery, fluid_1_2);
+})(jQuery, fluid_1_3);

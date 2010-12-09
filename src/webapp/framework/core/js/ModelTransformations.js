@@ -1,7 +1,7 @@
 /*global fluid, mccord, jQuery*/
 
-var fluid_1_2 = fluid_1_2 || {};
-var fluid = fluid || fluid_1_2;
+var fluid_1_3 = fluid_1_3 || {};
+var fluid = fluid || fluid_1_3;
 
 (function ($) {
 
@@ -83,4 +83,4 @@ var fluid = fluid || fluid_1_2;
         return transformedModel;
     };
     
-})(jQuery, fluid_1_2);
+})(jQuery, fluid_1_3);

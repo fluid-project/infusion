@@ -12,10 +12,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global setTimeout*/
-/*global jQuery, fluid_1_2, fluid*/
+/*global jQuery, fluid_1_3, fluid*/
 /*global tinyMCE, FCKeditor, FCKeditorAPI, CKEDITOR*/
 
-fluid_1_2 = fluid_1_2 || {};
+fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
 
@@ -500,7 +500,7 @@ fluid_1_2 = fluid_1_2 || {};
         blurHandlerBinder: fluid.inlineEdit.dropdown.blurHandlerBinder,
         editModeRenderer: fluid.inlineEdit.dropdown.editModeRenderer
     });
-})(jQuery, fluid_1_2);
+})(jQuery, fluid_1_3);
 
 
 // This must be written outside any scope as a result of the FCKEditor event model.

@@ -10,9 +10,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery  fluid_1_2:true*/
+/*global jQuery*/
+/*global fluid_1_3:true*/
 
-fluid_1_2 = fluid_1_2 || {};
+fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
 
@@ -877,4 +878,4 @@ fluid_1_2 = fluid_1_2 || {};
             rangeAnnotation: "<b> %first </b><br/>&mdash;<br/><b> %last </b>"
         }
     });
-})(jQuery, fluid_1_2);
+})(jQuery, fluid_1_3);

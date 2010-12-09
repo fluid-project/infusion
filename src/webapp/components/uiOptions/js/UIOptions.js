@@ -11,9 +11,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_1_2*/
+/*global fluid_1_3*/
 
-fluid_1_2 = fluid_1_2 || {};
+fluid_1_3 = fluid_1_3 || {};
 
 
 /******************
@@ -155,7 +155,7 @@ fluid_1_2 = fluid_1_2 || {};
         value: null       
     });
     
-})(jQuery, fluid_1_2);
+})(jQuery, fluid_1_3);
 
 
 /**************
@@ -498,4 +498,4 @@ fluid_1_2 = fluid_1_2 || {};
         previewTemplateUrl: "UIOptionsPreview.html"        
     });
 
-})(jQuery, fluid_1_2);
+})(jQuery, fluid_1_3);

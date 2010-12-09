@@ -12,9 +12,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery, fluid_1_2, document, setTimeout*/
+/*global jQuery, fluid_1_3, document, setTimeout*/
 
-fluid_1_2 = fluid_1_2 || {};
+fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
     
@@ -914,4 +914,4 @@ fluid_1_2 = fluid_1_2 || {};
             editables: ".flc-inlineEditable"
         }
     });
-})(jQuery, fluid_1_2);
+})(jQuery, fluid_1_3);

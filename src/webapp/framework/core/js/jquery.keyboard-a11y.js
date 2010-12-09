@@ -12,8 +12,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery*/
 
-var fluid_1_2 = fluid_1_2 || {};
-var fluid = fluid || fluid_1_2;
+var fluid_1_3 = fluid_1_3 || {};
+var fluid = fluid || fluid_1_3;
 
 (function ($, fluid) {
 
@@ -63,7 +63,7 @@ var fluid = fluid || fluid_1_2;
     };
 
     fluid.thatistBridge("fluid", fluid);
-    fluid.thatistBridge("fluid_1_2", fluid_1_2);
+    fluid.thatistBridge("fluid_1_3", fluid_1_3);
 
 /*************************************************************************
  * Tabindex normalization - compensate for browser differences in naming
@@ -617,4 +617,4 @@ var fluid = fluid || fluid_1_2;
     };
 
   
-  })(jQuery, fluid_1_2);
+  })(jQuery, fluid_1_3);

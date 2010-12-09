@@ -7,7 +7,7 @@
 
   <artifactId>fluid-components</artifactId>
   <groupId>org.fluidproject</groupId>
-  <version>1.3-SNAPSHOT</version>
+  <version>1.3</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
