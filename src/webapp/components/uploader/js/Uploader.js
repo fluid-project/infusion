@@ -413,7 +413,13 @@ var fluid_1_2 = fluid_1_2 || {};
             },
             
             fileQueueView: {
-                type: "fluid.uploader.fileQueueView"
+                type: "fluid.uploader.fileQueueView",
+                options: {
+                    uploaderContainer: "{multiFileUploader}.container",
+                    events: {
+                        onFileRemoved: "{multiFileUploader}.events.onFileRemoved"
+                    }
+                }
             },
             
             totalProgress: {
@@ -515,6 +521,11 @@ var fluid_1_2 = fluid_1_2 || {};
                 emptyQueue: "File list: No files waiting to be uploaded.",
                 queueSummary: "File list:  %totalUploaded files uploaded, %totalInUploadQueue file waiting to be uploaded." 
             }
+        },
+        
+        mergePolicy: {
+            model: "preserve",
+            events: "preserve"
         }
     });
     
@@ -522,7 +533,7 @@ var fluid_1_2 = fluid_1_2 || {};
     fluid.demands("fluid.uploader.totalProgressBar", "fluid.uploader.multiFileUploader", {
         funcName: "fluid.progress",
         args: [
-            "{multiFileUploader}.container",
+            "{multiFileUploader}.dom.fileQueue",
             fluid.COMPONENT_OPTIONS
         ]
     });
@@ -553,7 +564,7 @@ var fluid_1_2 = fluid_1_2 || {};
          return Math.round((num * 100) / total);
      };
      
-    
+    // TODO: Refactor this to be a general ARIA utility
     fluid.uploader.ariaLiveRegionUpdater = function (statusRegion, totalFileStatusText, events) {
         statusRegion.attr("role", "log");     
         statusRegion.attr("aria-live", "assertive");

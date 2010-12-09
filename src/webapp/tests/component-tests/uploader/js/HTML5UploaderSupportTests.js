@@ -26,8 +26,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         html5UploaderTests.test("Uploader HTML5 browseHandler", function () {
             var browseButton = $("<a href='#' name='browseButton'>Nothing</a>");
-            var addFilesFn = function() {};
-            var browseHandler = fluid.uploader.html5.browseHandler(events, browseButton, addFilesFn);
+            var browseHandler = fluid.uploader.html5Strategy.browseHandler({
+                queueSettings: {
+                    fileTypes: ""
+                },
+                events: events, 
+                browseButton: browseButton, 
+                addFilesFn: function() {}
+            });
+            
             var inputs = browseButton.children();
 
             jqUnit.assertEquals("There should be one multi-file input element at the start", 1, inputs.length);

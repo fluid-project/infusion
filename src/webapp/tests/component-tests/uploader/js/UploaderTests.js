@@ -89,36 +89,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
                             isNaN(fluid.uploader.derivePercent(total / total)));
         });
 
-        uploaderTests.test("manuallyDegrade()", function () {
-            expect(9);
-            var degrader = fluid.manuallyDegrade($('#single-inline-fluid-uploader'), {
-                    container: "#uploader-content"
-                });
-            jqUnit.assertFalse("Before calling degrade, isDegraded() should be false", 
-                                degrader.isDegraded());            
-            jqUnit.assertFalse("Before calling degrade, the non-flash controller should be visible.", 
-                                degrader.locate('degradeControl').is(':hidden'));
-            jqUnit.assertTrue("Before calling degrade, the flash controller should be invisible.", 
-                                degrader.locate('enhanceControl').is(':hidden'));
-            jqUnit.assertTrue("Before calling degrade, the non-flash container should be invisible.", 
-                                degrader.locate('enhanceable').is(':hidden'));
-
-            degrader.degrade();
-            jqUnit.assertTrue("After calling degrade, isDegrade() should be true", 
-                                degrader.isDegraded());
-            jqUnit.assertTrue("After calling degrade, the non-flash controller should be invisible.", 
-                                degrader.locate('degradeControl').is(':hidden'));
-            jqUnit.assertFalse("After calling degrade, the flash controller should be visible.", 
-                                degrader.locate('enhanceControl').is(':hidden'));
-            jqUnit.assertFalse("After calling degrade, the non-flash container should be visible.", 
-                                degrader.locate('enhanceable').is(':hidden'));
-
-            degrader.enhance();
-            jqUnit.assertFalse("After calling enhance, isDegraded should be false", 
-                                degrader.isDegraded());
-        });
-        
-
         var events = {
             afterFileDialog: fluid.event.getEventFirer(),
             afterFileRemoved: fluid.event.getEventFirer(),
@@ -146,8 +116,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             checkStatusAfterFiringEvent("cat", "afterFileDialog");
             checkStatusAfterFiringEvent("dog", "afterFileRemoved");       
-            checkStatusAfterFiringEvent("fish", "onUploadStart");           
-            checkStatusAfterFiringEvent("hamster", "onFileProgress");           
             checkStatusAfterFiringEvent("shark", "afterUploadComplete");           
         });
     });

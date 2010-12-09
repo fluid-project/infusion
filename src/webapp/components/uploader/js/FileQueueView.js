@@ -33,7 +33,7 @@ fluid_1_2 = fluid_1_2 || {};
     };
     
     var fileForRow = function (that, row) {
-        var files = that.queue.files;
+        var files = that.model;
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
             if (file.id.toString() === row.attr("id")) {
@@ -180,7 +180,7 @@ fluid_1_2 = fluid_1_2 || {};
         rowProgressor.height(row.height()).width(5);
         that.container.after(rowProgressor);
        
-        that.fileProgressors[progressId] = fluid.progress(that.uploadContainer, {
+        that.fileProgressors[progressId] = fluid.progress(that.options.uploaderContainer, {
             selectors: {
                 progressBar: "#" + rowId,
                 displayElement: "#" + progressId,
@@ -290,10 +290,11 @@ fluid_1_2 = fluid_1_2 || {};
         that.rowTemplate = that.locate("rowTemplate").remove();
         that.errorInfoRowTemplate = that.locate("errorInfoRowTemplate").remove();
         that.errorInfoRowTemplate.removeClass(that.options.styles.hiddenTemplate);
-        that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.uploadContainer).remove();
+        that.rowProgressorTemplate = that.locate("rowProgressorTemplate", that.options.uploaderContainer).remove();
     };
     
-    var setupFileQueue = function (that, queue) {
+    var setupFileQueue = function (that) {
+        fluid.initDependents(that);
         prepareTemplateElements(that);         
         addKeyboardNavigation(that); 
         bindModelEvents(that);
@@ -306,13 +307,10 @@ fluid_1_2 = fluid_1_2 || {};
      * @param {fileQueue} queue a file queue model instance
      * @param {Object} options configuration options for the view
      */
-    fluid.uploader.fileQueueView = function (container, parentContainer, queue, events, options) {
+    fluid.uploader.fileQueueView = function (container, queue, options) {
         var that = fluid.initView("fluid.uploader.fileQueueView", container, options);
-        that.uploadContainer = parentContainer;
         that.fileProgressors = {};
-        that.queue = queue;
-        that.events = events;
-        that.scroller = fluid.scroller(that.container);
+        that.model = queue.files;
         
         that.addFile = function (file) {
             addFile(that, file);
@@ -356,7 +354,7 @@ fluid_1_2 = fluid_1_2 || {};
             that.selectableContext.refresh();
         };
         
-        setupFileQueue(that, queue);     
+        setupFileQueue(that);     
         return that;
     };
     
@@ -364,14 +362,25 @@ fluid_1_2 = fluid_1_2 || {};
         funcName: "fluid.uploader.fileQueueView",
         args: [
             "{multiFileUploader}.dom.fileQueue",
-            "{multiFileUploader}.container", // TODO: Get rid of this dependency
             "{multiFileUploader}.queue",
-            "{multiFileUploader}.events", // TODO: boil down to only needed events
             fluid.COMPONENT_OPTIONS
         ]
     });
     
+    fluid.demands("fluid.scroller", "fluid.uploader.fileQueueView", {
+        funcName: "fluid.scroller",
+        args: [
+            "{fileQueueView}.container"
+        ]
+    })
+    
     fluid.defaults("fluid.uploader.fileQueueView", {
+        components: {
+            scroller: {
+                type: "fluid.scroller"
+            }
+        },
+        
         selectors: {
             fileRows: ".flc-uploader-file",
             fileName: ".flc-uploader-file-name",

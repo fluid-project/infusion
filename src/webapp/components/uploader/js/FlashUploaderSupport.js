@@ -36,7 +36,11 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.defaults("fluid.uploader.swfUploadStrategy", {
         components: {
             engine: {
-                type: "fluid.uploader.swfUploadStrategy.engine"
+                type: "fluid.uploader.swfUploadStrategy.engine",
+                options: {
+                    queueSettings: "{multiFileUploader}.options.queueSettings",
+                    flashMovieSettings: "{swfUploadStrategy}.options.flashMovieSettings",
+                }
             },
             
             local: {
@@ -139,7 +143,7 @@ fluid_1_2 = fluid_1_2 || {};
         ]
     });
     
-    fluid.uploader.swfUploadStrategy.engine = function (queueSettings, flashMovieSettings, options) {
+    fluid.uploader.swfUploadStrategy.engine = function (options) {
         var that = fluid.initLittleComponent("fluid.uploader.swfUploadStrategy.engine", options);
         
         // Get the Flash version from swfobject and setup a new context so that the appropriate
@@ -148,7 +152,7 @@ fluid_1_2 = fluid_1_2 || {};
         that.flashVersionContext = fluid.typeTag("fluid.uploader.flash." + flashVersion);
         
         // Merge Uploader's generic queue options with our Flash-specific options.
-        that.config = $.extend({}, queueSettings, flashMovieSettings);
+        that.config = $.extend({}, that.options.queueSettings, that.options.flashMovieSettings);
         
         // Configure the SWFUpload subsystem.
         fluid.initDependents(that);
@@ -171,8 +175,6 @@ fluid_1_2 = fluid_1_2 || {};
     fluid.demands("fluid.uploader.swfUploadStrategy.engine", "fluid.uploader.swfUploadStrategy", {
         funcName: "fluid.uploader.swfUploadStrategy.engine",
         args: [
-            "{multiFileUploader}.options.queueSettings",
-            "{swfUploadStrategy}.options.flashMovieSettings",
             fluid.COMPONENT_OPTIONS
         ]
     });

@@ -18,7 +18,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         // Redefine SWFUploadStrategy's invokers in this testing context.
         fluid.staticEnvironment.uploaderTests = fluid.typeTag("fluid.uploader.tests");
-        fluid.demands("fluid.uploader.swfUpload.setupDOM", ["fluid.uploader.tests"], {
+        fluid.demands("fluid.uploader.swfUploadStrategy.setupDOM", ["fluid.uploader.tests"], {
             funcName: "fluid.identity",
             args: []
         });
@@ -31,12 +31,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             }    
         };
         
-        fluid.demands("fluid.uploader.swfUpload.setupConfig", ["fluid.uploader.tests"], {
-            funcName: "fluid.uploader.swfUpload.demo.tests.makeMockConfig",
+        fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", ["fluid.uploader.tests"], {
+            funcName: "fluid.uploader.demoRemote.tests.makeMockConfig",
             args: []
         });
         
-        fluid.demands("fluid.uploader.swfUpload.eventBinder", ["fluid.uploader.tests"], {
+        fluid.demands("fluid.uploader.swfUploadStrategy.eventBinder", ["fluid.uploader.tests"], {
             funcName: "fluid.identity",
             args: []
         });
@@ -152,7 +152,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var events;        
         var demoUploadTests = new jqUnit.TestCase("DemoEngine Tests", function () {
             events = {};
-            fluid.mergeListeners(events, fluid.defaults("fluid.uploader").events);
+            fluid.mergeListeners(events, fluid.defaults("fluid.uploader.multiFileUploader").events);
 
             for (var i = 0; i < allFiles.length; i++) {
                 allFiles[i].filestatus = fluid.uploader.fileStatusConstants.QUEUED;

@@ -18,35 +18,35 @@ https://source.fluidproject.org/svn/LICENSE.txt
           
         var makeUploaderEventFirers = function () {
             var mockUploader = {};
-            fluid.instantiateFirers(mockUploader, fluid.defaults("fluid.uploader"));
+            fluid.instantiateFirers(mockUploader, fluid.defaults("fluid.uploader.multiFileUploader"));
             return mockUploader.events;
         };
         
         var container = $("#uploaderContainer");
         var button = $("#browseButton");
         var flashContainer = $("#flashContainer");
-        var styles = fluid.defaults("fluid.uploader.swfUpload.engine").styles;
-        var defaultQueueSettings = fluid.defaults("fluid.uploader").queueSettings;
-        var defaultFlashSettings = fluid.defaults("fluid.uploader.swfUpload.engine").flashMovieSettings;
+        var styles = fluid.defaults("fluid.uploader.swfUploadStrategy").styles;
+        var defaultQueueSettings = fluid.defaults("fluid.uploader.multiFileUploader").queueSettings;
+        var defaultFlashSettings = fluid.defaults("fluid.uploader.swfUploadStrategy").flashMovieSettings;
         var defaultMergedSettings = $.extend({}, defaultQueueSettings, defaultFlashSettings);
         var events = makeUploaderEventFirers();
         
         var swfUploadSetupTests = new jqUnit.TestCase("SWFUpload for Flash 9 & 10 Setup Tests");
         
         swfUploadSetupTests.test("SWFUpload Flash 10 callFlash() should be unavailable.", function () {
-            fluid.uploader.swfUpload.flash10SetupDOM(container, button, styles);
+            fluid.uploader.swfUploadStrategy.flash10SetupDOM(container, button, styles);
             jqUnit.assertNotEquals("The Flash 9-compatible version of callFlash() should not be in place.",
                                    SWFUpload.callFlash_Flash9Compatibility, SWFUpload.prototype.callFlash);
         });
         
         swfUploadSetupTests.test("SWFUpload Flash 10 accessibility", function () {
-            fluid.uploader.swfUpload.flash10SetupDOM(container, button, styles);
+            fluid.uploader.swfUploadStrategy.flash10SetupDOM(container, button, styles);
             jqUnit.assertEquals("The HTML browse button should have been given a tabindex of -1",
                                 "-1", button.attr("tabindex"));
         });
         
         swfUploadSetupTests.test("SWFUpload Flash 9 configuration", function () {
-            var config = fluid.uploader.swfUpload.flash9SetupConfig(defaultMergedSettings, events);
+            var config = fluid.uploader.swfUploadStrategy.flash9SetupConfig(defaultMergedSettings, events);
             jqUnit.assertEquals("We should have specified the correct Flash URL.", 
                                 defaultFlashSettings.flashURL,
                                 config.flash_url);   
@@ -79,7 +79,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             });
                
             var defaultConfig = $.extend({}, defaultQueueSettings, flashOptions);                     
-            var config = fluid.uploader.swfUpload.flash10SetupConfig(defaultConfig, events, flashContainer, button);
+            var config = fluid.uploader.swfUploadStrategy.flash10SetupConfig(defaultConfig, 
+                                                                             events, 
+                                                                             flashContainer, 
+                                                                             button);
                                                              
             checkVisibleSettings(config);
         });
@@ -89,7 +92,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             $.browser.msie = true;
                         
             // Now try with the transparentEvenInIE option turned on.
-            var config = fluid.uploader.swfUpload.flash10SetupConfig(defaultMergedSettings, 
+            var config = fluid.uploader.swfUploadStrategy.flash10SetupConfig(defaultMergedSettings, 
                                                                             events, 
                                                                             flashContainer, 
                                                                             button);
@@ -97,7 +100,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             // Mock non-IE browsers.
             $.browser.msie = false;
-            config = fluid.uploader.swfUpload.flash10SetupConfig(defaultMergedSettings, 
+            config = fluid.uploader.swfUploadStrategy.flash10SetupConfig(defaultMergedSettings, 
                                                                         events, 
                                                                         flashContainer, 
                                                                         button);        

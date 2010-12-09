@@ -28,12 +28,26 @@ var fluid_1_2 = fluid_1_2 || {};
     fluid.defaults("fluid.uploader.html5Strategy", {
         components: {
             local: {
-                type: "fluid.uploader.html5Strategy.local"
+                type: "fluid.uploader.html5Strategy.local",
+                options: {
+                    queueSettings: "{multiFileUploader}.options.queueSettings",
+                    browseButton: "{multiFileUploader}.dom.browseButton",
+                    events: "{multiFileUploader}.events"
+                }
             },
             
             remote: {
-                type: "fluid.uploader.remote"
+                type: "fluid.uploader.remote",
+                options: {
+                    queueSettings: "{multiFileUploader}.options.queueSettings",
+                    events: "{multiFileUploader}.events"
+                }
             }
+        },
+        
+        mergePolicy: {
+            events: "preserve",
+            browseButton: "preserve"
         }
     });
 
@@ -97,11 +111,11 @@ var fluid_1_2 = fluid_1_2 || {};
         });
     };
     
-    fluid.uploader.html5Strategy.remote = function (queue, queueSettings, events, options) {
+    fluid.uploader.html5Strategy.remote = function (queue, options) {
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.remote", options);
         that.queue = queue;
-        that.queueSettings = queueSettings;
-        that.events = events;
+        that.queueSettings = that.options.queueSettings;
+        that.events = that.options.events;
         
         // Upload files in the current batch without exceeding the fileUploadLimit
         // and the fileSizeLimit.  The fileSizeLimit is scaled to KBs.
@@ -148,8 +162,6 @@ var fluid_1_2 = fluid_1_2 || {};
         funcName: "fluid.uploader.html5Strategy.remote",
         args: [
             "{multiFileUploader}.queue", 
-            "{multiFileUploader}.options.queueSettings",
-            "{multiFileUploader}.events",
             fluid.COMPONENT_OPTIONS
         ]
     });
@@ -216,11 +228,11 @@ var fluid_1_2 = fluid_1_2 || {};
     });
     
     
-    fluid.uploader.html5Strategy.local = function (events, queue, queueSettings, browseButton, options) {
+    fluid.uploader.html5Strategy.local = function (queue, options) {
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.local", options);
-        that.events = events;
         that.queue = queue;
-        that.queueSettings = queueSettings;
+        that.events = that.options.events;
+        that.queueSettings = that.options.queueSettings;
 
         // Add files to the file queue without exceeding the fileQueueLimit 
         that.addFiles = function (files) {
@@ -246,12 +258,12 @@ var fluid_1_2 = fluid_1_2 || {};
         };
         
         that.enableBrowseButton = function () {
-            var activeMultiFileInput = getActiveMultiFileInput(browseButton);
+            var activeMultiFileInput = getActiveMultiFileInput(that.options.browseButton);
             activeMultiFileInput.removeAttr("disabled");
         };
         
         that.disableBrowseButton = function () {
-            var activeMultiFileInput = getActiveMultiFileInput(browseButton);
+            var activeMultiFileInput = getActiveMultiFileInput(that.options.browseButton);
             activeMultiFileInput.attr("disabled", "disabled");
         };
         
@@ -263,18 +275,27 @@ var fluid_1_2 = fluid_1_2 || {};
     fluid.defaults("fluid.uploader.html5Strategy.local", {
         components: {
             browseHandler: {
-                type: "fluid.uploader.html5Strategy.browseHandler"
+                type: "fluid.uploader.html5Strategy.browseHandler",
+                options: {
+                    browseButton: "{multiFileUploader}.dom.browseButton",
+                    queueSettings: "{multiFileUploader}.options.queueSettings",
+                    events: "{multiFileUploader}.events",
+                    addFilesFn: "{local}.addFiles"
+                }
             }
+        },
+        mergePolicy: {
+            browseButton: "preserve",
+            events: "preserve",
+            // TODO: This is awkward--refactor
+            addFilesFn: "preserve"
         }
     });
     
     fluid.demands("fluid.uploader.html5Strategy.local", "fluid.uploader.html5Strategy", {
         funcName: "fluid.uploader.html5Strategy.local",
         args: [
-            "{multiFileUploader}.events",
             "{multiFileUploader}.queue",
-            "{multiFileUploader}.options.queueSettings",
-            "{multiFileUploader}.dom.browseButton",
             fluid.COMPONENT_OPTIONS
         ]
     });
@@ -294,22 +315,22 @@ var fluid_1_2 = fluid_1_2 || {};
         
         fileInput.change(function () {
             var files = fileInput[0].files;
-            that.addFilesFn.apply(null, [files]);
+            that.options.addFilesFn.apply(null, [files]);
             that.renderFreshMultiFileInput();
         });
         
         fileInput.focus(function () {
-            that.browseButton.addClass("focus");
+            that.options.browseButton.addClass("focus");
         });
         
         fileInput.blur(function () {
-            that.browseButton.removeClass("focus");
+            that.options.browseButton.removeClass("focus");
         });
     };
     
     var renderMultiFileInput = function (that) {
         var multiFileInput = $(that.options.multiFileInputMarkup);
-        var fileTypes = (that.queueSettings.fileTypes).replace(/\;/g, ',');       
+        var fileTypes = (that.options.queueSettings.fileTypes).replace(/\;/g, ',');       
         multiFileInput.attr("accept", fileTypes);
         that.inputs.push(multiFileInput);
         bindEventsToFileInput(that, multiFileInput);
@@ -318,18 +339,14 @@ var fluid_1_2 = fluid_1_2 || {};
     
     var setupBrowseHandler = function (that) {
         var multiFileInput = renderMultiFileInput(that);        
-        that.browseButton.append(multiFileInput);
-        that.browseButton.attr("tabindex", -1);
+        that.options.browseButton.append(multiFileInput);
+        that.options.browseButton.attr("tabindex", -1);
     };
     
-    
-    fluid.uploader.html5Strategy.browseHandler = function (events, queueSettings, browseButton, addFilesFn, options) {
+    fluid.uploader.html5Strategy.browseHandler = function (options) {
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.browseHandler", options);
         that.inputs = [];
-        that.events = events;
-        that.queueSettings = queueSettings;
-        that.browseButton = browseButton;
-        that.addFilesFn = addFilesFn;
+        that.events = that.options.events;
         
         that.renderFreshMultiFileInput = function () {
             // Update the stack of multi file input elements we have in the DOM.
@@ -351,10 +368,7 @@ var fluid_1_2 = fluid_1_2 || {};
     fluid.demands("fluid.uploader.html5Strategy.browseHandler", "fluid.uploader.html5Strategy.local", {
         funcName: "fluid.uploader.html5Strategy.browseHandler",
         args: [
-            "{multiFileUploader}.events",
-            "{multiFileUploader}.options.queueSettings",
-            "{multiFileUploader}.dom.browseButton",
-            "{local}.addFiles"
+            fluid.COMPONENT_OPTIONS
         ]
     });
 

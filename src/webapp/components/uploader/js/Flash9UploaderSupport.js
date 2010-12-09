@@ -17,58 +17,58 @@ var fluid_1_2 = fluid_1_2 || {};
 (function ($, fluid) {
 
     fluid.uploader = fluid.uploader || {};
-    fluid.uploader.swfUpload = fluid.uploader.swfUpload || {};
+    fluid.uploader.swfUploadStrategy = fluid.uploader.swfUploadStrategy || {};
     
     /**********************************************************************************
      * The functions in this file, which provide support for Flash 9 in the Uploader, *
      * have been deprecated as of Infusion 1.3.                                       * 
      **********************************************************************************/
     
-    fluid.uploader.swfUpload.flash9SetupDOM = function (styles) {
+    fluid.uploader.swfUploadStrategy.flash9SetupDOM = function (styles) {
         var container = $("<div><span></span></div>");
         container.addClass(styles.flash9Container);
         $("body").append(container);
         return container;       
     };
 
-    fluid.demands("fluid.uploader.swfUpload.setupDOM", [
-        "fluid.uploader.swfUpload.engine",
+    fluid.demands("fluid.uploader.swfUploadStrategy.setupDOM", [
+        "fluid.uploader.swfUploadStrategy.engine",
         "fluid.uploader.flash.9"
     ], {
-        funcName: "fluid.uploader.swfUpload.flash9SetupDOM",
+        funcName: "fluid.uploader.swfUploadStrategy.flash9SetupDOM",
         args: [
             "{engine}.options.styles"
         ]
     });
 
-    fluid.uploader.swfUpload.flash9SetupConfig = function (config, events) {
-        return fluid.uploader.swfUpload.convertConfigForSWFUpload(config, events);
+    fluid.uploader.swfUploadStrategy.flash9SetupConfig = function (config, events) {
+        return fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(config, events);
     };
 
-    fluid.demands("fluid.uploader.swfUpload.setupConfig", [
-        "fluid.uploader.swfUpload.engine",
+    fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", [
+        "fluid.uploader.swfUploadStrategy.engine",
         "fluid.uploader.flash.9"
     ], {
-        funcName: "fluid.uploader.swfUpload.flash9SetupConfig",
+        funcName: "fluid.uploader.swfUploadStrategy.flash9SetupConfig",
         args: [
             "{engine}.config",
             "{multiFileUploader}.events"
         ]
     });
 
-    fluid.uploader.swfUpload.flash9EventBinder = function (model, events, local, browseButton) {
+    fluid.uploader.swfUploadStrategy.flash9EventBinder = function (model, events, local, browseButton) {
         browseButton.click(function (e) {        
             local.browse();
             e.preventDefault();
         });
-        fluid.uploader.swfUpload.bindFileEventListeners(model, events);
+        fluid.uploader.swfUploadStrategy.bindFileEventListeners(model, events);
     };
 
-    fluid.demands("fluid.uploader.swfUpload.eventBinder", [
-        "fluid.uploader.swfUpload.engine",
+    fluid.demands("fluid.uploader.swfUploadStrategy.eventBinder", [
+        "fluid.uploader.swfUploadStrategy.engine",
         "fluid.uploader.flash.9"
     ], {
-        funcName: "fluid.uploader.swfUpload.flash9EventBinder",
+        funcName: "fluid.uploader.swfUploadStrategy.flash9EventBinder",
         args: [
             "{multiFileUploader}.queue.files",
             "{multiFileUploader}.events",
