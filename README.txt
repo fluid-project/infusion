@@ -7,21 +7,17 @@ Documentation:      http://wiki.fluidproject.org/display/fluid/Infusion+Document
 What's New in 1.3
 ===================
 
-This release:
-    * Mobile FSS themes: stable, full-featured support for iPhone and Android
-    * Support for jQuery 1.4.2 and jQuery UI 1.8
-    * Rich Text InlineEdit now supports the new CKEditor 3 rich text editor
-    * Smaller, faster, and more mobile-friendly package
-        * The uncompressed distributions are now over 5 MB smaller
-    * Bug fixes for Renderer, data binding, Inline Edit, and Reorderer
-    * Improved internationalization for Undo
-    * Better ARIA support for Inline Edit and Undo
-    * Improved build scripts
-    * Easier asynchronous unit testing
-    * Ubiquitous UTF-8 support
-
-More information on migrating from Infusion 1.1.x to Infusion 1.2 can be found on the "Upgrading to Infusion 1.2" page on the wiki.
-http://wiki.fluidproject.org/display/fluid/Upgrading+to+Infusion+1.2
+    * Bug fixes
+    * Renderer improvements
+    * Transactional change applier
+    * Sneak Peek at the IoC system
+    * Accessibility Improvements
+          o HTML5 Uploader
+          o Better feedback for the Progress component
+          o Enhanced screen reader semantics for the Inline Edit component
+          o Location and movement announcements for the Reorderer component
+          o No Wrap option for the Reorderer component
+    * Many improved demos
 
 
 What's in this Release
@@ -105,12 +101,9 @@ Other Examples and Sample Code
 Sample code illustrating how Infusion components can be used:
 
         integration-demos/
-             bspace/    (showcases: Inline Edit)
              sakai/     (showcases: Inline Edit, Pager, UI Options, FSS)
              uportal/   (showcases: Reorderer, UI Options, FSS)
         standalone-demos/
-             keyboard-a11y/
-             lib/
              pager/
              renderer/
              reorderer/
@@ -184,16 +177,21 @@ manual pages easy to navigate we have added the following guides:
     * A link to the documentation appears at the top of the left-side wiki navigation
       bar with the name "Infusion Documentation".
 
+NOTE: Starting with Infusion 1.3, we are beginning to migrate our documentation to a new home.
+Some of our Sneak Peek functionality is now documented at
+    http://wiki.fluidproject.org/display/docs/Infusion+Documentation+Home
+
 
 Supported Browsers
 ==================
 Chrome 4: full support in Win XP
-Firefox 3.0: full support in Win XP
+Firefox 4: full support in Mac OS 10.6 and Win 7
 Firefox 3.6: full support in Mac OS 10.6, Win XP and Win 7
-Internet Explorer 6.x: full support in Win XP
-Internet Explorer 7.x: full support in Win XP
+Internet Explorer 9.x: full support in Win 7
 Internet Explorer 8.x: full support in Win XP and Win 7
-Safari 4: full support in Mac OS 10.5 and 10.6
+Internet Explorer 7.x: full support in Win XP
+Internet Explorer 6.x: full support in Win XP
+Safari 4: full support in Mac OS 10.6
 
 For more information on Fluid Infusion browser support, please see:
     http://wiki.fluidproject.org/display/fluid/Browser+Support
@@ -218,6 +216,8 @@ Preview: still growing, but with broad browser support. Expect new features in u
     * Uploader
 
 Sneak Peek: in development; APIs will change. Share your feedback, ideas, and code
+    * IoC
+    * Transactional ChangeApplier
     * Inline Edit: Dropdown
     * Inline Edit: Rich Text
     * Mobile Fluid Skinning System
@@ -239,19 +239,18 @@ Framework:
 
 Inline Edit: 
     FLUID-3632: Chrome 4 in WIN XP does not allow tabbing out of tinyMCE editor's edit field
-    FLUID-3611: Text persists in edit mode when view mode displays default text: using IE 6
-    FLUID-2536: Inline Edit test fails using IE 8
+    FLUID-3811: Previous edits are persisting in Edit Mode despite demo being reloaded in IE8
     FLUID-1600: Pressing the "Tab" key to exit edit mode places focus on the wrong item
 
 Layout Reorderer: 
+    FLUID-3864: Layout Reorderer failed to move portlets back to the first column in three-columns view with keyboard
     FLUID-3089: If columns become stacked, can't drag item into lower column
-    FLUID-1540: Can't use keyboard reordering to move a nested reorderer to the right column, using IE6
     FLUID-858:  Portlet Columns load with no padding between them in IE7
 
 Pager:
-    FLUID-3584: Clicking page numbers throws an error: using IE 6
     FLUID-2880: The Pager will be refactored. Note that as a result of this, there will be significant changes to the Pager API
     FLUID-2329: The self-rendering mode of the Pager is not the default mode
+    FLUID-3584: Clicking page numbers throws an error: using IE 6
 
 Renderer: 
     FLUID-3493: Renderer appears to corrupt templates containing empty tags on Opera (maybe others)
