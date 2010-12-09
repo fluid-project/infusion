@@ -295,16 +295,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
             pageLinksBottom.each(tooltipTest("bottom"));
         });
         
-        tests.test("Pager Current Page describedby", function () {
+        tests.test("Pager Current Page label", function () {
             var pager = renderedPager("#rendered");
             var currentPages = $(".fl-pager-currentPage", pager.container);
             
             currentPages.each(function (idx, currentPage) {
-                var descElmID = $(currentPage).attr("aria-describedby");
-                var descElm = $("#" + descElmID);
-                jqUnit.assertTrue("aria-describedby was added to the current page list element", descElmID);
-                jqUnit.assertTrue("The description element exists", descElm);
-                jqUnit.assertEquals("The description is set", pager.pagerBar.options.strings.currentPageIndexMsg, descElm.text());
+                var descElmID = $(currentPage).attr("aria-label");
+                jqUnit.assertTrue("aria-label was added to the current page list element", descElmID);
+                jqUnit.assertEquals("The label is correct", pager.pagerBar.options.strings.currentPageIndexMsg, descElmID);
             });
         });
         
