@@ -1,6 +1,7 @@
 /*
 Copyright 2008-2009 University of Cambridge
 Copyright 2008-2009 University of Toronto
+Copyright 2010 OCAD University
 
 Licensed under the Educational Community License (ECL), Version 2.0 or the New
 BSD license. You may not use this file except in compliance with one these
@@ -11,7 +12,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_1_3:true*/
+/*global fluid_1_3*/
 
 fluid_1_3 = fluid_1_3 || {};
 
@@ -683,7 +684,7 @@ fluid_1_3 = fluid_1_3 || {};
                     var iValue = fetchValue(start);
                     var lValue = fetchValue(limit - 1);
                     
-                    var tooltipOpts = fluid.copy(that.options.tooltipOptions);
+                    var tooltipOpts = fluid.copy(that.options.tooltip.options) || {};
                     
                     if (!tooltipOpts.content) {
                         tooltipOpts.content = function () { 
@@ -697,9 +698,9 @@ fluid_1_3 = fluid_1_3 || {};
                     if (!cell.current) {
                         var decorators = [
                             {
-                                type: "jQuery",
-                                func: "tooltip",
-                                args: tooltipOpts
+                                type: "fluid",
+                                func: that.options.tooltip.type,
+                                options: tooltipOpts
                             },
                             {
                                 identify: page
@@ -826,19 +827,8 @@ fluid_1_3 = fluid_1_3 || {};
         
         annotateColumnRange: undefined,
         
-        tooltipOptions: {
-            position: {
-                my: "left top",
-                at: "left bottom",
-                offset: "0 5"
-            },
-            items: "*",
-            open: function (event) {
-                $(event.target).tooltip("widget").stop(false, true).show();
-            },
-            close: function (event) {
-                $(event.target).tooltip("widget").stop(false, true).hide();
-            }
+        tooltip: {
+            type: "fluid.tooltip"
         },
         
         rangeAnnotator: {

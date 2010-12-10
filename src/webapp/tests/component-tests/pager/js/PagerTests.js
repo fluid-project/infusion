@@ -51,6 +51,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
                         sortable: true
                     }
                 ],
+                tooltip: {
+                    type: "fluid.tooltip",
+                    options: {
+                        delay: 0
+                    }
+                },
                 annotateColumnRange: "animal",
                 dataOffset: "pets",
                 bodyRenderer: "fluid.pager.selfRender",

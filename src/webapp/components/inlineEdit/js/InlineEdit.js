@@ -271,31 +271,24 @@ fluid_1_3 = fluid_1_3 || {};
     // Initialize the tooltip once the document is ready.
     // For more details, see http://issues.fluidproject.org/browse/FLUID-1030
     var initTooltips = function (that) {
-        var tooltipStyle = that.options.styles.tooltip;
         var tooltipOptions = {
-            content: function () { 
-                return that.options.tooltipText;
-            },
+            content: that.options.tooltipText,
             position: {
                 my: "left top",
                 at: "left bottom",
                 offset: "0 5"
             },
-            items: "*",
-            open: function(event) {
-                $(event.target).tooltip("widget").stop(false, true).hide().delay(that.options.tooltipDelay).fadeIn();
-            },
-            close: function(event) {
-                $(event.target).tooltip("widget").stop(false, true).hide().clearQueue();
-            }          
+            target: "*",
+            delay: that.options.tooltipDelay,
+            styles: {
+                tooltip: that.options.styles.tooltip
+            }     
         };
         
-        that.viewEl.tooltip(tooltipOptions);
-        that.viewEl.tooltip("widget").addClass(tooltipStyle);
+          fluid.tooltip(that.viewEl, tooltipOptions);
         
         if (that.textEditButton) {
-            that.textEditButton.tooltip(tooltipOptions);
-            that.textEditButton.tooltip("widget").addClass(tooltipStyle);
+            fluid.tooltip(that.textEditButton, tooltipOptions);
         }
     };
     
@@ -901,8 +894,6 @@ fluid_1_3 = fluid_1_3 || {};
         
         // this is here for backwards API compatibility, but should be in the strings block
         tooltipText: "Select or press Enter to edit",
-        
-        tooltipId: "tooltip",
         
         tooltipDelay: 1000,
 
