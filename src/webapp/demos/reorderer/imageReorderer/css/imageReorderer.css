@@ -1,17 +1,4 @@
-﻿/*.fl-reorderer-instructions{
-	color: #666;
-	background-color: lightyellow;
-	padding: 3px;
-	border: 2px solid #ddd;
-	font-size: .9em;
-	width: 340px;
-    margin:auto;
-    position:absolute;
-    right:0;
-    top:0;
-	z-index:10000;
-}
-*/
+﻿
 .fl-imageReorderer {
     clear:both;
 }
