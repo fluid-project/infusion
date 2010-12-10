@@ -88,42 +88,5 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.initEnablement = function(target) {
         fluid.setScopedData(target, ENABLEMENT_KEY, true);
     }
-    /** Sets an interation on a target control, which morally manages a "blur" for
-     * a possibly composite region.
-     * A timed blur listener is set on the control, which waits for a short period of
-     * time (options.delay, defaults to 150ms) to discover whether the reason for the 
-     * blur interaction is that either a focus or click is being serviced on a nominated
-     * set of "exclusions" (options.exclusions, a free hash of elements or jQueries). 
-     * If no such event is received within the window, options.handler will be called
-     * with the argument "control", to service whatever interaction is required of the
-     * blur.
-     */
-    
-    fluid.deadMansBlur = function (control, options) {
-        // TODO: framework-free version of component construction, review whether we
-        // can put this in fluidView.js once it exists
-        var that = {options: $.extend(true, {}, options)};
-        that.options.delay = that.options.delay || 150;
-        that.blurPending = false;
-        $(control).blur(function () {
-            that.blurPending = true;
-            setTimeout(function () {
-                if (that.blurPending) {
-                    that.options.handler(control);
-                }
-            }, that.options.delay);
-        });
-        that.canceller = function () {
-            that.blurPending = false; 
-        };
-        for (var key in that.options.exclusions) {
-            var exclusion = $(that.options.exclusions[key]);  
-            exclusion.focusin(that.canceller);
-            exclusion.click(that.canceller);
-        }
-        return that;
-    };
-    
-
     
 })(jQuery, fluid_1_3);

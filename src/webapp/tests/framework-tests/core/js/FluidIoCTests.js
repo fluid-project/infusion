@@ -17,6 +17,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 fluid.registerNamespace("fluid.testUtils");
 
+(function($) {
+
 fluid.defaults("fluid.testUtils.testComponent", {
     default1: "testComponent value",
     components: {
@@ -279,7 +281,7 @@ fluid.testUtils.stackThroughInvoke = function(container, options) {
 
 var fluidIoCTests = new jqUnit.TestCase("Fluid IoC Tests");
 
-fluid.logEnabled = true;
+fluid.setLogging(true);
 
 fluidIoCTests.test("construct", function() {
     expect(2);
@@ -598,3 +600,5 @@ fluidIoCTests.test("Deferred expander Tests", function() {
         jqUnit.assertDeepEq("Resolved model", expectedRes, expanded);
     });
 });
+
+})(jQuery); 
