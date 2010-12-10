@@ -263,8 +263,9 @@ fluid_1_3 = fluid_1_3 || {};
         };
 
         thatReorderer.requestMovement = function (requestedPosition, item) {
+            item = fluid.unwrap(item);
           // Temporary censoring to get around ModuleLayout inability to update relative to self.
-            if (!requestedPosition || fluid.unwrap(requestedPosition.element) === fluid.unwrap(item)) {
+            if (!requestedPosition || fluid.unwrap(requestedPosition.element) === item) {
                 return;
             }
             var activeItem = $(thatReorderer.activeItem);
