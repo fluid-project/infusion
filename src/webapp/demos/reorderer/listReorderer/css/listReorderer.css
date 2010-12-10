@@ -1,16 +1,17 @@
 
-ol li {
+.demo-listReorderer-container ol li {
     padding: 5px;
     margin-bottom: 5px;
 	list-style-position: inside;
 	border-right: 3px solid #6d6e71; /* thicker right border acts as a grab indicator. */
 }
 
-ul {
+.demo-listReorderer-container ul {
 	margin-top: 0px;
 	margin-bottom: 0px;
 }
-ul li {
+
+.demo-listReorderer-container ul li {
 	list-style-type: none;
     margin:0px;
     padding:0px;
@@ -19,7 +20,7 @@ ul li {
 }
 
 :focus{
-    /** override fss-reset.css */
+    /* FLUID-3880: Fixes an IE8 problem where focus lines appear around blocks */
 	outline: none;
 }
 
