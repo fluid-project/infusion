@@ -111,7 +111,7 @@ fluid_1_3 = fluid_1_3 || {};
               fluid.fail("Cannot perform value fixup for valuebinding " 
                 + uibound.valuebinding + " since no model was supplied to rendering");
           }
-          uibound.value = fluid.model.getBeanValue(model, uibound.valuebinding, resolverGetConfig);
+          uibound.value = fluid.get(model, uibound.valuebinding, resolverGetConfig);
       }
   }
   

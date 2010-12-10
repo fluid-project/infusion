@@ -121,7 +121,7 @@ fluid_1_3 = fluid_1_3 || {};
             applier.fireChangeRequest({path: EL, value: newValue, source: node.id});
         }
         else {
-            fluid.model.setBeanValue(root.data, EL, newValue);
+            fluid.set(root.data, EL, newValue);
         }    
         };
    
@@ -244,7 +244,7 @@ fluid_1_3 = fluid_1_3 || {};
       
     fluid.model.isNullChange = function(model, request, resolverGetConfig) {
         if (request.type === "ADD") {
-            var existing = fluid.model.getBeanValue(model, request.path, resolverGetConfig);
+            var existing = fluid.get(model, request.path, resolverGetConfig);
             if (existing === request.value) {
                 return true;
             }

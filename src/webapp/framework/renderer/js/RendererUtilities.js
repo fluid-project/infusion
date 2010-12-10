@@ -229,7 +229,7 @@ fluid_1_3 = fluid_1_3 || {};
     fluid.renderer.repeat = function(options, container, key, config) {
         fluid.expect("Repetition expander", ["controlledBy", "tree"], options);
         var path = fluid.extractContextualPath(options.controlledBy, {ELstyle: "ALL"}, fluid.threadLocal());
-        var list = fluid.model.getBeanValue(config.model, path, config.resolverGetConfig);
+        var list = fluid.get(config.model, path, config.resolverGetConfig);
         
         var togo = {};
         if (!list || list.length === 0) {
@@ -245,7 +245,7 @@ fluid_1_3 = fluid_1_3 || {};
                 envAdd[options.pathAs] = EL;
             }
             if (options.valueAs) {
-                envAdd[options.valueAs] = fluid.model.getBeanValue(config.model, EL, config.resolverGetConfig);
+                envAdd[options.valueAs] = fluid.get(config.model, EL, config.resolverGetConfig);
             }
             var expandrow = fluid.withEnvironment(envAdd, function() {return config.expander(options.tree);});
             return fluid.isArrayable(expandrow)? {children: expandrow} : expandrow;
@@ -318,7 +318,7 @@ fluid_1_3 = fluid_1_3 || {};
                 proto.value = value;
             }
             if (options.model && proto.valuebinding && proto.value === undefined) {
-                proto.value = fluid.model.getBeanValue(options.model, proto.valuebinding, options.resolverGetConfig);
+                proto.value = fluid.get(options.model, proto.valuebinding, options.resolverGetConfig);
                 }
             if (concrete) {
                 proto.componentType = "UIBound";

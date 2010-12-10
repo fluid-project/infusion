@@ -89,14 +89,14 @@ var fluid_1_3 = fluid_1_3 || {};
                     return true; // YOUR VISIT IS AT AN END!!
                 }
                 if (component.options && component.options.components && component.options.components[context] && !component[context]) {
-                    foundComponent = fluid.model.getBeanValue(component, context, fetchStrategies);
+                    foundComponent = fluid.get(component, context, fetchStrategies);
                     return true;
                 }
             });
                 // TODO: we used to get a helpful diagnostic when we failed to match a context name before we fell back
                 // to the environment for FLUID-3818
                 //fluid.fail("No context matched for name " + context + " from root of type " + thatStack[0].typeName);
-            return fluid.model.getBeanValue(foundComponent, parsed.path, fetchStrategies);
+            return fluid.get(foundComponent, parsed.path, fetchStrategies);
         };
         return fetcher;
     }
@@ -156,7 +156,7 @@ var fluid_1_3 = fluid_1_3 || {};
                     for (var key in arg) {
                         var ref = arg[key];
                         var rvalue = resolveRvalue(thatStack, ref, initArgs, options.componentOptions);
-                        fluid.model.setBeanValue(resolvedOptions, key, rvalue);
+                        fluid.set(resolvedOptions, key, rvalue);
                     }
                     args[i] = resolvedOptions;
                 }
@@ -349,14 +349,14 @@ var fluid_1_3 = fluid_1_3 || {};
             var pen = fluid.model.getPenultimate(options, path);
             var value = pen.root[pen.last];
             delete pen.root[pen.last];
-            fluid.model.setBeanValue(preserve, path, value);  
+            fluid.set(preserve, path, value);  
         });
         return {
             restore: function(target) {
                 fluid.each(preserveList, function(path) {
-                    var preserved = fluid.model.getBeanValue(preserve, path);
+                    var preserved = fluid.get(preserve, path);
                     if (preserved !== undefined) {
-                        fluid.model.setBeanValue(target, path, preserved)
+                        fluid.set(target, path, preserved)
                     }
                 });
             }
@@ -582,7 +582,7 @@ var fluid_1_3 = fluid_1_3 || {};
         if (!base) {
             return base;
         }
-        return fluid.model.getBeanValue(base, parsed.path);
+        return fluid.get(base, parsed.path);
     };
     
     fluid.resolveContextValue = function(string, options) {

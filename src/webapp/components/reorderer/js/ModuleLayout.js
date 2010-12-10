@@ -155,7 +155,7 @@ fluid_1_3 = fluid_1_3 || {};
                 togo = fluid.moduleLayout.layoutFromFlat(container, dom.locate("columns"), dom.locate("modules"));
             }
             if (!togo) {
-                var idLayout = fluid.model.getBeanValue(options, "moduleLayout.layout");
+                var idLayout = fluid.get(options, "moduleLayout.layout");
                 fluid.moduleLayout.layoutFromIds(idLayout);
             }
             return togo;

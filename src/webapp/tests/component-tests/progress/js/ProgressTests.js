@@ -63,7 +63,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 speed: 0
             };
             
-            fluid.model.setBeanValue(obj, ELPath, function () {                
+            fluid.set(obj, ELPath, function () {                
                 callback(ELPath);
                 if (!stopStart) {
                     start();

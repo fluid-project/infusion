@@ -464,12 +464,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         fluidJSTests.test("set/getBeanValue", function() {
             var model = {"path3": "thing"};
-            jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path3.nonexistent"));
-            jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path3.nonexistent.non3"));
-            jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path1.nonexistent"));
-            jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path1.nonexistent.non3"));
-            jqUnit.assertEquals("Get blank value", undefined, fluid.model.getBeanValue(model, "path1"));
-            fluid.model.setBeanValue(model, "path2.past", "attach");
+            jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path3.nonexistent"));
+            jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path3.nonexistent.non3"));
+            jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path1.nonexistent"));
+            jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path1.nonexistent.non3"));
+            jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path1"));
+            fluid.set(model, "path2.past", "attach");
             jqUnit.assertDeepEq("Set blank value", {path2: {past: "attach"}, path3: "thing"}, model);
             fluid.registerGlobalFunction("fluid.newFunc", function() { return 2 ;});
             jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
@@ -481,9 +481,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         fluidJSTests.test("getBeanValue with custom strategy", function() {
             var model = {path3: "thing", path4: "otherThing"};
-            var value = fluid.model.getBeanValue(model, "path3", [customStrategy, fluid.model.defaultFetchStrategy]);
+            var value = fluid.get(model, "path3", [customStrategy, fluid.model.defaultFetchStrategy]);
             jqUnit.assertUndefined("path3 value censored", value);
-            var value2 = fluid.model.getBeanValue(model, "path4", [customStrategy, fluid.model.defaultFetchStrategy]);
+            var value2 = fluid.get(model, "path4", [customStrategy, fluid.model.defaultFetchStrategy]);
             jqUnit.assertEquals("path4 value uncensored", model.path4, value2);
         });
 

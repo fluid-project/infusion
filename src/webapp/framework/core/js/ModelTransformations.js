@@ -17,7 +17,7 @@ var fluid = fluid || fluid_1_3;
         }
          
         try {
-            return fluid.model.getBeanValue(model, options.path) || options.defaultValue;
+            return fluid.get(model, options.path) || options.defaultValue;
         } catch (e) {
             if (options.failOnInvalidPath) {
                 throw new Error ("Model transformation error: Can't find a LHS value at path \"" + options.path + "\".");
@@ -31,7 +31,7 @@ var fluid = fluid || fluid_1_3;
      
     fluid.model.transform.count = function (model, options) {
         try {
-            var value = fluid.model.getBeanValue(model, options.path);
+            var value = fluid.get(model, options.path);
             return value ? $.makeArray(value).length : 0;
         } catch (e) {
             return 0;
@@ -42,7 +42,7 @@ var fluid = fluid || fluid_1_3;
         var value;
         for (var i = 0; i < options.paths.length; i++) {
             var path = options.paths[i];
-            value = fluid.model.getBeanValue(model, path);
+            value = fluid.get(model, path);
             if (value) {
                 break;
             }

@@ -110,9 +110,9 @@ fluid_1_3 = fluid_1_3 || {};
 
     
     var setDefaultValue = function (target, path, value) {
-        var previousValue = fluid.model.getBeanValue(target, path);
+        var previousValue = fluid.get(target, path);
         var valueToSet = previousValue || value;
-        fluid.model.setBeanValue(target, path, valueToSet);
+        fluid.set(target, path, valueToSet);
     };
     
     // Public Lightbox API

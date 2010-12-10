@@ -435,12 +435,12 @@ var fluid = fluid || fluid_1_3;
         return resolver;
     }
     
-    fluid.model.setBeanValue = function(root, EL, newValue, config) {
+    fluid.set = function(root, EL, newValue, config) {
         config = config || fluid.model.defaultSetConfig;
         var resolver = fluid.model.getPenultimate(root, EL, config);
         resolver.root[resolver.last] = newValue;
     };
-
+    
     fluid.model.defaultGetConfig = [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy];
     
     /** Evaluates an EL expression by fetching a dot-separated list of members
@@ -452,7 +452,7 @@ var fluid = fluid || fluid_1_3;
      * @return The fetched data value.
      */
     
-    fluid.model.getBeanValue = function (root, EL, config) {
+    fluid.get = function (root, EL, config) {
         if (EL === "" || EL === null || EL === undefined) {
             return root;
         }
@@ -461,13 +461,16 @@ var fluid = fluid || fluid_1_3;
         resolver.step(resolver.segs.length);
         return resolver.root;
     };
-    
+
+    // This backward compatibility will be maintained for a number of releases, probably until Fluid 2.0
+    fluid.model.setBeanValue = fluid.set;
+    fluid.model.getBeanValue = fluid.get;
     
     fluid.getGlobalValue = function(path, env) {
         if (path) {
             env = env || fluid.environment;
             var envFetcher = fluid.model.environmentStrategy(env);
-            return fluid.model.getBeanValue(globalObject, path, [envFetcher].concat(fluid.model.defaultGetConfig));
+            return fluid.get(globalObject, path, [envFetcher].concat(fluid.model.defaultGetConfig));
         }
     };
     
@@ -493,7 +496,7 @@ var fluid = fluid || fluid_1_3;
     fluid.registerGlobalFunction = function (functionPath, func, env) {
         env = env || fluid.environment;
         var envFetcher = fluid.model.environmentStrategy(env);
-        fluid.model.setBeanValue(globalObject, functionPath, func, [envFetcher].concat(fluid.model.defaultSetConfig));
+        fluid.set(globalObject, functionPath, func, [envFetcher].concat(fluid.model.defaultSetConfig));
     };
     
     fluid.setGlobalValue = fluid.registerGlobalFunction;
@@ -675,10 +678,10 @@ var fluid = fluid || fluid_1_3;
             for (var key in policy) {
                 var elrh = policy[key];
                 if (typeof(elrh) === 'string' && elrh !== "replace") {
-                    var oldValue = fluid.model.getBeanValue(target, key);
+                    var oldValue = fluid.get(target, key);
                     if (oldValue === null || oldValue === undefined) {
-                        var value = fluid.model.getBeanValue(target, elrh);
-                        fluid.model.setBeanValue(target, key, value);
+                        var value = fluid.get(target, elrh);
+                        fluid.set(target, key, value);
                     }
                 }
             }

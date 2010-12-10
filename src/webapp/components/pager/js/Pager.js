@@ -315,7 +315,7 @@ fluid_1_3 = fluid_1_3 || {};
         getRoots(roots, that, index);
 
         var path = expandPath(valuebinding, roots.shortRoot, roots.longRoot);
-        return fluid.model.getBeanValue(dataModel, path);
+        return fluid.get(dataModel, path);
     };
     
     fluid.pager.basicSorter = function (overallThat, model) {        
@@ -370,7 +370,7 @@ fluid_1_3 = fluid_1_3 || {};
                     EL = expandPath(EL, opts.shortRoot, opts.longRoot);
                 }
 
-                var val = fluid.model.getBeanValue(opts.dataModel, EL);
+                var val = fluid.get(opts.dataModel, EL);
                 togo += val;
                 index = endi + 1;
             }
@@ -445,7 +445,7 @@ fluid_1_3 = fluid_1_3 || {};
     }
    
     function fetchModel(overallThat) {
-        return fluid.model.getBeanValue(overallThat.options.dataModel, 
+        return fluid.get(overallThat.options.dataModel, 
             overallThat.options.dataOffset);
     }
    
