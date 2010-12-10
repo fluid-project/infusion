@@ -72,14 +72,14 @@ var demo = demo || {};
         liveRegion.attr("role", "status");         
         
         // set default aria-controls to one of the container
-        submitButton.attr("aria-controls", "status-message");
+        submitButton.attr("aria-controls", "demo-status-message");
     }; 
     
     demo.initShoppingDemo = function (percent, steps) {
-        var submitButton = $("#submit-section button");
-        var statusText = $(".status-text");
-        var restartDemo = $(".restart-demo");
-        var liveRegion = $(".region");    
+        var submitButton = $(".progress-demo-submit button");
+        var statusText = $(".demoSelector-progress-status-text");
+        var restartDemo = $(".demoSelector-progress-restart");
+        var liveRegion = $(".demoSelector-liveRegion");    
         
         var timer = timeSimulator(percent, steps);         
          
@@ -101,7 +101,7 @@ var demo = demo || {};
         };       
         
         // here's where we create the progress component
-        var myProgress = fluid.progress("#progress-container", {
+        var myProgress = fluid.progress("#demoSelector-progress-theComponent", {
             speed: 1000,         
             listeners: {
                 afterProgressHidden: myProgressHide

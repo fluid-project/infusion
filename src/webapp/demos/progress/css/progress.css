@@ -1,15 +1,6 @@
 /* progress demo styles */
 
-/* strawberries image from Simon Koleznik
-http://www.flickr.com/photos/simonkoleznik/396358600/
-Modified under CC v2.0 generic license. */
-
-/* general */
-html {
-	background-color: #444;
-}
-
-#main {
+.demo-progress-container {
     position: relative;
     min-height: 300px;
 	margin: 0 auto;
@@ -18,23 +9,19 @@ html {
 	border: 3px solid black;
 	max-width: 30em;
 	min-width: 30em;
+    margin-top: 1em;
 }
 
-#inner {
-	margin: 0 auto 3em auto;
-}
-
-h1 {
+.demo-progress-container h1 {
 	margin-top: 0.5em;
 }
 
-abbr {
+.demo-progress-container abbr {
 	border:0px;
 }
 
-
 /* progress bar */
-.progress-pop-up {
+.demo-progress-popUp {
     display: none;
     text-align: center;
     color: black;
@@ -43,17 +30,12 @@ abbr {
     z-index: 3000;
 }
 
-.progress-pop-up h3 {
-    margin-top: 0;
-    margin-bottom: 0.4em;
-}
-
-.progress-label {
+.demo-progress-theBar-label {
     margin-top: 0.6em;
     margin-bottom: 0;
 }
 
-.progress-bar {
+.demo-progress-theBar {
     text-align: left;
     background-image: url('../images/progress-bar-animation.gif');
     background-position: left top;
@@ -68,7 +50,7 @@ abbr {
     -webkit-border-radius: 0.2em;
 }
 
-.progress-indicator {
+.demo-progress-indicator {
     height: 16px;
     width: 5px;
     border: 1px solid #2D3E76;
@@ -83,13 +65,13 @@ abbr {
     -webkit-border-top-right-radius: 0;
 }
 
-.status-area{
+.demo-progress-status-container{
 	height:6em;
     background-color: #afddc5;
     padding:1em;
 }
 
-.status-text, .restart-demo{
+.demo-progress-status-text, .demo-progress-restart{
     text-align: center;
     display: block;
     border:0;
@@ -98,60 +80,49 @@ abbr {
 
 /* table styles */
 
-div#data-tables {
+.demo-progress-table-container {
 	margin: 10px 0px 10px 0px;
 	border:3px solid #d2d3d5;
 	padding: 0px 30px 0px 30px;
 }
 
-table#grocery-order {
+.demo-progress-table-container table {
 	width: 100%;
 	border: 0px;
 	margin-top: 10px;
 }
 
-table#grocery-order th {
+.demo-progress-table-container th {
 	font-weight:bold;
 	text-align:left;
 	border: 0px;
 	padding: 2px;	
 }
 
-table#grocery-order td, table#totals td {
+.demo-progress-table-container td {
 	border: 0px;
 	padding: 2px;
 }
 
-table#totals {
-	width: 100%;
-	border: 0px;
-	margin-top: 10px;
-}
-
-tr#total-row {
-	border-top: 2px solid black;
-}
-tr#total-row td {
-	padding-top:5px;
-}
-
-#sub, #service, #total {
+.demo-progress-total-label {
 	width:18em;
 }
 
-p#submit-section {
+/* Submit controls */
+
+.progress-demo-submit {
 	text-align:right;
 	clear:both;
 }
 
-button.enabled {
+.progress-demo-submit button.enabled {
 	background-color: #8bc5eb;
 	border: 1px solid black;
 	padding:3px 15px 3px 15px;
 	color: black;
 }
 
-button.disabled {
+.progress-demo-submit button.disabled {
 	background-color: #cbe5f6;
 	border: 1px solid #cdcccc;
 	padding:3px 15px 3px 15px;

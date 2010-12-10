@@ -17,97 +17,99 @@
 
 </head>
 <body>
-<div id="main">
+    <div class="demo-progress-container">
      
-    <h1>Zip Grocery Delivery</h1>
+        <h1>Zip Grocery Delivery</h1>
     
-    <div id="status-message" class="status-area">
+        <!-- The area that displays dynamic status messages and the progress bar. -->
+        <div id="demo-status-message" class="demo-progress-status-container">
         
-            <div class='region'>
+            <div class='demoSelector-liveRegion'>
                 <!-- status text for progress -->
-                <p class='status-text'>
-                </p>   
+                <p class='demoSelector-progress-status-text demo-progress-status-text'></p>   
                 <!-- links to the demo page --> 
-                <a class='restart-demo' href="progress.html">Restart the Demo</a>           
+                <a class='demoSelector-progress-restart demo-progress-restart' href="progress.html">Restart the Demo</a>           
             </div>
             
             <!-- progress simulation -->
-            <div id="progress-container">
-                <div class="flc-progress progress-pop-up">
-                    <div class="flc-progress-bar progress-bar">
-                        <div class="flc-progress-indicator progress-indicator">
+            <div id="demoSelector-progress-theComponent">
+                <div class="flc-progress demo-progress-popUp">
+                    <div class="flc-progress-bar demo-progress-theBar">
+                        <div class="flc-progress-indicator demo-progress-indicator">
                         </div>
                     </div>
-                    <p class="flc-progress-label progress-label">
+                    <p class="flc-progress-label demo-progress-theBar-label">
                         0% Complete
                     </p>
                 </div>
             </div>
-      </div>  
+        </div>  
     
-        <div id="data-tables">
-        <table summary="This table summarizes the items you have ordered for delivery." id="grocery-order">
-            <tr>
-                 <th>Item</th>
-                 <th><abbr title="Quantity">Qty.</abrr></th>
-                 <th>Price</th>                  
-            </tr>  
+        <div class="demo-progress-table-container">
+        
+            <!-- The customer's order. -->
+            <table summary="This table summarizes the items you have ordered for delivery.">
+                <tr>
+                     <th>Item</th>
+                     <th><abbr title="Quantity">Qty.</abrr></th>
+                     <th>Price</th>                  
+                </tr>  
 
-           <tr>         
-                 <td>Apples</td>
-                 <td>1<abbr title="pound">lb.</abrr></td>
-                 <td>$ 1.12</td>                  
-            </tr>  
-            
-            <tr>
-                 <td>Bananas</td>
-                 <td>2<abbr title="pounds">lb.</abrr></td>
-                 <td>$ 2.10</td>                  
-            </tr> 
-            
-            <tr>
-                 <td>Corn Flakes</td>
-                 <td>1</td>
-                 <td>$ 2.99</td>                  
-            </tr> 
-            
-            <tr>
-                 <td>8<abbr title="pounds">lb.</abrr> Rice</td>
-                 <td>1</td>
-                 <td>$ 5.99</td>                  
-            </tr>   
-            
-             <tr>
-                 <td>Ground Coffee</td>
-                 <td>1<abbr title="pound">lb.</abrr></td>
-                 <td>$10.99</td>                  
-            </tr>   
-      </table>
-      
-      <table id="totals">
-            <tr>
-                 <td id="subtotal">SUBTOTAL</td>
-                 <td headers="subtotal">$23.19</td>                  
-            </tr>            
+                <tr>         
+                     <td>Apples</td>
+                     <td>1<abbr title="pound">lb.</abrr></td>
+                     <td>$ 1.12</td>                  
+                </tr>  
+                
+                <tr>
+                     <td>Bananas</td>
+                     <td>2<abbr title="pounds">lb.</abrr></td>
+                     <td>$ 2.10</td>                  
+                </tr> 
+                
+                <tr>
+                     <td>Corn Flakes</td>
+                     <td>1</td>
+                     <td>$ 2.99</td>                  
+                </tr> 
+                
+                <tr>
+                     <td>8<abbr title="pounds">lb.</abrr> Rice</td>
+                     <td>1</td>
+                     <td>$ 5.99</td>                  
+                </tr>   
+                
+                 <tr>
+                     <td>Ground Coffee</td>
+                     <td>1<abbr title="pound">lb.</abrr></td>
+                     <td>$10.99</td>                  
+                </tr>   
+          </table>
+          
+          <!-- Subtotal, surcharge, and order total table. -->
+          <table>
+                <tr>
+                     <td class="demo-progress-total-label">SUBTOTAL</td>
+                     <td headers="subtotal">$23.19</td>                  
+                </tr>            
 
-             <tr>
-                 <td id="service">Service Charge</td>
-                 <td headers="service">$ 7.32</td>                  
-            </tr> 
-            
-            <tr id="total-row">
-                 <td id="total">TOTAL</td>
-                 <td headers="total">$30.51</td>                  
-            </tr>  
-              
-    </table>
+                 <tr>
+                     <td class="demo-progress-total-label">Service Charge</td>
+                     <td headers="service">$ 7.32</td>                  
+                </tr> 
+                
+                <tr>
+                     <td class="demo-progress-total-label">TOTAL</td>
+                     <td headers="total">$30.51</td>                  
+                </tr>  
+                  
+        </table>
     </div>
     
-    <p id="submit-section">
+    <!-- The Submit button -->
+    <div class="progress-demo-submit">
         <button class="enabled" title="Submit your order">Submit</button>
-    </p>
-    
-    
+    </div>
 </div>
 
 <script type="text/javascript">
