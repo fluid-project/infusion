@@ -636,7 +636,7 @@ var fluid = fluid || fluid_1_3;
                     if (typeof(newPolicy) === "function") {
                         newPolicy.call(null, target, source, name);
                     }
-                    else if (thisTarget === null || thisTarget === undefined || !fluid.mergePolicyIs(thisPolicy, "reverse")) {
+                    else if (thisTarget === null || thisTarget === undefined || !fluid.mergePolicyIs(newPolicy, "reverse")) {
                         // TODO: When "grades" are implemented, grandfather in any paired applier to perform these operations
                         // NB: mergePolicy of "preserve" now creates dependency on DataBinding.js
                         target[name] = fluid.mergePolicyIs(newPolicy, "preserve")? fluid.model.mergeModel(thisTarget, thisSource) : thisSource;

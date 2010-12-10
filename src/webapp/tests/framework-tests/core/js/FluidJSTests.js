@@ -131,6 +131,47 @@ https://source.fluidproject.org/svn/LICENSE.txt
       
         });
         
+        fluidJSTests.test("reverse merge: object with multiple keys", function() {
+            var target = {
+                prop1: {
+                    child1: {"key1": "value1", "key2": 2},
+                    child2: 2,
+                    child3: 3
+                },
+                prop2: "old",
+                prop3: {"key1": "value1", "key2": 2}
+            };
+           var source = {
+                prop1: {
+                    child1: {"key1": "value1", "key2": 2},
+                    child2: 2,
+                    child3: 3
+                },
+                prop2: "new",
+                prop3: {"key1": "value1", "key2": 2}
+            };
+
+            var testReverseMerge = function(policy, expected) {
+                var thisTarget = fluid.copy(target);
+                if (policy=="undeclared") {
+                    fluid.merge(thisTarget, source);
+                } else {
+                    fluid.merge(policy, thisTarget, source);
+                }
+                jqUnit.assertEquals("\"" + policy + "\" policy", expected, thisTarget.prop2);
+            };
+
+            testReverseMerge("reverse", target.prop2);
+            testReverseMerge("undeclared",  target.prop2);
+
+            //falsy policy should be replaced.
+            var undefined_obj = {}; //to mimic undefined behavior
+            testReverseMerge(undefined_obj[""],  source.prop2);
+            testReverseMerge(null,  source.prop2);
+            testReverseMerge("",  source.prop2);
+            testReverseMerge("random_string",  source.prop2);
+        });
+        
         fluidJSTests.test("copy", function () {
             var array = [1, "thing", true, null];
             var copy = fluid.copy(array);
