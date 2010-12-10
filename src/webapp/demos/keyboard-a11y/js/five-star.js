@@ -19,7 +19,7 @@ var demo = demo || {};
 
     // This assumes the className is of the form "star-x" where x is the starNum
     var getStarNum = function (el) {
-        var className = $(el).attr("class").match("demo-star-[1-5]")[0];
+        var className = $(el).attr("class").match("star-[1-5]")[0];
         return parseInt(className.charAt(className.length - 1));
     };
 
