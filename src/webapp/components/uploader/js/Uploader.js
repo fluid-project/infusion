@@ -534,7 +534,7 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.demands("fluid.uploader.totalProgressBar", "fluid.uploader.multiFileUploader", {
         funcName: "fluid.progress",
         args: [
-            "{multiFileUploader}.dom.fileQueue",
+            "{multiFileUploader}.container",
             fluid.COMPONENT_OPTIONS
         ]
     });
