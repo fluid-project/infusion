@@ -1,6 +1,5 @@
 :focus{
-    /** override fss-reset.css */
-    /* Fixes an IE8 problem where focus lines appear around blocks */
+    /* FLUID-3880: Fixes an IE8 problem where focus lines appear around blocks */
 	outline: none;
 }
 
