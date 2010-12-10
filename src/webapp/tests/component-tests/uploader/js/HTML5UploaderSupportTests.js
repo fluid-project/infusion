@@ -46,6 +46,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("After the first batch of files have processed, there should now be two multi-file input elements", 2, inputs.length);
             jqUnit.assertEquals("The original multi-file input element should be removed from the tab order", -1, inputs.eq(0).attr("tabindex"));            
             jqUnit.assertEquals("The second multi-file input element should be visible and in the tab order", 0, inputs.eq(1).attr("tabindex"));
+            
+            inputs.eq(1).focus();
+            jqUnit.assertTrue("On focus, the browseButton input has the focus class", browseButton.hasClass("focus"));
+            
+            inputs.eq(1).blur();
+            jqUnit.assertFalse("On blur, the browseButton no longer has the focus class", browseButton.hasClass("focus"));
         });
     })
 })(jQuery);
