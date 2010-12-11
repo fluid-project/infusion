@@ -24,6 +24,28 @@ https://source.fluidproject.org/svn/LICENSE.txt
             afterUploadComplete: fluid.event.getEventFirer()
         };
         
+        html5UploaderTests.test("Ensure multipart content is correctly built", function () {
+            var boundary = 1234567890123456789;
+            var file = {
+                name: "test",
+                type: "image",
+                getAsBinary: function () {return "";}
+            };
+            
+            var multipart = fluid.uploader.html5Strategy.generateMultiPartContent(boundary, file);
+            var parts = multipart.split('\r\n');
+            
+            jqUnit.assertEquals("The multipart content must contain 7 lines", 7, parts.length);
+            jqUnit.assertTrue("The first line of the multipart content must contain the boundary", parts[0].indexOf(boundary) !== -1);
+            jqUnit.assertTrue("The second line of the multipart content must contain the Content-Disposition", parts[1].indexOf('Content-Disposition') !== -1);
+            jqUnit.assertTrue("The second line of the multipart content must contain the name attribute with value of 'fileData'", parts[1].indexOf('name=\"fileData\"') !== -1);            
+            jqUnit.assertTrue("The second line of the multipart content must contain the file name", parts[1].indexOf('filename') !== -1);
+            jqUnit.assertTrue("The file name should be 'test'", parts[1].indexOf(file.name) !== -1);
+            jqUnit.assertTrue("The third line of the multipart content must contain the Content-Type", parts[2].indexOf('Content-Type') !== -1);
+            jqUnit.assertTrue("The Content-Type should be 'image'", parts[2].indexOf(file.type) !== -1);
+            jqUnit.assertTrue("The sixth line of the multipart content must also contain the boundary", parts[5].indexOf(boundary) !== -1);
+        });
+        
         html5UploaderTests.test("Uploader HTML5 browseHandler", function () {
             var browseButton = $("<a href='#' name='browseButton'>Nothing</a>");
             var browseHandler = fluid.uploader.html5Strategy.browseHandler({

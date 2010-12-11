@@ -193,12 +193,7 @@ var fluid_1_3 = fluid_1_3 || {};
         return boundary;
     };
     
-    /*
-     * Create the multipart/form-data content by hand to send the file
-     */
-    fluid.uploader.html5Strategy.doManualMultipartUpload = function (file, queueSettings, xhr) {
-        var boundary = generateMultipartBoundary();
-        
+    fluid.uploader.html5Strategy.generateMultiPartContent = function (boundary, file) {
         var multipart = " ";
         multipart += "--" + boundary + CRLF;
         multipart += "Content-Disposition: form-data;" +
@@ -208,6 +203,15 @@ var fluid_1_3 = fluid_1_3 || {};
         multipart += "Content-Type: " + file.type + CRLF + CRLF;
         multipart += file.getAsBinary(); // TODO: Ack, concatting binary data to JS String!
         multipart += CRLF + "--" + boundary + "--" + CRLF;
+        return multipart;
+    };
+    
+    /*
+     * Create the multipart/form-data content by hand to send the file
+     */
+    fluid.uploader.html5Strategy.doManualMultipartUpload = function (file, queueSettings, xhr) {
+        var boundary = generateMultipartBoundary();
+        var multipart = fluid.uploader.html5Strategy.generateMultiPartContent(boundary, file);
         
         xhr.open("POST", queueSettings.uploadURL, true);
         xhr.setRequestHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
