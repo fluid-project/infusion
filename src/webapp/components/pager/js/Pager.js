@@ -496,9 +496,9 @@ fluid_1_3 = fluid_1_3 || {};
             that.permutation = sorted;
             that.events.onModelChange.fire(newModel, that.model, that);
             fluid.model.copyModel(that.model, newModel);
-        }            
+        }
     }
- 
+
     function generateColumnClick(overallThat, columnDef, opts) {
         return function () {
             if (columnDef.sortable === true) {
@@ -531,15 +531,24 @@ fluid_1_3 = fluid_1_3 || {};
     }
    
     function generateHeader(overallThat, newModel, columnDefs, opts) {
+        var sortableColumnTxt = opts.options.strings.sortableColumnText;
+        if (newModel.sortDir === 1) {
+            sortableColumnTxt = opts.options.strings.sortableColumnTextAsc;
+        } else if (newModel.sortDir === -1) {
+            sortableColumnTxt = opts.options.strings.sortableColumnTextDesc;
+        }
+
         return {
             children:  
                 fluid.transform(columnDefs, function (columnDef) {
                 return {
                     ID: iDforColumn(columnDef, opts),
                     value: columnDef.label,
-                    decorators: [
+                    decorators: [ 
                         {"jQuery": ["click", generateColumnClick(overallThat, columnDef, opts)]},
-                        {identify: "header:" + columnDef.key}].concat(fetchHeaderDecorators(opts.overallOptions.decorators, columnDef))
+                        {identify: "header:" + columnDef.key},
+                        {type: "attrs", attributes: { title: (columnDef.key === newModel.sortKey) ? sortableColumnTxt : opts.options.strings.sortableColumnText}}
+                    ].concat(fetchHeaderDecorators(opts.overallOptions.decorators, columnDef))
                 };
             }
        )};
@@ -603,6 +612,13 @@ fluid_1_3 = fluid_1_3 || {};
         keyPrefix: "",
         row: "row:",
         header: "header:",
+        
+        strings: {
+            sortableColumnText: "Select to sort",
+            sortableColumnTextDesc: "Select to sort in ascending, currently in descending order.",
+            sortableColumnTextAsc: "Select to sort in descending, currently in ascending order."
+        },
+
         // Options passed upstream to the renderer
         renderOptions: {}
     });
@@ -797,7 +813,7 @@ fluid_1_3 = fluid_1_3 || {};
             options: null},
         
         summary: {type: "fluid.pager.summary", options: {
-            message: "Viewing page %currentPage. Showing records %first - %last of %total items"
+            message: "Viewing page %currentPage. Showing records %first - %last of %total items." 
         }},
         
         pageSize: {

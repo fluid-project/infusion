@@ -136,11 +136,24 @@
                     <li class="flc-pager-next">next &gt;</li>
                 </ul>
             </div>
-            
-            <ul class="flc-pager-body-template">
-                <li rsf:id="row:"><strong rsf:id="animal">Animal</strong></li>
-            </ul>
-            
+
+            <table summary="Table of all students and teachers." xmlns:rsf="http://ponder.org.uk" class="flc-pager-body-template">
+                <thead>
+                    <tr rsf:id="header:">
+                        <th class="flc-pager-sort-header"><a rsf:id="category" href="#">Category</a></th>
+                        <th class="flc-pager-sort-header"><a rsf:id="breed" href="#">Breed</a></th>
+                        <th class="flc-pager-sort-header"><a rsf:id="origin" href="#">Origin</a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr rsf:id="row:">
+                        <td><span rsf:id="category">Animal category</span></td>
+                        <td><span rsf:id="breed">Shiba</span></td>
+                        <td><span rsf:id="origin">Japan</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
             <div class="flc-pager-bottom">
                 <ul class="flc-pager-links">
                     <li class="flc-pager-pageLink"><a href="#">1</a></li>

@@ -29,17 +29,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     pageChangeStats.oldPageNum = oldModel.pageIndex;
                 }
             }
-        };
-    
-        var createPagerBar = function (container, options) {
-            var mockEvents = {
-                onModelChange: fluid.event.getEventFirer()
-            };
-            
-            return fluid.pager.pagerBar(container, mockEvents, options);    
-        };
-        
-        
+        };        
         
         /** Convenience rendered pager creator **/
         var renderedPager = function (container, options) {
@@ -310,6 +300,147 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertTrue("aria-label was added to the current page list element", descElmID);
                 jqUnit.assertEquals("The label is correct", pager.pagerBar.options.strings.currentPageIndexMsg, descElmID);
             });
+        });
+        
+        tests.test("Page Table Header aria-sort, also checks if anchor titles changes accordingly ", function () {
+            //the following sortableColumnText strings are the same as fluid.pager.selfRender.strings.
+            //redeclaring them here because we cannot get them from the pager object.
+            var sortableColumnText = "Select to sort";
+            var sortableColumnTextDesc = "Select to sort in ascending, currently in descending order.";
+            var sortableColumnTextAsc = "Select to sort in descending, currently in ascending order.";
+    
+    		// TODO: this data can be usefully reused for other tests as well - we might want to make it more accessible.  
+            var dataModel = {
+                    pets: [
+                        {
+                            category: "B",
+                            breed: "Siberian Husky",
+                            origin: "Russia"
+                        },
+                        {
+                            category: "C",
+                            breed: "Old German Shepherd Dog",
+                            origin: "Germany"
+                        },
+                        {
+                            category: "A",
+                            breed: "Old England Old English Terrier",
+                            origin: "Germany"
+                        },
+                        {
+                            category: "D",
+                            breed: "Kuvasz",
+                            origin: "Hungary"
+                        },
+                        {
+                            category: "D",
+                            breed: "King Shepherd",
+                            origin: "United States"
+                        },
+                        {
+                            category: "B",
+                            breed: "Kishu",
+                            origin: "Japan"
+                        }
+                    ]
+                };
+            var columnDefs = [ 
+                {
+                    key: "category",
+                    valuebinding: "*.category",  
+                    sortable: true
+                },
+                {
+                    key: "breed",
+                    valuebinding: "*.breed",
+                    sortable: true 
+                },
+                {
+                    key: "origin",
+                    valuebinding: "*.origin",
+                    sortable: true
+                }
+            ];
+            var opt = {
+                dataModel : dataModel,
+                columnDefs: columnDefs,
+                annotateColumnRange: "category",
+                model: {
+                    pageSize: 6
+                }
+            };
+            var pager = renderedPager("#rendered", opt);
+            var currentHeaders = pager.locate("headerSortStylisticOffset");
+
+            /**
+             * Get a string representation of the parameter based on the strings we have in Pager.js 
+             */
+            var sortableColumnTextStr = function (dir_order) {
+                if (dir_order === "ascending") {
+                    return sortableColumnTextAsc;
+                } else if (dir_order === "descending") {
+                    return sortableColumnTextDesc;
+                } else {
+                    return sortableColumnText;
+                }
+            };
+
+            /**
+             * Upon a click on a single column, this function will check the aira-sort attribute, and the anchor titles on ALL columns,
+             * making sure they all have the correct values.
+             *
+             * @param   int     index of the header column on which aria-sort should display in
+             * @param   string  the n-th times this column is clicked, use strings like 1st, 2nd, 3rd, etc. Used for displaying report.
+             * @param   string  descending/ascending
+             */
+            var testAriaOnAllHeaders = function (aria_index, times, dir_order) {
+                var currentHeadersMod = pager.locate("headerSortStylisticOffset");
+                var currentHeadersAnchor = $("a", currentHeadersMod);
+                for (var j = 0; j < currentHeadersMod.length; j++) {
+                    var aria_sort_attr = $(currentHeadersMod[j]).attr("aria-sort");
+                    var title_attr = $(currentHeadersAnchor[j]).attr("title");
+                    var test_prefix = times + " clicked  on Column [" + currentHeadersAnchor.eq(aria_index).text() +
+                                 "], checking column [" + currentHeadersAnchor.eq(j).text() + "] - ";
+                    if (aria_index === j) {
+                        jqUnit.assertTrue(test_prefix + "aria-sort was added to the sorted column", aria_sort_attr);
+                        jqUnit.assertEquals(test_prefix + "The aria-sort value is set", dir_order, aria_sort_attr);
+                        jqUnit.assertEquals(test_prefix + "The anchor of the header is set", sortableColumnTextStr(dir_order), title_attr);
+                    } else {
+                        jqUnit.assertFalse(test_prefix + "aria-sort was not added to the unsorted column", aria_sort_attr);
+                        jqUnit.assertEquals(test_prefix + "The anchor of the header is set", sortableColumnTextStr(""), title_attr);
+                    }
+                }
+            };
+
+            /**
+             * This function performs a mouse click on the column header
+             *
+             * @param   int     index of the header column on which aria-sort should display in
+             */
+            var clickHeader = function (aria_index) {
+                currentHeaders = pager.locate("headerSortStylisticOffset");
+                var currentHeader = currentHeaders.eq(aria_index);
+                //first click is ascending order
+                $("a", currentHeader).click();
+            };
+
+            //sort each column individually, and check aria-sort on all columns after every sort.
+            for (var i = 0; i < currentHeaders.length; i++) {
+                //first click is ascending order
+                clickHeader(i);
+                testAriaOnAllHeaders(i, "1st", "ascending");
+
+                //second click is descending order
+                clickHeader(i);
+                testAriaOnAllHeaders(i, "2nd", "descending");
+
+                //third click is ascending order
+                //if rand(0,1)===0, then do a third click; this adds randomness
+                if (Math.floor(Math.random() * 2) === 0) {
+                    clickHeader(i);
+                    testAriaOnAllHeaders(i, "3rd", "ascending");
+                }
+            }
         });
         
     });
