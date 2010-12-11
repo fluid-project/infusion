@@ -28,7 +28,8 @@ var fluid_1_3 = fluid_1_3 || {};
     };
     
     fluid.browser.flash = function () {
-        return (swfobject.getFlashPlayerVersion().major > 8) ? fluid.typeTag("fluid.browser.supportsFlash") : undefined;
+        var hasModernFlash = (typeof(swfobject) !== "undefined") && (swfobject.getFlashPlayerVersion().major > 8);
+        return hasModernFlash ? fluid.typeTag("fluid.browser.supportsFlash") : undefined;
     };
     
     fluid.progressiveChecker = function (options) {
