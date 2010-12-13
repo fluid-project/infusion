@@ -4,11 +4,11 @@
         "description": "A DHTML tooltip plugin for jQuery, providing a range of customizable hover effects.",
         "cssFiles": "jquery.tooltip.css",
         "files": [
-            "jquery.ui.tooltip.js"
+            "jquery.ui.tooltip.js" 
         ],
         "dependencies": [
             "jQuery",
-            "jQueryUICore"
-        ]
+            "jQueryUICore" 
+        ] 
     }
 }
