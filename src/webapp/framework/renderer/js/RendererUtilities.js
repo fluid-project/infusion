@@ -197,9 +197,10 @@ fluid_1_3 = fluid_1_3 || {};
         return togo;
     };
   
-      /** A special "shallow copy" operation suitable for nondestructively
+    /** A special "shallow copy" operation suitable for nondestructively
      * merging trees of components. jQuery.extend in shallow mode will 
      * neglect null valued properties.
+     * This function is unsupported: It is not really intended for use by implementors.
      */
     fluid.renderer.mergeComponents = function (target, source) {
         for (var key in source) {

@@ -51,6 +51,9 @@ var fluid_1_3 = fluid_1_3 || {};
         return that;
     };
   
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
     // Add "synthetic" elements of *this* resourceSpec list corresponding to any
     // still pending elements matching the PROLEPTICK CLASS SPECIFICATION supplied 
     fluid.fetchResources.amalgamateClasses = function(specs, classes, operator) {
@@ -63,6 +66,9 @@ var fluid_1_3 = fluid_1_3 || {};
         });
     };
   
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
     fluid.fetchResources.timeSuccessCallback = function(resourceSpec) {
         if (resourceSpec.timeSuccess && resourceSpec.options && resourceSpec.options.success) {
             var success = resourceSpec.options.success;
@@ -90,6 +96,9 @@ var fluid_1_3 = fluid_1_3 || {};
         }  
     };
   
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
     fluid.fetchResources.handleCachedRequest = function(resourceSpec, response) {
          var canon = canonUrl(resourceSpec.href);
          var cached = resourceCache[canon];
@@ -105,6 +114,9 @@ var fluid_1_3 = fluid_1_3 || {};
          }
     };
     
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
     fluid.fetchResources.completeRequest = function(thisSpec, recurseCall) {
         thisSpec.queued = false;
         thisSpec.completeTime = new Date();
@@ -113,6 +125,9 @@ var fluid_1_3 = fluid_1_3 || {};
         thisSpec.recurseFirer.fire();
     };
   
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
     fluid.fetchResources.makeResourceCallback = function(thisSpec) {
         return {
             success: function(response) {
@@ -136,6 +151,9 @@ var fluid_1_3 = fluid_1_3 || {};
     };
     
         
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
     fluid.fetchResources.issueCachedRequest = function(resourceSpec, options) {
          var canon = canonUrl(resourceSpec.href);
          var cached = resourceCache[canon];
@@ -167,6 +185,9 @@ var fluid_1_3 = fluid_1_3 || {};
          }
     };
     
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
     // Compose callbacks in such a way that the 2nd, marked "external" will be applied
     // first if it exists, but in all cases, the first, marked internal, will be 
     // CALLED WITHOUT FAIL
@@ -182,6 +203,9 @@ var fluid_1_3 = fluid_1_3 || {};
         } : internal;
     };
     
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
     fluid.fetchResources.composePolicy = function(target, source, key) {
         target[key] = fluid.fetchResources.composeCallbacks(target[key], source[key]);
     };
@@ -194,6 +218,9 @@ var fluid_1_3 = fluid_1_3 || {};
         }
     });
     
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
     fluid.fetchResources.issueRequest = function(resourceSpec, key) {
         var thisCallback = fluid.fetchResources.makeResourceCallback(resourceSpec);
         var options = {  
@@ -263,6 +290,9 @@ var fluid_1_3 = fluid_1_3 || {};
     /** Utilities invoking requests for expansion **/
     fluid.registerNamespace("fluid.expander");
       
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
     fluid.expander.makeDefaultFetchOptions = function (successdisposer, failid, options) {
         return $.extend(true, {dataType: "text"}, options, {
             success: function(response, environmentdisposer) {
@@ -275,6 +305,9 @@ var fluid_1_3 = fluid_1_3 || {};
         });
     };
   
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
     fluid.expander.makeFetchExpander = function (options) {
         return { expander: {
             type: "fluid.expander.deferredFetcher",

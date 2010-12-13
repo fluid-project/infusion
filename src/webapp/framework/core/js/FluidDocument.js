@@ -26,7 +26,7 @@ var fluid_1_3 = fluid_1_3 || {};
 
     /**
      * Gets stored state from the jQuery instance's data map.
-     * NOT A PART OF THE STABLE FLUID API.
+     * This function is unsupported: It is not really intended for use by implementors.
      */
     fluid.getScopedData = function(target, key) {
         var data = $(target).data(NAMESPACE_KEY);
@@ -36,7 +36,7 @@ var fluid_1_3 = fluid_1_3 || {};
     /**
      * Stores state in the jQuery instance's data map. Unlike jQuery's version,
      * accepts multiple-element jQueries.
-     * NOT A PART OF THE STABLE FLUID API.
+     * This function is unsupported: It is not really intended for use by implementors.
      */
     fluid.setScopedData = function(target, key, value) {
         $(target).each(function() {
@@ -66,6 +66,7 @@ var fluid_1_3 = fluid_1_3 || {};
     /** Queries or sets the enabled status of a control. An activatable node
      * may be "disabled" in which case its keyboard bindings will be inoperable
      * (but still stored) until it is reenabled again.
+     * This function is unsupported: It is not really intended for use by implementors.
      */
      
     fluid.enabled = function(target, state) {

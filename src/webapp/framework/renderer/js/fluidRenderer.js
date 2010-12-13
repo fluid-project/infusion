@@ -670,6 +670,9 @@ fluid_1_3 = fluid_1_3 || {};
           return attrcopy.id;
       }
       
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
       function assignSubmittingName(attrcopy, component, parent) {
           var submitting = parent || component;
         // if a submittingName is required, we must already go out to the document to 
@@ -1352,6 +1355,9 @@ fluid_1_3 = fluid_1_3 || {};
   
   jQuery.extend(true, fluid.renderer, renderer);
 
+    /*
+     * This function is unsupported: It is not really intended for use by implementors.
+     */
   fluid.ComponentReference = function(reference) {
       this.reference = reference;
   };
