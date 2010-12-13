@@ -13,6 +13,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var fluid_1_3 = fluid_1_3 || {};
 
+/*********************************************************************************************
+ * Note: this file should not be included in any Infusion build.                             *
+ * Instead, users can choose to add this file manually if they need backwards compatibility. *
+ *********************************************************************************************/
+ 
 (function ($, fluid) {
     
     fluid.registerNamespace("fluid.compat.fluid_1_2.uploader");
