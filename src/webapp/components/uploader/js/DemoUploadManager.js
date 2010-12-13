@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery, fluid_1_3*/
+/*global jQuery, fluid_1_3:true*/
 
 var fluid_1_3 = fluid_1_3 || {};
 
@@ -119,7 +119,7 @@ var fluid_1_3 = fluid_1_3 || {};
      // TODO: boil down events to only those we actually need.
      // TODO: remove swfupload references and move into general namespace. Are there any real SWFUpload references here?
     fluid.uploader.demoRemote = function (queue, events, options) {
-        var that = fluid.initLittleComponent("fluid.uploader.demoRemote", options)
+        var that = fluid.initLittleComponent("fluid.uploader.demoRemote", options);
         that.queue = queue;
         that.events = events;
         

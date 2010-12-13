@@ -10,7 +10,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global fluid_1_3, jQuery */
+/*global jQuery, fluid_1_3:true*/
 
 var fluid_1_3 = fluid_1_3 || {};
 

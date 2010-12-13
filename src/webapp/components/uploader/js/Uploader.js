@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global window, swfobject, jQuery, fluid_1_3*/
+/*global jQuery, fluid_1_3:true, window, swfobject*/
 
 var fluid_1_3 = fluid_1_3 || {};
 
@@ -408,7 +408,7 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.defaults("fluid.uploader.multiFileUploader", {
         components: {
             strategy: {
-                type: "fluid.uploader.progressiveStrategy",                
+                type: "fluid.uploader.progressiveStrategy"
             },
             
             fileQueueView: {
@@ -539,30 +539,30 @@ var fluid_1_3 = fluid_1_3 || {};
     });
     
         
-    /**
-      * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
-      * 
-      * @param {Number} bytes the files size, specified as in number bytes.
-      */
-     fluid.uploader.formatFileSize = function (bytes) {
-         if (typeof bytes === "number") {
-             if (bytes === 0) {
-                 return "0.0 KB";
-             } else if (bytes > 0) {
-                 if (bytes < 1048576) {
-                     return (Math.ceil(bytes / 1024 * 10) / 10).toFixed(1) + " KB";
-                 }
-                 else {
-                     return (Math.ceil(bytes / 1048576 * 10) / 10).toFixed(1) + " MB";
-                 }
-             }
-         }
-         return "";
-     };
+   /**
+    * Pretty prints a file's size, converting from bytes to kilobytes or megabytes.
+    * 
+    * @param {Number} bytes the files size, specified as in number bytes.
+    */
+    fluid.uploader.formatFileSize = function (bytes) {
+        if (typeof(bytes) === "number") {
+            if (bytes === 0) {
+                return "0.0 KB";
+            } else if (bytes > 0) {
+                if (bytes < 1048576) {
+                    return (Math.ceil(bytes / 1024 * 10) / 10).toFixed(1) + " KB";
+                }
+                else {
+                    return (Math.ceil(bytes / 1048576 * 10) / 10).toFixed(1) + " MB";
+                }
+            }
+        }
+        return "";
+    };
 
-     fluid.uploader.derivePercent = function (num, total) {
-         return Math.round((num * 100) / total);
-     };
+    fluid.uploader.derivePercent = function (num, total) {
+        return Math.round((num * 100) / total);
+    };
      
     // TODO: Refactor this to be a general ARIA utility
     fluid.uploader.ariaLiveRegionUpdater = function (statusRegion, totalFileStatusText, events) {

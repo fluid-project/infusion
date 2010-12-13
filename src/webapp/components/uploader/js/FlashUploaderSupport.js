@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global fluid_1_3, jQuery, SWFUpload, swfobject */
+/*global jQuery, fluid_1_3:true, SWFUpload, swfobject */
 
 fluid_1_3 = fluid_1_3 || {};
 
@@ -39,7 +39,7 @@ fluid_1_3 = fluid_1_3 || {};
                 type: "fluid.uploader.swfUploadStrategy.engine",
                 options: {
                     queueSettings: "{multiFileUploader}.options.queueSettings",
-                    flashMovieSettings: "{swfUploadStrategy}.options.flashMovieSettings",
+                    flashMovieSettings: "{swfUploadStrategy}.options.flashMovieSettings"
                 }
             },
             

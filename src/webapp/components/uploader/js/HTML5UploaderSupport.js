@@ -9,6 +9,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+/*global jQuery, fluid_1_3:true, FormData*/
+
 var fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
@@ -125,9 +127,9 @@ var fluid_1_3 = fluid_1_3 || {};
             
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
-                if(fileUploadLimit === 0 ||
+                if (fileUploadLimit === 0 ||
                         that.queue.currentBatch.numFilesCompleted < fileUploadLimit &&
-                        file.size < (that.queueSettings.fileSizeLimit*1000)) {
+                        file.size < (that.queueSettings.fileSizeLimit * 1000)) {
                     that.uploadFile(file);
                 }
             }
@@ -141,6 +143,9 @@ var fluid_1_3 = fluid_1_3 || {};
         };
 
         that.stop = function () {
+            var batch = that.queue.currentBatch,
+                file = that.queue.files[batch.fileIdx];
+            
             file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
             that.queue.shouldStop = true;
             that.currentXHR.abort();
@@ -186,10 +191,10 @@ var fluid_1_3 = fluid_1_3 || {};
     };
     
     var generateMultipartBoundary = function () {
-        var boundary = '---------------------------';
-        boundary += Math.floor(Math.random()*32768);
-        boundary += Math.floor(Math.random()*32768);
-        boundary += Math.floor(Math.random()*32768);
+        var boundary = "---------------------------";
+        boundary += Math.floor(Math.random() * 32768);
+        boundary += Math.floor(Math.random() * 32768);
+        boundary += Math.floor(Math.random() * 32768);
         return boundary;
     };
     
@@ -234,6 +239,14 @@ var fluid_1_3 = fluid_1_3 || {};
     });
     
     
+    /*
+     * Return the active multi-file input from the input stack
+     */
+    var getActiveMultiFileInput = function (browseButton) {
+        var inputs = browseButton.children();
+        return inputs.eq(inputs.length - 1);
+    };
+    
     fluid.uploader.html5Strategy.local = function (queue, options) {
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.local", options);
         that.queue = queue;
@@ -246,7 +259,7 @@ var fluid_1_3 = fluid_1_3 || {};
             var fileQueueLimit = that.queueSettings.fileQueueLimit;
             var filesInQueue = that.queue.files.length - that.queue.getUploadedFiles().length;
             
-            if(fileQueueLimit !== 0 && (filesToUpload + filesInQueue) > fileQueueLimit) { 
+            if (fileQueueLimit !== 0 && (filesToUpload + filesInQueue) > fileQueueLimit) { 
                 filesToUpload = fileQueueLimit - filesInQueue;
             } 
             
@@ -306,13 +319,6 @@ var fluid_1_3 = fluid_1_3 || {};
         ]
     });
     
-    /*
-     * Return the active multi-file input from the input stack
-     */
-    var getActiveMultiFileInput = function (browseButton) {
-        var inputs = browseButton.children();
-        return inputs.eq(inputs.length - 1);
-    };
     
     var bindEventsToFileInput = function (that, fileInput) {
         fileInput.click(function () {
