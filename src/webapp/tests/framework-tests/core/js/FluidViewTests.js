@@ -96,12 +96,11 @@ fluid.tests.testView = function() {
      fluidViewTests.test("ARIA labeller test", function() {
          var target = $("#component-3");
          var labeller = fluid.updateAriaLabel(target, "Label 1");
-         var attr = target.attr("aria-labelledby");
+         var attr = target.attr("aria-label");
          jqUnit.assertValue("Target must be labelled", attr);
-         var label = fluid.jById(attr);
-         jqUnit.assertEquals("Target label", "Label 1", label.text());
+         jqUnit.assertEquals("Target label", "Label 1", attr);
          labeller.update({text: "Label 2"});
-         jqUnit.assertEquals("Label updated", "Label 2", label.text());
+         jqUnit.assertEquals("Label updated", "Label 2", target.attr("aria-label"));
      });
      
 };

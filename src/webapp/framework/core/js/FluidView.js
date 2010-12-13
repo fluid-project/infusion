@@ -20,66 +20,38 @@ var fluid_1_3 = fluid_1_3 || {};
 (function ($, fluid) {
 
     fluid.defaults("fluid.ariaLabeller", {
-        labelAttribute: "aria-labelledby",
-        labelMarkup: "<span style='display: none'></span>",
+        labelAttribute: "aria-label",
+        liveRegionMarkup: "<div class=\"liveRegion fl-offScreen-hidden\" aria-live=\"polite\"></div>",
+        liveRegionId: "fluid-ariaLabeller-liveRegion",
         invokers: {
-            generateLabelId: {funcName: "fluid.ariaLabeller.generateLabelId", args: ["{ariaLabeller}", "@0"]},
-            getLabelElement: {funcName: "fluid.ariaLabeller.getLabelElement", args: ["{ariaLabeller}", "@0"]},
-            generateLabelElement: {funcName: "fluid.ariaLabeller.generateLabelElement", args: ["{ariaLabeller}", "@0"]}
+            generateLiveElement: {funcName: "fluid.ariaLabeller.generateLiveElement", args: ["{ariaLabeller}"]}
         }
     });
  
     fluid.ariaLabeller = function(element, options) {
         var that = fluid.initView("fluid.ariaLabeller", element, options);
         fluid.initDependents(that);
-        that.freshLabel = true;
 
         that.update = function(newOptions) {
             newOptions = newOptions || that.options;
-            var element = that.getLabelElement(true);
-            if (!that.alreadyLabelled) {
-                element.text(newOptions.text);
+            that.container.attr(that.options.labelAttribute, newOptions.text);
+            if (newOptions.dynamicLabel) {
+                var live = fluid.jById(that.options.liveRegionId); 
+                if (live.length === 0) {
+                    live = that.generateLiveElement();
+                }
+                live.text(newOptions.text);
             }
         }
         that.update();
-        that.freshLabel = false;
         return that;
     };
     
-    fluid.ariaLabeller.generateLabelId = function(that, baseId) {
-        return that.typeName + "-" + baseId; // + "-" + fluid.allocateGuid();
-    };
-    
-    fluid.ariaLabeller.generateLabelElement = function(that, labelId) {
-        var labEl = $(that.options.labelMarkup);
-        labEl.attr("id", labelId);
-        that.container.append(labEl);
-         //$("body").append(labEl);
-        return labEl;
-    };
-    
-    fluid.ariaLabeller.getLabelElement = function(that, rebind) {
-        var labelId = that.container.attr(that.options.labelAttribute);
-        if (labelId && that.freshLabel) {
-            that.alreadyLabelled = true;
-        }
-        if (!labelId) {
-            var ourId = fluid.allocateSimpleId(that.container);
-            labelId = that.generateLabelId(ourId);
-            that.container.attr(that.options.labelAttribute, labelId);
-        }
-      /*  else if (rebind) {
-            fluid.log("rebinding target");
-            that.container.attr(that.options.labelAttribute, "");
-            window.setTimeout(function() {
-                that.container.attr(that.options.labelAttribute, labelId);
-            }, 1000);
-        }*/
-        var labEl = fluid.jById(labelId);
-        if (labEl.length === 0) {
-            labEl = that.generateLabelElement(labelId);
-        }
-        return labEl;
+    fluid.ariaLabeller.generateLiveElement = function(that) {
+        var liveEl = $(that.options.liveRegionMarkup);
+        liveEl.attr("id", that.options.liveRegionId);
+        $("body").append(liveEl);
+        return liveEl;
     };
     
     var LABEL_KEY = "aria-labelling";
@@ -96,7 +68,6 @@ var fluid_1_3 = fluid_1_3 || {};
      * "update" that allows the text to be updated. */
     
     fluid.updateAriaLabel = function(element, text, options) {
-        fluid.log("updateLabel: " + fluid.allocateSimpleId(element) + ": " + text);
         var options = $.extend({}, options || {}, {text: text});
         var that = fluid.getAriaLabeller(element);
         if (!that) {

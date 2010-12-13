@@ -60,15 +60,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.notVisible("On first load the warning should not be visible", "#drop-warning");
             
             // focus on portlet 3 - it is underneath a locked portlet
-            var portlet3 = fluid.byId(fluid.testUtils.moduleLayout.portletIds[3]);
-            $(portlet3).focus();
+            var portlet3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
+            portlet3.focus();
             
             var label = fluid.getAriaLabeller(portlet3);
             jqUnit.assertValue("Aria labeller is present", label);
             
-            var labelElement = label.getLabelElement();
+            var labelElement = portlet3.attr("aria-label");
             jqUnit.assertTrue("Text labels position of portlet", 
-                labelElement.text().indexOf("3 of 4 in column 1 of 4") > -1);
+                labelElement.indexOf("3 of 4 in column 1 of 4") > -1);
             
             // try to move portlet 3 up
             // Press the ctrl key
@@ -93,14 +93,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.notVisible("After ctrl + down arrow, drop warning should NOT be visible", "#drop-warning");
             
             jqUnit.assertTrue("Label is updated to account for temporary moved state", 
-                labelElement.text().indexOf("moved from") > -1);
+                portlet3.attr("aria-label").indexOf("moved from") > -1);
     
             // focus on portlet 8 
             var portlet8 = fluid.byId(fluid.testUtils.moduleLayout.portletIds[8]);
             $(portlet8).focus();
     
             jqUnit.assertTrue("Temporary moved state is cleared", 
-                labelElement.text().indexOf("moved from") === -1);
+                portlet3.attr("aria-label").indexOf("moved from") === -1);
     
             // move portlet 8 down
             // Press the ctrl key

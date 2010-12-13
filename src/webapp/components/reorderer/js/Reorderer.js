@@ -83,9 +83,9 @@ fluid_1_3 = fluid_1_3 || {};
         that.container.attr("aria-multiselectable", "false");
         that.container.attr("aria-readonly", "false");
         that.container.attr("aria-disabled", "false");
-        //Some failed attempts here to get dynamic messages
-        //that.container.attr("aria-relevant", "all");
-        //that.container.attr("aria-live", "assertive");
+        // FLUID-3707: We require to have BOTH application role as well as our named role
+        // This however breaks the component completely under NVDA and causes it to perpetually drop back into "browse mode"
+        //that.container.wrap("<div role=\"application\"></div>");
     }
     
     function createAvatarId(parentId) {
@@ -288,9 +288,6 @@ fluid_1_3 = fluid_1_3 || {};
             dropManager.updateGeometry(thatReorderer.layoutHandler.getGeometricInfo());
 
             thatReorderer.events.afterMove.fire(item, requestedPosition, thatReorderer.dom.fastLocate("movables"));
-            window.setTimeout(function() {
-                thatReorderer.container.attr("aria-busy", false);
-            }, 2000);
         };
 
         var hoverStyleHandler = function (item, state) {
@@ -466,7 +463,7 @@ fluid_1_3 = fluid_1_3 || {};
             dropManager.updateGeometry(thatReorderer.layoutHandler.getGeometricInfo());
             
             dropManager.dropChangeFirer.addListener(dropChangeListener, "fluid.Reorderer");
-            // Setup dropTargets
+            // Set up dropTargets
             dropTargets.attr("aria-dropeffect", "none");  
 
         };
@@ -780,6 +777,7 @@ fluid_1_3 = fluid_1_3 || {};
                 onRefresh: function() {
                     var selectables = that.dom.locate("selectables");
                     fluid.each(selectables, function(selectable) {
+                        var labelOptions = {};
                         var id = fluid.allocateSimpleId(selectable);
                         var moved = movedMap[id];
                         var label = plainLabel = that.renderLabel(selectable);
@@ -793,8 +791,9 @@ fluid_1_3 = fluid_1_3 || {};
                                     fluid.updateAriaLabel(selectable, oldLabel);
                                 }
                             });
+                            labelOptions.dynamicLabel = true;
                         }
-                        fluid.updateAriaLabel(selectable, label.label);
+                        fluid.updateAriaLabel(selectable, label.label, labelOptions);
                     });
                 },
                 onMove: function(item, newPosition) {
