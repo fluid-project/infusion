@@ -20,79 +20,118 @@ var fluid = fluid || fluid_1_3;
     fluid.model = fluid.model || {};
     fluid.model.transform = fluid.model.transform || {};
     
+    
     /******************************
      * General Model Transformers *
      ******************************/
-    fluid.model.transform.value = function (model, options) {
-        if (!options.path && options.literalValue) {
-            return options.literalValue;
-        }
-         
-        try {
-            return fluid.get(model, options.path) || options.defaultValue;
-        } catch (e) {
-            if (options.failOnInvalidPath) {
-                throw new Error ("Model transformation error: Can't find a LHS value at path \"" + options.path + "\".");
+    
+    fluid.model.transform.value = function (model, expandSpec, recurse) {
+        var val;
+        if (expandSpec.path) {
+            val = fluid.get(model, expandSpec.path);
+            
+            if (typeof(val) !== "undefined") {
+                return val;
             }
         }
+        
+        return typeof(expandSpec.value) === "object" ? recurse(model, expandSpec.value) : expandSpec.value;    
     };
     
-    fluid.model.transform.arrayValue = function (model, options) {
-        return $.makeArray(fluid.transformers.value(model, options));
+    fluid.model.transform.arrayValue = function (model, expandSpec, recurse) {
+        return fluid.makeArray(fluid.model.transform.value(model, expandSpec));
     };
      
-    fluid.model.transform.count = function (model, options) {
-        try {
-            var value = fluid.get(model, options.path);
-            return value ? $.makeArray(value).length : 0;
-        } catch (e) {
-            return 0;
-        }
+    fluid.model.transform.count = function (model, expandSpec, recurse) {
+        var value = fluid.get(model, expandSpec.path);
+        return fluid.makeArray(value).length;
     };
      
-    fluid.model.transform.firstAvailableValue = function (model, options) {
-        var value;
-        for (var i = 0; i < options.paths.length; i++) {
-            var path = options.paths[i];
-            value = fluid.get(model, path);
-            if (value) {
+    fluid.model.transform.firstValue = function (model, expandSpec, recurse) {
+        var result;
+        for (var i = 0; i < expandSpec.values.length; i++) {
+            var value = expandSpec.values[i];
+            if (typeof(value) === "string") {
+                value = fixupExpandSpec(value);
+            }
+            result = fluid.model.transform.value(model, value.expander, recurse);
+            if (typeof(result) !== "undefined") {
                 break;
             }
         }
-        return value;
+        return result;
     };
     
+    var getOrRecurse = function (model, value, recurse) {
+        return typeof(value) === "string" ? fluid.get(model, value) : recurse(model, value, recurse);
+    };
     
-    /******************************
-     * Basic model transformation *
-     ******************************/
+    fluid.model.transform.merge = function (model, expandSpec, recurse) {
+        var left = getOrRecurse(model, expandSpec.left, recurse);
+        var right = getOrRecurse(model, expandSpec.right, recurse);
+        
+        if (typeof(left) !== "object" || typeof(right) !== "object") {
+            return left;
+        }
+        
+        return fluid.merge(expandSpec.policy ? expandSpec.policy : null, {}, left, right);
+    };
      
-    var fixupTransformSpec = function (transformSpec) {
+    var fixupExpandSpec = function (expandSpec) {
         return {
-            transformer: "fluid.model.transform.value",
-            options: {
-                path: transformSpec
+            expander: {
+                type: "fluid.model.transform.value",
+                path: expandSpec
             }
         };
-    }
+    };
     
-    fluid.model.transformModel = function (entityNames, transformDoc, model) {
-        var transformedModel = {};
-        entityNames = $.makeArray(entityNames);
-        
-        $.each(entityNames, function (idx, entityName) {
-            var entityTransform = transformDoc[entityName];
-            var transformed = fluid.transform(entityTransform, function (transformSpec, key) {
-                // If we get a right hand side value of a string, assume this is a "value" transform.
-                if (typeof(transformSpec) === "string") {
-                    transformSpec = fixupTransformSpec(transformSpec);
+    var expandRule = function (model, targetPath, rule) {
+        var expanded = {};
+        for (var key in rule) {
+            var value = rule[key];
+            if (key === "expander") {
+                var expanderFn = fluid.getGlobalValue(value.type);
+                if (expanderFn) {
+                    expanded = expanderFn.call(null, model, value, fluid.model.transformWithRules);
                 }
-                return fluid.invokeGlobalFunction(transformSpec.transformer, [model, transformSpec.options]);
-            });
-            $.extend(transformedModel, transformed);
-        });
-        
-        return transformedModel;
+            } else {
+                expanded[key] = fluid.model.transformWithRules(model, value);
+            }
+        }
+        return expanded;
+    };
+    
+    /**
+     * Transforms a model based on a specified expansion rules objects.
+     * Rules objects take the form of:
+     *   {
+     *       "target.path": "value.el.path" || {
+     *          expander: {
+     *              type: "expander.function.path",
+     *               ...
+     *           }
+     *       }
+     *   }
+     *
+     * @param {Object} model the model to transform
+     * @param {Object} rules a rules object containing instructions on how to transform the model
+     */
+    fluid.model.transformWithRules = function (model, rules) {
+        var transformed = {};
+        for (var targetPath in rules) {
+            var rule = rules[targetPath];
+            
+            if (typeof(rule) === "string") {
+                rule = fixupExpandSpec(rule);
+            }
+            
+            var expanded = expandRule(model, targetPath, rule);
+            if (typeof(expanded) !== "undefined") {
+                fluid.set(transformed, targetPath, expanded);
+            }
+        };
+        return transformed;
     };
     
 })(jQuery, fluid_1_3);
