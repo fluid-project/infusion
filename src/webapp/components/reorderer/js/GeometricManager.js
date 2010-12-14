@@ -12,8 +12,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 // Declare dependencies.
-/*global jQuery*/
-/*global fluid_1_3*/
+/*global jQuery, fluid_1_3:true, window*/
 
 var fluid_1_3 = fluid_1_3 || {};
 
@@ -58,17 +57,17 @@ var fluid_1_3 = fluid_1_3 || {};
     };
     
     fluid.directionSign = function (direction) {
-        return direction === fluid.direction.UP || direction === fluid.direction.LEFT? 
+        return direction === fluid.direction.UP || direction === fluid.direction.LEFT ? 
              fluid.direction.PREVIOUS : fluid.direction.NEXT;
     };
     
     fluid.directionAxis = function (direction) {
-        return direction === fluid.direction.LEFT || direction === fluid.direction.RIGHT?
+        return direction === fluid.direction.LEFT || direction === fluid.direction.RIGHT ?
             0 : 1; 
     };
     
     fluid.directionOrientation = function (direction) {
-        return fluid.directionAxis(direction)? fluid.orientation.VERTICAL : fluid.orientation.HORIZONTAL;
+        return fluid.directionAxis(direction) ? fluid.orientation.VERTICAL : fluid.orientation.HORIZONTAL;
     };
     
     fluid.keycodeDirection = {
@@ -118,7 +117,7 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.normalisePosition = function (position, samespan, targeti, sourcei) {
         // convert a REPLACE into a primitive BEFORE/AFTER
         if (position === fluid.position.REPLACE) {
-            position = samespan && targeti >= sourcei? fluid.position.AFTER: fluid.position.BEFORE;
+            position = samespan && targeti >= sourcei ? fluid.position.AFTER: fluid.position.BEFORE;
         }
         return position;
     };
@@ -128,13 +127,13 @@ var fluid_1_3 = fluid_1_3 || {};
         target = fluid.unwrap(target);
         var sourcei = $.inArray(element, sourceelements);
         if (sourcei === -1) {
-            fluid.fail("Error in permuteDom: source element " + fluid.dumpEl(element) 
-               + " not found in source list " + fluid.dumpEl(sourceelements));
+            fluid.fail("Error in permuteDom: source element " + fluid.dumpEl(element) + 
+                " not found in source list " + fluid.dumpEl(sourceelements));
         }
         var targeti = $.inArray(target, targetelements);
         if (targeti === -1) {
-            fluid.fail("Error in permuteDom: target element " + fluid.dumpEl(target) 
-               + " not found in source list " + fluid.dumpEl(targetelements));
+            fluid.fail("Error in permuteDom: target element " + fluid.dumpEl(target) + 
+                " not found in source list " + fluid.dumpEl(targetelements));
         }
         var samespan = sourceelements === targetelements;
         position = fluid.normalisePosition(position, samespan, targeti, sourcei);
@@ -147,7 +146,7 @@ var fluid_1_3 = fluid_1_3 || {};
         fluid.moveDom(sourceelements[sourcei], targetelements[targeti], position);
         
         // perform the leftward-moving, AFTER shift
-        var frontlimit = samespan? targeti - 1: sourceelements.length - 2;
+        var frontlimit = samespan ? targeti - 1: sourceelements.length - 2;
         var i;
         if (position === fluid.position.BEFORE && samespan) { 
             // we cannot do skip processing if the element was "fused against the grain" 
@@ -162,7 +161,7 @@ var fluid_1_3 = fluid_1_3 || {};
             }
         }
         // perform the rightward-moving, BEFORE shift
-        var backlimit = samespan? sourcei - 1: targetelements.length - 1;
+        var backlimit = samespan ? sourcei - 1: targetelements.length - 1;
         if (position === fluid.position.AFTER) { 
             // we cannot do skip processing if the element was "fused against the grain" 
             targeti++;
@@ -179,7 +178,7 @@ var fluid_1_3 = fluid_1_3 || {};
     };
   
     var curCss = function (a, name) {
-        return window.getComputedStyle? window.getComputedStyle(a, null).getPropertyValue(name) : 
+        return window.getComputedStyle ? window.getComputedStyle(a, null).getPropertyValue(name) : 
           a.currentStyle[name];
     };
     
@@ -406,7 +405,7 @@ var fluid_1_3 = fluid_1_3 || {};
             }
             var retpos = projected.cacheelem.position;
             return {element: projected.cacheelem.element, 
-                     position: retpos? retpos : fluid.position.BEFORE 
+                     position: retpos ? retpos : fluid.position.BEFORE 
                      };
         };
         
@@ -433,7 +432,7 @@ var fluid_1_3 = fluid_1_3 || {};
         
         that.getOwningSpan = function (element, position, includeLocked) {
             var owner = cache[fluid.dropManager.cacheKey(element)].owner; 
-            var elements = position === fluid.position.INSIDE? [owner.parentElement] : owner.elements;
+            var elements = position === fluid.position.INSIDE ? [owner.parentElement] : owner.elements;
             if (!includeLocked && lastGeometry.elementMapper) {
                 elements = $.makeArray(elements);
                 fluid.remove_if(elements, function (element) {
@@ -461,10 +460,10 @@ var fluid_1_3 = fluid_1_3 || {};
     
     fluid.dropManager.sentinelizeElement = function (targets, sides, cacheelem, fc, disposition, clazz) {
         var elemCopy = $.extend(true, {}, cacheelem);
-        elemCopy.rect[sides[fc]] = elemCopy.rect[sides[1 - fc]] + (fc? 1: -1);
-        elemCopy.rect[sides[1 - fc]] = (fc? -1 : 1) * SENTINEL_DIMENSION;
-        elemCopy.position = disposition === fluid.position.INSIDE?
-           disposition : (fc? fluid.position.BEFORE : fluid.position.AFTER);
+        elemCopy.rect[sides[fc]] = elemCopy.rect[sides[1 - fc]] + (fc ? 1: -1);
+        elemCopy.rect[sides[1 - fc]] = (fc ? -1 : 1) * SENTINEL_DIMENSION;
+        elemCopy.position = disposition === fluid.position.INSIDE ?
+           disposition : (fc ? fluid.position.BEFORE : fluid.position.AFTER);
         elemCopy.clazz = clazz;
         targets[targets.length] = elemCopy;
     };
@@ -499,9 +498,9 @@ var fluid_1_3 = fluid_1_3 || {};
         }
     };
     
-     fluid.dropManager.getRelativeElement = function (element, direction, elements, disableWrap) {
+    fluid.dropManager.getRelativeElement = function (element, direction, elements, disableWrap) {
         var folded = fluid.directionSign(direction);
-  
+        
         var index = $(elements).index(element) + folded;
         if (index < 0) {
             index += elements.length;
@@ -513,7 +512,7 @@ var fluid_1_3 = fluid_1_3 || {};
                 return element;
             }
         }
-                      
+          
         index %= elements.length;
         return elements[index];              
     };
@@ -525,19 +524,19 @@ var fluid_1_3 = fluid_1_3 || {};
     
     /** Returns the minimum squared distance between a point and a rectangle **/
     fluid.geom.minPointRectangle = function (x, y, rectangle) {
-        var dx = x < rectangle.left? (rectangle.left - x) : 
-                  (x > rectangle.right? (x - rectangle.right) : 0);
-        var dy = y < rectangle.top? (rectangle.top - y) : 
-                  (y > rectangle.bottom? (y - rectangle.bottom) : 0);
+        var dx = x < rectangle.left ? (rectangle.left - x) : 
+                  (x > rectangle.right ? (x - rectangle.right) : 0);
+        var dy = y < rectangle.top ? (rectangle.top - y) : 
+                  (y > rectangle.bottom ? (y - rectangle.bottom) : 0);
         return dx * dx + dy * dy;
     };
     
     /** Returns the minimum squared distance between two rectangles **/
     fluid.geom.minRectRect = function (rect1, rect2) {
-        var dx = rect1.right < rect2.left? rect2.left - rect1.right : 
-                 rect2.right < rect1.left? rect1.left - rect2.right :0;
-        var dy = rect1.bottom < rect2.top? rect2.top - rect1.bottom : 
-                 rect2.bottom < rect1.top? rect1.top - rect2.bottom :0;
+        var dx = rect1.right < rect2.left ? rect2.left - rect1.right : 
+                 rect2.right < rect1.left ? rect1.left - rect2.right :0;
+        var dy = rect1.bottom < rect2.top ? rect2.top - rect1.bottom : 
+                 rect2.bottom < rect1.top ? rect1.top - rect2.bottom :0;
         return dx * dx + dy * dy;
     };
     
@@ -575,11 +574,11 @@ var fluid_1_3 = fluid_1_3 || {};
         function accPen(collect, cacheelem, backSign) {
             var thisrect = cacheelem.rect;
             var pdist = fluid.geom.minRectRect(penrect, thisrect);
-            var rdist = -dirSign * backSign * (baserect[backSign === 1 ? frontSide:backSide] 
-                                             - thisrect[backSign === 1 ? backSide:frontSide]);
+            var rdist = -dirSign * backSign * (baserect[backSign === 1 ? frontSide:backSide] - 
+                                                thisrect[backSign === 1 ? backSide:frontSide]);
             // fluid.log("pdist: " + pdist + " rdist: " + rdist);
             // the oddity in the rdist comparison is intended to express "half-open"-ness of rectangles
-            // (backSign === 1? 0 : 1) - this is now gone - must be possible to move to perpendicularly abutting regions
+            // (backSign === 1 ? 0 : 1) - this is now gone - must be possible to move to perpendicularly abutting regions
             if (pdist <= collect.mindist && rdist >= 0) {
                 if (pdist === collect.mindist && rdist * backSign > collect.minrdist) {
                     return;
@@ -608,12 +607,12 @@ var fluid_1_3 = fluid_1_3 || {};
             }
             //fluid.log("Element " + i + " " + dumpelem(elem) + " mindist " + collect.mindist);
         }
-        var wrap = !collect.minelem || backcollect.mindist < collect.mindist ;
+        var wrap = !collect.minelem || backcollect.mindist < collect.mindist;
         
         // disable wrap
         wrap = wrap && !disableWrap;       
                 
-        var mincollect = wrap? backcollect: collect;        
+        var mincollect = wrap ? backcollect: collect;        
         
         var togo = {
             wrapped: wrap,

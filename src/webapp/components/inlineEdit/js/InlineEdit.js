@@ -12,9 +12,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery, fluid_1_3, document, setTimeout*/
+/*global jQuery, fluid_1_3:true, document, setTimeout*/
 
-fluid_1_3 = fluid_1_3 || {};
+var fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
     
@@ -285,7 +285,7 @@ fluid_1_3 = fluid_1_3 || {};
             }     
         };
         
-          fluid.tooltip(that.viewEl, tooltipOptions);
+        fluid.tooltip(that.viewEl, tooltipOptions);
         
         if (that.textEditButton) {
             fluid.tooltip(that.textEditButton, tooltipOptions);
@@ -775,7 +775,7 @@ fluid_1_3 = fluid_1_3 || {};
                 if ($.trim(componentThat.viewEl.text()).length === 0) {
                     componentThat.viewEl.addClass(componentThat.options.styles.emptyDefaultViewText);
                     
-                    if(componentThat.existingPadding < componentThat.options.paddings.minimumView) {
+                    if (componentThat.existingPadding < componentThat.options.paddings.minimumView) {
                         componentThat.viewEl.css('padding-right', componentThat.options.paddings.minimumView);
                     }
                 }

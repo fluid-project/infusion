@@ -13,10 +13,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 // Declare dependencies.
-/*global jQuery*/
-/*global fluid, fluid_1_3*/
+/*global jQuery, fluid, fluid_1_3:true*/
 
-fluid_1_3 = fluid_1_3 || {};
+var fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
     
@@ -32,14 +31,14 @@ fluid_1_3 = fluid_1_3 || {};
         return fluid.find(layout.columns,
             function (column, colIndex) {
                 var index = $.inArray(item, column.elements);
-                return index === -1? undefined : {columnIndex: colIndex, itemIndex: index};
+                return index === -1 ? undefined : {columnIndex: colIndex, itemIndex: index};
             }, {columnIndex: -1, itemIndex: -1});
     };
     // unsupported - NON-API function
     fluid.moduleLayout.findColIndex = function (item, layout) {
         return fluid.find(layout.columns,
             function (column, colIndex) {
-                return item === column.container? colIndex : undefined;
+                return item === column.container ? colIndex : undefined;
             }, -1);
     };
 
@@ -62,7 +61,7 @@ fluid_1_3 = fluid_1_3 || {};
             position = fluid.normalisePosition(position, 
                   itemIndices.columnIndex === relativeItemIndices.columnIndex, 
                   relativeItemIndices.itemIndex, itemIndices.itemIndex);
-            var relative = position === fluid.position.BEFORE? 0 : 1;
+            var relative = position === fluid.position.BEFORE ? 0 : 1;
             targetCol.splice(relativeItemIndices.itemIndex + relative, 0, item);
         }
     };
@@ -95,14 +94,13 @@ fluid_1_3 = fluid_1_3 || {};
     fluid.moduleLayout.layoutFromIds = function (idLayout) {
         return {
             container: fluid.byId(idLayout.id),
-            columns: fluid.transform(idLayout.columns, 
-                function (column) {
-                    return {
-                        container: fluid.byId(column.id),
-                        elements: fluid.transform(column.children, fluid.byId)
-                    };
-                })
-            };
+            columns: fluid.transform(idLayout.columns, function (column) {
+                return {
+                    container: fluid.byId(column.id),
+                    elements: fluid.transform(column.children, fluid.byId)
+                };
+            })
+        };
     };
       
     /**
@@ -111,14 +109,13 @@ fluid_1_3 = fluid_1_3 || {};
     fluid.moduleLayout.layoutToIds = function (idLayout) {
         return {
             id: fluid.getId(idLayout.container),
-            columns: fluid.transform(idLayout.columns, 
-                function (column) {
-                    return {
-                        id: fluid.getId(column.container),
-                        children: fluid.transform(column.elements, fluid.getId)
-                    };
-                })
-            };
+            columns: fluid.transform(idLayout.columns, function (column) {
+                return {
+                    id: fluid.getId(column.container),
+                    children: fluid.transform(column.elements, fluid.getId)
+                };
+            })
+        };
     };
     
     var defaultOnShowKeyboardDropWarning = function (item, dropWarning) {
@@ -165,7 +162,7 @@ fluid_1_3 = fluid_1_3 || {};
         that.layout = layout;
         
         function isLocked(item) {
-            var lockedModules = options.selectors.lockedModules? dom.fastLocate("lockedModules") : [];
+            var lockedModules = options.selectors.lockedModules ? dom.fastLocate("lockedModules") : [];
             return $.inArray(item, lockedModules) !== -1;
         }
 
@@ -179,7 +176,7 @@ fluid_1_3 = fluid_1_3 || {};
             var togo = {extents: extents,
                         sentinelize: options.sentinelize};
             togo.elementMapper = function (element) {
-                return isLocked(element)? "locked" : null;
+                return isLocked(element) ? "locked" : null;
             };
             togo.elementIndexer = function (element) {
                 var indices = fluid.moduleLayout.findColumnAndItemIndices(element, that.layout);

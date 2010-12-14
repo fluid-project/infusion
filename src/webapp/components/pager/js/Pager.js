@@ -12,10 +12,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery*/
-/*global fluid_1_3*/
+/*global jQuery, fluid_1_3:true*/
 
-fluid_1_3 = fluid_1_3 || {};
+var fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
 
@@ -38,7 +37,9 @@ fluid_1_3 = fluid_1_3 || {};
     
     function bindLinkClick(link, events, eventArg) {
         link.unbind("click.fluid.pager");
-        link.bind("click.fluid.pager", function () {events.initiatePageChange.fire(eventArg); });
+        link.bind("click.fluid.pager", function () {
+            events.initiatePageChange.fire(eventArg);
+        });
     }
     
     // 10 -> 1, 11 -> 2
@@ -337,7 +338,9 @@ fluid_1_3 = fluid_1_3 || {};
             return a === b ? 0 : (a > b ? model.sortDir : -model.sortDir); 
         }
         sortrecs.sort(sortfunc);
-        return fluid.transform(sortrecs, function (row) {return row.index; });
+        return fluid.transform(sortrecs, function (row) {
+            return row.index;
+        });
     };
 
     
@@ -400,7 +403,9 @@ fluid_1_3 = fluid_1_3 || {};
             else if (typeof(val) === 'string') {
                 target[i] = expandVariables(val, opts);
             }
-            else {target[i] = tree[i]; }
+            else {
+                target[i] = tree[i];
+            }
         }
         return target;
     }
@@ -454,10 +459,13 @@ fluid_1_3 = fluid_1_3 || {};
     function bigHeaderForKey(key, opts) {
         var id = opts.options.renderOptions.idMap["header:" + key];
         var smallHeader = fluid.jById(id);
-        if (smallHeader.length === 0) {return null; }
+        if (smallHeader.length === 0) {
+            return null;
+        }
         var headerSortStylisticOffset = opts.overallOptions.selectors.headerSortStylisticOffset;
         var bigHeader = fluid.findAncestor(smallHeader, function (element) {
-            return $(element).is(headerSortStylisticOffset); });
+            return $(element).is(headerSortStylisticOffset); 
+        });
         return bigHeader;
     }
    
@@ -518,7 +526,9 @@ fluid_1_3 = fluid_1_3 || {};
                 else if (newModel.sortKey === columnDef.key) {
                     newModel.sortDir = -1 * newModel.sortDir;
                 }
-                else {return false; }
+                else {
+                    return false;
+                }
                 newModel.pageIndex = 0;
                 fireModelChange(overallThat, newModel, true);
                 setModelSortHeaderClass(newModel, opts);                

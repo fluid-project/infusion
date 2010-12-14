@@ -12,10 +12,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global setTimeout*/
-/*global jQuery, fluid_1_3, fluid*/
+/*global jQuery, fluid_1_3:true, fluid*/
 /*global tinyMCE, FCKeditor, FCKeditorAPI, CKEDITOR*/
 
-fluid_1_3 = fluid_1_3 || {};
+var fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
 
@@ -187,10 +187,10 @@ fluid_1_3 = fluid_1_3 || {};
             // are delivered to the actual body
             fluid.deadMansBlur(that.editField, 
                 {exclusions: {body: $(editorBody)}, 
-                 handler: function () {
-                     that.cancel();
-                 }
-                 });
+                    handler: function () {
+                        that.cancel();
+                    }
+                });
         });
             
         that.events.afterBeginEdit.addListener(function () {
@@ -488,11 +488,11 @@ fluid_1_3 = fluid_1_3 || {};
    
     fluid.inlineEdit.dropdown.blurHandlerBinder = function (that) {
         fluid.deadMansBlur(that.editField, {
-             exclusions: {selectBox: $("div.selectbox-wrapper li", that.editContainer)},
-             handler: function () {
+            exclusions: {selectBox: $("div.selectbox-wrapper li", that.editContainer)},
+            handler: function () {
                 that.cancel();
-                }
-            });
+            }
+        });
     };
     
     fluid.defaults("fluid.inlineEdit.dropdown", {

@@ -13,9 +13,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 // Declare dependencies.
-/*global jQuery, fluid_1_3, document*/
+/*global jQuery, fluid_1_3:true, document*/
 
-fluid_1_3 = fluid_1_3 || {};
+var fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
     
@@ -291,7 +291,7 @@ fluid_1_3 = fluid_1_3 || {};
         };
 
         var hoverStyleHandler = function (item, state) {
-            thatReorderer.dom.fastLocate("grabHandle", item)[state?"addClass":"removeClass"](styles.hover);
+            thatReorderer.dom.fastLocate("grabHandle", item)[state ? "addClass":"removeClass"](styles.hover);
         };
         /**
          * Takes a $ object and adds 'movable' functionality to it
@@ -482,7 +482,7 @@ fluid_1_3 = fluid_1_3 || {};
         if (options.afterMoveCallbackUrl) {
             thatReorderer.events.afterMove.addListener(function () {
                 var layoutHandler = thatReorderer.layoutHandler;
-                var model = layoutHandler.getModel? layoutHandler.getModel():
+                var model = layoutHandler.getModel ? layoutHandler.getModel():
                      options.acquireModel(thatReorderer);
                 $.post(options.afterMoveCallbackUrl, JSON.stringify(model));
             }, "postModel");
@@ -585,8 +585,8 @@ fluid_1_3 = fluid_1_3 || {};
     fluid.reorderer.relativeInfoGetter = function (orientation, coStrategy, contraStrategy, dropManager, dom, disableWrap) {
         return function (item, direction, forSelection) {
             var dirorient = fluid.directionOrientation(direction);
-            var strategy = dirorient === orientation? coStrategy: contraStrategy;
-            return strategy !== null? dropManager[strategy](item, direction, forSelection, disableWrap) : null;
+            var strategy = dirorient === orientation ? coStrategy: contraStrategy;
+            return strategy !== null ? dropManager[strategy](item, direction, forSelection, disableWrap) : null;
         };
     };
     
@@ -635,7 +635,7 @@ fluid_1_3 = fluid_1_3 || {};
                     dom: "{reorderer}.dom",
                     getGeometricInfo: "{reorderer}.layoutHandler.getGeometricInfo",
                     orientation: "{reorderer}.options.orientation",
-                    layoutType: "{reorderer}.options.layoutHandler", // TODO, get rid of "global defaults"
+                    layoutType: "{reorderer}.options.layoutHandler" // TODO, get rid of "global defaults"
                 }          
             }
         },
@@ -650,7 +650,7 @@ fluid_1_3 = fluid_1_3 || {};
      * Layout Handlers *
      *******************/
 
-     fluid.reorderer.makeGeometricInfoGetter = function(orientation, sentinelize, dom) {
+    fluid.reorderer.makeGeometricInfoGetter = function (orientation, sentinelize, dom) {
         return function () {
             var that = {
                 sentinelize: sentinelize,
@@ -659,7 +659,7 @@ fluid_1_3 = fluid_1_3 || {};
                     elements: dom.fastLocate("dropTargets")
                 }],
                 elementMapper: function (element) {
-                    return $.inArray(element, dom.fastLocate("movables")) === -1? "locked": null;
+                    return $.inArray(element, dom.fastLocate("movables")) === -1 ? "locked": null;
                 },
                 elementIndexer: function (element) {
                     var selectables = dom.fastLocate("selectables");
@@ -749,7 +749,7 @@ fluid_1_3 = fluid_1_3 || {};
     });
 
     // Convert from 0-based to 1-based indices for announcement
-    fluid.reorderer.indexRebaser = function(indices) {
+    fluid.reorderer.indexRebaser = function (indices) {
         indices.index++;
         if (indices.moduleIndex !== undefined) {
             indices.moduleIndex++;
@@ -761,7 +761,7 @@ fluid_1_3 = fluid_1_3 || {};
      * Labelling *
      *************/
      
-    fluid.reorderer.labeller = function(options) {
+    fluid.reorderer.labeller = function (options) {
         var that = fluid.initLittleComponent("fluid.reorderer.labeller", options);
         fluid.initDependents(that);
         that.dom = that.options.dom;
@@ -774,17 +774,18 @@ fluid_1_3 = fluid_1_3 || {};
         
         that.returnedOptions = {
             listeners: {
-                onRefresh: function() {
+                onRefresh: function () {
                     var selectables = that.dom.locate("selectables");
-                    fluid.each(selectables, function(selectable) {
+                    fluid.each(selectables, function (selectable) {
                         var labelOptions = {};
                         var id = fluid.allocateSimpleId(selectable);
                         var moved = movedMap[id];
-                        var label = plainLabel = that.renderLabel(selectable);
+                        var label = that.renderLabel(selectable);
+                        var plainLabel = label;
                         if (moved) {
                             moved.newRender = plainLabel;
                             label = that.renderLabel(selectable, moved.oldRender.position);
-                            $(selectable).one("focusout", function() {
+                            $(selectable).one("focusout", function () {
                                 if (movedMap[id]) {
                                     var oldLabel = movedMap[id].newRender.label;
                                     delete movedMap[id];
@@ -796,7 +797,7 @@ fluid_1_3 = fluid_1_3 || {};
                         fluid.updateAriaLabel(selectable, label.label, labelOptions);
                     });
                 },
-                onMove: function(item, newPosition) {
+                onMove: function (item, newPosition) {
                     fluid.clear(movedMap); // if we somehow were fooled into missing a defocus, at least clear the map on a 2nd move
                     var movingId = fluid.allocateSimpleId(item);
                     movedMap[movingId] = {
@@ -808,7 +809,7 @@ fluid_1_3 = fluid_1_3 || {};
         return that;
     };
     
-    fluid.reorderer.labeller.renderLabel = function(that, selectable, recentPosition) {
+    fluid.reorderer.labeller.renderLabel = function (that, selectable, recentPosition) {
         var geom = that.options.getGeometricInfo();
         var indices = fluid.reorderer.indexRebaser(geom.elementIndexer(selectable));
         indices.moduleCell = that.moduleCell;
@@ -820,18 +821,18 @@ fluid_1_3 = fluid_1_3 || {};
             recentStatus = that.resolver.resolve("recentStatus", {position: recentPosition});
         }
         var topModel = {
-            item: typeof(labelSource) === "string"? labelSource: fluid.dom.getElementText(fluid.unwrap(labelSource)),
+            item: typeof(labelSource) === "string" ? labelSource: fluid.dom.getElementText(fluid.unwrap(labelSource)),
             position: that.positionTemplate.resolveFunc(that.positionTemplate.template, indices),
-            movable: that.resolver.resolve(elementClass === "locked"? "fixed" : "movable"),
+            movable: that.resolver.resolve(elementClass === "locked" ? "fixed" : "movable"),
             recentStatus: recentStatus || ""
-        }
+        };
         
         var template = that.resolver.lookup(["overallTemplate"]);
         var label = template.resolveFunc(template.template, topModel);
         return {
             position: topModel.position,
             label: label
-        } 
+        };
     };
 
 })(jQuery, fluid_1_3);
