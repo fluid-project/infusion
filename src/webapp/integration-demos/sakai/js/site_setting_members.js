@@ -11,10 +11,12 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+/*global jQuery,fluid */
+
 var sakai = sakai || {};
 
 
-sakai.initFluidSiteSettingTable = function() {
+sakai.initFluidSiteSettingTable = function () {
     var resources = {
         users: {
             href: "../js/demo_site_membership.json"
@@ -23,7 +25,7 @@ sakai.initFluidSiteSettingTable = function() {
             href: "../js/demo_site.json"
         }
     };
-    fluid.each(resources, function(resource) {
+    fluid.each(resources, function (resource) {
         resource.options = { dataType: "text"};
     });
     
@@ -35,88 +37,89 @@ sakai.initFluidSiteSettingTable = function() {
             users: JSON.parse(resources.users.resourceText)
         };
         var columnDefs = [ 
-           {key: "selection",
+            {key: "selection",
             valuebinding: "selecteds.*.selected",
             sortable: true
             },
-           {key: "user-link",
+            {key: "user-link",
             valuebinding: "*.userDisplayName",  
             components: {
                 target: "/dev/sn/profile.html?user=${*.userId}",
-                linktext: fluid.VALUE},
+                linktext: fluid.VALUE
+            },
             sortable: true
             },
-           {key: "user-email",
+            {key: "user-email",
             valuebinding: "*.userEmail",
             components: {
                 linktext: fluid.VALUE,
                 target: "mailto:${VALUE}"
-                }
+            }
             // test FLUID-2247 - remove sortable from this column 
             },
-           {key: "user-role",
+            {key: "user-role",
             valuebinding: "*.memberRole",
             components: {
                 selection: fluid.VALUE, 
                 optionlist: {valuebinding: "site.userRoles"}
-               },
+            },
             sortable: true
-           },
-           {key: "user-status",
+            },
+            {key: "user-status",
             valuebinding: "*.active",
             components: {
                 selection: fluid.VALUE,
                 optionlist: {value: ["Active", "Inactive"]}
             },
             sortable: true}
-          ];
+        ];
            
   
-    var pagerBarOptions = {
-          type: "fluid.pager.pagerBar",
-          options: {
-            pageList: {
-               type: "fluid.pager.renderedPageList",
-               options: {
-                 pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
-                 }
-               }            
+        var pagerBarOptions = {
+            type: "fluid.pager.pagerBar",
+            options: {
+                pageList: {
+                    type: "fluid.pager.renderedPageList",
+                    options: {
+                        pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
+                    }
+                }            
             }
         };
   
-    var pager = fluid.pager(".ss-members", {
-        dataModel: model,
-        // Test FLUID-2663
-        model: {
-            pageIndex: 3
-        },
-        dataOffset: "users.membership_collection",
-        columnDefs: columnDefs,
-        annotateColumnRange: "user-link",
-        pagerBar: pagerBarOptions,
+        var pager = fluid.pager(".ss-members", {
+            dataModel: model,
+            // Test FLUID-2663
+            model: {
+                pageIndex: 3
+            },
+            dataOffset: "users.membership_collection",
+            columnDefs: columnDefs,
+            annotateColumnRange: "user-link",
+            pagerBar: pagerBarOptions,
 
-        bodyRenderer: {
-          type: "fluid.pager.selfRender",
-          options: {
-              selectors: {
-                root: ".site-setting-body"
+            bodyRenderer: {
+                type: "fluid.pager.selfRender",
+                options: {
+                    selectors: {
+                        root: ".site-setting-body"
+                    },
+                    renderOptions: {debugMode: false}
+                }
             },
-            renderOptions: {debugMode: false}
-          }
-        },
-        decorators: {
-            unsortableHeader: [
-            {type: "attrs",
-             attributes: {
-                 title: null
-                 }
-            },
-            {type: "addClass",
-            classes: "fl-pager-disabled"
+            decorators: {
+                unsortableHeader: [{
+                    type: "attrs",
+                    attributes: {
+                        title: null
+                    }
+                },
+                {
+                    type: "addClass",
+                    classes: "fl-pager-disabled"
+                }]
             }
-            ]
-        }
-    });
+        });
     }
     
     fluid.fetchResources(resources, initPager);
