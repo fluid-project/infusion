@@ -11,10 +11,9 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery*/
-/*global fluid_1_3*/
+/*global jQuery, fluid_1_3:true*/
 
-fluid_1_3 = fluid_1_3 || {};
+var fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
     
@@ -23,28 +22,31 @@ fluid_1_3 = fluid_1_3 || {};
     /** Recursively find any data stored under a given name from a node upwards
      * in its DOM hierarchy **/
      
-    fluid.findData = function(elem, name) {
+    fluid.findData = function (elem, name) {
         while (elem) {
             var data = $.data(elem, name);
-            if (data) {return data;}
-            elem = elem.parentNode;
+            if (data) {
+                return data;
             }
-        };
+            elem = elem.parentNode;
+        }
+    };
   
-    fluid.bindFossils = function(node, data, fossils) {
+    fluid.bindFossils = function (node, data, fossils) {
         $.data(node, fluid.BINDING_ROOT_KEY, {data: data, fossils: fossils});
-        };
+    };
         
-    fluid.boundPathForNode = function(node, fossils) {
+    fluid.boundPathForNode = function (node, fossils) {
         node = fluid.unwrap(node);
         var key = node.name || node.id;
         var record = fossils[key];
-        return record? record.EL: null;
+        return record ? record.EL: null;
     };
   
     fluid.findForm = function (node) {
-      return fluid.findAncestor(node, 
-          function(element) {return element.nodeName.toLowerCase() === "form";});
+        return fluid.findAncestor(node, function (element) {
+            return element.nodeName.toLowerCase() === "form";
+        });
     };
     
     /** A generalisation of jQuery.val to correctly handle the case of acquiring and
@@ -58,8 +60,9 @@ fluid_1_3 = fluid_1_3 || {};
             node = node[0];
             multiple = true;
         }
-        if ("input" !== node.nodeName.toLowerCase()
-           || ! /radio|checkbox/.test(node.type)) {return $(node).val(newValue);}
+        if ("input" !== node.nodeName.toLowerCase() || ! /radio|checkbox/.test(node.type)) {
+            return $(node).val(newValue);
+        }
         var name = node.name;
         if (name === undefined) {
             fluid.fail("Cannot acquire value from node " + fluid.dumpEl(node) + " which does not have name attribute set");
@@ -72,39 +75,43 @@ fluid_1_3 = fluid_1_3 || {};
             elements = document.getElementsByName(name);
             var scope = fluid.findForm(node);
             elements = $.grep(elements, 
-              function(element) {
-                if (element.name !== name) {return false;}
+            function (element) {
+                if (element.name !== name) {
+                    return false;
+                }
                 return !scope || fluid.dom.isContainer(scope, element);
-              });
+            });
         }
         if (newValue !== undefined) {
             if (typeof(newValue) === "boolean") {
-                newValue = (newValue? "true" : "false");
+                newValue = (newValue ? "true" : "false");
             }
           // jQuery gets this partially right, but when dealing with radio button array will
           // set all of their values to "newValue" rather than setting the checked property
           // of the corresponding control. 
-            $.each(elements, function() {
-               this.checked = (newValue instanceof Array? 
-                 $.inArray(this.value, newValue) !== -1 : newValue === this.value);
+            $.each(elements, function () {
+                this.checked = (newValue instanceof Array ? 
+                    $.inArray(this.value, newValue) !== -1 : newValue === this.value);
             });
         }
         else { // this part jQuery will not do - extracting value from <input> array
-            var checked = $.map(elements, function(element) {
-                return element.checked? element.value : null;
+            var checked = $.map(elements, function (element) {
+                return element.checked ? element.value : null;
             });
-            return node.type === "radio"? checked[0] : checked;
-            }
-       };
+            return node.type === "radio" ? checked[0] : checked;
+        }
+    };
     
     /** "Automatically" apply to whatever part of the data model is
      * relevant, the changed value received at the given DOM node*/
-    fluid.applyChange = function(node, newValue, applier) {
+    fluid.applyChange = function (node, newValue, applier) {
         node = fluid.unwrap(node);
         if (newValue === undefined) {
             newValue = fluid.value(node);
         }
-        if (node.nodeType === undefined && node.length > 0) {node = node[0];} // assume here that they share name and parent
+        if (node.nodeType === undefined && node.length > 0) {
+            node = node[0];
+        } // assume here that they share name and parent
         var root = fluid.findData(node, fluid.BINDING_ROOT_KEY);
         if (!root) {
             fluid.fail("Bound data could not be discovered in any node above " + fluid.dumpEl(node));
@@ -115,7 +122,7 @@ fluid_1_3 = fluid_1_3 || {};
             fluid.fail("No fossil discovered for name " + name + " in fossil record above " + fluid.dumpEl(node));
         }
         if (typeof(fossil.oldvalue) === "boolean") { // deal with the case of an "isolated checkbox"
-            newValue = newValue[0]? true: false;
+            newValue = newValue[0] ? true: false;
         }
         var EL = root.fossils[name].EL;
         if (applier) {
@@ -124,11 +131,11 @@ fluid_1_3 = fluid_1_3 || {};
         else {
             fluid.set(root.data, EL, newValue);
         }    
-        };
+    };
    
     fluid.pathUtil = {};
    
-    var getPathSegmentImpl = function(accept, path, i) {
+    var getPathSegmentImpl = function (accept, path, i) {
         var segment = null; // TODO: rewrite this with regexes and replaces
         if (accept) {
             segment = "";
@@ -140,10 +147,10 @@ fluid_1_3 = fluid_1_3 || {};
             if (!escaped) {
                 if (c === '.') {
                     break;
-                    }
+                }
                 else if (c === '\\') {
                     escaped = true;
-                    }
+                }
                 else if (segment !== null) {
                     segment += c;
                 }
@@ -159,42 +166,42 @@ fluid_1_3 = fluid_1_3 || {};
             accept[0] = segment;
         }
         return i;
-        };
+    };
     
     var globalAccept = []; // TODO: serious reentrancy risk here, why is this impl like this?
     
-    fluid.pathUtil.getPathSegment = function(path, i) {
+    fluid.pathUtil.getPathSegment = function (path, i) {
         getPathSegmentImpl(globalAccept, path, i);
         return globalAccept[0];
-        }; 
+    }; 
   
-    fluid.pathUtil.getHeadPath = function(path) {
+    fluid.pathUtil.getHeadPath = function (path) {
         return fluid.pathUtil.getPathSegment(path, 0);
-        };
+    };
   
-    fluid.pathUtil.getFromHeadPath = function(path) {
+    fluid.pathUtil.getFromHeadPath = function (path) {
         var firstdot = getPathSegmentImpl(null, path, 0);
         return firstdot === path.length ? null
             : path.substring(firstdot + 1);
-        };
+    };
     
     function lastDotIndex(path) {
         // TODO: proper escaping rules
         return path.lastIndexOf(".");
-        }
+    }
     
-    fluid.pathUtil.getToTailPath = function(path) {
+    fluid.pathUtil.getToTailPath = function (path) {
         var lastdot = lastDotIndex(path);
-        return lastdot == -1 ? null : path.substring(0, lastdot);
-        };
+        return lastdot === -1 ? null : path.substring(0, lastdot);
+    };
 
   /** Returns the very last path component of a bean path */
-    fluid.pathUtil.getTailPath = function(path) {
+    fluid.pathUtil.getTailPath = function (path) {
         var lastdot = lastDotIndex(path);
         return fluid.pathUtil.getPathSegment(path, lastdot + 1);
-        };
+    };
     
-    var composeSegment = function(prefix, toappend) {
+    var composeSegment = function (prefix, toappend) {
         for (var i = 0; i < toappend.length; ++i) {
             var c = toappend.charAt(i);
             if (c === '.' || c === '\\' || c === '}') {
@@ -209,32 +216,36 @@ fluid_1_3 = fluid_1_3 || {};
      * Compose a prefix and suffix EL path, where the prefix is already escaped.
      * Prefix may be empty, but not null. The suffix will become escaped.
      */
-    fluid.pathUtil.composePath = function(prefix, suffix) {
+    fluid.pathUtil.composePath = function (prefix, suffix) {
         if (prefix.length !== 0) {
             prefix += '.';
         }
         return composeSegment(prefix, suffix);
-        };    
+    };    
    
-    fluid.pathUtil.matchPath = function(spec, path) {
+    fluid.pathUtil.matchPath = function (spec, path) {
         var togo = "";
         while (true) {
-          if (!spec || path === "") {break;}
-          if (!path) {return null;}
-          var spechead = fluid.pathUtil.getHeadPath(spec);
-          var pathhead = fluid.pathUtil.getHeadPath(path);
-          // if we fail to match on a specific component, fail.
-          if (spechead !== "*" && spechead !== pathhead) {
-              return null;
-          }
-          togo = fluid.pathUtil.composePath(togo, pathhead);
-          spec = fluid.pathUtil.getFromHeadPath(spec);
-          path = fluid.pathUtil.getFromHeadPath(path);
+            if (!spec || path === "") {
+                break;
+            }
+            if (!path) {
+                return null;
+            }
+            var spechead = fluid.pathUtil.getHeadPath(spec);
+            var pathhead = fluid.pathUtil.getHeadPath(path);
+            // if we fail to match on a specific component, fail.
+            if (spechead !== "*" && spechead !== pathhead) {
+                return null;
+            }
+            togo = fluid.pathUtil.composePath(togo, pathhead);
+            spec = fluid.pathUtil.getFromHeadPath(spec);
+            path = fluid.pathUtil.getFromHeadPath(path);
         }
         return togo;
-      };
+    };
     
-    fluid.model.mergeModel = function(target, source, applier) {
+    fluid.model.mergeModel = function (target, source, applier) {
         var copySource = fluid.copy(source);
         applier = applier || fluid.makeChangeApplier(source);
         applier.fireChangeRequest({type: "ADD", path: "", value: target});
@@ -243,7 +254,7 @@ fluid_1_3 = fluid_1_3 || {};
     };
         
       
-    fluid.model.isNullChange = function(model, request, resolverGetConfig) {
+    fluid.model.isNullChange = function (model, request, resolverGetConfig) {
         if (request.type === "ADD") {
             var existing = fluid.get(model, request.path, resolverGetConfig);
             if (existing === request.value) {
@@ -253,15 +264,15 @@ fluid_1_3 = fluid_1_3 || {};
     };
     /** Applies the supplied ChangeRequest object directly to the supplied model.
      */
-    fluid.model.applyChangeRequest = function(model, request, resolverSetConfig) {
+    fluid.model.applyChangeRequest = function (model, request, resolverSetConfig) {
         var pen = fluid.model.getPenultimate(model, request.path, resolverSetConfig || fluid.model.defaultSetConfig);
         
         if (request.type === "ADD" || request.type === "MERGE") {
             if (pen.last === "" || request.type === "MERGE") {
-               if (request.type === "ADD") {
-                   fluid.clear(pen.root);
-               }
-               $.extend(true, pen.last === ""? pen.root: pen.root[pen.last], request.value);
+                if (request.type === "ADD") {
+                    fluid.clear(pen.root);
+                }
+                $.extend(true, pen.last === "" ? pen.root: pen.root[pen.last], request.value);
             }
             else {
                 pen.root[pen.last] = request.value;
@@ -280,18 +291,18 @@ fluid_1_3 = fluid_1_3 || {};
     // Utility shared between changeApplier and superApplier
     
     function bindRequestChange(that) {
-        that.requestChange = function(path, value, type) {
+        that.requestChange = function (path, value, type) {
             var changeRequest = {
                 path: path,
                 value: value,
                 type: type
             };
-        that.fireChangeRequest(changeRequest);
+            that.fireChangeRequest(changeRequest);
         };
     }
     
   
-    fluid.makeChangeApplier = function(model, options) {
+    fluid.makeChangeApplier = function (model, options) {
         options = options || {};
         var baseEvents = {
             guards: fluid.event.getEventFirer(false, true),
@@ -306,10 +317,12 @@ fluid_1_3 = fluid_1_3 || {};
             if (!cullUnchanged) {
                 return null;
             }
-            var togo = function(guard) {
-                return function(model, changeRequest, internalApplier) {
+            var togo = function (guard) {
+                return function (model, changeRequest, internalApplier) {
                     var oldRet = guard(model, changeRequest, internalApplier);
-                    if (oldRet === false) { return false;}
+                    if (oldRet === false) {
+                        return false;
+                    }
                     else {
                         if (fluid.model.isNullChange(model, changeRequest)) {
                             togo.culled = true;
@@ -322,51 +335,51 @@ fluid_1_3 = fluid_1_3 || {};
         }
 
         function wrapListener(listener, spec) {
-             var pathSpec = spec;
-             var transactional = false;
-             var priority = Number.MAX_VALUE;
-             if (typeof (spec) !== "string") {
-                 pathSpec = spec.path;
-                 transactional = spec.transactional;
-                 if (spec.priority !== undefined) {
-                     priority = spec.priority;
-                     }
-                 }
-             else {
-                 if (pathSpec.charAt(0) === "!") {
-                     transactional = true;
-                     pathSpec = pathSpec.substring(1);
-                 }
-             }
-             return function(changePath, fireSpec, accum) {
-                 var guid = fluid.event.identifyListener(listener);
-                 var exist = fireSpec.guids[guid];
-                 if (!exist) {
-                     var match = fluid.pathUtil.matchPath(pathSpec, changePath);
-                     if (match !== null) {
-                         var record = {
-                             changePath: changePath,
-                             pathSpec: pathSpec,
-                             listener: listener,
-                             priority: priority,
-                             transactional: transactional
-                             };
-                         if (accum) {
-                             record.accumulate = [accum];
-                         }
-                         fireSpec.guids[guid] = record;
-                         var collection = transactional? "transListeners": "listeners";
-                         fireSpec[collection].push(record);
-                         fireSpec.all.push(record);
-                     }
-                 }
-                 else if (accum) {
-                     if (!exist.accumulate) {
+            var pathSpec = spec;
+            var transactional = false;
+            var priority = Number.MAX_VALUE;
+            if (typeof (spec) !== "string") {
+                pathSpec = spec.path;
+                transactional = spec.transactional;
+                if (spec.priority !== undefined) {
+                    priority = spec.priority;
+                }
+            }
+            else {
+                if (pathSpec.charAt(0) === "!") {
+                    transactional = true;
+                    pathSpec = pathSpec.substring(1);
+                }
+            }
+            return function (changePath, fireSpec, accum) {
+                var guid = fluid.event.identifyListener(listener);
+                var exist = fireSpec.guids[guid];
+                if (!exist) {
+                    var match = fluid.pathUtil.matchPath(pathSpec, changePath);
+                    if (match !== null) {
+                        var record = {
+                            changePath: changePath,
+                            pathSpec: pathSpec,
+                            listener: listener,
+                            priority: priority,
+                            transactional: transactional
+                        };
+                        if (accum) {
+                            record.accumulate = [accum];
+                        }
+                        fireSpec.guids[guid] = record;
+                        var collection = transactional ? "transListeners": "listeners";
+                        fireSpec[collection].push(record);
+                        fireSpec.all.push(record);
+                    }
+                }
+                else if (accum) {
+                    if (!exist.accumulate) {
                         exist.accumulate = [];
-                     }
-                     exist.accumulate.push(accum);
-                 }
-           };
+                    }
+                    exist.accumulate.push(accum);
+                }
+            };
         }
         
         function fireFromSpec(name, fireSpec, args, category, wrapper) {
@@ -401,10 +414,10 @@ fluid_1_3 = fluid_1_3 || {};
         
         function adaptListener(that, name) {
             that[name] = {
-                addListener: function(spec, listener, namespace) {
+                addListener: function (spec, listener, namespace) {
                     baseEvents[name].addListener(wrapListener(listener, spec), namespace);
                 },
-                removeListener: function(listener) {
+                removeListener: function (listener) {
                     baseEvents[name].removeListener(listener);
                 }
             };
@@ -420,15 +433,15 @@ fluid_1_3 = fluid_1_3 || {};
         }
 
         var bareApplier = {
-            fireChangeRequest: function(changeRequest) {
+            fireChangeRequest: function (changeRequest) {
                 that.fireChangeRequest(changeRequest, true);
             }
         };
         bindRequestChange(bareApplier);
 
-        that.fireChangeRequest = function(changeRequest, defeatGuards) {
+        that.fireChangeRequest = function (changeRequest, defeatGuards) {
             preFireChangeRequest(changeRequest);
-            var guardFireSpec = defeatGuards? null : getFireSpec("guards", changeRequest.path);
+            var guardFireSpec = defeatGuards ? null : getFireSpec("guards", changeRequest.path);
             if (guardFireSpec && guardFireSpec.transListeners.length > 0) {
                 var ation = that.initiate();
                 ation.fireChangeRequest(changeRequest, guardFireSpec);
@@ -458,9 +471,9 @@ fluid_1_3 = fluid_1_3 || {};
             var fireSpec = makeFireSpec();
             for (var i = 0; i < changes.length; ++ i) {
                 prepareFireEvent(eventName, changes[i].path, fireSpec, changes[i]);
-                }
-            for (var i = 0; i < fireSpec[formName].length; ++ i) {
-                var spec = fireSpec[formName][i];
+            }
+            for (var j = 0; j < fireSpec[formName].length; ++ j) {
+                var spec = fireSpec[formName][j];
                 if (accpos) {
                     args[accpos] = spec.accumulate;
                 }
@@ -471,7 +484,7 @@ fluid_1_3 = fluid_1_3 || {};
             }
         }
 
-        that.initiate = function(newModel) {
+        that.initiate = function (newModel) {
             var cancelled = false;
             var changes = [];
             if (options.thin) {
@@ -484,14 +497,14 @@ fluid_1_3 = fluid_1_3 || {};
             // the guard in the inner world is given a private applier to "fast track"
             // and glob collateral changes it requires
             var internalApplier = 
-              {fireChangeRequest: function(changeRequest) {
+              {fireChangeRequest: function (changeRequest) {
                     preFireChangeRequest(changeRequest);
                     fluid.model.applyChangeRequest(newModel, changeRequest, options.resolverSetConfig);
                     changes.push(changeRequest);
                 }};
             bindRequestChange(internalApplier);
             var ation = {
-                commit: function() {
+                commit: function () {
                     var oldModel;
                     if (cancelled) {
                         return false;
@@ -511,22 +524,22 @@ fluid_1_3 = fluid_1_3 || {};
                     }
                     fireAgglomerated("modelChanged", "all", changes, [model, oldModel, null], 2);
                 },
-                fireChangeRequest: function(changeRequest) {
-                     preFireChangeRequest(changeRequest);
-                     if (options.cullUnchanged && fluid.model.isNullChange(model, changeRequest, options.resolverGetConfig)) {
-                         return;
-                     } 
-                     var wrapper = makeGuardWrapper(options.cullUnchanged);
-                     var prevent = fireEvent("guards", changeRequest.path, [newModel, changeRequest, internalApplier], wrapper);
-                     if (prevent === false && !(wrapper && wrapper.culled)) {
-                         cancelled = true;
-                     }
-                     if (!cancelled) {
-                         if (!(wrapper && wrapper.culled)) {
-                             fluid.model.applyChangeRequest(newModel, changeRequest, options.resolverSetConfig);
-                             changes.push(changeRequest);
-                         }
-                     }
+                fireChangeRequest: function (changeRequest) {
+                    preFireChangeRequest(changeRequest);
+                    if (options.cullUnchanged && fluid.model.isNullChange(model, changeRequest, options.resolverGetConfig)) {
+                        return;
+                    } 
+                    var wrapper = makeGuardWrapper(options.cullUnchanged);
+                    var prevent = fireEvent("guards", changeRequest.path, [newModel, changeRequest, internalApplier], wrapper);
+                    if (prevent === false && !(wrapper && wrapper.culled)) {
+                        cancelled = true;
+                    }
+                    if (!cancelled) {
+                        if (!(wrapper && wrapper.culled)) {
+                            fluid.model.applyChangeRequest(newModel, changeRequest, options.resolverSetConfig);
+                            changes.push(changeRequest);
+                        }
+                    }
                 }
             };
             bindRequestChange(ation);
@@ -537,13 +550,13 @@ fluid_1_3 = fluid_1_3 || {};
         return that;
     };
     
-    fluid.makeSuperApplier = function() {
+    fluid.makeSuperApplier = function () {
         var subAppliers = [];
         var that = {};
-        that.addSubApplier = function(path, subApplier) {
+        that.addSubApplier = function (path, subApplier) {
             subAppliers.push({path: path, subApplier: subApplier});
         };
-        that.fireChangeRequest = function(request) {
+        that.fireChangeRequest = function (request) {
             for (var i = 0; i < subAppliers.length; ++ i) {
                 var path = subAppliers[i].path;
                 if (request.path.indexOf(path) === 0) {
@@ -559,7 +572,7 @@ fluid_1_3 = fluid_1_3 || {};
         return that;
     };
     
-    fluid.attachModel = function(baseModel, path, model) {
+    fluid.attachModel = function (baseModel, path, model) {
         var segs = fluid.model.parseEL(path);
         for (var i = 0; i < segs.length - 1; ++ i) {
             var seg = segs[i];
@@ -573,17 +586,17 @@ fluid_1_3 = fluid_1_3 || {};
     };
     
     fluid.assembleModel = function (modelSpec) {
-       var model = {};
-       var superApplier = fluid.makeSuperApplier();
-       var togo = {model: model, applier: superApplier};
-       for (var path in modelSpec) {
-           var rec = modelSpec[path];
-           fluid.attachModel(model, path, rec.model);
-           if (rec.applier) {
-              superApplier.addSubApplier(path, rec.applier);
-           }
-       }
-       return togo;
+        var model = {};
+        var superApplier = fluid.makeSuperApplier();
+        var togo = {model: model, applier: superApplier};
+        for (var path in modelSpec) {
+            var rec = modelSpec[path];
+            fluid.attachModel(model, path, rec.model);
+            if (rec.applier) {
+                superApplier.addSubApplier(path, rec.applier);
+            }
+        }
+        return togo;
     };
 
 })(jQuery, fluid_1_3);
