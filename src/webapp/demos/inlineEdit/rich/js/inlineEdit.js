@@ -36,10 +36,10 @@ var demo = demo || {};
         // Create a TinyMCE-based Rich Inline Edit component.
         var tinyEditor = fluid.inlineEdit.tinyMCE("#demo-richInlineEdit-container-tinyMCE", {
             tinyMCE: {
-                    width: 1024,
-                    theme: "advanced",
-                    theme_advanced_toolbar_location : "top"
-                }, 
+                width: 1024,
+                theme: "advanced",
+                theme_advanced_toolbar_location : "top"
+            }, 
             componentDecorators: {
                 type: "fluid.undoDecorator",
                 options: {

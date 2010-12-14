@@ -10,12 +10,14 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global fluid_1_3, jQuery, window, demo*/
+/*global jQuery*/
+/*global fluid*/
+/*global demo*/
 
-var fluid_1_3 = fluid_1_3 || {};
+var fluid = fluid || {};
 var demo = demo || {};
 
-(function ($,fluid) {
+(function ($, fluid) {
     // ensure browser is permitted to crawl the filesystem before running demo
     // If the browser is not, AND the demo is known to require ajax, then halt the demo and show warning
     var abortDemo = false;
@@ -24,7 +26,7 @@ var demo = demo || {};
             url: "../../../build-scripts/build.xml",
             async : false,
             error: function (XMLHttpRequest, state, error) {
-                if (error && error.code === 1012 && (demo.name === "uiOptions" || demo.name === "uploader") ) {
+                if (error && error.code === 1012 && (demo.name === "uiOptions" || demo.name === "uploader")) {
                     // Access denide: we're prob. in FF with the same origin policy blocking our fetch
                     abortDemo = true;
                 }
@@ -45,7 +47,7 @@ var demo = demo || {};
             keys.push(key);
         }
         return keys;
-    }
+    };
 
     var dataModel = {
         "html" : {
@@ -68,13 +70,13 @@ var demo = demo || {};
             tab : null,
             content : null
         }
-    }
+    };
 
     var status = {
         "html" : null,
         "css" : null,
         "js" : null
-    }
+    };
 
     var setDemoIframe = function (error) {
         $(document).ready(function () {
@@ -85,16 +87,7 @@ var demo = demo || {};
                 $("iframe").attr("src", demo.path + "html/" + demo.name + ".html");
             }
         });
-    }
-
-    var extractHTML = function (data) {
-        var start = data.indexOf("<body");
-        var end = data.indexOf("</html>");
-
-        data = data.substring(start, end);
-        data = entityEscape(data);
-        return data;
-    }
+    };
 
     var entityEscape = function (value) {
         return value
@@ -104,12 +97,21 @@ var demo = demo || {};
             .replace(/\"/g, '&quot;')
             .replace(/\'/g, '&#39;')
         ;
-    }
+    };
+
+    var extractHTML = function (data) {
+        var start = data.indexOf("<body");
+        var end = data.indexOf("</html>");
+
+        data = data.substring(start, end);
+        data = entityEscape(data);
+        return data;
+    };
 
     var selectTab = function (name) {
         dataModel[name].tab.addClass("fl-tabs-active");
         dataModel[name].content.show();
-    }
+    };
 
     var bindTabsContent = function (thisTab, thisCode) {
         thisTab.bind("click", function (event) {
@@ -121,30 +123,30 @@ var demo = demo || {};
             thisCode.show();
             thisTab.addClass("fl-tabs-active");
         });
-    }
+    };
 
-    var addAriaTabList = function(tl) {
+    var addAriaTabList = function (tl) {
         tl.attr({
             role: "tablist",
             "aria-multiselectable": "false"
         });
     };
 
-    var addAriaTab = function(tb) {
+    var addAriaTab = function (tb) {
         tb.attr({
             role: "tab",
             "aria-expanded": "false"
         });
     };
 
-    var initKeyboardNav = function(tl) {
+    var initKeyboardNav = function (tl) {
         var level1tabs = tl;
         level1tabs.attr("tabindex", "0");
         level1tabs.fluid("selectable", {
             selectableSelector: "> li",
             autoSelectFirstItem: true,
             direction : fluid.a11y.orientation.HORIZONTAL,
-            onSelect : function(el) {
+            onSelect : function (el) {
                 var tab = $(el);
                 $(".fl-tabs-active").removeClass("fl-tabs-active").attr("aria-selected", "false");
 
@@ -157,7 +159,7 @@ var demo = demo || {};
     };
 
     var makeTab = function (name) {
-        aux = $('.fl-tabs');
+        var aux = $('.fl-tabs');
         var tab = $('<li/>').html('<a href="#' + name + '" title=' + name + '>' + name + '</a>');
         $("a", tab).attr("tabindex", -1);
         aux.append(tab);
@@ -181,6 +183,22 @@ var demo = demo || {};
         code.chili();
         return code;
     };
+    
+    var togglePlainColorized = function () {
+        // plain view
+        $(".codeOptions [href=#plaintext]").click(function (e) {
+            var langID = $("#tabs .fl-tabs-active a").attr("title");
+            $("code." + langID).hide(); // hide colorised
+            $("textarea." + langID).show(); // show plaintext
+        });
+
+        // normal black
+        $(".codeOptions [href=#normal]").click(function (e) {
+            var langID = $("#tabs .fl-tabs-active a").attr("title");
+            $("code." + langID).show(); // show colorised
+            $("textarea." + langID).hide(); // hide plaintext
+        });
+    };    
 
     var loadComplete = function (name, data) {
 
@@ -215,24 +233,7 @@ var demo = demo || {};
         }
     };
 
-    var togglePlainColorized = function () {
-        // plain view
-        $(".codeOptions [href=#plaintext]").click(function (e) {
-            var langID = $("#tabs .fl-tabs-active a").attr("title");
-            $("code." + langID).hide(); // hide colorised
-            $("textarea." + langID).show(); // show plaintext
-        });
-
-        // normal black
-        $(".codeOptions [href=#normal]").click(function (e) {
-            var langID = $("#tabs .fl-tabs-active a").attr("title");
-            $("code." + langID).show(); // show colorised
-            $("textarea." + langID).hide(); // hide plaintext
-        });
-    }
-
-
-    if (abortDemo === false){
+    if (abortDemo === false) {
         // Loop through all content types, and deliver their content if found
         $.each(dataModel, function (name, data) {
             $.ajax({
@@ -249,4 +250,4 @@ var demo = demo || {};
     } else {
         setDemoIframe(true); // use error iFrame
     }
-})(jQuery, fluid_1_3)
+})(jQuery, fluid);

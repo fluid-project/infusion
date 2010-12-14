@@ -21,7 +21,7 @@ var demo = demo || {};
         fluid.reorderLayout("#demo-layoutReorderer", {
             selectors: {
                 lockedModules: ".demoSelector-layoutReorderer-locked",
-                grabHandle: ".demoSelector-layoutReorderer",
+                grabHandle: ".demoSelector-layoutReorderer"
             },
             styles: {
                 defaultStyle: "demo-layoutReorderer-movable-default",

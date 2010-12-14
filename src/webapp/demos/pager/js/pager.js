@@ -27,7 +27,7 @@ var demo = demo || {};
                 href: "../data/pager.js"
             }
         };
-        fluid.each(resources, function(resource) {
+        fluid.each(resources, function (resource) {
             resource.options = { dataType: "text"};
         });
         
@@ -55,7 +55,7 @@ var demo = demo || {};
                 {
                     key: "user-comment",
                     valuebinding: "*.userComment",
-                    sortable:false
+                    sortable: false
                 }
             ];
                

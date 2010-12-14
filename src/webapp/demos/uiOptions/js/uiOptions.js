@@ -44,7 +44,7 @@ var demo = demo || {};
     var setupUIOptions = function () {
         var options = {
             listeners: {
-                afterRender: function() {
+                afterRender: function () {
                     $(".uiOptions .fl-col:eq(0)").accordion({
                         header: 'h2',
                         clearStyle: true,
@@ -52,10 +52,10 @@ var demo = demo || {};
                     });
                     $(".uiOptions .fl-col h2:eq(0)").focus();
                 },
-                onCancel: function() {
+                onCancel: function () {
                     uiOptionsNode.slideUp();
                 },
-                onSave: function() {
+                onSave: function () {
                     uiOptionsNode.slideUp();
                 }
             }

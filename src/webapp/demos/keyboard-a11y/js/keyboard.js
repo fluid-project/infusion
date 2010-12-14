@@ -11,6 +11,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery*/
 /*global fluid*/
+/*global demo*/
 
 var demo = demo || {};
 
