@@ -95,6 +95,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertTrue("Label is updated to account for temporary moved state", 
                 portlet3.attr("aria-label").indexOf("moved from") > -1);
     
+            portlet3[0].blur();
             // focus on portlet 8 
             var portlet8 = fluid.byId(fluid.testUtils.moduleLayout.portletIds[8]);
             $(portlet8).focus();
