@@ -32,46 +32,67 @@ fluid.registerNamespace("fluid.tests");
             selectors: {
                 select: "select",
                 input: "input",
-                div: "#component-3"
+                div: "#component-3",
+                excluded: ".excluded",
+                excludedParent: ".excludedParent"
             }
         });
-      
-        function blurTest(message, provokeTarget, provokeOp, shouldBlur, excludeMaker) { 
-            fluidViewTests.test("Dead man's blur test - " + message, function () {
-                var blurReceived = false;
-                var blurTester = fluid.tests.blurTester("#blurrable-widget");
-                var input = blurTester.locate("input");
+     
+    function noteTime() {
+        jqUnit.assertTrue("Time : " + fluid.renderTimestamp(new Date()), true);  
+    }
+     
+    // This function is necessary since simulation of focus events by jQuery under IE
+    // is not sufficiently good to intercept the "focusin" binding.
+    function applyOp(node, func) {
+        var raw = fluid.unwrap(node);
+        raw[func]? raw[func]() : node[func]();   
+    }
+     
+    function blurTest(message, provokeTarget, provokeOp, shouldBlur, excludeMaker) { 
+        fluidViewTests.test("Dead man's blur test - " + message, function() {
+           
+            noteTime();
+            
+            var blurReceived = false;
+            var blurTester = fluid.tests.blurTester("#blurrable-widget");
+            var input = blurTester.locate("input");
+            var excluded = $("<div></div>").addClass("excludedParent");
+            blurTester.container.append(excluded);
              
-                var blurHandler = function () {
-                    if (!blurReceived) {
-                        jqUnit.assertTrue("Blur handler should " + (shouldBlur ? "" : "not ") + "execute", shouldBlur);
-                        blurReceived = true;
-                        start();
-                    }
-                };
-                var blurrer = fluid.deadMansBlur(input, {
-                    delay: 200,
-                    exclusions: excludeMaker(blurTester),
-                    handler: blurHandler 
-                });
-                input.focus();
+            var blurHandler = function () {
+                if (!blurReceived) {
+                    jqUnit.assertTrue(message + " - Blur handler should " + (shouldBlur? "" : "not ") + "execute", shouldBlur);
+                    noteTime();
+                    blurReceived = true;
+                }
+            };
+            var blurrer = fluid.deadMansBlur(input, {
+                delay: 300,
+                exclusions: excludeMaker(blurTester),
+                handler: blurHandler 
+                } 
+            );
+            
+            excluded.append($("<input></input>").addClass("excluded"));
+            
+            input.focus();
              
-                var blurOutwaiter = function () {
-                    jqUnit.assertFalse("Blur handler has not executed", shouldBlur && !blurReceived);
-                    if (!blurReceived) {
-                        start();
-                    }  
-                };
-             
-                input.blur();
-                window.setTimeout(function () {
-                    fluid.log("Apply " + provokeOp + " to " + provokeTarget);
-                    blurTester.locate(provokeTarget)[provokeOp]();
+            var blurOutwaiter = function() {
+                jqUnit.assertTrue(message + " - Blur handler has not executed", shouldBlur ^ !blurReceived);
+                noteTime();
+                start();
+            };
+
+            input.blur();
+            window.setTimeout(function() {
+                fluid.log("Apply " + provokeOp + " to " + provokeTarget);
+                applyOp(blurTester.locate(provokeTarget), provokeOp);
                 }, blurrer.options.delay - 100);
              
-                window.setTimeout(blurOutwaiter, blurrer.options.delay + 100);
+            window.setTimeout(blurOutwaiter, blurrer.options.delay + 300);
              
-                stop();
+            stop();
             });
         }
      
@@ -85,12 +106,18 @@ fluid.registerNamespace("fluid.tests");
                 div:  dom.locate("div")
             };
         };
+        
+        var excludedExclusions = function (dom) {
+            return {excludedParent: dom.locate("excludedParent")};
+        };
      
         blurTest("nonExcluded component one", "div", "click", true, selectExclusions);
         blurTest("excluded component one", "select", "focus", false, selectExclusions);
      
         blurTest("excluded component two - a", "div", "click", false, bothExclusions);
         blurTest("excluded component two - b", "select", "focus", false, bothExclusions);
+        
+        blurTest("excluded component excluded", "excluded", "focus", false, excludedExclusions);
      
         fluidViewTests.test("ARIA labeller test", function () {
             var target = $("#component-3");
@@ -100,6 +127,21 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertEquals("Target label", "Label 1", attr);
             labeller.update({text: "Label 2"});
             jqUnit.assertEquals("Label updated", "Label 2", target.attr("aria-label"));
+        });
+        
+        fluidViewTests.test("ARIA labeller live region test", function () {
+            var target = $("#component-3");
+            var labeller = fluid.updateAriaLabel(target, "Label 1", {
+                dynamicLabel: true
+            });
+            
+            var region = fluid.jById(fluid.defaults("fluid.ariaLabeller").liveRegionId);
+            jqUnit.assertEquals("Live region should have the correct label", "Label 1", region.text());
+            labeller.update({
+                text: "Label 2",
+                dynamicLabel: true
+            });
+            jqUnit.assertEquals("The live region should be updated", target.attr("aria-label"), region.text());
         });
     };
    

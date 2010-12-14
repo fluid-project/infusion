@@ -90,7 +90,7 @@ var fluid_1_3 = fluid_1_3 || {};
      */
     
     fluid.deadMansBlur = function (control, options) {
-        var that = fluid.initLittleComponent(control, options);
+        var that = fluid.initLittleComponent("fluid.deadMansBlur", options);
         that.blurPending = false;
         $(control).blur(function () {
             that.blurPending = true;
@@ -105,14 +105,16 @@ var fluid_1_3 = fluid_1_3 || {};
         };
         fluid.each(that.options.exclusions, function(exclusion) {
             var exclusion = $(exclusion);
-            exclusion.focusin(that.canceller);
-            exclusion.click(that.canceller);
+            fluid.each(exclusion, function(excludeEl) {
+                $(excludeEl).bind("focusin", that.canceller);
+                $(excludeEl).click(that.canceller);
+            });
         });
         return that;
     };
 
     fluid.defaults("fluid.deadMansBlur", {
-        delay: 150,
+        delay: 150
     });
     
 })(jQuery, fluid_1_3);

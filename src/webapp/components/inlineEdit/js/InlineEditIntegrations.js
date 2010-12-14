@@ -488,7 +488,7 @@ var fluid_1_3 = fluid_1_3 || {};
    
     fluid.inlineEdit.dropdown.blurHandlerBinder = function (that) {
         fluid.deadMansBlur(that.editField, {
-            exclusions: {selectBox: $("div.selectbox-wrapper li", that.editContainer)},
+            exclusions: {selectBox: $("div.selectbox-wrapper", that.editContainer)},
             handler: function () {
                 that.cancel();
             }
