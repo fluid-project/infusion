@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery, fluid, jqUnit*/
+/*global jQuery, fluid, jqUnit, start*/
 
 (function ($) {
     $(function () {
@@ -40,6 +40,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             funcName: "fluid.identity",
             args: []
         });
+        
+        var events;        
         
         // Setup test files.
         var file1 = {
@@ -147,9 +149,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                     "onFileProgress", transcript[i].name);      
             }   
         };
-        
-        
-        var events;        
+                
         var demoUploadTests = new jqUnit.TestCase("DemoEngine Tests", function () {
             events = {};
             fluid.mergeListeners(events, fluid.defaults("fluid.uploader.multiFileUploader").events);
@@ -161,7 +161,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         demoUploadTests.asyncTest("Simulated upload flow: sequence of events.", function () {
             // Test with just one file.
-            var transcript = uploadFirstFileAndTest(function (transcript) {
+            uploadFirstFileAndTest(function (transcript) {
                 jqUnit.assertEquals("We should have received seven upload events.", 7, transcript.length);
 
                 jqUnit.assertEquals("The first event of a batch should be onUploadStart.",
@@ -181,7 +181,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
         demoUploadTests.asyncTest("Simulated upload flow: sequence of events for multiple files.", function () {
             // Upload three files.
-            var transcript = uploadAllFilesAndTest(function (transcript) {
+            uploadAllFilesAndTest(function (transcript) {
                 jqUnit.assertEquals("We should have received twenty upload events.", 20, transcript.length);
                 jqUnit.assertEquals("The first event of a batch should be onUploadStart.",
                                     "onUploadStart", transcript[0].name);
@@ -206,7 +206,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         demoUploadTests.asyncTest("Simulated upload flow: onFileProgress data.", function () {
-            var transcript = uploadFirstFileAndTest(function (transcript) {
+            uploadFirstFileAndTest(function (transcript) {
                 // Check that we're getting valid progress data for the onFileProgress events.
                 jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
                                     200000, transcript[2].args[1]);
@@ -221,7 +221,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
     
         demoUploadTests.asyncTest("Chunking test: smaller files don't get reported larger because of demo file chunking.", function () {
-            var transcript = uploadSmallFileAndTest(function (transcript) {
+            uploadSmallFileAndTest(function (transcript) {
                 // Check that we're getting valid progress data for the onFileProgress events.
                 jqUnit.assertEquals("The only onFileProgress event should have 165432 bytes complete.",
                                     165432, transcript[2].args[1]);
@@ -234,7 +234,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
 
         demoUploadTests.asyncTest("Chunking test: files that are not a multiple of the chunk size don't get reported larger because of the chunking.", function () {
-            var transcript = uploadNotMultipleFileAndTest(function (transcript) {
+            uploadNotMultipleFileAndTest(function (transcript) {
                 // Check that we're getting valid progress data for the onFileProgress events.
                 jqUnit.assertEquals("The first onFileProgress event should have 200000 bytes complete.",
                                     200000, transcript[2].args[1]);

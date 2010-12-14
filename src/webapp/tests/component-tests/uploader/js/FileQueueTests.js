@@ -11,7 +11,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery, fluid*/
+/*global jQuery, fluid, jqUnit, expect*/
 
 (function ($) {
     $(function () {
@@ -244,7 +244,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                 0, 
                                 testQueue.currentBatch.numFilesCompleted);
 
-            called = false; //reset event called flag
             testQueue.finishFile(); 
             jqUnit.assertEquals("testQueue number of files finished should now be 1",
                                 1, 

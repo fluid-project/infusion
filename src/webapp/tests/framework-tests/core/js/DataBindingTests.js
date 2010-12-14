@@ -18,13 +18,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        fluid.setLogging(true)
+        fluid.setLogging(true);
         
         fluid.registerNamespace("fluid.tests");
         
         var DataBindingTests = new jqUnit.TestCase("Data Binding Tests");
         
-        DataBindingTests.test("PathUtil", function() {
+        DataBindingTests.test("PathUtil", function () {
             var path = "path1.path2.path3";
             jqUnit.assertEquals("getHeadPath", "path1", fluid.pathUtil.getHeadPath(path));
             jqUnit.assertEquals("getTailPath", "path3", fluid.pathUtil.getTailPath(path));
@@ -38,7 +38,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Match thing *", "thing.otherThing", fluid.pathUtil.matchPath("thing.*", "thing.otherThing"));
         });
                 
-        fluid.tests.testMergeComponent = function(options) {
+        fluid.tests.testMergeComponent = function (options) {
             return fluid.initLittleComponent("fluid.tests.testMergeComponent", options);
         };
         
@@ -55,7 +55,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
             var comp = fluid.tests.testMergeComponent({model: model});
             
-            var presString = preserve? " - preserve" : ""; 
+            var presString = preserve ? " - preserve" : ""; 
             
             jqUnit.assertEquals("Identical model reference" + presString, 
                 preserve, comp.options.model === model);
@@ -65,7 +65,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         }
      
         
-        DataBindingTests.test("Merge model semantics - preserve", function() {
+        DataBindingTests.test("Merge model semantics - preserve", function () {
             testPreservingMerge(true);
             testPreservingMerge(false);
              // defaultModel of "null" tests FLUID-3768
@@ -77,7 +77,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             testPreservingMerge(false, defaultModel);
         });
         
-        DataBindingTests.test("FLUID-3729 test: application into nothing", function() {
+        DataBindingTests.test("FLUID-3729 test: application into nothing", function () {
             var model = {};
             
             fluid.model.applyChangeRequest(model, {type: "ADD", path: "path1.nonexistent", value: "value"});
@@ -88,13 +88,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
             
         
-        DataBindingTests.test("ApplyChangeRequest - ADD, DELETE and MERGE", function() {
+        DataBindingTests.test("ApplyChangeRequest - ADD, DELETE and MERGE", function () {
             var model = {a: 1, b: 2};
             var model2 = {c: 3};
             
             var testModel1 = fluid.copy(model);
             fluid.model.applyChangeRequest(testModel1, {type: "ADD", path: "", value: fluid.copy(model2)});
-            jqUnit.assertDeepEq("Add at root === clear + add", {c:3}, testModel1);
+            jqUnit.assertDeepEq("Add at root === clear + add", {c: 3}, testModel1);
             
             var testModel2 = fluid.copy(model);
             fluid.model.applyChangeRequest(testModel2, {type: "DELETE", path: ""});
@@ -104,13 +104,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             testModel3.c = fluid.copy(model);
             var testModel4 = fluid.copy(testModel3);
             fluid.model.applyChangeRequest(testModel3, {type: "MERGE", path: "c", value: fluid.copy(model2)});
-            jqUnit.assertDeepEq("Merge at trunk", {a:1, b:2, c:{a:1, b:2, c:3}}, testModel3);
+            jqUnit.assertDeepEq("Merge at trunk", {a: 1, b: 2, c: {a: 1, b: 2, c: 3}}, testModel3);
             
             fluid.model.applyChangeRequest(testModel4, {type: "ADD", path: "c", value: fluid.copy(model2)});
-            jqUnit.assertDeepEq("Add at trunk", {a:1, b:2, c:{c:3}}, testModel4);
+            jqUnit.assertDeepEq("Add at trunk", {a: 1, b: 2, c: {c: 3}}, testModel4);
         });
 
-        DataBindingTests.test("Transactional ChangeApplier - external transactions", function() {
+        DataBindingTests.test("Transactional ChangeApplier - external transactions", function () {
             var model = {a: 1, b: 2};
             var applier = fluid.makeChangeApplier(model);
             var initModel = fluid.copy(model);
@@ -125,8 +125,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
 
         function makeTransTest(trans, thin) {
-            DataBindingTests.test("Transactional ChangeApplier - Transactional: " 
-                    + trans + " Thin: " + thin, function() {
+            DataBindingTests.test("Transactional ChangeApplier - Transactional: " + 
+                trans + " Thin: " + thin, function () {
                 var model = {
                     outerProperty: false,
                     transWorld: {
@@ -151,11 +151,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 function transGuard1(innerModel, changeRequest, applier) {
                     applier.requestChange("transWorld.innerPath2", 5);
                     jqUnit.assertEquals("Change wrt transaction", trans && !thin ? 4 : 5, model.transWorld.innerPath2);
-                    jqUnit.assertEquals("ModelChanged count", trans? 0 : 1, modelChangedCheck.length);
+                    jqUnit.assertEquals("ModelChanged count", trans ? 0 : 1, modelChangedCheck.length);
                     guard1check++;
                 }
                 var applier = fluid.makeChangeApplier(model, {thin: thin});
-                applier.guards.addListener((trans? "!" : "") + "transWorld", transGuard1);
+                applier.guards.addListener((trans ? "!" : "") + "transWorld", transGuard1);
                 applier.modelChanged.addListener("*", modelChanged);
                 applier.requestChange("transWorld.innerPath1", 4);
                 jqUnit.assertEquals("Guard 1 executed", 1, guard1check);
@@ -169,7 +169,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         makeTransTest(true, true);
         makeTransTest(false, true);
         
-        DataBindingTests.test("Culling Applier", function() {
+        DataBindingTests.test("Culling Applier", function () {
             var model = {
                     outerProperty: false,
                     transWorld: {
@@ -207,7 +207,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("Low priority guard culled", lowExecuted);
         });
         
-        DataBindingTests.test("PostGuards", function() {
+        DataBindingTests.test("PostGuards", function () {
             var model = {
                 outerProperty: false,
                 transWorld: {
@@ -245,7 +245,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("Model unchanged ", modelChangedCheck);
         });
         
-        DataBindingTests.test("ChangeApplier", function() {
+        DataBindingTests.test("ChangeApplier", function () {
             var outerDAR = null;
             function checkingGuard(model, dar) {
                 outerDAR = dar;
@@ -269,9 +269,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             applier.requestChange("outerProperty", true);
             
             jqUnit.assertDeepEq("Guard triggered", {
-              path: "outerProperty",
-              value: true,
-              type: "ADD"}, outerDAR);
+                path: "outerProperty",
+                value: true,
+                type: "ADD"
+            }, outerDAR);
             jqUnit.assertEquals("Value applied", true, model.outerProperty);
             
             jqUnit.assertEquals("Outer listener old", false, outerOldModel.outerProperty);
@@ -294,9 +295,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             applier.guards.addListener("innerProperty.*", checkingGuard2);
             applier.requestChange("innerProperty.innerPath1", 6);
             jqUnit.assertDeepEq("Guard2 triggered", {
-              path: "innerProperty.innerPath1",
-              value: 6,
-              type: "ADD"}, outerDAR2);
+                path: "innerProperty.innerPath1",
+                value: 6,
+                type: "ADD"
+            }, outerDAR2);
             
             outerNewModel = null;
             applier.requestChange("innerProperty.innerPath2", "Disowneriet");

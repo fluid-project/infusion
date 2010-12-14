@@ -12,9 +12,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery*/
-/*global fluid*/
-/*global jqUnit*/
+/*global jQuery, fluid, jqUnit, expect*/
 
 
 (function ($) {
@@ -25,9 +23,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var fluidJSTests = new jqUnit.TestCase("Fluid JS Tests");
 
-        function isOdd(i) {return i % 2 === 1;}
+        function isOdd(i) {
+            return i % 2 === 1;
+        }
         
-        fluidJSTests.test("remove_if", function() {
+        fluidJSTests.test("remove_if", function () {
             jqUnit.assertDeepEq("Remove nothing", [2, 4, 6, 8], fluid.remove_if([2, 4, 6, 8], isOdd));
             jqUnit.assertDeepEq("Remove first ", [2, 4, 6, 8], fluid.remove_if([1, 2, 4, 6, 8], isOdd));
             jqUnit.assertDeepEq("Remove last ", [2, 4, 6, 8], fluid.remove_if([2, 4, 6, 8, 9], isOdd));
@@ -50,23 +50,25 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertDeepEq("Remove from nothing", {}, fluid.remove_if({}, isOdd));    
         });
 
-        fluidJSTests.test("transform", function() {
-            function addOne(i) {return i + 1;}
+        fluidJSTests.test("transform", function () {
+            function addOne(i) {
+                return i + 1;
+            }
             jqUnit.assertDeepEq("Transform array", [false, true, false, true, false], fluid.transform([0, 1, 2, 3, 4], isOdd));
             jqUnit.assertDeepEq("Transform hash", {a: false, b: true}, fluid.transform({a: 0, b: 1}, isOdd));
             jqUnit.assertDeepEq("Transform hash chain", {a: true, b: false}, fluid.transform({a: 0, b: 1}, addOne, isOdd));
         });
         
-        fluidJSTests.test("keyForValue, fluid.find and fluid.each", function() {
+        fluidJSTests.test("keyForValue, fluid.find and fluid.each", function () {
             expect(16);
-            var seekIt = function(seek) {
-                fluid.each(seek, function(value, key) {
+            var seekIt = function (seek) {
+                fluid.each(seek, function (value, key) {
                     jqUnit.assertEquals("Find value with keyForValue - " + value + ": ", key, fluid.keyForValue(seek, value));
-                    jqUnit.assertEquals("Find value with fluid.find - " + value + ": ", key, fluid.find(seek, function(thisValue, key) {
+                    jqUnit.assertEquals("Find value with fluid.find - " + value + ": ", key, fluid.find(seek, function (thisValue, key) {
                         if (value === thisValue) {
                             return key;
-                            }
-                        }));
+                        }
+                    }));
                 });           
             };
             var seek1 = {"One": 1, "Two": null, "Three": false, "Four": "Sneeze"};
@@ -75,12 +77,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             seekIt(seek2);
         });
         
-        fluidJSTests.test("null iteration", function() {
-            fluid.each(null, function() {});
-            fluid.transform(null, function() {});
+        fluidJSTests.test("null iteration", function () {
+            fluid.each(null, function () {});
+            fluid.transform(null, function () {});
         });
 
-        fluidJSTests.test("merge", function() {
+        fluidJSTests.test("merge", function () {
           
             expect(8);
             
@@ -110,12 +112,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });
       
-        fluidJSTests.test("reverse merge", function() {
+        fluidJSTests.test("reverse merge", function () {
             var target = {
                 root: {
                     prop1: "thing1",
                     prop2: "thing2"
-              }  
+                }  
             };
             var source = {
                 root: {
@@ -132,7 +134,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
       
         });
         
-        fluidJSTests.test("reverse merge: object with multiple keys", function() {
+        fluidJSTests.test("reverse merge: object with multiple keys", function () {
             var target = {
                 prop1: {
                     child1: {"key1": "value1", "key2": 2},
@@ -142,7 +144,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 prop2: "old",
                 prop3: {"key1": "value1", "key2": 2}
             };
-           var source = {
+            var source = {
                 prop1: {
                     child1: {"key1": "value1", "key2": 2},
                     child2: 2,
@@ -152,9 +154,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 prop3: {"key1": "value1", "key2": 2}
             };
 
-            var testReverseMerge = function(policy, expected) {
+            var testReverseMerge = function (policy, expected) {
                 var thisTarget = fluid.copy(target);
-                if (policy=="undeclared") {
+                if (policy === "undeclared") {
                     fluid.merge(thisTarget, source);
                 } else {
                     fluid.merge(policy, thisTarget, source);
@@ -317,7 +319,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             }
         });
     
-        fluidJSTests.test("container(): bind to a single jQuery", function() {
+        fluidJSTests.test("container(): bind to a single jQuery", function () {
             // Try with a single-item jQuery.
             var oneContainer = jQuery("#main");
             var result = fluid.container(oneContainer);
@@ -346,19 +348,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var container = {foo: "bar"};
 
             try {
-                var result = fluid.container(container);
+                fluid.container(container);
                 jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
             } catch (e) {
                 jqUnit.assertTrue("We should have received an exception", !!e);
             }
         });
         
-        fluidJSTests.test("DOM binder", function() {
+        fluidJSTests.test("DOM binder", function () {
             var container = $(".pager-top");
             var selectors = {
-              "page-link": ".page-link",
-              "inexistent": ".inexistent",
-              "inner-link": "a"
+                "page-link": ".page-link",
+                "inexistent": ".inexistent",
+                "inner-link": "a"
             };
             var binder = fluid.createDomBinder(container, selectors);
             var pageLinks = binder.locate("page-link");
@@ -377,7 +379,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var inexistent = binder.locate("inexistent");
             jqUnit.assertNotNull("Inexistent return", inexistent);
             jqUnit.assertEquals("Inexistent length", 0, inexistent.length);
-            var inexistent2 = binder.locate("inexistent", pageLinks[0]);
+            binder.locate("inexistent", pageLinks[0]);
             jqUnit.assertNotNull("Scoped inexistent return", inexistent);
             jqUnit.assertEquals("Scoped inexistent length", 0, inexistent.length);
         });
@@ -440,30 +442,30 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         var componentWithOverridenSubcomponentOptions = function (greeting) {
             return fluid.tests.testComponent("#notmain", {
-               subcomponent: {
-                   options: {
-                       greeting: greeting
-                   }
-               }
-           });
+                subcomponent: {
+                    options: {
+                        greeting: greeting
+                    }
+                }
+            });
         };
         
         fluidJSTests.test("initSubcomponents", function () {
-           defineTestComponent();
+            defineTestComponent();
            
-           // First, let's check that the defaults are used if no other options are specified.
-           var myComponent = fluid.tests.testComponent("#notmain");
-           jqUnit.assertEquals("The subcomponent should have its default options.", 
-                               "hello", myComponent.subcomponent.greeting);
+            // First, let's check that the defaults are used if no other options are specified.
+            var myComponent = fluid.tests.testComponent("#notmain");
+            jqUnit.assertEquals("The subcomponent should have its default options.", 
+                                "hello", myComponent.subcomponent.greeting);
            
-           // Now try overriding the subcomponent options with specific options.
-           myComponent = componentWithOverridenSubcomponentOptions("bonjour");
-           jqUnit.assertEquals("The subcomponent's options should have been overridden correctly.", 
-                               "bonjour", myComponent.subcomponent.greeting);
+            // Now try overriding the subcomponent options with specific options.
+            myComponent = componentWithOverridenSubcomponentOptions("bonjour");
+            jqUnit.assertEquals("The subcomponent's options should have been overridden correctly.", 
+                                "bonjour", myComponent.subcomponent.greeting);
                                
         });
         
-        fluidJSTests.test("set/getBeanValue", function() {
+        fluidJSTests.test("set/getBeanValue", function () {
             var model = {"path3": "thing"};
             jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path3.nonexistent"));
             jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path3.nonexistent.non3"));
@@ -472,15 +474,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path1"));
             fluid.set(model, "path2.past", "attach");
             jqUnit.assertDeepEq("Set blank value", {path2: {past: "attach"}, path3: "thing"}, model);
-            fluid.registerGlobalFunction("fluid.newFunc", function() { return 2 ;});
+            fluid.registerGlobalFunction("fluid.newFunc", function () { 
+                return 2;
+            });
             jqUnit.assertEquals("Call new global function", 2, fluid.newFunc());
         });
         
-        var customStrategy = function(root, segment, index) {
-            return index === 0 && segment === "path3"? fluid.NO_VALUE : undefined;
-        }
+        var customStrategy = function (root, segment, index) {
+            return index === 0 && segment === "path3" ? fluid.NO_VALUE : undefined;
+        };
         
-        fluidJSTests.test("getBeanValue with custom strategy", function() {
+        fluidJSTests.test("getBeanValue with custom strategy", function () {
             var model = {path3: "thing", path4: "otherThing"};
             var value = fluid.get(model, "path3", [customStrategy, fluid.model.defaultFetchStrategy]);
             jqUnit.assertUndefined("path3 value censored", value);
@@ -488,9 +492,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("path4 value uncensored", model.path4, value2);
         });
 
-        fluidJSTests.test("Globals", function() {
+        fluidJSTests.test("Globals", function () {
             var space = fluid.registerNamespace("fluid.engage.mccord");
-            space.func = function() { return 2 ;};
+            space.func = function () { 
+                return 2;
+            };
             jqUnit.assertEquals("Call function in namespace", 2, fluid.engage.mccord.func());
             
             var fluidd = fluid.getGlobalValue("nothing.fluid");
@@ -499,13 +505,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var fluidd2 = fluid.getGlobalValue("fluid.fluid");
             jqUnit.assertUndefined("No environment slippage", fluidd2);
             
-            var autocomplete = fluid.registerNamespace("cspace.autocomplete");
+            fluid.registerNamespace("cspace.autocomplete");
             var fluidd3 = fluid.getGlobalValue("cspace.fluid");
             jqUnit.assertUndefined("No environment slippage", fluidd3);
             
         });
         
-        fluidJSTests.test("messageResolver", function() {
+        fluidJSTests.test("messageResolver", function () {
             var bundlea = {
                 key1: "value1a",
                 key2: "value2a"
@@ -523,20 +529,20 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 key3: "value3b",
                 key4: undefined
             };
-            fluid.each(requiredLook, function(value, key) {
+            fluid.each(requiredLook, function (value, key) {
                 var looked = resolver.lookup([key]);
-                jqUnit.assertEquals("Resolve key " + key, value, looked? looked.template: looked);
+                jqUnit.assertEquals("Resolve key " + key, value, looked ? looked.template: looked);
             });
             jqUnit.assertEquals("Local fallback",  bundleb.key1, resolver.resolve(["key2", "key1"]));
             jqUnit.assertEquals("Global fallback", bundlea.key2, resolver.resolve(["key4", "key2"]));
         });
         
-        fluidJSTests.test("Sorting listeners", function() {
+        fluidJSTests.test("Sorting listeners", function () {
             var accumulate = [];
-            var makeListener = function(i) {
-                return function() {
+            var makeListener = function (i) {
+                return function () {
                     accumulate.push(i);
-                }
+                };
             };
             var firer = fluid.event.getEventFirer();
             firer.addListener(makeListener(4), null, null, "last");
@@ -548,8 +554,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         fluidJSTests.test("Attach and remove listeners", function () {
-            var testListener = function(shouldExecute) {
-                   jqUnit.assertTrue("This listener should be reached only once", shouldExecute);
+            var testListener = function (shouldExecute) {
+                jqUnit.assertTrue("This listener should be reached only once", shouldExecute);
             };
 
             expect(1);
@@ -559,6 +565,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
             firer.removeListener(testListener);
             firer.fire(false); //listener should not run and assertion should not 
-         });
+        });
     });
 })(jQuery);

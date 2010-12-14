@@ -9,7 +9,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery, fluid*/
+/*global jQuery, fluid, jqUnit*/
 
 (function ($) {
     $(document).ready(function () {        
@@ -29,7 +29,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var file = {
                 name: "test",
                 type: "image",
-                getAsBinary: function () {return "";}
+                getAsBinary: function () {
+                    return "";
+                }
             };
             
             var multipart = fluid.uploader.html5Strategy.generateMultiPartContent(boundary, file);
@@ -54,7 +56,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 },
                 events: events, 
                 browseButton: browseButton, 
-                addFilesFn: function() {}
+                addFilesFn: function () {}
             });
             
             var inputs = browseButton.children();
@@ -75,5 +77,5 @@ https://source.fluidproject.org/svn/LICENSE.txt
             inputs.eq(1).blur();
             jqUnit.assertFalse("On blur, the browseButton no longer has the focus class", browseButton.hasClass("focus"));
         });
-    })
+    });
 })(jQuery);

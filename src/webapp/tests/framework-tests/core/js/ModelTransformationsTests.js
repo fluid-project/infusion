@@ -52,29 +52,29 @@ https://source.fluidproject.org/svn/LICENSE.txt
         jqUnit.assertNotEquals("When the path is valid, the value option should not be returned.", 
                                "hello!", result);
                                
-       result = fluid.model.transform.value(source, {
-           path: "dog",
-           value: "hello!"
-       });
+        result = fluid.model.transform.value(source, {
+            path: "dog",
+            value: "hello!"
+        });
 
-       jqUnit.assertNotEquals("When the path's value is null, the value option should not be returned.", 
-                              "hello!", result);
+        jqUnit.assertNotEquals("When the path's value is null, the value option should not be returned.", 
+                               "hello!", result);
                               
-      result = fluid.model.transform.value(source, {
-          path: "goat",
-          value: "hello!"
-      });
+        result = fluid.model.transform.value(source, {
+            path: "goat",
+            value: "hello!"
+        });
 
-      jqUnit.assertNotEquals("When the path's value is 'false', the value option should not be returned.", 
-                             "hello!", result);
+        jqUnit.assertNotEquals("When the path's value is 'false', the value option should not be returned.", 
+                               "hello!", result);
 
-       result = fluid.model.transform.value(source, {
-           path: "gerbil",
-           value: "hello!"
-       });
+        result = fluid.model.transform.value(source, {
+            path: "gerbil",
+            value: "hello!"
+        });
        
-       jqUnit.assertEquals("When the path's value is undefined, the value option should be returned.", 
-                           "hello!", result);
+        jqUnit.assertEquals("When the path's value is undefined, the value option should be returned.", 
+                            "hello!", result);
                             
         // Transform value with literal value
         result = fluid.model.transform.value(source, {
@@ -297,7 +297,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 sheep: [
                     "baaa",
                     "wooooool"
-                ],
+                ]
             }
         };
         
@@ -335,7 +335,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     options: {
                         flashMovieSettings: {
                             flashURL: "jscripts/infusion/lib/swfupload/flash/swfupload.swf",
-                            flashButtonImageURL: "jscripts/infusion/components/uploader/images/browse.png",
+                            flashButtonImageURL: "jscripts/infusion/components/uploader/images/browse.png"
                         }
                     }
                 }

@@ -11,6 +11,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+/*global jQuery, fluid, jqUnit*/
+
 (function ($) {
     $(document).ready(function () {
         var container = function () {
@@ -31,7 +33,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var scrollCheck = function (scroller, elementNumber) {
             var scrollableList = $("#scrollable");
             var elementTarget = scrollableList.find("li").eq(elementNumber);
-            var beforeScroll = scroller.scrollingElm[0].scrollTop;
             var containerHeight = scroller.scrollingElm.height();
             var elePosTop = elementTarget[0].offsetTop;
             var elePosBottom = elePosTop - containerHeight;
