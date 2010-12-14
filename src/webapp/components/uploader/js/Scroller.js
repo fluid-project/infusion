@@ -12,7 +12,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery, fluid_1_3:true*/
 
-fluid_1_3 = fluid_1_3 || {};
+var fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
     
