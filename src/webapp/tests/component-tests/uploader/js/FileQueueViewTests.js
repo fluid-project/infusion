@@ -12,7 +12,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery, fluid*/
+/*global jQuery, fluid, jqUnit, expect*/
 
 (function ($) {
     $(function () {
@@ -75,7 +75,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         var createFileQueue = function (qEl) {            
             var q = fluid.uploader.fileQueueView(qEl, mockEvents, {
                 model: fluid.uploader.fileQueue().files,
-                uploaderContainer: $("#main"),
+                uploaderContainer: $("#main")
             });
             return q;
         };
