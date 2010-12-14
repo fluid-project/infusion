@@ -19,7 +19,7 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.browser = fluid.browser || {};
     
     fluid.browser.binaryXHR = function () {
-        var canSendBinary = window.FormData || XMLHttpRequest.prototype.sendAsBinary;
+        var canSendBinary = window.FormData || (window.XMLHttpRequest && window.XMLHttpRequest.prototype.sendAsBinary);
         return canSendBinary ? fluid.typeTag("fluid.browser.supportsBinaryXHR") : undefined;
     };
     
