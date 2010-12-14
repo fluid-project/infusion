@@ -16,3 +16,7 @@
 .demo-redoContainer  :focus {
     outline: 1px solid black;
 }
+
+.demo-inlineEdit-p {
+	margin-bottom: 1em;
+}

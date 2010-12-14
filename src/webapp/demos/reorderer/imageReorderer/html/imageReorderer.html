@@ -30,23 +30,15 @@
         <script type="text/javascript" src="../js/imageReorderer.js"></script>
     </head>
 
-  <body>
-            <div class="fl-offScreen-hidden" tabindex="1">Image Reorderer: To use the keyboard:
-                      Screen reader users turn off virtual cursor (insert + z).
-                      Select an image using i, k, m or j.
-                      Move an image using CTRL + i, k, m or j.
-                      View an image by pressing Enter.
-            </div>
-
-            <div class="fl-reorderer-instructions" tabindex="-1">
-                <strong>To use the keyboard:</strong>
-                Select an image using the [arrow keys]. Move an image using CTRL + [arrow keys]. View an image by pressing Enter.
-            </div>
-   
+  <body class="demo-imageReorderer-container">
+     <h1>Image Gallery</h1>
+     
+     <p><strong>Mouse instructions:</strong> Drag and drop items with the mouse.  View an image by clicking it.</p>
+     <p><strong>Keyboard instructions:</strong> Arrow keys move the focus.  CTRL + Arrow moves the selection. View an image by using the 'Return' or 'Enter' key.</p>
+            
     <form action="#" id="reorder-images-form" class="flc-imageReorderer fl-imageReorderer fl-reorderer-horizontalLayout">
     
-        <div>
-            
+        <div>      
             <a href="../../../../components/reorderer/images/Dragonfruit.jpg" class="flc-imageReorderer-item fl-imageReorderer-item">
                 <img src="../../../../components/reorderer/images/Dragonfruit.jpg" alt="Dragonfruit thumbnail" />
                 <span class="flc-reorderer-imageTitle  fl-imageReorderer-caption">Dragonfruit</span>
