@@ -12,306 +12,308 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+/*global fluid, jQuery, jqUnit*/
+
 fluid.registerNamespace("fluid.tests");
 
-(function($) {
+(function ($) {
 
-    fluid.tests.testRendererUtilities = function() {
+    fluid.tests.testRendererUtilities = function () {
     
-    var binderTests = jqUnit.testCase("Cutpoint utility tests");
-    binderTests.test("Renderer Utilities Test: selectorsToCutpoints", function () {
-        // Single class name, simple cutpoints generation.
-        var selectors = {selector1: ".class1"};
-        var expected = [{id: "selector1", selector: ".class1"}];
-        jqUnit.assertDeepEq("Selector Map generation", expected, fluid.renderer.selectorsToCutpoints(selectors));
-        
-        selectors.selector2 = ".class2";
-        
-        // Multiple selectors with one repeating.
-        expected = [{id: "selector1", selector: ".class1"}, {id: "selector2:", selector: ".class2"}];
-        var actual = fluid.renderer.selectorsToCutpoints(selectors, {repeatingSelectors: ["selector2"]});
-        jqUnit.assertDeepEq("Selector Map generation, with repeating items", expected, actual);
-        
-        // Ignoring selectors.
-        expected = [{id: "selector1", selector: ".class1"}];
-        actual = fluid.renderer.selectorsToCutpoints(selectors, {
-            selectorsToIgnore: ["selector2"]
+        var binderTests = jqUnit.testCase("Cutpoint utility tests");
+        binderTests.test("Renderer Utilities Test: selectorsToCutpoints", function () {
+            // Single class name, simple cutpoints generation.
+            var selectors = {selector1: ".class1"};
+            var expected = [{id: "selector1", selector: ".class1"}];
+            jqUnit.assertDeepEq("Selector Map generation", expected, fluid.renderer.selectorsToCutpoints(selectors));
+            
+            selectors.selector2 = ".class2";
+            
+            // Multiple selectors with one repeating.
+            expected = [{id: "selector1", selector: ".class1"}, {id: "selector2:", selector: ".class2"}];
+            var actual = fluid.renderer.selectorsToCutpoints(selectors, {repeatingSelectors: ["selector2"]});
+            jqUnit.assertDeepEq("Selector Map generation, with repeating items", expected, actual);
+            
+            // Ignoring selectors.
+            expected = [{id: "selector1", selector: ".class1"}];
+            actual = fluid.renderer.selectorsToCutpoints(selectors, {
+                selectorsToIgnore: ["selector2"]
+            });
+            jqUnit.assertDeepEq("Selector Map generation, with ignored selectors", expected, actual);
+            jqUnit.assertNotUndefined("selectorsToCutpoints should not eat other people's selectors", selectors.selector2);
+            
+            // Repeating and ignored selectors.
+            expected = [{id: "selector1:", selector: ".class1"}];
+            actual = fluid.renderer.selectorsToCutpoints(selectors, {
+                repeatingSelectors: ["selector1"], 
+                selectorsToIgnore: ["selector2"]
+            });
+            jqUnit.assertDeepEq("Selector Map generation, with repeating items and ignored selectors", expected, actual);
+            jqUnit.assertNotUndefined("selectorsToCutpoints should not eat other people's selectors", selectors.selector2);
         });
-        jqUnit.assertDeepEq("Selector Map generation, with ignored selectors", expected, actual);
-        jqUnit.assertNotUndefined("selectorsToCutpoints should not eat other people's selectors", selectors.selector2);
         
-        // Repeating and ignored selectors.
-        expected = [{id: "selector1:", selector: ".class1"}];
-        actual = fluid.renderer.selectorsToCutpoints(selectors, {
-            repeatingSelectors: ["selector1"], 
-            selectorsToIgnore: ["selector2"]
-        });
-        jqUnit.assertDeepEq("Selector Map generation, with repeating items and ignored selectors", expected, actual);
-        jqUnit.assertNotUndefined("selectorsToCutpoints should not eat other people's selectors", selectors.selector2);
-    });
-    
-    fluid.tests.rendererComponentTest = function(container, options) {
-        var that = fluid.initRendererComponent("fluid.tests.rendererComponentTest", container, options);
-        return that;
-    };
-    
-    fluid.tests.censoringStrategy = function(listCensor) {
-        return {
-            init: function() {
-                var totalPath = "";
-                return function(root, segment, index) {
-                    var orig = root[segment];
-                    totalPath = fluid.model.composePath(totalPath, segment);
-                    return totalPath === "recordlist.deffolt"?
-                        listCensor(orig) : orig;
-                    }
-                }
-            }
+        fluid.tests.rendererComponentTest = function (container, options) {
+            var that = fluid.initRendererComponent("fluid.tests.rendererComponentTest", container, options);
+            return that;
         };
-    
-    fluid.defaults("fluid.tests.rendererComponentTest", {
-        mergePolicy: {
-            model: "preserve",
-            protoTree: "noexpand, replace"
-        },
-        model: {
-            recordlist: {
-                deffolt: ["person", "intake", "loanin", "loanout", "acquisition", "organization", "objects", "movement"],
-            }
-        },
-        protoTree: {
-            expander: {
-                type: "fluid.renderer.repeat",
-                controlledBy: "recordlist.deffolt",
-                pathAs: "elementPath",
-                repeatID: "recordType",
-                tree: { value: "${{elementPath}}" }
-            },
-            message: {
-                messagekey: "message"
-            },
-            deffoltmessage: {
-                messagekey: "deffolt"
-            }
-        },
-        selectors: {
-            recordType: ".csc-searchBox-recordType",
-            message: ".csc-searchBox-message",
-            deffoltmessage: ".csc-searchBox-deffoltmessage",
-            toIgnore: ".csc-searchBox-ignore"
-        },
-        repeatingSelectors: ["recordType"],
-        selectorsToIgnore: ["toIgnore"],
-        parentBundle: "{globalBundle}",
-        strings: {
-            message: "A mess of messuage"          
-        }
-    });
-    
-    function assertRenderedText(els, array) {
-        fluid.each(els, function(el, index) {
-            jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
-        });
-    }
-    
-    var compTests = jqUnit.testCase("Renderer component tests");
-    
-    compTests.test("Renderer component without resolver", function() {
-        var globalMessages = {deffolt: "A globbal messuage"};
-        var globalBundle = fluid.messageResolver({messageBase: globalMessages});
-        var that = fluid.withEnvironment({globalBundle: globalBundle}, function() { 
-            return fluid.tests.rendererComponentTest(".renderer-component-test");
-        });
-        that.refreshView();
-        var renderMess = that.locate("message").text();
-        jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
-        var renderDeffoltMess = that.locate("deffoltmessage").text();
-        jqUnit.assertEquals("Rendered message from global bundle", globalMessages.deffolt, renderDeffoltMess);
-        jqUnit.assertEquals("Resolver global message using local resolver", globalMessages.deffolt, that.messageResolver.resolve("deffolt"));
-        var renderRecs = that.locate("recordType");
-        var array = that.model.recordlist.deffolt;
-        jqUnit.assertEquals("Rendered elements", array.length, renderRecs.length);
-        fluid.each(renderRecs, function(rec, index) {
-            var key = that.renderer.boundPathForNode(rec);
-            jqUnit.assertEquals("Bound path at " + index, "recordlist.deffolt."+index, key);
-        });
-        assertRenderedText(renderRecs, array);
-    });
-
-    var censorFunc = function(types) {
-        var togo = [];
-        fluid.each(types, function(type) {
-            if (type.charAt(0) === "o") {
-                togo.push(type);
-            }
-        });
-        return togo;
-        };
-    
-    var testFilteredRecords = function(that) {
-        that.refreshView();
-        var renderRecs = that.locate("recordType");
-        var censored = censorFunc(that.model.recordlist.deffolt);
-        jqUnit.assertEquals("Rendered elements", censored.length, renderRecs.length);
-        assertRenderedText(renderRecs, censored);      
-    }
-    
-    var testMessageRepeat = function (that) {
-        that.refreshView();
-        var tablinks = that.locate("tabLink");
-        jqUnit.assertEquals("Existin string relative should be found", "Acquisition", tablinks.eq(0).text());
-        jqUnit.assertEquals("Nonexisting string relative should be notified of", "[No messagecodes provided]", tablinks.eq(1).text());
-        jqUnit.assertEquals("Nonexisting string relative should be notified of", "[No messagecodes provided]", that.locate("unmatchedMessage").text());
-    };
-    
-    var testMultipleExpanders = function (that) {
-        that.refreshView();
-        var tabContent = that.locate("tabContent");
-        var tabTwoContent = that.locate("tab2Content");
-        jqUnit.assertEquals("Existin string relative should be found", "Acquisition", tabContent.eq(0).text());
-        jqUnit.assertEquals("Existin string relative should be found", "Cataloging", tabContent.eq(1).text());
-        jqUnit.assertEquals("Existin string relative should be found", "Acquisition", tabTwoContent.eq(0).text());
-        jqUnit.assertEquals("Existin string relative should be found", "Cataloging", tabTwoContent.eq(1).text());
-    };
-    
-    compTests.test("Multiple same level expanders", function() {
-        var that = fluid.tests.rendererComponentTest(".renderer-component-test-multiple-repeat", {
-            model: {
-                firstCategory: {
-                    acquisition: {
-                        "name": "acq"
-                    }, 
-                    objects: {
-                        "name": "acq2"
-                    }
-                },
-                secondCategory: {
-                    acquisition: {
-                        "name": "acq"
-                    }, 
-                    objects: {
-                        "name": "acq2"
-                    }
+        
+        fluid.tests.censoringStrategy = function (listCensor) {
+            return {
+                init: function () {
+                    var totalPath = "";
+                    return function (root, segment, index) {
+                        var orig = root[segment];
+                        totalPath = fluid.model.composePath(totalPath, segment);
+                        return totalPath === "recordlist.deffolt" ?
+                            listCensor(orig) : orig;
+                    };
                 }
+            };
+        };
+        
+        fluid.defaults("fluid.tests.rendererComponentTest", {
+            mergePolicy: {
+                model: "preserve",
+                protoTree: "noexpand, replace"
             },
-            selectors: {
-                "tab:": ".csc-tabs-tab",
-                "tab2:": ".csc-tabs-tab-two",
-                "tabContent": ".csc-tabs-tab-content",
-                "tab2Content": ".csc-tabs-tab-two-content"
-            },
-            strings: {
-                "acq": "Acquisition",
-                "acq2": "Cataloging"
-            },
-            protoTree: {
-                expander: [{
-                    repeatID: "tab2:",
-                    tree: {
-                        "tab2Content": {
-                            messagekey: "${{tabInfo}.name}"
-                        }
-                    },
-                    type: "fluid.renderer.repeat",
-                    pathAs: "tabInfo",
-                    controlledBy: "secondCategory"
-                }, {
-                    repeatID: "tab:",
-                    tree: {
-                        tabContent: {
-                            messagekey: "${{tabInfo}.name}"
-                        }
-                    },
-                    type: "fluid.renderer.repeat",
-                    pathAs: "tabInfo",
-                    controlledBy: "firstCategory"
-                }]
-            }
-        });
-        testMultipleExpanders(that);
-    });
-    
-    compTests.test("FLUID-3819 test: messagekey with no value", function() {
-        var that = fluid.tests.rendererComponentTest(".renderer-component-test-repeat", {
-            resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
             model: {
                 recordlist: {
-                    test: {
-                        acquisition: {
-                            "name": "acq",
-                            href: "#HREF1"
-                        }, 
-                        objects: {
-                            href: "#HREF1"
-                        }
-                    }
+                    deffolt: ["person", "intake", "loanin", "loanout", "acquisition", "organization", "objects", "movement"]
                 }
-            },
-            selectors: {
-                "tab:": ".csc-tabs-tab",
-                tabLink: ".csc-tabs-tab-link",
-                unmatchedMessage: ".csc-unmatchedMessage"
-            },
-            strings: {
-                "acq": "Acquisition",
-                "cat": "Cataloging"
             },
             protoTree: {
                 expander: {
-                    repeatID: "tab:",
-                    tree: {
-                        tabLink: {
-                            target: "${{tabInfo}.href}",
-                            linktext: {
-                                messagekey: "${{tabInfo}.name}"
-                            }
+                    type: "fluid.renderer.repeat",
+                    controlledBy: "recordlist.deffolt",
+                    pathAs: "elementPath",
+                    repeatID: "recordType",
+                    tree: { value: "${{elementPath}}" }
+                },
+                message: {
+                    messagekey: "message"
+                },
+                deffoltmessage: {
+                    messagekey: "deffolt"
+                }
+            },
+            selectors: {
+                recordType: ".csc-searchBox-recordType",
+                message: ".csc-searchBox-message",
+                deffoltmessage: ".csc-searchBox-deffoltmessage",
+                toIgnore: ".csc-searchBox-ignore"
+            },
+            repeatingSelectors: ["recordType"],
+            selectorsToIgnore: ["toIgnore"],
+            parentBundle: "{globalBundle}",
+            strings: {
+                message: "A mess of messuage"          
+            }
+        });
+        
+        function assertRenderedText(els, array) {
+            fluid.each(els, function (el, index) {
+                jqUnit.assertEquals("Element " + index + " text", array[index], $(el).text());
+            });
+        }
+        
+        var compTests = jqUnit.testCase("Renderer component tests");
+        
+        compTests.test("Renderer component without resolver", function () {
+            var globalMessages = {deffolt: "A globbal messuage"};
+            var globalBundle = fluid.messageResolver({messageBase: globalMessages});
+            var that = fluid.withEnvironment({globalBundle: globalBundle}, function () { 
+                return fluid.tests.rendererComponentTest(".renderer-component-test");
+            });
+            that.refreshView();
+            var renderMess = that.locate("message").text();
+            jqUnit.assertEquals("Rendered message from bundle", that.options.strings.message, renderMess);
+            var renderDeffoltMess = that.locate("deffoltmessage").text();
+            jqUnit.assertEquals("Rendered message from global bundle", globalMessages.deffolt, renderDeffoltMess);
+            jqUnit.assertEquals("Resolver global message using local resolver", globalMessages.deffolt, that.messageResolver.resolve("deffolt"));
+            var renderRecs = that.locate("recordType");
+            var array = that.model.recordlist.deffolt;
+            jqUnit.assertEquals("Rendered elements", array.length, renderRecs.length);
+            fluid.each(renderRecs, function (rec, index) {
+                var key = that.renderer.boundPathForNode(rec);
+                jqUnit.assertEquals("Bound path at " + index, "recordlist.deffolt." + index, key);
+            });
+            assertRenderedText(renderRecs, array);
+        });
+    
+        var censorFunc = function (types) {
+            var togo = [];
+            fluid.each(types, function (type) {
+                if (type.charAt(0) === "o") {
+                    togo.push(type);
+                }
+            });
+            return togo;
+        };
+        
+        var testFilteredRecords = function (that) {
+            that.refreshView();
+            var renderRecs = that.locate("recordType");
+            var censored = censorFunc(that.model.recordlist.deffolt);
+            jqUnit.assertEquals("Rendered elements", censored.length, renderRecs.length);
+            assertRenderedText(renderRecs, censored);      
+        };
+        
+        var testMessageRepeat = function (that) {
+            that.refreshView();
+            var tablinks = that.locate("tabLink");
+            jqUnit.assertEquals("Existin string relative should be found", "Acquisition", tablinks.eq(0).text());
+            jqUnit.assertEquals("Nonexisting string relative should be notified of", "[No messagecodes provided]", tablinks.eq(1).text());
+            jqUnit.assertEquals("Nonexisting string relative should be notified of", "[No messagecodes provided]", that.locate("unmatchedMessage").text());
+        };
+        
+        var testMultipleExpanders = function (that) {
+            that.refreshView();
+            var tabContent = that.locate("tabContent");
+            var tabTwoContent = that.locate("tab2Content");
+            jqUnit.assertEquals("Existin string relative should be found", "Acquisition", tabContent.eq(0).text());
+            jqUnit.assertEquals("Existin string relative should be found", "Cataloging", tabContent.eq(1).text());
+            jqUnit.assertEquals("Existin string relative should be found", "Acquisition", tabTwoContent.eq(0).text());
+            jqUnit.assertEquals("Existin string relative should be found", "Cataloging", tabTwoContent.eq(1).text());
+        };
+        
+        compTests.test("Multiple same level expanders", function () {
+            var that = fluid.tests.rendererComponentTest(".renderer-component-test-multiple-repeat", {
+                model: {
+                    firstCategory: {
+                        acquisition: {
+                            "name": "acq"
+                        }, 
+                        objects: {
+                            "name": "acq2"
                         }
                     },
-                    type: "fluid.renderer.repeat",
-                    pathAs: "tabInfo",
-                    controlledBy: "recordlist.test"
+                    secondCategory: {
+                        acquisition: {
+                            "name": "acq"
+                        }, 
+                        objects: {
+                            "name": "acq2"
+                        }
+                    }
                 },
-                unmatchedMessage: {
-                    messagekey: "${notThere}"
+                selectors: {
+                    "tab:": ".csc-tabs-tab",
+                    "tab2:": ".csc-tabs-tab-two",
+                    "tabContent": ".csc-tabs-tab-content",
+                    "tab2Content": ".csc-tabs-tab-two-content"
+                },
+                strings: {
+                    "acq": "Acquisition",
+                    "acq2": "Cataloging"
+                },
+                protoTree: {
+                    expander: [{
+                        repeatID: "tab2:",
+                        tree: {
+                            "tab2Content": {
+                                messagekey: "${{tabInfo}.name}"
+                            }
+                        },
+                        type: "fluid.renderer.repeat",
+                        pathAs: "tabInfo",
+                        controlledBy: "secondCategory"
+                    }, {
+                        repeatID: "tab:",
+                        tree: {
+                            tabContent: {
+                                messagekey: "${{tabInfo}.name}"
+                            }
+                        },
+                        type: "fluid.renderer.repeat",
+                        pathAs: "tabInfo",
+                        controlledBy: "firstCategory"
+                    }]
                 }
-            }
+            });
+            testMultipleExpanders(that);
         });
-        testMessageRepeat(that);
-    });
-    
-    compTests.test("Renderer component with custom resolver", function() {
-        var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
-            resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)]
+        
+        compTests.test("FLUID-3819 test: messagekey with no value", function () {
+            var that = fluid.tests.rendererComponentTest(".renderer-component-test-repeat", {
+                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
+                model: {
+                    recordlist: {
+                        test: {
+                            acquisition: {
+                                "name": "acq",
+                                href: "#HREF1"
+                            }, 
+                            objects: {
+                                href: "#HREF1"
+                            }
+                        }
+                    }
+                },
+                selectors: {
+                    "tab:": ".csc-tabs-tab",
+                    tabLink: ".csc-tabs-tab-link",
+                    unmatchedMessage: ".csc-unmatchedMessage"
+                },
+                strings: {
+                    "acq": "Acquisition",
+                    "cat": "Cataloging"
+                },
+                protoTree: {
+                    expander: {
+                        repeatID: "tab:",
+                        tree: {
+                            tabLink: {
+                                target: "${{tabInfo}.href}",
+                                linktext: {
+                                    messagekey: "${{tabInfo}.name}"
+                                }
+                            }
+                        },
+                        type: "fluid.renderer.repeat",
+                        pathAs: "tabInfo",
+                        controlledBy: "recordlist.test"
+                    },
+                    unmatchedMessage: {
+                        messagekey: "${notThere}"
+                    }
+                }
+            });
+            testMessageRepeat(that);
         });
-        testFilteredRecords(that);
-    });
-    
-    compTests.test("Renderer component with custom resolver and renderer fixup", function() {
-        var tree = {
-            children: [
-            {ID: "recordType:",
-             valuebinding: "recordlist.deffolt.0"},
-            {ID: "recordType:",
-             valuebinding: "recordlist.deffolt.1"}
-            ]  
-        };
-        var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
-            resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
-            protoTree: tree,
-            rendererFnOptions: {
-                noexpand: true
-            }
+        
+        compTests.test("Renderer component with custom resolver", function () {
+            var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
+                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)]
+            });
+            testFilteredRecords(that);
         });
-        testFilteredRecords(that);
-    });
+        
+        compTests.test("Renderer component with custom resolver and renderer fixup", function () {
+            var tree = {
+                children: [
+                    {ID: "recordType:",
+                     valuebinding: "recordlist.deffolt.0"},
+                    {ID: "recordType:",
+                     valuebinding: "recordlist.deffolt.1"}
+                ]  
+            };
+            var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
+                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
+                protoTree: tree,
+                rendererFnOptions: {
+                    noexpand: true
+                }
+            });
+            testFilteredRecords(that);
+        });
     
-    var protoTests = new jqUnit.TestCase("Protocomponent Expander Tests");
+        var protoTests = new jqUnit.TestCase("Protocomponent Expander Tests");
   
-        protoTests.test("makeProtoExpander Basic Tests", function() {
+        protoTests.test("makeProtoExpander Basic Tests", function () {
             var model = {
                 path1: "value1",
                 path2: "value2"
-            }
+            };
             var expander = fluid.renderer.makeProtoExpander({ELstyle: "%", model: model});
             var protoTree = {
                 thingery: {messagekey: "myKey", args: ["thing", 3, false, "%path1"]},
@@ -335,33 +337,33 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertDeepEq("Simple expansion", expected, expanded);
         });
         
-        protoTests.test("Bare array expansion", function() {
+        protoTests.test("Bare array expansion", function () {
             var protoTree = {matches: {
                 children: ["Fred Allen", "Phyllis Allen", "Karen Allen", "Rex Allen"]
-                }
+            }
             };
             var expander = fluid.renderer.makeProtoExpander();
             var expanded = expander(protoTree);       
             var expected = {
                 children: [
-                {ID: "matches:",
-                 componentType: "UIBound",
-                 value: "Fred Allen"},
-                 {ID: "matches:",
-                 componentType: "UIBound",
-                 value: "Phyllis Allen"},
-                 {ID: "matches:",
-                 componentType: "UIBound",
-                 value: "Karen Allen"},
-                 {ID: "matches:",
-                 componentType: "UIBound",
-                 value: "Rex Allen"}
+                    {ID: "matches:",
+                     componentType: "UIBound",
+                     value: "Fred Allen"},
+                    {ID: "matches:",
+                     componentType: "UIBound",
+                     value: "Phyllis Allen"},
+                    {ID: "matches:",
+                     componentType: "UIBound",
+                     value: "Karen Allen"},
+                    {ID: "matches:",
+                     componentType: "UIBound",
+                     value: "Rex Allen"}
                 ] 
             };
-             jqUnit.assertDeepEq("Simple expansion", expected, expanded);
+            jqUnit.assertDeepEq("Simple expansion", expected, expanded);
         });
        
-        protoTests.test("FLUID-3663 test: anomalous UISelect expansion", function() {
+        protoTests.test("FLUID-3663 test: anomalous UISelect expansion", function () {
             var expander = fluid.renderer.makeProtoExpander({ELstyle: "${}"});
             var protoTree = {
                 "authority-history": "${fields.history}",
@@ -369,8 +371,8 @@ fluid.registerNamespace("fluid.tests");
                     "selection": "${fields.addressType1}",
                     "optionlist": ["Home", "Work"],
                     "optionnames": ["home", "work"]
-                    }
-                };
+                }
+            };
             var expanded = expander(protoTree);
             var expected = {
                 children: [
@@ -383,43 +385,45 @@ fluid.registerNamespace("fluid.tests");
                      optionlist: { value: ["Home", "Work"]},
                      optionnames: { value: ["home", "work"]}
                      }
-                 ]
+                ]
             };
             jqUnit.assertDeepEq("UISelect expansion", expected, expanded);
         });
         
-        protoTests.test("FLUID-3682 test: decorators attached to blank UIOutput", function() {
+        protoTests.test("FLUID-3682 test: decorators attached to blank UIOutput", function () {
             var expander = fluid.renderer.makeProtoExpander({ELstyle: "${}"});
             var protoTree = {
-              ".csc-date-information-date-earliest-single-date-container": { 
-                  "decorators": [ 
-                      { 
-                          "func": "cspace.datePicker", 
-                          "type": "fluid" 
-                      } 
-                  ] 
-              }
+                ".csc-date-information-date-earliest-single-date-container": { 
+                    "decorators": [ 
+                        { 
+                            "func": "cspace.datePicker", 
+                            "type": "fluid" 
+                        } 
+                    ] 
+                }
             };
             var expanded = expander(protoTree);
             var expected = {
                 children: [
                     {ID: ".csc-date-information-date-earliest-single-date-container",
                      componentType: "UIBound",
-                    "decorators": [ 
-                          { 
-                              "func": "cspace.datePicker", 
-                              "type": "fluid" 
-                          } 
-                      ] 
-                }]};
+                     "decorators": [ 
+                        { 
+                            "func": "cspace.datePicker", 
+                            "type": "fluid" 
+                        } 
+                    ] 
+                }
+                ]
+            };
             jqUnit.assertDeepEq("Decorator expansion", expected, expanded);
         });
         
       
-        protoTests.test("FLUID-3659 test: decorators attached to elements with valuebinding", function() {
+        protoTests.test("FLUID-3659 test: decorators attached to elements with valuebinding", function () {
             var model = {
-              queryUrl: "../../chain/loanin/autocomplete/lender",
-              vocabUrl: "../../chain/loanin/source-vocab/lender"
+                queryUrl: "../../chain/loanin/autocomplete/lender",
+                vocabUrl: "../../chain/loanin/source-vocab/lender"
             };
             var expander = fluid.renderer.makeProtoExpander({ELstyle: "${}", model: model});
             var protoTree = {
@@ -434,14 +438,14 @@ fluid.registerNamespace("fluid.tests");
                             }
                         }]
                     }
-            };
+                };
             var expanded = expander(protoTree);
             var expected = {
-               children: [
-                {ID: "loanIn-lender",
-                 componentType: "UIBound",
-                 valuebinding: "fields.lenders.0.lender",
-                 decorators: [{
+                children: [
+                    {ID: "loanIn-lender",
+                     componentType: "UIBound",
+                     valuebinding: "fields.lenders.0.lender",
+                     decorators: [{
                             type: "fluid",
                             func: "cspace.autocomplete",
                             options: {
@@ -450,13 +454,14 @@ fluid.registerNamespace("fluid.tests");
                             }
                         }]
                     }
-               ]};
+                    ]
+                };
             jqUnit.assertDeepEq("Decorator expansion", expected, expanded);
         });
         
-        protoTests.test("FLUID-3658 test: simple repetition expander", function() {
+        protoTests.test("FLUID-3658 test: simple repetition expander", function () {
             var model = {
-               vector: [1, 2, 3]
+                vector: [1, 2, 3]
             };
             var messageBundle = {
                 siteUrlTemplate: "http://site/path/%element/text.html"
@@ -478,13 +483,14 @@ fluid.registerNamespace("fluid.tests");
                             }          
                         }
                     }
-                }
-            };
+                    }
+                }; 
             var expanded = expander(protoTree);
             var node = $(".repeater-leaf-test");
             fluid.selfRender(node, expanded, {
-              model: model,
-              messageSource: {type: "data", messages: messageBundle}});
+                model: model,
+                messageSource: {type: "data", messages: messageBundle}
+            });
             var links = $("a", node);
             jqUnit.assertEquals("Link count", 3, links.length);
             for (var i = 0; i < links.length; ++ i) {
@@ -496,20 +502,20 @@ fluid.registerNamespace("fluid.tests");
             }
         });
         
-        protoTests.test("FLUID-3658 test: recursive expansion with expanders", function() {
-            var choices = ["none", "read","write", "delete"];
+        protoTests.test("FLUID-3658 test: recursive expansion with expanders", function () {
+            var choices = ["none", "read", "write", "delete"];
             var rows = ["Acquisition", "Cataloguing", "Intake", "Loan In", "Loan Out"];
             var model = {
-               choices: choices
+                choices: choices
             };
-            model.permissions = fluid.transform(rows, function(row, rowIndex) {
+            model.permissions = fluid.transform(rows, function (row, rowIndex) {
                 return {
                     recordType: row,
-                    permissions: fluid.transform(fluid.iota(3), function(col) {
-                        var value = (rowIndex * 7 + col) %4;
+                    permissions: fluid.transform(fluid.iota(3), function (col) {
+                        var value = (rowIndex * 7 + col) % 4;
                         return choices[value];
-                        })
-                    };
+                    })
+                };
             });
             
             var expopts = {ELstyle: "${}", model: model};
@@ -529,40 +535,41 @@ fluid.registerNamespace("fluid.tests");
                             repeatID: "permissions-record-column",
                             tree: {
                                 expander: {                  
-                                   type: "fluid.renderer.selection.inputs",
-                                   rowID: "permissions-record-role-row",
-                                   labelID: "permissions-record-role-label",
-                                   inputID: "permissions-record-role-input",
-                                   selectID: "permissions-record-permissions",
-                                   tree: {
-                                      "selection": "${{permission}}",
-                                      "optionlist": "${choices}",
-                                      "optionnames": "${choices}",
-                                      //"default": "write"
-                                   }
-                             },
-                        }
-                    },
-                    "permissions-record-type": "${{row}.recordType}"
+                                    type: "fluid.renderer.selection.inputs",
+                                    rowID: "permissions-record-role-row",
+                                    labelID: "permissions-record-role-label",
+                                    inputID: "permissions-record-role-input",
+                                    selectID: "permissions-record-permissions",
+                                    tree: {
+                                        "selection": "${{permission}}",
+                                        "optionlist": "${choices}",
+                                        "optionnames": "${choices}"//,
+                                        //"default": "write"
+                                    }
+                                }
+                            }
+                        },
+                        "permissions-record-type": "${{row}.recordType}"
+                    }
                 }
-            }
-        };
+            };
         
-        var expanded = expander(protoTree);
-        var node = $(".recursive-expansion-test");
-        fluid.selfRender(node, expanded, {
-              model: model});
-        var radios = $("input", node);
-        jqUnit.assertEquals("Radio button count", model.permissions.length * model.permissions[0].permissions.length * choices.length, 
-            radios.length);
-        
-        var spans = $("span", node);
-        jqUnit.assertEquals("Span count", model.permissions.length, spans.length);
+            var expanded = expander(protoTree);
+            var node = $(".recursive-expansion-test");
+            fluid.selfRender(node, expanded, {
+                model: model
+            });
+            var radios = $("input", node);
+            jqUnit.assertEquals("Radio button count", model.permissions.length * model.permissions[0].permissions.length * choices.length, 
+                radios.length);
+            
+            var spans = $("span", node);
+            jqUnit.assertEquals("Span count", model.permissions.length, spans.length);
         
         });
         
-        function deleteComponentTypes (tree) {
-            return fluid.transform(tree, function(el) {
+        function deleteComponentTypes(tree) {
+            return fluid.transform(tree, function (el) {
                 if (fluid.isPrimitive(el)) {
                     return el;
                 }
@@ -573,10 +580,10 @@ fluid.registerNamespace("fluid.tests");
             });
         }
         
-        protoTests.test("Non-expansion expander test", function() {
+        protoTests.test("Non-expansion expander test", function () {
             var model = {
-              queryUrl: "../../chain/loanin/autocomplete/lender",
-              vocabUrl: "../../chain/loanin/source-vocab/lender"
+                queryUrl: "../../chain/loanin/autocomplete/lender",
+                vocabUrl: "../../chain/loanin/source-vocab/lender"
             };
             var expander = fluid.renderer.makeProtoExpander({ELstyle: "${}", model: model});
             var protoTree = {
@@ -611,22 +618,23 @@ fluid.registerNamespace("fluid.tests");
                      componentType: "UIBound",
                      valuebinding: "path2",
                      decorators: {
-                         type: "fluid",
-                         func: "cspace.autocomplete",
-                         options: {
-                             queryUrl: "../../chain/loanin/autocomplete/lender",
-                             vocabUrl: "../../chain/loanin/source-vocab/lender",
-                             componentTree: {
-                                 component1: "${path1}"
-                             }
-                         }
-                     }
+                        type: "fluid",
+                        func: "cspace.autocomplete",
+                        options: {
+                            queryUrl: "../../chain/loanin/autocomplete/lender",
+                            vocabUrl: "../../chain/loanin/source-vocab/lender",
+                            componentTree: {
+                                component1: "${path1}"
+                            }
+                        }
+                    }
                   }
-               ]};
+                ]
+            };
             jqUnit.assertDeepEq("Decorator non-expansion", expected, expanded);
         });
         
-        protoTests.test("FLUID-3658 test: selection to inputs expander", function() {
+        protoTests.test("FLUID-3658 test: selection to inputs expander", function () {
             var model = { };
             var expopts = {ELstyle: "${}", model: model};
             var expander = fluid.renderer.makeProtoExpander(expopts);
@@ -634,22 +642,23 @@ fluid.registerNamespace("fluid.tests");
                 "permissions-record-row": {
                     "children": [ 
                         {expander: {                  
-                             type: "fluid.renderer.selection.inputs",
-                             rowID: "permissions-record-role-row",
-                             labelID: "permissions-record-role-label",
-                             inputID: "permissions-record-role-input",
-                             selectID: "permissions-record-permissions",
-                             tree: {
+                            type: "fluid.renderer.selection.inputs",
+                            rowID: "permissions-record-role-row",
+                            labelID: "permissions-record-role-label",
+                            inputID: "permissions-record-role-input",
+                            selectID: "permissions-record-permissions",
+                            tree: {
                                 "selection": "${fields.permissions.0.permission}",
                                 "optionlist": ["none", "read", "write", "delete"],
-                                "optionnames": ["none", "read","write", "delete"]
+                                "optionnames": ["none", "read", "write", "delete"]
                                 //"default": "write" // this non-specified field might be expanded to a UIBound by the protoExpander
-                             }
-                         },
+                            }
+                        },
                         "permissions-record-type": "${fields.permissions.0.recordType}"
                      }
-                ]
-            }};
+                    ]
+                }
+            };
             var expanded = expander(protoTree);
             expanded = deleteComponentTypes(expanded);
             
@@ -665,17 +674,19 @@ fluid.registerNamespace("fluid.tests");
             selection.optionlist = selection.optionnames = {value: selection.optionlist};
             var expected = {
                 children: [
-                {
-                  ID: "permissions-record-row:",
-                  children: [selection].concat(manualExpand).concat({
-                    ID: "permissions-record-type",
-                    valuebinding: "fields.permissions.0.recordType"})
-                }]
+                    {
+                        ID: "permissions-record-row:",
+                        children: [selection].concat(manualExpand).concat({
+                            ID: "permissions-record-type",
+                            valuebinding: "fields.permissions.0.recordType"
+                        })
+                    }
+                ]
             };
             fluid.testUtils.assertTree("Selection explosion", expected, expanded);
         });
         
-        protoTests.test("FLUID-3844 test: messagekey resolved by expander", function() {
+        protoTests.test("FLUID-3844 test: messagekey resolved by expander", function () {
             var model = {
                 tabs: {
                     here: {
