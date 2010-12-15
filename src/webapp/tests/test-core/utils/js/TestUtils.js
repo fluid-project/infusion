@@ -11,6 +11,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+/*global fluid, jQuery, jqUnit, $*/
+
 fluid.registerNamespace("fluid.testUtils");
 
 /*
@@ -18,18 +20,20 @@ fluid.registerNamespace("fluid.testUtils");
  * stroke combinations.
  */
 
-fluid.testUtils.ctrlKeyEvent = function(keyCode, target) {
+fluid.testUtils.ctrlKeyEvent = function (keyCode, target) {
     return fluid.testUtils.modKeyEvent("CTRL", keyCode, target);
 };
 
-fluid.testUtils.keyEvent = function(keyCode, target) {
+fluid.testUtils.keyEvent = function (keyCode, target) {
     return {
-            keyCode: fluid.reorderer.keys[keyCode],
-            target: fluid.unwrap(target),
-            preventDefault: function(){}, stopPropagation: function(){}};
+        keyCode: fluid.reorderer.keys[keyCode],
+        target: fluid.unwrap(target),
+        preventDefault: function () {}, 
+        stopPropagation: function () {} 
     };
+};
 
-fluid.testUtils.modKeyEvent = function(modifier, keyCode, target) {
+fluid.testUtils.modKeyEvent = function (modifier, keyCode, target) {
     var togo = fluid.testUtils.keyEvent(keyCode, target);
     modifier = jQuery.makeArray(modifier);
     for (var i = 0; i < modifier.length; ++ i) {
@@ -50,7 +54,7 @@ fluid.testUtils.modKeyEvent = function(modifier, keyCode, target) {
 /** Sort a component tree into canonical order, to facilitate comparison with
  * deepEq */
 
-fluid.testUtils.sortTree = function(tree) {
+fluid.testUtils.sortTree = function (tree) {
     function comparator(ela, elb) {
         var ida = ela.ID || "";
         var idb = elb.ID || "";
@@ -59,29 +63,31 @@ fluid.testUtils.sortTree = function(tree) {
         if (cola && colb) { // if neither has a colon, compare by IDs if they have IDs
             return ida.localeCompare(idb);
         }
-        else return cola - colb; 
+        else {
+            return cola - colb; 
+        }
     }
     if (fluid.isArrayable(tree)) {
         tree.sort(comparator);
     }
-    fluid.transform(tree, function(value) {
+    fluid.transform(tree, function (value) {
         if (!fluid.isPrimitive(value)) {
             fluid.testUtils.sortTree(value);
         }
     });
       
-}
+};
 
-fluid.testUtils.assertTree = function(message, expected, actual) {
+fluid.testUtils.assertTree = function (message, expected, actual) {
     fluid.testUtils.sortTree(expected);
     fluid.testUtils.sortTree(actual);
     jqUnit.assertDeepEq(message, expected, actual);
-}
+};
 
 /** Condense a DOM node into a plain Javascript object, to facilitate testing against
  * a trial, with the use of assertDeepEq or similar
  */
-fluid.testUtils.assertNode = function(message, expected, node) {
+fluid.testUtils.assertNode = function (message, expected, node) {
     var togo = {};
     if (!node.nodeType) { // Some types of DOM nodes (e.g. select) have a valid "length" property
         if (node.length === 1 && expected.length === undefined) {
@@ -100,20 +106,20 @@ fluid.testUtils.assertNode = function(message, expected, node) {
         var attr = jQuery.attr(node, key);
         var messageExt = " - attribute " + key + "";
         if (key === "nodeName") {
-           attr = node.tagName.toLowerCase();
-           messageExt = " - node name"
+            attr = node.tagName.toLowerCase();
+            messageExt = " - node name";
         }
         else if (key === "nodeText") {
-           attr = jQuery.trim(fluid.dom.getElementText(node));
+            attr = jQuery.trim(fluid.dom.getElementText(node));
         }
         else if (key === "nodeHTML") {
-           attr = $(node).html();
+            attr = $(node).html();
         }
         var evalue = expected[key];
         var pass = evalue === attr;
         if (attr === false || attr === true) { // support for IE refusing to honour XHTML values
             pass = !!evalue === attr;
-            }
+        }
         if (key !== "children") {
             jqUnit.assertTrue(message + messageExt + " expected value: " + evalue + " actual: " + attr, pass);
         }
@@ -123,4 +129,4 @@ fluid.testUtils.assertNode = function(message, expected, node) {
         }
     }
   
-}
+};

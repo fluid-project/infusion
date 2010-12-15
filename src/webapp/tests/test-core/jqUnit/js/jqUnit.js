@@ -12,7 +12,7 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global window, equals, ok, test, module, jQuery*/
+/*global window, equals, ok, test, module, jQuery, deepEqDiag, asyncTest*/
 var jqUnit = jqUnit || {};
 
 // A function to load the testswarm agent if running in the testswarm environment
@@ -35,12 +35,12 @@ var jqUnit = jqUnit || {};
      ************************/
     
     function path(el) {
-        return el? "path " + el: "root path";
+        return el ? "path " + el: "root path";
     }
     
     function reportType(obj) {
         var type = typeof(obj);
-        return type === "string" || type === "number" || type === "boolean"? type + " ("+obj+")"
+        return type === "string" || type === "number" || type === "boolean" ? type + " (" + obj + ")"
           : type;
     }
     
@@ -80,7 +80,7 @@ var jqUnit = jqUnit || {};
             for (var name in thing1) {
                 var n1 = thing1[name];
                 var n2 = thing2[name];
-                var neq = deepEqDiag(n1, n2, (basename? basename + ".": "") + name);
+                var neq = deepEqDiag(n1, n2, (basename ? basename + ".": "") + name);
                 if (neq) {
                     return neq;
                 }
@@ -176,7 +176,7 @@ var jqUnit = jqUnit || {};
         },
         
         assertNotEquals: function (msg, value1, value2) {
-            ok(value1 != value2, msg);
+            ok(value1 !== value2, msg);
         },
 
         assertTrue: function (msg, value) {
@@ -209,7 +209,7 @@ var jqUnit = jqUnit || {};
         
         assertDeepEq: function (msg, expected, actual) {
             var diag = deepEqDiag(expected, actual);
-            ok(diag === null, msg + (diag === null? "" : ": " + diag));
+            ok(diag === null, msg + (diag === null ? "" : ": " + diag));
         },
         
         assertDeepNeq: function (msg, unexpected, actual) {
@@ -289,13 +289,13 @@ var jqUnit = jqUnit || {};
             type: "GET",
             dataType: "html",
             async: false,
-            complete: function(res, status){
-                if (status == "success" || status == "notmodified") {
+            complete: function (res, status) {
+                if (status === "success" || status === "notmodified") {
                     injectFragment(container, sel, res.responseText);
                     callback.apply(null, [container, res.responseText, status, res]);
                 }   
             }
-         });
+        });
     };
     
     /***************************************************

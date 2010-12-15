@@ -10,9 +10,11 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+/*global fluid:true, jQuery*/
+
 fluid = fluid || {};
 
-fluid.debug = function () {
+fluid.debug = (function () {
 
     var outputEventDetails = function (eventType, event, caughtBy) {
         fluid.log(new Date() + " " + eventType + " was called on target " + fluid.dumpEl(event.target) + ", caught by " + fluid.dumpEl(caughtBy));
@@ -36,18 +38,20 @@ fluid.debug = function () {
             fluid.setLogging(true);
             var focussableElements  = [];
 
-            var everything = context? jQuery("*", context) : jQuery("*");
+            var everything = context ? jQuery("*", context) : jQuery("*");
             fluid.log("Everything: " + everything.length);
             everything.each(function () {
                //if (jQuery(this).hasTabindex()) {
-                   focussableElements.push(this);
+                focussableElements.push(this);
               // }
             });
 
             addFocusChangeListeners(jQuery(focussableElements));
         }
     }; // End of public return.
-} (); // End of fluid.debug namespace.
+}) (); // End of fluid.debug namespace.
 
 // Call listenForFocusEvents when the document is ready.
-jQuery(document).ready(function () {fluid.debug.listenForFocusEvents()});
+jQuery(document).ready(function () {
+    fluid.debug.listenForFocusEvents();
+});
