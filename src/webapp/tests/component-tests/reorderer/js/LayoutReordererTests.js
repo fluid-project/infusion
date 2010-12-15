@@ -32,11 +32,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         layoutReordererTests.test("Events within module", function () {
             var reorderer = fluid.reorderLayout("#" + fluid.testUtils.moduleLayout.portalRootId, {
-                        selectors: {
-                            columns: fluid.testUtils.moduleLayout.columnSelector,
-                            modules: fluid.testUtils.moduleLayout.portletSelector
-                        }
-                    });
+                selectors: {
+                    columns: fluid.testUtils.moduleLayout.columnSelector,
+                    modules: fluid.testUtils.moduleLayout.portletSelector
+                }
+            });
             
             fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
             var text2 = fluid.jById("text-2").focus();
@@ -120,16 +120,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.notVisible("After ctrl is released, drop warning should not be visible", "#drop-warning"); 
     
         });   
-    
-       function expectOrder(message, order) {
-                var items = fluid.transform($(".portlet"), fluid.getId);
-                var expected = fluid.transform(order, function(item) {return fluid.testUtils.moduleLayout.portletIds[item];});
-                jqUnit.assertDeepEq(message, expected, items);
-       }
+        
+        function expectOrder(message, order) {
+            var items = fluid.transform($(".portlet"), fluid.getId);
+            var expected = fluid.transform(order, function (item) {
+                return fluid.testUtils.moduleLayout.portletIds[item];
+            });
+            jqUnit.assertDeepEq(message, expected, items);
+        }
              
         var tests = new jqUnit.TestCase("Reorder Layout Tests");
         
-        var assembleOptions = function (isDisableWrap,isLocked) {
+        var assembleOptions = function (isDisableWrap, isLocked) {
             var obj = {
                 selectors: {
                     columns: "[id^='c']",
@@ -152,9 +154,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
             
             // Test for FLUID-3121
-            var afterMoveListener = function() {
+            var afterMoveListener = function () {
                 lastLayoutModel = layoutReorderer.layoutHandler.getModel();
-                };
+            };
             layoutReorderer.events.afterMove.addListener(afterMoveListener);
             
             var item2 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
@@ -200,7 +202,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         tests.test("reorderLayout with locked portlets", function () {
-            var options = assembleOptions(false,".locked");
+            var options = assembleOptions(false, ".locked");
             var layoutReorderer = fluid.reorderLayout(".reorderer_container", options);
             var item2 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[2]).focus();
             var item3 = fluid.jById(fluid.testUtils.moduleLayout.portletIds[3]);
@@ -244,7 +246,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });        
      
         tests.test("reorderLayout, option set disabled wrap, user action ctrl+down", function () {  
-             var options = {
+            var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "DOWN",
                 expectedOrderArrays: [[1, 2, 3, 4, 5, 6, 7, 8, 9]],
@@ -258,7 +260,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var options = {
                 reordererOptions: assembleOptions(true, ".locked"),
                 direction: "UP",
-                expectedOrderArrays: [[1, 2, 4, 3, 5, 6, 7, 8, 9],[1, 2, 4, 3, 5, 6, 7, 8, 9]],
+                expectedOrderArrays: [[1, 2, 4, 3, 5, 6, 7, 8, 9], [1, 2, 4, 3, 5, 6, 7, 8, 9]],
                 itemSelector: fluid.jById(fluid.testUtils.moduleLayout.portletIds[4])
             };
        

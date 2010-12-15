@@ -12,7 +12,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global jQuery*/
 /*global fluid*/
 /*global jqUnit*/
-
+/*global start, expect */
 
 (function ($) {
 
@@ -32,7 +32,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     testFn(toc);
                     start();
                 }
-            }
+            };
             
             toc = fluid.tableOfContents("#main", options);
         };

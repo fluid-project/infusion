@@ -28,7 +28,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals(message, required, str);
         }
 
-        GeometricManagerTests.test("Original order", function() {
+        GeometricManagerTests.test("Original order", function () {
             expect(2);
             assertOrder("Original order", "permuteTest",  "0123A4567B8");
             assertOrder("Original order", "permuteTest2", "abCc");
@@ -85,59 +85,59 @@ https://source.fluidproject.org/svn/LICENSE.txt
         crossPermuteTest("0->2 AFTER",  0, 2, fluid.position.AFTER,   "1234A5678B",  "abCc0");             
         
  
-        GeometricManagerTests.test("minPointRectangle", function() {
+        GeometricManagerTests.test("minPointRectangle", function () {
           
-          expect(6);
-          
-          var rect = {left: -1, right: 5, top: -1, bottom : 1};
-          
-          jqUnit.assertEquals("Inside", 0, 
-             fluid.geom.minPointRectangle(0, 0, rect));
-             
-          jqUnit.assertEquals("Inside", 0, 
-             fluid.geom.minPointRectangle(0.5, 0.5, rect));
-             
-          jqUnit.assertEquals("InsideEdge", 0, 
-             fluid.geom.minPointRectangle(0, -1, rect));
-             
-          jqUnit.assertEquals("LTDist", 2, 
-             fluid.geom.minPointRectangle(-2, -2, rect));
-             
-          jqUnit.assertEquals("TDist", 4, 
-             fluid.geom.minPointRectangle(0, -3, rect));
-             
-          jqUnit.assertEquals("RDist", 25, 
-             fluid.geom.minPointRectangle(10, 0, rect));
-          
-        });
-        
-      GeometricManagerTests.test("minRectRect", function() {
-          
-          expect(6);
-          
-          var rect1 = {left: -1, top: -1, right: 5, bottom: 1};
-          var rect2 = {left: 3, top: 2, right: 10, bottom: 3};
-          var rect3 = {left: 7, top: 2, right: 10, bottom: 5};
-          
-          jqUnit.assertEquals("Dist12", 1, fluid.geom.minRectRect(rect1, rect2));
-          jqUnit.assertEquals("Dist12R", 1, fluid.geom.minRectRect(rect2, rect1));
-          
-          jqUnit.assertEquals("Dist13", 5, fluid.geom.minRectRect(rect1, rect3));
-          jqUnit.assertEquals("Dist13R", 5, fluid.geom.minRectRect(rect3, rect1));
-          
-          jqUnit.assertEquals("Dist23", 0, fluid.geom.minRectRect(rect2, rect3));
-          jqUnit.assertEquals("Dist23R", 0, fluid.geom.minRectRect(rect3, rect2));
-          
-        });
-        
-      GeometricManagerTests.test("projectFrom", function() {          
-          expect(24);  
-          fluid.testUtils.reorderer.stepProjectFrom(false);
-      });
+            expect(6);
             
-      GeometricManagerTests.test("projectFrom with disabled wrap", function() {          
-          expect(24);  
-          fluid.testUtils.reorderer.stepProjectFrom(true);
-      });
+            var rect = {left: -1, right: 5, top: -1, bottom : 1};
+            
+            jqUnit.assertEquals("Inside", 0, 
+            fluid.geom.minPointRectangle(0, 0, rect));
+            
+            jqUnit.assertEquals("Inside", 0, 
+            fluid.geom.minPointRectangle(0.5, 0.5, rect));
+            
+            jqUnit.assertEquals("InsideEdge", 0, 
+            fluid.geom.minPointRectangle(0, -1, rect));
+            
+            jqUnit.assertEquals("LTDist", 2, 
+            fluid.geom.minPointRectangle(-2, -2, rect));
+            
+            jqUnit.assertEquals("TDist", 4, 
+            fluid.geom.minPointRectangle(0, -3, rect));
+            
+            jqUnit.assertEquals("RDist", 25, 
+            fluid.geom.minPointRectangle(10, 0, rect));
+          
+        });
+        
+        GeometricManagerTests.test("minRectRect", function () {
+          
+            expect(6);
+            
+            var rect1 = {left: -1, top: -1, right: 5, bottom: 1};
+            var rect2 = {left: 3, top: 2, right: 10, bottom: 3};
+            var rect3 = {left: 7, top: 2, right: 10, bottom: 5};
+            
+            jqUnit.assertEquals("Dist12", 1, fluid.geom.minRectRect(rect1, rect2));
+            jqUnit.assertEquals("Dist12R", 1, fluid.geom.minRectRect(rect2, rect1));
+            
+            jqUnit.assertEquals("Dist13", 5, fluid.geom.minRectRect(rect1, rect3));
+            jqUnit.assertEquals("Dist13R", 5, fluid.geom.minRectRect(rect3, rect1));
+            
+            jqUnit.assertEquals("Dist23", 0, fluid.geom.minRectRect(rect2, rect3));
+            jqUnit.assertEquals("Dist23R", 0, fluid.geom.minRectRect(rect3, rect2));
+          
+        });
+        
+        GeometricManagerTests.test("projectFrom", function () {          
+            expect(24);  
+            fluid.testUtils.reorderer.stepProjectFrom(false);
+        });
+            
+        GeometricManagerTests.test("projectFrom with disabled wrap", function () {          
+            expect(24);  
+            fluid.testUtils.reorderer.stepProjectFrom(true);
+        });
     });
 })(jQuery);

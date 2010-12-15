@@ -10,6 +10,8 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
+/*global fluid, jQuery, jqUnit*/
+
 (function ($) {
     $(document).ready(function () {
         var schedulerTests = new jqUnit.TestCase("Scheduler Tests");
@@ -35,7 +37,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("There should be six moveable topics.", 6, foundOrderables.length);
             
             // Check to make sure each returned element does indeed contain the correct class.
-            for(var elementIdx = 0; elementIdx < foundOrderables.length; elementIdx++) {
+            for (var elementIdx = 0; elementIdx < foundOrderables.length; elementIdx++) {
                 var element = foundOrderables[elementIdx];
                 jqUnit.assertTrue("The found element should contain the 'movableTopic' CSS class.",
                             jQuery(element).hasClass(SchedulerTests.moveableClass));
@@ -58,7 +60,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("There should be six moveable topics.", SchedulerTests.numMoveables, foundOrderables.length);
             
             // Make sure they're all good and correct orderables.
-            for(var i = 0; i < SchedulerTests.numMoveables; i++) {
+            for (var i = 0; i < SchedulerTests.numMoveables; i++) {
                 var element = foundOrderables[i];
                 jqUnit.assertValue("Orderable should be a valid element.", foundOrderables[i]);
                 jqUnit.assertTrue("Orderable should have the moveable class.", jQuery(element).hasClass(SchedulerTests.moveableClass));

@@ -690,7 +690,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 var editor = fluid.inlineEdit("#inline-edit-undo", {
                     componentDecorators: "fluid.undoDecorator",
                     listeners: {
-                        modelChanged: function () { ++ changeCount; }
+                        modelChanged: function () { 
+                            ++changeCount; 
+                        }
                     }
                 });
                 jqUnit.assertEquals("No modelChanged on startup", 0, changeCount); // FLUID-1772

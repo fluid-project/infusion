@@ -12,8 +12,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 /*global document, jqUnit, setUp, fluid, itemIds, callbackConfirmer, afterMoveCallbackWasCalled, itemIds2, jQuery*/
 
-(function($) {
-    $(document).ready(function() {
+(function ($) {
+    $(document).ready(function () {
         var tests = new jqUnit.TestCase("Reorder List Tests", setUp);
     
         function assertItemsInOrder(message, expectOrder) {
@@ -41,7 +41,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             return obj;
         };
         
-        tests.test("reorderList API", function() {
+        tests.test("reorderList API", function () {
             var options = assembleOptions(false); 
             var listReorderer = fluid.reorderList("#list1", options);
             var item2 = $("#list1item2").focus();
@@ -66,7 +66,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
         });
         
-        tests.test("reorderList with optional styles", function() {
+        tests.test("reorderList with optional styles", function () {
             var options = {
                 selectors: {
                     movables: "li"
@@ -96,7 +96,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
         var k2 = fluid.testUtils.reorderer.bindReorderer(itemIds2);
     
-        tests.test("reorderList with multi selectors", function() {
+        tests.test("reorderList with multi selectors", function () {
             var options = {
                 selectors: {
                     movables: ".orderable",
@@ -141,7 +141,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
         });
         
-        tests.test("reorderList, option set disabled wrap, user action ctrl+down", function() {
+        tests.test("reorderList, option set disabled wrap, user action ctrl+down", function () {
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "DOWN",
@@ -153,11 +153,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer("#list1", options);
         });
 
-        tests.test("reorderList, option set disabled wrap, user action ctrl+up", function() {
+        tests.test("reorderList, option set disabled wrap, user action ctrl+up", function () {
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "UP",
-                expectedOrderArrays: [[2, 1, 3, 4, 5],[2, 1, 3, 4, 5]],
+                expectedOrderArrays: [[2, 1, 3, 4, 5], [2, 1, 3, 4, 5]],
                 itemSelector: $("#list1item2"),
                 itemIndex: 1
             };

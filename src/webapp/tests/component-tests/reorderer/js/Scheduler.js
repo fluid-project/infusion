@@ -10,22 +10,24 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-fluid.Scheduler = function () {
+/*global fluid, jQuery*/
+
+fluid.Scheduler = (function () {
     var fetchReordererContainer = function (id) {
-        return fluid.jById (id);
+        return fluid.jById(id);
     };
     return {
         initScheduler: function (containerId) {
             var movableFinder = fluid.Scheduler.createCSSOrderableFinderForClass("movableTopic");
             var jsonCallback = fluid.Scheduler.createJSONafterMoveCallback(movableFinder);            
-            var container = fetchReordererContainer (containerId);
+            var container = fetchReordererContainer(containerId);
             var options = {
                 layoutHandler: "fluid.listLayoutHandler",
                 selectors: {
                     movables: movableFinder
                 },
                 afterMoveCallback: jsonCallback
-              }
+            };
             
             return fluid.reorderer(container, options);
         },
@@ -42,7 +44,7 @@ fluid.Scheduler = function () {
         generateJSONStringForOrderables: function (orderables) {
             // Create a simple data structure keyed by element id and with the ordinal number as value.
             var orderMap = {};
-            jQuery.each (orderables, function (index, element) {
+            jQuery.each(orderables, function (index, element) {
                 orderMap[jQuery(element).attr("id")] = index;
             });
 
@@ -71,9 +73,9 @@ fluid.Scheduler = function () {
                 for (var idx = 0; idx < numOrderables; idx++) {
                     var idSelector = "#" + orderablePrefix + idx;
 
-                    var foundElement = jQuery (idSelector, containerElement).get (0);
+                    var foundElement = jQuery(idSelector, containerElement).get(0);
                     if (foundElement) {
-                        orderables.push (foundElement);
+                        orderables.push(foundElement);
                     }
                 }
 
@@ -90,4 +92,4 @@ fluid.Scheduler = function () {
              */
         }
     };
-} ();
+}) ();

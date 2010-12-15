@@ -33,23 +33,23 @@ var findList1 = function () {
     return jQuery("#list1")[0]; 
 };
 
-var listMovableFinder = function() {
+var listMovableFinder = function () {
     // This is returning the list instead of a jQuery object to ensure that people 
     // can use an orderable finder function that doesn't use jQuery
     return jQuery("[id^=list1item]", findList1()).get();
 };
 
-var callbackConfirmer = function(item){
+var callbackConfirmer = function (item) {
     afterMoveCallbackWasCalled = true;
     itemThatWasMoved = item;
 };
 
-var createListLayoutHandler = function  () {
+var createListLayoutHandler = function () {
     var options = {
         afterMoveCallback: callbackConfirmer,
         selectors: {
-          movables: listMovableFinder,
-          selectables: listMovableFinder
+            movables: listMovableFinder,
+            selectables: listMovableFinder
         }
     };
     

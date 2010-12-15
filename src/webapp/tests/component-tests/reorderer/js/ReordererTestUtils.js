@@ -71,7 +71,7 @@ var fluid = fluid || fluid_1_3;
     fluid.testUtils.reorderer.compositeKey = function (reorderer, event, target, keepModifierPressed) {
         target = fluid.unwrap(target);
         var modifierEvent = $.extend(true, {}, event);
-        var modifier = event.ctrlKey? "CTRL" : event.shiftKey? "SHIFT" : event.altKey? "ALT" : "";
+        var modifier = event.ctrlKey ? "CTRL": event.shiftKey ? "SHIFT": event.altKey ? "ALT": "";
         modifierEvent.keyCode = $.ui.keyCode[modifier];
         fluid.testUtils.reorderer.keyDown(reorderer, modifierEvent, target);
         fluid.testUtils.reorderer.keyDown(reorderer, event, target);
@@ -117,15 +117,16 @@ var fluid = fluid || fluid_1_3;
             {left: 1, top: 9, right: 4, bottom: 12},
         // column 2, same dimensions but offset down by 1
             {left: 6, top: 2, right: 9, bottom: 5},
-            {left: 6, top: 6, right: 9, bottom: 9}];
+            {left: 6, top: 6, right: 9, bottom: 9}
+        ];
         
-        var elems = fluid.transform(rects, function(rect, i) {
-           return {rect: rect, index: i};
+        var elems = fluid.transform(rects, function (rect, i) {
+            return {rect: rect, index: i};
         });
                  
         function assertProject(name, fromIndex, direction, toIndex, couldWrap) {
             var proj = fluid.geom.projectFrom(rects[fromIndex], fluid.direction[direction], elems, false, disabledWrap);
-            if(couldWrap && disabledWrap) {
+            if (couldWrap && disabledWrap) {
                 jqUnit.assertUndefined(name + " index " + toIndex, proj.cacheelem);
                 jqUnit.assertFalse("no wrapping from index:" + fromIndex + " to index:" + toIndex + " wrapped set to " + couldWrap, proj.wrapped);
             } else {
@@ -157,7 +158,7 @@ var fluid = fluid || fluid_1_3;
             var focusItem = $(options.itemSelector).focus();
             var expectedOrder = options.expectedOrderArrays[i];
             jqUnit.assertTrue("focus on item " + focusItem.selector, focusItem.hasClass("fl-reorderer-movable-selected"));   
-            options.reordererOptions.key(that, fluid.testUtils.ctrlKeyEvent(options.direction), options.itemIndex?options.itemIndex:options.itemSelector);                
+            options.reordererOptions.key(that, fluid.testUtils.ctrlKeyEvent(options.direction), options.itemIndex ? options.itemIndex: options.itemSelector);                
             options.reordererOptions.expectOrderFn("after ctrl-" + options.direction.toLowerCase() + " the order is " + expectedOrder, expectedOrder, 
                     $(options.reordererOptions.thumbArray, that.container), options.reordererOptions.prefix);           
         }

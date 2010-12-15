@@ -11,12 +11,16 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-(function($) {
-    $(document).ready(function() {
+/*global document, jQuery, fluid, demo, jqUnit*/
+/*global fetchLightboxRoot, focusLightbox, createLightbox, createLightboxWithNoOrderables, createAltKeystrokeLightbox, createMultiKeystrokeLightbox, createMultiOverlappingKeystrokeLightbox*/
+/*global imageIds, orderableIds, lightboxRootId, focusPosition:true, numOfImages */
+
+(function ($) {
+    $(document).ready(function () {
         var lightboxTests = new jqUnit.TestCase("Lightbox Tests");
     
         function findImagesInLightbox() {
-            return jQuery("img", fetchLightboxRoot());
+            return $("img", fetchLightboxRoot());
         }
     
         function assertItemsInOriginalPosition(desc) {
@@ -24,8 +28,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
                findImagesInLightbox(), imageIds);
         }
             
-        function assertItemsInOrder(message, assertItemsInOrder) {
-            return fluid.testUtils.reorderer.assertItemsInOrder(message, assertItemsInOrder, 
+        function assertItemsInOrder(message, assertItemsInOrder2) {
+            return fluid.testUtils.reorderer.assertItemsInOrder(message, assertItemsInOrder2, 
                findImagesInLightbox(), "fluid.img.");
         }
        
@@ -42,17 +46,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
         }
         
         function compositeKey(reorderer, event, targetIndex, keepModifierPressed) {
-           return fluid.testUtils.reorderer.compositeKey(reorderer, event, 
+            return fluid.testUtils.reorderer.compositeKey(reorderer, event, 
                fluid.byId(orderableIds[targetIndex]), keepModifierPressed);
         }
         
         function keyDown(reorderer, event, targetIndex) {
-           return fluid.testUtils.reorderer.keyDown(reorderer, event, 
+            return fluid.testUtils.reorderer.keyDown(reorderer, event, 
                fluid.byId(orderableIds[targetIndex]));
         }
         
         function keyUp(reorderer, event, targetIndex) {
-           return fluid.testUtils.reorderer.keyUp(reorderer, event, 
+            return fluid.testUtils.reorderer.keyUp(reorderer, event, 
                fluid.byId(orderableIds[targetIndex]));
         }
           
@@ -91,7 +95,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             assertItemDefault("After down arrow wrap ", 12);
             
             // Tests for FLUID-1589
-            var box2 = fluid.jById(orderableIds[2]).focus()
+            var box2 = fluid.jById(orderableIds[2]).focus();
             keyDown(lightbox, upEvt, 2);
             assertItemFocused("After up arrow wrap irregular ", 10);
             assertItemDefault("After up arrow wrap irregular ", 2);
@@ -116,7 +120,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             assertItemDefault("After right ", 0);
         
             // Test: right arrow to the last image
-            for (focusPosition = 2; focusPosition < numOfImages; focusPosition++ ) {
+            for (focusPosition = 2; focusPosition < numOfImages; focusPosition++) {
                 keyDown(lightbox, rightEvt, focusPosition - 1);
             }
             assertItemFocused("Right to last ", 13);
@@ -190,7 +194,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
          * This test tests the movement of images, and does not concern itself
          * with changes of state(i.e. dragging, etc.)
          */
-        lightboxTests.test("HandleArrowKeyDownMoveThumbDown", function() {
+        lightboxTests.test("HandleArrowKeyDownMoveThumbDown", function () {
             var lightbox = createLightbox();
             focusLightbox();
             // Test: ctrl down arrow - move the first image down
@@ -198,7 +202,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             assertItemsInOrder("after ctrl-down-arrow", [1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]);
         });
          
-        lightboxTests.test("HandleArrowKeyDownWrapThumbUp", function() {
+        lightboxTests.test("HandleArrowKeyDownWrapThumbUp", function () {
             // Test: ctrl up arrow - move the first image 'up'
             var lightbox = createLightbox();
             focusLightbox();
@@ -207,18 +211,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
             assertItemsInOrder("after ctrl-up-arrow", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 13]);
         });
         
-        lightboxTests.test("HandleArrowKeyDownForUpAndDown", function() {
+        lightboxTests.test("HandleArrowKeyDownForUpAndDown", function () {
             var lightbox = createLightbox();
             verticalNavigationTest(lightbox, fluid.testUtils.keyEvent("UP"), fluid.testUtils.keyEvent("DOWN"));
         });
         
-        lightboxTests.test("HandleArrowKeyDownForLeftAndRight", function() {
+        lightboxTests.test("HandleArrowKeyDownForLeftAndRight", function () {
             var lightbox = createLightbox();
         
             horizontalNavigationTest(lightbox, fluid.testUtils.keyEvent("RIGHT"), fluid.testUtils.keyEvent("LEFT"));
         });
         
-        lightboxTests.test("HandleKeyUpAndHandleKeyDownChangesState", function() {
+        lightboxTests.test("HandleKeyUpAndHandleKeyDownChangesState", function () {
             var lightbox = createLightbox();
             focusLightbox();
         
@@ -265,7 +269,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 fluid.jById(orderableIds[12]).attr("aria-dropeffect"));  
         });
         
-        lightboxTests.test("HandleKeyUpAndHandleKeyDownItemMovement", function() {
+        lightboxTests.test("HandleKeyUpAndHandleKeyDownItemMovement", function () {
             var lightbox = createLightbox();
             focusLightbox();
         
@@ -282,7 +286,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
          * This test tests the movement of images, and does not concern itself
          * with changes of state(i.e. dragging, etc.)
          */
-        lightboxTests.test("HandleArrowCtrlArrowKeyDown", function() {  
+        lightboxTests.test("HandleArrowCtrlArrowKeyDown", function () {  
             var lightbox = createLightbox();
             horizontalMovementTest(lightbox,  fluid.testUtils.ctrlKeyEvent("RIGHT"), 
                                               fluid.testUtils.ctrlKeyEvent("LEFT"));
@@ -291,14 +295,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                               fluid.testUtils.ctrlKeyEvent("DOWN"));
         });
         
-        lightboxTests.test("PersistFocus ", function() {
+        lightboxTests.test("PersistFocus ", function () {
             var lbRoot = fetchLightboxRoot();
             var lightbox = createLightbox();
             // Create an input that we can move focus to during the test
             var newInputElement = document.createElement("input");
-            newInputElement.id="input1";
+            newInputElement.id = "input1";
             
-            jQuery("[id=para1]").after(newInputElement);
+            $("[id=para1]").after(newInputElement);
             
             assertItemDefault("Initially ", 0);
         
@@ -340,10 +344,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         function testFocusBlur(initiator) {
-            lightboxTests.test("ItemFocusBlur: with " + initiator, function() {
+            lightboxTests.test("ItemFocusBlur: with " + initiator, function () {
                 var lightbox = createLightbox();
                 var count = 0; // To test multiple selection issue FLUID-3388
-                var countListener = function() {
+                var countListener = function () {
                     ++count;
                 };
                 lightbox.events.onSelect.addListener(countListener);
@@ -363,7 +367,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         testFocusBlur("click");
         testFocusBlur("focus");
         
-        lightboxTests.test("LightboxFocussed", function() {
+        lightboxTests.test("LightboxFocussed", function () {
             var lightbox = createLightbox();
         
             assertItemDefault("Initially ", 0);
@@ -376,7 +380,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertUndefined("Lightbox's activeItem should not be set ", lightboxWithNoOrderables.activeItem);
         });
         
-        lightboxTests.test("KeypressesWithNoOrderables", function() {
+        lightboxTests.test("KeypressesWithNoOrderables", function () {
             var lightboxWithNoOrderables = createLightboxWithNoOrderables();
             
             focusLightbox();
@@ -417,7 +421,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 lightboxWithNoOrderables.activeItem);
         });
         
-        lightboxTests.test("UpdateAriaStates", function() {
+        lightboxTests.test("UpdateAriaStates", function () {
             var lightbox = createLightbox();
             var lbRoot = fetchLightboxRoot();
             var firstImage = fluid.jById(orderableIds[0]);
@@ -432,15 +436,15 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("after setting active item to third image, third image should be selected", "true", thirdImage.attr("aria-selected"));
         
             var newInputElement = document.createElement("input");
-            newInputElement.id="input1";
+            newInputElement.id = "input1";
             
-            jQuery("[id=para1]").after(newInputElement);
-            jQuery("[id=input1]").get(0).focus();
+            $("[id=para1]").after(newInputElement);
+            $("[id=input1]").get(0).focus();
             fluid.jById(orderableIds[2]).blur();
             jqUnit.assertEquals("after removing focus from lightbox, third image should not be selected", "false", thirdImage.attr("aria-selected"));
         });
         
-        lightboxTests.test("UpdateGrabProperty", function() {
+        lightboxTests.test("UpdateGrabProperty", function () {
             var lightbox = createLightbox();
             var lbRoot = fetchLightboxRoot();
             var testItem = fluid.jById(orderableIds[0]);
@@ -458,7 +462,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("after CTRL released, test item should have @aria-grabbed='false", "false", testItem.attr("aria-grabbed"));
         });
     
-        lightboxTests.test("AlternativeKeySetDefaultKeysDontWork", function() {
+        lightboxTests.test("AlternativeKeySetDefaultKeysDontWork", function () {
             var lightbox = createAltKeystrokeLightbox();
             focusLightbox();
             
@@ -500,7 +504,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });    
     
-        lightboxTests.test("AlternativeKeySetNavigation", function() {
+        lightboxTests.test("AlternativeKeySetNavigation", function () {
             var lightbox = createAltKeystrokeLightbox();
             focusLightbox();
             
@@ -508,9 +512,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                     
             fluid.jById(orderableIds[0]).focus();
             verticalNavigationTest(lightbox, fluid.testUtils.keyEvent("i"), fluid.testUtils.keyEvent("m"));
-           });
+        });
            
-        lightboxTests.test("AlternativeKeySetMovement", function() {
+        lightboxTests.test("AlternativeKeySetMovement", function () {
             var lightbox = createAltKeystrokeLightbox();
             focusLightbox();
             
@@ -519,9 +523,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.jById(orderableIds[0]).focus();
             verticalMovementTest(lightbox,   fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "i"),
                                              fluid.testUtils.modKeyEvent(["CTRL", "SHIFT"], "m"));
-           });
+        });
      
-        lightboxTests.test("MultiKeySetNavigation", function() {
+        lightboxTests.test("MultiKeySetNavigation", function () {
             var lightbox = createMultiKeystrokeLightbox();
             focusLightbox();
             
@@ -536,9 +540,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.jById(orderableIds[0]).focus();
             verticalNavigationTest(lightbox, fluid.testUtils.keyEvent("UP"), fluid.testUtils.keyEvent("DOWN"));
     
-           });
+        });
            
-        lightboxTests.test("MultiKeySetMovement", function() {
+        lightboxTests.test("MultiKeySetMovement", function () {
             var lightbox = createMultiKeystrokeLightbox();
             focusLightbox();
             
@@ -558,7 +562,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                                              fluid.testUtils.modKeyEvent("ALT", "DOWN"));
         });
     
-        lightboxTests.test("MultiKeySetWrongModifier", function() {
+        lightboxTests.test("MultiKeySetWrongModifier", function () {
             var lightbox = createMultiKeystrokeLightbox();
             focusLightbox();
             
@@ -588,7 +592,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
         });   
         
-        lightboxTests.test("MultiKeySetOverlappingModifierMovement", function() {
+        lightboxTests.test("MultiKeySetOverlappingModifierMovement", function () {
             var lightbox = createMultiOverlappingKeystrokeLightbox();
             focusLightbox();
             
@@ -612,7 +616,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
          * Tests that the dragging style remains on the moved element when the modifier
          * key remains depressed after the move. This is used to test FLUID-3288
          */
-        lightboxTests.test("Dragging style after a move: FLUID-3288", function() {  
+        lightboxTests.test("Dragging style after a move: FLUID-3288", function () {  
             var lightbox = createLightbox();
             var movables = lightbox.locate("movables");
             var draggingClass = lightbox.options.styles.dragging;

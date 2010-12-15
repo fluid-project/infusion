@@ -10,8 +10,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-(function($) {
-    $(document).ready(function() {
+/*global fluid, jQuery, jqUnit*/
+
+(function ($) {
+    $(document).ready(function () {
         
         var moduleLayoutTests = new jqUnit.TestCase("ModuleLayout Tests");
     
@@ -29,10 +31,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         }
 
-        moduleLayoutTests.test("UpdateLayout", function() {
+        moduleLayoutTests.test("UpdateLayout", function () {
             var portlet = fluid.transform(fluid.testUtils.moduleLayout.portletIds, fluid.byId);
             
-            var item = portlet[3]
+            var item = portlet[3];
             var relatedItem = portlet[6];
             var layout = fluid.moduleLayout.layoutFromIds(fluid.testUtils.moduleLayout.fullLayout);
             var layoutClone = jQuery.extend(true, {}, layout);
@@ -43,17 +45,17 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.moduleLayout.updateLayout(item, relatedItem, fluid.position.BEFORE, layoutClone);
             jqUnit.assertEquals("After move, Portlet 3 should be before Portlet 6", portlet[3], layoutClone.columns[1].elements[1]);
             jqUnit.assertEquals("After move, Portlet 6 should be third in the column", portlet[6], layoutClone.columns[1].elements[2]);
-            jqUnit.assertEquals("After move, Portlet 3 should not be in column 1", -1, jQuery.inArray( portlet[3], layoutClone.columns[0]));
+            jqUnit.assertEquals("After move, Portlet 3 should not be in column 1", -1, jQuery.inArray(portlet[3], layoutClone.columns[0]));
              
             // Move after
-            relatedItem = portlet[8]
+            relatedItem = portlet[8];
             fluid.moduleLayout.updateLayout(item, relatedItem, fluid.position.AFTER, layoutClone);
             jqUnit.assertEquals("After move, Portlet 3 should be after Portlet 8", portlet[3], layoutClone.columns[2].elements[2]);
             jqUnit.assertEquals("After move, Portlet 8 should be second in the column", portlet[8], layoutClone.columns[2].elements[1]);
-            jqUnit.assertEquals("After move, Portlet 3 should not be in column 2", -1, jQuery.inArray( portlet[3], layoutClone.columns[1]));
+            jqUnit.assertEquals("After move, Portlet 3 should not be in column 2", -1, jQuery.inArray(portlet[3], layoutClone.columns[1]));
               
             // Move within same column
-            relatedItem = portlet[7]
+            relatedItem = portlet[7];
             fluid.moduleLayout.updateLayout(item, relatedItem, fluid.position.BEFORE, layoutClone);
             jqUnit.assertEquals("After move, Portlet 3 should be before Portlet 7", portlet[3], layoutClone.columns[2].elements[0]);
             jqUnit.assertEquals("After move, Portlet 7 should be second in the column", portlet[7], layoutClone.columns[2].elements[1]);

@@ -12,8 +12,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 /*global document, jqUnit, fluid, orderableIds, lightboxRootId, jQuery*/
 
-(function($) {
-    $(document).ready(function() {
+(function ($) {
+    $(document).ready(function () {
         var tests = new jqUnit.TestCase("Reorder Grid Tests");
         
         var k = fluid.testUtils.reorderer.bindReorderer(orderableIds);
@@ -33,7 +33,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             return obj;
         };    
         
-        tests.test("reorderGrid API", function() {            
+        tests.test("reorderGrid API", function () {            
             var options = assembleOptions(false);
             var containerSelector = "[id='" + lightboxRootId + "']";
             var gridReorderer = fluid.reorderGrid(containerSelector, options);
@@ -54,13 +54,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
     
             k.compositeKey(gridReorderer, fluid.testUtils.ctrlKeyEvent("DOWN"), 4);
             
-            fluid.testUtils.reorderer.assertItemsInOrder("after ctrl-down", [0, 1, 2, 3, 5, 6, 7, 4, 8, 9, 10, 11, 12, 13], 
-                $("img", $(containerSelector)), "fluid.img.");
+            fluid.testUtils.reorderer.assertItemsInOrder("after ctrl-down", [0, 1, 2, 3, 5, 6, 7, 4, 8, 9, 10, 11, 12, 13], $("img", $(containerSelector)), "fluid.img.");
+        });    
         
-            });
-    
-        
-        tests.test("reorderGrid with optional styles", function() {
+        tests.test("reorderGrid with optional styles", function () {
             var options = {
                 selectors: {
                     movables: ".float"
@@ -81,7 +78,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
         });  
         
-        tests.test("reorderGrid, option set disabled wrap, user action ctrl+down", function() {        
+        tests.test("reorderGrid, option set disabled wrap, user action ctrl+down", function () {        
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "DOWN",
@@ -94,7 +91,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });
         
-        tests.test("reorderGrid, option set enabled wrap, user action ctrl+down", function() {   
+        tests.test("reorderGrid, option set enabled wrap, user action ctrl+down", function () {   
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "DOWN",
@@ -104,10 +101,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 itemIndex: 9
             };
              
-             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
+            fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });
       
-        tests.test("reorderGrid, option set disabled wrap, user action ctrl+up", function() {   
+        tests.test("reorderGrid, option set disabled wrap, user action ctrl+up", function () {   
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "UP",
@@ -120,7 +117,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });
         
-        tests.test("reorderGrid, option set enabled wrap, user action ctrl+up", function() {   
+        tests.test("reorderGrid, option set enabled wrap, user action ctrl+up", function () {   
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "UP",
@@ -131,10 +128,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 itemIndex: 1
             };
              
-             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
+            fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });
            
-        tests.test("reorderGrid, option set disabled wrap, user action ctrl+right", function() {    
+        tests.test("reorderGrid, option set disabled wrap, user action ctrl+right", function () {    
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "RIGHT",
@@ -147,7 +144,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });
         
-        tests.test("reorderGrid, option set enabled wrap, user action ctrl+right", function() { 
+        tests.test("reorderGrid, option set enabled wrap, user action ctrl+right", function () { 
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "RIGHT",
@@ -160,7 +157,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });        
         
-        tests.test("reorderGrid, option set disabled wrap, user action ctrl+left", function() { 
+        tests.test("reorderGrid, option set disabled wrap, user action ctrl+left", function () { 
             var options = {
                 reordererOptions: assembleOptions(true),
                 direction: "LEFT",
@@ -170,10 +167,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 itemIndex: 1       
             };
            
-             fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
+            fluid.testUtils.reorderer.stepReorderer("[id='" + lightboxRootId + "']", options);
         });        
       
-        tests.test("reorderGrid, option set enabled wrap, user action ctrl+left", function() {
+        tests.test("reorderGrid, option set enabled wrap, user action ctrl+left", function () {
             var options = {
                 reordererOptions: assembleOptions(false),
                 direction: "LEFT",

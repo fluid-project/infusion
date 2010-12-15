@@ -17,8 +17,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery*/
 /*global fluid*/
+/*global portalRootId*/ 
  
-var fluid = fluid || {};
 fluid.testUtils = fluid.testUtils || {};
 
 fluid.testUtils.moduleLayout = {
@@ -35,41 +35,41 @@ fluid.testUtils.moduleLayout = {
     columnSelector: "[id^='c']",
     portletSelector: "[id^='portlet']",
 
-    emptyLayout: { id:"t3", columns: [] },   
+    emptyLayout: { id: "t3", columns: [] },   
 
     fullLayout: { 
-        "id":"portlet-reorderer-root",
-        "columns":[
-            { "id":"c1", "children":["portlet1","portlet2","portlet3","portlet4"]},
-            { "id":"c2", "children":["portlet5","portlet6"]},
-            { "id":"c3", "children":["portlet7","portlet8","portlet9"]},
-            { "id":"c4", "children":[]}
+        "id": "portlet-reorderer-root",
+        "columns": [
+            { "id": "c1", "children": ["portlet1", "portlet2", "portlet3", "portlet4"]},
+            { "id": "c2", "children": ["portlet5", "portlet6"]},
+            { "id": "c3", "children": ["portlet7", "portlet8", "portlet9"]},
+            { "id": "c4", "children": []}
         ]
     },
 
 // Permissions are no longer supported, this table is listed here for historical reasons
     dropTargetPerms: [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],   // portlet 1
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],   // portlet 2
-    [0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1],   // portlet 3  
-    [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1],   // portlet 4
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],   // portlet 5
-    [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1],   // portlet 6
-    [0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1],   // portlet 7    
-    [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1],   // portlet 8
-    [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1]    // portlet 9
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],   // portlet 1
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],   // portlet 2
+        [0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1],   // portlet 3  
+        [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1],   // portlet 4
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],   // portlet 5
+        [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1],   // portlet 6
+        [0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1],   // portlet 7    
+        [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1],   // portlet 8
+        [0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1]    // portlet 9
     ],
 
     initReorderer: function () {
-      var options = {
-          selectors: {
-              columns: fluid.testUtils.moduleLayout.columnSelector,
-              modules: fluid.testUtils.moduleLayout.portletSelector,
-              dropWarning: jQuery("#drop-warning"),
-              lockedModules: ".locked"
-          }
-      };
-      return fluid.reorderLayout("#" + fluid.testUtils.moduleLayout.portalRootId, options);
+        var options = {
+            selectors: {
+                columns: fluid.testUtils.moduleLayout.columnSelector,
+                modules: fluid.testUtils.moduleLayout.portletSelector,
+                dropWarning: jQuery("#drop-warning"),
+                lockedModules: ".locked"
+            }
+        };
+        return fluid.reorderLayout("#" + fluid.testUtils.moduleLayout.portalRootId, options);
     },
 
     container: function () {

@@ -12,7 +12,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 /*global jQuery*/
 /*global fluid*/
 /*global jqUnit*/
-
+/*global expect*/
 
 (function ($) {
     $(document).ready(function () {
