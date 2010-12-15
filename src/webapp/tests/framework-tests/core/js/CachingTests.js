@@ -84,34 +84,55 @@ fluid.registerNamespace("fluid.tests");
     fluid.tests.testCaching = function () {
         var cachingTests = new jqUnit.TestCase("Caching Tests");
 
-        function testSimpleCache(requestDelay) {
+        function testSimpleCache(message, invoker, requestDelay) {
             cachingTests.test("Simple caching test with delay " + requestDelay, function () {
-                fluid.log("Begin with delay " + requestDelay);
-                fluid.fetchResources.clearResourceCache(fluid.tests.cacheTestUrl);
-                var fetches = 0;
-                function countCallback() {
-                    ++fetches;
-                }
-                function finalCallback(specs) {
-                    jqUnit.assertEquals("Just one fetch", 1, fetches);
-                    jqUnit.assertEquals("Success", "success", specs.template.resourceText.status);
-                    start();
-                }
-                fluid.tests.setMock(requestDelay, fluid.tests.cacheTestUrl, countCallback);
-                fluid.fetchResources.primeCacheFromResources("fluid.tests.cacheComponent");
-                var defaults = fluid.defaults("fluid.tests.cacheComponent");
-                window.setTimeout(function () {
-                    fluid.fetchResources(fluid.copy(defaults.resources), finalCallback);
-                }, 100);
-                stop();
+                invoker(function () {
+                    fluid.log("Begin with delay " + requestDelay);
+                    fluid.fetchResources.clearResourceCache(fluid.tests.cacheTestUrl);
+                    var fetches = 0;
+                    function countCallback() {
+                        ++fetches;
+                    }
+                    function finalCallback(specs) {
+                        jqUnit.assertEquals("Just one fetch", 1, fetches);
+                        jqUnit.assertEquals("Success", "success", specs.template.resourceText.status);
+                        start();
+                    }
+                    fluid.tests.setMock(requestDelay, fluid.tests.cacheTestUrl, countCallback);
+                    fluid.fetchResources.primeCacheFromResources("fluid.tests.cacheComponent");
+                    var defaults = fluid.defaults("fluid.tests.cacheComponent");
+                    window.setTimeout(function () {
+                        fluid.fetchResources(fluid.copy(defaults.resources), finalCallback);
+                    }, 100);
+                    stop();
+                });
             });      
         }
 
-        testSimpleCache(0);
-        testSimpleCache(50);
-        testSimpleCache(150);
+        function testAllSimpleCache(message, invoker) {
+            testSimpleCache(message, invoker, 0);
+            testSimpleCache(message, invoker, 50);
+            testSimpleCache(message, invoker, 150);
+        }
 
-
+        // "whitebox" testing to assess failure in the presence and absence of IoC
+        function expandOptionsCensorer(func) {
+            var expandOptions = fluid.expandOptions;
+            delete fluid.expandOptions;
+            try {
+                func();
+            }
+            finally {
+                fluid.expandOptions = expandOptions;
+            }      
+        }
+         
+        function funcInvoker(func) {
+            func();
+        }
+        
+        testAllSimpleCache("No IoC", expandOptionsCensorer);
+        testAllSimpleCache("With IoC", funcInvoker);
 
         function testProleptickJoinset(delays, message, expectedFinal) {
             cachingTests.test("Test proleptick joinsets: " + message, function () {

@@ -605,6 +605,8 @@ fluid.registerNamespace("fluid.testUtils");
         };
     
         fluid.fetchResources(resourceSpecs, function () {
+            jqUnit.assertUndefined("No fetch error", resourceSpecs.objects.fetchError);
+            jqUnit.assertValue("Request completed", resourceSpecs.objects.completeTime);
             jqUnit.assertDeepEq("Resolved model", expectedRes, expanded);
         });
     });

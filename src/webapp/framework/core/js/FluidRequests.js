@@ -283,7 +283,8 @@ var fluid_1_3 = fluid_1_3 || {};
     
     fluid.fetchResources.primeCacheFromResources = function(componentName) {
         var resources = fluid.defaults(componentName).resources;
-        var expanded = (fluid.expandOptions? fluid.expandOptions : fluid.identity)(fluid.copy(resources));
+        var that = {typeName: "fluid.fetchResources.primeCacheFromResources"};
+        var expanded = (fluid.expandOptions ? fluid.expandOptions : fluid.identity)(fluid.copy(resources), that);
         fluid.fetchResources(expanded);
     };
     

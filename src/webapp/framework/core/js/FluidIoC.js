@@ -407,20 +407,17 @@ var fluid_1_3 = fluid_1_3 || {};
     
     // NON-API function    
     fluid.withNewComponent = function(that, func) {
-        if (that) {
-            that[inCreationMarker] = true;
-        }
+        that[inCreationMarker] = true;
+
         // push a dynamic stack of "currently resolving components" onto the current thread
         var root = fluid.threadLocal();
         var thatStack = root["fluid.initDependents"];
-        if (that) {
-            if (!thatStack) {
-                thatStack = [that];
-                root["fluid.initDependents"] = thatStack;
-            }
-            else {
-                thatStack.push(that);
-            }
+        if (!thatStack) {
+            thatStack = [that];
+            root["fluid.initDependents"] = thatStack;
+        }
+        else {
+            thatStack.push(that)
         }
         var fullStack = [fluid.staticEnvironment, fluid.threadLocal()].concat(fluid.makeArray(thatStack));
         try {
