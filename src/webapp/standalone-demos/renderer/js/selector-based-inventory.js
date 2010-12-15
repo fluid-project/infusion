@@ -15,7 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var fluid = fluid || {};
 
-fluid.inventoryExample =  function () {
+fluid.inventoryExample =  (function () {
 
     var parsedTemplate = null;
     
@@ -140,4 +140,4 @@ fluid.inventoryExample =  function () {
             };
         }
     };
-}();
+})();

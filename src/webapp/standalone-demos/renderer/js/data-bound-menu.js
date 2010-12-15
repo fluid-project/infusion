@@ -15,7 +15,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 var fluid = fluid || {};
 
-fluid.dataBindingExample = function () {
+fluid.dataBindingExample = (function ($) {
 
     /*
      * Utility function to display the selected items, which are identified
@@ -36,14 +36,14 @@ fluid.dataBindingExample = function () {
     };
 
     var foodModel = {
-        values: ["castelo-branco", "chevre-noir", "camembert", "la-sauvagine", "pastorella","asparagus", "chicken", "shrimp", "beef", "peppers", "figs"],
-        names: ["Castelo Branco", "Chevre noir", "Camembert", "La Sauvagine", "Pastorella","Filo Wrapped Asparagus", "Chicken Ballotine with Carrot Raita and Pomegranate Chutney", "Spicy Shrimp Crostini", "Broiled Beef Fillet Croutes with Salsa Verde", "Roasted Marinated Peppers with Goat Cheese", "Gorgonzola Stuffed Figs"],
-        choice: ["chevre-noir","asparagus", "shrimp", "figs"]
+        values: ["castelo-branco", "chevre-noir", "camembert", "la-sauvagine", "pastorella", "asparagus", "chicken", "shrimp", "beef", "peppers", "figs"],
+        names: ["Castelo Branco", "Chevre noir", "Camembert", "La Sauvagine", "Pastorella", "Filo Wrapped Asparagus", "Chicken Ballotine with Carrot Raita and Pomegranate Chutney", "Spicy Shrimp Crostini", "Broiled Beef Fillet Croutes with Salsa Verde", "Roasted Marinated Peppers with Goat Cheese", "Gorgonzola Stuffed Figs"],
+        choice: ["chevre-noir", "asparagus", "shrimp", "figs"]
     };
 
     // curry the food model into an event listener that updates the display (after waiting a moment
     // to give the renderer a chance to actually update the model)
-    var dumpFoodModel = function(){
+    var dumpFoodModel = function () {
         var timeOut = setTimeout(function () {
             dumpModel(foodModel, jQuery("#autobound-model"));
         }, 50);
@@ -51,7 +51,7 @@ fluid.dataBindingExample = function () {
 
     // curry the wine model into an event listener that updates the display (after waiting a moment
     // to give the renderer a chance to actually update the model)
-    var dumpWineModel = function(){
+    var dumpWineModel = function () {
         var timeOut = setTimeout(function () {
             dumpModel(wineModel, jQuery("bound-model"));
         }, 50);
@@ -141,7 +141,8 @@ fluid.dataBindingExample = function () {
                     {ID: "canape", choiceindex: 10, parentRelativeID: "..::food"},
                     {ID: "canape-label", choiceindex: 10, parentRelativeID: "..::food"}
                 ]}
-            ]};
+            ]
+        };
 
         // The wine list and food list trees will be bound to a data model, which is passed to
         // fluid.selfRender() in the options parameter.
@@ -171,10 +172,10 @@ fluid.dataBindingExample = function () {
             // with whatever the current value of the inputs are.
             var applyButton = fluid.byId("apply-change");
             applyButton.onclick = function () {
-                var inputs = $("input", jQuery("#wine-list"));
+                var inputs = $("input", $("#wine-list"));
                 fluid.applyChange(inputs);
-                dumpModel(wineModel, jQuery("#bound-model"));
+                dumpModel(wineModel, $("#bound-model"));
             };
         }
     };
-}();
+})(jQuery);
