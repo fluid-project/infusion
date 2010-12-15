@@ -78,8 +78,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         fluidJSTests.test("null iteration", function () {
-            fluid.each(null, function () {});
-            fluid.transform(null, function () {});
+            expect(1);
+            
+            fluid.each(null, function () {
+                fluid.fail("This should not run");
+            });
+            fluid.transform(null, function () {
+                fluid.fail("This should not run");
+            });
+            
+            jqUnit.assertTrue("a null each and a null transform don't crash the framework", true);
         });
 
         fluidJSTests.test("merge", function () {
