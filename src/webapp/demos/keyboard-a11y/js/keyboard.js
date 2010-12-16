@@ -27,7 +27,7 @@ var demo = demo || {};
     var setARIA = function (container, thumbContainer, image) {
         container.attr("role", "application");
         thumbContainer.attr("role", "listbox");
-        $("li", thumbContainer).attr({
+        $(demo.imageViewer.selectors.thumbSelector, thumbContainer).attr({
             "role": "listitem",
             "aria-controls": "image-preview",
             "aria-selected": false
@@ -36,7 +36,7 @@ var demo = demo || {};
 
     var displayImage = function (thumb, thumbContainer, image) {
         // Remove the 'selected' styling from the thumbnails.
-        var images = $("li", thumbContainer);
+        var images = $(demo.imageViewer.selectors.thumbSelector, thumbContainer);
         images.attr("aria-selected", false);
 
         // Display the selected image in the main viewer.
@@ -54,7 +54,7 @@ var demo = demo || {};
      */
     var makeImageActivationHandler = function (thumbContainer, image, fiveStarRanker, model) {
         return function (evt) {
-            var thumb = (evt.target.nodeName === "LI" ? $("img", evt.target) : $(evt.target));
+            var thumb = $(evt.target);
             displayImage(thumb, thumbContainer, image);
             // update the five-star with the image's rank
             fiveStarRanker.setRank(model[thumb.attr("src")]);
@@ -106,8 +106,8 @@ var demo = demo || {};
         //*** Use the Keyboard Accessibility Plugin to make the thumbnails activatable by keyboard
         thumbContainer.fluid("activatable", handler);
 
-        // add the same handler to the click event
-        thumbContainer.click(handler);
+        // add the same handler to the click event of the thumbs
+        $(demo.imageViewer.selectors.thumbSelector, thumbContainer).click(handler);
     };
 
     /**
@@ -160,7 +160,7 @@ var demo = demo || {};
     //
     
     var setUpModel = function (thumbContainer) {
-        var thumbnails = $("img", thumbContainer);
+        var thumbnails = $(demo.imageViewer.selectors.thumbImgSelector, thumbContainer);
         var model = {};
         fluid.each(thumbnails, function (value, key) {
             model[$(value).attr("src")] = 1;
@@ -220,7 +220,9 @@ var demo = demo || {};
         selectors: {
             thumbContainer: ".demo-container-imageThumbnails",
             ranker: ".demo-fiveStar",
-            image: ".demo-image-mainImage"
+            image: ".demo-image-mainImage",
+            thumbSelector: ".selectable",
+            thumbImgSelector: "img"
         },
         styles: {
             selected: "demo-selected"

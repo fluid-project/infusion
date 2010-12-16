@@ -69,7 +69,7 @@ p.demo-right {
 	border:5px solid #fff;
 }
 
-.demo-container-imageThumbnails li.demo-selected img,
+.demo-container-imageThumbnails li img.demo-selected,
 .demo-container-imageThumbnails img:hover {
     border: 5px solid black;
 }
