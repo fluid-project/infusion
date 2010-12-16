@@ -114,6 +114,7 @@ var fluid_1_3 = fluid_1_3 || {};
         }
     };
     
+    // unsupported, NON-API function
     fluid.normalisePosition = function (position, samespan, targeti, sourcei) {
         // convert a REPLACE into a primitive BEFORE/AFTER
         if (position === fluid.position.REPLACE) {
@@ -238,7 +239,7 @@ var fluid_1_3 = fluid_1_3 || {};
     }
     
    
-    
+    // unsupported, NON-API function
     fluid.dropManager = function () { 
         var targets = [];
         var cache = {};

@@ -45,6 +45,7 @@ var fluid_1_3 = fluid_1_3 || {};
     /**
      * Move an item within the layout object. 
      */
+    // unsupported - NON-API function
     fluid.moduleLayout.updateLayout = function (item, target, position, layout) {
         item = fluid.unwrap(item);
         target = fluid.unwrap(target);

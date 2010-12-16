@@ -213,6 +213,7 @@ var fluid_1_3 = fluid_1_3 || {};
             return true;
         };
 
+        // unsupported, NON-API function
         thatReorderer.handleKeyDown = function (evt) {
             if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
                 return true;
@@ -233,6 +234,7 @@ var fluid_1_3 = fluid_1_3 || {};
             return handleDirectionKeyDown(evt);
         };
 
+        // unsupported, NON-API function
         thatReorderer.handleKeyUp = function (evt) {
             if (!thatReorderer.activeItem || thatReorderer.activeItem !== evt.target) {
                 return true;
@@ -262,7 +264,7 @@ var fluid_1_3 = fluid_1_3 || {};
             dropMarker.hide();
             return dropMarker;
         };
-
+        // unsupported, NON-API function
         thatReorderer.requestMovement = function (requestedPosition, item) {
             item = fluid.unwrap(item);
           // Temporary censoring to get around ModuleLayout inability to update relative to self.
@@ -582,6 +584,7 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.reorderer.WRAP_LOCKED_STRATEGY       = "lockedWrapFrom";
     fluid.reorderer.NO_STRATEGY = null;
     
+    // unsupported, NON-API function
     fluid.reorderer.relativeInfoGetter = function (orientation, coStrategy, contraStrategy, dropManager, dom, disableWrap) {
         return function (item, direction, forSelection) {
             var dirorient = fluid.directionOrientation(direction);
@@ -650,6 +653,7 @@ var fluid_1_3 = fluid_1_3 || {};
      * Layout Handlers *
      *******************/
 
+    // unsupported, NON-API function
     fluid.reorderer.makeGeometricInfoGetter = function (orientation, sentinelize, dom) {
         return function () {
             var that = {
@@ -748,6 +752,7 @@ var fluid_1_3 = fluid_1_3 || {};
         }
     });
 
+    // unsupported, NON-API function
     // Convert from 0-based to 1-based indices for announcement
     fluid.reorderer.indexRebaser = function (indices) {
         indices.index++;
