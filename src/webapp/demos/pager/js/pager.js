@@ -24,18 +24,16 @@ var demo = demo || {};
     demo.initPager = function () {
         var resources = {
             users: {
-                href: "../data/pager.js"
+                href: "../data/pager.json",
+                options: {
+                    dataType: "json"
+                }
             }
         };
-        fluid.each(resources, function (resource) {
-            resource.options = { dataType: "text"};
-        });
         
-        function initPager() {
-          
-            var model = {
-                users: JSON.parse(resources.users.resourceText)
-            };
+        function initPager(resourceSpecs) {
+            
+            var model = resourceSpecs.users.resourceText;
             var columnDefs = [ 
                 {
                     key: "user-link",
@@ -76,7 +74,7 @@ var demo = demo || {};
                 model: {
                     pageSize: 10
                 },
-                dataOffset: "users.membership_collection",
+                dataOffset: "membership_collection",
                 columnDefs: columnDefs,
                 annotateColumnRange: "user-link",
                 pagerBar: pagerBarOptions,
