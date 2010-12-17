@@ -297,7 +297,7 @@ var fluid = fluid || fluid_1_3;
             sc_that.activeItemIndex = elements.length - 1;
         }
         if (sc_that.activeItemIndex >= 0) {
-            fluid.focus(elements[sc_that.activeItemIndex]);
+            $(elements[sc_that.activeItemIndex]).focus();
         }
     };
 
@@ -305,7 +305,7 @@ var fluid = fluid || fluid_1_3;
         // FLUID-3590: FF 3.6 and Safari 4.x won't fire blur() when programmatically moving focus.
         var selElm = selectionContext.selectedElement();
         if (selElm) {
-            fluid.blur(selElm);
+            selElm.blur();
         }
 
         unselectElement(selectionContext.selectedElement(), selectionContext);
@@ -382,7 +382,7 @@ var fluid = fluid || fluid_1_3;
                 if (selectionContext.activeItemIndex === NO_SELECTION) {
                     selectionContext.activeItemIndex = 0;
                 }
-                fluid.focus(selectionContext.selectables[selectionContext.activeItemIndex]);
+                $(selectionContext.selectables[selectionContext.activeItemIndex]).focus();
             }
 
            // Force focus not to bubble on some browsers.
@@ -480,7 +480,7 @@ var fluid = fluid || fluid_1_3;
      * Selects the specified element.
      */
     fluid.selectable.select = function(target, toSelect) {
-        fluid.focus(toSelect);
+        $(toSelect).focus();
     };
 
     /**

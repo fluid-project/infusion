@@ -92,39 +92,29 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.deadMansBlur = function (control, options) {
         var that = fluid.initLittleComponent("fluid.deadMansBlur", options);
         that.blurPending = false;
-        that.lastCancel = 0;
-        $(control).bind("focusout", function (event) {
-            fluid.log("Starting blur timer for element " + fluid.dumpEl(event.target));
-            var now = new Date().getTime();
-            fluid.log("back delay: " + (now - that.lastCancel));
-            if (now - that.lastCancel > that.options.backDelay) {
-                that.blurPending = true;
-            }
+        $(control).blur(function () {
+            that.blurPending = true;
             setTimeout(function () {
                 if (that.blurPending) {
                     that.options.handler(control);
                 }
             }, that.options.delay);
         });
-        that.canceller = function (event) {
-            fluid.log("Cancellation through " + event.type + " on " + fluid.dumpEl(event.target)); 
-            that.lastCancel = new Date().getTime();
-            that.blurPending = false;
+        that.canceller = function () {
+            that.blurPending = false; 
         };
         fluid.each(that.options.exclusions, function(exclusion) {
             var exclusion = $(exclusion);
             fluid.each(exclusion, function(excludeEl) {
-                $(excludeEl).bind("focusin", that.canceller)
-                            .bind("fluid-focus", that.canceller)
-                            .click(that.canceller);
+                $(excludeEl).bind("focusin", that.canceller);
+                $(excludeEl).click(that.canceller);
             });
         });
         return that;
     };
 
     fluid.defaults("fluid.deadMansBlur", {
-        delay: 150,
-        backDelay: 100
+        delay: 150
     });
     
 })(jQuery, fluid_1_3);
