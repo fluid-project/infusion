@@ -199,7 +199,7 @@ var fluid_1_3 = fluid_1_3 || {};
     };
     
     fluid.uploader.html5Strategy.generateMultiPartContent = function (boundary, file) {
-        var multipart = " ";
+        var multipart = "";
         multipart += "--" + boundary + CRLF;
         multipart += "Content-Disposition: form-data;" +
                      " name=\"fileData\";" + 
