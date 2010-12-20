@@ -47,10 +47,15 @@ var fluid_1_3 = fluid_1_3 || {};
             }
         },
         
+        // Used for browsers that rely on File.getAsBinary(), such as Firefox 3.6,
+        // which load the entire file to be loaded into memory.
+        // Set this option to a sane limit so your users won't experience crashes or slowdowns (FLUID-3937).
+        legacyBrowserFileLimit: 100,
+        
         mergePolicy: {
             events: "preserve",
             browseButton: "preserve"
-        }
+        }        
     });
 
     fluid.demands("fluid.uploader.html5Strategy", "fluid.multiFileUploader", {
@@ -120,18 +125,11 @@ var fluid_1_3 = fluid_1_3 || {};
         that.events = that.options.events;
         
         // Upload files in the current batch without exceeding the fileUploadLimit
-        // and the fileSizeLimit.  The fileSizeLimit is scaled to KBs.
         that.start = function () {
             var files = that.queue.currentBatch.files;
-            var fileUploadLimit = that.queueSettings.fileUploadLimit;
-            
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
-                if (fileUploadLimit === 0 ||
-                        that.queue.currentBatch.numFilesCompleted < fileUploadLimit &&
-                        file.size < (that.queueSettings.fileSizeLimit * 1000)) {
-                    that.uploadFile(file);
-                }
+                that.uploadFile(file);
             }
             that.events.afterUploadComplete.fire(files);
         };
@@ -247,29 +245,39 @@ var fluid_1_3 = fluid_1_3 || {};
         return inputs.eq(inputs.length - 1);
     };
     
-    fluid.uploader.html5Strategy.local = function (queue, options) {
+    fluid.uploader.html5Strategy.local = function (queue, legacyBrowserFileLimit, options) {
         var that = fluid.initLittleComponent("fluid.uploader.html5Strategy.local", options);
         that.queue = queue;
         that.events = that.options.events;
         that.queueSettings = that.options.queueSettings;
 
-        // Add files to the file queue without exceeding the fileQueueLimit 
+        // Add files to the file queue without exceeding the fileQueueLimit and the fileSizeLimit
+        // NOTE:  fileSizeLimit set to bytes for HTML5 Uploader (MB for SWF Uploader).  
         that.addFiles = function (files) {
             var filesToUpload = files.length;
+            var fileSizeLimit = (legacyBrowserFileLimit ? legacyBrowserFileLimit : 
+                                                          that.queueSettings.fileSizeLimit) * 1000000;
+            var fileUploadLimit = that.queueSettings.fileUploadLimit;
             var fileQueueLimit = that.queueSettings.fileQueueLimit;
             var filesInQueue = that.queue.files.length - that.queue.getUploadedFiles().length;
             
             if (fileQueueLimit !== 0 && (filesToUpload + filesInQueue) > fileQueueLimit) { 
                 filesToUpload = fileQueueLimit - filesInQueue;
-            } 
-            
-            for (var i = 0; i < filesToUpload; i++) {
-                var file = files[i];
-                file.filestatus = fluid.uploader.fileStatusConstants.QUEUED;
-                file.id = "file-" + fluid.allocateGuid();
-                that.events.afterFileQueued.fire(file);
             }
             
+            // TODO:  Provide feedback to the user if the file size is too large and isn't added to the file queue
+            for (var i = 0; i < filesToUpload; i++) {
+                var file = files[i];
+                if (file.size < fileSizeLimit && (fileUploadLimit === 0 ||
+                        that.queue.currentBatch.numFilesCompleted < fileUploadLimit)) {
+                    file.id = "file-" + fluid.allocateGuid();
+                    file.filestatus = fluid.uploader.fileStatusConstants.QUEUED;
+                    that.events.afterFileQueued.fire(file);
+                } else {
+                    file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
+                    that.events.onQueueError.fire(file);
+                }
+            }
             that.events.afterFileDialog.fire(files.length);    
         };
         
@@ -315,6 +323,19 @@ var fluid_1_3 = fluid_1_3 || {};
         funcName: "fluid.uploader.html5Strategy.local",
         args: [
             "{multiFileUploader}.queue",
+            "{html5Strategy}.options.legacyBrowserFileLimit",
+            fluid.COMPONENT_OPTIONS
+        ]
+    });
+    
+    fluid.demands("fluid.uploader.html5Strategy.local", [
+        "fluid.uploader.html5Strategy",
+        "fluid.browser.supportsFormData"
+    ], {
+        funcName: "fluid.uploader.html5Strategy.local",
+        args: [
+            "{multiFileUploader}.queue",
+            undefined,
             fluid.COMPONENT_OPTIONS
         ]
     });
