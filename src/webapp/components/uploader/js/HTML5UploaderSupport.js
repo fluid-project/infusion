@@ -81,6 +81,12 @@ var fluid_1_3 = fluid_1_3 || {};
         events.onFileComplete.fire(file);
     };
     
+    fluid.uploader.html5Strategy.fileErrorHandler = function (file, events) {
+        file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
+        events.onFileError.fire(file, fluid.uploader.errorConstants.UPLOAD_FAILED);
+        events.onFileComplete.fire(file);
+    };
+    
     fluid.uploader.html5Strategy.progressTracker = function () {
         var that = {
             previousBytesLoaded: 0
@@ -99,7 +105,11 @@ var fluid_1_3 = fluid_1_3 || {};
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
-                fluid.uploader.html5Strategy.fileSuccessHandler(file, events);
+                if (xhr.status === 200) {
+                    fluid.uploader.html5Strategy.fileSuccessHandler(file, events);
+                } else {
+                    fluid.uploader.html5Strategy.fileErrorHandler(file, events);
+                }
             }
         };
 
@@ -275,7 +285,7 @@ var fluid_1_3 = fluid_1_3 || {};
                     that.events.afterFileQueued.fire(file);
                 } else {
                     file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
-                    that.events.onQueueError.fire(file);
+                    that.events.onQueueError.fire(file, fluid.uploader.errorConstants.UPLOAD_LIMIT_EXCEEDED);
                 }
             }
             that.events.afterFileDialog.fire(files.length);    
