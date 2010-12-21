@@ -222,6 +222,8 @@ Sneak Peek: in development; APIs will change. Share your feedback, ideas, and co
     * Inline Edit: Rich Text
     * Mobile Fluid Skinning System
     * Table of Contents
+    * Model Transformation
+    * Progressive Enhancement
 
 
 Known Issues
@@ -267,6 +269,7 @@ UI Options:
     FLUID-2398: Minimum font size control changes the text size even when the base size is larger then the minimum.
     
 Uploader: 
+    FLUID-3999: "Add more" button is not disabled while uploading
     FLUID-3241: Can only tab to the "Browse Files" button once: using IE
     FLUID-2052: Cannot tab away from the "Browse Files" button with Flash 10*
     * For information related to known issues with Flash 10 compatibility, 
