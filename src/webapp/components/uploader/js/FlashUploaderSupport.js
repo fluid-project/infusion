@@ -272,20 +272,20 @@ var fluid_1_3 = fluid_1_3 || {};
         return result;
     };
     
-    fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload = function (config, events) {
+    fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload = function (flashContainer, config, events) {
+        config.flashButtonPeerId = fluid.allocateSimpleId(flashContainer.children().eq(0));
         // Map the event and settings names to SWFUpload's expectations.
         var convertedConfig = mapNames(swfUploadOptionsMap, config);
         return mapSWFUploadEvents(swfUploadEventMap, events, convertedConfig);
     };
     
     fluid.uploader.swfUploadStrategy.flash10SetupConfig = function (config, events, flashContainer, browseButton) {
-        config.flashButtonPeerId = fluid.allocateSimpleId(flashContainer.children().eq(0));
         var isTransparent = config.flashButtonAlwaysVisible ? false : (!$.browser.msie || config.flashButtonTransparentEvenInIE);
         config.flashButtonImageURL = isTransparent ? undefined : config.flashButtonImageURL;
         config.flashButtonHeight = config.flashButtonHeight || browseButton.outerHeight();
         config.flashButtonWidth = config.flashButtonWidth || browseButton.outerWidth();
         config.flashButtonWindowMode = isTransparent ? SWFUpload.WINDOW_MODE.TRANSPARENT : SWFUpload.WINDOW_MODE.OPAQUE;
-        return fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(config, events);
+        return fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(flashContainer, config, events);
     };
     
     fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", [

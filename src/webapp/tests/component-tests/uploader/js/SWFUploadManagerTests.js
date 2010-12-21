@@ -45,7 +45,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         swfUploadSetupTests.test("SWFUpload Flash 9 configuration", function () {
-            var config = fluid.uploader.swfUploadStrategy.flash9SetupConfig(defaultMergedSettings, events);
+            var config = fluid.uploader.swfUploadStrategy.flash9SetupConfig(flashContainer, 
+                                                                            defaultMergedSettings, 
+                                                                            events);
             jqUnit.assertEquals("We should have specified the correct Flash URL.", 
                                 defaultFlashSettings.flashURL,
                                 config.flash_url);   

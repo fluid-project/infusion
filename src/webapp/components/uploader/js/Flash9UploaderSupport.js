@@ -37,12 +37,12 @@ var fluid_1_3 = fluid_1_3 || {};
     ], {
         funcName: "fluid.uploader.swfUploadStrategy.flash9SetupDOM",
         args: [
-            "{engine}.options.styles"
+            "{swfUploadStrategy}.options.styles"
         ]
     });
 
-    fluid.uploader.swfUploadStrategy.flash9SetupConfig = function (config, events) {
-        return fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(config, events);
+    fluid.uploader.swfUploadStrategy.flash9SetupConfig = function (flashContainer, config, events) {
+        return fluid.uploader.swfUploadStrategy.convertConfigForSWFUpload(flashContainer, config, events);
     };
 
     fluid.demands("fluid.uploader.swfUploadStrategy.setupConfig", [
@@ -51,6 +51,7 @@ var fluid_1_3 = fluid_1_3 || {};
     ], {
         funcName: "fluid.uploader.swfUploadStrategy.flash9SetupConfig",
         args: [
+            "{engine}.flashContainer",
             "{engine}.config",
             "{multiFileUploader}.events"
         ]
