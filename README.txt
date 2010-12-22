@@ -8,7 +8,7 @@ What's New in 1.3?
 ==================
 
     * Sneak Peek at the new Inversion of Control (IoC) system
-    * Uploader now features support for HTML 5
+    * Uploader support for HTML 5
          o Flash-free for modern browsers!
          o Substantially improved keyboard and screen reader accessibility
          o Comprehensive automatic progressive enhancement based on browser capabilities
@@ -17,7 +17,8 @@ What's New in 1.3?
          o Enhanced screen reader support for the Inline Edit component
          o Location and movement announcements for the Reorderer component
          o No wrap option for the Reorderer component
-    * Create custom Infusion builds with the new Builder site at http://builder.fluidproject.org
+    * The new Infusion Builder site, which allows you to create custom builds: 
+         http://builder.fluidproject.org
     * Renderer improvements
     * Transactional change applier
     * Bug fixes
