@@ -634,6 +634,157 @@ fluid.registerNamespace("fluid.tests");
             jqUnit.assertDeepEq("Decorator non-expansion", expected, expanded);
         });
         
+        fluid.tests.returnArg = function (arg) {
+            return arg;
+        };
+        
+        protoTests.test("Condition Expander", function () {
+            var tree = {
+                expander: {
+                    type: "fluid.renderer.condition",
+                    condition: true,
+                    trueTree: {
+                        thisIsTrueTree: {
+                            messagekey: "test"
+                        }
+                    },
+                    falseTree: {
+                        thisIsFalseTree: {
+                            messagekey: "test"
+                        }
+                    }
+                }
+            };
+            var expectedTrue = {
+                children: [{
+                    ID: "thisIsTrueTree",
+                    componentType: "UIMessage",
+                    messagekey: {
+                        value: "test"
+                    }
+                }]
+            };
+            var expectedFalse = {
+                children: [{
+                    ID: "thisIsFalseTree",
+                    componentType: "UIMessage",
+                    messagekey: {
+                        value: "test"
+                    }
+                }]
+            };
+            var expander = fluid.renderer.makeProtoExpander({ELstyle: "${}"});
+            var expanded = expander(tree);
+            jqUnit.assertDeepEq("Expanded tree should be", expectedTrue, expanded);
+            tree.expander.condition = false;
+            expanded = expander(tree);
+            jqUnit.assertDeepEq("Expanded tree should be", expectedFalse, expanded);
+            tree.expander.condition = {
+                expander: {
+                    type: "fluid.deferredInvokeCall",
+                    func: "fluid.tests.returnArg",
+                    args: true
+                }
+            };
+            expanded = expander(tree);
+            jqUnit.assertDeepEq("Expanded tree should be", expectedTrue, expanded);
+            tree.expander.condition = {
+                funcName: "fluid.tests.returnArg",
+                args: true
+            };
+            expanded = expander(tree);
+            jqUnit.assertDeepEq("Expanded tree should be", expectedTrue, expanded);
+            tree.expander.condition = {
+                funcName: "fluid.tests.returnArg",
+                args: true
+            };
+            expanded = expander(tree);
+            jqUnit.assertDeepEq("Expanded tree should be", expectedTrue, expanded);
+            var model = {
+                vector: ["one", "two"]
+            };
+            expander = fluid.renderer.makeProtoExpander({ELstyle: "${}", model: model});
+            tree.expander.trueTree = {
+                expander: {
+                    type: "fluid.renderer.repeat",
+                    controlledBy: "vector",
+                    pathAs: "element",
+                    repeatID: "vectorElement",
+                    tree: { value: "${{element}}" }
+                }
+            };
+            expanded = expander(tree);
+            expectedTrue.children = fluid.transform(model.vector, function (element, i) {
+                return {
+                    ID: "vectorElement:",
+                    componentType: "UIBound",
+                    value: element,
+                    valuebinding: "vector." + i
+                };
+            });
+            jqUnit.assertDeepEq("Expanded tree should be", expectedTrue, expanded);
+        });
+       
+        fluid.tests.assertDisplay = function(displayString) {
+            return displayString === "show";
+        };
+        
+        protoTests.test("Condition within repetition expander", function() {
+            var model = {
+                "fields": {
+                    "permissions": [
+                        {
+                            "display": "show",
+                            "resourceName": "idgenerators",
+                            "permission": "delete"
+                        },
+                        {
+                            "display": "none",
+                            "resourceName": "id",
+                            "permission": "delete"
+                        }]
+                    }
+                };
+            var expopts = {ELstyle: "${}", model: model};
+            var expander = fluid.renderer.makeProtoExpander(expopts);
+            var protoTree = {
+                "expander": {
+                    "repeatID": ".csc-permissions-record-row:",
+                    "type": "fluid.renderer.repeat",
+                    "pathAs": "row",
+                    "valueAs": "rowValue",
+                    "controlledBy": "fields.permissions", 
+                    "tree": {
+                        "expander": {
+                            "type": "fluid.renderer.condition",
+                            "condition": {
+                                "funcName": "fluid.tests.assertDisplay",
+                                "args": "{rowValue}.display"
+                            },
+                            "trueTree": {
+                                ".csc-role-resourceName": "${{row}.resourceName}",
+                                "expander": {
+                                    "inputID": ".csc-role-permission-input",
+                                    "tree": {
+                                        "optionnames": ["none", "read", "write", "delete"],
+                                        "optionlist": ["none", "read", "write", "delete"],
+                                        "selection": "${{row}.permission}" 
+                                    },
+                                    "rowID": ".csc-role-permission-row:",
+                                    "selectID": "permission",
+                                    "labelID": ".csc-role-permission-label",
+                                    "type": "fluid.renderer.selection.inputs" 
+                                }
+                            },
+                            "falseTree": {}
+                        }
+                    }
+                }
+            };
+            var expanded = expander(protoTree);
+            return;
+        });
+        
         protoTests.test("FLUID-3658 test: selection to inputs expander", function () {
             var model = { };
             var expopts = {ELstyle: "${}", model: model};
@@ -715,6 +866,37 @@ fluid.registerNamespace("fluid.tests");
             };
             var expanded = expander(protoTree);
             fluid.testUtils.assertTree("Message key resolved", model.tabs.here.name, expanded.children[0].children[0].linktext.messagekey.value);
+        });
+        
+        protoTests.test("Can't have explicit valuebinding in the proto tree (no other way if there are decorators)", function () {
+            var model = {
+                vector: [{
+                    index: "one"
+                }, {
+                    index: "two"
+                }]
+            };
+            var expander = fluid.renderer.makeProtoExpander({ELstyle: "${}", model: model});
+            var protoTree = {
+                expander: {
+                    repeatID: "tab",
+                    tree: {
+                        node: {
+                            value: "${{vec}.index}",
+                            decorators: {
+                                type: "addClass",
+                                classes: "someClass"
+                            }
+                        }
+                    },
+                    type: "fluid.renderer.repeat",
+                    pathAs: "vec",
+                    controlledBy: "vector"
+                }
+            };
+            var expanded = expander(protoTree);
+            fluid.testUtils.assertTree("Valuebinding should be resolved", "vector.0.index", expanded.children[0].children[0].valuebinding);
+            fluid.testUtils.assertTree("Valuebinding should be resolved", "one", expanded.children[0].children[0].value);
         });
     };  
 })(jQuery); 

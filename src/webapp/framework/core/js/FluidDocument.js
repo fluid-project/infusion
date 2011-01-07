@@ -56,7 +56,7 @@ var fluid_1_3 = fluid_1_3 || {};
         lastFocusedElement = event.target;
     });
     
-    fluid.getLastFocusedElement = function () {
+    fluid.getLastFocusedElement = function() {
         return lastFocusedElement;
     }
 
@@ -89,6 +89,23 @@ var fluid_1_3 = fluid_1_3 || {};
     
     fluid.initEnablement = function(target) {
         fluid.setScopedData(target, ENABLEMENT_KEY, true);
+    };
+    
+    // This function is necessary since simulation of focus events by jQuery under IE
+    // is not sufficiently good to intercept the "focusin" binding. Any code which triggers
+    // focus or blur synthetically throughout the framework and client code must use this function,
+    // especially if correct cross-platform interaction is required with the "deadMansBlur" function.
+    
+    function applyOp(node, func) {
+        node = $(node);
+        node.trigger("fluid-"+func);
+        node[func]();
     }
+    
+    $.each(["focus", "blur"], function(i, name) {
+        fluid[name] = function(elem) {
+            applyOp(elem, name);
+        }
+    });
     
 })(jQuery, fluid_1_3);

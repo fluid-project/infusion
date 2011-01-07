@@ -27,7 +27,7 @@ fluid_1_3 = fluid_1_3 || {};
     // TODO: rescued from kettleCouchDB.js - clean up in time
     fluid.expect = function (name, members, target) {
         fluid.transform($.makeArray(members), function(key) {
-            if (!target[key]) {
+            if (typeof target[key] === "undefined") {
                 fluid.fail(name + " missing required parameter " + key);
             }
         });
@@ -261,6 +261,23 @@ fluid_1_3 = fluid_1_3 || {};
         return expanded;
     };
     
+    fluid.renderer.condition = function (options, container, key, config) {
+        fluid.expect("Selection to condition expander", ["falseTree", "trueTree", "condition"], options);
+        var condition;
+        if (options.condition.funcName) {
+            var args = config.expandLight(options.condition.args);
+            condition = fluid.invoke(options.condition.funcName, args);
+        }
+        else if (options.condition.expander) {
+            condition = config.expander(options.condition);
+        }
+        else {
+            condition = options.condition;
+        }
+        var tree = (condition ? options.trueTree : options.falseTree);
+        return config.expander(tree);
+    };
+    
 
     /** Create a "protoComponent expander" with the supplied set of options.
      * The returned value will be a function which accepts a "protoComponent tree"
@@ -354,7 +371,8 @@ fluid_1_3 = fluid_1_3 || {};
             model: options.model,
             resolverGetConfig: options.resolverGetConfig,
             resolverSetConfig: options.resolverSetConfig,
-            expander: expandExternal
+            expander: expandExternal,
+            expandLight: expandLight
         };
         
         var expandLeaf = function(leaf, componentType) {
