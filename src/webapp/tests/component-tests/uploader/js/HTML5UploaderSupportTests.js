@@ -38,7 +38,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var parts = multipart.split('\r\n');
             
             jqUnit.assertEquals("The multipart content must contain 7 lines", 7, parts.length);
-            jqUnit.assertTrue("The first line of the multipart content must contain the boundary", parts[0].indexOf(boundary) !== -1);
+            jqUnit.assertEquals("The first line of the multipart content should start with two dashes.", 0, parts[0].indexOf("--"));
+            jqUnit.assertEquals("The first line of the multipart content must contain the boundary", 2, parts[0].indexOf(boundary));
             jqUnit.assertTrue("The second line of the multipart content must contain the Content-Disposition", parts[1].indexOf('Content-Disposition') !== -1);
             jqUnit.assertTrue("The second line of the multipart content must contain the name attribute with value of 'fileData'", parts[1].indexOf('name=\"fileData\"') !== -1);            
             jqUnit.assertTrue("The second line of the multipart content must contain the file name", parts[1].indexOf('filename') !== -1);
@@ -49,27 +50,26 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         html5UploaderTests.test("Uploader HTML5 browseHandler", function () {
-            var browseButton = $("<a href='#' name='browseButton'>Nothing</a>");
-            var browseHandler = fluid.uploader.html5Strategy.browseHandler({
+            var browseButton = $("#browseButton");
+            var browseButtonView = fluid.uploader.html5Strategy.browseButtonView("#browseButtonContainer", {
                 queueSettings: {
                     fileTypes: ""
-                },
-                events: events, 
-                browseButton: browseButton, 
-                addFilesFn: function () {}
+                }
             });
             
             var inputs = browseButton.children();
-
             jqUnit.assertEquals("There should be one multi-file input element at the start", 1, inputs.length);
-            jqUnit.assertEquals("The multi-file input element should be visible and in the tab order to start", 0, inputs.eq(0).attr("tabindex"));
+            jqUnit.assertEquals("The multi-file input element should be visible and in the tab order to start", 
+                0, inputs.eq(0).attr("tabindex"));
             
-            browseHandler.renderFreshMultiFileInput();
+            browseButtonView.renderFreshMultiFileInput();
             inputs = browseButton.children();
-            
-            jqUnit.assertEquals("After the first batch of files have processed, there should now be two multi-file input elements", 2, inputs.length);
-            jqUnit.assertEquals("The original multi-file input element should be removed from the tab order", -1, inputs.eq(0).attr("tabindex"));            
-            jqUnit.assertEquals("The second multi-file input element should be visible and in the tab order", 0, inputs.eq(1).attr("tabindex"));
+            jqUnit.assertEquals("After the first batch of files have processed, there should now be two multi-file input elements", 
+                2, inputs.length);
+            jqUnit.assertEquals("The original multi-file input element should be removed from the tab order", 
+                -1, inputs.eq(0).attr("tabindex"));            
+            jqUnit.assertEquals("The second multi-file input element should be visible and in the tab order", 
+                0, inputs.eq(1).attr("tabindex"));
             
             inputs.eq(1).focus();
             jqUnit.assertTrue("On focus, the browseButton input has the focus class", browseButton.hasClass("focus"));
