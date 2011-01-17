@@ -1,3 +1,13 @@
+/*!
+ * Fluid Infusion v1.3
+ *
+ * Infusion is distributed under the Educational Community License 2.0 and new BSD licenses: 
+ * http://wiki.fluidproject.org/display/fluid/Fluid+Licensing
+ *
+ * For information on copyright, see the individual Infusion source code files: 
+ * https://source.fluidproject.org/svn/fluid/infusion/
+ */
+
 /*
 Copyright 2007-2010 University of Cambridge
 Copyright 2007-2009 University of Toronto
