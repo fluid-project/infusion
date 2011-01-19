@@ -13,13 +13,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_1_3*/
+/*global fluid_1_3:true*/
 
 fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
     
-  fluid.parseTemplate = function(template, baseURL, scanStart, cutpoints_in, opts) {
+  fluid.parseTemplate = function (template, baseURL, scanStart, cutpoints_in, opts) {
       opts = opts || {};
     
       if (!template) {
@@ -37,9 +37,7 @@ fluid_1_3 = fluid_1_3 || {};
       var defend = -1;   
       
       var parseOptions = opts;
-      
-      var baseURL;
-      
+            
       var debugMode = false;
       
       var cutpoints = []; // list of selector, tree, id
@@ -47,7 +45,7 @@ fluid_1_3 = fluid_1_3 || {};
       
       var cutstatus = [];
       
-      XMLLump = function (lumpindex, nestingdepth) {
+      var XMLLump = function (lumpindex, nestingdepth) {
           return {
               //rsfID: "",
               //text: "",
@@ -370,12 +368,12 @@ fluid_1_3 = fluid_1_3 || {};
     var excess = tagstack.length - 1; 
     if (excess) {
         fluid.fail("Error parsing template - unclosed tag(s) of depth " + (excess) + 
-           ": " + fluid.transform(tagstack.splice(1, excess), function(lump) {return debugLump(lump);}).join(", "));
+           ": " + fluid.transform(tagstack.splice(1, excess), function (lump) {return debugLump(lump);}).join(", "));
     }
     return t;
     };
   
-    fluid.debugLump = function(lump) {
+    fluid.debugLump = function (lump) {
         var togo = lump.text;
         togo += " at ";
         togo += "lump line " + lump.line + " column " + lump.column +" index " + lump.lumpindex;
@@ -387,12 +385,12 @@ fluid_1_3 = fluid_1_3 || {};
   
   fluid.ID_ATTRIBUTE = "rsf:id";
   
-  fluid.getPrefix = function(id) {
+  fluid.getPrefix = function (id) {
    var colpos = id.indexOf(':');
    return colpos === -1? id : id.substring(0, colpos);
    };
   
-  fluid.SplitID = function(id) {
+  fluid.SplitID = function (id) {
     var that = {};
     var colpos = id.indexOf(':');
     if (colpos === -1) {
@@ -405,7 +403,7 @@ fluid_1_3 = fluid_1_3 || {};
      return that;
   };
   
-  fluid.XMLViewTemplate = function() {
+  fluid.XMLViewTemplate = function () {
     return {
       globalmap: {},
       collectmap: {},
@@ -419,7 +417,7 @@ fluid_1_3 = fluid_1_3 || {};
     return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
     };
   
-  fluid.dumpAttributes = function(attrcopy) {
+  fluid.dumpAttributes = function (attrcopy) {
     var togo = "";
     for (var attrname in attrcopy) {
       var attrvalue = attrcopy[attrname];
@@ -445,7 +443,7 @@ fluid_1_3 = fluid_1_3 || {};
   /** Returns a "template structure", with globalmap in the root, and a list
    * of entries {href, template, cutpoints} for each parsed template.
    */
-  fluid.parseTemplates = function(resourceSpec, templateList, opts) {
+  fluid.parseTemplates = function (resourceSpec, templateList, opts) {
     var togo = [];
     opts = opts || {};
     togo.globalmap = {};
@@ -481,7 +479,7 @@ fluid_1_3 = fluid_1_3 || {};
   var childSeg = new RegExp("\\s*(>)?\\s*", "g");
   var whiteSpace = new RegExp("^\\w*$");
 
-  fluid.parseSelector = function(selstring) {
+  fluid.parseSelector = function (selstring) {
     var togo = [];
     selstring = $.trim(selstring);
     //ws-(ss*)[ws/>]
