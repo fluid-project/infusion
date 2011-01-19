@@ -679,6 +679,7 @@ fluid.registerNamespace("fluid.tests");
             tree.expander.condition = false;
             expanded = expander(tree);
             jqUnit.assertDeepEq("Expanded tree should be", expectedFalse, expanded);
+            /*
             tree.expander.condition = {
                 expander: {
                     type: "fluid.deferredInvokeCall",
@@ -688,6 +689,7 @@ fluid.registerNamespace("fluid.tests");
             };
             expanded = expander(tree);
             jqUnit.assertDeepEq("Expanded tree should be", expectedTrue, expanded);
+            */
             tree.expander.condition = {
                 funcName: "fluid.tests.returnArg",
                 args: true
