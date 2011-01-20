@@ -207,16 +207,25 @@ var fluid_1_3 = fluid_1_3 || {};
         that.refreshView();
     };
     
+    // Toggle keyboard row handlers on and off depending on the uploader state
+    var enableRows = function (rows, state) {
+        for (var i = 0; i < rows.length; i++) {
+            fluid.enabled(rows[i], state);	
+        }            	
+    }
+    
     var prepareForUpload = function (that) {
         var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
         rowButtons.attr("disabled", "disabled");
-        rowButtons.addClass(that.options.styles.dim);    
+        rowButtons.addClass(that.options.styles.dim);
+        enableRows(that.locate("fileRows"), false);
     };
 
     var refreshAfterUpload = function (that) {
         var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
         rowButtons.removeAttr("disabled");
-        rowButtons.removeClass(that.options.styles.dim);    
+        rowButtons.removeClass(that.options.styles.dim);
+        enableRows(that.locate("fileRows"), true);        
     };
         
     var changeRowState = function (that, row, newState) {
