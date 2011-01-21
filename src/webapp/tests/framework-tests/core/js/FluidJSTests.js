@@ -313,6 +313,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         fluidJSTests.test("Container: bind to an id", function () {
+            expect(2);
             // Give it a valid id string.
             var result = fluid.container("#main");
             jqUnit.assertTrue("One element should be returned when specifying a selector",
@@ -321,13 +322,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             // Now try with a invalid string... a CSS selector matching two elements
             try {
                 result = fluid.container(".container");
-                jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
             } catch (e) {
                 jqUnit.assertTrue("We should have received an exception", !!e);
             }
         });
     
         fluidJSTests.test("container(): bind to a single jQuery", function () {
+            expect(2);
             // Try with a single-item jQuery.
             var oneContainer = jQuery("#main");
             var result = fluid.container(oneContainer);
@@ -338,7 +339,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var twoContainers = jQuery(".container");
             try {
                 result = fluid.container(twoContainers);
-                jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
             } catch (e) {
                 jqUnit.assertTrue("We should have received an exception", !!e);
             }
@@ -352,12 +352,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         fluidJSTests.test("container(): garbage object", function () {
+            expect(1);
             // Random objects should fail.
             var container = {foo: "bar"};
 
             try {
                 fluid.container(container);
-                jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
             } catch (e) {
                 jqUnit.assertTrue("We should have received an exception", !!e);
             }
@@ -534,14 +534,19 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     childMatch: fluid.tests.childMatchResolver
                 }
             });
-            var resolved = fluid.get(model, {
+            var el = {
                 type: "childMatch",
                 queryPath: "fields.repeatableThing",
                 childPath: "_primary",
                 value: true,
                 path: "value.a"
-            }, config);
+            };
+            var resolved = fluid.get(model, el, config);
             jqUnit.assertEquals("Queried resolved value", 2, resolved);
+            model.fields.repeatableThing = [{}];
+            el.path = "value";
+            resolved = fluid.get(model, el, config);
+            jqUnit.assertUndefined("Queried resolved value", resolved);
         });
 
         fluidJSTests.test("Globals", function () {

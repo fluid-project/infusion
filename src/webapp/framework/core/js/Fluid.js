@@ -136,6 +136,12 @@ var fluid = fluid || fluid_1_3;
         return !value || valueType === "string" || valueType === "boolean" || valueType === "number" || valueType === "function";
     };
     
+    fluid.isDOMNode = function (obj) {
+      // This could be more sound, but messy: 
+      // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
+        return obj && typeof(obj.nodeType) === "number";  
+    };
+    
     /** Determines whether the supplied object can be treated as an array, by 
      * iterating an index towards its length. The test functions by detecting
      * a property named "length" which is of type "number", but excluding objects
@@ -486,7 +492,7 @@ var fluid = fluid || fluid_1_3;
                 fluid.fail("Unable to find resolver of type " + key);
             }
             trundler = resolver(EL, trundler) || {};
-            if (EL.path) {
+            if (EL.path && trundler.trundle) {
                 trundler = trundler.trundle(EL.path, uncess);
             }
         }
@@ -686,7 +692,7 @@ var fluid = fluid || fluid_1_3;
     
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
-                      !thisSource.nodeType && !thisSource.jquery && thisSource !== fluid.VALUE &&
+                      !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
                        !fluid.mergePolicyIs(newPolicy, "preserve")) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array ? [] : {};
@@ -947,6 +953,9 @@ var fluid = fluid || fluid_1_3;
                 message: count > 1 ? "More than one (" + count + ") container elements were "
                 : "No container element was found for selector " + containerSpec
             });
+        }
+        if (!fluid.isDOMNode(container[0])) {
+            fluid.fail("fluid.container was supplied a non-jQueryable element");  
         }
         
         return container;
