@@ -475,6 +475,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         fluidJSTests.test("set/getBeanValue", function () {
             var model = {"path3": "thing"};
+            jqUnit.assertEquals("Get simple value", "thing", fluid.get(model, "path3"));
+            jqUnit.assertDeepEq("Get root value", model, fluid.get(model, ""));
             jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path3.nonexistent"));
             jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path3.nonexistent.non3"));
             jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path1.nonexistent"));
@@ -494,10 +496,52 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         fluidJSTests.test("getBeanValue with custom strategy", function () {
             var model = {path3: "thing", path4: "otherThing"};
-            var value = fluid.get(model, "path3", [customStrategy, fluid.model.defaultFetchStrategy]);
+            var value = fluid.get(model, "path3", {strategies: [customStrategy, fluid.model.defaultFetchStrategy]});
             jqUnit.assertUndefined("path3 value censored", value);
-            var value2 = fluid.get(model, "path4", [customStrategy, fluid.model.defaultFetchStrategy]);
+            var value2 = fluid.get(model, "path4", {strategies: [customStrategy, fluid.model.defaultFetchStrategy]});
             jqUnit.assertEquals("path4 value uncensored", model.path4, value2);
+        });
+        
+        fluid.tests.childMatchResolver = function(options, trundler) {
+            trundler = trundler.trundle(options.queryPath);
+            return fluid.find(trundler.root, function(value, key) {
+                var trundleKey = trundler.trundle(key);
+                var trundleChild = trundleKey.trundle(options.childPath);
+                if (trundleChild.root === options.value) {
+                    return trundleKey;
+                } 
+            });
+            
+        };
+        
+        fluidJSTests.test("getBeanValue with resolver", function () {
+            var model = {
+                fields: {  
+                    repeatableThing: [
+                        {
+                        _primary: false,
+                        value: {a: 0, b: 1}  
+                        },
+                        {
+                        _primary: true,
+                        value: {a: 2, b: 3}
+                        }
+                    ]              
+                }
+            };
+            var config = $.extend(true, fluid.model.defaultGetConfig, {
+                resolvers: {
+                    childMatch: fluid.tests.childMatchResolver
+                }
+            });
+            var resolved = fluid.get(model, {
+                type: "childMatch",
+                queryPath: "fields.repeatableThing",
+                childPath: "_primary",
+                value: true,
+                path: "value.a"
+            }, config);
+            jqUnit.assertEquals("Queried resolved value", 2, resolved);
         });
 
         fluidJSTests.test("Globals", function () {

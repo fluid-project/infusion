@@ -60,11 +60,14 @@ var fluid_1_3 = fluid_1_3 || {};
     
     function makeGingerStrategy(thatStack) {
         return function(component, thisSeg) {
+            if (thisSeg === "") {
+                return component; // explicitly allow lookup to self TODO review
+            }
             var atval = component[thisSeg];
             if (atval !== undefined) {
                 if (atval[inCreationMarker] && atval !== thatStack[0]) {
                     fluid.fail("Component of type " + 
-                    atval.typeName + " cannot be used for lookup of path " + segs.join(".") +
+                    atval.typeName + " cannot be used for lookup of path " + thisSeg +
                     " since it is still in creation. Please reorganise your dependencies so that they no longer contain circular references");
                 }
             }
@@ -89,14 +92,14 @@ var fluid_1_3 = fluid_1_3 || {};
                     return true; // YOUR VISIT IS AT AN END!!
                 }
                 if (component.options && component.options.components && component.options.components[context] && !component[context]) {
-                    foundComponent = fluid.get(component, context, fetchStrategies);
+                    foundComponent = fluid.get(component, context, {strategies: fetchStrategies});
                     return true;
                 }
             });
                 // TODO: we used to get a helpful diagnostic when we failed to match a context name before we fell back
                 // to the environment for FLUID-3818
                 //fluid.fail("No context matched for name " + context + " from root of type " + thatStack[0].typeName);
-            return fluid.get(foundComponent, parsed.path, fetchStrategies);
+            return fluid.get(foundComponent, parsed.path, {strategies: fetchStrategies});
         };
         return fetcher;
     }

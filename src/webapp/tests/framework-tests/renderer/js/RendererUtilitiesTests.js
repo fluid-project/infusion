@@ -161,19 +161,19 @@ fluid.registerNamespace("fluid.tests");
         var testMessageRepeat = function (that) {
             that.refreshView();
             var tablinks = that.locate("tabLink");
-            jqUnit.assertEquals("Existin string relative should be found", "Acquisition", tablinks.eq(0).text());
-            jqUnit.assertEquals("Nonexisting string relative should be notified of", "[No messagecodes provided]", tablinks.eq(1).text());
-            jqUnit.assertEquals("Nonexisting string relative should be notified of", "[No messagecodes provided]", that.locate("unmatchedMessage").text());
+            jqUnit.assertEquals("Existing string relative should be found", "Acquisition", tablinks.eq(0).text());
+            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", tablinks.eq(1).text());
+            jqUnit.assertEquals("Nonexisting string relative should be notified ", "[No messagecodes provided]", that.locate("unmatchedMessage").text());
         };
         
         var testMultipleExpanders = function (that) {
             that.refreshView();
             var tabContent = that.locate("tabContent");
             var tabTwoContent = that.locate("tab2Content");
-            jqUnit.assertEquals("Existin string relative should be found", "Acquisition", tabContent.eq(0).text());
-            jqUnit.assertEquals("Existin string relative should be found", "Cataloging", tabContent.eq(1).text());
-            jqUnit.assertEquals("Existin string relative should be found", "Acquisition", tabTwoContent.eq(0).text());
-            jqUnit.assertEquals("Existin string relative should be found", "Cataloging", tabTwoContent.eq(1).text());
+            jqUnit.assertEquals("Existing string relative should be found", "Acquisition", tabContent.eq(0).text());
+            jqUnit.assertEquals("Existing string relative should be found", "Cataloging", tabContent.eq(1).text());
+            jqUnit.assertEquals("Existing string relative should be found", "Acquisition", tabTwoContent.eq(0).text());
+            jqUnit.assertEquals("Existing string relative should be found", "Cataloging", tabTwoContent.eq(1).text());
         };
         
         compTests.test("Multiple same level expanders", function () {
@@ -235,7 +235,7 @@ fluid.registerNamespace("fluid.tests");
         
         compTests.test("FLUID-3819 test: messagekey with no value", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test-repeat", {
-                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
+                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
                 model: {
                     recordlist: {
                         test: {
@@ -283,7 +283,7 @@ fluid.registerNamespace("fluid.tests");
         
         compTests.test("Renderer component with custom resolver", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
-                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)]
+                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]}
             });
             testFilteredRecords(that);
         });
@@ -298,7 +298,7 @@ fluid.registerNamespace("fluid.tests");
                 ]  
             };
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
-                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
+                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
                 protoTree: tree,
                 rendererFnOptions: {
                     noexpand: true
