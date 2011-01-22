@@ -511,24 +511,30 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     return trundleKey;
                 } 
             });
-            
         };
         
+        fluid.tests.generateRepeatableThing = function(gens) {
+            var togo = [];
+            for (var i = 0; i < gens.length; i+= 3) {
+                togo.push({
+                    _primary: !!Number(gens.charAt(i)),
+                    value: {
+                        a: Number(gens.charAt(i + 1)),
+                        b: Number(gens.charAt(i + 2))
+                    }     
+                });
+            }
+            return togo;
+        };
+        
+        fluid.tests.basicResolverModel = {
+            fields: {  
+                repeatableThing: fluid.tests.generateRepeatableThing("001123")
+            }
+        };
+                
         fluidJSTests.test("getBeanValue with resolver", function () {
-            var model = {
-                fields: {  
-                    repeatableThing: [
-                        {
-                        _primary: false,
-                        value: {a: 0, b: 1}  
-                        },
-                        {
-                        _primary: true,
-                        value: {a: 2, b: 3}
-                        }
-                    ]              
-                }
-            };
+            var model = fluid.copy(fluid.tests.basicResolverModel);
             var config = $.extend(true, fluid.model.defaultGetConfig, {
                 resolvers: {
                     childMatch: fluid.tests.childMatchResolver
@@ -547,6 +553,52 @@ https://source.fluidproject.org/svn/LICENSE.txt
             el.path = "value";
             resolved = fluid.get(model, el, config);
             jqUnit.assertUndefined("Queried resolved value", resolved);
+        });
+
+        fluid.tests.repeatableModifyingStrategy = {
+           init: function(oldStrategy) {
+               var that = {};
+               that.path = oldStrategy? oldStrategy.path : "";
+               that.next = function(root, segment) {
+                   that.path = fluid.model.composePath(that.path, segment);
+                   return that.path === "fields.repeatableThing.1.value"?
+                       fluid.tests.generateRepeatableThing("145") : undefined;   
+               };
+               return that;
+           }
+        };
+
+        fluidJSTests.test("Complex resolving and strategising", function () {
+            var model = fluid.copy(fluid.tests.basicResolverModel);
+            model.fields.repeatableThing[1].value = fluid.tests.generateRepeatableThing("045167089");
+            var el = {
+                type: "childMatch",
+                queryPath: "fields.repeatableThing",
+                childPath: "_primary",
+                value: true,
+                path: {
+                    type: "childMatch",
+                    queryPath: "value",
+                    childPath: "_primary",
+                    value: true,
+                    path: "value.a"
+                }
+            };
+            var config = $.extend(true, {}, fluid.model.defaultGetConfig, {
+                resolvers: {
+                    childMatch: fluid.tests.childMatchResolver
+                }
+            });
+            var resolved = fluid.get(model, el, config);
+            jqUnit.assertEquals("Queried resolved value", 6, resolved);
+            var config2 = {
+                resolvers: {
+                    childMatch: fluid.tests.childMatchResolver
+                },
+                strategies: [fluid.tests.repeatableModifyingStrategy].concat(fluid.model.defaultGetConfig.strategies) 
+            };
+            var resolved2 = fluid.get(model, el, config2);
+            jqUnit.assertEquals("Queried resolved and strategised value", 4, resolved2)
         });
 
         fluidJSTests.test("Globals", function () {

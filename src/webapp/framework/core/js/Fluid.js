@@ -387,11 +387,11 @@ var fluid = fluid || fluid_1_3;
     };
 
     /** Standard strategies for resolving path segments **/
-    fluid.model.environmentStrategy = function (initEnvironment) {
+    fluid.model.environmentStrategy = function(initEnvironment) {
         return {
-            init: function () {
+            init: function() {
                 var environment = initEnvironment;
-                return function (root, segment, index) {
+                return function(root, segment, index) {
                     var togo;
                     if (environment && environment[segment]) {
                         togo = environment[segment];
@@ -430,18 +430,22 @@ var fluid = fluid || fluid_1_3;
         }
     };
     
+    fluid.model.initStrategy = function(baseStrategy, index, oldStrategies) {
+        return baseStrategy.init? baseStrategy.init(oldStrategies? oldStrategies[index] : undefined) : baseStrategy;
+    };
+    
     // unsupported, NON-API function
-    fluid.model.makeTrundler = function(root, config) {
+    fluid.model.makeTrundler = function(root, config, oldStrategies) {
         var that = {
             root: root,
             strategies: fluid.isArrayable(config)? config : 
-                fluid.transform(config.strategies, function (figel) {
-                    return figel.init ? figel.init() : figel;
+                fluid.transform(config.strategies, function (strategy, index) {
+                    return fluid.model.initStrategy(strategy, index, oldStrategies); 
             })
         };
         that.trundle = function(EL, uncess) {
             uncess = uncess || 0;
-            var newThat = fluid.model.makeTrundler(that.root, that.strategies);
+            var newThat = fluid.model.makeTrundler(that.root, config, that.strategies);
             newThat.segs = fluid.model.parseEL(EL);
             newThat.index = 0;
             newThat.step(newThat.segs.length - uncess);
@@ -478,10 +482,8 @@ var fluid = fluid || fluid_1_3;
     };
     
     // unsupported, NON-API function
-    fluid.model.trundle = function(root, EL, config, uncess) {
-        EL = EL || "";
-        config = config || fluid.model.defaultGetConfig;
-        var trundler = fluid.model.makeTrundler(root, config);
+    // core trundling recursion point
+    fluid.model.trundleImpl = function(trundler, EL, config, uncess) {
         if (typeof(EL) === "string") {
             trundler = trundler.trundle(EL, uncess);
         }
@@ -492,11 +494,20 @@ var fluid = fluid || fluid_1_3;
                 fluid.fail("Unable to find resolver of type " + key);
             }
             trundler = resolver(EL, trundler) || {};
-            if (EL.path && trundler.trundle) {
-                trundler = trundler.trundle(EL.path, uncess);
+            if (EL.path && trundler.trundle && trundler.root !== undefined) {
+                trundler = fluid.model.trundleImpl(trundler, EL.path, config, uncess);
             }
         }
-        return trundler;
+        return trundler;  
+    }
+    
+    // unsupported, NON-API function
+    // entry point for initially unbased trundling
+    fluid.model.trundle = function(root, EL, config, uncess) {
+        EL = EL || "";
+        config = config || fluid.model.defaultGetConfig;
+        var trundler = fluid.model.makeTrundler(root, config);
+        return fluid.model.trundleImpl(trundler, EL, config, uncess);
     };
     
     fluid.model.getPenultimate = function (root, EL, config) {
