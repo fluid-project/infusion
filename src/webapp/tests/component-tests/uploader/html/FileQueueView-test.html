@@ -9,15 +9,16 @@
     
     <script type="text/javascript" src="../../../../lib/jquery/core/js/jquery.js"></script>
     <script type="text/javascript" src="../../../../lib/jquery/ui/js/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="../../../../lib/jquery/plugins/scrollTo/js/jquery.scrollTo.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/jquery.keyboard-a11y.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/Fluid.js"></script>
+    <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/FluidDocument.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/FluidView.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/DataBinding.js"></script>
     <script type="text/javascript" src="../../../../framework/core/js/FluidIoC.js"></script>
     
     <script type="text/javascript" src="../../../../components/progress/js/Progress.js"></script>
-    <script type="text/javascript" src="../../../../components/uploader/js/Scroller.js"></script>
     <script type="text/javascript" src="../../../../components/uploader/js/Uploader.js"></script>
     <script type="text/javascript" src="../../../../components/uploader/js/FileQueue.js"></script>
     <script type="text/javascript" src="../../../../components/uploader/js/FileQueueView.js"></script>
@@ -40,49 +41,36 @@
     <!-- Test HTML -->
     <div id="main">
         
-        <!-- Top of the queue -->
-        <div class="fl-uploader-queue-header">
-            <table cellspacing="0" cellpadding="0" summary="Headers for the file queue.">
-                <caption>File Queue:</caption>
-                <thead>
-                    <tr>
-                        <th scope="col" class="fileName">File Name</th>
-                        <th scope="col" class="fileSize">Size&nbsp;&nbsp;</th>
-                        <th scope="col" class="fileRemove">&nbsp;</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-        
-        <!-- Scrolling section -->
-        <div class="flc-scroller">
-            <div class="scroller-inner">
+        <!-- The file queue -->
+        <table summary="Headers for the file queue." class="flc-uploader-queue fl-uploader-data">
+            <caption>File Upload Queue:</caption>
+            <thead>
+                <tr>
+                    <th scope="col" class="fl-uploader-file-name">File Name</th>
+                    <th scope="col" class="fl-uploader-file-size">Size</th>
+                    <th scope="col" class="fl-uploader-file-actions"></th>
+                </tr>
+            </thead>
+            <tbody class="fl-uploader-queue">
+                <!-- Rows will be rendered in here. -->
                 
-                <!-- The file list itself -->
-                <table cellspacing="0" class="flc-uploader-queue" summary="Queue of files to upload.">
-                    <tbody>
-                        <!-- Rows will be rendered in here. -->
-                        
-                        <!-- Template for the file queue rows -->
-                        <tr class="flc-uploader-file-tmplt flc-uploader-file fl-uploader-hidden-templates">
-                            <th class="flc-uploader-file-name fileName" scope="row">File Name Placeholder</th>
-                            <td class="flc-uploader-file-size fileSize">0 KB</td>
-                            <td class="actions">
-                                <button type="button" class="flc-uploader-file-action iconBtn" title="Remove File" tabindex="-1">
-                                    <span class="text-description">Remove file from queue</span>
-                                </button>
-                            </td>
-                        </tr>
-                        
-                        <!-- Template for the file error info rows -->
-                        <tr class="flc-uploader-file-error-tmplt fl-uploader-file-error fl-uploader-hidden-templates">
-                            <td colspan="3" class="flc-uploader-file-error"></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- Template markup for the file queue rows -->
+                <tr class="flc-uploader-file-tmplt flc-uploader-file fl-uploader-hidden-templates">
+                    <td class="flc-uploader-file-name fl-uploader-file-name">File Name Placeholder</td>
+                    <td class="flc-uploader-file-size fl-uploader-file-size">0 KB</td>
+                    <td class="fl-uploader-file-actions">
+                        <button type="button" class="flc-uploader-file-action fl-uploader-file-action" tabindex="-1">
+                            <span class="fl-uploader-button-text fl-uploader-hidden">Remove file from queue</span>
+                        </button>
+                    </td>
+                </tr>
                 
-            </div>
-        </div>
+                <!-- Template for the file error info rows -->
+                <tr class="flc-uploader-file-error-tmplt fl-uploader-file-error fl-uploader-hidden-templates">
+                    <td colspan="3" class="flc-uploader-file-error"></td>
+                </tr>
+            </tbody>
+        </table>
         
     </div>
 </body>

@@ -142,6 +142,25 @@ fluid.registerNamespace("fluid.tests");
             });
             jqUnit.assertEquals("The live region should be updated", target.attr("aria-label"), region.text());
         });
+        
+        fluidViewTests.test("fluid.scrollableTable", function () {
+            var table = $("#scrollableTable");
+            table.css("height", "1px");
+            
+            var scroller = fluid.scrollableTable(table, {
+                css: {
+                    height: "1px"
+                }
+            });
+            
+            jqUnit.assertTrue("The table's parent element is a div", table.parent().is("div"));
+            jqUnit.assertTrue("The table's parent element has the fl-table-scrollable-area class",
+                              table.parent().hasClass("fl-table-scrollable-area"));
+            jqUnit.assertTrue("The table's grandparent element has the fl-table-scrollable-container class",
+                              table.parent().parent().hasClass("fl-table-scrollable-container"));
+            jqUnit.assertEquals("The appropriate styles were injected.",
+                                "1px", table.parent().css("height"));
+        });
     };
    
 })(jQuery); 

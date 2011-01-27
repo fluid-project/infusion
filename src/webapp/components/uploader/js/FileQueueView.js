@@ -50,7 +50,7 @@ var fluid_1_3 = fluid_1_3 || {};
     var startFileProgress = function (that, file) {
         var fileRowElm = rowForFile(that, file);
         that.scroller.scrollTo(fileRowElm);
-         
+               
         // update the progressor and make sure that it's in position
         var fileProgressor = progressorForFile(that, file);
         fileProgressor.refreshView();
@@ -201,9 +201,8 @@ var fluid_1_3 = fluid_1_3 || {};
         that.container.append(row);
         row.attr("title", that.options.strings.status.remove);
         row.fadeIn("slow");
-        that.scroller.scrollBottom();
+        that.scroller.scrollTo("100%");
         createProgressorFromTemplate(that, row);
-
         that.refreshView();
     };
     
@@ -362,7 +361,6 @@ var fluid_1_3 = fluid_1_3 || {};
         };
         
         that.refreshView = function () {
-            that.scroller.refreshView();
             that.selectableContext.refresh();
         };
         
@@ -381,17 +379,10 @@ var fluid_1_3 = fluid_1_3 || {};
         ]
     });
     
-    fluid.demands("fluid.scroller", "fluid.uploader.fileQueueView", {
-        funcName: "fluid.scroller",
-        args: [
-            "{fileQueueView}.container"
-        ]
-    });
-    
     fluid.defaults("fluid.uploader.fileQueueView", {
         components: {
             scroller: {
-                type: "fluid.scroller"
+                type: "fluid.scrollableTable",
             }
         },
         
@@ -446,6 +437,13 @@ var fluid_1_3 = fluid_1_3 || {};
             model: "preserve",
             events: "preserve"
         }
+    });
+    
+    fluid.demands("fluid.scrollableTable", "fluid.uploader.fileQueueView", {
+        funcName: "fluid.scrollableTable",
+        args: [
+            "{fileQueueView}.container"
+        ]
     });
    
 })(jQuery, fluid_1_3);

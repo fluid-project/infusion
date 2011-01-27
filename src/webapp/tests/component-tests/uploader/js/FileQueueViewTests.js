@@ -87,19 +87,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
         };
         
         var fileQueueViewTests = new jqUnit.TestCase("FileQueueView Tests", setupFunction);
-
-        fileQueueViewTests.test("Scrollability", function () {
-            var q = createFileQueue(qEl);
-            
-            jqUnit.assertNotNull("The queue should have a scroller attached to it.", q.scroller);
-            jqUnit.assertNotUndefined("The queue should have a scroller attached to it.", q.scroller);
-            jqUnit.assertEquals("The queue's container should be scrollable", 
-                                $(".flc-uploader-queue")[0], 
-                                q.scroller.container[0]);
-            jqUnit.assertEquals("The queue's scroller should have a scroller wrapper.", 
-                                $(".flc-scroller")[0], 
-                                q.scroller.scrollingElm[0]);
-        });
         
         fileQueueViewTests.test("Add file", function () {
             var q = createFileQueue(qEl);
