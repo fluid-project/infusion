@@ -777,13 +777,16 @@ fluid.registerNamespace("fluid.tests");
                                     "labelID": ".csc-role-permission-label",
                                     "type": "fluid.renderer.selection.inputs" 
                                 }
-                            },
-                            "falseTree": {}
+                            }
                         }
                     }
                 }
             };
             var expanded = expander(protoTree);
+            jqUnit.assertEquals("Only one row produced", 1, expanded.children.length);
+            // one for UISelect, one for resourceName bound, one each for optionlist
+            jqUnit.assertEquals("Inner expander expanded", 2 + protoTree.expander.tree.expander.trueTree.expander.tree.optionnames.length, 
+                expanded.children[0].children.length);
             return;
         });
         

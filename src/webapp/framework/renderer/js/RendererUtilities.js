@@ -197,6 +197,10 @@ fluid_1_3 = fluid_1_3 || {};
         return togo;
     };
   
+    /** END of "Renderer Components" infrastructure **/
+    
+    fluid.renderer.NO_COMPONENT = {};
+  
     /** A special "shallow copy" operation suitable for nondestructively
      * merging trees of components. jQuery.extend in shallow mode will 
      * neglect null valued properties.
@@ -237,10 +241,8 @@ fluid_1_3 = fluid_1_3 || {};
         if (!list || list.length === 0) {
             return options.ifEmpty ? config.expander(options.ifEmpty) : togo;
         }
-        fluid.setLogging(true);
-        fluid.log("fluid.repeat controlledBy " + options.controlledBy);
-        fluid.log("Argument tree: " + JSON.stringify(options.tree));
-        var expanded = fluid.transform(list, function (element, i) {
+        var expanded = [];
+        fluid.each(list, function (element, i) {
             var EL = fluid.model.composePath(path, i); 
             var envAdd = {};
             if (options.pathAs) {
@@ -250,9 +252,15 @@ fluid_1_3 = fluid_1_3 || {};
                 envAdd[options.valueAs] = fluid.get(config.model, EL, config.resolverGetConfig);
             }
             var expandrow = fluid.withEnvironment(envAdd, function () {return config.expander(options.tree); });
-            return fluid.isArrayable(expandrow) ? {children: expandrow} : expandrow;
+            if (fluid.isArrayable(expandrow)) {
+                if (expandrow.length > 0) {
+                    expanded.push( {children: expandrow} );
+                }
+            }
+            else if (expandrow !== fluid.renderer.NO_COMPONENT) {
+                expanded.push(expandrow);
+            }
         });
-        fluid.log("Expanded to " + JSON.stringify(expanded));
         var repeatID = options.repeatID;
         if (repeatID.indexOf(":") === -1) {
             repeatID = repeatID + ":";
@@ -262,7 +270,7 @@ fluid_1_3 = fluid_1_3 || {};
     };
     
     fluid.renderer.condition = function (options, container, key, config) {
-        fluid.expect("Selection to condition expander", ["falseTree", "trueTree", "condition"], options);
+        fluid.expect("Selection to condition expander", ["condition"], options);
         var condition;
         if (options.condition.funcName) {
             var args = config.expandLight(options.condition.args);
@@ -273,6 +281,9 @@ fluid_1_3 = fluid_1_3 || {};
             condition = options.condition;
         }
         var tree = (condition ? options.trueTree : options.falseTree);
+        if (!tree) {
+            tree = fluid.renderer.NO_COMPONENT;
+        }
         return config.expander(tree);
     };
     
@@ -354,6 +365,9 @@ fluid_1_3 = fluid_1_3 || {};
         };
         
         var expandExternal = function (entry) {
+            if (entry === fluid.renderer.NO_COMPONENT) {
+                return entry;
+            }
             var singleTarget;
             var target = [];
             var pusher = function (comp) {
@@ -449,7 +463,9 @@ fluid_1_3 = fluid_1_3 || {};
                     var expanders = fluid.makeArray(entry);
                     fluid.each(expanders, function (expander) {
                         var expanded = fluid.invokeGlobalFunction(expander.type, [expander, proto, key, expandConfig]);
-                        fluid.each(expanded, function (el) {target[target.length] = el; });
+                        if (expanded !== fluid.renderer.NO_COMPONENT) {
+                            fluid.each(expanded, function (el) {target[target.length] = el; });
+                        }
                     });
                 } else if (entry) {
                     var condPusher = function (comp) {
