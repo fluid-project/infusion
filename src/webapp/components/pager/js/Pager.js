@@ -267,7 +267,10 @@ var fluid_1_3 = fluid_1_3 || {};
         },
         
         pageList: {
-            type: "fluid.pager.directPageList"
+            type: "fluid.pager.renderedPageList",
+            options: {
+                pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
+            }
         },
         
         selectors: {
@@ -820,8 +823,9 @@ var fluid_1_3 = fluid_1_3 || {};
             dataModel: "preserve",
             model: "preserve"
         },
-        pagerBar: {type: "fluid.pager.pagerBar", 
-            options: null},
+        pagerBar: {
+            type: "fluid.pager.pagerBar"
+        },
         
         summary: {type: "fluid.pager.summary", options: {
             message: "Viewing page %currentPage. Showing records %first - %last of %total items." 
@@ -836,7 +840,7 @@ var fluid_1_3 = fluid_1_3 || {};
         sorter: fluid.pager.basicSorter,
         
         bodyRenderer: {
-            type: "fluid.emptySubcomponent"
+            type: "fluid.pager.selfRender"
         },
         
         model: {
@@ -850,9 +854,15 @@ var fluid_1_3 = fluid_1_3 || {};
         dataOffset: "",
         
         // strategy for generating a tree row, either "explode" or an array of columnDef objects
-        columnDefs: "explode",
+        columnDefs: [
+            {
+                key: "column1",
+                valuebinding: "*.value1",  
+                sortable: true
+            }
+        ],
         
-        annotateColumnRange: undefined,
+        annotateColumnRange: "column1",
         
         tooltip: {
             type: "fluid.tooltip"

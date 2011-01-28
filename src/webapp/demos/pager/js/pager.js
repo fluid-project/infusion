@@ -56,18 +56,6 @@ var demo = demo || {};
                     sortable: false
                 }
             ];
-               
-            var pagerBarOptions = {
-                type: "fluid.pager.pagerBar",
-                options: {
-                    pageList: {
-                        type: "fluid.pager.renderedPageList",
-                        options: {
-                            pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
-                        }
-                    }            
-                }
-            };
           
             demo.pager = fluid.pager(".demo-pager-container", {
                 dataModel: model,
@@ -77,7 +65,6 @@ var demo = demo || {};
                 dataOffset: "membership_collection",
                 columnDefs: columnDefs,
                 annotateColumnRange: "user-link",
-                pagerBar: pagerBarOptions,
                 bodyRenderer: {
                     type: "fluid.pager.selfRender",
                     options: {

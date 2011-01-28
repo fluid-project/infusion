@@ -73,19 +73,6 @@ sakai.initFluidSiteSettingTable = function () {
             },
             sortable: true}
         ];
-           
-  
-        var pagerBarOptions = {
-            type: "fluid.pager.pagerBar",
-            options: {
-                pageList: {
-                    type: "fluid.pager.renderedPageList",
-                    options: {
-                        pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
-                    }
-                }            
-            }
-        };
   
         var pager = fluid.pager(".ss-members", {
             dataModel: model,
@@ -96,7 +83,6 @@ sakai.initFluidSiteSettingTable = function () {
             dataOffset: "users.membership_collection",
             columnDefs: columnDefs,
             annotateColumnRange: "user-link",
-            pagerBar: pagerBarOptions,
 
             bodyRenderer: {
                 type: "fluid.pager.selfRender",

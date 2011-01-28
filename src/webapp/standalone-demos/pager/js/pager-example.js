@@ -21,6 +21,19 @@ var demo = demo || {};
         var selectorPrefix = "#students-page";
         
         var options = {
+            pagerBar: {
+                type: "fluid.pager.pagerBar", 
+                options: {
+                    pageList: {
+                        type: "fluid.pager.directPageList"
+                    }
+                }
+            },
+            bodyRenderer: {
+                type: "fluid.emptySubcomponent"
+            },
+            columnDefs: "explode",
+            annotateColumnRange: undefined,
             listeners: {
                 onModelChange: function (newModel, oldModel) {
                     $(selectorPrefix + (oldModel.pageIndex + 1)).addClass("hidden");

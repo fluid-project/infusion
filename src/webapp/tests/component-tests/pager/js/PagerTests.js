@@ -30,7 +30,28 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     pageChangeStats.oldPageNum = oldModel.pageIndex;
                 }
             }
-        };        
+        };    
+        
+        /** Convenience markup driven pager creator **/
+        var markupPager = function (container, options) {
+            var defaultSetupOptions = {
+                pagerBar: {
+                    type: "fluid.pager.pagerBar", 
+                    options: {
+                        pageList: {
+                            type: "fluid.pager.directPageList"
+                        }
+                    }
+                },
+                bodyRenderer: {
+                    type: "fluid.emptySubcomponent"
+                },
+                columnDefs: "explode",
+                annotateColumnRange: undefined
+            };
+           
+            return fluid.pager(container, fluid.merge("replace", defaultSetupOptions, options));
+        };    
         
         /** Convenience rendered pager creator **/
         var renderedPager = function (container, options) {
@@ -50,7 +71,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 },
                 annotateColumnRange: "animal",
                 dataOffset: "pets",
-                bodyRenderer: "fluid.pager.selfRender",
                 model: {
                     pageSize: 2
                 },
@@ -69,14 +89,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
                             animal: "fish"
                         }
                     ]
-                },
-                pagerBar: {
-                    type: "fluid.pager.pagerBar",
-                    options: {
-                        pageList: {
-                            type: "fluid.pager.renderedPageList"
-                        }
-                    }
                 }
             };
            
@@ -107,7 +119,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         // This is a placeholder test. It knows too much about the implementation details. 
         // This will be replaced with a better test as the public API of the Pager is developed
         tests.test("Pager setup", function () {
-            var pager = fluid.pager("#gradebook");
+            var pager = markupPager("#gradebook");
             
             // For now, the pager exposes the objects it contains.
             var pagerTop = pager.pagerBar; 
@@ -127,7 +139,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         tests.test("Initially First Selected", function () {
-            var pager = fluid.pager("#gradebook", options);
+            var pager = markupPager("#gradebook", options);
             
             var firstLink = $("#top1");
             var firstLinkBottom = $("#bottom1");
@@ -147,8 +159,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertUndefined("The oldPageNum for the onPageChange event should be undefined.", pageChangeStats.oldPageNum);
         });
         
-        tests.test("Click link", function () {      
-            var pager = fluid.pager("#gradebook", options);
+        tests.test("Click link", function () {
+            var pager = markupPager("#gradebook", options);
             var link1 = $("#top1");        
             var link1Bottom = $("#bottom1");        
             var link2 = $("#top2");
@@ -179,7 +191,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         tests.test("Links between top and bottom", function () {
-            var pager = fluid.pager("#plants", options);
+            var pager = markupPager("#plants", options);
             var nonPageLink = $("#chives");
             var topLink = $("#plants-top2");
             var pageLink = $("#plants-bottom2");
@@ -199,7 +211,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         tests.test("Pager Next/Previous", function () {
-            var pager = fluid.pager("#gradebook");
+            var pager = markupPager("#gradebook");
     
             var nextLink = $("#next-top");
             var previousLink = $("#previous-top");
@@ -242,7 +254,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         tests.test("Pager bodyRenderer: fluid.pager.selfRender with default columnDefs (FLUID-3793)", function () {
             // without a fix to FLUID-3793, pager creation will fail with the default selfRender configuration
             expect(1);
-            var pager = fluid.pager("#plants", {
+            var pager = markupPager("#plants", {
                 bodyRenderer: "fluid.pager.selfRender",
                 dataModel: {}
             });
