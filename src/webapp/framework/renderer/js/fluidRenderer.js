@@ -12,155 +12,153 @@ https://source.fluidproject.org/svn/LICENSE.txt
 */
 
 /*global jQuery*/
-/*global fluid_1_3*/
+/*global fluid_1_3:true*/
 
 fluid_1_3 = fluid_1_3 || {};
 
 (function ($, fluid) {
   
     function debugPosition(component) {
-        return "as child of " + (component.parent.fullID? "component with full ID " + component.parent.fullID : "root");
+        return "as child of " + (component.parent.fullID ? "component with full ID " + component.parent.fullID : "root");
     }
      
-    fluid.arrayToHash = function(array) {
+    fluid.arrayToHash = function (array) {
         var togo = {};
-        fluid.each(array, function(el) {
+        fluid.each(array, function (el) {
             togo[el] = true;
         });
         return togo;
     };
   
-  function computeFullID(component) {
-      var togo = "";
-      var move = component;
-      if (component.children === undefined) { // not a container
-          // unusual case on the client-side, since a repetitive leaf may have localID blasted onto it.
-          togo = component.ID + (component.localID !== undefined? component.localID : "");
-          move = component.parent;
-          }
-      while (move.parent) {
-          var parent = move.parent;
-          if (move.fullID !== undefined) {
-              togo = move.fullID + togo;
-              return togo;
-          }
-          if (move.noID === undefined) {
-              var ID = move.ID;
-              if (ID === undefined) {
-                  fluid.fail("Error in component tree - component found with no ID " +
-                    debugPosition(parent) + ": please check structure");
-              }
-              var colpos = ID.indexOf(":");        
-              var prefix = colpos === -1? ID : ID.substring(0, colpos);
-              togo = prefix + ":" + (move.localID === undefined ? "" : move.localID) + ":" + togo;
-          }
-          move = parent;
-      }
-      return togo;
-  }
+    function computeFullID(component) {
+        var togo = "";
+        var move = component;
+        if (component.children === undefined) { // not a container
+            // unusual case on the client-side, since a repetitive leaf may have localID blasted onto it.
+            togo = component.ID + (component.localID !== undefined ? component.localID : "");
+            move = component.parent;
+        }
+        
+        while (move.parent) {
+            var parent = move.parent;
+            if (move.fullID !== undefined) {
+                togo = move.fullID + togo;
+                return togo;
+            }
+            if (move.noID === undefined) {
+                var ID = move.ID;
+                if (ID === undefined) {
+                    fluid.fail("Error in component tree - component found with no ID " +
+                        debugPosition(parent) + ": please check structure");
+                }
+                var colpos = ID.indexOf(":");
+                var prefix = colpos === -1 ? ID : ID.substring(0, colpos);
+                togo = prefix + ":" + (move.localID === undefined ? "" : move.localID) + ":" + togo;
+            }
+            move = parent;
+        }
+        
+        return togo;
+    }
 
-  var renderer = {};
+    var renderer = {};
   
-  renderer.isBoundPrimitive = function(value) {
-      return fluid.isPrimitive(value) || value instanceof Array 
-             && (value.length === 0 || typeof(value[0]) === "string");
-  };
+    renderer.isBoundPrimitive = function (value) {
+        return fluid.isPrimitive(value) || value instanceof Array 
+            && (value.length === 0 || typeof (value[0]) === "string");
+    };
   
-  function processChild(value, key) {
-      if (renderer.isBoundPrimitive(value)) {
-          return {componentType: "UIBound", value: value, ID: key};
-          }
-      else {
-          var unzip = unzipComponent(value);
-          if (unzip.ID) {
-              return {ID: key, componentType: "UIContainer", children: [unzip]};
-          }
-          else {
-              unzip.ID = key;
-              return unzip;
-          } 
-      }    
-  }
+    function processChild(value, key) {
+        if (renderer.isBoundPrimitive(value)) {
+            return {componentType: "UIBound", value: value, ID: key};
+        } else {
+            var unzip = unzipComponent(value);
+            if (unzip.ID) {
+                return {ID: key, componentType: "UIContainer", children: [unzip]};
+            } else {
+                unzip.ID = key;
+                return unzip;
+            } 
+        }    
+    }
   
-  function fixChildren(children) {
-      if (!(children instanceof Array)) {
-          var togo = [];
-          for (var key in children) {
-              var value = children[key];
-              if (value instanceof Array) {
-                  for (var i = 0; i < value.length; ++ i) {
-                      var processed = processChild(value[i], key);
+    function fixChildren(children) {
+        if (!(children instanceof Array)) {
+            var togo = [];
+            for (var key in children) {
+                var value = children[key];
+                if (value instanceof Array) {
+                    for (var i = 0; i < value.length; ++i) {
+                        var processed = processChild(value[i], key);
           //            if (processed.componentType === "UIContainer" &&
           //              processed.localID === undefined) {
           //              processed.localID = i;
           //            }
-                      togo[togo.length] = processed;
-                  }
+                        togo[togo.length] = processed;
+                    }
+                } else {
+                    togo[togo.length] = processChild(value, key);
+                } 
+            }
+            return togo;
+        } else {return children; }
+    }
+  
+    function fixupValue(uibound, model, resolverGetConfig) {
+        if (uibound.value === undefined && uibound.valuebinding !== undefined) {
+            if (!model) {
+                fluid.fail("Cannot perform value fixup for valuebinding " 
+                    + uibound.valuebinding + " since no model was supplied to rendering");
+            }
+            uibound.value = fluid.get(model, uibound.valuebinding, resolverGetConfig);
+        }
+    }
+  
+    function upgradeBound(holder, property, model, resolverGetConfig) {
+        if (holder[property] !== undefined) {
+            if (renderer.isBoundPrimitive(holder[property])) {
+                holder[property] = {value: holder[property]};
+            }
+            else if (holder[property].messagekey) {
+                holder[property].componentType = "UIMessage";
+            }
+        }
+        else {
+            holder[property] = {value: null};
+        }
+        fixupValue(holder[property], model, resolverGetConfig);
+    }
+  
+    renderer.duckMap = {children: "UIContainer", 
+            value: "UIBound", valuebinding: "UIBound", messagekey: "UIMessage", 
+            markup: "UIVerbatim", selection: "UISelect", target: "UILink",
+            choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
+      
+      var boundMap = {
+          UISelect:   ["selection", "optionlist", "optionnames"],
+          UILink:     ["target", "linktext"],
+          UIVerbatim: ["markup"],
+          UIMessage:  ["messagekey"]
+      };
+  
+      renderer.boundMap = fluid.transform(boundMap, fluid.arrayToHash);
+      
+      renderer.inferComponentType = function (component) {
+          for (var key in renderer.duckMap) {
+              if (component[key] !== undefined) {
+                  return renderer.duckMap[key];
               }
-              else {
-                  togo[togo.length] = processChild(value, key);
-              } 
           }
-          return togo;
-      }
-      else {return children;}
-  }
+      };
   
-  function fixupValue(uibound, model, resolverGetConfig) {
-      if (uibound.value === undefined && uibound.valuebinding !== undefined) {
-          if (!model) {
-              fluid.fail("Cannot perform value fixup for valuebinding " 
-                + uibound.valuebinding + " since no model was supplied to rendering");
-          }
-          uibound.value = fluid.get(model, uibound.valuebinding, resolverGetConfig);
-      }
-  }
-  
-  function upgradeBound(holder, property, model, resolverGetConfig) {
-      if (holder[property] !== undefined) {
-          if (renderer.isBoundPrimitive(holder[property])) {
-              holder[property] = {value: holder[property]};
-          }
-          else if (holder[property].messagekey) {
-              holder[property].componentType = "UIMessage";
-          }
-      }
-      else {
-          holder[property] = {value: null};
-      }
-      fixupValue(holder[property], model, resolverGetConfig);
-  }
-  
-  renderer.duckMap = {children: "UIContainer", 
-        value: "UIBound", valuebinding: "UIBound", messagekey: "UIMessage", 
-        markup: "UIVerbatim", selection: "UISelect", target: "UILink",
-        choiceindex: "UISelectChoice", functionname: "UIInitBlock"};
-  
-  var boundMap = {
-      UISelect:   ["selection", "optionlist", "optionnames"],
-      UILink:     ["target", "linktext"],
-      UIVerbatim: ["markup"],
-      UIMessage:  ["messagekey"]
-  };
-  
-  renderer.boundMap = fluid.transform(boundMap, fluid.arrayToHash);
-  
-  renderer.inferComponentType = function(component) {
-      for (var key in renderer.duckMap) {
-          if (component[key] !== undefined) {
-              return renderer.duckMap[key];
-          }
-      }
-  };
-  
-  renderer.applyComponentType = function(component) {
+  renderer.applyComponentType = function (component) {
       component.componentType = renderer.inferComponentType(component);
       if (component.componentType === undefined && component.ID !== undefined) {
           component.componentType = "UIBound";
       }
   };
   
-  function unzipComponent(component, model, resolverGetConfig) {
+    function unzipComponent(component, model, resolverGetConfig) {
       if (component) {
           renderer.applyComponentType(component);
       }
@@ -177,7 +175,7 @@ fluid_1_3 = fluid_1_3 || {};
       else {
           map = renderer.boundMap[cType];
           if (map) {
-              fluid.each(map, function(value, key) {
+              fluid.each(map, function (value, key) {
                   upgradeBound(component, key, model, resolverGetConfig);
               });
           }
@@ -186,7 +184,7 @@ fluid_1_3 = fluid_1_3 || {};
       return component;
   }
   
-  function fixupTree(tree, model, resolverGetConfig) {
+    function fixupTree(tree, model, resolverGetConfig) {
     if (tree.componentType === undefined) {
       tree = unzipComponent(tree, model, resolverGetConfig);
       }
@@ -262,7 +260,7 @@ fluid_1_3 = fluid_1_3 || {};
       applet: "codebase", object: "codebase"
   };
   
-  fluid.renderer = function(templates, tree, options, fossilsIn) {
+  fluid.renderer = function (templates, tree, options, fossilsIn) {
     
       options = options || {};
       tree = tree || {};
@@ -763,7 +761,7 @@ fluid_1_3 = fluid_1_3 || {};
       
       function resolveArgs(args) {
           if (!args) {return args;}
-          return fluid.transform(args, function(arg, index) {
+          return fluid.transform(args, function (arg, index) {
               upgradeBound(args, index, renderOptions.model, renderOptions.resolverGetConfig);
               return args[index].value;
           });
@@ -1336,7 +1334,7 @@ fluid_1_3 = fluid_1_3 || {};
           }
       }
 
-      that.renderTemplates = function() {
+      that.renderTemplates = function () {
           tree = fixupTree(tree, options.model, options.resolverGetConfig);
           var template = templates[0];
           resolveBranches(templates.globalmap, tree, template.rootlump);
@@ -1346,7 +1344,7 @@ fluid_1_3 = fluid_1_3 || {};
           return out;
       };  
       
-      that.processDecoratorQueue = function() {
+      that.processDecoratorQueue = function () {
           processDecoratorQueue();
       };
       return that;
@@ -1358,15 +1356,15 @@ fluid_1_3 = fluid_1_3 || {};
     /*
      * This function is unsupported: It is not really intended for use by implementors.
      */
-  fluid.ComponentReference = function(reference) {
+  fluid.ComponentReference = function (reference) {
       this.reference = reference;
   };
   
   // Explodes a raw "hash" into a list of UIOutput/UIBound entries
-  fluid.explode = function(hash, basepath) {
+  fluid.explode = function (hash, basepath) {
       var togo = [];
       for (var key in hash) {
-          var binding = basepath === undefined? key : basepath + "." + key;
+          var binding = basepath === undefined ? key : basepath + "." + key;
           togo[togo.length] = {ID: key, value: hash[key], valuebinding: binding};
       }
       return togo;
@@ -1383,8 +1381,8 @@ fluid_1_3 = fluid_1_3 || {};
             labelID: ""
         }
     */ 
-   fluid.explodeSelectionToInputs = function(optionlist, opts) {
-       return fluid.transform(optionlist, function(option, index) {
+   fluid.explodeSelectionToInputs = function (optionlist, opts) {
+       return fluid.transform(optionlist, function (option, index) {
             return {
               ID: opts.rowID, 
               children: [
@@ -1394,7 +1392,7 @@ fluid_1_3 = fluid_1_3 || {};
          });
     };
   
-    fluid.resolveMessageSource = function(messageSource) {
+    fluid.resolveMessageSource = function (messageSource) {
         if (messageSource.type === "data") {
             if (messageSource.url === undefined) {
                 return fluid.messageLocator(messageSource.messages, messageSource.resolveFunc);
@@ -1408,7 +1406,7 @@ fluid_1_3 = fluid_1_3 || {};
         }
     };
     
-    fluid.renderTemplates = function(templates, tree, options, fossilsIn) {
+    fluid.renderTemplates = function (templates, tree, options, fossilsIn) {
         var renderer = fluid.renderer(templates, tree, options, fossilsIn);
         var rendered = renderer.renderTemplates();
         return rendered;
@@ -1419,11 +1417,11 @@ fluid_1_3 = fluid_1_3 || {};
      * fluid.parseTemplates.
      */
   
-    fluid.reRender = function(templates, node, tree, options) {
+    fluid.reRender = function (templates, node, tree, options) {
         options = options || {};
               // Empty the node first, to head off any potential id collisions when rendering
         node = fluid.unwrap(node);
-        var lastFocusedElement = fluid.getLastFocusedElement? fluid.getLastFocusedElement() : null;
+        var lastFocusedElement = fluid.getLastFocusedElement ? fluid.getLastFocusedElement() : null;
         var lastId;
         if (lastFocusedElement && fluid.dom.isContainer(node, lastFocusedElement)) {
             lastId = lastFocusedElement.id;
@@ -1463,9 +1461,9 @@ fluid_1_3 = fluid_1_3 || {};
     };
   
     function findNodeValue(rootNode) {
-        var node = fluid.dom.iterateDom(rootNode, function(node) {
+        var node = fluid.dom.iterateDom(rootNode, function (node) {
           // NB, in Firefox at least, comment and cdata nodes cannot be distinguished!
-            return node.nodeType === 8 || node.nodeType === 4? "stop" : null;
+            return node.nodeType === 8 || node.nodeType === 4 ? "stop" : null;
             }, true);
         var value = node.nodeValue;
         if (value.indexOf("[CDATA[") === 0) {
@@ -1476,7 +1474,7 @@ fluid_1_3 = fluid_1_3 || {};
         }
     }
   
-    fluid.extractTemplate = function(node, armouring) {
+    fluid.extractTemplate = function (node, armouring) {
         if (!armouring) {
             return node.innerHTML;
         }
@@ -1491,7 +1489,7 @@ fluid_1_3 = fluid_1_3 || {};
      * @param target The node to receive the rendered markup
      * @param tree, options, return as for fluid.selfRender
      */
-    fluid.render = function(source, target, tree, options) {
+    fluid.render = function (source, target, tree, options) {
         options = options || {};
         var template = source;
         if (typeof(source) === "object") {
@@ -1518,7 +1516,7 @@ fluid_1_3 = fluid_1_3 || {};
      * @return A templates structure, suitable for a further call to fluid.reRender or
      * fluid.renderTemplates.
      */  
-     fluid.selfRender = function(node, tree, options) {
+     fluid.selfRender = function (node, tree, options) {
          options = options || {};
          return fluid.render({node: node, armouring: options.armouring}, node, tree, options);
      };
