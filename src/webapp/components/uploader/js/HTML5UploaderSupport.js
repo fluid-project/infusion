@@ -53,8 +53,7 @@ var fluid_1_3 = fluid_1_3 || {};
         
         mergePolicy: {
             "components.local.options.events": "preserve",
-            "components.remote.options.events": "preserve",
-            
+            "components.remote.options.events": "preserve"
         }        
     });
 

@@ -137,12 +137,17 @@ var fluid_1_3 = fluid_1_3 || {};
      */
     fluid.scrollable = function (element, options) {
         var that = fluid.initLittleComponent("fluid.scrollable", options);
+        element = fluid.container(element);
         that.scrollable = that.options.makeScrollableFn(element, that.options);
         if (that.options.css) {
             that.scrollable.css(that.options.css);
         }
         
-        that.scrollTo = function (/* Arguments are passed directly to jquery.scrollTo */) {
+        /**
+         * Programmatically scrolls this scrollable element to the region specified.
+         * This method is directly compatible with the underlying jQuery.scrollTo plugin.
+         */
+        that.scrollTo = function () {
             that.scrollable.scrollTo.apply(that.scrollable, arguments);
         };
         
@@ -177,7 +182,7 @@ var fluid_1_3 = fluid_1_3 || {};
     
     fluid.defaults("fluid.scrollableTable", {
         makeScrollableFn: fluid.scrollable.makeTable,
-        wrapperMarkup: "<div class='fl-table-scrollable-container'><div class='fl-table-scrollable-area'></div></div>",
+        wrapperMarkup: "<div class='fl-table-scrollable-container'><div class='fl-table-scrollable-scroller'></div></div>"
     });
     
 })(jQuery, fluid_1_3);

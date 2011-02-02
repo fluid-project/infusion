@@ -28,12 +28,13 @@ table.fl-uploader-data {
 }
 .fl-uploader-data td, .fl-uploader-data th {
     border: none;
+    margin:0px;
 }
 
 .fl-uploader-data thead tr { 
     border-bottom: 1px solid #999;    
     width: 435px;
-    top: -1px;
+    left: -1px;
     background-color: transparent;
     color: #666;    
 }

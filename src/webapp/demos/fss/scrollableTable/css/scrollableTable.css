@@ -1,0 +1,9 @@
+/* set width of container */
+#demo-container {
+    width:45em;
+}
+
+/* set width of columns */
+#demo-table th, #demo-table td {
+    width: 13.5em;
+}
