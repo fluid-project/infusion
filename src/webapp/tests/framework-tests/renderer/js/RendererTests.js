@@ -1512,5 +1512,46 @@ fluid.registerNamespace("fluid.tests");
             });
             jqUnit.assertEquals("Messagekey resolves to undefined", "[No messagecodes provided]", $(selector).text());
         });
+        
+        
+        renderTests.test("FLUID-4050 test: XML encoding corruption", function () {
+            var node = $(".FLUID-4050-test");
+            var value = "Value containing \"Several < undesirable > XML characters &c\"";
+            var url = "http://www.google.com/search?rls=ig&hl=en&source=hp&q=thing&aq=f&aqi=g10&aql=&oq=";
+            var tree = {
+                children: [{
+                    ID: "input",
+                    value: value
+                }, {
+                    ID: "select",
+                    selection: value,
+                    optionlist: [value],
+                    optionnames: ["Value"]
+                }, {
+                    ID: "radio",
+                    parentRelativeID: "select",
+                    choiceindex: 0
+                }, {
+                    ID: "span",
+                    decorators: {
+                        attrs: {
+                            attrkey: value
+                        }
+                    }
+                },  {
+                    ID: "link",
+                    target: url
+                }]
+            };
+            fluid.selfRender(node, tree);
+            var recovered1 = $(":text", node).val();
+            jqUnit.assertEquals("Recovered value from attribute", value, recovered1);
+            var recovered2 = $(":radio", node).val();
+            jqUnit.assertEquals("Recovered value from radio button", value, recovered2);
+            var recovered3 = $("span", node).attr("attrkey");
+            jqUnit.assertEquals("Recovered value from attribute decorator", value, recovered3);
+            var recovered4 = $("a", node).attr("href");
+            jqUnit.assertEquals("Recovered encoded URL", url, recovered4);
+        });
     };
 })(jQuery);
