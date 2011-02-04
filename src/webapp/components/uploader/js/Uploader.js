@@ -98,11 +98,11 @@ var fluid_1_3 = fluid_1_3 || {};
         var numReadyFiles = that.queue.getReadyFiles().length;
         var bytesReadyFiles = that.queue.sizeOfReadyFiles();
         var fileLabelStr = fileOrFiles(that, numReadyFiles);
-                                                   
+
         var totalStateStr = fluid.stringTemplate(that.options.strings.progress.toUploadLabel, {
             fileCount: numReadyFiles, 
             fileLabel: fileLabelStr, 
-            totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles)
+            totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles),
         });
         that.locate("totalFileStatusText").html(totalStateStr);
     };
@@ -127,7 +127,6 @@ var fluid_1_3 = fluid_1_3 || {};
         var numErroredFiles = that.queue.getErroredFiles().length;
         var numTotalFiles = that.queue.files.length;
         var fileLabelStr = fileOrFiles(that, numTotalFiles);
-        
         var errorStr = "";
         
         // if there are errors then change the total progress bar
@@ -157,8 +156,7 @@ var fluid_1_3 = fluid_1_3 || {};
      * Summarizes the status of all the files in the file queue.  
      */
     var updateQueueSummaryText = function (that) {
-        var fileQueueTable = that.locate("fileQueue");
-        
+        var fileQueueTable = that.locate("fileQueue");        
         if (that.queue.files.length === 0) {
             fileQueueTable.attr("summary", that.options.strings.queue.emptyQueue);
         }
@@ -166,8 +164,7 @@ var fluid_1_3 = fluid_1_3 || {};
             var queueSummary = fluid.stringTemplate(that.options.strings.queue.queueSummary, {
                 totalUploaded: that.queue.getUploadedFiles().length, 
                 totalInUploadQueue: that.queue.files.length - that.queue.getUploadedFiles().length
-            });        
-            
+            });
             fileQueueTable.attr("summary", queueSummary);
         }
     };
@@ -188,7 +185,8 @@ var fluid_1_3 = fluid_1_3 || {};
             renderUploadTotalMessage(that);
             that.locate(that.options.focusWithEvent.afterFileDialog).focus();
             updateQueueSummaryText(that);
-        }
+        } 
+        that.errorHandler.refreshView();
     };
     
     var updateStateAfterFileRemoval = function (that) {
@@ -209,7 +207,7 @@ var fluid_1_3 = fluid_1_3 || {};
         updateQueueSummaryText(that);
     }; 
     
-    var bindEvents = function (that) {       
+    var bindEvents = function (that) {
         that.events.afterFileDialog.addListener(function () {
             updateStateAfterFileDialog(that);
         });
@@ -228,6 +226,9 @@ var fluid_1_3 = fluid_1_3 || {};
         
         that.events.onUploadStart.addListener(function () {
             setStateUploading(that);
+            //clear error messages when upload is clicked.
+            that.errorHandler.clearErrors();
+            that.errorHandler.refreshView();
         });
         
         that.events.onUploadStop.addListener(function () {
@@ -279,6 +280,14 @@ var fluid_1_3 = fluid_1_3 || {};
             }
         });
 
+        that.events.onFileQueueError.addListener(function (file, error) {
+            if (error === fluid.uploader.errorConstants.UPLOAD_LIMIT_EXCEEDED) {
+                that.errorHandler.addError(file.fileName, "exceedsUploadLimit");
+            } else if (error === fluid.uploader.errorConstants.FILE_LIMIT_EXCEEDED) {
+                that.errorHandler.addError(file.fileName, "exceedsFileLimit");
+            }
+        });
+
         that.events.afterUploadComplete.addListener(function () {
             that.queue.isUploading = false;
             updateStateAfterCompletion(that);
@@ -291,7 +300,7 @@ var fluid_1_3 = fluid_1_3 || {};
             that.demo = fluid.typeTag("fluid.uploader.demo");
         }
         
-        fluid.initDependents(that);                 
+        fluid.initDependents(that);
 
         // Upload button should not be enabled until there are files to upload
         disableElement(that, that.locate("uploadButton"));
@@ -410,7 +419,11 @@ var fluid_1_3 = fluid_1_3 || {};
             strategy: {
                 type: "fluid.uploader.progressiveStrategy"
             },
-            
+
+            errorHandler: {
+                type: "fluid.uploader.errorHandler"
+            },
+
             fileQueueView: {
                 type: "fluid.uploader.fileQueueView",
                 options: {
@@ -444,7 +457,7 @@ var fluid_1_3 = fluid_1_3 || {};
             fileSizeLimit: "20480",
             fileTypes: "*",
             fileTypesDescription: null,
-            fileUploadLimit: 0,
+            fileUploadLimit: 3,
             fileQueueLimit: 0
         },
 
@@ -458,7 +471,8 @@ var fluid_1_3 = fluid_1_3 || {};
             pauseButton: ".flc-uploader-button-pause",
             totalFileStatusText: ".flc-uploader-total-progress-text",
             instructions: ".flc-uploader-browse-instructions",
-            statusRegion: ".flc-uploader-status-region"
+            statusRegion: ".flc-uploader-status-region",
+            errorHandler: ".flc-uploader-total-errored"
         },
 
         // Specifies a selector name to move keyboard focus to when a particular event fires.
@@ -484,13 +498,13 @@ var fluid_1_3 = fluid_1_3 || {};
             afterFileQueued: null,
             onFileRemoved: null,
             afterFileRemoved: null,
-            onQueueError: null,
             afterFileDialog: null,
             onUploadStart: null,
             onUploadStop: null,
             onFileStart: null,
             onFileProgress: null,
             onFileError: null,
+            onFileQueueError: null,
             onFileSuccess: null,
             onFileComplete: null,
             afterFileComplete: null,
@@ -605,7 +619,8 @@ var fluid_1_3 = fluid_1_3 || {};
         SPECIFIED_FILE_ID_NOT_FOUND: -260,
         FILE_VALIDATION_FAILED: -270,
         FILE_CANCELLED: -280,
-        UPLOAD_STOPPED: -290
+        UPLOAD_STOPPED: -290,
+        FILE_LIMIT_EXCEEDED: -300
     };
     
     fluid.uploader.fileStatusConstants = {
@@ -615,7 +630,6 @@ var fluid_1_3 = fluid_1_3 || {};
         COMPLETE: -4,
         CANCELLED: -5
     };
-
 
     var toggleVisibility = function (toShow, toHide) {
         // For FLUID-2789: hide() doesn't work in Opera
@@ -660,6 +674,180 @@ var fluid_1_3 = fluid_1_3 || {};
 
     fluid.demands("fluid.uploader.impl", ["fluid.uploader", "fluid.uploader.singleFile"], {
         funcName: "fluid.uploader.singleFileUploader"
+    });
+    
+
+    /** 
+     * Error Handler
+     */
+    var errorHandlerInit = function (that) {
+        /* change the error title*/
+        that.locate("errorHeader").text(that.options.strings.errorTemplateHeader);
+        /* bind events */
+        bindErrorHandlers(that, "exceedsFileLimit");
+        bindErrorHandlers(that, "exceedsUploadLimit");
+        /* set all toggle buttons related prefs */
+        that.locate("toggleErrorBodyButton").text(that.options.strings.errorTemplateWhichOnes);
+        that.locate("errorBodyTogglable").hide();
+        /* hide the error on init */
+        that.container.hide();
+    }
+
+    var bindDeleteKey = function (that, row, errorCode) {
+        var deleteHandler = function () {
+            that.removeError(errorCode);
+        };
+       
+        fluid.activatable(row, null, {
+            additionalBindings: [{
+                key: $.ui.keyCode.DELETE, 
+                activateHandler: deleteHandler
+            }]
+        });
+    };
+    
+    var removeError = function (that, errorCode) {
+        that.errorMsgs[errorCode].files = [];
+    }
+    
+    var bindErrorHandlers = function (that, errorCode) {
+        var row = that.locate(errorCode);
+
+        //Bind delete button
+        that.locate("deleteErrorButton", row).click(function () {
+            that.removeError(errorCode);
+        });
+
+        //Bind hide/show error details link
+        that.locate("toggleErrorBodyButton", row).click(function () {
+            that.errorMsgs[errorCode].show = !that.errorMsgs[errorCode].show;
+            if (that.errorMsgs[errorCode].show) {
+                that.locate("errorBodyTogglable", row).show();
+                that.locate("toggleErrorBodyButton", row).text(that.options.strings.errorTemplateHideThisList);
+            } else {
+                that.locate("errorBodyTogglable", row).hide();
+                that.locate("toggleErrorBodyButton", row).text(that.options.strings.errorTemplateWhichOnes);
+            }
+        });
+
+        //Bind delete key on keyboard
+        bindDeleteKey(that, row, errorCode);
+    };
+
+    var updateTotalError = function (that) {
+        var errorSize = 0; //the number of errors, the total of all the subarrays
+
+        $.each(that.errorMsgs, function (errorCode, errObj) {
+            var errorStr = "";
+            var row = that.locate(errorCode);
+
+            errorSize = errorSize + that.errorMsgs[errorCode].files.length;
+
+            //render header title
+            that.locate("errorTitle", row).text(that.options.strings[errorCode]);
+            $.each(errObj.files, function (errKey, indivErrMsg) {
+                errorStr = fluid.stringTemplate(that.options.strings.errorTemplateFilesListing, {
+                    files: errorStr + indivErrMsg
+                });
+            });
+            if (!errorStr) {
+                row.hide();
+            } else {
+                row.show();
+            }
+            //Take out the extra comma and the space
+            that.locate("erroredFiles", row).text(errorStr.substring(0, errorStr.length - 2));
+        });
+
+        //if size is 0, then no errors -> hide the error box
+        if (errorSize === 0) {
+            //Hide the error box
+            that.container.hide();
+        } else {
+            that.container.show();
+        }
+    }
+
+    fluid.uploader.errorHandler = function (container, options) {
+        var that = fluid.initView("fluid.uploader.errorHandler", container, options);
+
+        /**
+         * A map that stores error messages toggle mode and its files. Mapped by the error name as key.
+         */
+        that.errorMsgs = {
+            exceedsFileLimit: {
+                files: [],
+                show: false
+            },
+            exceedsUploadLimit: {
+                files: [],
+                show: false
+            }
+        }; 
+
+        /**
+         * Removes the specified error from the list of errors
+         * 
+         * @param {string} The ID of the error box. Usually the error code itself (unique)
+         */
+        that.removeError = function (errorCode) {
+            removeError(that, errorCode);
+            that.refreshView();
+        };
+        
+        /**
+         * Add the specified error to the list of errors
+         * @param (string)   The filename of the file which introduced the error.
+         * @param (string) The ID of the error box. 
+         */
+        that.addError = function (file, errorCode) {
+            that.errorMsgs[errorCode].files.push(file);
+        }
+
+        that.refreshView = function () {
+            updateTotalError(that);
+        }
+        
+        that.clearErrors = function () {
+            $.each(that.errorMsgs, function (errorCode, errObj) {
+                removeError(that, errorCode);
+            });
+            that.refreshView();
+        }
+
+        errorHandlerInit(that);
+
+        return that;
+    };
+
+    fluid.defaults("fluid.uploader.errorHandler", {
+        selectors: {
+            errorHeader: ".flc-uploader-erroredHeader",
+            exceedsFileLimit: ".flc-uploader-exceededFileLimit-template",
+            exceedsUploadLimit: ".flc-uploader-exceededUploadLimit-template",
+            deleteErrorButton: ".flc-uploader-erroredButton",
+            toggleErrorBodyButton: ".flc-uploader-errored-bodyButton",
+            errorBodyTogglable: ".flc-uploader-erroredBody-togglable",
+            errorTitle: ".flc-uploader-erroredTitle",
+            erroredFiles: ".flc-uploader-erroredFiles"
+        },
+        strings: {
+            exceedsFileLimit: "Too many files were selected. Not all were added to the queue.",
+            exceedsUploadLimit: "Some files were too large and were not added to the queue.",
+            errorTemplateHeader: "Heads up!",
+            errorTemplateButtonSpan: "Remove error",
+            errorTemplateHideThisList: "Hide this list",
+            errorTemplateWhichOnes: "Which Ones?",
+            errorTemplateFilesListing: "%files, "
+        }
+    });
+
+    fluid.demands("fluid.uploader.errorHandler", "fluid.uploader", {
+        funcName: "fluid.uploader.errorHandler",
+        args: [
+            "{multiFileUploader}.dom.errorHandler",
+            fluid.COMPONENT_OPTIONS
+        ]
     });
     
 })(jQuery, fluid_1_3);

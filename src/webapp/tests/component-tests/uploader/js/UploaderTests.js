@@ -19,7 +19,16 @@ https://source.fluidproject.org/svn/LICENSE.txt
         fluid.staticEnvironment = fluid.typeTag("fluid.uploader.tests");
         
         var uploaderTests = new jqUnit.TestCase("Uploader Basic Tests");
-        
+        var errorHandler = fluid.uploader.errorHandler(".uploader-total-errored");
+        var mountainTestFile = {
+                fileName : "Mountain.jpg", // The file name. The path is not included. 
+                size : 400000 // The file size in bytes     
+            };            
+        var oceanTestFile = {
+            fileName : "Ocean.jpg", // The file name. The path is not included. 
+            size : 950000000 // The file size in bytes        
+        };
+
         // Test formatFileSize()
         uploaderTests.test("formatFileSize()", function () {          
             var testFileSize = function (testVal, expected) {
@@ -116,8 +125,108 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("The status region should be empty after invoking the updater.", "", status.text());
             
             checkStatusAfterFiringEvent("cat", "afterFileDialog");
-            checkStatusAfterFiringEvent("dog", "afterFileRemoved");       
-            checkStatusAfterFiringEvent("shark", "afterUploadComplete");           
+            checkStatusAfterFiringEvent("dog", "afterFileRemoved");
+            checkStatusAfterFiringEvent("shark", "afterUploadComplete");
+        });
+
+        uploaderTests.test("ErrorHandling tests - addError", function () {
+            var testAddingError = function (fileName, errorCode) {
+                errorHandler.addError(fileName, errorCode); 
+                jqUnit.assertNotEquals("Error array should not be empty.", 0, errorHandler.errorMsgs[errorCode].files.length);
+                jqUnit.assertNotEquals("Filename should appear in the array", -1, $.inArray(fileName, errorHandler.errorMsgs[errorCode].files));
+            };
+            testAddingError(mountainTestFile.fileName, "exceedsUploadLimit");
+            testAddingError(mountainTestFile.fileName, "exceedsFileLimit");
+        });
+
+        uploaderTests.test("ErrorHandling tests - removeError", function () {
+            var testArray = function (errorCode) {
+                jqUnit.assertEquals("Error array should contains nothing.", 0, errorHandler.errorMsgs[errorCode].files.length);
+            };
+            errorHandler.addError(oceanTestFile.fileName, "exceedsUploadLimit");
+            errorHandler.addError(oceanTestFile.fileName, "exceedsFileLimit");
+            errorHandler.removeError("exceedsUploadLimit");
+            testArray("exceedsUploadLimit");
+            errorHandler.removeError("exceedsFileLimit");
+            testArray("exceedsFileLimit");
+        });
+
+        uploaderTests.test("ErrorHandling tests - refreshView", function () {
+            //use a new errorHandler
+            var errorHandler = fluid.uploader.errorHandler(".uploader-total-errored"); 
+            var fileLimitRow = errorHandler.locate("exceedsFileLimit");
+            var uploadLimitRow = errorHandler.locate("exceedsUploadLimit");
+            var testVisibility = function (element, state) {
+                if (state) {
+                    jqUnit.assertTrue("This element should be Visible.", element.is(":visible"));
+                } else {
+                    jqUnit.assertFalse("This element should be Invisible.", element.is(":visible"));
+                }
+            };
+            //Error is invisible at beginning
+            testVisibility(errorHandler.container, false);
+            testVisibility(uploadLimitRow, false);
+            testVisibility(fileLimitRow, false);
+            //Adding errors
+            errorHandler.addError(oceanTestFile.fileName, "exceedsUploadLimit");
+            errorHandler.refreshView();
+            testVisibility(errorHandler.container, true);
+            testVisibility(uploadLimitRow, true);
+            testVisibility(fileLimitRow, false);
+            errorHandler.addError(oceanTestFile.fileName, "exceedsFileLimit");
+            errorHandler.refreshView();
+            testVisibility(uploadLimitRow, true);
+            testVisibility(fileLimitRow, true);
+            //Delete row
+            errorHandler.locate("deleteErrorButton", uploadLimitRow).click();
+            testVisibility(uploadLimitRow, false);
+            testVisibility(fileLimitRow, true);
+            errorHandler.locate("deleteErrorButton", fileLimitRow).click();
+            testVisibility(uploadLimitRow, false);
+            testVisibility(fileLimitRow, false);
+            //When all errors are deleted, error box should disappear.
+            testVisibility(errorHandler.container, false);
+        });
+
+        uploaderTests.test("ErrorHandling tests - toggle error message body", function () {
+            //use a new errorHandler
+            var errorHandler = fluid.uploader.errorHandler(".uploader-total-errored"); 
+            var fileLimitRow = errorHandler.locate("exceedsFileLimit");
+            var uploadLimitRow = errorHandler.locate("exceedsUploadLimit");
+            var testVisibility = function (element, state) {
+                if (state) {
+                    jqUnit.assertTrue("This element should be Visible.", 
+                        errorHandler.locate("errorBodyTogglable", element).is(":visible"));
+                } else {
+                    jqUnit.assertFalse("This element should be Invisible.", 
+                        errorHandler.locate("errorBodyTogglable", element).is(":visible"));
+                }
+            };
+            var testToggle = function (row, upload_state, file_state) {
+                if (row !== null) {
+                    errorHandler.locate("toggleErrorBodyButton", row).click();
+                }
+                testVisibility(uploadLimitRow, upload_state);
+                testVisibility(fileLimitRow, file_state);
+            }
+            testToggle(null, false, false);
+            errorHandler.addError(oceanTestFile.fileName, "exceedsUploadLimit");
+            errorHandler.addError(oceanTestFile.fileName, "exceedsFileLimit");
+            errorHandler.refreshView();
+            testToggle(null, false, false);
+            testToggle(uploadLimitRow, true, false);
+            testToggle(uploadLimitRow, false, false);
+            testToggle(fileLimitRow, false, true);
+            testToggle(fileLimitRow, false, false);
+        });
+
+        uploaderTests.test("ErrorHandling tests - cleanErrors", function () {
+            errorHandler.addError(oceanTestFile.fileName, "exceedsUploadLimit");
+            errorHandler.addError(oceanTestFile.fileName, "exceedsFileLimit");
+            errorHandler.clearErrors();
+            $.each(errorHandler.errorMsgs, function (errorCode, errObj) {
+                jqUnit.assertEquals("Error array '" + errorCode + "' should contains nothing.", 0, errObj.files.length);
+            });
         });
     });
 })(jQuery);

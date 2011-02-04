@@ -88,15 +88,51 @@
 
             <!-- Foot of the queue -->
             <div class="flc-uploader-queue-footer fl-uploader-queue-footer fl-fix">
-                    <div class="flc-uploader-total-progress-text fl-uploader-total-progress-text">
-                        Total: 0 files (0 KB)
-                    </div>
-                    <div class="fl-uploader-footer-buttons fl-force-right">
-                        <span class="flc-uploader-button-browse fl-uploader-browse">
-                            <span class="flc-uploader-button-browse-text">Browse files</span>
-                        </span>
-                    </div>
+                <div class="flc-uploader-total-progress-text fl-uploader-total-progress-text">
+                    Total: 0 files (0 KB)
+                </div>
+                <div class="fl-uploader-footer-buttons fl-force-right">
+                    <span class="flc-uploader-button-browse fl-uploader-browse">
+                        <span class="flc-uploader-button-browse-text">Browse files</span>
+                    </span>
+                </div>
                 <div class="flc-uploader-total-progress fl-uploader-total-progress-okay">&nbsp;</div>
+                <div class="flc-uploader-total-errored fl-uploader-total-errored">
+                     <div class="fl-uploader-erroredHeader"><span class="flc-uploader-erroredHeader">Header placeholder</span></div>
+    
+                     <!-- Templates error for exceeeding files limit -->
+                     <div class="flc-uploader-exceededFileLimit-template fl-uploader-hidden-templates">
+                         <button type="button" class="flc-uploader-erroredButton fl-uploader-erroredButton">
+                             <span class="flc-uploader-erroredButton-text fl-uploader-hidden">Remove error</span>
+                         </button>
+                         <div class="fl-uploader-errored-wrapper">
+                             <div class="fl-uploader-erroredTitle flc-uploader-erroredTitle">Error summary placeholder</div>
+                             <div class="fl-uploader-erroredBody">
+                                 <p class="flc-uploader-erroredBody-togglable">The following files were not added:</p>
+                                 <p class="flc-uploader-erroredFiles flc-uploader-erroredBody-togglable">file_1, file_2, file_3, file_4, file_5 </p>
+                                 <button type="button" class="flc-uploader-errored-bodyButton fl-uploader-erroredBodyButton">Hide this list</button>
+                             </div>
+                         </div>
+                     </div>
+    
+                    <!-- Templates error for exceeeding file size limit 
+                          Note: This template is repeated intentionally for the 1.3.1 errorHandler implementation.
+                                This should be generated automatically with the Renderer in 1.4.
+                    --> 
+                     <div class="flc-uploader-exceededUploadLimit-template fl-uploader-errorRow-template fl-uploader-hidden-templates">
+                         <button type="button" class="flc-uploader-erroredButton fl-uploader-erroredButton">
+                             <span class="flc-uploader-erroredButton-text fl-uploader-hidden">Remove error</span>
+                         </button>
+                         <div class="fl-uploader-errored-wrapper">
+                             <div class="fl-uploader-erroredTitle flc-uploader-erroredTitle">Error summary placeholder</div>
+                             <div class="fl-uploader-erroredBody">
+                                 <p class="flc-uploader-erroredBody-togglable">The following files were not added:</p>
+                                 <p class="flc-uploader-erroredFiles flc-uploader-erroredBody-togglable">file_1, file_2, file_3, file_4, file_5 </p>
+                                 <button type="button" class="flc-uploader-errored-bodyButton fl-uploader-erroredBodyButton">Toggle Text placeholder</button>
+                             </div>
+                         </div>
+                     </div>
+                 </div>                
             </div>
             
             <!-- Action buttons -->
