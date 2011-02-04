@@ -85,7 +85,11 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 afterUploadComplete: emptyFunction
             };
             
-            var tracker = jqUnit.invocationTracker("afterUploadComplete", testBody);
+            var tracker = jqUnit.invocationTracker({
+                runTestsOnFunctionNamed: "afterUploadComplete", 
+                testBody: testBody
+            });
+            
             tracker.interceptAll(listeners);
             tracker.listeners = listeners;
             
