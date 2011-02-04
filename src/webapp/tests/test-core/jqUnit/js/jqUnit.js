@@ -333,7 +333,7 @@ var jqUnit = jqUnit || {};
                     that.fetchedTemplates[selectorToFetch] = $(container).clone();
                 });
             } else {
-                container.append(that.fetchedTemplates[selectorToFetch].clone());
+                container.append($(selector, that.fetchedTemplates[selectorToFetch].clone()));
             }
         };
 
