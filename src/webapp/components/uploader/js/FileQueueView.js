@@ -211,7 +211,7 @@ var fluid_1_3 = fluid_1_3 || {};
         for (var i = 0; i < rows.length; i++) {
             fluid.enabled(rows[i], state);	
         }            	
-    }
+    };
     
     var prepareForUpload = function (that) {
         var rowButtons = that.locate("fileIconBtn", that.locate("fileRows"));
@@ -382,7 +382,7 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.defaults("fluid.uploader.fileQueueView", {
         components: {
             scroller: {
-                type: "fluid.scrollableTable",
+                type: "fluid.scrollableTable"
             }
         },
         

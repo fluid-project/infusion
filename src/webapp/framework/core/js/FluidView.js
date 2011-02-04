@@ -42,7 +42,8 @@ var fluid_1_3 = fluid_1_3 || {};
                 }
                 live.text(newOptions.text);
             }
-        }
+        };
+        
         that.update();
         return that;
     };
@@ -67,14 +68,15 @@ var fluid_1_3 = fluid_1_3 || {};
      * if they do not exist already, and a "little component" is returned exposing a method
      * "update" that allows the text to be updated. */
     
-    fluid.updateAriaLabel = function(element, text, options) {
-        var options = $.extend({}, options || {}, {text: text});
+    fluid.updateAriaLabel = function (element, text, options) {
+        options = $.extend({}, options || {}, {text: text});
         var that = fluid.getAriaLabeller(element);
         if (!that) {
             that = fluid.ariaLabeller(element, options);
             fluid.setScopedData(element, LABEL_KEY, that);
+        } else {
+            that.update(options);
         }
-        else that.update(options);
         return that;
     };
     
@@ -112,11 +114,11 @@ var fluid_1_3 = fluid_1_3 || {};
             that.blurPending = false;
         };
         fluid.each(that.options.exclusions, function(exclusion) {
-            var exclusion = $(exclusion);
+            exclusion = $(exclusion);
             fluid.each(exclusion, function(excludeEl) {
-                $(excludeEl).bind("focusin", that.canceller)
-                            .bind("fluid-focus", that.canceller)
-                            .click(that.canceller);
+                $(excludeEl).bind("focusin", that.canceller).
+                             bind("fluid-focus", that.canceller).
+                             click(that.canceller);
             });
         });
         return that;
@@ -177,7 +179,7 @@ var fluid_1_3 = fluid_1_3 || {};
     
     fluid.defaults("fluid.scrollableTable", {
         makeScrollableFn: fluid.scrollable.makeTable,
-        wrapperMarkup: "<div class='fl-table-scrollable-container'><div class='fl-table-scrollable-area'></div></div>",
+        wrapperMarkup: "<div class='fl-table-scrollable-container'><div class='fl-table-scrollable-area'></div></div>"
     });
     
 })(jQuery, fluid_1_3);
