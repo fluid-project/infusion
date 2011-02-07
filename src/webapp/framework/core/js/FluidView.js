@@ -141,8 +141,8 @@ var fluid_1_3 = fluid_1_3 || {};
         that.scrollable = that.options.makeScrollableFn(element, that.options);
         if (that.options.css) {
             that.scrollable.css(that.options.css);
-        }
-        
+        }        
+                
         /**
          * Programmatically scrolls this scrollable element to the region specified.
          * This method is directly compatible with the underlying jQuery.scrollTo plugin.
@@ -150,7 +150,23 @@ var fluid_1_3 = fluid_1_3 || {};
         that.scrollTo = function () {
             that.scrollable.scrollTo.apply(that.scrollable, arguments);
         };
+
+        /* 
+         * Set height, if max-height is reached, to allow scrolling in IE6.
+         */
+        that.refreshView = function () {
+            if ($.browser.msie && $.browser.version=="6.0") {    
+                var maxHeight = that.scrollable.css("max-height");      // set a default if max-height not set?                             
+                that.scrollable.css("height", "")                        // `that.scrollable.removeAttr("style"); better?
+                
+                if (that.scrollable.height() >= parseInt(maxHeight, 10)) {
+                    that.scrollable.css("height", maxHeight);           
+                }
+            }
+        }          
         
+        that.refreshView();  //Make sure initially scrollable for IE6
+                
         return that;
     };
     
@@ -183,6 +199,6 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.defaults("fluid.scrollableTable", {
         makeScrollableFn: fluid.scrollable.makeTable,
         wrapperMarkup: "<div class='fl-table-scrollable-container'><div class='fl-table-scrollable-scroller'></div></div>"
-    });
+    });  
     
 })(jQuery, fluid_1_3);

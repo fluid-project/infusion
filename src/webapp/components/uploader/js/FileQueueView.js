@@ -209,8 +209,8 @@ var fluid_1_3 = fluid_1_3 || {};
     // Toggle keyboard row handlers on and off depending on the uploader state
     var enableRows = function (rows, state) {
         for (var i = 0; i < rows.length; i++) {
-            fluid.enabled(rows[i], state);	
-        }            	
+            fluid.enabled(rows[i], state);  
+        }               
     };
     
     var prepareForUpload = function (that) {
@@ -362,6 +362,7 @@ var fluid_1_3 = fluid_1_3 || {};
         
         that.refreshView = function () {
             that.selectableContext.refresh();
+            that.scroller.refreshView();
         };
         
         setupFileQueue(that);     
