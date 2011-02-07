@@ -115,6 +115,43 @@ var fluid_1_3 = fluid_1_3 || {};
         };
     };
     
+    fluid.pager.consistentGappedPageStrategy = function (endLinkCount, midLinkCount) {
+        if (!endLinkCount) {
+            endLinkCount = 1;
+        }        
+        if (!midLinkCount) {
+            midLinkCount = endLinkCount;
+        }
+        var midWidth = endLinkCount + (midLinkCount * 2);
+       
+        return function (count, first, mid) {
+            var pages = [];       
+            var anchoredLeft = mid < midWidth;
+            var anchoredRight = mid >= count - midWidth;
+            var paddedMidWidth = midWidth + 2;
+            var midStart = mid - midLinkCount;
+            var midEnd = mid + midLinkCount;
+            var lastSkip = false;
+            
+            for (var page = 0; page < count; page++) {
+                if (
+                    page < endLinkCount || // start pages
+                    count - page <= endLinkCount || // end pages
+                    (anchoredLeft && page < paddedMidWidth) || // pages if no skipped pages between start and mid
+                    (anchoredRight && page >= count - paddedMidWidth) || // pages if no skipped pages between mid and end
+                    (page >= midStart && page <= midEnd) // pages around the mid
+                ) {
+                    pages.push(page);
+                    lastSkip = false;
+                }
+                else if (!lastSkip) {
+                    pages.push(-1);
+                    lastSkip = true;
+                }
+            }            
+            return pages;
+        };
+    }; 
     
     fluid.pager.renderedPageList = function (container, events, pagerBarOptions, options, strings) {
         options = $.extend(true, pagerBarOptions, options);
@@ -269,7 +306,7 @@ var fluid_1_3 = fluid_1_3 || {};
         pageList: {
             type: "fluid.pager.renderedPageList",
             options: {
-                pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
+                pageStrategy: fluid.pager.consistentGappedPageStrategy(3, 1)
             }
         },
         
@@ -597,7 +634,7 @@ var fluid_1_3 = fluid_1_3 || {};
                                     return expandColumnDefs(filteredRow, expOpts);
                                 }
                             }
-                            );
+                           );
                         var fullTree = {};
                         fullTree[options.row] = tree;
                         if (typeof(columnDefs) === "object") {
