@@ -116,8 +116,10 @@ var jqUnit = jqUnit || {};
      * Keeps track of the order of function invocations. The transcript contains information about
      * each invocation, including its name and the arguments that were supplied to it.
      */
-    jqUnit.invocationTracker = function (runTestsOnFunctionNamed, testBody) {
+    jqUnit.invocationTracker = function (options) {
         var that = {};
+        that.runTestsOnFunctionNamed = options ? options.runTestsOnFunctionNamed : undefined;
+        that.testBody = options ? options.testBody : undefined;
         
         /**
          * An array containing an ordered list of details about each function invocation.
@@ -141,8 +143,8 @@ var jqUnit = jqUnit || {};
                 });
                 wrappedFn.apply(onObject, arguments);
                 
-                if (fnName === runTestsOnFunctionNamed) {
-                    testBody(that.transcript);
+                if (fnName === that.runTestsOnFunctionNamed) {
+                    that.testBody(that.transcript);
                 }
             };
         };
@@ -331,7 +333,7 @@ var jqUnit = jqUnit || {};
                     that.fetchedTemplates[selectorToFetch] = $(container).clone();
                 });
             } else {
-                container.append(that.fetchedTemplates[selectorToFetch].clone());
+                container.append($(selector, that.fetchedTemplates[selectorToFetch].clone()));
             }
         };
 

@@ -414,7 +414,7 @@ fluid_1_3 = fluid_1_3 || {};
   
     // TODO: find faster encoder
   fluid.XMLEncode = function (text) {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;"); 
     };
   
   fluid.dumpAttributes = function (attrcopy) {

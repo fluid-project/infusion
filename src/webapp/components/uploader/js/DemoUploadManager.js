@@ -123,7 +123,7 @@ var fluid_1_3 = fluid_1_3 || {};
         that.queue = queue;
         that.events = events;
         
-        that.start = function () {
+        that.uploadNextFile = function () {
             startUploading(that);   
         };
         

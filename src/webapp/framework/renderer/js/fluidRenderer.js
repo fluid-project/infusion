@@ -731,7 +731,14 @@ fluid_1_3 = fluid_1_3 || {};
               }
               // honour these remaining types immediately
               else if (type === "attrs") {
-                  $.extend(true, attrcopy, decorator.attributes);
+                  fluid.each(decorator.attributes, function(value, key) {
+                      if (value === null || value === undefined) {
+                          delete attrcopy[key];
+                      }
+                      else {
+                          attrcopy[key] = fluid.XMLEncode(value);
+                      }
+                  });
               }
               else if (type === "addClass" || type === "removeClass") {
                   var fakeNode = {
@@ -849,7 +856,7 @@ fluid_1_3 = fluid_1_3 || {};
                           delete attrcopy.checked;
                           }
                       }
-                  attrcopy.value = underlyingValue? underlyingValue: "true";
+                  attrcopy.value = fluid.XMLEncode(underlyingValue? underlyingValue: "true");
                   rewriteLeaf(null);
               }
               else if (torender.value instanceof Array) {
@@ -870,7 +877,7 @@ fluid_1_3 = fluid_1_3 || {};
                   }
                   else if (tagname === "input") {
                       if (torender.willinput || isValue(value)) {
-                          attrcopy.value = value;
+                          attrcopy.value = fluid.XMLEncode(String(value));
                       }
                       rewriteLeaf(null);
                   }
@@ -948,7 +955,9 @@ fluid_1_3 = fluid_1_3 || {};
                       target = attrcopy[attrname];
                   }
                   target = rewriteUrl(trc.uselump.parent, target);
-                  attrcopy[attrname] = target;
+                  // Note that all real browsers succeed in recovering the URL here even if it is presented in violation of XML
+                  // seemingly due to the purest accident, the text &amp; cannot occur in a properly encoded URL :P
+                  attrcopy[attrname] = fluid.XMLEncode(target);
               }
               var value;
               if (torender.linktext) { 
