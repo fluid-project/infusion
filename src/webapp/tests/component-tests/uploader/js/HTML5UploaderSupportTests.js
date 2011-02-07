@@ -110,7 +110,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var browseButton = $("#browseButton");
             var browseButtonView = fluid.uploader.html5Strategy.browseButtonView("#browseButtonContainer", {
                 queueSettings: {
-                    fileTypes: ""
+                    fileTypes: "*.gif,*.divx,*.idrc"
                 }
             });
             
@@ -118,6 +118,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("There should be one multi-file input element at the start", 1, inputs.length);
             jqUnit.assertEquals("The multi-file input element should be visible and in the tab order to start", 
                 0, inputs.eq(0).attr("tabindex"));
+            jqUnit.assertEquals("The accepted mimeTypes are", "video/*,image/*", inputs.eq(0).attr("accept"));
             
             browseButtonView.renderFreshMultiFileInput();
             inputs = browseButton.children();

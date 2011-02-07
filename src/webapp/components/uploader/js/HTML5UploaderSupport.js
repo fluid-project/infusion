@@ -355,10 +355,53 @@ var fluid_1_3 = fluid_1_3 || {};
         });
     };
     
+    /*
+     * Convert a list of file types into a list of mime types.
+     * The HTML5 Uploader only makes use of mime types for file exclusion
+     * in the file dialog. 
+     */
+    var setMimeTypes = function (fileTypes) {
+        var mimeTypes = "";
+        var audioTypes = [".aac", ".aif", ".flac", ".iff", ".m4a", ".m4b", ".mid", 
+                          ".midi", ".mp3", ".mpa", ".mpc", ".oga", ".ogg", ".ra", 
+                          ".ram", ".snd", ".wav", ".wma", "audio/*"];
+        var videoTypes = [".avi", ".divx", ".flv", ".m4v", ".mkv", ".mov", ".mp4", 
+                          ".mpeg", ".mpg", ".ogm", ".ogv", ".ogx", ".rm", ".rmvb", 
+                          ".smil", ".webm", ".wmv", ".xvid", "video/*"];
+        var imageTypes = [".jpe", ".jpg", ".jpeg", ".gif", ".png", ".bmp", ".ico", 
+                          ".svg", ".svgz", ".tif", ".tiff", ".ai", ".drw", ".pct", 
+                          ".psp", ".xcf", ".psd", ".raw", "image/*"];
+        
+        var i = 0;
+        for(i = 0; i < audioTypes.length; i++) {
+            if(fileTypes.indexOf(audioTypes[i]) !== -1) {
+                mimeTypes = mimeTypes + "audio/*,";
+                break;
+            }
+        }
+        for(i = 0; i < videoTypes.length; i++) {
+            if(fileTypes.indexOf(videoTypes[i]) !== -1) {
+                mimeTypes = mimeTypes + "video/*,";
+                break;
+            }
+        }        
+        for(i = 0; i < imageTypes.length; i++) {
+            if(fileTypes.indexOf(imageTypes[i]) !== -1) {
+                mimeTypes = mimeTypes + "image/*,";
+                break;
+            }
+        }        
+        
+        // Accept all file types if no valid types are specified
+        if(mimeTypes.length === 0) {
+            return "audio/*,video/*,image/*";
+        }
+        return mimeTypes.substring(0, mimeTypes.length - 1);
+    };
+    
     var renderMultiFileInput = function (that) {
         var multiFileInput = $(that.options.multiFileInputMarkup);
-        var fileTypes = (that.options.queueSettings.fileTypes).replace(/\;/g, ',');       
-        //multiFileInput.attr("accept", fileTypes);
+        multiFileInput.attr("accept", that.mimeTypes);
         bindEventsToFileInput(that, multiFileInput);
         return multiFileInput;
     };
@@ -372,6 +415,7 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.uploader.html5Strategy.browseButtonView = function (container, options) {
         var that = fluid.initView("fluid.uploader.html5Strategy.browseButtonView", container, options);
         that.browseButton = that.locate("browseButton");
+        that.mimeTypes = setMimeTypes(that.options.queueSettings.fileTypes);
         
         that.renderFreshMultiFileInput = function () {
             var previousInput = that.locate("fileInputs").last();

@@ -237,8 +237,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertEquals("testQueue previous uploaded files byte should be 0",
                                 0, 
                                 testQueue.currentBatch.previousBytesUploadedForFile);
-            jqUnit.assertEquals("testQueue file index should be 0",
-                                0, 
+            jqUnit.assertEquals("testQueue file index should be 1",
+                                1, 
                                 testQueue.currentBatch.fileIdx);
             jqUnit.assertEquals("testQueue number of files finished should be 0",
                                 0, 
