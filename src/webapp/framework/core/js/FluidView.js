@@ -28,11 +28,11 @@ var fluid_1_3 = fluid_1_3 || {};
         }
     });
  
-    fluid.ariaLabeller = function(element, options) {
+    fluid.ariaLabeller = function (element, options) {
         var that = fluid.initView("fluid.ariaLabeller", element, options);
         fluid.initDependents(that);
 
-        that.update = function(newOptions) {
+        that.update = function (newOptions) {
             newOptions = newOptions || that.options;
             that.container.attr(that.options.labelAttribute, newOptions.text);
             if (newOptions.dynamicLabel) {
@@ -48,7 +48,7 @@ var fluid_1_3 = fluid_1_3 || {};
         return that;
     };
     
-    fluid.ariaLabeller.generateLiveElement = function(that) {
+    fluid.ariaLabeller.generateLiveElement = function (that) {
         var liveEl = $(that.options.liveRegionMarkup);
         liveEl.attr("id", that.options.liveRegionId);
         $("body").append(liveEl);
@@ -57,7 +57,7 @@ var fluid_1_3 = fluid_1_3 || {};
     
     var LABEL_KEY = "aria-labelling";
     
-    fluid.getAriaLabeller = function(element) {
+    fluid.getAriaLabeller = function (element) {
         element = $(element);
         var that = fluid.getScopedData(element, LABEL_KEY);
         return that;      
@@ -113,12 +113,12 @@ var fluid_1_3 = fluid_1_3 || {};
             that.lastCancel = new Date().getTime();
             that.blurPending = false;
         };
-        fluid.each(that.options.exclusions, function(exclusion) {
+        fluid.each(that.options.exclusions, function (exclusion) {
             exclusion = $(exclusion);
-            fluid.each(exclusion, function(excludeEl) {
+            fluid.each(exclusion, function (excludeEl) {
                 $(excludeEl).bind("focusin", that.canceller).
-                             bind("fluid-focus", that.canceller).
-                             click(that.canceller);
+                    bind("fluid-focus", that.canceller).
+                    click(that.canceller);
             });
         });
         return that;
@@ -144,7 +144,7 @@ var fluid_1_3 = fluid_1_3 || {};
             that.scrollable.css(that.options.css);
         }
         
-        that.scrollTo = function (/* Arguments are passed directly to jquery.scrollTo */) {
+        that.scrollTo = function () {
             that.scrollable.scrollTo.apply(that.scrollable, arguments);
         };
         
@@ -172,7 +172,7 @@ var fluid_1_3 = fluid_1_3 || {};
      * @param {Object} options configuration options
      * @return the scrollable component
      */
-    fluid.scrollableTable = function(table, options) {
+    fluid.scrollableTable = function (table, options) {
         options = $.extend({}, fluid.defaults("fluid.scrollableTable"), options);
         return fluid.scrollable(table, options);
     };
