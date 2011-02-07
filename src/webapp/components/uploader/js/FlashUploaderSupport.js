@@ -89,7 +89,7 @@ var fluid_1_3 = fluid_1_3 || {};
         var that = fluid.initLittleComponent("fluid.uploader.swfUploadStrategy.remote", options);
         that.swfUpload = swfUpload;
         
-        that.start = function () {
+        that.uploadNextFile = function () {
             that.swfUpload.startUpload();
         };
         

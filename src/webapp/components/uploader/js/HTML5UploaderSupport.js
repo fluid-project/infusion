@@ -135,7 +135,7 @@ var fluid_1_3 = fluid_1_3 || {};
         that.events = that.options.events;
         
         // Upload files in the current batch without exceeding the fileUploadLimit
-        that.start = function () {
+        that.uploadNextFile = function () {
             var batch = that.queue.currentBatch;
             var file = batch.files[batch.fileIdx];                        
             that.uploadFile(file);

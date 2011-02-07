@@ -249,7 +249,7 @@ var fluid_1_3 = fluid_1_3 || {};
             that.events.afterFileComplete.fire(file); 
             
             if (that.queue.shouldUploadNextFile()) {
-                that.strategy.remote.start();
+                that.strategy.remote.uploadNextFile();
             } else {
                 if (that.queue.shouldStop) {
                     that.strategy.remote.stop();
@@ -386,7 +386,7 @@ var fluid_1_3 = fluid_1_3 || {};
         that.start = function () {
             that.queue.start();
             that.events.onUploadStart.fire(that.queue.currentBatch.files); 
-            that.strategy.remote.start();
+            that.strategy.remote.uploadNextFile();
         };
         
         /**
