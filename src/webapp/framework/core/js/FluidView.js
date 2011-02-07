@@ -157,15 +157,15 @@ var fluid_1_3 = fluid_1_3 || {};
          * Set height, if max-height is reached, to allow scrolling in IE6.
          */
         that.refreshView = function () {
-            if ($.browser.msie && $.browser.version=="6.0") {    
-                var maxHeight = that.scrollable.css("max-height");      // set a default if max-height not set?                             
-                that.scrollable.css("height", "")                        // `that.scrollable.removeAttr("style"); better?
+            if ($.browser.msie && $.browser.version === "6.0") {    
+                var maxHeight = that.scrollable.css("max-height");
+                that.scrollable.css("height", "");
                 
                 if (that.scrollable.height() >= parseInt(maxHeight, 10)) {
                     that.scrollable.css("height", maxHeight);           
                 }
             }
-        }          
+        };          
         
         that.refreshView();  //Make sure initially scrollable for IE6
                 

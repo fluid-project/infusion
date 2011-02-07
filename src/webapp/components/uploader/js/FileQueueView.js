@@ -33,7 +33,8 @@ var fluid_1_3 = fluid_1_3 || {};
     
     var fileForRow = function (that, row) {
         var files = that.model;
-        for (var i = 0; i < files.length; i++) {
+        var i;
+        for (i = 0; i < files.length; i++) {
             var file = files[i];
             if (file.id.toString() === row.attr("id")) {
                 return file;
@@ -208,7 +209,8 @@ var fluid_1_3 = fluid_1_3 || {};
     
     // Toggle keyboard row handlers on and off depending on the uploader state
     var enableRows = function (rows, state) {
-        for (var i = 0; i < rows.length; i++) {
+        var i;
+        for (i = 0; i < rows.length; i++) {
             fluid.enabled(rows[i], state);  
         }               
     };
