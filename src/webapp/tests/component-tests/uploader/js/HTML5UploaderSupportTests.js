@@ -59,6 +59,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
             return local;
         };
         
+        var getBrowseButtonView = function (fileTypes) {
+            var browseButtonView = fluid.uploader.html5Strategy.browseButtonView("#browseButtonContainer", {
+                queueSettings: {
+                    fileTypes: fileTypes
+                }
+            }); 
+            return browseButtonView;
+        };
         
         /*********
          * Setup *
@@ -108,17 +116,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         html5UploaderTests.test("Uploader HTML5 browseHandler", function () {
             var browseButton = $("#browseButton");
-            var browseButtonView = fluid.uploader.html5Strategy.browseButtonView("#browseButtonContainer", {
-                queueSettings: {
-                    fileTypes: "*.gif,*.divx,*.idrc"
-                }
-            });
+            var browseButtonView = getBrowseButtonView("");
             
             var inputs = browseButton.children();
             jqUnit.assertEquals("There should be one multi-file input element at the start", 1, inputs.length);
             jqUnit.assertEquals("The multi-file input element should be visible and in the tab order to start", 
                 0, inputs.eq(0).attr("tabindex"));
-            jqUnit.assertEquals("The accepted mimeTypes are", "video/*,image/*", inputs.eq(0).attr("accept"));
             
             browseButtonView.renderFreshMultiFileInput();
             inputs = browseButton.children();
@@ -136,6 +139,33 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("On blur, the browseButton no longer has the focus class", browseButton.hasClass("focus"));
         });
         
+        /**********************************
+         * Mime type file exclusion tests *
+         **********************************/
+        
+        var checkMimeTypeConversion = function (fileTypes, expectedMimeTypeConversion) {
+            var browseButton = $("#browseButton");
+            var browseButtonView = getBrowseButtonView(fileTypes);
+            var inputs = browseButton.children();
+            jqUnit.assertEquals("The fileTypes have been properly converted to valid HTML5 mime types", 
+                                expectedMimeTypeConversion, inputs.eq(0).attr("accept"));
+        };
+        
+        html5UploaderTests.test("Uploader HTML5 file exclusion: Not all file types are valid", function () {
+            checkMimeTypeConversion("*.gif,*.divx,*.idrc", "video/*,image/*");
+        });
+        
+        html5UploaderTests.test("Uploader HTML5 file exclusion: File types empty", function () {
+            checkMimeTypeConversion("", "audio/*,video/*,image/*");
+        });
+        
+        html5UploaderTests.test("Uploader HTML5 file exclusion: No specific file type defined", function () {
+            checkMimeTypeConversion("*", "audio/*,video/*,image/*");
+        });        
+        
+        html5UploaderTests.test("Uploader HTML5 file exclusion: All file types are invalid", function () {
+            checkMimeTypeConversion("*.idrc,*.atrc,*.ocad", "audio/*,video/*,image/*");
+        });        
         
         /********************
          * addFiles() Tests *
