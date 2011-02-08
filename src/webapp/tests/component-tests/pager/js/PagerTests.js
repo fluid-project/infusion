@@ -95,6 +95,30 @@ https://source.fluidproject.org/svn/LICENSE.txt
             return fluid.pager(container, fluid.merge("replace", defaultSetupOptions, options));
         };
         
+        /** Convenience strategy pager creator **/
+        var strategyRenderer = function (n, pageSize, pageList) {
+                var dataModel = {};
+                dataModel.pets = new Array();
+                for (var i = 0; i < n; i++) {
+                    dataModel.pets.push({animal:"cat_" + i});
+                }
+                
+                var opt = {
+                    dataModel : dataModel,
+                    model: {
+                        pageSize: pageSize
+                    },
+                    pagerBar: {
+                        type: "fluid.pager.pagerBar", 
+                        options: {
+                            pageList: pageList
+                        }
+                    }
+                };
+                var pager = renderedPager("#rendered", opt);
+                return pager;
+            };
+        
         /** Convenience test functions **/
         var enabled = function (str, link) {
             jqUnit.assertFalse(str + " link is enabled", 
@@ -456,5 +480,70 @@ https://source.fluidproject.org/svn/LICENSE.txt
             }
         });
         
+        /** 
+         * Test everyPageStrategy Strategy
+         */
+        tests.test("Pager everyPageStrategy", function () {
+            /*
+             * Create n pages, check if number of pages = n
+             */    
+            var pageSize = 3;
+            var pageList = 20;
+            var everyPageStrategyPageList = {
+                type: "fluid.pager.renderedPageList",
+                options: {
+                    pageStrategy: fluid.pager.everyPageStrategy
+                }
+            };            
+            var expectedPages = Math.ceil(pageList/pageSize);
+            var pager = strategyRenderer(pageList, pageSize, everyPageStrategyPageList);
+            var pagerTopPageLinks = $(".flc-pager-top .flc-pager-pageLink", pager.container).length;
+            var pagerBottomPageLinks = $(".flc-pager-bottom .flc-pager-pageLink", pager.container).length;
+            jqUnit.assertEquals("Top pageLinks", expectedPages, pagerTopPageLinks);
+            jqUnit.assertEquals("Bottom pageLinks", expectedPages, pagerBottomPageLinks);
+        });
+        
+        /** 
+         * Test consistentGappedPageStrategy Strategy
+         */
+        tests.asyncTest("Pager consistentGappedPageStrategy", function () {
+            /*
+             * Create n pages, check if number of pages = n
+             * consistentGappedPageStrategy(j, m) should look like this:
+             * ---j--- -m-[x]-m- ---j---
+             */   
+            var pageSize = 3;
+            var pageList = 100;             
+            var consistentGappedPageStrategyPageList = function (j, m) {
+                return {
+                    type: "fluid.pager.renderedPageList",
+                    options: {
+                        pageStrategy: fluid.pager.consistentGappedPageStrategy(j, m)
+                    }
+                };
+            };
+            var expectedPages = Math.ceil(pageList/pageSize);
+            var j = 3;
+            var m = 1; 
+            var pager = strategyRenderer(pageList, pageSize, consistentGappedPageStrategyPageList(j, m)); 
+            //total queue size allowed is current_page + 2*(j + m) + skipped_pages                        
+            var totalPagesWithoutSkipped = 2 * ( j + m ) + 1;
+            var totalPages = totalPagesWithoutSkipped + pager.pagerBar.locate("pageLinkSkip").length;
+            
+            //randomly click 1 page and see if the pages are right
+            //todo: make it more generic.  
+            var listedPages = pager.pagerBar.locate("pageLinks");
+            var rand = Math.floor(Math.random() * listedPages.length);
+            var randomPage = pager.pagerBar.locate("pageLinks")[rand];
+            $('a', randomPage).click();
+            listedPages = pager.pagerBar.locate("pageLinks");  //reload
+            
+            /* TODO:
+             * locate the currentPage item from the new list, and get status
+             */
+            jqUnit.assertEquals("Top pageLinks", totalPagesWithoutSkipped, pager.pagerBar.locate("pageLinks").length);
+            jqUnit.assertEquals("Bottom pageLinks", totalPagesWithoutSkipped, pager.pagerBarSecondary.locate("pageLinks").length);
+            
+        });
     });
 })(jQuery);

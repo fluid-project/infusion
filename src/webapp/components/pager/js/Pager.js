@@ -115,6 +115,12 @@ var fluid_1_3 = fluid_1_3 || {};
         };
     };
     
+    /**
+     * An impl of a page strategy that will always display same number of page links (including skip place holders). 
+     * @param   endLinkCount    int     The # of elements first and last trunks of elements
+     * @param   midLinkCount    int     The # of elements from beside the selected #
+     * @author  Eric Dalquist
+     */
     fluid.pager.consistentGappedPageStrategy = function (endLinkCount, midLinkCount) {
         if (!endLinkCount) {
             endLinkCount = 1;
@@ -306,7 +312,7 @@ var fluid_1_3 = fluid_1_3 || {};
         pageList: {
             type: "fluid.pager.renderedPageList",
             options: {
-                pageStrategy: fluid.pager.consistentGappedPageStrategy(3, 1)
+                pageStrategy: fluid.pager.consistentGappedPageStrategy(2, 1)
             }
         },
         
