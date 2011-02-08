@@ -214,6 +214,27 @@ var fluid_1_3 = fluid_1_3 || {};
         exist.push({contexts: contextNames, spec: spec});
     };
     
+    fluid.instantiator = function() {
+        var that = fluid.initLittleComponent(fluid.instantiator);
+        that.idToPath = {};
+        that.pathToComponent = {};
+        that.getThatStack = function(component) {
+            var path = idToPath(component.id);
+            var parsed = fluid.parseEL(path);
+            var togo = [component];
+            var togo = fluid.transform(parsed, function(value, i) {
+                var parentPath = fluid.model.composeSegments.apply(null, parsed.slice(0, i));
+                return pathToComponent[parentPath];    
+            });
+            return togo;
+        };
+        that.recordComponent = function(component, path) {
+            that.idToPath[component.id] = path;
+            that.pathToComponent[path] = component;
+        };
+        return that;
+    };
+    
     fluid.getEnvironmentalThatStack = function() {
          return [fluid.staticEnvironment];
     };
