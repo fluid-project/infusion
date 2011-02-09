@@ -506,14 +506,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
         /** 
          * Test consistentGappedPageStrategy Strategy
          */
-        tests.asyncTest("Pager consistentGappedPageStrategy", function () {
+        tests.test("Pager consistentGappedPageStrategy", function () {            
             /*
              * Create n pages, check if number of pages = n
              * consistentGappedPageStrategy(j, m) should look like this:
              * ---j--- -m-[x]-m- ---j---
              */   
+             
             var pageSize = 3;
-            var pageList = 100;             
+            var pageList = 100;
+            var expectedPages = Math.ceil(pageList/pageSize);
+            var j = 3;
+            var m = 1;             
             var consistentGappedPageStrategyPageList = function (j, m) {
                 return {
                     type: "fluid.pager.renderedPageList",
@@ -522,25 +526,59 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     }
                 };
             };
-            var expectedPages = Math.ceil(pageList/pageSize);
-            var j = 3;
-            var m = 1; 
+            var listId = function (index) {
+                return '#page-link\\:link' + index;
+            }
+            /*
+             * Check if element is in the list when we clicked on "i"
+             */
+            var shouldExistInList = function (i, element) {
+                //manually retrieve ID
+                //todo: make this better?
+                var link = $(element).find('a');
+                var linkId = parseInt(link.attr('id').replace('page-link:link', ''));
+                //if this link is within the leading linkCount
+                if (linkId <= j) {
+                    return true;
+                }
+                //if this link is within the trailing linkCount
+                if (linkId > expectedPages - j && linkId <= expectedPages) {
+                    return true;
+                }
+                //if tihs link is within the middle linkCount
+                if (i >= linkId - m && i <= linkId + m) {
+                    return true;
+                }
+                return false;
+            };
+            
+            
             var pager = strategyRenderer(pageList, pageSize, consistentGappedPageStrategyPageList(j, m)); 
             //total queue size allowed is current_page + 2*(j + m) + skipped_pages                        
             var totalPagesWithoutSkipped = 2 * ( j + m ) + 1;
             var totalPages = totalPagesWithoutSkipped + pager.pagerBar.locate("pageLinkSkip").length;
             
-            //randomly click 1 page and see if the pages are right
-            //todo: make it more generic.  
-            var listedPages = pager.pagerBar.locate("pageLinks");
-            var rand = Math.floor(Math.random() * listedPages.length);
-            var randomPage = pager.pagerBar.locate("pageLinks")[rand];
-            $('a', randomPage).click();
-            listedPages = pager.pagerBar.locate("pageLinks");  //reload
+            //click all page manually by its ID.
+            for (var i = 1; i <= expectedPages; i++) {
+                var page = listId(i);
+                $(page).click();
+                var listedPages = pager.pagerBar.locate("pageLinks");
+                var skippedPages = pager.pagerBar.locate("pageLinkSkip");
+                jqUnit.assertEquals("Top pageLinks", totalPages, listedPages);
+                
+                var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
+                allPagesAfterClicked.each(function (index, element) {
+                    if (!$(element).hasClass("flc-pager-pageLink-skip")) {
+                        jqUnit.assertTrue("Clicked on [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
+                    }
+                    
+                });
+            }
             
             /* TODO:
              * locate the currentPage item from the new list, and get status
              */
+             
             jqUnit.assertEquals("Top pageLinks", totalPagesWithoutSkipped, pager.pagerBar.locate("pageLinks").length);
             jqUnit.assertEquals("Bottom pageLinks", totalPagesWithoutSkipped, pager.pagerBarSecondary.locate("pageLinks").length);
             
