@@ -370,7 +370,7 @@ var fluid = fluid || fluid_1_3;
      * with the more complex implementations in fluid.pathUtil(data binding).
      */
     fluid.model.parseEL = function(EL) {
-        return String(EL).split('.');
+        return EL === ""? [] : String(EL).split('.');
     };
     
     /** Compose an EL expression from two separate EL expressions. The returned 
@@ -537,61 +537,6 @@ var fluid = fluid || fluid_1_3;
     fluid.get = function (root, EL, config) {
         return fluid.model.trundle(root, EL, config).root;
     };
-
-    fluid.accessor = function(options) {
-        var that = fluid.initLittleComponent("fluid.accessor", options);
-        $.extend(that, that.options); // shallow copy all material into our root
-        that.getRoot = function(world) {
-            world = world || "!";
-            var root = worldRoots[world];
-            if (!root) {
-                worldRoots[world] = {}; // TODO, OK, make a "root world strategy" ...
-                return root;
-            }  
-        };
-        that.prepareArgs = function(argsType, configType, world, args) {
-            world = world || "!";
-            var root = getRoot(world);
-            var worldConfig = that.worldConfigs[world];
-            var config = worldConfig? worldConfig[configType] : null;
-            config = config? config : fluid.model[configType === "get"? "defaultGetConfig" : "defaultSetConfig"];
-            var togo = [root, args[0]];
-            if (argsType === "set") {
-                togo.push[args[2]];
-            }
-            togo.push[config];
-            return togo;
-        }
-        that.trundle = function(EL, world, opType) {
-            opType = opType || "get";
-            var args = that.prepareArgs("get", opType, world, arguments);
-            return fluid.model.trundle.apply(null, args);
-        };
-        
-        that.get = function (EL, world) {
-            var args = that.prepareArgs("get", "get", world, arguments);
-            return fluid.get.apply(null, args);
-        };
-        that.set = function (EL, newValue, world) {
-            var args = that.prepareArgs("set", "set", world, arguments);
-            return fluid.set.apply(null, args);
-        }
-        return that;
-    };
-    
-    fluid.defaults("fluid.accessor", {
-        mergePolicy: {
-            model: "preserve",
-            applier: "preserve",
-            worldRoots: "preserve",
-            "worldRoots.!": model,
-            "worldAppliers.!": applier, 
-            },
-        model: {},
-        worldRoots: {},
-        worldConfigs: {},
-        worldAppliers: {}
-    });
 
     // This backward compatibility will be maintained for a number of releases, probably until Fluid 2.0
     fluid.model.setBeanValue = fluid.set;
