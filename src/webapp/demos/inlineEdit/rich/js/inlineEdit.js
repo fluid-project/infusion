@@ -49,7 +49,8 @@ var demo = demo || {};
             },
             strings: {
                 textEditButton: "Edit"
-            }
+            },
+            tooltipText: "Use the edit link to make changes"            
         });
         makeButtons(tinyEditor);
 
@@ -64,7 +65,8 @@ var demo = demo || {};
             },
             strings: {
                 textEditButton: "Edit"
-            }
+            },
+            tooltipText: "Use the edit link to edit text"
         });
         makeButtons(ckEditor);    
     };    
