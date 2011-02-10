@@ -526,9 +526,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     }
                 };
             };
-            var listId = function (index) {
-                return '#page-link\\:link' + index;
-            }
+            
             /*
              * Check if element is in the list when we clicked on "i"
              */
@@ -545,43 +543,45 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 if (linkId > expectedPages - j && linkId <= expectedPages) {
                     return true;
                 }
-                //if tihs link is within the middle linkCount
+                //if this link is within the middle linkCount
                 if (i >= linkId - m && i <= linkId + m) {
+                    return true;
+                }
+                
+                //if this element is outside of leading linkCount but index
+                //is within leading linkCount
+                if ((i - m - 1) <= j && linkId <= (2 * j + 1)) {
+                    return true;
+                }
+                
+                //if this element is outside of leading linkCount but index
+                //is within leading linkCount
+                if (i + m + 1 >= expectedPages - j && linkId > expectedPages - (2 * j +1)) {
                     return true;
                 }
                 return false;
             };
             
-            
             var pager = strategyRenderer(pageList, pageSize, consistentGappedPageStrategyPageList(j, m)); 
-            //total queue size allowed is current_page + 2*(j + m) + skipped_pages                        
+            //total queue size allowed is current_page + 2 * (j + m) + self + 2 skipped_pages                        
             var totalPagesWithoutSkipped = 2 * ( j + m ) + 1;
-            var totalPages = totalPagesWithoutSkipped + pager.pagerBar.locate("pageLinkSkip").length;
+            var totalPages = totalPagesWithoutSkipped + 2;
             
             //click all page manually by its ID.
             for (var i = 1; i <= expectedPages; i++) {
-                var page = listId(i);
+                var page = '#page-link\\:link' + i;
                 $(page).click();
                 var listedPages = pager.pagerBar.locate("pageLinks");
                 var skippedPages = pager.pagerBar.locate("pageLinkSkip");
-                jqUnit.assertEquals("Top pageLinks", totalPages, listedPages);
+                jqUnit.assertEquals("Verify number of top page links", totalPages, listedPages.length + skippedPages.length);
                 
                 var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
                 allPagesAfterClicked.each(function (index, element) {
                     if (!$(element).hasClass("flc-pager-pageLink-skip")) {
                         jqUnit.assertTrue("Clicked on [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
                     }
-                    
                 });
-            }
-            
-            /* TODO:
-             * locate the currentPage item from the new list, and get status
-             */
-             
-            jqUnit.assertEquals("Top pageLinks", totalPagesWithoutSkipped, pager.pagerBar.locate("pageLinks").length);
-            jqUnit.assertEquals("Bottom pageLinks", totalPagesWithoutSkipped, pager.pagerBarSecondary.locate("pageLinks").length);
-            
+            }            
         });
     });
 })(jQuery);
