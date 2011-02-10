@@ -66,7 +66,7 @@ var demo = demo || {};
             strings: {
                 textEditButton: "Edit"
             },
-            tooltipText: "Use the edit link to edit text"
+            tooltipText: "Use the edit link to make changes"
         });
         makeButtons(ckEditor);    
     };    
