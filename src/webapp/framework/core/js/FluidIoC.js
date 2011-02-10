@@ -267,21 +267,10 @@ var fluid_1_3 = fluid_1_3 || {};
         };
         return that;
     };
-    
-    fluid.getEnvironmentalThatStack = function() {
-         return [fluid.staticEnvironment];
-    };
-    
-    fluid.getDynamicEnvironmentalThatStack = function() {
-        var root = fluid.threadLocal();
-        var dynamic = root["fluid.initDependents"]
-        return dynamic? dynamic : fluid.getEnvironmentalThatStack();
-    };
 
     fluid.locateDemands = function(demandingNames, thatStack) {
-        var searchStack = fluid.getEnvironmentalThatStack().concat(thatStack); // TODO: put in ThreadLocal "instance" too, and also accelerate lookup
         var contextNames = {};
-        visitComponents(searchStack, function(component) {
+        visitComponents(thatStack, function(component) {
             contextNames[component.typeName] = true;
         });
         var matches = [];
