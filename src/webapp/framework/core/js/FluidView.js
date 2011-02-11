@@ -143,7 +143,8 @@ var fluid_1_3 = fluid_1_3 || {};
         that.scrollable = that.options.makeScrollableFn(element, that.options);
         if (that.options.css) {
             that.scrollable.css(that.options.css);
-        }        
+        }
+        that.maxHeight = that.scrollable.css("max-height");
                 
         /**
          * Programmatically scrolls this scrollable element to the region specified.
@@ -154,20 +155,20 @@ var fluid_1_3 = fluid_1_3 || {};
         };
 
         /* 
-         * Set height, if max-height is reached, to allow scrolling in IE6.
+         * Updates the view of the scrollable region. This should be called when the content of the scrollable region is changed. 
          */
         that.refreshView = function () {
             if ($.browser.msie && $.browser.version === "6.0") {    
-                var maxHeight = that.scrollable.css("max-height");
                 that.scrollable.css("height", "");
                 
-                if (that.scrollable.height() >= parseInt(maxHeight, 10)) {
-                    that.scrollable.css("height", maxHeight);           
+                // Set height, if max-height is reached, to allow scrolling in IE6.
+                if (that.scrollable.height() >= parseInt(that.maxHeight, 10)) {
+                    that.scrollable.css("height", that.maxHeight);           
                 }
             }
         };          
         
-        that.refreshView();  //Make sure initially scrollable for IE6
+        that.refreshView();
                 
         return that;
     };
