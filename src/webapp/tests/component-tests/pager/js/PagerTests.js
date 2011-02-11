@@ -504,6 +504,63 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         /** 
+         * Test gappedPageStrategy Strategy
+         */
+        tests.test("Pager gappedPageStrategy", function () {
+            var pageSize = 3;
+            var pageList = 100;
+            var expectedPages = Math.ceil(pageList/pageSize);
+            var j = 3;
+            var m = 1;
+            var gappedPageStrategyPageList = function (j, m) {
+                return {
+                    type: "fluid.pager.renderedPageList",
+                    options: {
+                        pageStrategy: fluid.pager.gappedPageStrategy(j, m)
+                    }
+                };
+            };
+            var pager = strategyRenderer(pageList, pageSize, gappedPageStrategyPageList(j, m)); 
+            
+            /*
+             * Check if element is in the list when we clicked on "i"
+             */
+            var shouldExistInList = function (i, element) {
+                //manually retrieve ID
+                //todo: make this better?
+                var link = $(element).find('a');
+                var linkId = parseInt(link.attr('id').replace('page-link:link', ''));
+                //if this link is within the leading linkCount
+                if (linkId <= j) {
+                    return true;
+                }
+                //if this link is within the trailing linkCount
+                if (linkId > expectedPages - j && linkId <= expectedPages) {
+                    return true;
+                }
+                //if this link is within the middle linkCount
+                if (i >= linkId - m && i <= linkId + m) {
+                    return true;
+                }
+                
+                //if all the above fails.
+                return false;
+            };
+            
+            //Go through all pages 1 by 1 , and click click all page dynamically each time
+            for (var i = 1; i <= expectedPages; i++) {
+                var page = fluid.jById('page-link:link' + i);
+                page.click();     
+                var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
+                allPagesAfterClicked.each(function (index, element) {
+                    if (!$(element).hasClass("flc-pager-pageLink-skip")) {
+                        jqUnit.assertTrue("Clicked on [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
+                    }
+                });
+            } 
+        });
+        
+        /** 
          * Test consistentGappedPageStrategy Strategy
          */
         tests.test("Pager consistentGappedPageStrategy", function () {            
@@ -511,13 +568,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
              * Create n pages, check if number of pages = n
              * consistentGappedPageStrategy(j, m) should look like this:
              * ---j--- -m-[x]-m- ---j---
-             */   
-             
+             */             
             var pageSize = 3;
             var pageList = 100;
             var expectedPages = Math.ceil(pageList/pageSize);
             var j = 3;
-            var m = 1;             
+            var m = 3;
             var consistentGappedPageStrategyPageList = function (j, m) {
                 return {
                     type: "fluid.pager.renderedPageList",
@@ -550,38 +606,38 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 
                 //if this element is outside of leading linkCount but index
                 //is within leading linkCount
-                if ((i - m - 1) <= j && linkId <= (2 * j + 1)) {
+                //i-m-2 because 1 2 3 ... 5 6 is pointless. it should be 1 2 3 4 5 6.
+                if ((i - m - 2) <= j && linkId <= (expectedPages - j - 1)) {
                     return true;
                 }
                 
-                //if this element is outside of leading linkCount but index
+                //if this element is outside of trailing linkCount but index
                 //is within leading linkCount
-                if (i + m + 1 >= expectedPages - j && linkId > expectedPages - (2 * j +1)) {
+                if (i + m + 2 >= expectedPages - j && linkId > expectedPages - (expectedPages - j - 1)) {
                     return true;
                 }
+                
+                //if all the above fails.
                 return false;
             };
             
             var pager = strategyRenderer(pageList, pageSize, consistentGappedPageStrategyPageList(j, m)); 
             //total queue size allowed is current_page + 2 * (j + m) + self + 2 skipped_pages                        
-            var totalPagesWithoutSkipped = 2 * ( j + m ) + 1;
-            var totalPages = totalPagesWithoutSkipped + 2;
+            var totalPages = 2 * ( j + m ) + 3;
             
-            //click all page manually by its ID.
+            //Go through all pages 1 by 1 , and click all page dynamically each time
             for (var i = 1; i <= expectedPages; i++) {
-                var page = '#page-link\\:link' + i;
-                $(page).click();
-                var listedPages = pager.pagerBar.locate("pageLinks");
-                var skippedPages = pager.pagerBar.locate("pageLinkSkip");
-                jqUnit.assertEquals("Verify number of top page links", totalPages, listedPages.length + skippedPages.length);
-                
+                var page = fluid.jById('page-link:link' + i);
+                page.click();                
+                jqUnit.assertEquals("Verify number of top page links", totalPages, 
+                                    pager.pagerBar.locate("pageLinks").length + pager.pagerBar.locate("pageLinkSkip").length);                
                 var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
                 allPagesAfterClicked.each(function (index, element) {
                     if (!$(element).hasClass("flc-pager-pageLink-skip")) {
-                        jqUnit.assertTrue("Clicked on [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
+                        jqUnit.assertTrue("On [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
                     }
                 });
-            }            
+            }
         });
     });
 })(jQuery);
