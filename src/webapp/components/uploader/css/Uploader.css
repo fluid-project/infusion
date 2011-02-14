@@ -130,30 +130,6 @@ tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
     color: #5E7A5E;
 }
 
-/* 
- * Errors: displayed in file queue
- */
-.fl-uploader-queue .fl-uploader-file-state-error th {
-    border-left: 4px solid #F5E392;
-    background-color: #FCFBE6;
-    border-bottom-width: 0;
-}
-
-.fl-uploader-queue .fl-uploader-file-state-error td {
-    background-color: #FCFBE6;
-    border-bottom-width: 0;
-}
-
-.fl-uploader-queue .fl-uploader-file-error td {
-    background-color: #FCFBE6;
-    border-left: 4px solid #F5E392;
-    background-image: url(../images/error.png);
-    background-position: 8px 2px;
-    background-repeat: no-repeat;
-    padding-bottom: 8px;
-    padding-left: 32px;
-}
-
 /*
  * Instructions 
  */
