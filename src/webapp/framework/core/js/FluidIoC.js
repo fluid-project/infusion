@@ -443,26 +443,37 @@ var fluid_1_3 = fluid_1_3 || {};
     };
     
     fluid.initDependent = function(that, name, instantiator) {
-        if (!that || that[name]) { return; }
+        if (!that) { return; }
         if (!instantiator) {
             instantiator = fluid.threadLocal()["fluid.instantiator"];
         }
         var thatStack = instantiator.getFullStack(that);
         var component = that.options.components[name];
-        var invokeSpec = fluid.resolveDemands(thatStack, [component.type, name], [], {componentOptions: component.options});
-        // TODO: only want to expand "options" or all args? See "component rescuing" in expandOptions above
-        //invokeSpec.args = fluid.expandOptions(invokeSpec.args, thatStack, true);
-        instantiator.pushUpcomingInstantiation(that, name);
-        try {
-            var instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
-            if (instance) { // TODO: more fallibility
-               // Interestingly, by the time we have actually recorded this component here, it is far too late
-               // to have used it for resolution required by itself and subcomponents....
-                that[name] = instance;
+        if (typeof(component) === "string") {
+            that[name] = fluid.expandOptions([component], that)[0]; // TODO: expose more sensible semantic for expandOptions 
+        }
+        else if (component.type) {
+            var invokeSpec = fluid.resolveDemands(thatStack, [component.type, name], [], {componentOptions: component.options});
+            // TODO: only want to expand "options" or all args? See "component rescuing" in expandOptions above
+            //invokeSpec.args = fluid.expandOptions(invokeSpec.args, thatStack, true);
+            instantiator.pushUpcomingInstantiation(that, name);
+            try {
+                var instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
+                if (instance) { // TODO: more fallibility
+                   // Interestingly, by the time we have actually recorded this component here, it is far too late
+                   // to have used it for resolution required by itself and subcomponents....
+                    that[name] = instance;
+                }
+            }
+            finally {
+                instantiator.pushUpcomingInstantiation();
             }
         }
-        finally {
-            instantiator.pushUpcomingInstantiation();
+        else { 
+          // TODO: As a result of brainless expansion pathway, it has ALREADY been 
+          // expanded - since resolveDemands above unilaterally calls embodyDemands etc. on ALL of the supplied material
+          // including component.options
+            that[name] = component;
         }
     };
     

@@ -248,7 +248,9 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.model.mergeModel = function (target, source, applier) {
         var copySource = fluid.copy(source);
         applier = applier || fluid.makeChangeApplier(source);
-        applier.fireChangeRequest({type: "ADD", path: "", value: target});
+        if (!fluid.isPrimitive(target)) {
+            applier.fireChangeRequest({type: "ADD", path: "", value: target});
+        }
         applier.fireChangeRequest({type: "MERGE", path: "", value: copySource});
         return source; 
     };

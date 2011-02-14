@@ -683,7 +683,7 @@ var fluid = fluid || fluid_1_3;
     
                 
     fluid.mergePolicyIs = function (policy, test) {
-        return typeof(policy) === "string" && policy.indexOf(test) !== -1;
+        return typeof(policy) === "string" && $.inArray(test, policy.split(/\s*,\s*/)) !== -1;
     };
     
     function mergeImpl(policy, basePath, target, source, thisPolicy) {
@@ -705,7 +705,7 @@ var fluid = fluid || fluid_1_3;
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
                       !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
-                       !fluid.mergePolicyIs(newPolicy, "preserve")) {
+                       !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "preserveLeft")) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array ? [] : {};
                     }
@@ -753,7 +753,7 @@ var fluid = fluid || fluid_1_3;
         if (policy && typeof(policy) !== "string") {
             for (var key in policy) {
                 var elrh = policy[key];
-                if (typeof(elrh) === 'string' && elrh !== "replace") {
+                if (typeof(elrh) === "string" && elrh !== "replace" && elrh !== "preserve" && elrh !== "preserveLeft") {
                     var oldValue = fluid.get(target, key);
                     if (oldValue === null || oldValue === undefined) {
                         var value = fluid.get(target, elrh);
@@ -780,7 +780,9 @@ var fluid = fluid || fluid_1_3;
         if (fluid.expandOptions) {
             defaults = fluid.expandOptions(fluid.copy(defaults), that);
         }
-        that.options = fluid.merge(defaults ? defaults.mergePolicy: null, {}, defaults, userOptions);    
+        var mergePolicy = $.extend({}, defaults? defaults.mergePolicy : {});
+        mergePolicy["components"] = "preserveLeft";
+        that.options = fluid.merge(mergePolicy, {}, defaults, userOptions);    
     };
     
         

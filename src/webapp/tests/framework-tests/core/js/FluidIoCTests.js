@@ -114,6 +114,26 @@ fluid.registerNamespace("fluid.testUtils");
         }
     });
 
+    fluid.defaults("fluid.testUtils.reinstantiation", {
+        headValue: "headValue",
+        components: {
+            child1: {
+                type: "fluid.testUtils.reinsChild",
+                options: {
+                    components: {
+                        instantiator: "{instantiator}",
+                        child2: {
+                            type: "fluid.testUtils.reinsChild2",
+                            options: {
+                                value: "{reinstantiation}.options.headValue"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
     fluid.makeComponents({
         "fluid.testUtils.testComponent":      "fluid.standardComponent",
         "fluid.testUtils.testComponent2":     "fluid.standardComponent",
@@ -132,7 +152,10 @@ fluid.registerNamespace("fluid.testUtils");
         "fluid.testUtils.fluid3818head":      "fluid.littleComponent",
         "fluid.testUtils.fluid3818child":     "fluid.littleComponent",
         "fluid.testUtils.thatStackHead":      "fluid.littleComponent",
-        "fluid.testUtils.thatStackTail":      "fluid.littleComponent"
+        "fluid.testUtils.thatStackTail":      "fluid.littleComponent",
+        "fluid.testUtils.reinstantiation":    "fluid.littleComponent",
+        "fluid.testUtils.reinsChild":         "fluid.littleComponent",
+        "fluid.testUtils.reinsChild2":        "fluid.littleComponent"
         // TODO: GRADES
         //"fluid.testUtils.resultsPager":       "fluid.littleComponent"
     });
@@ -517,6 +540,17 @@ fluid.registerNamespace("fluid.testUtils");
             fetchKey: recordType
         });
     };
+    
+    fluidIoCTests.test("FLUID-4055 reinstantiation test", function() {
+        var reins = fluid.testUtils.reinstantiation();
+        var origID = reins.child1.child2.id;
+        var instantiator = reins.child1.instantiator;
+        jqUnit.assertEquals("Original value transmission", reins.options.headValue, reins.child1.child2.options.value);
+        reins.options.headValue = "headValue2"; // in poor style, modify options to verify reexpansion
+        fluid.initDependent(reins.child1, "child2", instantiator);
+        jqUnit.assertNotEquals("Child2 reinstantiated", origID, reins.child1.child2.id);
+        jqUnit.assertEquals("Changed value found in expansion", "headValue2", reins.child1.child2.options.value); 
+    });
 
     fluidIoCTests.test("Deferred expander Tests", function () {
         var pageBuilder = {
