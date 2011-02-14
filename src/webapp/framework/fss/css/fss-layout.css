@@ -287,15 +287,21 @@ input.fl-icon {padding-left:16px;}
     padding-top:2em;   
 }
 
-.fl-table-scrollable-area { 
+.fl-table-scrollable-scroller { 
     max-height:160px;
     overflow: auto;
     overflow-x: hidden;
     overflow-y: auto;
 }
 
-.fl-table-scrollable-area table thead tr { /* fixed table header */
-    left: -1px; 
-    top: 0;
-    position: absolute;   
+.fl-table-scrollable-scroller thead tr { /* fixed table header */
+    left: 0px; 
+    top: -1px;
+    position: absolute;       
+    white-space: nowrap;
+}
+
+.fl-table-scrollable-scroller th { 
+    display:inline-block;
+    margin:-2px;
 }

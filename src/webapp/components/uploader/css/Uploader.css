@@ -1,70 +1,103 @@
-.fl-uploader-basic-save {
-    margin-top: 0.6em;
-}
-
+/*
+ * Uploader Container
+ */
 .fl-uploader { 
     width: 434px;
     position: relative;
     clear: both;
 }
 
-.fl-uploader-manually-degrade, .fl-uploader-manually-enhance {
-    display: block;
-    width: 434px;
-    clear: both;
-    float: none;
-    text-align: center;
-    padding: 1em;
-}
-
-/*** uploader data table ***/
-table.fl-uploader-data {
-    border-collapse: collapse;
+/*
+ * File Queue table
+ */
+ 
+/* Table general */
+table.fl-uploader-queue {
     margin: 0;
-    width: 434px;        
+    color: #333;
 }
-.fl-uploader-data tr {
-     background-color: transparent;
-}
-.fl-uploader-data td, .fl-uploader-data th {
+
+.fl-uploader-queue td, .fl-uploader-queue th {
     border: none;
+    margin: 0px;
 }
 
-.fl-uploader-data thead tr { 
-    border-bottom: 1px solid #999;    
-    width: 435px;
-    top: -1px;
-    background-color: transparent;
-    color: #666;    
+.fl-uploader-queue tr.fl-uploader-dim {
+    color: #666;
 }
 
-.fl-uploader-data caption {
+.fl-uploader-queue caption {
     display: none;
 }
 
-.fl-uploader-data thead th { 
+/* Table header */
+.fl-uploader-queue thead tr { 
+    border-bottom: 1px solid #999;    
+    width: 100%;
+    color: #666;    
+}
+
+.fl-uploader-queue thead th { 
     text-align: left;
     font-size: 0.94em;
     font-weight: normal;
     padding: 6px;
 }
 
-.fl-uploader-data .fl-uploader-file-name {
-    width: 322px;
+/* Table body */
+.fl-uploader-queue tbody {
+    z-index: 6;
+    border-right: 1px solid #999;    
+    display:block;
+    font-size: 0.9em;
+}
+
+.fl-uploader-queue tr:focus, .fl-uploader-queue tr.fl-uploader-file-state-ready:hover {  
+    background-color: #FFF9DC;
+}
+
+/* Table columns */
+.fl-uploader-queue td { 
+    text-align: left;
+    padding: 3px 6px;
+    border-bottom: 1px solid #BBCFDC;
+}
+
+/* file name */
+.fl-uploader-queue td.fl-uploader-file-name {
+    width: 29em;
     overflow: hidden;
+    white-space: nowrap;
+    font-weight:bold;    
+}
+.fl-uploader-queue th.fl-uploader-file-name {
+    width:26.5em;
 }
 
-.fl-uploader-data td.fl-uploader-file-name {
-    font-weight:bold;
-}
-
-.fl-uploader-data .fl-uploader-file-size {
+/* file size */
+.fl-uploader-queue .fl-uploader-file-size {
     text-align: right;
-    width: 5em;
     white-space: nowrap;
 }
 
-.fl-uploader-data .fl-uploader-file-action {
+/* action */
+.fl-uploader-queue .fl-uploader-file-actions {
+    padding-right:15px;
+    white-space: nowrap;
+    text-align: center;
+}
+.fl-uploader-queue .fl-uploader-file-actions .fl-uploader-dim {
+    border: 1px solid transparent;
+    background-color: transparent;
+    cursor: auto;
+}
+
+/* 
+ * Action buttons: remove or uploaded 
+ */
+ 
+/* general action buttons */
+.fl-uploader-file-actions button {
     border: 1px solid transparent;
     height: 20px;
     width: 20px;
@@ -75,106 +108,55 @@ table.fl-uploader-data {
     background-position: 1px 1px;
     padding: 0;
     margin: 0;
-    outline: none;
 }
 
-/* the file queue part of the table */
-tbody.fl-uploader-queue {
-    z-index: 6;
-    border-right: 1px solid #999;    
-    display:block;
-    font-size: 0.9em;
-}
-
-.fl-uploader-queue tr {
-    color: #333;    
-}
-
-/* hidden from IE6 */
-html>body .fl-uploader-queue {
-    width: 100%;    
-}
-
-/* this style is here for debugging, if everything is working right the list items are focusable but the list not. */
-.fl-uploader-queue:focus {
-    border: 1px solid #142B8C;
-}
-
-.fl-uploader-queue tr:focus, .fl-uploader-queue tr.fl-uploader-file-focus {
-    background-color: #FFF9DC;
-}
-
-/* second CSS selector is added only for IE6 */
-.fl-uploader-queue tr.fl-uploader-file-state-ready:hover, .fl-uploader-queue tr.fl-uploader-file-hover  {
-    background-color: #FFF9DC;
-}
-
-.fl-uploader-queue tr.fl-uploader-dim {
-    color: #666;
-}
-
-.fl-uploader-queue td, .fl-uploader-queue th { 
-    text-align: left;
-    padding: 3px 6px;
-    border-bottom: 1px solid #BBCFDC;
-}
-
-.fl-uploader-queue .fl-uploader-file-action:hover {
-    border: 1px solid transparent;
-    background-color: transparent;
-    cursor: auto;
-}
-
-.fl-uploader-queue td.fl-uploader-file-actions {
-    padding-right:15px;
-}
-
-.fl-uploader-queue .fl-uploader-file-actions .fl-uploader-dim {
-    border: 1px solid transparent;
-    background-color: transparent;
-    cursor: auto;
-}
-
-.fl-uploader-queue .fl-uploader-file-action-remove {
+/* remove button */
+.fl-uploader-file-actions .fl-uploader-file-action-remove {
     background-image: url(../images/remove.png);
-    cursor: pointer !important;
+    cursor: pointer; 
 }
 
-.fl-uploader-queue .fl-uploader-file-action-remove:hover, .fl-uploader-queue tr.fl-uploader-file-state-ready:focus .fl-uploader-file-action-remove, .fl-uploader-queue tr.focus .fl-uploader-file-action-remove {
+.fl-uploader-file-actions .fl-uploader-file-action-remove:hover, tr:focus .fl-uploader-file-actions .fl-uploader-file-action-remove {
     border: 1px solid #CCC;
     background-color: #FFF;
 }
 
-.fl-uploader-queue .fl-uploader-file-action-remove:focus, .fl-uploader-queue .fl-uploader-file-action-remove.focus {
-    background-color: #4F99D3;
-    outline: none;
+/* uploaded row */
+tr.fl-uploader-file-state-uploaded button {
+    background-image: url(../images/tick.png);
 }
-
-.fl-uploader-queue .fl-uploader-file-state-uploaded td {
-    color: #5E7A5E;
-}
-
-.fl-uploader-queue .fl-uploader-file-state-uploaded .fl-uploader-file-name, 
-.fl-uploader-queue tr.fl-uploader-file-state-uploaded .fl-uploader-file-name, 
-.fl-uploader-queue tr.focus .fl-uploader-file-name   {
+tr.fl-uploader-file-state-uploaded .fl-uploader-file-name {
     border-left: 4px solid #74B74A;
     color: #5E7A5E;
 }
 
-.fl-uploader-queue .fl-uploader-file-state-uploaded .fl-uploader-file-action {
-    background-image: url(../images/tick.png);
+/* 
+ * Errors: displayed in file queue
+ */
+.fl-uploader-queue .fl-uploader-file-state-error th {
+    border-left: 4px solid #F5E392;
+    background-color: #FCFBE6;
+    border-bottom-width: 0;
 }
 
-.fl-uploader-queue-wrapper td.fl-uploader-file-actions, .fl-uploader-queue-wrapper th.fl-uploader-file-actions {
-    white-space: nowrap;
-    text-align: center;
+.fl-uploader-queue .fl-uploader-file-state-error td {
+    background-color: #FCFBE6;
+    border-bottom-width: 0;
 }
 
-.fl-uploader-queue td.fileStatus { 
-    white-space: nowrap;
+.fl-uploader-queue .fl-uploader-file-error td {
+    background-color: #FCFBE6;
+    border-left: 4px solid #F5E392;
+    background-image: url(../images/error.png);
+    background-position: 8px 2px;
+    background-repeat: no-repeat;
+    padding-bottom: 8px;
+    padding-left: 32px;
 }
 
-/*** uploader instructions ***/
+/*
+ * Instructions 
+ */
 .fl-uploader-browse-instructions {
     background-color: #F0F9FF;
     color: #666;
@@ -184,7 +166,9 @@ html>body .fl-uploader-queue {
     padding: 6px;
 }
 
-/*** uploader status footer ***/
+/* 
+ * Status footer 
+ */
 .fl-uploader-queue-footer {
     z-index:6;
     position: relative;
@@ -197,16 +181,11 @@ html>body .fl-uploader-queue {
     vertical-align:middle;  
 }
 
-.fl-uploader-queue-footer .fl-uploader-footer-buttons {
-    text-align: right;
-    vertical-align: center;
-}
-
 .fl-uploader span.fl-uploader-browse {
     background-image: url(../images/add.png);
     background-attachment: scroll;
     background-repeat: no-repeat;
-    background-position: 1px center;
+    background-position: 6px 6px;
     padding: 5px 5px 0px 22px;
     border: none;
     white-space: nowrap;
@@ -215,11 +194,13 @@ html>body .fl-uploader-queue {
 }
 
 .fl-uploader-queue-footer .fl-uploader-total-progress-text {
-    float:left;
     padding-top:6px;
 }
 
-
+/*
+ * Browse files/Add more buttons 
+ */
+ 
 /* Special note about .fl-uploader-browse, .fl-uploader-browse.fl-uploader-browseMore, .fl-uploader-browse input
  *
  * Because of the inconsistencies in affecting <input type="file"> styling across browsers, we've used the following hack:
@@ -287,63 +268,96 @@ html>body .fl-uploader span.fl-uploader-browse {
     float: left;
 }
 
-/*** uploader bottom buttons ***/
-.fl-uploader button {
-    background-color: #4F99D3;
-    border-color: #2A3990;
+/*
+ * Upload/Stop Upload buttons 
+ */
+
+.fl-uploader-buttons {
+    margin-top: 1em;
+    text-align:right;
+}
+
+/* general button */
+.fl-uploader-buttons button {
     border-width: 1px;
     border-style: solid;
     font-weight: bolder;
     font-size: 1.06em;
     color: #FFF;
     height: 32px;
-    padding-left: 2em;
-    padding-right: 2em;
+    padding:0px;
     margin-right: 1em;
     outline: none;
     cursor: pointer;
+    width: 8.4em;
 }
 
-.fl-uploader button:focus, .fl-uploader button.focus {
+.fl-uploader-buttons button:focus {
     outline: 2px solid #142B8C;
 }
 
-.fl-uploader button:hover {
-    background-color: #115F8F;
-}
-
-.fl-uploader button.fl-uploader-button-default {
+/* upload button */
+.fl-uploader-buttons .fl-uploader-button-upload {
     background-color: #74B74A;
     border-color: #006838;
 }
 
-.fl-uploader button.fl-uploader-button-default:hover {
+.fl-uploader-buttons .fl-uploader-button-upload:hover {
     background-color: #519325;
     border-color: #142B8C;
 }
 
-.fl-uploader button.fl-uploader-button-cancel {
-    background-color: #D03E4F;
-    border-color: #BF1E2D;
+/* stop upload button */
+.fl-uploader-buttons .fl-uploader-button-stop {
+    background-color: #4F99D3;
+    border-color: #2A3990;
 }
 
-.fl-uploader button.fl-uploader-button-cancel:hover {
-    background-color: #9E182B;
-    border-color: #142B8C;
+.fl-uploader-buttons .fl-uploader-button-stop:hover {
+    background-color: #115F8F;
 }
 
-.fl-uploader button.fl-uploader-dim {
+/* disabled button */
+.fl-uploader-buttons .fl-uploader-dim, .fl-uploader-buttons .fl-uploader-dim:hover {
     background-color: #999;
     border-color: #666666;
+    cursor: auto;
 }
 
-.fl-uploader button.fl-uploader-dim:hover {
-    background-color: #999;
-    border-color: #666666;
-}
-
-.fl-uploader button span.text-description {
+/* 
+ * Progess bars
+ */
+.fl-uploader-file-progress, .fl-uploader-total-progress-okay, .fl-uploader-total-progress-errored {
+    position: absolute;
     display: none;
+    background-attachment: scroll;
+    background-position: bottom left;
+    background-repeat: repeat-x;
+    overflow: hidden;
+    left: -1px;
+    z-index:-1;
+    top: 0;
+    height: 100%;    
+}
+
+/* file progress */
+.fl-uploader-file-progress {
+    background-image: url('../images/gradient-file-green.png');
+    background-color: #D1D6DD;
+    border-right: 1px solid #9FCE7F;
+}
+
+/* overall progress */
+.fl-uploader-total-progress-okay {
+    background-image: url('../images/gradient-total-green.png');
+    border-right: 1px solid #9FCE7F;
+    background-color: #BDBFC1;
+}
+
+.fl-uploader-total-progress-errored {
+    background-image: url('../images/gradient-total-yellow.png');
+    border-right: 1px solid #E8C81C;
+    background-color: #F6ECA0;
 }
 
 /* ERRORS */
@@ -433,86 +447,27 @@ html>body .fl-uploader span.fl-uploader-browse {
     font-weight: normal;
 }
 
-.fl-uploader-btns {
-    margin-top: 1em;
-    text-align:right;
+/*
+ * Misc
+ */
+ 
+/* button for no-js basic version */
+.fl-uploader-basic-save {
+    margin-top: 0.6em;
+    display:block;
 }
 
-.fl-uploader-btns .fl-uploader-upload, .fl-uploader-btns .fl-uploader-resume,  .fl-uploader-btns .fl-uploader-pause {
-    width: 8.4em;
-}
-
-.fl-uploader-btns .fl-uploader-done, .fl-uploader-btns .fl-uploader-cancel {
-    width: 7.6em;
-}
-
-.fl-uploader-btns button {
-    padding: 0;
-}
-
-button span.fl-uploader-button-text-hidden {
+/* hidden */
+.fl-uploader-hidden {
     display: none;
 }
 
-/* element states */
-.fl-uploader-disabled, .fl-uploader-dim {
-    cursor: auto; 
-}
-
-.fl-uploader-disabled {
-    background-color: #CCC !important;
-    border-color: #999 !important;
-}
-
+/* dimmed */
 .fl-uploader-dim {
     opacity: 0.4;
     filter:alpha(opacity=40);
 }
 
-.fl-uploader-hidden, .fl-uploader-hidden-templates {
-    display: none;
-}
-
-/* PROGRESS */
-.fl-uploader-file-progress, .fl-uploader-total-progress-okay, .fl-uploader-total-progress-errored {
-    position: absolute;
-    display: none;
-    background-attachment: scroll;
-    background-position: bottom left;
-    background-repeat: repeat-x;
-    overflow: hidden;
-    left: 0;
-    z-index:-1;
-}
-
-.fl-uploader-file-progress {
-    background-image: url('../images/gradient-file-green.png');
-    background-color: #D1D6DD;
-    border-right: 1px solid #9FCE7F;
-    width:76%;
-}
-
-.fl-uploader-file-progress .fl-uploader-file-progress-text {
-    display: none;
-}
-
-.fl-uploader-total-progress-okay, .fl-uploader-total-progress-errored {
-    top: 0;
-    height: 100%;
-    width:76%;
-} 
-
-.fl-uploader-total-progress-okay {
-    background-image: url('../images/gradient-total-green.png');
-    border-right: 1px solid #9FCE7F;
-    background-color: #BDBFC1;
-}
-
-.fl-uploader-total-progress-errored {
-    background-image: url('../images/gradient-total-yellow.png');
-    border-right: 1px solid #E8C81C;
-    background-color: #F6ECA0;
-}
 
 /* Hidden SWF for Flash 9*/
 .fl-uploader-flash9-container {

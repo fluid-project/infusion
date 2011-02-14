@@ -104,6 +104,7 @@ var fluid_1_3 = fluid_1_3 || {};
     
     var createFileUploadXHR = function (file, events) {
         var xhr = new XMLHttpRequest();
+
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
@@ -136,13 +137,10 @@ var fluid_1_3 = fluid_1_3 || {};
         that.events = that.options.events;
         
         // Upload files in the current batch without exceeding the fileUploadLimit
-        that.start = function () {
-            var files = that.queue.currentBatch.files;
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                that.uploadFile(file);
-            }
-            that.events.afterUploadComplete.fire(files);
+        that.uploadNextFile = function () {
+            var batch = that.queue.currentBatch;
+            var file = batch.files[batch.fileIdx];                        
+            that.uploadFile(file);
         };
         
         that.uploadFile = function (file) {
@@ -152,9 +150,8 @@ var fluid_1_3 = fluid_1_3 || {};
         };
 
         that.stop = function () {
-            var batch = that.queue.currentBatch,
-                file = that.queue.files[batch.fileIdx];
-            
+            var batch = that.queue.currentBatch;
+            var file = batch.files[batch.fileIdx];                                    
             file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
             that.queue.shouldStop = true;
             that.currentXHR.abort();

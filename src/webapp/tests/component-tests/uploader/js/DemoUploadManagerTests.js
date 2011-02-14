@@ -111,7 +111,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             events.onUploadStart.fire(queue.currentBatch.files); 
             //
             
-            demoEngine.start();
+            demoEngine.uploadNextFile();
             
             tracker.transcript.files = files;
             return tracker.transcript;    

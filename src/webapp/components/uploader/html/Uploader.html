@@ -5,6 +5,7 @@
         <title>Uploader Template</title>
   
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-reset.css" />
+        <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-text.css" />
         <link rel="stylesheet" type="text/css" href="../../../framework/fss/css/fss-layout.css" />
         <link rel="stylesheet" type="text/css" href="../css/Uploader.css" />
         
@@ -35,20 +36,18 @@
     </head>
     
     <body>            
-        <!-- This form will be progressively enhanced by the Fluid Uploader component. -->
-        <form method="post" enctype="multipart/form-data" class="fl-uploader-basic fl-progEnhance-basic">
-            <p>Browse to upload a file...</p>
+        <!-- No javascript basic uploader -->
+        <form method="post" enctype="multipart/form-data" class="fl-progEnhance-basic">
+            <p>Use the Browse button to add a file, and the Save button to upload it.</p>
             <input name="fileData" type="file" />
-            <div>
-                <input class="fl-uploader-basic-save" type="submit" value="Save"/>
-            </div>
+            <input class="fl-uploader-basic-save" type="submit" value="Save"/>
         </form>
         
-        <!-- This is the markup for the Fluid Uploader component itself. -->
+        <!-- Fluid Uploader component -->
         <form class="flc-uploader fl-uploader fl-progEnhance-enhanced" method="get" enctype="multipart/form-data">
 
-            <!-- The file queue -->
-            <table summary="Headers for the file queue." class="flc-uploader-queue fl-uploader-data">
+            <!-- File queue -->
+            <table summary="The list of files" class="flc-uploader-queue fl-uploader-queue">
                 <caption>File Upload Queue:</caption>
                 <thead>
                     <tr>
@@ -57,46 +56,42 @@
                         <th scope="col" class="fl-uploader-file-actions"></th>
                     </tr>
                 </thead>
-                <tbody class="fl-uploader-queue">
-                    <!-- Rows will be rendered in here. -->
-                    
-                    <!-- Template markup for the file queue rows -->
-                    <tr class="flc-uploader-file-tmplt flc-uploader-file fl-uploader-hidden-templates">
+                <tbody>
+                    <!-- Template for file row -->
+                    <tr class="flc-uploader-file-tmplt flc-uploader-file">
                         <td class="flc-uploader-file-name fl-uploader-file-name">File Name Placeholder</td>
                         <td class="flc-uploader-file-size fl-uploader-file-size">0 KB</td>
                         <td class="fl-uploader-file-actions">
-                            <button type="button" class="flc-uploader-file-action fl-uploader-file-action" tabindex="-1">
-                                <span class="fl-uploader-button-text fl-uploader-hidden">Remove file from queue</span>
-                            </button>
+                            <button type="button" class="flc-uploader-file-action" tabindex="-1"></button>
                         </td>
                     </tr>
                     
-                    <!-- Template for the file error info rows -->
-                    <tr class="flc-uploader-file-error-tmplt fl-uploader-file-error fl-uploader-hidden-templates">
+                    <!-- Template for error info row -->
+                    <tr class="flc-uploader-file-error-tmplt fl-uploader-file-error">
                         <td colspan="3" class="flc-uploader-file-error"></td>
                     </tr>
                 </tbody>
             </table>
             
-            <div class="flc-uploader-file-progressor-tmplt fl-uploader-file-progress">
-                <span class="fl-uploader-file-progress-text fl-uploader-hidden">76%</span>
-            </div>
-            
+            <!-- Initial instructions -->
             <div class="flc-uploader-browse-instructions fl-uploader-browse-instructions">
-                Choose <em>Browse files</em> to add files to the queue 
-            </div>
+                Choose <em>Browse files</em> to add files to the queue. 
+            </div>            
+            
+            <!-- Overall progress bar -->
+            <div class="flc-uploader-file-progressor-tmplt fl-uploader-file-progress"></div>
 
-            <!-- Foot of the queue -->
+            <!-- Status footer -->
             <div class="flc-uploader-queue-footer fl-uploader-queue-footer fl-fix">
-                <div class="flc-uploader-total-progress-text fl-uploader-total-progress-text">
+                <div class="flc-uploader-total-progress-text fl-uploader-total-progress-text fl-force-left">
                     Total: 0 files (0 KB)
                 </div>
-                <div class="fl-uploader-footer-buttons fl-force-right">
+                <div class="fl-text-align-right fl-force-right">
                     <span class="flc-uploader-button-browse fl-uploader-browse">
                         <span class="flc-uploader-button-browse-text">Browse files</span>
                     </span>
                 </div>
-                <div class="flc-uploader-total-progress fl-uploader-total-progress-okay">&nbsp;</div>
+                <div class="flc-uploader-total-progress fl-uploader-total-progress-okay"></div>
                 <div class="flc-uploader-total-errored fl-uploader-total-errored">
                      <div class="fl-uploader-erroredHeader"><span class="flc-uploader-erroredHeader">Header placeholder</span></div>
     
@@ -135,10 +130,10 @@
                  </div>                
             </div>
             
-            <!-- Action buttons -->
-            <div class="fl-uploader-btns fl-push">
-                <button type="button" class="flc-uploader-button-pause fl-uploader-pause fl-uploader-hidden">Stop Upload</button>
-                <button type="button" class="flc-uploader-button-upload fl-uploader-upload fl-uploader-button-default fl-uploader-dim" disabled="disabled">Upload</button>
+            <!-- Upload buttons -->
+            <div class="fl-uploader-buttons">
+                <button type="button" class="flc-uploader-button-pause fl-uploader-button-stop fl-uploader-hidden">Stop Upload</button>
+                <button type="button" class="flc-uploader-button-upload fl-uploader-button-upload fl-uploader-dim">Upload</button>
             </div>
             
             <div class="flc-uploader-status-region fl-offScreen-hidden"></div>
