@@ -132,7 +132,7 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.defaults(true, "fluid.moduleLayoutHandler", 
         {orientation: fluid.orientation.VERTICAL,
          containerRole: fluid.reorderer.roles.REGIONS,
-         selectablesTabindex: 0,
+         selectablesTabindex: -1,
          sentinelize:         true
          });
        
