@@ -859,10 +859,10 @@ var fluid_1_3 = fluid_1_3 || {};
         strings: {
             exceedsFileLimit: "Too many files were selected. %num_of_files were not added to the queue.",
             exceedsUploadLimit: "%num_of_files files were too large and were not added to the queue.",
-            errorTemplateHeader: "Heads up!",
+            errorTemplateHeader: "Warning(s)",
             errorTemplateButtonSpan: "Remove error",
-            errorTemplateHideThisList: "Hide this list",
-            errorTemplateWhichOnes: "Which Ones?",
+            errorTemplateHideThisList: "Hide files",
+            errorTemplateWhichOnes: "Show files",
             errorTemplateFilesListing: "%files, "
         }
     });
