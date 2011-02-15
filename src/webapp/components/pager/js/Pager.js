@@ -121,20 +121,20 @@ var fluid_1_3 = fluid_1_3 || {};
      * @param   midLinkCount    int     The # of elements from beside the selected #
      * @author  Eric Dalquist
      */
-    fluid.pager.consistentGappedPageStrategy = function (endLinkCount, midLinkCount) {
+     fluid.pager.consistentGappedPageStrategy = function (endLinkCount, midLinkCount) {
         if (!endLinkCount) {
             endLinkCount = 1;
-        }        
+        }
         if (!midLinkCount) {
             midLinkCount = endLinkCount;
         }
-        var midWidth = endLinkCount + (midLinkCount * 2);
-       
+        var endWidth = endLinkCount + 2 + midLinkCount;
+
         return function (count, first, mid) {
-            var pages = [];       
-            var anchoredLeft = mid < midWidth;
-            var anchoredRight = mid >= count - midWidth;
-            var paddedMidWidth = midWidth + 2;
+            var pages = [];
+            var anchoredLeft = mid < endWidth;
+            var anchoredRight = mid >= count - endWidth;
+            var anchoredEndWidth = endWidth + midLinkCount;
             var midStart = mid - midLinkCount;
             var midEnd = mid + midLinkCount;
             var lastSkip = false;
@@ -143,8 +143,8 @@ var fluid_1_3 = fluid_1_3 || {};
                 if (
                     page < endLinkCount || // start pages
                     count - page <= endLinkCount || // end pages
-                    (anchoredLeft && page < paddedMidWidth) || // pages if no skipped pages between start and mid
-                    (anchoredRight && page >= count - paddedMidWidth) || // pages if no skipped pages between mid and end
+                    (anchoredLeft && page < anchoredEndWidth) || // pages if no skipped pages between start and mid
+                    (anchoredRight && page >= count - anchoredEndWidth) || // pages if no skipped pages between mid and end
                     (page >= midStart && page <= midEnd) // pages around the mid
                 ) {
                     pages.push(page);
@@ -154,10 +154,10 @@ var fluid_1_3 = fluid_1_3 || {};
                     pages.push(-1);
                     lastSkip = true;
                 }
-            }            
+            }
             return pages;
         };
-    }; 
+    };  
     
     fluid.pager.renderedPageList = function (container, events, pagerBarOptions, options, strings) {
         options = $.extend(true, pagerBarOptions, options);
