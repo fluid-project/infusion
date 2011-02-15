@@ -313,7 +313,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         fluidJSTests.test("Container: bind to an id", function () {
-            expect(2);
             // Give it a valid id string.
             var result = fluid.container("#main");
             jqUnit.assertTrue("One element should be returned when specifying a selector",
@@ -322,13 +321,13 @@ https://source.fluidproject.org/svn/LICENSE.txt
             // Now try with a invalid string... a CSS selector matching two elements
             try {
                 result = fluid.container(".container");
+                jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
             } catch (e) {
                 jqUnit.assertTrue("We should have received an exception", !!e);
             }
         });
     
         fluidJSTests.test("container(): bind to a single jQuery", function () {
-            expect(2);
             // Try with a single-item jQuery.
             var oneContainer = jQuery("#main");
             var result = fluid.container(oneContainer);
@@ -339,6 +338,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
             var twoContainers = jQuery(".container");
             try {
                 result = fluid.container(twoContainers);
+                jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
             } catch (e) {
                 jqUnit.assertTrue("We should have received an exception", !!e);
             }
@@ -352,12 +352,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
         });
         
         fluidJSTests.test("container(): garbage object", function () {
-            expect(1);
             // Random objects should fail.
             var container = {foo: "bar"};
 
             try {
                 fluid.container(container);
+                jqUnit.ok(false); // We expect to get an exception. If we don't, fail immediately.
             } catch (e) {
                 jqUnit.assertTrue("We should have received an exception", !!e);
             }
@@ -475,8 +475,6 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         fluidJSTests.test("set/getBeanValue", function () {
             var model = {"path3": "thing"};
-            jqUnit.assertEquals("Get simple value", "thing", fluid.get(model, "path3"));
-            jqUnit.assertDeepEq("Get root value", model, fluid.get(model, ""));
             jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path3.nonexistent"));
             jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path3.nonexistent.non3"));
             jqUnit.assertEquals("Get blank value", undefined, fluid.get(model, "path1.nonexistent"));
@@ -496,109 +494,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         fluidJSTests.test("getBeanValue with custom strategy", function () {
             var model = {path3: "thing", path4: "otherThing"};
-            var value = fluid.get(model, "path3", {strategies: [customStrategy, fluid.model.defaultFetchStrategy]});
+            var value = fluid.get(model, "path3", [customStrategy, fluid.model.defaultFetchStrategy]);
             jqUnit.assertUndefined("path3 value censored", value);
-            var value2 = fluid.get(model, "path4", {strategies: [customStrategy, fluid.model.defaultFetchStrategy]});
+            var value2 = fluid.get(model, "path4", [customStrategy, fluid.model.defaultFetchStrategy]);
             jqUnit.assertEquals("path4 value uncensored", model.path4, value2);
-        });
-        
-        fluid.tests.childMatchResolver = function(options, trundler) {
-            trundler = trundler.trundle(options.queryPath);
-            return fluid.find(trundler.root, function(value, key) {
-                var trundleKey = trundler.trundle(key);
-                var trundleChild = trundleKey.trundle(options.childPath);
-                if (trundleChild.root === options.value) {
-                    return trundleKey;
-                } 
-            });
-        };
-        
-        fluid.tests.generateRepeatableThing = function(gens) {
-            var togo = [];
-            for (var i = 0; i < gens.length; i+= 3) {
-                togo.push({
-                    _primary: !!Number(gens.charAt(i)),
-                    value: {
-                        a: Number(gens.charAt(i + 1)),
-                        b: Number(gens.charAt(i + 2))
-                    }     
-                });
-            }
-            return togo;
-        };
-        
-        fluid.tests.basicResolverModel = {
-            fields: {  
-                repeatableThing: fluid.tests.generateRepeatableThing("001123")
-            }
-        };
-                
-        fluidJSTests.test("getBeanValue with resolver", function () {
-            var model = fluid.copy(fluid.tests.basicResolverModel);
-            var config = $.extend(true, fluid.model.defaultGetConfig, {
-                resolvers: {
-                    childMatch: fluid.tests.childMatchResolver
-                }
-            });
-            var el = {
-                type: "childMatch",
-                queryPath: "fields.repeatableThing",
-                childPath: "_primary",
-                value: true,
-                path: "value.a"
-            };
-            var resolved = fluid.get(model, el, config);
-            jqUnit.assertEquals("Queried resolved value", 2, resolved);
-            model.fields.repeatableThing = [{}];
-            el.path = "value";
-            resolved = fluid.get(model, el, config);
-            jqUnit.assertUndefined("Queried resolved value", resolved);
-        });
-
-        fluid.tests.repeatableModifyingStrategy = {
-           init: function(oldStrategy) {
-               var that = {};
-               that.path = oldStrategy? oldStrategy.path : "";
-               that.next = function(root, segment) {
-                   that.path = fluid.model.composePath(that.path, segment);
-                   return that.path === "fields.repeatableThing.1.value"?
-                       fluid.tests.generateRepeatableThing("145") : undefined;   
-               };
-               return that;
-           }
-        };
-
-        fluidJSTests.test("Complex resolving and strategising", function () {
-            var model = fluid.copy(fluid.tests.basicResolverModel);
-            model.fields.repeatableThing[1].value = fluid.tests.generateRepeatableThing("045167089");
-            var el = {
-                type: "childMatch",
-                queryPath: "fields.repeatableThing",
-                childPath: "_primary",
-                value: true,
-                path: {
-                    type: "childMatch",
-                    queryPath: "value",
-                    childPath: "_primary",
-                    value: true,
-                    path: "value.a"
-                }
-            };
-            var config = $.extend(true, {}, fluid.model.defaultGetConfig, {
-                resolvers: {
-                    childMatch: fluid.tests.childMatchResolver
-                }
-            });
-            var resolved = fluid.get(model, el, config);
-            jqUnit.assertEquals("Queried resolved value", 6, resolved);
-            var config2 = {
-                resolvers: {
-                    childMatch: fluid.tests.childMatchResolver
-                },
-                strategies: [fluid.tests.repeatableModifyingStrategy].concat(fluid.model.defaultGetConfig.strategies) 
-            };
-            var resolved2 = fluid.get(model, el, config2);
-            jqUnit.assertEquals("Queried resolved and strategised value", 4, resolved2)
         });
 
         fluidJSTests.test("Globals", function () {
