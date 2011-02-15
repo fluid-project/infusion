@@ -377,6 +377,7 @@ html>body .fl-uploader span.fl-uploader-browse {
     padding-left: 25px;
     font-size: 1.1em;
     font-weight: bolder;
+    color: #000000;
 }
 
 .fl-uploader-errored-wrapper {
@@ -385,7 +386,7 @@ html>body .fl-uploader span.fl-uploader-browse {
 }
 
 .fl-uploader-total-errored .fl-uploader-erroredButton {
-    background-image: url("../images/remove.png");
+    background-image: url("../images/grey-4d4d4d-x-button.png");
     background-position: center;
     background-repeat: no-repeat;
     background-color: #e6e6e6;
@@ -394,7 +395,11 @@ html>body .fl-uploader span.fl-uploader-browse {
     height: 16px;
     padding: 0px;
     margin-right: 9px;
-    float: left;
+    float: right;
+}
+
+.fl-uploader-total-errored .fl-uploader-erroredButton:hover{
+    background-image: url("../images/grey-999999-x-button.png");
 }
 
 .fl-uploader-erroredBody .fl-uploader-erroredBodyButton {

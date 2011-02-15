@@ -263,6 +263,12 @@ var fluid_1_3 = fluid_1_3 || {};
             var fileUploadLimit = that.queueSettings.fileUploadLimit;
             var remainingUploadLimit = fileUploadLimit - filesUploaded - filesInQueue;
              
+             // Clear the error queue when "User successfully added an error through the file dialog"
+             // that is LEQV to remainingUploadLimit > 0
+             if (remainingUploadLimit > 0) {
+                that.events.clearFileError.fire();
+             }
+             
             if (fileUploadLimit !== 0 && filesToUpload > remainingUploadLimit) {
                 filesToUpload = remainingUploadLimit; 
                 for (var i = filesToUpload; i < files.length; i++) {

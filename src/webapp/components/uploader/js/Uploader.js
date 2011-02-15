@@ -91,6 +91,18 @@ var fluid_1_3 = fluid_1_3 || {};
         enableElement(that, that.locate("pauseButton"));
         showElement(that, that.locate("pauseButton"));
         that.locate(that.options.focusWithEvent.afterUploadStart).focus();
+    };
+
+    var setStateFull = function (that) {        
+        that.locate("browseButtonText").text(that.options.strings.buttons.addMore);
+        that.locate("browseButton").addClass(that.options.styles.browseButton);
+        hideElement(that, that.locate("pauseButton"));
+        showElement(that, that.locate("uploadButton"));
+        enableElement(that, that.locate("uploadButton"));
+        disableElement(that, that.locate("browseButton"));        
+        that.strategy.local.disableBrowseButton();
+        hideElement(that, that.locate("instructions"));
+        that.totalProgress.hide();
     };    
     
     var renderUploadTotalMessage = function (that) {
@@ -180,8 +192,13 @@ var fluid_1_3 = fluid_1_3 || {};
     };
 
     var updateStateAfterFileDialog = function (that) {
-        if (that.queue.getReadyFiles().length > 0) {
-            setStateLoaded(that);
+        var queueLength = that.queue.getReadyFiles().length
+        if (queueLength > 0) {
+            if (queueLength === that.options.queueSettings.fileUploadLimit) {
+                setStateFull(that);
+            } else {
+                setStateLoaded(that);
+            }
             renderUploadTotalMessage(that);
             that.locate(that.options.focusWithEvent.afterFileDialog).focus();
             updateQueueSummaryText(that);
@@ -193,6 +210,7 @@ var fluid_1_3 = fluid_1_3 || {};
         if (that.queue.getReadyFiles().length === 0) {
             setStateEmpty(that);
         }
+        setStateLoaded(that);
         renderUploadTotalMessage(that);
         updateQueueSummaryText(that);
     };
@@ -228,7 +246,6 @@ var fluid_1_3 = fluid_1_3 || {};
             setStateUploading(that);
             //clear error messages when upload is clicked.
             that.errorHandler.clearErrors();
-            that.errorHandler.refreshView();
         });
         
         that.events.onUploadStop.addListener(function () {
@@ -291,6 +308,10 @@ var fluid_1_3 = fluid_1_3 || {};
         that.events.afterUploadComplete.addListener(function () {
             that.queue.isUploading = false;
             updateStateAfterCompletion(that);
+        });
+        
+        that.events.clearFileError.addListener(function () {
+            that.errorHandler.clearErrors();
         });
     };
     
@@ -508,7 +529,8 @@ var fluid_1_3 = fluid_1_3 || {};
             onFileSuccess: null,
             onFileComplete: null,
             afterFileComplete: null,
-            afterUploadComplete: null
+            afterUploadComplete: null,
+            clearFileError: null
         },
 
         strings: {
@@ -744,7 +766,10 @@ var fluid_1_3 = fluid_1_3 || {};
             errorSize = errorSize + that.errorMsgs[errorCode].files.length;
 
             //render header title
-            that.locate("errorTitle", row).text(that.options.strings[errorCode]);
+            var errorTitle = fluid.stringTemplate(that.options.strings[errorCode], {
+                    num_of_files: that.errorMsgs[errorCode].files.length
+                });
+            that.locate("errorTitle", row).text(errorTitle); 
             $.each(errObj.files, function (errKey, indivErrMsg) {
                 errorStr = fluid.stringTemplate(that.options.strings.errorTemplateFilesListing, {
                     files: errorStr + indivErrMsg
@@ -832,8 +857,8 @@ var fluid_1_3 = fluid_1_3 || {};
             erroredFiles: ".flc-uploader-erroredFiles"
         },
         strings: {
-            exceedsFileLimit: "Too many files were selected. Not all were added to the queue.",
-            exceedsUploadLimit: "Some files were too large and were not added to the queue.",
+            exceedsFileLimit: "Too many files were selected. %num_of_files were not added to the queue.",
+            exceedsUploadLimit: "%num_of_files files were too large and were not added to the queue.",
             errorTemplateHeader: "Heads up!",
             errorTemplateButtonSpan: "Remove error",
             errorTemplateHideThisList: "Hide this list",
