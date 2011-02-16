@@ -262,6 +262,31 @@ https://source.fluidproject.org/svn/LICENSE.txt
             jqUnit.assertFalse("The first row should no longer be selected.",
                                 locateRows(q).eq(0).hasClass(q.options.styles.selected));
         });
+        
+        
+        /********************
+         * Scrollable tests *
+         ********************/
+        
+        fileQueueViewTests.test("fluid.scrollableTable", function () {
+            var table = $("#scrollableTable");
+            table.css("height", "1px");
+
+            var scroller = fluid.scrollableTable(table, {
+                css: {
+                    height: "1px"
+                }
+            });
+
+            jqUnit.assertTrue("The table's parent element is a div", table.parent().is("div"));
+            jqUnit.assertTrue("The table's parent element has the fl-scrollable-scroller class",
+                              table.parent().hasClass("fl-scrollable-scroller"));
+            jqUnit.assertTrue("The table's grandparent element has the fl-scrollable-container class",
+                              table.parent().parent().hasClass("fl-scrollable-container"));
+            jqUnit.assertEquals("The appropriate styles were injected.",
+                                "1px", table.parent().css("height"));
+        });
     });
+    
     
 })(jQuery);

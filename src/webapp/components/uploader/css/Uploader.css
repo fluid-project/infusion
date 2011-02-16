@@ -1,28 +1,10 @@
 /*
- * Uploader Container
+ * Uploader container
  */
 .fl-uploader { 
     width: 434px;
     position: relative;
     clear: both;
-}
-
-/*
- * File Queue table
- */
- 
-.fl-uploader-scrollable-container {
-    display: block;
-    position: relative;  
-    overflow: auto;
-    overflow-x: hidden;
-    overflow-y: auto;
-    max-height: 160px;
-
-}
-.fl-uploader-scrollable-scroller {
-    position: relative;
-    overflow: hidden;
 }
 
 /* Header table */
@@ -43,7 +25,26 @@ table.fl-uploader-header {
     font-weight: normal;
     padding: 6px;
 }
+
+/*
+ * Scrollable file queue table
+ */
  
+.fl-scrollable-container {
+    display: block;
+    position: relative;  
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 160px;
+
+}
+
+.fl-scrollable-scroller {
+    position: relative;
+    overflow: hidden;
+}
+
 /* File queue table general */
 table.fl-uploader-queue {
     margin: 0;
