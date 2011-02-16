@@ -151,7 +151,6 @@ var fluid_1_3 = fluid_1_3 || {};
             var batch = that.queue.currentBatch;
             var file = batch.files[batch.fileIdx];                                    
             file.filestatus = fluid.uploader.fileStatusConstants.CANCELLED;
-            that.queue.shouldStop = true;
             that.currentXHR.abort();
             that.events.onUploadStop.fire();
         };

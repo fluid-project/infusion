@@ -43,7 +43,6 @@ var fluid_1_3 = fluid_1_3 || {};
         that.start = function () {
             that.setupCurrentBatch();
             that.isUploading = true;
-            that.shouldStop = false;
         };
         
         that.startFile = function () {
@@ -57,8 +56,7 @@ var fluid_1_3 = fluid_1_3 || {};
         };
         
         that.shouldUploadNextFile = function () {
-            return !that.shouldStop && 
-                   that.isUploading && 
+            return that.isUploading && 
                    that.currentBatch.numFilesCompleted < that.currentBatch.files.length;
         };
         
