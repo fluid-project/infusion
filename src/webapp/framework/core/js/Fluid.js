@@ -30,7 +30,7 @@ var fluid = fluid || fluid_1_3;
 
 (function ($, fluid) {
     
-    fluid.version = "Infusion 1.3";
+    fluid.version = "Infusion 1.3.1";
     
     fluid.environment = {
         fluid: fluid
