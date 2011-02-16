@@ -33,7 +33,8 @@ var fluid_1_3 = fluid_1_3 || {};
                 type: "fluid.uploader.html5Strategy.local",
                 options: {
                     queueSettings: "{multiFileUploader}.options.queueSettings",
-                    events: "{multiFileUploader}.events"
+                    events: "{multiFileUploader}.events",
+                    errorHandler: "{multiFileUploader}.dom.errorHandler"
                 }
             },
             
@@ -257,7 +258,21 @@ var fluid_1_3 = fluid_1_3 || {};
             var uploaded = that.queue.getUploadedFiles().length;
             var queued = that.queue.getReadyFiles().length;
             var remainingUploadLimit = fileLimit - uploaded - queued;
+            var filesToUpload = files.length;
             
+            // Clear the error queue when "User successfully added an error through the file dialog"
+             // that is LEQV to remainingUploadLimit > 0
+             if (remainingUploadLimit > 0) {
+                that.events.clearFileError.fire();
+             }
+             
+            if (fileLimit !== 0 && filesToUpload > remainingUploadLimit) {
+                filesToUpload = remainingUploadLimit; 
+                for (var i = filesToUpload; i < files.length; i++) {
+                    that.events.onFileQueueError.fire(files[i], fluid.uploader.errorConstants.FILE_LIMIT_EXCEEDED);
+                }
+            } 
+             
             // TODO:  Provide feedback to the user if the file size is too large and isn't added to the file queue
             var numFilesAdded = 0;
             for (var i = 0; i < files.length; i++) {
@@ -270,7 +285,7 @@ var fluid_1_3 = fluid_1_3 || {};
                     numFilesAdded++;
                 } else {
                     file.filestatus = fluid.uploader.fileStatusConstants.ERROR;
-                    that.events.onQueueError.fire(file, fluid.uploader.errorConstants.UPLOAD_LIMIT_EXCEEDED);
+                    that.events.onFileQueueError.fire(file, fluid.uploader.errorConstants.UPLOAD_LIMIT_EXCEEDED);
                 }
             }            
             that.events.afterFileDialog.fire(numFilesAdded);
