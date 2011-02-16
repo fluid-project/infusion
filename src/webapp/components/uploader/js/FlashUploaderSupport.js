@@ -95,7 +95,7 @@ var fluid_1_3 = fluid_1_3 || {};
         };
         
         that.stop = function () {
-            // TODO: Instead of actually stopping SWFUpload right away, we wait until the current file 
+            // FLUID-822: Instead of actually stopping SWFUpload right away, we wait until the current file 
             // is finished and then don't bother to upload any new ones. This is due an issue where SWFUpload
             // appears to hang while Uploading a file that was previously stopped. I have a lingering suspicion
             // that this may actually be a bug in our Image Gallery demo, rather than in SWFUpload itself.
