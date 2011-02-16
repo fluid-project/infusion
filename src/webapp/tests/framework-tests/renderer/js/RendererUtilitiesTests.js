@@ -235,7 +235,7 @@ fluid.registerNamespace("fluid.tests");
         
         compTests.test("FLUID-3819 test: messagekey with no value", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test-repeat", {
-                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
+                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
                 model: {
                     recordlist: {
                         test: {
@@ -283,7 +283,7 @@ fluid.registerNamespace("fluid.tests");
         
         compTests.test("Renderer component with custom resolver", function () {
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
-                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]}
+                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)]
             });
             testFilteredRecords(that);
         });
@@ -298,7 +298,7 @@ fluid.registerNamespace("fluid.tests");
                 ]  
             };
             var that = fluid.tests.rendererComponentTest(".renderer-component-test", {
-                resolverGetConfig: {strategies: [fluid.tests.censoringStrategy(censorFunc)]},
+                resolverGetConfig: [fluid.tests.censoringStrategy(censorFunc)],
                 protoTree: tree,
                 rendererFnOptions: {
                     noexpand: true

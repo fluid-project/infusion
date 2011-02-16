@@ -74,7 +74,7 @@ var fluid_1_3 = fluid_1_3 || {};
          
     var percentToPixels = function (that, percent) {
         // progress does not support percents over 100, also all numbers are rounded to integers
-        return Math.round((Math.min(percent, 100) * that.progressBar.width()) / 100);
+        return Math.round((Math.min(percent, 100) * that.progressBar.innerWidth()) / 100);
     };
     
     var refreshRelativeWidth = function (that)  {

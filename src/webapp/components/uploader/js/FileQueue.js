@@ -120,7 +120,7 @@ var fluid_1_3 = fluid_1_3 || {};
         
         that.clearCurrentBatch = function () {
             that.currentBatch = {
-                fileIdx: -1,
+                fileIdx: 0,
                 files: [],
                 totalBytes: 0,
                 numFilesCompleted: 0,
