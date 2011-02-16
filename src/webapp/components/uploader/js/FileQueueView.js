@@ -497,7 +497,7 @@ var fluid_1_3 = fluid_1_3 || {};
 
     fluid.scrollable.makeTable =  function (table, options) {
         table.wrap(options.wrapperMarkup);
-        return table.closest(".fl-scrollable-container");
+        return table.closest(".fl-scrollable-scroller");
     };
 
     fluid.defaults("fluid.scrollable", {
@@ -519,7 +519,7 @@ var fluid_1_3 = fluid_1_3 || {};
 
     fluid.defaults("fluid.scrollableTable", {
         makeScrollableFn: fluid.scrollable.makeTable,
-        wrapperMarkup: "<div class='fl-scrollable-container'><div class='fl-scrollable-scroller'></div></div>"
+        wrapperMarkup: "<div class='fl-scrollable-scroller'><div class='fl-scrollable-inner'></div></div>"
     });    
     
     fluid.demands("fluid.scrollableTable", "fluid.uploader.fileQueueView", {

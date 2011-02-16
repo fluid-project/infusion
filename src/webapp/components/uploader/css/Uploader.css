@@ -30,7 +30,7 @@ table.fl-uploader-header {
  * Scrollable file queue table
  */
  
-.fl-scrollable-container {
+.fl-scrollable-scroller {
     display: block;
     position: relative;  
     overflow: auto;
@@ -40,7 +40,7 @@ table.fl-uploader-header {
 
 }
 
-.fl-scrollable-scroller {
+.fl-scrollable-inner {
     position: relative;
     overflow: hidden;
 }
