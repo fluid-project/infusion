@@ -114,7 +114,7 @@ var fluid_1_3 = fluid_1_3 || {};
         var totalStateStr = fluid.stringTemplate(that.options.strings.progress.toUploadLabel, {
             fileCount: numReadyFiles, 
             fileLabel: fileLabelStr, 
-            totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles),
+            totalBytes: fluid.uploader.formatFileSize(bytesReadyFiles)
         });
         that.locate("totalFileStatusText").html(totalStateStr);
     };
@@ -192,7 +192,7 @@ var fluid_1_3 = fluid_1_3 || {};
     };
 
     var updateStateAfterFileDialog = function (that) {
-        var queueLength = that.queue.getReadyFiles().length
+        var queueLength = that.queue.getReadyFiles().length;
         if (queueLength > 0) {
             if (queueLength === that.options.queueSettings.fileUploadLimit) {
                 setStateFull(that);
