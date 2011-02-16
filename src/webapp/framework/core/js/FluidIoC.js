@@ -72,7 +72,7 @@ var fluid_1_3 = fluid_1_3 || {};
                 }
             }
             else {
-                if (component.options && component.options.components && component.options.components[thisSeg]) {
+                if (fluid.get(component, fluid.path("options", "components", thisSeg, "type"))) {
                     fluid.initDependent(component, thisSeg);
                     atval = component[thisSeg];
                 }
@@ -91,7 +91,7 @@ var fluid_1_3 = fluid_1_3 || {};
                     foundComponent = component;
                     return true; // YOUR VISIT IS AT AN END!!
                 }
-                if (component.options && component.options.components && component.options.components[context] && !component[context]) {
+                if (fluid.get(component, fluid.path("options", "components", context, "type")) && !component[context]) {
                     foundComponent = fluid.get(component, context, {strategies: fetchStrategies});
                     return true;
                 }
@@ -117,7 +117,7 @@ var fluid_1_3 = fluid_1_3 || {};
         options.model = directModel;
         
         if (fluid.isMarker(arg, fluid.COMPONENT_OPTIONS)) {
-            arg = fluid.expander.expandLight(componentOptions, options);
+            arg = fluid.expandOptions(componentOptions, thatStack[thatStack.length - 1]); //fluid.expander.expandLight(componentOptions, options);
         }
         else {
             if (typeof(arg) === "string" && arg.charAt(0) === "@") { // Test cases for i) single-args, ii) composite args
@@ -259,6 +259,13 @@ var fluid_1_3 = fluid_1_3 || {};
             else {
                 that.recordRoot(component);
             }
+        };
+        that.clearComponent = function(component, name) {
+            var child = component[name];
+            var path = that.idToPath[child.id];
+            delete that.idToPath[child.id];
+            delete that.pathToComponent[path];
+            delete component[name];
         };
         that.recordKnownComponent = function(parent, component, name) {
             var parentPath = that.idToPath[parent.id] || "";
@@ -442,10 +449,14 @@ var fluid_1_3 = fluid_1_3 || {};
         });
     };
     
-    fluid.initDependent = function(that, name, instantiator) {
-        if (!that) { return; }
-        if (!instantiator) {
+    fluid.initDependent = function(that, name, userInstantiator) {
+        if (!that || that[name]) { return; }
+        var instantiator;
+        if (!userInstantiator) {
             instantiator = fluid.threadLocal()["fluid.instantiator"];
+        }
+        else {
+            instantiator = fluid.threadLocal()["fluid.instantiator"] = userInstantiator;
         }
         var thatStack = instantiator.getFullStack(that);
         var component = that.options.components[name];

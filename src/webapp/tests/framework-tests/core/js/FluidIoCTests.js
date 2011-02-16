@@ -547,6 +547,8 @@ fluid.registerNamespace("fluid.testUtils");
         var instantiator = reins.child1.instantiator;
         jqUnit.assertEquals("Original value transmission", reins.options.headValue, reins.child1.child2.options.value);
         reins.options.headValue = "headValue2"; // in poor style, modify options to verify reexpansion
+        reins.child1.options.components.child2 = fluid.copy(fluid.defaults("fluid.testUtils.reinstantiation").components.child1.options.components.child2);
+        instantiator.clearComponent(reins.child1, "child2");
         fluid.initDependent(reins.child1, "child2", instantiator);
         jqUnit.assertNotEquals("Child2 reinstantiated", origID, reins.child1.child2.id);
         jqUnit.assertEquals("Changed value found in expansion", "headValue2", reins.child1.child2.options.value); 

@@ -386,6 +386,9 @@ var fluid = fluid || fluid_1_3;
     fluid.model.composeSegments = function () {
         return $.makeArray(arguments).join(".");
     };
+    
+    /** Helpful alias for old-style API **/
+    fluid.path = fluid.model.composeSegments;
 
     /** Standard strategies for resolving path segments **/
     fluid.model.environmentStrategy = function(initEnvironment) {
@@ -500,7 +503,7 @@ var fluid = fluid || fluid_1_3;
             }
         }
         return trundler;  
-    }
+    };
     
     // unsupported, NON-API function
     // entry point for initially unbased trundling
@@ -705,7 +708,7 @@ var fluid = fluid || fluid_1_3;
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
                       !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
-                       !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "preserveLeft")) {
+                       !fluid.mergePolicyIs(newPolicy, "preserve")) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array ? [] : {};
                     }
@@ -753,7 +756,7 @@ var fluid = fluid || fluid_1_3;
         if (policy && typeof(policy) !== "string") {
             for (var key in policy) {
                 var elrh = policy[key];
-                if (typeof(elrh) === "string" && elrh !== "replace" && elrh !== "preserve" && elrh !== "preserveLeft") {
+                if (typeof(elrh) === "string" && elrh !== "replace" && elrh !== "preserve") {
                     var oldValue = fluid.get(target, key);
                     if (oldValue === null || oldValue === undefined) {
                         var value = fluid.get(target, elrh);
@@ -781,7 +784,6 @@ var fluid = fluid || fluid_1_3;
             defaults = fluid.expandOptions(fluid.copy(defaults), that);
         }
         var mergePolicy = $.extend({}, defaults? defaults.mergePolicy : {});
-        mergePolicy["components"] = "preserveLeft";
         that.options = fluid.merge(mergePolicy, {}, defaults, userOptions);    
     };
     
