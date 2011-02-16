@@ -136,12 +136,6 @@ var fluid = fluid || fluid_1_3;
         return !value || valueType === "string" || valueType === "boolean" || valueType === "number" || valueType === "function";
     };
     
-    fluid.isDOMNode = function (obj) {
-      // This could be more sound, but messy: 
-      // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
-        return obj && typeof(obj.nodeType) === "number";  
-    };
-    
     /** Determines whether the supplied object can be treated as an array, by 
      * iterating an index towards its length. The test functions by detecting
      * a property named "length" which is of type "number", but excluding objects
@@ -220,11 +214,12 @@ var fluid = fluid || fluid_1_3;
      * matches a predicate function.
      * @param source {Arrayable or Object} The list or hash of objects to be searched.
      * @param func {Function} A predicate function, acting on a member. A predicate which
-     * returns any value which is not <code>undefined</code> will terminate
+     * returns any value which is not <code>null</code> or <code>undefined</code> will terminate
      * the search. The function accepts (object, index).
      * @param deflt {Object} A value to be returned in the case no predicate function matches
      * a list member. The default will be the natural value of <code>undefined</code>
-     * @return The first return value from the predicate function which is not <code>undefined</code>
+     * @return The first return value from the predicate function which is not <code>null</code>
+     * or <code>undefined</code>
      */
     fluid.find = function (source, func, deflt) {
         var disp;
@@ -368,7 +363,7 @@ var fluid = fluid || fluid_1_3;
      * TODO: This needs to be upgraded to handle (the same) escaping rules (as RSF), so that
      * path segments containing periods and backslashes etc. can be processed.
      */
-    fluid.model.parseEL = function(EL) {
+    fluid.model.parseEL = function (EL) {
         return String(EL).split('.');
     };
     
@@ -387,11 +382,11 @@ var fluid = fluid || fluid_1_3;
     };
 
     /** Standard strategies for resolving path segments **/
-    fluid.model.environmentStrategy = function(initEnvironment) {
+    fluid.model.environmentStrategy = function (initEnvironment) {
         return {
-            init: function() {
+            init: function () {
                 var environment = initEnvironment;
-                return function(root, segment, index) {
+                return function (root, segment, index) {
                     var togo;
                     if (environment && environment[segment]) {
                         togo = environment[segment];
@@ -411,7 +406,7 @@ var fluid = fluid || fluid_1_3;
     };
     
     fluid.model.defaultFetchStrategy = function (root, segment) {
-        return segment === ""? root : root[segment];
+        return root[segment];
     };
         
     fluid.model.funcResolverStrategy = function (root, segment) {
@@ -420,36 +415,14 @@ var fluid = fluid || fluid_1_3;
         }
     };
     
-    // unsupported, NON-API function
-    fluid.model.applyStrategy = function(strategy, root, segment, index) {
-        if (typeof(strategy) === "function") { 
-            return strategy(root, segment, index);
-        }
-        else if (strategy && strategy.next) {
-            return strategy.next(root, segment, index);
-        }
-    };
-    
-    fluid.model.initStrategy = function(baseStrategy, index, oldStrategies) {
-        return baseStrategy.init? baseStrategy.init(oldStrategies? oldStrategies[index] : undefined) : baseStrategy;
-    };
-    
-    // unsupported, NON-API function
-    fluid.model.makeTrundler = function(root, config, oldStrategies) {
+    fluid.model.makeResolver = function (root, EL, config) {
         var that = {
+            segs: fluid.model.parseEL(EL),
             root: root,
-            strategies: fluid.isArrayable(config)? config : 
-                fluid.transform(config.strategies, function (strategy, index) {
-                    return fluid.model.initStrategy(strategy, index, oldStrategies); 
+            index: 0,
+            strategies: fluid.transform(config, function (figel) {
+                return figel.init ? figel.init() : figel;
             })
-        };
-        that.trundle = function(EL, uncess) {
-            uncess = uncess || 0;
-            var newThat = fluid.model.makeTrundler(that.root, config, that.strategies);
-            newThat.segs = fluid.model.parseEL(EL);
-            newThat.index = 0;
-            newThat.step(newThat.segs.length - uncess);
-            return newThat;
         };
         that.next = function () {
             if (!that.root) {
@@ -457,7 +430,7 @@ var fluid = fluid || fluid_1_3;
             }
             var accepted;
             for (var i = 0; i < that.strategies.length; ++ i) {
-                var value = fluid.model.applyStrategy(that.strategies[i], that.root, that.segs[that.index], that.index);
+                var value = that.strategies[i](that.root, that.segs[that.index], that.index);
                 if (accepted === undefined) {
                     accepted = value;
                 }
@@ -477,52 +450,22 @@ var fluid = fluid || fluid_1_3;
         return that;
     };
 
-    fluid.model.defaultSetConfig = {
-        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy]
-    };
-    
-    // unsupported, NON-API function
-    // core trundling recursion point
-    fluid.model.trundleImpl = function(trundler, EL, config, uncess) {
-        if (typeof(EL) === "string") {
-            trundler = trundler.trundle(EL, uncess);
-        }
-        else {
-            var key = EL.type || "default";
-            var resolver = config.resolvers[key];
-            if (!resolver) {
-                fluid.fail("Unable to find resolver of type " + key);
-            }
-            trundler = resolver(EL, trundler) || {};
-            if (EL.path && trundler.trundle && trundler.root !== undefined) {
-                trundler = fluid.model.trundleImpl(trundler, EL.path, config, uncess);
-            }
-        }
-        return trundler;  
-    }
-    
-    // unsupported, NON-API function
-    // entry point for initially unbased trundling
-    fluid.model.trundle = function(root, EL, config, uncess) {
-        EL = EL || "";
-        config = config || fluid.model.defaultGetConfig;
-        var trundler = fluid.model.makeTrundler(root, config);
-        return fluid.model.trundleImpl(trundler, EL, config, uncess);
-    };
+    fluid.model.defaultSetConfig = [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy, fluid.model.defaultCreatorStrategy];
     
     fluid.model.getPenultimate = function (root, EL, config) {
-        return fluid.model.trundle(root, EL, config, 1);
+        config = config || fluid.model.defaultGetConfig;
+        var resolver = fluid.model.makeResolver(root, EL, config);
+        resolver.step(resolver.segs.length - 1);
+        return resolver;
     };
     
     fluid.set = function (root, EL, newValue, config) {
         config = config || fluid.model.defaultSetConfig;
-        var trundler = fluid.model.getPenultimate(root, EL, config);
-        trundler.root[trundler.last] = newValue;
+        var resolver = fluid.model.getPenultimate(root, EL, config);
+        resolver.root[resolver.last] = newValue;
     };
     
-    fluid.model.defaultGetConfig = {
-        strategies: [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy]
-    };
+    fluid.model.defaultGetConfig = [fluid.model.funcResolverStrategy, fluid.model.defaultFetchStrategy];
     
     /** Evaluates an EL expression by fetching a dot-separated list of members
      * recursively from a provided root.
@@ -534,7 +477,13 @@ var fluid = fluid || fluid_1_3;
      */
     
     fluid.get = function (root, EL, config) {
-        return fluid.model.trundle(root, EL, config).root;
+        if (EL === "" || EL === null || EL === undefined) {
+            return root;
+        }
+        config = config || fluid.model.defaultGetConfig;
+        var resolver = fluid.model.makeResolver(root, EL, config);
+        resolver.step(resolver.segs.length);
+        return resolver.root;
     };
 
     // This backward compatibility will be maintained for a number of releases, probably until Fluid 2.0
@@ -545,7 +494,7 @@ var fluid = fluid || fluid_1_3;
         if (path) {
             env = env || fluid.environment;
             var envFetcher = fluid.model.environmentStrategy(env);
-            return fluid.get(globalObject, path, {strategies: [envFetcher].concat(fluid.model.defaultGetConfig.strategies)});
+            return fluid.get(globalObject, path, [envFetcher].concat(fluid.model.defaultGetConfig));
         }
     };
     
@@ -571,7 +520,7 @@ var fluid = fluid || fluid_1_3;
     fluid.registerGlobalFunction = function (functionPath, func, env) {
         env = env || fluid.environment;
         var envFetcher = fluid.model.environmentStrategy(env);
-        fluid.set(globalObject, functionPath, func, {strategies: [envFetcher].concat(fluid.model.defaultSetConfig.strategies)});
+        fluid.set(globalObject, functionPath, func, [envFetcher].concat(fluid.model.defaultSetConfig));
     };
     
     fluid.setGlobalValue = fluid.registerGlobalFunction;
@@ -703,7 +652,7 @@ var fluid = fluid || fluid_1_3;
     
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
-                      !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
+                      !thisSource.nodeType && !thisSource.jquery && thisSource !== fluid.VALUE &&
                        !fluid.mergePolicyIs(newPolicy, "preserve")) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array ? [] : {};
@@ -964,9 +913,6 @@ var fluid = fluid || fluid_1_3;
                 message: count > 1 ? "More than one (" + count + ") container elements were "
                 : "No container element was found for selector " + containerSpec
             });
-        }
-        if (!fluid.isDOMNode(container[0])) {
-            fluid.fail("fluid.container was supplied a non-jQueryable element");  
         }
         
         return container;

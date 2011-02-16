@@ -291,7 +291,32 @@ https://source.fluidproject.org/svn/LICENSE.txt
             };
        
             fluid.testUtils.reorderer.stepReorderer(".reorderer_container", options);                       
+        });
+        
+        var tabIndexTest = function (container, reordererOptions) {
+            var layoutReorderer =  fluid.reorderLayout(container, reordererOptions);
+            jqUnit.assertEquals("Tabindex should be set to 0 for the container ", 0, layoutReorderer.container.attr("tabindex"));
+
+            var modules = layoutReorderer.locate("modules");
+            for (var i = 0; i < modules.length; i++) {
+                jqUnit.assertEquals("Tabindex should be set to -1 for item " + i, -1, modules.eq(i).attr("tabindex"));
+            }
+        };
+
+        tests.test("Check tabindex with default selectors", function () {
+            tabIndexTest("#default-selector-test");
+        });
+
+        tests.test("Check tabindex when using a table. ", function () {
+            var options = {
+                selectors: {
+                    columns: "td",
+                    modules: "td > div"
+                }
+            };
+
+            tabIndexTest("#portlet-reorderer-root", options);
         });    
-    
+
     });
 })(jQuery);
