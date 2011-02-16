@@ -177,31 +177,9 @@ var fluid_1_3 = fluid_1_3 || {};
         return fluid.container(element);
     };
     
-    fluid.scrollable.makeTable =  function (table, options) {
-        table.wrap(options.wrapperMarkup);
-        return table.parent();
-    };
-    
     fluid.defaults("fluid.scrollable", {
         makeScrollableFn: fluid.scrollable.makeSimple
     });
     
-    /** 
-     * Wraps a table in order to make it scrollable with the jQuery.scrollTo plugin.
-     * Container divs are injected to allow cross-browser support. 
-     *
-     * @param {jQueryable} table the table to make scrollable
-     * @param {Object} options configuration options
-     * @return the scrollable component
-     */
-    fluid.scrollableTable = function (table, options) {
-        options = $.extend({}, fluid.defaults("fluid.scrollableTable"), options);
-        return fluid.scrollable(table, options);
-    };
-    
-    fluid.defaults("fluid.scrollableTable", {
-        makeScrollableFn: fluid.scrollable.makeTable,
-        wrapperMarkup: "<div class='fl-table-scrollable-container'><div class='fl-table-scrollable-scroller'></div></div>"
-    });  
     
 })(jQuery, fluid_1_3);

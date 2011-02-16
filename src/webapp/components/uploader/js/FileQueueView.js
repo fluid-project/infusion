@@ -385,7 +385,7 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.defaults("fluid.uploader.fileQueueView", {
         components: {
             scroller: {
-                type: "fluid.scrollableTable"
+                type: "fluid.scrollable"
             }
         },
         
@@ -442,8 +442,8 @@ var fluid_1_3 = fluid_1_3 || {};
         }
     });
     
-    fluid.demands("fluid.scrollableTable", "fluid.uploader.fileQueueView", {
-        funcName: "fluid.scrollableTable",
+    fluid.demands("fluid.scrollable", "fluid.uploader.fileQueueView", {
+        funcName: "fluid.scrollable",
         args: [
             "{fileQueueView}.container"
         ]

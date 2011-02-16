@@ -43,43 +43,47 @@
             <input class="fl-uploader-basic-save" type="submit" value="Save"/>
         </form>
         
-        <!-- Fluid Uploader component -->
-        <form class="flc-uploader fl-uploader fl-progEnhance-enhanced" method="get" enctype="multipart/form-data">
-
-            <!-- File queue -->
-            <table summary="The list of files" class="flc-uploader-queue fl-uploader-queue">
-                <caption>File Upload Queue:</caption>
-                <thead>
-                    <tr>
-                        <th scope="col" class="fl-uploader-file-name">File Name</th>
-                        <th scope="col" class="fl-uploader-file-size">Size</th>
-                        <th scope="col" class="fl-uploader-file-actions"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Template for file row -->
-                    <tr class="flc-uploader-file-tmplt flc-uploader-file">
-                        <td class="flc-uploader-file-name fl-uploader-file-name">File Name Placeholder</td>
-                        <td class="flc-uploader-file-size fl-uploader-file-size">0 KB</td>
-                        <td class="fl-uploader-file-actions">
-                            <button type="button" class="flc-uploader-file-action" tabindex="-1"></button>
-                        </td>
-                    </tr>
-                    
-                    <!-- Template for error info row -->
-                    <tr class="flc-uploader-file-error-tmplt fl-uploader-file-error">
-                        <td colspan="3" class="flc-uploader-file-error"></td>
-                    </tr>
-                </tbody>
+        <!-- Fluid Uploader component -->        
+        <form class="flc-uploader fl-uploader fl-progEnhance-enhanced" method="get" enctype="multipart/form-data">            
+            <table class="fl-uploader-header">
+           		<tr>
+					<th class="fl-uploader-file-name">File Name</th>
+					<th class="fl-uploader-file-size">Size</th>
+					<th class="fl-uploader-file-actions"></th>
+				</tr>
             </table>
+            
+            <!-- File queue -->
+            <div class="fl-uploader-scrollable-container">
+				<div class="fl-uploader-scrollable-scroller">
+				<table summary="The list of files" class="flc-uploader-queue fl-uploader-queue">
+					<caption>File Upload Queue:</caption>
+					<tbody>
+						<!-- Template for file row -->
+						<tr class="flc-uploader-file-tmplt flc-uploader-file">
+							<td class="flc-uploader-file-name fl-uploader-file-name">File Name Placeholder</td>
+							<td class="flc-uploader-file-size fl-uploader-file-size">0 KB</td>
+							<td class="fl-uploader-file-actions">
+								<button type="button" class="flc-uploader-file-action" tabindex="-1"></button>
+							</td>
+						</tr>
+						
+						<!-- Template for error info row -->
+						<tr class="flc-uploader-file-error-tmplt fl-uploader-file-error">
+							<td colspan="3" class="flc-uploader-file-error"></td>
+						</tr>
+					</tbody>
+				</table>
+				</div>	
+            </div>
+            <!-- File progress bar -->
+            <div class="flc-uploader-file-progressor-tmplt fl-uploader-file-progress"></div>            
+
             
             <!-- Initial instructions -->
             <div class="flc-uploader-browse-instructions fl-uploader-browse-instructions">
                 Choose <em>Browse files</em> to add files to the queue. 
             </div>            
-            
-            <!-- Overall progress bar -->
-            <div class="flc-uploader-file-progressor-tmplt fl-uploader-file-progress"></div>
 
             <!-- Status footer -->
             <div class="flc-uploader-queue-footer fl-uploader-queue-footer fl-fix">
@@ -91,6 +95,7 @@
                         <span class="flc-uploader-button-browse-text">Browse files</span>
                     </span>
                 </div>
+                <!-- Overall progress bar -->
                 <div class="flc-uploader-total-progress fl-uploader-total-progress-okay"></div>
             </div>
             
