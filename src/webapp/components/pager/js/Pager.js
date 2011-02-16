@@ -312,7 +312,7 @@ var fluid_1_3 = fluid_1_3 || {};
         pageList: {
             type: "fluid.pager.renderedPageList",
             options: {
-                pageStrategy: fluid.pager.consistentGappedPageStrategy(2, 1)
+                pageStrategy: fluid.pager.gappedPageStrategy(3, 1)
             }
         },
         
