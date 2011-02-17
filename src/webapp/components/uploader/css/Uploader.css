@@ -1,5 +1,5 @@
 /*
- * Uploader Container
+ * Uploader container
  */
 .fl-uploader { 
     width: 434px;
@@ -7,17 +7,51 @@
     clear: both;
 }
 
+/* Header table */
+table.fl-uploader-header {
+    width: 434px;
+    margin-bottom: 0px;
+    border-bottom: 1px solid #999;      
+}
+
+.fl-uploader-header tr { 
+    width: 100%;
+    color: #666;    
+}
+
+.fl-uploader-header th { 
+    text-align: left;
+    font-size: 0.94em;
+    font-weight: normal;
+    padding: 6px;
+}
+
 /*
- * File Queue table
+ * Scrollable file queue table
  */
  
-/* Table general */
+.fl-scrollable-scroller {
+    display: block;
+    position: relative;  
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 160px;
+
+}
+
+.fl-scrollable-inner {
+    position: relative;
+    overflow: hidden;
+}
+
+/* File queue table general */
 table.fl-uploader-queue {
     margin: 0;
     color: #333;
 }
 
-.fl-uploader-queue td, .fl-uploader-queue th {
+.fl-uploader-queue td, .fl-uploader-header th {
     border: none;
     margin: 0px;
 }
@@ -28,20 +62,6 @@ table.fl-uploader-queue {
 
 .fl-uploader-queue caption {
     display: none;
-}
-
-/* Table header */
-.fl-uploader-queue thead tr { 
-    border-bottom: 1px solid #999;    
-    width: 100%;
-    color: #666;    
-}
-
-.fl-uploader-queue thead th { 
-    text-align: left;
-    font-size: 0.94em;
-    font-weight: normal;
-    padding: 6px;
 }
 
 /* Table body */
@@ -70,18 +90,18 @@ table.fl-uploader-queue {
     white-space: nowrap;
     font-weight:bold;    
 }
-.fl-uploader-queue th.fl-uploader-file-name {
+.fl-uploader-header th.fl-uploader-file-name {
     width:26.5em;
 }
 
 /* file size */
-.fl-uploader-queue .fl-uploader-file-size {
+.fl-uploader-queue .fl-uploader-file-size, .fl-uploader-header .fl-uploader-file-size {
     text-align: right;
     white-space: nowrap;
 }
 
 /* action */
-.fl-uploader-queue .fl-uploader-file-actions {
+.fl-uploader-queue .fl-uploader-file-actions, .fl-uploader-header .fl-uploader-file-actions {
     padding-right:15px;
     white-space: nowrap;
     text-align: center;
