@@ -8,9 +8,9 @@ What's New in 1.3.1?
 ====================
 
 This release:
-    * Updates the Pager to self-render by default
+    * Updates Pager to use the Renderer by default
     * Fixes several bugs in the Uploader
-    * Fixes a tab order bug in the Layout Reorderer
+    * Fixes a keyboard navigation bug in the Layout Reorderer
 
 What's in this Release?
 =======================
@@ -264,9 +264,11 @@ UI Options:
     FLUID-2398: Minimum font size control changes the text size even when the base size is larger then the minimum.
     
 Uploader: 
+    FLUID-3886: The HTML5 version of the Uploader can't exclude certain files based on file type
+    FLUID-4078: The HTML5 Upload strategy incorrectly interprets the fileSizeLimit option as MB instead of KB
     FLUID-3996: Deleting files on the local filesystem after they have been added to the Uploader's queue will cause inconsistent behaviour
     FLUID-3997: Can't tab to the "Browse/Add More" button with the keyboard in IE with Flash 10
-    FLUID-3999: "Add more" button is not disabled while uploading other files
+    FLUID-3999: "Add more" button is not disabled while uploading other files in HTML5-compliant browsers
     FLUID-2052: Cannot tab away from the "Browse Files" button with Flash 10*
     * For information related to known issues with Flash 10 compatibility, 
       see http://wiki.fluidproject.org/x/kwZo

@@ -10,7 +10,7 @@ Infusion Uploader Read Me
 
 PROGRESSIVE ENHANCEMENT:
 
-As of Infusion 1.3, the Uploader will automatically deliver the best version of the component 
+As of Infusion 1.3, the Uploader automatically delivers the best version of the component 
 possible, based on the features supported by a user's browser. There are three flavours of the 
 Uploader:
 
@@ -19,10 +19,10 @@ Uploader:
     3. HTML 5: the best and most widely-supported version of Uploader, suitable for modern browsers
     
 If you don't want to offer a particular version of Uploader to your users, you can simply omit the 
-Support.js file from your page. So, for example, if you don't want to deliver Flash to your users, 
-simply don't include FlashUploaderSupport.js and Flash9UploaderSupport.js in your page. To do this,
-you will have to include all the required files individually, instead of using a single concatenated
-file.
+appropriate Support.js file from your page. So, for example, if you don't want to deliver Flash to 
+your users, simply don't include FlashUploaderSupport.js and Flash9UploaderSupport.js in your page. 
+To do this, you will have to include all the required files individually, instead of using a single 
+concatenated file.
 
 --------------------------------------
 
@@ -44,7 +44,7 @@ KNOWN ISSUES:
 Uploader and HTML 5:
 
 * Uploading more than one file at a time without Flash requires a reasonably up-to-date browser with
-  support for the following specifications, referred to under the umbrella of "HTML 5":
+  support for the following open web technologies, referred to under the umbrella of "HTML 5":
     - Multiple file form elements
     - XmlHTTPRequest Level 2
     - FormData
@@ -63,11 +63,10 @@ Uploader and HTML 5:
   result, we've included an additional option called "legacyBrowserFileLimit," allowing file sizes to 
   be specially capped in Firefox 3.6. The default value for this option is 100 MB.
 
-* Most browsers don't currently support filtering based on file type with the HTML 5 version of the 
-  Uploader. This is a browser bug and we anticipate it will be supported in future releases.
+* The Uploader's HTML 5 implementation doesn't currently support filtering based on file types.
   
-* Total file progress calculations are currently inaccurate in several browsers.
-
+* The HTML 5 implementation is inconsistent with the Flash version when handling the 
+  queueSettings.fileSize limit option, causing it to be interpreted as MB instead of KB.
 
 Uploader and Flash:
 
@@ -76,31 +75,17 @@ Uploader and Flash:
   ongoing accessibility and stability issues with Flash and SWFUpload, we encourage you and your 
   users to upgrade to an HTML 5-compatible browser such as Firefox 3.6+, Safari 4+, or Chrome.
 
-* To support Flash 10 (released on 9/26/2008), the Uploader required a new version of the SWFUpload 
-  Flash component (2.2.0 beta 3). This new version, still in beta, still has numerous bugs. We have 
-  worked around many of the bugs and inconsistencies in the SWFUpload code, but there are still 
-  significant compromises and issues in this release. For this reason, we do not consider this version 
-  of the Uploader to be production-ready. 
-
-  In the previous version of the Uploader, the Flash component worked completely "behind the scenes." 
-  To support Flash 10, the Uploader displays a Flash-based "Browse files..." button in place of an 
-  HTML button. The Flash-based button presents the following quirks:
+* The Flash 10-based implementation of the Uploader has a number of systemic bugs an accessibility 
+issues, and is deprecated for all browsers except Internet Explorer on Windows. Some issues include:
   
       - In Firefox and IE, the Flash-based "Browse" button does not size correctly when the text/page 
       is resized or zoomed.
 
-      - In most browsers, the Flash-based "Browse" button may not be keyboard navigable or may trap
+      - In most browsers, the Flash-based "Browse" button is not  keyboard navigable and may trap
       keyboard navigation, refusing to give up focus without a mouse click. 
       
-      - ARIA is not supported by Internet Explorer.
-
-* In previous versions of the Uploader, the upload process would stop immediately at the moment that 
-  the Stop Upload button was clicked.
-   
-  In this version, we wait for the current file to complete or to error before we stop the upload 
-  process. This avoids a serious bug in the SWFUploader where the Upload process could get stuck when 
-  the Upload process is resumed.
-
+      - When the user presses the Stop button, the Uploader waits until the current file is complete
+      before stopping the upload process.
 
 --------------------------------------
 
