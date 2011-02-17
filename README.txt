@@ -1,45 +1,33 @@
-Fluid Infusion 1.3
+Fluid Infusion 1.3.1
 ====================
 Main Project Site:  http://fluidproject.org
 Documentation:      http://wiki.fluidproject.org/display/fluid/Infusion+Documentation
 
 
-What's New in 1.3?
-==================
+What's New in 1.3.1?
+====================
 
-    * Sneak Peek at the new Inversion of Control (IoC) system
-    * Uploader support for HTML 5
-         o Flash-free for modern browsers!
-         o Substantially improved keyboard and screen reader accessibility
-         o Comprehensive automatic progressive enhancement based on browser capabilities
-    * Tons of accessibility improvements
-         o Better feedback for the Progress component
-         o Enhanced screen reader support for the Inline Edit component
-         o Location and movement announcements for the Reorderer component
-         o No wrap option for the Reorderer component
-    * The new Infusion Builder site, which allows you to create custom builds: 
-         http://builder.fluidproject.org
-    * Renderer improvements
-    * Transactional change applier
-    * Bug fixes
-    * Many improved demos
-
+This release:
+    * Updates the Pager to self-render by default
+    * Fixes several bugs in the Uploader
+    * Fixes a tab order bug in the Layout Reorderer
 
 What's in this Release?
 =======================
 
 This release is available in three forms:
-    Deployment Bundle - infusion-1.3.zip 
-    Source Code Bundle - infusion-1.3-src.zip
+    Deployment Bundle - infusion-1.3.1.zip 
+    Source Code Bundle - infusion-1.3.1-src.zip
     Your own custom build, using the new Infusion Builder: http://builder.fluidproject.org
     
 In addition to source code, samples and tests, both bundles include at the top level a single JavaScript file,
-InfusionAll.js, which is a combination of all other source files. Developers can include this single file in 
+    InfusionAll.js
+which is a combination of all other source files. Developers can include this single file in 
 their pages to provide all the necessary support for the Infusion component Library. In the Deployment Bundle,
 this script is compressed and suitable for production use.
 
 The Deployment Bundle also includes a WAR file suitable for deployment in Java-based containers: 
-        fluid-components-1.3.war
+        fluid-components-1.3.1.war
 
 Source Code
 -----------
@@ -177,7 +165,7 @@ Some of our Sneak Peek functionality is now documented at
 Supported Browsers
 ==================
 
-The following browsers are fully supported and were actively tested against for Infusion 1.3:
+The following browsers are fully supported and were actively tested against for Infusion 1.3.1:
 
 Mac OS X 10.6:
     * Safari 5
@@ -254,8 +242,8 @@ Layout Reorderer:
     FLUID-858:  Portlet Columns load with no padding between them in IE7
 
 Pager:
+    FLUID-4036: The Pager is dependent on the use of rsf:ids for sortable columns
     FLUID-2880: The Pager will be refactored. Note that as a result of this, there will be significant changes to the Pager API
-    FLUID-2329: The self-rendering mode of the Pager is not the default mode
     FLUID-3584: Clicking page numbers throws an error: using IE 6
 
 Renderer: 
@@ -273,9 +261,6 @@ UI Options:
     FLUID-2398: Minimum font size control changes the text size even when the base size is larger then the minimum.
     
 Uploader: 
-    FLUID-4017: Total file progress information is inaccurate when uploading files with the HTML 5 version of Uploader
-    FLUID-4018: The "Stop" button is unavailable in the HTML 5 version of Uploader
-    FLUID-3992: When JavaScript is turned off, the Uploader is still visible beneath the Simple Uploader
     FLUID-3996: Deleting files on the local filesystem after they have been added to the Uploader's queue will cause inconsistent behaviour
     FLUID-3997: Can't tab to the "Browse/Add More" button with the keyboard in IE with Flash 10
     FLUID-3999: "Add more" button is not disabled while uploading other files
