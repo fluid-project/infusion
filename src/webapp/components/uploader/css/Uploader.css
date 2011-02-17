@@ -9,12 +9,12 @@
 
 /* Header table */
 table.fl-uploader-header {
-	width: 434px;
-	margin-bottom: 0px;
+    width: 434px;
+    margin-bottom: 0px;
+    border-bottom: 1px solid #999;      
 }
 
 .fl-uploader-header tr { 
-    border-bottom: 1px solid #999;    
     width: 100%;
     color: #666;    
 }
