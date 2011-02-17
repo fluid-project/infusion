@@ -98,6 +98,9 @@ Tests
             manual-tests/
             test-core/
 
+Please note that the tests in the "manual-tests" folder are deprecated, and are being
+converted into unit tests. Any remaining tests in that folder may not function properly.
+
 License
 -------
 Fluid Infusion code is licensed under both the ECL 2.0 and new BSD licenses. The specific licenses can be
