@@ -87,7 +87,6 @@ table.fl-uploader-queue {
 .fl-uploader-queue td.fl-uploader-file-name {
     width: 29em;
     overflow: hidden;
-    white-space: nowrap;
     font-weight:bold;    
 }
 .fl-uploader-header th.fl-uploader-file-name {
