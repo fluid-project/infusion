@@ -270,21 +270,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
         
         fileQueueViewTests.test("fluid.scrollableTable", function () {
             var table = $("#scrollableTable");
-            table.css("height", "1px");
 
-            var scroller = fluid.scrollableTable(table, {
-                css: {
-                    height: "1px"
-                }
-            });
+            var scroller = fluid.scrollableTable(table);
 
             jqUnit.assertTrue("The table's parent element is a div", table.parent().is("div"));
-            jqUnit.assertTrue("The table's parent element has the fl-scrollable-scroller class",
-                              table.parent().hasClass("fl-scrollable-scroller"));
-            jqUnit.assertTrue("The table's grandparent element has the fl-scrollable-container class",
-                              table.parent().parent().hasClass("fl-scrollable-container"));
-            jqUnit.assertEquals("The appropriate styles were injected.",
-                                "1px", table.parent().css("height"));
+            jqUnit.assertTrue("The table's parent element has the fl-scrollable-inner class",
+                              table.parent().hasClass("fl-scrollable-inner"));
+            jqUnit.assertTrue("The table's grandparent element has the fl-scrollable-scroller class",
+                              table.parent().parent().hasClass("fl-scrollable-scroller"));
         });
     });
     

@@ -202,9 +202,9 @@ var fluid_1_3 = fluid_1_3 || {};
         that.container.append(row);
         row.attr("title", that.options.strings.status.remove);
         row.fadeIn("slow");
-        that.scroller.scrollTo("100%");
         createProgressorFromTemplate(that, row);
         that.refreshView();
+        that.scroller.scrollTo("100%");
     };
     
     // Toggle keyboard row handlers on and off depending on the uploader state
@@ -459,9 +459,6 @@ var fluid_1_3 = fluid_1_3 || {};
         var that = fluid.initLittleComponent("fluid.scrollable", options);
         element = fluid.container(element);
         that.scrollable = that.options.makeScrollableFn(element, that.options);
-        if (that.options.css) {
-            that.scrollable.css(that.options.css);
-        }
         that.maxHeight = that.scrollable.css("max-height");
 
         /**
