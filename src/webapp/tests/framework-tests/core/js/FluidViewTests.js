@@ -75,7 +75,7 @@ fluid.registerNamespace("fluid.tests");
                 
                 excluded.append($("<input></input>").addClass("excluded"));
                 
-                input.focus();
+                applyOp(input, "focus");
                  
                 var blurOutwaiter = function () {
                     jqUnit.assertTrue(message + " - Blur handler has not executed", shouldBlur ^ !blurReceived);
@@ -83,7 +83,7 @@ fluid.registerNamespace("fluid.tests");
                     start();
                 };
     
-                input.blur();
+                applyOp(input, "blur");
                 window.setTimeout(function () {
                     fluid.log("Apply " + provokeOp + " to " + provokeTarget);
                     applyOp(blurTester.locate(provokeTarget), provokeOp);
@@ -142,25 +142,5 @@ fluid.registerNamespace("fluid.tests");
             });
             jqUnit.assertEquals("The live region should be updated", target.attr("aria-label"), region.text());
         });
-        
-        fluidViewTests.test("fluid.scrollableTable", function () {
-            var table = $("#scrollableTable");
-            table.css("height", "1px");
-            
-            var scroller = fluid.scrollableTable(table, {
-                css: {
-                    height: "1px"
-                }
-            });
-            
-            jqUnit.assertTrue("The table's parent element is a div", table.parent().is("div"));
-            jqUnit.assertTrue("The table's parent element has the fl-table-scrollable-area class",
-                              table.parent().hasClass("fl-table-scrollable-area"));
-            jqUnit.assertTrue("The table's grandparent element has the fl-table-scrollable-container class",
-                              table.parent().parent().hasClass("fl-table-scrollable-container"));
-            jqUnit.assertEquals("The appropriate styles were injected.",
-                                "1px", table.parent().css("height"));
-        });
-    };
-   
+   };
 })(jQuery); 
