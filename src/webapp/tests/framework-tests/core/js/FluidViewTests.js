@@ -75,7 +75,7 @@ fluid.registerNamespace("fluid.tests");
                 
                 excluded.append($("<input></input>").addClass("excluded"));
                 
-                input.focus();
+                applyOp(input, "focus");
                  
                 var blurOutwaiter = function () {
                     jqUnit.assertTrue(message + " - Blur handler has not executed", shouldBlur ^ !blurReceived);
@@ -83,7 +83,7 @@ fluid.registerNamespace("fluid.tests");
                     start();
                 };
     
-                input.blur();
+                applyOp(input, "blur");
                 window.setTimeout(function () {
                     fluid.log("Apply " + provokeOp + " to " + provokeTarget);
                     applyOp(blurTester.locate(provokeTarget), provokeOp);
