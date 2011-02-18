@@ -23,34 +23,46 @@ var fluid_1_3 = fluid_1_3 || {};
     
     var inCreationMarker = "__CURRENTLY_IN_CREATION__";
     
-    var findMatchingComponent = function(that, visitor, except) {
+    // unsupported, non-API function
+    fluid.isFireBreak = function(component) {
+        return component.options && component.options["fluid.visitComponents.fireBreak"]  
+    };
+    
+    var findMatchingComponent = function(that, visitor, visited) {
         for (var name in that) {
             var component = that[name];
-            if (!component || component === except || !component.typeName) {continue;}
+            //Every component *should* have an id, but some clients may not yet be compliant
+            //if (component && component.typeName && !component.id) {
+            //    fluid.fail("No id");
+            //}
+            if (!component || !component.typeName || component.id && visited[component.id]) {continue;}
+            visited[component.id] = true;
             if (visitor(component, name)) {
                 return true;
             }
-            findMatchingComponent(component, visitor);
+            if (!fluid.isFireBreak(component)) {
+                findMatchingComponent(component, visitor, visited);
+            }
          }
     };
     
     // thatStack contains an increasing list of MORE SPECIFIC thats.
-    var visitComponents = function(thatStack, visitor) {
-        var lastDead;
+    var visitComponents = function(thatStack, visitor, visited) {
+        visited = visited || {};
         for (var i = thatStack.length - 1; i >= 0; -- i) {
             var that = thatStack[i];
-            if (that.options && that.options.fireBreak) { // TODO: formalise this
+            if (fluid.isFireBreak(that)) {
                return;
             }
             if (that.typeName) {
+                visited[that.id] = true;
                 if (visitor(that, "")) {
                     return;
                 }
             }
-            if (findMatchingComponent(that, visitor, lastDead)) {
+            if (findMatchingComponent(that, visitor, visited)) {
                 return;
             }
-            lastDead = that;
         }
     };
     
@@ -215,10 +227,19 @@ var fluid_1_3 = fluid_1_3 || {};
     };
     
     fluid.instantiator = function() {
+        // NB: We may not use the options merging framework itself here, since "withNewComponent" below
+        // will blow up, as it tries to resolve the instantiator which we are instantiating *NOW*
+        var preThat = {
+            options: {
+                "fluid.visitComponents.fireBreak": true         
+            },
+            idToPath: {},
+            pathToComponent: {},
+            stackCount: 0
+        };
         var that = fluid.initLittleComponent("fluid.instantiator");
-        that.idToPath = {};
-        that.pathToComponent = {};
-        that.stackCount = 0;
+        that = $.extend(that, preThat);
+
         that.stack = function(count) {
             return that.stackCount += count;
         }
@@ -529,12 +550,6 @@ var fluid_1_3 = fluid_1_3 || {};
     };
     
     // Standard Fluid component types
-    
-    fluid.typeTag = function(name) {
-        return {
-            typeName: name
-        };
-    };
     
     fluid.standardComponent = function(name) {
         return function(container, options) {

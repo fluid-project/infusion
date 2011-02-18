@@ -45,8 +45,8 @@ var fluid = fluid || fluid_1_3;
     fluid.fail = function (message) {
         fluid.setLogging(true);
         fluid.log(message.message ? message.message : message);
-        throw new Error(message);
-        //message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
+        //throw new Error(message);
+        message.fail(); // Intentionally cause a browser error by invoking a nonexistent function.
     };
     
     // Logging
@@ -708,7 +708,7 @@ var fluid = fluid || fluid_1_3;
             if (thisSource !== undefined) {
                 if (thisSource !== null && typeof thisSource === 'object' &&
                       !fluid.isDOMNode(thisSource) && !thisSource.jquery && thisSource !== fluid.VALUE &&
-                       !fluid.mergePolicyIs(newPolicy, "preserve")) {
+                       !fluid.mergePolicyIs(newPolicy, "preserve") && !fluid.mergePolicyIs(newPolicy, "noexpand")) {
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array ? [] : {};
                     }
@@ -818,6 +818,16 @@ var fluid = fluid || fluid_1_3;
         return segs[segs.length - 1];
     };
     
+    /** Create a "type tag" component with no state but simply a type name and id. The most 
+     *  minimal form of Fluid component */
+       
+    fluid.typeTag = function(name) {
+        return {
+            typeName: name,
+            id: fluid.allocateGuid()
+        };
+    };
+    
     /**
      * Creates a new "little component": a that-ist object with options merged into it by the framework.
      * This method is a convenience for creating small objects that have options but don't require full
@@ -827,7 +837,7 @@ var fluid = fluid || fluid_1_3;
      * @param {Object} options user-supplied options to merge with the defaults
      */
     fluid.initLittleComponent = function (name, options) {
-        var that = {typeName: name, id: fluid.allocateGuid()};
+        var that = fluid.typeTag(name);
         // TODO: nickName must be available earlier than other merged options so that component may resolve to itself
         that.nickName = options && options.nickName ? options.nickName: fluid.computeNickName(that.typeName);
         fluid.mergeComponentOptions(that, name, options);

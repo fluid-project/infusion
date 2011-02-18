@@ -133,6 +133,27 @@ fluid.registerNamespace("fluid.testUtils");
             }
         }
     });
+    
+    fluid.defaults("fluid.testUtils.circularity", {
+        components: {
+            instantiator: "{instantiator}",
+            child1: {
+                type: "fluid.testUtils.circChild"
+            }
+        }
+    });
+    
+    fluid.defaults("fluid.testUtils.circChild", {
+        mergePolicy: {
+            instantiator: "noexpand"
+        }
+    });
+    
+    fluid.demands("fluid.testUtils.circChild", "fluid.testUtils.circularity",
+        [{
+        instantiator: "{circularity}.instantiator"  
+        }] 
+    );
 
     fluid.makeComponents({
         "fluid.testUtils.testComponent":      "fluid.standardComponent",
@@ -155,7 +176,9 @@ fluid.registerNamespace("fluid.testUtils");
         "fluid.testUtils.thatStackTail":      "fluid.littleComponent",
         "fluid.testUtils.reinstantiation":    "fluid.littleComponent",
         "fluid.testUtils.reinsChild":         "fluid.littleComponent",
-        "fluid.testUtils.reinsChild2":        "fluid.littleComponent"
+        "fluid.testUtils.reinsChild2":        "fluid.littleComponent",
+        "fluid.testUtils.circularity":        "fluid.littleComponent",
+        "fluid.testUtils.circChild":          "fluid.littleComponent"
         // TODO: GRADES
         //"fluid.testUtils.resultsPager":       "fluid.littleComponent"
     });
@@ -420,10 +443,10 @@ fluid.registerNamespace("fluid.testUtils");
 
     fluidIoCTests.test("Environmental Tests II - FLUID-3818", function () {
         var component = fluid.withEnvironment({
-            environmentalValue: {
-                typeName: "environmentalValue", 
+            environmentalValue: $.extend(fluid.typeTag("environmentalValue"),
+            { 
                 derived: "derivedValue"
-            }
+            })
         }, function () {
             return fluid.testUtils.fluid3818head();
         });
@@ -552,6 +575,12 @@ fluid.registerNamespace("fluid.testUtils");
         fluid.initDependent(reins.child1, "child2", instantiator);
         jqUnit.assertNotEquals("Child2 reinstantiated", origID, reins.child1.child2.id);
         jqUnit.assertEquals("Changed value found in expansion", "headValue2", reins.child1.child2.options.value); 
+    });
+    
+    fluidIoCTests.test("Tree circularity test", function() {
+        var circular = fluid.testUtils.circularity();
+        // if this test fails, the browser will bomb with a stack overflow 
+        jqUnit.assertValue("Circular test delivered instantiator", circular.child1.options.instantiator);  
     });
 
     fluidIoCTests.test("Deferred expander Tests", function () {
