@@ -456,6 +456,7 @@ var fluid_1_3 = fluid_1_3 || {};
             return args;
         }
         return fluid.withNewComponent(that, function(instantiator) {
+            fluid.log("expandOptions for " + that.typeName + " executing with instantiator " + instantiator.id);
             var thatStack = instantiator.getFullStack(that);
             var expandOptions = makeStackResolverOptions(thatStack);
             expandOptions.noCopy = true; // It is still possible a model may be fetched even though it is preserved
@@ -470,14 +471,17 @@ var fluid_1_3 = fluid_1_3 || {};
         });
     };
     
+    // The case without the instantiator is from the ginger strategy - this logic is still a little ragged
     fluid.initDependent = function(that, name, userInstantiator) {
         if (!that || that[name]) { return; }
         var instantiator;
         if (!userInstantiator) {
             instantiator = fluid.threadLocal()["fluid.instantiator"];
+            fluid.log("*** initDependent for " + that.typeName + " member " + name + " fetched existing instantiator " + instantiator.id);
         }
         else {
             instantiator = fluid.threadLocal()["fluid.instantiator"] = userInstantiator;
+            fluid.log("*** initDependent for " + that.typeName + " member " + name + " was supplied USER instantiator with id " + instantiator.id + " - STORED");
         }
         var thatStack = instantiator.getFullStack(that);
         var component = that.options.components[name];
@@ -490,6 +494,7 @@ var fluid_1_3 = fluid_1_3 || {};
             //invokeSpec.args = fluid.expandOptions(invokeSpec.args, thatStack, true);
             instantiator.pushUpcomingInstantiation(that, name);
             try {
+                that[inCreationMarker] = true;
                 var instance = fluid.initSubcomponentImpl(that, {type: invokeSpec.funcName}, invokeSpec.args);
                 if (instance) { // TODO: more fallibility
                    // Interestingly, by the time we have actually recorded this component here, it is far too late
@@ -498,13 +503,11 @@ var fluid_1_3 = fluid_1_3 || {};
                 }
             }
             finally {
+                delete that[inCreationMarker];
                 instantiator.pushUpcomingInstantiation();
             }
         }
         else { 
-          // TODO: As a result of brainless expansion pathway, it has ALREADY been 
-          // expanded - since resolveDemands above unilaterally calls embodyDemands etc. on ALL of the supplied material
-          // including component.options
             that[name] = component;
         }
     };
@@ -512,24 +515,25 @@ var fluid_1_3 = fluid_1_3 || {};
     // NON-API function
     // This function is stateful and MUST NOT be called by client code
     fluid.withNewComponent = function(that, func) {
-        that[inCreationMarker] = true;
         var root = fluid.threadLocal();
         var instantiator = root["fluid.instantiator"];
         if (!instantiator) {
             instantiator = root["fluid.instantiator"] = fluid.instantiator();
+            fluid.log("Created new instantiator with id " + instantiator.id + " in order to record component " + that.typeName);
         }
         try {
             instantiator.recordComponent(that);
             instantiator.stack(1);
+            fluid.log("Instantiator stack +1 to " + instantiator.stackCount + " for " + that.typeName);
             return func(instantiator);
         }
         finally {
             var count = instantiator.stack(-1);
-            fluid.log("withNewComponent end: instantiator count " + count);
+            fluid.log("Instantiator stack -1 to " + instantiator.stackCount + " for " + that.typeName);
             if (count === 0) {
+                fluid.log("Clearing instantiator with id " + instantiator.id + " from threadLocal for end of " + that.typeName);
                 delete root["fluid.instantiator"];
             }
-            delete that[inCreationMarker];
         }              
     };
         

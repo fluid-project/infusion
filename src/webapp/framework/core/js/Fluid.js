@@ -689,13 +689,23 @@ var fluid = fluid || fluid_1_3;
         return typeof(policy) === "string" && $.inArray(test, policy.split(/\s*,\s*/)) !== -1;
     };
     
-    function mergeImpl(policy, basePath, target, source, thisPolicy) {
+    function mergeImpl(policy, basePath, target, source, thisPolicy, rec) {
         if (typeof(thisPolicy) === "function") {
             thisPolicy.apply(null, target, source);
             return target;
         }
         if (fluid.mergePolicyIs(thisPolicy, "replace")) {
             fluid.clear(target);
+        }
+        if (source.id) {
+            var seenIds = rec.seenIds;
+            if (!seenIds[source.id]) {
+                seenIds[source.id] = source;
+            }
+            else if (seenIds[source.id] === source) {
+                fluid.fail("Circularity in options merging - component with typename " + source.typeName + " and id " + source.id 
+                + " has already been seen when evaluating path " + basePath + " - please protect components from merging using the \"noexpand\" merge policy");  
+            }
         }
       
         for (var name in source) {
@@ -712,7 +722,7 @@ var fluid = fluid || fluid_1_3;
                     if (primitiveTarget) {
                         target[name] = thisTarget = thisSource instanceof Array ? [] : {};
                     }
-                    mergeImpl(policy, path, thisTarget, thisSource, newPolicy);
+                    mergeImpl(policy, path, thisTarget, thisSource, newPolicy, rec);
                 }
                 else {
                     if (typeof(newPolicy) === "function") {
@@ -750,7 +760,7 @@ var fluid = fluid || fluid_1_3;
         for (var i = 2; i < arguments.length; ++i) {
             var source = arguments[i];
             if (source !== null && source !== undefined) {
-                mergeImpl(policy, path, target, source, policy ? policy[""] : null);
+                mergeImpl(policy, path, target, source, policy ? policy[""] : null, {seenIds: {}});
             }
         }
         if (policy && typeof(policy) !== "string") {

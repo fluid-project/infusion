@@ -134,6 +134,16 @@ fluid.registerNamespace("fluid.testUtils");
         }
     });
     
+    fluid.demands("fluid.testUtils.reinsChild2", "fluid.testUtils.reinstantiation",
+       [fluid.COMPONENT_OPTIONS, "{reinstantiation}.options.headValue"] 
+    );
+    
+    fluid.testUtils.reinsChild2 = function(options, otherValue) {
+        var that = fluid.initLittleComponent("fluid.testUtils.reinsChild2", options);
+        that.otherValue = otherValue;
+        return that;
+    }
+    
     fluid.defaults("fluid.testUtils.circularity", {
         components: {
             instantiator: "{instantiator}",
@@ -154,6 +164,7 @@ fluid.registerNamespace("fluid.testUtils");
         instantiator: "{circularity}.instantiator"  
         }] 
     );
+    
 
     fluid.makeComponents({
         "fluid.testUtils.testComponent":      "fluid.standardComponent",
@@ -176,7 +187,7 @@ fluid.registerNamespace("fluid.testUtils");
         "fluid.testUtils.thatStackTail":      "fluid.littleComponent",
         "fluid.testUtils.reinstantiation":    "fluid.littleComponent",
         "fluid.testUtils.reinsChild":         "fluid.littleComponent",
-        "fluid.testUtils.reinsChild2":        "fluid.littleComponent",
+        //"fluid.testUtils.reinsChild2":        "fluid.littleComponent",
         "fluid.testUtils.circularity":        "fluid.littleComponent",
         "fluid.testUtils.circChild":          "fluid.littleComponent"
         // TODO: GRADES
@@ -569,12 +580,14 @@ fluid.registerNamespace("fluid.testUtils");
         var origID = reins.child1.child2.id;
         var instantiator = reins.child1.instantiator;
         jqUnit.assertEquals("Original value transmission", reins.options.headValue, reins.child1.child2.options.value);
+        jqUnit.assertEquals("Original value transmission through demands block", reins.options.headValue, reins.child1.child2.otherValue);
         reins.options.headValue = "headValue2"; // in poor style, modify options to verify reexpansion
         reins.child1.options.components.child2 = fluid.copy(fluid.defaults("fluid.testUtils.reinstantiation").components.child1.options.components.child2);
         instantiator.clearComponent(reins.child1, "child2");
         fluid.initDependent(reins.child1, "child2", instantiator);
         jqUnit.assertNotEquals("Child2 reinstantiated", origID, reins.child1.child2.id);
-        jqUnit.assertEquals("Changed value found in expansion", "headValue2", reins.child1.child2.options.value); 
+        jqUnit.assertEquals("Changed value found in expansion", "headValue2", reins.child1.child2.options.value);
+        jqUnit.assertEquals("Changed value found in expansion through demands block", "headValue2", reins.child1.child2.otherValue); 
     });
     
     fluidIoCTests.test("Tree circularity test", function() {
