@@ -3,7 +3,7 @@
         "name": "Uploader",
         "description": "Upload single files, batches of files, and large files while visually indicating duration.",
         "cssFiles": "Uploader.css",
-        "files": ["Uploader.js", "FileQueue.js", "Scroller.js", "FileQueueView.js", "FlashUploaderSupport.js", "Flash9UploaderSupport.js", "HTML5UploaderSupport.js", "DemoUploadManager.js"],
+        "files": ["Uploader.js", "FileQueue.js", "FileQueueView.js", "FlashUploaderSupport.js", "Flash9UploaderSupport.js", "HTML5UploaderSupport.js", "DemoUploadManager.js"],
         "dependencies": ["fss", "jQuery", "jQueryUICore", "framework", "swfobject", "swfupload", "progress", "enhancement"]
     }
 }
