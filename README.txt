@@ -125,7 +125,7 @@ MIT License:
     * jQuery javascript library v1.4.2: http://jquery.com/ 
     * jQuery UI javascript widget library v1.8: http://ui.jquery.com/
     * jQuery UI tooltip (pre-release from jQuery 1.9 branch) https://github.com/jquery/jquery-ui/tree/tooltip
-    * jQuery QUnit revision 2dbf603: http://docs.jquery.com/QUnit
+    * jQuery QUnit: http://docs.jquery.com/QUnit
     * jQuery Mockjax: https://github.com/appendto/jquery-mockjax
     * jQuery Chili code highlighter http://code.google.com/p/jquery-chili-js/ 
     * SWFUpload v2.2.0.1: http://swfupload.org/
