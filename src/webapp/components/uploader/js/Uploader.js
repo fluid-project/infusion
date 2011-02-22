@@ -22,8 +22,7 @@ var fluid_1_3 = fluid_1_3 || {};
 (function ($, fluid) {
     
     var fileOrFiles = function (that, numFiles) {
-        return (numFiles === 1) ? that.options.strings.progress.singleFile : 
-                                  that.options.strings.progress.pluralFiles;
+        return (numFiles === 1) ? that.options.strings.progress.singleFile : that.options.strings.progress.pluralFiles;
     };
     
     var enableElement = function (that, elm) {
@@ -171,8 +170,7 @@ var fluid_1_3 = fluid_1_3 || {};
         var fileQueueTable = that.locate("fileQueue");        
         if (that.queue.files.length === 0) {
             fileQueueTable.attr("summary", that.options.strings.queue.emptyQueue);
-        }
-        else {
+        } else {
             var queueSummary = fluid.stringTemplate(that.options.strings.queue.queueSummary, {
                 totalUploaded: that.queue.getUploadedFiles().length, 
                 totalInUploadQueue: that.queue.files.length - that.queue.getUploadedFiles().length
@@ -581,14 +579,13 @@ var fluid_1_3 = fluid_1_3 || {};
     * @param {Number} bytes the files size, specified as in number bytes.
     */
     fluid.uploader.formatFileSize = function (bytes) {
-        if (typeof(bytes) === "number") {
+        if (typeof (bytes) === "number") {
             if (bytes === 0) {
                 return "0.0 KB";
             } else if (bytes > 0) {
                 if (bytes < 1048576) {
                     return (Math.ceil(bytes / 1024 * 10) / 10).toFixed(1) + " KB";
-                }
-                else {
+                } else {
                     return (Math.ceil(bytes / 1048576 * 10) / 10).toFixed(1) + " MB";
                 }
             }
@@ -702,19 +699,6 @@ var fluid_1_3 = fluid_1_3 || {};
     /** 
      * Error Handler
      */
-    var errorHandlerInit = function (that) {
-        /* change the error title*/
-        that.locate("errorHeader").text(that.options.strings.errorTemplateHeader);
-        /* bind events */
-        bindErrorHandlers(that, "exceedsFileLimit");
-        bindErrorHandlers(that, "exceedsUploadLimit");
-        /* set all toggle buttons related prefs */
-        that.locate("toggleErrorBodyButton").text(that.options.strings.errorTemplateWhichOnes);
-        that.locate("errorBodyTogglable").hide();
-        /* hide the error on init */
-        that.container.hide();
-    }
-
     var bindDeleteKey = function (that, row, errorCode) {
         var deleteHandler = function () {
             that.removeError(errorCode);
@@ -727,10 +711,6 @@ var fluid_1_3 = fluid_1_3 || {};
             }]
         });
     };
-    
-    var removeError = function (that, errorCode) {
-        that.errorMsgs[errorCode].files = [];
-    }
     
     var bindErrorHandlers = function (that, errorCode) {
         var row = that.locate(errorCode);
@@ -754,6 +734,23 @@ var fluid_1_3 = fluid_1_3 || {};
 
         //Bind delete key on keyboard
         bindDeleteKey(that, row, errorCode);
+    };
+    
+    var errorHandlerInit = function (that) {
+        /* change the error title*/
+        that.locate("errorHeader").text(that.options.strings.errorTemplateHeader);
+        /* bind events */
+        bindErrorHandlers(that, "exceedsFileLimit");
+        bindErrorHandlers(that, "exceedsUploadLimit");
+        /* set all toggle buttons related prefs */
+        that.locate("toggleErrorBodyButton").text(that.options.strings.errorTemplateWhichOnes);
+        that.locate("errorBodyTogglable").hide();
+        /* hide the error on init */
+        that.container.hide();
+    };
+
+    var removeError = function (that, errorCode) {
+        that.errorMsgs[errorCode].files = [];
     };
 
     var updateTotalError = function (that) {
@@ -791,7 +788,7 @@ var fluid_1_3 = fluid_1_3 || {};
         } else {
             that.container.show();
         }
-    }
+    };
 
     fluid.uploader.errorHandler = function (container, options) {
         var that = fluid.initView("fluid.uploader.errorHandler", container, options);
@@ -827,18 +824,18 @@ var fluid_1_3 = fluid_1_3 || {};
          */
         that.addError = function (file, errorCode) {
             that.errorMsgs[errorCode].files.push(file);
-        }
+        };
 
         that.refreshView = function () {
             updateTotalError(that);
-        }
+        };
         
         that.clearErrors = function () {
             $.each(that.errorMsgs, function (errorCode, errObj) {
                 removeError(that, errorCode);
             });
             that.refreshView();
-        }
+        };
 
         errorHandlerInit(that);
 

@@ -207,9 +207,9 @@ var fluid_1_3 = fluid_1_3 || {};
         var multipart = "";
         multipart += "--" + boundary + CRLF;
         multipart += "Content-Disposition: form-data;" +
-                     " name=\"fileData\";" + 
-                     " filename=\"" + file.name + 
-                     "\"" + CRLF;
+            " name=\"fileData\";" + 
+            " filename=\"" + file.name + 
+            "\"" + CRLF;
         multipart += "Content-Type: " + file.type + CRLF + CRLF;
         multipart += file.getAsBinary(); // TODO: Ack, concatting binary data to JS String!
         multipart += CRLF + "--" + boundary + "--" + CRLF;
@@ -261,10 +261,10 @@ var fluid_1_3 = fluid_1_3 || {};
             var filesToUpload = files.length;
             
             // Clear the error queue when "User successfully added an error through the file dialog"
-             // that is LEQV to remainingUploadLimit > 0
-             if (remainingUploadLimit > 0) {
+            // that is LEQV to remainingUploadLimit > 0
+            if (remainingUploadLimit > 0) {
                 that.events.clearFileError.fire();
-             }
+            }
              
             if (fileLimit !== 0 && filesToUpload > remainingUploadLimit) {
                 filesToUpload = remainingUploadLimit; 
@@ -429,5 +429,5 @@ var fluid_1_3 = fluid_1_3 || {};
             "{multiFileUploader}.container",
             fluid.COMPONENT_OPTIONS
         ]
-    })
+    });
 })(jQuery, fluid_1_3);    
