@@ -58,7 +58,7 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.pager.directPageList = function (container, events, options) {
         var that = fluid.initView("fluid.pager.directPageList", container, options);
         that.pageLinks = that.locate("pageLinks");
-        for (var i = 0; i < that.pageLinks.length; ++ i) {
+        for (var i = 0; i < that.pageLinks.length; ++i) {
             var pageLink = that.pageLinks.eq(i);
             bindLinkClick(pageLink, events, {pageIndex: i});
         }
@@ -82,7 +82,7 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.iota = function (count, first) {
         first = first || 0;
         var togo = [];
-        for (var i = 0; i < count; ++ i) {
+        for (var i = 0; i < count; ++i) {
             togo[togo.length] = first++;
         }
         return togo;
@@ -101,12 +101,11 @@ var fluid_1_3 = fluid_1_3 || {};
             var togo = [];
             var j = 0;
             var lastSkip = false;
-            for (var i = 0; i < count; ++ i) {
+            for (var i = 0; i < count; ++i) {
                 if (i < locality || (count - i - 1) < locality || (i >= mid - midLocality && i <= mid + midLocality)) {
                     togo[j++] = i;
                     lastSkip = false;
-                }
-                else if (!lastSkip) {
+                } else if (!lastSkip) {
                     togo[j++] = -1;
                     lastSkip = true;
                 }
@@ -121,7 +120,7 @@ var fluid_1_3 = fluid_1_3 || {};
      * @param   midLinkCount    int     The # of elements from beside the selected #
      * @author  Eric Dalquist
      */
-     fluid.pager.consistentGappedPageStrategy = function (endLinkCount, midLinkCount) {
+    fluid.pager.consistentGappedPageStrategy = function (endLinkCount, midLinkCount) {
         if (!endLinkCount) {
             endLinkCount = 1;
         }
@@ -140,17 +139,15 @@ var fluid_1_3 = fluid_1_3 || {};
             var lastSkip = false;
             
             for (var page = 0; page < count; page++) {
-                if (
-                    page < endLinkCount || // start pages
-                    count - page <= endLinkCount || // end pages
-                    (anchoredLeft && page < anchoredEndWidth) || // pages if no skipped pages between start and mid
-                    (anchoredRight && page >= count - anchoredEndWidth) || // pages if no skipped pages between mid and end
-                    (page >= midStart && page <= midEnd) // pages around the mid
-                ) {
+                if (page < endLinkCount || // start pages
+                        count - page <= endLinkCount || // end pages
+                        (anchoredLeft && page < anchoredEndWidth) || // pages if no skipped pages between start and mid
+                        (anchoredRight && page >= count - anchoredEndWidth) || // pages if no skipped pages between mid and end
+                        (page >= midStart && page <= midEnd) // pages around the mid
+                        ) {
                     pages.push(page);
                     lastSkip = false;
-                }
-                else if (!lastSkip) {
+                } else if (!lastSkip) {
                     pages.push(-1);
                     lastSkip = true;
                 }
@@ -165,14 +162,16 @@ var fluid_1_3 = fluid_1_3 || {};
         options = that.options; // pick up any defaults
         var idMap = {};
         var renderOptions = {
-            cutpoints: [ {
-                id: "page-link:link",
-                selector: pagerBarOptions.selectors.pageLinks
-            },
-            {
-                id: "page-link:skip",
-                selector: pagerBarOptions.selectors.pageLinkSkip
-            }],
+            cutpoints: [ 
+                {
+                    id: "page-link:link",
+                    selector: pagerBarOptions.selectors.pageLinks
+                },
+                {
+                    id: "page-link:skip",
+                    selector: pagerBarOptions.selectors.pageLinkSkip
+                }
+            ],
             idMap: idMap
         };
         
@@ -204,9 +203,12 @@ var fluid_1_3 = fluid_1_3 || {};
             if (isCurrent) {
                 obj.current = true;
                 obj.decorators = obj.decorators.concat([
-                    {type: "addClass",
-                         classes: that.options.styles.currentPage},                           
-                    {type: "jQuery",
+                    {
+                        type: "addClass",
+                        classes: that.options.styles.currentPage
+                    },
+                    {
+                        type: "jQuery",
                         func: "attr", 
                         args: ["aria-label", that.options.strings.currentPageIndexMsg] 
                     }
@@ -254,15 +256,13 @@ var fluid_1_3 = fluid_1_3 || {};
         return that;
     };
     
-    fluid.defaults("fluid.pager.renderedPageList",
-        {
-            selectors: {
-                root: ".flc-pager-links"
-            },
-            linkBody: "a",
-            pageStrategy: fluid.pager.everyPageStrategy
-        }
-    );
+    fluid.defaults("fluid.pager.renderedPageList", {
+        selectors: {
+            root: ".flc-pager-links"
+        },
+        linkBody: "a",
+        pageStrategy: fluid.pager.everyPageStrategy
+    });
     
     var updatePreviousNext = function (that, options, newModel) {
         if (newModel.pageIndex === 0) {
@@ -295,9 +295,9 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.pager.pagerBar = function (events, container, options, strings) {
         var that = fluid.initView("fluid.pager.pagerBar", container, options);
         that.pageList = fluid.initSubcomponent(that, "pageList", 
-           [container, events, that.options, fluid.COMPONENT_OPTIONS, strings]);
+            [container, events, that.options, fluid.COMPONENT_OPTIONS, strings]);
         that.previousNext = fluid.initSubcomponent(that, "previousNext", 
-           [container, events, that.options, fluid.COMPONENT_OPTIONS, strings]);
+            [container, events, that.options, fluid.COMPONENT_OPTIONS, strings]);
         
         return that;
     };
@@ -345,7 +345,7 @@ var fluid_1_3 = fluid_1_3 || {};
     };
     
     function getRoots(target, overallThat, index) {
-        var cellRoot = (overallThat.options.dataOffset ? overallThat.options.dataOffset + ".": "");
+        var cellRoot = (overallThat.options.dataOffset ? overallThat.options.dataOffset + "." : "");
         target.shortRoot = index;
         target.longRoot = cellRoot + target.shortRoot;
     }
@@ -353,8 +353,7 @@ var fluid_1_3 = fluid_1_3 || {};
     function expandPath(EL, shortRoot, longRoot) {
         if (EL.charAt(0) === "*") {
             return longRoot + EL.substring(1); 
-        }
-        else {
+        } else {
             return EL.replace("*", shortRoot);
         }
     }
@@ -372,7 +371,7 @@ var fluid_1_3 = fluid_1_3 || {};
         var columnDefs = getColumnDefs(overallThat);
         var columnDef = fluid.pager.findColumnDef(columnDefs, model.sortKey);
         var sortrecs = [];
-        for (var i = 0; i < model.totalRange; ++ i) {
+        for (var i = 0; i < model.totalRange; ++i) {
             sortrecs[i] = {
                 index: i,
                 value: fluid.pager.fetchValue(overallThat, dataModel, i, columnDef.valuebinding, roots)
@@ -393,8 +392,8 @@ var fluid_1_3 = fluid_1_3 || {};
     fluid.pager.directModelFilter = function (model, pagerModel, perm) {
         var togo = [];
         var limit = fluid.pager.computePageLimit(pagerModel);
-        for (var i = pagerModel.pageIndex * pagerModel.pageSize; i < limit; ++ i) {
-            var index = perm ? perm[i]: i;
+        for (var i = pagerModel.pageIndex * pagerModel.pageSize; i < limit; ++i) {
+            var index = perm ? perm[i] : i;
             togo[togo.length] = {index: index, row: model[index]};
         }
         return togo;
@@ -408,18 +407,15 @@ var fluid_1_3 = fluid_1_3 || {};
             if (nextindex === -1) {
                 togo += value.substring(index);
                 break;
-            }
-            else {
+            } else {
                 togo += value.substring(index, nextindex);
                 var endi = value.indexOf("}", nextindex + 2);
                 var EL = value.substring(nextindex + 2, endi);
                 if (EL === "VALUE") {
                     EL = opts.EL;
-                }
-                else {
+                } else {
                     EL = expandPath(EL, opts.shortRoot, opts.longRoot);
                 }
-
                 var val = fluid.get(opts.dataModel, EL);
                 togo += val;
                 index = endi + 1;
@@ -434,22 +430,17 @@ var fluid_1_3 = fluid_1_3 || {};
             if (val === fluid.VALUE) {
                 if (i === "valuebinding") {
                     target[i] = opts.EL;
-                }
-                else {
+                } else {
                     target[i] = {"valuebinding" : opts.EL};
                 }
-            }
-            else if (i === "valuebinding") {
+            } else if (i === "valuebinding") {
                 target[i] = expandPath(tree[i], opts);
-            }
-            else if (typeof(val) === 'object') {
+            } else if (typeof (val) === 'object') {
                 target[i] = val.length !== undefined ? [] : {};
                 expandPaths(target[i], val, opts);
-            }
-            else if (typeof(val) === 'string') {
+            } else if (typeof (val) === 'string') {
                 target[i] = expandVariables(val, opts);
-            }
-            else {
+            } else {
                 target[i] = tree[i];
             }
         }
@@ -482,11 +473,9 @@ var fluid_1_3 = fluid_1_3 || {};
                     ID: ID,
                     valuebinding: opts.EL
                 };
-            }
-            else if (typeof columnDef.components === 'function') {
+            } else if (typeof columnDef.components === 'function') {
                 togo = columnDef.components(filteredRow.row, filteredRow.index);
-            }
-            else {
+            } else {
                 togo = columnDef.components;
             }
             togo = expandPaths({}, togo, opts);
@@ -568,11 +557,9 @@ var fluid_1_3 = fluid_1_3 || {};
                     if (oldBig) {
                         setSortHeaderClass(styles, oldBig, 0);
                     }
-                }
-                else if (newModel.sortKey === columnDef.key) {
+                } else if (newModel.sortKey === columnDef.key) {
                     newModel.sortDir = -1 * newModel.sortDir;
-                }
-                else {
+                } else {
                     return false;
                 }
                 newModel.pageIndex = 0;
@@ -607,8 +594,8 @@ var fluid_1_3 = fluid_1_3 || {};
                         {type: "attrs", attributes: { title: (columnDef.key === newModel.sortKey) ? sortableColumnTxt : opts.options.strings.sortableColumnText}}
                     ].concat(fetchHeaderDecorators(opts.overallOptions.decorators, columnDef))
                 };
-            }
-       )};
+            })
+        };
     }
    
     /** A body renderer implementation which uses the Fluid renderer to render a table section **/
@@ -635,15 +622,13 @@ var fluid_1_3 = fluid_1_3 || {};
                                 getRoots(expOpts, overallThat, filteredRow.index);
                                 if (columnDefs === "explode") {
                                     return fluid.explode(filteredRow.row, expOpts.longRoot);
-                                }
-                                else if (columnDefs.length) {
+                                } else if (columnDefs.length) {
                                     return expandColumnDefs(filteredRow, expOpts);
                                 }
-                            }
-                           );
+                            });
                         var fullTree = {};
                         fullTree[options.row] = tree;
-                        if (typeof(columnDefs) === "object") {
+                        if (typeof (columnDefs) === "object") {
                             fullTree[options.header] = generateHeader(overallThat, newModel, columnDefs, expOpts);
                         }
                         options.renderOptions = options.renderOptions || {};
@@ -800,8 +785,7 @@ var fluid_1_3 = fluid_1_3 || {};
                 var newModel = fluid.copy(that.model);
                 if (arg.relativePage !== undefined) {
                     newModel.pageIndex = that.model.pageIndex + arg.relativePage;
-                }
-                else {
+                } else {
                     newModel.pageIndex = arg.pageIndex;
                 }
                 if (newModel.pageIndex === undefined || newModel.pageIndex < 0) {
@@ -817,19 +801,19 @@ var fluid_1_3 = fluid_1_3 || {};
                 newModel.pageSize = arg;
                 fireModelChange(that, newModel);     
             }
-            );
+        );
 
         // Setup the top and bottom pager bars.
         var pagerBarElement = that.locate("pagerBar");
         if (pagerBarElement.length > 0) {
             that.pagerBar = fluid.initSubcomponent(that, "pagerBar", 
-            [that.events, pagerBarElement, fluid.COMPONENT_OPTIONS, that.options.strings]);
+                [that.events, pagerBarElement, fluid.COMPONENT_OPTIONS, that.options.strings]);
         }
         
         var pagerBarSecondaryElement = that.locate("pagerBarSecondary");
         if (pagerBarSecondaryElement.length > 0) {
             that.pagerBarSecondary = fluid.initSubcomponent(that, "pagerBar",
-               [that.events, pagerBarSecondaryElement, fluid.COMPONENT_OPTIONS, that.options.strings]);
+                [that.events, pagerBarSecondaryElement, fluid.COMPONENT_OPTIONS, that.options.strings]);
         }
  
         that.bodyRenderer = fluid.initSubcomponent(that, "bodyRenderer", [that, fluid.COMPONENT_OPTIONS]);
@@ -849,14 +833,14 @@ var fluid_1_3 = fluid_1_3 || {};
         if (that.model.totalRange === undefined) {
             if (!that.pagerBar) {
                 fluid.fail("Error in Pager configuration - cannot determine total range, " +
-                " since not configured in model.totalRange and no PagerBar is configured");
+                    " since not configured in model.totalRange and no PagerBar is configured");
             }
             that.model = that.pagerBar.pageList.defaultModel;
         }
         that.applier = fluid.makeChangeApplier(that.model);
 
-        that.events.initiatePageChange.fire({pageIndex: that.model.pageIndex ? that.model.pageIndex: 0, 
-           forceUpdate: true});
+        that.events.initiatePageChange.fire({pageIndex: that.model.pageIndex ? that.model.pageIndex : 0, 
+            forceUpdate: true});
 
         return that;
     };

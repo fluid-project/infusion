@@ -98,9 +98,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
         /** Convenience strategy pager creator **/
         var strategyRenderer = function (n, pageSize, pageList) {
                 var dataModel = {};
-                dataModel.pets = new Array();
+                dataModel.pets = [];
                 for (var i = 0; i < n; i++) {
-                    dataModel.pets.push({animal:"cat_" + i});
+                    dataModel.pets.push({animal: "cat_" + i});
                 }
                 
                 var opt = {
@@ -495,7 +495,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                     pageStrategy: fluid.pager.everyPageStrategy
                 }
             };            
-            var expectedPages = Math.ceil(pageList/pageSize);
+            var expectedPages = Math.ceil(pageList / pageSize);
             var pager = strategyRenderer(pageList, pageSize, everyPageStrategyPageList);
             var pagerTopPageLinks = $(".flc-pager-top .flc-pager-pageLink", pager.container).length;
             var pagerBottomPageLinks = $(".flc-pager-bottom .flc-pager-pageLink", pager.container).length;
@@ -509,7 +509,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
         tests.test("Pager gappedPageStrategy", function () {
             var pageSize = 3;
             var pageList = 100;
-            var expectedPages = Math.ceil(pageList/pageSize);
+            var expectedPages = Math.ceil(pageList / pageSize);
             var j = 3;
             var m = 1;
             var gappedPageStrategyPageList = function (j, m) {
@@ -529,7 +529,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 //manually retrieve ID
                 //todo: make this better?
                 var link = $(element).find('a');
-                var linkId = parseInt(link.attr('id').replace('page-link:link', ''));
+                var linkId = parseInt(link.attr('id').replace('page-link:link', ''), 10);
                 //if this link is within the leading linkCount
                 if (linkId <= j) {
                     return true;
@@ -547,16 +547,18 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 return false;
             };
             
+            var allPagesAfterClickedEachFn = function (index, element) {
+                    if (!$(element).hasClass("flc-pager-pageLink-skip")) {
+                        jqUnit.assertTrue("Clicked on [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
+                    }
+                };
+                
             //Go through all pages 1 by 1 , and click click all page dynamically each time
             for (var i = 1; i <= expectedPages; i++) {
                 var page = fluid.jById('page-link:link' + i);
                 page.click();     
                 var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
-                allPagesAfterClicked.each(function (index, element) {
-                    if (!$(element).hasClass("flc-pager-pageLink-skip")) {
-                        jqUnit.assertTrue("Clicked on [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
-                    }
-                });
+                allPagesAfterClicked.each(allPagesAfterClickedEachFn);
             } 
         });
         
@@ -571,9 +573,9 @@ https://source.fluidproject.org/svn/LICENSE.txt
              */             
             var pageSize = 3;
             var pageList = 100;
-            var expectedPages = Math.ceil(pageList/pageSize);
+            var expectedPages = Math.ceil(pageList / pageSize);
             var j = 3;
-            var m = 3;
+            var m = 1;
             var consistentGappedPageStrategyPageList = function (j, m) {
                 return {
                     type: "fluid.pager.renderedPageList",
@@ -590,7 +592,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 //manually retrieve ID
                 //todo: make this better?
                 var link = $(element).find('a');
-                var linkId = parseInt(link.attr('id').replace('page-link:link', ''));
+                var linkId = parseInt(link.attr('id').replace('page-link:link', ''), 10);
                 //if this link is within the leading linkCount
                 if (linkId <= j) {
                     return true;
@@ -623,7 +625,12 @@ https://source.fluidproject.org/svn/LICENSE.txt
             
             var pager = strategyRenderer(pageList, pageSize, consistentGappedPageStrategyPageList(j, m)); 
             //total queue size allowed is current_page + 2 * (j + m) + self + 2 skipped_pages                        
-            var totalPages = 2 * ( j + m ) + 3;
+            var totalPages = 2 * (j + m) + 3;
+            var allPagesAfterClickedEachFn = function (index, element) {
+                    if (!$(element).hasClass("flc-pager-pageLink-skip")) {
+                        jqUnit.assertTrue("On [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
+                    }
+                };
             
             //Go through all pages 1 by 1 , and click all page dynamically each time
             for (var i = 1; i <= expectedPages; i++) {
@@ -632,11 +639,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
                 jqUnit.assertEquals("Verify number of top page links", totalPages, 
                                     pager.pagerBar.locate("pageLinks").length + pager.pagerBar.locate("pageLinkSkip").length);                
                 var allPagesAfterClicked = pager.pagerBar.pageList.locate("root").find("li");
-                allPagesAfterClicked.each(function (index, element) {
-                    if (!$(element).hasClass("flc-pager-pageLink-skip")) {
-                        jqUnit.assertTrue("On [page " + i + "] and checking [" + $(element).find('a').attr('id') + "]", shouldExistInList(i, element));
-                    }
-                });
+                allPagesAfterClicked.each(allPagesAfterClickedEachFn);
             }
         });
     });
