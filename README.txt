@@ -118,30 +118,33 @@ More information about Infusion licensing is available in our wiki:
 
 Third Party Software in Infusion
 --------------------------------
-This is a list of publicly available software that is included in the Fluid Infusion bundle, along
-with their licensing terms.
+This is a list of publicly available software that is redistributed with Fluid Infusion, 
+categorized by license:
 
-    * jQuery javascript library v1.4.2: http://jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * jQuery UI javascript widget library v1.8: http://ui.jquery.com/ (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * jQuery UI tooltip plugin from the tooltip branch on github for jQuery UI v1.9: (MIT and GPL licensed http://docs.jquery.com/Licensing)
-            https://github.com/jquery/jquery-ui/tree/tooltip
-            commit  48a5977d3325869abd7b
-            tree    43fd0cda4af2cdcd33f5
-            parent  bdd815e8dcdeace8be6d 
-    * jQuery QUnit revision 2dbf603: http://docs.jquery.com/QUnit (MIT and GPL licensed http://docs.jquery.com/Licensing)
-    * jQuery Mockjax: https://github.com/appendto/jquery-mockjax (MIT and GPL licensed) 
-    * jQuery Chili code highlighter http://code.google.com/p/jquery-chili-js/ (MIT licensed)
-    * Douglas Crockford's JSON parsing and stringifying methods (from 2007-11-06): http://www.json.org/ (Public Domain)
-    * SWFUpload v2.2.0.1: http://swfupload.org/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
-    * SWFObject v2.2: http://code.google.com/p/swfobject/ (MIT licensed http://www.opensource.org/licenses/mit-license.php)
-    * Sample markup and stylesheets from Sakai v2.5 (http://sakaiproject.org) and uPortal v2.6 (http://www.uportal.org/)
+MIT License:
+    * jQuery javascript library v1.4.2: http://jquery.com/ 
+    * jQuery UI javascript widget library v1.8: http://ui.jquery.com/
+    * jQuery UI tooltip (pre-release from jQuery 1.9 branch) https://github.com/jquery/jquery-ui/tree/tooltip
+    * jQuery QUnit: http://docs.jquery.com/QUnit
+    * jQuery Mockjax: https://github.com/appendto/jquery-mockjax
+    * jQuery Chili code highlighter http://code.google.com/p/jquery-chili-js/ 
+    * SWFUpload v2.2.0.1: http://swfupload.org/
+    * SWFObject v2.2: http://code.google.com/p/swfobject/
 
-Other third party software
-
+zlib/libpng License:
     * fastXmlPull is based on XML for Script's Fast Pull Parser v3.1
-      (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js )
+      (see: http://wiki.fluidproject.org/display/fluid/Licensing+for+fastXmlPull.js)
+  
+BSD License:
     * fluid.reset.css is based on YUI's CSS reset styling v2.5.2
-      see: http://developer.yahoo.com/yui/reset/ (BSD licensed http://developer.yahoo.com/yui/license.html)
+      see: http://developer.yahoo.com/yui/reset/
+    * Sample markup and stylesheets from uPortal v2.6 (http://www.uportal.org/)
+
+ECL 2.0:
+    * Sample markup and stylesheets from Sakai v2.5 (http://sakaiproject.org)
+
+Other licenses:
+    * Douglas Crockford's JSON.js (from 2007-11-06): http://www.json.org/ (Public Domain)
     
 
 Documentation
